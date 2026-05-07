@@ -1,0 +1,27 @@
+name: Compute Rankings
+
+on:
+  schedule:
+    - cron: "0 22 * * 0"  # Sunday 22:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  compute:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+      - name: Run weekly compute (Phase 0 stub)
+        run: |
+          echo "QuantRank Phase 0 stub — no real compute yet."
+          python -m compute.main
