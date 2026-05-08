@@ -8,7 +8,7 @@ import os
 from pathlib import Path
 from typing import Any
 
-from compute.output.schemas import Metadata, StockSummary
+from compute.output.schemas import Metadata, StockDetail, StockSummary
 
 logger = logging.getLogger(__name__)
 
@@ -35,4 +35,11 @@ def write_rankings_json(rows: list[StockSummary], data_dir: Path) -> Path:
 def write_metadata_json(meta: Metadata, data_dir: Path) -> Path:
     out = data_dir / "metadata.json"
     atomic_write_json(out, meta.model_dump(mode="json"))
+    return out
+
+
+def write_stock_detail(detail: StockDetail, data_dir: Path) -> Path:
+    """Write per-stock detail JSON to ``data_dir / 'stocks' / '{ticker}.json'``."""
+    out = data_dir / "stocks" / f"{detail.ticker}.json"
+    atomic_write_json(out, detail.model_dump(mode="json"))
     return out

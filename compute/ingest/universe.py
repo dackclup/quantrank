@@ -21,6 +21,12 @@ logger = logging.getLogger(__name__)
 
 EXPECTED_COLUMNS = ("ticker", "name", "sector", "sub_industry", "cik")
 
+# Wikipedia is sometimes slow to update post-rename. Map stale symbols here.
+# Keys are normalized (dot-to-dash, uppercase). Values are the live ticker.
+TICKER_OVERRIDES: dict[str, str] = {
+    "FISV": "FI",  # Fiserv renamed in 2024
+}
+
 
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(min=2, max=30), reraise=True)
 def _fetch_wikipedia_html(url: str = config.WIKIPEDIA_SP500_URL) -> str:
@@ -56,7 +62,9 @@ def parse_sp500_html(html: str) -> pd.DataFrame:
     if missing:
         raise ValueError(f"Wikipedia table is missing expected columns: {missing}")
     df = df.rename(columns=rename_map)
-    df["ticker"] = df["wiki_ticker"].astype(str).map(_normalize_ticker)
+    df["wiki_ticker"] = df["wiki_ticker"].astype(str)
+    df["ticker"] = df["wiki_ticker"].map(_normalize_ticker)
+    df["ticker"] = df["ticker"].map(lambda t: TICKER_OVERRIDES.get(t, t))
     df["cik"] = df["cik"].astype(str).str.zfill(10)
     df = df[["ticker", "name", "sector", "sub_industry", "cik", "wiki_ticker"]]
     df = df.drop_duplicates(subset=["ticker"]).reset_index(drop=True)
