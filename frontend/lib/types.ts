@@ -4,9 +4,11 @@ export type PillarScores = {
   growth: number | null;
   momentum: number | null;
   health: number | null;
+  profitability: number | null;
+  technical: number | null;
+  risk: number | null;
   sentiment: number | null;
   ml: number | null;
-  risk: number | null;
 };
 
 export type StockSummary = {
@@ -20,6 +22,9 @@ export type StockSummary = {
   max_fair_price: number | null;
   margin_of_safety_pct: number | null;
   pillar_scores: PillarScores;
+  risk_flags: string[];
+  entered_top5: boolean;
+  exited_top5: boolean;
 };
 
 export type Metadata = {
@@ -72,4 +77,7 @@ export type StockDetail = {
   top5_factors: unknown[];
   score_history: unknown[];
   data_quality: DataQuality;
+  risk_flags: string[];
+  entered_top5: boolean;
+  exited_top5: boolean;
 };

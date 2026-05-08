@@ -5,17 +5,17 @@
   "industry": "Integrated Telecommunication Services",
   "market_cap": 192500111329.73093,
   "current_price": 25.26,
-  "rank": 305,
-  "composite_score": 39.32,
+  "rank": 276,
+  "composite_score": 48.94,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 39.32,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 47.83,
+    "value": 63.77,
+    "growth": 37.5,
+    "momentum": 60.16,
+    "health": 21.0,
+    "profitability": 51.45,
+    "technical": 32.12,
+    "risk": 61.55,
     "sentiment": null,
     "ml": null
   },
@@ -48,5 +48,10 @@
     "filing_lag_days": 11,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-27"
-  }
+  },
+  "risk_flags": [
+    "altman_distress"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }

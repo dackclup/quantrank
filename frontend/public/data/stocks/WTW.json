@@ -5,17 +5,17 @@
   "industry": "Insurance Brokers",
   "market_cap": null,
   "current_price": 258.07,
-  "rank": 359,
-  "composite_score": 28.54,
+  "rank": 354,
+  "composite_score": 44.76,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 28.54,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 52.33,
+    "value": 43.78,
+    "growth": 56.67,
+    "momentum": 22.31,
+    "health": 39.24,
+    "profitability": 48.89,
+    "technical": 36.21,
+    "risk": 49.5,
     "sentiment": null,
     "ml": null
   },
@@ -51,5 +51,10 @@
     "filing_lag_days": 8,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
-  }
+  },
+  "risk_flags": [
+    "altman_distress"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }

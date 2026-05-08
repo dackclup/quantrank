@@ -5,17 +5,17 @@
   "industry": "Diversified Banks",
   "market_cap": 825765144378.6621,
   "current_price": 306.27,
-  "rank": 183,
-  "composite_score": 63.67,
+  "rank": 158,
+  "composite_score": 55.07,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 63.67,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 55.33,
+    "value": 53.56,
+    "growth": 67.0,
+    "momentum": 51.44,
+    "health": 52.31,
+    "profitability": 40.67,
+    "technical": 53.98,
+    "risk": 67.33,
     "sentiment": null,
     "ml": null
   },
@@ -58,5 +58,10 @@
     "filing_lag_days": 7,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
-  }
+  },
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }

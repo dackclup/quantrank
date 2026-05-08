@@ -5,17 +5,17 @@
   "industry": "Industrial Machinery & Supplies & Components",
   "market_cap": 160519845581.0547,
   "current_price": 886.85,
-  "rank": 90,
-  "composite_score": 82.24,
+  "rank": 60,
+  "composite_score": 61.54,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 82.24,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 70.57,
+    "value": 51.05,
+    "growth": 79.75,
+    "momentum": 59.46,
+    "health": 49.92,
+    "profitability": 65.82,
+    "technical": 27.54,
+    "risk": 73.74,
     "sentiment": null,
     "ml": null
   },
@@ -44,5 +44,10 @@
     "filing_lag_days": 7,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
-  }
+  },
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }

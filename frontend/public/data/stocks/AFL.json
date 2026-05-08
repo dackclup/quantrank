@@ -5,17 +5,17 @@
   "industry": "Life & Health Insurance",
   "market_cap": 57996207220.99304,
   "current_price": 113.6,
-  "rank": 293,
-  "composite_score": 41.72,
+  "rank": 89,
+  "composite_score": 59.52,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 41.72,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 64.0,
+    "value": 67.78,
+    "growth": 33.67,
+    "momentum": 55.43,
+    "health": 60.2,
+    "profitability": 60.0,
+    "technical": 57.22,
+    "risk": 77.52,
     "sentiment": null,
     "ml": null
   },
@@ -57,5 +57,10 @@
     "filing_lag_days": 2,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
-  }
+  },
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }

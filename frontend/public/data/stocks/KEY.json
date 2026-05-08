@@ -5,17 +5,17 @@
   "industry": "Regional Banks",
   "market_cap": 27257868808.04132,
   "current_price": 21.69,
-  "rank": 103,
-  "composite_score": 79.64,
+  "rank": 337,
+  "composite_score": 45.75,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 79.64,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 39.33,
+    "value": 46.44,
+    "growth": 23.67,
+    "momentum": 65.64,
+    "health": 56.02,
+    "profitability": 46.0,
+    "technical": 52.39,
+    "risk": 59.26,
     "sentiment": null,
     "ml": null
   },
@@ -56,5 +56,10 @@
     "filing_lag_days": 3,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-05"
-  }
+  },
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }

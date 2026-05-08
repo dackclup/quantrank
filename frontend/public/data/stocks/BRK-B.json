@@ -5,17 +5,17 @@
   "industry": "Multi-Sector Holdings",
   "market_cap": null,
   "current_price": 475.08,
-  "rank": 369,
-  "composite_score": 26.55,
+  "rank": 405,
+  "composite_score": 42.31,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 26.55,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 28.67,
+    "value": 49.56,
+    "growth": 34.0,
+    "momentum": 43.97,
+    "health": 49.24,
+    "profitability": 52.22,
+    "technical": 60.01,
+    "risk": 62.3,
     "sentiment": null,
     "ml": null
   },
@@ -58,5 +58,10 @@
     "filing_lag_days": 4,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-04"
-  }
+  },
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }

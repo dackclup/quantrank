@@ -5,17 +5,17 @@
   "industry": "Real Estate Services",
   "market_cap": 42959703683.72165,
   "current_price": 146.7,
-  "rank": 265,
-  "composite_score": 47.31,
+  "rank": 86,
+  "composite_score": 59.77,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 47.31,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 91.94,
+    "value": 42.47,
+    "growth": 62.1,
+    "momentum": 31.37,
+    "health": 51.27,
+    "profitability": 62.37,
+    "technical": 46.41,
+    "risk": 50.83,
     "sentiment": null,
     "ml": null
   },
@@ -51,5 +51,10 @@
     "filing_lag_days": 15,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-23"
-  }
+  },
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }

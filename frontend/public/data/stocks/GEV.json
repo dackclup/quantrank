@@ -5,17 +5,17 @@
   "industry": "Heavy Electrical Equipment",
   "market_cap": 280981689683.95935,
   "current_price": 1045.63,
-  "rank": 21,
-  "composite_score": 96.01,
+  "rank": 264,
+  "composite_score": 49.54,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 96.01,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 51.58,
+    "value": 24.58,
+    "growth": 62.66,
+    "momentum": 87.05,
+    "health": 34.9,
+    "profitability": 34.39,
+    "technical": 63.55,
+    "risk": 61.07,
     "sentiment": null,
     "ml": null
   },
@@ -49,5 +49,11 @@
     "filing_lag_days": 16,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-22"
-  }
+  },
+  "risk_flags": [
+    "altman_distress",
+    "sloan_accruals_top_decile"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }

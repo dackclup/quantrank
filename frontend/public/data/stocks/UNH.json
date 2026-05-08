@@ -5,17 +5,17 @@
   "industry": "Managed Health Care",
   "market_cap": 335723911132.8125,
   "current_price": 369.74,
-  "rank": 430,
-  "composite_score": 14.37,
+  "rank": 50,
+  "composite_score": 62.51,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 14.37,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 90.25,
+    "value": 60.73,
+    "growth": 49.15,
+    "momentum": 59.61,
+    "health": 22.99,
+    "profitability": 59.32,
+    "technical": 67.68,
+    "risk": 27.82,
     "sentiment": null,
     "ml": null
   },
@@ -48,5 +48,10 @@
     "filing_lag_days": 3,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-05"
-  }
+  },
+  "risk_flags": [
+    "altman_distress"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }

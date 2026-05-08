@@ -5,17 +5,17 @@
   "industry": "Asset Management & Custody Banks",
   "market_cap": 165889386211.864,
   "current_price": 1067.74,
-  "rank": 289,
-  "composite_score": 42.51,
+  "rank": 464,
+  "composite_score": 36.91,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 42.51,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 34.0,
+    "value": 14.22,
+    "growth": 43.67,
+    "momentum": 40.14,
+    "health": 64.38,
+    "profitability": 46.22,
+    "technical": 51.44,
+    "risk": 53.05,
     "sentiment": null,
     "ml": null
   },
@@ -55,5 +55,10 @@
     "filing_lag_days": 2,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
-  }
+  },
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }

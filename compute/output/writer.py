@@ -43,3 +43,25 @@ def write_stock_detail(detail: StockDetail, data_dir: Path) -> Path:
     out = data_dir / "stocks" / f"{detail.ticker}.json"
     atomic_write_json(out, detail.model_dump(mode="json"))
     return out
+
+
+def read_previous_top5(data_dir: Path) -> set[str]:
+    """Return the ticker set that ranked in the previous run's Top-5.
+
+    Returns an empty set if ``rankings.json`` doesn't exist (first run) or
+    can't be parsed. Used for entered_top5 / exited_top5 annotations.
+    """
+    path = data_dir / "rankings.json"
+    if not path.exists():
+        return set()
+    try:
+        with path.open("r", encoding="utf-8") as f:
+            rows = json.load(f)
+    except Exception as e:  # noqa: BLE001
+        logger.warning("Could not read previous rankings.json (%s): %s", path, e)
+        return set()
+    return {
+        str(r["ticker"])
+        for r in rows[:5]
+        if isinstance(r, dict) and "ticker" in r
+    }

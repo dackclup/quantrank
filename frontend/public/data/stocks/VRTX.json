@@ -5,17 +5,17 @@
   "industry": "Biotechnology",
   "market_cap": 108019680025.0,
   "current_price": 425.0,
-  "rank": 326,
-  "composite_score": 35.13,
+  "rank": 139,
+  "composite_score": 56.22,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 35.13,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 75.85,
+    "value": 23.16,
+    "growth": 57.2,
+    "momentum": 42.03,
+    "health": 90.72,
+    "profitability": 79.94,
+    "technical": 41.04,
+    "risk": 43.46,
     "sentiment": null,
     "ml": null
   },
@@ -48,5 +48,10 @@
     "filing_lag_days": 3,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-05"
-  }
+  },
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }
