@@ -3,7 +3,7 @@
 | # | Phase | Status |
 |---|---|---|
 | 0 | Scaffolding + first deploy | ✅ DONE — 2026-05-07 |
-| 1 | Universe + prices ingestion | ⚪ not started |
+| 1 | Universe + prices ingestion | 🟡 in progress |
 | 2 | Fundamentals via SEC EDGAR | ⚪ not started |
 | 3 | Classical features + composite → **v1.0** | ⚪ not started |
 | 4 | Sentiment & alternative data | ⚪ not started |
@@ -11,17 +11,21 @@
 | 6 | Regime detection + validation → **v1.5** | ⚪ not started |
 | 7 | Universe expansion (S&P 1500) | ⚪ not started |
 
-**Current focus**: Phase 1 — Universe + Prices Ingestion (next session)
+**Current focus**: Phase 1 — Universe + Prices Ingestion (in progress, PR open)
 
 **Next deliverable**: `rankings.json` with 500 S&P stocks ranked by momentum;
 working ranking table on the live site.
 
 **Live URL**: https://quantrank.vercel.app
 
-## Phase 1 todo
-- Also add `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true` to workflow `env:` blocks
-  to silence the Node.js 20 deprecation warning seen in the Phase 0 manual
-  trigger logs.
+## Phase 1 acceptance checklist
+
+- [ ] `compute-rankings.yml` runs in <15 min on first try
+- [ ] `frontend/public/data/rankings.json` exists with ~500 stocks ranked by momentum
+- [ ] `metadata.json` reflects accurate timestamp + schema `0.2.0-phase1`
+- [ ] Vercel URL shows working sortable/filterable table after auto-redeploy
+- [ ] Mobile view of ranking table is readable
+- [ ] CI green on the Phase 1 PR before merge
 
 ## Phase 0 acceptance checklist — ✅ all met (2026-05-07)
 

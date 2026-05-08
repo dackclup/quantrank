@@ -5,14 +5,20 @@ on:
     - cron: "0 22 * * 0"  # Sunday 22:00 UTC
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 permissions:
   contents: write
 
 jobs:
   compute:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -21,7 +27,18 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e .
-      - name: Run weekly compute (Phase 0 stub)
+
+      - name: Run weekly compute
+        run: python -m compute.main
+
+      - name: Commit JSON outputs
         run: |
-          echo "QuantRank Phase 0 stub — no real compute yet."
-          python -m compute.main
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add frontend/public/data/
+          if git diff --cached --quiet; then
+            echo "No JSON changes to commit."
+          else
+            git commit -m "chore: update rankings $(date -u +%Y-%m-%d)"
+            git push
+          fi
