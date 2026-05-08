@@ -13,9 +13,11 @@
     "growth": null,
     "momentum": 80.24,
     "health": null,
+    "profitability": null,
+    "technical": null,
+    "risk": null,
     "sentiment": null,
-    "ml": null,
-    "risk": null
+    "ml": null
   },
   "raw_metrics": {
     "revenue": 14881000000.0,
@@ -39,7 +41,13 @@
   "data_quality": {
     "missing_metrics": [
       "capex",
-      "free_cash_flow"
+      "free_cash_flow",
+      "gross_profit",
+      "cost_of_revenue",
+      "research_and_development",
+      "sga_expense",
+      "interest_expense",
+      "accounts_payable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
