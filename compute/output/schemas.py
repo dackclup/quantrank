@@ -36,6 +36,9 @@ class StockSummary(BaseModel):
     max_fair_price: float | None = None
     margin_of_safety_pct: float | None = None
     pillar_scores: PillarScores = Field(default_factory=PillarScores)
+    risk_flags: list[str] = Field(default_factory=list)
+    entered_top5: bool = False
+    exited_top5: bool = False
 
 
 class Metadata(BaseModel):
@@ -100,3 +103,6 @@ class StockDetail(BaseModel):
     top5_factors: list = Field(default_factory=list)
     score_history: list = Field(default_factory=list)
     data_quality: DataQuality = Field(default_factory=DataQuality)
+    risk_flags: list[str] = Field(default_factory=list)
+    entered_top5: bool = False
+    exited_top5: bool = False
