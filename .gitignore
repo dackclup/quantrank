@@ -228,3 +228,7 @@ node_modules/
 .next/
 out/
 *.tsbuildinfo
+
+# The Python template above ignores /lib/ (virtualenv); whitelist project libs.
+!frontend/lib/
+!frontend/lib/**
