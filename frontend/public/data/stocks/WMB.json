@@ -13,9 +13,11 @@
     "growth": null,
     "momentum": 71.06,
     "health": null,
+    "profitability": null,
+    "technical": null,
+    "risk": null,
     "sentiment": null,
-    "ml": null,
-    "risk": null
+    "ml": null
   },
   "raw_metrics": {
     "revenue": 15430000000.0,
@@ -38,7 +40,11 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "total_liabilities"
+      "total_liabilities",
+      "gross_profit",
+      "research_and_development",
+      "accounts_receivable",
+      "long_term_debt"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 4,

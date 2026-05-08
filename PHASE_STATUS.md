@@ -5,19 +5,46 @@
 | 0 | Scaffolding + first deploy | ✅ DONE — 2026-05-07 |
 | 1 | Universe + prices ingestion | ✅ DONE — 2026-05-08 |
 | 2 | Fundamentals via SEC EDGAR | ✅ DONE — 2026-05-08 |
-| 3 | Classical features + composite → **v1.0** | ⚪ not started |
+| 3 | Classical features + composite → **v1.0** | 🟡 in progress |
 | 4 | Sentiment & alternative data | ⚪ not started |
 | 5 | ML meta-learner + SHAP | ⚪ not started |
 | 6 | Regime detection + validation → **v1.5** | ⚪ not started |
 | 7 | Universe expansion (S&P 1500) | ⚪ not started |
 
-**Current focus**: Phase 3 — Classical features → v1.0 milestone (next session)
+**Current focus**: Phase 3 — Classical features → v1.0 milestone (in progress)
 
-**Next deliverable**: 30+ classical metrics per pillar (quality / value /
-growth / momentum / health / risk / technical / profitability), normalized
+**Phase 3 sub-PR plan** (5 sub-PRs, mobile-friendly slicing):
+- 🟡 **3a — Pillar feature modules** (current PR): all 30+ classical metrics
+  in `compute/features/{quality,value,growth,health,profitability,risk,technical}.py`,
+  extended `momentum.py`, extended `fundamentals.py` (more EDGAR concepts +
+  annual history), SPY benchmark, golden-value tests.
+- ⚪ 3b — Normalization, pillar aggregation, composite, risk overlay.
+- ⚪ 3c — Fair price ensemble + price history (separate `stocks/history/{TICKER}.json`).
+- ⚪ 3d — Charts (Pillar Radar + Fair Price Bar + Price History) + about page.
+- ⚪ 3e — README polish + tag **v1.0**.
+
+**Next deliverable**: 30+ classical metrics per pillar, normalized
 sector-relative, 8 pillar scores combining into a real composite, plus the
 ensemble fair price (DCF + Graham + RIM + multiples) and risk overlay
 vetoes. Tag **v1.0** at the end of Phase 3.
+
+**Phase 3 composite weights (10 pillars, sum = 1.00)**:
+
+| Pillar | Weight | Status |
+|---|---|---|
+| quality | 0.22 | active |
+| value | 0.18 | active |
+| growth | 0.10 | active |
+| momentum | 0.10 | active |
+| health | 0.08 | active |
+| profitability | 0.05 | active (NEW key) |
+| technical | 0.04 | active (NEW key) |
+| risk | 0.03 | active |
+| sentiment | 0.10 | placeholder, redistributed in Phase 4 |
+| ml | 0.10 | placeholder, redistributed in Phase 5 |
+
+For Phase 3, sentiment + ml stay null; their 0.20 weight is redistributed
+pro-rata across the active pillars (effective weights divided by 0.80).
 
 **Live URL**: https://quantrank.vercel.app
 **Verified production (Phase 2, 2026-05-08)**: https://quantrank.vercel.app

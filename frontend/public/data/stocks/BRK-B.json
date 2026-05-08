@@ -13,9 +13,11 @@
     "growth": null,
     "momentum": 26.55,
     "health": null,
+    "profitability": null,
+    "technical": null,
+    "risk": null,
     "sentiment": null,
-    "ml": null,
-    "risk": null
+    "ml": null
   },
   "raw_metrics": {
     "revenue": 251024000000.0,
@@ -39,7 +41,18 @@
   "data_quality": {
     "missing_metrics": [
       "eps_diluted",
-      "shares_outstanding"
+      "shares_outstanding",
+      "gross_profit",
+      "cost_of_revenue",
+      "research_and_development",
+      "sga_expense",
+      "dividends_paid",
+      "current_assets",
+      "current_liabilities",
+      "accounts_receivable",
+      "accounts_payable",
+      "long_term_debt",
+      "short_term_debt"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 4,

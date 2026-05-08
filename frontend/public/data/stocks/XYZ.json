@@ -13,9 +13,11 @@
     "growth": null,
     "momentum": 67.27,
     "health": null,
+    "profitability": null,
+    "technical": null,
+    "risk": null,
     "sentiment": null,
-    "ml": null,
-    "risk": null
+    "ml": null
   },
   "raw_metrics": {
     "revenue": 3205600000.0,
@@ -38,7 +40,8 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "shares_outstanding"
+      "shares_outstanding",
+      "dividends_paid"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 1,

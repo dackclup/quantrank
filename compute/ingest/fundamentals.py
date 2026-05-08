@@ -16,6 +16,7 @@ import logging
 import os
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
+from pathlib import Path
 from typing import Any
 
 import pandas as pd
@@ -59,12 +60,34 @@ _BALANCE_TAGS: dict[str, list[str]] = {
         "us-gaap:CommonStockSharesOutstanding",
         "us-gaap:CommonStockSharesIssued",
     ],
+    "current_assets": ["us-gaap:AssetsCurrent"],
+    "current_liabilities": ["us-gaap:LiabilitiesCurrent"],
+    "inventory": ["us-gaap:InventoryNet"],
+    "accounts_receivable": ["us-gaap:AccountsReceivableNetCurrent"],
+    "accounts_payable": ["us-gaap:AccountsPayableCurrent"],
+    "long_term_debt": ["us-gaap:LongTermDebt", "us-gaap:LongTermDebtNoncurrent"],
+    "short_term_debt": [
+        "us-gaap:DebtCurrent",
+        "us-gaap:LongTermDebtCurrent",
+        "us-gaap:ShortTermBorrowings",
+    ],
+    "retained_earnings": ["us-gaap:RetainedEarningsAccumulatedDeficit"],
 }
 
-# Concepts queried via the normalized snake_case API for latest-annual values.
+# Concepts queried via the normalized snake_case API for latest values.
 _NORMALIZED_LATEST: dict[str, str] = {
     "eps_basic": "earnings_per_share_basic",
     "eps_diluted": "earnings_per_share_diluted",
+    "gross_profit": "gross_profit",
+    "operating_income": "operating_income",
+    "cost_of_revenue": "cost_of_revenue",
+    "research_and_development": "research_and_development",
+    "sga_expense": "sga_expense",
+    "depreciation_and_amortization": "depreciation_and_amortization",
+    "interest_expense": "interest_expense",
+    "income_tax_expense": "income_tax_expense",
+    "income_before_tax": "income_before_tax",
+    "dividends_paid": "dividends_paid",
 }
 
 # US-GAAP tags for TTM flow items.
@@ -76,7 +99,31 @@ _TTM_TAGS: dict[str, list[str]] = {
     ],
 }
 
+# Annual history concepts for CAGR + Piotroski. Tuple of (snapshot_key,
+# US-GAAP tag list, fallback lookup). Pulled per fiscal year for the last
+# ``ANNUAL_HISTORY_YEARS`` years.
+ANNUAL_HISTORY_YEARS: int = 5
+
+_ANNUAL_TAGS: dict[str, list[str]] = {
+    "revenue": [
+        "us-gaap:Revenues",
+        "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+        "us-gaap:SalesRevenueNet",
+    ],
+    "net_income": ["us-gaap:NetIncomeLoss"],
+    "operating_cash_flow": ["us-gaap:NetCashProvidedByUsedInOperatingActivities"],
+    "capex": ["us-gaap:PaymentsToAcquirePropertyPlantAndEquipment"],
+    "eps_diluted": ["us-gaap:EarningsPerShareDiluted"],
+    "total_assets": ["us-gaap:Assets"],
+    "long_term_debt": ["us-gaap:LongTermDebt", "us-gaap:LongTermDebtNoncurrent"],
+    "current_assets": ["us-gaap:AssetsCurrent"],
+    "current_liabilities": ["us-gaap:LiabilitiesCurrent"],
+    "shares_outstanding": ["us-gaap:CommonStockSharesOutstanding"],
+    "gross_profit": ["us-gaap:GrossProfit"],
+}
+
 ALL_METRIC_KEYS: tuple[str, ...] = (
+    # Phase 2 core
     "revenue",
     "net_income",
     "total_assets",
@@ -89,6 +136,26 @@ ALL_METRIC_KEYS: tuple[str, ...] = (
     "eps_basic",
     "eps_diluted",
     "shares_outstanding",
+    # Phase 3 additions
+    "gross_profit",
+    "operating_income",
+    "cost_of_revenue",
+    "research_and_development",
+    "sga_expense",
+    "depreciation_and_amortization",
+    "interest_expense",
+    "income_tax_expense",
+    "income_before_tax",
+    "dividends_paid",
+    "current_assets",
+    "current_liabilities",
+    "inventory",
+    "accounts_receivable",
+    "accounts_payable",
+    "long_term_debt",
+    "short_term_debt",
+    "retained_earnings",
+    "ebitda",  # computed = operating_income + D&A
 )
 
 
@@ -98,26 +165,50 @@ class FundamentalsSnapshot:
 
     ticker: str
     cik: str
-    revenue: float | None
-    net_income: float | None
-    total_assets: float | None
-    total_liabilities: float | None
-    stockholders_equity: float | None
-    cash: float | None
-    operating_cash_flow: float | None
-    capex: float | None
-    free_cash_flow: float | None
-    eps_basic: float | None
-    eps_diluted: float | None
-    shares_outstanding: float | None
-    latest_filed_date: date | None
-    latest_period_end: date | None
+    # Phase 2 core
+    revenue: float | None = None
+    net_income: float | None = None
+    total_assets: float | None = None
+    total_liabilities: float | None = None
+    stockholders_equity: float | None = None
+    cash: float | None = None
+    operating_cash_flow: float | None = None
+    capex: float | None = None
+    free_cash_flow: float | None = None
+    eps_basic: float | None = None
+    eps_diluted: float | None = None
+    shares_outstanding: float | None = None
+    # Phase 3 additions — income statement
+    gross_profit: float | None = None
+    operating_income: float | None = None
+    cost_of_revenue: float | None = None
+    research_and_development: float | None = None
+    sga_expense: float | None = None
+    depreciation_and_amortization: float | None = None
+    interest_expense: float | None = None
+    income_tax_expense: float | None = None
+    income_before_tax: float | None = None
+    dividends_paid: float | None = None
+    # Phase 3 additions — balance sheet
+    current_assets: float | None = None
+    current_liabilities: float | None = None
+    inventory: float | None = None
+    accounts_receivable: float | None = None
+    accounts_payable: float | None = None
+    long_term_debt: float | None = None
+    short_term_debt: float | None = None
+    retained_earnings: float | None = None
+    # Phase 3 derived
+    ebitda: float | None = None  # operating_income + D&A
+    # Filing dates
+    latest_filed_date: date | None = None
+    latest_period_end: date | None = None
 
     def to_record(self) -> dict[str, Any]:
         return {**self.__dict__}
 
     def missing_fields(self) -> list[str]:
-        return [k for k in ALL_METRIC_KEYS if getattr(self, k) is None]
+        return [k for k in ALL_METRIC_KEYS if getattr(self, k, None) is None]
 
 
 def _max_date(*candidates: date | None) -> date | None:
@@ -214,22 +305,31 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
         if pe is not None:
             period_dates.append(pe)
 
-    # Latest EPS via normalized API
-    eps: dict[str, float | None] = {}
+    # Latest values via normalized snake_case API (EPS, income statement
+    # detail, cash flow detail). Returns None when the concept isn't tagged.
+    normalized: dict[str, float | None] = {}
     for out_key, concept in _NORMALIZED_LATEST.items():
         try:
             md = facts.get_concept(concept, return_metadata=True)
         except Exception:  # noqa: BLE001
             md = None
         if md is None:
-            eps[out_key] = None
+            normalized[out_key] = None
             continue
         if isinstance(md, dict):
-            eps[out_key] = (
+            normalized[out_key] = (
                 float(md["value"]) if md.get("value") is not None else None
             )
         else:
-            eps[out_key] = float(md)
+            normalized[out_key] = float(md)
+
+    # Derive EBITDA from operating_income + D&A (knowledge §11.2; SEC doesn't
+    # tag EBITDA directly).
+    op_income = normalized.get("operating_income")
+    da = normalized.get("depreciation_and_amortization")
+    ebitda_val = (
+        op_income + da if op_income is not None and da is not None else None
+    )
 
     return FundamentalsSnapshot(
         ticker=ticker,
@@ -243,9 +343,28 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
         operating_cash_flow=cfo_val,
         capex=capex_val,
         free_cash_flow=fcf_val,
-        eps_basic=eps.get("eps_basic"),
-        eps_diluted=eps.get("eps_diluted"),
+        eps_basic=normalized.get("eps_basic"),
+        eps_diluted=normalized.get("eps_diluted"),
         shares_outstanding=balance_values.get("shares_outstanding"),
+        gross_profit=normalized.get("gross_profit"),
+        operating_income=op_income,
+        cost_of_revenue=normalized.get("cost_of_revenue"),
+        research_and_development=normalized.get("research_and_development"),
+        sga_expense=normalized.get("sga_expense"),
+        depreciation_and_amortization=da,
+        interest_expense=normalized.get("interest_expense"),
+        income_tax_expense=normalized.get("income_tax_expense"),
+        income_before_tax=normalized.get("income_before_tax"),
+        dividends_paid=normalized.get("dividends_paid"),
+        current_assets=balance_values.get("current_assets"),
+        current_liabilities=balance_values.get("current_liabilities"),
+        inventory=balance_values.get("inventory"),
+        accounts_receivable=balance_values.get("accounts_receivable"),
+        accounts_payable=balance_values.get("accounts_payable"),
+        long_term_debt=balance_values.get("long_term_debt"),
+        short_term_debt=balance_values.get("short_term_debt"),
+        retained_earnings=balance_values.get("retained_earnings"),
+        ebitda=ebitda_val,
         latest_filed_date=_max_date(*snapshot_dates),
         latest_period_end=max(period_dates) if period_dates else None,
     )
@@ -325,3 +444,89 @@ def fetch_fundamentals(
             logger.warning("Failed to write fundamentals cache for %s: %s", ticker, e)
 
     return snapshot
+
+
+# -- Annual history (CAGR + Piotroski) --------------------------------------
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(min=2, max=30), reraise=True)
+def _build_annual_history(cik: str, years: int = ANNUAL_HISTORY_YEARS) -> pd.DataFrame:
+    """Fetch ``years`` of annual 10-K facts for the metrics in ``_ANNUAL_TAGS``.
+
+    Returns a tidy long DataFrame indexed by (fiscal_year, metric) with columns:
+        value, period_end, filing_date, form_type
+
+    Empty DataFrame on any failure so the caller can degrade gracefully.
+    """
+    company = Company(cik)
+    facts = company.get_facts()
+    if facts is None:
+        return pd.DataFrame()
+
+    today_year = datetime.utcnow().year
+    fiscal_years = list(range(today_year - years - 1, today_year + 1))
+    rows: list[dict[str, Any]] = []
+    for fy in fiscal_years:
+        for metric, tags in _ANNUAL_TAGS.items():
+            for tag in tags:
+                try:
+                    f = facts.get_annual_fact(tag, fiscal_year=fy)
+                except Exception:  # noqa: BLE001
+                    f = None
+                if f is None or f.value is None:
+                    continue
+                rows.append(
+                    {
+                        "fiscal_year": fy,
+                        "metric": metric,
+                        "value": float(f.value),
+                        "period_end": getattr(f, "period_end", None),
+                        "filing_date": getattr(f, "filing_date", None),
+                        "form_type": getattr(f, "form_type", None),
+                    }
+                )
+                break  # first non-null tag wins
+    if not rows:
+        return pd.DataFrame()
+    return pd.DataFrame(rows)
+
+
+def _annual_cache_path(cik: str) -> Path:
+    config.FUNDAMENTALS_HISTORY_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    return config.FUNDAMENTALS_HISTORY_CACHE_DIR / f"{cik}.parquet"
+
+
+def fetch_fundamentals_history(
+    cik: str, *, force_refresh: bool = False
+) -> pd.DataFrame:
+    """Return annual fundamentals history for ``cik``. Cached per CIK.
+
+    Cache invalidates on the same 45-day rule as the snapshot — re-fetch when
+    the latest annual filing is older than the threshold.
+    """
+    _require_identity()
+    cache = _annual_cache_path(cik)
+
+    if not force_refresh and cache.exists():
+        try:
+            cached_df = pd.read_parquet(cache)
+            if not cached_df.empty:
+                latest = pd.to_datetime(cached_df["filing_date"]).max()
+                if (datetime.utcnow() - latest.to_pydatetime()).days < (
+                    config.FUNDAMENTALS_REFETCH_DAYS * 4
+                ):
+                    return cached_df
+        except Exception as e:  # noqa: BLE001
+            logger.warning("Annual cache read failed for %s: %s", cik, e)
+
+    try:
+        df = _build_annual_history(cik)
+    except Exception as e:  # noqa: BLE001
+        logger.warning("EDGAR annual fetch failed for %s: %s", cik, e)
+        return pd.DataFrame()
+
+    if not df.empty:
+        try:
+            df.to_parquet(cache, index=False)
+        except Exception as e:  # noqa: BLE001
+            logger.warning("Annual cache write failed for %s: %s", cik, e)
+    return df

@@ -13,9 +13,11 @@
     "growth": null,
     "momentum": 82.63,
     "health": null,
+    "profitability": null,
+    "technical": null,
+    "risk": null,
     "sentiment": null,
-    "ml": null,
-    "risk": null
+    "ml": null
   },
   "raw_metrics": {
     "revenue": 14151000000.0,
@@ -37,7 +39,14 @@
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
-    "missing_metrics": [],
+    "missing_metrics": [
+      "gross_profit",
+      "cost_of_revenue",
+      "research_and_development",
+      "sga_expense",
+      "inventory",
+      "short_term_debt"
+    ],
     "imputed_metrics": [],
     "filing_lag_days": 16,
     "latest_period_end": "2026-03-31",

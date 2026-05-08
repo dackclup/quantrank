@@ -13,9 +13,11 @@
     "growth": null,
     "momentum": 84.63,
     "health": null,
+    "profitability": null,
+    "technical": null,
+    "risk": null,
     "sentiment": null,
-    "ml": null,
-    "risk": null
+    "ml": null
   },
   "raw_metrics": {
     "revenue": 32494000000.0,
@@ -37,7 +39,11 @@
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
-    "missing_metrics": [],
+    "missing_metrics": [
+      "operating_income",
+      "research_and_development",
+      "ebitda"
+    ],
     "imputed_metrics": [],
     "filing_lag_days": 72,
     "latest_period_end": "2025-12-31",

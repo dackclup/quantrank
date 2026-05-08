@@ -13,9 +13,11 @@
     "growth": null,
     "momentum": 37.72,
     "health": null,
+    "profitability": null,
+    "technical": null,
+    "risk": null,
     "sentiment": null,
-    "ml": null,
-    "risk": null
+    "ml": null
   },
   "raw_metrics": {
     "revenue": 4025000000.0,
@@ -39,7 +41,18 @@
   "data_quality": {
     "missing_metrics": [
       "capex",
-      "free_cash_flow"
+      "free_cash_flow",
+      "gross_profit",
+      "operating_income",
+      "cost_of_revenue",
+      "research_and_development",
+      "income_before_tax",
+      "current_assets",
+      "current_liabilities",
+      "inventory",
+      "accounts_receivable",
+      "accounts_payable",
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 2,

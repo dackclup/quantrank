@@ -13,9 +13,11 @@
     "growth": null,
     "momentum": 49.3,
     "health": null,
+    "profitability": null,
+    "technical": null,
+    "risk": null,
     "sentiment": null,
-    "ml": null,
-    "risk": null
+    "ml": null
   },
   "raw_metrics": {
     "revenue": null,
@@ -39,7 +41,10 @@
   "data_quality": {
     "missing_metrics": [
       "revenue",
-      "total_liabilities"
+      "total_liabilities",
+      "gross_profit",
+      "research_and_development",
+      "sga_expense"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 3,
