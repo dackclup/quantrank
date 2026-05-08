@@ -11,14 +11,14 @@
 | 6 | Regime detection + validation → **v1.5** | ⚪ not started |
 | 7 | Universe expansion (S&P 1500) | ⚪ not started |
 
-**Current focus**: Phase 3 — Classical features → v1.0 milestone (in progress)
+**Current focus**: Phase 3 PR 3b — composite + risk overlay (wires pillar functions into orchestrator)
 
 **Phase 3 sub-PR plan** (5 sub-PRs, mobile-friendly slicing):
-- 🟡 **3a — Pillar feature modules** (current PR): all 30+ classical metrics
-  in `compute/features/{quality,value,growth,health,profitability,risk,technical}.py`,
-  extended `momentum.py`, extended `fundamentals.py` (more EDGAR concepts +
-  annual history), SPY benchmark, golden-value tests.
-- ⚪ 3b — Normalization, pillar aggregation, composite, risk overlay.
+- ✅ **3a — Pillar feature modules** — DONE 2026-05-08. Foundation only —
+  7 feature modules, 30+ metrics, 50+ tests. No production output changes.
+- 🟡 **3b — Composite + risk overlay** — NEXT. Wires the new pillar functions
+  into `compute/main.py` via `compute/scoring/{normalize,pillars,composite,risk_overlay}.py`.
+  Schema bumps to `0.4.0-phase3b`; first production Top-5 rotation.
 - ⚪ 3c — Fair price ensemble + price history (separate `stocks/history/{TICKER}.json`).
 - ⚪ 3d — Charts (Pillar Radar + Fair Price Bar + Price History) + about page.
 - ⚪ 3e — README polish + tag **v1.0**.
