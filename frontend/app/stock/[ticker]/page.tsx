@@ -1,13 +1,12 @@
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
 
 import RawMetricsTable from '@/components/RawMetricsTable';
-import { getStockDetail, listAvailableTickers } from '@/lib/data';
+import { getStockDetail, listTickersForStaticBuild } from '@/lib/data';
 
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
-  return listAvailableTickers().map((ticker) => ({ ticker }));
+  return listTickersForStaticBuild().map((ticker) => ({ ticker }));
 }
 
 function scoreColorClasses(score: number): string {
@@ -41,7 +40,31 @@ export default function StockDetailPage({
   const { ticker } = params;
   const detail = getStockDetail(ticker);
   if (!detail) {
-    notFound();
+    return (
+      <article className="space-y-6">
+        <Link
+          href="/"
+          className="inline-block text-sm text-slate-500 hover:text-slate-900"
+        >
+          ← Back to ranking
+        </Link>
+        <header>
+          <h1 className="font-mono text-3xl font-bold tracking-tight sm:text-4xl">
+            {ticker}
+          </h1>
+        </header>
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-6 text-sm text-amber-900">
+          <p className="font-medium">Detail data pending</p>
+          <p className="mt-1">
+            Phase 2 compute hasn&rsquo;t produced fundamentals for{' '}
+            <span className="font-mono">{ticker}</span> yet. Trigger
+            <span className="ml-1 font-mono">compute-rankings.yml</span> from
+            the GitHub Actions tab; the detail page will populate after the
+            next deploy.
+          </p>
+        </div>
+      </article>
+    );
   }
 
   const filingLag = detail.data_quality.filing_lag_days;
