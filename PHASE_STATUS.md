@@ -12,16 +12,26 @@
 | 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → **v1.5** | ⚪ not started |
 | 8 | Universe expansion (S&P 1500) | ⚪ not started |
 
-**Current focus**: Phase 3 PR 3b — composite + risk overlay (wires pillar functions into orchestrator)
+**Current focus**: Phase 3 PR 3c — fair price ensemble + price history
 
 **Phase 3 sub-PR plan** (5 sub-PRs, mobile-friendly slicing):
 - ✅ **3a — Pillar feature modules** — DONE 2026-05-08. Foundation only —
   7 feature modules, 30+ metrics, 50+ tests. No production output changes.
-- 🟡 **3b — Composite + risk overlay** — NEXT. Wires the new pillar functions
-  into `compute/main.py` via `compute/scoring/{normalize,pillars,composite,risk_overlay}.py`.
-  Schema bumps to `0.4.0-phase3b`; first production Top-5 rotation.
-- ⚪ 3c — Fair price ensemble + price history (separate `stocks/history/{TICKER}.json`).
-- ⚪ 3d — Charts (Pillar Radar + Fair Price Bar + Price History) + about page.
+- ✅ **3b — Composite + risk overlay** — DONE 2026-05-08. 4 new scoring
+  modules (normalize, pillars, composite, risk_overlay), 33 new tests,
+  schema bump to `0.4.0-phase3b`. First 8-pillar production Top-5; 80%
+  rotation from the prior momentum-only baseline (4 of 5 entrants new).
+  Risk overlay is **annotate-only** — flagged stocks keep their composite
+  rank, the flag only suppresses the `entered_top5` badge. Sector-bucket
+  bias hypothesis disproved (Real Estate sector mean 49.33 — near bottom).
+  Sloan over-firing on growers + financials filed as
+  [issue #7](https://github.com/dackclup/quantrank/issues/7) for Phase 4.
+- 🟡 **3c — Fair price ensemble + price history** — NEXT. DCF + Graham +
+  RIM + multiples → median + max fair price; per-stock
+  `stocks/history/{TICKER}.json` with multi-year price + score history.
+  Schema bump to `0.5.0-phase3c`.
+- ⚪ 3d — Charts (Pillar Radar + Fair Price Bar + Price History) + about
+  page; surface `risk_flags` and `entered_top5` / `exited_top5` badges.
 - ⚪ 3e — README polish + tag **v1.0**.
 
 **Next deliverable**: 30+ classical metrics per pillar, normalized
