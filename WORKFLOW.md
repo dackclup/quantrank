@@ -880,8 +880,13 @@ This section is the per-phase task delta vs the Option-A baseline.
 
 ## Phase 4 — Factor consolidation (OSAP + JKP + Qlib + IPCA) → v1.1
 
+> **Default = Option B** (this section). Fallback = original Option A
+> "Sentiment & alternative data" Phase 4 (which under Option B moves to
+> Phase 6). Triggers for the fallback are listed in the
+> "Fallback Triggers (Phase 4 → Option A)" subsection below.
+
 **Replaces** original Option A Phase 4 ("Sentiment & alternative data") —
-which moves to Phase 6.
+which moves to Phase 6 under Option B.
 
 **Goal**: replace the 30+ hand-rolled classical metrics' weights with a
 parsimonious latent-factor representation derived from established factor
@@ -916,28 +921,63 @@ scikit-learn = ">=1.4"  # for sklearn-style IPCA pipeline
   Kelly-Pruitt-Su 2019, ~150-200 lines of NumPy. Inputs: standardized
   signals (4.2-4.3); outputs: a small set of latent factors and per-stock
   loadings. Fit with rolling 5-year window.
-- Bind into `compute/scoring/composite.py` as a new
-  `latent_factor_score` pillar (replacing `quality + value + growth`
-  contribution? — to be benchmarked first).
 
-### 4.6 Side-by-side validation
-- For 4 weeks, write **both** the existing 7-pillar composite **and** the
-  new IPCA composite into `rankings.json` under separate keys
+### 4.6 Pillar update
+- Bind IPCA outputs into `compute/scoring/composite.py` as a new
+  `latent_factor_score` pillar. This pillar may absorb part of the
+  classical `quality + value + growth` contribution — to be benchmarked
+  cross-sectionally before any weight reallocation.
+- Update `compute/scoring/pillars.py` if the latent factor partially
+  replaces individual classical pillars; otherwise add it alongside
+  with a Phase-4-specific weight (default 0.10).
+
+### 4.7 Validation
+- For 4 weeks, write **both** the existing v1.0 7-pillar composite **and**
+  the new IPCA composite into `rankings.json` under separate keys
   (`composite_score` vs `composite_score_v11_alpha`). Frontend renders the
-  classical one by default; about page exposes the new one for manual
-  inspection. Cut over to the new composite only after IC comparison.
+  classical one by default; the about page exposes the new one for manual
+  inspection.
+- IC comparison: out-of-sample IC of the new composite must beat the v1.0
+  baseline by at least 0.005 over the 4-week window. Otherwise revert.
 
-### 4.7 Tag v1.1
-After 4 weeks of side-by-side production data, IC of the new composite
-should beat the v1.0 baseline. If yes, swap and tag `v1.1`. If no,
-revert — Option A.
+### 4.8 Schema bump
+- `version` in `metadata.json` → `0.5.0-phase4` (or `1.1.0` after Tag v1.1).
+- Update `compute/output/schemas.py`: extend `PillarScores` with
+  `latent_factor` (additive — null until Phase 4 ships).
+- Update `frontend/lib/types.ts` to mirror.
+- Document the schema delta in `docs/RESEARCH_FINDINGS.md` "Postmortems"
+  if any backwards-incompatible change is introduced (avoid if possible
+  per Rule 9).
 
-**Fallback to Option A**: drop OSAP/JKP/IPCA entirely; do original Option-A
-"Sentiment & alt-data" path here (move it from Phase 6 back to Phase 4).
+### 4.9 Tag v1.1
+After 4 weeks of side-by-side production data, if 4.7 IC comparison
+clears the threshold, swap composites and tag `v1.1`. If not, revert
+per the Fallback Triggers below.
+
+### Fallback Triggers (Phase 4 → Option A)
+- **Library install fails**: Qlib's data loader doesn't run on a vanilla
+  `ubuntu-latest` runner after pinning a stable version → drop
+  `compute/ingest/qlib_alpha158.py`; rely on OSAP+JKP only. If both
+  also fail, revert to original Option-A Phase-4 "Sentiment & alt-data"
+  scope (move it from Phase 6 back to Phase 4).
+- **Data licence breakage**: OSAP / JKP CSV download URLs go behind
+  authwall or change format → use the last cached snapshot in
+  `compute/cache/`; reassess at next quarterly refresh.
+- **IC underperformance**: 4.7 side-by-side IC of the new composite
+  fails to beat the v1.0 baseline by ≥0.005 over 4 weeks → revert
+  composite weights to v1.0; document in `docs/RESEARCH_FINDINGS.md`
+  "Postmortems".
+- **Schema breakage**: any backwards-incompatible JSON change → revert
+  the schema bump; do an additive minor-version PR instead.
 
 ---
 
 ## Phase 5 — ML meta-learner (Triple-Barrier + Meta-Labeling + Conformal)
+
+> **Default = Option B** (this section, augmenting Option A's LightGBM
+> ranker with López de Prado labeling and conformal calibration).
+> Fallback = original Option A Phase 5 (LightGBM + walk-forward CV +
+> SHAP only). Triggers in "Fallback Triggers (Phase 5 → Option A)" below.
 
 **Augments** original Option A Phase 5.
 
@@ -981,14 +1021,40 @@ mapie = ">=0.8"          # Conformal prediction
 
 ### 5.7 Schema bump
 `pillar_scores.ml` populated; new `score_interval_80pct` field on
-`StockSummary`.
+`StockSummary`. Bump `version` to `0.6.0-phase5`.
 
-**Fallback to Option A**: ship the triple-barrier labels only, defer
-meta-labeling and conformal intervals to a v1.6+ housekeeping PR.
+### 5.8 Optional — Conditional Autoencoder (CAE) for non-linear factors
+- Research-suggested non-blocker. Gu-Kelly-Xiu 2021 (*Autoencoder Asset
+  Pricing Models*, JoE) showed a conditional autoencoder with stock
+  characteristics as inputs outperforms IPCA + LightGBM on out-of-sample
+  cross-sectional R². Implementation: `compute/ml/cae.py`, ~250 lines
+  PyTorch on CPU; 32-dim bottleneck; trained monthly on Kaggle/Modal.
+- **Strictly optional** — only attempt after 5.1-5.7 ship and IC is
+  validated. Adds material training-time compute (~30 min on CPU) but
+  near-zero inference cost.
+- Failure mode is graceful: if the autoencoder doesn't beat the
+  LightGBM-only baseline IC by ≥0.005, do not deploy.
+
+### Fallback Triggers (Phase 5 → Option A)
+- **`mapie` integration with LightGBM ranker fails**: hand-roll
+  split-conformal (~50 lines) or drop conformal intervals entirely;
+  ship only triple-barrier labels + meta-labeling.
+- **`mlfinlab` AGPL incompatible**: do NOT ship Hudson & Thames code
+  in this public repo. Hand-roll triple-barrier and CPCV from the
+  paper specs (~80 lines each).
+- **CAE doesn't beat baseline IC**: keep 5.8 as deferred research; do
+  not deploy.
+- **Compute time blow-up**: if monthly retrain on free-tier exceeds
+  6 hours, drop to quarterly retrain or move training to Kaggle.
 
 ---
 
 ## Phase 6 — Sentiment v2 (FinBERT + Whisper + 8-K Lazy Prices)
+
+> **Default = Option B** (this section). Fallback = original Option A
+> Phase 4 baseline (FinBERT-on-news + Form 4 + Reddit only — note Reddit
+> stays disabled for megacaps per 6.7). Triggers in
+> "Fallback Triggers (Phase 6 → Option A)" below.
 
 **Replaces** original Option A Phase 4 — moved here, augmented.
 
@@ -1023,14 +1089,49 @@ meta-labeling and conformal intervals to a v1.6+ housekeeping PR.
 ### 6.5 Schema bump
 `pillar_scores.sentiment` populated. New per-stock detail JSON fields:
 `sentiment_breakdown.{news_finbert, earnings_call_qna_diff,
-lazy_prices_score}`.
+lazy_prices_score}`. Bump `version` to `0.7.0-phase6`.
 
-**Fallback to Option A**: ship original Option A Phase 4 — FinBERT news +
-Form 4 + Reddit only. Drop Whisper + Lazy Prices entirely.
+### 6.6 Insider Form 4 (carry from original Option A §4.5)
+- New `compute/ingest/insider.py` using `edgartools`. Pull last 90 days
+  of Form 4 per ticker. Compute net insider buy $, role-weighted
+  (CEO/CFO=3, Director=2, 10% holder=1). Cluster-buying score (≥2
+  distinct insiders within 30 days).
+- Surfaced in `sentiment_breakdown.insider_buying`.
+
+### 6.7 SKIP Reddit / StockTwits for megacaps
+- **Explicit non-task**: do NOT ingest Reddit (`r/wallstreetbets`,
+  `r/stocks`, `r/investing`) or StockTwits sentiment for the S&P 500
+  universe in v1.x.
+- **Reasoning**: signal-to-noise is dominated by professional algo
+  desks for megacap names; retail mention-acceleration is a small/
+  mid-cap signal (literature: Bartov-Faurel-Mohanram 2018; Da-Engelberg-Gao
+  2011 for Google Trends). Keep the ingest modules in `compute/ingest/`
+  but **gate them on universe ≥ S&P 1500** (Phase 8+).
+- This is documented as a deliberate choice, not an oversight.
+
+### Fallback Triggers (Phase 6 → Option A)
+- **Free earnings-call audio unavailable**: drop 6.4 Whisper entirely;
+  stay with FinBERT-on-news only. Document the source decay in
+  `docs/RESEARCH_FINDINGS.md`.
+- **Whisper CPU-inference budget overrun**: cap 6.4 to monthly
+  pre-compute (not weekly); shift the workload to Kaggle/Modal heavy
+  compute. If still overrun, drop 6.4.
+- **EDGAR rate-limit pressure from 6.6 Lazy Prices** (~500 tickers ×
+  2 filings each): cache filings to `compute/cache/edgar_filings/`
+  aggressively; back off to monthly recompute of `lazy_prices_score`.
+- **6.7 boundary crossed**: do not enable Reddit/StockTwits for
+  megacaps even if a contributor proposes it. Wait for Phase 8 universe
+  expansion.
 
 ---
 
 ## Phase 7 — Regime + portfolio (Student-t HMM + NCO + TDA) → v1.5
+
+> **Default = Option B** (this section, with t-emission HMM + NCO + TDA
+> on top of the Option-A backtest harness). Fallback = original Option A
+> Phase 6 (Gaussian HMM + equal-weight portfolio + no TDA). Triggers in
+> "Fallback Triggers (Phase 7 → Option A)" below. Backtest harness
+> (PBO < 0.5) is **non-negotiable** in either path.
 
 **Augments** original Option A Phase 6.
 
@@ -1040,42 +1141,75 @@ hmmlearn = ">=0.3"     # already in original Option A
 dynamax = ">=0.1"      # JAX-based HMM family with t-emission
 riskfolio-lib = ">=5.0"  # NCO
 giotto-tda = ">=0.6"   # OPTIONAL — TDA persistence diagrams
+fredapi = ">=0.5"      # already in original Option A
+arch = ">=7.0"          # already in original Option A
 ```
 
-### 7.2 Student-t HMM regime
-- Replace Gaussian-emission HMM in Option A §6.3 with a Student-t HMM
-  via `dynamax.linear_gaussian_hmm` plus a custom emission, OR a
-  hand-rolled t-emission EM (~150 lines).
-- Inputs: SPY returns + VIX changes + 10y-2y term spread changes.
-- Outputs: 3 regimes (bull, neutral, bear) with stable transition matrix
-  on the trailing 10y window.
-- Validation: out-of-sample regime probability stability (no flapping).
+### 7.2 Macro data ingestion (carry from original Option A §6.2)
+- New `compute/ingest/macro.py` using `fredapi` (GitHub secret
+  `FRED_API_KEY`). Pull weekly: T10Y2Y (term spread), VIXCLS (VIX),
+  BAMLH0A0HYM2 (HY credit spread), UNRATE (unemployment).
+- Cache to `compute/cache/macro/{series_id}.parquet`.
+- Outputs feed Student-t HMM (7.3) and TDA risk-off (7.4).
 
-### 7.3 Regime-conditional weights (carry over from Option A §6.4 unchanged).
+### 7.3 Student-t HMM regime
+- Replace Gaussian-emission HMM (default in `hmmlearn`) with a
+  Student-t HMM via `dynamax` + custom emission, OR a hand-rolled
+  t-emission EM (~150 lines).
+- Inputs: SPY returns + VIX changes + 10y-2y term-spread changes
+  (sourced from 7.2).
+- Outputs: 3 regimes (bull, neutral, bear) with stable transition
+  matrix on the trailing 10y window.
+- Validation: out-of-sample regime-probability stability (no flapping
+  between consecutive weeks).
+- Persist current state to `public/data/metadata.json` under
+  `regime: {state, probability, since_date}`.
 
-### 7.4 NCO portfolio sizing
+### 7.4 TDA risk-off diagnostics (optional but recommended)
+- Compute persistent homology of the 30-day rolling cross-sectional
+  correlation matrix via `giotto-tda`. Report persistence-diagram
+  entropy as an auxiliary risk-off indicator (Gidea-Katz 2018).
+- **Not** wired into the composite weights — exposed on the about page
+  and as `metadata.json: risk_off_indicator: 0..1`.
+- Computational budget: 1 GPU-minute on Kaggle, weekly. CPU-only
+  fallback ~10 minutes — acceptable for a weekly cron.
+
+### 7.5 Regime-conditional weights (carry from original Option A §6.4)
+- Estimate `IR(pillar | regime)` from rolling 3-yr history.
+- Per-Sunday weights: `w_i = max(IR_i^r, 0) / Σ`.
+- Apply gentle tilts (±20% from neutral defaults) — never bets.
+
+### 7.6 NCO portfolio sizing
 - New `compute/portfolio/nco.py`. ~100-line port of López de Prado 2019.
-- Hierarchical clustering of the covariance matrix (single linkage on
-  correlation distance), within-cluster optimization, between-cluster
-  optimization.
-- **Used only for backtest harness** (Phase 7 §7.5), not for the
-  ranking app's score. The frontend remains a ranking, not a portfolio.
+- Hierarchical clustering of the covariance matrix (single-linkage on
+  correlation distance), within-cluster Markowitz, between-cluster
+  Markowitz.
+- **Used only for the backtest harness** (7.7), NOT for the ranking
+  app's surface score. The frontend remains a ranking, not a portfolio.
 
-### 7.5 Backtest harness (carry over from Option A §6.5-6.7).
+### 7.7 Backtest harness (carry from original Option A §6.5-6.7)
 - IC, IR, decile spread, deflated Sharpe, **PBO via CSCV** (López de
-  Prado, ~30-line NumPy port).
+  Prado, ~30-line NumPy port). 40 bps round-trip cost.
 - Hard requirement: PBO < 0.5 before any new methodology change reaches
-  production.
+  production. This is **non-negotiable** — see Decision Points table.
+- Output: `public/data/backtest_report.json`; new `frontend/app/backtest/page.tsx`.
 
-### 7.6 TDA regime diagnostics (optional)
-- Compute persistent homology of the 30-day rolling correlation matrix
-  via `giotto-tda`. Report persistence-diagram entropy as an auxiliary
-  regime indicator on the about page. **Not** wired into composite.
+### 7.8 Tag v1.5
 
-### 7.7 Tag v1.5
-
-**Fallback to Option A**: stay with Gaussian HMM, equal-weight portfolio
-(no NCO), no TDA. Backtest harness is non-negotiable.
+### Fallback Triggers (Phase 7 → Option A)
+- **`dynamax` JAX install fails on free-tier runner**: stay with
+  `hmmlearn` Gaussian HMM. Document the t-emission as a deferred
+  research item.
+- **`giotto-tda` install or runtime > 30 min**: drop 7.4 TDA entirely
+  (it's optional). Phase 7 still ships without it.
+- **`riskfolio-lib` API drift**: hand-roll NCO from López de Prado 2019
+  (~100 lines) rather than depend on the library.
+- **PBO ≥ 0.5 on any methodology**: HARD VETO. Do not ship that
+  methodology change to production. Revert composite weights to the
+  last-passing methodology. Document in
+  `docs/RESEARCH_FINDINGS.md` "Postmortems".
+- **Backtest harness IC < 0.02 mean**: do not deploy the new model;
+  keep the previous month's model in production.
 
 ---
 
