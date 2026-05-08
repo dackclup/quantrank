@@ -6,10 +6,11 @@
 | 1 | Universe + prices ingestion | ✅ DONE — 2026-05-08 |
 | 2 | Fundamentals via SEC EDGAR | ✅ DONE — 2026-05-08 |
 | 3 | Classical features + composite → **v1.0** | 🟡 in progress |
-| 4 | Sentiment & alternative data | ⚪ not started |
-| 5 | ML meta-learner + SHAP | ⚪ not started |
-| 6 | Regime detection + validation → **v1.5** | ⚪ not started |
-| 7 | Universe expansion (S&P 1500) | ⚪ not started |
+| 4 | Factor consolidation (OSAP + JKP + Qlib + IPCA) → **v1.1** | ⚪ not started |
+| 5 | ML meta-learner (Triple-Barrier + Meta-Labeling + Conformal) + SHAP | ⚪ not started |
+| 6 | Sentiment v2 (FinBERT + Whisper + 8-K Lazy Prices) | ⚪ not started |
+| 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → **v1.5** | ⚪ not started |
+| 8 | Universe expansion (S&P 1500) | ⚪ not started |
 
 **Current focus**: Phase 3 PR 3b — composite + risk overlay (wires pillar functions into orchestrator)
 
@@ -27,6 +28,35 @@
 sector-relative, 8 pillar scores combining into a real composite, plus the
 ensemble fair price (DCF + Graham + RIM + multiples) and risk overlay
 vetoes. Tag **v1.0** at the end of Phase 3.
+
+## Roadmap — Option B (research-backed) — adopted 2026-05-08
+
+Post-v1.0 phases now incorporate published quant-finance research. Detailed
+references and library pinnings live in
+[`docs/RESEARCH_FINDINGS.md`](docs/RESEARCH_FINDINGS.md); per-phase task
+breakdowns in [`WORKFLOW.md`](WORKFLOW.md) under "Research-Backed Additions".
+
+| # | Phase | Headline upgrade |
+|---|---|---|
+| 4 | Factor consolidation → **v1.1** | Replicate OSAP / JKP / Qlib Alpha158 factor zoo; reduce to a parsimonious latent set via IPCA (Kelly-Pruitt-Su 2019). |
+| 5 | ML meta-learner | LightGBM ranker + López de Prado's **Triple-Barrier** labeling and **Meta-Labeling**; **Conformal prediction** for calibrated 80% prediction intervals. |
+| 6 | Sentiment v2 | FinBERT news (Phase 4 baseline); add **Whisper** transcription of earnings calls + **8-K "Lazy Prices"** factor (Cohen-Malloy-Nguyen 2020). |
+| 7 | Regime + portfolio → **v1.5** | **Student-t HMM** for heavy-tailed regime states; **NCO** (López de Prado) for hierarchical risk parity sizing; optional **TDA** (persistence diagrams) regime tagging. |
+| 8 | Universe expansion | S&P 1500 (mid + small cap). |
+
+**Fallback — Option A** (original `WORKFLOW.md` Phase 4-7 baseline): if any
+research-backed addition hits a blocker (library unmaintained, data licence
+restriction, free-tier compute insufficient, golden-value validation fails),
+revert that phase to its Option-A scope. Triggers and decision points are
+listed in `WORKFLOW.md` "Research-Backed Additions → Fallback rules".
+
+**Honest performance ceiling** (from `docs/RESEARCH_FINDINGS.md`):
+~3-7% **net** annualized alpha vs SPY is a *research-suggested upper bound*
+for this combination of techniques on free-tier data. McLean-Pontiff (2016)
+shows ~58% post-publication anomaly decay; Hou-Xue-Zhang (2020) shows ~65%
+of the factor zoo fails replication. Real-world result for QuantRank will
+likely land 2-4% net alpha after costs — same realistic envelope already
+documented in `stock_ranking_knowledge.md` §28.
 
 **Phase 3 composite weights (10 pillars, sum = 1.00)**:
 

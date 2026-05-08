@@ -857,3 +857,248 @@ Most "improvements" past v1.5 are noise + maintenance burden.
 ---
 
 **End of WORKFLOW.md** — combined with `SKILL.md` and `stock_ranking_knowledge.md`, this is everything Claude Code needs to build QuantRank from your phone.
+
+---
+
+# Research-Backed Additions (Option B, adopted 2026-05-08)
+
+The Phase 4-7 baseline above is **Option A** — the original plan. As of
+2026-05-08 the project formally adopted **Option B** which incorporates
+2024-2025 quant-finance research. Full motivation, references, and
+performance hedging live in [`docs/RESEARCH_FINDINGS.md`](docs/RESEARCH_FINDINGS.md).
+This section is the per-phase task delta vs the Option-A baseline.
+
+> **Fall back to Option A whenever**:
+> - A required Python library has no working Linux + Py3.11 wheel.
+> - Cold compute time on free-tier GitHub Actions exceeds 90 min.
+> - A required dataset has a license that's incompatible with a public
+>   public repo (revisit the dataset choice; do not bypass the license).
+> - The phase's golden-value validation fails 3 consecutive runs and the
+>   root cause isn't identified within a single session.
+>
+> Each phase below documents its specific fallback trigger.
+
+## Phase 4 — Factor consolidation (OSAP + JKP + Qlib + IPCA) → v1.1
+
+**Replaces** original Option A Phase 4 ("Sentiment & alternative data") —
+which moves to Phase 6.
+
+**Goal**: replace the 30+ hand-rolled classical metrics' weights with a
+parsimonious latent-factor representation derived from established factor
+zoos.
+
+### 4.1 Add deps
+```toml
+qlib = ">=0.9"      # Microsoft Qlib — Alpha158 + data adapters
+pandas = ">=2.2"    # already present
+scikit-learn = ">=1.4"  # for sklearn-style IPCA pipeline
+```
+
+### 4.2 OSAP signal ingestion
+- New `compute/ingest/osap.py`. Pull the OSAP signed-signal CSVs from
+  `https://www.openassetpricing.com/data/`. Cache to
+  `compute/cache/osap/{signal_name}.parquet` (gitignored).
+- Filter to S&P 500 universe; compute monthly cross-sectional ranks.
+- Persist a panel: `(date, ticker, signal_name) → standardized rank`.
+
+### 4.3 JKP factor returns
+- New `compute/ingest/jkp.py`. Pull the JKP characteristic returns from
+  the JKP project's open data drop. Smaller payload than OSAP; use as a
+  cross-check rather than a primary input.
+
+### 4.4 Qlib Alpha158
+- Optional. New `compute/ingest/qlib_alpha158.py` initializing Qlib with
+  US daily data. **Bail-out trigger**: if Qlib's data loader fails on a
+  vanilla `ubuntu-latest` runner, drop and rely on OSAP+JKP only.
+
+### 4.5 IPCA dimension reduction
+- New `compute/scoring/ipca.py`. Hand-rolled instrumented PCA per
+  Kelly-Pruitt-Su 2019, ~150-200 lines of NumPy. Inputs: standardized
+  signals (4.2-4.3); outputs: a small set of latent factors and per-stock
+  loadings. Fit with rolling 5-year window.
+- Bind into `compute/scoring/composite.py` as a new
+  `latent_factor_score` pillar (replacing `quality + value + growth`
+  contribution? — to be benchmarked first).
+
+### 4.6 Side-by-side validation
+- For 4 weeks, write **both** the existing 7-pillar composite **and** the
+  new IPCA composite into `rankings.json` under separate keys
+  (`composite_score` vs `composite_score_v11_alpha`). Frontend renders the
+  classical one by default; about page exposes the new one for manual
+  inspection. Cut over to the new composite only after IC comparison.
+
+### 4.7 Tag v1.1
+After 4 weeks of side-by-side production data, IC of the new composite
+should beat the v1.0 baseline. If yes, swap and tag `v1.1`. If no,
+revert — Option A.
+
+**Fallback to Option A**: drop OSAP/JKP/IPCA entirely; do original Option-A
+"Sentiment & alt-data" path here (move it from Phase 6 back to Phase 4).
+
+---
+
+## Phase 5 — ML meta-learner (Triple-Barrier + Meta-Labeling + Conformal)
+
+**Augments** original Option A Phase 5.
+
+### 5.1 Add deps
+```toml
+lightgbm = ">=4.3"      # already in original Option A
+shap = ">=0.45"
+mapie = ">=0.8"          # Conformal prediction
+# mlfinlab — license check first; default is hand-rolled triple-barrier
+```
+
+### 5.2 Triple-Barrier labels
+- New `compute/ml/labels.py`. For each (ticker, date), compute the label
+  via López de Prado's triple-barrier:
+  - **Upper barrier**: +2σ × ATR(20) profit-take.
+  - **Lower barrier**: −2σ × ATR(20) stop.
+  - **Time barrier**: 21 trading days (1 month).
+- Output: ternary label `{−1, 0, +1}` based on which barrier hit first.
+- Tests: synthetic price paths with deterministic outcomes.
+
+### 5.3 Meta-Labeling
+- After the primary LightGBM ranker (Phase 5.3 from Option A) generates a
+  signed signal, train a **secondary classifier** to predict whether to
+  *act on* the signal. Inputs: primary signal + a few orthogonal regime
+  features (VIX level, sector concentration). Output: probability that
+  acting on the primary signal yields a positive triple-barrier label.
+- Multiplied as a confidence weight on the primary score.
+
+### 5.4 CPCV — Combinatorially Purged Cross-Validation
+- New `compute/ml/cpcv.py`. ~80-line port of López de Prado's CPCV.
+  Replaces walk-forward CV in Option A's Phase 5.4. Used during training,
+  not at inference time.
+
+### 5.5 Conformal prediction intervals
+- Wrap the primary LightGBM ranker in `mapie.MapieRegressor` (or hand-roll
+  split-conformal if mapie integration with ranker is awkward).
+- Persist `score_interval_80pct = [low, high]` per stock in JSON.
+- Frontend: render the interval as an error-bar on the score badge.
+
+### 5.6 SHAP top-5 (unchanged from Option A).
+
+### 5.7 Schema bump
+`pillar_scores.ml` populated; new `score_interval_80pct` field on
+`StockSummary`.
+
+**Fallback to Option A**: ship the triple-barrier labels only, defer
+meta-labeling and conformal intervals to a v1.6+ housekeeping PR.
+
+---
+
+## Phase 6 — Sentiment v2 (FinBERT + Whisper + 8-K Lazy Prices)
+
+**Replaces** original Option A Phase 4 — moved here, augmented.
+
+### 6.1 FinBERT news (baseline; identical to original Option A §4)
+
+### 6.2 Whisper-transcribed earnings calls
+- New `compute/ingest/earnings_calls.py`. Pull recent earnings-call audio
+  from a free source (Seeking Alpha archives via Wayback, or paid-tier
+  Earnings Call Transcripts API if budget permits — out of scope by
+  default). Transcribe with `whisper-base.en` on Kaggle / Modal heavy
+  compute (see `docs/RESEARCH_FINDINGS.md` §4).
+- New `compute/features/earnings_call_sentiment.py`. Run FinBERT on the
+  transcript split by speaker role (CEO, CFO, analyst). Compute the
+  **Q&A sentiment differential** (analyst questions − management
+  responses).
+- **Fallback trigger**: if free audio sources are unavailable / unreliable,
+  drop this entirely and stay with FinBERT-on-news only.
+
+### 6.3 8-K Lazy Prices factor
+- New `compute/features/lazy_prices.py`. For each ticker, compute the
+  text-similarity score between the most recent 10-K/10-Q and the prior
+  filing (cosine on TF-IDF over the MD&A section, or `rapidfuzz` on the
+  whole document). Lower similarity → higher `lazy_prices_score`.
+- Cohen-Malloy-Nguyen 2020 found this predicts 1-month returns; we'll
+  IC-validate in Phase 7.
+
+### 6.4 FNSPID corpus (optional, training only)
+- For training the meta-labeler on news-driven labels, optionally
+  pre-train on FNSPID. **Out of weekly compute path.** One-shot training
+  job on Kaggle/Modal; commit pretrained weights as a release artifact.
+
+### 6.5 Schema bump
+`pillar_scores.sentiment` populated. New per-stock detail JSON fields:
+`sentiment_breakdown.{news_finbert, earnings_call_qna_diff,
+lazy_prices_score}`.
+
+**Fallback to Option A**: ship original Option A Phase 4 — FinBERT news +
+Form 4 + Reddit only. Drop Whisper + Lazy Prices entirely.
+
+---
+
+## Phase 7 — Regime + portfolio (Student-t HMM + NCO + TDA) → v1.5
+
+**Augments** original Option A Phase 6.
+
+### 7.1 Add deps
+```toml
+hmmlearn = ">=0.3"     # already in original Option A
+dynamax = ">=0.1"      # JAX-based HMM family with t-emission
+riskfolio-lib = ">=5.0"  # NCO
+giotto-tda = ">=0.6"   # OPTIONAL — TDA persistence diagrams
+```
+
+### 7.2 Student-t HMM regime
+- Replace Gaussian-emission HMM in Option A §6.3 with a Student-t HMM
+  via `dynamax.linear_gaussian_hmm` plus a custom emission, OR a
+  hand-rolled t-emission EM (~150 lines).
+- Inputs: SPY returns + VIX changes + 10y-2y term spread changes.
+- Outputs: 3 regimes (bull, neutral, bear) with stable transition matrix
+  on the trailing 10y window.
+- Validation: out-of-sample regime probability stability (no flapping).
+
+### 7.3 Regime-conditional weights (carry over from Option A §6.4 unchanged).
+
+### 7.4 NCO portfolio sizing
+- New `compute/portfolio/nco.py`. ~100-line port of López de Prado 2019.
+- Hierarchical clustering of the covariance matrix (single linkage on
+  correlation distance), within-cluster optimization, between-cluster
+  optimization.
+- **Used only for backtest harness** (Phase 7 §7.5), not for the
+  ranking app's score. The frontend remains a ranking, not a portfolio.
+
+### 7.5 Backtest harness (carry over from Option A §6.5-6.7).
+- IC, IR, decile spread, deflated Sharpe, **PBO via CSCV** (López de
+  Prado, ~30-line NumPy port).
+- Hard requirement: PBO < 0.5 before any new methodology change reaches
+  production.
+
+### 7.6 TDA regime diagnostics (optional)
+- Compute persistent homology of the 30-day rolling correlation matrix
+  via `giotto-tda`. Report persistence-diagram entropy as an auxiliary
+  regime indicator on the about page. **Not** wired into composite.
+
+### 7.7 Tag v1.5
+
+**Fallback to Option A**: stay with Gaussian HMM, equal-weight portfolio
+(no NCO), no TDA. Backtest harness is non-negotiable.
+
+---
+
+## Phase 8 — Universe expansion (S&P 1500)
+
+Identical to original Option A Phase 7. No research-backed delta. See
+that section for tasks 8.1-8.4.
+
+---
+
+## Decision points — when to flip Option A vs Option B
+
+| Trigger | Action |
+|---|---|
+| Library install fails on `ubuntu-latest` runner | Pin a different version, then fall back to Option A baseline if still broken. |
+| OSAP / JKP CSV download URL breaks | Cache the last-known-good snapshot in `compute/cache/`; revisit Phase 4 if still broken at next refresh. |
+| Whisper transcription budget overrun (Kaggle 30h/wk hit) | Drop earnings-call sentiment from weekly path; pre-compute monthly only. |
+| `mapie` integration with LightGBM ranker fails | Hand-roll split-conformal (~50 lines) or drop conformal intervals (Option A fallback). |
+| Backtest IC of the new IPCA composite < classical baseline for 4 consecutive weeks | Revert to Phase 3 v1.0 composite weights. Document the rejection in `docs/RESEARCH_FINDINGS.md` "Postmortems". |
+| PBO > 0.5 on any new methodology | **Hard veto**. Do not ship that change to production. |
+
+---
+
+**End of Research-Backed Additions** — for context and references, see
+`docs/RESEARCH_FINDINGS.md`. For original Option A baseline, see Phase 4-7
+above this section.
