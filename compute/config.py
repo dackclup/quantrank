@@ -12,6 +12,7 @@ CACHE_DIR: Path = PROJECT_ROOT / "compute" / "cache"
 UNIVERSE_CACHE: Path = CACHE_DIR / "universe.parquet"
 PRICES_CACHE_DIR: Path = CACHE_DIR / "prices"
 FUNDAMENTALS_CACHE_DIR: Path = CACHE_DIR / "fundamentals"
+FUNDAMENTALS_HISTORY_CACHE_DIR: Path = CACHE_DIR / "fundamentals_history"
 MODELS_DIR: Path = PROJECT_ROOT / "models"
 
 UNIVERSE: str = "SP500"

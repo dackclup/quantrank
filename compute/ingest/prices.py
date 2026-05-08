@@ -33,6 +33,14 @@ def _yf_download(ticker: str, period: str) -> pd.DataFrame:
     return df
 
 
+SPY_TICKER: str = "SPY"
+
+
+def fetch_spy_benchmark(period: str = config.PRICES_PERIOD) -> pd.DataFrame | None:
+    """Fetch SPY OHLCV for use as the β benchmark + market-return baseline."""
+    return fetch_prices(SPY_TICKER, period=period)
+
+
 def fetch_prices(ticker: str, period: str = config.PRICES_PERIOD) -> pd.DataFrame | None:
     """Return a daily OHLCV DataFrame for ``ticker``, or ``None`` on failure."""
     cache_dir = config.PRICES_CACHE_DIR

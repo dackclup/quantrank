@@ -6,6 +6,9 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 class PillarScores(BaseModel):
+    """Per-pillar 0-100 scores. Phase 3 introduces ``technical`` and
+    ``profitability`` (additive — defaults to None for older data)."""
+
     model_config = ConfigDict(extra="forbid")
 
     quality: float | None = None
@@ -13,9 +16,11 @@ class PillarScores(BaseModel):
     growth: float | None = None
     momentum: float | None = None
     health: float | None = None
+    profitability: float | None = None
+    technical: float | None = None
+    risk: float | None = None
     sentiment: float | None = None
     ml: float | None = None
-    risk: float | None = None
 
 
 class StockSummary(BaseModel):
