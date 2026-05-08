@@ -46,6 +46,14 @@
 28. [Realistic Accuracy Expectations](#part-v-28)
 29. [Caveats & Pitfalls](#part-v-29)
 
+**PART VI — RESEARCH-BACKED STRETCH ADDITIONS (Phase 4+)** ⭐
+30. [Why Option B (Research-Backed Roadmap)](#part-vi-30)
+31. [Factor Consolidation Layer (Phase 4)](#part-vi-31)
+32. [ML Enhancements (Phase 5)](#part-vi-32)
+33. [Sentiment v2 (Phase 6)](#part-vi-33)
+34. [Regime + Portfolio v2 (Phase 7)](#part-vi-34)
+35. [Honest Decay & Replication Caveats](#part-vi-35)
+
 ---
 
 # PART I — APP CONCEPT & ARCHITECTURE
@@ -1523,6 +1531,385 @@ Compared to a strong **classical-only multi-factor baseline** (Piotroski + Magic
 
 ### 29.10 Configuration
 - Risk-free proxy (10-yr Treasury), 22.5 in Graham formula, 5–7% MRP need **periodic updating**. Build into config file, not hardcoded.
+
+---
+
+# PART VI — RESEARCH-BACKED STRETCH ADDITIONS (Phase 4+)
+
+## 30. Why Option B (Research-Backed Roadmap)
+
+### Why DIY factors hit a ceiling fast
+
+If you implement Sections 6-11 perfectly, you'll have ~30 hand-coded metrics that match academic factors. Problem: most of these factors are **already in published peer-reviewed factor libraries** that have:
+- Been replicated against original t-stats
+- Been point-in-time corrected
+- Been cleaned of survivorship bias
+- Been documented for license/usage
+
+**Building your own implementation from scratch reintroduces noise.** Better path: use the library factors as inputs, then add your own composite logic.
+
+### What Option B adds
+
+```
+DIY Layer (Phase 0-3):     30 metrics → 8 pillars → composite
+                           = 2-4% net alpha realistic ceiling
+                           
++ Library Factor Layer:     319 OSAP signals + 153 JKP factors + 
+                           158 Qlib Alpha158 features
+                           
++ ML Enhancement Layer:     Triple-Barrier + Meta-Labeling + 
+                           Conformal Prediction
+                           
++ Sentiment v2 Layer:       Whisper + 8-K events + Lazy Prices
+                           
++ Regime v2 Layer:          Student-t HMM + TDA + NCO
+                           = 3-7% net alpha realistic ceiling ⭐
+```
+
+### Sources for upgrade rationale
+
+- McLean & Pontiff (2016, JoF) — anomalies decay post-publication; library replications correct for this
+- Chen & Zimmermann (2022, CFR) — Open Source Cross-Sectional Asset Pricing replicated 319 anomalies
+- Jensen, Kelly & Pedersen (2023, JoF) — "Is There a Replication Crisis in Finance?" — 153 factors survive corrections
+- Kelly, Pruitt & Su (2019, JFE) — IPCA dominates Fama-French in pricing errors
+- Gu, Kelly & Xiu (2020, RFS; 2021, JoE) — autoencoder asset pricing models, ML in asset pricing
+- Cohen, Malloy & Nguyen (2020, JoF) — "Lazy Prices" — 30-60 bps/month from MD&A YoY similarity
+- López de Prado (2018) — Triple-Barrier + Meta-Labeling improves precision
+- Sang, Kim & Verdi (2024, JAR) — Vocal Delivery Quality independent of text sentiment
+
+---
+
+## 31. Factor Consolidation Layer (Phase 4)
+
+### 31.1 Chen-Zimmermann Open Source Asset Pricing (OSAP)
+
+**Source**: openassetpricing.com (October 2025 release)
+**License**: Free CSV/parquet downloads; signal recompute requires WRDS
+**Coverage**: 319 cross-sectional anomalies, all peer-reviewed
+**Library**: `pip install openassetpricing` (Peng Li wrapper)
+
+**Use case**: Treat each signal as a feature. Cross-sectionally rank, feed into LightGBM.
+
+```python
+import openassetpricing as oap
+signals = oap.get_signals_long()  # Long-format DataFrame
+```
+
+**Key signals not in DIY plan**: Asness/Frazzini Quality minus Junk extensions, Stambaugh-Yuan Mispricing 11-factor composite, Daniel-Hirshleifer-Sun behavioral factors, Hou-Xue-Zhang q5 factors.
+
+**Re-verification**: Check openassetpricing.com for current release; signal list expanded over time.
+
+### 31.2 Jensen-Kelly-Pedersen (JKP) Factor Library
+
+**Source**: jkpfactors.com
+**License**: CC BY-NC 4.0 (non-commercial)
+**Coverage**: 153 factors organized in 13 theme clusters
+**Format**: Monthly long-short factor returns CSV (free); stock-level needs WRDS
+
+**Theme clusters** (use to reduce dimension):
+1. Accruals
+2. Debt Issuance
+3. Investment
+4. Low Leverage
+5. Low Risk
+6. Momentum
+7. Profit Growth
+8. Profitability
+9. Quality
+10. Seasonality
+11. Size
+12. Skewness
+13. Value
+
+**Use case**: Use cluster-level factor returns as macro signals; avoid double-counting collinear signals.
+
+### 31.3 Microsoft Qlib Alpha158
+
+**Source**: github.com/microsoft/qlib
+**License**: MIT
+**Coverage**: 158 hand-crafted technical features
+
+**Published benchmarks** (CSI300 China A-share, illustrative):
+- LightGBM Rank IC ≈ 0.0482, ICIR ≈ 1.57
+- HIST GNN Rank IC ≈ 0.0628
+- Alpha360 (raw OHLCV alternative) similar performance
+
+**Use case**: Drop-in replacement for hand-coded technical indicators (Section 7).
+
+```python
+from qlib.contrib.data.handler import Alpha158
+handler = Alpha158(...)
+features = handler.fetch(...)
+```
+
+**Re-verification**: Test on free GitHub Actions runner; may need pre-compute on Kaggle.
+
+### 31.4 IPCA — Instrumented Principal Component Analysis
+
+**Paper**: Kelly, Pruitt & Su (2019, JFE "Characteristics are Covariances")
+**Library**: `pip install ipca` (github.com/bkelly-lab/ipca)
+**License**: MIT
+
+**What it does**: Estimates a 5-factor latent model where loadings are time-varying and instrumented by characteristics. Substantially fewer parameters than ML black-box models.
+
+**Use case**: Take OSAP/JKP signals as instruments → output 5 latent factor exposures → use as ML features.
+
+```python
+from ipca import InstrumentedPCA
+ipca = InstrumentedPCA(n_factors=5, intercept=True)
+ipca.fit(X=characteristics_panel, y=returns_panel, indices=panel_index)
+factor_exposures = ipca.predict_panel(...)
+```
+
+**Expected lift over Fama-French**: +0.5-1.5% alpha when used as residual return signal.
+
+---
+
+## 32. ML Enhancements (Phase 5)
+
+### 32.1 Triple-Barrier Method
+
+**Paper**: López de Prado (2018) — Advances in Financial ML
+**Library**: `pip install mlfinlab` ⚠️ AGPL-3.0 (verify license)
+
+**What**: Replaces fixed-horizon return labels with three barriers — take-profit, stop-loss, time barrier — scaled by daily volatility. Captures path-dependent outcomes.
+
+```python
+import mlfinlab as ml
+events = ml.filters.cusum_filter(close, threshold=daily_vol.mean()*0.5)
+t1 = ml.labeling.add_vertical_barrier(events, close, num_days=21)
+triple = ml.labeling.get_events(close, events, pt_sl=[1,1], target=daily_vol, t1=t1)
+labels = ml.labeling.get_bins(triple, close)
+```
+
+**Why better than fixed labels**: Doesn't reward signals that work after stops would have triggered.
+
+### 32.2 Meta-Labeling
+
+**Concept**: Two-model architecture
+- Primary model (LightGBM): predicts BUY/HOLD signal
+- Secondary model (XGBoost or LightGBM): predicts probability primary is correct
+
+**Use**: Position sizing — large position only when secondary confidence is high.
+
+**Documented impact**: Singh & Joubert (2019) — meaningful precision/recall improvements; better drawdown profile.
+
+### 32.3 Conformal Prediction
+
+**Paper**: Chernozhukov et al. (2021, PNAS) — Distributional Conformal Prediction
+**Library**: `pip install mapie` (BSD-3-Clause, fully compatible)
+
+**What**: Distribution-free prediction intervals with valid coverage under heteroskedasticity.
+
+```python
+from mapie.regression import MapieRegressor
+mapie = MapieRegressor(estimator=lgbm, method="cv_plus", cv=5)
+mapie.fit(X_train, y_train)
+y_pred, y_pis = mapie.predict(X_test, alpha=0.1)  # 90% intervals
+```
+
+**Use case**: Size positions by interval width — narrow interval = high confidence = larger size.
+
+**Expected lift**: +0.1-0.3% alpha + Sharpe lift +0.1 via better risk allocation.
+
+### 32.4 Conditional Autoencoder Asset Pricing (Optional)
+
+**Paper**: Gu, Kelly & Xiu (2021, JoE) — Autoencoder Asset Pricing Models
+**Repo**: github.com/rongwang0824/Autoencoder-Asset-Pricing-Models
+
+**What**: Nonlinear generalization of IPCA. Autoencoder bottleneck = latent factors; loadings parameterized by NN over characteristics.
+
+**Compute**: Trains in <1hr on Colab T4.
+
+**Expected lift over LightGBM-only**: +0.2-0.5% alpha + better tail behavior.
+
+---
+
+## 33. Sentiment v2 (Phase 6)
+
+### 33.1 Whisper Earnings Call Audio
+
+**Source**: openai-whisper (open source, free)
+**Compute**: Modal $30/mo credits = ~50 GPU-hrs T4 free monthly
+**Audio source**: Free from IR websites + Seeking Alpha public archive
+
+**Pipeline**:
+1. Scrape audio URLs from IR websites (legal, public)
+2. Transcribe with Whisper-medium (fast, accurate)
+3. Extract Wav2Vec2 features for vocal delivery quality
+
+### 33.2 Vocal Delivery Quality (VDQ)
+
+**Paper**: Sang, Kim & Verdi (2024, J. of Accounting Research) — "Vocal delivery quality in earnings conference calls"
+**Earlier**: Mayew & Venkatachalam (2012, JoF), Cao et al. (2023, RAS — "CEO vocal cues")
+
+**What**: Audio features (pitch, intensity, jitter, shimmer) capture executive uncertainty/confidence independently of text sentiment.
+
+**Documented alpha**: +0.2-0.4% as orthogonal signal to FinBERT text.
+
+```python
+import whisper
+import torchaudio
+# Whisper for transcription
+model = whisper.load_model("medium")
+result = model.transcribe(audio_path)
+transcript = result["text"]
+# Wav2Vec2 for vocal features
+# (extract pitch contour, energy, etc.)
+```
+
+### 33.3 8-K Item-Level Events
+
+**Source**: SEC EDGAR free
+**Library**: edgartools
+
+**Items with documented signed CARs**:
+- **Item 1.01** (Material Definitive Agreement / M&A): mostly positive for target, small for acquirer
+- **Item 4.02** (Non-Reliance Restatement): -2.6% to -5.4% CAR (Schroeder 2024)
+- **Item 5.02** (Mgmt Change): mixed signal, sign depends on context
+- **Item 1.05** (Cybersecurity): negative
+- **Item 2.05** (Costs of Exit/Disposal): negative
+
+**Implementation**: Parse 8-K via edgartools, classify item, compute event-window CAR feature.
+
+### 33.4 Lazy Prices (MD&A YoY Similarity)
+
+**Paper**: Cohen, Malloy & Nguyen (2020, JoF) — "Lazy Prices"
+**Library**: sentence-transformers (free)
+**Documented alpha**: 30-60 bps/month long-short
+
+**What**: Stocks whose 10-K MD&A language changes substantially from prior year underperform — the change signals new risks management is "burying" in lengthy prose.
+
+```python
+from sentence_transformers import SentenceTransformer
+from sklearn.metrics.pairwise import cosine_similarity
+
+model = SentenceTransformer('all-MiniLM-L6-v2')
+emb_y1 = model.encode(mda_text_year1)
+emb_y2 = model.encode(mda_text_year2)
+similarity = cosine_similarity([emb_y1], [emb_y2])[0][0]
+
+# Lower similarity = more change = lower expected return
+```
+
+### 33.5 SKIP for Megacap
+
+**Research finding**: Reddit/StockTwits/WSB sentiment **has no documented alpha at S&P 500 scale**. The alpha exists for small-caps only.
+
+**Action**:
+- Phase 6 (S&P 500 scope): SKIP Reddit/StockTwits
+- Phase 8 (S&P 1500 scope): Revisit for small-cap segment
+
+---
+
+## 34. Regime + Portfolio v2 (Phase 7)
+
+### 34.1 Student-t HMM (vs Gaussian)
+
+**Why**: Lee 2026 (KAIST) — Student-t emission better captures fat-tailed crisis returns.
+
+**Implementation**: Custom emission distribution in hmmlearn or Pyro/PyMC.
+
+### 34.2 Topological Data Analysis (TDA)
+
+**Paper**: Gidea & Katz (2018), Akingbade et al. (2023)
+**Library**: `gtda` (giotto-tda) ⚠️ AGPL-3 — verify
+
+**What**: Persistent homology on rolling correlation matrices. Detects topological "phase transitions" before crashes.
+
+**Use**: Risk-off gate (not return signal). Reduce exposure when persistence landscapes shift.
+
+### 34.3 Nested Clustered Optimization (NCO)
+
+**Paper**: López de Prado (2019)
+**Library**: `pip install skfolio` (BSD-3-Clause, compatible)
+
+**What**: Hierarchical optimization. Cluster assets first, optimize within clusters, then between clusters. More stable than HRP under noisy correlations.
+
+```python
+from skfolio.optimization import NestedClustersOptimization
+from skfolio.cluster import HierarchicalClustering
+
+nco = NestedClustersOptimization(
+    inner_estimator=...,
+    outer_estimator=...,
+    clustering_estimator=HierarchicalClustering(),
+)
+nco.fit(returns)
+weights = nco.weights_
+```
+
+**Expected Sharpe lift over HRP**: +0.05-0.15.
+
+---
+
+## 35. Honest Decay & Replication Caveats
+
+### 35.1 The Decay Reality
+
+McLean-Pontiff (2016, JoF):
+- 26% decay in-sample to OOS
+- 32% additional decay post-publication
+- Combined: ~50% decay realistic
+
+Falck-Rej-Thesmar (2022, QF):
+- Newer factors decay 5pp/year MORE than older ones
+- Post-2018 factors should be expected to decay faster
+
+Chen-Lou-Robotti (2023, JFQA):
+- 90th percentile anomaly post-2005: ~10.5 bps/month gross
+- Post-cost: 93% decay → near zero
+
+**Implication**: Budget 35-50% decay on any research-backed factor. Don't expect published numbers to replicate.
+
+### 35.2 Replication Crisis Mitigation
+
+JKP (2023, JoF) — "Is There a Replication Crisis in Finance?":
+- Most factors DO survive multiple-testing corrections
+- BUT magnitudes are materially smaller than originals
+- Theme clustering reduces multiple testing burden
+
+**Mitigation strategies**:
+1. Use library replications (OSAP, JKP) — they've already corrected
+2. Validate own implementations against published t-stats (5% tolerance)
+3. Decay monitoring: rolling 24-month IC, alert if slope < 0
+4. Quarterly re-validation against original papers
+
+### 35.3 What We Are NOT Promising
+
+**Honest disclaimers for users**:
+- Not a guarantee of profit
+- Not a substitute for fundamental research
+- Not real-time / not intraday
+- Not for short-term trading
+- 25-30% probability of negative alpha in any 3-year window
+- Past performance ≠ future results
+- Backtest performance > live performance (always)
+- Some factors will decay over time
+- License compatibility may change
+
+### 35.4 Performance Honesty Hierarchy
+
+| Net Alpha vs SPY | Verdict |
+|---|---|
+| 0-2% | Honest baseline; expect this most of the time |
+| 2-4% | Strong execution + benign regime; Option A target |
+| 3-7% | Option B target; requires research-backed pipeline |
+| 7-10% | Suspicious; likely overfit or in-sample bias |
+| >10% | Overfit. Reject. |
+
+### 35.5 Validation Discipline (Hard Vetoes)
+
+Before shipping ANY research-backed phase:
+- ✅ Mean IC OOS ≥ 0.02
+- ✅ PBO < 0.5
+- ✅ Deflated Sharpe > 0
+- ✅ Compute time < 6 hrs (or moved to Kaggle/Modal)
+- ✅ Net alpha vs SPY ≥ 0% post-cost
+- ✅ License compatibility verified
+- ✅ Replication QC ≥ 50% match published
+
+If ANY criterion fails → Option A fallback for that phase.
 
 ---
 
