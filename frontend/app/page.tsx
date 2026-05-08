@@ -19,8 +19,8 @@ export default function HomePage() {
           Schema <span className="font-mono">{metadata.version}</span>
         </p>
         <p className="text-xs text-slate-400">
-          Phase 1 — composite is momentum-only (12-1, knowledge doc §8.8).
-          Real pillars land in Phase 3.
+          Phase 2 — composite is still momentum-only (12-1, knowledge doc §8.8).
+          Tap a ticker to see SEC EDGAR fundamentals. Real pillars land in Phase 3.
         </p>
       </header>
 

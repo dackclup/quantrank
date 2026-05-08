@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useMemo, useState } from 'react';
 
 import type { StockSummary } from '@/lib/types';
@@ -144,7 +145,14 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
             {pageRows.map((row) => (
               <tr key={row.ticker} className="hover:bg-slate-50">
                 <td className="px-3 py-2 tabular-nums text-slate-700">{row.rank}</td>
-                <td className="px-3 py-2 font-mono font-semibold">{row.ticker}</td>
+                <td className="px-3 py-2 font-mono font-semibold">
+                  <Link
+                    href={`/stock/${row.ticker}/`}
+                    className="hover:text-slate-700 hover:underline"
+                  >
+                    {row.ticker}
+                  </Link>
+                </td>
                 <td className="px-3 py-2 text-slate-700">{row.name}</td>
                 <td className="px-3 py-2 text-slate-500">{row.sector}</td>
                 <td className="px-3 py-2 text-right">
@@ -164,22 +172,27 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
         {pageRows.map((row) => (
           <li
             key={row.ticker}
-            className="flex items-center justify-between rounded-lg border border-slate-200 bg-white p-3 shadow-sm"
+            className="rounded-lg border border-slate-200 bg-white shadow-sm hover:bg-slate-50"
           >
-            <div className="min-w-0 flex-1">
-              <div className="flex items-baseline gap-2">
-                <span className="text-xs text-slate-500 tabular-nums">#{row.rank}</span>
-                <span className="font-mono text-base font-semibold">{row.ticker}</span>
+            <Link
+              href={`/stock/${row.ticker}/`}
+              className="flex items-center justify-between p-3"
+            >
+              <div className="min-w-0 flex-1">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-xs text-slate-500 tabular-nums">#{row.rank}</span>
+                  <span className="font-mono text-base font-semibold">{row.ticker}</span>
+                </div>
+                <div className="truncate text-sm text-slate-700">{row.name}</div>
+                <div className="mt-1 flex items-center justify-between text-xs text-slate-500">
+                  <span className="truncate">{row.sector}</span>
+                  <span className="tabular-nums">{formatPrice(row.current_price)}</span>
+                </div>
               </div>
-              <div className="truncate text-sm text-slate-700">{row.name}</div>
-              <div className="mt-1 flex items-center justify-between text-xs text-slate-500">
-                <span className="truncate">{row.sector}</span>
-                <span className="tabular-nums">{formatPrice(row.current_price)}</span>
+              <div className="ml-3 shrink-0">
+                <ScoreBadge score={row.composite_score} />
               </div>
-            </div>
-            <div className="ml-3 shrink-0">
-              <ScoreBadge score={row.composite_score} />
-            </div>
+            </Link>
           </li>
         ))}
       </ul>

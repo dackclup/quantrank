@@ -19,7 +19,7 @@ def test_parse_sp500_html_normalizes_brk_b():
     html = FIXTURE_HTML.read_text()
     df = universe_mod.parse_sp500_html(html)
 
-    assert len(df) == 3
+    assert len(df) == 4
     assert set(["ticker", "name", "sector", "sub_industry", "cik", "wiki_ticker"]).issubset(df.columns)
 
     brk = df[df["wiki_ticker"] == "BRK.B"].iloc[0]
@@ -31,6 +31,19 @@ def test_parse_sp500_html_normalizes_brk_b():
     assert aapl["cik"] == "0000320193"
 
 
+def test_parse_sp500_html_applies_ticker_overrides():
+    """Stale Wikipedia symbols (e.g., FISV after the 2024 Fiserv rename) must
+    be remapped via TICKER_OVERRIDES before they reach yfinance/EDGAR.
+    """
+    html = FIXTURE_HTML.read_text()
+    df = universe_mod.parse_sp500_html(html)
+
+    fi_row = df[df["wiki_ticker"] == "FISV"]
+    assert len(fi_row) == 1
+    assert fi_row.iloc[0]["ticker"] == "FI"
+    assert "FISV" not in df["ticker"].values
+
+
 def test_get_sp500_constituents_uses_cache(monkeypatch, tmp_path):
     cache_path = tmp_path / "universe.parquet"
     monkeypatch.setattr(universe_mod.config, "UNIVERSE_CACHE", cache_path)
@@ -39,7 +52,7 @@ def test_get_sp500_constituents_uses_cache(monkeypatch, tmp_path):
     monkeypatch.setattr(universe_mod, "_fetch_wikipedia_html", lambda *a, **kw: html)
 
     df1 = universe_mod.get_sp500_constituents()
-    assert len(df1) == 3
+    assert len(df1) == 4
     assert cache_path.exists()
 
     # Second call should not refetch — replace the fetcher with a sentinel that would fail.
