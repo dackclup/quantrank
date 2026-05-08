@@ -19,8 +19,13 @@ export default function HomePage() {
           Schema <span className="font-mono">{metadata.version}</span>
         </p>
         <p className="text-xs text-slate-400">
-          Phase 2 — composite is still momentum-only (12-1, knowledge doc §8.8).
-          Tap a ticker to see SEC EDGAR fundamentals. Real pillars land in Phase 3.
+          Phase 3b — composite is the 8-pillar weighted score (quality, value,
+          growth, momentum, health, profitability, technical, risk).{' '}
+          <span className="font-mono">sentiment</span> and{' '}
+          <span className="font-mono">ml</span> pillars stay null until
+          Phases 5-6; their 0.20 weight is redistributed pro-rata across the
+          active pillars. Risk-overlay flags annotate; flagged tickers cannot
+          earn the entered-top-5 badge even at rank #1 by composite.
         </p>
       </header>
 

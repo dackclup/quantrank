@@ -56,7 +56,7 @@ export default function StockDetailPage({
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-6 text-sm text-amber-900">
           <p className="font-medium">Detail data pending</p>
           <p className="mt-1">
-            Phase 2 compute hasn&rsquo;t produced fundamentals for{' '}
+            The latest weekly compute hasn&rsquo;t produced data for{' '}
             <span className="font-mono">{ticker}</span> yet. Trigger
             <span className="ml-1 font-mono">compute-rankings.yml</span> from
             the GitHub Actions tab; the detail page will populate after the
@@ -160,9 +160,11 @@ export default function StockDetailPage({
       </section>
 
       <p className="text-xs text-slate-400">
-        Phase 2 — composite is still momentum-only; raw fundamentals shown
-        above are sourced from SEC EDGAR. Real fundamental pillars land in
-        Phase 3.
+        Phase 3b — composite is the 8-pillar weighted score over quality,
+        value, growth, momentum, health, profitability, technical, and risk.
+        Sentiment + ML pillars land in Phases 5-6; until then their weight
+        redistributes pro-rata. Risk-overlay flags annotate only — they
+        suppress the entered-top-5 badge but do not modify the composite.
       </p>
     </article>
   );
