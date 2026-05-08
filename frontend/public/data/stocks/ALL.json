@@ -5,17 +5,17 @@
   "industry": "Property & Casualty Insurance",
   "market_cap": 55126859527.58789,
   "current_price": 213.67,
-  "rank": 295,
-  "composite_score": 41.32,
+  "rank": 10,
+  "composite_score": 69.11,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 41.32,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 72.0,
+    "value": 76.0,
+    "growth": 73.33,
+    "momentum": 64.44,
+    "health": 60.96,
+    "profitability": 61.11,
+    "technical": 47.86,
+    "risk": 71.48,
     "sentiment": null,
     "ml": null
   },
@@ -56,5 +56,10 @@
     "filing_lag_days": 9,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-29"
-  }
+  },
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }

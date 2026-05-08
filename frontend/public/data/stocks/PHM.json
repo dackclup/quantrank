@@ -5,17 +5,17 @@
   "industry": "Homebuilding",
   "market_cap": 22514131871.145004,
   "current_price": 116.82,
-  "rank": 229,
-  "composite_score": 54.49,
+  "rank": 161,
+  "composite_score": 54.94,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 54.49,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 59.64,
+    "value": 66.67,
+    "growth": 51.04,
+    "momentum": 35.16,
+    "health": 49.52,
+    "profitability": 67.19,
+    "technical": 37.5,
+    "risk": 46.45,
     "sentiment": null,
     "ml": null
   },
@@ -54,5 +54,10 @@
     "filing_lag_days": 15,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-23"
-  }
+  },
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }

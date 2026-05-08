@@ -5,17 +5,17 @@
   "industry": "Electric Utilities",
   "market_cap": 45431429843.90259,
   "current_price": 44.41,
-  "rank": 270,
-  "composite_score": 46.31,
+  "rank": 321,
+  "composite_score": 46.71,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 46.31,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 32.26,
+    "value": 66.67,
+    "growth": 50.81,
+    "momentum": 63.15,
+    "health": 24.14,
+    "profitability": 38.71,
+    "technical": 28.54,
+    "risk": 62.32,
     "sentiment": null,
     "ml": null
   },
@@ -50,5 +50,10 @@
     "filing_lag_days": 2,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
-  }
+  },
+  "risk_flags": [
+    "altman_distress"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }

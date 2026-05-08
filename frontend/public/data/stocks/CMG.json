@@ -5,17 +5,17 @@
   "industry": "Restaurants",
   "market_cap": 42820154089.164734,
   "current_price": 33.27,
-  "rank": 478,
-  "composite_score": 4.79,
+  "rank": 335,
+  "composite_score": 45.76,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 4.79,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 75.26,
+    "value": 19.1,
+    "growth": 63.02,
+    "momentum": 21.61,
+    "health": 40.88,
+    "profitability": 61.11,
+    "technical": 32.17,
+    "risk": 17.99,
     "sentiment": null,
     "ml": null
   },
@@ -51,5 +51,10 @@
     "filing_lag_days": 8,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
-  }
+  },
+  "risk_flags": [
+    "altman_distress"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }

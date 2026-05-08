@@ -5,17 +5,17 @@
   "industry": "Other Specialty Retail",
   "market_cap": 16679782499.71962,
   "current_price": 31.74,
-  "rank": 401,
-  "composite_score": 20.16,
+  "rank": 375,
+  "composite_score": 43.9,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 20.16,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 67.19,
+    "value": 38.54,
+    "growth": 40.1,
+    "momentum": 10.41,
+    "health": 49.18,
+    "profitability": 48.61,
+    "technical": 29.71,
+    "risk": 26.63,
     "sentiment": null,
     "ml": null
   },
@@ -48,5 +48,10 @@
     "filing_lag_days": 1,
     "latest_period_end": "2026-03-28",
     "latest_filed_date": "2026-05-07"
-  }
+  },
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }

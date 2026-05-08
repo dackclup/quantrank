@@ -5,17 +5,17 @@
   "industry": "Hotels, Resorts & Cruise Lines",
   "market_cap": 85334596004.49219,
   "current_price": 280.87,
-  "rank": 198,
-  "composite_score": 60.68,
+  "rank": 360,
+  "composite_score": 44.58,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 60.68,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 62.76,
+    "value": 21.88,
+    "growth": 70.31,
+    "momentum": 36.5,
+    "health": 12.15,
+    "profitability": 62.33,
+    "technical": 49.55,
+    "risk": 38.84,
     "sentiment": null,
     "ml": null
   },
@@ -48,5 +48,10 @@
     "filing_lag_days": 8,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
-  }
+  },
+  "risk_flags": [
+    "altman_distress"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }

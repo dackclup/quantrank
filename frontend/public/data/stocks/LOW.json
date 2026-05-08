@@ -5,17 +5,17 @@
   "industry": "Home Improvement Retail",
   "market_cap": 129523682739.25781,
   "current_price": 230.88,
-  "rank": 296,
-  "composite_score": 41.12,
+  "rank": 266,
+  "composite_score": 49.51,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 41.12,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 43.75,
+    "value": 71.35,
+    "growth": 37.76,
+    "momentum": 32.42,
+    "health": 46.04,
+    "profitability": 65.45,
+    "technical": 41.93,
+    "risk": 49.63,
     "sentiment": null,
     "ml": null
   },
@@ -47,5 +47,10 @@
     "filing_lag_days": 46,
     "latest_period_end": "2026-01-30",
     "latest_filed_date": "2026-03-23"
-  }
+  },
+  "risk_flags": [
+    "altman_distress"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }

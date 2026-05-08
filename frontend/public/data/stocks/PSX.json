@@ -5,17 +5,17 @@
   "industry": "Oil & Gas Refining & Marketing",
   "market_cap": 111239729040.18164,
   "current_price": 168.31,
-  "rank": 42,
-  "composite_score": 91.82,
+  "rank": 120,
+  "composite_score": 57.06,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 91.82,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 61.9,
+    "value": 45.24,
+    "growth": 42.86,
+    "momentum": 82.17,
+    "health": 48.84,
+    "profitability": 51.59,
+    "technical": 74.8,
+    "risk": 63.58,
     "sentiment": null,
     "ml": null
   },
@@ -50,5 +50,10 @@
     "filing_lag_days": 9,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-29"
-  }
+  },
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }

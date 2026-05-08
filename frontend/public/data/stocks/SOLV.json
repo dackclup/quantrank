@@ -5,17 +5,17 @@
   "industry": "Health Care Technology",
   "market_cap": 12433543417.188293,
   "current_price": 71.65,
-  "rank": 351,
-  "composite_score": 30.14,
+  "rank": 400,
+  "composite_score": 42.64,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 30.14,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 49.58,
+    "value": 36.16,
+    "growth": 59.32,
+    "momentum": 23.06,
+    "health": 30.52,
+    "profitability": 44.35,
+    "technical": 64.34,
+    "risk": 40.84,
     "sentiment": null,
     "ml": null
   },
@@ -48,5 +48,10 @@
     "filing_lag_days": 3,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-05"
-  }
+  },
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }

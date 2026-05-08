@@ -5,17 +5,17 @@
   "industry": "Brewers",
   "market_cap": null,
   "current_price": 43.13,
-  "rank": 425,
-  "composite_score": 15.37,
+  "rank": 484,
+  "composite_score": 34.31,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 15.37,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 22.92,
+    "value": 49.07,
+    "growth": 46.18,
+    "momentum": 27.79,
+    "health": 9.84,
+    "profitability": 31.25,
+    "technical": 65.49,
+    "risk": 40.34,
     "sentiment": null,
     "ml": null
   },
@@ -47,5 +47,10 @@
     "filing_lag_days": 79,
     "latest_period_end": "2025-12-31",
     "latest_filed_date": "2026-02-18"
-  }
+  },
+  "risk_flags": [
+    "altman_distress"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }

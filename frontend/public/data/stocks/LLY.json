@@ -5,17 +5,17 @@
   "industry": "Pharmaceuticals",
   "market_cap": 921142228759.7656,
   "current_price": 974.96,
-  "rank": 185,
-  "composite_score": 63.27,
+  "rank": 83,
+  "composite_score": 59.87,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 63.27,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 83.05,
+    "value": 20.34,
+    "growth": 86.02,
+    "momentum": 46.91,
+    "health": 56.69,
+    "profitability": 80.79,
+    "technical": 60.91,
+    "risk": 55.28,
     "sentiment": null,
     "ml": null
   },
@@ -49,5 +49,10 @@
     "filing_lag_days": 8,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
-  }
+  },
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }

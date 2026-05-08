@@ -5,17 +5,17 @@
   "industry": "Financial Exchanges & Data",
   "market_cap": null,
   "current_price": 286.85,
-  "rank": 238,
-  "composite_score": 52.69,
+  "rank": 184,
+  "composite_score": 54.05,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 52.69,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 53.33,
+    "value": 43.56,
+    "growth": 53.0,
+    "momentum": 66.78,
+    "health": 52.29,
+    "profitability": 58.67,
+    "technical": 59.21,
+    "risk": 73.46,
     "sentiment": null,
     "ml": null
   },
@@ -52,5 +52,11 @@
     "filing_lag_days": 14,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-24"
-  }
+  },
+  "risk_flags": [
+    "altman_distress",
+    "sloan_accruals_top_decile"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }

@@ -5,17 +5,17 @@
   "industry": "Pharmaceuticals",
   "market_cap": 1738.9999389648438,
   "current_price": 17.39,
-  "rank": 61,
-  "composite_score": 88.02,
+  "rank": 189,
+  "composite_score": 53.87,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 88.02,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 50.85,
+    "value": 66.67,
+    "growth": 31.78,
+    "momentum": 78.36,
+    "health": 47.55,
+    "profitability": 9.89,
+    "technical": 69.47,
+    "risk": 60.52,
     "sentiment": null,
     "ml": null
   },
@@ -46,5 +46,10 @@
     "filing_lag_days": 1,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
-  }
+  },
+  "risk_flags": [
+    "altman_distress"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }

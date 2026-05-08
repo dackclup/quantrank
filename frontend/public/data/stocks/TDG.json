@@ -5,17 +5,17 @@
   "industry": "Aerospace & Defense",
   "market_cap": 64778229286.8042,
   "current_price": 1241.98,
-  "rank": 377,
-  "composite_score": 24.95,
+  "rank": 229,
+  "composite_score": 51.6,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 24.95,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 37.34,
+    "value": 58.86,
+    "growth": 81.01,
+    "momentum": 30.13,
+    "health": 60.68,
+    "profitability": 52.53,
+    "technical": 56.37,
+    "risk": 53.92,
     "sentiment": null,
     "ml": null
   },
@@ -46,5 +46,11 @@
     "filing_lag_days": 3,
     "latest_period_end": "2026-03-28",
     "latest_filed_date": "2026-05-05"
-  }
+  },
+  "risk_flags": [
+    "altman_distress",
+    "sloan_accruals_top_decile"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }

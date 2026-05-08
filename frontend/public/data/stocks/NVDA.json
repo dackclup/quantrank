@@ -5,17 +5,17 @@
   "industry": "Semiconductors",
   "market_cap": 5140296000000.0,
   "current_price": 211.5,
-  "rank": 82,
-  "composite_score": 83.83,
+  "rank": 3,
+  "composite_score": 72.35,
   "pillar_scores": {
-    "quality": null,
-    "value": null,
-    "growth": null,
-    "momentum": 83.83,
-    "health": null,
-    "profitability": null,
-    "technical": null,
-    "risk": null,
+    "quality": 90.92,
+    "value": 42.47,
+    "growth": 82.71,
+    "momentum": 65.69,
+    "health": 95.54,
+    "profitability": 82.08,
+    "technical": 50.6,
+    "risk": 54.15,
     "sentiment": null,
     "ml": null
   },
@@ -44,5 +44,10 @@
     "filing_lag_days": 72,
     "latest_period_end": "2026-01-25",
     "latest_filed_date": "2026-02-25"
-  }
+  },
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
+  "entered_top5": false,
+  "exited_top5": false
 }
