@@ -1,15 +1,16 @@
 ---
 name: quantrank-app
-description: Build, modify, or extend QuantRank — a static-site US equity ranking application that combines fundamental, technical, factor, sentiment, and ML analysis into a 0-100 composite StockRank with ensemble fair price. Architecture is GITHUB-ACTIONS-FIRST (no backend server, no database) — Python script computes scores weekly and outputs JSON files; Next.js static site reads JSON and renders the UI; everything deploys free via Vercel. Use when the user wants to create QuantRank from scratch, add new analysis pillars or metrics, improve scoring methodology, integrate new free data sources, build the GitHub Actions compute pipeline, design the JSON output schema, build the Next.js static frontend, set up scheduled refresh workflows, deploy to Vercel, or troubleshoot any part of this static ranking system.
+description: Build, modify, or extend QuantRank — a static-site US equity ranking application that combines fundamental, technical, factor, sentiment, and ML analysis into a 0-100 composite StockRank with ensemble fair price. Architecture is GITHUB-ACTIONS-FIRST (no backend server, no database) — Python script computes scores weekly and outputs JSON files; Next.js static site reads JSON and renders the UI; everything deploys free via Vercel. Roadmap is OPTION B (research-backed) with Option A as fallback. Use when the user wants to create QuantRank from scratch, add new analysis pillars or metrics, improve scoring methodology, integrate new free data sources, build the GitHub Actions compute pipeline, design the JSON output schema, build the Next.js static frontend, set up scheduled refresh workflows, deploy to Vercel, or troubleshoot any part of this static ranking system.
 ---
 
 # QuantRank — Build & Maintenance Skill
 
-A skill for building and extending **QuantRank**, a static-site US equity stock ranking application that ranks stocks 1..N using 60+ classical analysis techniques plus advanced ML/NLP/regime-detection methods.
+A skill for building and extending **QuantRank**, a static-site US equity stock ranking application that ranks stocks 1..N using 60+ classical analysis techniques plus advanced ML/NLP/regime-detection methods, augmented by **research-backed peer-reviewed libraries** (Option B roadmap).
 
-**Project knowledge file**: `stock_ranking_knowledge.md` (loaded into the project) is the authoritative reference for ALL formulas, data sources, normalization rules. **Always consult it before implementing any analysis technique** — never invent formulas.
-
-**Workflow file**: `WORKFLOW.md` is the phase-by-phase build plan. Always check current phase before working.
+**Project knowledge files** (loaded into the project):
+- `stock_ranking_knowledge.md` — authoritative reference for ALL classical formulas, data sources, normalization rules. **Always consult before implementing any analysis technique** — never invent formulas.
+- `WORKFLOW.md` — phase-by-phase build plan (9 phases, 0-8). Always check current phase before working.
+- `RESEARCH_FINDINGS.md` — research-backed stretch additions for Phase 4-8 (Option B roadmap).
 
 ---
 
@@ -18,14 +19,15 @@ A skill for building and extending **QuantRank**, a static-site US equity stock 
 Build a **static web app** (no backend server, no database) that:
 1. Pulls free-tier financial data for US stocks (S&P 500 → S&P 1500 in stages)
 2. Computes 60+ classical metrics + advanced sentiment/ML/regime features
-3. Normalizes them sector-relative into 8 pillar scores (0-100 each)
-4. Combines via meta-learner into a final composite StockRank (0-100)
-5. Computes ensemble Fair Price (DCF + Graham + Residual Income + multiples)
-6. Surfaces top-5 SHAP explanations per stock
-7. Outputs everything as JSON files committed to the repo
-8. Refreshes weekly via GitHub Actions cron
-9. Renders via Next.js static site deployed on Vercel
-10. **Public GitHub repo** — fully reproducible, free GitHub Actions
+3. **Phase 4+: Augments with peer-reviewed library factors** (OSAP, JKP, Qlib Alpha158, IPCA)
+4. Normalizes them sector-relative into 8 pillar scores (0-100 each)
+5. Combines via meta-learner into a final composite StockRank (0-100)
+6. Computes ensemble Fair Price (DCF + Graham + Residual Income + multiples)
+7. Surfaces top-5 SHAP explanations per stock
+8. Outputs everything as JSON files committed to the repo
+9. Refreshes weekly via GitHub Actions cron
+10. Renders via Next.js static site deployed on Vercel
+11. **Public GitHub repo** — fully reproducible, free GitHub Actions
 
 ---
 
@@ -38,6 +40,7 @@ Build a **static web app** (no backend server, no database) that:
 - A **Next.js static site** that reads pre-computed JSON files
 - A **public GitHub repo** with auto-committed JSON outputs
 - Deployed to **Vercel free tier** with auto-deploy on push
+- **Phase 5+: Hybrid compute** — heavy ML training on Kaggle/Modal, light scoring on GitHub Actions
 
 ### What this app is NOT:
 - ❌ NOT a FastAPI/Flask/Express backend
@@ -46,7 +49,7 @@ Build a **static web app** (no backend server, no database) that:
 - ❌ NOT computing scores on user request
 - ❌ NOT a real-time/intraday system
 
-### Compute Flow:
+### Compute Flow (Phase 0-3):
 ```
 [GitHub Actions cron, weekly Sunday 22:00 UTC]
     ↓
@@ -59,9 +62,26 @@ Push triggers Vercel auto-deploy
 [User opens site] → Next.js loads pre-computed JSON → renders UI
 ```
 
+### Compute Flow (Phase 5+ with heavy ML):
+```
+[GitHub Actions weekly cron]
+    ↓
+Light pipeline (ingestion + scoring) → JSON
+    ↓
+[Kaggle Notebooks monthly]
+    ↓
+Heavy training (LightGBM, autoencoder, FinBERT batch) → models
+    ↓
+[Modal $30/mo credits, quarterly]
+    ↓
+Whisper transcription + Llama-3 MD&A inference → embeddings
+    ↓
+All artifacts → repo public/data/ → Vercel deploy
+```
+
 ### Why this architecture:
-- **Free forever**: Vercel hobby + GitHub Actions on public repo = $0
-- **Mobile-friendly dev**: only 1 system to debug (the Python script + GH Actions logs)
+- **Free forever**: Vercel hobby + GitHub Actions on public repo + Kaggle/Modal free tiers = $0
+- **Mobile-friendly dev**: Claude Code app + GitHub mobile + Vercel mobile = full workflow
 - **Fast for users**: pre-computed JSON served via CDN, no DB queries
 - **Simple**: no auth, no rate limiting, no API design needed
 
@@ -70,6 +90,8 @@ Push triggers Vercel auto-deploy
 ## Required Tech Stack
 
 **DO NOT deviate without explicit approval.**
+
+### Phase 0-3 (v1.0)
 
 | Layer | Technology | Why |
 |---|---|---|
@@ -83,16 +105,76 @@ Push triggers Vercel auto-deploy
 | Package Manager (Python) | `uv` (or `pip` if needed) | Fast |
 | Package Manager (JS) | `npm` | Standard |
 
-**Python libraries**:
+### Phase 4+ Research Additions (Option B)
+
+| Layer | Technology | Why |
+|---|---|---|
+| Heavy ML Training | Kaggle Notebooks (30 GPU-hr/wk) | Free T4/P100 |
+| LLM Inference | Modal ($30/mo credits) | ~50 GPU-hrs T4 free |
+| Audio Transcription | OpenAI Whisper (open source) | Free local/Modal inference |
+| Factor Library | OSAP + JKP + Qlib | Peer-reviewed replicated factors |
+
+**Python libraries (Phase 0-3)**:
 ```
 yfinance, edgartools, fredapi, finnhub-python, praw, pytrends    # Data
 pandas, numpy, scipy, statsmodels                                 # Core
 ta, pandas-ta, arch, hmmlearn                                     # Analysis
 lightgbm, scikit-learn, shap                                      # ML
-transformers, torch                                               # FinBERT (optional, heavy)
+transformers, torch                                               # FinBERT (optional)
 tenacity, python-dotenv                                           # Utilities
 pytest, ruff                                                      # Quality
 ```
+
+**Python libraries (Phase 4+ Option B additions)**:
+```
+openassetpricing                # Chen-Zimmermann 319 signals (Phase 4)
+ipca                            # Kelly-Pruitt-Su latent factors (Phase 4)
+pyqlib                          # Microsoft Qlib Alpha158 (Phase 4)
+mlfinlab                        # Triple-Barrier + Meta-Labeling (Phase 5)
+mapie                           # Conformal Prediction (Phase 5)
+sentence-transformers           # MD&A YoY similarity (Phase 6)
+openai-whisper                  # Audio transcription (Phase 6)
+skfolio                         # NCO portfolio optimization (Phase 7)
+gtda                            # Topological Data Analysis (Phase 7)
+```
+
+**License caveats** (verify per phase):
+- OSAP signals: Free CSV/parquet, MIT-style for code; SIGNAL-LEVEL data needs WRDS for stock-level recompute
+- JKP: CC BY-NC 4.0 (non-commercial); factor returns CSV freely downloadable; stock-level needs WRDS
+- mlfinlab: AGPL-3.0 (verify before integration; may require open-sourcing of derivatives)
+- pyqlib: MIT
+- ipca: MIT
+- skfolio: BSD-3-Clause
+
+---
+
+## Roadmap Strategy: Option B with Option A Fallback
+
+### Active Plan: Option B (Research-Backed)
+- **Phases 0-3** unchanged from original WORKFLOW.md → ship v1.0
+- **Phase 4 NEW**: Factor Consolidation (OSAP + JKP + Qlib + IPCA)
+- **Phase 5 ENHANCED**: ML + Triple-Barrier + Meta-Labeling + Conformal Prediction
+- **Phase 6 ENHANCED**: Sentiment v2 (Whisper + 8-K events + Lazy Prices)
+- **Phase 7 ENHANCED**: Regime v2 (Student-t HMM + TDA + NCO)
+- **Phase 8**: Universe expansion to S&P 1500
+
+### Fallback Plan: Option A (Original WORKFLOW.md)
+Triggers reverting to Option A per-phase if:
+- Library integration > 1 week of blockers
+- License conflict (e.g., mlfinlab AGPL incompatibility)
+- Heavy compute setup fails (Kaggle/Modal access issues)
+- Validation shows no alpha lift from research addition
+
+Each phase has explicit fallback triggers in WORKFLOW.md.
+
+### Performance Expectations
+
+| Path | Net Alpha vs SPY | Sharpe Lift | Time |
+|---|---|---|---|
+| Option A (original) | 2-4% | +0.2 to +0.4 | ~5-6 weeks |
+| Option B (research) | 3-7% | +0.3 to +0.5 | ~7-8 weeks |
+
+**Honest hedge**: 3-7% is research-suggested upper bound; 2-4% is realistic floor. Wide confidence interval [0%, +5%] on any single 3-year window. Some research papers cited may have decay, replication issues, or in-sample bias — see RESEARCH_FINDINGS.md caveats.
 
 ---
 
@@ -101,30 +183,36 @@ pytest, ruff                                                      # Quality
 ```
 quantrank/
 ├── README.md                       # Public README with disclaimer
-├── PHASE_STATUS.md                 # Current phase tracker
+├── PHASE_STATUS.md                 # Current phase tracker (9 phases)
 ├── pyproject.toml                  # Python dependencies
 ├── .gitignore                      # Includes .env, __pycache__, node_modules
 │
 ├── .github/workflows/
 │   ├── compute-rankings.yml        # Sun 22:00 UTC: weekly compute
 │   ├── compute-monthly.yml         # 1st of month: ML retrain
+│   ├── compute-quarterly.yml       # Phase 6+: Whisper + LLM heavy jobs
 │   ├── ci.yml                      # Lint + test on PR
 │   └── manual-trigger.yml          # workflow_dispatch for ad-hoc runs
 │
-├── compute/                        # Python compute pipeline (replaces backend)
+├── compute/                        # Python compute pipeline
 │   ├── __init__.py
-│   ├── config.py                   # Paths, defaults (no env vars in code)
+│   ├── config.py                   # Paths, defaults
 │   ├── main.py                     # Entry: orchestrates full weekly run
 │   │
-│   ├── ingest/                     # Data fetchers — one module per source
+│   ├── ingest/                     # Data fetchers
 │   │   ├── universe.py             # S&P 500 from Wikipedia
 │   │   ├── prices.py               # yfinance OHLCV
 │   │   ├── fundamentals.py         # edgartools (SEC EDGAR)
-│   │   ├── insider.py              # edgartools Form 4 (Phase 4)
-│   │   ├── institutional.py        # edgartools 13F (Phase 4)
-│   │   ├── macro.py                # fredapi (Phase 5)
-│   │   ├── news.py                 # finnhub + yfinance (Phase 4)
-│   │   └── reddit.py               # PRAW (Phase 4)
+│   │   ├── insider.py              # edgartools Form 4 (Phase 6)
+│   │   ├── institutional.py        # edgartools 13F (Phase 6)
+│   │   ├── macro.py                # fredapi (Phase 7)
+│   │   ├── news.py                 # finnhub + yfinance (Phase 6)
+│   │   ├── reddit.py               # PRAW (Phase 6 - skip for megacap)
+│   │   ├── osap.py                 # ⭐ Chen-Zimmermann signals (Phase 4)
+│   │   ├── jkp.py                  # ⭐ JKP factor returns (Phase 4)
+│   │   ├── qlib_data.py            # ⭐ Microsoft Qlib (Phase 4)
+│   │   ├── earnings_audio.py       # ⭐ Audio scrape from IR (Phase 6)
+│   │   └── eight_k.py              # ⭐ 8-K item parser (Phase 6)
 │   │
 │   ├── features/                   # Pure feature computation
 │   │   ├── fundamental.py          # Piotroski, Altman Z, Beneish M
@@ -135,14 +223,19 @@ quantrank/
 │   │   ├── technical.py            # MACD, ADX, ATR, Ichimoku
 │   │   ├── health.py               # Current/Quick, D/E, IC
 │   │   ├── risk.py                 # Sharpe, Sortino, MaxDD, GARCH
-│   │   ├── sentiment.py            # FinBERT, Reddit (Phase 4)
+│   │   ├── sentiment.py            # FinBERT, Reddit (Phase 6)
 │   │   ├── advanced_valuation.py   # EVA, CFROI, Tobin's Q (Phase 4)
-│   │   ├── anomaly.py              # PEAD, IVOL, asset growth (Phase 4)
-│   │   └── macro_regime.py         # HMM, sector rotation (Phase 5)
+│   │   ├── anomaly.py              # PEAD, IVOL, asset growth
+│   │   ├── macro_regime.py         # HMM, sector rotation (Phase 7)
+│   │   ├── ipca_factors.py         # ⭐ IPCA latent (Phase 4)
+│   │   ├── alpha158.py             # ⭐ Qlib Alpha158 wrapper (Phase 4)
+│   │   ├── lazy_prices.py          # ⭐ MD&A YoY similarity (Phase 6)
+│   │   ├── vdq.py                  # ⭐ Vocal Delivery Quality (Phase 6)
+│   │   └── tda_regime.py           # ⭐ Topological regime (Phase 7)
 │   │
 │   ├── scoring/
 │   │   ├── normalize.py            # Winsorize, sector-rank, percentile
-│   │   ├── pillars.py              # Aggregate features → 8 pillars
+│   │   ├── pillars.py              # Aggregate features → pillars
 │   │   ├── composite.py            # Weighted sum → 0-100
 │   │   ├── fair_price.py           # DCF + Graham + RIM + multiples
 │   │   └── risk_overlay.py         # Beneish/Sloan/Z″ vetoes
@@ -150,11 +243,20 @@ quantrank/
 │   ├── ml/                         # Phase 5
 │   │   ├── train.py                # LightGBM walk-forward
 │   │   ├── validate.py             # IC, IR, PBO
-│   │   └── shap_explain.py         # Top-5 factors per stock
+│   │   ├── shap_explain.py         # Top-5 factors per stock
+│   │   ├── triple_barrier.py       # ⭐ mlfinlab labels (Phase 5)
+│   │   ├── meta_labeling.py        # ⭐ Secondary classifier (Phase 5)
+│   │   ├── conformal.py            # ⭐ Prediction intervals (Phase 5)
+│   │   └── autoencoder.py          # ⭐ Conditional AE (Phase 5)
+│   │
+│   ├── portfolio/                  # Phase 7
+│   │   ├── hrp.py                  # Hierarchical Risk Parity
+│   │   ├── nco.py                  # ⭐ Nested Clustered Opt (Phase 7)
+│   │   └── black_litterman.py
 │   │
 │   ├── output/                     # JSON writers
-│   │   ├── writer.py               # Atomic JSON output to public/data/
-│   │   └── schemas.py              # Pydantic models for JSON validation
+│   │   ├── writer.py               # Atomic JSON output
+│   │   └── schemas.py              # Pydantic models
 │   │
 │   └── cache/                      # Local dev cache (gitignored)
 │
@@ -164,38 +266,13 @@ quantrank/
 │   └── test_ingest/
 │
 ├── frontend/                       # Next.js static site
-│   ├── package.json
-│   ├── next.config.js              # output: 'export' for static
-│   ├── tailwind.config.ts
-│   ├── app/
-│   │   ├── layout.tsx              # Header + disclaimer banner
-│   │   ├── page.tsx                # Ranking table (reads rankings.json)
-│   │   ├── stock/[ticker]/page.tsx # generateStaticParams from JSON
-│   │   ├── about/page.tsx          # Methodology, disclaimers
-│   │   └── globals.css
-│   ├── components/
-│   │   ├── RankingTable.tsx
-│   │   ├── PillarRadar.tsx
-│   │   ├── FairPriceChart.tsx
-│   │   ├── ScoreBadge.tsx
-│   │   ├── MosBadge.tsx
-│   │   └── ShapBars.tsx
-│   ├── lib/
-│   │   ├── data.ts                 # Helpers to read JSON at build time
-│   │   └── types.ts                # TypeScript matches schemas.py
-│   └── public/
-│       └── data/                   # ⭐ JSON OUTPUT FROM COMPUTE
-│           ├── metadata.json        # last_update, version, universe_size
-│           ├── rankings.json        # array of 500 ranked stocks (summary)
-│           └── stocks/
-│               ├── AAPL.json        # full detail per ticker
-│               ├── MSFT.json
-│               └── ...
+│   └── (unchanged structure)
 │
 └── docs/
-    ├── stock_ranking_knowledge.md   # THE reference (~1600 lines)
-    ├── ARCHITECTURE.md              # This static-site pattern explained
-    └── METHODOLOGY.md               # User-facing: how scoring works
+    ├── stock_ranking_knowledge.md   # Classical reference (~1600 lines)
+    ├── RESEARCH_FINDINGS.md         # ⭐ Option B research additions
+    ├── ARCHITECTURE.md              # Static-site pattern
+    └── METHODOLOGY.md               # User-facing scoring explanation
 ```
 
 ---
@@ -203,6 +280,19 @@ quantrank/
 ## JSON Output Schema (Critical Contract)
 
 The `compute/` and `frontend/` are decoupled by these JSON contracts. **Never break them.**
+
+Schema versions:
+- `0.1.0-phase0` — placeholder
+- `0.2.0-phase1` — universe + prices
+- `0.3.0-phase2` — fundamentals
+- `0.4.0-phase3b` — composite + risk overlay
+- `0.5.0-phase3c` — fair price + history
+- `1.0.0` — Phase 3 complete (v1.0 ship)
+- `1.1.0-phase4` — OSAP + JKP + Qlib + IPCA factors added
+- `1.2.0-phase5` — ML + Triple-Barrier + Conformal added
+- `1.3.0-phase6` — Sentiment v2 (Whisper, 8-K, Lazy Prices)
+- `1.4.0-phase7` — Regime v2 + Portfolio v2
+- `2.0.0-phase8` — S&P 1500 universe
 
 ### `public/data/metadata.json`
 ```json
@@ -213,11 +303,13 @@ The `compute/` and `frontend/` are decoupled by these JSON contracts. **Never br
   "universe": "SP500",
   "universe_size": 503,
   "compute_run_id": "abc123def",
-  "git_commit": "..."
+  "git_commit": "...",
+  "phase": 3,
+  "roadmap": "Option B"
 }
 ```
 
-### `public/data/rankings.json` (summary, ~1MB for 500 stocks)
+### `public/data/rankings.json` (summary)
 ```json
 [
   {
@@ -232,91 +324,42 @@ The `compute/` and `frontend/` are decoupled by these JSON contracts. **Never br
     "margin_of_safety_pct": 10.3,
     "pillar_scores": {
       "quality": 92, "value": 65, "growth": 78, "momentum": 84,
-      "health": 95, "sentiment": 70, "ml": 80, "risk": 88
-    }
-  },
-  ...
+      "health": 95, "sentiment": 70, "ml": 80, "risk": 88,
+      "technical": 75, "profitability": 90
+    },
+    "confidence_interval_95": [78.2, 92.1]
+  }
 ]
 ```
 
-### `public/data/stocks/{TICKER}.json` (full detail, ~10KB each)
-```json
-{
-  "ticker": "AAPL",
-  "name": "Apple Inc.",
-  "sector": "Information Technology",
-  "industry": "Technology Hardware",
-  "market_cap": 3400000000000,
-  "current_price": 220.15,
-  "rank": 1,
-  "composite_score": 87.4,
-  "pillar_scores": { ... },
-  "raw_metrics": {
-    "piotroski_f_score": 8,
-    "altman_z_prime": 4.2,
-    "beneish_m_score": -2.85,
-    "pe_ratio": 28.5,
-    "roe": 0.156,
-    ...
-  },
-  "fair_price": {
-    "median": 245.30,
-    "max": 285.00,
-    "margin_of_safety_pct": 10.3,
-    "methods": [
-      {"name": "DCF", "value": 240.50, "applicable": true},
-      {"name": "Graham Number", "value": null, "applicable": false},
-      {"name": "Residual Income", "value": 252.10, "applicable": true},
-      {"name": "P/E × Forward EPS", "value": 235.40, "applicable": true},
-      {"name": "EV/EBITDA peer", "value": 248.20, "applicable": true},
-      {"name": "P/B × BVPS", "value": 250.30, "applicable": true}
-    ]
-  },
-  "top5_factors": [
-    {"feature": "roic", "shap_value": 0.12, "direction": "+"},
-    {"feature": "gross_profitability", "shap_value": 0.09, "direction": "+"},
-    {"feature": "momentum_12_1", "shap_value": 0.08, "direction": "+"},
-    {"feature": "debt_to_ebitda", "shap_value": -0.06, "direction": "−"},
-    {"feature": "fcf_yield", "shap_value": 0.05, "direction": "+"}
-  ],
-  "score_history": [
-    {"date": "2026-05-04", "score": 86.1},
-    {"date": "2026-05-11", "score": 87.4}
-  ],
-  "data_quality": {
-    "missing_metrics": [],
-    "imputed_metrics": ["analyst_revisions"],
-    "filing_lag_days": 38
-  }
-}
-```
+### `public/data/stocks/{TICKER}.json` (full detail)
+*(Same structure as before with additions for Phase 4+ research features. See WORKFLOW.md for full detail.)*
 
 ---
 
 ## Core Behavior Rules
 
-### Rule 1: Always reference the knowledge document
-Before implementing any analysis technique, **read the relevant section of `stock_ranking_knowledge.md`**. Use the formula AS WRITTEN. Never reinvent or simplify without justification.
+### Rule 1: Always reference the knowledge documents
+Before implementing any analysis technique:
+- Phase 0-3: Read `stock_ranking_knowledge.md`
+- Phase 4+: Read `RESEARCH_FINDINGS.md` for stretch additions
+- Use formulas AS WRITTEN. Never reinvent without justification.
 
 ### Rule 2: Phase discipline
-Work in **phases per `WORKFLOW.md`**. Do not skip ahead. Each phase produces a working deliverable.
+Work in **phases per `WORKFLOW.md`**. Do not skip ahead. Each phase produces a working deliverable. **Phase 4 starts only after v1.0 ships.**
 
 ### Rule 3: GitHub-Actions-first development
-Since the user develops on mobile (no local Python/Node), **all testing/running happens in GitHub Actions**. This means:
-- Every PR must have a CI workflow that catches errors before merge
-- Use `workflow_dispatch` for ad-hoc compute runs from the GitHub mobile app UI
-- Logs in GitHub Actions are the primary debugging tool
-- Cache aggressively in Actions (`actions/cache@v4`) to avoid 6+ minute runs every time
+The user develops on mobile (no local Python/Node), so all testing/running happens in GitHub Actions / Kaggle / Modal. CI must catch errors before merge. Use `workflow_dispatch` for ad-hoc runs. Logs are primary debugging tool.
 
-### Rule 4: Free-tier first
-Every API call must respect free-tier limits:
-- Use `yfinance` first; fall back to FMP/SimFin only when necessary
-- Cache to `compute/cache/` during dev runs (gitignored)
-- Implement `tenacity` retry with exponential backoff on 429
-- For weekly compute, all of S&P 500 should fit in <2000 free GH Actions minutes/month even with retries
+### Rule 4: Free-tier first + license verification
+Every API/library must respect free-tier limits AND have compatible license:
+- Verify OSS license before integration (especially mlfinlab AGPL)
+- Cache aggressively to `compute/cache/` (gitignored)
+- Implement `tenacity` retry with exponential backoff
+- Phase 4+: Verify current data availability before integration (sources change)
 
 ### Rule 5: Point-in-time data discipline
-**Look-ahead bias kills backtests.** Every fundamental MUST use `filing_date`, not `period_end`. 13F is lagged 45 days. Form 4 uses `transactionDate`. SEC EDGAR exposes both — always use the filing date.
+**Look-ahead bias kills backtests.** Every fundamental MUST use `filing_date`, not `period_end`. 13F is lagged 45 days. Form 4 uses `transactionDate`. SEC EDGAR exposes both — always use the filing date. **Phase 4+ OSAP/JKP signals are pre-built with proper PIT discipline; verify any reconstructions match.**
 
 ### Rule 6: Sector-relative for fundamentals
 Quality, Value, Growth, Profitability — **always rank within GICS sector**, never globally. Use absolute ranking only for Risk and Momentum. **Always exclude financials/utilities from Magic Formula and asset-turnover metrics.**
@@ -327,24 +370,41 @@ Quality, Value, Growth, Profitability — **always rank within GICS sector**, ne
 - Never propagate NaN; record imputed fields in `data_quality.imputed_metrics`.
 
 ### Rule 8: Test golden values
-For every fundamental metric, write a unit test against a **known-correct value** for at least 1 ticker (e.g., AAPL Piotroski F-Score for FY2024 = X). This catches yfinance field-name changes early.
+For every fundamental metric, write a unit test against a **known-correct value** for at least 1 ticker. **Phase 4+: Validate library outputs against published paper results within 5% tolerance.**
 
 ### Rule 9: JSON schema is sacred
-The `frontend/` consumes JSON with strict expectations. **Never break the schema mid-development.** If you must change it:
-1. Bump the `version` field in metadata.json.
-2. Update `compute/output/schemas.py` (Pydantic).
-3. Update `frontend/lib/types.ts` (TypeScript).
-4. Update example JSON in this SKILL.md.
-5. Test both compute output AND frontend rendering.
+The `frontend/` consumes JSON with strict expectations. **Never break the schema mid-development.** Bump version per phase per Schema versions table above.
 
 ### Rule 10: No paid data, no real-money, no live trading
-This app is for **research and educational ranking only**. The README and frontend MUST display this disclaimer. Never integrate live trading APIs.
+This app is for **research and educational ranking only**. README and frontend MUST display this disclaimer. Never integrate live trading APIs.
 
 ### Rule 11: Trademark caution
 Never use "Jitta" anywhere. The project name is **QuantRank**.
 
 ### Rule 12: Atomic JSON writes
-Always write to a `.tmp` file then `os.rename()` to final path. Never write partial JSON. If compute fails halfway, the previous JSON must remain valid so the site doesn't break.
+Always write to a `.tmp` file then `os.rename()` to final path. Never write partial JSON.
+
+### Rule 13: Fallback discipline (Option B specific)
+Per-phase fallback triggers documented in WORKFLOW.md. If hit:
+- Log decision in PHASE_STATUS.md
+- Revert that phase to Option A
+- Continue with subsequent phases on Option B
+- Do not silently abandon research additions; document why
+
+### Rule 14: Decay monitoring (Option B specific)
+For research-backed factors (Phase 4+):
+- Track rolling 24-month IC per signal
+- Alert when slope < 0 with t < -2
+- McLean-Pontiff suggests 35% post-publication decay; budget for it
+- Re-validate quarterly against published paper t-stats
+
+### Rule 15: Performance ceiling honesty
+Never claim alpha > 5% net without:
+- 10+ years walk-forward validation
+- Embargoed/purged CV
+- Deflated Sharpe < 0.5
+- PBO < 50%
+- Out-of-sample period including 2020 + 2022 regime stress
 
 ---
 
@@ -355,7 +415,7 @@ Always write to a `.tmp` file then `os.rename()` to final path. Never write part
 2. Confirm: project name = QuantRank, repo = public, Vercel deploy.
 3. Execute Phase 0 tasks. Update `PHASE_STATUS.md` at end.
 
-### "Add a new metric"
+### "Add a new metric (Phase 0-3)"
 1. Search `stock_ranking_knowledge.md` for the technique.
 2. Identify pillar (per Section 21 / Quick Reference A).
 3. Add function to `compute/features/<pillar>.py` with golden-value test.
@@ -364,34 +424,51 @@ Always write to a `.tmp` file then `os.rename()` to final path. Never write part
 6. Update TypeScript types in `frontend/lib/types.ts`.
 7. Run CI to verify.
 
+### "Add a research-backed feature (Phase 4+)"
+1. Read `RESEARCH_FINDINGS.md` for the technique.
+2. Verify license compatibility (especially AGPL libraries).
+3. Verify current data source availability (re-check URLs).
+4. Add module to appropriate `compute/` directory.
+5. Validate output against published paper results (5% tolerance).
+6. If validation fails → trigger fallback to Option A for that phase.
+7. Document in PHASE_STATUS.md.
+
 ### "Add a new data source"
 1. Check Section 5 of knowledge doc — already covered?
-2. New file in `compute/ingest/<source>.py` matching existing pattern (cache, retry).
-3. Add API key (if needed) to GitHub Actions secrets — never commit.
-4. Document rate limits in module docstring.
+2. Phase 4+: Check RESEARCH_FINDINGS.md data sources.
+3. New file in `compute/ingest/<source>.py` matching existing pattern.
+4. Add API key (if needed) to GitHub Actions secrets.
+5. Document rate limits and license in module docstring.
 
 ### "Improve accuracy"
-1. Manage expectations per Section 28 (realistic = 2-4% net alpha).
-2. Check what's NOT yet implemented — usually sentiment (Phase 4) or ML (Phase 5).
+1. Manage expectations per Section 28 (realistic = 2-4% Option A, 3-7% Option B).
+2. Check current phase. Don't add Phase 6 features in Phase 4.
 3. Don't add LSTM before LightGBM works.
-4. Always validate via IC, IR, PBO before claiming improvement.
+4. **Phase 4+**: Prioritize OSAP/JKP factor library over DIY signals.
+5. Always validate via IC, IR, PBO before claiming improvement.
 
 ### "The site is broken / shows old data"
 1. Check `PHASE_STATUS.md` for current phase.
 2. Check latest GitHub Actions run — failed?
 3. Check `public/data/metadata.json` — what's `last_update_utc`?
 4. Check Vercel deployment logs.
-5. Recovery: trigger `manual-trigger.yml` workflow via GitHub mobile app.
+5. Recovery: trigger `manual-trigger.yml` workflow.
 
 ### "Deploy to production"
 1. **One-time setup** (Phase 0):
    - Push repo to GitHub (public).
    - Connect repo to Vercel (auto-detects Next.js).
    - Set Vercel build settings: root = `frontend/`, output = `out/`.
-   - First deploy will fail (no JSON yet) — that's expected.
-2. **Trigger first compute**: GitHub Actions tab → `compute-rankings.yml` → Run workflow.
-3. **Verify**: After ~10 min, JSON appears in `public/data/`, Vercel rebuilds, site goes live.
-4. No backend deployment needed.
+2. **Trigger first compute**: GitHub Actions → `compute-rankings.yml` → Run workflow.
+3. **Verify**: After ~10 min, JSON appears, Vercel rebuilds, site goes live.
+
+### "Set up Phase 5+ heavy compute"
+1. Connect Kaggle account (free) → generate API token.
+2. Add `KAGGLE_USERNAME`, `KAGGLE_KEY` to GitHub secrets.
+3. Connect Modal account (free $30/mo credits).
+4. Add `MODAL_TOKEN_ID`, `MODAL_TOKEN_SECRET` to GitHub secrets.
+5. Set up workflow to trigger Kaggle from GH Action via `kaggle kernels push`.
+6. Outputs: Kaggle Dataset → re-pull into repo via API.
 
 ---
 
@@ -401,7 +478,7 @@ Always write to a `.tmp` file then `os.rename()` to final path. Never write part
 |---|---|---|
 | Adding FastAPI/Flask backend | Architecture is static (Option D) | Output JSON from GitHub Actions |
 | Adding PostgreSQL/SQLite | No runtime DB by design | Files in `public/data/` |
-| Calling APIs from frontend | Defeats static-site purpose, cost money | Pre-compute, read JSON at build |
+| Calling APIs from frontend | Defeats static-site purpose, costs money | Pre-compute, read JSON at build |
 | Hardcoding API keys | Repo is public! | GitHub Actions secrets |
 | Using `period_end` for backtest | Look-ahead bias | Use `filing_date` from EDGAR |
 | Global z-score across financials + tech | Sector-distorting | Sector-relative percentile rank |
@@ -409,33 +486,41 @@ Always write to a `.tmp` file then `os.rename()` to final path. Never write part
 | LSTM before LightGBM works | Overengineering | Tree-based first |
 | Daily refresh in GitHub Actions | Wastes free minutes | Weekly only |
 | Skipping golden-value tests | yfinance changes silently | Mandatory per metric |
-| Claiming >10% alpha | Almost certainly overfit | Run PBO, deflated Sharpe |
+| Claiming >7% alpha | Almost certainly overfit | Run PBO, deflated Sharpe |
 | Live trading endpoints | Out of scope, regulatory risk | Read-only ranking display only |
-| Partial JSON writes | Breaks frontend | Atomic write via temp file (Rule 12) |
+| Partial JSON writes | Breaks frontend | Atomic write via temp file |
 | Using "Jitta" name | Trademark | "QuantRank" |
+| Skipping research additions in Phase 4+ without fallback log | Loses Option B value | Document fallback in PHASE_STATUS |
+| AGPL libs without license check | Legal risk | Verify before integration |
+| Reddit/StockTwits for megacap | No documented alpha at S&P 500 scale | Skip, focus on insider Form 4 |
+| Russell 2000 microcaps in Phase 8 | Free data quality collapses | Stop at S&P 1500 |
+| LSTM/TFT instead of PatchTST | Outdated SOTA | Use PatchTST/iTransformer |
+| Larger LLMs (>13B) for sentiment | Disproportionate cost | FinBERT or Llama-3 8B max |
 
 ---
 
 ## Communication Style
 
 The user develops on mobile and may not be a quant expert.
-- **Formulas**: link to section in `stock_ranking_knowledge.md`, don't re-derive.
-- **Realistic expectations**: cite Section 28 (~2-4% net alpha realistic).
-- **Mobile constraints**: prefer GitHub Actions runs over local debugging suggestions.
-- **Iteration**: each GH Actions run takes 3-10 min; budget time wisely.
-- **Phase status**: always say "we are in Phase X; next deliverable is Y".
+- **Formulas (Phase 0-3)**: link to section in `stock_ranking_knowledge.md`.
+- **Research additions (Phase 4+)**: link to section in `RESEARCH_FINDINGS.md` + paper citation.
+- **Realistic expectations**: cite Section 28 + RESEARCH_FINDINGS caveats.
+- **Mobile constraints**: prefer GitHub Actions/Kaggle/Modal runs over local debugging.
+- **Iteration**: each GH Actions run takes 3-30 min depending on phase; budget time.
+- **Phase status**: always say "we are in Phase X; next deliverable is Y; fallback to Option A is Z if blocker hits."
+- **Honesty**: acknowledge when training-time familiarity may be stale; recommend re-verification.
 
-When user is excited about a new technique: "great — let's add it after Phase X stabilizes."
+When user is excited about a new technique: "great — let's add it after Phase X stabilizes. Read RESEARCH_FINDINGS.md to see if it's already in the Option B roadmap."
 
 ---
 
-## End State Definition (v1.0)
+## End State Definition
 
-QuantRank v1.0 ships when:
+### v1.0 (Phase 3 complete)
 - [ ] Public GitHub repo `quantrank` exists
 - [ ] Weekly GitHub Actions cron runs successfully
 - [ ] S&P 500 universe ingested with ≥10 years of data
-- [ ] All 8 pillars computed for every stock (Phases 1-3 done)
+- [ ] All 8 pillars computed for every stock
 - [ ] Composite StockRank (0-100) per stock
 - [ ] Fair Price ensemble (Median + Max) per stock
 - [ ] JSON files in `public/data/` valid against schema
@@ -444,4 +529,16 @@ QuantRank v1.0 ships when:
 - [ ] Mobile responsive, Lighthouse >85
 - [ ] Tag `v1.0` on GitHub
 
-After v1.0: Phase 4 (sentiment) → Phase 5 (ML) → Phase 6 (regime + validation) → Phase 7 (universe expansion to S&P 1500).
+### v2.0 (Phase 8 complete) — MAXIMUM FREE TIER
+- [ ] All v1.0 criteria
+- [ ] OSAP + JKP + Qlib factor libraries integrated (Phase 4)
+- [ ] IPCA latent factors (Phase 4)
+- [ ] LightGBM + Triple-Barrier + Meta-Labeling + Conformal (Phase 5)
+- [ ] Whisper + 8-K events + Lazy Prices sentiment (Phase 6)
+- [ ] Student-t HMM + TDA + NCO (Phase 7)
+- [ ] S&P 1500 universe (Phase 8)
+- [ ] Backtest report with PBO < 50%, Deflated Sharpe documented
+- [ ] Tag `v2.0` on GitHub
+- [ ] Honest performance: 3-7% net alpha vs SPY (with wide CI)
+
+After v2.0: Maintenance mode. No further phase additions unless empirically validated alpha gain.
