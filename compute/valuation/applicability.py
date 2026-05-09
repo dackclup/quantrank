@@ -50,6 +50,10 @@ SKIP_REASONS: tuple[str, ...] = (
     "ev_ebitda_negative_equity_post_debt",
     "ev_ebitda_net_debt_unknown",
     "insufficient_peers_all_tiers",
+    # Step 4.5 additions (dcf.py emits; applicability gates do not):
+    "terminal_g_unsafe_g_too_close_to_wacc",
+    "dcf_net_debt_unknown",
+    "dcf_negative_equity_post_debt",
 )
 
 LagStatus = Literal["fresh", "soft", "hard", "unknown"]

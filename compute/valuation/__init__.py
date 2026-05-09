@@ -17,8 +17,10 @@ sub-modules document their own preconditions and source citations:
   and 5/95 winsorization.
 - ``rim`` — Penman 2013 Residual Income Model with TBVPS as B_0 and
   conservative zero-terminal-value truncation.
+- ``dcf`` — two-stage DCF: 5-year flat-FCF explicit + Gordon-growth terminal
+  with hard terminal-g cap (Defense #5).
 
-Subsequent steps add ``dcf``, ``ensemble``.
+Subsequent step adds ``ensemble``.
 """
 
 from __future__ import annotations
@@ -35,6 +37,7 @@ from compute.valuation.applicability import (
     filing_lag_days,
     stale_filing_status,
 )
+from compute.valuation.dcf import dcf_fair_price
 from compute.valuation.graham import graham_fair_price
 from compute.valuation.multiples import (
     PeerMedian,
@@ -76,4 +79,6 @@ __all__ = [
     "multiples_pe_fair_price",
     # rim
     "rim_fair_price",
+    # dcf
+    "dcf_fair_price",
 ]
