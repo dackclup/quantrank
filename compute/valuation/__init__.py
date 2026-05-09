@@ -8,19 +8,46 @@ sub-modules document their own preconditions and source citations:
   Used by Graham + RIM in fair-price computation; NOT used in the Value
   pillar (compute/features/value.py keeps the fast-TTM Graham
   intentionally — dual implementation per the kickoff §B4 spec).
+- ``applicability`` — per-method applicability gates + stale-filing
+  primitives (Defense #3). Pure functions with stable snake_case ``reason``
+  strings; Step 5 ensemble pattern-matches to populate
+  ``StockDetail.fair_price.methods.<method>.reason``.
 
-Subsequent steps add ``applicability``, ``dcf``, ``graham``, ``rim``,
-``multiples``, ``ensemble``.
+Subsequent steps add ``dcf``, ``graham``, ``rim``, ``multiples``, ``ensemble``.
 """
 
 from __future__ import annotations
 
+from compute.valuation.applicability import (
+    LagStatus,
+    MethodApplicability,
+    check_dcf_applicability,
+    check_graham_applicability,
+    check_multiples_ev_ebitda_applicability,
+    check_multiples_pb_applicability,
+    check_multiples_pe_applicability,
+    check_rim_applicability,
+    filing_lag_days,
+    stale_filing_status,
+)
 from compute.valuation.tangible_book import (
     goodwill_heavy_flag,
     tangible_book_value_per_share,
 )
 
 __all__ = [
+    # tangible_book
     "goodwill_heavy_flag",
     "tangible_book_value_per_share",
+    # applicability
+    "LagStatus",
+    "MethodApplicability",
+    "check_dcf_applicability",
+    "check_graham_applicability",
+    "check_multiples_ev_ebitda_applicability",
+    "check_multiples_pb_applicability",
+    "check_multiples_pe_applicability",
+    "check_rim_applicability",
+    "filing_lag_days",
+    "stale_filing_status",
 ]
