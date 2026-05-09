@@ -32,6 +32,7 @@ from compute.features import (
 )
 from compute.ingest.fundamentals import FundamentalsSnapshot
 from compute.scoring.normalize import average_pillar_score, normalize_metric
+from compute.scoring.sector_rules import is_metric_excluded_for_sector
 
 
 @dataclass(frozen=True)
@@ -63,20 +64,27 @@ def _quality_metrics(inp: TickerInputs) -> dict[str, float]:
     s = inp.snapshot
     if s is None:
         return {k: math.nan for k in ("roe", "roic", "gross_profitability", "msci_q", "piotroski")}
-    return {
+    metrics = {
         "roe": _safe(quality.return_on_equity, s),
         "roic": _safe(quality.return_on_invested_capital, s),
         "gross_profitability": _safe(quality.gross_profitability, s),
         "msci_q": _safe(quality.msci_3descriptor, s),
         "piotroski": _safe(quality.piotroski_f_score, s),
     }
+    # Defense #6: sector exclusions for EBIT-based ROIC and gross
+    # profitability (Greenblatt 2005 + Novy-Marx 2013 sector caveats).
+    if is_metric_excluded_for_sector(metric="ebit_based_roic", sector=inp.sector):
+        metrics["roic"] = math.nan
+    if is_metric_excluded_for_sector(metric="gross_profitability", sector=inp.sector):
+        metrics["gross_profitability"] = math.nan
+    return metrics
 
 
 def _value_metrics(inp: TickerInputs) -> dict[str, float]:
     s = inp.snapshot
     if s is None:
         return {k: math.nan for k in ("pe", "pb", "ps", "ev_ebitda", "ev_fcf", "earnings_yield")}
-    return {
+    metrics = {
         # P/E, P/B, P/S, EV/EBITDA, EV/FCF: lower is better → caller passes higher_is_better=False
         "pe": _safe(value.pe_ratio, s, inp.current_price),
         "pb": _safe(value.pb_ratio, s, inp.current_price),
@@ -85,6 +93,11 @@ def _value_metrics(inp: TickerInputs) -> dict[str, float]:
         "ev_fcf": _safe(value.ev_to_fcf, s, inp.current_price),
         "earnings_yield": _safe(value.earnings_yield_greenblatt, s, inp.current_price),
     }
+    # Defense #6: EV/EBITDA pillar metric mirrors the fair-price-side
+    # sector exclusion for Financials (no meaningful EBITDA for banks).
+    if is_metric_excluded_for_sector(metric="ev_ebitda_multiple", sector=inp.sector):
+        metrics["ev_ebitda"] = math.nan
+    return metrics
 
 
 def _growth_metrics(inp: TickerInputs) -> dict[str, float]:
@@ -125,7 +138,7 @@ def _profitability_metrics(inp: TickerInputs) -> dict[str, float]:
     s = inp.snapshot
     if s is None:
         return {k: math.nan for k in ("gm", "om", "nm", "roa", "asset_turnover", "gross_p")}
-    return {
+    metrics = {
         "gm": _safe(profitability.gross_margin, s),
         "om": _safe(profitability.operating_margin, s),
         "nm": _safe(profitability.net_margin, s),
@@ -133,6 +146,15 @@ def _profitability_metrics(inp: TickerInputs) -> dict[str, float]:
         "asset_turnover": _safe(profitability.asset_turnover, s),
         "gross_p": _safe(profitability.gross_profitability, s),
     }
+    # Defense #6: asset_turnover (revenue/total_assets) and gross
+    # profitability are meaningless for Financials (their "assets" are
+    # loans + securities, not productive capital). The asset_turnover
+    # docstring already claimed this exclusion; this wires the actual gate.
+    if is_metric_excluded_for_sector(metric="asset_turnover", sector=inp.sector):
+        metrics["asset_turnover"] = math.nan
+    if is_metric_excluded_for_sector(metric="gross_profitability", sector=inp.sector):
+        metrics["gross_p"] = math.nan
+    return metrics
 
 
 def _technical_metrics(inp: TickerInputs) -> dict[str, float]:
