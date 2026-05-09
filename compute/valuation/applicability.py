@@ -46,6 +46,10 @@ SKIP_REASONS: tuple[str, ...] = (
     "non_positive_or_missing_ebitda",
     "missing_or_non_positive_peer_ev_ebitda",
     "stale_filing_hard",
+    # Step 4.3 additions (multiples.py emits; applicability gates do not):
+    "ev_ebitda_negative_equity_post_debt",
+    "ev_ebitda_net_debt_unknown",
+    "insufficient_peers_all_tiers",
 )
 
 LagStatus = Literal["fresh", "soft", "hard", "unknown"]

@@ -13,8 +13,10 @@ sub-modules document their own preconditions and source citations:
   strings; Step 5 ensemble pattern-matches to populate
   ``StockDetail.fair_price.methods.<method>.reason``.
 - ``graham`` — defense-aware Graham number using TBVPS + 3y-avg EPS.
+- ``multiples`` — sector P/E + P/B + EV/EBITDA with 4-tier peer-median walk
+  and 5/95 winsorization.
 
-Subsequent steps add ``multiples``, ``rim``, ``dcf``, ``ensemble``.
+Subsequent steps add ``rim``, ``dcf``, ``ensemble``.
 """
 
 from __future__ import annotations
@@ -32,6 +34,14 @@ from compute.valuation.applicability import (
     stale_filing_status,
 )
 from compute.valuation.graham import graham_fair_price
+from compute.valuation.multiples import (
+    PeerMedian,
+    PeerTierUsed,
+    compute_peer_medians,
+    multiples_ev_ebitda_fair_price,
+    multiples_pb_fair_price,
+    multiples_pe_fair_price,
+)
 from compute.valuation.tangible_book import (
     goodwill_heavy_flag,
     tangible_book_value_per_share,
@@ -54,4 +64,11 @@ __all__ = [
     "stale_filing_status",
     # graham
     "graham_fair_price",
+    # multiples
+    "PeerMedian",
+    "PeerTierUsed",
+    "compute_peer_medians",
+    "multiples_ev_ebitda_fair_price",
+    "multiples_pb_fair_price",
+    "multiples_pe_fair_price",
 ]
