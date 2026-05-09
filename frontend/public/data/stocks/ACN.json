@@ -5,7 +5,7 @@
   "industry": "IT Consulting & Other Services",
   "market_cap": null,
   "current_price": 180.42,
-  "rank": 183,
+  "rank": 177,
   "composite_score": 53.83,
   "pillar_scores": {
     "quality": 71.23,
@@ -33,9 +33,55 @@
     "eps_diluted": 6.47,
     "shares_outstanding": null,
     "market_cap": null,
-    "pe_ratio_ttm": 27.885625682990003
+    "pe_ratio_ttm": 27.885625682990003,
+    "goodwill": 24581153000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 471.09090484419363,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "missing_shares_outstanding",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "missing_shares_outstanding",
+        "tier_used": null
+      }
+    },
+    "median": 471.09090484419363,
+    "max": 471.09090484419363,
+    "low": 471.09090484419363,
+    "high": 471.09090484419363,
+    "mos_pct": 61.70165963432969,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -52,6 +98,9 @@
     "latest_filed_date": "2026-03-19"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

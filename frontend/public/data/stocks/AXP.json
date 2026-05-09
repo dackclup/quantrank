@@ -5,15 +5,15 @@
   "industry": "Consumer Finance",
   "market_cap": 215532459167.48047,
   "current_price": 316.03,
-  "rank": 337,
-  "composite_score": 45.97,
+  "rank": 266,
+  "composite_score": 49.49,
   "pillar_scores": {
-    "quality": 62.0,
-    "value": 32.0,
+    "quality": 69.33,
+    "value": 38.0,
     "growth": 49.67,
     "momentum": 29.48,
     "health": 38.57,
-    "profitability": 51.78,
+    "profitability": 54.22,
     "technical": 51.79,
     "risk": 57.3,
     "sentiment": null,
@@ -33,9 +33,55 @@
     "eps_diluted": 4.28,
     "shares_outstanding": 682000000.0,
     "market_cap": 215532459167.48047,
-    "pe_ratio_ttm": 73.83878476151796
+    "pe_ratio_ttm": 73.83878476151796,
+    "goodwill": 4872000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 113.85377062286514,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 229.9616654281143,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 101.34406759487206,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 93.569329724766,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 107.5989191088686,
+    "max": 229.9616654281143,
+    "low": 93.569329724766,
+    "high": 229.9616654281143,
+    "mos_pct": -193.71112776656955,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -56,6 +102,9 @@
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 42.570381231671554,
   "entered_top5": false,
   "exited_top5": false
 }

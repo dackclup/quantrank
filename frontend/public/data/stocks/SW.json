@@ -5,7 +5,7 @@
   "industry": "Paper & Plastic Packaging Products & Materials",
   "market_cap": 21791223932.170403,
   "current_price": 41.55,
-  "rank": 451,
+  "rank": 455,
   "composite_score": 38.21,
   "pillar_scores": {
     "quality": 19.23,
@@ -33,9 +33,57 @@
     "eps_diluted": 0.12,
     "shares_outstanding": 524457866.0,
     "market_cap": 21791223932.170403,
-    "pe_ratio_ttm": 346.24999364217126
+    "pe_ratio_ttm": 346.24999364217126,
+    "goodwill": 7186000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 10.148201702310027,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 113.83726360875134,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 66.87074872872128,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 66.87074872872128,
+    "max": 113.83726360875134,
+    "low": 10.148201702310027,
+    "high": 113.83726360875134,
+    "mos_pct": 37.86521008517639,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -50,6 +98,11 @@
   "risk_flags": [
     "net_issuance_top_decile"
   ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 18.754604778870835,
   "entered_top5": false,
   "exited_top5": false
 }

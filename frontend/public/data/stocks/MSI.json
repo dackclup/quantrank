@@ -5,7 +5,7 @@
   "industry": "Communications Equipment",
   "market_cap": 63819136376.953125,
   "current_price": 383.99,
-  "rank": 188,
+  "rank": 181,
   "composite_score": 53.58,
   "pillar_scores": {
     "quality": 67.81,
@@ -33,9 +33,55 @@
     "eps_diluted": 2.18,
     "shares_outstanding": 166200000.0,
     "market_cap": 63819136376.953125,
-    "pe_ratio_ttm": 176.1421973552179
+    "pe_ratio_ttm": 176.1421973552179,
+    "goodwill": 6885000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 154.42797474325485,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 151.98637592800384,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 245.5861549227169,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 154.42797474325485,
+    "max": 245.5861549227169,
+    "low": 151.98637592800384,
+    "high": 245.5861549227169,
+    "mos_pct": -148.65312834205062,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -48,6 +94,9 @@
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

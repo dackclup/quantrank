@@ -5,7 +5,7 @@
   "industry": "Consumer Finance",
   "market_cap": 24648179794.311523,
   "current_price": 73.14,
-  "rank": 121,
+  "rank": 114,
   "composite_score": 57.14,
   "pillar_scores": {
     "quality": 64.0,
@@ -33,9 +33,55 @@
     "eps_diluted": 2.27,
     "shares_outstanding": 337000000.0,
     "market_cap": 24648179794.311523,
-    "pe_ratio_ttm": 32.22026404830328
+    "pe_ratio_ttm": 32.22026404830328,
+    "goodwill": 1363000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 84.35971358394,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 122.8683675392797,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 101.17784801790827,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 60.5443243597952,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 92.76878080092413,
+    "max": 122.8683675392797,
+    "low": 60.5443243597952,
+    "high": 122.8683675392797,
+    "mos_pct": 21.1588222264102,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -62,6 +108,9 @@
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 41.21958456973294,
   "entered_top5": false,
   "exited_top5": false
 }

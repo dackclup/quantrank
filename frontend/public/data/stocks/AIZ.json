@@ -5,15 +5,15 @@
   "industry": "Multi-line Insurance",
   "market_cap": 11904688503.939377,
   "current_price": 239.67,
-  "rank": 59,
-  "composite_score": 61.89,
+  "rank": 58,
+  "composite_score": 61.52,
   "pillar_scores": {
     "quality": 56.0,
     "value": 69.78,
     "growth": 74.0,
     "momentum": 54.28,
     "health": 58.11,
-    "profitability": 49.33,
+    "profitability": 43.56,
     "technical": 70.02,
     "risk": 62.82,
     "sentiment": null,
@@ -33,9 +33,57 @@
     "eps_diluted": 5.41,
     "shares_outstanding": 49671167.0,
     "market_cap": 11904688503.939377,
-    "pe_ratio_ttm": 44.30129356172741
+    "pe_ratio_ttm": 44.30129356172741,
+    "goodwill": 2654500000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 133.01793002255155,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 292.8272547962569,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 244.52684322267336,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 62.05932550946824,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 188.77238662261246,
+    "max": 292.8272547962569,
+    "low": 62.05932550946824,
+    "high": 292.8272547962569,
+    "mos_pct": -26.96242414314848,
+    "valuation_warnings": [
+      "goodwill_heavy"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -58,6 +106,11 @@
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy"
+  ],
+  "has_history": true,
+  "tangible_book_value": 54.4339938701259,
   "entered_top5": false,
   "exited_top5": false
 }

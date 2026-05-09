@@ -5,7 +5,7 @@
   "industry": "Managed Health Care",
   "market_cap": 345021849975.58594,
   "current_price": 379.98,
-  "rank": 51,
+  "rank": 49,
   "composite_score": 62.36,
   "pillar_scores": {
     "quality": 90.68,
@@ -33,9 +33,55 @@
     "eps_diluted": 6.9,
     "shares_outstanding": 908000000.0,
     "market_cap": 345021849975.58594,
-    "pe_ratio_ttm": 55.069566809612766
+    "pe_ratio_ttm": 55.069566809612766,
+    "goodwill": 110512000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 546.996431350708,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 122.5741884896427,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 444.5125992344317,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 239.8036198552569,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 342.1581095448443,
+    "max": 546.996431350708,
+    "low": 122.5741884896427,
+    "high": 546.996431350708,
+    "mos_pct": -11.053925184411495,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -52,6 +98,9 @@
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

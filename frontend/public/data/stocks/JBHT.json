@@ -5,7 +5,7 @@
   "industry": "Cargo Ground Transportation",
   "market_cap": 23213544937.639618,
   "current_price": 245.4,
-  "rank": 195,
+  "rank": 190,
   "composite_score": 53.2,
   "pillar_scores": {
     "quality": 43.35,
@@ -33,9 +33,57 @@
     "eps_diluted": 1.49,
     "shares_outstanding": 94594725.0,
     "market_cap": 23213544937.639618,
-    "pe_ratio_ttm": 164.697982480862
+    "pe_ratio_ttm": 164.697982480862,
+    "goodwill": 134057000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 70.73784606727892,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 173.7576785056007,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 269.6858091472241,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 249.10072233177323,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 49.954436904416355,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 48.16425375314318,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 122.24776228643981,
+    "max": 269.6858091472241,
+    "low": 48.16425375314318,
+    "high": 269.6858091472241,
+    "mos_pct": -100.73986575025029,
+    "valuation_warnings": [
+      "extreme_dcf_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -51,6 +99,11 @@
     "latest_filed_date": "2026-04-24"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_dcf_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 35.77367554057586,
   "entered_top5": false,
   "exited_top5": false
 }

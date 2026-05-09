@@ -5,7 +5,7 @@
   "industry": "Multi-Family Residential REITs",
   "market_cap": 24556181426.28495,
   "current_price": 65.54,
-  "rank": 46,
+  "rank": 44,
   "composite_score": 62.82,
   "pillar_scores": {
     "quality": 75.81,
@@ -33,9 +33,57 @@
     "eps_diluted": 0.24,
     "shares_outstanding": 374674719.0,
     "market_cap": 24556181426.28495,
-    "pe_ratio_ttm": 273.08333714803064
+    "pe_ratio_ttm": 273.08333714803064,
+    "goodwill": null
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 40.661181182191044,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 29.685074418414775,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 68.07860882908761,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 208.66183309021977,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 54.36989500563933,
+    "max": 208.66183309021977,
+    "low": 29.685074418414775,
+    "high": 208.66183309021977,
+    "mos_pct": -20.544652346173255,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -57,6 +105,11 @@
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 28.046338509431163,
   "entered_top5": false,
   "exited_top5": false
 }

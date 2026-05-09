@@ -5,15 +5,15 @@
   "industry": "Asset Management & Custody Banks",
   "market_cap": 39537734088.75,
   "current_price": 126.25,
-  "rank": 338,
-  "composite_score": 45.88,
+  "rank": 345,
+  "composite_score": 45.75,
   "pillar_scores": {
     "quality": 52.0,
     "value": 42.89,
     "growth": 62.33,
     "momentum": 7.12,
     "health": 62.81,
-    "profitability": 45.33,
+    "profitability": 43.33,
     "technical": 64.14,
     "risk": 24.7,
     "sentiment": null,
@@ -33,9 +33,58 @@
     "eps_diluted": null,
     "shares_outstanding": 313170171.0,
     "market_cap": 39537734088.75,
-    "pe_ratio_ttm": null
+    "pe_ratio_ttm": null,
+    "goodwill": 3463416000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
+      },
+      "multiples_pb": {
+        "value": 29.37836749810659,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 1.7881878298354783,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 15.583277663971035,
+    "max": 29.37836749810659,
+    "low": 1.7881878298354783,
+    "high": 29.37836749810659,
+    "mos_pct": -710.1633220069835,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -60,6 +109,12 @@
     "latest_filed_date": "2026-05-08"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 1.6243341387708345,
   "entered_top5": false,
   "exited_top5": false
 }

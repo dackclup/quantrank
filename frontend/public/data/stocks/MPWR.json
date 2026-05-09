@@ -5,7 +5,7 @@
   "industry": "Semiconductors",
   "market_cap": 78647666680.78613,
   "current_price": 1600.84,
-  "rank": 203,
+  "rank": 199,
   "composite_score": 52.47,
   "pillar_scores": {
     "quality": 43.84,
@@ -33,9 +33,60 @@
     "eps_diluted": 3.92,
     "shares_outstanding": 49129000.0,
     "market_cap": 78647666680.78613,
-    "pe_ratio_ttm": 408.3775423011001
+    "pe_ratio_ttm": 408.3775423011001,
+    "goodwill": 25944000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 179.9234828535822,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 306.10470895308924,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 861.5503671207323,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 705.3433432412846,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": 144.50160996413757,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 174.41663937120907,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 243.01409590333571,
+    "max": 861.5503671207323,
+    "low": 144.50160996413757,
+    "high": 861.5503671207323,
+    "mos_pct": -558.7436666460214,
+    "valuation_warnings": [
+      "extreme_graham_estimate",
+      "extreme_multiples_pe_estimate",
+      "extreme_rim_estimate",
+      "extreme_dcf_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -52,6 +103,14 @@
   "risk_flags": [
     "net_issuance_top_decile"
   ],
+  "valuation_warnings": [
+    "extreme_graham_estimate",
+    "extreme_multiples_pe_estimate",
+    "extreme_rim_estimate",
+    "extreme_dcf_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 74.15096989558103,
   "entered_top5": false,
   "exited_top5": false
 }

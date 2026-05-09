@@ -5,7 +5,7 @@
   "industry": "Agricultural & Farm Machinery",
   "market_cap": 155436743261.71875,
   "current_price": 574.84,
-  "rank": 240,
+  "rank": 242,
   "composite_score": 50.84,
   "pillar_scores": {
     "quality": 45.57,
@@ -33,9 +33,55 @@
     "eps_diluted": 2.42,
     "shares_outstanding": 270400000.0,
     "market_cap": 155436743261.71875,
-    "pe_ratio_ttm": 237.53720117994578
+    "pe_ratio_ttm": 237.53720117994578,
+    "goodwill": 4280000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 218.71051788664752,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 282.210457707083,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 690.323636573918,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 2135.8968046527534,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 174.51446366619916,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 180.74069969359064,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 250.46048779686527,
+    "max": 2135.8968046527534,
+    "low": 174.51446366619916,
+    "high": 2135.8968046527534,
+    "mos_pct": -129.5132585231128,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -52,6 +98,9 @@
     "latest_filed_date": "2026-02-26"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 80.98927514792899,
   "entered_top5": false,
   "exited_top5": false
 }

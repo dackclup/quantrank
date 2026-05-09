@@ -5,7 +5,7 @@
   "industry": "Packaged Foods & Meats",
   "market_cap": 1531711938.4765625,
   "current_price": 68.38,
-  "rank": 233,
+  "rank": 234,
   "composite_score": 51.33,
   "pillar_scores": {
     "quality": 25.0,
@@ -33,9 +33,61 @@
     "eps_diluted": 0.97,
     "shares_outstanding": 22400000.0,
     "market_cap": 1531711938.4765625,
-    "pe_ratio_ttm": 70.49484252929688
+    "pe_ratio_ttm": 70.49484252929688,
+    "goodwill": 9472000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 42.12942431195972,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 56.175369723531226,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 4025.236077976834,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 3020.6131475118027,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 776.3654771894412,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 776.3654771894412,
+    "max": 56.175369723531226,
+    "low": 42.12942431195972,
+    "high": 4025.236077976834,
+    "mos_pct": 91.19229290037937,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_multiples_pb_estimate",
+      "extreme_multiples_ev_ebitda_estimate",
+      "extreme_dcf_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -50,6 +102,15 @@
     "latest_filed_date": "2026-05-04"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_multiples_pb_estimate",
+    "extreme_multiples_ev_ebitda_estimate",
+    "extreme_dcf_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 138.39285714285714,
   "entered_top5": false,
   "exited_top5": false
 }

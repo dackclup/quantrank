@@ -5,15 +5,15 @@
   "industry": "Property & Casualty Insurance",
   "market_cap": 33674201095.581055,
   "current_price": 93.8,
-  "rank": 31,
-  "composite_score": 64.57,
+  "rank": 32,
+  "composite_score": 64.38,
   "pillar_scores": {
     "quality": 61.33,
     "value": 74.67,
     "growth": 79.67,
     "momentum": 53.44,
     "health": 55.2,
-    "profitability": 59.56,
+    "profitability": 56.44,
     "technical": 51.79,
     "risk": 64.94,
     "sentiment": null,
@@ -33,9 +33,55 @@
     "eps_diluted": 2.88,
     "shares_outstanding": 359000000.0,
     "market_cap": 33674201095.581055,
-    "pe_ratio_ttm": 32.56944550408257
+    "pe_ratio_ttm": 32.56944550408257,
+    "goodwill": 607000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 128.71612137765402,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 155.88585837582622,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 139.4256598601046,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 91.68759921312883,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 134.0708906188793,
+    "max": 155.88585837582622,
+    "low": 91.68759921312883,
+    "high": 155.88585837582622,
+    "mos_pct": 30.03701055555658,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -60,6 +106,9 @@
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 64.19777158774373,
   "entered_top5": false,
   "exited_top5": false
 }

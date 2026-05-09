@@ -5,7 +5,7 @@
   "industry": "Fertilizers & Agricultural Chemicals",
   "market_cap": 7043298046.444506,
   "current_price": 22.19,
-  "rank": 356,
+  "rank": 362,
   "composite_score": 45.05,
   "pillar_scores": {
     "quality": 38.46,
@@ -33,9 +33,60 @@
     "eps_diluted": 1.7,
     "shares_outstanding": 317408647.0,
     "market_cap": 7043298046.444506,
-    "pe_ratio_ttm": 13.052941490622128
+    "pe_ratio_ttm": 13.052941490622128,
+    "goodwill": 1005100000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 38.79905408193476,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 147.85641336033487,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 125.87796397807695,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 278.4862698714103,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 25.154084783582743,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 125.87796397807695,
+    "max": 38.79905408193476,
+    "low": 25.154084783582743,
+    "high": 278.4862698714103,
+    "mos_pct": 82.3718148651322,
+    "valuation_warnings": [
+      "extreme_multiples_pe_estimate",
+      "extreme_multiples_pb_estimate",
+      "extreme_multiples_ev_ebitda_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -51,6 +102,14 @@
     "latest_filed_date": "2026-02-27"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_multiples_pe_estimate",
+    "extreme_multiples_pb_estimate",
+    "extreme_multiples_ev_ebitda_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 34.90705153977736,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -5,7 +5,7 @@
   "industry": "Health Care Equipment",
   "market_cap": 11340381000.0,
   "current_price": 101.0,
-  "rank": 372,
+  "rank": 378,
   "composite_score": 44.07,
   "pillar_scores": {
     "quality": 36.02,
@@ -33,9 +33,57 @@
     "eps_diluted": 2.07,
     "shares_outstanding": 112281000.0,
     "market_cap": 11340381000.0,
-    "pe_ratio_ttm": 48.79227053140097
+    "pe_ratio_ttm": 48.79227053140097,
+    "goodwill": 6613493000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 200.01914014859437,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 208.9862343816528,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 265.9094019188763,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 32.42806966877535,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 204.5026872651236,
+    "max": 265.9094019188763,
+    "low": 32.42806966877535,
+    "high": 265.9094019188763,
+    "mos_pct": 50.61189593608593,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -46,6 +94,11 @@
     "latest_filed_date": "2026-02-24"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

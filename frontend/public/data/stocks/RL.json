@@ -5,7 +5,7 @@
   "industry": "Apparel, Accessories & Luxury Goods",
   "market_cap": null,
   "current_price": 358.45,
-  "rank": 39,
+  "rank": 37,
   "composite_score": 63.79,
   "pillar_scores": {
     "quality": 68.75,
@@ -33,9 +33,55 @@
     "eps_diluted": 12.66,
     "shares_outstanding": null,
     "market_cap": null,
-    "pe_ratio_ttm": 28.313587062166764
+    "pe_ratio_ttm": 28.313587062166764,
+    "goodwill": 912200000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 979.6460867052997,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "missing_shares_outstanding",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 979.6460867052997,
+    "max": 979.6460867052997,
+    "low": 979.6460867052997,
+    "high": 979.6460867052997,
+    "mos_pct": 63.41025426717584,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -49,6 +95,9 @@
     "latest_filed_date": "2026-02-05"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

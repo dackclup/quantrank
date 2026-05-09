@@ -5,7 +5,7 @@
   "industry": "Specialty Chemicals",
   "market_cap": 24489827906.648987,
   "current_price": 109.61,
-  "rank": 29,
+  "rank": 28,
   "composite_score": 64.85,
   "pillar_scores": {
     "quality": 77.88,
@@ -33,9 +33,55 @@
     "eps_diluted": 1.7,
     "shares_outstanding": 223426948.0,
     "market_cap": 24489827906.648987,
-    "pe_ratio_ttm": 64.47647094726562
+    "pe_ratio_ttm": 64.47647094726562,
+    "goodwill": 6152000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 147.85641336033487,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 119.9193544024938,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 142.2774679966749,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 39.27607787150652,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 131.09841119958435,
+    "max": 147.85641336033487,
+    "low": 39.27607787150652,
+    "high": 147.85641336033487,
+    "mos_pct": 16.39105340225581,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -49,6 +95,9 @@
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -5,7 +5,7 @@
   "industry": "Investment Banking & Brokerage",
   "market_cap": 305010615366.04474,
   "current_price": 193.09,
-  "rank": 169,
+  "rank": 166,
   "composite_score": 54.63,
   "pillar_scores": {
     "quality": 53.33,
@@ -33,9 +33,55 @@
     "eps_diluted": 3.43,
     "shares_outstanding": 1579629298.0,
     "market_cap": 305010615366.04474,
-    "pe_ratio_ttm": 56.29445957372904
+    "pe_ratio_ttm": 56.29445957372904,
+    "goodwill": 17105000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 100.54277829094917,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 184.29170850897944,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 147.09757496373751,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 61.72135803815203,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 123.82017662734334,
+    "max": 184.29170850897944,
+    "low": 61.72135803815203,
+    "high": 184.29170850897944,
+    "mos_pct": -55.94388701207066,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -63,6 +109,9 @@
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 57.7483591343214,
   "entered_top5": false,
   "exited_top5": false
 }

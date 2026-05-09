@@ -5,7 +5,7 @@
   "industry": "Health Care Services",
   "market_cap": 75893439196.77734,
   "current_price": 288.06,
-  "rank": 103,
+  "rank": 97,
   "composite_score": 57.94,
   "pillar_scores": {
     "quality": 58.9,
@@ -33,9 +33,57 @@
     "eps_diluted": 6.26,
     "shares_outstanding": 263464000.0,
     "market_cap": 75893439196.77734,
-    "pe_ratio_ttm": 46.01597405089357
+    "pe_ratio_ttm": 46.01597405089357,
+    "goodwill": 45534000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 496.26053047180176,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 571.5178757194229,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 387.72715401126794,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 496.26053047180176,
+    "max": 571.5178757194229,
+    "low": 387.72715401126794,
+    "high": 571.5178757194229,
+    "mos_pct": 41.95387707244598,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -52,6 +100,11 @@
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

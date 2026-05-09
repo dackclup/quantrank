@@ -5,7 +5,7 @@
   "industry": "Data Center REITs",
   "market_cap": 68148345588.134766,
   "current_price": 195.31,
-  "rank": 404,
+  "rank": 407,
   "composite_score": 42.54,
   "pillar_scores": {
     "quality": 33.87,
@@ -33,9 +33,57 @@
     "eps_diluted": 0.46,
     "shares_outstanding": 348924000.0,
     "market_cap": 68148345588.134766,
-    "pe_ratio_ttm": 424.58695121433425
+    "pe_ratio_ttm": 424.58695121433425,
+    "goodwill": 9591250000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 46.059628880334536,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 56.896392635294994,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 153.07556662688538,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 131.82857301382947,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 94.36248282456224,
+    "max": 153.07556662688538,
+    "low": 46.059628880334536,
+    "high": 153.07556662688538,
+    "mos_pct": -106.97844282214587,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -58,6 +106,11 @@
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 34.537882174914884,
   "entered_top5": false,
   "exited_top5": false
 }

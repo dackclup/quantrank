@@ -5,7 +5,7 @@
   "industry": "Soft Drinks & Non-alcoholic Beverages",
   "market_cap": 211520153320.3125,
   "current_price": 154.62,
-  "rank": 295,
+  "rank": 298,
   "composite_score": 47.88,
   "pillar_scores": {
     "quality": 64.58,
@@ -33,9 +33,59 @@
     "eps_diluted": 1.7,
     "shares_outstanding": 1368000000.0,
     "market_cap": 211520153320.3125,
-    "pe_ratio_ttm": 90.95293830422794
+    "pe_ratio_ttm": 90.95293830422794,
+    "goodwill": 19021000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 14.112568275595102,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 98.4516788969104,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 69.95175392450552,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 98.28589443539323,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 4.865929328655563,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 69.95175392450552,
+    "max": 98.4516788969104,
+    "low": 4.865929328655563,
+    "high": 98.4516788969104,
+    "mos_pct": -121.0380532903564,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_graham_estimate",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -48,6 +98,13 @@
     "latest_filed_date": "2026-04-16"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_graham_estimate",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 1.3611111111111112,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -5,7 +5,7 @@
   "industry": "Building Products",
   "market_cap": 9641743775.539696,
   "current_price": 58.6,
-  "rank": 123,
+  "rank": 117,
   "composite_score": 57.03,
   "pillar_scores": {
     "quality": 58.54,
@@ -33,9 +33,58 @@
     "eps_diluted": 0.85,
     "shares_outstanding": 164534881.0,
     "market_cap": 9641743775.539696,
-    "pe_ratio_ttm": 68.94117467543659
+    "pe_ratio_ttm": 68.94117467543659,
+    "goodwill": 919900000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 12.174595456767662,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 100.01000213623047,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 81.0061819456121,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 72.31948923154168,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 3.9365557757661804,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 72.31948923154168,
+    "max": 100.01000213623047,
+    "low": 3.9365557757661804,
+    "high": 100.01000213623047,
+    "mos_pct": 18.970668768823273,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -49,6 +98,12 @@
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 2.183731484875842,
   "entered_top5": false,
   "exited_top5": false
 }

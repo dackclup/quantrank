@@ -5,7 +5,7 @@
   "industry": "Packaged Foods & Meats",
   "market_cap": 26169528230.285645,
   "current_price": 34.68,
-  "rank": 171,
+  "rank": 169,
   "composite_score": 54.56,
   "pillar_scores": {
     "quality": 65.28,
@@ -33,9 +33,58 @@
     "eps_diluted": 3.56,
     "shares_outstanding": 754600000.0,
     "market_cap": 26169528230.285645,
-    "pe_ratio_ttm": 9.741573119431399
+    "pe_ratio_ttm": 9.741573119431399,
+    "goodwill": 15634400000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 206.8819719563472,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 61.68680596711813,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 177.76814831918685,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 30.5553492745672,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 119.7274771431525,
+    "max": 61.68680596711813,
+    "low": 30.5553492745672,
+    "high": 206.8819719563472,
+    "mos_pct": 71.03421776464016,
+    "valuation_warnings": [
+      "extreme_multiples_pe_estimate",
+      "extreme_multiples_ev_ebitda_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -51,6 +100,12 @@
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [
+    "extreme_multiples_pe_estimate",
+    "extreme_multiples_ev_ebitda_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -5,7 +5,7 @@
   "industry": "Semiconductor Materials & Equipment",
   "market_cap": 345303921936.03516,
   "current_price": 435.44,
-  "rank": 119,
+  "rank": 113,
   "composite_score": 57.2,
   "pillar_scores": {
     "quality": 57.53,
@@ -33,9 +33,58 @@
     "eps_diluted": 2.54,
     "shares_outstanding": 793000000.0,
     "market_cap": 345303921936.03516,
-    "pe_ratio_ttm": 171.4330718273253
+    "pe_ratio_ttm": 171.4330718273253,
+    "goodwill": 3707000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 65.3565084978266,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 179.92984213204923,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 271.92254482318253,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 157.1070600925927,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 56.43373454054835,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 95.11877500632409,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 126.11291754945839,
+    "max": 271.92254482318253,
+    "low": 56.43373454054835,
+    "high": 271.92254482318253,
+    "mos_pct": -245.277875496487,
+    "valuation_warnings": [
+      "extreme_graham_estimate",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -46,6 +95,12 @@
     "latest_filed_date": "2026-02-19"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_graham_estimate",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 22.440100882723833,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -33,9 +33,59 @@
     "eps_diluted": 0.11,
     "shares_outstanding": 486097000.0,
     "market_cap": 42416825258.41522,
-    "pe_ratio_ttm": 793.2727466930043
+    "pe_ratio_ttm": 793.2727466930043,
+    "goodwill": 1045774000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 10.831048726168635,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 13.605659108440106,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 61.71295753081231,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 115.24730941594066,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 37.659308319626206,
+    "max": 115.24730941594066,
+    "low": 10.831048726168635,
+    "high": 115.24730941594066,
+    "mos_pct": -131.70898784339803,
+    "valuation_warnings": [
+      "extreme_graham_estimate",
+      "extreme_multiples_pe_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -56,6 +106,13 @@
     "latest_filed_date": "2026-04-28"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_graham_estimate",
+    "extreme_multiples_pe_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 24.82785534574375,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -5,7 +5,7 @@
   "industry": "Electronic Equipment & Instruments",
   "market_cap": 61611297912.59766,
   "current_price": 360.3,
-  "rank": 238,
+  "rank": 239,
   "composite_score": 51.21,
   "pillar_scores": {
     "quality": 48.29,
@@ -33,9 +33,59 @@
     "eps_diluted": 1.63,
     "shares_outstanding": 171000000.0,
     "market_cap": 61611297912.59766,
-    "pe_ratio_ttm": 221.04293729629987
+    "pe_ratio_ttm": 221.04293729629987,
+    "goodwill": 3474000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 30.499065271843012,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 115.46678845481898,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 407.7111855114139,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 146.4777609167892,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 84.70424678594235,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 115.46678845481898,
+    "max": 407.7111855114139,
+    "low": 30.499065271843012,
+    "high": 407.7111855114139,
+    "mos_pct": -212.03776654267176,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_graham_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -49,6 +99,13 @@
     "latest_filed_date": "2026-03-05"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_graham_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 8.654970760233919,
   "entered_top5": false,
   "exited_top5": false
 }

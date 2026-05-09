@@ -5,7 +5,7 @@
   "industry": "Food Retail",
   "market_cap": 125897518829.3457,
   "current_price": 65.64,
-  "rank": 279,
+  "rank": 280,
   "composite_score": 48.63,
   "pillar_scores": {
     "quality": 64.58,
@@ -33,9 +33,59 @@
     "eps_diluted": 1.54,
     "shares_outstanding": 1918000000.0,
     "market_cap": 125897518829.3457,
-    "pe_ratio_ttm": 42.62337622704444
+    "pe_ratio_ttm": 42.62337622704444,
+    "goodwill": 2595000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 8.637974215066054,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 89.49388674516143,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 13.829369931061287,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 64.11479921686811,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 3.0931734652213234,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 13.829369931061287,
+    "max": 89.49388674516143,
+    "low": 3.0931734652213234,
+    "high": 89.49388674516143,
+    "mos_pct": -374.6420098447039,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_graham_estimate",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -51,6 +101,13 @@
     "latest_filed_date": "2026-03-31"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_graham_estimate",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 1.3159541188738269,
   "entered_top5": false,
   "exited_top5": false
 }

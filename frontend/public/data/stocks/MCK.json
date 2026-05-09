@@ -5,7 +5,7 @@
   "industry": "Health Care Distributors",
   "market_cap": 206105207519.53125,
   "current_price": 736.09,
-  "rank": 196,
+  "rank": 191,
   "composite_score": 53.16,
   "pillar_scores": {
     "quality": 42.8,
@@ -33,9 +33,57 @@
     "eps_diluted": 38.38,
     "shares_outstanding": 280000000.0,
     "market_cap": 206105207519.53125,
-    "pe_ratio_ttm": 19.179000178620864
+    "pe_ratio_ttm": 19.179000178620864,
+    "goodwill": 11316000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 3042.568555831909,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": 1106.7484988407246,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 204.7814974791227,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 1106.7484988407246,
+    "max": 3042.568555831909,
+    "low": 204.7814974791227,
+    "high": 3042.568555831909,
+    "mos_pct": 33.49075895503865,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -49,6 +97,11 @@
     "latest_filed_date": "2026-05-08"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

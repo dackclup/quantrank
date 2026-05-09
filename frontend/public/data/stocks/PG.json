@@ -5,7 +5,7 @@
   "industry": "Personal Care Products",
   "market_cap": 587027056658.9355,
   "current_price": 146.42,
-  "rank": 99,
+  "rank": 94,
   "composite_score": 58.25,
   "pillar_scores": {
     "quality": 86.11,
@@ -33,9 +33,55 @@
     "eps_diluted": 5.36,
     "shares_outstanding": 4009200000.0,
     "market_cap": 587027056658.9355,
-    "pe_ratio_ttm": 27.317163837489794
+    "pe_ratio_ttm": 27.317163837489794,
+    "goodwill": 41359000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 311.4852162039385,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 61.09303929318748,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 199.03697348200527,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 38.549487215633015,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 130.06500638759638,
+    "max": 311.4852162039385,
+    "low": 38.549487215633015,
+    "high": 311.4852162039385,
+    "mos_pct": -12.574475053351952,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -48,6 +94,9 @@
     "latest_filed_date": "2026-04-24"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -5,7 +5,7 @@
   "industry": "Consumer Staples Merchandise Retail",
   "market_cap": 445809714965.8203,
   "current_price": 130.43,
-  "rank": 27,
+  "rank": 26,
   "composite_score": 65.37,
   "pillar_scores": {
     "quality": 79.86,
@@ -33,9 +33,55 @@
     "eps_diluted": 2.73,
     "shares_outstanding": 3418000000.0,
     "market_cap": 445809714965.8203,
-    "pe_ratio_ttm": 47.776554093692766
+    "pe_ratio_ttm": 47.776554093692766,
+    "goodwill": 28735000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 33.11365674048611,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 158.64825377551344,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 145.2011952432299,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 502.16674147400624,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 30.753269500808003,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 38.817249450290625,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 92.00922234676027,
+    "max": 502.16674147400624,
+    "low": 30.753269500808003,
+    "high": 502.16674147400624,
+    "mos_pct": -41.75752098438838,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -52,6 +98,9 @@
     "latest_filed_date": "2026-03-13"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 20.73785839672323,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -5,7 +5,7 @@
   "industry": "Oil & Gas Exploration & Production",
   "market_cap": 52562940246.848145,
   "current_price": 53.03,
-  "rank": 307,
+  "rank": 315,
   "composite_score": 47.32,
   "pillar_scores": {
     "quality": 34.52,
@@ -33,9 +33,57 @@
     "eps_diluted": 3.13,
     "shares_outstanding": 991192560.0,
     "market_cap": 52562940246.848145,
-    "pe_ratio_ttm": 16.942491622778554
+    "pe_ratio_ttm": 16.942491622778554,
+    "goodwill": 668000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 46.45615259595626,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 155.11521690002587,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 74.23567827135935,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 67.14985507743589,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 70.69276667439762,
+    "max": 155.11521690002587,
+    "low": 46.45615259595626,
+    "high": 155.11521690002587,
+    "mos_pct": 24.98525482310422,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -52,6 +100,11 @@
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 36.19579226865868,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -5,7 +5,7 @@
   "industry": "Environmental & Facilities Services",
   "market_cap": 86643349035.64453,
   "current_price": 215.37,
-  "rank": 109,
+  "rank": 103,
   "composite_score": 57.75,
   "pillar_scores": {
     "quality": 70.25,
@@ -33,9 +33,55 @@
     "eps_diluted": 1.79,
     "shares_outstanding": 402300000.0,
     "market_cap": 86643349035.64453,
-    "pe_ratio_ttm": 120.31843302636173
+    "pe_ratio_ttm": 120.31843302636173,
+    "goodwill": 13873000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 208.74244598994983,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 173.38375009711302,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 293.4241636314365,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 57.217625033063776,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 191.06309804353143,
+    "max": 293.4241636314365,
+    "low": 57.217625033063776,
+    "high": 293.4241636314365,
+    "mos_pct": -12.721921356115582,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -51,6 +97,9 @@
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

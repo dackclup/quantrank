@@ -5,7 +5,7 @@
   "industry": "Oil & Gas Refining & Marketing",
   "market_cap": 162354292364.289,
   "current_price": 241.06,
-  "rank": 200,
+  "rank": 196,
   "composite_score": 53.0,
   "pillar_scores": {
     "quality": 46.43,
@@ -33,9 +33,55 @@
     "eps_diluted": 4.22,
     "shares_outstanding": 673501593.0,
     "market_cap": 162354292364.289,
-    "pe_ratio_ttm": 57.12322217028288
+    "pe_ratio_ttm": 57.12322217028288,
+    "goodwill": 260000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 103.64239574895252,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 369.71036790129426,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 85.31990012221387,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 109.10975773567499,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 52.73356627050889,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 103.64239574895252,
+    "max": 369.71036790129426,
+    "low": 52.73356627050889,
+    "high": 369.71036790129426,
+    "mos_pct": -132.58821432736906,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -50,6 +96,9 @@
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 34.87296874144142,
   "entered_top5": false,
   "exited_top5": false
 }

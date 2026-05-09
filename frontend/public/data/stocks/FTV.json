@@ -5,7 +5,7 @@
   "industry": "Industrial Machinery & Supplies & Components",
   "market_cap": 18467408093.26172,
   "current_price": 60.43,
-  "rank": 479,
+  "rank": 482,
   "composite_score": 34.74,
   "pillar_scores": {
     "quality": 16.14,
@@ -33,9 +33,57 @@
     "eps_diluted": 0.44,
     "shares_outstanding": 305600000.0,
     "market_cap": 18467408093.26172,
-    "pe_ratio_ttm": 137.3409097844904
+    "pe_ratio_ttm": 137.3409097844904,
+    "goodwill": 7288500000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 52.41731069869354,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 98.73749921707426,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 54.58766229796015,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 37.87795128096184,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 53.502486498326846,
+    "max": 98.73749921707426,
+    "low": 37.87795128096184,
+    "high": 98.73749921707426,
+    "mos_pct": -12.948022157933867,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -49,6 +97,11 @@
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

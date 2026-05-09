@@ -5,7 +5,7 @@
   "industry": "Life Sciences Tools & Services",
   "market_cap": 24015507435.927734,
   "current_price": 1124.46,
-  "rank": 441,
+  "rank": 443,
   "composite_score": 39.55,
   "pillar_scores": {
     "quality": 28.81,
@@ -33,9 +33,57 @@
     "eps_diluted": 8.33,
     "shares_outstanding": 21357370.0,
     "market_cap": 24015507435.927734,
-    "pe_ratio_ttm": 134.98919098889556
+    "pe_ratio_ttm": 134.98919098889556,
+    "goodwill": 736872000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 636.5576729500317,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 416.13437747424405,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 526.3460252121379,
+    "max": 636.5576729500317,
+    "low": 416.13437747424405,
+    "high": 636.5576729500317,
+    "mos_pct": -113.6351196884785,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -52,6 +100,11 @@
   "risk_flags": [
     "net_issuance_top_decile"
   ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

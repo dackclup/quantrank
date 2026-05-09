@@ -5,7 +5,7 @@
   "industry": "Automotive Parts & Equipment",
   "market_cap": 12303569948.741386,
   "current_price": 57.94,
-  "rank": 459,
+  "rank": 464,
   "composite_score": 37.44,
   "pillar_scores": {
     "quality": 20.31,
@@ -33,9 +33,57 @@
     "eps_diluted": 0.88,
     "shares_outstanding": 212350194.0,
     "market_cap": 12303569948.741386,
-    "pe_ratio_ttm": 65.84090753035112
+    "pe_ratio_ttm": 65.84090753035112,
+    "goodwill": 4548000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 41.89042460955692,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 68.09546258299082,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 283.5602809859197,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 89.47921434792862,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 18.095099719412993,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 15.61816100600698,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 54.992943596273875,
+    "max": 283.5602809859197,
+    "low": 15.61816100600698,
+    "high": 283.5602809859197,
+    "mos_pct": -5.358969419914432,
+    "valuation_warnings": [
+      "goodwill_heavy"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -46,6 +94,11 @@
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy"
+  ],
+  "has_history": true,
+  "tangible_book_value": 12.926760029237364,
   "entered_top5": false,
   "exited_top5": false
 }

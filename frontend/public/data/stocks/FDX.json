@@ -5,7 +5,7 @@
   "industry": "Air Freight & Logistics",
   "market_cap": 120388435729.98047,
   "current_price": 378.58,
-  "rank": 36,
+  "rank": 34,
   "composite_score": 64.03,
   "pillar_scores": {
     "quality": 60.13,
@@ -33,9 +33,55 @@
     "eps_diluted": 11.91,
     "shares_outstanding": 318000000.0,
     "market_cap": 120388435729.98047,
-    "pe_ratio_ttm": 31.786732709678052
+    "pe_ratio_ttm": 31.786732709678052,
+    "goodwill": 6758000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 163.29663221983367,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 1401.316618167653,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 665.1982796072199,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 1354.755026489283,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 85.35593441814402,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 665.1982796072199,
+    "max": 1401.316618167653,
+    "low": 85.35593441814402,
+    "high": 1401.316618167653,
+    "mos_pct": 43.087647972299926,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -53,6 +99,9 @@
     "latest_filed_date": "2026-03-19"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 71.82704402515724,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -5,15 +5,15 @@
   "industry": "Diversified Banks",
   "market_cap": 231783650129.6997,
   "current_price": 75.64,
-  "rank": 285,
-  "composite_score": 48.22,
+  "rank": 283,
+  "composite_score": 48.54,
   "pillar_scores": {
     "quality": 44.67,
     "value": 61.56,
     "growth": 55.0,
     "momentum": 36.35,
     "health": 49.82,
-    "profitability": 44.67,
+    "profitability": 49.78,
     "technical": 17.13,
     "risk": 54.22,
     "sentiment": null,
@@ -33,9 +33,55 @@
     "eps_diluted": 1.6,
     "shares_outstanding": 3064300000.0,
     "market_cap": 231783650129.6997,
-    "pe_ratio_ttm": 47.27499961853027
+    "pe_ratio_ttm": 47.27499961853027,
+    "goodwill": 24965000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 78.31230920111678,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 86.6032546532368,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 120.47336150475986,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 52.56315019472786,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 82.4577819271768,
+    "max": 120.47336150475986,
+    "low": 52.56315019472786,
+    "high": 120.47336150475986,
+    "mos_pct": 8.26820995930928,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -62,6 +108,9 @@
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 49.678556277126916,
   "entered_top5": false,
   "exited_top5": false
 }

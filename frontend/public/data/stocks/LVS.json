@@ -5,7 +5,7 @@
   "industry": "Casinos & Gaming",
   "market_cap": 35211930404.663086,
   "current_price": 53.11,
-  "rank": 134,
+  "rank": 128,
   "composite_score": 56.64,
   "pillar_scores": {
     "quality": 77.34,
@@ -33,9 +33,57 @@
     "eps_diluted": 0.85,
     "shares_outstanding": 663000000.0,
     "market_cap": 35211930404.663086,
-    "pe_ratio_ttm": 62.482353659237134
+    "pe_ratio_ttm": 62.482353659237134,
+    "goodwill": 103000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 8.30227167298967,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 65.77402635857067,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 11.24446271062992,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 62.12310289787549,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 49.17290397156684,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 49.17290397156684,
+    "max": 65.77402635857067,
+    "low": 8.30227167298967,
+    "high": 65.77402635857067,
+    "mos_pct": -8.006638454912615,
+    "valuation_warnings": [
+      "extreme_graham_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -52,6 +100,11 @@
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [
+    "extreme_graham_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 1.555052790346908,
   "entered_top5": false,
   "exited_top5": false
 }

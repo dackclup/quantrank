@@ -5,15 +5,15 @@
   "industry": "Insurance Brokers",
   "market_cap": 78686500000.0,
   "current_price": 163.25,
-  "rank": 435,
-  "composite_score": 40.18,
+  "rank": 454,
+  "composite_score": 38.54,
   "pillar_scores": {
-    "quality": 36.0,
-    "value": 31.33,
+    "quality": 26.0,
+    "value": 38.0,
     "growth": 55.67,
     "momentum": 26.15,
     "health": 67.51,
-    "profitability": 51.78,
+    "profitability": 45.56,
     "technical": 25.9,
     "risk": 45.95,
     "sentiment": null,
@@ -33,9 +33,57 @@
     "eps_diluted": 2.36,
     "shares_outstanding": 482000000.0,
     "market_cap": 78686500000.0,
-    "pe_ratio_ttm": 69.17372881355932
+    "pe_ratio_ttm": 69.17372881355932,
+    "goodwill": 24273000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 126.80129215195086,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 126.80129215195086,
+    "max": 126.80129215195086,
+    "low": 126.80129215195086,
+    "high": 126.80129215195086,
+    "mos_pct": -28.744744812514412,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -55,6 +103,11 @@
     "latest_filed_date": "2026-04-16"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

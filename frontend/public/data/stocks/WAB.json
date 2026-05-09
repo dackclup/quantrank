@@ -5,7 +5,7 @@
   "industry": "Construction Machinery & Heavy Transportation Equipment",
   "market_cap": 45144127548.21777,
   "current_price": 265.71,
-  "rank": 342,
+  "rank": 349,
   "composite_score": 45.61,
   "pillar_scores": {
     "quality": 16.14,
@@ -33,9 +33,58 @@
     "eps_diluted": 2.12,
     "shares_outstanding": 169900000.0,
     "market_cap": 45144127548.21777,
-    "pe_ratio_ttm": 125.33490162975383
+    "pe_ratio_ttm": 125.33490162975383,
+    "goodwill": 10625000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 247.22569022273387,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 463.8212516627783,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 199.54172668332333,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 31.001227373973226,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 223.3837084530286,
+    "max": 463.8212516627783,
+    "low": 31.001227373973226,
+    "high": 463.8212516627783,
+    "mos_pct": -18.947793147121818,
+    "valuation_warnings": [
+      "extreme_dcf_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -46,6 +95,12 @@
     "latest_filed_date": "2026-04-22"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_dcf_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

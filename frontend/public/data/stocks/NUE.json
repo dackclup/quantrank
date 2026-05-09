@@ -5,7 +5,7 @@
   "industry": "Steel",
   "market_cap": 86495500000.0,
   "current_price": 227.5,
-  "rank": 264,
+  "rank": 268,
   "composite_score": 49.36,
   "pillar_scores": {
     "quality": 37.02,
@@ -33,9 +33,55 @@
     "eps_diluted": 7.52,
     "shares_outstanding": 380200000.0,
     "market_cap": 86495500000.0,
-    "pe_ratio_ttm": 30.252659574468087
+    "pe_ratio_ttm": 30.252659574468087,
+    "goodwill": 4297000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 102.79716297228208,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 654.0471932174813,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 172.8265102940853,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 47.874412763098356,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 155.91796466473744,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 155.91796466473744,
+    "max": 654.0471932174813,
+    "low": 47.874412763098356,
+    "high": 654.0471932174813,
+    "mos_pct": -45.910062698151435,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -50,6 +96,9 @@
     "latest_filed_date": "2026-02-25"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 41.46461336138874,
   "entered_top5": false,
   "exited_top5": false
 }

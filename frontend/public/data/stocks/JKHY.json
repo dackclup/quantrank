@@ -5,15 +5,15 @@
   "industry": "Transaction & Payment Processing Services",
   "market_cap": 15250449186.094208,
   "current_price": 145.84,
-  "rank": 56,
-  "composite_score": 62.22,
+  "rank": 183,
+  "composite_score": 53.53,
   "pillar_scores": {
-    "quality": 90.0,
-    "value": 54.67,
+    "quality": 67.33,
+    "value": 48.0,
     "growth": 38.33,
     "momentum": 27.69,
     "health": 87.97,
-    "profitability": 71.56,
+    "profitability": 56.22,
     "technical": 37.95,
     "risk": 46.61,
     "sentiment": null,
@@ -33,9 +33,57 @@
     "eps_diluted": 5.41,
     "shares_outstanding": 104569731.0,
     "market_cap": 15250449186.094208,
-    "pe_ratio_ttm": 26.957485459868877
+    "pe_ratio_ttm": 26.957485459868877,
+    "goodwill": 827740000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 38.74611334400419,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 292.8272547962569,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 41.506976735260054,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 17.837892726348915,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 40.12654503963212,
+    "max": 292.8272547962569,
+    "low": 17.837892726348915,
+    "high": 292.8272547962569,
+    "mos_pct": -263.45017043916346,
+    "valuation_warnings": [
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -48,6 +96,11 @@
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 12.138761263524719,
   "entered_top5": false,
   "exited_top5": false
 }

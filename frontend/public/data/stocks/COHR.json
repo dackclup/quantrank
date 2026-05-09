@@ -5,7 +5,7 @@
   "industry": "Electronic Components",
   "market_cap": 71189357225.0,
   "current_price": 335.26,
-  "rank": 297,
+  "rank": 302,
   "composite_score": 47.69,
   "pillar_scores": {
     "quality": 25.34,
@@ -33,9 +33,58 @@
     "eps_diluted": 2.92,
     "shares_outstanding": 212340736.0,
     "market_cap": 71189357225.0,
-    "pe_ratio_ttm": 114.81507183754282
+    "pe_ratio_ttm": 114.81507183754282,
+    "goodwill": 4402403000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 206.84847993133218,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 564.9658326918411,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 184.34370486466221,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 4.469567495208927,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 195.5960923979972,
+    "max": 564.9658326918411,
+    "low": 4.469567495208927,
+    "high": 564.9658326918411,
+    "mos_pct": -71.404247219541,
+    "valuation_warnings": [
+      "extreme_dcf_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -51,6 +100,12 @@
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [
+    "extreme_dcf_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 28.81372229961565,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -5,7 +5,7 @@
   "industry": "Electrical Components & Equipment",
   "market_cap": 79147729632.56836,
   "current_price": 141.31,
-  "rank": 397,
+  "rank": 399,
   "composite_score": 43.0,
   "pillar_scores": {
     "quality": 43.04,
@@ -33,9 +33,55 @@
     "eps_diluted": 1.07,
     "shares_outstanding": 560100000.0,
     "market_cap": 79147729632.56836,
-    "pe_ratio_ttm": 132.06541827905957
+    "pe_ratio_ttm": 132.06541827905957,
+    "goodwill": 18153000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 124.7790040275119,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 257.27543699927384,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 39.462317076991155,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 124.7790040275119,
+    "max": 257.27543699927384,
+    "low": 39.462317076991155,
+    "high": 257.27543699927384,
+    "mos_pct": -13.248217246097758,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -50,6 +96,9 @@
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

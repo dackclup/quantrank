@@ -5,7 +5,7 @@
   "industry": "Semiconductors",
   "market_cap": 2036480000000.0,
   "current_price": 430.0,
-  "rank": 193,
+  "rank": 188,
   "composite_score": 53.23,
   "pillar_scores": {
     "quality": 69.18,
@@ -33,9 +33,59 @@
     "eps_diluted": 1.5,
     "shares_outstanding": 4736000000.0,
     "market_cap": 2036480000000.0,
-    "pe_ratio_ttm": 286.6666666666667
+    "pe_ratio_ttm": 286.6666666666667,
+    "goodwill": 97801000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 117.1319039361311,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 60.61480496468546,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 285.0180557005589,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 36.69981562963224,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 88.87335445040827,
+    "max": 285.0180557005589,
+    "low": 36.69981562963224,
+    "high": 285.0180557005589,
+    "mos_pct": -383.8345561041492,
+    "valuation_warnings": [
+      "extreme_multiples_pb_estimate",
+      "extreme_dcf_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -46,6 +96,13 @@
     "latest_filed_date": "2026-03-11"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_multiples_pb_estimate",
+    "extreme_dcf_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

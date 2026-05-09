@@ -5,7 +5,7 @@
   "industry": "Oil & Gas Storage & Transportation",
   "market_cap": 53653419870.16147,
   "current_price": 85.16,
-  "rank": 260,
+  "rank": 265,
   "composite_score": 49.75,
   "pillar_scores": {
     "quality": 34.52,
@@ -33,9 +33,55 @@
     "eps_diluted": 1.23,
     "shares_outstanding": 630030737.0,
     "market_cap": 53653419870.16147,
-    "pe_ratio_ttm": 69.23577533504827
+    "pe_ratio_ttm": 69.23577533504827,
+    "goodwill": 8058000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 46.76272529956971,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 107.75918306127771,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 96.82477845663017,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 74.2109179744655,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 18.55761772103367,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "dcf_negative_equity_post_debt",
+        "tier_used": null
+      }
+    },
+    "median": 74.2109179744655,
+    "max": 107.75918306127771,
+    "low": 18.55761772103367,
+    "high": 107.75918306127771,
+    "mos_pct": -14.75400923003167,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -51,6 +97,9 @@
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 18.14355924034862,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -5,7 +5,7 @@
   "industry": "Health Care REITs",
   "market_cap": 151246934329.67358,
   "current_price": 214.63,
-  "rank": 224,
+  "rank": 225,
   "composite_score": 51.81,
   "pillar_scores": {
     "quality": 44.35,
@@ -33,9 +33,58 @@
     "eps_diluted": 1.02,
     "shares_outstanding": 704686814.0,
     "market_cap": 151246934329.67358,
-    "pe_ratio_ttm": 210.42157341452204
+    "pe_ratio_ttm": 210.42157341452204,
+    "goodwill": 342907000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 40.544407125856885,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 126.16156627826281,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 142.04188462044732,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 126.16156627826281,
+    "max": 142.04188462044732,
+    "low": 40.544407125856885,
+    "high": 142.04188462044732,
+    "mos_pct": -70.12312958244597,
+    "valuation_warnings": [
+      "extreme_graham_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -63,6 +112,12 @@
   "risk_flags": [
     "net_issuance_top_decile"
   ],
+  "valuation_warnings": [
+    "extreme_graham_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 60.54692262199758,
   "entered_top5": false,
   "exited_top5": false
 }

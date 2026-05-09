@@ -5,7 +5,7 @@
   "industry": "Tobacco",
   "market_cap": 308086968852.5923,
   "current_price": 170.99,
-  "rank": 385,
+  "rank": 388,
   "composite_score": 43.46,
   "pillar_scores": {
     "quality": 40.97,
@@ -33,9 +33,57 @@
     "eps_diluted": 1.56,
     "shares_outstanding": 1801783490.0,
     "market_cap": 308086968852.5923,
-    "pe_ratio_ttm": 109.60897788023337
+    "pe_ratio_ttm": 109.60897788023337,
+    "goodwill": 17069000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 90.34389357598836,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": 103.17082158664569,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 69.45322069590004,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 90.34389357598836,
+    "max": 103.17082158664569,
+    "low": 69.45322069590004,
+    "high": 103.17082158664569,
+    "mos_pct": -89.26570322026708,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -48,6 +96,11 @@
     "latest_filed_date": "2026-04-24"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -5,7 +5,7 @@
   "industry": "Telecom Tower REITs",
   "market_cap": 39488519866.94336,
   "current_price": 90.57,
-  "rank": 470,
+  "rank": 476,
   "composite_score": 35.91,
   "pillar_scores": {
     "quality": 50.4,
@@ -33,9 +33,57 @@
     "eps_diluted": 0.34,
     "shares_outstanding": 436000000.0,
     "market_cap": 39488519866.94336,
-    "pe_ratio_ttm": 266.38235204360063
+    "pe_ratio_ttm": 266.38235204360063,
+    "goodwill": 5127000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 42.05385542608761,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 37.16320884745659,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 70.52521703317406,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 42.05385542608761,
+    "max": 70.52521703317406,
+    "low": 37.16320884745659,
+    "high": 70.52521703317406,
+    "mos_pct": -115.3666977193254,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -52,6 +100,11 @@
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

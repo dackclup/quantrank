@@ -5,7 +5,7 @@
   "industry": "Electronic Components",
   "market_cap": 157041596502.68555,
   "current_price": 128.03,
-  "rank": 235,
+  "rank": 236,
   "composite_score": 51.29,
   "pillar_scores": {
     "quality": 49.32,
@@ -33,9 +33,57 @@
     "eps_diluted": 0.72,
     "shares_outstanding": 1226600000.0,
     "market_cap": 157041596502.68555,
-    "pe_ratio_ttm": 177.81944274902344
+    "pe_ratio_ttm": 177.81944274902344,
+    "goodwill": 17542900000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 51.003734777588754,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 113.14187257200743,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 96.22954747896763,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 22.764741630579806,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 73.61664112827819,
+    "max": 113.14187257200743,
+    "low": 22.764741630579806,
+    "high": 113.14187257200743,
+    "mos_pct": -73.91448022764652,
+    "valuation_warnings": [
+      "extreme_dcf_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -46,6 +94,11 @@
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_dcf_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

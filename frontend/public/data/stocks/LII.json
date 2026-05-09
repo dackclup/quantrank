@@ -5,7 +5,7 @@
   "industry": "Building Products",
   "market_cap": 45437465186.25,
   "current_price": 521.25,
-  "rank": 231,
+  "rank": 232,
   "composite_score": 51.49,
   "pillar_scores": {
     "quality": 79.75,
@@ -33,9 +33,61 @@
     "eps_diluted": 3.35,
     "shares_outstanding": 87170197.0,
     "market_cap": 45437465186.25,
-    "pe_ratio_ttm": 155.59701492537312
+    "pe_ratio_ttm": 155.59701492537312,
+    "goodwill": 503700000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 48.42388531539449,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 390.6632369085653,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 96.93090027866586,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 141.05469944076341,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 33.40645897466409,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 72.41602831498332,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 84.67346429682459,
+    "max": 390.6632369085653,
+    "low": 33.40645897466409,
+    "high": 390.6632369085653,
+    "mos_pct": -515.6001816256712,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_graham_estimate",
+      "extreme_multiples_pb_estimate",
+      "extreme_rim_estimate",
+      "extreme_dcf_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -49,6 +101,15 @@
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_graham_estimate",
+    "extreme_multiples_pb_estimate",
+    "extreme_rim_estimate",
+    "extreme_dcf_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 5.053332620092622,
   "entered_top5": false,
   "exited_top5": false
 }

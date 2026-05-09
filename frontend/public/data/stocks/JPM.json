@@ -5,15 +5,15 @@
   "industry": "Diversified Banks",
   "market_cap": 814522036456.2988,
   "current_price": 302.1,
-  "rank": 175,
-  "composite_score": 54.4,
+  "rank": 168,
+  "composite_score": 54.58,
   "pillar_scores": {
     "quality": 54.67,
     "value": 54.44,
     "growth": 66.67,
     "momentum": 51.74,
     "health": 51.53,
-    "profitability": 40.67,
+    "profitability": 43.56,
     "technical": 42.33,
     "risk": 66.73,
     "sentiment": null,
@@ -33,9 +33,55 @@
     "eps_diluted": 5.94,
     "shares_outstanding": 2696200000.0,
     "market_cap": 814522036456.2988,
-    "pe_ratio_ttm": 50.85858688611374
+    "pe_ratio_ttm": 50.85858688611374,
+    "goodwill": 52706000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 219.93592744275622,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 321.51458290014165,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 274.51259538965553,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 144.55586695452013,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 247.22426141620588,
+    "max": 321.51458290014165,
+    "low": 144.55586695452013,
+    "high": 321.51458290014165,
+    "mos_pct": -22.196747347108293,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -62,6 +108,9 @@
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 115.17098138120318,
   "entered_top5": false,
   "exited_top5": false
 }

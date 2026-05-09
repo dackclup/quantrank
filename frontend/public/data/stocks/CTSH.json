@@ -5,7 +5,7 @@
   "industry": "IT Consulting & Other Services",
   "market_cap": 24496320144.65332,
   "current_price": 51.68,
-  "rank": 159,
+  "rank": 153,
   "composite_score": 55.11,
   "pillar_scores": {
     "quality": 52.05,
@@ -33,9 +33,58 @@
     "eps_diluted": 1.39,
     "shares_outstanding": 474000000.0,
     "market_cap": 24496320144.65332,
-    "pe_ratio_ttm": 37.17985633465884
+    "pe_ratio_ttm": 37.17985633465884,
+    "goodwill": 7681000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 35.216006142201806,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 101.20809238538317,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 357.17760500137814,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 143.10094491824742,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 15.27643108350701,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 61.94657459694691,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 81.57733349116504,
+    "max": 143.10094491824742,
+    "low": 15.27643108350701,
+    "high": 357.17760500137814,
+    "mos_pct": 36.6490689343593,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_multiples_pb_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -51,6 +100,12 @@
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_multiples_pb_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 12.451476793248945,
   "entered_top5": false,
   "exited_top5": false
 }

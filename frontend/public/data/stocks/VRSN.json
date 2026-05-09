@@ -5,7 +5,7 @@
   "industry": "Internet Services & Infrastructure",
   "market_cap": 26255930221.557617,
   "current_price": 288.21,
-  "rank": 254,
+  "rank": 257,
   "composite_score": 49.95,
   "pillar_scores": {
     "quality": 39.73,
@@ -33,9 +33,57 @@
     "eps_diluted": 6.24,
     "shares_outstanding": 91100000.0,
     "market_cap": 26255930221.557617,
-    "pe_ratio_ttm": 46.18749863062149
+    "pe_ratio_ttm": 46.18749863062149,
+    "goodwill": 52500000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 454.3442420753893,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": 211.7920243669631,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 119.88889157605347,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 211.7920243669631,
+    "max": 454.3442420753893,
+    "low": 119.88889157605347,
+    "high": 454.3442420753893,
+    "mos_pct": -36.081607565971815,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -52,6 +100,11 @@
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

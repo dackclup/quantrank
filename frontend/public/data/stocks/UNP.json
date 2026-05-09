@@ -5,7 +5,7 @@
   "industry": "Rail Transportation",
   "market_cap": 157116329133.78973,
   "current_price": 264.65,
-  "rank": 168,
+  "rank": 165,
   "composite_score": 54.7,
   "pillar_scores": {
     "quality": 63.92,
@@ -33,9 +33,55 @@
     "eps_diluted": 2.87,
     "shares_outstanding": 593675922.0,
     "market_cap": 157116329133.78973,
-    "pe_ratio_ttm": 92.21254142734647
+    "pe_ratio_ttm": 92.21254142734647,
+    "goodwill": null
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 90.67971935443266,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 337.6808307423311,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 227.66822615812913,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 281.5886860111387,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 90.3460193122009,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 72.68104331680594,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 159.1739727562809,
+    "max": 337.6808307423311,
+    "low": 72.68104331680594,
+    "high": 337.6808307423311,
+    "mos_pct": -66.26461557361705,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -55,6 +101,9 @@
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 32.708080756557955,
   "entered_top5": false,
   "exited_top5": false
 }

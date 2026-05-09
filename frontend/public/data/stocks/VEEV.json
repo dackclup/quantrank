@@ -5,7 +5,7 @@
   "industry": "Health Care Technology",
   "market_cap": 27242876998.36606,
   "current_price": 166.34,
-  "rank": 101,
+  "rank": 95,
   "composite_score": 58.1,
   "pillar_scores": {
     "quality": 68.22,
@@ -33,9 +33,57 @@
     "eps_diluted": 5.44,
     "shares_outstanding": 163778271.0,
     "market_cap": 27242876998.36606,
-    "pe_ratio_ttm": 30.57720520917107
+    "pe_ratio_ttm": 30.57720520917107,
+    "goodwill": 439877000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 63.22844798239692,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 431.2551574707032,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 148.4817000945625,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 267.44561563950884,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 42.95456845747293,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 148.4817000945625,
+    "max": 431.2551574707032,
+    "low": 42.95456845747293,
+    "high": 431.2551574707032,
+    "mos_pct": -12.027270856916928,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -52,6 +100,11 @@
     "latest_filed_date": "2026-03-20"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 41.066632093093716,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -5,7 +5,7 @@
   "industry": "Soft Drinks & Non-alcoholic Beverages",
   "market_cap": 39221333998.17706,
   "current_price": 28.83,
-  "rank": 475,
+  "rank": 479,
   "composite_score": 35.45,
   "pillar_scores": {
     "quality": 22.22,
@@ -33,9 +33,58 @@
     "eps_diluted": 0.2,
     "shares_outstanding": 1360434759.0,
     "market_cap": 39221333998.17706,
-    "pe_ratio_ttm": 144.14999961853027
+    "pe_ratio_ttm": 144.14999961853027,
+    "goodwill": 20210000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 11.582550458460048,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 92.50849387874587,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 15.324852263992232,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 4.352611565459615,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 13.453701361226141,
+    "max": 92.50849387874587,
+    "low": 4.352611565459615,
+    "high": 92.50849387874587,
+    "mos_pct": -114.29047032956106,
+    "valuation_warnings": [
+      "extreme_dcf_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -46,6 +95,12 @@
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_dcf_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

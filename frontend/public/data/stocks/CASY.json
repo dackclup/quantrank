@@ -5,7 +5,7 @@
   "industry": "Food Retail",
   "market_cap": 31808424989.708984,
   "current_price": 859.49,
-  "rank": 96,
+  "rank": 90,
   "composite_score": 58.47,
   "pillar_scores": {
     "quality": 55.21,
@@ -33,9 +33,59 @@
     "eps_diluted": 14.79,
     "shares_outstanding": 37008488.0,
     "market_cap": 31808424989.708984,
-    "pe_ratio_ttm": 58.112913470884045
+    "pe_ratio_ttm": 58.112913470884045,
+    "goodwill": 1266489000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 144.77688698379853,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 856.5296064031204,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 465.9812051748128,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 79.73460555054977,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 86.43034348262306,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 144.77688698379853,
+    "max": 856.5296064031204,
+    "low": 79.73460555054977,
+    "high": 856.5296064031204,
+    "mos_pct": -493.6651962481812,
+    "valuation_warnings": [
+      "extreme_graham_estimate",
+      "extreme_rim_estimate",
+      "extreme_dcf_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -53,6 +103,13 @@
     "latest_filed_date": "2026-03-09"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_graham_estimate",
+    "extreme_rim_estimate",
+    "extreme_dcf_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 69.90277473643344,
   "entered_top5": false,
   "exited_top5": false
 }

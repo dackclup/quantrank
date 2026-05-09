@@ -5,7 +5,7 @@
   "industry": "Semiconductor Materials & Equipment",
   "market_cap": 56318394080.200195,
   "current_price": 359.77,
-  "rank": 153,
+  "rank": 147,
   "composite_score": 55.69,
   "pillar_scores": {
     "quality": 63.7,
@@ -33,9 +33,59 @@
     "eps_diluted": 2.53,
     "shares_outstanding": 156540000.0,
     "market_cap": 56318394080.200195,
-    "pe_ratio_ttm": 142.2015766852458
+    "pe_ratio_ttm": 142.2015766852458,
+    "goodwill": 514175000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 34.308521637585734,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 179.22145692680493,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 199.4115744085831,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 202.96861099636192,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 21.857145774999058,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 37.54803678778111,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 108.38474685729302,
+    "max": 202.96861099636192,
+    "low": 21.857145774999058,
+    "high": 202.96861099636192,
+    "mos_pct": -231.93784129732785,
+    "valuation_warnings": [
+      "extreme_graham_estimate",
+      "extreme_rim_estimate",
+      "extreme_dcf_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -50,6 +100,13 @@
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [
+    "extreme_graham_estimate",
+    "extreme_rim_estimate",
+    "extreme_dcf_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 16.485639453174908,
   "entered_top5": false,
   "exited_top5": false
 }

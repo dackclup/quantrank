@@ -5,7 +5,7 @@
   "industry": "Application Software",
   "market_cap": 98581500617.85889,
   "current_price": 362.7,
-  "rank": 257,
+  "rank": 261,
   "composite_score": 49.84,
   "pillar_scores": {
     "quality": 54.11,
@@ -33,9 +33,57 @@
     "eps_diluted": 1.23,
     "shares_outstanding": 271799000.0,
     "market_cap": 98581500617.85889,
-    "pe_ratio_ttm": 294.8780587049035
+    "pe_ratio_ttm": 294.8780587049035,
+    "goodwill": 4929581000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 99.08970904396584,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 123.08721497557515,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 80.50861083444586,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 57.27827090556425,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 89.79915993920585,
+    "max": 123.08721497557515,
+    "low": 57.27827090556425,
+    "high": 123.08721497557515,
+    "mos_pct": -303.90134212010406,
+    "valuation_warnings": [
+      "extreme_dcf_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -52,6 +100,11 @@
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_dcf_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

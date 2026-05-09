@@ -5,7 +5,7 @@
   "industry": "Semiconductors",
   "market_cap": 53620827847.763214,
   "current_price": 99.09,
-  "rank": 452,
+  "rank": 456,
   "composite_score": 38.18,
   "pillar_scores": {
     "quality": 19.86,
@@ -33,9 +33,55 @@
     "eps_diluted": 0.0,
     "shares_outstanding": 541132605.0,
     "market_cap": 53620827847.763214,
-    "pe_ratio_ttm": null
+    "pe_ratio_ttm": null,
+    "goodwill": 6695500000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
+      },
+      "multiples_pb": {
+        "value": 140.94624311351467,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 269.39323883907485,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 49.6153729512434,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 140.94624311351467,
+    "max": 269.39323883907485,
+    "low": 49.6153729512434,
+    "high": 269.39323883907485,
+    "mos_pct": 29.696603365237657,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -48,6 +94,9 @@
     "latest_filed_date": "2026-02-05"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

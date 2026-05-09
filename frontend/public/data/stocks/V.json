@@ -5,15 +5,15 @@
   "industry": "Transaction & Payment Processing Services",
   "market_cap": null,
   "current_price": 318.79,
-  "rank": 52,
-  "composite_score": 62.34,
+  "rank": 89,
+  "composite_score": 58.67,
   "pillar_scores": {
-    "quality": 87.33,
+    "quality": 75.33,
     "value": 49.56,
     "growth": 67.33,
     "momentum": 31.72,
     "health": 50.2,
-    "profitability": 78.44,
+    "profitability": 72.44,
     "technical": 57.12,
     "risk": 53.72,
     "sentiment": null,
@@ -33,9 +33,55 @@
     "eps_diluted": null,
     "shares_outstanding": null,
     "market_cap": null,
-    "pe_ratio_ttm": null
+    "pe_ratio_ttm": null,
+    "goodwill": 20891000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": null,
+    "max": null,
+    "low": null,
+    "high": null,
+    "mos_pct": null,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -54,6 +100,9 @@
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

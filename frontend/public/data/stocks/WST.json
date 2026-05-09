@@ -5,7 +5,7 @@
   "industry": "Health Care Supplies",
   "market_cap": 23107728952.026367,
   "current_price": 325.92,
-  "rank": 270,
+  "rank": 273,
   "composite_score": 49.13,
   "pillar_scores": {
     "quality": 54.66,
@@ -33,9 +33,57 @@
     "eps_diluted": 1.92,
     "shares_outstanding": 70900000.0,
     "market_cap": 23107728952.026367,
-    "pe_ratio_ttm": 169.75000699361166
+    "pe_ratio_ttm": 169.75000699361166,
+    "goodwill": 109200000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 80.58730471508018,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 146.7215764782786,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 142.16439955592165,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 143.14427915121232,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 56.639934895664986,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 80.03842900960034,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 111.3758521355009,
+    "max": 146.7215764782786,
+    "low": 56.639934895664986,
+    "high": 146.7215764782786,
+    "mos_pct": -192.6307697571795,
+    "valuation_warnings": [
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -46,6 +94,11 @@
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 40.538787023977434,
   "entered_top5": false,
   "exited_top5": false
 }

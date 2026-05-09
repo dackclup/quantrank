@@ -5,7 +5,7 @@
   "industry": "Health Care Facilities",
   "market_cap": null,
   "current_price": 169.96,
-  "rank": 170,
+  "rank": 167,
   "composite_score": 54.6,
   "pillar_scores": {
     "quality": 57.63,
@@ -33,9 +33,55 @@
     "eps_diluted": 5.65,
     "shares_outstanding": null,
     "market_cap": null,
-    "pe_ratio_ttm": 30.081417117498617
+    "pe_ratio_ttm": 30.081417117498617,
+    "goodwill": 3980656000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 447.90287494659424,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "missing_shares_outstanding",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "missing_shares_outstanding",
+        "tier_used": null
+      }
+    },
+    "median": 447.90287494659424,
+    "max": 447.90287494659424,
+    "low": 447.90287494659424,
+    "high": 447.90287494659424,
+    "mos_pct": 62.054271981591455,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -54,6 +100,9 @@
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

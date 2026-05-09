@@ -5,7 +5,7 @@
   "industry": "Hotels, Resorts & Cruise Lines",
   "market_cap": 7841424719.773464,
   "current_price": 17.08,
-  "rank": 392,
+  "rank": 394,
   "composite_score": 43.27,
   "pillar_scores": {
     "quality": 44.79,
@@ -33,9 +33,55 @@
     "eps_diluted": 0.23,
     "shares_outstanding": 459099810.0,
     "market_cap": 7841424719.773464,
-    "pe_ratio_ttm": 74.26086923350458
+    "pe_ratio_ttm": 74.26086923350458,
+    "goodwill": 135764000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 9.68731189898816,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 17.797677720554418,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 34.539237069716535,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 37.40072119692566,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 6.183572807473848,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 17.797677720554418,
+    "max": 37.40072119692566,
+    "low": 6.183572807473848,
+    "high": 37.40072119692566,
+    "mos_pct": 4.032423825831626,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -54,6 +100,9 @@
     "altman_distress",
     "net_issuance_top_decile"
   ],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 3.9101671595115666,
   "entered_top5": false,
   "exited_top5": false
 }

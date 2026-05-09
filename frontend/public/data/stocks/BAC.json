@@ -5,15 +5,15 @@
   "industry": "Diversified Banks",
   "market_cap": 365835590913.35864,
   "current_price": 51.31,
-  "rank": 302,
-  "composite_score": 47.44,
+  "rank": 301,
+  "composite_score": 47.79,
   "pillar_scores": {
     "quality": 40.67,
     "value": 62.22,
     "growth": 33.33,
     "momentum": 48.06,
     "health": 47.87,
-    "profitability": 43.11,
+    "profitability": 48.67,
     "technical": 44.27,
     "risk": 63.78,
     "sentiment": null,
@@ -33,9 +33,57 @@
     "eps_diluted": 1.11,
     "shares_outstanding": 7129908032.0,
     "market_cap": 365835590913.35864,
-    "pe_ratio_ttm": 46.22522646242433
+    "pe_ratio_ttm": 46.22522646242433,
+    "goodwill": 69021000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 49.416134959570236,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 60.08100791568303,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 87.26507734967298,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 60.08100791568303,
+    "max": 87.26507734967298,
+    "low": 49.416134959570236,
+    "high": 87.26507734967298,
+    "mos_pct": 14.598634155241106,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -60,6 +108,11 @@
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 32.237021707491216,
   "entered_top5": false,
   "exited_top5": false
 }

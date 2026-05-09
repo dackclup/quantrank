@@ -5,15 +5,15 @@
   "industry": "Multi-Sector Holdings",
   "market_cap": null,
   "current_price": 475.94,
-  "rank": 411,
-  "composite_score": 41.86,
+  "rank": 365,
+  "composite_score": 44.79,
   "pillar_scores": {
-    "quality": 28.33,
+    "quality": 39.33,
     "value": 49.56,
     "growth": 33.67,
     "momentum": 40.54,
     "health": 48.57,
-    "profitability": 52.0,
+    "profitability": 50.44,
     "technical": 63.79,
     "risk": 62.5,
     "sentiment": null,
@@ -33,9 +33,55 @@
     "eps_diluted": null,
     "shares_outstanding": null,
     "market_cap": null,
-    "pe_ratio_ttm": null
+    "pe_ratio_ttm": null,
+    "goodwill": 83180000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": null,
+    "max": null,
+    "low": null,
+    "high": null,
+    "mos_pct": null,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -63,6 +109,9 @@
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

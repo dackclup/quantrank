@@ -5,7 +5,7 @@
   "industry": "Application Software",
   "market_cap": 14087359823.226929,
   "current_price": 60.8,
-  "rank": 486,
+  "rank": 488,
   "composite_score": 34.05,
   "pillar_scores": {
     "quality": 20.21,
@@ -33,9 +33,55 @@
     "eps_diluted": 0.42,
     "shares_outstanding": 231700000.0,
     "market_cap": 14087359823.226929,
-    "pe_ratio_ttm": 144.76190294538225
+    "pe_ratio_ttm": 144.76190294538225,
+    "goodwill": 5213600000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 33.83551040525663,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 179.93237920299597,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 31.069636127941912,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 20.486234010988316,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 32.45257326659927,
+    "max": 179.93237920299597,
+    "low": 20.486234010988316,
+    "high": 179.93237920299597,
+    "mos_pct": -87.35031807057628,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -48,6 +94,9 @@
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

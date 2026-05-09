@@ -5,7 +5,7 @@
   "industry": "Industrial Conglomerates",
   "market_cap": 74735369326.95668,
   "current_price": 143.29,
-  "rank": 114,
+  "rank": 108,
   "composite_score": 57.6,
   "pillar_scores": {
     "quality": 89.56,
@@ -33,9 +33,57 @@
     "eps_diluted": 1.23,
     "shares_outstanding": 521567261.0,
     "market_cap": 74735369326.95668,
-    "pe_ratio_ttm": 116.495929500921
+    "pe_ratio_ttm": 116.495929500921,
+    "goodwill": 6384000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 144.72035603242762,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 43.546586101086625,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 291.3433758486669,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 72.4974653064731,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 108.60891066945035,
+    "max": 291.3433758486669,
+    "low": 43.546586101086625,
+    "high": 291.3433758486669,
+    "mos_pct": -31.932078503423934,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -48,6 +96,11 @@
     "latest_filed_date": "2026-04-21"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

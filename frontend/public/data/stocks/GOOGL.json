@@ -5,7 +5,7 @@
   "industry": "Interactive Media & Services",
   "market_cap": 4856092652099.609,
   "current_price": 400.8,
-  "rank": 32,
+  "rank": 31,
   "composite_score": 64.54,
   "pillar_scores": {
     "quality": 90.22,
@@ -33,9 +33,60 @@
     "eps_diluted": 5.11,
     "shares_outstanding": 12116000000.0,
     "market_cap": 4856092652099.609,
-    "pe_ratio_ttm": 78.43443988120718
+    "pe_ratio_ttm": 78.43443988120718,
+    "goodwill": 57774000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 79.2426801699376,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 264.8872539167051,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 76.53344657991026,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 133.24367135701326,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 55.409660517448096,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 73.12849127974656,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 77.88806337492393,
+    "max": 264.8872539167051,
+    "low": 55.409660517448096,
+    "high": 264.8872539167051,
+    "mos_pct": -414.58461081984785,
+    "valuation_warnings": [
+      "extreme_graham_estimate",
+      "extreme_multiples_pb_estimate",
+      "extreme_rim_estimate",
+      "extreme_dcf_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -48,6 +99,14 @@
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_graham_estimate",
+    "extreme_multiples_pb_estimate",
+    "extreme_rim_estimate",
+    "extreme_dcf_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 33.9656652360515,
   "entered_top5": false,
   "exited_top5": false
 }

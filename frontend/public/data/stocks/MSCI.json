@@ -5,15 +5,15 @@
   "industry": "Financial Exchanges & Data",
   "market_cap": 42677116754.15039,
   "current_price": 585.42,
-  "rank": 330,
-  "composite_score": 46.4,
+  "rank": 431,
+  "composite_score": 40.67,
   "pillar_scores": {
-    "quality": 50.33,
-    "value": 13.78,
+    "quality": 26.67,
+    "value": 21.56,
     "growth": 60.67,
     "momentum": 49.35,
     "health": 55.22,
-    "profitability": 93.78,
+    "profitability": 78.22,
     "technical": 50.5,
     "risk": 48.04,
     "sentiment": null,
@@ -33,9 +33,57 @@
     "eps_diluted": 5.53,
     "shares_outstanding": 72900000.0,
     "market_cap": 42677116754.15039,
-    "pe_ratio_ttm": 105.86256472154724
+    "pe_ratio_ttm": 105.86256472154724,
+    "goodwill": 2962300000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 297.12336677978317,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 297.12336677978317,
+    "max": 297.12336677978317,
+    "low": 297.12336677978317,
+    "high": 297.12336677978317,
+    "mos_pct": -97.02926405786451,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -49,6 +97,11 @@
     "latest_filed_date": "2026-04-21"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

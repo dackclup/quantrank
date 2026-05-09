@@ -5,7 +5,7 @@
   "industry": "Gold",
   "market_cap": 126879392326.35498,
   "current_price": 116.51,
-  "rank": 67,
+  "rank": 59,
   "composite_score": 61.4,
   "pillar_scores": {
     "quality": 58.17,
@@ -33,9 +33,57 @@
     "eps_diluted": 3.0,
     "shares_outstanding": 1089000000.0,
     "market_cap": 126879392326.35498,
-    "pe_ratio_ttm": 38.83666737874349
+    "pe_ratio_ttm": 38.83666737874349,
+    "goodwill": 2658000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 37.49986593180809,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 260.92308240059094,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 100.65833295532053,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 100.65833295532053,
+    "max": 260.92308240059094,
+    "low": 37.49986593180809,
+    "high": 260.92308240059094,
+    "mos_pct": -15.747994940414975,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -49,6 +97,11 @@
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 29.573921028466483,
   "entered_top5": false,
   "exited_top5": false
 }

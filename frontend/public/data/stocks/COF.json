@@ -6,14 +6,14 @@
   "market_cap": 116692506884.17671,
   "current_price": 189.48,
   "rank": 434,
-  "composite_score": 40.2,
+  "composite_score": 40.6,
   "pillar_scores": {
     "quality": 28.67,
     "value": 56.44,
     "growth": 43.33,
     "momentum": 22.61,
     "health": 57.59,
-    "profitability": 42.0,
+    "profitability": 48.44,
     "technical": 30.38,
     "risk": 39.28,
     "sentiment": null,
@@ -33,9 +33,57 @@
     "eps_diluted": 3.34,
     "shares_outstanding": 615856605.0,
     "market_cap": 116692506884.17671,
-    "pe_ratio_ttm": 56.73053764297577
+    "pe_ratio_ttm": 56.73053764297577,
+    "goodwill": 28502000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 150.7348659122005,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 179.45606601165926,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 377.2128685217731,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 179.45606601165926,
+    "max": 377.2128685217731,
+    "low": 150.7348659122005,
+    "high": 377.2128685217731,
+    "mos_pct": -5.585729108331478,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -60,6 +108,11 @@
   "risk_flags": [
     "net_issuance_top_decile"
   ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 109.88272180664524,
   "entered_top5": false,
   "exited_top5": false
 }

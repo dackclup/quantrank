@@ -5,7 +5,7 @@
   "industry": "Construction Machinery & Heavy Transportation Equipment",
   "market_cap": 413365475622.5586,
   "current_price": 897.45,
-  "rank": 374,
+  "rank": 379,
   "composite_score": 44.02,
   "pillar_scores": {
     "quality": 41.14,
@@ -33,9 +33,58 @@
     "eps_diluted": 5.47,
     "shares_outstanding": 460600000.0,
     "market_cap": 413365475622.5586,
-    "pe_ratio_ttm": 164.06764391353406
+    "pe_ratio_ttm": 164.06764391353406,
+    "goodwill": 5865000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 110.85429523494557,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 637.8889271312992,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 281.9908835196672,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 438.7836678353911,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 180.51839831535597,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 281.9908835196672,
+    "max": 637.8889271312992,
+    "low": 110.85429523494557,
+    "high": 637.8889271312992,
+    "mos_pct": -218.25497370890693,
+    "valuation_warnings": [
+      "extreme_graham_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -49,6 +98,12 @@
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_graham_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 26.869300911854104,
   "entered_top5": false,
   "exited_top5": false
 }

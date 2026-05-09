@@ -5,7 +5,7 @@
   "industry": "Regional Banks",
   "market_cap": 44684228346.09064,
   "current_price": 49.33,
-  "rank": 422,
+  "rank": 424,
   "composite_score": 41.24,
   "pillar_scores": {
     "quality": 33.33,
@@ -33,9 +33,58 @@
     "eps_diluted": 0.15,
     "shares_outstanding": 905822556.0,
     "market_cap": 44684228346.09064,
-    "pe_ratio_ttm": 328.86667887369794
+    "pe_ratio_ttm": 328.86667887369794,
+    "goodwill": 9966000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 43.31031276117608,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 8.059404162200266,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 77.9156779805503,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 43.31031276117608,
+    "max": 77.9156779805503,
+    "low": 8.059404162200266,
+    "high": 77.9156779805503,
+    "mos_pct": -13.898973907375556,
+    "valuation_warnings": [
+      "extreme_multiples_pe_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -62,6 +111,12 @@
     "sloan_accruals_top_decile",
     "net_issuance_top_decile"
   ],
+  "valuation_warnings": [
+    "extreme_multiples_pe_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 25.2886173437262,
   "entered_top5": false,
   "exited_top5": false
 }

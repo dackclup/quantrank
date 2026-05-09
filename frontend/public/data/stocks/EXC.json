@@ -5,7 +5,7 @@
   "industry": "Electric Utilities",
   "market_cap": 44919929843.90259,
   "current_price": 43.91,
-  "rank": 324,
+  "rank": 330,
   "composite_score": 46.65,
   "pillar_scores": {
     "quality": 32.26,
@@ -33,9 +33,57 @@
     "eps_diluted": 0.9,
     "shares_outstanding": 1023000000.0,
     "market_cap": 44919929843.90259,
-    "pe_ratio_ttm": 48.78888871934679
+    "pe_ratio_ttm": 48.78888871934679,
+    "goodwill": 6630000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 51.81539351957491,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 67.7424119280324,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 43.10065757041575,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_utilities",
+        "tier_used": null
+      }
+    },
+    "median": 51.81539351957491,
+    "max": 67.7424119280324,
+    "low": 43.10065757041575,
+    "high": 67.7424119280324,
+    "mos_pct": 15.256843835753727,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -54,6 +102,11 @@
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 22.19941348973607,
   "entered_top5": false,
   "exited_top5": false
 }

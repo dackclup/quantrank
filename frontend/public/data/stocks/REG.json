@@ -5,7 +5,7 @@
   "industry": "Retail REITs",
   "market_cap": 14205801982.501495,
   "current_price": 77.59,
-  "rank": 190,
+  "rank": 184,
   "composite_score": 53.48,
   "pillar_scores": {
     "quality": 51.61,
@@ -33,9 +33,57 @@
     "eps_diluted": 0.46,
     "shares_outstanding": 183088061.0,
     "market_cap": 14205801982.501495,
-    "pe_ratio_ttm": 168.6739050823709
+    "pe_ratio_ttm": 168.6739050823709,
+    "goodwill": 166739000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 56.896392635294994,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 90.57939325203358,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 107.84974095451737,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 90.57939325203358,
+    "max": 107.84974095451737,
+    "low": 56.896392635294994,
+    "high": 107.84974095451737,
+    "mos_pct": 14.340344362873433,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -60,6 +108,11 @@
     "latest_filed_date": "2026-05-04"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 35.39946823730904,
   "entered_top5": false,
   "exited_top5": false
 }

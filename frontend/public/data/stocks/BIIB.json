@@ -5,7 +5,7 @@
   "industry": "Biotechnology",
   "market_cap": 28398459552.001953,
   "current_price": 193.45,
-  "rank": 137,
+  "rank": 130,
   "composite_score": 56.57,
   "pillar_scores": {
     "quality": 48.31,
@@ -33,9 +33,57 @@
     "eps_diluted": 2.15,
     "shares_outstanding": 146800000.0,
     "market_cap": 28398459552.001953,
-    "pe_ratio_ttm": 89.97674276662428
+    "pe_ratio_ttm": 89.97674276662428,
+    "goodwill": 6488700000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 164.2975986605724,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 359.628250723652,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 192.3050806692218,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 157.60424272857193,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 178.3013396648971,
+    "max": 359.628250723652,
+    "low": 157.60424272857193,
+    "high": 359.628250723652,
+    "mos_pct": -8.496098409476756,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -48,6 +96,11 @@
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

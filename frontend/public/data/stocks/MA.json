@@ -5,15 +5,15 @@
   "industry": "Transaction & Payment Processing Services",
   "market_cap": null,
   "current_price": 495.48,
-  "rank": 76,
-  "composite_score": 60.61,
+  "rank": 123,
+  "composite_score": 56.75,
   "pillar_scores": {
-    "quality": 85.67,
+    "quality": 73.33,
     "value": 42.44,
     "growth": 82.0,
     "momentum": 28.98,
     "health": 59.32,
-    "profitability": 61.78,
+    "profitability": 54.22,
     "technical": 37.75,
     "risk": 51.96,
     "sentiment": null,
@@ -33,9 +33,57 @@
     "eps_diluted": 4.35,
     "shares_outstanding": null,
     "market_cap": null,
-    "pe_ratio_ttm": 113.90345080145475
+    "pe_ratio_ttm": 113.90345080145475,
+    "goodwill": 9525000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 233.72272070380774,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 233.72272070380774,
+    "max": 233.72272070380774,
+    "low": 233.72272070380774,
+    "high": 233.72272070380774,
+    "mos_pct": -111.99479857768742,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -52,6 +100,11 @@
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

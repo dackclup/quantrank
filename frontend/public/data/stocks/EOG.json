@@ -33,9 +33,57 @@
     "eps_diluted": 3.7,
     "shares_outstanding": 271632000.0,
     "market_cap": 35320308628.41797,
-    "pe_ratio_ttm": 35.143242913323476
+    "pe_ratio_ttm": 35.143242913323476,
+    "goodwill": null
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 168.75386220734546,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 170.55914968990996,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 215.05719252911834,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 658.5495092822641,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 179.24665535515666,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 179.24665535515666,
+    "max": 215.05719252911834,
+    "low": 168.75386220734546,
+    "high": 658.5495092822641,
+    "mos_pct": 27.457503448721337,
+    "valuation_warnings": [
+      "extreme_multiples_ev_ebitda_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -55,6 +103,11 @@
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_multiples_ev_ebitda_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 113.78629911056134,
   "entered_top5": false,
   "exited_top5": false
 }

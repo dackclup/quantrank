@@ -5,7 +5,7 @@
   "industry": "Other Specialty Retail",
   "market_cap": 16106973249.5327,
   "current_price": 30.65,
-  "rank": 352,
+  "rank": 360,
   "composite_score": 45.11,
   "pillar_scores": {
     "quality": 67.19,
@@ -33,9 +33,55 @@
     "eps_diluted": 0.31,
     "shares_outstanding": 525513000.0,
     "market_cap": 16106973249.5327,
-    "pe_ratio_ttm": 98.87096651138798
+    "pe_ratio_ttm": 98.87096651138798,
+    "goodwill": 346724000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 20.696068352096646,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 23.358318080980787,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 30.312541606958852,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 23.79977458640907,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 15.376615185889303,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 14.497667036256068,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 22.027193216538716,
+    "max": 30.312541606958852,
+    "low": 14.497667036256068,
+    "high": 30.312541606958852,
+    "mos_pct": -39.14618770183248,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -52,6 +98,9 @@
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 4.024686354095903,
   "entered_top5": false,
   "exited_top5": false
 }

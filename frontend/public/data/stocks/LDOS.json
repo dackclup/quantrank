@@ -5,7 +5,7 @@
   "industry": "Diversified Support Services",
   "market_cap": 16365692823.092163,
   "current_price": 130.11,
-  "rank": 40,
+  "rank": 38,
   "composite_score": 63.66,
   "pillar_scores": {
     "quality": 73.42,
@@ -33,9 +33,55 @@
     "eps_diluted": 2.56,
     "shares_outstanding": 125783512.0,
     "market_cap": 16365692823.092163,
-    "pe_ratio_ttm": 50.82421898841858
+    "pe_ratio_ttm": 50.82421898841858,
+    "goodwill": 8094000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 301.2065946691177,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 282.86399495062886,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 287.7340733734923,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 287.7340733734923,
+    "max": 301.2065946691177,
+    "low": 282.86399495062886,
+    "high": 301.2065946691177,
+    "mos_pct": 54.78116335514331,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -48,6 +94,9 @@
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

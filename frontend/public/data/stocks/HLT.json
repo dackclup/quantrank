@@ -5,7 +5,7 @@
   "industry": "Hotels, Resorts & Cruise Lines",
   "market_cap": 72330278285.91724,
   "current_price": 316.78,
-  "rank": 440,
+  "rank": 442,
   "composite_score": 39.57,
   "pillar_scores": {
     "quality": 32.81,
@@ -33,9 +33,57 @@
     "eps_diluted": 1.66,
     "shares_outstanding": 228329688.0,
     "market_cap": 72330278285.91724,
-    "pe_ratio_ttm": 190.8313245658415
+    "pe_ratio_ttm": 190.8313245658415,
+    "goodwill": 5070000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 125.08002585299388,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": 112.52454467078448,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 104.04833969191388,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 112.52454467078448,
+    "max": 125.08002585299388,
+    "low": 104.04833969191388,
+    "high": 125.08002585299388,
+    "mos_pct": -181.52080037835927,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -53,6 +101,11 @@
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

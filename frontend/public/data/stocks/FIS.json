@@ -5,15 +5,15 @@
   "industry": "Transaction & Payment Processing Services",
   "market_cap": 27833601074.21875,
   "current_price": 43.49,
-  "rank": 495,
-  "composite_score": 31.28,
+  "rank": 446,
+  "composite_score": 39.27,
   "pillar_scores": {
-    "quality": 33.33,
-    "value": 54.11,
+    "quality": 55.33,
+    "value": 61.67,
     "growth": 26.33,
     "momentum": 10.56,
     "health": 10.12,
-    "profitability": 35.78,
+    "profitability": 39.56,
     "technical": 24.53,
     "risk": 22.81,
     "sentiment": null,
@@ -33,9 +33,58 @@
     "eps_diluted": 4.58,
     "shares_outstanding": 640000000.0,
     "market_cap": 27833601074.21875,
-    "pe_ratio_ttm": 9.495633554250393
+    "pe_ratio_ttm": 9.495633554250393,
+    "goodwill": 24585000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 247.90181644489033,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 51.65976882667644,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 149.78079263578337,
+    "max": 51.65976882667644,
+    "low": 51.65976882667644,
+    "high": 247.90181644489033,
+    "mos_pct": 70.96423318828343,
+    "valuation_warnings": [
+      "extreme_multiples_pe_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -51,6 +100,12 @@
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [
+    "extreme_multiples_pe_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

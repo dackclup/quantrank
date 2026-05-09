@@ -5,7 +5,7 @@
   "industry": "Technology Hardware, Storage & Peripherals",
   "market_cap": 4302326351589.3555,
   "current_price": 293.32,
-  "rank": 35,
+  "rank": 33,
   "composite_score": 64.04,
   "pillar_scores": {
     "quality": 89.04,
@@ -33,9 +33,57 @@
     "eps_diluted": 4.85,
     "shares_outstanding": 14667688000.0,
     "market_cap": 4302326351589.3555,
-    "pe_ratio_ttm": 60.47835202561212
+    "pe_ratio_ttm": 60.47835202561212,
+    "goodwill": 5889000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 27.429462260983097,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 194.56103475168405,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 72.08913490128148,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 225.77019368960092,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": 88.74290295938424,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 84.66939962738167,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 86.70615129338296,
+    "max": 225.77019368960092,
+    "low": 27.429462260983097,
+    "high": 225.77019368960092,
+    "mos_pct": -238.29203920230248,
+    "valuation_warnings": [
+      "extreme_graham_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -46,6 +94,11 @@
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_graham_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 5.099985764627664,
   "entered_top5": false,
   "exited_top5": false
 }

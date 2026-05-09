@@ -5,15 +5,15 @@
   "industry": "Multi-line Insurance",
   "market_cap": 35176931911.0,
   "current_price": 104.5,
-  "rank": 417,
-  "composite_score": 41.49,
+  "rank": 352,
+  "composite_score": 45.46,
   "pillar_scores": {
-    "quality": 25.67,
+    "quality": 37.33,
     "value": 36.89,
     "growth": 44.33,
     "momentum": 60.41,
     "health": 56.75,
-    "profitability": 34.89,
+    "profitability": 47.11,
     "technical": 41.88,
     "risk": 82.34,
     "sentiment": null,
@@ -33,9 +33,57 @@
     "eps_diluted": 1.63,
     "shares_outstanding": 336621358.0,
     "market_cap": 35176931911.0,
-    "pe_ratio_ttm": 64.11042944785277
+    "pe_ratio_ttm": 64.11042944785277,
+    "goodwill": 348000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 91.94308266574036,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 87.57885856257623,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 114.98204363684064,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 91.94308266574036,
+    "max": 114.98204363684064,
+    "low": 87.57885856257623,
+    "high": 114.98204363684064,
+    "mos_pct": -13.65727248879656,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -58,6 +106,11 @@
     "latest_filed_date": "2026-05-04"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 54.53011095035746,
   "entered_top5": false,
   "exited_top5": false
 }

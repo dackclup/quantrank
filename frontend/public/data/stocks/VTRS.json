@@ -5,7 +5,7 @@
   "industry": "Pharmaceuticals",
   "market_cap": 1717.0000076293945,
   "current_price": 17.17,
-  "rank": 184,
+  "rank": 178,
   "composite_score": 53.78,
   "pillar_scores": {
     "quality": 50.85,
@@ -33,9 +33,59 @@
     "eps_diluted": 0.15,
     "shares_outstanding": 100.0,
     "market_cap": 1717.0000076293945,
-    "pe_ratio_ttm": 114.46666717529297
+    "pe_ratio_ttm": 114.46666717529297,
+    "goodwill": 6692400000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 11.462623162365515,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": 153390392.33310804,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 196590359.87003216,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 153390392.33310804,
+    "max": 11.462623162365515,
+    "low": 11.462623162365515,
+    "high": 196590359.87003216,
+    "mos_pct": 99.99998880633929,
+    "valuation_warnings": [
+      "extreme_multiples_ev_ebitda_estimate",
+      "extreme_dcf_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -50,6 +100,13 @@
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [
+    "extreme_multiples_ev_ebitda_estimate",
+    "extreme_dcf_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

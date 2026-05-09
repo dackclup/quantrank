@@ -5,7 +5,7 @@
   "industry": "Health Care Distributors",
   "market_cap": 50795889539.77139,
   "current_price": 261.08,
-  "rank": 148,
+  "rank": 141,
   "composite_score": 55.88,
   "pillar_scores": {
     "quality": 77.12,
@@ -33,9 +33,55 @@
     "eps_diluted": 11.27,
     "shares_outstanding": 194560641.0,
     "market_cap": 50795889539.77139,
-    "pe_ratio_ttm": 23.16592604900316
+    "pe_ratio_ttm": 23.16592604900316,
+    "goodwill": 16452669000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 893.4275045394897,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 58.86047839666331,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 507.8437323690538,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 145.6499862892529,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 326.7468593291533,
+    "max": 893.4275045394897,
+    "low": 58.86047839666331,
+    "high": 893.4275045394897,
+    "mos_pct": 20.097170296206947,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -51,6 +97,9 @@
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -5,7 +5,7 @@
   "industry": "Pharmaceuticals",
   "market_cap": 896095571533.2031,
   "current_price": 948.45,
-  "rank": 77,
+  "rank": 69,
   "composite_score": 60.43,
   "pillar_scores": {
     "quality": 83.47,
@@ -33,9 +33,59 @@
     "eps_diluted": 8.26,
     "shares_outstanding": 944800000.0,
     "market_cap": 896095571533.2031,
-    "pe_ratio_ttm": 114.82445668365996
+    "pe_ratio_ttm": 114.82445668365996,
+    "goodwill": 6130000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 75.38529524518734,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 631.2084488075944,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 111.29987469137981,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 60.26634861422485,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 93.34258496828357,
+    "max": 631.2084488075944,
+    "low": 60.26634861422485,
+    "high": 631.2084488075944,
+    "mos_pct": -916.0957215072848,
+    "valuation_warnings": [
+      "extreme_graham_estimate",
+      "extreme_multiples_pb_estimate",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -53,6 +103,13 @@
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [
+    "extreme_graham_estimate",
+    "extreme_multiples_pb_estimate",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 18.727773073666384,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -5,10 +5,10 @@
   "industry": "Electric Utilities",
   "market_cap": 96604258575.43945,
   "current_price": 124.17,
-  "rank": 311,
-  "composite_score": 47.09,
+  "rank": 294,
+  "composite_score": 47.98,
   "pillar_scores": {
-    "quality": 48.39,
+    "quality": 51.61,
     "value": 48.39,
     "growth": 51.61,
     "momentum": 64.64,
@@ -33,9 +33,57 @@
     "eps_diluted": 1.97,
     "shares_outstanding": 778000000.0,
     "market_cap": 96604258575.43945,
-    "pe_ratio_ttm": 63.03045592332249
+    "pe_ratio_ttm": 63.03045592332249,
+    "goodwill": 19010000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 72.55618512573548,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 102.03146800901473,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 165.47047220319192,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 53.64460933821198,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_utilities",
+        "tier_used": null
+      }
+    },
+    "median": 87.2938265673751,
+    "max": 165.47047220319192,
+    "low": 53.64460933821198,
+    "high": 165.47047220319192,
+    "mos_pct": -42.243733665528396,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -52,6 +100,11 @@
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 45.11053984575835,
   "entered_top5": false,
   "exited_top5": false
 }

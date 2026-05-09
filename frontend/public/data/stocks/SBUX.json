@@ -5,7 +5,7 @@
   "industry": "Restaurants",
   "market_cap": 119294917346.95435,
   "current_price": 104.93,
-  "rank": 349,
+  "rank": 355,
   "composite_score": 45.37,
   "pillar_scores": {
     "quality": 51.04,
@@ -33,9 +33,57 @@
     "eps_diluted": 0.7,
     "shares_outstanding": 1136900000.0,
     "market_cap": 119294917346.95435,
-    "pe_ratio_ttm": 149.9000004359654
+    "pe_ratio_ttm": 149.9000004359654,
+    "goodwill": 1295100000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 52.7445892151179,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": 91.15086949799789,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 25.500610480555537,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 52.7445892151179,
+    "max": 91.15086949799789,
+    "low": 25.500610480555537,
+    "high": 91.15086949799789,
+    "mos_pct": -98.93983793715898,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -51,6 +99,11 @@
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

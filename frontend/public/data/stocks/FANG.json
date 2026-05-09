@@ -5,7 +5,7 @@
   "industry": "Oil & Gas Exploration & Production",
   "market_cap": 53083522592.50473,
   "current_price": 188.7,
-  "rank": 478,
+  "rank": 481,
   "composite_score": 34.86,
   "pillar_scores": {
     "quality": 16.67,
@@ -33,9 +33,58 @@
     "eps_diluted": 0.08,
     "shares_outstanding": 281311730.0,
     "market_cap": 53083522592.50473,
-    "pe_ratio_ttm": 2358.7499618530273
+    "pe_ratio_ttm": 2358.7499618530273,
+    "goodwill": null
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 193.7199851477066,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 2.534618649018368,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 245.04601530041973,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 174.1081099146508,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 183.9140475311787,
+    "max": 245.04601530041973,
+    "low": 2.534618649018368,
+    "high": 245.04601530041973,
+    "mos_pct": -2.602275074312701,
+    "valuation_warnings": [
+      "extreme_multiples_pe_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -54,6 +103,12 @@
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_multiples_pe_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 129.62843746330805,
   "entered_top5": false,
   "exited_top5": false
 }

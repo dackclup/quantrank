@@ -5,7 +5,7 @@
   "industry": "Household Products",
   "market_cap": 27444261435.145386,
   "current_price": 93.44,
-  "rank": 348,
+  "rank": 354,
   "composite_score": 45.38,
   "pillar_scores": {
     "quality": 43.06,
@@ -33,9 +33,55 @@
     "eps_diluted": 0.91,
     "shares_outstanding": 293709982.0,
     "market_cap": 27444261435.145386,
-    "pe_ratio_ttm": 102.6813213641827
+    "pe_ratio_ttm": 102.6813213641827,
+    "goodwill": 2629400000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 52.70060458599321,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 63.78177291090531,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 48.18748421884792,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 32.71594786185718,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 50.444044402420566,
+    "max": 63.78177291090531,
+    "low": 32.71594786185718,
+    "high": 63.78177291090531,
+    "mos_pct": -85.23495399374146,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -46,6 +92,9 @@
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

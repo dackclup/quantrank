@@ -5,7 +5,7 @@
   "industry": "Aerospace & Defense",
   "market_cap": 310027653012.22485,
   "current_price": 297.15,
-  "rank": 151,
+  "rank": 145,
   "composite_score": 55.73,
   "pillar_scores": {
     "quality": 76.27,
@@ -33,9 +33,60 @@
     "eps_diluted": 1.81,
     "shares_outstanding": 1043337235.0,
     "market_cap": 310027653012.22485,
-    "pe_ratio_ttm": 164.17126734612395
+    "pe_ratio_ttm": 164.17126734612395,
+    "goodwill": 9003000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 28.154249345280228,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 156.51935318419507,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 70.55356840906362,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 1138.6906632634975,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": 19.140564836035477,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 45.66254312669264,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 58.10805576787813,
+    "max": 1138.6906632634975,
+    "low": 19.140564836035477,
+    "high": 1138.6906632634975,
+    "mos_pct": -411.37486871613345,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_graham_estimate",
+      "extreme_rim_estimate",
+      "extreme_dcf_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -50,6 +101,14 @@
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_graham_estimate",
+    "extreme_rim_estimate",
+    "extreme_dcf_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 4.699343448621384,
   "entered_top5": false,
   "exited_top5": false
 }

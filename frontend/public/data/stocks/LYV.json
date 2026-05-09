@@ -5,7 +5,7 @@
   "industry": "Movies & Entertainment",
   "market_cap": 38439613415.500305,
   "current_price": 163.28,
-  "rank": 225,
+  "rank": 226,
   "composite_score": 51.77,
   "pillar_scores": {
     "quality": 33.7,
@@ -33,9 +33,57 @@
     "eps_diluted": -1.85,
     "shares_outstanding": 235421446.0,
     "market_cap": 38439613415.500305,
-    "pe_ratio_ttm": null
+    "pe_ratio_ttm": null,
+    "goodwill": 2933243000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 90.49589636480935,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 90.49589636480935,
+    "max": 90.49589636480935,
+    "low": 90.49589636480935,
+    "high": 90.49589636480935,
+    "mos_pct": -80.42806949066332,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -52,6 +100,11 @@
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

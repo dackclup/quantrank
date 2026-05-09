@@ -5,7 +5,7 @@
   "industry": "Packaged Foods & Meats",
   "market_cap": null,
   "current_price": 48.32,
-  "rank": 409,
+  "rank": 416,
   "composite_score": 41.99,
   "pillar_scores": {
     "quality": 45.14,
@@ -33,9 +33,55 @@
     "eps_diluted": 3.77,
     "shares_outstanding": null,
     "market_cap": null,
-    "pe_ratio_ttm": 12.816976046372472
+    "pe_ratio_ttm": 12.816976046372472,
+    "goodwill": 6316500000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 219.08568378523285,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "missing_shares_outstanding",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "missing_shares_outstanding",
+        "tier_used": null
+      }
+    },
+    "median": 219.08568378523285,
+    "max": 219.08568378523285,
+    "low": 219.08568378523285,
+    "high": 219.08568378523285,
+    "mos_pct": 77.94470233746914,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -52,6 +98,9 @@
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

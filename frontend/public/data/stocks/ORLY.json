@@ -5,7 +5,7 @@
   "industry": "Automotive Retail",
   "market_cap": 77369930117.37326,
   "current_price": 92.96,
-  "rank": 490,
+  "rank": 492,
   "composite_score": 33.5,
   "pillar_scores": {
     "quality": 28.13,
@@ -33,9 +33,57 @@
     "eps_diluted": 0.72,
     "shares_outstanding": 832292716.0,
     "market_cap": 77369930117.37326,
-    "pe_ratio_ttm": 129.11110983954535
+    "pe_ratio_ttm": 129.11110983954535,
+    "goodwill": 953035000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 54.251577478406986,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": 35.52333366538231,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 26.484215638066427,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 35.52333366538231,
+    "max": 54.251577478406986,
+    "low": 26.484215638066427,
+    "high": 54.251577478406986,
+    "mos_pct": -161.68714895996007,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -53,6 +101,11 @@
   "risk_flags": [
     "net_issuance_top_decile"
   ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -5,7 +5,7 @@
   "industry": "Cable & Satellite",
   "market_cap": 32973255.909957886,
   "current_price": 154.86,
-  "rank": 252,
+  "rank": 255,
   "composite_score": 50.12,
   "pillar_scores": {
     "quality": 64.13,
@@ -33,9 +33,58 @@
     "eps_diluted": 9.17,
     "shares_outstanding": 212923.0,
     "market_cap": 32973255.909957886,
-    "pe_ratio_ttm": 16.887677274847498
+    "pe_ratio_ttm": 16.887677274847498,
+    "goodwill": 29710000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 529.4536008130849,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 160540.0195361795,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 2125836.7485448453,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "dcf_negative_equity_post_debt",
+        "tier_used": null
+      }
+    },
+    "median": 160540.0195361795,
+    "max": 529.4536008130849,
+    "low": 529.4536008130849,
+    "high": 2125836.7485448453,
+    "mos_pct": 99.90353807040901,
+    "valuation_warnings": [
+      "extreme_multiples_pb_estimate",
+      "extreme_multiples_ev_ebitda_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -54,6 +103,12 @@
     "latest_filed_date": "2026-04-24"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_multiples_pb_estimate",
+    "extreme_multiples_ev_ebitda_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

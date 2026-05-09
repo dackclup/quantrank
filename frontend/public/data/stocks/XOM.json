@@ -5,7 +5,7 @@
   "industry": "Integrated Oil & Gas",
   "market_cap": 599242680358.8867,
   "current_price": 144.57,
-  "rank": 303,
+  "rank": 308,
   "composite_score": 47.44,
   "pillar_scores": {
     "quality": 33.33,
@@ -33,9 +33,55 @@
     "eps_diluted": 1.0,
     "shares_outstanding": 4145000000.0,
     "market_cap": 599242680358.8867,
-    "pe_ratio_ttm": 144.57000732421875
+    "pe_ratio_ttm": 144.57000732421875,
+    "goodwill": null
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 103.84769076373433,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 71.90227421847257,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 167.45374248348364,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 69.93419642195823,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 97.27837333995684,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 97.27837333995684,
+    "max": 167.45374248348364,
+    "low": 69.93419642195823,
+    "high": 167.45374248348364,
+    "mos_pct": -48.614745868532104,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -54,6 +100,9 @@
     "latest_filed_date": "2026-05-04"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 61.370566948130275,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -5,7 +5,7 @@
   "industry": "Passenger Airlines",
   "market_cap": 30817261024.475098,
   "current_price": 41.31,
-  "rank": 425,
+  "rank": 426,
   "composite_score": 41.0,
   "pillar_scores": {
     "quality": 28.48,
@@ -33,9 +33,57 @@
     "eps_diluted": 0.45,
     "shares_outstanding": 746000000.0,
     "market_cap": 30817261024.475098,
-    "pe_ratio_ttm": 91.80000305175781
+    "pe_ratio_ttm": 91.80000305175781,
+    "goodwill": 970000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 11.413265704795334,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 52.94647171918084,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 65.40900724731716,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 60.09740975611543,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 56.52194073764814,
+    "max": 65.40900724731716,
+    "low": 11.413265704795334,
+    "high": 65.40900724731716,
+    "mos_pct": 26.913335186002822,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -53,6 +101,11 @@
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 7.518766756032171,
   "entered_top5": false,
   "exited_top5": false
 }

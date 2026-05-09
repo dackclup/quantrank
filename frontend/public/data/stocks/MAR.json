@@ -5,7 +5,7 @@
   "industry": "Hotels, Resorts & Cruise Lines",
   "market_cap": 93898117874.52826,
   "current_price": 353.18,
-  "rank": 391,
+  "rank": 393,
   "composite_score": 43.35,
   "pillar_scores": {
     "quality": 31.77,
@@ -33,9 +33,57 @@
     "eps_diluted": 2.43,
     "shares_outstanding": 265864771.0,
     "market_cap": 93898117874.52826,
-    "pe_ratio_ttm": 145.34156077192642
+    "pe_ratio_ttm": 145.34156077192642,
+    "goodwill": 8873000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 183.0990739896236,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": 146.85324186469015,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 95.97914665220281,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 146.85324186469015,
+    "max": 183.0990739896236,
+    "low": 95.97914665220281,
+    "high": 183.0990739896236,
+    "mos_pct": -140.49860131872305,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -52,6 +100,11 @@
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

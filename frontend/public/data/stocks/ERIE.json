@@ -5,15 +5,15 @@
   "industry": "Insurance Brokers",
   "market_cap": null,
   "current_price": 215.9,
-  "rank": 107,
-  "composite_score": 57.77,
+  "rank": 161,
+  "composite_score": 54.78,
   "pillar_scores": {
-    "quality": 75.67,
+    "quality": 66.67,
     "value": 57.67,
     "growth": 65.67,
     "momentum": 13.55,
     "health": 77.37,
-    "profitability": 54.67,
+    "profitability": 46.44,
     "technical": 36.45,
     "risk": 29.65,
     "sentiment": null,
@@ -33,9 +33,57 @@
     "eps_diluted": 491.0,
     "shares_outstanding": null,
     "market_cap": null,
-    "pe_ratio_ttm": 0.43971485518632253
+    "pe_ratio_ttm": 0.43971485518632253,
+    "goodwill": null
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 26576.373771712042,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 26576.373771712042,
+    "max": null,
+    "low": 26576.373771712042,
+    "high": 26576.373771712042,
+    "mos_pct": 99.18762433223193,
+    "valuation_warnings": [
+      "extreme_multiples_pe_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -55,6 +103,11 @@
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_multiples_pe_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

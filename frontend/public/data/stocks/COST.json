@@ -5,7 +5,7 @@
   "industry": "Consumer Staples Merchandise Retail",
   "market_cap": 447592042930.9082,
   "current_price": 1008.79,
-  "rank": 108,
+  "rank": 102,
   "composite_score": 57.76,
   "pillar_scores": {
     "quality": 76.39,
@@ -33,9 +33,58 @@
     "eps_diluted": 9.08,
     "shares_outstanding": 443692000.0,
     "market_cap": 447592042930.9082,
-    "pe_ratio_ttm": 111.10021784442112
+    "pe_ratio_ttm": 111.10021784442112,
+    "goodwill": 994000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 160.36469177888657,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 525.8477908140861,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 323.6410381964115,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 656.5099946778328,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 120.53839656991374,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 217.23946401314794,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 270.4402511047797,
+    "max": 656.5099946778328,
+    "low": 120.53839656991374,
+    "high": 656.5099946778328,
+    "mos_pct": -273.01769019453286,
+    "valuation_warnings": [
+      "extreme_graham_estimate",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -50,6 +99,12 @@
     "latest_filed_date": "2026-03-11"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_graham_estimate",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 70.07789187093749,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -5,7 +5,7 @@
   "industry": "Diversified Support Services",
   "market_cap": 66790505038.29956,
   "current_price": 166.97,
-  "rank": 85,
+  "rank": 78,
   "composite_score": 60.04,
   "pillar_scores": {
     "quality": 87.34,
@@ -33,9 +33,59 @@
     "eps_diluted": 3.65,
     "shares_outstanding": 400015000.0,
     "market_cap": 66790505038.29956,
-    "pe_ratio_ttm": 45.74520581389127
+    "pe_ratio_ttm": 45.74520581389127,
+    "goodwill": 3499028000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 19.105555966522417,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 429.4547150555779,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 83.3220536786054,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 365.2014088939572,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 3.856166935591498,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 35.83459245252689,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 59.578323065566146,
+    "max": 429.4547150555779,
+    "low": 3.856166935591498,
+    "high": 429.4547150555779,
+    "mos_pct": -180.2529387021385,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_graham_estimate",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -49,6 +99,13 @@
     "latest_filed_date": "2026-04-07"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_graham_estimate",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 1.495686411759559,
   "entered_top5": false,
   "exited_top5": false
 }

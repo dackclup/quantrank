@@ -5,7 +5,7 @@
   "industry": "Home Improvement Retail",
   "market_cap": 128581198287.96387,
   "current_price": 229.2,
-  "rank": 249,
+  "rank": 252,
   "composite_score": 50.22,
   "pillar_scores": {
     "quality": 44.79,
@@ -33,9 +33,57 @@
     "eps_diluted": 11.85,
     "shares_outstanding": 561000000.0,
     "market_cap": 128581198287.96387,
-    "pe_ratio_ttm": 19.34177189436643
+    "pe_ratio_ttm": 19.34177189436643,
+    "goodwill": 3945000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 916.9673086459558,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": 739.3389238689533,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 106.08914652659648,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 739.3389238689533,
+    "max": 916.9673086459558,
+    "low": 106.08914652659648,
+    "high": 916.9673086459558,
+    "mos_pct": 68.99933311385246,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -51,6 +99,11 @@
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

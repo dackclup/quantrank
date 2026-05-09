@@ -5,15 +5,15 @@
   "industry": "Regional Banks",
   "market_cap": 32677346763.67569,
   "current_price": 16.12,
-  "rank": 461,
-  "composite_score": 36.92,
+  "rank": 465,
+  "composite_score": 37.39,
   "pillar_scores": {
     "quality": 35.33,
     "value": 39.11,
     "growth": 15.33,
     "momentum": 38.0,
     "health": 53.09,
-    "profitability": 44.67,
+    "profitability": 52.22,
     "technical": 34.66,
     "risk": 50.8,
     "sentiment": null,
@@ -33,9 +33,57 @@
     "eps_diluted": 0.25,
     "shares_outstanding": 2027130587.0,
     "market_cap": 32677346763.67569,
-    "pe_ratio_ttm": 64.4800033569336
+    "pe_ratio_ttm": 64.4800033569336,
+    "goodwill": 9527000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 17.410696657317295,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 13.432340270333778,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 33.212860516049176,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 17.410696657317295,
+    "max": 33.212860516049176,
+    "low": 13.432340270333778,
+    "high": 33.212860516049176,
+    "mos_pct": 7.413234768761816,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -61,6 +109,11 @@
     "sloan_accruals_top_decile",
     "net_issuance_top_decile"
   ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 10.498090323571246,
   "entered_top5": false,
   "exited_top5": false
 }

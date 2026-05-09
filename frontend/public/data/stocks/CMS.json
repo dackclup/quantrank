@@ -5,10 +5,10 @@
   "industry": "Multi-Utilities",
   "market_cap": 22429229188.537598,
   "current_price": 72.61,
-  "rank": 178,
-  "composite_score": 54.13,
+  "rank": 198,
+  "composite_score": 52.8,
   "pillar_scores": {
-    "quality": 67.74,
+    "quality": 62.9,
     "value": 52.15,
     "growth": 52.42,
     "momentum": 62.9,
@@ -33,9 +33,55 @@
     "eps_diluted": 1.1,
     "shares_outstanding": 308900000.0,
     "market_cap": 22429229188.537598,
-    "pe_ratio_ttm": 66.00909146395595
+    "pe_ratio_ttm": 66.00909146395595,
+    "goodwill": null
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 47.628127103857146,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 95.60833613077801,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 63.786067553421915,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 120.71336499161853,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": 31.243337293810924,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_utilities",
+        "tier_used": null
+      }
+    },
+    "median": 63.786067553421915,
+    "max": 120.71336499161853,
+    "low": 31.243337293810924,
+    "high": 120.71336499161853,
+    "mos_pct": -13.833637023538806,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -55,6 +101,9 @@
     "latest_filed_date": "2026-04-28"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 30.644221430883782,
   "entered_top5": false,
   "exited_top5": false
 }

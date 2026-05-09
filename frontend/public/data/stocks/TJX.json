@@ -5,7 +5,7 @@
   "industry": "Apparel Retail",
   "market_cap": 169783014975.4729,
   "current_price": 153.36,
-  "rank": 91,
+  "rank": 83,
   "composite_score": 59.19,
   "pillar_scores": {
     "quality": 69.79,
@@ -33,9 +33,57 @@
     "eps_diluted": 4.87,
     "shares_outstanding": 1107087991.0,
     "market_cap": 169783014975.4729,
-    "pe_ratio_ttm": 31.49075987892229
+    "pe_ratio_ttm": 31.49075987892229,
+    "goodwill": 96000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 29.80408460166555,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 376.84648043086963,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 57.27794961351214,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 206.9028427310404,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 40.90867967469313,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 52.054929927900616,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 54.666439770706376,
+    "max": 376.84648043086963,
+    "low": 29.80408460166555,
+    "high": 376.84648043086963,
+    "mos_pct": -180.53775086434518,
+    "valuation_warnings": [
+      "extreme_graham_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -50,6 +98,11 @@
     "latest_filed_date": "2026-03-31"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_graham_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 9.11761312746459,
   "entered_top5": false,
   "exited_top5": false
 }

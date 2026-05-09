@@ -5,15 +5,15 @@
   "industry": "Life & Health Insurance",
   "market_cap": 13932323256.496536,
   "current_price": 151.08,
-  "rank": 62,
-  "composite_score": 61.8,
+  "rank": 73,
+  "composite_score": 60.22,
   "pillar_scores": {
-    "quality": 59.67,
-    "value": 75.33,
+    "quality": 59.33,
+    "value": 67.11,
     "growth": 47.33,
     "momentum": 70.17,
     "health": 63.98,
-    "profitability": 43.11,
+    "profitability": 48.89,
     "technical": 48.85,
     "risk": 59.16,
     "sentiment": null,
@@ -33,9 +33,55 @@
     "eps_diluted": 3.39,
     "shares_outstanding": 92218183.0,
     "market_cap": 13932323256.496536,
-    "pe_ratio_ttm": 44.566372221550054
+    "pe_ratio_ttm": 44.566372221550054,
+    "goodwill": 490446000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 128.12169314268692,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 183.49064579654546,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 134.1475814448808,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 84.52552278752543,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 131.13463729378387,
+    "max": 183.49064579654546,
+    "low": 84.52552278752543,
+    "high": 183.49064579654546,
+    "mos_pct": -15.209836965184701,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -55,6 +101,9 @@
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 60.66211475886485,
   "entered_top5": false,
   "exited_top5": false
 }

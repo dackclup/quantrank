@@ -5,7 +5,7 @@
   "industry": "Industrial Machinery & Supplies & Components",
   "market_cap": 26231758551.822052,
   "current_price": 492.58,
-  "rank": 266,
+  "rank": 271,
   "composite_score": 49.24,
   "pillar_scores": {
     "quality": 43.99,
@@ -33,9 +33,55 @@
     "eps_diluted": 3.41,
     "shares_outstanding": 53253805.0,
     "market_cap": 26231758551.822052,
-    "pe_ratio_ttm": 144.45160896547378
+    "pe_ratio_ttm": 144.45160896547378,
+    "goodwill": 3059600000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 406.23415791487497,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 320.60870034034195,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 385.0371988466661,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 385.0371988466661,
+    "max": 406.23415791487497,
+    "low": 320.60870034034195,
+    "high": 406.23415791487497,
+    "mos_pct": -27.930492962168678,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -49,6 +95,9 @@
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

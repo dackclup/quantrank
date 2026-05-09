@@ -5,7 +5,7 @@
   "industry": "Asset Management & Custody Banks",
   "market_cap": 89814841978.5,
   "current_price": 130.5,
-  "rank": 234,
+  "rank": 235,
   "composite_score": 51.3,
   "pillar_scores": {
     "quality": 47.33,
@@ -33,9 +33,57 @@
     "eps_diluted": 2.24,
     "shares_outstanding": 688236337.0,
     "market_cap": 89814841978.5,
-    "pe_ratio_ttm": 58.25892857142857
+    "pe_ratio_ttm": 58.25892857142857,
+    "goodwill": 16734000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 68.5209330796559,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 126.8847135192328,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 193.46357583986597,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 126.8847135192328,
+    "max": 193.46357583986597,
+    "low": 68.5209330796559,
+    "high": 193.46357583986597,
+    "mos_pct": -2.849268742068919,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -62,6 +110,11 @@
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 36.6734487022588,
   "entered_top5": false,
   "exited_top5": false
 }

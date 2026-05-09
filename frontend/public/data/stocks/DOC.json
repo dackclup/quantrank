@@ -5,7 +5,7 @@
   "industry": "Health Care REITs",
   "market_cap": 13654967959.485046,
   "current_price": 19.64,
-  "rank": 429,
+  "rank": 432,
   "composite_score": 40.66,
   "pillar_scores": {
     "quality": 27.82,
@@ -33,9 +33,57 @@
     "eps_diluted": 0.28,
     "shares_outstanding": 695263156.0,
     "market_cap": 13654967959.485046,
-    "pe_ratio_ttm": 70.14285496303013
+    "pe_ratio_ttm": 70.14285496303013,
+    "goodwill": 68529000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 8.7757106860271,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 35.15215388746314,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 27.08308669851561,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 27.08308669851561,
+    "max": 35.15215388746314,
+    "low": 8.7757106860271,
+    "high": 35.15215388746314,
+    "mos_pct": 27.48241879414402,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -58,6 +106,11 @@
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 10.067071639849702,
   "entered_top5": false,
   "exited_top5": false
 }

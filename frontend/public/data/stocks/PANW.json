@@ -5,7 +5,7 @@
   "industry": "Systems Software",
   "market_cap": 146139643432.6172,
   "current_price": 207.88,
-  "rank": 405,
+  "rank": 408,
   "composite_score": 42.49,
   "pillar_scores": {
     "quality": 41.44,
@@ -33,9 +33,59 @@
     "eps_diluted": 1.07,
     "shares_outstanding": 703000000.0,
     "market_cap": 146139643432.6172,
-    "pe_ratio_ttm": 194.28037839515187
+    "pe_ratio_ttm": 194.28037839515187,
+    "goodwill": 6931000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 11.4664827909877,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 75.79721696113886,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 132.66842375614348,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 82.13514618288136,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 2.129884833167636,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 75.79721696113886,
+    "max": 132.66842375614348,
+    "low": 2.129884833167636,
+    "high": 132.66842375614348,
+    "mos_pct": -174.2580970873803,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_graham_estimate",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -51,6 +101,13 @@
   "risk_flags": [
     "net_issuance_top_decile"
   ],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_graham_estimate",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 1.7254623044096729,
   "entered_top5": false,
   "exited_top5": false
 }

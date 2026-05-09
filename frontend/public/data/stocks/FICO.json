@@ -5,7 +5,7 @@
   "industry": "Application Software",
   "market_cap": 26230170000.0,
   "current_price": 1126.0,
-  "rank": 274,
+  "rank": 276,
   "composite_score": 48.85,
   "pillar_scores": {
     "quality": 38.01,
@@ -33,9 +33,58 @@
     "eps_diluted": 17.73,
     "shares_outstanding": 23295000.0,
     "market_cap": 26230170000.0,
-    "pe_ratio_ttm": 63.50817822899041
+    "pe_ratio_ttm": 63.50817822899041,
+    "goodwill": 781390000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 2032.110342239749,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": 1993.9602574633673,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 131.92445651366117,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 1993.9602574633673,
+    "max": 2032.110342239749,
+    "low": 131.92445651366117,
+    "high": 2032.110342239749,
+    "mos_pct": 43.52946625764497,
+    "valuation_warnings": [
+      "extreme_dcf_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -48,6 +97,12 @@
     "latest_filed_date": "2026-04-28"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_dcf_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

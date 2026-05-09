@@ -5,7 +5,7 @@
   "industry": "Technology Hardware, Storage & Peripherals",
   "market_cap": 20797560279.84619,
   "current_price": 22.68,
-  "rank": 419,
+  "rank": 421,
   "composite_score": 41.38,
   "pillar_scores": {
     "quality": 19.86,
@@ -33,9 +33,57 @@
     "eps_diluted": 0.58,
     "shares_outstanding": 917000000.0,
     "market_cap": 20797560279.84619,
-    "pe_ratio_ttm": 39.10344880202721
+    "pe_ratio_ttm": 39.10344880202721,
+    "goodwill": 8724000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 27.327452625276283,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": 38.25701445039035,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 32.79223353783332,
+    "max": 38.25701445039035,
+    "low": 27.327452625276283,
+    "high": 38.25701445039035,
+    "mos_pct": 30.837281092764755,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -48,6 +96,11 @@
     "latest_filed_date": "2026-02-25"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

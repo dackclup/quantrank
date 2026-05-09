@@ -5,7 +5,7 @@
   "industry": "Homebuilding",
   "market_cap": 22654821752.049957,
   "current_price": 117.55,
-  "rank": 152,
+  "rank": 146,
   "composite_score": 55.71,
   "pillar_scores": {
     "quality": 59.64,
@@ -33,9 +33,55 @@
     "eps_diluted": 1.79,
     "shares_outstanding": 192724978.0,
     "market_cap": 22654821752.049957,
-    "pe_ratio_ttm": 65.67039276634515
+    "pe_ratio_ttm": 65.67039276634515,
+    "goodwill": 40377000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 137.0873961441384,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 138.51236139040176,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 438.35524609665623,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 104.62363037938394,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 113.93762405745628,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 137.0873961441384,
+    "max": 438.35524609665623,
+    "low": 104.62363037938394,
+    "high": 438.35524609665623,
+    "mos_pct": 14.251779260464112,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -58,6 +104,9 @@
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 66.76597986172814,
   "entered_top5": false,
   "exited_top5": false
 }

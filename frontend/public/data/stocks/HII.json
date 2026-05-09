@@ -5,7 +5,7 @@
   "industry": "Aerospace & Defense",
   "market_cap": 12454400731.251434,
   "current_price": 316.28,
-  "rank": 208,
+  "rank": 207,
   "composite_score": 52.15,
   "pillar_scores": {
     "quality": 37.66,
@@ -33,9 +33,58 @@
     "eps_diluted": 3.79,
     "shares_outstanding": 39377769.0,
     "market_cap": 12454400731.251434,
-    "pe_ratio_ttm": 83.45118701300709
+    "pe_ratio_ttm": 83.45118701300709,
+    "goodwill": 2650000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 127.75370223593433,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 378.35597403183317,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 886.3706060741971,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 268.35738574085343,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": 51.44523998224593,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 71.94187796882807,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 198.05554398839388,
+    "max": 886.3706060741971,
+    "low": 51.44523998224593,
+    "high": 886.3706060741971,
+    "mos_pct": -59.69257533019676,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -50,6 +99,12 @@
   "risk_flags": [
     "net_issuance_top_decile"
   ],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 46.87924295558745,
   "entered_top5": false,
   "exited_top5": false
 }

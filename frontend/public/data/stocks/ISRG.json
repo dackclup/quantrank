@@ -5,7 +5,7 @@
   "industry": "Health Care Equipment",
   "market_cap": 159501263134.76562,
   "current_price": 450.06,
-  "rank": 366,
+  "rank": 373,
   "composite_score": 44.34,
   "pillar_scores": {
     "quality": 57.2,
@@ -33,9 +33,58 @@
     "eps_diluted": 2.28,
     "shares_outstanding": 354400000.0,
     "market_cap": 159501263134.76562,
-    "pe_ratio_ttm": 197.39473577131307
+    "pe_ratio_ttm": 197.39473577131307,
+    "goodwill": 613200000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 82.60129939292449,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 162.05578541180893,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 143.86661172968076,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 179.61109990916293,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": 54.606930324932094,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 143.86661172968076,
+    "max": 179.61109990916293,
+    "low": 54.606930324932094,
+    "high": 179.61109990916293,
+    "mos_pct": -212.83144306215908,
+    "valuation_warnings": [
+      "extreme_graham_estimate",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -50,6 +99,12 @@
     "latest_filed_date": "2026-04-22"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_graham_estimate",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 47.08747178329571,
   "entered_top5": false,
   "exited_top5": false
 }

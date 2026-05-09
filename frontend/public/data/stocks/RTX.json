@@ -33,9 +33,60 @@
     "eps_diluted": 1.51,
     "shares_outstanding": 1381700.0,
     "market_cap": 243303547.94006348,
-    "pe_ratio_ttm": 116.6158916144971
+    "pe_ratio_ttm": 116.6158916144971,
+    "goodwill": 53276000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 130.57691895477046,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 330042.8527406485,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 278462.73938933195,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 33394.332823267214,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 155928.53610629958,
+    "max": 130.57691895477046,
+    "low": 130.57691895477046,
+    "high": 330042.8527406485,
+    "mos_pct": 99.88707006380292,
+    "valuation_warnings": [
+      "extreme_multiples_pb_estimate",
+      "extreme_multiples_ev_ebitda_estimate",
+      "extreme_dcf_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -48,6 +99,14 @@
     "latest_filed_date": "2026-04-21"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_multiples_pb_estimate",
+    "extreme_multiples_ev_ebitda_estimate",
+    "extreme_dcf_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

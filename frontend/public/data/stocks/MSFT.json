@@ -5,7 +5,7 @@
   "industry": "Systems Software",
   "market_cap": 3083926443725.586,
   "current_price": 415.12,
-  "rank": 69,
+  "rank": 62,
   "composite_score": 61.25,
   "pillar_scores": {
     "quality": 69.52,
@@ -33,9 +33,57 @@
     "eps_diluted": 13.14,
     "shares_outstanding": 7429000000.0,
     "market_cap": 3083926443725.586,
-    "pe_ratio_ttm": 31.592084864321727
+    "pe_ratio_ttm": 31.592084864321727,
+    "goodwill": 119661000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 101.99773381597271,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 956.7441251395217,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 626.7029712698786,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 1270.501277206806,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 63.88113174181909,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 111.07796296573981,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 368.89046711780924,
+    "max": 1270.501277206806,
+    "low": 63.88113174181909,
+    "high": 1270.501277206806,
+    "mos_pct": -12.532047347435075,
+    "valuation_warnings": [
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -46,6 +94,11 @@
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 39.497105936195986,
   "entered_top5": false,
   "exited_top5": false
 }

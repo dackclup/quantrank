@@ -5,7 +5,7 @@
   "industry": "Distributors",
   "market_cap": 6842900575.7712555,
   "current_price": 187.77,
-  "rank": 474,
+  "rank": 478,
   "composite_score": 35.62,
   "pillar_scores": {
     "quality": 43.75,
@@ -33,9 +33,59 @@
     "eps_diluted": 1.45,
     "shares_outstanding": 36442991.0,
     "market_cap": 6842900575.7712555,
-    "pe_ratio_ttm": 129.49655467066273
+    "pe_ratio_ttm": 129.49655467066273,
+    "goodwill": 706996000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 32.47691550873077,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 109.25664908845852,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 202.79863259131167,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 55.726901636219736,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 13.285870148125511,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 123.2859103898164,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 82.49177536233913,
+    "max": 202.79863259131167,
+    "low": 13.285870148125511,
+    "high": 202.79863259131167,
+    "mos_pct": -127.62269747219628,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_graham_estimate",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -50,6 +100,13 @@
     "latest_filed_date": "2026-04-28"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_graham_estimate",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 3.961502501262863,
   "entered_top5": false,
   "exited_top5": false
 }
