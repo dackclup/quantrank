@@ -7,6 +7,56 @@
 
 ---
 
+## ⚠️ CRITICAL LICENSE RE-VERIFICATION (2026-05-09)
+
+After deep research on free-tier compatibility, three license corrections
+from this document's original 2026-05-08 composition:
+
+### mlfinlab — DO NOT USE
+
+**Status corrected**: Earlier sections (2.4, 2.7, 2.8, etc.) said
+"AGPL-3.0 — verify". Actual status is **all-rights-reserved** with a
+commercial license required (Hudson & Thames). This is incompatible with
+QuantRank's MIT licensing and free-tier ethos.
+
+**Action**:
+- Do NOT add `mlfinlab` to any `pyproject.toml` dependency list
+- Do NOT use any code from the mlfinlab repository
+- Reimplement the three algorithms QuantRank needs from primary papers:
+  - **Triple-Barrier labels** — López de Prado 2018, Ch. 3. ~150 LOC.
+  - **Meta-Labeling** — same source, Ch. 3.7. ~80 LOC.
+  - **Purged + Embargoed CV** — Ch. 7. Use `skfolio.model_selection.
+    CombinatorialPurgedCV` (BSD-3-Clause) instead.
+- Algorithms are described in publicly-available papers; not patented.
+
+### giotto-tda — Apache 2.0 (NOT AGPL)
+
+**Status corrected**: Earlier section 2.13 / WORKFLOW Phase 7 said
+"AGPL-3 — verify". Actual status is **Apache 2.0**, fully compatible.
+No license concern.
+
+### JKP data — CC BY-NC 4.0 (educational use only)
+
+**Status confirmed**: JKP **data** (`bkelly-lab/jkp-data` factor returns
+CSV) is CC BY-NC 4.0. JKP **code** is MIT.
+
+**Action**:
+- For QuantRank's current educational static-site use → ✅ JKP data OK
+- If commercializing QuantRank later → switch to OSAP raw data (no NC
+  restriction) and reconstruct factor returns
+
+### Loughran-McDonald academic dictionary — academic-use OK
+
+**Status confirmed**: Free for academic research; commercial license
+required for production-commercial use.
+
+**Action**:
+- For QuantRank's current educational static-site → ✅ OK
+- State explicitly in README v1.0 as a license attribution
+- If commercializing → reach out to Notre Dame for commercial license
+
+---
+
 ## Table of Contents
 
 1. **Why Option B (Research-Backed Roadmap)**
@@ -1197,7 +1247,242 @@ The honest expectation:
 
 That's still a net win. **3-7% net alpha** is realistic if even half the additions work.
 
-**Last verified**: This document composed 2026-05-08. All papers cited from training-time familiarity. Re-verify current data availability and license terms before each phase actually starts.
+**Last verified**: This document composed 2026-05-08; license alerts and
+Defense Playbook section added 2026-05-09. All papers cited from training-
+time familiarity. Re-verify current data availability and license terms
+before each phase actually starts.
+
+---
+
+## DEFENSE PLAYBOOK — Research-Validated Defenses Against Analysis Errors
+**Composed 2026-05-09 from comprehensive deep research on three layers of
+analysis errors (data integrity, computation, methodology). Mapped to
+QuantRank phases per cost/value/dependency optimization.**
+
+### Three Defense Modes
+
+QuantRank operates in **three defense modes** by v1.0:
+
+1. **VETO** — exclude flagged stock from Top-5 badge (composite score
+   unchanged). Currently 2 active (Altman Z″, Sloan accruals); 3 by v1.0.
+2. **GUARD** — return null + flag (e.g., null fair_price for stale
+   filings). 4 numerical guards by v1.0.
+3. **ANNOTATE** — warning only, no score change. 5+ flags by v1.0.
+
+### Architectural Principle (Locked)
+
+Risk overlays are **annotate-and-veto-Top-N**, never scoring inputs.
+Empirical evidence (Beneish & Vorst 2021; Bao-Ke 2020; McLean-Pontiff
+2016):
+
+- Fraud-detection FP rates ≥30% in broad market; subtracting from score
+  introduces more error than it removes
+- Anomaly returns decay 26% OOS + 32% post-publication = 58% cumulative
+- Multiple-defense stacking shows diminishing returns: marginal AAER
+  capture < 5% beyond 4 fraud signals
+
+**Rational use** = screening at the top of the ranking + risk disclosure
+to user, not penalizing every name.
+
+### Defense Schedule (v1.0 → v2.0)
+
+#### PR 3c (Tier-1, ~260 LOC)
+
+1. **Net Stock Issuance veto** — Pontiff-Woodgate 2008 *JF*. NSI =
+   ln(shares_t / shares_{t-12m}). Top decile within sector → flag
+   `net_issuance_top_decile`. 80 LOC. Joins existing 2 vetoes → 3 total.
+2. **Tangible BVPS (full intangibles netting)** — TBVPS = (equity −
+   goodwill − intangibles) / shares. Used in Graham + RIM (NOT in Value
+   pillar's TTM Graham). Flag `goodwill_heavy` if TBVPS/BVPS < 0.5. 50 LOC.
+3. **Stale filing 120/180d** — `filing_lag_days > 180` → null all
+   fair_price + `stale_filing_hard` risk_flag. `> 120` → soft
+   `stale_filing_soft` valuation_warning. 40 LOC.
+4. **Multi-method outlier guard 5×** — any method estimate > 5× or
+   < 0.2× current_price → exclude from `max_fair_price` + warning.
+   Still included in median (median is robust). 30 LOC.
+5. **Terminal g constraint** — `g ≤ min(0.03, WACC − 0.01)`. 100bp
+   buffer below WACC prevents terminal-value blow-up. 20 LOC.
+6. **Quality pillar sector exclusions extended** — Financials and
+   Utilities skip Magic Formula + EBIT-based ROIC + gross profitability
+   + EV/EBITDA. REITs use FFO/AFFO substitutes (placeholder for Phase 4).
+   40 LOC.
+
+#### PR 3d (Tier-2, ~270 LOC)
+
+7. **Going-concern phrase scan** — Mayew-Sethuraman-Venkatachalam 2015
+   *TAR*. Loughran-McDonald academic dictionary phrases ("substantial
+   doubt", "going concern", etc.) in 10-K Item 7. ANNOTATE. 120 LOC.
+8. **8-K Item 4.02 hard veto** — Schroeder 2024 SSRN. Restatement
+   filing in trailing 12 months → exclude from Top-5. 100 LOC.
+9. **8-K Item 4.01 auditor change soft flag** — Reg S-K Item 304.
+   Auditor dismissal in trailing 12m + declining ROE → ANNOTATE. 50 LOC.
+
+#### PR 3e (Tier-3, ~370 LOC)
+
+10. **Beneish M-Score full 8-ratio** — Beneish 1999 *FAJ*. DSRI/GMI/AQI
+    /SGI/DEPI/SGAI/TATA/LVGI composite, threshold M > -2.22 (sector-
+    relative). ANNOTATE-only — Sloan accruals already encodes much of
+    TATA. 150 LOC.
+11. **Dechow F-Score** — Dechow et al. 2011 *CAR*. Parallel signal to
+    Beneish (different ratio inputs). ANNOTATE-only. 100 LOC.
+12. **Honest Limitations section** in README — frauds we cannot catch,
+    realistic FP/FN rates, decay reality, free-data fragility,
+    "QuantRank is a risk-stratifier and screener, not a fraud
+    guarantor". Doc only.
+
+#### Phase 4 (~500 LOC)
+
+13. **Cross-source validator** — yfinance vs SEC equity > 5% delta →
+    flag `cross_source_disagreement`. Catches 80% of yfinance scraper
+    drift. GUARD. 150 LOC.
+14. **PBO + Deflated Sharpe gating** — Bailey-Lopez de Prado 2014
+    Deflated Sharpe + Bailey-Borwein-Lopez de Prado-Zhu 2016 PBO. Hard
+    veto: PBO > 0.5 OR DSR < 0 → reject factor for production. Library:
+    `pypbo` (esvhd/pypbo, MIT) + custom DSR. 200 LOC.
+15. **IC decay monitor** — McLean-Pontiff 2016 *JF*. Rolling 12m and
+    36m IC per pillar; alert if < 50% historical mean for 6+ consecutive
+    months. 150 LOC.
+
+#### Phase 5 (~550 LOC)
+
+16. **Bao-Ke ML fraud overlay** — Bao, Ke, Li, Yu, Zhang 2020 *JAR*.
+    RUSBoost on 28 raw accounting numbers (not ratios). NDCG 50% better
+    than Dechow logit. ANNOTATE-only flag `bao_ml_fraud_high`. 300 LOC.
+17. **MAPIE conformal prediction wrappers** — Angelopoulos-Bates 2021.
+    Distribution-free 90% prediction intervals around ML pillar score.
+    Library: `mapie` (BSD-3-Clause). 150 LOC.
+18. **Purged + Embargoed CV** — López de Prado 2018, Ch. 7. Mandatory
+    for ALL Phase 5+ ML training. Library: `skfolio.model_selection.
+    CombinatorialPurgedCV` (BSD-3-Clause). Embargo = 5% of sample. 100 LOC.
+
+#### Phase 6 (~1450 LOC)
+
+19. **Lazy Prices** — Cohen-Malloy-Nguyen 2020 *JF*. 22% reported annual
+    alpha from YoY 10-K text similarity changes. Easy: cosine similarity
+    on Item 1A + Item 7. ⚠️ Expect McLean-Pontiff decay by 2026; validate
+    on recent OOS data. ANNOTATE. 250 LOC.
+20. **FinBERT MD&A classifier** — Loughran-McDonald + FinBERT
+    (Apache 2.0). Forward-looking vs negative tone classification in
+    10-K Item 7. ANNOTATE. 400 LOC.
+21. **Whisper Vocal Delivery Quality** — Baik-Kim-Kim-Yoon 2025 *JAE*.
+    Vocal features (jitter, shimmer, MFCC) on earnings calls. Compute-
+    heavy (Modal $30/mo). ANNOTATE. 600 LOC.
+22. **Insider routine vs opportunistic classifier** — Cohen-Malloy-
+    Pomorski 2012 *JF*. Routine = same calendar month for 3+ years (no
+    signal). Only opportunistic predict returns. ANNOTATE. 200 LOC.
+
+#### Phase 7 (~550 LOC)
+
+23. **HMM 3-state regime gating** — Wang et al. 2020 *JRFM*. Inputs:
+    monthly returns + VIX + credit spreads + 200-DMA breadth. Down-
+    weight momentum / up-weight quality+low-vol in stress regime.
+    Library: `hmmlearn` (BSD-3-Clause). 250 LOC.
+24. **Persistent-homology TDA crash detector** — Gidea-Katz 2018.
+    L¹/L² norms of persistence landscape rise *before* crashes. Library:
+    `giotto-tda` (Apache 2.0). 300 LOC.
+
+#### Phase 8 (~150 LOC)
+
+25. **Bonferroni multi-test thresholds** — Harvey-Liu-Zhu 2016. Bump
+    Beneish cutoff from −2.22 to −2.50 for S&P 1500 universe (3× more
+    multiple comparisons). t-hurdle 1.96 → 2.78. 100 LOC.
+26. **Liquidity backstop** — exclude < $5M ADV stocks from rankings
+    (microstructure noise dominates). GUARD. 50 LOC.
+
+### Honest Limitations (User-Facing Required)
+
+Per Bao-Ke 2020 + Beneish-Vorst 2021 + McLean-Pontiff 2016:
+
+#### Frauds We Cannot Catch (No Quantitative System Can)
+
+1. **Madoff-style total fabrication** — fictitious revenue, cash,
+   customers, bank confirmations
+2. **Off-shore related-party round-trips** — Wirecard's Asian
+   "third-party acquirers"
+3. **Audit-firm complicity** — when the audit itself is fraudulent
+4. **Post-acquisition baseline reset** — fraud disguised by an
+   acquisition that resets accounting
+
+#### Realistic Error Rates
+
+- Beneish M-Score: ~30% type-I FP at −2.22 cutoff (broad market)
+  - In S&P 500 (size effect): ~15-20% FP
+  - Type-II (missed frauds): ~25-40%
+- Bao-Ke ML: NDCG ~50% better than Dechow but does NOT eliminate FP/FN
+  trade-off (Beneish 2022 confirm)
+- All defense flags are **risk stratifiers**, not fraud verdicts
+
+#### Decay Reality
+
+- Out-of-sample: 26% lower returns vs in-sample (McLean-Pontiff 2016)
+- Post-publication: additional 32% lower (publication-informed trading)
+- **Cumulative: 58%** — plan for it via IC decay monitor (Phase 4+)
+
+#### Free-Data Fragility
+
+- yfinance is unofficial scraper; multiple 2023-2024 incidents broke
+  fundamental endpoints
+- SEC EDGAR XBRL has documented 2025 taxonomy drift
+- Cross-source validator (Phase 4) catches large discrepancies but not
+  small systematic biases
+
+#### Diminishing Returns
+
+- Marginal AAER capture < 5% beyond 4 fraud signals (Beneish + Dechow +
+  Bao-ML + textual)
+- After v2.0: **rotate signals based on IC decay, do not stack**
+- Adding more defenses produces more false positives without
+  proportional true positives
+
+#### Required User-Facing Disclaimer (verbatim, in README v1.0)
+
+> "QuantRank is an educational research tool, not investment advice.
+> Quantitative fraud detection has irreducible false-positive and
+> false-negative rates; flags indicate elevated risk, not confirmed
+> fraud. Past factor performance does not predict future returns;
+> published anomalies typically decay 30-60% post-publication. Free-
+> tier data sources are subject to occasional errors; cross-check
+> material decisions against primary SEC filings."
+
+### Bibliography (Defense-Specific)
+
+- Beneish, M.D. (1999). "The Detection of Earnings Manipulation."
+  *Financial Analysts Journal*, 55(5).
+- Pontiff, J., Woodgate, A. (2008). "Share Issuance and Cross-Sectional
+  Returns." *Journal of Finance*, 63(2), 921-945.
+- Dechow, P., Ge, W., Larson, C., Sloan, R. (2011). "Predicting Material
+  Accounting Misstatements." *Contemporary Accounting Research*, 28(1),
+  17-82.
+- Bao, Y., Ke, B., Li, B., Yu, Y.J., Zhang, J. (2020). "Detecting
+  Accounting Fraud in Publicly Traded U.S. Firms Using a Machine
+  Learning Approach." *Journal of Accounting Research*, 58(1), 199-235.
+- Cohen, L., Malloy, C., Nguyen, Q. (2020). "Lazy Prices." *Journal of
+  Finance*, 75(3), 1371-1415.
+- Bailey, D.H., Lopez de Prado, M. (2014). "The Deflated Sharpe Ratio."
+  *Journal of Portfolio Management*, 40(5), 94-107.
+- Bailey, D.H., Borwein, J., Lopez de Prado, M., Zhu, Q.J. (2016). "The
+  Probability of Backtest Overfitting." *Journal of Computational
+  Finance*.
+- McLean, R.D., Pontiff, J. (2016). "Does Academic Research Destroy
+  Stock Return Predictability?" *Journal of Finance*, 71(1), 5-32.
+- Beneish, M.D., Vorst, P. (2021). "The Cost of Fraud Prediction
+  Errors."
+- López de Prado, M. (2018). *Advances in Financial Machine Learning*.
+  Wiley.
+- Mayew, W., Sethuraman, M., Venkatachalam, M. (2015). "MD&A Disclosure
+  and the Firm's Ability to Continue as a Going Concern." *The
+  Accounting Review*, 90(4).
+- Cohen, L., Malloy, C., Pomorski, L. (2012). "Decoding Inside
+  Information." *Journal of Finance*, 67(3), 1009-1043.
+- Baik, B., Kim, A.G., Kim, D.S., Yoon, S. (2025). "Vocal Delivery
+  Quality in Earnings Conference Calls." *Journal of Accounting and
+  Economics*, 80(1).
+- Angelopoulos, A.N., Bates, S. (2021). "A Gentle Introduction to
+  Conformal Prediction."
+- Gidea, M., Katz, Y. (2018). "Topological Data Analysis of Financial
+  Time Series: Landscapes of Crashes." *Physica A*, 491, 820-834.
+- Wang et al. (2020). "Regime-Switching Factor Investing with HMM."
+  *Journal of Risk and Financial Management*.
 
 ---
 

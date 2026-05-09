@@ -1,1539 +1,1179 @@
 # Stock Ranking App — Complete Knowledge Base
 **A unified, code-ready reference for building a state-of-the-art US equity ranking application**
 
-> This document is the consolidated project knowledge for an LLM coding agent (Claude Code) to implement a multi-pillar, multi-discipline stock ranking system. It combines (A) classical fundamental/technical/factor/risk techniques and (B) advanced ML, NLP, alternative-data, regime-detection, and validation techniques — all implementable with **free or low-cost data sources** for **weekly/monthly refresh**.
+> This document is the consolidated project knowledge for an LLM coding agent (Claude Code) to implement a multi-pillar, multi-discipline stock ranking system. Contains:
+> - **Parts I-V (Sections 1-29)**: Classical fundamental/technical/factor/risk techniques — 60+ academically-grounded techniques
+> - **Part VI (Sections 30-35)**: ⭐ NEW — Research-backed stretch additions for Option B roadmap (Phase 4+)
+>
+> All implementable with **free or low-cost data sources** for **weekly/monthly refresh**.
+
+> **Companion docs**: `SKILL.md` (architecture rules), `WORKFLOW.md` (phase plan), `RESEARCH_FINDINGS.md` (Option B research detail with full citations).
+
+---
+
+## ⚠️ READ FIRST: Honest Performance Ceiling
+
+Before building anything, internalize these realistic numbers:
+
+| Path | Net Alpha vs SPY | Sharpe Lift | CAGR | Time |
+|---|---|---|---|---|
+| **Buy & hold SPY** | 0% | baseline | ~10% | passive |
+| **Option A (DIY, Parts I-V only)** | 2-4% | +0.2 to +0.4 | 12-13% | ~5-6 wk |
+| **Option B (research-backed, +Part VI)** | 3-7% | +0.3 to +0.5 | 13-17% | ~7-8 wk |
+
+**Wide confidence interval**: [0%, +5%] on any 3-year window. ~25-30% probability of negative alpha in any given 3-year period due to factor crowding, regime change, post-publication decay.
+
+**Sources**: McLean & Pontiff (2016, JoF) — 35% post-publication decay; Hou-Xue-Zhang (2020, RFS) — 65% of anomalies fail at NYSE-breakpoint hurdle; Avramov-Cheng-Metzker (2023, MS) — ML alpha mostly disappears in S&P 1500 large-cap universe; Falck-Rej-Thesmar (2022, QF) — ~50% Sharpe drop post-publication.
+
+**Anything claiming >7% net alpha should trigger overfit suspicion.** See Section 28 + Section 35 caveats.
 
 ---
 
 ## Table of Contents
 
-**PART I — APP CONCEPT & ARCHITECTURE**
-1. [App Overview & Output](#part-i-1)
-2. [Recommended Tech Stack](#part-i-2)
-3. [End-to-End Architecture](#part-i-3)
-4. [Pillar Weighting & Scoring Philosophy](#part-i-4)
-5. [Free Data Stack Summary](#part-i-5)
+**PART I-V — CLASSICAL TECHNIQUES (Sections 1-29)**
+- Sections 1-11: Fundamental, Technical, Factor, Valuation analysis
+- Sections 12-20: Sentiment, ML, Advanced Quant, Macro/Regime, Behavioral
+- Sections 21-24: Composite scoring, validation
+- Sections 25-29: Implementation, accuracy expectations, caveats
 
-**PART II — CLASSICAL ANALYSIS TECHNIQUES (60+)**
-6. [Fundamental Analysis](#part-ii-6)
-7. [Technical Indicators](#part-ii-7)
-8. [Quantitative / Factor Investing](#part-ii-8)
-9. [Risk Metrics](#part-ii-9)
-10. [Valuation Models — Ensemble Fair Price](#part-ii-10)
-11. [Growth, Profitability, Financial Health](#part-ii-11)
-
-**PART III — ADVANCED TECHNIQUES**
-12. [Sentiment Analysis & Alternative Data](#part-iii-12)
-13. [Machine Learning Pipeline](#part-iii-13)
-14. [Advanced Quant — HRP, Black-Litterman, Kelly](#part-iii-14)
-15. [Macro & Regime Detection](#part-iii-15)
-16. [Microstructure / Volume / Flow](#part-iii-16)
-17. [Advanced Valuation (EVA, CFROI, Tobin's Q)](#part-iii-17)
-18. [Behavioral & Anomaly Factors](#part-iii-18)
-19. [Advanced Risk Analysis](#part-iii-19)
-20. [Corporate Events & Catalysts](#part-iii-20)
-
-**PART IV — SCORING, RANKING, VALIDATION**
-21. [Composite Score Construction](#part-iv-21)
-22. [Backtesting & Validation Framework](#part-iv-22)
-23. [Ensemble & Meta-Learning](#part-iv-23)
-24. [Performance Metrics for the App](#part-iv-24)
-
-**PART V — IMPLEMENTATION GUIDE**
-25. [Data Caching & Refresh Cadence](#part-v-25)
-26. [Rate-Limit Management](#part-v-26)
-27. [Suggested Database Schema](#part-v-27)
-28. [Realistic Accuracy Expectations](#part-v-28)
-29. [Caveats & Pitfalls](#part-v-29)
-
-**PART VI — RESEARCH-BACKED STRETCH ADDITIONS (Phase 4+)** ⭐
-30. [Why Option B (Research-Backed Roadmap)](#part-vi-30)
-31. [Factor Consolidation Layer (Phase 4)](#part-vi-31)
-32. [ML Enhancements (Phase 5)](#part-vi-32)
-33. [Sentiment v2 (Phase 6)](#part-vi-33)
-34. [Regime + Portfolio v2 (Phase 7)](#part-vi-34)
-35. [Honest Decay & Replication Caveats](#part-vi-35)
+**PART VI — RESEARCH-BACKED ADDITIONS (Sections 30-35) ⭐ NEW**
+- Section 30: Why Option B
+- Section 31: Factor Consolidation Layer (Phase 4) — OSAP, JKP, Qlib, IPCA
+- Section 32: ML Enhancements (Phase 5) — Triple-Barrier, Meta-Labeling, Conformal
+- Section 33: Sentiment v2 (Phase 6) — Whisper, 8-K, Lazy Prices
+- Section 34: Regime + Portfolio v2 (Phase 7) — Student-t HMM, TDA, NCO
+- Section 35: Honest Decay & Replication Caveats
 
 ---
 
-# PART I — APP CONCEPT & ARCHITECTURE
+# 1. FUNDAMENTAL ANALYSIS TECHNIQUES
 
-<a id="part-i-1"></a>
-## 1. App Overview & Output
+## 1.1 Piotroski F-Score (Stanford, Joseph Piotroski 2000)
 
-### 1.1 Purpose
-Build a stock-ranking application for **US equities** (S&P 500 → S&P 1500 → Russell 3000 universe) that combines **classical fundamental analysis, technical indicators, factor investing, sentiment analysis, machine learning, regime detection, and risk metrics** into a single 0–100 composite **StockRank**, plus an ensemble **Fair Price** estimate.
+**Origin:** Joseph Piotroski, "Value Investing: The Use of Historical Financial Statement Information to Separate Winners from Losers" (Journal of Accounting Research, 2000), while at University of Chicago Booth (now Stanford GSB).
 
-### 1.2 Core Outputs (Per Stock)
-| Output | Description | Range |
-|---|---|---|
-| **Rank** | Position in universe (1 = best) | 1 to N |
-| **Composite Score** | Final ranking score | 0–100 |
-| **Pillar Sub-scores** | Quality, Value, Growth, Momentum, Health, Sentiment, ML, Risk | 0–100 each |
-| **Fair Price (median)** | Ensemble fair value | $ |
-| **Maximum Fair Price** | 95th-percentile of methods | $ |
-| **Margin of Safety %** | (Fair − Current)/Fair | % |
-| **Top-5 SHAP factors** | Why the score is what it is | text/values |
+**Score range:** 0–9 (integer). Each criterion = 1 point if true, else 0.
 
-### 1.3 Refresh Cadence
-- **Daily**: prices, news sentiment, insider Form 4
-- **Weekly**: composite score recompute, regime detection
-- **Monthly**: full feature recompute, ML retrain
-- **Quarterly**: 13F holdings update, hyperparameter retune
+| # | Category | Criterion | Formula | Inputs |
+|---|----------|-----------|---------|--------|
+| 1 | Profitability | Positive Net Income | NI > 0 | Income stmt |
+| 2 | Profitability | Positive ROA | NI / Total Assets > 0 | IS + BS |
+| 3 | Profitability | Positive Operating Cash Flow | CFO > 0 | Cash flow stmt |
+| 4 | Profitability | Accruals (Quality of Earnings) | CFO / Total Assets > ROA | CF + IS + BS |
+| 5 | Leverage | Decrease in Long-Term Debt Ratio | LT Debt_t / TA_t < LT Debt_{t-1} / TA_{t-1} | BS |
+| 6 | Liquidity | Increase in Current Ratio | CR_t > CR_{t-1} | BS |
+| 7 | Funding | No New Shares Issued | Shares_t ≤ Shares_{t-1} | BS |
+| 8 | Operating | Increase in Gross Margin | (Rev_t − COGS_t)/Rev_t > prior year | IS |
+| 9 | Operating | Increase in Asset Turnover | Rev_t / TA_{t−1} > Rev_{t−1}/TA_{t−2} | IS + BS |
 
----
+**Interpretation:** 8–9 strong, 4–6 neutral, 0–2 weak. Originally designed for high book-to-market (value) stocks.
 
-<a id="part-i-2"></a>
-## 2. Recommended Tech Stack
+**Normalization to 0-100:** `score_100 = (F_Score / 9) × 100`.
 
-| Layer | Recommendation | Rationale |
-|---|---|---|
-| **Language** | Python 3.11+ | Universal in quant/finance |
-| **Backend Framework** | FastAPI | Async, OpenAPI docs, fast |
-| **Database** | PostgreSQL (production) / SQLite (dev) | Time-series + relational mix |
-| **Cache Layer** | Parquet files + Redis (optional) | Fast columnar reads |
-| **Frontend** | Next.js (React) + TailwindCSS + Recharts | Modern UX, charting |
-| **Deployment** | GitHub repo → Railway/Render/Fly.io (backend), Vercel (frontend) | Free tiers exist |
-| **Scheduling** | GitHub Actions (cron) or APScheduler | Free, code-as-config |
-| **ML Stack** | scikit-learn, LightGBM, XGBoost, SHAP | Tree-based primary |
-| **NLP Stack** | transformers (FinBERT), VADER | Domain-tuned |
-| **Quant Stack** | pandas, numpy, statsmodels, arch (GARCH), hmmlearn (regimes) | Standard |
-| **Portfolio Stack** | PyPortfolioOpt, riskfolio-lib | HRP, Black-Litterman |
-| **Backtest** | vectorbt or backtrader, alphalens (factor analysis) | Fast vectorized |
-| **Data Sources** | yfinance, edgartools, fredapi, finnhub, PRAW, pytrends | All free |
+**Strengths:** Discrete, explainable, bankruptcy-resistant. **Limitations:** Backward-looking; less useful for growth/tech firms; needs at least 2 years of data.
 
 ---
 
-<a id="part-i-3"></a>
-## 3. End-to-End Architecture
+## 1.2 Altman Z-Score (NYU Stern, Edward Altman 1968)
 
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│                       1. DATA INGESTION LAYER                         │
-│  • yfinance        → Prices, OHLCV, basic info (daily)                │
-│  • edgartools      → 10-K/Q, 8-K, Form 4, 13F (event-driven)         │
-│  • fredapi         → Macro indicators (daily)                         │
-│  • finnhub         → News + sentiment, insider, fundamentals (daily) │
-│  • PRAW (Reddit)   → r/wallstreetbets sentiment (daily)              │
-│  • pytrends        → Google Trends search interest (weekly)          │
-│  • SimFin / FMP    → Standardized fundamentals (gap-filling)         │
-│  ↓                                                                    │
-│  Cache: SQLite/Parquet by source+ticker+date                         │
-└──────────────────────────────────────────────────────────────────────┘
-            ↓
-┌──────────────────────────────────────────────────────────────────────┐
-│                  2. FEATURE COMPUTATION LAYER                          │
-│                                                                        │
-│  FUNDAMENTAL (from financial statements):                             │
-│  • Piotroski F-Score, Altman Z-Score, Beneish M-Score                │
-│  • Magic Formula (ROC, EY), Graham Number, PEG                       │
-│  • DCF, DDM, Residual Income, Owner Earnings                         │
-│  • EVA, CFROI, Tobin's Q, Sloan Accruals                             │
-│  • Margin trends, ROIC, Cash Conversion Cycle                        │
-│                                                                        │
-│  TECHNICAL (from prices):                                              │
-│  • RSI, MACD, Bollinger Bands, ADX, ATR, Ichimoku                    │
-│  • OBV, MFI, CMF, VWAP, Force Index                                  │
-│  • SMA50/200, Golden Cross, % above SMA200                           │
-│                                                                        │
-│  FACTOR (cross-sectional):                                            │
-│  • Value (P/E, P/B, P/S, EV/EBITDA, EV/FCF)                          │
-│  • Quality (ROE, D/E, Earnings Variability — MSCI 3-descriptor)      │
-│  • Momentum (12-1, 6-1, residual, 52w-high distance)                 │
-│  • Low-Vol (σ_252, idiosyncratic vol)                                │
-│  • Profitability (Gross Profitability — Novy-Marx)                    │
-│                                                                        │
-│  SENTIMENT / ALTERNATIVE:                                              │
-│  • FinBERT on news + 8-K + earnings call transcripts                 │
-│  • Reddit / StockTwits sentiment + mention acceleration              │
-│  • Insider Form 4 (CEO/CFO weighted, cluster buying)                 │
-│  • 13F smart-money flow (45-day lag)                                 │
-│  • Short interest, options PCR, IV skew                              │
-│  • Google Trends search acceleration                                  │
-│                                                                        │
-│  RISK:                                                                │
-│  • σ, β, Sharpe, Sortino, MaxDD, Calmar                              │
-│  • VaR/CVaR (historical), GARCH(1,1) vol forecast                    │
-│  • Skewness, Kurtosis, Ulcer Index                                   │
-│                                                                        │
-│  MACRO/REGIME:                                                        │
-│  • Yield curve, credit spreads, VIX                                   │
-│  • HMM 3-state regime (bull/neutral/bear)                            │
-│  • Sector rotation phase (early/mid/late/recession)                  │
-└──────────────────────────────────────────────────────────────────────┘
-            ↓
-┌──────────────────────────────────────────────────────────────────────┐
-│                  3. NORMALIZATION LAYER                               │
-│  • Winsorize at 5th/95th percentile                                   │
-│  • Sector-neutralize (subtract sector median)                         │
-│  • Cross-sectional percentile rank → 0–100                           │
-│  • Missing data → sector median (NEVER global mean)                   │
-└──────────────────────────────────────────────────────────────────────┘
-            ↓
-┌──────────────────────────────────────────────────────────────────────┐
-│              4. PILLAR AGGREGATION (each 0–100)                       │
-│  Quality | Value | Growth | Momentum | Health | Sentiment | ML | Risk│
-└──────────────────────────────────────────────────────────────────────┘
-            ↓
-┌──────────────────────────────────────────────────────────────────────┐
-│        5. ML META-LEARNER (LightGBM LambdaRank + SHAP)                │
-│  Input: all pillar scores + raw features                              │
-│  Target: cross-sectional rank of forward 1m/3m return                │
-│  Output: predicted rank → percentile → 0–100                          │
-└──────────────────────────────────────────────────────────────────────┘
-            ↓
-┌──────────────────────────────────────────────────────────────────────┐
-│   6. REGIME-CONDITIONAL META-COMPOSITE                                │
-│  Weights of pillars adjusted by HMM regime state                      │
-│  Final composite = Σ w_i(regime) × pillar_i                          │
-└──────────────────────────────────────────────────────────────────────┘
-            ↓
-┌──────────────────────────────────────────────────────────────────────┐
-│              7. RISK OVERLAYS                                          │
-│  • Beneish M-Score / Sloan accruals → veto top-rank if high           │
-│  • Isolation Forest anomaly filter                                    │
-│  • Liquidity floor (avg vol > $1M/day)                                │
-└──────────────────────────────────────────────────────────────────────┘
-            ↓
-┌──────────────────────────────────────────────────────────────────────┐
-│       8. FAIR PRICE ENSEMBLE                                          │
-│  • DCF (Gordon Growth) + Graham Number + Residual Income             │
-│  • Multiples (P/E, EV/EBITDA, P/B, P/S)                              │
-│  • Trimmed mean → Fair Price; max → Maximum Fair Price                │
-│  • Margin of Safety = (Fair − Current)/Fair                           │
-└──────────────────────────────────────────────────────────────────────┘
-            ↓
-┌──────────────────────────────────────────────────────────────────────┐
-│              9. OUTPUT: RANKED TABLE + UI                             │
-│  ticker | rank | score | sub-scores | fair$ | max-fair$ | MoS% | top5 SHAP
-└──────────────────────────────────────────────────────────────────────┘
-```
+**Original public manufacturing formula:**
 
----
-
-<a id="part-i-4"></a>
-## 4. Pillar Weighting & Scoring Philosophy
-
-### 4.1 Default Pillar Weights (Starting Point)
-
-| Pillar | Weight | Rationale |
-|---|---|---|
-| **Fundamental Quality** | 25% | Long-term anchor; low decay |
-| **Value** | 20% | Margin of safety |
-| **Growth** | 10% | Forward potential |
-| **Momentum** | 10% | Short-term lift |
-| **Sentiment / Alt-data** | 15% | Edge vs. classical |
-| **ML composite** | 10% | Captures interactions |
-| **Macro / Regime** | 5% | Risk-on / risk-off modulator |
-| **Risk (low-risk bias)** | 5% | Tail-risk reduction |
-
-These weights should be **re-tuned quarterly** by the meta-learner using recent IR (Information Ratio) of each pillar.
-
-### 4.2 Sector-Relative vs. Absolute
-- **Sector-relative**: Quality, Value, Growth, Profitability — banks have systematically different ROE/leverage/P/B from tech firms.
-- **Absolute**: Momentum, Risk metrics (volatility, drawdown), Sentiment.
-- **Always exclude financials/utilities from Magic Formula and asset-turnover metrics.**
-
-### 4.3 Missing Data Policy
-- If <50% of pillar's metrics are available → set pillar to neutral (50) and flag.
-- Single metric NaN → impute as **sector median** (NEVER global median).
-- Never propagate NaN; always log which fields were imputed.
-
----
-
-<a id="part-i-5"></a>
-## 5. Free Data Stack Summary
-
-| Source | Library | Free Limits | Best Use |
-|---|---|---|---|
-| **yfinance** | `yfinance` | Unlimited (best-effort, unofficial) | Prices, OHLCV, basic fundamentals, options chains, holders, news |
-| **SEC EDGAR** | `edgartools` | Free, no key (UA email) | 10-K/Q, 8-K, Form 4 (insider), 13F (institutional), DEF 14A |
-| **FRED** | `fredapi` | Free with key (generous) | All US macro: rates, CPI, UNRATE, INDPRO, VIX, spreads |
-| **Finnhub** | `finnhub-python` | 60 calls/min free | News + sentiment, insider transactions, earnings, IPO calendar |
-| **Financial Modeling Prep** | REST | 250 calls/day free | Pre-calculated ratios, key metrics, fundamentals |
-| **Alpha Vantage** | `alpha_vantage` | 25 calls/day, 5/min | Pre-computed technical indicators |
-| **SimFin** | `simfin` | Free CSV/API (5-yr limit) | Bulk standardized fundamentals |
-| **Polygon.io** | `polygon-api-client` | 5 calls/min free | Aggregates, splits, dividends |
-| **Tiingo** | `tiingo` | 50/hr free | EOD prices, news |
-| **NewsAPI** | `newsapi-python` | 100/day free | News headlines |
-| **GDELT** | BigQuery | 1 TB/mo free | Global news + tone analysis |
-| **Reddit** | `praw` | Generous | r/wallstreetbets, r/stocks sentiment |
-| **StockTwits** | REST | Free | User-tagged Bull/Bear sentiment |
-| **Google Trends** | `pytrends` | Heavy throttling | Search-interest acceleration |
-| **HuggingFace** | `transformers` | Free models | FinBERT, Longformer for transcripts |
-| **Cboe** | CSV download | Free | Historical PCR, VIX |
-| **Ken French Data** | CSV download | Free | Fama-French factor returns SMB, HML, RMW, CMA, UMD |
-| **AQR Datasets** | CSV download | Free | QMJ factor returns |
-
-**ETL strategy**: Incremental updates with disk cache (Parquet), TTL per source, exponential backoff on 429, persistent SQLite for filings.
-
----
-
-# PART II — CLASSICAL ANALYSIS TECHNIQUES
-
-<a id="part-ii-6"></a>
-## 6. Fundamental Analysis
-
-### 6.1 Piotroski F-Score (Stanford, Piotroski 2000)
-
-Score 0–9 (integer); each criterion = 1 point if true.
-
-| # | Category | Criterion | Formula |
-|---|----------|-----------|---------|
-| 1 | Profitability | Positive Net Income | NI > 0 |
-| 2 | Profitability | Positive ROA | NI / Total Assets > 0 |
-| 3 | Profitability | Positive Operating Cash Flow | CFO > 0 |
-| 4 | Profitability | Quality of Earnings | CFO / TA > ROA |
-| 5 | Leverage | Decrease in LT Debt Ratio | LTD_t/TA_t < LTD_{t−1}/TA_{t−1} |
-| 6 | Liquidity | Increase in Current Ratio | CR_t > CR_{t−1} |
-| 7 | Funding | No New Shares Issued | Shares_t ≤ Shares_{t−1} |
-| 8 | Operating | Increase in Gross Margin | GM_t > GM_{t−1} |
-| 9 | Operating | Increase in Asset Turnover | (Rev/TA)_t > (Rev/TA)_{t−1} |
-
-**Interpretation**: 8–9 strong, 4–6 neutral, 0–2 weak.
-**0–100 normalization**: `(F_Score / 9) × 100`.
-**Strengths**: Discrete, explainable. **Limits**: Backward-looking; less useful for growth/tech.
-
-### 6.2 Altman Z-Score (NYU Stern, Altman 1968)
-
-**Original (public manufacturing):**
 > **Z = 1.2·X₁ + 1.4·X₂ + 3.3·X₃ + 0.6·X₄ + 1.0·X₅**
 
-Where: X₁ = WC/TA, X₂ = RE/TA, X₃ = EBIT/TA, X₄ = MV(Equity)/Total Liab, X₅ = Sales/TA.
-**Zones**: >2.99 Safe, 1.81–2.99 Grey, <1.81 Distress.
+Where:
+- X₁ = Working Capital / Total Assets
+- X₂ = Retained Earnings / Total Assets
+- X₃ = EBIT / Total Assets
+- X₄ = Market Value of Equity / Total Liabilities
+- X₅ = Sales / Total Assets
 
-**Z″-Score (RECOMMENDED for general US screener — non-manufacturers):**
+**Zones:** Z > 2.99 = Safe; 1.81 ≤ Z ≤ 2.99 = Grey; Z < 1.81 = Distress.
+
+**Z″-Score (Non-manufacturers, public/private) — RECOMMENDED for general US screener (excludes industry-distorting X₅):**
+
 > **Z″ = 6.56·X₁ + 3.26·X₂ + 6.72·X₃ + 1.05·X₄**
 
-Safe >2.90, Grey 1.23–2.90, Distress <1.23.
+**Zones (Altman 2003 update for non-manufacturers, *Corporate Financial Distress and Bankruptcy*, 3rd ed., Wiley):** Safe > 2.6; Grey 1.1–2.6; Distress < 1.1.
 
-**0–100 normalization**: `min(Z, 6) / 6 × 100` or sigmoid `100/(1+exp(−(Z−2.5)))`.
+> **Note**: Earlier versions of this document listed the zones as
+> "Safe > 2.90; Grey 1.23–2.90; Distress < 1.23". Those values were
+> mistakenly carried over from the original 1968 Z-score.
+> The 1.10 distress cutoff is from Altman & Hotchkiss (2003) and is
+> what `compute/scoring/risk_overlay.py:ALTMAN_DISTRESS_THRESHOLD = 1.10`
+> implements.
 
-### 6.3 Beneish M-Score (Indiana Kelley, Beneish 1999)
+**Z′-Score (private manufacturer):** 0.717·X₁ + 0.847·X₂ + 3.107·X₃ + 0.42·X₄ + 0.998·X₅ (uses book value of equity in X₄).
+
+**0–100 normalization:** Clip Z to [0, 6], then `score = min(Z, 6) / 6 × 100` (or use sigmoid: `100/(1+exp(−(Z−2.5)))`).
+
+**Strengths:** Robust, 50-year track record. **Limitations:** Original calibrated to manufacturers; financials and asset-light tech firms need Z″; abnormally high market cap (X₄) can mask weak fundamentals.
+
+---
+
+## 1.3 Beneish M-Score (Indiana Kelley, Messod Beneish 1999)
+
+Detects probability of earnings manipulation using 8 ratios (`t` = current year, `t−1` = prior year).
 
 > **M = −4.84 + 0.92·DSRI + 0.528·GMI + 0.404·AQI + 0.892·SGI + 0.115·DEPI − 0.172·SGAI + 4.679·TATA − 0.327·LVGI**
 
 | Variable | Formula |
 |---|---|
-| DSRI | (AR_t/Sales_t) / (AR_{t−1}/Sales_{t−1}) |
-| GMI | GM_{t−1} / GM_t |
-| AQI | [1−(CA+PP&E+Sec)/TA]_t / same_{t−1} |
-| SGI | Sales_t / Sales_{t−1} |
-| DEPI | Dep%_{t−1} / Dep%_t |
-| SGAI | (SGA/Sales)_t / (SGA/Sales)_{t−1} |
-| TATA | (NI − CFO) / TA |
-| LVGI | (LTD+CL)/TA_t / same_{t−1} |
+| **DSRI** Days Sales Receivables Index | (AR_t/Sales_t) / (AR_{t-1}/Sales_{t-1}) |
+| **GMI** Gross Margin Index | GM_{t-1} / GM_t |
+| **AQI** Asset Quality Index | [1−(CA_t+PP&E_t+Sec_t)/TA_t] / [1−(CA_{t-1}+PP&E_{t-1}+Sec_{t-1})/TA_{t-1}] |
+| **SGI** Sales Growth Index | Sales_t / Sales_{t−1} |
+| **DEPI** Depreciation Index | (Dep_{t-1}/(Dep_{t-1}+PP&E_{t-1})) / (Dep_t/(Dep_t+PP&E_t)) |
+| **SGAI** SG&A Index | (SGA_t/Sales_t) / (SGA_{t-1}/Sales_{t-1}) |
+| **TATA** Total Accruals to Total Assets | (NI − CFO) / TA |
+| **LVGI** Leverage Index | (LTD_t+CL_t)/TA_t / (LTD_{t-1}+CL_{t-1})/TA_{t-1} |
 
-**Threshold**: M > −1.78 ⇒ likely manipulator. M < −2.22 ⇒ unlikely.
-**0–100 normalization (inverted)**: `clip((−1.78 − M)/2 × 50 + 50, 0, 100)`.
-**Famously flagged Enron pre-collapse.** Use as **risk overlay/veto**, not alpha.
+**Threshold:** M > −1.78 ⇒ likely manipulator (some sources use −2.22 as a more conservative threshold). M < −2.22 ⇒ unlikely.
 
-### 6.4 Magic Formula (Greenblatt 2005)
+**0–100 normalization (inverted, since lower = better):** `score = clip((−1.78 − M) / 2 × 50 + 50, 0, 100)`.
 
-> **ROC = EBIT / (Net Working Capital + Net Fixed Assets)**
-> **Earnings Yield = EBIT / Enterprise Value**
-> EV = Market Cap + Total Debt − Cash
+**Strengths:** Famously flagged Enron pre-collapse. **Limitations:** Probabilistic, not deterministic; high false-positive rate; requires 2 years of detailed data; coefficients calibrated to 1982-1992 US data.
 
-**Procedure**:
-1. Universe: market cap > $50M; **exclude financials, utilities, foreign ADRs**.
-2. Rank by ROC (high→low) and by EY (high→low).
-3. Magic Formula Score = Rank_ROC + Rank_EY (lowest = best).
+---
 
-**0–100**: `100 × (1 − combined_rank/max_combined_rank)`.
+## 1.4 Magic Formula (Joel Greenblatt, "The Little Book that Beats the Market", 2005)
 
-### 6.5 Graham Number & Defensive Investor (Graham 1949)
+Two ranks combined:
 
-> **Graham Number = √(22.5 × EPS × BVPS)**
+> **ROC (Greenblatt) = EBIT / (Net Working Capital + Net Fixed Assets)**
+> **Earnings Yield (Greenblatt) = EBIT / Enterprise Value**
+> EV = Market Cap + Total Debt − Cash & Equivalents
 
-Use **3-year average EPS**.
-**Buy if** Current Price < Graham Number. **MoS % = (GN − Price)/GN.**
+**Procedure:**
+1. Universe: market cap > $50M-$100M; **exclude financials, utilities, foreign ADRs**.
+2. Rank all stocks by ROC (high to low) → Rank_ROC.
+3. Rank all stocks by Earnings Yield (high to low) → Rank_EY.
+4. **Magic Formula Score = Rank_ROC + Rank_EY** → lowest combined number wins.
 
-**Defensive Investor 7 Criteria**:
-1. Sales > $500M
-2. Current Ratio ≥ 2; LT Debt < Net Current Assets
-3. Positive EPS for 10 consecutive years
-4. Uninterrupted dividends for 20 years
-5. ≥33% growth in 3-yr avg EPS over last 10 yrs
-6. P/E ≤ 15 (3-yr avg EPS)
-7. P/E × P/B ≤ 22.5
+**0–100 normalization:** `score = 100 × (1 − combined_rank / max_combined_rank)`.
 
-**Graham Formula (growth-adjusted, illustrative)**:
-> **V = EPS × (8.5 + 2g) × 4.4 / Y** (g = 7-10yr expected growth %, Y = AAA bond yield)
+**Strengths:** Minimal data needs; backtested ~30% annualized 1988-2004 in Greenblatt's book; ~3% alpha in independent backtests (Martin, 2020). **Limitations:** Ignores debt structure for ROC; backtests have data-snooping risks; excludes whole sectors.
 
-### 6.6 Peter Lynch PEG Ratio
+---
+
+## 1.5 Graham Number & Defensive Investor Criteria (Benjamin Graham, *The Intelligent Investor* 1949)
+
+**Graham Number (max defensive price):**
+
+> **Graham Number = √(22.5 × EPS × BVPS) = √(15 × P/E_max × 1.5 × P/B_max × EPS × BVPS)**
+
+The 22.5 = 15 (max P/E) × 1.5 (max P/B). Use **3-year average EPS** as Graham specified.
+
+**Buy if** Current Price < Graham Number. **Margin of Safety % = (GN − Price) / GN.**
+
+**Defensive Investor 7 Criteria:**
+1. **Adequate size:** Sales > $500M (inflation-adjusted from Graham's $100M).
+2. **Strong financial condition:** Current Ratio ≥ 2; LT Debt < Net Current Assets.
+3. **Earnings stability:** Positive EPS for 10 consecutive years.
+4. **Dividend record:** Uninterrupted dividends for 20 years.
+5. **Earnings growth:** ≥ 33% growth in 3-yr avg EPS over last 10 years.
+6. **Moderate P/E:** ≤ 15 (using 3-yr avg EPS).
+7. **Moderate P/B:** P/E × P/B ≤ 22.5.
+
+**Graham Formula (growth-adjusted intrinsic value, 1962/1973 — use cautiously):**
+
+> **V = EPS × (8.5 + 2g) × 4.4 / Y** where g = 7-10yr expected growth %, Y = current AAA corporate bond yield.
+
+Graham himself warned this is illustrative, not predictive. Many modern adaptations replace 4.4 with current rate.
+
+**0–100 normalization:** `score = clip(MoS%, −100, 100) / 2 + 50`.
+
+**Limitations:** Does not work for asset-light/negative-earnings/high-growth firms.
+
+---
+
+## 1.6 Peter Lynch PEG Ratio (*One Up on Wall Street*, 1989)
 
 > **PEG = (P/E) / Earnings Growth Rate (%)**
 
-- PEG <0.5 strong buy, 0.5–1.0 attractive, ≈1.0 fair, >2.0 overvalued.
-- Dividend-adjusted: PEG = P/E / (Growth + Div Yield).
+Lynch's heuristics:
+- PEG < 0.5 = strong buy
+- 0.5 ≤ PEG < 1.0 = attractive
+- PEG ≈ 1.0 = fairly valued
+- PEG > 2.0 = overvalued
 
-**0–100 (inverted)**: `clip(100 × (2 − PEG) / 2, 0, 100)`.
+**Dividend-adjusted PEG:** PEG = P/E / (Growth + Dividend Yield).
 
-### 6.7 Discounted Cash Flow (Simplified 2-Stage)
+**Inputs:** Use forward P/E with 3-5yr expected growth, or trailing P/E with 5yr historical EPS CAGR.
 
-> **EV = Σ_{t=1..N} FCF_t / (1+WACC)^t + TV / (1+WACC)^N**
-> **TV = FCF_N × (1+g) / (WACC − g)**
-> **Equity Value = EV − Net Debt; Fair Price = Equity Value / Shares**
+**0–100 normalization (inverted):** `score = clip(100 × (2 − PEG) / 2, 0, 100)`.
 
-**Inputs**:
-- FCF = Operating Cash Flow − CapEx
-- WACC ≈ 10% default; or via CAPM: rE = Rf + β×(Rm−Rf), Rf = FRED `DGS10`, ERP = 5–6%
-- g (perpetual) = 2–3% (cap at GDP growth)
-- Project: 5 yrs at historical CAGR (cap 15%) → 3% perpetual
+**Limitations:** Highly sensitive to growth estimate; meaningless for negative earnings; cyclical EPS distorts PEG.
 
-**Reverse DCF**: solve for `g` such that DCF = current price → "implied growth priced in."
+---
 
-### 6.8 Dividend Discount Model (Gordon Growth)
+## 1.7 Discounted Cash Flow (Simplified 2-Stage)
+
+**Free Cash Flow to Firm (FCFF) DCF:**
+
+> **Enterprise Value = Σ_{t=1..N} FCF_t / (1+WACC)^t + TV / (1+WACC)^N**
+> **Equity Value = EV − Net Debt + Cash**
+> **Fair Price/Share = Equity Value / Shares Outstanding**
+
+**Terminal Value (Gordon Growth):**
+
+> **TV = FCF_{N+1} / (WACC − g) = FCF_N × (1+g) / (WACC − g)**
+
+Where g = perpetual growth rate (typically 2-3%, capped at long-term GDP growth).
+
+**Inputs:**
+- FCF = Operating Cash Flow − CapEx (from cash flow statement)
+- WACC = (E/V)·Re + (D/V)·Rd·(1−Tax). For free-tier simplicity, use **discount rate = 10%** as a default proxy.
+- Cost of equity (Re) via CAPM: `Re = Rf + β × (Rm − Rf)`. Use Rf = 10yr Treasury yield, Rm − Rf = 5-6%.
+
+**Free-tier proxy approach:** Project FCF growth at historical 5-yr CAGR (capped at 15%) for 5 years, then 3% perpetual. Discount at 10%. This works with yfinance `cashflow` and `info['totalDebt']`.
+
+**Reverse DCF:** Solve for the implied growth rate `g` that makes DCF = current market price. Useful sanity check on what growth rate is "priced in."
+
+---
+
+## 1.8 Dividend Discount Model (DDM) — Gordon Growth
 
 > **P₀ = D₁ / (r − g) = D₀ × (1+g) / (r − g)**
 
-Only meaningful for stable dividend payers (utilities, consumer staples).
-
-### 6.9 Free Cash Flow Yield, Earnings Yield, ROIC, Owner Earnings
-
-| Metric | Formula |
-|---|---|
-| FCF Yield | FCF / Market Cap (or FCF/EV) |
-| Earnings Yield | EPS / Price = 1/(P/E) |
-| ROIC | NOPAT / (Total Debt + Equity − Cash); NOPAT = EBIT(1−t) |
-| Owner Earnings (Buffett) | NI + D&A + Other Non-cash − Maintenance CapEx ± ΔWC |
-| P/Owner Earnings | Price / OE per share |
-
-**Simplified Owner Earnings**: `OE ≈ Operating Cash Flow − CapEx` (= FCF).
+Multi-stage version sums explicit-period dividends + terminal value. Only meaningful for stable dividend payers (utilities, consumer staples).
 
 ---
 
-<a id="part-ii-7"></a>
-## 7. Technical Indicators
+## 1.9 Free Cash Flow Yield, Earnings Yield, ROIC, Owner Earnings
 
-All inputs: OHLCV from yfinance daily prices. Library: `ta` or `pandas_ta`.
+| Metric | Formula | Source |
+|---|---|---|
+| **FCF Yield** | FCF / Market Cap (or FCF/EV) | CF stmt + price |
+| **Earnings Yield** | EPS / Price = 1/(P/E) | IS + price |
+| **ROIC** | NOPAT / Invested Capital = EBIT(1−t) / (Total Debt + Equity − Cash) | IS + BS |
+| **Owner Earnings** (Buffett 1986 letter) | Net Income + D&A + Other Non-cash − Maintenance CapEx ± ΔWC | IS + CF |
+| **P/Owner Earnings** | Price / OE per share | derived |
 
-### 7.1 RSI (14)
+**Maintenance CapEx proxy (Bruce Greenwald method):** PP&E/Sales 5-yr avg × ΔSales = Growth CapEx; Maintenance CapEx = Total CapEx − Growth CapEx.
+
+**Simplified Owner Earnings:** `OE = Operating Cash Flow − CapEx` (this equals FCF, an acceptable approximation).
+
+---
+
+# 2. TECHNICAL ANALYSIS INDICATORS
+
+All inputs are OHLCV from yfinance daily prices. Recommended Python library: **`ta`** (technical-analysis-library-in-python) or **`pandas_ta`**, both pure-Python.
+
+## 2.1 RSI (Wilder, 14-period default)
+
 ```
-RS = Avg Gain / Avg Loss (Wilder smoothing)
+RS = Avg Gain / Avg Loss (Wilder's smoothing)
 RSI = 100 − 100/(1+RS)
 ```
->70 overbought, <30 oversold.
 
-### 7.2 MACD
+**Interpretation:** > 70 overbought, < 30 oversold. **0-100 score (already 0-100; for ranking favor mid-range or use −|RSI−50|).**
+
+## 2.2 MACD
+
 ```
-MACD = EMA(12) − EMA(26)
-Signal = EMA(MACD, 9)
+MACD Line = EMA(12) − EMA(26)
+Signal Line = EMA(MACD, 9)
 Histogram = MACD − Signal
 ```
 
-### 7.3 Moving Averages (Golden/Death Cross)
-- SMA_n, EMA_n
-- Golden Cross: SMA_50 crosses above SMA_200 (bullish)
-- Death Cross: SMA_50 crosses below SMA_200 (bearish)
-- **Trend score (0–100)**: `100 × (Price − SMA_200)/SMA_200`, clipped [−50,+50] then shifted.
+**Signals:** MACD crossing above Signal = bullish; histogram > 0 and rising = strengthening trend.
 
-### 7.4 Bollinger Bands (20, 2)
+## 2.3 Moving Averages — Golden/Death Cross
+
+- SMA_n = Σ Close / n
+- EMA_n = Close_t × α + EMA_{t−1} × (1−α), α = 2/(n+1)
+- **Golden Cross:** SMA_50 crosses above SMA_200 (bullish long-term).
+- **Death Cross:** SMA_50 crosses below SMA_200 (bearish).
+
+**Trend score (0-100):** `100 × (Price − SMA_200) / SMA_200`, clipped to [−50, +50] then shifted to [0, 100].
+
+## 2.4 Bollinger Bands (20, 2)
+
 ```
-Middle = SMA(20); Upper/Lower = Middle ± 2σ_20
-%B = (Close − Lower)/(Upper − Lower)
+Middle = SMA(Close, 20)
+Upper = Middle + 2·σ_20
+Lower = Middle − 2·σ_20
+%B = (Close − Lower) / (Upper − Lower)
+Bandwidth = (Upper − Lower) / Middle
 ```
 
-### 7.5 Stochastic Oscillator
+%B > 1 above upper band; < 0 below lower band.
+
+## 2.5 Stochastic Oscillator
+
 ```
-%K = 100 × (Close − Low_14)/(High_14 − Low_14)
+%K = 100 × (Close − Low_14) / (High_14 − Low_14)
 %D = SMA(%K, 3)
 ```
->80 overbought, <20 oversold.
 
-### 7.6 ADX (Wilder, 14) — Trend Strength
+> 80 overbought, < 20 oversold.
+
+## 2.6 ADX (Wilder, 14)
+
 ```
-+DI, −DI from directional movement
-DX = 100 × |+DI − −DI|/(+DI + −DI)
++DM = max(High_t − High_{t-1}, 0) when High Δ > Low Δ else 0
+−DM = max(Low_{t-1} − Low_t, 0) when Low Δ > High Δ else 0
+TR = max(High−Low, |High−PrevClose|, |Low−PrevClose|)
++DI = 100 × Smoothed(+DM)/ATR, −DI = 100 × Smoothed(−DM)/ATR
+DX = 100 × |+DI − −DI| / (+DI + −DI)
 ADX = Wilder-smoothed DX over 14 periods
 ```
-<20 weak/no trend; 25–50 strong; >50 very strong.
 
-### 7.7 OBV (Granville)
-Cumulative volume signed by close direction. Score by slope or divergence with price.
+**ADX Interpretation:** < 20 weak/no trend; 20-25 emerging; 25-50 strong; > 50 very strong (regardless of direction).
 
-### 7.8 Money Flow Index (Volume-Weighted RSI, 14)
+## 2.7 OBV (Granville)
+
 ```
-TP = (H+L+C)/3; RMF = TP × Volume
-MFI = 100 − 100/(1 + Pos_MF/Neg_MF)
+If Close_t > Close_{t-1}: OBV_t = OBV_{t-1} + Volume_t
+If Close_t < Close_{t-1}: OBV_t = OBV_{t-1} − Volume_t
+Else: OBV_t = OBV_{t-1}
 ```
->80 overbought, <20 oversold.
 
-### 7.9 ATR (Wilder, 14)
-For volatility-based stops/sizing.
+Score by OBV slope or divergence with price.
 
-### 7.10 Ichimoku Cloud
+## 2.8 Money Flow Index (volume-weighted RSI, default 14)
+
 ```
-Tenkan = (H_9+L_9)/2; Kijun = (H_26+L_26)/2
-Span A = (Tenkan+Kijun)/2 [+26 forward]
-Span B = (H_52+L_52)/2 [+26 forward]
+Typical Price (TP) = (High + Low + Close) / 3
+Raw Money Flow = TP × Volume
+Positive MF = sum of RMF on up-days; Negative MF = sum on down-days
+Money Ratio = Positive MF / Negative MF
+MFI = 100 − 100/(1 + Money Ratio)
 ```
-**Bullish**: price above cloud + Tenkan>Kijun + Span A>Span B.
 
-**Composite Tech Score (0–100)**: avg of normalized RSI, MACD-hist sign, ADX strength, % above SMA200, Ichimoku state.
+> 80 overbought, < 20 oversold.
+
+## 2.9 ATR (Wilder, 14)
+
+```
+TR = max(High−Low, |High−PrevClose|, |Low−PrevClose|)
+ATR = Wilder smoothing of TR over 14 periods
+```
+
+Use for volatility-based position sizing and stop placement.
+
+## 2.10 Ichimoku Cloud
+
+```
+Tenkan-sen (Conversion) = (High_9 + Low_9) / 2
+Kijun-sen (Base)        = (High_26 + Low_26) / 2
+Senkou Span A           = (Tenkan + Kijun) / 2,   plotted +26 forward
+Senkou Span B           = (High_52 + Low_52) / 2, plotted +26 forward
+Chikou Span (Lagging)   = Close,                  plotted −26 backward
+The "Cloud" (Kumo)      = area between Span A & Span B
+```
+
+**Bullish:** Price above cloud + Tenkan > Kijun + Span A > Span B + Chikou above past price.
+
+**Composite Tech Score (0-100):** Average of normalized RSI, MACD-histogram-sign, ADX strength, % above SMA200, and Ichimoku state.
 
 ---
 
-<a id="part-ii-8"></a>
-## 8. Quantitative / Factor Investing
+# 3. QUANTITATIVE / FACTOR INVESTING
 
-### 8.1 CAPM (Sharpe 1964)
-> **E[R_i] − R_f = β_i × (E[R_m] − R_f)**, β = Cov(R_i, R_m)/Var(R_m), 36–60mo OLS
+## 3.1 CAPM (Sharpe 1964)
 
-### 8.2 Fama-French 3-Factor (1993)
-> **R_i − R_f = α + β·MKT + s·SMB + h·HML + ε**
+> **E[R_i] − R_f = β_i × (E[R_m] − R_f)**
 
-- SMB: small minus big
-- HML: high B/M (value) minus low B/M (growth)
+β_i = Cov(R_i, R_m) / Var(R_m) — estimate via OLS regression of stock excess returns on market excess returns over 36-60 months.
 
-### 8.3 Carhart 4-Factor (1997)
-Adds **UMD (Up Minus Down)**: top-30% prior 12-month returns minus bottom 30%, **skipping last month**.
+## 3.2 Fama-French 3-Factor (1993, U Chicago / Dartmouth)
 
-### 8.4 Fama-French 5-Factor (2015)
-Adds:
-- **RMW (Robust Minus Weak)**: profitable minus unprofitable
-- **CMA (Conservative Minus Aggressive)**: low asset growth minus high asset growth
+> **R_i − R_f = α + β·(R_m − R_f) + s·SMB + h·HML + ε**
 
-**Implementation**: download monthly factor returns from **Ken French's data library** (free); run OLS regression per stock for factor loadings.
+- **SMB (Small Minus Big):** small-cap return minus large-cap return.
+- **HML (High Minus Low):** high B/M ("value") minus low B/M ("growth").
 
-### 8.5 AQR Quality Minus Junk (Asness, Frazzini, Pedersen 2014)
+## 3.3 Carhart 4-Factor (1997, "On Persistence in Mutual Fund Performance")
 
-Quality = average of 4 z-scored sub-scores:
-1. **Profitability**: GP/A, ROE, ROA, CFO/A, gross margin, low accruals
-2. **Growth**: 5-yr avg growth in profitability metrics
-3. **Safety**: low β, low IVOL, low leverage, low O-Score, low ROE volatility
-4. **Payout**: net equity issuance (negative=good), net debt issuance, dividend payout
+> **R_i − R_f = α + β·MKT + s·SMB + h·HML + w·UMD + ε**
 
-**Free QMJ factor returns**: download from aqr.com Datasets.
+- **UMD / WML / MOM (Up Minus Down):** Top-30% prior 12-month returns minus bottom 30%, **skipping the most recent month** to avoid short-term reversal.
 
-### 8.6 MSCI Quality Index (3-Descriptor Composite)
+## 3.4 Fama-French 5-Factor (2015)
+
+> **R_i − R_f = α + β·MKT + s·SMB + h·HML + r·RMW + c·CMA + ε**
+
+- **RMW (Robust Minus Weak):** profitable minus unprofitable, where "profitability" = (Revenue − COGS − Interest − SG&A) / Book Equity.
+- **CMA (Conservative Minus Aggressive):** firms with low asset growth minus high asset growth.
+
+**Implementation tip:** Download monthly factor returns from **Ken French's data library** (free, mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html). Run OLS regression per stock to get factor loadings; interpret loadings as "factor tilts."
+
+## 3.5 AQR Quality Minus Junk (Asness, Frazzini, Pedersen 2014)
+
+QMJ defines **Quality = average of four sub-scores, each itself a z-score average of sub-components**:
+
+1. **Profitability:** Gross profit/assets, ROE, ROA, CFO/assets, gross margin, low accruals.
+2. **Growth:** 5-year average growth in profitability metrics above.
+3. **Safety:** Low beta, low idiosyncratic volatility, low leverage, low bankruptcy risk (low O-Score), low ROE volatility.
+4. **Payout:** Net equity issuance (negative is good), net debt issuance (negative is good), dividend payout.
+
+QMJ portfolio = top 30% Quality long, bottom 30% short. **Free QMJ factor returns:** download from aqr.com Datasets (no key required).
+
+## 3.6 MSCI Quality Index Methodology (3-descriptor composite)
 
 Equally-weighted z-scores of:
-1. **ROE** (positive z = better)
-2. **D/E** (negative z so lower = better)
-3. **Earnings Variability** (Std of YoY EPS growth, 5 yrs; negative z)
+1. **ROE** = Net Income / Book Equity (positive z-score = better)
+2. **Debt-to-Equity** = Total Debt / Book Equity (negative z-score so lower is better)
+3. **Earnings Variability** = Std Dev of YoY EPS growth, last 5 years (negative z-score)
 
-Process: winsorize 5/95th, z-score, average → Quality Z.
+**Process:** winsorize at 5th/95th percentile, compute z-scores, average → Quality Z-Score → optionally convert to percentile.
 
-### 8.7 Value Factor — Multiple Definitions
+## 3.7 Value Factor — Multiple Definitions
 
-| Metric | Use |
-|---|---|
-| P/E | Most common |
-| P/B | Original Fama-French |
-| P/S | Useful for unprofitable firms |
-| EV/EBITDA | Capital-structure neutral |
-| EV/Sales | Robust |
-| EV/FCF | Cash-quality |
-| Earnings Yield (EBIT/EV) | Magic Formula |
-| Shiller P/E (CAPE) | Index level only |
+| Metric | Formula | Notes |
+|---|---|---|
+| P/E | Price / TTM EPS | Most common |
+| P/B | Price / Book Value per Share | Original Fama-French value definition |
+| P/S | Price / Sales | Useful for unprofitable firms |
+| EV/EBITDA | EV / EBITDA | Capital-structure neutral |
+| EV/Sales | EV / Revenue | Robust to capital structure & profitability |
+| EV/FCF | EV / Free Cash Flow | Cash-quality value |
+| Earnings Yield (Greenblatt) | EBIT/EV | Magic Formula version |
+| Shiller P/E (CAPE) | Price / 10-yr avg inflation-adjusted EPS | Index-level only |
 
-**Composite Value**: avg percentile rank across 4–6 of these (sector-relative).
+**Composite Value Score:** Average percentile rank across 4-6 of these (sector-relative).
 
-### 8.8 Momentum Factor
-- 12-1 momentum (cumulative return month t−12 to t−1)
-- 6-1 momentum
-- 52-week high proximity (Price / 52w High)
-- **Residual momentum**: residuals from regression of returns on Fama-French factors (cleaner)
+## 3.8 Momentum Factor
 
-### 8.9 Low Volatility Factor
-σ_252 (1-yr daily-return std × √252). Lowest-vol quintile historically higher Sharpe (Baker, Bradley, Wurgler 2011).
+- **12-1 Momentum:** cumulative return from month t-12 to t-1 (skip last month).
+- **6-1 Momentum:** prior 6 months excluding most recent.
+- **52-week High proximity:** Price / 52-Week High.
 
-### 8.10 Profitability Factor (Novy-Marx 2013)
-**Gross Profitability = (Revenue − COGS) / Total Assets**. Most robust profitability predictor — gross profit, not net income.
+**Score:** percentile rank of 12-1 momentum across universe.
+
+## 3.9 Low Volatility Factor
+
+Compute **σ_252** (1-year rolling daily-return standard deviation, annualized × √252). Rank ascending — lowest volatility scores highest. Empirically, lowest-vol quintile has historically produced higher Sharpe than highest-vol (Baker, Bradley, Wurgler 2011).
+
+## 3.10 Profitability Factor
+
+Use **Gross Profitability** (Novy-Marx 2013): GP / Total Assets = (Revenue − COGS) / TA. This was a key insight — gross profit, not net income, is the most robust profitability predictor of returns.
 
 ---
 
-<a id="part-ii-9"></a>
-## 9. Risk Metrics
+# 4. RISK METRICS
 
 All assume daily returns r_t and annualization factor √252.
 
 | Metric | Formula |
 |---|---|
-| **Sharpe** | (R̄_p − R_f)/σ_p, annualized |
-| **Sortino** | (R̄_p − R_f)/σ_downside |
-| **Treynor** | (R̄_p − R_f)/β_p |
-| **Information Ratio** | (R̄_p − R̄_b)/σ(R_p − R_b) |
-| **Beta** | Cov(R_p, R_m)/Var(R_m), 36–60mo |
-| **Calmar** | Annualized Return / |MaxDD| |
-| **Maximum Drawdown** | min[(P_t − running_max(P))/running_max(P)] |
-| **σ × √252** | Annualized vol |
-| **VaR (Historical 95%)** | 5th percentile of return distribution |
-| **CVaR (95%)** | Mean of returns ≤ VaR(95%) |
+| **Sharpe Ratio** | (R̄_p − R_f) / σ_p, annualized |
+| **Sortino Ratio** | (R̄_p − R_f) / σ_downside, where σ_downside uses only r_t < 0 (or < target) |
+| **Treynor Ratio** | (R̄_p − R_f) / β_p |
+| **Information Ratio** | (R̄_p − R̄_b) / σ(R_p − R_b) where b = benchmark |
+| **Beta** | Cov(R_p, R_m) / Var(R_m), 36-60 month regression |
+| **Calmar Ratio** | Annualized Return / |Max Drawdown| |
+| **Maximum Drawdown** | min over t of [(P_t − running_max(P)) / running_max(P)] |
+| **Standard Deviation of Returns** | σ × √252 |
+| **VaR (Historical, 95%)** | 5th percentile of historical return distribution |
+| **CVaR / Expected Shortfall (95%)** | Mean of returns ≤ VaR(95%) |
 
-**Sharpe**: >1 good, >2 very good, >3 excellent. **Calmar**: >1 strong.
+**Sharpe interpretation:** > 1 good, > 2 very good, > 3 excellent (annualized). **Calmar:** > 1 strong; widely used for trend-following / leveraged strategies.
 
-**0–100 risk score (low-risk bias)**:
-`100 × (1 − percentile_rank(σ_252))` averaged with `100 × percentile_rank(Sharpe)`.
-
----
-
-<a id="part-ii-10"></a>
-## 10. Valuation Models — Ensemble Fair Price
-
-### 10.1 Methods to Combine
-
-| Method | Applicable When |
-|---|---|
-| DCF (Gordon Growth) | Positive FCF + reasonable forecast |
-| Graham Number | Positive EPS + Book Value, traditional sectors |
-| Residual Income Model | Positive ROE > cost of equity |
-| DDM | Stable dividend payer |
-| P/E × forward EPS | Always |
-| EV/EBITDA × EBITDA − Net Debt | Always for non-financials |
-| P/B × BVPS | Banks, capital-intensive |
-| P/S × Sales | Unprofitable / growth firms |
-
-### 10.2 Residual Income Model
-> **V₀ = B₀ + Σ (ROE_t − r) × B_{t−1} / (1+r)^t**
-
-Best when ROE > cost of equity. Forecast 5 yrs explicitly + terminal capitalization.
-
-### 10.3 Aggregation Procedure
-1. Compute each applicable fair price; tag inapplicable (e.g., negative EPS → skip Graham).
-2. Drop top and bottom values (trimmed mean) if ≥5 estimates.
-3. **Fair Price** = trimmed mean (or median).
-4. **Maximum Fair Price** = 95th percentile / max of methods (Jitta-style optimistic upper bound).
-
-### 10.4 Margin of Safety
-> **MoS % = (Fair Price − Current Price) / Fair Price × 100**
-
-- MoS >30% = strong buy zone
-- 0–30% = fair to attractive
-- <0% = overvalued
-
-**Buy Score (0–100)**: `clip(50 + MoS%, 0, 100)`.
-
-### 10.5 Reverse DCF
-Solve for g such that DCF(g, WACC=10%) = current price. If implied g >12–15% perpetual, market is pricing aggressive expectations.
+**0-100 risk score:** A "low risk" composite can be `100 × (1 − percentile_rank(σ_252))` averaged with `100 × percentile_rank(Sharpe)`.
 
 ---
 
-<a id="part-ii-11"></a>
-## 11. Growth, Profitability, Financial Health
+# 5. VALUATION MODELS — ENSEMBLE
 
-### 11.1 Growth Metrics
+## 5.1 DCF with Terminal Value
+See section 1.7. Always run a sensitivity table: vary discount rate ±2% and terminal growth ±1%.
+
+## 5.2 Relative Valuation
+Multiples × benchmark = price. Compare each ratio (P/E, P/B, P/S, EV/EBITDA, EV/Sales) against:
+- 5-year company median ("auto-correlation")
+- Sector median (industry-relative)
+- Market median (S&P 500)
+
+**Fair price from multiples:** `Implied Price = (Sector_Median_PE × Company_EPS)`, then average across multiple ratios.
+
+## 5.3 Reverse DCF
+Solve for `g` such that DCF(g, WACC=10%) = current price. If implied g > 12-15% perpetual, the market is pricing in aggressive expectations.
+
+## 5.4 Residual Income Model
+
+> **V₀ = B₀ + Σ_{t=1..∞} (E_t − r·B_{t-1}) / (1+r)^t = B₀ + Σ (ROE_t − r) × B_{t-1} / (1+r)^t**
+
+Where B = book value, E = earnings, r = cost of equity.
+
+**Two-stage RIM:** Forecast residual income for 5 years explicitly + terminal RI capitalized as perpetuity. Best when ROE > cost of equity (firm creates value); meaningless for capital-light businesses.
+
+## 5.5 Sum-of-the-Parts (SOTP)
+For conglomerates: value each segment using sector-appropriate multiple (e.g., software EV/Sales, consumer EV/EBITDA), sum, deduct corporate overhead and net debt. Hard to fully automate; flag firms where revenue concentration in one segment > 80% to skip SOTP.
+
+---
+
+# 6. GROWTH METRICS
+
 | Metric | Formula |
 |---|---|
-| Revenue CAGR (n yr) | (Rev_t / Rev_{t−n})^(1/n) − 1 |
-| EPS CAGR | Same on EPS (handle negatives via log) |
-| FCF CAGR | Same on FCF |
-| Sustainable Growth Rate | ROE × (1 − Payout) = ROE × Retention |
-| PRAT model SGR | Profit Margin × Retention × Asset Turnover × Equity Multiplier |
-| Internal Growth Rate | ROA × Retention |
-| PEG | (P/E) / EPS Growth % |
+| **Revenue CAGR (n yr)** | (Rev_t / Rev_{t-n})^(1/n) − 1 |
+| **EPS CAGR (n yr)** | (EPS_t / EPS_{t-n})^(1/n) − 1 (handle negatives via diff or log-protected) |
+| **FCF CAGR** | Same on FCF |
+| **Sustainable Growth Rate (SGR)** | ROE × (1 − Payout Ratio) = ROE × Retention |
+| **PRAT model SGR** | Profit Margin × Retention × Asset Turnover × Equity Multiplier |
+| **Internal Growth Rate** | ROA × Retention (no external financing) |
+| **PEG** | (P/E) / EPS Growth Rate (%) |
 
-Use 3-yr and 5-yr windows. **Score** = avg percentile rank across windows.
+Use 3-year and 5-year windows. **Score = average percentile rank across 3 growth windows.**
 
-### 11.2 Profitability & Efficiency
+---
+
+# 7. PROFITABILITY & EFFICIENCY
+
 | Metric | Formula |
 |---|---|
-| Gross Margin | (Rev − COGS)/Rev |
-| Operating Margin | EBIT/Rev |
-| Net Margin | NI/Rev |
-| ROE | NI / Avg Equity |
-| ROA | NI / Avg TA |
-| ROIC | NOPAT / (Debt+Equity−Cash) |
-| Asset Turnover | Rev / Avg TA |
-| Cash Conversion Cycle | DIO + DSO − DPO |
-| DIO | Avg Inv / COGS × 365 |
-| DSO | Avg AR / Rev × 365 |
+| Gross Margin | (Revenue − COGS) / Revenue |
+| Operating Margin | EBIT / Revenue |
+| Net Margin | Net Income / Revenue |
+| ROE | Net Income / Avg Equity |
+| ROA | Net Income / Avg Total Assets |
+| ROIC | NOPAT / (Debt + Equity − Cash) |
+| Asset Turnover | Revenue / Avg Total Assets |
+| **Cash Conversion Cycle** | DIO + DSO − DPO |
+| DIO | Avg Inventory / COGS × 365 |
+| DSO | Avg AR / Revenue × 365 |
 | DPO | Avg AP / COGS × 365 |
 
-**Trend dimensions**: 5-yr average + slope. Rising margins/ROIC = quality improving.
-
-### 11.3 Financial Health
-| Metric | Healthy Threshold |
-|---|---|
-| Current Ratio | ≥1.5 |
-| Quick Ratio | ≥1.0 |
-| Debt-to-Equity | <1.0 (sector-dep) |
-| Debt-to-Assets | <0.6 |
-| Interest Coverage | >5× |
-| Debt-to-EBITDA | <3× (investment grade) |
-| Net Debt / FCF | <5× |
+**Trend dimensions:** rather than a single year, use 5-year average and slope of each ratio. Rising margins/ROIC = quality improving.
 
 ---
 
-# PART III — ADVANCED TECHNIQUES
+# 8. FINANCIAL HEALTH
 
-<a id="part-iii-12"></a>
-## 12. Sentiment Analysis & Alternative Data
-
-### 12.1 News Sentiment with FinBERT (PRIMARY NLP)
-
-**Model**: `ProsusAI/finbert` (BERT pre-trained on financial corpora). Outputs softmax over {positive, neutral, negative}.
-
-**Score**: `s = P(pos) − P(neg)` ∈ [−1, 1].
-
-**Inputs**: news headlines + first paragraph; earnings call paragraphs; 8-K text.
-**Free sources**: yfinance `Ticker.news`, Finnhub `/company-news`, GDELT 2.0, NewsAPI, SEC 8-K via edgartools.
-
-**Python**:
-```python
-from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
-tokenizer = AutoTokenizer.from_pretrained("ProsusAI/finbert")
-model = AutoModelForSequenceClassification.from_pretrained("ProsusAI/finbert")
-finbert = pipeline("sentiment-analysis", model=model, tokenizer=tokenizer, top_k=None)
-scores = finbert("Apple beat earnings expectations and raised guidance.")
-```
-
-**Aggregation**: weighted mean by recency (exp decay, half-life 3 days), per ticker per week.
-**0–100**: cross-sectional percentile rank.
-
-**Limits**: 512-token cap (use Longformer for full transcripts); ~50ms/article CPU; corpora pre-2020.
-**Lift**: weekly IC ~0.02–0.04 (academic).
-
-### 12.2 VADER / Loughran-McDonald (Lightweight)
-- VADER (`vaderSentiment`): general text
-- Loughran-McDonald financial dictionary (free CSV from Notre Dame): SEC filings
-Use as fast first-pass / sanity-check; FinBERT dominates accuracy.
-
-### 12.3 Reddit r/wallstreetbets Sentiment
-
-**Algorithm**:
-1. Pull top/hot/new posts and comments daily via `praw.Reddit(...)`.
-2. Extract candidate tickers via regex `\$?[A-Z]{2,5}\b`, filter against known ticker list.
-3. Per-ticker features:
-   - `mention_count`
-   - `unique_authors`
-   - `score_weighted_mentions`
-   - `bullish_ratio` (from VADER/FinBERT on context)
-   - `acceleration` = mentions_today / mean_7d
-4. Blacklist: `PUTS`, `CALLS`, `YOLO`, `HOLD`, etc.
-
-**Caveat**: WSB sentiment is reflexive — extreme positive often precedes mean reversion. Treat as **attention/crowding** feature.
-
-**Lift**: mention-count *acceleration* strongest sub-feature; 5-day forward IC ~0.03 on small/mid-cap.
-
-### 12.4 StockTwits Sentiment
-Free streaming endpoint with user-tagged Bullish/Bearish (cleaner than free-text):
-`https://api.stocktwits.com/api/2/streams/symbol/{TICKER}.json`
-
-Aggregate: `bullish_share = bull/(bull+bear)`; level + WoW change.
-
-### 12.5 SEC Form 4 Insider Trading
-
-**Why**: insider open-market purchases (transaction code "P") are among the most consistent positive predictors (Lakonishok-Lee 2001, Cohen-Malloy-Pomorski 2012). Sales are noisy.
-
-**Implementation**:
-```python
-from edgar import Company, get_filings
-filings = get_filings(form="4", year=2026, quarter=2)
-for f in filings:
-    obj = f.obj()  # Form4 object
-    df = obj.to_dataframe()
-```
-
-**Score (rolling 90 days)**:
-- `net_insider_buy_$ = Σ(P) − Σ(S non-10b5-1)`
-- Weight by role: CEO/CFO=3, Director=2, 10% owner=1
-- `cluster_buying_score`: distinct insiders buying within 30 days (≥2 = strong)
-- Normalize by market cap → cross-sectional percentile.
-
-**Lift**: cluster buying = 5–10% annualized alpha in long-only top decile.
-
-### 12.6 13F Institutional Holdings
-
-Quarterly parse for "smart money" managers (Berkshire, Pershing Square, Baupost, Renaissance, Tiger Global, Coatue, Akre, etc.).
-
-Per ticker:
-- `smart_money_count_change`
-- `smart_money_$_added`
-- `whale_concentration`: top-10 13F-filers' aggregate / shares out
-
-```python
-from edgar import Company
-report = Company("BRK.A").get_filings(form="13F-HR")[0].obj()
-holdings = report.holdings  # DataFrame: Ticker, Value, Shares, Status
-```
-
-**45-day lag** for backtesting (filings late).
-
-### 12.7 Short Interest & Squeeze Metrics
-
-Free: yfinance `Ticker.info` (`sharesShort`, `shortRatio`, `shortPercentOfFloat`); Finnhub free historical.
-
-- `short_pct_float` (>20% raises squeeze odds)
-- `days_to_cover` = short_int / avg daily volume
-- `short_ratio_change_2w`
-
-Use **change** as sentiment signal (rising = bearish; high level + price strength = potential squeeze).
-
-### 12.8 Options Flow / Put-Call Ratio
-
-Free: CBOE daily total/equity/index PCR (CSV); yfinance options chain.
-
-- `pcr_volume` = put_vol / call_vol
-- `pcr_oi` = put_oi / call_oi
-- `iv_skew` = IV(25Δ put) − IV(25Δ call)
-- `unusual_options_activity` = today_vol / 30d_avg
-
-PCR <0.7 bullish, >1.0 bearish; extremes contrarian.
-
-### 12.9 Google Trends (pytrends)
-
-```python
-from pytrends.request import TrendReq
-pt = TrendReq()
-pt.build_payload(["AAPL", "Apple stock"], timeframe="today 12-m")
-df = pt.interest_over_time()
-```
-
-**Feature**: `search_acceleration = (this_week − mean_12w) / std_12w`.
-Heavy throttling — cache aggressively.
-
-### 12.10 Earnings Call Transcript Sentiment
-
-**Source**: Seeking Alpha (legal/fragile), Motley Fool transcripts, IR pages, API Ninjas. Use Longformer (`allenai/longformer-base-4096`) for full transcripts (>512 tokens) or chunk + average.
-
-**Features**:
-- `qa_section_sentiment` (Q&A more honest than prepared)
-- `complexity` (Gunning Fog/Flesch-Kincaid; rising = red flag post-Enron)
-- `forward_looking_count` ("expect/anticipate/guidance" dictionary)
-- `hedging_word_count` (Loughran-McDonald uncertainty)
-
----
-
-<a id="part-iii-13"></a>
-## 13. Machine Learning Pipeline
-
-### 13.1 Gradient Boosted Trees (PRIMARY ML — RECOMMENDED)
-
-**Why first**: outperform LSTM/Transformers on typical equity feature sets at daily/weekly horizons. Handle mixed scales, missing values, non-linearities. Provide free SHAP interpretability.
-
-**Target**: cross-sectional rank of forward return (1m, 3m). For ranking, use LightGBM `objective="lambdarank"`, group = trading date.
-
-**Features**: all 60 classical metrics + advanced features = ~150 features.
-
-**Pre-process**:
-1. Winsorize at 1/99 percentiles
-2. Cross-sectionally rank (or z-score by sector)
-3. Train
-
-**Hyperparameters (starting point)**:
-```python
-params = {
-    'num_leaves': 31,
-    'learning_rate': 0.03,
-    'n_estimators': 500,
-    'min_child_samples': 200,
-    'reg_alpha': 0.1,
-    'reg_lambda': 0.1,
-    'feature_fraction': 0.7,
-    'bagging_fraction': 0.8,
-    'objective': 'lambdarank'
-}
-```
-Use Optuna for tuning **only on training fold** to avoid leakage.
-
-### 13.2 Walk-Forward Validation
-
-```python
-from sklearn.model_selection import TimeSeriesSplit
-splits = TimeSeriesSplit(n_splits=10, test_size=21)  # 21 trading days per test
-```
-
-**Procedure**:
-- Initial train: 5 years
-- Step forward 1 month
-- Refit; predict next month
-- Evaluate IC, IR, decile spread per fold; aggregate
-
-### 13.3 LSTM / GRU / Temporal Fusion Transformer
-
-Use only when sequence dependence beyond ~20 lags adds value (rare for weekly fundamental). Libraries: `pytorch-forecasting` (TFT, DeepAR, N-BEATS), `darts`. **Defer until tree-based pipeline is live and validated.**
-
-### 13.4 Anomaly Detection
-
-```python
-from sklearn.ensemble import IsolationForest
-iso = IsolationForest(contamination=0.01)
-flagged = iso.fit_predict(X_features)
-```
-
-Flag stocks behaving unusually (return, volume, vol z-scores). Use as **risk filter** (avoid recently-anomalous at top of ranking), not alpha.
-
-### 13.5 Clustering for Peer Discovery
-
-Cluster stocks by return-correlation distance (`1 − corr`) using HDBSCAN or hierarchical agglomerative; alternative: cluster by feature-vector. Use clusters for **peer-relative valuations** (P/E vs. cluster median) — often more powerful than sector-relative.
-
-### 13.6 Feature Engineering Best Practices
-
-- **Cross-sectional ranking** every feature each rebalance date → uniform [0,1]
-- **Sector neutralization**: subtract sector median before ranking
-- **Market-cap neutralization**: residualize feature against log(market cap) by OLS
-- **Z-score winsorization** at 3σ before any non-rank feature
-- **Lag policy**: fundamentals lagged ≥45 days post fiscal period end; macro 1 day; price-derived 0 day
-- **Stationary transforms**: changes/ratios of fundamentals, not raw levels
-
-### 13.7 Common Pitfalls — Hard-Code Against
-
-| Pitfall | Mitigation |
-|---|---|
-| Look-ahead bias | "As-of" snapshots; SEC EDGAR filing dates, not period-end |
-| Survivorship bias | Historical S&P 500 constituents from Wikipedia history |
-| Selection bias | Define universe at time t with info available at t |
-| P-hacking | Pre-register hypotheses; require IC>0 in ≥70% of yrs OOS; PBO |
-| Multiple testing | Bonferroni / Benjamini-Hochberg correction |
-| Newey-West needed | `OLS().fit(cov_type='HAC', cov_kwds={'maxlags':12})` |
-| Train-test leak | Strict time-cut; do not standardize across full sample |
-
-### 13.8 SHAP for Explainability
-
-```python
-import shap
-explainer = shap.TreeExplainer(lgbm_model)
-shap_values = explainer.shap_values(X_today)
-top5 = np.argsort(np.abs(shap_values[idx]))[-5:]
-```
-
-Surface top-5 contributing features per stock in UI.
-
----
-
-<a id="part-iii-14"></a>
-## 14. Advanced Quant — HRP, Black-Litterman, Kelly
-
-### 14.1 Hierarchical Risk Parity (López de Prado 2016) — RECOMMENDED
-
-**Algorithm**:
-1. Compute correlation `ρ`. Distance `d_ij = sqrt(0.5(1−ρ_ij))`.
-2. Hierarchical clustering (single linkage) → tree.
-3. Quasi-diagonalize covariance by tree order.
-4. Recursive bisection: allocate inverse-variance proportional.
-
-```python
-from pypfopt import HRPOpt
-hrp = HRPOpt(returns=daily_returns_df)
-weights = hrp.optimize(linkage_method="single")
-```
-
-**Why**: avoids covariance inversion, far more stable than Markowitz under estimation error. Standard in modern quant.
-
-### 14.2 Black-Litterman Model
-
-Blend market prior (CAPM-implied) with ranking system's predictions (treated as views).
-
-```python
-from pypfopt import BlackLittermanModel, risk_models, EfficientFrontier
-S = risk_models.CovarianceShrinkage(prices).ledoit_wolf()
-delta = 2.5
-prior = delta * S @ market_caps_normalized
-viewdict = {"AAPL": 0.15, "TSLA": -0.05}
-bl = BlackLittermanModel(S, pi=prior, absolute_views=viewdict,
-                          omega="idzorek", view_confidences=[0.6, 0.4])
-posterior_ret = bl.bl_returns()
-ef = EfficientFrontier(posterior_ret, S)
-w = ef.max_sharpe()
-```
-
-### 14.3 Ledoit-Wolf Shrinkage Covariance
-
-Always use shrinkage when N (assets) ~ T (observations):
-```python
-from sklearn.covariance import LedoitWolf
-S = LedoitWolf().fit(returns_matrix).covariance_
-```
-
-### 14.4 Markowitz / Max-Sharpe / Min-Var
-
-```python
-from pypfopt import EfficientFrontier
-ef = EfficientFrontier(mu, S)
-w_max_sharpe = ef.max_sharpe()
-w_min_vol = ef.min_volatility()
-```
-
-### 14.5 Risk Parity (Equal Risk Contribution)
-
-```python
-import riskfolio as rp
-port = rp.Portfolio(returns=returns)
-port.assets_stats(method_mu='hist', method_cov='ledoit')
-w = port.rp_optimization(model='Classic', rm='MV', rf=0)
-```
-
-### 14.6 Kelly Criterion
-
-- Binary: `f* = p/L − q/G`
-- Continuous (single asset): `f* = μ/σ²`
-- Portfolio: `f* = Σ⁻¹ μ`
-
-**Use fractional Kelly (¼ to ½)** in production — full Kelly too aggressive given parameter estimation error.
-
-### 14.7 Multi-Factor Composite Construction
-
-Build composite per category, then combine:
-- **Value**: rank avg of P/E, P/B, EV/EBITDA, FCF yield, div yield (5)
-- **Quality**: ROE, ROIC, gross margin, accruals (inverted), Piotroski (5)
-- **Momentum**: 12-1, 6-1, 3-1, residual, 52w-high distance (5)
-- **Low-Vol**: 252-day vol, idiosyncratic vol, β (3)
-- **Growth**: rev/EPS CAGR 3y, fwd revisions (3)
-- **Sentiment**: news, Reddit, options, insider (4)
-
-Z-score within each category, average → one factor per category. Combine via meta-learner weights.
-
-### 14.8 Factor Timing / Rotation
-
-Conditional on macro regime: value tends to outperform in rising-rate; momentum in trending; quality in late-cycle.
-
-**Implementation**: estimate factor return ~ regime indicator with rolling window; weight factors by recent IR within current regime. Use **gentle tilts (±20% from neutral)**, not bets — factor timing's added value is debated.
-
----
-
-<a id="part-iii-15"></a>
-## 15. Macro & Regime Detection
-
-### 15.1 FRED Macro Stack (Free with API Key)
-
-| Code | Series | Use |
+| Metric | Formula | Healthy Threshold |
 |---|---|---|
-| `T10Y2Y` | 10Y–2Y spread | Recession indicator |
-| `T10Y3M` | 10Y–3M | NY Fed favorite |
-| `BAMLH0A0HYM2` | HY OAS | Credit-stress regime |
-| `VIXCLS` | VIX close | Vol regime |
-| `UNRATE` | Unemployment | Late-cycle |
-| `INDPRO` | Industrial production | Chen-Roll-Ross |
-| `CPIAUCSL` | CPI | Inflation factor |
-| `FEDFUNDS` | Fed funds | Discount-rate factor |
-| `USREC` | NBER recession | Backtest regime |
-
-```python
-from fredapi import Fred
-fred = Fred(api_key=KEY)
-spread = fred.get_series('T10Y2Y')
-```
-
-### 15.2 Hidden Markov Models for Regime Detection
-
-```python
-from hmmlearn.hmm import GaussianHMM
-features = pd.concat([spy_returns, vix_change, term_spread_change], axis=1).dropna()
-hmm = GaussianHMM(n_components=3, covariance_type='full', n_iter=1000).fit(features)
-states = hmm.predict(features)
-```
-
-Label states by mean return: high-mean-low-vol = bull, low-mean-high-vol = bear, otherwise neutral.
-
-**Use**: as ML feature (one-hot regime); as gate for factor weights; as risk filter (reduce exposure in bear).
-
-### 15.3 Chen-Roll-Ross (1986) Macro Factor Model
-
-Macro factors: industrial production growth, unexpected inflation (CPI − consensus), term spread innovation, default-spread innovation. Estimate stock betas via 60-month rolling regression; expected return = Σ βᵢ × λᵢ. Cross-section deviation between actual and predicted return = mispricing signal.
-
-### 15.4 Sector Rotation Logic
-
-Classify regime via HMM + yield curve + ISM PMI proxy, then tilt sector weights:
-- **Early recovery**: Tech, Cyclicals
-- **Mid cycle**: Industrials, Materials
-- **Late cycle**: Energy, Staples
-- **Recession**: Healthcare, Utilities
-
-### 15.5 Equity Duration (Interest-Rate Sensitivity)
-
-`Duration ≈ −ΔP/P / Δy`. Estimate via 3-yr rolling regression of weekly returns on 10Y yield change. Long-duration equities suffer in rising-rate regimes. Use as risk factor.
+| Current Ratio | Current Assets / Current Liabilities | ≥ 1.5 |
+| Quick Ratio | (Cash + ST Inv + AR) / CL | ≥ 1.0 |
+| Debt-to-Equity | Total Debt / Equity | < 1.0 (varies by sector) |
+| Debt-to-Assets | Total Debt / Total Assets | < 0.6 |
+| Interest Coverage | EBIT / Interest Expense | > 5× |
+| Debt-to-EBITDA | Total Debt / EBITDA | < 3× investment grade |
+| Net Debt / FCF | (Total Debt − Cash) / FCF | < 5× |
 
 ---
 
-<a id="part-iii-16"></a>
-## 16. Microstructure / Volume / Flow
+# 9. SCORING & RANKING METHODOLOGIES
 
-All available in `ta` and `pandas-ta`:
+## 9.1 Z-Score Normalization
+For each metric `x` across the cross-section:
+> **z_i = (x_i − μ) / σ**
 
-| Indicator | Library | Interpretation |
-|---|---|---|
-| VWAP | `ta.volume.VolumeWeightedAveragePrice` | Price vs. VWAP = institutional sentiment |
-| A/D Line | `ta.volume.AccDistIndexIndicator` | Divergence with price → reversal |
-| Chaikin Money Flow (20) | `ta.volume.ChaikinMoneyFlowIndicator` | >0 buying pressure |
-| Volume-Price Trend | `ta.volume.VolumePriceTrendIndicator` | Cumulative volume × % return |
-| Force Index | `ta.volume.ForceIndexIndicator` | Strength of move |
-| Ease of Movement | `ta.volume.EaseOfMovementIndicator` | Price moves on low vol = easy |
-| NVI / PVI | `pandas_ta.nvi`, `pvi` | Smart vs. uninformed money proxy |
-| Relative Volume | `volume / 20d_avg_volume` | Attention spike |
+After **winsorization** at 5th/95th percentile to handle outliers (per MSCI methodology). For "lower is better" metrics (D/E, P/E, volatility), use `z = −(x − μ)/σ`.
 
-Score each → 0–100 percentile cross-sectionally, average within "Volume/Flow" category.
-
----
-
-<a id="part-iii-17"></a>
-## 17. Advanced Valuation (EVA, CFROI, Tobin's Q)
-
-### 17.1 Economic Value Added (EVA)
-> **EVA = NOPAT − (WACC × Invested Capital)**
-
-- NOPAT = EBIT × (1 − effective tax rate)
-- Invested Capital ≈ Total Debt + Equity − Cash
-- WACC via CAPM (rf from FRED `DGS10`, ERP=5.5%)
-
-**Score**: `EVA / Invested Capital` cross-sectional rank → 0–100.
-
-### 17.2 Market Value Added (MVA)
-> **MVA = MarketCap + Total Debt − Invested Capital**
-
-Cumulative value creation by management.
-
-### 17.3 CFROI (Cash Flow Return on Investment)
-
-Approximation: `(EBITDA + R&D) / (Gross PP&E + Working Capital)`. Compare to WACC.
-
-### 17.4 Tobin's Q
-> **q ≈ (MarketCap + Total Debt) / Total Assets**
-
-q < 1 cheap; q > 1 expensive (high-growth premium).
-
-### 17.5 Damodaran Intrinsic Value
-
-Two-stage FCFF DCF with explicit fade to terminal industry margin/growth = risk-free + 2%. Damodaran publishes industry betas, ERP, country-risk premia, R&D capitalization rules — free at `pages.stern.nyu.edu/~adamodar/`.
-
-### 17.6 Implied Cost of Capital (ICC)
-
-Reverse-engineer the discount rate that makes residual-income or DCF model match current price given consensus EPS. Gebhardt-Lee-Swaminathan (2001) or Easton (2004) PEG. Forward expected-return measure superior to historical β-based CAPM.
-
-### 17.7 Sloan Accruals Anomaly
-
-> **Accruals = (NI − CFO) / Avg Total Assets**
-
-**Higher accruals → lower future returns**. Sloan (1996) hedge spread ~10% annually historically; decayed but still significant.
-
-Use **rank ascending** (low accruals = high score). Subtract from base score (penalty) when high.
-
-### 17.8 Dechow F-Score (Fraud Detection)
-
-Logit using accruals quality, change in receivables, change in inventory, % soft assets, change in cash sales, change in ROA, actual issuance. Use alongside Beneish — they catch slightly different fraud patterns.
-
----
-
-<a id="part-iii-18"></a>
-## 18. Behavioral & Anomaly Factors
-
-| Anomaly | Construction | Sign | Notes |
-|---|---|---|---|
-| **PEAD** | SUE = (actual − consensus EPS)/std(SUE_4q); long top quintile 60d | + | Decaying; enhance with NLP |
-| **Earnings surprise momentum** | SUE × EAR(3-day reaction) interaction | + | George-Hwang style |
-| **Analyst revisions** | Δ(consensus EPS)/|EPS| over 4w | + | yfinance has analyst data |
-| **52-week high** | Price / 52w_high | + | Anchoring bias |
-| **Lottery / MAX effect** | Avg of 5 highest daily returns last month | − | Avoid lottery stocks |
-| **Idiosyncratic volatility** | Std of CAPM residuals 60d | − | IVOL puzzle |
-| **Asset growth** | (TA_t − TA_{t−1})/TA_{t−1} | − | High asset growth → low returns |
-| **Net stock issuance** | log(SharesOut_t/SharesOut_{t−1}) | − | Robust survivor anomaly |
-| **CapEx / Assets** | CapEx / Avg TA | − | Over-investment penalty |
-| **Investment-to-assets** | (ΔPPE + ΔInv)/TA | − | q-theory grounded |
-| **Profitability persistence** | Std of ROA last 5 yrs (low = persistent) | + (low std) | Quality |
-| **Quality persistence** | Avg Piotroski over 5 yrs | + | Buffett-like |
-| **Composite mispricing (Stambaugh-Yu-Yuan)** | Avg rank of 11 anomalies | + | Strong long-short spread |
-
-Within each: cross-sectional rank → 0–100, then combine via equal-weight or recent-IR weighting.
-
----
-
-<a id="part-iii-19"></a>
-## 19. Advanced Risk Analysis
-
-| Metric | Implementation | Interpretation |
-|---|---|---|
-| **Conditional VaR (ES)** | `np.mean(returns[returns ≤ np.quantile(returns, α)])` | Expected loss given VaR exceeded |
-| **Drawdown details** | `quantstats.stats.drawdown_details(returns)` | Worst-case stress |
-| **Skewness / Kurtosis** | `scipy.stats.skew/kurtosis` | Tail-risk shape |
-| **Downside Deviation** | std of returns below MAR | Sortino numerator |
-| **Ulcer Index** | sqrt(mean(drawdown_pct²)) over 14d | Stress of holding |
-| **Pain Index** | mean(\|drawdown\|) | Avg pain |
-| **Omega Ratio** | Σ max(r−θ,0) / Σ max(θ−r,0) | Threshold-based |
-| **GARCH(1,1)** | `arch.arch_model(r, vol='Garch', p=1, q=1).fit()` | Time-varying vol |
-| **GJR-GARCH** | asymmetric leverage | Better for equities |
-
-```python
-from arch import arch_model
-am = arch_model(returns*100, vol='Garch', p=1, o=1, q=1, dist='t')
-res = am.fit(disp='off')
-sigma_forecast = res.forecast(horizon=21).variance.iloc[-1]
-```
-
-Use forecasted volatility in Sharpe/Kelly inputs and as a feature.
-
----
-
-<a id="part-iii-20"></a>
-## 20. Corporate Events & Catalysts
-
-| Event | Source | Treatment |
-|---|---|---|
-| Earnings date | yfinance, Finnhub | Drift signal (PEAD); higher vol pre-event |
-| Beat/miss | Finnhub `/stock/earnings` | SUE feature |
-| Dividend / buyback | yfinance `Ticker.actions`, 8-K | Buyback yield = +shareholder yield |
-| M&A target | 8-K item 1.01, news | Risk-arb; consider excluding from base |
-| Insider buying | Form 4 | + score |
-| 8-K material events | edgartools `form="8-K"` + item filter | Item 4.02 (restatement) = strong negative |
-| Spin-offs | edgartools form-10 | Often overlooked; +alpha academic |
-| Index inclusion | News + index publisher | +flow upon addition |
-
-For each catalyst within trailing 90 days, compute event-window CAR and add as features.
-
----
-
-# PART IV — SCORING, RANKING, VALIDATION
-
-<a id="part-iv-21"></a>
-## 21. Composite Score Construction
-
-### 21.1 Z-Score Normalization
-> **z_i = (x_i − μ) / σ** after winsorization at 5th/95th percentile
-
-For "lower-is-better" metrics (D/E, P/E, vol): `z = −(x−μ)/σ`.
-
-### 21.2 Percentile Rank (RECOMMENDED for ranking apps)
+## 9.2 Percentile Rank (RECOMMENDED for Jitta-style apps)
 > **percentile_i = rank(x_i) / N × 100**
 
-Robust to outliers; produces 0–100 directly; easy to interpret. Used by Stockopedia, Jitta-style platforms.
+**Strengths:** robust to outliers; produces 0-100 directly; easy to interpret. **Stockopedia's StockRanks** use this approach.
 
-### 21.3 Sigmoid / Min-Max
-- Min-Max: `(x − min)/(max − min) × 100` — sensitive to outliers; only after winsorization
-- Sigmoid: `100 / (1 + exp(−k·z))` — smooth bounded
+## 9.3 Sigmoid / Min-Max Scaling
+- Min-Max: `(x − min)/(max − min) × 100`. Sensitive to outliers — only use after winsorization.
+- Sigmoid: `100 / (1 + exp(−k·z))`. Smooth bounded output.
 
-### 21.4 Two-Level Composite
-- **Level 1 (Pillar Score)**: avg percentile rank of metrics within pillar
-- **Level 2 (Composite)**: weighted avg of pillar scores
+## 9.4 Composite Construction
+Two-level hierarchy is standard:
+- **Level 1 (Pillar Score):** Average percentile ranks of all metrics within a pillar (e.g., 6 value metrics → 1 Value Score).
+- **Level 2 (Composite):** Weighted average of pillar scores.
 
-**Recommended weights** (already in §4.1):
+**Recommended initial weights (Stockopedia/QVM-style):**
+- Quality 33% / Value 33% / Momentum 34% (QVM)
+- Or: Quality 25% / Value 25% / Growth 15% / Momentum 15% / Health 10% / Risk 10% (Jitta-like)
 
+## 9.5 Missing Data
+- If < 50% of a pillar's metrics are available → set pillar to neutral (50) and flag.
+- For individual metric NaN → impute as sector median (NOT global median).
+- Never propagate NaN; always log which fields were imputed.
+
+## 9.6 Sector-Relative vs Absolute
+**ALWAYS compute Quality/Value/Growth ranks within sector (GICS sector or industry).** Banks have systematically different ROE, leverage, P/B than tech firms. Use absolute scoring only for Risk (volatility, drawdown) and Momentum.
+
+---
+
+# 10. FAIR PRICE / TARGET PRICE — ENSEMBLE METHOD
+
+This is the core of a Jitta-like app. Compute multiple fair-price estimates, then aggregate.
+
+| Method | When Applicable |
+|---|---|
+| **DCF (Gordon Growth)** | Positive FCF + reasonable forecast |
+| **Graham Number** | Positive EPS + Book Value, traditional sectors |
+| **Residual Income Model** | Positive ROE > cost of equity |
+| **DDM** | Stable dividend payer |
+| **Multiple-based:** P/E × forward EPS | Always |
+| **Multiple-based:** EV/EBITDA × EBITDA − Net Debt | Always for non-financials |
+| **Multiple-based:** P/B × BVPS | Banks, capital-intensive |
+| **Multiple-based:** P/S × Sales | Unprofitable / growth firms |
+
+**Aggregation (recommended):**
+1. Compute each applicable fair price; tag inapplicable (e.g., negative EPS → skip Graham).
+2. Drop top and bottom values (trimmed mean) if you have ≥ 5 estimates.
+3. **Fair Price = trimmed mean** OR median of applicable methods.
+4. **Maximum Fair Price = 95th percentile / max of methods** (optimistic upper bound, like Jitta's "Fair Price").
+
+**Margin of Safety:**
+> **MoS % = (Fair Price − Current Price) / Fair Price × 100**
+
+- MoS > 30% = strong buy zone (Graham's recommended)
+- MoS 0–30% = fair to attractive
+- MoS < 0% = overvalued
+
+**Buy Score (0-100):** `clip(50 + MoS%, 0, 100)`.
+
+---
+
+# 11. DATA SOURCES & FREE-TIER REALITIES
+
+## 11.1 yfinance (Yahoo Finance, unofficial Python)
+- **Cost:** Free, unlimited, no key.
+- **Best for:** Daily/intraday OHLCV history (decades), basic info (sector, market cap, beta, P/E), annual & quarterly income statement / balance sheet / cash flow via `Ticker.income_stmt`, `.balance_sheet`, `.cashflow`, `.quarterly_*`.
+- **Available fields:** TotalRevenue, GrossProfit, OperatingIncome, NetIncome, EBITDA, BasicEPS, DilutedEPS, TotalAssets, CurrentAssets, CurrentLiabilities, TotalDebt, StockholdersEquity, OperatingCashFlow, CapitalExpenditure, FreeCashFlow, etc.
+- **Caveats:** Unofficial; field names changed several times in 2023-2024; some methods (recommendations, sustainability) frequently break. Plan for retry/fallback. Not for real-money production trading systems.
+
+## 11.2 Financial Modeling Prep (FMP) Free Tier
+- **Cost:** Free, **250 calls/day**, US-only on free.
+- **Endpoints (free):** `/income-statement/{symbol}`, `/balance-sheet-statement/{symbol}`, `/cash-flow-statement/{symbol}`, `/ratios/{symbol}`, `/key-metrics/{symbol}`, `/historical-price-full/{symbol}`, `/profile/{symbol}`, `/quote/{symbol}`, plus 250+ more.
+- **Best for:** Pre-calculated ratios and key metrics (saves you from computing them); cleaner data than Yahoo.
+- **Caveat:** 250 calls/day burns fast — fetching profile + 3 statements + ratios = 5 calls per ticker, so ~50 stocks/day. Cache aggressively to disk.
+
+## 11.3 Alpha Vantage Free Tier
+- **Cost:** Free, **25 calls/day, 5/min**.
+- **Endpoints:** TIME_SERIES_DAILY/_ADJUSTED, INTRADAY, OVERVIEW (fundamentals), INCOME_STATEMENT, BALANCE_SHEET, CASH_FLOW, EARNINGS, plus 50+ pre-computed technical indicators (RSI, MACD, BBANDS, ADX, ATR, MFI, OBV, STOCH, etc.).
+- **Best for:** Pre-computed technical indicators if you don't want to build them. **Realtime/15-min delayed quotes are PREMIUM only** since this is exchange-regulated.
+- **Caveat:** 25/day is very tight — only practical for daily refresh of a small watchlist or for fetching a single feature broadly (e.g., one batch download of OVERVIEW for a few key tickers).
+
+## 11.4 SimFin Free Tier
+- **Cost:** Free Python API & bulk CSV; subscription required for >5-year history and intraday data.
+- **Best for:** Bulk download of standardized fundamentals across the entire US market in one CSV. Excellent for cross-sectional ranking when you need ~3,000 stocks at once.
+- **Coverage:** Strong on US (~5,000 stocks), expanding globally; primarily annual/quarterly income statement, balance sheet, cash flow, and 7,000+ pre-calculated daily ratios.
+
+## 11.5 SEC EDGAR XBRL API (data.sec.gov)
+- **Cost:** Completely free, no API key, no rate limit (just need a User-Agent header with your email).
+- **Endpoints:** `/api/xbrl/companyfacts/CIK{cik}.json` (all reported XBRL facts for a company) and `/api/xbrl/companyconcept/CIK{cik}/us-gaap/{concept}.json`.
+- **Best for:** Authoritative ground truth — every line item ever reported in a 10-K/10-Q since 2009 is here, machine-readable, free. Recommended for serious fundamentals.
+- **Library:** `edgartools` Python package wraps EDGAR access cleanly.
+- **Caveat:** Raw XBRL has firm-specific extensions; reconciling to a standard chart of accounts requires effort. Use `edgartools` to abstract this.
+
+
+---
+
+# 12. SENTIMENT ANALYSIS & ALTERNATIVE DATA
+
+## 12.1 FinBERT (Financial Sentiment via Transformers)
+- **Source**: ProsusAI/finbert on HuggingFace (free, MIT-style)
+- **Use**: Classify news headlines/articles as positive/negative/neutral
+- **Inputs**: yfinance news, Finnhub free tier, NewsAPI free
+- **Phase**: 6 (Sentiment v2)
+
+## 12.2 VADER + Loughran-McDonald Dictionary
+- **VADER**: Generic social media sentiment
+- **L-M Dictionary**: Finance-specific positive/negative word lists (cite Loughran-McDonald 2011, JoF)
+- **Use**: Lightweight alternative to FinBERT for headline sentiment
+
+## 12.3 SEC Form 4 (Insider Transactions)
+- **Source**: SEC EDGAR free
+- **Library**: edgartools
+- **Signals**: CFO/CEO P-coded purchases > $100k, cluster buys (3+ insiders, 90 days)
+- **Documented alpha**: ~5-10% top decile (Cohen-Malloy-Pomorski 2012, JoF)
+
+## 12.4 13F Institutional Holdings
+- **Source**: SEC EDGAR (lagged 45 days)
+- **Use**: Track smart money concentration, hedge fund crowding
+- **Caveat**: 45-day lag limits real-time use
+
+## 12.5 Reddit / StockTwits / WSB
+- **Library**: PRAW (Reddit), public StockTwits API
+- **Caveat**: NO documented alpha at S&P 500 scale (megacap)
+- **Phase 6**: SKIP for megacap; Phase 8 revisit for small-cap
+
+## 12.6 Options Put-Call Ratio
+- **Source**: Cboe CSV (free)
+- **Use**: Sentiment indicator; high PCR = bearish
+
+## 12.7 Google Trends
+- **Library**: pytrends (free)
+- **Use**: Attention proxy; works better for retail names
+
+---
+
+# 13. MACHINE LEARNING PIPELINE
+
+## 13.1 LightGBM LambdaRank (Primary Ranker)
+- **Use**: Cross-sectional rank prediction
+- **Why**: Tree-based handles non-linear factor interactions; fast on CPU
+- **Phase**: 5
+
+## 13.2 Walk-Forward Validation
+- **Methodology**: Train 36mo / Validate 6mo / Test 1mo, rolling forward
+- **Embargo**: 5 trading days between train and test (López de Prado 2018)
+- **Purging**: Remove labels spanning train-test boundary
+
+## 13.3 SHAP Explainability
+- **Library**: shap (free, MIT)
+- **Use**: Top-5 contributing factors per stock, displayed in detail page
+
+## 13.4 Isolation Forest (Anomaly Detection)
+- **Use**: Flag stocks with unusual feature patterns (potential errors or genuine outliers)
+
+## 13.5 HDBSCAN Clustering
+- **Use**: Find similar stocks, sector-agnostic peer groups
+
+---
+
+# 14. ADVANCED QUANT — PORTFOLIO CONSTRUCTION
+
+## 14.1 Hierarchical Risk Parity (HRP)
+- **Paper**: López de Prado (2016) "Building Diversified Portfolios that Outperform Out of Sample"
+- **Library**: PyPortfolioOpt (free, MIT)
+- **Why**: Robust to noisy correlation matrices, no matrix inversion
+
+## 14.2 Black-Litterman
+- **Use**: Combine market equilibrium with QuantRank views
+- **Library**: PyPortfolioOpt
+
+## 14.3 Ledoit-Wolf Shrinkage
+- **Use**: Stabilize covariance matrix estimation
+- **Library**: scikit-learn
+
+## 14.4 Markowitz / Risk Parity
+- **Use**: Standard mean-variance and equal-risk-contribution baselines
+
+## 14.5 Kelly Criterion (Fractional)
+- **Use**: Position sizing based on edge × odds
+- **Cap at 1.0**: Avoid over-leveraging
+- **Half-Kelly recommended**: Reduces drawdown variance
+
+---
+
+# 15. MACRO & REGIME DETECTION
+
+## 15.1 FRED Macro Stack (free, no key with fredapi)
+Key series:
+- T10Y2Y (yield curve)
+- VIX, VIX9D, VIX3M
+- BAMLH0A0HYM2 (HY OAS — credit spreads)
+- UNRATE, INDPRO, CPIAUCSL, FEDFUNDS
+- USREC (NBER recession indicator)
+
+## 15.2 Hidden Markov Models (HMM)
+- **Library**: hmmlearn (Gaussian HMM)
+- **States**: 3 (bull / neutral / bear)
+- **Use**: Tilt factor weights conditionally
+
+## 15.3 Chen-Roll-Ross Macro Factors
+- **Inputs**: Inflation surprise, term spread, default spread, industrial production growth
+- **Use**: Macro factor exposure scoring
+
+## 15.4 Sector Rotation
+- **Methodology**: Track sector relative momentum over business cycle phases
+- **Late-cycle**: Energy, materials lead
+- **Recession**: Staples, healthcare, utilities lead
+
+## 15.5 Equity Duration
+- **Concept**: Long-duration stocks (low current FCF, high terminal value) hurt by rate hikes
+- **Proxy**: P/E or 1 / earnings yield
+
+---
+
+# 16. MICROSTRUCTURE / VOLUME / FLOW
+
+## 16.1 OBV / MFI / CMF (already in Section 2)
+- Money flow indicators
+
+## 16.2 Volume Profile / VWAP Distance
+- Distance from VWAP as mean-reversion signal
+
+## 16.3 Short Interest
+- **Source**: Finra free CSV, or finnhub.io free
+- **Signal**: High SI + price rising = squeeze potential
+
+## 16.4 Dark Pool Volume
+- **Source**: Finra ATS Transparency Data (free)
+- **Use**: Institutional accumulation/distribution
+
+---
+
+# 17. ADVANCED VALUATION
+
+## 17.1 EVA (Economic Value Added)
+- Formula: NOPAT − (WACC × Capital)
+- **Use**: True economic profit (vs accounting profit)
+
+## 17.2 CFROI (Cash Flow Return on Investment)
+- Formula: Gross Cash Flow / Gross Investment
+- **Use**: Sector-neutral return metric (HOLT methodology)
+
+## 17.3 Tobin's Q
+- Formula: Market Value / Replacement Cost
+- **Q > 1**: Stock trades above replacement cost (overvalued by Tobin's measure)
+
+## 17.4 Real Options Valuation
+- Apply to growth stocks with significant optionality (R&D pipelines, etc.)
+
+---
+
+# 18. BEHAVIORAL & ANOMALY FACTORS
+
+## 18.1 Post-Earnings Announcement Drift (PEAD)
+- **Paper**: Bernard-Thomas 1989, 1990
+- **Use**: Standardized Unexpected Earnings (SUE) → 60-day drift signal
+
+## 18.2 Idiosyncratic Volatility (IVOL)
+- **Paper**: Ang-Hodrick-Xing-Zhang 2006
+- **Use**: Low IVOL outperforms (anomaly)
+
+## 18.3 MAX (Lottery Effect)
+- **Paper**: Bali-Cakici-Whitelaw 2011
+- **Use**: Stocks with high MAX returns underperform
+
+## 18.4 Asset Growth
+- **Paper**: Cooper-Gulen-Schill 2008
+- **Use**: High asset growth firms underperform
+
+## 18.5 Net Stock Issuance
+- **Use**: Issuing firms underperform; buyback firms outperform
+
+## 18.6 Stambaugh-Yu-Yuan Composite (SEE PART VI)
+- **Section 31.2**: 11-anomaly composite
+- **Used in Part VI Phase 4**
+
+---
+
+# 19. ADVANCED RISK ANALYSIS
+
+## 19.1 GARCH(1,1) / GJR-GARCH
+- **Library**: arch (free)
+- **Use**: Conditional volatility forecasting
+
+## 19.2 VaR / CVaR
+- **Methodology**: Historical, parametric, Cornish-Fisher
+- **Caveat**: Historical fails in regime change (2008, 2020)
+
+## 19.3 Skewness / Kurtosis
+- Higher moments of return distribution
+
+## 19.4 Ulcer Index, Pain Index
+- Drawdown-aware risk metrics
+
+## 19.5 Omega Ratio
+- Probability-weighted upside vs downside
+
+---
+
+# 20. CORPORATE EVENTS & CATALYSTS
+
+## 20.1 8-K Filings (SEE PART VI Section 33.3)
+- Item-level event analysis
+
+## 20.2 DEF 14A (Proxy Statements)
+- **Source**: SEC EDGAR
+- **Use**: Executive compensation, governance scores
+
+## 20.3 Form ADV
+- **Use**: Investment adviser concentration
+
+---
+
+# 21. COMPOSITE SCORE CONSTRUCTION
+
+## 21.1 Pillar Weighting (v1.0 default)
 | Pillar | Weight |
 |---|---|
-| Quality | 25% |
-| Value | 20% |
+| Quality | 22% |
+| Value | 18% |
 | Growth | 10% |
 | Momentum | 10% |
-| Sentiment | 15% |
-| ML | 10% |
-| Macro | 5% |
-| Risk | 5% |
+| Health | 8% |
+| Profitability | 5% |
+| Technical | 4% |
+| Risk | 3% |
+| Sentiment | 10% (placeholder until Phase 6) |
+| ML | 10% (placeholder until Phase 5) |
 
-### 21.5 Sector-Relative Computation
-**Always compute Quality/Value/Growth ranks within sector (GICS).** Use absolute scoring only for Risk and Momentum.
+**Phase 3 active composite**: Scale active pillar weights to sum to 1.0 (redistribute sentiment + ml pro-rata).
+
+## 21.2 Normalization
+1. Winsorize raw metrics at 5th/95th percentile (sector-wise)
+2. Compute sector-relative percentile rank (preferred over z-score)
+3. Linear map [0, 100]
+4. Aggregate within pillar (mean of valid metrics)
+5. <50% pillar metrics → set pillar to neutral 50, flag in data_quality
+
+## 21.3 Risk Overlay (Vetoes)
+Hard floors on composite if any of:
+- Beneish M-Score > -1.78 (likely manipulator)
+- Altman Z″ < 1.10 (distress zone)
+- Sloan Accruals top decile (earnings quality red flag)
+- Z-score on Net Stock Issuance top decile
 
 ---
 
-<a id="part-iv-22"></a>
-## 22. Backtesting & Validation Framework
+# 22. BACKTESTING & VALIDATION FRAMEWORK
 
-### 22.1 Information Coefficient (IC)
+## 22.1 Information Coefficient (IC)
+- Spearman rank correlation of predicted vs realized returns
+- Target: |IC| ≥ 0.02 OOS
 
-`IC_t = spearmanr(predicted_rank_t, forward_return_{t+h})`
+## 22.2 Information Ratio (IR)
+- Mean IC / Std IC
+- Target: IR ≥ 0.5
 
-Report:
-- **Mean IC** (>0.02 monthly = decent; >0.05 strong)
-- **IC IR** = mean(IC) / std(IC) (annualized × √12)
-- **% positive IC periods** (>55% good)
-- **IC decay** plot at horizons 1, 5, 21, 63 days
+## 22.3 alphalens (free, Quantopian heritage)
+- Library for factor analysis tearsheets
 
-### 22.2 Quintile/Decile Spread
+## 22.4 Combinatorially Symmetric Cross-Validation (CSCV)
+- **Paper**: Bailey-Borwein-López de Prado-Zhu (2014)
+- **Use**: Compute Probability of Backtest Overfitting (PBO)
 
-Sort stocks into 5 or 10 buckets by predicted score; equal-weight; monthly returns. Top-bottom spread, **t-stat with Newey-West**, Sharpe of long-short.
+## 22.5 PBO (Probability of Backtest Overfitting)
+- Hard veto threshold: PBO > 50%
+- Quantifies multiple-testing bias
 
-### 22.3 alphalens
+## 22.6 Block Bootstrap
+- Use 6-12 month overlapping blocks
+- Compute Sharpe and IC confidence intervals
 
-```python
-from alphalens.utils import get_clean_factor_and_forward_returns
-from alphalens.tears import create_full_tear_sheet
-factor_data = get_clean_factor_and_forward_returns(
-    factor=score_series, prices=prices_wide, quantiles=5, periods=(1,5,21))
-create_full_tear_sheet(factor_data, by_group=False)
+## 22.7 Newey-West HAC
+- Lag = floor(4·(T/100)^(2/9))
+- Use for monthly factor returns t-stats
+
+## 22.8 Deflated Sharpe Ratio
+- **Paper**: Bailey-López de Prado (2014)
+- Adjusts for selection bias when picking best of N candidates
+
+---
+
+# 23. ENSEMBLE & META-LEARNING
+
+## 23.1 Linear Combination of Pillars
+- Phase 3 baseline
+
+## 23.2 LightGBM Meta-Learner (Phase 5)
+- Treats pillar scores as features
+- Trains on historical realized returns
+
+## 23.3 Stacking / Blending
+- Combine multiple ML models with logistic meta-learner
+- Phase 5 optional
+
+---
+
+# 24. PERFORMANCE METRICS FOR THE APP
+
+## 24.1 Top Decile vs SPY
+- Equal-weight Top 30 from QuantRank
+- Compare to SPY total return
+
+## 24.2 Sharpe Ratio
+- (Mean excess return) / Std
+- Target: 0.7-1.0 (Option B)
+
+## 24.3 Max Drawdown / Calmar
+- Worst peak-to-trough; CAGR / |MaxDD|
+
+## 24.4 Information Ratio vs SPY
+- Annualized active return / tracking error
+
+## 24.5 Hit Rate
+- % of months top decile beats SPY
+- Target: 55-60%
+
+---
+
+# 25. DATA CACHING & REFRESH CADENCE
+
+## 25.1 Cache Layers
+1. **L1: Memory** (within compute run)
+2. **L2: Disk parquet** (compute/cache/, gitignored)
+3. **L3: Repo committed** (public/data/, with PIT discipline)
+
+## 25.2 Refresh Cadence
+- **Daily**: Skip (waste of GH Actions minutes)
+- **Weekly Sunday 22:00 UTC**: Main compute cron
+- **Monthly 1st**: ML retrain (Kaggle)
+- **Quarterly**: Whisper transcription, deep model re-validation (Modal)
+
+## 25.3 Atomic Writes (Rule 12 in SKILL)
+- Always write to .tmp file, then os.rename() to final path
+
+---
+
+# 26. RATE-LIMIT MANAGEMENT
+
+## 26.1 yfinance
+- Unlimited but unofficial; use tenacity exponential backoff
+
+## 26.2 SEC EDGAR
+- No rate limit; require User-Agent header with email
+
+## 26.3 FRED
+- 120 requests/minute via fredapi
+
+## 26.4 Finnhub free
+- 60 calls/minute
+
+## 26.5 Reddit (PRAW)
+- 60 requests/minute authenticated
+
+---
+
+# 27. SUGGESTED DATABASE SCHEMA
+
+(For QuantRank static-site: NO database. JSON files in public/data/ instead.)
+
+### metadata.json
+```json
+{
+  "version": "1.0.0",
+  "last_update_utc": "2026-XX-XXTXX:XX:XXZ",
+  "universe": "SP500",
+  "universe_size": 503,
+  "phase": 3,
+  "roadmap": "Option B"
+}
 ```
 
-### 22.4 Walk-Forward Optimization
-Train years 1–5, test year 6; roll. Re-tune hyperparameters in each window using only past data.
+### rankings.json (summary array)
+Per stock: rank, ticker, name, sector, composite_score, current_price, fair_price, max_fair_price, margin_of_safety_pct, pillar_scores, confidence_interval_95
 
-### 22.5 Combinatorially Symmetric CV (CSCV) and PBO
-
-Bailey, Borwein, López de Prado, Zhu — CSCV splits T into S equal blocks, uses every C(S,S/2) split into train/test, computes performance rank, then **PBO** = probability that the best in-sample is below median out-of-sample.
-
-**PBO < 0.5 desired.** Implementations: `pbo` (R) or port the López de Prado snippet (~30 lines NumPy).
-
-### 22.6 Monte Carlo & Bootstrap
-
-- **Block bootstrap** (`arch.bootstrap.CircularBlockBootstrap`) preserves autocorrelation
-- **Monte Carlo** of strategy: simulate 10,000 reorderings of trade outcomes for p-value of Sharpe
-
-### 22.7 Transaction Cost Modeling
-
-- Spread cost: ~0.05–0.10% liquid US large-cap, 0.20–0.50% small-cap
-- Market impact: `0.5 × σ × sqrt(trade_size / ADV)` (square-root law)
-- Weekly/monthly rebalance with top-decile S&P 500 round-trip ~30–60 bps
-
-### 22.8 Statistical Significance
-
-- **Newey-West HAC** for time-series factor returns: `OLS().fit(cov_type='HAC', cov_kwds={'maxlags':12})`
-- **Deflated Sharpe** (Bailey & López de Prado 2014): adjusts Sharpe for skew, kurtosis, number of trials
+### stocks/{TICKER}.json (full detail)
+ticker, raw_metrics (all features), pillar_scores, fair_price_methods (DCF/Graham/RIM/multiples), risk_overlay (Beneish/Sloan/Z″), data_quality (filing_date, missing_metrics, imputed_metrics), shap_top5_factors
 
 ---
 
-<a id="part-iv-23"></a>
-## 23. Ensemble & Meta-Learning
+# 28. REALISTIC ACCURACY EXPECTATIONS
 
-### 23.1 Stacked Generalization
+## 28.1 Published vs Realistic Returns
 
-**Layer 1 base learners** (each → 0–100 per ticker per date):
-- M1: Fundamental composite (60 classical + EVA/CFROI/Tobin/Beneish/Sloan)
-- M2: Technical/Volume composite
-- M3: Sentiment/alt-data composite
-- M4: LightGBM trained on all features
-- M5: Macro/regime-adjusted score
-
-**Layer 2 meta-learner**: logistic regression or shallow tree on **out-of-fold predictions** of M1–M5 → final score. Critical: out-of-fold (not in-sample) to avoid leakage.
-
-### 23.2 Dynamic Regime-Conditional Weights
-
-Estimate `IR(M_i | regime_r)` from rolling 3-year history. At each rebalance:
-> w_i = max(IR_i^r, 0) / Σ max(IR_j^r, 0)
-
-Recompute weekly.
-
-### 23.3 Bayesian Model Averaging (Lighter)
-
-Posterior weights ∝ likelihood × prior. Lightweight: weight by `exp(IR/τ)` (softmax) where τ controls sharpness.
-
-### 23.4 Meta-Labeling (López de Prado)
-
-Primary model → BUY/SELL signal. Triple-barrier labels training data: hit upper (TP) → +1, lower (SL) → −1, vertical (timeout) → 0. Secondary classifier (XGBoost) predicts probability the primary signal is correct → bet sizing.
-
-```python
-import mlfinlab as ml
-events = ml.filters.cusum_filter(close, threshold=daily_vol.mean()*0.5)
-t1 = ml.labeling.add_vertical_barrier(events, close, num_days=21)
-triple = ml.labeling.get_events(close, events, pt_sl=[1,1], target=daily_vol, t1=t1)
-labels = ml.labeling.get_bins(triple, close)
-```
-
-### 23.5 Alpha Decay & Crowding Diagnostics
-
-- **Decay**: rolling 24-mo IC per signal; alert when slope < 0 with t < −2
-- **Crowding proxy**: high short interest in long leg + high mutual-fund overlap (13F) + high return correlation with peer "factor ETFs" (MTUM, QUAL, USMV, IVE)
-
----
-
-<a id="part-iv-24"></a>
-## 24. Performance Metrics for the App
-
-Every scheduled run, log:
-
-| Metric | Definition | Target |
+| Strategy | In-sample paper | OOS realistic |
 |---|---|---|
-| Spearman IC (1m, 3m) | Rank correlation rank vs forward return | >0.04 / >0.06 |
-| IR | mean(IC)/std(IC)·√12 | >0.5 |
-| Top-decile vs. bottom spread | Equal-weighted | t > 2.5 (NW) |
-| Hit rate | % top-N beating SPY 1m | >55% |
-| Top-N annualized alpha | CAPM α | >2% post-cost |
-| Top-decile Calmar | CAGR / |MaxDD| | >0.5 |
-| Sharpe | excess / σ | >1.0 (after cost) |
-| Sortino | excess / downside-σ | >1.5 |
-| MaxDD | Peak-to-trough | <30% |
-| Turnover | Σ|Δw|/2 monthly | track; <50%/m |
-| Deflated Sharpe | Bailey-LdP | >0 |
-| PBO | CSCV-based | <0.5 |
+| Magic Formula | ~30% CAGR | ~11% CAGR (Martin 2020) |
+| Piotroski F | ~23% top decile | ~8-12% top decile |
+| Momentum 12-1 | ~12% annual | ~5-8% annual (post-2000) |
+| QMJ | ~4-5% alpha | ~2-3% alpha |
+| Composite of all | "very high" | 2-4% net alpha realistic |
 
-Persist every run's outputs in versioned table with run hash → auditable.
+## 28.2 Decay Reality
+- McLean-Pontiff: ~50% post-publication decay
+- Falck-Rej-Thesmar: Newer factors decay faster
+- See Section 35 for full decay analysis
 
----
+## 28.3 What Free Data CAN'T Deliver
+- Point-in-time CRSP/Compustat (paid: $30k/yr)
+- IBES analyst estimates (paid)
+- Intraday TAQ (paid)
+- Real-time news (paid)
+- Alt-data (satellite, credit card, etc.) — paid
 
-# PART V — IMPLEMENTATION GUIDE
+## 28.4 Honest Performance Hierarchy
 
-<a id="part-v-25"></a>
-## 25. Data Caching & Refresh Cadence
-
-| Data | Cadence | Cache layer |
-|---|---|---|
-| Prices/volume | Daily | parquet by month |
-| Fundamentals | After each filing | SQLite indexed by CIK+filing-date |
-| 13F | Quarterly (45-day lag) | parquet |
-| Form 4 | Daily | parquet |
-| Macro (FRED) | Daily | small CSVs |
-| News | Daily | SQLite, FinBERT scores cached by article hash |
-| Reddit | Daily | parquet |
-| Google Trends | Weekly | parquet |
-| ML model retrain | Monthly | pickled models versioned by date |
-| HMM regime | Weekly | small pickle |
-| Composite scores | Weekly | parquet (versioned) |
-
----
-
-<a id="part-v-26"></a>
-## 26. Rate-Limit Management Strategies
-
-- One ticker = one batch task; orchestrate with `asyncio` + semaphore for free APIs
-- Persist `last_pulled_at` per (source, ticker); skip if within TTL
-- Implement circuit breaker on 429 with exponential backoff (`tenacity` library)
-- Pre-compute heavy embeddings (FinBERT) once; only score new articles
-- Use HuggingFace `pipeline(device=0)` if GPU available; else batch CPU calls of size 32
-- Reduce universe (S&P 500 → S&P 1500 → Russell 3000) in stages as bandwidth allows
-
-```python
-from tenacity import retry, stop_after_attempt, wait_exponential
-
-@retry(stop=stop_after_attempt(5), wait=wait_exponential(multiplier=1, max=60))
-def fetch_with_backoff(url):
-    ...
-```
-
----
-
-<a id="part-v-27"></a>
-## 27. Suggested Database Schema
-
-### Core Tables
-
-```sql
--- Universe and metadata
-CREATE TABLE securities (
-    ticker TEXT PRIMARY KEY,
-    cik TEXT,
-    name TEXT,
-    sector TEXT,
-    industry TEXT,
-    market_cap REAL,
-    listed_date DATE,
-    delisted_date DATE
-);
-
--- Daily price data
-CREATE TABLE prices_daily (
-    ticker TEXT,
-    date DATE,
-    open REAL, high REAL, low REAL, close REAL,
-    adj_close REAL, volume INTEGER,
-    PRIMARY KEY (ticker, date)
-);
-
--- Fundamentals (point-in-time)
-CREATE TABLE fundamentals (
-    ticker TEXT,
-    period_end DATE,
-    filing_date DATE,  -- USE THIS for backtests, not period_end
-    revenue REAL, net_income REAL, ebit REAL, ebitda REAL,
-    total_assets REAL, total_debt REAL, equity REAL,
-    cfo REAL, capex REAL, fcf REAL,
-    eps_basic REAL, eps_diluted REAL,
-    shares_outstanding REAL,
-    -- ... ~50 fields
-    PRIMARY KEY (ticker, period_end)
-);
-
--- Form 4 insider transactions
-CREATE TABLE insider_transactions (
-    ticker TEXT,
-    insider_name TEXT,
-    role TEXT,
-    transaction_date DATE,
-    filed_date DATE,
-    transaction_code TEXT,  -- 'P'=purchase, 'S'=sale
-    shares REAL,
-    price REAL,
-    value_usd REAL
-);
-
--- News + sentiment (cached FinBERT)
-CREATE TABLE news_sentiment (
-    article_hash TEXT PRIMARY KEY,
-    ticker TEXT,
-    date TIMESTAMP,
-    source TEXT,
-    headline TEXT,
-    p_positive REAL,
-    p_neutral REAL,
-    p_negative REAL,
-    finbert_score REAL  -- p_pos - p_neg
-);
-
--- Composite scores (versioned)
-CREATE TABLE stock_ranks (
-    run_date DATE,
-    run_hash TEXT,
-    ticker TEXT,
-    rank INTEGER,
-    composite_score REAL,
-    quality_score REAL,
-    value_score REAL,
-    growth_score REAL,
-    momentum_score REAL,
-    health_score REAL,
-    sentiment_score REAL,
-    ml_score REAL,
-    risk_score REAL,
-    fair_price REAL,
-    max_fair_price REAL,
-    margin_of_safety REAL,
-    top5_factors TEXT,  -- JSON
-    PRIMARY KEY (run_date, ticker)
-);
-```
-
----
-
-<a id="part-v-28"></a>
-## 28. Realistic Accuracy Expectations
-
-Compared to a strong **classical-only multi-factor baseline** (Piotroski + Magic Formula + 12-1 momentum + low-vol):
-
-| Source of Lift | Expected Annualized Alpha |
+| Net Alpha | Verdict |
 |---|---|
-| FinBERT news + insider Form 4 | +1–2% |
-| ML composite (LightGBM with cross-sectional ranks) | +1–2% |
-| Regime-conditional weighting + HRP construction | +0.5–1% |
-| **Combined upper bound (gross)** | **~4–6%** |
-| **Net of transaction costs** | **~2–4%** |
-| Sharpe lift | +0.2–0.4 |
-
-> **Anything claiming >10% alpha should be treated as overfit** until validated on a fresh 3-year out-of-sample period and CSCV PBO < 0.4.
-
-### Mean IC Expectations (Individual Factors)
-- Strong: 0.04–0.06
-- Decent: 0.02–0.04
-- Suspicious: >0.10 (likely overfit)
+| 0-2% | Honest baseline |
+| 2-4% | Option A target |
+| 3-7% | Option B target |
+| 7-10% | Suspicious (likely overfit) |
+| >10% | Reject (overfit) |
 
 ---
 
-<a id="part-v-29"></a>
-## 29. Caveats & Pitfalls
+# 29. CAVEATS & PITFALLS
 
-### 29.1 Data Quality
-- **yfinance** breaks periodically; field names shift; some quarters missing. Cross-check fundamentals against SEC EDGAR ground truth.
-- **Sector exclusions matter**: Magic Formula excludes financials/utilities; Z-score's X₅ distorts asset-light tech (use Z″); Graham Number breaks for negative book/EPS.
-- **Free-data quality varies**: SimFin, FMP free, edgartools (XBRL) more reliable for backtests but each has coverage holes pre-2010.
+## 29.1 Survivorship Bias
+- Use historical S&P 500 constituents (Wikipedia table) not current
+- Free data has weak delisted-stock coverage
+- Mitigation: explicit acknowledgment + use OSAP/JKP returns where possible
 
-### 29.2 Survivorship & Look-Ahead
-- **Survivorship bias** is everywhere in free data; truly clean source is CRSP (paid). Reconstruct delisted tickers from SEC EDGAR (companies that stopped filing).
-- **Look-ahead is silent killer**: Form 4 must use `transactionDate`; 13F lagged 45 days; 10-K filing date not period-end. SEC EDGAR exposes both.
+## 29.2 Look-Ahead Bias
+- ALWAYS use filing_date, not period_end (Rule 5 in SKILL)
+- 13F lagged 45 days
+- Form 4: use transactionDate
 
-### 29.3 Backtest Overoptimism
-- All cited strategies (Magic Formula 30% CAGR, Piotroski 23%, QMJ alpha) are **in-sample**. Independent OOS replications typically produce **~3× lower** returns. Treat historical numbers as upper bounds.
-- Most published anomalies have **decayed post-publication**.
+## 29.3 Sector Distortion
+- ALWAYS rank within GICS sector for fundamentals
+- Exclude financials/utilities from Magic Formula and asset-turnover
 
-### 29.4 NLP / ML Specific
-- **FinBERT trained on pre-2020 corpora**; periodically benchmark on labeled validation.
-- **Reddit/StockTwits are reflexive** — never use as single-factor strategy.
-- **HMM regime states not stable** across refits; persist model and use state-mapping logic.
+## 29.4 Multiple Testing
+- 100 candidate strategies → best one is biased upward by ~20-30% Sharpe
+- Mitigation: Deflated Sharpe, PBO
 
-### 29.5 Forward-Looking Estimates
-- PEG, DCF, reverse-DCF need growth assumptions. Free APIs lack reliable analyst consensus — historical CAGR proxy biases against accelerating/decelerating firms.
+## 29.5 Regime Change Risk
+- 2008, 2020, 2022 = factor failure modes
+- Mitigation: HMM gating, conformal prediction
 
-### 29.6 Risk Metrics
-- **VaR/CVaR (historical)** assume past distribution repeats — fail in regime changes (2008, 2020). Pair with stress tests.
-- **Owner Earnings is an estimate**, not GAAP. Maintenance CapEx unobservable; report range.
+## 29.6 Free Data Fragility
+- yfinance breaks ~1-2x/year
+- Mitigation: fallback sources (Stooq, Tiingo free)
 
-### 29.7 Composite Scores
-- StockRank 99 is not "twice as good" as 50. Treat ranks as **ordinal screens, not cardinal predictions**.
-- Always pair quantitative ranking with qualitative DD.
+## 29.7 Trademark
+- NEVER use "Jitta" — trademark
+- Project name: QuantRank
 
-### 29.8 Reconstruction Assumptions
-- MSCI Quality, AQR QMJ, Fama-French weights are **public reconstructions** — actual proprietary methodologies may use additional descriptors not disclosed.
-
-### 29.9 Real-Time Data
-- Alpha Vantage and most free tiers serve **delayed (15–20 min)** US equity prices. Real-time requires paid tiers.
-
-### 29.10 Configuration
-- Risk-free proxy (10-yr Treasury), 22.5 in Graham formula, 5–7% MRP need **periodic updating**. Build into config file, not hardcoded.
+## 29.8 No Live Trading
+- App is research/educational only
+- README must display disclaimer
 
 ---
 
+## Recommended Architecture for the Ranking App
+
+```
+┌─────────────────────────────────────────────────┐
+│  1. DATA LAYER                                  │
+│  • SEC EDGAR (long-term fundamentals, free)     │
+│  • SimFin bulk CSV (current fundamentals)       │
+│  • yfinance (prices, real-time refresh)         │
+│  • FMP (filling gaps, ratios)                   │
+│  • Cache to SQLite/Parquet                      │
+└─────────────────────────────────────────────────┘
+            │
+┌─────────────────────────────────────────────────┐
+│  2. METRIC COMPUTATION LAYER                    │
+│  • Fundamental: F-Score, Z-Score, M-Score,      │
+│    Magic Formula, Graham Number, ROIC, OE       │
+│  • Technical: RSI, MACD, ADX, ATR, % above SMA  │
+│  • Risk: σ, β, Sharpe, MaxDD, VaR              │
+│  • Growth: 3/5-yr CAGR of Revenue/EPS/FCF       │
+│  • Quality: MSCI 3-descriptor + AQR QMJ proxy   │
+└─────────────────────────────────────────────────┘
+            │
+┌─────────────────────────────────────────────────┐
+│  3. NORMALIZATION LAYER                         │
+│  • Winsorize 5th/95th                           │
+│  • Sector-relative percentile rank (preferred)  │
+│  • Handle missing → sector median               │
+└─────────────────────────────────────────────────┘
+            │
+┌─────────────────────────────────────────────────┐
+│  4. PILLAR AGGREGATION (each 0-100)             │
+│  Quality | Value | Growth | Momentum |          │
+│  Health  | Risk  | Sentiment (optional)         │
+└─────────────────────────────────────────────────┘
+            │
+┌─────────────────────────────────────────────────┐
+│  5. COMPOSITE STOCKRANK + FAIR PRICE OVERLAY    │
+│  • Weighted sum of pillars                      │
+│  • Ensemble fair price (DCF + Graham + RIM +    │
+│    multiples) → MoS %                           │
+│  • Final 0-100 with optional MoS bonus          │
+└─────────────────────────────────────────────────┘
+```
+
+---
+
+## Caveats
+
+- **Backtest skepticism.** All strategies cited (Magic Formula 30% CAGR, Piotroski's 23% return, QMJ alpha, etc.) come from in-sample studies. Independent out-of-sample replications consistently produce **lower** returns: Martin (2020) found Magic Formula delivered ~11% vs S&P's 8.7% in 2003–2015, far below Greenblatt's claims. Treat all historical numbers as upper bounds.
+- **Free-data quality varies.** yfinance breaks periodically; field names shift; some quarters are missing. Always cross-check at least one fundamental against SEC EDGAR ground truth before relying on it for production scoring.
+- **Sector exclusions matter.** Magic Formula explicitly excludes financials/utilities. Altman's Z-score X₅ distorts asset-light tech firms (use Z″). Graham Number breaks for negative book value or earnings. Build sector-aware applicability flags into every metric.
+- **Forward-looking estimates require care.** PEG, DCF, and reverse-DCF all need a growth assumption. Free APIs do not provide reliable analyst consensus growth — using historical CAGR as proxy biases against firms whose growth is accelerating or decelerating.
+- **The MSCI Quality methodology, AQR's QMJ, and Fama-French factor weights** referenced here are reconstructions based on publicly available research; the actual proprietary index methodologies may use additional descriptors and refinements not disclosed publicly.
+- **Real-time vs delayed data:** Alpha Vantage and most free tiers serve **delayed (15–20 min) US equity prices only**. Real-time prices are exchange-regulated and require paid tiers.
+- **VaR and CVaR using the historical method** assume the past distribution will repeat — they fail spectacularly during regime changes (2008, 2020). Pair with stress tests.
+- **Owner Earnings is an estimate**, not a GAAP figure. Maintenance CapEx is genuinely unobservable; the Greenwald PP&E/Sales method or simply using D&A as a proxy are both crude. Report a range, not a point.
+- **Composite scores tempt over-confidence.** A stock with StockRank 99 is not "twice as good" as one at 50. Treat ranks as ordinal screens, not cardinal predictions, and always pair quantitative ranking with qualitative due diligence.
+- **Dates and constants in this document** (e.g., risk-free proxy of 10-yr Treasury, 22.5 in Graham formula, 5–7% MRP) need periodic updating. Build the WACC/risk-free into a config file rather than hardcoding.
 # PART VI — RESEARCH-BACKED STRETCH ADDITIONS (Phase 4+)
 
 ## 30. Why Option B (Research-Backed Roadmap)
@@ -1913,84 +1553,54 @@ If ANY criterion fails → Option A fallback for that phase.
 
 ---
 
-# Quick Reference — Summary Tables
+# Quick Reference — Updated Tables
 
-## A. Pillar → Metrics Mapping
+## A. Pillar → Metrics Mapping (Updated for Option B)
 
-| Pillar | Key Metrics |
-|---|---|
-| **Quality** | Piotroski F, ROE, ROIC, Gross Profitability, MSCI 3-desc, Quality persistence |
-| **Value** | P/E, P/B, P/S, EV/EBITDA, EV/FCF, Earnings Yield, Graham Number, Tobin's Q |
-| **Growth** | Rev/EPS/FCF CAGR (3y, 5y), Sustainable Growth Rate, Analyst revisions |
-| **Momentum** | 12-1, 6-1, 3-1 momentum, Residual momentum, 52w-high distance, RSI, MACD |
-| **Health** | Current/Quick Ratio, D/E, Interest Coverage, Altman Z″, Net Debt/FCF |
-| **Sentiment** | FinBERT news, Reddit acceleration, StockTwits bull%, Insider Form 4 cluster, Options PCR, Google Trends |
-| **ML** | LightGBM LambdaRank composite |
-| **Risk (low-risk bias)** | σ_252, β, Sharpe (positive), MaxDD, GARCH vol forecast, IVOL |
-| **Macro/Regime** | HMM state, yield curve position, sector rotation phase |
-
-## B. Risk Vetoes (override top-rank)
-
-- Beneish M-Score > −1.78 (likely manipulator)
-- Sloan accruals top decile (earnings quality red flag)
-- Altman Z″ < 1.23 (distress zone)
-- Item 4.02 8-K filing in last 90 days (restatement)
-- Isolation Forest anomaly flag
-
-## C. Free Data Source Cheat Sheet
-
-| Need | First choice | Fallback |
+| Pillar | DIY Metrics (Phase 0-3) | + OSAP/JKP/Qlib (Phase 4+) |
 |---|---|---|
-| Prices | yfinance | Tiingo, Polygon |
-| Fundamentals | edgartools (SEC) | SimFin, FMP |
-| News | Finnhub | yfinance, NewsAPI |
-| Macro | FRED | World Bank |
-| Insider | edgartools (Form 4) | Finnhub |
-| 13F | edgartools | WhaleWisdom (paid) |
-| Sentiment NLP | FinBERT (HF) | VADER |
-| Reddit | PRAW | — |
-| Trends | pytrends | — |
-| Options | yfinance + CBOE | ORATS (paid) |
-| Factor returns | Ken French / AQR | — |
+| **Quality** | Piotroski F, ROE, ROIC, Gross Profitability, MSCI 3-desc | + JKP Quality theme + OSAP profitability cluster |
+| **Value** | P/E, P/B, P/S, EV/EBITDA, EV/FCF, Earnings Yield, Graham, Tobin's Q | + JKP Value theme + OSAP value signals |
+| **Growth** | Rev/EPS/FCF CAGR, SGR, Analyst revisions | + OSAP growth signals |
+| **Momentum** | 12-1, 6-1, 3-1, residual, 52w-high distance | + JKP Momentum theme + Qlib momentum features |
+| **Health** | Current/Quick, D/E, IC, Altman Z″, Net Debt/FCF | + OSAP distress signals |
+| **Profitability** | Gross/Op/Net margins, ROA, AT, CCC | + JKP Profitability theme |
+| **Technical** | RSI, MACD, ADX, ATR, Bollinger | + Qlib Alpha158 (158 features) ⭐ |
+| **Sentiment** | FinBERT news, Insider Form 4, options PCR | + Whisper VDQ + 8-K events + Lazy Prices ⭐ |
+| **ML** | LightGBM LambdaRank | + Triple-Barrier + Meta-Labeling + Conformal ⭐ |
+| **Risk** | σ, β, Sharpe, MaxDD, GARCH, IVOL | + IPCA latent factors as risk model ⭐ |
+| **Macro/Regime** | HMM Gaussian, yield curve, sector rotation | + Student-t HMM + TDA risk-off gate ⭐ |
 
-## D. Critical Python Libraries
+## B. Library Matrix (Phase 4+ Option B)
 
-```python
-# Data
-import yfinance as yf
-from edgar import Company, get_filings
-from fredapi import Fred
-import finnhub
-import praw
-from pytrends.request import TrendReq
+| Library | License | Phase | Compute | Status |
+|---|---|---|---|---|
+| openassetpricing | MIT-style | 4 | CPU | ✅ Free |
+| ipca | MIT | 4 | CPU | ✅ Free |
+| pyqlib | MIT | 4 | CPU/Kaggle | ✅ Free |
+| mlfinlab | AGPL-3.0 | 5 | CPU | ⚠️ Verify license |
+| mapie | BSD-3-Clause | 5 | CPU | ✅ Free |
+| sentence-transformers | Apache 2.0 | 6 | CPU/GPU | ✅ Free |
+| openai-whisper | MIT | 6 | GPU (Modal) | ✅ Free |
+| skfolio | BSD-3-Clause | 7 | CPU | ✅ Free |
+| gtda | AGPL-3 | 7 | CPU | ⚠️ Verify license |
 
-# Analysis
-import pandas as pd, numpy as np
-import ta, pandas_ta
-from arch import arch_model
-from hmmlearn.hmm import GaussianHMM
-import statsmodels.api as sm
+## C. Free Heavy Compute Strategy
 
-# ML
-import lightgbm as lgb
-from sklearn.covariance import LedoitWolf
-from sklearn.ensemble import IsolationForest
-from sklearn.model_selection import TimeSeriesSplit
-from transformers import pipeline
-import shap
-
-# Portfolio
-from pypfopt import HRPOpt, BlackLittermanModel, EfficientFrontier, risk_models
-import riskfolio as rp
-
-# Backtest
-import alphalens
-import vectorbt as vbt
-import quantstats as qs
-```
+| Platform | Quota | Use Case | Phase |
+|---|---|---|---|
+| GitHub Actions | Unlimited public, 2000 min/mo private | Orchestration, light scoring | All |
+| Kaggle Notebooks | 30 GPU-hr/wk T4/P100, 9hr session | Heavy ML training, Llama-3 fine-tune | 5+ |
+| Modal | $30/mo credits, ~50 T4-hrs | Whisper + LLM batch inference | 6+ |
+| Google Colab Free | T4 dynamic, ~12hr session | Prototyping, FinBERT inference | All |
+| HuggingFace Spaces | 16GB CPU always-on | Static-site dashboard | All |
+| Paperspace Gradient Free | M4000, 6hr | Backup capacity | 5+ |
+| Lightning AI Studio | Limited | Experimentation | 5+ |
 
 ---
 
 **END OF KNOWLEDGE BASE**
 
-This document provides everything an LLM coding agent needs to build a state-of-the-art US equity stock ranking application from scratch using only free or low-cost data sources. All techniques are mathematically specified, with Python implementation hints and known limitations clearly stated.
+This document provides everything needed to build QuantRank from scratch with both Option A (DIY, 2-4% alpha) and Option B (research-backed, 3-7% alpha) paths. All techniques are mathematically specified with realistic caveats and honest decay expectations.
+
+For Phase 4+ specifics, also read `RESEARCH_FINDINGS.md`. For phase-by-phase tasks, read `WORKFLOW.md`. For architecture rules, read `SKILL.md`.

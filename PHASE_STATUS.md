@@ -5,16 +5,17 @@
 | 0 | Scaffolding + first deploy | ✅ DONE — 2026-05-07 |
 | 1 | Universe + prices ingestion | ✅ DONE — 2026-05-08 |
 | 2 | Fundamentals via SEC EDGAR | ✅ DONE — 2026-05-08 |
-| 3 | Classical features + composite → **v1.0** | 🟡 in progress |
+| 3 | Classical features + composite + **defenses** → **v1.0** | 🟡 in progress |
 | 4 | Factor consolidation (OSAP + JKP + Qlib + IPCA) → **v1.1** | ⚪ not started |
 | 5 | ML meta-learner (Triple-Barrier + Meta-Labeling + Conformal) + SHAP | ⚪ not started |
 | 6 | Sentiment v2 (FinBERT + Whisper + 8-K Lazy Prices) | ⚪ not started |
 | 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → **v1.5** | ⚪ not started |
 | 8 | Universe expansion (S&P 1500) | ⚪ not started |
 
-**Current focus**: Phase 3 PR 3c — fair price ensemble + price history
+**Current focus**: Phase 3 PR 3c — fair price ensemble + price history + Tier-1 defenses
 
-**Phase 3 sub-PR plan** (5 sub-PRs, mobile-friendly slicing):
+**Phase 3 sub-PR plan** (5 sub-PRs, defense-augmented 2026-05-09 per
+[`docs/RESEARCH_FINDINGS.md`](docs/RESEARCH_FINDINGS.md) §"Defense Playbook"):
 - ✅ **3a — Pillar feature modules** — DONE 2026-05-08. Foundation only —
   7 feature modules, 30+ metrics, 50+ tests. No production output changes.
 - ✅ **3b — Composite + risk overlay** — DONE 2026-05-08. 4 new scoring
@@ -26,18 +27,50 @@
   bias hypothesis disproved (Real Estate sector mean 49.33 — near bottom).
   Sloan over-firing on growers + financials filed as
   [issue #7](https://github.com/dackclup/quantrank/issues/7) for Phase 4.
-- 🟡 **3c — Fair price ensemble + price history** — NEXT. DCF + Graham +
-  RIM + multiples → median + max fair price; per-stock
-  `stocks/history/{TICKER}.json` with multi-year price + score history.
-  Schema bump to `0.5.0-phase3c`.
-- ⚪ 3d — Charts (Pillar Radar + Fair Price Bar + Price History) + about
-  page; surface `risk_flags` and `entered_top5` / `exited_top5` badges.
-- ⚪ 3e — README polish + tag **v1.0**.
+  Active vetoes: 2 (`altman_distress`, `sloan_accruals_top_decile`).
+- 🟡 **3c — Fair price ensemble + price history + Tier-1 defenses** —
+  NEXT. Schema bump to `0.5.0-phase3c`. ~960 LOC, 2 days.
+  - Fair price: DCF + Graham + RIM + multiples → median + max
+  - Price history: per-stock `stocks/history/{TICKER}.json`
+  - **6 research-validated defenses** (per RESEARCH_FINDINGS Defense
+    Playbook):
+    1. Net Stock Issuance veto (Pontiff-Woodgate 2008 *JF*) — **3rd veto**
+    2. Tangible BVPS = equity − goodwill − intangibles (full netting)
+    3. Stale filing: 120d soft flag + 180d hard veto
+    4. Multi-method outlier guard at 5× current price
+    5. Terminal g ≤ WACC − 100bp constraint in DCF
+    6. Magic Formula sector exclusion → ALL Quality pillar metrics
+  - New schema fields: `valuation_warnings: list[str]`,
+    `tangible_book_value: float | None`, `goodwill: float | None`,
+    `mos_trailing_ic_smoke: float | None`
+- ⚪ **3d — Charts + Tier-2 defenses** — Stock detail Pillar Radar +
+  Fair Price Bar + Price History charts; About page; risk_flags +
+  valuation_warnings UI badges. ~520 LOC, 1.5-2 days. Plus:
+  - Going-concern phrase scan in 10-K Item 7
+    (Loughran-McDonald academic dictionary)
+  - 8-K Item 4.02 hard veto (12-month window) — restatement signal
+  - 8-K Item 4.01 auditor change soft flag
+- ⚪ **3e — Tier-3 defenses + README polish + tag v1.0** — ~370 LOC, 1 day.
+  - Beneish M-Score full 8-ratio (annotate-only, sector-relative)
+  - Dechow F-Score (parallel signal to Beneish, annotate-only)
+  - **Honest Limitations section** in README (frauds we cannot catch,
+    realistic FP/FN rates, decay reality, free-data fragility)
+  - README architecture diagram + methodology link
+  - Tag **v1.0** push
 
-**Next deliverable**: 30+ classical metrics per pillar, normalized
-sector-relative, 8 pillar scores combining into a real composite, plus the
-ensemble fair price (DCF + Graham + RIM + multiples) and risk overlay
-vetoes. Tag **v1.0** at the end of Phase 3.
+**v1.0 ETA**: ~4.5 days from 2026-05-09 (was 3 days; +1.5 days for
+research-validated defenses — net positive ROI before user-facing prices ship)
+
+**Defense scorecard at v1.0**:
+- 3 active vetoes (Altman Z″, Sloan accruals, NSI)
+- 4 numerical guards (stale_filing, outlier_5x, terminal_g, sector_exclusion)
+- 5+ annotate-only flags (goodwill_heavy, value_trap_risk, going_concern,
+  auditor_change, beneish_high, dechow_f_high)
+- 1 hard event veto (8-K Item 4.02)
+
+**Next deliverable**: Fair price ensemble + 6 research-validated defenses
++ price history files. Tag **v1.0** at the end of Phase 3 with all 11
+defenses live and Honest Limitations documented.
 
 ## Roadmap — Option B (research-backed) — adopted 2026-05-08
 

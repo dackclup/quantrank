@@ -1,48 +1,129 @@
 # WORKFLOW — QuantRank Build Plan
 **Phase-by-phase guide for building QuantRank from scratch via Claude Code on mobile**
 
-> Companion to `SKILL.md` and `stock_ranking_knowledge.md`. Each phase produces a **working, testable deliverable visible at the public Vercel URL**. Designed for mobile-only development (Claude Code app + GitHub mobile + Vercel mobile).
+> Companion to `SKILL.md`, `stock_ranking_knowledge.md`, and `RESEARCH_FINDINGS.md`. Each phase produces a **working, testable deliverable visible at the public Vercel URL**. Designed for mobile-only development (Claude Code app + GitHub mobile + Vercel mobile).
+
+> **Roadmap Strategy**: Option B (Research-Backed) with Option A (Original) as per-phase fallback. v1.0 (Phases 0-3) ships first regardless. Phases 4-8 may revert to Option A if blockers hit.
 
 ---
 
 ## How This Workflow Adapts to Mobile-Only Dev
 
-You cannot run Python or Node locally. All execution happens in **GitHub Actions** (compute) and **Vercel** (frontend deploy). This means:
+You cannot run Python or Node locally. All execution happens in **GitHub Actions** (compute) and **Vercel** (frontend deploy). **Phase 5+** adds **Kaggle Notebooks** (heavy ML training) and **Modal** ($30/mo credits for LLM inference). This means:
 
 1. **No "run it locally" steps** — every test runs in CI on push.
 2. **`workflow_dispatch` everywhere** — manual trigger from GitHub mobile app for debugging.
 3. **Smaller commits, more pushes** — iterate via CI logs.
 4. **Visual verification = Vercel preview URL** on every PR.
 5. **`PHASE_STATUS.md`** in repo tracks where you are. Update after every phase.
+6. **Phase 5+: Kaggle/Modal triggered from GitHub Actions** via API tokens in secrets.
 
 ---
 
 ## Tools You'll Use Daily
 
-| Tool | What for |
-|---|---|
-| **Claude Code (mobile app)** | Edit code, commit, push to GitHub |
-| **GitHub mobile app** | View Actions logs, trigger workflow_dispatch, review PRs |
-| **Vercel mobile app** | View deployment status + preview URL |
-| **Mobile browser** | Open Vercel preview URL to see live site |
+| Tool | What for | Phase |
+|---|---|---|
+| **Claude Code (mobile app)** | Edit code, commit, push to GitHub | All |
+| **GitHub mobile app** | View Actions logs, trigger workflow_dispatch, review PRs | All |
+| **Vercel mobile app** | View deployment status + preview URL | All |
+| **Mobile browser** | Open Vercel preview URL to see live site | All |
+| **Kaggle (web/mobile)** | Monitor heavy training jobs | 5+ |
+| **Modal dashboard** | Monitor LLM/Whisper inference jobs | 6+ |
 
 ---
 
-## Phase Overview (7 Phases to v1.0, 3 more for v1.x)
+## Phase Overview (9 Phases — Option B Research-Backed)
 
-| Phase | Goal | Deliverable | Est. effort (full-time) |
-|---|---|---|---|
-| 0 | Project scaffolding + first deploy | Empty site live on Vercel | 1 day |
-| 1 | Universe + prices ingestion | rankings.json with stub scores | 2 days |
-| 2 | Fundamentals from SEC EDGAR | Real data flowing into JSON | 3 days |
-| 3 | Classical features + composite | Working v1.0 with 30+ metrics | 5 days |
-| **v1.0 SHIPS** | | **Tag v1.0** | |
-| 4 | Sentiment + alt-data | FinBERT news + insider Form 4 | 4 days |
-| 5 | ML meta-learner + SHAP | LightGBM ranker + explainability | 3 days |
-| 6 | Regime + validation | HMM weights + backtest report | 4 days |
-| 7 | Universe expansion | S&P 1500 | 2 days |
+| Phase | Goal | Deliverable | Est. effort | Roadmap |
+|---|---|---|---|---|
+| 0 | Project scaffolding + first deploy | Empty site live on Vercel | 1 day | Both |
+| 1 | Universe + prices ingestion | rankings.json with stub scores | 2 days | Both |
+| 2 | Fundamentals from SEC EDGAR | Real data flowing into JSON | 3 days | Both |
+| 3 | Classical features + composite | Working v1.0 with 30+ metrics | 5 days | Both |
+| **v1.0 SHIPS** | | **Tag v1.0** | | |
+| 4 | **Factor Consolidation** ⭐ | OSAP + JKP + Qlib + IPCA | 1-2 weeks | **B (NEW)** |
+| 5 | ML meta-learner + SHAP | LightGBM + Triple-Barrier + Conformal | 1-1.5 weeks | B (enhanced) |
+| 6 | Sentiment v2 | Whisper + 8-K + Lazy Prices | 1-1.5 weeks | B (enhanced) |
+| 7 | Regime + Portfolio v2 | Student-t HMM + TDA + NCO | 1 week | B (enhanced) |
+| 8 | Universe expansion | S&P 1500 → v2.0 | 3-5 days | Both |
 
-**To v1.0**: ~11 working days. Realistic calendar (full-time): 2-3 weeks.
+**To v1.0**: ~11 working days. Calendar (full-time): 2-3 weeks.
+**To v2.0 (Option B)**: ~32-37 working days. Calendar: 7-8 weeks.
+**To v2.0 (Option A fallback)**: ~25-28 working days. Calendar: 5-6 weeks.
+
+---
+
+## Defense Roadmap (Research-Validated, 2026-05-09)
+
+QuantRank operates in **3 defense modes** against analysis errors at all
+three layers (data integrity, computation, methodology):
+
+1. **VETO** — exclude flagged stock from Top-5 badge (composite score
+   unchanged). 3 active by v1.0.
+2. **GUARD** — return null + flag (e.g., null fair_price for stale
+   filings). 4 numerical guards by v1.0.
+3. **ANNOTATE** — warning only, no score change. 5+ flags by v1.0.
+
+**Architectural principle (locked):** Risk overlays are
+**annotate-and-veto-Top-N**, never scoring inputs. Empirical evidence
+(Beneish-Vorst 2021; Bao-Ke 2020; McLean-Pontiff 2016) shows fraud-
+detection FP rates ≥30% in broad market and anomaly returns decay 58%
+cumulative — penalizing every name introduces more error than it removes.
+
+Defense additions per phase (full bibliography in
+[`docs/RESEARCH_FINDINGS.md`](docs/RESEARCH_FINDINGS.md) §"Defense Playbook"):
+
+| Phase | Defense | Mode | Cost | Source |
+|---|---|---|---|---|
+| 3c | Net Stock Issuance | VETO | 80 LOC | Pontiff-Woodgate 2008 *JF* |
+| 3c | Tangible BVPS (full intangibles netting) | GUARD | 50 LOC | Penman 2013; Damodaran |
+| 3c | Stale filing 120/180d | GUARD | 40 LOC | (10-Q practitioner rule) |
+| 3c | Multi-method outlier 5× | GUARD | 30 LOC | (DCF terminal sanity) |
+| 3c | Terminal g ≤ WACC − 100bp | GUARD | 20 LOC | Damodaran |
+| 3c | Quality sector exclusions extended | (logic) | 40 LOC | Greenblatt 2005 |
+| 3d | Going-concern phrase scan | ANNOTATE | 120 LOC | Mayew-Sethuraman-Venkatachalam 2015 |
+| 3d | 8-K Item 4.02 hard veto | VETO (event) | 100 LOC | Schroeder 2024 SSRN |
+| 3d | 8-K Item 4.01 auditor change | ANNOTATE | 50 LOC | (Reg S-K Item 304) |
+| 3e | Beneish M-Score full 8-ratio | ANNOTATE | 150 LOC | Beneish 1999 *FAJ* |
+| 3e | Dechow F-Score | ANNOTATE | 100 LOC | Dechow et al. 2011 *CAR* |
+| 4 | PBO + Deflated Sharpe gating | (infra) | 200 LOC | Bailey-de Prado 2014 |
+| 4 | IC decay monitor | (infra) | 150 LOC | McLean-Pontiff 2016 |
+| 4 | Cross-source validator | GUARD | 150 LOC | (data-fragility defense) |
+| 5 | Bao-Ke ML fraud (RUSBoost) | ANNOTATE | 300 LOC | Bao et al. 2020 *JAR* |
+| 5 | MAPIE conformal wrappers | (arch) | 150 LOC | Angelopoulos-Bates 2021 |
+| 5 | Purged + Embargoed CV (skfolio) | (arch) | 100 LOC | López de Prado 2018 |
+| 6 | Lazy Prices 10-K diff | ANNOTATE | 250 LOC | Cohen-Malloy-Nguyen 2020 *JF* |
+| 6 | FinBERT MD&A classifier | ANNOTATE | 400 LOC | Loughran-McDonald + FinBERT |
+| 6 | Whisper Vocal Delivery Quality | ANNOTATE | 600 LOC | Baik-Kim-Kim-Yoon 2025 *JAE* |
+| 6 | Insider routine vs opportunistic | ANNOTATE | 200 LOC | Cohen-Malloy-Pomorski 2012 |
+| 7 | HMM 3-state regime gating | (arch) | 250 LOC | Wang et al. 2020 *JRFM* |
+| 7 | Persistent-homology TDA crash detector | (arch) | 300 LOC | Gidea-Katz 2018 |
+| 8 | Bonferroni multi-test thresholds | (infra) | 100 LOC | Harvey-Liu-Zhu 2016 |
+| 8 | Liquidity backstop ($5M ADV) | GUARD | 50 LOC | (microstructure defense) |
+
+**Honest limits** (research-validated, post-v2.0 freeze):
+
+- Marginal AAER capture < 5% beyond 4 fraud signals (Beneish + Dechow +
+  Bao-ML + textual). After that: rotate signals, don't stack.
+- Madoff-style fabrication (revenue/cash/customers all fictitious): **no
+  quantitative system** based on filed financials can detect.
+- Decay reality: 26% out-of-sample + 32% post-publication = 58% cumulative
+  per McLean-Pontiff 2016. Plan for it via IC decay monitor (Phase 4+).
+- Beneish FP/FN frontier not broken by ML (Beneish 2022 confirm). Expect
+  ~30% type-I FP at −2.22 cutoff in broad market, ~15-20% in S&P 500.
+- All defense flags are **risk stratifiers**, not fraud verdicts.
+
+⚠️ **Critical license alert** (verified 2026-05-09):
+- **mlfinlab is all-rights-reserved** (Hudson & Thames commercial license
+  required). DO NOT depend on it. Reimplement Triple-Barrier +
+  Meta-Labeling + Purged CV from primary papers (López de Prado 2018)
+  under MIT. Algorithms are not patented.
+- **JKP data is CC BY-NC 4.0** (non-commercial). Educational static-site
+  use OK; if commercializing later, build factors from raw OSAP data.
+- **Loughran-McDonald dictionary** is free for academic research;
+  commercial license required. State explicitly in README for
+  static-site use.
 
 ---
 
@@ -50,117 +131,7 @@ You cannot run Python or Node locally. All execution happens in **GitHub Actions
 
 **Goal**: Empty `quantrank` repo on GitHub, deployed to Vercel, showing "Hello World" — proves the pipeline works before adding any analysis.
 
-## Tasks
-
-### 0.1 Create GitHub repo
-On GitHub mobile or web:
-- Repo name: `quantrank`
-- Visibility: **Public** (free unlimited GitHub Actions)
-- License: MIT
-- Add Python `.gitignore`
-- Initialize with README
-
-### 0.2 Tell Claude Code to clone & set up structure
-Initial prompt:
-> "We're starting Phase 0 of QuantRank. Read SKILL.md and WORKFLOW.md. Create the full directory structure per SKILL.md. Add stub README, .gitignore, pyproject.toml, package.json, all empty __init__.py files. Add a stub PHASE_STATUS.md. Add the four .github/workflows/ files (ci.yml, compute-rankings.yml, compute-monthly.yml, manual-trigger.yml) — these can be near-empty for now but valid YAML. Push to main."
-
-### 0.3 Set up Python deps in `pyproject.toml`
-Use `[project]` table with these dependencies (Phase 0 only needs basics):
-```toml
-[project]
-name = "quantrank-compute"
-version = "0.1.0"
-requires-python = ">=3.11"
-dependencies = [
-  "pandas>=2.2",
-  "numpy>=1.26",
-  "pydantic>=2.6",
-  "tenacity>=8.2",
-]
-
-[project.optional-dependencies]
-dev = ["pytest>=8.0", "ruff>=0.4"]
-```
-More deps added per phase to keep CI fast.
-
-### 0.4 Initial Next.js app
-In `frontend/`:
-- `package.json` with Next.js 14, React 18, Tailwind, Recharts
-- `next.config.js` with `output: 'export'` (static export)
-- `app/page.tsx` with a placeholder "QuantRank — coming soon"
-- Create stub `public/data/metadata.json` with placeholder values
-
-### 0.5 GitHub Actions: ci.yml (most important)
-This runs on every PR/push to main:
-```yaml
-name: CI
-on:
-  push: { branches: [main] }
-  pull_request:
-jobs:
-  python:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: { python-version: "3.11" }
-      - run: pip install -e .[dev]
-      - run: ruff check .
-      - run: pytest -v
-  frontend:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: "20" }
-      - working-directory: frontend
-        run: npm ci && npm run build
-```
-
-### 0.6 Stub `compute-rankings.yml` (cron, but no-op for now)
-```yaml
-name: Compute Rankings
-on:
-  schedule: [{ cron: "0 22 * * 0" }]  # Sunday 22:00 UTC
-  workflow_dispatch:
-jobs:
-  compute:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: { python-version: "3.11" }
-      - run: pip install -e .
-      - run: echo "Phase 0 stub — real compute in Phase 1+"
-```
-
-### 0.7 Connect Vercel
-On Vercel mobile/web:
-- Import the `quantrank` GitHub repo
-- Framework preset: Next.js
-- Root directory: `frontend`
-- Build command: `npm run build`
-- Output directory: `out`
-- Deploy
-
-You'll get a URL like `quantrank-xxx.vercel.app` showing "QuantRank — coming soon".
-
-### 0.8 PHASE_STATUS.md
-```markdown
-# QuantRank Phase Status
-
-- [x] Phase 0: Scaffolding + first deploy ✅ (DATE)
-- [ ] Phase 1: Universe + prices
-- [ ] Phase 2: Fundamentals
-- [ ] Phase 3: Classical features → v1.0
-- [ ] Phase 4: Sentiment & alt-data
-- [ ] Phase 5: ML meta-learner
-- [ ] Phase 6: Regime + validation
-- [ ] Phase 7: Universe expansion
-
-**Current focus**: Phase 1 — Universe + prices ingestion
-**Live URL**: https://quantrank-xxx.vercel.app
-```
+*(Same as before — see original WORKFLOW for full task breakdown 0.1-0.8)*
 
 ## Phase 0 Acceptance Criteria
 - [ ] Repo exists at `github.com/<user>/quantrank` (public)
@@ -175,123 +146,9 @@ You'll get a URL like `quantrank-xxx.vercel.app` showing "QuantRank — coming s
 
 **Goal**: GitHub Actions fetches S&P 500 prices, computes a stub composite (just based on momentum), outputs valid `rankings.json`, and the frontend displays a real ranking table.
 
-**Knowledge ref**: Section 5 (Free Data Stack), Section 25 (Caching), Section 7.3 (momentum).
+**Knowledge ref**: stock_ranking_knowledge.md Section 5 (Free Data Stack), Section 25 (Caching), Section 7.3 (momentum).
 
-## Tasks
-
-### 1.1 Add deps to pyproject.toml
-```toml
-yfinance = ">=0.2.40"
-pandas-ta = ">=0.3"
-beautifulsoup4 = ">=4.12"  # for Wikipedia scrape
-lxml = ">=5.0"
-```
-
-### 1.2 Universe fetcher
-`compute/ingest/universe.py`:
-- Function `get_sp500_constituents() -> pd.DataFrame` scraping `https://en.wikipedia.org/wiki/List_of_S%26P_500_companies`
-- Returns: `ticker, name, sector, sub_industry, cik`
-- Cache to `compute/cache/universe.parquet` (gitignored)
-
-### 1.3 Price fetcher
-`compute/ingest/prices.py`:
-- `fetch_prices(ticker: str, period: str = "5y") -> pd.DataFrame`
-- Use `yf.download(ticker, period=period, auto_adjust=False, progress=False)`
-- Wrap with `tenacity.retry` (3 attempts, exp backoff)
-- Returns OHLCV DataFrame
-
-### 1.4 Stub features
-`compute/features/momentum.py`:
-- `momentum_12_1(prices: pd.DataFrame) -> float`: cumulative return month t-12 to t-1
-- This is the only feature in Phase 1 — proves the pipeline.
-
-### 1.5 Output schemas
-`compute/output/schemas.py`:
-```python
-from pydantic import BaseModel
-from typing import Optional
-
-class StockSummary(BaseModel):
-    rank: int
-    ticker: str
-    name: str
-    sector: str
-    composite_score: float
-    current_price: float
-    fair_price: Optional[float] = None
-    max_fair_price: Optional[float] = None
-    margin_of_safety_pct: Optional[float] = None
-    pillar_scores: dict[str, float]
-
-class Metadata(BaseModel):
-    version: str
-    last_update_utc: str
-    universe: str
-    universe_size: int
-    git_commit: str
-```
-
-### 1.6 Main orchestrator
-`compute/main.py`:
-```python
-def run_weekly_compute():
-    universe = get_sp500_constituents()
-    results = []
-    for _, row in universe.iterrows():
-        prices = fetch_prices(row["ticker"])
-        mom = momentum_12_1(prices)
-        results.append({
-            "ticker": row["ticker"],
-            "name": row["name"],
-            "sector": row["sector"],
-            "current_price": float(prices["Close"].iloc[-1]),
-            "momentum_12_1": mom,
-        })
-    df = pd.DataFrame(results)
-    df["composite_score"] = df["momentum_12_1"].rank(pct=True) * 100
-    df = df.sort_values("composite_score", ascending=False).reset_index(drop=True)
-    df["rank"] = df.index + 1
-    write_rankings_json(df)
-    write_metadata_json(...)
-```
-
-### 1.7 JSON writer with atomic writes
-`compute/output/writer.py`:
-```python
-def atomic_write_json(path: Path, data: dict | list):
-    tmp = path.with_suffix(".tmp")
-    tmp.write_text(json.dumps(data, indent=2, default=str))
-    tmp.rename(path)
-```
-
-### 1.8 Update `compute-rankings.yml`
-```yaml
-- run: pip install -e .
-- run: python -m compute.main
-- name: Commit JSON outputs
-  run: |
-    git config user.name "github-actions[bot]"
-    git config user.email "github-actions[bot]@users.noreply.github.com"
-    git add public/data/
-    git diff --cached --quiet || git commit -m "chore: update rankings $(date -u +%Y-%m-%d)"
-    git push
-```
-Add `permissions: { contents: write }` to workflow.
-
-### 1.9 Frontend reads real JSON
-`frontend/app/page.tsx`:
-```tsx
-import rankings from "@/public/data/rankings.json";
-import metadata from "@/public/data/metadata.json";
-
-export default function HomePage() {
-  return <RankingTable data={rankings} lastUpdate={metadata.last_update_utc} />;
-}
-```
-`components/RankingTable.tsx`: simple sortable table with rank, ticker, name, sector, score.
-
-### 1.10 Trigger first run
-On GitHub mobile: Actions tab → "Compute Rankings" → "Run workflow". Watch logs (~10 min for 500 tickers with retries).
+*(Tasks 1.1-1.10 same as before)*
 
 ## Phase 1 Acceptance Criteria
 - [ ] `compute-rankings.yml` runs in <15 min on first try
@@ -306,88 +163,9 @@ On GitHub mobile: Actions tab → "Compute Rankings" → "Run workflow". Watch l
 
 **Goal**: Pull real annual + quarterly financials, point-in-time correct (`filing_date`).
 
-**Knowledge ref**: Section 5 (SEC EDGAR), Section 27 (schema), Rule 5 (point-in-time).
+**Knowledge ref**: stock_ranking_knowledge.md Section 5 (SEC EDGAR), Section 27 (schema), Rule 5 (point-in-time).
 
-## Tasks
-
-### 2.1 Add deps
-```toml
-edgartools = ">=2.30"
-```
-
-### 2.2 EDGAR fetcher
-`compute/ingest/fundamentals.py`:
-```python
-from edgar import Company, set_identity
-import os
-set_identity(os.environ["EDGAR_USER_AGENT"])  # "Your Name email@example.com"
-
-def fetch_fundamentals(ticker: str) -> pd.DataFrame:
-    company = Company(ticker)
-    facts = company.get_facts()
-    # extract: Revenues, NetIncomeLoss, Assets, Liabilities,
-    #          StockholdersEquity, Cash, OperatingCashFlow, CapEx
-    # MUST keep both period_end AND filed_date columns
-    return df
-```
-
-### 2.3 GitHub Actions secret
-On GitHub mobile: Settings → Secrets and variables → Actions → New secret:
-- `EDGAR_USER_AGENT` = `"Your Name email@example.com"` (SEC requires email)
-
-Update `compute-rankings.yml`:
-```yaml
-env:
-  EDGAR_USER_AGENT: ${{ secrets.EDGAR_USER_AGENT }}
-```
-
-### 2.4 Cache strategy
-EDGAR doesn't update fundamentals daily — cache aggressively:
-- Use `actions/cache@v4` with key based on quarter:
-```yaml
-- uses: actions/cache@v4
-  with:
-    path: compute/cache/fundamentals
-    key: fundamentals-${{ hashFiles('public/data/metadata.json') }}-q${{ steps.quarter.outputs.q }}
-```
-- Per-ticker cache file: `compute/cache/fundamentals/{cik}.parquet`
-- Re-fetch only if last cached `filed_date` < 45 days ago
-
-### 2.5 Golden value tests
-`tests/test_features/test_fundamentals.py`:
-```python
-def test_aapl_fy2024_revenue():
-    df = fetch_fundamentals("AAPL")
-    fy2024 = df[df["period_end"] == "2024-09-28"]
-    assert abs(fy2024["revenue"].iloc[0] - 391_035_000_000) / 391_035_000_000 < 0.01
-```
-Pick 5 reference tickers (AAPL, MSFT, GOOGL, JPM, XOM).
-
-### 2.6 Update main orchestrator
-After prices, fetch fundamentals for each ticker, attach to dataframe. JSON output now has more raw_metrics.
-
-### 2.7 Update detail JSON
-Each `public/data/stocks/{TICKER}.json` now has:
-```json
-{
-  "raw_metrics": {
-    "revenue_ttm": 391035000000,
-    "net_income_ttm": 93736000000,
-    "total_assets": 364980000000,
-    ...
-  }
-}
-```
-
-### 2.8 Generate per-stock detail pages
-`frontend/app/stock/[ticker]/page.tsx`:
-```tsx
-export async function generateStaticParams() {
-  const rankings = await import("@/public/data/rankings.json");
-  return rankings.default.map((s) => ({ ticker: s.ticker }));
-}
-```
-Renders simple detail page showing ticker, name, sector, raw_metrics table.
+*(Tasks 2.1-2.8 same as before)*
 
 ## Phase 2 Acceptance Criteria
 - [ ] All 500 tickers have ≥5 years annual fundamentals
@@ -398,236 +176,360 @@ Renders simple detail page showing ticker, name, sector, raw_metrics table.
 
 ---
 
-# PHASE 3 — Classical Features + Composite → v1.0
+# PHASE 3 — Classical Features + Composite + Defenses → v1.0
 
-**Goal**: All 30+ classical metrics implemented, 8 pillar scores, full composite, fair price ensemble. **Tag v1.0.**
+**Goal**: All 30+ classical metrics implemented, 8 pillar scores, full composite, fair price ensemble, **6 Tier-1 defenses, 3 Tier-2 defenses, 2 Tier-3 defenses**. **Tag v1.0.**
 
-**Knowledge ref**: Sections 6-11 (formulas), Sections 21 (normalization), Section 10 (fair price ensemble).
+**Knowledge ref**: stock_ranking_knowledge.md Sections 6-11 (formulas), Section 21 (normalization), Section 10 (fair price ensemble).
 
-## Tasks
+**Defense ref**: `docs/RESEARCH_FINDINGS.md` §"Defense Playbook" — 11 research-validated defenses ship across PR 3c/3d/3e (6 + 3 + 2).
 
-### 3.1 Implement features per pillar
-For EACH pillar, follow this pattern:
-1. Create `compute/features/<pillar>.py` with one pure function per metric.
-2. Each function: takes DataFrame of raw data, returns Series indexed by ticker.
-3. Write unit test with golden value (look up known correct value).
-4. Add to schema.
+**Sub-PR Strategy** (locked, defense-augmented 2026-05-09):
+- ✅ PR 3a — Pillar feature modules (foundation, no production output) — DONE
+- ✅ PR 3b — Normalization, pillar aggregation, composite, risk overlay (Altman Z″ + Sloan accruals = 2 vetoes) — DONE
+- 🟡 PR 3c — Fair price ensemble + price history + **Tier-1 defenses (6)** — NEXT (~960 LOC)
+- ⚪ PR 3d — Charts (Pillar Radar + Fair Price Bar + Price History) + about page + **Tier-2 defenses (3)** (~520 LOC)
+- ⚪ PR 3e — README polish + **Tier-3 defenses (2)** + Honest Limitations + tag **v1.0** (~370 LOC)
 
-**Quality** (`compute/features/quality.py`): Piotroski F-Score, ROE, ROIC, Gross Profitability, MSCI 3-descriptor.
+*(Tasks 3.1-3.10 same as before, broken across 5 sub-PRs)*
 
-**Value** (`compute/features/value.py`): P/E, P/B, P/S, EV/EBITDA, EV/FCF, Earnings Yield (Greenblatt), Graham Number, Tobin's Q.
+## PR 3c — Tier-1 Defense Layer (research-validated, ~260 LOC)
 
-**Growth** (`compute/features/growth.py`): Revenue/EPS/FCF CAGR (3y, 5y), Sustainable Growth Rate.
+Per `docs/RESEARCH_FINDINGS.md` §"PR 3c-Specific Recommendations". 6
+defenses operating in 3 modes (VETO / GUARD / ANNOTATE).
 
-**Momentum** (`compute/features/momentum.py`): 12-1, 6-1, 3-1, 52w-high distance, RSI, MACD signal.
+**(1) Net Stock Issuance veto** — extend `compute/scoring/risk_overlay.py`:
+```python
+# NSI per Pontiff-Woodgate (2008, JF)
+nsi_t = ln(shares_outstanding_t / shares_outstanding_{t-12m})
+# Top decile WITHIN sector (post-SBC era requires sector relativity)
+if nsi_rank_within_sector >= 0.90:
+    flag `net_issuance_top_decile`  # joins 2 existing vetoes → 3 total
+```
+EDGAR source: `dei:EntityCommonStockSharesOutstanding` (preferred) →
+fallback `us-gaap:CommonStockSharesOutstanding`. Adjust for splits via
+yfinance `Ticker.splits`.
 
-**Health** (`compute/features/health.py`): Current/Quick Ratio, D/E, Interest Coverage, Altman Z″, Debt/EBITDA.
+**(2) Tangible BVPS with full intangibles netting** — new module
+`compute/valuation/tangible_book.py`:
+```python
+def tangible_book_value_per_share(snap):
+    equity = snap.stockholders_equity or 0
+    goodwill = snap.goodwill or 0
+    intangibles = snap.intangibles_net or 0  # fallback chain
+    if snap.shares_outstanding in (None, 0):
+        return None
+    tbvps = (equity - goodwill - intangibles) / snap.shares_outstanding
+    return tbvps if tbvps > 0 else None
+```
+EDGAR fallback chain for intangibles:
+`us-gaap:IntangibleAssetsNetExcludingGoodwill` →
+`us-gaap:OtherIntangibleAssetsNet` →
+`us-gaap:FiniteLivedIntangibleAssetsNet`.
+TBVPS used in Graham + RIM for fair price (NOT in Value pillar — pillar
+keeps fast-TTM Graham; intentional dual implementation).
+Flag `goodwill_heavy` if TBVPS / BVPS_reported < 0.5.
 
-**Risk** (`compute/features/risk.py`): σ_252, β (vs SPY), Sharpe, Sortino, MaxDD, Calmar.
+**(3) Stale filing guard (soft 120d / hard 180d)** —
+`compute/valuation/applicability.py`:
+```python
+if filing_lag_days > 180:
+    return None  # null all fair_price + risk_flag stale_filing_hard
+elif filing_lag_days > 120:
+    valuation_warnings.append("stale_filing_soft")
+```
+Justification: 10-Q deadline 45d (large accelerated); 120d = 75d past
+deadline (unusual); 180d = missed filing entirely → restatement risk.
 
-**Technical** (`compute/features/technical.py`): ADX, ATR, Bollinger %B, OBV slope, MFI.
+**(4) Multi-method outlier guard at 5×** — `compute/valuation/ensemble.py`:
+```python
+for method, value in method_estimates.items():
+    if value > 5.0 * current_price or value < 0.2 * current_price:
+        outlier_methods.add(method)  # exclude from max_fair_price
+        valuation_warnings.append(f"extreme_{method}_estimate")
+        # Still in median (median is robust to one outlier)
+```
+5× chosen empirically (RESEARCH_FINDINGS §IV-4). Even high-growth tech
+rarely shows fair-value-to-price > 5× across all methods; 10× would let
+model bugs slip through.
 
-**Profitability** (`compute/features/profitability.py`): GM/OM/NM, ROA, Asset Turnover, Cash Conversion Cycle.
+**(5) Terminal g constraint** — `compute/valuation/dcf.py`:
+```python
+TERMINAL_GROWTH_MAX = 0.03   # long-run nominal GDP cap (Damodaran)
+g_constrained = min(TERMINAL_GROWTH_MAX, WACC - 0.01)  # 100bp buffer
+if g >= WACC - 0.01:
+    return None  # mathematical sanity
+```
 
-### 3.2 Sector exclusions config
+**(6) Quality pillar sector exclusions extended** —
 `compute/scoring/sector_rules.py`:
 ```python
 SECTOR_BLACKLIST = {
+    # Existing
     "magic_formula": {"Financials", "Utilities", "Real Estate"},
     "asset_turnover": {"Financials"},
-    "altman_z_x5": "Information Technology"  # use Z″ instead
+    # NEW (PR 3c)
+    "ebit_based_roic": {"Financials", "Utilities"},
+    "gross_profitability": {"Financials"},
+    "ev_ebitda_multiple": {"Financials"},
 }
 ```
+Reasoning: Greenblatt's capital-structure-distortion argument applies to
+ALL Quality metrics using EBIT, total debt, or invested capital.
 
-### 3.3 Normalization layer
-`compute/scoring/normalize.py`:
-- `winsorize(s, lower=0.05, upper=0.95)`
-- `sector_neutralize(s, sectors)` — subtract sector median
-- `cross_sectional_rank(s)` → 0-100
+## PR 3d — Tier-2 Defense Layer (~270 LOC)
 
-### 3.4 Pillar aggregation
-`compute/scoring/pillars.py`:
-- Compute pillar score = avg of normalized member metrics
-- Output: DataFrame indexed by ticker, 8 columns (quality, value, growth, momentum, health, risk, technical, profitability)
-- For Phase 3 (no sentiment/ML yet), redistribute their weights:
-
+**(7) Going-concern phrase scan** —
+`compute/features/text/going_concern.py`:
 ```python
-# Phase 3 weights (sentiment + ML will come later)
-PHASE3_WEIGHTS = {
-    "quality": 0.30,        # was 0.25, +0.05 from sentiment
-    "value": 0.25,          # was 0.20, +0.05 from sentiment
-    "growth": 0.13,         # was 0.10, +0.03 from sentiment+ML
-    "momentum": 0.13,       # was 0.10, +0.03
-    "health": 0.10,         # was unweighted, now explicit
-    "risk": 0.05,
-    "technical": 0.04,
+GOING_CONCERN_PHRASES = {
+    "substantial doubt", "going concern",
+    "ability to continue", "raise substantial doubt",
+    "unable to continue as a going concern",
 }
-# Total: 1.00
+def scan_going_concern(filing_10k_text):
+    matches = [p for p in GOING_CONCERN_PHRASES
+               if p in filing_10k_text.lower()]
+    return len(matches) > 0
 ```
+ANNOTATE-only flag (`going_concern_warning`) but pair with Altman Z″
+< 1.10 for hard veto.
 
-### 3.5 Composite + risk overlay
-`compute/scoring/composite.py`:
-- Weighted sum → 0-100
-`compute/scoring/risk_overlay.py`:
-- Beneish M-Score > -1.78 → cap composite at 60
-- Sloan accruals top decile → -10 points
-- Altman Z″ < 1.23 → cap composite at 50
-
-### 3.6 Fair Price ensemble
-`compute/scoring/fair_price.py`:
-- `dcf_two_stage(fcf_history, wacc=0.10, terminal_g=0.025) -> float`
-- `graham_number(eps_3yr_avg, bvps) -> float`
-- `residual_income(book_value, roe_forecast, cost_of_equity=0.10) -> float`
-- `multiples_based(metric, peer_median, divisor) -> float`
-- `ensemble_fair_price(estimates: list) -> dict` → median + 95th percentile
-
-### 3.7 Final JSON output (full schema)
-Now `rankings.json` and `stocks/{TICKER}.json` match the full schemas in SKILL.md.
-
-### 3.8 Frontend polish
-- `RankingTable`: sortable columns, sector filter, search, pagination (50/page), color-coded score badges
-- `app/stock/[ticker]/page.tsx`: pillar radar chart (Recharts RadarChart), fair price chart (current/fair/max bar), raw metrics table, MoS badge
-- `app/about/page.tsx`: methodology summary, disclaimer
-- Mobile-responsive throughout
-- Dark mode via Tailwind `dark:` classes (optional)
-
-### 3.9 README polish
-Add to README.md:
-- Architecture diagram (ascii or mermaid)
-- Setup section ("just clone and push, GitHub Actions does the rest")
-- Disclaimer (large, visible)
-- Methodology link
-- Tech stack
-- Live URL
-
-### 3.10 Tag v1.0
-```bash
-git tag v1.0
-git push origin v1.0
+**(8) 8-K Item 4.02 hard veto + Item 4.01 soft flag** —
+`compute/ingest/eight_k_events.py`:
+```python
+def scan_8k_events(cik, lookback_months=12):
+    filings = edgar.Company(cik).get_filings(
+        form="8-K", date_after=lookback_months_ago)
+    for f in filings:
+        if "4.02" in f.items:  # Non-Reliance on Previously Issued
+            return ("hard_veto", "restatement_4_02")
+        if "4.01" in f.items:  # Changes in Certifying Accountant
+            return ("soft_flag", "auditor_change_4_01")
+    return None
 ```
+Item 4.02 in trailing 12m → hard veto; Item 4.01 → annotate-only.
+
+## PR 3e — Tier-3 Defense Layer + v1.0 polish (~370 LOC)
+
+**(9) Beneish M-Score full 8-ratio** — `compute/features/text/beneish.py`:
+
+Full formula per Beneish 1999 *FAJ*:
+```
+M = -4.84 + 0.92*DSRI + 0.528*GMI + 0.404*AQI + 0.892*SGI
+    + 0.115*DEPI - 0.172*SGAI + 4.679*TATA - 0.327*LVGI
+```
+Threshold M > -2.22 → flag `beneish_high`.
+
+⚠️ **CRITICAL**: ANNOTATE-only, NO scoring penalty. Reasons:
+1. Sloan accruals already encodes much of TATA → double-jeopardy
+2. Beneish FP rate ~30% in broad market (Beneish 2022 confirm)
+3. Sector relativity matters: tech and biotech inflate DSRI/SGI
+
+Implementation needs 2-year balance items. Use existing
+`fetch_fundamentals_history` from PR 3a for prior fiscal year.
+
+**(10) Dechow F-Score** — `compute/features/text/dechow_f.py`:
+
+Dechow et al. 2011 F-Score is parallel to Beneish — different ratio
+inputs (RSST accruals + non-financial proxies). Average sensitivity 73%,
+type-II 27%; complementary to Beneish.
+
+Both flags ANNOTATE-only. Display side-by-side in stock detail UI.
+
+**(11) Honest Limitations section** in README v1.0:
+
+Per `docs/RESEARCH_FINDINGS.md` §"Honest Limitations Section". User-facing
+copy MUST include:
+- Frauds we cannot catch: Madoff-style fabrication; off-shore related-
+  party round-trips (Wirecard); audit-firm complicity; post-acquisition
+  baseline reset
+- Realistic FP/FN rates with academic citations
+- Decay reality: 58% cumulative (McLean-Pontiff 2016)
+- Free-data fragility caveat
+- "QuantRank is a risk-stratifier and screener, not a fraud guarantor"
+- Diminishing returns: defense set freezes at v1.0; rotate (don't stack)
+  beyond 4 fraud signals
 
 ## Phase 3 / v1.0 Acceptance Criteria
-- [ ] All 30+ classical metrics implemented; golden value tests pass
-- [ ] StockRank computed for all S&P 500 weekly
-- [ ] Top-10 are sensible (high ROE, low D/E, decent momentum)
-- [ ] Bottom-10 are sensible (distressed, low quality)
-- [ ] Risk vetoes catch known bad cases
+
+### Core (existing)
+- [x] All 30+ classical metrics implemented; golden value tests pass
+- [x] StockRank computed for all S&P 500 weekly
+- [x] Top-10 are sensible (high ROE, low D/E, decent momentum)
+- [x] Bottom-10 are sensible (distressed, low quality)
 - [ ] Fair Price exists for all stocks with ≥3 applicable methods
 - [ ] Mobile site has table + detail page + radar + fair price
 - [ ] Lighthouse mobile score >85
 - [ ] README professional with disclaimer
+
+### Defenses (research-validated, NEW 2026-05-09)
+- [ ] **3 active vetoes**: Altman Z″ + Sloan accruals + Net Stock Issuance
+- [ ] **4 numerical guards**: stale_filing (120/180), outlier_5x,
+      terminal_g (≤ WACC−100bp), sector_exclusion (Quality pillar)
+- [ ] **5+ annotate-only flags**: goodwill_heavy, value_trap_risk,
+      going_concern_warning, auditor_change, beneish_high, dechow_f_high
+- [ ] **1 hard event veto**: 8-K Item 4.02 (12-month window)
+- [ ] Tangible BVPS uses full intangibles netting (goodwill + identifiable)
+- [ ] **Honest Limitations** section in README (frauds we cannot catch,
+      realistic FP/FN rates, decay reality, free-data fragility)
+- [ ] Defense badges display correctly on stock detail UI
+
+### Ship
 - [ ] **v1.0 tag pushed**
 
 ---
 
-# PHASE 4 — Sentiment & Alternative Data
+# PHASE 4 — Factor Consolidation ⭐ NEW (Option B)
 
-**Goal**: Add Sentiment pillar (15% weight) backed by FinBERT news + Form 4 + Reddit.
+**Goal**: Replace DIY factor work with peer-reviewed library factors. Highest single-phase ROI (+0.5-1% alpha lift).
 
-**Knowledge ref**: Section 12.
+**Research ref**: RESEARCH_FINDINGS.md Sections 1, 2.1-2.3, 2.4.
 
-⚠️ **Heads up**: This phase adds heavy ML deps (transformers, torch ~2GB). GitHub Actions runs will go from ~10 min to ~25 min. Cache aggressively.
+⚠️ **License caveats** — verify before each integration:
+- **OSAP** (Chen-Zimmermann openassetpricing.com): Stock-level signals require WRDS for recompute; portfolio returns CSV freely downloadable. Use returns CSV directly.
+- **JKP** (jkpfactors.com): CC BY-NC 4.0. Factor returns CSV free. Stock-level needs WRDS.
+- **pyqlib** (Microsoft): MIT, fully free.
+- **ipca** (Kelly-Pruitt-Su): MIT.
 
 ## Tasks
 
-### 4.1 Add deps (carefully)
+### 4.1 Add deps
 ```toml
 [project.optional-dependencies]
-sentiment = [
-  "transformers>=4.40",
-  "torch>=2.2 --index-url https://download.pytorch.org/whl/cpu",
-  "praw>=7.7",
-  "finnhub-python>=2.4",
+factors = [
+  "openassetpricing>=0.1",  # Chen-Zimmermann signals (Phase 4)
+  "ipca>=0.2",              # Instrumented PCA (Kelly-Pruitt-Su 2019)
+  "pyqlib>=0.9",            # Microsoft Qlib Alpha158 features
+  "scikit-learn>=1.4",
 ]
 ```
-Use CPU-only torch to save 1.5GB.
 
-### 4.2 GitHub Actions cache for HF models
-```yaml
-- uses: actions/cache@v4
-  with:
-    path: ~/.cache/huggingface
-    key: hf-finbert-v1
-```
+### 4.2 OSAP Integration
+`compute/ingest/osap.py`:
+- Download Chen-Zimmermann portfolio returns CSV
+- Cache to `compute/cache/osap/{signal_name}.parquet`
+- Map signals to QuantRank pillars (Quality/Value/Growth/etc.)
+- Add cross-sectional ranks as features
 
-### 4.3 News ingestion
-`compute/ingest/news.py`:
-- `yfinance Ticker.news` (free, no key)
-- `finnhub /company-news` (free 60/min, set `FINNHUB_API_KEY` secret)
-- Dedupe by URL hash
-- Cache scored articles by hash so FinBERT runs once per article
+**Re-verify**: Check openassetpricing.com October 2025 release for current 319 signals list.
 
-### 4.4 FinBERT scoring
-`compute/features/sentiment.py`:
+### 4.3 JKP Factor Integration
+`compute/ingest/jkp.py`:
+- Download JKP 153-factor monthly returns CSV
+- Use 13 theme clusters to reduce dimension
+- Avoid LightGBM double-counting collinear signals
+
+**Re-verify**: jkpfactors.com terms — confirm CC BY-NC 4.0 still applies for non-commercial open-source use.
+
+### 4.4 Microsoft Qlib Alpha158
+`compute/features/alpha158.py`:
+- Wrap Qlib Alpha158 feature generation
+- Generate 158 hand-crafted technical features
+- Benchmark: LightGBM Rank IC ≈ 0.0482, IR ≈ 1.57 on Qlib's CSI300
+
+**Re-verify**: Qlib's data loader status on free-tier GitHub Actions runners. May need pre-compute on Kaggle if heavy.
+
+### 4.5 IPCA Latent Factors
+`compute/features/ipca_factors.py`:
+- Fit Kelly-Pruitt-Su IPCA with 5 latent factors
+- Use OSAP signals as instruments for time-varying loadings
+- Output: 5 latent factor exposures per stock per month
+
 ```python
-from transformers import pipeline
-finbert = pipeline("sentiment-analysis",
-                    model="ProsusAI/finbert", top_k=None)
-
-def score_text(text: str) -> dict:
-    out = finbert(text[:512])
-    probs = {x["label"]: x["score"] for x in out[0]}
-    return {**probs, "score": probs["positive"] - probs["negative"]}
-```
-Aggregate weekly per ticker: weighted mean by recency (half-life 3 days).
-
-### 4.5 Insider Form 4
-`compute/ingest/insider.py` using `edgartools`:
-- Pull last 90 days of Form 4 for each ticker
-- Compute net insider buy $, role-weighted (CEO/CFO=3, Director=2, 10%=1)
-- Cluster buying score (≥2 distinct insiders within 30 days)
-
-### 4.6 Reddit (PRAW)
-GitHub secrets needed:
-- `REDDIT_CLIENT_ID`
-- `REDDIT_CLIENT_SECRET`
-- `REDDIT_USER_AGENT` = `"quantrank/1.0 by <username>"`
-
-`compute/ingest/reddit.py`:
-- Pull r/wallstreetbets, r/stocks, r/investing daily (Phase 4 = weekly OK)
-- Extract tickers via regex + S&P 500 whitelist
-- Compute mention_count, acceleration, bullish_ratio (FinBERT on context)
-
-### 4.7 Sentiment pillar aggregation
-`compute/scoring/pillars.py`:
-- 50% news FinBERT (recency-weighted)
-- 30% insider Form 4 cluster
-- 20% Reddit acceleration
-
-### 4.8 Restore weights
-Add sentiment pillar back at 15%, redistribute from quality/value:
-```python
-WEIGHTS_V14 = {
-    "quality": 0.25, "value": 0.20, "growth": 0.10, "momentum": 0.10,
-    "health": 0.10, "risk": 0.05, "technical": 0.05, "sentiment": 0.15,
-}  # Total: 1.00
+from ipca import InstrumentedPCA
+ipca = InstrumentedPCA(n_factors=5, intercept=True)
+ipca.fit(X=characteristics, y=returns, indices=panel_index)
+factor_exposures = ipca.predict_panel(...)
 ```
 
-### 4.9 Update JSON schema
-Add `sentiment` to `pillar_scores`. Add `news_summary` to detail JSON:
-```json
-"sentiment_breakdown": {
-  "news_finbert": 72,
-  "insider_buying": 85,
-  "reddit_attention": 60,
-  "article_count_7d": 12
-}
-```
+### 4.6 Update Pillar Aggregation
+- Quality pillar: blend DIY + OSAP quality signals + JKP Quality theme
+- Value pillar: blend DIY + OSAP value + JKP Value theme
+- (etc. for all pillars)
+
+### 4.7 Validation
+- Replication QC: verify OSAP signal returns match published t-stats within 5%
+- IC test: each library factor must show |IC| > 0.01 on walk-forward
+- If validation fails for a library → fallback to Option A for that signal
+
+### 4.8 Schema Bump
+`metadata.json` version → `1.1.0-phase4`
+
+### 4.9 Defense additions (research-validated, 2026-05-09)
+
+Per `docs/RESEARCH_FINDINGS.md` §"Phase 4 Defense Layer".
+
+**Cross-source validator** — `compute/ingest/cross_source.py`:
+- For each stock, compute SEC-derived market cap (shares × close) and
+  yfinance-reported market cap.
+- If |delta| / sec_mc > 5% → flag `cross_source_disagreement`.
+- Catches ~80% of yfinance scraper drift (a common Phase 1 fragility).
+- Mode: GUARD. ~150 LOC.
+
+**PBO + Deflated Sharpe gating** — `compute/validation/pbo_dsr.py`:
+- Bailey-Borwein-Lopez de Prado-Zhu (2014) Combinatorially Symmetric CV.
+- Use S=8 or 16 partitions.
+- **Hard-veto threshold**: PBO > 0.5 → reject factor for production use.
+- **Deflated Sharpe Ratio** (Bailey-Lopez de Prado 2014) > 0 required.
+- Library: `pypbo` (esvhd/pypbo, MIT) + custom DSR (~30 LOC pandas).
+- Mode: infrastructure. ~200 LOC.
+
+**IC decay monitor** — `compute/validation/ic_decay.py`:
+- Rolling 12-month and 36-month IC per pillar.
+- Alert if IC < 50% of historical mean for 6+ consecutive months.
+- McLean-Pontiff anchor: 26% out-of-sample, 32% post-publication decay.
+- Surface to `frontend/public/data/decay_report.json` for transparency.
+- Mode: infrastructure. ~150 LOC.
+
+⚠️ **License re-verification at Phase 4 entry:**
+- `openassetpricing` (OSAP): MIT-style, ✅ free
+- `bkelly-lab/jkp-data` code: MIT, ✅ free
+- JKP factor returns CSV: CC BY-NC 4.0, ✅ educational static-site OK
+- `bkelly-lab/ipca`: MIT, ✅ free
+- `pyqlib`: MIT, ✅ free
+
+## Phase 4 Fallback Triggers (Option A revert)
+Revert to Option A if:
+- ❌ OSAP CSV download fails or signals materially differ from published
+- ❌ JKP license terms changed to commercial-only
+- ❌ Qlib Alpha158 cannot run on GitHub Actions free tier within 6hr
+- ❌ IPCA fitting requires WRDS data not available free
+- ❌ Replication QC shows <50% of signals match published values
+
+If fallback triggered → log in PHASE_STATUS.md, continue Phase 5 on Option B.
 
 ## Phase 4 Acceptance Criteria
-- [ ] Sentiment pillar populated for stocks with ≥3 articles in 7 days
-- [ ] No-news stocks → sentiment = 50 + flagged in `data_quality`
-- [ ] FinBERT scores cached (re-runs are fast)
-- [ ] Insider cluster signals visible (e.g., recent CEO buys boost rank)
-- [ ] Total compute time still <30 min weekly
+- [ ] OSAP signals integrated for ≥100 of 319 signals
+- [ ] JKP factor returns merged into pillar aggregation
+- [ ] Qlib Alpha158 features generated for all 500 stocks
+- [ ] IPCA 5 latent factors fit and exposure outputs verified
+- [ ] All library factors pass IC > 0.01 walk-forward
+- [ ] Composite alpha lift ≥ 0.3% on backtest (vs Phase 3 baseline)
+- [ ] Compute time stays <60 min weekly
+- [ ] **Cross-source validator running weekly; <5% of universe flagged**
+- [ ] **PBO + DSR computed for every Phase 4 factor before integration**
+- [ ] **IC decay report published; baseline IC documented per pillar**
+- [ ] Tag `v1.1.0-phase4`
 
 ---
 
-# PHASE 5 — ML Meta-Learner + SHAP
+# PHASE 5 — ML Meta-Learner Enhanced (Option B)
 
-**Goal**: LightGBM ranker on all features → ML pillar (10%); SHAP top-5 in UI.
+**Goal**: LightGBM ranker + research-backed wrapping (Triple-Barrier + Meta-Labeling + Conformal Prediction).
 
-**Knowledge ref**: Section 13.
+**Knowledge ref**: stock_ranking_knowledge.md Section 13.
+**Research ref**: RESEARCH_FINDINGS.md Section 2.4 (López de Prado), 2.7 (Conformal Prediction).
+
+⚠️ **CRITICAL LICENSE ALERT** (re-verified 2026-05-09):
+- **mlfinlab is all-rights-reserved** (Hudson & Thames commercial license
+  required). DO NOT depend on it. Reimplement Triple-Barrier +
+  Meta-Labeling + Purged CV from primary papers (López de Prado 2018
+  *Advances in Financial Machine Learning*) under MIT. Algorithms are
+  not patented; papers are publicly available.
+- **mapie** (Conformal): BSD-3-Clause, ✅ fully compatible.
+- **skfolio**: BSD-3-Clause, ✅ use for `CombinatorialPurgedCV`
+  (replacement for mlfinlab's PurgedKFold).
 
 ## Tasks
 
@@ -637,194 +539,491 @@ ml = [
   "lightgbm>=4.3",
   "scikit-learn>=1.4",
   "shap>=0.45",
+  "skfolio>=0.2",   # Purged + Embargoed CV (BSD-3) — replaces mlfinlab
+  "mapie>=0.8",     # Conformal Prediction (BSD)
 ]
+# ⚠️ Do NOT add mlfinlab — all-rights-reserved (commercial license).
+# Reimplement Triple-Barrier + Meta-Labeling under MIT.
 ```
 
-### 5.2 Historical training data
-This is the trickiest phase. Need to backfill features for past dates:
-- Re-run feature computation for each Sunday in last 5 years
-- Cache results in `compute/cache/historical_features/{date}.parquet`
-- Compute forward 1m return as target
-- This backfill is a separate one-time workflow (`backfill-history.yml` with `workflow_dispatch`)
+### 5.2 Historical Training Data Backfill
+*(Same as original Phase 5 task)*
 
-### 5.3 LightGBM training
-`compute/ml/train.py`:
+### 5.3 LightGBM LambdaRank Training
+*(Same as original Phase 5)*
+
+### 5.4 Triple-Barrier Method ⭐ NEW (reimplemented under MIT)
+`compute/ml/triple_barrier.py` — pure-pandas implementation per
+López de Prado 2018 Ch. 3 (~150 LOC). Algorithm not patented:
 ```python
-import lightgbm as lgb
-model = lgb.LGBMRanker(
-    objective="lambdarank",
-    num_leaves=31, learning_rate=0.03, n_estimators=500,
-    min_child_samples=200, feature_fraction=0.7, bagging_fraction=0.8,
-)
-model.fit(X_train, y_train, group=group_train)
+def cusum_filter(close, threshold):
+    """López de Prado Ch. 3.6 — symmetric CUSUM filter."""
+    s_pos, s_neg = 0, 0
+    events = []
+    diff = close.diff()
+    for i, d in diff.items():
+        s_pos = max(0, s_pos + d)
+        s_neg = min(0, s_neg + d)
+        if s_neg < -threshold:
+            s_neg = 0; events.append(i)
+        elif s_pos > threshold:
+            s_pos = 0; events.append(i)
+    return pd.DatetimeIndex(events)
+
+def add_vertical_barrier(events, close, num_days):
+    """Time barrier — return Series of t1 (vertical) timestamps."""
+    t1 = close.index.searchsorted(events + pd.Timedelta(days=num_days))
+    t1 = t1[t1 < close.shape[0]]
+    return pd.Series(close.index[t1], index=events[:len(t1)])
+
+def triple_barrier_labels(close, events, pt_sl, target, t1):
+    """Take-profit / stop-loss / time barriers per López de Prado Ch. 3.4."""
+    # ~80 LOC — see RESEARCH_FINDINGS.md §"Phase 5 Defense Layer" for full impl
+    ...
 ```
-- Walk-forward: train years 1-5, predict year 6, roll
-- Save monthly versioned: `models/lgbm_v{YYYYMMDD}.pkl`
 
-### 5.4 Validation
-`compute/ml/validate.py`:
-- IC, IR per fold (mean IC ≥ 0.02 required)
-- Decile spread with Newey-West t-stat
-- IC decay at 1, 5, 21, 63 days
-- **Hard fail**: if mean IC < 0.02, don't deploy new model
+Replaces fixed-horizon labels with vol-scaled take-profit / stop-loss /
+time barriers. **Does NOT depend on mlfinlab.**
 
-### 5.5 ML pillar score
-At each Sunday compute, latest model predicts current cross-section → percentile rank → 0-100.
+### 5.5 Meta-Labeling ⭐ NEW (reimplemented under MIT)
+`compute/ml/meta_labeling.py` — López de Prado 2018 Ch. 3.7 (~80 LOC):
+- Primary model: LightGBM produces BUY/HOLD signal per stock
+- Secondary model: classifier predicts probability primary signal correct
+- Use secondary probability for position sizing
 
-### 5.6 SHAP per stock
+### 5.6 Conformal Prediction ⭐ NEW
+`compute/ml/conformal.py`:
 ```python
-import shap
-explainer = shap.TreeExplainer(model)
-shap_vals = explainer.shap_values(X_today)
-# top-5 features by abs(shap_value), with sign
+from mapie.regression import MapieRegressor
+mapie = MapieRegressor(estimator=lgbm, method="cv_plus", cv=5)
+mapie.fit(X_train, y_train)
+y_pred, y_pis = mapie.predict(X_test, alpha=0.1)  # 90% prediction intervals
 ```
-Persist top-5 to `top5_factors` in detail JSON.
 
-### 5.7 Frontend SHAP bars
-`components/ShapBars.tsx` — horizontal bar chart showing each factor's contribution (+/- color-coded).
+Use prediction interval width for confidence-weighted ranking.
 
-### 5.8 Monthly retrain workflow
-`compute-monthly.yml`:
-```yaml
-on:
-  schedule: [{ cron: "0 3 1 * *" }]  # 1st of month, 03:00 UTC
-  workflow_dispatch:
-```
-Runs training + validation. If new model improves IC, commits `models/lgbm_v{date}.pkl`. Otherwise keeps old.
+### 5.7 Validation
+*(Same as original Phase 5)*
+- Mean IC ≥ 0.02 hard requirement
+- PBO < 50%
+- Hard fail: don't deploy if degrades
 
-### 5.9 Restore ML weight
-```python
-WEIGHTS_V15 = {
-    "quality": 0.22, "value": 0.18, "growth": 0.10, "momentum": 0.10,
-    "health": 0.08, "risk": 0.05, "technical": 0.04,
-    "sentiment": 0.13, "ml": 0.10,
-}
-```
+### 5.8 Optional: Conditional Autoencoder
+If Kaggle GPU setup smooth + time permits:
+- Implement Gu-Kelly-Xiu 2021 conditional autoencoder
+- Repo: github.com/rongwang0824/Autoencoder-Asset-Pricing-Models
+- Trains in <1hr on Colab T4
+
+### 5.9 Monthly Retrain Workflow
+*(Same as original)*
+
+### 5.10 Schema Bump
+`metadata.json` version → `1.2.0-phase5`
+
+### 5.11 Defense additions (research-validated, 2026-05-09)
+
+Per `docs/RESEARCH_FINDINGS.md` §"Phase 5 Defense Layer".
+
+**Bao-Ke ML fraud overlay** — `compute/ml/fraud_overlay.py`:
+- Bao, Ke, Li, Yu, Zhang 2020 *J. Accounting Research*: RUSBoost on 28
+  raw accounting numbers (not ratios).
+- NDCG ~50% better than Dechow logit.
+- Replication code at `JarFraud/FraudDetection` (MIT-style).
+- ANNOTATE-only flag `bao_ml_fraud_high` (top decile cross-section).
+- ⚠️ Do NOT subtract from composite — already covered by 4 other fraud
+  signals (Beneish + Dechow + Sloan + going-concern). This is the 5th
+  diversifier, not the 5th penalty.
+- Mode: ANNOTATE. ~300 LOC.
+
+**MAPIE conformal prediction wrappers** — `compute/ml/conformal.py`:
+- Wrap LightGBM with `mapie.regression.MapieRegressor` (BSD-3-Clause).
+- Output: 90% prediction intervals around ML pillar score.
+- Propagate intervals via Monte-Carlo to composite (1000 samples).
+- Display ranks as `(rank, ci_low, ci_high)` in UI.
+- Distribution-free finite-sample coverage guarantee (Vovk-Gammerman-
+  Shafer framework; Angelopoulos-Bates 2021 introduction).
+- Mode: architecture. ~150 LOC.
+
+**Purged + Embargoed CV** — `compute/ml/cv.py`:
+- López de Prado 2018, Ch. 7. Mandatory for ALL Phase 5+ ML training.
+- Library: `skfolio.model_selection.CombinatorialPurgedCV` (BSD-3).
+- Embargo = 5% of sample.
+- Mode: architecture. ~100 LOC.
+
+## Phase 5 Fallback Triggers
+Revert to Option A (original Phase 5) if:
+- ❌ Triple-Barrier reimplementation complexity > expected, blocks shipping
+- ❌ Conformal Prediction shows no Sharpe lift
+- ❌ Conditional Autoencoder fails to train on Kaggle in 6hr
+- ❌ Bao-Ke replication QC fails on golden tickers
 
 ## Phase 5 Acceptance Criteria
-- [ ] Historical backfill completed (5 years of weekly features)
-- [ ] Mean IC ≥ 0.02 on out-of-sample folds
-- [ ] PBO < 0.5 (will compute fully in Phase 6)
-- [ ] SHAP top-5 visible in UI per stock
-- [ ] Monthly retrain workflow successful
+- [ ] LightGBM walk-forward shipped (Option A baseline)
+- [ ] Triple-Barrier labels in production (Option B addition, MIT-reimplemented)
+- [ ] Meta-labeling secondary model deployed (Option B, MIT-reimplemented)
+- [ ] **MAPIE conformal intervals reported on every ML score**
+- [ ] **Purged + Embargoed CV (5% embargo) used for all training**
+- [ ] **Bao-Ke ML fraud annotation visible per stock**
+- [ ] Mean IC ≥ 0.02 OOS
+- [ ] PBO < 50%
+- [ ] **No mlfinlab dependency anywhere in `pyproject.toml`**
+- [ ] Tag `v1.2.0-phase5`
 
 ---
 
-# PHASE 6 — Regime Detection + Validation Framework
+# PHASE 6 — Sentiment v2 Enhanced (Option B)
 
-**Goal**: HMM gates pillar weights by regime; full backtest harness with PBO.
+**Goal**: Multi-signal sentiment beyond original Reddit/StockTwits plan. Whisper + 8-K + Lazy Prices.
 
-**Knowledge ref**: Sections 15, 22, 23.
+**Research ref**: RESEARCH_FINDINGS.md Section 2.5 (Whisper VDQ), 2.6 (Lazy Prices), 2.9 (8-K events).
+
+⚠️ **Compute requirement**: This phase needs **Modal ($30/mo credits)** for Whisper transcription. Estimate: ~50 GPU-hrs T4 monthly.
 
 ## Tasks
+
+### 6.0 Defense-priority ordering (research-validated, 2026-05-09)
+
+Implement Phase 6 defenses in this order (highest ROI first per
+`docs/RESEARCH_FINDINGS.md` §"Phase 6 Defense Layer"):
+
+1. **Lazy Prices first** (Cohen-Malloy-Nguyen 2020 *JF*) — 22% reported
+   annual alpha, simplest to implement (cosine similarity on 10-K text
+   YoY changes). Caveat: published 2020 → expect McLean-Pontiff decay
+   (~30% by 2026). Validate on recent OOS data.
+2. **8-K Item 4.02 / 4.01 already shipped in PR 3d** (Tier-2 defenses).
+   Phase 6 extends with full event-window CAR computation `(-1, +1)`,
+   expected −5 to −15% on Item 4.02.
+3. **FinBERT MD&A classifier** — Apache 2.0. Forward-looking vs
+   negative tone in 10-K Item 7. Modal $30/mo sufficient for monthly
+   batch (502 stocks × ~30s/stock).
+4. **Whisper Vocal Delivery Quality** — Baik-Kim-Kim-Yoon 2025 *JAE*.
+   Most expensive (Modal GPU time). Defer if budget tight.
+5. **Insider routine vs opportunistic classifier** — Cohen-Malloy-
+   Pomorski 2012 *JF*. Reclassify Form 4 trades; only opportunistic
+   predict returns.
+
+⚠️ **Diminishing returns warning** (Beneish-Vorst 2021): marginal
+AAER capture < 5% beyond 4 fraud signals. By Phase 6, QuantRank has
+Beneish + Dechow + Sloan + going-concern + Bao-ML = 5 signals. Lazy
+Prices is the 6th — track its incremental information ratio carefully
+and FREEZE the defense set if marginal IR < 0.05.
 
 ### 6.1 Add deps
 ```toml
-quant = [
-  "fredapi>=0.5",
-  "hmmlearn>=0.3",
-  "arch>=7.0",
-  "alphalens-reloaded>=0.4",  # alphalens fork
+sentiment_v2 = [
+  "transformers>=4.40",
+  "torch>=2.2",
+  "openai-whisper>=20240930",   # Whisper transcription
+  "sentence-transformers>=3.0", # For Lazy Prices
+  "praw>=7.7",                  # Skip for megacap, use for small-cap
+  "finnhub-python>=2.4",
 ]
 ```
 
-### 6.2 Macro ingestion
-`compute/ingest/macro.py`:
-- GitHub secret: `FRED_API_KEY`
-- Pull T10Y2Y, VIXCLS, BAMLH0A0HYM2, UNRATE weekly
+### 6.2 FinBERT News Sentiment (original Phase 4 plan)
+*(Same as original)*
 
-### 6.3 HMM regime
-`compute/features/macro_regime.py`:
-- 3-state Gaussian HMM on (SPY returns, VIX change, term spread change)
-- Label states by mean return: bull, neutral, bear
-- Persist current state to `public/data/metadata.json`
+### 6.3 Insider Form 4 (original Phase 4 plan)
+*(Same as original)*
 
-### 6.4 Regime-conditional weights
-`compute/scoring/composite.py`:
-- Estimate `IR(pillar | regime)` from rolling 3-yr history
-- Weights per Sunday: `w_i = max(IR_i^r, 0) / Σ`
-- Apply gentle tilts (±20% from neutral defaults)
+### 6.4 Whisper Earnings Call Audio ⭐ NEW
+`compute/ingest/earnings_audio.py`:
+- Scrape audio URLs from IR websites + Seeking Alpha public archive
+- Quarterly cron triggers Modal job to transcribe
+- Output: text transcripts + Wav2Vec2 vocal features
 
-### 6.5 Backtest harness
-`compute/backtest/run_backtest.py`:
-- Equal-weight top decile vs SPY
-- 40 bps round-trip cost
-- Output: IC, IR, decile spread, alpha, Sharpe, MaxDD, Calmar, turnover, deflated Sharpe
+`compute/features/vdq.py`:
+- Vocal Delivery Quality features (Sang et al. 2024 JAR)
+- Independent of textual sentiment
+- Documented alpha contribution: +0.2-0.4%
 
-### 6.6 PBO via CSCV
-`compute/backtest/cscv.py` — port López de Prado snippet (~30 lines):
-- Split returns into S=16 blocks
-- C(16,8) = 12,870 train/test combos
-- PBO = % of times best in-sample is below median OOS
-- Hard requirement: PBO < 0.5
+**Re-verify**: Modal pricing 2026 — may differ from $30/mo credit estimate.
 
-### 6.7 Backtest report
-- `compute/backtest/report.py` outputs `public/data/backtest_report.json`
-- New page `frontend/app/backtest/page.tsx` shows IC time series, decile spread, PBO
+### 6.5 8-K Item-Level Events ⭐ NEW
+`compute/ingest/eight_k.py`:
+- Parse all 8-K filings via edgartools
+- Item 1.01 (M&A): event window CAR feature
+- Item 4.02 (restatement): -2.6% to -5.4% CAR (Schroeder 2024)
+- Item 5.02 (mgmt change): mixed signal
+- Item 1.05 (cyber): negative
+- Aggregate per stock per 90-day window
 
-### 6.8 Tag v1.5
-```bash
-git tag v1.5
-git push origin v1.5
+### 6.6 Lazy Prices (MD&A YoY Similarity) ⭐ NEW
+`compute/features/lazy_prices.py`:
+- Cohen-Malloy-Nguyen 2020 (JoF)
+- Compute year-over-year cosine similarity of 10-K MD&A sections
+- Use sentence-transformers `all-MiniLM-L6-v2` (free)
+- Stocks with major language change underperform by 30-60 bps/month
+
+```python
+from sentence_transformers import SentenceTransformer
+model = SentenceTransformer('all-MiniLM-L6-v2')
+embeddings_y1 = model.encode(mda_text_y1)
+embeddings_y2 = model.encode(mda_text_y2)
+similarity = cosine_similarity(embeddings_y1, embeddings_y2)
+# Lower similarity = larger language change = lower expected return
 ```
 
+### 6.7 SKIP Reddit/StockTwits for Megacap
+Research finding: no documented alpha at S&P 500 scale. Skip these for the main pipeline. **Phase 8** can re-evaluate for small-caps.
+
+### 6.8 Update Sentiment Pillar Weight
+*(Same as original Phase 4)*
+
+### 6.9 Schema Bump
+`metadata.json` version → `1.3.0-phase6`
+
+## Phase 6 Fallback Triggers
+Revert to Option A (original Phase 4 sentiment) if:
+- ❌ Modal credits insufficient for Whisper at universe scale
+- ❌ IR website scraping legally blocked (ToS issues)
+- ❌ 8-K parsing complexity blocks shipping
+- ❌ Lazy Prices shows no IC improvement
+
 ## Phase 6 Acceptance Criteria
-- [ ] HMM regime updates weekly, visible in metadata
-- [ ] Pillar weights actually shift across regimes
-- [ ] Backtest report shows IC, IR, PBO
-- [ ] Net-of-cost top-decile alpha reported honestly (>2% target, but report whatever)
-- [ ] PBO < 0.5
-- [ ] **v1.5 tag pushed**
+- [ ] FinBERT news sentiment in production
+- [ ] Insider Form 4 cluster signals visible
+- [ ] **Routine vs opportunistic classifier (Cohen-Malloy-Pomorski 2012)
+      separates the two; only opportunistic counted as signal**
+- [ ] Whisper transcription job runs quarterly on Modal
+- [ ] 8-K event features in JSON output (extends Tier-2 defenses from PR 3d)
+- [ ] Lazy Prices similarity computed monthly
+- [ ] **Lazy Prices replicated within 5% of published alpha (or
+      documented decay if not)**
+- [ ] **All Phase 6 defenses ANNOTATE-only — no scoring penalties**
+- [ ] Sentiment pillar shows IC > 0.02
+- [ ] Tag `v1.3.0-phase6`
 
 ---
 
-# PHASE 7 — Universe Expansion
+# PHASE 7 — Regime + Portfolio v2 (Option B)
 
-**Goal**: Expand from S&P 500 → S&P 1500 (or Russell 2000 if data permits).
+**Goal**: Better regime detection + portfolio construction. Student-t HMM + TDA + NCO.
+
+**Research ref**: RESEARCH_FINDINGS.md Section 2.10 (NCO), 2.15 (TDA).
+
+⚠️ **License re-verification at Phase 7 entry (2026-05-09):**
+- `skfolio` (NCO): BSD-3-Clause, ✅ free
+- `giotto-tda` (TDA, package name `gtda`): Apache 2.0, ✅ free
+  *(Original WORKFLOW.md said AGPL — corrected after re-check.)*
+- `hmmlearn`: BSD-3-Clause, ✅ free
 
 ## Tasks
 
-### 7.1 Source larger universe
-- S&P 1500 = SP500 + S&P 400 (mid-cap) + S&P 600 (small-cap)
-- Wikipedia has constituents for all three
+### 7.1 Add deps
+```toml
+quant_v2 = [
+  "fredapi>=0.5",
+  "hmmlearn>=0.3",
+  "arch>=7.0",
+  "alphalens-reloaded>=0.4",
+  "skfolio>=0.2",         # NCO portfolio (BSD)
+  "gtda>=0.6",            # TDA (AGPL — verify)
+]
+```
 
-### 7.2 Performance considerations
-- 1500 stocks × all features will push GH Actions toward time limit (6 hours hard cap on free public, but soft pain at ~30 min)
-- Parallelize ticker processing with `concurrent.futures.ThreadPoolExecutor`
-- Add `--universe` CLI flag: `python -m compute.main --universe SP500|SP1500`
+### 7.2 Macro Ingestion (original Phase 6)
+*(Same as original)*
 
-### 7.3 Frontend pagination
-Now showing 1500 stocks → must paginate / virtualize the table. Use `@tanstack/react-virtual`.
+### 7.3 HMM Regime — Student-t Distribution ⭐ NEW
+Original was Gaussian HMM. Student-t is more robust per Lee 2026 (KAIST):
+```python
+from hmmlearn.hmm import GaussianHMM
+# Or implement Student-t HMM via custom emission distribution
+# Fat-tailed emission better captures crisis periods
+```
 
-### 7.4 Data quality monitoring
-- Smaller stocks have worse data — track null rates per universe segment
-- Display in `data_quality` per stock
+### 7.4 Topological Data Analysis ⭐ NEW
+`compute/features/tda_regime.py`:
+- Persistent homology on rolling correlation matrices (Gidea-Katz 2018)
+- Use `gtda` library
+- Detect topological "phase transitions" before crashes
+- Use as **risk-off gate**, not return signal
+
+### 7.5 Regime-Conditional Weights (original Phase 6)
+*(Same as original)*
+
+### 7.6 Nested Clustered Optimization ⭐ NEW
+`compute/portfolio/nco.py`:
+- López de Prado 2019 — improves over HRP under noisy correlations
+```python
+from skfolio.optimization import NestedClustersOptimization
+nco = NestedClustersOptimization(
+    inner_estimator=...,
+    outer_estimator=...,
+)
+nco.fit(returns)
+weights = nco.weights_
+```
+
+### 7.7 Backtest Harness (original Phase 6)
+- Add Hansen SPA test
+- Add Romano-Wolf StepM
+- Add Deflated Sharpe (Bailey-LdP 2014)
+
+### 7.8 PBO via CSCV (original Phase 6)
+*(Same as original)*
+
+### 7.9 Backtest Report Page
+*(Same as original)*
+
+### 7.10 Schema Bump
+`metadata.json` version → `1.4.0-phase7`
+
+### 7.11 Defense additions (research-validated, 2026-05-09)
+
+Per `docs/RESEARCH_FINDINGS.md` §"Phase 7 Defense Layer".
+
+**HMM 3-state regime gating** — `compute/regime/hmm.py`:
+- Inputs: monthly S&P 500 returns + VIX + credit spreads (HYG/LQD) +
+  200-DMA breadth.
+- Library: `hmmlearn` (BSD-3-Clause).
+- Output: 3-state classifier {calm, transition, stress}.
+- In `stress` regime: down-weight momentum 50%, up-weight quality+low-
+  vol by equivalent.
+- Source: Wang et al. 2020 *J. Risk and Financial Management*.
+- Mode: architecture. ~250 LOC.
+
+**Persistent-homology TDA crash detector** —
+`compute/regime/tda_crash.py`:
+- Compute persistence landscape L¹ and L² norms on rolling 60-day
+  return windows.
+- Source: Gidea-Katz 2018; recent extension MDPI 2025 confirms
+  predictive power on COVID + 2022 selloffs.
+- Library: `giotto-tda` (Apache 2.0).
+- Alert when norms exceed 2σ above trailing 12-month baseline.
+- ⚠️ Compute-intensive: schedule monthly on Kaggle, not weekly GH Actions.
+- Mode: architecture. ~300 LOC.
+
+## Phase 7 Fallback Triggers
+Revert to Option A (original Phase 6) if:
+- ❌ Student-t HMM convergence issues
+- ❌ TDA computation > acceptable time budget
+- ❌ NCO shows no Sharpe lift over HRP
+- ❌ skfolio/gtda license issues
 
 ## Phase 7 Acceptance Criteria
-- [ ] S&P 1500 ranked weekly
-- [ ] Compute time <90 min
-- [ ] Frontend handles 1500-row table smoothly on mobile
-- [ ] Null rate <10% in mid-cap segment, <20% in small-cap
+- [ ] HMM regime updates weekly (Gaussian or Student-t)
+- [ ] **HMM regime classifier published to `metadata.json.regime_state`**
+- [ ] TDA risk-off gate visible in metadata
+- [ ] **TDA L¹/L² norms tracked monthly; alerts logged**
+- [ ] **Regime-conditional pillar weights documented and A/B tested**
+- [ ] NCO replaces HRP (or HRP retained per fallback)
+- [ ] Backtest report shows IC, IR, PBO < 50%, DSR > 0
+- [ ] Net-of-cost top-decile alpha reported honestly
+- [ ] Tag `v1.4.0-phase7`
 
 ---
 
-# Maintenance Cycle (Post-v1.5)
+# PHASE 8 — Universe Expansion → v2.0
+
+**Goal**: Expand from S&P 500 → S&P 1500. **Stop here. Do NOT push to Russell 2000** — free data quality collapses.
+
+## Tasks
+
+*(Same as original Phase 7)*
+
+### 8.1 Source larger universe
+- S&P 1500 = SP500 + S&P 400 (mid-cap) + S&P 600 (small-cap)
+- Wikipedia has constituents
+
+### 8.2 Performance considerations
+- 1500 stocks × all features = approaching GH Actions time limit
+- Parallelize ticker processing
+- Add `--universe` CLI flag
+
+### 8.3 Frontend pagination
+- Use `@tanstack/react-virtual` for 1500-row table
+
+### 8.4 Data quality monitoring
+- Track null rates per universe segment
+- Display in `data_quality` per stock
+
+### 8.5 v2.0 Tag
+```bash
+git tag v2.0
+git push origin v2.0
+```
+
+### 8.6 Scale-aware defense additions (research-validated, 2026-05-09)
+
+Per `docs/RESEARCH_FINDINGS.md` §"Phase 8 Defense Layer".
+
+**Bonferroni-adjusted multi-test thresholds** — when expanding to 1500
+stocks (3× more multiple-comparison burden):
+- Beneish M-Score cutoff: bump from −2.22 to −2.50 to maintain 5% FDR
+- IC significance: t-hurdle bumps from 1.96 → 2.78 (Hou-Xue-Zhang 2020)
+- Document each adjustment in `docs/METHODOLOGY.md`.
+- Mode: infrastructure. ~100 LOC.
+
+**Liquidity backstop** — exclude any stock with average daily volume
+< $5M (microstructure noise dominates at smaller caps; market-impact
+modeling needed for any actionable signal).
+- Mode: GUARD. ~50 LOC.
+
+### 8.7 DEFENSE FREEZE policy (post-v2.0)
+
+⚠️ **Do NOT add new defenses post-v2.0** unless ALL of:
+1. Existing defense IC has decayed > 50% for 6+ months (per Phase 4 IC
+   monitor), AND
+2. New addition has academic evidence of incremental IC > 0.01 OOS, AND
+3. Free data exists, AND
+4. License is MIT/BSD/Apache compatible.
+
+**Rotate, don't stack** (Beneish-Vorst 2021): marginal AAER capture
+< 5% beyond 4 fraud signals. Adding more defenses = more false
+positives without proportional true positives.
+
+## Phase 8 Acceptance Criteria
+- [ ] S&P 1500 ranked weekly
+- [ ] Compute time <90 min
+- [ ] Frontend handles 1500-row table smoothly on mobile
+- [ ] Null rate <10% mid-cap, <20% small-cap
+- [ ] **All defenses verified on S&P 1500 universe (no scaling failures)**
+- [ ] **Bonferroni adjustments documented and applied**
+- [ ] **Liquidity backstop excludes <$5M ADV stocks**
+- [ ] **Defense set FROZEN — no new flags added unless rotation criteria met**
+- [ ] **v2.0 tag pushed**
+
+---
+
+# Decision Points Table (Option B Discipline)
+
+Hard veto criteria during any phase shipping:
+
+| Metric | Threshold | Action if violated |
+|---|---|---|
+| Mean IC OOS | < 0.02 | Don't deploy phase changes |
+| PBO | > 0.5 | Hard veto on shipping |
+| Deflated Sharpe | < 0 | Hard veto |
+| Compute time | > 6 hrs | Move to Kaggle/Modal |
+| Net alpha vs SPY | < 0% post-cost | Investigate before next phase |
+| Library license | Conflict with MIT | Exclude or fallback |
+| Replication QC | < 50% match published | Use library output, not reconstruct |
+
+---
+
+# Maintenance Cycle (Post-v2.0)
 
 | Task | Cadence | Notes |
 |---|---|---|
 | Pillar weight retune | Quarterly | Use last 12 months IR |
 | ML hyperparameter retune | Quarterly | Optuna on training fold only |
+| OSAP/JKP update check | Quarterly | New October release each year |
 | Free data source rotation | As needed | Watch yfinance breaks |
-| Disclaimers + methodology page updates | Quarterly | Keep accurate |
-| GitHub Actions minutes monitoring | Monthly | Public repo = unlimited but be efficient |
+| License re-verification | Annually | Especially mlfinlab, JKP, gtda |
+| Disclaimers + methodology | Quarterly | Keep accurate |
+| GitHub Actions minutes | Monthly | Public repo unlimited but be efficient |
+| Decay monitoring | Monthly | Per Rule 14 in SKILL.md |
 
 ## When to STOP adding features
-After v1.5 + Phase 7, **resist scope creep** unless:
+After v2.0, **resist scope creep** unless:
 1. Mean IC has plateaued/declined for 2+ quarters AND
 2. New addition has academic evidence of incremental IC > 0.01 AND
-3. Free data exists.
+3. Free data exists AND
+4. License is compatible.
 
-Most "improvements" past v1.5 are noise + maintenance burden.
+Most "improvements" past v2.0 are noise + maintenance burden.
 
 ---
 
@@ -833,406 +1032,29 @@ Most "improvements" past v1.5 are noise + maintenance burden.
 | Situation | Do this on mobile |
 |---|---|
 | Starting work session | Open Claude Code → "What phase are we in? Read PHASE_STATUS.md" |
-| After Claude Code commit | Open GitHub mobile app → check Actions tab → wait for green |
+| After Claude Code commit | GitHub mobile app → check Actions tab → wait for green |
 | Failed Actions run | GitHub mobile → Actions → tap failed run → read logs → tell Claude Code error |
 | Want to manually trigger compute | GitHub mobile → Actions → "Compute Rankings" → "Run workflow" |
 | Want to see live site | Vercel mobile app → tap latest deploy → "Visit" |
 | Backtest looks "too good" | "Run PBO and deflated Sharpe before trusting any number >5%" |
 | Adding a metric | Tell Claude Code section number from knowledge doc |
-| Stuck on yfinance error | Tell Claude Code: "yfinance broke again, check field names per Section 11.1 of knowledge" |
+| Stuck on yfinance error | Tell Claude Code: "yfinance broke again, check field names" |
+| Phase 4+: monitor Kaggle | Open Kaggle web → check Notebooks → watch logs |
+| Phase 6+: monitor Modal | Open Modal dashboard → check usage → ensure within $30 credit |
 
 ---
 
 # Initial Prompts to Give Claude Code
 
 ## Session 1: Phase 0 kickoff
-> Read SKILL.md, WORKFLOW.md, and stock_ranking_knowledge.md. We're starting Phase 0 of QuantRank. Execute Phase 0 task 0.2 onward: create the full directory structure per SKILL.md, including all stub files, the four .github/workflows YAMLs, pyproject.toml with Phase 0 deps only, frontend/ Next.js skeleton with `output: 'export'`, stub PHASE_STATUS.md, and a README with disclaimer. Push to main when CI is green. List anything I need to do manually (Vercel hookup, secrets, etc.).
-
-## Session 2: After Phase 0 lands, Phase 1
-> Phase 0 is done; site is live with placeholder. Now do Phase 1 tasks 1.1-1.10. Output rankings.json with momentum-only stub composite. Update RankingTable component to render real JSON. Verify by triggering compute-rankings.yml manually.
+> Read SKILL.md, WORKFLOW.md, RESEARCH_FINDINGS.md, and stock_ranking_knowledge.md. We're starting Phase 0 of QuantRank. Execute Phase 0 tasks. Push to main when CI is green. List anything I need to do manually (Vercel hookup, secrets, etc.).
 
 ## Subsequent sessions
 > Read PHASE_STATUS.md. We're in Phase X. Continue from task X.Y.
 
----
-
-**End of WORKFLOW.md** — combined with `SKILL.md` and `stock_ranking_knowledge.md`, this is everything Claude Code needs to build QuantRank from your phone.
-
----
-
-# Research-Backed Additions (Option B, adopted 2026-05-08)
-
-The Phase 4-7 baseline above is **Option A** — the original plan. As of
-2026-05-08 the project formally adopted **Option B** which incorporates
-2024-2025 quant-finance research. Full motivation, references, and
-performance hedging live in [`docs/RESEARCH_FINDINGS.md`](docs/RESEARCH_FINDINGS.md).
-This section is the per-phase task delta vs the Option-A baseline.
-
-> **Fall back to Option A whenever**:
-> - A required Python library has no working Linux + Py3.11 wheel.
-> - Cold compute time on free-tier GitHub Actions exceeds 90 min.
-> - A required dataset has a license that's incompatible with a public
->   public repo (revisit the dataset choice; do not bypass the license).
-> - The phase's golden-value validation fails 3 consecutive runs and the
->   root cause isn't identified within a single session.
->
-> Each phase below documents its specific fallback trigger.
-
-## Phase 4 — Factor consolidation (OSAP + JKP + Qlib + IPCA) → v1.1
-
-> **Default = Option B** (this section). Fallback = original Option A
-> "Sentiment & alternative data" Phase 4 (which under Option B moves to
-> Phase 6). Triggers for the fallback are listed in the
-> "Fallback Triggers (Phase 4 → Option A)" subsection below.
-
-**Replaces** original Option A Phase 4 ("Sentiment & alternative data") —
-which moves to Phase 6 under Option B.
-
-**Goal**: replace the 30+ hand-rolled classical metrics' weights with a
-parsimonious latent-factor representation derived from established factor
-zoos.
-
-### 4.1 Add deps
-```toml
-qlib = ">=0.9"      # Microsoft Qlib — Alpha158 + data adapters
-pandas = ">=2.2"    # already present
-scikit-learn = ">=1.4"  # for sklearn-style IPCA pipeline
-```
-
-### 4.2 OSAP signal ingestion
-- New `compute/ingest/osap.py`. Pull the OSAP signed-signal CSVs from
-  `https://www.openassetpricing.com/data/`. Cache to
-  `compute/cache/osap/{signal_name}.parquet` (gitignored).
-- Filter to S&P 500 universe; compute monthly cross-sectional ranks.
-- Persist a panel: `(date, ticker, signal_name) → standardized rank`.
-
-### 4.3 JKP factor returns
-- New `compute/ingest/jkp.py`. Pull the JKP characteristic returns from
-  the JKP project's open data drop. Smaller payload than OSAP; use as a
-  cross-check rather than a primary input.
-
-### 4.4 Qlib Alpha158
-- Optional. New `compute/ingest/qlib_alpha158.py` initializing Qlib with
-  US daily data. **Bail-out trigger**: if Qlib's data loader fails on a
-  vanilla `ubuntu-latest` runner, drop and rely on OSAP+JKP only.
-
-### 4.5 IPCA dimension reduction
-- New `compute/scoring/ipca.py`. Hand-rolled instrumented PCA per
-  Kelly-Pruitt-Su 2019, ~150-200 lines of NumPy. Inputs: standardized
-  signals (4.2-4.3); outputs: a small set of latent factors and per-stock
-  loadings. Fit with rolling 5-year window.
-
-### 4.6 Pillar update
-- Bind IPCA outputs into `compute/scoring/composite.py` as a new
-  `latent_factor_score` pillar. This pillar may absorb part of the
-  classical `quality + value + growth` contribution — to be benchmarked
-  cross-sectionally before any weight reallocation.
-- Update `compute/scoring/pillars.py` if the latent factor partially
-  replaces individual classical pillars; otherwise add it alongside
-  with a Phase-4-specific weight (default 0.10).
-
-### 4.7 Validation
-- For 4 weeks, write **both** the existing v1.0 7-pillar composite **and**
-  the new IPCA composite into `rankings.json` under separate keys
-  (`composite_score` vs `composite_score_v11_alpha`). Frontend renders the
-  classical one by default; the about page exposes the new one for manual
-  inspection.
-- IC comparison: out-of-sample IC of the new composite must beat the v1.0
-  baseline by at least 0.005 over the 4-week window. Otherwise revert.
-
-### 4.8 Schema bump
-- `version` in `metadata.json` → `0.5.0-phase4` (or `1.1.0` after Tag v1.1).
-- Update `compute/output/schemas.py`: extend `PillarScores` with
-  `latent_factor` (additive — null until Phase 4 ships).
-- Update `frontend/lib/types.ts` to mirror.
-- Document the schema delta in `docs/RESEARCH_FINDINGS.md` "Postmortems"
-  if any backwards-incompatible change is introduced (avoid if possible
-  per Rule 9).
-
-### 4.9 Tag v1.1
-After 4 weeks of side-by-side production data, if 4.7 IC comparison
-clears the threshold, swap composites and tag `v1.1`. If not, revert
-per the Fallback Triggers below.
-
-### Fallback Triggers (Phase 4 → Option A)
-- **Library install fails**: Qlib's data loader doesn't run on a vanilla
-  `ubuntu-latest` runner after pinning a stable version → drop
-  `compute/ingest/qlib_alpha158.py`; rely on OSAP+JKP only. If both
-  also fail, revert to original Option-A Phase-4 "Sentiment & alt-data"
-  scope (move it from Phase 6 back to Phase 4).
-- **Data licence breakage**: OSAP / JKP CSV download URLs go behind
-  authwall or change format → use the last cached snapshot in
-  `compute/cache/`; reassess at next quarterly refresh.
-- **IC underperformance**: 4.7 side-by-side IC of the new composite
-  fails to beat the v1.0 baseline by ≥0.005 over 4 weeks → revert
-  composite weights to v1.0; document in `docs/RESEARCH_FINDINGS.md`
-  "Postmortems".
-- **Schema breakage**: any backwards-incompatible JSON change → revert
-  the schema bump; do an additive minor-version PR instead.
+## Phase 4+ kickoff
+> Read PHASE_STATUS.md and RESEARCH_FINDINGS.md. We just shipped v1.0. Now starting Phase 4 (Factor Consolidation, Option B). First task: re-verify current OSAP/JKP/Qlib data availability and licenses before integration.
 
 ---
 
-## Phase 5 — ML meta-learner (Triple-Barrier + Meta-Labeling + Conformal)
-
-> **Default = Option B** (this section, augmenting Option A's LightGBM
-> ranker with López de Prado labeling and conformal calibration).
-> Fallback = original Option A Phase 5 (LightGBM + walk-forward CV +
-> SHAP only). Triggers in "Fallback Triggers (Phase 5 → Option A)" below.
-
-**Augments** original Option A Phase 5.
-
-### 5.1 Add deps
-```toml
-lightgbm = ">=4.3"      # already in original Option A
-shap = ">=0.45"
-mapie = ">=0.8"          # Conformal prediction
-# mlfinlab — license check first; default is hand-rolled triple-barrier
-```
-
-### 5.2 Triple-Barrier labels
-- New `compute/ml/labels.py`. For each (ticker, date), compute the label
-  via López de Prado's triple-barrier:
-  - **Upper barrier**: +2σ × ATR(20) profit-take.
-  - **Lower barrier**: −2σ × ATR(20) stop.
-  - **Time barrier**: 21 trading days (1 month).
-- Output: ternary label `{−1, 0, +1}` based on which barrier hit first.
-- Tests: synthetic price paths with deterministic outcomes.
-
-### 5.3 Meta-Labeling
-- After the primary LightGBM ranker (Phase 5.3 from Option A) generates a
-  signed signal, train a **secondary classifier** to predict whether to
-  *act on* the signal. Inputs: primary signal + a few orthogonal regime
-  features (VIX level, sector concentration). Output: probability that
-  acting on the primary signal yields a positive triple-barrier label.
-- Multiplied as a confidence weight on the primary score.
-
-### 5.4 CPCV — Combinatorially Purged Cross-Validation
-- New `compute/ml/cpcv.py`. ~80-line port of López de Prado's CPCV.
-  Replaces walk-forward CV in Option A's Phase 5.4. Used during training,
-  not at inference time.
-
-### 5.5 Conformal prediction intervals
-- Wrap the primary LightGBM ranker in `mapie.MapieRegressor` (or hand-roll
-  split-conformal if mapie integration with ranker is awkward).
-- Persist `score_interval_80pct = [low, high]` per stock in JSON.
-- Frontend: render the interval as an error-bar on the score badge.
-
-### 5.6 SHAP top-5 (unchanged from Option A).
-
-### 5.7 Schema bump
-`pillar_scores.ml` populated; new `score_interval_80pct` field on
-`StockSummary`. Bump `version` to `0.6.0-phase5`.
-
-### 5.8 Optional — Conditional Autoencoder (CAE) for non-linear factors
-- Research-suggested non-blocker. Gu-Kelly-Xiu 2021 (*Autoencoder Asset
-  Pricing Models*, JoE) showed a conditional autoencoder with stock
-  characteristics as inputs outperforms IPCA + LightGBM on out-of-sample
-  cross-sectional R². Implementation: `compute/ml/cae.py`, ~250 lines
-  PyTorch on CPU; 32-dim bottleneck; trained monthly on Kaggle/Modal.
-- **Strictly optional** — only attempt after 5.1-5.7 ship and IC is
-  validated. Adds material training-time compute (~30 min on CPU) but
-  near-zero inference cost.
-- Failure mode is graceful: if the autoencoder doesn't beat the
-  LightGBM-only baseline IC by ≥0.005, do not deploy.
-
-### Fallback Triggers (Phase 5 → Option A)
-- **`mapie` integration with LightGBM ranker fails**: hand-roll
-  split-conformal (~50 lines) or drop conformal intervals entirely;
-  ship only triple-barrier labels + meta-labeling.
-- **`mlfinlab` AGPL incompatible**: do NOT ship Hudson & Thames code
-  in this public repo. Hand-roll triple-barrier and CPCV from the
-  paper specs (~80 lines each).
-- **CAE doesn't beat baseline IC**: keep 5.8 as deferred research; do
-  not deploy.
-- **Compute time blow-up**: if monthly retrain on free-tier exceeds
-  6 hours, drop to quarterly retrain or move training to Kaggle.
-
----
-
-## Phase 6 — Sentiment v2 (FinBERT + Whisper + 8-K Lazy Prices)
-
-> **Default = Option B** (this section). Fallback = original Option A
-> Phase 4 baseline (FinBERT-on-news + Form 4 + Reddit only — note Reddit
-> stays disabled for megacaps per 6.7). Triggers in
-> "Fallback Triggers (Phase 6 → Option A)" below.
-
-**Replaces** original Option A Phase 4 — moved here, augmented.
-
-### 6.1 FinBERT news (baseline; identical to original Option A §4)
-
-### 6.2 Whisper-transcribed earnings calls
-- New `compute/ingest/earnings_calls.py`. Pull recent earnings-call audio
-  from a free source (Seeking Alpha archives via Wayback, or paid-tier
-  Earnings Call Transcripts API if budget permits — out of scope by
-  default). Transcribe with `whisper-base.en` on Kaggle / Modal heavy
-  compute (see `docs/RESEARCH_FINDINGS.md` §4).
-- New `compute/features/earnings_call_sentiment.py`. Run FinBERT on the
-  transcript split by speaker role (CEO, CFO, analyst). Compute the
-  **Q&A sentiment differential** (analyst questions − management
-  responses).
-- **Fallback trigger**: if free audio sources are unavailable / unreliable,
-  drop this entirely and stay with FinBERT-on-news only.
-
-### 6.3 8-K Lazy Prices factor
-- New `compute/features/lazy_prices.py`. For each ticker, compute the
-  text-similarity score between the most recent 10-K/10-Q and the prior
-  filing (cosine on TF-IDF over the MD&A section, or `rapidfuzz` on the
-  whole document). Lower similarity → higher `lazy_prices_score`.
-- Cohen-Malloy-Nguyen 2020 found this predicts 1-month returns; we'll
-  IC-validate in Phase 7.
-
-### 6.4 FNSPID corpus (optional, training only)
-- For training the meta-labeler on news-driven labels, optionally
-  pre-train on FNSPID. **Out of weekly compute path.** One-shot training
-  job on Kaggle/Modal; commit pretrained weights as a release artifact.
-
-### 6.5 Schema bump
-`pillar_scores.sentiment` populated. New per-stock detail JSON fields:
-`sentiment_breakdown.{news_finbert, earnings_call_qna_diff,
-lazy_prices_score}`. Bump `version` to `0.7.0-phase6`.
-
-### 6.6 Insider Form 4 (carry from original Option A §4.5)
-- New `compute/ingest/insider.py` using `edgartools`. Pull last 90 days
-  of Form 4 per ticker. Compute net insider buy $, role-weighted
-  (CEO/CFO=3, Director=2, 10% holder=1). Cluster-buying score (≥2
-  distinct insiders within 30 days).
-- Surfaced in `sentiment_breakdown.insider_buying`.
-
-### 6.7 SKIP Reddit / StockTwits for megacaps
-- **Explicit non-task**: do NOT ingest Reddit (`r/wallstreetbets`,
-  `r/stocks`, `r/investing`) or StockTwits sentiment for the S&P 500
-  universe in v1.x.
-- **Reasoning**: signal-to-noise is dominated by professional algo
-  desks for megacap names; retail mention-acceleration is a small/
-  mid-cap signal (literature: Bartov-Faurel-Mohanram 2018; Da-Engelberg-Gao
-  2011 for Google Trends). Keep the ingest modules in `compute/ingest/`
-  but **gate them on universe ≥ S&P 1500** (Phase 8+).
-- This is documented as a deliberate choice, not an oversight.
-
-### Fallback Triggers (Phase 6 → Option A)
-- **Free earnings-call audio unavailable**: drop 6.4 Whisper entirely;
-  stay with FinBERT-on-news only. Document the source decay in
-  `docs/RESEARCH_FINDINGS.md`.
-- **Whisper CPU-inference budget overrun**: cap 6.4 to monthly
-  pre-compute (not weekly); shift the workload to Kaggle/Modal heavy
-  compute. If still overrun, drop 6.4.
-- **EDGAR rate-limit pressure from 6.6 Lazy Prices** (~500 tickers ×
-  2 filings each): cache filings to `compute/cache/edgar_filings/`
-  aggressively; back off to monthly recompute of `lazy_prices_score`.
-- **6.7 boundary crossed**: do not enable Reddit/StockTwits for
-  megacaps even if a contributor proposes it. Wait for Phase 8 universe
-  expansion.
-
----
-
-## Phase 7 — Regime + portfolio (Student-t HMM + NCO + TDA) → v1.5
-
-> **Default = Option B** (this section, with t-emission HMM + NCO + TDA
-> on top of the Option-A backtest harness). Fallback = original Option A
-> Phase 6 (Gaussian HMM + equal-weight portfolio + no TDA). Triggers in
-> "Fallback Triggers (Phase 7 → Option A)" below. Backtest harness
-> (PBO < 0.5) is **non-negotiable** in either path.
-
-**Augments** original Option A Phase 6.
-
-### 7.1 Add deps
-```toml
-hmmlearn = ">=0.3"     # already in original Option A
-dynamax = ">=0.1"      # JAX-based HMM family with t-emission
-riskfolio-lib = ">=5.0"  # NCO
-giotto-tda = ">=0.6"   # OPTIONAL — TDA persistence diagrams
-fredapi = ">=0.5"      # already in original Option A
-arch = ">=7.0"          # already in original Option A
-```
-
-### 7.2 Macro data ingestion (carry from original Option A §6.2)
-- New `compute/ingest/macro.py` using `fredapi` (GitHub secret
-  `FRED_API_KEY`). Pull weekly: T10Y2Y (term spread), VIXCLS (VIX),
-  BAMLH0A0HYM2 (HY credit spread), UNRATE (unemployment).
-- Cache to `compute/cache/macro/{series_id}.parquet`.
-- Outputs feed Student-t HMM (7.3) and TDA risk-off (7.4).
-
-### 7.3 Student-t HMM regime
-- Replace Gaussian-emission HMM (default in `hmmlearn`) with a
-  Student-t HMM via `dynamax` + custom emission, OR a hand-rolled
-  t-emission EM (~150 lines).
-- Inputs: SPY returns + VIX changes + 10y-2y term-spread changes
-  (sourced from 7.2).
-- Outputs: 3 regimes (bull, neutral, bear) with stable transition
-  matrix on the trailing 10y window.
-- Validation: out-of-sample regime-probability stability (no flapping
-  between consecutive weeks).
-- Persist current state to `public/data/metadata.json` under
-  `regime: {state, probability, since_date}`.
-
-### 7.4 TDA risk-off diagnostics (optional but recommended)
-- Compute persistent homology of the 30-day rolling cross-sectional
-  correlation matrix via `giotto-tda`. Report persistence-diagram
-  entropy as an auxiliary risk-off indicator (Gidea-Katz 2018).
-- **Not** wired into the composite weights — exposed on the about page
-  and as `metadata.json: risk_off_indicator: 0..1`.
-- Computational budget: 1 GPU-minute on Kaggle, weekly. CPU-only
-  fallback ~10 minutes — acceptable for a weekly cron.
-
-### 7.5 Regime-conditional weights (carry from original Option A §6.4)
-- Estimate `IR(pillar | regime)` from rolling 3-yr history.
-- Per-Sunday weights: `w_i = max(IR_i^r, 0) / Σ`.
-- Apply gentle tilts (±20% from neutral defaults) — never bets.
-
-### 7.6 NCO portfolio sizing
-- New `compute/portfolio/nco.py`. ~100-line port of López de Prado 2019.
-- Hierarchical clustering of the covariance matrix (single-linkage on
-  correlation distance), within-cluster Markowitz, between-cluster
-  Markowitz.
-- **Used only for the backtest harness** (7.7), NOT for the ranking
-  app's surface score. The frontend remains a ranking, not a portfolio.
-
-### 7.7 Backtest harness (carry from original Option A §6.5-6.7)
-- IC, IR, decile spread, deflated Sharpe, **PBO via CSCV** (López de
-  Prado, ~30-line NumPy port). 40 bps round-trip cost.
-- Hard requirement: PBO < 0.5 before any new methodology change reaches
-  production. This is **non-negotiable** — see Decision Points table.
-- Output: `public/data/backtest_report.json`; new `frontend/app/backtest/page.tsx`.
-
-### 7.8 Tag v1.5
-
-### Fallback Triggers (Phase 7 → Option A)
-- **`dynamax` JAX install fails on free-tier runner**: stay with
-  `hmmlearn` Gaussian HMM. Document the t-emission as a deferred
-  research item.
-- **`giotto-tda` install or runtime > 30 min**: drop 7.4 TDA entirely
-  (it's optional). Phase 7 still ships without it.
-- **`riskfolio-lib` API drift**: hand-roll NCO from López de Prado 2019
-  (~100 lines) rather than depend on the library.
-- **PBO ≥ 0.5 on any methodology**: HARD VETO. Do not ship that
-  methodology change to production. Revert composite weights to the
-  last-passing methodology. Document in
-  `docs/RESEARCH_FINDINGS.md` "Postmortems".
-- **Backtest harness IC < 0.02 mean**: do not deploy the new model;
-  keep the previous month's model in production.
-
----
-
-## Phase 8 — Universe expansion (S&P 1500)
-
-Identical to original Option A Phase 7. No research-backed delta. See
-that section for tasks 8.1-8.4.
-
----
-
-## Decision points — when to flip Option A vs Option B
-
-| Trigger | Action |
-|---|---|
-| Library install fails on `ubuntu-latest` runner | Pin a different version, then fall back to Option A baseline if still broken. |
-| OSAP / JKP CSV download URL breaks | Cache the last-known-good snapshot in `compute/cache/`; revisit Phase 4 if still broken at next refresh. |
-| Whisper transcription budget overrun (Kaggle 30h/wk hit) | Drop earnings-call sentiment from weekly path; pre-compute monthly only. |
-| `mapie` integration with LightGBM ranker fails | Hand-roll split-conformal (~50 lines) or drop conformal intervals (Option A fallback). |
-| Backtest IC of the new IPCA composite < classical baseline for 4 consecutive weeks | Revert to Phase 3 v1.0 composite weights. Document the rejection in `docs/RESEARCH_FINDINGS.md` "Postmortems". |
-| PBO > 0.5 on any new methodology | **Hard veto**. Do not ship that change to production. |
-
----
-
-**End of Research-Backed Additions** — for context and references, see
-`docs/RESEARCH_FINDINGS.md`. For original Option A baseline, see Phase 4-7
-above this section.
+**End of WORKFLOW.md** — combined with `SKILL.md`, `stock_ranking_knowledge.md`, and `RESEARCH_FINDINGS.md`, this is everything Claude Code needs to build QuantRank from your phone via the Option B research-backed roadmap with Option A fallback.
