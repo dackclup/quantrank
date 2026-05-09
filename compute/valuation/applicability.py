@@ -54,6 +54,11 @@ SKIP_REASONS: tuple[str, ...] = (
     "terminal_g_unsafe_g_too_close_to_wacc",
     "dcf_net_debt_unknown",
     "dcf_negative_equity_post_debt",
+    # Step 7.5 — data-quality sanity guard. Applied at the ensemble layer
+    # AFTER all 6 methods compute; nulls every method when any value
+    # exceeds config.FAIR_PRICE_DATA_QUALITY_CEILING (typically caused
+    # by upstream shares_outstanding ingestion bugs).
+    "data_quality_input_corruption",
 )
 
 LagStatus = Literal["fresh", "soft", "hard", "unknown"]

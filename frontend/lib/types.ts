@@ -67,6 +67,24 @@ export type DataQuality = {
 
 // Per-method fair-price result (one entry per method in
 // FairPriceEnsemble.methods).
+//
+// Reason taxonomy (subset; see compute/valuation/applicability.py
+// SKIP_REASONS for the full list):
+// - sector_excluded_financials, sector_excluded_utilities — sector-rule gates
+// - non_positive_or_missing_tangible_book, non_positive_eps_3y_avg,
+//   non_positive_or_missing_eps_ttm, non_positive_or_missing_bvps,
+//   non_positive_or_missing_ebitda — input-precondition gates
+// - missing_or_non_positive_peer_pe / pb / ev_ebitda — peer-tier walk fell off
+// - value_trap_risk_roe_below_cost_of_equity — RIM short-circuit
+// - non_positive_fcf_5y_median, terminal_g_unsafe_g_too_close_to_wacc,
+//   dcf_negative_equity_post_debt — DCF-specific gates
+// - stale_filing_hard — Defense #3 hard-stale (entire ensemble nulled)
+// - data_quality_input_corruption — Defense #7 (Step 7.5) sanity guard.
+//   Surfaced when upstream fundamentals ingestion produces clearly
+//   broken inputs (e.g., shares_outstanding off by 6+ orders of
+//   magnitude, causing a method to compute > $10,000/share). When this
+//   fires, all 6 methods are nulled. Tracking issue filed; the Phase-3
+//   fundamentals ingest layer needs an audit.
 export type FairPriceMethodResult = {
   value: number | null;
   applicable: boolean;

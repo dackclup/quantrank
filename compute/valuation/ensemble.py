@@ -386,6 +386,17 @@ def compute_fair_price_ensemble(
         "dcf": _wrap(dcf_value, dcf_app, tier_used=None),
     }
 
+    # Step 4.5 — Data-quality sanity sweep (Defense #7).
+    # If ANY applicable method produced a value above the per-share ceiling,
+    # the underlying snapshot is corrupted (typically shares_outstanding
+    # ingested with the wrong unit — see issue tracker for the Phase-3
+    # fundamentals follow-up). Null all 6 methods + surface a single
+    # warning rather than ship nonsense to the UI. No risk_flag is
+    # appended: data quality is an upstream-ingest concern, not a
+    # ranking veto.
+    if _has_corrupt_input(methods):
+        return (_data_quality_corrupt_result(methods), [])
+
     # Defense #4 outlier guard + aggregation.
     aggregates, extreme_warnings = _aggregate_methods(methods, current_price)
     valuation_warnings.extend(extreme_warnings)
@@ -408,6 +419,53 @@ def compute_fair_price_ensemble(
             valuation_warnings=valuation_warnings,
         ),
         [],
+    )
+
+
+def _has_corrupt_input(methods: dict[str, FairPriceMethodResult]) -> bool:
+    """True if any applicable method produced a value > the data-quality
+    ceiling (config.FAIR_PRICE_DATA_QUALITY_CEILING).
+
+    Strict ``>`` so a method computing exactly the ceiling does NOT trip
+    the guard. Skipped methods (applicable=False) and missing values
+    are pass-through.
+    """
+    ceiling = config.FAIR_PRICE_DATA_QUALITY_CEILING
+    for r in methods.values():
+        if r.applicable and r.value is not None and r.value > ceiling:
+            return True
+    return False
+
+
+def _data_quality_corrupt_result(
+    methods: dict[str, FairPriceMethodResult],
+) -> EnsembleResult:
+    """Build the all-null EnsembleResult returned when the data-quality
+    sanity guard fires.
+
+    Each method becomes ``applicable=False`` with reason
+    ``data_quality_input_corruption``. ``tier_used`` is preserved from
+    the original computation so the JSON still tells the operator which
+    peer tier the multiples methods consulted before the guard fired
+    (useful for upstream-bug triage).
+    """
+    nulled: dict[str, FairPriceMethodResult] = {
+        name: FairPriceMethodResult(
+            value=None,
+            applicable=False,
+            reason="data_quality_input_corruption",
+            tier_used=r.tier_used,
+        )
+        for name, r in methods.items()
+    }
+    return EnsembleResult(
+        methods=nulled,
+        median=None,
+        max=None,
+        low=None,
+        high=None,
+        mos_pct=None,
+        valuation_warnings=["data_quality_input_corruption"],
     )
 
 

@@ -33,6 +33,8 @@ from compute.valuation.ensemble import (
     _all_methods_skipped,
     _bvps_reported,
     _classify_outliers,
+    _data_quality_corrupt_result,
+    _has_corrupt_input,
     _net_debt,
     compute_fair_price_ensemble,
     ensemble_result_to_dict,
@@ -623,6 +625,141 @@ def test_I3_ensemble_result_to_dict_warnings_is_a_copy():
     out = ensemble_result_to_dict(result)
     out["valuation_warnings"].append("mutation_test")
     assert result.valuation_warnings == ["goodwill_heavy"]
+
+
+# -- J. Step 7.5 data-quality sanity guard -----------------------------------
+
+def test_data_quality_sanity_guard_triggers_on_extreme_method_value():
+    """Synthetic SPG-pattern: 5 methods compute reasonable values, 1 produces
+    an absurd $10,001/share (just above the $10,000 ceiling). The guard
+    must null all 6 methods, surface a single warning, and return an empty
+    risk_flags list (data quality is not a ranking veto)."""
+    methods = {
+        "graham": _result(50.0, applicable=True),
+        "multiples_pe": _result(60.0, applicable=True, tier_used="sub_industry"),
+        "multiples_pb": _result(10001.0, applicable=True, tier_used="sector"),
+        "multiples_ev_ebitda": _result(70.0, applicable=True, tier_used="sub_industry"),
+        "rim": _result(55.0, applicable=True),
+        "dcf": _result(65.0, applicable=True),
+    }
+    assert _has_corrupt_input(methods) is True
+
+    result = _data_quality_corrupt_result(methods)
+    # All 6 methods nulled with the single canonical reason.
+    for name in METHOD_NAMES:
+        m = result.methods[name]
+        assert m.value is None
+        assert m.applicable is False
+        assert m.reason == "data_quality_input_corruption"
+    # Aggregates all None.
+    assert result.median is None
+    assert result.max is None
+    assert result.low is None
+    assert result.high is None
+    assert result.mos_pct is None
+    # Single warning, no others.
+    assert result.valuation_warnings == ["data_quality_input_corruption"]
+    # tier_used preserved on multiples for diagnostics.
+    assert result.methods["multiples_pe"].tier_used == "sub_industry"
+    assert result.methods["multiples_pb"].tier_used == "sector"
+    assert result.methods["multiples_ev_ebitda"].tier_used == "sub_industry"
+    assert result.methods["graham"].tier_used is None
+
+
+def test_data_quality_guard_boundary_exactly_at_ceiling():
+    """Method value = 10000.0 exactly → does NOT trigger (strict >)."""
+    methods = {
+        "graham": _result(50.0, applicable=True),
+        "multiples_pe": _result(60.0, applicable=True),
+        "multiples_pb": _result(config.FAIR_PRICE_DATA_QUALITY_CEILING, applicable=True),
+        "multiples_ev_ebitda": _result(70.0, applicable=True),
+        "rim": _result(55.0, applicable=True),
+        "dcf": _result(65.0, applicable=True),
+    }
+    assert _has_corrupt_input(methods) is False
+
+
+def test_data_quality_guard_skipped_methods_dont_trigger():
+    """Methods with applicable=False are pass-through. A skipped method
+    can never trip the guard (its value is None or stale; only applicable
+    values are checked)."""
+    methods = {
+        "graham": _result(None, applicable=False, reason="non_positive_eps_3y_avg"),
+        "multiples_pe": _result(60.0, applicable=True),
+        "multiples_pb": _result(None, applicable=False, reason="non_positive_or_missing_bvps"),
+        "multiples_ev_ebitda": _result(70.0, applicable=True),
+        "rim": _result(None, applicable=False, reason="value_trap_risk_roe_below_cost_of_equity"),
+        "dcf": _result(65.0, applicable=True),
+    }
+    assert _has_corrupt_input(methods) is False
+
+
+def test_data_quality_guard_end_to_end_via_full_ensemble():
+    """End-to-end: a corrupted snapshot (shares_outstanding=10 instead
+    of millions, mirroring the SPG-pattern bug) routes through
+    compute_fair_price_ensemble and returns the all-null payload with
+    no risk_flags appended."""
+    # Equity $5B / 10 shares = $500M/share TBVPS — far above the $10K ceiling.
+    snap = FundamentalsSnapshot(
+        ticker="CORRUPT",
+        cik="0000000099",
+        revenue=1000.0,
+        net_income=100.0,
+        operating_income=200.0,
+        total_assets=10_000_000_000.0,
+        total_liabilities=5_000_000_000.0,
+        stockholders_equity=5_000_000_000.0,
+        cash=100_000_000.0,
+        operating_cash_flow=300_000_000.0,
+        capex=50_000_000.0,
+        free_cash_flow=250_000_000.0,
+        eps_basic=10_000_000.0,
+        eps_diluted=10_000_000.0,
+        shares_outstanding=10.0,  # corrupted — should be millions
+        long_term_debt=500_000_000.0,
+        short_term_debt=50_000_000.0,
+        ebitda=400_000_000.0,
+        goodwill=10_000_000.0,
+        intangibles_net=5_000_000.0,
+        latest_period_end=date(2025, 12, 31),
+        latest_filed_date=date(2026, 2, 14),
+    )
+    historical_metrics = {
+        "CORRUPT": {
+            "eps_3y_avg": 10_000_000.0,
+            "avg_3y_roe": 0.20,
+            "fcf_5y": [200_000_000.0] * 5,
+        }
+    }
+    universe_metrics = {"CORRUPT": {"pe_ttm": 1.0, "pb_reported": 1.0, "ev_ebitda_ttm": 5.0}}
+    peer_panels = {
+        "pe": {"sub_industry": [], "industry": [], "sector": [], "broad": []},
+        "pb": {"sub_industry": [], "industry": [], "sector": [], "broad": []},
+        "ev_ebitda": {"sub_industry": [], "industry": [], "sector": [], "broad": []},
+    }
+    result, extra_flags = compute_fair_price_ensemble(
+        ticker="CORRUPT",
+        snap=snap,
+        sector="Information Technology",
+        sub_industry="Software",
+        industry=None,
+        current_price=100.0,
+        filing_lag_days_value=30,
+        peer_panels=peer_panels,
+        universe_metrics=universe_metrics,
+        historical_metrics=historical_metrics,
+    )
+    # Guard fires whenever the corruption is severe enough — at least one
+    # method (Graham/RIM via TBVPS) computed > $10,000/share. Confirm the
+    # canonical all-null + single-warning + empty-flags shape.
+    assert result.valuation_warnings == ["data_quality_input_corruption"]
+    assert extra_flags == []
+    assert result.median is None
+    assert result.max is None
+    for name in METHOD_NAMES:
+        m = result.methods[name]
+        assert m.value is None
+        assert m.reason == "data_quality_input_corruption"
 
 
 # -- Helpers ------------------------------------------------------------------

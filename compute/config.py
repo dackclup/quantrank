@@ -54,6 +54,15 @@ GOODWILL_HEAVY_RATIO: float = 0.5
 EXTREME_ESTIMATE_HIGH: float = 5.0
 EXTREME_ESTIMATE_LOW: float = 0.2
 
+# Data-quality sanity ceiling. No S&P 500 stock has a sensible fair price
+# > $10,000/share (BRK-A trades ~$700K but is not in the index; BRK-B is).
+# If any applicable method computes a value above this ceiling, the
+# upstream snapshot inputs are corrupted (typically shares_outstanding
+# ingested with the wrong unit). The ensemble nulls all 6 methods and
+# surfaces ``data_quality_input_corruption`` as a single warning rather
+# than ship nonsense to the UI. See compute/valuation/ensemble.py.
+FAIR_PRICE_DATA_QUALITY_CEILING: float = 10000.0
+
 # Sector-multiples peer-group floor; below this fall back to global median + flag.
 MULTIPLES_MIN_PEERS: int = 8
 
