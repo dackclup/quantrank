@@ -64,6 +64,10 @@ def _snapshot(latest: date, **overrides) -> FundamentalsSnapshot:
         short_term_debt=10_000_000_000.0,
         retained_earnings=20_000_000_000.0,
         ebitda=132_000_000_000.0,
+        # Phase 3c fields — feed Tangible BVPS (Defense Playbook §PR 3c §2).
+        # AAPL FY2024 actuals from EDGAR: goodwill ≈ $5.89B; intangibles ≈ $25.80B.
+        goodwill=5_890_000_000.0,
+        intangibles_net=25_800_000_000.0,
         latest_filed_date=latest,
         latest_period_end=date(latest.year, 9, 28),
     )
@@ -211,4 +215,86 @@ def test_fy2024_revenue_within_tolerance(ticker):
     assert diff < tol, (
         f"{ticker} FY2024 revenue {fact.value:,.0f} differs from expected "
         f"{expected:,.0f} by {diff*100:.2f}% (tolerance {tol*100:.0f}%)"
+    )
+
+
+# -- Phase 3c: goodwill + intangibles fallback-chain coverage probe ----------
+#
+# Verifies the new _BALANCE_TAGS entries land non-null values via SEC EDGAR
+# for a curated 5-ticker reference set spanning hardware (AAPL), consumer
+# staples (KO, PG), bank (JPM), and financial conglomerate (BRK-B). The
+# fallback chain for intangibles_net is intentionally probed: AAPL+PG tag
+# under us-gaap:IntangibleAssetsNetExcludingGoodwill (primary); KO+JPM+BRK-B
+# typically don't, so the fallback to us-gaap:OtherIntangibleAssetsNet must
+# fire. We require ≥3/5 non-null on intangibles_net (vs the 2/5 seen with
+# the primary tag alone) to assert the fallback chain actually improves
+# coverage. Goodwill is uniformly tagged → all 5 must be non-null.
+
+GOODWILL_INTANGIBLES_PROBE = {
+    # ticker: (cik, sector_label)
+    "AAPL":  ("0000320193", "hardware"),
+    "KO":    ("0000021344", "staples"),
+    "PG":    ("0000080424", "staples"),
+    "JPM":   ("0000019617", "bank"),
+    "BRK-B": ("0001067983", "financial_conglomerate"),
+}
+
+
+@pytest.mark.network
+def test_goodwill_intangibles_fallback_chain():
+    """Verify _BALANCE_TAGS goodwill + intangibles_net fallback hits SEC EDGAR.
+
+    Probe rationale documented in PR-3c kickoff §D3 / §E2 — goodwill at 100%
+    coverage, intangibles_net targeting ≥60% with the 3-tag fallback chain.
+    """
+    if not os.environ.get("EDGAR_USER_AGENT"):
+        pytest.skip("EDGAR_USER_AGENT not set")
+
+    from edgar import set_identity
+
+    from compute.ingest import fundamentals as fundamentals_mod
+    set_identity(os.environ["EDGAR_USER_AGENT"])
+
+    snapshots: dict[str, fundamentals_mod.FundamentalsSnapshot] = {}
+    for ticker, (cik, _label) in GOODWILL_INTANGIBLES_PROBE.items():
+        snap = fundamentals_mod._build_snapshot(ticker, cik)
+        snapshots[ticker] = snap
+
+    # 1. Goodwill: 5/5 non-null and economically plausible (each company has
+    #    > $1B goodwill on book).
+    goodwill_non_null = [t for t, s in snapshots.items() if s.goodwill is not None]
+    assert len(goodwill_non_null) == 5, (
+        f"Expected goodwill non-null for all 5 reference tickers; "
+        f"got {goodwill_non_null}. Missing: "
+        f"{[t for t in GOODWILL_INTANGIBLES_PROBE if t not in goodwill_non_null]}"
+    )
+    for ticker, snap in snapshots.items():
+        assert snap.goodwill > 1e9, (
+            f"{ticker} goodwill {snap.goodwill:,.0f} below $1B sanity floor"
+        )
+
+    # 2. Intangibles net (excluding goodwill): fallback chain must yield
+    #    ≥3/5 non-null. Without the fallback chain only AAPL + PG would
+    #    populate (2/5); the chain should add at least one more.
+    intangibles_non_null = [
+        t for t, s in snapshots.items() if s.intangibles_net is not None
+    ]
+    assert len(intangibles_non_null) >= 3, (
+        f"Fallback chain coverage too low: only {len(intangibles_non_null)}/5 "
+        f"tickers have non-null intangibles_net. Got: {intangibles_non_null}. "
+        f"Expected at least AAPL + PG + 1 fallback hit."
+    )
+    for ticker in intangibles_non_null:
+        assert snapshots[ticker].intangibles_net > 0, (
+            f"{ticker} intangibles_net non-positive: {snapshots[ticker].intangibles_net}"
+        )
+
+    # 3. AAPL spot check (anchor against the E2 probe values within ±20%):
+    #    goodwill ≈ $5.89B; intangibles_net ≈ $25.80B.
+    aapl = snapshots["AAPL"]
+    assert 4.5e9 <= aapl.goodwill <= 8.0e9, (
+        f"AAPL goodwill {aapl.goodwill:,.0f} outside [4.5B, 8.0B] sanity band"
+    )
+    assert aapl.intangibles_net is not None and 20e9 <= aapl.intangibles_net <= 35e9, (
+        f"AAPL intangibles_net {aapl.intangibles_net} outside [20B, 35B]"
     )
