@@ -15,8 +15,10 @@ sub-modules document their own preconditions and source citations:
 - ``graham`` — defense-aware Graham number using TBVPS + 3y-avg EPS.
 - ``multiples`` — sector P/E + P/B + EV/EBITDA with 4-tier peer-median walk
   and 5/95 winsorization.
+- ``rim`` — Penman 2013 Residual Income Model with TBVPS as B_0 and
+  conservative zero-terminal-value truncation.
 
-Subsequent steps add ``rim``, ``dcf``, ``ensemble``.
+Subsequent steps add ``dcf``, ``ensemble``.
 """
 
 from __future__ import annotations
@@ -42,6 +44,7 @@ from compute.valuation.multiples import (
     multiples_pb_fair_price,
     multiples_pe_fair_price,
 )
+from compute.valuation.rim import rim_fair_price
 from compute.valuation.tangible_book import (
     goodwill_heavy_flag,
     tangible_book_value_per_share,
@@ -71,4 +74,6 @@ __all__ = [
     "multiples_ev_ebitda_fair_price",
     "multiples_pb_fair_price",
     "multiples_pe_fair_price",
+    # rim
+    "rim_fair_price",
 ]

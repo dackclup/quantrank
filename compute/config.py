@@ -40,6 +40,7 @@ TERMINAL_GROWTH: float = 0.03  # long-run nominal GDP cap (Damodaran)
 COST_OF_EQUITY: float = 0.10  # used by RIM (Cost of Equity ≈ WACC for S&P 500 cash-flat names)
 DCF_FORECAST_YEARS: int = 5
 DCF_FCF_WINDOW_YEARS: int = 5  # trailing window for FCF base estimation
+RIM_FORECAST_YEARS: int = 5  # explicit RIM residual-income forecast horizon
 
 # Stale-filing guards (10-Q deadline 45d; 75d past = unusual, missed = restatement risk).
 FILING_STALE_SOFT_DAYS: int = 120
