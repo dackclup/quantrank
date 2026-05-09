@@ -406,6 +406,31 @@ Never claim alpha > 5% net without:
 - PBO < 50%
 - Out-of-sample period including 2020 + 2022 regime stress
 
+### Rule 16: Defense layer is annotate-and-veto-Top-N (NEW 2026-05-09)
+
+Risk overlays and fraud-detection signals **never modify the composite
+score**. They operate in three modes only:
+
+1. **VETO** — exclude flagged stock from `entered_top5` badge (composite
+   rank unchanged). Currently 2 active (Altman Z″, Sloan accruals); 3 by
+   v1.0 (+ Net Stock Issuance per Pontiff-Woodgate 2008).
+2. **GUARD** — return null + flag (e.g., null fair_price for stale
+   filings). 4 numerical guards by v1.0.
+3. **ANNOTATE** — warning only, no score change. 5+ flags by v1.0.
+
+**Why never scoring inputs**: empirical evidence (Beneish-Vorst 2021;
+McLean-Pontiff 2016) shows fraud-detection FP rates ≥30% in broad market
+and anomaly returns decay 58% cumulative. Penalizing the score
+introduces more error than it removes.
+
+**Defense freeze post-v2.0**: Do NOT add new defenses unless an existing
+defense's IC has decayed > 50% for 6+ months AND the new addition has
+academic evidence of incremental IC > 0.01. Marginal AAER capture < 5%
+beyond 4 fraud signals (Beneish-Vorst 2021). **Rotate, don't stack.**
+
+Full defense schedule and bibliography in
+`docs/RESEARCH_FINDINGS.md` §"Defense Playbook".
+
 ---
 
 ## When the user asks for...

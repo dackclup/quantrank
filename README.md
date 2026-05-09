@@ -21,6 +21,18 @@ browser.
 - The author is not a registered investment adviser.
 - This project does not connect to a brokerage and never will.
 
+**Honest limits of quantitative analysis** (full section ships with v1.0):
+- Quantitative fraud detection has irreducible false-positive (~30% in
+  broad market) and false-negative (~25-40%) rates. Defense flags
+  indicate elevated risk, **not** confirmed fraud.
+- Madoff-style fabrication (where revenue, cash, and counter-parties are
+  all fictitious) is **undetectable** by any system based on filed
+  financials.
+- Published anomalies typically decay 30-60% post-publication
+  (McLean-Pontiff 2016).
+- See [`docs/RESEARCH_FINDINGS.md`](docs/RESEARCH_FINDINGS.md)
+  §"Honest Limitations" for the full list.
+
 If you're not comfortable losing 100% of any capital you might allocate based
 on quantitative models, do not use this app for investing.
 
