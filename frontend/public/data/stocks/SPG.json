@@ -39,53 +39,49 @@
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 11755.154841334503,
-        "applicable": true,
-        "reason": null,
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 1778.9500735191166,
-        "applicable": true,
-        "reason": null,
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 1566371.9107967776,
-        "applicable": true,
-        "reason": null,
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 31839774.13789788,
-        "applicable": true,
-        "reason": null,
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
         "tier_used": "sector"
       },
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       },
       "dcf": {
         "value": null,
         "applicable": false,
-        "reason": "non_positive_fcf_5y_median",
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       }
     },
-    "median": 789063.5328190561,
+    "median": null,
     "max": null,
-    "low": 1778.9500735191166,
-    "high": 31839774.13789788,
-    "mos_pct": 99.97438482622621,
+    "low": null,
+    "high": null,
+    "mos_pct": null,
     "valuation_warnings": [
-      "extreme_graham_estimate",
-      "extreme_multiples_pe_estimate",
-      "extreme_multiples_pb_estimate",
-      "extreme_multiples_ev_ebitda_estimate",
-      "value_trap_risk"
+      "data_quality_input_corruption"
     ]
   },
   "top5_factors": [],
@@ -114,11 +110,7 @@
     "sloan_accruals_top_decile"
   ],
   "valuation_warnings": [
-    "extreme_graham_estimate",
-    "extreme_multiples_pe_estimate",
-    "extreme_multiples_pb_estimate",
-    "extreme_multiples_ev_ebitda_estimate",
-    "value_trap_risk"
+    "data_quality_input_corruption"
   ],
   "has_history": true,
   "tangible_book_value": 648521.25,

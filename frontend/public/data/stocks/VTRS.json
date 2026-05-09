@@ -41,49 +41,47 @@
       "graham": {
         "value": null,
         "applicable": false,
-        "reason": "non_positive_eps_3y_avg",
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 11.462623162365515,
-        "applicable": true,
-        "reason": null,
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
         "tier_used": "sector"
       },
       "multiples_pb": {
         "value": null,
         "applicable": false,
-        "reason": "non_positive_or_missing_bvps",
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 153390392.33310804,
-        "applicable": true,
-        "reason": null,
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
         "tier_used": "sector"
       },
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       },
       "dcf": {
-        "value": 196590359.87003216,
-        "applicable": true,
-        "reason": null,
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       }
     },
-    "median": 153390392.33310804,
-    "max": 11.462623162365515,
-    "low": 11.462623162365515,
-    "high": 196590359.87003216,
-    "mos_pct": 99.99998880633929,
+    "median": null,
+    "max": null,
+    "low": null,
+    "high": null,
+    "mos_pct": null,
     "valuation_warnings": [
-      "extreme_multiples_ev_ebitda_estimate",
-      "extreme_dcf_estimate",
-      "value_trap_risk"
+      "data_quality_input_corruption"
     ]
   },
   "top5_factors": [],
@@ -101,9 +99,7 @@
     "altman_distress"
   ],
   "valuation_warnings": [
-    "extreme_multiples_ev_ebitda_estimate",
-    "extreme_dcf_estimate",
-    "value_trap_risk"
+    "data_quality_input_corruption"
   ],
   "has_history": true,
   "tangible_book_value": null,

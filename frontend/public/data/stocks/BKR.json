@@ -39,53 +39,49 @@
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 54369.92734959281,
-        "applicable": true,
-        "reason": null,
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 261.0750939208192,
-        "applicable": true,
-        "reason": null,
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 526995552.2912986,
-        "applicable": true,
-        "reason": null,
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 1677210071.719331,
-        "applicable": true,
-        "reason": null,
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
         "tier_used": "sector"
       },
       "rim": {
-        "value": 105171058.95667458,
-        "applicable": true,
-        "reason": null,
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       },
       "dcf": {
         "value": null,
         "applicable": false,
-        "reason": "non_positive_fcf_5y_median",
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       }
     },
-    "median": 105171058.95667458,
-    "max": 261.0750939208192,
-    "low": 261.0750939208192,
-    "high": 1677210071.719331,
-    "mos_pct": 99.99993925134916,
+    "median": null,
+    "max": null,
+    "low": null,
+    "high": null,
+    "mos_pct": null,
     "valuation_warnings": [
-      "goodwill_heavy",
-      "extreme_graham_estimate",
-      "extreme_multiples_pb_estimate",
-      "extreme_multiples_ev_ebitda_estimate",
-      "extreme_rim_estimate"
+      "data_quality_input_corruption"
     ]
   },
   "top5_factors": [],
@@ -101,11 +97,7 @@
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "goodwill_heavy",
-    "extreme_graham_estimate",
-    "extreme_multiples_pb_estimate",
-    "extreme_multiples_ev_ebitda_estimate",
-    "extreme_rim_estimate"
+    "data_quality_input_corruption"
   ],
   "has_history": true,
   "tangible_book_value": 92090000.0,

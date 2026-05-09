@@ -41,47 +41,47 @@
       "graham": {
         "value": null,
         "applicable": false,
-        "reason": "non_positive_eps_3y_avg",
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 26576.373771712042,
-        "applicable": true,
-        "reason": null,
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
         "tier_used": "sector"
       },
       "multiples_pb": {
         "value": null,
         "applicable": false,
-        "reason": "non_positive_or_missing_bvps",
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       },
       "multiples_ev_ebitda": {
         "value": null,
         "applicable": false,
-        "reason": "sector_excluded_financials",
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       },
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       },
       "dcf": {
         "value": null,
         "applicable": false,
-        "reason": "sector_excluded_financials",
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       }
     },
-    "median": 26576.373771712042,
+    "median": null,
     "max": null,
-    "low": 26576.373771712042,
-    "high": 26576.373771712042,
-    "mos_pct": 99.18762433223193,
+    "low": null,
+    "high": null,
+    "mos_pct": null,
     "valuation_warnings": [
-      "extreme_multiples_pe_estimate"
+      "data_quality_input_corruption"
     ]
   },
   "top5_factors": [],
@@ -104,7 +104,7 @@
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_multiples_pe_estimate"
+    "data_quality_input_corruption"
   ],
   "has_history": true,
   "tangible_book_value": null,

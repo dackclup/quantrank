@@ -41,49 +41,47 @@
       "graham": {
         "value": null,
         "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 134.81025924030533,
-        "applicable": true,
-        "reason": null,
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 2962864.8825424192,
-        "applicable": true,
-        "reason": null,
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 8689758.879741065,
-        "applicable": true,
-        "reason": null,
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
         "tier_used": "sector"
       },
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       },
       "dcf": {
         "value": null,
         "applicable": false,
-        "reason": "non_positive_fcf_5y_median",
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       }
     },
-    "median": 2962864.8825424192,
-    "max": 134.81025924030533,
-    "low": 134.81025924030533,
-    "high": 8689758.879741065,
-    "mos_pct": 99.99865231787854,
+    "median": null,
+    "max": null,
+    "low": null,
+    "high": null,
+    "mos_pct": null,
     "valuation_warnings": [
-      "extreme_multiples_pb_estimate",
-      "extreme_multiples_ev_ebitda_estimate",
-      "value_trap_risk"
+      "data_quality_input_corruption"
     ]
   },
   "top5_factors": [],
@@ -97,9 +95,7 @@
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_multiples_pb_estimate",
-    "extreme_multiples_ev_ebitda_estimate",
-    "value_trap_risk"
+    "data_quality_input_corruption"
   ],
   "has_history": true,
   "tangible_book_value": null,
