@@ -12,8 +12,9 @@ sub-modules document their own preconditions and source citations:
   primitives (Defense #3). Pure functions with stable snake_case ``reason``
   strings; Step 5 ensemble pattern-matches to populate
   ``StockDetail.fair_price.methods.<method>.reason``.
+- ``graham`` — defense-aware Graham number using TBVPS + 3y-avg EPS.
 
-Subsequent steps add ``dcf``, ``graham``, ``rim``, ``multiples``, ``ensemble``.
+Subsequent steps add ``multiples``, ``rim``, ``dcf``, ``ensemble``.
 """
 
 from __future__ import annotations
@@ -30,6 +31,7 @@ from compute.valuation.applicability import (
     filing_lag_days,
     stale_filing_status,
 )
+from compute.valuation.graham import graham_fair_price
 from compute.valuation.tangible_book import (
     goodwill_heavy_flag,
     tangible_book_value_per_share,
@@ -50,4 +52,6 @@ __all__ = [
     "check_rim_applicability",
     "filing_lag_days",
     "stale_filing_status",
+    # graham
+    "graham_fair_price",
 ]

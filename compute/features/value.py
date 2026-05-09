@@ -97,9 +97,16 @@ def earnings_yield_greenblatt(snap: FundamentalsSnapshot, current_price: float) 
 
 
 def graham_number(snap: FundamentalsSnapshot) -> float:
-    """Graham Number = √(22.5 × EPS × BVPS). Conservative fair-value proxy.
+    """Graham Number = √(22.5 × EPS_TTM × BVPS_reported). Conservative fair-value proxy.
 
     Defined only for positive EPS and BVPS. Compare to current price.
+
+    For the **fair-price ensemble** (Phase 3c onward), use the
+    tangible-book-aware variant in ``compute.valuation.graham`` —
+    ``graham_fair_price`` uses 3y-avg EPS and TBVPS for a more conservative
+    valuation anchor. This pillar function intentionally retains TTM EPS +
+    reported BVPS for cross-sectional ranking responsiveness (kickoff §B4
+    "intentional dual implementation").
     """
     if snap.eps_diluted is None or snap.eps_diluted <= 0:
         return float("nan")
