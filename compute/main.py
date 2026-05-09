@@ -65,6 +65,7 @@ from compute.output.writer import (
 from compute.scoring.composite import compute_composite, neutralize_pillar_scores
 from compute.scoring.pillars import TickerInputs, compute_all_pillars
 from compute.scoring.risk_overlay import compute_risk_flags
+from compute.scoring.sanity import compute_mos_trailing_ic
 from compute.valuation.ensemble import (
     EnsembleResult,
     compute_fair_price_ensemble,
@@ -707,8 +708,15 @@ def run_weekly_compute() -> int:
         history_count,
     )
 
-    # Step 9 — metadata. mos_trailing_ic_smoke is populated in Step 8 of the
-    # PR 3c plan (sanity check); for now leave as None placeholder.
+    # Step 9 — sanity smoke test (Phase 3c Step 8). Cross-sectional Spearman
+    # rank corr between margin_of_safety_pct and trailing 1y return. NOT a
+    # backtest — see compute/scoring/sanity.py docstring.
+    mos_ic = compute_mos_trailing_ic(
+        rankings=summaries,
+        prices_by_ticker=prices_by_ticker,
+    )
+    logger.info("MoS trailing IC smoke: %s", mos_ic)
+
     meta = Metadata(
         version=config.SCHEMA_VERSION,
         last_update_utc=_iso(now),
@@ -717,7 +725,7 @@ def run_weekly_compute() -> int:
         universe_size=len(summaries),
         compute_run_id=os.environ.get("GITHUB_RUN_ID", "local"),
         git_commit=(os.environ.get("GITHUB_SHA") or "unknown")[:40],
-        mos_trailing_ic_smoke=None,
+        mos_trailing_ic_smoke=mos_ic,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)
