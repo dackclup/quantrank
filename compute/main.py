@@ -318,9 +318,19 @@ def run_weekly_compute() -> int:
     pillar_df = compute_all_pillars(inputs)
     pillar_df, imputed_by_ticker = neutralize_pillar_scores(pillar_df)
 
-    # Step 5 — composite + risk flags.
+    # Step 5 — composite + risk flags. NSI flag (Defense Playbook §PR 3c §1)
+    # requires per-ticker history + sector to compute within-sector top-decile
+    # threshold, so we pass both into compute_risk_flags. Top-5 rotation below
+    # already iterates risk_flags.get(ticker) → no change needed there for NSI
+    # to enter the existing flagged-skip path (annotate-and-veto-Top-N pattern,
+    # SKILL.md Rule 16).
     composite = compute_composite(pillar_df)
-    risk_flags = compute_risk_flags(snapshots)
+    sectors_dict = {t: inp.sector for t, inp in inputs.items()}
+    risk_flags = compute_risk_flags(
+        snapshots,
+        histories=histories,
+        sectors=sectors_dict,
+    )
 
     # Step 6 — assemble ranking DataFrame.
     df = df.assign(composite_score=composite.reindex(df.index).fillna(0.0))

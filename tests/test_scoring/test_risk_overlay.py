@@ -2,13 +2,18 @@
 
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, timedelta
+
+import pandas as pd
 
 from compute.ingest.fundamentals import FundamentalsSnapshot
 from compute.scoring.risk_overlay import (
     ALTMAN_DISTRESS_THRESHOLD,
+    NSI_MIN_POPULATION,
     SLOAN_MIN_POPULATION,
     SLOAN_TOP_DECILE,
+    _net_stock_issuance,
+    _shares_at_lookback,
     compute_risk_flags,
 )
 
@@ -116,3 +121,142 @@ def test_sloan_accruals_skipped_when_inputs_missing():
     s = _snap(total_assets=None)
     flags = compute_risk_flags({"NOTA": s})
     assert "sloan_accruals_top_decile" not in flags["NOTA"]
+
+
+# --- Defense #1: Net Stock Issuance (Pontiff-Woodgate 2008 JF) ----------------
+#
+# NSI = ln(shares_t / shares_{t-12m}). Within-sector top decile triggers flag.
+# Pure-helper tests on _shares_at_lookback + _net_stock_issuance precede the
+# integration tests so a failure points at the smallest unit.
+
+
+_NSI_TODAY = date(2026, 5, 9)  # deterministic clock for all NSI tests
+
+
+def _history_with_shares(prior_shares: float, *, years_ago: int = 1) -> pd.DataFrame:
+    """Build a minimal annual history DataFrame containing one shares_outstanding row."""
+    period_end = _NSI_TODAY - timedelta(days=365 * years_ago)
+    return pd.DataFrame(
+        [
+            {
+                "fiscal_year": _NSI_TODAY.year - years_ago,
+                "metric": "shares_outstanding",
+                "value": prior_shares,
+                "period_end": period_end,
+                "filing_date": period_end + timedelta(days=60),
+                "form_type": "10-K",
+            }
+        ]
+    )
+
+
+def test_shares_at_lookback_returns_correct_value():
+    history = _history_with_shares(1_000_000.0)
+    out = _shares_at_lookback(history, asof_days=365, today=_NSI_TODAY)
+    assert out == 1_000_000.0
+
+
+def test_shares_at_lookback_skips_too_recent_rows():
+    # A row only 30 days old must NOT satisfy a 365d lookback (cutoff = 182d).
+    history = _history_with_shares(1_000_000.0)
+    history.loc[0, "period_end"] = _NSI_TODAY - timedelta(days=30)
+    out = _shares_at_lookback(history, asof_days=365, today=_NSI_TODAY)
+    assert out is None
+
+
+def test_shares_at_lookback_handles_empty_or_missing():
+    assert _shares_at_lookback(None, 365, today=_NSI_TODAY) is None
+    assert _shares_at_lookback(pd.DataFrame(), 365, today=_NSI_TODAY) is None
+    no_metric_col = pd.DataFrame([{"value": 1e6, "period_end": _NSI_TODAY}])
+    assert _shares_at_lookback(no_metric_col, 365, today=_NSI_TODAY) is None
+
+
+def test_shares_at_lookback_rejects_non_positive_value():
+    history = _history_with_shares(0.0)
+    assert _shares_at_lookback(history, 365, today=_NSI_TODAY) is None
+
+
+def test_net_stock_issuance_zero_when_shares_unchanged():
+    snap = _snap(shares_outstanding=1_000_000.0)
+    history = _history_with_shares(1_000_000.0)
+    nsi = _net_stock_issuance(snap, history, today=_NSI_TODAY)
+    assert nsi == 0.0
+
+
+def test_net_stock_issuance_positive_under_dilution():
+    snap = _snap(shares_outstanding=1_150_000.0)  # +15% YoY
+    history = _history_with_shares(1_000_000.0)
+    nsi = _net_stock_issuance(snap, history, today=_NSI_TODAY)
+    # ln(1.15) ≈ 0.1398
+    assert 0.13 < nsi < 0.15
+
+
+def test_net_stock_issuance_nan_when_history_missing():
+    import math
+
+    snap = _snap(shares_outstanding=1_000_000.0)
+    nsi = _net_stock_issuance(snap, None, today=_NSI_TODAY)
+    assert math.isnan(nsi)
+
+
+def test_nsi_top_decile_within_sector_flags_diluter():
+    # 12 tickers in one sector. Eleven have stable shares; one (T11) dilutes
+    # 15%. The diluter must land in the top decile and earn the flag.
+    snaps: dict[str, FundamentalsSnapshot] = {}
+    histories: dict[str, pd.DataFrame] = {}
+    sectors: dict[str, str] = {}
+    for i in range(11):
+        ticker = f"T{i:02d}"
+        snaps[ticker] = _snap(shares_outstanding=1_000_000.0)
+        histories[ticker] = _history_with_shares(1_000_000.0)
+        sectors[ticker] = "Information Technology"
+    snaps["T11"] = _snap(shares_outstanding=1_150_000.0)  # +15% YoY
+    histories["T11"] = _history_with_shares(1_000_000.0)
+    sectors["T11"] = "Information Technology"
+
+    flags = compute_risk_flags(
+        snaps, histories=histories, sectors=sectors, today=_NSI_TODAY
+    )
+    assert "net_issuance_top_decile" in flags["T11"]
+    # The 11 stable-shares tickers must NOT be flagged (NSI = 0 for all of them).
+    for i in range(11):
+        assert "net_issuance_top_decile" not in flags[f"T{i:02d}"]
+
+
+def test_nsi_skipped_when_sectors_not_provided():
+    # Without sectors, NSI defaults to NOT firing (we don't degrade to
+    # cross-sectional — that was the lesson from issue #7's Sloan over-fire
+    # on REITs/banks). 12 tickers, one with massive dilution → no flag.
+    snaps = {f"T{i:02d}": _snap(shares_outstanding=1_000_000.0) for i in range(11)}
+    snaps["T11"] = _snap(shares_outstanding=2_000_000.0)
+    histories = {t: _history_with_shares(1_000_000.0) for t in snaps}
+    flags = compute_risk_flags(snaps, histories=histories, today=_NSI_TODAY)
+    for t in snaps:
+        assert "net_issuance_top_decile" not in flags[t]
+
+
+def test_nsi_skipped_when_sector_below_min_population():
+    # Sector with fewer than NSI_MIN_POPULATION members → NSI flag suppressed
+    # entirely for that sector even if the math would put a ticker in the
+    # top decile.
+    assert NSI_MIN_POPULATION >= 5
+    snaps: dict[str, FundamentalsSnapshot] = {}
+    histories: dict[str, pd.DataFrame] = {}
+    sectors: dict[str, str] = {}
+    for i in range(NSI_MIN_POPULATION - 1):
+        ticker = f"S{i:02d}"
+        snaps[ticker] = _snap(shares_outstanding=1_000_000.0 * (1.0 + 0.02 * i))
+        histories[ticker] = _history_with_shares(1_000_000.0)
+        sectors[ticker] = "Energy"
+    flags = compute_risk_flags(
+        snaps, histories=histories, sectors=sectors, today=_NSI_TODAY
+    )
+    for t in snaps:
+        assert "net_issuance_top_decile" not in flags[t]
+
+
+def test_compute_risk_flags_backward_compat_without_new_kwargs():
+    # The PR-3b signature (snapshots only) must still work — Step 1 of PR-3c
+    # added kwargs. Existing callers see no behavior change.
+    flags = compute_risk_flags({"HEALTHY": _snap()})
+    assert flags["HEALTHY"] == []
