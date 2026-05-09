@@ -19,8 +19,10 @@ sub-modules document their own preconditions and source citations:
   conservative zero-terminal-value truncation.
 - ``dcf`` — two-stage DCF: 5-year flat-FCF explicit + Gordon-growth terminal
   with hard terminal-g cap (Defense #5).
-
-Subsequent step adds ``ensemble``.
+- ``ensemble`` — orchestrates the 6 fair-price methods + applies Defenses
+  #2 / #3 / #4 (goodwill_heavy, stale-filing hard/soft, multi-method
+  outlier guard). Pure function; Step 7 wires its output into
+  ``StockDetail.fair_price``.
 """
 
 from __future__ import annotations
@@ -38,6 +40,12 @@ from compute.valuation.applicability import (
     stale_filing_status,
 )
 from compute.valuation.dcf import dcf_fair_price
+from compute.valuation.ensemble import (
+    METHOD_NAMES,
+    EnsembleResult,
+    FairPriceMethodResult,
+    compute_fair_price_ensemble,
+)
 from compute.valuation.graham import graham_fair_price
 from compute.valuation.multiples import (
     PeerMedian,
@@ -81,4 +89,9 @@ __all__ = [
     "rim_fair_price",
     # dcf
     "dcf_fair_price",
+    # ensemble
+    "EnsembleResult",
+    "FairPriceMethodResult",
+    "METHOD_NAMES",
+    "compute_fair_price_ensemble",
 ]

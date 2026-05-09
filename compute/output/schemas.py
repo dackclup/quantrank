@@ -37,6 +37,7 @@ class StockSummary(BaseModel):
     margin_of_safety_pct: float | None = None
     pillar_scores: PillarScores = Field(default_factory=PillarScores)
     risk_flags: list[str] = Field(default_factory=list)
+    valuation_warnings: list[str] = Field(default_factory=list)
     entered_top5: bool = False
     exited_top5: bool = False
 
@@ -51,6 +52,7 @@ class Metadata(BaseModel):
     universe_size: int
     compute_run_id: str
     git_commit: str
+    mos_trailing_ic_smoke: float | None = None
 
 
 class RawMetrics(BaseModel):
@@ -72,6 +74,7 @@ class RawMetrics(BaseModel):
     shares_outstanding: float | None = None
     market_cap: float | None = None
     pe_ratio_ttm: float | None = None
+    goodwill: float | None = None
 
 
 class DataQuality(BaseModel):
@@ -104,5 +107,8 @@ class StockDetail(BaseModel):
     score_history: list = Field(default_factory=list)
     data_quality: DataQuality = Field(default_factory=DataQuality)
     risk_flags: list[str] = Field(default_factory=list)
+    valuation_warnings: list[str] = Field(default_factory=list)
+    has_history: bool = False
+    tangible_book_value: float | None = None
     entered_top5: bool = False
     exited_top5: bool = False
