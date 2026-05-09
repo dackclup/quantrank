@@ -3,19 +3,19 @@
   "name": "Fastenal",
   "sector": "Industrials",
   "industry": "Trading Companies & Distributors",
-  "market_cap": 50925324350.924194,
-  "current_price": 44.36,
-  "rank": 152,
-  "composite_score": 55.55,
+  "market_cap": 50707201361.22742,
+  "current_price": 44.17,
+  "rank": 147,
+  "composite_score": 56.0,
   "pillar_scores": {
     "quality": 71.2,
     "value": 26.16,
     "growth": 36.71,
-    "momentum": 59.56,
-    "health": 85.18,
+    "momentum": 64.64,
+    "health": 85.26,
     "profitability": 73.63,
-    "technical": 50.8,
-    "risk": 63.78,
+    "technical": 46.91,
+    "risk": 63.81,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.3,
     "eps_diluted": 0.3,
     "shares_outstanding": 1148000984.0,
-    "market_cap": 50925324350.924194,
-    "pe_ratio_ttm": 147.86666870117188
+    "market_cap": 50707201361.22742,
+    "pe_ratio_ttm": 147.23332722981772
   },
   "fair_price": null,
   "top5_factors": [],
@@ -41,14 +41,18 @@
   "data_quality": {
     "missing_metrics": [
       "total_liabilities",
-      "research_and_development"
+      "research_and_development",
+      "goodwill",
+      "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 22,
+    "filing_lag_days": 23,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-16"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
   "entered_top5": false,
   "exited_top5": false
 }

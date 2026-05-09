@@ -3,19 +3,19 @@
   "name": "Realty Income",
   "sector": "Real Estate",
   "industry": "Retail REITs",
-  "market_cap": 57617569313.705444,
-  "current_price": 61.79,
-  "rank": 332,
-  "composite_score": 46.03,
+  "market_cap": 57738788372.58911,
+  "current_price": 61.92,
+  "rank": 336,
+  "composite_score": 45.98,
   "pillar_scores": {
     "quality": 37.1,
     "value": 48.92,
     "growth": 50.0,
-    "momentum": 63.94,
-    "health": 37.09,
+    "momentum": 62.1,
+    "health": 36.85,
     "profitability": 46.24,
-    "technical": 28.31,
-    "risk": 68.36,
+    "technical": 31.97,
+    "risk": 68.86,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.33,
     "eps_diluted": 0.33,
     "shares_outstanding": 932474000.0,
-    "market_cap": 57617569313.705444,
-    "pe_ratio_ttm": 187.24242701674953
+    "market_cap": 57738788372.58911,
+    "pe_ratio_ttm": 187.63635808771306
   },
   "fair_price": null,
   "top5_factors": [],
@@ -56,11 +56,13 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 1,
+    "filing_lag_days": 2,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
   "entered_top5": false,
   "exited_top5": false
 }

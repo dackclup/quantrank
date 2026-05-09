@@ -3,19 +3,19 @@
   "name": "International Paper",
   "sector": "Materials",
   "industry": "Paper & Plastic Packaging Products & Materials",
-  "market_cap": 20741161148.07129,
-  "current_price": 33.08,
-  "rank": 343,
-  "composite_score": 45.58,
+  "market_cap": 20709809234.61914,
+  "current_price": 33.03,
+  "rank": 329,
+  "composite_score": 46.44,
   "pillar_scores": {
     "quality": 41.35,
-    "value": 58.97,
+    "value": 60.26,
     "growth": 61.06,
-    "momentum": 14.09,
-    "health": 50.98,
-    "profitability": 44.87,
-    "technical": 54.73,
-    "risk": 24.14,
+    "momentum": 17.38,
+    "health": 51.14,
+    "profitability": 44.23,
+    "technical": 57.97,
+    "risk": 24.8,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.11,
     "eps_diluted": 0.11,
     "shares_outstanding": 627000000.0,
-    "market_cap": 20741161148.07129,
-    "pe_ratio_ttm": 300.72728937322444
+    "market_cap": 20709809234.61914,
+    "pe_ratio_ttm": 300.2727161754261
   },
   "fair_price": null,
   "top5_factors": [],
@@ -46,11 +46,13 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 3,
+    "filing_lag_days": 4,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-05"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
   "entered_top5": false,
   "exited_top5": false
 }

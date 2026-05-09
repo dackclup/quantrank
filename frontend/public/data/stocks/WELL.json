@@ -3,19 +3,19 @@
   "name": "Welltower",
   "sector": "Real Estate",
   "industry": "Health Care REITs",
-  "market_cap": 150063054890.7665,
-  "current_price": 212.95,
+  "market_cap": 151246934329.67358,
+  "current_price": 214.63,
   "rank": 224,
-  "composite_score": 51.67,
+  "composite_score": 51.81,
   "pillar_scores": {
     "quality": 44.35,
     "value": 38.17,
     "growth": 74.19,
-    "momentum": 75.55,
-    "health": 32.95,
+    "momentum": 75.1,
+    "health": 32.71,
     "profitability": 51.61,
-    "technical": 51.0,
-    "risk": 82.6,
+    "technical": 55.33,
+    "risk": 82.77,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.04,
     "eps_diluted": 1.02,
     "shares_outstanding": 704686814.0,
-    "market_cap": 150063054890.7665,
-    "pe_ratio_ttm": 208.77450681200213
+    "market_cap": 151246934329.67358,
+    "pe_ratio_ttm": 210.42157341452204
   },
   "fair_price": null,
   "top5_factors": [],
@@ -56,11 +56,13 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 9,
+    "filing_lag_days": 10,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-29"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
   "entered_top5": false,
   "exited_top5": false
 }

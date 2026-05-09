@@ -3,19 +3,19 @@
   "name": "Simon Property Group",
   "sector": "Real Estate",
   "industry": "Retail REITs",
-  "market_cap": 1611199.951171875,
-  "current_price": 201.4,
+  "market_cap": 1616959.9609375,
+  "current_price": 202.12,
   "rank": 1,
-  "composite_score": 74.88,
+  "composite_score": 74.81,
   "pillar_scores": {
-    "quality": 87.1,
+    "quality": 87.9,
     "value": 97.31,
     "growth": 71.77,
-    "momentum": 66.83,
+    "momentum": 65.14,
     "health": 21.12,
     "profitability": 69.89,
-    "technical": 50.7,
-    "risk": 71.78,
+    "technical": 49.15,
+    "risk": 71.85,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 14.17,
     "eps_diluted": 14.17,
     "shares_outstanding": 8000.0,
-    "market_cap": 1611199.951171875,
-    "pe_ratio_ttm": 14.213125892483019
+    "market_cap": 1616959.9609375,
+    "pe_ratio_ttm": 14.263937552377381
   },
   "fair_price": null,
   "top5_factors": [],
@@ -50,10 +50,11 @@
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "short_term_debt"
+      "short_term_debt",
+      "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 72,
+    "filing_lag_days": 73,
     "latest_period_end": "2025-12-31",
     "latest_filed_date": "2026-02-25"
   },
@@ -61,5 +62,5 @@
     "sloan_accruals_top_decile"
   ],
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": true
 }

@@ -3,19 +3,19 @@
   "name": "Federal Realty Investment Trust",
   "sector": "Real Estate",
   "industry": "Retail REITs",
-  "market_cap": 9992347927.111252,
-  "current_price": 115.67,
-  "rank": 49,
-  "composite_score": 62.68,
+  "market_cap": 9993211978.523125,
+  "current_price": 115.68,
+  "rank": 54,
+  "composite_score": 62.29,
   "pillar_scores": {
     "quality": 66.94,
     "value": 62.9,
     "growth": 69.35,
-    "momentum": 75.05,
-    "health": 25.1,
+    "momentum": 70.77,
+    "health": 25.22,
     "profitability": 60.75,
-    "technical": 61.4,
-    "risk": 71.65,
+    "technical": 64.54,
+    "risk": 71.28,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.82,
     "eps_diluted": 1.81,
     "shares_outstanding": 86386687.0,
-    "market_cap": 9992347927.111252,
-    "pe_ratio_ttm": 63.90607633643387
+    "market_cap": 9993211978.523125,
+    "pe_ratio_ttm": 63.91160237855016
   },
   "fair_price": null,
   "top5_factors": [],
@@ -53,14 +53,17 @@
       "accounts_receivable",
       "accounts_payable",
       "short_term_debt",
-      "retained_earnings"
+      "retained_earnings",
+      "goodwill"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 7,
+    "filing_lag_days": 8,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
   "entered_top5": false,
   "exited_top5": false
 }

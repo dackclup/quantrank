@@ -3,19 +3,19 @@
   "name": "Huntington Bancshares",
   "sector": "Financials",
   "industry": "Regional Banks",
-  "market_cap": 32819245286.13453,
-  "current_price": 16.19,
-  "rank": 462,
-  "composite_score": 37.1,
+  "market_cap": 32677346763.67569,
+  "current_price": 16.12,
+  "rank": 461,
+  "composite_score": 36.92,
   "pillar_scores": {
-    "quality": 36.0,
-    "value": 38.22,
-    "growth": 15.67,
+    "quality": 35.33,
+    "value": 39.11,
+    "growth": 15.33,
     "momentum": 38.0,
-    "health": 53.9,
+    "health": 53.09,
     "profitability": 44.67,
-    "technical": 36.8,
-    "risk": 49.9,
+    "technical": 34.66,
+    "risk": 50.8,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.26,
     "eps_diluted": 0.25,
     "shares_outstanding": 2027130587.0,
-    "market_cap": 32819245286.13453,
-    "pe_ratio_ttm": 64.76000213623047
+    "market_cap": 32677346763.67569,
+    "pe_ratio_ttm": 64.4800033569336
   },
   "fair_price": null,
   "top5_factors": [],
@@ -53,12 +53,13 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 9,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [
-    "sloan_accruals_top_decile"
+    "sloan_accruals_top_decile",
+    "net_issuance_top_decile"
   ],
   "entered_top5": false,
   "exited_top5": false

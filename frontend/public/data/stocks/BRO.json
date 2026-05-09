@@ -3,19 +3,19 @@
   "name": "Brown & Brown",
   "sector": "Financials",
   "industry": "Insurance Brokers",
-  "market_cap": 19446749744.415283,
-  "current_price": 58.05,
-  "rank": 310,
-  "composite_score": 47.32,
+  "market_cap": 18910750255.584717,
+  "current_price": 56.45,
+  "rank": 292,
+  "composite_score": 48.12,
   "pillar_scores": {
     "quality": 62.0,
-    "value": 42.0,
+    "value": 45.56,
     "growth": 70.0,
-    "momentum": 14.09,
-    "health": 44.3,
-    "profitability": 52.22,
-    "technical": 28.51,
-    "risk": 31.74,
+    "momentum": 13.7,
+    "health": 44.36,
+    "profitability": 51.78,
+    "technical": 29.86,
+    "risk": 31.71,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.27,
     "eps_diluted": 1.06,
     "shares_outstanding": 335000000.0,
-    "market_cap": 19446749744.415283,
-    "pe_ratio_ttm": 54.76415022364202
+    "market_cap": 18910750255.584717,
+    "pe_ratio_ttm": 53.254717700886275
   },
   "fair_price": null,
   "top5_factors": [],
@@ -50,11 +50,13 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 11,
+    "filing_lag_days": 12,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-27"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
   "entered_top5": false,
   "exited_top5": false
 }

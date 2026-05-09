@@ -3,19 +3,19 @@
   "name": "Incyte",
   "sector": "Health Care",
   "industry": "Biotechnology",
-  "market_cap": 19548954494.556496,
-  "current_price": 97.77,
-  "rank": 78,
-  "composite_score": 60.38,
+  "market_cap": 19706913914.404724,
+  "current_price": 98.56,
+  "rank": 82,
+  "composite_score": 60.16,
   "pillar_scores": {
     "quality": 65.25,
-    "value": 37.85,
+    "value": 36.44,
     "growth": 79.66,
     "momentum": 45.67,
     "health": 78.84,
-    "profitability": 85.31,
-    "technical": 57.02,
-    "risk": 58.2,
+    "profitability": 85.59,
+    "technical": 58.27,
+    "risk": 58.73,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.52,
     "eps_diluted": 1.47,
     "shares_outstanding": 199948401.0,
-    "market_cap": 19548954494.556496,
-    "pe_ratio_ttm": 66.51020179800436
+    "market_cap": 19706913914.404724,
+    "pe_ratio_ttm": 67.04761738679846
   },
   "fair_price": null,
   "top5_factors": [],
@@ -45,11 +45,13 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 10,
+    "filing_lag_days": 11,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-28"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
   "entered_top5": false,
   "exited_top5": false
 }

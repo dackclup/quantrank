@@ -3,19 +3,19 @@
   "name": "Quanta Services",
   "sector": "Industrials",
   "industry": "Construction & Engineering",
-  "market_cap": 112651790194.49219,
-  "current_price": 750.73,
-  "rank": 394,
-  "composite_score": 43.14,
+  "market_cap": 111791970320.0,
+  "current_price": 745.0,
+  "rank": 396,
+  "composite_score": 43.06,
   "pillar_scores": {
     "quality": 24.37,
     "value": 16.46,
     "growth": 75.32,
     "momentum": 86.35,
-    "health": 51.2,
+    "health": 51.39,
     "profitability": 21.73,
-    "technical": 70.32,
-    "risk": 67.6,
+    "technical": 68.18,
+    "risk": 67.76,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.47,
     "eps_diluted": 1.45,
     "shares_outstanding": 150056336.0,
-    "market_cap": 112651790194.49219,
-    "pe_ratio_ttm": 517.7448141163793
+    "market_cap": 111791970320.0,
+    "pe_ratio_ttm": 513.7931034482759
   },
   "fair_price": null,
   "top5_factors": [],
@@ -44,11 +44,13 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 9,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
   "entered_top5": false,
   "exited_top5": false
 }

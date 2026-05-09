@@ -3,19 +3,19 @@
   "name": "Capital One",
   "sector": "Financials",
   "industry": "Consumer Finance",
-  "market_cap": 118607821301.61575,
-  "current_price": 192.59,
-  "rank": 435,
-  "composite_score": 40.23,
+  "market_cap": 116692506884.17671,
+  "current_price": 189.48,
+  "rank": 434,
+  "composite_score": 40.2,
   "pillar_scores": {
     "quality": 28.67,
-    "value": 55.78,
+    "value": 56.44,
     "growth": 43.33,
-    "momentum": 20.37,
-    "health": 58.41,
-    "profitability": 41.78,
-    "technical": 38.0,
-    "risk": 39.64,
+    "momentum": 22.61,
+    "health": 57.59,
+    "profitability": 42.0,
+    "technical": 30.38,
+    "risk": 39.28,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 3.34,
     "eps_diluted": 3.34,
     "shares_outstanding": 615856605.0,
-    "market_cap": 118607821301.61575,
-    "pe_ratio_ttm": 57.66167555026666
+    "market_cap": 116692506884.17671,
+    "pe_ratio_ttm": 56.73053764297577
   },
   "fair_price": null,
   "top5_factors": [],
@@ -53,11 +53,13 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 1,
+    "filing_lag_days": 2,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
   "entered_top5": false,
   "exited_top5": false
 }

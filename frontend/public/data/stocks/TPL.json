@@ -3,19 +3,19 @@
   "name": "Texas Pacific Land Corporation",
   "sector": "Energy",
   "industry": "Oil & Gas Exploration & Production",
-  "market_cap": 27526217621.79294,
-  "current_price": 399.08,
-  "rank": 132,
-  "composite_score": 56.49,
+  "market_cap": 27189625357.370056,
+  "current_price": 394.2,
+  "rank": 140,
+  "composite_score": 56.35,
   "pillar_scores": {
     "quality": 84.52,
     "value": 6.35,
     "growth": 58.33,
-    "momentum": 61.55,
+    "momentum": 61.75,
     "health": 91.16,
     "profitability": 72.22,
-    "technical": 35.56,
-    "risk": 38.08,
+    "technical": 32.17,
+    "risk": 38.01,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.07,
     "eps_diluted": 2.07,
     "shares_outstanding": 68974187.0,
-    "market_cap": 27526217621.79294,
-    "pe_ratio_ttm": 192.7922640445728
+    "market_cap": 27189625357.370056,
+    "pe_ratio_ttm": 190.4347885058122
   },
   "fair_price": null,
   "top5_factors": [],
@@ -47,14 +47,17 @@
       "accounts_receivable",
       "accounts_payable",
       "long_term_debt",
-      "short_term_debt"
+      "short_term_debt",
+      "goodwill"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 2,
+    "filing_lag_days": 3,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
   "entered_top5": false,
   "exited_top5": false
 }

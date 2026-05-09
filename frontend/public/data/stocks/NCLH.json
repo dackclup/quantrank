@@ -3,19 +3,19 @@
   "name": "Norwegian Cruise Line Holdings",
   "sector": "Consumer Discretionary",
   "industry": "Hotels, Resorts & Cruise Lines",
-  "market_cap": 7905698412.961178,
-  "current_price": 17.22,
-  "rank": 411,
-  "composite_score": 42.0,
+  "market_cap": 7841424719.773464,
+  "current_price": 17.08,
+  "rank": 392,
+  "composite_score": 43.27,
   "pillar_scores": {
-    "quality": 44.27,
-    "value": 64.58,
+    "quality": 44.79,
+    "value": 65.8,
     "growth": 46.09,
-    "momentum": 26.1,
-    "health": 18.19,
-    "profitability": 37.15,
-    "technical": 27.29,
-    "risk": 20.52,
+    "momentum": 30.88,
+    "health": 18.27,
+    "profitability": 37.5,
+    "technical": 31.82,
+    "risk": 20.48,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.23,
     "eps_diluted": 0.23,
     "shares_outstanding": 459099810.0,
-    "market_cap": 7905698412.961178,
-    "pe_ratio_ttm": 74.86956223197605
+    "market_cap": 7841424719.773464,
+    "pe_ratio_ttm": 74.26086923350458
   },
   "fair_price": null,
   "top5_factors": [],
@@ -46,12 +46,13 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 4,
+    "filing_lag_days": 5,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-04"
   },
   "risk_flags": [
-    "altman_distress"
+    "altman_distress",
+    "net_issuance_top_decile"
   ],
   "entered_top5": false,
   "exited_top5": false

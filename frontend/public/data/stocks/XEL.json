@@ -3,19 +3,19 @@
   "name": "Xcel Energy",
   "sector": "Utilities",
   "industry": "Multi-Utilities",
-  "market_cap": 50201412585.879364,
-  "current_price": 80.43,
-  "rank": 468,
-  "composite_score": 36.4,
+  "market_cap": 49552282723.24127,
+  "current_price": 79.39,
+  "rank": 472,
+  "composite_score": 35.79,
   "pillar_scores": {
     "quality": 29.03,
-    "value": 26.88,
+    "value": 27.96,
     "growth": 39.52,
-    "momentum": 67.98,
-    "health": 13.82,
+    "momentum": 65.69,
+    "health": 13.9,
     "profitability": 33.87,
-    "technical": 56.77,
-    "risk": 69.06,
+    "technical": 46.56,
+    "risk": 67.43,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.89,
     "eps_diluted": 0.89,
     "shares_outstanding": 624162780.0,
-    "market_cap": 50201412585.879364,
-    "pe_ratio_ttm": 90.37078685974807
+    "market_cap": 49552282723.24127,
+    "pe_ratio_ttm": 89.20224650522296
   },
   "fair_price": null,
   "top5_factors": [],
@@ -43,14 +43,18 @@
       "total_liabilities",
       "gross_profit",
       "research_and_development",
-      "sga_expense"
+      "sga_expense",
+      "goodwill",
+      "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 9,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
   "entered_top5": false,
   "exited_top5": false
 }
