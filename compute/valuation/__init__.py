@@ -45,6 +45,7 @@ from compute.valuation.ensemble import (
     EnsembleResult,
     FairPriceMethodResult,
     compute_fair_price_ensemble,
+    ensemble_result_to_dict,
 )
 from compute.valuation.graham import graham_fair_price
 from compute.valuation.multiples import (
@@ -94,4 +95,5 @@ __all__ = [
     "FairPriceMethodResult",
     "METHOD_NAMES",
     "compute_fair_price_ensemble",
+    "ensemble_result_to_dict",
 ]

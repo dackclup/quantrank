@@ -1,18 +1,29 @@
-"""Phase 3b weekly compute orchestrator.
+"""Phase 3c weekly compute orchestrator.
 
 Pipeline:
 1. Universe (S&P 500 from Wikipedia, cached)
 2. Prices (yfinance, parallel) + SPY benchmark for beta
 3. Fundamentals snapshot (SEC EDGAR, parallel)
-4. Annual fundamentals history (SEC EDGAR, parallel) — feeds growth CAGRs
-5. 8-pillar scoring via ``compute.scoring.pillars``
+4. Annual fundamentals history (SEC EDGAR, parallel)
+5. 8-pillar scoring via ``compute.scoring.pillars`` (Defense #6 sector
+   exclusions applied at the pillar wrapper layer)
 6. NaN pillar imputation (50.0 = neutral) per SKILL.md Rule 7
 7. 10-pillar weighted composite (sentiment+ml redistributed pro-rata)
-8. Risk overlay flags (annotate-only)
-9. Sort by composite, assign rank
-10. Top-5 rotation: compare to previous rankings.json; flagged stocks
-    cannot earn ``entered_top5`` even if their rank ≤ 5
-11. Atomic writes: rankings.json, metadata.json, stocks/{TICKER}.json
+8. Risk overlay flags (annotate-only): altman_distress +
+   sloan_accruals_top_decile + net_issuance_top_decile
+9. **Cross-sectional inputs** for fair-price ensemble: universe_metrics
+   (P/E, P/B, EV/EBITDA per ticker), peer groupings (sub_industry /
+   sector / broad-ex-Fin-Util), historical_metrics (eps_3y_avg,
+   avg_3y_roe, fcf_5y per ticker)
+10. **Per-ticker fair-price ensemble**: 6 methods + Defenses #2/#3/#4
+    (goodwill_heavy, stale-filing, outlier-5×). Merge ensemble's
+    risk_flags into the per-ticker risk list.
+11. Sort by composite, assign rank
+12. Top-5 rotation: compare to previous rankings.json; flagged stocks
+    (any of 3 vetoes) cannot earn ``entered_top5``
+13. Atomic writes: rankings.json, metadata.json, stocks/{TICKER}.json,
+    stocks/history/{TICKER}.json
+14. Final RSS memory log (best-effort via psutil)
 """
 
 from __future__ import annotations
@@ -22,7 +33,7 @@ import math
 import os
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 
 import numpy as np
 import pandas as pd
@@ -49,10 +60,17 @@ from compute.output.writer import (
     write_metadata_json,
     write_rankings_json,
     write_stock_detail,
+    write_stock_history,
 )
 from compute.scoring.composite import compute_composite, neutralize_pillar_scores
 from compute.scoring.pillars import TickerInputs, compute_all_pillars
 from compute.scoring.risk_overlay import compute_risk_flags
+from compute.valuation.ensemble import (
+    EnsembleResult,
+    compute_fair_price_ensemble,
+    ensemble_result_to_dict,
+)
+from compute.valuation.tangible_book import tangible_book_value_per_share
 
 logger = logging.getLogger(__name__)
 
@@ -147,6 +165,7 @@ def _build_raw_metrics(
         shares_outstanding=snapshot.shares_outstanding,
         market_cap=market_cap,
         pe_ratio_ttm=pe_ttm,
+        goodwill=snapshot.goodwill,
     )
 
 
@@ -174,6 +193,190 @@ def _build_data_quality(
         if snapshot.latest_filed_date
         else None,
     )
+
+
+# --- Phase 3c cross-sectional builders for fair-price ensemble --------------
+
+def _filing_lag(snap: FundamentalsSnapshot | None, asof: date) -> int | None:
+    """Days between asof and the snapshot's latest filing date."""
+    if snap is None or snap.latest_filed_date is None:
+        return None
+    return (asof - snap.latest_filed_date).days
+
+
+def _build_universe_metrics(
+    snapshots: dict[str, FundamentalsSnapshot | None],
+    df: pd.DataFrame,
+) -> dict[str, dict[str, float | None]]:
+    """Per-ticker P/E, P/B (reported), EV/EBITDA TTM ratios for peer median.
+
+    None values flow through; the peer-median walk filters them out.
+    """
+    out: dict[str, dict[str, float | None]] = {}
+    for _, r in df.iterrows():
+        ticker = str(r["ticker"])
+        snap = snapshots.get(ticker)
+        cp = float(r["current_price"])
+        if snap is None:
+            out[ticker] = {"pe_ttm": None, "pb_reported": None, "ev_ebitda_ttm": None}
+            continue
+
+        pe_ttm: float | None = None
+        if snap.eps_diluted is not None and snap.eps_diluted > 0 and cp > 0:
+            pe_ttm = cp / float(snap.eps_diluted)
+
+        pb_reported: float | None = None
+        if (
+            snap.stockholders_equity is not None
+            and snap.stockholders_equity > 0
+            and snap.shares_outstanding not in (None, 0)
+        ):
+            bvps = float(snap.stockholders_equity) / float(snap.shares_outstanding)
+            if bvps > 0 and cp > 0:
+                pb_reported = cp / bvps
+
+        ev_ebitda_ttm: float | None = None
+        if (
+            snap.ebitda is not None
+            and snap.ebitda > 0
+            and snap.shares_outstanding not in (None, 0)
+            and cp > 0
+        ):
+            mc = cp * float(snap.shares_outstanding)
+            ltd = float(snap.long_term_debt or 0.0)
+            std = float(snap.short_term_debt or 0.0)
+            cash = float(snap.cash or 0.0)
+            ev = mc + (ltd + std - cash)
+            ev_ebitda_ttm = ev / float(snap.ebitda)
+
+        out[ticker] = {
+            "pe_ttm": pe_ttm,
+            "pb_reported": pb_reported,
+            "ev_ebitda_ttm": ev_ebitda_ttm,
+        }
+    return out
+
+
+def _build_peer_groupings(
+    df: pd.DataFrame,
+) -> tuple[dict[str, list[str]], dict[str, list[str]], list[str]]:
+    """Build (sub_industry → tickers, sector → tickers, broad-ex-Fin-Util tickers).
+
+    The Wikipedia universe loader populates only ``sector`` and
+    ``sub_industry`` (level-1 + level-3 GICS); level-2 industry is not
+    parsed. The "industry" tier in the ensemble peer-median walk
+    therefore receives an empty list and falls through to sector. This
+    is fine: with 502 S&P 500 stocks and 11 sectors the smallest sector
+    (Energy n=21) comfortably exceeds the 8-peer floor, so the
+    sub_industry → sector fallback is the only path that fires in
+    practice.
+    """
+    by_sub_industry: dict[str, list[str]] = {}
+    by_sector: dict[str, list[str]] = {}
+    broad_ex_fin_util: list[str] = []
+    for _, r in df.iterrows():
+        ticker = str(r["ticker"])
+        sector = str(r["sector"])
+        sub_industry_raw = r.get("industry")
+        sub_industry = (
+            str(sub_industry_raw)
+            if sub_industry_raw is not None and pd.notna(sub_industry_raw)
+            else None
+        )
+        if sub_industry is not None:
+            by_sub_industry.setdefault(sub_industry, []).append(ticker)
+        by_sector.setdefault(sector, []).append(ticker)
+        if sector not in ("Financials", "Utilities"):
+            broad_ex_fin_util.append(ticker)
+    return by_sub_industry, by_sector, broad_ex_fin_util
+
+
+def _build_historical_metrics(
+    histories: dict[str, pd.DataFrame],
+    snapshots: dict[str, FundamentalsSnapshot | None],
+) -> dict[str, dict[str, float | list[float] | None]]:
+    """Per-ticker historical metrics: eps_3y_avg, avg_3y_roe, fcf_5y."""
+    out: dict[str, dict[str, float | list[float] | None]] = {}
+    for ticker, hist in histories.items():
+        out[ticker] = {
+            "eps_3y_avg": _eps_3y_avg(hist),
+            "avg_3y_roe": _avg_3y_roe(hist, snapshots.get(ticker)),
+            "fcf_5y": _fcf_5y(hist),
+        }
+    return out
+
+
+def _eps_3y_avg(hist: pd.DataFrame | None) -> float | None:
+    if hist is None or len(hist) == 0 or "metric" not in hist.columns:
+        return None
+    rows = hist[hist["metric"] == "eps_diluted"].sort_values(
+        "fiscal_year", ascending=False
+    )
+    if len(rows) < 3:
+        return None
+    values = rows["value"].head(3).astype(float).tolist()
+    if any(v is None or (isinstance(v, float) and math.isnan(v)) for v in values):
+        return None
+    return float(sum(values) / 3.0)
+
+
+def _avg_3y_roe(
+    hist: pd.DataFrame | None, snap: FundamentalsSnapshot | None
+) -> float | None:
+    """Avg 3y ROE = (mean of last 3y NI) / current stockholders_equity.
+
+    True per-year ROE would need historical equity (not in
+    ``_ANNUAL_TAGS``). Phase 4 follow-up: backfill historical equity
+    for true ROE; for now we use current-equity denominator across all
+    3 years, which gives a smoothed-NI / latest-equity ratio. Bias is
+    bounded by the Step 4.4 RIM gate (only ROE > Ke matters for the
+    method to apply).
+    """
+    if hist is None or len(hist) == 0 or "metric" not in hist.columns:
+        return None
+    if snap is None or snap.stockholders_equity in (None, 0):
+        return None
+    if float(snap.stockholders_equity) <= 0:
+        return None
+    rows = hist[hist["metric"] == "net_income"].sort_values(
+        "fiscal_year", ascending=False
+    )
+    if len(rows) < 3:
+        return None
+    values = rows["value"].head(3).astype(float).tolist()
+    if any(v is None or (isinstance(v, float) and math.isnan(v)) for v in values):
+        return None
+    avg_ni = float(sum(values) / 3.0)
+    return avg_ni / float(snap.stockholders_equity)
+
+
+def _fcf_5y(hist: pd.DataFrame | None) -> list[float | None]:
+    """Last 5 years of FCF = OCF − |capex|, in chronological order.
+
+    Returns an empty list if the annual history doesn't have either
+    column populated; returns up to 5 values when they overlap.
+    """
+    if hist is None or len(hist) == 0 or "metric" not in hist.columns:
+        return []
+    ocf = hist[hist["metric"] == "operating_cash_flow"].set_index("fiscal_year")["value"]
+    capex = hist[hist["metric"] == "capex"].set_index("fiscal_year")["value"]
+    if ocf.empty or capex.empty:
+        return []
+    common_fy = sorted(set(ocf.index) & set(capex.index), reverse=True)[:5]
+    if not common_fy:
+        return []
+    out: list[float | None] = []
+    for fy in sorted(common_fy):  # chronological order (oldest → newest)
+        try:
+            o = float(ocf[fy])
+            c = float(capex[fy])
+            if math.isnan(o) or math.isnan(c):
+                out.append(None)
+            else:
+                out.append(o - abs(c))
+        except (KeyError, TypeError, ValueError):
+            out.append(None)
+    return out
 
 
 def _pillar_scores_to_schema(row: pd.Series) -> PillarScores:
@@ -332,6 +535,13 @@ def run_weekly_compute() -> int:
         sectors=sectors_dict,
     )
 
+    # Step 5b — cross-sectional inputs for the fair-price ensemble.
+    # Built ONCE; reused inside the per-ticker loop below.
+    logger.info("Building cross-sectional inputs for fair-price ensemble…")
+    universe_metrics = _build_universe_metrics(snapshots, df)
+    by_sub_industry, by_sector, broad_ex_fin_util = _build_peer_groupings(df)
+    historical_metrics = _build_historical_metrics(histories, snapshots)
+
     # Step 6 — assemble ranking DataFrame.
     df = df.assign(composite_score=composite.reindex(df.index).fillna(0.0))
     df = df.sort_values(
@@ -360,56 +570,145 @@ def run_weekly_compute() -> int:
         sum(1 for f in risk_flags.values() if f),
     )
 
-    # Step 8 — assemble StockSummary list.
+    now = _now_utc()
+    asof_date = now.date()
+
+    # Step 8 — combined per-ticker loop: fair-price ensemble + price history
+    # write + StockSummary + StockDetail. Single pass so per-ticker outputs
+    # stay synchronized (e.g., has_history reflects the actual write result;
+    # ensemble warnings flow into both summary and detail consistently).
     summaries: list[StockSummary] = []
+    detail_count = 0
+    history_count = 0
+    fair_price_count = 0
     for _, r in df.iterrows():
         ticker = str(r["ticker"])
+        snap = snapshots.get(ticker)
+        current_price = float(r["current_price"])
+        sector = str(r["sector"])
+        sub_industry_raw = r.get("industry")
+        sub_industry = (
+            str(sub_industry_raw)
+            if sub_industry_raw is not None and pd.notna(sub_industry_raw)
+            else None
+        )
         pillar_row = pillar_df.loc[ticker] if ticker in pillar_df.index else pd.Series(dtype=float)
+
+        # Fair-price ensemble (skipped when snapshot is missing — without
+        # fundamentals there's no input to any of the 6 methods).
+        ensemble: EnsembleResult | None = None
+        ensemble_dict: dict | None = None
+        valuation_warnings: list[str] = []
+        tbvps_value: float | None = None
+        if snap is not None:
+            tbvps_value = tangible_book_value_per_share(snap)
+            sub_panel = (
+                [t for t in by_sub_industry.get(sub_industry, []) if t != ticker]
+                if sub_industry is not None
+                else []
+            )
+            sector_panel = [t for t in by_sector.get(sector, []) if t != ticker]
+            broad_panel = [t for t in broad_ex_fin_util if t != ticker]
+            tier_panel = {
+                "sub_industry": sub_panel,
+                "industry": [],  # GICS level-2 not parsed; falls through to sector
+                "sector": sector_panel,
+                "broad": broad_panel,
+            }
+            peer_panels = {
+                "pe": tier_panel,
+                "pb": tier_panel,
+                "ev_ebitda": tier_panel,
+            }
+            ensemble, extra_flags = compute_fair_price_ensemble(
+                ticker=ticker,
+                snap=snap,
+                sector=sector,
+                sub_industry=sub_industry,
+                industry=None,
+                current_price=current_price,
+                filing_lag_days_value=_filing_lag(snap, asof_date),
+                peer_panels=peer_panels,
+                universe_metrics=universe_metrics,
+                historical_metrics=historical_metrics,
+            )
+            ensemble_dict = ensemble_result_to_dict(ensemble)
+            valuation_warnings = list(ensemble.valuation_warnings)
+            if extra_flags:
+                merged = list(risk_flags.get(ticker, []))
+                for f in extra_flags:
+                    if f not in merged:
+                        merged.append(f)
+                risk_flags[ticker] = merged
+            if ensemble.median is not None or ensemble.max is not None:
+                fair_price_count += 1
+
+        # Price history JSON (sliced from already-fetched prices, no new
+        # fetches per Step 5 spec).
+        prices_df = prices_by_ticker.get(ticker)
+        has_history = False
+        if prices_df is not None:
+            has_history = write_stock_history(
+                ticker=ticker,
+                prices_df=prices_df,
+                output_dir=config.DATA_DIR,
+            )
+            if has_history:
+                history_count += 1
+
         summaries.append(
             StockSummary(
                 rank=int(r["rank"]),
                 ticker=ticker,
                 name=str(r["name"]),
-                sector=str(r["sector"]),
+                sector=sector,
                 composite_score=round(float(r["composite_score"]), 2),
-                current_price=round(float(r["current_price"]), 4),
+                current_price=round(current_price, 4),
+                fair_price=ensemble.median if ensemble is not None else None,
+                max_fair_price=ensemble.max if ensemble is not None else None,
+                margin_of_safety_pct=ensemble.mos_pct if ensemble is not None else None,
                 pillar_scores=_pillar_scores_to_schema(pillar_row),
                 risk_flags=risk_flags.get(ticker, []),
+                valuation_warnings=valuation_warnings,
                 entered_top5=ticker in entered,
                 exited_top5=ticker in exited,
             )
         )
 
-    now = _now_utc()
-
-    # Step 9 — per-stock detail JSON.
-    detail_count = 0
-    for _, r in df.iterrows():
-        ticker = str(r["ticker"])
-        snap = snapshots.get(ticker)
-        raw_metrics = _build_raw_metrics(snap, float(r["current_price"]))
+        raw_metrics = _build_raw_metrics(snap, current_price)
         imputed = imputed_by_ticker.get(ticker, [])
-        pillar_row = pillar_df.loc[ticker] if ticker in pillar_df.index else pd.Series(dtype=float)
         detail = StockDetail(
             ticker=ticker,
             name=str(r["name"]),
-            sector=str(r["sector"]),
-            industry=(r.get("industry") if pd.notna(r.get("industry")) else None),
+            sector=sector,
+            industry=sub_industry,
             market_cap=raw_metrics.market_cap,
-            current_price=round(float(r["current_price"]), 4),
+            current_price=round(current_price, 4),
             rank=int(r["rank"]),
             composite_score=round(float(r["composite_score"]), 2),
             pillar_scores=_pillar_scores_to_schema(pillar_row),
             raw_metrics=raw_metrics,
+            fair_price=ensemble_dict,
             data_quality=_build_data_quality(snap, now, imputed),
             risk_flags=risk_flags.get(ticker, []),
+            valuation_warnings=valuation_warnings,
+            has_history=has_history,
+            tangible_book_value=tbvps_value,
             entered_top5=ticker in entered,
             exited_top5=ticker in exited,
         )
         write_stock_detail(detail, config.DATA_DIR)
         detail_count += 1
-    logger.info("Wrote %d stock detail JSON files", detail_count)
 
+    logger.info(
+        "Wrote %d stock detail JSON files; %d with fair_price; %d with price history",
+        detail_count,
+        fair_price_count,
+        history_count,
+    )
+
+    # Step 9 — metadata. mos_trailing_ic_smoke is populated in Step 8 of the
+    # PR 3c plan (sanity check); for now leave as None placeholder.
     meta = Metadata(
         version=config.SCHEMA_VERSION,
         last_update_utc=_iso(now),
@@ -418,12 +717,26 @@ def run_weekly_compute() -> int:
         universe_size=len(summaries),
         compute_run_id=os.environ.get("GITHUB_RUN_ID", "local"),
         git_commit=(os.environ.get("GITHUB_SHA") or "unknown")[:40],
+        mos_trailing_ic_smoke=None,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)
     write_rankings_json(summaries, config.DATA_DIR)
     write_metadata_json(meta, config.DATA_DIR)
     logger.info("Wrote rankings.json (%d rows) and metadata.json", len(summaries))
+
+    # Best-effort RSS memory log (psutil is not a hard requirement; production
+    # still runs without it).
+    try:
+        import psutil  # type: ignore[import-not-found]
+
+        rss_mb = psutil.Process().memory_info().rss / (1024 * 1024)
+        logger.info("Final RSS memory: %.1f MB", rss_mb)
+    except ImportError:
+        logger.debug("psutil not installed — skipping RSS memory log")
+    except Exception as e:  # noqa: BLE001
+        logger.debug("psutil RSS log failed: %s", e)
+
     return len(summaries)
 
 

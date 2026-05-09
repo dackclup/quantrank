@@ -442,10 +442,42 @@ def _tier_str(
     return tier.value
 
 
+def ensemble_result_to_dict(r: EnsembleResult) -> dict:
+    """Convert :class:`EnsembleResult` to a JSON-serializable dict.
+
+    Output shape exactly mirrors the ``FairPriceEnsemble`` type in
+    ``frontend/lib/types.ts`` so the dict can be stored directly in
+    ``StockDetail.fair_price``. The dict re-emits ``valuation_warnings``
+    inside the ensemble payload (the same list ALSO surfaces at top
+    level on ``StockDetail.valuation_warnings`` for ranking-table
+    consumption); this duplication is intentional — the inner copy is
+    used by the detail page's fair-price card without requiring the
+    parent StockDetail context.
+    """
+    return {
+        "methods": {
+            name: {
+                "value": result.value,
+                "applicable": result.applicable,
+                "reason": result.reason,
+                "tier_used": result.tier_used,
+            }
+            for name, result in r.methods.items()
+        },
+        "median": r.median,
+        "max": r.max,
+        "low": r.low,
+        "high": r.high,
+        "mos_pct": r.mos_pct,
+        "valuation_warnings": list(r.valuation_warnings),
+    }
+
+
 __all__ = [
     "EnsembleResult",
     "FairPriceMethodResult",
     "METHOD_NAMES",
     "compute_fair_price_ensemble",
+    "ensemble_result_to_dict",
     "filing_lag_days",  # re-exported for caller convenience
 ]

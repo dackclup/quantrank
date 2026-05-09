@@ -35,6 +35,7 @@ from compute.valuation.ensemble import (
     _classify_outliers,
     _net_debt,
     compute_fair_price_ensemble,
+    ensemble_result_to_dict,
 )
 
 
@@ -537,6 +538,91 @@ def test_bvps_reported_helper():
 def test_extreme_estimate_constants_sane():
     assert config.EXTREME_ESTIMATE_HIGH == 5.0
     assert config.EXTREME_ESTIMATE_LOW == 0.2
+
+
+# -- I. ensemble_result_to_dict shape ----------------------------------------
+
+def test_I1_ensemble_result_to_dict_shape_matches_ts_type():
+    """Shape mirrors FairPriceEnsemble in frontend/lib/types.ts.
+
+    Top-level keys: methods, median, max, low, high, mos_pct,
+    valuation_warnings. Each method is a 4-key sub-dict (value,
+    applicable, reason, tier_used).
+    """
+    methods = _methods_fixture({
+        "graham": 50.0,
+        "multiples_pe": 160.0,
+        "multiples_pb": None,
+        "multiples_ev_ebitda": None,
+        "rim": 207.0,
+        "dcf": 117.0,
+    })
+    methods["multiples_pe"] = _result(
+        160.0, applicable=True, reason=None, tier_used="sub_industry"
+    )
+    result = EnsembleResult(
+        methods=methods,
+        median=138.5,
+        max=207.0,
+        low=50.0,
+        high=207.0,
+        mos_pct=-44.4,
+        valuation_warnings=["goodwill_heavy"],
+    )
+    out = ensemble_result_to_dict(result)
+    assert set(out.keys()) == {
+        "methods", "median", "max", "low", "high", "mos_pct", "valuation_warnings"
+    }
+    assert set(out["methods"].keys()) == set(METHOD_NAMES)
+    for name, sub in out["methods"].items():
+        assert set(sub.keys()) == {"value", "applicable", "reason", "tier_used"}, name
+    assert out["median"] == 138.5
+    assert out["max"] == 207.0
+    assert out["mos_pct"] == -44.4
+    assert out["valuation_warnings"] == ["goodwill_heavy"]
+    assert out["methods"]["multiples_pe"]["tier_used"] == "sub_industry"
+    assert out["methods"]["graham"]["tier_used"] is None
+
+
+def test_I2_ensemble_result_to_dict_handles_all_null():
+    """When every method is skipped, dict reflects null aggregates and
+    preserves the per-method skip reason."""
+    methods = _all_methods_skipped("stale_filing_hard")
+    result = EnsembleResult(
+        methods=methods,
+        median=None,
+        max=None,
+        low=None,
+        high=None,
+        mos_pct=None,
+        valuation_warnings=[],
+    )
+    out = ensemble_result_to_dict(result)
+    assert out["median"] is None
+    assert out["max"] is None
+    assert out["mos_pct"] is None
+    assert out["valuation_warnings"] == []
+    for sub in out["methods"].values():
+        assert sub["value"] is None
+        assert sub["applicable"] is False
+        assert sub["reason"] == "stale_filing_hard"
+
+
+def test_I3_ensemble_result_to_dict_warnings_is_a_copy():
+    """The returned ``valuation_warnings`` list is a new list, not the
+    same object — mutating it must not affect the EnsembleResult."""
+    result = EnsembleResult(
+        methods=_all_methods_skipped("stale_filing_hard"),
+        median=None,
+        max=None,
+        low=None,
+        high=None,
+        mos_pct=None,
+        valuation_warnings=["goodwill_heavy"],
+    )
+    out = ensemble_result_to_dict(result)
+    out["valuation_warnings"].append("mutation_test")
+    assert result.valuation_warnings == ["goodwill_heavy"]
 
 
 # -- Helpers ------------------------------------------------------------------
