@@ -46,6 +46,8 @@ import re
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 
+from bs4 import BeautifulSoup
+
 from compute import config
 
 logger = logging.getLogger(__name__)
@@ -147,6 +149,18 @@ def invalidate_cache(ticker: str) -> None:
 def fetch_latest_10k_text(ticker: str) -> str | None:
     """Fetch the narrative text of the most recent 10-K (or None on failure).
 
+    Uses ``filing.html()`` + BeautifulSoup raw text extraction (NOT
+    ``filing.text()``) to skip edgartools' section-detection parser,
+    which adds ~5-10s per filing for section structure we don't need.
+    The going-concern phrase scan operates on raw text via
+    ``\\b``-anchored regex with ``[\\s\\-]+`` whitespace flex, so the
+    flat output of ``BeautifulSoup.get_text(separator=" ")`` matches
+    correctness-equivalently to ``rich_to_text``-formatted text. The
+    section detector's ~19,000-call CPU cost on a 502-stock universe
+    blew past the 45-min workflow timeout in the first
+    ``workflow_dispatch`` run; this path keeps cold-cache time around
+    25-30 min instead.
+
     Parameters
     ----------
     ticker:
@@ -162,6 +176,7 @@ def fetch_latest_10k_text(ticker: str) -> str | None:
         - EDGAR network error / rate-limit / ticker-not-found
         - No 10-K filed within
           ``config.GOING_CONCERN_FILING_LOOKBACK_DAYS`` (default 400d)
+        - 10-K HTML payload empty / unparseable
 
     Cache: 90-day TTL. See module docstring.
     """
@@ -215,18 +230,25 @@ def fetch_latest_10k_text(ticker: str) -> str | None:
     if most_recent is None or most_recent_date is None:
         return None
 
+    # Pull the raw HTML and strip tags ourselves. We deliberately skip
+    # ``filing.text()`` because that path runs ``HTMLParser(ParserConfig)``
+    # → ``rich_to_text`` → ``hybrid_section_detector`` for every paragraph
+    # (~5-10s per filing × 502 tickers blew the 45-min workflow timeout
+    # on the first cold-cache run). Going-concern detection only needs
+    # the prose body, not section structure, so BS get_text gives
+    # correctness-equivalent input to ``scan_going_concern``.
     text: str | None = None
     try:
-        # Prefer Filing.text — concatenates the full primary document.
-        # On some edgartools versions text is a property; on others it's
-        # a method. Handle both.
-        text_attr = getattr(most_recent, "text", None)
-        if callable(text_attr):
-            text = text_attr()
-        else:
-            text = text_attr
-        if text is not None:
-            text = str(text)
+        html_attr = getattr(most_recent, "html", None)
+        html_content = html_attr() if callable(html_attr) else html_attr
+        if not html_content:
+            logger.warning(
+                "10-K HTML fetch returned empty for %s (filing_date %s)",
+                ticker,
+                most_recent_date,
+            )
+            return None
+        text = BeautifulSoup(str(html_content), "lxml").get_text(separator=" ")
     except Exception as e:  # noqa: BLE001
         logger.warning("10-K text extract failed for %s: %s", ticker, e)
         text = None
