@@ -225,11 +225,11 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
           return (
             <li
               key={row.ticker}
-              className="rounded-lg border border-slate-200 bg-white shadow-sm hover:bg-slate-50"
+              className="min-h-[112px] rounded-lg border border-slate-200 bg-white shadow-sm hover:bg-slate-50"
             >
               <Link
                 href={`/stock/${row.ticker}/`}
-                className="flex items-center justify-between p-3"
+                className="flex h-full items-center justify-between p-3"
               >
                 <div className="min-w-0 flex-1">
                   <div className="flex items-baseline gap-2">
@@ -242,12 +242,25 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                     <span className="tabular-nums">{formatPrice(row.current_price)}</span>
                   </div>
                   <div className="mt-1 flex items-center justify-between text-xs">
-                    <span className="text-slate-500">
-                      Fair{' '}
-                      <span className="tabular-nums text-slate-700">
-                        {dataQualityIssue ? '⚠ —' : formatFairPrice(row.fair_price)}
+                    {row.fair_price !== null ? (
+                      <span className="text-slate-500">
+                        Fair{' '}
+                        <span className="tabular-nums text-slate-700">
+                          {formatFairPrice(row.fair_price)}
+                        </span>
                       </span>
-                    </span>
+                    ) : (
+                      <span
+                        className="inline-flex items-center gap-1 text-slate-400"
+                        title={
+                          dataQualityIssue
+                            ? 'Fair price unavailable: data quality issue (Step 7.5 sanity guard)'
+                            : 'Fair price unavailable for this stock'
+                        }
+                      >
+                        Fair <span aria-hidden="true">⚠</span> N/A
+                      </span>
+                    )}
                     <span
                       className={`tabular-nums ${mosColorClass(row.margin_of_safety_pct)}`}
                       title={mos.tooltip ?? undefined}

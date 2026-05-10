@@ -176,7 +176,7 @@ export function FairPriceBarChart({
               content={<CustomTooltip />}
               cursor={{ fill: 'rgb(241 245 249)' }}
             />
-            <Bar dataKey="value" isAnimationActive={false}>
+            <Bar dataKey="value" minPointSize={5} isAnimationActive={false}>
               {rows.map((row) => (
                 <Cell
                   key={row.key}
