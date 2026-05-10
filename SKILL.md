@@ -282,17 +282,20 @@ quantrank/
 The `compute/` and `frontend/` are decoupled by these JSON contracts. **Never break them.**
 
 Schema versions:
-- `0.1.0-phase0` — placeholder
-- `0.2.0-phase1` — universe + prices
-- `0.3.0-phase2` — fundamentals
-- `0.4.0-phase3b` — composite + risk overlay
-- `0.5.0-phase3c` — fair price + history
-- `1.0.0` — Phase 3 complete (v1.0 ship)
-- `1.1.0-phase4` — OSAP + JKP + Qlib + IPCA factors added
-- `1.2.0-phase5` — ML + Triple-Barrier + Conformal added
-- `1.3.0-phase6` — Sentiment v2 (Whisper, 8-K, Lazy Prices)
-- `1.4.0-phase7` — Regime v2 + Portfolio v2
-- `2.0.0-phase8` — S&P 1500 universe
+
+| Schema | Phase | What changed |
+|--------|-------|--------------|
+| `0.1.0-phase0` | Phase 0 | Placeholder JSON only — frontend skeleton ships, no compute output yet. |
+| `0.2.0-phase1` | Phase 1 | Universe (S&P 500 from Wikipedia) + per-stock prices via yfinance. Single momentum-only ranking field. |
+| `0.3.0-phase2` | Phase 2 | SEC EDGAR fundamentals snapshot per stock — `revenue`, `net_income`, full balance sheet, EPS basic/diluted, shares outstanding. Filing-lag tracking. |
+| `0.4.0-phase3b` | Phase 3b | 8-pillar composite (`quality, value, growth, momentum, health, profitability, technical, risk`) + risk overlay annotations. 2 active vetoes (`altman_distress`, `sloan_accruals_top_decile`). NaN imputation = sector median; null pillars (`sentiment`, `ml`) redistributed pro-rata. |
+| `0.5.0-phase3c` | Phase 3c | **Fair-price ensemble (6 methods)**: Graham, P/E / P/B / EV-EBITDA multiples (4-tier peer walk + 5/95 winsorization), RIM (Penman 2013), DCF (2-stage, terminal-g ≤ WACC − 100 bp). Aggregation: median (all applicable) + max (excludes outliers > 5× / < 0.2× current). **Per-stock 1y price-history files** (`stocks/history/{TICKER}.json`, OHLCV column-major). **3rd veto** (`net_issuance_top_decile`, Pontiff-Woodgate 2008). **5 numerical guards**: stale-filing (120d soft / 180d hard), outlier 5×, terminal-g cap, sector exclusions, data-quality $10K/share ceiling (Defense #7, added mid-PR after a production spot-check surfaced upstream `shares_outstanding` corruption). **5+ annotate-only flags**: `goodwill_heavy`, `value_trap_risk`, `extreme_<method>_estimate` (×4), `stale_filing_soft`, `data_quality_input_corruption`. New schema fields: `StockSummary.{fair_price, max_fair_price, margin_of_safety_pct, valuation_warnings}`; `StockDetail.{fair_price (full ensemble dict), valuation_warnings, has_history, tangible_book_value}`; `RawMetrics.goodwill`; `Metadata.mos_trailing_ic_smoke`. **CI snapshot guard** (`frontend/lib/schema-snapshot.json`) makes Python ↔ TypeScript drift impossible to merge. Reason taxonomy: 21 stable identifiers. |
+| `1.0.0` | Phase 3 (e) | v1.0 ship: PR 3d adds Tier-2 event defenses (going-concern phrase scan, 8-K 4.02 hard veto, 8-K 4.01 auditor-change soft flag) + UI polish. PR 3e adds Tier-3 (Beneish M-Score, Dechow F-Score, both annotate-only) + Honest Limitations section. |
+| `1.1.0-phase4` | Phase 4 | OSAP + JKP + Qlib + IPCA factor consolidation. |
+| `1.2.0-phase5` | Phase 5 | ML meta-learner (Triple-Barrier + Meta-Labeling + Conformal). |
+| `1.3.0-phase6` | Phase 6 | Sentiment v2 (Whisper, 8-K Lazy Prices, FinBERT). |
+| `1.4.0-phase7` | Phase 7 | Regime v2 (Student-t HMM, TDA) + portfolio v2 (NCO). |
+| `2.0.0-phase8` | Phase 8 | Universe expansion to S&P 1500. |
 
 ### `public/data/metadata.json`
 ```json
