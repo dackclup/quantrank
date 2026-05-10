@@ -141,7 +141,7 @@ composite.
 
 | Veto | Rule | Source |
 |---|---|---|
-| `altman_distress` | Z″ < 1.10 | Altman 1968 |
+| `altman_distress` | Z″ < 1.10 | Altman 1968, Hotchkiss 2003 update for non-manufacturers |
 | `sloan_accruals_top_decile` | Within-sector top decile of accruals/assets | Sloan 1996 |
 | `net_issuance_top_decile` | Within-sector top decile of NSI over 365 days | Pontiff-Woodgate 2008 |
 
@@ -160,8 +160,11 @@ composite.
 - `goodwill_heavy` — TBVPS / BVPS_reported < 0.5 (cautions that
   reported book is misleading)
 - `value_trap_risk` — RIM was skipped because ROE < cost of equity
-- `extreme_<method>_estimate` — one of the 6 methods produced an
-  outlier value (excluded from MAX). Surfaces per-method.
+- `extreme_<method>_estimate` — one of the 6 methods (`graham`,
+  `multiples_pe`, `multiples_pb`, `multiples_ev_ebitda`, `rim`, `dcf`)
+  produced an outlier value outside the `[0.2×, 5×]` band of current
+  price (excluded from MAX, kept in MEDIAN). Surfaces per-method as a
+  separate warning.
 - `stale_filing_soft` — filing > 120d but ≤ 180d
 - `data_quality_input_corruption` — also surfaced as the `reason`
   on every method when the $10K ceiling fires
