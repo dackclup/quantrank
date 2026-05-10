@@ -30,6 +30,19 @@ from compute.scoring.tier2 import (
 ASOF = date(2026, 5, 10)
 
 
+@pytest.fixture
+def eight_k_enabled(monkeypatch):
+    """Re-enable the 8-K Defenses #9/#10 wiring for tests that exercise it.
+
+    The module-level ``_EIGHT_K_DEFENSES_ENABLED`` ships False in PR 3d
+    (deferred to Phase 4 — see issue tracker). Tests that lock the
+    integration shape need to flip the flag so the wiring stays
+    exercised pre-Phase-4. New tests in section E exercise the
+    deferred-default mode.
+    """
+    monkeypatch.setattr(tier2, "_EIGHT_K_DEFENSES_ENABLED", True)
+
+
 def _filing(days_ago: int, items: list[str]) -> dict:
     """Synthetic 8-K filing dict (matches eight_k_events.py cache shape)."""
     fd = ASOF - timedelta(days=days_ago)
@@ -45,9 +58,13 @@ def _filing(days_ago: int, items: list[str]) -> dict:
 # A. fetch_tier2_for_ticker orchestration
 # ---------------------------------------------------------------------------
 
-def test_A1_all_three_defenses_clean_returns_succeeded(monkeypatch):
+def test_A1_all_three_defenses_clean_returns_succeeded(monkeypatch, eight_k_enabled):
     """10-K text is clean (no phrases) + 8-K has no matching items →
-    fetch_succeeded=True, all three flags False."""
+    fetch_succeeded=True, all three flags False.
+
+    Uses ``eight_k_enabled`` fixture to flip the deferral flag so the
+    full integration shape stays under test pre-Phase-4.
+    """
     monkeypatch.setattr(
         tier2, "fetch_latest_10k_text",
         lambda t: "Revenue grew 12% year-over-year. The Company is healthy.",
@@ -63,7 +80,7 @@ def test_A1_all_three_defenses_clean_returns_succeeded(monkeypatch):
     assert result.auditor_change_flag.fired is False
 
 
-def test_A2_10k_fetch_fails_8k_succeeds_partial(monkeypatch):
+def test_A2_10k_fetch_fails_8k_succeeds_partial(monkeypatch, eight_k_enabled):
     """10-K text fetch returns None (rate-limit / not-found) but 8-K
     succeeds → going_concern=False, 8-K flags computed normally,
     fetch_succeeded=False (Step 5 spec: BOTH must succeed)."""
@@ -78,7 +95,7 @@ def test_A2_10k_fetch_fails_8k_succeeds_partial(monkeypatch):
     assert result.fetch_succeeded is False  # 10-K failed
 
 
-def test_A3_8k_fetch_fails_10k_succeeds_partial(monkeypatch):
+def test_A3_8k_fetch_fails_10k_succeeds_partial(monkeypatch, eight_k_enabled):
     """8-K returns None (rate-limit) → both flags False, going-concern
     still scans the 10-K text. fetch_succeeded=False."""
     monkeypatch.setattr(
@@ -119,7 +136,7 @@ def test_A5_underlying_exception_caught_per_defense(monkeypatch):
     assert result.fetch_succeeded is False
 
 
-def test_A6_both_8k_items_present_both_flags_fire(monkeypatch):
+def test_A6_both_8k_items_present_both_flags_fire(monkeypatch, eight_k_enabled):
     """A single 8-K with both 4.01 + 4.02 items → both flags fire."""
     monkeypatch.setattr(tier2, "fetch_latest_10k_text", lambda t: "clean")
     monkeypatch.setattr(
@@ -244,7 +261,7 @@ def test_C5_single_ticker_succeeded_returns_100():
 # D. End-to-end smoke (orchestrator + dict + coverage together)
 # ---------------------------------------------------------------------------
 
-def test_D1_full_pipeline_synthetic(monkeypatch):
+def test_D1_full_pipeline_synthetic(monkeypatch, eight_k_enabled):
     """Mock 10 tickers, 3 of which trip various flags. Verify the full
     pipeline (orchestrator → dict → coverage) produces sensible output."""
     universe = [f"T{i:02d}" for i in range(10)]
@@ -298,3 +315,79 @@ def test_D2_tier2_result_is_frozen():
     r = _result_with_flags()
     with pytest.raises(FrozenInstanceError):
         r.fetch_succeeded = False  # type: ignore[misc]
+
+
+# ---------------------------------------------------------------------------
+# E. 8-K deferred-mode default (PR 3d Phase 4 hand-off)
+# ---------------------------------------------------------------------------
+
+def test_E1_deferred_mode_skips_8k_fetch_entirely(monkeypatch):
+    """With ``_EIGHT_K_DEFENSES_ENABLED=False`` (PR 3d default), the 8-K
+    fetcher MUST NOT be called even when the 10-K fetch succeeds. Locks
+    the perf contract: deferring 8-K means zero 8-K-related EDGAR calls."""
+    eight_k_calls: list[str] = []
+
+    def boom(*a, **k):
+        eight_k_calls.append("called")
+        raise AssertionError("8-K fetch must not run in deferred mode")
+
+    monkeypatch.setattr(tier2, "fetch_latest_10k_text", lambda t: "clean text")
+    monkeypatch.setattr(tier2, "fetch_recent_8k_filings", boom)
+    result = fetch_tier2_for_ticker("TST", asof=ASOF)
+    assert eight_k_calls == []
+    # 8-K flags emit the empty ItemFlag.
+    assert result.non_reliance_flag.fired is False
+    assert result.non_reliance_flag.filing_date is None
+    assert result.auditor_change_flag.fired is False
+    assert result.auditor_change_flag.filing_date is None
+
+
+def test_E2_deferred_mode_fetch_succeeded_collapses_to_text_only(monkeypatch):
+    """With 8-K deferred, ``fetch_succeeded`` is True iff the 10-K
+    text fetched OK (the 8-K leg is not part of the success criterion)."""
+    monkeypatch.setattr(tier2, "fetch_latest_10k_text", lambda t: "clean text")
+    monkeypatch.setattr(tier2, "fetch_recent_8k_filings", lambda t, **k: None)
+    result = fetch_tier2_for_ticker("TST", asof=ASOF)
+    assert result.fetch_succeeded is True
+
+
+def test_E3_deferred_mode_10k_failure_still_marks_unsucceeded(monkeypatch):
+    """10-K fetch failure → fetch_succeeded=False, regardless of 8-K
+    branch (which is skipped in deferred mode)."""
+    monkeypatch.setattr(tier2, "fetch_latest_10k_text", lambda t: None)
+    result = fetch_tier2_for_ticker("TST", asof=ASOF)
+    assert result.fetch_succeeded is False
+    assert result.going_concern_disclosure is False
+
+
+def test_E4_deferred_mode_going_concern_still_works(monkeypatch):
+    """Defense #8 (the only Tier-2 defense active in PR 3d) fires
+    correctly in deferred mode — the 10-K text scan is independent of
+    the 8-K wiring."""
+    monkeypatch.setattr(
+        tier2, "fetch_latest_10k_text",
+        lambda t: "We have substantial doubt about the Company's ability to continue as a going concern.",
+    )
+    result = fetch_tier2_for_ticker("TST", asof=ASOF)
+    assert result.going_concern_disclosure is True
+    assert result.non_reliance_flag.fired is False
+    assert result.auditor_change_flag.fired is False
+
+
+def test_E5_deferred_mode_dict_shape_unchanged(monkeypatch):
+    """Schema contract: tier2_events dict still emits all 5 keys with
+    safe defaults in deferred mode. Frontend doesn't notice a difference."""
+    monkeypatch.setattr(tier2, "fetch_latest_10k_text", lambda t: "clean")
+    result = fetch_tier2_for_ticker("TST", asof=ASOF)
+    d = tier2_events_dict(result)
+    assert set(d.keys()) == {
+        "going_concern_disclosure",
+        "non_reliance_filing",
+        "auditor_change",
+        "latest_8k_filing_date",
+        "latest_8k_filing_url",
+    }
+    assert d["non_reliance_filing"] is False
+    assert d["auditor_change"] is False
+    assert d["latest_8k_filing_date"] is None
+    assert d["latest_8k_filing_url"] is None

@@ -17,6 +17,7 @@ import math
 from datetime import date
 
 import pandas as pd
+import pytest
 
 from compute.ingest.fundamentals import FundamentalsSnapshot
 from compute.main import (
@@ -27,6 +28,10 @@ from compute.main import (
     _eps_3y_avg,
     _fcf_5y,
     _filing_lag,
+    _fundamentals_one,
+    _history_one,
+    _latency_histogram,
+    _percentile,
 )
 
 
@@ -300,3 +305,130 @@ def test_eps_3y_avg_with_nan_in_recent_year():
         "eps_diluted": [(2023, 1.0), (2024, 2.0), (2025, math.nan)],
     })
     assert _eps_3y_avg(hist) is None
+
+
+# ---------------------------------------------------------------------------
+# PR 3d Part 2 — fundamentals observability primitives
+# ---------------------------------------------------------------------------
+
+def test_latency_histogram_buckets_align_with_retry_budget():
+    """Histogram buckets at 5, 15, 30s thresholds. The 30s threshold
+    aligns with the inner ``stop_after_delay(30)`` retry budget — any
+    ticker landing in the 30s+ bucket is retry-exhausted or
+    future-timed out."""
+    elapsed = [0.5, 2.0, 4.99, 5.0, 14.99, 15.0, 29.99, 30.0, 100.0]
+    hist = _latency_histogram(elapsed)
+    assert hist == {"<5s": 3, "5-15s": 2, "15-30s": 2, "30s+": 2}
+
+
+def test_latency_histogram_empty_input():
+    """Zero observations → all buckets zero, no division-by-zero."""
+    assert _latency_histogram([]) == {"<5s": 0, "5-15s": 0, "15-30s": 0, "30s+": 0}
+
+
+def test_percentile_p50_p95_basic():
+    """Linear interpolation percentile on a small sorted list."""
+    values = sorted([1.0, 2.0, 3.0, 4.0, 5.0])
+    p50 = _percentile(values, 0.50)
+    p95 = _percentile(values, 0.95)
+    assert p50 == pytest.approx(3.0, rel=1e-6)
+    # 0.95 * 4 = 3.8 → between idx 3 (4.0) and idx 4 (5.0): 4.0 + 0.8*1.0 = 4.8
+    assert p95 == pytest.approx(4.8, rel=1e-6)
+
+
+def test_percentile_empty_returns_none():
+    assert _percentile([], 0.50) is None
+
+
+def test_percentile_singleton():
+    """Single observation → percentile equals that observation."""
+    assert _percentile([7.5], 0.95) == pytest.approx(7.5, rel=1e-6)
+
+
+# ---------------------------------------------------------------------------
+# PR 3d Part 1 — _fundamentals_one + _history_one tuple-return + timing
+# ---------------------------------------------------------------------------
+
+def test_fundamentals_one_returns_tuple_with_elapsed(monkeypatch):
+    """``_fundamentals_one`` now returns ``(snapshot, elapsed_seconds)``
+    so the orchestrator can populate the latency histogram."""
+    from compute.main import fetch_fundamentals as orig
+    sentinel = _snap()
+
+    def fake(*a, **k):
+        return sentinel
+
+    monkeypatch.setattr("compute.main.fetch_fundamentals", fake)
+    snap, elapsed = _fundamentals_one("TST", "0000000001")
+    assert snap is sentinel
+    assert isinstance(elapsed, float)
+    assert elapsed >= 0.0
+    # noqa lint: keep `orig` ref to silence unused-import linters
+    _ = orig
+
+
+def test_fundamentals_one_failure_returns_none_and_elapsed(monkeypatch):
+    """Exception in fetch_fundamentals → (None, elapsed) — never raises."""
+    def boom(*a, **k):
+        raise RuntimeError("synthetic")
+
+    monkeypatch.setattr("compute.main.fetch_fundamentals", boom)
+    snap, elapsed = _fundamentals_one("TST", "0000000001")
+    assert snap is None
+    assert elapsed >= 0.0
+
+
+def test_history_one_missing_cik_returns_empty_zero_elapsed():
+    """No CIK → empty DataFrame + zero elapsed (no work to time)."""
+    df, elapsed = _history_one("TST", "")
+    assert df.empty
+    assert elapsed == 0.0
+
+
+def test_history_one_failure_returns_empty_with_elapsed(monkeypatch):
+    """Exception in fetch_fundamentals_history → empty DataFrame + elapsed."""
+    def boom(*a, **k):
+        raise RuntimeError("synthetic")
+
+    monkeypatch.setattr("compute.main.fetch_fundamentals_history", boom)
+    df, elapsed = _history_one("TST", "0000000001")
+    assert df.empty
+    assert elapsed >= 0.0
+
+
+# ---------------------------------------------------------------------------
+# PR 3d Part 1 — fundamentals.py retry policy contract
+# ---------------------------------------------------------------------------
+
+def test_build_snapshot_retry_policy_caps_at_30s_or_2_attempts():
+    """Lock the retry contract on both _build_snapshot and
+    _build_annual_history: must use the tightened
+    (stop_after_delay(30) | stop_after_attempt(2)) policy. Earlier
+    (stop_after_attempt(3) + max=30s wait) caused 60-90s/stuck-stock
+    under SEC API throttling (run #14 incident, 2026-05-10)."""
+    from tenacity.stop import stop_after_attempt, stop_after_delay, stop_any
+
+    from compute.ingest.fundamentals import _build_annual_history, _build_snapshot
+
+    for fn in (_build_snapshot, _build_annual_history):
+        retrying = fn.retry  # tenacity attaches the Retrying object
+        stop = retrying.stop
+        assert isinstance(stop, stop_any), (
+            f"{fn.__name__}: stop policy must be stop_any (use of '|'); got {type(stop).__name__}"
+        )
+        constituent_types = {type(s) for s in stop.stops}
+        assert stop_after_delay in constituent_types, (
+            f"{fn.__name__}: missing stop_after_delay in stop_any.stops"
+        )
+        assert stop_after_attempt in constituent_types, (
+            f"{fn.__name__}: missing stop_after_attempt in stop_any.stops"
+        )
+        # Verify the delay cap is exactly 30s (locks the budget contract).
+        delay_stop = next(s for s in stop.stops if isinstance(s, stop_after_delay))
+        assert delay_stop.max_delay == 30, (
+            f"{fn.__name__}: stop_after_delay must cap at 30s; got {delay_stop.max_delay}"
+        )
+        attempt_stop = next(s for s in stop.stops if isinstance(s, stop_after_attempt))
+        assert attempt_stop.max_attempt_number == 2, (
+            f"{fn.__name__}: stop_after_attempt must cap at 2; got {attempt_stop.max_attempt_number}"
+        )

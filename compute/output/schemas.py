@@ -54,6 +54,9 @@ class Metadata(BaseModel):
     git_commit: str
     mos_trailing_ic_smoke: float | None = None
     tier2_coverage_pct: float | None = None
+    fundamentals_coverage_pct: float | None = None
+    fundamentals_latency_p50_seconds: float | None = None
+    fundamentals_latency_p95_seconds: float | None = None
 
 
 class RawMetrics(BaseModel):

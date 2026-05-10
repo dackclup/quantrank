@@ -38,6 +38,13 @@ export type Metadata = {
   git_commit: string;
   mos_trailing_ic_smoke: number | null;
   tier2_coverage_pct: number | null;
+  // PR 3d Part 2 — observability for SEC EDGAR throttling diagnostics.
+  // coverage_pct = % of universe with non-null FundamentalsSnapshot.
+  // p50/p95 = per-stock fetch wall-clock distribution. All null on
+  // older outputs from before this field was added.
+  fundamentals_coverage_pct: number | null;
+  fundamentals_latency_p50_seconds: number | null;
+  fundamentals_latency_p95_seconds: number | null;
 };
 
 // Phase 3d Tier-2 event defenses. Surfaces in StockDetail.tier2_events.

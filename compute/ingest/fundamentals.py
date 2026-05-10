@@ -21,7 +21,7 @@ from typing import Any
 
 import pandas as pd
 from edgar import Company, set_identity
-from tenacity import retry, stop_after_attempt, wait_exponential
+from tenacity import retry, stop_after_attempt, stop_after_delay, wait_exponential
 
 from compute import config
 
@@ -260,13 +260,34 @@ def _try_ttm_tags(facts, tags: list[str]) -> tuple[float | None, date | None]:
     return None, None
 
 
-@retry(stop=stop_after_attempt(3), wait=wait_exponential(min=2, max=30), reraise=True)
+@retry(
+    stop=(stop_after_delay(30) | stop_after_attempt(2)),
+    wait=wait_exponential(min=2, max=8),
+    reraise=True,
+)
 def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
-    """Pull and assemble the snapshot from EDGAR. Caller wraps in retry-aware caching."""
+    """Pull and assemble the snapshot from EDGAR. Caller wraps in retry-aware caching.
+
+    Retry policy: caps at the FIRST of 30 seconds total wall-clock OR 2
+    attempts. The previous ``stop_after_attempt(3)`` +
+    ``wait_exponential(max=30)`` policy could spend 60-90s per stuck CIK
+    under SEC API throttling (run #14 incident, 2026-05-10 — ~3-6× SEC
+    API slowdown). Tightening to (30s | 2 attempts) caps per-stock retry
+    cost at ~30s while still absorbing transient blips.
+    """
     company = Company(cik or ticker)
     facts = company.get_facts()
     if facts is None:
         raise RuntimeError(f"No EntityFacts for {ticker}/{cik}")
+    # Suppress edgartools' UserWarning noise on concept/period misses.
+    # The TTM and balance-item concept lookups below tolerate misses (None
+    # checks) but the warnings module formats traceback at stacklevel=2
+    # plus optional difflib fuzzy-match suggestions — pure log noise that
+    # we don't action on. Same pattern as _build_annual_history.
+    try:
+        facts._suppress_warnings = True
+    except (AttributeError, TypeError):
+        pass  # edgartools version variance — non-fatal
 
     snapshot_dates: list[date | None] = []
     period_dates: list[date | None] = []
@@ -468,7 +489,11 @@ def fetch_fundamentals(
 
 # -- Annual history (CAGR + Piotroski) --------------------------------------
 
-@retry(stop=stop_after_attempt(3), wait=wait_exponential(min=2, max=30), reraise=True)
+@retry(
+    stop=(stop_after_delay(30) | stop_after_attempt(2)),
+    wait=wait_exponential(min=2, max=8),
+    reraise=True,
+)
 def _build_annual_history(cik: str, years: int = ANNUAL_HISTORY_YEARS) -> pd.DataFrame:
     """Fetch ``years`` of annual 10-K facts for the metrics in ``_ANNUAL_TAGS``.
 
@@ -476,11 +501,30 @@ def _build_annual_history(cik: str, years: int = ANNUAL_HISTORY_YEARS) -> pd.Dat
         value, period_end, filing_date, form_type
 
     Empty DataFrame on any failure so the caller can degrade gracefully.
+
+    Retry policy
+    ------------
+    Caps at the FIRST of: 30 seconds total wall-clock OR 2 attempts. The
+    earlier ``stop_after_attempt(3)`` + ``wait_exponential(max=30)`` policy
+    could spend 60-90 seconds per stuck CIK under SEC API throttling
+    (run #14 incident, 2026-05-10 — ~3-6× SEC API slowdown). Tightening
+    to (30s | 2 attempts) caps per-stock retry cost at ~30s while still
+    absorbing transient blips.
     """
     company = Company(cik)
     facts = company.get_facts()
     if facts is None:
         return pd.DataFrame()
+    # Suppress edgartools' UserWarning storm on concept/fiscal-year misses.
+    # Each get_annual_fact() call below misses for ~60-70% of (fy × tag)
+    # combinations; the warnings are pure log noise (the call already
+    # returns None which we already handle). Suppressing also skips the
+    # difflib fuzzy-match suggestion pass at edgar/entity/entity_facts.py:677
+    # which is the only non-trivial CPU cost in the warning path.
+    try:
+        facts._suppress_warnings = True
+    except (AttributeError, TypeError):
+        pass  # edgartools version variance — non-fatal
 
     today_year = datetime.utcnow().year
     fiscal_years = list(range(today_year - years - 1, today_year + 1))
