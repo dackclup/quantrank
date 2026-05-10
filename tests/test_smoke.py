@@ -5,7 +5,7 @@ from compute import config
 
 def test_phase0_scaffold_imports() -> None:
     assert config.UNIVERSE == "SP500"
-    assert config.SCHEMA_VERSION.startswith("0.5.0")
+    assert config.SCHEMA_VERSION.startswith("0.6.0")
 
 
 def test_phase0_paths_resolve() -> None:

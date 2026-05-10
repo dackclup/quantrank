@@ -120,7 +120,7 @@ Honest Limitations documented.
 - Schema: `0.5.0-phase3c`
 - Compute time: **27m 10s** (workflow run #10, commit `6bca592`)
 - Fair-price coverage: **487 / 502 (97.0%)**
-- Tests: **118 → 410** (+292 in PR 3c)
+- Tests: **118 → 409** (+291 in PR 3c)
 - Reason taxonomy: 21 stable identifiers
 - 3 follow-up issue drafts staged at `/tmp/issue_drafts/`
 

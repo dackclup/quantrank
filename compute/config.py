@@ -16,7 +16,7 @@ FUNDAMENTALS_HISTORY_CACHE_DIR: Path = CACHE_DIR / "fundamentals_history"
 MODELS_DIR: Path = PROJECT_ROOT / "models"
 
 UNIVERSE: str = "SP500"
-SCHEMA_VERSION: str = "0.5.0-phase3c"
+SCHEMA_VERSION: str = "0.6.0-phase3d"
 
 PRICES_PERIOD: str = "5y"
 MAX_PARALLEL_FETCHES: int = 10
@@ -69,3 +69,21 @@ MULTIPLES_MIN_PEERS: int = 8
 # Net Stock Issuance veto (Pontiff-Woodgate 2008 JF). Top decile within sector.
 NSI_TOP_DECILE: float = 0.90
 NSI_LOOKBACK_DAYS: int = 365
+
+# --- Phase 3d: Tier-2 event defenses (going-concern + 8-K Items 4.02/4.01) ---
+# Anchored in WORKFLOW.md "PR 3d — Tier-2 Defense Layer" + Mayew-Sethuraman-
+# Venkatachalam 2015 (TAR) for going-concern, Schroeder 2024 SSRN for 8-K 4.02.
+
+# 8-K Item 4.02 hard veto: "Non-Reliance on Previously Issued Financial
+# Statements". Trailing-12-month window — restatement-style events have
+# ~50% subsequent restatement rate per Schroeder 2024.
+EIGHT_K_LOOKBACK_DAYS_VETO: int = 365
+
+# 8-K Item 4.01 annotate: "Changes in Registrant's Certifying Accountant".
+# 2-year window per Reg S-K Item 304 disclosure horizon.
+EIGHT_K_LOOKBACK_DAYS_ANNOTATE: int = 730
+
+# Going-concern phrase scan: 1-year + buffer to capture the most recent
+# 10-K. 10-K filings cluster ~75d after fiscal year-end so 400d covers
+# all calendar-year filers + most off-cycle filers.
+GOING_CONCERN_FILING_LOOKBACK_DAYS: int = 400
