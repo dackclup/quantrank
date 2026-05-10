@@ -3,9 +3,18 @@
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 
+import { formatFairPrice, formatMosPct, mosColorClass } from '@/lib/format';
 import type { StockSummary } from '@/lib/types';
 
-type SortKey = 'rank' | 'ticker' | 'name' | 'sector' | 'composite_score' | 'current_price';
+type SortKey =
+  | 'rank'
+  | 'ticker'
+  | 'name'
+  | 'sector'
+  | 'composite_score'
+  | 'current_price'
+  | 'fair_price'
+  | 'margin_of_safety_pct';
 type SortDir = 'asc' | 'desc';
 
 const PAGE_SIZE = 50;
@@ -58,6 +67,12 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
     arr.sort((a, b) => {
       const av = a[sortKey];
       const bv = b[sortKey];
+      // Nulls sort last regardless of direction — they're "no data",
+      // not "infinitely small", so they shouldn't fight for the top
+      // of an ascending sort.
+      if (av === null && bv === null) return 0;
+      if (av === null) return 1;
+      if (bv === null) return -1;
       let cmp = 0;
       if (typeof av === 'number' && typeof bv === 'number') cmp = av - bv;
       else cmp = String(av).localeCompare(String(bv));
@@ -75,7 +90,14 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
       setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
     } else {
       setSortKey(key);
-      setSortDir(key === 'composite_score' ? 'desc' : 'asc');
+      // Score- and undervaluation-style columns default to descending —
+      // most useful sort is "best at top".
+      const descByDefault: SortKey[] = [
+        'composite_score',
+        'fair_price',
+        'margin_of_safety_pct',
+      ];
+      setSortDir(descByDefault.includes(key) ? 'desc' : 'asc');
     }
     setPage(1);
   };
@@ -139,62 +161,108 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
               {headerCell('sector', 'Sector')}
               {headerCell('composite_score', 'Score', 'text-right')}
               {headerCell('current_price', 'Price', 'text-right')}
+              {headerCell('fair_price', 'Fair price', 'text-right')}
+              {headerCell('margin_of_safety_pct', 'MoS', 'text-right')}
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {pageRows.map((row) => (
-              <tr key={row.ticker} className="hover:bg-slate-50">
-                <td className="px-3 py-2 tabular-nums text-slate-700">{row.rank}</td>
-                <td className="px-3 py-2 font-mono font-semibold">
-                  <Link
-                    href={`/stock/${row.ticker}/`}
-                    className="hover:text-slate-700 hover:underline"
+            {pageRows.map((row) => {
+              const mos = formatMosPct(row.margin_of_safety_pct);
+              const dataQualityIssue = row.valuation_warnings.includes(
+                'data_quality_input_corruption',
+              );
+              return (
+                <tr key={row.ticker} className="hover:bg-slate-50">
+                  <td className="px-3 py-2 tabular-nums text-slate-700">{row.rank}</td>
+                  <td className="px-3 py-2 font-mono font-semibold">
+                    <Link
+                      href={`/stock/${row.ticker}/`}
+                      className="hover:text-slate-700 hover:underline"
+                    >
+                      {row.ticker}
+                    </Link>
+                  </td>
+                  <td className="px-3 py-2 text-slate-700">{row.name}</td>
+                  <td className="px-3 py-2 text-slate-500">{row.sector}</td>
+                  <td className="px-3 py-2 text-right">
+                    <ScoreBadge score={row.composite_score} />
+                  </td>
+                  <td className="px-3 py-2 text-right tabular-nums text-slate-700">
+                    {formatPrice(row.current_price)}
+                  </td>
+                  <td className="px-3 py-2 text-right tabular-nums text-slate-700">
+                    {dataQualityIssue ? (
+                      <span
+                        className="inline-flex items-center gap-1 text-slate-400"
+                        title="Fair price unavailable: data quality issue (Step 7.5 sanity guard)"
+                      >
+                        <span aria-hidden="true">⚠</span>—
+                      </span>
+                    ) : (
+                      formatFairPrice(row.fair_price)
+                    )}
+                  </td>
+                  <td
+                    className={`px-3 py-2 text-right tabular-nums ${mosColorClass(row.margin_of_safety_pct)}`}
+                    title={mos.tooltip ?? undefined}
                   >
-                    {row.ticker}
-                  </Link>
-                </td>
-                <td className="px-3 py-2 text-slate-700">{row.name}</td>
-                <td className="px-3 py-2 text-slate-500">{row.sector}</td>
-                <td className="px-3 py-2 text-right">
-                  <ScoreBadge score={row.composite_score} />
-                </td>
-                <td className="px-3 py-2 text-right tabular-nums text-slate-700">
-                  {formatPrice(row.current_price)}
-                </td>
-              </tr>
-            ))}
+                    {mos.display}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
 
       {/* Mobile cards */}
       <ul className="space-y-2 md:hidden">
-        {pageRows.map((row) => (
-          <li
-            key={row.ticker}
-            className="rounded-lg border border-slate-200 bg-white shadow-sm hover:bg-slate-50"
-          >
-            <Link
-              href={`/stock/${row.ticker}/`}
-              className="flex items-center justify-between p-3"
+        {pageRows.map((row) => {
+          const mos = formatMosPct(row.margin_of_safety_pct);
+          const dataQualityIssue = row.valuation_warnings.includes(
+            'data_quality_input_corruption',
+          );
+          return (
+            <li
+              key={row.ticker}
+              className="rounded-lg border border-slate-200 bg-white shadow-sm hover:bg-slate-50"
             >
-              <div className="min-w-0 flex-1">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-xs text-slate-500 tabular-nums">#{row.rank}</span>
-                  <span className="font-mono text-base font-semibold">{row.ticker}</span>
+              <Link
+                href={`/stock/${row.ticker}/`}
+                className="flex items-center justify-between p-3"
+              >
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-xs text-slate-500 tabular-nums">#{row.rank}</span>
+                    <span className="font-mono text-base font-semibold">{row.ticker}</span>
+                  </div>
+                  <div className="truncate text-sm text-slate-700">{row.name}</div>
+                  <div className="mt-1 flex items-center justify-between text-xs text-slate-500">
+                    <span className="truncate">{row.sector}</span>
+                    <span className="tabular-nums">{formatPrice(row.current_price)}</span>
+                  </div>
+                  <div className="mt-1 flex items-center justify-between text-xs">
+                    <span className="text-slate-500">
+                      Fair{' '}
+                      <span className="tabular-nums text-slate-700">
+                        {dataQualityIssue ? '⚠ —' : formatFairPrice(row.fair_price)}
+                      </span>
+                    </span>
+                    <span
+                      className={`tabular-nums ${mosColorClass(row.margin_of_safety_pct)}`}
+                      title={mos.tooltip ?? undefined}
+                    >
+                      MoS {mos.display}
+                    </span>
+                  </div>
                 </div>
-                <div className="truncate text-sm text-slate-700">{row.name}</div>
-                <div className="mt-1 flex items-center justify-between text-xs text-slate-500">
-                  <span className="truncate">{row.sector}</span>
-                  <span className="tabular-nums">{formatPrice(row.current_price)}</span>
+                <div className="ml-3 shrink-0">
+                  <ScoreBadge score={row.composite_score} />
                 </div>
-              </div>
-              <div className="ml-3 shrink-0">
-                <ScoreBadge score={row.composite_score} />
-              </div>
-            </Link>
-          </li>
-        ))}
+              </Link>
+            </li>
+          );
+        })}
       </ul>
 
       {pageRows.length === 0 && (

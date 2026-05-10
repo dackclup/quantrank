@@ -1,0 +1,175 @@
+import { formatFairPrice, formatMosPct, mosColorClass } from '@/lib/format';
+import type { FairPriceEnsemble, FairPriceMethodResult } from '@/lib/types';
+
+interface Props {
+  ensemble: FairPriceEnsemble | null;
+  currentPrice: number;
+  warnings: string[];
+  tangibleBookValue: number | null;
+}
+
+const METHOD_LABELS: Record<keyof FairPriceEnsemble['methods'], string> = {
+  graham: 'Graham (defensive)',
+  multiples_pe: 'P/E multiples',
+  multiples_pb: 'P/B multiples',
+  multiples_ev_ebitda: 'EV/EBITDA',
+  rim: 'Residual Income',
+  dcf: 'DCF (2-stage)',
+};
+
+const METHOD_ORDER: Array<keyof FairPriceEnsemble['methods']> = [
+  'graham',
+  'multiples_pe',
+  'multiples_pb',
+  'multiples_ev_ebitda',
+  'rim',
+  'dcf',
+];
+
+function MethodRow({
+  label,
+  result,
+}: {
+  label: string;
+  result: FairPriceMethodResult;
+}) {
+  return (
+    <tr className="hover:bg-slate-50">
+      <td className="px-3 py-2 text-slate-700">
+        {label}
+        {result.tier_used && (
+          <span className="ml-2 text-xs text-slate-400">
+            (vs {result.tier_used.replace(/_/g, ' ')} peers)
+          </span>
+        )}
+      </td>
+      <td className="px-3 py-2 text-right tabular-nums">
+        {result.applicable && result.value !== null ? (
+          <span className="text-slate-900">{formatFairPrice(result.value)}</span>
+        ) : (
+          <span
+            className="italic text-slate-400"
+            title={result.reason ?? undefined}
+          >
+            skipped
+          </span>
+        )}
+      </td>
+    </tr>
+  );
+}
+
+export default function FairPriceCard({
+  ensemble,
+  currentPrice,
+  warnings,
+  tangibleBookValue,
+}: Props) {
+  // No ensemble at all (snapshot was missing entirely).
+  if (!ensemble) {
+    return (
+      <section className="rounded-lg border border-slate-200 bg-white p-4">
+        <h2 className="mb-2 text-sm font-medium uppercase tracking-wide text-slate-500">
+          Fair price ensemble
+        </h2>
+        <p className="text-sm text-slate-500">
+          Not computed — fundamentals snapshot unavailable for this ticker.
+        </p>
+      </section>
+    );
+  }
+
+  const dataQualityIssue = warnings.includes('data_quality_input_corruption');
+  const mos = formatMosPct(ensemble.mos_pct);
+
+  return (
+    <section className="rounded-lg border border-slate-200 bg-white p-4">
+      <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-slate-500">
+        Fair price ensemble
+      </h2>
+
+      {/* Headline median + MoS */}
+      <div className="mb-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div>
+          <dt className="text-xs uppercase tracking-wide text-slate-500">
+            Median fair
+          </dt>
+          <dd className="mt-1 text-lg tabular-nums text-slate-900">
+            {dataQualityIssue ? '—' : formatFairPrice(ensemble.median)}
+          </dd>
+        </div>
+        <div>
+          <dt className="text-xs uppercase tracking-wide text-slate-500">
+            Margin of safety
+          </dt>
+          <dd
+            className={`mt-1 text-lg tabular-nums ${mosColorClass(ensemble.mos_pct)}`}
+            title={mos.tooltip ?? undefined}
+          >
+            {mos.display}
+          </dd>
+        </div>
+        <div>
+          <dt className="text-xs uppercase tracking-wide text-slate-500">
+            Max (ex-outliers)
+          </dt>
+          <dd className="mt-1 text-lg tabular-nums text-slate-700">
+            {dataQualityIssue ? '—' : formatFairPrice(ensemble.max)}
+          </dd>
+        </div>
+        <div>
+          <dt className="text-xs uppercase tracking-wide text-slate-500">
+            Tangible BVPS
+          </dt>
+          <dd className="mt-1 text-lg tabular-nums text-slate-700">
+            {tangibleBookValue !== null
+              ? formatFairPrice(tangibleBookValue)
+              : '—'}
+          </dd>
+        </div>
+      </div>
+
+      {/* Per-method breakdown */}
+      <div className="overflow-hidden rounded-md border border-slate-200">
+        <table className="min-w-full divide-y divide-slate-200 text-sm">
+          <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+            <tr>
+              <th className="px-3 py-2 text-left font-medium">Method</th>
+              <th className="px-3 py-2 text-right font-medium">Value</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {METHOD_ORDER.map((key) => (
+              <MethodRow
+                key={key}
+                label={METHOD_LABELS[key]}
+                result={ensemble.methods[key]}
+              />
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Warnings */}
+      {warnings.length > 0 && (
+        <ul className="mt-3 space-y-1 text-xs">
+          {warnings.map((w) => (
+            <li
+              key={w}
+              className="inline-block rounded bg-amber-50 px-2 py-0.5 text-amber-800 ring-1 ring-inset ring-amber-200"
+            >
+              {w.replace(/_/g, ' ')}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <p className="mt-3 text-xs text-slate-400">
+        Median of all applicable methods (current price ${currentPrice.toFixed(2)}).
+        Outliers above 5× or below 0.2× current price are excluded from the
+        max but kept in the median. See methodology for the 6-method ensemble
+        + 7 defenses.
+      </p>
+    </section>
+  );
+}
