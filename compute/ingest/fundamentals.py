@@ -72,6 +72,18 @@ _BALANCE_TAGS: dict[str, list[str]] = {
         "us-gaap:ShortTermBorrowings",
     ],
     "retained_earnings": ["us-gaap:RetainedEarningsAccumulatedDeficit"],
+    # Phase 3c additions — feed Tangible BVPS (full intangibles netting) per
+    # docs/RESEARCH_FINDINGS.md "Defense Playbook §PR 3c §2 Tangible BVPS".
+    # Goodwill is uniformly tagged (5/5 hit on AAPL/KO/PG/JPM/BRK-B probe);
+    # intangibles_net needs a fallback chain because ~60% of filers use the
+    # us-gaap:OtherIntangibleAssetsNet tag rather than the Excluding-Goodwill
+    # variant. Coverage probe results in PR-3c kickoff D3 / E2.
+    "goodwill": ["us-gaap:Goodwill"],
+    "intangibles_net": [
+        "us-gaap:IntangibleAssetsNetExcludingGoodwill",
+        "us-gaap:OtherIntangibleAssetsNet",
+        "us-gaap:FiniteLivedIntangibleAssetsNet",
+    ],
 }
 
 # Concepts queried via the normalized snake_case API for latest values.
@@ -156,6 +168,9 @@ ALL_METRIC_KEYS: tuple[str, ...] = (
     "short_term_debt",
     "retained_earnings",
     "ebitda",  # computed = operating_income + D&A
+    # Phase 3c additions
+    "goodwill",
+    "intangibles_net",
 )
 
 
@@ -200,6 +215,9 @@ class FundamentalsSnapshot:
     retained_earnings: float | None = None
     # Phase 3 derived
     ebitda: float | None = None  # operating_income + D&A
+    # Phase 3c additions — Tangible BVPS inputs (Defense Playbook §PR 3c §2)
+    goodwill: float | None = None
+    intangibles_net: float | None = None
     # Filing dates
     latest_filed_date: date | None = None
     latest_period_end: date | None = None
@@ -365,6 +383,8 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
         short_term_debt=balance_values.get("short_term_debt"),
         retained_earnings=balance_values.get("retained_earnings"),
         ebitda=ebitda_val,
+        goodwill=balance_values.get("goodwill"),
+        intangibles_net=balance_values.get("intangibles_net"),
         latest_filed_date=_max_date(*snapshot_dates),
         latest_period_end=max(period_dates) if period_dates else None,
     )

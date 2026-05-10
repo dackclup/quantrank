@@ -3,19 +3,19 @@
   "name": "Chubb Limited",
   "sector": "Financials",
   "industry": "Property & Casualty Insurance",
-  "market_cap": 124815859468.16223,
-  "current_price": 321.28,
-  "rank": 118,
-  "composite_score": 57.13,
+  "market_cap": 124178732882.05322,
+  "current_price": 319.64,
+  "rank": 138,
+  "composite_score": 56.02,
   "pillar_scores": {
-    "quality": 52.0,
-    "value": 57.33,
-    "growth": 66.67,
-    "momentum": 66.43,
-    "health": 61.16,
-    "profitability": 53.33,
-    "technical": 17.33,
-    "risk": 79.52,
+    "quality": 50.0,
+    "value": 57.78,
+    "growth": 66.0,
+    "momentum": 64.39,
+    "health": 60.34,
+    "profitability": 50.22,
+    "technical": 16.58,
+    "risk": 79.08,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 5.94,
     "eps_diluted": 5.88,
     "shares_outstanding": 388495580.0,
-    "market_cap": 124815859468.16223,
-    "pe_ratio_ttm": 54.639455574710354
+    "market_cap": 124178732882.05322,
+    "pe_ratio_ttm": 54.360546708917944,
+    "goodwill": 20370000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 252.88313826291534,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 315.92864315825045,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 393.0400932737099,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 138.52907082408805,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 284.40589071058287,
+    "max": 393.0400932737099,
+    "low": 138.52907082408805,
+    "high": 393.0400932737099,
+    "mos_pct": -12.388675863858806,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -54,11 +100,14 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 10,
+    "filing_lag_days": 12,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-28"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 121.49687777657599,
   "entered_top5": false,
   "exited_top5": false
 }

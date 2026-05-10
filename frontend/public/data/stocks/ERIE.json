@@ -4,18 +4,18 @@
   "sector": "Financials",
   "industry": "Insurance Brokers",
   "market_cap": null,
-  "current_price": 216.75,
-  "rank": 110,
-  "composite_score": 57.59,
+  "current_price": 215.9,
+  "rank": 161,
+  "composite_score": 54.78,
   "pillar_scores": {
-    "quality": 75.33,
+    "quality": 66.67,
     "value": 57.67,
     "growth": 65.67,
-    "momentum": 14.54,
-    "health": 77.35,
-    "profitability": 54.22,
-    "technical": 33.07,
-    "risk": 29.32,
+    "momentum": 13.55,
+    "health": 77.37,
+    "profitability": 46.44,
+    "technical": 36.45,
+    "risk": 29.65,
     "sentiment": null,
     "ml": null
   },
@@ -33,9 +33,57 @@
     "eps_diluted": 491.0,
     "shares_outstanding": null,
     "market_cap": null,
-    "pe_ratio_ttm": 0.4414460285132383
+    "pe_ratio_ttm": 0.43971485518632253,
+    "goodwill": null
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": null
+      }
+    },
+    "median": null,
+    "max": null,
+    "low": null,
+    "high": null,
+    "mos_pct": null,
+    "valuation_warnings": [
+      "data_quality_input_corruption"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -46,14 +94,20 @@
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
-      "inventory"
+      "inventory",
+      "goodwill"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 17,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "data_quality_input_corruption"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

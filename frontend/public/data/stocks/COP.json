@@ -3,19 +3,19 @@
   "name": "ConocoPhillips",
   "sector": "Energy",
   "industry": "Oil & Gas Exploration & Production",
-  "market_cap": 259154742632.85834,
-  "current_price": 114.88,
-  "rank": 284,
-  "composite_score": 48.5,
+  "market_cap": 256876322779.64166,
+  "current_price": 113.87,
+  "rank": 287,
+  "composite_score": 48.16,
   "pillar_scores": {
     "quality": 45.24,
     "value": 38.89,
     "growth": 32.14,
-    "momentum": 81.23,
-    "health": 58.88,
+    "momentum": 77.89,
+    "health": 59.08,
     "profitability": 59.52,
-    "technical": 21.96,
-    "risk": 64.77,
+    "technical": 23.56,
+    "risk": 64.14,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 1.78,
     "eps_diluted": 1.78,
     "shares_outstanding": 2255873510.0,
-    "market_cap": 259154742632.85834,
-    "pe_ratio_ttm": 64.53932429967301
+    "market_cap": 256876322779.64166,
+    "pe_ratio_ttm": 63.97191165538316,
+    "goodwill": 3332000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 68.73814664660847,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 56.39526494065869,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 47.08224129375008,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 33.23984471383263,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 51.73875311720438,
+    "max": 68.73814664660847,
+    "low": 33.23984471383263,
+    "high": 68.73814664660847,
+    "mos_pct": -120.08648428119446,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -46,11 +92,14 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 10,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 27.131397096816833,
   "entered_top5": false,
   "exited_top5": false
 }

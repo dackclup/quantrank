@@ -3,19 +3,19 @@
   "name": "Dollar General",
   "sector": "Consumer Staples",
   "industry": "Consumer Staples Merchandise Retail",
-  "market_cap": 25649256608.825684,
-  "current_price": 116.47,
-  "rank": 74,
-  "composite_score": 60.72,
+  "market_cap": 24948950581.619263,
+  "current_price": 113.29,
+  "rank": 72,
+  "composite_score": 60.22,
   "pillar_scores": {
     "quality": 70.14,
     "value": 87.04,
     "growth": 40.62,
-    "momentum": 47.51,
-    "health": 31.65,
+    "momentum": 47.01,
+    "health": 31.81,
     "profitability": 63.43,
-    "technical": 45.87,
-    "risk": 37.68,
+    "technical": 37.05,
+    "risk": 37.28,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,60 @@
     "eps_basic": 6.87,
     "eps_diluted": 6.85,
     "shares_outstanding": 220222000.0,
-    "market_cap": 25649256608.825684,
-    "pe_ratio_ttm": 17.002919886234032
+    "market_cap": 24948950581.619263,
+    "pe_ratio_ttm": 16.53868626504049,
+    "goodwill": 4338589000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 44.447768318193646,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 398.0734572755557,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 192.56518211649708,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 657.0962005591915,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 18.250443835185585,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 192.56518211649708,
+    "max": 398.0734572755557,
+    "low": 18.250443835185585,
+    "high": 657.0962005591915,
+    "mos_pct": 41.167972491003205,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_multiples_ev_ebitda_estimate",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,11 +94,18 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 49,
+    "filing_lag_days": 51,
     "latest_period_end": "2026-01-30",
     "latest_filed_date": "2026-03-20"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_multiples_ev_ebitda_estimate",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 13.501480324399923,
   "entered_top5": false,
   "exited_top5": false
 }

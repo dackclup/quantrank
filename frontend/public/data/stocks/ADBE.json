@@ -3,19 +3,19 @@
   "name": "Adobe Inc.",
   "sector": "Information Technology",
   "industry": "Application Software",
-  "market_cap": 104143063964.84375,
-  "current_price": 256.51,
-  "rank": 82,
-  "composite_score": 59.95,
+  "market_cap": 102734237274.16992,
+  "current_price": 253.04,
+  "rank": 80,
+  "composite_score": 59.93,
   "pillar_scores": {
     "quality": 74.32,
-    "value": 68.95,
+    "value": 70.55,
     "growth": 65.75,
-    "momentum": 12.4,
-    "health": 57.33,
-    "profitability": 69.41,
-    "technical": 67.13,
-    "risk": 21.45,
+    "momentum": 9.36,
+    "health": 57.49,
+    "profitability": 69.63,
+    "technical": 66.33,
+    "risk": 21.71,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 4.6,
     "eps_diluted": 4.6,
     "shares_outstanding": 406000000.0,
-    "market_cap": 104143063964.84375,
-    "pe_ratio_ttm": 55.76304560122283
+    "market_cap": 102734237274.16992,
+    "pe_ratio_ttm": 55.00869419263757,
+    "goodwill": 12869000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 527.2254695038265,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 143.5801112612135,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 471.87209726112627,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 235.74772184250585,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 353.8099095518161,
+    "max": 527.2254695038265,
+    "low": 143.5801112612135,
+    "high": 527.2254695038265,
+    "mos_pct": 28.481371930292227,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,11 +91,14 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 44,
+    "filing_lag_days": 46,
     "latest_period_end": "2026-02-27",
     "latest_filed_date": "2026-03-25"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

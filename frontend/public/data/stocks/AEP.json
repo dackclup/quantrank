@@ -3,19 +3,19 @@
   "name": "American Electric Power",
   "sector": "Utilities",
   "industry": "Electric Utilities",
-  "market_cap": 71830267010.46716,
-  "current_price": 131.76,
-  "rank": 148,
-  "composite_score": 55.74,
+  "market_cap": 70958016142.35522,
+  "current_price": 130.16,
+  "rank": 140,
+  "composite_score": 55.96,
   "pillar_scores": {
-    "quality": 66.13,
+    "quality": 67.74,
     "value": 43.01,
     "growth": 66.13,
-    "momentum": 77.59,
-    "health": 9.32,
+    "momentum": 76.79,
+    "health": 9.44,
     "profitability": 64.52,
-    "technical": 37.25,
-    "risk": 82.17,
+    "technical": 34.81,
+    "risk": 81.77,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,59 @@
     "eps_basic": 1.61,
     "eps_diluted": 1.6,
     "shares_outstanding": 545159912.0,
-    "market_cap": 71830267010.46716,
-    "pe_ratio_ttm": 82.34999656677246
+    "market_cap": 70958016142.35522,
+    "pe_ratio_ttm": 81.35000228881836,
+    "goodwill": 53000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 84.8502912804272,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 82.8681973677277,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 131.96589851695688,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 22.66983856226217,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_utilities",
+        "tier_used": null
+      }
+    },
+    "median": 83.85924432407745,
+    "max": 131.96589851695688,
+    "low": 22.66983856226217,
+    "high": 131.96589851695688,
+    "mos_pct": -55.212469073893345,
+    "valuation_warnings": [
+      "extreme_multiples_ev_ebitda_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -43,16 +92,23 @@
       "gross_profit",
       "research_and_development",
       "sga_expense",
-      "inventory"
+      "inventory",
+      "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 3,
+    "filing_lag_days": 5,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [
+    "extreme_multiples_ev_ebitda_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 58.248963837972006,
   "entered_top5": false,
   "exited_top5": false
 }

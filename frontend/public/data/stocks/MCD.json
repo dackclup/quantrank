@@ -3,19 +3,19 @@
   "name": "McDonald's",
   "sector": "Consumer Discretionary",
   "industry": "Restaurants",
-  "market_cap": 471112240270.9961,
-  "current_price": 283.7,
-  "rank": 473,
-  "composite_score": 35.82,
+  "market_cap": 457910450000.0,
+  "current_price": 275.75,
+  "rank": 480,
+  "composite_score": 35.45,
   "pillar_scores": {
     "quality": 26.56,
-    "value": 15.1,
+    "value": 14.76,
     "growth": 51.82,
-    "momentum": 41.88,
-    "health": 54.5,
-    "profitability": 70.14,
-    "technical": 29.58,
-    "risk": 55.86,
+    "momentum": 38.75,
+    "health": 56.65,
+    "profitability": 70.83,
+    "technical": 27.19,
+    "risk": 54.7,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,60 @@
     "eps_basic": 2.79,
     "eps_diluted": 2.78,
     "shares_outstanding": 1660600000.0,
-    "market_cap": 471112240270.9961,
-    "pe_ratio_ttm": 102.05036410324865
+    "market_cap": 457910450000.0,
+    "pe_ratio_ttm": 99.1906474820144,
+    "goodwill": 3349000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 209.4713685971825,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": 49.811533605076384,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 31.915882520797236,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 49.811533605076384,
+    "max": 209.4713685971825,
+    "low": 31.915882520797236,
+    "high": 209.4713685971825,
+    "mos_pct": -453.58664960256874,
+    "valuation_warnings": [
+      "extreme_multiples_ev_ebitda_estimate",
+      "extreme_dcf_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,14 +94,22 @@
       "gross_profit",
       "research_and_development",
       "income_before_tax",
-      "accounts_receivable"
+      "accounts_receivable",
+      "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 1,
+    "filing_lag_days": 3,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_multiples_ev_ebitda_estimate",
+    "extreme_dcf_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

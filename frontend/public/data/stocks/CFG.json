@@ -3,19 +3,19 @@
   "name": "Citizens Financial Group",
   "sector": "Financials",
   "industry": "Regional Banks",
-  "market_cap": 27359234699.208313,
-  "current_price": 64.22,
-  "rank": 350,
-  "composite_score": 45.01,
+  "market_cap": 27150482430.921883,
+  "current_price": 63.73,
+  "rank": 359,
+  "composite_score": 45.11,
   "pillar_scores": {
-    "quality": 36.67,
-    "value": 44.0,
-    "growth": 23.67,
-    "momentum": 70.67,
-    "health": 57.69,
-    "profitability": 44.89,
-    "technical": 47.01,
-    "risk": 61.72,
+    "quality": 36.0,
+    "value": 45.11,
+    "growth": 23.0,
+    "momentum": 70.27,
+    "health": 56.87,
+    "profitability": 52.44,
+    "technical": 42.43,
+    "risk": 61.82,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 1.14,
     "eps_diluted": 1.13,
     "shares_outstanding": 426023578.0,
-    "market_cap": 27359234699.208313,
-    "pe_ratio_ttm": 56.831859487347906
+    "market_cap": 27150482430.921883,
+    "pe_ratio_ttm": 56.39822968339499,
+    "goodwill": 8221000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 56.09613343338602,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 60.71417802190867,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 127.12778299367132,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 60.71417802190867,
+    "max": 127.12778299367132,
+    "low": 56.09613343338602,
+    "high": 127.12778299367132,
+    "mos_pct": -4.967244255928819,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -53,11 +101,16 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 4,
+    "filing_lag_days": 6,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-04"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 41.87326927712907,
   "entered_top5": false,
   "exited_top5": false
 }

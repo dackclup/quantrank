@@ -3,19 +3,19 @@
   "name": "Cincinnati Financial",
   "sector": "Financials",
   "industry": "Property & Casualty Insurance",
-  "market_cap": 32134515605.163574,
-  "current_price": 162.05,
-  "rank": 121,
-  "composite_score": 57.04,
+  "market_cap": 32025450000.0,
+  "current_price": 161.5,
+  "rank": 131,
+  "composite_score": 56.56,
   "pillar_scores": {
     "quality": 57.33,
-    "value": 49.56,
-    "growth": 73.33,
-    "momentum": 53.14,
-    "health": 63.55,
+    "value": 48.89,
+    "growth": 73.0,
+    "momentum": 51.34,
+    "health": 62.73,
     "profitability": 55.78,
-    "technical": 38.35,
-    "risk": 68.16,
+    "technical": 38.55,
+    "risk": 68.26,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 1.77,
     "eps_diluted": 1.75,
     "shares_outstanding": 198300000.0,
-    "market_cap": 32134515605.163574,
-    "pe_ratio_ttm": 92.60000174386161
+    "market_cap": 32025450000.0,
+    "pe_ratio_ttm": 92.28571428571429,
+    "goodwill": null
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 156.7844237223088,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 94.02638189233645,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 163.59731988711744,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 94.10627163824455,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 125.44534768027667,
+    "max": 163.59731988711744,
+    "low": 94.02638189233645,
+    "high": 163.59731988711744,
+    "mos_pct": -28.74132280426696,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -51,14 +97,19 @@
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "ebitda"
+      "ebitda",
+      "goodwill",
+      "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 11,
+    "filing_lag_days": 13,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-27"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 79.24357034795764,
   "entered_top5": false,
   "exited_top5": false
 }

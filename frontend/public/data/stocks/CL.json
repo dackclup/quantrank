@@ -3,19 +3,19 @@
   "name": "Colgate-Palmolive",
   "sector": "Consumer Staples",
   "industry": "Household Products",
-  "market_cap": 69996285305.6778,
-  "current_price": 87.36,
-  "rank": 136,
-  "composite_score": 56.39,
+  "market_cap": 70148522771.38898,
+  "current_price": 87.55,
+  "rank": 125,
+  "composite_score": 56.69,
   "pillar_scores": {
     "quality": 81.94,
     "value": 25.46,
     "growth": 72.57,
-    "momentum": 40.94,
-    "health": 43.76,
+    "momentum": 41.68,
+    "health": 43.8,
     "profitability": 64.35,
-    "technical": 66.68,
-    "risk": 58.86,
+    "technical": 70.47,
+    "risk": 59.23,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 0.81,
     "eps_diluted": 0.8,
     "shares_outstanding": 801239524.0,
-    "market_cap": 69996285305.6778,
-    "pe_ratio_ttm": 109.20000076293945
+    "market_cap": 70148522771.38898,
+    "pe_ratio_ttm": 109.43750381469727,
+    "goodwill": 3107000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 46.33020183384019,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 0.8098819270674703,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 53.116819061552356,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 34.988562349571666,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 40.65938209170593,
+    "max": 53.116819061552356,
+    "low": 0.8098819270674703,
+    "high": 53.116819061552356,
+    "mos_pct": -115.32546376206996,
+    "valuation_warnings": [
+      "extreme_multiples_pb_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -43,11 +91,16 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 7,
+    "filing_lag_days": 9,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_multiples_pb_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "Trimble Inc.",
   "sector": "Information Technology",
   "industry": "Application Software",
-  "market_cap": 14330644646.453857,
-  "current_price": 61.85,
-  "rank": 490,
-  "composite_score": 33.61,
+  "market_cap": 14087359823.226929,
+  "current_price": 60.8,
+  "rank": 488,
+  "composite_score": 34.05,
   "pillar_scores": {
     "quality": 20.21,
-    "value": 55.25,
+    "value": 56.16,
     "growth": 20.21,
-    "momentum": 30.58,
-    "health": 57.29,
+    "momentum": 32.17,
+    "health": 57.45,
     "profitability": 26.94,
-    "technical": 12.77,
-    "risk": 32.57,
+    "technical": 15.31,
+    "risk": 29.78,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 0.42,
     "eps_diluted": 0.42,
     "shares_outstanding": 231700000.0,
-    "market_cap": 14330644646.453857,
-    "pe_ratio_ttm": 147.26190112885976
+    "market_cap": 14087359823.226929,
+    "pe_ratio_ttm": 144.76190294538225,
+    "goodwill": 5213600000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 33.83551040525663,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 179.93237920299597,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 31.069636127941912,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 20.486234010988316,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 32.45257326659927,
+    "max": 179.93237920299597,
+    "low": 20.486234010988316,
+    "high": 179.93237920299597,
+    "mos_pct": -87.35031807057628,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -43,11 +89,14 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 2,
+    "filing_lag_days": 4,
     "latest_period_end": "2026-04-03",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

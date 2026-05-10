@@ -3,19 +3,19 @@
   "name": "Republic Services",
   "sector": "Industrials",
   "industry": "Environmental & Facilities Services",
-  "market_cap": 71429321081.54297,
-  "current_price": 201.55,
-  "rank": 336,
-  "composite_score": 45.76,
+  "market_cap": 70887089514.16016,
+  "current_price": 200.02,
+  "rank": 357,
+  "composite_score": 45.18,
   "pillar_scores": {
     "quality": 49.05,
-    "value": 45.99,
+    "value": 46.2,
     "growth": 51.58,
-    "momentum": 45.27,
-    "health": 26.97,
+    "momentum": 39.14,
+    "health": 27.05,
     "profitability": 59.07,
-    "technical": 23.71,
-    "risk": 59.76,
+    "technical": 26.49,
+    "risk": 59.63,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 1.7,
     "eps_diluted": 1.7,
     "shares_outstanding": 354400000.0,
-    "market_cap": 71429321081.54297,
-    "pe_ratio_ttm": 118.55882532456343
+    "market_cap": 70887089514.16016,
+    "pe_ratio_ttm": 117.65882604262409,
+    "goodwill": 16926000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 198.24701574464507,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 239.9201848922033,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 193.5202399722055,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 34.11531963609058,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 195.88362785842529,
+    "max": 239.9201848922033,
+    "low": 34.11531963609058,
+    "high": 239.9201848922033,
+    "mos_pct": -2.1116498909368855,
+    "valuation_warnings": [
+      "extreme_dcf_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -46,11 +94,16 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 0,
+    "filing_lag_days": 2,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-08"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_dcf_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

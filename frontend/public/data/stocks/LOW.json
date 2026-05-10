@@ -3,19 +3,19 @@
   "name": "Lowe's",
   "sector": "Consumer Discretionary",
   "industry": "Home Improvement Retail",
-  "market_cap": 129523682739.25781,
-  "current_price": 230.88,
-  "rank": 266,
-  "composite_score": 49.51,
+  "market_cap": 128581198287.96387,
+  "current_price": 229.2,
+  "rank": 252,
+  "composite_score": 50.22,
   "pillar_scores": {
-    "quality": 43.75,
+    "quality": 44.79,
     "value": 71.35,
     "growth": 37.76,
-    "momentum": 32.42,
-    "health": 46.04,
-    "profitability": 65.45,
-    "technical": 41.93,
-    "risk": 49.63,
+    "momentum": 35.31,
+    "health": 46.2,
+    "profitability": 67.71,
+    "technical": 40.14,
+    "risk": 49.57,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 11.87,
     "eps_diluted": 11.85,
     "shares_outstanding": 561000000.0,
-    "market_cap": 129523682739.25781,
-    "pe_ratio_ttm": 19.483544715849156
+    "market_cap": 128581198287.96387,
+    "pe_ratio_ttm": 19.34177189436643,
+    "goodwill": 3945000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 916.9673086459558,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": 739.3389238689533,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 106.08914652659648,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 739.3389238689533,
+    "max": 916.9673086459558,
+    "low": 106.08914652659648,
+    "high": 916.9673086459558,
+    "mos_pct": 68.99933311385246,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,13 +92,18 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 46,
+    "filing_lag_days": 48,
     "latest_period_end": "2026-01-30",
     "latest_filed_date": "2026-03-23"
   },
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

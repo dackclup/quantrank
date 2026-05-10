@@ -3,19 +3,19 @@
   "name": "TE Connectivity",
   "sector": "Information Technology",
   "industry": "Electronic Manufacturing Services",
-  "market_cap": 62130166823.93689,
-  "current_price": 210.06,
-  "rank": 77,
-  "composite_score": 60.42,
+  "market_cap": 60988481188.17111,
+  "current_price": 206.2,
+  "rank": 63,
+  "composite_score": 61.24,
   "pillar_scores": {
-    "quality": 57.19,
-    "value": 76.94,
+    "quality": 56.85,
+    "value": 79.91,
     "growth": 46.58,
-    "momentum": 50.6,
-    "health": 78.13,
+    "momentum": 54.03,
+    "health": 78.29,
     "profitability": 52.97,
-    "technical": 40.74,
-    "risk": 55.41,
+    "technical": 37.45,
+    "risk": 54.48,
     "sentiment": null,
     "ml": null
   },
@@ -32,20 +32,77 @@
     "eps_basic": 5.46,
     "eps_diluted": 5.42,
     "shares_outstanding": 295773434.0,
-    "market_cap": 62130166823.93689,
-    "pe_ratio_ttm": 38.75645711413169
+    "market_cap": 60988481188.17111,
+    "pe_ratio_ttm": 38.04427987974948,
+    "goodwill": 7437000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 40.462162455784075,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 394.6387487257387,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 472.9140907981932,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 520.0318085458186,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 14.120593519514962,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 94.77957799003536,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 244.70916335788704,
+    "max": 520.0318085458186,
+    "low": 14.120593519514962,
+    "high": 520.0318085458186,
+    "mos_pct": 15.736707968440564,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_graham_estimate",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 16,
     "latest_period_end": "2026-03-27",
     "latest_filed_date": "2026-04-24"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_graham_estimate",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 9.69323025813062,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "Axon Enterprise",
   "sector": "Industrials",
   "industry": "Aerospace & Defense",
-  "market_cap": 34395468065.14685,
-  "current_price": 426.89,
+  "market_cap": 32514106680.023163,
+  "current_price": 403.54,
   "rank": 502,
-  "composite_score": 22.8,
+  "composite_score": 23.02,
   "pillar_scores": {
     "quality": 13.29,
-    "value": 8.54,
+    "value": 9.07,
     "growth": 31.65,
-    "momentum": 10.21,
-    "health": 61.79,
+    "momentum": 12.3,
+    "health": 61.91,
     "profitability": 21.52,
-    "technical": 72.86,
-    "risk": 21.91,
+    "technical": 70.02,
+    "risk": 21.15,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,62 @@
     "eps_basic": 2.11,
     "eps_diluted": 2.05,
     "shares_outstanding": 80572201.0,
-    "market_cap": 34395468065.14685,
-    "pe_ratio_ttm": 208.2390315358232
+    "market_cap": 32514106680.023163,
+    "pe_ratio_ttm": 196.84878465605948,
+    "goodwill": 1894376000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 32.84726284668802,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 177.27330056773474,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 178.81061506147577,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 28.934893349956997,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 5.009930774940066,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 32.84726284668802,
+    "max": 178.81061506147577,
+    "low": 5.009930774940066,
+    "high": 178.81061506147577,
+    "mos_pct": -1128.5346588189486,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_graham_estimate",
+      "extreme_multiples_ev_ebitda_estimate",
+      "extreme_dcf_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -43,11 +95,22 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 1,
+    "filing_lag_days": 3,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_graham_estimate",
+    "extreme_multiples_ev_ebitda_estimate",
+    "extreme_dcf_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 16.688981848714793,
   "entered_top5": false,
   "exited_top5": false
 }

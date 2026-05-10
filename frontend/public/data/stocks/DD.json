@@ -3,19 +3,19 @@
   "name": "DuPont",
   "sector": "Materials",
   "industry": "Specialty Chemicals",
-  "market_cap": 35506105888.12256,
-  "current_price": 48.36,
-  "rank": 259,
-  "composite_score": 49.94,
+  "market_cap": 36533989807.662964,
+  "current_price": 49.76,
+  "rank": 248,
+  "composite_score": 50.65,
   "pillar_scores": {
     "quality": 47.6,
-    "value": 34.62,
+    "value": 33.33,
     "growth": 40.87,
-    "momentum": 75.65,
-    "health": 63.98,
+    "momentum": 81.32,
+    "health": 64.14,
     "profitability": 50.32,
-    "technical": 53.24,
-    "risk": 61.12,
+    "technical": 58.02,
+    "risk": 62.12,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,60 @@
     "eps_basic": 0.39,
     "eps_diluted": 0.39,
     "shares_outstanding": 734204000.0,
-    "market_cap": 35506105888.12256,
-    "pe_ratio_ttm": 124.000001565004
+    "market_cap": 36533989807.662964,
+    "pe_ratio_ttm": 127.58973928598257,
+    "goodwill": 7865000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 5.039583631020494,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 32.98165553250759,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 63.22309671532771,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 32.98165553250759,
+    "max": 63.22309671532771,
+    "low": 5.039583631020494,
+    "high": 63.22309671532771,
+    "mos_pct": -50.87174224013237,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_graham_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,11 +94,18 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 3,
+    "filing_lag_days": 5,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_graham_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 4.515093897608839,
   "entered_top5": false,
   "exited_top5": false
 }

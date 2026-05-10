@@ -3,19 +3,19 @@
   "name": "Agilent Technologies",
   "sector": "Health Care",
   "industry": "Life Sciences Tools & Services",
-  "market_cap": 33541852711.3095,
-  "current_price": 118.65,
-  "rank": 280,
-  "composite_score": 48.67,
+  "market_cap": 32685284894.507103,
+  "current_price": 115.62,
+  "rank": 274,
+  "composite_score": 49.09,
   "pillar_scores": {
-    "quality": 63.98,
-    "value": 24.29,
+    "quality": 64.41,
+    "value": 25.99,
     "growth": 50.0,
-    "momentum": 24.8,
-    "health": 73.15,
-    "profitability": 68.93,
-    "technical": 63.3,
-    "risk": 39.11,
+    "momentum": 24.1,
+    "health": 73.23,
+    "profitability": 69.49,
+    "technical": 63.99,
+    "risk": 37.48,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,59 @@
     "eps_basic": 1.08,
     "eps_diluted": 1.07,
     "shares_outstanding": 282695763.0,
-    "market_cap": 33541852711.3095,
-    "pe_ratio_ttm": 110.88785189334476
+    "market_cap": 32685284894.507103,
+    "pe_ratio_ttm": 108.05607733325422,
+    "goodwill": 4484000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 26.441806436494126,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 81.7667118915407,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 82.36464591538618,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 60.068033662141566,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 10.250214746905606,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 53.663977547205484,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 56.866005604673525,
+    "max": 82.36464591538618,
+    "low": 10.250214746905606,
+    "high": 82.36464591538618,
+    "mos_pct": -103.3200706066118,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -43,11 +92,17 @@
       "gross_profit"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 66,
+    "filing_lag_days": 68,
     "latest_period_end": "2026-01-31",
     "latest_filed_date": "2026-03-03"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 7.06766871493578,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "Verizon",
   "sector": "Communication Services",
   "industry": "Integrated Telecommunication Services",
-  "market_cap": 202083611044.96082,
-  "current_price": 47.09,
-  "rank": 222,
-  "composite_score": 51.89,
+  "market_cap": 202641502002.68646,
+  "current_price": 47.22,
+  "rank": 231,
+  "composite_score": 51.5,
   "pillar_scores": {
     "quality": 44.57,
     "value": 74.64,
     "growth": 27.17,
-    "momentum": 72.86,
-    "health": 21.2,
+    "momentum": 68.97,
+    "health": 21.24,
     "profitability": 47.83,
-    "technical": 52.74,
-    "risk": 69.09,
+    "technical": 53.29,
+    "risk": 70.92,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 1.2,
     "eps_diluted": 1.2,
     "shares_outstanding": 4291433646.0,
-    "market_cap": 202083611044.96082,
-    "pe_ratio_ttm": 39.24166679382324
+    "market_cap": 202641502002.68646,
+    "pe_ratio_ttm": 39.35000101725261,
+    "goodwill": 30628000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 34.22113896973388,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 69.28509498099257,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 50.860433609017925,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 125.72135265083271,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 17.61595273874742,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 50.860433609017925,
+    "max": 125.72135265083271,
+    "low": 17.61595273874742,
+    "high": 125.72135265083271,
+    "mos_pct": 7.157690428477441,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,11 +91,14 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 7,
+    "filing_lag_days": 9,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 14.25980337760534,
   "entered_top5": false,
   "exited_top5": false
 }

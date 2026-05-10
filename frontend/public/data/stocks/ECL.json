@@ -3,19 +3,19 @@
   "name": "Ecolab",
   "sector": "Materials",
   "industry": "Specialty Chemicals",
-  "market_cap": 72193166564.9414,
-  "current_price": 256.55,
-  "rank": 206,
-  "composite_score": 52.36,
+  "market_cap": 71537508343.50586,
+  "current_price": 254.22,
+  "rank": 158,
+  "composite_score": 54.99,
   "pillar_scores": {
-    "quality": 73.08,
-    "value": 17.31,
+    "quality": 79.81,
+    "value": 17.95,
     "growth": 90.38,
-    "momentum": 40.74,
-    "health": 34.54,
-    "profitability": 73.72,
-    "technical": 36.4,
-    "risk": 56.04,
+    "momentum": 43.58,
+    "health": 34.7,
+    "profitability": 78.21,
+    "technical": 36.65,
+    "risk": 55.25,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 1.53,
     "eps_diluted": 1.52,
     "shares_outstanding": 281400000.0,
-    "market_cap": 72193166564.9414,
-    "pe_ratio_ttm": 168.7828867059005
+    "market_cap": 71537508343.50586,
+    "pe_ratio_ttm": 167.25000080309417,
+    "goodwill": 9438700000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 128.54388822926035,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 111.57682842254796,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 109.29058794339707,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 44.45070098130703,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 110.43370818297251,
+    "max": 128.54388822926035,
+    "low": 44.45070098130703,
+    "high": 128.54388822926035,
+    "mos_pct": -130.20145334565578,
+    "valuation_warnings": [
+      "extreme_dcf_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -43,11 +91,16 @@
       "gross_profit"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 1,
+    "filing_lag_days": 3,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_dcf_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

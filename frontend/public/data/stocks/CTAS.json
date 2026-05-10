@@ -3,19 +3,19 @@
   "name": "Cintas",
   "sector": "Industrials",
   "industry": "Diversified Support Services",
-  "market_cap": 68018547914.35242,
-  "current_price": 170.04,
-  "rank": 81,
-  "composite_score": 60.17,
+  "market_cap": 66790505038.29956,
+  "current_price": 166.97,
+  "rank": 78,
+  "composite_score": 60.04,
   "pillar_scores": {
     "quality": 87.34,
-    "value": 55.27,
+    "value": 55.49,
     "growth": 44.62,
-    "momentum": 21.36,
-    "health": 70.52,
+    "momentum": 20.82,
+    "health": 70.64,
     "profitability": 83.54,
-    "technical": 24.75,
-    "risk": 52.22,
+    "technical": 22.61,
+    "risk": 51.69,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,60 @@
     "eps_basic": 3.7,
     "eps_diluted": 3.65,
     "shares_outstanding": 400015000.0,
-    "market_cap": 68018547914.35242,
-    "pe_ratio_ttm": 46.58629953044735
+    "market_cap": 66790505038.29956,
+    "pe_ratio_ttm": 45.74520581389127,
+    "goodwill": 3499028000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 19.105555966522417,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 429.4547150555779,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 83.3220536786054,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 365.2014088939572,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 3.856166935591498,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 35.83459245252689,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 59.578323065566146,
+    "max": 429.4547150555779,
+    "low": 3.856166935591498,
+    "high": 429.4547150555779,
+    "mos_pct": -180.2529387021385,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_graham_estimate",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,11 +94,18 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 31,
+    "filing_lag_days": 33,
     "latest_period_end": "2026-02-28",
     "latest_filed_date": "2026-04-07"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_graham_estimate",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 1.495686411759559,
   "entered_top5": false,
   "exited_top5": false
 }

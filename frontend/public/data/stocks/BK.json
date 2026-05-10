@@ -3,19 +3,19 @@
   "name": "BNY Mellon",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 89945608562.7945,
-  "current_price": 130.69,
-  "rank": 227,
-  "composite_score": 51.63,
+  "market_cap": 89814841978.5,
+  "current_price": 130.5,
+  "rank": 235,
+  "composite_score": 51.3,
   "pillar_scores": {
-    "quality": 48.67,
-    "value": 40.44,
-    "growth": 42.67,
-    "momentum": 75.95,
-    "health": 53.75,
-    "profitability": 46.22,
-    "technical": 61.4,
-    "risk": 79.71,
+    "quality": 47.33,
+    "value": 40.89,
+    "growth": 42.33,
+    "momentum": 76.0,
+    "health": 52.93,
+    "profitability": 46.44,
+    "technical": 62.3,
+    "risk": 79.55,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 2.26,
     "eps_diluted": 2.24,
     "shares_outstanding": 688236337.0,
-    "market_cap": 89945608562.7945,
-    "pe_ratio_ttm": 58.343751089913496
+    "market_cap": 89814841978.5,
+    "pe_ratio_ttm": 58.25892857142857,
+    "goodwill": 16734000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 68.5209330796559,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 126.8847135192328,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 193.46357583986597,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 126.8847135192328,
+    "max": 193.46357583986597,
+    "low": 68.5209330796559,
+    "high": 193.46357583986597,
+    "mos_pct": -2.849268742068919,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -55,13 +103,18 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 7,
+    "filing_lag_days": 9,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 36.6734487022588,
   "entered_top5": false,
   "exited_top5": false
 }

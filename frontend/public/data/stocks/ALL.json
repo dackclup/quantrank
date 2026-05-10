@@ -3,19 +3,19 @@
   "name": "Allstate",
   "sector": "Financials",
   "industry": "Property & Casualty Insurance",
-  "market_cap": 55126859527.58789,
-  "current_price": 213.67,
-  "rank": 10,
-  "composite_score": 69.11,
+  "market_cap": 54992698425.29297,
+  "current_price": 213.15,
+  "rank": 14,
+  "composite_score": 68.25,
   "pillar_scores": {
     "quality": 72.0,
-    "value": 76.0,
+    "value": 76.44,
     "growth": 73.33,
-    "momentum": 64.44,
-    "health": 60.96,
-    "profitability": 61.11,
-    "technical": 47.86,
-    "risk": 71.48,
+    "momentum": 60.96,
+    "health": 60.14,
+    "profitability": 54.0,
+    "technical": 48.01,
+    "risk": 71.28,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 9.36,
     "eps_diluted": 9.25,
     "shares_outstanding": 258000000.0,
-    "market_cap": 55126859527.58789,
-    "pe_ratio_ttm": 23.0994592615076
+    "market_cap": 54992698425.29297,
+    "pe_ratio_ttm": 23.043242583403718,
+    "goodwill": 3118000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 209.10136840164836,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 500.67506596402524,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 253.51331116848877,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 138.5724227380259,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 231.30733978506856,
+    "max": 500.67506596402524,
+    "low": 138.5724227380259,
+    "high": 500.67506596402524,
+    "mos_pct": 7.849878825918817,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -53,13 +99,16 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 9,
+    "filing_lag_days": 11,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 108.25968992248062,
   "entered_top5": false,
   "exited_top5": false
 }

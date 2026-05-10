@@ -3,19 +3,19 @@
   "name": "Royal Caribbean Group",
   "sector": "Consumer Discretionary",
   "industry": "Hotels, Resorts & Cruise Lines",
-  "market_cap": 85334596004.49219,
-  "current_price": 280.87,
-  "rank": 360,
-  "composite_score": 44.58,
+  "market_cap": 83624074408.98438,
+  "current_price": 275.24,
+  "rank": 338,
+  "composite_score": 46.0,
   "pillar_scores": {
-    "quality": 62.76,
-    "value": 21.88,
+    "quality": 65.1,
+    "value": 23.26,
     "growth": 70.31,
-    "momentum": 36.5,
+    "momentum": 37.95,
     "health": 12.15,
-    "profitability": 62.33,
-    "technical": 49.55,
-    "risk": 38.84,
+    "profitability": 64.24,
+    "technical": 53.39,
+    "risk": 38.05,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 3.49,
     "eps_diluted": 3.48,
     "shares_outstanding": 303822400.0,
-    "market_cap": 85334596004.49219,
-    "pe_ratio_ttm": 80.7097687118355
+    "market_cap": 83624074408.98438,
+    "pe_ratio_ttm": 79.09195121677442,
+    "goodwill": 808000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 83.5808005929869,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 262.2159578123004,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 200.92993152104498,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 160.98327079933293,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 65.45989203305396,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 29.1025936416128,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 122.28203569615991,
+    "max": 262.2159578123004,
+    "low": 29.1025936416128,
+    "high": 262.2159578123004,
+    "mos_pct": -125.0862022924423,
+    "valuation_warnings": [
+      "extreme_dcf_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,13 +93,18 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 10,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [
+    "extreme_dcf_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 28.34550711204967,
   "entered_top5": false,
   "exited_top5": false
 }

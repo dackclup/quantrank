@@ -3,18 +3,18 @@
   "name": "Waters Corporation",
   "sector": "Health Care",
   "industry": "Life Sciences Tools & Services",
-  "market_cap": 20871328428.466797,
-  "current_price": 350.49,
-  "rank": 93,
-  "composite_score": 58.9,
+  "market_cap": 21147636660.7666,
+  "current_price": 355.13,
+  "rank": 84,
+  "composite_score": 59.18,
   "pillar_scores": {
     "quality": 76.27,
-    "value": 58.19,
+    "value": 57.91,
     "growth": 47.46,
-    "momentum": 22.16,
-    "health": 73.9,
-    "profitability": 70.9,
-    "technical": 60.61,
+    "momentum": 23.66,
+    "health": 73.98,
+    "profitability": 71.75,
+    "technical": 62.35,
     "risk": 34.2,
     "sentiment": null,
     "ml": null
@@ -32,10 +32,60 @@
     "eps_basic": 10.8,
     "eps_diluted": 10.76,
     "shares_outstanding": 59549000.0,
-    "market_cap": 20871328428.466797,
-    "pe_ratio_ttm": 32.57341916676348
+    "market_cap": 21147636660.7666,
+    "pe_ratio_ttm": 33.00464729394168,
+    "goodwill": 1340081000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 51.94129138356063,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 852.9973335266113,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 144.97193923071768,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 663.300740466505,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 404.1363398486113,
+    "max": 852.9973335266113,
+    "low": 51.94129138356063,
+    "high": 852.9973335266113,
+    "mos_pct": 12.126188648156834,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_graham_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,13 +95,21 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 74,
+    "filing_lag_days": 76,
     "latest_period_end": "2025-12-31",
     "latest_filed_date": "2026-02-23"
   },
   "risk_flags": [
-    "sloan_accruals_top_decile"
+    "sloan_accruals_top_decile",
+    "net_issuance_top_decile"
   ],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_graham_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 11.13338595106551,
   "entered_top5": false,
   "exited_top5": false
 }

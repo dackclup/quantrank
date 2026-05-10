@@ -3,19 +3,19 @@
   "name": "PayPal",
   "sector": "Financials",
   "industry": "Transaction & Payment Processing Services",
-  "market_cap": 41228241088.86719,
-  "current_price": 46.22,
-  "rank": 87,
-  "composite_score": 59.6,
+  "market_cap": 40470039047.24121,
+  "current_price": 45.37,
+  "rank": 91,
+  "composite_score": 58.4,
   "pillar_scores": {
     "quality": 68.0,
-    "value": 78.67,
+    "value": 74.89,
     "growth": 57.33,
-    "momentum": 27.19,
-    "health": 64.74,
-    "profitability": 55.11,
-    "technical": 45.42,
-    "risk": 11.87,
+    "momentum": 27.34,
+    "health": 64.94,
+    "profitability": 52.89,
+    "technical": 40.49,
+    "risk": 11.9,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 1.22,
     "eps_diluted": 1.21,
     "shares_outstanding": 892000000.0,
-    "market_cap": 41228241088.86719,
-    "pe_ratio_ttm": 38.198348116283576
+    "market_cap": 40470039047.24121,
+    "pe_ratio_ttm": 37.49586688585518,
+    "goodwill": 10946000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 31.427002756262848,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 65.49371133151033,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 46.454006826982805,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 17.16371551311589,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 38.94050479162283,
+    "max": 65.49371133151033,
+    "low": 17.16371551311589,
+    "high": 65.49371133151033,
+    "mos_pct": -16.51107034864401,
+    "valuation_warnings": [
+      "goodwill_heavy"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,11 +93,16 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 3,
+    "filing_lag_days": 5,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy"
+  ],
+  "has_history": true,
+  "tangible_book_value": 9.946188340807176,
   "entered_top5": false,
   "exited_top5": false
 }

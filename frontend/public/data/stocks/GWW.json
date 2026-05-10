@@ -3,19 +3,19 @@
   "name": "W. W. Grainger",
   "sector": "Industrials",
   "industry": "Industrial Machinery & Supplies & Components",
-  "market_cap": 135330439490.67297,
-  "current_price": 1234.1,
-  "rank": 109,
-  "composite_score": 57.65,
+  "market_cap": 135287670788.92676,
+  "current_price": 1233.71,
+  "rank": 100,
+  "composite_score": 57.85,
   "pillar_scores": {
     "quality": 83.86,
-    "value": 16.24,
+    "value": 16.03,
     "growth": 56.33,
-    "momentum": 65.76,
-    "health": 68.57,
+    "momentum": 66.38,
+    "health": 68.69,
     "profitability": 61.6,
-    "technical": 50.77,
-    "risk": 64.74,
+    "technical": 53.44,
+    "risk": 65.34,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,61 @@
     "eps_basic": 11.67,
     "eps_diluted": 11.65,
     "shares_outstanding": 109659219.0,
-    "market_cap": 135330439490.67297,
-    "pe_ratio_ttm": 105.93132837647532
+    "market_cap": 135287670788.92676,
+    "pe_ratio_ttm": 105.89785072424893,
+    "goodwill": 358000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 157.90452173392146,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 1463.439726475307,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 162.3653321832639,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 513.3564463181323,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": 124.85124629611266,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 141.23850267530986,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 160.13492695859267,
+    "max": 1463.439726475307,
+    "low": 124.85124629611266,
+    "high": 1463.439726475307,
+    "mos_pct": -670.4190362271873,
+    "valuation_warnings": [
+      "extreme_graham_estimate",
+      "extreme_multiples_pb_estimate",
+      "extreme_rim_estimate",
+      "extreme_dcf_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,11 +96,19 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 1,
+    "filing_lag_days": 3,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_graham_estimate",
+    "extreme_multiples_pb_estimate",
+    "extreme_rim_estimate",
+    "extreme_dcf_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 30.129705738648386,
   "entered_top5": false,
   "exited_top5": false
 }

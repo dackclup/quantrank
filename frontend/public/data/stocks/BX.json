@@ -3,39 +3,88 @@
   "name": "Blackstone Inc.",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 91587012729.3288,
-  "current_price": 122.33,
-  "rank": 268,
-  "composite_score": 49.42,
+  "market_cap": 93017534306.45557,
+  "current_price": 123.77,
+  "rank": 336,
+  "composite_score": 46.25,
   "pillar_scores": {
-    "quality": 70.67,
-    "value": 38.22,
+    "quality": 71.33,
+    "value": 24.22,
     "growth": 55.33,
-    "momentum": 16.09,
-    "health": 49.8,
-    "profitability": 58.0,
-    "technical": 54.08,
-    "risk": 30.71,
+    "momentum": 18.08,
+    "health": 48.51,
+    "profitability": 53.56,
+    "technical": 52.54,
+    "risk": 31.41,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 14450265000.0,
-    "net_income": 3019214000.0,
-    "total_assets": 47708975000.0,
-    "total_liabilities": 25827803000.0,
-    "stockholders_equity": 8665526000.0,
-    "cash": 2631241000.0,
-    "operating_cash_flow": 4663161000.0,
-    "capex": 115703000.0,
-    "free_cash_flow": 4547458000.0,
-    "eps_basic": 3.87,
-    "eps_diluted": 3.87,
-    "shares_outstanding": 748688068.0,
-    "market_cap": 91587012729.3288,
-    "pe_ratio_ttm": 31.609819594587773
+    "revenue": 14778402000.0,
+    "net_income": 3054091000.0,
+    "total_assets": 48326982000.0,
+    "total_liabilities": 26910271000.0,
+    "stockholders_equity": 8370770000.0,
+    "cash": 2448485000.0,
+    "operating_cash_flow": 4544989000.0,
+    "capex": 119834000.0,
+    "free_cash_flow": 4425155000.0,
+    "eps_basic": 0.83,
+    "eps_diluted": 0.83,
+    "shares_outstanding": 751535403.0,
+    "market_cap": 93017534306.45557,
+    "pe_ratio_ttm": 149.12047788321254,
+    "goodwill": 1890202000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 24.331300735172263,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 46.62814175581731,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 25.45723288204753,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 18.48972564289724,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 24.8942668086099,
+    "max": 46.62814175581731,
+    "low": 18.48972564289724,
+    "high": 46.62814175581731,
+    "mos_pct": -397.1827352644083,
+    "valuation_warnings": [
+      "extreme_graham_estimate",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -53,11 +102,17 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 70,
-    "latest_period_end": "2025-12-31",
-    "latest_filed_date": "2026-02-27"
+    "filing_lag_days": 2,
+    "latest_period_end": "2026-03-31",
+    "latest_filed_date": "2026-05-08"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_graham_estimate",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 8.460338627586916,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "Goldman Sachs",
   "sector": "Financials",
   "industry": "Investment Banking & Brokerage",
-  "market_cap": 272737532552.87878,
-  "current_price": 925.87,
-  "rank": 194,
-  "composite_score": 53.45,
+  "market_cap": 275862961868.51514,
+  "current_price": 936.48,
+  "rank": 182,
+  "composite_score": 53.56,
   "pillar_scores": {
-    "quality": 51.33,
-    "value": 46.67,
-    "growth": 58.67,
-    "momentum": 69.77,
-    "health": 47.89,
-    "profitability": 45.33,
-    "technical": 51.25,
-    "risk": 69.12,
+    "quality": 49.33,
+    "value": 48.44,
+    "growth": 56.33,
+    "momentum": 74.1,
+    "health": 47.07,
+    "profitability": 45.56,
+    "technical": 52.79,
+    "risk": 69.16,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 17.74,
     "eps_diluted": 17.55,
     "shares_outstanding": 294574329.0,
-    "market_cap": 272737532552.87878,
-    "pe_ratio_ttm": 52.75612507790242
+    "market_cap": 275862961868.51514,
+    "pe_ratio_ttm": 53.36068264779202,
+    "goodwill": 6590000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 580.2444398668921,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 949.9294494776912,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 847.4370876443862,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 406.6416481897155,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 713.8407637556392,
+    "max": 949.9294494776912,
+    "low": 406.6416481897155,
+    "high": 949.9294494776912,
+    "mos_pct": -31.188918876216537,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -54,13 +100,16 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 7,
+    "filing_lag_days": 9,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 391.2764577662842,
   "entered_top5": false,
   "exited_top5": false
 }

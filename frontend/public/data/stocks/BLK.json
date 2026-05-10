@@ -3,19 +3,19 @@
   "name": "BlackRock",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 165889386211.864,
-  "current_price": 1067.74,
-  "rank": 464,
-  "composite_score": 36.91,
+  "market_cap": 168544568153.38806,
+  "current_price": 1084.83,
+  "rank": 410,
+  "composite_score": 42.38,
   "pillar_scores": {
-    "quality": 34.0,
-    "value": 14.22,
-    "growth": 43.67,
-    "momentum": 40.14,
-    "health": 64.38,
-    "profitability": 46.22,
-    "technical": 51.44,
-    "risk": 53.05,
+    "quality": 42.0,
+    "value": 22.0,
+    "growth": 43.0,
+    "momentum": 44.17,
+    "health": 63.71,
+    "profitability": 58.44,
+    "technical": 58.52,
+    "risk": 54.12,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 14.24,
     "eps_diluted": 14.06,
     "shares_outstanding": 155364965.0,
-    "market_cap": 165889386211.864,
-    "pe_ratio_ttm": 75.94167782605797
+    "market_cap": 168544568153.38806,
+    "pe_ratio_ttm": 77.15718037373311,
+    "goodwill": 35296000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 789.8694856467367,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 833.9370590430347,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 811.9032723448856,
+    "max": 833.9370590430347,
+    "low": 789.8694856467367,
+    "high": 833.9370590430347,
+    "mos_pct": -33.615664945105216,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -52,13 +100,18 @@
       "retained_earnings"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 2,
+    "filing_lag_days": 4,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

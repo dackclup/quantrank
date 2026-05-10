@@ -3,19 +3,19 @@
   "name": "RTX Corporation",
   "sector": "Industrials",
   "industry": "Aerospace & Defense",
-  "market_cap": 244256924.3133545,
-  "current_price": 176.78,
-  "rank": 296,
-  "composite_score": 47.9,
+  "market_cap": 243303547.94006348,
+  "current_price": 176.09,
+  "rank": 290,
+  "composite_score": 48.14,
   "pillar_scores": {
     "quality": 12.97,
     "value": 91.14,
     "growth": 53.8,
-    "momentum": 65.79,
-    "health": 30.12,
+    "momentum": 66.28,
+    "health": 30.24,
     "profitability": 16.46,
-    "technical": 41.24,
-    "risk": 73.97,
+    "technical": 44.22,
+    "risk": 74.34,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 1.53,
     "eps_diluted": 1.51,
     "shares_outstanding": 1381700.0,
-    "market_cap": 244256924.3133545,
-    "pe_ratio_ttm": 117.07284687370654
+    "market_cap": 243303547.94006348,
+    "pe_ratio_ttm": 116.6158916144971,
+    "goodwill": 53276000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": null
+      }
+    },
+    "median": null,
+    "max": null,
+    "low": null,
+    "high": null,
+    "mos_pct": null,
+    "valuation_warnings": [
+      "data_quality_input_corruption"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -43,11 +91,16 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 17,
+    "filing_lag_days": 19,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-21"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "data_quality_input_corruption"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

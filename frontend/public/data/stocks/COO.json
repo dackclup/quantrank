@@ -3,19 +3,19 @@
   "name": "Cooper Companies (The)",
   "sector": "Health Care",
   "industry": "Health Care Supplies",
-  "market_cap": 11922561119.07959,
-  "current_price": 61.11,
-  "rank": 488,
-  "composite_score": 34.13,
+  "market_cap": 11706000000.0,
+  "current_price": 60.0,
+  "rank": 483,
+  "composite_score": 34.57,
   "pillar_scores": {
     "quality": 20.34,
-    "value": 52.82,
+    "value": 54.52,
     "growth": 27.54,
-    "momentum": 23.95,
-    "health": 55.62,
-    "profitability": 33.33,
-    "technical": 32.42,
-    "risk": 25.17,
+    "momentum": 23.66,
+    "health": 55.7,
+    "profitability": 33.9,
+    "technical": 33.91,
+    "risk": 24.7,
     "sentiment": null,
     "ml": null
   },
@@ -32,20 +32,75 @@
     "eps_basic": 0.67,
     "eps_diluted": 0.66,
     "shares_outstanding": 195100000.0,
-    "market_cap": 11922561119.07959,
-    "pe_ratio_ttm": 92.59091001568419
+    "market_cap": 11706000000.0,
+    "pe_ratio_ttm": 90.9090909090909,
+    "goodwill": 3905400000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 33.047210068105514,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 50.435541914408276,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 152.92627759068077,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 57.73084016566933,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 16.573177174895598,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 50.435541914408276,
+    "max": 152.92627759068077,
+    "low": 16.573177174895598,
+    "high": 152.92627759068077,
+    "mos_pct": -18.963726218750864,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 63,
+    "filing_lag_days": 65,
     "latest_period_end": "2026-01-31",
     "latest_filed_date": "2026-03-06"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 14.950281906714505,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "Teradyne",
   "sector": "Information Technology",
   "industry": "Semiconductor Materials & Equipment",
-  "market_cap": 55432377106.93359,
-  "current_price": 354.11,
-  "rank": 160,
-  "composite_score": 54.97,
+  "market_cap": 56318394080.200195,
+  "current_price": 359.77,
+  "rank": 147,
+  "composite_score": 55.69,
   "pillar_scores": {
-    "quality": 64.04,
-    "value": 24.43,
+    "quality": 63.7,
+    "value": 25.11,
     "growth": 31.16,
-    "momentum": 80.13,
-    "health": 88.84,
+    "momentum": 84.54,
+    "health": 88.92,
     "profitability": 67.81,
-    "technical": 59.91,
-    "risk": 48.74,
+    "technical": 62.0,
+    "risk": 48.9,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,60 @@
     "eps_basic": 2.55,
     "eps_diluted": 2.53,
     "shares_outstanding": 156540000.0,
-    "market_cap": 55432377106.93359,
-    "pe_ratio_ttm": 139.96442108757412
+    "market_cap": 56318394080.200195,
+    "pe_ratio_ttm": 142.2015766852458,
+    "goodwill": 514175000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 34.308521637585734,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 179.22145692680493,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 199.4115744085831,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 202.96861099636192,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 21.857145774999058,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 37.54803678778111,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 108.38474685729302,
+    "max": 202.96861099636192,
+    "low": 21.857145774999058,
+    "high": 202.96861099636192,
+    "mos_pct": -231.93784129732785,
+    "valuation_warnings": [
+      "extreme_graham_estimate",
+      "extreme_rim_estimate",
+      "extreme_dcf_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -43,13 +93,20 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 7,
+    "filing_lag_days": 9,
     "latest_period_end": "2026-03-29",
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [
+    "extreme_graham_estimate",
+    "extreme_rim_estimate",
+    "extreme_dcf_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 16.485639453174908,
   "entered_top5": false,
   "exited_top5": false
 }

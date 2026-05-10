@@ -3,19 +3,19 @@
   "name": "Seagate Technology",
   "sector": "Information Technology",
   "industry": "Technology Hardware, Storage & Peripherals",
-  "market_cap": 171995321718.67126,
-  "current_price": 766.44,
-  "rank": 40,
-  "composite_score": 63.36,
+  "market_cap": 175630735192.0276,
+  "current_price": 782.64,
+  "rank": 36,
+  "composite_score": 63.82,
   "pillar_scores": {
     "quality": 97.09,
-    "value": 29.68,
+    "value": 30.59,
     "growth": 27.4,
-    "momentum": 93.6,
-    "health": 39.4,
-    "profitability": 84.25,
-    "technical": 72.01,
-    "risk": 54.61,
+    "momentum": 95.84,
+    "health": 39.48,
+    "profitability": 84.02,
+    "technical": 71.61,
+    "risk": 54.75,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,59 @@
     "eps_basic": 8.71,
     "eps_diluted": 8.29,
     "shares_outstanding": 224408070.0,
-    "market_cap": 171995321718.67126,
-    "pe_ratio_ttm": 92.45355879872211
+    "market_cap": 175630735192.0276,
+    "pe_ratio_ttm": 94.40772191175363,
+    "goodwill": 1221000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 332.55896455494036,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 48.45004898699079,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 430.48166135395036,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 64.0167806351005,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 198.28787259502042,
+    "max": 430.48166135395036,
+    "low": 48.45004898699079,
+    "high": 430.48166135395036,
+    "mos_pct": -294.69888118013523,
+    "valuation_warnings": [
+      "extreme_multiples_pb_estimate",
+      "extreme_dcf_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -43,13 +92,20 @@
       "gross_profit"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 9,
+    "filing_lag_days": 11,
     "latest_period_end": "2026-04-03",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [
-    "altman_distress"
+    "altman_distress",
+    "net_issuance_top_decile"
   ],
+  "valuation_warnings": [
+    "extreme_multiples_pb_estimate",
+    "extreme_dcf_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

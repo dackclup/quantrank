@@ -3,19 +3,19 @@
   "name": "Take-Two Interactive",
   "sector": "Communication Services",
   "industry": "Interactive Home Entertainment",
-  "market_cap": 41369850000.0,
-  "current_price": 223.5,
+  "market_cap": 40805294435.11963,
+  "current_price": 220.45,
   "rank": 499,
-  "composite_score": 29.61,
+  "composite_score": 29.79,
   "pillar_scores": {
     "quality": 11.96,
     "value": 20.29,
     "growth": 60.33,
-    "momentum": 38.65,
-    "health": 32.75,
+    "momentum": 37.75,
+    "health": 34.74,
     "profitability": 21.74,
-    "technical": 62.05,
-    "risk": 43.86,
+    "technical": 63.6,
+    "risk": 44.49,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,61 @@
     "eps_basic": -1.3,
     "eps_diluted": -1.3,
     "shares_outstanding": 185100000.0,
-    "market_cap": 41369850000.0,
-    "pe_ratio_ttm": null
+    "market_cap": 40805294435.11963,
+    "pe_ratio_ttm": null,
+    "goodwill": 1065700000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
+      },
+      "multiples_pb": {
+        "value": 36.57806184126408,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 7.935072933053878,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 22.25656738715898,
+    "max": null,
+    "low": 7.935072933053878,
+    "high": 36.57806184126408,
+    "mos_pct": -890.494145451341,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_multiples_pb_estimate",
+      "extreme_multiples_ev_ebitda_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -43,13 +94,21 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 93,
+    "filing_lag_days": 95,
     "latest_period_end": "2025-12-31",
     "latest_filed_date": "2026-02-04"
   },
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_multiples_pb_estimate",
+    "extreme_multiples_ev_ebitda_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 3.1555915721231766,
   "entered_top5": false,
   "exited_top5": false
 }

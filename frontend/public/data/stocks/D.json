@@ -3,19 +3,19 @@
   "name": "Dominion Energy",
   "sector": "Utilities",
   "industry": "Multi-Utilities",
-  "market_cap": 54155190536.49902,
-  "current_price": 61.61,
-  "rank": 282,
-  "composite_score": 48.59,
+  "market_cap": 54401309463.50098,
+  "current_price": 61.89,
+  "rank": 296,
+  "composite_score": 47.96,
   "pillar_scores": {
-    "quality": 58.06,
-    "value": 41.94,
+    "quality": 56.45,
+    "value": 40.32,
     "growth": 50.81,
-    "momentum": 64.59,
-    "health": 12.83,
-    "profitability": 52.69,
-    "technical": 36.55,
-    "risk": 63.01,
+    "momentum": 61.55,
+    "health": 12.79,
+    "profitability": 53.23,
+    "technical": 47.31,
+    "risk": 62.62,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 0.69,
     "eps_diluted": 0.69,
     "shares_outstanding": 879000000.0,
-    "market_cap": 54155190536.49902,
-    "pe_ratio_ttm": 89.28985595703125
+    "market_cap": 54401309463.50098,
+    "pe_ratio_ttm": 89.69565128934556,
+    "goodwill": 4143000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 40.3455594064889,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 58.79554671049117,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 73.82235522422012,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 38.118491408775164,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_utilities",
+        "tier_used": null
+      }
+    },
+    "median": 49.570553058490034,
+    "max": 73.82235522422012,
+    "low": 38.118491408775164,
+    "high": 73.82235522422012,
+    "mos_pct": -24.85234795872109,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -46,13 +94,18 @@
       "sga_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 7,
+    "filing_lag_days": 9,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 26.532423208191126,
   "entered_top5": false,
   "exited_top5": false
 }

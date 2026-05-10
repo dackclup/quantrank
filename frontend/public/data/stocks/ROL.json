@@ -3,19 +3,19 @@
   "name": "Rollins, Inc.",
   "sector": "Industrials",
   "industry": "Environmental & Facilities Services",
-  "market_cap": 26186708367.889023,
-  "current_price": 54.39,
-  "rank": 357,
-  "composite_score": 44.65,
+  "market_cap": 25917090921.33293,
+  "current_price": 53.83,
+  "rank": 377,
+  "composite_score": 44.16,
   "pillar_scores": {
     "quality": 67.41,
     "value": 13.5,
     "growth": 79.75,
-    "momentum": 26.44,
+    "momentum": 25.85,
     "health": 18.84,
     "profitability": 53.38,
-    "technical": 48.26,
-    "risk": 57.8,
+    "technical": 40.04,
+    "risk": 57.77,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 0.22,
     "eps_diluted": 0.22,
     "shares_outstanding": 481461825.0,
-    "market_cap": 26186708367.889023,
-    "pe_ratio_ttm": 247.22726995294744
+    "market_cap": 25917090921.33293,
+    "pe_ratio_ttm": 244.68182650479403,
+    "goodwill": 1384591000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 25.65549615518936,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 19.975400268446244,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 22.42159805507547,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 12.205747914806805,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 21.198499161760857,
+    "max": 25.65549615518936,
+    "low": 12.205747914806805,
+    "high": 25.65549615518936,
+    "mos_pct": -153.9330799802871,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -43,11 +89,14 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 17,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

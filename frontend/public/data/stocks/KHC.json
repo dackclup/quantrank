@@ -3,19 +3,19 @@
   "name": "Kraft Heinz",
   "sector": "Consumer Staples",
   "industry": "Packaged Foods & Meats",
-  "market_cap": 28037039276.123047,
-  "current_price": 23.64,
-  "rank": 366,
-  "composite_score": 44.24,
+  "market_cap": 28416558914.18457,
+  "current_price": 23.96,
+  "rank": 385,
+  "composite_score": 43.75,
   "pillar_scores": {
     "quality": 13.89,
-    "value": 78.7,
+    "value": 78.24,
     "growth": 62.85,
-    "momentum": 40.04,
-    "health": 41.0,
+    "momentum": 35.01,
+    "health": 41.08,
     "profitability": 22.92,
-    "technical": 56.08,
-    "risk": 40.41,
+    "technical": 60.16,
+    "risk": 41.14,
     "sentiment": null,
     "ml": null
   },
@@ -32,20 +32,75 @@
     "eps_basic": 0.67,
     "eps_diluted": 0.67,
     "shares_outstanding": 1186000000.0,
-    "market_cap": 28037039276.123047,
-    "pe_ratio_ttm": 35.28358117857976
+    "market_cap": 28416558914.18457,
+    "pe_ratio_ttm": 35.76119266339202,
+    "goodwill": 22153000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 38.93565202549231,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 176.1069335907777,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 45.19687880647166,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 25.724244226524764,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 42.06626541598199,
+    "max": 45.19687880647166,
+    "low": 25.724244226524764,
+    "high": 176.1069335907777,
+    "mos_pct": 43.042248111310414,
+    "valuation_warnings": [
+      "extreme_multiples_pb_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 2,
+    "filing_lag_days": 4,
     "latest_period_end": "2026-03-28",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_multiples_pb_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

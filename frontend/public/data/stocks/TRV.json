@@ -3,19 +3,19 @@
   "name": "Travelers Companies (The)",
   "sector": "Financials",
   "industry": "Property & Casualty Insurance",
-  "market_cap": 63554644519.04297,
-  "current_price": 298.94,
-  "rank": 11,
-  "composite_score": 68.97,
+  "market_cap": 63363305816.65039,
+  "current_price": 298.04,
+  "rank": 29,
+  "composite_score": 64.77,
   "pillar_scores": {
-    "quality": 74.33,
-    "value": 76.89,
+    "quality": 66.0,
+    "value": 72.0,
     "growth": 72.33,
-    "momentum": 63.25,
-    "health": 64.9,
-    "profitability": 48.89,
-    "technical": 36.21,
-    "risk": 77.99,
+    "momentum": 62.05,
+    "health": 64.18,
+    "profitability": 43.56,
+    "technical": 31.08,
+    "risk": 77.95,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 7.89,
     "eps_diluted": 7.78,
     "shares_outstanding": 212600000.0,
-    "market_cap": 63554644519.04297,
-    "pe_ratio_ttm": 38.42416483822702
+    "market_cap": 63363305816.65039,
+    "pe_ratio_ttm": 38.308484388807436,
+    "goodwill": 4060000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 245.05952417811577,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 421.10832575136396,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 311.3392464395834,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 161.25567404684415,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 278.19938530884957,
+    "max": 421.10832575136396,
+    "low": 161.25567404684415,
+    "high": 421.10832575136396,
+    "mos_pct": -7.131799811148314,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -52,11 +98,14 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 22,
+    "filing_lag_days": 24,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-16"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 129.79774223894637,
   "entered_top5": false,
   "exited_top5": false
 }

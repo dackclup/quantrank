@@ -3,39 +3,87 @@
   "name": "O’Reilly Automotive",
   "sector": "Consumer Discretionary",
   "industry": "Automotive Retail",
-  "market_cap": 79627777271.62186,
-  "current_price": 94.58,
-  "rank": 345,
-  "composite_score": 45.52,
+  "market_cap": 77369930117.37326,
+  "current_price": 92.96,
+  "rank": 492,
+  "composite_score": 33.5,
   "pillar_scores": {
-    "quality": 45.31,
-    "value": 47.74,
+    "quality": 28.13,
+    "value": 23.09,
     "growth": 30.99,
-    "momentum": 43.68,
-    "health": 34.36,
-    "profitability": 77.08,
-    "technical": 45.02,
-    "risk": 66.14,
+    "momentum": 42.03,
+    "health": 34.2,
+    "profitability": 54.51,
+    "technical": 43.38,
+    "risk": 65.34,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 17781992000.0,
-    "net_income": 2538209000.0,
-    "total_assets": 16538253000.0,
+    "revenue": 18205607000.0,
+    "net_income": 2603905000.0,
+    "total_assets": 16937178000.0,
     "total_liabilities": null,
-    "stockholders_equity": -763352000.0,
-    "cash": 193793000.0,
-    "operating_cash_flow": 2761993000.0,
-    "capex": 1168815000.0,
-    "free_cash_flow": 1593178000.0,
-    "eps_basic": 2.98,
-    "eps_diluted": 2.97,
-    "shares_outstanding": 841909238.0,
-    "market_cap": 79627777271.62186,
-    "pe_ratio_ttm": 31.845118461634573
+    "stockholders_equity": -1067055000.0,
+    "cash": 252632000.0,
+    "operating_cash_flow": 3039786000.0,
+    "capex": 1126311000.0,
+    "free_cash_flow": 1913475000.0,
+    "eps_basic": 0.72,
+    "eps_diluted": 0.72,
+    "shares_outstanding": 832292716.0,
+    "market_cap": 77369930117.37326,
+    "pe_ratio_ttm": 129.11110983954535,
+    "goodwill": 953035000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 54.251577478406986,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": 35.52333366538231,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 26.484215638066427,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 35.52333366538231,
+    "max": 54.251577478406986,
+    "low": 26.484215638066427,
+    "high": 54.251577478406986,
+    "mos_pct": -161.68714895996007,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -46,11 +94,18 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 70,
-    "latest_period_end": "2025-12-31",
-    "latest_filed_date": "2026-02-27"
+    "filing_lag_days": 2,
+    "latest_period_end": "2026-03-31",
+    "latest_filed_date": "2026-05-08"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "Amcor",
   "sector": "Materials",
   "industry": "Paper & Plastic Packaging Products & Materials",
-  "market_cap": 518999.896194458,
-  "current_price": 39.92,
-  "rank": 180,
-  "composite_score": 54.19,
+  "market_cap": 519129.93396759033,
+  "current_price": 39.93,
+  "rank": 137,
+  "composite_score": 56.13,
   "pillar_scores": {
-    "quality": 54.81,
+    "quality": 57.69,
     "value": 95.51,
     "growth": 19.71,
-    "momentum": 23.71,
-    "health": 47.05,
-    "profitability": 51.28,
-    "technical": 59.26,
-    "risk": 35.49,
+    "momentum": 30.73,
+    "health": 47.17,
+    "profitability": 53.21,
+    "technical": 61.6,
+    "risk": 35.92,
     "sentiment": null,
     "ml": null
   },
@@ -32,20 +32,73 @@
     "eps_basic": 1.55,
     "eps_diluted": 1.55,
     "shares_outstanding": 13001.0,
-    "market_cap": 518999.896194458,
-    "pe_ratio_ttm": 25.754837528351814
+    "market_cap": 519129.93396759033,
+    "pe_ratio_ttm": 25.761290519468247,
+    "goodwill": 11955000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": null
+      }
+    },
+    "median": null,
+    "max": null,
+    "low": null,
+    "high": null,
+    "mos_pct": null,
+    "valuation_warnings": [
+      "data_quality_input_corruption"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 1,
+    "filing_lag_days": 3,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "data_quality_input_corruption"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

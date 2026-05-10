@@ -3,19 +3,19 @@
   "name": "Baxter International",
   "sector": "Health Care",
   "industry": "Health Care Equipment",
-  "market_cap": 11954326414.120422,
-  "current_price": 17.49,
-  "rank": 496,
-  "composite_score": 30.99,
+  "market_cap": 12296073886.120422,
+  "current_price": 17.99,
+  "rank": 497,
+  "composite_score": 30.91,
   "pillar_scores": {
     "quality": 11.86,
-    "value": 53.67,
+    "value": 52.82,
     "growth": 39.41,
-    "momentum": 9.96,
-    "health": 50.48,
+    "momentum": 10.81,
+    "health": 50.6,
     "profitability": 16.1,
-    "technical": 61.3,
-    "risk": 9.55,
+    "technical": 61.06,
+    "risk": 9.89,
     "sentiment": null,
     "ml": null
   },
@@ -32,20 +32,73 @@
     "eps_basic": -0.03,
     "eps_diluted": -0.03,
     "shares_outstanding": 683494944.0,
-    "market_cap": 11954326414.120422,
-    "pe_ratio_ttm": null
+    "market_cap": 12296073886.120422,
+    "pe_ratio_ttm": null,
+    "goodwill": 4899000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
+      },
+      "multiples_pb": {
+        "value": 28.614204031862688,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 29.19705661649807,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 28.90563032418038,
+    "max": 29.19705661649807,
+    "low": 28.614204031862688,
+    "high": 29.19705661649807,
+    "mos_pct": 37.76299091437207,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 10,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

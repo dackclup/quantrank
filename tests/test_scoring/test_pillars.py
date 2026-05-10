@@ -143,3 +143,145 @@ def test_pillar_score_unaffected_by_individual_ticker_isolation():
     assert "T00" not in df.index
     finite_values = df.values[~pd.isna(df.values)]
     assert ((finite_values >= 0.0) & (finite_values <= 100.0)).all()
+
+
+# -- Defense #6 sector exclusions (PR 3c Step 6) ----------------------------
+
+import math  # noqa: E402
+
+from compute.scoring.pillars import (  # noqa: E402
+    _profitability_metrics,
+    _quality_metrics,
+    _value_metrics,
+)
+
+
+def _ticker_input(sector: str, **snap_kwargs) -> TickerInputs:
+    """Build a TickerInputs with sector + populated snapshot for sector-gate tests."""
+    snap = _snap("TST", **snap_kwargs)
+    return TickerInputs(
+        snapshot=snap,
+        prices=None,
+        benchmark_prices=None,
+        current_price=100.0,
+        sector=sector,
+    )
+
+
+# B. ebit_based_roic exclusion --------------------------------------------------
+
+def test_B1_jpm_financials_roic_returns_nan():
+    inp = _ticker_input("Financials")
+    metrics = _quality_metrics(inp)
+    assert math.isnan(metrics["roic"])
+
+
+def test_B2_nee_utilities_roic_returns_nan():
+    inp = _ticker_input("Utilities")
+    metrics = _quality_metrics(inp)
+    assert math.isnan(metrics["roic"])
+
+
+def test_B3_aapl_it_roic_returns_finite_value():
+    inp = _ticker_input("Information Technology")
+    metrics = _quality_metrics(inp)
+    # The synthetic snap has positive operating_income + equity → ROIC computes.
+    assert math.isfinite(metrics["roic"])
+
+
+# C. gross_profitability exclusion (Quality pillar) ---------------------------
+
+def test_C1_jpm_financials_gross_profitability_returns_nan():
+    inp = _ticker_input("Financials")
+    metrics = _quality_metrics(inp)
+    assert math.isnan(metrics["gross_profitability"])
+
+
+def test_C2_aapl_it_gross_profitability_returns_finite_value():
+    inp = _ticker_input("Information Technology")
+    metrics = _quality_metrics(inp)
+    assert math.isfinite(metrics["gross_profitability"])
+
+
+# C bis. gross_profitability also gated in the Profitability pillar -----------
+
+def test_C3_jpm_profitability_gross_p_returns_nan():
+    """Same metric (Novy-Marx GP/A) appears in BOTH Quality (gross_profitability)
+    AND Profitability (gross_p) pillars; both must gate."""
+    inp = _ticker_input("Financials")
+    metrics = _profitability_metrics(inp)
+    assert math.isnan(metrics["gross_p"])
+
+
+def test_C4_aapl_profitability_gross_p_returns_finite_value():
+    inp = _ticker_input("Information Technology")
+    metrics = _profitability_metrics(inp)
+    assert math.isfinite(metrics["gross_p"])
+
+
+# D. ev_ebitda_multiple exclusion (Value pillar) ------------------------------
+
+def test_D1_jpm_financials_ev_ebitda_returns_nan():
+    inp = _ticker_input("Financials")
+    metrics = _value_metrics(inp)
+    assert math.isnan(metrics["ev_ebitda"])
+
+
+def test_D2_aapl_it_ev_ebitda_returns_finite_value():
+    inp = _ticker_input("Information Technology")
+    metrics = _value_metrics(inp)
+    assert math.isfinite(metrics["ev_ebitda"])
+
+
+def test_D3_utilities_ev_ebitda_NOT_excluded():
+    """Per Step 4.1 spec — Utilities have meaningful EBITDA above D&A line.
+    The pillar-side ev_ebitda gate should match (Financials only)."""
+    inp = _ticker_input("Utilities")
+    metrics = _value_metrics(inp)
+    assert math.isfinite(metrics["ev_ebitda"])
+
+
+# E. asset_turnover exclusion (already documented as Financials-only) ---------
+
+def test_E1_jpm_asset_turnover_returns_nan():
+    inp = _ticker_input("Financials")
+    metrics = _profitability_metrics(inp)
+    assert math.isnan(metrics["asset_turnover"])
+
+
+def test_E2_aapl_asset_turnover_returns_finite_value():
+    inp = _ticker_input("Information Technology")
+    metrics = _profitability_metrics(inp)
+    assert math.isfinite(metrics["asset_turnover"])
+
+
+# F. Pillar-score robustness when sector-gate fires ---------------------------
+
+def test_F1_jpm_quality_pillar_still_finite_with_some_nans():
+    """JPM (Financials) has roic + gross_profitability gated to NaN, but
+    roe + msci_q + piotroski (history-dependent) are still in play. The
+    pillar averaging should produce a finite score from the non-NaN
+    metrics (per SKILL.md Rule 7 / compute.scoring.normalize."""
+    inp = _ticker_input("Financials")
+    q_metrics = _quality_metrics(inp)
+    # Confirm exactly 2 Quality metrics gated to NaN.
+    assert math.isnan(q_metrics["roic"])
+    assert math.isnan(q_metrics["gross_profitability"])
+    # Confirm at least 1 Quality metric is finite (roe — NI/equity).
+    assert math.isfinite(q_metrics["roe"])
+    # Pillar score will be averaged in compute_all_pillars; tested
+    # separately in test_pillar_scores_in_0_100_range above.
+
+
+def test_F2_full_universe_with_financials_does_not_crash():
+    """Smoke test: synthetic universe including a Financials ticker
+    completes compute_all_pillars without crashing on NaN propagation."""
+    inputs = _build_universe(n=12, sectors=("Financials", "Information Technology"))
+    df = compute_all_pillars(inputs)
+    # Verify: at least Financials tickers have finite Quality scores
+    # (roic + gross_profitability NaN'd, but roe/msci_q + piotroski
+    # remain — though piotroski may be NaN without history; Quality
+    # pillar should still aggregate from the survivors).
+    assert df.shape[0] == len(inputs)
+    # No assertion on specific values — too dependent on synthetic gen.
+    # The smoke aspect is that the call completes without crashing.

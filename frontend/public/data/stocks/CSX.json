@@ -3,19 +3,19 @@
   "name": "CSX Corporation",
   "sector": "Industrials",
   "industry": "Rail Transportation",
-  "market_cap": 82695598297.11914,
-  "current_price": 44.46,
-  "rank": 178,
-  "composite_score": 54.27,
+  "market_cap": 83383803405.76172,
+  "current_price": 44.83,
+  "rank": 174,
+  "composite_score": 54.13,
   "pillar_scores": {
     "quality": 66.14,
     "value": 43.67,
     "growth": 31.96,
-    "momentum": 80.23,
-    "health": 32.15,
+    "momentum": 79.78,
+    "health": 32.31,
     "profitability": 53.16,
-    "technical": 57.72,
-    "risk": 74.8,
+    "technical": 55.88,
+    "risk": 74.67,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 0.43,
     "eps_diluted": 0.43,
     "shares_outstanding": 1860000000.0,
-    "market_cap": 82695598297.11914,
-    "pe_ratio_ttm": 103.39534670807595
+    "market_cap": 83383803405.76172,
+    "pe_ratio_ttm": 104.25581821175508,
+    "goodwill": 80000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 13.078395753450456,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 50.593295198328356,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 31.64458412641859,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 53.28422078976692,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 14.551724444642295,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 18.47961898340948,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 25.062101554914037,
+    "max": 53.28422078976692,
+    "low": 13.078395753450456,
+    "high": 53.28422078976692,
+    "mos_pct": -78.87566903687959,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -48,11 +94,14 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 18,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-22"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 4.40268817204301,
   "entered_top5": false,
   "exited_top5": false
 }

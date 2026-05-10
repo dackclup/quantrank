@@ -3,19 +3,19 @@
   "name": "Southern Company",
   "sector": "Utilities",
   "industry": "Electric Utilities",
-  "market_cap": 101673000335.69336,
-  "current_price": 92.43,
-  "rank": 112,
-  "composite_score": 57.38,
+  "market_cap": 100980003356.9336,
+  "current_price": 91.8,
+  "rank": 154,
+  "composite_score": 55.1,
   "pillar_scores": {
-    "quality": 82.26,
-    "value": 42.47,
+    "quality": 74.19,
+    "value": 43.55,
     "growth": 47.58,
-    "momentum": 65.24,
+    "momentum": 62.55,
     "health": 27.21,
     "profitability": 66.13,
-    "technical": 30.68,
-    "risk": 72.44,
+    "technical": 32.37,
+    "risk": 70.98,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 1.21,
     "eps_diluted": 1.2,
     "shares_outstanding": 1100000000.0,
-    "market_cap": 101673000335.69336,
-    "pe_ratio_ttm": 77.02500025431316
+    "market_cap": 100980003356.9336,
+    "pe_ratio_ttm": 76.50000254313152,
+    "goodwill": 5161000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 49.015419419903886,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 62.15114802579578,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 69.69433736516878,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 66.5235629202318,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_utilities",
+        "tier_used": null
+      }
+    },
+    "median": 64.33735547301379,
+    "max": 69.69433736516878,
+    "low": 49.015419419903886,
+    "high": 69.69433736516878,
+    "mos_pct": -42.6853845279096,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -48,13 +96,18 @@
       "long_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 10,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 27.78272727272727,
   "entered_top5": false,
   "exited_top5": false
 }

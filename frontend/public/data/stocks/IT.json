@@ -3,19 +3,19 @@
   "name": "Gartner",
   "sector": "Information Technology",
   "industry": "IT Consulting & Other Services",
-  "market_cap": 25813133931.550446,
-  "current_price": 157.78,
-  "rank": 209,
-  "composite_score": 52.21,
+  "market_cap": 25955466931.002228,
+  "current_price": 158.65,
+  "rank": 219,
+  "composite_score": 51.92,
   "pillar_scores": {
-    "quality": 80.82,
-    "value": 46.8,
+    "quality": 80.48,
+    "value": 47.26,
     "growth": 57.02,
-    "momentum": 13.94,
-    "health": 42.97,
+    "momentum": 12.35,
+    "health": 43.05,
     "profitability": 45.43,
-    "technical": 60.41,
-    "risk": 11.29,
+    "technical": 58.27,
+    "risk": 11.32,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 3.19,
     "eps_diluted": 3.18,
     "shares_outstanding": 163602067.0,
-    "market_cap": 25813133931.550446,
-    "pe_ratio_ttm": 49.61635181738895
+    "market_cap": 25955466931.002228,
+    "pe_ratio_ttm": 49.8899351875737,
+    "goodwill": 2740264000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 231.5408156730349,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 3.8468869924472826,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 137.58899238107472,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 137.58899238107472,
+    "max": 231.5408156730349,
+    "low": 3.8468869924472826,
+    "high": 231.5408156730349,
+    "mos_pct": -15.307184936043317,
+    "valuation_warnings": [
+      "extreme_multiples_pb_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -47,11 +95,16 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 3,
+    "filing_lag_days": 5,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_multiples_pb_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

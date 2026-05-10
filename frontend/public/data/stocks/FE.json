@@ -3,19 +3,19 @@
   "name": "FirstEnergy",
   "sector": "Utilities",
   "industry": "Electric Utilities",
-  "market_cap": 26127735115.610886,
-  "current_price": 45.17,
-  "rank": 176,
-  "composite_score": 54.33,
+  "market_cap": 25641855046.889114,
+  "current_price": 44.33,
+  "rank": 221,
+  "composite_score": 51.85,
   "pillar_scores": {
-    "quality": 49.19,
-    "value": 66.67,
-    "growth": 63.71,
-    "momentum": 68.23,
+    "quality": 40.32,
+    "value": 67.74,
+    "growth": 62.9,
+    "momentum": 66.68,
     "health": 23.86,
     "profitability": 47.31,
-    "technical": 24.85,
-    "risk": 72.69,
+    "technical": 26.34,
+    "risk": 70.83,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,59 @@
     "eps_basic": 0.7,
     "eps_diluted": 0.7,
     "shares_outstanding": 578431175.0,
-    "market_cap": 26127735115.610886,
-    "pe_ratio_ttm": 64.52856881277903
+    "market_cap": 25641855046.889114,
+    "pe_ratio_ttm": 63.32857404436384,
+    "goodwill": 5618000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 20.672091565071653,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 36.25483634838087,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 51.7157144878556,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 80.59682545084769,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_utilities",
+        "tier_used": null
+      }
+    },
+    "median": 43.985275418118235,
+    "max": 80.59682545084769,
+    "low": 20.672091565071653,
+    "high": 80.59682545084769,
+    "mos_pct": -0.783731395698967,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -47,13 +96,19 @@
       "long_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 10,
+    "filing_lag_days": 12,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-28"
   },
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 10.590715481405372,
   "entered_top5": false,
   "exited_top5": false
 }

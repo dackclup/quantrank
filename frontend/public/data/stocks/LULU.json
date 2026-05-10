@@ -3,19 +3,19 @@
   "name": "Lululemon Athletica",
   "sector": "Consumer Discretionary",
   "industry": "Apparel, Accessories & Luxury Goods",
-  "market_cap": 14879253792.114258,
-  "current_price": 133.59,
-  "rank": 17,
-  "composite_score": 67.47,
+  "market_cap": 14610827584.228516,
+  "current_price": 131.18,
+  "rank": 15,
+  "composite_score": 67.9,
   "pillar_scores": {
-    "quality": 75.52,
-    "value": 87.15,
+    "quality": 76.04,
+    "value": 87.5,
     "growth": 82.29,
-    "momentum": 15.01,
-    "health": 78.65,
+    "momentum": 15.56,
+    "health": 78.8,
     "profitability": 85.07,
-    "technical": 29.63,
-    "risk": 7.07,
+    "technical": 32.32,
+    "risk": 6.96,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,59 @@
     "eps_basic": 13.27,
     "eps_diluted": 13.26,
     "shares_outstanding": 111380000.0,
-    "market_cap": 14879253792.114258,
-    "pe_ratio_ttm": 10.074660357306986
+    "market_cap": 14610827584.228516,
+    "pe_ratio_ttm": 9.892910458203714,
+    "goodwill": 184911000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 113.49789501063064,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 1026.0748111937025,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 290.5298546783959,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 920.5410575751359,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 111.5697096643367,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 123.3506123484659,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 206.9402335134309,
+    "max": 290.5298546783959,
+    "low": 111.5697096643367,
+    "high": 1026.0748111937025,
+    "mos_pct": 36.60972037742126,
+    "valuation_warnings": [
+      "extreme_multiples_pe_estimate",
+      "extreme_multiples_ev_ebitda_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -47,11 +96,17 @@
       "long_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 52,
+    "filing_lag_days": 54,
     "latest_period_end": "2026-02-01",
     "latest_filed_date": "2026-03-17"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_multiples_pe_estimate",
+    "extreme_multiples_ev_ebitda_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 42.832160172382835,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "Albemarle Corporation",
   "sector": "Materials",
   "industry": "Specialty Chemicals",
-  "market_cap": 23382688819.519043,
-  "current_price": 198.35,
+  "market_cap": 23992159223.66333,
+  "current_price": 203.52,
   "rank": 351,
-  "composite_score": 44.84,
+  "composite_score": 45.52,
   "pillar_scores": {
     "quality": 20.19,
-    "value": 43.59,
+    "value": 44.23,
     "growth": 44.71,
-    "momentum": 85.61,
-    "health": 64.76,
-    "profitability": 28.85,
-    "technical": 68.73,
-    "risk": 39.28,
+    "momentum": 87.95,
+    "health": 64.96,
+    "profitability": 30.13,
+    "technical": 71.36,
+    "risk": 39.67,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 2.35,
     "eps_diluted": 2.34,
     "shares_outstanding": 117886000.0,
-    "market_cap": 23382688819.519043,
-    "pe_ratio_ttm": 84.76495987329729
+    "market_cap": 23992159223.66333,
+    "pe_ratio_ttm": 86.97436080019699,
+    "goodwill": 1488404000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 197.8899331950455,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 276.25304447990453,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 122.0773446233617,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 197.8899331950455,
+    "max": 276.25304447990453,
+    "low": 122.0773446233617,
+    "high": 276.25304447990453,
+    "mos_pct": -2.845051785361053,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -43,11 +91,16 @@
       "total_liabilities"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 2,
+    "filing_lag_days": 4,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 69.16981660248037,
   "entered_top5": false,
   "exited_top5": false
 }

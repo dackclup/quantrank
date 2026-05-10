@@ -3,19 +3,19 @@
   "name": "CVS Health",
   "sector": "Health Care",
   "industry": "Health Care Services",
-  "market_cap": 111209280776.97754,
-  "current_price": 87.36,
-  "rank": 326,
-  "composite_score": 46.5,
+  "market_cap": 115270153884.8877,
+  "current_price": 90.55,
+  "rank": 346,
+  "composite_score": 45.73,
   "pillar_scores": {
     "quality": 27.97,
-    "value": 79.38,
+    "value": 77.4,
     "growth": 21.61,
-    "momentum": 68.55,
-    "health": 24.1,
+    "momentum": 64.42,
+    "health": 24.22,
     "profitability": 29.94,
-    "technical": 69.22,
-    "risk": 51.59,
+    "technical": 71.51,
+    "risk": 53.45,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 2.31,
     "eps_diluted": 2.3,
     "shares_outstanding": 1273000000.0,
-    "market_cap": 111209280776.97754,
-    "pe_ratio_ttm": 37.98260896102242
+    "market_cap": 115270153884.8877,
+    "pe_ratio_ttm": 39.36956654424253,
+    "goodwill": 85478000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 182.33214378356934,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 217.05130896773443,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 201.42193737247436,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 52.37568691006587,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 191.87704057802185,
+    "max": 217.05130896773443,
+    "low": 52.37568691006587,
+    "high": 217.05130896773443,
+    "mos_pct": 52.80831787952348,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,11 +92,16 @@
       "sga_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 2,
+    "filing_lag_days": 4,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

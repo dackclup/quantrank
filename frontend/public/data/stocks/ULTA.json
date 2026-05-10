@@ -3,19 +3,19 @@
   "name": "Ulta Beauty",
   "sector": "Consumer Discretionary",
   "industry": "Other Specialty Retail",
-  "market_cap": 23254725273.92578,
-  "current_price": 526.53,
-  "rank": 23,
-  "composite_score": 65.64,
+  "market_cap": 23036103034.79004,
+  "current_price": 521.58,
+  "rank": 24,
+  "composite_score": 65.49,
   "pillar_scores": {
-    "quality": 83.33,
-    "value": 64.41,
+    "quality": 83.85,
+    "value": 64.06,
     "growth": 56.25,
-    "momentum": 37.55,
-    "health": 78.82,
-    "profitability": 76.04,
-    "technical": 42.28,
-    "risk": 46.78,
+    "momentum": 36.6,
+    "health": 78.9,
+    "profitability": 76.74,
+    "technical": 39.54,
+    "risk": 46.58,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 25.72,
     "eps_diluted": 25.64,
     "shares_outstanding": 44166000.0,
-    "market_cap": 23254725273.92578,
-    "pe_ratio_ttm": 20.535492562280616
+    "market_cap": 23036103034.79004,
+    "pe_ratio_ttm": 20.34243436387846,
+    "goodwill": 226421000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 183.45686756702727,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 1984.0541598044142,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 395.0029331001207,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 1549.2518567433428,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 218.99444787152066,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 294.77785665976893,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 344.8903948799448,
+    "max": 1984.0541598044142,
+    "low": 183.45686756702727,
+    "high": 1984.0541598044142,
+    "mos_pct": -51.2306590247038,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,11 +90,14 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 43,
+    "filing_lag_days": 45,
     "latest_period_end": "2026-01-31",
     "latest_filed_date": "2026-03-26"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 58.271951274736224,
   "entered_top5": false,
   "exited_top5": false
 }

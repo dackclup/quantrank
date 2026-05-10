@@ -3,19 +3,19 @@
   "name": "Equity Residential",
   "sector": "Real Estate",
   "industry": "Multi-Family Residential REITs",
-  "market_cap": 24676077222.0233,
-  "current_price": 65.86,
-  "rank": 47,
-  "composite_score": 62.77,
+  "market_cap": 24556181426.28495,
+  "current_price": 65.54,
+  "rank": 44,
+  "composite_score": 62.82,
   "pillar_scores": {
-    "quality": 75.0,
-    "value": 63.44,
-    "growth": 60.48,
-    "momentum": 52.44,
+    "quality": 75.81,
+    "value": 64.52,
+    "growth": 59.68,
+    "momentum": 49.55,
     "health": 42.43,
     "profitability": 69.89,
-    "technical": 63.79,
-    "risk": 52.09,
+    "technical": 64.39,
+    "risk": 52.49,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 0.24,
     "eps_diluted": 0.24,
     "shares_outstanding": 374674719.0,
-    "market_cap": 24676077222.0233,
-    "pe_ratio_ttm": 274.4166692097982
+    "market_cap": 24556181426.28495,
+    "pe_ratio_ttm": 273.08333714803064,
+    "goodwill": null
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 40.661181182191044,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 29.685074418414775,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 68.07860882908761,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 208.66183309021977,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 54.36989500563933,
+    "max": 208.66183309021977,
+    "low": 29.685074418414775,
+    "high": 208.66183309021977,
+    "mos_pct": -20.544652346173255,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -48,14 +96,20 @@
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "short_term_debt"
+      "short_term_debt",
+      "goodwill"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 10,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 28.046338509431163,
   "entered_top5": false,
   "exited_top5": false
 }

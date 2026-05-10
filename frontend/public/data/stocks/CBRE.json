@@ -3,19 +3,19 @@
   "name": "CBRE Group",
   "sector": "Real Estate",
   "industry": "Real Estate Services",
-  "market_cap": 42959703683.72165,
-  "current_price": 146.7,
-  "rank": 86,
-  "composite_score": 59.77,
+  "market_cap": 42851354120.46701,
+  "current_price": 146.33,
+  "rank": 74,
+  "composite_score": 60.18,
   "pillar_scores": {
     "quality": 91.94,
-    "value": 42.47,
+    "value": 43.01,
     "growth": 62.1,
-    "momentum": 31.37,
-    "health": 51.27,
+    "momentum": 32.32,
+    "health": 51.47,
     "profitability": 62.37,
-    "technical": 46.41,
-    "risk": 50.83,
+    "technical": 49.15,
+    "risk": 51.13,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 1.08,
     "eps_diluted": 1.07,
     "shares_outstanding": 292840522.0,
-    "market_cap": 42959703683.72165,
-    "pe_ratio_ttm": 137.10280088620763
+    "market_cap": 42851354120.46701,
+    "pe_ratio_ttm": 136.75701105706045,
+    "goodwill": 7024000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 132.34595678209922,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 66.49815599193067,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 135.65141524329076,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 60.23266058400205,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 99.42205638701495,
+    "max": 135.65141524329076,
+    "low": 60.23266058400205,
+    "high": 135.65141524329076,
+    "mos_pct": -47.180622840311884,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -48,13 +94,16 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 17,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

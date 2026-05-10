@@ -3,19 +3,19 @@
   "name": "Chevron Corporation",
   "sector": "Energy",
   "industry": "Integrated Oil & Gas",
-  "market_cap": 445788475850.0,
-  "current_price": 182.5,
-  "rank": 322,
-  "composite_score": 46.64,
+  "market_cap": 443638908532.46826,
+  "current_price": 181.62,
+  "rank": 340,
+  "composite_score": 45.98,
   "pillar_scores": {
     "quality": 36.9,
     "value": 39.68,
     "growth": 39.29,
-    "momentum": 78.83,
-    "health": 50.52,
+    "momentum": 73.26,
+    "health": 50.68,
     "profitability": 44.44,
-    "technical": 38.6,
-    "risk": 81.04,
+    "technical": 39.24,
+    "risk": 80.74,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 1.12,
     "eps_diluted": 1.11,
     "shares_outstanding": 2442676580.0,
-    "market_cap": 445788475850.0,
-    "pe_ratio_ttm": 164.4144144144144
+    "market_cap": 443638908532.46826,
+    "pe_ratio_ttm": 163.62161722269144,
+    "goodwill": 4568000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 123.45841023131085,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 79.81152438250456,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 204.65397030506438,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 123.45841023131085,
+    "max": 204.65397030506438,
+    "low": 79.81152438250456,
+    "high": 204.65397030506438,
+    "mos_pct": -47.11026553549936,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,14 +92,20 @@
       "operating_income",
       "interest_expense",
       "income_before_tax",
-      "ebitda"
+      "ebitda",
+      "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 1,
+    "filing_lag_days": 3,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 73.34045017126255,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "Equifax",
   "sector": "Industrials",
   "industry": "Research & Consulting Services",
-  "market_cap": 20951465417.48047,
-  "current_price": 175.62,
+  "market_cap": 20976519218.444824,
+  "current_price": 175.83,
   "rank": 422,
-  "composite_score": 41.47,
+  "composite_score": 41.31,
   "pillar_scores": {
     "quality": 41.77,
-    "value": 59.92,
+    "value": 59.49,
     "growth": 42.72,
-    "momentum": 20.57,
-    "health": 20.84,
+    "momentum": 19.52,
+    "health": 20.92,
     "profitability": 57.81,
-    "technical": 39.89,
-    "risk": 24.04,
+    "technical": 40.59,
+    "risk": 24.5,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 1.43,
     "eps_diluted": 1.42,
     "shares_outstanding": 119300000.0,
-    "market_cap": 20951465417.48047,
-    "pe_ratio_ttm": 123.67605289942782
+    "market_cap": 20976519218.444824,
+    "pe_ratio_ttm": 123.82394495144698,
+    "goodwill": 6790900000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 165.59456609258586,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 270.1382289892107,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 201.28249890422657,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 201.28249890422657,
+    "max": 270.1382289892107,
+    "low": 165.59456609258586,
+    "high": 270.1382289892107,
+    "mos_pct": 12.645161507698981,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,11 +91,14 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 17,
+    "filing_lag_days": 19,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-21"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

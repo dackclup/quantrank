@@ -3,39 +3,88 @@
   "name": "Ares Management",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 38566907036.50976,
-  "current_price": 123.15,
-  "rank": 390,
-  "composite_score": 43.21,
+  "market_cap": 39537734088.75,
+  "current_price": 126.25,
+  "rank": 345,
+  "composite_score": 45.75,
   "pillar_scores": {
-    "quality": 46.0,
-    "value": 43.33,
-    "growth": 57.0,
-    "momentum": 6.57,
-    "health": 63.63,
-    "profitability": 42.89,
-    "technical": 58.42,
-    "risk": 24.04,
+    "quality": 52.0,
+    "value": 42.89,
+    "growth": 62.33,
+    "momentum": 7.12,
+    "health": 62.81,
+    "profitability": 43.33,
+    "technical": 64.14,
+    "risk": 24.7,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 5601482000.0,
-    "net_income": 527362000.0,
-    "total_assets": 28633369000.0,
-    "total_liabilities": 19931981000.0,
-    "stockholders_equity": 4275463000.0,
+    "revenue": 5909113000.0,
+    "net_income": 622781000.0,
+    "total_assets": 28394933000.0,
+    "total_liabilities": 20011654000.0,
+    "stockholders_equity": 4025435000.0,
     "cash": 152203000.0,
-    "operating_cash_flow": 4558265000.0,
+    "operating_cash_flow": 4157162000.0,
     "capex": 18419000.0,
-    "free_cash_flow": 4539846000.0,
+    "free_cash_flow": 4138743000.0,
     "eps_basic": null,
     "eps_diluted": null,
     "shares_outstanding": 313170171.0,
-    "market_cap": 38566907036.50976,
-    "pe_ratio_ttm": null
+    "market_cap": 39537734088.75,
+    "pe_ratio_ttm": null,
+    "goodwill": 3463416000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
+      },
+      "multiples_pb": {
+        "value": 29.37836749810659,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 1.7881878298354783,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 15.583277663971035,
+    "max": 29.37836749810659,
+    "low": 1.7881878298354783,
+    "high": 29.37836749810659,
+    "mos_pct": -710.1633220069835,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -55,11 +104,17 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 72,
-    "latest_period_end": "2025-12-31",
-    "latest_filed_date": "2026-02-25"
+    "filing_lag_days": 2,
+    "latest_period_end": "2026-03-31",
+    "latest_filed_date": "2026-05-08"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 1.6243341387708345,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "Incyte",
   "sector": "Health Care",
   "industry": "Biotechnology",
-  "market_cap": 19548954494.556496,
-  "current_price": 97.77,
-  "rank": 78,
-  "composite_score": 60.38,
+  "market_cap": 19706913914.404724,
+  "current_price": 98.56,
+  "rank": 75,
+  "composite_score": 60.16,
   "pillar_scores": {
     "quality": 65.25,
-    "value": 37.85,
+    "value": 36.44,
     "growth": 79.66,
     "momentum": 45.67,
     "health": 78.84,
-    "profitability": 85.31,
-    "technical": 57.02,
-    "risk": 58.2,
+    "profitability": 85.59,
+    "technical": 58.27,
+    "risk": 58.73,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 1.52,
     "eps_diluted": 1.47,
     "shares_outstanding": 199948401.0,
-    "market_cap": 19548954494.556496,
-    "pe_ratio_ttm": 66.51020179800436
+    "market_cap": 19706913914.404724,
+    "pe_ratio_ttm": 67.04761738679846,
+    "goodwill": 133000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 42.599347523337805,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 116.5340223312378,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 96.54332038241856,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "ev_ebitda_negative_equity_post_debt",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 27.94066785850213,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "dcf_negative_equity_post_debt",
+        "tier_used": null
+      }
+    },
+    "median": 69.57133395287818,
+    "max": 116.5340223312378,
+    "low": 27.94066785850213,
+    "high": 116.5340223312378,
+    "mos_pct": -41.66754029087624,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,11 +91,16 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 10,
+    "filing_lag_days": 12,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-28"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 26.271507917685224,
   "entered_top5": false,
   "exited_top5": false
 }

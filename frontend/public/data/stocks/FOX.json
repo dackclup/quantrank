@@ -3,19 +3,19 @@
   "name": "Fox Corporation (Class B)",
   "sector": "Communication Services",
   "industry": "Broadcasting",
-  "market_cap": 14227917914.0,
-  "current_price": 56.5,
-  "rank": 59,
-  "composite_score": 61.66,
+  "market_cap": 14253099685.3508,
+  "current_price": 56.6,
+  "rank": 60,
+  "composite_score": 61.39,
   "pillar_scores": {
     "quality": 59.78,
     "value": 75.36,
     "growth": 59.24,
-    "momentum": 40.19,
-    "health": 62.53,
+    "momentum": 39.44,
+    "health": 62.65,
     "profitability": 63.77,
-    "technical": 63.6,
-    "risk": 64.38,
+    "technical": 60.06,
+    "risk": 64.11,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,59 @@
     "eps_basic": 1.88,
     "eps_diluted": 1.85,
     "shares_outstanding": 251821556.0,
-    "market_cap": 14227917914.0,
-    "pe_ratio_ttm": 30.54054054054054
+    "market_cap": 14253099685.3508,
+    "pe_ratio_ttm": 30.594593769795186,
+    "goodwill": 3638000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 36.607357745659726,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 106.81452142903022,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 90.53306539925468,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 65.92444065733676,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 78.22875302829573,
+    "max": 106.81452142903022,
+    "low": 36.607357745659726,
+    "high": 106.81452142903022,
+    "mos_pct": 27.648088096650863,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -49,11 +98,17 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 93,
+    "filing_lag_days": 95,
     "latest_period_end": "2025-12-31",
     "latest_filed_date": "2026-02-04"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 17.230455044920777,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "Baker Hughes",
   "sector": "Energy",
   "industry": "Oil & Gas Equipment & Services",
-  "market_cap": 6352.9998779296875,
-  "current_price": 63.53,
+  "market_cap": 6388.999938964844,
+  "current_price": 63.89,
   "rank": 6,
-  "composite_score": 69.6,
+  "composite_score": 69.98,
   "pillar_scores": {
     "quality": 60.71,
     "value": 86.51,
     "growth": 65.48,
-    "momentum": 80.38,
-    "health": 62.75,
+    "momentum": 81.57,
+    "health": 62.83,
     "profitability": 47.62,
-    "technical": 70.27,
-    "risk": 65.07,
+    "technical": 74.45,
+    "risk": 65.37,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 3.0,
     "eps_diluted": 2.98,
     "shares_outstanding": 100.0,
-    "market_cap": 6352.9998779296875,
-    "pe_ratio_ttm": 21.318791536676805
+    "market_cap": 6388.999938964844,
+    "pe_ratio_ttm": 21.43959711062028,
+    "goodwill": 6032000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": null
+      }
+    },
+    "median": null,
+    "max": null,
+    "low": null,
+    "high": null,
+    "mos_pct": null,
+    "valuation_warnings": [
+      "data_quality_input_corruption"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -43,11 +91,16 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 16,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-24"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "data_quality_input_corruption"
+  ],
+  "has_history": true,
+  "tangible_book_value": 92090000.0,
   "entered_top5": true,
   "exited_top5": false
 }

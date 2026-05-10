@@ -3,19 +3,19 @@
   "name": "Intercontinental Exchange",
   "sector": "Financials",
   "industry": "Financial Exchanges & Data",
-  "market_cap": 88358260345.45898,
-  "current_price": 156.11,
-  "rank": 487,
-  "composite_score": 34.19,
+  "market_cap": 88194124145.50781,
+  "current_price": 155.82,
+  "rank": 414,
+  "composite_score": 42.08,
   "pillar_scores": {
-    "quality": 28.0,
-    "value": 17.56,
-    "growth": 49.0,
-    "momentum": 50.3,
-    "health": 34.86,
-    "profitability": 41.11,
-    "technical": 40.54,
-    "risk": 54.65,
+    "quality": 48.0,
+    "value": 24.67,
+    "growth": 48.67,
+    "momentum": 48.71,
+    "health": 35.06,
+    "profitability": 52.89,
+    "technical": 46.22,
+    "risk": 54.32,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 2.49,
     "eps_diluted": 2.48,
     "shares_outstanding": 566000000.0,
-    "market_cap": 88358260345.45898,
-    "pe_ratio_ttm": 62.94758089127079
+    "market_cap": 88194124145.50781,
+    "pe_ratio_ttm": 62.83064811460434,
+    "goodwill": 30634000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 133.2488154817111,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 105.88860914128598,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 119.56871231149853,
+    "max": 133.2488154817111,
+    "low": 105.88860914128598,
+    "high": 133.2488154817111,
+    "mos_pct": -30.318378706194405,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,13 +93,18 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 10,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

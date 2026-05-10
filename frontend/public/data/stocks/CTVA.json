@@ -3,19 +3,19 @@
   "name": "Corteva",
   "sector": "Materials",
   "industry": "Fertilizers & Agricultural Chemicals",
-  "market_cap": 53147928204.87213,
-  "current_price": 79.07,
-  "rank": 133,
-  "composite_score": 56.47,
+  "market_cap": 54532582343.84918,
+  "current_price": 81.13,
+  "rank": 107,
+  "composite_score": 57.61,
   "pillar_scores": {
     "quality": 50.48,
-    "value": 56.41,
+    "value": 57.05,
     "growth": 46.15,
-    "momentum": 82.62,
-    "health": 56.89,
+    "momentum": 81.03,
+    "health": 57.09,
     "profitability": 56.09,
-    "technical": 42.68,
-    "risk": 65.77,
+    "technical": 64.39,
+    "risk": 68.29,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,60 @@
     "eps_basic": 1.07,
     "eps_diluted": 1.07,
     "shares_outstanding": 672163000.0,
-    "market_cap": 53147928204.87213,
-    "pe_ratio_ttm": 73.89719597647122
+    "market_cap": 54532582343.84918,
+    "pe_ratio_ttm": 75.82242733964296,
+    "goodwill": 10409000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 15.956150404258825,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 93.06256605621078,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 119.82949770404372,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 24.135179479663506,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 58.598872767937145,
+    "max": 119.82949770404372,
+    "low": 15.956150404258825,
+    "high": 119.82949770404372,
+    "mos_pct": -38.44975751446351,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_graham_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -47,11 +97,18 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 2,
+    "filing_lag_days": 4,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_graham_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 8.637785775176557,
   "entered_top5": false,
   "exited_top5": false
 }

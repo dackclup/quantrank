@@ -3,19 +3,19 @@
   "name": "Paccar",
   "sector": "Industrials",
   "industry": "Construction Machinery & Heavy Transportation Equipment",
-  "market_cap": 60024516606.14014,
-  "current_price": 114.05,
-  "rank": 202,
-  "composite_score": 52.79,
+  "market_cap": 60161351715.08789,
+  "current_price": 114.31,
+  "rank": 186,
+  "composite_score": 53.32,
   "pillar_scores": {
     "quality": 47.78,
-    "value": 68.78,
+    "value": 68.14,
     "growth": 32.28,
-    "momentum": 63.94,
-    "health": 49.72,
+    "momentum": 66.83,
+    "health": 49.92,
     "profitability": 53.16,
-    "technical": 27.74,
-    "risk": 65.7,
+    "technical": 33.32,
+    "risk": 66.07,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 1.15,
     "eps_diluted": 1.15,
     "shares_outstanding": 526300000.0,
-    "market_cap": 60024516606.14014,
-    "pe_ratio_ttm": 99.17391569718072
+    "market_cap": 60161351715.08789,
+    "pe_ratio_ttm": 99.39999787703805,
+    "goodwill": 114200000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 76.97889117472786,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 135.3076499490177,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 266.4296287472214,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 54.82174088558027,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 91.96269395375465,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 91.96269395375465,
+    "max": 266.4296287472214,
+    "low": 54.82174088558027,
+    "high": 266.4296287472214,
+    "mos_pct": -24.30040122147455,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -50,14 +96,18 @@
       "accounts_payable",
       "long_term_debt",
       "short_term_debt",
-      "ebitda"
+      "ebitda",
+      "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 9,
+    "filing_lag_days": 11,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 37.32167965038951,
   "entered_top5": false,
   "exited_top5": false
 }

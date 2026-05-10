@@ -3,19 +3,19 @@
   "name": "Stryker Corporation",
   "sector": "Health Care",
   "industry": "Health Care Equipment",
-  "market_cap": 110042024108.88672,
-  "current_price": 294.23,
-  "rank": 26,
-  "composite_score": 65.04,
+  "market_cap": 106765780456.54297,
+  "current_price": 285.47,
+  "rank": 25,
+  "composite_score": 65.41,
   "pillar_scores": {
-    "quality": 84.75,
-    "value": 60.45,
+    "quality": 85.17,
+    "value": 61.3,
     "growth": 75.42,
-    "momentum": 28.24,
-    "health": 79.22,
-    "profitability": 66.67,
-    "technical": 28.06,
-    "risk": 44.92,
+    "momentum": 28.29,
+    "health": 79.26,
+    "profitability": 66.95,
+    "technical": 28.93,
+    "risk": 44.59,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 8.49,
     "eps_diluted": 8.4,
     "shares_outstanding": 374000000.0,
-    "market_cap": 110042024108.88672,
-    "pe_ratio_ttm": 35.02738226027716
+    "market_cap": 106765780456.54297,
+    "pe_ratio_ttm": 33.984523954845606,
+    "goodwill": 19291000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 811.6718730667599,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 91.51143813694557,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 756.1784337307929,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 111.70240866338646,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 433.9404211970897,
+    "max": 811.6718730667599,
+    "low": 91.51143813694557,
+    "high": 811.6718730667599,
+    "mos_pct": 34.21447109416741,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -43,11 +89,14 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 86,
+    "filing_lag_days": 88,
     "latest_period_end": "2025-12-31",
     "latest_filed_date": "2026-02-11"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

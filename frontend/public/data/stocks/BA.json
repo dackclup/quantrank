@@ -3,19 +3,19 @@
   "name": "Boeing",
   "sector": "Industrials",
   "industry": "Aerospace & Defense",
-  "market_cap": 233862694328.09964,
-  "current_price": 231.03,
-  "rank": 415,
-  "composite_score": 41.95,
+  "market_cap": 240270309318.0752,
+  "current_price": 237.36,
+  "rank": 409,
+  "composite_score": 42.47,
   "pillar_scores": {
     "quality": 41.77,
-    "value": 27.64,
+    "value": 27.43,
     "growth": 68.67,
-    "momentum": 49.1,
-    "health": 28.94,
+    "momentum": 51.94,
+    "health": 29.1,
     "profitability": 34.39,
-    "technical": 58.32,
-    "risk": 41.63,
+    "technical": 61.06,
+    "risk": 43.36,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,59 @@
     "eps_basic": -0.11,
     "eps_diluted": -0.11,
     "shares_outstanding": 1012261159.0,
-    "market_cap": 233862694328.09964,
-    "pe_ratio_ttm": null
+    "market_cap": 240270309318.0752,
+    "pe_ratio_ttm": null,
+    "goodwill": 17633000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
+      },
+      "multiples_pb": {
+        "value": 24.110975294852864,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 95.02873759457401,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 59.56985644471344,
+    "max": 95.02873759457401,
+    "low": 24.110975294852864,
+    "high": 95.02873759457401,
+    "mos_pct": -298.45655970422644,
+    "valuation_warnings": [
+      "extreme_multiples_pb_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,13 +93,19 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 18,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-22"
   },
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [
+    "extreme_multiples_pb_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

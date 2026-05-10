@@ -3,19 +3,19 @@
   "name": "Mid-America Apartment Communities",
   "sector": "Real Estate",
   "industry": "Multi-Family Residential REITs",
-  "market_cap": 15167796965.736328,
-  "current_price": 130.36,
+  "market_cap": 15045625801.054688,
+  "current_price": 129.31,
   "rank": 417,
-  "composite_score": 41.84,
+  "composite_score": 41.68,
   "pillar_scores": {
     "quality": 46.77,
     "value": 47.85,
-    "growth": 34.68,
-    "momentum": 33.57,
-    "health": 25.86,
+    "growth": 33.87,
+    "momentum": 32.07,
+    "health": 25.94,
     "profitability": 45.7,
-    "technical": 53.83,
-    "risk": 41.37,
+    "technical": 56.03,
+    "risk": 41.53,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 1.06,
     "eps_diluted": 1.06,
     "shares_outstanding": 116353152.0,
-    "market_cap": 15167796965.736328,
-    "pe_ratio_ttm": 122.98113265127505
+    "market_cap": 15045625801.054688,
+    "pe_ratio_ttm": 121.9905637345224,
+    "goodwill": 4106000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 68.06091897147974,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 133.07601114539617,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 108.83856407507777,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 139.52320430838066,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 120.95728761023696,
+    "max": 139.52320430838066,
+    "low": 68.06091897147974,
+    "high": 139.52320430838066,
+    "mos_pct": -6.905503680995138,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -53,14 +101,20 @@
       "accounts_payable",
       "long_term_debt",
       "short_term_debt",
-      "retained_earnings"
+      "retained_earnings",
+      "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 10,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 47.58385918071218,
   "entered_top5": false,
   "exited_top5": false
 }

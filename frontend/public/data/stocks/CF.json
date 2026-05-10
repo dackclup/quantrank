@@ -3,19 +3,19 @@
   "name": "CF Industries",
   "sector": "Materials",
   "industry": "Fertilizers & Agricultural Chemicals",
-  "market_cap": 18223570633.0204,
-  "current_price": 118.68,
-  "rank": 9,
-  "composite_score": 69.26,
+  "market_cap": 17661569157.77559,
+  "current_price": 115.02,
+  "rank": 5,
+  "composite_score": 70.17,
   "pillar_scores": {
-    "quality": 81.73,
-    "value": 70.51,
+    "quality": 84.62,
+    "value": 74.36,
     "growth": 35.58,
-    "momentum": 83.44,
-    "health": 71.89,
-    "profitability": 68.59,
-    "technical": 46.41,
-    "risk": 59.78,
+    "momentum": 80.18,
+    "health": 72.01,
+    "profitability": 71.15,
+    "technical": 36.65,
+    "risk": 59.25,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,59 @@
     "eps_basic": 3.99,
     "eps_diluted": 3.98,
     "shares_outstanding": 153552162.0,
-    "market_cap": 18223570633.0204,
-    "pe_ratio_ttm": 29.819095554064265
+    "market_cap": 17661569157.77559,
+    "pe_ratio_ttm": 28.899496643986534,
+    "goodwill": 2492000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 52.35558815796665,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 346.157955984784,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 109.18845270710048,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 388.5822020255503,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 167.771123801686,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 167.771123801686,
+    "max": 388.5822020255503,
+    "low": 52.35558815796665,
+    "high": 388.5822020255503,
+    "mos_pct": 31.442316152673634,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,11 +93,17 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 1,
+    "filing_lag_days": 3,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 15.499618950334284,
   "entered_top5": false,
   "exited_top5": false
 }

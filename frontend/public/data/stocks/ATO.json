@@ -3,19 +3,19 @@
   "name": "Atmos Energy",
   "sector": "Utilities",
   "industry": "Gas Utilities",
-  "market_cap": 30355763958.47885,
-  "current_price": 181.86,
-  "rank": 137,
-  "composite_score": 56.39,
+  "market_cap": 30190513914.66919,
+  "current_price": 180.87,
+  "rank": 195,
+  "composite_score": 53.05,
   "pillar_scores": {
-    "quality": 49.19,
-    "value": 65.05,
-    "growth": 56.45,
-    "momentum": 71.36,
-    "health": 45.46,
+    "quality": 37.9,
+    "value": 66.13,
+    "growth": 55.65,
+    "momentum": 69.02,
+    "health": 45.54,
     "profitability": 56.45,
-    "technical": 21.36,
-    "risk": 82.79,
+    "technical": 20.47,
+    "risk": 81.67,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 5.98,
     "eps_diluted": 5.92,
     "shares_outstanding": 166918310.0,
-    "market_cap": 30355763958.47885,
-    "pe_ratio_ttm": 30.71959469769452
+    "market_cap": 30190513914.66919,
+    "pe_ratio_ttm": 30.552364040065456,
+    "goodwill": 731257000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 113.68521110196626,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 382.8394899046266,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 199.0483449347077,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 396.3721226876171,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_utilities",
+        "tier_used": null
+      }
+    },
+    "median": 290.9439174196672,
+    "max": 396.3721226876171,
+    "low": 113.68521110196626,
+    "high": 396.3721226876171,
+    "mos_pct": 37.83338152545234,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -47,11 +95,16 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 2,
+    "filing_lag_days": 4,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 84.51415545724133,
   "entered_top5": false,
   "exited_top5": false
 }

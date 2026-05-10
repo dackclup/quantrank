@@ -3,19 +3,19 @@
   "name": "Dexcom",
   "sector": "Health Care",
   "industry": "Health Care Equipment",
-  "market_cap": 23505168941.116333,
-  "current_price": 60.91,
-  "rank": 76,
-  "composite_score": 60.43,
+  "market_cap": 23389399235.534668,
+  "current_price": 60.61,
+  "rank": 64,
+  "composite_score": 60.92,
   "pillar_scores": {
-    "quality": 75.85,
-    "value": 33.9,
+    "quality": 76.27,
+    "value": 34.75,
     "growth": 92.8,
-    "momentum": 32.97,
-    "health": 87.01,
-    "profitability": 62.71,
-    "technical": 58.72,
-    "risk": 17.76,
+    "momentum": 35.16,
+    "health": 87.17,
+    "profitability": 63.28,
+    "technical": 55.88,
+    "risk": 17.8,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 0.52,
     "eps_diluted": 0.51,
     "shares_outstanding": 385900000.0,
-    "market_cap": 23505168941.116333,
-    "pe_ratio_ttm": 119.43137224982766
+    "market_cap": 23389399235.534668,
+    "pe_ratio_ttm": 118.84313845166973,
+    "goodwill": 24200000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 16.38001499277439,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 36.24932042106253,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 22.356861135448305,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 32.199103103502,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": 12.49535816624391,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 20.03818074039958,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 21.19752093792394,
+    "max": 36.24932042106253,
+    "low": 12.49535816624391,
+    "high": 36.24932042106253,
+    "mos_pct": -185.92966502000604,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,11 +91,14 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 10,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 7.437419020471625,
   "entered_top5": false,
   "exited_top5": false
 }

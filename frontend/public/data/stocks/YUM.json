@@ -3,19 +3,19 @@
   "name": "Yum! Brands",
   "sector": "Consumer Discretionary",
   "industry": "Restaurants",
-  "market_cap": 43401000000.0,
-  "current_price": 157.25,
-  "rank": 290,
-  "composite_score": 48.15,
+  "market_cap": 41938199157.71484,
+  "current_price": 151.95,
+  "rank": 322,
+  "composite_score": 46.95,
   "pillar_scores": {
     "quality": 45.57,
-    "value": 33.51,
+    "value": 34.9,
     "growth": 62.24,
-    "momentum": 57.32,
+    "momentum": 54.38,
     "health": 30.74,
-    "profitability": 85.07,
-    "technical": 45.12,
-    "risk": 66.37,
+    "profitability": 85.42,
+    "technical": 23.9,
+    "risk": 63.51,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 1.56,
     "eps_diluted": 1.55,
     "shares_outstanding": 276000000.0,
-    "market_cap": 43401000000.0,
-    "pe_ratio_ttm": 101.45161290322581
+    "market_cap": 41938199157.71484,
+    "pe_ratio_ttm": 98.03225609564012,
+    "goodwill": 971000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 116.79159040490393,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": 152.5889230290555,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 61.45924329321086,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 116.79159040490393,
+    "max": 152.5889230290555,
+    "low": 61.45924329321086,
+    "high": 152.5889230290555,
+    "mos_pct": -30.103542919013115,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,13 +92,18 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 2,
+    "filing_lag_days": 4,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

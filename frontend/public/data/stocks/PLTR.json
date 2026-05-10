@@ -3,19 +3,19 @@
   "name": "Palantir Technologies",
   "sector": "Information Technology",
   "industry": "Application Software",
-  "market_cap": 328527084965.46936,
-  "current_price": 137.05,
-  "rank": 240,
-  "composite_score": 50.97,
+  "market_cap": 330324934715.46936,
+  "current_price": 137.8,
+  "rank": 260,
+  "composite_score": 49.87,
   "pillar_scores": {
-    "quality": 59.59,
-    "value": 6.62,
+    "quality": 59.25,
+    "value": 7.31,
     "growth": 77.91,
-    "momentum": 48.61,
+    "momentum": 37.6,
     "health": 97.43,
     "profitability": 66.67,
-    "technical": 40.09,
-    "risk": 36.5,
+    "technical": 43.92,
+    "risk": 37.0,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,63 @@
     "eps_basic": 0.36,
     "eps_diluted": 0.34,
     "shares_outstanding": 2397133000.0,
-    "market_cap": 328527084965.46936,
-    "pe_ratio_ttm": 403.0882442698759
+    "market_cap": 330324934715.46936,
+    "pe_ratio_ttm": 405.2941266228171,
+    "goodwill": 37938000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 4.889565712827921,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 27.390651280445844,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 17.972453688866814,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 15.502235947329051,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 4.715125001976243,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 15.502235947329051,
+    "max": null,
+    "low": 4.715125001976243,
+    "high": 27.390651280445844,
+    "mos_pct": -788.9040491962063,
+    "valuation_warnings": [
+      "extreme_graham_estimate",
+      "extreme_multiples_pe_estimate",
+      "extreme_multiples_pb_estimate",
+      "extreme_multiples_ev_ebitda_estimate",
+      "extreme_dcf_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,11 +98,21 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 3,
+    "filing_lag_days": 5,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_graham_estimate",
+    "extreme_multiples_pe_estimate",
+    "extreme_multiples_pb_estimate",
+    "extreme_multiples_ev_ebitda_estimate",
+    "extreme_dcf_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 3.5029821040384492,
   "entered_top5": false,
   "exited_top5": false
 }

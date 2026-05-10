@@ -3,19 +3,19 @@
   "name": "Camden Property Trust",
   "sector": "Real Estate",
   "industry": "Multi-Family Residential REITs",
-  "market_cap": 10604732968.902588,
-  "current_price": 104.07,
-  "rank": 380,
-  "composite_score": 43.7,
+  "market_cap": 10574162657.928467,
+  "current_price": 103.77,
+  "rank": 392,
+  "composite_score": 43.4,
   "pillar_scores": {
     "quality": 47.18,
     "value": 35.48,
-    "growth": 62.9,
-    "momentum": 45.32,
-    "health": 25.98,
-    "profitability": 39.25,
-    "technical": 51.15,
-    "risk": 42.96,
+    "growth": 62.1,
+    "momentum": 44.02,
+    "health": 25.78,
+    "profitability": 39.52,
+    "technical": 50.15,
+    "risk": 43.26,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 0.4,
     "eps_diluted": 0.4,
     "shares_outstanding": 101900000.0,
-    "market_cap": 10604732968.902588,
-    "pe_ratio_ttm": 260.17499923706055
+    "market_cap": 10574162657.928467,
+    "pe_ratio_ttm": 259.424991607666,
+    "goodwill": null
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 50.90866933388083,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 49.4751240306913,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 90.36743905132194,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 50.90866933388083,
+    "max": 90.36743905132194,
+    "low": 49.4751240306913,
+    "high": 90.36743905132194,
+    "mos_pct": -103.83560992823911,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -53,14 +101,20 @@
       "accounts_payable",
       "short_term_debt",
       "retained_earnings",
-      "ebitda"
+      "ebitda",
+      "goodwill"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 7,
+    "filing_lag_days": 9,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 39.53764474975466,
   "entered_top5": false,
   "exited_top5": false
 }

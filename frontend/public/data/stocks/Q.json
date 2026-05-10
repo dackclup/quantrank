@@ -3,19 +3,19 @@
   "name": "Qnity Electronics",
   "sector": "Information Technology",
   "industry": "Semiconductor Materials & Equipment",
-  "market_cap": 30079113683.934357,
-  "current_price": 143.59,
-  "rank": 84,
-  "composite_score": 59.82,
+  "market_cap": 30862566941.65782,
+  "current_price": 147.33,
+  "rank": 76,
+  "composite_score": 60.15,
   "pillar_scores": {
-    "quality": 51.71,
-    "value": 60.27,
+    "quality": 51.37,
+    "value": 60.73,
     "growth": 50.68,
-    "momentum": 79.88,
-    "health": 72.19,
-    "profitability": 48.4,
-    "technical": 68.82,
-    "risk": 54.1,
+    "momentum": 81.57,
+    "health": 72.23,
+    "profitability": 47.95,
+    "technical": 71.22,
+    "risk": 54.63,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 3.3,
     "eps_diluted": 3.3,
     "shares_outstanding": 209479173.0,
-    "market_cap": 30079113683.934357,
-    "pe_ratio_ttm": 43.5121201023911
+    "market_cap": 30862566941.65782,
+    "pe_ratio_ttm": 44.6454551003196,
+    "goodwill": 7522000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 240.27820494371545,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 380.5559356000964,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 310.4170702719059,
+    "max": 380.5559356000964,
+    "low": 240.27820494371545,
+    "high": 380.5559356000964,
+    "mos_pct": 52.538047697569326,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -49,11 +97,16 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 71,
+    "filing_lag_days": 73,
     "latest_period_end": "2025-12-31",
     "latest_filed_date": "2026-02-26"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

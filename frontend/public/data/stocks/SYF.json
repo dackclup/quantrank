@@ -3,19 +3,19 @@
   "name": "Synchrony Financial",
   "sector": "Financials",
   "industry": "Consumer Finance",
-  "market_cap": 24938000000.0,
-  "current_price": 74.0,
-  "rank": 115,
-  "composite_score": 57.25,
+  "market_cap": 24648179794.311523,
+  "current_price": 73.14,
+  "rank": 114,
+  "composite_score": 57.14,
   "pillar_scores": {
     "quality": 64.0,
-    "value": 59.33,
+    "value": 60.22,
     "growth": 62.0,
-    "momentum": 45.37,
-    "health": 51.83,
-    "profitability": 51.56,
-    "technical": 49.15,
-    "risk": 53.75,
+    "momentum": 47.21,
+    "health": 51.06,
+    "profitability": 51.33,
+    "technical": 40.49,
+    "risk": 53.35,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 2.29,
     "eps_diluted": 2.27,
     "shares_outstanding": 337000000.0,
-    "market_cap": 24938000000.0,
-    "pe_ratio_ttm": 32.59911894273128
+    "market_cap": 24648179794.311523,
+    "pe_ratio_ttm": 32.22026404830328,
+    "goodwill": 1363000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 84.35971358394,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 122.8683675392797,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 101.17784801790827,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 60.5443243597952,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 92.76878080092413,
+    "max": 122.8683675392797,
+    "low": 60.5443243597952,
+    "high": 122.8683675392797,
+    "mos_pct": 21.1588222264102,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -57,11 +103,14 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 17,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 41.21958456973294,
   "entered_top5": false,
   "exited_top5": false
 }

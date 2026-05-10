@@ -3,19 +3,19 @@
   "name": "Everest Group",
   "sector": "Financials",
   "industry": "Reinsurance",
-  "market_cap": 26203885818.481445,
-  "current_price": 351.73,
-  "rank": 95,
-  "composite_score": 58.87,
+  "market_cap": 26188239181.518555,
+  "current_price": 351.52,
+  "rank": 98,
+  "composite_score": 57.94,
   "pillar_scores": {
-    "quality": 48.0,
-    "value": 67.78,
-    "growth": 66.67,
-    "momentum": 58.86,
-    "health": 64.58,
-    "profitability": 50.22,
-    "technical": 60.41,
-    "risk": 56.31,
+    "quality": 46.67,
+    "value": 68.22,
+    "growth": 66.33,
+    "momentum": 56.72,
+    "health": 63.76,
+    "profitability": 46.0,
+    "technical": 59.56,
+    "risk": 57.1,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 16.21,
     "eps_diluted": 16.21,
     "shares_outstanding": 74500000.0,
-    "market_cap": 26203885818.481445,
-    "pe_ratio_ttm": 21.69833503925528
+    "market_cap": 26188239181.518555,
+    "pe_ratio_ttm": 21.685378717684877,
+    "goodwill": null
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 446.94861084721475,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 877.3992237056053,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 424.73378979125954,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 224.07936155579873,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 435.84120031923715,
+    "max": 877.3992237056053,
+    "low": 224.07936155579873,
+    "high": 877.3992237056053,
+    "mos_pct": 19.3467738350122,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -53,14 +99,19 @@
       "accounts_receivable",
       "accounts_payable",
       "long_term_debt",
-      "ebitda"
+      "ebitda",
+      "goodwill",
+      "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 3,
+    "filing_lag_days": 5,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 205.248322147651,
   "entered_top5": false,
   "exited_top5": false
 }

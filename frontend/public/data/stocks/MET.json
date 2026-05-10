@@ -3,19 +3,19 @@
   "name": "MetLife",
   "sector": "Financials",
   "industry": "Life & Health Insurance",
-  "market_cap": 50919685416.008835,
-  "current_price": 78.82,
-  "rank": 312,
-  "composite_score": 47.16,
+  "market_cap": 50441628341.94699,
+  "current_price": 78.08,
+  "rank": 249,
+  "composite_score": 50.55,
   "pillar_scores": {
-    "quality": 37.67,
-    "value": 54.44,
-    "growth": 45.67,
-    "momentum": 47.01,
-    "health": 45.34,
-    "profitability": 51.33,
-    "technical": 65.39,
-    "risk": 52.19,
+    "quality": 46.0,
+    "value": 55.33,
+    "growth": 45.33,
+    "momentum": 48.51,
+    "health": 44.7,
+    "profitability": 59.56,
+    "technical": 70.52,
+    "risk": 53.45,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 1.75,
     "eps_diluted": 1.74,
     "shares_outstanding": 646024938.0,
-    "market_cap": 50919685416.008835,
-    "pe_ratio_ttm": 45.298850399324266
+    "market_cap": 50441628341.94699,
+    "pe_ratio_ttm": 44.87356427072108,
+    "goodwill": 9565000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 49.768544482626716,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 94.18103943539502,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 87.52501438406736,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 28.294439856496844,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 68.64677943334704,
+    "max": 94.18103943539502,
+    "low": 28.294439856496844,
+    "high": 94.18103943539502,
+    "mos_pct": -13.74168238564912,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -52,11 +98,14 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 1,
+    "filing_lag_days": 3,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 26.505168752479335,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "Paychex",
   "sector": "Industrials",
   "industry": "Human Resource & Employment Services",
-  "market_cap": 33773358765.411377,
-  "current_price": 94.26,
-  "rank": 52,
-  "composite_score": 62.42,
+  "market_cap": 33655119109.344482,
+  "current_price": 93.93,
+  "rank": 51,
+  "composite_score": 62.08,
   "pillar_scores": {
     "quality": 87.97,
-    "value": 73.0,
+    "value": 73.21,
     "growth": 46.2,
-    "momentum": 17.73,
-    "health": 55.3,
+    "momentum": 12.6,
+    "health": 55.54,
     "profitability": 70.46,
-    "technical": 51.64,
-    "risk": 34.59,
+    "technical": 55.98,
+    "risk": 34.89,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 3.73,
     "eps_diluted": 3.71,
     "shares_outstanding": 358300000.0,
-    "market_cap": 33773358765.411377,
-    "pe_ratio_ttm": 25.40700866205673
+    "market_cap": 33655119109.344482,
+    "pe_ratio_ttm": 25.318059381448997,
+    "goodwill": 4526600000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 436.51424461813536,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 77.97127614496456,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 346.9500391190039,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 46.073946117740846,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 212.46065763198425,
+    "max": 436.51424461813536,
+    "low": 46.073946117740846,
+    "high": 436.51424461813536,
+    "mos_pct": 55.789461751606964,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,11 +93,16 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 43,
+    "filing_lag_days": 45,
     "latest_period_end": "2026-02-28",
     "latest_filed_date": "2026-03-26"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

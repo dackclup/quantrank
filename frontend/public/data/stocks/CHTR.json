@@ -3,19 +3,19 @@
   "name": "Charter Communications",
   "sector": "Communication Services",
   "industry": "Cable & Satellite",
-  "market_cap": 34118782.68962097,
-  "current_price": 160.24,
-  "rank": 250,
-  "composite_score": 50.44,
+  "market_cap": 32973255.909957886,
+  "current_price": 154.86,
+  "rank": 255,
+  "composite_score": 50.12,
   "pillar_scores": {
     "quality": 64.13,
     "value": 80.07,
     "growth": 33.7,
-    "momentum": 27.02,
-    "health": 22.43,
+    "momentum": 22.24,
+    "health": 24.26,
     "profitability": 43.48,
-    "technical": 32.87,
-    "risk": 15.9,
+    "technical": 34.61,
+    "risk": 16.07,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 9.27,
     "eps_diluted": 9.17,
     "shares_outstanding": 212923.0,
-    "market_cap": 34118782.68962097,
-    "pe_ratio_ttm": 17.474373554325418
+    "market_cap": 32973255.909957886,
+    "pe_ratio_ttm": 16.887677274847498,
+    "goodwill": 29710000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": null
+      }
+    },
+    "median": null,
+    "max": null,
+    "low": null,
+    "high": null,
+    "mos_pct": null,
+    "valuation_warnings": [
+      "data_quality_input_corruption"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -49,11 +97,16 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 16,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-24"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "data_quality_input_corruption"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -1,6 +1,9 @@
 import Link from 'next/link';
 
+import FairPriceCard from '@/components/FairPriceCard';
+import { PriceHistoryChart } from '@/components/PriceHistoryChart';
 import RawMetricsTable from '@/components/RawMetricsTable';
+import { formatMosPct, mosColorClass } from '@/lib/format';
 import { getStockDetail, listTickersForStaticBuild } from '@/lib/data';
 
 export const dynamicParams = false;
@@ -104,8 +107,39 @@ export default function StockDetailPage({
           <span className="text-sm tabular-nums text-slate-700">
             {formatPrice(detail.current_price)}
           </span>
+          {(() => {
+            const mos = formatMosPct(detail.fair_price?.mos_pct ?? null);
+            return (
+              <span
+                className={`text-xs tabular-nums ${mosColorClass(detail.fair_price?.mos_pct ?? null)}`}
+                title={mos.tooltip ?? undefined}
+              >
+                MoS {mos.display}
+              </span>
+            );
+          })()}
         </div>
       </header>
+
+      <section>
+        <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-slate-500">
+          Price (1y)
+        </h2>
+        {detail.has_history ? (
+          <PriceHistoryChart ticker={detail.ticker} />
+        ) : (
+          <div className="flex h-64 items-center justify-center rounded-lg border border-slate-200 bg-white text-sm text-slate-400">
+            No price history available
+          </div>
+        )}
+      </section>
+
+      <FairPriceCard
+        ensemble={detail.fair_price}
+        currentPrice={detail.current_price}
+        warnings={detail.valuation_warnings}
+        tangibleBookValue={detail.tangible_book_value}
+      />
 
       <section>
         <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-slate-500">
@@ -160,11 +194,14 @@ export default function StockDetailPage({
       </section>
 
       <p className="text-xs text-slate-400">
-        Phase 3b — composite is the 8-pillar weighted score over quality,
+        Phase 3c — composite is the 8-pillar weighted score over quality,
         value, growth, momentum, health, profitability, technical, and risk.
         Sentiment + ML pillars land in Phases 5-6; until then their weight
-        redistributes pro-rata. Risk-overlay flags annotate only — they
-        suppress the entered-top-5 badge but do not modify the composite.
+        redistributes pro-rata. Fair price is the median of 6 valuation
+        methods (Graham, P/E / P/B / EV-EBITDA multiples, RIM, DCF) with
+        outliers above 5× current price excluded from the max. Risk-overlay
+        flags annotate only — they suppress the entered-top-5 badge but do
+        not modify the composite.
       </p>
     </article>
   );

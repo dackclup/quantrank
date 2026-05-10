@@ -3,18 +3,18 @@
   "name": "Sandisk",
   "sector": "Information Technology",
   "industry": "Technology Hardware, Storage & Peripherals",
-  "market_cap": 198314074218.75,
-  "current_price": 1339.96,
-  "rank": 2,
-  "composite_score": 72.77,
+  "market_cap": 231226314941.40625,
+  "current_price": 1562.34,
+  "rank": 3,
+  "composite_score": 72.5,
   "pillar_scores": {
     "quality": 79.79,
-    "value": 51.6,
+    "value": 47.03,
     "growth": 56.16,
-    "momentum": 92.73,
-    "health": 96.27,
-    "profitability": 83.33,
-    "technical": 73.16,
+    "momentum": 98.63,
+    "health": 96.39,
+    "profitability": 83.11,
+    "technical": 73.46,
     "risk": 56.42,
     "sentiment": null,
     "ml": null
@@ -32,23 +32,77 @@
     "eps_basic": 30.82,
     "eps_diluted": 29.42,
     "shares_outstanding": 148000000.0,
-    "market_cap": 198314074218.75,
-    "pe_ratio_ttm": 45.54588582384432
+    "market_cap": 231226314941.40625,
+    "pe_ratio_ttm": 53.10468952482367,
+    "goodwill": 4994000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 1180.2032252359888,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 924.2969394144411,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 1405.246776374636,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 1180.2032252359888,
+    "max": 1405.246776374636,
+    "low": 924.2969394144411,
+    "high": 1405.246776374636,
+    "mos_pct": -32.37889309342576,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
       "dividends_paid",
-      "accounts_payable"
+      "accounts_payable",
+      "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 7,
+    "filing_lag_days": 9,
     "latest_period_end": "2026-04-03",
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 59.3445945945946,
   "entered_top5": false,
   "exited_top5": false
 }

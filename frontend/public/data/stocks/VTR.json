@@ -3,19 +3,19 @@
   "name": "Ventas",
   "sector": "Real Estate",
   "industry": "Health Care REITs",
-  "market_cap": 42071696833.45032,
-  "current_price": 86.55,
-  "rank": 285,
-  "composite_score": 48.45,
+  "market_cap": 42416825258.41522,
+  "current_price": 87.26,
+  "rank": 289,
+  "composite_score": 48.15,
   "pillar_scores": {
     "quality": 43.55,
     "value": 43.55,
     "growth": 47.18,
-    "momentum": 76.94,
-    "health": 27.77,
-    "profitability": 40.32,
-    "technical": 55.13,
-    "risk": 82.93,
+    "momentum": 73.51,
+    "health": 27.89,
+    "profitability": 40.86,
+    "technical": 56.92,
+    "risk": 82.64,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,60 @@
     "eps_basic": 0.12,
     "eps_diluted": 0.11,
     "shares_outstanding": 486097000.0,
-    "market_cap": 42071696833.45032,
-    "pe_ratio_ttm": 786.8182095614346
+    "market_cap": 42416825258.41522,
+    "pe_ratio_ttm": 793.2727466930043,
+    "goodwill": 1045774000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 10.831048726168635,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 13.605659108440106,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 61.71295753081231,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 115.24730941594066,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 37.659308319626206,
+    "max": 115.24730941594066,
+    "low": 10.831048726168635,
+    "high": 115.24730941594066,
+    "mos_pct": -131.70898784339803,
+    "valuation_warnings": [
+      "extreme_graham_estimate",
+      "extreme_multiples_pe_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -51,11 +101,18 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 10,
+    "filing_lag_days": 12,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-28"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_graham_estimate",
+    "extreme_multiples_pe_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 24.82785534574375,
   "entered_top5": false,
   "exited_top5": false
 }

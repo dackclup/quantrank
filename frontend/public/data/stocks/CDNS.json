@@ -3,19 +3,19 @@
   "name": "Cadence Design Systems",
   "sector": "Information Technology",
   "industry": "Application Software",
-  "market_cap": 97005061441.07056,
-  "current_price": 356.9,
-  "rank": 271,
-  "composite_score": 49.17,
+  "market_cap": 98581500617.85889,
+  "current_price": 362.7,
+  "rank": 261,
+  "composite_score": 49.84,
   "pillar_scores": {
-    "quality": 53.77,
-    "value": 18.49,
+    "quality": 54.11,
+    "value": 18.95,
     "growth": 65.07,
-    "momentum": 47.11,
-    "health": 76.22,
-    "profitability": 63.01,
-    "technical": 57.92,
-    "risk": 46.61,
+    "momentum": 49.35,
+    "health": 76.33,
+    "profitability": 63.24,
+    "technical": 60.51,
+    "risk": 47.58,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 1.23,
     "eps_diluted": 1.23,
     "shares_outstanding": 271799000.0,
-    "market_cap": 97005061441.07056,
-    "pe_ratio_ttm": 290.1625966638084
+    "market_cap": 98581500617.85889,
+    "pe_ratio_ttm": 294.8780587049035,
+    "goodwill": 4929581000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 99.08970904396584,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 123.08721497557515,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 80.50861083444586,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 57.27827090556425,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 89.79915993920585,
+    "max": 123.08721497557515,
+    "low": 57.27827090556425,
+    "high": 123.08721497557515,
+    "mos_pct": -303.90134212010406,
+    "valuation_warnings": [
+      "extreme_dcf_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -47,11 +95,16 @@
       "long_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 7,
+    "filing_lag_days": 9,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_dcf_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

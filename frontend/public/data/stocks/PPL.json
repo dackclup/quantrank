@@ -3,39 +3,87 @@
   "name": "PPL Corporation",
   "sector": "Utilities",
   "industry": "Electric Utilities",
-  "market_cap": 27615777913.799286,
-  "current_price": 36.77,
-  "rank": 173,
-  "composite_score": 54.45,
+  "market_cap": 27010711865.226746,
+  "current_price": 35.91,
+  "rank": 258,
+  "composite_score": 49.92,
   "pillar_scores": {
-    "quality": 53.23,
-    "value": 75.81,
-    "growth": 41.13,
-    "momentum": 64.99,
-    "health": 17.13,
-    "profitability": 61.83,
-    "technical": 26.05,
-    "risk": 69.52,
+    "quality": 45.16,
+    "value": 61.29,
+    "growth": 47.58,
+    "momentum": 63.05,
+    "health": 23.67,
+    "profitability": 59.68,
+    "technical": 25.4,
+    "risk": 67.16,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 9169000000.0,
-    "net_income": 1181000000.0,
-    "total_assets": 45244000000.0,
+    "revenue": 9409000000.0,
+    "net_income": 1219000000.0,
+    "total_assets": 46304000000.0,
     "total_liabilities": null,
     "stockholders_equity": 13933000000.0,
-    "cash": 1071000000.0,
-    "operating_cash_flow": 2629000000.0,
-    "capex": 4030000000.0,
-    "free_cash_flow": -1401000000.0,
-    "eps_basic": 1.6,
+    "cash": 1241000000.0,
+    "operating_cash_flow": 2673000000.0,
+    "capex": 4295000000.0,
+    "free_cash_flow": -1622000000.0,
+    "eps_basic": 0.6,
     "eps_diluted": 1.59,
-    "shares_outstanding": 751041000.0,
-    "market_cap": 27615777913.799286,
-    "pe_ratio_ttm": 23.125786451423693
+    "shares_outstanding": 752178000.0,
+    "market_cap": 27010711865.226746,
+    "pe_ratio_ttm": 22.584905564410132,
+    "goodwill": 2247000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 91.54052855124901,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 43.78954179305927,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 28.36146674937067,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_utilities",
+        "tier_used": null
+      }
+    },
+    "median": 43.78954179305927,
+    "max": 91.54052855124901,
+    "low": 28.36146674937067,
+    "high": 91.54052855124901,
+    "mos_pct": 17.99411828258976,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -47,11 +95,16 @@
       "sga_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 77,
-    "latest_period_end": "2025-12-31",
-    "latest_filed_date": "2026-02-20"
+    "filing_lag_days": 2,
+    "latest_period_end": "2026-03-31",
+    "latest_filed_date": "2026-05-08"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 15.102808111909681,
   "entered_top5": false,
   "exited_top5": false
 }

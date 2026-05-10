@@ -3,19 +3,19 @@
   "name": "Caterpillar Inc.",
   "sector": "Industrials",
   "industry": "Construction Machinery & Heavy Transportation Equipment",
-  "market_cap": 412554815124.5117,
-  "current_price": 895.69,
-  "rank": 381,
-  "composite_score": 43.69,
+  "market_cap": 413365475622.5586,
+  "current_price": 897.45,
+  "rank": 379,
+  "composite_score": 44.02,
   "pillar_scores": {
     "quality": 41.14,
-    "value": 17.93,
+    "value": 18.14,
     "growth": 45.89,
-    "momentum": 84.41,
-    "health": 45.26,
+    "momentum": 87.05,
+    "health": 45.38,
     "profitability": 25.74,
-    "technical": 67.23,
-    "risk": 68.31,
+    "technical": 65.94,
+    "risk": 68.26,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,59 @@
     "eps_basic": 5.5,
     "eps_diluted": 5.47,
     "shares_outstanding": 460600000.0,
-    "market_cap": 412554815124.5117,
-    "pe_ratio_ttm": 163.74588710080553
+    "market_cap": 413365475622.5586,
+    "pe_ratio_ttm": 164.06764391353406,
+    "goodwill": 5865000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 110.85429523494557,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 637.8889271312992,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 281.9908835196672,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 438.7836678353911,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 180.51839831535597,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 281.9908835196672,
+    "max": 637.8889271312992,
+    "low": 110.85429523494557,
+    "high": 637.8889271312992,
+    "mos_pct": -218.25497370890693,
+    "valuation_warnings": [
+      "extreme_graham_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,11 +93,17 @@
       "income_before_tax"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 2,
+    "filing_lag_days": 4,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_graham_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 26.869300911854104,
   "entered_top5": false,
   "exited_top5": false
 }

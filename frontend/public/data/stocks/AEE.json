@@ -3,19 +3,19 @@
   "name": "Ameren",
   "sector": "Utilities",
   "industry": "Multi-Utilities",
-  "market_cap": 30096658071.136475,
-  "current_price": 108.77,
-  "rank": 480,
-  "composite_score": 35.04,
+  "market_cap": 30179668915.55786,
+  "current_price": 109.07,
+  "rank": 462,
+  "composite_score": 37.72,
   "pillar_scores": {
-    "quality": 23.39,
+    "quality": 30.65,
     "value": 30.65,
     "growth": 47.58,
-    "momentum": 69.02,
-    "health": 11.43,
+    "momentum": 69.57,
+    "health": 11.51,
     "profitability": 34.95,
-    "technical": 21.17,
-    "risk": 73.36,
+    "technical": 33.27,
+    "risk": 73.42,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,59 @@
     "eps_basic": 1.29,
     "eps_diluted": 1.28,
     "shares_outstanding": 276700000.0,
-    "market_cap": 30096658071.136475,
-    "pe_ratio_ttm": 84.97655987739563
+    "market_cap": 30179668915.55786,
+    "pe_ratio_ttm": 85.21093726158142,
+    "goodwill": 411000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 70.95024967655266,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 111.25333658854169,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 101.97639092668426,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 4.846340657244656,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_utilities",
+        "tier_used": null
+      }
+    },
+    "median": 86.46332030161847,
+    "max": 111.25333658854169,
+    "low": 4.846340657244656,
+    "high": 111.25333658854169,
+    "mos_pct": -26.145976483836915,
+    "valuation_warnings": [
+      "extreme_multiples_ev_ebitda_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -48,11 +97,17 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 0,
+    "filing_lag_days": 2,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-08"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_multiples_ev_ebitda_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 47.43404409107337,
   "entered_top5": false,
   "exited_top5": false
 }

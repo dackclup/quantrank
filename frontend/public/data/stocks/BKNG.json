@@ -3,19 +3,19 @@
   "name": "Booking Holdings",
   "sector": "Consumer Discretionary",
   "industry": "Hotels, Resorts & Cruise Lines",
-  "market_cap": 277131038024.90234,
-  "current_price": 171.28,
-  "rank": 426,
-  "composite_score": 41.28,
+  "market_cap": 268474728149.41406,
+  "current_price": 165.93,
+  "rank": 419,
+  "composite_score": 41.57,
   "pillar_scores": {
-    "quality": 42.19,
-    "value": 16.49,
+    "quality": 42.71,
+    "value": 17.53,
     "growth": 77.34,
-    "momentum": 29.53,
-    "health": 61.31,
-    "profitability": 49.65,
-    "technical": 39.94,
-    "risk": 36.79,
+    "momentum": 32.12,
+    "health": 61.47,
+    "profitability": 50.35,
+    "technical": 30.73,
+    "risk": 36.35,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,59 @@
     "eps_basic": 1.37,
     "eps_diluted": 1.36,
     "shares_outstanding": 1618000000.0,
-    "market_cap": 277131038024.90234,
-    "pe_ratio_ttm": 125.9411755730124
+    "market_cap": 268474728149.41406,
+    "pe_ratio_ttm": 122.0073475557215,
+    "goodwill": 2662000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 102.47520190365765,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": 26.382960951134592,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 52.37977531546915,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 52.37977531546915,
+    "max": 102.47520190365765,
+    "low": 26.382960951134592,
+    "high": 102.47520190365765,
+    "mos_pct": -216.78255906297804,
+    "valuation_warnings": [
+      "extreme_multiples_ev_ebitda_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,11 +93,17 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 10,
+    "filing_lag_days": 12,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-28"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_multiples_ev_ebitda_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

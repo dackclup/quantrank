@@ -119,3 +119,93 @@ def test_write_stock_detail_round_trip(tmp_path):
     assert payload["data_quality"]["filing_lag_days"] == 38
     assert payload["fair_price"] is None
     assert payload["top5_factors"] == []
+
+
+# -- write_stock_history (Phase 3c Step 5.2) ---------------------------------
+
+import math  # noqa: E402
+
+import pandas as pd  # noqa: E402
+
+from compute.output.writer import write_stock_history  # noqa: E402
+
+
+def _ohlcv_df(n_rows: int) -> pd.DataFrame:
+    """Build a synthetic OHLCV DataFrame with a date index."""
+    idx = pd.date_range(end="2026-05-01", periods=n_rows, freq="B")
+    return pd.DataFrame(
+        {
+            "Open": [100.0 + i for i in range(n_rows)],
+            "High": [101.0 + i for i in range(n_rows)],
+            "Low": [99.0 + i for i in range(n_rows)],
+            "Close": [100.5 + i for i in range(n_rows)],
+            "Adj Close": [100.5 + i for i in range(n_rows)],
+            "Volume": [1_000_000 + i * 1000 for i in range(n_rows)],
+        },
+        index=idx,
+    )
+
+
+def test_write_stock_history_slices_to_252_when_input_longer(tmp_path):
+    df = _ohlcv_df(300)
+    ok = write_stock_history(ticker="AAPL", prices_df=df, output_dir=tmp_path)
+    assert ok is True
+    out = tmp_path / "stocks" / "history" / "AAPL.json"
+    assert out.exists()
+    payload = json.loads(out.read_text())
+    assert payload["ticker"] == "AAPL"
+    assert len(payload["dates"]) == 252
+    assert len(payload["closes"]) == 252
+    # First date in slice is row 300-252=48 (0-indexed); last date is row 299.
+    assert payload["dates"][-1] == "2026-05-01"
+
+
+def test_write_stock_history_uses_full_input_when_shorter_than_252(tmp_path):
+    df = _ohlcv_df(100)
+    ok = write_stock_history(ticker="NEW", prices_df=df, output_dir=tmp_path)
+    assert ok is True
+    payload = json.loads((tmp_path / "stocks" / "history" / "NEW.json").read_text())
+    assert len(payload["dates"]) == 100
+    assert len(payload["closes"]) == 100
+
+
+def test_write_stock_history_returns_false_for_empty_df(tmp_path):
+    empty = pd.DataFrame(columns=["Open", "High", "Low", "Close", "Volume"])
+    ok = write_stock_history(ticker="EMPTY", prices_df=empty, output_dir=tmp_path)
+    assert ok is False
+    out = tmp_path / "stocks" / "history" / "EMPTY.json"
+    assert not out.exists()
+
+
+def test_write_stock_history_returns_false_for_none_input(tmp_path):
+    assert write_stock_history(ticker="X", prices_df=None, output_dir=tmp_path) is False  # type: ignore[arg-type]
+
+
+def test_write_stock_history_returns_false_when_columns_missing(tmp_path):
+    df = pd.DataFrame({"WrongCol": [1, 2, 3]},
+                      index=pd.date_range(end="2026-05-01", periods=3, freq="B"))
+    ok = write_stock_history(ticker="BAD", prices_df=df, output_dir=tmp_path)
+    assert ok is False
+
+
+def test_write_stock_history_serializes_nan_as_none(tmp_path):
+    df = _ohlcv_df(5)
+    df.loc[df.index[2], "Close"] = math.nan
+    df.loc[df.index[2], "Adj Close"] = math.nan
+    ok = write_stock_history(ticker="NAN", prices_df=df, output_dir=tmp_path)
+    assert ok is True
+    payload = json.loads((tmp_path / "stocks" / "history" / "NAN.json").read_text())
+    assert payload["closes"][2] is None
+    # Surrounding rows still numeric.
+    assert payload["closes"][0] is not None
+    assert payload["closes"][1] is not None
+
+
+def test_write_stock_history_payload_schema_keys(tmp_path):
+    df = _ohlcv_df(10)
+    write_stock_history(ticker="SCH", prices_df=df, output_dir=tmp_path)
+    payload = json.loads((tmp_path / "stocks" / "history" / "SCH.json").read_text())
+    assert set(payload.keys()) == {
+        "ticker", "dates", "opens", "highs", "lows", "closes", "volumes",
+    }
+    assert all(isinstance(d, str) for d in payload["dates"])

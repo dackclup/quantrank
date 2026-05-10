@@ -3,19 +3,19 @@
   "name": "CRH plc",
   "sector": "Materials",
   "industry": "Construction Materials",
-  "market_cap": 79293960335.2667,
-  "current_price": 112.63,
-  "rank": 429,
-  "composite_score": 40.98,
+  "market_cap": 80089508275.79257,
+  "current_price": 113.76,
+  "rank": 412,
+  "composite_score": 42.12,
   "pillar_scores": {
     "quality": 39.42,
-    "value": 38.46,
-    "growth": 48.56,
-    "momentum": 36.45,
-    "health": 42.87,
-    "profitability": 41.67,
-    "technical": 38.89,
-    "risk": 54.05,
+    "value": 37.82,
+    "growth": 47.6,
+    "momentum": 43.33,
+    "health": 43.07,
+    "profitability": 42.31,
+    "technical": 46.99,
+    "risk": 56.04,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,60 @@
     "eps_basic": -0.27,
     "eps_diluted": -0.27,
     "shares_outstanding": 704021684.0,
-    "market_cap": 79293960335.2667,
-    "pe_ratio_ttm": null
+    "market_cap": 80089508275.79257,
+    "pe_ratio_ttm": null,
+    "goodwill": 12592000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 36.73188895991152,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
+      },
+      "multiples_pb": {
+        "value": 102.85114885609492,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 9.4835269167715,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 15.15834708610706,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 28.362774012165318,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 28.362774012165318,
+    "max": 102.85114885609492,
+    "low": 9.4835269167715,
+    "high": 102.85114885609492,
+    "mos_pct": -301.0891250885287,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_multiples_ev_ebitda_estimate",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,11 +94,18 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 10,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_multiples_ev_ebitda_estimate",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 12.106161207386902,
   "entered_top5": false,
   "exited_top5": false
 }

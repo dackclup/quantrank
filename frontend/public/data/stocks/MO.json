@@ -3,19 +3,19 @@
   "name": "Altria",
   "sector": "Consumer Staples",
   "industry": "Tobacco",
-  "market_cap": 115594936757.76419,
-  "current_price": 69.04,
-  "rank": 220,
-  "composite_score": 51.92,
+  "market_cap": 114054566990.29254,
+  "current_price": 68.12,
+  "rank": 227,
+  "composite_score": 51.74,
   "pillar_scores": {
     "quality": 32.64,
-    "value": 55.79,
+    "value": 56.25,
     "growth": 52.43,
-    "momentum": 70.07,
-    "health": 40.48,
+    "momentum": 67.33,
+    "health": 40.52,
     "profitability": 73.61,
-    "technical": 68.77,
-    "risk": 79.83,
+    "technical": 70.44,
+    "risk": 78.9,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 1.3,
     "eps_diluted": 1.3,
     "shares_outstanding": 1674318297.0,
-    "market_cap": 115594936757.76419,
-    "pe_ratio_ttm": 53.10769301194411
+    "market_cap": 114054566990.29254,
+    "pe_ratio_ttm": 52.40000211275541,
+    "goodwill": 5787000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 75.54678751214927,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": 72.3488729867909,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 53.57590839461158,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 72.3488729867909,
+    "max": 75.54678751214927,
+    "low": 53.57590839461158,
+    "high": 75.54678751214927,
+    "mos_pct": 5.845108659786518,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -43,11 +91,16 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 10,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

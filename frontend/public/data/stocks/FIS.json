@@ -3,39 +3,88 @@
   "name": "Fidelity National Information Services",
   "sector": "Financials",
   "industry": "Transaction & Payment Processing Services",
-  "market_cap": 30051000000.0,
-  "current_price": 47.25,
-  "rank": 467,
-  "composite_score": 36.51,
+  "market_cap": 27833601074.21875,
+  "current_price": 43.49,
+  "rank": 446,
+  "composite_score": 39.27,
   "pillar_scores": {
-    "quality": 30.33,
-    "value": 65.78,
-    "growth": 29.67,
-    "momentum": 12.1,
-    "health": 13.9,
-    "profitability": 49.78,
-    "technical": 54.73,
-    "risk": 24.27,
+    "quality": 55.33,
+    "value": 61.67,
+    "growth": 26.33,
+    "momentum": 10.56,
+    "health": 10.12,
+    "profitability": 39.56,
+    "technical": 24.53,
+    "risk": 22.81,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 10677000000.0,
-    "net_income": 382000000.0,
-    "total_assets": 33488000000.0,
-    "total_liabilities": 19586000000.0,
-    "stockholders_equity": 13899000000.0,
-    "cash": 599000000.0,
+    "revenue": 11440000000.0,
+    "net_income": 2671000000.0,
+    "total_assets": 43484000000.0,
+    "total_liabilities": 27504000000.0,
+    "stockholders_equity": 15977000000.0,
+    "cash": 755000000.0,
     "operating_cash_flow": 4335000000.0,
-    "capex": 154000000.0,
-    "free_cash_flow": 4181000000.0,
-    "eps_basic": 0.73,
-    "eps_diluted": 0.73,
-    "shares_outstanding": 636000000.0,
-    "market_cap": 30051000000.0,
-    "pe_ratio_ttm": 64.72602739726028
+    "capex": 167000000.0,
+    "free_cash_flow": 4168000000.0,
+    "eps_basic": 4.59,
+    "eps_diluted": 4.58,
+    "shares_outstanding": 640000000.0,
+    "market_cap": 27833601074.21875,
+    "pe_ratio_ttm": 9.495633554250393,
+    "goodwill": 24585000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 247.90181644489033,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 51.65976882667644,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 149.78079263578337,
+    "max": 51.65976882667644,
+    "low": 51.65976882667644,
+    "high": 247.90181644489033,
+    "mos_pct": 70.96423318828343,
+    "valuation_warnings": [
+      "extreme_multiples_pe_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,13 +93,19 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 73,
-    "latest_period_end": "2025-12-31",
-    "latest_filed_date": "2026-02-24"
+    "filing_lag_days": 2,
+    "latest_period_end": "2026-03-31",
+    "latest_filed_date": "2026-05-08"
   },
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [
+    "extreme_multiples_pe_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

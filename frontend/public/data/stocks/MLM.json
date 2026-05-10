@@ -3,19 +3,19 @@
   "name": "Martin Marietta Materials",
   "sector": "Materials",
   "industry": "Construction Materials",
-  "market_cap": 36056961904.61426,
-  "current_price": 600.49,
+  "market_cap": 35449898735.19287,
+  "current_price": 590.38,
   "rank": 307,
-  "composite_score": 47.43,
+  "composite_score": 47.52,
   "pillar_scores": {
     "quality": 47.12,
-    "value": 32.69,
+    "value": 32.05,
     "growth": 81.73,
-    "momentum": 37.75,
-    "health": 57.57,
+    "momentum": 40.34,
+    "health": 59.56,
     "profitability": 43.59,
-    "technical": 30.38,
-    "risk": 58.3,
+    "technical": 25.35,
+    "risk": 57.2,
     "sentiment": null,
     "ml": null
   },
@@ -32,22 +32,75 @@
     "eps_basic": 25.11,
     "eps_diluted": 25.06,
     "shares_outstanding": 60045900.0,
-    "market_cap": 36056961904.61426,
-    "pe_ratio_ttm": 23.96209059195431
+    "market_cap": 35449898735.19287,
+    "pe_ratio_ttm": 23.55865941272197,
+    "goodwill": 3828000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 255.37493903081793,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 2179.5774816529365,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 621.9110583232832,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 159.5639435638855,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 140.18822190989331,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 65.3954640321972,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 207.4694412973517,
+    "max": 2179.5774816529365,
+    "low": 65.3954640321972,
+    "high": 2179.5774816529365,
+    "mos_pct": -184.5623920279717,
+    "valuation_warnings": [
+      "extreme_dcf_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 10,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [
+    "extreme_dcf_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 124.22163711427424,
   "entered_top5": false,
   "exited_top5": false
 }

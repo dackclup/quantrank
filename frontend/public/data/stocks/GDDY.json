@@ -3,19 +3,19 @@
   "name": "GoDaddy",
   "sector": "Information Technology",
   "industry": "Internet Services & Infrastructure",
-  "market_cap": 11906055500.0,
-  "current_price": 89.75,
-  "rank": 103,
-  "composite_score": 57.94,
+  "market_cap": 12074530714.675903,
+  "current_price": 91.02,
+  "rank": 92,
+  "composite_score": 58.33,
   "pillar_scores": {
-    "quality": 82.88,
-    "value": 65.53,
+    "quality": 84.25,
+    "value": 66.44,
     "growth": 69.69,
-    "momentum": 5.45,
+    "momentum": 3.26,
     "health": 30.14,
-    "profitability": 62.56,
-    "technical": 63.99,
-    "risk": 23.64,
+    "profitability": 63.01,
+    "technical": 65.24,
+    "risk": 23.56,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 1.61,
     "eps_diluted": 1.6,
     "shares_outstanding": 132658000.0,
-    "market_cap": 11906055500.0,
-    "pe_ratio_ttm": 56.09375
+    "market_cap": 12074530714.675903,
+    "pe_ratio_ttm": 56.887497901916504,
+    "goodwill": 3614200000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 116.49852360907417,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 17.761631877376022,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 244.26275538538675,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 76.80420966637456,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 96.65136663772437,
+    "max": 244.26275538538675,
+    "low": 17.761631877376022,
+    "high": 244.26275538538675,
+    "mos_pct": 5.826477359358887,
+    "valuation_warnings": [
+      "extreme_multiples_pb_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -46,11 +94,16 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 7,
+    "filing_lag_days": 9,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_multiples_pb_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "Cardinal Health",
   "sector": "Health Care",
   "industry": "Health Care Distributors",
-  "market_cap": 50210879669.18945,
-  "current_price": 185.28,
-  "rank": 340,
-  "composite_score": 45.7,
+  "market_cap": 49769148345.947266,
+  "current_price": 183.65,
+  "rank": 347,
+  "composite_score": 45.72,
   "pillar_scores": {
-    "quality": 25.0,
-    "value": 70.9,
+    "quality": 24.15,
+    "value": 72.03,
     "growth": 42.8,
-    "momentum": 53.54,
-    "health": 50.12,
-    "profitability": 27.12,
-    "technical": 27.19,
-    "risk": 73.64,
+    "momentum": 52.54,
+    "health": 50.2,
+    "profitability": 27.4,
+    "technical": 29.73,
+    "risk": 72.84,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 1.89,
     "eps_diluted": 1.88,
     "shares_outstanding": 271000000.0,
-    "market_cap": 50210879669.18945,
-    "pe_ratio_ttm": 98.55319084005153
+    "market_cap": 49769148345.947266,
+    "pe_ratio_ttm": 97.6861669662151,
+    "goodwill": 11609000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 143.66487696831447,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": 275.3527842019078,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 112.22080750264895,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 143.66487696831447,
+    "max": 275.3527842019078,
+    "low": 112.22080750264895,
+    "high": 275.3527842019078,
+    "mos_pct": -27.832214645607976,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,11 +93,16 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 92,
+    "filing_lag_days": 94,
     "latest_period_end": "2025-12-31",
     "latest_filed_date": "2026-02-05"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "Raymond James Financial",
   "sector": "Financials",
   "industry": "Investment Banking & Brokerage",
-  "market_cap": 29883571793.698425,
-  "current_price": 153.53,
-  "rank": 130,
-  "composite_score": 56.65,
+  "market_cap": 30039286955.702362,
+  "current_price": 154.33,
+  "rank": 124,
+  "composite_score": 56.74,
   "pillar_scores": {
     "quality": 56.67,
-    "value": 65.11,
-    "growth": 63.0,
-    "momentum": 30.13,
-    "health": 64.66,
-    "profitability": 44.22,
-    "technical": 68.58,
-    "risk": 56.47,
+    "value": 66.0,
+    "growth": 62.67,
+    "momentum": 31.32,
+    "health": 63.84,
+    "profitability": 45.56,
+    "technical": 63.89,
+    "risk": 56.81,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 5.61,
     "eps_diluted": 5.51,
     "shares_outstanding": 194643210.0,
-    "market_cap": 29883571793.698425,
-    "pe_ratio_ttm": 27.863883626006693
+    "market_cap": 30039286955.702362,
+    "pe_ratio_ttm": 28.009074742478166,
+    "goodwill": 1451000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 107.48667496041764,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 298.2399582120842,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 131.2683472815535,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 71.08872630600729,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 119.37751112098557,
+    "max": 298.2399582120842,
+    "low": 71.08872630600729,
+    "high": 298.2399582120842,
+    "mos_pct": -29.27895747017694,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -53,11 +99,14 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 2,
+    "filing_lag_days": 4,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 55.075129515178055,
   "entered_top5": false,
   "exited_top5": false
 }

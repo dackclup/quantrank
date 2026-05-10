@@ -3,19 +3,19 @@
   "name": "Alexandria Real Estate Equities",
   "sector": "Real Estate",
   "industry": "Office REITs",
-  "market_cap": 7773116290.124161,
-  "current_price": 45.58,
-  "rank": 443,
-  "composite_score": 39.33,
+  "market_cap": 7889081441.177853,
+  "current_price": 46.26,
+  "rank": 445,
+  "composite_score": 39.36,
   "pillar_scores": {
     "quality": 30.65,
-    "value": 63.44,
+    "value": 63.98,
     "growth": 51.61,
-    "momentum": 8.02,
-    "health": 27.81,
+    "momentum": 7.67,
+    "health": 27.57,
     "profitability": 43.55,
-    "technical": 63.0,
-    "risk": 13.94,
+    "technical": 62.45,
+    "risk": 14.08,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,59 @@
     "eps_basic": 2.1,
     "eps_diluted": 2.1,
     "shares_outstanding": 170537867.0,
-    "market_cap": 7773116290.124161,
-    "pe_ratio_ttm": 21.704762776692707
+    "market_cap": 7889081441.177853,
+    "pe_ratio_ttm": 22.028570629301523,
+    "goodwill": null
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 263.64115415597354,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 221.97926470547839,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 242.81020943072596,
+    "max": 221.97926470547839,
+    "low": 221.97926470547839,
+    "high": 263.64115415597354,
+    "mos_pct": 80.94808351346065,
+    "valuation_warnings": [
+      "extreme_multiples_pe_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -55,14 +104,21 @@
       "accounts_receivable",
       "accounts_payable",
       "short_term_debt",
-      "ebitda"
+      "ebitda",
+      "goodwill"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 11,
+    "filing_lag_days": 13,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-27"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_multiples_pe_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 92.3132338696367,
   "entered_top5": false,
   "exited_top5": false
 }

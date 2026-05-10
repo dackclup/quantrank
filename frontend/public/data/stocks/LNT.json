@@ -3,19 +3,19 @@
   "name": "Alliant Energy",
   "sector": "Utilities",
   "industry": "Electric Utilities",
-  "market_cap": 18515881413.089172,
-  "current_price": 71.69,
-  "rank": 131,
-  "composite_score": 56.63,
+  "market_cap": 18533960726.859276,
+  "current_price": 71.76,
+  "rank": 150,
+  "composite_score": 55.29,
   "pillar_scores": {
-    "quality": 75.0,
+    "quality": 70.16,
     "value": 40.32,
     "growth": 46.77,
-    "momentum": 74.4,
-    "health": 20.56,
+    "momentum": 72.31,
+    "health": 20.6,
     "profitability": 67.2,
-    "technical": 48.51,
-    "risk": 82.9,
+    "technical": 53.44,
+    "risk": 82.75,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 0.87,
     "eps_diluted": 0.87,
     "shares_outstanding": 258277037.0,
-    "market_cap": 18515881413.089172,
-    "pe_ratio_ttm": 82.4023016567888
+    "market_cap": 18533960726.859276,
+    "pe_ratio_ttm": 82.48276107612698,
+    "goodwill": null
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 43.077429932039024,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 45.059582318701935,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 61.16878516717959,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 112.59117004013575,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_utilities",
+        "tier_used": null
+      }
+    },
+    "median": 53.11418374294077,
+    "max": 112.59117004013575,
+    "low": 43.077429932039024,
+    "high": 112.59117004013575,
+    "mos_pct": -35.10515850818823,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,14 +92,21 @@
       "gross_profit",
       "research_and_development",
       "sga_expense",
-      "inventory"
+      "inventory",
+      "goodwill",
+      "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 7,
+    "filing_lag_days": 9,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 28.736584894304794,
   "entered_top5": false,
   "exited_top5": false
 }

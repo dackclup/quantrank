@@ -3,19 +3,19 @@
   "name": "Linde plc",
   "sector": "Materials",
   "industry": "Industrial Gases",
-  "market_cap": 251212055198.8917,
-  "current_price": 493.85,
-  "rank": 163,
-  "composite_score": 54.9,
+  "market_cap": 250861064150.48502,
+  "current_price": 493.16,
+  "rank": 164,
+  "composite_score": 54.7,
   "pillar_scores": {
     "quality": 73.08,
     "value": 16.67,
     "growth": 63.46,
-    "momentum": 76.49,
-    "health": 40.12,
+    "momentum": 74.3,
+    "health": 40.2,
     "profitability": 74.36,
-    "technical": 43.65,
-    "risk": 72.51,
+    "technical": 45.0,
+    "risk": 72.34,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 4.0,
     "eps_diluted": 3.98,
     "shares_outstanding": 508680879.0,
-    "market_cap": 251212055198.8917,
-    "pe_ratio_ttm": 124.08291610641096
+    "market_cap": 250861064150.48502,
+    "pe_ratio_ttm": 123.90954865882145,
+    "goodwill": 27882000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 336.58202312661587,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 237.9512264118536,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 263.97019959802276,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 97.08917714930307,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 250.96071300493819,
+    "max": 336.58202312661587,
+    "low": 97.08917714930307,
+    "high": 336.58202312661587,
+    "mos_pct": -96.50884704507729,
+    "valuation_warnings": [
+      "extreme_dcf_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,11 +92,16 @@
       "income_before_tax"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 7,
+    "filing_lag_days": 9,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_dcf_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

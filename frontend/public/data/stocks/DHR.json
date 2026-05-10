@@ -3,19 +3,19 @@
   "name": "Danaher Corporation",
   "sector": "Health Care",
   "industry": "Life Sciences Tools & Services",
-  "market_cap": 124314584591.6748,
-  "current_price": 175.66,
-  "rank": 491,
-  "composite_score": 33.34,
+  "market_cap": 121129934591.6748,
+  "current_price": 171.16,
+  "rank": 490,
+  "composite_score": 33.66,
   "pillar_scores": {
     "quality": 22.46,
-    "value": 40.11,
+    "value": 42.09,
     "growth": 12.71,
-    "momentum": 26.79,
-    "health": 80.32,
-    "profitability": 35.31,
-    "technical": 32.92,
-    "risk": 35.19,
+    "momentum": 25.9,
+    "health": 80.4,
+    "profitability": 35.88,
+    "technical": 32.82,
+    "risk": 33.73,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 1.45,
     "eps_diluted": 1.45,
     "shares_outstanding": 707700000.0,
-    "market_cap": 124314584591.6748,
-    "pe_ratio_ttm": 121.14483011179958
+    "market_cap": 121129934591.6748,
+    "pe_ratio_ttm": 118.0413818359375,
+    "goodwill": 42765000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 110.8053572362,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 266.8973823758434,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 205.12794914871196,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 86.21286734975757,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 157.96665319245596,
+    "max": 266.8973823758434,
+    "low": 86.21286734975757,
+    "high": 266.8973823758434,
+    "mos_pct": -8.351984550549108,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -43,11 +91,16 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 17,
+    "filing_lag_days": 19,
     "latest_period_end": "2026-03-27",
     "latest_filed_date": "2026-04-21"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

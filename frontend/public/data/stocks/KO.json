@@ -3,19 +3,19 @@
   "name": "Coca-Cola Company (The)",
   "sector": "Consumer Staples",
   "industry": "Soft Drinks & Non-alcoholic Beverages",
-  "market_cap": 552147202148.4375,
-  "current_price": 78.43,
-  "rank": 258,
-  "composite_score": 50.11,
+  "market_cap": 552076787109.375,
+  "current_price": 78.42,
+  "rank": 254,
+  "composite_score": 50.13,
   "pillar_scores": {
     "quality": 62.5,
     "value": 9.72,
     "growth": 61.81,
-    "momentum": 63.0,
-    "health": 51.89,
+    "momentum": 61.6,
+    "health": 52.05,
     "profitability": 64.81,
-    "technical": 59.16,
-    "risk": 78.3,
+    "technical": 63.0,
+    "risk": 77.97,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,60 @@
     "eps_basic": 0.91,
     "eps_diluted": 0.91,
     "shares_outstanding": 7040000000.0,
-    "market_cap": 552147202148.4375,
-    "pe_ratio_ttm": 86.18681352217118
+    "market_cap": 552076787109.375,
+    "pe_ratio_ttm": 86.17582216367616,
+    "goodwill": 15411000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 12.280248918255614,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 52.70060458599321,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 21.380064829326766,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 25.54060685860669,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 6.804627612554702,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 13.626978662814881,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 17.503521746070824,
+    "max": 52.70060458599321,
+    "low": 6.804627612554702,
+    "high": 52.70060458599321,
+    "mos_pct": -348.02411369899875,
+    "valuation_warnings": [
+      "extreme_graham_estimate",
+      "extreme_rim_estimate",
+      "extreme_dcf_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,11 +95,18 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 10,
     "latest_period_end": "2026-04-03",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_graham_estimate",
+    "extreme_rim_estimate",
+    "extreme_dcf_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 2.5228693181818183,
   "entered_top5": false,
   "exited_top5": false
 }

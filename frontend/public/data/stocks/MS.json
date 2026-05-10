@@ -3,18 +3,18 @@
   "name": "Morgan Stanley",
   "sector": "Financials",
   "industry": "Investment Banking & Brokerage",
-  "market_cap": 300398100708.27234,
-  "current_price": 190.17,
-  "rank": 174,
-  "composite_score": 54.39,
+  "market_cap": 305010615366.04474,
+  "current_price": 193.09,
+  "rank": 166,
+  "composite_score": 54.63,
   "pillar_scores": {
-    "quality": 54.0,
-    "value": 44.0,
-    "growth": 58.67,
-    "momentum": 68.53,
-    "health": 47.41,
+    "quality": 53.33,
+    "value": 44.22,
+    "growth": 58.0,
+    "momentum": 71.56,
+    "health": 46.59,
     "profitability": 47.11,
-    "technical": 68.58,
+    "technical": 71.66,
     "risk": 70.05,
     "sentiment": null,
     "ml": null
@@ -32,10 +32,56 @@
     "eps_basic": 3.47,
     "eps_diluted": 3.43,
     "shares_outstanding": 1579629298.0,
-    "market_cap": 300398100708.27234,
-    "pe_ratio_ttm": 55.44314815421146
+    "market_cap": 305010615366.04474,
+    "pe_ratio_ttm": 56.29445957372904,
+    "goodwill": 17105000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 100.54277829094917,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 184.29170850897944,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 147.09757496373751,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 61.72135803815203,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 123.82017662734334,
+    "max": 184.29170850897944,
+    "low": 61.72135803815203,
+    "high": 184.29170850897944,
+    "mos_pct": -55.94388701207066,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -56,13 +102,16 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 3,
+    "filing_lag_days": 5,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 57.7483591343214,
   "entered_top5": false,
   "exited_top5": false
 }

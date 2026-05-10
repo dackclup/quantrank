@@ -3,19 +3,19 @@
   "name": "Constellation Energy",
   "sector": "Utilities",
   "industry": "Electric Utilities",
-  "market_cap": 97119359619.14062,
-  "current_price": 311.28,
-  "rank": 66,
-  "composite_score": 60.98,
+  "market_cap": 94732561523.4375,
+  "current_price": 303.63,
+  "rank": 88,
+  "composite_score": 58.89,
   "pillar_scores": {
-    "quality": 81.45,
-    "value": 53.23,
+    "quality": 69.35,
+    "value": 56.45,
     "growth": 57.26,
-    "momentum": 37.35,
-    "health": 61.2,
-    "profitability": 69.35,
-    "technical": 57.17,
-    "risk": 39.21,
+    "momentum": 39.24,
+    "health": 61.39,
+    "profitability": 69.89,
+    "technical": 61.43,
+    "risk": 39.34,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 7.4,
     "eps_diluted": 7.4,
     "shares_outstanding": 312000000.0,
-    "market_cap": 97119359619.14062,
-    "pe_ratio_ttm": 42.06486469990498
+    "market_cap": 94732561523.4375,
+    "pe_ratio_ttm": 41.031081740920605,
+    "goodwill": 420000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 90.09514201878265,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 426.0376800498382,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 99.04144855519792,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 507.82067500080205,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": 62.36077280286588,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_utilities",
+        "tier_used": null
+      }
+    },
+    "median": 99.04144855519792,
+    "max": 507.82067500080205,
+    "low": 62.36077280286588,
+    "high": 507.82067500080205,
+    "mos_pct": -206.56862284641667,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -46,11 +92,14 @@
       "sga_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 73,
+    "filing_lag_days": 75,
     "latest_period_end": "2025-12-31",
     "latest_filed_date": "2026-02-24"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 44.53846153846154,
   "entered_top5": false,
   "exited_top5": false
 }

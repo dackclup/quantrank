@@ -3,19 +3,19 @@
   "name": "News Corp (Class A)",
   "sector": "Communication Services",
   "industry": "Publishing",
-  "market_cap": 15656160530.090332,
-  "current_price": 27.04,
-  "rank": 243,
-  "composite_score": 50.83,
+  "market_cap": 15644580265.045166,
+  "current_price": 27.02,
+  "rank": 247,
+  "composite_score": 50.7,
   "pillar_scores": {
     "quality": 48.91,
     "value": 63.04,
     "growth": 17.39,
-    "momentum": 46.02,
-    "health": 62.61,
+    "momentum": 46.46,
+    "health": 62.77,
     "profitability": 61.23,
-    "technical": 66.43,
-    "risk": 49.44,
+    "technical": 62.7,
+    "risk": 49.27,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,59 @@
     "eps_basic": 0.7,
     "eps_diluted": 0.7,
     "shares_outstanding": 579000000.0,
-    "market_cap": 15656160530.090332,
-    "pe_ratio_ttm": 38.62857273646764
+    "market_cap": 15644580265.045166,
+    "pe_ratio_ttm": 38.60000065394811,
+    "goodwill": 4485000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 8.961185732978233,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 40.416305405578996,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 30.92933536182853,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 13.756778436687185,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 22.34305689925786,
+    "max": 40.416305405578996,
+    "low": 8.961185732978233,
+    "high": 40.416305405578996,
+    "mos_pct": -20.93242468832078,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -48,11 +97,17 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 0,
+    "filing_lag_days": 2,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-08"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 3.837651122625216,
   "entered_top5": false,
   "exited_top5": false
 }

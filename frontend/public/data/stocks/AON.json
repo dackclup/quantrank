@@ -3,19 +3,19 @@
   "name": "Aon plc",
   "sector": "Financials",
   "industry": "Insurance Brokers",
-  "market_cap": 84606581011.96289,
-  "current_price": 313.59,
-  "rank": 294,
-  "composite_score": 48.08,
+  "market_cap": 84390744305.41992,
+  "current_price": 312.79,
+  "rank": 306,
+  "composite_score": 47.57,
   "pillar_scores": {
-    "quality": 80.67,
-    "value": 18.0,
+    "quality": 72.67,
+    "value": 25.56,
     "growth": 55.0,
-    "momentum": 35.21,
-    "health": 36.57,
-    "profitability": 54.89,
-    "technical": 31.23,
-    "risk": 51.13,
+    "momentum": 34.81,
+    "health": 36.73,
+    "profitability": 49.78,
+    "technical": 37.75,
+    "risk": 51.59,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 5.66,
     "eps_diluted": 5.63,
     "shares_outstanding": 269800000.0,
-    "market_cap": 84606581011.96289,
-    "pe_ratio_ttm": 55.6998217296431
+    "market_cap": 84390744305.41992,
+    "pe_ratio_ttm": 55.55772798311224,
+    "goodwill": 15925000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 302.49630288791667,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 74.10643461352315,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 188.30136875071992,
+    "max": 302.49630288791667,
+    "low": 74.10643461352315,
+    "high": 302.49630288791667,
+    "mos_pct": -66.11138337449074,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -48,7 +94,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 7,
+    "filing_lag_days": 9,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
@@ -56,6 +102,9 @@
     "altman_distress",
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

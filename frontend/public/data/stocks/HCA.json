@@ -3,19 +3,19 @@
   "name": "HCA Healthcare",
   "sector": "Health Care",
   "industry": "Health Care Facilities",
-  "market_cap": 95470204273.20251,
-  "current_price": 429.02,
-  "rank": 256,
-  "composite_score": 50.17,
+  "market_cap": 96843222914.28833,
+  "current_price": 435.19,
+  "rank": 243,
+  "composite_score": 50.8,
   "pillar_scores": {
-    "quality": 28.81,
-    "value": 61.02,
+    "quality": 27.97,
+    "value": 60.45,
     "growth": 69.49,
-    "momentum": 53.88,
-    "health": 54.06,
+    "momentum": 56.82,
+    "health": 54.1,
     "profitability": 59.04,
-    "technical": 35.31,
-    "risk": 59.63,
+    "technical": 47.21,
+    "risk": 60.13,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,59 @@
     "eps_basic": 7.25,
     "eps_diluted": 7.15,
     "shares_outstanding": 222530900.0,
-    "market_cap": 95470204273.20251,
-    "pe_ratio_ttm": 60.00279566624781
+    "market_cap": 96843222914.28833,
+    "pe_ratio_ttm": 60.86573460718968,
+    "goodwill": 2701000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 566.8151426315308,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 79.13145192307748,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 322.97329727730414,
+    "max": 566.8151426315308,
+    "low": 79.13145192307748,
+    "high": 566.8151426315308,
+    "mos_pct": -34.744886376087344,
+    "valuation_warnings": [
+      "extreme_dcf_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -47,11 +96,17 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 9,
+    "filing_lag_days": 11,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_dcf_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

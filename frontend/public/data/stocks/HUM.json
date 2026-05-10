@@ -3,19 +3,19 @@
   "name": "Humana",
   "sector": "Health Care",
   "industry": "Managed Health Care",
-  "market_cap": 49107643913.52832,
-  "current_price": 247.12,
-  "rank": 175,
-  "composite_score": 54.33,
+  "market_cap": 54640003308.67456,
+  "current_price": 274.96,
+  "rank": 170,
+  "composite_score": 54.46,
   "pillar_scores": {
-    "quality": 47.88,
-    "value": 85.03,
+    "quality": 48.31,
+    "value": 81.07,
     "growth": 27.54,
-    "momentum": 31.62,
-    "health": 77.11,
+    "momentum": 36.65,
+    "health": 78.03,
     "profitability": 40.4,
-    "technical": 68.68,
-    "risk": 25.86,
+    "technical": 70.49,
+    "risk": 28.09,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,59 @@
     "eps_basic": 9.85,
     "eps_diluted": 9.83,
     "shares_outstanding": 198719832.0,
-    "market_cap": 49107643913.52832,
-    "pe_ratio_ttm": 25.139368780995678
+    "market_cap": 54640003308.67456,
+    "pe_ratio_ttm": 27.971514898787195,
+    "goodwill": 10489000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 101.85435210284464,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 779.2717275619507,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 333.5341029533369,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 439.86290834790753,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 158.72062759431395,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 333.5341029533369,
+    "max": 779.2717275619507,
+    "low": 101.85435210284464,
+    "high": 779.2717275619507,
+    "mos_pct": 17.56165590852747,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -48,11 +97,17 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 9,
+    "filing_lag_days": 11,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 34.737348207903075,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "CMS Energy",
   "sector": "Utilities",
   "industry": "Multi-Utilities",
-  "market_cap": 22846243717.193604,
-  "current_price": 73.96,
-  "rank": 185,
-  "composite_score": 54.05,
+  "market_cap": 22429229188.537598,
+  "current_price": 72.61,
+  "rank": 198,
+  "composite_score": 52.8,
   "pillar_scores": {
-    "quality": 66.94,
-    "value": 51.08,
+    "quality": 62.9,
+    "value": 52.15,
     "growth": 52.42,
-    "momentum": 65.09,
-    "health": 21.71,
-    "profitability": 53.23,
-    "technical": 28.88,
-    "risk": 67.2,
+    "momentum": 62.9,
+    "health": 21.79,
+    "profitability": 52.69,
+    "technical": 28.39,
+    "risk": 65.74,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 1.1,
     "eps_diluted": 1.1,
     "shares_outstanding": 308900000.0,
-    "market_cap": 22846243717.193604,
-    "pe_ratio_ttm": 67.23636280406605
+    "market_cap": 22429229188.537598,
+    "pe_ratio_ttm": 66.00909146395595,
+    "goodwill": null
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 47.628127103857146,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 95.60833613077801,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 63.786067553421915,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 120.71336499161853,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": 31.243337293810924,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_utilities",
+        "tier_used": null
+      }
+    },
+    "median": 63.786067553421915,
+    "max": 120.71336499161853,
+    "low": 31.243337293810924,
+    "high": 120.71336499161853,
+    "mos_pct": -13.833637023538806,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,14 +91,19 @@
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
-      "inventory"
+      "inventory",
+      "goodwill",
+      "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 10,
+    "filing_lag_days": 12,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-28"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 30.644221430883782,
   "entered_top5": false,
   "exited_top5": false
 }

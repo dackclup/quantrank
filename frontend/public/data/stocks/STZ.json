@@ -4,18 +4,18 @@
   "sector": "Consumer Staples",
   "industry": "Distillers & Vintners",
   "market_cap": null,
-  "current_price": 150.25,
-  "rank": 249,
-  "composite_score": 50.57,
+  "current_price": 148.21,
+  "rank": 263,
+  "composite_score": 49.77,
   "pillar_scores": {
     "quality": 65.97,
     "value": 49.07,
     "growth": 42.71,
-    "momentum": 42.93,
-    "health": 37.69,
+    "momentum": 36.06,
+    "health": 37.81,
     "profitability": 68.52,
-    "technical": 29.03,
-    "risk": 31.37,
+    "technical": 30.13,
+    "risk": 31.24,
     "sentiment": null,
     "ml": null
   },
@@ -33,9 +33,55 @@
     "eps_diluted": null,
     "shares_outstanding": null,
     "market_cap": null,
-    "pe_ratio_ttm": null
+    "pe_ratio_ttm": null,
+    "goodwill": 5233900000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "missing_shares_outstanding",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "missing_shares_outstanding",
+        "tier_used": null
+      }
+    },
+    "median": null,
+    "max": null,
+    "low": null,
+    "high": null,
+    "mos_pct": null,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -46,11 +92,14 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 18,
     "latest_period_end": "2026-02-28",
     "latest_filed_date": "2026-04-22"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "Vertex Pharmaceuticals",
   "sector": "Health Care",
   "industry": "Biotechnology",
-  "market_cap": 108019680025.0,
-  "current_price": 425.0,
-  "rank": 139,
-  "composite_score": 56.22,
+  "market_cap": 109244752140.01239,
+  "current_price": 429.82,
+  "rank": 104,
+  "composite_score": 57.73,
   "pillar_scores": {
-    "quality": 75.85,
+    "quality": 76.69,
     "value": 23.16,
     "growth": 57.2,
-    "momentum": 42.03,
-    "health": 90.72,
-    "profitability": 79.94,
-    "technical": 41.04,
-    "risk": 43.46,
+    "momentum": 43.63,
+    "health": 90.8,
+    "profitability": 80.51,
+    "technical": 60.81,
+    "risk": 44.69,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 4.06,
     "eps_diluted": 4.02,
     "shares_outstanding": 254163953.0,
-    "market_cap": 108019680025.0,
-    "pe_ratio_ttm": 105.72139303482588
+    "market_cap": 109244752140.01239,
+    "pe_ratio_ttm": 106.92039983189522,
+    "goodwill": 1088000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 119.55929410863011,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 307.19830075139583,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 256.768546438333,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 228.98446314509042,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 77.27067818941637,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 187.2796423958503,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 208.13205277047035,
+    "max": 307.19830075139583,
+    "low": 77.27067818941637,
+    "high": 307.19830075139583,
+    "mos_pct": -106.51312549068433,
+    "valuation_warnings": [
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,13 +93,18 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 3,
+    "filing_lag_days": 5,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 70.25150415409222,
   "entered_top5": false,
   "exited_top5": false
 }

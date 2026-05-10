@@ -3,19 +3,19 @@
   "name": "Williams Companies",
   "sector": "Energy",
   "industry": "Oil & Gas Storage & Transportation",
-  "market_cap": 92062896148.68164,
-  "current_price": 72.95,
-  "rank": 92,
-  "composite_score": 59.07,
+  "market_cap": 90813518844.60449,
+  "current_price": 71.96,
+  "rank": 96,
+  "composite_score": 58.02,
   "pillar_scores": {
     "quality": 79.76,
     "value": 22.22,
     "growth": 64.29,
-    "momentum": 82.37,
-    "health": 39.96,
+    "momentum": 78.14,
+    "health": 40.08,
     "profitability": 52.38,
-    "technical": 67.93,
-    "risk": 83.73,
+    "technical": 58.02,
+    "risk": 82.77,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,60 @@
     "eps_basic": 0.71,
     "eps_diluted": 0.7,
     "shares_outstanding": 1262000000.0,
-    "market_cap": 92062896148.68164,
-    "pe_ratio_ttm": 104.21428135463171
+    "market_cap": 90813518844.60449,
+    "pe_ratio_ttm": 102.7999986921038,
+    "goodwill": 466000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 10.32409825381172,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 50.33159195293079,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 24.78296158140933,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 61.881940491207494,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 3.42914840796187,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 28.643502835665576,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 26.713232208537455,
+    "max": 61.881940491207494,
+    "low": 3.42914840796187,
+    "high": 61.881940491207494,
+    "mos_pct": -169.3796037960337,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_graham_estimate",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -47,11 +97,18 @@
       "long_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 4,
+    "filing_lag_days": 6,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-04"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_graham_estimate",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 2.1664025356576864,
   "entered_top5": false,
   "exited_top5": false
 }

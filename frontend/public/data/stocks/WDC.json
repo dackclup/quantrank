@@ -3,18 +3,18 @@
   "name": "Western Digital",
   "sector": "Information Technology",
   "industry": "Technology Hardware, Storage & Peripherals",
-  "market_cap": 160048951263.42773,
-  "current_price": 463.91,
-  "rank": 12,
-  "composite_score": 68.75,
+  "market_cap": 165600000000.0,
+  "current_price": 480.0,
+  "rank": 9,
+  "composite_score": 69.62,
   "pillar_scores": {
     "quality": 80.82,
-    "value": 46.35,
+    "value": 47.95,
     "growth": 55.48,
-    "momentum": 92.53,
-    "health": 70.16,
-    "profitability": 81.62,
-    "technical": 69.52,
+    "momentum": 96.61,
+    "health": 70.28,
+    "profitability": 81.39,
+    "technical": 69.62,
     "risk": 53.35,
     "sentiment": null,
     "ml": null
@@ -32,10 +32,59 @@
     "eps_basic": 17.8,
     "eps_diluted": 16.05,
     "shares_outstanding": 345000000.0,
-    "market_cap": 160048951263.42773,
-    "pe_ratio_ttm": 28.904050072405568
+    "market_cap": 165600000000.0,
+    "pe_ratio_ttm": 29.906542056074766,
+    "goodwill": 4321000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 756.2165769580765,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 278.5959727634074,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 311.0977729487695,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 25.179182598344376,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 294.84687285608845,
+    "max": 756.2165769580765,
+    "low": 25.179182598344376,
+    "high": 756.2165769580765,
+    "mos_pct": -62.79636794190549,
+    "valuation_warnings": [
+      "extreme_dcf_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -43,13 +92,19 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 7,
+    "filing_lag_days": 9,
     "latest_period_end": "2026-04-03",
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [
+    "extreme_dcf_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 15.31304347826087,
   "entered_top5": false,
-  "exited_top5": true
+  "exited_top5": false
 }

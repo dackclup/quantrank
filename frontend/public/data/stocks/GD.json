@@ -3,19 +3,19 @@
   "name": "General Dynamics",
   "sector": "Industrials",
   "industry": "Aerospace & Defense",
-  "market_cap": 94030745230.36499,
-  "current_price": 347.76,
+  "market_cap": 93698162856.20438,
+  "current_price": 346.53,
   "rank": 79,
-  "composite_score": 60.31,
+  "composite_score": 59.94,
   "pillar_scores": {
     "quality": 50.95,
     "value": 79.54,
     "growth": 48.42,
-    "momentum": 63.15,
-    "health": 48.61,
+    "momentum": 59.01,
+    "health": 48.8,
     "profitability": 55.91,
-    "technical": 62.55,
-    "risk": 79.28,
+    "technical": 64.99,
+    "risk": 79.55,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,60 @@
     "eps_basic": 15.65,
     "eps_diluted": 15.45,
     "shares_outstanding": 270389759.0,
-    "market_cap": 94030745230.36499,
-    "pe_ratio_ttm": 22.50873849615696
+    "market_cap": 93698162856.20438,
+    "pe_ratio_ttm": 22.429126134582322,
+    "goodwill": 20956000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 59.36164478532141,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 1542.3746170954676,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 663.5937481488929,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 346.61560764577735,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": 13.940130808225419,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 142.8225312785285,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 244.7190694621529,
+    "max": 1542.3746170954676,
+    "low": 13.940130808225419,
+    "high": 1542.3746170954676,
+    "mos_pct": -41.60318586569714,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_graham_estimate",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,11 +94,18 @@
       "gross_profit"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 9,
+    "filing_lag_days": 11,
     "latest_period_end": "2026-04-05",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_graham_estimate",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 11.431645974432042,
   "entered_top5": false,
   "exited_top5": false
 }

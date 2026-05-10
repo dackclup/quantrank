@@ -3,19 +3,19 @@
   "name": "Quanta Services",
   "sector": "Industrials",
   "industry": "Construction & Engineering",
-  "market_cap": 112651790194.49219,
-  "current_price": 750.73,
-  "rank": 394,
-  "composite_score": 43.14,
+  "market_cap": 111791970320.0,
+  "current_price": 745.0,
+  "rank": 398,
+  "composite_score": 43.06,
   "pillar_scores": {
     "quality": 24.37,
     "value": 16.46,
     "growth": 75.32,
     "momentum": 86.35,
-    "health": 51.2,
+    "health": 51.39,
     "profitability": 21.73,
-    "technical": 70.32,
-    "risk": 67.6,
+    "technical": 68.18,
+    "risk": 67.76,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,59 @@
     "eps_basic": 1.47,
     "eps_diluted": 1.45,
     "shares_outstanding": 150056336.0,
-    "market_cap": 112651790194.49219,
-    "pe_ratio_ttm": 517.7448141163793
+    "market_cap": 111791970320.0,
+    "pe_ratio_ttm": 513.7931034482759,
+    "goodwill": 7405347000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 169.0930428410208,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 419.54727137275364,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 177.08084720547822,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 83.6240593640319,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 173.0869450232495,
+    "max": 419.54727137275364,
+    "low": 83.6240593640319,
+    "high": 419.54727137275364,
+    "mos_pct": -330.4195211833738,
+    "valuation_warnings": [
+      "extreme_dcf_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,11 +93,19 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 10,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
+  "valuation_warnings": [
+    "extreme_dcf_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

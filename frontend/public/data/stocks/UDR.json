@@ -3,19 +3,19 @@
   "name": "UDR, Inc.",
   "sector": "Real Estate",
   "industry": "Multi-Family Residential REITs",
-  "market_cap": 12035266627.354965,
-  "current_price": 36.93,
-  "rank": 154,
-  "composite_score": 55.27,
+  "market_cap": 12028748597.572517,
+  "current_price": 36.91,
+  "rank": 162,
+  "composite_score": 54.78,
   "pillar_scores": {
     "quality": 72.58,
-    "value": 47.85,
-    "growth": 62.9,
-    "momentum": 41.73,
-    "health": 24.98,
-    "profitability": 62.37,
-    "technical": 68.28,
-    "risk": 44.22,
+    "value": 47.31,
+    "growth": 62.1,
+    "momentum": 39.94,
+    "health": 25.06,
+    "profitability": 62.63,
+    "technical": 66.28,
+    "risk": 44.82,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 0.58,
     "eps_diluted": 0.57,
     "shares_outstanding": 325894030.0,
-    "market_cap": 12035266627.354965,
-    "pe_ratio_ttm": 64.78947421960665
+    "market_cap": 12028748597.572517,
+    "pe_ratio_ttm": 64.75438569721423,
+    "goodwill": null
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 14.320261768115524,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 71.55974184233567,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 23.04358468876384,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 29.69510961639503,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 26.369347152579437,
+    "max": 71.55974184233567,
+    "low": 14.320261768115524,
+    "high": 71.55974184233567,
+    "mos_pct": -39.97312725962421,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -49,14 +97,20 @@
       "accounts_receivable",
       "accounts_payable",
       "short_term_debt",
-      "retained_earnings"
+      "retained_earnings",
+      "goodwill"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 10,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 10.015623790346819,
   "entered_top5": false,
   "exited_top5": false
 }

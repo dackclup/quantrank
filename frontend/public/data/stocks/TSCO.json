@@ -3,19 +3,19 @@
   "name": "Tractor Supply",
   "sector": "Consumer Discretionary",
   "industry": "Other Specialty Retail",
-  "market_cap": 16679782499.71962,
-  "current_price": 31.74,
-  "rank": 375,
-  "composite_score": 43.9,
+  "market_cap": 16106973249.5327,
+  "current_price": 30.65,
+  "rank": 360,
+  "composite_score": 45.11,
   "pillar_scores": {
     "quality": 67.19,
-    "value": 38.54,
+    "value": 42.88,
     "growth": 40.1,
-    "momentum": 10.41,
-    "health": 49.18,
+    "momentum": 11.6,
+    "health": 49.54,
     "profitability": 48.61,
-    "technical": 29.71,
-    "risk": 26.63,
+    "technical": 31.1,
+    "risk": 25.9,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 0.31,
     "eps_diluted": 0.31,
     "shares_outstanding": 525513000.0,
-    "market_cap": 16679782499.71962,
-    "pe_ratio_ttm": 102.38709603586504
+    "market_cap": 16106973249.5327,
+    "pe_ratio_ttm": 98.87096651138798,
+    "goodwill": 346724000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 20.696068352096646,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 23.358318080980787,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 30.312541606958852,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 23.79977458640907,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 15.376615185889303,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 14.497667036256068,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 22.027193216538716,
+    "max": 30.312541606958852,
+    "low": 14.497667036256068,
+    "high": 30.312541606958852,
+    "mos_pct": -39.14618770183248,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,13 +91,16 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 1,
+    "filing_lag_days": 3,
     "latest_period_end": "2026-03-28",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 4.024686354095903,
   "entered_top5": false,
   "exited_top5": false
 }

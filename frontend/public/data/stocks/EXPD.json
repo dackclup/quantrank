@@ -3,19 +3,19 @@
   "name": "Expeditors International",
   "sector": "Industrials",
   "industry": "Air Freight & Logistics",
-  "market_cap": 20049164720.581055,
-  "current_price": 151.86,
-  "rank": 69,
-  "composite_score": 60.95,
+  "market_cap": 20686840882.32422,
+  "current_price": 156.69,
+  "rank": 67,
+  "composite_score": 60.62,
   "pillar_scores": {
     "quality": 70.89,
-    "value": 66.24,
+    "value": 64.14,
     "growth": 35.13,
-    "momentum": 54.93,
-    "health": 70.76,
+    "momentum": 55.23,
+    "health": 70.96,
     "profitability": 46.41,
-    "technical": 62.1,
-    "risk": 59.0,
+    "technical": 63.0,
+    "risk": 60.03,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 1.72,
     "eps_diluted": 1.71,
     "shares_outstanding": 132024000.0,
-    "market_cap": 20049164720.581055,
-    "pe_ratio_ttm": 88.80701790079038
+    "market_cap": 20686840882.32422,
+    "pe_ratio_ttm": 91.63158037509137,
+    "goodwill": 7927000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 46.417268925271806,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 201.1965925328872,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 120.43727588935796,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 158.68031016776584,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 47.29996759121714,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 120.43727588935796,
+    "max": 201.1965925328872,
+    "low": 46.417268925271806,
+    "high": 201.1965925328872,
+    "mos_pct": -30.100918743257328,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -47,11 +93,14 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 2,
+    "filing_lag_days": 4,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 17.22272465612313,
   "entered_top5": false,
   "exited_top5": false
 }

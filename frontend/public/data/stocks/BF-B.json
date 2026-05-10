@@ -3,19 +3,19 @@
   "name": "Brown–Forman",
   "sector": "Consumer Staples",
   "industry": "Distillers & Vintners",
-  "market_cap": 12941676823.320389,
-  "current_price": 27.38,
-  "rank": 143,
-  "composite_score": 56.03,
+  "market_cap": 13083478064.247131,
+  "current_price": 27.68,
+  "rank": 149,
+  "composite_score": 55.55,
   "pillar_scores": {
     "quality": 65.97,
-    "value": 68.52,
+    "value": 67.13,
     "growth": 25.0,
-    "momentum": 30.98,
-    "health": 69.32,
+    "momentum": 29.73,
+    "health": 69.4,
     "profitability": 72.69,
-    "technical": 62.5,
-    "risk": 23.24,
+    "technical": 61.85,
+    "risk": 23.61,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,59 @@
     "eps_basic": 1.41,
     "eps_diluted": 1.41,
     "shares_outstanding": 472669000.0,
-    "market_cap": 12941676823.320389,
-    "pe_ratio_ttm": 19.418439121111067
+    "market_cap": 13083478064.247131,
+    "pe_ratio_ttm": 19.63120589019559,
+    "goodwill": 1536000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 11.392322331882125,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 81.9392079939465,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 43.02537570997291,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 89.5830883454019,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 5.145183650382495,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 7.383032606343702,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 27.20884902092752,
+    "max": 89.5830883454019,
+    "low": 5.145183650382495,
+    "high": 89.5830883454019,
+    "mos_pct": -1.7316104914466544,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,11 +93,17 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 65,
+    "filing_lag_days": 67,
     "latest_period_end": "2026-01-31",
     "latest_filed_date": "2026-03-04"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 3.084611006856807,
   "entered_top5": false,
   "exited_top5": false
 }

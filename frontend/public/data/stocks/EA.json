@@ -3,19 +3,19 @@
   "name": "Electronic Arts",
   "sector": "Communication Services",
   "industry": "Interactive Home Entertainment",
-  "market_cap": 50212501525.87891,
-  "current_price": 200.85,
-  "rank": 424,
-  "composite_score": 41.39,
+  "market_cap": 50110000610.35156,
+  "current_price": 200.44,
+  "rank": 427,
+  "composite_score": 40.86,
   "pillar_scores": {
     "quality": 50.0,
     "value": 20.29,
     "growth": 28.26,
-    "momentum": 72.21,
-    "health": 41.63,
+    "momentum": 67.23,
+    "health": 41.75,
     "profitability": 47.1,
-    "technical": 11.75,
-    "risk": 75.2,
+    "technical": 13.4,
+    "risk": 75.13,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,60 @@
     "eps_basic": 1.7,
     "eps_diluted": 1.68,
     "shares_outstanding": 250000000.0,
-    "market_cap": 50212501525.87891,
-    "pe_ratio_ttm": 119.55357506161644
+    "market_cap": 50110000610.35156,
+    "pe_ratio_ttm": 119.30952526274181,
+    "goodwill": 5388000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 13.895808720617882,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 87.08622046576605,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 47.66303532031608,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 117.66368673863303,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 3.008120659340517,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 47.66303532031608,
+    "max": 117.66368673863303,
+    "low": 3.008120659340517,
+    "high": 117.66368673863303,
+    "mos_pct": -320.53553890213516,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_graham_estimate",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -47,11 +97,18 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 94,
+    "filing_lag_days": 96,
     "latest_period_end": "2025-12-31",
     "latest_filed_date": "2026-02-03"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_graham_estimate",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 2.18,
   "entered_top5": false,
   "exited_top5": false
 }

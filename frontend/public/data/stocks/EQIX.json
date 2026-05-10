@@ -3,19 +3,19 @@
   "name": "Equinix",
   "sector": "Real Estate",
   "industry": "Data Center REITs",
-  "market_cap": 105207072443.11523,
-  "current_price": 1066.76,
-  "rank": 338,
-  "composite_score": 45.73,
+  "market_cap": 105731741505.98145,
+  "current_price": 1072.08,
+  "rank": 350,
+  "composite_score": 45.57,
   "pillar_scores": {
     "quality": 45.97,
-    "value": 15.59,
-    "growth": 62.9,
-    "momentum": 80.03,
-    "health": 38.29,
+    "value": 15.05,
+    "growth": 62.1,
+    "momentum": 79.88,
+    "health": 38.45,
     "profitability": 37.63,
-    "technical": 64.99,
-    "risk": 61.02,
+    "technical": 66.19,
+    "risk": 60.96,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,59 @@
     "eps_basic": 4.22,
     "eps_diluted": 4.2,
     "shares_outstanding": 98623000.0,
-    "market_cap": 105207072443.11523,
-    "pe_ratio_ttm": 253.990478515625
+    "market_cap": 105731741505.98145,
+    "pe_ratio_ttm": 255.2571323939732,
+    "goodwill": 5931000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 142.38052673539235,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 519.4888023222586,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 331.3586128910479,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 492.07545926704137,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 411.71703607904465,
+    "max": 519.4888023222586,
+    "low": 142.38052673539235,
+    "high": 519.4888023222586,
+    "mos_pct": -160.3924205479953,
+    "valuation_warnings": [
+      "extreme_graham_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,11 +93,17 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 9,
+    "filing_lag_days": 11,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_graham_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 82.98931283777618,
   "entered_top5": false,
   "exited_top5": false
 }

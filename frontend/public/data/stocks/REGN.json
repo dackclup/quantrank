@@ -3,19 +3,19 @@
   "name": "Regeneron Pharmaceuticals",
   "sector": "Health Care",
   "industry": "Biotechnology",
-  "market_cap": 66946428644.35803,
-  "current_price": 709.1,
-  "rank": 150,
-  "composite_score": 55.64,
+  "market_cap": 67493068681.43518,
+  "current_price": 714.89,
+  "rank": 129,
+  "composite_score": 56.61,
   "pillar_scores": {
-    "quality": 52.97,
-    "value": 43.79,
+    "quality": 53.39,
+    "value": 44.63,
     "growth": 46.19,
-    "momentum": 64.89,
-    "health": 91.87,
-    "profitability": 69.21,
-    "technical": 49.2,
-    "risk": 36.32,
+    "momentum": 65.64,
+    "health": 91.99,
+    "profitability": 70.62,
+    "technical": 57.82,
+    "risk": 37.48,
     "sentiment": null,
     "ml": null
   },
@@ -32,22 +32,72 @@
     "eps_basic": 6.99,
     "eps_diluted": 6.75,
     "shares_outstanding": 94410423.0,
-    "market_cap": 66946428644.35803,
-    "pe_ratio_ttm": 105.05184823495371
+    "market_cap": 67493068681.43518,
+    "pe_ratio_ttm": 105.90963179976852,
+    "goodwill": null
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 523.7715044251859,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 515.8180423064482,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 1187.3308226016736,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 353.368754624407,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 375.8573789973331,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 515.8180423064482,
+    "max": 1187.3308226016736,
+    "low": 353.368754624407,
+    "high": 1187.3308226016736,
+    "mos_pct": -38.59344885492011,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "gross_profit"
+      "gross_profit",
+      "goodwill"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 9,
+    "filing_lag_days": 11,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 319.2094584726095,
   "entered_top5": false,
   "exited_top5": false
 }

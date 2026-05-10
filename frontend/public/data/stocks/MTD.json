@@ -3,39 +3,87 @@
   "name": "Mettler Toledo",
   "sector": "Health Care",
   "industry": "Life Sciences Tools & Services",
-  "market_cap": 26859891614.657227,
-  "current_price": 1319.29,
-  "rank": 305,
-  "composite_score": 47.5,
+  "market_cap": 24015507435.927734,
+  "current_price": 1124.46,
+  "rank": 443,
+  "composite_score": 39.55,
   "pillar_scores": {
-    "quality": 36.86,
-    "value": 45.2,
+    "quality": 28.81,
+    "value": 34.18,
     "growth": 47.88,
-    "momentum": 42.58,
-    "health": 63.69,
-    "profitability": 79.1,
-    "technical": 59.21,
-    "risk": 43.06,
+    "momentum": 37.95,
+    "health": 64.88,
+    "profitability": 66.95,
+    "technical": 26.52,
+    "risk": 32.2,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 4026399000.0,
-    "net_income": 869193000.0,
-    "total_assets": 3712646000.0,
-    "total_liabilities": 3736282000.0,
-    "stockholders_equity": -23636000.0,
+    "revenue": 4089782000.0,
+    "net_income": 875060000.0,
+    "total_assets": 3668915000.0,
+    "total_liabilities": 3710798000.0,
+    "stockholders_equity": -41883000.0,
     "cash": 69065000.0,
-    "operating_cash_flow": 955772000.0,
-    "capex": 107124000.0,
-    "free_cash_flow": 848648000.0,
-    "eps_basic": 42.17,
-    "eps_diluted": 42.05,
-    "shares_outstanding": 20359353.0,
-    "market_cap": 26859891614.657227,
-    "pe_ratio_ttm": 31.374317219084425
+    "operating_cash_flow": 901117000.0,
+    "capex": 107283000.0,
+    "free_cash_flow": 793834000.0,
+    "eps_basic": 8.35,
+    "eps_diluted": 8.33,
+    "shares_outstanding": 21357370.0,
+    "market_cap": 24015507435.927734,
+    "pe_ratio_ttm": 134.98919098889556,
+    "goodwill": 736872000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 636.5576729500317,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 416.13437747424405,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 526.3460252121379,
+    "max": 636.5576729500317,
+    "low": 416.13437747424405,
+    "high": 636.5576729500317,
+    "mos_pct": -113.6351196884785,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,11 +93,18 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 91,
-    "latest_period_end": "2025-12-31",
-    "latest_filed_date": "2026-02-06"
+    "filing_lag_days": 2,
+    "latest_period_end": "2026-03-31",
+    "latest_filed_date": "2026-05-08"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

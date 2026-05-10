@@ -3,19 +3,19 @@
   "name": "Ford Motor Company",
   "sector": "Consumer Discretionary",
   "industry": "Automobile Manufacturers",
-  "market_cap": 39779880996.7041,
-  "current_price": 12.18,
-  "rank": 197,
-  "composite_score": 52.99,
+  "market_cap": 40237119003.2959,
+  "current_price": 12.32,
+  "rank": 180,
+  "composite_score": 53.7,
   "pillar_scores": {
-    "quality": 44.79,
-    "value": 94.44,
+    "quality": 45.31,
+    "value": 94.1,
     "growth": 38.8,
-    "momentum": 33.72,
-    "health": 36.89,
-    "profitability": 34.72,
-    "technical": 58.62,
-    "risk": 41.67,
+    "momentum": 38.35,
+    "health": 37.05,
+    "profitability": 35.07,
+    "technical": 57.82,
+    "risk": 43.63,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,59 @@
     "eps_basic": 0.64,
     "eps_diluted": 0.63,
     "shares_outstanding": 3266000000.0,
-    "market_cap": 39779880996.7041,
-    "pe_ratio_ttm": 19.333333817739334
+    "market_cap": 40237119003.2959,
+    "pe_ratio_ttm": 19.555555071149552,
+    "goodwill": 483000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 6.368938709211303,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 48.75016071282297,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 74.7869212053538,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 53.7442902118624,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 51.24722546234268,
+    "max": 53.7442902118624,
+    "low": 6.368938709211303,
+    "high": 74.7869212053538,
+    "mos_pct": 75.95967472643537,
+    "valuation_warnings": [
+      "extreme_multiples_pb_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,13 +94,19 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 10,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [
+    "extreme_multiples_pb_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 11.267605633802816,
   "entered_top5": false,
   "exited_top5": false
 }

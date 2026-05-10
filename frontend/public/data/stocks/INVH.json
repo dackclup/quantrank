@@ -3,19 +3,19 @@
   "name": "Invitation Homes",
   "sector": "Real Estate",
   "industry": "Single-Family Residential REITs",
-  "market_cap": 17207646283.415207,
-  "current_price": 28.97,
-  "rank": 356,
-  "composite_score": 44.74,
+  "market_cap": 17065090837.526806,
+  "current_price": 28.73,
+  "rank": 363,
+  "composite_score": 44.98,
   "pillar_scores": {
     "quality": 40.32,
-    "value": 47.85,
-    "growth": 54.03,
-    "momentum": 38.25,
-    "health": 25.26,
-    "profitability": 56.45,
-    "technical": 72.04,
-    "risk": 45.19,
+    "value": 52.15,
+    "growth": 51.61,
+    "momentum": 35.76,
+    "health": 25.34,
+    "profitability": 55.11,
+    "technical": 71.36,
+    "risk": 45.05,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 0.26,
     "eps_diluted": 0.26,
     "shares_outstanding": 593981591.0,
-    "market_cap": 17207646283.415207,
-    "pe_ratio_ttm": 111.42307428213266
+    "market_cap": 17065090837.526806,
+    "pe_ratio_ttm": 110.49999823937048,
+    "goodwill": 314154000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 16.75595208942762,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 32.64128575264434,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 36.82407502415749,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 28.944855881662377,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 30.79307081715336,
+    "max": 36.82407502415749,
+    "low": 16.75595208942762,
+    "high": 36.82407502415749,
+    "mos_pct": 6.699790635261336,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -52,11 +100,16 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 10,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 14.680362375068961,
   "entered_top5": false,
   "exited_top5": false
 }

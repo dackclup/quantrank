@@ -3,19 +3,19 @@
   "name": "Darden Restaurants",
   "sector": "Consumer Discretionary",
   "industry": "Restaurants",
-  "market_cap": 22834889785.7666,
-  "current_price": 195.17,
-  "rank": 165,
-  "composite_score": 54.77,
+  "market_cap": 22958909500.12207,
+  "current_price": 196.23,
+  "rank": 151,
+  "composite_score": 55.27,
   "pillar_scores": {
-    "quality": 68.75,
-    "value": 58.51,
+    "quality": 69.79,
+    "value": 58.16,
     "growth": 59.9,
-    "momentum": 44.22,
-    "health": 22.55,
-    "profitability": 44.44,
-    "technical": 51.1,
-    "risk": 55.98,
+    "momentum": 43.73,
+    "health": 22.67,
+    "profitability": 45.49,
+    "technical": 56.37,
+    "risk": 56.24,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,60 @@
     "eps_basic": 6.91,
     "eps_diluted": 6.87,
     "shares_outstanding": 117000000.0,
-    "market_cap": 22834889785.7666,
-    "pe_ratio_ttm": 28.40902447874022
+    "market_cap": 22958909500.12207,
+    "pe_ratio_ttm": 28.56331815539142,
+    "goodwill": 1658200000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 26.485167595544915,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 531.6088953922124,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 111.90649477846715,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 459.0345658572994,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 16.517694256632808,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 111.90649477846715,
+    "max": 531.6088953922124,
+    "low": 16.517694256632808,
+    "high": 531.6088953922124,
+    "mos_pct": -75.35174890072358,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_graham_estimate",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -46,13 +96,20 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 42,
+    "filing_lag_days": 44,
     "latest_period_end": "2026-02-22",
     "latest_filed_date": "2026-03-27"
   },
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_graham_estimate",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 3.6880341880341883,
   "entered_top5": false,
   "exited_top5": false
 }

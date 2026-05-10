@@ -3,19 +3,19 @@
   "name": "Air Products",
   "sector": "Materials",
   "industry": "Industrial Gases",
-  "market_cap": 65661307463.72656,
-  "current_price": 294.99,
-  "rank": 140,
-  "composite_score": 56.16,
+  "market_cap": 65754797520.10254,
+  "current_price": 295.41,
+  "rank": 109,
+  "composite_score": 57.59,
   "pillar_scores": {
-    "quality": 58.65,
-    "value": 49.04,
-    "growth": 46.63,
-    "momentum": 73.11,
-    "health": 64.26,
-    "profitability": 57.69,
-    "technical": 37.25,
-    "risk": 56.91,
+    "quality": 61.54,
+    "value": 51.6,
+    "growth": 45.67,
+    "momentum": 70.87,
+    "health": 64.42,
+    "profitability": 59.62,
+    "technical": 42.73,
+    "risk": 58.27,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 6.23,
     "eps_diluted": 6.23,
     "shares_outstanding": 222588256.0,
-    "market_cap": 65661307463.72656,
-    "pe_ratio_ttm": 47.34991817566212
+    "market_cap": 65754797520.10254,
+    "pe_ratio_ttm": 47.417336061333764,
+    "goodwill": 958700000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 111.78437631523623,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 541.8502677852273,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 220.66735211683516,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 506.367146195213,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 71.50593589579444,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 220.66735211683516,
+    "max": 541.8502677852273,
+    "low": 71.50593589579444,
+    "high": 541.8502677852273,
+    "mos_pct": -33.87118702802069,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -43,11 +89,14 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 10,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 64.72803309083837,
   "entered_top5": false,
   "exited_top5": false
 }

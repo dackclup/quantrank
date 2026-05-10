@@ -3,19 +3,19 @@
   "name": "Marathon Petroleum",
   "sector": "Energy",
   "industry": "Oil & Gas Refining & Marketing",
-  "market_cap": 86486818038.94043,
-  "current_price": 242.26,
-  "rank": 16,
-  "composite_score": 67.49,
+  "market_cap": 87418588256.83594,
+  "current_price": 244.87,
+  "rank": 17,
+  "composite_score": 66.9,
   "pillar_scores": {
     "quality": 89.29,
     "value": 56.35,
     "growth": 42.86,
-    "momentum": 86.8,
-    "health": 50.84,
+    "momentum": 82.22,
+    "health": 50.92,
     "profitability": 43.65,
-    "technical": 74.85,
-    "risk": 66.6,
+    "technical": 73.85,
+    "risk": 67.16,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,59 @@
     "eps_basic": 1.73,
     "eps_diluted": 1.73,
     "shares_outstanding": 357000000.0,
-    "market_cap": 86486818038.94043,
-    "pe_ratio_ttm": 140.03467890568552
+    "market_cap": 87418588256.83594,
+    "pe_ratio_ttm": 141.5433497787211,
+    "goodwill": 9335000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 68.5054742338158,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 124.39093439795755,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 112.96942520136683,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 286.60677607581397,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 35.994512741909965,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 212.85880562183198,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 118.6801797996622,
+    "max": 286.60677607581397,
+    "low": 35.994512741909965,
+    "high": 286.60677607581397,
+    "mos_pct": -106.32762398113967,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,11 +93,17 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 3,
+    "filing_lag_days": 5,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 13.333333333333334,
   "entered_top5": false,
   "exited_top5": false
 }

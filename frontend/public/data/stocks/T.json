@@ -3,19 +3,19 @@
   "name": "AT&T",
   "sector": "Communication Services",
   "industry": "Integrated Telecommunication Services",
-  "market_cap": 192500111329.73093,
-  "current_price": 25.26,
-  "rank": 276,
-  "composite_score": 48.94,
+  "market_cap": 191738033562.84604,
+  "current_price": 25.16,
+  "rank": 286,
+  "composite_score": 48.2,
   "pillar_scores": {
     "quality": 47.83,
     "value": 63.77,
     "growth": 37.5,
-    "momentum": 60.16,
-    "health": 21.0,
+    "momentum": 52.89,
+    "health": 21.12,
     "profitability": 51.45,
-    "technical": 32.12,
-    "risk": 61.55,
+    "technical": 35.16,
+    "risk": 61.72,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 0.54,
     "eps_diluted": 0.54,
     "shares_outstanding": 7620748598.0,
-    "market_cap": 192500111329.73093,
-    "pe_ratio_ttm": 46.777778201633026
+    "market_cap": 191738033562.84604,
+    "pe_ratio_ttm": 46.59259231002242,
+    "goodwill": 63838000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 18.867113770568437,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 31.17829274144666,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 34.38880934317991,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 57.662709912990714,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 8.188950971335434,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 31.17829274144666,
+    "max": 57.662709912990714,
+    "low": 8.188950971335434,
+    "high": 57.662709912990714,
+    "mos_pct": 19.302830157964916,
+    "valuation_warnings": [
+      "goodwill_heavy"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,13 +93,18 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 11,
+    "filing_lag_days": 13,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-27"
   },
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [
+    "goodwill_heavy"
+  ],
+  "has_history": true,
+  "tangible_book_value": 7.301907323724577,
   "entered_top5": false,
   "exited_top5": false
 }

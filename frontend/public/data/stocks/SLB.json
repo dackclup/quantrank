@@ -3,19 +3,19 @@
   "name": "Schlumberger",
   "sector": "Energy",
   "industry": "Oil & Gas Equipment & Services",
-  "market_cap": 79235000000.0,
-  "current_price": 53.0,
-  "rank": 75,
-  "composite_score": 60.67,
+  "market_cap": 79638650684.35669,
+  "current_price": 53.27,
+  "rank": 65,
+  "composite_score": 60.83,
   "pillar_scores": {
     "quality": 46.43,
     "value": 59.52,
     "growth": 73.81,
-    "momentum": 79.28,
-    "health": 61.51,
+    "momentum": 79.58,
+    "health": 61.63,
     "profitability": 57.94,
-    "technical": 72.01,
-    "risk": 53.42,
+    "technical": 73.95,
+    "risk": 53.62,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,59 @@
     "eps_basic": 0.5,
     "eps_diluted": 0.5,
     "shares_outstanding": 1495000000.0,
-    "market_cap": 79235000000.0,
-    "pe_ratio_ttm": 106.0
+    "market_cap": 79638650684.35669,
+    "pe_ratio_ttm": 106.54000091552734,
+    "goodwill": 16852000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 13.950752488065927,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 35.951137109236285,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 42.151712845645626,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 68.82834146170593,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 3.9276912788318423,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 34.72237701866289,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 35.33675706394959,
+    "max": 68.82834146170593,
+    "low": 3.9276912788318423,
+    "high": 68.82834146170593,
+    "mos_pct": -50.74954490407808,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,11 +94,17 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 9,
+    "filing_lag_days": 11,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 3.100334448160535,
   "entered_top5": false,
   "exited_top5": false
 }

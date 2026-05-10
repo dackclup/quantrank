@@ -3,19 +3,19 @@
   "name": "Cisco",
   "sector": "Information Technology",
   "industry": "Communications Equipment",
-  "market_cap": 363939854461.6699,
-  "current_price": 92.16,
-  "rank": 193,
-  "composite_score": 53.47,
+  "market_cap": 381354928794.86084,
+  "current_price": 96.57,
+  "rank": 175,
+  "composite_score": 54.03,
   "pillar_scores": {
     "quality": 55.48,
-    "value": 56.16,
+    "value": 55.94,
     "growth": 28.08,
-    "momentum": 74.6,
-    "health": 37.09,
-    "profitability": 53.88,
-    "technical": 59.81,
-    "risk": 71.25,
+    "momentum": 77.96,
+    "health": 37.17,
+    "profitability": 53.65,
+    "technical": 63.25,
+    "risk": 71.85,
     "sentiment": null,
     "ml": null
   },
@@ -32,22 +32,71 @@
     "eps_basic": 1.53,
     "eps_diluted": 1.51,
     "shares_outstanding": 3949000000.0,
-    "market_cap": 363939854461.6699,
-    "pe_ratio_ttm": 61.03311500801945
+    "market_cap": 381354928794.86084,
+    "pe_ratio_ttm": 63.953642182002795,
+    "goodwill": 59234000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 109.94548165606375,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 135.7836735441164,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 128.92454785789118,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 36.94571804242417,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 119.43501475697747,
+    "max": 135.7836735441164,
+    "low": 36.94571804242417,
+    "high": 135.7836735441164,
+    "mos_pct": 19.144314679140155,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 80,
+    "filing_lag_days": 82,
     "latest_period_end": "2026-01-24",
     "latest_filed_date": "2026-02-17"
   },
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "Tyler Technologies",
   "sector": "Information Technology",
   "industry": "Application Software",
-  "market_cap": 15940828930.001862,
-  "current_price": 331.08,
-  "rank": 458,
-  "composite_score": 37.32,
+  "market_cap": 15627867131.501862,
+  "current_price": 324.58,
+  "rank": 469,
+  "composite_score": 36.83,
   "pillar_scores": {
-    "quality": 21.92,
-    "value": 44.75,
-    "growth": 59.25,
-    "momentum": 16.63,
-    "health": 66.89,
+    "quality": 22.6,
+    "value": 45.89,
+    "growth": 59.59,
+    "momentum": 12.75,
+    "health": 67.01,
     "profitability": 29.45,
-    "technical": 45.42,
-    "risk": 24.9,
+    "technical": 35.66,
+    "risk": 24.57,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,60 @@
     "eps_basic": 1.9,
     "eps_diluted": 1.88,
     "shares_outstanding": 48147969.0,
-    "market_cap": 15940828930.001862,
-    "pe_ratio_ttm": 176.1063758363115
+    "market_cap": 15627867131.501862,
+    "pe_ratio_ttm": 172.64892902780088,
+    "goodwill": 2591709000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 23.71581848759478,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 151.45418943305347,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 546.5480183420232,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 126.2027489900304,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 90.74355637796934,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 126.2027489900304,
+    "max": 546.5480183420232,
+    "low": 23.71581848759478,
+    "high": 546.5480183420232,
+    "mos_pct": -157.18931573979137,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_graham_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,11 +95,18 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 9,
+    "filing_lag_days": 11,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_graham_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 4.377817058077777,
   "entered_top5": false,
   "exited_top5": false
 }

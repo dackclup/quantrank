@@ -3,19 +3,19 @@
   "name": "Regions Financial Corporation",
   "sector": "Financials",
   "industry": "Regional Banks",
-  "market_cap": 24983814841.82272,
-  "current_price": 27.95,
-  "rank": 382,
-  "composite_score": 43.68,
+  "market_cap": 24697773319.12001,
+  "current_price": 27.63,
+  "rank": 299,
+  "composite_score": 47.88,
   "pillar_scores": {
-    "quality": 32.33,
-    "value": 45.56,
-    "growth": 38.0,
-    "momentum": 55.53,
-    "health": 47.21,
+    "quality": 43.33,
+    "value": 53.11,
+    "growth": 37.67,
+    "momentum": 54.83,
+    "health": 46.49,
     "profitability": 47.78,
-    "technical": 56.18,
-    "risk": 62.28,
+    "technical": 49.6,
+    "risk": 62.35,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 0.63,
     "eps_diluted": 0.62,
     "shares_outstanding": 893875283.0,
-    "market_cap": 24983814841.82272,
-    "pe_ratio_ttm": 45.08064639183783
+    "market_cap": 24697773319.12001,
+    "pe_ratio_ttm": 44.564514775430005,
+    "goodwill": 5733000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 26.208995235318227,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 33.55876117812926,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 43.47431327798878,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 15.025471630732076,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 29.883878206723743,
+    "max": 43.47431327798878,
+    "low": 15.025471630732076,
+    "high": 43.47431327798878,
+    "mos_pct": 7.542123650637916,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -54,11 +100,14 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 1,
+    "filing_lag_days": 3,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 14.446086882122682,
   "entered_top5": false,
   "exited_top5": false
 }

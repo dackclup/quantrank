@@ -3,19 +3,19 @@
   "name": "Texas Pacific Land Corporation",
   "sector": "Energy",
   "industry": "Oil & Gas Exploration & Production",
-  "market_cap": 27526217621.79294,
-  "current_price": 399.08,
-  "rank": 132,
-  "composite_score": 56.49,
+  "market_cap": 27189625357.370056,
+  "current_price": 394.2,
+  "rank": 133,
+  "composite_score": 56.35,
   "pillar_scores": {
     "quality": 84.52,
     "value": 6.35,
     "growth": 58.33,
-    "momentum": 61.55,
+    "momentum": 61.75,
     "health": 91.16,
     "profitability": 72.22,
-    "technical": 35.56,
-    "risk": 38.08,
+    "technical": 32.17,
+    "risk": 38.01,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,61 @@
     "eps_basic": 2.07,
     "eps_diluted": 2.07,
     "shares_outstanding": 68974187.0,
-    "market_cap": 27526217621.79294,
-    "pe_ratio_ttm": 192.7922640445728
+    "market_cap": 27189625357.370056,
+    "pe_ratio_ttm": 190.4347885058122,
+    "goodwill": null
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 114.73854956358142,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 65.58325754335027,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 37.12308959099454,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 129.42604233825523,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 48.48553547851341,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 50.209889037090086,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 57.896573290220175,
+    "max": 129.42604233825523,
+    "low": 37.12308959099454,
+    "high": 129.42604233825523,
+    "mos_pct": -580.8693326822834,
+    "valuation_warnings": [
+      "extreme_multiples_pe_estimate",
+      "extreme_multiples_pb_estimate",
+      "extreme_rim_estimate",
+      "extreme_dcf_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -47,14 +98,25 @@
       "accounts_receivable",
       "accounts_payable",
       "long_term_debt",
-      "short_term_debt"
+      "short_term_debt",
+      "goodwill"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 2,
+    "filing_lag_days": 4,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
+  "valuation_warnings": [
+    "extreme_multiples_pe_estimate",
+    "extreme_multiples_pb_estimate",
+    "extreme_rim_estimate",
+    "extreme_dcf_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 22.09066994874474,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "Devon Energy",
   "sector": "Energy",
   "industry": "Oil & Gas Exploration & Production",
-  "market_cap": 28137510852.81372,
-  "current_price": 45.31,
-  "rank": 62,
-  "composite_score": 61.51,
+  "market_cap": 28323810379.02832,
+  "current_price": 45.61,
+  "rank": 56,
+  "composite_score": 61.56,
   "pillar_scores": {
     "quality": 63.1,
     "value": 66.67,
     "growth": 47.62,
-    "momentum": 82.07,
-    "health": 40.88,
+    "momentum": 78.93,
+    "health": 41.08,
     "profitability": 73.02,
-    "technical": 45.42,
-    "risk": 54.08,
+    "technical": 53.29,
+    "risk": 54.81,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 0.19,
     "eps_diluted": 0.19,
     "shares_outstanding": 621000000.0,
-    "market_cap": 28137510852.81372,
-    "pe_ratio_ttm": 238.47369143837378
+    "market_cap": 28323810379.02832,
+    "pe_ratio_ttm": 240.052634791324,
+    "goodwill": 753000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 48.21138163173277,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 6.019719291418625,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 42.22909784513915,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 179.4808564443633,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 33.68333890961846,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 42.22909784513915,
+    "max": 179.4808564443633,
+    "low": 6.019719291418625,
+    "high": 179.4808564443633,
+    "mos_pct": -8.006097543477537,
+    "valuation_warnings": [
+      "extreme_multiples_pe_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -46,11 +94,16 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 2,
+    "filing_lag_days": 4,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "extreme_multiples_pe_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 21.270531400966185,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "EchoStar",
   "sector": "Communication Services",
   "industry": "Wireless Telecommunication Services",
-  "market_cap": 5847384853.156364,
-  "current_price": 122.62,
-  "rank": 358,
-  "composite_score": 44.62,
+  "market_cap": 6063407081.614647,
+  "current_price": 127.15,
+  "rank": 367,
+  "composite_score": 44.76,
   "pillar_scores": {
     "quality": 11.96,
     "value": 67.39,
     "growth": 63.59,
-    "momentum": 87.38,
+    "momentum": 88.62,
     "health": 14.14,
     "profitability": 27.17,
-    "technical": 45.27,
-    "risk": 51.28,
+    "technical": 44.67,
+    "risk": 51.58,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": -50.41,
     "eps_diluted": -50.41,
     "shares_outstanding": 47687039.0,
-    "market_cap": 5847384853.156364,
-    "pe_ratio_ttm": null
+    "market_cap": 6063407081.614647,
+    "pe_ratio_ttm": null,
+    "goodwill": 0.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
+      },
+      "multiples_pb": {
+        "value": 252.24203070476364,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 252.24203070476364,
+    "max": 252.24203070476364,
+    "low": 252.24203070476364,
+    "high": 252.24203070476364,
+    "mos_pct": 49.59206395118922,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,13 +92,18 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 67,
+    "filing_lag_days": 69,
     "latest_period_end": "2025-12-31",
     "latest_filed_date": "2026-03-02"
   },
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 110.95287337928447,
   "entered_top5": false,
-  "exited_top5": true
+  "exited_top5": false
 }

@@ -1,0 +1,374 @@
+{
+  "DataQuality": {
+    "filing_lag_days": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
+    "imputed_metrics": {
+      "type": "list[str]",
+      "required": false,
+      "default": "<factory:list>"
+    },
+    "latest_filed_date": {
+      "type": "str | None",
+      "required": false,
+      "default": null
+    },
+    "latest_period_end": {
+      "type": "str | None",
+      "required": false,
+      "default": null
+    },
+    "missing_metrics": {
+      "type": "list[str]",
+      "required": false,
+      "default": "<factory:list>"
+    }
+  },
+  "Metadata": {
+    "compute_run_id": {
+      "type": "str",
+      "required": true,
+      "default": "<required>"
+    },
+    "git_commit": {
+      "type": "str",
+      "required": true,
+      "default": "<required>"
+    },
+    "last_update_utc": {
+      "type": "str",
+      "required": true,
+      "default": "<required>"
+    },
+    "mos_trailing_ic_smoke": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "next_update_utc": {
+      "type": "str",
+      "required": true,
+      "default": "<required>"
+    },
+    "universe": {
+      "type": "str",
+      "required": true,
+      "default": "<required>"
+    },
+    "universe_size": {
+      "type": "int",
+      "required": true,
+      "default": "<required>"
+    },
+    "version": {
+      "type": "str",
+      "required": true,
+      "default": "<required>"
+    }
+  },
+  "PillarScores": {
+    "growth": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "health": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "ml": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "momentum": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "profitability": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "quality": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "risk": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "sentiment": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "technical": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "value": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    }
+  },
+  "RawMetrics": {
+    "capex": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "cash": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "eps_basic": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "eps_diluted": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "free_cash_flow": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "goodwill": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "market_cap": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "net_income": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "operating_cash_flow": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "pe_ratio_ttm": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "revenue": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "shares_outstanding": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "stockholders_equity": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "total_assets": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "total_liabilities": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    }
+  },
+  "StockDetail": {
+    "composite_score": {
+      "type": "float",
+      "required": true,
+      "default": "<required>"
+    },
+    "current_price": {
+      "type": "float",
+      "required": true,
+      "default": "<required>"
+    },
+    "data_quality": {
+      "type": "DataQuality",
+      "required": false,
+      "default": "<factory:DataQuality>"
+    },
+    "entered_top5": {
+      "type": "bool",
+      "required": false,
+      "default": false
+    },
+    "exited_top5": {
+      "type": "bool",
+      "required": false,
+      "default": false
+    },
+    "fair_price": {
+      "type": "dict | None",
+      "required": false,
+      "default": null
+    },
+    "has_history": {
+      "type": "bool",
+      "required": false,
+      "default": false
+    },
+    "industry": {
+      "type": "str | None",
+      "required": false,
+      "default": null
+    },
+    "market_cap": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "name": {
+      "type": "str",
+      "required": true,
+      "default": "<required>"
+    },
+    "pillar_scores": {
+      "type": "PillarScores",
+      "required": false,
+      "default": "<factory:PillarScores>"
+    },
+    "rank": {
+      "type": "int",
+      "required": true,
+      "default": "<required>"
+    },
+    "raw_metrics": {
+      "type": "RawMetrics",
+      "required": false,
+      "default": "<factory:RawMetrics>"
+    },
+    "risk_flags": {
+      "type": "list[str]",
+      "required": false,
+      "default": "<factory:list>"
+    },
+    "score_history": {
+      "type": "list",
+      "required": false,
+      "default": "<factory:list>"
+    },
+    "sector": {
+      "type": "str",
+      "required": true,
+      "default": "<required>"
+    },
+    "tangible_book_value": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "ticker": {
+      "type": "str",
+      "required": true,
+      "default": "<required>"
+    },
+    "top5_factors": {
+      "type": "list",
+      "required": false,
+      "default": "<factory:list>"
+    },
+    "valuation_warnings": {
+      "type": "list[str]",
+      "required": false,
+      "default": "<factory:list>"
+    }
+  },
+  "StockSummary": {
+    "composite_score": {
+      "type": "float",
+      "required": true,
+      "default": "<required>"
+    },
+    "current_price": {
+      "type": "float",
+      "required": true,
+      "default": "<required>"
+    },
+    "entered_top5": {
+      "type": "bool",
+      "required": false,
+      "default": false
+    },
+    "exited_top5": {
+      "type": "bool",
+      "required": false,
+      "default": false
+    },
+    "fair_price": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "margin_of_safety_pct": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "max_fair_price": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "name": {
+      "type": "str",
+      "required": true,
+      "default": "<required>"
+    },
+    "pillar_scores": {
+      "type": "PillarScores",
+      "required": false,
+      "default": "<factory:PillarScores>"
+    },
+    "rank": {
+      "type": "int",
+      "required": true,
+      "default": "<required>"
+    },
+    "risk_flags": {
+      "type": "list[str]",
+      "required": false,
+      "default": "<factory:list>"
+    },
+    "sector": {
+      "type": "str",
+      "required": true,
+      "default": "<required>"
+    },
+    "ticker": {
+      "type": "str",
+      "required": true,
+      "default": "<required>"
+    },
+    "valuation_warnings": {
+      "type": "list[str]",
+      "required": false,
+      "default": "<factory:list>"
+    }
+  }
+}

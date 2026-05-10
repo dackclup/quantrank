@@ -3,19 +3,19 @@
   "name": "Johnson & Johnson",
   "sector": "Health Care",
   "industry": "Pharmaceuticals",
-  "market_cap": 694196248792.1906,
-  "current_price": 222.51,
-  "rank": 218,
-  "composite_score": 51.95,
+  "market_cap": 690483675610.4126,
+  "current_price": 221.32,
+  "rank": 209,
+  "composite_score": 52.13,
   "pillar_scores": {
     "quality": 63.56,
-    "value": 16.67,
+    "value": 17.51,
     "growth": 62.71,
-    "momentum": 75.1,
-    "health": 53.35,
-    "profitability": 55.37,
-    "technical": 25.95,
-    "risk": 90.85,
+    "momentum": 73.61,
+    "health": 53.47,
+    "profitability": 55.93,
+    "technical": 28.78,
+    "risk": 90.42,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 2.17,
     "eps_diluted": 2.14,
     "shares_outstanding": 3119843000.0,
-    "market_cap": 694196248792.1906,
-    "pe_ratio_ttm": 103.9766329471196
+    "market_cap": 690483675610.4126,
+    "pe_ratio_ttm": 103.42056417019568,
+    "goodwill": 48558000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 163.5334237830814,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 87.71143394965634,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 101.9673711904226,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 72.5645476076582,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 94.83940257003947,
+    "max": 163.5334237830814,
+    "low": 72.5645476076582,
+    "high": 163.5334237830814,
+    "mos_pct": -133.36292862112094,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -43,11 +89,14 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 18,
     "latest_period_end": "2026-03-29",
     "latest_filed_date": "2026-04-22"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

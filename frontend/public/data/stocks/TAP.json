@@ -4,18 +4,18 @@
   "sector": "Consumer Staples",
   "industry": "Brewers",
   "market_cap": null,
-  "current_price": 43.13,
-  "rank": 484,
-  "composite_score": 34.31,
+  "current_price": 42.41,
+  "rank": 493,
+  "composite_score": 33.1,
   "pillar_scores": {
     "quality": 22.92,
     "value": 49.07,
     "growth": 46.18,
-    "momentum": 27.79,
+    "momentum": 21.61,
     "health": 9.84,
     "profitability": 31.25,
-    "technical": 65.49,
-    "risk": 40.34,
+    "technical": 56.62,
+    "risk": 40.41,
     "sentiment": null,
     "ml": null
   },
@@ -33,9 +33,57 @@
     "eps_diluted": -10.75,
     "shares_outstanding": null,
     "market_cap": null,
-    "pe_ratio_ttm": null
+    "pe_ratio_ttm": null,
+    "goodwill": 1944700000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_bvps",
+        "tier_used": null
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": null,
+    "max": null,
+    "low": null,
+    "high": null,
+    "mos_pct": null,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,13 +92,18 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 79,
+    "filing_lag_days": 81,
     "latest_period_end": "2025-12-31",
     "latest_filed_date": "2026-02-18"
   },
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

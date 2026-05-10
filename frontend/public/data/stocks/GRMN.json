@@ -3,19 +3,19 @@
   "name": "Garmin",
   "sector": "Consumer Discretionary",
   "industry": "Consumer Electronics",
-  "market_cap": 46663234522.613525,
-  "current_price": 241.9,
-  "rank": 263,
-  "composite_score": 49.61,
+  "market_cap": 46314080563.568115,
+  "current_price": 240.09,
+  "rank": 259,
+  "composite_score": 49.88,
   "pillar_scores": {
     "quality": 38.02,
     "value": 25.69,
     "growth": 72.4,
-    "momentum": 77.09,
-    "health": 76.22,
-    "profitability": 52.78,
-    "technical": 37.45,
-    "risk": 50.43,
+    "momentum": 78.19,
+    "health": 76.25,
+    "profitability": 53.47,
+    "technical": 39.44,
+    "risk": 50.23,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 2.1,
     "eps_diluted": 2.09,
     "shares_outstanding": 192903000.0,
-    "market_cap": 46663234522.613525,
-    "pe_ratio_ttm": 115.74162387391598
+    "market_cap": 46314080563.568115,
+    "pe_ratio_ttm": 114.87559633391896,
+    "goodwill": 750633000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 85.5716156191245,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 157.48027351370916,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 313.4324432769657,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 96.3807942858602,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 55.60052129755283,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 91.13101441535616,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 93.75590435060818,
+    "max": 313.4324432769657,
+    "low": 55.60052129755283,
+    "high": 313.4324432769657,
+    "mos_pct": -156.0798682502743,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,13 +91,16 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 9,
+    "filing_lag_days": 11,
     "latest_period_end": "2026-03-28",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 43.20059822812502,
   "entered_top5": false,
   "exited_top5": false
 }

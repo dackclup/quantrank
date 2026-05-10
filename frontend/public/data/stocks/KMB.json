@@ -3,19 +3,19 @@
   "name": "Kimberly-Clark",
   "sector": "Consumer Staples",
   "industry": "Household Products",
-  "market_cap": 33043963189.697266,
-  "current_price": 99.56,
-  "rank": 230,
-  "composite_score": 51.6,
+  "market_cap": 32629088189.697266,
+  "current_price": 98.31,
+  "rank": 218,
+  "composite_score": 51.96,
   "pillar_scores": {
     "quality": 74.31,
-    "value": 50.93,
+    "value": 51.39,
     "growth": 46.18,
-    "momentum": 21.96,
-    "health": 27.19,
+    "momentum": 23.95,
+    "health": 27.27,
     "profitability": 55.56,
-    "technical": 68.97,
-    "risk": 41.24,
+    "technical": 69.02,
+    "risk": 41.14,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 2.0,
     "eps_diluted": 2.0,
     "shares_outstanding": 331900000.0,
-    "market_cap": 33043963189.697266,
-    "pe_ratio_ttm": 49.779998779296875
+    "market_cap": 32629088189.697266,
+    "pe_ratio_ttm": 49.154998779296875,
+    "goodwill": 1840000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 116.22582694176809,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 24.216710473503188,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 179.58336343313323,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 116.22582694176809,
+    "max": 179.58336343313323,
+    "low": 24.216710473503188,
+    "high": 179.58336343313323,
+    "mos_pct": 15.414671467255378,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,11 +90,14 @@
       "sga_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 10,
+    "filing_lag_days": 12,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-28"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

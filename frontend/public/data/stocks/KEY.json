@@ -3,19 +3,19 @@
   "name": "KeyCorp",
   "sector": "Financials",
   "industry": "Regional Banks",
-  "market_cap": 27257868808.04132,
-  "current_price": 21.69,
-  "rank": 337,
-  "composite_score": 45.75,
+  "market_cap": 27144765428.993797,
+  "current_price": 21.6,
+  "rank": 343,
+  "composite_score": 45.97,
   "pillar_scores": {
-    "quality": 39.33,
-    "value": 46.44,
-    "growth": 23.67,
-    "momentum": 65.64,
-    "health": 56.02,
-    "profitability": 46.0,
-    "technical": 52.39,
-    "risk": 59.26,
+    "quality": 38.67,
+    "value": 47.56,
+    "growth": 23.0,
+    "momentum": 65.24,
+    "health": 55.2,
+    "profitability": 53.11,
+    "technical": 50.75,
+    "risk": 59.53,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 0.45,
     "eps_diluted": 0.44,
     "shares_outstanding": 1256702081.0,
-    "market_cap": 27257868808.04132,
-    "pe_ratio_ttm": 49.29545575922186
+    "market_cap": 27144765428.993797,
+    "pe_ratio_ttm": 49.09090995788574,
+    "goodwill": 2752000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 14.624760773501913,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 23.81589502964012,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 32.911863672985724,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 23.81589502964012,
+    "max": 32.911863672985724,
+    "low": 14.624760773501913,
+    "high": 32.911863672985724,
+    "mos_pct": 9.3042677817172,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -53,13 +101,18 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 3,
+    "filing_lag_days": 5,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 13.710488953984632,
   "entered_top5": false,
   "exited_top5": false
 }

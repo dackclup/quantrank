@@ -3,19 +3,19 @@
   "name": "IQVIA",
   "sector": "Health Care",
   "industry": "Life Sciences Tools & Services",
-  "market_cap": 29815015898.132324,
-  "current_price": 178.64,
-  "rank": 393,
-  "composite_score": 43.14,
+  "market_cap": 29826700120.544434,
+  "current_price": 178.71,
+  "rank": 395,
+  "composite_score": 43.25,
   "pillar_scores": {
     "quality": 50.85,
-    "value": 43.79,
+    "value": 44.63,
     "growth": 58.05,
-    "momentum": 29.18,
-    "health": 15.78,
-    "profitability": 38.7,
-    "technical": 64.59,
-    "risk": 31.41,
+    "momentum": 27.99,
+    "health": 15.74,
+    "profitability": 39.27,
+    "technical": 65.14,
+    "risk": 31.51,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 1.63,
     "eps_diluted": 1.61,
     "shares_outstanding": 166900000.0,
-    "market_cap": 29815015898.132324,
-    "pe_ratio_ttm": 110.95652136003008
+    "market_cap": 29826700120.544434,
+    "pe_ratio_ttm": 111.00000417010384,
+    "goodwill": 16544000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 123.03215527605656,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 125.63529704339055,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 148.55711780135084,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 125.63529704339055,
+    "max": 148.55711780135084,
+    "low": 123.03215527605656,
+    "high": 148.55711780135084,
+    "mos_pct": -42.245062430302745,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,13 +91,16 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 3,
+    "filing_lag_days": 5,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

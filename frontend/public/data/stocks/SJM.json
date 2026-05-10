@@ -3,19 +3,19 @@
   "name": "J.M. Smucker Company (The)",
   "sector": "Consumer Staples",
   "industry": "Packaged Foods & Meats",
-  "market_cap": 10610248260.498047,
-  "current_price": 99.44,
-  "rank": 461,
-  "composite_score": 37.17,
+  "market_cap": 10589975000.0,
+  "current_price": 99.25,
+  "rank": 468,
+  "composite_score": 36.89,
   "pillar_scores": {
     "quality": 21.53,
     "value": 53.47,
     "growth": 56.6,
-    "momentum": 27.29,
-    "health": 9.16,
+    "momentum": 24.05,
+    "health": 9.2,
     "profitability": 44.91,
-    "technical": 68.82,
-    "risk": 41.77,
+    "technical": 70.72,
+    "risk": 42.43,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,59 @@
     "eps_basic": -4.94,
     "eps_diluted": -4.94,
     "shares_outstanding": 106700000.0,
-    "market_cap": 10610248260.498047,
-    "pe_ratio_ttm": null
+    "market_cap": 10589975000.0,
+    "pe_ratio_ttm": null,
+    "goodwill": 5204600000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_eps_3y_avg",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
+      },
+      "multiples_pb": {
+        "value": 244.48504785661734,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 15.111193838454696,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 23.426164347961375,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 23.426164347961375,
+    "max": 244.48504785661734,
+    "low": 15.111193838454696,
+    "high": 244.48504785661734,
+    "mos_pct": -323.6715773260469,
+    "valuation_warnings": [
+      "extreme_multiples_ev_ebitda_estimate",
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -43,13 +92,19 @@
       "revenue"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 71,
+    "filing_lag_days": 73,
     "latest_period_end": "2026-01-31",
     "latest_filed_date": "2026-02-26"
   },
   "risk_flags": [
     "altman_distress"
   ],
+  "valuation_warnings": [
+    "extreme_multiples_ev_ebitda_estimate",
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "Paramount Skydance Corporation",
   "sector": "Communication Services",
   "industry": "Movies & Entertainment",
-  "market_cap": 10760.000228881836,
-  "current_price": 10.76,
-  "rank": 299,
-  "composite_score": 47.72,
+  "market_cap": 11090.00015258789,
+  "current_price": 11.09,
+  "rank": 304,
+  "composite_score": 47.6,
   "pillar_scores": {
     "quality": 51.09,
-    "value": 68.48,
+    "value": 67.75,
     "growth": 40.22,
-    "momentum": 29.78,
-    "health": 40.84,
+    "momentum": 26.79,
+    "health": 44.9,
     "profitability": 36.23,
-    "technical": 44.65,
-    "risk": 24.93,
+    "technical": 43.33,
+    "risk": 26.86,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 0.15,
     "eps_diluted": 0.15,
     "shares_outstanding": 1000.0,
-    "market_cap": 10760.000228881836,
-    "pe_ratio_ttm": 71.73333485921225
+    "market_cap": 11090.00015258789,
+    "pe_ratio_ttm": 73.93333435058594,
+    "goodwill": 1622000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
+        "tier_used": null
+      }
+    },
+    "median": null,
+    "max": null,
+    "low": null,
+    "high": null,
+    "mos_pct": null,
+    "valuation_warnings": [
+      "data_quality_input_corruption"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -50,11 +98,16 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 4,
+    "filing_lag_days": 6,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-04"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "data_quality_input_corruption"
+  ],
+  "has_history": true,
+  "tangible_book_value": 4129000.0,
   "entered_top5": false,
   "exited_top5": false
 }

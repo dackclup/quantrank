@@ -3,19 +3,19 @@
   "name": "ServiceNow",
   "sector": "Information Technology",
   "industry": "Systems Software",
-  "market_cap": 96520111943.2373,
-  "current_price": 93.59,
-  "rank": 425,
-  "composite_score": 41.3,
+  "market_cap": 94034663754.73022,
+  "current_price": 91.18,
+  "rank": 433,
+  "composite_score": 40.64,
   "pillar_scores": {
     "quality": 37.67,
-    "value": 40.41,
+    "value": 41.55,
     "growth": 66.78,
-    "momentum": 17.31,
-    "health": 46.33,
-    "profitability": 38.81,
-    "technical": 71.61,
-    "risk": 18.69,
+    "momentum": 12.67,
+    "health": 46.49,
+    "profitability": 38.58,
+    "technical": 64.64,
+    "risk": 18.76,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,59 @@
     "eps_basic": 0.45,
     "eps_diluted": 0.45,
     "shares_outstanding": 1031308000.0,
-    "market_cap": 96520111943.2373,
-    "pe_ratio_ttm": 207.97776963975693
+    "market_cap": 94034663754.73022,
+    "pe_ratio_ttm": 202.62222290039062,
+    "goodwill": 4541000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 26.509827369968214,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 31.877334235992976,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 127.77400910050513,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 47.4658012042018,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 6.59899866639055,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 35.07502144284103,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 33.476177839417005,
+    "max": 127.77400910050513,
+    "low": 6.59899866639055,
+    "high": 127.77400910050513,
+    "mos_pct": -172.37279220632703,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_rim_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -44,11 +93,19 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 17,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-23"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_rim_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 5.534719017015285,
   "entered_top5": false,
   "exited_top5": false
 }

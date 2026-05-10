@@ -3,19 +3,19 @@
   "name": "Omnicom Group",
   "sector": "Communication Services",
   "industry": "Advertising",
-  "market_cap": 24083651426.696777,
-  "current_price": 76.92,
-  "rank": 371,
-  "composite_score": 44.07,
+  "market_cap": 24127485235.595703,
+  "current_price": 77.06,
+  "rank": 375,
+  "composite_score": 44.21,
   "pillar_scores": {
     "quality": 25.0,
     "value": 57.25,
     "growth": 64.67,
-    "momentum": 59.51,
-    "health": 32.27,
+    "momentum": 59.41,
+    "health": 32.43,
     "profitability": 21.74,
-    "technical": 51.05,
-    "risk": 44.19,
+    "technical": 53.39,
+    "risk": 44.52,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 1.36,
     "eps_diluted": 1.35,
     "shares_outstanding": 313100000.0,
-    "market_cap": 24083651426.696777,
-    "pe_ratio_ttm": 56.97777642144097
+    "market_cap": 24127485235.595703,
+    "pe_ratio_ttm": 57.081479673032405,
+    "goodwill": 18733900000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 70.86573288358491,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_pb": {
+        "value": 58.379566709337425,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": 112.89064066148079,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 41.23856244855096,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 64.62264979646116,
+    "max": 112.89064066148079,
+    "low": 41.23856244855096,
+    "high": 112.89064066148079,
+    "mos_pct": -19.246112317130144,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -47,11 +95,16 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 9,
+    "filing_lag_days": 11,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

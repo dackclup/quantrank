@@ -3,19 +3,19 @@
   "name": "T. Rowe Price",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 22641147549.591064,
-  "current_price": 103.59,
-  "rank": 144,
-  "composite_score": 55.98,
+  "market_cap": 23021451850.204468,
+  "current_price": 105.33,
+  "rank": 142,
+  "composite_score": 55.8,
   "pillar_scores": {
-    "quality": 56.67,
-    "value": 73.11,
-    "growth": 32.67,
-    "momentum": 50.15,
-    "health": 56.02,
-    "profitability": 46.44,
-    "technical": 68.38,
-    "risk": 44.65,
+    "quality": 60.0,
+    "value": 67.33,
+    "growth": 32.33,
+    "momentum": 51.34,
+    "health": 55.2,
+    "profitability": 47.78,
+    "technical": 69.72,
+    "risk": 45.19,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,56 @@
     "eps_basic": 2.23,
     "eps_diluted": 2.23,
     "shares_outstanding": 218565000.0,
-    "market_cap": 22641147549.591064,
-    "pe_ratio_ttm": 46.45291315600476
+    "market_cap": 23021451850.204468,
+    "pe_ratio_ttm": 47.233184677603,
+    "goodwill": 2642800000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 84.05859913577714,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 130.95765520336127,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 146.61049821181743,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 52.2322106382378,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 107.5081271695692,
+    "max": 146.61049821181743,
+    "low": 52.2322106382378,
+    "high": 146.61049821181743,
+    "mos_pct": 2.0260099360479327,
+    "valuation_warnings": []
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -53,11 +99,14 @@
       "retained_earnings"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 10,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
+  "valuation_warnings": [],
+  "has_history": true,
+  "tangible_book_value": 36.02726877587903,
   "entered_top5": false,
   "exited_top5": false
 }

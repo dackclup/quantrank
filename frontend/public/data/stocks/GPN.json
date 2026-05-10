@@ -3,39 +3,87 @@
   "name": "Global Payments",
   "sector": "Financials",
   "industry": "Transaction & Payment Processing Services",
-  "market_cap": 16599250826.86438,
-  "current_price": 70.13,
-  "rank": 234,
-  "composite_score": 51.19,
+  "market_cap": 18916327404.362732,
+  "current_price": 69.19,
+  "rank": 470,
+  "composite_score": 36.65,
   "pillar_scores": {
-    "quality": 32.67,
-    "value": 90.78,
-    "growth": 42.83,
-    "momentum": 18.77,
-    "health": 62.87,
-    "profitability": 66.22,
-    "technical": 59.36,
-    "risk": 18.19,
+    "quality": 27.33,
+    "value": 57.56,
+    "growth": 51.5,
+    "momentum": 19.97,
+    "health": 17.49,
+    "profitability": 33.56,
+    "technical": 54.28,
+    "risk": 18.39,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 8309289000.0,
-    "net_income": 1400107000.0,
-    "total_assets": 53338484000.0,
-    "total_liabilities": 29559003000.0,
-    "stockholders_equity": 22888767000.0,
-    "cash": 8336402000.0,
-    "operating_cash_flow": 2656592000.0,
+    "revenue": 8866873000.0,
+    "net_income": -705505000.0,
+    "total_assets": 64254841000.0,
+    "total_liabilities": 39580260000.0,
+    "stockholders_equity": 23792363000.0,
+    "cash": 5861312000.0,
+    "operating_cash_flow": 1812647000.0,
     "capex": 98537000.0,
-    "free_cash_flow": 2558055000.0,
-    "eps_basic": 5.79,
-    "eps_diluted": 5.78,
-    "shares_outstanding": 236692592.0,
-    "market_cap": 16599250826.86438,
-    "pe_ratio_ttm": 12.133217517892382
+    "free_cash_flow": 1714110000.0,
+    "eps_basic": -6.59,
+    "eps_diluted": -6.59,
+    "shares_outstanding": 273396831.0,
+    "market_cap": 18916327404.362732,
+    "pe_ratio_ttm": null,
+    "goodwill": 27082588000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_tangible_book",
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
+      },
+      "multiples_pb": {
+        "value": 180.08655830006913,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "multiples_ev_ebitda": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_financials",
+        "tier_used": null
+      }
+    },
+    "median": 180.08655830006913,
+    "max": 180.08655830006913,
+    "low": 180.08655830006913,
+    "high": 180.08655830006913,
+    "mos_pct": 61.57958534244491,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,11 +93,19 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 77,
-    "latest_period_end": "2025-12-31",
-    "latest_filed_date": "2026-02-20"
+    "filing_lag_days": 2,
+    "latest_period_end": "2026-03-31",
+    "latest_filed_date": "2026-05-08"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "altman_distress",
+    "net_issuance_top_decile"
+  ],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": null,
   "entered_top5": false,
   "exited_top5": false
 }

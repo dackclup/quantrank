@@ -3,19 +3,19 @@
   "name": "NiSource",
   "sector": "Utilities",
   "industry": "Multi-Utilities",
-  "market_cap": 22539733162.45579,
-  "current_price": 47.02,
-  "rank": 179,
-  "composite_score": 54.24,
+  "market_cap": 22395924087.88211,
+  "current_price": 46.72,
+  "rank": 212,
+  "composite_score": 52.06,
   "pillar_scores": {
-    "quality": 49.19,
-    "value": 67.2,
+    "quality": 41.94,
+    "value": 68.28,
     "growth": 54.84,
-    "momentum": 75.45,
-    "health": 19.36,
-    "profitability": 41.4,
-    "technical": 34.21,
-    "risk": 81.77,
+    "momentum": 73.36,
+    "health": 19.64,
+    "profitability": 40.86,
+    "technical": 32.82,
+    "risk": 79.48,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 1.06,
     "eps_diluted": 1.06,
     "shares_outstanding": 479364801.0,
-    "market_cap": 22539733162.45579,
-    "pe_ratio_ttm": 44.35849099789026
+    "market_cap": 22395924087.88211,
+    "pe_ratio_ttm": 44.07547284971993,
+    "goodwill": 1485900000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 25.410628128641285,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 92.13166936238608,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 41.937958903110015,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 104.88229452338011,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "sector_excluded_utilities",
+        "tier_used": null
+      }
+    },
+    "median": 67.03481413274804,
+    "max": 104.88229452338011,
+    "low": 25.410628128641285,
+    "high": 104.88229452338011,
+    "mos_pct": 30.304869454572952,
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -47,11 +95,16 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 2,
+    "filing_lag_days": 4,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
+  "has_history": true,
+  "tangible_book_value": 17.04818539649097,
   "entered_top5": false,
   "exited_top5": false
 }

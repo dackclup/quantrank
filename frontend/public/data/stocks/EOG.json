@@ -3,19 +3,19 @@
   "name": "EOG Resources",
   "sector": "Energy",
   "industry": "Oil & Gas Exploration & Production",
-  "market_cap": 35553912314.208984,
-  "current_price": 130.89,
+  "market_cap": 35320308628.41797,
+  "current_price": 130.03,
   "rank": 4,
-  "composite_score": 71.48,
+  "composite_score": 71.02,
   "pillar_scores": {
     "quality": 72.62,
     "value": 80.16,
     "growth": 53.57,
-    "momentum": 79.83,
-    "health": 75.98,
+    "momentum": 76.05,
+    "health": 76.14,
     "profitability": 67.46,
-    "technical": 48.95,
-    "risk": 67.63,
+    "technical": 48.71,
+    "risk": 67.83,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,58 @@
     "eps_basic": 3.72,
     "eps_diluted": 3.7,
     "shares_outstanding": 271632000.0,
-    "market_cap": 35553912314.208984,
-    "pe_ratio_ttm": 35.375675510715794
+    "market_cap": 35320308628.41797,
+    "pe_ratio_ttm": 35.143242913323476,
+    "goodwill": null
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 168.75386220734546,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 170.55914968990996,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 215.05719252911834,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 658.5495092822641,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
+      },
+      "rim": {
+        "value": 179.24665535515666,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_fcf_5y_median",
+        "tier_used": null
+      }
+    },
+    "median": 179.24665535515666,
+    "max": 215.05719252911834,
+    "low": 168.75386220734546,
+    "high": 658.5495092822641,
+    "mos_pct": 27.457503448721337,
+    "valuation_warnings": [
+      "extreme_multiples_ev_ebitda_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,14 +93,21 @@
       "free_cash_flow",
       "gross_profit",
       "cost_of_revenue",
-      "research_and_development"
+      "research_and_development",
+      "goodwill",
+      "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 3,
+    "filing_lag_days": 5,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
-  "entered_top5": true,
+  "valuation_warnings": [
+    "extreme_multiples_ev_ebitda_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 113.78629911056134,
+  "entered_top5": false,
   "exited_top5": false
 }

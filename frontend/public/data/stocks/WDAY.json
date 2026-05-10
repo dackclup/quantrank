@@ -3,19 +3,19 @@
   "name": "Workday, Inc.",
   "sector": "Information Technology",
   "industry": "Application Software",
-  "market_cap": 4711680175.78125,
-  "current_price": 130.88,
-  "rank": 201,
-  "composite_score": 52.85,
+  "market_cap": 4601880065.917969,
+  "current_price": 127.83,
+  "rank": 193,
+  "composite_score": 53.15,
   "pillar_scores": {
-    "quality": 44.18,
-    "value": 92.47,
-    "growth": 49.66,
-    "momentum": 2.09,
-    "health": 62.47,
-    "profitability": 52.05,
-    "technical": 64.74,
-    "risk": 18.29,
+    "quality": 45.21,
+    "value": 93.15,
+    "growth": 50.0,
+    "momentum": 1.25,
+    "health": 62.67,
+    "profitability": 53.2,
+    "technical": 61.35,
+    "risk": 18.53,
     "sentiment": null,
     "ml": null
   },
@@ -32,10 +32,61 @@
     "eps_basic": 2.61,
     "eps_diluted": 2.59,
     "shares_outstanding": 36000000.0,
-    "market_cap": 4711680175.78125,
-    "pe_ratio_ttm": 50.53282041807433
+    "market_cap": 4601880065.917969,
+    "pe_ratio_ttm": 49.35521306218328,
+    "goodwill": 5229000000.0
   },
-  "fair_price": null,
+  "fair_price": {
+    "methods": {
+      "graham": {
+        "value": 67.7955105445781,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "multiples_pe": {
+        "value": 296.8508621771545,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 1603.4016261999316,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_ev_ebitda": {
+        "value": 1933.1879013708356,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "rim": {
+        "value": 66.07252544933861,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      },
+      "dcf": {
+        "value": 851.0452694271248,
+        "applicable": true,
+        "reason": null,
+        "tier_used": null
+      }
+    },
+    "median": 573.9480658021397,
+    "max": 296.8508621771545,
+    "low": 66.07252544933861,
+    "high": 1933.1879013708356,
+    "mos_pct": 77.72794971398646,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_multiples_pb_estimate",
+      "extreme_multiples_ev_ebitda_estimate",
+      "extreme_dcf_estimate"
+    ]
+  },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
@@ -45,11 +96,19 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 63,
+    "filing_lag_days": 65,
     "latest_period_end": "2026-01-31",
     "latest_filed_date": "2026-03-06"
   },
   "risk_flags": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_multiples_pb_estimate",
+    "extreme_multiples_ev_ebitda_estimate",
+    "extreme_dcf_estimate"
+  ],
+  "has_history": true,
+  "tangible_book_value": 62.85444444444445,
   "entered_top5": false,
   "exited_top5": false
 }
