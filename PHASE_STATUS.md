@@ -78,13 +78,47 @@
   - Reason taxonomy: 21 stable identifiers (was 17 pre-3c).
   - 3 follow-up issue drafts staged at `/tmp/issue_drafts/` —
     file via `gh issue create` after PR 3c merges.
-- ⚪ **3d — Charts + Tier-2 defenses** — Stock detail Pillar Radar +
-  Fair Price Bar + Price History charts; About page; risk_flags +
-  valuation_warnings UI badges. ~520 LOC, 1.5-2 days. Plus:
-  - Going-concern phrase scan in 10-K Item 7
-    (Loughran-McDonald academic dictionary)
-  - 8-K Item 4.02 hard veto (12-month window) — restatement signal
-  - 8-K Item 4.01 auditor change soft flag
+- ✅ **3d — Tier-2 event defenses + UI polish** —
+  DONE 2026-05-10. Schema bump to `0.6.0-phase3d`. Tag
+  **v0.6.0-phase3d** (post-merge). 8 commits, 6 sub-modules,
+  91 new non-network tests (409 → 500) + 3 `@network` tests
+  added. Adds the **4th active veto**
+  (`non_reliance_filing`).
+  - **Defense #8** — going-concern phrase scan
+    (`compute/scoring/going_concern.py`). Mayew-Sethuraman-
+    Venkatachalam 2015 *TAR* + Loughran-McDonald financial
+    dictionary subset (CC BY 4.0). 14 curated phrases; pre-compiled
+    regex with `\b` word-boundaries + `[\s\-]+` whitespace/hyphen
+    flex. Annotate-only.
+  - **Defense #9** — 8-K Item 4.02 hard veto
+    (`compute/scoring/eight_k_events.py`). Schroeder 2024 SSRN
+    finds ~50% of 4.02 filings precede formal restatement.
+    365-day lookback. Joins altman / sloan / NSI as the 4th veto.
+  - **Defense #10** — 8-K Item 4.01 auditor change (same module).
+    Reg S-K Item 304 disclosure. 730-day lookback. Annotate-only —
+    audit-firm restructuring fires the same item, FP rate too high
+    for veto.
+  - **Tier-2 orchestrator** (`compute/scoring/tier2.py`) shares
+    one EDGAR fetch per ticker between the veto path
+    (`risk_overlay.compute_risk_flags`'s `non_reliance_by_ticker`
+    inject) and the display path (`StockDetail.tier2_events`).
+  - **10-K text fetcher** (`compute/ingest/filing_text.py`) — 90-day
+    on-disk cache, atomic write, sanitized ticker filename.
+  - **Frontend** — 3 new components: `Tier2EventCard` (severity-
+    coded events), `PillarRadarChart` (8-pillar polar radar),
+    `FairPriceBarChart` (6-method horizontal bars + outlier graying).
+  - New schema fields: `StockDetail.tier2_events`,
+    `Metadata.tier2_coverage_pct`. Reason taxonomy: 24 stable
+    identifiers (was 21 in PR 3c).
+
+  **Production verification — DRAFT (filled in at Step 10):**
+  - Universe: 502 S&P 500 stocks, schema `0.6.0-phase3d`
+  - Compute time: TBD (set after `workflow_dispatch`)
+  - Fair-price coverage: TBD
+  - Tier-2 coverage (`tier2_coverage_pct`): TBD
+  - Tests: 500 (current count; final after Step 9 commits)
+  - Reason taxonomy: 24 stable identifiers
+  - Defense scorecard: 4 vetoes / 5 guards / 7 annotate-only flags
 - ⚪ **3e — Tier-3 defenses + README polish + tag v1.0** — ~370 LOC, 1 day.
   - Beneish M-Score full 8-ratio (annotate-only, sector-relative)
   - Dechow F-Score (parallel signal to Beneish, annotate-only)
@@ -93,16 +127,16 @@
   - README architecture diagram + methodology link
   - Tag **v1.0** push
 
-**v1.0 ETA**: ~2-3 days from 2026-05-09 — PR 3c shipped, only PR 3d
-(~520 LOC, 1.5-2 days) and PR 3e (~370 LOC, 1 day) remain.
+**v1.0 ETA**: ~1 day from 2026-05-10 — PR 3c + 3d shipped, only
+PR 3e (~370 LOC, 1 day) remains.
 
 **Defense scorecard — current vs v1.0 target**:
 
-| Layer | Now (post-3c) | At v1.0 (post-3e) |
+| Layer | Now (post-3d) | At v1.0 (post-3e) |
 |---|---|---|
-| Vetoes | 3 (Altman Z″, Sloan accruals, NSI) | 3 (unchanged) + 1 hard event veto (8-K 4.02) |
-| Numerical guards | 5 (stale_filing, outlier_5×, terminal_g, sector_exclusion, **data_quality_input_corruption**) | 5 (unchanged) |
-| Annotate-only flags | 5+ (goodwill_heavy, value_trap_risk, extreme_<method>_estimate, stale_filing_soft, data_quality_input_corruption surface) | 8+ (adds going_concern, auditor_change, beneish_high, dechow_f_high) |
+| Vetoes | **4** (Altman Z″, Sloan accruals, NSI, `non_reliance_filing`) | 4 (unchanged) |
+| Numerical guards | 5 (stale_filing, outlier_5×, terminal_g, sector_exclusion, `data_quality_input_corruption`) | 5 (unchanged) |
+| Annotate-only flags | 7 (goodwill_heavy, value_trap_risk, extreme_<method>_estimate, stale_filing_soft, data_quality_input_corruption surface, **going_concern_disclosure**, **auditor_change**) | 9 (adds beneish_high, dechow_f_high) |
 
 (Defense #7 — `data_quality_input_corruption` — was added mid-PR-3c at
 Step 7.5 after the production spot-check on commit `c13e4f7` surfaced
@@ -120,7 +154,7 @@ Honest Limitations documented.
 - Schema: `0.5.0-phase3c`
 - Compute time: **27m 10s** (workflow run #10, commit `6bca592`)
 - Fair-price coverage: **487 / 502 (97.0%)**
-- Tests: **118 → 410** (+292 in PR 3c)
+- Tests: **118 → 409** (+291 in PR 3c)
 - Reason taxonomy: 21 stable identifiers
 - 3 follow-up issue drafts staged at `/tmp/issue_drafts/`
 
@@ -140,6 +174,38 @@ Honest Limitations documented.
 - [x] 2 production verification rounds (workflow runs #9 + #10)
 - [x] Top-5 composition unchanged from PR-3b baseline (semantically
       additive confirmed)
+
+## Phase 3d verified production stats — DRAFT (filled at Step 10)
+
+- Universe size: **502 stocks** (S&P 500)
+- Schema: `0.6.0-phase3d`
+- Compute time: TBD (set after `workflow_dispatch`)
+- Fair-price coverage: TBD
+- Tier-2 coverage (`tier2_coverage_pct`): TBD
+- Tests: 500 (post-Step-9; final after Step 10 if any tests added)
+- Reason taxonomy: 24 stable identifiers (was 21 in PR 3c)
+
+## Phase 3d acceptance checklist — ⏳ pending Step 10
+
+- [x] Defense #8 going-concern phrase scan (`compute/scoring/going_concern.py`)
+- [x] Defense #9 8-K Item 4.02 hard veto (`compute/scoring/eight_k_events.py`)
+- [x] Defense #10 8-K Item 4.01 auditor change (same module)
+- [x] Tier-2 orchestrator avoids duplicate EDGAR fetch (one fetch shared
+      between veto + display paths)
+- [x] 10-K text fetcher with 90-day on-disk cache
+- [x] Schema additions wired to TypeScript + snapshot guard regenerated
+- [x] CI green on Steps 1-8 commits
+- [x] Vercel preview spot-checked on NVDA / AAPL / BKR (Step 8 review)
+- [ ] `workflow_dispatch` on Step 10 commit produces clean run
+- [ ] `tier2_coverage_pct` populated in Metadata
+- [ ] At least 1 stock fires `going_concern_disclosure` flag
+      (or document none did, with why — likely "S&P 500 financial
+      health excludes most going-concern candidates")
+- [ ] Top-5 composition stable (or document any displacement
+      from `non_reliance_filing` veto)
+- [ ] Vercel preview shows `Tier2EventCard` for any flagged stocks
+- [ ] PR description updated with final scope summary
+- [ ] Ready for Review flag flipped
 
 ## Roadmap — Option B (research-backed) — adopted 2026-05-08
 

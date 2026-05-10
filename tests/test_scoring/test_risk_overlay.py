@@ -260,3 +260,75 @@ def test_compute_risk_flags_backward_compat_without_new_kwargs():
     # added kwargs. Existing callers see no behavior change.
     flags = compute_risk_flags({"HEALTHY": _snap()})
     assert flags["HEALTHY"] == []
+
+
+# -- Defense #9 — non_reliance_filing 4th veto (PR 3d Step 4) ---------------
+
+def test_C1_non_reliance_inject_true_appends_flag():
+    """Inject path: non_reliance_by_ticker={ticker: True} → flag appears."""
+    snaps = {"TST": _snap()}
+    flags = compute_risk_flags(snaps, non_reliance_by_ticker={"TST": True})
+    assert "non_reliance_filing" in flags["TST"]
+
+
+def test_C2_non_reliance_inject_false_omits_flag():
+    """Inject path: non_reliance_by_ticker={ticker: False} → no flag."""
+    snaps = {"TST": _snap()}
+    flags = compute_risk_flags(snaps, non_reliance_by_ticker={"TST": False})
+    assert "non_reliance_filing" not in flags["TST"]
+
+
+def test_C3_non_reliance_missing_from_inject_dict_omits_flag():
+    """Inject path with empty dict — same as False (default)."""
+    snaps = {"TST": _snap()}
+    flags = compute_risk_flags(snaps, non_reliance_by_ticker={})
+    assert "non_reliance_filing" not in flags["TST"]
+
+
+def test_C4_non_reliance_default_path_no_env_yields_no_flag(monkeypatch):
+    """Default path: no inject kwarg → calls check_non_reliance(ticker)
+    which without EDGAR_USER_AGENT returns ItemFlag(fired=False) — no
+    flag appended. Existing PR-3c tests rely on this contract.
+    """
+    monkeypatch.delenv("EDGAR_USER_AGENT", raising=False)
+    # Point cache at a fresh tmp dir so we know we hit identity-fail path,
+    # not a stale cache.
+    import tempfile
+
+    from compute import config
+    with tempfile.TemporaryDirectory() as tmpdir:
+        from pathlib import Path
+        monkeypatch.setattr(config, "EDGAR_8K_CACHE_DIR", Path(tmpdir) / "edgar_8k")
+        # Reset module-level identity flag — different test runs might
+        # have set it in earlier tests. (Forgivable side-effect; PR 3d
+        # Step 5 will own the production identity setup.)
+        from compute.scoring import eight_k_events
+        monkeypatch.setattr(eight_k_events, "_IDENTITY_SET", False)
+        flags = compute_risk_flags({"TST": _snap()})
+        assert "non_reliance_filing" not in flags["TST"]
+
+
+def test_C5_non_reliance_does_not_affect_existing_flags():
+    """A ticker that should fire altman / sloan / NSI plus non_reliance
+    sees ALL four flags — they are additive."""
+    snaps = {
+        "BAD": _snap(
+            stockholders_equity=10.0,  # tiny equity → low Z″
+            total_liabilities=200.0,
+            retained_earnings=-50.0,
+            operating_income=-10.0,
+            current_assets=10.0,
+            current_liabilities=100.0,
+        ),
+    }
+    flags = compute_risk_flags(snaps, non_reliance_by_ticker={"BAD": True})
+    assert "altman_distress" in flags["BAD"]
+    assert "non_reliance_filing" in flags["BAD"]
+
+
+def test_C6_inject_dict_does_not_pollute_other_tickers():
+    """non_reliance_by_ticker={A: True} should NOT add the flag to B."""
+    snaps = {"A": _snap(), "B": _snap()}
+    flags = compute_risk_flags(snaps, non_reliance_by_ticker={"A": True})
+    assert "non_reliance_filing" in flags["A"]
+    assert "non_reliance_filing" not in flags["B"]

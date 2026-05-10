@@ -1,8 +1,11 @@
 import Link from 'next/link';
 
 import FairPriceCard from '@/components/FairPriceCard';
+import { FairPriceBarChart } from '@/components/FairPriceBarChart';
+import { PillarRadarChart } from '@/components/PillarRadarChart';
 import { PriceHistoryChart } from '@/components/PriceHistoryChart';
 import RawMetricsTable from '@/components/RawMetricsTable';
+import { Tier2EventCard } from '@/components/Tier2EventCard';
 import { formatMosPct, mosColorClass } from '@/lib/format';
 import { getStockDetail, listTickersForStaticBuild } from '@/lib/data';
 
@@ -134,11 +137,27 @@ export default function StockDetailPage({
         )}
       </section>
 
+      <Tier2EventCard
+        tier2_events={detail.tier2_events}
+        ticker={detail.ticker}
+      />
+
+      <FairPriceBarChart
+        fair_price={detail.fair_price}
+        current_price={detail.current_price}
+        ticker={detail.ticker}
+      />
+
       <FairPriceCard
         ensemble={detail.fair_price}
         currentPrice={detail.current_price}
         warnings={detail.valuation_warnings}
         tangibleBookValue={detail.tangible_book_value}
+      />
+
+      <PillarRadarChart
+        pillars={detail.pillar_scores}
+        ticker={detail.ticker}
       />
 
       <section>

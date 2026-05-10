@@ -28,10 +28,12 @@ Pipeline:
 
 from __future__ import annotations
 
+import concurrent.futures as _cf
 import logging
 import math
 import os
 import sys
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import UTC, date, datetime, timedelta
 
@@ -66,6 +68,14 @@ from compute.scoring.composite import compute_composite, neutralize_pillar_score
 from compute.scoring.pillars import TickerInputs, compute_all_pillars
 from compute.scoring.risk_overlay import compute_risk_flags
 from compute.scoring.sanity import compute_mos_trailing_ic
+from compute.scoring.tier2 import (
+    Tier2Result,
+    fetch_tier2_for_ticker,
+    tier2_events_dict,
+)
+from compute.scoring.tier2 import (
+    coverage_pct as tier2_coverage_pct_calc,
+)
 from compute.valuation.ensemble import (
     EnsembleResult,
     compute_fair_price_ensemble,
@@ -110,22 +120,96 @@ def _fetch_prices_one(row: pd.Series) -> dict | None:
     }
 
 
-def _fundamentals_one(ticker: str, cik: str) -> FundamentalsSnapshot | None:
+# Per-stock fundamentals fetch ceiling. Belt-and-suspenders for the
+# tightened tenacity retry (stop_after_delay(30) | stop_after_attempt(2))
+# in compute/ingest/fundamentals.py. Defends the orchestrator against a
+# truly stuck task (e.g., SEC's HTTP layer hanging mid-stream past the
+# inner retry's wall-clock cap).
+_FUNDAMENTALS_FUTURE_TIMEOUT_SECONDS = 45
+
+
+def _fundamentals_one(
+    ticker: str, cik: str
+) -> tuple[FundamentalsSnapshot | None, float]:
+    """Fetch the snapshot for one ticker, timed.
+
+    Returns (snapshot, elapsed_seconds). ``snapshot`` is ``None`` on
+    any failure (logged, not raised). The elapsed is captured even on
+    failure so the latency histogram covers stuck/erroring tickers.
+    """
+    t0 = time.perf_counter()
+    snap: FundamentalsSnapshot | None = None
     try:
-        return fetch_fundamentals(ticker, cik)
+        snap = fetch_fundamentals(ticker, cik)
     except Exception as e:  # noqa: BLE001
         logger.warning("fetch_fundamentals raised for %s/%s: %s", ticker, cik, e)
-        return None
+    elapsed = time.perf_counter() - t0
+    logger.info(
+        "fundamentals_fetch ticker=%s elapsed_seconds=%.2f status=%s",
+        ticker,
+        elapsed,
+        "success" if snap is not None else "failure",
+    )
+    return snap, elapsed
 
 
-def _history_one(cik: str) -> pd.DataFrame:
+def _history_one(ticker: str, cik: str) -> tuple[pd.DataFrame, float]:
+    """Fetch annual history for one CIK, timed.
+
+    Returns (history_df, elapsed_seconds). Empty DataFrame on missing
+    CIK or any failure. Elapsed always captured.
+    """
+    t0 = time.perf_counter()
     if not cik:
-        return pd.DataFrame()
+        return pd.DataFrame(), 0.0
+    df: pd.DataFrame = pd.DataFrame()
     try:
-        return fetch_fundamentals_history(cik)
+        df = fetch_fundamentals_history(cik)
     except Exception as e:  # noqa: BLE001
         logger.warning("fetch_fundamentals_history raised for cik=%s: %s", cik, e)
-        return pd.DataFrame()
+    elapsed = time.perf_counter() - t0
+    logger.debug(
+        "fundamentals_history_fetch ticker=%s elapsed_seconds=%.2f status=%s",
+        ticker,
+        elapsed,
+        "success" if not df.empty else "empty",
+    )
+    return df, elapsed
+
+
+def _latency_histogram(elapsed_values: list[float]) -> dict[str, int]:
+    """Bucket fundamentals-fetch latencies for at-a-glance throttling diagnostics.
+
+    Buckets: <5s, 5-15s, 15-30s, 30s+. The 15s and 30s thresholds align
+    with the inner ``stop_after_delay(30)`` retry budget — anything in
+    the 15-30s bucket is "retried once successfully", and 30s+ tickers
+    are likely retry-exhausted or future-timed out. Phase 4 will use
+    the slow-tickers list to special-case chronically-slow CIKs.
+    """
+    buckets = {"<5s": 0, "5-15s": 0, "15-30s": 0, "30s+": 0}
+    for e in elapsed_values:
+        if e < 5:
+            buckets["<5s"] += 1
+        elif e < 15:
+            buckets["5-15s"] += 1
+        elif e < 30:
+            buckets["15-30s"] += 1
+        else:
+            buckets["30s+"] += 1
+    return buckets
+
+
+def _percentile(sorted_values: list[float], pct: float) -> float | None:
+    """Linear-interpolation percentile for a pre-sorted list."""
+    if not sorted_values:
+        return None
+    if len(sorted_values) == 1:
+        return float(sorted_values[0])
+    idx = (len(sorted_values) - 1) * pct
+    lo = int(idx)
+    hi = min(lo + 1, len(sorted_values) - 1)
+    frac = idx - lo
+    return float(sorted_values[lo] * (1 - frac) + sorted_values[hi] * frac)
 
 
 def _now_utc() -> datetime:
@@ -460,6 +544,7 @@ def run_weekly_compute() -> int:
         config.EDGAR_MAX_WORKERS,
     )
     snapshots: dict[str, FundamentalsSnapshot | None] = {}
+    fundamentals_latency: dict[str, float] = {}
     with ThreadPoolExecutor(max_workers=config.EDGAR_MAX_WORKERS) as ex:
         futures = {
             ex.submit(_fundamentals_one, r["ticker"], str(r.get("cik") or "")): r["ticker"]
@@ -468,11 +553,21 @@ def run_weekly_compute() -> int:
         for fut in as_completed(futures):
             ticker = futures[fut]
             try:
-                snap = fut.result()
+                snap, elapsed = fut.result(timeout=_FUNDAMENTALS_FUTURE_TIMEOUT_SECONDS)
+            except _cf.TimeoutError:
+                logger.warning(
+                    "Fundamentals task timed out (>%ds) for %s — skipping ticker.",
+                    _FUNDAMENTALS_FUTURE_TIMEOUT_SECONDS,
+                    ticker,
+                )
+                snap = None
+                elapsed = float(_FUNDAMENTALS_FUTURE_TIMEOUT_SECONDS)
             except Exception as e:  # noqa: BLE001
                 logger.warning("Fundamentals task raised for %s: %s", ticker, e)
                 snap = None
+                elapsed = 0.0
             snapshots[ticker] = snap
+            fundamentals_latency[ticker] = elapsed
 
     coverage = sum(1 for v in snapshots.values() if v is not None) / max(len(df), 1)
     logger.info(
@@ -481,6 +576,32 @@ def run_weekly_compute() -> int:
         len(df),
         coverage * 100,
     )
+
+    # PR 3d Part 2 — observability. Per-stock latency histogram surfaces
+    # SEC-API throttling at-a-glance. p50 / p95 plus the histogram are
+    # mirrored into ``Metadata`` so the JSON output captures the run's
+    # cost profile (Phase 4 will mine slow tickers for special-case caching).
+    elapsed_values = sorted(fundamentals_latency.values())
+    latency_buckets = _latency_histogram(elapsed_values)
+    slow_tickers = sorted(
+        ((t, e) for t, e in fundamentals_latency.items() if e >= 15.0),
+        key=lambda p: -p[1],
+    )[:20]
+    fundamentals_p50 = _percentile(elapsed_values, 0.50)
+    fundamentals_p95 = _percentile(elapsed_values, 0.95)
+    fundamentals_coverage_pct = round(100 * coverage, 2)
+    logger.info("fundamentals_latency_histogram: %s", latency_buckets)
+    logger.info(
+        "fundamentals_latency_p50=%.2fs p95=%.2fs coverage=%.2f%%",
+        fundamentals_p50 if fundamentals_p50 is not None else 0.0,
+        fundamentals_p95 if fundamentals_p95 is not None else 0.0,
+        fundamentals_coverage_pct,
+    )
+    if slow_tickers:
+        logger.info(
+            "fundamentals_slow_tickers (>=15s, top 20): %s",
+            [(t, round(e, 2)) for t, e in slow_tickers],
+        )
     if coverage < config.MIN_FUNDAMENTALS_COVERAGE:
         logger.error(
             "Fundamentals coverage %.1f%% below threshold %.1f%%. Aborting.",
@@ -494,13 +615,25 @@ def run_weekly_compute() -> int:
     histories: dict[str, pd.DataFrame] = {}
     with ThreadPoolExecutor(max_workers=config.EDGAR_MAX_WORKERS) as ex:
         futures = {
-            ex.submit(_history_one, str(r.get("cik") or "")): r["ticker"]
+            ex.submit(
+                _history_one, r["ticker"], str(r.get("cik") or "")
+            ): r["ticker"]
             for _, r in df.iterrows()
         }
         for fut in as_completed(futures):
             ticker = futures[fut]
             try:
-                histories[ticker] = fut.result()
+                hist_df, _hist_elapsed = fut.result(
+                    timeout=_FUNDAMENTALS_FUTURE_TIMEOUT_SECONDS
+                )
+                histories[ticker] = hist_df
+            except _cf.TimeoutError:
+                logger.warning(
+                    "History task timed out (>%ds) for %s — skipping ticker.",
+                    _FUNDAMENTALS_FUTURE_TIMEOUT_SECONDS,
+                    ticker,
+                )
+                histories[ticker] = pd.DataFrame()
             except Exception as e:  # noqa: BLE001
                 logger.warning("History task raised for %s: %s", ticker, e)
                 histories[ticker] = pd.DataFrame()
@@ -522,18 +655,62 @@ def run_weekly_compute() -> int:
     pillar_df = compute_all_pillars(inputs)
     pillar_df, imputed_by_ticker = neutralize_pillar_scores(pillar_df)
 
+    # Step 4b — Tier-2 event defenses (PR 3d). Fetched in parallel ahead of
+    # risk-flag computation so the resulting non_reliance veto can be
+    # injected into compute_risk_flags (avoiding a duplicate EDGAR fetch
+    # inside the risk-overlay layer). See compute/scoring/tier2.py.
+    #
+    # fetch_tier2_for_ticker catches every per-defense exception
+    # internally, so a failed fetch surfaces as a Tier2Result with
+    # fetch_succeeded=False (not an exception). The defensive try/except
+    # below covers only the unexpected case (e.g., interpreter-level
+    # bug); a missing-ticker entry in tier2_results just means no veto
+    # and an empty tier2_events display dict for that ticker.
+    logger.info("Fetching Tier-2 event defenses (10-K + 8-K) for %d tickers…", len(df))
+    tier2_results: dict[str, Tier2Result] = {}
+    with ThreadPoolExecutor(max_workers=config.EDGAR_MAX_WORKERS) as ex:
+        futures = {
+            ex.submit(fetch_tier2_for_ticker, r["ticker"]): r["ticker"]
+            for _, r in df.iterrows()
+        }
+        for fut in as_completed(futures):
+            ticker = futures[fut]
+            try:
+                tier2_results[ticker] = fut.result()
+            except Exception as e:  # noqa: BLE001
+                logger.warning("Tier-2 task raised for %s: %s", ticker, e)
+                # Skip this ticker — downstream uses .get() with safe defaults.
+    tier2_coverage = tier2_coverage_pct_calc(tier2_results)
+    logger.info(
+        "Tier-2 coverage: %s%% (gc=%d, nr=%d, ac=%d)",
+        tier2_coverage if tier2_coverage is not None else "n/a",
+        sum(1 for r in tier2_results.values() if r.going_concern_disclosure),
+        sum(1 for r in tier2_results.values() if r.non_reliance_flag.fired),
+        sum(1 for r in tier2_results.values() if r.auditor_change_flag.fired),
+    )
+
     # Step 5 — composite + risk flags. NSI flag (Defense Playbook §PR 3c §1)
     # requires per-ticker history + sector to compute within-sector top-decile
     # threshold, so we pass both into compute_risk_flags. Top-5 rotation below
     # already iterates risk_flags.get(ticker) → no change needed there for NSI
     # to enter the existing flagged-skip path (annotate-and-veto-Top-N pattern,
     # SKILL.md Rule 16).
+    #
+    # PR 3d Defense #9: ``non_reliance_by_ticker`` injects the pre-computed
+    # 4.02 veto results from Step 4b above so compute_risk_flags doesn't
+    # re-issue the EDGAR fetch.
     composite = compute_composite(pillar_df)
     sectors_dict = {t: inp.sector for t, inp in inputs.items()}
+    non_reliance_by_ticker = {
+        t: r.non_reliance_flag.fired
+        for t, r in tier2_results.items()
+        if r.non_reliance_flag.fired
+    }
     risk_flags = compute_risk_flags(
         snapshots,
         histories=histories,
         sectors=sectors_dict,
+        non_reliance_by_ticker=non_reliance_by_ticker,
     )
 
     # Step 5b — cross-sectional inputs for the fair-price ensemble.
@@ -678,6 +855,8 @@ def run_weekly_compute() -> int:
 
         raw_metrics = _build_raw_metrics(snap, current_price)
         imputed = imputed_by_ticker.get(ticker, [])
+        tier2_result = tier2_results.get(ticker)
+        tier2_dict = tier2_events_dict(tier2_result) if tier2_result is not None else None
         detail = StockDetail(
             ticker=ticker,
             name=str(r["name"]),
@@ -695,6 +874,7 @@ def run_weekly_compute() -> int:
             valuation_warnings=valuation_warnings,
             has_history=has_history,
             tangible_book_value=tbvps_value,
+            tier2_events=tier2_dict,
             entered_top5=ticker in entered,
             exited_top5=ticker in exited,
         )
@@ -726,6 +906,14 @@ def run_weekly_compute() -> int:
         compute_run_id=os.environ.get("GITHUB_RUN_ID", "local"),
         git_commit=(os.environ.get("GITHUB_SHA") or "unknown")[:40],
         mos_trailing_ic_smoke=mos_ic,
+        tier2_coverage_pct=tier2_coverage,
+        fundamentals_coverage_pct=fundamentals_coverage_pct,
+        fundamentals_latency_p50_seconds=(
+            round(fundamentals_p50, 2) if fundamentals_p50 is not None else None
+        ),
+        fundamentals_latency_p95_seconds=(
+            round(fundamentals_p95, 2) if fundamentals_p95 is not None else None
+        ),
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)

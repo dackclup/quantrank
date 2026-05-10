@@ -16,7 +16,7 @@ FUNDAMENTALS_HISTORY_CACHE_DIR: Path = CACHE_DIR / "fundamentals_history"
 MODELS_DIR: Path = PROJECT_ROOT / "models"
 
 UNIVERSE: str = "SP500"
-SCHEMA_VERSION: str = "0.5.0-phase3c"
+SCHEMA_VERSION: str = "0.6.0-phase3d"
 
 PRICES_PERIOD: str = "5y"
 MAX_PARALLEL_FETCHES: int = 10
@@ -69,3 +69,39 @@ MULTIPLES_MIN_PEERS: int = 8
 # Net Stock Issuance veto (Pontiff-Woodgate 2008 JF). Top decile within sector.
 NSI_TOP_DECILE: float = 0.90
 NSI_LOOKBACK_DAYS: int = 365
+
+# --- Phase 3d: Tier-2 event defenses (going-concern + 8-K Items 4.02/4.01) ---
+# Anchored in WORKFLOW.md "PR 3d — Tier-2 Defense Layer" + Mayew-Sethuraman-
+# Venkatachalam 2015 (TAR) for going-concern, Schroeder 2024 SSRN for 8-K 4.02.
+
+# 8-K Item 4.02 hard veto: "Non-Reliance on Previously Issued Financial
+# Statements". Trailing-12-month window — restatement-style events have
+# ~50% subsequent restatement rate per Schroeder 2024.
+EIGHT_K_LOOKBACK_DAYS_VETO: int = 365
+
+# 8-K Item 4.01 annotate: "Changes in Registrant's Certifying Accountant".
+# 2-year window per Reg S-K Item 304 disclosure horizon.
+EIGHT_K_LOOKBACK_DAYS_ANNOTATE: int = 730
+
+# Going-concern phrase scan: 1-year + buffer to capture the most recent
+# 10-K. 10-K filings cluster ~75d after fiscal year-end so 400d covers
+# all calendar-year filers + most off-cycle filers.
+GOING_CONCERN_FILING_LOOKBACK_DAYS: int = 400
+
+# 8-K event-fetch JSON cache. Per-ticker filing list refreshes weekly;
+# Item 4.02 / 4.01 disclosures are sticky once filed so even a 7-day
+# stale cache won't cause a flagged ticker to silently un-flag.
+EDGAR_8K_CACHE_DIR: Path = CACHE_DIR / "edgar_8k"
+EDGAR_8K_CACHE_TTL_SECONDS: int = 7 * 86400  # 7 days
+
+# Cap how much of an Item body we keep in the cache + surface in the
+# UI excerpt. 500 chars is enough for the human reviewer to gauge
+# context without pulling the whole 8-K.
+EDGAR_8K_ITEM_TEXT_EXCERPT_CHARS: int = 500
+
+# Latest-10-K text cache (Defense #8 going-concern phrase scan). 90-day TTL
+# is safe — 10-K filings are annual, and a ticker's most-recent 10-K only
+# changes once per year. Even a stale 89-day cache hit is the same filing
+# we'd fetch fresh.
+EDGAR_10K_TEXT_CACHE_DIR: Path = CACHE_DIR / "edgar_10k_text"
+EDGAR_10K_TEXT_CACHE_TTL_SECONDS: int = 90 * 86400  # 90 days

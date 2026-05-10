@@ -1307,15 +1307,56 @@ to user, not penalizing every name.
    + EV/EBITDA. REITs use FFO/AFFO substitutes (placeholder for Phase 4).
    40 LOC.
 
-#### PR 3d (Tier-2, ~270 LOC)
+#### PR 3d (Tier-2, ~520 LOC) — ✅ SHIPPED 2026-05-10
 
-7. **Going-concern phrase scan** — Mayew-Sethuraman-Venkatachalam 2015
-   *TAR*. Loughran-McDonald academic dictionary phrases ("substantial
-   doubt", "going concern", etc.) in 10-K Item 7. ANNOTATE. 120 LOC.
-8. **8-K Item 4.02 hard veto** — Schroeder 2024 SSRN. Restatement
-   filing in trailing 12 months → exclude from Top-5. 100 LOC.
-9. **8-K Item 4.01 auditor change soft flag** — Reg S-K Item 304.
-   Auditor dismissal in trailing 12m + declining ROE → ANNOTATE. 50 LOC.
+7. **Going-concern phrase scan** ✅ — Mayew-Sethuraman-Venkatachalam
+   2015 *TAR*. Loughran-McDonald academic dictionary phrases
+   ("substantial doubt", "going concern", etc.) scanned over the most
+   recent 10-K MD&A text. ANNOTATE-only. Implementation:
+   `compute/scoring/going_concern.py` (Step 2 commit `fee4498`).
+   14 curated phrases with `\b` word-boundary anchoring + `[\s\-]+`
+   whitespace/hyphen flex; pre-compiled regex tuple at module load.
+   25 unit tests including word-boundary safety (`ongoing concerns`,
+   `discontinued operations` correctly do not trip the flag).
+8. **8-K Item 4.02 hard veto** ✅ — Schroeder 2024 SSRN finds ~50% of
+   4.02 filings precede formal restatement within 12 months. 365-day
+   lookback. **4th active veto** at v1.0 — joins
+   `altman_distress`, `sloan_accruals_top_decile`,
+   `net_issuance_top_decile`. Implementation:
+   `compute/scoring/eight_k_events.py::check_non_reliance` (Step 3
+   commit `cedadca`). 7-day on-disk cache; the same filing list
+   serves Defense #10 (no duplicate fetch).
+9. **8-K Item 4.01 auditor change soft flag** ✅ — Reg S-K Item 304.
+   730-day lookback (covers the disclosure horizon). ANNOTATE-only:
+   audit-firm restructuring + benign rotation fire the same item, so
+   the false-positive rate is too high for veto. Implementation:
+   `compute/scoring/eight_k_events.py::check_auditor_change` (Step 3
+   commit `cedadca`). Surfaced for human review on the detail page
+   via `Tier2EventCard`.
+
+PR 3d also shipped:
+
+- **Tier-2 orchestrator** (`compute/scoring/tier2.py`, Step 5 commit
+  `9cd2c74`) — composes all 3 defenses behind a single per-ticker
+  fetch. Result drives both the veto path
+  (`compute_risk_flags(non_reliance_by_ticker=…)`) and the display
+  path (`StockDetail.tier2_events`), avoiding a duplicate EDGAR call.
+- **10-K text cache** (`compute/ingest/filing_text.py`, Step 5).
+  90-day TTL, atomic write, sanitized filename.
+- **Schema additions** (Step 4 commit `b90930e`):
+  `StockDetail.tier2_events` + `Metadata.tier2_coverage_pct`.
+  Reason taxonomy: 21 → **24 stable identifiers**.
+- **Frontend** (Steps 6-8, commits `104d3a1` / `2c65a13` / `1a30353`):
+  `Tier2EventCard` (severity-coded events with HARD VETO red /
+  Annotate amber pills), `PillarRadarChart` (8-pillar polar radar),
+  `FairPriceBarChart` (6-method horizontal bars + outlier graying).
+- **Tests**: 409 (PR 3c baseline) → **500** non-network passing
+  (+91 in PR 3d, plus 3 `@network` tests deselected in the sandbox
+  — +94 total added). Breakdown:
+  +25 going-concern (Step 2), +25 8-K-events non-network +3
+  @network (Step 3), +17 tier2 orchestrator (Step 5), +13 tier2
+  schema (Step 4), +6 risk-overlay non-reliance (Step 4),
+  +5 config smoke (Step 1).
 
 #### PR 3e (Tier-3, ~370 LOC)
 

@@ -32,6 +32,21 @@
       "required": true,
       "default": "<required>"
     },
+    "fundamentals_coverage_pct": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "fundamentals_latency_p50_seconds": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "fundamentals_latency_p95_seconds": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
     "git_commit": {
       "type": "str",
       "required": true,
@@ -51,6 +66,11 @@
       "type": "str",
       "required": true,
       "default": "<required>"
+    },
+    "tier2_coverage_pct": {
+      "type": "float | None",
+      "required": false,
+      "default": null
     },
     "universe": {
       "type": "str",
@@ -287,6 +307,11 @@
       "type": "str",
       "required": true,
       "default": "<required>"
+    },
+    "tier2_events": {
+      "type": "dict | None",
+      "required": false,
+      "default": null
     },
     "top5_factors": {
       "type": "list",

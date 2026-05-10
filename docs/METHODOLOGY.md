@@ -1,8 +1,8 @@
 # Methodology
 
 > Full user-facing methodology ships with **v1.0** (end of Phase 3). This page
-> is the working draft; sections marked _(Phase 3c)_ are live in production
-> as of schema `0.5.0-phase3c` (2026-05-09).
+> is the working draft; sections marked _(Phase 3c)_ or _(Phase 3d)_ are
+> live in production as of schema `0.6.0-phase3d` (2026-05-10).
 
 QuantRank produces, per stock:
 
@@ -13,10 +13,10 @@ QuantRank produces, per stock:
 - **Fair-price ensemble** — median of 6 valuation methods + outlier-excluded
   max. _(Phase 3c)_
 - **Margin of safety** — `(median − current) / median × 100`. _(Phase 3c)_
-- **7 active defenses** — 3 vetoes + 5 numerical guards + 5+ annotate-only
+- **10 active defenses** — 4 vetoes + 5 numerical guards + 7 annotate-only
   flags. Annotate-and-veto-Top-N philosophy: defenses **never modify the
   composite**, only suppress the entered-top-5 badge or null specific
-  fair-price methods. _(Phase 3b/3c)_
+  fair-price methods. _(Phase 3b/3c/3d)_
 - **Top-5 SHAP factors** — why the score is what it is. _(Phase 5+)_
 
 ## How scoring works
@@ -123,7 +123,7 @@ matches the textbook formula; some practitioners use the inverse
 (`current / intrinsic − 1`) which has identical sign but a different
 magnitude.
 
-## Defense layer _(Phase 3b/3c)_
+## Defense layer _(Phase 3b/3c/3d)_
 
 QuantRank treats fraud detection and data-quality protection as a
 **separate, explicit layer** that runs after composite scoring. The
@@ -137,13 +137,14 @@ defense set, lets the user see "this stock is high-rank but has flags X,
 Y, Z", and prevents defense overhaul from invalidating the historical
 composite.
 
-### Active vetoes (3) — suppress the entered-top-5 badge
+### Active vetoes (4) — suppress the entered-top-5 badge
 
 | Veto | Rule | Source |
 |---|---|---|
 | `altman_distress` | Z″ < 1.10 | Altman 1968, Hotchkiss 2003 update for non-manufacturers |
 | `sloan_accruals_top_decile` | Within-sector top decile of accruals/assets | Sloan 1996 |
 | `net_issuance_top_decile` | Within-sector top decile of NSI over 365 days | Pontiff-Woodgate 2008 |
+| `non_reliance_filing` | 8-K Item 4.02 within trailing 365 days | Schroeder 2024 SSRN |
 
 ### Numerical guards (5) — null specific fair-price methods + emit a warning
 
@@ -155,7 +156,7 @@ composite.
 | Sector exclusions | EV/EBITDA skipped for Financials; DCF skipped for Financials + Utilities; Quality pillar metrics gated by sector (`magic_formula`, `ebit_based_roic`, `gross_profitability`, `asset_turnover` per Greenblatt 2005) | Greenblatt; sector-method spec |
 | Data-quality $10K ceiling | If any method computes > $10,000/share → null all 6 + emit `data_quality_input_corruption`. Catches upstream ingestion bugs (e.g., `shares_outstanding` in wrong units) before user-visible nonsense. | Internal — Step 7.5 (post-spot-check) |
 
-### Annotate-only flags (5+) — surfaced in `valuation_warnings`, no behavioral effect
+### Annotate-only flags (7) — surfaced in `valuation_warnings` or `tier2_events`, no behavioral effect
 
 - `goodwill_heavy` — TBVPS / BVPS_reported < 0.5 (cautions that
   reported book is misleading)
@@ -168,10 +169,21 @@ composite.
 - `stale_filing_soft` — filing > 120d but ≤ 180d
 - `data_quality_input_corruption` — also surfaced as the `reason`
   on every method when the $10K ceiling fires
+- `going_concern_disclosure` _(Phase 3d)_ — going-concern phrase
+  found in the most recent 10-K MD&A. Mayew-Sethuraman-Venkatachalam
+  2015 *TAR* shows mere mention is the predictive signal even when
+  paired with management's denial. False-positive rate is non-trivial
+  (firms cite the language when describing peers or historical events);
+  acceptable here because the flag does not veto. Implementation:
+  `compute/scoring/going_concern.py` with a 14-phrase Loughran-McDonald
+  dictionary subset (CC BY 4.0).
+- `auditor_change` _(Phase 3d)_ — 8-K Item 4.01 within trailing 730
+  days. Reg S-K Item 304 disclosure. False-positive rate too high for
+  veto: audit-firm restructuring fires the same item, and many
+  changes are benign rotation. Surfaced for human review on the
+  detail page.
 
-Phase 3d (Tier-2 events) will add `going_concern`, `auditor_change`, and
-the 8-K Item 4.02 hard event veto. Phase 3e adds `beneish_high` and
-`dechow_f_high`.
+Phase 3e adds `beneish_high` and `dechow_f_high`.
 
 ### Annotate-vs-veto philosophy
 
@@ -182,6 +194,58 @@ the 8-K Item 4.02 hard event veto. Phase 3e adds `beneish_high` and
 | Does a flag suppress the entered-top-5 badge? | Vetoes only. Annotate-only flags are visible but have no behavioral effect. |
 | Does a flag null fair-price methods? | Numerical guards do (per-method or all-6). Annotate-only flags don't. |
 | Can the user override flags? | Not in v1.0. Phase 4+ may add a "show flagged stocks" toggle. |
+
+## Tier-2 events _(Phase 3d)_
+
+Tier-2 events extend the defense layer with regulatory-disclosure
+pattern matching. Two SEC EDGAR data sources, three defenses:
+
+| Source | Defense | Mode | Lookback |
+|---|---|---|---|
+| 10-K MD&A text | `going_concern_disclosure` | Annotate-only | 400 days (covers 1y filing cadence + buffer) |
+| 8-K Item 4.02 | `non_reliance_filing` | **Hard veto** (joins altman / sloan / NSI) | 365 days (Schroeder 2024 SSRN cohort window) |
+| 8-K Item 4.01 | `auditor_change` | Annotate-only | 730 days (Reg S-K Item 304 horizon) |
+
+**Cache strategy**: 90-day TTL for 10-K text (annual filing cadence —
+an 89-day stale cache hit returns the same filing we'd fetch fresh);
+7-day TTL for 8-K filings (recent events refresh weekly, sticky once
+filed). Both caches gitignored under `compute/cache/edgar_8k/` and
+`compute/cache/edgar_10k_text/`.
+
+**Failure semantics**: any individual fetch failure (rate-limit,
+network error, ticker-not-found, missing `EDGAR_USER_AGENT`) returns
+`False`/`None`. The orchestrator never raises — one bad ticker
+cannot crash the run. Population-level success surfaces in
+`Metadata.tier2_coverage_pct` (percentage of universe where **both**
+the 10-K and 8-K fetch returned data).
+
+**Implementation modules**:
+
+- `compute/scoring/going_concern.py` — Defense #8. Pre-compiled
+  per-phrase regex with `\b` word-boundary anchoring and
+  `[\s\-]+` whitespace/hyphen flex. 14 curated phrases.
+- `compute/scoring/eight_k_events.py` — Defenses #9 + #10.
+  `ItemFlag` frozen dataclass + `check_non_reliance` /
+  `check_auditor_change` consumers. Cache layer inlined; one
+  fetch (730-day lookback) serves both checks.
+- `compute/scoring/tier2.py` — Orchestrator. `Tier2Result` frozen
+  dataclass + `fetch_tier2_for_ticker` (parallel-safe, never
+  raises) + `tier2_events_dict` (display-payload builder) +
+  `coverage_pct` (population-level metric).
+- `compute/ingest/filing_text.py` — 10-K text fetch + 90-day cache.
+  Atomic write via tmp + os.replace; sanitized ticker filename
+  (path-traversal-safe).
+
+**Why annotate-vs-veto split**: Item 4.02 (non-reliance on previously
+issued statements) is a high-precision restatement signal —
+Schroeder 2024 SSRN finds ~50% of 4.02 filings precede formal
+restatement within 12 months. Worth a hard veto. Item 4.01 (auditor
+change), by contrast, fires for benign reasons too — auditor
+rotation, audit-firm restructuring, post-merger consolidations —
+so the FP rate is too high to suppress entered-top-5. The same
+Reg S-K Item 304 disclosure mandate applies to both dismissal and
+resignation, so we can't filter on cause without parsing prose;
+annotate-only is the conservative choice.
 
 ## Sanity tests _(Phase 3c)_
 
