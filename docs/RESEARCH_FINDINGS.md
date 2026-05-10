@@ -1350,10 +1350,13 @@ PR 3d also shipped:
   `Tier2EventCard` (severity-coded events with HARD VETO red /
   Annotate amber pills), `PillarRadarChart` (8-pillar polar radar),
   `FairPriceBarChart` (6-method horizontal bars + outlier graying).
-- **Tests**: 423 (PR 3c baseline) → **500** (+77 new in PR 3d):
-  +25 going-concern, +28 8-K-events (incl. 3 @network), +17 tier2
-  orchestrator, +13 tier2-schema, +6 risk-overlay non-reliance
-  integration, +5 misc.
+- **Tests**: 409 (PR 3c baseline) → **500** non-network passing
+  (+91 in PR 3d, plus 3 `@network` tests deselected in the sandbox
+  — +94 total added). Breakdown:
+  +25 going-concern (Step 2), +25 8-K-events non-network +3
+  @network (Step 3), +17 tier2 orchestrator (Step 5), +13 tier2
+  schema (Step 4), +6 risk-overlay non-reliance (Step 4),
+  +5 config smoke (Step 1).
 
 #### PR 3e (Tier-3, ~370 LOC)
 

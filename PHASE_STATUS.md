@@ -81,7 +81,8 @@
 - ✅ **3d — Tier-2 event defenses + UI polish** —
   DONE 2026-05-10. Schema bump to `0.6.0-phase3d`. Tag
   **v0.6.0-phase3d** (post-merge). 8 commits, 6 sub-modules,
-  77 new tests (500 - 423 baseline). Adds the **4th active veto**
+  91 new non-network tests (409 → 500) + 3 `@network` tests
+  added. Adds the **4th active veto**
   (`non_reliance_filing`).
   - **Defense #8** — going-concern phrase scan
     (`compute/scoring/going_concern.py`). Mayew-Sethuraman-
