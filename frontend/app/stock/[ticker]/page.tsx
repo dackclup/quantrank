@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import FairPriceCard from '@/components/FairPriceCard';
+import { FairPriceBarChart } from '@/components/FairPriceBarChart';
 import { PillarRadarChart } from '@/components/PillarRadarChart';
 import { PriceHistoryChart } from '@/components/PriceHistoryChart';
 import RawMetricsTable from '@/components/RawMetricsTable';
@@ -138,6 +139,12 @@ export default function StockDetailPage({
 
       <Tier2EventCard
         tier2_events={detail.tier2_events}
+        ticker={detail.ticker}
+      />
+
+      <FairPriceBarChart
+        fair_price={detail.fair_price}
+        current_price={detail.current_price}
         ticker={detail.ticker}
       />
 
