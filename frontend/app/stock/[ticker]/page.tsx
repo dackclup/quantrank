@@ -3,6 +3,7 @@ import Link from 'next/link';
 import FairPriceCard from '@/components/FairPriceCard';
 import { PriceHistoryChart } from '@/components/PriceHistoryChart';
 import RawMetricsTable from '@/components/RawMetricsTable';
+import { Tier2EventCard } from '@/components/Tier2EventCard';
 import { formatMosPct, mosColorClass } from '@/lib/format';
 import { getStockDetail, listTickersForStaticBuild } from '@/lib/data';
 
@@ -133,6 +134,11 @@ export default function StockDetailPage({
           </div>
         )}
       </section>
+
+      <Tier2EventCard
+        tier2_events={detail.tier2_events}
+        ticker={detail.ticker}
+      />
 
       <FairPriceCard
         ensemble={detail.fair_price}
