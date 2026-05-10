@@ -87,3 +87,14 @@ EIGHT_K_LOOKBACK_DAYS_ANNOTATE: int = 730
 # 10-K. 10-K filings cluster ~75d after fiscal year-end so 400d covers
 # all calendar-year filers + most off-cycle filers.
 GOING_CONCERN_FILING_LOOKBACK_DAYS: int = 400
+
+# 8-K event-fetch JSON cache. Per-ticker filing list refreshes weekly;
+# Item 4.02 / 4.01 disclosures are sticky once filed so even a 7-day
+# stale cache won't cause a flagged ticker to silently un-flag.
+EDGAR_8K_CACHE_DIR: Path = CACHE_DIR / "edgar_8k"
+EDGAR_8K_CACHE_TTL_SECONDS: int = 7 * 86400  # 7 days
+
+# Cap how much of an Item body we keep in the cache + surface in the
+# UI excerpt. 500 chars is enough for the human reviewer to gauge
+# context without pulling the whole 8-K.
+EDGAR_8K_ITEM_TEXT_EXCERPT_CHARS: int = 500
