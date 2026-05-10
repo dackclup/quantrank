@@ -23,6 +23,7 @@ from compute import config
 from compute.scoring import eight_k_events
 from compute.scoring.eight_k_events import (
     ItemFlag,
+    _extract_items_and_excerpts_from_html,
     check_auditor_change,
     check_non_reliance,
     fetch_recent_8k_filings,
@@ -164,6 +165,75 @@ def test_A14_no_matching_items_returns_no_flag_with_url_none():
     flag = check_non_reliance("TST", asof=ASOF, filings=filings)
     assert flag.fired is False
     assert flag.filing_url is None
+
+
+# ---------------------------------------------------------------------------
+# A-bis. Regex item extraction (perf-fix parity tests — bypass parser)
+# ---------------------------------------------------------------------------
+
+def test_A15_regex_extracts_items_from_html():
+    """Parity test for the perf hotfix: raw 8-K HTML → regex item
+    extraction yields the same shape that edgartools' parser would
+    have produced (canonical 'Item N.MM' strings)."""
+    html = (
+        "<html><body>"
+        "<h2>Item 4.02 Non-Reliance on Previously Issued Financial "
+        "Statements</h2>"
+        "<p>On March 1, 2026, the Company concluded that the previously "
+        "issued financial statements should no longer be relied upon.</p>"
+        "<h2>Item 9.01 Financial Statements and Exhibits</h2>"
+        "<p>(d) Exhibits.</p>"
+        "</body></html>"
+    )
+    items, excerpts = _extract_items_and_excerpts_from_html(html)
+    assert "Item 4.02" in items
+    assert "Item 9.01" in items
+    assert "Non-Reliance" in excerpts["Item 4.02"]
+
+
+def test_A16_regex_dedupes_repeated_items():
+    """Same item header appearing twice (e.g., body reference) yields
+    one entry — first-occurrence excerpt wins."""
+    html = (
+        "<p>Item 4.02 first mention with key context here.</p>"
+        "<p>Item 4.02 second mention with different context.</p>"
+    )
+    items, excerpts = _extract_items_and_excerpts_from_html(html)
+    assert items == ["Item 4.02"]
+    assert "first mention" in excerpts["Item 4.02"]
+
+
+def test_A17_regex_canonicalizes_internal_whitespace():
+    """SEC inline-tag splits like 'Item 4. 02' canonicalize to 'Item 4.02'."""
+    html = "<p>Item 4. 02 Non-Reliance on Previously Issued ...</p>"
+    items, _ = _extract_items_and_excerpts_from_html(html)
+    assert items == ["Item 4.02"]
+
+
+def test_A18_regex_excerpt_capped_at_config_chars():
+    long_body = "X" * (config.EDGAR_8K_ITEM_TEXT_EXCERPT_CHARS + 500)
+    html = f"<p>Item 4.02 {long_body}</p>"
+    _, excerpts = _extract_items_and_excerpts_from_html(html)
+    assert len(excerpts["Item 4.02"]) == config.EDGAR_8K_ITEM_TEXT_EXCERPT_CHARS
+
+
+def test_A19_regex_empty_html_returns_empty_lists():
+    items, excerpts = _extract_items_and_excerpts_from_html(
+        "<html><body></body></html>"
+    )
+    assert items == []
+    assert excerpts == {}
+
+
+def test_A20_regex_does_not_match_item_4_020():
+    """Defense-in-depth: 'Item 4.020' must not match (the general
+    pattern is \\b-anchored so '4.020' fails the closing word boundary
+    after '02' due to the trailing '0')."""
+    html = "<p>Item 4.020 malformed item number.</p>"
+    items, _ = _extract_items_and_excerpts_from_html(html)
+    # '4.020' as a whole captures fine, but the canonical form would
+    # be 'Item 4.020' — NOT 'Item 4.02', so the 4.02 check stays clean.
+    assert "Item 4.02" not in items
 
 
 # ---------------------------------------------------------------------------

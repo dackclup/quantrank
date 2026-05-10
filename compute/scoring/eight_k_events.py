@@ -75,6 +75,8 @@ from dataclasses import dataclass
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 
+from bs4 import BeautifulSoup
+
 from compute import config
 
 logger = logging.getLogger(__name__)
@@ -84,6 +86,12 @@ logger = logging.getLogger(__name__)
 # malformed item number anyway, but defense in depth).
 _ITEM_4_02_PATTERN = re.compile(r"\bItem\s+4\.\s*02\b", re.IGNORECASE)
 _ITEM_4_01_PATTERN = re.compile(r"\bItem\s+4\.\s*01\b", re.IGNORECASE)
+
+# General "Item N.MM" extractor used by _filing_to_dict to enumerate
+# items in raw 8-K HTML text. Mirrors edgartools' Strategy 3 fallback
+# (_extract_items_from_text in current_report.py:51) — proven-correct
+# regex extraction that bypasses hybrid_section_detector.
+_ITEMS_PATTERN = re.compile(r"\bItem\s+(\d+\.\s*\d+)\b", re.IGNORECASE)
 
 
 @dataclass(frozen=True)
@@ -228,8 +236,57 @@ def invalidate_cache(ticker: str) -> None:
 # Fetch
 # ---------------------------------------------------------------------------
 
+def _extract_items_and_excerpts_from_html(
+    html: str,
+) -> tuple[list[str], dict[str, str]]:
+    """Pure regex extraction of 8-K items + excerpts from raw HTML.
+
+    Mirrors edgartools' Strategy 3 fallback path
+    (``_extract_items_from_text`` in
+    ``edgar/company_reports/current_report.py:51``), which the
+    upstream library uses for legacy SGML filings (1999-2001). The
+    same approach gives correctness-equivalent output for modern
+    filings on our use case (item-number presence + first-N-char
+    excerpts) WITHOUT routing through ``HTMLParser(ParserConfig)`` →
+    ``hybrid_section_detector``. Skipping the parser saves the
+    dominant Tier-2 cost (~3,500 detector invocations across 502
+    stocks × ~7 8-K filings each) that exceeded the 45-min workflow
+    timeout in run #13.
+
+    Items are canonicalized to ``"Item N.MM"`` (whitespace stripped
+    from inside the number), deduplicated (first occurrence wins
+    for excerpt). Excerpts are sliced from the match start position
+    out to ``config.EDGAR_8K_ITEM_TEXT_EXCERPT_CHARS``.
+    """
+    text = BeautifulSoup(html, "lxml").get_text(separator=" ")
+    items: list[str] = []
+    seen: set[str] = set()
+    excerpts: dict[str, str] = {}
+    excerpt_chars = config.EDGAR_8K_ITEM_TEXT_EXCERPT_CHARS
+    for m in _ITEMS_PATTERN.finditer(text):
+        num = re.sub(r"\s+", "", m.group(1))
+        canon = f"Item {num}"
+        if canon in seen:
+            continue
+        seen.add(canon)
+        items.append(canon)
+        excerpts[canon] = text[m.start() : m.start() + excerpt_chars]
+    return items, excerpts
+
+
 def _filing_to_dict(filing: object) -> dict | None:
     """Extract the JSON-cacheable subset of an edgartools Filing.
+
+    Uses ``filing.html()`` + BeautifulSoup raw text extraction +
+    regex item detection (NOT ``filing.obj().items`` /
+    ``filing.obj().sections``) to skip edgartools' parser pipeline,
+    which routes through ``HTMLParser(ParserConfig(form='8-K'))`` →
+    ``hybrid_section_detector`` via the ``EightK.document``
+    cached_property. The detector adds substantial CPU cost across
+    ~3,500 8-K filings (502 tickers × ~7 each) totaling 30+ min
+    that exceeded the 45-min workflow timeout in run #13. Item
+    detection mirrors edgartools' own Strategy 3 regex fallback
+    (validated against legacy SGML filings).
 
     Returns None if the filing can't be parsed (malformed object,
     missing required fields). Caller treats as a soft skip.
@@ -250,23 +307,14 @@ def _filing_to_dict(filing: object) -> dict | None:
     items: list[str] = []
     item_text_excerpts: dict[str, str] = {}
     try:
-        eight_k = filing.obj()
-        raw_items = getattr(eight_k, "items", None) or []
-        items = [str(i) for i in raw_items]
-
-        # Best-effort excerpt extraction: edgartools' EightK has a
-        # ``sections`` mapping items to their bodies. Shape varies
-        # across edgartools versions; fall back to filing.text for
-        # the relevant Item only.
-        sections = getattr(eight_k, "sections", None)
-        excerpt_chars = config.EDGAR_8K_ITEM_TEXT_EXCERPT_CHARS
-        if isinstance(sections, dict):
-            for item_name in items:
-                body = sections.get(item_name)
-                if body:
-                    item_text_excerpts[item_name] = str(body)[:excerpt_chars]
+        html_attr = getattr(filing, "html", None)
+        html_content = html_attr() if callable(html_attr) else html_attr
+        if html_content:
+            items, item_text_excerpts = _extract_items_and_excerpts_from_html(
+                str(html_content)
+            )
     except Exception as e:  # noqa: BLE001
-        logger.debug("_filing_to_dict obj() / items extract failed: %s", e)
+        logger.debug("_filing_to_dict html extract failed: %s", e)
 
     return {
         "filing_date": filing_date_str,
