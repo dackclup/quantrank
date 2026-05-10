@@ -59,6 +59,13 @@ SKIP_REASONS: tuple[str, ...] = (
     # exceeds config.FAIR_PRICE_DATA_QUALITY_CEILING (typically caused
     # by upstream shares_outstanding ingestion bugs).
     "data_quality_input_corruption",
+    # PR 3d Tier-2 event defenses. These identifiers also appear in
+    # StockDetail.tier2_events (display-side) and risk_flags (only
+    # non_reliance_filing — hard veto). They are tracked here for the
+    # JSON contract / reason-taxonomy completeness check.
+    "going_concern_disclosure",   # Defense #8 — 10-K text scan, annotate-only
+    "non_reliance_filing",        # Defense #9 — 8-K Item 4.02, HARD VETO
+    "auditor_change",             # Defense #10 — 8-K Item 4.01, annotate-only
 )
 
 LagStatus = Literal["fresh", "soft", "hard", "unknown"]

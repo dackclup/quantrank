@@ -37,6 +37,20 @@ export type Metadata = {
   compute_run_id: string;
   git_commit: string;
   mos_trailing_ic_smoke: number | null;
+  tier2_coverage_pct: number | null;
+};
+
+// Phase 3d Tier-2 event defenses. Surfaces in StockDetail.tier2_events.
+// All three boolean flags can be true simultaneously (a single 8-K can
+// contain Items 4.01 + 4.02; going-concern is a separate 10-K text scan).
+// non_reliance_filing is the only one wired into risk_flags as a hard
+// veto; the other two are annotate-only.
+export type Tier2Events = {
+  going_concern_disclosure: boolean;
+  non_reliance_filing: boolean;
+  auditor_change: boolean;
+  latest_8k_filing_date: string | null;
+  latest_8k_filing_url: string | null;
 };
 
 export type RawMetrics = {
@@ -142,6 +156,7 @@ export type StockDetail = {
   valuation_warnings: string[];
   has_history: boolean;
   tangible_book_value: number | null;
+  tier2_events: Tier2Events | null;
   entered_top5: boolean;
   exited_top5: boolean;
 };

@@ -53,6 +53,7 @@ class Metadata(BaseModel):
     compute_run_id: str
     git_commit: str
     mos_trailing_ic_smoke: float | None = None
+    tier2_coverage_pct: float | None = None
 
 
 class RawMetrics(BaseModel):
@@ -110,5 +111,6 @@ class StockDetail(BaseModel):
     valuation_warnings: list[str] = Field(default_factory=list)
     has_history: bool = False
     tangible_book_value: float | None = None
+    tier2_events: dict | None = None
     entered_top5: bool = False
     exited_top5: bool = False

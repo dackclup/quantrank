@@ -5,8 +5,9 @@ honest composite score; the veto is enforced one layer up at Top-5 rotation
 (``compute.main``) — a flagged stock cannot earn the ``entered_top5`` badge
 even if its composite would qualify.
 
-Phase 3 ships three vetoes (annotate-only flags surfaced in JSON; the Top-5
-rotation layer in ``compute.main`` is the only place a flag changes behavior):
+Phase 3 ships **four** vetoes (annotate-only flags surfaced in JSON; the
+Top-5 rotation layer in ``compute.main`` is the only place a flag changes
+behavior):
 
 - ``altman_distress`` — Altman Z″ < 1.1 (Altman 2003, *Corporate Financial
   Distress and Bankruptcy*, 3rd ed., Wiley)
@@ -19,6 +20,20 @@ rotation layer in ``compute.main`` is the only place a flag changes behavior):
   (Pontiff-Woodgate 2008, *Journal of Finance*). Within-sector framing is
   required because the post-SBC era inflates NSI uniformly across tech but
   much less in mature sectors (mature staples vs. RSU-heavy software).
+- ``non_reliance_filing`` — SEC Form 8-K Item 4.02 within trailing 365
+  days. Schroeder 2024 SSRN finds ~50% of 4.02 filings precede formal
+  restatement. Implemented in :mod:`compute.scoring.eight_k_events`;
+  this module just appends the flag when ``check_non_reliance`` fires.
+
+Two additional Tier-2 defenses ship in PR 3d as **annotate-only** flags
+that do NOT enter ``risk_flags`` (they live only in
+``StockDetail.tier2_events``):
+
+- ``going_concern_disclosure`` — 10-K phrase scan; Mayew-Sethuraman-
+  Venkatachalam 2015 *TAR*. See :mod:`compute.scoring.going_concern`.
+- ``auditor_change`` — 8-K Item 4.01 within trailing 730 days; Reg S-K
+  Item 304. False-positive rate is too high for veto (audit firm
+  restructuring fires the same item).
 
 The Beneish M-score flag (``beneish_manipulation``) is documented in
 ``SKILL.md`` but deferred to Phase 3e — its 8-ratio composite needs prior-
@@ -37,6 +52,7 @@ import pandas as pd
 from compute import config
 from compute.features import health
 from compute.ingest.fundamentals import FundamentalsSnapshot
+from compute.scoring.eight_k_events import check_non_reliance
 
 ALTMAN_DISTRESS_THRESHOLD = 1.1
 SLOAN_TOP_DECILE = 0.90
@@ -151,10 +167,11 @@ def compute_risk_flags(
     histories: dict[str, pd.DataFrame] | None = None,
     sectors: dict[str, str] | None = None,
     today: date | None = None,
+    non_reliance_by_ticker: dict[str, bool] | None = None,
 ) -> dict[str, list[str]]:
     """Compute the risk-flag list per ticker.
 
-    Three flag pathways:
+    Four flag pathways:
 
     1. **Altman Z″ < 1.1** — per-ticker, no cross-section.
     2. **Sloan accruals top decile** — cross-sectional 90th percentile across
@@ -163,6 +180,14 @@ def compute_risk_flags(
        ``sectors`` to be passed; if either is absent the NSI flag is
        suppressed entirely (rather than degrading to cross-sectional, which
        was the lesson learned from #7's Sloan over-firing on REITs/banks).
+    4. **Non-reliance filing (8-K Item 4.02)** — per-ticker. By default
+       calls :func:`compute.scoring.eight_k_events.check_non_reliance`
+       which hits the on-disk EDGAR cache (or fetches if cache miss).
+       ``non_reliance_by_ticker`` overrides this with a pre-computed
+       ``{ticker: bool}`` map — Step 5's ``compute/main.py`` wire-up
+       passes that map so the EDGAR fetch happens once per ticker
+       (shared with ``StockDetail.tier2_events`` display) instead of
+       being re-issued here.
 
     Per-sector NSI thresholds use ``NSI_MIN_POPULATION`` as a floor; sectors
     smaller than that fall through without firing the flag.
@@ -240,6 +265,16 @@ def compute_risk_flags(
                 and v >= threshold
             ):
                 flags.append("net_issuance_top_decile")
+
+        # Defense #9 — 8-K Item 4.02 non-reliance (HARD VETO).
+        # Inject path used by Step 5 / tests; default falls through to a
+        # per-ticker check_non_reliance call which hits the EDGAR cache.
+        if non_reliance_by_ticker is not None:
+            non_reliance_fired = bool(non_reliance_by_ticker.get(ticker, False))
+        else:
+            non_reliance_fired = check_non_reliance(ticker).fired
+        if non_reliance_fired:
+            flags.append("non_reliance_filing")
 
         out[ticker] = flags
     return out
