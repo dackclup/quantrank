@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import FairPriceCard from '@/components/FairPriceCard';
+import { PillarRadarChart } from '@/components/PillarRadarChart';
 import { PriceHistoryChart } from '@/components/PriceHistoryChart';
 import RawMetricsTable from '@/components/RawMetricsTable';
 import { Tier2EventCard } from '@/components/Tier2EventCard';
@@ -145,6 +146,11 @@ export default function StockDetailPage({
         currentPrice={detail.current_price}
         warnings={detail.valuation_warnings}
         tangibleBookValue={detail.tangible_book_value}
+      />
+
+      <PillarRadarChart
+        pillars={detail.pillar_scores}
+        ticker={detail.ticker}
       />
 
       <section>
