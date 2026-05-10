@@ -158,7 +158,7 @@ export function FairPriceBarChart({
           <BarChart
             data={rows}
             layout="vertical"
-            margin={{ top: 8, right: 24, bottom: 8, left: 0 }}
+            margin={{ top: 10, right: 30, bottom: 10, left: 10 }}
           >
             <XAxis
               type="number"
@@ -190,9 +190,10 @@ export function FairPriceBarChart({
               strokeDasharray="4 4"
               label={{
                 value: `Current ${fmtPrice(current_price)}`,
-                position: 'top',
+                position: 'insideBottomRight',
                 fill: CURRENT_PRICE_STROKE,
                 fontSize: 11,
+                offset: 8,
               }}
             />
             {fair_price.median !== null && (

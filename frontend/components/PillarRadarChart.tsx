@@ -109,7 +109,13 @@ export function PillarRadarChart({
       </h2>
       <div className="h-72 w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <RadarChart data={data} margin={{ top: 8, right: 24, bottom: 8, left: 24 }}>
+          <RadarChart
+            data={data}
+            cx="50%"
+            cy="50%"
+            outerRadius="70%"
+            margin={{ top: 8, right: 24, bottom: 8, left: 24 }}
+          >
             <PolarGrid stroke="rgb(226 232 240)" />
             <PolarAngleAxis
               dataKey="pillar"
