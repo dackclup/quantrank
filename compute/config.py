@@ -98,3 +98,10 @@ EDGAR_8K_CACHE_TTL_SECONDS: int = 7 * 86400  # 7 days
 # UI excerpt. 500 chars is enough for the human reviewer to gauge
 # context without pulling the whole 8-K.
 EDGAR_8K_ITEM_TEXT_EXCERPT_CHARS: int = 500
+
+# Latest-10-K text cache (Defense #8 going-concern phrase scan). 90-day TTL
+# is safe — 10-K filings are annual, and a ticker's most-recent 10-K only
+# changes once per year. Even a stale 89-day cache hit is the same filing
+# we'd fetch fresh.
+EDGAR_10K_TEXT_CACHE_DIR: Path = CACHE_DIR / "edgar_10k_text"
+EDGAR_10K_TEXT_CACHE_TTL_SECONDS: int = 90 * 86400  # 90 days

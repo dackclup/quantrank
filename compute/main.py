@@ -66,6 +66,14 @@ from compute.scoring.composite import compute_composite, neutralize_pillar_score
 from compute.scoring.pillars import TickerInputs, compute_all_pillars
 from compute.scoring.risk_overlay import compute_risk_flags
 from compute.scoring.sanity import compute_mos_trailing_ic
+from compute.scoring.tier2 import (
+    Tier2Result,
+    fetch_tier2_for_ticker,
+    tier2_events_dict,
+)
+from compute.scoring.tier2 import (
+    coverage_pct as tier2_coverage_pct_calc,
+)
 from compute.valuation.ensemble import (
     EnsembleResult,
     compute_fair_price_ensemble,
@@ -522,18 +530,62 @@ def run_weekly_compute() -> int:
     pillar_df = compute_all_pillars(inputs)
     pillar_df, imputed_by_ticker = neutralize_pillar_scores(pillar_df)
 
+    # Step 4b — Tier-2 event defenses (PR 3d). Fetched in parallel ahead of
+    # risk-flag computation so the resulting non_reliance veto can be
+    # injected into compute_risk_flags (avoiding a duplicate EDGAR fetch
+    # inside the risk-overlay layer). See compute/scoring/tier2.py.
+    #
+    # fetch_tier2_for_ticker catches every per-defense exception
+    # internally, so a failed fetch surfaces as a Tier2Result with
+    # fetch_succeeded=False (not an exception). The defensive try/except
+    # below covers only the unexpected case (e.g., interpreter-level
+    # bug); a missing-ticker entry in tier2_results just means no veto
+    # and an empty tier2_events display dict for that ticker.
+    logger.info("Fetching Tier-2 event defenses (10-K + 8-K) for %d tickers…", len(df))
+    tier2_results: dict[str, Tier2Result] = {}
+    with ThreadPoolExecutor(max_workers=config.EDGAR_MAX_WORKERS) as ex:
+        futures = {
+            ex.submit(fetch_tier2_for_ticker, r["ticker"]): r["ticker"]
+            for _, r in df.iterrows()
+        }
+        for fut in as_completed(futures):
+            ticker = futures[fut]
+            try:
+                tier2_results[ticker] = fut.result()
+            except Exception as e:  # noqa: BLE001
+                logger.warning("Tier-2 task raised for %s: %s", ticker, e)
+                # Skip this ticker — downstream uses .get() with safe defaults.
+    tier2_coverage = tier2_coverage_pct_calc(tier2_results)
+    logger.info(
+        "Tier-2 coverage: %s%% (gc=%d, nr=%d, ac=%d)",
+        tier2_coverage if tier2_coverage is not None else "n/a",
+        sum(1 for r in tier2_results.values() if r.going_concern_disclosure),
+        sum(1 for r in tier2_results.values() if r.non_reliance_flag.fired),
+        sum(1 for r in tier2_results.values() if r.auditor_change_flag.fired),
+    )
+
     # Step 5 — composite + risk flags. NSI flag (Defense Playbook §PR 3c §1)
     # requires per-ticker history + sector to compute within-sector top-decile
     # threshold, so we pass both into compute_risk_flags. Top-5 rotation below
     # already iterates risk_flags.get(ticker) → no change needed there for NSI
     # to enter the existing flagged-skip path (annotate-and-veto-Top-N pattern,
     # SKILL.md Rule 16).
+    #
+    # PR 3d Defense #9: ``non_reliance_by_ticker`` injects the pre-computed
+    # 4.02 veto results from Step 4b above so compute_risk_flags doesn't
+    # re-issue the EDGAR fetch.
     composite = compute_composite(pillar_df)
     sectors_dict = {t: inp.sector for t, inp in inputs.items()}
+    non_reliance_by_ticker = {
+        t: r.non_reliance_flag.fired
+        for t, r in tier2_results.items()
+        if r.non_reliance_flag.fired
+    }
     risk_flags = compute_risk_flags(
         snapshots,
         histories=histories,
         sectors=sectors_dict,
+        non_reliance_by_ticker=non_reliance_by_ticker,
     )
 
     # Step 5b — cross-sectional inputs for the fair-price ensemble.
@@ -678,6 +730,8 @@ def run_weekly_compute() -> int:
 
         raw_metrics = _build_raw_metrics(snap, current_price)
         imputed = imputed_by_ticker.get(ticker, [])
+        tier2_result = tier2_results.get(ticker)
+        tier2_dict = tier2_events_dict(tier2_result) if tier2_result is not None else None
         detail = StockDetail(
             ticker=ticker,
             name=str(r["name"]),
@@ -695,6 +749,7 @@ def run_weekly_compute() -> int:
             valuation_warnings=valuation_warnings,
             has_history=has_history,
             tangible_book_value=tbvps_value,
+            tier2_events=tier2_dict,
             entered_top5=ticker in entered,
             exited_top5=ticker in exited,
         )
@@ -726,6 +781,7 @@ def run_weekly_compute() -> int:
         compute_run_id=os.environ.get("GITHUB_RUN_ID", "local"),
         git_commit=(os.environ.get("GITHUB_SHA") or "unknown")[:40],
         mos_trailing_ic_smoke=mos_ic,
+        tier2_coverage_pct=tier2_coverage,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)
