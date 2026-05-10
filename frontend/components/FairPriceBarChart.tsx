@@ -153,12 +153,13 @@ export function FairPriceBarChart({
       <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-slate-500">
         Fair price methods
       </h2>
-      <div className="h-72 w-full" role="img" aria-label="Horizontal bar chart of 6 fair-price methods">
+      <div className="h-[300px] w-full" role="img" aria-label="Horizontal bar chart of 6 fair-price methods">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={rows}
             layout="vertical"
-            margin={{ top: 10, right: 30, bottom: 10, left: 10 }}
+            margin={{ top: 35, right: 30, bottom: 10, left: 10 }}
+            barCategoryGap="25%"
           >
             <XAxis
               type="number"
@@ -169,8 +170,8 @@ export function FairPriceBarChart({
             <YAxis
               type="category"
               dataKey="label"
-              tick={{ fontSize: 11, fill: 'rgb(71 85 105)' }}
-              width={140}
+              tick={{ fontSize: 10, fill: 'rgb(71 85 105)' }}
+              width={110}
             />
             <Tooltip
               content={<CustomTooltip />}
@@ -190,10 +191,10 @@ export function FairPriceBarChart({
               strokeDasharray="4 4"
               label={{
                 value: `Current ${fmtPrice(current_price)}`,
-                position: 'insideBottomRight',
+                position: 'top',
                 fill: CURRENT_PRICE_STROKE,
                 fontSize: 11,
-                offset: 8,
+                offset: 12,
               }}
             />
             {fair_price.median !== null && (

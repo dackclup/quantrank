@@ -229,48 +229,53 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
             >
               <Link
                 href={`/stock/${row.ticker}/`}
-                className="flex h-full items-center justify-between p-3"
+                className="flex h-full flex-col gap-1 p-3"
               >
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-xs text-slate-500 tabular-nums">#{row.rank}</span>
-                    <span className="font-mono text-base font-semibold">{row.ticker}</span>
+                {/* Top row: ticker + name on left, score top-aligned on right */}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-xs text-slate-500 tabular-nums">#{row.rank}</span>
+                      <span className="font-mono text-base font-semibold">{row.ticker}</span>
+                    </div>
+                    <div className="truncate text-sm text-slate-700">{row.name}</div>
                   </div>
-                  <div className="truncate text-sm text-slate-700">{row.name}</div>
-                  <div className="mt-1 flex items-center justify-between text-xs text-slate-500">
-                    <span className="truncate">{row.sector}</span>
-                    <span className="tabular-nums">{formatPrice(row.current_price)}</span>
-                  </div>
-                  <div className="mt-1 flex items-center justify-between text-xs">
-                    {row.fair_price !== null ? (
-                      <span className="text-slate-500">
-                        Fair{' '}
-                        <span className="tabular-nums text-slate-700">
-                          {formatFairPrice(row.fair_price)}
-                        </span>
-                      </span>
-                    ) : (
-                      <span
-                        className="inline-flex items-center gap-1 text-slate-400"
-                        title={
-                          dataQualityIssue
-                            ? 'Fair price unavailable: data quality issue (Step 7.5 sanity guard)'
-                            : 'Fair price unavailable for this stock'
-                        }
-                      >
-                        Fair <span aria-hidden="true">⚠</span> N/A
-                      </span>
-                    )}
-                    <span
-                      className={`tabular-nums ${mosColorClass(row.margin_of_safety_pct)}`}
-                      title={mos.tooltip ?? undefined}
-                    >
-                      MoS {mos.display}
-                    </span>
+                  <div className="shrink-0">
+                    <ScoreBadge score={row.composite_score} />
                   </div>
                 </div>
-                <div className="ml-3 shrink-0">
-                  <ScoreBadge score={row.composite_score} />
+                {/* Sector | price */}
+                <div className="flex items-center justify-between text-xs text-slate-500">
+                  <span className="truncate">{row.sector}</span>
+                  <span className="tabular-nums">{formatPrice(row.current_price)}</span>
+                </div>
+                {/* Fair | MoS */}
+                <div className="flex items-center justify-between text-xs">
+                  {row.fair_price !== null ? (
+                    <span className="text-slate-500">
+                      Fair{' '}
+                      <span className="tabular-nums text-slate-700">
+                        {formatFairPrice(row.fair_price)}
+                      </span>
+                    </span>
+                  ) : (
+                    <span
+                      className="inline-flex items-center gap-1 text-slate-400"
+                      title={
+                        dataQualityIssue
+                          ? 'Fair price unavailable: data quality issue (Step 7.5 sanity guard)'
+                          : 'Fair price unavailable for this stock'
+                      }
+                    >
+                      Fair <span aria-hidden="true">⚠</span> N/A
+                    </span>
+                  )}
+                  <span
+                    className={`tabular-nums ${mosColorClass(row.margin_of_safety_pct)}`}
+                    title={mos.tooltip ?? undefined}
+                  >
+                    MoS {mos.display}
+                  </span>
                 </div>
               </Link>
             </li>
