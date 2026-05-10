@@ -102,7 +102,7 @@ export function PillarRadarChart({
   return (
     <section
       aria-label={`Pillar score breakdown for ${ticker}`}
-      className="mb-4 rounded-lg border border-slate-200 bg-white p-4 sm:max-w-2xl"
+      className="mb-4 rounded-lg border border-slate-200 bg-white p-4"
     >
       <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-slate-500">
         Pillar breakdown
