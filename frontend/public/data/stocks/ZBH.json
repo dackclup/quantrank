@@ -3,19 +3,19 @@
   "name": "Zimmer Biomet",
   "sector": "Health Care",
   "industry": "Health Care Equipment",
-  "market_cap": 26348634928.131104,
-  "current_price": 82.52,
-  "rank": 347,
-  "composite_score": 45.89,
+  "market_cap": 26837165974.42627,
+  "current_price": 84.05,
+  "rank": 338,
+  "composite_score": 46.28,
   "pillar_scores": {
     "quality": 27.54,
-    "value": 65.25,
+    "value": 64.97,
     "growth": 54.66,
-    "momentum": 42.83,
+    "momentum": 43.33,
     "health": 54.42,
     "profitability": 35.03,
-    "technical": 53.19,
-    "risk": 30.78,
+    "technical": 60.36,
+    "risk": 31.81,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.22,
     "eps_diluted": 1.22,
     "shares_outstanding": 319300000.0,
-    "market_cap": 26348634928.131104,
-    "pe_ratio_ttm": 67.63934151071017,
+    "market_cap": 26837165974.42627,
+    "pe_ratio_ttm": 68.89344512439165,
     "goodwill": 9931800000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 148.52402574943773,
+        "value": 147.6303326883843,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 127.7859158348868,
+        "value": 127.7080772458531,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 151.65843699141016,
+        "value": 149.47356364442152,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 138.15497079216226,
-    "max": 151.65843699141016,
+    "median": 137.6692049671187,
+    "max": 149.47356364442152,
     "low": 48.24704207365022,
-    "high": 151.65843699141016,
-    "mos_pct": 40.269976411338874,
+    "high": 149.47356364442152,
+    "mos_pct": 38.94785469863609,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -87,7 +87,9 @@
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
-    "missing_metrics": [],
+    "missing_metrics": [
+      "property_plant_equipment"
+    ],
     "imputed_metrics": [],
     "filing_lag_days": 12,
     "latest_period_end": "2026-03-31",
@@ -110,15 +112,17 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 51.27,
-      "Value": 51.69,
+      "Value": 52.82,
       "Growth": 50.0,
-      "Momentum": 39.29,
+      "Momentum": 40.24,
       "Health": 60.08,
       "Profitability": 52.54,
-      "Technical": 54.48,
-      "Risk": 40.01
+      "Technical": 56.37,
+      "Risk": 39.94
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

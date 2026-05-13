@@ -3,19 +3,19 @@
   "name": "CenterPoint Energy",
   "sector": "Utilities",
   "industry": "Multi-Utilities",
-  "market_cap": 27344023141.91305,
-  "current_price": 41.8,
-  "rank": 241,
-  "composite_score": 51.1,
+  "market_cap": 27608960953.033676,
+  "current_price": 42.205,
+  "rank": 230,
+  "composite_score": 51.6,
   "pillar_scores": {
     "quality": 61.29,
-    "value": 45.16,
+    "value": 44.62,
     "growth": 32.26,
-    "momentum": 64.99,
+    "momentum": 65.54,
     "health": 29.4,
     "profitability": 63.98,
-    "technical": 37.7,
-    "risk": 82.9,
+    "technical": 47.96,
+    "risk": 83.8,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.48,
     "eps_diluted": 0.48,
     "shares_outstanding": 654163245.0,
-    "market_cap": 27344023141.91305,
-    "pe_ratio_ttm": 87.08333174387614,
+    "market_cap": 27608960953.033676,
+    "pe_ratio_ttm": 87.92708714803061,
     "goodwill": 3550000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 40.841251373291016,
+        "value": 40.918124198913574,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 36.37489045824768,
+        "value": 36.55385429319665,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 80.45914677489306,
+        "value": 80.93367488566363,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 38.608070915769346,
-    "max": 80.45914677489306,
+    "median": 38.73598924605511,
+    "max": 80.93367488566363,
     "low": 19.88248030623283,
-    "high": 80.45914677489306,
-    "mos_pct": -8.267515691874332,
+    "high": 80.93367488566363,
+    "mos_pct": -8.955528573090103,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -91,7 +91,8 @@
       "total_liabilities",
       "gross_profit",
       "research_and_development",
-      "sga_expense"
+      "sga_expense",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 20,
@@ -117,13 +118,15 @@
       "Quality": 51.61,
       "Value": 47.85,
       "Growth": 50.81,
-      "Momentum": 62.95,
+      "Momentum": 62.7,
       "Health": 19.4,
       "Profitability": 51.61,
-      "Technical": 41.93,
-      "Risk": 72.21
+      "Technical": 42.98,
+      "Risk": 72.44
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

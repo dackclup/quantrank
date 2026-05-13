@@ -3,19 +3,19 @@
   "name": "Motorola Solutions",
   "sector": "Information Technology",
   "industry": "Communications Equipment",
-  "market_cap": 64821322174.072266,
-  "current_price": 390.02,
-  "rank": 200,
-  "composite_score": 52.95,
+  "market_cap": 65085579565.42969,
+  "current_price": 391.61,
+  "rank": 194,
+  "composite_score": 53.05,
   "pillar_scores": {
     "quality": 67.12,
-    "value": 39.27,
+    "value": 39.04,
     "growth": 70.21,
     "momentum": 47.81,
     "health": 43.63,
     "profitability": 40.41,
-    "technical": 35.81,
-    "risk": 59.23,
+    "technical": 38.35,
+    "risk": 59.93,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.21,
     "eps_diluted": 2.18,
     "shares_outstanding": 166200000.0,
-    "market_cap": 64821322174.072266,
-    "pe_ratio_ttm": 178.90825184113388,
+    "market_cap": 65085579565.42969,
+    "pe_ratio_ttm": 179.63760795943233,
     "goodwill": 6885000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 175.7600115194484,
+        "value": 178.99151100321342,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 152.04966115633192,
+        "value": 153.4163955178322,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 247.57634995036514,
+        "value": 248.8916457625887,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,18 +75,19 @@
         "tier_used": null
       }
     },
-    "median": 175.7600115194484,
-    "max": 247.57634995036514,
-    "low": 152.04966115633192,
-    "high": 247.57634995036514,
-    "mos_pct": -121.90484948307763,
+    "median": 178.99151100321342,
+    "max": 248.8916457625887,
+    "low": 153.4163955178322,
+    "high": 248.8916457625887,
+    "mos_pct": -118.7869040026887,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "total_liabilities"
+      "total_liabilities",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
@@ -110,13 +111,15 @@
       "Quality": 51.71,
       "Value": 50.46,
       "Growth": 52.74,
-      "Momentum": 44.32,
+      "Momentum": 44.47,
       "Health": 66.93,
       "Profitability": 53.2,
-      "Technical": 64.14,
-      "Risk": 45.48
+      "Technical": 64.94,
+      "Risk": 46.71
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

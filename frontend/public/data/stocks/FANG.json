@@ -3,19 +3,19 @@
   "name": "Diamondback Energy",
   "sector": "Energy",
   "industry": "Oil & Gas Exploration & Production",
-  "market_cap": 55609700726.01135,
-  "current_price": 197.68,
-  "rank": 479,
-  "composite_score": 35.22,
+  "market_cap": 56211711948.98865,
+  "current_price": 199.82,
+  "rank": 480,
+  "composite_score": 35.38,
   "pillar_scores": {
     "quality": 16.67,
     "value": 27.78,
     "growth": 44.05,
-    "momentum": 80.48,
+    "momentum": 81.62,
     "health": 21.39,
     "profitability": 23.81,
-    "technical": 54.53,
-    "risk": 65.77,
+    "technical": 54.58,
+    "risk": 66.24,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.08,
     "eps_diluted": 0.08,
     "shares_outstanding": 281311730.0,
-    "market_cap": 55609700726.01135,
-    "pe_ratio_ttm": 2470.9999084472656,
+    "market_cap": 56211711948.98865,
+    "pe_ratio_ttm": 2497.7500915527344,
     "goodwill": null
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 2.5928750724252434,
+        "value": 2.609465432054543,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 248.87623260659208,
+        "value": 251.46814654677956,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 178.89921158669642,
+        "value": 178.58565548374466,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 186.30959836720152,
-    "max": 248.87623260659208,
-    "low": 2.5928750724252434,
-    "high": 248.87623260659208,
-    "mos_pct": -6.102956803207521,
+    "median": 186.15282031572565,
+    "max": 251.46814654677956,
+    "low": 2.609465432054543,
+    "high": 251.46814654677956,
+    "mos_pct": -7.341917777723047,
     "valuation_warnings": [
       "extreme_multiples_pe_estimate",
       "value_trap_risk"
@@ -95,7 +95,8 @@
       "cost_of_revenue",
       "research_and_development",
       "accounts_payable",
-      "goodwill"
+      "goodwill",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
@@ -122,13 +123,15 @@
       "Quality": 50.0,
       "Value": 50.79,
       "Growth": 53.57,
-      "Momentum": 76.69,
+      "Momentum": 77.09,
       "Health": 50.4,
       "Profitability": 52.38,
-      "Technical": 59.36,
+      "Technical": 59.61,
       "Risk": 65.64
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

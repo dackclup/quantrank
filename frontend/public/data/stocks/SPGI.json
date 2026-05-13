@@ -3,19 +3,19 @@
   "name": "S&P Global",
   "sector": "Financials",
   "industry": "Financial Exchanges & Data",
-  "market_cap": 121484323974.60938,
-  "current_price": 410.42,
-  "rank": 430,
-  "composite_score": 40.54,
+  "market_cap": 120167120361.32812,
+  "current_price": 405.97,
+  "rank": 428,
+  "composite_score": 40.46,
   "pillar_scores": {
     "quality": 51.33,
-    "value": 19.78,
+    "value": 20.0,
     "growth": 55.0,
-    "momentum": 34.61,
+    "momentum": 34.11,
     "health": 40.56,
     "profitability": 74.0,
-    "technical": 11.5,
-    "risk": 40.54,
+    "technical": 10.11,
+    "risk": 40.47,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 4.69,
     "eps_diluted": 4.69,
     "shares_outstanding": 296000000.0,
-    "market_cap": 121484323974.60938,
-    "pe_ratio_ttm": 87.50959774578557,
+    "market_cap": 120167120361.32812,
+    "pe_ratio_ttm": 86.56076785089618,
     "goodwill": 36357000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 252.65895326527118,
+        "value": 252.08024791961023,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 218.00071079184843,
+        "value": 216.88112380372846,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 235.3298320285598,
-    "max": 252.65895326527118,
-    "low": 218.00071079184843,
-    "high": 252.65895326527118,
-    "mos_pct": -74.40203389850103,
+    "median": 234.48068586166934,
+    "max": 252.08024791961023,
+    "low": 216.88112380372846,
+    "high": 252.08024791961023,
+    "mos_pct": -73.13579569628307,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -87,7 +87,8 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
-      "research_and_development"
+      "research_and_development",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
@@ -111,13 +112,15 @@
       "Quality": 50.67,
       "Value": 49.56,
       "Growth": 52.67,
-      "Momentum": 53.34,
+      "Momentum": 52.84,
       "Health": 54.68,
       "Profitability": 49.78,
-      "Technical": 49.8,
-      "Risk": 55.05
+      "Technical": 48.11,
+      "Risk": 54.98
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

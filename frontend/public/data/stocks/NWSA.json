@@ -3,19 +3,19 @@
   "name": "News Corp (Class A)",
   "sector": "Communication Services",
   "industry": "Publishing",
-  "market_cap": 15488250000.0,
-  "current_price": 26.75,
-  "rank": 230,
-  "composite_score": 51.57,
+  "market_cap": 15357974779.129028,
+  "current_price": 26.525,
+  "rank": 229,
+  "composite_score": 51.61,
   "pillar_scores": {
     "quality": 48.91,
     "value": 63.04,
     "growth": 17.39,
-    "momentum": 46.61,
+    "momentum": 46.36,
     "health": 70.1,
     "profitability": 61.23,
-    "technical": 64.79,
-    "risk": 49.6,
+    "technical": 66.24,
+    "risk": 49.5,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.7,
     "eps_diluted": 0.7,
     "shares_outstanding": 579000000.0,
-    "market_cap": 15488250000.0,
-    "pe_ratio_ttm": 38.214285714285715,
+    "market_cap": 15357974779.129028,
+    "pe_ratio_ttm": 37.89285659790039,
     "goodwill": 4485000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 39.462750687558426,
+        "value": 39.16111175015441,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 30.639999389648438,
+        "value": 30.360000610351562,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 22.19838891316781,
-    "max": 39.462750687558426,
+    "median": 22.058389523519374,
+    "max": 39.16111175015441,
     "low": 8.961185732978233,
-    "high": 39.462750687558426,
-    "mos_pct": -20.504240666457687,
+    "high": 39.16111175015441,
+    "mos_pct": -20.24903082905692,
     "valuation_warnings": [
       "goodwill_heavy",
       "value_trap_risk"
@@ -94,7 +94,8 @@
       "operating_income",
       "cost_of_revenue",
       "research_and_development",
-      "ebitda"
+      "ebitda",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 5,
@@ -119,15 +120,17 @@
     "label": "Communication Services median (n=23)",
     "values": {
       "Quality": 51.09,
-      "Value": 50.72,
+      "Value": 51.45,
       "Growth": 55.43,
-      "Momentum": 48.66,
+      "Momentum": 48.36,
       "Health": 48.17,
       "Profitability": 56.52,
-      "Technical": 54.43,
-      "Risk": 50.28
+      "Technical": 52.44,
+      "Risk": 50.25
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

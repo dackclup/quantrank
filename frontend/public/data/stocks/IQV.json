@@ -3,19 +3,19 @@
   "name": "IQVIA",
   "sector": "Health Care",
   "industry": "Life Sciences Tools & Services",
-  "market_cap": 28821976687.62207,
-  "current_price": 172.6901,
-  "rank": 333,
-  "composite_score": 46.46,
+  "market_cap": 28766048786.92627,
+  "current_price": 172.355,
+  "rank": 336,
+  "composite_score": 46.43,
   "pillar_scores": {
     "quality": 53.39,
-    "value": 48.59,
+    "value": 48.31,
     "growth": 58.05,
-    "momentum": 38.75,
+    "momentum": 38.79,
     "health": 15.82,
     "profitability": 41.81,
-    "technical": 67.88,
-    "risk": 30.81,
+    "technical": 68.38,
+    "risk": 31.04,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.63,
     "eps_diluted": 1.61,
     "shares_outstanding": 166900000.0,
-    "market_cap": 28821976687.62207,
-    "pe_ratio_ttm": 107.26092794667119,
+    "market_cap": 28766048786.92627,
+    "pe_ratio_ttm": 107.05279237735346,
     "goodwill": 16544000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 135.74312543869019,
+        "value": 136.06296348571777,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 119.22752307621315,
+        "value": 120.56933205563195,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 168.54857528037087,
+        "value": 166.36336195431815,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 135.74312543869019,
-    "max": 168.54857528037087,
-    "low": 119.22752307621315,
-    "high": 168.54857528037087,
-    "mos_pct": -27.218298117158007,
+    "median": 136.06296348571777,
+    "max": 166.36336195431815,
+    "low": 120.56933205563195,
+    "high": 166.36336195431815,
+    "mos_pct": -26.672969125526052,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -88,7 +88,8 @@
     "missing_metrics": [
       "income_before_tax",
       "inventory",
-      "accounts_receivable"
+      "accounts_receivable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
@@ -112,15 +113,17 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 51.27,
-      "Value": 51.69,
+      "Value": 52.82,
       "Growth": 50.0,
-      "Momentum": 39.29,
+      "Momentum": 40.24,
       "Health": 60.08,
       "Profitability": 52.54,
-      "Technical": 54.48,
-      "Risk": 40.01
+      "Technical": 56.37,
+      "Risk": 39.94
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

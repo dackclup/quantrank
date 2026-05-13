@@ -3,19 +3,19 @@
   "name": "Biogen",
   "sector": "Health Care",
   "industry": "Biotechnology",
-  "market_cap": 29699107641.601562,
-  "current_price": 202.31,
-  "rank": 101,
-  "composite_score": 57.88,
+  "market_cap": 29308619104.003906,
+  "current_price": 199.65,
+  "rank": 106,
+  "composite_score": 57.78,
   "pillar_scores": {
     "quality": 50.0,
-    "value": 67.51,
+    "value": 67.8,
     "growth": 33.05,
-    "momentum": 63.6,
+    "momentum": 61.85,
     "health": 78.25,
     "profitability": 62.71,
-    "technical": 66.04,
-    "risk": 48.21,
+    "technical": 67.33,
+    "risk": 47.94,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.17,
     "eps_diluted": 2.15,
     "shares_outstanding": 146800000.0,
-    "market_cap": 29699107641.601562,
-    "pe_ratio_ttm": 94.09767328306687,
+    "market_cap": 29308619104.003906,
+    "pe_ratio_ttm": 92.86046227743459,
     "goodwill": 6488700000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 181.2718755858285,
+        "value": 181.69898850577215,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 338.4011063908009,
+        "value": 333.1430315451117,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 214.6043741486681,
+        "value": 214.26797476343367,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 197.9381248672483,
-    "max": 338.4011063908009,
+    "median": 197.98348163460292,
+    "max": 333.1430315451117,
     "low": 157.60424272857193,
-    "high": 338.4011063908009,
-    "mos_pct": -2.20870673311549,
+    "high": 333.1430315451117,
+    "mos_pct": -0.8417430828684765,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -88,7 +88,8 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "dividends_paid"
+      "dividends_paid",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
@@ -112,15 +113,17 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 51.27,
-      "Value": 51.69,
+      "Value": 52.82,
       "Growth": 50.0,
-      "Momentum": 39.29,
+      "Momentum": 40.24,
       "Health": 60.08,
       "Profitability": 52.54,
-      "Technical": 54.48,
-      "Risk": 40.01
+      "Technical": 56.37,
+      "Risk": 39.94
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

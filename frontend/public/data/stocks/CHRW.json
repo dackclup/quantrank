@@ -3,19 +3,19 @@
   "name": "C.H. Robinson",
   "sector": "Industrials",
   "industry": "Air Freight & Logistics",
-  "market_cap": 19616425644.821167,
-  "current_price": 166.02,
+  "market_cap": 19472273960.586548,
+  "current_price": 164.8,
   "rank": 146,
-  "composite_score": 55.64,
+  "composite_score": 55.65,
   "pillar_scores": {
     "quality": 76.58,
-    "value": 41.98,
+    "value": 42.19,
     "growth": 25.32,
-    "momentum": 56.18,
+    "momentum": 56.03,
     "health": 65.82,
     "profitability": 63.92,
     "technical": 44.47,
-    "risk": 57.14,
+    "risk": 56.84,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.23,
     "eps_diluted": 1.22,
     "shares_outstanding": 118157000.0,
-    "market_cap": 19616425644.821167,
-    "pe_ratio_ttm": 136.08197071513192,
+    "market_cap": 19472273960.586548,
+    "pe_ratio_ttm": 135.08196971455558,
     "goodwill": 1459459000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 142.2067505287019,
+        "value": 142.9450345079438,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 99.02097058985423,
+        "value": 98.31479231530369,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 96.07821641406613,
+        "value": 95.88962953396604,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 81.4322922651875,
-    "max": 142.2067505287019,
+    "median": 81.33799882513745,
+    "max": 142.9450345079438,
     "low": 3.9659759436733566,
-    "high": 142.2067505287019,
-    "mos_pct": -103.87489981469538,
+    "high": 142.9450345079438,
+    "mos_pct": -102.61133225818494,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -94,7 +94,8 @@
       "research_and_development",
       "interest_expense",
       "inventory",
-      "accounts_receivable"
+      "accounts_receivable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 12,
@@ -122,13 +123,15 @@
       "Quality": 49.05,
       "Value": 50.42,
       "Growth": 49.05,
-      "Momentum": 58.17,
+      "Momentum": 57.92,
       "Health": 47.85,
       "Profitability": 53.16,
-      "Technical": 51.15,
-      "Risk": 55.11
+      "Technical": 50.05,
+      "Risk": 55.61
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

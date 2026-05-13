@@ -3,19 +3,19 @@
   "name": "Citizens Financial Group",
   "sector": "Financials",
   "industry": "Regional Banks",
-  "market_cap": 26234532713.31247,
-  "current_price": 61.58,
-  "rank": 369,
-  "composite_score": 44.83,
+  "market_cap": 25927795217.104156,
+  "current_price": 60.86,
+  "rank": 370,
+  "composite_score": 44.66,
   "pillar_scores": {
     "quality": 36.0,
-    "value": 46.0,
+    "value": 46.44,
     "growth": 23.0,
-    "momentum": 73.01,
+    "momentum": 72.26,
     "health": 56.27,
     "profitability": 52.44,
-    "technical": 27.89,
-    "risk": 60.69,
+    "technical": 24.63,
+    "risk": 60.33,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.14,
     "eps_diluted": 1.13,
     "shares_outstanding": 426023578.0,
-    "market_cap": 26234532713.31247,
-    "pe_ratio_ttm": 54.49557684164132,
+    "market_cap": 25927795217.104156,
+    "pe_ratio_ttm": 53.85840761978015,
     "goodwill": 8221000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 60.87518490186703,
+        "value": 60.73575269704894,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 127.44433039893576,
+        "value": 127.59702879660652,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 60.87518490186703,
-    "max": 127.44433039893576,
+    "median": 60.73575269704894,
+    "max": 127.59702879660652,
     "low": 56.09613343338602,
-    "high": 127.44433039893576,
-    "mos_pct": -1.1578066338917041,
+    "high": 127.59702879660652,
+    "mos_pct": -0.20457129085462394,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -98,7 +98,8 @@
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "ebitda"
+      "ebitda",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 9,
@@ -124,13 +125,15 @@
       "Quality": 50.67,
       "Value": 49.56,
       "Growth": 52.67,
-      "Momentum": 53.34,
+      "Momentum": 52.84,
       "Health": 54.68,
       "Profitability": 49.78,
-      "Technical": 49.8,
-      "Risk": 55.05
+      "Technical": 48.11,
+      "Risk": 54.98
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

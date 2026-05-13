@@ -3,19 +3,19 @@
   "name": "Eversource Energy",
   "sector": "Utilities",
   "industry": "Electric Utilities",
-  "market_cap": 25761781344.758087,
-  "current_price": 68.52,
-  "rank": 394,
-  "composite_score": 43.11,
+  "market_cap": 25630190793.049866,
+  "current_price": 68.17,
+  "rank": 396,
+  "composite_score": 42.99,
   "pillar_scores": {
     "quality": 27.42,
     "value": 68.55,
     "growth": 47.58,
-    "momentum": 44.67,
+    "momentum": 44.42,
     "health": 10.92,
     "profitability": 43.01,
-    "technical": 55.38,
-    "risk": 55.05,
+    "technical": 53.78,
+    "risk": 54.95,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.61,
     "eps_diluted": 1.61,
     "shares_outstanding": 375974644.0,
-    "market_cap": 25761781344.758087,
-    "pe_ratio_ttm": 42.5590041261282,
+    "market_cap": 25630190793.049866,
+    "pe_ratio_ttm": 42.34161376953125,
     "goodwill": 4233767000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 100.25415407667494,
+        "value": 100.53619524440482,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 103.14575144972382,
+        "value": 103.51221196746133,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 125.03568392754384,
+        "value": 125.73091677138109,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 101.69995276319938,
-    "max": 125.03568392754384,
+    "median": 102.02420360593308,
+    "max": 125.73091677138109,
     "low": 36.96423894021346,
-    "high": 125.03568392754384,
-    "mos_pct": 32.62534073874152,
+    "high": 125.73091677138109,
+    "mos_pct": 33.18252359778187,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -95,7 +95,8 @@
       "sga_expense",
       "income_before_tax",
       "inventory",
-      "intangibles_net"
+      "intangibles_net",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
@@ -121,13 +122,15 @@
       "Quality": 51.61,
       "Value": 47.85,
       "Growth": 50.81,
-      "Momentum": 62.95,
+      "Momentum": 62.7,
       "Health": 19.4,
       "Profitability": 51.61,
-      "Technical": 41.93,
-      "Risk": 72.21
+      "Technical": 42.98,
+      "Risk": 72.44
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "Invitation Homes",
   "sector": "Real Estate",
   "industry": "Single-Family Residential REITs",
-  "market_cap": 16863137005.952408,
-  "current_price": 28.39,
-  "rank": 361,
-  "composite_score": 45.15,
+  "market_cap": 16860167596.486597,
+  "current_price": 28.385,
+  "rank": 372,
+  "composite_score": 44.4,
   "pillar_scores": {
     "quality": 40.32,
-    "value": 53.23,
+    "value": 49.46,
     "growth": 51.61,
-    "momentum": 33.52,
+    "momentum": 33.67,
     "health": 25.38,
     "profitability": 55.11,
-    "technical": 75.15,
-    "risk": 45.52,
+    "technical": 76.74,
+    "risk": 45.55,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.26,
     "eps_diluted": 0.26,
     "shares_outstanding": 593981591.0,
-    "market_cap": 16863137005.952408,
-    "pe_ratio_ttm": 109.19230534480168,
+    "market_cap": 16860167596.486597,
+    "pe_ratio_ttm": 109.17307780339168,
     "goodwill": 314154000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 33.833241530413865,
+        "value": 33.55143090313938,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 36.88411695302668,
+        "value": 36.78289896632536,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 28.696400948670327,
+        "value": 28.261604815934234,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 31.264821239542094,
-    "max": 36.88411695302668,
+    "median": 30.906517859536805,
+    "max": 36.78289896632536,
     "low": 16.75595208942762,
-    "high": 36.88411695302668,
-    "mos_pct": 9.19506888546586,
+    "high": 36.78289896632536,
+    "mos_pct": 8.158530320739144,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -97,7 +97,8 @@
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "short_term_debt"
+      "short_term_debt",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
@@ -123,13 +124,15 @@
       "Quality": 46.77,
       "Value": 47.85,
       "Growth": 51.61,
-      "Momentum": 53.88,
+      "Momentum": 53.04,
       "Health": 27.89,
       "Profitability": 52.69,
-      "Technical": 59.31,
-      "Risk": 53.42
+      "Technical": 60.51,
+      "Risk": 53.92
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

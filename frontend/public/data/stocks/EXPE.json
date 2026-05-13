@@ -3,19 +3,19 @@
   "name": "Expedia Group",
   "sector": "Consumer Discretionary",
   "industry": "Hotels, Resorts & Cruise Lines",
-  "market_cap": 24833277841.552734,
-  "current_price": 216.93,
-  "rank": 206,
-  "composite_score": 52.65,
+  "market_cap": 25070244000.0,
+  "current_price": 219.0,
+  "rank": 204,
+  "composite_score": 52.7,
   "pillar_scores": {
     "quality": 71.88,
-    "value": 43.23,
+    "value": 42.19,
     "growth": 73.44,
-    "momentum": 54.43,
+    "momentum": 54.98,
     "health": 16.55,
     "profitability": 45.14,
-    "technical": 24.15,
-    "risk": 39.71,
+    "technical": 27.99,
+    "risk": 40.31,
     "sentiment": null,
     "ml": null
   },
@@ -32,7 +32,7 @@
     "eps_basic": -0.05,
     "eps_diluted": -0.05,
     "shares_outstanding": 114476000.0,
-    "market_cap": 24833277841.552734,
+    "market_cap": 25070244000.0,
     "pe_ratio_ttm": null,
     "goodwill": 7016000000.0
   },
@@ -51,13 +51,13 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 30.656310125855533,
+        "value": 29.697965037451237,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 152.18695757837168,
+        "value": 151.9299852815869,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 152.18695757837168,
+    "median": 151.9299852815869,
     "max": 323.052544226519,
-    "low": 30.656310125855533,
+    "low": 29.697965037451237,
     "high": 323.052544226519,
-    "mos_pct": -42.541776330648354,
+    "mos_pct": -44.145344050488504,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ]
@@ -91,7 +91,8 @@
       "total_liabilities",
       "gross_profit",
       "research_and_development",
-      "inventory"
+      "inventory",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 5,
@@ -117,13 +118,15 @@
       "Quality": 45.44,
       "Value": 49.31,
       "Growth": 51.04,
-      "Momentum": 36.53,
+      "Momentum": 37.7,
       "Health": 47.32,
       "Profitability": 51.22,
-      "Technical": 31.37,
-      "Risk": 40.11
+      "Technical": 32.77,
+      "Risk": 40.55
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

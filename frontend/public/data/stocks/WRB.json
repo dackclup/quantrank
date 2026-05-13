@@ -3,19 +3,19 @@
   "name": "W. R. Berkley Corporation",
   "sector": "Financials",
   "industry": "Property & Casualty Insurance",
-  "market_cap": 24873975913.767586,
-  "current_price": 66.74,
-  "rank": 172,
-  "composite_score": 53.94,
+  "market_cap": 24352195791.673004,
+  "current_price": 65.34,
+  "rank": 196,
+  "composite_score": 53.01,
   "pillar_scores": {
     "quality": 58.67,
-    "value": 62.44,
+    "value": 62.67,
     "growth": 49.0,
-    "momentum": 34.11,
+    "momentum": 33.42,
     "health": 54.68,
     "profitability": 48.22,
-    "technical": 46.24,
-    "risk": 68.76,
+    "technical": 29.06,
+    "risk": 67.76,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.31,
     "eps_diluted": 1.31,
     "shares_outstanding": 372699681.0,
-    "market_cap": 24873975913.767586,
-    "pe_ratio_ttm": 50.9465632547859,
+    "market_cap": 24352195791.673004,
+    "pe_ratio_ttm": 49.87785979991651,
     "goodwill": 184332000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 71.19278817103215,
+        "value": 70.51748355490922,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 54.09422356539289,
+        "value": 53.81641167837526,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 52.7427730255654,
-    "max": 71.19278817103215,
+    "median": 52.60386708205658,
+    "max": 70.51748355490922,
     "low": 34.33396796329322,
-    "high": 71.19278817103215,
-    "mos_pct": -26.538659299198052,
+    "high": 70.51748355490922,
+    "mos_pct": -24.21139350072306,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -98,7 +98,8 @@
       "accounts_payable",
       "long_term_debt",
       "short_term_debt",
-      "ebitda"
+      "ebitda",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 12,
@@ -122,13 +123,15 @@
       "Quality": 50.67,
       "Value": 49.56,
       "Growth": 52.67,
-      "Momentum": 53.34,
+      "Momentum": 52.84,
       "Health": 54.68,
       "Profitability": 49.78,
-      "Technical": 49.8,
-      "Risk": 55.05
+      "Technical": 48.11,
+      "Risk": 54.98
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

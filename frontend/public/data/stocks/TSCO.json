@@ -3,19 +3,19 @@
   "name": "Tractor Supply",
   "sector": "Consumer Discretionary",
   "industry": "Other Specialty Retail",
-  "market_cap": 15794293375.37384,
-  "current_price": 30.055,
+  "market_cap": 15484240625.18692,
+  "current_price": 29.465,
   "rank": 355,
-  "composite_score": 45.43,
+  "composite_score": 45.49,
   "pillar_scores": {
     "quality": 67.19,
-    "value": 43.92,
+    "value": 44.27,
     "growth": 40.1,
-    "momentum": 10.61,
+    "momentum": 10.46,
     "health": 49.7,
     "profitability": 48.61,
-    "technical": 35.56,
-    "risk": 25.3,
+    "technical": 35.81,
+    "risk": 24.97,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.31,
     "eps_diluted": 0.31,
     "shares_outstanding": 525513000.0,
-    "market_cap": 15794293375.37384,
-    "pe_ratio_ttm": 96.95161388766381,
+    "market_cap": 15484240625.18692,
+    "pe_ratio_ttm": 95.0483875889932,
     "goodwill": 346724000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 22.125081933819654,
+        "value": 22.117506195196686,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 29.549518357611994,
+        "value": 29.19768649731767,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 23.528970672327617,
+        "value": 23.486895793122443,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 21.41057514295815,
-    "max": 29.549518357611994,
+    "median": 21.406787273646664,
+    "max": 29.19768649731767,
     "low": 14.497667036256068,
-    "high": 29.549518357611994,
-    "mos_pct": -40.374558387614094,
+    "high": 29.19768649731767,
+    "mos_pct": -37.643261344786104,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -88,7 +88,8 @@
     "missing_metrics": [
       "research_and_development",
       "accounts_receivable",
-      "short_term_debt"
+      "short_term_debt",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
@@ -114,13 +115,15 @@
       "Quality": 45.44,
       "Value": 49.31,
       "Growth": 51.04,
-      "Momentum": 36.53,
+      "Momentum": 37.7,
       "Health": 47.32,
       "Profitability": 51.22,
-      "Technical": 31.37,
-      "Risk": 40.11
+      "Technical": 32.77,
+      "Risk": 40.55
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

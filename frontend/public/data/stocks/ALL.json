@@ -3,19 +3,19 @@
   "name": "Allstate",
   "sector": "Financials",
   "industry": "Property & Casualty Insurance",
-  "market_cap": 55936979370.11719,
-  "current_price": 216.81,
-  "rank": 10,
-  "composite_score": 69.07,
+  "market_cap": 55250698425.29297,
+  "current_price": 214.15,
+  "rank": 12,
+  "composite_score": 68.79,
   "pillar_scores": {
     "quality": 72.0,
     "value": 76.0,
     "growth": 73.33,
-    "momentum": 65.44,
+    "momentum": 63.35,
     "health": 59.54,
     "profitability": 54.0,
-    "technical": 55.28,
-    "risk": 72.94,
+    "technical": 55.15,
+    "risk": 72.54,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 9.36,
     "eps_diluted": 9.25,
     "shares_outstanding": 258000000.0,
-    "market_cap": 55936979370.11719,
-    "pe_ratio_ttm": 23.43891865498311,
+    "market_cap": 55250698425.29297,
+    "pe_ratio_ttm": 23.151350691511823,
     "goodwill": 3118000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 502.69716838324223,
+        "value": 497.9287960938246,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 254.14455776904012,
+        "value": 254.44906301165545,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 231.62296308534422,
-    "max": 502.69716838324223,
+    "median": 231.77521570665192,
+    "max": 497.9287960938246,
     "low": 138.5724227380259,
-    "high": 502.69716838324223,
-    "mos_pct": 6.395292301520407,
+    "high": 497.9287960938246,
+    "mos_pct": 7.6044462978626,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -96,7 +96,8 @@
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "ebitda"
+      "ebitda",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
@@ -122,13 +123,15 @@
       "Quality": 50.67,
       "Value": 49.56,
       "Growth": 52.67,
-      "Momentum": 53.34,
+      "Momentum": 52.84,
       "Health": 54.68,
       "Profitability": 49.78,
-      "Technical": 49.8,
-      "Risk": 55.05
+      "Technical": 48.11,
+      "Risk": 54.98
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

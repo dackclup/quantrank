@@ -3,19 +3,19 @@
   "name": "DuPont",
   "sector": "Materials",
   "industry": "Specialty Chemicals",
-  "market_cap": 37172749304.21448,
-  "current_price": 50.63,
-  "rank": 260,
-  "composite_score": 49.95,
+  "market_cap": 37554535720.3064,
+  "current_price": 51.15,
+  "rank": 261,
+  "composite_score": 50.01,
   "pillar_scores": {
     "quality": 47.6,
     "value": 34.62,
     "growth": 40.87,
-    "momentum": 72.56,
+    "momentum": 72.96,
     "health": 63.47,
     "profitability": 50.32,
-    "technical": 61.4,
-    "risk": 62.15,
+    "technical": 61.45,
+    "risk": 62.42,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.39,
     "eps_diluted": 0.39,
     "shares_outstanding": 734204000.0,
-    "market_cap": 37172749304.21448,
-    "pe_ratio_ttm": 129.82051555926984,
+    "market_cap": 37554535720.3064,
+    "pe_ratio_ttm": 131.15385006635617,
     "goodwill": 7865000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 32.9452195476285,
+        "value": 33.36244631614045,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 64.14553983423275,
+        "value": 63.964639678828085,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 32.9452195476285,
-    "max": 64.14553983423275,
+    "median": 33.36244631614045,
+    "max": 63.964639678828085,
     "low": 5.039583631020494,
-    "high": 64.14553983423275,
-    "mos_pct": -53.679355497753065,
+    "high": 63.964639678828085,
+    "mos_pct": -53.316099908216266,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -91,7 +91,8 @@
   "data_quality": {
     "missing_metrics": [
       "operating_income",
-      "ebitda"
+      "ebitda",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
@@ -117,15 +118,17 @@
     "label": "Materials median (n=26)",
     "values": {
       "Quality": 52.16,
-      "Value": 51.12,
+      "Value": 50.8,
       "Growth": 47.6,
-      "Momentum": 52.37,
+      "Momentum": 52.12,
       "Health": 51.62,
       "Profitability": 50.8,
-      "Technical": 56.04,
-      "Risk": 50.05
+      "Technical": 57.51,
+      "Risk": 49.62
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

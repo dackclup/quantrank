@@ -3,19 +3,19 @@
   "name": "EQT Corporation",
   "sector": "Energy",
   "industry": "Oil & Gas Exploration & Production",
-  "market_cap": 34623168338.68027,
-  "current_price": 55.355,
-  "rank": 153,
-  "composite_score": 55.17,
+  "market_cap": 34870231250.0,
+  "current_price": 55.75,
+  "rank": 148,
+  "composite_score": 55.56,
   "pillar_scores": {
     "quality": 46.43,
     "value": 71.43,
     "growth": 70.24,
-    "momentum": 40.34,
+    "momentum": 40.89,
     "health": 45.66,
     "profitability": 69.05,
-    "technical": 33.81,
-    "risk": 51.63,
+    "technical": 39.94,
+    "risk": 52.16,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.38,
     "eps_diluted": 2.36,
     "shares_outstanding": 625475000.0,
-    "market_cap": 34623168338.68027,
-    "pe_ratio_ttm": 23.455508280608615,
+    "market_cap": 34870231250.0,
+    "pe_ratio_ttm": 23.622881355932204,
     "goodwill": 2062462000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 119.84566106810745,
+        "value": 119.98367169076388,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 77.08822338260494,
+        "value": 77.8910563358243,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 201.05883479111432,
+        "value": 202.4806088985646,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 77.08822338260494,
-    "max": 201.05883479111432,
+    "median": 77.8910563358243,
+    "max": 202.4806088985646,
     "low": 14.10087568675688,
-    "high": 201.05883479111432,
-    "mos_pct": 28.192664049996434,
+    "high": 202.4806088985646,
+    "mos_pct": 28.42567218547401,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -90,7 +90,8 @@
     "missing_metrics": [
       "gross_profit",
       "research_and_development",
-      "inventory"
+      "inventory",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 21,
@@ -116,13 +117,15 @@
       "Quality": 50.0,
       "Value": 50.79,
       "Growth": 53.57,
-      "Momentum": 76.69,
+      "Momentum": 77.09,
       "Health": 50.4,
       "Profitability": 52.38,
-      "Technical": 59.36,
+      "Technical": 59.61,
       "Risk": 65.64
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

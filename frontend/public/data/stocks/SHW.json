@@ -3,19 +3,19 @@
   "name": "Sherwin-Williams",
   "sector": "Materials",
   "industry": "Specialty Chemicals",
-  "market_cap": 76195087811.2793,
-  "current_price": 308.9825,
-  "rank": 54,
-  "composite_score": 61.97,
+  "market_cap": 75055172387.69531,
+  "current_price": 304.36,
+  "rank": 56,
+  "composite_score": 61.77,
   "pillar_scores": {
     "quality": 93.27,
     "value": 51.28,
     "growth": 77.4,
-    "momentum": 31.18,
+    "momentum": 30.68,
     "health": 29.82,
     "profitability": 80.77,
-    "technical": 31.62,
-    "risk": 42.76,
+    "technical": 29.13,
+    "risk": 42.4,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.18,
     "eps_diluted": 2.15,
     "shares_outstanding": 246600000.0,
-    "market_cap": 76195087811.2793,
-    "pe_ratio_ttm": 143.71279694313228,
+    "market_cap": 75055172387.69531,
+    "pe_ratio_ttm": 141.56278388444767,
     "goodwill": 8003400000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 181.62108212154172,
+        "value": 183.9211784094922,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 57.670558074350794,
+        "value": 59.37295823478235,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 711.2182145417953,
+        "value": 706.2497519929337,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 181.62108212154172,
-    "max": 711.2182145417953,
-    "low": 57.670558074350794,
-    "high": 711.2182145417953,
-    "mos_pct": -70.12480589723707,
+    "median": 183.9211784094922,
+    "max": 706.2497519929337,
+    "low": 59.37295823478235,
+    "high": 706.2497519929337,
+    "mos_pct": -65.48392522470617,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ]
@@ -88,7 +88,8 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "total_liabilities"
+      "total_liabilities",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
@@ -112,15 +113,17 @@
     "label": "Materials median (n=26)",
     "values": {
       "Quality": 52.16,
-      "Value": 51.12,
+      "Value": 50.8,
       "Growth": 47.6,
-      "Momentum": 52.37,
+      "Momentum": 52.12,
       "Health": 51.62,
       "Profitability": 50.8,
-      "Technical": 56.04,
-      "Risk": 50.05
+      "Technical": 57.51,
+      "Risk": 49.62
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

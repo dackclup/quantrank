@@ -3,19 +3,19 @@
   "name": "Aon plc",
   "sector": "Financials",
   "industry": "Insurance Brokers",
-  "market_cap": 84544524047.85156,
-  "current_price": 313.36,
-  "rank": 299,
-  "composite_score": 48.36,
+  "market_cap": 83605625317.38281,
+  "current_price": 309.88,
+  "rank": 298,
+  "composite_score": 48.15,
   "pillar_scores": {
     "quality": 72.67,
-    "value": 24.67,
+    "value": 24.89,
     "growth": 55.0,
-    "momentum": 38.89,
+    "momentum": 38.75,
     "health": 36.65,
     "profitability": 49.78,
-    "technical": 46.76,
-    "risk": 52.79,
+    "technical": 42.28,
+    "risk": 52.26,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 5.66,
     "eps_diluted": 5.63,
     "shares_outstanding": 269800000.0,
-    "market_cap": 84544524047.85156,
-    "pe_ratio_ttm": 55.65896720276421,
+    "market_cap": 83605625317.38281,
+    "pe_ratio_ttm": 55.04085344277309,
     "goodwill": 15925000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 303.2984876084172,
+        "value": 302.60379441096063,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 75.4500061932769,
+        "value": 75.06251734115008,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 189.37424690084706,
-    "max": 303.2984876084172,
-    "low": 75.4500061932769,
-    "high": 303.2984876084172,
-    "mos_pct": -65.4712773673139,
+    "median": 188.83315587605534,
+    "max": 302.60379441096063,
+    "low": 75.06251734115008,
+    "high": 302.60379441096063,
+    "mos_pct": -64.10253985598209,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -91,7 +91,8 @@
       "research_and_development",
       "sga_expense",
       "inventory",
-      "accounts_payable"
+      "accounts_payable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 12,
@@ -118,13 +119,15 @@
       "Quality": 50.67,
       "Value": 49.56,
       "Growth": 52.67,
-      "Momentum": 53.34,
+      "Momentum": 52.84,
       "Health": 54.68,
       "Profitability": 49.78,
-      "Technical": 49.8,
-      "Risk": 55.05
+      "Technical": 48.11,
+      "Risk": 54.98
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

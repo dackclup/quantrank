@@ -3,19 +3,19 @@
   "name": "Royal Caribbean Group",
   "sector": "Consumer Discretionary",
   "industry": "Hotels, Resorts & Cruise Lines",
-  "market_cap": 78717344503.36914,
-  "current_price": 259.09,
-  "rank": 351,
-  "composite_score": 45.67,
+  "market_cap": 79818700703.36914,
+  "current_price": 262.715,
+  "rank": 344,
+  "composite_score": 46.02,
   "pillar_scores": {
     "quality": 65.1,
     "value": 23.96,
     "growth": 70.31,
-    "momentum": 39.19,
+    "momentum": 39.74,
     "health": 12.27,
     "profitability": 64.24,
-    "technical": 42.33,
-    "risk": 35.42,
+    "technical": 47.51,
+    "risk": 36.09,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 3.49,
     "eps_diluted": 3.48,
     "shares_outstanding": 303822400.0,
-    "market_cap": 78717344503.36914,
-    "pe_ratio_ttm": 74.45114837295708,
+    "market_cap": 79818700703.36914,
+    "pe_ratio_ttm": 75.49281503962375,
     "goodwill": 808000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 248.37188751513676,
+        "value": 248.28684373962733,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 196.72568251347806,
+        "value": 190.5758526472683,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 158.87174677106395,
+        "value": 158.54367869741893,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 121.22627368202544,
-    "max": 248.37188751513676,
+    "median": 121.06223964520291,
+    "max": 248.28684373962733,
     "low": 29.1025936416128,
-    "high": 248.37188751513676,
-    "mos_pct": -113.72429298410962,
+    "high": 248.28684373962733,
+    "mos_pct": -117.00820760282433,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ]
@@ -90,7 +90,8 @@
     "missing_metrics": [
       "gross_profit",
       "research_and_development",
-      "accounts_receivable"
+      "accounts_receivable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
@@ -118,13 +119,15 @@
       "Quality": 45.44,
       "Value": 49.31,
       "Growth": 51.04,
-      "Momentum": 36.53,
+      "Momentum": 37.7,
       "Health": 47.32,
       "Profitability": 51.22,
-      "Technical": 31.37,
-      "Risk": 40.11
+      "Technical": 32.77,
+      "Risk": 40.55
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

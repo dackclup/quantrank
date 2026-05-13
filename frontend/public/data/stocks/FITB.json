@@ -3,19 +3,19 @@
   "name": "Fifth Third Bancorp",
   "sector": "Financials",
   "industry": "Regional Banks",
-  "market_cap": 43742172058.54532,
-  "current_price": 48.29,
-  "rank": 424,
-  "composite_score": 40.84,
+  "market_cap": 43298317485.712234,
+  "current_price": 47.8,
+  "rank": 427,
+  "composite_score": 40.6,
   "pillar_scores": {
     "quality": 33.33,
     "value": 39.78,
     "growth": 22.0,
-    "momentum": 60.61,
+    "momentum": 60.11,
     "health": 54.4,
     "profitability": 44.67,
-    "technical": 40.39,
-    "risk": 57.2,
+    "technical": 37.35,
+    "risk": 56.54,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.16,
     "eps_diluted": 0.15,
     "shares_outstanding": 905822556.0,
-    "market_cap": 43742172058.54532,
-    "pe_ratio_ttm": 321.933339436849,
+    "market_cap": 43298317485.712234,
+    "pe_ratio_ttm": 318.6666615804037,
     "goodwill": 9966000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 8.080776756885005,
+        "value": 8.06226805713039,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 78.1096875441041,
+        "value": 78.20327526270415,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 43.31031276117608,
-    "max": 78.1096875441041,
-    "low": 8.080776756885005,
-    "high": 78.1096875441041,
-    "mos_pct": -11.4976961302739,
+    "max": 78.20327526270415,
+    "low": 8.06226805713039,
+    "high": 78.20327526270415,
+    "mos_pct": -10.366321990426911,
     "valuation_warnings": [
       "extreme_multiples_pe_estimate",
       "value_trap_risk"
@@ -100,7 +100,8 @@
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "ebitda"
+      "ebitda",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
@@ -130,13 +131,15 @@
       "Quality": 50.67,
       "Value": 49.56,
       "Growth": 52.67,
-      "Momentum": 53.34,
+      "Momentum": 52.84,
       "Health": 54.68,
       "Profitability": 49.78,
-      "Technical": 49.8,
-      "Risk": 55.05
+      "Technical": 48.11,
+      "Risk": 54.98
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

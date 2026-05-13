@@ -3,19 +3,19 @@
   "name": "RTX Corporation",
   "sector": "Industrials",
   "industry": "Aerospace & Defense",
-  "market_cap": 243193009.4100952,
-  "current_price": 176.01,
-  "rank": 293,
-  "composite_score": 48.56,
+  "market_cap": 246453822.25341797,
+  "current_price": 178.37,
+  "rank": 287,
+  "composite_score": 48.82,
   "pillar_scores": {
     "quality": 12.97,
-    "value": 91.14,
+    "value": 90.3,
     "growth": 53.8,
-    "momentum": 66.04,
+    "momentum": 66.83,
     "health": 30.28,
     "profitability": 16.46,
-    "technical": 53.44,
-    "risk": 74.04,
+    "technical": 59.96,
+    "risk": 74.77,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.53,
     "eps_diluted": 1.51,
     "shares_outstanding": 1381700.0,
-    "market_cap": 243193009.4100952,
-    "pe_ratio_ttm": 116.56291026942777,
+    "market_cap": 246453822.25341797,
+    "pe_ratio_ttm": 118.12582458091887,
     "goodwill": 53276000000.0
   },
   "fair_price": {
@@ -88,7 +88,8 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "accounts_receivable"
+      "accounts_receivable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 22,
@@ -114,13 +115,15 @@
       "Quality": 49.05,
       "Value": 50.42,
       "Growth": 49.05,
-      "Momentum": 58.17,
+      "Momentum": 57.92,
       "Health": 47.85,
       "Profitability": 53.16,
-      "Technical": 51.15,
-      "Risk": 55.11
+      "Technical": 50.05,
+      "Risk": 55.61
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

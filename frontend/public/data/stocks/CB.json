@@ -3,19 +3,19 @@
   "name": "Chubb Limited",
   "sector": "Financials",
   "industry": "Property & Casualty Insurance",
-  "market_cap": 125899765456.02661,
-  "current_price": 324.07,
-  "rank": 116,
-  "composite_score": 57.36,
+  "market_cap": 122902523479.03992,
+  "current_price": 316.355,
+  "rank": 130,
+  "composite_score": 56.35,
   "pillar_scores": {
     "quality": 50.0,
-    "value": 57.11,
+    "value": 59.11,
     "growth": 66.0,
-    "momentum": 66.88,
+    "momentum": 64.54,
     "health": 59.7,
     "profitability": 50.22,
-    "technical": 39.54,
-    "risk": 81.64,
+    "technical": 17.63,
+    "risk": 79.78,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 5.94,
     "eps_diluted": 5.88,
     "shares_outstanding": 388495580.0,
-    "market_cap": 125899765456.02661,
-    "pe_ratio_ttm": 55.113946823846724,
+    "market_cap": 122902523479.03992,
+    "pe_ratio_ttm": 53.80187261672247,
     "goodwill": 20370000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 316.7664488698922,
+        "value": 316.20712074850087,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 394.01876071178583,
+        "value": 394.4908572987785,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 284.82479356640374,
-    "max": 394.01876071178583,
+    "median": 284.54512950570813,
+    "max": 394.4908572987785,
     "low": 138.52907082408805,
-    "high": 394.01876071178583,
-    "mos_pct": -13.77872103984003,
+    "high": 394.4908572987785,
+    "mos_pct": -11.17920434480038,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -97,7 +97,8 @@
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "ebitda"
+      "ebitda",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
@@ -121,13 +122,15 @@
       "Quality": 50.67,
       "Value": 49.56,
       "Growth": 52.67,
-      "Momentum": 53.34,
+      "Momentum": 52.84,
       "Health": 54.68,
       "Profitability": 49.78,
-      "Technical": 49.8,
-      "Risk": 55.05
+      "Technical": 48.11,
+      "Risk": 54.98
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

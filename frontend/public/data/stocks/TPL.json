@@ -3,19 +3,19 @@
   "name": "Texas Pacific Land Corporation",
   "sector": "Energy",
   "industry": "Oil & Gas Exploration & Production",
-  "market_cap": 26354346858.238983,
-  "current_price": 382.09,
-  "rank": 176,
-  "composite_score": 53.85,
+  "market_cap": 26480570799.20706,
+  "current_price": 383.92,
+  "rank": 171,
+  "composite_score": 54.02,
   "pillar_scores": {
     "quality": 84.52,
     "value": 7.14,
     "growth": 58.33,
-    "momentum": 43.23,
+    "momentum": 43.38,
     "health": 91.08,
     "profitability": 72.22,
-    "technical": 25.35,
-    "risk": 37.82,
+    "technical": 27.59,
+    "risk": 38.65,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.07,
     "eps_diluted": 2.07,
     "shares_outstanding": 68974187.0,
-    "market_cap": 26354346858.238983,
-    "pe_ratio_ttm": 184.58453929366698,
+    "market_cap": 26480570799.20706,
+    "pe_ratio_ttm": 185.46860552064464,
     "goodwill": null
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 67.09064249900317,
+        "value": 67.51991805441129,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 38.16989637633365,
+        "value": 38.560369201862436,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 133.00948800323465,
+        "value": 132.83125715738632,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 58.65026576804662,
-    "max": 133.00948800323465,
-    "low": 38.16989637633365,
-    "high": 133.00948800323465,
-    "mos_pct": -551.4718924701922,
+    "median": 58.86490354575069,
+    "max": 132.83125715738632,
+    "low": 38.560369201862436,
+    "high": 132.83125715738632,
+    "mos_pct": -552.2052875349502,
     "valuation_warnings": [
       "extreme_multiples_pe_estimate",
       "extreme_multiples_pb_estimate",
@@ -99,7 +99,8 @@
       "accounts_payable",
       "long_term_debt",
       "short_term_debt",
-      "goodwill"
+      "goodwill",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
@@ -130,13 +131,15 @@
       "Quality": 50.0,
       "Value": 50.79,
       "Growth": 53.57,
-      "Momentum": 76.69,
+      "Momentum": 77.09,
       "Health": 50.4,
       "Profitability": 52.38,
-      "Technical": 59.36,
+      "Technical": 59.61,
       "Risk": 65.64
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

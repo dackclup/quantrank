@@ -3,19 +3,19 @@
   "name": "EOG Resources",
   "sector": "Energy",
   "industry": "Oil & Gas Exploration & Production",
-  "market_cap": 36265586827.88086,
-  "current_price": 133.51,
+  "market_cap": 36363374513.671875,
+  "current_price": 133.87,
   "rank": 4,
-  "composite_score": 71.15,
+  "composite_score": 71.28,
   "pillar_scores": {
     "quality": 72.62,
     "value": 80.16,
     "growth": 53.57,
-    "momentum": 74.25,
+    "momentum": 74.55,
     "health": 75.5,
     "profitability": 67.46,
-    "technical": 57.07,
-    "risk": 67.93,
+    "technical": 58.42,
+    "risk": 68.49,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 3.72,
     "eps_diluted": 3.7,
     "shares_outstanding": 271632000.0,
-    "market_cap": 36265586827.88086,
-    "pe_ratio_ttm": 36.08378229914484,
+    "market_cap": 36363374513.671875,
+    "pe_ratio_ttm": 36.181079761402025,
     "goodwill": null
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 174.30409875893224,
+        "value": 174.92777486780398,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 218.41866641242967,
+        "value": 220.69338095765679,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 676.6841045713502,
+        "value": 681.2446272432625,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 179.24665535515666,
-    "max": 218.41866641242967,
+    "max": 220.69338095765679,
     "low": 168.75386220734546,
-    "high": 676.6841045713502,
-    "mos_pct": 25.516047012257374,
+    "high": 681.2446272432625,
+    "mos_pct": 25.315206104158833,
     "valuation_warnings": [
       "extreme_multiples_ev_ebitda_estimate"
     ]
@@ -95,7 +95,8 @@
       "cost_of_revenue",
       "research_and_development",
       "goodwill",
-      "intangibles_net"
+      "intangibles_net",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
@@ -121,13 +122,15 @@
       "Quality": 50.0,
       "Value": 50.79,
       "Growth": 53.57,
-      "Momentum": 76.69,
+      "Momentum": 77.09,
       "Health": 50.4,
       "Profitability": 52.38,
-      "Technical": 59.36,
+      "Technical": 59.61,
       "Risk": 65.64
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

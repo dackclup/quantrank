@@ -3,19 +3,19 @@
   "name": "Johnson Controls",
   "sector": "Industrials",
   "industry": "Building Products",
-  "market_cap": 132897127716.06445,
-  "current_price": 142.06,
-  "rank": 271,
-  "composite_score": 49.49,
+  "market_cap": 134440711280.82275,
+  "current_price": 143.71,
+  "rank": 270,
+  "composite_score": 49.53,
   "pillar_scores": {
     "quality": 51.27,
-    "value": 30.38,
+    "value": 29.96,
     "growth": 50.95,
-    "momentum": 80.58,
+    "momentum": 81.23,
     "health": 37.81,
     "profitability": 53.16,
-    "technical": 49.75,
-    "risk": 67.2,
+    "technical": 50.8,
+    "risk": 67.36,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.86,
     "eps_diluted": 1.86,
     "shares_outstanding": 935500000.0,
-    "market_cap": 132897127716.06445,
-    "pe_ratio_ttm": 76.3763427734375,
+    "market_cap": 134440711280.82275,
+    "pe_ratio_ttm": 77.26344446982107,
     "goodwill": 16547000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 219.59721925879728,
+        "value": 219.71403372050912,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 99.2098645256226,
+        "value": 98.502339134468,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 98.99911251947732,
+        "value": 98.80633828810844,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,17 +75,19 @@
         "tier_used": null
       }
     },
-    "median": 99.2098645256226,
-    "max": 219.59721925879728,
-    "low": 98.99911251947732,
-    "high": 219.59721925879728,
-    "mos_pct": -43.191403634972595,
+    "median": 98.80633828810844,
+    "max": 219.71403372050912,
+    "low": 98.502339134468,
+    "high": 219.71403372050912,
+    "mos_pct": -45.44614161778224,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
-    "missing_metrics": [],
+    "missing_metrics": [
+      "property_plant_equipment"
+    ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
     "latest_period_end": "2026-03-31",
@@ -110,13 +112,15 @@
       "Quality": 49.05,
       "Value": 50.42,
       "Growth": 49.05,
-      "Momentum": 58.17,
+      "Momentum": 57.92,
       "Health": 47.85,
       "Profitability": 53.16,
-      "Technical": 51.15,
-      "Risk": 55.11
+      "Technical": 50.05,
+      "Risk": 55.61
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

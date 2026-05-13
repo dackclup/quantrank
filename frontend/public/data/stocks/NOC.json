@@ -3,19 +3,19 @@
   "name": "Northrop Grumman",
   "sector": "Industrials",
   "industry": "Aerospace & Defense",
-  "market_cap": 77693733093.80566,
-  "current_price": 547.01,
-  "rank": 144,
-  "composite_score": 55.71,
+  "market_cap": 78148129253.35254,
+  "current_price": 550.2092,
+  "rank": 139,
+  "composite_score": 55.85,
   "pillar_scores": {
     "quality": 57.28,
     "value": 60.13,
     "growth": 55.7,
-    "momentum": 58.57,
+    "momentum": 58.76,
     "health": 40.8,
     "profitability": 60.13,
-    "technical": 37.57,
-    "risk": 64.81,
+    "technical": 39.22,
+    "risk": 65.6,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 6.16,
     "eps_diluted": 6.14,
     "shares_outstanding": 142033476.0,
-    "market_cap": 77693733093.80566,
-    "pe_ratio_ttm": 89.08957813772395,
+    "market_cap": 78148129253.35254,
+    "pe_ratio_ttm": 89.61062353674674,
     "goodwill": 17439000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 605.7022839824031,
+        "value": 608.6803110757081,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 735.8442177026534,
+        "value": 718.9037735365131,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 473.3496887398472,
+        "value": 469.3739213428614,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 539.5259863611251,
-    "max": 735.8442177026534,
+    "median": 539.0271162092847,
+    "max": 718.9037735365131,
     "low": 94.73355088121106,
-    "high": 735.8442177026534,
-    "mos_pct": -1.3871479027315228,
+    "high": 718.9037735365131,
+    "mos_pct": -2.0744990316959635,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ]
@@ -88,7 +88,8 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "gross_profit"
+      "gross_profit",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 22,
@@ -116,13 +117,15 @@
       "Quality": 49.05,
       "Value": 50.42,
       "Growth": 49.05,
-      "Momentum": 58.17,
+      "Momentum": 57.92,
       "Health": 47.85,
       "Profitability": 53.16,
-      "Technical": 51.15,
-      "Risk": 55.11
+      "Technical": 50.05,
+      "Risk": 55.61
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

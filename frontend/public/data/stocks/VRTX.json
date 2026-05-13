@@ -3,19 +3,19 @@
   "name": "Vertex Pharmaceuticals",
   "sector": "Health Care",
   "industry": "Biotechnology",
-  "market_cap": 115104500214.875,
-  "current_price": 452.875,
-  "rank": 107,
-  "composite_score": 57.62,
+  "market_cap": 114315318348.48141,
+  "current_price": 449.77,
+  "rank": 103,
+  "composite_score": 57.82,
   "pillar_scores": {
     "quality": 77.97,
-    "value": 20.9,
+    "value": 21.19,
     "growth": 57.2,
-    "momentum": 39.09,
+    "momentum": 38.75,
     "health": 90.76,
     "profitability": 81.64,
-    "technical": 68.75,
-    "risk": 48.54,
+    "technical": 72.36,
+    "risk": 48.57,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 4.06,
     "eps_diluted": 4.02,
     "shares_outstanding": 254163953.0,
-    "market_cap": 115104500214.875,
-    "pe_ratio_ttm": 112.65547263681593,
+    "market_cap": 114315318348.48141,
+    "pe_ratio_ttm": 111.883081844197,
     "goodwill": 1088000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 338.93625109536305,
+        "value": 339.73485292707164,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 243.67258657532338,
+        "value": 246.41492371585065,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 248.52861355676058,
+        "value": 246.3922941828089,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 215.47611448558683,
-    "max": 338.93625109536305,
+    "median": 216.8359682893296,
+    "max": 339.73485292707164,
     "low": 77.27067818941637,
-    "high": 338.93625109536305,
-    "mos_pct": -110.1741072699233,
+    "high": 339.73485292707164,
+    "mos_pct": -107.42406924552878,
     "valuation_warnings": [
       "extreme_rim_estimate"
     ]
@@ -90,7 +90,8 @@
     "missing_metrics": [
       "gross_profit",
       "dividends_paid",
-      "short_term_debt"
+      "short_term_debt",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
@@ -116,15 +117,17 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 51.27,
-      "Value": 51.69,
+      "Value": 52.82,
       "Growth": 50.0,
-      "Momentum": 39.29,
+      "Momentum": 40.24,
       "Health": 60.08,
       "Profitability": 52.54,
-      "Technical": 54.48,
-      "Risk": 40.01
+      "Technical": 56.37,
+      "Risk": 39.94
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

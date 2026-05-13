@@ -3,19 +3,19 @@
   "name": "L3Harris",
   "sector": "Industrials",
   "industry": "Aerospace & Defense",
-  "market_cap": 56275250119.00586,
-  "current_price": 301.58,
+  "market_cap": 56543956602.0957,
+  "current_price": 303.02,
   "rank": 380,
-  "composite_score": 43.84,
+  "composite_score": 43.86,
   "pillar_scores": {
     "quality": 14.24,
-    "value": 64.98,
+    "value": 64.35,
     "growth": 48.1,
     "momentum": 71.71,
     "health": 42.43,
     "profitability": 22.78,
-    "technical": 39.44,
-    "risk": 71.65,
+    "technical": 42.43,
+    "risk": 72.01,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.74,
     "eps_diluted": 2.72,
     "shares_outstanding": 186601408.0,
-    "market_cap": 56275250119.00586,
-    "pe_ratio_ttm": 110.87499506333295,
+    "market_cap": 56543956602.0957,
+    "pe_ratio_ttm": 111.40440772561465,
     "goodwill": 19999000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 238.6959718137673,
+        "value": 240.00384863765535,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 695.6363799352769,
+        "value": 683.5955324915601,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 296.75961162356276,
+        "value": 294.4493871000734,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 267.727791718665,
-    "max": 695.6363799352769,
+    "median": 267.22661786886437,
+    "max": 683.5955324915601,
     "low": 111.95739919046206,
-    "high": 695.6363799352769,
-    "mos_pct": -12.64425879595397,
+    "high": 683.5955324915601,
+    "mos_pct": -13.39438841469465,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -88,7 +88,8 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "research_and_development"
+      "research_and_development",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
@@ -114,13 +115,15 @@
       "Quality": 49.05,
       "Value": 50.42,
       "Growth": 49.05,
-      "Momentum": 58.17,
+      "Momentum": 57.92,
       "Health": 47.85,
       "Profitability": 53.16,
-      "Technical": 51.15,
-      "Risk": 55.11
+      "Technical": 50.05,
+      "Risk": 55.61
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

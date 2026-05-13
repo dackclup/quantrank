@@ -3,19 +3,19 @@
   "name": "Wynn Resorts",
   "sector": "Consumer Discretionary",
   "industry": "Casinos & Gaming",
-  "market_cap": 9922187421.638977,
-  "current_price": 95.64,
-  "rank": 489,
-  "composite_score": 33.1,
+  "market_cap": 9871352512.902557,
+  "current_price": 95.15,
+  "rank": 490,
+  "composite_score": 33.04,
   "pillar_scores": {
     "quality": 20.05,
-    "value": 40.8,
+    "value": 40.45,
     "growth": 51.04,
-    "momentum": 25.6,
+    "momentum": 25.55,
     "health": 47.71,
     "profitability": 33.33,
-    "technical": 18.55,
-    "risk": 27.82,
+    "technical": 19.02,
+    "risk": 27.95,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.17,
     "eps_diluted": 1.04,
     "shares_outstanding": 103745164.0,
-    "market_cap": 9922187421.638977,
-    "pe_ratio_ttm": 91.96153787466196,
+    "market_cap": 9871352512.902557,
+    "pe_ratio_ttm": 91.49038608257587,
     "goodwill": 18463000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 74.22608132636272,
+        "value": 74.20066594517598,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 50.53326901478027,
+        "value": 50.270950158498614,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 50.53326901478027,
-    "max": 74.22608132636272,
+    "median": 50.270950158498614,
+    "max": 74.20066594517598,
     "low": 5.039330414037102,
-    "high": 74.22608132636272,
-    "mos_pct": -89.26145340345009,
+    "high": 74.20066594517598,
+    "mos_pct": -89.27432488521049,
     "valuation_warnings": [
       "extreme_dcf_estimate",
       "value_trap_risk"
@@ -92,7 +92,8 @@
       "gross_profit",
       "cost_of_revenue",
       "research_and_development",
-      "accounts_receivable"
+      "accounts_receivable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
@@ -121,13 +122,15 @@
       "Quality": 45.44,
       "Value": 49.31,
       "Growth": 51.04,
-      "Momentum": 36.53,
+      "Momentum": 37.7,
       "Health": 47.32,
       "Profitability": 51.22,
-      "Technical": 31.37,
-      "Risk": 40.11
+      "Technical": 32.77,
+      "Risk": 40.55
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

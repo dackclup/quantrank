@@ -3,19 +3,19 @@
   "name": "Amgen",
   "sector": "Health Care",
   "industry": "Biotechnology",
-  "market_cap": 181417450570.6787,
-  "current_price": 336.145,
-  "rank": 194,
-  "composite_score": 53.1,
+  "market_cap": 179803752841.18652,
+  "current_price": 333.155,
+  "rank": 199,
+  "composite_score": 52.93,
   "pillar_scores": {
     "quality": 69.07,
-    "value": 28.53,
+    "value": 28.81,
     "growth": 66.53,
-    "momentum": 52.19,
+    "momentum": 51.84,
     "health": 48.01,
     "profitability": 49.44,
-    "technical": 48.21,
-    "risk": 67.96,
+    "technical": 44.72,
+    "risk": 67.5,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 3.37,
     "eps_diluted": 3.34,
     "shares_outstanding": 539700000.0,
-    "market_cap": 181417450570.6787,
-    "pe_ratio_ttm": 100.64221227954248,
+    "market_cap": 179803752841.18652,
+    "pe_ratio_ttm": 99.74700562254398,
     "goodwill": 18674000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 281.60375091007774,
+        "value": 282.26726586478094,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 54.467287829253756,
+        "value": 55.08027293544575,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 171.15630259272191,
+        "value": 168.72454815334984,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 142.14556614090944,
-    "max": 281.60375091007774,
-    "low": 54.467287829253756,
-    "high": 281.60375091007774,
-    "mos_pct": -136.4794049787315,
+    "median": 140.9296889212234,
+    "max": 282.26726586478094,
+    "low": 55.08027293544575,
+    "high": 282.26726586478094,
+    "mos_pct": -136.39802324797807,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ]
@@ -90,7 +90,8 @@
     "missing_metrics": [
       "total_liabilities",
       "research_and_development",
-      "interest_expense"
+      "interest_expense",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 12,
@@ -114,15 +115,17 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 51.27,
-      "Value": 51.69,
+      "Value": 52.82,
       "Growth": 50.0,
-      "Momentum": 39.29,
+      "Momentum": 40.24,
       "Health": 60.08,
       "Profitability": 52.54,
-      "Technical": 54.48,
-      "Risk": 40.01
+      "Technical": 56.37,
+      "Risk": 39.94
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

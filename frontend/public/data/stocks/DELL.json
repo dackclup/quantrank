@@ -3,19 +3,19 @@
   "name": "Dell Technologies",
   "sector": "Information Technology",
   "industry": "Technology Hardware, Storage & Peripherals",
-  "market_cap": 156760355224.60938,
-  "current_price": 240.43,
-  "rank": 71,
-  "composite_score": 60.7,
+  "market_cap": 158318644775.39062,
+  "current_price": 242.82,
+  "rank": 69,
+  "composite_score": 60.84,
   "pillar_scores": {
     "quality": 38.01,
     "value": 78.54,
     "growth": 69.01,
-    "momentum": 87.52,
+    "momentum": 88.32,
     "health": 45.64,
     "profitability": 48.17,
-    "technical": 71.17,
-    "risk": 49.93,
+    "technical": 72.01,
+    "risk": 49.9,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 8.79,
     "eps_diluted": 8.68,
     "shares_outstanding": 652000000.0,
-    "market_cap": 156760355224.60938,
-    "pe_ratio_ttm": 27.699307911956367,
+    "market_cap": 158318644775.39062,
+    "pe_ratio_ttm": 27.974655221684188,
     "goodwill": 19547000000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 374.32067046729617,
+        "value": 373.46382309559453,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 677.2333714272936,
+        "value": 687.2209230582237,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 374.32067046729617,
-    "max": 677.2333714272936,
+    "median": 373.46382309559453,
+    "max": 687.2209230582237,
     "low": 74.48470413515257,
-    "high": 677.2333714272936,
-    "mos_pct": 35.768977872466365,
+    "high": 687.2209230582237,
+    "mos_pct": 34.98165222229176,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -97,7 +97,8 @@
     "altman_distress"
   ],
   "valuation_warnings": [
-    "value_trap_risk"
+    "value_trap_risk",
+    "beneish_high"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -114,13 +115,15 @@
       "Quality": 51.71,
       "Value": 50.46,
       "Growth": 52.74,
-      "Momentum": 44.32,
+      "Momentum": 44.47,
       "Health": 66.93,
       "Profitability": 53.2,
-      "Technical": 64.14,
-      "Risk": 45.48
+      "Technical": 64.94,
+      "Risk": 46.71
     }
   },
+  "beneish_m_score": -2.156597110029077,
+  "dechow_f_score": 0.6468799937693459,
   "entered_top5": false,
   "exited_top5": false
 }

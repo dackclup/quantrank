@@ -3,19 +3,19 @@
   "name": "Williams Companies",
   "sector": "Energy",
   "industry": "Oil & Gas Storage & Transportation",
-  "market_cap": 94126268844.60449,
-  "current_price": 74.585,
-  "rank": 99,
-  "composite_score": 57.96,
+  "market_cap": 95470301925.65918,
+  "current_price": 75.65,
+  "rank": 102,
+  "composite_score": 57.84,
   "pillar_scores": {
     "quality": 79.76,
-    "value": 22.22,
+    "value": 21.43,
     "growth": 64.29,
-    "momentum": 74.55,
+    "momentum": 75.4,
     "health": 39.68,
     "profitability": 52.38,
-    "technical": 64.09,
-    "risk": 85.89,
+    "technical": 62.8,
+    "risk": 86.32,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.71,
     "eps_diluted": 0.7,
     "shares_outstanding": 1262000000.0,
-    "market_cap": 94126268844.60449,
-    "pe_ratio_ttm": 106.5499986921038,
+    "market_cap": 95470301925.65918,
+    "pe_ratio_ttm": 108.07143075125559,
     "goodwill": 466000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 52.03227294575084,
+        "value": 52.05454496903852,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 25.397962714100874,
+        "value": 25.457458652526373,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 63.59739479629715,
+        "value": 63.51207276259133,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 27.020732774883225,
-    "max": 63.59739479629715,
+    "median": 27.050480744095974,
+    "max": 63.51207276259133,
     "low": 3.42914840796187,
-    "high": 63.59739479629715,
-    "mos_pct": -176.02878021798944,
+    "high": 63.51207276259133,
+    "mos_pct": -179.66231817299675,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -94,7 +94,8 @@
       "gross_profit",
       "research_and_development",
       "accounts_receivable",
-      "long_term_debt"
+      "long_term_debt",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 9,
@@ -122,13 +123,15 @@
       "Quality": 50.0,
       "Value": 50.79,
       "Growth": 53.57,
-      "Momentum": 76.69,
+      "Momentum": 77.09,
       "Health": 50.4,
       "Profitability": 52.38,
-      "Technical": 59.36,
+      "Technical": 59.61,
       "Risk": 65.64
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

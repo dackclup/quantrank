@@ -3,19 +3,19 @@
   "name": "Occidental Petroleum",
   "sector": "Energy",
   "industry": "Oil & Gas Exploration & Production",
-  "market_cap": 55318458134.79584,
-  "current_price": 55.81,
-  "rank": 308,
-  "composite_score": 47.93,
+  "market_cap": 55377927268.49213,
+  "current_price": 55.87,
+  "rank": 301,
+  "composite_score": 48.01,
   "pillar_scores": {
     "quality": 34.52,
     "value": 64.29,
     "growth": 8.33,
-    "momentum": 76.69,
+    "momentum": 77.09,
     "health": 53.07,
     "profitability": 52.38,
-    "technical": 55.23,
-    "risk": 53.24,
+    "technical": 55.78,
+    "risk": 53.57,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 3.19,
     "eps_diluted": 3.13,
     "shares_outstanding": 991192560.0,
-    "market_cap": 55318458134.79584,
-    "pe_ratio_ttm": 17.830671365268696,
+    "market_cap": 55377927268.49213,
+    "pe_ratio_ttm": 17.84983991434018,
     "goodwill": 668000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 158.94784709456624,
+        "value": 159.1308866068182,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 75.39602678509385,
+        "value": 76.18123640841671,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 71.27294093126487,
-    "max": 158.94784709456624,
+    "median": 71.6655457429263,
+    "max": 159.1308866068182,
     "low": 46.45615259595626,
-    "high": 158.94784709456624,
-    "mos_pct": 21.69538587286051,
+    "high": 159.1308866068182,
+    "mos_pct": 22.04064260907498,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -92,7 +92,8 @@
       "gross_profit",
       "operating_income",
       "research_and_development",
-      "ebitda"
+      "ebitda",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
@@ -118,13 +119,15 @@
       "Quality": 50.0,
       "Value": 50.79,
       "Growth": 53.57,
-      "Momentum": 76.69,
+      "Momentum": 77.09,
       "Health": 50.4,
       "Profitability": 52.38,
-      "Technical": 59.36,
+      "Technical": 59.61,
       "Risk": 65.64
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

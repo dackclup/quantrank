@@ -4,18 +4,18 @@
   "sector": "Financials",
   "industry": "Transaction & Payment Processing Services",
   "market_cap": null,
-  "current_price": 69.37,
-  "rank": 328,
-  "composite_score": 46.9,
+  "current_price": 70.79,
+  "rank": 323,
+  "composite_score": 47.15,
   "pillar_scores": {
     "quality": 29.33,
     "value": 49.56,
     "growth": 57.17,
-    "momentum": 58.86,
+    "momentum": 60.46,
     "health": 62.19,
     "profitability": 49.78,
-    "technical": 56.72,
-    "risk": 26.96,
+    "technical": 57.07,
+    "risk": 27.79,
     "sentiment": null,
     "ml": null
   },
@@ -89,7 +89,8 @@
   "data_quality": {
     "missing_metrics": [
       "shares_outstanding",
-      "dividends_paid"
+      "dividends_paid",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
@@ -115,13 +116,15 @@
       "Quality": 50.67,
       "Value": 49.56,
       "Growth": 52.67,
-      "Momentum": 53.34,
+      "Momentum": 52.84,
       "Health": 54.68,
       "Profitability": 49.78,
-      "Technical": 49.8,
-      "Risk": 55.05
+      "Technical": 48.11,
+      "Risk": 54.98
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

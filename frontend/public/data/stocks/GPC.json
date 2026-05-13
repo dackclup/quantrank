@@ -3,19 +3,19 @@
   "name": "Genuine Parts Company",
   "sector": "Consumer Discretionary",
   "industry": "Distributors",
-  "market_cap": 13850534124.800644,
-  "current_price": 100.64,
+  "market_cap": 13710157550.897102,
+  "current_price": 99.62,
   "rank": 443,
-  "composite_score": 39.19,
+  "composite_score": 39.16,
   "pillar_scores": {
     "quality": 36.46,
     "value": 67.53,
     "growth": 33.33,
-    "momentum": 15.69,
+    "momentum": 15.64,
     "health": 36.2,
     "profitability": 30.56,
-    "technical": 21.51,
-    "risk": 32.9,
+    "technical": 21.31,
+    "risk": 32.54,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.37,
     "eps_diluted": 1.37,
     "shares_outstanding": 137624545.0,
-    "market_cap": 13850534124.800644,
-    "pe_ratio_ttm": 73.45985356908645,
+    "market_cap": 13710157550.897102,
+    "pe_ratio_ttm": 72.71533047195769,
     "goodwill": 3181594000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 98.45762484172535,
+        "value": 98.79760120476985,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 207.07867383366334,
+        "value": 206.86955333722008,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 399.7328037024202,
+        "value": 397.50318894660586,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 152.76814933769435,
-    "max": 399.7328037024202,
+    "median": 152.83357727099497,
+    "max": 397.50318894660586,
     "low": 33.345923607458936,
-    "high": 399.7328037024202,
-    "mos_pct": 34.12239408151533,
+    "high": 397.50318894660586,
+    "mos_pct": 34.81798664573424,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -88,7 +88,8 @@
     "missing_metrics": [
       "total_liabilities",
       "research_and_development",
-      "accounts_receivable"
+      "accounts_receivable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 22,
@@ -112,13 +113,15 @@
       "Quality": 45.44,
       "Value": 49.31,
       "Growth": 51.04,
-      "Momentum": 36.53,
+      "Momentum": 37.7,
       "Health": 47.32,
       "Profitability": 51.22,
-      "Technical": 31.37,
-      "Risk": 40.11
+      "Technical": 32.77,
+      "Risk": 40.55
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

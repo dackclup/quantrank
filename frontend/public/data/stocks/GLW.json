@@ -3,19 +3,19 @@
   "name": "Corning Inc.",
   "sector": "Information Technology",
   "industry": "Electronic Components",
-  "market_cap": 374490011596.6797,
-  "current_price": 197.1,
-  "rank": 411,
-  "composite_score": 42.1,
+  "market_cap": 388170005798.33984,
+  "current_price": 204.3,
+  "rank": 406,
+  "composite_score": 42.44,
   "pillar_scores": {
     "quality": 31.16,
-    "value": 14.84,
+    "value": 14.61,
     "growth": 45.55,
-    "momentum": 92.73,
+    "momentum": 95.87,
     "health": 55.1,
     "profitability": 26.71,
-    "technical": 67.83,
-    "risk": 62.32,
+    "technical": 67.78,
+    "risk": 62.35,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.43,
     "eps_diluted": 0.43,
     "shares_outstanding": 1900000000.0,
-    "market_cap": 374490011596.6797,
-    "pe_ratio_ttm": 458.37210721747823,
+    "market_cap": 388170005798.33984,
+    "pe_ratio_ttm": 475.11628616687864,
     "goodwill": 2479000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 34.668259152918715,
+        "value": 35.3056650143953,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 61.754584847228166,
+        "value": 62.30968054720551,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 30.818628465949747,
+        "value": 30.98621427241349,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 32.74344380943423,
-    "max": 61.754584847228166,
+    "median": 33.1459396434044,
+    "max": 62.30968054720551,
     "low": 10.301907718067511,
-    "high": 61.754584847228166,
-    "mos_pct": -501.9525840062248,
+    "high": 62.30968054720551,
+    "mos_pct": -516.365097051671,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_multiples_pe_estimate",
@@ -92,7 +92,8 @@
   "data_quality": {
     "missing_metrics": [
       "capex",
-      "free_cash_flow"
+      "free_cash_flow",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 12,
@@ -121,13 +122,15 @@
       "Quality": 51.71,
       "Value": 50.46,
       "Growth": 52.74,
-      "Momentum": 44.32,
+      "Momentum": 44.47,
       "Health": 66.93,
       "Profitability": 53.2,
-      "Technical": 64.14,
-      "Risk": 45.48
+      "Technical": 64.94,
+      "Risk": 46.71
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

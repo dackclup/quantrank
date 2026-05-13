@@ -3,19 +3,19 @@
   "name": "Prologis",
   "sector": "Real Estate",
   "industry": "Industrial REITs",
-  "market_cap": 134094931564.22424,
-  "current_price": 143.835,
-  "rank": 312,
-  "composite_score": 47.7,
+  "market_cap": 133894479907.83691,
+  "current_price": 143.62,
+  "rank": 316,
+  "composite_score": 47.52,
   "pillar_scores": {
     "quality": 42.74,
-    "value": 35.48,
+    "value": 34.95,
     "growth": 58.06,
-    "momentum": 72.76,
+    "momentum": 71.91,
     "health": 26.25,
     "profitability": 52.69,
-    "technical": 65.04,
-    "risk": 65.11,
+    "technical": 66.04,
+    "risk": 64.94,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.05,
     "eps_diluted": 1.05,
     "shares_outstanding": 932283000.0,
-    "market_cap": 134094931564.22424,
-    "pe_ratio_ttm": 136.9857206798735,
+    "market_cap": 133894479907.83691,
+    "pe_ratio_ttm": 136.78094773065476,
     "goodwill": 25280000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 130.19743674087903,
+        "value": 129.94936167424345,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 131.8727232946771,
+        "value": 131.41205310144173,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 89.94217603111424,
+        "value": 89.56548399127844,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 110.06980638599663,
-    "max": 131.8727232946771,
+    "median": 109.75742283276094,
+    "max": 131.41205310144173,
     "low": 67.3908146914377,
-    "high": 131.8727232946771,
-    "mos_pct": -30.676169456918622,
+    "high": 131.41205310144173,
+    "mos_pct": -30.852193328212053,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -98,7 +98,8 @@
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "short_term_debt"
+      "short_term_debt",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
@@ -124,13 +125,15 @@
       "Quality": 46.77,
       "Value": 47.85,
       "Growth": 51.61,
-      "Momentum": 53.88,
+      "Momentum": 53.04,
       "Health": 27.89,
       "Profitability": 52.69,
-      "Technical": 59.31,
-      "Risk": 53.42
+      "Technical": 60.51,
+      "Risk": 53.92
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

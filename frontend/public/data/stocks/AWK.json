@@ -3,19 +3,19 @@
   "name": "American Water Works",
   "sector": "Utilities",
   "industry": "Water Utilities",
-  "market_cap": 23041221292.612816,
-  "current_price": 126.865,
-  "rank": 341,
-  "composite_score": 46.11,
+  "market_cap": 23162907747.717316,
+  "current_price": 127.535,
+  "rank": 337,
+  "composite_score": 46.42,
   "pillar_scores": {
     "quality": 54.84,
     "value": 30.11,
     "growth": 71.77,
-    "momentum": 50.1,
+    "momentum": 50.6,
     "health": 11.91,
     "profitability": 59.68,
-    "technical": 42.43,
-    "risk": 52.64,
+    "technical": 46.96,
+    "risk": 53.27,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.0,
     "eps_diluted": 1.0,
     "shares_outstanding": 181620003.0,
-    "market_cap": 23041221292.612816,
-    "pe_ratio_ttm": 126.86499786376953,
+    "market_cap": 23162907747.717316,
+    "pe_ratio_ttm": 127.53500366210938,
     "goodwill": 1156000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 63.2036808282245,
+        "value": 62.91789296228355,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 133.70234333363038,
+        "value": 134.07163723917637,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 88.34787262158582,
+        "value": 87.63494097049227,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 84.41136417268153,
-    "max": 133.70234333363038,
-    "low": 63.2036808282245,
-    "high": 133.70234333363038,
-    "mos_pct": -50.293741970855955,
+    "median": 84.05489834713475,
+    "max": 134.07163723917637,
+    "low": 62.91789296228355,
+    "high": 134.07163723917637,
+    "mos_pct": -51.728223066082336,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -93,7 +93,8 @@
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
-      "inventory"
+      "inventory",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
@@ -119,13 +120,15 @@
       "Quality": 51.61,
       "Value": 47.85,
       "Growth": 50.81,
-      "Momentum": 62.95,
+      "Momentum": 62.7,
       "Health": 19.4,
       "Profitability": 51.61,
-      "Technical": 41.93,
-      "Risk": 72.21
+      "Technical": 42.98,
+      "Risk": 72.44
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

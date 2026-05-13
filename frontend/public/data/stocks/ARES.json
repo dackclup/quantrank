@@ -3,19 +3,19 @@
   "name": "Ares Management",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 38319502314.7039,
-  "current_price": 122.36,
-  "rank": 348,
-  "composite_score": 45.87,
+  "market_cap": 38588828852.90781,
+  "current_price": 123.22,
+  "rank": 352,
+  "composite_score": 45.77,
   "pillar_scores": {
     "quality": 52.0,
-    "value": 43.78,
+    "value": 43.33,
     "growth": 62.33,
-    "momentum": 7.12,
+    "momentum": 7.37,
     "health": 62.29,
     "profitability": 43.33,
-    "technical": 64.14,
-    "risk": 23.9,
+    "technical": 63.35,
+    "risk": 24.17,
     "sentiment": null,
     "ml": null
   },
@@ -32,7 +32,7 @@
     "eps_basic": null,
     "eps_diluted": null,
     "shares_outstanding": 313170171.0,
-    "market_cap": 38319502314.7039,
+    "market_cap": 38588828852.90781,
     "pe_ratio_ttm": null,
     "goodwill": 3463416000.0
   },
@@ -51,7 +51,7 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 29.646674959083832,
+        "value": 29.75015260375695,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 15.717431394459656,
-    "max": 29.646674959083832,
+    "median": 15.769170216796214,
+    "max": 29.75015260375695,
     "low": 1.7881878298354783,
-    "high": 29.646674959083832,
-    "mos_pct": -678.4987097413581,
+    "high": 29.75015260375695,
+    "mos_pct": -681.398130191136,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
@@ -101,7 +101,8 @@
       "accounts_receivable",
       "accounts_payable",
       "short_term_debt",
-      "ebitda"
+      "ebitda",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 5,
@@ -128,13 +129,15 @@
       "Quality": 50.67,
       "Value": 49.56,
       "Growth": 52.67,
-      "Momentum": 53.34,
+      "Momentum": 52.84,
       "Health": 54.68,
       "Profitability": 49.78,
-      "Technical": 49.8,
-      "Risk": 55.05
+      "Technical": 48.11,
+      "Risk": 54.98
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

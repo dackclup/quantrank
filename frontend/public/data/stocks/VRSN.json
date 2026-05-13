@@ -3,19 +3,19 @@
   "name": "Verisign",
   "sector": "Information Technology",
   "industry": "Internet Services & Infrastructure",
-  "market_cap": 26062342721.557617,
-  "current_price": 286.085,
-  "rank": 257,
-  "composite_score": 50.11,
+  "market_cap": 26692300000.0,
+  "current_price": 293.0,
+  "rank": 252,
+  "composite_score": 50.37,
   "pillar_scores": {
     "quality": 39.73,
-    "value": 47.72,
+    "value": 47.49,
     "growth": 44.18,
-    "momentum": 65.79,
+    "momentum": 67.73,
     "health": 36.06,
     "profitability": 93.72,
-    "technical": 64.04,
-    "risk": 54.45,
+    "technical": 64.67,
+    "risk": 55.35,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 6.24,
     "eps_diluted": 6.24,
     "shares_outstanding": 91100000.0,
-    "market_cap": 26062342721.557617,
-    "pe_ratio_ttm": 45.84695375882662,
+    "market_cap": 26692300000.0,
+    "pe_ratio_ttm": 46.955128205128204,
     "goodwill": 52500000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 553.3514398864179,
+        "value": 565.3297518798073,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 213.42264551892714,
+        "value": 214.50030330758912,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 213.42264551892714,
-    "max": 553.3514398864179,
+    "median": 214.50030330758912,
+    "max": 565.3297518798073,
     "low": 119.88889157605347,
-    "high": 553.3514398864179,
-    "mos_pct": -34.04622117745561,
+    "high": 565.3297518798073,
+    "mos_pct": -36.59654344630175,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -90,7 +90,8 @@
     "missing_metrics": [
       "gross_profit",
       "inventory",
-      "short_term_debt"
+      "short_term_debt",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 20,
@@ -118,13 +119,15 @@
       "Quality": 51.71,
       "Value": 50.46,
       "Growth": 52.74,
-      "Momentum": 44.32,
+      "Momentum": 44.47,
       "Health": 66.93,
       "Profitability": 53.2,
-      "Technical": 64.14,
-      "Risk": 45.48
+      "Technical": 64.94,
+      "Risk": 46.71
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

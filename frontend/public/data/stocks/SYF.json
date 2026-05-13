@@ -3,19 +3,19 @@
   "name": "Synchrony Financial",
   "sector": "Financials",
   "industry": "Consumer Finance",
-  "market_cap": 23584945205.688477,
-  "current_price": 69.985,
-  "rank": 119,
-  "composite_score": 57.15,
+  "market_cap": 23512488868.71338,
+  "current_price": 69.77,
+  "rank": 115,
+  "composite_score": 57.24,
   "pillar_scores": {
     "quality": 64.0,
     "value": 60.44,
     "growth": 62.0,
-    "momentum": 53.54,
+    "momentum": 53.59,
     "health": 50.54,
     "profitability": 51.33,
-    "technical": 28.19,
-    "risk": 48.87,
+    "technical": 29.93,
+    "risk": 48.77,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.29,
     "eps_diluted": 2.27,
     "shares_outstanding": 337000000.0,
-    "market_cap": 23584945205.688477,
-    "pe_ratio_ttm": 30.830396744648265,
+    "market_cap": 23512488868.71338,
+    "pe_ratio_ttm": 30.73568134055789,
     "goodwill": 1363000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 123.3646024032389,
+        "value": 122.19441806843047,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 101.42978024315524,
+        "value": 101.55130910890192,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 92.89474691354762,
-    "max": 123.3646024032389,
+    "median": 92.95551134642096,
+    "max": 122.19441806843047,
     "low": 60.5443243597952,
-    "high": 123.3646024032389,
-    "mos_pct": 24.662047170995564,
+    "high": 122.19441806843047,
+    "mos_pct": 24.942592824806468,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -100,7 +100,8 @@
       "accounts_receivable",
       "accounts_payable",
       "short_term_debt",
-      "ebitda"
+      "ebitda",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 20,
@@ -124,13 +125,15 @@
       "Quality": 50.67,
       "Value": 49.56,
       "Growth": 52.67,
-      "Momentum": 53.34,
+      "Momentum": 52.84,
       "Health": 54.68,
       "Profitability": 49.78,
-      "Technical": 49.8,
-      "Risk": 55.05
+      "Technical": 48.11,
+      "Risk": 54.98
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

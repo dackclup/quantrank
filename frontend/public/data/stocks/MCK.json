@@ -3,19 +3,19 @@
   "name": "McKesson Corporation",
   "sector": "Health Care",
   "industry": "Health Care Distributors",
-  "market_cap": 209266401367.1875,
-  "current_price": 747.38,
-  "rank": 169,
-  "composite_score": 54.11,
+  "market_cap": 206642802734.375,
+  "current_price": 738.01,
+  "rank": 168,
+  "composite_score": 54.18,
   "pillar_scores": {
     "quality": 43.22,
-    "value": 68.36,
+    "value": 68.93,
     "growth": 72.03,
-    "momentum": 41.98,
+    "momentum": 41.88,
     "health": 56.45,
     "profitability": 43.5,
-    "technical": 34.59,
-    "risk": 66.53,
+    "technical": 34.01,
+    "risk": 66.17,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 38.55,
     "eps_diluted": 38.38,
     "shares_outstanding": 280000000.0,
-    "market_cap": 209266401367.1875,
-    "pe_ratio_ttm": 19.4731632330071,
+    "market_cap": 206642802734.375,
+    "pe_ratio_ttm": 19.229025788578035,
     "goodwill": 11316000000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 3494.3245543277626,
+        "value": 3498.3951426419344,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 1205.5524456215926,
+        "value": 1203.8237514697862,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 1205.5524456215926,
-    "max": 3494.3245543277626,
+    "median": 1203.8237514697862,
+    "max": 3498.3951426419344,
     "low": 204.7814974791227,
-    "high": 3494.3245543277626,
-    "mos_pct": 38.005185291009276,
+    "high": 3498.3951426419344,
+    "mos_pct": 38.69451330690515,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -89,7 +89,8 @@
   "data_quality": {
     "missing_metrics": [
       "total_liabilities",
-      "accounts_receivable"
+      "accounts_receivable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 5,
@@ -113,15 +114,17 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 51.27,
-      "Value": 51.69,
+      "Value": 52.82,
       "Growth": 50.0,
-      "Momentum": 39.29,
+      "Momentum": 40.24,
       "Health": 60.08,
       "Profitability": 52.54,
-      "Technical": 54.48,
-      "Risk": 40.01
+      "Technical": 56.37,
+      "Risk": 39.94
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

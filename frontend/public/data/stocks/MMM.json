@@ -3,19 +3,19 @@
   "name": "3M",
   "sector": "Industrials",
   "industry": "Industrial Conglomerates",
-  "market_cap": 77744814651.30243,
-  "current_price": 149.06,
-  "rank": 103,
-  "composite_score": 57.8,
+  "market_cap": 76967684525.84271,
+  "current_price": 147.57,
+  "rank": 100,
+  "composite_score": 57.87,
   "pillar_scores": {
     "quality": 89.56,
     "value": 52.95,
     "growth": 31.01,
-    "momentum": 30.18,
+    "momentum": 29.83,
     "health": 50.16,
     "profitability": 66.24,
-    "technical": 53.98,
-    "risk": 46.85,
+    "technical": 56.47,
+    "risk": 46.41,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.23,
     "eps_diluted": 1.23,
     "shares_outstanding": 521567261.0,
-    "market_cap": 77744814651.30243,
-    "pe_ratio_ttm": 121.18698988503557,
+    "market_cap": 76967684525.84271,
+    "pe_ratio_ttm": 119.97561571074695,
     "goodwill": 6384000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 143.37237963139617,
+        "value": 144.11671511866467,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 42.952946135664405,
+        "value": 42.64662276589476,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 286.2259138349224,
+        "value": 285.8338210342352,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 107.93492246893464,
-    "max": 286.2259138349224,
-    "low": 42.952946135664405,
-    "high": 286.2259138349224,
-    "mos_pct": -38.10173218171861,
+    "median": 108.30709021256888,
+    "max": 285.8338210342352,
+    "low": 42.64662276589476,
+    "high": 285.8338210342352,
+    "mos_pct": -36.251474427565654,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -88,7 +88,8 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "gross_profit"
+      "gross_profit",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 22,
@@ -114,13 +115,15 @@
       "Quality": 49.05,
       "Value": 50.42,
       "Growth": 49.05,
-      "Momentum": 58.17,
+      "Momentum": 57.92,
       "Health": 47.85,
       "Profitability": 53.16,
-      "Technical": 51.15,
-      "Risk": 55.11
+      "Technical": 50.05,
+      "Risk": 55.61
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

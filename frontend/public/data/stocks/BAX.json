@@ -3,19 +3,19 @@
   "name": "Baxter International",
   "sector": "Health Care",
   "industry": "Health Care Equipment",
-  "market_cap": 12152540573.638733,
-  "current_price": 17.78,
-  "rank": 494,
-  "composite_score": 31.74,
+  "market_cap": 12169627686.506104,
+  "current_price": 17.805,
+  "rank": 495,
+  "composite_score": 31.77,
   "pillar_scores": {
     "quality": 12.71,
     "value": 53.39,
     "growth": 39.41,
-    "momentum": 13.84,
+    "momentum": 13.94,
     "health": 50.64,
     "profitability": 16.95,
-    "technical": 61.7,
-    "risk": 9.89,
+    "technical": 61.95,
+    "risk": 9.96,
     "sentiment": null,
     "ml": null
   },
@@ -32,7 +32,7 @@
     "eps_basic": -0.03,
     "eps_diluted": -0.03,
     "shares_outstanding": 683494944.0,
-    "market_cap": 12152540573.638733,
+    "market_cap": 12169627686.506104,
     "pe_ratio_ttm": null,
     "goodwill": 4899000000.0
   },
@@ -51,13 +51,13 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 28.4648880963968,
+        "value": 28.44754920022855,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 60.819004450731356,
+        "value": 59.8224443690985,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 44.64194627356407,
-    "max": 60.819004450731356,
-    "low": 28.4648880963968,
-    "high": 60.819004450731356,
-    "mos_pct": 60.17198583213561,
+    "median": 44.13499678466353,
+    "max": 59.8224443690985,
+    "low": 28.44754920022855,
+    "high": 59.8224443690985,
+    "mos_pct": 59.65786427481322,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -87,7 +87,9 @@
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
-    "missing_metrics": [],
+    "missing_metrics": [
+      "property_plant_equipment"
+    ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
     "latest_period_end": "2026-03-31",
@@ -110,15 +112,17 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 51.27,
-      "Value": 51.69,
+      "Value": 52.82,
       "Growth": 50.0,
-      "Momentum": 39.29,
+      "Momentum": 40.24,
       "Health": 60.08,
       "Profitability": 52.54,
-      "Technical": 54.48,
-      "Risk": 40.01
+      "Technical": 56.37,
+      "Risk": 39.94
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

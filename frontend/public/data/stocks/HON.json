@@ -3,19 +3,19 @@
   "name": "Honeywell",
   "sector": "Industrials",
   "industry": "Industrial Conglomerates",
-  "market_cap": 138919714773.55957,
-  "current_price": 219.22,
-  "rank": 365,
-  "composite_score": 44.97,
+  "market_cap": 137664991481.01807,
+  "current_price": 217.24,
+  "rank": 368,
+  "composite_score": 44.82,
   "pillar_scores": {
     "quality": 46.84,
-    "value": 39.24,
+    "value": 39.66,
     "growth": 35.44,
-    "momentum": 58.37,
+    "momentum": 58.07,
     "health": 37.49,
     "profitability": 33.76,
-    "technical": 67.83,
-    "risk": 60.96,
+    "technical": 64.04,
+    "risk": 60.49,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.29,
     "eps_diluted": 1.29,
     "shares_outstanding": 633700000.0,
-    "market_cap": 138919714773.55957,
-    "pe_ratio_ttm": 169.9379854424055,
+    "market_cap": 137664991481.01807,
+    "pe_ratio_ttm": 168.40310503346052,
     "goodwill": 21079000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 150.36615424756184,
+        "value": 151.14679878298978,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 147.23869376438918,
+        "value": 146.18864581908795,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 206.1459748600261,
+        "value": 205.71007004190318,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,18 +75,19 @@
         "tier_used": null
       }
     },
-    "median": 148.80242400597552,
-    "max": 206.1459748600261,
+    "median": 148.66772230103885,
+    "max": 205.71007004190318,
     "low": 61.55575221701946,
-    "high": 206.1459748600261,
-    "mos_pct": -47.32286969458227,
+    "high": 205.71007004190318,
+    "mos_pct": -46.12452664961965,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "total_liabilities"
+      "total_liabilities",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 20,
@@ -110,13 +111,15 @@
       "Quality": 49.05,
       "Value": 50.42,
       "Growth": 49.05,
-      "Momentum": 58.17,
+      "Momentum": 57.92,
       "Health": 47.85,
       "Profitability": 53.16,
-      "Technical": 51.15,
-      "Risk": 55.11
+      "Technical": 50.05,
+      "Risk": 55.61
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

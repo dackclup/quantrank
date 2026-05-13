@@ -3,19 +3,19 @@
   "name": "Coherent Corp.",
   "sector": "Information Technology",
   "industry": "Electronic Components",
-  "market_cap": 81290401111.625,
-  "current_price": 382.83,
-  "rank": 310,
-  "composite_score": 47.87,
+  "market_cap": 86528849920.0,
+  "current_price": 407.5,
+  "rank": 311,
+  "composite_score": 47.67,
   "pillar_scores": {
     "quality": 25.34,
-    "value": 34.25,
+    "value": 33.56,
     "growth": 55.82,
-    "momentum": 98.85,
+    "momentum": 98.75,
     "health": 66.61,
     "profitability": 31.05,
-    "technical": 67.28,
-    "risk": 50.51,
+    "technical": 66.56,
+    "risk": 50.71,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 3.09,
     "eps_diluted": 2.92,
     "shares_outstanding": 212340736.0,
-    "market_cap": 81290401111.625,
-    "pe_ratio_ttm": 131.10615978502247,
+    "market_cap": 86528849920.0,
+    "pe_ratio_ttm": 139.55479452054794,
     "goodwill": 4402403000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 235.42166680586664,
+        "value": 239.75009730705648,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 557.2876373363824,
+        "value": 545.8938842495118,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 185.85880885738862,
+        "value": 186.8601227532791,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 210.64023783162764,
-    "max": 557.2876373363824,
+    "median": 213.30511003016778,
+    "max": 545.8938842495118,
     "low": 4.469567495208927,
-    "high": 557.2876373363824,
-    "mos_pct": -81.74589551986524,
+    "high": 545.8938842495118,
+    "mos_pct": -91.04089908693102,
     "valuation_warnings": [
       "extreme_dcf_estimate",
       "value_trap_risk"
@@ -90,7 +90,8 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
-      "dividends_paid"
+      "dividends_paid",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
@@ -119,13 +120,15 @@
       "Quality": 51.71,
       "Value": 50.46,
       "Growth": 52.74,
-      "Momentum": 44.32,
+      "Momentum": 44.47,
       "Health": 66.93,
       "Profitability": 53.2,
-      "Technical": 64.14,
-      "Risk": 45.48
+      "Technical": 64.94,
+      "Risk": 46.71
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "UDR, Inc.",
   "sector": "Real Estate",
   "industry": "Multi-Family Residential REITs",
-  "market_cap": 12103704075.29007,
-  "current_price": 37.14,
-  "rank": 159,
-  "composite_score": 54.9,
+  "market_cap": 12150958858.822517,
+  "current_price": 37.285,
+  "rank": 158,
+  "composite_score": 54.89,
   "pillar_scores": {
     "quality": 73.39,
     "value": 47.85,
     "growth": 62.1,
-    "momentum": 36.55,
+    "momentum": 36.75,
     "health": 25.06,
     "profitability": 62.63,
-    "technical": 69.42,
-    "risk": 46.18,
+    "technical": 68.28,
+    "risk": 46.58,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.58,
     "eps_diluted": 0.57,
     "shares_outstanding": 325894030.0,
-    "market_cap": 12103704075.29007,
-    "pe_ratio_ttm": 65.1578936660499,
+    "market_cap": 12150958858.822517,
+    "pe_ratio_ttm": 65.41228043405634,
     "goodwill": null
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 74.17287566283038,
+        "value": 73.55506005688247,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 23.167021944442233,
+        "value": 23.086092725653092,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 29.326002207204755,
+        "value": 29.18661583311927,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 26.246512075823496,
-    "max": 74.17287566283038,
+    "median": 26.136354279386182,
+    "max": 73.55506005688247,
     "low": 14.320261768115524,
-    "high": 74.17287566283038,
-    "mos_pct": -41.50451413260081,
+    "high": 73.55506005688247,
+    "mos_pct": -42.65570266170939,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -98,7 +98,8 @@
       "accounts_payable",
       "short_term_debt",
       "retained_earnings",
-      "goodwill"
+      "goodwill",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
@@ -124,13 +125,15 @@
       "Quality": 46.77,
       "Value": 47.85,
       "Growth": 51.61,
-      "Momentum": 53.88,
+      "Momentum": 53.04,
       "Health": 27.89,
       "Profitability": 52.69,
-      "Technical": 59.31,
-      "Risk": 53.42
+      "Technical": 60.51,
+      "Risk": 53.92
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

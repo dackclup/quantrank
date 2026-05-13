@@ -3,19 +3,19 @@
   "name": "Regeneron Pharmaceuticals",
   "sector": "Health Care",
   "industry": "Biotechnology",
-  "market_cap": 68865794157.40741,
-  "current_price": 729.43,
+  "market_cap": 67694163343.413574,
+  "current_price": 717.02,
   "rank": 125,
-  "composite_score": 56.82,
+  "composite_score": 56.68,
   "pillar_scores": {
     "quality": 55.08,
-    "value": 44.63,
+    "value": 46.05,
     "growth": 49.15,
-    "momentum": 53.93,
+    "momentum": 53.24,
     "health": 91.99,
     "profitability": 72.03,
-    "technical": 70.47,
-    "risk": 40.6,
+    "technical": 63.35,
+    "risk": 40.04,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 6.99,
     "eps_diluted": 6.75,
     "shares_outstanding": 94410423.0,
-    "market_cap": 68865794157.40741,
-    "pe_ratio_ttm": 108.06370261863425,
+    "market_cap": 67694163343.413574,
+    "pe_ratio_ttm": 106.22518807870371,
     "goodwill": null
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 569.1093768392291,
+        "value": 570.45031275068,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 1117.2483341111472,
+        "value": 1099.8885345979804,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 387.12793894759153,
+        "value": 383.43781182518876,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 523.7715044251859,
-    "max": 1117.2483341111472,
+    "max": 1099.8885345979804,
     "low": 375.8573789973331,
-    "high": 1117.2483341111472,
-    "mos_pct": -39.264924974545096,
+    "high": 1099.8885345979804,
+    "mos_pct": -36.895576310159356,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -87,7 +87,8 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
-      "goodwill"
+      "goodwill",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
@@ -109,15 +110,17 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 51.27,
-      "Value": 51.69,
+      "Value": 52.82,
       "Growth": 50.0,
-      "Momentum": 39.29,
+      "Momentum": 40.24,
       "Health": 60.08,
       "Profitability": 52.54,
-      "Technical": 54.48,
-      "Risk": 40.01
+      "Technical": 56.37,
+      "Risk": 39.94
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

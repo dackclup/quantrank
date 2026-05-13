@@ -3,18 +3,18 @@
   "name": "Jack Henry & Associates",
   "sector": "Financials",
   "industry": "Transaction & Payment Processing Services",
-  "market_cap": 14824851210.64009,
-  "current_price": 141.77,
-  "rank": 183,
-  "composite_score": 53.47,
+  "market_cap": 14594274762.312195,
+  "current_price": 139.565,
+  "rank": 181,
+  "composite_score": 53.5,
   "pillar_scores": {
     "quality": 67.33,
-    "value": 48.22,
+    "value": 48.89,
     "growth": 38.33,
-    "momentum": 28.14,
+    "momentum": 27.69,
     "health": 87.93,
     "profitability": 56.22,
-    "technical": 35.86,
+    "technical": 34.61,
     "risk": 45.09,
     "sentiment": null,
     "ml": null
@@ -32,8 +32,8 @@
     "eps_basic": 5.42,
     "eps_diluted": 5.41,
     "shares_outstanding": 104569731.0,
-    "market_cap": 14824851210.64009,
-    "pe_ratio_ttm": 26.20517639047337,
+    "market_cap": 14594274762.312195,
+    "pe_ratio_ttm": 25.797597493790434,
     "goodwill": 827740000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 294.0099114544152,
+        "value": 291.2210580397396,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 42.25951050096924,
+        "value": 42.042478189884804,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 40.502811922486714,
-    "max": 294.0099114544152,
+    "median": 40.394295766944495,
+    "max": 291.2210580397396,
     "low": 17.837892726348915,
-    "high": 294.0099114544152,
-    "mos_pct": -250.02509095856578,
+    "high": 291.2210580397396,
+    "mos_pct": -245.50671027074875,
     "valuation_warnings": [
       "extreme_rim_estimate"
     ]
@@ -88,7 +88,8 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "inventory"
+      "inventory",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
@@ -114,13 +115,15 @@
       "Quality": 50.67,
       "Value": 49.56,
       "Growth": 52.67,
-      "Momentum": 53.34,
+      "Momentum": 52.84,
       "Health": 54.68,
       "Profitability": 49.78,
-      "Technical": 49.8,
-      "Risk": 55.05
+      "Technical": 48.11,
+      "Risk": 54.98
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

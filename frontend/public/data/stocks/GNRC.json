@@ -3,19 +3,19 @@
   "name": "Generac",
   "sector": "Industrials",
   "industry": "Electrical Components & Equipment",
-  "market_cap": 18234337693.447266,
-  "current_price": 266.99,
+  "market_cap": 18138723766.292725,
+  "current_price": 265.59,
   "rank": 474,
-  "composite_score": 35.73,
+  "composite_score": 35.78,
   "pillar_scores": {
     "quality": 18.35,
-    "value": 30.59,
+    "value": 31.22,
     "growth": 20.25,
-    "momentum": 72.86,
+    "momentum": 71.61,
     "health": 55.1,
     "profitability": 27.64,
-    "technical": 66.33,
-    "risk": 42.96,
+    "technical": 67.63,
+    "risk": 42.9,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.25,
     "eps_diluted": 1.24,
     "shares_outstanding": 68295960.0,
-    "market_cap": 18234337693.447266,
-    "pe_ratio_ttm": 215.31450825352823,
+    "market_cap": 18138723766.292725,
+    "pe_ratio_ttm": 214.18548091765373,
     "goodwill": 1486807000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 144.53800873409045,
+        "value": 145.2883957293855,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 274.56722002195124,
+        "value": 273.41491915698214,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 270.327251994383,
+        "value": 269.96130917419583,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 144.53800873409045,
-    "max": 274.56722002195124,
+    "median": 145.2883957293855,
+    "max": 273.41491915698214,
     "low": 25.27716742185161,
-    "high": 274.56722002195124,
-    "mos_pct": -84.71957139354394,
+    "high": 273.41491915698214,
+    "mos_pct": -82.8019333578293,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -90,7 +90,9 @@
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
-    "missing_metrics": [],
+    "missing_metrics": [
+      "property_plant_equipment"
+    ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
     "latest_period_end": "2026-03-31",
@@ -118,13 +120,15 @@
       "Quality": 49.05,
       "Value": 50.42,
       "Growth": 49.05,
-      "Momentum": 58.17,
+      "Momentum": 57.92,
       "Health": 47.85,
       "Profitability": 53.16,
-      "Technical": 51.15,
-      "Risk": 55.11
+      "Technical": 50.05,
+      "Risk": 55.61
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

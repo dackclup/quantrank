@@ -3,19 +3,19 @@
   "name": "Becton Dickinson",
   "sector": "Health Care",
   "industry": "Health Care Equipment",
-  "market_cap": 53723215983.80777,
-  "current_price": 144.965,
-  "rank": 473,
-  "composite_score": 35.93,
+  "market_cap": 53550890944.5,
+  "current_price": 144.5,
+  "rank": 472,
+  "composite_score": 35.87,
   "pillar_scores": {
     "quality": 30.93,
-    "value": 38.7,
+    "value": 38.42,
     "growth": 33.05,
-    "momentum": 37.4,
+    "momentum": 37.25,
     "health": 31.95,
     "profitability": 38.98,
-    "technical": 49.35,
-    "risk": 48.31,
+    "technical": 49.8,
+    "risk": 48.27,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.25,
     "eps_diluted": 0.25,
     "shares_outstanding": 370594401.0,
-    "market_cap": 53723215983.80777,
-    "pe_ratio_ttm": 579.8599853515625,
+    "market_cap": 53550890944.5,
+    "pe_ratio_ttm": 578.0,
     "goodwill": 25955000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 29.950235965205174,
+        "value": 29.68639754961339,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 209.65472382724866,
+        "value": 209.52701626432722,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 312.57759244964217,
+        "value": 307.61388538071645,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 136.1996972000612,
-    "max": 312.57759244964217,
-    "low": 29.950235965205174,
-    "high": 312.57759244964217,
-    "mos_pct": -6.435623072608045,
+    "median": 136.13584341860047,
+    "max": 307.61388538071645,
+    "low": 29.68639754961339,
+    "high": 307.61388538071645,
+    "mos_pct": -6.1439782289230065,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -88,7 +88,8 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "total_liabilities"
+      "total_liabilities",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
@@ -112,15 +113,17 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 51.27,
-      "Value": 51.69,
+      "Value": 52.82,
       "Growth": 50.0,
-      "Momentum": 39.29,
+      "Momentum": 40.24,
       "Health": 60.08,
       "Profitability": 52.54,
-      "Technical": 54.48,
-      "Risk": 40.01
+      "Technical": 56.37,
+      "Risk": 39.94
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

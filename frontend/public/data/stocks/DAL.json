@@ -3,19 +3,19 @@
   "name": "Delta Air Lines",
   "sector": "Industrials",
   "industry": "Passenger Airlines",
-  "market_cap": 46860197640.31531,
-  "current_price": 70.39,
-  "rank": 207,
-  "composite_score": 52.53,
+  "market_cap": 47412748431.369385,
+  "current_price": 71.22,
+  "rank": 210,
+  "composite_score": 52.42,
   "pillar_scores": {
     "quality": 37.97,
-    "value": 74.89,
+    "value": 73.63,
     "growth": 66.46,
-    "momentum": 63.79,
+    "momentum": 64.84,
     "health": 24.94,
     "profitability": 35.86,
-    "technical": 51.15,
-    "risk": 44.26,
+    "technical": 51.69,
+    "risk": 44.72,
     "sentiment": null,
     "ml": null
   },
@@ -32,7 +32,7 @@
     "eps_basic": -0.44,
     "eps_diluted": -0.44,
     "shares_outstanding": 665722376.0,
-    "market_cap": 46860197640.31531,
+    "market_cap": 47412748431.369385,
     "pe_ratio_ttm": null,
     "goodwill": 9753000000.0
   },
@@ -51,13 +51,13 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 214.58319100690994,
+        "value": 213.68263049358526,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 251.97409420370636,
+        "value": 251.63370829020855,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 123.55628129768674,
-    "max": 251.97409420370636,
+    "median": 123.1060010410244,
+    "max": 251.63370829020855,
     "low": 11.45052654329011,
-    "high": 251.97409420370636,
-    "mos_pct": 43.03001138399728,
+    "high": 251.63370829020855,
+    "mos_pct": 42.147417170208094,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
@@ -94,7 +94,8 @@
       "cost_of_revenue",
       "research_and_development",
       "inventory",
-      "accounts_receivable"
+      "accounts_receivable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 35,
@@ -121,13 +122,15 @@
       "Quality": 49.05,
       "Value": 50.42,
       "Growth": 49.05,
-      "Momentum": 58.17,
+      "Momentum": 57.92,
       "Health": 47.85,
       "Profitability": 53.16,
-      "Technical": 51.15,
-      "Risk": 55.11
+      "Technical": 50.05,
+      "Risk": 55.61
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

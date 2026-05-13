@@ -3,19 +3,19 @@
   "name": "Lennox International",
   "sector": "Industrials",
   "industry": "Building Products",
-  "market_cap": 44264155079.49252,
-  "current_price": 507.79,
-  "rank": 212,
-  "composite_score": 52.31,
+  "market_cap": 43629556151.741455,
+  "current_price": 500.51,
+  "rank": 215,
+  "composite_score": 52.17,
   "pillar_scores": {
     "quality": 79.75,
-    "value": 9.07,
+    "value": 9.49,
     "growth": 78.48,
-    "momentum": 33.27,
+    "momentum": 33.07,
     "health": 65.14,
     "profitability": 55.49,
-    "technical": 62.35,
-    "risk": 33.83,
+    "technical": 58.47,
+    "risk": 33.37,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 3.37,
     "eps_diluted": 3.35,
     "shares_outstanding": 87170197.0,
-    "market_cap": 44264155079.49252,
-    "pe_ratio_ttm": 151.57910702833487,
+    "market_cap": 43629556151.741455,
+    "pe_ratio_ttm": 149.40597306436567,
     "goodwill": 503700000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 390.48574940258305,
+        "value": 392.51300459148507,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 95.60950952357436,
+        "value": 94.92766043581257,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 138.52592746122676,
+        "value": 138.28029376728855,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 84.01276891927884,
-    "max": 390.48574940258305,
+    "median": 83.67184437539794,
+    "max": 392.51300459148507,
     "low": 33.40645897466409,
-    "high": 390.48574940258305,
-    "mos_pct": -504.42003647423724,
+    "high": 392.51300459148507,
+    "mos_pct": -498.1821166987328,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -93,7 +93,8 @@
   "data_quality": {
     "missing_metrics": [
       "accounts_receivable",
-      "long_term_debt"
+      "long_term_debt",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
@@ -123,13 +124,15 @@
       "Quality": 49.05,
       "Value": 50.42,
       "Growth": 49.05,
-      "Momentum": 58.17,
+      "Momentum": 57.92,
       "Health": 47.85,
       "Profitability": 53.16,
-      "Technical": 51.15,
-      "Risk": 55.11
+      "Technical": 50.05,
+      "Risk": 55.61
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

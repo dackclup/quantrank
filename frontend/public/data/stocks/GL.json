@@ -3,19 +3,19 @@
   "name": "Globe Life",
   "sector": "Financials",
   "industry": "Life & Health Insurance",
-  "market_cap": 14231570810.04744,
-  "current_price": 154.325,
-  "rank": 70,
-  "composite_score": 60.77,
+  "market_cap": 13999642136.087952,
+  "current_price": 151.81,
+  "rank": 73,
+  "composite_score": 60.62,
   "pillar_scores": {
     "quality": 59.33,
-    "value": 66.67,
+    "value": 66.89,
     "growth": 47.33,
-    "momentum": 74.35,
+    "momentum": 72.36,
     "health": 63.39,
     "profitability": 48.89,
-    "technical": 51.89,
-    "risk": 60.09,
+    "technical": 53.29,
+    "risk": 59.66,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 3.45,
     "eps_diluted": 3.39,
     "shares_outstanding": 92218183.0,
-    "market_cap": 14231570810.04744,
-    "pe_ratio_ttm": 45.52359791983545,
+    "market_cap": 13999642136.087952,
+    "pe_ratio_ttm": 44.78171019427544,
     "goodwill": 490446000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 184.23171900748014,
+        "value": 182.48417500087194,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 136.5797167764753,
+        "value": 135.87828386284568,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 132.3507049595811,
-    "max": 184.23171900748014,
+    "median": 131.9999885027663,
+    "max": 182.48417500087194,
     "low": 84.52552278752543,
-    "high": 184.23171900748014,
-    "mos_pct": -16.603078914745392,
+    "high": 182.48417500087194,
+    "mos_pct": -15.007583925215478,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -93,7 +93,8 @@
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "intangibles_net"
+      "intangibles_net",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
@@ -117,13 +118,15 @@
       "Quality": 50.67,
       "Value": 49.56,
       "Growth": 52.67,
-      "Momentum": 53.34,
+      "Momentum": 52.84,
       "Health": 54.68,
       "Profitability": 49.78,
-      "Technical": 49.8,
-      "Risk": 55.05
+      "Technical": 48.11,
+      "Risk": 54.98
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

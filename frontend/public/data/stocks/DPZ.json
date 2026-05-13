@@ -3,18 +3,18 @@
   "name": "Domino's",
   "sector": "Consumer Discretionary",
   "industry": "Restaurants",
-  "market_cap": 10475456116.31836,
-  "current_price": 311.51,
-  "rank": 400,
-  "composite_score": 42.61,
+  "market_cap": 10312360149.869385,
+  "current_price": 306.66,
+  "rank": 402,
+  "composite_score": 42.69,
   "pillar_scores": {
     "quality": 33.59,
-    "value": 51.74,
+    "value": 52.08,
     "growth": 47.14,
-    "momentum": 25.05,
+    "momentum": 24.95,
     "health": 56.79,
     "profitability": 62.15,
-    "technical": 36.35,
+    "technical": 36.55,
     "risk": 35.39,
     "sentiment": null,
     "ml": null
@@ -32,8 +32,8 @@
     "eps_basic": 4.16,
     "eps_diluted": 4.13,
     "shares_outstanding": 33627992.0,
-    "market_cap": 10475456116.31836,
-    "pe_ratio_ttm": 75.42615248562349,
+    "market_cap": 10312360149.869385,
+    "pe_ratio_ttm": 74.25181686733883,
     "goodwill": 10689000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 294.7631883441135,
+        "value": 294.6622599553623,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 261.07842051577944,
+        "value": 260.6204091551518,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 261.07842051577944,
-    "max": 294.7631883441135,
+    "median": 260.6204091551518,
+    "max": 294.6622599553623,
     "low": 203.31585050272318,
-    "high": 294.7631883441135,
-    "mos_pct": -19.316644075835253,
+    "high": 294.6622599553623,
+    "mos_pct": -17.665383404240394,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -88,7 +88,8 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "research_and_development"
+      "research_and_development",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 16,
@@ -116,13 +117,15 @@
       "Quality": 45.44,
       "Value": 49.31,
       "Growth": 51.04,
-      "Momentum": 36.53,
+      "Momentum": 37.7,
       "Health": 47.32,
       "Profitability": 51.22,
-      "Technical": 31.37,
-      "Risk": 40.11
+      "Technical": 32.77,
+      "Risk": 40.55
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

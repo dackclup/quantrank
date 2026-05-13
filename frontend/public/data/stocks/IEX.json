@@ -3,19 +3,19 @@
   "name": "IDEX Corporation",
   "sector": "Industrials",
   "industry": "Industrial Machinery & Supplies & Components",
-  "market_cap": 19175082659.91211,
-  "current_price": 212.82,
-  "rank": 407,
-  "composite_score": 42.26,
+  "market_cap": 19134536560.058594,
+  "current_price": 212.37,
+  "rank": 409,
+  "composite_score": 42.25,
   "pillar_scores": {
     "quality": 25.95,
-    "value": 36.71,
+    "value": 36.92,
     "growth": 25.95,
-    "momentum": 66.09,
+    "momentum": 65.09,
     "health": 78.49,
     "profitability": 43.46,
-    "technical": 57.52,
-    "risk": 51.26,
+    "technical": 59.01,
+    "risk": 51.1,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.61,
     "eps_diluted": 1.61,
     "shares_outstanding": 90100000.0,
-    "market_cap": 19175082659.91211,
-    "pe_ratio_ttm": 132.1863399529309,
+    "market_cap": 19134536560.058594,
+    "pe_ratio_ttm": 131.90682926533384,
     "goodwill": 3390200000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 190.08146398207722,
+        "value": 188.640578326057,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 207.46562144806563,
+        "value": 205.44377478112244,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 137.56542057852357,
+        "value": 135.86561407010367,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,18 +75,19 @@
         "tier_used": null
       }
     },
-    "median": 163.8234422803004,
-    "max": 207.46562144806563,
+    "median": 162.25309619808036,
+    "max": 205.44377478112244,
     "low": 72.14208563113067,
-    "high": 207.46562144806563,
-    "mos_pct": -29.9081525585854,
+    "high": 205.44377478112244,
+    "mos_pct": -30.888100192506577,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "accounts_payable"
+      "accounts_payable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
@@ -110,13 +111,15 @@
       "Quality": 49.05,
       "Value": 50.42,
       "Growth": 49.05,
-      "Momentum": 58.17,
+      "Momentum": 57.92,
       "Health": 47.85,
       "Profitability": 53.16,
-      "Technical": 51.15,
-      "Risk": 55.11
+      "Technical": 50.05,
+      "Risk": 55.61
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "McDonald's",
   "sector": "Consumer Discretionary",
   "industry": "Restaurants",
-  "market_cap": 459770313891.60156,
-  "current_price": 276.87,
+  "market_cap": 457495300000.0,
+  "current_price": 275.5,
   "rank": 477,
-  "composite_score": 35.49,
+  "composite_score": 35.66,
   "pillar_scores": {
     "quality": 26.56,
-    "value": 14.76,
+    "value": 15.45,
     "growth": 51.82,
-    "momentum": 35.26,
+    "momentum": 35.36,
     "health": 56.49,
     "profitability": 70.83,
-    "technical": 35.71,
-    "risk": 56.41,
+    "technical": 35.96,
+    "risk": 56.18,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.79,
     "eps_diluted": 2.78,
     "shares_outstanding": 1660600000.0,
-    "market_cap": 459770313891.60156,
-    "pe_ratio_ttm": 99.59352342344874,
+    "market_cap": 457495300000.0,
+    "pe_ratio_ttm": 99.10071942446044,
     "goodwill": 3349000000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 198.41202508393107,
+        "value": 198.34408781498962,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 48.97390493972794,
+        "value": 48.84376234177891,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 48.97390493972794,
-    "max": 198.41202508393107,
+    "median": 48.84376234177891,
+    "max": 198.34408781498962,
     "low": 31.915882520797236,
-    "high": 198.41202508393107,
-    "mos_pct": -465.3418804523159,
+    "high": 198.34408781498962,
+    "mos_pct": -464.04336355626884,
     "valuation_warnings": [
       "extreme_multiples_ev_ebitda_estimate",
       "extreme_dcf_estimate",
@@ -95,7 +95,8 @@
       "research_and_development",
       "income_before_tax",
       "accounts_receivable",
-      "intangibles_net"
+      "intangibles_net",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
@@ -123,13 +124,15 @@
       "Quality": 45.44,
       "Value": 49.31,
       "Growth": 51.04,
-      "Momentum": 36.53,
+      "Momentum": 37.7,
       "Health": 47.32,
       "Profitability": 51.22,
-      "Technical": 31.37,
-      "Risk": 40.11
+      "Technical": 32.77,
+      "Risk": 40.55
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

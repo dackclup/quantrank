@@ -3,19 +3,19 @@
   "name": "Federal Realty Investment Trust",
   "sector": "Real Estate",
   "industry": "Retail REITs",
-  "market_cap": 9902073997.375,
-  "current_price": 114.625,
-  "rank": 32,
+  "market_cap": 9884364568.361252,
+  "current_price": 114.42,
+  "rank": 31,
   "composite_score": 64.35,
   "pillar_scores": {
     "quality": 71.77,
     "value": 63.44,
     "growth": 69.35,
-    "momentum": 74.75,
+    "momentum": 74.1,
     "health": 25.22,
     "profitability": 62.9,
-    "technical": 63.6,
-    "risk": 71.65,
+    "technical": 65.29,
+    "risk": 71.58,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.82,
     "eps_diluted": 1.81,
     "shares_outstanding": 86386687.0,
-    "market_cap": 9902073997.375,
-    "pe_ratio_ttm": 63.328729281767956,
+    "market_cap": 9884364568.361252,
+    "pe_ratio_ttm": 63.215468601627244,
     "goodwill": null
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 235.5314121924965,
+        "value": 233.5695766718549,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 88.07480333512744,
+        "value": 87.76713215296115,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 161.51386092131588,
+        "value": 159.94955705461962,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 88.07480333512744,
-    "max": 235.5314121924965,
+    "median": 87.76713215296115,
+    "max": 233.5695766718549,
     "low": 38.052508113678975,
-    "high": 235.5314121924965,
-    "mos_pct": -30.14505359023989,
+    "high": 233.5695766718549,
+    "mos_pct": -30.3677075485768,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -100,7 +100,8 @@
       "accounts_payable",
       "short_term_debt",
       "retained_earnings",
-      "goodwill"
+      "goodwill",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 12,
@@ -126,13 +127,15 @@
       "Quality": 46.77,
       "Value": 47.85,
       "Growth": 51.61,
-      "Momentum": 53.88,
+      "Momentum": 53.04,
       "Health": 27.89,
       "Profitability": 52.69,
-      "Technical": 59.31,
-      "Risk": 53.42
+      "Technical": 60.51,
+      "Risk": 53.92
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

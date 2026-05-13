@@ -3,19 +3,19 @@
   "name": "Tapestry, Inc.",
   "sector": "Consumer Discretionary",
   "industry": "Apparel, Accessories & Luxury Goods",
-  "market_cap": 26705621888.73291,
-  "current_price": 132.01,
-  "rank": 30,
-  "composite_score": 64.48,
+  "market_cap": 27153718734.74121,
+  "current_price": 134.225,
+  "rank": 24,
+  "composite_score": 64.95,
   "pillar_scores": {
     "quality": 94.27,
-    "value": 55.21,
+    "value": 54.51,
     "growth": 48.96,
-    "momentum": 68.68,
+    "momentum": 69.47,
     "health": 35.06,
     "profitability": 69.79,
-    "technical": 31.42,
-    "risk": 53.09,
+    "technical": 41.73,
+    "risk": 53.39,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 5.76,
     "eps_diluted": 5.58,
     "shares_outstanding": 202300000.0,
-    "market_cap": 26705621888.73291,
-    "pe_ratio_ttm": 23.65770510875196,
+    "market_cap": 27153718734.74121,
+    "pe_ratio_ttm": 24.05466059202789,
     "goodwill": 960400000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 412.67169541830145,
+        "value": 410.03834107663727,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 20.55204199996035,
+        "value": 19.909565836766486,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 292.5067057754626,
+        "value": 290.9581691504903,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 177.91540096509712,
-    "max": 412.67169541830145,
-    "low": 20.55204199996035,
-    "high": 412.67169541830145,
-    "mos_pct": 25.80181716099258,
+    "median": 177.14113265261096,
+    "max": 410.03834107663727,
+    "low": 19.909565836766486,
+    "high": 410.03834107663727,
+    "mos_pct": 24.227081483811872,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ]
@@ -88,7 +88,8 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "research_and_development"
+      "research_and_development",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
@@ -114,13 +115,15 @@
       "Quality": 45.44,
       "Value": 49.31,
       "Growth": 51.04,
-      "Momentum": 36.53,
+      "Momentum": 37.7,
       "Health": 47.32,
       "Profitability": 51.22,
-      "Technical": 31.37,
-      "Risk": 40.11
+      "Technical": 32.77,
+      "Risk": 40.55
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

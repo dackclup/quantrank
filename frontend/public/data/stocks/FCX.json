@@ -3,19 +3,19 @@
   "name": "Freeport-McMoRan",
   "sector": "Materials",
   "industry": "Copper",
-  "market_cap": 62601051750.183105,
-  "current_price": 66.2445,
-  "rank": 22,
-  "composite_score": 65.71,
+  "market_cap": 64448997116.08887,
+  "current_price": 68.2,
+  "rank": 20,
+  "composite_score": 66.1,
   "pillar_scores": {
     "quality": 68.27,
     "value": 56.41,
     "growth": 62.98,
-    "momentum": 86.55,
+    "momentum": 88.99,
     "health": 68.76,
     "profitability": 65.38,
-    "technical": 60.46,
-    "risk": 41.8,
+    "technical": 61.6,
+    "risk": 42.53,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.61,
     "eps_diluted": 0.61,
     "shares_outstanding": 945000000.0,
-    "market_cap": 62601051750.183105,
-    "pe_ratio_ttm": 108.59753968285733,
+    "market_cap": 64448997116.08887,
+    "pe_ratio_ttm": 111.80327368564294,
     "goodwill": 0.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 51.529702369367655,
+        "value": 52.18228782780942,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 69.23572575441868,
+        "value": 69.0404705023638,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 133.2398531076236,
+        "value": 132.3150793348152,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 69.23572575441868,
-    "max": 133.2398531076236,
-    "low": 51.529702369367655,
-    "high": 133.2398531076236,
-    "mos_pct": 4.3203512569301115,
+    "median": 69.0404705023638,
+    "max": 132.3150793348152,
+    "low": 52.18228782780942,
+    "high": 132.3150793348152,
+    "mos_pct": 1.2173635955925872,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -91,7 +91,8 @@
       "net_income",
       "gross_profit",
       "research_and_development",
-      "income_before_tax"
+      "income_before_tax",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 5,
@@ -115,15 +116,17 @@
     "label": "Materials median (n=26)",
     "values": {
       "Quality": 52.16,
-      "Value": 51.12,
+      "Value": 50.8,
       "Growth": 47.6,
-      "Momentum": 52.37,
+      "Momentum": 52.12,
       "Health": 51.62,
       "Profitability": 50.8,
-      "Technical": 56.04,
-      "Risk": 50.05
+      "Technical": 57.51,
+      "Risk": 49.62
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

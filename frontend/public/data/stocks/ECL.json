@@ -3,19 +3,19 @@
   "name": "Ecolab",
   "sector": "Materials",
   "industry": "Specialty Chemicals",
-  "market_cap": 71081641717.5293,
-  "current_price": 252.6,
+  "market_cap": 70361958297.72949,
+  "current_price": 250.0425,
   "rank": 163,
-  "composite_score": 54.72,
+  "composite_score": 54.57,
   "pillar_scores": {
     "quality": 79.81,
     "value": 17.95,
     "growth": 90.38,
-    "momentum": 40.34,
+    "momentum": 40.14,
     "health": 34.66,
     "profitability": 78.85,
-    "technical": 38.4,
-    "risk": 55.48,
+    "technical": 36.35,
+    "risk": 54.88,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.53,
     "eps_diluted": 1.52,
     "shares_outstanding": 281400000.0,
-    "market_cap": 71081641717.5293,
-    "pe_ratio_ttm": 166.1842145417866,
+    "market_cap": 70361958297.72949,
+    "pe_ratio_ttm": 164.50164192601255,
     "goodwill": 9438700000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 128.40188131383414,
+        "value": 130.0279958988038,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 114.09875979964987,
+        "value": 117.46688650890664,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 117.69820220532732,
+        "value": 116.74879863226538,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 115.8984810024886,
-    "max": 128.40188131383414,
+    "median": 117.107842570586,
+    "max": 130.0279958988038,
     "low": 44.45070098130703,
-    "high": 128.40188131383414,
-    "mos_pct": -117.94936734165802,
+    "high": 130.0279958988038,
+    "mos_pct": -113.51473158326483,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ]
@@ -88,7 +88,8 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "gross_profit"
+      "gross_profit",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
@@ -112,15 +113,17 @@
     "label": "Materials median (n=26)",
     "values": {
       "Quality": 52.16,
-      "Value": 51.12,
+      "Value": 50.8,
       "Growth": 47.6,
-      "Momentum": 52.37,
+      "Momentum": 52.12,
       "Health": 51.62,
       "Profitability": 50.8,
-      "Technical": 56.04,
-      "Risk": 50.05
+      "Technical": 57.51,
+      "Risk": 49.62
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

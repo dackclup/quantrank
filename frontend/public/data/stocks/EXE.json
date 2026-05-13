@@ -3,19 +3,19 @@
   "name": "Expand Energy",
   "sector": "Energy",
   "industry": "Oil & Gas Exploration & Production",
-  "market_cap": 186374896194.458,
-  "current_price": 95.235,
-  "rank": 334,
-  "composite_score": 46.44,
+  "market_cap": 186697802986.14502,
+  "current_price": 95.4,
+  "rank": 333,
+  "composite_score": 46.6,
   "pillar_scores": {
     "quality": 54.76,
     "value": 29.37,
     "growth": 58.33,
-    "momentum": 25.1,
+    "momentum": 25.2,
     "health": 69.6,
     "profitability": 53.17,
-    "technical": 43.08,
-    "risk": 50.83,
+    "technical": 45.87,
+    "risk": 51.2,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 4.83,
     "eps_diluted": 4.81,
     "shares_outstanding": 1957000000.0,
-    "market_cap": 186374896194.458,
-    "pe_ratio_ttm": 19.799376426268516,
+    "market_cap": 186697802986.14502,
+    "pe_ratio_ttm": 19.83368015091038,
     "goodwill": 15000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 244.26170751593085,
+        "value": 244.54299187820942,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 16.899743745929744,
+        "value": 17.072625815771495,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 35.392473318555126,
+        "value": 35.34177068152148,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 35.392473318555126,
-    "max": 244.26170751593085,
+    "median": 35.34177068152148,
+    "max": 244.54299187820942,
     "low": 6.46908769799531,
-    "high": 244.26170751593085,
-    "mos_pct": -169.08263729741358,
+    "high": 244.54299187820942,
+    "mos_pct": -169.9355456339911,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate",
       "extreme_dcf_estimate",
@@ -93,7 +93,8 @@
       "revenue",
       "cost_of_revenue",
       "research_and_development",
-      "intangibles_net"
+      "intangibles_net",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
@@ -121,13 +122,15 @@
       "Quality": 50.0,
       "Value": 50.79,
       "Growth": 53.57,
-      "Momentum": 76.69,
+      "Momentum": 77.09,
       "Health": 50.4,
       "Profitability": 52.38,
-      "Technical": 59.36,
+      "Technical": 59.61,
       "Risk": 65.64
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

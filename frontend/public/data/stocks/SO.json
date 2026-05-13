@@ -3,19 +3,19 @@
   "name": "Southern Company",
   "sector": "Utilities",
   "industry": "Electric Utilities",
-  "market_cap": 102025000000.0,
-  "current_price": 92.75,
-  "rank": 130,
-  "composite_score": 56.59,
+  "market_cap": 101915001678.4668,
+  "current_price": 92.65,
+  "rank": 126,
+  "composite_score": 56.62,
   "pillar_scores": {
     "quality": 75.81,
     "value": 43.55,
     "growth": 47.58,
-    "momentum": 62.05,
+    "momentum": 62.25,
     "health": 27.29,
     "profitability": 65.59,
     "technical": 50.6,
-    "risk": 76.93,
+    "risk": 76.99,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.21,
     "eps_diluted": 1.2,
     "shares_outstanding": 1100000000.0,
-    "market_cap": 102025000000.0,
-    "pe_ratio_ttm": 77.29166666666667,
+    "market_cap": 101915001678.4668,
+    "pe_ratio_ttm": 77.2083346048991,
     "goodwill": 5161000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 68.2626921901107,
+        "value": 68.41855360442264,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 68.77635881403651,
+        "value": 68.74967584202278,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 70.41919128493795,
+        "value": 70.71737455406408,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 68.5195255020736,
-    "max": 70.41919128493795,
+    "median": 68.58411472322271,
+    "max": 70.71737455406408,
     "low": 49.015419419903886,
-    "high": 70.41919128493795,
-    "mos_pct": -35.36287550209773,
+    "high": 70.71737455406408,
+    "mos_pct": -35.089593121929504,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -93,7 +93,8 @@
       "sga_expense",
       "inventory",
       "accounts_receivable",
-      "long_term_debt"
+      "long_term_debt",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
@@ -121,13 +122,15 @@
       "Quality": 51.61,
       "Value": 47.85,
       "Growth": 50.81,
-      "Momentum": 62.95,
+      "Momentum": 62.7,
       "Health": 19.4,
       "Profitability": 51.61,
-      "Technical": 41.93,
-      "Risk": 72.21
+      "Technical": 42.98,
+      "Risk": 72.44
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

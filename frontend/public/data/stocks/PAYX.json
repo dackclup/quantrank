@@ -3,19 +3,19 @@
   "name": "Paychex",
   "sector": "Industrials",
   "industry": "Human Resource & Employment Services",
-  "market_cap": 32467353734.588623,
-  "current_price": 90.615,
-  "rank": 50,
-  "composite_score": 62.33,
+  "market_cap": 31345875718.688965,
+  "current_price": 87.485,
+  "rank": 59,
+  "composite_score": 61.62,
   "pillar_scores": {
     "quality": 87.97,
-    "value": 74.47,
+    "value": 74.89,
     "growth": 46.2,
-    "momentum": 14.84,
+    "momentum": 14.59,
     "health": 55.62,
     "profitability": 70.46,
-    "technical": 49.75,
-    "risk": 34.56,
+    "technical": 34.84,
+    "risk": 33.8,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 3.73,
     "eps_diluted": 3.71,
     "shares_outstanding": 358300000.0,
-    "market_cap": 32467353734.588623,
-    "pe_ratio_ttm": 24.424527726083433,
+    "market_cap": 31345875718.688965,
+    "pe_ratio_ttm": 23.58086269820797,
     "goodwill": 4526600000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 438.01380830652573,
+        "value": 438.24680919520904,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 76.9083486041655,
+        "value": 76.35986877618262,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 341.13260746193293,
+        "value": 340.6868839636244,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,12 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 209.02047803304922,
-    "max": 438.01380830652573,
+    "median": 208.5233763699035,
+    "max": 340.6868839636244,
     "low": 46.073946117740846,
-    "high": 438.01380830652573,
-    "mos_pct": 56.64778938576441,
+    "high": 438.24680919520904,
+    "mos_pct": 58.045470904345855,
     "valuation_warnings": [
+      "extreme_multiples_pe_estimate",
       "value_trap_risk"
     ]
   },
@@ -99,6 +100,7 @@
   },
   "risk_flags": [],
   "valuation_warnings": [
+    "extreme_multiples_pe_estimate",
     "value_trap_risk"
   ],
   "has_history": true,
@@ -116,13 +118,15 @@
       "Quality": 49.05,
       "Value": 50.42,
       "Growth": 49.05,
-      "Momentum": 58.17,
+      "Momentum": 57.92,
       "Health": 47.85,
       "Profitability": 53.16,
-      "Technical": 51.15,
-      "Risk": 55.11
+      "Technical": 50.05,
+      "Risk": 55.61
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

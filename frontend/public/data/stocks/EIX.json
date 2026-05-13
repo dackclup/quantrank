@@ -3,19 +3,19 @@
   "name": "Edison International",
   "sector": "Utilities",
   "industry": "Electric Utilities",
-  "market_cap": 27193387105.89125,
-  "current_price": 70.67,
+  "market_cap": 27197235867.30979,
+  "current_price": 70.68,
   "rank": 21,
-  "composite_score": 65.91,
+  "composite_score": 65.92,
   "pillar_scores": {
     "quality": 72.58,
     "value": 72.04,
     "growth": 79.84,
-    "momentum": 75.3,
+    "momentum": 75.35,
     "health": 11.04,
     "profitability": 58.6,
-    "technical": 67.03,
-    "risk": 59.5,
+    "technical": 66.98,
+    "risk": 59.63,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.38,
     "eps_diluted": 1.37,
     "shares_outstanding": 384793941.0,
-    "market_cap": 27193387105.89125,
-    "pe_ratio_ttm": 51.58394026930314,
+    "market_cap": 27197235867.30979,
+    "pe_ratio_ttm": 51.59124109866845,
     "goodwill": null
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 85.30943545654948,
+        "value": 85.54943322039416,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 105.59217882787263,
+        "value": 105.96733111459726,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 222.96455695397697,
+        "value": 224.11326255960918,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 95.45080714221106,
-    "max": 222.96455695397697,
+    "median": 95.75838216749571,
+    "max": 224.11326255960918,
     "low": 77.88691486798817,
-    "high": 222.96455695397697,
-    "mos_pct": 25.961864247355297,
+    "high": 224.11326255960918,
+    "mos_pct": 26.189228864011188,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -93,7 +93,8 @@
       "research_and_development",
       "sga_expense",
       "goodwill",
-      "intangibles_net"
+      "intangibles_net",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
@@ -121,13 +122,15 @@
       "Quality": 51.61,
       "Value": 47.85,
       "Growth": 50.81,
-      "Momentum": 62.95,
+      "Momentum": 62.7,
       "Health": 19.4,
       "Profitability": 51.61,
-      "Technical": 41.93,
-      "Risk": 72.21
+      "Technical": 42.98,
+      "Risk": 72.44
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

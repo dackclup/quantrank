@@ -3,19 +3,19 @@
   "name": "American Tower",
   "sector": "Real Estate",
   "industry": "Telecom Tower REITs",
-  "market_cap": 80376285434.41772,
-  "current_price": 172.485,
-  "rank": 269,
-  "composite_score": 49.6,
+  "market_cap": 80951783368.83545,
+  "current_price": 173.72,
+  "rank": 262,
+  "composite_score": 49.89,
   "pillar_scores": {
     "quality": 70.97,
     "value": 43.01,
     "growth": 68.55,
-    "momentum": 31.67,
+    "momentum": 31.92,
     "health": 7.11,
     "profitability": 60.75,
-    "technical": 34.21,
-    "risk": 44.26,
+    "technical": 38.84,
+    "risk": 44.99,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.84,
     "eps_diluted": 1.84,
     "shares_outstanding": 465990000.0,
-    "market_cap": 80376285434.41772,
-    "pe_ratio_ttm": 93.74184815779975,
+    "market_cap": 80951783368.83545,
+    "pe_ratio_ttm": 94.41304414168647,
     "goodwill": 12192700000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 239.4352477536981,
+        "value": 237.44089562221714,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 17.370330607186872,
+        "value": 17.309650935474213,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 384.2529684252776,
+        "value": 380.9025158943058,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 128.40278918044248,
-    "max": 384.2529684252776,
+    "median": 127.37527327884568,
+    "max": 380.9025158943058,
     "low": 13.641444753685777,
-    "high": 384.2529684252776,
-    "mos_pct": -34.33119460353857,
+    "high": 380.9025158943058,
+    "mos_pct": -36.38439922354562,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate",
       "extreme_dcf_estimate",
@@ -92,7 +92,8 @@
     "missing_metrics": [
       "gross_profit",
       "research_and_development",
-      "inventory"
+      "inventory",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
@@ -122,13 +123,15 @@
       "Quality": 46.77,
       "Value": 47.85,
       "Growth": 51.61,
-      "Momentum": 53.88,
+      "Momentum": 53.04,
       "Health": 27.89,
       "Profitability": 52.69,
-      "Technical": 59.31,
-      "Risk": 53.42
+      "Technical": 60.51,
+      "Risk": 53.92
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

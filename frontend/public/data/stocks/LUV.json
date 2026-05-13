@@ -3,19 +3,19 @@
   "name": "Southwest Airlines",
   "sector": "Industrials",
   "industry": "Passenger Airlines",
-  "market_cap": 29232011024.475098,
-  "current_price": 39.185,
-  "rank": 420,
-  "composite_score": 41.2,
+  "market_cap": 29549060455.322266,
+  "current_price": 39.61,
+  "rank": 421,
+  "composite_score": 41.28,
   "pillar_scores": {
     "quality": 28.48,
-    "value": 65.19,
+    "value": 64.35,
     "growth": 37.97,
-    "momentum": 43.63,
+    "momentum": 44.02,
     "health": 23.71,
     "profitability": 33.33,
-    "technical": 55.63,
-    "risk": 33.6,
+    "technical": 59.61,
+    "risk": 34.33,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.45,
     "eps_diluted": 0.45,
     "shares_outstanding": 746000000.0,
-    "market_cap": 29232011024.475098,
-    "pe_ratio_ttm": 87.07778082953558,
+    "market_cap": 29549060455.322266,
+    "pe_ratio_ttm": 88.02222357855902,
     "goodwill": 970000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 53.12835949809612,
+        "value": 53.156621061413496,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 64.61060339061473,
+        "value": 64.3394462795538,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 59.07755903038214,
+        "value": 58.99941949045753,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 56.10295926423913,
-    "max": 64.61060339061473,
+    "median": 56.078020275935515,
+    "max": 64.3394462795538,
     "low": 11.413265704795334,
-    "high": 64.61060339061473,
-    "mos_pct": 30.1551970035418,
+    "high": 64.3394462795538,
+    "mos_pct": 29.366264330573728,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -93,7 +93,8 @@
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
-      "inventory"
+      "inventory",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 20,
@@ -119,13 +120,15 @@
       "Quality": 49.05,
       "Value": 50.42,
       "Growth": 49.05,
-      "Momentum": 58.17,
+      "Momentum": 57.92,
       "Health": 47.85,
       "Profitability": 53.16,
-      "Technical": 51.15,
-      "Risk": 55.11
+      "Technical": 50.05,
+      "Risk": 55.61
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

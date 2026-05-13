@@ -3,19 +3,19 @@
   "name": "Cigna",
   "sector": "Health Care",
   "industry": "Health Care Services",
-  "market_cap": 79608283204.83398,
-  "current_price": 302.16,
+  "market_cap": 79006267000.0,
+  "current_price": 299.875,
   "rank": 82,
-  "composite_score": 59.17,
+  "composite_score": 59.18,
   "pillar_scores": {
     "quality": 59.75,
     "value": 83.62,
     "growth": 57.63,
-    "momentum": 42.78,
+    "momentum": 42.18,
     "health": 26.77,
     "profitability": 64.41,
-    "technical": 58.49,
-    "risk": 46.68,
+    "technical": 60.21,
+    "risk": 46.61,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 6.3,
     "eps_diluted": 6.26,
     "shares_outstanding": 263464000.0,
-    "market_cap": 79608283204.83398,
-    "pe_ratio_ttm": 48.26837119203025,
+    "market_cap": 79006267000.0,
+    "pe_ratio_ttm": 47.90335463258786,
     "goodwill": 45534000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 569.9445469018184,
+        "value": 570.6084834012117,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 537.7838951094766,
+        "value": 529.4278114032184,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 433.23296208458214,
+        "value": 432.43678311752103,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 537.7838951094766,
-    "max": 569.9445469018184,
-    "low": 433.23296208458214,
-    "high": 569.9445469018184,
-    "mos_pct": 43.81386158828748,
+    "median": 529.4278114032184,
+    "max": 570.6084834012117,
+    "low": 432.43678311752103,
+    "high": 570.6084834012117,
+    "mos_pct": 43.35866126768098,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -92,7 +92,8 @@
       "gross_profit",
       "research_and_development",
       "interest_expense",
-      "accounts_receivable"
+      "accounts_receivable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
@@ -116,15 +117,17 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 51.27,
-      "Value": 51.69,
+      "Value": 52.82,
       "Growth": 50.0,
-      "Momentum": 39.29,
+      "Momentum": 40.24,
       "Health": 60.08,
       "Profitability": 52.54,
-      "Technical": 54.48,
-      "Risk": 40.01
+      "Technical": 56.37,
+      "Risk": 39.94
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "Kinder Morgan",
   "sector": "Energy",
   "industry": "Oil & Gas Storage & Transportation",
-  "market_cap": 71950350144.65904,
-  "current_price": 32.34,
-  "rank": 445,
-  "composite_score": 39.07,
+  "market_cap": 72617791395.36385,
+  "current_price": 32.64,
+  "rank": 447,
+  "composite_score": 38.75,
   "pillar_scores": {
     "quality": 17.86,
-    "value": 38.89,
+    "value": 37.3,
     "growth": 55.95,
-    "momentum": 68.73,
+    "momentum": 69.07,
     "health": 8.17,
     "profitability": 38.1,
-    "technical": 68.68,
-    "risk": 85.06,
+    "technical": 68.38,
+    "risk": 85.46,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.44,
     "eps_diluted": 0.44,
     "shares_outstanding": 2224809827.0,
-    "market_cap": 71950350144.65904,
-    "pe_ratio_ttm": 73.50000034679066,
+    "market_cap": 72617791395.36385,
+    "pe_ratio_ttm": 74.18181679465555,
     "goodwill": 20084000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 39.976999773298,
+        "value": 40.175714765276226,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 39.4664458424723,
+        "value": 39.7489450798099,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 24.714674109586316,
+        "value": 24.6562306778955,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 24.714674109586316,
-    "max": 39.976999773298,
+    "median": 24.6562306778955,
+    "max": 40.175714765276226,
     "low": 1.7185347275684686,
-    "high": 39.976999773298,
-    "mos_pct": -30.853435530610003,
+    "high": 40.175714765276226,
+    "mos_pct": -32.38032940254102,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_dcf_estimate",
@@ -91,7 +91,8 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
-      "research_and_development"
+      "research_and_development",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 19,
@@ -121,13 +122,15 @@
       "Quality": 50.0,
       "Value": 50.79,
       "Growth": 53.57,
-      "Momentum": 76.69,
+      "Momentum": 77.09,
       "Health": 50.4,
       "Profitability": 52.38,
-      "Technical": 59.36,
+      "Technical": 59.61,
       "Risk": 65.64
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "Elevance Health",
   "sector": "Health Care",
   "industry": "Managed Health Care",
-  "market_cap": 84669373394.7984,
-  "current_price": 389.52,
-  "rank": 132,
-  "composite_score": 56.48,
+  "market_cap": 85946413297.0484,
+  "current_price": 395.395,
+  "rank": 128,
+  "composite_score": 56.56,
   "pillar_scores": {
     "quality": 55.93,
-    "value": 80.51,
+    "value": 80.23,
     "growth": 35.17,
-    "momentum": 39.29,
+    "momentum": 40.24,
     "health": 51.59,
     "profitability": 58.76,
     "technical": 70.77,
-    "risk": 34.83,
+    "risk": 35.59,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 8.03,
     "eps_diluted": 8.0,
     "shares_outstanding": 217368494.0,
-    "market_cap": 84669373394.7984,
-    "pe_ratio_ttm": 48.689998626708984,
+    "market_cap": 85946413297.0484,
+    "pe_ratio_ttm": 49.424373626708984,
     "goodwill": 28340000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 728.3636382131865,
+        "value": 729.212119362571,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 677.9558777269583,
+        "value": 667.4218023949273,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 527.9873421303878,
+        "value": 527.0977162208648,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 414.98499075950224,
-    "max": 728.3636382131865,
+    "median": 414.5401778047407,
+    "max": 729.212119362571,
     "low": 23.9238220384431,
-    "high": 728.3636382131865,
-    "mos_pct": 6.136366932024341,
+    "high": 729.212119362571,
+    "mos_pct": 4.618415732934513,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
@@ -93,7 +93,8 @@
       "research_and_development",
       "inventory",
       "accounts_receivable",
-      "accounts_payable"
+      "accounts_payable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 21,
@@ -118,15 +119,17 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 51.27,
-      "Value": 51.69,
+      "Value": 52.82,
       "Growth": 50.0,
-      "Momentum": 39.29,
+      "Momentum": 40.24,
       "Health": 60.08,
       "Profitability": 52.54,
-      "Technical": 54.48,
-      "Risk": 40.01
+      "Technical": 56.37,
+      "Risk": 39.94
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

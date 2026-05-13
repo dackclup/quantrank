@@ -3,19 +3,19 @@
   "name": "APA Corporation",
   "sector": "Energy",
   "industry": "Oil & Gas Exploration & Production",
-  "market_cap": 12780849508.511215,
-  "current_price": 36.21,
-  "rank": 56,
-  "composite_score": 61.71,
+  "market_cap": 12922035905.492523,
+  "current_price": 36.61,
+  "rank": 52,
+  "composite_score": 61.99,
   "pillar_scores": {
     "quality": 63.1,
     "value": 69.05,
     "growth": 54.76,
-    "momentum": 81.52,
+    "momentum": 82.37,
     "health": 34.5,
     "profitability": 57.94,
-    "technical": 53.34,
-    "risk": 54.7,
+    "technical": 56.82,
+    "risk": 54.76,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.26,
     "eps_diluted": 1.26,
     "shares_outstanding": 352964646.0,
-    "market_cap": 12780849508.511215,
-    "pe_ratio_ttm": 28.738094511486235,
+    "market_cap": 12922035905.492523,
+    "pe_ratio_ttm": 29.05555603996156,
     "goodwill": 0.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 63.98539531602347,
+        "value": 64.05907895354343,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 30.948910493280113,
+        "value": 31.265513619686335,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 199.13067741142535,
+        "value": 200.6363194149993,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 55.05606371745688,
-    "max": 63.98539531602347,
-    "low": 30.948910493280113,
-    "high": 199.13067741142535,
-    "mos_pct": 34.23067934841956,
+    "median": 55.09290553621686,
+    "max": 64.05907895354343,
+    "low": 31.265513619686335,
+    "high": 200.6363194149993,
+    "mos_pct": 33.54861165148577,
     "valuation_warnings": [
       "extreme_multiples_ev_ebitda_estimate",
       "value_trap_risk"
@@ -97,7 +97,8 @@
       "cost_of_revenue",
       "research_and_development",
       "interest_expense",
-      "intangibles_net"
+      "intangibles_net",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
@@ -124,13 +125,15 @@
       "Quality": 50.0,
       "Value": 50.79,
       "Growth": 53.57,
-      "Momentum": 76.69,
+      "Momentum": 77.09,
       "Health": 50.4,
       "Profitability": 52.38,
-      "Technical": 59.36,
+      "Technical": 59.61,
       "Risk": 65.64
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

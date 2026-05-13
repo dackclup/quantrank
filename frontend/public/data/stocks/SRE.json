@@ -3,19 +3,19 @@
   "name": "Sempra",
   "sector": "Utilities",
   "industry": "Multi-Utilities",
-  "market_cap": 60604209202.17378,
-  "current_price": 92.76,
-  "rank": 356,
-  "composite_score": 45.43,
+  "market_cap": 60525806103.95035,
+  "current_price": 92.64,
+  "rank": 357,
+  "composite_score": 45.4,
   "pillar_scores": {
     "quality": 37.1,
     "value": 47.85,
     "growth": 20.16,
-    "momentum": 65.84,
+    "momentum": 65.94,
     "health": 53.23,
     "profitability": 43.01,
-    "technical": 59.76,
-    "risk": 72.41,
+    "technical": 58.81,
+    "risk": 72.44,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.59,
     "eps_diluted": 1.58,
     "shares_outstanding": 653344198.0,
-    "market_cap": 60604209202.17378,
-    "pe_ratio_ttm": 58.70886211153827,
+    "market_cap": 60525806103.95035,
+    "pe_ratio_ttm": 58.6329110061066,
     "goodwill": 0.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 137.5916641553243,
+        "value": 138.92479769388837,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 109.69451066786274,
+        "value": 109.90098149592944,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 109.69451066786274,
-    "max": 137.5916641553243,
+    "median": 109.90098149592944,
+    "max": 138.92479769388837,
     "low": 66.52976406231595,
-    "high": 137.5916641553243,
-    "mos_pct": 15.437881466017231,
+    "high": 138.92479769388837,
+    "mos_pct": 15.705939902748117,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -96,7 +96,8 @@
       "sga_expense",
       "accounts_payable",
       "long_term_debt",
-      "ebitda"
+      "ebitda",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
@@ -122,13 +123,15 @@
       "Quality": 51.61,
       "Value": 47.85,
       "Growth": 50.81,
-      "Momentum": 62.95,
+      "Momentum": 62.7,
       "Health": 19.4,
       "Profitability": 51.61,
-      "Technical": 41.93,
-      "Risk": 72.21
+      "Technical": 42.98,
+      "Risk": 72.44
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

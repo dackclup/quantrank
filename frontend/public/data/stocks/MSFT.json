@@ -3,19 +3,19 @@
   "name": "Microsoft",
   "sector": "Information Technology",
   "industry": "Systems Software",
-  "market_cap": 2989838095245.3613,
-  "current_price": 402.455,
-  "rank": 74,
-  "composite_score": 60.39,
+  "market_cap": 3013143045989.99,
+  "current_price": 405.592,
+  "rank": 72,
+  "composite_score": 60.75,
   "pillar_scores": {
     "quality": 69.52,
     "value": 67.12,
     "growth": 57.53,
-    "momentum": 23.26,
+    "momentum": 23.56,
     "health": 77.69,
     "profitability": 72.15,
-    "technical": 41.88,
-    "risk": 45.32,
+    "technical": 47.91,
+    "risk": 45.78,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 13.19,
     "eps_diluted": 13.14,
     "shares_outstanding": 7429000000.0,
-    "market_cap": 2989838095245.3613,
-    "pe_ratio_ttm": 30.62823337688475,
+    "market_cap": 3013143045989.99,
+    "pe_ratio_ttm": 30.866971879607828,
     "goodwill": 119661000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 1165.2304359146685,
+        "value": 1190.4539967469018,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 618.185734359587,
+        "value": 605.546918876825,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 1235.4644345435067,
+        "value": 1232.1315027419903,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 364.6318486626634,
-    "max": 1235.4644345435067,
+    "median": 358.3124409212824,
+    "max": 1232.1315027419903,
     "low": 63.88113174181909,
-    "high": 1235.4644345435067,
-    "mos_pct": -10.372966061062328,
+    "high": 1232.1315027419903,
+    "mos_pct": -13.195067817126477,
     "valuation_warnings": [
       "extreme_rim_estimate"
     ]
@@ -87,7 +87,9 @@
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
-    "missing_metrics": [],
+    "missing_metrics": [
+      "property_plant_equipment"
+    ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
     "latest_period_end": "2026-03-31",
@@ -112,13 +114,15 @@
       "Quality": 51.71,
       "Value": 50.46,
       "Growth": 52.74,
-      "Momentum": 44.32,
+      "Momentum": 44.47,
       "Health": 66.93,
       "Profitability": 53.2,
-      "Technical": 64.14,
-      "Risk": 45.48
+      "Technical": 64.94,
+      "Risk": 46.71
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

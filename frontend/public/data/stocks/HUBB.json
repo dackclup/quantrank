@@ -3,19 +3,19 @@
   "name": "Hubbell Incorporated",
   "sector": "Industrials",
   "industry": "Industrial Machinery & Supplies & Components",
-  "market_cap": 25874159446.26831,
-  "current_price": 485.865,
-  "rank": 268,
-  "composite_score": 49.63,
+  "market_cap": 25689635206.96457,
+  "current_price": 482.4,
+  "rank": 273,
+  "composite_score": 49.45,
   "pillar_scores": {
     "quality": 43.99,
-    "value": 39.87,
+    "value": 39.03,
     "growth": 58.86,
-    "momentum": 71.81,
+    "momentum": 71.46,
     "health": 53.78,
     "profitability": 50.0,
-    "technical": 30.1,
-    "risk": 59.1,
+    "technical": 31.52,
+    "risk": 58.73,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 3.42,
     "eps_diluted": 3.41,
     "shares_outstanding": 53253805.0,
-    "market_cap": 25874159446.26831,
-    "pe_ratio_ttm": 142.48240182826245,
+    "market_cap": 25689635206.96457,
+    "pe_ratio_ttm": 141.46627386993677,
     "goodwill": 3059600000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 402.5949019744617,
+        "value": 399.5430882558102,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 315.52207490278465,
+        "value": 313.3388159318716,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 366.12748159395596,
+        "value": 361.7207864223815,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 366.12748159395596,
-    "max": 402.5949019744617,
-    "low": 315.52207490278465,
-    "high": 402.5949019744617,
-    "mos_pct": -32.70377523127607,
+    "median": 361.7207864223815,
+    "max": 399.5430882558102,
+    "low": 313.3388159318716,
+    "high": 399.5430882558102,
+    "mos_pct": -33.362530438929696,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -87,7 +87,8 @@
   "data_quality": {
     "missing_metrics": [
       "research_and_development",
-      "accounts_receivable"
+      "accounts_receivable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 12,
@@ -111,13 +112,15 @@
       "Quality": 49.05,
       "Value": 50.42,
       "Growth": 49.05,
-      "Momentum": 58.17,
+      "Momentum": 57.92,
       "Health": 47.85,
       "Profitability": 53.16,
-      "Technical": 51.15,
-      "Risk": 55.11
+      "Technical": 50.05,
+      "Risk": 55.61
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

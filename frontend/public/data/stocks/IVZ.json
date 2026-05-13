@@ -3,19 +3,19 @@
   "name": "Invesco",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 12274977236.747742,
-  "current_price": 27.69,
-  "rank": 226,
-  "composite_score": 51.62,
+  "market_cap": 12370286804.389954,
+  "current_price": 27.905,
+  "rank": 241,
+  "composite_score": 51.05,
   "pillar_scores": {
     "quality": 30.67,
-    "value": 75.56,
+    "value": 73.11,
     "growth": 42.0,
-    "momentum": 58.32,
+    "momentum": 58.67,
     "health": 64.22,
     "profitability": 35.56,
-    "technical": 61.63,
-    "risk": 51.33,
+    "technical": 60.01,
+    "risk": 51.63,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.51,
     "eps_diluted": 0.51,
     "shares_outstanding": 443300000.0,
-    "market_cap": 12274977236.747742,
-    "pe_ratio_ttm": 54.29411869423062,
+    "market_cap": 12370286804.389954,
+    "pe_ratio_ttm": 54.715687620873545,
     "goodwill": 8415900000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 30.444124748660315,
+        "value": 30.68284603954932,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 79.20684727230329,
+        "value": 78.74325101363262,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 54.825486010481804,
-    "max": 79.20684727230329,
-    "low": 30.444124748660315,
-    "high": 79.20684727230329,
-    "mos_pct": 49.494290796138664,
+    "median": 54.71304852659097,
+    "max": 78.74325101363262,
+    "low": 30.68284603954932,
+    "high": 78.74325101363262,
+    "mos_pct": 48.997540005317994,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -91,7 +91,8 @@
       "gross_profit",
       "cost_of_revenue",
       "research_and_development",
-      "inventory"
+      "inventory",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
@@ -117,13 +118,15 @@
       "Quality": 50.67,
       "Value": 49.56,
       "Growth": 52.67,
-      "Momentum": 53.34,
+      "Momentum": 52.84,
       "Health": 54.68,
       "Profitability": 49.78,
-      "Technical": 49.8,
-      "Risk": 55.05
+      "Technical": 48.11,
+      "Risk": 54.98
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

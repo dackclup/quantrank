@@ -3,19 +3,19 @@
   "name": "Valero Energy",
   "sector": "Energy",
   "industry": "Oil & Gas Refining & Marketing",
-  "market_cap": 165506285163.47473,
-  "current_price": 245.74,
-  "rank": 195,
-  "composite_score": 53.1,
+  "market_cap": 164334388692.0,
+  "current_price": 244.0,
+  "rank": 197,
+  "composite_score": 53.01,
   "pillar_scores": {
     "quality": 46.43,
     "value": 31.75,
     "growth": 51.19,
-    "momentum": 90.99,
+    "momentum": 89.89,
     "health": 64.82,
     "profitability": 46.83,
-    "technical": 66.14,
-    "risk": 72.05,
+    "technical": 67.28,
+    "risk": 71.75,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 4.22,
     "eps_diluted": 4.22,
     "shares_outstanding": 673501593.0,
-    "market_cap": 165506285163.47473,
-    "pe_ratio_ttm": 58.23222878984931,
+    "market_cap": 164334388692.0,
+    "pe_ratio_ttm": 57.81990521327015,
     "goodwill": 260000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 383.4157705529944,
+        "value": 385.3216279760583,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 87.437154553002,
+        "value": 87.6419802558328,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 112.36714070934626,
+        "value": 112.20512733536845,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 103.64239574895252,
-    "max": 383.4157705529944,
+    "max": 385.3216279760583,
     "low": 52.73356627050889,
-    "high": 383.4157705529944,
-    "mos_pct": -137.10374863237146,
+    "high": 385.3216279760583,
+    "mos_pct": -135.42489368060174,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -88,7 +88,8 @@
     "missing_metrics": [
       "revenue",
       "total_liabilities",
-      "research_and_development"
+      "research_and_development",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
@@ -112,13 +113,15 @@
       "Quality": 50.0,
       "Value": 50.79,
       "Growth": 53.57,
-      "Momentum": 76.69,
+      "Momentum": 77.09,
       "Health": 50.4,
       "Profitability": 52.38,
-      "Technical": 59.36,
+      "Technical": 59.61,
       "Risk": 65.64
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

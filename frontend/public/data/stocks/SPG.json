@@ -3,19 +3,19 @@
   "name": "Simon Property Group",
   "sector": "Real Estate",
   "industry": "Retail REITs",
-  "market_cap": 1632319.9462890625,
-  "current_price": 204.04,
-  "rank": 9,
-  "composite_score": 69.08,
+  "market_cap": 1618319.9462890625,
+  "current_price": 202.29,
+  "rank": 11,
+  "composite_score": 69.0,
   "pillar_scores": {
     "quality": 72.58,
-    "value": 86.02,
+    "value": 86.56,
     "growth": 71.77,
-    "momentum": 76.0,
+    "momentum": 74.35,
     "health": 20.8,
     "profitability": 63.44,
-    "technical": 51.2,
-    "risk": 71.78,
+    "technical": 51.59,
+    "risk": 71.41,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.48,
     "eps_diluted": 1.48,
     "shares_outstanding": 8000.0,
-    "market_cap": 1632319.9462890625,
-    "pe_ratio_ttm": 137.86486032846813,
+    "market_cap": 1618319.9462890625,
+    "pe_ratio_ttm": 136.68242789603568,
     "goodwill": 20098000.0
   },
   "fair_price": {
@@ -99,7 +99,8 @@
       "accounts_receivable",
       "accounts_payable",
       "short_term_debt",
-      "intangibles_net"
+      "intangibles_net",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 2,
@@ -128,13 +129,15 @@
       "Quality": 46.77,
       "Value": 47.85,
       "Growth": 51.61,
-      "Momentum": 53.88,
+      "Momentum": 53.04,
       "Health": 27.89,
       "Profitability": 52.69,
-      "Technical": 59.31,
-      "Risk": 53.42
+      "Technical": 60.51,
+      "Risk": 53.92
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

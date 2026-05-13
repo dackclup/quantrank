@@ -3,19 +3,19 @@
   "name": "Regions Financial Corporation",
   "sector": "Financials",
   "industry": "Regional Banks",
-  "market_cap": 24103347142.489544,
-  "current_price": 26.965,
-  "rank": 313,
-  "composite_score": 47.5,
+  "market_cap": 23915632446.49501,
+  "current_price": 26.755,
+  "rank": 320,
+  "composite_score": 47.32,
   "pillar_scores": {
     "quality": 43.33,
     "value": 54.44,
     "growth": 37.67,
-    "momentum": 56.77,
+    "momentum": 56.52,
     "health": 45.94,
     "profitability": 47.78,
-    "technical": 34.01,
-    "risk": 59.99,
+    "technical": 31.47,
+    "risk": 59.46,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.63,
     "eps_diluted": 0.62,
     "shares_outstanding": 893875283.0,
-    "market_cap": 24103347142.489544,
-    "pe_ratio_ttm": 43.49193572998047,
+    "market_cap": 23915632446.49501,
+    "pe_ratio_ttm": 43.15322445284936,
     "goodwill": 5733000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 33.69429669163353,
+        "value": 33.37468687331581,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 43.58256405323031,
+        "value": 43.63478283516026,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 29.95164596347588,
-    "max": 43.58256405323031,
+    "median": 29.79184105431702,
+    "max": 43.63478283516026,
     "low": 15.025471630732076,
-    "high": 43.58256405323031,
-    "mos_pct": 9.971558205949727,
+    "high": 43.63478283516026,
+    "mos_pct": 10.19353549857356,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -97,7 +97,8 @@
       "current_liabilities",
       "inventory",
       "accounts_receivable",
-      "accounts_payable"
+      "accounts_payable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
@@ -121,13 +122,15 @@
       "Quality": 50.67,
       "Value": 49.56,
       "Growth": 52.67,
-      "Momentum": 53.34,
+      "Momentum": 52.84,
       "Health": 54.68,
       "Profitability": 49.78,
-      "Technical": 49.8,
-      "Risk": 55.05
+      "Technical": 48.11,
+      "Risk": 54.98
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

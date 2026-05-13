@@ -3,19 +3,19 @@
   "name": "Assurant",
   "sector": "Financials",
   "industry": "Multi-line Insurance",
-  "market_cap": 12168194438.993744,
-  "current_price": 244.975,
-  "rank": 51,
-  "composite_score": 62.28,
+  "market_cap": 11974476432.940628,
+  "current_price": 241.075,
+  "rank": 47,
+  "composite_score": 62.55,
   "pillar_scores": {
     "quality": 56.0,
-    "value": 67.56,
+    "value": 69.56,
     "growth": 74.0,
-    "momentum": 64.14,
+    "momentum": 61.9,
     "health": 57.51,
     "profitability": 43.56,
-    "technical": 70.22,
-    "risk": 64.67,
+    "technical": 73.01,
+    "risk": 63.81,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 5.47,
     "eps_diluted": 5.41,
     "shares_outstanding": 49671167.0,
-    "market_cap": 12168194438.993744,
-    "pe_ratio_ttm": 45.281886525603625,
+    "market_cap": 11974476432.940628,
+    "pe_ratio_ttm": 44.56099758747545,
     "goodwill": 2654500000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 294.0099114544152,
+        "value": 291.2210580397396,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 244.76291105208819,
+        "value": 245.4294247999274,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 188.89042053731987,
-    "max": 294.0099114544152,
+    "median": 189.22367741123946,
+    "max": 291.2210580397396,
     "low": 62.05932550946824,
-    "high": 294.0099114544152,
-    "mos_pct": -29.691598656330427,
+    "high": 291.2210580397396,
+    "mos_pct": -27.402130772627544,
     "valuation_warnings": [
       "goodwill_heavy"
     ]
@@ -98,7 +98,8 @@
       "accounts_receivable",
       "accounts_payable",
       "short_term_debt",
-      "ebitda"
+      "ebitda",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
@@ -124,13 +125,15 @@
       "Quality": 50.67,
       "Value": 49.56,
       "Growth": 52.67,
-      "Momentum": 53.34,
+      "Momentum": 52.84,
       "Health": 54.68,
       "Profitability": 49.78,
-      "Technical": 49.8,
-      "Risk": 55.05
+      "Technical": 48.11,
+      "Risk": 54.98
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "W. W. Grainger",
   "sector": "Industrials",
   "industry": "Industrial Machinery & Supplies & Components",
-  "market_cap": 135818431046.90405,
-  "current_price": 1238.55,
-  "rank": 84,
-  "composite_score": 59.07,
+  "market_cap": 136693509472.74243,
+  "current_price": 1246.53,
+  "rank": 83,
+  "composite_score": 59.13,
   "pillar_scores": {
     "quality": 83.86,
     "value": 16.03,
     "growth": 56.33,
-    "momentum": 75.35,
+    "momentum": 75.25,
     "health": 68.17,
     "profitability": 61.6,
-    "technical": 56.23,
-    "risk": 65.57,
+    "technical": 57.12,
+    "risk": 66.37,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 11.67,
     "eps_diluted": 11.65,
     "shares_outstanding": 109659219.0,
-    "market_cap": 135818431046.90405,
-    "pe_ratio_ttm": 106.31330891228541,
+    "market_cap": 136693509472.74243,
+    "pe_ratio_ttm": 106.99828577655579,
     "goodwill": 358000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 1438.8083182198661,
+        "value": 1429.6879634312222,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 159.7893209022721,
+        "value": 158.6836566839334,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 489.1231978723796,
+        "value": 483.4759141245405,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 158.84692131809678,
-    "max": 1438.8083182198661,
+    "median": 158.29408920892743,
+    "max": 1429.6879634312222,
     "low": 124.85124629611266,
-    "high": 1438.8083182198661,
-    "mos_pct": -679.7129705446939,
+    "high": 1429.6879634312222,
+    "mos_pct": -687.4773060234858,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_multiples_pb_estimate",
@@ -93,7 +93,8 @@
     "missing_metrics": [
       "total_liabilities",
       "research_and_development",
-      "accounts_payable"
+      "accounts_payable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
@@ -122,13 +123,15 @@
       "Quality": 49.05,
       "Value": 50.42,
       "Growth": 49.05,
-      "Momentum": 58.17,
+      "Momentum": 57.92,
       "Health": 47.85,
       "Profitability": 53.16,
-      "Technical": 51.15,
-      "Risk": 55.11
+      "Technical": 50.05,
+      "Risk": 55.61
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

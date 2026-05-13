@@ -3,19 +3,19 @@
   "name": "Public Storage",
   "sector": "Real Estate",
   "industry": "Self-Storage REITs",
-  "market_cap": 54187873647.5448,
-  "current_price": 308.37,
-  "rank": 90,
-  "composite_score": 58.39,
+  "market_cap": 53932198225.8591,
+  "current_price": 306.915,
+  "rank": 94,
+  "composite_score": 58.32,
   "pillar_scores": {
     "quality": 84.68,
     "value": 43.55,
     "growth": 47.58,
-    "momentum": 63.15,
+    "momentum": 61.95,
     "health": 27.97,
     "profitability": 63.98,
-    "technical": 52.39,
-    "risk": 54.75,
+    "technical": 53.83,
+    "risk": 54.71,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.72,
     "eps_diluted": 2.71,
     "shares_outstanding": 175723561.0,
-    "market_cap": 54187873647.5448,
-    "pe_ratio_ttm": 113.78966609490314,
+    "market_cap": 53932198225.8591,
+    "pe_ratio_ttm": 113.25277068078299,
     "goodwill": 165843000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 352.6464790285445,
+        "value": 349.70914518272195,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 120.62203670817226,
+        "value": 120.2006684709013,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 353.8429506526834,
+        "value": 350.87940624205686,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 120.62203670817226,
-    "max": 353.8429506526834,
+    "median": 120.2006684709013,
+    "max": 350.87940624205686,
     "low": 85.12582354189362,
-    "high": 353.8429506526834,
-    "mos_pct": -155.64979959942522,
+    "high": 350.87940624205686,
+    "mos_pct": -155.33552554179113,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -93,7 +93,8 @@
       "current_liabilities",
       "inventory",
       "accounts_receivable",
-      "accounts_payable"
+      "accounts_payable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 16,
@@ -117,13 +118,15 @@
       "Quality": 46.77,
       "Value": 47.85,
       "Growth": 51.61,
-      "Momentum": 53.88,
+      "Momentum": 53.04,
       "Health": 27.89,
       "Profitability": 52.69,
-      "Technical": 59.31,
-      "Risk": 53.42
+      "Technical": 60.51,
+      "Risk": 53.92
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

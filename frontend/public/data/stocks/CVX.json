@@ -3,19 +3,19 @@
   "name": "Chevron Corporation",
   "sector": "Energy",
   "industry": "Integrated Oil & Gas",
-  "market_cap": 453189559271.897,
-  "current_price": 185.5299,
-  "rank": 321,
-  "composite_score": 47.16,
+  "market_cap": 451748612668.76587,
+  "current_price": 184.94,
+  "rank": 305,
+  "composite_score": 47.86,
   "pillar_scores": {
     "quality": 36.9,
-    "value": 40.48,
+    "value": 43.65,
     "growth": 39.29,
-    "momentum": 74.6,
+    "momentum": 74.9,
     "health": 50.12,
     "profitability": 44.44,
-    "technical": 56.47,
-    "risk": 81.44,
+    "technical": 55.48,
+    "risk": 81.37,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.12,
     "eps_diluted": 1.11,
     "shares_outstanding": 2442676580.0,
-    "market_cap": 453189559271.897,
-    "pe_ratio_ttm": 167.1440605644707,
+    "market_cap": 451748612668.76587,
+    "pe_ratio_ttm": 166.61261481207768,
     "goodwill": 4568000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 82.50831852826205,
+        "value": 82.5436355937611,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 210.83857644250807,
+        "value": 212.34775052127085,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 123.45841023131085,
-    "max": 210.83857644250807,
-    "low": 82.50831852826205,
-    "high": 210.83857644250807,
-    "mos_pct": -50.277252784119696,
+    "max": 212.34775052127085,
+    "low": 82.5436355937611,
+    "high": 212.34775052127085,
+    "mos_pct": -49.79943617847006,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -93,7 +93,8 @@
       "interest_expense",
       "income_before_tax",
       "ebitda",
-      "intangibles_net"
+      "intangibles_net",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
@@ -119,13 +120,15 @@
       "Quality": 50.0,
       "Value": 50.79,
       "Growth": 53.57,
-      "Momentum": 76.69,
+      "Momentum": 77.09,
       "Health": 50.4,
       "Profitability": 52.38,
-      "Technical": 59.36,
+      "Technical": 59.61,
       "Risk": 65.64
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

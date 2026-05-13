@@ -3,19 +3,19 @@
   "name": "Tesla, Inc.",
   "sector": "Consumer Discretionary",
   "industry": "Automobile Manufacturers",
-  "market_cap": 1622272645416.2598,
-  "current_price": 432.03,
+  "market_cap": 1686595813751.2207,
+  "current_price": 449.16,
   "rank": 501,
-  "composite_score": 25.45,
+  "composite_score": 25.75,
   "pillar_scores": {
     "quality": 20.31,
-    "value": 2.26,
+    "value": 1.91,
     "growth": 19.79,
-    "momentum": 30.28,
+    "momentum": 32.97,
     "health": 73.9,
     "profitability": 15.28,
-    "technical": 68.63,
-    "risk": 35.19,
+    "technical": 68.08,
+    "risk": 36.95,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.15,
     "eps_diluted": 0.13,
     "shares_outstanding": 3755000000.0,
-    "market_cap": 1622272645416.2598,
-    "pe_ratio_ttm": 3323.307682917668,
+    "market_cap": 1686595813751.2207,
+    "pe_ratio_ttm": 3455.076951246995,
     "goodwill": 257000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 9.27826016579534,
+        "value": 9.275083243146998,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 136.48361417794285,
+        "value": 132.21700802873173,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 14.358517855418796,
+        "value": 14.336320066974691,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 20.922721392669164,
-    "max": 136.48361417794285,
-    "low": 9.27826016579534,
-    "high": 136.48361417794285,
-    "mos_pct": -1964.8843459277248,
+    "max": 132.21700802873173,
+    "low": 9.275083243146998,
+    "high": 132.21700802873173,
+    "mos_pct": -2046.7570839971352,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_multiples_pe_estimate",
@@ -92,7 +92,8 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "dividends_paid"
+      "dividends_paid",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 20,
@@ -124,13 +125,15 @@
       "Quality": 45.44,
       "Value": 49.31,
       "Growth": 51.04,
-      "Momentum": 36.53,
+      "Momentum": 37.7,
       "Health": 47.32,
       "Profitability": 51.22,
-      "Technical": 31.37,
-      "Risk": 40.11
+      "Technical": 32.77,
+      "Risk": 40.55
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

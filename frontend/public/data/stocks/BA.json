@@ -3,19 +3,19 @@
   "name": "Boeing",
   "sector": "Industrials",
   "industry": "Aerospace & Defense",
-  "market_cap": 237658673674.34964,
-  "current_price": 234.78,
-  "rank": 405,
-  "composite_score": 42.4,
+  "market_cap": 243892383507.01956,
+  "current_price": 240.9382,
+  "rank": 401,
+  "composite_score": 42.69,
   "pillar_scores": {
     "quality": 41.77,
     "value": 27.64,
     "growth": 68.67,
-    "momentum": 51.99,
+    "momentum": 54.38,
     "health": 29.18,
     "profitability": 34.39,
-    "technical": 60.36,
-    "risk": 40.57,
+    "technical": 59.11,
+    "risk": 42.16,
     "sentiment": null,
     "ml": null
   },
@@ -32,7 +32,7 @@
     "eps_basic": -0.11,
     "eps_diluted": -0.11,
     "shares_outstanding": 1012261159.0,
-    "market_cap": 237658673674.34964,
+    "market_cap": 243892383507.01956,
     "pe_ratio_ttm": null,
     "goodwill": 17633000000.0
   },
@@ -51,13 +51,13 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 23.955093096068307,
+        "value": 23.955881860112857,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 93.90555413892156,
+        "value": 92.97962614099349,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 58.930323617494935,
-    "max": 93.90555413892156,
-    "low": 23.955093096068307,
-    "high": 93.90555413892156,
-    "mos_pct": -298.40269723140733,
+    "median": 58.46775400055317,
+    "max": 92.97962614099349,
+    "low": 23.955881860112857,
+    "high": 92.97962614099349,
+    "mos_pct": -312.0873223589491,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate",
       "value_trap_risk"
@@ -90,7 +90,8 @@
   "data_quality": {
     "missing_metrics": [
       "revenue",
-      "inventory"
+      "inventory",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 21,
@@ -119,13 +120,15 @@
       "Quality": 49.05,
       "Value": 50.42,
       "Growth": 49.05,
-      "Momentum": 58.17,
+      "Momentum": 57.92,
       "Health": 47.85,
       "Profitability": 53.16,
-      "Technical": 51.15,
-      "Risk": 55.11
+      "Technical": 50.05,
+      "Risk": 55.61
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

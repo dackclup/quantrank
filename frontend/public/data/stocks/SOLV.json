@@ -3,18 +3,18 @@
   "name": "Solventum",
   "sector": "Health Care",
   "industry": "Health Care Technology",
-  "market_cap": 12980168398.376587,
-  "current_price": 74.8,
+  "market_cap": 12953982160.095154,
+  "current_price": 74.6491,
   "rank": 377,
-  "composite_score": 43.87,
+  "composite_score": 43.97,
   "pillar_scores": {
     "quality": 50.85,
-    "value": 35.88,
+    "value": 36.16,
     "growth": 59.32,
-    "momentum": 27.14,
+    "momentum": 27.39,
     "health": 30.52,
     "profitability": 45.76,
-    "technical": 71.46,
+    "technical": 71.51,
     "risk": 40.64,
     "sentiment": null,
     "ml": null
@@ -32,8 +32,8 @@
     "eps_basic": 0.07,
     "eps_diluted": 0.07,
     "shares_outstanding": 173531656.0,
-    "market_cap": 12980168398.376587,
-    "pe_ratio_ttm": 1068.5714721679688,
+    "market_cap": 12953982160.095154,
+    "pe_ratio_ttm": 1066.4157322474887,
     "goodwill": 5626000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 5.901875019073486,
+        "value": 5.915781021118164,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 96.11784094338799,
+        "value": 94.62436236976082,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 31.541813845680363,
+        "value": 30.97576898895105,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 31.408965551778437,
-    "max": 96.11784094338799,
-    "low": 5.901875019073486,
-    "high": 96.11784094338799,
-    "mos_pct": -138.14857235093655,
+    "median": 31.125943123413776,
+    "max": 94.62436236976082,
+    "low": 5.915781021118164,
+    "high": 94.62436236976082,
+    "mos_pct": -139.82920280147638,
     "valuation_warnings": [
       "extreme_multiples_pe_estimate",
       "value_trap_risk"
@@ -91,7 +91,8 @@
     "missing_metrics": [
       "cost_of_revenue",
       "interest_expense",
-      "dividends_paid"
+      "dividends_paid",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
@@ -118,15 +119,17 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 51.27,
-      "Value": 51.69,
+      "Value": 52.82,
       "Growth": 50.0,
-      "Momentum": 39.29,
+      "Momentum": 40.24,
       "Health": 60.08,
       "Profitability": 52.54,
-      "Technical": 54.48,
-      "Risk": 40.01
+      "Technical": 56.37,
+      "Risk": 39.94
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

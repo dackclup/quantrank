@@ -3,19 +3,19 @@
   "name": "Abbott Laboratories",
   "sector": "Health Care",
   "industry": "Health Care Equipment",
-  "market_cap": 167611841964.96707,
-  "current_price": 83.88,
-  "rank": 496,
-  "composite_score": 31.14,
+  "market_cap": 167509744099.1839,
+  "current_price": 83.8289,
+  "rank": 494,
+  "composite_score": 31.92,
   "pillar_scores": {
     "quality": 30.93,
-    "value": 27.12,
+    "value": 29.94,
     "growth": 26.27,
-    "momentum": 12.5,
+    "momentum": 12.55,
     "health": 61.87,
     "profitability": 35.03,
-    "technical": 37.25,
-    "risk": 38.65,
+    "technical": 39.79,
+    "risk": 38.75,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.62,
     "eps_diluted": 0.61,
     "shares_outstanding": 1998233756.0,
-    "market_cap": 167611841964.96707,
-    "pe_ratio_ttm": 137.508192218718,
+    "market_cap": 167509744099.1839,
+    "pe_ratio_ttm": 137.42443147252817,
     "goodwill": 35221000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 73.07857575510062,
+        "value": 72.43481002105666,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 75.65834020004914,
+        "value": 75.82044241219059,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 46.93436631302819,
+        "value": 47.387354734907696,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 60.006471034064404,
-    "max": 75.65834020004914,
+    "median": 59.91108237798218,
+    "max": 75.82044241219059,
     "low": 42.56841703935983,
-    "high": 75.65834020004914,
-    "mos_pct": -39.78491953942945,
+    "high": 75.82044241219059,
+    "mos_pct": -39.922197815357784,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -87,7 +87,8 @@
   "data_quality": {
     "missing_metrics": [
       "total_liabilities",
-      "accounts_payable"
+      "accounts_payable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
@@ -109,15 +110,17 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 51.27,
-      "Value": 51.69,
+      "Value": 52.82,
       "Growth": 50.0,
-      "Momentum": 39.29,
+      "Momentum": 40.24,
       "Health": 60.08,
       "Profitability": 52.54,
-      "Technical": 54.48,
-      "Risk": 40.01
+      "Technical": 56.37,
+      "Risk": 39.94
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

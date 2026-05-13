@@ -3,19 +3,19 @@
   "name": "KLA Corporation",
   "sector": "Information Technology",
   "industry": "Semiconductor Materials & Equipment",
-  "market_cap": 239175506615.35645,
-  "current_price": 1811.62,
-  "rank": 196,
-  "composite_score": 53.07,
+  "market_cap": 243153360250.0,
+  "current_price": 1841.75,
+  "rank": 191,
+  "composite_score": 53.21,
   "pillar_scores": {
     "quality": 56.85,
-    "value": 19.41,
+    "value": 18.95,
     "growth": 63.7,
-    "momentum": 88.84,
+    "momentum": 90.34,
     "health": 62.39,
     "profitability": 49.54,
-    "technical": 49.3,
-    "risk": 58.6,
+    "technical": 50.5,
+    "risk": 58.63,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 26.41,
     "eps_diluted": 26.26,
     "shares_outstanding": 132023000.0,
-    "market_cap": 239175506615.35645,
-    "pe_ratio_ttm": 68.98781398009092,
+    "market_cap": 243153360250.0,
+    "pe_ratio_ttm": 70.13518659558262,
     "goodwill": 1788483000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 2328.687309522009,
+        "value": 2379.0960391608555,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 438.6874388726103,
+        "value": 442.6306847312729,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 330.111499266146,
+        "value": 331.98101584530366,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 297.9294189198342,
-    "max": 2328.687309522009,
+    "median": 298.864177209413,
+    "max": 2379.0960391608555,
     "low": 126.08621530659819,
-    "high": 2328.687309522009,
-    "mos_pct": -508.0701938349539,
+    "high": 2379.0960391608555,
+    "mos_pct": -516.2498353589874,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_multiples_ev_ebitda_estimate",
@@ -90,7 +90,9 @@
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
-    "missing_metrics": [],
+    "missing_metrics": [
+      "property_plant_equipment"
+    ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
     "latest_period_end": "2026-03-31",
@@ -120,13 +122,15 @@
       "Quality": 51.71,
       "Value": 50.46,
       "Growth": 52.74,
-      "Momentum": 44.32,
+      "Momentum": 44.47,
       "Health": 66.93,
       "Profitability": 53.2,
-      "Technical": 64.14,
-      "Risk": 45.48
+      "Technical": 64.94,
+      "Risk": 46.71
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

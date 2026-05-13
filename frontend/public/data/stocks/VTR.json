@@ -3,19 +3,19 @@
   "name": "Ventas",
   "sector": "Real Estate",
   "industry": "Health Care REITs",
-  "market_cap": 43228606358.34503,
-  "current_price": 88.93,
+  "market_cap": 43748874636.405945,
+  "current_price": 90.0003,
   "rank": 294,
   "composite_score": 48.47,
   "pillar_scores": {
     "quality": 44.35,
     "value": 43.01,
     "growth": 47.18,
-    "momentum": 74.6,
+    "momentum": 74.5,
     "health": 27.89,
     "profitability": 41.4,
-    "technical": 56.37,
-    "risk": 84.86,
+    "technical": 56.42,
+    "risk": 84.93,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.12,
     "eps_diluted": 0.11,
     "shares_outstanding": 486097000.0,
-    "market_cap": 43228606358.34503,
-    "pe_ratio_ttm": 808.4545482288707,
+    "market_cap": 43748874636.405945,
+    "pe_ratio_ttm": 818.1845231489701,
     "goodwill": 1045774000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 13.639731468092089,
+        "value": 13.613742651587408,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 62.04353448835985,
+        "value": 61.82679818150516,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 114.43967721666948,
+        "value": 113.4274322789308,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 37.841632978225974,
-    "max": 114.43967721666948,
+    "median": 37.720270416546285,
+    "max": 113.4274322789308,
     "low": 10.831048726168635,
-    "high": 114.43967721666948,
-    "mos_pct": -135.0057154149399,
+    "high": 113.4274322789308,
+    "mos_pct": -138.59929038819246,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_multiples_pe_estimate",
@@ -98,7 +98,8 @@
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "short_term_debt"
+      "short_term_debt",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
@@ -126,13 +127,15 @@
       "Quality": 46.77,
       "Value": 47.85,
       "Growth": 51.61,
-      "Momentum": 53.88,
+      "Momentum": 53.04,
       "Health": 27.89,
       "Profitability": 52.69,
-      "Technical": 59.31,
-      "Risk": 53.42
+      "Technical": 60.51,
+      "Risk": 53.92
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

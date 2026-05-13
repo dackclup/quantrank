@@ -3,19 +3,19 @@
   "name": "CVS Health",
   "sector": "Health Care",
   "industry": "Health Care Services",
-  "market_cap": 122959065338.13477,
-  "current_price": 96.59,
-  "rank": 322,
-  "composite_score": 47.11,
+  "market_cap": 123013172111.51123,
+  "current_price": 96.6325,
+  "rank": 324,
+  "composite_score": 47.03,
   "pillar_scores": {
     "quality": 30.51,
-    "value": 77.68,
+    "value": 77.4,
     "growth": 21.61,
-    "momentum": 67.53,
+    "momentum": 67.43,
     "health": 24.1,
     "profitability": 30.79,
-    "technical": 72.76,
-    "risk": 56.81,
+    "technical": 72.51,
+    "risk": 56.87,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.31,
     "eps_diluted": 2.3,
     "shares_outstanding": 1273000000.0,
-    "market_cap": 122959065338.13477,
-    "pe_ratio_ttm": 41.99565058169158,
+    "market_cap": 123013172111.51123,
+    "pe_ratio_ttm": 42.01413030209749,
     "goodwill": 85478000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 209.4045459862911,
+        "value": 209.64848431673914,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 204.2398030478817,
+        "value": 201.06632592084657,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 223.83983588101034,
+        "value": 223.44760772302558,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 206.8221745170864,
-    "max": 223.83983588101034,
+    "median": 205.35740511879285,
+    "max": 223.44760772302558,
     "low": 52.37568691006587,
-    "high": 223.83983588101034,
-    "mos_pct": 53.298046225739235,
+    "high": 223.44760772302558,
+    "mos_pct": 52.94423415657919,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -89,7 +89,8 @@
   "data_quality": {
     "missing_metrics": [
       "research_and_development",
-      "sga_expense"
+      "sga_expense",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
@@ -113,15 +114,17 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 51.27,
-      "Value": 51.69,
+      "Value": 52.82,
       "Growth": 50.0,
-      "Momentum": 39.29,
+      "Momentum": 40.24,
       "Health": 60.08,
       "Profitability": 52.54,
-      "Technical": 54.48,
-      "Risk": 40.01
+      "Technical": 56.37,
+      "Risk": 39.94
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

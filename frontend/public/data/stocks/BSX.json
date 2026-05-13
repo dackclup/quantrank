@@ -3,19 +3,19 @@
   "name": "Boston Scientific",
   "sector": "Health Care",
   "industry": "Health Care Equipment",
-  "market_cap": 75108015354.51045,
-  "current_price": 53.675,
-  "rank": 362,
-  "composite_score": 45.13,
+  "market_cap": 75268938464.98746,
+  "current_price": 53.79,
+  "rank": 359,
+  "composite_score": 45.3,
   "pillar_scores": {
     "quality": 33.47,
     "value": 60.17,
     "growth": 72.88,
-    "momentum": 4.73,
+    "momentum": 4.78,
     "health": 75.26,
     "profitability": 37.01,
-    "technical": 34.76,
-    "risk": 29.55,
+    "technical": 37.8,
+    "risk": 29.85,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.9,
     "eps_diluted": 0.9,
     "shares_outstanding": 1399310972.0,
-    "market_cap": 75108015354.51045,
-    "pe_ratio_ttm": 59.63888804117838,
+    "market_cap": 75268938464.98746,
+    "pe_ratio_ttm": 59.766667683919266,
     "goodwill": 18536000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 109.56690424138849,
+        "value": 108.9076224750376,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 59.507765788641045,
+        "value": 59.47151765835789,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 104.44410832532166,
+        "value": 102.95821708299765,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 59.507765788641045,
-    "max": 109.56690424138849,
+    "median": 59.47151765835789,
+    "max": 108.9076224750376,
     "low": 2.4736924784002348,
-    "high": 109.56690424138849,
-    "mos_pct": 9.801689702646957,
+    "high": 108.9076224750376,
+    "mos_pct": 9.553340769725738,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -92,7 +92,8 @@
     "missing_metrics": [
       "total_liabilities",
       "research_and_development",
-      "accounts_receivable"
+      "accounts_receivable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 12,
@@ -118,15 +119,17 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 51.27,
-      "Value": 51.69,
+      "Value": 52.82,
       "Growth": 50.0,
-      "Momentum": 39.29,
+      "Momentum": 40.24,
       "Health": 60.08,
       "Profitability": 52.54,
-      "Technical": 54.48,
-      "Risk": 40.01
+      "Technical": 56.37,
+      "Risk": 39.94
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

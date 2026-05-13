@@ -3,19 +3,19 @@
   "name": "GE Aerospace",
   "sector": "Industrials",
   "industry": "Aerospace & Defense",
-  "market_cap": 306302931441.6448,
-  "current_price": 293.58,
-  "rank": 138,
-  "composite_score": 56.0,
+  "market_cap": 309996354168.7799,
+  "current_price": 297.12,
+  "rank": 134,
+  "composite_score": 56.11,
   "pillar_scores": {
     "quality": 76.27,
-    "value": 44.09,
+    "value": 43.67,
     "growth": 49.05,
-    "momentum": 56.03,
+    "momentum": 56.82,
     "health": 29.12,
     "profitability": 53.38,
-    "technical": 71.02,
-    "risk": 57.9,
+    "technical": 72.91,
+    "risk": 58.3,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.82,
     "eps_diluted": 1.81,
     "shares_outstanding": 1043337235.0,
-    "market_cap": 306302931441.6448,
-    "pe_ratio_ttm": 162.19888760898652,
+    "market_cap": 309996354168.7799,
+    "pe_ratio_ttm": 164.15469343491023,
     "goodwill": 9003000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 158.83812830254368,
+        "value": 159.70844339491035,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 70.09742570885317,
+        "value": 70.09973379126357,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 1145.137065719117,
+        "value": 1149.9221016056474,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 57.8799844177729,
-    "max": 1145.137065719117,
+    "median": 57.88113845897811,
+    "max": 1149.9221016056474,
     "low": 19.140564836035477,
-    "high": 1145.137065719117,
-    "mos_pct": -407.2219516391534,
+    "high": 1149.9221016056474,
+    "mos_pct": -413.3278353323411,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -91,7 +91,8 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "dividends_paid"
+      "dividends_paid",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 22,
@@ -122,13 +123,15 @@
       "Quality": 49.05,
       "Value": 50.42,
       "Growth": 49.05,
-      "Momentum": 58.17,
+      "Momentum": 57.92,
       "Health": 47.85,
       "Profitability": 53.16,
-      "Technical": 51.15,
-      "Risk": 55.11
+      "Technical": 50.05,
+      "Risk": 55.61
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

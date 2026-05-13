@@ -3,19 +3,19 @@
   "name": "MSCI Inc.",
   "sector": "Financials",
   "industry": "Financial Exchanges & Data",
-  "market_cap": 42092096923.828125,
-  "current_price": 577.395,
-  "rank": 428,
-  "composite_score": 40.71,
+  "market_cap": 41033587500.0,
+  "current_price": 562.875,
+  "rank": 437,
+  "composite_score": 39.73,
   "pillar_scores": {
     "quality": 26.67,
     "value": 21.56,
     "growth": 60.67,
-    "momentum": 53.49,
+    "momentum": 51.84,
     "health": 55.26,
     "profitability": 78.22,
-    "technical": 41.36,
-    "risk": 47.38,
+    "technical": 26.79,
+    "risk": 46.05,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 5.54,
     "eps_diluted": 5.53,
     "shares_outstanding": 72900000.0,
-    "market_cap": 42092096923.828125,
-    "pe_ratio_ttm": 104.4113959369349,
+    "market_cap": 41033587500.0,
+    "pe_ratio_ttm": 101.78571428571428,
     "goodwill": 2962300000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 297.9113031038272,
+        "value": 297.2289490395404,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 297.9113031038272,
-    "max": 297.9113031038272,
-    "low": 297.9113031038272,
-    "high": 297.9113031038272,
-    "mos_pct": -93.81440499759015,
+    "median": 297.2289490395404,
+    "max": 297.2289490395404,
+    "low": 297.2289490395404,
+    "high": 297.2289490395404,
+    "mos_pct": -89.37421870206886,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -89,7 +89,8 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
-      "inventory"
+      "inventory",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 22,
@@ -115,13 +116,15 @@
       "Quality": 50.67,
       "Value": 49.56,
       "Growth": 52.67,
-      "Momentum": 53.34,
+      "Momentum": 52.84,
       "Health": 54.68,
       "Profitability": 49.78,
-      "Technical": 49.8,
-      "Risk": 55.05
+      "Technical": 48.11,
+      "Risk": 54.98
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

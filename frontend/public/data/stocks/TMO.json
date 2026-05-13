@@ -3,19 +3,19 @@
   "name": "Thermo Fisher Scientific",
   "sector": "Health Care",
   "industry": "Life Sciences Tools & Services",
-  "market_cap": 203215903634.57776,
-  "current_price": 456.18,
-  "rank": 464,
-  "composite_score": 36.98,
+  "market_cap": 199380386992.92224,
+  "current_price": 447.57,
+  "rank": 466,
+  "composite_score": 36.83,
   "pillar_scores": {
     "quality": 34.75,
-    "value": 29.1,
+    "value": 29.38,
     "growth": 28.39,
-    "momentum": 42.68,
+    "momentum": 42.18,
     "health": 55.98,
     "profitability": 36.16,
-    "technical": 53.34,
-    "risk": 39.18,
+    "technical": 50.6,
+    "risk": 38.78,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 4.44,
     "eps_diluted": 4.43,
     "shares_outstanding": 445473074.0,
-    "market_cap": 203215903634.57776,
-    "pe_ratio_ttm": 102.97516764690322,
+    "market_cap": 199380386992.92224,
+    "pe_ratio_ttm": 101.03160436212613,
     "goodwill": 55187000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 373.5043762070792,
+        "value": 374.38442747933516,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 372.9090916911194,
+        "value": 377.1058807783019,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 352.59758996807983,
+        "value": 348.3815530853778,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 362.7533408295996,
-    "max": 373.5043762070792,
+    "median": 361.38299028235645,
+    "max": 377.1058807783019,
     "low": 104.51110410863059,
-    "high": 373.5043762070792,
-    "mos_pct": -25.754870136418134,
+    "high": 377.1058807783019,
+    "mos_pct": -23.84921796527349,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -88,7 +88,8 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "total_liabilities"
+      "total_liabilities",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 12,
@@ -112,15 +113,17 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 51.27,
-      "Value": 51.69,
+      "Value": 52.82,
       "Growth": 50.0,
-      "Momentum": 39.29,
+      "Momentum": 40.24,
       "Health": 60.08,
       "Profitability": 52.54,
-      "Technical": 54.48,
-      "Risk": 40.01
+      "Technical": 56.37,
+      "Risk": 39.94
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

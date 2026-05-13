@@ -3,19 +3,19 @@
   "name": "TE Connectivity",
   "sector": "Information Technology",
   "industry": "Electronic Manufacturing Services",
-  "market_cap": 63555796942.12622,
-  "current_price": 214.88,
-  "rank": 55,
-  "composite_score": 61.78,
+  "market_cap": 63245233933.79733,
+  "current_price": 213.83,
+  "rank": 54,
+  "composite_score": 61.91,
   "pillar_scores": {
     "quality": 56.85,
-    "value": 77.4,
+    "value": 77.63,
     "growth": 46.58,
-    "momentum": 56.77,
+    "momentum": 56.87,
     "health": 78.21,
     "profitability": 53.65,
-    "technical": 51.34,
-    "risk": 55.31,
+    "technical": 52.79,
+    "risk": 55.21,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 5.46,
     "eps_diluted": 5.42,
     "shares_outstanding": 295773434.0,
-    "market_cap": 63555796942.12622,
-    "pe_ratio_ttm": 39.64575735845249,
+    "market_cap": 63245233933.79733,
+    "pe_ratio_ttm": 39.45202985812817,
     "goodwill": 7437000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 480.6353852859591,
+        "value": 491.0396242289351,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 466.48692907374556,
+        "value": 456.94959766348387,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 505.43810987263356,
+        "value": 504.04986256744604,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 280.63325353189043,
-    "max": 505.43810987263356,
+    "median": 275.8645878267596,
+    "max": 504.04986256744604,
     "low": 14.120593519514962,
-    "high": 505.43810987263356,
-    "mos_pct": 23.43031263100326,
+    "high": 504.04986256744604,
+    "mos_pct": 22.487332094491972,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -89,7 +89,9 @@
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
-    "missing_metrics": [],
+    "missing_metrics": [
+      "property_plant_equipment"
+    ],
     "imputed_metrics": [],
     "filing_lag_days": 19,
     "latest_period_end": "2026-03-27",
@@ -116,13 +118,15 @@
       "Quality": 51.71,
       "Value": 50.46,
       "Growth": 52.74,
-      "Momentum": 44.32,
+      "Momentum": 44.47,
       "Health": 66.93,
       "Profitability": 53.2,
-      "Technical": 64.14,
-      "Risk": 45.48
+      "Technical": 64.94,
+      "Risk": 46.71
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

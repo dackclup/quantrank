@@ -3,19 +3,19 @@
   "name": "Blackstone Inc.",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 89932484688.0462,
-  "current_price": 119.665,
+  "market_cap": 90296979817.20203,
+  "current_price": 120.15,
   "rank": 349,
-  "composite_score": 45.8,
+  "composite_score": 45.93,
   "pillar_scores": {
     "quality": 71.33,
-    "value": 24.44,
+    "value": 24.22,
     "growth": 55.33,
-    "momentum": 20.02,
+    "momentum": 20.12,
     "health": 47.99,
     "profitability": 53.56,
-    "technical": 41.19,
-    "risk": 28.15,
+    "technical": 44.22,
+    "risk": 28.59,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.83,
     "eps_diluted": 0.83,
     "shares_outstanding": 751535403.0,
-    "market_cap": 89932484688.0462,
-    "pe_ratio_ttm": 144.17469989822573,
+    "market_cap": 90296979817.20203,
+    "pe_ratio_ttm": 144.75903798298665,
     "goodwill": 1890202000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 47.28940391273391,
+        "value": 47.58250889151256,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 25.689729310534535,
+        "value": 25.77939578021496,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 25.010515022853397,
-    "max": 47.28940391273391,
+    "median": 25.05534825769361,
+    "max": 47.58250889151256,
     "low": 18.48972564289724,
-    "high": 47.28940391273391,
-    "mos_pct": -378.45876346881806,
+    "high": 47.58250889151256,
+    "mos_pct": -379.5383416352439,
     "valuation_warnings": [
       "extreme_rim_estimate"
     ]
@@ -98,7 +98,8 @@
       "accounts_receivable",
       "accounts_payable",
       "short_term_debt",
-      "ebitda"
+      "ebitda",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 5,
@@ -124,13 +125,15 @@
       "Quality": 50.67,
       "Value": 49.56,
       "Growth": 52.67,
-      "Momentum": 53.34,
+      "Momentum": 52.84,
       "Health": 54.68,
       "Profitability": 49.78,
-      "Technical": 49.8,
-      "Risk": 55.05
+      "Technical": 48.11,
+      "Risk": 54.98
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

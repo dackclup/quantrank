@@ -3,19 +3,19 @@
   "name": "Rollins, Inc.",
   "sector": "Industrials",
   "industry": "Environmental & Facilities Services",
-  "market_cap": 25652285448.278046,
-  "current_price": 53.28,
-  "rank": 367,
-  "composite_score": 44.88,
+  "market_cap": 25074532727.58293,
+  "current_price": 52.08,
+  "rank": 373,
+  "composite_score": 44.2,
   "pillar_scores": {
     "quality": 67.41,
     "value": 13.92,
     "growth": 79.75,
-    "momentum": 33.76,
+    "momentum": 33.27,
     "health": 18.76,
     "profitability": 53.38,
-    "technical": 32.12,
-    "risk": 58.83,
+    "technical": 20.37,
+    "risk": 57.97,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.22,
     "eps_diluted": 0.22,
     "shares_outstanding": 481461825.0,
-    "market_cap": 25652285448.278046,
-    "pe_ratio_ttm": 242.18181263316762,
+    "market_cap": 25074532727.58293,
+    "pe_ratio_ttm": 236.7272810502486,
     "goodwill": 1384591000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 25.64384025927411,
+        "value": 25.77697343585872,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 19.70308969289094,
+        "value": 19.562575074626174,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 21.99872005825141,
+        "value": 21.95764356527947,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,18 +75,19 @@
         "tier_used": null
       }
     },
-    "median": 20.850904875571175,
-    "max": 25.64384025927411,
+    "median": 20.76010931995282,
+    "max": 25.77697343585872,
     "low": 12.205747914806805,
-    "high": 25.64384025927411,
-    "mos_pct": -155.5284727317493,
+    "high": 25.77697343585872,
+    "mos_pct": -150.86573981091658,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "research_and_development"
+      "research_and_development",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 20,
@@ -110,13 +111,15 @@
       "Quality": 49.05,
       "Value": 50.42,
       "Growth": 49.05,
-      "Momentum": 58.17,
+      "Momentum": 57.92,
       "Health": 47.85,
       "Profitability": 53.16,
-      "Technical": 51.15,
-      "Risk": 55.11
+      "Technical": 50.05,
+      "Risk": 55.61
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

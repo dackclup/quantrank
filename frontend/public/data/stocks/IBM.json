@@ -3,19 +3,19 @@
   "name": "IBM",
   "sector": "Information Technology",
   "industry": "IT Consulting & Other Services",
-  "market_cap": 200217302733.49078,
-  "current_price": 213.69,
-  "rank": 344,
-  "composite_score": 46.03,
+  "market_cap": 200132980473.10196,
+  "current_price": 213.6,
+  "rank": 339,
+  "composite_score": 46.27,
   "pillar_scores": {
     "quality": 51.03,
-    "value": 56.85,
+    "value": 57.31,
     "growth": 59.25,
-    "momentum": 18.43,
+    "momentum": 18.48,
     "health": 40.48,
     "profitability": 33.11,
-    "technical": 34.51,
-    "risk": 44.16,
+    "technical": 36.9,
+    "risk": 44.36,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.3,
     "eps_diluted": 1.28,
     "shares_outstanding": 936952129.0,
-    "market_cap": 200217302733.49078,
-    "pe_ratio_ttm": 166.94531440734863,
+    "market_cap": 200132980473.10196,
+    "pe_ratio_ttm": 166.87500476837158,
     "goodwill": 74709000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 103.19853887380455,
+        "value": 105.09593306610695,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 390.04831605654533,
+        "value": 382.07377309639804,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 103.19853887380455,
-    "max": 390.04831605654533,
+    "median": 105.09593306610695,
+    "max": 382.07377309639804,
     "low": 100.39998610138511,
-    "high": 390.04831605654533,
-    "mos_pct": -107.06688754839374,
+    "high": 382.07377309639804,
+    "mos_pct": -103.24288473575656,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -87,7 +87,8 @@
   "data_quality": {
     "missing_metrics": [
       "operating_income",
-      "ebitda"
+      "ebitda",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 20,
@@ -111,13 +112,15 @@
       "Quality": 51.71,
       "Value": 50.46,
       "Growth": 52.74,
-      "Momentum": 44.32,
+      "Momentum": 44.47,
       "Health": 66.93,
       "Profitability": 53.2,
-      "Technical": 64.14,
-      "Risk": 45.48
+      "Technical": 64.94,
+      "Risk": 46.71
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

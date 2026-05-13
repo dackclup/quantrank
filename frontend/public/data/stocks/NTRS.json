@@ -3,19 +3,19 @@
   "name": "Northern Trust",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 29954524888.75,
-  "current_price": 161.875,
+  "market_cap": 30059077041.295532,
+  "current_price": 162.44,
   "rank": 160,
-  "composite_score": 54.81,
+  "composite_score": 54.77,
   "pillar_scores": {
     "quality": 48.67,
-    "value": 45.56,
+    "value": 45.11,
     "growth": 51.33,
-    "momentum": 79.68,
+    "momentum": 79.98,
     "health": 61.33,
     "profitability": 51.56,
-    "technical": 60.51,
-    "risk": 64.48,
+    "technical": 60.96,
+    "risk": 64.54,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.72,
     "eps_diluted": 2.71,
     "shares_outstanding": 185047258.0,
-    "market_cap": 29954524888.75,
-    "pe_ratio_ttm": 59.73247232472325,
+    "market_cap": 30059077041.295532,
+    "pe_ratio_ttm": 59.94096031048201,
     "goodwill": 709500000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 154.40275253434808,
+        "value": 155.95997661769556,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 201.08670658568442,
+        "value": 199.909749693043,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 131.2613874890731,
-    "max": 201.08670658568442,
+    "median": 132.03999953074683,
+    "max": 199.909749693043,
     "low": 73.97296415347078,
-    "high": 201.08670658568442,
-    "mos_pct": -23.322633637005673,
+    "high": 199.909749693043,
+    "mos_pct": -23.023328550967225,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -97,7 +97,8 @@
       "accounts_receivable",
       "accounts_payable",
       "short_term_debt",
-      "ebitda"
+      "ebitda",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
@@ -121,13 +122,15 @@
       "Quality": 50.67,
       "Value": 49.56,
       "Growth": 52.67,
-      "Momentum": 53.34,
+      "Momentum": 52.84,
       "Health": 54.68,
       "Profitability": 49.78,
-      "Technical": 49.8,
-      "Risk": 55.05
+      "Technical": 48.11,
+      "Risk": 54.98
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "Crown Castle",
   "sector": "Real Estate",
   "industry": "Telecom Tower REITs",
-  "market_cap": 38578894775.390625,
-  "current_price": 88.4837,
-  "rank": 475,
-  "composite_score": 35.7,
+  "market_cap": 38686281463.62305,
+  "current_price": 88.73,
+  "rank": 476,
+  "composite_score": 35.69,
   "pillar_scores": {
     "quality": 50.4,
     "value": 19.89,
     "growth": 37.1,
-    "momentum": 36.3,
+    "momentum": 36.4,
     "health": 6.69,
     "profitability": 42.47,
-    "technical": 68.97,
-    "risk": 37.62,
+    "technical": 68.18,
+    "risk": 38.31,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.34,
     "eps_diluted": 0.34,
     "shares_outstanding": 436000000.0,
-    "market_cap": 38578894775.390625,
-    "pe_ratio_ttm": 260.24618709788604,
+    "market_cap": 38686281463.62305,
+    "pe_ratio_ttm": 260.9705981086282,
     "goodwill": 5127000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 42.15916999228464,
+        "value": 42.07884092308836,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 37.36228050120713,
+        "value": 37.231763070853134,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 69.4788154304249,
+        "value": 69.08366182035674,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 42.15916999228464,
-    "max": 69.4788154304249,
-    "low": 37.36228050120713,
-    "high": 69.4788154304249,
-    "mos_pct": -109.88008926521621,
+    "median": 42.07884092308836,
+    "max": 69.08366182035674,
+    "low": 37.231763070853134,
+    "high": 69.08366182035674,
+    "mos_pct": -110.86608235981157,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -90,7 +90,8 @@
     "missing_metrics": [
       "gross_profit",
       "research_and_development",
-      "inventory"
+      "inventory",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
@@ -118,13 +119,15 @@
       "Quality": 46.77,
       "Value": 47.85,
       "Growth": 51.61,
-      "Momentum": 53.88,
+      "Momentum": 53.04,
       "Health": 27.89,
       "Profitability": 52.69,
-      "Technical": 59.31,
-      "Risk": 53.42
+      "Technical": 60.51,
+      "Risk": 53.92
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

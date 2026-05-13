@@ -3,19 +3,19 @@
   "name": "Hewlett Packard Enterprise",
   "sector": "Information Technology",
   "industry": "Technology Hardware, Storage & Peripherals",
-  "market_cap": 40571992839.2084,
-  "current_price": 30.53,
-  "rank": 303,
-  "composite_score": 48.13,
+  "market_cap": 41701574602.384186,
+  "current_price": 31.38,
+  "rank": 293,
+  "composite_score": 48.48,
   "pillar_scores": {
     "quality": 28.42,
-    "value": 62.1,
+    "value": 61.64,
     "growth": 49.66,
-    "momentum": 79.38,
+    "momentum": 82.37,
     "health": 24.06,
     "profitability": 37.21,
-    "technical": 72.66,
-    "risk": 49.34,
+    "technical": 73.51,
+    "risk": 50.1,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.32,
     "eps_diluted": 0.31,
     "shares_outstanding": 1328922107.0,
-    "market_cap": 40571992839.2084,
-    "pe_ratio_ttm": 98.48387318272745,
+    "market_cap": 41701574602.384186,
+    "pe_ratio_ttm": 101.2258037444084,
     "goodwill": 23828000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 10.463654582709704,
+        "value": 10.450833740566301,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 206.61449362343768,
+        "value": 202.39025757943352,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 17.82998696618387,
+        "value": 17.8267800292714,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 17.82998696618387,
-    "max": 17.82998696618387,
-    "low": 10.463654582709704,
-    "high": 206.61449362343768,
-    "mos_pct": -71.22839598564107,
+    "median": 17.8267800292714,
+    "max": 17.8267800292714,
+    "low": 10.450833740566301,
+    "high": 202.39025757943352,
+    "mos_pct": -76.02729774665389,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate",
       "value_trap_risk"
@@ -99,7 +99,8 @@
   "risk_flags": [],
   "valuation_warnings": [
     "extreme_multiples_pb_estimate",
-    "value_trap_risk"
+    "value_trap_risk",
+    "beneish_high"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -116,13 +117,15 @@
       "Quality": 51.71,
       "Value": 50.46,
       "Growth": 52.74,
-      "Momentum": 44.32,
+      "Momentum": 44.47,
       "Health": 66.93,
       "Profitability": 53.2,
-      "Technical": 64.14,
-      "Risk": 45.48
+      "Technical": 64.94,
+      "Risk": 46.71
     }
   },
+  "beneish_m_score": -2.0502448816319094,
+  "dechow_f_score": 1.6115329649119625,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "Regency Centers",
   "sector": "Real Estate",
   "industry": "Retail REITs",
-  "market_cap": 14127075457.248505,
-  "current_price": 77.16,
-  "rank": 174,
-  "composite_score": 53.89,
+  "market_cap": 14061163643.54042,
+  "current_price": 76.8,
+  "rank": 177,
+  "composite_score": 53.7,
   "pillar_scores": {
     "quality": 52.42,
     "value": 61.83,
     "growth": 50.0,
-    "momentum": 68.87,
+    "momentum": 67.93,
     "health": 26.25,
     "profitability": 53.76,
-    "technical": 40.04,
-    "risk": 72.54,
+    "technical": 38.84,
+    "risk": 72.01,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.18,
     "eps_diluted": 0.46,
     "shares_outstanding": 183088061.0,
-    "market_cap": 14127075457.248505,
-    "pe_ratio_ttm": 167.73913839588994,
+    "market_cap": 14061163643.54042,
+    "pe_ratio_ttm": 166.95652837338653,
     "goodwill": 166739000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 57.0388770483851,
+        "value": 56.93019654300189,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 90.7270836280467,
+        "value": 90.47810890660203,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 107.08006630239005,
+        "value": 106.11539541504213,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 90.7270836280467,
-    "max": 107.08006630239005,
-    "low": 57.0388770483851,
-    "high": 107.08006630239005,
-    "mos_pct": 14.953726520691665,
+    "median": 90.47810890660203,
+    "max": 106.11539541504213,
+    "low": 56.93019654300189,
+    "high": 106.11539541504213,
+    "mos_pct": 15.117585922318222,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -100,7 +100,8 @@
       "accounts_receivable",
       "accounts_payable",
       "short_term_debt",
-      "retained_earnings"
+      "retained_earnings",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 9,
@@ -126,13 +127,15 @@
       "Quality": 46.77,
       "Value": 47.85,
       "Growth": 51.61,
-      "Momentum": 53.88,
+      "Momentum": 53.04,
       "Health": 27.89,
       "Profitability": 52.69,
-      "Technical": 59.31,
-      "Risk": 53.42
+      "Technical": 60.51,
+      "Risk": 53.92
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "eBay Inc.",
   "sector": "Consumer Discretionary",
   "industry": "Broadline Retail",
-  "market_cap": 49296379455.56641,
-  "current_price": 110.53,
-  "rank": 233,
-  "composite_score": 51.42,
+  "market_cap": 50522879455.56641,
+  "current_price": 113.28,
+  "rank": 238,
+  "composite_score": 51.13,
   "pillar_scores": {
     "quality": 54.69,
-    "value": 25.0,
+    "value": 23.61,
     "growth": 45.57,
-    "momentum": 87.75,
+    "momentum": 87.65,
     "health": 57.81,
     "profitability": 48.26,
-    "technical": 62.95,
-    "risk": 57.34,
+    "technical": 63.1,
+    "risk": 57.93,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.14,
     "eps_diluted": 1.12,
     "shares_outstanding": 446000000.0,
-    "market_cap": 49296379455.56641,
-    "pe_ratio_ttm": 98.68749891008649,
+    "market_cap": 50522879455.56641,
+    "pe_ratio_ttm": 101.14285605294363,
     "goodwill": 4463000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 79.93577988992908,
+        "value": 79.9084094794203,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 60.271567778993585,
+        "value": 58.38742188164668,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 41.380360455929946,
+        "value": 41.28342045061572,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,18 +75,19 @@
         "tier_used": null
       }
     },
-    "median": 52.23063167310062,
-    "max": 79.93577988992908,
-    "low": 41.380360455929946,
-    "high": 79.93577988992908,
-    "mos_pct": -111.61911169498858,
+    "median": 51.28855872442716,
+    "max": 79.9084094794203,
+    "low": 41.28342045061572,
+    "high": 79.9084094794203,
+    "mos_pct": -120.86797055060372,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "inventory"
+      "inventory",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
@@ -110,13 +111,15 @@
       "Quality": 45.44,
       "Value": 49.31,
       "Growth": 51.04,
-      "Momentum": 36.53,
+      "Momentum": 37.7,
       "Health": 47.32,
       "Profitability": 51.22,
-      "Technical": 31.37,
-      "Risk": 40.11
+      "Technical": 32.77,
+      "Risk": 40.55
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

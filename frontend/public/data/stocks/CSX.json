@@ -3,19 +3,19 @@
   "name": "CSX Corporation",
   "sector": "Industrials",
   "industry": "Rail Transportation",
-  "market_cap": 83811602554.32129,
-  "current_price": 45.06,
-  "rank": 170,
-  "composite_score": 54.04,
+  "market_cap": 82472400283.81348,
+  "current_price": 44.34,
+  "rank": 169,
+  "composite_score": 54.13,
   "pillar_scores": {
     "quality": 66.14,
-    "value": 43.25,
+    "value": 43.88,
     "growth": 31.96,
-    "momentum": 81.67,
+    "momentum": 79.68,
     "health": 32.27,
     "profitability": 53.16,
-    "technical": 51.29,
-    "risk": 74.77,
+    "technical": 55.63,
+    "risk": 74.17,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.43,
     "eps_diluted": 0.43,
     "shares_outstanding": 1860000000.0,
-    "market_cap": 83811602554.32129,
-    "pe_ratio_ttm": 104.79070086811865,
+    "market_cap": 82472400283.81348,
+    "pe_ratio_ttm": 103.116279424623,
     "goodwill": 80000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 50.76709907595851,
+        "value": 50.79410456979512,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 31.213195778707476,
+        "value": 30.990595650604167,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 52.347031839446224,
+        "value": 52.27522572944142,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 24.846407381058476,
-    "max": 52.347031839446224,
+    "median": 24.735107317006822,
+    "max": 52.27522572944142,
     "low": 13.078395753450456,
-    "high": 52.347031839446224,
-    "mos_pct": -81.35419210602763,
+    "high": 52.27522572944142,
+    "mos_pct": -79.2593805408783,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -91,7 +91,8 @@
       "research_and_development",
       "sga_expense",
       "inventory",
-      "short_term_debt"
+      "short_term_debt",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 21,
@@ -115,13 +116,15 @@
       "Quality": 49.05,
       "Value": 50.42,
       "Growth": 49.05,
-      "Momentum": 58.17,
+      "Momentum": 57.92,
       "Health": 47.85,
       "Profitability": 53.16,
-      "Technical": 51.15,
-      "Risk": 55.11
+      "Technical": 50.05,
+      "Risk": 55.61
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

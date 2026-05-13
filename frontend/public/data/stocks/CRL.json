@@ -3,19 +3,19 @@
   "name": "Charles River Laboratories",
   "sector": "Health Care",
   "industry": "Life Sciences Tools & Services",
-  "market_cap": 7973564856.613159,
-  "current_price": 165.54,
-  "rank": 449,
-  "composite_score": 38.3,
+  "market_cap": 7845681530.410767,
+  "current_price": 162.885,
+  "rank": 450,
+  "composite_score": 38.49,
   "pillar_scores": {
     "quality": 19.07,
-    "value": 51.13,
+    "value": 52.82,
     "growth": 42.8,
-    "momentum": 57.37,
+    "momentum": 56.92,
     "health": 44.18,
     "profitability": 18.08,
-    "technical": 50.4,
-    "risk": 25.6,
+    "technical": 47.86,
+    "risk": 25.37,
     "sentiment": null,
     "ml": null
   },
@@ -32,7 +32,7 @@
     "eps_basic": -0.3,
     "eps_diluted": -0.3,
     "shares_outstanding": 48167000.0,
-    "market_cap": 7973564856.613159,
+    "market_cap": 7845681530.410767,
     "pe_ratio_ttm": null,
     "goodwill": 3040032000.0
   },
@@ -51,13 +51,13 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 204.9270037501406,
+        "value": 201.74284890173206,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 158.32552645363683,
+        "value": 156.5595728889452,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 181.62626510188872,
-    "max": 204.9270037501406,
-    "low": 158.32552645363683,
-    "high": 204.9270037501406,
-    "mos_pct": 8.856798220638314,
+    "median": 179.15121089533864,
+    "max": 201.74284890173206,
+    "low": 156.5595728889452,
+    "high": 201.74284890173206,
+    "mos_pct": 9.079601699150967,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -89,7 +89,8 @@
   "data_quality": {
     "missing_metrics": [
       "research_and_development",
-      "dividends_paid"
+      "dividends_paid",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
@@ -113,15 +114,17 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 51.27,
-      "Value": 51.69,
+      "Value": 52.82,
       "Growth": 50.0,
-      "Momentum": 39.29,
+      "Momentum": 40.24,
       "Health": 60.08,
       "Profitability": 52.54,
-      "Technical": 54.48,
-      "Risk": 40.01
+      "Technical": 56.37,
+      "Risk": 39.94
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

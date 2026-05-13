@@ -3,19 +3,19 @@
   "name": "General Dynamics",
   "sector": "Industrials",
   "industry": "Aerospace & Defense",
-  "market_cap": 92866711046.62314,
-  "current_price": 343.455,
-  "rank": 75,
-  "composite_score": 59.98,
+  "market_cap": 92181280269.00186,
+  "current_price": 340.92,
+  "rank": 76,
+  "composite_score": 60.08,
   "pillar_scores": {
     "quality": 50.95,
-    "value": 79.32,
+    "value": 79.54,
     "growth": 48.42,
-    "momentum": 58.17,
+    "momentum": 57.57,
     "health": 48.33,
     "profitability": 55.91,
-    "technical": 70.42,
-    "risk": 78.62,
+    "technical": 73.11,
+    "risk": 78.35,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 15.65,
     "eps_diluted": 15.45,
     "shares_outstanding": 270389759.0,
-    "market_cap": 92866711046.62314,
-    "pe_ratio_ttm": 22.230096218269622,
+    "market_cap": 92181280269.00186,
+    "pe_ratio_ttm": 22.06602028658475,
     "goodwill": 20956000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 1544.7263279781646,
+        "value": 1552.8411165017417,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 636.1694421544131,
+        "value": 625.1579145484986,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 348.74430841838506,
+        "value": 350.32440051761995,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 245.7834198484568,
-    "max": 1544.7263279781646,
+    "median": 246.57346589807423,
+    "max": 1552.8411165017417,
     "low": 13.940130808225419,
-    "high": 1544.7263279781646,
-    "mos_pct": -39.73887530087685,
+    "high": 1552.8411165017417,
+    "mos_pct": -38.26305770007713,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -91,7 +91,8 @@
   "data_quality": {
     "missing_metrics": [
       "total_liabilities",
-      "gross_profit"
+      "gross_profit",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
@@ -119,13 +120,15 @@
       "Quality": 49.05,
       "Value": 50.42,
       "Growth": 49.05,
-      "Momentum": 58.17,
+      "Momentum": 57.92,
       "Health": 47.85,
       "Profitability": 53.16,
-      "Technical": 51.15,
-      "Risk": 55.11
+      "Technical": 50.05,
+      "Risk": 55.61
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

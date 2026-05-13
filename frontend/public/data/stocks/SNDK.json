@@ -3,19 +3,19 @@
   "name": "Sandisk",
   "sector": "Information Technology",
   "industry": "Technology Hardware, Storage & Peripherals",
-  "market_cap": 212824000000.0,
-  "current_price": 1438.0,
+  "market_cap": 214591111328.125,
+  "current_price": 1449.9399,
   "rank": 2,
   "composite_score": 72.3,
   "pillar_scores": {
     "quality": 79.79,
-    "value": 50.91,
+    "value": 50.46,
     "growth": 56.16,
-    "momentum": 90.51,
+    "momentum": 91.16,
     "health": 96.43,
     "profitability": 82.88,
-    "technical": 72.56,
-    "risk": 56.46,
+    "technical": 72.81,
+    "risk": 56.52,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 30.82,
     "eps_diluted": 29.42,
     "shares_outstanding": 148000000.0,
-    "market_cap": 212824000000.0,
-    "pe_ratio_ttm": 48.87831407205982,
+    "market_cap": 214591111328.125,
+    "pe_ratio_ttm": 49.284158443448334,
     "goodwill": 4994000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 993.0345736236114,
+        "value": 991.817834346647,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 924.6818051137292,
+        "value": 932.9935263427799,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 1387.6390960249394,
+        "value": 1397.0894895886413,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 993.0345736236114,
-    "max": 1387.6390960249394,
-    "low": 924.6818051137292,
-    "high": 1387.6390960249394,
-    "mos_pct": -44.80865401822789,
+    "median": 991.817834346647,
+    "max": 1397.0894895886413,
+    "low": 932.9935263427799,
+    "high": 1397.0894895886413,
+    "mos_pct": -46.19014613317451,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -90,7 +90,8 @@
     "missing_metrics": [
       "dividends_paid",
       "accounts_payable",
-      "intangibles_net"
+      "intangibles_net",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 12,
@@ -116,13 +117,15 @@
       "Quality": 51.71,
       "Value": 50.46,
       "Growth": 52.74,
-      "Momentum": 44.32,
+      "Momentum": 44.47,
       "Health": 66.93,
       "Profitability": 53.2,
-      "Technical": 64.14,
-      "Risk": 45.48
+      "Technical": 64.94,
+      "Risk": 46.71
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

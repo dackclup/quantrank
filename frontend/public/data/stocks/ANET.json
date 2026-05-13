@@ -3,19 +3,19 @@
   "name": "Arista Networks",
   "sector": "Information Technology",
   "industry": "Communications Equipment",
-  "market_cap": 183100276611.32812,
-  "current_price": 145.41,
+  "market_cap": 179964861694.33594,
+  "current_price": 142.92,
   "rank": 187,
-  "composite_score": 53.42,
+  "composite_score": 53.45,
   "pillar_scores": {
     "quality": 53.42,
-    "value": 28.31,
+    "value": 29.0,
     "growth": 56.85,
-    "momentum": 70.62,
+    "momentum": 70.12,
     "health": 89.88,
     "profitability": 53.2,
-    "technical": 48.11,
-    "risk": 45.48,
+    "technical": 47.06,
+    "risk": 45.15,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.81,
     "eps_diluted": 0.8,
     "shares_outstanding": 1259200000.0,
-    "market_cap": 183100276611.32812,
-    "pe_ratio_ttm": 181.76250457763672,
+    "market_cap": 179964861694.33594,
+    "pe_ratio_ttm": 178.64999771118164,
     "goodwill": 416100000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 64.49908679612786,
+        "value": 65.68495816631685,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 106.39549310281859,
+        "value": 107.3518541708178,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 61.43603441682835,
+        "value": 61.74298605027972,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 61.43603441682835,
-    "max": 106.39549310281859,
+    "median": 61.74298605027972,
+    "max": 107.3518541708178,
     "low": 16.567384781323547,
-    "high": 106.39549310281859,
-    "mos_pct": -136.68520444457457,
+    "high": 107.3518541708178,
+    "mos_pct": -131.475682197424,
     "valuation_warnings": [
       "extreme_rim_estimate"
     ]
@@ -88,7 +88,8 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "dividends_paid"
+      "dividends_paid",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
@@ -114,13 +115,15 @@
       "Quality": 51.71,
       "Value": 50.46,
       "Growth": 52.74,
-      "Momentum": 44.32,
+      "Momentum": 44.47,
       "Health": 66.93,
       "Profitability": 53.2,
-      "Technical": 64.14,
-      "Risk": 45.48
+      "Technical": 64.94,
+      "Risk": 46.71
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

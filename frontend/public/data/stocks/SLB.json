@@ -3,19 +3,19 @@
   "name": "Schlumberger",
   "sector": "Energy",
   "industry": "Oil & Gas Equipment & Services",
-  "market_cap": 82177009487.1521,
-  "current_price": 54.9679,
-  "rank": 67,
-  "composite_score": 60.88,
+  "market_cap": 82733300228.1189,
+  "current_price": 55.34,
+  "rank": 68,
+  "composite_score": 60.85,
   "pillar_scores": {
     "quality": 46.43,
     "value": 59.52,
     "growth": 73.81,
-    "momentum": 84.21,
+    "momentum": 84.01,
     "health": 60.88,
     "profitability": 57.94,
-    "technical": 64.74,
-    "risk": 53.88,
+    "technical": 64.39,
+    "risk": 54.22,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.5,
     "eps_diluted": 0.5,
     "shares_outstanding": 1495000000.0,
-    "market_cap": 82177009487.1521,
-    "pe_ratio_ttm": 109.93579864501953,
+    "market_cap": 82733300228.1189,
+    "pe_ratio_ttm": 110.68000030517578,
     "goodwill": 16852000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 37.16590924696489,
+        "value": 37.181817835027516,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 43.19772790965665,
+        "value": 43.298920646600365,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 70.88006949643757,
+        "value": 71.39604198271756,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 35.94414313281389,
-    "max": 70.88006949643757,
+    "median": 35.9520974268452,
+    "max": 71.39604198271756,
     "low": 3.9276912788318423,
-    "high": 70.88006949643757,
-    "mos_pct": -52.92588592083819,
+    "high": 71.39604198271756,
+    "mos_pct": -53.92704212930251,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
@@ -91,7 +91,8 @@
     "missing_metrics": [
       "gross_profit",
       "accounts_receivable",
-      "accounts_payable"
+      "accounts_payable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
@@ -118,13 +119,15 @@
       "Quality": 50.0,
       "Value": 50.79,
       "Growth": 53.57,
-      "Momentum": 76.69,
+      "Momentum": 77.09,
       "Health": 50.4,
       "Profitability": 52.38,
-      "Technical": 59.36,
+      "Technical": 59.61,
       "Risk": 65.64
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

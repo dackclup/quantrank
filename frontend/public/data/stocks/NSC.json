@@ -3,19 +3,19 @@
   "name": "Norfolk Southern",
   "sector": "Industrials",
   "industry": "Rail Transportation",
-  "market_cap": 70622462289.4206,
-  "current_price": 314.445,
-  "rank": 413,
-  "composite_score": 41.79,
+  "market_cap": 69811674381.69681,
+  "current_price": 310.835,
+  "rank": 411,
+  "composite_score": 41.9,
   "pillar_scores": {
     "quality": 38.92,
-    "value": 41.14,
+    "value": 41.56,
     "growth": 23.73,
-    "momentum": 60.81,
+    "momentum": 58.81,
     "health": 27.33,
     "profitability": 51.27,
-    "technical": 49.4,
-    "risk": 76.16,
+    "technical": 55.08,
+    "risk": 75.46,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.43,
     "eps_diluted": 2.43,
     "shares_outstanding": 224594001.0,
-    "market_cap": 70622462289.4206,
-    "pe_ratio_ttm": 129.40123758198303,
+    "market_cap": 69811674381.69681,
+    "pe_ratio_ttm": 127.91563434365354,
     "goodwill": null
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 283.2478719547095,
+        "value": 284.7183884051668,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 493.3314366486673,
+        "value": 491.2610283853602,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 299.74188805699686,
+        "value": 299.13385389125466,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 206.94527494188253,
-    "max": 493.3314366486673,
+    "median": 207.68053316711115,
+    "max": 491.2610283853602,
     "low": 81.84088375582319,
-    "high": 493.3314366486673,
-    "mos_pct": -51.94597093967277,
+    "high": 491.2610283853602,
+    "mos_pct": -49.66977728478925,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -92,7 +92,8 @@
       "sga_expense",
       "inventory",
       "goodwill",
-      "intangibles_net"
+      "intangibles_net",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 19,
@@ -116,13 +117,15 @@
       "Quality": 49.05,
       "Value": 50.42,
       "Growth": 49.05,
-      "Momentum": 58.17,
+      "Momentum": 57.92,
       "Health": 47.85,
       "Profitability": 53.16,
-      "Technical": 51.15,
-      "Risk": 55.11
+      "Technical": 50.05,
+      "Risk": 55.61
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

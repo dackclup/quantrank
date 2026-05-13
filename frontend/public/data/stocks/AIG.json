@@ -3,19 +3,19 @@
   "name": "American International Group",
   "sector": "Financials",
   "industry": "Multi-line Insurance",
-  "market_cap": 40873428373.71826,
-  "current_price": 76.7,
-  "rank": 371,
-  "composite_score": 44.73,
+  "market_cap": 40345858512.11548,
+  "current_price": 75.71,
+  "rank": 365,
+  "composite_score": 45.01,
   "pillar_scores": {
     "quality": 36.67,
-    "value": 58.89,
+    "value": 61.56,
     "growth": 17.5,
-    "momentum": 46.66,
+    "momentum": 46.12,
     "health": 59.66,
     "profitability": 42.67,
-    "technical": 48.8,
-    "risk": 61.52,
+    "technical": 44.12,
+    "risk": 60.82,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.42,
     "eps_diluted": 1.41,
     "shares_outstanding": 532900000.0,
-    "market_cap": 40873428373.71826,
-    "pe_ratio_ttm": 54.39716095620014,
+    "market_cap": 40345858512.11548,
+    "pe_ratio_ttm": 53.69503481168274,
     "goodwill": 3418000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 75.95930151471904,
+        "value": 75.90049756673434,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 157.29199998754294,
+        "value": 157.48046059845709,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 75.95930151471904,
-    "max": 157.29199998754294,
+    "median": 75.90049756673434,
+    "max": 157.48046059845709,
     "low": 65.22701094947467,
-    "high": 157.29199998754294,
-    "mos_pct": -0.9751214383923932,
+    "high": 157.48046059845709,
+    "mos_pct": 0.25098449729423095,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -97,7 +97,8 @@
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "ebitda"
+      "ebitda",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 12,
@@ -123,13 +124,15 @@
       "Quality": 50.67,
       "Value": 49.56,
       "Growth": 52.67,
-      "Momentum": 53.34,
+      "Momentum": 52.84,
       "Health": 54.68,
       "Profitability": 49.78,
-      "Technical": 49.8,
-      "Risk": 55.05
+      "Technical": 48.11,
+      "Risk": 54.98
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

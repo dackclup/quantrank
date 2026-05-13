@@ -3,19 +3,19 @@
   "name": "PulteGroup",
   "sector": "Consumer Discretionary",
   "industry": "Homebuilding",
-  "market_cap": 21909938653.410034,
-  "current_price": 113.685,
-  "rank": 164,
-  "composite_score": 54.71,
+  "market_cap": 21547616224.104996,
+  "current_price": 111.805,
+  "rank": 161,
+  "composite_score": 54.66,
   "pillar_scores": {
     "quality": 59.64,
-    "value": 66.67,
+    "value": 67.01,
     "growth": 51.04,
-    "momentum": 36.11,
+    "momentum": 35.66,
     "health": 49.56,
     "profitability": 67.19,
-    "technical": 30.58,
-    "risk": 46.08,
+    "technical": 29.46,
+    "risk": 45.88,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.81,
     "eps_diluted": 1.79,
     "shares_outstanding": 192724978.0,
-    "market_cap": 21909938653.410034,
-    "pe_ratio_ttm": 63.51117182044344,
+    "market_cap": 21547616224.104996,
+    "pe_ratio_ttm": 62.46089402523786,
     "goodwill": 40377000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 132.38034673812896,
+        "value": 131.53559686867038,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 428.0246174879059,
+        "value": 427.5923724921179,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 132.38034673812896,
-    "max": 428.0246174879059,
+    "median": 131.53559686867038,
+    "max": 427.5923724921179,
     "low": 104.62363037938394,
-    "high": 428.0246174879059,
-    "mos_pct": 14.122450681080192,
+    "high": 427.5923724921179,
+    "mos_pct": 15.000195409607864,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -94,7 +94,8 @@
       "inventory",
       "accounts_payable",
       "short_term_debt",
-      "ebitda"
+      "ebitda",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 20,
@@ -120,13 +121,15 @@
       "Quality": 45.44,
       "Value": 49.31,
       "Growth": 51.04,
-      "Momentum": 36.53,
+      "Momentum": 37.7,
       "Health": 47.32,
       "Profitability": 51.22,
-      "Technical": 31.37,
-      "Risk": 40.11
+      "Technical": 32.77,
+      "Risk": 40.55
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

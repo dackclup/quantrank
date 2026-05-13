@@ -3,19 +3,19 @@
   "name": "Wells Fargo",
   "sector": "Financials",
   "industry": "Diversified Banks",
-  "market_cap": 228137125648.49854,
-  "current_price": 74.45,
+  "market_cap": 226191311981.20117,
+  "current_price": 73.815,
   "rank": 253,
-  "composite_score": 50.38,
+  "composite_score": 50.35,
   "pillar_scores": {
     "quality": 44.67,
     "value": 61.56,
     "growth": 55.0,
-    "momentum": 47.76,
+    "momentum": 47.61,
     "health": 49.3,
     "profitability": 49.78,
-    "technical": 27.74,
-    "risk": 52.76,
+    "technical": 27.29,
+    "risk": 52.99,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.62,
     "eps_diluted": 1.6,
     "shares_outstanding": 3064300000.0,
-    "market_cap": 228137125648.49854,
-    "pe_ratio_ttm": 46.53124809265137,
+    "market_cap": 226191311981.20117,
+    "pe_ratio_ttm": 46.134376525878906,
     "goodwill": 24965000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 86.95302372034462,
+        "value": 86.1282241892021,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 120.77333944105186,
+        "value": 120.91804493996474,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 82.63266646073069,
-    "max": 120.77333944105186,
+    "median": 82.22026669515944,
+    "max": 120.91804493996474,
     "low": 52.56315019472786,
-    "high": 120.77333944105186,
-    "mos_pct": 9.902463351315344,
+    "high": 120.91804493996474,
+    "mos_pct": 10.222861821789774,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -98,7 +98,8 @@
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "ebitda"
+      "ebitda",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
@@ -124,13 +125,15 @@
       "Quality": 50.67,
       "Value": 49.56,
       "Growth": 52.67,
-      "Momentum": 53.34,
+      "Momentum": 52.84,
       "Health": 54.68,
       "Profitability": 49.78,
-      "Technical": 49.8,
-      "Risk": 55.05
+      "Technical": 48.11,
+      "Risk": 54.98
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

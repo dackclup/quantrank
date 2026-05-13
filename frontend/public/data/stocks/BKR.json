@@ -3,19 +3,19 @@
   "name": "Baker Hughes",
   "sector": "Energy",
   "industry": "Oil & Gas Equipment & Services",
-  "market_cap": 6508.499908447266,
-  "current_price": 65.085,
+  "market_cap": 6544.999694824219,
+  "current_price": 65.45,
   "rank": 7,
-  "composite_score": 69.46,
+  "composite_score": 69.48,
   "pillar_scores": {
     "quality": 60.71,
     "value": 86.51,
     "growth": 65.48,
-    "momentum": 80.43,
+    "momentum": 80.98,
     "health": 62.17,
     "profitability": 47.62,
-    "technical": 68.18,
-    "risk": 65.64,
+    "technical": 67.18,
+    "risk": 65.74,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 3.0,
     "eps_diluted": 2.98,
     "shares_outstanding": 100.0,
-    "market_cap": 6508.499908447266,
-    "pe_ratio_ttm": 21.840603719621697,
+    "market_cap": 6544.999694824219,
+    "pe_ratio_ttm": 21.963086224242346,
     "goodwill": 6032000000.0
   },
   "fair_price": {
@@ -88,7 +88,8 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "accounts_receivable"
+      "accounts_receivable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 19,
@@ -116,13 +117,15 @@
       "Quality": 50.0,
       "Value": 50.79,
       "Growth": 53.57,
-      "Momentum": 76.69,
+      "Momentum": 77.09,
       "Health": 50.4,
       "Profitability": 52.38,
-      "Technical": 59.36,
+      "Technical": 59.61,
       "Risk": 65.64
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

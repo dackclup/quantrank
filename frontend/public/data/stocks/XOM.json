@@ -3,19 +3,19 @@
   "name": "ExxonMobil",
   "sector": "Energy",
   "industry": "Integrated Oil & Gas",
-  "market_cap": 627034849700.9277,
-  "current_price": 151.275,
-  "rank": 291,
-  "composite_score": 48.59,
+  "market_cap": 625646310119.6289,
+  "current_price": 150.94,
+  "rank": 295,
+  "composite_score": 48.46,
   "pillar_scores": {
     "quality": 33.33,
-    "value": 51.59,
+    "value": 50.79,
     "growth": 33.33,
-    "momentum": 74.1,
+    "momentum": 74.45,
     "health": 50.16,
     "profitability": 51.59,
-    "technical": 59.36,
-    "risk": 84.83,
+    "technical": 59.56,
+    "risk": 84.59,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.0,
     "eps_diluted": 1.0,
     "shares_outstanding": 4145000000.0,
-    "market_cap": 627034849700.9277,
-    "pe_ratio_ttm": 151.27499389648438,
+    "market_cap": 625646310119.6289,
+    "pe_ratio_ttm": 150.94000244140625,
     "goodwill": null
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 74.33181849392977,
+        "value": 74.36363567005503,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 172.04084301662232,
+        "value": 173.27230447472027,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 97.27837333995684,
-    "max": 172.04084301662232,
+    "max": 173.27230447472027,
     "low": 69.93419642195823,
-    "high": 172.04084301662232,
-    "mos_pct": -55.507322647991444,
+    "high": 173.27230447472027,
+    "mos_pct": -55.162958897266044,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -92,7 +92,8 @@
       "accounts_payable",
       "ebitda",
       "goodwill",
-      "intangibles_net"
+      "intangibles_net",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 9,
@@ -116,13 +117,15 @@
       "Quality": 50.0,
       "Value": 50.79,
       "Growth": 53.57,
-      "Momentum": 76.69,
+      "Momentum": 77.09,
       "Health": 50.4,
       "Profitability": 52.38,
-      "Technical": 59.36,
+      "Technical": 59.61,
       "Risk": 65.64
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

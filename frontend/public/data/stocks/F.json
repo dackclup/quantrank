@@ -3,19 +3,19 @@
   "name": "Ford Motor Company",
   "sector": "Consumer Discretionary",
   "industry": "Automobile Manufacturers",
-  "market_cap": 40286110124.58801,
-  "current_price": 12.335,
-  "rank": 202,
-  "composite_score": 52.9,
+  "market_cap": 44082182283.40149,
+  "current_price": 13.4973,
+  "rank": 178,
+  "composite_score": 53.68,
   "pillar_scores": {
     "quality": 45.31,
-    "value": 93.4,
+    "value": 92.36,
     "growth": 38.8,
-    "momentum": 35.21,
+    "momentum": 42.18,
     "health": 37.05,
     "profitability": 35.07,
-    "technical": 52.79,
-    "risk": 43.56,
+    "technical": 54.06,
+    "risk": 45.68,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.64,
     "eps_diluted": 0.63,
     "shares_outstanding": 3266000000.0,
-    "market_cap": 40286110124.58801,
-    "pe_ratio_ttm": 19.57936513991583,
+    "market_cap": 44082182283.40149,
+    "pe_ratio_ttm": 21.424285949222625,
     "goodwill": 483000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 46.59196561174371,
+        "value": 46.2946514118784,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 73.02443309863219,
+        "value": 72.95068863514223,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 54.260908075169624,
+        "value": 54.00748465864726,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 50.42643684345667,
-    "max": 54.260908075169624,
+    "median": 50.151068035262824,
+    "max": 54.00748465864726,
     "low": 6.368938709211303,
-    "high": 73.02443309863219,
-    "mos_pct": 75.53862455830534,
+    "high": 72.95068863514223,
+    "mos_pct": 73.08671444739747,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate",
       "value_trap_risk"
@@ -91,7 +91,8 @@
     "missing_metrics": [
       "gross_profit",
       "accounts_payable",
-      "short_term_debt"
+      "short_term_debt",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
@@ -120,13 +121,15 @@
       "Quality": 45.44,
       "Value": 49.31,
       "Growth": 51.04,
-      "Momentum": 36.53,
+      "Momentum": 37.7,
       "Health": 47.32,
       "Profitability": 51.22,
-      "Technical": 31.37,
-      "Risk": 40.11
+      "Technical": 32.77,
+      "Risk": 40.55
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

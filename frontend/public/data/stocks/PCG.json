@@ -3,19 +3,19 @@
   "name": "PG&E Corporation",
   "sector": "Utilities",
   "industry": "Multi-Utilities",
-  "market_cap": 36578954076.2113,
-  "current_price": 16.61,
-  "rank": 305,
-  "composite_score": 48.01,
+  "market_cap": 36545917849.01228,
+  "current_price": 16.595,
+  "rank": 300,
+  "composite_score": 48.07,
   "pillar_scores": {
     "quality": 29.03,
     "value": 69.89,
     "growth": 65.32,
-    "momentum": 49.3,
+    "momentum": 49.6,
     "health": 32.55,
     "profitability": 32.26,
-    "technical": 60.46,
-    "risk": 44.82,
+    "technical": 60.61,
+    "risk": 45.25,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.39,
     "eps_diluted": 0.39,
     "shares_outstanding": 2202224728.0,
-    "market_cap": 36578954076.2113,
-    "pe_ratio_ttm": 42.5897451547476,
+    "market_cap": 36545917849.01228,
+    "pe_ratio_ttm": 42.55128029065254,
     "goodwill": null
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 33.962499380111694,
+        "value": 34.29156398773194,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 33.56412937158409,
+        "value": 33.62730494475083,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 33.56412937158409,
-    "max": 33.962499380111694,
+    "median": 33.62730494475083,
+    "max": 34.29156398773194,
     "low": 19.562952304883947,
-    "high": 33.962499380111694,
-    "mos_pct": 50.51264274885722,
+    "high": 34.29156398773194,
+    "mos_pct": 50.650225045926724,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -95,7 +95,8 @@
       "sga_expense",
       "depreciation_and_amortization",
       "ebitda",
-      "goodwill"
+      "goodwill",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 20,
@@ -121,13 +122,15 @@
       "Quality": 51.61,
       "Value": 47.85,
       "Growth": 50.81,
-      "Momentum": 62.95,
+      "Momentum": 62.7,
       "Health": 19.4,
       "Profitability": 51.61,
-      "Technical": 41.93,
-      "Risk": 72.21
+      "Technical": 42.98,
+      "Risk": 72.44
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

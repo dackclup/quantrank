@@ -3,19 +3,19 @@
   "name": "State Street Corporation",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 41793519436.49519,
-  "current_price": 150.92,
+  "market_cap": 41765854825.75955,
+  "current_price": 150.8201,
   "rank": 193,
-  "composite_score": 53.11,
+  "composite_score": 53.16,
   "pillar_scores": {
     "quality": 42.67,
     "value": 61.11,
     "growth": 23.67,
-    "momentum": 86.35,
+    "momentum": 85.66,
     "health": 56.79,
     "profitability": 43.33,
-    "technical": 58.37,
-    "risk": 68.53,
+    "technical": 61.06,
+    "risk": 68.56,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.53,
     "eps_diluted": 2.49,
     "shares_outstanding": 276924993.0,
-    "market_cap": 41793519436.49519,
-    "pe_ratio_ttm": 60.61044103170494,
+    "market_cap": 41765854825.75955,
+    "pe_ratio_ttm": 60.570320834117716,
     "goodwill": 8121000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 141.86821173820175,
+        "value": 142.74752667453768,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 287.02700331188726,
+        "value": 285.3470394015023,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 141.86821173820175,
-    "max": 287.02700331188726,
+    "median": 142.74752667453768,
+    "max": 285.3470394015023,
     "low": 103.84185308546459,
-    "high": 287.02700331188726,
-    "mos_pct": -6.380419066286243,
+    "high": 285.3470394015023,
+    "mos_pct": -5.655139805553895,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -99,7 +99,8 @@
       "accounts_receivable",
       "accounts_payable",
       "short_term_debt",
-      "ebitda"
+      "ebitda",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
@@ -125,13 +126,15 @@
       "Quality": 50.67,
       "Value": 49.56,
       "Growth": 52.67,
-      "Momentum": 53.34,
+      "Momentum": 52.84,
       "Health": 54.68,
       "Profitability": 49.78,
-      "Technical": 49.8,
-      "Risk": 55.05
+      "Technical": 48.11,
+      "Risk": 54.98
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

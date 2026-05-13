@@ -3,10 +3,10 @@
   "name": "Incyte",
   "sector": "Health Care",
   "industry": "Biotechnology",
-  "market_cap": 19705914721.57441,
-  "current_price": 98.555,
-  "rank": 66,
-  "composite_score": 60.98,
+  "market_cap": 19678921260.303543,
+  "current_price": 98.42,
+  "rank": 64,
+  "composite_score": 60.95,
   "pillar_scores": {
     "quality": 66.1,
     "value": 35.03,
@@ -14,8 +14,8 @@
     "momentum": 50.25,
     "health": 78.92,
     "profitability": 86.44,
-    "technical": 64.39,
-    "risk": 59.26,
+    "technical": 63.75,
+    "risk": 59.36,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.52,
     "eps_diluted": 1.47,
     "shares_outstanding": 199948401.0,
-    "market_cap": 19705914721.57441,
-    "pe_ratio_ttm": 67.0442178946774,
+    "market_cap": 19678921260.303543,
+    "pe_ratio_ttm": 66.95237970676553,
     "goodwill": 133000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 133.83681852167302,
+        "value": 133.99272693287242,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 89.95203397336817,
+        "value": 90.9643710897343,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 0.88012864180116,
+        "value": 0.1411481371668714,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 42.599347523337805,
-    "max": 133.83681852167302,
-    "low": 0.88012864180116,
-    "high": 133.83681852167302,
-    "mos_pct": -131.35330946367898,
+    "max": 133.99272693287242,
+    "low": 0.1411481371668714,
+    "high": 133.99272693287242,
+    "mos_pct": -131.03639818667762,
     "valuation_warnings": [
       "extreme_multiples_ev_ebitda_estimate"
     ]
@@ -90,7 +90,8 @@
     "missing_metrics": [
       "gross_profit",
       "dividends_paid",
-      "accounts_receivable"
+      "accounts_receivable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
@@ -116,15 +117,17 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 51.27,
-      "Value": 51.69,
+      "Value": 52.82,
       "Growth": 50.0,
-      "Momentum": 39.29,
+      "Momentum": 40.24,
       "Health": 60.08,
       "Profitability": 52.54,
-      "Technical": 54.48,
-      "Risk": 40.01
+      "Technical": 56.37,
+      "Risk": 39.94
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

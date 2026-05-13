@@ -3,19 +3,19 @@
   "name": "Coca-Cola Company (The)",
   "sector": "Consumer Staples",
   "industry": "Soft Drinks & Non-alcoholic Beverages",
-  "market_cap": 569747202148.4375,
-  "current_price": 80.93,
-  "rank": 250,
-  "composite_score": 50.56,
+  "market_cap": 563975102539.0625,
+  "current_price": 80.1101,
+  "rank": 254,
+  "composite_score": 50.34,
   "pillar_scores": {
     "quality": 62.5,
-    "value": 9.26,
+    "value": 8.8,
     "growth": 61.81,
-    "momentum": 64.49,
+    "momentum": 63.1,
     "health": 52.01,
     "profitability": 64.81,
-    "technical": 61.16,
-    "risk": 85.14,
+    "technical": 62.95,
+    "risk": 84.21,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.91,
     "eps_diluted": 0.91,
     "shares_outstanding": 7040000000.0,
-    "market_cap": 569747202148.4375,
-    "pe_ratio_ttm": 88.93406626942394,
+    "market_cap": 563975102539.0625,
+    "pe_ratio_ttm": 88.03307669503349,
     "goodwill": 15411000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 52.78610756893286,
+        "value": 52.49600782970454,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 21.673482761432386,
+        "value": 21.393999117109228,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 25.94006334816537,
+        "value": 25.818040692063978,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 17.650230712123633,
-    "max": 52.78610756893286,
+    "median": 17.510488889962055,
+    "max": 52.49600782970454,
     "low": 6.804627612554702,
-    "high": 52.78610756893286,
-    "mos_pct": -358.5209203502727,
+    "high": 52.49600782970454,
+    "mos_pct": -357.49779058655434,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_rim_estimate",
@@ -92,7 +92,8 @@
     "missing_metrics": [
       "total_liabilities",
       "research_and_development",
-      "accounts_payable"
+      "accounts_payable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
@@ -118,15 +119,17 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 56.08,
-      "Value": 48.26,
+      "Value": 49.07,
       "Growth": 50.52,
-      "Momentum": 39.07,
+      "Momentum": 38.62,
       "Health": 38.67,
       "Profitability": 52.55,
-      "Technical": 57.84,
-      "Risk": 51.26
+      "Technical": 55.03,
+      "Risk": 51.1
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

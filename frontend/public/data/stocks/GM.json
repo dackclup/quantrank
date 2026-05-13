@@ -3,19 +3,19 @@
   "name": "General Motors",
   "sector": "Consumer Discretionary",
   "industry": "Automobile Manufacturers",
-  "market_cap": 68786521926.87988,
-  "current_price": 76.26,
-  "rank": 330,
-  "composite_score": 46.81,
+  "market_cap": 68948882202.14844,
+  "current_price": 76.44,
+  "rank": 325,
+  "composite_score": 46.99,
   "pillar_scores": {
     "quality": 22.92,
     "value": 87.85,
     "growth": 40.1,
-    "momentum": 58.72,
+    "momentum": 59.21,
     "health": 38.94,
     "profitability": 10.94,
-    "technical": 35.76,
-    "risk": 53.92,
+    "technical": 38.05,
+    "risk": 54.05,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.87,
     "eps_diluted": 2.82,
     "shares_outstanding": 902000000.0,
-    "market_cap": 68786521926.87988,
-    "pe_ratio_ttm": 27.042553949017897,
+    "market_cap": 68948882202.14844,
+    "pe_ratio_ttm": 27.106383844470304,
     "goodwill": 1900000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 208.55451273828137,
+        "value": 207.22367774840805,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 442.358814954057,
+        "value": 441.91209442375475,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 271.5070614321904,
+        "value": 270.21496196936187,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 181.88814199181994,
-    "max": 271.5070614321904,
+    "median": 181.22272449688327,
+    "max": 270.21496196936187,
     "low": 62.5440880513152,
-    "high": 442.358814954057,
-    "mos_pct": 58.07313148558079,
+    "high": 441.91209442375475,
+    "mos_pct": 57.819858048364736,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ]
@@ -89,7 +89,8 @@
   "data_quality": {
     "missing_metrics": [
       "long_term_debt",
-      "short_term_debt"
+      "short_term_debt",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
@@ -115,13 +116,15 @@
       "Quality": 45.44,
       "Value": 49.31,
       "Growth": 51.04,
-      "Momentum": 36.53,
+      "Momentum": 37.7,
       "Health": 47.32,
       "Profitability": 51.22,
-      "Technical": 31.37,
-      "Risk": 40.11
+      "Technical": 32.77,
+      "Risk": 40.55
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

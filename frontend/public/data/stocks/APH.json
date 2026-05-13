@@ -3,19 +3,19 @@
   "name": "Amphenol",
   "sector": "Information Technology",
   "industry": "Electronic Components",
-  "market_cap": 154907315122.98584,
-  "current_price": 126.29,
-  "rank": 198,
-  "composite_score": 53.01,
+  "market_cap": 151740233024.59717,
+  "current_price": 123.708,
+  "rank": 200,
+  "composite_score": 52.91,
   "pillar_scores": {
     "quality": 49.32,
     "value": 42.24,
     "growth": 77.4,
-    "momentum": 58.37,
+    "momentum": 58.12,
     "health": 70.04,
     "profitability": 39.73,
-    "technical": 25.3,
-    "risk": 59.3,
+    "technical": 24.35,
+    "risk": 58.6,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.76,
     "eps_diluted": 0.72,
     "shares_outstanding": 1226600000.0,
-    "market_cap": 154907315122.98584,
-    "pe_ratio_ttm": 175.40277904934354,
+    "market_cap": 151740233024.59717,
+    "pe_ratio_ttm": 171.81666692097983,
     "goodwill": 17542900000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 58.04917811651506,
+        "value": 59.11646234968516,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 113.18898343438221,
+        "value": 114.20640939789027,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 96.9883097680382,
+        "value": 97.48976658378908,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 77.51874394227663,
-    "max": 113.18898343438221,
+    "median": 78.30311446673711,
+    "max": 114.20640939789027,
     "low": 22.764741630579806,
-    "high": 113.18898343438221,
-    "mos_pct": -62.91543759992761,
+    "high": 114.20640939789027,
+    "mos_pct": -57.98605333336542,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ]
@@ -87,7 +87,9 @@
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
-    "missing_metrics": [],
+    "missing_metrics": [
+      "property_plant_equipment"
+    ],
     "imputed_metrics": [],
     "filing_lag_days": 12,
     "latest_period_end": "2026-03-31",
@@ -112,13 +114,15 @@
       "Quality": 51.71,
       "Value": 50.46,
       "Growth": 52.74,
-      "Momentum": 44.32,
+      "Momentum": 44.47,
       "Health": 66.93,
       "Profitability": 53.2,
-      "Technical": 64.14,
-      "Risk": 45.48
+      "Technical": 64.94,
+      "Risk": 46.71
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

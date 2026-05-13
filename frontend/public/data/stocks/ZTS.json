@@ -3,19 +3,19 @@
   "name": "Zoetis",
   "sector": "Health Care",
   "industry": "Pharmaceuticals",
-  "market_cap": 32314290553.125,
-  "current_price": 76.875,
-  "rank": 76,
-  "composite_score": 59.88,
+  "market_cap": 31509322800.35946,
+  "current_price": 74.96,
+  "rank": 75,
+  "composite_score": 60.17,
   "pillar_scores": {
     "quality": 83.9,
-    "value": 50.85,
+    "value": 51.98,
     "growth": 75.42,
     "momentum": 22.21,
     "health": 64.42,
     "profitability": 78.53,
-    "technical": 25.2,
-    "risk": 14.79,
+    "technical": 26.15,
+    "risk": 14.49,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.42,
     "eps_diluted": 1.42,
     "shares_outstanding": 420348495.0,
-    "market_cap": 32314290553.125,
-    "pe_ratio_ttm": 54.137323943661976,
+    "market_cap": 31509322800.35946,
+    "pe_ratio_ttm": 52.78873174962863,
     "goodwill": 2778000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 129.2845457828406,
+        "value": 129.43515118685636,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 24.601912231910006,
+        "value": 24.87878678144291,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 35.29837809438598,
-    "max": 129.2845457828406,
-    "low": 24.601912231910006,
-    "high": 129.2845457828406,
-    "mos_pct": -117.78621044411828,
+    "max": 129.43515118685636,
+    "low": 24.87878678144291,
+    "high": 129.43515118685636,
+    "mos_pct": -112.36102940490244,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -90,7 +90,8 @@
       "operating_income",
       "research_and_development",
       "dividends_paid",
-      "ebitda"
+      "ebitda",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
@@ -112,15 +113,17 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 51.27,
-      "Value": 51.69,
+      "Value": 52.82,
       "Growth": 50.0,
-      "Momentum": 39.29,
+      "Momentum": 40.24,
       "Health": 60.08,
       "Profitability": 52.54,
-      "Technical": 54.48,
-      "Risk": 40.01
+      "Technical": 56.37,
+      "Risk": 39.94
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

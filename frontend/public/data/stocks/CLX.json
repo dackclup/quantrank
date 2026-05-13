@@ -3,10 +3,10 @@
   "name": "Clorox",
   "sector": "Consumer Staples",
   "industry": "Household Products",
-  "market_cap": 11074480344.449211,
-  "current_price": 91.585,
-  "rank": 345,
-  "composite_score": 45.99,
+  "market_cap": 11021880333.959648,
+  "current_price": 91.15,
+  "rank": 346,
+  "composite_score": 45.97,
   "pillar_scores": {
     "quality": 33.68,
     "value": 62.27,
@@ -14,8 +14,8 @@
     "momentum": 19.07,
     "health": 41.81,
     "profitability": 71.53,
-    "technical": 52.29,
-    "risk": 32.2,
+    "technical": 52.09,
+    "risk": 31.91,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 3.48,
     "eps_diluted": 3.47,
     "shares_outstanding": 120920243.0,
-    "market_cap": 11074480344.449211,
-    "pe_ratio_ttm": 26.393371494084338,
+    "market_cap": 11021880333.959648,
+    "pe_ratio_ttm": 26.268011967112074,
     "goodwill": 1229000000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 205.72712299999475,
+        "value": 206.6925737175932,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 135.54047068383764,
-    "max": 205.72712299999475,
+    "median": 136.02319604263687,
+    "max": 206.6925737175932,
     "low": 65.35381836768052,
-    "high": 205.72712299999475,
-    "mos_pct": 32.42977641851025,
+    "high": 206.6925737175932,
+    "mos_pct": 32.98936932984013,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -89,7 +89,8 @@
   "data_quality": {
     "missing_metrics": [
       "operating_income",
-      "ebitda"
+      "ebitda",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
@@ -113,15 +114,17 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 56.08,
-      "Value": 48.26,
+      "Value": 49.07,
       "Growth": 50.52,
-      "Momentum": 39.07,
+      "Momentum": 38.62,
       "Health": 38.67,
       "Profitability": 52.55,
-      "Technical": 57.84,
-      "Risk": 51.26
+      "Technical": 55.03,
+      "Risk": 51.1
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

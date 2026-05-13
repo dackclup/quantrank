@@ -3,18 +3,18 @@
   "name": "Viatris",
   "sector": "Health Care",
   "industry": "Pharmaceuticals",
-  "market_cap": 1712.9999160766602,
-  "current_price": 17.13,
-  "rank": 189,
+  "market_cap": 1732.5000762939453,
+  "current_price": 17.325,
+  "rank": 188,
   "composite_score": 53.39,
   "pillar_scores": {
     "quality": 51.27,
-    "value": 68.08,
+    "value": 67.8,
     "growth": 31.78,
-    "momentum": 70.52,
+    "momentum": 71.07,
     "health": 47.63,
     "profitability": 10.73,
-    "technical": 69.97,
+    "technical": 69.92,
     "risk": 60.09,
     "sentiment": null,
     "ml": null
@@ -32,8 +32,8 @@
     "eps_basic": 0.15,
     "eps_diluted": 0.15,
     "shares_outstanding": 100.0,
-    "market_cap": 1712.9999160766602,
-    "pe_ratio_ttm": 114.19999440511069,
+    "market_cap": 1732.5000762939453,
+    "pe_ratio_ttm": 115.50000508626303,
     "goodwill": 6692400000.0
   },
   "fair_price": {
@@ -88,7 +88,8 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "accounts_payable"
+      "accounts_payable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
@@ -114,15 +115,17 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 51.27,
-      "Value": 51.69,
+      "Value": 52.82,
       "Growth": 50.0,
-      "Momentum": 39.29,
+      "Momentum": 40.24,
       "Health": 60.08,
       "Profitability": 52.54,
-      "Technical": 54.48,
-      "Risk": 40.01
+      "Technical": 56.37,
+      "Risk": 39.94
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

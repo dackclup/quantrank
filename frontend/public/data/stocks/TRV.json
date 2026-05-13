@@ -3,19 +3,19 @@
   "name": "Travelers Companies (The)",
   "sector": "Financials",
   "industry": "Property & Casualty Insurance",
-  "market_cap": 63507872259.521484,
-  "current_price": 298.72,
-  "rank": 23,
-  "composite_score": 65.61,
+  "market_cap": 62325816778.56445,
+  "current_price": 293.16,
+  "rank": 30,
+  "composite_score": 64.47,
   "pillar_scores": {
     "quality": 66.0,
     "value": 72.22,
     "growth": 72.33,
-    "momentum": 64.99,
+    "momentum": 62.95,
     "health": 63.67,
     "profitability": 43.56,
-    "technical": 39.54,
-    "risk": 79.57,
+    "technical": 22.76,
+    "risk": 78.27,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 7.89,
     "eps_diluted": 7.78,
     "shares_outstanding": 212600000.0,
-    "market_cap": 63507872259.521484,
-    "pe_ratio_ttm": 38.395887046362866,
+    "market_cap": 62325816778.56445,
+    "pe_ratio_ttm": 37.6812344038701,
     "goodwill": 4060000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 422.8090778401757,
+        "value": 418.79849011999517,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 312.1144792667172,
+        "value": 312.48844161345073,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 278.58700172241646,
-    "max": 422.8090778401757,
+    "median": 278.77398289578326,
+    "max": 418.79849011999517,
     "low": 161.25567404684415,
-    "high": 422.8090778401757,
-    "mos_pct": -7.22682658336915,
+    "high": 418.79849011999517,
+    "mos_pct": -5.160460318746522,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -95,7 +95,8 @@
       "current_liabilities",
       "inventory",
       "accounts_receivable",
-      "accounts_payable"
+      "accounts_payable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 27,
@@ -119,13 +120,15 @@
       "Quality": 50.67,
       "Value": 49.56,
       "Growth": 52.67,
-      "Momentum": 53.34,
+      "Momentum": 52.84,
       "Health": 54.68,
       "Profitability": 49.78,
-      "Technical": 49.8,
-      "Risk": 55.05
+      "Technical": 48.11,
+      "Risk": 54.98
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "Vistra Corp.",
   "sector": "Utilities",
   "industry": "Electric Utilities",
-  "market_cap": 47812958526.18814,
-  "current_price": 141.425,
-  "rank": 134,
-  "composite_score": 56.2,
+  "market_cap": 48287960448.862885,
+  "current_price": 142.83,
+  "rank": 132,
+  "composite_score": 56.21,
   "pillar_scores": {
     "quality": 75.81,
-    "value": 65.05,
+    "value": 63.98,
     "growth": 74.19,
-    "momentum": 26.0,
+    "momentum": 26.39,
     "health": 15.26,
     "profitability": 70.97,
-    "technical": 16.16,
-    "risk": 37.88,
+    "technical": 19.6,
+    "risk": 38.71,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.9,
     "eps_diluted": 2.87,
     "shares_outstanding": 338079954.0,
-    "market_cap": 47812958526.18814,
-    "pe_ratio_ttm": 49.277004547650805,
+    "market_cap": 48287960448.862885,
+    "pe_ratio_ttm": 49.76655116064623,
     "goodwill": 2810000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 178.71392683233358,
+        "value": 179.21669587046077,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 34.77541114430998,
+        "value": 34.76191942508653,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 180.63499569680934,
+        "value": 181.44216515822845,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 34.77541114430998,
-    "max": 180.63499569680934,
+    "median": 34.76191942508653,
+    "max": 181.44216515822845,
     "low": 2.9304302692709068,
-    "high": 180.63499569680934,
-    "mos_pct": -306.6810381187918,
+    "high": 181.44216515822845,
+    "mos_pct": -310.88065386855186,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -92,7 +92,8 @@
     "missing_metrics": [
       "gross_profit",
       "cost_of_revenue",
-      "research_and_development"
+      "research_and_development",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 5,
@@ -122,13 +123,15 @@
       "Quality": 51.61,
       "Value": 47.85,
       "Growth": 50.81,
-      "Momentum": 62.95,
+      "Momentum": 62.7,
       "Health": 19.4,
       "Profitability": 51.61,
-      "Technical": 41.93,
-      "Risk": 72.21
+      "Technical": 42.98,
+      "Risk": 72.44
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

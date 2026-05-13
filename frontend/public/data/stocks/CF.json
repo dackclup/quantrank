@@ -3,19 +3,19 @@
   "name": "CF Industries",
   "sector": "Materials",
   "industry": "Fertilizers & Agricultural Chemicals",
-  "market_cap": 19498821385.290802,
-  "current_price": 126.985,
+  "market_cap": 19331448919.52559,
+  "current_price": 125.895,
   "rank": 3,
-  "composite_score": 71.87,
+  "composite_score": 71.77,
   "pillar_scores": {
     "quality": 85.58,
     "value": 73.72,
     "growth": 35.58,
-    "momentum": 84.51,
+    "momentum": 83.86,
     "health": 71.61,
     "profitability": 72.44,
-    "technical": 53.54,
-    "risk": 63.2,
+    "technical": 53.39,
+    "risk": 63.06,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 3.99,
     "eps_diluted": 3.98,
     "shares_outstanding": 153552162.0,
-    "market_cap": 19498821385.290802,
-    "pe_ratio_ttm": 31.905779047827025,
+    "market_cap": 19331448919.52559,
+    "pe_ratio_ttm": 31.63190870428804,
     "goodwill": 2492000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 384.2748435634897,
+        "value": 393.0799900315231,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 111.6564004771914,
+        "value": 114.95243020939058,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 389.39258250966736,
+        "value": 386.6583546765496,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 167.771123801686,
-    "max": 389.39258250966736,
+    "max": 393.0799900315231,
     "low": 52.35558815796665,
-    "high": 389.39258250966736,
-    "mos_pct": 24.31057399338024,
+    "high": 393.0799900315231,
+    "mos_pct": 24.960270998791966,
     "valuation_warnings": [
       "goodwill_heavy",
       "value_trap_risk"
@@ -90,7 +90,8 @@
   "data_quality": {
     "missing_metrics": [
       "total_liabilities",
-      "research_and_development"
+      "research_and_development",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
@@ -115,15 +116,17 @@
     "label": "Materials median (n=26)",
     "values": {
       "Quality": 52.16,
-      "Value": 51.12,
+      "Value": 50.8,
       "Growth": 47.6,
-      "Momentum": 52.37,
+      "Momentum": 52.12,
       "Health": 51.62,
       "Profitability": 50.8,
-      "Technical": 56.04,
-      "Risk": 50.05
+      "Technical": 57.51,
+      "Risk": 49.62
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

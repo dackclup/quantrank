@@ -3,19 +3,19 @@
   "name": "Principal Financial Group",
   "sector": "Financials",
   "industry": "Life & Health Insurance",
-  "market_cap": 21785625696.72547,
-  "current_price": 100.65,
+  "market_cap": 21710950412.620094,
+  "current_price": 100.305,
   "rank": 203,
-  "composite_score": 52.79,
+  "composite_score": 52.82,
   "pillar_scores": {
     "quality": 45.33,
     "value": 61.33,
     "growth": 25.0,
-    "momentum": 75.1,
+    "momentum": 74.05,
     "health": 57.95,
     "profitability": 36.89,
-    "technical": 66.04,
-    "risk": 69.69,
+    "technical": 69.07,
+    "risk": 69.75,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.96,
     "eps_diluted": 1.93,
     "shares_outstanding": 216449333.0,
-    "market_cap": 21785625696.72547,
-    "pe_ratio_ttm": 52.150259857968344,
+    "market_cap": 21710950412.620094,
+    "pe_ratio_ttm": 51.97150274879574,
     "goodwill": 1588000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 104.88708486266567,
+        "value": 103.89217042822501,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 113.24153432866031,
+        "value": 113.37721553776264,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 104.88708486266567,
-    "max": 113.24153432866031,
+    "median": 103.89217042822501,
+    "max": 113.37721553776264,
     "low": 67.0278103330731,
-    "high": 113.24153432866031,
-    "mos_pct": 4.039661644076207,
+    "high": 113.37721553776264,
+    "mos_pct": 3.452781964476782,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -102,7 +102,8 @@
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "ebitda"
+      "ebitda",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
@@ -128,13 +129,15 @@
       "Quality": 50.67,
       "Value": 49.56,
       "Growth": 52.67,
-      "Momentum": 53.34,
+      "Momentum": 52.84,
       "Health": 54.68,
       "Profitability": 49.78,
-      "Technical": 49.8,
-      "Risk": 55.05
+      "Technical": 48.11,
+      "Risk": 54.98
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

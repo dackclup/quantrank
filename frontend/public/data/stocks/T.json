@@ -3,19 +3,19 @@
   "name": "AT&T",
   "sector": "Communication Services",
   "industry": "Integrated Telecommunication Services",
-  "market_cap": 194290991901.59674,
-  "current_price": 25.495,
-  "rank": 338,
-  "composite_score": 46.24,
+  "market_cap": 190785439988.09604,
+  "current_price": 25.035,
+  "rank": 354,
+  "composite_score": 45.55,
   "pillar_scores": {
     "quality": 51.09,
     "value": 53.62,
     "growth": 38.59,
-    "momentum": 38.15,
+    "momentum": 36.95,
     "health": 21.2,
     "profitability": 51.45,
-    "technical": 54.43,
-    "risk": 65.94,
+    "technical": 44.17,
+    "risk": 65.34,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.54,
     "eps_diluted": 0.54,
     "shares_outstanding": 7620748598.0,
-    "market_cap": 194290991901.59674,
-    "pe_ratio_ttm": 47.21296451709888,
+    "market_cap": 190785439988.09604,
+    "pe_ratio_ttm": 46.36111082854094,
     "goodwill": 63838000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 30.442693387545074,
+        "value": 30.210000492976263,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 34.06711088225195,
+        "value": 33.755793987630064,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 35.58384383437861,
+        "value": 35.46561570148899,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 30.442693387545074,
-    "max": 35.58384383437861,
+    "median": 30.210000492976263,
+    "max": 35.46561570148899,
     "low": 8.188950971335434,
-    "high": 35.58384383437861,
-    "mos_pct": 16.252479651934838,
+    "high": 35.46561570148899,
+    "mos_pct": 17.130091231767196,
     "valuation_warnings": [
       "goodwill_heavy"
     ]
@@ -90,7 +90,8 @@
     "missing_metrics": [
       "revenue",
       "gross_profit",
-      "research_and_development"
+      "research_and_development",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 16,
@@ -116,15 +117,17 @@
     "label": "Communication Services median (n=23)",
     "values": {
       "Quality": 51.09,
-      "Value": 50.72,
+      "Value": 51.45,
       "Growth": 55.43,
-      "Momentum": 48.66,
+      "Momentum": 48.36,
       "Health": 48.17,
       "Profitability": 56.52,
-      "Technical": 54.43,
-      "Risk": 50.28
+      "Technical": 52.44,
+      "Risk": 50.25
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

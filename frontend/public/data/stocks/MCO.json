@@ -3,19 +3,19 @@
   "name": "Moody's Corporation",
   "sector": "Financials",
   "industry": "Financial Exchanges & Data",
-  "market_cap": 151610815565.0625,
-  "current_price": 442.14,
-  "rank": 240,
-  "composite_score": 51.11,
+  "market_cap": 149944305081.57812,
+  "current_price": 437.28,
+  "rank": 245,
+  "composite_score": 50.92,
   "pillar_scores": {
     "quality": 74.67,
     "value": 10.44,
     "growth": 86.0,
-    "momentum": 39.34,
+    "momentum": 39.14,
     "health": 43.09,
     "profitability": 75.78,
-    "technical": 36.5,
-    "risk": 45.12,
+    "technical": 33.34,
+    "risk": 44.79,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 3.74,
     "eps_diluted": 3.73,
     "shares_outstanding": 342902272.0,
-    "market_cap": 151610815565.0625,
-    "pe_ratio_ttm": 118.53619695668566,
+    "market_cap": 149944305081.57812,
+    "pe_ratio_ttm": 117.23324364056216,
     "goodwill": 6335000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 200.9419820212071,
+        "value": 200.4817323539757,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 18.073924113119258,
+        "value": 17.981101799890027,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 109.50795306716319,
-    "max": 200.9419820212071,
-    "low": 18.073924113119258,
-    "high": 200.9419820212071,
-    "mos_pct": -303.75151052021323,
+    "median": 109.23141707693287,
+    "max": 200.4817323539757,
+    "low": 17.981101799890027,
+    "high": 200.4817323539757,
+    "mos_pct": -300.32438512750946,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ]
@@ -89,7 +89,8 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
-      "inventory"
+      "inventory",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 20,
@@ -115,13 +116,15 @@
       "Quality": 50.67,
       "Value": 49.56,
       "Growth": 52.67,
-      "Momentum": 53.34,
+      "Momentum": 52.84,
       "Health": 54.68,
       "Profitability": 49.78,
-      "Technical": 49.8,
-      "Risk": 55.05
+      "Technical": 48.11,
+      "Risk": 54.98
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

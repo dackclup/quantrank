@@ -3,19 +3,19 @@
   "name": "Intel",
   "sector": "Information Technology",
   "industry": "Semiconductors",
-  "market_cap": 592111724395.752,
-  "current_price": 117.8801,
+  "market_cap": 609842448394.7754,
+  "current_price": 121.41,
   "rank": 390,
-  "composite_score": 43.18,
+  "composite_score": 43.45,
   "pillar_scores": {
     "quality": 5.82,
     "value": 59.93,
     "growth": 40.07,
-    "momentum": 88.55,
+    "momentum": 91.04,
     "health": 62.83,
     "profitability": 5.48,
-    "technical": 72.34,
-    "risk": 47.46,
+    "technical": 71.24,
+    "risk": 47.69,
     "sentiment": null,
     "ml": null
   },
@@ -32,7 +32,7 @@
     "eps_basic": -0.73,
     "eps_diluted": -0.73,
     "shares_outstanding": 5023000000.0,
-    "market_cap": 592111724395.752,
+    "market_cap": 609842448394.7754,
     "pe_ratio_ttm": null,
     "goodwill": 20465000000.0
   },
@@ -51,7 +51,7 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 273.661234165602,
+        "value": 274.4673665276462,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 273.661234165602,
-    "max": 273.661234165602,
-    "low": 273.661234165602,
-    "high": 273.661234165602,
-    "mos_pct": 56.92481005029252,
+    "median": 274.4673665276462,
+    "max": 274.4673665276462,
+    "low": 274.4673665276462,
+    "high": 274.4673665276462,
+    "mos_pct": 55.765231692897764,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -88,7 +88,8 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "total_liabilities"
+      "total_liabilities",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 19,
@@ -116,13 +117,15 @@
       "Quality": 51.71,
       "Value": 50.46,
       "Growth": 52.74,
-      "Momentum": 44.32,
+      "Momentum": 44.47,
       "Health": 66.93,
       "Profitability": 53.2,
-      "Technical": 64.14,
-      "Risk": 45.48
+      "Technical": 64.94,
+      "Risk": 46.71
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

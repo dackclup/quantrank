@@ -3,19 +3,19 @@
   "name": "Citigroup",
   "sector": "Financials",
   "industry": "Diversified Banks",
-  "market_cap": 3637300514614.296,
-  "current_price": 125.21,
+  "market_cap": 3636574230263.1226,
+  "current_price": 125.185,
   "rank": 360,
-  "composite_score": 45.2,
+  "composite_score": 45.28,
   "pillar_scores": {
     "quality": 34.0,
     "value": 41.33,
     "growth": 24.33,
-    "momentum": 85.66,
+    "momentum": 85.41,
     "health": 47.67,
     "profitability": 47.56,
-    "technical": 54.23,
-    "risk": 62.78,
+    "technical": 56.37,
+    "risk": 62.68,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 7.11,
     "eps_diluted": 6.99,
     "shares_outstanding": 29049601000.0,
-    "market_cap": 3637300514614.296,
-    "pe_ratio_ttm": 17.912732343987503,
+    "market_cap": 3636574230263.1226,
+    "pe_ratio_ttm": 17.90915558778165,
     "goodwill": 19098000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 379.8760223782555,
+        "value": 376.27267942657664,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 15.127335266843058,
+        "value": 15.049645759922795,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 28.76920040688111,
-    "max": 379.8760223782555,
-    "low": 15.127335266843058,
-    "high": 379.8760223782555,
-    "mos_pct": -335.2223812745401,
+    "max": 376.27267942657664,
+    "low": 15.049645759922795,
+    "high": 376.27267942657664,
+    "mos_pct": -335.13547748324487,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate",
       "value_trap_risk"
@@ -98,7 +98,8 @@
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "ebitda"
+      "ebitda",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 82,
@@ -127,13 +128,15 @@
       "Quality": 50.67,
       "Value": 49.56,
       "Growth": 52.67,
-      "Momentum": 53.34,
+      "Momentum": 52.84,
       "Health": 54.68,
       "Profitability": 49.78,
-      "Technical": 49.8,
-      "Risk": 55.05
+      "Technical": 48.11,
+      "Risk": 54.98
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

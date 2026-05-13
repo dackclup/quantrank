@@ -3,19 +3,19 @@
   "name": "O’Reilly Automotive",
   "sector": "Consumer Discretionary",
   "industry": "Automotive Retail",
-  "market_cap": 76496026575.50696,
-  "current_price": 91.91,
-  "rank": 491,
-  "composite_score": 33.01,
+  "market_cap": 74490198082.0,
+  "current_price": 89.5,
+  "rank": 493,
+  "composite_score": 32.33,
   "pillar_scores": {
     "quality": 28.13,
-    "value": 22.4,
+    "value": 23.09,
     "growth": 30.99,
-    "momentum": 41.19,
+    "momentum": 40.29,
     "health": 34.12,
     "profitability": 54.51,
-    "technical": 37.6,
-    "risk": 67.0,
+    "technical": 24.85,
+    "risk": 64.81,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.72,
     "eps_diluted": 0.72,
     "shares_outstanding": 832292716.0,
-    "market_cap": 76496026575.50696,
-    "pe_ratio_ttm": 127.6527828640408,
+    "market_cap": 74490198082.0,
+    "pe_ratio_ttm": 124.30555555555556,
     "goodwill": 953035000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 51.38728707209726,
+        "value": 51.36969180819875,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 35.0593507518033,
+        "value": 34.98726159789162,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 35.0593507518033,
-    "max": 51.38728707209726,
+    "median": 34.98726159789162,
+    "max": 51.36969180819875,
     "low": 26.484215638066427,
-    "high": 51.38728707209726,
-    "mos_pct": -162.15546406654983,
+    "high": 51.36969180819875,
+    "mos_pct": -155.80738792484806,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -91,7 +91,8 @@
       "total_liabilities",
       "research_and_development",
       "interest_expense",
-      "dividends_paid"
+      "dividends_paid",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 5,
@@ -119,13 +120,15 @@
       "Quality": 45.44,
       "Value": 49.31,
       "Growth": 51.04,
-      "Momentum": 36.53,
+      "Momentum": 37.7,
       "Health": 47.32,
       "Profitability": 51.22,
-      "Technical": 31.37,
-      "Risk": 40.11
+      "Technical": 32.77,
+      "Risk": 40.55
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

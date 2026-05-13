@@ -3,19 +3,19 @@
   "name": "GE HealthCare",
   "sector": "Health Care",
   "industry": "Health Care Equipment",
-  "market_cap": 27966399307.250977,
-  "current_price": 61.6,
-  "rank": 387,
-  "composite_score": 43.47,
+  "market_cap": 28277389930.725098,
+  "current_price": 62.285,
+  "rank": 384,
+  "composite_score": 43.75,
   "pillar_scores": {
     "quality": 43.22,
     "value": 51.69,
     "growth": 55.93,
-    "momentum": 29.33,
+    "momentum": 29.83,
     "health": 37.21,
     "profitability": 35.88,
-    "technical": 44.57,
-    "risk": 29.38,
+    "technical": 48.41,
+    "risk": 30.08,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.85,
     "eps_diluted": 0.85,
     "shares_outstanding": 454000000.0,
-    "market_cap": 27966399307.250977,
-    "pe_ratio_ttm": 72.47058644014247,
+    "market_cap": 28277389930.725098,
+    "pe_ratio_ttm": 73.27647040872013,
     "goodwill": 15060000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 103.4798540057558,
+        "value": 102.85719900420217,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 75.6518141621849,
+        "value": 75.60573216297747,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 84.54872418707282,
+        "value": 83.13202387325703,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 84.54872418707282,
-    "max": 103.4798540057558,
-    "low": 75.6518141621849,
-    "high": 103.4798540057558,
-    "mos_pct": 27.142604378246194,
+    "median": 83.13202387325703,
+    "max": 102.85719900420217,
+    "low": 75.60573216297747,
+    "high": 102.85719900420217,
+    "mos_pct": 25.077007697573034,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -87,7 +87,8 @@
   "data_quality": {
     "missing_metrics": [
       "cost_of_revenue",
-      "accounts_receivable"
+      "accounts_receivable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
@@ -111,15 +112,17 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 51.27,
-      "Value": 51.69,
+      "Value": 52.82,
       "Growth": 50.0,
-      "Momentum": 39.29,
+      "Momentum": 40.24,
       "Health": 60.08,
       "Profitability": 52.54,
-      "Technical": 54.48,
-      "Risk": 40.01
+      "Technical": 56.37,
+      "Risk": 39.94
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

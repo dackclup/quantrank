@@ -3,19 +3,19 @@
   "name": "Equinix",
   "sector": "Real Estate",
   "industry": "Data Center REITs",
-  "market_cap": 106009865107.78809,
-  "current_price": 1074.9,
-  "rank": 357,
-  "composite_score": 45.39,
+  "market_cap": 106814138562.13379,
+  "current_price": 1083.0551,
+  "rank": 356,
+  "composite_score": 45.41,
   "pillar_scores": {
     "quality": 45.97,
     "value": 13.98,
     "growth": 62.1,
-    "momentum": 82.42,
+    "momentum": 82.47,
     "health": 38.57,
     "profitability": 37.63,
-    "technical": 59.71,
-    "risk": 62.65,
+    "technical": 59.41,
+    "risk": 63.25,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 4.22,
     "eps_diluted": 4.2,
     "shares_outstanding": 98623000.0,
-    "market_cap": 106009865107.78809,
-    "pe_ratio_ttm": 255.92857724144343,
+    "market_cap": 106814138562.13379,
+    "pe_ratio_ttm": 257.87025088355654,
     "goodwill": 5931000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 520.7897469635161,
+        "value": 519.7974466969738,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 333.1335970514166,
+        "value": 331.9698634551675,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 486.64851227988373,
+        "value": 484.5991292437819,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 409.89105466565013,
-    "max": 520.7897469635161,
+    "median": 408.2844963494747,
+    "max": 519.7974466969738,
     "low": 142.38052673539235,
-    "high": 520.7897469635161,
-    "mos_pct": -162.24042027237286,
+    "high": 519.7974466969738,
+    "mos_pct": -165.26969879940947,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "value_trap_risk"
@@ -90,7 +90,8 @@
   "data_quality": {
     "missing_metrics": [
       "research_and_development",
-      "inventory"
+      "inventory",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
@@ -117,13 +118,15 @@
       "Quality": 46.77,
       "Value": 47.85,
       "Growth": 51.61,
-      "Momentum": 53.88,
+      "Momentum": 53.04,
       "Health": 27.89,
       "Profitability": 52.69,
-      "Technical": 59.31,
-      "Risk": 53.42
+      "Technical": 60.51,
+      "Risk": 53.92
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

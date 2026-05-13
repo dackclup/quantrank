@@ -3,19 +3,19 @@
   "name": "Cencora",
   "sector": "Health Care",
   "industry": "Health Care Distributors",
-  "market_cap": 50948620355.45874,
-  "current_price": 261.865,
-  "rank": 124,
-  "composite_score": 56.9,
+  "market_cap": 50443735254.56296,
+  "current_price": 259.27,
+  "rank": 119,
+  "composite_score": 56.97,
   "pillar_scores": {
     "quality": 78.39,
-    "value": 64.41,
+    "value": 64.69,
     "growth": 70.34,
-    "momentum": 26.15,
+    "momentum": 26.05,
     "health": 24.1,
     "profitability": 29.94,
-    "technical": 49.25,
-    "risk": 54.65,
+    "technical": 49.45,
+    "risk": 54.75,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 11.32,
     "eps_diluted": 11.27,
     "shares_outstanding": 194560641.0,
-    "market_cap": 50948620355.45874,
-    "pe_ratio_ttm": 23.235580322482253,
+    "market_cap": 50443735254.56296,
+    "pe_ratio_ttm": 23.005322893848437,
     "goodwill": 16452669000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 1026.0822753328264,
+        "value": 1027.277573152022,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 55.85841886370033,
+        "value": 56.487060020319326,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 557.2708079815773,
+        "value": 556.4060217120394,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 351.46039713541506,
-    "max": 1026.0822753328264,
-    "low": 55.85841886370033,
-    "high": 1026.0822753328264,
-    "mos_pct": 25.49231937119778,
+    "median": 351.02800400064615,
+    "max": 1027.277573152022,
+    "low": 56.487060020319326,
+    "high": 1027.277573152022,
+    "mos_pct": 26.13979908759797,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -87,7 +87,8 @@
   "data_quality": {
     "missing_metrics": [
       "total_liabilities",
-      "research_and_development"
+      "research_and_development",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
@@ -111,15 +112,17 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 51.27,
-      "Value": 51.69,
+      "Value": 52.82,
       "Growth": 50.0,
-      "Momentum": 39.29,
+      "Momentum": 40.24,
       "Health": 60.08,
       "Profitability": 52.54,
-      "Technical": 54.48,
-      "Risk": 40.01
+      "Technical": 56.37,
+      "Risk": 39.94
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

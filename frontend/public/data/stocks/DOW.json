@@ -3,19 +3,19 @@
   "name": "Dow Inc.",
   "sector": "Materials",
   "industry": "Commodity Chemicals",
-  "market_cap": 31489747893.39998,
-  "current_price": 39.765,
-  "rank": 265,
-  "composite_score": 49.72,
+  "market_cap": 31081921885.75,
+  "current_price": 39.25,
+  "rank": 268,
+  "composite_score": 49.64,
   "pillar_scores": {
     "quality": 33.17,
     "value": 52.24,
     "growth": 45.67,
-    "momentum": 87.4,
+    "momentum": 86.16,
     "health": 51.16,
     "profitability": 44.55,
-    "technical": 57.92,
-    "risk": 37.65,
+    "technical": 59.56,
+    "risk": 37.62,
     "sentiment": null,
     "ml": null
   },
@@ -32,7 +32,7 @@
     "eps_basic": -0.74,
     "eps_diluted": -0.74,
     "shares_outstanding": 791896099.0,
-    "market_cap": 31489747893.39998,
+    "market_cap": 31081921885.75,
     "pe_ratio_ttm": null,
     "goodwill": 7947000000.0
   },
@@ -51,7 +51,7 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 64.5935663756858,
+        "value": 64.41140271745329,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 64.5935663756858,
-    "max": 64.5935663756858,
-    "low": 64.5935663756858,
-    "high": 64.5935663756858,
-    "mos_pct": 38.43814234010662,
+    "median": 64.41140271745329,
+    "max": 64.41140271745329,
+    "low": 64.41140271745329,
+    "high": 64.41140271745329,
+    "mos_pct": 39.063584483365716,
     "valuation_warnings": [
       "goodwill_heavy",
       "value_trap_risk"
@@ -92,7 +92,8 @@
       "total_liabilities",
       "operating_income",
       "accounts_payable",
-      "ebitda"
+      "ebitda",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 19,
@@ -117,15 +118,17 @@
     "label": "Materials median (n=26)",
     "values": {
       "Quality": 52.16,
-      "Value": 51.12,
+      "Value": 50.8,
       "Growth": 47.6,
-      "Momentum": 52.37,
+      "Momentum": 52.12,
       "Health": 51.62,
       "Profitability": 50.8,
-      "Technical": 56.04,
-      "Risk": 50.05
+      "Technical": 57.51,
+      "Risk": 49.62
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

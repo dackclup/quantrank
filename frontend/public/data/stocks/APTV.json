@@ -3,19 +3,19 @@
   "name": "Aptiv",
   "sector": "Consumer Discretionary",
   "industry": "Automotive Parts & Equipment",
-  "market_cap": 11872499314.137932,
-  "current_price": 55.91,
+  "market_cap": 11717483769.724136,
+  "current_price": 55.18,
   "rank": 471,
-  "composite_score": 36.42,
+  "composite_score": 36.25,
   "pillar_scores": {
     "quality": 20.31,
     "value": 72.92,
     "growth": 28.91,
-    "momentum": 9.14,
+    "momentum": 9.04,
     "health": 55.1,
     "profitability": 17.71,
-    "technical": 48.06,
-    "risk": 17.53,
+    "technical": 45.12,
+    "risk": 17.07,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.89,
     "eps_diluted": 0.88,
     "shares_outstanding": 212350194.0,
-    "market_cap": 11872499314.137932,
-    "pe_ratio_ttm": 63.53409073569558,
+    "market_cap": 11717483769.724136,
+    "pe_ratio_ttm": 62.70454580133612,
     "goodwill": 4548000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 65.08084085449916,
+        "value": 64.66554482929047,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 276.87767372356126,
+        "value": 276.59806600002696,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 90.66390297262153,
+        "value": 90.08276193955136,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,19 +75,22 @@
         "tier_used": null
       }
     },
-    "median": 53.48563273202804,
-    "max": 276.87767372356126,
+    "median": 53.2779847194237,
+    "max": 90.08276193955136,
     "low": 15.61816100600698,
-    "high": 276.87767372356126,
-    "mos_pct": -4.532744573726101,
+    "high": 276.59806600002696,
+    "mos_pct": -3.569984104632732,
     "valuation_warnings": [
-      "goodwill_heavy"
+      "goodwill_heavy",
+      "extreme_multiples_pb_estimate"
     ]
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
-    "missing_metrics": [],
+    "missing_metrics": [
+      "property_plant_equipment"
+    ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
     "latest_period_end": "2026-03-31",
@@ -95,7 +98,8 @@
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "goodwill_heavy"
+    "goodwill_heavy",
+    "extreme_multiples_pb_estimate"
   ],
   "has_history": true,
   "tangible_book_value": 12.926760029237364,
@@ -112,13 +116,15 @@
       "Quality": 45.44,
       "Value": 49.31,
       "Growth": 51.04,
-      "Momentum": 36.53,
+      "Momentum": 37.7,
       "Health": 47.32,
       "Profitability": 51.22,
-      "Technical": 31.37,
-      "Risk": 40.11
+      "Technical": 32.77,
+      "Risk": 40.55
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

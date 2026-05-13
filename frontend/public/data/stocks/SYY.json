@@ -3,19 +3,19 @@
   "name": "Sysco",
   "sector": "Consumer Staples",
   "industry": "Food Distributors",
-  "market_cap": 56152361671.089935,
-  "current_price": 73.385,
-  "rank": 34,
-  "composite_score": 64.21,
+  "market_cap": 55958773682.359314,
+  "current_price": 73.132,
+  "rank": 33,
+  "composite_score": 64.19,
   "pillar_scores": {
     "quality": 89.58,
     "value": 55.09,
     "growth": 79.51,
-    "momentum": 30.13,
+    "momentum": 30.28,
     "health": 52.13,
     "profitability": 51.39,
-    "technical": 60.16,
-    "risk": 54.45,
+    "technical": 59.31,
+    "risk": 54.48,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.52,
     "eps_diluted": 2.51,
     "shares_outstanding": 765174900.0,
-    "market_cap": 56152361671.089935,
-    "pe_ratio_ttm": 29.237052643916524,
+    "market_cap": 55958773682.359314,
+    "pe_ratio_ttm": 29.136256487720992,
     "goodwill": 5246000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 148.81126188184055,
+        "value": 149.50961384183253,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 13.618712016084784,
+        "value": 13.44309615835028,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 158.69583796854602,
+        "value": 157.3874628769058,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 148.81126188184055,
-    "max": 158.69583796854602,
-    "low": 13.618712016084784,
-    "high": 158.69583796854602,
-    "mos_pct": 50.685854546076094,
+    "median": 149.50961384183253,
+    "max": 157.3874628769058,
+    "low": 13.44309615835028,
+    "high": 157.3874628769058,
+    "mos_pct": 51.08541724845425,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ]
@@ -92,7 +92,8 @@
       "research_and_development",
       "sga_expense",
       "accounts_receivable",
-      "retained_earnings"
+      "retained_earnings",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
@@ -116,15 +117,17 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 56.08,
-      "Value": 48.26,
+      "Value": 49.07,
       "Growth": 50.52,
-      "Momentum": 39.07,
+      "Momentum": 38.62,
       "Health": 38.67,
       "Profitability": 52.55,
-      "Technical": 57.84,
-      "Risk": 51.26
+      "Technical": 55.03,
+      "Risk": 51.1
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

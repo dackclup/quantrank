@@ -3,19 +3,19 @@
   "name": "Oneok",
   "sector": "Energy",
   "industry": "Oil & Gas Storage & Transportation",
-  "market_cap": 55162341370.30512,
-  "current_price": 87.555,
-  "rank": 280,
-  "composite_score": 49.21,
+  "market_cap": 55584460810.47439,
+  "current_price": 88.225,
+  "rank": 279,
+  "composite_score": 49.25,
   "pillar_scores": {
     "quality": 34.52,
     "value": 50.79,
     "growth": 86.9,
-    "momentum": 62.6,
+    "momentum": 63.15,
     "health": 24.66,
     "profitability": 26.98,
-    "technical": 64.64,
-    "risk": 58.93,
+    "technical": 63.65,
+    "risk": 59.5,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.23,
     "eps_diluted": 1.23,
     "shares_outstanding": 630030737.0,
-    "market_cap": 55162341370.30512,
-    "pe_ratio_ttm": 71.18292707737868,
+    "market_cap": 55584460810.47439,
+    "pe_ratio_ttm": 71.7276410358708,
     "goodwill": 8058000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 111.75388572990121,
+        "value": 112.30938445747671,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 99.4676600204561,
+        "value": 99.71479470428716,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 78.3251043469739,
+        "value": 78.42303137845198,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 78.3251043469739,
-    "max": 111.75388572990121,
+    "median": 78.42303137845198,
+    "max": 112.30938445747671,
     "low": 18.55761772103367,
-    "high": 111.75388572990121,
-    "mos_pct": -11.784083832578357,
+    "high": 112.30938445747671,
+    "mos_pct": -12.498837297384,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -89,7 +89,8 @@
       "total_liabilities",
       "research_and_development",
       "sga_expense",
-      "accounts_receivable"
+      "accounts_receivable",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
@@ -113,13 +114,15 @@
       "Quality": 50.0,
       "Value": 50.79,
       "Growth": 53.57,
-      "Momentum": 76.69,
+      "Momentum": 77.09,
       "Health": 50.4,
       "Profitability": 52.38,
-      "Technical": 59.36,
+      "Technical": 59.61,
       "Risk": 65.64
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

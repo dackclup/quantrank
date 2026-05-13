@@ -3,18 +3,18 @@
   "name": "Trimble Inc.",
   "sector": "Information Technology",
   "industry": "Application Software",
-  "market_cap": 12863984106.063843,
-  "current_price": 55.52,
+  "market_cap": 12678624282.836914,
+  "current_price": 54.72,
   "rank": 487,
-  "composite_score": 33.91,
+  "composite_score": 34.07,
   "pillar_scores": {
     "quality": 19.86,
-    "value": 57.31,
+    "value": 57.99,
     "growth": 20.21,
-    "momentum": 30.48,
+    "momentum": 30.33,
     "health": 56.89,
     "profitability": 26.94,
-    "technical": 17.98,
+    "technical": 18.48,
     "risk": 25.27,
     "sentiment": null,
     "ml": null
@@ -32,8 +32,8 @@
     "eps_basic": 0.42,
     "eps_diluted": 0.42,
     "shares_outstanding": 231700000.0,
-    "market_cap": 12863984106.063843,
-    "pe_ratio_ttm": 132.1904772803897,
+    "market_cap": 12678624282.836914,
+    "pe_ratio_ttm": 130.28571719215032,
     "goodwill": 5213600000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 32.05842692449022,
+        "value": 31.874930615644622,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 169.4446541171003,
+        "value": 167.7065951557265,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 28.966753830974703,
+        "value": 28.89340790378874,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,18 +75,19 @@
         "tier_used": null
       }
     },
-    "median": 30.51259037773246,
-    "max": 169.4446541171003,
+    "median": 30.384169259716682,
+    "max": 167.7065951557265,
     "low": 20.486234010988316,
-    "high": 169.4446541171003,
-    "mos_pct": -81.9576763901408,
+    "high": 167.7065951557265,
+    "mos_pct": -80.09378750154238,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "dividends_paid"
+      "dividends_paid",
+      "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
@@ -110,13 +111,15 @@
       "Quality": 51.71,
       "Value": 50.46,
       "Growth": 52.74,
-      "Momentum": 44.32,
+      "Momentum": 44.47,
       "Health": 66.93,
       "Profitability": 53.2,
-      "Technical": 64.14,
-      "Risk": 45.48
+      "Technical": 64.94,
+      "Risk": 46.71
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

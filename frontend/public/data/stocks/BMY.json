@@ -3,19 +3,19 @@
   "name": "Bristol Myers Squibb",
   "sector": "Health Care",
   "industry": "Pharmaceuticals",
-  "market_cap": 164241495132.4463,
-  "current_price": 56.635,
-  "rank": 140,
-  "composite_score": 55.94,
+  "market_cap": 163545501327.51465,
+  "current_price": 56.395,
+  "rank": 141,
+  "composite_score": 55.82,
   "pillar_scores": {
     "quality": 69.49,
-    "value": 41.81,
+    "value": 41.53,
     "growth": 60.17,
-    "momentum": 65.19,
+    "momentum": 64.99,
     "health": 41.47,
     "profitability": 62.99,
-    "technical": 33.76,
-    "risk": 52.92,
+    "technical": 33.07,
+    "risk": 52.89,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.31,
     "eps_diluted": 1.31,
     "shares_outstanding": 2900000000.0,
-    "market_cap": 164241495132.4463,
-    "pe_ratio_ttm": 43.23282314620855,
+    "market_cap": 163545501327.51465,
+    "pe_ratio_ttm": 43.0496186700486,
     "goodwill": 21740000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 119.26954575740929,
+        "value": 119.40848454562101,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 22.13496050825048,
+        "value": 22.384071518885712,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 20.591335196375713,
+        "value": 20.27833951324735,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,17 +75,19 @@
         "tier_used": null
       }
     },
-    "median": 33.33918555030577,
-    "max": 119.26954575740929,
-    "low": 20.591335196375713,
-    "high": 119.26954575740929,
-    "mos_pct": -69.87517057390676,
+    "median": 33.46374105562339,
+    "max": 119.40848454562101,
+    "low": 20.27833951324735,
+    "high": 119.40848454562101,
+    "mos_pct": -68.52568983253838,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
-    "missing_metrics": [],
+    "missing_metrics": [
+      "property_plant_equipment"
+    ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
     "latest_period_end": "2026-03-31",
@@ -106,15 +108,17 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 51.27,
-      "Value": 51.69,
+      "Value": 52.82,
       "Growth": 50.0,
-      "Momentum": 39.29,
+      "Momentum": 40.24,
       "Health": 60.08,
       "Profitability": 52.54,
-      "Technical": 54.48,
-      "Risk": 40.01
+      "Technical": 56.37,
+      "Risk": 39.94
     }
   },
+  "beneish_m_score": null,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }
