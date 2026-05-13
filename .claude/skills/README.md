@@ -4,46 +4,79 @@ Skills for QuantRank's compute → output → verify lifecycle, plus
 vendored third-party skills from
 [`anthropics/skills`](https://github.com/anthropics/skills).
 
-## Layout
+## Layout — flat vs nested matters
+
+Claude Code auto-loads skills whose `SKILL.md` sits at the **top level**
+of `.claude/skills/<name>/`. It does **not** recurse into nested
+sub-directories like `phase-N/`. So this directory has two
+populations:
+
+- **Loaded skills** (sit flat under `.claude/skills/<name>/SKILL.md`) —
+  7 QuantRank cross-phase skills + 17 vendored Anthropic skills =
+  24 invocation-triggerable skills total
+- **Planning documents** (nested under `phase-N/<name>/PLAN.md`) —
+  roadmap docs for skills that don't yet exist. Renamed from
+  `SKILL.md` to `PLAN.md` to honestly reflect that Claude Code does
+  not load them. Flesh each one into a real top-level skill when its
+  phase begins.
 
 ```
 .claude/skills/
 ├── README.md                                  # this file
 ├── THIRD_PARTY_NOTICES.md                     # license attribution for vendored skills
 │
-├── verify-production-output/                  # cross-phase: 7 QuantRank skills
-├── schema-check/                              # — used by every phase that
-├── defense-scorecard/                         #   touches output JSON or
-├── top5-rotation-audit/                       #   schema
-├── network-test-runner/
-├── phase-status-bump/
-├── pr-iteration-flow/
+├── verify-production-output/SKILL.md          ┐ 7 QuantRank cross-phase
+├── schema-check/SKILL.md                      │ skills — loaded by
+├── defense-scorecard/SKILL.md                 │ Claude Code at session
+├── top5-rotation-audit/SKILL.md               │ start
+├── network-test-runner/SKILL.md               │
+├── phase-status-bump/SKILL.md                 │
+├── pr-iteration-flow/SKILL.md                 ┘
 │
-├── phase-1/ ... phase-8/                      # phase-specific stubs (12 dirs)
+├── algorithmic-art/SKILL.md                   ┐ 17 vendored Anthropic
+├── brand-guidelines/SKILL.md                  │ skills (full upstream
+├── canvas-design/SKILL.md                     │ snapshot 2026-05-09) —
+├── claude-api/SKILL.md                        │ also loaded at session
+├── doc-coauthoring/SKILL.md                   │ start
+├── docx/SKILL.md                              │
+├── frontend-design/SKILL.md                   │
+├── internal-comms/SKILL.md                    │
+├── mcp-builder/SKILL.md                       │
+├── pdf/SKILL.md                               │
+├── pptx/SKILL.md                              │
+├── skill-creator/SKILL.md                     │
+├── slack-gif-creator/SKILL.md                 │
+├── theme-factory/SKILL.md                     │
+├── web-artifacts-builder/SKILL.md             │
+├── webapp-testing/SKILL.md                    │
+└── xlsx/SKILL.md                              ┘
 │
-├── algorithmic-art/                           # vendored from anthropics/skills (17 dirs)
-├── brand-guidelines/
-├── canvas-design/
-├── claude-api/
-├── doc-coauthoring/
-├── docx/
-├── frontend-design/
-├── internal-comms/
-├── mcp-builder/
-├── pdf/
-├── pptx/
-├── skill-creator/
-├── slack-gif-creator/
-├── theme-factory/
-├── web-artifacts-builder/
-├── webapp-testing/
-└── xlsx/
+├── phase-1/                                   ┐ 37 phase-specific
+│   ├── universe-refresh/PLAN.md               │ planning docs — NOT
+│   └── yfinance-debug/PLAN.md                 │ loaded by Claude Code;
+├── phase-2/<name>/PLAN.md × 3                 │ flesh into real
+├── phase-3a/<name>/PLAN.md × 2                │ top-level skills as
+├── phase-3b/<name>/PLAN.md × 3                │ each phase starts
+├── phase-3c/<name>/PLAN.md × 3                │
+├── phase-3d/<name>/PLAN.md × 3                │
+├── phase-3e/<name>/PLAN.md × 3                │
+├── phase-4/<name>/PLAN.md × 5                 │
+├── phase-5/<name>/PLAN.md × 4                 │
+├── phase-6/<name>/PLAN.md × 3                 │
+├── phase-7/<name>/PLAN.md × 3                 │
+└── phase-8/<name>/PLAN.md × 2                 ┘
 ```
 
-Each skill directory contains a `SKILL.md` with YAML frontmatter
-(`name`, `description`) plus markdown body. The vendored skills
-additionally include `LICENSE.txt` (Apache 2.0 or source-available
-per skill) and per-skill helper scripts / templates / fonts.
+Each loaded `SKILL.md` has YAML frontmatter (`name`, `description`)
+plus markdown body that describes WHEN to use the skill and HOW. The
+vendored skills additionally include `LICENSE.txt` and per-skill
+helper scripts / templates / fonts.
+
+The `PLAN.md` files use a different shape — they capture intent,
+acceptance criteria, and references for a future skill. When the
+phase begins, the relevant PLAN.md gets fleshed out and **promoted**
+into a top-level `<skill-name>/SKILL.md` so Claude Code can actually
+invoke it.
 
 ## QuantRank cross-phase skills (7)
 

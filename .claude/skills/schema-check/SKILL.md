@@ -1,125 +1,124 @@
 ---
 name: schema-check
-description: Verify that compute/output/schemas.py (Pydantic) and frontend/lib/types.ts
-  (TypeScript) are in sync via the schema-snapshot guard. Run anytime either side
-  changes — adds, removes, or renames a field on StockSummary / StockDetail /
-  Metadata / RawMetrics / DataQuality / PillarScores. CI fails on drift; this
-  skill catches it locally before push.
+description: Run `python -m compute.output.schema_check` to verify that the
+  Pydantic models in `compute/output/schemas.py` agree with the TypeScript
+  types in `frontend/lib/types.ts` via the canonical snapshot at
+  `frontend/lib/schema-snapshot.json`. Also regenerate the snapshot when a
+  schema change has been mirrored on both sides. TRIGGER any time
+  `schemas.py` is edited (added / removed / renamed field on StockSummary,
+  StockDetail, Metadata, RawMetrics, DataQuality, or PillarScores), any
+  time `types.ts` is edited, when CI fails with a schema-drift error,
+  before pushing a PR that touches output schemas, or whenever the user
+  asks "did I update both sides?" / "is the schema in sync?" — even
+  without naming the snapshot file. SKIP for unrelated Pydantic models
+  inside `compute/` that aren't part of the JSON output surface.
 ---
 
 # schema-check
 
-## When to use
+The Pydantic models in `compute/output/schemas.py` and the TypeScript
+interfaces in `frontend/lib/types.ts` describe the same JSON wire format
+from opposite sides. They are not auto-synced — every new field on the
+Python side needs a manual mirror on the TypeScript side. The
+schema-snapshot guard at `frontend/lib/schema-snapshot.json` is the
+canonical bridge; CI fails on drift.
 
-After any change to:
+This skill is the local pre-CI check that catches drift before push.
 
-- `compute/output/schemas.py` (Pydantic models)
-- `frontend/lib/types.ts` (TypeScript interfaces)
-- `frontend/lib/schema-snapshot.json` (the canonical bridge)
+## Two modes
 
-Or proactively before opening / pushing a PR that touches the
-output schema layer.
-
-## What it does
-
-Wraps `python -m compute.output.schema_check` and reports drift
-between the live Pydantic models and the on-disk
-`frontend/lib/schema-snapshot.json`. Auto-updates the snapshot if
-requested.
-
-The schema snapshot guard exists because **Pydantic and TypeScript
-are not auto-synced** — every new field requires touching both
-`schemas.py` and `types.ts`. CI fails on drift via the snapshot
-diff. This skill is the local pre-CI check.
-
-## Modes
-
-### 1. Verify (default, read-only)
+### Verify (read-only)
 
 ```bash
 python -m compute.output.schema_check
 ```
 
-Exit 0 = in sync. Exit 1 = drift detected; the diff is printed to
-stderr.
+Exit 0 means the live Pydantic models match the on-disk snapshot. Exit 1
+means drift — the diff prints to stderr telling you which side is out of
+sync.
 
-### 2. Update snapshot
+### Update the snapshot
 
-After you've changed `schemas.py` AND mirrored the change in
-`types.ts`, regenerate the snapshot:
+After you've changed `schemas.py` AND mirrored the change in `types.ts`,
+regenerate the snapshot:
 
 ```bash
 python -m compute.output.schema_check --update-snapshot
 ```
 
-This rewrites `frontend/lib/schema-snapshot.json` from the current
-Pydantic models. Commit the snapshot file along with the schema +
-types changes — they belong in the same commit.
+This rewrites `schema-snapshot.json` from the current Pydantic models.
+Commit the snapshot in the same commit as the schemas.py + types.ts
+changes — they belong together so reviewers can see the three-way change
+in one diff.
 
 ## Workflow when adding a field
 
 1. Add the field to `compute/output/schemas.py` (Pydantic)
 2. Mirror the type in `frontend/lib/types.ts` (TypeScript)
-3. Run the verifier:
-   ```bash
-   python -m compute.output.schema_check
-   ```
-   Should report drift on the new field.
-4. Update the snapshot:
-   ```bash
-   python -m compute.output.schema_check --update-snapshot
-   ```
-5. Verify clean:
-   ```bash
-   python -m compute.output.schema_check
-   # → "✓ Schema snapshot in sync (.../schema-snapshot.json)."
-   ```
-6. Stage all three (schemas.py, types.ts, schema-snapshot.json) in
-   the same commit.
+3. Run the verifier — should report drift on the new field
+4. Run with `--update-snapshot` — should report "✓ in sync"
+5. Verify clean (re-run the read-only check)
+6. Stage all three files in the same commit
 
 ## Workflow when CI fails on schema drift
 
-Common cause: someone added a field on one side but not the other,
-or forgot to regenerate the snapshot.
+A teammate pushed a Python schema change but forgot the TypeScript mirror
+(or vice versa). To fix:
 
-1. Pull the failing commit locally.
-2. Run `python -m compute.output.schema_check` — read the diff.
-3. The diff tells you which side is out of sync:
-   - "+ field on Python, missing from snapshot" → either type the
-     field in `types.ts` and regen, OR remove the field from
-     `schemas.py` if it was added by mistake.
-   - "- field in snapshot, missing from Python" → restore the field
-     to `schemas.py` if it should still exist, OR regen if the
-     removal is intentional.
-4. Apply the fix, regen, commit, push.
+1. Pull the failing commit locally
+2. Run `python -m compute.output.schema_check` to read the diff
+3. Apply the missing side:
+   - "+ field on Python, missing from snapshot" → add to `types.ts` then
+     `--update-snapshot`
+   - "- field in snapshot, missing from Python" → either restore the
+     field on the Python side, or regenerate if removal was intentional
+4. Stage + commit + push
 
-## Edge cases
+## Type mapping cheat sheet
 
-- **Type changes** (e.g., `int | None` → `float | None`): the
-  snapshot picks this up. Update `types.ts` to match (`number | null`
-  on both sides — TypeScript doesn't distinguish int vs float).
-- **Optional vs required**: Pydantic `default=None` → `<field> | null`
-  in TypeScript with `required: false` in the snapshot.
-- **Nested dicts** (e.g., `tier2_events: dict | None`): the snapshot
-  records `dict | None` but doesn't enforce sub-shape. The sub-shape
-  contract lives in `frontend/lib/types.ts::Tier2Events` and is
-  exercised by `tests/test_scoring/test_tier2.py::test_B4_dict_shape_matches_typescript_interface`.
+| Python type | TypeScript type |
+|---|---|
+| `int \| None` / `float \| None` | `number \| null` |
+| `str \| None` | `string \| null` |
+| `bool` | `boolean` |
+| `list[T]` | `T[]` |
+| `dict \| None` (untyped) | `Record<string, unknown> \| null` or a dedicated interface |
 
-## Anti-patterns (do not do)
+TypeScript does not distinguish `int` from `float` — both map to
+`number`. Pydantic `default=None` ≡ TypeScript `<field> \| null` with
+`required: false` in the snapshot.
 
-- Do NOT edit `schema-snapshot.json` by hand. It's a generated file.
-  Always regenerate via `--update-snapshot`.
-- Do NOT skip the verify step. The CI guard exists for a reason —
-  catching drift in dev is much cheaper than the CI red-light + fix
-  + re-push cycle.
-- Do NOT regenerate the snapshot without first changing types.ts.
-  That just papers over drift instead of fixing it.
+## Nested-dict caveat
 
-## Related
+Some fields like `StockDetail.tier2_events: dict | None` aren't fully
+typed at the Pydantic level. The snapshot records `dict | None` but
+doesn't enforce sub-shape. The sub-shape contract lives in
+`frontend/lib/types.ts::Tier2Events` and is exercised by
+`tests/test_scoring/test_tier2.py::test_B4_dict_shape_matches_typescript_interface`.
+When introducing a nested dict, prefer typing it as a dedicated
+Pydantic + TypeScript pair so the snapshot picks up the structure.
 
-- `verify-production-output` — Section A reads the version + new
-  fields from this layer
-- The reason taxonomy in `compute/output/schemas.py` is also schema —
-  but it's not currently snapshotted. (Phase 4 candidate: snapshot
-  the `SKIP_REASONS` set so the 21→24 migration in PR-3d is
-  guarded.)
+## Why this skill exists
+
+Pydantic-to-TypeScript drift causes silent UI breakage. A new
+`Metadata.fundamentals_latency_p95_seconds` field on Python that's not
+mirrored in TypeScript means the field renders as `undefined` at
+runtime — TypeScript can't narrow it because the type doesn't include
+it. The snapshot guard catches this in CI; this skill catches it in
+local dev so the CI red-light never fires.
+
+## Anti-patterns
+
+- Hand-editing `schema-snapshot.json`. The file is generated. Always go
+  through `--update-snapshot`.
+- Regenerating the snapshot before mirroring `types.ts`. That papers
+  over drift instead of fixing it.
+- Bumping the schema version in `pyproject.toml` here. Version bumps
+  belong with the actual scoring / shape change, not the schema check.
+
+## Related skills
+
+- `verify-production-output` — Section A reads the version + new fields
+  from this layer at runtime
+- `phase-status-bump` — when the schema version moves, the docs that
+  cite it also need to move; that skill keeps them aligned
