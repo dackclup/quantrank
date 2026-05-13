@@ -23,6 +23,26 @@ class PillarScores(BaseModel):
     ml: float | None = None
 
 
+class PillarBaseline(BaseModel):
+    """Sector-median overlay for the per-stock pillar bars (#34).
+
+    Rendered as a vertical notch on each pillar bar + a header label
+    (``"Information Technology median (n=72)"``) on the stock-detail
+    page. The component (``frontend/components/PillarRadarChart.tsx``)
+    keys ``values`` by the **display label** (``Quality``, ``Value``,
+    ...), not the snake_case PillarScores field name, so the compute
+    layer converts during aggregation.
+
+    Sectors with fewer than ``PILLAR_BASELINE_MIN_PEERS`` (10) skip
+    the overlay entirely — too few peers for a meaningful median.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    label: str
+    values: dict[str, float | None]
+
+
 class StockSummary(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -115,5 +135,6 @@ class StockDetail(BaseModel):
     has_history: bool = False
     tangible_book_value: float | None = None
     tier2_events: dict | None = None
+    pillar_baseline: PillarBaseline | None = None
     entered_top5: bool = False
     exited_top5: bool = False

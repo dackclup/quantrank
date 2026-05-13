@@ -132,6 +132,16 @@ export type FairPriceEnsemble = {
   valuation_warnings: string[];
 };
 
+// Sector-median overlay for the per-stock pillar bars (#34).
+// Rendered as a vertical notch + header label by PillarRadarChart.
+// `values` is keyed by display label ("Quality", "Value", ...) so the
+// frontend component can index it directly from its ACTIVE_PILLARS
+// loop without case conversion.
+export type PillarBaseline = {
+  label: string;
+  values: Record<string, number | null>;
+};
+
 // Per-stock 1-year price history JSON (column-major). Lazy-loaded by
 // the detail page chart in Step 10.
 export type StockHistory = {
@@ -164,6 +174,7 @@ export type StockDetail = {
   has_history: boolean;
   tangible_book_value: number | null;
   tier2_events: Tier2Events | null;
+  pillar_baseline: PillarBaseline | null;
   entered_top5: boolean;
   exited_top5: boolean;
 };

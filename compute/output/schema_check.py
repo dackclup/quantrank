@@ -42,6 +42,7 @@ from compute import config
 from compute.output.schemas import (
     DataQuality,
     Metadata,
+    PillarBaseline,
     PillarScores,
     RawMetrics,
     StockDetail,
@@ -53,6 +54,7 @@ SNAPSHOT_PATH: Path = config.PROJECT_ROOT / "frontend" / "lib" / "schema-snapsho
 TRACKED_MODELS: list[type[BaseModel]] = [
     DataQuality,
     Metadata,
+    PillarBaseline,
     PillarScores,
     RawMetrics,
     StockDetail,

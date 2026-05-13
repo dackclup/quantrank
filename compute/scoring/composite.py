@@ -106,3 +106,79 @@ def neutralize_pillar_scores(
             for c in missing:
                 out.at[ticker, c] = neutral
     return out, imputed
+
+
+# ---------------------------------------------------------------------------
+# Issue #34 — per-sector pillar-median baseline for the stock-detail UI.
+# ---------------------------------------------------------------------------
+
+# Mapping from snake_case PillarScores field name (the pillar_df column
+# name) to the display label used by the frontend ``PillarRadarChart``
+# component. The component's ``baseline.values`` is keyed by display
+# label so it can index directly in its ``ACTIVE_PILLARS`` loop without
+# case conversion. Keep this list in sync with
+# ``frontend/components/PillarRadarChart.tsx::ACTIVE_PILLARS``.
+PILLAR_LABEL_MAP: dict[str, str] = {
+    "quality": "Quality",
+    "value": "Value",
+    "growth": "Growth",
+    "momentum": "Momentum",
+    "health": "Health",
+    "profitability": "Profitability",
+    "technical": "Technical",
+    "risk": "Risk",
+}
+
+
+def build_sector_pillar_baselines(
+    pillar_df: pd.DataFrame,
+    by_sector: dict[str, list[str]],
+    *,
+    min_peers: int,
+) -> dict[str, dict]:
+    """Compute per-sector pillar medians for the stock-detail overlay.
+
+    Parameters
+    ----------
+    pillar_df:
+        Output of :func:`compute_all_pillars` (after
+        :func:`neutralize_pillar_scores`). Index = ticker, columns =
+        snake_case pillar names matching :data:`PILLAR_LABEL_MAP`.
+    by_sector:
+        ``{sector_name: [tickers]}`` from :func:`_build_peer_groupings`.
+    min_peers:
+        Minimum sector population. Sectors below this floor are absent
+        from the return dict — their tickers carry ``pillar_baseline =
+        None`` downstream (rendered without an overlay).
+
+    Returns
+    -------
+    dict[sector_name, PillarBaseline-shaped dict]
+        Each value has shape ``{"label": "<Sector> median (n=N)",
+        "values": {"Quality": 67.2, "Value": 41.0, ...}}``. Pillar
+        keys use the display labels (capitalized), not the snake_case
+        column names. Pillars with all-null sector values map to
+        ``None`` (lets the frontend skip the notch for that pillar
+        without crashing).
+    """
+    out: dict[str, dict] = {}
+    for sector, tickers in by_sector.items():
+        peers = [t for t in tickers if t in pillar_df.index]
+        if len(peers) < min_peers:
+            continue
+        sub = pillar_df.loc[peers]
+        values: dict[str, float | None] = {}
+        for col, label in PILLAR_LABEL_MAP.items():
+            if col not in sub.columns:
+                values[label] = None
+                continue
+            col_series = sub[col].dropna()
+            if col_series.empty:
+                values[label] = None
+            else:
+                values[label] = round(float(col_series.median()), 2)
+        out[sector] = {
+            "label": f"{sector} median (n={len(peers)})",
+            "values": values,
+        }
+    return out

@@ -2,7 +2,7 @@
 
 import type { JSX } from 'react';
 
-import type { PillarScores } from '@/lib/types';
+import type { PillarBaseline, PillarScores } from '@/lib/types';
 
 // "Pillar breakdown" — horizontal bar list from the QuantRank.html
 // design. The previous Recharts polar radar was hard to read for
@@ -52,11 +52,6 @@ const tierLabel = (v: number): string =>
   v >= 50 ? 'Decent' :
   v >= 30 ? 'Weak' :
   'Poor';
-
-export type PillarBaseline = {
-  label: string;
-  values: Record<string, number | null>;
-};
 
 export function PillarRadarChart({
   pillars,

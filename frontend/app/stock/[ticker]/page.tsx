@@ -157,6 +157,7 @@ export default function StockDetailPage({
       <PillarRadarChart
         pillars={detail.pillar_scores}
         ticker={detail.ticker}
+        baseline={detail.pillar_baseline}
       />
 
       <section>

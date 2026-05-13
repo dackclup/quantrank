@@ -88,6 +88,18 @@
       "default": "<required>"
     }
   },
+  "PillarBaseline": {
+    "label": {
+      "type": "str",
+      "required": true,
+      "default": "<required>"
+    },
+    "values": {
+      "type": "dict[str, float | None]",
+      "required": true,
+      "default": "<required>"
+    }
+  },
   "PillarScores": {
     "growth": {
       "type": "float | None",
@@ -267,6 +279,11 @@
       "type": "str",
       "required": true,
       "default": "<required>"
+    },
+    "pillar_baseline": {
+      "type": "PillarBaseline | None",
+      "required": false,
+      "default": null
     },
     "pillar_scores": {
       "type": "PillarScores",
