@@ -66,7 +66,11 @@ from compute.output.writer import (
     write_stock_detail,
     write_stock_history,
 )
-from compute.scoring.composite import compute_composite, neutralize_pillar_scores
+from compute.scoring.composite import (
+    build_sector_pillar_baselines,
+    compute_composite,
+    neutralize_pillar_scores,
+)
 from compute.scoring.pillars import TickerInputs, compute_all_pillars
 from compute.scoring.risk_overlay import compute_risk_flags
 from compute.scoring.sanity import compute_mos_trailing_ic
@@ -736,6 +740,20 @@ def run_weekly_compute() -> int:
     by_sub_industry, by_sector, broad_ex_fin_util = _build_peer_groupings(df)
     historical_metrics = _build_historical_metrics(histories, snapshots)
 
+    # Step 5c — per-sector pillar median baselines for the stock-detail
+    # overlay (issue #34). Built once; looked up by sector in the per-
+    # ticker loop below. Sectors below PILLAR_BASELINE_MIN_PEERS are
+    # absent here — those tickers carry pillar_baseline=None.
+    sector_pillar_baselines = build_sector_pillar_baselines(
+        pillar_df, by_sector, min_peers=config.PILLAR_BASELINE_MIN_PEERS,
+    )
+    logger.info(
+        "Sector pillar baselines built for %d/%d sectors (min_peers=%d)",
+        len(sector_pillar_baselines),
+        len(by_sector),
+        config.PILLAR_BASELINE_MIN_PEERS,
+    )
+
     # Step 6 — assemble ranking DataFrame.
     df = df.assign(composite_score=composite.reindex(df.index).fillna(0.0))
     df = df.sort_values(
@@ -891,6 +909,7 @@ def run_weekly_compute() -> int:
             has_history=has_history,
             tangible_book_value=tbvps_value,
             tier2_events=tier2_dict,
+            pillar_baseline=sector_pillar_baselines.get(sector),
             entered_top5=ticker in entered,
             exited_top5=ticker in exited,
         )

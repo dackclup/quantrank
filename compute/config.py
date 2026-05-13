@@ -35,6 +35,14 @@ FUNDAMENTALS_REFETCH_DAYS: int = 45
 MIN_VALID_TICKERS: int = 100
 MIN_FUNDAMENTALS_COVERAGE: float = 0.5
 
+# Issue #34: per-sector pillar-median overlay floor. Sectors with fewer
+# than this many peers in the universe skip the overlay entirely — a
+# 5-stock median notch on the pillar bars is noisier than no notch at
+# all. S&P 500's smallest sector (Energy, n=21) sits comfortably above.
+# Phase 8 universe expansion may surface sub-buckets that fail the
+# floor; those simply emit pillar_baseline=null.
+PILLAR_BASELINE_MIN_PEERS: int = 10
+
 WIKIPEDIA_SP500_URL: str = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
 HTTP_USER_AGENT: str = "QuantRank/0.3 (+https://github.com/dackclup/quantrank)"
 
