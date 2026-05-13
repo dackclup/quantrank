@@ -68,6 +68,9 @@ def _snapshot(latest: date, **overrides) -> FundamentalsSnapshot:
         # AAPL FY2024 actuals from EDGAR: goodwill ≈ $5.89B; intangibles ≈ $25.80B.
         goodwill=5_890_000_000.0,
         intangibles_net=25_800_000_000.0,
+        # Phase 3e.1 — PPE net (Beneish M-score AQI + DEPI input).
+        # AAPL FY2024 actual from EDGAR: PP&E net ≈ $45.68B.
+        property_plant_equipment=45_680_000_000.0,
         latest_filed_date=latest,
         latest_period_end=date(latest.year, 9, 28),
     )

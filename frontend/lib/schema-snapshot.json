@@ -230,6 +230,11 @@
     }
   },
   "StockDetail": {
+    "beneish_m_score": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
     "composite_score": {
       "type": "float",
       "required": true,

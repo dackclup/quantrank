@@ -66,6 +66,7 @@ from compute.output.writer import (
     write_stock_detail,
     write_stock_history,
 )
+from compute.scoring.beneish import compute_beneish
 from compute.scoring.composite import (
     build_sector_pillar_baselines,
     compute_composite,
@@ -855,6 +856,15 @@ def run_weekly_compute() -> int:
             if ensemble.median is not None or ensemble.max is not None:
                 fair_price_count += 1
 
+        # Beneish M-score (PR 3e.1, ANNOTATE-only — never enters composite,
+        # never suppresses Top-5). Lands in `valuation_warnings` as
+        # ``beneish_high`` when M > -2.22; numeric m_score on StockDetail
+        # for transparency. None on any missing ratio (banks / REITs / asset-
+        # light filers usually fail AQI + DEPI through missing PPE).
+        beneish_result = compute_beneish(snap, histories.get(ticker))
+        if beneish_result.is_high and "beneish_high" not in valuation_warnings:
+            valuation_warnings.append("beneish_high")
+
         # Price history JSON (sliced from already-fetched prices, no new
         # fetches per Step 5 spec).
         prices_df = prices_by_ticker.get(ticker)
@@ -910,6 +920,7 @@ def run_weekly_compute() -> int:
             tangible_book_value=tbvps_value,
             tier2_events=tier2_dict,
             pillar_baseline=sector_pillar_baselines.get(sector),
+            beneish_m_score=beneish_result.m_score,
             entered_top5=ticker in entered,
             exited_top5=ticker in exited,
         )

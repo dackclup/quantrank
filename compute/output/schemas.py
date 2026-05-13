@@ -136,5 +136,6 @@ class StockDetail(BaseModel):
     tangible_book_value: float | None = None
     tier2_events: dict | None = None
     pillar_baseline: PillarBaseline | None = None
+    beneish_m_score: float | None = None
     entered_top5: bool = False
     exited_top5: bool = False
