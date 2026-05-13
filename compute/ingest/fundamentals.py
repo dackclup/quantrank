@@ -150,6 +150,8 @@ _ANNUAL_TAGS: dict[str, list[str]] = {
         "us-gaap:DepreciationDepletionAndAmortization",
     ],
     "property_plant_equipment": ["us-gaap:PropertyPlantAndEquipmentNet"],
+    # PR 3e.2 — Dechow F-score Δinventory input.
+    "inventory": ["us-gaap:InventoryNet"],
 }
 
 ALL_METRIC_KEYS: tuple[str, ...] = (
