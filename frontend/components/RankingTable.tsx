@@ -3,7 +3,10 @@
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 
-import { formatFairPrice, formatMosPct, mosColorClass } from '@/lib/format';
+import { MoSCell } from '@/components/MoSCell';
+import { ScoreBadge } from '@/components/ScoreBadge';
+import { SectorChip } from '@/components/SectorChip';
+import { formatFairPrice, formatMosPct } from '@/lib/format';
 import type { StockSummary } from '@/lib/types';
 
 type SortKey =
@@ -18,24 +21,6 @@ type SortKey =
 type SortDir = 'asc' | 'desc';
 
 const PAGE_SIZE = 50;
-
-function scoreColorClasses(score: number): string {
-  if (score >= 80) return 'bg-emerald-100 text-emerald-800 ring-emerald-200';
-  if (score >= 60) return 'bg-lime-100 text-lime-800 ring-lime-200';
-  if (score >= 40) return 'bg-amber-100 text-amber-800 ring-amber-200';
-  if (score >= 20) return 'bg-orange-100 text-orange-800 ring-orange-200';
-  return 'bg-red-100 text-red-800 ring-red-200';
-}
-
-function ScoreBadge({ score }: { score: number }) {
-  return (
-    <span
-      className={`inline-flex min-w-[3rem] items-center justify-center rounded-full px-2 py-0.5 text-sm font-semibold tabular-nums ring-1 ring-inset ${scoreColorClasses(score)}`}
-    >
-      {score.toFixed(1)}
-    </span>
-  );
-}
 
 function formatPrice(p: number): string {
   return p.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 });
@@ -90,8 +75,6 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
       setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
     } else {
       setSortKey(key);
-      // Score- and undervaluation-style columns default to descending —
-      // most useful sort is "best at top".
       const descByDefault: SortKey[] = [
         'composite_score',
         'fair_price',
@@ -167,7 +150,6 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
           </thead>
           <tbody className="divide-y divide-slate-100">
             {pageRows.map((row) => {
-              const mos = formatMosPct(row.margin_of_safety_pct);
               const dataQualityIssue = row.valuation_warnings.includes(
                 'data_quality_input_corruption',
               );
@@ -183,7 +165,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                     </Link>
                   </td>
                   <td className="px-3 py-2 text-slate-700">{row.name}</td>
-                  <td className="px-3 py-2 text-slate-500">{row.sector}</td>
+                  <td className="px-3 py-2"><SectorChip sector={row.sector} /></td>
                   <td className="px-3 py-2 text-right">
                     <ScoreBadge score={row.composite_score} />
                   </td>
@@ -202,11 +184,12 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                       formatFairPrice(row.fair_price)
                     )}
                   </td>
-                  <td
-                    className={`px-3 py-2 text-right tabular-nums ${mosColorClass(row.margin_of_safety_pct)}`}
-                    title={mos.tooltip ?? undefined}
-                  >
-                    {mos.display}
+                  <td className="px-3 py-2">
+                    {dataQualityIssue ? (
+                      <span className="flex justify-end text-slate-300">—</span>
+                    ) : (
+                      <MoSCell mos={row.margin_of_safety_pct} />
+                    )}
                   </td>
                 </tr>
               );
@@ -245,8 +228,8 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                   </div>
                 </div>
                 {/* Sector | price */}
-                <div className="flex items-center justify-between text-xs text-slate-500">
-                  <span className="truncate">{row.sector}</span>
+                <div className="flex items-center justify-between gap-2 text-xs text-slate-500">
+                  <SectorChip sector={row.sector} size="xs" />
                   <span className="tabular-nums">{formatPrice(row.current_price)}</span>
                 </div>
                 {/* Fair | MoS */}
@@ -270,13 +253,10 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                       Fair <span aria-hidden="true">⚠</span> N/A
                     </span>
                   )}
-                  <span
-                    className={`tabular-nums ${mosColorClass(row.margin_of_safety_pct)}`}
-                    title={mos.tooltip ?? undefined}
-                  >
-                    MoS {mos.display}
-                  </span>
+                  <MoSCell mos={row.margin_of_safety_pct} align="right" />
                 </div>
+                {/* Tooltip backup for clamped MoS values */}
+                {mos.tooltip && <span className="sr-only">{mos.tooltip}</span>}
               </Link>
             </li>
           );
