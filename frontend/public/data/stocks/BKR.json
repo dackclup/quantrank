@@ -95,7 +95,9 @@
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-24"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "data_quality_input_corruption"
+  ],
   "valuation_warnings": [
     "data_quality_input_corruption"
   ],
@@ -107,6 +109,19 @@
     "auditor_change": false,
     "latest_8k_filing_date": null,
     "latest_8k_filing_url": null
+  },
+  "pillar_baseline": {
+    "label": "Energy median (n=21)",
+    "values": {
+      "Quality": 50.0,
+      "Value": 50.79,
+      "Growth": 53.57,
+      "Momentum": 78.74,
+      "Health": 50.4,
+      "Profitability": 52.38,
+      "Technical": 61.4,
+      "Risk": 65.67
+    }
   },
   "entered_top5": false,
   "exited_top5": false
