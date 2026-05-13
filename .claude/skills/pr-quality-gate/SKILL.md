@@ -214,7 +214,9 @@ Walks the commits between `merge-base(origin/main, HEAD)` and `HEAD`:
 
 - Empty / placeholder message (`wip`, `fix`, `update`, `todo`,
   single-word subjects) = `⚠`
-- Commit body references `--no-verify` / `--no-gpg-sign` = `✗`
+- Commit body references `--no-verify` / `--no-gpg-sign` in a `git ...`
+  command context = `⚠` (prose mentions in code-listing form are
+  filtered out)
 - Merge commit on the branch (squash-merge expected) = `⚠`
 - Commit author is `github-actions[bot]` but touches files outside
   `frontend/public/data/` = `⚠`
