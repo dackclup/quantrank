@@ -97,7 +97,7 @@ export default function StockDetailPage({
                 {detail.ticker}
               </span>
             </h1>
-            <p className="display-serif mt-1 text-2xl text-slate-700 sm:text-3xl">
+            <p className="mt-1 text-2xl text-slate-700 sm:text-3xl">
               {detail.name}
             </p>
           </div>
