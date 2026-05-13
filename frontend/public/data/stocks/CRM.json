@@ -3,19 +3,19 @@
   "name": "Salesforce",
   "sector": "Information Technology",
   "industry": "Application Software",
-  "market_cap": 168910786804.19922,
-  "current_price": 181.82,
-  "rank": 119,
-  "composite_score": 57.0,
+  "market_cap": 159146987731.9336,
+  "current_price": 171.31,
+  "rank": 164,
+  "composite_score": 54.61,
   "pillar_scores": {
-    "quality": 52.05,
-    "value": 88.36,
+    "quality": 51.37,
+    "value": 88.58,
     "growth": 73.97,
-    "momentum": 13.15,
-    "health": 45.42,
-    "profitability": 58.45,
-    "technical": 57.12,
-    "risk": 23.14,
+    "momentum": 8.76,
+    "health": 45.34,
+    "profitability": 58.22,
+    "technical": 23.9,
+    "risk": 22.58,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 7.85,
     "eps_diluted": 7.8,
     "shares_outstanding": 929000000.0,
-    "market_cap": 168910786804.19922,
-    "pe_ratio_ttm": 23.310257349258816,
+    "market_cap": 159146987731.9336,
+    "pe_ratio_ttm": 21.962820199819713,
     "goodwill": 57941000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 893.9910135064885,
+        "value": 897.1952952305085,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 470.81707623894715,
+        "value": 453.01939249974976,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 980.4713029980829,
+        "value": 959.617093045407,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,12 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 682.4040448727178,
-    "max": 893.9910135064885,
+    "median": 675.1073438651291,
+    "max": 453.01939249974976,
     "low": 75.88527115355843,
-    "high": 980.4713029980829,
-    "mos_pct": 73.35595990523007,
+    "high": 959.617093045407,
+    "mos_pct": 74.62477647216684,
     "valuation_warnings": [
+      "extreme_multiples_pe_estimate",
       "extreme_multiples_ev_ebitda_estimate",
       "value_trap_risk"
     ]
@@ -92,12 +93,13 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 69,
+    "filing_lag_days": 72,
     "latest_period_end": "2026-01-31",
     "latest_filed_date": "2026-03-02"
   },
   "risk_flags": [],
   "valuation_warnings": [
+    "extreme_multiples_pe_estimate",
     "extreme_multiples_ev_ebitda_estimate",
     "value_trap_risk"
   ],
