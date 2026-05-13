@@ -12,8 +12,8 @@ sub-directories like `phase-N/`. So this directory has two
 populations:
 
 - **Loaded skills** (sit flat under `.claude/skills/<name>/SKILL.md`) —
-  8 QuantRank cross-phase skills + 17 vendored Anthropic skills =
-  25 invocation-triggerable skills total
+  9 QuantRank cross-phase skills + 17 vendored Anthropic skills =
+  26 invocation-triggerable skills total
 - **Planning documents** (nested under `phase-N/<name>/PLAN.md`) —
   roadmap docs for skills that don't yet exist. Renamed from
   `SKILL.md` to `PLAN.md` to honestly reflect that Claude Code does
@@ -25,14 +25,15 @@ populations:
 ├── README.md                                  # this file
 ├── THIRD_PARTY_NOTICES.md                     # license attribution for vendored skills
 │
-├── verify-production-output/SKILL.md          ┐ 8 QuantRank cross-phase
+├── verify-production-output/SKILL.md          ┐ 9 QuantRank cross-phase
 ├── schema-check/SKILL.md                      │ skills — loaded by
 ├── defense-scorecard/SKILL.md                 │ Claude Code at session
 ├── top5-rotation-audit/SKILL.md               │ start
 ├── network-test-runner/SKILL.md               │
 ├── phase-status-bump/SKILL.md                 │
 ├── pr-iteration-flow/SKILL.md                 │
-├── security-check/SKILL.md                    ┘
+├── security-check/SKILL.md                    │
+├── pr-quality-gate/SKILL.md                   ┘
 │
 ├── algorithmic-art/SKILL.md                   ┐ 17 vendored Anthropic
 ├── brand-guidelines/SKILL.md                  │ skills (full upstream
@@ -79,7 +80,7 @@ phase begins, the relevant PLAN.md gets fleshed out and **promoted**
 into a top-level `<skill-name>/SKILL.md` so Claude Code can actually
 invoke it.
 
-## QuantRank cross-phase skills (8)
+## QuantRank cross-phase skills (9)
 
 | Skill | When to use |
 |---|---|
@@ -91,6 +92,7 @@ invoke it.
 | `phase-status-bump` | At the end of each phase, to update `PHASE_STATUS.md` + `SKILL.md` + `WORKFLOW.md` consistently |
 | `pr-iteration-flow` | During UI polish iteration — manage Draft↔Ready flips + spot-check matrix authoring |
 | `security-check` | Before release tags / CI workflow edits / dependency adds — Section A-G audit of secrets, CVEs, EDGAR rate-limit hygiene, output JSON cleanliness, CI permissions, licenses, git hygiene |
+| `pr-quality-gate` | Before authorizing Draft→Ready or merge — Section A-G PR completeness audit: scope, skill triggers met, doc drift, test coverage, local verification ladder, commit hygiene, polish |
 
 ## QuantRank phase-specific stubs (36)
 
