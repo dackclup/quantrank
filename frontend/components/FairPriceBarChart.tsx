@@ -1,39 +1,40 @@
 'use client';
 
 import type { JSX } from 'react';
-import {
-  Bar,
-  BarChart,
-  Cell,
-  ReferenceLine,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
 
 import type { FairPriceEnsemble } from '@/lib/types';
+import { formatFairPrice } from '@/lib/format';
 
-// 6-method horizontal-bar visualization of the fair-price ensemble
-// (PR 3d Step 8). Bars are sorted to match the existing FairPriceCard
-// table order for visual continuity. Outlier methods (per-method
-// extreme_*_estimate warnings) are grayed; the X-axis domain caps at
-// 1.2× max(non-outlier value, current_price, median, max), so an
-// extreme outlier value extends off-chart on the right — that's the
-// visual intent.
+// "Fair price check" — verdict card from the QuantRank.html design.
 //
-// Recharts naming gotcha: `<BarChart layout="vertical">` produces
-// HORIZONTAL bars (the chart's main axis is vertical, but the bars
-// extend horizontally). The default `layout="horizontal"` produces
-// vertical bars. We want horizontal bars here, so we pass
-// `layout="vertical"` despite the visual we're building being
-// horizontal-oriented. Recharts' axis terminology, not ours.
+// The previous Recharts horizontal bar chart had a hard usability
+// problem: a $1031 EV/EBITDA outlier compressed the other bars
+// into 6-pixel slivers, and the "method names + $ values + reference
+// lines + outlier grayscale" cocktail required a methodology-doc
+// read before a user could decode it.
+//
+// The redesign delivers the answer in plain English first:
+//   1. Headline: "Looks overvalued / Near fair value / …" with a
+//      one-sentence rationale and a side-by-side "today's price →
+//      median fair price" comparison.
+//   2. Tally pills: "Of N methods: X say cheap, Y say fair, Z say
+//      pricey" — distribution of opinion at a glance.
+//   3. Per-method rows: each method gets a verdict badge + a full
+//      English sentence ("estimates $98, about 48% below today")
+//      instead of an unlabeled bar.
+//
+// Component still exported as `FairPriceBarChart` for backward
+// compatibility with the existing import in the detail page. Internal
+// shape is now a card list, not a chart.
 
-interface FairPriceBarChartProps {
-  fair_price: FairPriceEnsemble | null;
-  current_price: number | null;
-  ticker: string;
-}
+const METHOD_ORDER: ReadonlyArray<readonly [MethodKey, string]> = [
+  ['graham', 'Graham (defensive)'],
+  ['multiples_pe', 'P/E multiples'],
+  ['multiples_pb', 'P/B multiples'],
+  ['multiples_ev_ebitda', 'EV/EBITDA'],
+  ['rim', 'Residual Income'],
+  ['dcf', 'DCF (2-stage)'],
+];
 
 type MethodKey =
   | 'graham'
@@ -43,229 +44,301 @@ type MethodKey =
   | 'rim'
   | 'dcf';
 
-const METHOD_ORDER: ReadonlyArray<readonly [MethodKey, string]> = [
-  ['graham', 'Graham (defensive)'],
-  ['multiples_pe', 'P/E multiples'],
-  ['multiples_pb', 'P/B multiples'],
-  ['multiples_ev_ebitda', 'EV/EBITDA'],
-  ['rim', 'Residual Income'],
-  ['dcf', 'DCF (2-stage)'],
-] as const;
+type Verdict = 'cheap' | 'fair' | 'pricey' | 'outlier';
 
-interface ChartRow {
+type Row = {
   key: MethodKey;
   label: string;
-  // The value plotted on the X-axis. Negative source values are
-  // clamped to 0 here (would distort the bar otherwise). The original
-  // unclamped number lives in `raw_value` for the tooltip.
   value: number;
-  raw_value: number;
+  pct: number;
   is_outlier: boolean;
+  verdict: Verdict;
+};
+
+// Verdict thresholds:
+// - "cheap" — method's fair price is at least 20% above today
+// - "fair" — within ±10–20% of today
+// - "pricey" — at least 10% below today
+function classifyVerdict(pct: number, is_outlier: boolean): Verdict {
+  if (is_outlier) return 'outlier';
+  if (pct >= 20) return 'cheap';
+  if (pct >= -10) return 'fair';
+  return 'pricey';
 }
 
-const APPLICABLE_FILL = 'rgb(99 102 241)'; // indigo-500
-const OUTLIER_FILL = 'rgb(148 163 184)'; // slate-400
-const CURRENT_PRICE_STROKE = 'rgb(244 63 94)'; // rose-500
-const MEDIAN_STROKE = 'rgb(67 56 202)'; // indigo-700
-const MAX_STROKE = 'rgb(165 180 252)'; // indigo-300
+const VERDICT_STYLE: Record<Verdict, {
+  dot: string;
+  text: string;
+  bg: string;
+  ring: string;
+  label: string;
+  phrase: string;
+}> = {
+  cheap:   { dot: 'bg-emerald-500', text: 'text-emerald-700', bg: 'bg-emerald-50', ring: 'ring-emerald-200', label: 'Undervalued', phrase: "thinks it's a bargain" },
+  fair:    { dot: 'bg-slate-400',   text: 'text-slate-600',   bg: 'bg-slate-50',   ring: 'ring-slate-200',   label: 'Fair',        phrase: "thinks it's fairly priced" },
+  pricey:  { dot: 'bg-rose-500',    text: 'text-rose-700',    bg: 'bg-rose-50',    ring: 'ring-rose-200',    label: 'Overvalued',  phrase: "thinks it's expensive" },
+  outlier: { dot: 'bg-slate-300',   text: 'text-slate-500',   bg: 'bg-slate-100',  ring: 'ring-slate-300',   label: 'Outlier',     phrase: 'estimate looks unreliable' },
+};
 
-function fmtPrice(value: number | null | undefined): string {
-  if (value === null || value === undefined || Number.isNaN(value)) return '—';
-  if (value < 0.01) return '< $0.01';
-  if (value >= 1_000_000) return '—';
-  return `$${value.toFixed(2)}`;
-}
+type Headline = {
+  tag: string;
+  desc: string;
+  cls: string;
+  bg: string;
+  ring: string;
+  big: string;
+} | null;
 
-interface TooltipProps {
-  active?: boolean;
-  payload?: Array<{ payload: ChartRow }>;
-}
-
-function CustomTooltip({ active, payload }: TooltipProps): JSX.Element | null {
-  if (!active || !payload || payload.length === 0) return null;
-  const row = payload[0].payload;
-  return (
-    <div className="rounded-md border border-slate-200 bg-white px-3 py-2 text-xs shadow-sm">
-      <p className="font-medium text-slate-900">{row.label}</p>
-      <p className="mt-0.5 tabular-nums text-slate-700">{fmtPrice(row.raw_value)}</p>
-      {row.is_outlier && (
-        <p className="mt-1 text-rose-700">
-          Outlier — excluded from MAX, kept in MEDIAN
-        </p>
-      )}
-    </div>
-  );
+function headlineFor(medianPct: number | null, ticker: string): Headline {
+  if (medianPct === null) return null;
+  if (medianPct >= 20) {
+    return {
+      tag: 'Looks undervalued',
+      desc: `Models suggest ${ticker} is trading below fair value`,
+      cls: 'text-emerald-800', bg: 'bg-emerald-50', ring: 'ring-emerald-200', big: 'text-emerald-700',
+    };
+  }
+  if (medianPct >= -10) {
+    return {
+      tag: 'Near fair value',
+      desc: `Models suggest ${ticker} is priced roughly in line`,
+      cls: 'text-slate-700', bg: 'bg-slate-50', ring: 'ring-slate-200', big: 'text-slate-700',
+    };
+  }
+  if (medianPct >= -50) {
+    return {
+      tag: 'Looks overvalued',
+      desc: `Models suggest ${ticker} is trading above fair value`,
+      cls: 'text-rose-800', bg: 'bg-rose-50', ring: 'ring-rose-200', big: 'text-rose-700',
+    };
+  }
+  return {
+    tag: 'Heavily overvalued',
+    desc: `Models suggest ${ticker} is far above estimated fair value`,
+    cls: 'text-rose-900', bg: 'bg-rose-50', ring: 'ring-rose-300', big: 'text-rose-800',
+  };
 }
 
 export function FairPriceBarChart({
   fair_price,
   current_price,
   ticker,
-}: FairPriceBarChartProps): JSX.Element | null {
-  // Loose null check — same forward-compat reason as Tier2EventCard:
-  // older StockDetail JSONs (pre-PR-3c) lack `fair_price` entirely,
-  // so runtime sees `undefined` not `null`.
+}: {
+  fair_price: FairPriceEnsemble | null;
+  current_price: number | null;
+  ticker: string;
+}): JSX.Element | null {
   if (fair_price == null || current_price == null || Number.isNaN(current_price)) {
     return null;
   }
 
   const warnings = new Set(fair_price.valuation_warnings ?? []);
-  const rows: ChartRow[] = [];
+  const rows: Row[] = [];
   for (const [key, label] of METHOD_ORDER) {
     const m = fair_price.methods[key];
-    if (!m || !m.applicable || m.value === null || Number.isNaN(m.value)) {
-      continue;
-    }
-    const raw = m.value;
+    if (!m || !m.applicable || m.value === null || Number.isNaN(m.value)) continue;
+    const pct = ((m.value - current_price) / current_price) * 100;
+    const is_outlier = warnings.has(`extreme_${key}_estimate`);
     rows.push({
       key,
       label,
-      // Clamp at 0 for the bar geometry — bars can't go negative
-      // visually. The tooltip surfaces the unclamped raw_value.
-      value: Math.max(raw, 0),
-      raw_value: raw,
-      is_outlier: warnings.has(`extreme_${key}_estimate`),
+      value: m.value,
+      pct,
+      is_outlier,
+      verdict: classifyVerdict(pct, is_outlier),
     });
   }
+  if (rows.length === 0) return null;
 
-  if (rows.length === 0) {
-    return null;
-  }
+  // Sort: cheap first (most positive %), then fair, then pricey
+  // (most negative %), outliers last. Within a verdict bucket, more
+  // extreme estimates surface first.
+  const verdictOrder: Record<Verdict, number> = { cheap: 0, fair: 1, pricey: 2, outlier: 3 };
+  rows.sort((a, b) =>
+    verdictOrder[a.verdict] - verdictOrder[b.verdict] || b.pct - a.pct,
+  );
 
-  // Domain cap: 1.2× the largest "real" value we want on-chart.
-  // Outliers are intentionally excluded from this cap so they extend
-  // off-chart on the right — visual signal that the value is extreme.
-  const realValues: number[] = [current_price];
-  for (const r of rows) {
-    if (!r.is_outlier) realValues.push(r.value);
-  }
-  if (fair_price.median !== null) realValues.push(fair_price.median);
-  if (fair_price.max !== null) realValues.push(fair_price.max);
-  const domainMax = Math.max(...realValues) * 1.2;
-
-  const hasOutlier = rows.some((r) => r.is_outlier);
+  const tally: Record<Verdict, number> = { cheap: 0, fair: 0, pricey: 0, outlier: 0 };
+  rows.forEach((r) => {
+    tally[r.verdict]++;
+  });
+  const nonOutlier = rows.length - tally.outlier;
+  const medianPct = fair_price.median !== null
+    ? ((fair_price.median - current_price) / current_price) * 100
+    : null;
+  const headline = headlineFor(medianPct, ticker);
 
   return (
     <section
       aria-label={`Fair price methods for ${ticker}`}
-      className="mb-4 rounded-lg border border-slate-200 bg-white p-4"
+      className="mb-4 rounded-xl border border-slate-200 bg-white p-5"
     >
-      <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-slate-500">
-        Fair price methods
-      </h2>
-      <div className="h-[300px] w-full" role="img" aria-label="Horizontal bar chart of 6 fair-price methods">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={rows}
-            layout="vertical"
-            margin={{ top: 35, right: 30, bottom: 10, left: 10 }}
-            barCategoryGap="25%"
-          >
-            <XAxis
-              type="number"
-              domain={[0, domainMax]}
-              tick={{ fontSize: 10, fill: 'rgb(71 85 105)' }}
-              tickFormatter={(v: number) => `$${v.toFixed(0)}`}
-            />
-            <YAxis
-              type="category"
-              dataKey="label"
-              tick={{ fontSize: 10, fill: 'rgb(71 85 105)' }}
-              width={110}
-            />
-            <Tooltip
-              content={<CustomTooltip />}
-              cursor={{ fill: 'rgb(241 245 249)' }}
-            />
-            <Bar dataKey="value" minPointSize={5} isAnimationActive={false}>
-              {rows.map((row) => (
-                <Cell
-                  key={row.key}
-                  fill={row.is_outlier ? OUTLIER_FILL : APPLICABLE_FILL}
-                />
-              ))}
-            </Bar>
-            <ReferenceLine
-              x={current_price}
-              stroke={CURRENT_PRICE_STROKE}
-              strokeDasharray="4 4"
-              label={{
-                value: `Current ${fmtPrice(current_price)}`,
-                position: 'top',
-                fill: CURRENT_PRICE_STROKE,
-                fontSize: 11,
-                offset: 12,
-              }}
-            />
-            {fair_price.median !== null && (
-              <ReferenceLine
-                x={fair_price.median}
-                stroke={MEDIAN_STROKE}
-                strokeWidth={2}
-              />
-            )}
-            {fair_price.max !== null && (
-              <ReferenceLine
-                x={fair_price.max}
-                stroke={MAX_STROKE}
-                strokeWidth={2}
-              />
-            )}
-          </BarChart>
-        </ResponsiveContainer>
+      <div className="mb-4">
+        <h2 className="text-sm font-medium uppercase tracking-wide text-slate-500">
+          Fair price check
+        </h2>
+        <p className="mt-1 text-xs text-slate-500">
+          {rows.length} different valuation methods each estimate what{' '}
+          <span className="font-mono font-semibold text-slate-700">{ticker}</span> should be
+          worth, then we compare to today&apos;s price.
+        </p>
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500">
-        <span className="inline-flex items-center gap-1.5">
+      {/* Headline summary — plain-English verdict + side-by-side
+          today-vs-median comparison. Color of the surround tracks
+          the verdict. */}
+      {headline && (
+        <div className={`mb-4 rounded-lg border border-slate-200 p-4 ${headline.bg}`}>
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <div className={`text-lg font-semibold ${headline.cls}`}>{headline.tag}</div>
+              <div className="mt-0.5 text-xs text-slate-600">{headline.desc}</div>
+            </div>
+            <div className="flex items-baseline gap-5">
+              <div>
+                <div className="text-[10px] uppercase tracking-wider text-slate-500">
+                  Today&apos;s price
+                </div>
+                <div className="font-mono text-xl font-semibold tabular-nums text-slate-900">
+                  {formatFairPrice(current_price)}
+                </div>
+              </div>
+              <div className="text-slate-400" aria-hidden="true">
+                →
+              </div>
+              <div>
+                <div className="text-[10px] uppercase tracking-wider text-slate-500">
+                  Median fair price
+                </div>
+                <div
+                  className={`font-mono text-xl font-semibold tabular-nums ${headline.big}`}
+                >
+                  {fair_price.median !== null ? formatFairPrice(fair_price.median) : '—'}
+                </div>
+                {medianPct !== null && (
+                  <div className={`text-[11px] font-medium ${headline.cls}`}>
+                    {medianPct >= 0
+                      ? `+${medianPct.toFixed(0)}%`
+                      : `${medianPct.toFixed(0)}%`}{' '}
+                    vs today
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tally pills — "Of N methods: X say cheap…" */}
+      <div className="mb-3 flex flex-wrap items-center gap-2 text-xs">
+        <span className="text-slate-500">Of {nonOutlier} methods:</span>
+        {tally.cheap > 0 && (
           <span
-            aria-hidden="true"
-            className="inline-block h-2.5 w-2.5 rounded-sm"
-            style={{ backgroundColor: APPLICABLE_FILL }}
-          />
-          Applicable
-        </span>
-        {hasOutlier && (
-          <span className="inline-flex items-center gap-1.5">
-            <span
-              aria-hidden="true"
-              className="inline-block h-2.5 w-2.5 rounded-sm"
-              style={{ backgroundColor: OUTLIER_FILL }}
-            />
-            Outlier
+            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-medium ${VERDICT_STYLE.cheap.bg} ${VERDICT_STYLE.cheap.text} ring-1 ring-inset ${VERDICT_STYLE.cheap.ring}`}
+          >
+            <span className={`inline-block h-1.5 w-1.5 rounded-full ${VERDICT_STYLE.cheap.dot}`} />
+            <span className="font-mono tabular-nums">{tally.cheap}</span> say cheap
           </span>
         )}
-        <span className="inline-flex items-center gap-1.5">
+        {tally.fair > 0 && (
           <span
-            aria-hidden="true"
-            className="inline-block h-0.5 w-4"
-            style={{ backgroundColor: MEDIAN_STROKE }}
-          />
-          Median
-        </span>
-        <span className="inline-flex items-center gap-1.5">
+            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-medium ${VERDICT_STYLE.fair.bg} ${VERDICT_STYLE.fair.text} ring-1 ring-inset ${VERDICT_STYLE.fair.ring}`}
+          >
+            <span className={`inline-block h-1.5 w-1.5 rounded-full ${VERDICT_STYLE.fair.dot}`} />
+            <span className="font-mono tabular-nums">{tally.fair}</span> say fair
+          </span>
+        )}
+        {tally.pricey > 0 && (
           <span
-            aria-hidden="true"
-            className="inline-block h-0.5 w-4"
-            style={{ backgroundColor: MAX_STROKE }}
-          />
-          Max (excl. outliers)
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span
-            aria-hidden="true"
-            className="inline-block h-0.5 w-4 border-t border-dashed"
-            style={{ borderColor: CURRENT_PRICE_STROKE }}
-          />
-          Current
-        </span>
+            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-medium ${VERDICT_STYLE.pricey.bg} ${VERDICT_STYLE.pricey.text} ring-1 ring-inset ${VERDICT_STYLE.pricey.ring}`}
+          >
+            <span className={`inline-block h-1.5 w-1.5 rounded-full ${VERDICT_STYLE.pricey.dot}`} />
+            <span className="font-mono tabular-nums">{tally.pricey}</span> say pricey
+          </span>
+        )}
+        {tally.outlier > 0 && (
+          <span className="text-slate-400">
+            ({tally.outlier} outlier{tally.outlier > 1 ? 's' : ''} excluded)
+          </span>
+        )}
       </div>
 
-      {hasOutlier && (
-        <p className="mt-2 text-xs text-slate-400">
-          Outliers (&gt; 5× or &lt; 0.2× current price) excluded from MAX,
-          retained in MEDIAN.
-        </p>
-      )}
+      {/* Per-method rows — accent bar (verdict color) + name + verdict
+          badge + descriptive sentence in plain English. */}
+      <ul className="divide-y divide-slate-100 overflow-hidden rounded-lg border border-slate-200">
+        {rows.map((r) => {
+          const v = VERDICT_STYLE[r.verdict];
+          const pctRounded = Math.abs(r.pct) > 999
+            ? r.pct > 0
+              ? '>+999%'
+              : '<−999%'
+            : r.pct >= 0
+              ? `+${r.pct.toFixed(0)}%`
+              : `${r.pct.toFixed(0)}%`;
+          const compare = r.is_outlier ? (
+            <>
+              estimates{' '}
+              <span className="font-mono font-semibold tabular-nums text-slate-700">
+                {formatFairPrice(r.value)}
+              </span>{' '}
+              — likely unreliable
+            </>
+          ) : r.pct >= 0 ? (
+            <>
+              estimates{' '}
+              <span className="font-mono font-semibold tabular-nums text-slate-700">
+                {formatFairPrice(r.value)}
+              </span>
+              , about{' '}
+              <span className="font-semibold text-emerald-700">
+                {pctRounded.replace('+', '')} above
+              </span>{' '}
+              today
+            </>
+          ) : (
+            <>
+              estimates{' '}
+              <span className="font-mono font-semibold tabular-nums text-slate-700">
+                {formatFairPrice(r.value)}
+              </span>
+              , about{' '}
+              <span className="font-semibold text-rose-700">
+                {Math.abs(r.pct) > 999 ? '>999%' : `${Math.abs(r.pct).toFixed(0)}%`} below
+              </span>{' '}
+              today
+            </>
+          );
+          return (
+            <li key={r.key} className="flex items-center gap-3 px-3 py-3 sm:px-4">
+              <span
+                className={`inline-flex h-8 w-1 shrink-0 rounded-sm ${v.dot}`}
+                aria-hidden="true"
+              />
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold text-slate-800">{r.label}</span>
+                  <span
+                    className={`inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${v.bg} ${v.text} ring-1 ring-inset ${v.ring}`}
+                  >
+                    {v.label}
+                  </span>
+                </div>
+                <div className="mt-0.5 text-xs text-slate-500">
+                  {v.phrase} — {compare}
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+
+      <p className="mt-3 text-[11px] text-slate-400">
+        <span className="font-medium text-slate-500">How to read this:</span>{' '}
+        &ldquo;Cheap&rdquo; = method&apos;s fair price is at least 20% above today.
+        &ldquo;Fair&rdquo; = within ±10–20%. &ldquo;Pricey&rdquo; = at least 10% below
+        today. Outliers (values more than 5× or less than 0.2× today&apos;s price) are
+        excluded.
+      </p>
     </section>
   );
 }
