@@ -84,6 +84,11 @@ _BALANCE_TAGS: dict[str, list[str]] = {
         "us-gaap:OtherIntangibleAssetsNet",
         "us-gaap:FiniteLivedIntangibleAssetsNet",
     ],
+    # PR 3e.1 — Beneish M-score needs PPE net for AQI + DEPI ratios.
+    # PropertyPlantAndEquipmentNet is the standard tag for filers with
+    # tangible operating assets; banks / REITs / asset-light tech may
+    # report None, in which case Beneish drops to None and skips the flag.
+    "property_plant_equipment": ["us-gaap:PropertyPlantAndEquipmentNet"],
 }
 
 # Concepts queried via the normalized snake_case API for latest values.
@@ -132,6 +137,19 @@ _ANNUAL_TAGS: dict[str, list[str]] = {
     "current_liabilities": ["us-gaap:LiabilitiesCurrent"],
     "shares_outstanding": ["us-gaap:CommonStockSharesOutstanding"],
     "gross_profit": ["us-gaap:GrossProfit"],
+    # PR 3e.1 — Beneish M-score year-over-year inputs (prior-year denominators
+    # for DSRI / GMI / AQI / SGI / DEPI / SGAI / LVGI).
+    "cost_of_revenue": ["us-gaap:CostOfGoodsAndServicesSold", "us-gaap:CostOfRevenue"],
+    "accounts_receivable": ["us-gaap:AccountsReceivableNetCurrent"],
+    "sga_expense": [
+        "us-gaap:SellingGeneralAndAdministrativeExpense",
+        "us-gaap:GeneralAndAdministrativeExpense",
+    ],
+    "depreciation_and_amortization": [
+        "us-gaap:DepreciationAndAmortization",
+        "us-gaap:DepreciationDepletionAndAmortization",
+    ],
+    "property_plant_equipment": ["us-gaap:PropertyPlantAndEquipmentNet"],
 }
 
 ALL_METRIC_KEYS: tuple[str, ...] = (
@@ -171,6 +189,8 @@ ALL_METRIC_KEYS: tuple[str, ...] = (
     # Phase 3c additions
     "goodwill",
     "intangibles_net",
+    # Phase 3e additions — Beneish M-score AQI + DEPI inputs
+    "property_plant_equipment",
 )
 
 
@@ -218,6 +238,8 @@ class FundamentalsSnapshot:
     # Phase 3c additions — Tangible BVPS inputs (Defense Playbook §PR 3c §2)
     goodwill: float | None = None
     intangibles_net: float | None = None
+    # Phase 3e.1 — Property/plant/equipment net (Beneish M-score AQI + DEPI)
+    property_plant_equipment: float | None = None
     # Filing dates
     latest_filed_date: date | None = None
     latest_period_end: date | None = None
@@ -406,6 +428,7 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
         ebitda=ebitda_val,
         goodwill=balance_values.get("goodwill"),
         intangibles_net=balance_values.get("intangibles_net"),
+        property_plant_equipment=balance_values.get("property_plant_equipment"),
         latest_filed_date=_max_date(*snapshot_dates),
         latest_period_end=max(period_dates) if period_dates else None,
     )

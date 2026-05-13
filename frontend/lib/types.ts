@@ -175,6 +175,7 @@ export type StockDetail = {
   tangible_book_value: number | null;
   tier2_events: Tier2Events | null;
   pillar_baseline: PillarBaseline | null;
+  beneish_m_score: number | null;
   entered_top5: boolean;
   exited_top5: boolean;
 };
