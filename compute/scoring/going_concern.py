@@ -7,13 +7,20 @@ Mayew-Sethuraman-Venkatachalam 2015 *The Accounting Review*,
 
 The original Mayew et al. study found that mere mention of going-concern
 phrases in MD&A predicts subsequent bankruptcy or restatement at a
-statistically significant rate, even when the disclosure is accompanied
-by management's denial. We therefore use **mere mention** as the signal
-— context analysis (positive vs. negative framing, hedging language) is
-out of scope for this annotate-only flag. The expected false-positive
-rate is non-trivial because some filings cite going-concern phrases
-when describing peers or historical events; that's acceptable here
-because the flag does **not** veto, only annotate.
+statistically significant rate. **However**, Run #15 production
+verification surfaced a 10.8% FP rate on the S&P 500 universe (54/502)
+— well above Mayew's expected 1-3% range. Audit of the 54 firing
+tickers found ~all were tripped by **negation phrases** in risk-factor
+language: "no substantial doubt about our ability...", "Management
+believes there is no material uncertainty...", "The Company has no
+doubt about its ability to continue...".
+
+Phase 4 issue #16 fix (Option A — negation lookbehind): after a phrase
+match fires, look at the ~60 characters preceding the match within the
+same sentence; if a negation token (``no`` / ``not`` / ``without`` /
+``absent`` / multi-word forms like ``has not identified``) appears in
+that window, drop the match. Tuning target: drop FP rate from 10.8% to
+≤5% while preserving ≥80% recall on known-positive corpora.
 
 Per SKILL.md Rule 16, this defense **never** modifies the composite
 score. It surfaces in ``StockDetail.tier2_events.going_concern_disclosure``
@@ -89,8 +96,89 @@ _COMPILED_PATTERNS: Final[tuple[re.Pattern[str], ...]] = tuple(
 )
 
 
+# Negation tokens that, when appearing in the 60-char window before a
+# phrase match, mark the match as negated. Captures the patterns
+# explicitly listed in issue #16:
+#
+# - "no substantial doubt" / "no material uncertainty" / "no doubt about"
+# - "Management believes there is no ..."
+# - "we have not identified ..." / "has not identified ..."
+# - "without" / "absent" risk-factor phrasing
+#
+# Multi-word forms like "has not identified" let us catch the longer
+# negation patterns when they sit within the local 60-char window.
+_NEGATION_PATTERN: Final[re.Pattern[str]] = re.compile(
+    r"""
+    \b(?:
+        no                                              # "no [phrase]"
+      | not                                             # "not [phrase]"
+      | without                                         # "without [phrase]"
+      | absent                                          # "absent [phrase]"
+      | denies | denied | dismisses | dismissed
+      | (?:has|have|had)\s+not\s+(?:identified|noted|raised|believed)
+      | believes?\s+(?:there\s+is\s+)?no
+      | does\s+not\s+(?:believe|indicate|raise|create)
+    )\b
+    """,
+    re.IGNORECASE | re.VERBOSE,
+)
+
+# 60-char window before each phrase match. Empirically wide enough to
+# catch "Management believes there is no material uncertainty..." (the
+# longest negation pattern from issue #16) while staying tight enough to
+# avoid claiming distant negation applies (e.g., "no operations" 100
+# chars before "substantial doubt" attaches to "operations", not the
+# phrase).
+_NEGATION_WINDOW: Final[int] = 60
+
+# Sentence splitter. Used to (a) clip the negation window so prior-
+# sentence negation doesn't leak across boundaries, and (b) propagate a
+# local-negation hit on one phrase match to all other phrase matches in
+# the same sentence (issue #16's H8 case: one negation verb "has not
+# identified" sits within local range of "substantial doubt" but >60
+# chars from the later "going concern" — without sentence-level
+# propagation, "going concern" would fire non-negated even though the
+# entire sentence is semantically negative).
+_SENTENCE_SPLIT: Final[re.Pattern[str]] = re.compile(r"(?<=[.!?])\s+")
+
+
+def _is_locally_negated(sentence: str, match_start: int) -> bool:
+    """True iff a negation token appears within 60 chars before ``match_start``.
+
+    ``sentence`` is already clipped at sentence boundaries by the caller,
+    so we don't risk crossing into a prior sentence's text.
+    """
+    window_start = max(0, match_start - _NEGATION_WINDOW)
+    return bool(_NEGATION_PATTERN.search(sentence[window_start:match_start]))
+
+
 def scan_going_concern(text: str | None) -> bool:
-    """Return True if any going-concern phrase appears in ``text``.
+    """Return True iff a non-negated going-concern phrase appears.
+
+    Splits ``text`` into sentences. For each sentence that contains at
+    least one phrase match, the sentence is considered **negative-
+    framed** (skipped) if ANY of its phrase matches is locally negated
+    (negation token within 60 chars before the match). Otherwise the
+    sentence is a positive signal → return True.
+
+    This handles three FP classes from issue #16:
+
+    1. Direct: ``"there is no substantial doubt"`` — local "no" attaches
+       to the immediate phrase.
+    2. Multi-phrase: ``"Management has not identified ... substantial
+       doubt ... going concern"`` — local "has not" attaches to the
+       first phrase, sentence-level propagation drops the later phrases
+       that would have escaped a per-match-only check.
+    3. Cross-sentence false alarm: ``"We have no operations. There is
+       substantial doubt..."`` — sentence split prevents the first
+       sentence's "no" from negating the second sentence's phrase.
+
+    And preserves H14-class TRUE positives:
+
+    4. Distant unrelated negation: ``"has no operations whatsoever in
+       region X, and the auditor has raised substantial doubt..."`` —
+       "no" is >60 chars from the phrase → not locally negated → not
+       propagated → sentence fires positive.
 
     Parameters
     ----------
@@ -104,21 +192,32 @@ def scan_going_concern(text: str | None) -> bool:
     Returns
     -------
     bool
-        True iff at least one phrase from :data:`GOING_CONCERN_PHRASES`
-        appears in ``text`` (case-insensitive, hyphen / whitespace
-        flexible). Returns False for ``None``, empty string, or any
-        text where no phrase fires.
+        True iff at least one sentence contains a phrase from
+        :data:`GOING_CONCERN_PHRASES` AND no phrase in that sentence is
+        locally negated. Returns False for ``None`` / empty / all-
+        sentences-negated text.
 
-        Note: a False return means *no signal*, not *signal is absent*.
-        Callers distinguish "we couldn't fetch the filing" from "we
-        fetched it and it's clean" via the surrounding pipeline (see
+        Note: a False return means *no signal we trust*, not *signal
+        is absent in the filing*. Callers distinguish "we couldn't
+        fetch the filing" from "we fetched it and it's clean (or all
+        negated)" via the surrounding pipeline (see
         ``Metadata.tier2_coverage_pct``).
     """
     if text is None or not text:
         return False
-    for pattern in _COMPILED_PATTERNS:
-        if pattern.search(text):
-            return True
+    sentences = _SENTENCE_SPLIT.split(text)
+    for sentence in sentences:
+        matches: list[re.Match[str]] = []
+        for pattern in _COMPILED_PATTERNS:
+            matches.extend(pattern.finditer(sentence))
+        if not matches:
+            continue
+        # Sentence-level propagation: if ANY phrase match in this
+        # sentence is locally negated, drop the whole sentence as
+        # negative-framed (H8 case from the issue).
+        if any(_is_locally_negated(sentence, m.start()) for m in matches):
+            continue
+        return True
     return False
 
 
