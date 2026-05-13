@@ -50,6 +50,7 @@ On failure the result is :class:`Tier2Result` with
 from __future__ import annotations
 
 import logging
+import os
 from dataclasses import dataclass
 from datetime import date
 
@@ -138,6 +139,22 @@ def fetch_tier2_for_ticker(
     ticker can never crash the whole compute run. Per-ticker logging
     surfaces failure causes in the workflow log without aborting.
     """
+    # Operational kill-switch — if QR_SKIP_TIER2 is set, return the
+    # empty result without touching SEC EDGAR. Useful when the user
+    # wants a fast compute run (e.g., a UI dry-run or a sanity-check
+    # workflow) and is willing to skip the going-concern annotate
+    # flag. The veto layer is unaffected because all Tier-2 vetoes
+    # are currently deferred (_EIGHT_K_DEFENSES_ENABLED=False), and
+    # the annotate-only going-concern flag has a 10.8% FP rate
+    # anyway (issue #16). Cuts ~10-15 min off a cold-cache run.
+    if os.environ.get("QR_SKIP_TIER2"):
+        return Tier2Result(
+            going_concern_disclosure=False,
+            non_reliance_flag=_empty_flag(),
+            auditor_change_flag=_empty_flag(),
+            fetch_succeeded=False,
+        )
+
     # --- 10-K text + going-concern phrase scan (Defense #8) ---
     text: str | None = None
     text_fetch_ok = False
