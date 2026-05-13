@@ -201,11 +201,12 @@ If every box is ticked, the file is doing its job.
 
 ## 11. Companion files in this repo
 
-- `agent-Creator.md` — counterpart for `AGENTS.md` (cross-tool standard)
-- `WORKFLOW.md` — the long-form per-phase task list this project follows
-- `SKILL.md` — high-level project rules + current state (separate from
+- `.claude/skills/agent-Creator.md` — counterpart for `AGENTS.md` (cross-tool standard)
+- `.claude/skills/README.md` — index of loaded skills + planning docs
+- `/WORKFLOW.md` — long-form per-phase task list
+- `/SKILL.md` — high-level project rules + current state (separate from
   CLAUDE.md; QuantRank-specific historical doc)
-- `.claude/skills/` — invocation-triggerable skills loaded at session start
+- `.claude/skills/<name>/SKILL.md` — invocation-triggerable skills loaded at session start
 
 ## Sources
 

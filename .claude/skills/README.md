@@ -157,6 +157,23 @@ done
 cp /tmp/skills-extract/skills-main/THIRD_PARTY_NOTICES.md .claude/skills/
 ```
 
+## Authoring guides (reference docs, not skills)
+
+Two reference guides live in this directory as plain markdown
+(not invocation-triggerable skills):
+
+| File | Purpose |
+|---|---|
+| [`claude-Creator.md`](claude-Creator.md) | Best practices for writing a `CLAUDE.md` (Anthropic Claude Code project-config) |
+| [`agent-Creator.md`](agent-Creator.md) | Best practices for writing an `AGENTS.md` (cross-tool open standard read by 20+ agent tools) |
+
+Each guide synthesizes 3 source URLs (Anthropic docs + Humanlayer
+blog for `claude-Creator.md`; agents.md spec + GitHub's 2,500-repo
+study + agentskills.io for `agent-Creator.md`) into one actionable
+reference. Each ends with a verification checklist + minimum-viable
+template. Use them when bootstrapping or auditing those files in
+this repo or any other project.
+
 ## Authoring conventions (for new QuantRank skills)
 
 - **YAML frontmatter** — every `SKILL.md` starts with:

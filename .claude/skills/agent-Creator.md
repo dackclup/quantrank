@@ -358,10 +358,11 @@ After writing or editing `AGENTS.md`, ask:
 
 ## 15. Companion files in this repo
 
-- `claude-Creator.md` — counterpart guide for `CLAUDE.md`
-- `WORKFLOW.md` — long-form per-phase task list
-- `SKILL.md` — high-level project rules + state
-- `.claude/skills/` — Claude-specific invocation-triggerable skills
+- `.claude/skills/claude-Creator.md` — counterpart guide for `CLAUDE.md`
+- `.claude/skills/README.md` — index of loaded skills + planning docs
+- `/WORKFLOW.md` — long-form per-phase task list
+- `/SKILL.md` — high-level project rules + state
+- `.claude/skills/<name>/SKILL.md` — Claude-specific invocation-triggerable skills
 
 ## Sources
 
