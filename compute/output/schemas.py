@@ -137,5 +137,6 @@ class StockDetail(BaseModel):
     tier2_events: dict | None = None
     pillar_baseline: PillarBaseline | None = None
     beneish_m_score: float | None = None
+    dechow_f_score: float | None = None
     entered_top5: bool = False
     exited_top5: bool = False

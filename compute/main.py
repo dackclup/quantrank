@@ -72,6 +72,7 @@ from compute.scoring.composite import (
     compute_composite,
     neutralize_pillar_scores,
 )
+from compute.scoring.dechow_f import compute_dechow_f
 from compute.scoring.pillars import TickerInputs, compute_all_pillars
 from compute.scoring.risk_overlay import compute_risk_flags
 from compute.scoring.sanity import compute_mos_trailing_ic
@@ -865,6 +866,17 @@ def run_weekly_compute() -> int:
         if beneish_result.is_high and "beneish_high" not in valuation_warnings:
             valuation_warnings.append("beneish_high")
 
+        # Dechow F-score (PR 3e.2, ANNOTATE-only — same posture as Beneish:
+        # never enters composite, never suppresses Top-5). Lands in
+        # `valuation_warnings` as ``dechow_high`` when F > 2.45 (top-decile
+        # Dechow 2011 cutoff); numeric f_score on StockDetail for transparency.
+        # Complementary to Beneish — different inputs (RSST-style accruals +
+        # non-financial proxies) so the two signals reinforce a misstatement
+        # call when both fire.
+        dechow_result = compute_dechow_f(snap, histories.get(ticker))
+        if dechow_result.is_high and "dechow_high" not in valuation_warnings:
+            valuation_warnings.append("dechow_high")
+
         # Price history JSON (sliced from already-fetched prices, no new
         # fetches per Step 5 spec).
         prices_df = prices_by_ticker.get(ticker)
@@ -921,6 +933,7 @@ def run_weekly_compute() -> int:
             tier2_events=tier2_dict,
             pillar_baseline=sector_pillar_baselines.get(sector),
             beneish_m_score=beneish_result.m_score,
+            dechow_f_score=dechow_result.f_score,
             entered_top5=ticker in entered,
             exited_top5=ticker in exited,
         )

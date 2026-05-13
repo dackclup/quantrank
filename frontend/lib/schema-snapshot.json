@@ -250,6 +250,11 @@
       "required": false,
       "default": "<factory:DataQuality>"
     },
+    "dechow_f_score": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
     "entered_top5": {
       "type": "bool",
       "required": false,
