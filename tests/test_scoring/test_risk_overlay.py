@@ -332,3 +332,105 @@ def test_C6_inject_dict_does_not_pollute_other_tickers():
     flags = compute_risk_flags(snaps, non_reliance_by_ticker={"A": True})
     assert "non_reliance_filing" in flags["A"]
     assert "non_reliance_filing" not in flags["B"]
+
+
+# ---------------------------------------------------------------------------
+# Issue #18 — data_quality_input_corruption promoted to active veto.
+#
+# The fix detects corruption from snapshot inputs (TBVPS > $10K/share
+# ceiling, mirroring the ensemble's post-hoc check) so the veto fires
+# BEFORE Top-5 rotation in compute.main. Previously SPG ranked #1 in
+# Run #15 despite obvious corruption — only suppressed by coincidental
+# Sloan co-firing. These tests lock the explicit suppression contract.
+# ---------------------------------------------------------------------------
+
+
+def _corrupt_snap(**kwargs) -> FundamentalsSnapshot:
+    """Snapshot shaped like the SPG corruption case: huge equity ÷ tiny
+    shares → TBVPS ≫ ceiling. Defaults are healthy; one shares override
+    is what makes it 'corrupt'."""
+    defaults = {
+        "stockholders_equity": 76_000_000_000.0,  # $76B (real SPG-class)
+        "shares_outstanding": 8_000.0,            # 8K shares (corrupted)
+    }
+    defaults.update(kwargs)
+    return _snap(**defaults)
+
+
+def test_D1_data_quality_corruption_fires_when_tbvps_exceeds_ceiling():
+    """SPG-shape: $76B equity / 8K shares → TBVPS = $9.5M > $10K ceiling."""
+    flags = compute_risk_flags({"SPG": _corrupt_snap()})
+    assert "data_quality_input_corruption" in flags["SPG"]
+
+
+def test_D2_data_quality_corruption_does_not_fire_for_normal_snapshot():
+    """Default _snap has TBVPS = ~$1/share — far below the $10K ceiling."""
+    flags = compute_risk_flags({"NORMAL": _snap()})
+    assert "data_quality_input_corruption" not in flags["NORMAL"]
+
+
+def test_D3_data_quality_corruption_does_not_fire_when_tbvps_uncomputable():
+    """shares_outstanding=0 makes TBVPS undefined. We rely on other
+    pathways (applicability gates) for null-fair-price; the veto
+    itself stays silent.
+    """
+    snap_missing_shares = _snap(shares_outstanding=None)
+    snap_zero_shares = _snap(shares_outstanding=0)
+    flags = compute_risk_flags(
+        {"M": snap_missing_shares, "Z": snap_zero_shares}
+    )
+    assert "data_quality_input_corruption" not in flags["M"]
+    assert "data_quality_input_corruption" not in flags["Z"]
+
+
+def test_D4_data_quality_corruption_fires_at_boundary_strict():
+    """Strict `>` comparison: TBVPS == ceiling does NOT fire.
+
+    Mirrors compute.valuation.ensemble._has_corrupt_input's strict
+    inequality — keeping the two pathways consistent so test fixtures
+    that sit exactly at the ceiling don't flap between veto+annotate.
+    """
+    from compute import config
+
+    # TBVPS = ceiling exactly: equity = ceiling × shares.
+    ceiling = config.FAIR_PRICE_DATA_QUALITY_CEILING
+    snap_at = _snap(
+        stockholders_equity=ceiling * 100.0,
+        shares_outstanding=100.0,
+        # zero goodwill + intangibles → TBVPS = equity/shares = ceiling exactly
+    )
+    snap_over = _snap(
+        stockholders_equity=ceiling * 100.0 + 1.0,
+        shares_outstanding=100.0,
+    )
+    flags = compute_risk_flags({"AT": snap_at, "OVER": snap_over})
+    assert "data_quality_input_corruption" not in flags["AT"]
+    assert "data_quality_input_corruption" in flags["OVER"]
+
+
+def test_D5_corruption_veto_independent_of_other_flags():
+    """A snapshot can fire data_quality alone (no Altman / Sloan / NSI).
+
+    Without this guarantee, the Top-5 rotation skip would have to rely
+    on a co-firing other veto — exactly the issue #18 production bug
+    pattern. The veto must stand on its own.
+    """
+    flags = compute_risk_flags({"CORRUPT_ONLY": _corrupt_snap()})
+    assert flags["CORRUPT_ONLY"] == ["data_quality_input_corruption"], (
+        "Expected ONLY data_quality_input_corruption to fire on a "
+        f"clean-but-corrupted snapshot, got: {flags['CORRUPT_ONLY']}"
+    )
+
+
+def test_D6_corruption_does_not_pollute_other_tickers():
+    """One corrupted ticker doesn't flag healthy peers (no cross-section).
+
+    The check is per-ticker by design — corruption is a snapshot-level
+    signal, not a population statistic like Sloan / NSI.
+    """
+    flags = compute_risk_flags(
+        {"CORRUPT": _corrupt_snap(), "HEALTHY": _snap()}
+    )
+    assert "data_quality_input_corruption" in flags["CORRUPT"]
+    assert "data_quality_input_corruption" not in flags["HEALTHY"]
+    assert flags["HEALTHY"] == []

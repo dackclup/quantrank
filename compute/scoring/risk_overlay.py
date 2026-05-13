@@ -5,9 +5,9 @@ honest composite score; the veto is enforced one layer up at Top-5 rotation
 (``compute.main``) — a flagged stock cannot earn the ``entered_top5`` badge
 even if its composite would qualify.
 
-Phase 3 ships **four** vetoes (annotate-only flags surfaced in JSON; the
-Top-5 rotation layer in ``compute.main`` is the only place a flag changes
-behavior):
+Phase 3 + Phase 4 issue-#18 fix ships **five** active vetoes (annotate-only
+flags surfaced in JSON; the Top-5 rotation layer in ``compute.main`` is the
+only place a flag changes behavior):
 
 - ``altman_distress`` — Altman Z″ < 1.1 (Altman 2003, *Corporate Financial
   Distress and Bankruptcy*, 3rd ed., Wiley)
@@ -24,6 +24,19 @@ behavior):
   days. Schroeder 2024 SSRN finds ~50% of 4.02 filings precede formal
   restatement. Implemented in :mod:`compute.scoring.eight_k_events`;
   this module just appends the flag when ``check_non_reliance`` fires.
+  Currently deferred behind the ``_EIGHT_K_DEFENSES_ENABLED`` feature
+  flag in :mod:`compute.scoring.tier2`; re-enabled in Phase 4 per issue #14.
+- ``data_quality_input_corruption`` — fundamentals ingest corruption (e.g.,
+  ``shares_outstanding`` ingested in the wrong unit, surfaced as TBVPS >
+  ``FAIR_PRICE_DATA_QUALITY_CEILING`` of $10K/share). The fair-price
+  ensemble already nulls all 6 methods + emits this name in
+  ``valuation_warnings`` when its post-hoc ceiling guard fires; this module
+  detects the same corruption upstream from snapshot inputs alone so the
+  Top-5 rotation skip catches the ticker without depending on the
+  ensemble pass. Promoted to veto per issue #18 (FP rate 8/502 ≈ 1.6%,
+  acceptable for veto). Top issue: SPG ranked #1 in Run #15 despite
+  market_cap $1.62M (real ~$76B) — only suppressed from effective Top-5
+  by coincidental Sloan co-firing. Now suppressed explicitly.
 
 Two additional Tier-2 defenses ship in PR 3d as **annotate-only** flags
 that do NOT enter ``risk_flags`` (they live only in
@@ -53,6 +66,7 @@ from compute import config
 from compute.features import health
 from compute.ingest.fundamentals import FundamentalsSnapshot
 from compute.scoring.eight_k_events import check_non_reliance
+from compute.valuation.tangible_book import tangible_book_value_per_share
 
 ALTMAN_DISTRESS_THRESHOLD = 1.1
 SLOAN_TOP_DECILE = 0.90
@@ -66,6 +80,35 @@ SLOAN_MIN_POPULATION = 10
 # satisfied in production. Phase 8 (S&P 1500) may break some sub-buckets
 # below the floor — those sectors will simply skip the NSI flag.
 NSI_MIN_POPULATION = 10
+
+
+def _data_quality_input_corruption(snap: FundamentalsSnapshot | None) -> bool:
+    """True iff snapshot inputs are corrupted (TBVPS > data-quality ceiling).
+
+    Mirrors the post-hoc ceiling guard in
+    :func:`compute.valuation.ensemble._has_corrupt_input` but operates on
+    the snapshot directly so the veto fires BEFORE Top-5 rotation runs in
+    ``compute.main`` (the ensemble runs per-ticker AFTER Top-5 is decided
+    — relying only on the ensemble-side check means a corrupted ticker
+    with a high composite can still slip into ``entered_top5`` if no
+    other veto co-fires).
+
+    Returns False when TBVPS is uncomputable (missing shares / equity /
+    non-positive tangible book). Those cases are handled by other
+    pathways (applicability gates produce null fair-price; the stock
+    simply doesn't show fair-price data — and won't show a misleading
+    one either).
+
+    Tuned per issue #18 acceptance criteria: the existing 8/502 ≈ 1.6%
+    universe-wide FP rate is acceptable for veto promotion (vs. the
+    typical 10% threshold that disqualifies a flag from veto status).
+    """
+    if snap is None:
+        return False
+    tbvps = tangible_book_value_per_share(snap)
+    if tbvps is None:
+        return False
+    return tbvps > config.FAIR_PRICE_DATA_QUALITY_CEILING
 
 
 def _altman_distress(snap: FundamentalsSnapshot | None) -> bool:
@@ -171,16 +214,19 @@ def compute_risk_flags(
 ) -> dict[str, list[str]]:
     """Compute the risk-flag list per ticker.
 
-    Four flag pathways:
+    Five flag pathways:
 
-    1. **Altman Z″ < 1.1** — per-ticker, no cross-section.
-    2. **Sloan accruals top decile** — cross-sectional 90th percentile across
+    1. **Data-quality input corruption** — TBVPS > $10K/share. Snapshot-
+       only signal, mirrors the ensemble's post-hoc ceiling guard. Veto
+       per issue #18 (was annotate-only before).
+    2. **Altman Z″ < 1.1** — per-ticker, no cross-section.
+    3. **Sloan accruals top decile** — cross-sectional 90th percentile across
        the universe (legacy from PR-3b; over-firing tracked in #7).
-    3. **NSI top decile within sector** — requires both ``histories`` and
+    4. **NSI top decile within sector** — requires both ``histories`` and
        ``sectors`` to be passed; if either is absent the NSI flag is
        suppressed entirely (rather than degrading to cross-sectional, which
        was the lesson learned from #7's Sloan over-firing on REITs/banks).
-    4. **Non-reliance filing (8-K Item 4.02)** — per-ticker. By default
+    5. **Non-reliance filing (8-K Item 4.02)** — per-ticker. By default
        calls :func:`compute.scoring.eight_k_events.check_non_reliance`
        which hits the on-disk EDGAR cache (or fetches if cache miss).
        ``non_reliance_by_ticker`` overrides this with a pre-computed
@@ -230,6 +276,12 @@ def compute_risk_flags(
     out: dict[str, list[str]] = {}
     for ticker, snap in snapshots.items():
         flags: list[str] = []
+
+        # Issue #18: data-quality corruption is a veto, not a soft warning.
+        # Emit first so a corrupted snapshot never relies on a coincidental
+        # co-firing of altman/sloan/NSI to be suppressed from Top-5.
+        if _data_quality_input_corruption(snap):
+            flags.append("data_quality_input_corruption")
 
         if _altman_distress(snap):
             flags.append("altman_distress")
