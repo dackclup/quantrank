@@ -136,6 +136,28 @@ def test_require_identity_rejects_missing(monkeypatch):
         _require_identity()
 
 
+def test_annual_tags_have_legacy_fallback_coverage():
+    """Regression guard against the 5.6%-coverage incident: the Beneish /
+    Dechow prior-year tags must include legacy XBRL aliases still in heavy
+    use by industrial / retail / energy filers. Without these, Beneish
+    M-score populated for only 28 / 502 S&P 500 tickers on the first
+    Phase 3e production run.
+    """
+    from compute.ingest.fundamentals import _ANNUAL_TAGS
+
+    # cost_of_revenue must accept the legacy CostOfGoodsSold tag (~40% of
+    # S&P 500 filers as of 2025 — biggest single gap).
+    assert "us-gaap:CostOfGoodsSold" in _ANNUAL_TAGS["cost_of_revenue"]
+    # accounts_receivable must accept ReceivablesNetCurrent (~10% filers).
+    assert "us-gaap:ReceivablesNetCurrent" in _ANNUAL_TAGS["accounts_receivable"]
+    # sga_expense must accept OperatingExpenses as last-resort proxy when
+    # tech filers split S/M and G/A into separate lines.
+    assert "us-gaap:OperatingExpenses" in _ANNUAL_TAGS["sga_expense"]
+    # depreciation_and_amortization must accept the Depreciation-only tag
+    # used by filers that report amortization separately.
+    assert "us-gaap:Depreciation" in _ANNUAL_TAGS["depreciation_and_amortization"]
+
+
 def test_fetch_fundamentals_uses_cache(monkeypatch, tmp_path):
     """Fresh-cache hit must NOT call ``_build_snapshot``."""
     monkeypatch.setattr(config, "FUNDAMENTALS_CACHE_DIR", tmp_path)

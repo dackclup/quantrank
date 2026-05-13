@@ -139,15 +139,45 @@ _ANNUAL_TAGS: dict[str, list[str]] = {
     "gross_profit": ["us-gaap:GrossProfit"],
     # PR 3e.1 — Beneish M-score year-over-year inputs (prior-year denominators
     # for DSRI / GMI / AQI / SGI / DEPI / SGAI / LVGI).
-    "cost_of_revenue": ["us-gaap:CostOfGoodsAndServicesSold", "us-gaap:CostOfRevenue"],
-    "accounts_receivable": ["us-gaap:AccountsReceivableNetCurrent"],
+    # PR 3e.x — fallback chains expanded post-3e.2 production run, which found
+    # Beneish coverage at 5.6% on S&P 500 because legacy XBRL tags (still in
+    # heavy use by industrial / retail / energy filers) were missing from the
+    # chains. Rationale per tag below.
+    "cost_of_revenue": [
+        # Modern post-2015 tags (~55% of S&P 500 filers).
+        "us-gaap:CostOfGoodsAndServicesSold",
+        "us-gaap:CostOfRevenue",
+        # Legacy tag still dominant in manufacturers / retailers / staples
+        # (~40% of filers — single biggest pre-3e.x coverage gap).
+        "us-gaap:CostOfGoodsSold",
+        # Pure-service filers (banks, consultancies) use this split.
+        "us-gaap:CostOfServices",
+    ],
+    "accounts_receivable": [
+        "us-gaap:AccountsReceivableNetCurrent",
+        # Some healthcare / financial-services filers tag receivables under
+        # the broader "Receivables" or "AccountsAndOtherReceivables" concept.
+        "us-gaap:ReceivablesNetCurrent",
+        "us-gaap:AccountsAndOtherReceivablesNetCurrent",
+    ],
     "sga_expense": [
         "us-gaap:SellingGeneralAndAdministrativeExpense",
         "us-gaap:GeneralAndAdministrativeExpense",
+        # Tech filers commonly split S/M and G/A into separate lines — when
+        # the SGA-combined concept isn't filed, OperatingExpenses (excluding
+        # COGS + R&D) is the closest single-line proxy. Caveat: this
+        # over-counts vs. strict S+G+A.
+        "us-gaap:OperatingExpenses",
     ],
     "depreciation_and_amortization": [
         "us-gaap:DepreciationAndAmortization",
         "us-gaap:DepreciationDepletionAndAmortization",
+        # Many filers (esp. tech / IP-heavy) tag depreciation separately
+        # from amortization. Falling back to Depreciation alone under-counts
+        # vs. strict D&A by the amortization-of-intangibles portion, but it
+        # preserves the year-over-year ratio signal which is what Beneish
+        # DEPI cares about.
+        "us-gaap:Depreciation",
     ],
     "property_plant_equipment": ["us-gaap:PropertyPlantAndEquipmentNet"],
     # PR 3e.2 — Dechow F-score Δinventory input.
