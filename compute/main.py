@@ -20,7 +20,9 @@ Pipeline:
     risk_flags into the per-ticker risk list.
 11. Sort by composite, assign rank
 12. Top-5 rotation: compare to previous rankings.json; flagged stocks
-    (any of 3 vetoes) cannot earn ``entered_top5``
+    (any of 4 active vetoes — altman / sloan / NSI / data-quality;
+    non-reliance 8-K is deferred per issue #14) cannot earn
+    ``entered_top5``
 13. Atomic writes: rankings.json, metadata.json, stocks/{TICKER}.json,
     stocks/history/{TICKER}.json
 14. Final RSS memory log (best-effort via psutil)
