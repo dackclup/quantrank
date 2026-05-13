@@ -15,6 +15,7 @@ import pytest
 
 from compute.scoring.going_concern import (
     GOING_CONCERN_PHRASES,
+    _extract_mda_section,
     scan_going_concern,
 )
 
@@ -320,3 +321,141 @@ def test_H15_negation_window_60_char_boundary():
     # "no" is at index 0, "substantial" starts at index 60.
     # Window is text[0:60] = "no" + 58 chars → "no" is in window.
     assert scan_going_concern(text) is False
+
+
+# ---------------------------------------------------------------------------
+# Section I — Stage-2 MD&A-section restriction (issue #16 Option B).
+# After Stage-1 (negation lookbehind) dropped only 1 ticker in production,
+# verification on Run @ commit `bdb49ee` showed the dominant FP class was
+# off-section mentions (Risk Factors / Forward-Looking) — not negation
+# prose. These tests lock the MD&A boundary-detection + fall-back contract.
+# ---------------------------------------------------------------------------
+
+
+def test_I1_mda_extraction_takes_last_item_7_over_toc():
+    """A 10-K typically lists Item 7 in the Table of Contents AND as the
+    body section header. Take the LAST occurrence — earlier ones are TOC.
+    """
+    text = (
+        "Table of Contents. Item 1 Business. Item 7 Management's "
+        "Discussion. Item 8 Financial Statements. "
+        "PART II. Item 7. The body of MD&A starts here with substantial "
+        "doubt about ability to continue as a going concern. "
+        "Item 7A. Quantitative disclosures. The end."
+    )
+    mda = _extract_mda_section(text)
+    assert mda is not None
+    assert "body of MD&A" in mda
+    # The TOC's Item 7 phrase shouldn't appear in the extracted MD&A —
+    # we want only the body section.
+    assert "Table of Contents" not in mda
+
+
+def test_I2_mda_bounded_above_by_item_7a():
+    """End boundary = first Item 7A after the start. Item 8 also works
+    (some filers go straight from 7 to 8 without 7A)."""
+    text = (
+        "Item 7. We have substantial doubt. "
+        "Item 7A. Quantitative and qualitative. The market risk section."
+    )
+    mda = _extract_mda_section(text)
+    assert "substantial doubt" in mda
+    assert "Quantitative" not in mda
+
+
+def test_I3_mda_falls_back_to_eof_when_no_end_boundary():
+    """If neither Item 7A nor Item 8 follows the chosen Item 7 (e.g.,
+    truncated cache), take from Item 7 to EOF rather than abandoning
+    the restriction entirely."""
+    text = "Item 7. MD&A text goes here. No closing boundary."
+    mda = _extract_mda_section(text)
+    assert mda is not None
+    assert "MD&A text goes here" in mda
+    assert mda.startswith("Item 7")
+
+
+def test_I4_mda_returns_none_when_no_item_7_present():
+    """A pre-2003 filing might use different section labels, or the
+    extraction might have stripped headers. Returns None → caller
+    falls back to full-text scan."""
+    text = "Generic narrative about the company. Substantial doubt may exist."
+    assert _extract_mda_section(text) is None
+
+
+def test_I5_mda_case_insensitive_section_match():
+    """ITEM 7 / Item 7 / item 7 all parse — capitalization varies by
+    filer convention."""
+    text = "ITEM 7. The MD&A. substantial doubt. ITEM 8. Financial statements."
+    mda = _extract_mda_section(text)
+    assert mda is not None
+    assert "substantial doubt" in mda
+
+
+def test_I6_item_7a_not_matched_as_item_7():
+    """The (?!\\s*[Aa]) negative lookahead in _MDA_START_RE: a stand-
+    alone Item 7A line must NOT trigger the start. Otherwise the
+    extraction would slice through Item 7A as if it were Item 7."""
+    text = (
+        "Cover page mentions Item 1A risk factors. "
+        "Item 7A. Quantitative and qualitative disclosures. "
+        "Stand-alone Section A text."
+    )
+    mda = _extract_mda_section(text)
+    # No "Item 7" (non-A) → should return None, NOT slice Item 7A.
+    assert mda is None
+
+
+def test_I7_off_section_negation_dropped_by_mda_restriction():
+    """The whole point of Option B: an off-section "substantial doubt"
+    mention in Risk Factors does NOT fire the flag, even when MD&A is
+    clean and even when the off-section mention is non-negated. The
+    scan never sees the off-section text."""
+    text = (
+        "Item 1A. Risk Factors. Adverse market conditions could create "
+        "substantial doubt about our ability to continue as a going "
+        "concern in a downturn scenario. "
+        "Item 7. Management's Discussion. Operations were strong. "
+        "Liquidity is adequate. "
+        "Item 7A. Quantitative disclosures."
+    )
+    # The Risk Factors section has a non-negated phrase, but it's NOT
+    # in MD&A → flag should NOT fire.
+    assert scan_going_concern(text) is False
+
+
+def test_I8_in_section_match_still_fires():
+    """Positive control for Stage 2: a non-negated mention WITHIN MD&A
+    must still fire. Otherwise we've broken the contract."""
+    text = (
+        "Item 1A. Risk factors. Clean prose. "
+        "Item 7. Management's Discussion. The auditor has raised "
+        "substantial doubt about our ability to continue as a going "
+        "concern. "
+        "Item 7A. Quantitative disclosures."
+    )
+    assert scan_going_concern(text) is True
+
+
+def test_I9_stage1_negation_still_works_within_mda():
+    """Stages compose: even after restricting to MD&A, a negated mention
+    inside MD&A is still dropped by Stage 1's negation lookbehind."""
+    text = (
+        "Item 7. Management's Discussion. There is no substantial doubt "
+        "about our ability to continue as a going concern. "
+        "Item 7A. Quantitative disclosures."
+    )
+    assert scan_going_concern(text) is False
+
+
+def test_I10_fallback_to_full_text_when_mda_not_found():
+    """When no Item 7 header is present (legacy filings, stripped
+    extraction), the scan falls back to full text — preserving the
+    Stage-1 behavior. Not worse than today."""
+    # No Item 7 markers at all — fallback to full-text scan.
+    text = (
+        "The auditor has raised substantial doubt about the Company's "
+        "ability to continue as a going concern."
+    )
+    # _extract_mda_section returns None → fall back → Stage-1 sees
+    # this non-negated phrase → fires.
+    assert scan_going_concern(text) is True
