@@ -103,6 +103,50 @@ intent + acceptance criteria so the implementation has a clear target.
 4. Update this README's table.
 5. Commit on a topic branch; open a PR if the skill is non-trivial.
 
+## Sister source: Anthropic skills marketplace
+
+The official Anthropic skills marketplace
+([`anthropics/skills`](https://github.com/anthropics/skills)) is
+pre-registered in `.claude/settings.json` at the repo root, with all
+17 marketplace skills listed in `enabledPlugins`. On a fresh clone,
+Claude Code will prompt to trust the marketplace and auto-install
+the listed plugins.
+
+The 17 marketplace skills:
+
+```
+claude-api          webapp-testing      mcp-builder
+docx                pdf                  xlsx
+pptx                skill-creator        web-artifacts-builder
+frontend-design     algorithmic-art      canvas-design
+brand-guidelines    theme-factory        slack-gif-creator
+doc-coauthoring     internal-comms
+```
+
+These complement (do not replace) the 43 QuantRank-specific skills
+above. The marketplace skills are general-purpose (Claude API
+helpers, web app testing, MCP server scaffolding, document
+generation, design utilities); the QuantRank skills here cover
+domain workflows (verify-production-output, defense-scorecard,
+schema-check, per-phase debuggers).
+
+**If a contributor's Claude Code doesn't auto-install on clone**,
+the manual incantation is:
+
+```
+/plugin marketplace add anthropics/skills
+/plugin install <name>@anthropics-skills    # per skill, no wildcard
+```
+
+Or use the `/plugin` UI's Discover tab to multi-select.
+
+**Settings.json scope**: `.claude/settings.json` is committed to the
+repo, so the marketplace registration + enabled-plugin list ships
+with the repo. Per-user overrides go in `.claude/settings.local.json`
+(gitignored).
+
+Docs: <https://code.claude.com/docs/en/discover-plugins.md>
+
 ## What this is NOT
 
 - **Not a substitute for project documentation** — `SKILL.md`,

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "extraKnownMarketplaces": {
+    "anthropics-skills": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/skills"
+      }
+    }
+  },
+  "enabledPlugins": [
+    "claude-api@anthropics-skills",
+    "webapp-testing@anthropics-skills",
+    "mcp-builder@anthropics-skills",
+    "docx@anthropics-skills",
+    "pdf@anthropics-skills",
+    "xlsx@anthropics-skills",
+    "pptx@anthropics-skills",
+    "skill-creator@anthropics-skills",
+    "web-artifacts-builder@anthropics-skills",
+    "frontend-design@anthropics-skills",
+    "algorithmic-art@anthropics-skills",
+    "canvas-design@anthropics-skills",
+    "brand-guidelines@anthropics-skills",
+    "theme-factory@anthropics-skills",
+    "slack-gif-creator@anthropics-skills",
+    "doc-coauthoring@anthropics-skills",
+    "internal-comms@anthropics-skills"
+  ]
+}
