@@ -7,6 +7,7 @@ import { FilterDrawer } from '@/components/FilterDrawer';
 import { MoSCell } from '@/components/MoSCell';
 import { ScoreBadge } from '@/components/ScoreBadge';
 import { SectorChip } from '@/components/SectorChip';
+import { StockLogo } from '@/components/StockLogo';
 import { formatFairPrice, formatMosPct } from '@/lib/format';
 import type { StockSummary } from '@/lib/types';
 import {
@@ -331,9 +332,10 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                   <td className="px-3 py-2 font-mono font-semibold">
                     <Link
                       href={`/stock/${row.ticker}/`}
-                      className="hover:text-slate-700 hover:underline"
+                      className="inline-flex items-center gap-2 hover:text-slate-700 hover:underline"
                     >
-                      {row.ticker}
+                      <StockLogo ticker={row.ticker} size={22} />
+                      <span>{row.ticker}</span>
                     </Link>
                   </td>
                   <td className="px-3 py-2 text-slate-700">{row.name}</td>
@@ -388,8 +390,9 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-baseline gap-2">
+                    <div className="flex items-center gap-2">
                       <span className="text-xs text-slate-500 tabular-nums">#{row.rank}</span>
+                      <StockLogo ticker={row.ticker} size={24} />
                       <span className="font-mono text-base font-semibold">{row.ticker}</span>
                     </div>
                     <div className="truncate text-sm text-slate-700">{row.name}</div>

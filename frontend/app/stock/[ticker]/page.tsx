@@ -8,6 +8,7 @@ import { PriceHistoryChart } from '@/components/PriceHistoryChart';
 import RawMetricsTable from '@/components/RawMetricsTable';
 import { ScoreBadge } from '@/components/ScoreBadge';
 import { SectorChip } from '@/components/SectorChip';
+import { StockLogo } from '@/components/StockLogo';
 import { Tier2EventCard } from '@/components/Tier2EventCard';
 import { getStockDetail, listTickersForStaticBuild } from '@/lib/data';
 import { filingLagBadgeClasses } from '@/lib/visual';
@@ -90,12 +91,13 @@ export default function StockDetailPage({
                 <span className="truncate text-slate-400">· {detail.industry}</span>
               )}
             </div>
-            <h1 className="mt-2 flex items-baseline gap-3">
+            <h1 className="mt-2 flex items-center gap-3">
+              <StockLogo ticker={detail.ticker} size={48} />
               <span className="font-mono text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
                 {detail.ticker}
               </span>
             </h1>
-            <p className="display-serif mt-1 text-2xl text-slate-700 sm:text-3xl">
+            <p className="mt-1 text-2xl text-slate-700 sm:text-3xl">
               {detail.name}
             </p>
           </div>
