@@ -21,7 +21,9 @@ browser.
 - The author is not a registered investment adviser.
 - This project does not connect to a brokerage and never will.
 
-**Honest limits of quantitative analysis** (full section ships with v1.0):
+**Honest limits of quantitative analysis** — full breakdown in the
+[Honest Limitations](#honest-limitations) section below. The short version:
+
 - Quantitative fraud detection has irreducible false-positive (~30% in
   broad market) and false-negative (~25-40%) rates. Defense flags
   indicate elevated risk, **not** confirmed fraud.
@@ -30,11 +32,132 @@ browser.
   financials.
 - Published anomalies typically decay 30-60% post-publication
   (McLean-Pontiff 2016).
-- See [`docs/RESEARCH_FINDINGS.md`](docs/RESEARCH_FINDINGS.md)
-  §"Honest Limitations" for the full list.
 
 If you're not comfortable losing 100% of any capital you might allocate based
 on quantitative models, do not use this app for investing.
+
+---
+
+## Honest Limitations
+
+QuantRank ships academic-quality defenses (Altman Z″, Sloan accruals,
+net-stock-issuance, going-concern phrase scan, Beneish M-score, Dechow
+F-score, tangible-book sanity guard). Despite this, several classes of
+manipulation and several structural realities remain outside what any
+filed-financials-based screener can address. v1.0 ships with the
+honest accounting below — readers should weight QuantRank's outputs
+accordingly.
+
+### Frauds we cannot catch
+
+Pure financial-statement screeners can only detect manipulation that
+leaves a footprint in the filed numbers. Four manipulation classes
+leave no detectable footprint:
+
+1. **Madoff-style total fabrication.** When revenue, cash, customers,
+   and bank confirmations are all fictitious, the screener has no
+   anchor to a real economy to compare against. Detection requires
+   forensic accounting + bank cross-confirmation outside SEC EDGAR's
+   reach.
+2. **Off-shore related-party round-trips.** Wirecard's Asian "third-
+   party acquirers" recorded as customers + suppliers cancel out on the
+   consolidated balance sheet. The ratios all behave normally because
+   the cash never existed but the offsetting fiction is symmetric.
+3. **Audit-firm complicity.** When the audit itself is fraudulent
+   (Arthur Andersen / Enron pattern), the 10-K is a primary source for
+   manipulated numbers — no quantitative cross-check inside the same
+   document can break the loop.
+4. **Post-acquisition baseline reset.** Fraud disguised by an
+   acquisition that resets the accounting baseline (Tyco-pattern roll-
+   ups) — the year-over-year ratios all reset with the acquisition, so
+   prior-period manipulation gets washed out of the comparison window.
+
+### Realistic error rates
+
+Every defense layer ships with documented false-positive and false-
+negative rates from the academic literature. v1.0 uses these
+unmodified — no proprietary "tuning":
+
+| Defense | False positive rate | False negative rate | Source |
+|---|---|---|---|
+| Beneish M-score (M > −2.22) | ~30% broad market, ~15-20% S&P 500 | ~25-40% | Beneish 1999, Beneish 2022 |
+| Dechow F-score (F > 2.45) | ~27% broad market | ~27% (sensitivity 73%) | Dechow et al. 2011 |
+| Going-concern phrase scan | ~1-3% (post-MD&A restriction) | ~10-15% | Mayew-Sethuraman-Venkatachalam 2015 |
+| Altman Z″ < 1.10 (distress) | ~5-10% manufacturing | ~20% (FE-heavy sectors) | Altman 1968, Altman 2017 |
+| Sloan accruals top-decile | ~10% (sector-confounded) | n/a (definitional) | Sloan 1996 |
+| Net stock issuance top-decile | ~10% (definitional) | n/a (definitional) | Pontiff-Woodgate 2008 |
+
+**All defense flags are risk stratifiers, not fraud verdicts.** A
+flagged stock is a "look harder" signal, not a "this is fraud" signal.
+Multiple flags compounding (e.g., Beneish + Dechow + going-concern
+simultaneously) is the actionable pattern.
+
+### Anomaly decay reality
+
+Academic factor research has a well-documented decay curve:
+
+- **Out-of-sample drop**: ~26% lower returns vs the original in-sample
+  period (McLean-Pontiff 2016).
+- **Post-publication drop**: an additional ~32% lower (publication-
+  informed trading erodes the edge).
+- **Cumulative**: ~58% of the original effect, on average, by year 5
+  post-publication.
+
+This applies to most of QuantRank's classical signals (value, momentum,
+quality, low-vol). The methodology page tracks expected vs realized IC
+where comparable; the rolling-IC decay monitor will land in Phase 4+.
+
+### Free-data fragility
+
+QuantRank uses only free data sources, which trade cost for fragility:
+
+- **yfinance is an unofficial scraper** — multiple 2023-2024 incidents
+  broke fundamental endpoints without warning. Daily-close prices have
+  been the most reliable surface; pre-market and after-hours data are
+  not.
+- **SEC EDGAR XBRL has documented 2025 taxonomy drift** — the
+  `CostOfGoodsAndServicesSold` vs `CostOfRevenue` split, the
+  `IntangibleAssetsNetExcludingGoodwill` vs `OtherIntangibleAssetsNet`
+  variant — every Phase 3 PR added a fallback chain for one of these.
+  Some filers report values only under tags the parser doesn't know
+  about yet, and the data goes missing silently.
+- A cross-source validator (Phase 4) catches large discrepancies but
+  not small systematic biases.
+
+### Diminishing returns on stacking defenses
+
+Beneish-Vorst 2021 measured marginal AAER capture across an ensemble of
+fraud signals:
+
+- Beneish + Dechow + Sloan + going-concern = ~4 signals
+- Adding a 5th signal (e.g., Bao-Ke 2020 ML) captures **less than 5%
+  additional AAERs** beyond the first 4
+- Adding more produces proportionally more false positives without
+  proportional true positives
+
+QuantRank's v1.0 defense set is intentionally fixed at this
+"diminishing-returns inflection point." Future versions will **rotate
+signals based on IC decay** rather than stacking. Treat the v1.0
+defense list as ceiling, not floor.
+
+### What QuantRank is — and is not
+
+**QuantRank is**:
+- A risk-stratifier and screener built from public filings + free data
+- An educational research tool with transparent methodology
+- A pre-computed JSON pipeline tied to a git commit (every score is
+  reproducible)
+
+**QuantRank is not**:
+- A fraud guarantor — flags indicate elevated risk, not confirmed fraud
+- A backtested live-trading strategy — anomaly decay is real and
+  unpredictable in direction
+- A registered investment adviser — the author is not, and this is not
+  investment advice
+- A connection to any brokerage — and will not become one
+
+See [`docs/RESEARCH_FINDINGS.md`](docs/RESEARCH_FINDINGS.md) for the
+academic bibliography backing each defense layer.
 
 ---
 
