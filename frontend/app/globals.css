@@ -2,8 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Fonts wired via next/font in app/layout.tsx; CSS variables exposed
+ * here so any utility class or inline style can reference them. */
 :root {
   color-scheme: light;
+  --font-sans: var(--font-ibm-plex-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
+
+  /* Soft positive — muted sage green (oklch hue 155). Used wherever
+   * the design called for "undervalued" / "strong" semantics. The
+   * three swatches (strong/medium/bg) cover text + bar fills +
+   * tinted backgrounds without ever reaching the "bright fresh green"
+   * that the design feedback rejected. */
+  --c-pos-strong: oklch(50% 0.09 155);
+  --c-pos-medium: oklch(56% 0.09 155);
+  --c-pos-bg: oklch(97% 0.025 155);
+  --c-pos-bg-mid: oklch(93% 0.04 155);
+  --c-pos-ring: oklch(86% 0.06 155);
+  --c-pos-dot: oklch(60% 0.10 155);
+
+  /* Soft negative — dusty rose / terracotta (oklch hue 18). Same
+   * three-swatch shape as positive. Reads as "overvalued" without
+   * the alarm-red intensity the design feedback rejected. */
+  --c-neg-strong: oklch(48% 0.09 18);
+  --c-neg-medium: oklch(54% 0.09 18);
+  --c-neg-bg: oklch(97% 0.025 18);
+  --c-neg-bg-mid: oklch(93% 0.04 18);
+  --c-neg-ring: oklch(86% 0.06 18);
+  --c-neg-dot: oklch(60% 0.10 18);
 }
 
 html,
@@ -12,5 +39,72 @@ body {
 }
 
 body {
-  @apply bg-slate-50 text-slate-900 antialiased;
+  background: rgb(248 250 252);
+  color: rgb(15 23 42);
+  -webkit-font-smoothing: antialiased;
+  font-family: var(--font-sans);
+}
+
+.font-mono,
+code {
+  font-family: var(--font-mono);
+}
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+.display-serif {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/*
+ * Soft-color overrides. Every Tailwind emerald / rose / red utility
+ * the components already use gets remapped to the oklch tokens above.
+ * This is the single layer that makes the design feel "soft" without
+ * touching the per-component Tailwind class strings — components
+ * keep their semantic class names (`text-emerald-700` etc.) and the
+ * cascade does the rest.
+ *
+ * Why not @layer override or full Tailwind config? Tailwind 3 utility
+ * classes are compiled with fixed values; this is the lightest path
+ * that doesn't require regenerating the Tailwind CSS.
+ */
+
+/* ── Emerald → muted sage ── */
+.text-emerald-600 { color: var(--c-pos-medium) !important; }
+.text-emerald-700 { color: var(--c-pos-medium) !important; }
+.text-emerald-800 { color: var(--c-pos-strong) !important; }
+.bg-emerald-50 { background-color: var(--c-pos-bg) !important; }
+.bg-emerald-100 { background-color: var(--c-pos-bg-mid) !important; }
+.bg-emerald-500 { background-color: var(--c-pos-dot) !important; }
+.bg-emerald-600 { background-color: var(--c-pos-medium) !important; }
+.ring-emerald-200 {
+  --tw-ring-color: var(--c-pos-ring) !important;
+}
+.border-emerald-200 {
+  border-color: var(--c-pos-ring) !important;
+}
+
+/* ── Rose / red → dusty terracotta ── */
+.text-rose-600 { color: var(--c-neg-medium) !important; }
+.text-rose-700 { color: var(--c-neg-medium) !important; }
+.text-rose-800 { color: var(--c-neg-strong) !important; }
+.text-rose-900 { color: var(--c-neg-strong) !important; }
+.bg-rose-50 { background-color: var(--c-neg-bg) !important; }
+.bg-rose-100 { background-color: var(--c-neg-bg-mid) !important; }
+.bg-rose-500 { background-color: var(--c-neg-dot) !important; }
+.ring-rose-200 {
+  --tw-ring-color: var(--c-neg-ring) !important;
+}
+.ring-rose-300 {
+  --tw-ring-color: var(--c-neg-ring) !important;
+}
+.border-rose-200 {
+  border-color: var(--c-neg-ring) !important;
+}
+.text-red-700 { color: var(--c-neg-medium) !important; }
+.bg-red-50 { background-color: var(--c-neg-bg) !important; }
+.ring-red-200 {
+  --tw-ring-color: var(--c-neg-ring) !important;
 }
