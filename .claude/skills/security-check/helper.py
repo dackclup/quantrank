@@ -594,6 +594,7 @@ _QUANTRANK_SKILLS = {
     "phase-status-bump",
     "pr-iteration-flow",
     "security-check",
+    "pr-quality-gate",
 }
 
 
@@ -676,6 +677,11 @@ def section_g_git(*, strict: bool, quiet: bool) -> tuple[bool, bool]:
     bot_scope_violations: list[str] = []
     merge_commits: list[str] = []
 
+    # Match `--no-verify` / `--no-gpg-sign` only when it looks like an
+    # actual git command, not when the commit body describes the rule
+    # itself (e.g., a skill SKILL.md listing). Heuristic: the flag is
+    # preceded by `git <verb> ...` within ~60 chars.
+    bypass_re = re.compile(r"(?s)git\s+\w[^\n]{0,60}--no-(?:verify|gpg-sign)\b")
     for line in log.stdout.splitlines():
         parts = line.split("\t", 2)
         if len(parts) != 3:
@@ -683,7 +689,7 @@ def section_g_git(*, strict: bool, quiet: bool) -> tuple[bool, bool]:
         sha, author, subject = parts
         short = sha[:8]
         body = _git_show_body(sha)
-        if "--no-verify" in body or "--no-gpg-sign" in body:
+        if bypass_re.search(body):
             no_verify_hits.append(f"{short}: {subject[:60]}")
         if subject.strip().lower() in {"wip", "fix", "test", "update", "todo"}:
             placeholder_hits.append(f"{short}: {subject[:60]}")
