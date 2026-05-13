@@ -1,5 +1,29 @@
 import type { Metadata } from 'next';
+import { IBM_Plex_Sans, Instrument_Serif, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
+import { Disclaimer } from '@/components/Disclaimer';
+
+const ibmPlexSans = IBM_Plex_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+  variable: '--font-ibm-plex-sans',
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  display: 'swap',
+  variable: '--font-jetbrains-mono',
+});
+
+const instrumentSerif = Instrument_Serif({
+  subsets: ['latin'],
+  weight: ['400'],
+  style: ['normal', 'italic'],
+  display: 'swap',
+  variable: '--font-instrument-serif',
+});
 
 export const metadata: Metadata = {
   title: 'QuantRank',
@@ -9,12 +33,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${ibmPlexSans.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable}`}>
       <body>
         <header className="border-b border-slate-200 bg-white">
           <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
             <div className="flex items-baseline gap-3">
-              <span className="text-xl font-semibold tracking-tight">QuantRank</span>
+              <a href="/" className="text-xl font-semibold tracking-tight">QuantRank</a>
               <span className="text-sm text-slate-500">US equity stock ranking</span>
             </div>
             <nav className="text-sm text-slate-600">
@@ -29,18 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </nav>
           </div>
         </header>
-        <div
-          role="alert"
-          className="border-b border-amber-200 bg-amber-50 text-amber-900"
-        >
-          <div className="mx-auto max-w-6xl px-4 py-3 text-sm">
-            <strong>Disclaimer:</strong> QuantRank is for educational and research
-            purposes only. Nothing here is investment advice, a recommendation, or
-            an offer to buy or sell securities. Do not use these scores for
-            real-money trading decisions. Past performance does not predict future
-            results.
-          </div>
-        </div>
+        <Disclaimer />
         <main className="mx-auto max-w-6xl px-4 py-10">{children}</main>
         <footer className="border-t border-slate-200 bg-white">
           <div className="mx-auto max-w-6xl px-4 py-6 text-xs text-slate-500">

@@ -3,19 +3,19 @@
   "name": "Qualcomm",
   "sector": "Information Technology",
   "industry": "Semiconductors",
-  "market_cap": 232016306121.82617,
-  "current_price": 219.09,
-  "rank": 13,
-  "composite_score": 68.27,
+  "market_cap": 222718287414.55078,
+  "current_price": 210.31,
+  "rank": 18,
+  "composite_score": 66.75,
   "pillar_scores": {
     "quality": 94.52,
-    "value": 64.16,
+    "value": 65.53,
     "growth": 45.72,
-    "momentum": 40.91,
-    "health": 67.81,
+    "momentum": 26.89,
+    "health": 67.73,
     "profitability": 76.71,
-    "technical": 72.29,
-    "risk": 48.74,
+    "technical": 72.91,
+    "risk": 45.92,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 9.71,
     "eps_diluted": 9.65,
     "shares_outstanding": 1059000000.0,
-    "market_cap": 232016306121.82617,
-    "pe_ratio_ttm": 22.703626563511982,
+    "market_cap": 222718287414.55078,
+    "pe_ratio_ttm": 21.793782130424223,
     "goodwill": 14251000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 1250.5335411511567,
+        "value": 1268.7165409221986,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 53.354814638440644,
+        "value": 52.54603612094523,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 1082.4495339696573,
+        "value": 1072.9086025440981,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,13 +75,14 @@
         "tier_used": null
       }
     },
-    "median": 1082.4495339696573,
-    "max": 1082.4495339696573,
-    "low": 53.354814638440644,
-    "high": 1250.5335411511567,
-    "mos_pct": 79.75979577224041,
+    "median": 1072.9086025440981,
+    "max": 52.54603612094523,
+    "low": 52.54603612094523,
+    "high": 1268.7165409221986,
+    "mos_pct": 80.39814416065792,
     "valuation_warnings": [
-      "extreme_multiples_pe_estimate"
+      "extreme_multiples_pe_estimate",
+      "extreme_multiples_ev_ebitda_estimate"
     ]
   },
   "top5_factors": [],
@@ -91,13 +92,14 @@
       "gross_profit"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 11,
+    "filing_lag_days": 14,
     "latest_period_end": "2026-03-29",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_multiples_pe_estimate"
+    "extreme_multiples_pe_estimate",
+    "extreme_multiples_ev_ebitda_estimate"
   ],
   "has_history": true,
   "tangible_book_value": null,

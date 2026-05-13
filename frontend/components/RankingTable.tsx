@@ -1,10 +1,21 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import { formatFairPrice, formatMosPct, mosColorClass } from '@/lib/format';
+import { FilterDrawer } from '@/components/FilterDrawer';
+import { MoSCell } from '@/components/MoSCell';
+import { ScoreBadge } from '@/components/ScoreBadge';
+import { SectorChip } from '@/components/SectorChip';
+import { formatFairPrice, formatMosPct } from '@/lib/format';
 import type { StockSummary } from '@/lib/types';
+import {
+  MOS_BUCKETS,
+  TIERS,
+  getMosBucket,
+  getTier,
+  sectorStyle,
+} from '@/lib/visual';
 
 type SortKey =
   | 'rank'
@@ -19,57 +30,105 @@ type SortDir = 'asc' | 'desc';
 
 const PAGE_SIZE = 50;
 
-function scoreColorClasses(score: number): string {
-  if (score >= 80) return 'bg-emerald-100 text-emerald-800 ring-emerald-200';
-  if (score >= 60) return 'bg-lime-100 text-lime-800 ring-lime-200';
-  if (score >= 40) return 'bg-amber-100 text-amber-800 ring-amber-200';
-  if (score >= 20) return 'bg-orange-100 text-orange-800 ring-orange-200';
-  return 'bg-red-100 text-red-800 ring-red-200';
-}
-
-function ScoreBadge({ score }: { score: number }) {
-  return (
-    <span
-      className={`inline-flex min-w-[3rem] items-center justify-center rounded-full px-2 py-0.5 text-sm font-semibold tabular-nums ring-1 ring-inset ${scoreColorClasses(score)}`}
-    >
-      {score.toFixed(1)}
-    </span>
-  );
-}
-
 function formatPrice(p: number): string {
   return p.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 });
 }
 
 export default function RankingTable({ data }: { data: StockSummary[] }) {
+  // Filter state
   const [search, setSearch] = useState('');
-  const [sector, setSector] = useState<string>('All');
+  const [sectorSet, setSectorSet] = useState<Set<string>>(() => new Set());
+  const [scoreRange, setScoreRange] = useState<[number, number]>([0, 100]);
+  const [tierSet, setTierSet] = useState<Set<string>>(() => new Set());
+  const [mosSet, setMosSet] = useState<Set<string>>(() => new Set());
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  // Sort + pagination
   const [sortKey, setSortKey] = useState<SortKey>('rank');
   const [sortDir, setSortDir] = useState<SortDir>('asc');
   const [page, setPage] = useState(1);
 
   const sectors = useMemo(() => {
     const s = new Set(data.map((d) => d.sector));
-    return ['All', ...Array.from(s).sort()];
+    return Array.from(s).sort();
   }, [data]);
 
+  // Multi-axis filter: every active dimension AND-combines (a stock
+  // has to match each non-empty filter to survive). Empty filters
+  // pass everything through (sectorSet.size===0 means "all sectors").
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return data.filter((row) => {
-      if (sector !== 'All' && row.sector !== sector) return false;
+      if (sectorSet.size > 0 && !sectorSet.has(row.sector)) return false;
+      if (scoreRange[0] !== 0 || scoreRange[1] !== 100) {
+        const sc = row.composite_score;
+        if (sc === null || sc === undefined || Number.isNaN(sc)) return false;
+        if (sc < scoreRange[0] || sc > scoreRange[1]) return false;
+      }
+      if (tierSet.size > 0) {
+        const t = getTier(row.composite_score);
+        if (!t || !tierSet.has(t)) return false;
+      }
+      if (mosSet.size > 0) {
+        const b = getMosBucket(row.margin_of_safety_pct);
+        if (!b || !mosSet.has(b)) return false;
+      }
       if (!q) return true;
       return row.ticker.toLowerCase().includes(q) || row.name.toLowerCase().includes(q);
     });
-  }, [data, search, sector]);
+  }, [data, search, sectorSet, scoreRange, tierSet, mosSet]);
+
+  // Reset page on any filter change so user doesn't end up on a
+  // suddenly-empty page after narrowing results.
+  useEffect(() => {
+    setPage(1);
+  }, [search, sectorSet, scoreRange, tierSet, mosSet]);
+
+  const toggleSector = (s: string) =>
+    setSectorSet((prev) => {
+      const n = new Set(prev);
+      if (n.has(s)) n.delete(s);
+      else n.add(s);
+      return n;
+    });
+  const toggleTier = (t: string) =>
+    setTierSet((prev) => {
+      const n = new Set(prev);
+      if (n.has(t)) n.delete(t);
+      else n.add(t);
+      return n;
+    });
+  const toggleMos = (m: string) =>
+    setMosSet((prev) => {
+      const n = new Set(prev);
+      if (n.has(m)) n.delete(m);
+      else n.add(m);
+      return n;
+    });
+  const clearAll = () => {
+    setSearch('');
+    setSectorSet(new Set());
+    setScoreRange([0, 100]);
+    setTierSet(new Set());
+    setMosSet(new Set());
+  };
+
+  const scoreActive = scoreRange[0] !== 0 || scoreRange[1] !== 100;
+  // Aggregate count for the badge on the Filters button — one per
+  // active dimension, not per active chip, so the user sees "2"
+  // when they have any sectors + any tiers selected.
+  const activeCount =
+    (search ? 1 : 0) +
+    (sectorSet.size ? 1 : 0) +
+    (scoreActive ? 1 : 0) +
+    (tierSet.size ? 1 : 0) +
+    (mosSet.size ? 1 : 0);
 
   const sorted = useMemo(() => {
     const arr = [...filtered];
     arr.sort((a, b) => {
       const av = a[sortKey];
       const bv = b[sortKey];
-      // Nulls sort last regardless of direction — they're "no data",
-      // not "infinitely small", so they shouldn't fight for the top
-      // of an ascending sort.
       if (av === null && bv === null) return 0;
       if (av === null) return 1;
       if (bv === null) return -1;
@@ -90,8 +149,6 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
       setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
     } else {
       setSortKey(key);
-      // Score- and undervaluation-style columns default to descending —
-      // most useful sort is "best at top".
       const descByDefault: SortKey[] = [
         'composite_score',
         'fair_price',
@@ -117,38 +174,136 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-1 flex-col gap-3 sm:flex-row">
+    <div className="space-y-3">
+      {/* Toolbar: Filters button (with active count) + inline search + count */}
+      <div className="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setDrawerOpen(true)}
+          className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50"
+        >
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <path d="M2 4h12M4 8h8M6 12h4" strokeLinecap="round" />
+          </svg>
+          Filters
+          {activeCount > 0 && (
+            <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-slate-900 px-1 text-[10px] font-semibold text-white">
+              {activeCount}
+            </span>
+          )}
+        </button>
+        <div className="relative max-w-xs flex-1" style={{ minWidth: '200px' }}>
           <input
             type="search"
             placeholder="Search ticker or name…"
             value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-            className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 sm:max-w-xs"
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full rounded-md border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm shadow-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
           />
-          <select
-            value={sector}
-            onChange={(e) => {
-              setSector(e.target.value);
-              setPage(1);
-            }}
-            className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 sm:max-w-xs"
+          <svg
+            className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+            viewBox="0 0 20 20"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.75"
           >
-            {sectors.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
+            <circle cx="9" cy="9" r="6" />
+            <path d="M14 14l4 4" strokeLinecap="round" />
+          </svg>
         </div>
-        <div className="text-xs text-slate-500">
-          {sorted.length.toLocaleString()} of {data.length.toLocaleString()} stocks
+        <div className="ml-auto text-xs text-slate-500">
+          <span className="font-mono font-semibold tabular-nums text-slate-700">
+            {sorted.length.toLocaleString()}
+          </span>
+          <span className="text-slate-400"> / {data.length.toLocaleString()} stocks</span>
         </div>
       </div>
+
+      {/* Active filter chips — click any chip to remove that single
+          filter; "Clear all" wipes everything. */}
+      {activeCount > 0 && (
+        <div className="flex flex-wrap items-center gap-1.5">
+          {Array.from(sectorSet).map((s) => {
+            const sty = sectorStyle(s);
+            return (
+              <button
+                key={`f-sec-${s}`}
+                type="button"
+                onClick={() => toggleSector(s)}
+                className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs ring-1 ring-inset hover:opacity-75 ${sty.bg} ${sty.fg} ${sty.ring}`}
+              >
+                <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ backgroundColor: sty.dot }} />
+                {s}
+                <span aria-hidden="true" className="opacity-60">×</span>
+              </button>
+            );
+          })}
+          {Array.from(tierSet).map((id) => {
+            const t = TIERS.find((x) => x.id === id);
+            return t ? (
+              <button
+                key={`f-tier-${id}`}
+                type="button"
+                onClick={() => toggleTier(id)}
+                className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs ring-1 ring-inset hover:opacity-75 ${t.cls}`}
+              >
+                <span className={`inline-block h-1.5 w-1.5 rounded-full ${t.dot}`} />
+                {t.label}
+                <span aria-hidden="true" className="opacity-60">×</span>
+              </button>
+            ) : null;
+          })}
+          {Array.from(mosSet).map((id) => {
+            const b = MOS_BUCKETS.find((x) => x.id === id);
+            return b ? (
+              <button
+                key={`f-mos-${id}`}
+                type="button"
+                onClick={() => toggleMos(id)}
+                className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs ring-1 ring-inset hover:opacity-75 ${b.cls}`}
+              >
+                <span className={`inline-block h-1.5 w-1.5 rounded-full ${b.dot}`} />
+                {b.label}
+                <span aria-hidden="true" className="opacity-60">×</span>
+              </button>
+            ) : null;
+          })}
+          {scoreActive && (
+            <button
+              type="button"
+              onClick={() => setScoreRange([0, 100])}
+              className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-700 ring-1 ring-inset ring-slate-300 hover:opacity-75"
+            >
+              Score {scoreRange[0]}–{scoreRange[1]}
+              <span aria-hidden="true" className="opacity-60">×</span>
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={clearAll}
+            className="ml-1 text-xs font-medium text-slate-500 underline-offset-2 hover:text-slate-900 hover:underline"
+          >
+            Clear all
+          </button>
+        </div>
+      )}
+
+      <FilterDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        state={{ search, sectorSet, scoreRange, tierSet, mosSet }}
+        setters={{
+          setSearch,
+          toggleSector,
+          setScoreRange,
+          toggleTier,
+          toggleMos,
+          clearAll,
+        }}
+        sectors={sectors}
+        totalCount={data.length}
+        filteredCount={filtered.length}
+      />
 
       {/* Desktop / tablet table */}
       <div className="hidden overflow-x-auto rounded-lg border border-slate-200 bg-white md:block">
@@ -167,7 +322,6 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
           </thead>
           <tbody className="divide-y divide-slate-100">
             {pageRows.map((row) => {
-              const mos = formatMosPct(row.margin_of_safety_pct);
               const dataQualityIssue = row.valuation_warnings.includes(
                 'data_quality_input_corruption',
               );
@@ -183,7 +337,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                     </Link>
                   </td>
                   <td className="px-3 py-2 text-slate-700">{row.name}</td>
-                  <td className="px-3 py-2 text-slate-500">{row.sector}</td>
+                  <td className="px-3 py-2"><SectorChip sector={row.sector} /></td>
                   <td className="px-3 py-2 text-right">
                     <ScoreBadge score={row.composite_score} />
                   </td>
@@ -202,11 +356,12 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                       formatFairPrice(row.fair_price)
                     )}
                   </td>
-                  <td
-                    className={`px-3 py-2 text-right tabular-nums ${mosColorClass(row.margin_of_safety_pct)}`}
-                    title={mos.tooltip ?? undefined}
-                  >
-                    {mos.display}
+                  <td className="px-3 py-2">
+                    {dataQualityIssue ? (
+                      <span className="flex justify-end text-slate-300">—</span>
+                    ) : (
+                      <MoSCell mos={row.margin_of_safety_pct} />
+                    )}
                   </td>
                 </tr>
               );
@@ -231,7 +386,6 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                 href={`/stock/${row.ticker}/`}
                 className="flex h-full flex-col gap-1 p-3"
               >
-                {/* Top row: ticker + name on left, score top-aligned on right */}
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline gap-2">
@@ -244,12 +398,10 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                     <ScoreBadge score={row.composite_score} />
                   </div>
                 </div>
-                {/* Sector | price */}
-                <div className="flex items-center justify-between text-xs text-slate-500">
-                  <span className="truncate">{row.sector}</span>
+                <div className="flex items-center justify-between gap-2 text-xs text-slate-500">
+                  <SectorChip sector={row.sector} size="xs" />
                   <span className="tabular-nums">{formatPrice(row.current_price)}</span>
                 </div>
-                {/* Fair | MoS */}
                 <div className="flex items-center justify-between text-xs">
                   {row.fair_price !== null ? (
                     <span className="text-slate-500">
@@ -270,13 +422,9 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                       Fair <span aria-hidden="true">⚠</span> N/A
                     </span>
                   )}
-                  <span
-                    className={`tabular-nums ${mosColorClass(row.margin_of_safety_pct)}`}
-                    title={mos.tooltip ?? undefined}
-                  >
-                    MoS {mos.display}
-                  </span>
+                  <MoSCell mos={row.margin_of_safety_pct} align="right" />
                 </div>
+                {mos.tooltip && <span className="sr-only">{mos.tooltip}</span>}
               </Link>
             </li>
           );

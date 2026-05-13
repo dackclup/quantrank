@@ -3,19 +3,19 @@
   "name": "Carnival Corporation",
   "sector": "Consumer Discretionary",
   "industry": "Hotels, Resorts & Cruise Lines",
-  "market_cap": 17041479457.855225,
-  "current_price": 26.38,
-  "rank": 384,
-  "composite_score": 43.76,
+  "market_cap": 16053100246.429443,
+  "current_price": 24.85,
+  "rank": 401,
+  "composite_score": 42.55,
   "pillar_scores": {
     "quality": 40.1,
     "value": 60.07,
     "growth": 57.29,
-    "momentum": 40.64,
-    "health": 8.41,
+    "momentum": 38.99,
+    "health": 8.49,
     "profitability": 39.58,
-    "technical": 46.12,
-    "risk": 36.06,
+    "technical": 28.64,
+    "risk": 32.47,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.19,
     "eps_diluted": 0.19,
     "shares_outstanding": 646000000.0,
-    "market_cap": 17041479457.855225,
-    "pe_ratio_ttm": 138.84210084614,
+    "market_cap": 16053100246.429443,
+    "pe_ratio_ttm": 130.78947569194594,
     "goodwill": 579000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 14.316388501246289,
+        "value": 13.594315941997346,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 131.55290759718204,
+        "value": 129.74267461607505,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 35.36969264324442,
+        "value": 36.1350607133133,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,11 +76,13 @@
       }
     },
     "median": 21.09283989264703,
-    "max": 131.55290759718204,
-    "low": 14.316388501246289,
-    "high": 131.55290759718204,
-    "mos_pct": -25.066132844267567,
-    "valuation_warnings": []
+    "max": 36.1350607133133,
+    "low": 13.594315941997346,
+    "high": 129.74267461607505,
+    "mos_pct": -17.812492333630438,
+    "valuation_warnings": [
+      "extreme_multiples_pb_estimate"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -92,12 +94,14 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 44,
+    "filing_lag_days": 47,
     "latest_period_end": "2026-02-28",
     "latest_filed_date": "2026-03-27"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "extreme_multiples_pb_estimate"
+  ],
   "has_history": true,
   "tangible_book_value": 17.44736842105263,
   "tier2_events": {

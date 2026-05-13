@@ -2,32 +2,20 @@ import Link from 'next/link';
 
 import FairPriceCard from '@/components/FairPriceCard';
 import { FairPriceBarChart } from '@/components/FairPriceBarChart';
+import { MoSCell } from '@/components/MoSCell';
 import { PillarRadarChart } from '@/components/PillarRadarChart';
 import { PriceHistoryChart } from '@/components/PriceHistoryChart';
 import RawMetricsTable from '@/components/RawMetricsTable';
+import { ScoreBadge } from '@/components/ScoreBadge';
+import { SectorChip } from '@/components/SectorChip';
 import { Tier2EventCard } from '@/components/Tier2EventCard';
-import { formatMosPct, mosColorClass } from '@/lib/format';
 import { getStockDetail, listTickersForStaticBuild } from '@/lib/data';
+import { filingLagBadgeClasses } from '@/lib/visual';
 
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
   return listTickersForStaticBuild().map((ticker) => ({ ticker }));
-}
-
-function scoreColorClasses(score: number): string {
-  if (score >= 80) return 'bg-emerald-100 text-emerald-800 ring-emerald-200';
-  if (score >= 60) return 'bg-lime-100 text-lime-800 ring-lime-200';
-  if (score >= 40) return 'bg-amber-100 text-amber-800 ring-amber-200';
-  if (score >= 20) return 'bg-orange-100 text-orange-800 ring-orange-200';
-  return 'bg-red-100 text-red-800 ring-red-200';
-}
-
-function filingLagBadgeClasses(days: number | null): string {
-  if (days === null) return 'bg-slate-100 text-slate-600 ring-slate-200';
-  if (days < 60) return 'bg-emerald-50 text-emerald-700 ring-emerald-200';
-  if (days < 180) return 'bg-amber-50 text-amber-700 ring-amber-200';
-  return 'bg-red-50 text-red-700 ring-red-200';
 }
 
 function formatPrice(p: number): string {
@@ -75,6 +63,7 @@ export default function StockDetailPage({
 
   const filingLag = detail.data_quality.filing_lag_days;
   const missingCount = detail.data_quality.missing_metrics.length;
+  const mosPct = detail.fair_price?.mos_pct ?? null;
 
   return (
     <article className="space-y-8">
@@ -85,42 +74,52 @@ export default function StockDetailPage({
         ← Back to ranking
       </Link>
 
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <div className="flex items-baseline gap-3">
-            <h1 className="font-mono text-3xl font-bold tracking-tight sm:text-4xl">
-              {detail.ticker}
-            </h1>
-            <span className="text-sm text-slate-500">#{detail.rank}</span>
-          </div>
-          <p className="mt-1 text-lg text-slate-700">{detail.name}</p>
-          <p className="text-sm text-slate-500">
-            {detail.sector}
-            {detail.industry && <> · {detail.industry}</>}
-          </p>
-        </div>
-        <div className="flex flex-col items-start gap-2 sm:items-end">
-          <span
-            className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-base font-semibold tabular-nums ring-1 ring-inset ${scoreColorClasses(
-              detail.composite_score,
-            )}`}
-          >
-            Score {detail.composite_score.toFixed(1)}
-          </span>
-          <span className="text-sm tabular-nums text-slate-700">
-            {formatPrice(detail.current_price)}
-          </span>
-          {(() => {
-            const mos = formatMosPct(detail.fair_price?.mos_pct ?? null);
-            return (
-              <span
-                className={`text-xs tabular-nums ${mosColorClass(detail.fair_price?.mos_pct ?? null)}`}
-                title={mos.tooltip ?? undefined}
-              >
-                MoS {mos.display}
+      {/* Hero header card — new layout from QuantRank.html design:
+          rank badge + sector chip on top row, big mono ticker, serif
+          company name, radial-gauge ScoreBadge + price + MoSCell on
+          the right side. */}
+      <header className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2 text-xs">
+              <span className="inline-flex items-center rounded-md bg-slate-100 px-1.5 py-0.5 font-mono font-medium text-slate-600">
+                #{detail.rank}
               </span>
-            );
-          })()}
+              <SectorChip sector={detail.sector} />
+              {detail.industry && (
+                <span className="truncate text-slate-400">· {detail.industry}</span>
+              )}
+            </div>
+            <h1 className="mt-2 flex items-baseline gap-3">
+              <span className="font-mono text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+                {detail.ticker}
+              </span>
+            </h1>
+            <p className="display-serif mt-1 text-2xl text-slate-700 sm:text-3xl">
+              {detail.name}
+            </p>
+          </div>
+          <div className="flex flex-col gap-3 sm:items-end">
+            <ScoreBadge score={detail.composite_score} size="lg" />
+            <div className="flex gap-6 sm:justify-end">
+              <div className="flex flex-col sm:items-end">
+                <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                  Price
+                </span>
+                <span className="font-mono text-lg font-semibold tabular-nums text-slate-900">
+                  {formatPrice(detail.current_price)}
+                </span>
+              </div>
+              <div className="flex flex-col sm:items-end">
+                <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                  Margin of safety
+                </span>
+                <div className="mt-0.5">
+                  <MoSCell mos={mosPct} align="right" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </header>
 
