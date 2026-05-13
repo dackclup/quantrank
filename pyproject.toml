@@ -35,7 +35,23 @@ exclude = ["tests*", "frontend*", "docs*"]
 [tool.ruff]
 line-length = 100
 target-version = "py311"
-extend-exclude = ["frontend", "compute/cache", "models"]
+extend-exclude = [
+  "frontend",
+  "compute/cache",
+  "models",
+  # Vendored upstream skills with their own Python helpers; not ours to lint.
+  ".claude/skills/docx",
+  ".claude/skills/pdf",
+  ".claude/skills/pptx",
+  ".claude/skills/xlsx",
+  ".claude/skills/webapp-testing",
+  ".claude/skills/mcp-builder",
+  ".claude/skills/skill-creator",
+  ".claude/skills/algorithmic-art",
+  ".claude/skills/canvas-design",
+  ".claude/skills/slack-gif-creator",
+  ".claude/skills/web-artifacts-builder",
+]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "W"]

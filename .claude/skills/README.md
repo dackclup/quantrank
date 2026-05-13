@@ -1,18 +1,17 @@
 # QuantRank project skills
 
-Project-specific [Claude Code skills](https://docs.claude.com/en/docs/claude-code/skills)
-for QuantRank's compute → output → verify lifecycle. Skills here encode
-the conventions, file paths, schema versions, and verification patterns
-that emerged from PR-3a through PR-3d so each phase doesn't re-invent
-them.
+Skills for QuantRank's compute → output → verify lifecycle, plus
+vendored third-party skills from
+[`anthropics/skills`](https://github.com/anthropics/skills).
 
 ## Layout
 
 ```
 .claude/skills/
 ├── README.md                                  # this file
+├── THIRD_PARTY_NOTICES.md                     # license attribution for vendored skills
 │
-├── verify-production-output/                  # cross-phase: 7 skills total
+├── verify-production-output/                  # cross-phase: 7 QuantRank skills
 ├── schema-check/                              # — used by every phase that
 ├── defense-scorecard/                         #   touches output JSON or
 ├── top5-rotation-audit/                       #   schema
@@ -20,27 +19,33 @@ them.
 ├── phase-status-bump/
 ├── pr-iteration-flow/
 │
-├── phase-1/                                   # phase-specific: 36 stubs
-│   ├── universe-refresh/                      #   organized per phase
-│   └── yfinance-debug/                        #
-├── phase-2/                                   # Phases 1 / 2 / 3a / 3b /
-├── phase-3a/                                  # 3c / 3d / 3e / 4 / 5 /
-├── phase-3b/                                  # 6 / 7 / 8
-├── phase-3c/
-├── phase-3d/
-├── phase-3e/
-├── phase-4/
-├── phase-5/
-├── phase-6/
-├── phase-7/
-└── phase-8/
+├── phase-1/ ... phase-8/                      # phase-specific stubs (12 dirs)
+│
+├── algorithmic-art/                           # vendored from anthropics/skills (17 dirs)
+├── brand-guidelines/
+├── canvas-design/
+├── claude-api/
+├── doc-coauthoring/
+├── docx/
+├── frontend-design/
+├── internal-comms/
+├── mcp-builder/
+├── pdf/
+├── pptx/
+├── skill-creator/
+├── slack-gif-creator/
+├── theme-factory/
+├── web-artifacts-builder/
+├── webapp-testing/
+└── xlsx/
 ```
 
 Each skill directory contains a `SKILL.md` with YAML frontmatter
-(`name`, `description`) plus markdown body that describes when to use
-the skill, its inputs / outputs, and any helper script paths.
+(`name`, `description`) plus markdown body. The vendored skills
+additionally include `LICENSE.txt` (Apache 2.0 or source-available
+per skill) and per-skill helper scripts / templates / fonts.
 
-## Cross-phase skills (full)
+## QuantRank cross-phase skills (7)
 
 | Skill | When to use |
 |---|---|
@@ -52,7 +57,7 @@ the skill, its inputs / outputs, and any helper script paths.
 | `phase-status-bump` | At the end of each phase, to update `PHASE_STATUS.md` + `SKILL.md` + `WORKFLOW.md` consistently |
 | `pr-iteration-flow` | During UI polish iteration — manage Draft↔Ready flips + spot-check matrix authoring |
 
-## Phase-specific skills (stubs)
+## QuantRank phase-specific stubs (36)
 
 Each `phase-N/` directory contains stubs (frontmatter + brief
 description) for the skills that phase will need. Flesh out each
@@ -74,7 +79,52 @@ intent + acceptance criteria so the implementation has a clear target.
 | Phase 7 — regime + portfolio | `student-t-hmm-fit`, `nco-portfolio-allocate`, `tda-risk-off` |
 | Phase 8 — universe expansion | `universe-expand-sp1500`, `microcap-skip` |
 
-## Authoring conventions
+## Vendored third-party skills (17, from `anthropics/skills`)
+
+Full snapshot of [`anthropics/skills`](https://github.com/anthropics/skills)
+@ main (2026-05-09). Placed flat alongside the QuantRank skills so
+Claude Code auto-loads them at session start — no plugin
+marketplace mechanism, no runtime fetch from GitHub.
+
+| Vendored skill | Description |
+|---|---|
+| `algorithmic-art` | Generative art with p5.js (seeded randomness, parametric exploration) |
+| `brand-guidelines` | Apply Anthropic corporate colors / typography to artifacts |
+| `canvas-design` | Static visual design (posters, graphics) as PNG/PDF — includes ~5 MB of font files |
+| `claude-api` | Build/debug Claude API + Anthropic SDK apps; prompt caching; model versioning |
+| `doc-coauthoring` | Structured workflow for collaborative docs / proposals / decision docs |
+| `docx` | Create/edit Word documents (.docx); formatting, tables, tracked changes |
+| `frontend-design` | Production-grade UI; distinctive visual design; avoid AI clichés |
+| `internal-comms` | Template-based internal communications (updates, FAQs, status reports) |
+| `mcp-builder` | Create Model Context Protocol servers in Python (FastMCP) or TypeScript |
+| `pdf` | Read/extract/merge/split PDFs; OCR; encryption; watermarking |
+| `pptx` | Create/edit PowerPoint presentations; templates; layouts; speaker notes |
+| `skill-creator` | Develop, test, iterate, and package Claude skills; eval framework |
+| `slack-gif-creator` | Animated GIFs optimized for Slack (128×128 emoji, 480×480 message) |
+| `theme-factory` | Pre-configured themes (10 themes) for styling artifacts |
+| `web-artifacts-builder` | Complex React/TypeScript/Tailwind/shadcn artifacts; Vite bundling |
+| `webapp-testing` | Playwright-based web app testing; browser automation; UI verification |
+| `xlsx` | Spreadsheet operations (.xlsx, .csv, .tsv); formulas; financial models |
+
+**License**: most are Apache 2.0; `docx`/`pdf`/`pptx`/`xlsx` are
+source-available per upstream. See
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) at the directory
+root for full attribution, and each skill's `LICENSE.txt` for
+per-skill terms.
+
+**Updates**: vendored skills do NOT auto-update. To pull a newer
+snapshot, re-download the ZIP from upstream and re-vendor:
+
+```bash
+unzip -q skills-main.zip -d /tmp/skills-extract
+for skill in /tmp/skills-extract/skills-main/skills/*/; do
+  rm -rf ".claude/skills/$(basename "$skill")"
+  cp -r "$skill" ".claude/skills/$(basename "$skill")/"
+done
+cp /tmp/skills-extract/skills-main/THIRD_PARTY_NOTICES.md .claude/skills/
+```
+
+## Authoring conventions (for new QuantRank skills)
 
 - **YAML frontmatter** — every `SKILL.md` starts with:
   ```yaml
@@ -95,57 +145,13 @@ intent + acceptance criteria so the implementation has a clear target.
   them next to the SKILL.md as `helper.py` / `helper.sh`. Reference
   them from the body with their relative path.
 
-## Adding a new skill
+## Adding a new QuantRank skill
 
 1. Pick the right directory (`<skill-name>/` for cross-phase, `phase-N/<skill-name>/` for phase-specific).
 2. Author `SKILL.md` with frontmatter + body.
 3. Add helper scripts if needed (next to SKILL.md).
-4. Update this README's table.
+4. Update this README's tables.
 5. Commit on a topic branch; open a PR if the skill is non-trivial.
-
-## Sister source: Anthropic skills marketplace
-
-The official Anthropic skills marketplace
-([`anthropics/skills`](https://github.com/anthropics/skills)) is
-pre-registered in `.claude/settings.json` at the repo root, with all
-17 marketplace skills listed in `enabledPlugins`. On a fresh clone,
-Claude Code will prompt to trust the marketplace and auto-install
-the listed plugins.
-
-The 17 marketplace skills:
-
-```
-claude-api          webapp-testing      mcp-builder
-docx                pdf                  xlsx
-pptx                skill-creator        web-artifacts-builder
-frontend-design     algorithmic-art      canvas-design
-brand-guidelines    theme-factory        slack-gif-creator
-doc-coauthoring     internal-comms
-```
-
-These complement (do not replace) the 43 QuantRank-specific skills
-above. The marketplace skills are general-purpose (Claude API
-helpers, web app testing, MCP server scaffolding, document
-generation, design utilities); the QuantRank skills here cover
-domain workflows (verify-production-output, defense-scorecard,
-schema-check, per-phase debuggers).
-
-**If a contributor's Claude Code doesn't auto-install on clone**,
-the manual incantation is:
-
-```
-/plugin marketplace add anthropics/skills
-/plugin install <name>@anthropics-skills    # per skill, no wildcard
-```
-
-Or use the `/plugin` UI's Discover tab to multi-select.
-
-**Settings.json scope**: `.claude/settings.json` is committed to the
-repo, so the marketplace registration + enabled-plugin list ships
-with the repo. Per-user overrides go in `.claude/settings.local.json`
-(gitignored).
-
-Docs: <https://code.claude.com/docs/en/discover-plugins.md>
 
 ## What this is NOT
 
@@ -153,7 +159,6 @@ Docs: <https://code.claude.com/docs/en/discover-plugins.md>
   `WORKFLOW.md`, `PHASE_STATUS.md`, `docs/METHODOLOGY.md`, and
   `docs/RESEARCH_FINDINGS.md` remain the canonical reference. Skills
   point AT those docs; they don't replace them.
-- **Not generic AI-agent skills** — for those, browse
-  [skills.sh](https://skills.sh) and install with
-  `npx skills add <owner/repo>`. The skills here are specific to
-  QuantRank's compute pipeline and only useful in this repo.
+- **Not a marketplace mirror** — the vendored skills are a frozen
+  snapshot, not a live mirror of `anthropics/skills`. For the latest
+  upstream content, see <https://github.com/anthropics/skills>.
