@@ -20,7 +20,15 @@ SCHEMA_VERSION: str = "0.6.0-phase3d"
 
 PRICES_PERIOD: str = "5y"
 MAX_PARALLEL_FETCHES: int = 10
-EDGAR_MAX_WORKERS: int = 5
+# Bumped from 5 to 8 (PR-3d quick wins). SEC EDGAR fair-access policy
+# documents a 10 req/s ceiling per IP. With ~5-10s per snapshot HTTP
+# call after the PR-3d tenacity tightening, 8 workers sustain ~1
+# req/s — comfortably under the 10/s ceiling, while ~60% more
+# throughput than the prior 5. Monitor
+# Metadata.fundamentals_latency_p95_seconds — a sustained p95 > 15s
+# on a healthy SEC run means we're triggering rate-limit responses
+# and should drop back to 5 or 6.
+EDGAR_MAX_WORKERS: int = 8
 UNIVERSE_CACHE_MAX_AGE_DAYS: int = 7
 PRICES_CACHE_MAX_AGE_HOURS: int = 24
 FUNDAMENTALS_REFETCH_DAYS: int = 45

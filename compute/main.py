@@ -495,6 +495,20 @@ def run_weekly_compute() -> int:
         format="%(asctime)s %(levelname)s %(name)s: %(message)s",
     )
 
+    # PR-3d quick wins: probe SEC EDGAR health BEFORE doing any other
+    # work. If SEC is degraded, abort the workflow in <1 minute rather
+    # than burn the full 90-min ceiling for ~0% coverage. The probe is
+    # a single cheap GET (~400 KB submissions endpoint). When healthy,
+    # adds ~1-2s; the operator can set QR_SKIP_SEC_HEALTH=1 to bypass.
+    # Raises RuntimeError on degraded SEC; we catch + exit non-zero so
+    # the GitHub Actions workflow surfaces a clear failure state.
+    from compute.ingest.sec_health import assert_sec_api_usable
+    try:
+        assert_sec_api_usable()
+    except RuntimeError:
+        # Already logged at error level by the helper; bail immediately.
+        return 0
+
     logger.info("Loading S&P 500 universe…")
     universe = get_sp500_constituents()
     logger.info("Universe size: %d", len(universe))

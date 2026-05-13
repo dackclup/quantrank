@@ -391,3 +391,44 @@ def test_E5_deferred_mode_dict_shape_unchanged(monkeypatch):
     assert d["auditor_change"] is False
     assert d["latest_8k_filing_date"] is None
     assert d["latest_8k_filing_url"] is None
+
+
+# ---------------------------------------------------------------------------
+# F. QR_SKIP_TIER2 operational kill-switch
+# ---------------------------------------------------------------------------
+
+def test_F1_qr_skip_tier2_bypasses_all_fetches(monkeypatch):
+    """When QR_SKIP_TIER2 is set, neither the 10-K fetch nor the 8-K
+    fetch is invoked. Returns an empty Tier2Result with
+    fetch_succeeded=False. Used by operators to cut ~10-15 min off a
+    cold-cache compute run when going-concern annotation is not needed."""
+    monkeypatch.setenv("QR_SKIP_TIER2", "1")
+
+    def boom_text(*a, **k):
+        raise AssertionError("10-K fetch must not run when QR_SKIP_TIER2 set")
+
+    def boom_eightk(*a, **k):
+        raise AssertionError("8-K fetch must not run when QR_SKIP_TIER2 set")
+
+    monkeypatch.setattr(tier2, "fetch_latest_10k_text", boom_text)
+    monkeypatch.setattr(tier2, "fetch_recent_8k_filings", boom_eightk)
+
+    result = fetch_tier2_for_ticker("TST", asof=ASOF)
+    assert result.going_concern_disclosure is False
+    assert result.non_reliance_flag.fired is False
+    assert result.auditor_change_flag.fired is False
+    assert result.fetch_succeeded is False
+
+
+def test_F2_qr_skip_tier2_unset_runs_normally(monkeypatch):
+    """Sanity: without the env var, the normal deferred-mode path runs
+    (10-K fetch happens, 8-K skipped per feature flag). Guards against
+    accidentally short-circuiting when the env var is empty/missing."""
+    monkeypatch.delenv("QR_SKIP_TIER2", raising=False)
+    monkeypatch.setattr(
+        tier2, "fetch_latest_10k_text",
+        lambda t: "We have substantial doubt about the Company's ability to continue as a going concern.",
+    )
+    result = fetch_tier2_for_ticker("TST", asof=ASOF)
+    assert result.going_concern_disclosure is True
+    assert result.fetch_succeeded is True
