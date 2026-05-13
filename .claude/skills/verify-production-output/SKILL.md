@@ -1,186 +1,139 @@
 ---
 name: verify-production-output
-description: Run a Section A-H production verification on the most recent compute
+description: Run a Section A-H verification on the most recent QuantRank compute
   output (frontend/public/data/metadata.json + stocks/*.json + rankings.json).
-  Use after every workflow_dispatch or scheduled compute run, before authorizing
-  PR Mark-Ready, tagging a release, or filing post-merge issues. Mirrors the
-  verification template established in PR-3c run #11 + PR-3d run #15.
+  Surfaces schema version + git_commit + universe_size, Tier-2 fired-flag
+  inventory (deferred-mode contract checks), fair-price coverage, data-quality
+  guard counts, Top-5 rotation invariants, risk-flag totals vs baseline,
+  Tier-2 dict-shape spot-check, fundamentals latency p50/p95/coverage, and
+  universe-size consistency. TRIGGER whenever a weekly compute run lands on
+  main, after any workflow_dispatch completes, before authorizing a PR from
+  Draft to Mark-Ready, before tagging a release version, or before filing
+  post-merge issues — invoke even when the user just says "verify the
+  output" / "looks good?" / "check the latest run" without naming a section.
+  ALSO use after any change to scoring, risk-overlay, or fair-price layers
+  to confirm no regression. SKIP if the user is asking about Python test
+  execution against live SEC EDGAR (use network-test-runner instead) or
+  about Pydantic↔TypeScript schema drift only (use schema-check instead).
 ---
 
 # verify-production-output
 
+A read-only scan of the most recent compute output. Produces an A-H report
+mirroring the verification template used in PR-3c run #11 and PR-3d run #15.
+
 ## When to use
 
-After a `workflow_dispatch` (or scheduled) compute run completes and
-the chore commit lands on the branch. Specifically before any of:
+Invoke whenever fresh JSON output from a compute run lands. The skill never
+edits any output — it only inspects and reports — so it is safe to run
+liberally during release gates.
 
-- Authorizing PR Mark-Ready (Draft → Ready for Review)
-- Tagging a release version (`v0.X.Y-phaseN`)
-- Filing post-merge follow-up issues
+Practical triggers:
 
-The skill is **read-only** — it never edits compute output. It just
-inspects and reports.
+- A weekly cron compute job auto-commits new JSON on main
+- A manual `workflow_dispatch` finishes and the chore commit auto-lands
+- A scoring / risk / fair-price PR is about to flip Draft → Ready
+- A release tag is about to be cut (`v0.X.Y-phaseN`)
+- The user is about to file post-merge follow-up issues and wants a final
+  health snapshot
 
-## What it does
+## What it produces
 
-Runs a Python scan against `frontend/public/data/` and emits an A-H
-report. Each section maps to a verification dimension that's been
-useful in practice:
+An A-H section report. Each section answers a specific health question:
 
-| Section | Question answered |
-|---|---|
-| A | Did the schema bump land? Coverage / latency healthy? |
-| B | Did Tier-2 fired-flag counts match expectations (deferred-mode contract still in force)? |
-| C | Fair-price coverage + data-quality sanity guard counts |
-| D | Top-5 composition — same as baseline? Effective vs raw rank breakdown |
-| E | Risk-flag totals — vetoes match prior-run baseline? |
-| F | Tier-2 events spot-check (5 random tickers, dict shape contract) |
-| G | Fundamentals resilience — histogram, p50/p95, slow tickers |
-| H | Universe size consistency (metadata vs rankings vs file count) |
+| Section | Question | Hard failure trigger |
+|---|---|---|
+| A | Schema bumped? Coverage / latency healthy? | schema version doesn't match in-flight phase |
+| B | Tier-2 fired-flag counts within expectations? | `non_reliance_filing` or `auditor_change` > 0 while feature flag is False |
+| C | Fair-price + data-quality coverage | fair-price coverage < 95% |
+| D | Top-5 composition (raw + effective + entered/exited) | rotation invariant violated |
+| E | Risk-flag totals vs baseline | unexpected delta beyond drift |
+| F | Tier-2 dict-shape spot-check (5 random tickers) | dict missing any of 5 required keys |
+| G | Fundamentals resilience (p50/p95/coverage) | coverage < 80% (ship anyway, file Phase 4 priority) |
+| H | Universe-size consistency across 3 files | mismatch beyond expected delisting delta |
 
-## Inputs
-
-Required:
-- `frontend/public/data/metadata.json`
-- `frontend/public/data/rankings.json`
-- `frontend/public/data/stocks/<TICKER>.json` × N
-
-Optional flags (if running the helper script):
-- `--baseline-commit=<sha>` — compare against an earlier run's metadata
-- `--top-n=5` — number of top-rank stocks to spotlight (default 5)
-- `--random-sample=5` — number of tickers for Section F dict-shape check
-- `--strict` — exit code 1 on any section anomaly (default: warn-only)
-
-## Helper script
-
-`helper.py` (next to this SKILL.md) — single-file Python scan, no deps
-beyond stdlib. Invoke from repo root:
+## Running
 
 ```bash
 python .claude/skills/verify-production-output/helper.py
 ```
 
-Or with explicit baseline:
+Optional flags:
 
 ```bash
+# Compare against a prior run's metadata
 python .claude/skills/verify-production-output/helper.py --baseline-commit=8a9d35f
+
+# Strict mode — exit 1 on any soft warning
+python .claude/skills/verify-production-output/helper.py --strict
+
+# Pick a different random seed for Section F (default: 42, reproducible)
+python .claude/skills/verify-production-output/helper.py --seed=7
 ```
 
-## Output sections
+The helper is pure stdlib + the repo's already-imported `json` / `glob` —
+no extra installs needed.
 
-### Section A — Schema + metadata
+## Reading the output
 
-Reports:
-- `version` (e.g., `0.6.0-phase3d`) — should match the in-flight phase
-- `git_commit` — hex prefix; should match the workflow run's commit
-- `universe_size` — typically 502 (S&P 500 minus 1 delisted)
-- `mos_trailing_ic_smoke` — informational (negative is normal in
-  certain regimes; not a backtest)
-- `tier2_coverage_pct` — target ≥ 95% in 10-K-only mode (Phase 3d
-  default), ≥ 99% when 8-K is re-enabled (Phase 4)
-- `fundamentals_coverage_pct` — target ≥ 95%; <80% indicates SEC
-  throttling, ship anyway but file Phase 4 priority
-- `fundamentals_latency_p50_seconds` — target <5s in healthy SEC,
-  10-15s in throttled
-- `fundamentals_latency_p95_seconds` — target <15s
+The report uses three severity markers so a glance tells you whether to
+proceed:
 
-### Section B — Tier-2 fired-flag inventory
+- `✓` healthy
+- `⚠` soft warning (ship but log)
+- `✗` hard failure (do not ship; investigate)
 
-For each of `going_concern_disclosure` / `non_reliance_filing` /
-`auditor_change`, report count + ticker list.
+### Hard contract checks (Section B + Section H)
 
-Hard contract checks (current Phase 3d):
-- `non_reliance_filing` MUST be 0 (deferred via `_EIGHT_K_DEFENSES_ENABLED=False`)
-- `auditor_change` MUST be 0 (same)
-- `going_concern_disclosure` typical range: 1-10% of universe
-  (Mayew 2015 expects 1-3% in healthy population; PR-3d run #15
-  observed 10.8% pending phrase-regex refinement in Phase 4)
+These must pass for the deferred-mode contract to hold and for the
+universe to be consistent:
 
-If B2 or B3 fire above 0 → HALT, feature flag broken.
+- **Section B**: `non_reliance_filing` count = 0, `auditor_change` count = 0
+  while `_EIGHT_K_DEFENSES_ENABLED = False` (current Phase 3d state).
+  If either fires non-zero the feature flag is broken — halt and
+  investigate `compute/scoring/tier2.py`.
+- **Section H**: `metadata.universe_size` == `len(rankings.json.stocks)`
+  == `len(glob frontend/public/data/stocks/*.json)`. Mismatch ≥ 2 means
+  a writer regression.
 
-### Section C — Coverage + sanity guard
+### Soft warnings (Section A, C, G)
 
-- Fair-price coverage: count of stock JSONs where `fair_price.median !== null`
-  (target: ≥95% of universe)
-- `data_quality_input_corruption` count + ticker list (typically 8 in
-  the S&P 500: AMCR/BKR/CHTR/ERIE/PSKY/RTX/SPG/VTRS — see Phase 3c
-  Step 7.5 for the $10K/share sanity ceiling)
-- Spot-check one corrupted ticker (e.g., BKR): all 6 methods
-  `applicable=false`, `fair_price.median=null`, `tier2_events` dict
-  populated with deferred-mode defaults
+These signal degraded quality but do not block release. They feed Phase 4
+priorities:
 
-### Section D — Top-5 composition
+- A: `fundamentals_latency_p95_seconds > 15s` → SEC API throttled
+- C: `fair_price` coverage 80-95% → some method outputs nulled out
+- G: `fundamentals_coverage_pct < 80%` → file Phase 4 SEC-resilience issue
 
-| Rank | Ticker | Sector | Composite | fair_price.median | warnings | risk_flags |
-|---|---|---|---|---|---|---|
+### Top-5 churn (Section D)
 
-Effective top-5 = top-5 by composite *after* veto suppression. Cards
-flagged by altman / sloan / NSI / non_reliance keep their composite
-rank but lose the `entered_top5` badge; the next-in-line cards earn
-the badge instead.
+The raw top-5 (by composite score) may differ from the effective top-5
+(after veto suppression). Both are reported. Comparison against the
+`--baseline-commit` reveals composition churn.
 
-Compare to baseline run's effective top-5. Document any churn.
+## Why this skill exists
 
-### Section E — Risk-flag totals
+QuantRank ships JSON output that the UI consumes directly. A buggy compute
+run that lands on main flows immediately into production UI within minutes
+of the chore-commit push. The cost of catching anomalies pre-release is
+near-zero (this scan runs in under 2 seconds); the cost of shipping a
+ranking with SPG at $1.62M market cap (PR-3d run #15 finding, issue #18)
+is real reputational damage to the rankings layer. This skill is the
+safety net.
 
-| Flag | Count |
-|---|---|
-| altman_distress | (typically 54 in S&P 500) |
-| sloan_accruals_top_decile | (typically 50) |
-| net_issuance_top_decile | (typically 37) |
-| non_reliance_filing | (currently 0 — deferred) |
+## What this skill does not do
 
-Exact parity with prior run = scoring layer didn't regress.
+- It does not run pytest, ruff, or any other code-quality tool. Use
+  `network-test-runner` for live SEC EDGAR tests.
+- It does not regenerate the schema snapshot. Use `schema-check`.
+- It does not tally the defense layer in isolation. Use
+  `defense-scorecard` for a focused vetoes / guards / annotates report.
+- It does not modify any output JSON, ever.
 
-### Section F — Tier-2 events spot-check
+## Related skills
 
-For 5 random tickers, verify `tier2_events` dict has all 5 expected
-keys (`going_concern_disclosure`, `non_reliance_filing`,
-`auditor_change`, `latest_8k_filing_date`, `latest_8k_filing_url`)
-with deferred-mode defaults (last 4 should be `false`/`null`).
-
-### Section G — Fundamentals resilience
-
-From metadata: report p50, p95, coverage_pct.
-From workflow logs (if accessible): histogram bucket distribution,
-top-20 slow tickers.
-
-Coverage interpretation:
-- ≥95%: SEC API healthy
-- 80-95%: throttled but graceful degrade working
-- <80%: heavily throttled (concerning but ship anyway, file Phase 4
-  priority on `issue_fundamentals_resilience_phase4.md`)
-
-### Section H — Universe size
-
-Three numbers must match (or differ by 1 due to delisting):
-- `metadata.universe_size`
-- `len(rankings.json.stocks)` (or array length)
-- `len(glob frontend/public/data/stocks/*.json)`
-
-If Wikipedia returned N constituents but we wrote N-1 stock files,
-the delta should equal `len(yfinance_failures)` — typically 0 or 1.
-
-## Exit codes
-
-- 0: all sections healthy (or only soft warnings under non-strict mode)
-- 1: hard criteria failure (in `--strict` mode):
-  - feature flag broken (B2/B3 > 0 in Phase 3d)
-  - coverage <80% in any layer
-  - schema version mismatch with branch
-- 2: soft warning (e.g., going-concern FP rate >5%) — caller logs + continues
-
-## Anti-patterns (do not do)
-
-- Don't modify any output JSON during verification.
-- Don't trigger workflow_dispatch from this skill — verification reads
-  what already exists.
-- Don't compare against an arbitrary git ref unless the user explicitly
-  passes `--baseline-commit=`. Default behavior is single-run inspection.
-
-## Related
-
-- `schema-check` — for the schema-side contract (Pydantic ↔ TypeScript)
-- `defense-scorecard` — focused dive on the veto/guard/annotate layer
-- `top5-rotation-audit` — focused dive on entered/exited semantics
-- `fundamentals-coverage-report` (phase-3d) — Section G deep-dive
+- `schema-check` — Pydantic ↔ TypeScript drift gate
+- `defense-scorecard` — vetoes / guards / annotates tally
+- `top5-rotation-audit` — deep dive on entered_top5 / exited_top5 invariants
+- `pr-iteration-flow` — codifies the broader Draft↔Ready review pattern
+  this skill plugs into
