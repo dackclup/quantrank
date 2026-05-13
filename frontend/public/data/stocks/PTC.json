@@ -3,19 +3,19 @@
   "name": "PTC Inc.",
   "sector": "Information Technology",
   "industry": "Application Software",
-  "market_cap": 16213609803.955078,
-  "current_price": 140.38,
+  "market_cap": 16229779453.460693,
+  "current_price": 140.52,
   "rank": 48,
-  "composite_score": 62.49,
+  "composite_score": 62.64,
   "pillar_scores": {
     "quality": 64.73,
-    "value": 78.77,
+    "value": 79.0,
     "growth": 79.45,
-    "momentum": 10.61,
+    "momentum": 10.86,
     "health": 71.16,
     "profitability": 67.81,
-    "technical": 61.16,
-    "risk": 34.73,
+    "technical": 62.25,
+    "risk": 34.96,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 6.38,
     "eps_diluted": 6.35,
     "shares_outstanding": 115498000.0,
-    "market_cap": 16213609803.955078,
-    "pe_ratio_ttm": 22.10708738312008,
+    "market_cap": 16229779453.460693,
+    "pe_ratio_ttm": 22.129134531096213,
     "goodwill": 3403009000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 700.6178434034861,
+        "value": 703.0502474778465,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 232.74963775966026,
+        "value": 232.16690474066303,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 354.7119511925441,
+        "value": 355.0783542536424,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,12 +75,14 @@
         "tier_used": null
       }
     },
-    "median": 293.7307944761022,
-    "max": 700.6178434034861,
+    "median": 293.62262949715273,
+    "max": 355.0783542536424,
     "low": 59.135346806192,
-    "high": 700.6178434034861,
-    "mos_pct": 52.20793749828169,
-    "valuation_warnings": []
+    "high": 703.0502474778465,
+    "mos_pct": 52.142651772749836,
+    "valuation_warnings": [
+      "extreme_multiples_pe_estimate"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -97,7 +99,9 @@
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "extreme_multiples_pe_estimate"
+  ],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -111,13 +115,13 @@
     "label": "Information Technology median (n=73)",
     "values": {
       "Quality": 51.71,
-      "Value": 50.46,
+      "Value": 50.23,
       "Growth": 52.74,
-      "Momentum": 44.32,
+      "Momentum": 45.97,
       "Health": 66.93,
       "Profitability": 53.2,
-      "Technical": 64.14,
-      "Risk": 45.48
+      "Technical": 64.54,
+      "Risk": 46.55
     }
   },
   "entered_top5": false,

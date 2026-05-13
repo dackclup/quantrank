@@ -3,19 +3,19 @@
   "name": "Broadridge Financial Solutions",
   "sector": "Industrials",
   "industry": "Data Processing & Outsourced Services",
-  "market_cap": 16902612576.293945,
-  "current_price": 146.09,
-  "rank": 57,
-  "composite_score": 61.67,
+  "market_cap": 16535843788.146973,
+  "current_price": 142.92,
+  "rank": 59,
+  "composite_score": 61.59,
   "pillar_scores": {
     "quality": 76.27,
-    "value": 83.33,
+    "value": 83.54,
     "growth": 76.9,
     "momentum": 10.06,
     "health": 34.5,
     "profitability": 71.1,
-    "technical": 35.26,
-    "risk": 37.8,
+    "technical": 33.22,
+    "risk": 37.1,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 6.22,
     "eps_diluted": 6.18,
     "shares_outstanding": 115700000.0,
-    "market_cap": 16902612576.293945,
-    "pe_ratio_ttm": 23.63915798347745,
+    "market_cap": 16535843788.146973,
+    "pe_ratio_ttm": 23.126213295945846,
     "goodwill": 3735200000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 729.62947044052,
+        "value": 727.5521912133994,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 170.8050967583861,
+        "value": 170.41681344973273,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 401.44231223441733,
+        "value": 402.0277060740081,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,12 +75,14 @@
         "tier_used": null
       }
     },
-    "median": 286.12370449640173,
-    "max": 729.62947044052,
+    "median": 286.2222597618704,
+    "max": 402.0277060740081,
     "low": 58.12065419617398,
-    "high": 729.62947044052,
-    "mos_pct": 48.941666124790494,
-    "valuation_warnings": []
+    "high": 727.5521912133994,
+    "mos_pct": 50.066777375089174,
+    "valuation_warnings": [
+      "extreme_multiples_pe_estimate"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -96,7 +98,9 @@
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "extreme_multiples_pe_estimate"
+  ],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -110,13 +114,13 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 49.05,
-      "Value": 50.42,
+      "Value": 50.63,
       "Growth": 49.05,
-      "Momentum": 58.17,
+      "Momentum": 57.72,
       "Health": 47.85,
       "Profitability": 53.16,
-      "Technical": 51.15,
-      "Risk": 55.11
+      "Technical": 51.29,
+      "Risk": 55.68
     }
   },
   "entered_top5": false,
