@@ -445,6 +445,10 @@ _TTM_REVENUE_TAGS: list[str] = [
     # sector-specific concept. `us-gaap:Revenues` is often frozen at
     # pre-2018 quarters for these filers.
     "us-gaap:RegulatedAndUnregulatedOperatingRevenue",
+    # Investment banks + diversified banks (GS, WFC, MS, ...) report
+    # consolidated revenue net of interest expense under this concept.
+    # Without it, pure banks ship with revenue=None.
+    "us-gaap:RevenuesNetOfInterestExpense",
     "us-gaap:SalesRevenueNet",
 ]
 _TTM_NET_INCOME_TAGS: list[str] = [
