@@ -158,6 +158,25 @@ def test_annual_tags_have_legacy_fallback_coverage():
     assert "us-gaap:Depreciation" in _ANNUAL_TAGS["depreciation_and_amortization"]
 
 
+def test_shares_outstanding_fallback_chain_covers_dei_and_weighted_avg():
+    """Regression guard for audit #6: shares_outstanding chain must include
+    DEI cover-page + weighted-average diluted fallbacks. Without these,
+    26 of 502 S&P 500 tickers (META rank #12, ACN, MA, BRK-B, ABNB,
+    CMCSA, DASH, LEN, ...) shipped with shares=None and consequently
+    market_cap=None / PE=NaN / PB=NaN, breaking the entire value pillar
+    for those names.
+    """
+    from compute.ingest.fundamentals import _BALANCE_TAGS
+
+    chain = _BALANCE_TAGS["shares_outstanding"]
+    # DEI cover-page tag — current for WMT post-split, META, ACN.
+    assert "dei:EntityCommonStockSharesOutstanding" in chain
+    # Weighted-average diluted — used by META, multi-class filers.
+    assert "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding" in chain
+    # Legacy us-gaap tags retained for backward compatibility.
+    assert "us-gaap:CommonStockSharesOutstanding" in chain
+
+
 def test_ttm_flow_tags_replace_normalized_latest_for_income_statement():
     """Regression guard for audit #6 (deep clean, pre-v1.0): income-
     statement flow items must be fetched via `_TTM_FLOW_TAGS` (TTM-aware)

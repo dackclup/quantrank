@@ -57,8 +57,23 @@ _BALANCE_TAGS: dict[str, list[str]] = {
         "us-gaap:Cash",
     ],
     "shares_outstanding": [
+        # DEI cover-page tag — most current for many filers (e.g., WMT,
+        # ACN, MA). Audit #6 found WMT's `us-gaap:CommonStockSharesOutstanding`
+        # held a stale pre-split value (3.42B vs ~8B post-Feb-2024 split).
+        # DEI cover-page facts are filed every quarter with as-of date
+        # close to the filing date, so they reflect splits / buybacks
+        # faster than the balance-sheet concept.
+        "dei:EntityCommonStockSharesOutstanding",
         "us-gaap:CommonStockSharesOutstanding",
         "us-gaap:CommonStockSharesIssued",
+        # META, BRK-B and ~25 other S&P 500 filers don't tag
+        # CommonStockSharesOutstanding at all — falls back to the
+        # weighted-average diluted figure used in their EPS denominator.
+        # This is a slight under-count vs point-in-time outstanding
+        # (the diluted average lags buybacks / issuance within a quarter),
+        # but it's far better than the None we shipped pre-audit-#6.
+        "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding",
+        "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
     ],
     "current_assets": ["us-gaap:AssetsCurrent"],
     "current_liabilities": ["us-gaap:LiabilitiesCurrent"],
@@ -348,6 +363,43 @@ def _try_balance_tags(facts, tags: list[str]) -> tuple[float | None, date | None
     return None, None, None
 
 
+def _try_balance_tags_most_recent(
+    facts, tags: list[str]
+) -> tuple[float | None, date | None, date | None]:
+    """Like ``_try_balance_tags`` but picks the candidate concept with the
+    most recent ``period_end`` across the entire chain.
+
+    Workaround for stale DEI cover-page facts (audit #6): the ``dei:Entity
+    CommonStockSharesOutstanding`` tag holds the most-recent value for
+    most filers (WMT post-split, META, ACN) BUT is frozen at 2010-2011
+    for some legacy filers (MA shows 122M from 2010-10-27 vs the correct
+    893M from 2026-03-31 via WeightedAverageDiluted; BRK-B shows 941k
+    from 2011 vs the correct ~2.16B). First-non-null chain ordering
+    can't distinguish "current DEI" from "stale DEI" — has to pick by
+    date instead.
+
+    Use this for any balance concept where multiple alternative tags
+    have different reporting cadences (shares_outstanding is the
+    canonical case).
+    """
+    candidates: list[tuple[float, date, date | None]] = []
+    for tag in tags:
+        f = facts.get_fact(tag)
+        if f is None or f.value is None or f.period_end is None:
+            continue
+        try:
+            v = float(f.value)
+        except (TypeError, ValueError):
+            continue
+        if v <= 0:
+            continue
+        candidates.append((v, f.period_end, f.filing_date))
+    if not candidates:
+        return None, None, None
+    best = max(candidates, key=lambda c: c[1])
+    return best
+
+
 def _try_ttm_tags(facts, tags: list[str]) -> tuple[float | None, date | None]:
     """Return (TTM value, max filing_date across the 4 quarters)."""
     for tag in tags:
@@ -503,7 +555,16 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
     # Latest balance sheet items
     balance_values: dict[str, float | None] = {}
     for key, tags in _BALANCE_TAGS.items():
-        v, pe, fd = _try_balance_tags(facts, tags)
+        # shares_outstanding uses MAX-of-most-recent across alternative
+        # concepts because the DEI tag is frozen at 2010-2011 for some
+        # legacy filers (MA, BRK-B) while being current for others (WMT,
+        # META, ACN). First-non-null chaining can't tell them apart;
+        # most-recent-period selection picks the right one universally.
+        # See `_try_balance_tags_most_recent` docstring for audit #6 detail.
+        if key == "shares_outstanding":
+            v, pe, fd = _try_balance_tags_most_recent(facts, tags)
+        else:
+            v, pe, fd = _try_balance_tags(facts, tags)
         balance_values[key] = v
         snapshot_dates.append(fd)
         if pe is not None:
