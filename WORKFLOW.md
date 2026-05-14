@@ -648,6 +648,16 @@ These are planning stubs at `.claude/skills/phase-4/<name>/PLAN.md`:
   concern with explicit non-probability framing. ~180 LOC effort.
   Independent of badge/chart — can ship in any order. See
   [`loss-chance/PLAN.md`](.claude/skills/phase-4/loss-chance/PLAN.md).
+- **exchange-pill** — adds an exchange-of-listing pill
+  (`NASDAQ` / `NYSE` / `NYSE Arca` / `NYSE American` / `Cboe`)
+  immediately before the existing Sector pill on both overview and
+  detail pages, plus an exchange filter chip in the filter bar.
+  Data source: SEC EDGAR submissions JSON `.exchanges[0]` (primary) +
+  yfinance `.info["exchange"]` (fallback) — both already in the cache
+  surface, no new dependencies. Schema additive
+  (`StockSummary.exchange` + `StockDetail.exchange`). ~290 LOC, ~1.5 days.
+  Independent of the UX trio. See
+  [`exchange-pill/PLAN.md`](.claude/skills/phase-4/exchange-pill/PLAN.md).
 
 ### Foundational PLANs added 2026-05-14 (P1 audit backfill)
 
