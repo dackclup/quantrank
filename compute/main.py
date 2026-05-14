@@ -442,31 +442,73 @@ def _eps_3y_avg(hist: pd.DataFrame | None) -> float | None:
 def _avg_3y_roe(
     hist: pd.DataFrame | None, snap: FundamentalsSnapshot | None
 ) -> float | None:
-    """Avg 3y ROE = (mean of last 3y NI) / current stockholders_equity.
+    """Avg 3y ROE = mean over last 3 years of (NI_t / Equity_t).
 
-    True per-year ROE would need historical equity (not in
-    ``_ANNUAL_TAGS``). Phase 4 follow-up: backfill historical equity
-    for true ROE; for now we use current-equity denominator across all
-    3 years, which gives a smoothed-NI / latest-equity ratio. Bias is
-    bounded by the Step 4.4 RIM gate (only ROE > Ke matters for the
-    method to apply).
+    PR 4c (issue #11): previously this function used the **current**
+    snapshot's equity as denominator for all 3 years' net income —
+    "smoothed-NI / latest-equity". For a firm whose equity grew 30%
+    over 3 years (typical growers + dividend-paying staples), this
+    biased ROE **downward** by ~15%, which over-fired
+    ``value_trap_risk_roe_below_cost_of_equity`` on 44% of the S&P 500
+    universe.
+
+    The fix: require ``stockholders_equity`` to be present in the
+    annual history alongside ``net_income``, and average per-year ROE
+    (= per-year NI / per-year equity) across the 3 most recent
+    fiscal years.
+
+    Fallback: if the annual history lacks 3 years of equity (older
+    filers, recent IPOs), we fall back to the prior behavior — mean
+    NI / current equity — so the RIM applicability gate still has an
+    input. The fallback path is logged at debug level so the count
+    can be tracked across runs.
     """
     if hist is None or len(hist) == 0 or "metric" not in hist.columns:
         return None
     if snap is None or snap.stockholders_equity in (None, 0):
         return None
-    if float(snap.stockholders_equity) <= 0:
+    current_equity = float(snap.stockholders_equity)
+    if current_equity <= 0:
         return None
-    rows = hist[hist["metric"] == "net_income"].sort_values(
+
+    ni_rows = hist[hist["metric"] == "net_income"].sort_values(
         "fiscal_year", ascending=False
     )
-    if len(rows) < 3:
+    if len(ni_rows) < 3:
         return None
-    values = rows["value"].head(3).astype(float).tolist()
-    if any(v is None or (isinstance(v, float) and math.isnan(v)) for v in values):
+    ni_top3 = ni_rows.head(3)
+    ni_values = ni_top3["value"].astype(float).tolist()
+    if any(v is None or (isinstance(v, float) and math.isnan(v)) for v in ni_values):
         return None
-    avg_ni = float(sum(values) / 3.0)
-    return avg_ni / float(snap.stockholders_equity)
+
+    # Per-year ROE path (PR 4c primary).
+    eq_rows = hist[hist["metric"] == "stockholders_equity"].sort_values(
+        "fiscal_year", ascending=False
+    )
+    if not eq_rows.empty:
+        # Match equity to net_income by fiscal_year (handles 10-K/calendar
+        # mismatches where one history has an extra year vs the other).
+        eq_by_year = eq_rows.set_index("fiscal_year")["value"]
+        per_year_roe: list[float] = []
+        for _, ni_row in ni_top3.iterrows():
+            fy = ni_row["fiscal_year"]
+            eq = eq_by_year.get(fy)
+            try:
+                eq_f = float(eq) if eq is not None else None
+            except (TypeError, ValueError):
+                eq_f = None
+            if eq_f is None or math.isnan(eq_f) or eq_f <= 0:
+                per_year_roe = []
+                break
+            per_year_roe.append(float(ni_row["value"]) / eq_f)
+        if len(per_year_roe) == 3:
+            return float(sum(per_year_roe) / 3.0)
+
+    # Fallback: legacy single-period-equity denominator. Triggers when
+    # the annual history is missing equity for one of the 3 fiscal
+    # years (recent IPOs, off-cycle filers, audit #6 residual gaps).
+    avg_ni = float(sum(ni_values) / 3.0)
+    return avg_ni / current_equity
 
 
 def _fcf_5y(hist: pd.DataFrame | None) -> list[float | None]:
