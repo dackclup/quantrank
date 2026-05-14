@@ -150,13 +150,17 @@ export default function FairPriceCard({
         </table>
       </div>
 
-      {/* Warnings */}
+      {/* Warnings — flex-wrap with gap-2 so adjacent chips have visible
+          breathing room (user feedback 2026-05-14: pills were touching
+          when multiple fired on the same stock). Outlined-light chip
+          pattern matches SectorChip / RecommendationBadge — see
+          `.claude/skills/frontend-design-system/SKILL.md` Rule 2. */}
       {warnings.length > 0 && (
-        <ul className="mt-3 space-y-1 text-xs">
+        <ul className="mt-3 flex flex-wrap gap-2 text-xs">
           {warnings.map((w) => (
             <li
               key={w}
-              className="inline-block rounded bg-amber-50 px-2 py-0.5 text-amber-800 ring-1 ring-inset ring-amber-200"
+              className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-amber-800 ring-1 ring-inset ring-amber-200"
             >
               {w.replace(/_/g, ' ')}
             </li>
