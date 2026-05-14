@@ -33,22 +33,36 @@ jobs:
         id: quarter
         run: echo "q=$(date -u +%Y)Q$(( ($(date -u +%-m)-1)/3 + 1 ))" >> $GITHUB_OUTPUT
 
-      - name: Restore fundamentals cache
+      - name: Restore compute caches (PR 4a — multi-path)
         uses: actions/cache@v5
         with:
-          path: compute/cache/fundamentals
-          # Cache version bumped to v2 after audit #6 deep-clean fixes the
-          # ingest schema (TTM flow items, smart shares fallback, expanded
-          # revenue / NI chains). Pre-v2 cached parquets hold wrong values
-          # for AVB / NVDA / META / GS / WFC / BKNG / DUK etc. — the 45-day
-          # `_is_fresh` check passes against the old (corrupted) filing
-          # date, so without a key bump the workflow keeps reusing them.
-          # Bump this when `_BALANCE_TAGS` / `_TTM_REVENUE_TAGS` /
-          # `_TTM_NET_INCOME_TAGS` / `_TTM_FLOW_TAGS` change schema.
-          key: fundamentals-v2-${{ steps.quarter.outputs.q }}-${{ runner.os }}
+          # PR 4a (workflow-cache-improvements/PLAN.md): six cache layers
+          # exist in code (fundamentals, fundamentals_history, prices,
+          # universe, edgar_8k, edgar_10k_text) but only `fundamentals`
+          # was restored across CI runs. Each missing path forced a cold
+          # re-fetch every weekly run — 10-K text alone hit ~5-15 min for
+          # going-concern + ~2-3 min for yfinance OHLCV prices. With all
+          # six restored, steady-state weekly compute drops from ~25-30
+          # min to ~10-15 min.
+          #
+          # Cache key bumped to `cache-v3` to atomically rotate ALL six
+          # paths together. Pre-v3 keys (fundamentals-v2-*) only held one
+          # path; partial restore-key matches could resurrect a stale
+          # partial state. Bump to v4 if any cache directory's *schema*
+          # changes (parquet column rename, JSON shape change, etc.).
+          # Value drift is covered by per-cache `_is_fresh()` checks in
+          # compute/ingest/*.py — those run regardless of key.
+          path: |
+            compute/cache/fundamentals
+            compute/cache/fundamentals_history
+            compute/cache/prices
+            compute/cache/universe.parquet
+            compute/cache/edgar_8k
+            compute/cache/edgar_10k_text
+          key: cache-v3-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
-            fundamentals-v2-${{ steps.quarter.outputs.q }}-
-            fundamentals-v2-
+            cache-v3-${{ steps.quarter.outputs.q }}-
+            cache-v3-
 
       - name: Run weekly compute
         run: python -m compute.main
