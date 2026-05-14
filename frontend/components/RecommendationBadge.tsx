@@ -2,10 +2,12 @@
 
 import type { Recommendation } from '@/lib/types';
 
-// 4-tier recommendation badge. Soft-palette tones — matches the
-// QuantRank design language (no pure-saturated reds/greens) and adds
-// dark-mode variants per the existing Tailwind dark: prefix pattern
-// used in SectorChip / MoSCell.
+// 4-tier recommendation badge. Outlined-light tone family matching
+// SectorChip / score-tier / MoS-bucket chips — one consistent visual
+// language across all chip surfaces. See `.claude/skills/frontend-
+// design-system/SKILL.md` Rule 2 (a 2026-05-14 user feedback iteration
+// retired the "two patterns" approach in favor of one outlined-light
+// pattern for every chip/badge surface).
 //
 // Hybrid terminology (locked 2026-05-14 after user review of PR 4d):
 //   - Internal IDs (`bullish` / `lean_bullish` / `neutral` / `cautious`)
@@ -20,15 +22,34 @@ import type { Recommendation } from '@/lib/types';
 // `phase-4-kickoff-checklist/PLAN.md` §1 + `recommendation-badge/
 // PLAN.md` for the full decision trail.
 
+// Tones match `SectorChip` / score-tier / MoS-bucket pattern: light-mode
+// only (NO `dark:` variants). `globals.css` sets `color-scheme: light`
+// to force the entire site to render in light mode, but Tailwind's
+// `dark:` variants are gated on `prefers-color-scheme: dark` at the
+// SYSTEM level, not the page's color-scheme. Users with system dark
+// mode would otherwise see `dark:text-{tone}-50` (very light text) on
+// the still-light `bg-{tone}-50` background — invisible label.
+// Lesson learned 2026-05-14 (PR #70 second iteration): adopting the
+// existing chip pattern means matching its absence of dark: variants.
+//
+// Strong-end (bullish + cautious) uses `text-{tone}-900` for max
+// contrast vs `bg-{tone}-50` (~10:1, well above WCAG AA 4.5:1).
+// Middle tones (lean_bullish + neutral) use `text-{tone}-700` so the
+// 4-tier ramp still has visual hierarchy via text shade.
 const TONES: Record<Recommendation, string> = {
-  bullish:
-    'bg-emerald-700 text-white ring-emerald-800 dark:bg-emerald-400 dark:text-emerald-950 dark:ring-emerald-300',
-  lean_bullish:
-    'bg-emerald-200 text-emerald-900 ring-emerald-300 dark:bg-emerald-900 dark:text-emerald-100 dark:ring-emerald-700',
-  neutral:
-    'bg-slate-200 text-slate-700 ring-slate-300 dark:bg-slate-700 dark:text-slate-200 dark:ring-slate-600',
-  cautious:
-    'bg-red-600 text-white ring-red-700 dark:bg-red-400 dark:text-red-950 dark:ring-red-300',
+  bullish: 'bg-emerald-50 text-emerald-900 ring-emerald-300',
+  lean_bullish: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
+  neutral: 'bg-slate-100 text-slate-700 ring-slate-300',
+  cautious: 'bg-red-50 text-red-900 ring-red-300',
+};
+
+// Small colored-dot indicator paired with the chip — same shape as
+// SectorChip / score-tier / MoS-bucket chips.
+const DOTS: Record<Recommendation, string> = {
+  bullish: 'bg-emerald-700',
+  lean_bullish: 'bg-emerald-500',
+  neutral: 'bg-slate-500',
+  cautious: 'bg-red-600',
 };
 
 const LABELS: Record<Recommendation, string> = {
@@ -70,14 +91,18 @@ export function RecommendationBadge({
   // computes land, the null path is unreachable in production.
   if (!recommendation) return null;
   const tone = TONES[recommendation];
+  const dotCls = DOTS[recommendation];
   const sizeCls = SIZE_CLASSES[size];
   const label = short ? SHORT_LABELS[recommendation] : LABELS[recommendation];
+  // The `gap-1.5` + dot shape mirrors SectorChip / score-tier chips
+  // so a row of "Materials [dot] · Buy [dot]" reads as one family.
   return (
     <span
-      className={`inline-flex items-center rounded-full font-medium ring-1 ring-inset ${tone} ${sizeCls} ${className}`}
+      className={`inline-flex items-center gap-1.5 rounded-full font-medium ring-1 ring-inset ${tone} ${sizeCls} ${className}`}
       title={LABELS[recommendation]}
       aria-label={`Recommendation: ${LABELS[recommendation]}`}
     >
+      <span className={`inline-block h-1.5 w-1.5 rounded-full ${dotCls}`} aria-hidden="true" />
       {label}
     </span>
   );
@@ -91,22 +116,9 @@ export const RECOMMENDATION_VALUES: Recommendation[] = [
   'cautious',
 ];
 
-// "Active filter chip" tone classes — used by the toolbar chip bar in
-// RankingTable.tsx. Outlined-light pattern matching SectorChip /
-// score-tier / MoS-bucket active chips (bg-50 + text-700 + ring-200/300)
-// so a row of active filters reads as one consistent visual family.
-// This is distinct from `TONES` above, which is the bold inline-badge
-// styling used next to the ticker symbol.
-export const RECOMMENDATION_CHIP_TONES: Record<Recommendation, string> = {
-  bullish: 'bg-emerald-50 text-emerald-800 ring-emerald-300',
-  lean_bullish: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
-  neutral: 'bg-slate-100 text-slate-700 ring-slate-300',
-  cautious: 'bg-red-50 text-red-800 ring-red-300',
-};
-
-export const RECOMMENDATION_CHIP_DOTS: Record<Recommendation, string> = {
-  bullish: 'bg-emerald-700',
-  lean_bullish: 'bg-emerald-400',
-  neutral: 'bg-slate-500',
-  cautious: 'bg-red-600',
-};
+// Re-exports for callers that build their own chip surfaces (e.g.,
+// RankingTable's active-filter chip bar) and want to reuse the same
+// tones the badge uses inline. One tone family per recommendation —
+// see Rule 2 in `.claude/skills/frontend-design-system/SKILL.md`.
+export const RECOMMENDATION_CHIP_TONES = TONES;
+export const RECOMMENDATION_CHIP_DOTS = DOTS;

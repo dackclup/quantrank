@@ -37,71 +37,99 @@ Always use the soft equivalents:
 - Info / link: `indigo-{500,700}`
 - Warning: `amber-{300,500}`
 
-## Rule 2 — Two badge / chip patterns, never mix
+## Rule 2 — One chip pattern: outlined-light everywhere
 
-QuantRank has **two distinct chip surfaces**. Choose the right one based on
-context.
+QuantRank uses **a single chip / badge surface pattern** for every metadata
+indicator: SectorChip, ScoreBadge tier, MoSCell bucket, RecommendationBadge,
+active-filter chips, and any future exchange-pill or loss-chance pill.
 
-### Pattern A — Solid inline badge (bold)
+History (2026-05-14): An earlier iteration of this skill defined two
+patterns (solid inline badge vs outlined chip). User feedback found the
+mix visually noisy — the recommendation badge stood out from the
+neighboring sector pill in a way that made the row feel inconsistent.
+Resolution: collapse to **one pattern** with optional saturation gradient
+for hierarchy.
 
-Used **next to the ticker symbol** on data rows and detail-page headers.
-High-contrast on white card surface; carries semantic weight.
+### Canonical chip pattern
 
 ```tsx
-// Bullish badge inline next to NVDA ticker
-<span className="inline-flex items-center rounded-full bg-emerald-700 text-white
-                 ring-1 ring-inset ring-emerald-800 px-2 py-0.5 text-xs font-medium
-                 dark:bg-emerald-400 dark:text-emerald-950 dark:ring-emerald-300">
+// Outlined-light chip — same shape across sector / recommendation /
+// score-tier / MoS-bucket / future exchange / loss-chance.
+<span className="inline-flex items-center gap-1.5 rounded-full
+                 ring-1 ring-inset px-2 py-0.5 text-xs font-medium
+                 bg-emerald-50 text-emerald-800 ring-emerald-300
+                 dark:bg-emerald-900 dark:text-emerald-100 dark:ring-emerald-700">
+  <span className="inline-block h-1.5 w-1.5 rounded-full
+                   bg-emerald-700 dark:bg-emerald-300" aria-hidden="true" />
   Strong Buy
 </span>
 ```
 
-Tone palette for Pattern A:
-- **Positive strong**: `bg-emerald-700 text-white ring-emerald-800`
-- **Positive light**: `bg-emerald-200 text-emerald-900 ring-emerald-300`
-- **Neutral**: `bg-slate-200 text-slate-700 ring-slate-300`
-- **Negative**: `bg-red-600 text-white ring-red-700`
+Tone palette (light-mode only — see Rule 4):
 
-Each pair has a `dark:` variant — see `RecommendationBadge.tsx::TONES`.
+| Tier | Background | Text | Ring | Dot |
+|---|---|---|---|---|
+| Positive strong | `bg-emerald-50` | `text-emerald-900` | `ring-emerald-300` | `bg-emerald-700` |
+| Positive light | `bg-emerald-50` | `text-emerald-700` | `ring-emerald-200` | `bg-emerald-500` |
+| Neutral | `bg-slate-100` | `text-slate-700` | `ring-slate-300` | `bg-slate-500` |
+| Negative | `bg-red-50` | `text-red-900` | `ring-red-300` | `bg-red-600` |
+| Info (sector blue/purple/etc.) | `bg-{tone}-50` | `text-{tone}-700` | `ring-{tone}-200` | `bg-{tone}-500` |
 
-### Pattern B — Outlined-light chip (subtle)
+**Strong-end text uses -900** (positive strong + negative) so high-stakes
+labels like "Strong Buy" / "Sell" stay readable against `bg-50` even on
+low-contrast displays. WCAG AA target ≥ 4.5:1; text-900 on bg-50 gives
+~10:1.
 
-Used in **active-filter chip bars** (the row of removable filters below the
-toolbar) and in **filter drawer chip groups**. Reads as one consistent family
-across sector / score-tier / MoS / recommendation filters.
+**Why no `dark:` variants**: Rule 4 above. Tailwind's `dark:` triggers on
+system `prefers-color-scheme: dark`, not the page's `color-scheme: light`
+declaration. Mixing them = invisible-label bug on every user with system
+dark mode. Add `dark:` only when the site ships an explicit dark-mode
+toggle (not on the current roadmap).
 
-```tsx
-// Active filter chip — recommendation "Strong Buy" in the toolbar row
-<button className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5
-                   text-xs ring-1 ring-inset hover:opacity-75
-                   bg-emerald-50 text-emerald-800 ring-emerald-300">
-  <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-700" />
-  Strong Buy
-  <span aria-hidden="true" className="opacity-60">×</span>
-</button>
-```
+### Visual hierarchy via dot color (not by switching patterns)
 
-Tone palette for Pattern B (these are the canonical "active chip" tones —
-copy them, don't invent):
-- **Positive strong**: `bg-emerald-50 text-emerald-800 ring-emerald-300`
-- **Positive light**: `bg-emerald-50 text-emerald-700 ring-emerald-200`
-- **Neutral**: `bg-slate-100 text-slate-700 ring-slate-300`
-- **Negative**: `bg-red-50 text-red-800 ring-red-300`
+When you need a chip to stand out within a row of chips (e.g.,
+recommendation chip should feel "more important" than sector chip):
 
-⚠️ **Anti-pattern (PR #68 mistake — don't repeat)**: embedding a Pattern A
-badge inside a Pattern B chip slot. The mismatch is jarring against
-neighboring Pattern B chips.
+- Use a **darker dot** (`emerald-700` vs `emerald-500`)
+- Use the **strong text** variant (`text-emerald-800` vs `text-emerald-700`)
+- Keep the same `bg-50` background — never switch to `bg-700` solid
 
-### When to use which
+This preserves visual consistency while still ranking importance subtly.
 
-| Context | Pattern |
-|---|---|
-| Inline next to ticker on ranking row | A (solid) |
-| Detail page header next to big ticker | A (solid) |
-| Active filter chip bar (below toolbar) | **B** (outlined-light) |
-| Filter drawer chip group selected state | use saturated solid (Pattern A-flavored) so user sees clear on/off |
-| Sector tag in ranking row | **B** (outlined-light, via `SectorChip`) |
-| Score tier indicator | depends — table dot uses `ScoreBadge`; chip uses B |
+### Active filter chip variant (clickable + dismissable)
+
+For the toolbar active-filter chip bar (below filters button), add:
+
+- `cursor: button` semantics via `<button type="button">`
+- `hover:opacity-75` for hover affordance
+- `<span aria-hidden="true" className="opacity-60">×</span>` close indicator
+- Click handler that removes the filter
+
+Same tones, same dots. Adding the × and hover state doesn't justify a new
+visual pattern.
+
+### Filter drawer selected-state chip
+
+When showing "selected" vs "unselected" in the filter drawer chip group,
+use the **same outlined-light tone for selected** + `bg-white text-slate-600
+ring-slate-300` for unselected. NEVER use saturated solid for selected —
+the drawer chip should match the active-toolbar chip exactly so a user can
+trace "this chip is selected → it shows up there as an active filter".
+
+⚠️ **Anti-pattern (PR #68 second iteration mistake — don't repeat)**:
+solid inline badge (`bg-emerald-700 text-white`) next to outlined sector
+pill (`bg-{tone}-50`). User-reported the inconsistency on screenshot review.
+Fix: badge and pill use SAME tone family.
+
+### When chip shape changes (rare)
+
+Two acceptable variations:
+- **`size="xs"`** for ultra-tight layouts (mobile data row, ticker prefix):
+  `px-1.5 py-0 text-[10px]` + dot is still rendered
+- **`size="lg"`** for detail page hero header: `px-3 py-1 text-base` + bigger dot
+
+The shape is the same chip — only `px` / `py` / `text-{size}` change.
 
 ## Rule 3 — Existing token sources are the single source of truth
 
@@ -124,21 +152,30 @@ pattern: export both an inline-badge tone map and an active-chip tone map
 from the badge component file. Don't put tone classes inline in `RankingTable`
 or `FilterDrawer` — keep them with the badge module.
 
-## Rule 4 — Light + dark mode parity
+## Rule 4 — Light-mode only (NO `dark:` variants)
 
-Every component with explicit `bg-` / `text-` / `ring-` must include
-`dark:` variants:
+The QuantRank site is **force-light-mode** via `:root { color-scheme: light }`
+in `frontend/app/globals.css`. The page itself never renders dark mode.
 
-```
-bg-emerald-50 → dark:bg-emerald-900
-text-emerald-800 → dark:text-emerald-100
-ring-emerald-300 → dark:ring-emerald-700
-```
+**Critical**: Tailwind's `dark:` variants (default `darkMode: 'media'`) are
+gated on the SYSTEM-level `prefers-color-scheme: dark` media query, NOT on
+the page's `color-scheme` declaration. So a user whose phone/laptop is set
+to system dark mode will trigger every `dark:` class on the page, even
+though the page background stays white.
 
-Skip dark variants only for:
-- Universally-light surfaces (Disclaimer banner — intentionally amber-50 in
-  both modes for the "warning" affordance)
-- Elements that inherit from parent and never set their own color
+**Result of mixing dark: variants on this site**: text colors flip to the
+dark-mode tone (`dark:text-{tone}-50` = very light) while backgrounds keep
+their light-mode tone (`bg-{tone}-50` = also very light) → label disappears
+into the background.
+
+Lesson 2026-05-14 (PR #70 second iteration): the recommendation badge was
+introduced with `dark:` variants per "good Tailwind practice." User on
+system dark mode saw blank/invisible "Strong Buy" and "Sell" labels.
+SectorChip / score-tier / MoS-bucket chips were already (correctly) without
+`dark:` variants — match them.
+
+**Rule**: Don't add `dark:` variants to any QuantRank component until the
+site adopts a dark-mode toggle (no such plan currently). Light tones only.
 
 ## Rule 5 — Typography
 
