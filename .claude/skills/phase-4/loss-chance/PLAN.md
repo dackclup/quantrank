@@ -1,9 +1,19 @@
 # Loss Chance % (Phase 4 planning stub)
 
-**Status**: Planning. Not yet a loaded skill — promote to top-level
-`.claude/skills/loss-chance/SKILL.md` when implementation begins.
-Companion stub to `recommendation-badge/PLAN.md` and
-`price-chart-enhancements/PLAN.md`.
+**Status**: ✅ Implemented in PR 4e (`feat/phase-4e-loss-chance`).
+Final calibration differs from the draft rubric in this PLAN — see
+`compute/scoring/loss_chance.py` for the locked constants:
+
+- Baseline 40 (not 50 — universe MoS median is −25%, baseline 50
+  pushed universe median to ~64)
+- MoS scale 0.35 asymmetric (cap_neg=35 for undervalued push-down,
+  cap_pos=20 for overvalued push-up)
+- Composite scale 2.0 (each 10 composite-points = 5 pp loss change)
+- Flag penalties proportionally lower (dq=15, altman=12, gc=8)
+
+Predicted distribution on commit eb861e12 production data:
+SB 7.6% / Buy 20.9% / Hold 43.8% / Sell-light 26.3% / Sell-strong 1.4%
+Universe median 49 (target ~50 ✅).
 
 ## Spec (user request, 2026-05-14)
 

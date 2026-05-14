@@ -33,6 +33,11 @@ export type StockSummary = {
   risk_flags: string[];
   valuation_warnings: string[];
   recommendation: Recommendation | null;
+  // Loss Chance % heuristic chip — 5-95 clipped, null when MoS missing.
+  // See `compute/scoring/loss_chance.py` for the rubric. Display via
+  // `LossChanceBadge` with small italic "heuristic" qualifier (Option D
+  // locked per `phase-4-kickoff-checklist/PLAN.md` §1).
+  loss_chance_pct: number | null;
   entered_top5: boolean;
   exited_top5: boolean;
 };
@@ -187,6 +192,7 @@ export type StockDetail = {
   beneish_m_score: number | null;
   dechow_f_score: number | null;
   recommendation: Recommendation | null;
+  loss_chance_pct: number | null;
   entered_top5: boolean;
   exited_top5: boolean;
 };

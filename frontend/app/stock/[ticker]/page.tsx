@@ -2,6 +2,7 @@ import Link from 'next/link';
 
 import FairPriceCard from '@/components/FairPriceCard';
 import { FairPriceBarChart } from '@/components/FairPriceBarChart';
+import { LossChanceBadge } from '@/components/LossChanceBadge';
 import { MoSCell } from '@/components/MoSCell';
 import { PillarRadarChart } from '@/components/PillarRadarChart';
 import { PriceHistoryChart } from '@/components/PriceHistoryChart';
@@ -120,6 +121,18 @@ export default function StockDetailPage({
                 </span>
                 <div className="mt-0.5">
                   <MoSCell mos={mosPct} align="right" />
+                </div>
+              </div>
+              <div className="flex flex-col sm:items-end">
+                <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                  Loss chance
+                </span>
+                <div className="mt-0.5">
+                  <LossChanceBadge
+                    lossChancePct={detail.loss_chance_pct}
+                    size="sm"
+                    showQualifier
+                  />
                 </div>
               </div>
             </div>
