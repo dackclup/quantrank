@@ -260,10 +260,12 @@ def test_earnings_yield_greenblatt():
 
 
 def test_graham_number():
+    # Audit #6: graham_number now derives TTM EPS from NI_TTM / shares.
+    # Fixture: NI=10k, shares=10k → TTM EPS=1.0; equity=120k, shares=10k → BVPS=12.
+    # √(22.5 × 1.0 × 12) = √270 ≈ 16.43.
     snap = _snap()
-    # √(22.5 × 2 × 12) = √540 ≈ 23.24
     g = value.graham_number(snap)
-    assert 22 < g < 24
+    assert 16 < g < 17
 
 
 def test_tobins_q():

@@ -39,6 +39,10 @@ def _snap(**overrides) -> FundamentalsSnapshot:
     defaults = {
         "ticker": "TST",
         "cik": "0000000001",
+        # net_income=50 + shares=10 → TTM EPS = 5.0 (matches the prior
+        # eps_diluted=5.0 fixture default before audit #6 switched pe_ttm
+        # to compute EPS from NI/shares).
+        "net_income": 50.0,
         "stockholders_equity": 100.0,
         "shares_outstanding": 10.0,
         "eps_diluted": 5.0,
@@ -96,9 +100,11 @@ def test_build_universe_metrics_all_three_ratios_computed():
     assert metrics["AAA"]["ev_ebitda_ttm"] == 20.30
 
 
-def test_build_universe_metrics_negative_eps_yields_null_pe():
+def test_build_universe_metrics_negative_ni_yields_null_pe():
+    # Audit #6: pe_ttm now keys off net_income (TTM), not snap.eps_diluted.
+    # Negative TTM net_income → NaN PE → None propagated to universe metrics.
     df = pd.DataFrame({"ticker": ["AAA"], "current_price": [100.0]})
-    snap = _snap(eps_diluted=-1.0)
+    snap = _snap(net_income=-10.0)
     metrics = _build_universe_metrics({"AAA": snap}, df)
     assert metrics["AAA"]["pe_ttm"] is None
 
@@ -277,11 +283,15 @@ def test_build_historical_metrics_handles_missing_ticker_history():
     assert out["AAA"]["fcf_5y"] == []
 
 
-def test_build_universe_metrics_pe_uses_diluted_eps():
+def test_build_universe_metrics_pe_uses_ttm_eps_not_single_period():
+    # Audit #6: pe_ttm now derives from NI_TTM / shares_outstanding instead
+    # of the single-period snap.eps_diluted. NI=40, shares=10 → TTM EPS=4
+    # → PE = 100/4 = 25. (snap.eps_diluted=999 set deliberately to verify
+    # the single-period field is IGNORED by the new formula.)
     df = pd.DataFrame({"ticker": ["AAA"], "current_price": [100.0]})
-    snap = _snap(eps_diluted=4.0, eps_basic=999.0)
+    snap = _snap(net_income=40.0, shares_outstanding=10.0, eps_diluted=999.0)
     metrics = _build_universe_metrics({"AAA": snap}, df)
-    assert metrics["AAA"]["pe_ttm"] == 25.0  # 100/4 from diluted, not basic
+    assert metrics["AAA"]["pe_ttm"] == 25.0
 
 
 def test_build_universe_metrics_zero_shares_yields_null_pb_and_ev():
