@@ -7,9 +7,18 @@ import type { Recommendation } from '@/lib/types';
 // dark-mode variants per the existing Tailwind dark: prefix pattern
 // used in SectorChip / MoSCell.
 //
-// Terminology locked per Option B (Bullish / Lean Bullish / Neutral /
-// Cautious). See `.claude/skills/phase-4/recommendation-badge/PLAN.md`
-// + `phase-4-kickoff-checklist/PLAN.md` §1 for the rationale.
+// Hybrid terminology (locked 2026-05-14 after user review of PR 4d):
+//   - Internal IDs (`bullish` / `lean_bullish` / `neutral` / `cautious`)
+//     stay neutral in the schema / JSON / Python code — keeps the
+//     compute layer free of regulated terms and lets future API
+//     consumers map labels to their own jurisdiction's UX conventions.
+//   - User-facing display labels use the familiar sell-side analyst
+//     terminology ("Strong Buy" / "Buy" / "Hold" / "Sell") that the
+//     user originally requested.
+// The global "Educational use only. Not investment advice." Disclaimer
+// banner at the top of every page covers the legal posture. See
+// `phase-4-kickoff-checklist/PLAN.md` §1 + `recommendation-badge/
+// PLAN.md` for the full decision trail.
 
 const TONES: Record<Recommendation, string> = {
   bullish:
@@ -23,17 +32,17 @@ const TONES: Record<Recommendation, string> = {
 };
 
 const LABELS: Record<Recommendation, string> = {
-  bullish: 'Bullish',
-  lean_bullish: 'Lean Bullish',
-  neutral: 'Neutral',
-  cautious: 'Cautious',
+  bullish: 'Strong Buy',
+  lean_bullish: 'Buy',
+  neutral: 'Hold',
+  cautious: 'Sell',
 };
 
 const SHORT_LABELS: Record<Recommendation, string> = {
-  bullish: 'BU',
-  lean_bullish: 'LB',
-  neutral: 'NT',
-  cautious: 'CA',
+  bullish: 'SB',
+  lean_bullish: 'B',
+  neutral: 'H',
+  cautious: 'S',
 };
 
 const SIZE_CLASSES: Record<'xs' | 'sm' | 'md' | 'lg', string> = {
