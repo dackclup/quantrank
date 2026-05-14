@@ -187,6 +187,17 @@ _TTM_FLOW_TAGS: dict[str, list[str]] = {
 # ``ANNUAL_HISTORY_YEARS`` years.
 ANNUAL_HISTORY_YEARS: int = 5
 
+# ⚠️ Cache-stale guard (PR 4c.1 lesson — see fundamentals.py history):
+# Adding a new metric to `_ANNUAL_TAGS` extends the parquet schema written
+# to `compute/cache/fundamentals_history/<cik>.parquet`. Cached parquets
+# from before the schema change are still considered "fresh" by
+# `fetch_fundamentals_history` (180-day filing-date freshness only — it
+# doesn't introspect columns). To force a fresh fetch in production,
+# bump the workflow cache key (`cache-v4-` → `cache-v5-`) in
+# `.github/workflows/compute-rankings.yml`.
+#
+# Same rule applies to `_TTM_REVENUE_TAGS`, `_TTM_NET_INCOME_TAGS`,
+# `_TTM_FLOW_TAGS`, and `_BALANCE_TAGS` (see audit #6 / PR #49 history).
 _ANNUAL_TAGS: dict[str, list[str]] = {
     "revenue": [
         # Mirror `_TTM_REVENUE_TAGS` for consistent annual history coverage

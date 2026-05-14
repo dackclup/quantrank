@@ -65,18 +65,27 @@ def test_workflow_restores_each_cache_dir(cache_path: Path) -> None:
     )
 
 
-def test_workflow_cache_key_is_v3() -> None:
-    """PR 4a bumped the atomic-rotation key from v2 → v3.
+def test_workflow_cache_key_is_v4() -> None:
+    """Cache key bumped v3 → v4 in PR 4c.1.
 
-    If this assertion fails, either the key got rolled back (perf
-    regression — partial restore-key matches resurrect stale state) or
-    a schema-changing PR forgot to bump to v4. Both warrant explicit
-    review.
+    Rationale: PR 4c extended `_ANNUAL_TAGS` with `stockholders_equity`
+    (issue #11 per-year ROE fix). The v3-era `fundamentals_history`
+    parquets pre-date that column and silently let `_avg_3y_roe` fall
+    back to the legacy single-period path — first post-PR-4c warm run
+    showed value_trap_risk count unchanged (197 → 196). Forcing a fresh
+    cold fetch via key bump is the established pattern (precedent:
+    PR #49 bumped v1 → v2 after audit-#6 `_TTM_*` expansion).
+
+    Bump again to v5 when:
+      - any cache directory's parquet/JSON schema changes (column rename,
+        column add, shape change), OR
+      - `_TTM_*` / `_ANNUAL_TAGS` / `_BALANCE_TAGS` gains a new metric that
+        per-cache `_is_fresh()` checks can't detect through filing-date
+        staleness alone.
     """
     text = _workflow_text()
-    assert "key: cache-v3-" in text, (
-        "Workflow cache key must be `cache-v3-${{ ... }}` per PR 4a. "
-        "Bump to v4 only when a cache directory's *schema* changes "
-        "(parquet column rename, JSON shape change); value drift is "
-        "handled by per-cache `_is_fresh()` checks."
+    assert "key: cache-v4-" in text, (
+        "Workflow cache key must be `cache-v4-${{ ... }}` per PR 4c.1. "
+        "Bump to v5 only when a cache directory's *schema* changes or a "
+        "new metric is added to `_ANNUAL_TAGS` / `_TTM_*` / `_BALANCE_TAGS`."
     )
