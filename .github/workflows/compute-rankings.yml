@@ -62,5 +62,16 @@ jobs:
             echo "No JSON changes to commit."
           else
             git commit -m "chore: update rankings $(date -u +%Y-%m-%d)"
-            git push
+            # Compute can take 30-50 min; during that window other PRs can
+            # land on main (docs PRs, hotfixes). Rebase-then-push so the
+            # bot commit cleanly stacks on top of whatever moved. Without
+            # this, workflow #30 (2026-05-14) failed: push rejected because
+            # main had advanced by 2 docs PRs during the 52-min compute.
+            # The bot commit only touches `frontend/public/data/` so it
+            # never conflicts with code/docs changes — rebase is safe.
+            for attempt in 1 2 3; do
+              git pull --rebase --autostash origin main && git push && break
+              echo "Push attempt $attempt failed; refetching and retrying."
+              sleep $((attempt * 5))
+            done
           fi
