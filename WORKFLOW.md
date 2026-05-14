@@ -54,6 +54,50 @@ You cannot run Python or Node locally. All execution happens in **GitHub Actions
 
 ---
 
+## SEC Filing Roadmap (Forms used per phase)
+
+QuantRank pulls data from SEC EDGAR via `edgartools`. Each phase
+gradually expands which SEC filing types feed the ranking. Phase 3 /
+v1.0 ships with the minimum viable set; Phase 5-8 layer in additional
+forms as new signals come online. This table is the canonical reference
+for "what filings does the system read?" — keep it in sync when a phase
+acceptance criterion changes.
+
+| Form | What it is | Phase introduced | Used for | Status |
+|---|---|---|---|---|
+| **10-K** | Annual report (audited financials) | Phase 2 | Annual history (CAGR, RIM 3y-avg ROE, Beneish prior-year inputs, Dechow Δroa, Piotroski F-score, going-concern MD&A text scan) | ✅ active |
+| **10-Q** | Quarterly report (unaudited) | Phase 2 | TTM aggregation (Q1+Q2+Q3 of fiscal year; Q4 from the 10-K), latest balance sheet items, EPS | ✅ active |
+| **8-K Item 4.01** | Auditor change | Phase 3d → 4 | Tier-2 `auditor_change` annotate flag (Cohen-Malloy-Nguyen 2020 type) | 🟡 deferred (`_EIGHT_K_DEFENSES_ENABLED = False`) — re-enable in Phase 4 |
+| **8-K Item 4.02** | Non-reliance on prior financials | Phase 3d → 4 | Tier-2 `non_reliance_filing` hard veto | 🟡 deferred — re-enable in Phase 4 |
+| **8-K (other items)** | Material events (M&A, CEO change, guidance, restatements, NT-filings, …) | Phase 5+ | Sentiment v2 — event-driven re-rate signals (Lazy Prices pattern, Cohen-Malloy-Pomorski 2012) | ❌ not used (Phase 5 / 6 work) |
+| **Form 4** | Insider transactions (officers, directors, 10%+ holders) | Phase 5 | Insider-signal pillar (cluster buys vs. routine sells; Cohen-Malloy-Pomorski 2012 *Decoding Inside Information* — cited in bibliography but not implemented) | ❌ not used |
+| **DEF 14A** | Proxy statement (exec comp, board composition, voting) | Phase 5 | Governance pillar (currently inactive in PillarScores schema) — CEO/CFO comp, board independence, dual-class structure penalties | ❌ not used |
+| **13F-HR** | Institutional holdings ($100M+ AUM funds) | Phase 5 / 6 | Smart-money / sentiment pillar — Bayesian update of holdings changes, hedge-fund-vs-mutual-fund divergence | ❌ not used |
+| **20-F** | Annual report (foreign private issuers — ADRs like ASML, TSM, NVS) | Phase 8 | Replaces 10-K when the universe expands beyond domestic S&P 500. Same intent (annual fundamentals + MD&A text) but different XBRL taxonomy. Phase 8 universe expansion will hit this. | ❌ not used |
+| **6-K** | Quarterly equivalent for foreign issuers | Phase 8 | Replaces 10-Q for foreign issuers. | ❌ not used |
+| **N-CSR / N-Q** | Mutual fund + ETF reports | n/a | Out of scope — QuantRank ranks individual equities, not funds. | ❌ never |
+| **S-1, S-3** | IPO + shelf registration | n/a | Out of scope for v1.0 — newly-public tickers have insufficient annual history for our defenses anyway. Possible Phase 6 "recent IPO" warning flag using filing date. | ❌ never |
+
+### Per-phase summary
+
+- **Phase 2 (v1.0 prep)**: 10-K + 10-Q. ~ALL TTM + balance + annual data flows through these two.
+- **Phase 3 (v1.0)**: same — 10-K + 10-Q + (deferred) 8-K Items 4.01/4.02.
+- **Phase 4 (factor consolidation + defense re-enable)**: same forms; the 8-K Tier-2 defenses re-enable. No new SEC forms.
+- **Phase 5 (ML + Sentiment)**: **first phase that adds new SEC forms** — Form 4 (insider) + 13F-HR (smart-money) + 8-K-other (event-driven sentiment) + DEF 14A (governance pillar).
+- **Phase 6 (Sentiment v2)**: 8-K event timeline + earnings call transcripts (separate API, not SEC).
+- **Phase 7 (Regime + Portfolio v2)**: no new SEC forms — pure portfolio-construction layer.
+- **Phase 8 (Universe expansion S&P 1500 + ADRs)**: **first phase that adds 20-F + 6-K** for foreign private issuers in the expanded universe.
+
+### Why this matters
+
+Without this map, it's easy to write a Phase 5 PR that pulls Form 4 data
+on day one without realizing the ingest layer needs significant work
+(Form 4 has a different XBRL taxonomy + different filing cadence). The
+roadmap also clarifies what's intentionally NOT in scope (S-1, N-CSR
+etc.) so spec drift doesn't accidentally drag them in.
+
+---
+
 ## Defense Roadmap (Research-Validated, 2026-05-09)
 
 QuantRank operates in **3 defense modes** against analysis errors at all
