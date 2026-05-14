@@ -121,3 +121,21 @@ EDGAR_8K_ITEM_TEXT_EXCERPT_CHARS: int = 500
 # we'd fetch fresh.
 EDGAR_10K_TEXT_CACHE_DIR: Path = CACHE_DIR / "edgar_10k_text"
 EDGAR_10K_TEXT_CACHE_TTL_SECONDS: int = 90 * 86400  # 90 days
+
+# --- Phase 4b: Defense Infrastructure ---
+# Per `.claude/skills/phase-4/defense-infrastructure/PLAN.md` §1.
+
+# Cross-source validator (compute.ingest.cross_source). Compare
+# SEC-derived market cap (shares × current_price) against yfinance's
+# reported marketCap. Delta > 5% surfaces as `cross_source_disagreement`
+# in valuation_warnings (annotate-only, no Top-N veto). Catches ~80% of
+# yfinance scraper drift — the canonical Phase 1 fragility documented in
+# README "Honest Limitations".
+CROSS_SOURCE_MARKET_CAP_TOLERANCE: float = 0.05  # 5%
+
+# yfinance Ticker.info cache. The `marketCap` field comes from a
+# separate API surface than the OHLCV history (yf.download). The .info
+# call is rate-limited more aggressively than history, so we cache
+# 24h per ticker — same cadence as `PRICES_CACHE_MAX_AGE_HOURS`.
+YFINANCE_INFO_CACHE_DIR: Path = CACHE_DIR / "yfinance_info"
+YFINANCE_INFO_CACHE_MAX_AGE_HOURS: int = 24

@@ -1,6 +1,12 @@
 # Defense Infrastructure (Phase 4 planning stub)
 
-**Status**: Planning. Closes P0 audit gap (2026-05-14): WORKFLOW.md §4.9 lists three defense-infrastructure items (cross-source validator, PBO+DSR gate, IC-decay monitor) but no focused PLAN existed. Consolidating all three here.
+**Status**: ✅ Implemented in PR 4b (`feat/phase-4b-defense-infrastructure`). All 3 sections ship in one PR per the locked single-PR decision.
+
+- §1 Cross-source validator: production-wired in `compute/main.py` (annotate-only via `valuation_warnings`)
+- §2 PBO + DSR: library at `compute/validation/pbo_dsr.py`; ready to be called by PR 4h (OSAP) / 4i (JKP) / 4j (Qlib) / 4k (IPCA) when their factor returns are available
+- §3 IC-decay monitor: library at `compute/validation/ic_decay.py`; the pillar IC time series accumulates from now on (or via Phase 5 backtest infra), feeding `decay_report.json` writes once history is sufficient
+
+No new third-party deps (pure numpy implementation of CSCV + DSR replaces `scipy` + `pypbo`).
 
 ## Purpose
 
