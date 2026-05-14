@@ -238,11 +238,22 @@ def _build_raw_metrics(
         if snapshot.shares_outstanding is not None
         else None
     )
-    pe_ttm = (
-        current_price / snapshot.eps_diluted
-        if snapshot.eps_diluted is not None and snapshot.eps_diluted > 0
-        else None
-    )
+    # PE shown in raw_metrics.pe_ratio_ttm — derive TTM EPS from
+    # NI_TTM / shares_outstanding rather than snap.eps_diluted (single-
+    # period). Audit #6 follow-up: this _build_raw_metrics helper was
+    # missed in PR #49 — production median PE stayed at 77.5 (broken)
+    # instead of dropping to ~26 (correct) until this fix lands.
+    pe_ttm: float | None = None
+    if (
+        snapshot.net_income is not None
+        and snapshot.net_income > 0
+        and snapshot.shares_outstanding is not None
+        and snapshot.shares_outstanding > 0
+        and current_price > 0
+    ):
+        ttm_eps = snapshot.net_income / snapshot.shares_outstanding
+        if ttm_eps > 0:
+            pe_ttm = current_price / ttm_eps
     return RawMetrics(
         revenue=snapshot.revenue,
         net_income=snapshot.net_income,
