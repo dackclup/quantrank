@@ -13,23 +13,22 @@
  * clean (different from `localStorage` which would persist across days).
  *
  * Why sessionStorage over URL query params:
- *   - The current 5 filter dimensions (search, sectors, score range,
- *     tiers, MoS buckets) would clutter the URL noticeably
+ *   - The active filter dimensions would clutter the URL noticeably
  *   - Next.js 14 static export requires `<Suspense>` boundaries around
  *     `useSearchParams()` — extra boilerplate we don't need for this
  *     localized fix
- *   - Future filter chips (recommendation-badge, exchange-pill — see
- *     phase-4 PLANs) can opt into URL params for shareability; the two
- *     approaches coexist (sessionStorage for transient navigation,
- *     URL for sharing)
+ *   - Future filter chips (exchange-pill — see Phase 4 PLANs) can opt
+ *     into URL params for shareability; the two approaches coexist
  *
- * Schema versioning: the key includes a `v1` suffix. If the saved
- * shape changes (e.g., new filter dimension added) bump to `v2` so
- * old saved payloads are cleanly ignored rather than crashing the
- * page on read.
+ * Schema versioning: the key includes a version suffix. v2 (PR 4d
+ * 2026-05-14) added `recommendations: Recommendation[]`. Bump again
+ * when adding new dimensions; old saved payloads are cleanly ignored
+ * rather than crashing the page on read.
  */
 
-const STORAGE_KEY = 'quantrank.filter.v1';
+import type { Recommendation } from '@/lib/types';
+
+const STORAGE_KEY = 'quantrank.filter.v2';
 
 export type FilterSnapshot = {
   search: string;
@@ -37,6 +36,7 @@ export type FilterSnapshot = {
   scoreRange: [number, number];
   tiers: string[];
   mos: string[];
+  recommendations: Recommendation[];
 };
 
 export const EMPTY_FILTER: FilterSnapshot = {
@@ -45,7 +45,26 @@ export const EMPTY_FILTER: FilterSnapshot = {
   scoreRange: [0, 100],
   tiers: [],
   mos: [],
+  recommendations: [],
 };
+
+const VALID_RECOMMENDATIONS: ReadonlySet<Recommendation> = new Set([
+  'bullish',
+  'lean_bullish',
+  'neutral',
+  'cautious',
+]);
+
+function isRecommendationArray(v: unknown): v is Recommendation[] {
+  return (
+    Array.isArray(v) &&
+    v.every(
+      (x) =>
+        typeof x === 'string' &&
+        VALID_RECOMMENDATIONS.has(x as Recommendation),
+    )
+  );
+}
 
 function isStringArray(v: unknown): v is string[] {
   return Array.isArray(v) && v.every((x) => typeof x === 'string');
@@ -83,6 +102,9 @@ export function loadFilterSnapshot(): FilterSnapshot {
       scoreRange: isScoreRange(parsed.scoreRange) ? parsed.scoreRange : [0, 100],
       tiers: isStringArray(parsed.tiers) ? parsed.tiers : [],
       mos: isStringArray(parsed.mos) ? parsed.mos : [],
+      recommendations: isRecommendationArray(parsed.recommendations)
+        ? parsed.recommendations
+        : [],
     };
   } catch {
     return EMPTY_FILTER;

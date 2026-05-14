@@ -1,3 +1,11 @@
+// 4-tier recommendation per PR 4d (Option B locked 2026-05-14 — neutral
+// terminology, no FINRA/SEC-regulated sell-side labels). Derived
+// deterministically from composite_score + risk_flags +
+// valuation_warnings + fair_price MoS by
+// `compute.scoring.recommendation.derive_recommendation`. null on
+// legacy outputs from before this field was added.
+export type Recommendation = 'bullish' | 'lean_bullish' | 'neutral' | 'cautious';
+
 export type PillarScores = {
   quality: number | null;
   value: number | null;
@@ -24,6 +32,7 @@ export type StockSummary = {
   pillar_scores: PillarScores;
   risk_flags: string[];
   valuation_warnings: string[];
+  recommendation: Recommendation | null;
   entered_top5: boolean;
   exited_top5: boolean;
 };
@@ -177,6 +186,7 @@ export type StockDetail = {
   pillar_baseline: PillarBaseline | null;
   beneish_m_score: number | null;
   dechow_f_score: number | null;
+  recommendation: Recommendation | null;
   entered_top5: boolean;
   exited_top5: boolean;
 };

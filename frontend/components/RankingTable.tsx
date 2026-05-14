@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { FilterDrawer } from '@/components/FilterDrawer';
 import { MoSCell } from '@/components/MoSCell';
+import { RecommendationBadge } from '@/components/RecommendationBadge';
 import { ScoreBadge } from '@/components/ScoreBadge';
 import { SectorChip } from '@/components/SectorChip';
 import { StockLogo } from '@/components/StockLogo';
@@ -14,7 +15,7 @@ import {
   saveFilterSnapshot,
 } from '@/lib/filter-storage';
 import { formatFairPrice, formatMosPct } from '@/lib/format';
-import type { StockSummary } from '@/lib/types';
+import type { Recommendation, StockSummary } from '@/lib/types';
 import {
   MOS_BUCKETS,
   TIERS,
@@ -50,6 +51,9 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
   const [scoreRange, setScoreRange] = useState<[number, number]>([0, 100]);
   const [tierSet, setTierSet] = useState<Set<string>>(() => new Set());
   const [mosSet, setMosSet] = useState<Set<string>>(() => new Set());
+  const [recommendationSet, setRecommendationSet] = useState<Set<Recommendation>>(
+    () => new Set(),
+  );
   const [drawerOpen, setDrawerOpen] = useState(false);
   // `hydrated` gates the persist-on-change effect so we don't overwrite
   // the saved snapshot with the empty defaults during the first render
@@ -66,6 +70,9 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
     }
     if (saved.tiers.length > 0) setTierSet(new Set(saved.tiers));
     if (saved.mos.length > 0) setMosSet(new Set(saved.mos));
+    if (saved.recommendations.length > 0) {
+      setRecommendationSet(new Set(saved.recommendations));
+    }
     hydratedRef.current = true;
   }, []);
 
@@ -99,16 +106,21 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
         const b = getMosBucket(row.margin_of_safety_pct);
         if (!b || !mosSet.has(b)) return false;
       }
+      if (recommendationSet.size > 0) {
+        if (!row.recommendation || !recommendationSet.has(row.recommendation)) {
+          return false;
+        }
+      }
       if (!q) return true;
       return row.ticker.toLowerCase().includes(q) || row.name.toLowerCase().includes(q);
     });
-  }, [data, search, sectorSet, scoreRange, tierSet, mosSet]);
+  }, [data, search, sectorSet, scoreRange, tierSet, mosSet, recommendationSet]);
 
   // Reset page on any filter change so user doesn't end up on a
   // suddenly-empty page after narrowing results.
   useEffect(() => {
     setPage(1);
-  }, [search, sectorSet, scoreRange, tierSet, mosSet]);
+  }, [search, sectorSet, scoreRange, tierSet, mosSet, recommendationSet]);
 
   // Persist filter state on every change (post-hydration). Skipping the
   // initial render via `hydratedRef` avoids clobbering a saved snapshot
@@ -121,8 +133,9 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
       scoreRange,
       tiers: Array.from(tierSet),
       mos: Array.from(mosSet),
+      recommendations: Array.from(recommendationSet),
     });
-  }, [search, sectorSet, scoreRange, tierSet, mosSet]);
+  }, [search, sectorSet, scoreRange, tierSet, mosSet, recommendationSet]);
 
   const toggleSector = (s: string) =>
     setSectorSet((prev) => {
@@ -145,12 +158,20 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
       else n.add(m);
       return n;
     });
+  const toggleRecommendation = (rec: Recommendation) =>
+    setRecommendationSet((prev) => {
+      const n = new Set(prev);
+      if (n.has(rec)) n.delete(rec);
+      else n.add(rec);
+      return n;
+    });
   const clearAll = () => {
     setSearch('');
     setSectorSet(new Set());
     setScoreRange([0, 100]);
     setTierSet(new Set());
     setMosSet(new Set());
+    setRecommendationSet(new Set());
     // Wipe the persisted snapshot too so a tab close → reopen lands on
     // the same clean state (otherwise the persist-on-change effect
     // would immediately re-save the defaults, which is correct but
@@ -167,7 +188,8 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
     (sectorSet.size ? 1 : 0) +
     (scoreActive ? 1 : 0) +
     (tierSet.size ? 1 : 0) +
-    (mosSet.size ? 1 : 0);
+    (mosSet.size ? 1 : 0) +
+    (recommendationSet.size ? 1 : 0);
 
   const sorted = useMemo(() => {
     const arr = [...filtered];
@@ -313,6 +335,17 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
               </button>
             ) : null;
           })}
+          {Array.from(recommendationSet).map((rec) => (
+            <button
+              key={`f-rec-${rec}`}
+              type="button"
+              onClick={() => toggleRecommendation(rec)}
+              className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-700 ring-1 ring-inset ring-slate-300 hover:opacity-75"
+            >
+              <RecommendationBadge recommendation={rec} size="xs" />
+              <span aria-hidden="true" className="opacity-60">×</span>
+            </button>
+          ))}
           {scoreActive && (
             <button
               type="button"
@@ -336,13 +369,14 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
       <FilterDrawer
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        state={{ search, sectorSet, scoreRange, tierSet, mosSet }}
+        state={{ search, sectorSet, scoreRange, tierSet, mosSet, recommendationSet }}
         setters={{
           setSearch,
           toggleSector,
           setScoreRange,
           toggleTier,
           toggleMos,
+          toggleRecommendation,
           clearAll,
         }}
         sectors={sectors}
@@ -380,6 +414,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                     >
                       <StockLogo ticker={row.ticker} size={22} />
                       <span>{row.ticker}</span>
+                      <RecommendationBadge recommendation={row.recommendation} size="xs" />
                     </Link>
                   </td>
                   <td className="px-3 py-2 text-slate-700">{row.name}</td>
@@ -438,6 +473,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                       <span className="text-xs text-slate-500 tabular-nums">#{row.rank}</span>
                       <StockLogo ticker={row.ticker} size={24} />
                       <span className="font-mono text-base font-semibold">{row.ticker}</span>
+                      <RecommendationBadge recommendation={row.recommendation} size="xs" />
                     </div>
                     <div className="truncate text-sm text-slate-700">{row.name}</div>
                   </div>

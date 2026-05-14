@@ -2,7 +2,17 @@
 
 from __future__ import annotations
 
+from typing import Literal
+
 from pydantic import BaseModel, ConfigDict, Field
+
+Recommendation = Literal["bullish", "lean_bullish", "neutral", "cautious"]
+"""4-tier recommendation per PR 4d (Option B locked 2026-05-14 — neutral
+terminology, no FINRA/SEC-regulated sell-side labels). Derived
+deterministically from composite + risk_flags + valuation_warnings +
+fair_price MoS by `compute.scoring.recommendation.derive_recommendation`.
+None on legacy data pre-PR-4d.
+"""
 
 
 class PillarScores(BaseModel):
@@ -58,6 +68,7 @@ class StockSummary(BaseModel):
     pillar_scores: PillarScores = Field(default_factory=PillarScores)
     risk_flags: list[str] = Field(default_factory=list)
     valuation_warnings: list[str] = Field(default_factory=list)
+    recommendation: Recommendation | None = None
     entered_top5: bool = False
     exited_top5: bool = False
 
@@ -138,5 +149,6 @@ class StockDetail(BaseModel):
     pillar_baseline: PillarBaseline | None = None
     beneish_m_score: float | None = None
     dechow_f_score: float | None = None
+    recommendation: Recommendation | None = None
     entered_top5: bool = False
     exited_top5: bool = False

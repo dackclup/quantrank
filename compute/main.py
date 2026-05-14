@@ -77,6 +77,7 @@ from compute.scoring.composite import (
 )
 from compute.scoring.dechow_f import compute_dechow_f
 from compute.scoring.pillars import TickerInputs, compute_all_pillars
+from compute.scoring.recommendation import derive_recommendation
 from compute.scoring.risk_overlay import compute_risk_flags
 from compute.scoring.sanity import compute_mos_trailing_ic
 from compute.scoring.tier2 import (
@@ -972,6 +973,17 @@ def run_weekly_compute() -> int:
             if has_history:
                 history_count += 1
 
+        # PR 4d — recommendation tier (Option B locked: bullish / lean_bullish
+        # / neutral / cautious). Deterministic derivation from composite +
+        # risk_flags + valuation_warnings + MoS. See
+        # `compute/scoring/recommendation.py` for the rubric.
+        recommendation = derive_recommendation(
+            composite_score=float(r["composite_score"]),
+            risk_flags=risk_flags.get(ticker, []),
+            valuation_warnings=valuation_warnings,
+            mos_pct=ensemble.mos_pct if ensemble is not None else None,
+        )
+
         summaries.append(
             StockSummary(
                 rank=int(r["rank"]),
@@ -986,6 +998,7 @@ def run_weekly_compute() -> int:
                 pillar_scores=_pillar_scores_to_schema(pillar_row),
                 risk_flags=risk_flags.get(ticker, []),
                 valuation_warnings=valuation_warnings,
+                recommendation=recommendation,
                 entered_top5=ticker in entered,
                 exited_top5=ticker in exited,
             )
@@ -1016,6 +1029,7 @@ def run_weekly_compute() -> int:
             pillar_baseline=sector_pillar_baselines.get(sector),
             beneish_m_score=beneish_result.m_score,
             dechow_f_score=dechow_result.f_score,
+            recommendation=recommendation,
             entered_top5=ticker in entered,
             exited_top5=ticker in exited,
         )
