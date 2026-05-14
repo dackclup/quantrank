@@ -82,33 +82,68 @@ SLOAN_MIN_POPULATION = 10
 NSI_MIN_POPULATION = 10
 
 
+# Audit #5 (2026-05-14, pre-v1.0 stop-the-line) found three additional
+# patterns of silent input corruption that escape the TBVPS ceiling:
+#
+#   A. REIT-style revenue subset — `RevenueFromContractWithCustomerExcludingAssessedTax`
+#      tagged with just non-rental contract revenue ($7M for AVB) while the
+#      actual total (`Revenues`) is in the billions. Fixed at the ingest
+#      layer via `_try_ttm_max_fresh`, but defense-in-depth here catches
+#      any residual.
+#   B. Bank-only `RevenueFromContract...` — banks like HBAN file only the
+#      contract-revenue subset (no `Revenues` total tag). Net income then
+#      legitimately exceeds the partial-revenue figure. Veto rather than
+#      ship a Top-5 ranking against a 50% partial-revenue input.
+#   C. NVDA-style stale-concept TTM — fixed upstream; this is the
+#      catch-all in case a new filer hits the same pattern.
+#
+# Threshold rationale: any S&P 500 company has revenue ≥ $200M (smallest
+# constituent in 2026); below $50M is several orders of magnitude wrong
+# and almost certainly a tag-pick bug rather than a real micro-cap.
+_MIN_PLAUSIBLE_TTM_REVENUE: float = 50_000_000.0
+
+
 def _data_quality_input_corruption(snap: FundamentalsSnapshot | None) -> bool:
-    """True iff snapshot inputs are corrupted (TBVPS > data-quality ceiling).
+    """True iff snapshot inputs look corrupted by any of the patterns the
+    audit identified.
 
-    Mirrors the post-hoc ceiling guard in
-    :func:`compute.valuation.ensemble._has_corrupt_input` but operates on
-    the snapshot directly so the veto fires BEFORE Top-5 rotation runs in
-    ``compute.main`` (the ensemble runs per-ticker AFTER Top-5 is decided
-    — relying only on the ensemble-side check means a corrupted ticker
-    with a high composite can still slip into ``entered_top5`` if no
-    other veto co-fires).
+    Patterns:
+    1. TBVPS > FAIR_PRICE_DATA_QUALITY_CEILING — shares_outstanding bug
+       (e.g., PSKY=1000 shares, BKR=100 shares — issue #10).
+    2. TTM revenue < $50M — for an S&P 500 company this is impossible;
+       indicates the wrong XBRL concept was picked (e.g., a contract-
+       revenue subset or a stale historical FY).
+    3. |TTM net_income| > |TTM revenue| — accounting identity says NI
+       cannot exceed revenue except in rare one-time gain scenarios; the
+       common cause is a partial-revenue tag with full NI (banks that
+       only file `RevenueFromContractWithCustomerExcludingAssessedTax`).
 
-    Returns False when TBVPS is uncomputable (missing shares / equity /
-    non-positive tangible book). Those cases are handled by other
-    pathways (applicability gates produce null fair-price; the stock
-    simply doesn't show fair-price data — and won't show a misleading
-    one either).
-
-    Tuned per issue #18 acceptance criteria: the existing 8/502 ≈ 1.6%
-    universe-wide FP rate is acceptable for veto promotion (vs. the
-    typical 10% threshold that disqualifies a flag from veto status).
+    All three patterns null the entire fair-price ensemble AND suppress
+    Top-5 entry — these tickers' composite scores remain visible (for
+    transparency) but they can't appear in the curated top tier with
+    inputs the screener can't trust.
     """
     if snap is None:
         return False
+    # Pattern 1 — shares_outstanding bug surfaces as TBVPS ceiling break.
     tbvps = tangible_book_value_per_share(snap)
-    if tbvps is None:
-        return False
-    return tbvps > config.FAIR_PRICE_DATA_QUALITY_CEILING
+    if tbvps is not None and tbvps > config.FAIR_PRICE_DATA_QUALITY_CEILING:
+        return True
+    # Pattern 2 — implausibly small revenue (XBRL tag mis-pick).
+    if (
+        snap.revenue is not None
+        and 0 < snap.revenue < _MIN_PLAUSIBLE_TTM_REVENUE
+    ):
+        return True
+    # Pattern 3 — net income exceeds revenue (partial-revenue tag bug).
+    if (
+        snap.revenue is not None
+        and snap.net_income is not None
+        and snap.revenue > 0
+        and abs(snap.net_income) > abs(snap.revenue)
+    ):
+        return True
+    return False
 
 
 def _altman_distress(snap: FundamentalsSnapshot | None) -> bool:

@@ -314,6 +314,84 @@ def _try_ttm_tags(facts, tags: list[str]) -> tuple[float | None, date | None]:
     return None, None
 
 
+# TTM concept chains for revenue + net_income. Both walked by
+# ``_try_ttm_max_fresh`` (NOT ``edgartools.get_ttm_revenue``) because:
+#
+# 1. edgartools' built-in helper iterates concepts but doesn't reject stale
+#    data — NVDA stopped filing under ``RevenueFromContractWithCustomerExcludingAssessedTax``
+#    in 2022, leaving FY2020 quarters as the "TTM" result ($10.9B instead of
+#    the real $215B). The freshness check (period_end > today - 540d) rejects
+#    those.
+# 2. For REITs / Financials, both ``Revenues`` and ``RevenueFromContractWithCustomerExcludingAssessedTax``
+#    can be fresh, but the latter is a subset (contract revenue only, excluding
+#    rental income for REITs / interest income for banks). Taking the MAX
+#    among fresh candidates picks the consolidated total — AVB ($3.07B) over
+#    the $7.1M contract subset.
+#
+# Probed across 10 diverse tickers in 2026-05; both heuristics needed to
+# cover all sectors.
+_TTM_REVENUE_TAGS: list[str] = [
+    "us-gaap:Revenues",
+    "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+    "us-gaap:SalesRevenueNet",
+]
+_TTM_NET_INCOME_TAGS: list[str] = [
+    "us-gaap:NetIncomeLoss",
+    "us-gaap:NetIncome",
+    "us-gaap:ProfitLoss",
+]
+# Stale-data rejection threshold. 540 days = 18 months — generous tolerance
+# for fiscal-calendar variance + filing lag.
+_TTM_STALE_DAYS: int = 540
+
+
+def _try_ttm_max_fresh(
+    facts,
+    tags: list[str],
+    *,
+    today: date | None = None,
+) -> tuple[float | None, date | None, date | None]:
+    """Walk ``tags`` and return (TTM value, filing_date, period_end) of the
+    fresh concept with the **largest** TTM value.
+
+    Workaround for edgartools' ``get_ttm_revenue()`` / ``get_ttm_net_income()``
+    convenience helpers which (a) don't reject stale data and (b) return the
+    first matching concept, which may be a subset of total revenue for
+    REITs / banks / insurers.
+
+    Freshness threshold: period_end must be within ``_TTM_STALE_DAYS`` (540
+    days) of ``today``. Stale results are silently skipped — so if every
+    candidate concept is stale, this returns ``(None, None, None)`` which
+    surfaces as missing fundamentals (Section G coverage drop) rather than
+    a corrupt-data ranking.
+    """
+    today = today or datetime.utcnow().date()
+    cutoff = today - timedelta(days=_TTM_STALE_DAYS)
+    candidates: list[tuple[float, date | None, date]] = []
+    for tag in tags:
+        try:
+            ttm = facts.get_ttm(tag)
+        except Exception:  # noqa: BLE001
+            continue
+        if ttm is None or ttm.value is None:
+            continue
+        latest_pe: date | None = None
+        latest_filed: date | None = None
+        for pf in getattr(ttm, "period_facts", []) or []:
+            pe = getattr(pf, "period_end", None)
+            if pe is not None and (latest_pe is None or pe > latest_pe):
+                latest_pe = pe
+            fd = getattr(pf, "filing_date", None)
+            if fd is not None and (latest_filed is None or fd > latest_filed):
+                latest_filed = fd
+        if latest_pe is None or latest_pe < cutoff:
+            continue
+        candidates.append((float(ttm.value), latest_filed, latest_pe))
+    if not candidates:
+        return None, None, None
+    return max(candidates, key=lambda c: c[0])
+
+
 @retry(
     stop=(stop_after_delay(30) | stop_after_attempt(2)),
     wait=wait_exponential(min=2, max=8),
@@ -346,36 +424,18 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
     snapshot_dates: list[date | None] = []
     period_dates: list[date | None] = []
 
-    # TTM revenue + net_income via convenience helpers (handle concept fallback).
-    revenue_val: float | None = None
-    revenue_filed: date | None = None
-    try:
-        rev_ttm = facts.get_ttm_revenue()
-        if rev_ttm is not None and rev_ttm.value is not None:
-            revenue_val = float(rev_ttm.value)
-            for pf in getattr(rev_ttm, "period_facts", []) or []:
-                fd = getattr(pf, "filing_date", None)
-                if fd is not None and (revenue_filed is None or fd > revenue_filed):
-                    revenue_filed = fd
-                pe = getattr(pf, "period_end", None)
-                if pe is not None:
-                    period_dates.append(pe)
-    except Exception as e:  # noqa: BLE001
-        logger.debug("get_ttm_revenue failed for %s: %s", ticker, e)
+    # TTM revenue + net_income via the freshness-aware MAX helper, NOT
+    # edgartools' get_ttm_revenue() / get_ttm_net_income() helpers — see
+    # _try_ttm_max_fresh() docstring for the NVDA + AVB regression cases
+    # this guards against (audit #5 — pre-v1.0 stop-the-line, 2026-05).
+    revenue_val, revenue_filed, revenue_pe = _try_ttm_max_fresh(facts, _TTM_REVENUE_TAGS)
+    if revenue_pe is not None:
+        period_dates.append(revenue_pe)
     snapshot_dates.append(revenue_filed)
 
-    ni_val: float | None = None
-    ni_filed: date | None = None
-    try:
-        ni_ttm = facts.get_ttm_net_income()
-        if ni_ttm is not None and ni_ttm.value is not None:
-            ni_val = float(ni_ttm.value)
-            for pf in getattr(ni_ttm, "period_facts", []) or []:
-                fd = getattr(pf, "filing_date", None)
-                if fd is not None and (ni_filed is None or fd > ni_filed):
-                    ni_filed = fd
-    except Exception as e:  # noqa: BLE001
-        logger.debug("get_ttm_net_income failed for %s: %s", ticker, e)
+    ni_val, ni_filed, ni_pe = _try_ttm_max_fresh(facts, _TTM_NET_INCOME_TAGS)
+    if ni_pe is not None:
+        period_dates.append(ni_pe)
     snapshot_dates.append(ni_filed)
 
     # Other TTM flow items

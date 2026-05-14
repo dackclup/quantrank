@@ -24,19 +24,22 @@ def _snap(**kwargs) -> FundamentalsSnapshot:
     Defaults yield a healthy Altman Z″ (≈ comfortable safe zone) and a
     near-zero accruals ratio — overrides target one or both flags.
     """
+    # Scaled to millions ($100M revenue / $10M NI baseline) — above the
+    # _MIN_PLAUSIBLE_TTM_REVENUE = $50M threshold added in audit #5
+    # (pre-v1.0 data-quality guard against XBRL tag mispicks).
     defaults = {
         "ticker": "TST",
         "cik": "0000000001",
-        "revenue": 100.0,
-        "net_income": 10.0,
-        "total_assets": 200.0,
-        "total_liabilities": 100.0,
-        "stockholders_equity": 100.0,
-        "current_assets": 100.0,
-        "current_liabilities": 50.0,
-        "operating_cash_flow": 10.0,
-        "retained_earnings": 50.0,
-        "operating_income": 20.0,  # used as EBIT proxy in altman_z_double_prime
+        "revenue": 100_000_000.0,
+        "net_income": 10_000_000.0,
+        "total_assets": 200_000_000.0,
+        "total_liabilities": 100_000_000.0,
+        "stockholders_equity": 100_000_000.0,
+        "current_assets": 100_000_000.0,
+        "current_liabilities": 50_000_000.0,
+        "operating_cash_flow": 10_000_000.0,
+        "retained_earnings": 50_000_000.0,
+        "operating_income": 20_000_000.0,  # used as EBIT proxy in altman_z_double_prime
         "latest_period_end": date(2025, 12, 31),
         "latest_filed_date": date(2026, 2, 14),
     }
@@ -53,9 +56,9 @@ def test_no_flags_when_healthy():
 def test_altman_distress_flag_fires_when_z_below_threshold():
     # Force Z″ < 1.1 by zeroing retained earnings + operating income + flipping equity sign.
     distressed = _snap(
-        retained_earnings=-200.0,
-        operating_income=-50.0,
-        stockholders_equity=-50.0,
+        retained_earnings=-200_000_000.0,
+        operating_income=-50_000_000.0,
+        stockholders_equity=-50_000_000.0,
     )
     flags = compute_risk_flags({"DISTRESSED": distressed})
     assert "altman_distress" in flags["DISTRESSED"]
@@ -434,3 +437,65 @@ def test_D6_corruption_does_not_pollute_other_tickers():
     assert "data_quality_input_corruption" in flags["CORRUPT"]
     assert "data_quality_input_corruption" not in flags["HEALTHY"]
     assert flags["HEALTHY"] == []
+
+
+# Audit #5 (pre-v1.0 stop-the-line) — three additional corruption patterns
+# beyond the SPG-shape TBVPS-ceiling break:
+#   D7: revenue < $50M  (XBRL tag mispick — AVB-style $7M "contract revenue")
+#   D8: |NI| > |revenue| (HBAN-style partial-revenue tag with full NI)
+#   D9: revenue > $50M + NI < revenue — healthy baseline
+
+
+def test_D7_corruption_fires_for_implausibly_small_revenue():
+    """AVB shipped with revenue=$7.1M (contract-only subset) before the
+    audit. Threshold pegged at $50M — any S&P 500 company has at least
+    $200M revenue; below $50M is a tag-pick bug not a real micro-cap.
+    """
+    avb_shape = _snap(revenue=7_135_000.0, net_income=1_212_000_000.0)
+    flags = compute_risk_flags({"AVB": avb_shape})
+    assert "data_quality_input_corruption" in flags["AVB"]
+
+
+def test_D8_corruption_fires_when_ni_exceeds_revenue():
+    """HBAN shipped with revenue=$1.68B (RevFromContract subset) and
+    NI=$2.23B before the audit. NI > revenue is impossible except for
+    rare one-time gains; the common cause is a partial-revenue tag with
+    full NI.
+    """
+    hban_shape = _snap(
+        revenue=1_683_000_000.0,
+        net_income=2_225_000_000.0,
+    )
+    flags = compute_risk_flags({"HBAN": hban_shape})
+    assert "data_quality_input_corruption" in flags["HBAN"]
+
+
+def test_D9_corruption_silent_when_revenue_and_ni_plausible():
+    """Baseline _snap has revenue=$100M, NI=$10M → above $50M floor +
+    NI < revenue → no flag.
+    """
+    flags = compute_risk_flags({"NORMAL": _snap()})
+    assert "data_quality_input_corruption" not in flags["NORMAL"]
+
+
+def test_D10_corruption_silent_when_revenue_or_ni_missing():
+    """Snapshot with revenue=None can't be evaluated for either new
+    pattern; we defer to the existing TBVPS-only check rather than
+    flagging on missing data.
+    """
+    incomplete = _snap(revenue=None, net_income=None)
+    flags = compute_risk_flags({"INCOMPLETE": incomplete})
+    assert "data_quality_input_corruption" not in flags["INCOMPLETE"]
+
+
+def test_D11_corruption_fires_when_ni_negative_but_abs_exceeds_revenue():
+    """Edge case: a huge one-time loss can produce |NI| > |revenue|.
+    The guard catches this too — better to suppress a Top-5 entry than
+    let a stale-tag bug masquerade as a real one-time loss.
+    """
+    snap_huge_loss = _snap(
+        revenue=100_000_000.0,
+        net_income=-150_000_000.0,
+    )
+    flags = compute_risk_flags({"LOSS": snap_huge_loss})
+    assert "data_quality_input_corruption" in flags["LOSS"]
