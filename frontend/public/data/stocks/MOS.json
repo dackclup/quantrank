@@ -1,21 +1,21 @@
 {
   "ticker": "MOS",
-  "name": "Mosaic Company (The)",
+  "name": "The Mosaic Company",
   "sector": "Materials",
   "industry": "Fertilizers & Agricultural Chemicals",
-  "market_cap": 7240546768.56797,
-  "current_price": 22.78,
+  "market_cap": 7138835333.242706,
+  "current_price": 22.46,
   "rank": 497,
-  "composite_score": 30.8,
+  "composite_score": 30.17,
   "pillar_scores": {
     "quality": 15.38,
-    "value": 54.81,
+    "value": 55.45,
     "growth": 30.77,
-    "momentum": 15.64,
+    "momentum": 12.15,
     "health": 44.46,
     "profitability": 19.87,
-    "technical": 38.7,
-    "risk": 21.68,
+    "technical": 32.57,
+    "risk": 20.78,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": -0.81,
     "eps_diluted": -0.81,
     "shares_outstanding": 317846644.0,
-    "market_cap": 7240546768.56797,
-    "pe_ratio_ttm": 102.12336768078943,
+    "market_cap": 7138835333.242706,
+    "pe_ratio_ttm": 100.68879172415664,
     "goodwill": 988900000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 5.705286407649869,
+        "value": 5.679707747396843,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 113.87447812869834,
+        "value": 114.07190610502718,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 46.65257624514282,
+        "value": 46.102417557869764,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,11 +76,12 @@
       }
     },
     "median": 38.3063708319312,
-    "max": 113.87447812869834,
-    "low": 5.705286407649869,
-    "high": 113.87447812869834,
-    "mos_pct": 40.5320833273595,
+    "max": 46.102417557869764,
+    "low": 5.679707747396843,
+    "high": 114.07190610502718,
+    "mos_pct": 41.36745769257112,
     "valuation_warnings": [
+      "extreme_multiples_pb_estimate",
       "value_trap_risk"
     ]
   },
@@ -101,6 +102,7 @@
   },
   "risk_flags": [],
   "valuation_warnings": [
+    "extreme_multiples_pb_estimate",
     "value_trap_risk"
   ],
   "has_history": true,
@@ -118,11 +120,11 @@
       "Quality": 51.68,
       "Value": 49.84,
       "Growth": 48.56,
-      "Momentum": 51.87,
+      "Momentum": 51.39,
       "Health": 56.53,
       "Profitability": 54.33,
-      "Technical": 57.68,
-      "Risk": 48.94
+      "Technical": 57.07,
+      "Risk": 49.17
     }
   },
   "beneish_m_score": null,
