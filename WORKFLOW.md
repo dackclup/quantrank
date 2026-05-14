@@ -589,6 +589,36 @@ These are planning stubs at `.claude/skills/phase-4/<name>/PLAN.md`:
   of badge/chart — can ship in any order. See
   [`loss-chance/PLAN.md`](.claude/skills/phase-4/loss-chance/PLAN.md).
 
+### Foundational PLANs added 2026-05-14 (P1 audit backfill)
+
+These close gaps surfaced by the comprehensive planning audit on
+2026-05-14. They're foundational for everything after v1.0:
+
+- **v1-to-v1-1-migration** — defines what v1.0 promises (schema
+  contract, frozen formulas, defense thresholds), what v1.1 may /
+  may not change, the suggested PR sequencing for Phase 4 work
+  (4a-4f), deprecation policy (additive-only within a major), and
+  rollback procedure. ~100 LOC scaffolding (field-deletion CI guard +
+  changelog + release notes template). See
+  [`v1-to-v1-1-migration/PLAN.md`](.claude/skills/phase-4/v1-to-v1-1-migration/PLAN.md).
+- **schema-versioning** — semver applied to the JSON output schema.
+  Table of when a change is patch / minor / major. Extends
+  `schema_check` to detect field deletions / type narrowing against
+  the most recent `v*.0.0` tag. ~130 LOC. See
+  [`schema-versioning/PLAN.md`](.claude/skills/phase-4/schema-versioning/PLAN.md).
+- **backtest-infrastructure** (Phase 5 foundational) — the shared
+  rolling-window + purged + embargoed CV harness that ALL Phase 5
+  ML stubs depend on. Metrics: rank IC + Sharpe + Deflated Sharpe
+  (Bailey 2014) + PBO (Bailey 2016). Hard gate: any ML feature with
+  DSR < 0 OR PBO > 0.5 is excluded from the composite. ~900 LOC,
+  ~8-9 days. **Must land before any other Phase 5 stub.** See
+  [`backtest-infrastructure/PLAN.md`](.claude/skills/phase-5/backtest-infrastructure/PLAN.md).
+- **Effort estimates backfill** — `docs/PHASE_4_8_EFFORT_BACKFILL.md`
+  has rough LOC + calendar estimates for all 28 Phase 4-8 stubs.
+  Grand total: ~6,000 LOC, ~11-13 weeks full-time
+  (3-4 months mobile-only). Aligns with this doc's "Phase Overview"
+  headline + adds the UX trio + scaffolding overhead.
+
 ---
 
 # PHASE 5 — ML Meta-Learner Enhanced (Option B)
