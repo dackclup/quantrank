@@ -12,8 +12,8 @@ sub-directories like `phase-N/`. So this directory has two
 populations:
 
 - **Loaded skills** (sit flat under `.claude/skills/<name>/SKILL.md`) —
-  9 QuantRank cross-phase skills + 17 vendored Anthropic skills =
-  26 invocation-triggerable skills total
+  10 QuantRank cross-phase skills + 17 vendored Anthropic skills =
+  27 invocation-triggerable skills total
 - **Planning documents** (nested under `phase-N/<name>/PLAN.md`) —
   roadmap docs for skills that don't yet exist. Renamed from
   `SKILL.md` to `PLAN.md` to honestly reflect that Claude Code does
@@ -25,7 +25,7 @@ populations:
 ├── README.md                                  # this file
 ├── THIRD_PARTY_NOTICES.md                     # license attribution for vendored skills
 │
-├── verify-production-output/SKILL.md          ┐ 9 QuantRank cross-phase
+├── verify-production-output/SKILL.md          ┐ 10 QuantRank cross-phase
 ├── schema-check/SKILL.md                      │ skills — loaded by
 ├── defense-scorecard/SKILL.md                 │ Claude Code at session
 ├── top5-rotation-audit/SKILL.md               │ start
@@ -33,7 +33,8 @@ populations:
 ├── phase-status-bump/SKILL.md                 │
 ├── pr-iteration-flow/SKILL.md                 │
 ├── security-check/SKILL.md                    │
-├── pr-quality-gate/SKILL.md                   ┘
+├── pr-quality-gate/SKILL.md                   │
+├── frontend-design-system/SKILL.md            ┘ (added PR 4d aftermath)
 │
 ├── algorithmic-art/SKILL.md                   ┐ 17 vendored Anthropic
 ├── brand-guidelines/SKILL.md                  │ skills (full upstream
