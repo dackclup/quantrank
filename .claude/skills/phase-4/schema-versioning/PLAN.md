@@ -98,8 +98,10 @@ Tag history (anticipated):
 | Update SKILL.md Table 2 with this versioning rule | ~30 | 0.5 day |
 | **Total** | **~130 LOC** | **~1.5 days** |
 
-## Open questions
+## Decisions (formerly open questions — locked 2026-05-14)
 
-1. Should the phase suffix be stripped at major tags? `v1.0.0` (clean) vs `v1.0.0-phase3d` (audit trail)
-2. How long to maintain backward-compat for deprecated fields — 1 minor cycle (~weeks) or 1 major cycle (~months/years)?
-3. Should `schema_check` block CI on breaking changes, or just warn + require explicit `--allow-breaking` flag?
+Per `phase-4-kickoff-checklist/PLAN.md` §2:
+
+1. ~~Strip phase suffix at major tags?~~ → **Yes — strip locked**. `v1.0.0` is the clean form on major tags. Phase suffix (`-phase3d`) lives in the changelog and pre-release tag form (`v1.0.0-rc.phase3d`), not the published version string
+2. ~~Deprecated field retention?~~ → **One minor cycle locked**. Deprecation in v1.X means: keep both populated through v1.(X+1); remove only at next major (v2.0). Phase 4 is strict additive (no deprecations expected)
+3. ~~`schema_check` breaking-change CI behavior?~~ → **CI-blocking with `--allow-breaking` escape hatch locked**. Default: fail. Override: explicit `python -m compute.output.schema_check --allow-breaking` flag + corresponding release-note entry in CHANGELOG.md required for the override commit to pass review

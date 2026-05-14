@@ -16,18 +16,19 @@ Toggle buttons above the chart: **`1D` `5D` `1M` `6M` `YTD` `1Y` `5Y`**
 
 Default: `1Y` (matches current behavior).
 
-### 2. Target price line (Strong Buy / Buy only)
+### 2. Target price line (Bullish / Lean Bullish only)
 
 For tickers whose `recommendation` field (added in
-[`recommendation-badge/PLAN.md`](../recommendation-badge/PLAN.md)) is
-`strong_buy` or `buy`:
+[`recommendation-badge/PLAN.md`](../recommendation-badge/PLAN.md), Option B
+locked per `phase-4-kickoff-checklist/PLAN.md` §1) is
+`bullish` or `lean_bullish`:
 
 - **Black solid horizontal line** across the chart at the target-price
   level
 - **Black numeric label** at the right edge showing the target value
   (e.g., `$XXX.XX`)
 
-Skip rendering for `hold` and `sell` (no target line, no label) —
+Skip rendering for `neutral` and `cautious` (no target line, no label) —
 showing a target price below current price would be confusing UX.
 
 ### 3. Fair price line (Jitta-style, all tickers)
@@ -51,13 +52,9 @@ needed — no new modeling:
 
 | Chart element | Source field | Notes |
 |---|---|---|
-| Black solid (target price) | `StockDetail.fair_price.max` | Upper bound across the 6 methods (excludes outliers per the `_classify_outliers` rule). Represents "if the optimistic methods are right, this is where it could go" |
+| Black solid (target price) | `StockDetail.fair_price.max` | **LOCKED** per `phase-4-kickoff-checklist/PLAN.md` §1. Upper bound across the 6 methods (excludes outliers per the `_classify_outliers` rule). Represents "if the optimistic methods are right, this is where it could go". Conservative vs `fair_price.high` (which includes outliers) |
 | Gray dashed (fair price) | `StockDetail.fair_price.median` | Robust central tendency across all applicable methods. Same value used for `MoS%` calculation |
 | Numeric labels | rounded to 2 decimals | Match the `current_price` formatting elsewhere |
-
-Open design question: should the target-price line be `fair_price.max`
-or `fair_price.high` (which includes outliers)? `max` is the more
-conservative choice — recommended.
 
 ## Time-period data requirements
 
@@ -143,7 +140,7 @@ LOC estimate: **~180 LOC** for Phase 4.1 (chart + selector + lines), **~50 LOC**
   }}
 />
 
-{recommendation === "strong_buy" || recommendation === "buy" ? (
+{recommendation === "bullish" || recommendation === "lean_bullish" ? (
   <ReferenceLine
     y={fairPriceMax}
     stroke="#0f172a"          // slate-900 (near-black, not pure black for readability)
@@ -170,8 +167,8 @@ existing soft-red/soft-green from the page header.
 - [ ] Disabled periods (`1D`, `5D`, `5Y` in Phase 4.1) show tooltip
   "available in v1.X" on hover
 - [ ] Recommendation badge → target-price line rendering:
-  - `strong_buy` / `buy` → black line + label visible
-  - `hold` / `sell` → no black line
+  - `bullish` / `lean_bullish` → black line + label visible
+  - `neutral` / `cautious` → no black line
   - `recommendation` field missing (legacy data) → no black line
 - [ ] Fair price line:
   - Renders for all tickers with non-null `fair_price.median`
@@ -181,7 +178,7 @@ existing soft-red/soft-green from the page header.
 - [ ] Mobile: labels don't overflow chart bounds; toggle buttons wrap
   cleanly at narrow viewports
 - [ ] Distribution sanity: target-price line is ABOVE current price for
-  Strong Buy / Buy tickers (else the rubric in
+  Bullish / Lean Bullish tickers (else the rubric in
   `recommendation-badge/PLAN.md` is broken)
 
 ## Effort estimate
@@ -207,14 +204,9 @@ Fits as **one PR for Phase 4.1**, separate PRs for 4.2 / 4.3.
   `recommendation-badge/PLAN.md` Option A/B/C/D — the chart's color
   story should align (soft-palette + "almost-black" not pure black)
 
-## Open questions for implementer
+## Decisions (formerly open questions — locked 2026-05-14)
 
-1. **Target line source**: `fair_price.max` (recommended) vs
-   `fair_price.high` vs `fair_price.median × 1.X` formula
-2. **5Y data source**: yfinance `period="5y"` (free) vs cached
-   alternative — yfinance has been unreliable per Honest Limitations
-3. **Intraday support**: defer entirely (cleanest), or commit to a
-   specific data source
-4. **Fair-price line for `sell` tickers**: show it (transparent to
-   user — they see overvaluation) or hide it (cleaner — no clutter
-   when stock is "below" the line)
+1. ~~Target line source?~~ → **`fair_price.max` locked** (per `phase-4-kickoff-checklist/PLAN.md` §1). Conservative; excludes outliers
+2. ~~5Y data source?~~ → **yfinance `period="5y"` locked** for Phase 4.2; defer alternative-source decision to Phase 6+ if yfinance reliability degrades further. Existing `yfinance==0.2.55` pin protects ingest
+3. ~~Intraday support (1D / 5D)?~~ → **Defer entirely** locked for Phase 4. Phase 4.3 (intraday) is a separate architecture decision; Phase 4 ships 4.1 + 4.2 only. Phase 4.1 disables `1D` / `5D` buttons with "available in v1.X" tooltip
+4. ~~Fair-price line for `cautious` tickers?~~ → **Show it** locked. Transparent to user (they see overvaluation explicitly); matches the "honest model output" framing

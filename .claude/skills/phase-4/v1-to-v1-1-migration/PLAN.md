@@ -54,23 +54,28 @@ Per WORKFLOW.md Phase 4 + the Phase 4 UX trio:
 - `0.6.0-phase3d` → `1.1.0-phase4` (or `1.0.1` if only the 3 UX trio fields land)
 - Snapshot regeneration is the canary
 
-## Sequencing
+## Sequencing (LOCKED 2026-05-14)
 
-Suggested PR order (top of v1.1 cycle):
+Per `phase-4-kickoff-checklist/PLAN.md` §3 — PR order + schema-bump staircase:
 
-1. **PR 4a — Workflow cache improvements** (1-2 days)
-   - Add cache steps for 10-K text + history + prices + universe in `compute-rankings.yml`
-   - Tag: `v1.0.1-perf` (patch release)
-2. **PR 4b — `_avg_3y_roe` per-year equity** (1 day, issue #11)
-   - Add `stockholders_equity` to `_ANNUAL_TAGS`
-   - Rewrite `_avg_3y_roe` to use per-year equity
-   - Tag: `v1.0.2-issue-11`
-3. **PR 4c — recommendation-badge** (~230 LOC, 1-2 days)
-4. **PR 4d — loss-chance** (~180 LOC, 1-2 days)
-5. **PR 4e — price-chart-enhancements** (depends on 4c — recommendation field)
-6. **PR 4f — 8-K Tier-2 re-enable** (gated by going-concern FP rate ≤ 5%)
-7. **PRs 4g-...** — OSAP / JKP / Qlib / IPCA (factor consolidation, multi-week)
-8. **Tag**: `v1.1.0-phase4` when all of above pass acceptance
+| PR | Scope | Tag | Schema bump |
+|---|---|---|---|
+| 4a | Workflow cache improvements (per `workflow-cache-improvements/PLAN.md`) | `v1.0.1-perf` | **patch** — no schema change |
+| 4b | Defense infrastructure: cross-source + PBO+DSR + IC-decay (per `defense-infrastructure/PLAN.md`) | `v1.0.2-defense` | **patch** — adds `cross_source_disagreement` risk flag (additive) |
+| 4c | `_avg_3y_roe` per-year equity fix (issue #11) | `v1.0.3-fix` | **patch** — bug fix only |
+| 4d | recommendation-badge (`StockDetail.recommendation` field, Option B locked) | `v1.1.0-rc1` | **minor** — first feature; field additive |
+| 4e | loss-chance (`StockDetail.loss_chance_pct` field, Option D locked) | `v1.1.0-rc2` | **minor** — field additive |
+| 4f | price-chart-enhancements (4.1 phase, depends on 4d) | `v1.1.0-rc3` | **patch** — no schema change (frontend-only) |
+| 4g | 8-K Tier-2 re-enable (gated by going-concern FP rate ≤ 5%) | `v1.1.0-rc4` | **patch** — no schema change |
+| 4h | OSAP integration (per `osap-integration/PLAN.md`) | `v1.1.0-rc5` | **minor** — adds `osap_signals` + `osap_blended_pillars` |
+| 4i | JKP integration (per `jkp-integration/PLAN.md`) | `v1.1.0-rc6` | **minor** — adds `jkp_theme_exposures` + `jkp_blended_pillars` |
+| 4j | Qlib Alpha158 (per `alpha158-fit/PLAN.md`) | `v1.1.0-rc7` | **minor** — adds Alpha158 feature dict |
+| 4k | IPCA factor (per `ipca-factor-fit/PLAN.md`) | `v1.1.0-rc8` | **minor** — adds IPCA exposures dict |
+| 4l | Final defense tuning (#7) + Phase 4 acceptance close | `v1.1.0-phase4` | **(final)** |
+
+Schema-bump staircase rationale: `v1.0.1` / `v1.0.2` / `v1.0.3` are non-feature patch releases (perf / defense infra / bug fix — no new user-visible JSON fields). First user-facing additive feature (`recommendation` field at PR 4d) jumps to `v1.1.0-rc1`. Rest of Phase 4 stays on the `v1.1.0-rcN` series until Phase 4 acceptance criteria pass, then tag clean `v1.1.0-phase4`.
+
+Per `phase-4-kickoff-checklist/PLAN.md` §2 decision: phase suffix stripped at major tags; here we keep phase suffix at Phase 4 close (`v1.1.0-phase4`) because it's a **minor** tag, not a major. Major (`v2.0`) cleans the suffix.
 
 ## Deprecation & breaking-change policy
 
@@ -110,8 +115,8 @@ The "annotate-and-veto-Top-N" pattern means even a buggy new annotation flag doe
 
 The migration scaffolding itself is small. The Phase 4 features it enables are large.
 
-## Open questions
+## Decisions (formerly open questions — locked 2026-05-14)
 
-1. Schema version naming: jump straight to `v1.1.0-phase4` or stair-step via `v1.0.1` / `v1.0.2` patch releases?
-2. Field-deletion CI guard: implement as part of `schema_check` (Python) or as a separate workflow step (yaml diff against `v1.0` tag)?
-3. Vercel deployment strategy during v1.1 development: keep `v1.0` tag pinned at a frozen preview URL, or always deploy main?
+1. ~~Stair-step or direct?~~ → **Stair-step locked**: `v1.0.1-perf` → `v1.0.2-defense` → `v1.0.3-fix` → `v1.1.0-rcN` series → `v1.1.0-phase4`. Per the Sequencing table above. Stair-step makes intermediate progress observable (each PR gets its own preview tag) and matches `phase-4-kickoff-checklist/PLAN.md` §3
+2. ~~Field-deletion CI guard implementation?~~ → **Extend `schema_check` (Python) locked**, NOT a separate workflow step. Per `schema-versioning/PLAN.md`'s `check_breaking_changes_since_last_major()` function. Single tool, single failure mode, easier debugging
+3. ~~Vercel deployment strategy?~~ → **Always deploy main locked**. `v1.0` tag remains reachable via git but does NOT get a frozen preview URL — Vercel deploys whatever's on main. Simpler ops; tag is the contract, deployment is current

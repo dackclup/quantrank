@@ -575,45 +575,78 @@ If fallback triggered → log in PHASE_STATUS.md, continue Phase 5 on Option B.
 - [ ] JKP factor returns merged into pillar aggregation
 - [ ] Qlib Alpha158 features generated for all 500 stocks
 - [ ] IPCA 5 latent factors fit and exposure outputs verified
-- [ ] All library factors pass IC > 0.01 walk-forward
-- [ ] Composite alpha lift ≥ 0.3% on backtest (vs Phase 3 baseline)
+- [ ] **Each library factor passes IC > 0.01 on walk-forward rolling 12-month evaluation** (locked 2026-05-14 — replaces "composite alpha lift ≥ 0.3%" criterion which is unreachable in Phase 4; full composite-alpha-lift gate moves to Phase 5 when backtest infrastructure lands. Per `phase-4-kickoff-checklist/PLAN.md` §7)
 - [ ] Compute time stays <60 min weekly
-- [ ] **Cross-source validator running weekly; <5% of universe flagged**
-- [ ] **PBO + DSR computed for every Phase 4 factor before integration**
-- [ ] **IC decay report published; baseline IC documented per pillar**
-- [ ] Tag `v1.1.0-phase4`
+- [ ] **Cross-source validator running weekly; <5% of universe flagged** (per `defense-infrastructure/PLAN.md` §1)
+- [ ] **PBO + DSR computed for every Phase 4 factor before integration; PBO ≤ 0.5 AND DSR > 0 required to accept** (per `defense-infrastructure/PLAN.md` §2)
+- [ ] **IC decay report published; baseline IC documented per pillar** (per `defense-infrastructure/PLAN.md` §3)
+- [ ] **Going-concern FP rate ≤ 5% at PR 4g (8-K Tier-2 re-enable gate)** (formal blocker; was informal target. Per `phase-4-kickoff-checklist/PLAN.md` §6)
+- [ ] Tag `v1.1.0-phase4` (per `v1-to-v1-1-migration/PLAN.md` sequencing — `v1.0.1-perf` → `v1.0.2-defense` → `v1.0.3-fix` → `v1.1.0-rc1..8` → `v1.1.0-phase4`)
+
+### Defense Acceptance Matrix (locked 2026-05-14)
+
+Per `phase-4-kickoff-checklist/PLAN.md` §8 — consolidates defense gates scattered across this WORKFLOW.md, `SKILL.md` Rule 13, and individual feature PLANs.
+
+| Defense | Mode | Activation gate | Veto status |
+|---|---|---|---|
+| Altman Z″ < 1.1 | Active veto | Standard Phase 0 spec | ✅ blocks Top-N badge |
+| Sloan accruals top decile | Active veto | Standard Phase 0 spec | ✅ blocks Top-N badge |
+| Net issuance top decile | Active veto | Standard Phase 0 spec | ✅ blocks Top-N badge |
+| Going-concern (10-K phrase) | Active veto | Mayew 2015 reimplementation | ✅ blocks Top-N badge |
+| `data_quality_input_corruption` | Active veto | Audit #6 (PR #48 expansion) | ✅ blocks Top-N badge |
+| Beneish M-score (Phase 3e) | Annotate-only | `beneish_high` valuation_warning | ⚠️ warns, no veto |
+| Dechow F-score (Phase 3e) | Annotate-only | `dechow_high` valuation_warning | ⚠️ warns, no veto |
+| Cross-source disagreement (PR 4b) | Annotate-only | 5% market-cap delta | ⚠️ warns, no veto |
+| IC-decay alert (PR 4b) | Monitor + manual review | 6-month threshold breach | ❌ no production veto; surface in `decay_report.json` |
+| PBO + DSR (PR 4b) | Pre-integration gate | PBO ≤ 0.5 AND DSR > 0 per factor | ✅ veto factor from being added to composite |
+
+Promotion path (Annotate → Active Veto): FP rate ≤ 5% + academic citation + sector-specific exclusions documented + schema minor bump.
+
+### Phase 4 P0 audit close PLANs (added 2026-05-14)
+
+These 6 PLANs close the P0 gaps surfaced by the comprehensive Phase 4 planning audit:
+
+- **`workflow-cache-improvements/PLAN.md`** — PR 4a leadoff. Caches 10-K text + filings index + prices + universe. Reduces weekly compute from ~30 min to ~10 min steady-state. ~360 LOC, ~1.5 days
+- **`defense-infrastructure/PLAN.md`** — PR 4b. Three sections (cross-source validator + PBO+DSR gate + IC-decay monitor). Hard gates for Phase 4 factor work. ~820 LOC, ~5.5 days
+- **`osap-integration/PLAN.md`** — PR 4h. Chen-Zimmermann OSAP returns CSV + 100-signal subset replication + 50/50 DIY blending. ~1,160 LOC, ~9 days
+- **`jkp-integration/PLAN.md`** — PR 4i. Jensen-Kelly-Pedersen 13 theme cluster returns + exposure regression + pillar blending. CC BY-NC 4.0 license (educational static-site OK). ~610 LOC, ~6 days
+- **`phase-4-kickoff-checklist/PLAN.md`** — Pre-flight decision registry. Locks UX terminology (Option B / D / fair_price.max), library version pins, license re-verification, sequencing, acceptance metric, Defense Matrix
+- **`issue-remapping/PLAN.md`** — Maps every open issue to a Phase 4 PR. Closes #10 + #16 immediately; pins #7 / #11 / #14 / #15 / #17 / #18 to specific PRs; defers #31 / #41 to a separate Next.js chore PR
 
 ### UI / UX features queued for Phase 4 (post-v1.0)
 
 These are planning stubs at `.claude/skills/phase-4/<name>/PLAN.md`:
 
-- **recommendation-badge** — 4-tier indicator (Strong Buy / Buy / Hold /
-  Sell) next to every ticker on overview + detail pages, plus filter
-  control. Derived from composite + risk overlay + fair-price MoS
-  (deterministic — no new modeling). See
+- **recommendation-badge** — 4-tier indicator (**Bullish / Lean
+  Bullish / Neutral / Cautious** — Option B locked 2026-05-14 per
+  `phase-4-kickoff-checklist/PLAN.md` §1, avoiding FINRA/SEC-regulated
+  sell-side terminology) next to every ticker on overview + detail
+  pages, plus filter control. Derived from composite + risk overlay
+  + fair-price MoS (deterministic — no new modeling). See
   [`recommendation-badge/PLAN.md`](.claude/skills/phase-4/recommendation-badge/PLAN.md)
-  for the full spec including methodology, legal mitigations (Option B
-  neutral terminology recommended over literal sell-side labels), and
-  ~230 LOC effort estimate.
+  for the full spec, ~230 LOC effort estimate.
 - **price-chart-enhancements** — adds (a) time-period selector
   (`1D / 5D / 1M / 6M / YTD / 1Y / 5Y`) to the per-stock price chart,
   (b) gray dashed Jitta-style fair-price line at `fair_price.median`
   for all tickers, (c) black solid target-price line at
-  `fair_price.max` (with numeric label) **only** for tickers whose
-  `recommendation` is Strong Buy / Buy. Hard-depends on
-  recommendation-badge landing first. Phased rollout: 4.1 ships
-  `1M / 6M / YTD / 1Y` with both lines (~180 LOC); 4.2 extends to 5Y
-  daily ingest (~50 LOC); 4.3 (intraday `1D / 5D`) is a separate
-  architecture decision. See
+  `fair_price.max` (locked source — conservative; per
+  `phase-4-kickoff-checklist/PLAN.md` §1) with numeric label, **only**
+  for tickers whose `recommendation` is `bullish` or `lean_bullish`.
+  Hard-depends on recommendation-badge landing first. Phased rollout:
+  4.1 ships `1M / 6M / YTD / 1Y` with both lines (~180 LOC); 4.2
+  extends to 5Y daily ingest (~50 LOC); 4.3 (intraday `1D / 5D`) is
+  deferred to Phase 5+ (locked decision — separate architecture
+  decision). See
   [`price-chart-enhancements/PLAN.md`](.claude/skills/phase-4/price-chart-enhancements/PLAN.md).
 - **loss-chance** — adds a `Loss Chance %` chip directly after the
   Margin of Safety display on both the overview table and the detail
   page. Heuristic derivation (no new modeling) from composite + risk
   flags + valuation warnings + MoS. 5-95% clipped range with 5-band
-  color gradient. Same legal-naming concern as recommendation-badge —
-  PLAN recommends Option D ("Loss Chance" + heuristic footnote)
-  pending implementer / user decision. ~180 LOC effort. Independent
-  of badge/chart — can ship in any order. See
+  color gradient. **Option D locked** ("Loss Chance %" + tooltip +
+  small italic "heuristic" qualifier, per
+  `phase-4-kickoff-checklist/PLAN.md` §1) — addresses legal-naming
+  concern with explicit non-probability framing. ~180 LOC effort.
+  Independent of badge/chart — can ship in any order. See
   [`loss-chance/PLAN.md`](.claude/skills/phase-4/loss-chance/PLAN.md).
 
 ### Foundational PLANs added 2026-05-14 (P1 audit backfill)
