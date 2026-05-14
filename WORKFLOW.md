@@ -579,6 +579,15 @@ These are planning stubs at `.claude/skills/phase-4/<name>/PLAN.md`:
   daily ingest (~50 LOC); 4.3 (intraday `1D / 5D`) is a separate
   architecture decision. See
   [`price-chart-enhancements/PLAN.md`](.claude/skills/phase-4/price-chart-enhancements/PLAN.md).
+- **loss-chance** — adds a `Loss Chance %` chip directly after the
+  Margin of Safety display on both the overview table and the detail
+  page. Heuristic derivation (no new modeling) from composite + risk
+  flags + valuation warnings + MoS. 5-95% clipped range with 5-band
+  color gradient. Same legal-naming concern as recommendation-badge —
+  PLAN recommends Option D ("Loss Chance" + heuristic footnote)
+  pending implementer / user decision. ~180 LOC effort. Independent
+  of badge/chart — can ship in any order. See
+  [`loss-chance/PLAN.md`](.claude/skills/phase-4/loss-chance/PLAN.md).
 
 ---
 
