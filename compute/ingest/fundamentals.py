@@ -436,10 +436,25 @@ def _try_ttm_tags(facts, tags: list[str]) -> tuple[float | None, date | None]:
 _TTM_REVENUE_TAGS: list[str] = [
     "us-gaap:Revenues",
     "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+    # CrowdStrike + some other tech filers use the "Including" assessed-tax
+    # variant of the ASC 606 concept rather than the more common
+    # "Excluding" variant. Including = revenue gross of sales tax;
+    # the MAX-of-fresh heuristic picks whichever is consolidated.
+    "us-gaap:RevenueFromContractWithCustomerIncludingAssessedTax",
+    # Utilities (DUK, AEP, ED, etc.) tag operating revenue under this
+    # sector-specific concept. `us-gaap:Revenues` is often frozen at
+    # pre-2018 quarters for these filers.
+    "us-gaap:RegulatedAndUnregulatedOperatingRevenue",
     "us-gaap:SalesRevenueNet",
 ]
 _TTM_NET_INCOME_TAGS: list[str] = [
     "us-gaap:NetIncomeLoss",
+    # BKNG and some other filers tag NI under this longer concept while
+    # leaving the standard NetIncomeLoss frozen at 2012-2015. The MAX-of-
+    # fresh heuristic picks the right one — extending the chain is
+    # enough.
+    "us-gaap:NetIncomeLossAvailableToCommonStockholdersBasic",
+    "us-gaap:NetIncomeLossAvailableToCommonStockholdersDiluted",
     "us-gaap:NetIncome",
     "us-gaap:ProfitLoss",
 ]
