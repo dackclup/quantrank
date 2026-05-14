@@ -568,6 +568,26 @@ These are planning stubs at `.claude/skills/phase-4/<name>/PLAN.md`:
   for the full spec including methodology, legal mitigations (Option B
   neutral terminology recommended over literal sell-side labels), and
   ~230 LOC effort estimate.
+- **price-chart-enhancements** — adds (a) time-period selector
+  (`1D / 5D / 1M / 6M / YTD / 1Y / 5Y`) to the per-stock price chart,
+  (b) gray dashed Jitta-style fair-price line at `fair_price.median`
+  for all tickers, (c) black solid target-price line at
+  `fair_price.max` (with numeric label) **only** for tickers whose
+  `recommendation` is Strong Buy / Buy. Hard-depends on
+  recommendation-badge landing first. Phased rollout: 4.1 ships
+  `1M / 6M / YTD / 1Y` with both lines (~180 LOC); 4.2 extends to 5Y
+  daily ingest (~50 LOC); 4.3 (intraday `1D / 5D`) is a separate
+  architecture decision. See
+  [`price-chart-enhancements/PLAN.md`](.claude/skills/phase-4/price-chart-enhancements/PLAN.md).
+- **loss-chance** — adds a `Loss Chance %` chip directly after the
+  Margin of Safety display on both the overview table and the detail
+  page. Heuristic derivation (no new modeling) from composite + risk
+  flags + valuation warnings + MoS. 5-95% clipped range with 5-band
+  color gradient. Same legal-naming concern as recommendation-badge —
+  PLAN recommends Option D ("Loss Chance" + heuristic footnote)
+  pending implementer / user decision. ~180 LOC effort. Independent
+  of badge/chart — can ship in any order. See
+  [`loss-chance/PLAN.md`](.claude/skills/phase-4/loss-chance/PLAN.md).
 
 ---
 
