@@ -39,6 +39,38 @@ def _normalize_ticker(t: str) -> str:
     return t.strip().replace(".", "-").upper()
 
 
+# Wikipedia stores some company names with a parenthetical "The" suffix or
+# similar quirks ("Hartford (The)", "Lilly (Eli)") that read awkwardly in
+# the UI. PR 4c.2 normalizes these to the human-readable form. Add new
+# entries here as Wikipedia surfaces more — the function is the single
+# transform applied after `df["name"]` is populated.
+_NAME_OVERRIDES: dict[str, str] = {
+    # Inverted-prefix oddity: "Lilly (Eli)" → "Eli Lilly".
+    "Lilly (Eli)": "Eli Lilly",
+}
+
+
+def _normalize_company_name(name: str) -> str:
+    """Clean Wikipedia formatting quirks in company names.
+
+    Two pattern types:
+
+    1. ``"X (The)"`` → ``"The X"`` — Wikipedia sorts alphabetically by
+       primary noun, so "The Hartford" / "The Walt Disney Company" land
+       under H/W with "(The)" suffixed. We restore the natural form.
+    2. Explicit overrides in ``_NAME_OVERRIDES`` for one-off cases
+       (currently just "Lilly (Eli)" → "Eli Lilly").
+
+    Returns the input unchanged if no rule matches. Affects 13 of 502
+    S&P 500 constituents at the 2026-05-14 baseline.
+    """
+    if name in _NAME_OVERRIDES:
+        return _NAME_OVERRIDES[name]
+    if name.endswith(" (The)"):
+        return "The " + name[: -len(" (The)")]
+    return name
+
+
 def parse_sp500_html(html: str) -> pd.DataFrame:
     """Parse the S&P 500 Wikipedia page HTML into a DataFrame.
 
@@ -65,6 +97,7 @@ def parse_sp500_html(html: str) -> pd.DataFrame:
     df["wiki_ticker"] = df["wiki_ticker"].astype(str)
     df["ticker"] = df["wiki_ticker"].map(_normalize_ticker)
     df["ticker"] = df["ticker"].map(lambda t: TICKER_OVERRIDES.get(t, t))
+    df["name"] = df["name"].astype(str).map(_normalize_company_name)
     df["cik"] = df["cik"].astype(str).str.zfill(10)
     df = df[["ticker", "name", "sector", "sub_industry", "cik", "wiki_ticker"]]
     df = df.drop_duplicates(subset=["ticker"]).reset_index(drop=True)
