@@ -3,24 +3,24 @@
   "name": "Copart",
   "sector": "Industrials",
   "industry": "Diversified Support Services",
-  "market_cap": 31730801977.201218,
+  "market_cap": 31731376977.817245,
   "current_price": 32.94,
-  "rank": 173,
-  "composite_score": 53.94,
+  "rank": 161,
+  "composite_score": 54.71,
   "pillar_scores": {
-    "quality": 51.27,
-    "value": 75.53,
-    "growth": 47.78,
+    "quality": 58.86,
+    "value": 61.18,
+    "growth": 58.23,
     "momentum": 8.02,
-    "health": 95.08,
-    "profitability": 49.16,
+    "health": 90.66,
+    "profitability": 65.82,
     "technical": 43.38,
     "risk": 30.01,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": null,
+    "revenue": 4613517000.0,
     "net_income": 1557409000.0,
     "total_assets": 10594962000.0,
     "total_liabilities": 787728000.0,
@@ -31,75 +31,77 @@
     "free_cash_flow": 1408851000.0,
     "eps_basic": 0.78,
     "eps_diluted": 0.77,
-    "shares_outstanding": 963290932.0,
-    "market_cap": 31730801977.201218,
+    "shares_outstanding": 963308388.0,
+    "market_cap": 31731376977.817245,
     "pe_ratio_ttm": 42.779218995725955,
     "goodwill": 523473000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 13.40698012149826,
+        "value": 13.406858647779073,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 90.82430494700047,
+        "value": 44.856981748273355,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 43.61218847300715,
+        "value": 40.47384750646,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 63.080707608557624,
+        "value": 35.48121763498253,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 9.860160397594438,
+        "value": 9.859981722767099,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 13.479363943680726,
+        "value": 13.479119685684084,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 28.545776208343938,
-    "max": 90.82430494700047,
-    "low": 9.860160397594438,
-    "high": 90.82430494700047,
-    "mos_pct": -15.393599341259511,
+    "median": 24.480168660333305,
+    "max": 44.856981748273355,
+    "low": 9.859981722767099,
+    "high": 44.856981748273355,
+    "mos_pct": -34.55789085343866,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "revenue",
+      "gross_profit",
+      "cost_of_revenue",
       "research_and_development",
+      "interest_expense",
       "dividends_paid",
       "accounts_payable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 72,
-    "latest_period_end": "2026-01-31",
+    "latest_period_end": "2026-03-02",
     "latest_filed_date": "2026-03-03"
   },
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 5.612712442724416,
+  "tangible_book_value": 5.612610735410725,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -110,18 +112,18 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 0.24917621828728667,
   "entered_top5": false,
   "exited_top5": false
 }

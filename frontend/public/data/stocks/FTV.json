@@ -3,17 +3,17 @@
   "name": "Fortive",
   "sector": "Industrials",
   "industry": "Industrial Machinery & Supplies & Components",
-  "market_cap": 18158751440.429688,
+  "market_cap": 18114841309.6028,
   "current_price": 59.42,
-  "rank": 485,
-  "composite_score": 34.37,
+  "rank": 479,
+  "composite_score": 35.1,
   "pillar_scores": {
-    "quality": 16.14,
-    "value": 48.1,
-    "growth": 11.71,
+    "quality": 14.87,
+    "value": 45.15,
+    "growth": 14.87,
     "momentum": 69.57,
-    "health": 21.71,
-    "profitability": 35.86,
+    "health": 29.96,
+    "profitability": 44.3,
     "technical": 50.25,
     "risk": 53.85,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 4235400000.0,
-    "net_income": 543700000.0,
+    "net_income": 579200000.0,
     "total_assets": 11584100000.0,
     "total_liabilities": null,
     "stockholders_equity": 6083100000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 971300000.0,
     "eps_basic": 0.44,
     "eps_diluted": 0.44,
-    "shares_outstanding": 305600000.0,
-    "market_cap": 18158751440.429688,
+    "shares_outstanding": 304861021.0,
+    "market_cap": 18114841309.6028,
     "pe_ratio_ttm": 135.04545038396662,
     "goodwill": 7288500000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 51.56688940224527,
+        "value": 51.25802549272868,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 96.87414196338894,
+        "value": 77.19336228623993,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 50.594186534379936,
+        "value": 59.34593966897826,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -65,42 +65,37 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "non_positive_or_missing_tangible_book",
         "tier_used": null
       },
       "dcf": {
-        "value": 37.87795128096184,
+        "value": 37.96976692360398,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 51.080537968312605,
-    "max": 96.87414196338894,
-    "low": 37.87795128096184,
-    "high": 96.87414196338894,
-    "mos_pct": -16.326100961986782,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ]
+    "median": 55.30198258085347,
+    "max": 77.19336228623993,
+    "low": 37.96976692360398,
+    "high": 77.19336228623993,
+    "mos_pct": -7.446415835221021,
+    "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
       "total_liabilities",
-      "accounts_payable",
-      "property_plant_equipment"
+      "accounts_payable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
-    "latest_period_end": "2026-04-03",
+    "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -113,18 +108,18 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -3.1120423799757457,
+  "dechow_f_score": 0.5596828740958023,
   "entered_top5": false,
   "exited_top5": false
 }

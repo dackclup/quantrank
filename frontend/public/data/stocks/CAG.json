@@ -3,17 +3,17 @@
   "name": "Conagra Brands",
   "sector": "Consumer Staples",
   "industry": "Packaged Foods & Meats",
-  "market_cap": 8231649025.75478,
+  "market_cap": 6741179601.043716,
   "current_price": 14.09,
-  "rank": 471,
-  "composite_score": 36.05,
+  "rank": 492,
+  "composite_score": 32.38,
   "pillar_scores": {
-    "quality": 25.0,
-    "value": 55.32,
-    "growth": 60.76,
+    "quality": 16.67,
+    "value": 49.07,
+    "growth": 62.15,
     "momentum": 9.76,
-    "health": 17.69,
-    "profitability": 30.56,
+    "health": 24.92,
+    "profitability": 16.67,
     "technical": 62.7,
     "risk": 29.2,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 842000000.0,
     "eps_basic": -0.63,
     "eps_diluted": -0.63,
-    "shares_outstanding": 584219229.0,
-    "market_cap": 8231649025.75478,
+    "shares_outstanding": 478437156.0,
+    "market_cap": 6741179601.043716,
     "pe_ratio_ttm": null,
     "goodwill": 9730700000.0
   },
@@ -51,16 +51,16 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 70.16171001700383,
+        "value": 32.85838242746421,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 10.488116706866654,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "ev_ebitda_negative_equity_post_debt",
+        "tier_used": null
       },
       "rim": {
         "value": null,
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 7.237674717075286,
+        "value": 8.837918815324027,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 10.488116706866654,
-    "max": 70.16171001700383,
-    "low": 7.237674717075286,
-    "high": 70.16171001700383,
-    "mos_pct": -34.34251874183527,
+    "median": 20.84815062139412,
+    "max": 32.85838242746421,
+    "low": 8.837918815324027,
+    "high": 32.85838242746421,
+    "mos_pct": 32.4160669765648,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -88,8 +88,9 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "accounts_receivable",
-      "property_plant_equipment"
+      "research_and_development",
+      "interest_expense",
+      "accounts_receivable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 43,
@@ -112,12 +113,12 @@
   "pillar_baseline": {
     "label": "Consumer Staples median (n=36)",
     "values": {
-      "Quality": 56.08,
-      "Value": 49.07,
-      "Growth": 50.52,
+      "Quality": 49.65,
+      "Value": 51.39,
+      "Growth": 48.44,
       "Momentum": 39.14,
-      "Health": 38.65,
-      "Profitability": 52.08,
+      "Health": 39.29,
+      "Profitability": 53.94,
       "Technical": 57.99,
       "Risk": 51.44
     }

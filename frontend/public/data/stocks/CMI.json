@@ -3,25 +3,25 @@
   "name": "Cummins",
   "sector": "Industrials",
   "industry": "Construction Machinery & Heavy Transportation Equipment",
-  "market_cap": 157879326629.63867,
+  "market_cap": 97912903281.85211,
   "current_price": 709.57,
-  "rank": 304,
-  "composite_score": 48.0,
+  "rank": 122,
+  "composite_score": 56.78,
   "pillar_scores": {
-    "quality": 34.81,
-    "value": 22.15,
-    "growth": 58.86,
+    "quality": 49.37,
+    "value": 35.44,
+    "growth": 66.14,
     "momentum": 87.4,
-    "health": 65.66,
-    "profitability": 41.56,
+    "health": 76.77,
+    "profitability": 37.76,
     "technical": 68.03,
     "risk": 69.19,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": null,
-    "net_income": 1493000000.0,
+    "revenue": 33670000000.0,
+    "net_income": 2787000000.0,
     "total_assets": 34445000000.0,
     "total_liabilities": 21073000000.0,
     "stockholders_equity": 12351000000.0,
@@ -31,68 +31,64 @@
     "free_cash_flow": 2671000000.0,
     "eps_basic": 4.73,
     "eps_diluted": 4.71,
-    "shares_outstanding": 222500000.0,
-    "market_cap": 157879326629.63867,
+    "shares_outstanding": 137989067.0,
+    "market_cap": 97912903281.85211,
     "pe_ratio_ttm": 150.65180622594877,
     "goodwill": 2219000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 120.23359006440455,
+        "value": 152.67519504490772,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 552.0001115558528,
+        "value": 550.073680550165,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 379.48935770547655,
+        "value": 569.6666015751105,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 294.2443284729636,
+        "value": 613.3300324085709,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "value": 90.03160716631518,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 93.17842335278914,
+        "value": 150.24523063117445,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 294.2443284729636,
-    "max": 552.0001115558528,
-    "low": 93.17842335278914,
-    "high": 552.0001115558528,
-    "mos_pct": -141.14993515989448,
+    "median": 351.37443779753636,
+    "max": 613.3300324085709,
+    "low": 90.03160716631518,
+    "high": 613.3300324085709,
+    "mos_pct": -101.94127147435705,
     "valuation_warnings": [
-      "extreme_graham_estimate",
-      "extreme_dcf_estimate",
-      "value_trap_risk"
+      "extreme_rim_estimate"
     ]
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "revenue",
-      "accounts_receivable",
-      "property_plant_equipment"
+      "accounts_receivable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 9,
@@ -101,12 +97,10 @@
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_graham_estimate",
-    "extreme_dcf_estimate",
-    "value_trap_risk"
+    "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 35.68089887640449,
+  "tangible_book_value": 57.53354358139113,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -117,12 +111,12 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }

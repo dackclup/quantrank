@@ -3,25 +3,25 @@
   "name": "Loews Corporation",
   "sector": "Financials",
   "industry": "Multi-line Insurance",
-  "market_cap": 35035551557.012115,
+  "market_cap": 21416424678.61406,
   "current_price": 104.08,
-  "rank": 343,
-  "composite_score": 46.07,
+  "rank": 257,
+  "composite_score": 50.45,
   "pillar_scores": {
-    "quality": 37.33,
-    "value": 36.67,
-    "growth": 44.33,
+    "quality": 36.0,
+    "value": 59.78,
+    "growth": 46.67,
     "momentum": 62.6,
-    "health": 56.12,
-    "profitability": 47.11,
+    "health": 52.11,
+    "profitability": 41.56,
     "technical": 50.75,
     "risk": 82.44,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 3186000000.0,
-    "net_income": 1634000000.0,
+    "revenue": 18515000000.0,
+    "net_income": 1734000000.0,
     "total_assets": 85652000000.0,
     "total_liabilities": 66061000000.0,
     "stockholders_equity": 18704000000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": 1930000000.0,
     "eps_basic": 1.63,
     "eps_diluted": 1.63,
-    "shares_outstanding": 336621358.0,
-    "market_cap": 35035551557.012115,
+    "shares_outstanding": 205768873.0,
+    "market_cap": 21416424678.61406,
     "pe_ratio_ttm": 63.85276185954276,
     "goodwill": 348000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 91.94308266574036,
+        "value": 117.59803231245509,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 87.38517638253504,
+        "value": 115.10657216731299,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 115.27317226305598,
+        "value": 183.63257668696838,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 91.94308266574036,
-    "max": 115.27317226305598,
-    "low": 87.38517638253504,
-    "high": 115.27317226305598,
-    "mos_pct": -13.200470131546673,
+    "median": 117.59803231245509,
+    "max": 183.63257668696838,
+    "low": 115.10657216731299,
+    "high": 183.63257668696838,
+    "mos_pct": 11.495116215451059,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -90,20 +90,21 @@
     "missing_metrics": [
       "gross_profit",
       "operating_income",
+      "cost_of_revenue",
       "research_and_development",
       "sga_expense",
+      "depreciation_and_amortization",
       "current_assets",
       "current_liabilities",
       "inventory",
       "accounts_receivable",
       "accounts_payable",
       "ebitda",
-      "intangibles_net",
-      "property_plant_equipment"
+      "intangibles_net"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 10,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-04"
   },
   "risk_flags": [],
@@ -111,7 +112,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 54.53011095035746,
+  "tangible_book_value": 89.20688407522162,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -123,11 +124,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

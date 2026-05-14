@@ -3,17 +3,17 @@
   "name": "MGM Resorts",
   "sector": "Consumer Discretionary",
   "industry": "Casinos & Gaming",
-  "market_cap": 9571222913.0009,
+  "market_cap": 9571394662.3102,
   "current_price": 37.41,
-  "rank": 327,
-  "composite_score": 46.82,
+  "rank": 271,
+  "composite_score": 49.92,
   "pillar_scores": {
-    "quality": 36.72,
-    "value": 69.44,
-    "growth": 41.67,
+    "quality": 41.93,
+    "value": 76.74,
+    "growth": 43.75,
     "momentum": 64.69,
-    "health": 34.38,
-    "profitability": 22.92,
+    "health": 31.43,
+    "profitability": 23.96,
     "technical": 33.91,
     "risk": 32.9,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 17715319000.0,
-    "net_income": 182444000.0,
+    "net_income": 468933000.0,
     "total_assets": 41402158000.0,
     "total_liabilities": 38070154000.0,
     "stockholders_equity": 2433422000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 1554538000.0,
     "eps_basic": 0.49,
     "eps_diluted": 0.48,
-    "shares_outstanding": 255846644.0,
-    "market_cap": 9571222913.0009,
+    "shares_outstanding": 255851235.0,
+    "market_cap": 9571394662.3102,
     "pe_ratio_ttm": 77.93749968210857,
     "goodwill": 4885382000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 33.516520624575406,
+        "value": 40.15423183955782,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 60.93827877627665,
+        "value": 56.43516422582599,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 64.04663187649119,
+        "value": 82.01696927913694,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 42.529840168700986,
+        "value": 42.52907701234486,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 51.734059472488816,
-    "max": 64.04663187649119,
-    "low": 33.516520624575406,
-    "high": 64.04663187649119,
-    "mos_pct": 27.687870952199233,
+    "median": 49.48212061908542,
+    "max": 82.01696927913694,
+    "low": 40.15423183955782,
+    "high": 82.01696927913694,
+    "mos_pct": 24.396934934548973,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -88,12 +88,11 @@
     "missing_metrics": [
       "gross_profit",
       "cost_of_revenue",
-      "research_and_development",
-      "property_plant_equipment"
+      "research_and_development"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [
@@ -112,18 +111,18 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 45.18,
-      "Value": 49.31,
-      "Growth": 51.04,
+      "Quality": 46.35,
+      "Value": 49.13,
+      "Growth": 51.69,
       "Momentum": 37.92,
-      "Health": 48.37,
-      "Profitability": 51.22,
+      "Health": 43.72,
+      "Profitability": 52.6,
       "Technical": 32.16,
       "Risk": 40.54
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 0.47141875658741905,
   "entered_top5": false,
   "exited_top5": false
 }

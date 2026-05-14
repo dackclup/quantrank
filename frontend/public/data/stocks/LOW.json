@@ -3,17 +3,17 @@
   "name": "Lowe's",
   "sector": "Consumer Discretionary",
   "industry": "Home Improvement Retail",
-  "market_cap": 123672448287.96387,
+  "market_cap": 123465981213.87206,
   "current_price": 220.45,
-  "rank": 277,
-  "composite_score": 49.38,
+  "rank": 400,
+  "composite_score": 43.01,
   "pillar_scores": {
-    "quality": 44.79,
-    "value": 69.79,
+    "quality": 42.71,
+    "value": 53.3,
     "growth": 37.76,
     "momentum": 35.36,
-    "health": 46.2,
-    "profitability": 67.71,
+    "health": 34.38,
+    "profitability": 53.12,
     "technical": 32.27,
     "risk": 46.91,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 7651000000.0,
     "eps_basic": 11.87,
     "eps_diluted": 11.85,
-    "shares_outstanding": 561000000.0,
-    "market_cap": 123672448287.96387,
+    "shares_outstanding": 560063429.0,
+    "market_cap": 123465981213.87206,
     "pe_ratio_ttm": 18.603375269893856,
     "goodwill": 3945000000.0
   },
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 855.1894398153262,
+        "value": 260.32680504503924,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 737.647190103748,
+        "value": 206.78654379525852,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 106.08914652659648,
+        "value": 106.2665550358951,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 737.647190103748,
-    "max": 855.1894398153262,
-    "low": 106.08914652659648,
-    "high": 855.1894398153262,
-    "mos_pct": 70.11443954429807,
+    "median": 206.78654379525852,
+    "max": 260.32680504503924,
+    "low": 106.2665550358951,
+    "high": 260.32680504503924,
+    "mos_pct": -6.607515606292055,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -89,11 +89,12 @@
   "data_quality": {
     "missing_metrics": [
       "research_and_development",
+      "interest_expense",
       "accounts_receivable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 52,
-    "latest_period_end": "2026-01-30",
+    "latest_period_end": "2026-03-19",
     "latest_filed_date": "2026-03-23"
   },
   "risk_flags": [
@@ -114,12 +115,12 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 45.18,
-      "Value": 49.31,
-      "Growth": 51.04,
+      "Quality": 46.35,
+      "Value": 49.13,
+      "Growth": 51.69,
       "Momentum": 37.92,
-      "Health": 48.37,
-      "Profitability": 51.22,
+      "Health": 43.72,
+      "Profitability": 52.6,
       "Technical": 32.16,
       "Risk": 40.54
     }

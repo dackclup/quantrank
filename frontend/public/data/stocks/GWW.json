@@ -3,17 +3,17 @@
   "name": "W. W. Grainger",
   "sector": "Industrials",
   "industry": "Industrial Machinery & Supplies & Components",
-  "market_cap": 137386549846.92297,
+  "market_cap": 59150954986.48596,
   "current_price": 1252.85,
-  "rank": 86,
-  "composite_score": 59.06,
+  "rank": 22,
+  "composite_score": 65.61,
   "pillar_scores": {
-    "quality": 83.86,
-    "value": 15.82,
-    "growth": 56.33,
+    "quality": 91.77,
+    "value": 31.86,
+    "growth": 55.7,
     "momentum": 75.05,
-    "health": 68.13,
-    "profitability": 61.6,
+    "health": 69.72,
+    "profitability": 72.57,
     "technical": 57.22,
     "risk": 66.5,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 18378000000.0,
-    "net_income": 1782000000.0,
+    "net_income": 1889000000.0,
     "total_assets": 9473000000.0,
     "total_liabilities": null,
     "stockholders_equity": 3930000000.0,
@@ -31,60 +31,57 @@
     "free_cash_flow": 1379000000.0,
     "eps_basic": 11.67,
     "eps_diluted": 11.65,
-    "shares_outstanding": 109659219.0,
-    "market_cap": 137386549846.92297,
+    "shares_outstanding": 47213119.0,
+    "market_cap": 59150954986.48596,
     "pe_ratio_ttm": 107.54077043656116,
     "goodwill": 358000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 157.90452173392146,
+        "value": 240.6499606106458,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 1428.7559674944198,
+        "value": 1079.454858664533,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 158.99010302086378,
+        "value": 293.25427316535973,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 482.189190554927,
+        "value": 1097.087171325857,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "rim": {
-        "value": 124.85124629611266,
+        "value": 289.98486967167656,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 141.23850267530986,
+        "value": 328.0466155202305,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 158.44731237739262,
-    "max": 1428.7559674944198,
-    "low": 124.85124629611266,
-    "high": 1428.7559674944198,
-    "mos_pct": -690.7044662277876,
+    "median": 310.65044434279514,
+    "max": 1097.087171325857,
+    "low": 240.6499606106458,
+    "high": 1097.087171325857,
+    "mos_pct": -303.29894851315527,
     "valuation_warnings": [
-      "extreme_graham_estimate",
-      "extreme_multiples_pb_estimate",
-      "extreme_rim_estimate",
-      "extreme_dcf_estimate"
+      "extreme_graham_estimate"
     ]
   },
   "top5_factors": [],
@@ -93,23 +90,20 @@
     "missing_metrics": [
       "total_liabilities",
       "research_and_development",
-      "accounts_payable",
-      "property_plant_equipment"
+      "interest_expense",
+      "accounts_payable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_graham_estimate",
-    "extreme_multiples_pb_estimate",
-    "extreme_rim_estimate",
-    "extreme_dcf_estimate"
+    "extreme_graham_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 30.129705738648386,
+  "tangible_book_value": 69.98054926216588,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -120,17 +114,17 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }
   },
-  "beneish_m_score": null,
+  "beneish_m_score": -2.4133730633726405,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false

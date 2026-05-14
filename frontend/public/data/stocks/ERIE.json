@@ -3,17 +3,17 @@
   "name": "Erie Indemnity",
   "sector": "Financials",
   "industry": "Insurance Brokers",
-  "market_cap": null,
+  "market_cap": 540581.729309082,
   "current_price": 212.66,
-  "rank": 145,
-  "composite_score": 55.65,
+  "rank": 73,
+  "composite_score": 59.63,
   "pillar_scores": {
-    "quality": 66.67,
-    "value": 57.67,
-    "growth": 65.67,
+    "quality": 64.0,
+    "value": 81.78,
+    "growth": 60.67,
     "momentum": 18.87,
-    "health": 77.45,
-    "profitability": 46.44,
+    "health": 75.96,
+    "profitability": 47.33,
     "technical": 39.64,
     "risk": 30.61,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 536999000.0,
     "eps_basic": null,
     "eps_diluted": 491.0,
-    "shares_outstanding": null,
-    "market_cap": null,
+    "shares_outstanding": 2542.0,
+    "market_cap": 540581.729309082,
     "pe_ratio_ttm": 0.43311609707150583,
     "goodwill": null
   },
@@ -54,7 +54,7 @@
         "value": null,
         "applicable": false,
         "reason": "data_quality_input_corruption",
-        "tier_used": null
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
         "value": null,
@@ -89,12 +89,14 @@
   "data_quality": {
     "missing_metrics": [
       "eps_basic",
-      "shares_outstanding",
       "gross_profit",
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
+      "depreciation_and_amortization",
+      "interest_expense",
       "inventory",
+      "ebitda",
       "goodwill",
       "property_plant_equipment"
     ],
@@ -103,12 +105,14 @@
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-23"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "data_quality_input_corruption"
+  ],
   "valuation_warnings": [
     "data_quality_input_corruption"
   ],
   "has_history": true,
-  "tangible_book_value": null,
+  "tangible_book_value": 907444.5318646735,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -120,11 +124,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

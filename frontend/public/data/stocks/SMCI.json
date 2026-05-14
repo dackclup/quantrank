@@ -3,17 +3,17 @@
   "name": "Supermicro",
   "sector": "Information Technology",
   "industry": "Technology Hardware, Storage & Peripherals",
-  "market_cap": 19244096000.0,
+  "market_cap": 19245391424.0,
   "current_price": 32.0,
-  "rank": 132,
-  "composite_score": 56.12,
+  "rank": 268,
+  "composite_score": 50.06,
   "pillar_scores": {
-    "quality": 51.03,
-    "value": 88.81,
-    "growth": 49.14,
+    "quality": 34.25,
+    "value": 84.7,
+    "growth": 52.23,
     "momentum": 6.77,
-    "health": 87.09,
-    "profitability": 33.11,
+    "health": 83.35,
+    "profitability": 24.66,
     "technical": 69.27,
     "risk": 23.17,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 33700206000.0,
-    "net_income": 1247391000.0,
+    "net_income": 1288795000.0,
     "total_assets": 23452029000.0,
     "total_liabilities": 15876438000.0,
     "stockholders_equity": 7575430000.0,
@@ -31,69 +31,68 @@
     "free_cash_flow": 825311000.0,
     "eps_basic": 1.76,
     "eps_diluted": 1.59,
-    "shares_outstanding": 601378000.0,
-    "market_cap": 19244096000.0,
+    "shares_outstanding": 601418482.0,
+    "market_cap": 19245391424.0,
     "pe_ratio_ttm": 20.12578616352201,
     "goodwill": null
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 37.68252522410947,
+        "value": 37.681256981028554,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 68.24853860541943,
+        "value": 79.19873869799046,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 137.78831871312224,
+        "value": 131.96674724111378,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 95.34277797193924,
+        "value": 69.3426372303249,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "rim": {
-        "value": 14.096817843369342,
+        "value": 14.095868974325548,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 15.3390616786868,
+        "value": 15.338029193132297,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 52.96553191476445,
-    "max": 137.78831871312224,
-    "low": 14.096817843369342,
-    "high": 137.78831871312224,
-    "mos_pct": 39.5833500709547,
+    "median": 53.511947105676725,
+    "max": 131.96674724111378,
+    "low": 14.095868974325548,
+    "high": 131.96674724111378,
+    "mos_pct": 40.200269788715396,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "income_before_tax",
       "dividends_paid",
       "goodwill",
       "intangibles_net"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 3,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-11"
   },
   "risk_flags": [
@@ -104,7 +103,7 @@
     "dechow_high"
   ],
   "has_history": true,
-  "tangible_book_value": 12.596786048042995,
+  "tangible_book_value": 12.595938147441235,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -115,18 +114,18 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }
   },
-  "beneish_m_score": -1.2315085587052463,
-  "dechow_f_score": 6.651454920961679,
+  "beneish_m_score": -0.8324584836047407,
+  "dechow_f_score": 6.652106582990692,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,17 +3,17 @@
   "name": "Equinix",
   "sector": "Real Estate",
   "industry": "Data Center REITs",
-  "market_cap": 106244588329.3457,
+  "market_cap": 106245932774.82227,
   "current_price": 1077.28,
-  "rank": 357,
-  "composite_score": 45.35,
+  "rank": 358,
+  "composite_score": 45.36,
   "pillar_scores": {
-    "quality": 45.97,
-    "value": 13.98,
-    "growth": 62.1,
+    "quality": 57.26,
+    "value": 6.45,
+    "growth": 48.79,
     "momentum": 82.17,
-    "health": 38.57,
-    "profitability": 37.63,
+    "health": 35.14,
+    "profitability": 47.31,
     "technical": 59.36,
     "risk": 62.85,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 9436000000.0,
-    "net_income": 1422000000.0,
+    "net_income": 1500000000.0,
     "total_assets": 40898000000.0,
     "total_liabilities": 26578000000.0,
     "stockholders_equity": 14298000000.0,
@@ -31,33 +31,33 @@
     "free_cash_flow": 2083257000.0,
     "eps_basic": 4.22,
     "eps_diluted": 4.2,
-    "shares_outstanding": 98623000.0,
-    "market_cap": 106244588329.3457,
+    "shares_outstanding": 98624248.0,
+    "market_cap": 106245932774.82227,
     "pe_ratio_ttm": 256.4952450706845,
     "goodwill": 5931000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 142.38052673539235,
+        "value": 142.37962588462239,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 518.5738326586938,
+        "value": 438.95394979459866,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 331.17821364942773,
+        "value": 346.91287890958864,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 486.03121087653795,
+        "value": 496.50478953884556,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 408.60471226298284,
-    "max": 518.5738326586938,
-    "low": 142.38052673539235,
-    "high": 518.5738326586938,
-    "mos_pct": -163.64845949293036,
+    "median": 392.9334143520937,
+    "max": 496.50478953884556,
+    "low": 142.37962588462239,
+    "high": 496.50478953884556,
+    "mos_pct": -174.1635070850866,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "value_trap_risk"
@@ -89,13 +89,13 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
+      "gross_profit",
       "research_and_development",
-      "inventory",
-      "property_plant_equipment"
+      "inventory"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-28",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
@@ -104,7 +104,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 82.98931283777618,
+  "tangible_book_value": 82.98826268363537,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -115,17 +115,17 @@
   "pillar_baseline": {
     "label": "Real Estate median (n=31)",
     "values": {
-      "Quality": 46.77,
-      "Value": 47.85,
-      "Growth": 51.61,
+      "Quality": 50.81,
+      "Value": 47.31,
+      "Growth": 48.79,
       "Momentum": 52.34,
-      "Health": 27.89,
-      "Profitability": 52.69,
+      "Health": 26.18,
+      "Profitability": 52.15,
       "Technical": 59.26,
       "Risk": 53.88
     }
   },
-  "beneish_m_score": null,
+  "beneish_m_score": -2.6590353239497455,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false

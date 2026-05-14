@@ -3,17 +3,17 @@
   "name": "Royal Caribbean Group",
   "sector": "Consumer Discretionary",
   "industry": "Hotels, Resorts & Cruise Lines",
-  "market_cap": 80269881788.76953,
+  "market_cap": 70857116461.46448,
   "current_price": 264.2,
-  "rank": 346,
-  "composite_score": 46.03,
+  "rank": 339,
+  "composite_score": 46.3,
   "pillar_scores": {
-    "quality": 65.1,
-    "value": 23.26,
-    "growth": 70.31,
+    "quality": 51.04,
+    "value": 44.79,
+    "growth": 67.71,
     "momentum": 40.04,
-    "health": 12.27,
-    "profitability": 63.89,
+    "health": 13.03,
+    "profitability": 56.6,
     "technical": 50.3,
     "risk": 36.22,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 18388000000.0,
-    "net_income": 4480000000.0,
+    "net_income": 4505000000.0,
     "total_assets": 41990000000.0,
     "total_liabilities": 31962000000.0,
     "stockholders_equity": 9810000000.0,
@@ -31,55 +31,55 @@
     "free_cash_flow": 1371000000.0,
     "eps_basic": 3.49,
     "eps_diluted": 3.48,
-    "shares_outstanding": 303822400.0,
-    "market_cap": 80269881788.76953,
+    "shares_outstanding": 268194978.0,
+    "market_cap": 70857116461.46448,
     "pe_ratio_ttm": 75.91954373765266,
     "goodwill": 808000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 83.5808005929869,
+        "value": 88.95924761468734,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 242.9947745281717,
+        "value": 368.00371048775327,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 191.7921802865575,
+        "value": 196.59142937523438,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 157.86633979513033,
+        "value": 310.73633110308936,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 65.45989203305396,
+        "value": 74.15568199499744,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 29.1025936416128,
+        "value": 32.968625707896514,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 120.72357019405862,
-    "max": 242.9947745281717,
-    "low": 29.1025936416128,
-    "high": 242.9947745281717,
-    "mos_pct": -118.8470832848462,
+    "median": 142.77533849496086,
+    "max": 368.00371048775327,
+    "low": 32.968625707896514,
+    "high": 368.00371048775327,
+    "mos_pct": -85.04597151864289,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ]
@@ -90,12 +90,13 @@
     "missing_metrics": [
       "gross_profit",
       "research_and_development",
-      "accounts_receivable",
-      "property_plant_equipment"
+      "income_tax_expense",
+      "income_before_tax",
+      "accounts_receivable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [
@@ -105,7 +106,7 @@
     "extreme_dcf_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 28.34550711204967,
+  "tangible_book_value": 32.11096667141918,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -116,12 +117,12 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 45.18,
-      "Value": 49.31,
-      "Growth": 51.04,
+      "Quality": 46.35,
+      "Value": 49.13,
+      "Growth": 51.69,
       "Momentum": 37.92,
-      "Health": 48.37,
-      "Profitability": 51.22,
+      "Health": 43.72,
+      "Profitability": 52.6,
       "Technical": 32.16,
       "Risk": 40.54
     }

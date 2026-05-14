@@ -3,25 +3,25 @@
   "name": "EQT Corporation",
   "sector": "Energy",
   "industry": "Oil & Gas Exploration & Production",
-  "market_cap": 34982816940.87982,
+  "market_cap": 34982984730.88074,
   "current_price": 55.93,
-  "rank": 143,
-  "composite_score": 55.72,
+  "rank": 53,
+  "composite_score": 61.27,
   "pillar_scores": {
-    "quality": 46.43,
-    "value": 71.43,
-    "growth": 70.24,
+    "quality": 57.14,
+    "value": 76.19,
+    "growth": 79.76,
     "momentum": 41.14,
-    "health": 45.62,
-    "profitability": 69.05,
+    "health": 45.58,
+    "profitability": 74.6,
     "technical": 42.48,
     "risk": 52.26,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 4559507000.0,
-    "net_income": 3284337000.0,
+    "revenue": 10283097000.0,
+    "net_income": 4740580000.0,
     "total_assets": 41692278000.0,
     "total_liabilities": 12905229000.0,
     "stockholders_equity": 25118761000.0,
@@ -31,33 +31,33 @@
     "free_cash_flow": 4052551000.0,
     "eps_basic": 2.38,
     "eps_diluted": 2.36,
-    "shares_outstanding": 625475000.0,
-    "market_cap": 34982816940.87982,
+    "shares_outstanding": 625478000.0,
+    "market_cap": 34982984730.88074,
     "pe_ratio_ttm": 23.699152671684654,
     "goodwill": 2062462000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 46.761706039928214,
+        "value": 46.76159389746571,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 120.85869469757033,
+        "value": 97.73041965226234,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 78.49236949455407,
+        "value": 78.57454364967771,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 203.45426487230426,
+        "value": 134.44185973778232,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 14.10087568675688,
+        "value": 14.100808054278902,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 78.49236949455407,
-    "max": 203.45426487230426,
-    "low": 14.10087568675688,
-    "high": 203.45426487230426,
-    "mos_pct": 28.74466567217556,
+    "median": 78.57454364967771,
+    "max": 134.44185973778232,
+    "low": 14.100808054278902,
+    "high": 134.44185973778232,
+    "mos_pct": 28.819185314600055,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -90,12 +90,11 @@
     "missing_metrics": [
       "gross_profit",
       "research_and_development",
-      "inventory",
-      "property_plant_equipment"
+      "inventory"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 22,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-14",
     "latest_filed_date": "2026-04-22"
   },
   "risk_flags": [],
@@ -103,7 +102,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 36.53562492505696,
+  "tangible_book_value": 36.53544968807856,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -115,16 +114,16 @@
     "label": "Energy median (n=21)",
     "values": {
       "Quality": 50.0,
-      "Value": 50.79,
-      "Growth": 53.57,
+      "Value": 51.59,
+      "Growth": 55.95,
       "Momentum": 77.24,
-      "Health": 50.36,
-      "Profitability": 52.38,
+      "Health": 55.14,
+      "Profitability": 54.76,
       "Technical": 62.77,
       "Risk": 65.8
     }
   },
-  "beneish_m_score": null,
+  "beneish_m_score": -2.319217520279489,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false

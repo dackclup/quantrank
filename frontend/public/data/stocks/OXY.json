@@ -3,17 +3,17 @@
   "name": "Occidental Petroleum",
   "sector": "Energy",
   "industry": "Oil & Gas Exploration & Production",
-  "market_cap": 55685198323.287964,
+  "market_cap": 55878577805.71842,
   "current_price": 56.18,
-  "rank": 297,
-  "composite_score": 48.19,
+  "rank": 171,
+  "composite_score": 54.24,
   "pillar_scores": {
-    "quality": 34.52,
-    "value": 64.29,
-    "growth": 8.33,
+    "quality": 48.81,
+    "value": 61.11,
+    "growth": 21.43,
     "momentum": 77.24,
-    "health": 53.03,
-    "profitability": 52.38,
+    "health": 58.05,
+    "profitability": 63.49,
     "technical": 58.86,
     "risk": 53.74,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 20227000000.0,
-    "net_income": 4321000000.0,
+    "net_income": 4783000000.0,
     "total_assets": 80464000000.0,
     "total_liabilities": null,
     "stockholders_equity": 38932000000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": 3592000000.0,
     "eps_basic": 3.19,
     "eps_diluted": 3.13,
-    "shares_outstanding": 991192560.0,
-    "market_cap": 55685198323.287964,
+    "shares_outstanding": 994634701.0,
+    "market_cap": 55878577805.71842,
     "pe_ratio_ttm": 17.94888188663763,
     "goodwill": 668000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 46.45615259595626,
+        "value": 46.37569732096918,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 160.29140440821828,
+        "value": 62.00791041819076,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 76.76934988454137,
+        "value": 76.58413302437172,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 67.14985507743589,
+        "value": 66.91746898727261,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 71.95960248098862,
-    "max": 160.29140440821828,
-    "low": 46.45615259595626,
-    "high": 160.29140440821828,
-    "mos_pct": 21.92841765625614,
+    "median": 64.4626897027317,
+    "max": 76.58413302437172,
+    "low": 46.37569732096918,
+    "high": 76.58413302437172,
+    "mos_pct": 12.848811360108236,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -92,12 +92,13 @@
       "gross_profit",
       "operating_income",
       "research_and_development",
-      "ebitda",
-      "property_plant_equipment"
+      "interest_expense",
+      "dividends_paid",
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 9,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
@@ -105,7 +106,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 36.19579226865868,
+  "tangible_book_value": 36.07052917410731,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -117,17 +118,17 @@
     "label": "Energy median (n=21)",
     "values": {
       "Quality": 50.0,
-      "Value": 50.79,
-      "Growth": 53.57,
+      "Value": 51.59,
+      "Growth": 55.95,
       "Momentum": 77.24,
-      "Health": 50.36,
-      "Profitability": 52.38,
+      "Health": 55.14,
+      "Profitability": 54.76,
       "Technical": 62.77,
       "Risk": 65.8
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 0.35015459993254916,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,17 +3,17 @@
   "name": "Apple Inc.",
   "sector": "Information Technology",
   "industry": "Technology Hardware, Storage & Peripherals",
-  "market_cap": 4383731840940.4297,
+  "market_cap": 4389610016004.3945,
   "current_price": 298.87,
-  "rank": 24,
-  "composite_score": 64.98,
+  "rank": 31,
+  "composite_score": 64.57,
   "pillar_scores": {
-    "quality": 89.04,
-    "value": 47.49,
-    "growth": 50.0,
+    "quality": 92.47,
+    "value": 39.73,
+    "growth": 50.34,
     "momentum": 64.34,
-    "health": 47.05,
-    "profitability": 79.34,
+    "health": 52.23,
+    "profitability": 76.71,
     "technical": 64.74,
     "risk": 69.79,
     "sentiment": null,
@@ -31,55 +31,55 @@
     "free_cash_flow": 129174000000.0,
     "eps_basic": 4.87,
     "eps_diluted": 4.85,
-    "shares_outstanding": 14667688000.0,
-    "market_cap": 4383731840940.4297,
+    "shares_outstanding": 14687356000.0,
+    "market_cap": 4389610016004.3945,
     "pe_ratio_ttm": 61.62267940560567,
     "goodwill": 5889000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 27.429462260983097,
+        "value": 27.41109056114927,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 163.54102092143197,
+        "value": 308.4391325340075,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 72.26720980616378,
+        "value": 66.75758029933236,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 211.33360992721543,
+        "value": 220.21761180367938,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "rim": {
-        "value": 88.74290295938424,
+        "value": 88.62406636174165,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 84.66939962738167,
+        "value": 84.55601790286492,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 86.70615129338296,
-    "max": 211.33360992721543,
-    "low": 27.429462260983097,
-    "high": 211.33360992721543,
-    "mos_pct": -244.69295506603345,
+    "median": 86.5900421323033,
+    "max": 308.4391325340075,
+    "low": 27.41109056114927,
+    "high": 308.4391325340075,
+    "mos_pct": -245.1551561327755,
     "valuation_warnings": [
       "extreme_graham_estimate"
     ]
@@ -88,11 +88,11 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "property_plant_equipment"
+      "interest_expense"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
-    "latest_period_end": "2026-03-28",
+    "latest_period_end": "2026-04-17",
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
@@ -100,7 +100,7 @@
     "extreme_graham_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 5.099985764627664,
+  "tangible_book_value": 5.093156317583642,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -111,18 +111,18 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -2.8265273739309493,
+  "dechow_f_score": 0.3949419188277985,
   "entered_top5": false,
   "exited_top5": false
 }

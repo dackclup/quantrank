@@ -3,17 +3,17 @@
   "name": "Hewlett Packard Enterprise",
   "sector": "Information Technology",
   "industry": "Technology Hardware, Storage & Peripherals",
-  "market_cap": 42618531565.93516,
+  "market_cap": 42552210229.30627,
   "current_price": 32.07,
-  "rank": 294,
-  "composite_score": 48.48,
+  "rank": 346,
+  "composite_score": 45.98,
   "pillar_scores": {
-    "quality": 28.42,
-    "value": 61.64,
-    "growth": 49.66,
+    "quality": 19.52,
+    "value": 65.3,
+    "growth": 50.68,
     "momentum": 82.17,
-    "health": 24.02,
-    "profitability": 37.21,
+    "health": 21.39,
+    "profitability": 25.34,
     "technical": 73.95,
     "risk": 50.46,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 2225000000.0,
     "eps_basic": 0.32,
     "eps_diluted": 0.31,
-    "shares_outstanding": 1328922107.0,
-    "market_cap": 42618531565.93516,
+    "shares_outstanding": 1326854089.0,
+    "market_cap": 42552210229.30627,
     "pe_ratio_ttm": 103.4516119187878,
     "goodwill": 23828000000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 10.453137419720395,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sub_industry"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
       },
       "multiples_pb": {
-        "value": 203.91503818535122,
+        "value": 195.61716426995903,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 17.758738958095517,
+        "value": 28.03156901136553,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 17.758738958095517,
-    "max": 17.758738958095517,
-    "low": 10.453137419720395,
-    "high": 203.91503818535122,
-    "mos_pct": -80.58714512611694,
+    "median": 111.82436664066228,
+    "max": 28.03156901136553,
+    "low": 28.03156901136553,
+    "high": 195.61716426995903,
+    "mos_pct": 71.32109873881215,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate",
       "value_trap_risk"
@@ -89,18 +89,18 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "gross_profit"
+      "gross_profit",
+      "cost_of_revenue"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 65,
-    "latest_period_end": "2026-01-31",
+    "latest_period_end": "2026-03-03",
     "latest_filed_date": "2026-03-10"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "extreme_multiples_pb_estimate",
-    "value_trap_risk",
-    "beneish_high"
+    "value_trap_risk"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -114,17 +114,17 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }
   },
-  "beneish_m_score": -2.0502448816319094,
+  "beneish_m_score": null,
   "dechow_f_score": 1.6115329649119625,
   "entered_top5": false,
   "exited_top5": false

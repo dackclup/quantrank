@@ -3,25 +3,25 @@
   "name": "Wynn Resorts",
   "sector": "Consumer Discretionary",
   "industry": "Casinos & Gaming",
-  "market_cap": 9981322133.458466,
+  "market_cap": 9985321102.070412,
   "current_price": 96.21,
-  "rank": 491,
-  "composite_score": 32.83,
+  "rank": 468,
+  "composite_score": 36.66,
   "pillar_scores": {
     "quality": 19.53,
-    "value": 39.76,
-    "growth": 51.04,
+    "value": 50.17,
+    "growth": 60.68,
     "momentum": 26.0,
-    "health": 47.67,
-    "profitability": 32.99,
+    "health": 47.75,
+    "profitability": 37.5,
     "technical": 19.77,
     "risk": 28.32,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 6717660000.0,
-    "net_income": 375041000.0,
+    "revenue": 7294289000.0,
+    "net_income": 478268000.0,
     "total_assets": 12905298000.0,
     "total_liabilities": 13847638000.0,
     "stockholders_equity": -211822000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 692768000.0,
     "eps_basic": 1.17,
     "eps_diluted": 1.04,
-    "shares_outstanding": 103745164.0,
-    "market_cap": 9981322133.458466,
+    "shares_outstanding": 103786729.0,
+    "market_cap": 9985321102.070412,
     "pe_ratio_ttm": 92.50961450430063,
     "goodwill": 18463000.0
   },
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 72.61912801991338,
+        "value": 100.95725714394354,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 49.7293590058171,
+        "value": 127.13618572637985,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 5.039330414037102,
+        "value": 5.037312239163708,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 49.7293590058171,
-    "max": 72.61912801991338,
-    "low": 5.039330414037102,
-    "high": 72.61912801991338,
-    "mos_pct": -93.46720128288497,
+    "median": 100.95725714394354,
+    "max": 127.13618572637985,
+    "low": 5.037312239163708,
+    "high": 127.13618572637985,
+    "mos_pct": 4.70224547870026,
     "valuation_warnings": [
       "extreme_dcf_estimate",
       "value_trap_risk"
@@ -92,12 +92,11 @@
       "gross_profit",
       "cost_of_revenue",
       "research_and_development",
-      "accounts_receivable",
-      "property_plant_equipment"
+      "accounts_receivable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [
@@ -119,12 +118,12 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 45.18,
-      "Value": 49.31,
-      "Growth": 51.04,
+      "Quality": 46.35,
+      "Value": 49.13,
+      "Growth": 51.69,
       "Momentum": 37.92,
-      "Health": 48.37,
-      "Profitability": 51.22,
+      "Health": 43.72,
+      "Profitability": 52.6,
       "Technical": 32.16,
       "Risk": 40.54
     }

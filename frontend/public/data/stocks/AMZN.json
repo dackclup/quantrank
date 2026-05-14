@@ -3,17 +3,17 @@
   "name": "Amazon",
   "sector": "Consumer Discretionary",
   "industry": "Broadline Retail",
-  "market_cap": 2904978072509.7656,
+  "market_cap": 2905818024471.6284,
   "current_price": 270.13,
-  "rank": 388,
-  "composite_score": 43.36,
+  "rank": 354,
+  "composite_score": 45.52,
   "pillar_scores": {
-    "quality": 33.85,
-    "value": 26.39,
-    "growth": 52.6,
+    "quality": 39.06,
+    "value": 25.35,
+    "growth": 52.08,
     "momentum": 68.97,
-    "health": 55.08,
-    "profitability": 32.99,
+    "health": 56.47,
+    "profitability": 47.22,
     "technical": 68.43,
     "risk": 51.39,
     "sentiment": null,
@@ -31,39 +31,39 @@
     "free_cash_flow": 141112000000.0,
     "eps_basic": 2.82,
     "eps_diluted": 2.78,
-    "shares_outstanding": 10754000000.0,
-    "market_cap": 2904978072509.7656,
+    "shares_outstanding": 10757109436.0,
+    "market_cap": 2905818024471.6284,
     "pe_ratio_ttm": 97.16906650460882,
     "goodwill": 23449000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 66.7285686821682,
+        "value": 66.71892374868682,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 194.1165152839992,
+        "value": 177.9536777285426,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 244.08967388585694,
+        "value": 220.79456961420993,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 100.64261160103916,
+        "value": 179.94667415488811,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 42.81558850675208,
+        "value": 42.80321228867452,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 100.64261160103916,
-    "max": 244.08967388585694,
-    "low": 42.81558850675208,
-    "high": 244.08967388585694,
-    "mos_pct": -168.40520191749806,
+    "median": 177.9536777285426,
+    "max": 220.79456961420993,
+    "low": 42.80321228867452,
+    "high": 220.79456961420993,
+    "mos_pct": -51.79793322107072,
     "valuation_warnings": [
       "extreme_rim_estimate"
     ]
@@ -89,14 +89,13 @@
   "data_quality": {
     "missing_metrics": [
       "total_liabilities",
+      "gross_profit",
       "research_and_development",
-      "income_before_tax",
-      "dividends_paid",
-      "property_plant_equipment"
+      "dividends_paid"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-22",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [
@@ -106,7 +105,7 @@
     "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 38.05728101171657,
+  "tangible_book_value": 38.046280223787065,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -117,18 +116,18 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 45.18,
-      "Value": 49.31,
-      "Growth": 51.04,
+      "Quality": 46.35,
+      "Value": 49.13,
+      "Growth": 51.69,
       "Momentum": 37.92,
-      "Health": 48.37,
-      "Profitability": 51.22,
+      "Health": 43.72,
+      "Profitability": 52.6,
       "Technical": 32.16,
       "Risk": 40.54
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 0.7827362213662097,
   "entered_top5": false,
   "exited_top5": false
 }

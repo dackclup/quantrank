@@ -3,17 +3,17 @@
   "name": "TKO Group Holdings",
   "sector": "Communication Services",
   "industry": "Movies & Entertainment",
-  "market_cap": null,
+  "market_cap": 35753786483.83212,
   "current_price": 183.7,
-  "rank": 385,
-  "composite_score": 43.64,
+  "rank": 407,
+  "composite_score": 42.36,
   "pillar_scores": {
-    "quality": 44.57,
-    "value": 41.3,
-    "growth": 41.3,
+    "quality": 57.61,
+    "value": 17.39,
+    "growth": 46.74,
     "momentum": 48.66,
-    "health": 41.24,
-    "profitability": 40.58,
+    "health": 38.65,
+    "profitability": 42.03,
     "technical": 42.08,
     "risk": 55.48,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 5063227000.0,
-    "net_income": 226346000.0,
+    "net_income": 630527000.0,
     "total_assets": 16022802000.0,
     "total_liabilities": 7496295000.0,
     "stockholders_equity": 3375962000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": null,
     "eps_basic": 1.16,
     "eps_diluted": 1.12,
-    "shares_outstanding": null,
-    "market_cap": null,
+    "shares_outstanding": 194631394.0,
+    "market_cap": 35753786483.83212,
     "pe_ratio_ttm": 164.01785441807337,
     "goodwill": 8444669000.0
   },
@@ -45,22 +45,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 56.45214702464916,
+        "value": 63.27456252835097,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_bvps",
-        "tier_used": null
+        "value": 41.660002676128975,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": null,
-        "applicable": false,
-        "reason": "missing_shares_outstanding",
-        "tier_used": null
+        "value": 81.76739732096145,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "rim": {
         "value": null,
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 56.45214702464916,
-    "max": 56.45214702464916,
-    "low": 56.45214702464916,
-    "high": 56.45214702464916,
-    "mos_pct": -225.40834428853836,
+    "median": 63.27456252835097,
+    "max": 81.76739732096145,
+    "low": 41.660002676128975,
+    "high": 81.76739732096145,
+    "mos_pct": -190.32203401790898,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -90,12 +90,10 @@
     "missing_metrics": [
       "capex",
       "free_cash_flow",
-      "shares_outstanding",
       "gross_profit",
       "cost_of_revenue",
       "research_and_development",
-      "inventory",
-      "property_plant_equipment"
+      "inventory"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
@@ -120,12 +118,12 @@
   "pillar_baseline": {
     "label": "Communication Services median (n=23)",
     "values": {
-      "Quality": 51.09,
-      "Value": 51.45,
-      "Growth": 55.43,
+      "Quality": 52.17,
+      "Value": 50.0,
+      "Growth": 60.33,
       "Momentum": 48.66,
-      "Health": 48.17,
-      "Profitability": 56.52,
+      "Health": 45.5,
+      "Profitability": 50.72,
       "Technical": 54.48,
       "Risk": 50.22
     }

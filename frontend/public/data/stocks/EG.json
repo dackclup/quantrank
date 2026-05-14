@@ -3,17 +3,17 @@
   "name": "Everest Group",
   "sector": "Financials",
   "industry": "Reinsurance",
-  "market_cap": 25923765090.942383,
+  "market_cap": 13769730396.245178,
   "current_price": 347.97,
   "rank": 110,
-  "composite_score": 57.44,
+  "composite_score": 57.48,
   "pillar_scores": {
-    "quality": 46.67,
-    "value": 68.22,
-    "growth": 66.33,
+    "quality": 44.67,
+    "value": 71.33,
+    "growth": 69.0,
     "momentum": 53.29,
-    "health": 63.21,
-    "profitability": 46.0,
+    "health": 59.2,
+    "profitability": 45.33,
     "technical": 59.56,
     "risk": 56.87,
     "sentiment": null,
@@ -31,27 +31,27 @@
     "free_cash_flow": null,
     "eps_basic": 16.21,
     "eps_diluted": 16.21,
-    "shares_outstanding": 74500000.0,
-    "market_cap": 25923765090.942383,
+    "shares_outstanding": 39571602.0,
+    "market_cap": 13769730396.245178,
     "pe_ratio_ttm": 21.46637885383733,
     "goodwill": null
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 446.94861084721475,
+        "value": 613.2589738229577,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 871.1892586875227,
+        "value": 702.0984640548827,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 425.80919392235774,
+        "value": 780.6334723100927,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -63,7 +63,7 @@
         "tier_used": null
       },
       "rim": {
-        "value": 224.07936155579873,
+        "value": 421.86597439009427,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 436.3789023847862,
-    "max": 871.1892586875227,
-    "low": 224.07936155579873,
-    "high": 871.1892586875227,
-    "mos_pct": 20.259664406536018,
+    "median": 657.6787189389202,
+    "max": 780.6334723100927,
+    "low": 421.86597439009427,
+    "high": 780.6334723100927,
+    "mos_pct": 47.09118735328583,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -92,7 +92,9 @@
       "operating_income",
       "cost_of_revenue",
       "research_and_development",
+      "sga_expense",
       "depreciation_and_amortization",
+      "interest_expense",
       "current_assets",
       "current_liabilities",
       "inventory",
@@ -106,13 +108,13 @@
     ],
     "imputed_metrics": [],
     "filing_lag_days": 9,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-28",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 205.248322147651,
+  "tangible_book_value": 386.4134689315838,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -124,11 +126,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

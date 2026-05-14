@@ -3,25 +3,25 @@
   "name": "Equity Residential",
   "sector": "Real Estate",
   "industry": "Multi-Family Residential REITs",
-  "market_cap": 24664837437.8199,
+  "market_cap": 24664641001.094437,
   "current_price": 65.83,
-  "rank": 41,
-  "composite_score": 63.13,
+  "rank": 191,
+  "composite_score": 53.31,
   "pillar_scores": {
-    "quality": 76.61,
-    "value": 65.05,
+    "quality": 54.84,
+    "value": 59.68,
     "growth": 59.68,
     "momentum": 48.9,
-    "health": 42.57,
-    "profitability": 70.43,
+    "health": 25.82,
+    "profitability": 55.38,
     "technical": 63.4,
     "risk": 53.88,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 2720910000.0,
-    "net_income": 953576000.0,
+    "revenue": null,
+    "net_income": 980252000.0,
     "total_assets": 20517153000.0,
     "total_liabilities": 9495258000.0,
     "stockholders_equity": 10670923000.0,
@@ -31,36 +31,36 @@
     "free_cash_flow": 1619927000.0,
     "eps_basic": 0.24,
     "eps_diluted": 0.24,
-    "shares_outstanding": 374674719.0,
-    "market_cap": 24664837437.8199,
+    "shares_outstanding": 374671735.0,
+    "market_cap": 24664641001.094437,
     "pe_ratio_ttm": 274.2916742960612,
     "goodwill": null
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 40.661181182191044,
+        "value": 40.66134310089445,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 29.632790437639645,
+        "value": 75.65047428595368,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 67.37957266036722,
+        "value": 72.66738239749775,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 206.09617010130842,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
       },
       "rim": {
         "value": null,
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 54.02037692127913,
-    "max": 206.09617010130842,
-    "low": 29.632790437639645,
-    "high": 206.09617010130842,
-    "mos_pct": -21.86142634099918,
+    "median": 72.66738239749775,
+    "max": 75.65047428595368,
+    "low": 40.66134310089445,
+    "high": 75.65047428595368,
+    "mos_pct": 9.409146636164646,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -88,21 +88,24 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
+      "revenue",
+      "gross_profit",
+      "operating_income",
       "cost_of_revenue",
       "research_and_development",
-      "income_before_tax",
       "current_assets",
       "current_liabilities",
       "inventory",
       "accounts_receivable",
       "accounts_payable",
       "short_term_debt",
+      "ebitda",
       "goodwill",
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
@@ -110,7 +113,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 28.046338509431163,
+  "tangible_book_value": 28.04656187902725,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -121,12 +124,12 @@
   "pillar_baseline": {
     "label": "Real Estate median (n=31)",
     "values": {
-      "Quality": 46.77,
-      "Value": 47.85,
-      "Growth": 51.61,
+      "Quality": 50.81,
+      "Value": 47.31,
+      "Growth": 48.79,
       "Momentum": 52.34,
-      "Health": 27.89,
-      "Profitability": 52.69,
+      "Health": 26.18,
+      "Profitability": 52.15,
       "Technical": 59.26,
       "Risk": 53.88
     }

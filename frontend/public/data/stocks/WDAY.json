@@ -3,17 +3,17 @@
   "name": "Workday, Inc.",
   "sector": "Information Technology",
   "industry": "Application Software",
-  "market_cap": 4194000000.0,
+  "market_cap": 31235630500.0,
   "current_price": 116.5,
-  "rank": 207,
-  "composite_score": 52.53,
+  "rank": 465,
+  "composite_score": 37.08,
   "pillar_scores": {
-    "quality": 45.55,
-    "value": 94.29,
-    "growth": 50.0,
+    "quality": 29.11,
+    "value": 56.85,
+    "growth": 49.66,
     "momentum": 2.44,
-    "health": 62.59,
-    "profitability": 53.2,
+    "health": 50.4,
+    "profitability": 33.33,
     "technical": 39.44,
     "risk": 17.96,
     "sentiment": null,
@@ -31,60 +31,58 @@
     "free_cash_flow": 2777000000.0,
     "eps_basic": 2.61,
     "eps_diluted": 2.59,
-    "shares_outstanding": 36000000.0,
-    "market_cap": 4194000000.0,
+    "shares_outstanding": 268117000.0,
+    "market_cap": 31235630500.0,
     "pe_ratio_ttm": 44.980694980694985,
     "goodwill": 5229000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 67.7955105445781,
+        "value": 24.842197507098497,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 283.54057654758054,
+        "value": 93.24846127839056,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 1499.0118337057743,
+        "value": 242.95479523856463,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 1814.1021802206462,
+        "value": 83.01073582189257,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "rim": {
-        "value": 66.07252544933861,
+        "value": 8.871540842901382,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 851.0452694271248,
+        "value": 114.2696274364419,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 567.2929229873527,
-    "max": 283.54057654758054,
-    "low": 66.07252544933861,
-    "high": 1814.1021802206462,
-    "mos_pct": 79.46387214095438,
+    "median": 88.12959855014157,
+    "max": 242.95479523856463,
+    "low": 8.871540842901382,
+    "high": 242.95479523856463,
+    "mos_pct": -32.19168351676653,
     "valuation_warnings": [
       "goodwill_heavy",
-      "extreme_multiples_pb_estimate",
-      "extreme_multiples_ev_ebitda_estimate",
-      "extreme_dcf_estimate"
+      "extreme_rim_estimate"
     ]
   },
   "top5_factors": [],
@@ -92,6 +90,7 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
+      "cost_of_revenue",
       "dividends_paid",
       "inventory"
     ],
@@ -103,12 +102,10 @@
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
-    "extreme_multiples_pb_estimate",
-    "extreme_multiples_ev_ebitda_estimate",
-    "extreme_dcf_estimate"
+    "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 62.85444444444445,
+  "tangible_book_value": 8.43944994162996,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -119,12 +116,12 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }

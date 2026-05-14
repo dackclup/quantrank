@@ -3,17 +3,17 @@
   "name": "Digital Realty",
   "sector": "Real Estate",
   "industry": "Data Center REITs",
-  "market_cap": 67450497588.134766,
+  "market_cap": 67930306533.775024,
   "current_price": 193.31,
-  "rank": 393,
-  "composite_score": 43.2,
+  "rank": 431,
+  "composite_score": 40.56,
   "pillar_scores": {
-    "quality": 33.87,
-    "value": 26.88,
-    "growth": 57.26,
+    "quality": 30.65,
+    "value": 22.04,
+    "growth": 55.65,
     "momentum": 74.65,
-    "health": 35.22,
-    "profitability": 39.78,
+    "health": 32.31,
+    "profitability": 37.1,
     "technical": 59.26,
     "risk": 63.38,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 6340228000.0,
-    "net_income": 1377889000.0,
+    "net_income": 1381574000.0,
     "total_assets": 48859973000.0,
     "total_liabilities": 23462959000.0,
     "stockholders_equity": 23368753000.0,
@@ -31,33 +31,33 @@
     "free_cash_flow": null,
     "eps_basic": 0.49,
     "eps_diluted": 0.46,
-    "shares_outstanding": 348924000.0,
-    "market_cap": 67450497588.134766,
+    "shares_outstanding": 351406070.0,
+    "market_cap": 67930306533.775024,
     "pe_ratio_ttm": 420.2391251273777,
     "goodwill": 9591250000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 46.059628880334536,
+        "value": 45.89667521732087,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 56.79618167214266,
+        "value": 113.4687575717617,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 152.9922287715958,
+        "value": 159.1311181279184,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 130.6560464601773,
+        "value": 126.10411555697739,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 93.72611406615998,
-    "max": 152.9922287715958,
-    "low": 46.059628880334536,
-    "high": 152.9922287715958,
-    "mos_pct": -106.24987975297778,
+    "median": 119.78643656436955,
+    "max": 159.1311181279184,
+    "low": 45.89667521732087,
+    "high": 159.1311181279184,
+    "mos_pct": -61.378869847852016,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -93,6 +93,7 @@
       "gross_profit",
       "cost_of_revenue",
       "research_and_development",
+      "income_before_tax",
       "current_assets",
       "current_liabilities",
       "inventory",
@@ -103,15 +104,17 @@
     ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-05-01"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
   "valuation_warnings": [
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 34.537882174914884,
+  "tangible_book_value": 34.29393237288132,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -122,12 +125,12 @@
   "pillar_baseline": {
     "label": "Real Estate median (n=31)",
     "values": {
-      "Quality": 46.77,
-      "Value": 47.85,
-      "Growth": 51.61,
+      "Quality": 50.81,
+      "Value": 47.31,
+      "Growth": 48.79,
       "Momentum": 52.34,
-      "Health": 27.89,
-      "Profitability": 52.69,
+      "Health": 26.18,
+      "Profitability": 52.15,
       "Technical": 59.26,
       "Risk": 53.88
     }

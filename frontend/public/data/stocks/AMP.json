@@ -3,24 +3,24 @@
   "name": "Ameriprise Financial",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 59775922008.13721,
+  "market_cap": 42177913212.69409,
   "current_price": 469.18,
-  "rank": 101,
-  "composite_score": 57.91,
+  "rank": 96,
+  "composite_score": 58.11,
   "pillar_scores": {
-    "quality": 74.0,
-    "value": 46.67,
-    "growth": 70.0,
+    "quality": 71.33,
+    "value": 54.89,
+    "growth": 69.0,
     "momentum": 37.0,
-    "health": 55.76,
-    "profitability": 54.67,
+    "health": 51.75,
+    "profitability": 48.44,
     "technical": 57.02,
     "risk": 49.0,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 9253000000.0,
+    "revenue": 19316000000.0,
     "net_income": 3895000000.0,
     "total_assets": 184448000000.0,
     "total_liabilities": 178236000000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": 6941000000.0,
     "eps_basic": 9.81,
     "eps_diluted": 9.68,
-    "shares_outstanding": 127405096.0,
-    "market_cap": 59775922008.13721,
+    "shares_outstanding": 89897084.0,
+    "market_cap": 42177913212.69409,
     "pe_ratio_ttm": 48.46900750782864,
     "goodwill": 1440000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 155.52013164363487,
+        "value": 185.14296416326525,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 582.7356472859963,
+        "value": 698.5824749212918,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 113.21816141716154,
+        "value": 160.45649182900038,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -63,7 +63,7 @@
         "tier_used": null
       },
       "rim": {
-        "value": 169.42212056725543,
+        "value": 240.11058618313749,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 162.47112610544514,
-    "max": 582.7356472859963,
-    "low": 113.21816141716154,
-    "high": 582.7356472859963,
-    "mos_pct": -188.77746090790276,
+    "median": 212.62677517320137,
+    "max": 698.5824749212918,
+    "low": 160.45649182900038,
+    "high": 698.5824749212918,
+    "mos_pct": -120.65894207989419,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -90,24 +90,24 @@
       "operating_income",
       "cost_of_revenue",
       "research_and_development",
+      "depreciation_and_amortization",
       "interest_expense",
       "current_assets",
       "current_liabilities",
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "ebitda",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 34.66109393300877,
+  "tangible_book_value": 49.12283917907727,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -119,11 +119,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

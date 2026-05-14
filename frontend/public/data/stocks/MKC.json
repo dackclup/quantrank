@@ -3,17 +3,17 @@
   "name": "McCormick & Company",
   "sector": "Consumer Staples",
   "industry": "Packaged Foods & Meats",
-  "market_cap": null,
+  "market_cap": 12284639588.928223,
   "current_price": 45.6,
-  "rank": 417,
-  "composite_score": 41.64,
+  "rank": 326,
+  "composite_score": 46.88,
   "pillar_scores": {
-    "quality": 45.14,
-    "value": 56.71,
-    "growth": 59.38,
+    "quality": 50.69,
+    "value": 68.06,
+    "growth": 62.15,
     "momentum": 8.76,
-    "health": 25.42,
-    "profitability": 41.2,
+    "health": 25.14,
+    "profitability": 54.63,
     "technical": 33.57,
     "risk": 30.81,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 727000000.0,
     "eps_basic": 3.78,
     "eps_diluted": 3.77,
-    "shares_outstanding": null,
-    "market_cap": null,
+    "shares_outstanding": 269400000.0,
+    "market_cap": 12284639588.928223,
     "pe_ratio_ttm": 12.095490311437956,
     "goodwill": 6316500000.0
   },
@@ -45,22 +45,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 226.44470214843753,
+        "value": 147.28497624449105,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_bvps",
-        "tier_used": null
+        "value": 39.25256993456556,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": null,
-        "applicable": false,
-        "reason": "missing_shares_outstanding",
-        "tier_used": null
+        "value": 52.537212979525385,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "rim": {
         "value": null,
@@ -69,27 +69,25 @@
         "tier_used": null
       },
       "dcf": {
-        "value": null,
-        "applicable": false,
-        "reason": "missing_shares_outstanding",
+        "value": 13.617811610256618,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       }
     },
-    "median": 226.44470214843753,
-    "max": 226.44470214843753,
-    "low": 226.44470214843753,
-    "high": 226.44470214843753,
-    "mos_pct": 79.8626339934287,
+    "median": 45.894891457045475,
+    "max": 147.28497624449105,
+    "low": 13.617811610256618,
+    "high": 147.28497624449105,
+    "mos_pct": 0.6425398852950353,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "shares_outstanding",
-      "income_before_tax",
-      "accounts_payable",
-      "property_plant_equipment"
+      "research_and_development",
+      "accounts_payable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 44,
@@ -99,7 +97,9 @@
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "beneish_high"
+  ],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -112,17 +112,17 @@
   "pillar_baseline": {
     "label": "Consumer Staples median (n=36)",
     "values": {
-      "Quality": 56.08,
-      "Value": 49.07,
-      "Growth": 50.52,
+      "Quality": 49.65,
+      "Value": 51.39,
+      "Growth": 48.44,
       "Momentum": 39.14,
-      "Health": 38.65,
-      "Profitability": 52.08,
+      "Health": 39.29,
+      "Profitability": 53.94,
       "Technical": 57.99,
       "Risk": 51.44
     }
   },
-  "beneish_m_score": null,
+  "beneish_m_score": -1.8384699281400236,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false

@@ -3,25 +3,25 @@
   "name": "Willis Towers Watson",
   "sector": "Financials",
   "industry": "Insurance Brokers",
-  "market_cap": null,
+  "market_cap": 22867743487.948242,
   "current_price": 242.12,
-  "rank": 293,
-  "composite_score": 48.51,
+  "rank": 270,
+  "composite_score": 49.95,
   "pillar_scores": {
-    "quality": 62.67,
-    "value": 44.0,
-    "growth": 56.67,
+    "quality": 60.0,
+    "value": 51.78,
+    "growth": 55.0,
     "momentum": 32.52,
-    "health": 39.32,
-    "profitability": 44.0,
+    "health": 44.54,
+    "profitability": 45.78,
     "technical": 34.86,
     "risk": 48.07,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 9699000000.0,
-    "net_income": 1667000000.0,
+    "revenue": 9897000000.0,
+    "net_income": 1677000000.0,
     "total_assets": 29637000000.0,
     "total_liabilities": 21578000000.0,
     "stockholders_equity": 7977000000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 1654000000.0,
     "eps_basic": 3.12,
     "eps_diluted": 3.1,
-    "shares_outstanding": null,
-    "market_cap": null,
+    "shares_outstanding": 94447976.0,
+    "market_cap": 22867743487.948242,
     "pe_ratio_ttm": 78.10322423135081,
     "goodwill": 9662000000.0
   },
@@ -45,16 +45,16 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 166.19266673979058,
+        "value": 242.53315362079834,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_bvps",
-        "tier_used": null
+        "value": 166.98822334146948,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
         "value": null,
@@ -75,33 +75,29 @@
         "tier_used": null
       }
     },
-    "median": 166.19266673979058,
-    "max": 166.19266673979058,
-    "low": 166.19266673979058,
-    "high": 166.19266673979058,
-    "mos_pct": -45.68632892585872,
+    "median": 204.7606884811339,
+    "max": 242.53315362079834,
+    "low": 166.98822334146948,
+    "high": 242.53315362079834,
+    "mos_pct": -18.245351152692464,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "shares_outstanding",
       "gross_profit",
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
-      "inventory",
-      "property_plant_equipment"
+      "inventory"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-30"
   },
-  "risk_flags": [
-    "altman_distress"
-  ],
+  "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
@@ -116,11 +112,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

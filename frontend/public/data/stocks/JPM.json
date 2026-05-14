@@ -3,17 +3,17 @@
   "name": "JPMorgan Chase",
   "sector": "Financials",
   "industry": "Diversified Banks",
-  "market_cap": 809534050000.0,
+  "market_cap": 804523303254.5,
   "current_price": 300.25,
-  "rank": 144,
-  "composite_score": 55.66,
+  "rank": 187,
+  "composite_score": 53.41,
   "pillar_scores": {
-    "quality": 54.67,
-    "value": 54.22,
-    "growth": 66.67,
+    "quality": 52.0,
+    "value": 50.0,
+    "growth": 65.0,
     "momentum": 61.25,
-    "health": 50.98,
-    "profitability": 43.56,
+    "health": 46.97,
+    "profitability": 44.22,
     "technical": 43.53,
     "risk": 65.11,
     "sentiment": null,
@@ -31,27 +31,27 @@
     "free_cash_flow": null,
     "eps_basic": 5.95,
     "eps_diluted": 5.94,
-    "shares_outstanding": 2696200000.0,
-    "market_cap": 809534050000.0,
+    "shares_outstanding": 2679511418.0,
+    "market_cap": 804523303254.5,
     "pe_ratio_ttm": 50.54713804713804,
     "goodwill": 52706000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 219.93592744275622,
+        "value": 220.61976879928832,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 319.2390004073958,
+        "value": 299.73852006887637,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 279.13745208836343,
+        "value": 268.61484808457055,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -63,7 +63,7 @@
         "tier_used": null
       },
       "rim": {
-        "value": 144.55586695452013,
+        "value": 145.4561924478342,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 249.53668976555983,
-    "max": 319.2390004073958,
-    "low": 144.55586695452013,
-    "high": 319.2390004073958,
-    "mos_pct": -20.322987486163026,
+    "median": 244.61730844192942,
+    "max": 299.73852006887637,
+    "low": 145.4561924478342,
+    "high": 299.73852006887637,
+    "mos_pct": -22.742745356989904,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -93,13 +93,13 @@
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
+      "depreciation_and_amortization",
       "current_assets",
       "current_liabilities",
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "ebitda",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
@@ -111,7 +111,7 @@
   ],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 115.17098138120318,
+  "tangible_book_value": 115.88829139297961,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -123,11 +123,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

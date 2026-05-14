@@ -3,17 +3,17 @@
   "name": "Caterpillar Inc.",
   "sector": "Industrials",
   "industry": "Construction Machinery & Heavy Transportation Equipment",
-  "market_cap": 415599374377.4414,
+  "market_cap": 415632782936.7894,
   "current_price": 902.3,
-  "rank": 378,
-  "composite_score": 43.86,
+  "rank": 196,
+  "composite_score": 53.17,
   "pillar_scores": {
-    "quality": 41.14,
-    "value": 17.72,
-    "growth": 45.89,
+    "quality": 68.35,
+    "value": 11.6,
+    "growth": 59.18,
     "momentum": 85.66,
-    "health": 45.26,
-    "profitability": 26.79,
+    "health": 50.32,
+    "profitability": 43.46,
     "technical": 67.18,
     "risk": 68.06,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 70755000000.0,
-    "net_income": 4349000000.0,
+    "net_income": 9430000000.0,
     "total_assets": 95550000000.0,
     "total_liabilities": 76890000000.0,
     "stockholders_equity": 18660000000.0,
@@ -31,67 +31,66 @@
     "free_cash_flow": 9481000000.0,
     "eps_basic": 5.5,
     "eps_diluted": 5.47,
-    "shares_outstanding": 460600000.0,
-    "market_cap": 415599374377.4414,
+    "shares_outstanding": 460637026.0,
+    "market_cap": 415632782936.7894,
     "pe_ratio_ttm": 164.95429392924476,
     "goodwill": 5865000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 110.85429523494557,
+        "value": 110.84983991178791,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 641.07019325064,
+        "value": 557.5469242269104,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 276.95882022513973,
+        "value": 257.81970709245496,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 430.83634810977105,
+        "value": 441.60242701949187,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "value": 142.67850754188106,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 180.51839831535597,
+        "value": 180.5038882481257,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 276.95882022513973,
-    "max": 641.07019325064,
-    "low": 110.85429523494557,
-    "high": 641.07019325064,
-    "mos_pct": -225.78850063684172,
+    "median": 219.16179767029033,
+    "max": 557.5469242269104,
+    "low": 110.84983991178791,
+    "high": 557.5469242269104,
+    "mos_pct": -311.70495833877027,
     "valuation_warnings": [
       "extreme_graham_estimate",
-      "value_trap_risk"
+      "extreme_rim_estimate"
     ]
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "interest_expense",
-      "income_before_tax",
-      "property_plant_equipment"
+      "gross_profit",
+      "interest_expense"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
@@ -101,10 +100,11 @@
   "risk_flags": [],
   "valuation_warnings": [
     "extreme_graham_estimate",
-    "value_trap_risk"
+    "extreme_rim_estimate",
+    "beneish_high"
   ],
   "has_history": true,
-  "tangible_book_value": 26.869300911854104,
+  "tangible_book_value": 26.867141157688874,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -115,18 +115,18 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -1.365232239831081,
+  "dechow_f_score": 0.5447029785627931,
   "entered_top5": false,
   "exited_top5": false
 }

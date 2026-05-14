@@ -3,17 +3,17 @@
   "name": "Ross Stores",
   "sector": "Consumer Discretionary",
   "industry": "Apparel Retail",
-  "market_cap": 68257234309.37195,
+  "market_cap": 68262273138.44124,
   "current_price": 211.76,
-  "rank": 70,
-  "composite_score": 60.62,
+  "rank": 247,
+  "composite_score": 50.79,
   "pillar_scores": {
-    "quality": 64.84,
-    "value": 46.88,
-    "growth": 66.67,
+    "quality": 55.73,
+    "value": 21.18,
+    "growth": 70.05,
     "momentum": 83.96,
-    "health": 57.35,
-    "profitability": 63.02,
+    "health": 47.97,
+    "profitability": 46.53,
     "technical": 24.33,
     "risk": 67.36,
     "sentiment": null,
@@ -31,55 +31,55 @@
     "free_cash_flow": 2207608000.0,
     "eps_basic": 6.66,
     "eps_diluted": 6.61,
-    "shares_outstanding": 322333000.0,
-    "market_cap": 68257234309.37195,
+    "shares_outstanding": 322356795.0,
+    "market_cap": 68262273138.44124,
     "pe_ratio_ttm": 32.0363077922596,
     "goodwill": 2889000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 51.58232281987024,
+        "value": 51.58041899150095,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 477.02972128095416,
+        "value": 140.2896553097403,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 114.02185962772386,
+        "value": 103.16220026240403,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 381.9693585721353,
+        "value": 133.44005067709747,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 49.42588725322007,
+        "value": 49.42223884560021,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 73.64238443125316,
+        "value": 73.63694846537709,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 93.83212202948852,
-    "max": 477.02972128095416,
-    "low": 49.42588725322007,
-    "high": 477.02972128095416,
-    "mos_pct": -125.67963926072818,
+    "median": 88.39957436389057,
+    "max": 140.2896553097403,
+    "low": 49.42223884560021,
+    "high": 140.2896553097403,
+    "mos_pct": -139.54865849821965,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -89,19 +89,19 @@
       "total_liabilities",
       "gross_profit",
       "research_and_development",
+      "interest_expense",
       "accounts_receivable",
-      "intangibles_net",
-      "property_plant_equipment"
+      "intangibles_net"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 44,
-    "latest_period_end": "2026-01-31",
+    "latest_period_end": "2026-03-09",
     "latest_filed_date": "2026-03-31"
   },
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 19.186847142551336,
+  "tangible_book_value": 19.185430851550688,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -112,12 +112,12 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 45.18,
-      "Value": 49.31,
-      "Growth": 51.04,
+      "Quality": 46.35,
+      "Value": 49.13,
+      "Growth": 51.69,
       "Momentum": 37.92,
-      "Health": 48.37,
-      "Profitability": 51.22,
+      "Health": 43.72,
+      "Profitability": 52.6,
       "Technical": 32.16,
       "Risk": 40.54
     }

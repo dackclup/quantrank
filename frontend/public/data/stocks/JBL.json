@@ -3,17 +3,17 @@
   "name": "Jabil",
   "sector": "Information Technology",
   "industry": "Electronic Manufacturing Services",
-  "market_cap": 37610974135.58411,
+  "market_cap": 37498796164.73572,
   "current_price": 355.43,
-  "rank": 122,
-  "composite_score": 56.79,
+  "rank": 143,
+  "composite_score": 55.88,
   "pillar_scores": {
-    "quality": 61.99,
-    "value": 54.79,
-    "growth": 53.42,
+    "quality": 57.19,
+    "value": 52.51,
+    "growth": 54.11,
     "momentum": 89.64,
-    "health": 20.32,
-    "profitability": 26.94,
+    "health": 30.72,
+    "profitability": 23.74,
     "technical": 70.62,
     "risk": 60.92,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 1275000000.0,
     "eps_basic": 3.46,
     "eps_diluted": 3.43,
-    "shares_outstanding": 105818234.0,
-    "market_cap": 37610974135.58411,
+    "shares_outstanding": 105502622.0,
+    "market_cap": 37498796164.73572,
     "pe_ratio_ttm": 103.6239045701986,
     "goodwill": 1229000000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 282.03660561207687,
+        "value": 276.5876548090304,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 126.42378971234983,
+        "value": 117.29171025267104,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 670.7942032768361,
+        "value": 471.98100885175324,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 62.633157988510575,
+        "value": 62.820525618663595,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 204.23019766221336,
-    "max": 670.7942032768361,
-    "low": 62.633157988510575,
-    "high": 670.7942032768361,
-    "mos_pct": -74.03400512966495,
+    "median": 196.93968253085075,
+    "max": 471.98100885175324,
+    "low": 62.820525618663595,
+    "high": 471.98100885175324,
+    "mos_pct": -80.47657440500996,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ]
@@ -88,11 +88,11 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "property_plant_equipment"
+      "interest_expense"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 36,
-    "latest_period_end": "2026-02-28",
+    "latest_period_end": "2026-04-01",
     "latest_filed_date": "2026-04-08"
   },
   "risk_flags": [],
@@ -111,18 +111,18 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -2.622127179363924,
+  "dechow_f_score": 0.4008300485227992,
   "entered_top5": false,
   "exited_top5": false
 }

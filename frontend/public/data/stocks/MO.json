@@ -3,17 +3,17 @@
   "name": "Altria",
   "sector": "Consumer Staples",
   "industry": "Tobacco",
-  "market_cap": 119780732500.26419,
+  "market_cap": 119464020480.73108,
   "current_price": 71.54,
-  "rank": 229,
-  "composite_score": 51.55,
+  "rank": 113,
+  "composite_score": 57.37,
   "pillar_scores": {
-    "quality": 32.64,
-    "value": 53.7,
+    "quality": 45.14,
+    "value": 57.18,
     "growth": 52.43,
     "momentum": 72.66,
-    "health": 40.64,
-    "profitability": 73.61,
+    "health": 49.46,
+    "profitability": 85.19,
     "technical": 59.51,
     "risk": 85.72,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 8623000000.0,
     "eps_basic": 1.3,
     "eps_diluted": 1.3,
-    "shares_outstanding": 1674318297.0,
-    "market_cap": 119780732500.26419,
+    "shares_outstanding": 1669891235.0,
+    "market_cap": 119464020480.73108,
     "pe_ratio_ttm": 55.030769935021034,
     "goodwill": 5787000000.0
   },
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 78.08438005118535,
+        "value": 116.44174337133542,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 71.91682942251849,
+        "value": 77.86011058521093,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 53.57590839461158,
+        "value": 53.717943913571155,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 71.91682942251849,
-    "max": 78.08438005118535,
-    "low": 53.57590839461158,
-    "high": 78.08438005118535,
-    "mos_pct": 0.5239781981728378,
+    "median": 77.86011058521093,
+    "max": 116.44174337133542,
+    "low": 53.717943913571155,
+    "high": 116.44174337133542,
+    "mos_pct": 8.117262642167447,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -88,12 +88,14 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "accounts_receivable",
-      "property_plant_equipment"
+      "research_and_development",
+      "sga_expense",
+      "interest_expense",
+      "accounts_receivable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-22",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
@@ -112,12 +114,12 @@
   "pillar_baseline": {
     "label": "Consumer Staples median (n=36)",
     "values": {
-      "Quality": 56.08,
-      "Value": 49.07,
-      "Growth": 50.52,
+      "Quality": 49.65,
+      "Value": 51.39,
+      "Growth": 48.44,
       "Momentum": 39.14,
-      "Health": 38.65,
-      "Profitability": 52.08,
+      "Health": 39.29,
+      "Profitability": 53.94,
       "Technical": 57.99,
       "Risk": 51.44
     }

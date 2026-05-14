@@ -3,17 +3,17 @@
   "name": "Fifth Third Bancorp",
   "sector": "Financials",
   "industry": "Regional Banks",
-  "market_cap": 42727648307.90936,
+  "market_cap": 42750714059.65399,
   "current_price": 47.17,
-  "rank": 433,
-  "composite_score": 40.26,
+  "rank": 453,
+  "composite_score": 38.02,
   "pillar_scores": {
-    "quality": 33.33,
-    "value": 40.0,
-    "growth": 22.0,
+    "quality": 30.67,
+    "value": 41.56,
+    "growth": 10.67,
     "momentum": 58.96,
-    "health": 54.36,
-    "profitability": 44.67,
+    "health": 50.36,
+    "profitability": 44.0,
     "technical": 32.94,
     "risk": 55.98,
     "sentiment": null,
@@ -31,27 +31,27 @@
     "free_cash_flow": 1562000000.0,
     "eps_basic": 0.16,
     "eps_diluted": 0.15,
-    "shares_outstanding": 905822556.0,
-    "market_cap": 42727648307.90936,
+    "shares_outstanding": 906311548.0,
+    "market_cap": 42750714059.65399,
     "pe_ratio_ttm": 314.46665445963544,
     "goodwill": 9966000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 43.31031276117608,
+        "value": 43.29862734575394,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 8.041580648699544,
+        "value": 32.69433151732883,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 78.1129564735536,
+        "value": 76.02355730690809,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,13 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 43.31031276117608,
-    "max": 78.1129564735536,
-    "low": 8.041580648699544,
-    "high": 78.1129564735536,
-    "mos_pct": -8.911700612859821,
+    "median": 43.29862734575394,
+    "max": 76.02355730690809,
+    "low": 32.69433151732883,
+    "high": 76.02355730690809,
+    "mos_pct": -8.941093657027938,
     "valuation_warnings": [
-      "extreme_multiples_pe_estimate",
       "value_trap_risk"
     ]
   },
@@ -100,24 +99,21 @@
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "ebitda",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 9,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [
-    "sloan_accruals_top_decile",
     "net_issuance_top_decile"
   ],
   "valuation_warnings": [
-    "extreme_multiples_pe_estimate",
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 25.2886173437262,
+  "tangible_book_value": 25.27497310450247,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -129,11 +125,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

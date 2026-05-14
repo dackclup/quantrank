@@ -3,17 +3,17 @@
   "name": "Mid-America Apartment Communities",
   "sector": "Real Estate",
   "industry": "Multi-Family Residential REITs",
-  "market_cap": 15049116253.582031,
+  "market_cap": 15053209864.466125,
   "current_price": 129.34,
-  "rank": 421,
-  "composite_score": 41.3,
+  "rank": 410,
+  "composite_score": 42.01,
   "pillar_scores": {
     "quality": 46.77,
-    "value": 47.85,
-    "growth": 33.87,
+    "value": 47.31,
+    "growth": 37.9,
     "momentum": 28.74,
-    "health": 25.98,
-    "profitability": 45.7,
+    "health": 25.86,
+    "profitability": 51.08,
     "technical": 56.37,
     "risk": 42.0,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 2213556000.0,
-    "net_income": 389595000.0,
+    "net_income": 396771000.0,
     "total_assets": 11994502000.0,
     "total_liabilities": 6286006000.0,
     "stockholders_equity": 5540638000.0,
@@ -31,36 +31,36 @@
     "free_cash_flow": null,
     "eps_basic": 1.06,
     "eps_diluted": 1.06,
-    "shares_outstanding": 116353152.0,
-    "market_cap": 15049116253.582031,
+    "shares_outstanding": 116384802.0,
+    "market_cap": 15053209864.466125,
     "pe_ratio_ttm": 122.01886446970813,
     "goodwill": 4106000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 68.06091897147974,
+        "value": 68.05166400640609,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 135.87591358340555,
+        "value": 98.39092804230275,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 108.77930986029557,
+        "value": 113.91799674658881,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 137.97746990987986,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
       },
       "rim": {
         "value": null,
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 122.32761172185056,
-    "max": 137.97746990987986,
-    "low": 68.06091897147974,
-    "high": 137.97746990987986,
-    "mos_pct": -5.732462620119551,
+    "median": 98.39092804230275,
+    "max": 113.91799674658881,
+    "low": 68.05166400640609,
+    "high": 113.91799674658881,
+    "mos_pct": -31.455205181397883,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -91,9 +91,9 @@
       "capex",
       "free_cash_flow",
       "gross_profit",
+      "operating_income",
       "cost_of_revenue",
       "research_and_development",
-      "income_before_tax",
       "current_assets",
       "current_liabilities",
       "inventory",
@@ -102,12 +102,13 @@
       "long_term_debt",
       "short_term_debt",
       "retained_earnings",
+      "ebitda",
       "intangibles_net",
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
@@ -115,7 +116,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 47.58385918071218,
+  "tangible_book_value": 47.57091909646416,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -126,12 +127,12 @@
   "pillar_baseline": {
     "label": "Real Estate median (n=31)",
     "values": {
-      "Quality": 46.77,
-      "Value": 47.85,
-      "Growth": 51.61,
+      "Quality": 50.81,
+      "Value": 47.31,
+      "Growth": 48.79,
       "Momentum": 52.34,
-      "Health": 27.89,
-      "Profitability": 52.69,
+      "Health": 26.18,
+      "Profitability": 52.15,
       "Technical": 59.26,
       "Risk": 53.88
     }

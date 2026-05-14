@@ -3,24 +3,24 @@
   "name": "CVS Health",
   "sector": "Health Care",
   "industry": "Health Care Services",
-  "market_cap": 124894030776.97754,
+  "market_cap": 125181228868.53423,
   "current_price": 98.11,
-  "rank": 325,
-  "composite_score": 46.97,
+  "rank": 428,
+  "composite_score": 40.82,
   "pillar_scores": {
-    "quality": 30.51,
-    "value": 77.12,
-    "growth": 21.61,
+    "quality": 37.29,
+    "value": 42.37,
+    "growth": 21.19,
     "momentum": 67.23,
-    "health": 24.1,
-    "profitability": 30.79,
+    "health": 16.29,
+    "profitability": 40.96,
     "technical": 72.86,
     "risk": 57.14,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 243331000000.0,
+    "revenue": 407905000000.0,
     "net_income": 2932000000.0,
     "total_assets": 252974000000.0,
     "total_liabilities": 175337000000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 7394000000.0,
     "eps_basic": 2.31,
     "eps_diluted": 2.3,
-    "shares_outstanding": 1273000000.0,
-    "market_cap": 124894030776.97754,
+    "shares_outstanding": 1275927307.0,
+    "market_cap": 125181228868.53423,
     "pe_ratio_ttm": 42.65652200450068,
     "goodwill": 85478000000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 207.2439436479048,
+        "value": 53.49621499516245,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 201.69523098014275,
+        "value": 175.66956200797105,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 222.53881630660428,
+        "value": 81.02155319044516,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 52.37568691006587,
+        "value": 52.255523548030666,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 204.46958731402378,
-    "max": 222.53881630660428,
-    "low": 52.37568691006587,
-    "high": 222.53881630660428,
-    "mos_pct": 52.017313724180156,
+    "median": 67.25888409280381,
+    "max": 175.66956200797105,
+    "low": 52.255523548030666,
+    "high": 175.66956200797105,
+    "mos_pct": -45.86920662403406,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -88,16 +88,18 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
+      "gross_profit",
       "research_and_development",
-      "sga_expense",
-      "property_plant_equipment"
+      "sga_expense"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-05-06"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
   "valuation_warnings": [
     "value_trap_risk"
   ],
@@ -113,18 +115,18 @@
   "pillar_baseline": {
     "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 51.27,
-      "Value": 52.82,
-      "Growth": 50.0,
+      "Quality": 52.97,
+      "Value": 51.98,
+      "Growth": 49.58,
       "Momentum": 41.24,
-      "Health": 60.08,
-      "Profitability": 52.54,
+      "Health": 59.88,
+      "Profitability": 51.13,
       "Technical": 55.13,
       "Risk": 39.71
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 1.7751926696141438,
   "entered_top5": false,
   "exited_top5": false
 }

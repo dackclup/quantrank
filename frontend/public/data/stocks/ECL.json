@@ -3,17 +3,17 @@
   "name": "Ecolab",
   "sector": "Materials",
   "industry": "Specialty Chemicals",
-  "market_cap": 70243066625.97656,
+  "market_cap": 70252427875.03345,
   "current_price": 249.62,
-  "rank": 163,
-  "composite_score": 54.47,
+  "rank": 150,
+  "composite_score": 55.6,
   "pillar_scores": {
-    "quality": 79.81,
-    "value": 17.95,
-    "growth": 90.38,
+    "quality": 83.65,
+    "value": 16.03,
+    "growth": 88.46,
     "momentum": 39.99,
-    "health": 34.62,
-    "profitability": 78.85,
+    "health": 41.73,
+    "profitability": 79.49,
     "technical": 34.86,
     "risk": 54.71,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 16452300000.0,
-    "net_income": 2105700000.0,
+    "net_income": 2123400000.0,
     "total_assets": 25040600000.0,
     "total_liabilities": 15008600000.0,
     "stockholders_equity": 10003900000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 1870200000.0,
     "eps_basic": 1.53,
     "eps_diluted": 1.52,
-    "shares_outstanding": 281400000.0,
-    "market_cap": 70243066625.97656,
+    "shares_outstanding": 281437502.0,
+    "market_cap": 70252427875.03345,
     "pe_ratio_ttm": 164.22368099814966,
     "goodwill": 9438700000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 130.07580280614752,
+        "value": 192.9739523216646,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 115.67561409279642,
+        "value": 103.10643566565783,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 115.7643338792065,
+        "value": 139.17525037230118,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 44.45070098130703,
+        "value": 44.444777853876055,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 115.71997398600146,
-    "max": 130.07580280614752,
-    "low": 44.45070098130703,
-    "high": 130.07580280614752,
-    "mos_pct": -115.71037956453722,
+    "median": 121.1408430189795,
+    "max": 192.9739523216646,
+    "low": 44.444777853876055,
+    "high": 192.9739523216646,
+    "mos_pct": -106.05766717182148,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ]
@@ -89,7 +89,7 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
-      "property_plant_equipment"
+      "research_and_development"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
@@ -112,18 +112,18 @@
   "pillar_baseline": {
     "label": "Materials median (n=26)",
     "values": {
-      "Quality": 52.16,
-      "Value": 50.8,
-      "Growth": 48.08,
+      "Quality": 51.68,
+      "Value": 49.84,
+      "Growth": 48.56,
       "Momentum": 51.87,
-      "Health": 51.58,
-      "Profitability": 50.48,
+      "Health": 56.53,
+      "Profitability": 54.33,
       "Technical": 57.81,
       "Risk": 48.94
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 0.5121436320970426,
   "entered_top5": false,
   "exited_top5": false
 }

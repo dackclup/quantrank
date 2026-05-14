@@ -3,17 +3,17 @@
   "name": "Carnival Corporation",
   "sector": "Consumer Discretionary",
   "industry": "Hotels, Resorts & Cruise Lines",
-  "market_cap": 16169380443.572998,
+  "market_cap": 31012176157.11393,
   "current_price": 25.03,
-  "rank": 400,
-  "composite_score": 42.8,
+  "rank": 328,
+  "composite_score": 46.76,
   "pillar_scores": {
-    "quality": 39.58,
-    "value": 59.72,
-    "growth": 57.29,
+    "quality": 36.46,
+    "value": 79.17,
+    "growth": 57.81,
     "momentum": 39.44,
-    "health": 8.45,
-    "profitability": 39.24,
+    "health": 10.44,
+    "profitability": 42.01,
     "technical": 38.2,
     "risk": 31.47,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 26976000000.0,
-    "net_income": 3097000000.0,
+    "net_income": 3151000000.0,
     "total_assets": 51567000000.0,
     "total_liabilities": null,
     "stockholders_equity": 13031000000.0,
@@ -31,39 +31,39 @@
     "free_cash_flow": 2986000000.0,
     "eps_basic": 0.19,
     "eps_diluted": 0.19,
-    "shares_outstanding": 646000000.0,
-    "market_cap": 16169380443.572998,
+    "shares_outstanding": 1239000212.0,
+    "market_cap": 31012176157.11393,
     "pe_ratio_ttm": 131.73684571918687,
     "goodwill": 579000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 21.09283989264703,
+        "value": 15.230551334893638,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 13.266956080561098,
+        "value": 55.71665895477219,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 129.24022474137138,
+        "value": 62.40598535579722,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 35.21140871783107,
+        "value": 57.12011259226065,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 18.898625842588746,
+        "value": 9.85351913266043,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,14 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 21.09283989264703,
-    "max": 35.21140871783107,
-    "low": 13.266956080561098,
-    "high": 129.24022474137138,
-    "mos_pct": -18.665863933149048,
-    "valuation_warnings": [
-      "extreme_multiples_pb_estimate"
-    ]
+    "median": 55.71665895477219,
+    "max": 62.40598535579722,
+    "low": 9.85351913266043,
+    "high": 62.40598535579722,
+    "mos_pct": 55.0762713411019,
+    "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -95,15 +93,13 @@
     ],
     "imputed_metrics": [],
     "filing_lag_days": 48,
-    "latest_period_end": "2026-02-28",
+    "latest_period_end": "2026-03-19",
     "latest_filed_date": "2026-03-27"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "extreme_multiples_pb_estimate"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 17.44736842105263,
+  "tangible_book_value": 9.09685074371884,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -114,12 +110,12 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 45.18,
-      "Value": 49.31,
-      "Growth": 51.04,
+      "Quality": 46.35,
+      "Value": 49.13,
+      "Growth": 51.69,
       "Momentum": 37.92,
-      "Health": 48.37,
-      "Profitability": 51.22,
+      "Health": 43.72,
+      "Profitability": 52.6,
       "Technical": 32.16,
       "Risk": 40.54
     }

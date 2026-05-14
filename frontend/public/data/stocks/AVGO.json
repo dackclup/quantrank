@@ -3,17 +3,17 @@
   "name": "Broadcom",
   "sector": "Information Technology",
   "industry": "Semiconductors",
-  "market_cap": 1973917480468.75,
+  "market_cap": 1973362392866.7297,
   "current_price": 416.79,
-  "rank": 184,
-  "composite_score": 53.52,
+  "rank": 159,
+  "composite_score": 54.8,
   "pillar_scores": {
-    "quality": 68.15,
-    "value": 11.64,
-    "growth": 64.73,
+    "quality": 72.6,
+    "value": 9.82,
+    "growth": 62.33,
     "momentum": 82.82,
-    "health": 51.0,
-    "profitability": 53.65,
+    "health": 53.43,
+    "profitability": 61.87,
     "technical": 62.05,
     "risk": 57.74,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 28911000000.0,
     "eps_basic": 1.55,
     "eps_diluted": 1.5,
-    "shares_outstanding": 4736000000.0,
-    "market_cap": 1973917480468.75,
+    "shares_outstanding": 4734668184.0,
+    "market_cap": 1973362392866.7297,
     "pe_ratio_ttm": 277.86000569661456,
     "goodwill": 97801000000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 121.8862790147944,
+        "value": 241.061597541739,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 59.324447960043706,
+        "value": 42.02148206852235,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 291.11435585980286,
+        "value": 192.6065620091922,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -65,25 +65,24 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "non_positive_or_missing_tangible_book",
         "tier_used": null
       },
       "dcf": {
-        "value": 36.69981562963224,
+        "value": 36.71013892996779,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 90.60536348741905,
-    "max": 291.11435585980286,
-    "low": 36.69981562963224,
-    "high": 291.11435585980286,
-    "mos_pct": -360.00588983100874,
+    "median": 117.31402203885727,
+    "max": 241.061597541739,
+    "low": 36.71013892996779,
+    "high": 241.061597541739,
+    "mos_pct": -255.27723054868142,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate",
-      "extreme_dcf_estimate",
-      "value_trap_risk"
+      "extreme_dcf_estimate"
     ]
   },
   "top5_factors": [],
@@ -92,14 +91,13 @@
     "missing_metrics": [],
     "imputed_metrics": [],
     "filing_lag_days": 64,
-    "latest_period_end": "2026-02-01",
+    "latest_period_end": "2026-02-27",
     "latest_filed_date": "2026-03-11"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "extreme_multiples_pb_estimate",
     "extreme_dcf_estimate",
-    "value_trap_risk",
     "beneish_high"
   ],
   "has_history": true,
@@ -114,17 +112,17 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }
   },
-  "beneish_m_score": -2.167943239574783,
+  "beneish_m_score": -2.0571190976788154,
   "dechow_f_score": 1.6677654054480173,
   "entered_top5": false,
   "exited_top5": false

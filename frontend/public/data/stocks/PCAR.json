@@ -3,17 +3,17 @@
   "name": "Paccar",
   "sector": "Industrials",
   "industry": "Construction Machinery & Heavy Transportation Equipment",
-  "market_cap": 58829813357.543945,
+  "market_cap": 58828274035.180756,
   "current_price": 111.78,
-  "rank": 187,
-  "composite_score": 53.39,
+  "rank": 334,
+  "composite_score": 46.6,
   "pillar_scores": {
-    "quality": 47.78,
+    "quality": 26.58,
     "value": 68.14,
-    "growth": 32.28,
+    "growth": 31.96,
     "momentum": 68.82,
-    "health": 49.24,
-    "profitability": 52.95,
+    "health": 55.98,
+    "profitability": 27.43,
     "technical": 33.02,
     "risk": 63.94,
     "sentiment": null,
@@ -31,27 +31,27 @@
     "free_cash_flow": 3752200000.0,
     "eps_basic": 1.15,
     "eps_diluted": 1.15,
-    "shares_outstanding": 526300000.0,
-    "market_cap": 58829813357.543945,
+    "shares_outstanding": 526286229.0,
+    "market_cap": 58828274035.180756,
     "pe_ratio_ttm": 97.19999893851903,
     "goodwill": 114200000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 76.97889117472786,
+        "value": 76.97989829719987,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 135.64668920655913,
+        "value": 130.5333080146079,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 263.3922637722349,
+        "value": 244.44933456275314,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -63,23 +63,23 @@
         "tier_used": null
       },
       "rim": {
-        "value": 54.82174088558027,
+        "value": 54.823175371516115,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 91.96269395375465,
+        "value": 91.96510028359697,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 91.96269395375465,
-    "max": 263.3922637722349,
-    "low": 54.82174088558027,
-    "high": 263.3922637722349,
-    "mos_pct": -21.549286970113954,
+    "median": 91.96510028359697,
+    "max": 244.44933456275314,
+    "low": 54.823175371516115,
+    "high": 244.44933456275314,
+    "mos_pct": -21.546106549762683,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -97,18 +97,17 @@
       "long_term_debt",
       "short_term_debt",
       "ebitda",
-      "intangibles_net",
-      "property_plant_equipment"
+      "intangibles_net"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 37.32167965038951,
+  "tangible_book_value": 37.32265622325451,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -119,12 +118,12 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }

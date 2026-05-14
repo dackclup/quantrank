@@ -3,17 +3,17 @@
   "name": "Verisk Analytics",
   "sector": "Industrials",
   "industry": "Research & Consulting Services",
-  "market_cap": 21155173863.681793,
+  "market_cap": 21156096664.73877,
   "current_price": 161.47,
-  "rank": 331,
-  "composite_score": 46.53,
+  "rank": 292,
+  "composite_score": 48.85,
   "pillar_scores": {
-    "quality": 42.41,
-    "value": 54.01,
-    "growth": 61.39,
+    "quality": 46.84,
+    "value": 55.7,
+    "growth": 61.08,
     "momentum": 10.81,
-    "health": 57.37,
-    "profitability": 85.02,
+    "health": 62.99,
+    "profitability": 88.19,
     "technical": 28.98,
     "risk": 31.71,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 1127300000.0,
     "eps_basic": 1.73,
     "eps_diluted": 1.73,
-    "shares_outstanding": 131016125.0,
-    "market_cap": 21155173863.681793,
+    "shares_outstanding": 131021840.0,
+    "market_cap": 21156096664.73877,
     "pe_ratio_ttm": 93.33526082121568,
     "goodwill": 1863100000.0
   },
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 204.05980202378026,
+        "value": 192.74620996105662,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 169.3321545120246,
+        "value": 178.914808741948,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 53.14540499539142,
+        "value": 53.14308686286062,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 169.3321545120246,
-    "max": 204.05980202378026,
-    "low": 53.14540499539142,
-    "high": 204.05980202378026,
-    "mos_pct": 4.643036234894874,
+    "median": 178.914808741948,
+    "max": 192.74620996105662,
+    "low": 53.14308686286062,
+    "high": 192.74620996105662,
+    "mos_pct": 9.750342995031696,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -89,13 +89,13 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
+      "research_and_development",
       "inventory",
-      "accounts_payable",
-      "property_plant_equipment"
+      "accounts_payable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
@@ -114,17 +114,17 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }
   },
-  "beneish_m_score": null,
+  "beneish_m_score": -2.8603633446005023,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false

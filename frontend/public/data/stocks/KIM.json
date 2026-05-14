@@ -3,17 +3,17 @@
   "name": "Kimco Realty",
   "sector": "Real Estate",
   "industry": "Retail REITs",
-  "market_cap": 15565213802.947159,
+  "market_cap": 15564916347.908142,
   "current_price": 23.08,
-  "rank": 309,
-  "composite_score": 47.66,
+  "rank": 302,
+  "composite_score": 48.11,
   "pillar_scores": {
-    "quality": 34.68,
-    "value": 65.59,
-    "growth": 37.9,
+    "quality": 33.06,
+    "value": 66.67,
+    "growth": 45.97,
     "momentum": 69.12,
-    "health": 26.85,
-    "profitability": 42.47,
+    "health": 24.54,
+    "profitability": 40.59,
     "technical": 42.98,
     "risk": 66.53,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 2161508000.0,
-    "net_income": 616822000.0,
+    "net_income": 624654000.0,
     "total_assets": 19585446000.0,
     "total_liabilities": 9039844000.0,
     "stockholders_equity": 10388906000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 1120788000.0,
     "eps_basic": 0.46,
     "eps_diluted": 0.45,
-    "shares_outstanding": 674402680.0,
-    "market_cap": 15565213802.947159,
+    "shares_outstanding": 674389792.0,
+    "market_cap": 15564916347.908142,
     "pe_ratio_ttm": 51.28888871934679,
     "goodwill": null
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 57.683170860879706,
+        "value": 26.782640196927705,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 36.86105732513715,
+        "value": 39.30495384331035,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 21.49078659732772,
+        "value": 25.11495927540255,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 9.920684188468979,
+        "value": 9.920873778790982,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 29.175921961232437,
-    "max": 57.683170860879706,
-    "low": 9.920684188468979,
-    "high": 57.683170860879706,
-    "mos_pct": 20.893674056389205,
+    "median": 25.948799736165128,
+    "max": 39.30495384331035,
+    "low": 9.920873778790982,
+    "high": 39.30495384331035,
+    "mos_pct": 11.05561660511332,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -91,19 +91,17 @@
       "gross_profit",
       "cost_of_revenue",
       "research_and_development",
-      "income_before_tax",
       "current_assets",
       "current_liabilities",
       "inventory",
       "accounts_receivable",
       "accounts_payable",
       "short_term_debt",
-      "goodwill",
-      "property_plant_equipment"
+      "goodwill"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-22",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
@@ -111,7 +109,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 13.584920807254207,
+  "tangible_book_value": 13.585180423371533,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -122,12 +120,12 @@
   "pillar_baseline": {
     "label": "Real Estate median (n=31)",
     "values": {
-      "Quality": 46.77,
-      "Value": 47.85,
-      "Growth": 51.61,
+      "Quality": 50.81,
+      "Value": 47.31,
+      "Growth": 48.79,
       "Momentum": 52.34,
-      "Health": 27.89,
-      "Profitability": 52.69,
+      "Health": 26.18,
+      "Profitability": 52.15,
       "Technical": 59.26,
       "Risk": 53.88
     }

@@ -3,17 +3,17 @@
   "name": "Clorox",
   "sector": "Consumer Staples",
   "industry": "Household Products",
-  "market_cap": 11124662356.0,
+  "market_cap": 11124764292.0,
   "current_price": 92.0,
-  "rank": 341,
-  "composite_score": 46.21,
+  "rank": 349,
+  "composite_score": 45.88,
   "pillar_scores": {
-    "quality": 33.68,
-    "value": 62.27,
-    "growth": 62.85,
+    "quality": 34.38,
+    "value": 59.26,
+    "growth": 64.24,
     "momentum": 19.32,
-    "health": 41.81,
-    "profitability": 71.53,
+    "health": 43.33,
+    "profitability": 68.75,
     "technical": 56.47,
     "risk": 31.77,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 6760000000.0,
-    "net_income": 756000000.0,
+    "net_income": 770000000.0,
     "total_assets": 6436000000.0,
     "total_liabilities": 6344000000.0,
     "stockholders_equity": -67000000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 788000000.0,
     "eps_basic": 3.48,
     "eps_diluted": 3.47,
-    "shares_outstanding": 120920243.0,
-    "market_cap": 11124662356.0,
+    "shares_outstanding": 120921351.0,
+    "market_cap": 11124764292.0,
     "pe_ratio_ttm": 26.512968299711815,
     "goodwill": 1229000000.0
   },
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 208.42522982893323,
+        "value": 153.75417581831238,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 65.35381836768052,
+        "value": 65.35321953190707,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 136.88952409830688,
-    "max": 208.42522982893323,
-    "low": 65.35381836768052,
-    "high": 208.42522982893323,
-    "mos_pct": 32.792519656996966,
+    "median": 109.55369767510973,
+    "max": 153.75417581831238,
+    "low": 65.35321953190707,
+    "high": 153.75417581831238,
+    "mos_pct": 16.02291665879378,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -89,12 +89,11 @@
   "data_quality": {
     "missing_metrics": [
       "operating_income",
-      "ebitda",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-16",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
@@ -113,18 +112,18 @@
   "pillar_baseline": {
     "label": "Consumer Staples median (n=36)",
     "values": {
-      "Quality": 56.08,
-      "Value": 49.07,
-      "Growth": 50.52,
+      "Quality": 49.65,
+      "Value": 51.39,
+      "Growth": 48.44,
       "Momentum": 39.14,
-      "Health": 38.65,
-      "Profitability": 52.08,
+      "Health": 39.29,
+      "Profitability": 53.94,
       "Technical": 57.99,
       "Risk": 51.44
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -2.9169088390085025,
+  "dechow_f_score": 0.32387153476334074,
   "entered_top5": false,
   "exited_top5": false
 }

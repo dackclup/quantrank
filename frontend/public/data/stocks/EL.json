@@ -3,17 +3,17 @@
   "name": "Estée Lauder Companies (The)",
   "sector": "Consumer Staples",
   "industry": "Personal Care Products",
-  "market_cap": null,
+  "market_cap": 29936383998.87085,
   "current_price": 82.13,
-  "rank": 369,
-  "composite_score": 44.75,
+  "rank": 484,
+  "composite_score": 34.53,
   "pillar_scores": {
-    "quality": 59.03,
-    "value": 45.14,
+    "quality": 47.22,
+    "value": 19.91,
     "growth": 17.01,
     "momentum": 22.14,
-    "health": 52.15,
-    "profitability": 59.72,
+    "health": 43.59,
+    "profitability": 52.78,
     "technical": 73.26,
     "risk": 22.81,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 1285000000.0,
     "eps_basic": 0.82,
     "eps_diluted": 0.82,
-    "shares_outstanding": null,
-    "market_cap": null,
+    "shares_outstanding": 364500000.0,
+    "market_cap": 29936383998.87085,
     "pe_ratio_ttm": 100.15853323587558,
     "goodwill": 2116000000.0
   },
@@ -45,22 +45,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 47.29033573841888,
+        "value": 28.594289262904468,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_bvps",
-        "tier_used": null
+        "value": 34.083748027490394,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": null,
-        "applicable": false,
-        "reason": "missing_shares_outstanding",
-        "tier_used": null
+        "value": 46.14108657730429,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "rim": {
         "value": null,
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": null,
-        "applicable": false,
-        "reason": "missing_shares_outstanding",
+        "value": 54.15691619652439,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       }
     },
-    "median": 47.29033573841888,
-    "max": 47.29033573841888,
-    "low": 47.29033573841888,
-    "high": 47.29033573841888,
-    "mos_pct": -73.6718421871875,
+    "median": 40.11241730239735,
+    "max": 54.15691619652439,
+    "low": 28.594289262904468,
+    "high": 54.15691619652439,
+    "mos_pct": -104.7495583082434,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -88,8 +88,7 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "shares_outstanding",
-      "property_plant_equipment"
+      "research_and_development"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
@@ -112,12 +111,12 @@
   "pillar_baseline": {
     "label": "Consumer Staples median (n=36)",
     "values": {
-      "Quality": 56.08,
-      "Value": 49.07,
-      "Growth": 50.52,
+      "Quality": 49.65,
+      "Value": 51.39,
+      "Growth": 48.44,
       "Momentum": 39.14,
-      "Health": 38.65,
-      "Profitability": 52.08,
+      "Health": 39.29,
+      "Profitability": 53.94,
       "Technical": 57.99,
       "Risk": 51.44
     }

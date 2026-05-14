@@ -3,17 +3,17 @@
   "name": "Intuit",
   "sector": "Information Technology",
   "industry": "Application Software",
-  "market_cap": 103755038204.8645,
+  "market_cap": 102796398136.90186,
   "current_price": 371.71,
-  "rank": 209,
-  "composite_score": 52.46,
+  "rank": 195,
+  "composite_score": 53.2,
   "pillar_scores": {
-    "quality": 57.53,
-    "value": 57.76,
-    "growth": 70.21,
+    "quality": 50.34,
+    "value": 72.37,
+    "growth": 68.84,
     "momentum": 8.44,
-    "health": 73.15,
-    "profitability": 69.41,
+    "health": 75.94,
+    "profitability": 58.68,
     "technical": 24.95,
     "risk": 24.2,
     "sentiment": null,
@@ -31,55 +31,55 @@
     "free_cash_flow": 6833000000.0,
     "eps_basic": 4.09,
     "eps_diluted": 4.06,
-    "shares_outstanding": 279129000.0,
-    "market_cap": 103755038204.8645,
+    "shares_outstanding": 276550000.0,
+    "market_cap": 102796398136.90186,
     "pe_ratio_ttm": 91.55418508745767,
     "goodwill": 13983000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 9.394293126958667,
+        "value": 9.437995276348511,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 380.51019380796055,
+        "value": 614.9018931808276,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 429.9579363386712,
+        "value": 575.0587413996819,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 219.3171385314591,
+        "value": 525.359481516411,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "rim": {
-        "value": 0.4743740265417536,
+        "value": 0.4787978580892176,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 205.816493644182,
+        "value": 207.73585989660776,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 212.56681608782054,
-    "max": 429.9579363386712,
-    "low": 0.4743740265417536,
-    "high": 429.9579363386712,
-    "mos_pct": -74.8673656105893,
+    "median": 366.5476707065094,
+    "max": 614.9018931808276,
+    "low": 0.4787978580892176,
+    "high": 614.9018931808276,
+    "mos_pct": -1.4083627209029912,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -91,12 +91,12 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
-      "interest_expense",
+      "cost_of_revenue",
       "inventory"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 77,
-    "latest_period_end": "2026-01-31",
+    "latest_period_end": "2026-02-20",
     "latest_filed_date": "2026-02-26"
   },
   "risk_flags": [],
@@ -106,7 +106,7 @@
     "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 0.36183986615507524,
+  "tangible_book_value": 0.36521424697161453,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -117,17 +117,17 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }
   },
-  "beneish_m_score": -2.6250359056644017,
+  "beneish_m_score": null,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false

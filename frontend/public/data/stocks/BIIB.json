@@ -3,17 +3,17 @@
   "name": "Biogen",
   "sector": "Health Care",
   "industry": "Biotechnology",
-  "market_cap": 30025003820.80078,
+  "market_cap": 30196219359.78891,
   "current_price": 204.53,
-  "rank": 103,
-  "composite_score": 57.76,
+  "rank": 213,
+  "composite_score": 52.31,
   "pillar_scores": {
-    "quality": 50.0,
-    "value": 67.23,
-    "growth": 33.05,
+    "quality": 38.98,
+    "value": 62.43,
+    "growth": 34.32,
     "momentum": 63.3,
-    "health": 78.25,
-    "profitability": 62.71,
+    "health": 73.11,
+    "profitability": 46.89,
     "technical": 65.84,
     "risk": 48.21,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 2422900000.0,
     "eps_basic": 2.17,
     "eps_diluted": 2.15,
-    "shares_outstanding": 146800000.0,
-    "market_cap": 30025003820.80078,
+    "shares_outstanding": 147637117.0,
+    "market_cap": 30196219359.78891,
     "pe_ratio_ttm": 95.13023199037065,
     "goodwill": 6488700000.0
   },
@@ -45,22 +45,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 183.18192550114222,
+        "value": 220.0656241770823,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 334.1850525650336,
+        "value": 290.0787651504967,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 213.48853843902202,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
       },
       "rim": {
         "value": null,
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 157.60424272857193,
+        "value": 156.7106111436351,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 198.33523197008213,
-    "max": 334.1850525650336,
-    "low": 157.60424272857193,
-    "high": 334.1850525650336,
-    "mos_pct": -3.1233819365735234,
+    "median": 220.0656241770823,
+    "max": 290.0787651504967,
+    "low": 156.7106111436351,
+    "high": 290.0787651504967,
+    "mos_pct": 7.059542105169604,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -88,12 +88,15 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
+      "gross_profit",
+      "operating_income",
+      "research_and_development",
       "dividends_paid",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
@@ -112,18 +115,18 @@
   "pillar_baseline": {
     "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 51.27,
-      "Value": 52.82,
-      "Growth": 50.0,
+      "Quality": 52.97,
+      "Value": 51.98,
+      "Growth": 49.58,
       "Momentum": 41.24,
-      "Health": 60.08,
-      "Profitability": 52.54,
+      "Health": 59.88,
+      "Profitability": 51.13,
       "Technical": 55.13,
       "Risk": 39.71
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -2.6681306562666594,
+  "dechow_f_score": 1.305785398533103,
   "entered_top5": false,
   "exited_top5": false
 }

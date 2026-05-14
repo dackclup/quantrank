@@ -3,17 +3,17 @@
   "name": "Carrier Global",
   "sector": "Industrials",
   "industry": "Building Products",
-  "market_cap": 54825773114.36998,
+  "market_cap": 54461158082.63697,
   "current_price": 65.57,
-  "rank": 342,
-  "composite_score": 46.11,
+  "rank": 405,
+  "composite_score": 42.45,
   "pillar_scores": {
     "quality": 65.82,
-    "value": 32.49,
-    "growth": 44.94,
+    "value": 22.57,
+    "growth": 41.46,
     "momentum": 45.97,
-    "health": 25.66,
-    "profitability": 34.39,
+    "health": 17.73,
+    "profitability": 31.22,
     "technical": 65.14,
     "risk": 36.32,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 21870000000.0,
-    "net_income": 1310000000.0,
+    "net_income": 1415000000.0,
     "total_assets": 37186000000.0,
     "total_liabilities": 23385000000.0,
     "stockholders_equity": 2697000000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 1686000000.0,
     "eps_basic": 0.29,
     "eps_diluted": 0.28,
-    "shares_outstanding": 836141122.0,
-    "market_cap": 54825773114.36998,
+    "shares_outstanding": 830580423.0,
+    "market_cap": 54461158082.63697,
     "pe_ratio_ttm": 234.1785703386579,
     "goodwill": 15313000000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 32.81529325597427,
+        "value": 46.39843418532886,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 22.051028896015435,
+        "value": 20.666292452118828,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 103.27374951376406,
+        "value": 36.03704264269423,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "non_positive_or_missing_tangible_book",
         "tier_used": null
       },
       "dcf": {
@@ -75,33 +75,28 @@
         "tier_used": null
       }
     },
-    "median": 32.81529325597427,
-    "max": 103.27374951376406,
-    "low": 22.051028896015435,
-    "high": 103.27374951376406,
-    "mos_pct": -99.81537017922798,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ]
+    "median": 36.03704264269423,
+    "max": 46.39843418532886,
+    "low": 20.666292452118828,
+    "high": 46.39843418532886,
+    "mos_pct": -81.95166663632202,
+    "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
-      "interest_expense",
-      "accounts_receivable",
-      "property_plant_equipment"
+      "cost_of_revenue",
+      "accounts_receivable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-15",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -114,12 +109,12 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }

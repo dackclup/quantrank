@@ -3,17 +3,17 @@
   "name": "Linde plc",
   "sector": "Materials",
   "industry": "Industrial Gases",
-  "market_cap": 261085552923.1267,
+  "market_cap": 237433843904.71362,
   "current_price": 513.26,
-  "rank": 134,
-  "composite_score": 56.08,
+  "rank": 216,
+  "composite_score": 52.09,
   "pillar_scores": {
-    "quality": 73.08,
-    "value": 17.31,
-    "growth": 63.46,
+    "quality": 68.75,
+    "value": 13.46,
+    "growth": 52.88,
     "momentum": 77.89,
-    "health": 40.24,
-    "profitability": 74.36,
+    "health": 40.6,
+    "profitability": 64.1,
     "technical": 57.15,
     "risk": 77.03,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 34655000000.0,
-    "net_income": 7082000000.0,
+    "net_income": 7251000000.0,
     "total_assets": 86315000000.0,
     "total_liabilities": 46223000000.0,
     "stockholders_equity": 38566000000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 5096000000.0,
     "eps_basic": 4.0,
     "eps_diluted": 3.98,
-    "shares_outstanding": 508680879.0,
-    "market_cap": 261085552923.1267,
+    "shares_outstanding": 462599539.0,
+    "market_cap": 237433843904.71362,
     "pe_ratio_ttm": 128.9598014486495,
     "goodwill": 27882000000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 340.59322050557046,
+        "value": 400.90507654426824,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 246.69238791306952,
+        "value": 241.82310913896202,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 277.91509839484706,
+        "value": 342.4158348925462,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,28 +69,25 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 97.08917714930307,
+        "value": 106.76060784767492,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 262.3037431539583,
-    "max": 340.59322050557046,
-    "low": 97.08917714930307,
-    "high": 340.59322050557046,
-    "mos_pct": -95.67391741884856,
-    "valuation_warnings": [
-      "extreme_dcf_estimate"
-    ]
+    "median": 292.1194720157541,
+    "max": 400.90507654426824,
+    "low": 106.76060784767492,
+    "high": 400.90507654426824,
+    "mos_pct": -75.70208730828621,
+    "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
-      "income_before_tax",
-      "property_plant_equipment"
+      "cost_of_revenue"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
@@ -98,9 +95,7 @@
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "extreme_dcf_estimate"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -113,18 +108,18 @@
   "pillar_baseline": {
     "label": "Materials median (n=26)",
     "values": {
-      "Quality": 52.16,
-      "Value": 50.8,
-      "Growth": 48.08,
+      "Quality": 51.68,
+      "Value": 49.84,
+      "Growth": 48.56,
       "Momentum": 51.87,
-      "Health": 51.58,
-      "Profitability": 50.48,
+      "Health": 56.53,
+      "Profitability": 54.33,
       "Technical": 57.81,
       "Risk": 48.94
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 0.34816109406675927,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,17 +3,17 @@
   "name": "Ventas",
   "sector": "Real Estate",
   "industry": "Health Care REITs",
-  "market_cap": 43918863208.27484,
+  "market_cap": 43925433731.213875,
   "current_price": 90.35,
-  "rank": 291,
-  "composite_score": 48.58,
+  "rank": 370,
+  "composite_score": 44.56,
   "pillar_scores": {
-    "quality": 44.35,
-    "value": 43.01,
-    "growth": 48.39,
+    "quality": 33.87,
+    "value": 33.87,
+    "growth": 58.06,
     "momentum": 74.3,
-    "health": 27.89,
-    "profitability": 41.4,
+    "health": 24.3,
+    "profitability": 42.47,
     "technical": 56.08,
     "risk": 84.96,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 6132850000.0,
-    "net_income": 249128000.0,
+    "net_income": 272208000.0,
     "total_assets": 27686545000.0,
     "total_liabilities": 14109965000.0,
     "stockholders_equity": 13124964000.0,
@@ -31,36 +31,36 @@
     "free_cash_flow": 1519276000.0,
     "eps_basic": 0.12,
     "eps_diluted": 0.11,
-    "shares_outstanding": 486097000.0,
-    "market_cap": 43918863208.27484,
+    "shares_outstanding": 486169723.0,
+    "market_cap": 43925433731.213875,
     "pe_ratio_ttm": 821.36362249201,
     "goodwill": 1045774000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 10.831048726168635,
+        "value": 10.830238622436402,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 13.581695617251505,
+        "value": 16.159368422125926,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 61.67935957891492,
+        "value": 64.60097117541038,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 113.67122494569011,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
       },
       "rim": {
         "value": null,
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 37.63052759808321,
-    "max": 113.67122494569011,
-    "low": 10.831048726168635,
-    "high": 113.67122494569011,
-    "mos_pct": -140.09761287195786,
+    "median": 16.159368422125926,
+    "max": 64.60097117541038,
+    "low": 10.830238622436402,
+    "high": 64.60097117541038,
+    "mos_pct": -459.11837711683694,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_multiples_pe_estimate",
@@ -91,6 +91,7 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
+      "operating_income",
       "cost_of_revenue",
       "research_and_development",
       "current_assets",
@@ -99,11 +100,12 @@
       "accounts_receivable",
       "accounts_payable",
       "short_term_debt",
+      "ebitda",
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 16,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-28"
   },
   "risk_flags": [],
@@ -113,7 +115,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 24.82785534574375,
+  "tangible_book_value": 24.824141506648285,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -124,12 +126,12 @@
   "pillar_baseline": {
     "label": "Real Estate median (n=31)",
     "values": {
-      "Quality": 46.77,
-      "Value": 47.85,
-      "Growth": 51.61,
+      "Quality": 50.81,
+      "Value": 47.31,
+      "Growth": 48.79,
       "Momentum": 52.34,
-      "Health": 27.89,
-      "Profitability": 52.69,
+      "Health": 26.18,
+      "Profitability": 52.15,
       "Technical": 59.26,
       "Risk": 53.88
     }

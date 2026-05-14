@@ -3,17 +3,17 @@
   "name": "APA Corporation",
   "sector": "Energy",
   "industry": "Oil & Gas Exploration & Production",
-  "market_cap": 13049103393.485046,
+  "market_cap": 13067794723.67221,
   "current_price": 36.97,
-  "rank": 50,
-  "composite_score": 62.11,
+  "rank": 6,
+  "composite_score": 68.55,
   "pillar_scores": {
-    "quality": 63.1,
-    "value": 69.05,
-    "growth": 54.76,
+    "quality": 79.76,
+    "value": 73.81,
+    "growth": 55.95,
     "momentum": 82.72,
-    "health": 34.46,
-    "profitability": 57.94,
+    "health": 39.92,
+    "profitability": 59.52,
     "technical": 58.07,
     "risk": 55.03,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": null,
-    "net_income": 1533000000.0,
+    "net_income": 2131000000.0,
     "total_assets": 18079000000.0,
     "total_liabilities": null,
     "stockholders_equity": 6456000000.0,
@@ -31,41 +31,41 @@
     "free_cash_flow": null,
     "eps_basic": 1.26,
     "eps_diluted": 1.26,
-    "shares_outstanding": 352964646.0,
-    "market_cap": 13049103393.485046,
+    "shares_outstanding": 353470227.0,
+    "market_cap": 13067794723.67221,
     "pe_ratio_ttm": 29.341270810081845,
     "goodwill": 0.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 46.12673211889028,
+        "value": 46.09373196402548,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 64.52625225378755,
+        "value": 77.73935507595604,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 31.449671130207776,
+        "value": 31.415871077980356,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 201.66740960254117,
+        "value": 164.67593613182135,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "value": 36.44134628376763,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
@@ -75,15 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 55.32649218633891,
-    "max": 64.52625225378755,
-    "low": 31.449671130207776,
-    "high": 201.66740960254117,
-    "mos_pct": 33.178483291171545,
-    "valuation_warnings": [
-      "extreme_multiples_ev_ebitda_estimate",
-      "value_trap_risk"
-    ]
+    "median": 46.09373196402548,
+    "max": 164.67593613182135,
+    "low": 31.415871077980356,
+    "high": 164.67593613182135,
+    "mos_pct": 19.79386427300593,
+    "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -96,22 +93,18 @@
       "gross_profit",
       "cost_of_revenue",
       "research_and_development",
-      "interest_expense",
-      "intangibles_net",
-      "property_plant_equipment"
+      "income_tax_expense",
+      "intangibles_net"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "extreme_multiples_ev_ebitda_estimate",
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 18.29078371775512,
+  "tangible_book_value": 18.264621761198576,
   "tier2_events": {
     "going_concern_disclosure": true,
     "non_reliance_filing": false,
@@ -123,17 +116,17 @@
     "label": "Energy median (n=21)",
     "values": {
       "Quality": 50.0,
-      "Value": 50.79,
-      "Growth": 53.57,
+      "Value": 51.59,
+      "Growth": 55.95,
       "Momentum": 77.24,
-      "Health": 50.36,
-      "Profitability": 52.38,
+      "Health": 55.14,
+      "Profitability": 54.76,
       "Technical": 62.77,
       "Risk": 65.8
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
-  "entered_top5": false,
+  "entered_top5": true,
   "exited_top5": false
 }

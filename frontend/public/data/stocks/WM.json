@@ -3,17 +3,17 @@
   "name": "Waste Management",
   "sector": "Industrials",
   "industry": "Environmental & Facilities Services",
-  "market_cap": 87073812982.17773,
+  "market_cap": 86917056743.28955,
   "current_price": 216.44,
-  "rank": 95,
-  "composite_score": 58.22,
+  "rank": 163,
+  "composite_score": 54.62,
   "pillar_scores": {
-    "quality": 70.25,
-    "value": 54.85,
-    "growth": 61.39,
+    "quality": 57.28,
+    "value": 55.06,
+    "growth": 59.18,
     "momentum": 55.13,
-    "health": 39.28,
-    "profitability": 57.17,
+    "health": 49.36,
+    "profitability": 44.3,
     "technical": 38.94,
     "risk": 67.78,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 25413000000.0,
-    "net_income": 2794000000.0,
+    "net_income": 2795000000.0,
     "total_assets": 45700000000.0,
     "total_liabilities": 35678000000.0,
     "stockholders_equity": 10021000000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 3290000000.0,
     "eps_basic": 1.79,
     "eps_diluted": 1.79,
-    "shares_outstanding": 402300000.0,
-    "market_cap": 87073812982.17773,
+    "shares_outstanding": 401575752.0,
+    "market_cap": 86917056743.28955,
     "pe_ratio_ttm": 120.91620248123255,
     "goodwill": 13873000000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 209.78348188640692,
+        "value": 189.55834405108158,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 170.2897564408594,
+        "value": 158.82062315542163,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 289.2873761371952,
+        "value": 313.0752948467546,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 57.217625033063776,
+        "value": 57.32081789341095,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 190.03661916363316,
-    "max": 289.2873761371952,
-    "low": 57.217625033063776,
-    "high": 289.2873761371952,
-    "mos_pct": -13.893839720984596,
+    "median": 174.1894836032516,
+    "max": 313.0752948467546,
+    "low": 57.32081789341095,
+    "high": 313.0752948467546,
+    "mos_pct": -24.255493479955383,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -88,13 +88,13 @@
     "missing_metrics": [
       "gross_profit",
       "research_and_development",
+      "interest_expense",
       "inventory",
-      "long_term_debt",
-      "property_plant_equipment"
+      "long_term_debt"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
@@ -111,12 +111,12 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }

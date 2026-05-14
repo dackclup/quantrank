@@ -3,17 +3,17 @@
   "name": "NiSource",
   "sector": "Utilities",
   "industry": "Multi-Utilities",
-  "market_cap": 22554113521.32368,
+  "market_cap": 22557616111.466885,
   "current_price": 47.05,
-  "rank": 193,
-  "composite_score": 53.26,
+  "rank": 170,
+  "composite_score": 54.29,
   "pillar_scores": {
-    "quality": 41.94,
-    "value": 69.89,
-    "growth": 54.84,
+    "quality": 53.23,
+    "value": 61.29,
+    "growth": 54.03,
     "momentum": 71.46,
-    "health": 19.76,
-    "profitability": 41.4,
+    "health": 16.97,
+    "profitability": 45.16,
     "technical": 50.2,
     "risk": 83.8,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 11331800000.0,
-    "net_income": 961800000.0,
+    "net_income": 1042100000.0,
     "total_assets": 36601000000.0,
     "total_liabilities": null,
     "stockholders_equity": 9658200000.0,
@@ -31,36 +31,36 @@
     "free_cash_flow": -832000000.0,
     "eps_basic": 1.06,
     "eps_diluted": 1.06,
-    "shares_outstanding": 479364801.0,
-    "market_cap": 22554113521.32368,
+    "shares_outstanding": 479439245.0,
+    "market_cap": 22557616111.466885,
     "pe_ratio_ttm": 44.38679173307599,
     "goodwill": 1485900000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 25.410628128641285,
+        "value": 25.40865525902627,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 93.10333299636841,
+        "value": 41.801839265402684,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 42.21265241583918,
+        "value": 42.21331842766301,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 105.71549524297544,
+        "value": 65.63059810510951,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "rim": {
         "value": null,
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 67.6579927061038,
-    "max": 105.71549524297544,
-    "low": 25.410628128641285,
-    "high": 105.71549524297544,
-    "mos_pct": 30.459067206680658,
+    "median": 42.00757884653285,
+    "max": 65.63059810510951,
+    "low": 25.40865525902627,
+    "high": 65.63059810510951,
+    "mos_pct": -12.003596800827948,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -89,15 +89,16 @@
   "data_quality": {
     "missing_metrics": [
       "total_liabilities",
+      "gross_profit",
+      "cost_of_revenue",
       "research_and_development",
       "sga_expense",
       "income_before_tax",
-      "inventory",
-      "property_plant_equipment"
+      "inventory"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
@@ -105,7 +106,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 17.04818539649097,
+  "tangible_book_value": 17.045538272529193,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -118,10 +119,10 @@
     "values": {
       "Quality": 51.61,
       "Value": 47.85,
-      "Growth": 50.81,
+      "Growth": 54.03,
       "Momentum": 62.85,
-      "Health": 19.36,
-      "Profitability": 51.61,
+      "Health": 17.85,
+      "Profitability": 52.15,
       "Technical": 43.63,
       "Risk": 71.98
     }

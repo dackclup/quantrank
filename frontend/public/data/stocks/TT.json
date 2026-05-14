@@ -3,17 +3,17 @@
   "name": "Trane Technologies",
   "sector": "Industrials",
   "industry": "Building Products",
-  "market_cap": 117283977264.4043,
+  "market_cap": 104121548347.952,
   "current_price": 471.02,
-  "rank": 105,
-  "composite_score": 57.71,
+  "rank": 64,
+  "composite_score": 60.56,
   "pillar_scores": {
-    "quality": 72.15,
-    "value": 21.52,
-    "growth": 82.59,
+    "quality": 75.32,
+    "value": 29.32,
+    "growth": 81.96,
     "momentum": 66.93,
-    "health": 44.66,
-    "profitability": 71.31,
+    "health": 52.79,
+    "profitability": 63.08,
     "technical": 65.29,
     "risk": 57.27,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 21602800000.0,
-    "net_income": 2898100000.0,
+    "net_income": 2916100000.0,
     "total_assets": 22754800000.0,
     "total_liabilities": 14142300000.0,
     "stockholders_equity": 8590900000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 3124300000.0,
     "eps_basic": 2.64,
     "eps_diluted": 2.62,
-    "shares_outstanding": 249000000.0,
-    "market_cap": 117283977264.4043,
+    "shares_outstanding": 221055477.0,
+    "market_cap": 104121548347.952,
     "pe_ratio_ttm": 179.77862176094345,
     "goodwill": 6957400000.0
   },
@@ -45,22 +45,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 307.0573868951878,
+        "value": 359.2772421552788,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 235.8667980617849,
+        "value": 247.34361221211756,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 257.0798863879633,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
       },
       "rim": {
         "value": null,
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 56.64500752627533,
+        "value": 63.80573358986512,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 246.4733422248741,
-    "max": 307.0573868951878,
-    "low": 56.64500752627533,
-    "high": 307.0573868951878,
-    "mos_pct": -91.10382679191686,
+    "median": 247.34361221211756,
+    "max": 359.2772421552788,
+    "low": 63.80573358986512,
+    "high": 359.2772421552788,
+    "mos_pct": -90.43143455418343,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ]
@@ -89,12 +89,14 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
+      "research_and_development",
+      "depreciation_and_amortization",
       "accounts_receivable",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
@@ -113,12 +115,12 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }

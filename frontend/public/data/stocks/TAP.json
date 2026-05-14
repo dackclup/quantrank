@@ -3,17 +3,17 @@
   "name": "Molson Coors Beverage Company",
   "sector": "Consumer Staples",
   "industry": "Brewers",
-  "market_cap": null,
+  "market_cap": 8246721635.437012,
   "current_price": 41.42,
-  "rank": 490,
-  "composite_score": 32.88,
+  "rank": 477,
+  "composite_score": 35.59,
   "pillar_scores": {
-    "quality": 22.92,
-    "value": 49.07,
-    "growth": 46.18,
+    "quality": 15.28,
+    "value": 73.61,
+    "growth": 47.57,
     "momentum": 21.61,
-    "health": 9.8,
-    "profitability": 31.25,
+    "health": 9.26,
+    "profitability": 17.82,
     "technical": 51.84,
     "risk": 41.1,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 1067800000.0,
     "eps_basic": -10.75,
     "eps_diluted": -10.75,
-    "shares_outstanding": null,
-    "market_cap": null,
+    "shares_outstanding": 199100000.0,
+    "market_cap": 8246721635.437012,
     "pe_ratio_ttm": null,
     "goodwill": 1944700000.0
   },
@@ -51,10 +51,10 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_bvps",
-        "tier_used": null
+        "value": 174.86622223058077,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
         "value": null,
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": null,
-    "max": null,
-    "low": null,
-    "high": null,
-    "mos_pct": null,
+    "median": 174.86622223058077,
+    "max": 174.86622223058077,
+    "low": 174.86622223058077,
+    "high": 174.86622223058077,
+    "mos_pct": 76.3133224698316,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -88,7 +88,6 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "shares_outstanding",
       "research_and_development"
     ],
     "imputed_metrics": [],
@@ -114,12 +113,12 @@
   "pillar_baseline": {
     "label": "Consumer Staples median (n=36)",
     "values": {
-      "Quality": 56.08,
-      "Value": 49.07,
-      "Growth": 50.52,
+      "Quality": 49.65,
+      "Value": 51.39,
+      "Growth": 48.44,
       "Momentum": 39.14,
-      "Health": 38.65,
-      "Profitability": 52.08,
+      "Health": 39.29,
+      "Profitability": 53.94,
       "Technical": 57.99,
       "Risk": 51.44
     }

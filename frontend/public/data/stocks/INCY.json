@@ -3,17 +3,17 @@
   "name": "Incyte",
   "sector": "Health Care",
   "industry": "Biotechnology",
-  "market_cap": 19758900925.80059,
+  "market_cap": 19742472496.131325,
   "current_price": 98.82,
-  "rank": 65,
-  "composite_score": 60.91,
+  "rank": 42,
+  "composite_score": 62.93,
   "pillar_scores": {
-    "quality": 66.1,
-    "value": 35.03,
-    "growth": 79.24,
+    "quality": 66.53,
+    "value": 41.81,
+    "growth": 80.93,
     "momentum": 50.5,
-    "health": 78.92,
-    "profitability": 86.44,
+    "health": 79.14,
+    "profitability": 88.7,
     "technical": 62.35,
     "risk": 59.3,
     "sentiment": null,
@@ -31,39 +31,39 @@
     "free_cash_flow": 1438949000.0,
     "eps_basic": 1.52,
     "eps_diluted": 1.47,
-    "shares_outstanding": 199948401.0,
-    "market_cap": 19758900925.80059,
+    "shares_outstanding": 199782155.0,
+    "market_cap": 19742472496.131325,
     "pe_ratio_ttm": 67.22448958831579,
     "goodwill": 133000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 42.599347523337805,
+        "value": 42.6170680711254,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 132.45591180974787,
+        "value": 169.72428818074852,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 91.08677529902904,
+        "value": 80.72232229097945,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": null,
-        "applicable": false,
-        "reason": "ev_ebitda_negative_equity_post_debt",
-        "tier_used": null
+        "value": 60.840200222611536,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "rim": {
-        "value": 27.94066785850213,
+        "value": 27.963918304813536,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 66.84306141118343,
-    "max": 132.45591180974787,
-    "low": 27.94066785850213,
-    "high": 132.45591180974787,
-    "mos_pct": -47.8388296534407,
+    "median": 60.840200222611536,
+    "max": 169.72428818074852,
+    "low": 27.963918304813536,
+    "high": 169.72428818074852,
+    "mos_pct": -62.42550046391418,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -88,12 +88,11 @@
     "missing_metrics": [
       "gross_profit",
       "dividends_paid",
-      "accounts_receivable",
-      "property_plant_equipment"
+      "accounts_receivable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 16,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-21",
     "latest_filed_date": "2026-04-28"
   },
   "risk_flags": [
@@ -101,7 +100,7 @@
   ],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 26.271507917685224,
+  "tangible_book_value": 26.293369395279573,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -112,12 +111,12 @@
   "pillar_baseline": {
     "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 51.27,
-      "Value": 52.82,
-      "Growth": 50.0,
+      "Quality": 52.97,
+      "Value": 51.98,
+      "Growth": 49.58,
       "Momentum": 41.24,
-      "Health": 60.08,
-      "Profitability": 52.54,
+      "Health": 59.88,
+      "Profitability": 51.13,
       "Technical": 55.13,
       "Risk": 39.71
     }

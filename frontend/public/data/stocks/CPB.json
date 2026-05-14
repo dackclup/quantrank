@@ -3,17 +3,17 @@
   "name": "Campbell's Company (The)",
   "sector": "Consumer Staples",
   "industry": "Packaged Foods & Meats",
-  "market_cap": 6573050123.214722,
+  "market_cap": 6067281144.533859,
   "current_price": 20.35,
-  "rank": 428,
-  "composite_score": 40.61,
+  "rank": 443,
+  "composite_score": 39.54,
   "pillar_scores": {
-    "quality": 36.11,
-    "value": 80.09,
-    "growth": 35.42,
+    "quality": 34.72,
+    "value": 78.24,
+    "growth": 36.11,
     "momentum": 4.51,
-    "health": 21.63,
-    "profitability": 37.96,
+    "health": 18.37,
+    "profitability": 37.5,
     "technical": 41.68,
     "risk": 28.0,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 692000000.0,
     "eps_basic": 1.14,
     "eps_diluted": 1.13,
-    "shares_outstanding": 323000000.0,
-    "market_cap": 6573050123.214722,
+    "shares_outstanding": 298146488.0,
+    "market_cap": 6067281144.533859,
     "pe_ratio_ttm": 18.008849895105953,
     "goodwill": 4992000000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 67.87334573679956,
+        "value": 44.542252622576264,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 56.89751015219015,
+        "value": 23.640744743345525,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 90.69657403394942,
+        "value": 38.90069914270691,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,28 +69,29 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 5.974217948838384,
+        "value": 6.472229173045963,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 62.38542794449486,
-    "max": 90.69657403394942,
-    "low": 5.974217948838384,
-    "high": 90.69657403394942,
-    "mos_pct": 67.38020231331042,
+    "median": 31.270721943026217,
+    "max": 44.542252622576264,
+    "low": 6.472229173045963,
+    "high": 44.542252622576264,
+    "mos_pct": 34.92315137927909,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
+      "gross_profit",
       "research_and_development"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 64,
-    "latest_period_end": "2026-02-01",
+    "latest_period_end": "2026-03-05",
     "latest_filed_date": "2026-03-11"
   },
   "risk_flags": [],
@@ -107,12 +108,12 @@
   "pillar_baseline": {
     "label": "Consumer Staples median (n=36)",
     "values": {
-      "Quality": 56.08,
-      "Value": 49.07,
-      "Growth": 50.52,
+      "Quality": 49.65,
+      "Value": 51.39,
+      "Growth": 48.44,
       "Momentum": 39.14,
-      "Health": 38.65,
-      "Profitability": 52.08,
+      "Health": 39.29,
+      "Profitability": 53.94,
       "Technical": 57.99,
       "Risk": 51.44
     }

@@ -3,24 +3,24 @@
   "name": "Wells Fargo",
   "sector": "Financials",
   "industry": "Diversified Banks",
-  "market_cap": 225317975259.3994,
+  "market_cap": 225015729758.23712,
   "current_price": 73.53,
-  "rank": 255,
-  "composite_score": 50.3,
+  "rank": 308,
+  "composite_score": 47.76,
   "pillar_scores": {
-    "quality": 44.67,
-    "value": 61.78,
-    "growth": 55.0,
+    "quality": 43.33,
+    "value": 58.22,
+    "growth": 48.0,
     "momentum": 47.51,
-    "health": 49.26,
-    "profitability": 49.78,
+    "health": 45.26,
+    "profitability": 48.22,
     "technical": 25.8,
     "risk": 52.66,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 74275000000.0,
+    "revenue": 84996000000.0,
     "net_income": 21697000000.0,
     "total_assets": 2205752000000.0,
     "total_liabilities": 2025439000000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": null,
     "eps_basic": 1.62,
     "eps_diluted": 1.6,
-    "shares_outstanding": 3064300000.0,
-    "market_cap": 225317975259.3994,
+    "shares_outstanding": 3060189494.0,
+    "market_cap": 225015729758.23712,
     "pe_ratio_ttm": 45.95624923706055,
     "goodwill": 24965000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 78.31230920111678,
+        "value": 78.36488685902809,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 85.99030314003926,
+        "value": 96.84608653127437,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 120.77839386564919,
+        "value": 117.7691948295062,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -63,7 +63,7 @@
         "tier_used": null
       },
       "rim": {
-        "value": 52.56315019472786,
+        "value": 52.63375403958059,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 82.15130617057801,
-    "max": 120.77839386564919,
-    "low": 52.56315019472786,
-    "high": 120.77839386564919,
-    "mos_pct": 10.494425217512616,
+    "median": 87.60548669515123,
+    "max": 117.7691948295062,
+    "low": 52.63375403958059,
+    "high": 117.7691948295062,
+    "mos_pct": 16.066902253319025,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -93,17 +93,17 @@
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
+      "depreciation_and_amortization",
       "current_assets",
       "current_liabilities",
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "ebitda",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-17",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [
@@ -111,7 +111,7 @@
   ],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 49.678556277126916,
+  "tangible_book_value": 49.74528547937038,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -123,11 +123,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

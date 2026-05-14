@@ -3,17 +3,17 @@
   "name": "Seagate Technology",
   "sector": "Information Technology",
   "industry": "Technology Hardware, Storage & Peripherals",
-  "market_cap": 183419930535.78735,
+  "market_cap": 183273561136.85938,
   "current_price": 817.35,
-  "rank": 38,
-  "composite_score": 63.51,
+  "rank": 87,
+  "composite_score": 58.69,
   "pillar_scores": {
-    "quality": 97.09,
-    "value": 30.14,
-    "growth": 27.4,
+    "quality": 95.03,
+    "value": 15.18,
+    "growth": 27.05,
     "momentum": 94.75,
-    "health": 39.44,
-    "profitability": 83.79,
+    "health": 39.12,
+    "profitability": 70.78,
     "technical": 70.49,
     "risk": 54.9,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 2412000000.0,
     "eps_basic": 8.71,
     "eps_diluted": 8.29,
-    "shares_outstanding": 224408070.0,
-    "market_cap": 183419930535.78735,
+    "shares_outstanding": 224228992.0,
+    "market_cap": 183273561136.85938,
     "pe_ratio_ttm": 98.59468945548102,
     "goodwill": 1221000000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 279.5371264822002,
+        "value": 382.5318572768512,
         "applicable": true,
         "reason": null,
-        "tier_used": "sub_industry"
+        "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 48.56973051565271,
+        "value": 44.96283201654916,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 403.26693670031455,
+        "value": 307.16927238367174,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 64.0167806351005,
+        "value": 64.06790692764778,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 171.77695355865035,
-    "max": 403.26693670031455,
-    "low": 48.56973051565271,
-    "high": 403.26693670031455,
-    "mos_pct": -375.82050947647474,
+    "median": 185.61858965565978,
+    "max": 382.5318572768512,
+    "low": 44.96283201654916,
+    "high": 382.5318572768512,
+    "mos_pct": -340.33842574830453,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate",
       "extreme_dcf_estimate"
@@ -89,12 +89,11 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "gross_profit",
-      "property_plant_equipment"
+      "gross_profit"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
-    "latest_period_end": "2026-04-03",
+    "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [
@@ -103,7 +102,8 @@
   ],
   "valuation_warnings": [
     "extreme_multiples_pb_estimate",
-    "extreme_dcf_estimate"
+    "extreme_dcf_estimate",
+    "beneish_high"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -117,18 +117,18 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -1.578909954056504,
+  "dechow_f_score": 1.1937282784037488,
   "entered_top5": false,
   "exited_top5": false
 }

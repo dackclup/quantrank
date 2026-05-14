@@ -3,25 +3,25 @@
   "name": "Corpay",
   "sector": "Financials",
   "industry": "Transaction & Payment Processing Services",
-  "market_cap": 21906809656.25,
+  "market_cap": 21651135668.75,
   "current_price": 331.25,
-  "rank": 230,
-  "composite_score": 51.54,
+  "rank": 138,
+  "composite_score": 56.15,
   "pillar_scores": {
-    "quality": 70.0,
-    "value": 27.56,
-    "growth": 67.33,
+    "quality": 72.0,
+    "value": 46.89,
+    "growth": 69.0,
     "momentum": 45.62,
-    "health": 45.42,
-    "profitability": 53.56,
+    "health": 29.76,
+    "profitability": 70.67,
     "technical": 54.83,
     "risk": 35.62,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": null,
-    "net_income": 1176659000.0,
+    "revenue": 4783723000.0,
+    "net_income": 2443288000.0,
     "total_assets": 26664790000.0,
     "total_liabilities": null,
     "stockholders_equity": 3510128000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 1615137000.0,
     "eps_basic": 5.14,
     "eps_diluted": 5.07,
-    "shares_outstanding": 66133765.0,
-    "market_cap": 21906809656.25,
+    "shares_outstanding": 65361919.0,
+    "market_cap": 21651135668.75,
     "pe_ratio_ttm": 65.3353057199211,
     "goodwill": 7340980000.0
   },
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 271.80542592604456,
+        "value": 510.5997223975387,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 109.72944953551082,
+        "value": 106.17861762885624,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,30 +75,32 @@
         "tier_used": null
       }
     },
-    "median": 190.7674377307777,
-    "max": 271.80542592604456,
-    "low": 109.72944953551082,
-    "high": 271.80542592604456,
-    "mos_pct": -73.64074495117958,
+    "median": 308.3891700131975,
+    "max": 510.5997223975387,
+    "low": 106.17861762885624,
+    "high": 510.5997223975387,
+    "mos_pct": -7.412980807926617,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "revenue",
       "total_liabilities",
+      "gross_profit",
+      "cost_of_revenue",
       "research_and_development",
       "dividends_paid",
-      "inventory",
-      "property_plant_equipment"
+      "inventory"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-08"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
   "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
@@ -113,11 +115,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

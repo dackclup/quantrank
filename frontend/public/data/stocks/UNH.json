@@ -3,17 +3,17 @@
   "name": "UnitedHealth Group",
   "sector": "Health Care",
   "industry": "Managed Health Care",
-  "market_cap": 364253283325.1953,
+  "market_cap": 364311212434.36414,
   "current_price": 401.16,
-  "rank": 36,
-  "composite_score": 63.55,
+  "rank": 130,
+  "composite_score": 56.64,
   "pillar_scores": {
-    "quality": 91.53,
-    "value": 60.17,
-    "growth": 49.15,
+    "quality": 88.77,
+    "value": 38.98,
+    "growth": 43.22,
     "momentum": 63.6,
-    "health": 23.31,
-    "profitability": 59.89,
+    "health": 16.97,
+    "profitability": 59.75,
     "technical": 69.4,
     "risk": 32.14,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 449713000000.0,
-    "net_income": 12044000000.0,
+    "net_income": 12814000000.0,
     "total_assets": 312644000000.0,
     "total_liabilities": 207325000000.0,
     "stockholders_equity": 33020000000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 19666000000.0,
     "eps_basic": 6.92,
     "eps_diluted": 6.9,
-    "shares_outstanding": 908000000.0,
-    "market_cap": 364253283325.1953,
+    "shares_outstanding": 908144404.0,
+    "market_cap": 364311212434.36414,
     "pe_ratio_ttm": 58.139130965523094,
     "goodwill": 110512000000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 621.7318309437145,
+        "value": 328.48446118760245,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 117.78994437771208,
+        "value": 104.283652180563,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 485.93961403494086,
+        "value": 359.3303668031509,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 239.8036198552569,
+        "value": 239.76548869266972,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 362.8716169450989,
-    "max": 621.7318309437145,
-    "low": 117.78994437771208,
-    "high": 621.7318309437145,
-    "mos_pct": -10.551496708215508,
+    "median": 284.1249749401361,
+    "max": 359.3303668031509,
+    "low": 104.283652180563,
+    "high": 359.3303668031509,
+    "mos_pct": -41.19139077676366,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -88,17 +88,14 @@
     "missing_metrics": [
       "gross_profit",
       "research_and_development",
-      "accounts_payable",
-      "property_plant_equipment"
+      "accounts_payable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 9,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-05"
   },
-  "risk_flags": [
-    "altman_distress"
-  ],
+  "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
@@ -112,18 +109,18 @@
   "pillar_baseline": {
     "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 51.27,
-      "Value": 52.82,
-      "Growth": 50.0,
+      "Quality": 52.97,
+      "Value": 51.98,
+      "Growth": 49.58,
       "Momentum": 41.24,
-      "Health": 60.08,
-      "Profitability": 52.54,
+      "Health": 59.88,
+      "Profitability": 51.13,
       "Technical": 55.13,
       "Risk": 39.71
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -2.485024971872371,
+  "dechow_f_score": 0.5900883219436807,
   "entered_top5": false,
   "exited_top5": false
 }

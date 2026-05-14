@@ -3,25 +3,25 @@
   "name": "Interactive Brokers",
   "sector": "Financials",
   "industry": "Investment Banking & Brokerage",
-  "market_cap": 5446431890.940971,
+  "market_cap": 38165195281.40304,
   "current_price": 85.12,
-  "rank": 323,
-  "composite_score": 47.16,
+  "rank": 55,
+  "composite_score": 61.23,
   "pillar_scores": {
-    "quality": 28.0,
-    "value": 54.44,
-    "growth": 35.67,
+    "quality": 73.33,
+    "value": 43.78,
+    "growth": 60.0,
     "momentum": 73.95,
-    "health": 61.22,
-    "profitability": 34.67,
+    "health": 57.21,
+    "profitability": 56.44,
     "technical": 60.11,
     "risk": 59.03,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 2547000000.0,
-    "net_income": 41597000.0,
+    "revenue": 6447000000.0,
+    "net_income": 4564000000.0,
     "total_assets": 218749000000.0,
     "total_liabilities": 197489000000.0,
     "stockholders_equity": 5585000000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": null,
     "eps_basic": 0.6,
     "eps_diluted": 0.59,
-    "shares_outstanding": 63985335.0,
-    "market_cap": 5446431890.940971,
+    "shares_outstanding": 448369291.0,
+    "market_cap": 38165195281.40304,
     "pe_ratio_ttm": 144.27119109590174,
     "goodwill": null
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 98.0380906655993,
+        "value": 37.03540844741787,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 31.630217218218203,
+        "value": 139.04023162706693,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 181.08319485444645,
+        "value": 24.62783442219115,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -63,9 +63,9 @@
         "tier_used": null
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "value": 14.72732309830737,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
@@ -75,13 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 98.0380906655993,
-    "max": 181.08319485444645,
-    "low": 31.630217218218203,
-    "high": 181.08319485444645,
-    "mos_pct": 13.176600881671504,
+    "median": 30.83162143480451,
+    "max": 139.04023162706693,
+    "low": 14.72732309830737,
+    "high": 139.04023162706693,
+    "mos_pct": -176.08020203080744,
     "valuation_warnings": [
-      "value_trap_risk"
+      "extreme_rim_estimate"
     ]
   },
   "top5_factors": [],
@@ -94,6 +94,7 @@
       "operating_income",
       "cost_of_revenue",
       "research_and_development",
+      "depreciation_and_amortization",
       "current_assets",
       "current_liabilities",
       "inventory",
@@ -101,8 +102,7 @@
       "accounts_payable",
       "long_term_debt",
       "ebitda",
-      "goodwill",
-      "property_plant_equipment"
+      "goodwill"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
@@ -111,10 +111,10 @@
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "value_trap_risk"
+    "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 86.47293946339423,
+  "tangible_book_value": 12.340274213828797,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -126,11 +126,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

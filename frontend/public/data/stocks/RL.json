@@ -3,17 +3,17 @@
   "name": "Ralph Lauren Corporation",
   "sector": "Consumer Discretionary",
   "industry": "Apparel, Accessories & Luxury Goods",
-  "market_cap": null,
+  "market_cap": 20693087695.3125,
   "current_price": 331.62,
-  "rank": 56,
-  "composite_score": 61.62,
+  "rank": 84,
+  "composite_score": 58.87,
   "pillar_scores": {
-    "quality": 68.75,
-    "value": 53.99,
+    "quality": 69.79,
+    "value": 40.62,
     "growth": 51.82,
     "momentum": 66.24,
-    "health": 84.74,
-    "profitability": 68.75,
+    "health": 85.62,
+    "profitability": 66.84,
     "technical": 18.43,
     "risk": 56.54,
     "sentiment": null,
@@ -31,41 +31,41 @@
     "free_cash_flow": 694500000.0,
     "eps_basic": 12.93,
     "eps_diluted": 12.66,
-    "shares_outstanding": null,
-    "market_cap": null,
+    "shares_outstanding": 62400000.0,
+    "market_cap": 20693087695.3125,
     "pe_ratio_ttm": 26.19431241052034,
     "goodwill": 912200000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "value": 81.69937858722342,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 913.6454268406777,
+        "value": 310.3279148206139,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_bvps",
-        "tier_used": null
+        "value": 248.78200349252106,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": null,
-        "applicable": false,
-        "reason": "missing_shares_outstanding",
-        "tier_used": null
+        "value": 304.32039795301444,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "value": 51.81494854084549,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
@@ -75,18 +75,19 @@
         "tier_used": null
       }
     },
-    "median": 913.6454268406777,
-    "max": 913.6454268406777,
-    "low": 913.6454268406777,
-    "high": 913.6454268406777,
-    "mos_pct": 63.70364417365866,
-    "valuation_warnings": []
+    "median": 248.78200349252106,
+    "max": 310.3279148206139,
+    "low": 51.81494854084549,
+    "high": 310.3279148206139,
+    "mos_pct": -33.29742122088696,
+    "valuation_warnings": [
+      "extreme_rim_estimate"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "shares_outstanding",
       "research_and_development"
     ],
     "imputed_metrics": [],
@@ -95,9 +96,11 @@
     "latest_filed_date": "2026-02-05"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "extreme_rim_estimate"
+  ],
   "has_history": true,
-  "tangible_book_value": null,
+  "tangible_book_value": 30.794871794871796,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -108,17 +111,17 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 45.18,
-      "Value": 49.31,
-      "Growth": 51.04,
+      "Quality": 46.35,
+      "Value": 49.13,
+      "Growth": 51.69,
       "Momentum": 37.92,
-      "Health": 48.37,
-      "Profitability": 51.22,
+      "Health": 43.72,
+      "Profitability": 52.6,
       "Technical": 32.16,
       "Risk": 40.54
     }
   },
-  "beneish_m_score": -2.4808102296032652,
+  "beneish_m_score": -2.510174137533485,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false

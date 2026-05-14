@@ -3,24 +3,24 @@
   "name": "ConocoPhillips",
   "sector": "Energy",
   "industry": "Oil & Gas Exploration & Production",
-  "market_cap": 264839553516.18982,
+  "market_cap": 143027718280.76913,
   "current_price": 117.4,
-  "rank": 279,
-  "composite_score": 49.31,
+  "rank": 166,
+  "composite_score": 54.47,
   "pillar_scores": {
-    "quality": 45.24,
-    "value": 38.89,
-    "growth": 32.14,
+    "quality": 50.0,
+    "value": 51.59,
+    "growth": 34.52,
     "momentum": 79.23,
-    "health": 58.53,
-    "profitability": 59.52,
+    "health": 63.55,
+    "profitability": 62.7,
     "technical": 43.08,
     "risk": 65.87,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 50845000000.0,
+    "revenue": 58188000000.0,
     "net_income": 7322000000.0,
     "total_assets": 122725000000.0,
     "total_liabilities": 58184000000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": 7460000000.0,
     "eps_basic": 1.78,
     "eps_diluted": 1.78,
-    "shares_outstanding": 2255873510.0,
-    "market_cap": 264839553516.18982,
+    "shares_outstanding": 1218294007.0,
+    "market_cap": 143027718280.76913,
     "pe_ratio_ttm": 65.95505703701062,
     "goodwill": 3332000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 68.73814664660847,
+        "value": 93.53607385910983,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 58.56986439433644,
+        "value": 73.3169149232478,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 49.1931621006542,
+        "value": 91.12174025712042,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -63,7 +63,7 @@
         "tier_used": null
       },
       "rim": {
-        "value": 33.23984471383263,
+        "value": 61.549088098279185,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 53.88151324749532,
-    "max": 68.73814664660847,
-    "low": 33.23984471383263,
-    "high": 68.73814664660847,
-    "mos_pct": -117.88549439326714,
+    "median": 82.21932759018411,
+    "max": 93.53607385910983,
+    "low": 61.549088098279185,
+    "high": 93.53607385910983,
+    "mos_pct": -42.78881251747782,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -88,9 +88,10 @@
     "missing_metrics": [
       "gross_profit",
       "operating_income",
+      "research_and_development",
+      "interest_expense",
       "accounts_receivable",
-      "ebitda",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
@@ -100,7 +101,7 @@
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 27.131397096816833,
+  "tangible_book_value": 50.23828373802384,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -112,11 +113,11 @@
     "label": "Energy median (n=21)",
     "values": {
       "Quality": 50.0,
-      "Value": 50.79,
-      "Growth": 53.57,
+      "Value": 51.59,
+      "Growth": 55.95,
       "Momentum": 77.24,
-      "Health": 50.36,
-      "Profitability": 52.38,
+      "Health": 55.14,
+      "Profitability": 54.76,
       "Technical": 62.77,
       "Risk": 65.8
     }

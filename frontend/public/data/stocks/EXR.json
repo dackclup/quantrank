@@ -3,25 +3,25 @@
   "name": "Extra Space Storage",
   "sector": "Real Estate",
   "industry": "Self-Storage REITs",
-  "market_cap": 30076581350.93692,
+  "market_cap": 30085670669.420654,
   "current_price": 142.41,
-  "rank": 264,
-  "composite_score": 49.8,
+  "rank": 230,
+  "composite_score": 51.5,
   "pillar_scores": {
-    "quality": 50.4,
-    "value": 49.73,
-    "growth": 57.26,
+    "quality": 49.19,
+    "value": 62.9,
+    "growth": 46.37,
     "momentum": 52.34,
-    "health": 37.73,
-    "profitability": 42.74,
+    "health": 36.14,
+    "profitability": 52.15,
     "technical": 59.76,
     "risk": 43.23,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 132266000.0,
-    "net_income": 944101000.0,
+    "revenue": 3413572000.0,
+    "net_income": 990033000.0,
     "total_assets": 29099370000.0,
     "total_liabilities": 14886868000.0,
     "stockholders_equity": 13332480000.0,
@@ -31,33 +31,33 @@
     "free_cash_flow": 1420586000.0,
     "eps_basic": 1.14,
     "eps_diluted": 1.14,
-    "shares_outstanding": 211197111.0,
-    "market_cap": 30076581350.93692,
+    "shares_outstanding": 211260936.0,
+    "market_cap": 30085670669.420654,
     "pe_ratio_ttm": 124.9210558439556,
     "goodwill": 170811000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 79.01499535517011,
+        "value": 79.00305866414605,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 144.47645043090756,
+        "value": 135.25143393500377,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 151.05678140498932,
+        "value": 161.02014115740872,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 156.95736077323636,
+        "value": 170.0195602661773,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 147.76661591794846,
-    "max": 156.95736077323636,
-    "low": 79.01499535517011,
-    "high": 156.95736077323636,
-    "mos_pct": 3.6250490156812485,
+    "median": 148.13578754620625,
+    "max": 170.0195602661773,
+    "low": 79.00305866414605,
+    "high": 170.0195602661773,
+    "mos_pct": 3.8652266133265694,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -90,27 +90,25 @@
     "missing_metrics": [
       "gross_profit",
       "research_and_development",
+      "interest_expense",
       "current_assets",
       "current_liabilities",
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "short_term_debt",
-      "property_plant_equipment"
+      "short_term_debt"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-05-01"
   },
-  "risk_flags": [
-    "data_quality_input_corruption"
-  ],
+  "risk_flags": [],
   "valuation_warnings": [
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 62.30907675626302,
+  "tangible_book_value": 62.290252278348326,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -121,12 +119,12 @@
   "pillar_baseline": {
     "label": "Real Estate median (n=31)",
     "values": {
-      "Quality": 46.77,
-      "Value": 47.85,
-      "Growth": 51.61,
+      "Quality": 50.81,
+      "Value": 47.31,
+      "Growth": 48.79,
       "Momentum": 52.34,
-      "Health": 27.89,
-      "Profitability": 52.69,
+      "Health": 26.18,
+      "Profitability": 52.15,
       "Technical": 59.26,
       "Risk": 53.88
     }

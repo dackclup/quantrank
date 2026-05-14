@@ -3,17 +3,17 @@
   "name": "PulteGroup",
   "sector": "Consumer Discretionary",
   "industry": "Homebuilding",
-  "market_cap": 21772140999.919983,
+  "market_cap": 21519243530.937286,
   "current_price": 112.97,
-  "rank": 162,
-  "composite_score": 54.48,
+  "rank": 299,
+  "composite_score": 48.37,
   "pillar_scores": {
-    "quality": 59.11,
-    "value": 66.32,
-    "growth": 51.04,
+    "quality": 39.32,
+    "value": 71.18,
+    "growth": 50.52,
     "momentum": 36.06,
-    "health": 49.56,
-    "profitability": 66.15,
+    "health": 47.81,
+    "profitability": 41.84,
     "technical": 32.05,
     "risk": 45.98,
     "sentiment": null,
@@ -31,27 +31,27 @@
     "free_cash_flow": 1778266000.0,
     "eps_basic": 1.81,
     "eps_diluted": 1.79,
-    "shares_outstanding": 192724978.0,
-    "market_cap": 21772140999.919983,
+    "shares_outstanding": 190486353.0,
+    "market_cap": 21519243530.937286,
     "pe_ratio_ttm": 63.11173252553247,
     "goodwill": 40377000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 137.0873961441384,
+        "value": 137.89057936509457,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 129.180514537505,
+        "value": 234.96178748214703,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 430.6490183825064,
+        "value": 403.5199419126092,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -63,23 +63,23 @@
         "tier_used": null
       },
       "rim": {
-        "value": 104.62363037938394,
+        "value": 105.85318342016292,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 113.93762405745628,
+        "value": 115.27663658847797,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 129.180514537505,
-    "max": 430.6490183825064,
-    "low": 104.62363037938394,
-    "high": 430.6490183825064,
-    "mos_pct": 12.548729485123289,
+    "median": 137.89057936509457,
+    "max": 403.5199419126092,
+    "low": 105.85318342016292,
+    "high": 403.5199419126092,
+    "mos_pct": 18.072719876249792,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -89,17 +89,17 @@
       "gross_profit",
       "operating_income",
       "research_and_development",
+      "income_before_tax",
       "current_assets",
       "current_liabilities",
       "inventory",
       "accounts_payable",
       "short_term_debt",
-      "ebitda",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 21,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-15",
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [
@@ -107,7 +107,7 @@
   ],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 66.76597986172814,
+  "tangible_book_value": 67.55062395467249,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -118,12 +118,12 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 45.18,
-      "Value": 49.31,
-      "Growth": 51.04,
+      "Quality": 46.35,
+      "Value": 49.13,
+      "Growth": 51.69,
       "Momentum": 37.92,
-      "Health": 48.37,
-      "Profitability": 51.22,
+      "Health": 43.72,
+      "Profitability": 52.6,
       "Technical": 32.16,
       "Risk": 40.54
     }

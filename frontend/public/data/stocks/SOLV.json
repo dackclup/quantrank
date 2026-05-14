@@ -3,17 +3,17 @@
   "name": "Solventum",
   "sector": "Health Care",
   "industry": "Health Care Technology",
-  "market_cap": 12912491158.451904,
+  "market_cap": 12885930954.104736,
   "current_price": 74.41,
-  "rank": 380,
-  "composite_score": 43.83,
+  "rank": 47,
+  "composite_score": 62.41,
   "pillar_scores": {
-    "quality": 50.85,
-    "value": 35.88,
-    "growth": 59.32,
+    "quality": 78.39,
+    "value": 78.53,
+    "growth": 61.02,
     "momentum": 27.14,
-    "health": 30.52,
-    "profitability": 45.76,
+    "health": 31.2,
+    "profitability": 63.84,
     "technical": 70.67,
     "risk": 40.47,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": -203000000.0,
     "eps_basic": 0.07,
     "eps_diluted": 0.07,
-    "shares_outstanding": 173531656.0,
-    "market_cap": 12912491158.451904,
+    "shares_outstanding": 173174712.0,
+    "market_cap": 12885930954.104736,
     "pe_ratio_ttm": 1063.000052315848,
     "goodwill": 5626000000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 5.964062690734863,
+        "value": 195.83208672449217,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 94.92033306477637,
+        "value": 83.03322535482667,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 30.301337255882885,
+        "value": 224.40653058085425,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,19 +69,18 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 31.276117257876507,
+        "value": 31.34058291957482,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 30.788727256879696,
-    "max": 94.92033306477637,
-    "low": 5.964062690734863,
-    "high": 94.92033306477637,
-    "mos_pct": -141.67937518587283,
+    "median": 139.43265603965943,
+    "max": 224.40653058085425,
+    "low": 31.34058291957482,
+    "high": 224.40653058085425,
+    "mos_pct": 46.633732888983616,
     "valuation_warnings": [
-      "extreme_multiples_pe_estimate",
       "value_trap_risk"
     ]
   },
@@ -91,19 +90,17 @@
     "missing_metrics": [
       "cost_of_revenue",
       "interest_expense",
-      "dividends_paid",
-      "property_plant_equipment"
+      "dividends_paid"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 9,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
   "valuation_warnings": [
-    "extreme_multiples_pe_estimate",
     "value_trap_risk"
   ],
   "has_history": true,
@@ -118,18 +115,18 @@
   "pillar_baseline": {
     "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 51.27,
-      "Value": 52.82,
-      "Growth": 50.0,
+      "Quality": 52.97,
+      "Value": 51.98,
+      "Growth": 49.58,
       "Momentum": 41.24,
-      "Health": 60.08,
-      "Profitability": 52.54,
+      "Health": 59.88,
+      "Profitability": 51.13,
       "Technical": 55.13,
       "Risk": 39.71
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 0.5704370054796583,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,25 +3,25 @@
   "name": "PG&E Corporation",
   "sector": "Utilities",
   "industry": "Multi-Utilities",
-  "market_cap": 36556931324.882065,
+  "market_cap": 44487475101.126785,
   "current_price": 16.6,
-  "rank": 302,
-  "composite_score": 48.07,
+  "rank": 263,
+  "composite_score": 50.22,
   "pillar_scores": {
-    "quality": 29.03,
-    "value": 69.89,
-    "growth": 65.32,
+    "quality": 33.87,
+    "value": 70.43,
+    "growth": 71.77,
     "momentum": 49.6,
-    "health": 32.51,
-    "profitability": 32.26,
+    "health": 30.48,
+    "profitability": 33.87,
     "technical": 60.71,
     "risk": 45.02,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 20278000000.0,
-    "net_income": -478000000.0,
+    "revenue": 25833000000.0,
+    "net_income": 2954000000.0,
     "total_assets": 141953000000.0,
     "total_liabilities": null,
     "stockholders_equity": 33250000000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": -4210000000.0,
     "eps_basic": 0.39,
     "eps_diluted": 0.39,
-    "shares_outstanding": 2202224728.0,
-    "market_cap": 36556931324.882065,
+    "shares_outstanding": 2679968318.0,
+    "market_cap": 44487475101.126785,
     "pe_ratio_ttm": 42.564103542230065,
     "goodwill": null
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 19.562952304883947,
+        "value": 17.733741908139248,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 34.25499987602234,
+        "value": 21.764487161298916,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 33.61959991839081,
+        "value": 27.631567479034437,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 33.61959991839081,
-    "max": 34.25499987602234,
-    "low": 19.562952304883947,
-    "high": 34.25499987602234,
-    "mos_pct": 50.62403948361953,
+    "median": 21.764487161298916,
+    "max": 27.631567479034437,
+    "low": 17.733741908139248,
+    "high": 27.631567479034437,
+    "mos_pct": 23.72896150299629,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -95,20 +95,21 @@
       "sga_expense",
       "depreciation_and_amortization",
       "ebitda",
-      "goodwill",
-      "property_plant_equipment"
+      "goodwill"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 21,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-15",
     "latest_filed_date": "2026-04-23"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "net_issuance_top_decile"
+  ],
   "valuation_warnings": [
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 15.097006030894047,
+  "tangible_book_value": 12.405743671183206,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -121,16 +122,16 @@
     "values": {
       "Quality": 51.61,
       "Value": 47.85,
-      "Growth": 50.81,
+      "Growth": 54.03,
       "Momentum": 62.85,
-      "Health": 19.36,
-      "Profitability": 51.61,
+      "Health": 17.85,
+      "Profitability": 52.15,
       "Technical": 43.63,
       "Risk": 71.98
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 0.7411482364684328,
   "entered_top5": false,
   "exited_top5": false
 }

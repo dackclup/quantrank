@@ -3,24 +3,24 @@
   "name": "MetLife",
   "sector": "Financials",
   "industry": "Life & Health Insurance",
-  "market_cap": 50441628341.94699,
+  "market_cap": 50239544882.48793,
   "current_price": 78.08,
-  "rank": 256,
-  "composite_score": 50.24,
+  "rank": 266,
+  "composite_score": 50.1,
   "pillar_scores": {
-    "quality": 46.0,
-    "value": 55.11,
-    "growth": 45.33,
+    "quality": 44.0,
+    "value": 65.56,
+    "growth": 43.33,
     "momentum": 46.86,
-    "health": 44.18,
-    "profitability": 59.56,
+    "health": 47.25,
+    "profitability": 27.56,
     "technical": 70.82,
     "risk": 52.92,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 2559000000.0,
+    "revenue": 77589000000.0,
     "net_income": 3619000000.0,
     "total_assets": 743211000000.0,
     "total_liabilities": 715410000000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": null,
     "eps_basic": 1.75,
     "eps_diluted": 1.74,
-    "shares_outstanding": 646024938.0,
-    "market_cap": 50441628341.94699,
+    "shares_outstanding": 643436779.0,
+    "market_cap": 50239544882.48793,
     "pe_ratio_ttm": 44.87356427072108,
     "goodwill": 9565000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 49.768544482626716,
+        "value": 49.868538483743926,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 93.5144546647927,
+        "value": 76.6960417636759,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 87.74662322307523,
+        "value": 85.7893363684922,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -63,7 +63,7 @@
         "tier_used": null
       },
       "rim": {
-        "value": 28.294439856496844,
+        "value": 28.408251363010912,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 68.75758385285097,
-    "max": 93.5144546647927,
-    "low": 28.294439856496844,
-    "high": 93.5144546647927,
-    "mos_pct": -13.558385062155107,
+    "median": 63.28229012370991,
+    "max": 85.7893363684922,
+    "low": 28.408251363010912,
+    "high": 85.7893363684922,
+    "mos_pct": -23.383653907620722,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -91,6 +91,7 @@
       "gross_profit",
       "cost_of_revenue",
       "research_and_development",
+      "interest_expense",
       "current_assets",
       "current_liabilities",
       "inventory",
@@ -100,15 +101,13 @@
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-07"
   },
-  "risk_flags": [
-    "data_quality_input_corruption"
-  ],
+  "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 26.505168752479335,
+  "tangible_book_value": 26.61178309796307,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -120,11 +119,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

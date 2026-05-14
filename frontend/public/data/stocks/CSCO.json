@@ -3,17 +3,17 @@
   "name": "Cisco",
   "sector": "Information Technology",
   "industry": "Communications Equipment",
-  "market_cap": 402284640846.25244,
+  "market_cap": 402375615037.24524,
   "current_price": 101.87,
-  "rank": 172,
-  "composite_score": 54.05,
+  "rank": 249,
+  "composite_score": 50.73,
   "pillar_scores": {
-    "quality": 55.48,
-    "value": 53.88,
-    "growth": 28.08,
+    "quality": 50.68,
+    "value": 47.03,
+    "growth": 24.66,
     "momentum": 79.48,
-    "health": 37.13,
-    "profitability": 54.11,
+    "health": 37.05,
+    "profitability": 53.65,
     "technical": 68.53,
     "risk": 72.14,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 12241000000.0,
     "eps_basic": 1.53,
     "eps_diluted": 1.51,
-    "shares_outstanding": 3949000000.0,
-    "market_cap": 402284640846.25244,
+    "shares_outstanding": 3949893042.0,
+    "market_cap": 402375615037.24524,
     "pe_ratio_ttm": 67.4635779778689,
     "goodwill": 59234000000.0
   },
@@ -45,22 +45,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 136.1857525128698,
+        "value": 102.91072538694061,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 132.18837107729166,
+        "value": 126.58329432954342,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 125.36928215820807,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
       },
       "rim": {
         "value": null,
@@ -69,31 +69,32 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 36.94571804242417,
+        "value": 36.93736488511555,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 128.77882661774987,
-    "max": 136.1857525128698,
-    "low": 36.94571804242417,
-    "high": 136.1857525128698,
-    "mos_pct": 20.895378982633886,
+    "median": 102.91072538694061,
+    "max": 126.58329432954342,
+    "low": 36.93736488511555,
+    "high": 126.58329432954342,
+    "mos_pct": 1.0112868570749078,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
-    "missing_metrics": [],
+    "missing_metrics": [
+      "depreciation_and_amortization",
+      "ebitda"
+    ],
     "imputed_metrics": [],
     "filing_lag_days": 86,
-    "latest_period_end": "2026-01-24",
+    "latest_period_end": "2026-02-12",
     "latest_filed_date": "2026-02-17"
   },
-  "risk_flags": [
-    "altman_distress"
-  ],
+  "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
@@ -107,18 +108,18 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }
   },
-  "beneish_m_score": -2.6264460872110074,
-  "dechow_f_score": 0.6221389706054308,
+  "beneish_m_score": null,
+  "dechow_f_score": 0.6174613446806869,
   "entered_top5": false,
   "exited_top5": false
 }

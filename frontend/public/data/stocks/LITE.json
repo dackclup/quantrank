@@ -3,24 +3,24 @@
   "name": "Lumentum",
   "sector": "Information Technology",
   "industry": "Communications Equipment",
-  "market_cap": 73877528649.90234,
+  "market_cap": 80162785620.11719,
   "current_price": 1030.37,
-  "rank": 434,
-  "composite_score": 40.15,
+  "rank": 488,
+  "composite_score": 33.6,
   "pillar_scores": {
-    "quality": 34.59,
-    "value": 10.39,
-    "growth": 33.9,
+    "quality": 22.95,
+    "value": 5.02,
+    "growth": 27.05,
     "momentum": 95.99,
-    "health": 34.86,
-    "profitability": 49.32,
+    "health": 38.29,
+    "profitability": 23.29,
     "technical": 71.31,
     "risk": 51.56,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 1645000000.0,
+    "revenue": 2488400000.0,
     "net_income": 439900000.0,
     "total_assets": 7027900000.0,
     "total_liabilities": 4054500000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 114000000.0,
     "eps_basic": 3.18,
     "eps_diluted": 2.59,
-    "shares_outstanding": 71700000.0,
-    "market_cap": 73877528649.90234,
+    "shares_outstanding": 77800000.0,
+    "market_cap": 80162785620.11719,
     "pe_ratio_ttm": 397.82625294099904,
     "goodwill": 1066300000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 212.96641648258864,
+        "value": 203.94914470562972,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 412.78530363068523,
+        "value": 351.8884751475411,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 256.9784864957594,
+        "value": 67.75814122397445,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,18 +69,20 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 24.166004358630133,
+        "value": 22.27124052074268,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 234.97245148917403,
-    "max": 412.78530363068523,
-    "low": 24.166004358630133,
-    "high": 412.78530363068523,
-    "mos_pct": -338.5067222080968,
+    "median": 135.85364296480208,
+    "max": 351.8884751475411,
+    "low": 22.27124052074268,
+    "high": 351.8884751475411,
+    "mos_pct": -658.4411964456067,
     "valuation_warnings": [
+      "extreme_multiples_pe_estimate",
+      "extreme_multiples_ev_ebitda_estimate",
       "extreme_dcf_estimate",
       "value_trap_risk"
     ]
@@ -89,23 +91,26 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "dividends_paid",
-      "property_plant_equipment"
+      "cost_of_revenue",
+      "income_before_tax",
+      "dividends_paid"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
-    "latest_period_end": "2026-03-28",
+    "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [
-    "sloan_accruals_top_decile"
+    "net_issuance_top_decile"
   ],
   "valuation_warnings": [
+    "extreme_multiples_pe_estimate",
+    "extreme_multiples_ev_ebitda_estimate",
     "extreme_dcf_estimate",
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 21.536959553695954,
+  "tangible_book_value": 19.848329048843187,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -116,12 +121,12 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }

@@ -3,17 +3,17 @@
   "name": "Universal Health Services",
   "sector": "Health Care",
   "industry": "Health Care Facilities",
-  "market_cap": null,
+  "market_cap": 10545844341.247559,
   "current_price": 171.01,
-  "rank": 142,
-  "composite_score": 55.74,
+  "rank": 33,
+  "composite_score": 64.38,
   "pillar_scores": {
-    "quality": 61.86,
-    "value": 55.93,
-    "growth": 82.63,
+    "quality": 64.41,
+    "value": 90.68,
+    "growth": 83.05,
     "momentum": 15.79,
-    "health": 54.9,
-    "profitability": 53.67,
+    "health": 56.37,
+    "profitability": 52.54,
     "technical": 70.62,
     "risk": 38.98,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 17760291000.0,
-    "net_income": 1520798000.0,
+    "net_income": 1548232000.0,
     "total_assets": 15681142000.0,
     "total_liabilities": null,
     "stockholders_equity": 7464857000.0,
@@ -31,69 +31,70 @@
     "free_cash_flow": 912694000.0,
     "eps_basic": 5.71,
     "eps_diluted": 5.65,
-    "shares_outstanding": null,
-    "market_cap": null,
+    "shares_outstanding": 61668000.0,
+    "market_cap": 10545844341.247559,
     "pe_ratio_ttm": 30.26725566492671,
     "goodwill": 3980656000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "value": 144.18054690831727,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 509.09925287420106,
+        "value": 594.5679342983191,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_bvps",
-        "tier_used": null
+        "value": 350.29102828369486,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": null,
-        "applicable": false,
-        "reason": "missing_shares_outstanding",
-        "tier_used": null
+        "value": 641.8028307682106,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "value": 68.88451491455132,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": null,
-        "applicable": false,
-        "reason": "missing_shares_outstanding",
+        "value": 23.451920880140015,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       }
     },
-    "median": 509.09925287420106,
-    "max": 509.09925287420106,
-    "low": 509.09925287420106,
-    "high": 509.09925287420106,
-    "mos_pct": 66.40930161626211,
-    "valuation_warnings": []
+    "median": 247.23578759600605,
+    "max": 641.8028307682106,
+    "low": 23.451920880140015,
+    "high": 641.8028307682106,
+    "mos_pct": 30.831213324879304,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_dcf_estimate"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
       "total_liabilities",
-      "shares_outstanding",
       "gross_profit",
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
-      "inventory",
-      "property_plant_equipment"
+      "inventory"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
@@ -101,9 +102,12 @@
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_dcf_estimate"
+  ],
   "has_history": true,
-  "tangible_book_value": null,
+  "tangible_book_value": 55.268940131024195,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -114,12 +118,12 @@
   "pillar_baseline": {
     "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 51.27,
-      "Value": 52.82,
-      "Growth": 50.0,
+      "Quality": 52.97,
+      "Value": 51.98,
+      "Growth": 49.58,
       "Momentum": 41.24,
-      "Health": 60.08,
-      "Profitability": 52.54,
+      "Health": 59.88,
+      "Profitability": 51.13,
       "Technical": 55.13,
       "Risk": 39.71
     }

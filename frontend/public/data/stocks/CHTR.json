@@ -3,17 +3,17 @@
   "name": "Charter Communications",
   "sector": "Communication Services",
   "industry": "Cable & Satellite",
-  "market_cap": 30460763.860168457,
+  "market_cap": 18147056399.569397,
   "current_price": 143.06,
-  "rank": 248,
-  "composite_score": 50.63,
+  "rank": 226,
+  "composite_score": 51.63,
   "pillar_scores": {
-    "quality": 63.04,
-    "value": 80.07,
-    "growth": 33.7,
+    "quality": 68.48,
+    "value": 80.43,
+    "growth": 35.87,
     "momentum": 25.42,
-    "health": 29.36,
-    "profitability": 42.03,
+    "health": 19.44,
+    "profitability": 44.2,
     "technical": 34.39,
     "risk": 16.24,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 54636000000.0,
-    "net_income": 4933000000.0,
+    "net_income": 5720000000.0,
     "total_assets": 154644000000.0,
     "total_liabilities": null,
     "stockholders_equity": 16385000000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 4030000000.0,
     "eps_basic": 9.27,
     "eps_diluted": 9.17,
-    "shares_outstanding": 212923.0,
-    "market_cap": 30460763.860168457,
+    "shares_outstanding": 126849271.0,
+    "market_cap": 18147056399.569397,
     "pe_ratio_ttm": 15.600872143794302,
     "goodwill": 29710000000.0
   },
@@ -41,47 +41,48 @@
       "graham": {
         "value": null,
         "applicable": false,
-        "reason": "data_quality_input_corruption",
+        "reason": "non_positive_or_missing_tangible_book",
         "tier_used": null
       },
       "multiples_pe": {
-        "value": null,
-        "applicable": false,
-        "reason": "data_quality_input_corruption",
+        "value": 1010.0107656900076,
+        "applicable": true,
+        "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": null,
-        "applicable": false,
-        "reason": "data_quality_input_corruption",
+        "value": 346.75349453166075,
+        "applicable": true,
+        "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": null,
-        "applicable": false,
-        "reason": "data_quality_input_corruption",
+        "value": 3809.84379685683,
+        "applicable": true,
+        "reason": null,
         "tier_used": "sector"
       },
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "data_quality_input_corruption",
+        "reason": "non_positive_or_missing_tangible_book",
         "tier_used": null
       },
       "dcf": {
         "value": null,
         "applicable": false,
-        "reason": "data_quality_input_corruption",
+        "reason": "dcf_negative_equity_post_debt",
         "tier_used": null
       }
     },
-    "median": null,
-    "max": null,
-    "low": null,
-    "high": null,
-    "mos_pct": null,
+    "median": 1010.0107656900076,
+    "max": 346.75349453166075,
+    "low": 346.75349453166075,
+    "high": 3809.84379685683,
+    "mos_pct": 85.83579478374574,
     "valuation_warnings": [
-      "data_quality_input_corruption"
+      "extreme_multiples_pe_estimate",
+      "extreme_multiples_ev_ebitda_estimate"
     ]
   },
   "top5_factors": [],
@@ -92,10 +93,11 @@
       "gross_profit",
       "cost_of_revenue",
       "research_and_development",
+      "sga_expense",
+      "interest_expense",
       "dividends_paid",
       "inventory",
-      "accounts_payable",
-      "property_plant_equipment"
+      "accounts_payable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 20,
@@ -104,7 +106,8 @@
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "data_quality_input_corruption"
+    "extreme_multiples_pe_estimate",
+    "extreme_multiples_ev_ebitda_estimate"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -118,12 +121,12 @@
   "pillar_baseline": {
     "label": "Communication Services median (n=23)",
     "values": {
-      "Quality": 51.09,
-      "Value": 51.45,
-      "Growth": 55.43,
+      "Quality": 52.17,
+      "Value": 50.0,
+      "Growth": 60.33,
       "Momentum": 48.66,
-      "Health": 48.17,
-      "Profitability": 56.52,
+      "Health": 45.5,
+      "Profitability": 50.72,
       "Technical": 54.48,
       "Risk": 50.22
     }

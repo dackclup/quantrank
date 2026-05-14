@@ -3,17 +3,17 @@
   "name": "ResMed",
   "sector": "Health Care",
   "industry": "Health Care Equipment",
-  "market_cap": 29351789422.67578,
+  "market_cap": 29355059721.796875,
   "current_price": 202.37,
-  "rank": 6,
-  "composite_score": 70.24,
+  "rank": 19,
+  "composite_score": 65.85,
   "pillar_scores": {
-    "quality": 82.63,
-    "value": 71.47,
-    "growth": 84.75,
+    "quality": 80.51,
+    "value": 60.45,
+    "growth": 85.17,
     "momentum": 22.81,
-    "health": 92.67,
-    "profitability": 81.36,
+    "health": 82.19,
+    "profitability": 75.99,
     "technical": 46.81,
     "risk": 34.76,
     "sentiment": null,
@@ -31,55 +31,55 @@
     "free_cash_flow": 1754221000.0,
     "eps_basic": 7.82,
     "eps_diluted": 7.79,
-    "shares_outstanding": 145040224.0,
-    "market_cap": 29351789422.67578,
+    "shares_outstanding": 145056384.0,
+    "market_cap": 29355059721.796875,
     "pe_ratio_ttm": 25.978176523387354,
     "goodwill": 3043136000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 62.7826069884999,
+        "value": 62.77910974432672,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 927.638331856957,
+        "value": 279.7817061635321,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 129.5573513285562,
+        "value": 129.50993803453255,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 826.8536860886431,
+        "value": 256.9361669780629,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "rim": {
-        "value": 31.82812195206136,
+        "value": 31.824576141552626,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 65.16985036358466,
+        "value": 65.16259011930698,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 97.36360084607043,
-    "max": 927.638331856957,
-    "low": 31.82812195206136,
-    "high": 927.638331856957,
-    "mos_pct": -107.84974400970412,
+    "median": 97.33626407691978,
+    "max": 279.7817061635321,
+    "low": 31.824576141552626,
+    "high": 279.7817061635321,
+    "mos_pct": -107.90811835274985,
     "valuation_warnings": [
       "extreme_rim_estimate"
     ]
@@ -88,11 +88,11 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "property_plant_equipment"
+      "interest_expense"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
@@ -100,7 +100,7 @@
     "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 23.33721575057689,
+  "tangible_book_value": 23.334615869095426,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -111,18 +111,18 @@
   "pillar_baseline": {
     "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 51.27,
-      "Value": 52.82,
-      "Growth": 50.0,
+      "Quality": 52.97,
+      "Value": 51.98,
+      "Growth": 49.58,
       "Momentum": 41.24,
-      "Health": 60.08,
-      "Profitability": 52.54,
+      "Health": 59.88,
+      "Profitability": 51.13,
       "Technical": 55.13,
       "Risk": 39.71
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
-  "entered_top5": true,
+  "beneish_m_score": -2.6654462080473946,
+  "dechow_f_score": 0.43795008495615667,
+  "entered_top5": false,
   "exited_top5": false
 }

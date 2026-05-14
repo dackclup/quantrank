@@ -3,17 +3,17 @@
   "name": "Accenture",
   "sector": "Information Technology",
   "industry": "IT Consulting & Other Services",
-  "market_cap": null,
+  "market_cap": 99708605502.42412,
   "current_price": 159.64,
-  "rank": 202,
-  "composite_score": 52.87,
+  "rank": 102,
+  "composite_score": 57.94,
   "pillar_scores": {
-    "quality": 70.89,
-    "value": 56.85,
-    "growth": 43.49,
+    "quality": 61.99,
+    "value": 91.78,
+    "growth": 49.32,
     "momentum": 6.92,
-    "health": 79.6,
-    "profitability": 66.21,
+    "health": 80.8,
+    "profitability": 47.26,
     "technical": 29.43,
     "risk": 18.94,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 72110322000.0,
-    "net_income": 7648264000.0,
+    "net_income": 7655446000.0,
     "total_assets": 67064216000.0,
     "total_liabilities": null,
     "stockholders_equity": 31210676000.0,
@@ -31,64 +31,68 @@
     "free_cash_flow": 12496959000.0,
     "eps_basic": 6.53,
     "eps_diluted": 6.47,
-    "shares_outstanding": null,
-    "market_cap": null,
+    "shares_outstanding": 624584101.0,
+    "market_cap": 99708605502.42412,
     "pe_ratio_ttm": 24.673879349250146,
     "goodwill": 24581153000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "value": 41.03405714236067,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 583.524383283621,
+        "value": 452.99224300552123,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_bvps",
-        "tier_used": null
+        "value": 523.5356295157227,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": null,
-        "applicable": false,
-        "reason": "missing_shares_outstanding",
-        "tier_used": null
+        "value": 445.23998251179233,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "value": 11.561082889552331,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": null,
-        "applicable": false,
-        "reason": "missing_shares_outstanding",
+        "value": 197.4810173364261,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       }
     },
-    "median": 583.524383283621,
-    "max": 583.524383283621,
-    "low": 583.524383283621,
-    "high": 583.524383283621,
-    "mos_pct": 72.64210306151753,
-    "valuation_warnings": []
+    "median": 321.3604999241092,
+    "max": 523.5356295157227,
+    "low": 11.561082889552331,
+    "high": 523.5356295157227,
+    "mos_pct": 50.32370206439553,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_rim_estimate"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
       "total_liabilities",
-      "shares_outstanding",
       "gross_profit",
+      "research_and_development",
+      "dividends_paid",
       "inventory",
       "long_term_debt"
     ],
@@ -98,9 +102,12 @@
     "latest_filed_date": "2026-03-19"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_rim_estimate"
+  ],
   "has_history": true,
-  "tangible_book_value": null,
+  "tangible_book_value": 6.5339303281432715,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -111,12 +118,12 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }

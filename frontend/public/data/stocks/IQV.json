@@ -5,15 +5,15 @@
   "industry": "Life Sciences Tools & Services",
   "market_cap": 28770222814.941406,
   "current_price": 172.38,
-  "rank": 340,
-  "composite_score": 46.28,
+  "rank": 193,
+  "composite_score": 53.22,
   "pillar_scores": {
-    "quality": 53.39,
-    "value": 47.74,
-    "growth": 58.05,
+    "quality": 63.56,
+    "value": 64.12,
+    "growth": 62.29,
     "momentum": 38.84,
-    "health": 15.82,
-    "profitability": 41.81,
+    "health": 14.02,
+    "profitability": 43.5,
     "technical": 67.78,
     "risk": 30.94,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 16632000000.0,
-    "net_income": 1385000000.0,
+    "net_income": 1387000000.0,
     "total_assets": 29675000000.0,
     "total_liabilities": 23326000000.0,
     "stockholders_equity": 6221000000.0,
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 137.17344188690186,
+        "value": 196.80921636486906,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 120.73157353082343,
+        "value": 106.90498067484599,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 163.75972163660705,
+        "value": 275.6577881667021,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,30 +75,30 @@
         "tier_used": null
       }
     },
-    "median": 137.17344188690186,
-    "max": 163.75972163660705,
-    "low": 120.73157353082343,
-    "high": 163.75972163660705,
-    "mos_pct": -25.665728373964768,
+    "median": 196.80921636486906,
+    "max": 275.6577881667021,
+    "low": 106.90498067484599,
+    "high": 275.6577881667021,
+    "mos_pct": 12.412635918821348,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "income_before_tax",
+      "gross_profit",
+      "cost_of_revenue",
+      "research_and_development",
+      "dividends_paid",
       "inventory",
-      "accounts_receivable",
-      "property_plant_equipment"
+      "accounts_receivable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 9,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-05"
   },
-  "risk_flags": [
-    "altman_distress"
-  ],
+  "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
@@ -112,12 +112,12 @@
   "pillar_baseline": {
     "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 51.27,
-      "Value": 52.82,
-      "Growth": 50.0,
+      "Quality": 52.97,
+      "Value": 51.98,
+      "Growth": 49.58,
       "Momentum": 41.24,
-      "Health": 60.08,
-      "Profitability": 52.54,
+      "Health": 59.88,
+      "Profitability": 51.13,
       "Technical": 55.13,
       "Risk": 39.71
     }

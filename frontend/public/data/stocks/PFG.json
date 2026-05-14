@@ -3,16 +3,16 @@
   "name": "Principal Financial Group",
   "sector": "Financials",
   "industry": "Life & Health Insurance",
-  "market_cap": 21735841623.529434,
+  "market_cap": 21691963205.74951,
   "current_price": 100.42,
-  "rank": 204,
-  "composite_score": 52.84,
+  "rank": 223,
+  "composite_score": 51.7,
   "pillar_scores": {
-    "quality": 45.33,
-    "value": 61.33,
-    "growth": 25.0,
+    "quality": 46.67,
+    "value": 57.33,
+    "growth": 23.33,
     "momentum": 74.2,
-    "health": 57.91,
+    "health": 53.9,
     "profitability": 36.89,
     "technical": 69.32,
     "risk": 69.72,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 15458700000.0,
-    "net_income": 1561600000.0,
+    "net_income": 1605500000.0,
     "total_assets": 332704500000.0,
     "total_liabilities": 320311700000.0,
     "stockholders_equity": 11815300000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": null,
     "eps_basic": 1.96,
     "eps_diluted": 1.93,
-    "shares_outstanding": 216449333.0,
-    "market_cap": 21735841623.529434,
+    "shares_outstanding": 216012384.0,
+    "market_cap": 21691963205.74951,
     "pe_ratio_ttm": 52.03108713416856,
     "goodwill": 1588000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 67.0278103330731,
+        "value": 67.09556788089799,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 103.72580316267235,
+        "value": 101.52251471314409,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 113.24627354345058,
+        "value": 110.49967902720321,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 103.72580316267235,
-    "max": 113.24627354345058,
-    "low": 67.0278103330731,
-    "high": 113.24627354345058,
-    "mos_pct": 3.1870613607518368,
+    "median": 101.52251471314409,
+    "max": 110.49967902720321,
+    "low": 67.09556788089799,
+    "high": 110.49967902720321,
+    "mos_pct": 1.0859823038406629,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -95,6 +95,7 @@
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
+      "depreciation_and_amortization",
       "interest_expense",
       "income_before_tax",
       "current_assets",
@@ -102,12 +103,11 @@
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "ebitda",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-22",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
@@ -115,7 +115,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 41.36949685125618,
+  "tangible_book_value": 41.45317890663158,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -127,11 +127,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

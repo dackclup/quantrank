@@ -3,25 +3,25 @@
   "name": "Invitation Homes",
   "sector": "Real Estate",
   "industry": "Single-Family Residential REITs",
-  "market_cap": 16904715536.053612,
+  "market_cap": 16906433523.898346,
   "current_price": 28.46,
-  "rank": 374,
-  "composite_score": 44.45,
+  "rank": 322,
+  "composite_score": 47.24,
   "pillar_scores": {
-    "quality": 40.32,
-    "value": 49.46,
-    "growth": 51.61,
+    "quality": 45.16,
+    "value": 60.75,
+    "growth": 47.58,
     "momentum": 33.86,
-    "health": 25.38,
-    "profitability": 56.18,
+    "health": 24.46,
+    "profitability": 48.39,
     "technical": 75.85,
     "risk": 45.55,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 102434000.0,
-    "net_income": 582687000.0,
+    "revenue": 2788929000.0,
+    "net_income": 584692000.0,
     "total_assets": 18701141000.0,
     "total_liabilities": 9572478000.0,
     "stockholders_equity": 9091034000.0,
@@ -31,36 +31,36 @@
     "free_cash_flow": 1193936000.0,
     "eps_basic": 0.26,
     "eps_diluted": 0.26,
-    "shares_outstanding": 593981591.0,
-    "market_cap": 16904715536.053612,
+    "shares_outstanding": 594041956.0,
+    "market_cap": 16906433523.898346,
     "pe_ratio_ttm": 109.46153494027945,
     "goodwill": 314154000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 16.75595208942762,
+        "value": 16.75510071964239,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 33.32805427517494,
+        "value": 28.40674280814515,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 36.62330685614133,
+        "value": 39.04672595128598,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 28.351325237896642,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
       },
       "rim": {
         "value": null,
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 30.83968975653579,
-    "max": 36.62330685614133,
-    "low": 16.75595208942762,
-    "high": 36.62330685614133,
-    "mos_pct": 7.716324939873337,
+    "median": 28.40674280814515,
+    "max": 39.04672595128598,
+    "low": 16.75510071964239,
+    "high": 39.04672595128598,
+    "mos_pct": -0.1874775882866642,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -89,8 +89,10 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
+      "operating_income",
       "cost_of_revenue",
       "research_and_development",
+      "income_tax_expense",
       "income_before_tax",
       "current_assets",
       "current_liabilities",
@@ -98,21 +100,19 @@
       "accounts_receivable",
       "accounts_payable",
       "short_term_debt",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-04-30"
   },
-  "risk_flags": [
-    "data_quality_input_corruption"
-  ],
+  "risk_flags": [],
   "valuation_warnings": [
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 14.680362375068961,
+  "tangible_book_value": 14.678870594790109,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -123,12 +123,12 @@
   "pillar_baseline": {
     "label": "Real Estate median (n=31)",
     "values": {
-      "Quality": 46.77,
-      "Value": 47.85,
-      "Growth": 51.61,
+      "Quality": 50.81,
+      "Value": 47.31,
+      "Growth": 48.79,
       "Momentum": 52.34,
-      "Health": 27.89,
-      "Profitability": 52.69,
+      "Health": 26.18,
+      "Profitability": 52.15,
       "Technical": 59.26,
       "Risk": 53.88
     }

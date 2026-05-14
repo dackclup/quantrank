@@ -3,17 +3,17 @@
   "name": "Wabtec",
   "sector": "Industrials",
   "industry": "Construction Machinery & Heavy Transportation Equipment",
-  "market_cap": 44986121792.60254,
+  "market_cap": 44927167466.75433,
   "current_price": 264.78,
-  "rank": 366,
-  "composite_score": 44.88,
+  "rank": 439,
+  "composite_score": 39.81,
   "pillar_scores": {
-    "quality": 16.14,
-    "value": 45.15,
-    "growth": 68.04,
+    "quality": 12.03,
+    "value": 33.12,
+    "growth": 69.62,
     "momentum": 82.72,
-    "health": 40.84,
-    "profitability": 30.59,
+    "health": 30.0,
+    "profitability": 24.89,
     "technical": 53.29,
     "risk": 74.24,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 11507000000.0,
-    "net_income": 1210000000.0,
+    "net_income": 1219000000.0,
     "total_assets": 23196000000.0,
     "total_liabilities": 12045000000.0,
     "stockholders_equity": 11103000000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 1505000000.0,
     "eps_basic": 2.12,
     "eps_diluted": 2.12,
-    "shares_outstanding": 169900000.0,
-    "market_cap": 44986121792.60254,
+    "shares_outstanding": 169677346.0,
+    "market_cap": 44927167466.75433,
     "pe_ratio_ttm": 124.89622583929098,
     "goodwill": 10625000000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 248.45864893809087,
+        "value": 195.6628694365191,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 458.53357239422553,
+        "value": 426.1035336932948,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 195.7010543161906,
+        "value": 187.7713093212221,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 31.001227373973226,
+        "value": 31.041907803284776,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 222.07985162714073,
-    "max": 458.53357239422553,
-    "low": 31.001227373973226,
-    "high": 458.53357239422553,
-    "mos_pct": -19.227384582302058,
+    "median": 191.71708937887058,
+    "max": 426.1035336932948,
+    "low": 31.041907803284776,
+    "high": 426.1035336932948,
+    "mos_pct": -38.10975309354903,
     "valuation_warnings": [
       "extreme_dcf_estimate",
       "value_trap_risk"
@@ -88,12 +88,10 @@
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
-    "missing_metrics": [
-      "property_plant_equipment"
-    ],
+    "missing_metrics": [],
     "imputed_metrics": [],
     "filing_lag_days": 22,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-17",
     "latest_filed_date": "2026-04-22"
   },
   "risk_flags": [],
@@ -113,18 +111,18 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -2.2608914039368213,
+  "dechow_f_score": 0.6742868099652647,
   "entered_top5": false,
   "exited_top5": false
 }

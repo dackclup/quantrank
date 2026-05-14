@@ -3,17 +3,17 @@
   "name": "Prologis",
   "sector": "Real Estate",
   "industry": "Industrial REITs",
-  "market_cap": 132384186000.0,
+  "market_cap": 132391996000.0,
   "current_price": 142.0,
-  "rank": 311,
-  "composite_score": 47.61,
+  "rank": 350,
+  "composite_score": 45.83,
   "pillar_scores": {
-    "quality": 42.74,
-    "value": 36.02,
-    "growth": 58.06,
+    "quality": 39.52,
+    "value": 28.49,
+    "growth": 60.48,
     "momentum": 70.77,
-    "health": 26.22,
-    "profitability": 52.69,
+    "health": 27.73,
+    "profitability": 58.33,
     "technical": 66.28,
     "risk": 64.44,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 8948185000.0,
-    "net_income": 3717254000.0,
+    "net_income": 3970594000.0,
     "total_assets": 98133451000.0,
     "total_liabilities": 40184959000.0,
     "stockholders_equity": 53503401000.0,
@@ -31,33 +31,33 @@
     "free_cash_flow": null,
     "eps_basic": 1.05,
     "eps_diluted": 1.05,
-    "shares_outstanding": 932283000.0,
-    "market_cap": 132384186000.0,
+    "shares_outstanding": 932338000.0,
+    "market_cap": 132391996000.0,
     "pe_ratio_ttm": 135.23809523809524,
     "goodwill": 25280000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 67.3908146914377,
+        "value": 67.38882692011842,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 129.64345816467346,
+        "value": 122.91177868772795,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 131.09867427474086,
+        "value": 141.73963524047602,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 89.8287113831087,
+        "value": 97.32325515842372,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 109.73608477389108,
-    "max": 131.09867427474086,
-    "low": 67.3908146914377,
-    "high": 131.09867427474086,
-    "mos_pct": -29.401372659310788,
+    "median": 110.11751692307584,
+    "max": 141.73963524047602,
+    "low": 67.38882692011842,
+    "high": 141.73963524047602,
+    "mos_pct": -28.953143848309004,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -98,12 +98,11 @@
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "short_term_debt",
-      "property_plant_equipment"
+      "short_term_debt"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-28",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
@@ -111,7 +110,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 55.758402759677054,
+  "tangible_book_value": 55.75511348888493,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -122,12 +121,12 @@
   "pillar_baseline": {
     "label": "Real Estate median (n=31)",
     "values": {
-      "Quality": 46.77,
-      "Value": 47.85,
-      "Growth": 51.61,
+      "Quality": 50.81,
+      "Value": 47.31,
+      "Growth": 48.79,
       "Momentum": 52.34,
-      "Health": 27.89,
-      "Profitability": 52.69,
+      "Health": 26.18,
+      "Profitability": 52.15,
       "Technical": 59.26,
       "Risk": 53.88
     }

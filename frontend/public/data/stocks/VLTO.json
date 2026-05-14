@@ -3,17 +3,17 @@
   "name": "Veralto",
   "sector": "Industrials",
   "industry": "Environmental & Facilities Services",
-  "market_cap": 21084759625.24414,
+  "market_cap": 21084696611.34526,
   "current_price": 85.85,
-  "rank": 180,
-  "composite_score": 53.62,
+  "rank": 79,
+  "composite_score": 59.15,
   "pillar_scores": {
-    "quality": 59.49,
-    "value": 60.76,
-    "growth": 57.59,
+    "quality": 71.2,
+    "value": 61.18,
+    "growth": 58.23,
     "momentum": 32.97,
-    "health": 50.8,
-    "profitability": 63.92,
+    "health": 62.83,
+    "profitability": 78.9,
     "technical": 25.75,
     "risk": 50.76,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 1042000000.0,
     "eps_basic": 1.03,
     "eps_diluted": 1.02,
-    "shares_outstanding": 245600000.0,
-    "market_cap": 21084759625.24414,
+    "shares_outstanding": 245599266.0,
+    "market_cap": 21084696611.34526,
     "pe_ratio_ttm": 84.16666517070695,
     "goodwill": 3042000000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 120.31271564407854,
+        "value": 109.46856438235379,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 83.64569781860129,
+        "value": 77.87189201785763,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 84.49175305158674,
+        "value": 88.33992421890044,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 39.98300193567092,
+        "value": 39.983121429201574,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 84.06872543509402,
-    "max": 120.31271564407854,
-    "low": 39.98300193567092,
-    "high": 120.31271564407854,
-    "mos_pct": -2.1188296001969453,
+    "median": 83.10590811837903,
+    "max": 109.46856438235379,
+    "low": 39.983121429201574,
+    "high": 109.46856438235379,
+    "mos_pct": -3.3019197044730912,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -87,12 +87,11 @@
   "data_quality": {
     "missing_metrics": [
       "total_liabilities",
-      "accounts_payable",
-      "property_plant_equipment"
+      "accounts_payable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
-    "latest_period_end": "2026-04-03",
+    "latest_period_end": "2026-04-21",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
@@ -109,18 +108,18 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -2.45105656071769,
+  "dechow_f_score": 0.4892076264996434,
   "entered_top5": false,
   "exited_top5": false
 }

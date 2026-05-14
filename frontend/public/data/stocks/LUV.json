@@ -3,17 +3,17 @@
   "name": "Southwest Airlines",
   "sector": "Industrials",
   "industry": "Passenger Airlines",
-  "market_cap": 29399859886.169434,
+  "market_cap": 19262571954.74905,
   "current_price": 39.41,
-  "rank": 422,
-  "composite_score": 41.27,
+  "rank": 397,
+  "composite_score": 43.3,
   "pillar_scores": {
-    "quality": 28.48,
-    "value": 65.19,
-    "growth": 37.97,
+    "quality": 24.68,
+    "value": 78.9,
+    "growth": 36.08,
     "momentum": 43.73,
-    "health": 23.67,
-    "profitability": 33.33,
+    "health": 27.33,
+    "profitability": 31.01,
     "technical": 56.52,
     "risk": 34.2,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 28884000000.0,
-    "net_income": 817000000.0,
+    "net_income": 818000000.0,
     "total_assets": 29355000000.0,
     "total_liabilities": null,
     "stockholders_equity": 6875000000.0,
@@ -31,33 +31,33 @@
     "free_cash_flow": 954000000.0,
     "eps_basic": 0.45,
     "eps_diluted": 0.45,
-    "shares_outstanding": 746000000.0,
-    "market_cap": 29399859886.169434,
+    "shares_outstanding": 488773713.0,
+    "market_cap": 19262571954.74905,
     "pe_ratio_ttm": 87.57777743869357,
     "goodwill": 970000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 11.413265704795334,
+        "value": 14.100204818414484,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 53.07913925474053,
+        "value": 46.43422194897576,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 64.66332806517887,
+        "value": 91.59326073553987,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 59.21858186936052,
+        "value": 85.56696767171059,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 56.14886056205053,
-    "max": 64.66332806517887,
-    "low": 11.413265704795334,
-    "high": 64.66332806517887,
-    "mos_pct": 29.81157684605225,
+    "median": 66.00059481034317,
+    "max": 91.59326073553987,
+    "low": 14.100204818414484,
+    "high": 91.59326073553987,
+    "mos_pct": 40.2884171564526,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -93,12 +93,11 @@
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
-      "inventory",
-      "property_plant_equipment"
+      "inventory"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 21,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-22",
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [],
@@ -106,7 +105,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 7.518766756032171,
+  "tangible_book_value": 11.475658061831979,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -117,12 +116,12 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }

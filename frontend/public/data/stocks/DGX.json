@@ -3,17 +3,17 @@
   "name": "Quest Diagnostics",
   "sector": "Health Care",
   "industry": "Health Care Services",
-  "market_cap": 30917700988.76953,
+  "market_cap": 21126414150.287384,
   "current_price": 190.85,
-  "rank": 285,
-  "composite_score": 49.05,
+  "rank": 259,
+  "composite_score": 50.4,
   "pillar_scores": {
-    "quality": 55.93,
-    "value": 41.24,
-    "growth": 41.1,
+    "quality": 44.49,
+    "value": 67.8,
+    "growth": 39.41,
     "momentum": 46.61,
-    "health": 48.88,
-    "profitability": 60.17,
+    "health": 48.21,
+    "profitability": 40.96,
     "technical": 42.03,
     "risk": 71.41,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 11278000000.0,
-    "net_income": 1024000000.0,
+    "net_income": 1075000000.0,
     "total_assets": 16673000000.0,
     "total_liabilities": null,
     "stockholders_equity": 7366000000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 1326000000.0,
     "eps_basic": 2.27,
     "eps_diluted": 2.24,
-    "shares_outstanding": 162000000.0,
-    "market_cap": 30917700988.76953,
+    "shares_outstanding": 110696429.0,
+    "market_cap": 21126414150.287384,
     "pe_ratio_ttm": 85.20089558192662,
     "goodwill": 9120000000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 201.83757990056822,
+        "value": 229.98534390030648,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 147.27658192563695,
+        "value": 192.55973910347703,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 122.18809194196412,
+        "value": 277.51711618904983,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 67.30457708156177,
+        "value": 98.49768041941992,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 134.73233693380053,
-    "max": 201.83757990056822,
-    "low": 67.30457708156177,
-    "high": 201.83757990056822,
-    "mos_pct": -41.651225271397166,
+    "median": 211.27254150189174,
+    "max": 277.51711618904983,
+    "low": 98.49768041941992,
+    "high": 277.51711618904983,
+    "mos_pct": 9.666440917119013,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -87,13 +87,13 @@
   "data_quality": {
     "missing_metrics": [
       "total_liabilities",
+      "gross_profit",
       "research_and_development",
-      "accounts_payable",
-      "property_plant_equipment"
+      "accounts_payable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 22,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-15",
     "latest_filed_date": "2026-04-22"
   },
   "risk_flags": [],
@@ -110,17 +110,17 @@
   "pillar_baseline": {
     "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 51.27,
-      "Value": 52.82,
-      "Growth": 50.0,
+      "Quality": 52.97,
+      "Value": 51.98,
+      "Growth": 49.58,
       "Momentum": 41.24,
-      "Health": 60.08,
-      "Profitability": 52.54,
+      "Health": 59.88,
+      "Profitability": 51.13,
       "Technical": 55.13,
       "Risk": 39.71
     }
   },
-  "beneish_m_score": null,
+  "beneish_m_score": -2.4971380421163807,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false

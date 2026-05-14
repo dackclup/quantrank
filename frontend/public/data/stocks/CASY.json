@@ -3,17 +3,17 @@
   "name": "Casey's",
   "sector": "Consumer Staples",
   "industry": "Food Retail",
-  "market_cap": 32876859857.563477,
+  "market_cap": 32832923349.40796,
   "current_price": 888.36,
-  "rank": 92,
-  "composite_score": 58.4,
+  "rank": 142,
+  "composite_score": 55.97,
   "pillar_scores": {
-    "quality": 55.21,
-    "value": 38.43,
-    "growth": 75.69,
+    "quality": 49.31,
+    "value": 29.17,
+    "growth": 85.42,
     "momentum": 92.13,
-    "health": 33.51,
-    "profitability": 57.64,
+    "health": 35.02,
+    "profitability": 56.25,
     "technical": 67.28,
     "risk": 87.27,
     "sentiment": null,
@@ -31,27 +31,27 @@
     "free_cash_flow": 667325000.0,
     "eps_basic": 14.87,
     "eps_diluted": 14.79,
-    "shares_outstanding": 37008488.0,
-    "market_cap": 32876859857.563477,
+    "shares_outstanding": 36959030.0,
+    "market_cap": 32832923349.40796,
     "pe_ratio_ttm": 60.06490773168104,
     "goodwill": 1266489000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 144.77688698379853,
+        "value": 144.87372368922814,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 852.9561775258724,
+        "value": 401.14452272479207,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 469.696795624622,
+        "value": 324.39838001392275,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -63,23 +63,23 @@
         "tier_used": null
       },
       "rim": {
-        "value": 79.73460555054977,
+        "value": 79.84130516147891,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 86.43034348262306,
+        "value": 86.54600322607313,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 144.77688698379853,
-    "max": 852.9561775258724,
-    "low": 79.73460555054977,
-    "high": 852.9561775258724,
-    "mos_pct": -513.6062211718752,
+    "median": 144.87372368922814,
+    "max": 401.14452272479207,
+    "low": 79.84130516147891,
+    "high": 401.14452272479207,
+    "mos_pct": -513.1960736076635,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_rim_estimate",
@@ -90,7 +90,9 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
+      "gross_profit",
       "operating_income",
+      "cost_of_revenue",
       "research_and_development",
       "sga_expense",
       "accounts_receivable",
@@ -99,7 +101,7 @@
     ],
     "imputed_metrics": [],
     "filing_lag_days": 66,
-    "latest_period_end": "2026-01-31",
+    "latest_period_end": "2026-03-05",
     "latest_filed_date": "2026-03-09"
   },
   "risk_flags": [],
@@ -109,7 +111,7 @@
     "extreme_dcf_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 69.90277473643344,
+  "tangible_book_value": 69.9963175440481,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -120,12 +122,12 @@
   "pillar_baseline": {
     "label": "Consumer Staples median (n=36)",
     "values": {
-      "Quality": 56.08,
-      "Value": 49.07,
-      "Growth": 50.52,
+      "Quality": 49.65,
+      "Value": 51.39,
+      "Growth": 48.44,
       "Momentum": 39.14,
-      "Health": 38.65,
-      "Profitability": 52.08,
+      "Health": 39.29,
+      "Profitability": 53.94,
       "Technical": 57.99,
       "Risk": 51.44
     }

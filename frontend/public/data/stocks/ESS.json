@@ -3,25 +3,25 @@
   "name": "Essex Property Trust",
   "sector": "Real Estate",
   "industry": "Multi-Family Residential REITs",
-  "market_cap": 17488373720.386047,
+  "market_cap": 17475643936.931763,
   "current_price": 271.94,
-  "rank": 437,
-  "composite_score": 39.87,
+  "rank": 258,
+  "composite_score": 50.4,
   "pillar_scores": {
-    "quality": 39.52,
-    "value": 25.54,
-    "growth": 41.94,
+    "quality": 61.29,
+    "value": 32.8,
+    "growth": 62.9,
     "momentum": 51.2,
-    "health": 21.95,
-    "profitability": 66.67,
+    "health": 22.19,
+    "profitability": 70.97,
     "technical": 64.19,
     "risk": 54.48,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 9200000.0,
-    "net_income": 314802000.0,
+    "revenue": 1907518000.0,
+    "net_income": 602203000.0,
     "total_assets": 13095487000.0,
     "total_liabilities": 7468343000.0,
     "stockholders_equity": 5435587000.0,
@@ -31,41 +31,41 @@
     "free_cash_flow": null,
     "eps_basic": 1.65,
     "eps_diluted": 1.65,
-    "shares_outstanding": 64309677.0,
-    "market_cap": 17488373720.386047,
+    "shares_outstanding": 64262866.0,
+    "market_cap": 17475643936.931763,
     "pe_ratio_ttm": 164.81212269176137,
     "goodwill": null
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 133.75251168063005,
+        "value": 133.801217484135,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 203.72543425877257,
+        "value": 270.4545120934394,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 193.07889232772533,
+        "value": 202.40218475825728,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 186.07156436984442,
+        "value": 263.3142595711266,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "value": 88.94631157462358,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 189.5752283487849,
-    "max": 203.72543425877257,
-    "low": 133.75251168063005,
-    "high": 203.72543425877257,
-    "mos_pct": -43.447012993219104,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ]
+    "median": 202.40218475825728,
+    "max": 270.4545120934394,
+    "low": 88.94631157462358,
+    "high": 270.4545120934394,
+    "mos_pct": -34.35625843970149,
+    "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -92,7 +90,9 @@
       "free_cash_flow",
       "cost_of_revenue",
       "research_and_development",
+      "income_tax_expense",
       "income_before_tax",
+      "dividends_paid",
       "current_assets",
       "current_liabilities",
       "inventory",
@@ -105,17 +105,13 @@
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-22",
     "latest_filed_date": "2026-04-29"
   },
-  "risk_flags": [
-    "data_quality_input_corruption"
-  ],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "risk_flags": [],
+  "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 84.40544647736296,
+  "tangible_book_value": 84.46692993742296,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -126,12 +122,12 @@
   "pillar_baseline": {
     "label": "Real Estate median (n=31)",
     "values": {
-      "Quality": 46.77,
-      "Value": 47.85,
-      "Growth": 51.61,
+      "Quality": 50.81,
+      "Value": 47.31,
+      "Growth": 48.79,
       "Momentum": 52.34,
-      "Health": 27.89,
-      "Profitability": 52.69,
+      "Health": 26.18,
+      "Profitability": 52.15,
       "Technical": 59.26,
       "Risk": 53.88
     }

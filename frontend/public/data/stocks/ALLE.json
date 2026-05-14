@@ -3,17 +3,17 @@
   "name": "Allegion",
   "sector": "Industrials",
   "industry": "Building Products",
-  "market_cap": 11226646980.748978,
+  "market_cap": 11226660828.588913,
   "current_price": 130.64,
-  "rank": 39,
-  "composite_score": 63.43,
+  "rank": 37,
+  "composite_score": 63.66,
   "pillar_scores": {
-    "quality": 83.23,
-    "value": 68.35,
-    "growth": 64.87,
+    "quality": 84.18,
+    "value": 68.14,
+    "growth": 63.61,
     "momentum": 22.86,
-    "health": 56.49,
-    "profitability": 76.79,
+    "health": 60.0,
+    "profitability": 73.84,
     "technical": 40.34,
     "risk": 46.25,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 682600000.0,
     "eps_basic": 1.6,
     "eps_diluted": 1.59,
-    "shares_outstanding": 85935755.0,
-    "market_cap": 11226646980.748978,
+    "shares_outstanding": 85935861.0,
+    "market_cap": 11226660828.588913,
     "pe_ratio_ttm": 82.1635216287097,
     "goodwill": 1930600000.0
   },
@@ -45,22 +45,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 187.54629203341656,
+        "value": 212.0887045337723,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 104.8740041589534,
+        "value": 97.63446130237124,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 219.66944788821223,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
       },
       "rim": {
         "value": null,
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 47.1810048307665,
+        "value": 47.180946634031706,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 146.21014809618498,
-    "max": 219.66944788821223,
-    "low": 47.1810048307665,
-    "high": 219.66944788821223,
-    "mos_pct": 10.649157332289722,
+    "median": 97.63446130237124,
+    "max": 212.0887045337723,
+    "low": 47.180946634031706,
+    "high": 212.0887045337723,
+    "mos_pct": -33.805213494300915,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -87,12 +87,14 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
+      "research_and_development",
+      "depreciation_and_amortization",
       "accounts_receivable",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 16,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-28"
   },
   "risk_flags": [],
@@ -109,12 +111,12 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }

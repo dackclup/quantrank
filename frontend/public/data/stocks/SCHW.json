@@ -3,17 +3,17 @@
   "name": "Charles Schwab Corporation",
   "sector": "Financials",
   "industry": "Investment Banking & Brokerage",
-  "market_cap": 181874589907.83783,
+  "market_cap": 158556980988.7378,
   "current_price": 91.17,
-  "rank": 206,
-  "composite_score": 52.62,
+  "rank": 217,
+  "composite_score": 52.01,
   "pillar_scores": {
-    "quality": 58.0,
-    "value": 40.0,
+    "quality": 56.0,
+    "value": 41.33,
     "growth": 56.17,
     "momentum": 53.83,
-    "health": 52.37,
-    "profitability": 53.33,
+    "health": 48.37,
+    "profitability": 54.0,
     "technical": 65.74,
     "risk": 54.98,
     "sentiment": null,
@@ -31,27 +31,27 @@
     "free_cash_flow": 16845000000.0,
     "eps_basic": 1.37,
     "eps_diluted": 1.37,
-    "shares_outstanding": 1994895180.0,
-    "market_cap": 181874589907.83783,
+    "shares_outstanding": 1739135507.0,
+    "market_cap": 158556980988.7378,
     "pe_ratio_ttm": 66.54744391893819,
     "goodwill": 12298000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 33.614350443453525,
+        "value": 36.00128919445632,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 73.44643659145584,
+        "value": 73.87541394270441,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 51.02329896898542,
+        "value": 55.97197183690432,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -63,7 +63,7 @@
         "tier_used": null
       },
       "rim": {
-        "value": 17.26774933938203,
+        "value": 19.807168439682364,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,14 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 42.31882470621947,
-    "max": 73.44643659145584,
-    "low": 17.26774933938203,
-    "high": 73.44643659145584,
-    "mos_pct": -115.43603538579919,
-    "valuation_warnings": [
-      "extreme_rim_estimate"
-    ]
+    "median": 45.98663051568032,
+    "max": 73.87541394270441,
+    "low": 19.807168439682364,
+    "high": 73.87541394270441,
+    "mos_pct": -98.25326871438988,
+    "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -93,25 +91,23 @@
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
+      "depreciation_and_amortization",
       "current_assets",
       "current_liabilities",
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "ebitda",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-08"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "extreme_rim_estimate"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 14.799273814476809,
+  "tangible_book_value": 16.97567549001804,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -123,11 +119,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

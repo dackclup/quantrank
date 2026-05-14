@@ -3,17 +3,17 @@
   "name": "CF Industries",
   "sector": "Materials",
   "industry": "Fertilizers & Agricultural Chemicals",
-  "market_cap": 19270796331.0,
+  "market_cap": 19280473887.0,
   "current_price": 125.5,
-  "rank": 3,
-  "composite_score": 71.64,
+  "rank": 1,
+  "composite_score": 75.38,
   "pillar_scores": {
-    "quality": 85.58,
-    "value": 73.72,
+    "quality": 92.31,
+    "value": 77.56,
     "growth": 35.58,
     "momentum": 83.52,
-    "health": 71.57,
-    "profitability": 71.79,
+    "health": 75.4,
+    "profitability": 82.05,
     "technical": 52.64,
     "risk": 62.83,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 7407000000.0,
-    "net_income": 1625600000.0,
+    "net_income": 2123000000.0,
     "total_assets": 14608000000.0,
     "total_liabilities": null,
     "stockholders_equity": 5342000000.0,
@@ -31,58 +31,57 @@
     "free_cash_flow": 1621000000.0,
     "eps_basic": 3.99,
     "eps_diluted": 3.98,
-    "shares_outstanding": 153552162.0,
-    "market_cap": 19270796331.0,
+    "shares_outstanding": 153629274.0,
+    "market_cap": 19280473887.0,
     "pe_ratio_ttm": 31.532663316582916,
     "goodwill": 2492000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 52.35558815796665,
+        "value": 52.3424469422816,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 389.9806235229099,
+        "value": 365.4790726084403,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 113.19950116258806,
+        "value": 100.8621693619455,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 385.35271340144254,
+        "value": 342.58697105445873,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "value": 30.785707873246714,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 167.771123801686,
+        "value": 167.68691350398848,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 167.771123801686,
-    "max": 389.9806235229099,
-    "low": 52.35558815796665,
-    "high": 389.9806235229099,
-    "mos_pct": 25.195708798882826,
+    "median": 134.274541432967,
+    "max": 365.4790726084403,
+    "low": 30.785707873246714,
+    "high": 365.4790726084403,
+    "mos_pct": 6.534776689107112,
     "valuation_warnings": [
-      "goodwill_heavy",
-      "value_trap_risk"
+      "goodwill_heavy"
     ]
   },
   "top5_factors": [],
@@ -90,21 +89,20 @@
   "data_quality": {
     "missing_metrics": [
       "total_liabilities",
-      "research_and_development",
-      "property_plant_equipment"
+      "research_and_development"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-05-04",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
-    "value_trap_risk"
+    "beneish_high"
   ],
   "has_history": true,
-  "tangible_book_value": 15.499618950334284,
+  "tangible_book_value": 15.491839139980573,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -115,18 +113,18 @@
   "pillar_baseline": {
     "label": "Materials median (n=26)",
     "values": {
-      "Quality": 52.16,
-      "Value": 50.8,
-      "Growth": 48.08,
+      "Quality": 51.68,
+      "Value": 49.84,
+      "Growth": 48.56,
       "Momentum": 51.87,
-      "Health": 51.58,
-      "Profitability": 50.48,
+      "Health": 56.53,
+      "Profitability": 54.33,
       "Technical": 57.81,
       "Risk": 48.94
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -2.0898643491986895,
+  "dechow_f_score": 0.2888164255263529,
   "entered_top5": false,
   "exited_top5": false
 }

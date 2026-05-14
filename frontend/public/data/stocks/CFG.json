@@ -3,24 +3,24 @@
   "name": "Citizens Financial Group",
   "sector": "Financials",
   "industry": "Regional Banks",
-  "market_cap": 25744604948.55208,
+  "market_cap": 25554755884.113327,
   "current_price": 60.43,
-  "rank": 335,
-  "composite_score": 46.44,
+  "rank": 364,
+  "composite_score": 44.96,
   "pillar_scores": {
-    "quality": 36.0,
-    "value": 54.89,
-    "growth": 23.0,
+    "quality": 33.33,
+    "value": 55.56,
+    "growth": 22.0,
     "momentum": 71.96,
-    "health": 56.24,
-    "profitability": 52.44,
+    "health": 52.23,
+    "profitability": 46.44,
     "technical": 23.43,
     "risk": 59.96,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 1683000000.0,
+    "revenue": 8480000000.0,
     "net_income": 1975000000.0,
     "total_assets": 227918000000.0,
     "total_liabilities": 201746000000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": 2453000000.0,
     "eps_basic": 1.14,
     "eps_diluted": 1.13,
-    "shares_outstanding": 426023578.0,
-    "market_cap": 25744604948.55208,
+    "shares_outstanding": 422881942.0,
+    "market_cap": 25554755884.113327,
     "pe_ratio_ttm": 53.47787637626176,
     "goodwill": 8221000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 56.09613343338602,
+        "value": 56.304120001603856,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 60.73065159265272,
+        "value": 63.79382850225189,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 127.4496640078377,
+        "value": 125.02955478948746,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 60.73065159265272,
-    "max": 127.4496640078377,
-    "low": 56.09613343338602,
-    "high": 127.4496640078377,
-    "mos_pct": 0.49505691046020606,
+    "median": 63.79382850225189,
+    "max": 125.02955478948746,
+    "low": 56.304120001603856,
+    "high": 125.02955478948746,
+    "mos_pct": 5.272968053574913,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -93,27 +93,25 @@
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
+      "depreciation_and_amortization",
       "current_assets",
       "current_liabilities",
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "ebitda",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 10,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-05-04"
   },
-  "risk_flags": [
-    "data_quality_input_corruption"
-  ],
+  "risk_flags": [],
   "valuation_warnings": [
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 41.87326927712907,
+  "tangible_book_value": 42.18435035469072,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -125,11 +123,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

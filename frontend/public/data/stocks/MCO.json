@@ -3,17 +3,17 @@
   "name": "Moody's Corporation",
   "sector": "Financials",
   "industry": "Financial Exchanges & Data",
-  "market_cap": 150300926374.53125,
+  "market_cap": 76574505279.54102,
   "current_price": 438.32,
-  "rank": 242,
-  "composite_score": 50.98,
+  "rank": 203,
+  "composite_score": 52.72,
   "pillar_scores": {
-    "quality": 74.67,
-    "value": 10.44,
-    "growth": 86.0,
+    "quality": 74.0,
+    "value": 13.56,
+    "growth": 85.0,
     "momentum": 39.34,
-    "health": 43.09,
-    "profitability": 75.78,
+    "health": 54.82,
+    "profitability": 78.44,
     "technical": 34.06,
     "risk": 44.92,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 7873000000.0,
-    "net_income": 2495000000.0,
+    "net_income": 2498000000.0,
     "total_assets": 14732000000.0,
     "total_liabilities": 11589000000.0,
     "stockholders_equity": 2994000000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 2747000000.0,
     "eps_basic": 3.74,
     "eps_diluted": 3.73,
-    "shares_outstanding": 342902272.0,
-    "market_cap": 150300926374.53125,
+    "shares_outstanding": 174700000.0,
+    "market_cap": 76574505279.54102,
     "pe_ratio_ttm": 117.51206630676106,
     "goodwill": 6335000000.0
   },
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 199.96730546432866,
+        "value": 357.72669501601285,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 18.051152199267428,
+        "value": 33.884243856102486,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 109.00922883179804,
-    "max": 199.96730546432866,
-    "low": 18.051152199267428,
-    "high": 199.96730546432866,
-    "mos_pct": -302.09440248453586,
+    "median": 195.80546943605768,
+    "max": 357.72669501601285,
+    "low": 33.884243856102486,
+    "high": 357.72669501601285,
+    "mos_pct": -123.85483336427265,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ]
@@ -89,8 +89,9 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
-      "inventory",
-      "property_plant_equipment"
+      "research_and_development",
+      "interest_expense",
+      "inventory"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 21,
@@ -114,16 +115,16 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }
   },
-  "beneish_m_score": null,
+  "beneish_m_score": -2.526362516438904,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false

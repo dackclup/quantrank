@@ -3,17 +3,17 @@
   "name": "Vulcan Materials Company",
   "sector": "Materials",
   "industry": "Construction Materials",
-  "market_cap": 35772563113.40332,
+  "market_cap": 35622907236.645355,
   "current_price": 274.54,
-  "rank": 405,
-  "composite_score": 42.61,
+  "rank": 243,
+  "composite_score": 50.9,
   "pillar_scores": {
-    "quality": 36.54,
-    "value": 21.79,
-    "growth": 78.85,
+    "quality": 56.73,
+    "value": 31.09,
+    "growth": 75.0,
     "momentum": 39.69,
-    "health": 61.63,
-    "profitability": 50.64,
+    "health": 67.71,
+    "profitability": 58.97,
     "technical": 29.93,
     "risk": 53.82,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 8062400000.0,
-    "net_income": 1113300000.0,
+    "net_income": 1114600000.0,
     "total_assets": 16672900000.0,
     "total_liabilities": 8197200000.0,
     "stockholders_equity": 8451300000.0,
@@ -31,55 +31,55 @@
     "free_cash_flow": 1116400000.0,
     "eps_basic": 1.27,
     "eps_diluted": 1.26,
-    "shares_outstanding": 130300000.0,
-    "market_cap": 35772563113.40332,
+    "shares_outstanding": 129754885.0,
+    "market_cap": 35622907236.645355,
     "pe_ratio_ttm": 217.8888956705729,
     "goodwill": 3780900000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 63.38490938935102,
+        "value": 63.51791344397023,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 107.82599443141176,
+        "value": 219.70713847730235,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 211.04529165430665,
+        "value": 188.92881499851552,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 98.28728414139658,
+        "value": 219.50874135475343,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 26.154920003485714,
+        "value": 26.26479979119236,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 33.487694454121666,
+        "value": 33.6283800596182,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 80.83609676537381,
-    "max": 211.04529165430665,
-    "low": 26.154920003485714,
-    "high": 211.04529165430665,
-    "mos_pct": -239.62551326763375,
+    "median": 126.22336422124287,
+    "max": 219.70713847730235,
+    "low": 26.26479979119236,
+    "high": 219.70713847730235,
+    "mos_pct": -117.50332059262124,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate",
@@ -90,12 +90,12 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "accounts_payable",
-      "property_plant_equipment"
+      "research_and_development",
+      "accounts_payable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-21",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
@@ -105,7 +105,7 @@
     "extreme_dcf_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 24.415963161934,
+  "tangible_book_value": 24.518537394565143,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -116,18 +116,18 @@
   "pillar_baseline": {
     "label": "Materials median (n=26)",
     "values": {
-      "Quality": 52.16,
-      "Value": 50.8,
-      "Growth": 48.08,
+      "Quality": 51.68,
+      "Value": 49.84,
+      "Growth": 48.56,
       "Momentum": 51.87,
-      "Health": 51.58,
-      "Profitability": 50.48,
+      "Health": 56.53,
+      "Profitability": 54.33,
       "Technical": 57.81,
       "Risk": 48.94
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -2.7709968254404984,
+  "dechow_f_score": 0.2646905100717187,
   "entered_top5": false,
   "exited_top5": false
 }

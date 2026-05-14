@@ -3,17 +3,17 @@
   "name": "PepsiCo",
   "sector": "Consumer Staples",
   "industry": "Soft Drinks & Non-alcoholic Beverages",
-  "market_cap": 204201365844.72656,
+  "market_cap": 204017512219.51422,
   "current_price": 149.27,
-  "rank": 313,
-  "composite_score": 47.45,
+  "rank": 197,
+  "composite_score": 53.06,
   "pillar_scores": {
-    "quality": 64.58,
-    "value": 28.24,
-    "growth": 54.86,
+    "quality": 83.33,
+    "value": 30.79,
+    "growth": 42.01,
     "momentum": 54.88,
-    "health": 29.12,
-    "profitability": 47.69,
+    "health": 32.15,
+    "profitability": 66.67,
     "technical": 23.66,
     "risk": 67.8,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 95449000000.0,
-    "net_income": 8733000000.0,
+    "net_income": 8790000000.0,
     "total_assets": 110646000000.0,
     "total_liabilities": 89110000000.0,
     "stockholders_equity": 21383000000.0,
@@ -31,39 +31,39 @@
     "free_cash_flow": 8842000000.0,
     "eps_basic": 1.7,
     "eps_diluted": 1.7,
-    "shares_outstanding": 1368000000.0,
-    "market_cap": 204201365844.72656,
+    "shares_outstanding": 1366768315.0,
+    "market_cap": 204017512219.51422,
     "pe_ratio_ttm": 87.80588486615349,
     "goodwill": 19021000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 14.112568275595102,
+        "value": 14.118925726290708,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 98.04093994550257,
+        "value": 152.6907997782107,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 70.50952764143427,
+        "value": 48.67649537132641,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 100.0820582039647,
+        "value": 114.13651933693669,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 4.865929328655563,
+        "value": 4.870314338243061,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 70.50952764143427,
-    "max": 100.0820582039647,
-    "low": 4.865929328655563,
-    "high": 100.0820582039647,
-    "mos_pct": -111.7018923053227,
+    "median": 48.67649537132641,
+    "max": 152.6907997782107,
+    "low": 4.870314338243061,
+    "high": 152.6907997782107,
+    "mos_pct": -206.6572544587723,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -90,12 +90,12 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "accounts_receivable",
-      "property_plant_equipment"
+      "research_and_development",
+      "accounts_receivable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 28,
-    "latest_period_end": "2026-03-21",
+    "latest_period_end": "2026-04-09",
     "latest_filed_date": "2026-04-16"
   },
   "risk_flags": [],
@@ -105,7 +105,7 @@
     "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 1.3611111111111112,
+  "tangible_book_value": 1.3623376980318715,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -116,12 +116,12 @@
   "pillar_baseline": {
     "label": "Consumer Staples median (n=36)",
     "values": {
-      "Quality": 56.08,
-      "Value": 49.07,
-      "Growth": 50.52,
+      "Quality": 49.65,
+      "Value": 51.39,
+      "Growth": 48.44,
       "Momentum": 39.14,
-      "Health": 38.65,
-      "Profitability": 52.08,
+      "Health": 39.29,
+      "Profitability": 53.94,
       "Technical": 57.99,
       "Risk": 51.44
     }

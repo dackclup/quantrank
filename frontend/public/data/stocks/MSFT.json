@@ -3,17 +3,17 @@
   "name": "Microsoft",
   "sector": "Information Technology",
   "industry": "Systems Software",
-  "market_cap": 3010305026519.7754,
+  "market_cap": 3010075962932.446,
   "current_price": 405.21,
-  "rank": 69,
-  "composite_score": 60.63,
+  "rank": 105,
+  "composite_score": 57.82,
   "pillar_scores": {
-    "quality": 69.52,
-    "value": 67.12,
-    "growth": 57.53,
+    "quality": 65.07,
+    "value": 60.27,
+    "growth": 57.19,
     "momentum": 23.46,
-    "health": 77.65,
-    "profitability": 71.92,
+    "health": 79.0,
+    "profitability": 69.86,
     "technical": 46.12,
     "risk": 45.75,
     "sentiment": null,
@@ -31,55 +31,55 @@
     "free_cash_flow": 72916000000.0,
     "eps_basic": 13.19,
     "eps_diluted": 13.14,
-    "shares_outstanding": 7429000000.0,
-    "market_cap": 3010305026519.7754,
+    "shares_outstanding": 7428434704.0,
+    "market_cap": 3010075962932.446,
     "pe_ratio_ttm": 30.837898893080524,
     "goodwill": 119661000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 101.99773381597271,
+        "value": 102.00161470180728,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 1185.0866145821917,
+        "value": 622.9794324361065,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 610.1090268009882,
+        "value": 584.4156585316756,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 1237.1001589256298,
+        "value": 585.1807631503713,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 63.88113174181909,
+        "value": 63.88599302817189,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 111.07796296573981,
+        "value": 111.08641588087669,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 360.59349488336403,
-    "max": 1237.1001589256298,
-    "low": 63.88113174181909,
-    "high": 1237.1001589256298,
-    "mos_pct": -12.373073060052164,
+    "median": 347.7510372062761,
+    "max": 622.9794324361065,
+    "low": 63.88599302817189,
+    "high": 622.9794324361065,
+    "mos_pct": -16.523014484847952,
     "valuation_warnings": [
       "extreme_rim_estimate"
     ]
@@ -87,12 +87,10 @@
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
-    "missing_metrics": [
-      "property_plant_equipment"
-    ],
+    "missing_metrics": [],
     "imputed_metrics": [],
     "filing_lag_days": 15,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-23",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
@@ -100,7 +98,7 @@
     "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 39.497105936195986,
+  "tangible_book_value": 39.50011162405447,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -111,18 +109,18 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -2.8486821926831656,
+  "dechow_f_score": 0.2729533620746848,
   "entered_top5": false,
   "exited_top5": false
 }

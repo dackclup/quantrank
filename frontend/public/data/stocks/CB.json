@@ -3,17 +3,17 @@
   "name": "Chubb Limited",
   "sector": "Financials",
   "industry": "Property & Casualty Insurance",
-  "market_cap": 122768492029.70215,
+  "market_cap": 122567675884.75635,
   "current_price": 316.01,
-  "rank": 129,
-  "composite_score": 56.29,
+  "rank": 148,
+  "composite_score": 55.7,
   "pillar_scores": {
     "quality": 50.0,
-    "value": 59.11,
-    "growth": 66.0,
+    "value": 57.33,
+    "growth": 67.0,
     "momentum": 64.44,
-    "health": 59.66,
-    "profitability": 50.22,
+    "health": 55.66,
+    "profitability": 51.56,
     "technical": 16.88,
     "risk": 79.55,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 60822000000.0,
-    "net_income": 11299000000.0,
+    "net_income": 11626000000.0,
     "total_assets": 275456000000.0,
     "total_liabilities": 195544000000.0,
     "stockholders_equity": 73788000000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": null,
     "eps_basic": 5.94,
     "eps_diluted": 5.88,
-    "shares_outstanding": 388495580.0,
-    "market_cap": 122768492029.70215,
+    "shares_outstanding": 387860106.0,
+    "market_cap": 122567675884.75635,
     "pe_ratio_ttm": 53.743198939732146,
     "goodwill": 20370000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 252.88313826291534,
+        "value": 253.09021664940394,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 315.2343157030414,
+        "value": 409.4358942992013,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 394.0352505937844,
+        "value": 384.331110326623,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -63,7 +63,7 @@
         "tier_used": null
       },
       "rim": {
-        "value": 138.52907082408805,
+        "value": 138.75603828320814,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 284.0587269829783,
-    "max": 394.0352505937844,
-    "low": 138.52907082408805,
-    "high": 394.0352505937844,
-    "mos_pct": -11.248125738647449,
+    "median": 318.71066348801344,
+    "max": 409.4358942992013,
+    "low": 138.75603828320814,
+    "high": 409.4358942992013,
+    "mos_pct": 0.847368485519785,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -92,23 +92,23 @@
       "operating_income",
       "cost_of_revenue",
       "research_and_development",
+      "depreciation_and_amortization",
       "current_assets",
       "current_liabilities",
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "ebitda",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 16,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-21",
     "latest_filed_date": "2026-04-28"
   },
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 121.49687777657599,
+  "tangible_book_value": 121.69593951485179,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -120,11 +120,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

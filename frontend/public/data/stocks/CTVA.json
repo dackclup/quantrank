@@ -3,17 +3,17 @@
   "name": "Corteva",
   "sector": "Materials",
   "industry": "Fertilizers & Agricultural Chemicals",
-  "market_cap": 56024785024.36066,
+  "market_cap": 55746145979.46167,
   "current_price": 83.35,
-  "rank": 107,
-  "composite_score": 57.66,
+  "rank": 158,
+  "composite_score": 54.91,
   "pillar_scores": {
-    "quality": 50.48,
-    "value": 57.05,
-    "growth": 46.15,
+    "quality": 48.56,
+    "value": 48.08,
+    "growth": 43.27,
     "momentum": 81.97,
-    "health": 56.37,
-    "profitability": 55.45,
+    "health": 59.16,
+    "profitability": 53.53,
     "technical": 64.94,
     "risk": 68.66,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 17889000000.0,
-    "net_income": 1162000000.0,
+    "net_income": 1172000000.0,
     "total_assets": 42717000000.0,
     "total_liabilities": null,
     "stockholders_equity": 24362000000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": 2046000000.0,
     "eps_basic": 1.07,
     "eps_diluted": 1.07,
-    "shares_outstanding": 672163000.0,
-    "market_cap": 56024785024.36066,
+    "shares_outstanding": 668820000.0,
+    "market_cap": 55746145979.46167,
     "pe_ratio_ttm": 77.89719483562719,
     "goodwill": 10409000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 15.956150404258825,
+        "value": 15.995977952802606,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 104.84403697726474,
+        "value": 44.819520538644866,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 120.27828262178478,
+        "value": 111.69108670744369,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 24.135179479663506,
+        "value": 24.25581568222999,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 64.48960822846412,
-    "max": 120.27828262178478,
-    "low": 15.956150404258825,
-    "high": 120.27828262178478,
-    "mos_pct": -29.24562695254902,
+    "median": 34.53766811043743,
+    "max": 111.69108670744369,
+    "low": 15.995977952802606,
+    "high": 111.69108670744369,
+    "mos_pct": -141.3307065422068,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -93,13 +93,13 @@
       "total_liabilities",
       "gross_profit",
       "operating_income",
+      "interest_expense",
       "long_term_debt",
-      "ebitda",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
@@ -109,7 +109,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 8.637785775176557,
+  "tangible_book_value": 8.680960497592775,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -120,18 +120,18 @@
   "pillar_baseline": {
     "label": "Materials median (n=26)",
     "values": {
-      "Quality": 52.16,
-      "Value": 50.8,
-      "Growth": 48.08,
+      "Quality": 51.68,
+      "Value": 49.84,
+      "Growth": 48.56,
       "Momentum": 51.87,
-      "Health": 51.58,
-      "Profitability": 50.48,
+      "Health": 56.53,
+      "Profitability": 54.33,
       "Technical": 57.81,
       "Risk": 48.94
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 0.6306373773610252,
   "entered_top5": false,
   "exited_top5": false
 }

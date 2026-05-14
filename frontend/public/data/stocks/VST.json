@@ -3,25 +3,25 @@
   "name": "Vistra Corp.",
   "sector": "Utilities",
   "industry": "Electric Utilities",
-  "market_cap": 48213582446.28763,
+  "market_cap": 48085591967.27985,
   "current_price": 142.61,
-  "rank": 130,
-  "composite_score": 56.22,
+  "rank": 165,
+  "composite_score": 54.52,
   "pillar_scores": {
-    "quality": 75.81,
-    "value": 63.98,
+    "quality": 74.19,
+    "value": 60.75,
     "growth": 74.19,
     "momentum": 26.44,
-    "health": 15.22,
-    "profitability": 71.51,
+    "health": 15.02,
+    "profitability": 63.44,
     "technical": 19.2,
     "risk": 38.48,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 18337000000.0,
-    "net_income": 2241000000.0,
+    "revenue": 19445000000.0,
+    "net_income": 2918000000.0,
     "total_assets": 41308000000.0,
     "total_liabilities": 35698000000.0,
     "stockholders_equity": 5597000000.0,
@@ -31,39 +31,39 @@
     "free_cash_flow": 1803000000.0,
     "eps_basic": 2.9,
     "eps_diluted": 2.87,
-    "shares_outstanding": 338079954.0,
-    "market_cap": 48213582446.28763,
+    "shares_outstanding": 337182468.0,
+    "market_cap": 48085591967.27985,
     "pe_ratio_ttm": 49.68989568304932,
     "goodwill": 2810000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 10.955423910780315,
+        "value": 10.969994368130298,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 178.10663535910226,
+        "value": 174.05114369728585,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 34.84657200545354,
+        "value": 34.90410311092131,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 180.17785729826065,
+        "value": 137.61127210348255,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "rim": {
-        "value": 2.9304302692709068,
+        "value": 2.9382302600481456,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 34.84657200545354,
-    "max": 180.17785729826065,
-    "low": 2.9304302692709068,
-    "high": 180.17785729826065,
-    "mos_pct": -309.25116131375245,
+    "median": 34.90410311092131,
+    "max": 174.05114369728585,
+    "low": 2.9382302600481456,
+    "high": 174.05114369728585,
+    "mos_pct": -308.57660819174475,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -92,12 +92,11 @@
     "missing_metrics": [
       "gross_profit",
       "cost_of_revenue",
-      "research_and_development",
-      "property_plant_equipment"
+      "research_and_development"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-08"
   },
   "risk_flags": [
@@ -109,7 +108,7 @@
     "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 1.2541412023500216,
+  "tangible_book_value": 1.257479377605125,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -122,16 +121,16 @@
     "values": {
       "Quality": 51.61,
       "Value": 47.85,
-      "Growth": 50.81,
+      "Growth": 54.03,
       "Momentum": 62.85,
-      "Health": 19.36,
-      "Profitability": 51.61,
+      "Health": 17.85,
+      "Profitability": 52.15,
       "Technical": 43.63,
       "Risk": 71.98
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 0.2694888545388964,
   "entered_top5": false,
   "exited_top5": false
 }

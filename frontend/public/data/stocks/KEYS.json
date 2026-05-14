@@ -3,17 +3,17 @@
   "name": "Keysight Technologies",
   "sector": "Information Technology",
   "industry": "Electronic Equipment & Instruments",
-  "market_cap": 61763490417.48047,
+  "market_cap": 61944986587.75726,
   "current_price": 361.19,
-  "rank": 233,
-  "composite_score": 51.38,
+  "rank": 280,
+  "composite_score": 49.25,
   "pillar_scores": {
-    "quality": 48.63,
-    "value": 30.14,
-    "growth": 27.05,
+    "quality": 39.38,
+    "value": 28.77,
+    "growth": 28.77,
     "momentum": 95.24,
-    "health": 69.96,
-    "profitability": 53.42,
+    "health": 79.6,
+    "profitability": 46.12,
     "technical": 67.38,
     "risk": 59.5,
     "sentiment": null,
@@ -31,59 +31,59 @@
     "free_cash_flow": 1342000000.0,
     "eps_basic": 1.64,
     "eps_diluted": 1.63,
-    "shares_outstanding": 171000000.0,
-    "market_cap": 61763490417.48047,
+    "shares_outstanding": 171502495.0,
+    "market_cap": 61944986587.75726,
     "pe_ratio_ttm": 221.58895855300997,
     "goodwill": 3474000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 30.499065271843012,
+        "value": 30.454352015226398,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 134.02905747745928,
+        "value": 202.32621306663194,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 396.9157416059654,
+        "value": 350.9891960218124,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 148.8102373068345,
+        "value": 140.32424021298584,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "value": 10.11175749695777,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 84.70424678594235,
+        "value": 84.45606695340578,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 134.02905747745928,
-    "max": 396.9157416059654,
-    "low": 30.499065271843012,
-    "high": 396.9157416059654,
-    "mos_pct": -169.4863406781402,
+    "median": 112.39015358319581,
+    "max": 350.9891960218124,
+    "low": 10.11175749695777,
+    "high": 350.9891960218124,
+    "mos_pct": -221.37157119732785,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
-      "value_trap_risk"
+      "extreme_rim_estimate"
     ]
   },
   "top5_factors": [],
@@ -95,17 +95,17 @@
     ],
     "imputed_metrics": [],
     "filing_lag_days": 70,
-    "latest_period_end": "2026-01-31",
+    "latest_period_end": "2026-02-27",
     "latest_filed_date": "2026-03-05"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
     "extreme_graham_estimate",
-    "value_trap_risk"
+    "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 8.654970760233919,
+  "tangible_book_value": 8.629612064827395,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -116,17 +116,17 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }
   },
-  "beneish_m_score": -2.586866505325954,
+  "beneish_m_score": -2.590008021116027,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false

@@ -3,17 +3,17 @@
   "name": "Verisign",
   "sector": "Information Technology",
   "industry": "Internet Services & Infrastructure",
-  "market_cap": 26887255334.472656,
+  "market_cap": 26857741333.007812,
   "current_price": 295.14,
-  "rank": 251,
-  "composite_score": 50.49,
+  "rank": 219,
+  "composite_score": 51.92,
   "pillar_scores": {
-    "quality": 39.73,
-    "value": 47.49,
-    "growth": 44.18,
+    "quality": 39.55,
+    "value": 52.28,
+    "growth": 44.52,
     "momentum": 68.48,
-    "health": 36.06,
-    "profitability": 94.18,
+    "health": 37.81,
+    "profitability": 97.03,
     "technical": 64.52,
     "risk": 55.51,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 1683200000.0,
-    "net_income": 834000000.0,
+    "net_income": 840900000.0,
     "total_assets": 1297200000.0,
     "total_liabilities": 3510600000.0,
     "stockholders_equity": -2213400000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 1048000000.0,
     "eps_basic": 6.24,
     "eps_diluted": 6.24,
-    "shares_outstanding": 91100000.0,
-    "market_cap": 26887255334.472656,
+    "shares_outstanding": 91000000.0,
+    "market_cap": 26857741333.007812,
     "pe_ratio_ttm": 47.29807927058293,
     "goodwill": 52500000.0
   },
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 562.780858066429,
+        "value": 341.5184360013106,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 215.03513094660892,
+        "value": 318.8046402794044,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 119.88889157605347,
+        "value": 120.02063761075242,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 215.03513094660892,
-    "max": 562.780858066429,
-    "low": 119.88889157605347,
-    "high": 562.780858066429,
-    "mos_pct": -37.2519984754109,
+    "median": 318.8046402794044,
+    "max": 341.5184360013106,
+    "low": 120.02063761075242,
+    "high": 341.5184360013106,
+    "mos_pct": 7.422923835182235,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -90,12 +90,11 @@
     "missing_metrics": [
       "gross_profit",
       "inventory",
-      "short_term_debt",
-      "property_plant_equipment"
+      "short_term_debt"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 21,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-17",
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [
@@ -116,12 +115,12 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }

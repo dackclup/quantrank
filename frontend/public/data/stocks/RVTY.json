@@ -3,17 +3,17 @@
   "name": "Revvity",
   "sector": "Health Care",
   "industry": "Health Care Equipment",
-  "market_cap": 10605871528.465271,
+  "market_cap": 10599294271.047386,
   "current_price": 95.01,
-  "rank": 486,
-  "composite_score": 34.29,
+  "rank": 500,
+  "composite_score": 28.9,
   "pillar_scores": {
-    "quality": 29.24,
-    "value": 33.62,
-    "growth": 13.14,
+    "quality": 13.56,
+    "value": 33.05,
+    "growth": 13.56,
     "momentum": 36.4,
-    "health": 59.0,
-    "profitability": 37.57,
+    "health": 59.68,
+    "profitability": 20.34,
     "technical": 68.23,
     "risk": 22.34,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 492693000.0,
     "eps_basic": 0.36,
     "eps_diluted": 0.36,
-    "shares_outstanding": 111629000.0,
-    "market_cap": 10605871528.465271,
+    "shares_outstanding": 111559773.0,
+    "market_cap": 10599294271.047386,
     "pe_ratio_ttm": 263.9166726006402,
     "goodwill": 6610750000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 41.28037947572734,
+        "value": 50.99205842003626,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 207.03621169353752,
+        "value": 196.32546276030914,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 67.68795970217116,
+        "value": 84.5778873610844,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 32.08410082039403,
+        "value": 32.104010201596274,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 54.48416958894924,
-    "max": 207.03621169353752,
-    "low": 32.08410082039403,
-    "high": 207.03621169353752,
-    "mos_pct": -74.38093092548644,
+    "median": 67.78497289056033,
+    "max": 196.32546276030914,
+    "low": 32.104010201596274,
+    "high": 196.32546276030914,
+    "mos_pct": -40.16381225028339,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -87,10 +87,12 @@
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
-    "missing_metrics": [],
+    "missing_metrics": [
+      "gross_profit"
+    ],
     "imputed_metrics": [],
     "filing_lag_days": 2,
-    "latest_period_end": "2026-04-05",
+    "latest_period_end": "2026-05-08",
     "latest_filed_date": "2026-05-12"
   },
   "risk_flags": [],
@@ -109,12 +111,12 @@
   "pillar_baseline": {
     "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 51.27,
-      "Value": 52.82,
-      "Growth": 50.0,
+      "Quality": 52.97,
+      "Value": 51.98,
+      "Growth": 49.58,
       "Momentum": 41.24,
-      "Health": 60.08,
-      "Profitability": 52.54,
+      "Health": 59.88,
+      "Profitability": 51.13,
       "Technical": 55.13,
       "Risk": 39.71
     }

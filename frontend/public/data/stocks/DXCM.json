@@ -3,17 +3,17 @@
   "name": "Dexcom",
   "sector": "Health Care",
   "industry": "Health Care Equipment",
-  "market_cap": 22602162882.232666,
+  "market_cap": 22600580145.130913,
   "current_price": 58.57,
-  "rank": 71,
-  "composite_score": 60.61,
+  "rank": 24,
+  "composite_score": 65.59,
   "pillar_scores": {
-    "quality": 78.81,
-    "value": 37.29,
-    "growth": 92.8,
+    "quality": 87.71,
+    "value": 45.48,
+    "growth": 94.07,
     "momentum": 23.41,
-    "health": 87.05,
-    "profitability": 66.1,
+    "health": 88.13,
+    "profitability": 72.88,
     "technical": 50.8,
     "risk": 17.07,
     "sentiment": null,
@@ -31,55 +31,55 @@
     "free_cash_flow": 1429400000.0,
     "eps_basic": 0.52,
     "eps_diluted": 0.51,
-    "shares_outstanding": 385900000.0,
-    "market_cap": 22602162882.232666,
+    "shares_outstanding": 385872977.0,
+    "market_cap": 22600580145.130913,
     "pe_ratio_ttm": 114.84313665651807,
     "goodwill": 24200000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 16.38001499277439,
+        "value": 16.380588535652805,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 60.64167387102034,
+        "value": 63.053332456736825,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 22.17889086687679,
+        "value": 22.174797216559213,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 44.86207903651963,
+        "value": 59.97813315777306,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "rim": {
-        "value": 12.49535816624391,
+        "value": 12.496233226390263,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 20.03818074039958,
+        "value": 20.039584030576457,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 21.108535803638183,
-    "max": 60.64167387102034,
-    "low": 12.49535816624391,
-    "high": 60.64167387102034,
-    "mos_pct": -177.47068882309367,
+    "median": 21.107190623567835,
+    "max": 63.053332456736825,
+    "low": 12.496233226390263,
+    "high": 63.053332456736825,
+    "mos_pct": -177.48837227738977,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -88,18 +88,17 @@
     "missing_metrics": [
       "dividends_paid",
       "accounts_payable",
-      "short_term_debt",
-      "property_plant_equipment"
+      "short_term_debt"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-23",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 7.437419020471625,
+  "tangible_book_value": 7.437939869005131,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -110,18 +109,18 @@
   "pillar_baseline": {
     "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 51.27,
-      "Value": 52.82,
-      "Growth": 50.0,
+      "Quality": 52.97,
+      "Value": 51.98,
+      "Growth": 49.58,
       "Momentum": 41.24,
-      "Health": 60.08,
-      "Profitability": 52.54,
+      "Health": 59.88,
+      "Profitability": 51.13,
       "Technical": 55.13,
       "Risk": 39.71
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 0.3575810340108057,
   "entered_top5": false,
   "exited_top5": false
 }

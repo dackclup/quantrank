@@ -3,17 +3,17 @@
   "name": "Truist Financial",
   "sector": "Financials",
   "industry": "Diversified Banks",
-  "market_cap": 57983209800.63629,
+  "market_cap": 57983222599.13654,
   "current_price": 46.54,
-  "rank": 249,
-  "composite_score": 50.56,
+  "rank": 384,
+  "composite_score": 43.91,
   "pillar_scores": {
-    "quality": 50.67,
-    "value": 57.11,
-    "growth": 40.33,
+    "quality": 35.33,
+    "value": 54.67,
+    "growth": 31.0,
     "momentum": 55.73,
-    "health": 49.78,
-    "profitability": 50.67,
+    "health": 45.78,
+    "profitability": 45.56,
     "technical": 31.97,
     "risk": 54.15,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": null,
-    "net_income": null,
+    "net_income": 5527000000.0,
     "total_assets": 548975000000.0,
     "total_liabilities": 484761000000.0,
     "stockholders_equity": 64214000000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": 5079000000.0,
     "eps_basic": 1.1,
     "eps_diluted": 1.09,
-    "shares_outstanding": 1245879000.0,
-    "market_cap": 57983209800.63629,
+    "shares_outstanding": 1245879275.0,
+    "market_cap": 57983222599.13654,
     "pe_ratio_ttm": 42.69724854635536,
     "goodwill": 17125000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 41.28305008124421,
+        "value": 41.283045525088724,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 58.58089401415175,
+        "value": 60.59603529681153,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 106.92746648539988,
+        "value": 104.1234802228425,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 58.58089401415175,
-    "max": 106.92746648539988,
-    "low": 41.28305008124421,
-    "high": 106.92746648539988,
-    "mos_pct": 20.554300683283554,
+    "median": 60.59603529681153,
+    "max": 104.1234802228425,
+    "low": 41.283045525088724,
+    "high": 104.1234802228425,
+    "mos_pct": 23.196293804429466,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -89,19 +89,18 @@
   "data_quality": {
     "missing_metrics": [
       "revenue",
-      "net_income",
       "gross_profit",
       "operating_income",
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
+      "depreciation_and_amortization",
       "current_assets",
       "current_liabilities",
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "ebitda",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
@@ -113,7 +112,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 37.31341486613066,
+  "tangible_book_value": 37.31340663002842,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -125,11 +124,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

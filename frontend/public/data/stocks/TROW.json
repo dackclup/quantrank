@@ -3,17 +3,17 @@
   "name": "T. Rowe Price",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 22514381116.905212,
+  "market_cap": 22071603541.782852,
   "current_price": 103.01,
-  "rank": 136,
-  "composite_score": 55.94,
+  "rank": 155,
+  "composite_score": 55.1,
   "pillar_scores": {
-    "quality": 60.0,
-    "value": 67.11,
-    "growth": 32.33,
+    "quality": 58.67,
+    "value": 65.33,
+    "growth": 25.0,
     "momentum": 53.34,
-    "health": 54.64,
-    "profitability": 47.78,
+    "health": 50.64,
+    "profitability": 67.78,
     "technical": 71.91,
     "risk": 42.23,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 7407900000.0,
-    "net_income": 2094800000.0,
+    "net_income": 2187300000.0,
     "total_assets": 14393000000.0,
     "total_liabilities": 2517600000.0,
     "stockholders_equity": 10777600000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": 2342200000.0,
     "eps_basic": 2.23,
     "eps_diluted": 2.23,
-    "shares_outstanding": 218565000.0,
-    "market_cap": 22514381116.905212,
+    "shares_outstanding": 214266606.0,
+    "market_cap": 22071603541.782852,
     "pe_ratio_ttm": 46.19282607005851,
     "goodwill": 2642800000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 84.05859913577714,
+        "value": 84.89756056997075,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 134.24591874460452,
+        "value": 164.59236732018897,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 140.11768270771748,
+        "value": 144.2879623620644,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -63,7 +63,7 @@
         "tier_used": null
       },
       "rim": {
-        "value": 52.2322106382378,
+        "value": 53.28003897231865,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,20 +75,23 @@
         "tier_used": null
       }
     },
-    "median": 109.15225894019083,
-    "max": 140.11768270771748,
-    "low": 52.2322106382378,
-    "high": 140.11768270771748,
-    "mos_pct": 5.627237460404707,
+    "median": 114.59276146601758,
+    "max": 164.59236732018897,
+    "low": 53.28003897231865,
+    "high": 164.59236732018897,
+    "mos_pct": 10.107758275135005,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
+      "gross_profit",
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
+      "depreciation_and_amortization",
+      "interest_expense",
       "current_assets",
       "current_liabilities",
       "inventory",
@@ -97,17 +100,17 @@
       "long_term_debt",
       "short_term_debt",
       "retained_earnings",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-28",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 36.02726877587903,
+  "tangible_book_value": 36.75001040526119,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -119,11 +122,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

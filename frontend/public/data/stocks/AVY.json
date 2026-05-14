@@ -3,17 +3,17 @@
   "name": "Avery Dennison",
   "sector": "Materials",
   "industry": "Paper & Plastic Packaging Products & Materials",
-  "market_cap": 12169310427.116394,
+  "market_cap": 12142084135.074234,
   "current_price": 158.74,
-  "rank": 175,
-  "composite_score": 53.79,
+  "rank": 141,
+  "composite_score": 56.04,
   "pillar_scores": {
-    "quality": 74.52,
-    "value": 57.05,
-    "growth": 50.0,
+    "quality": 81.25,
+    "value": 57.69,
+    "growth": 47.12,
     "momentum": 28.98,
-    "health": 35.82,
-    "profitability": 63.46,
+    "health": 38.61,
+    "profitability": 68.91,
     "technical": 27.04,
     "risk": 45.02,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 872900000.0,
     "eps_basic": 2.19,
     "eps_diluted": 2.18,
-    "shares_outstanding": 76661900.0,
-    "market_cap": 12169310427.116394,
+    "shares_outstanding": 76490385.0,
+    "market_cap": 12142084135.074234,
     "pe_ratio_ttm": 72.81651628126791,
     "goodwill": 2263000000.0
   },
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 213.607477206016,
+        "value": 238.5079400283935,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 97.64257499135242,
+        "value": 87.2396249985884,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 73.83638616549189,
+        "value": 74.00195008274991,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 97.64257499135242,
-    "max": 213.607477206016,
-    "low": 73.83638616549189,
-    "high": 213.607477206016,
-    "mos_pct": -62.57253099605644,
+    "median": 87.2396249985884,
+    "max": 238.5079400283935,
+    "low": 74.00195008274991,
+    "high": 238.5079400283935,
+    "mos_pct": -81.95860596114736,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -88,12 +88,11 @@
     "missing_metrics": [
       "total_liabilities",
       "operating_income",
-      "ebitda",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 9,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-05-02",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
@@ -110,18 +109,18 @@
   "pillar_baseline": {
     "label": "Materials median (n=26)",
     "values": {
-      "Quality": 52.16,
-      "Value": 50.8,
-      "Growth": 48.08,
+      "Quality": 51.68,
+      "Value": 49.84,
+      "Growth": 48.56,
       "Momentum": 51.87,
-      "Health": 51.58,
-      "Profitability": 50.48,
+      "Health": 56.53,
+      "Profitability": 54.33,
       "Technical": 57.81,
       "Risk": 48.94
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -2.549038036808497,
+  "dechow_f_score": 0.5038953284880446,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,17 +3,17 @@
   "name": "NXP Semiconductors",
   "sector": "Information Technology",
   "industry": "Semiconductors",
-  "market_cap": 1284664018065.4907,
+  "market_cap": 75339895608.9667,
   "current_price": 298.41,
-  "rank": 464,
-  "composite_score": 36.98,
+  "rank": 294,
+  "composite_score": 48.66,
   "pillar_scores": {
-    "quality": 43.84,
-    "value": 10.84,
-    "growth": 25.0,
+    "quality": 45.55,
+    "value": 63.93,
+    "growth": 19.52,
     "momentum": 44.17,
-    "health": 59.92,
-    "profitability": 42.92,
+    "health": 55.58,
+    "profitability": 49.09,
     "technical": 69.27,
     "risk": 45.29,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 12615000000.0,
-    "net_income": 2653000000.0,
+    "net_income": 2704000000.0,
     "total_assets": 27113000000.0,
     "total_liabilities": 15839000000.0,
     "stockholders_equity": 10927000000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 2711000000.0,
     "eps_basic": 4.44,
     "eps_diluted": 4.43,
-    "shares_outstanding": 4305030000.0,
-    "market_cap": 1284664018065.4907,
+    "shares_outstanding": 252471079.0,
+    "market_cap": 75339895608.9667,
     "pe_ratio_ttm": 67.36117464155969,
     "goodwill": 10280000000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 602.4869326158871,
+        "value": 556.3560729089513,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 28.592774410656858,
+        "value": 487.7315476273229,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 49.40882078092868,
+        "value": 723.3570652877064,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -69,41 +69,30 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 5.398477331682337,
+        "value": 92.05255096649076,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 39.00079759579277,
-    "max": 602.4869326158871,
-    "low": 5.398477331682337,
-    "high": 602.4869326158871,
-    "mos_pct": -665.1382075691204,
-    "valuation_warnings": [
-      "extreme_multiples_pb_estimate",
-      "extreme_multiples_ev_ebitda_estimate",
-      "extreme_dcf_estimate"
-    ]
+    "median": 522.0438102681371,
+    "max": 723.3570652877064,
+    "low": 92.05255096649076,
+    "high": 723.3570652877064,
+    "mos_pct": 42.838130097005234,
+    "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
-    "missing_metrics": [
-      "income_before_tax",
-      "property_plant_equipment"
-    ],
+    "missing_metrics": [],
     "imputed_metrics": [],
     "filing_lag_days": 16,
-    "latest_period_end": "2026-03-29",
+    "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-28"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "extreme_multiples_pb_estimate",
-    "extreme_multiples_ev_ebitda_estimate",
-    "extreme_dcf_estimate"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -116,17 +105,17 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }
   },
-  "beneish_m_score": null,
+  "beneish_m_score": -2.3667943676966177,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false

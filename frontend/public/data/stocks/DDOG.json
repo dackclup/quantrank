@@ -3,17 +3,17 @@
   "name": "Datadog",
   "sector": "Information Technology",
   "industry": "Application Software",
-  "market_cap": 0.0,
+  "market_cap": 74882920719.54346,
   "current_price": 205.31,
-  "rank": 349,
-  "composite_score": 45.98,
+  "rank": 462,
+  "composite_score": 37.38,
   "pillar_scores": {
-    "quality": 18.15,
-    "value": 65.75,
-    "growth": 59.59,
+    "quality": 26.03,
+    "value": 17.35,
+    "growth": 59.93,
     "momentum": 35.06,
-    "health": 76.89,
-    "profitability": 25.8,
+    "health": 69.72,
+    "profitability": 38.58,
     "technical": 69.05,
     "risk": 42.83,
     "sentiment": null,
@@ -31,36 +31,36 @@
     "free_cash_flow": 1061028000.0,
     "eps_basic": 0.15,
     "eps_diluted": 0.15,
-    "shares_outstanding": 0.0,
-    "market_cap": 0.0,
+    "shares_outstanding": 364731000.0,
+    "market_cap": 74882920719.54346,
     "pe_ratio_ttm": 1368.7333170572917,
     "goodwill": 540543000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "value": 8.27468076973204,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 11.370117243016336,
+        "value": 13.420031700546318,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_bvps",
-        "tier_used": null
+        "value": 58.98961912921649,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": null,
-        "applicable": false,
-        "reason": "missing_shares_outstanding",
-        "tier_used": null
+        "value": 3.7393818254903732,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
       },
       "rim": {
         "value": null,
@@ -69,19 +69,22 @@
         "tier_used": null
       },
       "dcf": {
-        "value": null,
-        "applicable": false,
-        "reason": "missing_shares_outstanding",
+        "value": 23.58205894295833,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       }
     },
-    "median": 11.370117243016336,
-    "max": null,
-    "low": 11.370117243016336,
-    "high": 11.370117243016336,
-    "mos_pct": -1705.698157463571,
+    "median": 13.420031700546318,
+    "max": 58.98961912921649,
+    "low": 3.7393818254903732,
+    "high": 58.98961912921649,
+    "mos_pct": -1429.8771429149142,
     "valuation_warnings": [
+      "extreme_graham_estimate",
       "extreme_multiples_pe_estimate",
+      "extreme_multiples_ev_ebitda_estimate",
+      "extreme_dcf_estimate",
       "value_trap_risk"
     ]
   },
@@ -92,8 +95,7 @@
       "dividends_paid",
       "inventory",
       "long_term_debt",
-      "short_term_debt",
-      "property_plant_equipment"
+      "short_term_debt"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
@@ -102,11 +104,14 @@
   },
   "risk_flags": [],
   "valuation_warnings": [
+    "extreme_graham_estimate",
     "extreme_multiples_pe_estimate",
+    "extreme_multiples_ev_ebitda_estimate",
+    "extreme_dcf_estimate",
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": null,
+  "tangible_book_value": 9.411730837247177,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -117,12 +122,12 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }

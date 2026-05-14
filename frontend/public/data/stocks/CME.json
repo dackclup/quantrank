@@ -3,17 +3,17 @@
   "name": "CME Group",
   "sector": "Financials",
   "industry": "Financial Exchanges & Data",
-  "market_cap": null,
+  "market_cap": 107919994813.47656,
   "current_price": 297.13,
-  "rank": 115,
-  "composite_score": 57.22,
+  "rank": 262,
+  "composite_score": 50.25,
   "pillar_scores": {
-    "quality": 60.67,
-    "value": 43.33,
-    "growth": 52.67,
+    "quality": 58.0,
+    "value": 18.44,
+    "growth": 51.0,
     "momentum": 63.25,
-    "health": 52.33,
-    "profitability": 63.78,
+    "health": 46.47,
+    "profitability": 66.22,
     "technical": 81.45,
     "risk": 80.18,
     "sentiment": null,
@@ -31,30 +31,30 @@
     "free_cash_flow": 4329300000.0,
     "eps_basic": 3.25,
     "eps_diluted": 3.18,
-    "shares_outstanding": null,
-    "market_cap": null,
+    "shares_outstanding": 363208000.0,
+    "market_cap": 107919994813.47656,
     "pe_ratio_ttm": 93.43710845371461,
     "goodwill": 10506000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "value": 82.10049384216877,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 170.48150975243033,
+        "value": 418.54202511375775,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
+      },
+      "multiples_pb": {
+        "value": 144.89793150695675,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
-      },
-      "multiples_pb": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_bvps",
-        "tier_used": null
       },
       "multiples_ev_ebitda": {
         "value": null,
@@ -63,9 +63,9 @@
         "tier_used": null
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "value": 35.488347768764534,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
@@ -75,25 +75,27 @@
         "tier_used": null
       }
     },
-    "median": 170.48150975243033,
-    "max": 170.48150975243033,
-    "low": 170.48150975243033,
-    "high": 170.48150975243033,
-    "mos_pct": -74.28869870656264,
-    "valuation_warnings": []
+    "median": 113.49921267456276,
+    "max": 418.54202511375775,
+    "low": 35.488347768764534,
+    "high": 418.54202511375775,
+    "mos_pct": -161.79036654181544,
+    "valuation_warnings": [
+      "goodwill_heavy",
+      "extreme_rim_estimate"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "shares_outstanding",
       "gross_profit",
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
+      "interest_expense",
       "inventory",
-      "long_term_debt",
-      "property_plant_equipment"
+      "long_term_debt"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 20,
@@ -104,9 +106,12 @@
     "altman_distress",
     "sloan_accruals_top_decile"
   ],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "goodwill_heavy",
+    "extreme_rim_estimate"
+  ],
   "has_history": true,
-  "tangible_book_value": null,
+  "tangible_book_value": 30.270533688685273,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -118,11 +123,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

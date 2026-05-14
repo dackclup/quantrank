@@ -3,17 +3,17 @@
   "name": "Teledyne Technologies",
   "sector": "Information Technology",
   "industry": "Electronic Equipment & Instruments",
-  "market_cap": 29463123482.84192,
+  "market_cap": 29463479620.454224,
   "current_price": 635.96,
-  "rank": 347,
-  "composite_score": 46.02,
+  "rank": 255,
+  "composite_score": 50.57,
   "pillar_scores": {
-    "quality": 16.44,
-    "value": 52.74,
-    "growth": 53.08,
+    "quality": 20.89,
+    "value": 64.61,
+    "growth": 53.42,
     "momentum": 71.36,
-    "health": 77.01,
-    "profitability": 21.23,
+    "health": 78.21,
+    "profitability": 29.0,
     "technical": 49.4,
     "risk": 68.82,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 6225600000.0,
-    "net_income": 933000000.0,
+    "net_income": 933700000.0,
     "total_assets": 15493000000.0,
     "total_liabilities": 4788600000.0,
     "stockholders_equity": 10704400000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 1053700000.0,
     "eps_basic": 4.9,
     "eps_diluted": 4.85,
-    "shares_outstanding": 46328578.0,
-    "market_cap": 29463123482.84192,
+    "shares_outstanding": 46329138.0,
+    "market_cap": 29463479620.454224,
     "pe_ratio_ttm": 131.12577772632088,
     "goodwill": 8687500000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 398.79811580716404,
+        "value": 744.8422987810181,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 2527.3535940972465,
+        "value": 2420.7063108468715,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 472.5807588072771,
+        "value": 750.7512611988134,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 149.82903162113135,
+        "value": 149.827220573887,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 435.6894373072206,
-    "max": 2527.3535940972465,
-    "low": 149.82903162113135,
-    "high": 2527.3535940972465,
-    "mos_pct": -45.966362164574925,
+    "median": 747.7967799899158,
+    "max": 2420.7063108468715,
+    "low": 149.827220573887,
+    "high": 2420.7063108468715,
+    "mos_pct": 14.955501415607547,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -88,12 +88,12 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "dividends_paid",
-      "property_plant_equipment"
+      "gross_profit",
+      "dividends_paid"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 20,
-    "latest_period_end": "2026-03-29",
+    "latest_period_end": "2026-04-15",
     "latest_filed_date": "2026-04-24"
   },
   "risk_flags": [],
@@ -112,18 +112,18 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -2.4870887493105545,
+  "dechow_f_score": 0.6303873586338884,
   "entered_top5": false,
   "exited_top5": false
 }

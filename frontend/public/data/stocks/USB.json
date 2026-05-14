@@ -3,17 +3,17 @@
   "name": "U.S. Bancorp",
   "sector": "Financials",
   "industry": "Diversified Banks",
-  "market_cap": 84384002685.54688,
+  "market_cap": 81868291156.78358,
   "current_price": 52.74,
-  "rank": 239,
-  "composite_score": 51.07,
+  "rank": 291,
+  "composite_score": 48.86,
   "pillar_scores": {
-    "quality": 44.0,
-    "value": 62.67,
-    "growth": 40.67,
+    "quality": 42.0,
+    "value": 58.0,
+    "growth": 38.67,
     "momentum": 65.64,
-    "health": 51.02,
-    "profitability": 49.56,
+    "health": 47.01,
+    "profitability": 50.22,
     "technical": 22.14,
     "risk": 60.59,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 28986000000.0,
-    "net_income": 7806000000.0,
+    "net_income": 7830000000.0,
     "total_assets": 700998000000.0,
     "total_liabilities": 634751000000.0,
     "stockholders_equity": 65786000000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": null,
     "eps_basic": 1.18,
     "eps_diluted": 1.18,
-    "shares_outstanding": 1600000000.0,
-    "market_cap": 84384002685.54688,
+    "shares_outstanding": 1552299745.0,
+    "market_cap": 81868291156.78358,
     "pe_ratio_ttm": 44.69491667666678,
     "goodwill": 12625000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 51.45696745825584,
+        "value": 52.24158999071529,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 63.417848565778954,
+        "value": 68.89962888954925,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 85.29997754142668,
+        "value": 85.6155809308526,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 63.417848565778954,
-    "max": 85.29997754142668,
-    "low": 51.45696745825584,
-    "high": 85.29997754142668,
-    "mos_pct": 16.83728970439097,
+    "median": 68.89962888954925,
+    "max": 85.6155809308526,
+    "low": 52.24158999071529,
+    "high": 85.6155809308526,
+    "mos_pct": 23.45386683720376,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -95,17 +95,17 @@
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
+      "depreciation_and_amortization",
       "current_assets",
       "current_liabilities",
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "ebitda",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 10,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-04"
   },
   "risk_flags": [],
@@ -113,7 +113,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 30.22625,
+  "tangible_book_value": 31.15506535111877,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -125,11 +125,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

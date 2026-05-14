@@ -5,15 +5,15 @@
   "industry": "Industrial Machinery & Supplies & Components",
   "market_cap": 71953771755.98145,
   "current_price": 250.1,
-  "rank": 112,
-  "composite_score": 57.36,
+  "rank": 101,
+  "composite_score": 57.94,
   "pillar_scores": {
-    "quality": 80.38,
-    "value": 46.41,
-    "growth": 37.03,
+    "quality": 80.06,
+    "value": 46.84,
+    "growth": 38.92,
     "momentum": 46.96,
-    "health": 46.73,
-    "profitability": 87.55,
+    "health": 51.43,
+    "profitability": 85.44,
     "technical": 39.34,
     "risk": 58.73,
     "sentiment": null,
@@ -45,27 +45,27 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 326.22239257812504,
+        "value": 305.88711963912573,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 127.095705407116,
+        "value": 100.93055877856193,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 211.68709909888878,
+        "value": 258.5358382565672,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "value": 28.39842328782875,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
@@ -75,15 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 127.095705407116,
-    "max": 326.22239257812504,
-    "low": 46.39626729462002,
-    "high": 326.22239257812504,
-    "mos_pct": -96.78084739558219,
+    "median": 94.94552237805829,
+    "max": 305.88711963912573,
+    "low": 28.39842328782875,
+    "high": 305.88711963912573,
+    "mos_pct": -163.41421884821102,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
-      "value_trap_risk"
+      "extreme_rim_estimate"
     ]
   },
   "top5_factors": [],
@@ -92,22 +92,21 @@
     "missing_metrics": [
       "total_liabilities",
       "gross_profit",
+      "research_and_development",
       "sga_expense",
-      "accounts_receivable",
-      "property_plant_equipment"
+      "income_before_tax",
+      "accounts_receivable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
-  "risk_flags": [
-    "sloan_accruals_top_decile"
-  ],
+  "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
     "extreme_graham_estimate",
-    "value_trap_risk"
+    "extreme_rim_estimate"
   ],
   "has_history": true,
   "tangible_book_value": 8.986072297532152,
@@ -121,12 +120,12 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }

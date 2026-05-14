@@ -3,17 +3,17 @@
   "name": "Otis Worldwide",
   "sector": "Industrials",
   "industry": "Industrial Machinery & Supplies & Components",
-  "market_cap": 32123063063.049316,
+  "market_cap": 28103364586.534027,
   "current_price": 73.24,
-  "rank": 384,
-  "composite_score": 43.65,
+  "rank": 343,
+  "composite_score": 46.01,
   "pillar_scores": {
-    "quality": 36.39,
-    "value": 63.5,
-    "growth": 47.47,
+    "quality": 39.24,
+    "value": 69.41,
+    "growth": 48.42,
     "momentum": 21.61,
-    "health": 46.1,
-    "profitability": 49.58,
+    "health": 41.75,
+    "profitability": 58.65,
     "technical": 26.94,
     "risk": 44.32,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 14647000000.0,
-    "net_income": 1481000000.0,
+    "net_income": 1552000000.0,
     "total_assets": 10542000000.0,
     "total_liabilities": 15977000000.0,
     "stockholders_equity": -5680000000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 1668000000.0,
     "eps_basic": 0.88,
     "eps_diluted": 0.87,
-    "shares_outstanding": 438600000.0,
-    "market_cap": 32123063063.049316,
+    "shares_outstanding": 383716076.0,
+    "market_cap": 28103364586.534027,
     "pe_ratio_ttm": 84.1839055905397,
     "goodwill": 1682000000.0
   },
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 106.69679757254464,
+        "value": 113.57527108975033,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -57,10 +57,10 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 90.54576653883055,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sub_industry"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
       },
       "rim": {
         "value": null,
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 98.6212820556876,
-    "max": 106.69679757254464,
-    "low": 90.54576653883055,
-    "high": 106.69679757254464,
-    "mos_pct": 25.736112594425865,
+    "median": 113.57527108975033,
+    "max": 113.57527108975033,
+    "low": 113.57527108975033,
+    "high": 113.57527108975033,
+    "mos_pct": 35.51413334871704,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -88,12 +88,14 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
+      "gross_profit",
       "cost_of_revenue",
-      "property_plant_equipment"
+      "depreciation_and_amortization",
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 21,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-15",
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [
@@ -114,18 +116,18 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 0.6041802298530912,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,17 +3,17 @@
   "name": "Paychex",
   "sector": "Industrials",
   "industry": "Human Resource & Employment Services",
-  "market_cap": 32218335343.933105,
+  "market_cap": 32217515363.469803,
   "current_price": 89.92,
-  "rank": 51,
-  "composite_score": 62.06,
+  "rank": 115,
+  "composite_score": 57.06,
   "pillar_scores": {
-    "quality": 87.97,
-    "value": 74.47,
-    "growth": 46.2,
+    "quality": 78.16,
+    "value": 68.35,
+    "growth": 41.14,
     "momentum": 14.79,
-    "health": 55.58,
-    "profitability": 70.89,
+    "health": 51.08,
+    "profitability": 73.42,
     "technical": 43.73,
     "risk": 34.93,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 2090100000.0,
     "eps_basic": 3.73,
     "eps_diluted": 3.71,
-    "shares_outstanding": 358300000.0,
-    "market_cap": 32218335343.933105,
+    "shares_outstanding": 358290881.0,
+    "market_cap": 32217515363.469803,
     "pe_ratio_ttm": 24.237196271952914,
     "goodwill": 4526600000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 437.6080147446386,
+        "value": 143.9426914780746,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 76.57989642438868,
+        "value": 71.29542266058094,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 341.9370298221298,
+        "value": 121.80840598428499,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -65,24 +65,22 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "non_positive_or_missing_tangible_book",
         "tier_used": null
       },
       "dcf": {
-        "value": 46.073946117740846,
+        "value": 46.07511876359071,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 209.25846312325922,
-    "max": 437.6080147446386,
-    "low": 46.073946117740846,
-    "high": 437.6080147446386,
-    "mos_pct": 57.02921792177177,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ]
+    "median": 96.55191432243296,
+    "max": 143.9426914780746,
+    "low": 46.07511876359071,
+    "high": 143.9426914780746,
+    "mos_pct": 6.868756771968824,
+    "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -98,9 +96,7 @@
     "latest_filed_date": "2026-03-26"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -113,12 +109,12 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }

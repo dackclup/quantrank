@@ -3,17 +3,17 @@
   "name": "Apollo Global Management",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 75868384859.92227,
+  "market_cap": 75869708229.58365,
   "current_price": 131.6,
-  "rank": 424,
-  "composite_score": 40.97,
+  "rank": 368,
+  "composite_score": 44.64,
   "pillar_scores": {
-    "quality": 31.33,
-    "value": 48.44,
-    "growth": 52.0,
+    "quality": 48.67,
+    "value": 41.11,
+    "growth": 58.67,
     "momentum": 21.17,
-    "health": 52.69,
-    "profitability": 35.11,
+    "health": 48.69,
+    "profitability": 37.11,
     "technical": 68.63,
     "risk": 37.68,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 31560000000.0,
-    "net_income": 1144000000.0,
+    "net_income": 3052000000.0,
     "total_assets": 467530000000.0,
     "total_liabilities": 427997000000.0,
     "stockholders_equity": 19951000000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": null,
     "eps_basic": -3.27,
     "eps_diluted": -3.27,
-    "shares_outstanding": 576507457.0,
-    "market_cap": 75868384859.92227,
+    "shares_outstanding": 576517513.0,
+    "market_cap": 75869708229.58365,
     "pe_ratio_ttm": null,
     "goodwill": 5920000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 62.13376425074478,
+        "value": 62.133222359263726,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_eps_ttm",
-        "tier_used": null
+        "value": 81.87255362372896,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 80.3583831222754,
+        "value": 80.35698145817594,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -63,7 +63,7 @@
         "tier_used": null
       },
       "rim": {
-        "value": 40.69889570794126,
+        "value": 40.698185810867855,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 62.13376425074478,
-    "max": 80.3583831222754,
-    "low": 40.69889570794126,
-    "high": 80.3583831222754,
-    "mos_pct": -111.80111601227858,
+    "median": 71.24510190871983,
+    "max": 81.87255362372896,
+    "low": 40.698185810867855,
+    "high": 81.87255362372896,
+    "mos_pct": -84.71446117393909,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -93,7 +93,6 @@
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
-      "interest_expense",
       "current_assets",
       "current_liabilities",
       "inventory",
@@ -106,13 +105,13 @@
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-05-05",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 24.33793323856347,
+  "tangible_book_value": 24.33750872022512,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -124,11 +123,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

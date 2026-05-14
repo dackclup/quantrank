@@ -3,24 +3,24 @@
   "name": "Comfort Systems USA",
   "sector": "Industrials",
   "industry": "Construction & Engineering",
-  "market_cap": 71592525981.81152,
+  "market_cap": 71623908115.00684,
   "current_price": 2034.63,
-  "rank": 19,
-  "composite_score": 66.5,
+  "rank": 10,
+  "composite_score": 67.51,
   "pillar_scores": {
-    "quality": 81.33,
-    "value": 10.34,
-    "growth": 96.84,
+    "quality": 88.29,
+    "value": 6.96,
+    "growth": 97.78,
     "momentum": 97.11,
-    "health": 76.29,
-    "profitability": 70.04,
+    "health": 79.64,
+    "profitability": 60.55,
     "technical": 68.03,
     "risk": 57.5,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 2826289000.0,
+    "revenue": 10135687000.0,
     "net_income": 1223647000.0,
     "total_assets": 6938346000.0,
     "total_liabilities": 4123298000.0,
@@ -31,55 +31,55 @@
     "free_cash_flow": 1382966000.0,
     "eps_basic": 10.52,
     "eps_diluted": 10.51,
-    "shares_outstanding": 35187000.0,
-    "market_cap": 71592525981.81152,
+    "shares_outstanding": 35202424.0,
+    "market_cap": 71623908115.00684,
     "pe_ratio_ttm": 193.58991483185656,
     "goodwill": 1025515000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 121.7436272091889,
+        "value": 121.71695320176036,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 1231.7454718581769,
+        "value": 946.6995167761833,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 546.9291341673741,
+        "value": 508.951677144897,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 1004.7651168026359,
+        "value": 822.7180064949114,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 63.50285169291776,
+        "value": 63.475027813956714,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 228.85039761531425,
+        "value": 228.7501264370335,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 387.88976589134415,
-    "max": 1231.7454718581769,
-    "low": 63.50285169291776,
-    "high": 1231.7454718581769,
-    "mos_pct": -424.5382022924404,
+    "median": 368.8509017909653,
+    "max": 946.6995167761833,
+    "low": 63.475027813956714,
+    "high": 946.6995167761833,
+    "mos_pct": -451.6131301302539,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -91,12 +91,11 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "research_and_development",
-      "property_plant_equipment"
+      "research_and_development"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 21,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-17",
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [],
@@ -107,7 +106,7 @@
     "extreme_dcf_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 37.64910336203712,
+  "tangible_book_value": 37.63260734544871,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -118,12 +117,12 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }

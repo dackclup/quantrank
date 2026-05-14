@@ -3,17 +3,17 @@
   "name": "CDW Corporation",
   "sector": "Information Technology",
   "industry": "Technology Distributors",
-  "market_cap": 12851200195.3125,
+  "market_cap": 12826446675.336296,
   "current_price": 100.4,
-  "rank": 320,
-  "composite_score": 47.31,
+  "rank": 199,
+  "composite_score": 52.83,
   "pillar_scores": {
-    "quality": 54.45,
-    "value": 74.89,
-    "growth": 36.64,
+    "quality": 59.93,
+    "value": 87.9,
+    "growth": 34.93,
     "momentum": 29.38,
-    "health": 30.88,
-    "profitability": 31.74,
+    "health": 41.59,
+    "profitability": 35.39,
     "technical": 29.28,
     "risk": 18.63,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 1076200000.0,
     "eps_basic": 1.82,
     "eps_diluted": 1.82,
-    "shares_outstanding": 128000000.0,
-    "market_cap": 12851200195.3125,
+    "shares_outstanding": 127753451.0,
+    "market_cap": 12826446675.336296,
     "pe_ratio_ttm": 55.164836003230164,
     "goodwill": 4651100000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 164.14441693604178,
+        "value": 311.5979401864705,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 218.37432151878548,
+        "value": 209.56571948920944,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 194.4081288494412,
+        "value": 334.97786264965265,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 77.06748784297028,
+        "value": 77.21621894895189,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 179.27627289274147,
-    "max": 218.37432151878548,
-    "low": 77.06748784297028,
-    "high": 218.37432151878548,
-    "mos_pct": 43.997049968822786,
+    "median": 260.58182983783996,
+    "max": 334.97786264965265,
+    "low": 77.21621894895189,
+    "high": 334.97786264965265,
+    "mos_pct": 61.47083563410472,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -87,17 +87,15 @@
   "data_quality": {
     "missing_metrics": [
       "research_and_development",
-      "accounts_payable",
-      "property_plant_equipment"
+      "interest_expense",
+      "accounts_payable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-06"
   },
-  "risk_flags": [
-    "altman_distress"
-  ],
+  "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
@@ -111,18 +109,18 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -2.3227542594795842,
+  "dechow_f_score": 0.8530543079664347,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,17 +3,17 @@
   "name": "Amcor",
   "sector": "Materials",
   "industry": "Paper & Plastic Packaging Products & Materials",
-  "market_cap": 508339.08016204834,
+  "market_cap": 18077715773.516464,
   "current_price": 39.1,
-  "rank": 157,
-  "composite_score": 55.05,
+  "rank": 401,
+  "composite_score": 42.95,
   "pillar_scores": {
-    "quality": 57.69,
-    "value": 95.51,
-    "growth": 20.19,
+    "quality": 32.69,
+    "value": 73.72,
+    "growth": 31.73,
     "momentum": 24.0,
-    "health": 47.21,
-    "profitability": 55.77,
+    "health": 43.59,
+    "profitability": 33.33,
     "technical": 52.59,
     "risk": 35.49,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 763000000.0,
     "eps_basic": 1.55,
     "eps_diluted": 1.55,
-    "shares_outstanding": 13001.0,
-    "market_cap": 508339.08016204834,
+    "shares_outstanding": 462345690.0,
+    "market_cap": 18077715773.516464,
     "pe_ratio_ttm": 25.225805467174897,
     "goodwill": 11955000000.0
   },
@@ -41,63 +41,61 @@
       "graham": {
         "value": null,
         "applicable": false,
-        "reason": "data_quality_input_corruption",
+        "reason": "non_positive_or_missing_tangible_book",
         "tier_used": null
       },
       "multiples_pe": {
-        "value": null,
-        "applicable": false,
-        "reason": "data_quality_input_corruption",
+        "value": 37.50694801536911,
+        "applicable": true,
+        "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": null,
-        "applicable": false,
-        "reason": "data_quality_input_corruption",
+        "value": 77.27005438163843,
+        "applicable": true,
+        "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": null,
-        "applicable": false,
-        "reason": "data_quality_input_corruption",
+        "value": 83.91901137042139,
+        "applicable": true,
+        "reason": null,
         "tier_used": "sector"
       },
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "data_quality_input_corruption",
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
         "tier_used": null
       },
       "dcf": {
         "value": null,
         "applicable": false,
-        "reason": "data_quality_input_corruption",
+        "reason": "non_positive_fcf_5y_median",
         "tier_used": null
       }
     },
-    "median": null,
-    "max": null,
-    "low": null,
-    "high": null,
-    "mos_pct": null,
+    "median": 77.27005438163843,
+    "max": 83.91901137042139,
+    "low": 37.50694801536911,
+    "high": 83.91901137042139,
+    "mos_pct": 49.39825164221398,
     "valuation_warnings": [
-      "data_quality_input_corruption"
+      "value_trap_risk"
     ]
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
-    "missing_metrics": [
-      "property_plant_equipment"
-    ],
+    "missing_metrics": [],
     "imputed_metrics": [],
     "filing_lag_days": 7,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-05-05",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "data_quality_input_corruption"
+    "value_trap_risk"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -111,12 +109,12 @@
   "pillar_baseline": {
     "label": "Materials median (n=26)",
     "values": {
-      "Quality": 52.16,
-      "Value": 50.8,
-      "Growth": 48.08,
+      "Quality": 51.68,
+      "Value": 49.84,
+      "Growth": 48.56,
       "Momentum": 51.87,
-      "Health": 51.58,
-      "Profitability": 50.48,
+      "Health": 56.53,
+      "Profitability": 54.33,
       "Technical": 57.81,
       "Risk": 48.94
     }

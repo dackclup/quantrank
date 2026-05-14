@@ -3,17 +3,17 @@
   "name": "Charles River Laboratories",
   "sector": "Health Care",
   "industry": "Life Sciences Tools & Services",
-  "market_cap": 7843996243.988037,
+  "market_cap": 7844115124.492493,
   "current_price": 162.85,
-  "rank": 449,
-  "composite_score": 38.44,
+  "rank": 473,
+  "composite_score": 36.39,
   "pillar_scores": {
-    "quality": 19.07,
-    "value": 52.82,
+    "quality": 23.31,
+    "value": 38.98,
     "growth": 42.8,
     "momentum": 56.77,
-    "health": 44.18,
-    "profitability": 18.08,
+    "health": 36.69,
+    "profitability": 28.53,
     "technical": 47.41,
     "risk": 25.2,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 4027044000.0,
-    "net_income": -184650000.0,
+    "net_income": -144338000.0,
     "total_assets": 7730308000.0,
     "total_liabilities": 4741995000.0,
     "stockholders_equity": 2940594000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 391290000.0,
     "eps_basic": -0.3,
     "eps_diluted": -0.3,
-    "shares_outstanding": 48167000.0,
-    "market_cap": 7843996243.988037,
+    "shares_outstanding": 48167730.0,
+    "market_cap": 7844115124.492493,
     "pe_ratio_ttm": null,
     "goodwill": 3040032000.0
   },
@@ -51,13 +51,13 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 202.37387002259877,
+        "value": 176.6632730246681,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 154.45547264142292,
+        "value": 112.1986030869288,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 178.41467133201084,
-    "max": 202.37387002259877,
-    "low": 154.45547264142292,
-    "high": 202.37387002259877,
-    "mos_pct": 8.723870695325846,
+    "median": 144.43093805579844,
+    "max": 176.6632730246681,
+    "low": 112.1986030869288,
+    "high": 176.6632730246681,
+    "mos_pct": -12.752854960064925,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -88,13 +88,14 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
+      "gross_profit",
+      "cost_of_revenue",
       "research_and_development",
-      "dividends_paid",
-      "property_plant_equipment"
+      "dividends_paid"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
-    "latest_period_end": "2026-03-28",
+    "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
@@ -113,18 +114,18 @@
   "pillar_baseline": {
     "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 51.27,
-      "Value": 52.82,
-      "Growth": 50.0,
+      "Quality": 52.97,
+      "Value": 51.98,
+      "Growth": 49.58,
       "Momentum": 41.24,
-      "Health": 60.08,
-      "Profitability": 52.54,
+      "Health": 59.88,
+      "Profitability": 51.13,
       "Technical": 55.13,
       "Risk": 39.71
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 0.447214018384792,
   "entered_top5": false,
   "exited_top5": false
 }

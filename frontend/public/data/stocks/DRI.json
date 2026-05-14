@@ -3,17 +3,17 @@
   "name": "Darden Restaurants",
   "sector": "Consumer Discretionary",
   "industry": "Restaurants",
-  "market_cap": 22558769714.35547,
+  "market_cap": 22083493648.803528,
   "current_price": 192.81,
-  "rank": 167,
-  "composite_score": 54.21,
+  "rank": 319,
+  "composite_score": 47.33,
   "pillar_scores": {
-    "quality": 69.79,
-    "value": 58.16,
-    "growth": 59.9,
+    "quality": 63.54,
+    "value": 48.09,
+    "growth": 52.86,
     "momentum": 42.93,
-    "health": 22.71,
-    "profitability": 45.14,
+    "health": 12.89,
+    "profitability": 28.47,
     "technical": 37.85,
     "risk": 55.91,
     "sentiment": null,
@@ -31,39 +31,39 @@
     "free_cash_flow": null,
     "eps_basic": 6.91,
     "eps_diluted": 6.87,
-    "shares_outstanding": 117000000.0,
-    "market_cap": 22558769714.35547,
+    "shares_outstanding": 114535003.0,
+    "market_cap": 22083493648.803528,
     "pe_ratio_ttm": 28.065501828034023,
     "goodwill": 1658200000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 26.485167595544915,
+        "value": 26.76865438940029,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 495.7933714372398,
+        "value": 211.47928923290652,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 106.81728928743756,
+        "value": 98.73104148048313,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 458.04136872155186,
+        "value": 212.47467570869978,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 16.517694256632808,
+        "value": 16.87318441879325,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 106.81728928743756,
-    "max": 495.7933714372398,
-    "low": 16.517694256632808,
-    "high": 495.7933714372398,
-    "mos_pct": -80.50448466236216,
+    "median": 98.73104148048313,
+    "max": 212.47467570869978,
+    "low": 16.87318441879325,
+    "high": 212.47467570869978,
+    "mos_pct": -95.28812283086053,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -92,12 +92,14 @@
     "missing_metrics": [
       "operating_cash_flow",
       "free_cash_flow",
+      "cost_of_revenue",
       "research_and_development",
+      "interest_expense",
       "accounts_receivable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 48,
-    "latest_period_end": "2026-02-22",
+    "latest_period_end": "2026-03-16",
     "latest_filed_date": "2026-03-27"
   },
   "risk_flags": [
@@ -109,7 +111,7 @@
     "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 3.6880341880341883,
+  "tangible_book_value": 3.767407244054466,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -120,12 +122,12 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 45.18,
-      "Value": 49.31,
-      "Growth": 51.04,
+      "Quality": 46.35,
+      "Value": 49.13,
+      "Growth": 51.69,
       "Momentum": 37.92,
-      "Health": 48.37,
-      "Profitability": 51.22,
+      "Health": 43.72,
+      "Profitability": 52.6,
       "Technical": 32.16,
       "Risk": 40.54
     }

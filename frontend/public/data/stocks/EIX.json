@@ -5,15 +5,15 @@
   "industry": "Electric Utilities",
   "market_cap": 27174149170.288124,
   "current_price": 70.62,
-  "rank": 22,
-  "composite_score": 65.91,
+  "rank": 4,
+  "composite_score": 69.16,
   "pillar_scores": {
-    "quality": 72.58,
-    "value": 72.04,
-    "growth": 79.84,
+    "quality": 70.97,
+    "value": 84.41,
+    "growth": 79.03,
     "momentum": 75.4,
-    "health": 11.0,
-    "profitability": 58.6,
+    "health": 13.39,
+    "profitability": 70.97,
     "technical": 66.68,
     "risk": 59.59,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 19609000000.0,
-    "net_income": 3554000000.0,
+    "net_income": 3779000000.0,
     "total_assets": 94475000000.0,
     "total_liabilities": 75591000000.0,
     "stockholders_equity": 17320000000.0,
@@ -45,27 +45,27 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 85.01954370800351,
+        "value": 197.51734803887584,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 105.9764415560369,
+        "value": 105.88093606488421,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 222.31399041737959,
+        "value": 178.93770724573153,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "value": 52.31027447978552,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 95.49799263202021,
-    "max": 222.31399041737959,
-    "low": 77.88691486798817,
-    "high": 222.31399041737959,
-    "mos_pct": 26.05079876526814,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ]
+    "median": 105.88093606488421,
+    "max": 197.51734803887584,
+    "low": 52.31027447978552,
+    "high": 197.51734803887584,
+    "mos_pct": 33.30243821861771,
+    "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -93,20 +91,17 @@
       "research_and_development",
       "sga_expense",
       "goodwill",
-      "intangibles_net",
-      "property_plant_equipment"
+      "intangibles_net"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 16,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-21",
     "latest_filed_date": "2026-04-28"
   },
   "risk_flags": [
     "altman_distress"
   ],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": 45.011103748122686,
   "tier2_events": {
@@ -121,16 +116,16 @@
     "values": {
       "Quality": 51.61,
       "Value": 47.85,
-      "Growth": 50.81,
+      "Growth": 54.03,
       "Momentum": 62.85,
-      "Health": 19.36,
-      "Profitability": 51.61,
+      "Health": 17.85,
+      "Profitability": 52.15,
       "Technical": 43.63,
       "Risk": 71.98
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 0.18201425590990025,
   "entered_top5": false,
   "exited_top5": false
 }

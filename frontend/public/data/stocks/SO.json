@@ -3,17 +3,17 @@
   "name": "Southern Company",
   "sector": "Utilities",
   "industry": "Electric Utilities",
-  "market_cap": 102453999328.61328,
+  "market_cap": 104996823579.67001,
   "current_price": 93.14,
-  "rank": 128,
-  "composite_score": 56.48,
+  "rank": 225,
+  "composite_score": 51.66,
   "pillar_scores": {
-    "quality": 75.81,
+    "quality": 64.52,
     "value": 41.94,
-    "growth": 47.58,
+    "growth": 40.32,
     "momentum": 62.65,
-    "health": 27.29,
-    "profitability": 66.13,
+    "health": 25.22,
+    "profitability": 56.45,
     "technical": 53.24,
     "risk": 77.26,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 30174000000.0,
-    "net_income": 4363000000.0,
+    "net_income": 4606000000.0,
     "total_assets": 157031000000.0,
     "total_liabilities": 117119000000.0,
     "stockholders_equity": 36016000000.0,
@@ -31,41 +31,41 @@
     "free_cash_flow": -3466000000.0,
     "eps_basic": 1.21,
     "eps_diluted": 1.2,
-    "shares_outstanding": 1100000000.0,
-    "market_cap": 102453999328.61328,
+    "shares_outstanding": 1127301098.0,
+    "market_cap": 104996823579.67001,
     "pe_ratio_ttm": 77.61666615804037,
     "goodwill": 5161000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 49.015419419903886,
+        "value": 48.418251367555385,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 68.03903814729229,
+        "value": 77.03756257123285,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 68.91709575311152,
+        "value": 67.18026441104334,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 70.28755981557158,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sub_industry"
-      },
-      "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 29.36323849623212,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
@@ -75,26 +75,27 @@
         "tier_used": null
       }
     },
-    "median": 68.4780669502019,
-    "max": 70.28755981557158,
-    "low": 49.015419419903886,
-    "high": 70.28755981557158,
-    "mos_pct": -36.014352533316966,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ]
+    "median": 57.79925788929936,
+    "max": 77.03756257123285,
+    "low": 29.36323849623212,
+    "high": 77.03756257123285,
+    "mos_pct": -61.14393642914205,
+    "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
+      "cost_of_revenue",
       "research_and_development",
       "sga_expense",
+      "depreciation_and_amortization",
+      "interest_expense",
       "inventory",
       "accounts_receivable",
       "long_term_debt",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
@@ -104,11 +105,9 @@
   "risk_flags": [
     "altman_distress"
   ],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 27.78272727272727,
+  "tangible_book_value": 27.109882225981828,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -121,10 +120,10 @@
     "values": {
       "Quality": 51.61,
       "Value": 47.85,
-      "Growth": 50.81,
+      "Growth": 54.03,
       "Momentum": 62.85,
-      "Health": 19.36,
-      "Profitability": 51.61,
+      "Health": 17.85,
+      "Profitability": 52.15,
       "Technical": 43.63,
       "Risk": 71.98
     }

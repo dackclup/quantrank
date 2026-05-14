@@ -3,17 +3,17 @@
   "name": "Starbucks",
   "sector": "Consumer Discretionary",
   "industry": "Restaurants",
-  "market_cap": 120454551530.45654,
+  "market_cap": 120751211521.91162,
   "current_price": 105.95,
-  "rank": 345,
-  "composite_score": 46.03,
+  "rank": 466,
+  "composite_score": 36.93,
   "pillar_scores": {
-    "quality": 51.04,
-    "value": 27.26,
+    "quality": 31.51,
+    "value": 17.53,
     "growth": 33.07,
     "momentum": 74.2,
-    "health": 36.39,
-    "profitability": 57.29,
+    "health": 33.11,
+    "profitability": 37.85,
     "technical": 65.74,
     "risk": 51.86,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 2725900000.0,
     "eps_basic": 0.71,
     "eps_diluted": 0.7,
-    "shares_outstanding": 1136900000.0,
-    "market_cap": 120454551530.45654,
+    "shares_outstanding": 1139700000.0,
+    "market_cap": 120751211521.91162,
     "pe_ratio_ttm": 151.35713849748885,
     "goodwill": 1295100000.0
   },
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 48.87825924417246,
+        "value": 27.66815612939313,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 89.40411468889334,
+        "value": 39.178611848266286,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 25.500610480555537,
+        "value": 25.437960915454585,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 48.87825924417246,
-    "max": 89.40411468889334,
-    "low": 25.500610480555537,
-    "high": 89.40411468889334,
-    "mos_pct": -116.76303245368571,
+    "median": 27.66815612939313,
+    "max": 39.178611848266286,
+    "low": 25.437960915454585,
+    "high": 39.178611848266286,
+    "mos_pct": -282.93118071459315,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -89,12 +89,12 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
-      "research_and_development",
-      "property_plant_equipment"
+      "cost_of_revenue",
+      "research_and_development"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 16,
-    "latest_period_end": "2026-03-29",
+    "latest_period_end": "2026-04-22",
     "latest_filed_date": "2026-04-28"
   },
   "risk_flags": [
@@ -115,18 +115,18 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 45.18,
-      "Value": 49.31,
-      "Growth": 51.04,
+      "Quality": 46.35,
+      "Value": 49.13,
+      "Growth": 51.69,
       "Momentum": 37.92,
-      "Health": 48.37,
-      "Profitability": 51.22,
+      "Health": 43.72,
+      "Profitability": 52.6,
       "Technical": 32.16,
       "Risk": 40.54
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 0.35169457697096607,
   "entered_top5": false,
   "exited_top5": false
 }

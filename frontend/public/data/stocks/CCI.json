@@ -3,24 +3,24 @@
   "name": "Crown Castle",
   "sector": "Real Estate",
   "industry": "Telecom Tower REITs",
-  "market_cap": 39074321197.509766,
+  "market_cap": 39114827915.211174,
   "current_price": 89.62,
-  "rank": 480,
-  "composite_score": 35.23,
+  "rank": 392,
+  "composite_score": 43.52,
   "pillar_scores": {
-    "quality": 50.4,
-    "value": 17.47,
-    "growth": 37.1,
+    "quality": 67.74,
+    "value": 31.18,
+    "growth": 31.45,
     "momentum": 36.85,
-    "health": 6.69,
-    "profitability": 43.82,
+    "health": 2.99,
+    "profitability": 68.01,
     "technical": 66.63,
     "risk": 38.78,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 214000000.0,
+    "revenue": 4213000000.0,
     "net_income": 1059000000.0,
     "total_assets": 31391000000.0,
     "total_liabilities": 33311000000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 2726000000.0,
     "eps_basic": 0.34,
     "eps_diluted": 0.34,
-    "shares_outstanding": 436000000.0,
-    "market_cap": 39074321197.509766,
+    "shares_outstanding": 436451983.0,
+    "market_cap": 39114827915.211174,
     "pe_ratio_ttm": 263.5882433723001,
     "goodwill": 5127000000.0
   },
@@ -45,22 +45,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 41.97978645332284,
+        "value": 70.02786664579357,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 37.14297634275794,
+        "value": 38.86788233789868,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 69.35978991214199,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
       },
       "rim": {
         "value": null,
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 41.97978645332284,
-    "max": 69.35978991214199,
-    "low": 37.14297634275794,
-    "high": 69.35978991214199,
-    "mos_pct": -113.48370327283624,
+    "median": 54.44787449184612,
+    "max": 70.02786664579357,
+    "low": 38.86788233789868,
+    "high": 70.02786664579357,
+    "mos_pct": -64.59779850543686,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -90,16 +90,16 @@
     "missing_metrics": [
       "gross_profit",
       "research_and_development",
+      "depreciation_and_amortization",
       "inventory",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-05-05",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [
-    "data_quality_input_corruption",
     "altman_distress"
   ],
   "valuation_warnings": [
@@ -117,12 +117,12 @@
   "pillar_baseline": {
     "label": "Real Estate median (n=31)",
     "values": {
-      "Quality": 46.77,
-      "Value": 47.85,
-      "Growth": 51.61,
+      "Quality": 50.81,
+      "Value": 47.31,
+      "Growth": 48.79,
       "Momentum": 52.34,
-      "Health": 27.89,
-      "Profitability": 52.69,
+      "Health": 26.18,
+      "Profitability": 52.15,
       "Technical": 59.26,
       "Risk": 53.88
     }

@@ -3,24 +3,24 @@
   "name": "Capital One",
   "sector": "Financials",
   "industry": "Consumer Finance",
-  "market_cap": 111802603936.92055,
+  "market_cap": 112971027647.8289,
   "current_price": 181.54,
-  "rank": 423,
-  "composite_score": 41.15,
+  "rank": 434,
+  "composite_score": 40.2,
   "pillar_scores": {
-    "quality": 28.67,
-    "value": 57.78,
+    "quality": 28.0,
+    "value": 59.78,
     "growth": 43.33,
     "momentum": 29.63,
-    "health": 56.95,
-    "profitability": 48.44,
+    "health": 52.95,
+    "profitability": 35.33,
     "technical": 20.82,
     "risk": 36.92,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 8983000000.0,
+    "revenue": 58665000000.0,
     "net_income": 3223000000.0,
     "total_assets": 682905000000.0,
     "total_liabilities": 570644000000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": 27291000000.0,
     "eps_basic": 3.34,
     "eps_diluted": 3.34,
-    "shares_outstanding": 615856605.0,
-    "market_cap": 111802603936.92055,
+    "shares_outstanding": 622292783.0,
+    "market_cap": 112971027647.8289,
     "pe_ratio_ttm": 54.35329140303378,
     "goodwill": 28502000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 150.7348659122005,
+        "value": 149.95333829635004,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 179.05919577770982,
+        "value": 70.62456576810133,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 378.1679521220467,
+        "value": 364.44253218962047,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 179.05919577770982,
-    "max": 378.1679521220467,
-    "low": 150.7348659122005,
-    "high": 378.1679521220467,
-    "mos_pct": -1.3854622197134971,
+    "median": 149.95333829635004,
+    "max": 364.44253218962047,
+    "low": 70.62456576810133,
+    "high": 364.44253218962047,
+    "mos_pct": -21.06432264105961,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -98,12 +98,11 @@
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "ebitda",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [
@@ -113,7 +112,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 109.88272180664524,
+  "tangible_book_value": 108.74623946908284,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -125,11 +124,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

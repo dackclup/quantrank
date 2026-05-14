@@ -3,24 +3,24 @@
   "name": "PayPal",
   "sector": "Financials",
   "industry": "Transaction & Payment Processing Services",
-  "market_cap": 40345159591.674805,
+  "market_cap": 39897631044.59415,
   "current_price": 45.23,
-  "rank": 88,
-  "composite_score": 58.74,
+  "rank": 95,
+  "composite_score": 58.17,
   "pillar_scores": {
-    "quality": 68.0,
-    "value": 74.67,
-    "growth": 57.33,
+    "quality": 66.0,
+    "value": 75.56,
+    "growth": 58.0,
     "momentum": 28.74,
-    "health": 64.38,
-    "profitability": 52.89,
+    "health": 66.45,
+    "profitability": 44.67,
     "technical": 45.57,
     "risk": 12.25,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 18262000000.0,
+    "revenue": 33734000000.0,
     "net_income": 5059000000.0,
     "total_assets": 80546000000.0,
     "total_liabilities": 60522000000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": 5503000000.0,
     "eps_basic": 1.22,
     "eps_diluted": 1.21,
-    "shares_outstanding": 892000000.0,
-    "market_cap": 40345159591.674805,
+    "shares_outstanding": 882105493.0,
+    "market_cap": 39897631044.59415,
     "pe_ratio_ttm": 37.380164910939115,
     "goodwill": 10946000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 31.427002756262848,
+        "value": 31.602768336002928,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 65.03016674965468,
+        "value": 78.3384293132876,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 46.57162598526157,
+        "value": 45.5107600143751,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -63,7 +63,7 @@
         "tier_used": null
       },
       "rim": {
-        "value": 17.16371551311589,
+        "value": 17.35623954186098,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 38.99931437076221,
-    "max": 65.03016674965468,
-    "low": 17.16371551311589,
-    "high": 65.03016674965468,
-    "mos_pct": -15.976396693130756,
+    "median": 38.556764175189016,
+    "max": 78.3384293132876,
+    "low": 17.35623954186098,
+    "high": 78.3384293132876,
+    "mos_pct": -17.307560709001322,
     "valuation_warnings": [
       "goodwill_heavy"
     ]
@@ -90,12 +90,14 @@
     "missing_metrics": [
       "gross_profit",
       "cost_of_revenue",
-      "inventory",
-      "property_plant_equipment"
+      "research_and_development",
+      "income_before_tax",
+      "dividends_paid",
+      "inventory"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 9,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
@@ -103,7 +105,7 @@
     "goodwill_heavy"
   ],
   "has_history": true,
-  "tangible_book_value": 9.946188340807176,
+  "tangible_book_value": 10.057753942588814,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -115,11 +117,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

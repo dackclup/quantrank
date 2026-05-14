@@ -3,17 +3,17 @@
   "name": "Lennar",
   "sector": "Consumer Discretionary",
   "industry": "Homebuilding",
-  "market_cap": null,
+  "market_cap": 20769897158.38623,
   "current_price": 84.97,
-  "rank": 488,
-  "composite_score": 33.31,
+  "rank": 378,
+  "composite_score": 44.17,
   "pillar_scores": {
-    "quality": 26.04,
-    "value": 47.05,
-    "growth": 36.46,
+    "quality": 44.27,
+    "value": 74.65,
+    "growth": 35.42,
     "momentum": 7.94,
-    "health": 56.35,
-    "profitability": 25.35,
+    "health": 43.78,
+    "profitability": 41.84,
     "technical": 38.2,
     "risk": 23.47,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 33174865000.0,
-    "net_income": 1788036000.0,
+    "net_income": 1812948000.0,
     "total_assets": 33210342000.0,
     "total_liabilities": 11178079000.0,
     "stockholders_equity": 21879376000.0,
@@ -31,71 +31,76 @@
     "free_cash_flow": 1848870000.0,
     "eps_basic": 0.93,
     "eps_diluted": 0.93,
-    "shares_outstanding": null,
-    "market_cap": null,
+    "shares_outstanding": 244438000.0,
+    "market_cap": 20769897158.38623,
     "pe_ratio_ttm": 91.36559271043346,
     "goodwill": 3632058000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "value": 156.5252650497948,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 64.93825871011485,
+        "value": 162.48926325940758,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_bvps",
-        "tier_used": null
+        "value": 531.1119716641563,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
         "value": null,
         "applicable": false,
-        "reason": "missing_shares_outstanding",
+        "reason": "non_positive_or_missing_ebitda",
         "tier_used": null
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "value": 93.87103113683675,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": null,
-        "applicable": false,
-        "reason": "missing_shares_outstanding",
+        "value": 121.83251321373498,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       }
     },
-    "median": 64.93825871011485,
-    "max": 64.93825871011485,
-    "low": 64.93825871011485,
-    "high": 64.93825871011485,
-    "mos_pct": -30.847366265255445,
-    "valuation_warnings": []
+    "median": 156.5252650497948,
+    "max": 162.48926325940758,
+    "low": 93.87103113683675,
+    "high": 531.1119716641563,
+    "mos_pct": 45.71483319726567,
+    "valuation_warnings": [
+      "extreme_multiples_pb_estimate"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "shares_outstanding",
+      "gross_profit",
+      "operating_income",
       "cost_of_revenue",
       "research_and_development",
+      "depreciation_and_amortization",
+      "interest_expense",
       "current_assets",
       "current_liabilities",
       "inventory",
       "accounts_receivable",
       "accounts_payable",
       "short_term_debt",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 35,
@@ -103,9 +108,11 @@
     "latest_filed_date": "2026-04-09"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "extreme_multiples_pb_estimate"
+  ],
   "has_history": true,
-  "tangible_book_value": null,
+  "tangible_book_value": 74.65008713866092,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -116,12 +123,12 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 45.18,
-      "Value": 49.31,
-      "Growth": 51.04,
+      "Quality": 46.35,
+      "Value": 49.13,
+      "Growth": 51.69,
       "Momentum": 37.92,
-      "Health": 48.37,
-      "Profitability": 51.22,
+      "Health": 43.72,
+      "Profitability": 52.6,
       "Technical": 32.16,
       "Risk": 40.54
     }

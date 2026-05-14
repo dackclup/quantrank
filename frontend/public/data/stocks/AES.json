@@ -3,17 +3,17 @@
   "name": "AES Corporation",
   "sector": "Utilities",
   "industry": "Independent Power Producers & Energy Traders",
-  "market_cap": 10290579609.582405,
+  "market_cap": 10290866016.228462,
   "current_price": 14.43,
-  "rank": 237,
-  "composite_score": 51.18,
+  "rank": 202,
+  "composite_score": 52.72,
   "pillar_scores": {
-    "quality": 62.1,
+    "quality": 63.71,
     "value": 63.98,
-    "growth": 54.03,
+    "growth": 55.65,
     "momentum": 42.53,
-    "health": 13.31,
-    "profitability": 37.1,
+    "health": 12.15,
+    "profitability": 53.23,
     "technical": 55.78,
     "risk": 32.04,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 12487000000.0,
-    "net_income": 1351000000.0,
+    "net_income": 2636000000.0,
     "total_assets": 52819000000.0,
     "total_liabilities": null,
     "stockholders_equity": 4420000000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": -1479000000.0,
     "eps_basic": 0.68,
     "eps_diluted": 0.68,
-    "shares_outstanding": 713137865.0,
-    "market_cap": 10290579609.582405,
+    "shares_outstanding": 713157713.0,
+    "market_cap": 10290866016.228462,
     "pe_ratio_ttm": 21.22058868408203,
     "goodwill": 342000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 9.271869494853325,
+        "value": 9.271740470555596,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 43.93462210320807,
+        "value": 74.04273682429417,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 13.291184546338675,
+        "value": 13.684161391273602,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -63,7 +63,7 @@
         "tier_used": null
       },
       "rim": {
-        "value": 4.7278252880369065,
+        "value": 4.727693707217395,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,13 +75,14 @@
         "tier_used": null
       }
     },
-    "median": 11.281527020596,
-    "max": 43.93462210320807,
-    "low": 4.7278252880369065,
-    "high": 43.93462210320807,
-    "mos_pct": -27.908219151820536,
+    "median": 11.477950930914599,
+    "max": 13.684161391273602,
+    "low": 4.727693707217395,
+    "high": 74.04273682429417,
+    "mos_pct": -25.719306451382035,
     "valuation_warnings": [
-      "goodwill_heavy"
+      "goodwill_heavy",
+      "extreme_multiples_pe_estimate"
     ]
   },
   "top5_factors": [],
@@ -93,20 +94,20 @@
       "research_and_development",
       "long_term_debt",
       "short_term_debt",
-      "ebitda",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 9,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "goodwill_heavy"
+    "goodwill_heavy",
+    "extreme_multiples_pe_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 2.8872397625387625,
+  "tangible_book_value": 2.887159407332947,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -119,16 +120,16 @@
     "values": {
       "Quality": 51.61,
       "Value": 47.85,
-      "Growth": 50.81,
+      "Growth": 54.03,
       "Momentum": 62.85,
-      "Health": 19.36,
-      "Profitability": 51.61,
+      "Health": 17.85,
+      "Profitability": 52.15,
       "Technical": 43.63,
       "Risk": 71.98
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 0.15063629569373063,
   "entered_top5": false,
   "exited_top5": false
 }

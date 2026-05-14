@@ -3,24 +3,24 @@
   "name": "Xcel Energy",
   "sector": "Utilities",
   "industry": "Multi-Utilities",
-  "market_cap": 49876850035.55237,
+  "market_cap": 49885382825.74341,
   "current_price": 79.91,
-  "rank": 457,
-  "composite_score": 37.83,
+  "rank": 476,
+  "composite_score": 35.6,
   "pillar_scores": {
-    "quality": 37.1,
-    "value": 27.96,
-    "growth": 39.52,
+    "quality": 30.65,
+    "value": 34.41,
+    "growth": 24.19,
     "momentum": 60.56,
-    "health": 13.94,
-    "profitability": 33.87,
+    "health": 12.31,
+    "profitability": 36.56,
     "technical": 51.84,
     "risk": 72.68,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 11177000000.0,
+    "revenue": 14784000000.0,
     "net_income": 2091000000.0,
     "total_assets": 84828000000.0,
     "total_liabilities": null,
@@ -31,36 +31,36 @@
     "free_cash_flow": -7190000000.0,
     "eps_basic": 0.89,
     "eps_diluted": 0.89,
-    "shares_outstanding": 624162780.0,
-    "market_cap": 49876850035.55237,
+    "shares_outstanding": 624269560.0,
+    "market_cap": 49885382825.74341,
     "pe_ratio_ttm": 89.78652096866222,
     "goodwill": null
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 53.67099515537396,
+        "value": 53.66640480344965,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 75.85163807868958,
+        "value": 64.4171416050061,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 84.92803740140646,
+        "value": 84.92935052208911,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 21.562990911136797,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sub_industry"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
       },
       "rim": {
         "value": null,
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 64.76131661703177,
-    "max": 84.92803740140646,
-    "low": 21.562990911136797,
-    "high": 84.92803740140646,
-    "mos_pct": -23.391567430075398,
+    "median": 64.4171416050061,
+    "max": 84.92935052208911,
+    "low": 53.66640480344965,
+    "high": 84.92935052208911,
+    "mos_pct": -24.050837511702433,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -90,15 +90,17 @@
     "missing_metrics": [
       "total_liabilities",
       "gross_profit",
+      "cost_of_revenue",
       "research_and_development",
       "sga_expense",
+      "depreciation_and_amortization",
+      "ebitda",
       "goodwill",
-      "intangibles_net",
-      "property_plant_equipment"
+      "intangibles_net"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-28",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [
@@ -108,7 +110,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 38.140691439499165,
+  "tangible_book_value": 38.134167554157216,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -121,10 +123,10 @@
     "values": {
       "Quality": 51.61,
       "Value": 47.85,
-      "Growth": 50.81,
+      "Growth": 54.03,
       "Momentum": 62.85,
-      "Health": 19.36,
-      "Profitability": 51.61,
+      "Health": 17.85,
+      "Profitability": 52.15,
       "Technical": 43.63,
       "Risk": 71.98
     }

@@ -3,17 +3,17 @@
   "name": "Deckers Brands",
   "sector": "Consumer Discretionary",
   "industry": "Footwear",
-  "market_cap": 13369150873.435974,
+  "market_cap": 13333360819.349693,
   "current_price": 93.93,
-  "rank": 10,
-  "composite_score": 68.87,
+  "rank": 14,
+  "composite_score": 66.81,
   "pillar_scores": {
-    "quality": 80.73,
-    "value": 78.47,
-    "growth": 72.4,
+    "quality": 80.21,
+    "value": 69.62,
+    "growth": 71.35,
     "momentum": 38.99,
-    "health": 79.16,
-    "profitability": 84.37,
+    "health": 79.62,
+    "profitability": 86.81,
     "technical": 23.9,
     "risk": 18.89,
     "sentiment": null,
@@ -31,55 +31,55 @@
     "free_cash_flow": 2097545000.0,
     "eps_basic": 6.05,
     "eps_diluted": 6.04,
-    "shares_outstanding": 142331000.0,
-    "market_cap": 13369150873.435974,
+    "shares_outstanding": 141949971.0,
+    "market_cap": 13333360819.349693,
     "pe_ratio_ttm": 15.55132455383705,
     "goodwill": 13990000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 86.35804702602931,
+        "value": 86.47387258206447,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 435.8940267075587,
+        "value": 160.49773489899297,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 117.46341490437909,
+        "value": 109.07725950411836,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 318.999083881885,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
       },
       "rim": {
-        "value": 39.65506636872078,
+        "value": 39.76151042205143,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 65.88637870715175,
+        "value": 66.06323412188381,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 101.91073096520421,
-    "max": 435.8940267075587,
-    "low": 39.65506636872078,
-    "high": 435.8940267075587,
-    "mos_pct": 7.831099418522785,
+    "median": 86.47387258206447,
+    "max": 160.49773489899297,
+    "low": 39.76151042205143,
+    "high": 160.49773489899297,
+    "mos_pct": -8.622405242734303,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -87,20 +87,23 @@
   "data_quality": {
     "missing_metrics": [
       "total_liabilities",
+      "research_and_development",
+      "depreciation_and_amortization",
       "income_before_tax",
       "dividends_paid",
       "accounts_payable",
-      "long_term_debt"
+      "long_term_debt",
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 100,
-    "latest_period_end": "2025-12-31",
+    "latest_period_end": "2026-01-13",
     "latest_filed_date": "2026-02-03"
   },
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 18.125439995503438,
+  "tangible_book_value": 18.174093181040522,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -111,12 +114,12 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 45.18,
-      "Value": 49.31,
-      "Growth": 51.04,
+      "Quality": 46.35,
+      "Value": 49.13,
+      "Growth": 51.69,
       "Momentum": 37.92,
-      "Health": 48.37,
-      "Profitability": 51.22,
+      "Health": 43.72,
+      "Profitability": 52.6,
       "Technical": 32.16,
       "Risk": 40.54
     }

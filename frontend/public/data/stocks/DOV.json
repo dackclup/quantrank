@@ -3,17 +3,17 @@
   "name": "Dover Corporation",
   "sector": "Industrials",
   "industry": "Industrial Machinery & Supplies & Components",
-  "market_cap": 55843025592.07715,
+  "market_cap": 28901032015.153564,
   "current_price": 214.62,
-  "rank": 448,
-  "composite_score": 38.77,
+  "rank": 365,
+  "composite_score": 44.84,
   "pillar_scores": {
-    "quality": 29.43,
-    "value": 23.84,
-    "growth": 35.13,
+    "quality": 26.58,
+    "value": 48.52,
+    "growth": 37.34,
     "momentum": 60.16,
-    "health": 70.68,
-    "profitability": 39.24,
+    "health": 75.66,
+    "profitability": 47.68,
     "technical": 32.17,
     "risk": 60.59,
     "sentiment": null,
@@ -31,82 +31,80 @@
     "free_cash_flow": 1038183000.0,
     "eps_basic": 1.77,
     "eps_diluted": 1.75,
-    "shares_outstanding": 260194888.0,
-    "market_cap": 55843025592.07715,
+    "shares_outstanding": 134661414.0,
+    "market_cap": 28901032015.153564,
     "pe_ratio_ttm": 122.63999720982143,
     "goodwill": 5401395000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 19.7124909100151,
+        "value": 27.40118221784646,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 205.09558284983916,
+        "value": 229.70486889412035,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 127.7024227229259,
+        "value": 196.50414997860935,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 128.65363284289097,
+        "value": 214.8639109770124,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "rim": {
-        "value": 2.4475767935066246,
+        "value": 4.729246119885948,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 34.288556714130124,
+        "value": 66.25288498689562,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 80.995489718528,
-    "max": 205.09558284983916,
-    "low": 2.4475767935066246,
-    "high": 205.09558284983916,
-    "mos_pct": -164.97771155285997,
+    "median": 131.3785174827525,
+    "max": 229.70486889412035,
+    "low": 4.729246119885948,
+    "high": 229.70486889412035,
+    "mos_pct": -63.36003726435947,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
-      "extreme_rim_estimate",
-      "extreme_dcf_estimate"
+      "extreme_rim_estimate"
     ]
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "property_plant_equipment"
+      "research_and_development"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 21,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-17",
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
     "extreme_graham_estimate",
-    "extreme_rim_estimate",
-    "extreme_dcf_estimate"
+    "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 1.4841298496225646,
+  "tangible_book_value": 2.8676588825957228,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -117,17 +115,17 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }
   },
-  "beneish_m_score": null,
+  "beneish_m_score": -2.5087709144976595,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false

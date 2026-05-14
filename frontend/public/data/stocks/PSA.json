@@ -3,17 +3,17 @@
   "name": "Public Storage",
   "sector": "Real Estate",
   "industry": "Self-Storage REITs",
-  "market_cap": 53367247620.763,
+  "market_cap": 53313245810.49243,
   "current_price": 303.7,
-  "rank": 97,
-  "composite_score": 58.14,
+  "rank": 210,
+  "composite_score": 52.49,
   "pillar_scores": {
-    "quality": 84.68,
-    "value": 43.55,
-    "growth": 47.58,
+    "quality": 79.03,
+    "value": 25.81,
+    "growth": 48.39,
     "momentum": 60.61,
-    "health": 27.97,
-    "profitability": 63.98,
+    "health": 25.26,
+    "profitability": 65.05,
     "technical": 54.33,
     "risk": 53.88,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 4858670000.0,
-    "net_income": 1902830000.0,
+    "net_income": 1915616000.0,
     "total_assets": 19850409000.0,
     "total_liabilities": 10530687000.0,
     "stockholders_equity": 9224340000.0,
@@ -31,39 +31,39 @@
     "free_cash_flow": null,
     "eps_basic": 2.72,
     "eps_diluted": 2.71,
-    "shares_outstanding": 175723561.0,
-    "market_cap": 53367247620.763,
+    "shares_outstanding": 175545748.0,
+    "market_cap": 53313245810.49243,
     "pe_ratio_ttm": 112.06642516864622,
     "goodwill": 165843000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 108.75971357730701,
+        "value": 108.81478183297222,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 347.3808734066311,
+        "value": 315.5316951839227,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 119.91402547609935,
+        "value": 125.74010616797305,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 351.5931568057695,
+        "value": 210.12397771504655,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 85.12582354189362,
+        "value": 85.21204880359267,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 119.91402547609935,
-    "max": 351.5931568057695,
-    "low": 85.12582354189362,
-    "high": 351.5931568057695,
-    "mos_pct": -153.26479617479205,
+    "median": 125.74010616797305,
+    "max": 315.5316951839227,
+    "low": 85.21204880359267,
+    "high": 315.5316951839227,
+    "mos_pct": -141.52994733543966,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -88,7 +88,10 @@
     "missing_metrics": [
       "capex",
       "free_cash_flow",
+      "gross_profit",
+      "cost_of_revenue",
       "research_and_development",
+      "dividends_paid",
       "current_assets",
       "current_liabilities",
       "inventory",
@@ -98,13 +101,13 @@
     ],
     "imputed_metrics": [],
     "filing_lag_days": 17,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-20",
     "latest_filed_date": "2026-04-27"
   },
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 51.35645412967701,
+  "tangible_book_value": 51.40847387542534,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -115,12 +118,12 @@
   "pillar_baseline": {
     "label": "Real Estate median (n=31)",
     "values": {
-      "Quality": 46.77,
-      "Value": 47.85,
-      "Growth": 51.61,
+      "Quality": 50.81,
+      "Value": 47.31,
+      "Growth": 48.79,
       "Momentum": 52.34,
-      "Health": 27.89,
-      "Profitability": 52.69,
+      "Health": 26.18,
+      "Profitability": 52.15,
       "Technical": 59.26,
       "Risk": 53.88
     }

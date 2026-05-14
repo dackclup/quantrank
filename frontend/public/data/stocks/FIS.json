@@ -3,17 +3,17 @@
   "name": "Fidelity National Information Services",
   "sector": "Financials",
   "industry": "Transaction & Payment Processing Services",
-  "market_cap": 27263999023.4375,
+  "market_cap": 22019051043.905006,
   "current_price": 42.6,
-  "rank": 425,
-  "composite_score": 40.86,
+  "rank": 426,
+  "composite_score": 40.88,
   "pillar_scores": {
-    "quality": 55.33,
-    "value": 62.11,
-    "growth": 26.33,
+    "quality": 53.33,
+    "value": 60.44,
+    "growth": 31.0,
     "momentum": 18.77,
-    "health": 10.08,
-    "profitability": 39.56,
+    "health": 12.55,
+    "profitability": 41.33,
     "technical": 34.56,
     "risk": 22.01,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 11440000000.0,
-    "net_income": 2671000000.0,
+    "net_income": 2675000000.0,
     "total_assets": 43484000000.0,
     "total_liabilities": 27504000000.0,
     "stockholders_equity": 15977000000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 4168000000.0,
     "eps_basic": 4.59,
     "eps_diluted": 4.58,
-    "shares_outstanding": 640000000.0,
-    "market_cap": 27263999023.4375,
+    "shares_outstanding": 516879151.0,
+    "market_cap": 22019051043.905006,
     "pe_ratio_ttm": 9.30130971050679,
     "goodwill": 24585000000.0
   },
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 246.1472427383624,
+        "value": 70.69122026188505,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 51.79056870684394,
+        "value": 62.445498054424135,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,13 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 148.96890572260315,
-    "max": 51.79056870684394,
-    "low": 51.79056870684394,
-    "high": 246.1472427383624,
-    "mos_pct": 71.4034292811098,
+    "median": 66.56835915815459,
+    "max": 70.69122026188505,
+    "low": 62.445498054424135,
+    "high": 70.69122026188505,
+    "mos_pct": 36.005635390665006,
     "valuation_warnings": [
-      "extreme_multiples_pe_estimate",
       "value_trap_risk"
     ]
   },
@@ -89,20 +88,19 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
+      "research_and_development",
       "inventory",
-      "accounts_payable",
-      "property_plant_equipment"
+      "accounts_payable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-05-06",
     "latest_filed_date": "2026-05-08"
   },
   "risk_flags": [
     "altman_distress"
   ],
   "valuation_warnings": [
-    "extreme_multiples_pe_estimate",
     "value_trap_risk"
   ],
   "has_history": true,
@@ -118,16 +116,16 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }
   },
-  "beneish_m_score": null,
+  "beneish_m_score": -2.644750298123332,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false

@@ -3,17 +3,17 @@
   "name": "Regeneron Pharmaceuticals",
   "sector": "Health Care",
   "industry": "Biotechnology",
-  "market_cap": 67964175770.22839,
+  "market_cap": 77531076525.8789,
   "current_price": 719.88,
-  "rank": 124,
-  "composite_score": 56.71,
+  "rank": 118,
+  "composite_score": 56.93,
   "pillar_scores": {
-    "quality": 55.08,
-    "value": 45.2,
-    "growth": 49.15,
+    "quality": 50.0,
+    "value": 53.11,
+    "growth": 51.69,
     "momentum": 53.39,
-    "health": 91.99,
-    "profitability": 72.03,
+    "health": 93.39,
+    "profitability": 62.15,
     "technical": 67.38,
     "risk": 40.17,
     "sentiment": null,
@@ -31,39 +31,39 @@
     "free_cash_flow": 4113000000.0,
     "eps_basic": 6.99,
     "eps_diluted": 6.75,
-    "shares_outstanding": 94410423.0,
-    "market_cap": 67964175770.22839,
+    "shares_outstanding": 107700000.0,
+    "market_cap": 77531076525.8789,
     "pe_ratio_ttm": 106.64888961226852,
     "goodwill": null
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 523.7715044251859,
+        "value": 490.39268934521357,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 575.1060451780047,
+        "value": 972.6706648742539,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 1103.3288195930068,
+        "value": 844.3210558668758,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 379.04109520314523,
+        "value": 623.8881457702108,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 375.8573789973331,
+        "value": 329.47868281160197,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 523.7715044251859,
-    "max": 1103.3288195930068,
-    "low": 375.8573789973331,
-    "high": 1103.3288195930068,
-    "mos_pct": -37.44161314633684,
+    "median": 623.8881457702108,
+    "max": 972.6706648742539,
+    "low": 329.47868281160197,
+    "high": 972.6706648742539,
+    "mos_pct": -15.386068763030671,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -87,8 +87,8 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
-      "goodwill",
-      "property_plant_equipment"
+      "cost_of_revenue",
+      "goodwill"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
@@ -98,7 +98,7 @@
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 319.2094584726095,
+  "tangible_book_value": 279.8207985143918,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -109,12 +109,12 @@
   "pillar_baseline": {
     "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 51.27,
-      "Value": 52.82,
-      "Growth": 50.0,
+      "Quality": 52.97,
+      "Value": 51.98,
+      "Growth": 49.58,
       "Momentum": 41.24,
-      "Health": 60.08,
-      "Profitability": 52.54,
+      "Health": 59.88,
+      "Profitability": 51.13,
       "Technical": 55.13,
       "Risk": 39.71
     }

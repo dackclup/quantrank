@@ -3,17 +3,17 @@
   "name": "Procter & Gamble",
   "sector": "Consumer Staples",
   "industry": "Personal Care Products",
-  "market_cap": 570268630023.1934,
+  "market_cap": 331219931422.0962,
   "current_price": 142.24,
-  "rank": 118,
-  "composite_score": 57.06,
+  "rank": 185,
+  "composite_score": 53.64,
   "pillar_scores": {
-    "quality": 86.11,
-    "value": 42.59,
-    "growth": 44.79,
+    "quality": 76.39,
+    "value": 39.81,
+    "growth": 47.57,
     "momentum": 30.88,
-    "health": 45.94,
-    "profitability": 82.41,
+    "health": 47.29,
+    "profitability": 72.69,
     "technical": 49.65,
     "risk": 56.27,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 86718000000.0,
-    "net_income": 16616000000.0,
+    "net_income": 16689000000.0,
     "total_assets": 128378000000.0,
     "total_liabilities": 73647000000.0,
     "stockholders_equity": 54731000000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 15028000000.0,
     "eps_basic": 5.47,
     "eps_diluted": 5.36,
-    "shares_outstanding": 4009200000.0,
-    "market_cap": 570268630023.1934,
+    "shares_outstanding": 2328598978.0,
+    "market_cap": 331219931422.0962,
     "pe_ratio_ttm": 26.537314457679862,
     "goodwill": 41359000000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 321.9479054418104,
+        "value": 173.0512725691304,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 61.58017635113475,
+        "value": 73.12809316906134,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 198.63590959149303,
+        "value": 115.04488356311954,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 38.549487215633015,
+        "value": 66.37149874456223,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 130.1080429713139,
-    "max": 321.9479054418104,
-    "low": 38.549487215633015,
-    "high": 321.9479054418104,
-    "mos_pct": -9.324529248760596,
+    "median": 94.08648836609044,
+    "max": 173.0512725691304,
+    "low": 66.37149874456223,
+    "high": 173.0512725691304,
+    "mos_pct": -51.18005567357168,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -87,7 +87,8 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
-      "property_plant_equipment"
+      "research_and_development",
+      "income_before_tax"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 20,
@@ -108,17 +109,17 @@
   "pillar_baseline": {
     "label": "Consumer Staples median (n=36)",
     "values": {
-      "Quality": 56.08,
-      "Value": 49.07,
-      "Growth": 50.52,
+      "Quality": 49.65,
+      "Value": 51.39,
+      "Growth": 48.44,
       "Momentum": 39.14,
-      "Health": 38.65,
-      "Profitability": 52.08,
+      "Health": 39.29,
+      "Profitability": 53.94,
       "Technical": 57.99,
       "Risk": 51.44
     }
   },
-  "beneish_m_score": null,
+  "beneish_m_score": -2.5609165434387,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false

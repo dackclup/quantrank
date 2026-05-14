@@ -3,17 +3,17 @@
   "name": "Edwards Lifesciences",
   "sector": "Health Care",
   "industry": "Health Care Equipment",
-  "market_cap": 46962029647.82715,
+  "market_cap": 46864361648.55957,
   "current_price": 81.39,
-  "rank": 303,
-  "composite_score": 48.05,
+  "rank": 314,
+  "composite_score": 47.42,
   "pillar_scores": {
-    "quality": 50.42,
-    "value": 19.77,
-    "growth": 43.64,
+    "quality": 55.08,
+    "value": 12.15,
+    "growth": 44.49,
     "momentum": 51.34,
-    "health": 93.13,
-    "profitability": 60.17,
+    "health": 84.84,
+    "profitability": 68.64,
     "technical": 61.58,
     "risk": 45.52,
     "sentiment": null,
@@ -31,73 +31,73 @@
     "free_cash_flow": 1089500000.0,
     "eps_basic": 0.66,
     "eps_diluted": 0.66,
-    "shares_outstanding": 577000000.0,
-    "market_cap": 46962029647.82715,
+    "shares_outstanding": 575800000.0,
+    "market_cap": 46864361648.55957,
     "pe_ratio_ttm": 123.31818089340672,
     "goodwill": 1819600000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 32.40931889863064,
+        "value": 32.443072754922184,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 75.68069570550013,
+        "value": 45.18485394647301,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 51.80806306380868,
+        "value": 51.90281686299009,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 57.71088162100255,
+        "value": 46.74411668208997,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "rim": {
-        "value": 20.713526814201096,
+        "value": 20.756694984011865,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 25.011130726492436,
+        "value": 25.063255347666093,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 42.10869098121966,
-    "max": 75.68069570550013,
-    "low": 20.713526814201096,
-    "high": 75.68069570550013,
-    "mos_pct": -93.28551302140481,
+    "median": 38.8139633506976,
+    "max": 51.90281686299009,
+    "low": 20.756694984011865,
+    "high": 51.90281686299009,
+    "mos_pct": -109.69257546378763,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "dividends_paid",
-      "property_plant_equipment"
+      "interest_expense",
+      "dividends_paid"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 12.616984402079723,
+  "tangible_book_value": 12.64327891629038,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -108,18 +108,18 @@
   "pillar_baseline": {
     "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 51.27,
-      "Value": 52.82,
-      "Growth": 50.0,
+      "Quality": 52.97,
+      "Value": 51.98,
+      "Growth": 49.58,
       "Momentum": 41.24,
-      "Health": 60.08,
-      "Profitability": 52.54,
+      "Health": 59.88,
+      "Profitability": 51.13,
       "Technical": 55.13,
       "Risk": 39.71
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -2.302577320297213,
+  "dechow_f_score": 0.5050495986312101,
   "entered_top5": false,
   "exited_top5": false
 }

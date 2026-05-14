@@ -3,17 +3,17 @@
   "name": "Newmont",
   "sector": "Materials",
   "industry": "Gold",
-  "market_cap": 129547439002.99072,
+  "market_cap": 126996075828.06625,
   "current_price": 118.96,
-  "rank": 60,
-  "composite_score": 61.27,
+  "rank": 27,
+  "composite_score": 65.44,
   "pillar_scores": {
-    "quality": 59.13,
-    "value": 55.13,
-    "growth": 73.08,
+    "quality": 70.19,
+    "value": 54.49,
+    "growth": 74.04,
     "momentum": 67.53,
-    "health": 68.45,
-    "profitability": 49.68,
+    "health": 71.24,
+    "profitability": 63.78,
     "technical": 62.1,
     "risk": 52.56,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 24966000000.0,
-    "net_income": 8456000000.0,
+    "net_income": 8593000000.0,
     "total_assets": 57670000000.0,
     "total_liabilities": 22572000000.0,
     "stockholders_equity": 34926000000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": 9238000000.0,
     "eps_basic": 3.01,
     "eps_diluted": 3.0,
-    "shares_outstanding": 1089000000.0,
-    "market_cap": 129547439002.99072,
+    "shares_outstanding": 1067552764.0,
+    "market_cap": 126996075828.06625,
     "pe_ratio_ttm": 39.653333028157554,
     "goodwill": 2658000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 37.49986593180809,
+        "value": 37.87468070362618,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 293.95524386148986,
+        "value": 212.88347988878004,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 104.35602663008527,
+        "value": 94.89818356042973,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 104.35602663008527,
-    "max": 293.95524386148986,
-    "low": 37.49986593180809,
-    "high": 293.95524386148986,
-    "mos_pct": -13.994373804739269,
+    "median": 94.89818356042973,
+    "max": 212.88347988878004,
+    "low": 37.87468070362618,
+    "high": 212.88347988878004,
+    "mos_pct": -25.355401569641984,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -88,13 +88,15 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
+      "gross_profit",
       "operating_income",
-      "ebitda",
-      "property_plant_equipment"
+      "cost_of_revenue",
+      "interest_expense",
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 21,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-16",
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [],
@@ -102,7 +104,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 29.573921028466483,
+  "tangible_book_value": 30.16806389908799,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -113,12 +115,12 @@
   "pillar_baseline": {
     "label": "Materials median (n=26)",
     "values": {
-      "Quality": 52.16,
-      "Value": 50.8,
-      "Growth": 48.08,
+      "Quality": 51.68,
+      "Value": 49.84,
+      "Growth": 48.56,
       "Momentum": 51.87,
-      "Health": 51.58,
-      "Profitability": 50.48,
+      "Health": 56.53,
+      "Profitability": 54.33,
       "Technical": 57.81,
       "Risk": 48.94
     }

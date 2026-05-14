@@ -3,17 +3,17 @@
   "name": "Hasbro",
   "sector": "Consumer Discretionary",
   "industry": "Leisure Products",
-  "market_cap": 20709156521.943237,
+  "market_cap": 13301540257.176727,
   "current_price": 94.01,
-  "rank": 363,
-  "composite_score": 45.07,
+  "rank": 375,
+  "composite_score": 44.41,
   "pillar_scores": {
-    "quality": 41.67,
-    "value": 31.6,
+    "quality": 37.5,
+    "value": 39.41,
     "growth": 51.56,
     "momentum": 59.51,
-    "health": 50.56,
-    "profitability": 50.35,
+    "health": 42.15,
+    "profitability": 43.4,
     "technical": 46.94,
     "risk": 55.28,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 1021100000.0,
     "eps_basic": 1.41,
     "eps_diluted": 1.39,
-    "shares_outstanding": 220286736.0,
-    "market_cap": 20709156521.943237,
+    "shares_outstanding": 141490692.0,
+    "market_cap": 13301540257.176727,
     "pe_ratio_ttm": 67.63309506203632,
     "goodwill": 1256500000.0
   },
@@ -45,22 +45,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 100.31336045091167,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
       },
       "multiples_pb": {
-        "value": 80.77314709723248,
+        "value": 125.62199423308125,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 27.599926128495593,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "ev_ebitda_negative_equity_post_debt",
+        "tier_used": null
       },
       "rim": {
         "value": null,
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 22.16158306669408,
+        "value": 34.50334950906106,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 54.18653661286404,
-    "max": 100.31336045091167,
-    "low": 22.16158306669408,
-    "high": 100.31336045091167,
-    "mos_pct": -73.49328451804433,
+    "median": 80.06267187107116,
+    "max": 125.62199423308125,
+    "low": 34.50334950906106,
+    "high": 125.62199423308125,
+    "mos_pct": -17.420515627581572,
     "valuation_warnings": [
       "goodwill_heavy",
       "value_trap_risk"
@@ -93,7 +93,7 @@
     ],
     "imputed_metrics": [],
     "filing_lag_days": 1,
-    "latest_period_end": "2026-03-29",
+    "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-13"
   },
   "risk_flags": [],
@@ -102,7 +102,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 5.8915485497047815,
+  "tangible_book_value": 9.172546841455832,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -113,17 +113,17 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 45.18,
-      "Value": 49.31,
-      "Growth": 51.04,
+      "Quality": 46.35,
+      "Value": 49.13,
+      "Growth": 51.69,
       "Momentum": 37.92,
-      "Health": 48.37,
-      "Profitability": 51.22,
+      "Health": 43.72,
+      "Profitability": 52.6,
       "Technical": 32.16,
       "Risk": 40.54
     }
   },
-  "beneish_m_score": -3.487639757020919,
+  "beneish_m_score": -3.799871335669794,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false

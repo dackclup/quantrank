@@ -3,17 +3,17 @@
   "name": "Monster Beverage",
   "sector": "Consumer Staples",
   "industry": "Soft Drinks & Non-alcoholic Beverages",
-  "market_cap": 84032322178.43628,
+  "market_cap": 84040237190.76439,
   "current_price": 85.93,
-  "rank": 146,
-  "composite_score": 55.61,
+  "rank": 71,
+  "composite_score": 59.69,
   "pillar_scores": {
-    "quality": 59.72,
-    "value": 17.59,
-    "growth": 82.29,
+    "quality": 77.08,
+    "value": 9.72,
+    "growth": 84.38,
     "momentum": 59.36,
-    "health": 71.16,
-    "profitability": 71.3,
+    "health": 72.67,
+    "profitability": 81.94,
     "technical": 64.84,
     "risk": 72.18,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 2071740000.0,
     "eps_basic": 1.57,
     "eps_diluted": 1.49,
-    "shares_outstanding": 977916000.0,
-    "market_cap": 84032322178.43628,
+    "shares_outstanding": 978008110.0,
+    "market_cap": 84040237190.76439,
     "pe_ratio_ttm": 57.671141144413276,
     "goodwill": 1331643000.0
   },
@@ -45,43 +45,43 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 89.49671252020475,
+        "value": 47.383336976230645,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 40.25598268081994,
+        "value": 27.76321971534915,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 36.92841911436254,
+        "value": 36.72459782342643,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "value": 9.217589413626584,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 21.483483573811792,
+        "value": 21.481460233052395,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 38.59220089759124,
-    "max": 89.49671252020475,
-    "low": 21.483483573811792,
-    "high": 89.49671252020475,
-    "mos_pct": -122.6615697124938,
+    "median": 27.76321971534915,
+    "max": 47.383336976230645,
+    "low": 9.217589413626584,
+    "high": 47.383336976230645,
+    "mos_pct": -209.51021238242262,
     "valuation_warnings": [
-      "value_trap_risk"
+      "extreme_rim_estimate"
     ]
   },
   "top5_factors": [],
@@ -92,22 +92,21 @@
       "research_and_development",
       "sga_expense",
       "interest_expense",
-      "dividends_paid",
-      "property_plant_equipment"
+      "dividends_paid"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-08"
   },
   "risk_flags": [
     "net_issuance_top_decile"
   ],
   "valuation_warnings": [
-    "value_trap_risk"
+    "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 6.150917870246524,
+  "tangible_book_value": 6.150338569278326,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -118,18 +117,18 @@
   "pillar_baseline": {
     "label": "Consumer Staples median (n=36)",
     "values": {
-      "Quality": 56.08,
-      "Value": 49.07,
-      "Growth": 50.52,
+      "Quality": 49.65,
+      "Value": 51.39,
+      "Growth": 48.44,
       "Momentum": 39.14,
-      "Health": 38.65,
-      "Profitability": 52.08,
+      "Health": 39.29,
+      "Profitability": 53.94,
       "Technical": 57.99,
       "Risk": 51.44
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 0.5114675535923936,
   "entered_top5": false,
   "exited_top5": false
 }

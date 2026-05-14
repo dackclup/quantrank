@@ -3,24 +3,24 @@
   "name": "CrowdStrike",
   "sector": "Information Technology",
   "industry": "Systems Software",
-  "market_cap": 0.0,
+  "market_cap": 140966542155.27344,
   "current_price": 562.57,
-  "rank": 348,
-  "composite_score": 46.01,
+  "rank": 461,
+  "composite_score": 37.49,
   "pillar_scores": {
-    "quality": 22.26,
-    "value": 64.16,
-    "growth": 57.53,
+    "quality": 19.18,
+    "value": 28.88,
+    "growth": 68.84,
     "momentum": 39.74,
-    "health": 55.52,
-    "profitability": 46.58,
+    "health": 54.84,
+    "profitability": 29.22,
     "technical": 64.54,
     "risk": 42.83,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": null,
+    "revenue": 4812005000.0,
     "net_income": -161165000.0,
     "total_assets": 11086684000.0,
     "total_liabilities": 6614079000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 1310241000.0,
     "eps_basic": -0.65,
     "eps_diluted": -0.65,
-    "shares_outstanding": 0.0,
-    "market_cap": 0.0,
+    "shares_outstanding": 250576000.0,
+    "market_cap": 140966542155.27344,
     "pe_ratio_ttm": null,
     "goodwill": 1363294000.0
   },
@@ -51,10 +51,10 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_bvps",
-        "tier_used": null
+        "value": 162.71878485073316,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
         "value": null,
@@ -69,18 +69,19 @@
         "tier_used": null
       },
       "dcf": {
-        "value": null,
-        "applicable": false,
-        "reason": "missing_shares_outstanding",
+        "value": 68.9548079592412,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       }
     },
-    "median": null,
-    "max": null,
-    "low": null,
-    "high": null,
-    "mos_pct": null,
+    "median": 115.83679640498718,
+    "max": 162.71878485073316,
+    "low": 68.9548079592412,
+    "high": 162.71878485073316,
+    "mos_pct": -385.65742905852505,
     "valuation_warnings": [
+      "extreme_dcf_estimate",
       "value_trap_risk"
     ]
   },
@@ -88,10 +89,11 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "revenue",
+      "depreciation_and_amortization",
       "dividends_paid",
       "inventory",
-      "short_term_debt"
+      "short_term_debt",
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 70,
@@ -100,10 +102,11 @@
   },
   "risk_flags": [],
   "valuation_warnings": [
+    "extreme_dcf_estimate",
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": null,
+  "tangible_book_value": 11.686649958495627,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -114,12 +117,12 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }

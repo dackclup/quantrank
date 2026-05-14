@@ -3,25 +3,25 @@
   "name": "Pfizer",
   "sector": "Health Care",
   "industry": "Pharmaceuticals",
-  "market_cap": 249761151191.71143,
+  "market_cap": 147957565409.243,
   "current_price": 25.96,
-  "rank": 300,
-  "composite_score": 48.12,
+  "rank": 324,
+  "composite_score": 47.14,
   "pillar_scores": {
-    "quality": 47.88,
-    "value": 53.67,
-    "growth": 8.47,
+    "quality": 36.02,
+    "value": 67.8,
+    "growth": 9.32,
     "momentum": 62.0,
-    "health": 62.67,
-    "profitability": 52.54,
+    "health": 59.88,
+    "profitability": 40.96,
     "technical": 52.49,
     "risk": 50.43,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 41007000000.0,
-    "net_income": 7490000000.0,
+    "revenue": 63315000000.0,
+    "net_income": 7534000000.0,
     "total_assets": 207618000000.0,
     "total_liabilities": 117214000000.0,
     "stockholders_equity": 90101000000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 12400000000.0,
     "eps_basic": 0.47,
     "eps_diluted": 0.47,
-    "shares_outstanding": 9621000000.0,
-    "market_cap": 249761151191.71143,
+    "shares_outstanding": 5699444169.0,
+    "market_cap": 147957565409.243,
     "pe_ratio_ttm": 55.23404060526097,
     "goodwill": 71409000000.0
   },
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 42.34984935413707,
+        "value": 31.30533963586955,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 31.044049294656343,
+        "value": 45.747197356580855,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 12.571667928867862,
+        "value": 21.2217215498857,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 31.044049294656343,
-    "max": 42.34984935413707,
-    "low": 12.571667928867862,
-    "high": 42.34984935413707,
-    "mos_pct": 16.376891306698226,
+    "median": 31.30533963586955,
+    "max": 45.747197356580855,
+    "low": 21.2217215498857,
+    "high": 45.747197356580855,
+    "mos_pct": 17.074852448724823,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -92,12 +92,11 @@
       "operating_income",
       "research_and_development",
       "dividends_paid",
-      "ebitda",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 9,
-    "latest_period_end": "2026-03-29",
+    "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
@@ -116,17 +115,17 @@
   "pillar_baseline": {
     "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 51.27,
-      "Value": 52.82,
-      "Growth": 50.0,
+      "Quality": 52.97,
+      "Value": 51.98,
+      "Growth": 49.58,
       "Momentum": 41.24,
-      "Health": 60.08,
-      "Profitability": 52.54,
+      "Health": 59.88,
+      "Profitability": 51.13,
       "Technical": 55.13,
       "Risk": 39.71
     }
   },
-  "beneish_m_score": null,
+  "beneish_m_score": -2.333420297437823,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false

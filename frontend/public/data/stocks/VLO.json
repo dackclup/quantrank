@@ -3,25 +3,25 @@
   "name": "Valero Energy",
   "sector": "Energy",
   "industry": "Oil & Gas Refining & Marketing",
-  "market_cap": 164401742962.0275,
+  "market_cap": 72481293898.53387,
   "current_price": 244.1,
-  "rank": 198,
-  "composite_score": 52.99,
+  "rank": 152,
+  "composite_score": 55.3,
   "pillar_scores": {
-    "quality": 46.43,
-    "value": 31.75,
-    "growth": 51.19,
+    "quality": 42.86,
+    "value": 57.94,
+    "growth": 36.9,
     "momentum": 90.04,
-    "health": 64.74,
-    "profitability": 46.83,
+    "health": 65.54,
+    "profitability": 32.54,
     "technical": 66.68,
     "risk": 71.81,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": null,
-    "net_income": 4206000000.0,
+    "revenue": 124810000000.0,
+    "net_income": 4220000000.0,
     "total_assets": 62142000000.0,
     "total_liabilities": null,
     "stockholders_equity": 23870000000.0,
@@ -31,39 +31,39 @@
     "free_cash_flow": 4656000000.0,
     "eps_basic": 4.22,
     "eps_diluted": 4.22,
-    "shares_outstanding": 673501593.0,
-    "market_cap": 164401742962.0275,
+    "shares_outstanding": 296932782.0,
+    "market_cap": 72481293898.53387,
     "pe_ratio_ttm": 57.843603342065315,
     "goodwill": 260000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 103.64239574895252,
+        "value": 156.09093546505662,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 385.57920678869465,
+        "value": 285.05485624969697,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 88.16465185471766,
+        "value": 190.7336505455318,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 112.41112087124826,
+        "value": 224.11331937043178,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 52.73356627050889,
+        "value": 119.61003648212477,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,31 +75,30 @@
         "tier_used": null
       }
     },
-    "median": 103.64239574895252,
-    "max": 385.57920678869465,
-    "low": 52.73356627050889,
-    "high": 385.57920678869465,
-    "mos_pct": -135.52138518178035,
+    "median": 190.7336505455318,
+    "max": 285.05485624969697,
+    "low": 119.61003648212477,
+    "high": 285.05485624969697,
+    "mos_pct": -27.97951772293283,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "revenue",
       "total_liabilities",
-      "research_and_development",
-      "property_plant_equipment"
+      "gross_profit",
+      "research_and_development"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 34.87296874144142,
+  "tangible_book_value": 79.09870995651804,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -111,11 +110,11 @@
     "label": "Energy median (n=21)",
     "values": {
       "Quality": 50.0,
-      "Value": 50.79,
-      "Growth": 53.57,
+      "Value": 51.59,
+      "Growth": 55.95,
       "Momentum": 77.24,
-      "Health": 50.36,
-      "Profitability": 52.38,
+      "Health": 55.14,
+      "Profitability": 54.76,
       "Technical": 62.77,
       "Risk": 65.8
     }

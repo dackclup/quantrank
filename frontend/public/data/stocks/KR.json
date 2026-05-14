@@ -3,17 +3,17 @@
   "name": "Kroger",
   "sector": "Consumer Staples",
   "industry": "Food Retail",
-  "market_cap": 127048315902.70996,
+  "market_cap": 40577007164.037315,
   "current_price": 66.24,
-  "rank": 318,
-  "composite_score": 47.34,
+  "rank": 376,
+  "composite_score": 44.36,
   "pillar_scores": {
-    "quality": 64.58,
-    "value": 37.04,
+    "quality": 45.49,
+    "value": 52.31,
     "growth": 35.76,
     "momentum": 44.32,
-    "health": 22.95,
-    "profitability": 56.02,
+    "health": 20.58,
+    "profitability": 41.2,
     "technical": 62.85,
     "risk": 61.24,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 147642000000.0,
-    "net_income": 1016000000.0,
+    "net_income": 1024000000.0,
     "total_assets": 49953000000.0,
     "total_liabilities": 44017000000.0,
     "stockholders_equity": 5927000000.0,
@@ -31,39 +31,39 @@
     "free_cash_flow": 3456000000.0,
     "eps_basic": 1.55,
     "eps_diluted": 1.54,
-    "shares_outstanding": 1918000000.0,
-    "market_cap": 127048315902.70996,
+    "shares_outstanding": 612575611.0,
+    "market_cap": 40577007164.037315,
     "pe_ratio_ttm": 43.01298562582437,
     "goodwill": 2595000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 8.637974215066054,
+        "value": 15.284680106476083,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 92.49995790678881,
+        "value": 38.12421355270404,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 13.939641062755218,
+        "value": 30.103763527931115,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 64.91025824721986,
+        "value": 91.5270273864778,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 3.0931734652213234,
+        "value": 9.684856203480976,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,14 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 13.939641062755218,
-    "max": 92.49995790678881,
-    "low": 3.0931734652213234,
-    "high": 92.49995790678881,
-    "mos_pct": -375.1915602816603,
+    "median": 30.103763527931115,
+    "max": 91.5270273864778,
+    "low": 9.684856203480976,
+    "high": 91.5270273864778,
+    "mos_pct": -120.03892570545275,
     "valuation_warnings": [
       "goodwill_heavy",
-      "extreme_graham_estimate",
       "extreme_rim_estimate"
     ]
   },
@@ -91,24 +90,24 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
+      "cost_of_revenue",
       "research_and_development",
       "sga_expense",
-      "accounts_receivable",
-      "property_plant_equipment"
+      "interest_expense",
+      "accounts_receivable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 44,
-    "latest_period_end": "2026-01-31",
+    "latest_period_end": "2026-03-25",
     "latest_filed_date": "2026-03-31"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
-    "extreme_graham_estimate",
     "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 1.3159541188738269,
+  "tangible_book_value": 4.12030768884137,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -119,12 +118,12 @@
   "pillar_baseline": {
     "label": "Consumer Staples median (n=36)",
     "values": {
-      "Quality": 56.08,
-      "Value": 49.07,
-      "Growth": 50.52,
+      "Quality": 49.65,
+      "Value": 51.39,
+      "Growth": 48.44,
       "Momentum": 39.14,
-      "Health": 38.65,
-      "Profitability": 52.08,
+      "Health": 39.29,
+      "Profitability": 53.94,
       "Technical": 57.99,
       "Risk": 51.44
     }

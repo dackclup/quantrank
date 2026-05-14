@@ -3,17 +3,17 @@
   "name": "Rollins, Inc.",
   "sector": "Industrials",
   "industry": "Environmental & Facilities Services",
-  "market_cap": 25430813449.56951,
+  "market_cap": 25430910532.72895,
   "current_price": 52.82,
-  "rank": 373,
-  "composite_score": 44.51,
+  "rank": 164,
+  "composite_score": 54.55,
   "pillar_scores": {
-    "quality": 67.41,
-    "value": 13.5,
-    "growth": 79.75,
+    "quality": 83.54,
+    "value": 20.68,
+    "growth": 84.18,
     "momentum": 33.62,
-    "health": 18.76,
-    "profitability": 53.59,
+    "health": 40.28,
+    "profitability": 74.05,
     "technical": 26.94,
     "risk": 58.6,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 3844970000.0,
-    "net_income": 529295000.0,
+    "net_income": 1003820000.0,
     "total_assets": 3160234000.0,
     "total_liabilities": 1778546000.0,
     "stockholders_equity": 1381688000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 621138000.0,
     "eps_basic": 0.22,
     "eps_diluted": 0.22,
-    "shares_outstanding": 481461825.0,
-    "market_cap": 25430813449.56951,
+    "shares_outstanding": 481463663.0,
+    "market_cap": 25430910532.72895,
     "pe_ratio_ttm": 240.09090770374644,
     "goodwill": 1384591000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 25.783444701122637,
+        "value": 57.84755913343752,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 19.61894378577654,
+        "value": 18.26458399768554,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 22.05387919478303,
+        "value": 28.89358029894398,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,32 +69,35 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 12.205747914806805,
+        "value": 12.205701319048098,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 20.836411490279787,
-    "max": 25.783444701122637,
-    "low": 12.205747914806805,
-    "high": 25.783444701122637,
-    "mos_pct": -153.49854373659696,
+    "median": 23.57908214831476,
+    "max": 57.84755913343752,
+    "low": 12.205701319048098,
+    "high": 57.84755913343752,
+    "mos_pct": -124.01211108465202,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "research_and_development",
-      "property_plant_equipment"
+      "gross_profit",
+      "cost_of_revenue",
+      "research_and_development"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 21,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-13",
     "latest_filed_date": "2026-04-23"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
   "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
@@ -108,18 +111,18 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 0.6192894367944051,
   "entered_top5": false,
   "exited_top5": false
 }

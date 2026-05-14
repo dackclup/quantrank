@@ -5,15 +5,15 @@
   "industry": "Electrical Components & Equipment",
   "market_cap": 77159372923.27881,
   "current_price": 137.76,
-  "rank": 389,
-  "composite_score": 43.36,
+  "rank": 449,
+  "composite_score": 38.76,
   "pillar_scores": {
-    "quality": 43.04,
-    "value": 52.74,
-    "growth": 16.14,
+    "quality": 29.43,
+    "value": 48.95,
+    "growth": 15.19,
     "momentum": 56.32,
-    "health": 32.71,
-    "profitability": 51.48,
+    "health": 39.44,
+    "profitability": 42.62,
     "technical": 42.73,
     "risk": 52.62,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 18316000000.0,
-    "net_income": 2446000000.0,
+    "net_income": 2447000000.0,
     "total_assets": 42088000000.0,
     "total_liabilities": null,
     "stockholders_equity": 20303000000.0,
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 125.40129922818737,
+        "value": 118.98630328201652,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 254.3424321193724,
+        "value": 236.04418205444904,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 125.40129922818737,
-    "max": 254.3424321193724,
+    "median": 118.98630328201652,
+    "max": 236.04418205444904,
     "low": 39.462317076991155,
-    "high": 254.3424321193724,
-    "mos_pct": -9.855316774796712,
+    "high": 236.04418205444904,
+    "mos_pct": -15.778027140084157,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -88,8 +88,9 @@
     "missing_metrics": [
       "total_liabilities",
       "operating_income",
-      "ebitda",
-      "property_plant_equipment"
+      "research_and_development",
+      "interest_expense",
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 9,
@@ -110,18 +111,18 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -2.704013158419034,
+  "dechow_f_score": 0.5681288491198945,
   "entered_top5": false,
   "exited_top5": false
 }

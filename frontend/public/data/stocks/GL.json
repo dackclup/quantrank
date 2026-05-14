@@ -3,17 +3,17 @@
   "name": "Globe Life",
   "sector": "Financials",
   "industry": "Life & Health Insurance",
-  "market_cap": 14108460323.739609,
+  "market_cap": 11878872411.90541,
   "current_price": 152.99,
-  "rank": 73,
-  "composite_score": 60.51,
+  "rank": 94,
+  "composite_score": 58.23,
   "pillar_scores": {
-    "quality": 59.33,
-    "value": 66.22,
-    "growth": 47.33,
+    "quality": 57.33,
+    "value": 61.11,
+    "growth": 48.33,
     "momentum": 72.96,
-    "health": 63.35,
-    "profitability": 48.89,
+    "health": 55.18,
+    "profitability": 50.67,
     "technical": 52.34,
     "risk": 60.06,
     "sentiment": null,
@@ -31,27 +31,27 @@
     "free_cash_flow": 1229793000.0,
     "eps_basic": 3.45,
     "eps_diluted": 3.39,
-    "shares_outstanding": 92218183.0,
-    "market_cap": 14108460323.739609,
+    "shares_outstanding": 77644761.0,
+    "market_cap": 11878872411.90541,
     "pe_ratio_ttm": 45.12979513072686,
     "goodwill": 490446000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 128.12169314268692,
+        "value": 139.62875672398818,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 182.1919547779582,
+        "value": 207.0947892406951,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 136.40763563212195,
+        "value": 158.31224347510403,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -63,7 +63,7 @@
         "tier_used": null
       },
       "rim": {
-        "value": 84.52552278752543,
+        "value": 100.39041949772619,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,36 +75,40 @@
         "tier_used": null
       }
     },
-    "median": 132.26466438740442,
-    "max": 182.1919547779582,
-    "low": 84.52552278752543,
-    "high": 182.1919547779582,
-    "mos_pct": -15.669597924548405,
+    "median": 148.9705000995461,
+    "max": 207.0947892406951,
+    "low": 100.39041949772619,
+    "high": 207.0947892406951,
+    "mos_pct": -2.6981888299576324,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
+      "gross_profit",
+      "operating_income",
       "cost_of_revenue",
       "research_and_development",
+      "sga_expense",
+      "depreciation_and_amortization",
       "current_assets",
       "current_liabilities",
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "intangibles_net",
-      "property_plant_equipment"
+      "ebitda",
+      "intangibles_net"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 60.66211475886485,
+  "tangible_book_value": 72.04800334178374,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -116,11 +120,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

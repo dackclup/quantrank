@@ -3,17 +3,17 @@
   "name": "Best Buy",
   "sector": "Consumer Discretionary",
   "industry": "Computer & Electronics Retail",
-  "market_cap": 11609232095.718384,
+  "market_cap": 11609930370.764141,
   "current_price": 55.52,
-  "rank": 138,
-  "composite_score": 55.87,
+  "rank": 45,
+  "composite_score": 62.48,
   "pillar_scores": {
-    "quality": 73.96,
-    "value": 91.67,
-    "growth": 22.92,
+    "quality": 85.94,
+    "value": 92.01,
+    "growth": 43.75,
     "momentum": 19.92,
-    "health": 43.69,
-    "profitability": 49.31,
+    "health": 45.24,
+    "profitability": 56.94,
     "technical": 23.66,
     "risk": 24.63,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 46271000000.0,
-    "net_income": 1069000000.0,
+    "net_income": 4016000000.0,
     "total_assets": 14670000000.0,
     "total_liabilities": null,
     "stockholders_equity": 2964000000.0,
@@ -31,58 +31,57 @@
     "free_cash_flow": 2894000000.0,
     "eps_basic": 5.06,
     "eps_diluted": 5.04,
-    "shares_outstanding": 209100000.0,
-    "market_cap": 11609232095.718384,
+    "shares_outstanding": 209112577.0,
+    "market_cap": 11609930370.764141,
     "pe_ratio_ttm": 11.015873106699141,
     "goodwill": 790000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 34.058351480883644,
+        "value": 34.05732725189254,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 363.72614149107545,
+        "value": 420.7475479532854,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 90.81898507854717,
+        "value": 84.10424682803054,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 400.5508917192378,
+        "value": 142.05644938820143,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 30.231452099831223,
+        "value": 30.229633840123874,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 80.46589315124528,
+        "value": 80.4610535593246,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 85.64243911489623,
-    "max": 90.81898507854717,
-    "low": 30.231452099831223,
-    "high": 400.5508917192378,
-    "mos_pct": 35.172326907598794,
+    "median": 82.28265019367757,
+    "max": 142.05644938820143,
+    "low": 30.229633840123874,
+    "high": 420.7475479532854,
+    "mos_pct": 32.52526464925444,
     "valuation_warnings": [
-      "extreme_multiples_pe_estimate",
-      "extreme_multiples_ev_ebitda_estimate"
+      "extreme_multiples_pe_estimate"
     ]
   },
   "top5_factors": [],
@@ -95,16 +94,17 @@
     ],
     "imputed_metrics": [],
     "filing_lag_days": 57,
-    "latest_period_end": "2026-01-31",
+    "latest_period_end": "2026-03-16",
     "latest_filed_date": "2026-03-18"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
   "valuation_warnings": [
-    "extreme_multiples_pe_estimate",
-    "extreme_multiples_ev_ebitda_estimate"
+    "extreme_multiples_pe_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 10.310856049736968,
+  "tangible_book_value": 10.310235907044463,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -115,12 +115,12 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 45.18,
-      "Value": 49.31,
-      "Growth": 51.04,
+      "Quality": 46.35,
+      "Value": 49.13,
+      "Growth": 51.69,
       "Momentum": 37.92,
-      "Health": 48.37,
-      "Profitability": 51.22,
+      "Health": 43.72,
+      "Profitability": 52.6,
       "Technical": 32.16,
       "Risk": 40.54
     }

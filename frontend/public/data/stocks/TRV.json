@@ -3,17 +3,17 @@
   "name": "Travelers Companies (The)",
   "sector": "Financials",
   "industry": "Property & Casualty Insurance",
-  "market_cap": 62721249664.30664,
+  "market_cap": 62734434992.67563,
   "current_price": 295.02,
-  "rank": 27,
-  "composite_score": 64.7,
+  "rank": 54,
+  "composite_score": 61.27,
   "pillar_scores": {
-    "quality": 66.0,
-    "value": 72.22,
-    "growth": 72.33,
+    "quality": 63.33,
+    "value": 62.0,
+    "growth": 71.33,
     "momentum": 63.25,
-    "health": 63.63,
-    "profitability": 43.56,
+    "health": 56.33,
+    "profitability": 50.89,
     "technical": 26.44,
     "risk": 78.57,
     "sentiment": null,
@@ -31,27 +31,27 @@
     "free_cash_flow": null,
     "eps_basic": 7.89,
     "eps_diluted": 7.78,
-    "shares_outstanding": 212600000.0,
-    "market_cap": 62721249664.30664,
+    "shares_outstanding": 212644693.0,
+    "market_cap": 62734434992.67563,
     "pe_ratio_ttm": 37.92030707116605,
     "goodwill": 4060000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 245.05952417811577,
+        "value": 245.03376990062176,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 418.1278490184409,
+        "value": 488.4479222281243,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 312.12754141361563,
+        "value": 303.8787265555648,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -63,7 +63,7 @@
         "tier_used": null
       },
       "rim": {
-        "value": 161.25567404684415,
+        "value": 161.22178183096753,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 278.5935327958657,
-    "max": 418.1278490184409,
-    "low": 161.25567404684415,
-    "high": 418.1278490184409,
-    "mos_pct": -5.896208735700389,
+    "median": 274.4562482280933,
+    "max": 488.4479222281243,
+    "low": 161.22178183096753,
+    "high": 488.4479222281243,
+    "mos_pct": -7.492538762859072,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -89,6 +89,7 @@
       "capex",
       "free_cash_flow",
       "gross_profit",
+      "operating_income",
       "cost_of_revenue",
       "research_and_development",
       "current_assets",
@@ -96,17 +97,18 @@
       "inventory",
       "accounts_receivable",
       "accounts_payable",
+      "ebitda",
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 28,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-09",
     "latest_filed_date": "2026-04-16"
   },
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 129.79774223894637,
+  "tangible_book_value": 129.77046175330602,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -118,11 +120,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

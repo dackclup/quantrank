@@ -3,17 +3,17 @@
   "name": "Tapestry, Inc.",
   "sector": "Consumer Discretionary",
   "industry": "Apparel, Accessories & Luxury Goods",
-  "market_cap": 26845209382.629395,
+  "market_cap": 26811332931.208466,
   "current_price": 132.7,
-  "rank": 28,
-  "composite_score": 64.64,
+  "rank": 192,
+  "composite_score": 53.26,
   "pillar_scores": {
-    "quality": 93.75,
-    "value": 54.51,
-    "growth": 48.96,
+    "quality": 79.43,
+    "value": 21.53,
+    "growth": 47.4,
     "momentum": 69.12,
-    "health": 35.02,
-    "profitability": 69.44,
+    "health": 41.87,
+    "profitability": 61.28,
     "technical": 39.94,
     "risk": 53.12,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 1755000000.0,
     "eps_basic": 5.76,
     "eps_diluted": 5.58,
-    "shares_outstanding": 202300000.0,
-    "market_cap": 26845209382.629395,
+    "shares_outstanding": 202044714.0,
+    "market_cap": 26811332931.208466,
     "pe_ratio_ttm": 23.781361460258456,
     "goodwill": 960400000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 402.69679950797644,
+        "value": 69.16100243126449,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 20.036636265034904,
+        "value": 18.152554101462442,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 288.73152356710654,
+        "value": 59.04989948413541,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 63.32409615473165,
+        "value": 63.404106934973875,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 176.0278098609191,
-    "max": 402.69679950797644,
-    "low": 20.036636265034904,
-    "high": 402.69679950797644,
-    "mos_pct": 24.61418621688842,
+    "median": 61.22700320955464,
+    "max": 69.16100243126449,
+    "low": 18.152554101462442,
+    "high": 69.16100243126449,
+    "mos_pct": -116.73443087532004,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ]
@@ -88,15 +88,16 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "research_and_development",
-      "property_plant_equipment"
+      "research_and_development"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
-    "latest_period_end": "2026-03-28",
+    "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-05-07"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "altman_distress"
+  ],
   "valuation_warnings": [
     "extreme_multiples_pb_estimate"
   ],
@@ -112,18 +113,18 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 45.18,
-      "Value": 49.31,
-      "Growth": 51.04,
+      "Quality": 46.35,
+      "Value": 49.13,
+      "Growth": 51.69,
       "Momentum": 37.92,
-      "Health": 48.37,
-      "Profitability": 51.22,
+      "Health": 43.72,
+      "Profitability": 52.6,
       "Technical": 32.16,
       "Risk": 40.54
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -3.1170786900458145,
+  "dechow_f_score": 0.3608223707714841,
   "entered_top5": false,
   "exited_top5": false
 }

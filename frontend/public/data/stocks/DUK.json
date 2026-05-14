@@ -3,16 +3,16 @@
   "name": "Duke Energy",
   "sector": "Utilities",
   "industry": "Electric Utilities",
-  "market_cap": 96394201187.13379,
+  "market_cap": 96591972475.86942,
   "current_price": 123.9,
-  "rank": 288,
-  "composite_score": 48.79,
+  "rank": 244,
+  "composite_score": 50.89,
   "pillar_scores": {
-    "quality": 51.61,
-    "value": 48.92,
-    "growth": 51.61,
+    "quality": 41.94,
+    "value": 59.68,
+    "growth": 70.16,
     "momentum": 62.85,
-    "health": 9.72,
+    "health": 9.92,
     "profitability": 51.61,
     "technical": 40.14,
     "risk": 82.09,
@@ -20,8 +20,8 @@
     "ml": null
   },
   "raw_metrics": {
-    "revenue": null,
-    "net_income": 5139000000.0,
+    "revenue": 33166000000.0,
+    "net_income": 5244000000.0,
     "total_assets": 198048000000.0,
     "total_liabilities": null,
     "stockholders_equity": 54457000000.0,
@@ -31,33 +31,33 @@
     "free_cash_flow": -3299000000.0,
     "eps_basic": 1.97,
     "eps_diluted": 1.97,
-    "shares_outstanding": 778000000.0,
-    "market_cap": 96394201187.13379,
+    "shares_outstanding": 779596217.0,
+    "market_cap": 96591972475.86942,
     "pe_ratio_ttm": 62.893401789786246,
     "goodwill": 19010000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 72.55618512573548,
+        "value": 72.48186796181254,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 111.69742095847151,
+        "value": 135.2849666652235,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 164.80249631102197,
+        "value": 164.31684934757976,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 63.31328751635193,
+        "value": 140.7808754909639,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 92.12680304210349,
-    "max": 164.80249631102197,
-    "low": 63.31328751635193,
-    "high": 164.80249631102197,
-    "mos_pct": -34.488549949198315,
+    "median": 138.0329210780937,
+    "max": 164.31684934757976,
+    "low": 72.48186796181254,
+    "high": 164.31684934757976,
+    "mos_pct": 10.238803498347272,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -88,16 +88,16 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "revenue",
       "total_liabilities",
       "gross_profit",
+      "cost_of_revenue",
       "research_and_development",
       "sga_expense",
-      "property_plant_equipment"
+      "dividends_paid"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 9,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
@@ -105,7 +105,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 45.11053984575835,
+  "tangible_book_value": 45.018176377323286,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -118,10 +118,10 @@
     "values": {
       "Quality": 51.61,
       "Value": 47.85,
-      "Growth": 50.81,
+      "Growth": 54.03,
       "Momentum": 62.85,
-      "Health": 19.36,
-      "Profitability": 51.61,
+      "Health": 17.85,
+      "Profitability": 52.15,
       "Technical": 43.63,
       "Risk": 71.98
     }

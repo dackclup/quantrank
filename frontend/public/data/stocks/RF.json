@@ -3,17 +3,17 @@
   "name": "Regions Financial Corporation",
   "sector": "Financials",
   "industry": "Regional Banks",
-  "market_cap": 23803898036.12001,
+  "market_cap": 22725496380.75539,
   "current_price": 26.63,
-  "rank": 267,
-  "composite_score": 49.73,
+  "rank": 304,
+  "composite_score": 47.91,
   "pillar_scores": {
-    "quality": 43.33,
-    "value": 66.0,
-    "growth": 37.67,
+    "quality": 41.33,
+    "value": 58.0,
+    "growth": 35.67,
     "momentum": 56.08,
-    "health": 45.9,
-    "profitability": 47.78,
+    "health": 53.82,
+    "profitability": 47.56,
     "technical": 29.13,
     "risk": 59.1,
     "sentiment": null,
@@ -31,27 +31,27 @@
     "free_cash_flow": null,
     "eps_basic": 0.63,
     "eps_diluted": 0.62,
-    "shares_outstanding": 893875283.0,
-    "market_cap": 23803898036.12001,
+    "shares_outstanding": 853379538.0,
+    "market_cap": 22725496380.75539,
     "pe_ratio_ttm": 42.95161154962355,
     "goodwill": 5733000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 26.208995235318227,
+        "value": 26.823640722780045,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 33.32124246676521,
+        "value": 35.61381486999305,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 43.584388005311,
+        "value": 44.455464248118865,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -63,7 +63,7 @@
         "tier_used": null
       },
       "rim": {
-        "value": 15.025471630732076,
+        "value": 15.738481072098434,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 29.76511885104172,
-    "max": 43.584388005311,
-    "low": 15.025471630732076,
-    "high": 43.584388005311,
-    "mos_pct": 10.532864679508563,
+    "median": 31.218727796386545,
+    "max": 44.455464248118865,
+    "low": 15.738481072098434,
+    "high": 44.455464248118865,
+    "mos_pct": 14.698640718316113,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -90,25 +90,27 @@
       "capex",
       "free_cash_flow",
       "gross_profit",
+      "operating_income",
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
+      "depreciation_and_amortization",
       "current_assets",
       "current_liabilities",
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-05-06",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 14.446086882122682,
+  "tangible_book_value": 15.131602557829316,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -120,11 +122,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

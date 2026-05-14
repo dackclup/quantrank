@@ -3,24 +3,24 @@
   "name": "American Express",
   "sector": "Financials",
   "industry": "Consumer Finance",
-  "market_cap": 211154010009.76562,
+  "market_cap": 211255080022.21375,
   "current_price": 309.61,
-  "rank": 328,
-  "composite_score": 46.8,
+  "rank": 287,
+  "composite_score": 49.02,
   "pillar_scores": {
-    "quality": 69.33,
-    "value": 26.44,
-    "growth": 49.67,
+    "quality": 68.67,
+    "value": 36.0,
+    "growth": 50.33,
     "momentum": 35.46,
-    "health": 38.09,
-    "profitability": 54.22,
+    "health": 43.43,
+    "profitability": 48.44,
     "technical": 37.9,
     "risk": 54.71,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 42195000000.0,
+    "revenue": 74169000000.0,
     "net_income": 11220000000.0,
     "total_assets": 308894000000.0,
     "total_liabilities": 274899000000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": 14324000000.0,
     "eps_basic": 4.29,
     "eps_diluted": 4.28,
-    "shares_outstanding": 682000000.0,
-    "market_cap": 211154010009.76562,
+    "shares_outstanding": 682326443.0,
+    "market_cap": 211255080022.21375,
     "pe_ratio_ttm": 72.33878162419684,
     "goodwill": 4872000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 113.85377062286514,
+        "value": 113.82653203840216,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 229.453101176227,
+        "value": 224.22854765917205,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 103.05146389566895,
+        "value": 98.50578827914376,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -63,7 +63,7 @@
         "tier_used": null
       },
       "rim": {
-        "value": 93.569329724766,
+        "value": 93.52456368496686,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 108.45261725926704,
-    "max": 229.453101176227,
-    "low": 93.569329724766,
-    "high": 229.453101176227,
-    "mos_pct": -185.4794961853325,
+    "median": 106.16616015877295,
+    "max": 224.22854765917205,
+    "low": 93.52456368496686,
+    "high": 224.22854765917205,
+    "mos_pct": -191.62775114832874,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -87,25 +87,27 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
+      "operating_income",
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
+      "depreciation_and_amortization",
       "current_assets",
       "current_liabilities",
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 21,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-17",
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 42.570381231671554,
+  "tangible_book_value": 42.55001443641837,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -117,11 +119,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

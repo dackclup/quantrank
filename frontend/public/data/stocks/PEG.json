@@ -3,24 +3,24 @@
   "name": "Public Service Enterprise Group",
   "sector": "Utilities",
   "industry": "Electric Utilities",
-  "market_cap": 38455560607.91016,
+  "market_cap": 38480379270.74249,
   "current_price": 77.22,
-  "rank": 84,
-  "composite_score": 59.15,
+  "rank": 178,
+  "composite_score": 53.96,
   "pillar_scores": {
-    "quality": 81.45,
-    "value": 40.05,
-    "growth": 80.65,
+    "quality": 67.74,
+    "value": 42.2,
+    "growth": 76.61,
     "momentum": 43.38,
-    "health": 22.83,
-    "profitability": 86.02,
+    "health": 19.96,
+    "profitability": 68.28,
     "technical": 42.88,
     "risk": 64.81,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 12794000000.0,
+    "revenue": 12893000000.0,
     "net_income": 2263000000.0,
     "total_assets": 57945000000.0,
     "total_liabilities": null,
@@ -31,39 +31,39 @@
     "free_cash_flow": 183000000.0,
     "eps_basic": 1.48,
     "eps_diluted": 1.48,
-    "shares_outstanding": 498000000.0,
-    "market_cap": 38455560607.91016,
+    "shares_outstanding": 498321402.0,
+    "market_cap": 38480379270.74249,
     "pe_ratio_ttm": 52.175676500475085,
     "goodwill": 0.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 50.44220568589196,
+        "value": 50.425936225392114,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 91.84593042908408,
+        "value": 91.33381389860308,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 55.49572869232314,
+        "value": 55.40402895064633,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 61.038004504151736,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sub_industry"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
       },
       "rim": {
-        "value": 34.866967794543555,
+        "value": 34.84447967113941,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 55.49572869232314,
-    "max": 91.84593042908408,
-    "low": 34.866967794543555,
-    "high": 91.84593042908408,
-    "mos_pct": -39.14584606830319,
+    "median": 52.91498258801922,
+    "max": 91.33381389860308,
+    "low": 34.84447967113941,
+    "high": 91.33381389860308,
+    "mos_pct": -45.93220567020831,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -88,18 +88,21 @@
     "missing_metrics": [
       "total_liabilities",
       "gross_profit",
+      "cost_of_revenue",
       "research_and_development",
-      "property_plant_equipment"
+      "sga_expense",
+      "depreciation_and_amortization",
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 9,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-21",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 26.319277108433734,
+  "tangible_book_value": 26.302301983008146,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -112,10 +115,10 @@
     "values": {
       "Quality": 51.61,
       "Value": 47.85,
-      "Growth": 50.81,
+      "Growth": 54.03,
       "Momentum": 62.85,
-      "Health": 19.36,
-      "Profitability": 51.61,
+      "Health": 17.85,
+      "Profitability": 52.15,
       "Technical": 43.63,
       "Risk": 71.98
     }

@@ -3,17 +3,17 @@
   "name": "First Solar",
   "sector": "Information Technology",
   "industry": "Semiconductors",
-  "market_cap": 25208475159.641083,
+  "market_cap": 25208559615.64328,
   "current_price": 234.6,
-  "rank": 244,
-  "composite_score": 50.93,
+  "rank": 162,
+  "composite_score": 54.67,
   "pillar_scores": {
-    "quality": 32.53,
-    "value": 68.72,
-    "growth": 58.56,
+    "quality": 36.3,
+    "value": 77.17,
+    "growth": 59.25,
     "momentum": 26.0,
-    "health": 89.32,
-    "profitability": 37.9,
+    "health": 90.68,
+    "profitability": 47.26,
     "technical": 66.28,
     "risk": 35.62,
     "sentiment": null,
@@ -31,39 +31,39 @@
     "free_cash_flow": 1667783000.0,
     "eps_basic": 3.23,
     "eps_diluted": 3.22,
-    "shares_outstanding": 107453003.0,
-    "market_cap": 25208475159.641083,
+    "shares_outstanding": 107453363.0,
+    "market_cap": 25208559615.64328,
     "pe_ratio_ttm": 72.8571447526446,
     "goodwill": 30582000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 152.30265839195576,
+        "value": 152.30240326265402,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 437.925039057146,
+        "value": 805.069996979172,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 1150.1337387178912,
+        "value": 1036.013756521826,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 797.3940702886752,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sub_industry"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
       },
       "rim": {
-        "value": 101.05916877970496,
+        "value": 101.05883020211424,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,29 +75,30 @@
         "tier_used": null
       }
     },
-    "median": 437.925039057146,
-    "max": 1150.1337387178912,
-    "low": 101.05916877970496,
-    "high": 1150.1337387178912,
-    "mos_pct": 46.4291864633705,
+    "median": 478.686200120913,
+    "max": 1036.013756521826,
+    "low": 101.05883020211424,
+    "high": 1036.013756521826,
+    "mos_pct": 50.990856631284295,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
+      "depreciation_and_amortization",
       "dividends_paid",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 91.04543127566197,
+  "tangible_book_value": 91.04512624700261,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -108,18 +109,18 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 0.2192936315015349,
   "entered_top5": false,
   "exited_top5": false
 }

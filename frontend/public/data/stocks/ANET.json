@@ -3,17 +3,17 @@
   "name": "Arista Networks",
   "sector": "Information Technology",
   "industry": "Communications Equipment",
-  "market_cap": 177156851074.21875,
+  "market_cap": 177157215883.39508,
   "current_price": 140.69,
-  "rank": 190,
-  "composite_score": 53.3,
+  "rank": 136,
+  "composite_score": 56.23,
   "pillar_scores": {
-    "quality": 53.42,
-    "value": 29.0,
-    "growth": 56.85,
+    "quality": 58.56,
+    "value": 31.96,
+    "growth": 57.53,
     "momentum": 69.82,
-    "health": 89.88,
-    "profitability": 53.2,
+    "health": 90.56,
+    "profitability": 64.38,
     "technical": 45.17,
     "risk": 44.82,
     "sentiment": null,
@@ -31,39 +31,39 @@
     "free_cash_flow": 5286700000.0,
     "eps_basic": 0.81,
     "eps_diluted": 0.8,
-    "shares_outstanding": 1259200000.0,
-    "market_cap": 177156851074.21875,
+    "shares_outstanding": 1259202593.0,
+    "market_cap": 177157215883.39508,
     "pe_ratio_ttm": 175.8625030517578,
     "goodwill": 416100000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 29.93488565684588,
+        "value": 29.93485483527717,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 65.7811325042745,
+        "value": 106.57448015167124,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 106.613919023782,
+        "value": 98.61756419200668,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 61.895322180672174,
+        "value": 80.85288957311063,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 16.567384781323547,
+        "value": 16.567350665106684,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 61.895322180672174,
-    "max": 106.613919023782,
-    "low": 16.567384781323547,
-    "high": 106.613919023782,
-    "mos_pct": -127.30312644747653,
+    "median": 80.85288957311063,
+    "max": 106.57448015167124,
+    "low": 16.567350665106684,
+    "high": 106.57448015167124,
+    "mos_pct": -74.00738945042694,
     "valuation_warnings": [
       "extreme_rim_estimate"
     ]
@@ -88,12 +88,12 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "dividends_paid",
-      "property_plant_equipment"
+      "interest_expense",
+      "dividends_paid"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
@@ -101,7 +101,7 @@
     "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 10.335609911054638,
+  "tangible_book_value": 10.335588627556138,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -112,18 +112,18 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 0.6518033895089196,
   "entered_top5": false,
   "exited_top5": false
 }

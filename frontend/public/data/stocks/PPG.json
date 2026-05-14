@@ -3,17 +3,17 @@
   "name": "PPG Industries",
   "sector": "Materials",
   "industry": "Specialty Chemicals",
-  "market_cap": 23562605731.52652,
+  "market_cap": 23507033795.928955,
   "current_price": 105.46,
-  "rank": 30,
-  "composite_score": 64.46,
+  "rank": 9,
+  "composite_score": 67.58,
   "pillar_scores": {
-    "quality": 77.88,
-    "value": 70.51,
-    "growth": 65.38,
+    "quality": 83.65,
+    "value": 76.92,
+    "growth": 63.46,
     "momentum": 36.25,
-    "health": 63.67,
-    "profitability": 77.56,
+    "health": 67.33,
+    "profitability": 76.92,
     "technical": 40.79,
     "risk": 32.54,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 16121000000.0,
-    "net_income": 1585000000.0,
+    "net_income": 1599000000.0,
     "total_assets": 22150000000.0,
     "total_liabilities": 13896000000.0,
     "stockholders_equity": 8104000000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 1227000000.0,
     "eps_basic": 1.71,
     "eps_diluted": 1.7,
-    "shares_outstanding": 223426948.0,
-    "market_cap": 23562605731.52652,
+    "shares_outstanding": 222900000.0,
+    "market_cap": 23507033795.928955,
     "pe_ratio_ttm": 62.03529357910156,
     "goodwill": 6152000000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 166.5746381881776,
+        "value": 189.7251450649517,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 120.36847585115417,
+        "value": 111.48185665615742,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 140.93907914254132,
+        "value": 195.64600650247343,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 39.27607787150652,
+        "value": 39.36892870453584,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 130.65377749684774,
-    "max": 166.5746381881776,
-    "low": 39.27607787150652,
-    "high": 166.5746381881776,
-    "mos_pct": 19.28285495839026,
+    "median": 150.60350086055456,
+    "max": 195.64600650247343,
+    "low": 39.36892870453584,
+    "high": 195.64600650247343,
+    "mos_pct": 29.975067988546144,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -87,8 +87,8 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
-      "accounts_payable",
-      "property_plant_equipment"
+      "research_and_development",
+      "accounts_payable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
@@ -109,18 +109,18 @@
   "pillar_baseline": {
     "label": "Materials median (n=26)",
     "values": {
-      "Quality": 52.16,
-      "Value": 50.8,
-      "Growth": 48.08,
+      "Quality": 51.68,
+      "Value": 49.84,
+      "Growth": 48.56,
       "Momentum": 51.87,
-      "Health": 51.58,
-      "Profitability": 50.48,
+      "Health": 56.53,
+      "Profitability": 54.33,
       "Technical": 57.81,
       "Risk": 48.94
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -2.458238303879437,
+  "dechow_f_score": 0.4564417045160459,
   "entered_top5": false,
   "exited_top5": false
 }

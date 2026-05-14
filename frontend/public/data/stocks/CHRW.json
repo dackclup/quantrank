@@ -3,17 +3,17 @@
   "name": "C.H. Robinson",
   "sector": "Industrials",
   "industry": "Air Freight & Logistics",
-  "market_cap": 19290311170.944214,
+  "market_cap": 19243952189.42404,
   "current_price": 163.26,
-  "rank": 149,
-  "composite_score": 55.49,
+  "rank": 227,
+  "composite_score": 51.6,
   "pillar_scores": {
-    "quality": 76.58,
-    "value": 42.41,
-    "growth": 25.32,
+    "quality": 67.72,
+    "value": 41.35,
+    "growth": 20.57,
     "momentum": 55.73,
-    "health": 65.78,
-    "profitability": 63.92,
+    "health": 69.68,
+    "profitability": 47.68,
     "technical": 41.33,
     "risk": 56.51,
     "sentiment": null,
@@ -31,55 +31,55 @@
     "free_cash_flow": 857672000.0,
     "eps_basic": 1.23,
     "eps_diluted": 1.22,
-    "shares_outstanding": 118157000.0,
-    "market_cap": 19290311170.944214,
+    "shares_outstanding": 117873042.0,
+    "market_cap": 19243952189.42404,
     "pe_ratio_ttm": 133.81966762855404,
     "goodwill": 1459459000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 12.874449641615032,
+        "value": 12.889947688648203,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 142.98092061531645,
+        "value": 138.40430733949955,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 98.59808212294347,
+        "value": 92.01301287928446,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 96.33145832239116,
+        "value": 118.0727870434963,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 3.9659759436733566,
+        "value": 3.975530041691915,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 66.78636811630886,
+        "value": 66.94725752066964,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 81.55891321935002,
-    "max": 142.98092061531645,
-    "low": 3.9659759436733566,
-    "high": 142.98092061531645,
-    "mos_pct": -100.17431334298625,
+    "median": 79.48013519997704,
+    "max": 138.40430733949955,
+    "low": 3.975530041691915,
+    "high": 138.40430733949955,
+    "mos_pct": -105.40980975442918,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -91,15 +91,16 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
+      "cost_of_revenue",
       "research_and_development",
+      "sga_expense",
       "interest_expense",
       "inventory",
-      "accounts_receivable",
-      "property_plant_equipment"
+      "accounts_receivable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
@@ -109,7 +110,7 @@
     "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 1.936914444341004,
+  "tangible_book_value": 1.941580501502625,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -120,12 +121,12 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }

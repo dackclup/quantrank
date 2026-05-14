@@ -5,15 +5,15 @@
   "industry": "Fertilizers & Agricultural Chemicals",
   "market_cap": 7240546768.56797,
   "current_price": 22.78,
-  "rank": 495,
-  "composite_score": 31.48,
+  "rank": 497,
+  "composite_score": 30.8,
   "pillar_scores": {
-    "quality": 13.46,
-    "value": 71.47,
-    "growth": 19.23,
+    "quality": 15.38,
+    "value": 54.81,
+    "growth": 30.77,
     "momentum": 15.64,
-    "health": 34.72,
-    "profitability": 17.95,
+    "health": 44.46,
+    "profitability": 19.87,
     "technical": 38.7,
     "risk": 21.68,
     "sentiment": null,
@@ -45,22 +45,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_eps_ttm",
-        "tier_used": null
+        "value": 5.705286407649869,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 123.24248672119393,
+        "value": 113.87447812869834,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_ebitda",
-        "tier_used": null
+        "value": 46.65257624514282,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "rim": {
         "value": null,
@@ -76,12 +76,11 @@
       }
     },
     "median": 38.3063708319312,
-    "max": 38.3063708319312,
-    "low": 25.13578220344616,
-    "high": 123.24248672119393,
+    "max": 113.87447812869834,
+    "low": 5.705286407649869,
+    "high": 113.87447812869834,
     "mos_pct": 40.5320833273595,
     "valuation_warnings": [
-      "extreme_multiples_pb_estimate",
       "value_trap_risk"
     ]
   },
@@ -91,17 +90,17 @@
     "missing_metrics": [
       "total_liabilities",
       "research_and_development",
+      "interest_expense",
       "accounts_receivable",
       "intangibles_net"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 3,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-05-08",
     "latest_filed_date": "2026-05-11"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_multiples_pb_estimate",
     "value_trap_risk"
   ],
   "has_history": true,
@@ -116,12 +115,12 @@
   "pillar_baseline": {
     "label": "Materials median (n=26)",
     "values": {
-      "Quality": 52.16,
-      "Value": 50.8,
-      "Growth": 48.08,
+      "Quality": 51.68,
+      "Value": 49.84,
+      "Growth": 48.56,
       "Momentum": 51.87,
-      "Health": 51.58,
-      "Profitability": 50.48,
+      "Health": 56.53,
+      "Profitability": 54.33,
       "Technical": 57.81,
       "Risk": 48.94
     }

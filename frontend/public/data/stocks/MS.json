@@ -3,25 +3,25 @@
   "name": "Morgan Stanley",
   "sector": "Financials",
   "industry": "Investment Banking & Brokerage",
-  "market_cap": 306179549723.72766,
+  "market_cap": 305725118967.2048,
   "current_price": 193.83,
-  "rank": 147,
-  "composite_score": 55.6,
+  "rank": 181,
+  "composite_score": 53.88,
   "pillar_scores": {
-    "quality": 53.33,
-    "value": 43.78,
-    "growth": 58.0,
+    "quality": 51.33,
+    "value": 40.0,
+    "growth": 57.67,
     "momentum": 81.32,
-    "health": 46.04,
-    "profitability": 47.11,
+    "health": 42.03,
+    "profitability": 49.11,
     "technical": 70.02,
     "risk": 69.82,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": null,
-    "net_income": 18113000000.0,
+    "revenue": 73486000000.0,
+    "net_income": 18292000000.0,
     "total_assets": 1581418000000.0,
     "total_liabilities": 1466034000000.0,
     "stockholders_equity": 114286000000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": null,
     "eps_basic": 3.47,
     "eps_diluted": 3.43,
-    "shares_outstanding": 1579629298.0,
-    "market_cap": 306179549723.72766,
+    "shares_outstanding": 1577284817.0,
+    "market_cap": 305725118967.2048,
     "pe_ratio_ttm": 56.510204615467835,
     "goodwill": 17105000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 100.54277829094917,
+        "value": 100.6174740915813,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 183.88414416692956,
+        "value": 158.13984882688572,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 149.57580443794097,
+        "value": 143.2589677290625,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -63,7 +63,7 @@
         "tier_used": null
       },
       "rim": {
-        "value": 61.72135803815203,
+        "value": 61.813100854449395,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,18 +75,17 @@
         "tier_used": null
       }
     },
-    "median": 125.05929136444507,
-    "max": 183.88414416692956,
-    "low": 61.72135803815203,
-    "high": 183.88414416692956,
-    "mos_pct": -54.9904846863393,
+    "median": 121.9382209103219,
+    "max": 158.13984882688572,
+    "low": 61.813100854449395,
+    "high": 158.13984882688572,
+    "mos_pct": -58.957544553323274,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "revenue",
       "capex",
       "free_cash_flow",
       "gross_profit",
@@ -99,12 +98,11 @@
       "inventory",
       "accounts_receivable",
       "accounts_payable",
-      "ebitda",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 9,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [
@@ -112,7 +110,7 @@
   ],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 57.7483591343214,
+  "tangible_book_value": 57.834196472836524,
   "tier2_events": {
     "going_concern_disclosure": true,
     "non_reliance_filing": false,
@@ -124,11 +122,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

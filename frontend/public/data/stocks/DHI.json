@@ -3,17 +3,17 @@
   "name": "D. R. Horton",
   "sector": "Consumer Discretionary",
   "industry": "Homebuilding",
-  "market_cap": 40099729950.84119,
+  "market_cap": 39908157725.90718,
   "current_price": 140.73,
-  "rank": 368,
-  "composite_score": 44.77,
+  "rank": 353,
+  "composite_score": 45.56,
   "pillar_scores": {
-    "quality": 35.68,
-    "value": 69.1,
-    "growth": 41.67,
+    "quality": 36.72,
+    "value": 71.88,
+    "growth": 41.15,
     "momentum": 34.21,
-    "health": 45.4,
-    "profitability": 32.29,
+    "health": 43.65,
+    "profitability": 34.2,
     "technical": 35.21,
     "risk": 42.76,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 33348500000.0,
-    "net_income": 3172600000.0,
+    "net_income": 3209300000.0,
     "total_assets": 35566900000.0,
     "total_liabilities": 11367900000.0,
     "stockholders_equity": 23625800000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": 4556700000.0,
     "eps_basic": 4.28,
     "eps_diluted": 4.27,
-    "shares_outstanding": 284940888.0,
-    "market_cap": 40099729950.84119,
+    "shares_outstanding": 283579613.0,
+    "market_cap": 39908157725.90718,
     "pe_ratio_ttm": 32.95784443267894,
     "goodwill": 163500000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 155.52605653521,
+        "value": 155.89889763009293,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 308.15686987438335,
+        "value": 247.93814877442745,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 531.2319995853367,
+        "value": 494.3464257605519,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -63,31 +63,33 @@
         "tier_used": null
       },
       "rim": {
-        "value": 117.60015113588304,
+        "value": 118.16467036927904,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 98.57840219407065,
+        "value": 99.05161080391079,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 155.52605653521,
-    "max": 531.2319995853367,
-    "low": 98.57840219407065,
-    "high": 531.2319995853367,
-    "mos_pct": 9.513557494670485,
+    "median": 155.89889763009293,
+    "max": 494.3464257605519,
+    "low": 99.05161080391079,
+    "high": 494.3464257605519,
+    "mos_pct": 9.729960976725879,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
+      "gross_profit",
       "operating_income",
       "research_and_development",
+      "interest_expense",
       "current_assets",
       "current_liabilities",
       "inventory",
@@ -95,18 +97,17 @@
       "accounts_payable",
       "long_term_debt",
       "short_term_debt",
-      "ebitda",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 21,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-16",
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 81.1757840805213,
+  "tangible_book_value": 81.56545442496248,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -117,12 +118,12 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 45.18,
-      "Value": 49.31,
-      "Growth": 51.04,
+      "Quality": 46.35,
+      "Value": 49.13,
+      "Growth": 51.69,
       "Momentum": 37.92,
-      "Health": 48.37,
-      "Profitability": 51.22,
+      "Health": 43.72,
+      "Profitability": 52.6,
       "Technical": 32.16,
       "Risk": 40.54
     }

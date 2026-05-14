@@ -3,25 +3,25 @@
   "name": "Freeport-McMoRan",
   "sector": "Materials",
   "industry": "Copper",
-  "market_cap": 63466203460.69336,
+  "market_cap": 96546525797.90146,
   "current_price": 67.16,
-  "rank": 21,
-  "composite_score": 66.03,
+  "rank": 15,
+  "composite_score": 66.63,
   "pillar_scores": {
-    "quality": 68.27,
-    "value": 56.41,
-    "growth": 62.98,
+    "quality": 76.92,
+    "value": 48.08,
+    "growth": 71.15,
     "momentum": 87.65,
-    "health": 68.76,
-    "profitability": 65.38,
+    "health": 59.94,
+    "profitability": 64.74,
     "technical": 63.75,
     "risk": 42.2,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 25866000000.0,
-    "net_income": null,
+    "revenue": 26421000000.0,
+    "net_income": 4746000000.0,
     "total_assets": 58840000000.0,
     "total_liabilities": 27329000000.0,
     "stockholders_equity": 19505000000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 1752000000.0,
     "eps_basic": 0.61,
     "eps_diluted": 0.61,
-    "shares_outstanding": 945000000.0,
-    "market_cap": 63466203460.69336,
+    "shares_outstanding": 1437559865.0,
+    "market_cap": 96546525797.90146,
     "pe_ratio_ttm": 110.0983666591957,
     "goodwill": 0.0
   },
@@ -45,27 +45,27 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 52.201473494572355,
+        "value": 87.31488631909674,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 68.49565582679898,
+        "value": 39.35667629143675,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 131.87348379793622,
+        "value": 100.138797762201,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "value": 15.125589837298591,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
@@ -75,36 +75,30 @@
         "tier_used": null
       }
     },
-    "median": 68.49565582679898,
-    "max": 131.87348379793622,
-    "low": 52.201473494572355,
-    "high": 131.87348379793622,
-    "mos_pct": 1.9499808397586444,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ]
+    "median": 63.33578130526675,
+    "max": 100.138797762201,
+    "low": 15.125589837298591,
+    "high": 100.138797762201,
+    "mos_pct": -6.038012444198929,
+    "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "net_income",
       "gross_profit",
       "research_and_development",
-      "income_before_tax",
-      "property_plant_equipment"
+      "interest_expense"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-08"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 20.183068783068784,
+  "tangible_book_value": 13.26762138006684,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -115,17 +109,17 @@
   "pillar_baseline": {
     "label": "Materials median (n=26)",
     "values": {
-      "Quality": 52.16,
-      "Value": 50.8,
-      "Growth": 48.08,
+      "Quality": 51.68,
+      "Value": 49.84,
+      "Growth": 48.56,
       "Momentum": 51.87,
-      "Health": 51.58,
-      "Profitability": 50.48,
+      "Health": 56.53,
+      "Profitability": 54.33,
       "Technical": 57.81,
       "Risk": 48.94
     }
   },
-  "beneish_m_score": null,
+  "beneish_m_score": -2.3396570835237913,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false

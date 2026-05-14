@@ -3,17 +3,17 @@
   "name": "Ulta Beauty",
   "sector": "Consumer Discretionary",
   "industry": "Other Specialty Retail",
-  "market_cap": 21736075584.777832,
+  "market_cap": 21524763290.84503,
   "current_price": 492.145,
-  "rank": 29,
-  "composite_score": 64.57,
+  "rank": 90,
+  "composite_score": 58.56,
   "pillar_scores": {
-    "quality": 83.33,
-    "value": 66.32,
-    "growth": 56.25,
+    "quality": 78.12,
+    "value": 56.25,
+    "growth": 56.77,
     "momentum": 32.32,
-    "health": 78.82,
-    "profitability": 76.39,
+    "health": 63.49,
+    "profitability": 62.85,
     "technical": 27.19,
     "risk": 43.86,
     "sentiment": null,
@@ -31,55 +31,55 @@
     "free_cash_flow": 1067951000.0,
     "eps_basic": 25.72,
     "eps_diluted": 25.64,
-    "shares_outstanding": 44166000.0,
-    "market_cap": 21736075584.777832,
+    "shares_outstanding": 43736630.0,
+    "market_cap": 21524763290.84503,
     "pe_ratio_ttm": 19.19442234842714,
     "goodwill": 226421000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 183.45686756702727,
+        "value": 184.3551819959927,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 1850.38457695063,
+        "value": 577.7931904468428,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 377.0392653068843,
+        "value": 344.5036815272997,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 1545.9936376162668,
+        "value": 540.3817879696604,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 218.99444787152066,
+        "value": 221.14435393613044,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 294.77785665976893,
+        "value": 297.67174144956647,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 335.90856098332665,
-    "max": 1850.38457695063,
-    "low": 183.45686756702727,
-    "high": 1850.38457695063,
-    "mos_pct": -46.51159457591206,
+    "median": 321.0877114884331,
+    "max": 577.7931904468428,
+    "low": 184.3551819959927,
+    "high": 577.7931904468428,
+    "mos_pct": -53.27431458908415,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -87,17 +87,19 @@
   "data_quality": {
     "missing_metrics": [
       "research_and_development",
+      "interest_expense",
+      "dividends_paid",
       "inventory"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 49,
-    "latest_period_end": "2026-01-31",
+    "latest_period_end": "2026-03-23",
     "latest_filed_date": "2026-03-26"
   },
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 58.271951274736224,
+  "tangible_book_value": 58.844017017314776,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -108,12 +110,12 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 45.18,
-      "Value": 49.31,
-      "Growth": 51.04,
+      "Quality": 46.35,
+      "Value": 49.13,
+      "Growth": 51.69,
       "Momentum": 37.92,
-      "Health": 48.37,
-      "Profitability": 51.22,
+      "Health": 43.72,
+      "Profitability": 52.6,
       "Technical": 32.16,
       "Risk": 40.54
     }

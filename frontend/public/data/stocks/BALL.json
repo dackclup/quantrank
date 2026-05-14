@@ -3,25 +3,25 @@
   "name": "Ball Corporation",
   "sector": "Materials",
   "industry": "Metal, Glass & Plastic Containers",
-  "market_cap": 38715789044.00603,
+  "market_cap": 15029615749.079967,
   "current_price": 56.45,
-  "rank": 482,
-  "composite_score": 34.76,
+  "rank": 214,
+  "composite_score": 52.23,
   "pillar_scores": {
-    "quality": 28.85,
-    "value": 20.51,
-    "growth": 51.92,
+    "quality": 52.4,
+    "value": 57.69,
+    "growth": 61.06,
     "momentum": 58.02,
-    "health": 28.84,
-    "profitability": 30.13,
+    "health": 36.29,
+    "profitability": 41.99,
     "technical": 39.49,
     "risk": 46.12,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 11214000000.0,
-    "net_income": 394800000.0,
+    "revenue": 13667000000.0,
+    "net_income": 941000000.0,
     "total_assets": 19770000000.0,
     "total_liabilities": 14151000000.0,
     "stockholders_equity": 5600000000.0,
@@ -31,82 +31,85 @@
     "free_cash_flow": 596000000.0,
     "eps_basic": 0.77,
     "eps_diluted": 0.77,
-    "shares_outstanding": 685842135.0,
-    "market_cap": 38715789044.00603,
+    "shares_outstanding": 266246511.0,
+    "market_cap": 15029615749.079967,
     "pe_ratio_ttm": 73.31168930251877,
     "goodwill": 4410000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 7.017127971259576,
+        "value": 11.262362855112968,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 75.44851259111574,
+        "value": 93.47429459018542,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 26.568095846959867,
+        "value": 64.49394320288776,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 13.233264625115487,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
-      },
-      "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
+      },
+      "rim": {
+        "value": 2.4025278413376903,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 3.5731750603491377,
+        "value": 9.204379816712816,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 13.233264625115487,
-    "max": 75.44851259111574,
-    "low": 3.5731750603491377,
-    "high": 75.44851259111574,
-    "mos_pct": -326.5765278796185,
+    "median": 11.262362855112968,
+    "max": 93.47429459018542,
+    "low": 2.4025278413376903,
+    "high": 93.47429459018542,
+    "mos_pct": -401.22697598321366,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
-      "extreme_dcf_estimate",
-      "value_trap_risk"
+      "extreme_rim_estimate",
+      "extreme_dcf_estimate"
     ]
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "property_plant_equipment"
+      "operating_income",
+      "cost_of_revenue",
+      "research_and_development",
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 9,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
     "extreme_graham_estimate",
-    "extreme_dcf_estimate",
-    "value_trap_risk"
+    "extreme_rim_estimate",
+    "extreme_dcf_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 0.35430894020531417,
+  "tangible_book_value": 0.9126880164074713,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -117,12 +120,12 @@
   "pillar_baseline": {
     "label": "Materials median (n=26)",
     "values": {
-      "Quality": 52.16,
-      "Value": 50.8,
-      "Growth": 48.08,
+      "Quality": 51.68,
+      "Value": 49.84,
+      "Growth": 48.56,
       "Momentum": 51.87,
-      "Health": 51.58,
-      "Profitability": 50.48,
+      "Health": 56.53,
+      "Profitability": 54.33,
       "Technical": 57.81,
       "Risk": 48.94
     }

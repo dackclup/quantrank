@@ -3,17 +3,17 @@
   "name": "NVR, Inc.",
   "sector": "Consumer Discretionary",
   "industry": "Homebuilding",
-  "market_cap": 16012773852.077637,
+  "market_cap": 15440220432.802734,
   "current_price": 5720.1001,
-  "rank": 305,
-  "composite_score": 47.99,
+  "rank": 285,
+  "composite_score": 49.18,
   "pillar_scores": {
     "quality": 58.85,
-    "value": 59.72,
+    "value": 65.97,
     "growth": 31.77,
     "momentum": 21.76,
-    "health": 46.93,
-    "profitability": 69.62,
+    "health": 45.18,
+    "profitability": 68.92,
     "technical": 26.39,
     "risk": 34.93,
     "sentiment": null,
@@ -31,56 +31,58 @@
     "free_cash_flow": 1230905000.0,
     "eps_basic": 71.33,
     "eps_diluted": 67.76,
-    "shares_outstanding": 2799387.0,
-    "market_cap": 16012773852.077637,
+    "shares_outstanding": 2699292.0,
+    "market_cap": 15440220432.802734,
     "pe_ratio_ttm": 84.4170616537227,
     "goodwill": 441000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 3627.439560453951,
-        "applicable": true,
-        "reason": null,
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 4731.4154948358955,
-        "applicable": true,
-        "reason": null,
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 7996.807891809355,
-        "applicable": true,
-        "reason": null,
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
         "value": null,
         "applicable": false,
-        "reason": "non_positive_or_missing_ebitda",
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       },
       "rim": {
-        "value": 4797.4441282301195,
-        "applicable": true,
-        "reason": null,
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       },
       "dcf": {
-        "value": 7001.526942704436,
-        "applicable": true,
-        "reason": null,
+        "value": null,
+        "applicable": false,
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       }
     },
-    "median": 4797.4441282301195,
-    "max": 7996.807891809355,
-    "low": 3627.439560453951,
-    "high": 7996.807891809355,
-    "mos_pct": -19.232240017071717,
-    "valuation_warnings": []
+    "median": null,
+    "max": null,
+    "low": null,
+    "high": null,
+    "mos_pct": null,
+    "valuation_warnings": [
+      "data_quality_input_corruption"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -91,6 +93,7 @@
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
+      "income_before_tax",
       "dividends_paid",
       "current_assets",
       "current_liabilities",
@@ -103,13 +106,15 @@
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "data_quality_input_corruption"
+  ],
   "has_history": true,
-  "tangible_book_value": 1247.3373635013666,
+  "tangible_book_value": 1293.5910601742976,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -120,12 +125,12 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 45.18,
-      "Value": 49.31,
-      "Growth": 51.04,
+      "Quality": 46.35,
+      "Value": 49.13,
+      "Growth": 51.69,
       "Momentum": 37.92,
-      "Health": 48.37,
-      "Profitability": 51.22,
+      "Health": 43.72,
+      "Profitability": 52.6,
       "Technical": 32.16,
       "Risk": 40.54
     }

@@ -3,17 +3,17 @@
   "name": "Walmart",
   "sector": "Consumer Staples",
   "industry": "Consumer Staples Merchandise Retail",
-  "market_cap": 449364464172.3633,
+  "market_cap": 1048131766538.4066,
   "current_price": 131.47,
-  "rank": 26,
-  "composite_score": 64.74,
+  "rank": 169,
+  "composite_score": 54.35,
   "pillar_scores": {
-    "quality": 79.86,
-    "value": 69.44,
-    "growth": 56.25,
+    "quality": 74.31,
+    "value": 22.92,
+    "growth": 60.42,
     "momentum": 67.83,
-    "health": 22.15,
-    "profitability": 62.5,
+    "health": 37.55,
+    "profitability": 55.09,
     "technical": 45.97,
     "risk": 86.09,
     "sentiment": null,
@@ -31,56 +31,60 @@
     "free_cash_flow": 14923000000.0,
     "eps_basic": 2.74,
     "eps_diluted": 2.73,
-    "shares_outstanding": 3418000000.0,
-    "market_cap": 449364464172.3633,
+    "shares_outstanding": 7972402501.0,
+    "market_cap": 1048131766538.4066,
     "pe_ratio_ttm": 48.15750960465316,
     "goodwill": 28735000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 33.11365674048611,
+        "value": 21.68196122261879,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 163.97719810748924,
+        "value": 63.707657875338995,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 133.73795072078016,
+        "value": 38.8767373421903,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 501.17031106129775,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
       },
       "rim": {
-        "value": 30.753269500808003,
+        "value": 13.184817894051001,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 38.817249450290625,
+        "value": 16.64207980021722,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 86.2776000855354,
-    "max": 501.17031106129775,
-    "low": 30.753269500808003,
-    "high": 501.17031106129775,
-    "mos_pct": -52.38022509940482,
-    "valuation_warnings": []
+    "median": 21.68196122261879,
+    "max": 63.707657875338995,
+    "low": 13.184817894051001,
+    "high": 63.707657875338995,
+    "mos_pct": -506.35659233424246,
+    "valuation_warnings": [
+      "extreme_graham_estimate",
+      "extreme_rim_estimate",
+      "extreme_dcf_estimate"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -89,18 +93,24 @@
       "total_liabilities",
       "gross_profit",
       "research_and_development",
+      "depreciation_and_amortization",
       "accounts_receivable",
+      "ebitda",
       "intangibles_net"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 62,
-    "latest_period_end": "2026-01-31",
+    "latest_period_end": "2026-03-11",
     "latest_filed_date": "2026-03-13"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "extreme_graham_estimate",
+    "extreme_rim_estimate",
+    "extreme_dcf_estimate"
+  ],
   "has_history": true,
-  "tangible_book_value": 20.73785839672323,
+  "tangible_book_value": 8.89092089757248,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -111,12 +121,12 @@
   "pillar_baseline": {
     "label": "Consumer Staples median (n=36)",
     "values": {
-      "Quality": 56.08,
-      "Value": 49.07,
-      "Growth": 50.52,
+      "Quality": 49.65,
+      "Value": 51.39,
+      "Growth": 48.44,
       "Momentum": 39.14,
-      "Health": 38.65,
-      "Profitability": 52.08,
+      "Health": 39.29,
+      "Profitability": 53.94,
       "Technical": 57.99,
       "Risk": 51.44
     }

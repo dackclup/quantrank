@@ -3,17 +3,17 @@
   "name": "Lilly (Eli)",
   "sector": "Health Care",
   "industry": "Pharmaceuticals",
-  "market_cap": 959680600000.0,
+  "market_cap": 956573833144.5,
   "current_price": 1015.75,
-  "rank": 78,
-  "composite_score": 59.91,
+  "rank": 80,
+  "composite_score": 59.07,
   "pillar_scores": {
-    "quality": 83.47,
-    "value": 20.62,
-    "growth": 86.02,
+    "quality": 82.2,
+    "value": 20.06,
+    "growth": 85.59,
     "momentum": 42.83,
-    "health": 58.01,
-    "profitability": 81.36,
+    "health": 55.22,
+    "profitability": 80.79,
     "technical": 61.4,
     "risk": 60.06,
     "sentiment": null,
@@ -31,27 +31,27 @@
     "free_cash_flow": 18790000000.0,
     "eps_basic": 8.27,
     "eps_diluted": 8.26,
-    "shares_outstanding": 944800000.0,
-    "market_cap": 959680600000.0,
+    "shares_outstanding": 941741406.0,
+    "market_cap": 956573833144.5,
     "pe_ratio_ttm": 122.9721549636804,
     "goodwill": 6130000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 75.38529524518734,
+        "value": 75.50761443998918,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 703.7593975067139,
+        "value": 624.8470590579029,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 106.95568300867622,
+        "value": 95.01434148603776,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -63,7 +63,7 @@
         "tier_used": null
       },
       "rim": {
-        "value": 60.26634861422485,
+        "value": 60.462082061962185,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 91.17048912693178,
-    "max": 703.7593975067139,
-    "low": 60.26634861422485,
-    "high": 703.7593975067139,
-    "mos_pct": -1014.1214769461485,
+    "median": 85.26097796301347,
+    "max": 624.8470590579029,
+    "low": 60.462082061962185,
+    "high": 624.8470590579029,
+    "mos_pct": -1091.3421875604524,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_multiples_pb_estimate",
@@ -93,12 +93,12 @@
       "total_liabilities",
       "gross_profit",
       "operating_income",
-      "ebitda",
-      "property_plant_equipment"
+      "research_and_development",
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [
@@ -107,10 +107,11 @@
   "valuation_warnings": [
     "extreme_graham_estimate",
     "extreme_multiples_pb_estimate",
-    "extreme_rim_estimate"
+    "extreme_rim_estimate",
+    "beneish_high"
   ],
   "has_history": true,
-  "tangible_book_value": 18.727773073666384,
+  "tangible_book_value": 18.7885972595751,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -121,17 +122,17 @@
   "pillar_baseline": {
     "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 51.27,
-      "Value": 52.82,
-      "Growth": 50.0,
+      "Quality": 52.97,
+      "Value": 51.98,
+      "Growth": 49.58,
       "Momentum": 41.24,
-      "Health": 60.08,
-      "Profitability": 52.54,
+      "Health": 59.88,
+      "Profitability": 51.13,
       "Technical": 55.13,
       "Risk": 39.71
     }
   },
-  "beneish_m_score": null,
+  "beneish_m_score": -1.6513168956582036,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false

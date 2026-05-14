@@ -3,17 +3,17 @@
   "name": "Align Technology",
   "sector": "Health Care",
   "industry": "Health Care Supplies",
-  "market_cap": 11584049750.0,
+  "market_cap": 11584232042.25,
   "current_price": 161.75,
-  "rank": 234,
-  "composite_score": 51.29,
+  "rank": 184,
+  "composite_score": 53.74,
   "pillar_scores": {
-    "quality": 46.61,
-    "value": 56.5,
-    "growth": 53.81,
+    "quality": 56.36,
+    "value": 58.76,
+    "growth": 54.66,
     "momentum": 47.91,
-    "health": 76.24,
-    "profitability": 55.65,
+    "health": 65.18,
+    "profitability": 59.89,
     "technical": 27.29,
     "risk": 15.31,
     "sentiment": null,
@@ -31,75 +31,75 @@
     "free_cash_flow": 583648000.0,
     "eps_basic": 1.58,
     "eps_diluted": 1.57,
-    "shares_outstanding": 71617000.0,
-    "market_cap": 11584049750.0,
+    "shares_outstanding": 71618127.0,
+    "market_cap": 11584232042.25,
     "pe_ratio_ttm": 103.02547770700636,
     "goodwill": 503041000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 79.63590541543516,
+        "value": 79.63527882812936,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 133.7654060636248,
+        "value": 139.74022112410643,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 192.0614195583933,
+        "value": 167.66087088222315,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 166.79509580948235,
+        "value": 205.55147737676816,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 50.08733946067566,
+        "value": 50.08655127430529,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 124.55628621711628,
+        "value": 124.55432616956342,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 129.16084614037055,
-    "max": 192.0614195583933,
-    "low": 50.08733946067566,
-    "high": 192.0614195583933,
-    "mos_pct": -25.231449648612493,
+    "median": 132.14727364683492,
+    "max": 205.55147737676816,
+    "low": 50.08655127430529,
+    "high": 205.55147737676816,
+    "mos_pct": -22.401314485139288,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
+      "interest_expense",
       "dividends_paid",
       "long_term_debt",
-      "short_term_debt",
-      "property_plant_equipment"
+      "short_term_debt"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 49.50723990114079,
+  "tangible_book_value": 49.50646084335604,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -110,18 +110,18 @@
   "pillar_baseline": {
     "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 51.27,
-      "Value": 52.82,
-      "Growth": 50.0,
+      "Quality": 52.97,
+      "Value": 51.98,
+      "Growth": 49.58,
       "Momentum": 41.24,
-      "Health": 60.08,
-      "Profitability": 52.54,
+      "Health": 59.88,
+      "Profitability": 51.13,
       "Technical": 55.13,
       "Risk": 39.71
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 0.3753017900163006,
   "entered_top5": false,
   "exited_top5": false
 }

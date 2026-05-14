@@ -3,17 +3,17 @@
   "name": "Blackstone Inc.",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 89898666971.01364,
+  "market_cap": 88863284553.72034,
   "current_price": 119.62,
-  "rank": 350,
-  "composite_score": 45.94,
+  "rank": 342,
+  "composite_score": 46.15,
   "pillar_scores": {
-    "quality": 71.33,
-    "value": 24.89,
-    "growth": 55.33,
+    "quality": 72.67,
+    "value": 30.0,
+    "growth": 43.0,
     "momentum": 19.92,
-    "health": 47.95,
-    "profitability": 53.56,
+    "health": 43.94,
+    "profitability": 63.78,
     "technical": 42.08,
     "risk": 28.45,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 14778402000.0,
-    "net_income": 3054091000.0,
+    "net_income": 6095756000.0,
     "total_assets": 48326982000.0,
     "total_liabilities": 26910271000.0,
     "stockholders_equity": 8370770000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": 4425155000.0,
     "eps_basic": 0.83,
     "eps_diluted": 0.83,
-    "shares_outstanding": 751535403.0,
-    "market_cap": 89898666971.01364,
+    "shares_outstanding": 742879807.0,
+    "market_cap": 88863284553.72034,
     "pe_ratio_ttm": 144.12048523684584,
     "goodwill": 1890202000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 24.331300735172263,
+        "value": 24.472637195730226,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 47.81420984731191,
+        "value": 132.30152508273488,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 25.8635071326477,
+        "value": 26.16485341608937,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -63,7 +63,7 @@
         "tier_used": null
       },
       "rim": {
-        "value": 18.48972564289724,
+        "value": 18.705156986982438,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 25.09740393390998,
-    "max": 47.81420984731191,
-    "low": 18.48972564289724,
-    "high": 47.81420984731191,
-    "mos_pct": -376.6230127290546,
+    "median": 25.3187453059098,
+    "max": 132.30152508273488,
+    "low": 18.705156986982438,
+    "high": 132.30152508273488,
+    "mos_pct": -372.45628209965366,
     "valuation_warnings": [
       "extreme_rim_estimate"
     ]
@@ -92,26 +92,28 @@
       "operating_income",
       "cost_of_revenue",
       "research_and_development",
+      "depreciation_and_amortization",
       "current_assets",
       "current_liabilities",
       "inventory",
       "accounts_receivable",
       "accounts_payable",
       "short_term_debt",
-      "ebitda",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 6,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-08"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
   "valuation_warnings": [
     "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 8.460338627586916,
+  "tangible_book_value": 8.558913487871935,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -123,11 +125,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

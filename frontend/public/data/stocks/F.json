@@ -3,24 +3,24 @@
   "name": "Ford Motor Company",
   "sector": "Consumer Discretionary",
   "industry": "Automobile Manufacturers",
-  "market_cap": 44319619003.2959,
+  "market_cap": 55243468757.629395,
   "current_price": 13.57,
-  "rank": 174,
-  "composite_score": 53.84,
+  "rank": 419,
+  "composite_score": 41.43,
   "pillar_scores": {
-    "quality": 45.31,
-    "value": 92.36,
-    "growth": 38.8,
+    "quality": 19.79,
+    "value": 74.13,
+    "growth": 38.02,
     "momentum": 42.43,
-    "health": 37.01,
-    "profitability": 34.38,
+    "health": 40.54,
+    "profitability": 9.72,
     "technical": 57.54,
     "risk": 45.78,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 189861000000.0,
+    "revenue": 216458000000.0,
     "net_income": 1827000000.0,
     "total_assets": 282434000000.0,
     "total_liabilities": 244950000000.0,
@@ -31,33 +31,33 @@
     "free_cash_flow": 9546000000.0,
     "eps_basic": 0.64,
     "eps_diluted": 0.63,
-    "shares_outstanding": 3266000000.0,
-    "market_cap": 44319619003.2959,
+    "shares_outstanding": 4071000000.0,
+    "market_cap": 55243468757.629395,
     "pe_ratio_ttm": 21.539682055276536,
     "goodwill": 483000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 6.368938709211303,
+        "value": 5.70459226249834,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 45.46576768638443,
+        "value": 9.461581122217579,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 73.47217694261136,
+        "value": 54.58903146070522,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 53.643086347347634,
+        "value": 32.80160632640854,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,13 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 49.55442701686603,
-    "max": 53.643086347347634,
-    "low": 6.368938709211303,
-    "high": 73.47217694261136,
-    "mos_pct": 72.61596892199839,
+    "median": 21.13159372431306,
+    "max": 54.58903146070522,
+    "low": 5.70459226249834,
+    "high": 54.58903146070522,
+    "mos_pct": 35.78335892757966,
     "valuation_warnings": [
-      "extreme_multiples_pb_estimate",
       "value_trap_risk"
     ]
   },
@@ -90,9 +89,10 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
+      "research_and_development",
+      "interest_expense",
       "accounts_payable",
-      "short_term_debt",
-      "property_plant_equipment"
+      "short_term_debt"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
@@ -103,11 +103,10 @@
     "altman_distress"
   ],
   "valuation_warnings": [
-    "extreme_multiples_pb_estimate",
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 11.267605633802816,
+  "tangible_book_value": 9.03954802259887,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -118,17 +117,17 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 45.18,
-      "Value": 49.31,
-      "Growth": 51.04,
+      "Quality": 46.35,
+      "Value": 49.13,
+      "Growth": 51.69,
       "Momentum": 37.92,
-      "Health": 48.37,
-      "Profitability": 51.22,
+      "Health": 43.72,
+      "Profitability": 52.6,
       "Technical": 32.16,
       "Risk": 40.54
     }
   },
-  "beneish_m_score": null,
+  "beneish_m_score": -2.774101184027201,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false

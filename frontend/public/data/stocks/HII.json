@@ -3,17 +3,17 @@
   "name": "Huntington Ingalls Industries",
   "sector": "Industrials",
   "industry": "Aerospace & Defense",
-  "market_cap": 13160838003.248566,
+  "market_cap": 13169614620.480621,
   "current_price": 334.22,
-  "rank": 222,
-  "composite_score": 51.92,
+  "rank": 333,
+  "composite_score": 46.66,
   "pillar_scores": {
-    "quality": 37.66,
-    "value": 66.03,
-    "growth": 53.48,
+    "quality": 24.37,
+    "value": 67.72,
+    "growth": 47.15,
     "momentum": 59.56,
-    "health": 46.73,
-    "profitability": 51.05,
+    "health": 44.02,
+    "profitability": 36.29,
     "technical": 52.84,
     "risk": 55.08,
     "sentiment": null,
@@ -31,55 +31,55 @@
     "free_cash_flow": 792000000.0,
     "eps_basic": 3.79,
     "eps_diluted": 3.79,
-    "shares_outstanding": 39377769.0,
-    "market_cap": 13160838003.248566,
+    "shares_outstanding": 39404029.0,
+    "market_cap": 13169614620.480621,
     "pe_ratio_ttm": 88.1846968920061,
     "goodwill": 2650000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 127.75370223593433,
+        "value": 127.71112573514884,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 382.7451260335191,
+        "value": 495.31987131764197,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 848.3497476858079,
+        "value": 847.989437473068,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 263.39337468946655,
+        "value": 337.56960597901707,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "rim": {
-        "value": 51.44523998224593,
+        "value": 51.410955366275985,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 71.94187796882807,
+        "value": 71.89393379247338,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 195.57353846270044,
-    "max": 848.3497476858079,
-    "low": 51.44523998224593,
-    "high": 848.3497476858079,
-    "mos_pct": -70.89224025286282,
+    "median": 232.64036585708294,
+    "max": 847.989437473068,
+    "low": 51.410955366275985,
+    "high": 847.989437473068,
+    "mos_pct": -43.66380485578466,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
@@ -90,11 +90,12 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
-      "property_plant_equipment"
+      "cost_of_revenue",
+      "research_and_development"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 9,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [
@@ -105,7 +106,7 @@
     "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 46.87924295558745,
+  "tangible_book_value": 46.84800125388193,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -116,12 +117,12 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }

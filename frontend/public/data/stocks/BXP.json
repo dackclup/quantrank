@@ -3,17 +3,17 @@
   "name": "BXP, Inc.",
   "sector": "Real Estate",
   "industry": "Office REITs",
-  "market_cap": 9266676481.320305,
+  "market_cap": 9313479877.743187,
   "current_price": 58.4,
-  "rank": 314,
-  "composite_score": 47.43,
+  "rank": 435,
+  "composite_score": 40.18,
   "pillar_scores": {
-    "quality": 52.42,
-    "value": 78.49,
-    "growth": 27.42,
+    "quality": 43.55,
+    "value": 64.52,
+    "growth": 21.37,
     "momentum": 16.88,
-    "health": 30.68,
-    "profitability": 37.63,
+    "health": 27.37,
+    "profitability": 28.49,
     "technical": 63.1,
     "risk": 32.97,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 3489212000.0,
-    "net_income": 317191000.0,
+    "net_income": 430096000.0,
     "total_assets": 25102250000.0,
     "total_liabilities": 17377871000.0,
     "stockholders_equity": 5152113000.0,
@@ -31,36 +31,36 @@
     "free_cash_flow": null,
     "eps_basic": 0.64,
     "eps_diluted": 0.64,
-    "shares_outstanding": 158675963.0,
-    "market_cap": 9266676481.320305,
+    "shares_outstanding": 159477391.0,
+    "market_cap": 9313479877.743187,
     "pe_ratio_ttm": 91.25000238418579,
     "goodwill": null
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 24.525407202619828,
+        "value": 24.4637053404904,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 82.03828744658448,
+        "value": 77.98141851338406,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 77.69471825193853,
+        "value": 82.42799182923974,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 328.4927220578018,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
       },
       "rim": {
         "value": null,
@@ -75,13 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 79.86650284926151,
-    "max": 82.03828744658448,
-    "low": 24.525407202619828,
-    "high": 328.4927220578018,
-    "mos_pct": 26.877978323275354,
+    "median": 77.98141851338406,
+    "max": 82.42799182923974,
+    "low": 24.4637053404904,
+    "high": 82.42799182923974,
+    "mos_pct": 25.11036264894869,
     "valuation_warnings": [
-      "extreme_multiples_ev_ebitda_estimate",
       "value_trap_risk"
     ]
   },
@@ -91,6 +90,8 @@
     "missing_metrics": [
       "capex",
       "free_cash_flow",
+      "operating_income",
+      "cost_of_revenue",
       "research_and_development",
       "income_tax_expense",
       "income_before_tax",
@@ -100,22 +101,22 @@
       "accounts_receivable",
       "accounts_payable",
       "short_term_debt",
+      "ebitda",
       "goodwill",
       "intangibles_net",
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_multiples_ev_ebitda_estimate",
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 32.46939802722357,
+  "tangible_book_value": 32.30622828536241,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -126,12 +127,12 @@
   "pillar_baseline": {
     "label": "Real Estate median (n=31)",
     "values": {
-      "Quality": 46.77,
-      "Value": 47.85,
-      "Growth": 51.61,
+      "Quality": 50.81,
+      "Value": 47.31,
+      "Growth": 48.79,
       "Momentum": 52.34,
-      "Health": 27.89,
-      "Profitability": 52.69,
+      "Health": 26.18,
+      "Profitability": 52.15,
       "Technical": 59.26,
       "Risk": 53.88
     }

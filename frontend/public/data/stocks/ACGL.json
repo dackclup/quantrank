@@ -3,17 +3,17 @@
   "name": "Arch Capital Group",
   "sector": "Financials",
   "industry": "Property & Casualty Insurance",
-  "market_cap": 33501879890.441895,
+  "market_cap": 32605036245.53476,
   "current_price": 93.32,
-  "rank": 34,
-  "composite_score": 64.12,
+  "rank": 20,
+  "composite_score": 65.81,
   "pillar_scores": {
-    "quality": 61.33,
-    "value": 74.67,
-    "growth": 79.67,
+    "quality": 68.0,
+    "value": 72.89,
+    "growth": 82.33,
     "momentum": 51.29,
-    "health": 54.64,
-    "profitability": 56.44,
+    "health": 50.64,
+    "profitability": 61.56,
     "technical": 53.19,
     "risk": 64.97,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 19777000000.0,
-    "net_income": 4872000000.0,
+    "net_income": 6882000000.0,
     "total_assets": 81446000000.0,
     "total_liabilities": 57258000000.0,
     "stockholders_equity": 24188000000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": 5859000000.0,
     "eps_basic": 2.94,
     "eps_diluted": 2.88,
-    "shares_outstanding": 359000000.0,
-    "market_cap": 33501879890.441895,
+    "shares_outstanding": 349389588.0,
+    "market_cap": 32605036245.53476,
     "pe_ratio_ttm": 32.402777671813965,
     "goodwill": 607000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 128.71612137765402,
+        "value": 130.4743643145494,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 154.78254565207067,
+        "value": 269.05149925421154,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 139.77867846657884,
+        "value": 139.85722749377848,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -63,7 +63,7 @@
         "tier_used": null
       },
       "rim": {
-        "value": 91.68759921312883,
+        "value": 94.20958508217838,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 134.24739992211641,
-    "max": 154.78254565207067,
-    "low": 91.68759921312883,
-    "high": 154.78254565207067,
-    "mos_pct": 30.48654964717098,
+    "median": 135.16579590416393,
+    "max": 269.05149925421154,
+    "low": 94.20958508217838,
+    "high": 269.05149925421154,
+    "mos_pct": 30.9588649476155,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -90,6 +90,7 @@
       "operating_income",
       "cost_of_revenue",
       "research_and_development",
+      "depreciation_and_amortization",
       "dividends_paid",
       "current_assets",
       "current_liabilities",
@@ -103,13 +104,15 @@
     ],
     "imputed_metrics": [],
     "filing_lag_days": 9,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-05"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 64.19777158774373,
+  "tangible_book_value": 65.96361423340412,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -121,11 +124,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

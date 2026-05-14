@@ -3,17 +3,17 @@
   "name": "IBM",
   "sector": "Information Technology",
   "industry": "IT Consulting & Other Services",
-  "market_cap": 201107404396.68982,
+  "market_cap": 201736975925.53955,
   "current_price": 214.64,
-  "rank": 338,
-  "composite_score": 46.36,
+  "rank": 286,
+  "composite_score": 49.03,
   "pillar_scores": {
-    "quality": 51.03,
-    "value": 57.53,
-    "growth": 59.25,
+    "quality": 55.48,
+    "value": 65.75,
+    "growth": 50.68,
     "momentum": 18.73,
-    "health": 40.48,
-    "profitability": 33.33,
+    "health": 41.43,
+    "profitability": 42.47,
     "technical": 36.6,
     "risk": 44.69,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 12913000000.0,
     "eps_basic": 1.3,
     "eps_diluted": 1.28,
-    "shares_outstanding": 936952129.0,
-    "market_cap": 201107404396.68982,
+    "shares_outstanding": 939885280.0,
+    "market_cap": 201736975925.53955,
     "pe_ratio_ttm": 167.68749952316284,
     "goodwill": 74709000000.0
   },
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 105.24981200683919,
+        "value": 422.8695143318998,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 384.95226480946155,
+        "value": 367.562146005777,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 100.39998610138511,
+        "value": 100.08666241614422,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 105.24981200683919,
-    "max": 384.95226480946155,
-    "low": 100.39998610138511,
-    "high": 384.95226480946155,
-    "mos_pct": -103.93385536470223,
+    "median": 367.562146005777,
+    "max": 422.8695143318998,
+    "low": 100.08666241614422,
+    "high": 422.8695143318998,
+    "mos_pct": 41.604432958590095,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -87,8 +87,7 @@
   "data_quality": {
     "missing_metrics": [
       "operating_income",
-      "ebitda",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 21,
@@ -109,18 +108,18 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -2.619316967536129,
+  "dechow_f_score": 1.6091143559531786,
   "entered_top5": false,
   "exited_top5": false
 }

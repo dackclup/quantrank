@@ -3,17 +3,17 @@
   "name": "Roper Technologies",
   "sector": "Information Technology",
   "industry": "Electronic Equipment & Instruments",
-  "market_cap": 32384000000.0,
+  "market_cap": 31915114783.75,
   "current_price": 316.25,
-  "rank": 469,
-  "composite_score": 36.64,
+  "rank": 446,
+  "composite_score": 39.12,
   "pillar_scores": {
-    "quality": 20.21,
-    "value": 72.37,
-    "growth": 37.33,
+    "quality": 21.23,
+    "value": 80.37,
+    "growth": 35.96,
     "momentum": 28.04,
-    "health": 28.49,
-    "profitability": 29.68,
+    "health": 28.09,
+    "profitability": 39.5,
     "technical": 14.29,
     "risk": 32.3,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 2546600000.0,
     "eps_basic": 4.88,
     "eps_diluted": 4.87,
-    "shares_outstanding": 102400000.0,
-    "market_cap": 32384000000.0,
+    "shares_outstanding": 100917359.0,
+    "market_cap": 31915114783.75,
     "pe_ratio_ttm": 64.93839835728953,
     "goodwill": 21347700000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 439.22159916402387,
+        "value": 627.7424111020972,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 2010.139304189415,
+        "value": 1953.6266928025973,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 857.9161898691085,
+        "value": 464.17947045347967,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 857.9161898691085,
-    "max": 857.9161898691085,
-    "low": 439.22159916402387,
-    "high": 2010.139304189415,
-    "mos_pct": 63.1374248750044,
+    "median": 627.7424111020972,
+    "max": 627.7424111020972,
+    "low": 464.17947045347967,
+    "high": 1953.6266928025973,
+    "mos_pct": 49.62105564211042,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate",
       "value_trap_risk"
@@ -89,11 +89,11 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "property_plant_equipment"
+      "research_and_development"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
@@ -113,18 +113,18 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -2.2448679970822667,
+  "dechow_f_score": 0.7094296258639619,
   "entered_top5": false,
   "exited_top5": false
 }

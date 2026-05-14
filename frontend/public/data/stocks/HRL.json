@@ -3,24 +3,24 @@
   "name": "Hormel Foods",
   "sector": "Consumer Staples",
   "industry": "Packaged Foods & Meats",
-  "market_cap": null,
+  "market_cap": 10964556375.968933,
   "current_price": 19.91,
-  "rank": 489,
-  "composite_score": 33.27,
+  "rank": 471,
+  "composite_score": 36.48,
   "pillar_scores": {
-    "quality": 23.61,
-    "value": 47.45,
-    "growth": 21.87,
+    "quality": 25.0,
+    "value": 64.81,
+    "growth": 12.5,
     "momentum": 15.64,
-    "health": 61.67,
-    "profitability": 42.59,
+    "health": 67.51,
+    "profitability": 34.72,
     "technical": 28.88,
     "risk": 30.44,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": null,
+    "revenue": 12144664000.0,
     "net_income": 489423000.0,
     "total_assets": 13316433000.0,
     "total_liabilities": null,
@@ -31,36 +31,36 @@
     "free_cash_flow": 577531000.0,
     "eps_basic": 0.33,
     "eps_diluted": 0.33,
-    "shares_outstanding": null,
-    "market_cap": null,
+    "shares_outstanding": 550706000.0,
+    "market_cap": 10964556375.968933,
     "pe_ratio_ttm": 60.33333287094578,
     "goodwill": 4888532000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "value": 8.686479883073478,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 19.03147657765638,
+        "value": 21.458716974557074,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_bvps",
-        "tier_used": null
+        "value": 25.369211683435616,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": null,
-        "applicable": false,
-        "reason": "missing_shares_outstanding",
-        "tier_used": null
+        "value": 23.79909542231156,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "rim": {
         "value": null,
@@ -69,18 +69,19 @@
         "tier_used": null
       },
       "dcf": {
-        "value": null,
-        "applicable": false,
-        "reason": "missing_shares_outstanding",
+        "value": 14.641334043751668,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       }
     },
-    "median": 19.03147657765638,
-    "max": 19.03147657765638,
-    "low": 19.03147657765638,
-    "high": 19.03147657765638,
-    "mos_pct": -4.61615926736418,
+    "median": 21.458716974557074,
+    "max": 25.369211683435616,
+    "low": 8.686479883073478,
+    "high": 25.369211683435616,
+    "mos_pct": 7.217193502208123,
     "valuation_warnings": [
+      "goodwill_heavy",
       "value_trap_risk"
     ]
   },
@@ -88,9 +89,8 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "revenue",
       "total_liabilities",
-      "shares_outstanding"
+      "research_and_development"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 77,
@@ -99,10 +99,11 @@
   },
   "risk_flags": [],
   "valuation_warnings": [
+    "goodwill_heavy",
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": null,
+  "tangible_book_value": 2.654527097943367,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -113,17 +114,17 @@
   "pillar_baseline": {
     "label": "Consumer Staples median (n=36)",
     "values": {
-      "Quality": 56.08,
-      "Value": 49.07,
-      "Growth": 50.52,
+      "Quality": 49.65,
+      "Value": 51.39,
+      "Growth": 48.44,
       "Momentum": 39.14,
-      "Health": 38.65,
-      "Profitability": 52.08,
+      "Health": 39.29,
+      "Profitability": 53.94,
       "Technical": 57.99,
       "Risk": 51.44
     }
   },
-  "beneish_m_score": null,
+  "beneish_m_score": -2.7327424348092304,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false

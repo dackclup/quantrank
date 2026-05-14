@@ -3,24 +3,24 @@
   "name": "United Rentals",
   "sector": "Industrials",
   "industry": "Trading Companies & Distributors",
-  "market_cap": 58669184012.561035,
+  "market_cap": 58590819511.60278,
   "current_price": 935.26,
-  "rank": 317,
-  "composite_score": 47.34,
+  "rank": 246,
+  "composite_score": 50.8,
   "pillar_scores": {
-    "quality": 42.72,
-    "value": 48.73,
+    "quality": 41.46,
+    "value": 64.77,
     "growth": 68.35,
     "momentum": 38.35,
-    "health": 26.65,
-    "profitability": 57.38,
+    "health": 30.84,
+    "profitability": 53.8,
     "technical": 61.5,
     "risk": 52.36,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 3731000000.0,
+    "revenue": 16365000000.0,
     "net_income": 2507000000.0,
     "total_assets": 29888000000.0,
     "total_liabilities": 20920000000.0,
@@ -31,55 +31,55 @@
     "free_cash_flow": 5131000000.0,
     "eps_basic": 8.44,
     "eps_diluted": 8.43,
-    "shares_outstanding": 62730346.0,
-    "market_cap": 58669184012.561035,
+    "shares_outstanding": 62646557.0,
+    "market_cap": 58590819511.60278,
     "pe_ratio_ttm": 110.94424789627817,
     "goodwill": 7285000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 79.11318860480263,
+        "value": 79.16607738487878,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 994.3492087054726,
+        "value": 1110.3242791111518,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 1003.095066706431,
+        "value": 911.090895818248,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 730.4878527489199,
+        "value": 975.1238293478121,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 15.7228186277895,
+        "value": 15.743847704455337,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 255.77478063146904,
+        "value": 256.11687625684124,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 493.13131669019447,
-    "max": 1003.095066706431,
-    "low": 15.7228186277895,
-    "high": 1003.095066706431,
-    "mos_pct": -89.65739512203686,
+    "median": 583.6038860375446,
+    "max": 1110.3242791111518,
+    "low": 15.743847704455337,
+    "high": 1110.3242791111518,
+    "mos_pct": -60.25595993126364,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -91,12 +91,11 @@
   "data_quality": {
     "missing_metrics": [
       "research_and_development",
-      "interest_expense",
-      "property_plant_equipment"
+      "interest_expense"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 22,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-20",
     "latest_filed_date": "2026-04-22"
   },
   "risk_flags": [],
@@ -106,7 +105,7 @@
     "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 7.412680299898234,
+  "tangible_book_value": 7.422594668690253,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -117,18 +116,18 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 0.6673645615475696,
   "entered_top5": false,
   "exited_top5": false
 }

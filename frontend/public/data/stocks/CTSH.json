@@ -3,17 +3,17 @@
   "name": "Cognizant",
   "sector": "Information Technology",
   "industry": "IT Consulting & Other Services",
-  "market_cap": 21789780578.61328,
+  "market_cap": 21783780068.38394,
   "current_price": 45.97,
-  "rank": 151,
-  "composite_score": 55.4,
+  "rank": 194,
+  "composite_score": 53.2,
   "pillar_scores": {
-    "quality": 52.4,
-    "value": 90.41,
+    "quality": 40.75,
+    "value": 97.03,
     "growth": 29.79,
     "momentum": 13.55,
-    "health": 88.53,
-    "profitability": 62.79,
+    "health": 91.12,
+    "profitability": 50.91,
     "technical": 29.23,
     "risk": 26.46,
     "sentiment": null,
@@ -31,55 +31,55 @@
     "free_cash_flow": 2470000000.0,
     "eps_basic": 1.39,
     "eps_diluted": 1.39,
-    "shares_outstanding": 474000000.0,
-    "market_cap": 21789780578.61328,
+    "shares_outstanding": 473869469.0,
+    "market_cap": 21783780068.38394,
     "pe_ratio_ttm": 33.07194332424685,
     "goodwill": 7681000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 35.216006142201806,
+        "value": 35.22085606848675,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 125.36304370390003,
+        "value": 173.84513150535832,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 347.7201975617511,
+        "value": 333.1431409003123,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 139.38526437441487,
+        "value": 203.61806303186208,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 15.27643108350701,
+        "value": 15.280639094269906,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 61.94657459694691,
+        "value": 61.96363825868857,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 93.65480915042347,
-    "max": 139.38526437441487,
-    "low": 15.27643108350701,
-    "high": 347.7201975617511,
-    "mos_pct": 50.91549314155507,
+    "median": 117.90438488202345,
+    "max": 203.61806303186208,
+    "low": 15.280639094269906,
+    "high": 333.1431409003123,
+    "mos_pct": 61.010778974249966,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_multiples_pb_estimate"
@@ -90,14 +90,13 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
+      "cost_of_revenue",
       "research_and_development",
-      "income_before_tax",
-      "inventory",
-      "property_plant_equipment"
+      "inventory"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
@@ -106,7 +105,7 @@
     "extreme_multiples_pb_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 12.451476793248945,
+  "tangible_book_value": 12.45490664856486,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -117,12 +116,12 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }

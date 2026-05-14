@@ -3,25 +3,25 @@
   "name": "Bunge Global",
   "sector": "Consumer Staples",
   "industry": "Agricultural Products & Services",
-  "market_cap": null,
+  "market_cap": 24450162200.994072,
   "current_price": 126.02,
-  "rank": 406,
-  "composite_score": 42.54,
+  "rank": 300,
+  "composite_score": 48.28,
   "pillar_scores": {
-    "quality": 26.04,
-    "value": 40.97,
-    "growth": 40.62,
+    "quality": 27.43,
+    "value": 59.49,
+    "growth": 44.1,
     "momentum": 80.08,
-    "health": 39.52,
-    "profitability": 19.68,
+    "health": 41.04,
+    "profitability": 29.4,
     "technical": 67.53,
     "risk": 66.97,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 17941000000.0,
-    "net_income": 683000000.0,
+    "revenue": 80547000000.0,
+    "net_income": 816000000.0,
     "total_assets": 47576000000.0,
     "total_liabilities": null,
     "stockholders_equity": 16045000000.0,
@@ -31,30 +31,30 @@
     "free_cash_flow": -374000000.0,
     "eps_basic": 0.35,
     "eps_diluted": 0.35,
-    "shares_outstanding": null,
-    "market_cap": null,
+    "shares_outstanding": 194018115.0,
+    "market_cap": 24450162200.994072,
     "pe_ratio_ttm": 360.05713326590404,
     "goodwill": 3291000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "value": 115.60646108100234,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 20.184899400544644,
+        "value": 95.91985569540523,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_bvps",
-        "tier_used": null
+        "value": 281.4402830706661,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
         "value": null,
@@ -69,19 +69,19 @@
         "tier_used": null
       },
       "dcf": {
-        "value": null,
-        "applicable": false,
-        "reason": "missing_shares_outstanding",
+        "value": 12.583137964492252,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       }
     },
-    "median": 20.184899400544644,
-    "max": null,
-    "low": 20.184899400544644,
-    "high": 20.184899400544644,
-    "mos_pct": -524.3280887477003,
+    "median": 105.76315838820378,
+    "max": 281.4402830706661,
+    "low": 12.583137964492252,
+    "high": 281.4402830706661,
+    "mos_pct": -19.153019410133236,
     "valuation_warnings": [
-      "extreme_multiples_pe_estimate",
+      "extreme_dcf_estimate",
       "value_trap_risk"
     ]
   },
@@ -90,23 +90,23 @@
   "data_quality": {
     "missing_metrics": [
       "total_liabilities",
-      "shares_outstanding",
       "operating_income",
-      "ebitda",
-      "property_plant_equipment"
+      "research_and_development",
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_multiples_pe_estimate",
-    "value_trap_risk"
+    "extreme_dcf_estimate",
+    "value_trap_risk",
+    "beneish_high"
   ],
   "has_history": true,
-  "tangible_book_value": null,
+  "tangible_book_value": 64.16926584406822,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -117,17 +117,17 @@
   "pillar_baseline": {
     "label": "Consumer Staples median (n=36)",
     "values": {
-      "Quality": 56.08,
-      "Value": 49.07,
-      "Growth": 50.52,
+      "Quality": 49.65,
+      "Value": 51.39,
+      "Growth": 48.44,
       "Momentum": 39.14,
-      "Health": 38.65,
-      "Profitability": 52.08,
+      "Health": 39.29,
+      "Profitability": 53.94,
       "Technical": 57.99,
       "Risk": 51.44
     }
   },
-  "beneish_m_score": null,
+  "beneish_m_score": -1.528541237857401,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false

@@ -3,24 +3,24 @@
   "name": "J.M. Smucker Company (The)",
   "sector": "Consumer Staples",
   "industry": "Packaged Foods & Meats",
-  "market_cap": 10762829293.060303,
+  "market_cap": 10757616230.448357,
   "current_price": 100.87,
   "rank": 470,
-  "composite_score": 36.61,
+  "composite_score": 36.55,
   "pillar_scores": {
-    "quality": 21.53,
-    "value": 53.47,
-    "growth": 56.6,
+    "quality": 14.58,
+    "value": 64.35,
+    "growth": 58.33,
     "momentum": 20.52,
-    "health": 9.24,
-    "profitability": 44.91,
+    "health": 18.19,
+    "profitability": 17.59,
     "technical": 72.21,
     "risk": 44.69,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": null,
+    "revenue": 8926600000.0,
     "net_income": -1255800000.0,
     "total_assets": 16265700000.0,
     "total_liabilities": 11029600000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 971200000.0,
     "eps_basic": -4.94,
     "eps_diluted": -4.94,
-    "shares_outstanding": 106700000.0,
-    "market_cap": 10762829293.060303,
+    "shares_outstanding": 106648319.0,
+    "market_cap": 10757616230.448357,
     "pe_ratio_ttm": null,
     "goodwill": 5204600000.0
   },
@@ -51,16 +51,16 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 225.18360973161748,
+        "value": 74.37817483160084,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 16.20352407622124,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
       },
       "rim": {
         "value": null,
@@ -69,19 +69,18 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 23.426164347961375,
+        "value": 23.437516496884296,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 23.426164347961375,
-    "max": 225.18360973161748,
-    "low": 16.20352407622124,
-    "high": 225.18360973161748,
-    "mos_pct": -330.58693368793035,
+    "median": 48.90784566424257,
+    "max": 74.37817483160084,
+    "low": 23.437516496884296,
+    "high": 74.37817483160084,
+    "mos_pct": -106.2450336476995,
     "valuation_warnings": [
-      "extreme_multiples_ev_ebitda_estimate",
       "value_trap_risk"
     ]
   },
@@ -89,18 +88,18 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "revenue"
+      "research_and_development",
+      "interest_expense"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 77,
-    "latest_period_end": "2026-01-31",
+    "latest_period_end": "2026-02-19",
     "latest_filed_date": "2026-02-26"
   },
   "risk_flags": [
     "altman_distress"
   ],
   "valuation_warnings": [
-    "extreme_multiples_ev_ebitda_estimate",
     "value_trap_risk"
   ],
   "has_history": true,
@@ -115,18 +114,18 @@
   "pillar_baseline": {
     "label": "Consumer Staples median (n=36)",
     "values": {
-      "Quality": 56.08,
-      "Value": 49.07,
-      "Growth": 50.52,
+      "Quality": 49.65,
+      "Value": 51.39,
+      "Growth": 48.44,
       "Momentum": 39.14,
-      "Health": 38.65,
-      "Profitability": 52.08,
+      "Health": 39.29,
+      "Profitability": 53.94,
       "Technical": 57.99,
       "Risk": 51.44
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -3.1198155194312376,
+  "dechow_f_score": 0.4517231953496322,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,25 +3,25 @@
   "name": "Vici Properties",
   "sector": "Real Estate",
   "industry": "Hotel & Resort REITs",
-  "market_cap": 30156178683.10134,
+  "market_cap": 30157340596.543633,
   "current_price": 28.21,
-  "rank": 199,
-  "composite_score": 52.95,
+  "rank": 112,
+  "composite_score": 57.45,
   "pillar_scores": {
-    "quality": 51.61,
-    "value": 56.99,
+    "quality": 54.03,
+    "value": 73.12,
     "growth": 75.0,
     "momentum": 40.69,
-    "health": 27.69,
-    "profitability": 57.53,
+    "health": 28.05,
+    "profitability": 60.22,
     "technical": 58.22,
     "risk": 58.62,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": null,
-    "net_income": 3104276000.0,
+    "revenue": 4040433000.0,
+    "net_income": 3152233000.0,
     "total_assets": 47089674000.0,
     "total_liabilities": 18470812000.0,
     "stockholders_equity": 28188653000.0,
@@ -31,36 +31,36 @@
     "free_cash_flow": 2547272000.0,
     "eps_basic": 0.82,
     "eps_diluted": 0.82,
-    "shares_outstanding": 1068988999.0,
-    "market_cap": 30156178683.10134,
+    "shares_outstanding": 1069030187.0,
+    "market_cap": 30157340596.543633,
     "pe_ratio_ttm": 34.402437907893486,
     "goodwill": null
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 38.87119165607421,
+        "value": 38.87044282686296,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 105.11155579093635,
+        "value": 85.26154377939058,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 63.09839997963054,
+        "value": 67.27796032431901,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 2.9729520863261367,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
       },
       "rim": {
         "value": null,
@@ -75,13 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 50.98479581785237,
-    "max": 105.11155579093635,
-    "low": 2.9729520863261367,
-    "high": 105.11155579093635,
-    "mos_pct": 44.66978119270039,
+    "median": 67.27796032431901,
+    "max": 85.26154377939058,
+    "low": 38.87044282686296,
+    "high": 85.26154377939058,
+    "mos_pct": 58.06947929383708,
     "valuation_warnings": [
-      "extreme_multiples_ev_ebitda_estimate",
       "value_trap_risk"
     ]
   },
@@ -89,8 +88,8 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "revenue",
       "gross_profit",
+      "operating_income",
       "research_and_development",
       "current_assets",
       "current_liabilities",
@@ -98,24 +97,23 @@
       "accounts_receivable",
       "accounts_payable",
       "short_term_debt",
+      "ebitda",
       "goodwill",
-      "intangibles_net",
-      "property_plant_equipment"
+      "intangibles_net"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-28",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
   "valuation_warnings": [
-    "extreme_multiples_ev_ebitda_estimate",
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 26.369450973180687,
+  "tangible_book_value": 26.368435000984682,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -126,12 +124,12 @@
   "pillar_baseline": {
     "label": "Real Estate median (n=31)",
     "values": {
-      "Quality": 46.77,
-      "Value": 47.85,
-      "Growth": 51.61,
+      "Quality": 50.81,
+      "Value": 47.31,
+      "Growth": 48.79,
       "Momentum": 52.34,
-      "Health": 27.89,
-      "Profitability": 52.69,
+      "Health": 26.18,
+      "Profitability": 52.15,
       "Technical": 59.26,
       "Risk": 53.88
     }

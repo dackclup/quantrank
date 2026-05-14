@@ -3,17 +3,17 @@
   "name": "Bio-Techne",
   "sector": "Health Care",
   "industry": "Life Sciences Tools & Services",
-  "market_cap": 7026007229.460159,
+  "market_cap": 7028371136.828018,
   "current_price": 44.89,
-  "rank": 283,
-  "composite_score": 49.2,
+  "rank": 491,
+  "composite_score": 32.59,
   "pillar_scores": {
-    "quality": 55.08,
-    "value": 56.5,
-    "growth": 19.92,
+    "quality": 30.51,
+    "value": 16.67,
+    "growth": 19.49,
     "momentum": 33.22,
-    "health": 87.05,
-    "profitability": 59.04,
+    "health": 89.12,
+    "profitability": 42.37,
     "technical": 32.27,
     "risk": 18.39,
     "sentiment": null,
@@ -31,33 +31,33 @@
     "free_cash_flow": 269598000.0,
     "eps_basic": 0.82,
     "eps_diluted": 0.81,
-    "shares_outstanding": 156516091.0,
-    "market_cap": 7026007229.460159,
+    "shares_outstanding": 156568751.0,
+    "market_cap": 7028371136.828018,
     "pe_ratio_ttm": 55.4197523328993,
     "goodwill": 977800000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 11.114926165178218,
+        "value": 11.113056822694338,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 72.98591058904475,
+        "value": 16.290853946106797,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 43.15462824657302,
+        "value": 38.199560294770414,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 79.8227768956707,
+        "value": 27.618836156689554,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 22.450038661992227,
+        "value": 22.442487863838767,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 43.15462824657302,
-    "max": 79.8227768956707,
-    "low": 11.114926165178218,
-    "high": 79.8227768956707,
-    "mos_pct": -4.021286275854381,
+    "median": 22.442487863838767,
+    "max": 38.199560294770414,
+    "low": 11.113056822694338,
+    "high": 38.199560294770414,
+    "mos_pct": -100.02238460370963,
     "valuation_warnings": [
       "goodwill_heavy",
       "value_trap_risk"
@@ -91,12 +91,11 @@
     "missing_metrics": [
       "total_liabilities",
       "research_and_development",
-      "long_term_debt",
-      "property_plant_equipment"
+      "long_term_debt"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
@@ -105,7 +104,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 5.03737344168658,
+  "tangible_book_value": 5.035679182239884,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -116,18 +115,18 @@
   "pillar_baseline": {
     "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 51.27,
-      "Value": 52.82,
-      "Growth": 50.0,
+      "Quality": 52.97,
+      "Value": 51.98,
+      "Growth": 49.58,
       "Momentum": 41.24,
-      "Health": 60.08,
-      "Profitability": 52.54,
+      "Health": 59.88,
+      "Profitability": 51.13,
       "Technical": 55.13,
       "Risk": 39.71
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 1.3593615983724292,
   "entered_top5": false,
   "exited_top5": false
 }

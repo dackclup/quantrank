@@ -3,24 +3,24 @@
   "name": "Old Dominion",
   "sector": "Industrials",
   "industry": "Cargo Ground Transportation",
-  "market_cap": 39377232801.086426,
+  "market_cap": 39343438254.7348,
   "current_price": 189.18,
-  "rank": 252,
-  "composite_score": 50.42,
+  "rank": 301,
+  "composite_score": 48.16,
   "pillar_scores": {
-    "quality": 52.53,
-    "value": 29.32,
-    "growth": 39.56,
+    "quality": 56.65,
+    "value": 17.72,
+    "growth": 31.96,
     "momentum": 71.96,
-    "health": 87.19,
-    "profitability": 57.59,
+    "health": 80.72,
+    "profitability": 70.68,
     "technical": 35.21,
     "risk": 36.16,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": null,
+    "revenue": 5456227000.0,
     "net_income": 1007301000.0,
     "total_assets": 5656948000.0,
     "total_liabilities": 1257226000.0,
@@ -31,39 +31,39 @@
     "free_cash_flow": 1017789000.0,
     "eps_basic": 1.14,
     "eps_diluted": 1.14,
-    "shares_outstanding": 208146920.0,
-    "market_cap": 39377232801.086426,
+    "shares_outstanding": 207968283.0,
+    "market_cap": 39343438254.7348,
     "pe_ratio_ttm": 165.94736199629935,
     "goodwill": 19463000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 58.36080218108353,
+        "value": 58.38586167735067,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 133.60512254218094,
+        "value": 131.9139527598883,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 144.50495595863222,
+        "value": 134.6453763956781,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 124.38705367371503,
+        "value": 139.52907368073787,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 41.71595304411874,
+        "value": 41.75178549220382,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,35 +75,34 @@
         "tier_used": null
       }
     },
-    "median": 124.38705367371503,
-    "max": 144.50495595863222,
-    "low": 41.71595304411874,
-    "high": 144.50495595863222,
-    "mos_pct": -52.08977710174511,
+    "median": 131.9139527598883,
+    "max": 139.52907368073787,
+    "low": 41.75178549220382,
+    "high": 139.52907368073787,
+    "mos_pct": -43.41166246464422,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "revenue",
       "gross_profit",
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
+      "interest_expense",
       "inventory",
-      "intangibles_net",
-      "property_plant_equipment"
+      "intangibles_net"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 21.044073099904626,
+  "tangible_book_value": 21.06214917396803,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -114,12 +113,12 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }

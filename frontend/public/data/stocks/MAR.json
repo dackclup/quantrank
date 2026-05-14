@@ -3,17 +3,17 @@
   "name": "Marriott International",
   "sector": "Consumer Discretionary",
   "industry": "Hotels, Resorts & Cruise Lines",
-  "market_cap": 93103184805.57391,
+  "market_cap": 92341119532.14105,
   "current_price": 350.19,
-  "rank": 399,
-  "composite_score": 42.83,
+  "rank": 373,
+  "composite_score": 44.49,
   "pillar_scores": {
-    "quality": 31.77,
-    "value": 23.09,
-    "growth": 70.57,
+    "quality": 32.81,
+    "value": 30.21,
+    "growth": 69.53,
     "momentum": 73.01,
-    "health": 33.41,
-    "profitability": 46.53,
+    "health": 30.02,
+    "profitability": 50.35,
     "technical": 44.57,
     "risk": 66.04,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 2861000000.0,
     "eps_basic": 2.44,
     "eps_diluted": 2.43,
-    "shares_outstanding": 265864771.0,
-    "market_cap": 93103184805.57391,
+    "shares_outstanding": 263688623.0,
+    "market_cap": 92341119532.14105,
     "pe_ratio_ttm": 144.11111211580504,
     "goodwill": 8873000000.0
   },
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 169.677385661913,
+        "value": 206.59860718813334,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,10 +57,10 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 144.35132706285322,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
       },
       "rim": {
         "value": null,
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 95.97914665220281,
+        "value": 96.77123553966649,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 144.35132706285322,
-    "max": 169.677385661913,
-    "low": 95.97914665220281,
-    "high": 169.677385661913,
-    "mos_pct": -142.59562386213955,
+    "median": 151.68492136389992,
+    "max": 206.59860718813334,
+    "low": 96.77123553966649,
+    "high": 206.59860718813334,
+    "mos_pct": -130.86671983781594,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -92,12 +92,13 @@
       "gross_profit",
       "cost_of_revenue",
       "research_and_development",
+      "depreciation_and_amortization",
       "accounts_receivable",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
@@ -116,12 +117,12 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 45.18,
-      "Value": 49.31,
-      "Growth": 51.04,
+      "Quality": 46.35,
+      "Value": 49.13,
+      "Growth": 51.69,
       "Momentum": 37.92,
-      "Health": 48.37,
-      "Profitability": 51.22,
+      "Health": 43.72,
+      "Profitability": 52.6,
       "Technical": 32.16,
       "Risk": 40.54
     }

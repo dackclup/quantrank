@@ -3,17 +3,17 @@
   "name": "West Pharmaceutical Services",
   "sector": "Health Care",
   "industry": "Health Care Supplies",
-  "market_cap": 21440159567.260742,
+  "market_cap": 21363832296.8013,
   "current_price": 302.4,
-  "rank": 270,
-  "composite_score": 49.56,
+  "rank": 235,
+  "composite_score": 51.19,
   "pillar_scores": {
-    "quality": 56.36,
-    "value": 13.84,
-    "growth": 43.64,
+    "quality": 62.29,
+    "value": 12.15,
+    "growth": 44.07,
     "momentum": 60.41,
-    "health": 90.56,
-    "profitability": 57.63,
+    "health": 92.11,
+    "profitability": 60.45,
     "technical": 75.85,
     "risk": 39.71,
     "sentiment": null,
@@ -31,55 +31,55 @@
     "free_cash_flow": 458000000.0,
     "eps_basic": 1.93,
     "eps_diluted": 1.92,
-    "shares_outstanding": 70900000.0,
-    "market_cap": 21440159567.260742,
+    "shares_outstanding": 70647595.0,
+    "market_cap": 21363832296.8013,
     "pe_ratio_ttm": 157.49999682108563,
     "goodwill": 109200000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 80.58730471508018,
+        "value": 80.73113482784423,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 163.5857195172991,
+        "value": 178.83291730451484,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 136.6155217711094,
+        "value": 121.40203778620817,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 153.06385663833333,
+        "value": 195.6699650547195,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 56.639934895664986,
+        "value": 56.84229426497316,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 80.03842900960034,
+        "value": 80.3243849529579,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 108.60141324309478,
-    "max": 163.5857195172991,
-    "low": 56.639934895664986,
-    "high": 163.5857195172991,
-    "mos_pct": -178.4494095114475,
+    "median": 101.0665863070262,
+    "max": 195.6699650547195,
+    "low": 56.84229426497316,
+    "high": 195.6699650547195,
+    "mos_pct": -199.20867513802767,
     "valuation_warnings": [
       "extreme_rim_estimate"
     ]
@@ -87,12 +87,10 @@
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
-    "missing_metrics": [
-      "property_plant_equipment"
-    ],
+    "missing_metrics": [],
     "imputed_metrics": [],
     "filing_lag_days": 21,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-20",
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [],
@@ -100,7 +98,7 @@
     "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 40.538787023977434,
+  "tangible_book_value": 40.6836212895853,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -111,18 +109,18 @@
   "pillar_baseline": {
     "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 51.27,
-      "Value": 52.82,
-      "Growth": 50.0,
+      "Quality": 52.97,
+      "Value": 51.98,
+      "Growth": 49.58,
       "Momentum": 41.24,
-      "Health": 60.08,
-      "Profitability": 52.54,
+      "Health": 59.88,
+      "Profitability": 51.13,
       "Technical": 55.13,
       "Risk": 39.71
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -2.531475080893436,
+  "dechow_f_score": 0.2754121704759475,
   "entered_top5": false,
   "exited_top5": false
 }

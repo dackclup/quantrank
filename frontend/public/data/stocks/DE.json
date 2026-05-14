@@ -3,17 +3,17 @@
   "name": "Deere & Company",
   "sector": "Industrials",
   "industry": "Agricultural & Farm Machinery",
-  "market_cap": 157007766601.5625,
+  "market_cap": 156837799887.71606,
   "current_price": 580.65,
-  "rank": 250,
-  "composite_score": 50.49,
+  "rank": 298,
+  "composite_score": 48.38,
   "pillar_scores": {
-    "quality": 44.94,
-    "value": 59.92,
-    "growth": 37.97,
+    "quality": 46.2,
+    "value": 46.2,
+    "growth": 38.61,
     "momentum": 66.53,
-    "health": 47.81,
-    "profitability": 30.17,
+    "health": 49.36,
+    "profitability": 36.5,
     "technical": 52.69,
     "risk": 61.02,
     "sentiment": null,
@@ -31,66 +31,69 @@
     "free_cash_flow": 6437000000.0,
     "eps_basic": 2.43,
     "eps_diluted": 2.42,
-    "shares_outstanding": 270400000.0,
-    "market_cap": 157007766601.5625,
+    "shares_outstanding": 270107282.0,
+    "market_cap": 156837799887.71606,
     "pe_ratio_ttm": 239.9380266173812,
     "goodwill": 4280000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 218.71051788664752,
+        "value": 218.8289951993938,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 283.617891712349,
+        "value": 485.39843119953355,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 682.4537729818164,
+        "value": 634.0421271242379,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 2103.827778117553,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
       },
       "rim": {
-        "value": 174.51446366619916,
+        "value": 174.7035867597981,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 180.74069969359064,
+        "value": 180.9365702222975,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 251.16420479949824,
-    "max": 2103.827778117553,
-    "low": 174.51446366619916,
-    "high": 2103.827778117553,
-    "mos_pct": -131.18343032901097,
+    "median": 218.8289951993938,
+    "max": 634.0421271242379,
+    "low": 174.7035867597981,
+    "high": 634.0421271242379,
+    "mos_pct": -165.34418982501958,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "income_before_tax",
+      "gross_profit",
+      "operating_income",
+      "cost_of_revenue",
       "current_assets",
       "current_liabilities",
       "accounts_receivable",
-      "accounts_payable"
+      "accounts_payable",
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 77,
@@ -100,7 +103,7 @@
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 80.98927514792899,
+  "tangible_book_value": 81.07704404652074,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -111,12 +114,12 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }

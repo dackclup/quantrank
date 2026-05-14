@@ -3,24 +3,24 @@
   "name": "Kraft Heinz",
   "sector": "Consumer Staples",
   "industry": "Packaged Foods & Meats",
-  "market_cap": 27491480361.938477,
+  "market_cap": 27486326010.710617,
   "current_price": 23.18,
-  "rank": 394,
-  "composite_score": 43.16,
+  "rank": 448,
+  "composite_score": 39.09,
   "pillar_scores": {
-    "quality": 13.89,
-    "value": 78.24,
-    "growth": 62.85,
+    "quality": 11.81,
+    "value": 74.31,
+    "growth": 54.17,
     "momentum": 27.49,
-    "health": 41.04,
-    "profitability": 22.45,
+    "health": 32.47,
+    "profitability": 11.81,
     "technical": 67.83,
     "risk": 41.24,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 18205000000.0,
+    "revenue": 24990000000.0,
     "net_income": -5760000000.0,
     "total_assets": 82046000000.0,
     "total_liabilities": 39997000000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 3945000000.0,
     "eps_basic": 0.67,
     "eps_diluted": 0.67,
-    "shares_outstanding": 1186000000.0,
-    "market_cap": 27491480361.938477,
+    "shares_outstanding": 1185777638.0,
+    "market_cap": 27486326010.710617,
     "pe_ratio_ttm": 34.597015380859375,
     "goodwill": 22153000000.0
   },
@@ -45,22 +45,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 40.2434881802263,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
       },
       "multiples_pb": {
-        "value": 162.2037640027572,
+        "value": 62.2210632971503,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 45.09179193889854,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
       },
       "rim": {
         "value": null,
@@ -69,19 +69,18 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 25.724244226524764,
+        "value": 25.729068144780086,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 42.667640059562416,
-    "max": 45.09179193889854,
-    "low": 25.724244226524764,
-    "high": 162.2037640027572,
-    "mos_pct": 45.673113692678164,
+    "median": 43.97506572096519,
+    "max": 62.2210632971503,
+    "low": 25.729068144780086,
+    "high": 62.2210632971503,
+    "mos_pct": 47.2883100340094,
     "valuation_warnings": [
-      "extreme_multiples_pb_estimate",
       "value_trap_risk"
     ]
   },
@@ -89,16 +88,17 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "property_plant_equipment"
+      "research_and_development"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
-    "latest_period_end": "2026-03-28",
+    "latest_period_end": "2026-05-02",
     "latest_filed_date": "2026-05-06"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "altman_distress"
+  ],
   "valuation_warnings": [
-    "extreme_multiples_pb_estimate",
     "value_trap_risk"
   ],
   "has_history": true,
@@ -113,18 +113,18 @@
   "pillar_baseline": {
     "label": "Consumer Staples median (n=36)",
     "values": {
-      "Quality": 56.08,
-      "Value": 49.07,
-      "Growth": 50.52,
+      "Quality": 49.65,
+      "Value": 51.39,
+      "Growth": 48.44,
       "Momentum": 39.14,
-      "Health": 38.65,
-      "Profitability": 52.08,
+      "Health": 39.29,
+      "Profitability": 53.94,
       "Technical": 57.99,
       "Risk": 51.44
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 0.5646268145335612,
   "entered_top5": false,
   "exited_top5": false
 }

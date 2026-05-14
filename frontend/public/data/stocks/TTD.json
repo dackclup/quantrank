@@ -3,17 +3,17 @@
   "name": "Trade Desk (The)",
   "sector": "Communication Services",
   "industry": "Advertising",
-  "market_cap": null,
+  "market_cap": 9771332560.850143,
   "current_price": 20.49,
-  "rank": 268,
-  "composite_score": 49.58,
+  "rank": 147,
+  "composite_score": 55.76,
   "pillar_scores": {
-    "quality": 61.96,
-    "value": 40.58,
-    "growth": 84.78,
+    "quality": 72.83,
+    "value": 49.28,
+    "growth": 86.96,
     "momentum": 1.82,
-    "health": 68.69,
-    "profitability": 68.12,
+    "health": 74.68,
+    "profitability": 73.91,
     "technical": 21.36,
     "risk": 10.36,
     "sentiment": null,
@@ -31,72 +31,68 @@
     "free_cash_flow": 842454000.0,
     "eps_basic": 0.08,
     "eps_diluted": 0.08,
-    "shares_outstanding": null,
-    "market_cap": null,
+    "shares_outstanding": 476883000.0,
+    "market_cap": 9771332560.850143,
     "pe_ratio_ttm": 256.12499713897705,
     "goodwill": null
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "value": 8.87220538873007,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 4.032296216046368,
+        "value": 17.718873992303482,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_bvps",
-        "tier_used": null
+        "value": 12.356810325874273,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": null,
-        "applicable": false,
-        "reason": "missing_shares_outstanding",
-        "tier_used": null
+        "value": 30.316223493207065,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "value": 6.095508093728654,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": null,
-        "applicable": false,
-        "reason": "missing_shares_outstanding",
+        "value": 16.792676104720574,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       }
     },
-    "median": 4.032296216046368,
-    "max": null,
-    "low": 4.032296216046368,
-    "high": 4.032296216046368,
-    "mos_pct": -408.1471864487285,
-    "valuation_warnings": [
-      "extreme_multiples_pe_estimate"
-    ]
+    "median": 14.574743215297424,
+    "max": 30.316223493207065,
+    "low": 6.095508093728654,
+    "high": 30.316223493207065,
+    "mos_pct": -40.585665685088564,
+    "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "shares_outstanding",
       "gross_profit",
       "dividends_paid",
       "inventory",
       "long_term_debt",
       "short_term_debt",
       "goodwill",
-      "intangibles_net",
-      "property_plant_equipment"
+      "intangibles_net"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 7,
@@ -104,11 +100,9 @@
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "extreme_multiples_pe_estimate"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": null,
+  "tangible_book_value": 5.1448384614255485,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -119,12 +113,12 @@
   "pillar_baseline": {
     "label": "Communication Services median (n=23)",
     "values": {
-      "Quality": 51.09,
-      "Value": 51.45,
-      "Growth": 55.43,
+      "Quality": 52.17,
+      "Value": 50.0,
+      "Growth": 60.33,
       "Momentum": 48.66,
-      "Health": 48.17,
-      "Profitability": 56.52,
+      "Health": 45.5,
+      "Profitability": 50.72,
       "Technical": 54.48,
       "Risk": 50.22
     }

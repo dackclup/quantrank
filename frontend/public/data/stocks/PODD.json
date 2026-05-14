@@ -3,25 +3,25 @@
   "name": "Insulet Corporation",
   "sector": "Health Care",
   "industry": "Health Care Equipment",
-  "market_cap": 10476968795.661133,
+  "market_cap": 10309353824.505188,
   "current_price": 148.84,
-  "rank": 274,
-  "composite_score": 49.44,
+  "rank": 176,
+  "composite_score": 54.12,
   "pillar_scores": {
-    "quality": 70.76,
-    "value": 24.01,
-    "growth": 81.78,
+    "quality": 80.08,
+    "value": 32.49,
+    "growth": 83.47,
     "momentum": 3.34,
-    "health": 68.88,
-    "profitability": 68.93,
+    "health": 66.18,
+    "profitability": 73.16,
     "technical": 41.26,
     "risk": 18.13,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 1069700000.0,
-    "net_income": 302800000.0,
+    "revenue": 2900900000.0,
+    "net_income": 303000000.0,
     "total_assets": 2987200000.0,
     "total_liabilities": 1684600000.0,
     "stockholders_equity": 1302600000.0,
@@ -31,73 +31,74 @@
     "free_cash_flow": 415700000.0,
     "eps_basic": 1.3,
     "eps_diluted": 1.3,
-    "shares_outstanding": 70390816.0,
-    "market_cap": 10476968795.661133,
+    "shares_outstanding": 69264674.0,
+    "market_cap": 10309353824.505188,
     "pe_ratio_ttm": 114.49230487530048,
     "goodwill": 51600000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 40.15793857781957,
+        "value": 40.48307692640276,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 154.8048564074511,
+        "value": 103.82587016355602,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 53.56400467946305,
+        "value": 54.4210184059881,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 119.85225561747072,
+        "value": 136.4401398042725,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "rim": {
-        "value": 29.95083877399575,
+        "value": 30.437795479785272,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 48.13365197701515,
+        "value": 48.91623455445859,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 50.8488283282391,
-    "max": 154.8048564074511,
-    "low": 29.95083877399575,
-    "high": 154.8048564074511,
-    "mos_pct": -192.71076882460184,
+    "median": 51.668626480223345,
+    "max": 136.4401398042725,
+    "low": 30.437795479785272,
+    "high": 136.4401398042725,
+    "mos_pct": -188.06648536488683,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "dividends_paid",
-      "property_plant_equipment"
+      "dividends_paid"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "beneish_high"
+  ],
   "has_history": true,
-  "tangible_book_value": 17.624699790381744,
+  "tangible_book_value": 17.911251556601567,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -108,18 +109,18 @@
   "pillar_baseline": {
     "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 51.27,
-      "Value": 52.82,
-      "Growth": 50.0,
+      "Quality": 52.97,
+      "Value": 51.98,
+      "Growth": 49.58,
       "Momentum": 41.24,
-      "Health": 60.08,
-      "Profitability": 52.54,
+      "Health": 59.88,
+      "Profitability": 51.13,
       "Technical": 55.13,
       "Risk": 39.71
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -0.982777602341068,
+  "dechow_f_score": 0.3997986874633505,
   "entered_top5": false,
   "exited_top5": false
 }

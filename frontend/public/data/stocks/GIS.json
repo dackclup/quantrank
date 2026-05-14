@@ -3,17 +3,17 @@
   "name": "General Mills",
   "sector": "Consumer Staples",
   "industry": "Packaged Foods & Meats",
-  "market_cap": 25362106460.57129,
+  "market_cap": 17937026062.713165,
   "current_price": 33.61,
-  "rank": 186,
-  "composite_score": 53.4,
+  "rank": 211,
+  "composite_score": 52.35,
   "pillar_scores": {
     "quality": 65.28,
-    "value": 83.8,
-    "growth": 54.86,
+    "value": 82.41,
+    "growth": 48.96,
     "momentum": 6.95,
-    "health": 25.02,
-    "profitability": 47.69,
+    "health": 21.59,
+    "profitability": 53.24,
     "technical": 43.13,
     "risk": 32.67,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 1650100000.0,
     "eps_basic": 3.57,
     "eps_diluted": 3.56,
-    "shares_outstanding": 754600000.0,
-    "market_cap": 25362106460.57129,
+    "shares_outstanding": 533681218.0,
+    "market_cap": 17937026062.713165,
     "pe_ratio_ttm": 9.441011407402124,
     "goodwill": 15634400000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 213.8310715247845,
+        "value": 100.70323090444656,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 56.816798255229436,
+        "value": 26.522226161570355,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 177.3993327419058,
+        "value": 85.0705334088641,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,41 +69,33 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 30.5553492745672,
+        "value": 43.20381865600601,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 117.10806549856761,
-    "max": 56.816798255229436,
-    "low": 30.5553492745672,
-    "high": 213.8310715247845,
-    "mos_pct": 71.3000121150813,
-    "valuation_warnings": [
-      "extreme_multiples_pe_estimate",
-      "extreme_multiples_ev_ebitda_estimate"
-    ]
+    "median": 64.13717603243505,
+    "max": 100.70323090444656,
+    "low": 26.522226161570355,
+    "high": 100.70323090444656,
+    "mos_pct": 47.596694008862315,
+    "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "income_before_tax",
+      "research_and_development",
       "accounts_receivable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 57,
-    "latest_period_end": "2026-02-22",
+    "latest_period_end": "2026-03-11",
     "latest_filed_date": "2026-03-18"
   },
-  "risk_flags": [
-    "sloan_accruals_top_decile"
-  ],
-  "valuation_warnings": [
-    "extreme_multiples_pe_estimate",
-    "extreme_multiples_ev_ebitda_estimate"
-  ],
+  "risk_flags": [],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -116,12 +108,12 @@
   "pillar_baseline": {
     "label": "Consumer Staples median (n=36)",
     "values": {
-      "Quality": 56.08,
-      "Value": 49.07,
-      "Growth": 50.52,
+      "Quality": 49.65,
+      "Value": 51.39,
+      "Growth": 48.44,
       "Momentum": 39.14,
-      "Health": 38.65,
-      "Profitability": 52.08,
+      "Health": 39.29,
+      "Profitability": 53.94,
       "Technical": 57.99,
       "Risk": 51.44
     }

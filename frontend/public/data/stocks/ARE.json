@@ -3,25 +3,25 @@
   "name": "Alexandria Real Estate Equities",
   "sector": "Real Estate",
   "industry": "Office REITs",
-  "market_cap": 8061325051.15604,
+  "market_cap": 8237718399.374237,
   "current_price": 47.27,
-  "rank": 439,
-  "composite_score": 39.7,
+  "rank": 460,
+  "composite_score": 37.5,
   "pillar_scores": {
     "quality": 30.65,
-    "value": 64.52,
-    "growth": 51.61,
+    "value": 62.9,
+    "growth": 45.97,
     "momentum": 9.61,
-    "health": 27.61,
-    "profitability": 43.55,
+    "health": 25.54,
+    "profitability": 28.76,
     "technical": 61.75,
     "risk": 14.31,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": null,
-    "net_income": -1058978000.0,
+    "revenue": 2939420000.0,
+    "net_income": -857011000.0,
     "total_assets": 34167397000.0,
     "total_liabilities": 14803657000.0,
     "stockholders_equity": 15734092000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": null,
     "eps_basic": 2.1,
     "eps_diluted": 2.1,
-    "shares_outstanding": 170537867.0,
-    "market_cap": 8061325051.15604,
+    "shares_outstanding": 174269480.0,
+    "market_cap": 8237718399.374237,
     "pe_ratio_ttm": 22.509524027506508,
     "goodwill": null
   },
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 269.1881306841053,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
       },
       "multiples_pb": {
-        "value": 220.76901379535357,
+        "value": 230.3609239141796,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,13 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 244.97857223972943,
-    "max": 220.76901379535357,
-    "low": 220.76901379535357,
-    "high": 269.1881306841053,
-    "mos_pct": 80.70443466724652,
+    "median": 230.3609239141796,
+    "max": 230.3609239141796,
+    "low": 230.3609239141796,
+    "high": 230.3609239141796,
+    "mos_pct": 79.48002653636951,
     "valuation_warnings": [
-      "extreme_multiples_pe_estimate",
       "value_trap_risk"
     ]
   },
@@ -89,7 +88,6 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "revenue",
       "capex",
       "free_cash_flow",
       "gross_profit",
@@ -105,21 +103,19 @@
       "accounts_payable",
       "short_term_debt",
       "ebitda",
-      "goodwill",
-      "property_plant_equipment"
+      "goodwill"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 17,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-15",
     "latest_filed_date": "2026-04-27"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_multiples_pe_estimate",
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 92.3132338696367,
+  "tangible_book_value": 90.33654085614991,
   "tier2_events": {
     "going_concern_disclosure": true,
     "non_reliance_filing": false,
@@ -130,12 +126,12 @@
   "pillar_baseline": {
     "label": "Real Estate median (n=31)",
     "values": {
-      "Quality": 46.77,
-      "Value": 47.85,
-      "Growth": 51.61,
+      "Quality": 50.81,
+      "Value": 47.31,
+      "Growth": 48.79,
       "Momentum": 52.34,
-      "Health": 27.89,
-      "Profitability": 52.69,
+      "Health": 26.18,
+      "Profitability": 52.15,
       "Technical": 59.26,
       "Risk": 53.88
     }

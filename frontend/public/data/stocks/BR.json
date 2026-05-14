@@ -3,17 +3,17 @@
   "name": "Broadridge Financial Solutions",
   "sector": "Industrials",
   "industry": "Data Processing & Outsourced Services",
-  "market_cap": 16652700152.58789,
+  "market_cap": 16646697840.103333,
   "current_price": 143.93,
-  "rank": 58,
-  "composite_score": 61.61,
+  "rank": 92,
+  "composite_score": 58.31,
   "pillar_scores": {
-    "quality": 76.27,
-    "value": 83.54,
-    "growth": 76.9,
+    "quality": 73.42,
+    "value": 73.42,
+    "growth": 77.22,
     "momentum": 10.01,
-    "health": 34.46,
-    "profitability": 71.52,
+    "health": 40.24,
+    "profitability": 57.81,
     "technical": 33.17,
     "risk": 37.48,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 1317200000.0,
     "eps_basic": 6.22,
     "eps_diluted": 6.18,
-    "shares_outstanding": 115700000.0,
-    "market_cap": 16652700152.58789,
+    "shares_outstanding": 115658297.0,
+    "market_cap": 16646697840.103333,
     "pe_ratio_ttm": 23.28964282779632,
     "goodwill": 3735200000.0
   },
@@ -45,22 +45,22 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 728.9535124317699,
+        "value": 264.00123814775606,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 170.94448012068096,
+        "value": 158.7033624034276,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 402.4295243443961,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
       },
       "rim": {
         "value": null,
@@ -69,39 +69,37 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 58.12065419617398,
+        "value": 58.14161080460427,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 286.68700223253853,
-    "max": 402.4295243443961,
-    "low": 58.12065419617398,
-    "high": 728.9535124317699,
-    "mos_pct": 49.795424433286215,
-    "valuation_warnings": [
-      "extreme_multiples_pe_estimate"
-    ]
+    "median": 158.7033624034276,
+    "max": 264.00123814775606,
+    "low": 58.14161080460427,
+    "high": 264.00123814775606,
+    "mos_pct": 9.30879440984502,
+    "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
+      "gross_profit",
       "research_and_development",
-      "interest_expense",
+      "depreciation_and_amortization",
+      "income_before_tax",
       "accounts_receivable",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "extreme_multiples_pe_estimate"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -114,12 +112,12 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }

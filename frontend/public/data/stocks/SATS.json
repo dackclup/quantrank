@@ -3,17 +3,17 @@
   "name": "EchoStar",
   "sector": "Communication Services",
   "industry": "Wireless Telecommunication Services",
-  "market_cap": 6353344002.228989,
+  "market_cap": 38505333985.198975,
   "current_price": 133.23,
-  "rank": 188,
-  "composite_score": 53.33,
+  "rank": 391,
+  "composite_score": 43.58,
   "pillar_scores": {
-    "quality": 28.26,
-    "value": 74.64,
+    "quality": 16.85,
+    "value": 50.0,
     "growth": 63.59,
     "momentum": 93.7,
-    "health": 25.28,
-    "profitability": 29.71,
+    "health": 17.93,
+    "profitability": 24.28,
     "technical": 56.77,
     "risk": 50.22,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 14802720000.0,
-    "net_income": -14450958000.0,
+    "net_income": -14441396000.0,
     "total_assets": 41375692000.0,
     "total_liabilities": 35698289000.0,
     "stockholders_equity": 5631310000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": -276506000.0,
     "eps_basic": -0.51,
     "eps_diluted": -0.51,
-    "shares_outstanding": 47687039.0,
-    "market_cap": 6353344002.228989,
+    "shares_outstanding": 289014000.0,
+    "market_cap": 38505333985.198975,
     "pe_ratio_ttm": null,
     "goodwill": 0.0
   },
@@ -51,16 +51,16 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 244.37304090293685,
+        "value": 46.797773600862286,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 495.29298933139484,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_ebitda",
+        "tier_used": null
       },
       "rim": {
         "value": null,
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 369.8330151171658,
-    "max": 495.29298933139484,
-    "low": 244.37304090293685,
-    "high": 495.29298933139484,
-    "mos_pct": 63.975634872584095,
+    "median": 46.797773600862286,
+    "max": 46.797773600862286,
+    "low": 46.797773600862286,
+    "high": 46.797773600862286,
+    "mos_pct": -184.69302164640627,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -89,6 +89,8 @@
   "data_quality": {
     "missing_metrics": [
       "gross_profit",
+      "cost_of_revenue",
+      "interest_expense",
       "dividends_paid"
     ],
     "imputed_metrics": [],
@@ -103,7 +105,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 108.13294572556707,
+  "tangible_book_value": 17.841834651608572,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -114,12 +116,12 @@
   "pillar_baseline": {
     "label": "Communication Services median (n=23)",
     "values": {
-      "Quality": 51.09,
-      "Value": 51.45,
-      "Growth": 55.43,
+      "Quality": 52.17,
+      "Value": 50.0,
+      "Growth": 60.33,
       "Momentum": 48.66,
-      "Health": 48.17,
-      "Profitability": 56.52,
+      "Health": 45.5,
+      "Profitability": 50.72,
       "Technical": 54.48,
       "Risk": 50.22
     }

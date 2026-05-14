@@ -3,17 +3,17 @@
   "name": "International Flavors & Fragrances",
   "sector": "Materials",
   "industry": "Specialty Chemicals",
-  "market_cap": 19772896856.689453,
+  "market_cap": 19780913945.076805,
   "current_price": 77.48,
-  "rank": 447,
-  "composite_score": 38.9,
+  "rank": 398,
+  "composite_score": 43.19,
   "pillar_scores": {
-    "quality": 24.04,
-    "value": 42.31,
-    "growth": 48.56,
+    "quality": 39.42,
+    "value": 43.91,
+    "growth": 38.46,
     "momentum": 42.08,
-    "health": 49.34,
-    "profitability": 29.49,
+    "health": 47.71,
+    "profitability": 47.44,
     "technical": 67.13,
     "risk": 34.96,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 10788000000.0,
-    "net_income": -197000000.0,
+    "net_income": 854000000.0,
     "total_assets": 25144000000.0,
     "total_liabilities": null,
     "stockholders_equity": 14120000000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 400000000.0,
     "eps_basic": 0.66,
     "eps_diluted": 0.66,
-    "shares_outstanding": 255200000.0,
-    "market_cap": 19772896856.689453,
+    "shares_outstanding": 255303473.0,
+    "market_cap": 19780913945.076805,
     "pe_ratio_ttm": 117.3939444802024,
     "goodwill": 8220000000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 56.48028279740616,
+        "value": 88.46829272141635,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 183.61278113708278,
+        "value": 169.58709587817708,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 72.2005045538574,
+        "value": 76.26411068938387,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 14.96996553091387,
+        "value": 14.963898291697816,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 64.34039367563179,
-    "max": 183.61278113708278,
-    "low": 14.96996553091387,
-    "high": 183.61278113708278,
-    "mos_pct": -20.422022512862377,
+    "median": 82.3662017054001,
+    "max": 169.58709587817708,
+    "low": 14.963898291697816,
+    "high": 169.58709587817708,
+    "mos_pct": 5.932285630874439,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_dcf_estimate",
@@ -91,12 +91,11 @@
   "data_quality": {
     "missing_metrics": [
       "total_liabilities",
-      "accounts_receivable",
-      "property_plant_equipment"
+      "accounts_receivable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 9,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-28",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
@@ -106,7 +105,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 0.12931034482758622,
+  "tangible_book_value": 0.12925793610336042,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -117,12 +116,12 @@
   "pillar_baseline": {
     "label": "Materials median (n=26)",
     "values": {
-      "Quality": 52.16,
-      "Value": 50.8,
-      "Growth": 48.08,
+      "Quality": 51.68,
+      "Value": 49.84,
+      "Growth": 48.56,
       "Momentum": 51.87,
-      "Health": 51.58,
-      "Profitability": 50.48,
+      "Health": 56.53,
+      "Profitability": 54.33,
       "Technical": 57.81,
       "Risk": 48.94
     }

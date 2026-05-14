@@ -3,17 +3,17 @@
   "name": "Intel",
   "sector": "Information Technology",
   "industry": "Semiconductors",
-  "market_cap": 604216674598.6938,
+  "market_cap": 604577544601.4404,
   "current_price": 120.29,
-  "rank": 392,
-  "composite_score": 43.24,
+  "rank": 444,
+  "composite_score": 39.47,
   "pillar_scores": {
-    "quality": 5.82,
-    "value": 59.7,
+    "quality": 5.14,
+    "value": 44.06,
     "growth": 40.07,
     "momentum": 90.19,
-    "health": 62.83,
-    "profitability": 5.02,
+    "health": 62.99,
+    "profitability": 3.65,
     "technical": 70.84,
     "risk": 47.66,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": -3119000000.0,
     "eps_basic": -0.73,
     "eps_diluted": -0.73,
-    "shares_outstanding": 5023000000.0,
-    "market_cap": 604216674598.6938,
+    "shares_outstanding": 5026000000.0,
+    "market_cap": 604577544601.4404,
     "pe_ratio_ttm": null,
     "goodwill": 20465000000.0
   },
@@ -51,16 +51,16 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 277.4415665600015,
+        "value": 249.76458346982977,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_ebitda",
-        "tier_used": null
+        "value": 35.6702687977788,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
       },
       "rim": {
         "value": null,
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 277.4415665600015,
-    "max": 277.4415665600015,
-    "low": 277.4415665600015,
-    "high": 277.4415665600015,
-    "mos_pct": 56.64312222317539,
+    "median": 142.71742613380428,
+    "max": 249.76458346982977,
+    "low": 35.6702687977788,
+    "high": 249.76458346982977,
+    "mos_pct": 15.714566767235679,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -88,12 +88,11 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "total_liabilities",
-      "property_plant_equipment"
+      "total_liabilities"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 20,
-    "latest_period_end": "2026-03-28",
+    "latest_period_end": "2026-04-17",
     "latest_filed_date": "2026-04-24"
   },
   "risk_flags": [
@@ -103,7 +102,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 17.56062114274338,
+  "tangible_book_value": 17.550139275766018,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -114,18 +113,18 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -2.638261611539307,
+  "dechow_f_score": 0.7052655821767236,
   "entered_top5": false,
   "exited_top5": false
 }

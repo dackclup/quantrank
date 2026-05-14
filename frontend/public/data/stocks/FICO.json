@@ -3,17 +3,17 @@
   "name": "Fair Isaac",
   "sector": "Information Technology",
   "industry": "Application Software",
-  "market_cap": 24800789141.23535,
+  "market_cap": 24689966503.550537,
   "current_price": 1064.64,
-  "rank": 271,
-  "composite_score": 49.55,
+  "rank": 204,
+  "composite_score": 52.67,
   "pillar_scores": {
-    "quality": 38.36,
-    "value": 56.16,
-    "growth": 69.86,
+    "quality": 50.86,
+    "value": 50.91,
+    "growth": 69.52,
     "momentum": 1.77,
-    "health": 86.43,
-    "profitability": 71.8,
+    "health": 82.53,
+    "profitability": 92.58,
     "technical": 69.77,
     "risk": 21.15,
     "sentiment": null,
@@ -31,8 +31,8 @@
     "free_cash_flow": 900878000.0,
     "eps_basic": 17.86,
     "eps_diluted": 17.73,
-    "shares_outstanding": 23295000.0,
-    "market_cap": 24800789141.23535,
+    "shares_outstanding": 23190906.0,
+    "market_cap": 24689966503.550537,
     "pe_ratio_ttm": 60.04737815276015,
     "goodwill": 781390000.0
   },
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 1940.9939854010051,
+        "value": 1283.4425776247747,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 1864.7952517618487,
+        "value": 1164.1700175218384,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 131.92445651366117,
+        "value": 132.5166086433077,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 1864.7952517618487,
-    "max": 1940.9939854010051,
-    "low": 131.92445651366117,
-    "high": 1940.9939854010051,
-    "mos_pct": 42.90847675407951,
+    "median": 1164.1700175218384,
+    "max": 1283.4425776247747,
+    "low": 132.5166086433077,
+    "high": 1283.4425776247747,
+    "mos_pct": 8.549438774009129,
     "valuation_warnings": [
       "extreme_dcf_estimate",
       "value_trap_risk"
@@ -89,12 +89,13 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "inventory",
-      "property_plant_equipment"
+      "gross_profit",
+      "dividends_paid",
+      "inventory"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 16,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-16",
     "latest_filed_date": "2026-04-28"
   },
   "risk_flags": [],
@@ -114,17 +115,17 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }
   },
-  "beneish_m_score": null,
+  "beneish_m_score": -2.717513991430988,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false

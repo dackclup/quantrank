@@ -3,17 +3,17 @@
   "name": "United Parcel Service",
   "sector": "Industrials",
   "industry": "Air Freight & Logistics",
-  "market_cap": null,
+  "market_cap": 83682497406.00586,
   "current_price": 98.45,
-  "rank": 365,
-  "composite_score": 44.89,
+  "rank": 212,
+  "composite_score": 52.34,
   "pillar_scores": {
-    "quality": 52.85,
-    "value": 51.48,
-    "growth": 22.47,
+    "quality": 59.81,
+    "value": 82.7,
+    "growth": 8.86,
     "momentum": 39.94,
-    "health": 46.18,
-    "profitability": 43.88,
+    "health": 47.49,
+    "profitability": 45.15,
     "technical": 46.46,
     "risk": 34.53,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 88317000000.0,
-    "net_income": 5249000000.0,
+    "net_income": 5542000000.0,
     "total_assets": 71809000000.0,
     "total_liabilities": null,
     "stockholders_equity": 15763000000.0,
@@ -31,68 +31,68 @@
     "free_cash_flow": 4516000000.0,
     "eps_basic": 1.02,
     "eps_diluted": 1.02,
-    "shares_outstanding": null,
-    "market_cap": null,
+    "shares_outstanding": 850000000.0,
+    "market_cap": 83682497406.00586,
     "pe_ratio_ttm": 96.51960485121784,
     "goodwill": 5796000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "value": 33.39132416379687,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 120.31271564407854,
+        "value": 180.9007243412967,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_bvps",
-        "tier_used": null
+        "value": 120.75874986946404,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": null,
-        "applicable": false,
-        "reason": "missing_shares_outstanding",
-        "tier_used": null
+        "value": 206.33936244025648,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "value": 22.04016783345914,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": null,
-        "applicable": false,
-        "reason": "missing_shares_outstanding",
+        "value": 72.81964335218409,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       }
     },
-    "median": 120.31271564407854,
-    "max": 120.31271564407854,
-    "low": 120.31271564407854,
-    "high": 120.31271564407854,
-    "mos_pct": 18.171577774466414,
-    "valuation_warnings": []
+    "median": 96.78919661082406,
+    "max": 206.33936244025648,
+    "low": 22.04016783345914,
+    "high": 206.33936244025648,
+    "mos_pct": -1.7158943307443406,
+    "valuation_warnings": [
+      "goodwill_heavy"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
       "total_liabilities",
-      "shares_outstanding",
       "gross_profit",
       "cost_of_revenue",
       "research_and_development",
-      "sga_expense",
-      "property_plant_equipment"
+      "sga_expense"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
@@ -100,9 +100,11 @@
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "goodwill_heavy"
+  ],
   "has_history": true,
-  "tangible_book_value": null,
+  "tangible_book_value": 7.04235294117647,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -113,12 +115,12 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }

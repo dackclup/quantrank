@@ -3,17 +3,17 @@
   "name": "W. R. Berkley Corporation",
   "sector": "Financials",
   "industry": "Property & Casualty Insurance",
-  "market_cap": 24385740241.568916,
+  "market_cap": 24358066688.369843,
   "current_price": 65.43,
-  "rank": 196,
-  "composite_score": 53.05,
+  "rank": 240,
+  "composite_score": 51.1,
   "pillar_scores": {
-    "quality": 58.67,
-    "value": 62.67,
-    "growth": 49.0,
+    "quality": 56.67,
+    "value": 60.0,
+    "growth": 45.67,
     "momentum": 33.47,
-    "health": 54.64,
-    "profitability": 48.22,
+    "health": 50.64,
+    "profitability": 48.44,
     "technical": 29.81,
     "risk": 67.8,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 14850791000.0,
-    "net_income": 1877047000.0,
+    "net_income": 1883003000.0,
     "total_assets": 44315553000.0,
     "total_liabilities": 34564937000.0,
     "stockholders_equity": 9739550000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": 3422919000.0,
     "eps_basic": 1.31,
     "eps_diluted": 1.31,
-    "shares_outstanding": 372699681.0,
-    "market_cap": 24385740241.568916,
+    "shares_outstanding": 372276732.0,
+    "market_cap": 24358066688.369843,
     "pe_ratio_ttm": 49.94656511845479,
     "goodwill": 184332000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 51.39132248573791,
+        "value": 51.42050741252809,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 70.40456069590715,
+        "value": 69.09010073185983,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 54.02606852660867,
+        "value": 51.72635858849029,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -63,7 +63,7 @@
         "tier_used": null
       },
       "rim": {
-        "value": 34.33396796329322,
+        "value": 34.37297528276251,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 52.708695506173285,
-    "max": 70.40456069590715,
-    "low": 34.33396796329322,
-    "high": 70.40456069590715,
-    "mos_pct": -24.13511599336122,
+    "median": 51.57343300050919,
+    "max": 69.09010073185983,
+    "low": 34.37297528276251,
+    "high": 69.09010073185983,
+    "mos_pct": -26.8676457984284,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -91,6 +91,7 @@
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
+      "depreciation_and_amortization",
       "current_assets",
       "current_liabilities",
       "inventory",
@@ -98,18 +99,17 @@
       "accounts_payable",
       "long_term_debt",
       "short_term_debt",
-      "ebitda",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 25.407099825234354,
+  "tangible_book_value": 25.435965200210255,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -121,11 +121,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

@@ -5,15 +5,15 @@
   "industry": "Construction Materials",
   "market_cap": 34633873341.63208,
   "current_price": 576.79,
-  "rank": 278,
-  "composite_score": 49.38,
+  "rank": 231,
+  "composite_score": 51.48,
   "pillar_scores": {
-    "quality": 49.04,
-    "value": 35.26,
-    "growth": 81.73,
+    "quality": 50.96,
+    "value": 35.9,
+    "growth": 82.69,
     "momentum": 44.42,
-    "health": 59.0,
-    "profitability": 45.51,
+    "health": 61.67,
+    "profitability": 62.18,
     "technical": 27.69,
     "risk": 55.01,
     "sentiment": null,
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 2455.506137056312,
+        "value": 1116.1170696686534,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 624.240236935391,
+        "value": 545.6338132428922,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 171.02893199821952,
+        "value": 393.5741595078017,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 213.2019355145187,
-    "max": 2455.506137056312,
+    "median": 324.4745492693098,
+    "max": 1116.1170696686534,
     "low": 65.3954640321972,
-    "high": 2455.506137056312,
-    "mos_pct": -170.53693327660494,
+    "high": 1116.1170696686534,
+    "mos_pct": -77.76123869382904,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ]
@@ -88,18 +88,19 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "property_plant_equipment"
+      "research_and_development"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
   "valuation_warnings": [
-    "extreme_dcf_estimate"
+    "extreme_dcf_estimate",
+    "beneish_high"
   ],
   "has_history": true,
   "tangible_book_value": 124.22163711427424,
@@ -113,18 +114,18 @@
   "pillar_baseline": {
     "label": "Materials median (n=26)",
     "values": {
-      "Quality": 52.16,
-      "Value": 50.8,
-      "Growth": 48.08,
+      "Quality": 51.68,
+      "Value": 49.84,
+      "Growth": 48.56,
       "Momentum": 51.87,
-      "Health": 51.58,
-      "Profitability": 50.48,
+      "Health": 56.53,
+      "Profitability": 54.33,
       "Technical": 57.81,
       "Risk": 48.94
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -2.140976985826718,
+  "dechow_f_score": 0.21642679566141276,
   "entered_top5": false,
   "exited_top5": false
 }

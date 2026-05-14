@@ -3,25 +3,25 @@
   "name": "BNY Mellon",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 92905026912.22511,
+  "market_cap": 92654311054.9427,
   "current_price": 134.99,
-  "rank": 221,
-  "composite_score": 52.01,
+  "rank": 252,
+  "composite_score": 50.66,
   "pillar_scores": {
-    "quality": 47.33,
-    "value": 38.89,
-    "growth": 42.33,
+    "quality": 45.33,
+    "value": 36.0,
+    "growth": 44.0,
     "momentum": 83.86,
-    "health": 52.41,
-    "profitability": 46.44,
+    "health": 48.41,
+    "profitability": 47.11,
     "technical": 67.03,
     "risk": 79.38,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": null,
-    "net_income": 5961000000.0,
+    "revenue": 27305000000.0,
+    "net_income": 5991000000.0,
     "total_assets": 561517000000.0,
     "total_liabilities": 516198000000.0,
     "stockholders_equity": 44783000000.0,
@@ -31,27 +31,27 @@
     "free_cash_flow": 2931000000.0,
     "eps_basic": 2.26,
     "eps_diluted": 2.24,
-    "shares_outstanding": 688236337.0,
-    "market_cap": 92905026912.22511,
+    "shares_outstanding": 686379045.0,
+    "market_cap": 92654311054.9427,
     "pe_ratio_ttm": 60.263395309448235,
     "goodwill": 16734000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 68.5209330796559,
+        "value": 68.61357679210323,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 129.04075910599843,
+        "value": 140.7314403620102,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 184.89581759599932,
+        "value": 187.15942270957527,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 129.04075910599843,
-    "max": 184.89581759599932,
-    "low": 68.5209330796559,
-    "high": 184.89581759599932,
-    "mos_pct": -4.610362205230611,
+    "median": 140.7314403620102,
+    "max": 187.15942270957527,
+    "low": 68.61357679210323,
+    "high": 187.15942270957527,
+    "mos_pct": 4.07971015863774,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -88,20 +88,20 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "revenue",
       "gross_profit",
       "operating_income",
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
+      "depreciation_and_amortization",
+      "income_before_tax",
       "current_assets",
       "current_liabilities",
       "inventory",
       "accounts_receivable",
       "accounts_payable",
       "short_term_debt",
-      "ebitda",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
@@ -115,7 +115,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 36.6734487022588,
+  "tangible_book_value": 36.77268439918646,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -127,11 +127,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

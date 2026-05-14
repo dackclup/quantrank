@@ -3,17 +3,17 @@
   "name": "Nike, Inc.",
   "sector": "Consumer Discretionary",
   "industry": "Apparel, Accessories & Luxury Goods",
-  "market_cap": null,
+  "market_cap": 62680136225.89111,
   "current_price": 42.34,
-  "rank": 451,
-  "composite_score": 38.29,
+  "rank": 457,
+  "composite_score": 37.85,
   "pillar_scores": {
-    "quality": 47.14,
-    "value": 52.6,
-    "growth": 18.23,
+    "quality": 53.39,
+    "value": 44.44,
+    "growth": 14.58,
     "momentum": 4.86,
-    "health": 55.66,
-    "profitability": 42.88,
+    "health": 53.9,
+    "profitability": 47.92,
     "technical": 36.25,
     "risk": 14.53,
     "sentiment": null,
@@ -31,30 +31,30 @@
     "free_cash_flow": 1048000000.0,
     "eps_basic": 1.38,
     "eps_diluted": 1.38,
-    "shares_outstanding": null,
-    "market_cap": null,
+    "shares_outstanding": 1480400000.0,
+    "market_cap": 62680136225.89111,
     "pe_ratio_ttm": 30.681159530860793,
     "goodwill": 240000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "value": 25.059027855450697,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 99.59168159874685,
+        "value": 32.04274502809433,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_bvps",
-        "tier_used": null
+        "value": 56.47442235154886,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
         "value": null,
@@ -63,23 +63,23 @@
         "tier_used": null
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "value": 23.807166694277207,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": null,
-        "applicable": false,
-        "reason": "missing_shares_outstanding",
+        "value": 40.98981420428442,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       }
     },
-    "median": 99.59168159874685,
-    "max": 99.59168159874685,
-    "low": 99.59168159874685,
-    "high": 99.59168159874685,
-    "mos_pct": 57.48640903245814,
+    "median": 32.04274502809433,
+    "max": 56.47442235154886,
+    "low": 23.807166694277207,
+    "high": 56.47442235154886,
+    "mos_pct": -32.13599557548883,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -87,12 +87,10 @@
   "data_quality": {
     "missing_metrics": [
       "total_liabilities",
-      "shares_outstanding",
       "operating_income",
       "research_and_development",
       "interest_expense",
-      "ebitda",
-      "property_plant_equipment"
+      "ebitda"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 43,
@@ -104,7 +102,7 @@
   ],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": null,
+  "tangible_book_value": 9.180626857606052,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -115,17 +113,17 @@
   "pillar_baseline": {
     "label": "Consumer Discretionary median (n=48)",
     "values": {
-      "Quality": 45.18,
-      "Value": 49.31,
-      "Growth": 51.04,
+      "Quality": 46.35,
+      "Value": 49.13,
+      "Growth": 51.69,
       "Momentum": 37.92,
-      "Health": 48.37,
-      "Profitability": 51.22,
+      "Health": 43.72,
+      "Profitability": 52.6,
       "Technical": 32.16,
       "Risk": 40.54
     }
   },
-  "beneish_m_score": null,
+  "beneish_m_score": -2.2322132972981725,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false

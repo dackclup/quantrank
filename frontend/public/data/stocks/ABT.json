@@ -3,17 +3,17 @@
   "name": "Abbott Laboratories",
   "sector": "Health Care",
   "industry": "Health Care Equipment",
-  "market_cap": 167511939424.3553,
+  "market_cap": 146016139112.42383,
   "current_price": 83.83,
-  "rank": 493,
-  "composite_score": 31.85,
+  "rank": 438,
+  "composite_score": 39.85,
   "pillar_scores": {
-    "quality": 30.93,
-    "value": 29.66,
-    "growth": 26.27,
+    "quality": 39.41,
+    "value": 51.98,
+    "growth": 23.31,
     "momentum": 12.65,
-    "health": 61.83,
-    "profitability": 35.03,
+    "health": 66.97,
+    "profitability": 43.22,
     "technical": 39.59,
     "risk": 38.68,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 45134000000.0,
-    "net_income": 6276000000.0,
+    "net_income": 6300000000.0,
     "total_assets": 110429000000.0,
     "total_liabilities": null,
     "stockholders_equity": 52061000000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 7378000000.0,
     "eps_basic": 0.62,
     "eps_diluted": 0.61,
-    "shares_outstanding": 1998233756.0,
-    "market_cap": 167511939424.3553,
+    "shares_outstanding": 1741812429.0,
+    "market_cap": 146016139112.42383,
     "pe_ratio_ttm": 137.4262325099257,
     "goodwill": 35221000000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 69.94730966720466,
+        "value": 96.59969558711424,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 75.41264613706691,
+        "value": 91.13921564401738,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 47.12614265420136,
+        "value": 81.61305473051065,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 42.56841703935983,
+        "value": 48.83513658033175,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 58.53672616070301,
-    "max": 75.41264613706691,
-    "low": 42.56841703935983,
-    "high": 75.41264613706691,
-    "mos_pct": -43.209242008022656,
+    "median": 86.37613518726403,
+    "max": 96.59969558711424,
+    "low": 48.83513658033175,
+    "high": 96.59969558711424,
+    "mos_pct": 2.9477278077900855,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -87,8 +87,8 @@
   "data_quality": {
     "missing_metrics": [
       "total_liabilities",
-      "accounts_payable",
-      "property_plant_equipment"
+      "gross_profit",
+      "accounts_payable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
@@ -109,17 +109,17 @@
   "pillar_baseline": {
     "label": "Health Care median (n=59)",
     "values": {
-      "Quality": 51.27,
-      "Value": 52.82,
-      "Growth": 50.0,
+      "Quality": 52.97,
+      "Value": 51.98,
+      "Growth": 49.58,
       "Momentum": 41.24,
-      "Health": 60.08,
-      "Profitability": 52.54,
+      "Health": 59.88,
+      "Profitability": 51.13,
       "Technical": 55.13,
       "Risk": 39.71
     }
   },
-  "beneish_m_score": null,
+  "beneish_m_score": -2.346195087388877,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false

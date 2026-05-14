@@ -3,17 +3,17 @@
   "name": "Albemarle Corporation",
   "sector": "Materials",
   "industry": "Specialty Chemicals",
-  "market_cap": 23688013127.807617,
+  "market_cap": 23697789059.866394,
   "current_price": 200.94,
-  "rank": 334,
-  "composite_score": 46.47,
+  "rank": 413,
+  "composite_score": 41.83,
   "pillar_scores": {
-    "quality": 22.12,
-    "value": 45.19,
-    "growth": 44.71,
+    "quality": 9.62,
+    "value": 44.23,
+    "growth": 45.67,
     "momentum": 88.2,
-    "health": 64.12,
-    "profitability": 32.05,
+    "health": 65.06,
+    "profitability": 12.82,
     "technical": 74.5,
     "risk": 39.08,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 5494583000.0,
-    "net_income": -232885000.0,
+    "net_income": -185531000.0,
     "total_assets": 15139578000.0,
     "total_liabilities": null,
     "stockholders_equity": 9850174000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 1131685000.0,
     "eps_basic": 2.35,
     "eps_diluted": 2.34,
-    "shares_outstanding": 117886000.0,
-    "market_cap": 23688013127.807617,
+    "shares_outstanding": 117934651.0,
+    "market_cap": 23697789059.866394,
     "pe_ratio_ttm": 85.87179591513087,
     "goodwill": 1488404000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 228.59336314317764,
-        "applicable": true,
-        "reason": null,
-        "tier_used": "sector"
+        "value": null,
+        "applicable": false,
+        "reason": "non_positive_or_missing_eps_ttm",
+        "tier_used": null
       },
       "multiples_pb": {
-        "value": 277.2876661900684,
+        "value": 256.10455640667004,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 128.06048590698026,
+        "value": 50.80423006374619,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 228.59336314317764,
-    "max": 277.2876661900684,
-    "low": 128.06048590698026,
-    "high": 277.2876661900684,
-    "mos_pct": 12.097184415827037,
+    "median": 153.4543932352081,
+    "max": 256.10455640667004,
+    "low": 50.80423006374619,
+    "high": 256.10455640667004,
+    "mos_pct": -30.9444442776,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -89,11 +89,11 @@
   "data_quality": {
     "missing_metrics": [
       "total_liabilities",
-      "property_plant_equipment"
+      "interest_expense"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
@@ -101,7 +101,7 @@
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 69.16981660248037,
+  "tangible_book_value": 69.14128231913791,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -112,18 +112,18 @@
   "pillar_baseline": {
     "label": "Materials median (n=26)",
     "values": {
-      "Quality": 52.16,
-      "Value": 50.8,
-      "Growth": 48.08,
+      "Quality": 51.68,
+      "Value": 49.84,
+      "Growth": 48.56,
       "Momentum": 51.87,
-      "Health": 51.58,
-      "Profitability": 50.48,
+      "Health": 56.53,
+      "Profitability": 54.33,
       "Technical": 57.81,
       "Risk": 48.94
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -3.8415306974863173,
+  "dechow_f_score": 0.17199431008620775,
   "entered_top5": false,
   "exited_top5": false
 }

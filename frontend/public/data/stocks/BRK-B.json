@@ -3,25 +3,25 @@
   "name": "Berkshire Hathaway",
   "sector": "Financials",
   "industry": "Multi-Sector Holdings",
-  "market_cap": null,
+  "market_cap": 797766633.3081665,
   "current_price": 485.52,
-  "rank": 360,
-  "composite_score": 45.18,
+  "rank": 200,
+  "composite_score": 52.82,
   "pillar_scores": {
-    "quality": 39.33,
-    "value": 49.56,
-    "growth": 33.67,
+    "quality": 37.33,
+    "value": 81.78,
+    "growth": 37.67,
     "momentum": 42.78,
-    "health": 48.05,
-    "profitability": 50.44,
+    "health": 50.64,
+    "profitability": 53.33,
     "technical": 64.64,
     "risk": 65.85,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 251024000000.0,
-    "net_income": 72471000000.0,
+    "revenue": 375394000000.0,
+    "net_income": 72767000000.0,
     "total_assets": 1252271000000.0,
     "total_liabilities": 522821000000.0,
     "stockholders_equity": 727181000000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 23872000000.0,
     "eps_basic": 3035.0,
     "eps_diluted": null,
-    "shares_outstanding": null,
-    "market_cap": null,
+    "shares_outstanding": 1643118.0,
+    "market_cap": 797766633.3081665,
     "pe_ratio_ttm": null,
     "goodwill": 83180000000.0
   },
@@ -41,37 +41,37 @@
       "graham": {
         "value": null,
         "applicable": false,
-        "reason": "non_positive_eps_3y_avg",
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       },
       "multiples_pe": {
         "value": null,
         "applicable": false,
-        "reason": "non_positive_or_missing_eps_ttm",
-        "tier_used": null
+        "reason": "data_quality_input_corruption",
+        "tier_used": "sector"
       },
       "multiples_pb": {
         "value": null,
         "applicable": false,
-        "reason": "non_positive_or_missing_bvps",
-        "tier_used": null
+        "reason": "data_quality_input_corruption",
+        "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
         "value": null,
         "applicable": false,
-        "reason": "sector_excluded_financials",
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       },
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       },
       "dcf": {
         "value": null,
         "applicable": false,
-        "reason": "sector_excluded_financials",
+        "reason": "data_quality_input_corruption",
         "tier_used": null
       }
     },
@@ -80,15 +80,17 @@
     "low": null,
     "high": null,
     "mos_pct": null,
-    "valuation_warnings": []
+    "valuation_warnings": [
+      "data_quality_input_corruption"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
       "eps_diluted",
-      "shares_outstanding",
       "gross_profit",
+      "operating_income",
       "cost_of_revenue",
       "research_and_development",
       "sga_expense",
@@ -99,6 +101,7 @@
       "accounts_payable",
       "long_term_debt",
       "short_term_debt",
+      "ebitda",
       "intangibles_net",
       "property_plant_equipment"
     ],
@@ -108,11 +111,14 @@
     "latest_filed_date": "2026-05-04"
   },
   "risk_flags": [
+    "data_quality_input_corruption",
     "sloan_accruals_top_decile"
   ],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "data_quality_input_corruption"
+  ],
   "has_history": true,
-  "tangible_book_value": null,
+  "tangible_book_value": 391938.3756979109,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -124,11 +130,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

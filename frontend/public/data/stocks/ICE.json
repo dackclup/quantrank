@@ -3,17 +3,17 @@
   "name": "Intercontinental Exchange",
   "sector": "Financials",
   "industry": "Financial Exchanges & Data",
-  "market_cap": 87616801727.29492,
+  "market_cap": 87541335951.80717,
   "current_price": 154.8,
-  "rank": 398,
-  "composite_score": 42.87,
+  "rank": 402,
+  "composite_score": 42.89,
   "pillar_scores": {
-    "quality": 48.0,
-    "value": 24.0,
-    "growth": 48.67,
+    "quality": 46.0,
+    "value": 23.78,
+    "growth": 51.0,
     "momentum": 53.69,
-    "health": 34.86,
-    "profitability": 52.89,
+    "health": 33.03,
+    "profitability": 61.11,
     "technical": 52.19,
     "risk": 55.31,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 13077000000.0,
-    "net_income": 3931000000.0,
+    "net_income": 3990000000.0,
     "total_assets": 179177000000.0,
     "total_liabilities": 149615000000.0,
     "stockholders_equity": 29478000000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 4670000000.0,
     "eps_basic": 2.49,
     "eps_diluted": 2.48,
-    "shares_outstanding": 566000000.0,
-    "market_cap": 87616801727.29492,
+    "shares_outstanding": 565512495.0,
+    "market_cap": 87541335951.80717,
     "pe_ratio_ttm": 62.419356069257184,
     "goodwill": 30634000000.0
   },
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 132.95413339183244,
+        "value": 202.27224752800248,
         "applicable": true,
         "reason": null,
-        "tier_used": "sector"
+        "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 107.67256970094195,
+        "value": 103.06108658686365,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 120.3133515463872,
-    "max": 132.95413339183244,
-    "low": 107.67256970094195,
-    "high": 132.95413339183244,
-    "mos_pct": -28.664026944735372,
+    "median": 152.66666705743307,
+    "max": 202.27224752800248,
+    "low": 103.06108658686365,
+    "high": 202.27224752800248,
+    "mos_pct": -1.3973816520944808,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -88,14 +88,15 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
+      "gross_profit",
+      "cost_of_revenue",
       "research_and_development",
       "inventory",
-      "accounts_payable",
-      "property_plant_equipment"
+      "accounts_payable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [
@@ -117,11 +118,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

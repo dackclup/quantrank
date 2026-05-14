@@ -3,17 +3,17 @@
   "name": "Trimble Inc.",
   "sector": "Information Technology",
   "industry": "Application Software",
-  "market_cap": 12720330353.546143,
+  "market_cap": 12797822748.79995,
   "current_price": 54.9,
-  "rank": 487,
-  "composite_score": 34.13,
+  "rank": 329,
+  "composite_score": 46.71,
   "pillar_scores": {
-    "quality": 19.86,
-    "value": 58.22,
-    "growth": 20.21,
+    "quality": 39.38,
+    "value": 78.77,
+    "growth": 32.88,
     "momentum": 30.38,
-    "health": 56.89,
-    "profitability": 26.94,
+    "health": 49.52,
+    "profitability": 54.79,
     "technical": 18.43,
     "risk": 25.37,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 3686600000.0,
-    "net_income": 456200000.0,
+    "net_income": 1258900000.0,
     "total_assets": 8991000000.0,
     "total_liabilities": 3353800000.0,
     "stockholders_equity": 5637200000.0,
@@ -31,8 +31,8 @@
     "free_cash_flow": 689600000.0,
     "eps_basic": 0.42,
     "eps_diluted": 0.42,
-    "shares_outstanding": 231700000.0,
-    "market_cap": 12720330353.546143,
+    "shares_outstanding": 233111519.0,
+    "market_cap": 12797822748.79995,
     "pe_ratio_ttm": 130.71428934733075,
     "goodwill": 5213600000.0
   },
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 31.83632828044574,
+        "value": 211.60077922949174,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 168.21784466526023,
+        "value": 201.82577467128482,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 29.221423920942673,
+        "value": 87.87384493981101,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -69,32 +69,33 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 20.486234010988316,
+        "value": 20.362187337237476,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 30.528876100694205,
-    "max": 168.21784466526023,
-    "low": 20.486234010988316,
-    "high": 168.21784466526023,
-    "mos_pct": -79.82974985649903,
+    "median": 144.84980980554792,
+    "max": 211.60077922949174,
+    "low": 20.362187337237476,
+    "high": 211.60077922949174,
+    "mos_pct": 62.09867199716809,
     "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
-      "dividends_paid",
-      "property_plant_equipment"
+      "dividends_paid"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 8,
-    "latest_period_end": "2026-04-03",
+    "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-06"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
   "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
@@ -108,18 +109,18 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }
   },
-  "beneish_m_score": null,
-  "dechow_f_score": null,
+  "beneish_m_score": -2.2707715782366003,
+  "dechow_f_score": 0.6874335423382213,
   "entered_top5": false,
   "exited_top5": false
 }

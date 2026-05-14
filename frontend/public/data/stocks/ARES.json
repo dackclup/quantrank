@@ -5,15 +5,15 @@
   "industry": "Asset Management & Custody Banks",
   "market_cap": 38576301759.35195,
   "current_price": 123.18,
-  "rank": 353,
-  "composite_score": 45.75,
+  "rank": 311,
+  "composite_score": 47.57,
   "pillar_scores": {
-    "quality": 52.0,
-    "value": 43.33,
-    "growth": 62.33,
+    "quality": 65.33,
+    "value": 32.22,
+    "growth": 68.0,
     "momentum": 7.42,
-    "health": 62.25,
-    "profitability": 43.33,
+    "health": 58.25,
+    "profitability": 48.89,
     "technical": 62.85,
     "risk": 24.2,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 5909113000.0,
-    "net_income": 622781000.0,
+    "net_income": 990332000.0,
     "total_assets": 28394933000.0,
     "total_liabilities": 20011654000.0,
     "stockholders_equity": 4025435000.0,
@@ -45,10 +45,10 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_eps_ttm",
-        "tier_used": null
+        "value": 48.906516991932754,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sub_industry"
       },
       "multiples_pb": {
         "value": 29.84721948584822,
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 15.81770365784185,
-    "max": 29.84721948584822,
+    "median": 29.84721948584822,
+    "max": 48.906516991932754,
     "low": 1.7881878298354783,
-    "high": 29.84721948584822,
-    "mos_pct": -678.7476802557719,
+    "high": 48.906516991932754,
+    "mos_pct": -312.70176058972737,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
@@ -95,6 +95,8 @@
       "operating_income",
       "cost_of_revenue",
       "research_and_development",
+      "depreciation_and_amortization",
+      "interest_expense",
       "current_assets",
       "current_liabilities",
       "inventory",
@@ -127,11 +129,11 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 49.56,
-      "Growth": 52.67,
+      "Value": 53.78,
+      "Growth": 51.5,
       "Momentum": 53.29,
-      "Health": 54.64,
-      "Profitability": 49.78,
+      "Health": 50.64,
+      "Profitability": 49.11,
       "Technical": 47.81,
       "Risk": 54.98
     }

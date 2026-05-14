@@ -3,17 +3,17 @@
   "name": "Federal Realty Investment Trust",
   "sector": "Real Estate",
   "industry": "Retail REITs",
-  "market_cap": 9859312350.041878,
+  "market_cap": 9859598816.334984,
   "current_price": 114.13,
-  "rank": 32,
-  "composite_score": 64.3,
+  "rank": 49,
+  "composite_score": 62.3,
   "pillar_scores": {
-    "quality": 71.77,
-    "value": 63.44,
-    "growth": 69.35,
+    "quality": 62.9,
+    "value": 64.52,
+    "growth": 70.16,
     "momentum": 73.71,
-    "health": 25.22,
-    "profitability": 62.9,
+    "health": 22.83,
+    "profitability": 68.28,
     "technical": 65.44,
     "risk": 71.45,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 1310905000.0,
-    "net_income": 506408000.0,
+    "net_income": 518140000.0,
     "total_assets": 9096770000.0,
     "total_liabilities": 5532426000.0,
     "stockholders_equity": 3311137000.0,
@@ -31,39 +31,39 @@
     "free_cash_flow": null,
     "eps_basic": 1.82,
     "eps_diluted": 1.81,
-    "shares_outstanding": 86386687.0,
-    "market_cap": 9859312350.041878,
+    "shares_outstanding": 86389197.0,
+    "market_cap": 9859598816.334984,
     "pe_ratio_ttm": 63.055247101335894,
     "goodwill": null
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 58.44344513141292,
+        "value": 58.44259610099063,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 232.0145316848717,
+        "value": 173.42533141055242,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 87.5578335365263,
+        "value": 91.7163046413497,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 160.32630955499343,
+        "value": 159.60722892007456,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 38.052508113678975,
+        "value": 38.05140251484623,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 87.5578335365263,
-    "max": 232.0145316848717,
-    "low": 38.052508113678975,
-    "high": 232.0145316848717,
-    "mos_pct": -30.348128366842946,
+    "median": 91.7163046413497,
+    "max": 173.42533141055242,
+    "low": 38.05140251484623,
+    "high": 173.42533141055242,
+    "mos_pct": -24.438067691143335,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -91,6 +91,7 @@
       "gross_profit",
       "cost_of_revenue",
       "research_and_development",
+      "income_tax_expense",
       "income_before_tax",
       "dividends_paid",
       "current_assets",
@@ -105,15 +106,13 @@
     ],
     "imputed_metrics": [],
     "filing_lag_days": 13,
-    "latest_period_end": "2026-03-31",
+    "latest_period_end": "2026-04-28",
     "latest_filed_date": "2026-05-01"
   },
-  "risk_flags": [
-    "net_issuance_top_decile"
-  ],
+  "risk_flags": [],
   "valuation_warnings": [],
   "has_history": true,
-  "tangible_book_value": 37.35998117395103,
+  "tangible_book_value": 37.35889569618294,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -124,12 +123,12 @@
   "pillar_baseline": {
     "label": "Real Estate median (n=31)",
     "values": {
-      "Quality": 46.77,
-      "Value": 47.85,
-      "Growth": 51.61,
+      "Quality": 50.81,
+      "Value": 47.31,
+      "Growth": 48.79,
       "Momentum": 52.34,
-      "Health": 27.89,
-      "Profitability": 52.69,
+      "Health": 26.18,
+      "Profitability": 52.15,
       "Technical": 59.26,
       "Risk": 53.88
     }

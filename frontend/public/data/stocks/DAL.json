@@ -3,17 +3,17 @@
   "name": "Delta Air Lines",
   "sector": "Industrials",
   "industry": "Passenger Airlines",
-  "market_cap": 47299576846.42346,
+  "market_cap": 46679433662.586914,
   "current_price": 71.05,
-  "rank": 212,
-  "composite_score": 52.4,
+  "rank": 67,
+  "composite_score": 60.34,
   "pillar_scores": {
-    "quality": 37.97,
-    "value": 73.42,
-    "growth": 66.46,
+    "quality": 43.99,
+    "value": 94.73,
+    "growth": 70.25,
     "momentum": 64.64,
-    "health": 24.9,
-    "profitability": 35.86,
+    "health": 34.02,
+    "profitability": 37.55,
     "technical": 52.94,
     "risk": 44.69,
     "sentiment": null,
@@ -31,39 +31,39 @@
     "free_cash_flow": 3920000000.0,
     "eps_basic": -0.44,
     "eps_diluted": -0.44,
-    "shares_outstanding": 665722376.0,
-    "market_cap": 47299576846.42346,
+    "shares_outstanding": 656994112.0,
+    "market_cap": 46679433662.586914,
     "pe_ratio_ttm": null,
     "goodwill": 9753000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 32.52937158846353,
+        "value": 32.74473741441168,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_eps_ttm",
-        "tier_used": null
+        "value": 189.06812924430875,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 214.75829893531568,
+        "value": 201.95569902983334,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 252.58840787788503,
+        "value": 198.513231089412,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 11.45052654329011,
+        "value": 11.60264848286823,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 123.6438352618896,
-    "max": 252.58840787788503,
-    "low": 11.45052654329011,
-    "high": 252.58840787788503,
-    "mos_pct": 42.53655841290669,
+    "median": 189.06812924430875,
+    "max": 201.95569902983334,
+    "low": 11.60264848286823,
+    "high": 201.95569902983334,
+    "mos_pct": 62.42095199453266,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
@@ -93,9 +93,10 @@
       "gross_profit",
       "cost_of_revenue",
       "research_and_development",
+      "sga_expense",
+      "interest_expense",
       "inventory",
-      "accounts_receivable",
-      "property_plant_equipment"
+      "accounts_receivable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 36,
@@ -108,7 +109,7 @@
     "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 6.998412803838217,
+  "tangible_book_value": 7.091387753563308,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -119,12 +120,12 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }

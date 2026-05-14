@@ -5,15 +5,15 @@
   "industry": "Application Software",
   "market_cap": 311747153965.46936,
   "current_price": 130.05,
-  "rank": 298,
-  "composite_score": 48.19,
+  "rank": 264,
+  "composite_score": 50.16,
   "pillar_scores": {
-    "quality": 59.59,
-    "value": 7.53,
-    "growth": 77.91,
+    "quality": 66.1,
+    "value": 5.71,
+    "growth": 78.6,
     "momentum": 30.88,
-    "health": 97.43,
-    "profitability": 66.89,
+    "health": 94.32,
+    "profitability": 79.91,
     "technical": 25.45,
     "risk": 34.99,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 5224174000.0,
-    "net_income": 2281529000.0,
+    "net_income": 2293329000.0,
     "total_assets": 10199183000.0,
     "total_liabilities": 1642902000.0,
     "stockholders_equity": 8449663000.0,
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 25.77226575083703,
+        "value": 34.51493208203839,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 17.022555524949226,
+        "value": 19.01587011022131,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 14.801333928712257,
+        "value": 21.83884247391908,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,14 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 14.801333928712257,
-    "max": null,
+    "median": 19.01587011022131,
+    "max": 34.51493208203839,
     "low": 4.715125001976243,
-    "high": 25.77226575083703,
-    "mos_pct": -778.6370449995813,
+    "high": 34.51493208203839,
+    "mos_pct": -583.9024577784322,
     "valuation_warnings": [
       "extreme_graham_estimate",
-      "extreme_multiples_pe_estimate",
       "extreme_multiples_pb_estimate",
       "extreme_multiples_ev_ebitda_estimate",
       "extreme_dcf_estimate",
@@ -93,10 +92,10 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
+      "interest_expense",
       "dividends_paid",
       "inventory",
-      "short_term_debt",
-      "property_plant_equipment"
+      "short_term_debt"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 9,
@@ -106,11 +105,11 @@
   "risk_flags": [],
   "valuation_warnings": [
     "extreme_graham_estimate",
-    "extreme_multiples_pe_estimate",
     "extreme_multiples_pb_estimate",
     "extreme_multiples_ev_ebitda_estimate",
     "extreme_dcf_estimate",
-    "value_trap_risk"
+    "value_trap_risk",
+    "beneish_high"
   ],
   "has_history": true,
   "tangible_book_value": 3.5029821040384492,
@@ -124,17 +123,17 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 52.05,
-      "Value": 50.46,
-      "Growth": 53.08,
+      "Quality": 50.0,
+      "Value": 50.91,
+      "Growth": 52.23,
       "Momentum": 44.17,
-      "Health": 66.93,
-      "Profitability": 49.32,
+      "Health": 69.52,
+      "Profitability": 47.26,
       "Technical": 64.74,
       "Risk": 46.38
     }
   },
-  "beneish_m_score": null,
+  "beneish_m_score": -1.4993225610409617,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false

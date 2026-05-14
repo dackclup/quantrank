@@ -3,24 +3,24 @@
   "name": "General Dynamics",
   "sector": "Industrials",
   "industry": "Aerospace & Defense",
-  "market_cap": 92300244171.45251,
+  "market_cap": 92314044672.9403,
   "current_price": 341.36,
-  "rank": 76,
-  "composite_score": 60.06,
+  "rank": 121,
+  "composite_score": 56.87,
   "pillar_scores": {
-    "quality": 50.95,
-    "value": 79.54,
-    "growth": 48.42,
+    "quality": 39.24,
+    "value": 78.69,
+    "growth": 47.78,
     "momentum": 57.72,
-    "health": 48.25,
-    "profitability": 55.91,
+    "health": 58.61,
+    "profitability": 44.09,
     "technical": 72.61,
     "risk": 78.42,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 53808000000.0,
+    "revenue": 91161000000.0,
     "net_income": 4341000000.0,
     "total_assets": 59029000000.0,
     "total_liabilities": null,
@@ -31,55 +31,55 @@
     "free_cash_flow": 6201000000.0,
     "eps_basic": 15.65,
     "eps_diluted": 15.45,
-    "shares_outstanding": 270389759.0,
-    "market_cap": 92300244171.45251,
+    "shares_outstanding": 270430187.0,
+    "market_cap": 92314044672.9403,
     "pe_ratio_ttm": 22.094497433758093,
     "goodwill": 20956000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 59.36164478532141,
+        "value": 59.35720748063099,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 1560.2670705060343,
+        "value": 517.8519598029143,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 635.1289008797164,
+        "value": 635.1875488424236,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 352.42021758655596,
+        "value": 404.1222938538294,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "rim": {
-        "value": 13.940130808225419,
+        "value": 13.938046826349849,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 142.8225312785285,
+        "value": 142.8011800035152,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 247.6213744325422,
-    "max": 1560.2670705060343,
-    "low": 13.940130808225419,
-    "high": 1560.2670705060343,
-    "mos_pct": -37.85562176683453,
+    "median": 273.4617369286723,
+    "max": 635.1875488424236,
+    "low": 13.938046826349849,
+    "high": 635.1875488424236,
+    "mos_pct": -24.829158618487195,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -92,7 +92,9 @@
     "missing_metrics": [
       "total_liabilities",
       "gross_profit",
-      "property_plant_equipment"
+      "cost_of_revenue",
+      "research_and_development",
+      "interest_expense"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 15,
@@ -106,7 +108,7 @@
     "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 11.431645974432042,
+  "tangible_book_value": 11.429936998860263,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -117,18 +119,18 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 48.42,
-      "Value": 50.42,
-      "Growth": 49.05,
+      "Quality": 47.15,
+      "Value": 49.79,
+      "Growth": 49.37,
       "Momentum": 58.07,
-      "Health": 47.81,
-      "Profitability": 52.95,
+      "Health": 52.79,
+      "Profitability": 47.68,
       "Technical": 51.15,
       "Risk": 55.61
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": null,
+  "dechow_f_score": 0.5348459600137555,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,17 +3,17 @@
   "name": "Coca-Cola Company (The)",
   "sector": "Consumer Staples",
   "industry": "Soft Drinks & Non-alcoholic Beverages",
-  "market_cap": 565030415039.0625,
+  "market_cap": 345317248059.77405,
   "current_price": 80.26,
-  "rank": 253,
-  "composite_score": 50.35,
+  "rank": 174,
+  "composite_score": 54.19,
   "pillar_scores": {
-    "quality": 62.5,
-    "value": 8.8,
-    "growth": 61.81,
+    "quality": 74.31,
+    "value": 17.59,
+    "growth": 47.92,
     "momentum": 63.25,
-    "health": 52.01,
-    "profitability": 64.81,
+    "health": 51.53,
+    "profitability": 71.3,
     "technical": 62.55,
     "risk": 84.48,
     "sentiment": null,
@@ -21,7 +21,7 @@
   },
   "raw_metrics": {
     "revenue": 49284000000.0,
-    "net_income": 13701000000.0,
+    "net_income": 13768000000.0,
     "total_assets": 104217000000.0,
     "total_liabilities": null,
     "stockholders_equity": 33633000000.0,
@@ -31,59 +31,58 @@
     "free_cash_flow": 12562000000.0,
     "eps_basic": 0.91,
     "eps_diluted": 0.91,
-    "shares_outstanding": 7040000000.0,
-    "market_cap": 565030415039.0625,
+    "shares_outstanding": 4302482418.0,
+    "market_cap": 345317248059.77405,
     "pe_ratio_ttm": 88.1978045453082,
     "goodwill": 15411000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 12.280248918255614,
+        "value": 15.708472186154125,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 52.48073844141609,
+        "value": 72.98143389500383,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 21.55054287396452,
+        "value": 24.321596070362027,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 25.948584887701074,
+        "value": 39.42037988589894,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 6.804627612554702,
+        "value": 11.134171796256506,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 13.626978662814881,
+        "value": 22.297343827569076,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 17.5887607683897,
-    "max": 52.48073844141609,
-    "low": 6.804627612554702,
-    "high": 52.48073844141609,
-    "mos_pct": -356.3141382903606,
+    "median": 23.30946994896555,
+    "max": 72.98143389500383,
+    "low": 11.134171796256506,
+    "high": 72.98143389500383,
+    "mos_pct": -244.32358312717585,
     "valuation_warnings": [
       "extreme_graham_estimate",
-      "extreme_rim_estimate",
-      "extreme_dcf_estimate"
+      "extreme_rim_estimate"
     ]
   },
   "top5_factors": [],
@@ -92,22 +91,20 @@
     "missing_metrics": [
       "total_liabilities",
       "research_and_development",
-      "accounts_payable",
-      "property_plant_equipment"
+      "accounts_payable"
     ],
     "imputed_metrics": [],
     "filing_lag_days": 14,
-    "latest_period_end": "2026-04-03",
+    "latest_period_end": "2026-04-28",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "extreme_graham_estimate",
-    "extreme_rim_estimate",
-    "extreme_dcf_estimate"
+    "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 2.5228693181818183,
+  "tangible_book_value": 4.128081947690134,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -118,17 +115,17 @@
   "pillar_baseline": {
     "label": "Consumer Staples median (n=36)",
     "values": {
-      "Quality": 56.08,
-      "Value": 49.07,
-      "Growth": 50.52,
+      "Quality": 49.65,
+      "Value": 51.39,
+      "Growth": 48.44,
       "Momentum": 39.14,
-      "Health": 38.65,
-      "Profitability": 52.08,
+      "Health": 39.29,
+      "Profitability": 53.94,
       "Technical": 57.99,
       "Risk": 51.44
     }
   },
-  "beneish_m_score": null,
+  "beneish_m_score": -2.4802488904343734,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
