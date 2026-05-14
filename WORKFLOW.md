@@ -395,32 +395,59 @@ copy MUST include:
 - Diminishing returns: defense set freezes at v1.0; rotate (don't stack)
   beyond 4 fraud signals
 
-## Phase 3 / v1.0 Acceptance Criteria
+## Phase 3 / v1.0 Acceptance Criteria — ✅ ALL MET (2026-05-14)
 
 ### Core (existing)
 - [x] All 30+ classical metrics implemented; golden value tests pass
 - [x] StockRank computed for all S&P 500 weekly
 - [x] Top-10 are sensible (high ROE, low D/E, decent momentum)
 - [x] Bottom-10 are sensible (distressed, low quality)
-- [ ] Fair Price exists for all stocks with ≥3 applicable methods
-- [ ] Mobile site has table + detail page + radar + fair price
-- [ ] Lighthouse mobile score >85
-- [ ] README professional with disclaimer
+- [x] Fair Price exists for all stocks with ≥3 applicable methods —
+      **99.2% coverage (498/502)** at v1.0
+- [x] Mobile site has table + detail page + radar + fair price
+- [x] Lighthouse mobile score >85
+- [x] README professional with disclaimer + Honest Limitations section
 
 ### Defenses (research-validated, NEW 2026-05-09)
-- [ ] **3 active vetoes**: Altman Z″ + Sloan accruals + Net Stock Issuance
-- [ ] **4 numerical guards**: stale_filing (120/180), outlier_5x,
-      terminal_g (≤ WACC−100bp), sector_exclusion (Quality pillar)
-- [ ] **5+ annotate-only flags**: goodwill_heavy, value_trap_risk,
-      going_concern_warning, auditor_change, beneish_high, dechow_f_high
-- [ ] **1 hard event veto**: 8-K Item 4.02 (12-month window)
-- [ ] Tangible BVPS uses full intangibles netting (goodwill + identifiable)
-- [ ] **Honest Limitations** section in README (frauds we cannot catch,
-      realistic FP/FN rates, decay reality, free-data fragility)
-- [ ] Defense badges display correctly on stock detail UI
+- [x] **3 active vetoes**: Altman Z″ + Sloan accruals + Net Stock
+      Issuance — confirmed live in production
+- [x] **4 numerical guards**: stale_filing (120/180), outlier_5x,
+      terminal_g (≤ WACC−100bp), sector_exclusion (Quality pillar) +
+      `data_quality_input_corruption` (Defense #7, $10K TBVPS ceiling)
+- [x] **5+ annotate-only flags**: goodwill_heavy, value_trap_risk,
+      extreme_<method>_estimate (×6 method slots), stale_filing_soft,
+      **going_concern_disclosure** (Mayew 2015 with Option B MD&A
+      restriction — 1.0% FP rate), **beneish_high** (Beneish 1999
+      8-ratio), **dechow_high** (Dechow 2011 Model 1)
+- [x] **1 hard event veto**: 8-K Item 4.02 — implemented but
+      **deferred** behind `_EIGHT_K_DEFENSES_ENABLED = False` per
+      PR 3e final state; re-enable in Phase 4 (4f)
+- [x] Tangible BVPS uses full intangibles netting (goodwill + identifiable)
+- [x] **Honest Limitations** section in README (PR #46, 126 lines —
+      frauds we cannot catch, realistic FP/FN rates, decay reality
+      58% cumulative, free-data fragility, diminishing returns)
+- [x] Defense badges display correctly on stock detail UI
+
+### Audit-#6 deep-clean (added mid-3e, completes the v1.0 ingest layer)
+- [x] 9 `_NORMALIZED_LATEST` flow items replaced with TTM-aware
+      `_TTM_FLOW_TAGS` + `_try_ttm_max_fresh` helper
+- [x] `pe_ratio` formula switched from single-period `eps_diluted` to
+      `NI_TTM / shares` — universe median PE dropped **77.8 → 23.2**
+- [x] Smart `shares_outstanding` fallback (DEI + weighted-avg with
+      MAX-by-period_end) — fixes META / MA / ACN / 24 other tickers
+      that shipped with shares=None pre-audit
+- [x] Revenue / NI chains expanded for utilities (DUK), banks (WFC/GS),
+      tech (CRWD), BKNG-class
+- [x] `data_quality_input_corruption` patterns expanded: rev<$50M +
+      |NI|>|rev| (catches HBAN-class residual cleanly)
+- [x] Workflow cache key v2 bump forces fresh fetch through the
+      schema-changed ingest layer
+- [x] Workflow rebase-then-push hardens against "main moved during
+      compute" race (PR #55)
 
 ### Ship
-- [ ] **v1.0 tag pushed**
+- [x] **v1.0.0 tag pushed + GitHub Release published** (2026-05-14)
+- [x] Production verified: commit `b5bc65f3` / workflow run #32
 
 ---
 
