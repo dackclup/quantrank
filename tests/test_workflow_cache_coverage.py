@@ -43,6 +43,7 @@ _REQUIRED_CACHE_PATHS = (
     config.UNIVERSE_CACHE,
     config.EDGAR_8K_CACHE_DIR,
     config.EDGAR_10K_TEXT_CACHE_DIR,
+    config.YFINANCE_INFO_CACHE_DIR,
 )
 
 

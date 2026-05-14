@@ -43,6 +43,9 @@ import numpy as np
 import pandas as pd
 
 from compute import config
+from compute.ingest.cross_source import (
+    validate_market_cap as cross_source_validate_market_cap,
+)
 from compute.ingest.fundamentals import (
     ALL_METRIC_KEYS,
     FundamentalsSnapshot,
@@ -899,6 +902,20 @@ def run_weekly_compute() -> int:
         dechow_result = compute_dechow_f(snap, histories.get(ticker))
         if dechow_result.is_high and "dechow_high" not in valuation_warnings:
             valuation_warnings.append("dechow_high")
+
+        # Cross-source market-cap validator (PR 4b §1, ANNOTATE-only).
+        # Compares SEC-derived market cap (shares × current_price) vs
+        # yfinance .info marketCap. Delta > 5% surfaces as
+        # ``cross_source_disagreement``. Catches yfinance scraper drift
+        # (pre-split share counts, intraday vs EOD price snapshots, M&A
+        # ticker rotation). See compute/ingest/cross_source.py +
+        # `.claude/skills/phase-4/defense-infrastructure/PLAN.md` §1.
+        if cross_source_validate_market_cap(
+            ticker=ticker,
+            snap=snap,
+            current_price=current_price,
+        ) and "cross_source_disagreement" not in valuation_warnings:
+            valuation_warnings.append("cross_source_disagreement")
 
         # Price history JSON (sliced from already-fetched prices, no new
         # fetches per Step 5 spec).

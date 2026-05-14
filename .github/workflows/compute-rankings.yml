@@ -59,6 +59,7 @@ jobs:
             compute/cache/universe.parquet
             compute/cache/edgar_8k
             compute/cache/edgar_10k_text
+            compute/cache/yfinance_info
           key: cache-v3-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
             cache-v3-${{ steps.quarter.outputs.q }}-
