@@ -37,10 +37,18 @@ jobs:
         uses: actions/cache@v5
         with:
           path: compute/cache/fundamentals
-          key: fundamentals-${{ steps.quarter.outputs.q }}-${{ runner.os }}
+          # Cache version bumped to v2 after audit #6 deep-clean fixes the
+          # ingest schema (TTM flow items, smart shares fallback, expanded
+          # revenue / NI chains). Pre-v2 cached parquets hold wrong values
+          # for AVB / NVDA / META / GS / WFC / BKNG / DUK etc. — the 45-day
+          # `_is_fresh` check passes against the old (corrupted) filing
+          # date, so without a key bump the workflow keeps reusing them.
+          # Bump this when `_BALANCE_TAGS` / `_TTM_REVENUE_TAGS` /
+          # `_TTM_NET_INCOME_TAGS` / `_TTM_FLOW_TAGS` change schema.
+          key: fundamentals-v2-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
-            fundamentals-${{ steps.quarter.outputs.q }}-
-            fundamentals-
+            fundamentals-v2-${{ steps.quarter.outputs.q }}-
+            fundamentals-v2-
 
       - name: Run weekly compute
         run: python -m compute.main
