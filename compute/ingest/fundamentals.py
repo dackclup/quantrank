@@ -189,11 +189,25 @@ ANNUAL_HISTORY_YEARS: int = 5
 
 _ANNUAL_TAGS: dict[str, list[str]] = {
     "revenue": [
+        # Mirror `_TTM_REVENUE_TAGS` for consistent annual history coverage
+        # across utilities (DUK), tech (CRWD), banks (WFC / GS), etc.
+        # Without these, _avg_3y_roe + revenue_cagr / DCF inputs all skip
+        # for sector-specific filers (audit #6 deeper sweep).
         "us-gaap:Revenues",
         "us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax",
+        "us-gaap:RevenueFromContractWithCustomerIncludingAssessedTax",
+        "us-gaap:RegulatedAndUnregulatedOperatingRevenue",
+        "us-gaap:RevenuesNetOfInterestExpense",
         "us-gaap:SalesRevenueNet",
     ],
-    "net_income": ["us-gaap:NetIncomeLoss"],
+    "net_income": [
+        # BKNG and similar filers tag NI under the longer concept name
+        # while the standard one is frozen pre-2015.
+        "us-gaap:NetIncomeLoss",
+        "us-gaap:NetIncomeLossAvailableToCommonStockholdersBasic",
+        "us-gaap:NetIncomeLossAvailableToCommonStockholdersDiluted",
+        "us-gaap:ProfitLoss",
+    ],
     "operating_cash_flow": ["us-gaap:NetCashProvidedByUsedInOperatingActivities"],
     "capex": ["us-gaap:PaymentsToAcquirePropertyPlantAndEquipment"],
     "eps_diluted": ["us-gaap:EarningsPerShareDiluted"],
