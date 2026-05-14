@@ -556,6 +556,19 @@ If fallback triggered → log in PHASE_STATUS.md, continue Phase 5 on Option B.
 - [ ] **IC decay report published; baseline IC documented per pillar**
 - [ ] Tag `v1.1.0-phase4`
 
+### UI / UX features queued for Phase 4 (post-v1.0)
+
+These are planning stubs at `.claude/skills/phase-4/<name>/PLAN.md`:
+
+- **recommendation-badge** — 4-tier indicator (Strong Buy / Buy / Hold /
+  Sell) next to every ticker on overview + detail pages, plus filter
+  control. Derived from composite + risk overlay + fair-price MoS
+  (deterministic — no new modeling). See
+  [`recommendation-badge/PLAN.md`](.claude/skills/phase-4/recommendation-badge/PLAN.md)
+  for the full spec including methodology, legal mitigations (Option B
+  neutral terminology recommended over literal sell-side labels), and
+  ~230 LOC effort estimate.
+
 ---
 
 # PHASE 5 — ML Meta-Learner Enhanced (Option B)
