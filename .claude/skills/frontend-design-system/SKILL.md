@@ -69,11 +69,16 @@ Tone palette (light mode → dark mode):
 
 | Tier | Background | Text | Ring | Dot |
 |---|---|---|---|---|
-| Positive strong | `bg-emerald-50` → `dark:bg-emerald-900` | `text-emerald-800` → `dark:text-emerald-100` | `ring-emerald-300` → `dark:ring-emerald-700` | `bg-emerald-700` → `dark:bg-emerald-300` |
+| Positive strong | `bg-emerald-50` → `dark:bg-emerald-900` | `text-emerald-900` → `dark:text-emerald-50` | `ring-emerald-300` → `dark:ring-emerald-700` | `bg-emerald-700` → `dark:bg-emerald-300` |
 | Positive light | `bg-emerald-50` → `dark:bg-emerald-900` | `text-emerald-700` → `dark:text-emerald-200` | `ring-emerald-200` → `dark:ring-emerald-700` | `bg-emerald-500` → `dark:bg-emerald-400` |
 | Neutral | `bg-slate-100` → `dark:bg-slate-700` | `text-slate-700` → `dark:text-slate-200` | `ring-slate-300` → `dark:ring-slate-600` | `bg-slate-500` → `dark:bg-slate-400` |
-| Negative | `bg-red-50` → `dark:bg-red-900` | `text-red-800` → `dark:text-red-100` | `ring-red-300` → `dark:ring-red-700` | `bg-red-600` → `dark:bg-red-400` |
+| Negative | `bg-red-50` → `dark:bg-red-900` | `text-red-900` → `dark:text-red-50` | `ring-red-300` → `dark:ring-red-700` | `bg-red-600` → `dark:bg-red-400` |
 | Info (sector blue/purple/etc.) | `bg-{tone}-50` → `dark:bg-{tone}-900` | `text-{tone}-700` → `dark:text-{tone}-200` | `ring-{tone}-200` → `dark:ring-{tone}-700` | `bg-{tone}-500` → `dark:bg-{tone}-400` |
+
+**Strong-end text uses -900** (positive strong + negative) so high-stakes
+labels like "Strong Buy" / "Sell" stay readable against `bg-50` even on
+low-contrast displays. WCAG AA target ≥ 4.5:1; text-900 on bg-50 gives
+~10:1.
 
 ### Visual hierarchy via dot color (not by switching patterns)
 
