@@ -5,7 +5,7 @@
   "industry": "Regional Banks",
   "market_cap": 26076568180.75,
   "current_price": 20.75,
-  "rank": 353,
+  "rank": 354,
   "composite_score": 45.65,
   "pillar_scores": {
     "quality": 38.67,
@@ -106,7 +106,9 @@
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-05"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "data_quality_input_corruption"
+  ],
   "valuation_warnings": [
     "value_trap_risk"
   ],

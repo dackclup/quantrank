@@ -6,14 +6,14 @@
   "market_cap": 12240580214.347343,
   "current_price": 37.56,
   "rank": 160,
-  "composite_score": 54.85,
+  "composite_score": 54.88,
   "pillar_scores": {
     "quality": 73.39,
-    "value": 47.31,
+    "value": 47.58,
     "growth": 62.1,
     "momentum": 37.55,
     "health": 25.06,
-    "profitability": 62.63,
+    "profitability": 62.1,
     "technical": 67.73,
     "risk": 47.01,
     "sentiment": null,
@@ -106,7 +106,9 @@
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "data_quality_input_corruption"
+  ],
   "valuation_warnings": [
     "value_trap_risk"
   ],

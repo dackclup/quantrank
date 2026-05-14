@@ -5,15 +5,15 @@
   "industry": "Multi-Family Residential REITs",
   "market_cap": 10735164844.51294,
   "current_price": 105.35,
-  "rank": 399,
-  "composite_score": 42.84,
+  "rank": 397,
+  "composite_score": 42.89,
   "pillar_scores": {
     "quality": 47.18,
-    "value": 34.95,
+    "value": 35.22,
     "growth": 62.1,
     "momentum": 39.34,
     "health": 25.82,
-    "profitability": 39.52,
+    "profitability": 39.25,
     "technical": 51.34,
     "risk": 45.58,
     "sentiment": null,
@@ -110,7 +110,9 @@
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "data_quality_input_corruption"
+  ],
   "valuation_warnings": [
     "value_trap_risk"
   ],

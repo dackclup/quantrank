@@ -5,22 +5,22 @@
   "industry": "Diversified Support Services",
   "market_cap": 31730801977.201218,
   "current_price": 32.94,
-  "rank": 206,
-  "composite_score": 52.55,
+  "rank": 173,
+  "composite_score": 53.94,
   "pillar_scores": {
     "quality": 51.27,
-    "value": 67.72,
+    "value": 75.53,
     "growth": 47.78,
     "momentum": 8.02,
     "health": 95.08,
-    "profitability": 55.06,
+    "profitability": 49.16,
     "technical": 43.38,
     "risk": 30.01,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 2205583000.0,
+    "revenue": null,
     "net_income": 1557409000.0,
     "total_assets": 10594962000.0,
     "total_liabilities": 787728000.0,
@@ -86,6 +86,7 @@
   "score_history": [],
   "data_quality": {
     "missing_metrics": [
+      "revenue",
       "research_and_development",
       "dividends_paid",
       "accounts_payable"
@@ -109,18 +110,18 @@
   "pillar_baseline": {
     "label": "Industrials median (n=79)",
     "values": {
-      "Quality": 49.05,
-      "Value": 50.63,
+      "Quality": 48.42,
+      "Value": 50.42,
       "Growth": 49.05,
       "Momentum": 58.07,
       "Health": 47.81,
-      "Profitability": 53.16,
+      "Profitability": 52.95,
       "Technical": 51.15,
       "Risk": 55.61
     }
   },
   "beneish_m_score": null,
-  "dechow_f_score": 0.4306122502872994,
+  "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
 }
