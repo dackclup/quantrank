@@ -1,6 +1,6 @@
 # Workflow Cache Improvements (Phase 4 planning stub — PR 4a)
 
-**Status**: Planning. Closes P0 audit gap (2026-05-14): workflow cache hygiene was discussed across multiple PLANs (`v1-to-v1-1-migration`, `chronic-slow-ticker-special-case`) but no standalone PLAN. This is **PR 4a** — the leadoff Phase 4 patch release.
+**Status**: ✅ Implemented in PR (this branch). Audit found that 5 of 6 declared cache directories were not being restored across CI runs — the perf gap was in the workflow YAML, not in the ingest code itself. Implementation scope reduced accordingly (no new cache modules needed — the caches already exist in code; the workflow just wasn't preserving them).
 
 ## Purpose
 
@@ -18,19 +18,24 @@ Fundamentals already cached (`fundamentals-v2-{quarter}-{os}` key, PR #49). This
 3. **GitHub Actions free tier**: 2000 min/month. Current 30 min × 4 runs/month = 120 min. Headroom to add Phase 4 OSAP/JKP/Qlib without breaking quota.
 4. **Subsequent Phase 4 PRs depend on caching discipline**: OSAP/JKP each add ~5 min if their parquet caches work. Without this PLAN landing first, Phase 4 cumulative compute could exceed 60-min budget.
 
-## What's NOT cached today (current state)
+## What's cached today (post-PR-4a)
 
-| Ingest step | Cache? | Per-run cost | Notes |
+The pre-flight audit (this PR) revealed that 5 of the 6 declared caches were *already implemented in code* but *not being restored across CI runs* — the workflow YAML only restored `compute/cache/fundamentals`. PR 4a expands the workflow's `path:` block.
+
+| Ingest step | Cache module | In code? | Restored by workflow? |
 |---|---|---|---|
-| Fundamentals (EDGAR XBRL) | ✅ parquet, 90d freshness | 0 (warm) / 25 min (cold) | PR #49 |
-| 10-K filing text | ❌ none | 5-15 min | Re-fetches every run |
-| Filing dates / index | ❌ none | 1-2 min | Re-fetches every run |
-| Price history (yfinance 1Y) | ❌ none | 2-3 min | Re-fetches every run |
-| Universe constituents (Wikipedia) | ❌ none | <1 min | Rarely changes |
-| OSAP returns (Phase 4) | (planned) parquet | 0 (warm) / 1 min (cold) | per `osap-integration/PLAN.md` |
-| JKP returns (Phase 4) | (planned) parquet | 0 (warm) / 1 min (cold) | per `jkp-integration/PLAN.md` |
+| Fundamentals (EDGAR XBRL TTM) | `compute/ingest/fundamentals.py` + `FUNDAMENTALS_CACHE_DIR` | ✅ parquet, 45d freshness | ✅ pre-PR-4a |
+| Fundamentals history (annual) | `compute/ingest/fundamentals.py` + `FUNDAMENTALS_HISTORY_CACHE_DIR` | ✅ parquet | ✅ PR 4a (new) |
+| Price history (yfinance 5Y) | `compute/ingest/prices.py` + `PRICES_CACHE_DIR` | ✅ parquet, 24h freshness | ✅ PR 4a (new) |
+| Universe constituents (Wikipedia) | `compute/ingest/universe.py` + `UNIVERSE_CACHE` | ✅ parquet, 7d freshness | ✅ PR 4a (new) |
+| 10-K filing text (going-concern) | `compute/ingest/filing_text.py` + `EDGAR_10K_TEXT_CACHE_DIR` | ✅ JSON, 90d TTL | ✅ PR 4a (new) |
+| 8-K Items 4.02 / 4.01 | `compute/scoring/eight_k_events.py` + `EDGAR_8K_CACHE_DIR` | ✅ JSON, 7d TTL | ✅ PR 4a (new) |
+| OSAP returns (Phase 4 future) | (planned) `compute/cache/osap/` | ❌ not yet | n/a — add to workflow in PR 4h |
+| JKP returns (Phase 4 future) | (planned) `compute/cache/jkp/` | ❌ not yet | n/a — add to workflow in PR 4i |
 
-PR 4a closes the gaps on rows 2-5.
+PR 4a's net impact: 5 cache layers now persist across CI runs. Each one's `_is_fresh()` check still applies (so stale data is auto-refetched).
+
+CI guard: `tests/test_workflow_cache_coverage.py` parametrizes over every `config.*_CACHE_*` entry and asserts the workflow YAML includes it. Future cache additions (OSAP / JKP) must update **both** `config.py` *and* the workflow `path:` block to pass the test.
 
 ## Architecture
 
