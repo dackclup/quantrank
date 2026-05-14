@@ -90,3 +90,23 @@ export const RECOMMENDATION_VALUES: Recommendation[] = [
   'neutral',
   'cautious',
 ];
+
+// "Active filter chip" tone classes — used by the toolbar chip bar in
+// RankingTable.tsx. Outlined-light pattern matching SectorChip /
+// score-tier / MoS-bucket active chips (bg-50 + text-700 + ring-200/300)
+// so a row of active filters reads as one consistent visual family.
+// This is distinct from `TONES` above, which is the bold inline-badge
+// styling used next to the ticker symbol.
+export const RECOMMENDATION_CHIP_TONES: Record<Recommendation, string> = {
+  bullish: 'bg-emerald-50 text-emerald-800 ring-emerald-300',
+  lean_bullish: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
+  neutral: 'bg-slate-100 text-slate-700 ring-slate-300',
+  cautious: 'bg-red-50 text-red-800 ring-red-300',
+};
+
+export const RECOMMENDATION_CHIP_DOTS: Record<Recommendation, string> = {
+  bullish: 'bg-emerald-700',
+  lean_bullish: 'bg-emerald-400',
+  neutral: 'bg-slate-500',
+  cautious: 'bg-red-600',
+};

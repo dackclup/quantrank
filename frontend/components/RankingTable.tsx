@@ -5,7 +5,12 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { FilterDrawer } from '@/components/FilterDrawer';
 import { MoSCell } from '@/components/MoSCell';
-import { RecommendationBadge } from '@/components/RecommendationBadge';
+import {
+  RECOMMENDATION_CHIP_DOTS,
+  RECOMMENDATION_CHIP_TONES,
+  RECOMMENDATION_LABELS,
+  RecommendationBadge,
+} from '@/components/RecommendationBadge';
 import { ScoreBadge } from '@/components/ScoreBadge';
 import { SectorChip } from '@/components/SectorChip';
 import { StockLogo } from '@/components/StockLogo';
@@ -340,9 +345,10 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
               key={`f-rec-${rec}`}
               type="button"
               onClick={() => toggleRecommendation(rec)}
-              className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-700 ring-1 ring-inset ring-slate-300 hover:opacity-75"
+              className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs ring-1 ring-inset hover:opacity-75 ${RECOMMENDATION_CHIP_TONES[rec]}`}
             >
-              <RecommendationBadge recommendation={rec} size="xs" />
+              <span className={`inline-block h-1.5 w-1.5 rounded-full ${RECOMMENDATION_CHIP_DOTS[rec]}`} />
+              {RECOMMENDATION_LABELS[rec]}
               <span aria-hidden="true" className="opacity-60">×</span>
             </button>
           ))}
