@@ -31,6 +31,57 @@ def test_parse_sp500_html_normalizes_brk_b():
     assert aapl["cik"] == "0000320193"
 
 
+@pytest.mark.parametrize(
+    "raw, expected",
+    [
+        # "(The)" suffix pattern (12 known S&P 500 entries 2026-05-14).
+        ("Hartford (The)", "The Hartford"),
+        ("Travelers Companies (The)", "The Travelers Companies"),
+        ("Trade Desk (The)", "The Trade Desk"),
+        ("Coca-Cola Company (The)", "The Coca-Cola Company"),
+        ("Home Depot (The)", "The Home Depot"),
+        ("Walt Disney Company (The)", "The Walt Disney Company"),
+        ("Hershey Company (The)", "The Hershey Company"),
+        ("Campbell's Company (The)", "The Campbell's Company"),
+        ("J.M. Smucker Company (The)", "The J.M. Smucker Company"),
+        ("Cooper Companies (The)", "The Cooper Companies"),
+        ("Estée Lauder Companies (The)", "The Estée Lauder Companies"),
+        ("Mosaic Company (The)", "The Mosaic Company"),
+        # Inverted-prefix one-off override.
+        ("Lilly (Eli)", "Eli Lilly"),
+        # Names without any pattern should pass through unchanged.
+        ("Apple Inc.", "Apple Inc."),
+        ("Berkshire Hathaway Inc. (Class B)", "Berkshire Hathaway Inc. (Class B)"),
+        ("Alphabet Inc. (Class C)", "Alphabet Inc. (Class C)"),
+        ("3M", "3M"),
+        ("IBM", "IBM"),
+    ],
+)
+def test_normalize_company_name(raw: str, expected: str) -> None:
+    assert universe_mod._normalize_company_name(raw) == expected
+
+
+def test_parse_sp500_html_applies_name_normalization():
+    """Wikipedia "(The)" suffix should disappear in the parsed DataFrame.
+
+    The shipped sample fixture doesn't include a (The)-affected ticker, so we
+    synthesize a small HTML table that mirrors the Wikipedia structure.
+    """
+    html = """
+    <table class="wikitable">
+      <tr><th>Symbol</th><th>Security</th><th>GICS Sector</th>
+          <th>GICS Sub-Industry</th><th>CIK</th></tr>
+      <tr><td>HIG</td><td>Hartford (The)</td><td>Financials</td>
+          <td>Property &amp; Casualty Insurance</td><td>874766</td></tr>
+      <tr><td>LLY</td><td>Lilly (Eli)</td><td>Health Care</td>
+          <td>Pharmaceuticals</td><td>59478</td></tr>
+    </table>
+    """
+    df = universe_mod.parse_sp500_html(html)
+    assert df[df["ticker"] == "HIG"].iloc[0]["name"] == "The Hartford"
+    assert df[df["ticker"] == "LLY"].iloc[0]["name"] == "Eli Lilly"
+
+
 def test_parse_sp500_html_applies_ticker_overrides():
     """Stale Wikipedia symbols (e.g., FISV after the 2024 Fiserv rename) must
     be remapped via TICKER_OVERRIDES before they reach yfinance/EDGAR.
