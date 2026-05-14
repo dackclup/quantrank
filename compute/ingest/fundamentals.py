@@ -92,19 +92,16 @@ _BALANCE_TAGS: dict[str, list[str]] = {
 }
 
 # Concepts queried via the normalized snake_case API for latest values.
+# Income-statement flow items (gross_profit, operating_income, ...) were
+# REMOVED from this dict in audit #6 (deep clean, pre-v1.0) — they now
+# flow through `_TTM_FLOW_TAGS` + `_try_ttm_max_fresh` to guarantee
+# trailing-12-month aggregation. Only EPS items remain here because EPS
+# is a per-share figure that the FASB stack reports as a single value
+# per filing period; consumers (pe_ratio) should derive TTM EPS from
+# NI_TTM / shares_outstanding instead.
 _NORMALIZED_LATEST: dict[str, str] = {
     "eps_basic": "earnings_per_share_basic",
     "eps_diluted": "earnings_per_share_diluted",
-    "gross_profit": "gross_profit",
-    "operating_income": "operating_income",
-    "cost_of_revenue": "cost_of_revenue",
-    "research_and_development": "research_and_development",
-    "sga_expense": "sga_expense",
-    "depreciation_and_amortization": "depreciation_and_amortization",
-    "interest_expense": "interest_expense",
-    "income_tax_expense": "income_tax_expense",
-    "income_before_tax": "income_before_tax",
-    "dividends_paid": "dividends_paid",
 }
 
 # US-GAAP tags for TTM flow items.
@@ -113,6 +110,60 @@ _TTM_TAGS: dict[str, list[str]] = {
     "capex": [
         "us-gaap:PaymentsToAcquirePropertyPlantAndEquipment",
         "us-gaap:PaymentsToAcquireProductiveAssets",
+    ],
+}
+
+# US-GAAP tag chains for income-statement flow items previously fetched via
+# the normalized snake_case API in `_NORMALIZED_LATEST`. Audit #6 (deep
+# clean, pre-v1.0) showed that `facts.get_concept('operating_income')`
+# returns the latest single-period value — which can be Q1, H1 YTD, or FY
+# annual depending on filer cadence. Probed 4 tickers in May 2026:
+# TSLA's `operating_income` came back as $941M (single quarter Q1-2026)
+# while TTM is $4.9B — 5× error that compresses TSLA's profitability and
+# health pillar scores universe-wide.
+#
+# Walking these through `_try_ttm_max_fresh` ensures every snapshot field
+# represents a consistent trailing-12-month aggregation, comparable across
+# tickers regardless of fiscal calendar.
+#
+# Fallback ordering for each metric: most-general / modern concept FIRST
+# (so the MAX-of-fresh heuristic picks the consolidated total), with
+# legacy + sector-specific fallbacks last.
+_TTM_FLOW_TAGS: dict[str, list[str]] = {
+    "operating_income": ["us-gaap:OperatingIncomeLoss"],
+    "gross_profit": ["us-gaap:GrossProfit"],
+    "cost_of_revenue": [
+        "us-gaap:CostOfRevenue",
+        "us-gaap:CostOfGoodsAndServicesSold",
+        "us-gaap:CostOfGoodsSold",
+        "us-gaap:CostOfServices",
+    ],
+    "sga_expense": [
+        "us-gaap:SellingGeneralAndAdministrativeExpense",
+        "us-gaap:GeneralAndAdministrativeExpense",
+    ],
+    "depreciation_and_amortization": [
+        "us-gaap:DepreciationDepletionAndAmortization",
+        "us-gaap:DepreciationAndAmortization",
+        "us-gaap:Depreciation",
+    ],
+    "interest_expense": [
+        # Newest concepts first — `us-gaap:InterestExpense` frozen post-2024
+        # for many filers (AAPL, MSFT, JPM, TSLA all probed stale).
+        "us-gaap:InterestExpenseOperating",
+        "us-gaap:InterestExpenseNonoperating",
+        "us-gaap:InterestExpense",
+        "us-gaap:InterestExpenseDebt",
+    ],
+    "income_tax_expense": ["us-gaap:IncomeTaxExpenseBenefit"],
+    "research_and_development": ["us-gaap:ResearchAndDevelopmentExpense"],
+    "income_before_tax": [
+        "us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+        "us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesMinorityInterestAndIncomeLossFromEquityMethodInvestments",
+    ],
+    "dividends_paid": [
+        "us-gaap:PaymentsOfDividendsCommonStock",
+        "us-gaap:PaymentsOfDividends",
     ],
 }
 
@@ -458,8 +509,9 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
         if pe is not None:
             period_dates.append(pe)
 
-    # Latest values via normalized snake_case API (EPS, income statement
-    # detail, cash flow detail). Returns None when the concept isn't tagged.
+    # Latest EPS values via normalized snake_case API (per-share figures
+    # don't have a clean TTM-via-tag concept; consumers like pe_ratio
+    # derive TTM EPS from NI_TTM / shares_outstanding instead).
     normalized: dict[str, float | None] = {}
     for out_key, concept in _NORMALIZED_LATEST.items():
         try:
@@ -476,10 +528,25 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
         else:
             normalized[out_key] = float(md)
 
+    # TTM income-statement flow items via the freshness-aware MAX helper
+    # (audit #6). Replaces the previous `_NORMALIZED_LATEST` loop for
+    # everything except EPS — those single-period values mixed quarterly /
+    # YTD / annual across the universe, breaking gross_margin /
+    # operating_margin / interest_coverage / Altman EBIT for ~88% of S&P 500.
+    flow_values: dict[str, float | None] = {}
+    for out_key, tags in _TTM_FLOW_TAGS.items():
+        val, filed, pe = _try_ttm_max_fresh(facts, tags)
+        flow_values[out_key] = val
+        snapshot_dates.append(filed)
+        if pe is not None:
+            period_dates.append(pe)
+
     # Derive EBITDA from operating_income + D&A (knowledge §11.2; SEC doesn't
-    # tag EBITDA directly).
-    op_income = normalized.get("operating_income")
-    da = normalized.get("depreciation_and_amortization")
+    # tag EBITDA directly). Both inputs are now TTM-aligned post-audit-#6
+    # — previously they were quarterly/YTD partial values producing TSLA-
+    # style 5× under-reporting on EV/EBITDA + Altman Z″ ratios.
+    op_income = flow_values.get("operating_income")
+    da = flow_values.get("depreciation_and_amortization")
     ebitda_val = (
         op_income + da if op_income is not None and da is not None else None
     )
@@ -499,16 +566,16 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
         eps_basic=normalized.get("eps_basic"),
         eps_diluted=normalized.get("eps_diluted"),
         shares_outstanding=balance_values.get("shares_outstanding"),
-        gross_profit=normalized.get("gross_profit"),
+        gross_profit=flow_values.get("gross_profit"),
         operating_income=op_income,
-        cost_of_revenue=normalized.get("cost_of_revenue"),
-        research_and_development=normalized.get("research_and_development"),
-        sga_expense=normalized.get("sga_expense"),
+        cost_of_revenue=flow_values.get("cost_of_revenue"),
+        research_and_development=flow_values.get("research_and_development"),
+        sga_expense=flow_values.get("sga_expense"),
         depreciation_and_amortization=da,
-        interest_expense=normalized.get("interest_expense"),
-        income_tax_expense=normalized.get("income_tax_expense"),
-        income_before_tax=normalized.get("income_before_tax"),
-        dividends_paid=normalized.get("dividends_paid"),
+        interest_expense=flow_values.get("interest_expense"),
+        income_tax_expense=flow_values.get("income_tax_expense"),
+        income_before_tax=flow_values.get("income_before_tax"),
+        dividends_paid=flow_values.get("dividends_paid"),
         current_assets=balance_values.get("current_assets"),
         current_liabilities=balance_values.get("current_liabilities"),
         inventory=balance_values.get("inventory"),

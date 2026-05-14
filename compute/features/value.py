@@ -24,10 +24,33 @@ def market_cap(snap: FundamentalsSnapshot, current_price: float) -> float:
 
 
 def pe_ratio(snap: FundamentalsSnapshot, current_price: float) -> float:
-    """Price / Earnings (TTM, diluted). Lower is cheaper. Negative EPS → NaN."""
-    if snap.eps_diluted is None or snap.eps_diluted <= 0:
+    """Price / Trailing-Twelve-Months EPS. Lower is cheaper. Negative or
+    missing TTM earnings → NaN.
+
+    Computes TTM EPS from ``net_income / shares_outstanding`` rather than
+    using ``snap.eps_diluted`` directly. Audit #6 (pre-v1.0 deep clean)
+    found that ``snap.eps_diluted`` comes from edgartools' normalized
+    snake_case API, which returns the latest single-period EPS — a value
+    that can be Q1, H1 YTD, Q3 YTD, or FY annual depending on each filer's
+    reporting cadence. The ratio ``eps_diluted / TTM_EPS`` had median 0.29
+    across the S&P 500 (88.6% of tickers had PE wrong by > 30%); TSLA was
+    8× off, ABBV 5× off, GOOGL 2.6× off.
+
+    Using ``net_income / shares_outstanding`` is consistent across filers
+    because ``net_income`` is fetched as a true TTM via the freshness-aware
+    MAX helper in ``compute.ingest.fundamentals._try_ttm_max_fresh``.
+    """
+    if (
+        snap.net_income is None
+        or snap.shares_outstanding is None
+        or snap.shares_outstanding <= 0
+        or snap.net_income <= 0
+    ):
         return float("nan")
-    return float(current_price) / float(snap.eps_diluted)
+    ttm_eps = snap.net_income / snap.shares_outstanding
+    if ttm_eps <= 0:
+        return float("nan")
+    return float(current_price) / ttm_eps
 
 
 def pb_ratio(snap: FundamentalsSnapshot, current_price: float) -> float:
