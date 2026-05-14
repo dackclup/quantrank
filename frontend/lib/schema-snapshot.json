@@ -310,6 +310,11 @@
       "required": false,
       "default": "<factory:RawMetrics>"
     },
+    "recommendation": {
+      "type": "Literal[bullish, lean_bullish, neutral, cautious] | None",
+      "required": false,
+      "default": null
+    },
     "risk_flags": {
       "type": "list[str]",
       "required": false,
@@ -401,6 +406,11 @@
       "type": "int",
       "required": true,
       "default": "<required>"
+    },
+    "recommendation": {
+      "type": "Literal[bullish, lean_bullish, neutral, cautious] | None",
+      "required": false,
+      "default": null
     },
     "risk_flags": {
       "type": "list[str]",

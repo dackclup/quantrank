@@ -3,6 +3,11 @@
 import { useEffect } from 'react';
 
 import { DualRange } from '@/components/DualRange';
+import {
+  RECOMMENDATION_LABELS,
+  RECOMMENDATION_VALUES,
+} from '@/components/RecommendationBadge';
+import type { Recommendation } from '@/lib/types';
 import { MOS_BUCKETS, TIERS, sectorStyle } from '@/lib/visual';
 
 // Slide-in panel from the right with a backdrop. Holds the full filter
@@ -18,6 +23,7 @@ export type FilterState = {
   scoreRange: [number, number];
   tierSet: Set<string>;
   mosSet: Set<string>;
+  recommendationSet: Set<Recommendation>;
 };
 
 export type FilterSetters = {
@@ -26,7 +32,24 @@ export type FilterSetters = {
   setScoreRange: (r: [number, number]) => void;
   toggleTier: (t: string) => void;
   toggleMos: (m: string) => void;
+  toggleRecommendation: (r: Recommendation) => void;
   clearAll: () => void;
+};
+
+// Soft-palette tone classes mirroring RecommendationBadge.tsx, but
+// muted slightly for the drawer-chip surface (drawer uses subtler tones
+// than the inline badge in the ranking-table row).
+const RECOMMENDATION_CHIP_CLS: Record<Recommendation, string> = {
+  bullish: 'bg-emerald-600 text-white ring-emerald-700',
+  lean_bullish: 'bg-emerald-100 text-emerald-900 ring-emerald-300',
+  neutral: 'bg-slate-200 text-slate-700 ring-slate-300',
+  cautious: 'bg-red-500 text-white ring-red-700',
+};
+const RECOMMENDATION_DOT_CLS: Record<Recommendation, string> = {
+  bullish: 'bg-emerald-700',
+  lean_bullish: 'bg-emerald-500',
+  neutral: 'bg-slate-500',
+  cautious: 'bg-red-600',
 };
 
 export function FilterDrawer({
@@ -46,8 +69,16 @@ export function FilterDrawer({
   totalCount: number;
   filteredCount: number;
 }) {
-  const { search, sectorSet, scoreRange, tierSet, mosSet } = state;
-  const { setSearch, toggleSector, setScoreRange, toggleTier, toggleMos, clearAll } = setters;
+  const { search, sectorSet, scoreRange, tierSet, mosSet, recommendationSet } = state;
+  const {
+    setSearch,
+    toggleSector,
+    setScoreRange,
+    toggleTier,
+    toggleMos,
+    toggleRecommendation,
+    clearAll,
+  } = setters;
 
   // Esc-to-close + body scroll lock while drawer is open.
   useEffect(() => {
@@ -163,6 +194,32 @@ export function FilterDrawer({
                     <span className="font-mono text-[10px] tabular-nums opacity-60">
                       {t.min}–{t.max === 101 ? '100' : t.max}
                     </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-slate-700">
+              Recommendation
+            </label>
+            <div className="flex flex-wrap gap-1.5">
+              {RECOMMENDATION_VALUES.map((rec) => {
+                const on = recommendationSet.has(rec);
+                return (
+                  <button
+                    key={rec}
+                    type="button"
+                    onClick={() => toggleRecommendation(rec)}
+                    className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition ${
+                      on
+                        ? RECOMMENDATION_CHIP_CLS[rec]
+                        : 'bg-white text-slate-600 ring-slate-300 hover:bg-slate-50'
+                    }`}
+                  >
+                    <span className={`inline-block h-1.5 w-1.5 rounded-full ${RECOMMENDATION_DOT_CLS[rec]}`} />
+                    {RECOMMENDATION_LABELS[rec]}
                   </button>
                 );
               })}
