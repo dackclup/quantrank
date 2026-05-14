@@ -65,20 +65,26 @@ for hierarchy.
 </span>
 ```
 
-Tone palette (light mode → dark mode):
+Tone palette (light-mode only — see Rule 4):
 
 | Tier | Background | Text | Ring | Dot |
 |---|---|---|---|---|
-| Positive strong | `bg-emerald-50` → `dark:bg-emerald-900` | `text-emerald-900` → `dark:text-emerald-50` | `ring-emerald-300` → `dark:ring-emerald-700` | `bg-emerald-700` → `dark:bg-emerald-300` |
-| Positive light | `bg-emerald-50` → `dark:bg-emerald-900` | `text-emerald-700` → `dark:text-emerald-200` | `ring-emerald-200` → `dark:ring-emerald-700` | `bg-emerald-500` → `dark:bg-emerald-400` |
-| Neutral | `bg-slate-100` → `dark:bg-slate-700` | `text-slate-700` → `dark:text-slate-200` | `ring-slate-300` → `dark:ring-slate-600` | `bg-slate-500` → `dark:bg-slate-400` |
-| Negative | `bg-red-50` → `dark:bg-red-900` | `text-red-900` → `dark:text-red-50` | `ring-red-300` → `dark:ring-red-700` | `bg-red-600` → `dark:bg-red-400` |
-| Info (sector blue/purple/etc.) | `bg-{tone}-50` → `dark:bg-{tone}-900` | `text-{tone}-700` → `dark:text-{tone}-200` | `ring-{tone}-200` → `dark:ring-{tone}-700` | `bg-{tone}-500` → `dark:bg-{tone}-400` |
+| Positive strong | `bg-emerald-50` | `text-emerald-900` | `ring-emerald-300` | `bg-emerald-700` |
+| Positive light | `bg-emerald-50` | `text-emerald-700` | `ring-emerald-200` | `bg-emerald-500` |
+| Neutral | `bg-slate-100` | `text-slate-700` | `ring-slate-300` | `bg-slate-500` |
+| Negative | `bg-red-50` | `text-red-900` | `ring-red-300` | `bg-red-600` |
+| Info (sector blue/purple/etc.) | `bg-{tone}-50` | `text-{tone}-700` | `ring-{tone}-200` | `bg-{tone}-500` |
 
 **Strong-end text uses -900** (positive strong + negative) so high-stakes
 labels like "Strong Buy" / "Sell" stay readable against `bg-50` even on
 low-contrast displays. WCAG AA target ≥ 4.5:1; text-900 on bg-50 gives
 ~10:1.
+
+**Why no `dark:` variants**: Rule 4 above. Tailwind's `dark:` triggers on
+system `prefers-color-scheme: dark`, not the page's `color-scheme: light`
+declaration. Mixing them = invisible-label bug on every user with system
+dark mode. Add `dark:` only when the site ships an explicit dark-mode
+toggle (not on the current roadmap).
 
 ### Visual hierarchy via dot color (not by switching patterns)
 
@@ -146,21 +152,30 @@ pattern: export both an inline-badge tone map and an active-chip tone map
 from the badge component file. Don't put tone classes inline in `RankingTable`
 or `FilterDrawer` — keep them with the badge module.
 
-## Rule 4 — Light + dark mode parity
+## Rule 4 — Light-mode only (NO `dark:` variants)
 
-Every component with explicit `bg-` / `text-` / `ring-` must include
-`dark:` variants:
+The QuantRank site is **force-light-mode** via `:root { color-scheme: light }`
+in `frontend/app/globals.css`. The page itself never renders dark mode.
 
-```
-bg-emerald-50 → dark:bg-emerald-900
-text-emerald-800 → dark:text-emerald-100
-ring-emerald-300 → dark:ring-emerald-700
-```
+**Critical**: Tailwind's `dark:` variants (default `darkMode: 'media'`) are
+gated on the SYSTEM-level `prefers-color-scheme: dark` media query, NOT on
+the page's `color-scheme` declaration. So a user whose phone/laptop is set
+to system dark mode will trigger every `dark:` class on the page, even
+though the page background stays white.
 
-Skip dark variants only for:
-- Universally-light surfaces (Disclaimer banner — intentionally amber-50 in
-  both modes for the "warning" affordance)
-- Elements that inherit from parent and never set their own color
+**Result of mixing dark: variants on this site**: text colors flip to the
+dark-mode tone (`dark:text-{tone}-50` = very light) while backgrounds keep
+their light-mode tone (`bg-{tone}-50` = also very light) → label disappears
+into the background.
+
+Lesson 2026-05-14 (PR #70 second iteration): the recommendation badge was
+introduced with `dark:` variants per "good Tailwind practice." User on
+system dark mode saw blank/invisible "Strong Buy" and "Sell" labels.
+SectorChip / score-tier / MoS-bucket chips were already (correctly) without
+`dark:` variants — match them.
+
+**Rule**: Don't add `dark:` variants to any QuantRank component until the
+site adopts a dark-mode toggle (no such plan currently). Light tones only.
 
 ## Rule 5 — Typography
 
