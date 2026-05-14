@@ -60,9 +60,9 @@ Per `phase-4-kickoff-checklist/PLAN.md` §3 — PR order + schema-bump staircase
 
 | PR | Scope | Tag | Schema bump |
 |---|---|---|---|
-| 4a | Workflow cache improvements (per `workflow-cache-improvements/PLAN.md`) | `v1.0.1-perf` | **patch** — no schema change |
-| 4b | Defense infrastructure: cross-source + PBO+DSR + IC-decay (per `defense-infrastructure/PLAN.md`) | `v1.0.2-defense` | **patch** — adds `cross_source_disagreement` risk flag (additive) |
-| 4c | `_avg_3y_roe` per-year equity fix (issue #11) | `v1.0.3-fix` | **patch** — bug fix only |
+| 4a | Workflow cache improvements (per `workflow-cache-improvements/PLAN.md`) | `v1.0.1-perf` ✅ | **patch** — no schema change |
+| 4b | Defense infrastructure: cross-source + PBO+DSR + IC-decay (per `defense-infrastructure/PLAN.md`) | `v1.0.2-defense` ✅ | **patch** — adds `cross_source_disagreement` risk flag (additive) |
+| 4c | `_avg_3y_roe` per-year equity fix (issue #11) | `v1.0.3-fix` 🟢 | **patch** — bug fix only |
 | 4d | recommendation-badge (`StockDetail.recommendation` field, Option B locked) | `v1.1.0-rc1` | **minor** — first feature; field additive |
 | 4e | loss-chance (`StockDetail.loss_chance_pct` field, Option D locked) | `v1.1.0-rc2` | **minor** — field additive |
 | 4f | price-chart-enhancements (4.1 phase, depends on 4d) | `v1.1.0-rc3` | **patch** — no schema change (frontend-only) |

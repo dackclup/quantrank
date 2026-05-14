@@ -187,12 +187,76 @@ def test_eps_3y_avg_returns_none_for_empty_or_missing():
 
 # -- _avg_3y_roe --------------------------------------------------------------
 
-def test_avg_3y_roe_smoothed_ni_over_current_equity():
+def test_avg_3y_roe_per_year_path_when_equity_history_present():
+    """PR 4c primary path: per-year ROE = mean(NI_t / Equity_t) across 3 fiscal years.
+
+    Hand-checked: per-year ROEs = (10/80, 20/120, 30/200) =
+    (0.125, 0.1667, 0.15) → mean ≈ 0.1472.
+    """
     hist = _hist({
         "net_income": [(2023, 10.0), (2024, 20.0), (2025, 30.0)],
+        "stockholders_equity": [(2023, 80.0), (2024, 120.0), (2025, 200.0)],
     })
     snap = _snap(stockholders_equity=200.0)
-    # avg NI = 20 → 20 / 200 = 0.10
+    expected = (10.0 / 80.0 + 20.0 / 120.0 + 30.0 / 200.0) / 3.0
+    assert abs(_avg_3y_roe(hist, snap) - expected) < 1e-12
+
+
+def test_avg_3y_roe_per_year_beats_legacy_for_grower():
+    """Issue #11 anchor: for a firm whose equity grew from $80 → $200 with
+    constant ROE around 15%, the legacy method (mean NI / current equity)
+    biases ROE downward; the new method recovers the true average.
+
+    Legacy: mean(10, 20, 30) / 200 = 20 / 200 = 0.10
+    PR 4c:  mean(10/80, 20/120, 30/200) ≈ 0.147
+
+    Result: the legacy method under-reports ROE for growing firms by
+    ~47% in this case, which over-fires value_trap_risk.
+    """
+    hist = _hist({
+        "net_income": [(2023, 10.0), (2024, 20.0), (2025, 30.0)],
+        "stockholders_equity": [(2023, 80.0), (2024, 120.0), (2025, 200.0)],
+    })
+    snap = _snap(stockholders_equity=200.0)
+    new_roe = _avg_3y_roe(hist, snap)
+    legacy_roe = (10.0 + 20.0 + 30.0) / 3.0 / 200.0  # 0.10
+    assert new_roe > legacy_roe
+    assert new_roe > 0.14  # within ~1% of true 0.147
+
+
+def test_avg_3y_roe_fallback_when_equity_history_missing():
+    """When the annual history lacks `stockholders_equity` rows, fall
+    back to the legacy mean-NI / current-equity path. Recent IPOs and
+    audit-#6 residual gaps land here."""
+    hist = _hist({
+        "net_income": [(2023, 10.0), (2024, 20.0), (2025, 30.0)],
+        # no `stockholders_equity` series
+    })
+    snap = _snap(stockholders_equity=200.0)
+    assert _avg_3y_roe(hist, snap) == 0.10  # legacy formula
+
+
+def test_avg_3y_roe_fallback_when_one_year_equity_missing():
+    """If 2 of 3 years have equity but the 3rd year is missing, fall
+    back to legacy. Strict requirement: all 3 years OR none."""
+    hist = _hist({
+        "net_income": [(2023, 10.0), (2024, 20.0), (2025, 30.0)],
+        "stockholders_equity": [(2023, 80.0), (2024, 120.0)],
+        # 2025 equity missing
+    })
+    snap = _snap(stockholders_equity=200.0)
+    assert _avg_3y_roe(hist, snap) == 0.10  # legacy formula
+
+
+def test_avg_3y_roe_fallback_when_one_year_equity_non_positive():
+    """A zero or negative historical equity drops the per-year path
+    (negative equity = distressed firm; the ratio is meaningless)."""
+    hist = _hist({
+        "net_income": [(2023, 10.0), (2024, 20.0), (2025, 30.0)],
+        "stockholders_equity": [(2023, 80.0), (2024, 0.0), (2025, 200.0)],
+    })
+    snap = _snap(stockholders_equity=200.0)
+    # Falls back to legacy formula = 20 / 200 = 0.10
     assert _avg_3y_roe(hist, snap) == 0.10
 
 

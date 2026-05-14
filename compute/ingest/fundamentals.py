@@ -262,6 +262,15 @@ _ANNUAL_TAGS: dict[str, list[str]] = {
     "property_plant_equipment": ["us-gaap:PropertyPlantAndEquipmentNet"],
     # PR 3e.2 — Dechow F-score Δinventory input.
     "inventory": ["us-gaap:InventoryNet"],
+    # PR 4c — per-year stockholders_equity history (issue #11). Lets
+    # `_avg_3y_roe` use per-year equity denominators instead of the
+    # current-snapshot equity for all 3 years. Mirrors the `_BALANCE_TAGS`
+    # chain (StockholdersEquity primary; the "IncludingNCI" variant covers
+    # filers that consolidate non-controlling interest).
+    "stockholders_equity": [
+        "us-gaap:StockholdersEquity",
+        "us-gaap:StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+    ],
 }
 
 ALL_METRIC_KEYS: tuple[str, ...] = (
