@@ -3,18 +3,18 @@
   "name": "Broadcom",
   "sector": "Information Technology",
   "industry": "Semiconductors",
-  "market_cap": 1967855406250.0,
-  "current_price": 415.51,
-  "rank": 172,
-  "composite_score": 53.89,
+  "market_cap": 1973917480468.75,
+  "current_price": 416.79,
+  "rank": 176,
+  "composite_score": 53.82,
   "pillar_scores": {
     "quality": 68.84,
-    "value": 12.1,
+    "value": 11.87,
     "growth": 64.73,
-    "momentum": 82.47,
+    "momentum": 82.82,
     "health": 51.0,
     "profitability": 54.57,
-    "technical": 63.3,
+    "technical": 62.05,
     "risk": 57.74,
     "sentiment": null,
     "ml": null
@@ -32,8 +32,8 @@
     "eps_basic": 1.55,
     "eps_diluted": 1.5,
     "shares_outstanding": 4736000000.0,
-    "market_cap": 1967855406250.0,
-    "pe_ratio_ttm": 277.0066731770833,
+    "market_cap": 1973917480468.75,
+    "pe_ratio_ttm": 277.86000569661456,
     "goodwill": 97801000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 122.19636718523037,
+        "value": 121.8862790147944,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 59.696642412661554,
+        "value": 59.324447960043706,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 292.03271417819036,
+        "value": 291.11435585980286,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 90.94650479894597,
-    "max": 292.03271417819036,
+    "median": 90.60536348741905,
+    "max": 291.11435585980286,
     "low": 36.69981562963224,
-    "high": 292.03271417819036,
-    "mos_pct": -356.87298339192535,
+    "high": 291.11435585980286,
+    "mos_pct": -360.00588983100874,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate",
       "extreme_dcf_estimate",
@@ -91,7 +91,7 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 63,
+    "filing_lag_days": 64,
     "latest_period_end": "2026-02-01",
     "latest_filed_date": "2026-03-11"
   },
@@ -99,7 +99,8 @@
   "valuation_warnings": [
     "extreme_multiples_pb_estimate",
     "extreme_dcf_estimate",
-    "value_trap_risk"
+    "value_trap_risk",
+    "beneish_high"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -116,14 +117,14 @@
       "Quality": 51.71,
       "Value": 50.46,
       "Growth": 52.74,
-      "Momentum": 44.47,
+      "Momentum": 44.17,
       "Health": 66.93,
       "Profitability": 53.2,
-      "Technical": 64.94,
-      "Risk": 46.71
+      "Technical": 64.74,
+      "Risk": 46.38
     }
   },
-  "beneish_m_score": null,
+  "beneish_m_score": -2.1243210786947513,
   "dechow_f_score": 1.6657272881899468,
   "entered_top5": false,
   "exited_top5": false

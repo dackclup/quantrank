@@ -3,38 +3,38 @@
   "name": "Hasbro",
   "sector": "Consumer Discretionary",
   "industry": "Leisure Products",
-  "market_cap": 20766981117.88147,
-  "current_price": 94.2725,
-  "rank": 453,
-  "composite_score": 38.17,
+  "market_cap": 20709156521.943237,
+  "current_price": 94.01,
+  "rank": 374,
+  "composite_score": 44.23,
   "pillar_scores": {
-    "quality": 33.33,
-    "value": 20.14,
+    "quality": 40.62,
+    "value": 29.51,
     "growth": 51.56,
-    "momentum": 59.46,
-    "health": 39.28,
-    "profitability": 34.72,
-    "technical": 48.48,
-    "risk": 55.25,
+    "momentum": 59.51,
+    "health": 50.56,
+    "profitability": 48.96,
+    "technical": 46.94,
+    "risk": 55.28,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 4701300000.0,
-    "net_income": -322400000.0,
-    "total_assets": 5552000000.0,
-    "total_liabilities": 4986500000.0,
+    "revenue": 4814400000.0,
+    "net_income": -222600000.0,
+    "total_assets": 5930300000.0,
+    "total_liabilities": 5256100000.0,
     "stockholders_equity": 2995530000.0,
     "cash": 1181200000.0,
-    "operating_cash_flow": 893200000.0,
-    "capex": 63300000.0,
-    "free_cash_flow": 829900000.0,
-    "eps_basic": -2.3,
-    "eps_diluted": -2.3,
+    "operating_cash_flow": 1092800000.0,
+    "capex": 71700000.0,
+    "free_cash_flow": 1021100000.0,
+    "eps_basic": 1.41,
+    "eps_diluted": 1.39,
     "shares_outstanding": 220286736.0,
-    "market_cap": 20766981117.88147,
-    "pe_ratio_ttm": null,
-    "goodwill": 1256700000.0
+    "market_cap": 20709156521.943237,
+    "pe_ratio_ttm": 67.63309506203632,
+    "goodwill": 1256500000.0
   },
   "fair_price": {
     "methods": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_or_missing_eps_ttm",
-        "tier_used": null
+        "value": 100.31336045091167,
+        "applicable": true,
+        "reason": null,
+        "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 80.26089153404973,
+        "value": 80.77314709723248,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 4.6289945158661,
+        "value": 27.599926128495593,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,14 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 22.16158306669408,
-    "max": 80.26089153404973,
-    "low": 4.6289945158661,
-    "high": 80.26089153404973,
-    "mos_pct": -325.3870258309828,
+    "median": 54.18653661286404,
+    "max": 100.31336045091167,
+    "low": 22.16158306669408,
+    "high": 100.31336045091167,
+    "mos_pct": -73.49328451804433,
     "valuation_warnings": [
       "goodwill_heavy",
-      "extreme_multiples_ev_ebitda_estimate",
       "value_trap_risk"
     ]
   },
@@ -93,18 +92,17 @@
       "gross_profit"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 77,
-    "latest_period_end": "2025-12-28",
-    "latest_filed_date": "2026-02-25"
+    "filing_lag_days": 1,
+    "latest_period_end": "2026-03-29",
+    "latest_filed_date": "2026-05-13"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
-    "extreme_multiples_ev_ebitda_estimate",
     "value_trap_risk"
   ],
   "has_history": true,
-  "tangible_book_value": 5.820277803743935,
+  "tangible_book_value": 5.8915485497047815,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -118,14 +116,14 @@
       "Quality": 45.44,
       "Value": 49.31,
       "Growth": 51.04,
-      "Momentum": 37.7,
-      "Health": 47.32,
-      "Profitability": 51.22,
-      "Technical": 32.77,
-      "Risk": 40.55
+      "Momentum": 37.92,
+      "Health": 48.37,
+      "Profitability": 51.04,
+      "Technical": 32.16,
+      "Risk": 40.54
     }
   },
-  "beneish_m_score": -3.5963518429105643,
+  "beneish_m_score": -3.594719147614529,
   "dechow_f_score": null,
   "entered_top5": false,
   "exited_top5": false
