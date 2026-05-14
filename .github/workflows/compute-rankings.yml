@@ -45,12 +45,17 @@ jobs:
           # six restored, steady-state weekly compute drops from ~25-30
           # min to ~10-15 min.
           #
-          # Cache key bumped to `cache-v3` to atomically rotate ALL six
-          # paths together. Pre-v3 keys (fundamentals-v2-*) only held one
-          # path; partial restore-key matches could resurrect a stale
-          # partial state. Bump to v4 if any cache directory's *schema*
-          # changes (parquet column rename, JSON shape change, etc.).
-          # Value drift is covered by per-cache `_is_fresh()` checks in
+          # Cache key bumped to `cache-v4` (PR 4c.1) after PR 4c (issue #11)
+          # extended `_ANNUAL_TAGS` with `stockholders_equity`. The cached
+          # `fundamentals_history` parquets from the v3 era pre-date the
+          # schema change — they lack the new column entirely, so the
+          # per-year ROE path in `_avg_3y_roe` silently falls back to the
+          # legacy single-period denominator. Forcing fresh fetch via key
+          # bump is the established pattern (precedent: PR #49 bumped v1 →
+          # v2 after the audit-#6 `_TTM_*` ingest expansion). Bump again to
+          # v5 if any cache directory's *schema* changes (parquet column
+          # rename, JSON shape change, new annual / TTM tag added). Value
+          # drift is handled by per-cache `_is_fresh()` checks in
           # compute/ingest/*.py — those run regardless of key.
           path: |
             compute/cache/fundamentals
@@ -60,10 +65,10 @@ jobs:
             compute/cache/edgar_8k
             compute/cache/edgar_10k_text
             compute/cache/yfinance_info
-          key: cache-v3-${{ steps.quarter.outputs.q }}-${{ runner.os }}
+          key: cache-v4-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
-            cache-v3-${{ steps.quarter.outputs.q }}-
-            cache-v3-
+            cache-v4-${{ steps.quarter.outputs.q }}-
+            cache-v4-
 
       - name: Run weekly compute
         run: python -m compute.main
