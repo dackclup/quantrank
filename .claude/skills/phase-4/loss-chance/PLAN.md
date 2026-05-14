@@ -114,12 +114,12 @@ def derive_loss_chance(detail: StockDetail) -> float | None:
 **Calibration target distributions** (validate against latest
 `rankings.json` before merging):
 
-| Recommendation tier | Expected Loss Chance band |
+| Recommendation tier (Option B locked, per `phase-4-kickoff-checklist/PLAN.md` §1) | Expected Loss Chance band |
 |---|---|
-| Strong Buy | 10-25% |
-| Buy | 25-40% |
-| Hold | 40-60% |
-| Sell | 60-90% |
+| Bullish | 10-25% |
+| Lean Bullish | 25-40% |
+| Neutral | 40-60% |
+| Cautious | 60-90% |
 
 Counts shouldn't be wildly skewed (e.g., > 70% of universe in 50-60
 band, or > 20% pinned at the 95 ceiling).
@@ -176,24 +176,30 @@ export function LossChanceBadge({ pct }: { pct: number | null }) {
 
 Calling this **"Loss Chance %"** carries the same legal risk surface as
 the recommendation-badge labels — implying a real probability without
-backtest validation. Same mitigation options apply:
+backtest validation.
 
-| Option | Tradeoff |
-|---|---|
-| **A. Keep "Loss Chance %"**, add small "heuristic" footnote | Most direct user request; legal exposure highest |
-| **B. Rename "Downside Risk %"** | Same UX, defensible as a risk score not probability |
-| **C. Rename "Risk Score" with 0-100 unitless scale** | Most defensible academically; loses the "probability" intuition |
-| **D. "Loss Chance (heuristic)"** with explicit small-text qualifier | Honest middle ground — matches the existing Disclaimer banner's "model outputs, not advice" framing |
+**DECISION LOCKED (2026-05-14)**: **Option D** — `Loss Chance %` user-facing label + small-text "heuristic" qualifier + tooltip linking to Honest Limitations. Per `phase-4-kickoff-checklist/PLAN.md` §1.
 
-**Recommended**: **Option D** — keeps the user-facing "Loss Chance"
-language but adds a single-line tooltip / footnote:
+Required tooltip / footnote text:
 
 > "Loss Chance combines composite, defense flags, and Margin of Safety
 > into a heuristic 5-95% range. NOT a backtested probability. See
 > [Honest Limitations](#honest-limitations) for caveats."
 
-For full backtest-calibrated probability → Phase 5+ ML work (Triple-
-Barrier + conformal prediction can yield calibrated intervals).
+Visual treatment:
+- On overview ranking table: chip shows `LossChance NN%`; on hover → tooltip text above
+- On detail page: chip in header card; small italic footer text immediately under chip says "heuristic — see disclaimer"
+
+For full backtest-calibrated probability → Phase 5+ ML work (Triple-Barrier + conformal prediction can yield calibrated intervals).
+
+Historical alternatives (archival reference only — NOT implemented):
+
+| Option | Disposition |
+|---|---|
+| A. "Loss Chance %" + small footnote | ❌ Rejected — footnote too easy to miss |
+| B. "Downside Risk %" | ❌ Rejected — loses user-requested intuition |
+| C. "Risk Score" 0-100 unitless | ❌ Rejected — loses probability framing entirely |
+| **D. "Loss Chance %" + tooltip + small italic qualifier** | ✅ **LOCKED** |
 
 ## Test plan
 
@@ -206,7 +212,7 @@ Barrier + conformal prediction can yield calibrated intervals).
 - [ ] Distribution test on latest `rankings.json`:
   - Median loss chance falls in 45-55 (universe roughly balanced)
   - At least 5 tickers in each color band (sanity)
-  - Strong Buy tier (when recommendation-badge ships) lands in 10-25
+  - Bullish tier (when recommendation-badge ships) lands in 10-25
     band ≥ 70% of the time
 - [ ] Snapshot regen — `schema_check` passes
 - [ ] TypeScript: `lossChancePct: number | null` matches Pydantic
@@ -239,16 +245,10 @@ Not a v1.0 blocker. Land as part of the Phase 4 UX trio:
 Suggested order: **#1 → #2 → #3** (badge first so the chart's
 target-line conditional has a field to read; loss-chance any time).
 
-## Open questions for implementer
+## Decisions (formerly open questions — locked 2026-05-14)
 
-1. Confirm terminology (Option A / B / C / D from "Naming considerations")
-2. Confirm display format on overview: same row as MoS bar, or
-   stacked below?
-3. Confirm color band cutoffs — current proposal is symmetric around
-   50; could shift if calibration distribution comes out skewed
-4. Should `loss_chance_pct` be sector-relative (within-sector
-   percentile) or absolute-universe (cross-sector)? Currently
-   proposed: **absolute** (matches the way MoS is computed)
-5. Schema field naming: `loss_chance_pct` (Pythonic) vs
-   `lossChancePct` (camelCase) — current `RawMetrics` uses
-   snake_case so `loss_chance_pct` is consistent
+1. ~~Terminology?~~ → **Option D locked** (`Loss Chance %` + tooltip + small italic qualifier) — per `phase-4-kickoff-checklist/PLAN.md` §1
+2. ~~Display format?~~ → **Same row as MoS** locked. Side-by-side chip layout; stacked is too vertical on mobile
+3. ~~Color band cutoffs?~~ → **Symmetric around 50 locked** (5-25 / 25-40 / 40-60 / 60-80 / 80-95). Validate post-merge against universe distribution; bandwidth tunable in v1.2 if skewed
+4. ~~Sector-relative vs absolute?~~ → **Absolute-universe locked**. Matches MoS computation (cross-sector). Sector-relative is a separate v1.2+ feature
+5. ~~Schema field naming?~~ → **`loss_chance_pct` (snake_case) locked**. Consistent with `RawMetrics` + Pydantic naming convention
