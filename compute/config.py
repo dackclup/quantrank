@@ -9,7 +9,18 @@ FRONTEND_DIR: Path = PROJECT_ROOT / "frontend"
 DATA_DIR: Path = FRONTEND_DIR / "public" / "data"
 STOCKS_DIR: Path = DATA_DIR / "stocks"
 CACHE_DIR: Path = PROJECT_ROOT / "compute" / "cache"
-UNIVERSE_CACHE: Path = CACHE_DIR / "universe.parquet"
+# Universe constituents file. The `-v2` suffix bumped 2026-05-14 in
+# PR 4c.3 after PR #63 (Wikipedia name normalize) — pre-v2 cached
+# parquets store un-normalized names like "Hartford (The)" /
+# "Lilly (Eli)" because they were written before the `_normalize_
+# company_name` helper landed. The 7-day filename freshness check in
+# `compute/ingest/universe.py::get_sp500_constituents` would keep
+# returning the stale parquet for up to a week. Bumping the filename
+# (not the workflow cache key) is a surgical refresh — the other 6
+# caches stay warm, only universe re-fetches Wikipedia (~2 sec).
+# Bump to `-v3` if another universe ingest change lands (column
+# rename, TICKER_OVERRIDES additions that touch existing rows, etc.).
+UNIVERSE_CACHE: Path = CACHE_DIR / "universe-v2.parquet"
 PRICES_CACHE_DIR: Path = CACHE_DIR / "prices"
 FUNDAMENTALS_CACHE_DIR: Path = CACHE_DIR / "fundamentals"
 FUNDAMENTALS_HISTORY_CACHE_DIR: Path = CACHE_DIR / "fundamentals_history"
