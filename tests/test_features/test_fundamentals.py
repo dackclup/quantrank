@@ -158,6 +158,69 @@ def test_annual_tags_have_legacy_fallback_coverage():
     assert "us-gaap:Depreciation" in _ANNUAL_TAGS["depreciation_and_amortization"]
 
 
+def test_shares_outstanding_fallback_chain_covers_dei_and_weighted_avg():
+    """Regression guard for audit #6: shares_outstanding chain must include
+    DEI cover-page + weighted-average diluted fallbacks. Without these,
+    26 of 502 S&P 500 tickers (META rank #12, ACN, MA, BRK-B, ABNB,
+    CMCSA, DASH, LEN, ...) shipped with shares=None and consequently
+    market_cap=None / PE=NaN / PB=NaN, breaking the entire value pillar
+    for those names.
+    """
+    from compute.ingest.fundamentals import _BALANCE_TAGS
+
+    chain = _BALANCE_TAGS["shares_outstanding"]
+    # DEI cover-page tag — current for WMT post-split, META, ACN.
+    assert "dei:EntityCommonStockSharesOutstanding" in chain
+    # Weighted-average diluted — used by META, multi-class filers.
+    assert "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding" in chain
+    # Legacy us-gaap tags retained for backward compatibility.
+    assert "us-gaap:CommonStockSharesOutstanding" in chain
+
+
+def test_ttm_flow_tags_replace_normalized_latest_for_income_statement():
+    """Regression guard for audit #6 (deep clean, pre-v1.0): income-
+    statement flow items must be fetched via `_TTM_FLOW_TAGS` (TTM-aware)
+    NOT via `_NORMALIZED_LATEST` (single-period, broken for ~88% of
+    tickers).
+
+    Pre-fix bug: snap.eps_diluted came from normalized API and ranged
+    from a single quarter (TSLA 0.13) to YTD (AAPL 4.85) to full annual
+    (NVDA 4.90) depending on filer cadence. Same single-period problem
+    for op_income, gross_profit, COGS, SGA, D&A, interest_expense, etc.
+    """
+    from compute.ingest.fundamentals import _NORMALIZED_LATEST, _TTM_FLOW_TAGS
+
+    # Income-statement flow items MUST be in _TTM_FLOW_TAGS (NOT in
+    # _NORMALIZED_LATEST anymore).
+    flow_items_required_ttm = (
+        "operating_income",
+        "gross_profit",
+        "cost_of_revenue",
+        "sga_expense",
+        "depreciation_and_amortization",
+        "interest_expense",
+        "income_tax_expense",
+        "research_and_development",
+        "income_before_tax",
+        "dividends_paid",
+    )
+    for key in flow_items_required_ttm:
+        assert key in _TTM_FLOW_TAGS, f"{key} must be in _TTM_FLOW_TAGS (TTM-aware)"
+        assert key not in _NORMALIZED_LATEST, (
+            f"{key} must NOT be in _NORMALIZED_LATEST anymore (single-period bug)"
+        )
+
+    # _NORMALIZED_LATEST should only contain EPS items (per-share, no
+    # clean TTM-via-tag substitute).
+    assert set(_NORMALIZED_LATEST.keys()) == {"eps_basic", "eps_diluted"}
+
+    # interest_expense must include the modern operating/nonoperating
+    # variants because the legacy `us-gaap:InterestExpense` froze post-
+    # 2024 for many filers (AAPL, MSFT, JPM, TSLA all probed stale).
+    assert "us-gaap:InterestExpenseOperating" in _TTM_FLOW_TAGS["interest_expense"]
+    assert "us-gaap:InterestExpenseNonoperating" in _TTM_FLOW_TAGS["interest_expense"]
+
+
 def test_fetch_fundamentals_uses_cache(monkeypatch, tmp_path):
     """Fresh-cache hit must NOT call ``_build_snapshot``."""
     monkeypatch.setattr(config, "FUNDAMENTALS_CACHE_DIR", tmp_path)

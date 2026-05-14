@@ -333,8 +333,23 @@ def compute_fair_price_ensemble(
         lag_status=lag_status,
     )
 
+    # Derive TTM EPS from NI_TTM / shares_outstanding instead of using
+    # snap.eps_diluted directly. Audit #6 found that snap.eps_diluted comes
+    # from edgartools' normalized snake_case API and returns the latest
+    # single-period EPS (quarterly / YTD / annual depending on filer cadence)
+    # — not TTM. This makes multiples_pe_fair_price 2-8× off for ~88% of
+    # the S&P 500 universe. Same fix as compute/features/value.py::pe_ratio.
+    eps_ttm: float | None = None
+    if (
+        snap.net_income is not None
+        and snap.shares_outstanding is not None
+        and snap.shares_outstanding > 0
+        and snap.net_income > 0
+    ):
+        eps_ttm = snap.net_income / snap.shares_outstanding
+
     pe_value, pe_app = multiples_pe_fair_price(
-        eps_ttm=snap.eps_diluted,
+        eps_ttm=eps_ttm,
         peer_pe_median=peer_pe.median,
         peer_tier_used=peer_pe.tier_used,
         lag_status=lag_status,

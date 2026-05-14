@@ -314,9 +314,21 @@ def _build_universe_metrics(
             out[ticker] = {"pe_ttm": None, "pb_reported": None, "ev_ebitda_ttm": None}
             continue
 
+        # PE shown in raw_metrics — derive TTM EPS from NI_TTM / shares
+        # rather than snap.eps_diluted, which is single-period (audit #6).
+        # Matches the same fix applied in compute/features/value.py::pe_ratio
+        # and compute/valuation/ensemble.py multiples_pe_fair_price.
         pe_ttm: float | None = None
-        if snap.eps_diluted is not None and snap.eps_diluted > 0 and cp > 0:
-            pe_ttm = cp / float(snap.eps_diluted)
+        if (
+            snap.net_income is not None
+            and snap.net_income > 0
+            and snap.shares_outstanding is not None
+            and snap.shares_outstanding > 0
+            and cp > 0
+        ):
+            ttm_eps = snap.net_income / snap.shares_outstanding
+            if ttm_eps > 0:
+                pe_ttm = cp / ttm_eps
 
         pb_reported: float | None = None
         if (
