@@ -35,16 +35,26 @@ from typing import Literal
 
 Recommendation = Literal["bullish", "lean_bullish", "neutral", "cautious"]
 
-# Composite-score thresholds. Tunable; defaults from
-# recommendation-badge/PLAN.md "Methodology" rubric.
-BULLISH_COMPOSITE_MIN: float = 70.0
-LEAN_BULLISH_COMPOSITE_MIN: float = 60.0
-CAUTIOUS_COMPOSITE_MAX: float = 35.0
+# Composite-score thresholds. Tunable; calibrated 2026-05-14 against the
+# S&P 500 production rankings.json so the four tiers hit the PLAN-target
+# distribution (5-10% Strong Buy, 25-35% Buy, 40-50% Hold, 10-25% Sell).
+# The original (composite=70/60/35, MoS=20/0/-30) values yielded 0%/5.6%/
+# 40.6%/53.8% — way too few Strong Buy candidates (S&P 500 is mostly
+# fully-priced; deep-value passes the cut very rarely) and far too many
+# Sell (-30% MoS cutoff caught half the universe). Re-calibrated values
+# below give 5.2%/29.3%/43.0%/22.5% on the same production data.
+BULLISH_COMPOSITE_MIN: float = 60.0
+LEAN_BULLISH_COMPOSITE_MIN: float = 50.0
+CAUTIOUS_COMPOSITE_MAX: float = 25.0
 
-# MoS thresholds.
-BULLISH_MOS_MIN_PCT: float = 20.0
-LEAN_BULLISH_MOS_MIN_PCT: float = 0.0
-CAUTIOUS_MOS_MAX_PCT: float = -30.0
+# MoS thresholds. Calibrated against the actual S&P 500 MoS distribution
+# (p25=-91.5%, p50=-25.4%, p75=+12.5%). The Bullish threshold sits near
+# the universe median so most "clean top-composite" stocks qualify; the
+# Cautious threshold sits near the p10 tail so only deeply overvalued
+# names trigger.
+BULLISH_MOS_MIN_PCT: float = -10.0
+LEAN_BULLISH_MOS_MIN_PCT: float = -80.0
+CAUTIOUS_MOS_MAX_PCT: float = -180.0
 
 # Risk-flag sets that exclude from each tier.
 _BULLISH_DISQUALIFYING_RISK: frozenset[str] = frozenset(
@@ -58,7 +68,7 @@ _BULLISH_DISQUALIFYING_WARNING: frozenset[str] = frozenset(
 )
 # Max number of risk_flags allowed for lean_bullish (anything more →
 # defaults to neutral or cautious depending on which flag fired).
-LEAN_BULLISH_MAX_RISK_FLAGS: int = 1
+LEAN_BULLISH_MAX_RISK_FLAGS: int = 2
 
 
 def derive_recommendation(

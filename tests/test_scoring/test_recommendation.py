@@ -21,6 +21,7 @@ from compute.scoring.recommendation import (
     CAUTIOUS_COMPOSITE_MAX,
     CAUTIOUS_MOS_MAX_PCT,
     LEAN_BULLISH_COMPOSITE_MIN,
+    LEAN_BULLISH_MAX_RISK_FLAGS,
     LEAN_BULLISH_MOS_MIN_PCT,
     derive_recommendation,
 )
@@ -102,13 +103,16 @@ def test_bullish_blocked_by_dechow_high():
 
 
 def test_bullish_blocked_by_low_mos():
-    """Composite 75 + 0 flags but only 10% MoS → lean_bullish (not bullish)."""
+    """Composite ≥ BULLISH_MIN + 0 flags, but MoS just below
+    BULLISH_MOS_MIN_PCT → falls through to lean_bullish (not bullish).
+    Threshold-relative so the test survives future calibration.
+    """
     assert (
         derive_recommendation(
-            composite_score=75.0,
+            composite_score=BULLISH_COMPOSITE_MIN + 5.0,
             risk_flags=[],
             valuation_warnings=[],
-            mos_pct=10.0,
+            mos_pct=BULLISH_MOS_MIN_PCT - 1.0,
         )
         == "lean_bullish"
     )
@@ -130,11 +134,15 @@ def test_bullish_composite_boundary_inclusive():
 # -- Lean Bullish ------------------------------------------------------------
 
 def test_lean_bullish_canonical_case():
-    """Top quartile, 1 risk flag, MoS positive → lean_bullish."""
+    """Top-quartile composite + a Bullish-disqualifying flag + positive
+    MoS → falls through to lean_bullish. Use Sloan (which IS in the
+    Bullish disqualifier set) so the test exercises the actual
+    Bullish→Lean fall-through path regardless of future tuning.
+    """
     assert (
         derive_recommendation(
-            composite_score=65.0,
-            risk_flags=["goodwill_heavy"],  # generic flag
+            composite_score=LEAN_BULLISH_COMPOSITE_MIN + 5.0,
+            risk_flags=["sloan_accruals_top_decile"],
             valuation_warnings=[],
             mos_pct=5.0,
         )
@@ -154,12 +162,21 @@ def test_lean_bullish_composite_boundary_inclusive():
     )
 
 
-def test_lean_bullish_blocked_by_two_risk_flags():
-    """Two flags → over LEAN_BULLISH_MAX_RISK_FLAGS=1 → neutral."""
+def test_lean_bullish_blocked_by_excess_risk_flags():
+    """More than LEAN_BULLISH_MAX_RISK_FLAGS flags → neutral.
+    Construct N+1 distinct flags to exceed the cap regardless of value.
+    """
+    excess_flags = [
+        "sloan_accruals_top_decile",
+        "net_issuance_top_decile",
+        "goodwill_heavy",
+        "stale_filing_soft",
+        "extreme_graham_estimate",
+    ][: LEAN_BULLISH_MAX_RISK_FLAGS + 1]
     assert (
         derive_recommendation(
-            composite_score=65.0,
-            risk_flags=["sloan_accruals_top_decile", "net_issuance_top_decile"],
+            composite_score=LEAN_BULLISH_COMPOSITE_MIN + 5.0,
+            risk_flags=excess_flags,
             valuation_warnings=[],
             mos_pct=5.0,
         )
@@ -168,13 +185,15 @@ def test_lean_bullish_blocked_by_two_risk_flags():
 
 
 def test_lean_bullish_blocked_by_negative_mos():
-    """Composite 65 + clean but MoS −5% → drops to neutral."""
+    """MoS just below LEAN_BULLISH_MOS_MIN_PCT but above CAUTIOUS_MOS_MAX_PCT
+    → neutral (Lean Bullish needs ≥ threshold; not deep enough for Sell).
+    """
     assert (
         derive_recommendation(
-            composite_score=65.0,
+            composite_score=LEAN_BULLISH_COMPOSITE_MIN + 5.0,
             risk_flags=[],
             valuation_warnings=[],
-            mos_pct=-5.0,
+            mos_pct=LEAN_BULLISH_MOS_MIN_PCT - 1.0,
         )
         == "neutral"
     )
@@ -236,9 +255,13 @@ def test_cautious_on_deep_overvaluation():
 # -- Neutral fallback --------------------------------------------------------
 
 def test_neutral_default_for_middling_composite():
+    """Composite just below LEAN_BULLISH_COMPOSITE_MIN + above
+    CAUTIOUS_COMPOSITE_MAX → neutral (no positive tier qualifies, no
+    cautious trigger).
+    """
     assert (
         derive_recommendation(
-            composite_score=50.0,
+            composite_score=LEAN_BULLISH_COMPOSITE_MIN - 1.0,
             risk_flags=[],
             valuation_warnings=[],
             mos_pct=0.0,
@@ -248,10 +271,21 @@ def test_neutral_default_for_middling_composite():
 
 
 def test_neutral_when_composite_in_lean_band_but_too_flagged():
+    """Composite in Lean Bullish band but with > LEAN_BULLISH_MAX_RISK_FLAGS
+    distinct flags → neutral. Five flag candidates ensure we always
+    exceed the cap regardless of future tuning.
+    """
+    excess_flags = [
+        "sloan_accruals_top_decile",
+        "net_issuance_top_decile",
+        "goodwill_heavy",
+        "stale_filing_soft",
+        "extreme_graham_estimate",
+    ][: LEAN_BULLISH_MAX_RISK_FLAGS + 1]
     assert (
         derive_recommendation(
-            composite_score=62.0,
-            risk_flags=["sloan_accruals_top_decile", "net_issuance_top_decile"],
+            composite_score=LEAN_BULLISH_COMPOSITE_MIN + 2.0,
+            risk_flags=excess_flags,
             valuation_warnings=[],
             mos_pct=0.0,
         )
