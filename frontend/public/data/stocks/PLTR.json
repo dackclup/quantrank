@@ -63,9 +63,9 @@
         "tier_used": "sub_industry"
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "value": 3.906374647886225,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
@@ -75,17 +75,17 @@
         "tier_used": null
       }
     },
-    "median": 19.01587011022131,
+    "median": 11.952717911524616,
     "max": 34.51493208203839,
-    "low": 4.715125001976243,
+    "low": 3.906374647886225,
     "high": 34.51493208203839,
-    "mos_pct": -583.9024577784322,
+    "mos_pct": -988.037080891583,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_multiples_pb_estimate",
       "extreme_multiples_ev_ebitda_estimate",
-      "extreme_dcf_estimate",
-      "value_trap_risk"
+      "extreme_rim_estimate",
+      "extreme_dcf_estimate"
     ]
   },
   "top5_factors": [],
@@ -107,8 +107,8 @@
     "extreme_graham_estimate",
     "extreme_multiples_pb_estimate",
     "extreme_multiples_ev_ebitda_estimate",
+    "extreme_rim_estimate",
     "extreme_dcf_estimate",
-    "value_trap_risk",
     "beneish_high"
   ],
   "has_history": true,

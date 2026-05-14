@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
         "tier_used": null
       },
       "dcf": {
@@ -80,7 +80,9 @@
     "low": 166.98822334146948,
     "high": 242.53315362079834,
     "mos_pct": -18.245351152692464,
-    "valuation_warnings": []
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -98,7 +100,9 @@
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {

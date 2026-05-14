@@ -63,9 +63,9 @@
         "tier_used": null
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "value": 71.55754769655897,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 105.76315838820378,
+    "median": 95.91985569540523,
     "max": 281.4402830706661,
     "low": 12.583137964492252,
     "high": 281.4402830706661,
-    "mos_pct": -19.153019410133236,
+    "mos_pct": -31.380511083382533,
     "valuation_warnings": [
-      "extreme_dcf_estimate",
-      "value_trap_risk"
+      "extreme_dcf_estimate"
     ]
   },
   "top5_factors": [],
@@ -102,7 +101,6 @@
   "risk_flags": [],
   "valuation_warnings": [
     "extreme_dcf_estimate",
-    "value_trap_risk",
     "beneish_high"
   ],
   "has_history": true,

@@ -6,7 +6,7 @@
   "market_cap": 115152396371.94862,
   "current_price": 56.39,
   "rank": 55,
-  "composite_score": 61.23,
+  "composite_score": 61.22,
   "pillar_scores": {
     "quality": 75.42,
     "value": 59.32,
@@ -15,7 +15,7 @@
     "health": 53.47,
     "profitability": 64.69,
     "technical": 34.71,
-    "risk": 52.82,
+    "risk": 52.79,
     "sentiment": null,
     "ml": null
   },
@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
         "tier_used": null
       },
       "dcf": {
@@ -80,7 +80,9 @@
     "low": 28.18559950602165,
     "high": 84.36987681565007,
     "mos_pct": 10.856123590840433,
-    "valuation_warnings": []
+    "valuation_warnings": [
+      "value_trap_risk"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -96,7 +98,9 @@
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {

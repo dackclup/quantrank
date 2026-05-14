@@ -63,9 +63,9 @@
     "sector": "Information Technology",
     "composite_score": 70.71,
     "current_price": 225.83,
-    "fair_price": 51.63571242346482,
+    "fair_price": 62.787859966670005,
     "max_fair_price": 256.6700337264631,
-    "margin_of_safety_pct": -337.35235020874967,
+    "margin_of_safety_pct": -259.6714427772075,
     "pillar_scores": {
       "quality": 90.75,
       "value": 23.29,
@@ -83,7 +83,6 @@
     ],
     "valuation_warnings": [
       "extreme_graham_estimate",
-      "extreme_rim_estimate",
       "beneish_high"
     ],
     "entered_top5": false,
@@ -125,9 +124,9 @@
     "sector": "Industrials",
     "composite_score": 68.93,
     "current_price": 507.5,
-    "fair_price": 201.7008843603571,
+    "fair_price": 331.01870851064785,
     "max_fair_price": 632.646043826641,
-    "margin_of_safety_pct": -151.61020072341614,
+    "margin_of_safety_pct": -53.314597317896094,
     "pillar_scores": {
       "quality": 94.94,
       "value": 57.17,
@@ -143,8 +142,7 @@
     "risk_flags": [],
     "valuation_warnings": [
       "goodwill_heavy",
-      "extreme_graham_estimate",
-      "extreme_rim_estimate"
+      "extreme_graham_estimate"
     ],
     "entered_top5": false,
     "exited_top5": false
@@ -156,9 +154,9 @@
     "sector": "Energy",
     "composite_score": 68.54,
     "current_price": 36.97,
-    "fair_price": 46.09373196402548,
+    "fair_price": 77.73935507595604,
     "max_fair_price": 164.67593613182135,
-    "margin_of_safety_pct": 19.79386427300593,
+    "margin_of_safety_pct": 52.44364815661102,
     "pillar_scores": {
       "quality": 79.76,
       "value": 73.81,
@@ -500,9 +498,9 @@
     "sector": "Consumer Discretionary",
     "composite_score": 65.86,
     "current_price": 121.21,
-    "fair_price": 195.41740846379145,
+    "fair_price": 197.485561233277,
     "max_fair_price": 329.5999670588008,
-    "margin_of_safety_pct": 37.97379668611691,
+    "margin_of_safety_pct": 38.62336146119813,
     "pillar_scores": {
       "quality": 72.92,
       "value": 85.59,
@@ -614,9 +612,9 @@
     "sector": "Industrials",
     "composite_score": 65.62,
     "current_price": 1252.85,
-    "fair_price": 310.65044434279514,
+    "fair_price": 350.6444158979907,
     "max_fair_price": 1097.087171325857,
-    "margin_of_safety_pct": -303.29894851315527,
+    "margin_of_safety_pct": -257.29928063375064,
     "pillar_scores": {
       "quality": 91.77,
       "value": 31.86,
@@ -700,9 +698,9 @@
     "sector": "Information Technology",
     "composite_score": 65.57,
     "current_price": 453.53,
-    "fair_price": 31.956363632520052,
+    "fair_price": 36.664784194384,
     "max_fair_price": 433.3403896031248,
-    "margin_of_safety_pct": -1319.216541639822,
+    "margin_of_safety_pct": -1136.9635025664895,
     "pillar_scores": {
       "quality": 94.52,
       "value": 29.0,
@@ -1576,7 +1574,7 @@
     "ticker": "BMY",
     "name": "Bristol Myers Squibb",
     "sector": "Health Care",
-    "composite_score": 61.23,
+    "composite_score": 61.22,
     "current_price": 56.39,
     "fair_price": 63.25728884710509,
     "max_fair_price": 84.36987681565007,
@@ -1589,12 +1587,14 @@
       "health": 53.47,
       "profitability": 64.69,
       "technical": 34.71,
-      "risk": 52.82,
+      "risk": 52.79,
       "sentiment": null,
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [],
+    "valuation_warnings": [
+      "value_trap_risk"
+    ],
     "entered_top5": false,
     "exited_top5": false
   },
@@ -1622,7 +1622,6 @@
     },
     "risk_flags": [],
     "valuation_warnings": [
-      "extreme_rim_estimate",
       "cross_source_disagreement"
     ],
     "entered_top5": false,
@@ -1864,9 +1863,9 @@
     "sector": "Financials",
     "composite_score": 60.4,
     "current_price": 195.96,
-    "fair_price": 118.19331837640951,
+    "fair_price": 126.33447056664733,
     "max_fair_price": 270.2016410427064,
-    "margin_of_safety_pct": -65.79617985662658,
+    "margin_of_safety_pct": -55.11206548373442,
     "pillar_scores": {
       "quality": 69.33,
       "value": 62.44,
@@ -1937,8 +1936,7 @@
     },
     "risk_flags": [],
     "valuation_warnings": [
-      "goodwill_heavy",
-      "extreme_rim_estimate"
+      "goodwill_heavy"
     ],
     "entered_top5": false,
     "exited_top5": false
@@ -2132,9 +2130,9 @@
     "sector": "Real Estate",
     "composite_score": 59.53,
     "current_price": 200.56,
-    "fair_price": 108.37965797606259,
+    "fair_price": 161.78545409750535,
     "max_fair_price": 485.3682856887718,
-    "margin_of_safety_pct": -85.0531744646128,
+    "margin_of_safety_pct": -23.966643773623577,
     "pillar_scores": {
       "quality": 81.45,
       "value": 31.72,
@@ -2306,9 +2304,9 @@
     "sector": "Health Care",
     "composite_score": 59.07,
     "current_price": 1015.75,
-    "fair_price": 85.26097796301347,
+    "fair_price": 123.31393369501453,
     "max_fair_price": 624.8470590579029,
-    "margin_of_safety_pct": -1091.3421875604524,
+    "margin_of_safety_pct": -723.7106461238985,
     "pillar_scores": {
       "quality": 82.2,
       "value": 20.06,
@@ -2352,7 +2350,7 @@
       "health": 73.67,
       "profitability": 44.29,
       "technical": 25.35,
-      "risk": 58.86,
+      "risk": 58.9,
       "sentiment": null,
       "ml": null
     },
@@ -2785,9 +2783,9 @@
     "sector": "Financials",
     "composite_score": 58.1,
     "current_price": 469.18,
-    "fair_price": 212.62677517320137,
+    "fair_price": 241.96154503387845,
     "max_fair_price": 698.5824749212918,
-    "margin_of_safety_pct": -120.65894207989419,
+    "margin_of_safety_pct": -93.90684276300543,
     "pillar_scores": {
       "quality": 71.33,
       "value": 54.89,
@@ -2873,9 +2871,9 @@
     "sector": "Consumer Discretionary",
     "composite_score": 57.95,
     "current_price": 69.9,
-    "fair_price": 36.345349495751144,
-    "max_fair_price": 188.43237979268497,
-    "margin_of_safety_pct": -92.32172064833324,
+    "fair_price": 98.41880384298123,
+    "max_fair_price": 196.43051569197038,
+    "margin_of_safety_pct": 28.97698529500687,
     "pillar_scores": {
       "quality": 51.56,
       "value": 72.05,
@@ -2958,9 +2956,9 @@
     "sector": "Industrials",
     "composite_score": 57.94,
     "current_price": 250.1,
-    "fair_price": 94.94552237805829,
+    "fair_price": 138.5091879769293,
     "max_fair_price": 305.88711963912573,
-    "margin_of_safety_pct": -163.41421884821102,
+    "margin_of_safety_pct": -80.56564315803611,
     "pillar_scores": {
       "quality": 80.06,
       "value": 46.84,
@@ -2976,8 +2974,7 @@
     "risk_flags": [],
     "valuation_warnings": [
       "goodwill_heavy",
-      "extreme_graham_estimate",
-      "extreme_rim_estimate"
+      "extreme_graham_estimate"
     ],
     "entered_top5": false,
     "exited_top5": false
@@ -3161,9 +3158,9 @@
     "sector": "Energy",
     "composite_score": 57.6,
     "current_price": 263.29,
-    "fair_price": 34.670474415038136,
+    "fair_price": 35.620225204305484,
     "max_fair_price": 200.12507165519997,
-    "margin_of_safety_pct": -659.4069968385585,
+    "margin_of_safety_pct": -639.1587420763907,
     "pillar_scores": {
       "quality": 80.95,
       "value": 10.32,
@@ -3277,9 +3274,9 @@
     "sector": "Real Estate",
     "composite_score": 57.43,
     "current_price": 28.21,
-    "fair_price": 67.27796032431901,
+    "fair_price": 53.07420157559099,
     "max_fair_price": 85.26154377939058,
-    "margin_of_safety_pct": 58.06947929383708,
+    "margin_of_safety_pct": 46.84800101176363,
     "pillar_scores": {
       "quality": 54.03,
       "value": 73.12,
@@ -3295,9 +3292,7 @@
     "risk_flags": [
       "sloan_accruals_top_decile"
     ],
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "valuation_warnings": [],
     "entered_top5": false,
     "exited_top5": false
   },
@@ -3482,9 +3477,9 @@
     "sector": "Consumer Discretionary",
     "composite_score": 56.88,
     "current_price": 51.32,
-    "fair_price": 49.19981731054588,
+    "fair_price": 10.355499360015415,
     "max_fair_price": 81.26978505951567,
-    "margin_of_safety_pct": -4.309329790588227,
+    "margin_of_safety_pct": -395.5820855243414,
     "pillar_scores": {
       "quality": 74.48,
       "value": 56.94,
@@ -3662,9 +3657,9 @@
     "sector": "Consumer Discretionary",
     "composite_score": 56.73,
     "current_price": 147.03,
-    "fair_price": 49.481979768801686,
+    "fair_price": 52.06797349415943,
     "max_fair_price": 104.65056959329523,
-    "margin_of_safety_pct": -197.1384723616072,
+    "margin_of_safety_pct": -182.3808742926965,
     "pillar_scores": {
       "quality": 74.22,
       "value": 31.94,
@@ -3743,9 +3738,9 @@
     "sector": "Health Care",
     "composite_score": 56.66,
     "current_price": 528.68,
-    "fair_price": 103.43894993417845,
+    "fair_price": 103.05163098019804,
     "max_fair_price": 329.5322048065861,
-    "margin_of_safety_pct": -411.1034025501974,
+    "margin_of_safety_pct": -413.024381707622,
     "pillar_scores": {
       "quality": 94.49,
       "value": 8.47,
@@ -3830,9 +3825,9 @@
     "sector": "Information Technology",
     "composite_score": 56.55,
     "current_price": 1650.35,
-    "fair_price": 388.5075734425235,
+    "fair_price": 389.92257462275774,
     "max_fair_price": 636.0314948106865,
-    "margin_of_safety_pct": -324.7922275909232,
+    "margin_of_safety_pct": -323.2506869299932,
     "pillar_scores": {
       "quality": 55.82,
       "value": 9.82,
@@ -3995,9 +3990,7 @@
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "valuation_warnings": [],
     "entered_top5": false,
     "exited_top5": false
   },
@@ -4176,7 +4169,7 @@
     "ticker": "NOC",
     "name": "Northrop Grumman",
     "sector": "Industrials",
-    "composite_score": 55.83,
+    "composite_score": 55.84,
     "current_price": 551.8,
     "fair_price": 723.3669604020131,
     "max_fair_price": 1039.3607370611544,
@@ -4189,7 +4182,7 @@
       "health": 46.49,
       "profitability": 48.31,
       "technical": 39.72,
-      "risk": 65.57,
+      "risk": 65.6,
       "sentiment": null,
       "ml": null
     },
@@ -4317,9 +4310,9 @@
     "sector": "Utilities",
     "composite_score": 55.67,
     "current_price": 127.95,
-    "fair_price": 132.49044120785203,
+    "fair_price": 108.71147506922676,
     "max_fair_price": 140.34327890787048,
-    "margin_of_safety_pct": 3.4269976144820573,
+    "margin_of_safety_pct": -17.69686398493301,
     "pillar_scores": {
       "quality": 59.68,
       "value": 55.38,
@@ -4335,9 +4328,7 @@
     "risk_flags": [
       "altman_distress"
     ],
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "valuation_warnings": [],
     "entered_top5": false,
     "exited_top5": false
   },
@@ -4395,9 +4386,7 @@
     "risk_flags": [
       "net_issuance_top_decile"
     ],
-    "valuation_warnings": [
-      "extreme_rim_estimate"
-    ],
+    "valuation_warnings": [],
     "entered_top5": false,
     "exited_top5": false
   },
@@ -4516,9 +4505,9 @@
     "sector": "Utilities",
     "composite_score": 55.09,
     "current_price": 72.3,
-    "fair_price": 62.771564209392565,
+    "fair_price": 60.42564790041482,
     "max_fair_price": 71.58445803946564,
-    "margin_of_safety_pct": -15.179546602631097,
+    "margin_of_safety_pct": -19.651183833250172,
     "pillar_scores": {
       "quality": 72.58,
       "value": 38.71,
@@ -4532,9 +4521,7 @@
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "valuation_warnings": [],
     "entered_top5": false,
     "exited_top5": false
   },
@@ -4950,9 +4937,9 @@
     "sector": "Industrials",
     "composite_score": 54.24,
     "current_price": 264.65,
-    "fair_price": 149.41695428860584,
+    "fair_price": 159.82664673077142,
     "max_fair_price": 337.0791794725083,
-    "margin_of_safety_pct": -77.12179662376234,
+    "margin_of_safety_pct": -65.58565127271191,
     "pillar_scores": {
       "quality": 62.97,
       "value": 49.37,
@@ -5272,7 +5259,7 @@
       "health": 20.72,
       "profitability": 36.56,
       "technical": 31.62,
-      "risk": 73.69,
+      "risk": 73.66,
       "sentiment": null,
       "ml": null
     },
@@ -5504,7 +5491,9 @@
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [],
+    "valuation_warnings": [
+      "extreme_rim_estimate"
+    ],
     "entered_top5": false,
     "exited_top5": false
   },
@@ -6746,9 +6735,9 @@
     "sector": "Energy",
     "composite_score": 51.39,
     "current_price": 386.51,
-    "fair_price": 69.64140920719134,
+    "fair_price": 78.02670863100079,
     "max_fair_price": 122.76925178680723,
-    "margin_of_safety_pct": -455.00027091024606,
+    "margin_of_safety_pct": -395.35603455155956,
     "pillar_scores": {
       "quality": 79.76,
       "value": 3.97,
@@ -7236,7 +7225,9 @@
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [],
+    "valuation_warnings": [
+      "cross_source_disagreement"
+    ],
     "entered_top5": false,
     "exited_top5": false
   },
@@ -7307,9 +7298,9 @@
     "sector": "Financials",
     "composite_score": 50.66,
     "current_price": 134.99,
-    "fair_price": 140.7314403620102,
+    "fair_price": 104.67250857705672,
     "max_fair_price": 187.15942270957527,
-    "margin_of_safety_pct": 4.07971015863774,
+    "margin_of_safety_pct": -28.964144767571444,
     "pillar_scores": {
       "quality": 45.33,
       "value": 36.0,
@@ -7325,9 +7316,7 @@
     "risk_flags": [
       "sloan_accruals_top_decile"
     ],
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "valuation_warnings": [],
     "entered_top5": false,
     "exited_top5": false
   },
@@ -7664,9 +7653,9 @@
     "sector": "Information Technology",
     "composite_score": 50.15,
     "current_price": 130.05,
-    "fair_price": 19.01587011022131,
+    "fair_price": 11.952717911524616,
     "max_fair_price": 34.51493208203839,
-    "margin_of_safety_pct": -583.9024577784322,
+    "margin_of_safety_pct": -988.037080891583,
     "pillar_scores": {
       "quality": 66.1,
       "value": 5.71,
@@ -7684,8 +7673,8 @@
       "extreme_graham_estimate",
       "extreme_multiples_pb_estimate",
       "extreme_multiples_ev_ebitda_estimate",
+      "extreme_rim_estimate",
       "extreme_dcf_estimate",
-      "value_trap_risk",
       "beneish_high"
     ],
     "entered_top5": false,
@@ -7864,7 +7853,9 @@
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [],
+    "valuation_warnings": [
+      "value_trap_risk"
+    ],
     "entered_top5": false,
     "exited_top5": false
   },
@@ -7931,9 +7922,9 @@
     "sector": "Utilities",
     "composite_score": 49.61,
     "current_price": 109.09,
-    "fair_price": 102.64274898220316,
+    "fair_price": 86.7931910028442,
     "max_fair_price": 106.25194671668433,
-    "margin_of_safety_pct": -6.281249693346902,
+    "margin_of_safety_pct": -25.68957896053824,
     "pillar_scores": {
       "quality": 54.84,
       "value": 40.32,
@@ -7947,9 +7938,7 @@
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "valuation_warnings": [],
     "entered_top5": false,
     "exited_top5": false
   },
@@ -8342,9 +8331,9 @@
     "sector": "Financials",
     "composite_score": 49.03,
     "current_price": 309.61,
-    "fair_price": 106.16616015877295,
+    "fair_price": 109.63715832131862,
     "max_fair_price": 224.22854765917205,
-    "margin_of_safety_pct": -191.62775114832874,
+    "margin_of_safety_pct": -182.39512049753642,
     "pillar_scores": {
       "quality": 68.67,
       "value": 36.0,
@@ -8369,9 +8358,9 @@
     "sector": "Energy",
     "composite_score": 48.96,
     "current_price": 186.0,
-    "fair_price": 136.72654922717925,
+    "fair_price": 120.27771153520158,
     "max_fair_price": 225.2851022156448,
-    "margin_of_safety_pct": -36.0379538950771,
+    "margin_of_safety_pct": -54.642117501182696,
     "pillar_scores": {
       "quality": 40.48,
       "value": 44.44,
@@ -8385,9 +8374,7 @@
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "valuation_warnings": [],
     "entered_top5": false,
     "exited_top5": false
   },
@@ -8483,9 +8470,9 @@
     "sector": "Financials",
     "composite_score": 48.85,
     "current_price": 52.74,
-    "fair_price": 68.89962888954925,
+    "fair_price": 60.57060944013227,
     "max_fair_price": 85.6155809308526,
-    "margin_of_safety_pct": 23.45386683720376,
+    "margin_of_safety_pct": 12.928065003878183,
     "pillar_scores": {
       "quality": 42.0,
       "value": 58.0,
@@ -8499,9 +8486,7 @@
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "valuation_warnings": [],
     "entered_top5": false,
     "exited_top5": false
   },
@@ -8715,9 +8700,9 @@
     "sector": "Consumer Staples",
     "composite_score": 48.26,
     "current_price": 126.02,
-    "fair_price": 105.76315838820378,
+    "fair_price": 95.91985569540523,
     "max_fair_price": 281.4402830706661,
-    "margin_of_safety_pct": -19.153019410133236,
+    "margin_of_safety_pct": -31.380511083382533,
     "pillar_scores": {
       "quality": 27.43,
       "value": 59.49,
@@ -8733,7 +8718,6 @@
     "risk_flags": [],
     "valuation_warnings": [
       "extreme_dcf_estimate",
-      "value_trap_risk",
       "beneish_high"
     ],
     "entered_top5": false,
@@ -9394,9 +9378,9 @@
     "sector": "Consumer Discretionary",
     "composite_score": 47.21,
     "current_price": 75.81,
-    "fair_price": 122.22659801072854,
+    "fair_price": 155.27940796618344,
     "max_fair_price": 233.56051156155132,
-    "margin_of_safety_pct": 37.97585894361596,
+    "margin_of_safety_pct": 51.178331659337886,
     "pillar_scores": {
       "quality": 30.99,
       "value": 74.48,
@@ -9411,7 +9395,8 @@
     },
     "risk_flags": [],
     "valuation_warnings": [
-      "extreme_multiples_pb_estimate"
+      "extreme_multiples_pb_estimate",
+      "value_trap_risk"
     ],
     "entered_top5": false,
     "exited_top5": false
@@ -9749,9 +9734,9 @@
     "sector": "Health Care",
     "composite_score": 46.43,
     "current_price": 155.73,
-    "fair_price": 95.00317355922903,
+    "fair_price": 63.31497521492486,
     "max_fair_price": 142.53565884721203,
-    "margin_of_safety_pct": -63.920835371305095,
+    "margin_of_safety_pct": -145.96076236136594,
     "pillar_scores": {
       "quality": 49.15,
       "value": 38.42,
@@ -9765,9 +9750,7 @@
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "valuation_warnings": [],
     "entered_top5": false,
     "exited_top5": false
   },
@@ -9840,9 +9823,9 @@
     "sector": "Consumer Discretionary",
     "composite_score": 46.3,
     "current_price": 264.2,
-    "fair_price": 142.77533849496086,
+    "fair_price": 149.7067206463443,
     "max_fair_price": 368.00371048775327,
-    "margin_of_safety_pct": -85.04597151864289,
+    "margin_of_safety_pct": -76.47839126150998,
     "pillar_scores": {
       "quality": 51.04,
       "value": 44.79,
@@ -10130,7 +10113,8 @@
     "risk_flags": [],
     "valuation_warnings": [
       "extreme_multiples_pb_estimate",
-      "value_trap_risk"
+      "value_trap_risk",
+      "cross_source_disagreement"
     ],
     "entered_top5": false,
     "exited_top5": false
@@ -10142,9 +10126,9 @@
     "sector": "Financials",
     "composite_score": 45.96,
     "current_price": 209.86,
-    "fair_price": 247.2917696941647,
+    "fair_price": 224.02081925771137,
     "max_fair_price": 320.0964848871166,
-    "margin_of_safety_pct": 15.136682118497703,
+    "margin_of_safety_pct": 6.321206526376165,
     "pillar_scores": {
       "quality": 40.67,
       "value": 52.22,
@@ -10160,9 +10144,7 @@
     "risk_flags": [
       "sloan_accruals_top_decile"
     ],
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "valuation_warnings": [],
     "entered_top5": false,
     "exited_top5": false
   },
@@ -10305,7 +10287,9 @@
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [],
+    "valuation_warnings": [
+      "extreme_rim_estimate"
+    ],
     "entered_top5": false,
     "exited_top5": false
   },
@@ -10334,9 +10318,7 @@
     "risk_flags": [
       "net_issuance_top_decile"
     ],
-    "valuation_warnings": [
-      "extreme_rim_estimate"
-    ],
+    "valuation_warnings": [],
     "entered_top5": false,
     "exited_top5": false
   },
@@ -10596,7 +10578,9 @@
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [],
+    "valuation_warnings": [
+      "cross_source_disagreement"
+    ],
     "entered_top5": false,
     "exited_top5": false
   },
@@ -10750,9 +10734,9 @@
     "sector": "Utilities",
     "composite_score": 44.58,
     "current_price": 127.37,
-    "fair_price": 117.46470588713967,
+    "fair_price": 110.1411833243894,
     "max_fair_price": 126.80022285671579,
-    "margin_of_safety_pct": -8.432572818050886,
+    "margin_of_safety_pct": -15.64248621830225,
     "pillar_scores": {
       "quality": 45.16,
       "value": 39.25,
@@ -10766,9 +10750,7 @@
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "valuation_warnings": [],
     "entered_top5": false,
     "exited_top5": false
   },
@@ -11078,9 +11060,9 @@
     "sector": "Utilities",
     "composite_score": 44.08,
     "current_price": 274.89,
-    "fair_price": 188.43402711336674,
+    "fair_price": 181.9398281939999,
     "max_fair_price": 198.20898310912858,
-    "margin_of_safety_pct": -45.88130331845884,
+    "margin_of_safety_pct": -51.08842158261584,
     "pillar_scores": {
       "quality": 56.45,
       "value": 24.73,
@@ -11096,9 +11078,7 @@
     "risk_flags": [
       "net_issuance_top_decile"
     ],
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "valuation_warnings": [],
     "entered_top5": false,
     "exited_top5": false
   },
@@ -11742,9 +11722,7 @@
     "risk_flags": [
       "altman_distress"
     ],
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "valuation_warnings": [],
     "entered_top5": false,
     "exited_top5": false
   },
@@ -12072,7 +12050,8 @@
     },
     "risk_flags": [],
     "valuation_warnings": [
-      "value_trap_risk"
+      "value_trap_risk",
+      "cross_source_disagreement"
     ],
     "entered_top5": false,
     "exited_top5": false
@@ -12345,8 +12324,7 @@
       "net_issuance_top_decile"
     ],
     "valuation_warnings": [
-      "extreme_dcf_estimate",
-      "value_trap_risk"
+      "extreme_dcf_estimate"
     ],
     "entered_top5": false,
     "exited_top5": false
@@ -12568,9 +12546,9 @@
     "sector": "Utilities",
     "composite_score": 40.69,
     "current_price": 112.35,
-    "fair_price": 73.74165940277578,
+    "fair_price": 73.28442181975007,
     "max_fair_price": 79.6705553959029,
-    "margin_of_safety_pct": -52.3562113790621,
+    "margin_of_safety_pct": -53.306795201927756,
     "pillar_scores": {
       "quality": 46.77,
       "value": 17.74,
@@ -12584,9 +12562,7 @@
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "valuation_warnings": [],
     "entered_top5": false,
     "exited_top5": false
   },
@@ -13219,9 +13195,9 @@
     "sector": "Energy",
     "composite_score": 38.12,
     "current_price": 201.1,
-    "fair_price": 177.2788070664982,
+    "fair_price": 160.8381685254443,
     "max_fair_price": 253.67456154667659,
-    "margin_of_safety_pct": -13.437138613010852,
+    "margin_of_safety_pct": -25.032514326163803,
     "pillar_scores": {
       "quality": 16.67,
       "value": 34.92,
@@ -13236,8 +13212,7 @@
     },
     "risk_flags": [],
     "valuation_warnings": [
-      "extreme_multiples_pe_estimate",
-      "value_trap_risk"
+      "extreme_multiples_pe_estimate"
     ],
     "entered_top5": false,
     "exited_top5": false
@@ -13267,7 +13242,6 @@
     "risk_flags": [],
     "valuation_warnings": [
       "extreme_multiples_pe_estimate",
-      "value_trap_risk",
       "beneish_high"
     ],
     "entered_top5": false,
@@ -13280,9 +13254,9 @@
     "sector": "Financials",
     "composite_score": 38.01,
     "current_price": 47.17,
-    "fair_price": 43.29862734575394,
+    "fair_price": 37.99647943154139,
     "max_fair_price": 76.02355730690809,
-    "margin_of_safety_pct": -8.941093657027938,
+    "margin_of_safety_pct": -24.143075555018033,
     "pillar_scores": {
       "quality": 30.67,
       "value": 41.56,
@@ -13298,9 +13272,7 @@
     "risk_flags": [
       "net_issuance_top_decile"
     ],
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "valuation_warnings": [],
     "entered_top5": false,
     "exited_top5": false
   },
@@ -13831,9 +13803,9 @@
     "sector": "Financials",
     "composite_score": 36.43,
     "current_price": 201.8,
-    "fair_price": 77.31032823103801,
+    "fair_price": 67.02540939354893,
     "max_fair_price": 101.18435160222643,
-    "margin_of_safety_pct": -161.02592974212797,
+    "margin_of_safety_pct": -201.07985147373185,
     "pillar_scores": {
       "quality": 30.0,
       "value": 24.44,
@@ -13848,7 +13820,7 @@
     },
     "risk_flags": [],
     "valuation_warnings": [
-      "value_trap_risk"
+      "extreme_rim_estimate"
     ],
     "entered_top5": false,
     "exited_top5": false
@@ -13996,8 +13968,7 @@
       "altman_distress"
     ],
     "valuation_warnings": [
-      "value_trap_risk",
-      "cross_source_disagreement"
+      "value_trap_risk"
     ],
     "entered_top5": false,
     "exited_top5": false
@@ -14054,7 +14025,9 @@
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [],
+    "valuation_warnings": [
+      "value_trap_risk"
+    ],
     "entered_top5": false,
     "exited_top5": false
   },
@@ -14565,7 +14538,6 @@
       "net_issuance_top_decile"
     ],
     "valuation_warnings": [
-      "value_trap_risk",
       "beneish_high",
       "dechow_high"
     ],
@@ -14628,7 +14600,6 @@
     ],
     "valuation_warnings": [
       "extreme_dcf_estimate",
-      "value_trap_risk",
       "beneish_high"
     ],
     "entered_top5": false,
@@ -14702,9 +14673,9 @@
     "sector": "Industrials",
     "composite_score": 27.69,
     "current_price": 376.82,
-    "fair_price": 106.28513328616575,
+    "fair_price": 32.841174692296626,
     "max_fair_price": 192.98044127283984,
-    "margin_of_safety_pct": -254.53689116581862,
+    "margin_of_safety_pct": -1047.4011232996709,
     "pillar_scores": {
       "quality": 26.9,
       "value": 15.61,
@@ -14724,8 +14695,8 @@
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
-      "extreme_dcf_estimate",
-      "value_trap_risk"
+      "extreme_rim_estimate",
+      "extreme_dcf_estimate"
     ],
     "entered_top5": false,
     "exited_top5": false
@@ -14737,9 +14708,9 @@
     "sector": "Consumer Discretionary",
     "composite_score": 26.11,
     "current_price": 445.27,
-    "fair_price": 28.894111459907784,
+    "fair_price": 30.235834417974324,
     "max_fair_price": 120.39678371509626,
-    "margin_of_safety_pct": -1441.0406014094228,
+    "margin_of_safety_pct": -1372.656526882459,
     "pillar_scores": {
       "quality": 19.27,
       "value": 1.91,

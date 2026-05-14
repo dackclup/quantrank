@@ -63,9 +63,9 @@
         "tier_used": null
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "value": 26.380890798959978,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 67.27796032431901,
+    "median": 53.07420157559099,
     "max": 85.26154377939058,
-    "low": 38.87044282686296,
+    "low": 26.380890798959978,
     "high": 85.26154377939058,
-    "mos_pct": 58.06947929383708,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ]
+    "mos_pct": 46.84800101176363,
+    "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -109,9 +107,7 @@
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": 26.368435000984682,
   "tier2_events": {

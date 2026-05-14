@@ -63,9 +63,9 @@
         "tier_used": "sector"
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "value": 50.30145822733449,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 117.46470588713967,
+    "median": 110.1411833243894,
     "max": 126.80022285671579,
-    "low": 77.60908862153842,
+    "low": 50.30145822733449,
     "high": 126.80022285671579,
-    "mos_pct": -8.432572818050886,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ]
+    "mos_pct": -15.64248621830225,
+    "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -101,9 +99,7 @@
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": 50.255908524537375,
   "tier2_events": {

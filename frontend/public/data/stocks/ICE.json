@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "non_positive_or_missing_tangible_book",
         "tier_used": null
       },
       "dcf": {
@@ -80,9 +80,7 @@
     "low": 103.06108658686365,
     "high": 202.27224752800248,
     "mos_pct": -1.3973816520944808,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ]
+    "valuation_warnings": []
   },
   "top5_factors": [],
   "score_history": [],
@@ -102,9 +100,7 @@
   "risk_flags": [
     "altman_distress"
   ],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {

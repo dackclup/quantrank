@@ -63,7 +63,7 @@
         "tier_used": "sub_industry"
       },
       "rim": {
-        "value": 25.185669847463732,
+        "value": 20.96425771707601,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -77,10 +77,12 @@
     },
     "median": 61.27491862043612,
     "max": 94.79837265645381,
-    "low": 25.185669847463732,
+    "low": 20.96425771707601,
     "high": 94.79837265645381,
     "mos_pct": -83.10917333608955,
-    "valuation_warnings": []
+    "valuation_warnings": [
+      "extreme_rim_estimate"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -98,7 +100,9 @@
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "extreme_rim_estimate"
+  ],
   "has_history": true,
   "tangible_book_value": 19.725494285409084,
   "tier2_events": {
