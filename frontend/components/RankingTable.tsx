@@ -1,13 +1,18 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { FilterDrawer } from '@/components/FilterDrawer';
 import { MoSCell } from '@/components/MoSCell';
 import { ScoreBadge } from '@/components/ScoreBadge';
 import { SectorChip } from '@/components/SectorChip';
 import { StockLogo } from '@/components/StockLogo';
+import {
+  clearFilterSnapshot,
+  loadFilterSnapshot,
+  saveFilterSnapshot,
+} from '@/lib/filter-storage';
 import { formatFairPrice, formatMosPct } from '@/lib/format';
 import type { StockSummary } from '@/lib/types';
 import {
@@ -36,13 +41,33 @@ function formatPrice(p: number): string {
 }
 
 export default function RankingTable({ data }: { data: StockSummary[] }) {
-  // Filter state
+  // Filter state. Defaults are empty/full-range on SSR + first render
+  // (avoids server/client markup mismatch); `useEffect` below rehydrates
+  // from sessionStorage after mount so a user returning from a stock
+  // detail page sees the same filters they left applied.
   const [search, setSearch] = useState('');
   const [sectorSet, setSectorSet] = useState<Set<string>>(() => new Set());
   const [scoreRange, setScoreRange] = useState<[number, number]>([0, 100]);
   const [tierSet, setTierSet] = useState<Set<string>>(() => new Set());
   const [mosSet, setMosSet] = useState<Set<string>>(() => new Set());
   const [drawerOpen, setDrawerOpen] = useState(false);
+  // `hydrated` gates the persist-on-change effect so we don't overwrite
+  // the saved snapshot with the empty defaults during the first render
+  // (the load effect runs after that initial render).
+  const hydratedRef = useRef(false);
+
+  // Rehydrate from sessionStorage on mount (client-only). Runs once.
+  useEffect(() => {
+    const saved = loadFilterSnapshot();
+    if (saved.search) setSearch(saved.search);
+    if (saved.sectors.length > 0) setSectorSet(new Set(saved.sectors));
+    if (saved.scoreRange[0] !== 0 || saved.scoreRange[1] !== 100) {
+      setScoreRange(saved.scoreRange);
+    }
+    if (saved.tiers.length > 0) setTierSet(new Set(saved.tiers));
+    if (saved.mos.length > 0) setMosSet(new Set(saved.mos));
+    hydratedRef.current = true;
+  }, []);
 
   // Sort + pagination
   const [sortKey, setSortKey] = useState<SortKey>('rank');
@@ -85,6 +110,20 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
     setPage(1);
   }, [search, sectorSet, scoreRange, tierSet, mosSet]);
 
+  // Persist filter state on every change (post-hydration). Skipping the
+  // initial render via `hydratedRef` avoids clobbering a saved snapshot
+  // with empty defaults before the load effect has a chance to read it.
+  useEffect(() => {
+    if (!hydratedRef.current) return;
+    saveFilterSnapshot({
+      search,
+      sectors: Array.from(sectorSet),
+      scoreRange,
+      tiers: Array.from(tierSet),
+      mos: Array.from(mosSet),
+    });
+  }, [search, sectorSet, scoreRange, tierSet, mosSet]);
+
   const toggleSector = (s: string) =>
     setSectorSet((prev) => {
       const n = new Set(prev);
@@ -112,6 +151,11 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
     setScoreRange([0, 100]);
     setTierSet(new Set());
     setMosSet(new Set());
+    // Wipe the persisted snapshot too so a tab close → reopen lands on
+    // the same clean state (otherwise the persist-on-change effect
+    // would immediately re-save the defaults, which is correct but
+    // wasteful — an explicit remove is the cleaner signal).
+    clearFilterSnapshot();
   };
 
   const scoreActive = scoreRange[0] !== 0 || scoreRange[1] !== 100;
