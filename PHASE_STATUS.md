@@ -6,7 +6,7 @@
 | 1 | Universe + prices ingestion | ✅ DONE — 2026-05-08 |
 | 2 | Fundamentals via SEC EDGAR | ✅ DONE — 2026-05-08 |
 | 3 | Classical features + composite + **defenses** → **v1.0** | ✅ **DONE — 2026-05-14** (v1.0.0 tagged + GitHub release) |
-| 4 | Factor consolidation (OSAP + JKP + Qlib + IPCA) → **v1.1** | 🟡 IN PROGRESS — 4a-4f + 4c.1/4c.2/4c.3 merged (2026-05-14 → 2026-05-15); 4g 8-K Tier-2 re-enable next |
+| 4 | Factor consolidation (OSAP + JKP + Qlib + IPCA) → **v1.1** | 🟡 IN PROGRESS — 4a-4g + 4c.1/4c.2/4c.3 merged (2026-05-14 → 2026-05-15); PR 4b defense-infrastructure (issue #75) next |
 | 5 | ML meta-learner (Triple-Barrier + Meta-Labeling + Conformal) + SHAP | ⚪ not started |
 | 6 | Sentiment v2 (FinBERT + Whisper + 8-K Lazy Prices) | ⚪ not started |
 | 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → **v1.5** | ⚪ not started |
@@ -133,13 +133,40 @@ weekly compute reflecting 4d + 4e fields).
   - History files: **1260 rows × 502 stocks** (5y daily) ✅
   - **Section A-H verify: 0 failures, 0 warnings**
 
-**Next deliverable**: **PR 4g — re-enable 8-K Tier-2 event defenses**
-per [issue #14](https://github.com/dackclup/quantrank/issues/14).
-Wire `non_reliance_filing` (Item 4.02 hard veto) + `auditor_change`
-(Item 4.01 annotate) back into the active layer after the PR 3d
-deferral. Sequencing: 4g (8-K re-enable) → 4b (defense-infrastructure
-hard gate, issue #75) → 4h / 4i / 4j / 4k (OSAP / JKP / Qlib / IPCA
-factor integrations) → tag `v1.1.0-phase4`.
+- ✅ **4g — Re-enable 8-K Tier-2 event defenses** (PR #79, merged
+  2026-05-15 on commit `c35c6d40`). Closes
+  [issue #14](https://github.com/dackclup/quantrank/issues/14).
+  Flipped `compute/scoring/tier2._EIGHT_K_DEFENSES_ENABLED = True`
+  after the PR 3d workflow-timeout deferral (root cause cleared by
+  PR #58 cache layers + PR 3d Part 1 tenacity tightening).
+  `non_reliance_filing` (Item 4.02 hard veto, 365d lookback,
+  Schroeder 2024 SSRN — ~50% of 4.02 filings precede formal
+  restatement) returns to the active layer as the **5th active
+  veto**. `auditor_change` (Item 4.01 annotate, 730d lookback, Reg
+  S-K Item 304, Cohen-Malloy-Nguyen 2020 type) joins the Tier-2
+  annotate surface. Schema bump `0.6.0-phase3d` → `0.7.0-phase4g`.
+  Subsequent additive `price_change_1d_pct` field on
+  `StockSummary` + `StockDetail` bumped `SCHEMA_VERSION` constant
+  to `0.7.1-phase4g` (production metadata still on `0.7.0` until
+  next weekly compute).
+
+**Next deliverable**: **PR 4b — defense-infrastructure hard gate**
+per [issue #75](https://github.com/dackclup/quantrank/issues/75).
+Three sub-sections: (§1) cross-source validator — SEC-derived
+market cap vs yfinance `.info`, flag `cross_source_disagreement`
+if `|delta| / sec_mc > 5%`, ANNOTATE-only (~150 LOC,
+`compute/ingest/cross_source.py`); (§2) PBO + DSR gate — Bailey-
+López de Prado-Zhu 2014 Combinatorially Symmetric CV with S=8 or
+16 partitions, **hard veto on PBO > 0.5 OR DSR ≤ 0**, pure-numpy
+reimpl + Beasley-Springer-Moro 1990 inverse normal CDF (~200 LOC,
+`compute/validation/pbo_dsr.py`); (§3) IC-decay monitor — rolling
+12m + 36m IC per pillar, alert at 50% drop sustained 6+ months,
+McLean-Pontiff 2016 anchor (26% OOS / 32% post-publication decay),
+writes `decay_report.json` (~150 LOC, `compute/validation/
+ic_decay.py`). Total ~500 LOC core + ~320 tests = ~820 LOC,
+~5.5 days. Sequencing: 4b (defense-infrastructure) → 4h / 4i / 4j
+/ 4k (OSAP / JKP / Qlib / IPCA factor integrations) → tag
+`v1.1.0-phase4`.
 
 **Phase 3 sub-PR plan** (5 sub-PRs, defense-augmented 2026-05-09 per
 [`docs/RESEARCH_FINDINGS.md`](docs/RESEARCH_FINDINGS.md) §"Defense Playbook"):

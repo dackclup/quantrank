@@ -67,8 +67,8 @@ acceptance criterion changes.
 |---|---|---|---|---|
 | **10-K** | Annual report (audited financials) | Phase 2 | Annual history (CAGR, RIM 3y-avg ROE, Beneish prior-year inputs, Dechow Δroa, Piotroski F-score, going-concern MD&A text scan) | ✅ active |
 | **10-Q** | Quarterly report (unaudited) | Phase 2 | TTM aggregation (Q1+Q2+Q3 of fiscal year; Q4 from the 10-K), latest balance sheet items, EPS | ✅ active |
-| **8-K Item 4.01** | Auditor change | Phase 3d → 4 | Tier-2 `auditor_change` annotate flag (Cohen-Malloy-Nguyen 2020 type) | 🟡 deferred (`_EIGHT_K_DEFENSES_ENABLED = False`) — re-enable in Phase 4 |
-| **8-K Item 4.02** | Non-reliance on prior financials | Phase 3d → 4 | Tier-2 `non_reliance_filing` hard veto | 🟡 deferred — re-enable in Phase 4 |
+| **8-K Item 4.01** | Auditor change | Phase 3d → 4g | Tier-2 `auditor_change` annotate flag (Cohen-Malloy-Nguyen 2020 type) | ✅ active (PR #79, 2026-05-15 — re-enabled after PR 3d workflow-timeout deferral) |
+| **8-K Item 4.02** | Non-reliance on prior financials | Phase 3d → 4g | Tier-2 `non_reliance_filing` hard veto | ✅ active (PR #79, 2026-05-15 — 5th active veto) |
 | **8-K (other items)** | Material events (M&A, CEO change, guidance, restatements, NT-filings, …) | Phase 5+ | Sentiment v2 — event-driven re-rate signals (Lazy Prices pattern, Cohen-Malloy-Pomorski 2012) | ❌ not used (Phase 5 / 6 work) |
 | **Form 4** | Insider transactions (officers, directors, 10%+ holders) | Phase 5 | Insider-signal pillar (cluster buys vs. routine sells; Cohen-Malloy-Pomorski 2012 *Decoding Inside Information* — cited in bibliography but not implemented) | ❌ not used |
 | **DEF 14A** | Proxy statement (exec comp, board composition, voting) | Phase 5 | Governance pillar (currently inactive in PillarScores schema) — CEO/CFO comp, board independence, dual-class structure penalties | ❌ not used |
@@ -580,7 +580,7 @@ If fallback triggered → log in PHASE_STATUS.md, continue Phase 5 on Option B.
 - [ ] **Cross-source validator running weekly; <5% of universe flagged** (per `defense-infrastructure/PLAN.md` §1)
 - [ ] **PBO + DSR computed for every Phase 4 factor before integration; PBO ≤ 0.5 AND DSR > 0 required to accept** (per `defense-infrastructure/PLAN.md` §2)
 - [ ] **IC decay report published; baseline IC documented per pillar** (per `defense-infrastructure/PLAN.md` §3)
-- [ ] **Going-concern FP rate ≤ 5% at PR 4g (8-K Tier-2 re-enable gate)** (formal blocker; was informal target. Per `phase-4-kickoff-checklist/PLAN.md` §6)
+- [x] **Going-concern FP rate ≤ 5% at PR 4g (8-K Tier-2 re-enable gate)** — ✅ satisfied at 1.0% FP rate (PR 4f production verification, commit `17323346`); 4g shipped via PR #79 on 2026-05-15
 - [ ] Tag `v1.1.0-phase4` (per `v1-to-v1-1-migration/PLAN.md` sequencing — `v1.0.1-perf` → `v1.0.2-defense` → `v1.0.3-fix` → `v1.1.0-rc1..8` → `v1.1.0-phase4`)
 
 ### Defense Acceptance Matrix (locked 2026-05-14)

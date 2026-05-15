@@ -22,7 +22,7 @@ backing.
 | Path | Purpose |
 |---|---|
 | `compute/ingest/` | SEC EDGAR + yfinance fetchers with on-disk caches |
-| `compute/scoring/` | 8-pillar composite + risk overlay (3 active vetoes) |
+| `compute/scoring/` | 8-pillar composite + risk overlay (5 active vetoes) |
 | `compute/valuation/` | 6-method fair-price ensemble + Tier-1 defenses |
 | `compute/output/` | Pydantic schemas + JSON writers + schema-snapshot guard |
 | `compute/main.py` | Weekly compute orchestrator |
@@ -86,11 +86,25 @@ network"` → (if schemas touched) `schema_check` → (if frontend touched)
 
 ## Phase status
 
-Currently at `v0.6.0-phase3d`. Next: PR 3e (Beneish + Dechow Tier-3 +
-Honest Limitations + tag v1.0). See [`PHASE_STATUS.md`](PHASE_STATUS.md)
-for the chronological tracker and [`WORKFLOW.md`](WORKFLOW.md) for
-per-phase task lists. 8 open Phase 4 issues queued: #7 / #10 / #11 /
-#14 / #15 / #16 / #17 / #18.
+**v1.0.0 shipped 2026-05-14** — Phase 3 + 3e complete (Beneish +
+Dechow Tier-3 + Honest Limitations all merged). **Phase 4 in
+flight**: 4a / 4b (`_avg_3y_roe` fix) / 4c+4c.1/4c.2/4c.3 / 4d / 4e
+/ 4f / 4g all merged (cache + ROE + UX trio + price chart + 8-K
+Tier-2 re-enable). Production schema `0.7.0-phase4g`;
+`SCHEMA_VERSION` constant currently `0.7.1-phase4g` (additive
+`price_change_1d_pct` field — flips on next weekly compute).
+**Next deliverable**: PR 4b defense-infrastructure
+([issue #75](https://github.com/dackclup/quantrank/issues/75)) —
+§1 cross-source validator (SEC vs yfinance market cap, 5% delta
+ANNOTATE) → §2 PBO + DSR hard gate (Bailey-López de Prado-Zhu 2014,
+pure-numpy CSCV) → §3 IC-decay monitor — then 4h / 4i / 4j / 4k
+(OSAP / JKP / Qlib / IPCA factor integrations) → tag
+`v1.1.0-phase4`. See [`PHASE_STATUS.md`](PHASE_STATUS.md) for the
+chronological tracker and [`WORKFLOW.md`](WORKFLOW.md) for
+per-phase task lists. **5 open Phase 4+ issues**: #7 (Sloan
+sector-relative) / #15 (fundamentals throttling) / #41 (Next.js 14
+→ 16 CVEs) / #67 (Damodaran CoE Phase 5+) / #75 (PR 4b
+defense-infrastructure).
 
 ## Companion files
 
