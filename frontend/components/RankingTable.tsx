@@ -5,7 +5,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { FilterDrawer } from '@/components/FilterDrawer';
 import { LossChanceBadge } from '@/components/LossChanceBadge';
-import { MoSCell } from '@/components/MoSCell';
 import {
   RECOMMENDATION_CHIP_DOTS,
   RECOMMENDATION_CHIP_TONES,
@@ -20,7 +19,7 @@ import {
   loadFilterSnapshot,
   saveFilterSnapshot,
 } from '@/lib/filter-storage';
-import { formatFairPrice, formatMosPct } from '@/lib/format';
+import { formatMosPct } from '@/lib/format';
 import type { Recommendation, StockSummary } from '@/lib/types';
 import {
   MOS_BUCKETS,
@@ -402,8 +401,6 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
               {headerCell('sector', 'Sector')}
               {headerCell('composite_score', 'Score', 'text-right')}
               {headerCell('current_price', 'Price', 'text-right')}
-              {headerCell('fair_price', 'Fair price', 'text-right')}
-              {headerCell('margin_of_safety_pct', 'MoS', 'text-right')}
               <th scope="col" className="px-3 py-2 text-right font-medium text-slate-600">
                 Loss Chance
               </th>
@@ -411,9 +408,6 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
           </thead>
           <tbody className="divide-y divide-slate-100">
             {pageRows.map((row) => {
-              const dataQualityIssue = row.valuation_warnings.includes(
-                'data_quality_input_corruption',
-              );
               return (
                 <tr key={row.ticker} className="hover:bg-slate-50">
                   <td className="px-3 py-2 tabular-nums text-slate-700">{row.rank}</td>
@@ -435,25 +429,6 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                   <td className="px-3 py-2 text-right tabular-nums text-slate-700">
                     {formatPrice(row.current_price)}
                   </td>
-                  <td className="px-3 py-2 text-right tabular-nums text-slate-700">
-                    {dataQualityIssue ? (
-                      <span
-                        className="inline-flex items-center gap-1 text-slate-400"
-                        title="Fair price unavailable: data quality issue (Step 7.5 sanity guard)"
-                      >
-                        <span aria-hidden="true">⚠</span>—
-                      </span>
-                    ) : (
-                      formatFairPrice(row.fair_price)
-                    )}
-                  </td>
-                  <td className="px-3 py-2">
-                    {dataQualityIssue ? (
-                      <span className="flex justify-end text-slate-300">—</span>
-                    ) : (
-                      <MoSCell mos={row.margin_of_safety_pct} />
-                    )}
-                  </td>
                   <td className="px-3 py-2 text-right">
                     <LossChanceBadge lossChancePct={row.loss_chance_pct} size="xs" />
                   </td>
@@ -468,9 +443,6 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
       <ul className="space-y-2 md:hidden">
         {pageRows.map((row) => {
           const mos = formatMosPct(row.margin_of_safety_pct);
-          const dataQualityIssue = row.valuation_warnings.includes(
-            'data_quality_input_corruption',
-          );
           return (
             <li
               key={row.ticker}
@@ -499,32 +471,8 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                   <span className="tabular-nums">{formatPrice(row.current_price)}</span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
-                  {row.fair_price !== null ? (
-                    <span className="text-slate-500">
-                      Fair{' '}
-                      <span className="tabular-nums text-slate-700">
-                        {formatFairPrice(row.fair_price)}
-                      </span>
-                    </span>
-                  ) : (
-                    <span
-                      className="inline-flex items-center gap-1 text-slate-400"
-                      title={
-                        dataQualityIssue
-                          ? 'Fair price unavailable: data quality issue (Step 7.5 sanity guard)'
-                          : 'Fair price unavailable for this stock'
-                      }
-                    >
-                      Fair <span aria-hidden="true">⚠</span> N/A
-                    </span>
-                  )}
-                </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="inline-flex items-center gap-2 text-slate-500">
-                    <span>Loss Chance</span>
-                    <LossChanceBadge lossChancePct={row.loss_chance_pct} size="xs" />
-                  </span>
-                  <MoSCell mos={row.margin_of_safety_pct} align="right" />
+                  <span className="text-slate-500">Loss Chance</span>
+                  <LossChanceBadge lossChancePct={row.loss_chance_pct} size="xs" />
                 </div>
                 {mos.tooltip && <span className="sr-only">{mos.tooltip}</span>}
               </Link>
