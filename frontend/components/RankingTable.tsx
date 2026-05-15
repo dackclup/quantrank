@@ -452,10 +452,24 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                 href={`/stock/${row.ticker}/`}
                 className="flex h-full flex-col gap-1 p-3"
               >
+                {/* Mobile card header — mirrors the detail-page hero
+                    cadence (frontend/app/stock/[ticker]/page.tsx:88-103):
+                    rank pill + sector chip + · industry on the top
+                    line, then [logo] TICKER [recommendation] on the
+                    next line, then company name. ScoreBadge floats on
+                    the right. */}
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-slate-500 tabular-nums">#{row.rank}</span>
+                    <div className="flex flex-wrap items-center gap-1.5 text-xs">
+                      <span className="inline-flex items-center rounded-md bg-slate-100 px-1.5 py-0.5 font-mono font-medium text-slate-600 tabular-nums">
+                        #{row.rank}
+                      </span>
+                      <SectorChip sector={row.sector} size="xs" />
+                      {row.industry && (
+                        <span className="truncate text-slate-400">· {row.industry}</span>
+                      )}
+                    </div>
+                    <div className="mt-1 flex items-center gap-2">
                       <StockLogo ticker={row.ticker} size={24} />
                       <span className="font-mono text-base font-semibold">{row.ticker}</span>
                       <RecommendationBadge recommendation={row.recommendation} size="xs" />
@@ -465,9 +479,6 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                   <div className="shrink-0">
                     <ScoreBadge score={row.composite_score} />
                   </div>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-slate-500">
-                  <SectorChip sector={row.sector} size="xs" />
                 </div>
                 {/* 2-column symmetric quote block — each column uses
                     the same 3-line stack (uppercase label, primary

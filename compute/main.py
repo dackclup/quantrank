@@ -1029,6 +1029,7 @@ def run_weekly_compute() -> int:
                 ticker=ticker,
                 name=str(r["name"]),
                 sector=sector,
+                industry=sub_industry,
                 composite_score=round(float(r["composite_score"]), 2),
                 current_price=round(current_price, 4),
                 fair_price=ensemble.median if ensemble is not None else None,
