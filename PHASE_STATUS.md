@@ -6,19 +6,80 @@
 | 1 | Universe + prices ingestion | ✅ DONE — 2026-05-08 |
 | 2 | Fundamentals via SEC EDGAR | ✅ DONE — 2026-05-08 |
 | 3 | Classical features + composite + **defenses** → **v1.0** | ✅ **DONE — 2026-05-14** (v1.0.0 tagged + GitHub release) |
-| 4 | Factor consolidation (OSAP + JKP + Qlib + IPCA) → **v1.1** | ⚪ not started — next |
+| 4 | Factor consolidation (OSAP + JKP + Qlib + IPCA) → **v1.1** | 🟡 IN PROGRESS — 4a-4e + 4c.1/4c.2/4c.3 merged (2026-05-14 → 2026-05-15); 4f price-chart next |
 | 5 | ML meta-learner (Triple-Barrier + Meta-Labeling + Conformal) + SHAP | ⚪ not started |
 | 6 | Sentiment v2 (FinBERT + Whisper + 8-K Lazy Prices) | ⚪ not started |
 | 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → **v1.5** | ⚪ not started |
 | 8 | Universe expansion (S&P 1500) | ⚪ not started |
 
-**Current focus**: 🎉 **v1.0.0 SHIPPED 2026-05-14** — production-verified
-on commit `b5bc65f3` (workflow run #32). Phase 4 cycle begins next, per
-[`.claude/skills/phase-4/v1-to-v1-1-migration/PLAN.md`](.claude/skills/phase-4/v1-to-v1-1-migration/PLAN.md):
-4a workflow cache improvements (10-K text + history + prices + universe)
-→ 4b issue #11 `_avg_3y_roe` fix → 4c-4e UX trio (recommendation-badge
-/ loss-chance / price-chart) → 4f 8-K Tier-2 re-enable → 4g+ OSAP /
-JKP / Qlib / IPCA factor consolidation → tag `v1.1.0-phase4`.
+**Current focus**: Phase 4 in flight — **4a → 4e merged** (cache +
+ROE fix + UX trio backend) across PRs #58-72; **4f price-chart-enhancements
+implementation** next per locked sequencing in
+[`.claude/skills/phase-4/v1-to-v1-1-migration/PLAN.md`](.claude/skills/phase-4/v1-to-v1-1-migration/PLAN.md).
+Production data still on schema `0.6.0-phase3d` (4d / 4e additive
+schema fields didn't bump the constant — `recommendation` + `loss_chance_pct`
+ride at the existing version per `v1-to-v1-1-migration/PLAN.md`'s
+additive-only-within-major rule). Run #32 `b5bc65f3` was the v1.0.0
+shipping snapshot; latest production run is `e47fa37e` (2026-05-15
+weekly compute reflecting 4d + 4e fields).
+
+**Phase 4 sub-PR progress** (2026-05-14 → 2026-05-15):
+
+- ✅ **4a — Workflow cache improvements** (PR #58). 10-K text +
+  fundamentals_history + prices + universe parquet cache steps in
+  `compute-rankings.yml`. Steady-state weekly compute target ~10 min
+  warm (vs ~30-50 min cold). Cache-key v1 → v2 → v3 → v4 evolution
+  across 4a + 4c.1 + 4c.3 as schema additions invalidated each prior
+  generation.
+- ✅ **4b — `_avg_3y_roe` denominator fix** (issue #11). Average
+  equity across all 3 periods instead of single-period snapshot.
+  Triggered the value_trap_risk re-fire that 4c.1 cache bump captured.
+- ✅ **4c / 4c.1 / 4c.2 / 4c.3 — value_trap_risk + name normalization**
+  (PRs #62 / #63 / #66 / #8dc643d6 / #16423995). 4c reduced
+  value_trap_risk flagged count from 197 → 196 on warm cache (issue:
+  parquets pre-dated `_ANNUAL_TAGS` `stockholders_equity` addition);
+  4c.1 bumped cache key v3→v4 to force refetch; 4c.2 normalized
+  Wikipedia ticker names but ran against stale universe.parquet;
+  4c.3 renamed universe.parquet → universe-v2.parquet to surgically
+  invalidate that one cache without breaking the others.
+- ✅ **4d — Recommendation badge** (PR #68, polish PRs #69 / #70).
+  4-tier outlined-light chip (Strong Buy / Buy / Hold / Sell display;
+  bullish / lean_bullish / neutral / cautious internal IDs) on
+  overview + detail pages plus a filter control. Pure-function
+  `derive_recommendation` in `compute/scoring/recommendation.py` with
+  calibration constants locked to S&P 500 distribution (composite ≥60
+  + clean + MoS ≥-10 → bullish; thresholds tightened from original
+  ≥70 / ≥20 spec after simulation showed 0% Strong Buy). Production:
+  26 Strong Buy / 147 Buy / 216 Hold / 113 Sell. `frontend-design-system`
+  SKILL drafted from this PR's chip-style audit findings.
+- ✅ **4e — Loss Chance % heuristic chip** (PR #72, spacing fix #71).
+  Adds `loss_chance_pct` (5-95% clipped) on rankings table + detail
+  page in a 5-band gradient outlined-light chip directly after the
+  MoS display. Pure-function `derive_loss_chance` in
+  `compute/scoring/loss_chance.py` with asymmetric MoS contribution
+  (baseline 40, MoS scale 0.35, cap_neg=35 / cap_pos=20, composite
+  scale 2.0). Explicitly framed as a heuristic — small italic
+  "heuristic" qualifier + tooltip — pending Phase 5 Triple-Barrier
+  + Conformal Prediction infrastructure for true calibrated
+  probability.
+- ✅ **Phase 9 / 10 / 11 roadmap expansion** (PR #73, merged
+  2026-05-15). Adds 13 planning stubs spanning free alt-data
+  (FRED, SEC Form 4 / 13F, NewsAPI, Reddit, Wikipedia), beginner UX
+  (next-intl TH/EN bilingual, localStorage watchlist, Recharts SPY
+  overlay, Radix tooltip), and community + transparency (Claude
+  Haiku 4.5 stock-story LLM via vendored `claude-api` skill).
+  Includes 5 P0 audit-close stubs (changelog-scaffolding,
+  dividend-history, earnings-calendar, stock-story-llm, SPY benchmark
+  overlay extension). Pure planning — no compute / schema changes.
+
+**Next deliverable**: **PR 4f — price-chart-enhancements
+implementation** per
+[`.claude/skills/phase-4/price-chart-enhancements/PLAN.md`](.claude/skills/phase-4/price-chart-enhancements/PLAN.md).
+Phase 4.1 scope (~180 LOC): time-period selector (1D/5D/1M/6M/YTD/1Y/5Y;
+1D/5D/5Y disabled with tooltip), `fair_price.median` dashed line,
+`fair_price.max` solid target-price line (bullish/lean_bullish only),
+SPY benchmark overlay toggle (data already in
+`compute/ingest/prices.py::fetch_spy_benchmark`).
 
 **Phase 3 sub-PR plan** (5 sub-PRs, defense-augmented 2026-05-09 per
 [`docs/RESEARCH_FINDINGS.md`](docs/RESEARCH_FINDINGS.md) §"Defense Playbook"):

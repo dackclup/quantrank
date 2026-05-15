@@ -416,11 +416,16 @@ Risk overlays and fraud-detection signals **never modify the composite
 score**. They operate in three modes only:
 
 1. **VETO** — exclude flagged stock from `entered_top5` badge (composite
-   rank unchanged). Currently 2 active (Altman Z″, Sloan accruals); 3 by
-   v1.0 (+ Net Stock Issuance per Pontiff-Woodgate 2008).
+   rank unchanged). **4 active at v1.0 + Phase 4 (2026-05-15)**: Altman
+   Z″, Sloan accruals top decile, Net Stock Issuance top decile
+   (Pontiff-Woodgate 2008), `data_quality_input_corruption` (promoted
+   PR #33). One deferred behind feature flag: `non_reliance_filing`
+   (re-enable in 4g).
 2. **GUARD** — return null + flag (e.g., null fair_price for stale
-   filings). 4 numerical guards by v1.0.
-3. **ANNOTATE** — warning only, no score change. 5+ flags by v1.0.
+   filings). 5 numerical guards at v1.0.
+3. **ANNOTATE** — warning only, no score change. 8+ flags at v1.0 +
+   `recommendation` (PR 4d) + `loss_chance_pct` (PR 4e) — both
+   pure derivations from existing fields, no new ingest.
 
 **Why never scoring inputs**: empirical evidence (Beneish-Vorst 2021;
 McLean-Pontiff 2016) shows fraud-detection FP rates ≥30% in broad market
@@ -434,6 +439,34 @@ beyond 4 fraud signals (Beneish-Vorst 2021). **Rotate, don't stack.**
 
 Full defense schedule and bibliography in
 `docs/RESEARCH_FINDINGS.md` §"Defense Playbook".
+
+### Rule 17: Frontend design system + threshold-symbolic tests (NEW 2026-05-15)
+
+Two pattern locks landed during PRs 4d / 4e and apply to every Phase
+4+ UI / scoring contribution:
+
+1. **Outlined-light chip family, no `dark:` variants** — every new
+   pill / badge / chip (sector, score-tier, MoS bucket, recommendation,
+   loss-chance) uses the **Pattern B** outlined-light style codified in
+   `.claude/skills/frontend-design-system/SKILL.md` Rule 2. Solid-bg
+   chips are an anti-pattern. **Never add `dark:` Tailwind variants** —
+   `globals.css` forces `color-scheme: light` but Tailwind `dark:`
+   triggers on system `prefers-color-scheme: dark`, producing invisible
+   text against the forced-light background (the PR #70 regression).
+   Light-mode only; trigger the design-system skill before any new UI.
+
+2. **Tests reference thresholds symbolically, not by literal value** —
+   pure-function scorers like `derive_recommendation` and
+   `derive_loss_chance` expose their thresholds as module-level
+   constants (`BULLISH_COMPOSITE_MIN`, `BULLISH_MOS_MIN_PCT`, etc.).
+   Tests **must** import the constants and assert against
+   `constant ± 1.0` style boundaries — never against hard-coded
+   numbers. This insulates the test suite from threshold tuning: when
+   the constant moves, tests stay green if the function still respects
+   the constant. PR 4d's calibration revision (composite 70 → 60, MoS
+   20 → -10 after the S&P 500 distribution simulation surfaced 0%
+   Strong Buy and 54% Sell) broke 5 hard-coded tests and was the
+   forcing function for this rule.
 
 ---
 

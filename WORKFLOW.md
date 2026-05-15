@@ -616,39 +616,50 @@ These 6 PLANs close the P0 gaps surfaced by the comprehensive Phase 4 planning a
 
 ### UI / UX features queued for Phase 4 (post-v1.0)
 
-These are planning stubs at `.claude/skills/phase-4/<name>/PLAN.md`:
+These are planning stubs at `.claude/skills/phase-4/<name>/PLAN.md`.
+Trio shipping order locked 2026-05-14: recommendation-badge → loss-chance
+→ price-chart (chart hard-depends on badge for the conditional target line).
 
-- **recommendation-badge** — 4-tier indicator (**Bullish / Lean
-  Bullish / Neutral / Cautious** — Option B locked 2026-05-14 per
-  `phase-4-kickoff-checklist/PLAN.md` §1, avoiding FINRA/SEC-regulated
-  sell-side terminology) next to every ticker on overview + detail
-  pages, plus filter control. Derived from composite + risk overlay
-  + fair-price MoS (deterministic — no new modeling). See
-  [`recommendation-badge/PLAN.md`](.claude/skills/phase-4/recommendation-badge/PLAN.md)
-  for the full spec, ~230 LOC effort estimate.
-- **price-chart-enhancements** — adds (a) time-period selector
-  (`1D / 5D / 1M / 6M / YTD / 1Y / 5Y`) to the per-stock price chart,
-  (b) gray dashed Jitta-style fair-price line at `fair_price.median`
-  for all tickers, (c) black solid target-price line at
-  `fair_price.max` (locked source — conservative; per
+- ✅ **recommendation-badge** *(PR 4d, merged 2026-05-14 — PRs #68 / #69
+  / #70)* — 4-tier indicator (**Bullish / Lean Bullish / Neutral /
+  Cautious** internal IDs, **Strong Buy / Buy / Hold / Sell** display
+  labels) next to every ticker on overview + detail pages, plus filter
+  control. Derived from composite + risk overlay + fair-price MoS via
+  pure-function `derive_recommendation` in
+  `compute/scoring/recommendation.py`. Calibration thresholds tuned
+  against the actual S&P 500 distribution after simulation showed the
+  original spec produced 0% Strong Buy (composite ≥70 + MoS ≥20%). Final
+  constants: `BULLISH_COMPOSITE_MIN=60` + `BULLISH_MOS_MIN_PCT=-10`,
+  `LEAN_BULLISH_COMPOSITE_MIN=50` + `LEAN_BULLISH_MOS_MIN_PCT=-80` +
+  `LEAN_BULLISH_MAX_RISK_FLAGS=2`, `CAUTIOUS_COMPOSITE_MAX=25` /
+  `CAUTIOUS_MOS_MAX_PCT=-180`. Production: 26 Strong Buy / 147 Buy /
+  216 Hold / 113 Sell. SKILL Rule 17 (frontend-design-system +
+  threshold-symbolic tests) drafted from this PR's audit findings.
+- ✅ **loss-chance** *(PR 4e, merged 2026-05-15 — PRs #71 / #72)* —
+  `Loss Chance %` chip directly after the Margin of Safety display on
+  rankings table + detail page in a 5-band gradient outlined-light
+  chip. Pure-function `derive_loss_chance` in
+  `compute/scoring/loss_chance.py` with asymmetric MoS contribution
+  (baseline 40, MoS scale 0.35, `cap_neg=35` / `cap_pos=20`, composite
+  scale 2.0). 5-95% clipped range. **Heuristic** framing explicit —
+  small italic "heuristic" qualifier + tooltip — pending Phase 5
+  Triple-Barrier + Conformal Prediction work for a true calibrated
+  probability. Independent of badge/chart so it shipped second.
+- ⚪ **price-chart-enhancements** *(PR 4f, next)* — adds (a)
+  time-period selector (`1D / 5D / 1M / 6M / YTD / 1Y / 5Y`) to the
+  per-stock price chart, (b) gray dashed Jitta-style fair-price line
+  at `fair_price.median` for all tickers, (c) black solid target-price
+  line at `fair_price.max` (locked source — conservative; per
   `phase-4-kickoff-checklist/PLAN.md` §1) with numeric label, **only**
-  for tickers whose `recommendation` is `bullish` or `lean_bullish`.
-  Hard-depends on recommendation-badge landing first. Phased rollout:
-  4.1 ships `1M / 6M / YTD / 1Y` with both lines (~180 LOC); 4.2
-  extends to 5Y daily ingest (~50 LOC); 4.3 (intraday `1D / 5D`) is
-  deferred to Phase 5+ (locked decision — separate architecture
+  for tickers whose `recommendation` is `bullish` or `lean_bullish`,
+  (d) SPY benchmark overlay toggle (audit add 2026-05-15 — data
+  already in production via `compute/ingest/prices.py::fetch_spy_benchmark`).
+  Hard-depends on recommendation-badge (✅ landed). Phased rollout:
+  **4.1 ships `1M / 6M / YTD / 1Y` + lines + SPY overlay (~180 LOC)**;
+  4.2 extends to 5Y daily ingest (~50 LOC); 4.3 (intraday `1D / 5D`)
+  is deferred to Phase 5+ (locked decision — separate architecture
   decision). See
   [`price-chart-enhancements/PLAN.md`](.claude/skills/phase-4/price-chart-enhancements/PLAN.md).
-- **loss-chance** — adds a `Loss Chance %` chip directly after the
-  Margin of Safety display on both the overview table and the detail
-  page. Heuristic derivation (no new modeling) from composite + risk
-  flags + valuation warnings + MoS. 5-95% clipped range with 5-band
-  color gradient. **Option D locked** ("Loss Chance %" + tooltip +
-  small italic "heuristic" qualifier, per
-  `phase-4-kickoff-checklist/PLAN.md` §1) — addresses legal-naming
-  concern with explicit non-probability framing. ~180 LOC effort.
-  Independent of badge/chart — can ship in any order. See
-  [`loss-chance/PLAN.md`](.claude/skills/phase-4/loss-chance/PLAN.md).
 - **exchange-pill** — adds an exchange-of-listing pill
   (`NASDAQ` / `NYSE` / `NYSE Arca` / `NYSE American` / `Cboe`)
   immediately before the existing Sector pill on both overview and
