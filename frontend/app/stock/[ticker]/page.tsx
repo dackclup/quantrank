@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import FairPriceCard from '@/components/FairPriceCard';
+import { CurrentPriceLine } from '@/components/CurrentPriceLine';
 import { FairPriceBarChart } from '@/components/FairPriceBarChart';
 import { LossChanceBadge } from '@/components/LossChanceBadge';
 import { MoSBadge } from '@/components/MoSBadge';
@@ -103,6 +104,10 @@ export default function StockDetailPage({
             <p className="mt-1 text-2xl text-slate-700 sm:text-3xl">
               {detail.name}
             </p>
+            <CurrentPriceLine
+              ticker={detail.ticker}
+              fallbackPrice={detail.current_price}
+            />
           </div>
           <div className="flex flex-col gap-3 sm:items-end">
             {/* Top row: composite donut + MoS donut — paired because
@@ -125,10 +130,12 @@ export default function StockDetailPage({
             <div className="flex flex-wrap items-start justify-evenly gap-3">
               <div className="flex flex-col items-center gap-1 text-center">
                 <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
-                  Price
+                  Fair value
                 </span>
                 <span className="flex h-6 items-center font-mono text-lg font-semibold tabular-nums leading-none text-slate-900">
-                  {formatPrice(detail.current_price)}
+                  {detail.fair_price?.median != null
+                    ? formatPrice(detail.fair_price.median)
+                    : <span className="text-slate-300">—</span>}
                 </span>
               </div>
               <div className="flex flex-col items-center gap-1 text-center">
