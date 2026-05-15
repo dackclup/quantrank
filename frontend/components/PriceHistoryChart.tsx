@@ -248,19 +248,23 @@ export function PriceHistoryChart({
       <PriceTimePeriodSelector value={period} onChange={setPeriod} />
 
       {/* Current price + period change indicator — Google Finance
-          pattern: large current quote followed by the absolute +
-          percent move across the visible window. */}
+          pattern: large current quote on its own row, with the
+          absolute + percent move on a second row beneath it. Mobile
+          viewports were squeezing both onto a single line, leaving
+          the change indicator clipped against the edge. */}
       {chartData.length > 0 && (
-        <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-          <span className="font-mono text-2xl font-semibold tabular-nums leading-none text-slate-900">
-            ${chartData[chartData.length - 1].close.toFixed(2)}
-          </span>
-          <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
-            USD
-          </span>
+        <div className="flex flex-col gap-1">
+          <div className="flex items-baseline gap-2">
+            <span className="font-mono text-2xl font-semibold tabular-nums leading-none text-slate-900">
+              ${chartData[chartData.length - 1].close.toFixed(2)}
+            </span>
+            <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
+              USD
+            </span>
+          </div>
           {periodChange && (
-            <span
-              className={`flex items-baseline gap-1.5 text-sm ${isPositive ? 'text-emerald-700' : 'text-rose-600'}`}
+            <div
+              className={`flex flex-wrap items-baseline gap-1.5 text-sm ${isPositive ? 'text-emerald-700' : 'text-rose-600'}`}
             >
               <span className="font-mono font-semibold tabular-nums">
                 {isPositive ? '+' : ''}
@@ -274,7 +278,7 @@ export function PriceHistoryChart({
               <span className="text-xs font-normal text-slate-500">
                 {PERIOD_LABEL[period]}
               </span>
-            </span>
+            </div>
           )}
         </div>
       )}
