@@ -127,7 +127,15 @@ export function PriceHistoryChart({
     );
   }
 
-  const formatTick = (raw: string) => raw.slice(5); // YYYY-MM-DD → MM-DD
+  // 5Y view spans multiple calendar years, so a YYYY-only label
+  // reads cleanly across the axis. Shorter views all show MM-YY
+  // (month-year) — user feedback was that day numbers added no
+  // value at the trading-day granularity we have anyway.
+  const formatTick = (raw: string) => {
+    // raw is YYYY-MM-DD
+    if (period === '5Y') return raw.slice(0, 4); // YYYY
+    return `${raw.slice(5, 7)}-${raw.slice(2, 4)}`; // MM-YY
+  };
   const fmtTooltip = (v: number) => `$${v.toFixed(2)}`;
   const fmtPrice = (v: number) => `$${v.toFixed(2)}`;
 
