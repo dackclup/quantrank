@@ -28,7 +28,6 @@ interface Props {
 type ChartPoint = {
   date: string;
   close: number;
-  spy?: number | null;
 };
 
 // Lazy-loaded ~1y OHLCV chart. Fetches from the static
@@ -42,8 +41,8 @@ type ChartPoint = {
 // - Gray dashed fair-price line at fair_price.median (all tickers)
 // - Black solid target-price line at fair_price.max
 //   (bullish / lean_bullish only)
-// - "vs SPY" overlay toggle — normalizes both lines to 100 at the
-//   window start so % return is comparable.
+// - Off-chart fair/target values surface as chip annotations so they
+//   don't warp the y-axis when far from the stock's price range.
 export function PriceHistoryChart({
   ticker,
   fairPriceMedian,
@@ -51,11 +50,9 @@ export function PriceHistoryChart({
   recommendation,
 }: Props) {
   const [data, setData] = useState<StockHistory | null>(null);
-  const [spyData, setSpyData] = useState<StockHistory | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<TimePeriod>('1Y');
-  const [showSpy, setShowSpy] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -89,26 +86,6 @@ export function PriceHistoryChart({
     };
   }, [ticker]);
 
-  // SPY fetched once; toggled by `showSpy`. Failing this fetch
-  // silently disables the SPY overlay (graceful degrade) — common
-  // case is the static export hasn't shipped SPY.json yet.
-  useEffect(() => {
-    if (!showSpy || spyData !== null) return;
-    let cancelled = false;
-    const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
-    fetch(`${basePath}/data/stocks/history/SPY.json`)
-      .then((r) => (r.ok ? (r.json() as Promise<StockHistory>) : null))
-      .then((json) => {
-        if (!cancelled && json) setSpyData(json);
-      })
-      .catch(() => {
-        // Silent — toggle just doesn't draw anything if SPY.json missing.
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [showSpy, spyData]);
-
   const fullChartData: ChartPoint[] = useMemo(() => {
     if (!data) return [];
     const out: ChartPoint[] = [];
@@ -121,49 +98,10 @@ export function PriceHistoryChart({
     return out;
   }, [data]);
 
-  const slicedData = useMemo(
+  const chartData = useMemo(
     () => sliceByPeriod(fullChartData, period),
     [fullChartData, period],
   );
-
-  // Build the chart series. If SPY toggle is on AND SPY.json
-  // available, normalize both lines to 100 at the start of the
-  // visible window. Otherwise, render the stock in absolute dollars.
-  const { chartData, normalized } = useMemo(() => {
-    if (showSpy && spyData) {
-      const spyClosesByDate = new Map<string, number>();
-      for (let i = 0; i < spyData.dates.length; i += 1) {
-        const c = spyData.closes[i];
-        if (c !== null && Number.isFinite(c)) {
-          spyClosesByDate.set(spyData.dates[i], c);
-        }
-      }
-      // Find the first stock-date that also has an SPY close so the
-      // two lines anchor at the same x.
-      let stockBase: number | null = null;
-      let spyBase: number | null = null;
-      for (const row of slicedData) {
-        const s = spyClosesByDate.get(row.date);
-        if (s !== undefined) {
-          stockBase = row.close;
-          spyBase = s;
-          break;
-        }
-      }
-      if (stockBase !== null && spyBase !== null) {
-        const norm: ChartPoint[] = slicedData.map((row) => {
-          const s = spyClosesByDate.get(row.date) ?? null;
-          return {
-            date: row.date,
-            close: (row.close / stockBase) * 100,
-            spy: s !== null ? (s / spyBase) * 100 : null,
-          };
-        });
-        return { chartData: norm, normalized: true };
-      }
-    }
-    return { chartData: slicedData, normalized: false };
-  }, [slicedData, showSpy, spyData]);
 
   if (loading) {
     return (
@@ -190,10 +128,8 @@ export function PriceHistoryChart({
   }
 
   const formatTick = (raw: string) => raw.slice(5); // YYYY-MM-DD → MM-DD
-  const fmtY = (v: number) =>
-    normalized ? `${v.toFixed(0)}` : `$${v.toFixed(0)}`;
-  const fmtTooltip = (v: number) =>
-    normalized ? `${v.toFixed(2)}` : `$${v.toFixed(2)}`;
+  const fmtY = (v: number) => `$${v.toFixed(0)}`;
+  const fmtTooltip = (v: number) => `$${v.toFixed(2)}`;
   const fmtPrice = (v: number) => `$${v.toFixed(2)}`;
 
   // PR 4f post-spot-check: compute a y-axis domain anchored on the
@@ -213,21 +149,12 @@ export function PriceHistoryChart({
     for (const p of chartData) {
       if (p.close < stockMin) stockMin = p.close;
       if (p.close > stockMax) stockMax = p.close;
-      if (showSpy && typeof p.spy === 'number' && Number.isFinite(p.spy)) {
-        // In normalized mode the SPY series shares the axis with the
-        // stock; include it in min/max so the lines aren't clipped.
-        if (p.spy < stockMin) stockMin = p.spy;
-        if (p.spy > stockMax) stockMax = p.spy;
-      }
     }
     const range = stockMax - stockMin || stockMax || 1;
     const pad = range * 0.1;
     yDomain = [stockMin - pad, stockMax + pad];
   }
 
-  // Reference lines only meaningful in absolute mode — normalized
-  // mode is showing % return, where a fair-price absolute level
-  // has no meaning.
   const fairIsNumber =
     typeof fairPriceMedian === 'number' && Number.isFinite(fairPriceMedian);
   const targetIsNumber =
@@ -237,49 +164,22 @@ export function PriceHistoryChart({
     (recommendation === 'bullish' || recommendation === 'lean_bullish');
 
   const fairInRange =
-    !normalized &&
     fairIsNumber &&
     (fairPriceMedian as number) >= (yDomain as [number, number])[0] &&
     (fairPriceMedian as number) <= (yDomain as [number, number])[1];
   const targetInRange =
-    !normalized &&
     targetEligible &&
     (fairPriceMax as number) >= (yDomain as [number, number])[0] &&
     (fairPriceMax as number) <= (yDomain as [number, number])[1];
 
   // Off-chart prices get surfaced as a chip annotation row instead of
   // a reference line that would force the y-axis to stretch.
-  const fairOffChart = !normalized && fairIsNumber && !fairInRange;
-  const targetOffChart = !normalized && targetEligible && !targetInRange;
+  const fairOffChart = fairIsNumber && !fairInRange;
+  const targetOffChart = targetEligible && !targetInRange;
 
   return (
     <div className="space-y-3">
-      {/* Toolbar — stacks vertically on narrow viewports so the
-          7-button selector and the "vs SPY" toggle don't overflow on
-          mobile (post-PR-4f spot-check, APA screenshot showed the
-          SPY toggle clipped at the right edge of the chip row). */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <PriceTimePeriodSelector value={period} onChange={setPeriod} />
-        <button
-          type="button"
-          aria-pressed={showSpy}
-          onClick={() => setShowSpy((v) => !v)}
-          className={
-            'inline-flex w-fit items-center rounded-full ring-1 ring-inset ' +
-            'px-2.5 py-1 text-xs font-medium transition-colors ' +
-            (showSpy
-              ? 'bg-emerald-50 text-emerald-800 ring-emerald-300'
-              : 'bg-white text-slate-600 ring-slate-200 hover:bg-slate-50')
-          }
-          title={
-            showSpy
-              ? 'Toggle off to return to absolute price'
-              : 'Show SPY benchmark normalized to 100 at window start'
-          }
-        >
-          vs SPY
-        </button>
-      </div>
+      <PriceTimePeriodSelector value={period} onChange={setPeriod} />
 
       {/* Off-chart reference price chips — surfaces fair / target
           values that fall outside the stock's visible price range so
@@ -308,25 +208,19 @@ export function PriceHistoryChart({
       )}
 
       {/* Inline legend — beginner-friendly, doesn't require hover to
-          decode the three line styles. */}
+          decode the line styles. */}
       <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-500">
         <span className="inline-flex items-center gap-1.5">
           <span className="h-0.5 w-3.5 rounded-full bg-emerald-500" />
-          {normalized ? ticker : 'Price'}
+          Price
         </span>
-        {normalized && showSpy && (
-          <span className="inline-flex items-center gap-1.5">
-            <span className="h-0 w-3.5 border-t-[1.5px] border-dashed border-teal-700" />
-            SPY
-          </span>
-        )}
-        {!normalized && fairIsNumber && (
+        {fairIsNumber && (
           <span className="inline-flex items-center gap-1.5">
             <span className="h-0 w-3.5 border-t border-dashed border-slate-400" />
             Fair value
           </span>
         )}
-        {!normalized && targetEligible && (
+        {targetEligible && (
           <span className="inline-flex items-center gap-1.5">
             <span className="h-0.5 w-3.5 bg-slate-900" />
             Target
@@ -353,10 +247,7 @@ export function PriceHistoryChart({
               width={52}
             />
             <Tooltip
-              formatter={(v: number, name: string) => [
-                fmtTooltip(v),
-                name === 'close' ? (normalized ? ticker : 'Close') : 'SPY',
-              ]}
+              formatter={(v: number) => [fmtTooltip(v), 'Close']}
               labelFormatter={(label: string) => label}
               contentStyle={{
                 fontSize: '0.75rem',
@@ -372,17 +263,6 @@ export function PriceHistoryChart({
               dot={false}
               isAnimationActive={false}
             />
-            {normalized && (
-              <Line
-                type="monotone"
-                dataKey="spy"
-                stroke="#0f766e"
-                strokeWidth={1.5}
-                strokeDasharray="4 2"
-                dot={false}
-                isAnimationActive={false}
-              />
-            )}
             {fairInRange && (
               <ReferenceLine
                 y={fairPriceMedian as number}

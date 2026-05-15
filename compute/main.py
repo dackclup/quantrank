@@ -596,16 +596,6 @@ def run_weekly_compute() -> int:
     if benchmark is None or benchmark.empty:
         logger.warning("SPY benchmark unavailable — beta will be NaN for all tickers")
         benchmark = None
-    else:
-        # PR 4f — persist SPY history as a special-ticker JSON for the
-        # detail-page chart's "vs SPY" overlay (PriceHistoryChart.tsx
-        # reads /data/stocks/history/SPY.json with the same shape as
-        # any other stock).
-        write_stock_history(
-            ticker="SPY",
-            prices_df=benchmark,
-            output_dir=config.DATA_DIR,
-        )
 
     # Step 1 — prices in parallel.
     rows: list[dict] = []
