@@ -99,6 +99,23 @@ from compute.valuation.tangible_book import tangible_book_value_per_share
 logger = logging.getLogger(__name__)
 
 
+def _next_business_day_offset(now: datetime) -> int:
+    """Calendar-day offset to the next Mon-Fri cron run.
+
+    Cron schedule is `0 22 * * 1-5` (Mon-Fri 22:00 UTC) — so the next
+    run is the next weekday on or after `now + 1 day`. Friday →
+    Monday (3 days); Sat → Mon (2); Sun → Mon (1); Mon-Thu → next
+    day (1).
+    """
+    # weekday: Mon=0, Tue=1, ..., Fri=4, Sat=5, Sun=6
+    wd = now.weekday()
+    if wd == 4:  # Friday → Monday
+        return 3
+    if wd == 5:  # Saturday → Monday
+        return 2
+    return 1
+
+
 def _resolve_close_column(prices: pd.DataFrame) -> str | None:
     if "Adj Close" in prices.columns:
         return "Adj Close"
@@ -1070,7 +1087,7 @@ def run_weekly_compute() -> int:
     meta = Metadata(
         version=config.SCHEMA_VERSION,
         last_update_utc=_iso(now),
-        next_update_utc=_iso(now + timedelta(days=7)),
+        next_update_utc=_iso(now + timedelta(days=_next_business_day_offset(now))),
         universe=config.UNIVERSE,
         universe_size=len(summaries),
         compute_run_id=os.environ.get("GITHUB_RUN_ID", "local"),

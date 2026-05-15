@@ -1,9 +1,9 @@
 # QuantRank
 
-> **Open-source US equity stock ranking — fundamental, technical, factor, sentiment, and ML signals combined into a single 0–100 composite StockRank, refreshed weekly.**
+> **Open-source US equity stock ranking — fundamental, technical, factor, sentiment, and ML signals combined into a single 0–100 composite StockRank, refreshed every US trading day.**
 
 QuantRank is a static web app. A Python pipeline runs in GitHub Actions on a
-weekly cron, computes scores for the S&P 500, and writes JSON files into the
+Mon-Fri cron (after US market close), computes scores for the S&P 500, and writes JSON files into the
 repo. A Next.js static site reads those JSON files at build time and is served
 from Vercel's free tier. No backend. No database. No live API calls from the
 browser.
@@ -165,7 +165,7 @@ academic bibliography backing each defense layer.
 
 ```mermaid
 flowchart LR
-    A[GitHub Actions cron<br/>Sun 22:00 UTC] -->|run weekly| B[Python compute pipeline]
+    A[GitHub Actions cron<br/>Mon-Fri 22:00 UTC] -->|run daily| B[Python compute pipeline]
     B -->|fetch| C[(yfinance / SEC EDGAR<br/>FRED / Finnhub / Reddit)]
     B -->|write| D[JSON files in<br/>frontend/public/data/]
     D -->|git push| E[GitHub repo]

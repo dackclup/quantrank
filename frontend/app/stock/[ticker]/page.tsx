@@ -53,7 +53,7 @@ export default function StockDetailPage({
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-6 text-sm text-amber-900">
           <p className="font-medium">Detail data pending</p>
           <p className="mt-1">
-            The latest weekly compute hasn&rsquo;t produced data for{' '}
+            The latest compute hasn&rsquo;t produced data for{' '}
             <span className="font-mono">{ticker}</span> yet. Trigger
             <span className="ml-1 font-mono">compute-rankings.yml</span> from
             the GitHub Actions tab; the detail page will populate after the
@@ -106,34 +106,49 @@ export default function StockDetailPage({
           </div>
           <div className="flex flex-col gap-3 sm:items-end">
             <ScoreBadge score={detail.composite_score} size="lg" />
-            <div className="flex gap-6 sm:justify-end">
-              <div className="flex flex-col sm:items-end">
-                <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+            {/* 3-column metric row. `justify-evenly` distributes
+                equal space BEFORE / BETWEEN / AFTER the three columns
+                so the left edge of Price + the right edge of Loss
+                Chance feel equally inset from the card, regardless of
+                each column's intrinsic content width (grid-cols-3
+                gave equal column widths but the visual gutters still
+                looked uneven because column content varies in size).
+                Single baseline: label + h-6 value box. `heuristic`
+                qualifier renders below the chip so the chip itself
+                stays narrow (regression #77). */}
+            <div className="flex flex-wrap items-start justify-evenly gap-3">
+              <div className="flex flex-col items-center gap-1 text-center">
+                <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
                   Price
                 </span>
-                <span className="font-mono text-lg font-semibold tabular-nums text-slate-900">
+                <span className="flex h-6 items-center font-mono text-lg font-semibold tabular-nums leading-none text-slate-900">
                   {formatPrice(detail.current_price)}
                 </span>
               </div>
-              <div className="flex flex-col sm:items-end">
-                <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+              <div className="flex flex-col items-center gap-1 text-center">
+                <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
                   Margin of safety
                 </span>
-                <div className="mt-0.5">
-                  <MoSCell mos={mosPct} align="right" />
+                <div className="flex h-6 items-center">
+                  <MoSCell mos={mosPct} align="left" />
                 </div>
               </div>
-              <div className="flex flex-col sm:items-end">
-                <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+              <div className="flex flex-col items-center gap-1 text-center">
+                <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
                   Loss chance
                 </span>
-                <div className="mt-0.5">
+                <div className="flex h-6 items-center">
                   <LossChanceBadge
                     lossChancePct={detail.loss_chance_pct}
                     size="sm"
-                    showQualifier
                   />
                 </div>
+                {detail.loss_chance_pct !== null &&
+                  detail.loss_chance_pct !== undefined && (
+                    <span className="text-[10px] italic text-slate-400">
+                      heuristic
+                    </span>
+                  )}
               </div>
             </div>
           </div>
@@ -145,7 +160,12 @@ export default function StockDetailPage({
           Price (1y)
         </h2>
         {detail.has_history ? (
-          <PriceHistoryChart ticker={detail.ticker} />
+          <PriceHistoryChart
+            ticker={detail.ticker}
+            fairPriceMedian={detail.fair_price?.median ?? null}
+            fairPriceMax={detail.fair_price?.max ?? null}
+            recommendation={detail.recommendation}
+          />
         ) : (
           <div className="flex h-64 items-center justify-center rounded-lg border border-slate-200 bg-white text-sm text-slate-400">
             No price history available

@@ -16,7 +16,7 @@ from compute.output.schemas import Metadata, StockDetail, StockSummary
 logger = logging.getLogger(__name__)
 
 
-HISTORY_TAIL_DAYS = 252  # ~1 trading year
+HISTORY_TAIL_DAYS = 1260  # ~5 trading years (PR 4f Phase 4.2 — was 252)
 
 
 def atomic_write_json(path: Path, data: Any) -> None:
