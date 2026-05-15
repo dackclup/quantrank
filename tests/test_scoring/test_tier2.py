@@ -318,13 +318,23 @@ def test_D2_tier2_result_is_frozen():
 
 
 # ---------------------------------------------------------------------------
-# E. 8-K deferred-mode default (PR 3d Phase 4 hand-off)
+# E. 8-K deferred-mode kill-switch (PR 4g re-enabled the flag; this group
+# locks the perf-contract behavior when ops flip it back to False — e.g.,
+# during SEC API degradation)
 # ---------------------------------------------------------------------------
 
-def test_E1_deferred_mode_skips_8k_fetch_entirely(monkeypatch):
-    """With ``_EIGHT_K_DEFENSES_ENABLED=False`` (PR 3d default), the 8-K
-    fetcher MUST NOT be called even when the 10-K fetch succeeds. Locks
-    the perf contract: deferring 8-K means zero 8-K-related EDGAR calls."""
+@pytest.fixture
+def eight_k_disabled(monkeypatch):
+    """Flip `_EIGHT_K_DEFENSES_ENABLED` back to False for tests that
+    exercise the deferred-mode path. PR 4g default is True."""
+    monkeypatch.setattr(tier2, "_EIGHT_K_DEFENSES_ENABLED", False)
+
+
+def test_E1_deferred_mode_skips_8k_fetch_entirely(monkeypatch, eight_k_disabled):
+    """With ``_EIGHT_K_DEFENSES_ENABLED=False`` (kill-switch path), the
+    8-K fetcher MUST NOT be called even when the 10-K fetch succeeds.
+    Locks the perf contract: disabling 8-K means zero 8-K-related EDGAR
+    calls."""
     eight_k_calls: list[str] = []
 
     def boom(*a, **k):
@@ -342,7 +352,9 @@ def test_E1_deferred_mode_skips_8k_fetch_entirely(monkeypatch):
     assert result.auditor_change_flag.filing_date is None
 
 
-def test_E2_deferred_mode_fetch_succeeded_collapses_to_text_only(monkeypatch):
+def test_E2_deferred_mode_fetch_succeeded_collapses_to_text_only(
+    monkeypatch, eight_k_disabled
+):
     """With 8-K deferred, ``fetch_succeeded`` is True iff the 10-K
     text fetched OK (the 8-K leg is not part of the success criterion)."""
     monkeypatch.setattr(tier2, "fetch_latest_10k_text", lambda t: "clean text")
@@ -351,7 +363,9 @@ def test_E2_deferred_mode_fetch_succeeded_collapses_to_text_only(monkeypatch):
     assert result.fetch_succeeded is True
 
 
-def test_E3_deferred_mode_10k_failure_still_marks_unsucceeded(monkeypatch):
+def test_E3_deferred_mode_10k_failure_still_marks_unsucceeded(
+    monkeypatch, eight_k_disabled
+):
     """10-K fetch failure → fetch_succeeded=False, regardless of 8-K
     branch (which is skipped in deferred mode)."""
     monkeypatch.setattr(tier2, "fetch_latest_10k_text", lambda t: None)
@@ -360,10 +374,9 @@ def test_E3_deferred_mode_10k_failure_still_marks_unsucceeded(monkeypatch):
     assert result.going_concern_disclosure is False
 
 
-def test_E4_deferred_mode_going_concern_still_works(monkeypatch):
-    """Defense #8 (the only Tier-2 defense active in PR 3d) fires
-    correctly in deferred mode — the 10-K text scan is independent of
-    the 8-K wiring."""
+def test_E4_deferred_mode_going_concern_still_works(monkeypatch, eight_k_disabled):
+    """Defense #8 (10-K phrase scan) fires correctly in deferred mode —
+    the 10-K text scan is independent of the 8-K wiring."""
     monkeypatch.setattr(
         tier2, "fetch_latest_10k_text",
         lambda t: "We have substantial doubt about the Company's ability to continue as a going concern.",
@@ -374,7 +387,7 @@ def test_E4_deferred_mode_going_concern_still_works(monkeypatch):
     assert result.auditor_change_flag.fired is False
 
 
-def test_E5_deferred_mode_dict_shape_unchanged(monkeypatch):
+def test_E5_deferred_mode_dict_shape_unchanged(monkeypatch, eight_k_disabled):
     """Schema contract: tier2_events dict still emits all 5 keys with
     safe defaults in deferred mode. Frontend doesn't notice a difference."""
     monkeypatch.setattr(tier2, "fetch_latest_10k_text", lambda t: "clean")
@@ -421,14 +434,18 @@ def test_F1_qr_skip_tier2_bypasses_all_fetches(monkeypatch):
 
 
 def test_F2_qr_skip_tier2_unset_runs_normally(monkeypatch):
-    """Sanity: without the env var, the normal deferred-mode path runs
-    (10-K fetch happens, 8-K skipped per feature flag). Guards against
-    accidentally short-circuiting when the env var is empty/missing."""
+    """Sanity: without the env var, the normal path runs (both 10-K
+    AND 8-K fetches happen since PR 4g flipped the flag back to True).
+    Guards against accidentally short-circuiting when the env var is
+    empty/missing."""
     monkeypatch.delenv("QR_SKIP_TIER2", raising=False)
     monkeypatch.setattr(
         tier2, "fetch_latest_10k_text",
         lambda t: "We have substantial doubt about the Company's ability to continue as a going concern.",
     )
+    # PR 4g: 8-K branch now runs by default. Patch the fetcher so the
+    # test doesn't depend on a live SEC connection or EDGAR_USER_AGENT.
+    monkeypatch.setattr(tier2, "fetch_recent_8k_filings", lambda t, lookback_days: [])
     result = fetch_tier2_for_ticker("TST", asof=ASOF)
     assert result.going_concern_disclosure is True
     assert result.fetch_succeeded is True

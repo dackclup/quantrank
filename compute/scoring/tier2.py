@@ -63,14 +63,22 @@ from compute.scoring.eight_k_events import (
 )
 from compute.scoring.going_concern import scan_going_concern
 
-# Phase 4 re-enable knob. Until the SEC-throttling / pre-cache work
-# lands (issue: fundamentals_resilience_phase4), 8-K Defenses #9/#10
-# are wired to always emit the empty ItemFlag without issuing the
-# parser-bound fetch. Set to True (or flip via env var override at
-# the orchestrator level) to re-enable in Phase 4 without further
-# tier2.py edits. The eight_k_events module remains importable and
-# unit-tested so the wiring stays exercised.
-_EIGHT_K_DEFENSES_ENABLED = False
+# PR 4g (2026-05-15) re-enabled 8-K Defenses #9 / #10. The PR 3d
+# rationale for deferral (filing.text() perf hot spot + SEC API
+# throttling timeouts on cold-cache runs) was addressed by:
+#   - PR 3d Part 1 perf hotfixes (commit 226840d filing.html(),
+#     12ad7ff regex-on-HTML 8-K extraction, tenacity retry tightened
+#     to stop_after_delay(30) | attempt(2), 45s per-stock timeout)
+#   - PR 4a workflow cache restore — `edgar_8k` cache now persists
+#     between runs (was being dropped each CI run)
+#   - PR 4f daily Mon-Fri cron — 24h recovery window instead of 7d
+# Production observability post-flip is via `tier2_coverage_pct` in
+# metadata.json + the workflow latency log. If 8-K fetch ever pushes
+# the run beyond the 90-min timeout, the kill-switch is the
+# QR_SKIP_TIER2 env var (already wired below). Pre-cache off-cycle
+# workflow remains an option for further perf headroom (issue #14
+# §1) but is no longer a blocker.
+_EIGHT_K_DEFENSES_ENABLED = True
 
 logger = logging.getLogger(__name__)
 

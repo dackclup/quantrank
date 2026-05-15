@@ -27,7 +27,7 @@ FUNDAMENTALS_HISTORY_CACHE_DIR: Path = CACHE_DIR / "fundamentals_history"
 MODELS_DIR: Path = PROJECT_ROOT / "models"
 
 UNIVERSE: str = "SP500"
-SCHEMA_VERSION: str = "0.6.0-phase3d"
+SCHEMA_VERSION: str = "0.7.0-phase4g"
 
 PRICES_PERIOD: str = "5y"
 MAX_PARALLEL_FETCHES: int = 10
