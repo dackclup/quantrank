@@ -139,6 +139,14 @@ def _fetch_prices_one(row: pd.Series) -> dict | None:
     current = float(last.iloc[-1])
     if math.isnan(current) or current <= 0:
         return None
+    # PR 4f follow-up — 1-day percent change for the ranking-table
+    # quote line. Computed here so the per-stock JSON has the value
+    # ready (no frontend fetch of 502 history files).
+    price_change_1d_pct: float | None = None
+    if len(last) >= 2:
+        prev = float(last.iloc[-2])
+        if not math.isnan(prev) and prev > 0:
+            price_change_1d_pct = (current - prev) / prev * 100.0
     return {
         "ticker": ticker,
         "name": row["name"],
@@ -146,6 +154,7 @@ def _fetch_prices_one(row: pd.Series) -> dict | None:
         "industry": row.get("sub_industry"),
         "cik": row.get("cik"),
         "current_price": current,
+        "price_change_1d_pct": price_change_1d_pct,
         "_prices": prices,
     }
 
@@ -1030,6 +1039,12 @@ def run_weekly_compute() -> int:
                 valuation_warnings=valuation_warnings,
                 recommendation=recommendation,
                 loss_chance_pct=loss_chance_pct,
+                price_change_1d_pct=(
+                    round(float(r["price_change_1d_pct"]), 4)
+                    if r.get("price_change_1d_pct") is not None
+                    and not math.isnan(float(r["price_change_1d_pct"]))
+                    else None
+                ),
                 entered_top5=ticker in entered,
                 exited_top5=ticker in exited,
             )
@@ -1062,6 +1077,12 @@ def run_weekly_compute() -> int:
             dechow_f_score=dechow_result.f_score,
             recommendation=recommendation,
             loss_chance_pct=loss_chance_pct,
+            price_change_1d_pct=(
+                round(float(r["price_change_1d_pct"]), 4)
+                if r.get("price_change_1d_pct") is not None
+                and not math.isnan(float(r["price_change_1d_pct"]))
+                else None
+            ),
             entered_top5=ticker in entered,
             exited_top5=ticker in exited,
         )

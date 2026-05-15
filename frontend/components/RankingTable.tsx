@@ -5,7 +5,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { FilterDrawer } from '@/components/FilterDrawer';
 import { LossChanceBadge } from '@/components/LossChanceBadge';
-import { MoSCell } from '@/components/MoSCell';
 import {
   RECOMMENDATION_CHIP_DOTS,
   RECOMMENDATION_CHIP_TONES,
@@ -20,7 +19,7 @@ import {
   loadFilterSnapshot,
   saveFilterSnapshot,
 } from '@/lib/filter-storage';
-import { formatFairPrice, formatMosPct } from '@/lib/format';
+import { formatMosPct } from '@/lib/format';
 import type { Recommendation, StockSummary } from '@/lib/types';
 import {
   MOS_BUCKETS,
@@ -402,8 +401,6 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
               {headerCell('sector', 'Sector')}
               {headerCell('composite_score', 'Score', 'text-right')}
               {headerCell('current_price', 'Price', 'text-right')}
-              {headerCell('fair_price', 'Fair price', 'text-right')}
-              {headerCell('margin_of_safety_pct', 'MoS', 'text-right')}
               <th scope="col" className="px-3 py-2 text-right font-medium text-slate-600">
                 Loss Chance
               </th>
@@ -411,9 +408,6 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
           </thead>
           <tbody className="divide-y divide-slate-100">
             {pageRows.map((row) => {
-              const dataQualityIssue = row.valuation_warnings.includes(
-                'data_quality_input_corruption',
-              );
               return (
                 <tr key={row.ticker} className="hover:bg-slate-50">
                   <td className="px-3 py-2 tabular-nums text-slate-700">{row.rank}</td>
@@ -435,25 +429,6 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                   <td className="px-3 py-2 text-right tabular-nums text-slate-700">
                     {formatPrice(row.current_price)}
                   </td>
-                  <td className="px-3 py-2 text-right tabular-nums text-slate-700">
-                    {dataQualityIssue ? (
-                      <span
-                        className="inline-flex items-center gap-1 text-slate-400"
-                        title="Fair price unavailable: data quality issue (Step 7.5 sanity guard)"
-                      >
-                        <span aria-hidden="true">⚠</span>—
-                      </span>
-                    ) : (
-                      formatFairPrice(row.fair_price)
-                    )}
-                  </td>
-                  <td className="px-3 py-2">
-                    {dataQualityIssue ? (
-                      <span className="flex justify-end text-slate-300">—</span>
-                    ) : (
-                      <MoSCell mos={row.margin_of_safety_pct} />
-                    )}
-                  </td>
                   <td className="px-3 py-2 text-right">
                     <LossChanceBadge lossChancePct={row.loss_chance_pct} size="xs" />
                   </td>
@@ -468,9 +443,6 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
       <ul className="space-y-2 md:hidden">
         {pageRows.map((row) => {
           const mos = formatMosPct(row.margin_of_safety_pct);
-          const dataQualityIssue = row.valuation_warnings.includes(
-            'data_quality_input_corruption',
-          );
           return (
             <li
               key={row.ticker}
@@ -480,10 +452,20 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                 href={`/stock/${row.ticker}/`}
                 className="flex h-full flex-col gap-1 p-3"
               >
+                {/* Mobile card header — mirrors the detail-page hero
+                    cadence (frontend/app/stock/[ticker]/page.tsx:88-103):
+                    rank pill + sector chip on the top line, then
+                    [logo] TICKER [recommendation] on the next line,
+                    then company name. ScoreBadge floats on the right. */}
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-slate-500 tabular-nums">#{row.rank}</span>
+                    <div className="flex flex-wrap items-center gap-1.5 text-xs">
+                      <span className="inline-flex items-center rounded-md bg-slate-100 px-1.5 py-0.5 font-mono font-medium text-slate-600 tabular-nums">
+                        #{row.rank}
+                      </span>
+                      <SectorChip sector={row.sector} size="xs" />
+                    </div>
+                    <div className="mt-1 flex items-center gap-2">
                       <StockLogo ticker={row.ticker} size={24} />
                       <span className="font-mono text-base font-semibold">{row.ticker}</span>
                       <RecommendationBadge recommendation={row.recommendation} size="xs" />
@@ -494,35 +476,98 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                     <ScoreBadge score={row.composite_score} />
                   </div>
                 </div>
-                <div className="flex items-center justify-between gap-2 text-xs text-slate-500">
-                  <SectorChip sector={row.sector} size="xs" />
-                  <span className="tabular-nums">{formatPrice(row.current_price)}</span>
-                </div>
-                <div className="flex items-center justify-between text-xs">
-                  {row.fair_price !== null ? (
-                    <span className="text-slate-500">
-                      Fair{' '}
-                      <span className="tabular-nums text-slate-700">
-                        {formatFairPrice(row.fair_price)}
+                {/* 2-column symmetric quote block — label sits inline
+                    BEFORE the number ("PRICE $123.01 USD"), with the
+                    supporting pill on the second line. Same shape on
+                    both columns so the card stays balanced. */}
+                <div className="mt-1 grid grid-cols-2 gap-3">
+                  <div className="flex flex-col items-start gap-1">
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                        Price
                       </span>
-                    </span>
-                  ) : (
-                    <span
-                      className="inline-flex items-center gap-1 text-slate-400"
-                      title={
-                        dataQualityIssue
-                          ? 'Fair price unavailable: data quality issue (Step 7.5 sanity guard)'
-                          : 'Fair price unavailable for this stock'
-                      }
-                    >
-                      Fair <span aria-hidden="true">⚠</span> N/A
-                    </span>
-                  )}
-                  <MoSCell mos={row.margin_of_safety_pct} align="right" />
-                </div>
-                <div className="flex items-center justify-between text-xs text-slate-500">
-                  <span className="text-slate-500">Loss Chance</span>
-                  <LossChanceBadge lossChancePct={row.loss_chance_pct} size="xs" />
+                      <span className="font-mono text-base font-semibold tabular-nums text-slate-900">
+                        ${row.current_price.toFixed(2)}
+                      </span>
+                      <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                        USD
+                      </span>
+                    </div>
+                    {row.price_change_1d_pct !== null &&
+                      row.price_change_1d_pct !== undefined && (() => {
+                        const pct = row.price_change_1d_pct;
+                        const positive = pct >= 0;
+                        const pillCls = positive
+                          ? 'bg-emerald-600 text-white'
+                          : 'bg-rose-600 text-white';
+                        const absCls = positive ? 'text-emerald-700' : 'text-rose-700';
+                        // Derive absolute $ change from current_price +
+                        // pct (the same identity CurrentPriceLine uses
+                        // on the detail page: abs = price * pct / (100
+                        // + pct)). Avoids adding a schema field for
+                        // what is already implied by the two values
+                        // already in StockSummary.
+                        const abs = (row.current_price * pct) / (100 + pct);
+                        return (
+                          <div className="flex items-center gap-1.5 text-[11px]">
+                            <span className={`font-mono font-semibold tabular-nums ${absCls}`}>
+                              {positive ? '+' : ''}
+                              {abs.toFixed(2)}
+                            </span>
+                            <span
+                              className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 font-semibold tabular-nums ${pillCls}`}
+                            >
+                              <span aria-hidden="true">{positive ? '↗' : '↘'}</span>
+                              {positive ? '+' : ''}
+                              {pct.toFixed(2)}%
+                            </span>
+                            <span className="text-slate-500">past day</span>
+                          </div>
+                        );
+                      })()}
+                  </div>
+                  <div className="flex flex-col items-end gap-1">
+                    {row.loss_chance_pct !== null && row.loss_chance_pct !== undefined ? (
+                      (() => {
+                        const pct = row.loss_chance_pct;
+                        const rounded = Math.round(pct);
+                        // Match LossChanceBadge band rubric (band thresholds
+                        // mirror frontend/components/LossChanceBadge.tsx).
+                        const band =
+                          pct < 25 ? { tone: 'text-emerald-700', dot: 'bg-emerald-700', label: 'Low' } :
+                          pct < 40 ? { tone: 'text-emerald-700', dot: 'bg-emerald-500', label: 'Moderate-low' } :
+                          pct < 60 ? { tone: 'text-slate-700',   dot: 'bg-slate-500',   label: 'Neutral' } :
+                          pct < 80 ? { tone: 'text-red-700',     dot: 'bg-red-500',     label: 'Moderate-high' } :
+                                     { tone: 'text-red-700',     dot: 'bg-red-600',     label: 'High' };
+                        return (
+                          <>
+                            <div className="flex items-baseline gap-1.5">
+                              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                                Loss Chance
+                              </span>
+                              <span className={`font-mono text-base font-semibold tabular-nums ${band.tone}`}>
+                                {rounded}%
+                              </span>
+                            </div>
+                            <span className="inline-flex items-center gap-1 text-[11px] text-slate-500">
+                              <span className={`inline-block h-1.5 w-1.5 rounded-full ${band.dot}`} aria-hidden="true" />
+                              {band.label}
+                            </span>
+                          </>
+                        );
+                      })()
+                    ) : (
+                      <>
+                        <div className="flex items-baseline gap-1.5">
+                          <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                            Loss Chance
+                          </span>
+                          <span className="font-mono text-base font-semibold tabular-nums text-slate-300">—</span>
+                        </div>
+                        <span className="text-[11px] text-slate-400">Unavailable</span>
+                      </>
+                    )}
+                  </div>
                 </div>
                 {mos.tooltip && <span className="sr-only">{mos.tooltip}</span>}
               </Link>

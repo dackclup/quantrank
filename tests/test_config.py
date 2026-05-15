@@ -11,7 +11,7 @@ from compute import config
 
 
 def test_schema_version_is_phase4g():
-    assert config.SCHEMA_VERSION == "0.7.0-phase4g"
+    assert config.SCHEMA_VERSION == "0.7.1-phase4g"
 
 
 def test_eight_k_lookback_veto_is_one_year():

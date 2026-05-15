@@ -70,6 +70,7 @@ class StockSummary(BaseModel):
     valuation_warnings: list[str] = Field(default_factory=list)
     recommendation: Recommendation | None = None
     loss_chance_pct: float | None = None
+    price_change_1d_pct: float | None = None
     entered_top5: bool = False
     exited_top5: bool = False
 
@@ -152,5 +153,6 @@ class StockDetail(BaseModel):
     dechow_f_score: float | None = None
     recommendation: Recommendation | None = None
     loss_chance_pct: float | None = None
+    price_change_1d_pct: float | None = None
     entered_top5: bool = False
     exited_top5: bool = False

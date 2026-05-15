@@ -1,9 +1,10 @@
 import Link from 'next/link';
 
 import FairPriceCard from '@/components/FairPriceCard';
+import { CurrentPriceLine } from '@/components/CurrentPriceLine';
 import { FairPriceBarChart } from '@/components/FairPriceBarChart';
 import { LossChanceBadge } from '@/components/LossChanceBadge';
-import { MoSCell } from '@/components/MoSCell';
+import { MoSBadge } from '@/components/MoSBadge';
 import { PillarRadarChart } from '@/components/PillarRadarChart';
 import { PriceHistoryChart } from '@/components/PriceHistoryChart';
 import RawMetricsTable from '@/components/RawMetricsTable';
@@ -103,35 +104,49 @@ export default function StockDetailPage({
             <p className="mt-1 text-2xl text-slate-700 sm:text-3xl">
               {detail.name}
             </p>
+            <CurrentPriceLine
+              ticker={detail.ticker}
+              fallbackPrice={detail.current_price}
+            />
           </div>
           <div className="flex flex-col gap-3 sm:items-end">
-            <ScoreBadge score={detail.composite_score} size="lg" />
+            {/* Top row: composite donut + MoS donut — paired because
+                both are summary statistics ("how good overall" / "how
+                cheap"). Both badges share the radial-gauge family
+                (ScoreBadge "lg" + MoSBadge); arc length = score/100
+                or |MoS|/100, color = sign-driven for MoS. `flex-nowrap`
+                keeps them on a single row even at narrow mobile
+                viewports (the badge widths are sized to fit a 375 px
+                card with `gap-3`). */}
+            <div className="flex flex-nowrap items-center gap-3 sm:gap-5">
+              <ScoreBadge score={detail.composite_score} size="lg" />
+              <MoSBadge mos={mosPct} />
+            </div>
             {/* 3-column metric row. `justify-evenly` distributes
                 equal space BEFORE / BETWEEN / AFTER the three columns
                 so the left edge of Price + the right edge of Loss
-                Chance feel equally inset from the card, regardless of
-                each column's intrinsic content width (grid-cols-3
-                gave equal column widths but the visual gutters still
-                looked uneven because column content varies in size).
-                Single baseline: label + h-6 value box. `heuristic`
-                qualifier renders below the chip so the chip itself
-                stays narrow (regression #77). */}
+                Chance feel equally inset from the card. Single
+                baseline: label + h-6 value box. */}
             <div className="flex flex-wrap items-start justify-evenly gap-3">
               <div className="flex flex-col items-center gap-1 text-center">
                 <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
-                  Price
+                  Fair value
                 </span>
                 <span className="flex h-6 items-center font-mono text-lg font-semibold tabular-nums leading-none text-slate-900">
-                  {formatPrice(detail.current_price)}
+                  {detail.fair_price?.median != null
+                    ? formatPrice(detail.fair_price.median)
+                    : <span className="text-slate-300">—</span>}
                 </span>
               </div>
               <div className="flex flex-col items-center gap-1 text-center">
                 <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
-                  Margin of safety
+                  Target
                 </span>
-                <div className="flex h-6 items-center">
-                  <MoSCell mos={mosPct} align="left" />
-                </div>
+                <span className="flex h-6 items-center font-mono text-lg font-semibold tabular-nums leading-none text-slate-900">
+                  {detail.fair_price?.max != null
+                    ? formatPrice(detail.fair_price.max)
+                    : <span className="text-slate-300">—</span>}
+                </span>
               </div>
               <div className="flex flex-col items-center gap-1 text-center">
                 <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
@@ -143,12 +158,6 @@ export default function StockDetailPage({
                     size="sm"
                   />
                 </div>
-                {detail.loss_chance_pct !== null &&
-                  detail.loss_chance_pct !== undefined && (
-                    <span className="text-[10px] italic text-slate-400">
-                      heuristic
-                    </span>
-                  )}
               </div>
             </div>
           </div>

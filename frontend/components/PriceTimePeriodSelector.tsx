@@ -47,7 +47,7 @@ export function PriceTimePeriodSelector({ value, onChange }: Props) {
     <div
       role="radiogroup"
       aria-label="Price chart time period"
-      className="flex flex-wrap gap-1"
+      className="flex w-full gap-1"
     >
       {TIME_PERIODS.map((period) => {
         const enabled = ENABLED_PERIODS.has(period);
@@ -61,9 +61,13 @@ export function PriceTimePeriodSelector({ value, onChange }: Props) {
         // Unselected enabled: bg-white + slate-600 text + slate-200 ring.
         // Disabled: bg-slate-50 + slate-400 text + slate-200 ring +
         //   cursor-not-allowed.
+        // `flex-1` + `justify-center` makes every button take an equal
+        // share of the row so the whole selector spans the chart width
+        // (PR 4f post-spot-check — user wanted "ปุ่ม 1D ถึง 5Y ปรับให้
+        // ยาวพอดีกับ ความยาวของกราฟราคา").
         const base =
-          'inline-flex items-center rounded-full ring-1 ring-inset ' +
-          'px-2.5 py-1 text-xs font-medium transition-colors';
+          'flex flex-1 items-center justify-center rounded-full ring-1 ring-inset ' +
+          'px-2 py-1 text-xs font-medium transition-colors';
         const stateClasses = !enabled
           ? 'bg-slate-50 text-slate-400 ring-slate-200 cursor-not-allowed'
           : selected

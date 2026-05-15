@@ -140,13 +140,30 @@ export function PriceHistoryChart({
   }
 
   // 5Y view spans multiple calendar years, so a YYYY-only label
-  // reads cleanly across the axis. Shorter views all show MM-YY
-  // (month-year) — user feedback was that day numbers added no
-  // value at the trading-day granularity we have anyway.
+  // reads cleanly across the axis. Shorter views all show "Mon YY"
+  // (English month abbreviation + 2-digit year) — user feedback was
+  // that numeric month indices were less scannable than month names
+  // at a glance.
+  const MONTH_ABBR = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+  ];
   const formatTick = (raw: string) => {
     // raw is YYYY-MM-DD
     if (period === '5Y') return raw.slice(0, 4); // YYYY
-    return `${raw.slice(5, 7)}-${raw.slice(2, 4)}`; // MM-YY
+    const monthIdx = Number(raw.slice(5, 7)) - 1;
+    const yy = raw.slice(2, 4);
+    return `${MONTH_ABBR[monthIdx] ?? raw.slice(5, 7)} ${yy}`;
+  };
+  // Tooltip label — "Mon DD, YYYY" reads more cleanly than the raw
+  // ISO date and stays consistent with the X-axis month-abbr style.
+  const formatTooltipLabel = (raw: string) => {
+    const monthIdx = Number(raw.slice(5, 7)) - 1;
+    const day = Number(raw.slice(8, 10));
+    const year = raw.slice(0, 4);
+    const mon = MONTH_ABBR[monthIdx];
+    if (!mon || Number.isNaN(day)) return raw;
+    return `${mon} ${day}, ${year}`;
   };
   const fmtTooltip = (v: number) => `$${v.toFixed(2)}`;
   const fmtPrice = (v: number) => `$${v.toFixed(2)}`;
@@ -228,22 +245,24 @@ export function PriceHistoryChart({
 
   return (
     <div className="space-y-3">
-      <PriceTimePeriodSelector value={period} onChange={setPeriod} />
-
       {/* Current price + period change indicator — Google Finance
-          pattern: large current quote followed by the absolute +
-          percent move across the visible window. */}
+          pattern: large current quote on its own row, with the
+          absolute + percent move on a second row beneath it. Mobile
+          viewports were squeezing both onto a single line, leaving
+          the change indicator clipped against the edge. */}
       {chartData.length > 0 && (
-        <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-          <span className="font-mono text-2xl font-semibold tabular-nums leading-none text-slate-900">
-            ${chartData[chartData.length - 1].close.toFixed(2)}
-          </span>
-          <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
-            USD
-          </span>
+        <div className="flex flex-col gap-1">
+          <div className="flex items-baseline gap-2">
+            <span className="font-mono text-2xl font-semibold tabular-nums leading-none text-slate-900">
+              ${chartData[chartData.length - 1].close.toFixed(2)}
+            </span>
+            <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
+              USD
+            </span>
+          </div>
           {periodChange && (
-            <span
-              className={`flex items-baseline gap-1.5 text-sm ${isPositive ? 'text-emerald-700' : 'text-rose-600'}`}
+            <div
+              className={`flex flex-wrap items-baseline gap-1.5 text-sm ${isPositive ? 'text-emerald-700' : 'text-rose-600'}`}
             >
               <span className="font-mono font-semibold tabular-nums">
                 {isPositive ? '+' : ''}
@@ -257,7 +276,7 @@ export function PriceHistoryChart({
               <span className="text-xs font-normal text-slate-500">
                 {PERIOD_LABEL[period]}
               </span>
-            </span>
+            </div>
           )}
         </div>
       )}
@@ -280,7 +299,7 @@ export function PriceHistoryChart({
           )}
           {targetOffChart && (
             <span
-              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium ring-1 ring-inset ${targetAboveCurrent ? upChipCls : downChipCls}`}
+              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 ring-1 ring-inset ${targetAboveCurrent ? upChipCls : downChipCls}`}
             >
               <span
                 className={`h-[2px] w-3 ${targetAboveCurrent ? 'bg-emerald-700' : 'bg-rose-700'}`}
@@ -317,6 +336,11 @@ export function PriceHistoryChart({
         )}
       </div>
 
+      {/* Time-period selector sits directly above the chart canvas
+          (post-spot-check user request — easier scan path: read the
+          numbers, choose a window, see the chart). */}
+      <PriceTimePeriodSelector value={period} onChange={setPeriod} />
+
       <div className="h-64 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
@@ -338,7 +362,7 @@ export function PriceHistoryChart({
             <YAxis hide domain={yDomain} />
             <Tooltip
               formatter={(v: number) => [fmtTooltip(v), 'Close']}
-              labelFormatter={(label: string) => label}
+              labelFormatter={formatTooltipLabel}
               contentStyle={{
                 fontSize: '0.75rem',
                 borderRadius: '0.375rem',

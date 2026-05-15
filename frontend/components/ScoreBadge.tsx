@@ -31,7 +31,7 @@ export function ScoreBadge({
     const frac = Math.max(0, Math.min(1, score / 100));
     const accent = scoreAccentColor(score);
     return (
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         <div className="relative h-16 w-16 shrink-0">
           <svg viewBox="0 0 64 64" className="h-16 w-16 -rotate-90">
             <circle cx="32" cy="32" r={r} fill="none" stroke="rgb(241 245 249)" strokeWidth="6" />
