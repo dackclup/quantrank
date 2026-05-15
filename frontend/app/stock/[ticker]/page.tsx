@@ -106,17 +106,18 @@ export default function StockDetailPage({
           </div>
           <div className="flex flex-col gap-3 sm:items-end">
             <ScoreBadge score={detail.composite_score} size="lg" />
-            {/* 3-column metric row. Grid (not flex) so the columns
-                are always equal-width with equal gutters, no matter
-                how wide each label / value renders. Each column lays
-                out as label → value (single baseline) so the Price
-                text, the MoS bar, and the Loss Chance chip share one
-                vertical position. The `heuristic` qualifier moves
-                OUT of the chip into a separate caption below — keeps
-                the chip narrow enough to stay inside the card on
-                mobile (regression #77). */}
-            <div className="grid grid-cols-3 gap-3 sm:gap-6">
-              <div className="flex min-w-0 flex-col gap-1">
+            {/* 3-column metric row. `justify-evenly` distributes
+                equal space BEFORE / BETWEEN / AFTER the three columns
+                so the left edge of Price + the right edge of Loss
+                Chance feel equally inset from the card, regardless of
+                each column's intrinsic content width (grid-cols-3
+                gave equal column widths but the visual gutters still
+                looked uneven because column content varies in size).
+                Single baseline: label + h-6 value box. `heuristic`
+                qualifier renders below the chip so the chip itself
+                stays narrow (regression #77). */}
+            <div className="flex flex-wrap items-start justify-evenly gap-3">
+              <div className="flex flex-col items-center gap-1 text-center">
                 <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
                   Price
                 </span>
@@ -124,7 +125,7 @@ export default function StockDetailPage({
                   {formatPrice(detail.current_price)}
                 </span>
               </div>
-              <div className="flex min-w-0 flex-col gap-1">
+              <div className="flex flex-col items-center gap-1 text-center">
                 <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
                   Margin of safety
                 </span>
@@ -132,7 +133,7 @@ export default function StockDetailPage({
                   <MoSCell mos={mosPct} align="left" />
                 </div>
               </div>
-              <div className="flex min-w-0 flex-col gap-1">
+              <div className="flex flex-col items-center gap-1 text-center">
                 <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
                   Loss chance
                 </span>
