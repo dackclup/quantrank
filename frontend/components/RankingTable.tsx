@@ -497,9 +497,10 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                       row.price_change_1d_pct !== undefined && (() => {
                         const pct = row.price_change_1d_pct;
                         const positive = pct >= 0;
-                        const cls = positive
+                        const pillCls = positive
                           ? 'bg-emerald-600 text-white'
                           : 'bg-rose-600 text-white';
+                        const absCls = positive ? 'text-emerald-700' : 'text-rose-700';
                         // Derive absolute $ change from current_price +
                         // pct (the same identity CurrentPriceLine uses
                         // on the detail page: abs = price * pct / (100
@@ -508,17 +509,20 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                         // already in StockSummary.
                         const abs = (row.current_price * pct) / (100 + pct);
                         return (
-                          <span
-                            className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-semibold tabular-nums ${cls}`}
-                          >
-                            <span aria-hidden="true">{positive ? '↗' : '↘'}</span>
-                            {positive ? '+' : ''}
-                            {abs.toFixed(2)}
-                            <span className="opacity-90">
-                              ({positive ? '+' : ''}
-                              {pct.toFixed(2)}%)
+                          <div className="flex items-center gap-1.5 text-[11px]">
+                            <span className={`font-mono font-semibold tabular-nums ${absCls}`}>
+                              {positive ? '+' : ''}
+                              {abs.toFixed(2)}
                             </span>
-                          </span>
+                            <span
+                              className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 font-semibold tabular-nums ${pillCls}`}
+                            >
+                              <span aria-hidden="true">{positive ? '↗' : '↘'}</span>
+                              {positive ? '+' : ''}
+                              {pct.toFixed(2)}%
+                            </span>
+                            <span className="text-slate-500">past day</span>
+                          </div>
                         );
                       })()}
                   </div>
