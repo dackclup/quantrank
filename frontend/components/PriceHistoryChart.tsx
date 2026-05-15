@@ -280,7 +280,7 @@ export function PriceHistoryChart({
           )}
           {targetOffChart && (
             <span
-              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium ring-1 ring-inset ${targetAboveCurrent ? upChipCls : downChipCls}`}
+              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 ring-1 ring-inset ${targetAboveCurrent ? upChipCls : downChipCls}`}
             >
               <span
                 className={`h-[2px] w-3 ${targetAboveCurrent ? 'bg-emerald-700' : 'bg-rose-700'}`}
