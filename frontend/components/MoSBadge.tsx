@@ -31,7 +31,7 @@ const accentColor = (mos: number): string =>
 export function MoSBadge({ mos }: { mos: number | null | undefined }): JSX.Element {
   if (mos === null || mos === undefined || Number.isNaN(mos)) {
     return (
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         <div className="relative h-16 w-16 shrink-0">
           <svg viewBox="0 0 64 64" className="h-16 w-16 -rotate-90">
             <circle
@@ -83,7 +83,7 @@ export function MoSBadge({ mos }: { mos: number | null | undefined }): JSX.Eleme
     `${sign}${Math.abs(mos).toFixed(0)}%`;
 
   return (
-    <div className="flex items-center gap-3" title={`${mos.toFixed(1)}% margin of safety`}>
+    <div className="flex items-center gap-2" title={`${mos.toFixed(1)}% margin of safety`}>
       <div className="relative h-16 w-16 shrink-0">
         <svg viewBox="0 0 64 64" className="h-16 w-16 -rotate-90">
           <circle

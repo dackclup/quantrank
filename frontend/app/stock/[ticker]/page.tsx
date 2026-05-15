@@ -107,11 +107,13 @@ export default function StockDetailPage({
           <div className="flex flex-col gap-3 sm:items-end">
             {/* Top row: composite donut + MoS donut — paired because
                 both are summary statistics ("how good overall" / "how
-                cheap"). MoS uses the same radial-gauge style as
-                ScoreBadge so the two badges share a visual family;
-                arc length = |MoS|/100 clamped, color = emerald when
-                MoS≥0 / rose when MoS<0. */}
-            <div className="flex flex-wrap items-center gap-5">
+                cheap"). Both badges share the radial-gauge family
+                (ScoreBadge "lg" + MoSBadge); arc length = score/100
+                or |MoS|/100, color = sign-driven for MoS. `flex-nowrap`
+                keeps them on a single row even at narrow mobile
+                viewports (the badge widths are sized to fit a 375 px
+                card with `gap-3`). */}
+            <div className="flex flex-nowrap items-center gap-3 sm:gap-5">
               <ScoreBadge score={detail.composite_score} size="lg" />
               <MoSBadge mos={mosPct} />
             </div>
