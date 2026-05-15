@@ -178,9 +178,11 @@ export function PriceHistoryChart({
     typeof fairPriceMedian === 'number' && Number.isFinite(fairPriceMedian);
   const targetIsNumber =
     typeof fairPriceMax === 'number' && Number.isFinite(fairPriceMax);
-  const targetEligible =
-    targetIsNumber &&
-    (recommendation === 'bullish' || recommendation === 'lean_bullish');
+  // PR 4f post-spot-check: target line now renders for every
+  // recommendation (was bullish / lean_bullish only). For hold /
+  // sell tickers the target typically falls below current price —
+  // the chip color cues that direction explicitly.
+  const targetEligible = targetIsNumber;
 
   const fairInRange =
     fairIsNumber &&
@@ -195,6 +197,27 @@ export function PriceHistoryChart({
   // a reference line that would force the y-axis to stretch.
   const fairOffChart = fairIsNumber && !fairInRange;
   const targetOffChart = targetEligible && !targetInRange;
+
+  // Direction cue for the off-chart chips: green when the reference
+  // sits ABOVE current price (upside to that level), red when it sits
+  // below (current price has run past it). Removes the need for the
+  // wordy "(below range)" / "(above range)" qualifier the user asked
+  // to drop.
+  const currentPrice =
+    chartData.length > 0 ? chartData[chartData.length - 1].close : null;
+  const fairAboveCurrent =
+    fairIsNumber &&
+    currentPrice !== null &&
+    (fairPriceMedian as number) > currentPrice;
+  const targetAboveCurrent =
+    targetEligible &&
+    currentPrice !== null &&
+    (fairPriceMax as number) > currentPrice;
+
+  const upChipCls =
+    'bg-emerald-50 text-emerald-800 ring-emerald-300';
+  const downChipCls =
+    'bg-rose-50 text-rose-700 ring-rose-300';
 
   // Color the chart line + area fill based on direction of the
   // visible window — Google-Finance-style cue ("green = up over the
@@ -239,27 +262,30 @@ export function PriceHistoryChart({
         </div>
       )}
 
-      {/* Off-chart reference price chips — surfaces fair / target
-          values that fall outside the stock's visible price range so
-          the user still sees the number, without warping the chart. */}
+      {/* Off-chart reference price chips. Chip color cues direction:
+          green when the reference sits ABOVE current price (upside to
+          that level), red when it sits BELOW (current price has run
+          past it — overvalued vs that yardstick). */}
       {(fairOffChart || targetOffChart) && (
         <div className="flex flex-wrap gap-1.5 text-xs">
           {fairOffChart && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-slate-50 px-2 py-0.5 ring-1 ring-inset ring-slate-200 text-slate-600">
-              <span className="h-0 w-3 border-t border-dashed border-slate-400" />
+            <span
+              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 ring-1 ring-inset ${fairAboveCurrent ? upChipCls : downChipCls}`}
+            >
+              <span
+                className={`h-0 w-3 border-t border-dashed ${fairAboveCurrent ? 'border-emerald-600' : 'border-rose-600'}`}
+              />
               <span>Fair {fmtPrice(fairPriceMedian as number)}</span>
-              <span className="text-slate-400">
-                ({(fairPriceMedian as number) < stockMin ? 'below' : 'above'} range)
-              </span>
             </span>
           )}
           {targetOffChart && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 ring-1 ring-inset ring-slate-300 text-slate-800 font-medium">
-              <span className="h-[2px] w-3 bg-slate-900" />
+            <span
+              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium ring-1 ring-inset ${targetAboveCurrent ? upChipCls : downChipCls}`}
+            >
+              <span
+                className={`h-[2px] w-3 ${targetAboveCurrent ? 'bg-emerald-700' : 'bg-rose-700'}`}
+              />
               <span>Target {fmtPrice(fairPriceMax as number)}</span>
-              <span className="text-slate-500 font-normal">
-                ({(fairPriceMax as number) < stockMin ? 'below' : 'above'} range)
-              </span>
             </span>
           )}
         </div>
