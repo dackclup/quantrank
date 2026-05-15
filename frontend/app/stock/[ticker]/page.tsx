@@ -106,34 +106,46 @@ export default function StockDetailPage({
           </div>
           <div className="flex flex-col gap-3 sm:items-end">
             <ScoreBadge score={detail.composite_score} size="lg" />
-            <div className="flex gap-6 sm:justify-end">
-              <div className="flex flex-col sm:items-end">
+            {/* 3-column metric row. Each column lays out as
+                  label → value (single baseline), so the Price text,
+                  the MoS bar, and the Loss Chance chip all sit at the
+                  same vertical position. The `heuristic` qualifier
+                  moves out of the chip and renders as a separate
+                  caption below — keeps the chip itself narrow enough
+                  to stay inside the card on mobile (regression #77). */}
+            <div className="flex flex-wrap gap-4 sm:flex-nowrap sm:justify-end sm:gap-6">
+              <div className="flex min-w-0 flex-col gap-1 sm:items-end">
                 <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
                   Price
                 </span>
-                <span className="font-mono text-lg font-semibold tabular-nums text-slate-900">
+                <span className="flex h-6 items-center font-mono text-lg font-semibold tabular-nums leading-none text-slate-900">
                   {formatPrice(detail.current_price)}
                 </span>
               </div>
-              <div className="flex flex-col sm:items-end">
+              <div className="flex min-w-0 flex-col gap-1 sm:items-end">
                 <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
                   Margin of safety
                 </span>
-                <div className="mt-0.5">
+                <div className="flex h-6 items-center">
                   <MoSCell mos={mosPct} align="right" />
                 </div>
               </div>
-              <div className="flex flex-col sm:items-end">
+              <div className="flex min-w-0 flex-col gap-1 sm:items-end">
                 <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
                   Loss chance
                 </span>
-                <div className="mt-0.5">
+                <div className="flex h-6 items-center">
                   <LossChanceBadge
                     lossChancePct={detail.loss_chance_pct}
                     size="sm"
-                    showQualifier
                   />
                 </div>
+                {detail.loss_chance_pct !== null &&
+                  detail.loss_chance_pct !== undefined && (
+                    <span className="text-[10px] italic text-slate-400">
+                      heuristic
+                    </span>
+                  )}
               </div>
             </div>
           </div>

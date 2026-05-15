@@ -197,7 +197,7 @@ export function PriceHistoryChart({
           )}
           {targetOffChart && (
             <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 ring-1 ring-inset ring-slate-300 text-slate-800 font-medium">
-              <span className="h-0.5 w-3 bg-slate-900" />
+              <span className="h-[2px] w-3 bg-slate-900" />
               <span>Target {fmtPrice(fairPriceMax as number)}</span>
               <span className="text-slate-500 font-normal">
                 ({(fairPriceMax as number) < stockMin ? 'below' : 'above'} range)
@@ -222,7 +222,7 @@ export function PriceHistoryChart({
         )}
         {targetEligible && (
           <span className="inline-flex items-center gap-1.5">
-            <span className="h-0.5 w-3.5 bg-slate-900" />
+            <span className="h-[2px] w-3.5 bg-slate-900" />
             Target
           </span>
         )}
@@ -280,14 +280,13 @@ export function PriceHistoryChart({
             {targetInRange && (
               <ReferenceLine
                 y={fairPriceMax as number}
-                stroke="#1e293b"
-                strokeWidth={1.25}
-                strokeDasharray="8 4"
+                stroke="#0f172a"
+                strokeWidth={2}
                 ifOverflow="hidden"
                 label={{
                   value: `Target ${fmtPrice(fairPriceMax as number)}`,
                   position: 'insideTopRight',
-                  fill: '#1e293b',
+                  fill: '#0f172a',
                   fontSize: 12,
                   fontWeight: 600,
                 }}
