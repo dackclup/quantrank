@@ -476,16 +476,16 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                     <ScoreBadge score={row.composite_score} />
                   </div>
                 </div>
-                {/* 2-column symmetric quote block — each column uses
-                    the same 3-line stack (uppercase label, primary
-                    value, supporting pill) so the card no longer
-                    feels lopsided. */}
+                {/* 2-column symmetric quote block — label sits inline
+                    BEFORE the number ("PRICE $123.01 USD"), with the
+                    supporting pill on the second line. Same shape on
+                    both columns so the card stays balanced. */}
                 <div className="mt-1 grid grid-cols-2 gap-3">
                   <div className="flex flex-col items-start gap-1">
-                    <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
-                      Price
-                    </span>
-                    <div className="flex items-baseline gap-1">
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                        Price
+                      </span>
                       <span className="font-mono text-base font-semibold tabular-nums text-slate-900">
                         ${row.current_price.toFixed(2)}
                       </span>
@@ -512,9 +512,6 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                       })()}
                   </div>
                   <div className="flex flex-col items-end gap-1">
-                    <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
-                      Loss Chance
-                    </span>
                     {row.loss_chance_pct !== null && row.loss_chance_pct !== undefined ? (
                       (() => {
                         const pct = row.loss_chance_pct;
@@ -529,9 +526,14 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                                      { tone: 'text-red-700',     dot: 'bg-red-600',     label: 'High' };
                         return (
                           <>
-                            <span className={`font-mono text-base font-semibold tabular-nums ${band.tone}`}>
-                              {rounded}%
-                            </span>
+                            <div className="flex items-baseline gap-1.5">
+                              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                                Loss Chance
+                              </span>
+                              <span className={`font-mono text-base font-semibold tabular-nums ${band.tone}`}>
+                                {rounded}%
+                              </span>
+                            </div>
                             <span className="inline-flex items-center gap-1 text-[11px] text-slate-500">
                               <span className={`inline-block h-1.5 w-1.5 rounded-full ${band.dot}`} aria-hidden="true" />
                               {band.label}
@@ -541,7 +543,12 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                       })()
                     ) : (
                       <>
-                        <span className="font-mono text-base font-semibold tabular-nums text-slate-300">—</span>
+                        <div className="flex items-baseline gap-1.5">
+                          <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                            Loss Chance
+                          </span>
+                          <span className="font-mono text-base font-semibold tabular-nums text-slate-300">—</span>
+                        </div>
                         <span className="text-[11px] text-slate-400">Unavailable</span>
                       </>
                     )}
