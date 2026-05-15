@@ -2,8 +2,8 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import {
-  Line,
-  LineChart,
+  Area,
+  AreaChart,
   ReferenceLine,
   ResponsiveContainer,
   Tooltip,
@@ -103,6 +103,18 @@ export function PriceHistoryChart({
     [fullChartData, period],
   );
 
+  // Google-Finance-style change indicator: absolute + percent move
+  // across the visible window, plus direction (drives chart color).
+  const periodChange = useMemo(() => {
+    if (chartData.length < 2) return null;
+    const first = chartData[0].close;
+    const last = chartData[chartData.length - 1].close;
+    if (first <= 0) return null;
+    const abs = last - first;
+    const pct = (abs / first) * 100;
+    return { abs, pct, positive: abs >= 0 };
+  }, [chartData]);
+
   if (loading) {
     return (
       <div className="flex h-64 items-center justify-center text-sm text-slate-400">
@@ -184,9 +196,41 @@ export function PriceHistoryChart({
   const fairOffChart = fairIsNumber && !fairInRange;
   const targetOffChart = targetEligible && !targetInRange;
 
+  // Color the chart line + area fill based on direction of the
+  // visible window — Google-Finance-style cue ("green = up over the
+  // selected period, red = down").
+  const isPositive = periodChange?.positive ?? true;
+  const trendStroke = isPositive ? '#10b981' : '#e11d48'; // emerald-500 / rose-600
+  const trendFillId = `priceFill-${ticker}-${isPositive ? 'up' : 'down'}`;
+
   return (
     <div className="space-y-3">
       <PriceTimePeriodSelector value={period} onChange={setPeriod} />
+
+      {/* Period change indicator — shows absolute + percent move
+          across the visible window, with direction arrow. Matches
+          the Google Finance pattern users referenced as the desired
+          design. */}
+      {periodChange && (
+        <div className="flex items-baseline gap-2 text-sm">
+          <span
+            className={`font-mono font-semibold tabular-nums ${isPositive ? 'text-emerald-700' : 'text-rose-600'}`}
+          >
+            {isPositive ? '+' : ''}
+            {periodChange.abs.toFixed(2)}
+          </span>
+          <span
+            className={`font-mono tabular-nums ${isPositive ? 'text-emerald-700' : 'text-rose-600'}`}
+          >
+            ({isPositive ? '+' : ''}
+            {periodChange.pct.toFixed(2)}%)
+          </span>
+          <span className={isPositive ? 'text-emerald-700' : 'text-rose-600'}>
+            {isPositive ? '↑' : '↓'}
+          </span>
+          <span className="text-xs text-slate-500">{PERIOD_LABEL[period]}</span>
+        </div>
+      )}
 
       {/* Off-chart reference price chips — surfaces fair / target
           values that fall outside the stock's visible price range so
@@ -215,10 +259,15 @@ export function PriceHistoryChart({
       )}
 
       {/* Inline legend — beginner-friendly, doesn't require hover to
-          decode the line styles. */}
+          decode the line styles. The Price swatch matches the trend
+          color so the legend reflects what the chart is currently
+          rendering. */}
       <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-500">
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-0.5 w-3.5 rounded-full bg-emerald-500" />
+          <span
+            className="h-0.5 w-3.5 rounded-full"
+            style={{ backgroundColor: trendStroke }}
+          />
           Price
         </span>
         {fairIsNumber && (
@@ -237,10 +286,16 @@ export function PriceHistoryChart({
 
       <div className="h-64 w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart
+          <AreaChart
             data={chartData}
             margin={{ top: 8, right: 16, left: 0, bottom: 0 }}
           >
+            <defs>
+              <linearGradient id={trendFillId} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={trendStroke} stopOpacity={0.22} />
+                <stop offset="100%" stopColor={trendStroke} stopOpacity={0} />
+              </linearGradient>
+            </defs>
             <XAxis
               dataKey="date"
               tick={{ fontSize: 10, fill: '#64748b' }}
@@ -257,11 +312,12 @@ export function PriceHistoryChart({
                 border: '1px solid #e2e8f0',
               }}
             />
-            <Line
+            <Area
               type="monotone"
               dataKey="close"
-              stroke="#10b981"
+              stroke={trendStroke}
               strokeWidth={2}
+              fill={`url(#${trendFillId})`}
               dot={false}
               isAnimationActive={false}
             />
@@ -292,12 +348,24 @@ export function PriceHistoryChart({
                 }}
               />
             )}
-          </LineChart>
+          </AreaChart>
         </ResponsiveContainer>
       </div>
     </div>
   );
 }
+
+// Plain-English period labels for the change indicator. Matches the
+// Google Finance phrasing the user referenced as the desired design.
+const PERIOD_LABEL: Record<TimePeriod, string> = {
+  '1D': 'today',
+  '5D': 'past 5 days',
+  '1M': 'past month',
+  '6M': 'past 6 months',
+  YTD: 'year-to-date',
+  '1Y': 'past year',
+  '5Y': 'past 5 years',
+};
 
 // Pure helper: slice the (already-loaded, ascending-date) point
 // array down to the visible window for the selected period. 1D / 5D
