@@ -207,28 +207,35 @@ export function PriceHistoryChart({
     <div className="space-y-3">
       <PriceTimePeriodSelector value={period} onChange={setPeriod} />
 
-      {/* Period change indicator — shows absolute + percent move
-          across the visible window, with direction arrow. Matches
-          the Google Finance pattern users referenced as the desired
-          design. */}
-      {periodChange && (
-        <div className="flex items-baseline gap-2 text-sm">
-          <span
-            className={`font-mono font-semibold tabular-nums ${isPositive ? 'text-emerald-700' : 'text-rose-600'}`}
-          >
-            {isPositive ? '+' : ''}
-            {periodChange.abs.toFixed(2)}
+      {/* Current price + period change indicator — Google Finance
+          pattern: large current quote followed by the absolute +
+          percent move across the visible window. */}
+      {chartData.length > 0 && (
+        <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+          <span className="font-mono text-2xl font-semibold tabular-nums leading-none text-slate-900">
+            ${chartData[chartData.length - 1].close.toFixed(2)}
           </span>
-          <span
-            className={`font-mono tabular-nums ${isPositive ? 'text-emerald-700' : 'text-rose-600'}`}
-          >
-            ({isPositive ? '+' : ''}
-            {periodChange.pct.toFixed(2)}%)
+          <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
+            USD
           </span>
-          <span className={isPositive ? 'text-emerald-700' : 'text-rose-600'}>
-            {isPositive ? '↑' : '↓'}
-          </span>
-          <span className="text-xs text-slate-500">{PERIOD_LABEL[period]}</span>
+          {periodChange && (
+            <span
+              className={`flex items-baseline gap-1.5 text-sm ${isPositive ? 'text-emerald-700' : 'text-rose-600'}`}
+            >
+              <span className="font-mono font-semibold tabular-nums">
+                {isPositive ? '+' : ''}
+                {periodChange.abs.toFixed(2)}
+              </span>
+              <span className="font-mono tabular-nums">
+                ({isPositive ? '+' : ''}
+                {periodChange.pct.toFixed(2)}%)
+              </span>
+              <span>{isPositive ? '↑' : '↓'}</span>
+              <span className="text-xs font-normal text-slate-500">
+                {PERIOD_LABEL[period]}
+              </span>
+            </span>
+          )}
         </div>
       )}
 
