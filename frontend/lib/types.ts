@@ -38,6 +38,10 @@ export type StockSummary = {
   // `LossChanceBadge` with small italic "heuristic" qualifier (Option D
   // locked per `phase-4-kickoff-checklist/PLAN.md` §1).
   loss_chance_pct: number | null;
+  // Day-over-day percent change from the prior trading-day close
+  // (compute/main.py _fetch_prices_one). Null when only one close
+  // is available (newly-IPO'd tickers).
+  price_change_1d_pct: number | null;
   entered_top5: boolean;
   exited_top5: boolean;
 };
@@ -193,6 +197,7 @@ export type StockDetail = {
   dechow_f_score: number | null;
   recommendation: Recommendation | null;
   loss_chance_pct: number | null;
+  price_change_1d_pct: number | null;
   entered_top5: boolean;
   exited_top5: boolean;
 };

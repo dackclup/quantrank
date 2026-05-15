@@ -305,6 +305,11 @@
       "required": false,
       "default": "<factory:PillarScores>"
     },
+    "price_change_1d_pct": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
     "rank": {
       "type": "int",
       "required": true,
@@ -411,6 +416,11 @@
       "type": "PillarScores",
       "required": false,
       "default": "<factory:PillarScores>"
+    },
+    "price_change_1d_pct": {
+      "type": "float | None",
+      "required": false,
+      "default": null
     },
     "rank": {
       "type": "int",

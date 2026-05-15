@@ -466,13 +466,44 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                     <ScoreBadge score={row.composite_score} />
                   </div>
                 </div>
-                <div className="flex items-center justify-between gap-2 text-xs text-slate-500">
+                <div className="flex items-center gap-2 text-xs text-slate-500">
                   <SectorChip sector={row.sector} size="xs" />
-                  <span className="tabular-nums">{formatPrice(row.current_price)}</span>
                 </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-500">Loss Chance</span>
-                  <LossChanceBadge lossChancePct={row.loss_chance_pct} size="xs" />
+                {/* Quote line — large price + USD label, then a solid-
+                    fill change pill on its own line. Mirrors the
+                    broker-app pattern the user referenced. */}
+                <div className="mt-1 flex items-end justify-between gap-2">
+                  <div className="flex flex-col items-start">
+                    <div className="flex items-baseline gap-1">
+                      <span className="font-mono text-base font-semibold tabular-nums text-slate-900">
+                        ${row.current_price.toFixed(2)}
+                      </span>
+                      <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                        USD
+                      </span>
+                    </div>
+                    {row.price_change_1d_pct !== null &&
+                      row.price_change_1d_pct !== undefined && (() => {
+                        const pct = row.price_change_1d_pct;
+                        const positive = pct >= 0;
+                        const cls = positive
+                          ? 'bg-emerald-600 text-white'
+                          : 'bg-rose-600 text-white';
+                        return (
+                          <span
+                            className={`mt-1 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-semibold tabular-nums ${cls}`}
+                          >
+                            <span aria-hidden="true">{positive ? '↗' : '↘'}</span>
+                            {positive ? '+' : ''}
+                            {pct.toFixed(2)}%
+                          </span>
+                        );
+                      })()}
+                  </div>
+                  <div className="flex flex-col items-end gap-1 text-xs">
+                    <span className="text-slate-500">Loss Chance</span>
+                    <LossChanceBadge lossChancePct={row.loss_chance_pct} size="xs" />
+                  </div>
                 </div>
                 {mos.tooltip && <span className="sr-only">{mos.tooltip}</span>}
               </Link>
