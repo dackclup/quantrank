@@ -145,7 +145,12 @@ export default function StockDetailPage({
           Price (1y)
         </h2>
         {detail.has_history ? (
-          <PriceHistoryChart ticker={detail.ticker} />
+          <PriceHistoryChart
+            ticker={detail.ticker}
+            fairPriceMedian={detail.fair_price?.median ?? null}
+            fairPriceMax={detail.fair_price?.max ?? null}
+            recommendation={detail.recommendation}
+          />
         ) : (
           <div className="flex h-64 items-center justify-center rounded-lg border border-slate-200 bg-white text-sm text-slate-400">
             No price history available
