@@ -140,13 +140,30 @@ export function PriceHistoryChart({
   }
 
   // 5Y view spans multiple calendar years, so a YYYY-only label
-  // reads cleanly across the axis. Shorter views all show MM-YY
-  // (month-year) — user feedback was that day numbers added no
-  // value at the trading-day granularity we have anyway.
+  // reads cleanly across the axis. Shorter views all show "Mon YY"
+  // (English month abbreviation + 2-digit year) — user feedback was
+  // that numeric month indices were less scannable than month names
+  // at a glance.
+  const MONTH_ABBR = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+  ];
   const formatTick = (raw: string) => {
     // raw is YYYY-MM-DD
     if (period === '5Y') return raw.slice(0, 4); // YYYY
-    return `${raw.slice(5, 7)}-${raw.slice(2, 4)}`; // MM-YY
+    const monthIdx = Number(raw.slice(5, 7)) - 1;
+    const yy = raw.slice(2, 4);
+    return `${MONTH_ABBR[monthIdx] ?? raw.slice(5, 7)} ${yy}`;
+  };
+  // Tooltip label — "Mon DD, YYYY" reads more cleanly than the raw
+  // ISO date and stays consistent with the X-axis month-abbr style.
+  const formatTooltipLabel = (raw: string) => {
+    const monthIdx = Number(raw.slice(5, 7)) - 1;
+    const day = Number(raw.slice(8, 10));
+    const year = raw.slice(0, 4);
+    const mon = MONTH_ABBR[monthIdx];
+    if (!mon || Number.isNaN(day)) return raw;
+    return `${mon} ${day}, ${year}`;
   };
   const fmtTooltip = (v: number) => `$${v.toFixed(2)}`;
   const fmtPrice = (v: number) => `$${v.toFixed(2)}`;
@@ -338,7 +355,7 @@ export function PriceHistoryChart({
             <YAxis hide domain={yDomain} />
             <Tooltip
               formatter={(v: number) => [fmtTooltip(v), 'Close']}
-              labelFormatter={(label: string) => label}
+              labelFormatter={formatTooltipLabel}
               contentStyle={{
                 fontSize: '0.75rem',
                 borderRadius: '0.375rem',
