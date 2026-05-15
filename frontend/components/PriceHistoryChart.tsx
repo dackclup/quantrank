@@ -245,8 +245,6 @@ export function PriceHistoryChart({
 
   return (
     <div className="space-y-3">
-      <PriceTimePeriodSelector value={period} onChange={setPeriod} />
-
       {/* Current price + period change indicator — Google Finance
           pattern: large current quote on its own row, with the
           absolute + percent move on a second row beneath it. Mobile
@@ -337,6 +335,11 @@ export function PriceHistoryChart({
           </span>
         )}
       </div>
+
+      {/* Time-period selector sits directly above the chart canvas
+          (post-spot-check user request — easier scan path: read the
+          numbers, choose a window, see the chart). */}
+      <PriceTimePeriodSelector value={period} onChange={setPeriod} />
 
       <div className="h-64 w-full">
         <ResponsiveContainer width="100%" height="100%">
