@@ -24,9 +24,6 @@ export type StockSummary = {
   ticker: string;
   name: string;
   sector: string;
-  // GICS sub-industry (level-3). Optional — older snapshots may omit
-  // it. See `compute/output/schemas.py` StockSummary.industry.
-  industry: string | null;
   composite_score: number;
   current_price: number;
   fair_price: number | null;

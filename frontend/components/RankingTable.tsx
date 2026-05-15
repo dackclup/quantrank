@@ -454,10 +454,9 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
               >
                 {/* Mobile card header — mirrors the detail-page hero
                     cadence (frontend/app/stock/[ticker]/page.tsx:88-103):
-                    rank pill + sector chip + · industry on the top
-                    line, then [logo] TICKER [recommendation] on the
-                    next line, then company name. ScoreBadge floats on
-                    the right. */}
+                    rank pill + sector chip on the top line, then
+                    [logo] TICKER [recommendation] on the next line,
+                    then company name. ScoreBadge floats on the right. */}
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-1.5 text-xs">
@@ -465,9 +464,6 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                         #{row.rank}
                       </span>
                       <SectorChip sector={row.sector} size="xs" />
-                      {row.industry && (
-                        <span className="truncate text-slate-400">· {row.industry}</span>
-                      )}
                     </div>
                     <div className="mt-1 flex items-center gap-2">
                       <StockLogo ticker={row.ticker} size={24} />

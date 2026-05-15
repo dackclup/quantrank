@@ -60,11 +60,6 @@ class StockSummary(BaseModel):
     ticker: str
     name: str
     sector: str
-    # GICS sub-industry (level-3) bubbled up from StockDetail so the
-    # ranking page mobile card can render the full sector → industry
-    # breadcrumb without a per-ticker fetch. Sourced from
-    # `compute/main.py` _meta_for() row["industry"] = sub_industry.
-    industry: str | None = None
     composite_score: float
     current_price: float
     fair_price: float | None = None
