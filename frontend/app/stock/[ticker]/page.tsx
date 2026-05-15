@@ -3,7 +3,7 @@ import Link from 'next/link';
 import FairPriceCard from '@/components/FairPriceCard';
 import { FairPriceBarChart } from '@/components/FairPriceBarChart';
 import { LossChanceBadge } from '@/components/LossChanceBadge';
-import { MoSCell } from '@/components/MoSCell';
+import { MoSBadge } from '@/components/MoSBadge';
 import { PillarRadarChart } from '@/components/PillarRadarChart';
 import { PriceHistoryChart } from '@/components/PriceHistoryChart';
 import RawMetricsTable from '@/components/RawMetricsTable';
@@ -105,21 +105,15 @@ export default function StockDetailPage({
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:items-end">
-            {/* Top row: composite donut + MoS — paired because both
-                are summary statistics ("how good overall" / "how
-                cheap"). MoS moved here from the 3-column metric row
-                so the lower row reads as three absolute-price cells
-                (Price / Target / Loss Chance). */}
-            <div className="flex items-center gap-5">
+            {/* Top row: composite donut + MoS donut — paired because
+                both are summary statistics ("how good overall" / "how
+                cheap"). MoS uses the same radial-gauge style as
+                ScoreBadge so the two badges share a visual family;
+                arc length = |MoS|/100 clamped, color = emerald when
+                MoS≥0 / rose when MoS<0. */}
+            <div className="flex flex-wrap items-center gap-5">
               <ScoreBadge score={detail.composite_score} size="lg" />
-              <div className="flex flex-col items-center gap-1 text-center">
-                <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
-                  Margin of safety
-                </span>
-                <div className="flex h-6 items-center">
-                  <MoSCell mos={mosPct} align="left" />
-                </div>
-              </div>
+              <MoSBadge mos={mosPct} />
             </div>
             {/* 3-column metric row. `justify-evenly` distributes
                 equal space BEFORE / BETWEEN / AFTER the three columns
