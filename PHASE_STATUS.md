@@ -6,7 +6,7 @@
 | 1 | Universe + prices ingestion | ✅ DONE — 2026-05-08 |
 | 2 | Fundamentals via SEC EDGAR | ✅ DONE — 2026-05-08 |
 | 3 | Classical features + composite + **defenses** → **v1.0** | ✅ **DONE — 2026-05-14** (v1.0.0 tagged + GitHub release) |
-| 4 | Factor consolidation (OSAP + JKP + Qlib + IPCA) → **v1.1** | 🟡 IN PROGRESS — 4a-4e + 4c.1/4c.2/4c.3 merged (2026-05-14 → 2026-05-15); 4f price-chart next |
+| 4 | Factor consolidation (OSAP + JKP + Qlib + IPCA) → **v1.1** | 🟡 IN PROGRESS — 4a-4f + 4c.1/4c.2/4c.3 merged (2026-05-14 → 2026-05-15); 4g 8-K Tier-2 re-enable next |
 | 5 | ML meta-learner (Triple-Barrier + Meta-Labeling + Conformal) + SHAP | ⚪ not started |
 | 6 | Sentiment v2 (FinBERT + Whisper + 8-K Lazy Prices) | ⚪ not started |
 | 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → **v1.5** | ⚪ not started |
@@ -72,14 +72,74 @@ weekly compute reflecting 4d + 4e fields).
   dividend-history, earnings-calendar, stock-story-llm, SPY benchmark
   overlay extension). Pure planning — no compute / schema changes.
 
-**Next deliverable**: **PR 4f — price-chart-enhancements
-implementation** per
-[`.claude/skills/phase-4/price-chart-enhancements/PLAN.md`](.claude/skills/phase-4/price-chart-enhancements/PLAN.md).
-Phase 4.1 scope (~180 LOC): time-period selector (1D/5D/1M/6M/YTD/1Y/5Y;
-1D/5D/5Y disabled with tooltip), `fair_price.median` dashed line,
-`fair_price.max` solid target-price line (bullish/lean_bullish only),
-SPY benchmark overlay toggle (data already in
-`compute/ingest/prices.py::fetch_spy_benchmark`).
+- ✅ **4f — Price chart enhancements** (PR #76, merged 2026-05-15
+  on commit `17323346`). 14 commits, +527 / -85 LOC, 10 files.
+  Phase 4.1 + 4.2 shipped together; 4.3 (intraday 1D/5D) deferred
+  per locked PLAN §3. **No schema delta** — additive frontend +
+  writer slice constant + cron schedule change.
+  - **Time-period selector** (`PriceTimePeriodSelector.tsx` new) —
+    7 buttons; 1M / 6M / YTD / 1Y / 5Y enabled, 1D / 5D disabled
+    with tooltip
+  - **Fair-price dashed line** at `fair_price.median` — every
+    ticker with non-null median
+  - **Target-price solid line** at `fair_price.max` — **every
+    recommendation tier** (locked decision per user spot-check —
+    Hold / Sell tickers benefit from the upper-bound reference)
+  - **Off-chart annotation chips** — color-coded by direction:
+    green when reference > current price (upside), red when
+    reference < current (overvalued). No "(below/above range)"
+    qualifier
+  - **Current price + USD label + period change indicator**
+    (Google Finance pattern) — `$XX.XX USD +YY.YY (+ZZ%) ↑ <period>`
+  - **Dynamic trend color** — line + area fill green on positive
+    period change, rose on negative
+  - **Gradient area fill** — 22% opacity → 0% Google-style wash
+  - **Y-axis hidden** — clutter removed; tooltip + chips cover the
+    exact prices
+  - **X-axis format** — MM-YY (1M / 6M / YTD / 1Y) / YYYY (5Y)
+  - **Inline legend** — Price (matches trend color) / Fair value /
+    Target
+  - **Hero card 3-column row refactor** — `flex justify-evenly`
+    + centered content + chip overflow fix (Loss Chance qualifier
+    moved out of chip → caption below), label font bumped
+    `text-[10px]` → `text-xs`
+  - **5Y daily ingest** — `HISTORY_TAIL_DAYS` 252 → 1260; total
+    `stocks/history/` 16 MB → 74 MB; per-file 31 KB → 155 KB
+  - **Daily Mon-Fri cron** — `compute-rankings.yml` `"0 22 * * 0"`
+    → `"0 22 * * 1-5"`; price staleness ≤ 24 h on trading days
+    (was ≤ 7 days)
+  - **`_next_business_day_offset()` helper** — `next_update_utc`
+    metadata reflects actual next cron run (Fri → Mon +3d, Sat → Mon
+    +2d, Sun → Mon +1d, Mon-Thu → next day +1d)
+  - Closes issue #77 (hero card baseline misalignment + Loss Chance
+    overflow)
+
+  **PR 4f production verification (commit `17323346`, run #25917615337,
+  5m14s warm cache):**
+  - Universe: **502** stocks; schema `0.6.0-phase3d` (unchanged)
+  - Fair-price coverage: **498 / 502 (99.2%)** ✅
+  - Tier-2 coverage: **100%** ✅
+  - `fundamentals_latency_p95`: **14.41s** (improved from 16.86s)
+  - Top-5: CF · HST · NVDA · EIX · LII — rotation invariant 2
+    entered / 2 exited
+  - `data_quality_input_corruption`: 3 (BRK-B / ERIE / NVR — baseline)
+  - Defense scorecard: 4 active vetoes + 1 deferred behind feature
+    flag (`non_reliance_filing`, Phase 4g re-enable)
+  - `going_concern_disclosure`: 5 tickers (1.0% FP rate, Mayew 2015
+    baseline 1-3%)
+  - `tier2_coverage_pct`: 100%
+  - `next_update_utc`: `2026-05-18T12:29:31Z` = **+3 days** (Friday
+    compute → Monday next run, per `_next_business_day_offset()`)
+  - History files: **1260 rows × 502 stocks** (5y daily) ✅
+  - **Section A-H verify: 0 failures, 0 warnings**
+
+**Next deliverable**: **PR 4g — re-enable 8-K Tier-2 event defenses**
+per [issue #14](https://github.com/dackclup/quantrank/issues/14).
+Wire `non_reliance_filing` (Item 4.02 hard veto) + `auditor_change`
+(Item 4.01 annotate) back into the active layer after the PR 3d
+deferral. Sequencing: 4g (8-K re-enable) → 4b (defense-infrastructure
+hard gate, issue #75) → 4h / 4i / 4j / 4k (OSAP / JKP / Qlib / IPCA
+factor integrations) → tag `v1.1.0-phase4`.
 
 **Phase 3 sub-PR plan** (5 sub-PRs, defense-augmented 2026-05-09 per
 [`docs/RESEARCH_FINDINGS.md`](docs/RESEARCH_FINDINGS.md) §"Defense Playbook"):

@@ -645,21 +645,42 @@ Trio shipping order locked 2026-05-14: recommendation-badge → loss-chance
   small italic "heuristic" qualifier + tooltip — pending Phase 5
   Triple-Barrier + Conformal Prediction work for a true calibrated
   probability. Independent of badge/chart so it shipped second.
-- ⚪ **price-chart-enhancements** *(PR 4f, next)* — adds (a)
-  time-period selector (`1D / 5D / 1M / 6M / YTD / 1Y / 5Y`) to the
-  per-stock price chart, (b) gray dashed Jitta-style fair-price line
-  at `fair_price.median` for all tickers, (c) black solid target-price
-  line at `fair_price.max` (locked source — conservative; per
-  `phase-4-kickoff-checklist/PLAN.md` §1) with numeric label, **only**
-  for tickers whose `recommendation` is `bullish` or `lean_bullish`,
-  (d) SPY benchmark overlay toggle (audit add 2026-05-15 — data
-  already in production via `compute/ingest/prices.py::fetch_spy_benchmark`).
-  Hard-depends on recommendation-badge (✅ landed). Phased rollout:
-  **4.1 ships `1M / 6M / YTD / 1Y` + lines + SPY overlay (~180 LOC)**;
-  4.2 extends to 5Y daily ingest (~50 LOC); 4.3 (intraday `1D / 5D`)
-  is deferred to Phase 5+ (locked decision — separate architecture
-  decision). See
-  [`price-chart-enhancements/PLAN.md`](.claude/skills/phase-4/price-chart-enhancements/PLAN.md).
+- ✅ **price-chart-enhancements** *(PR 4f, merged 2026-05-15 — PR
+  #76, commit `17323346`)* — Phase 4.1 + 4.2 shipped; 4.3 (intraday
+  `1D / 5D`) deferred to Phase 5+ per locked PLAN §3.
+  - **Phase 4.1**: 7-button time-period selector (1M / 6M / YTD / 1Y
+    enabled; 1D / 5D / 5Y disabled with tooltip in the initial scope);
+    `fair_price.median` dashed line + `fair_price.max` solid target
+    line for **every recommendation tier** (relaxed from the original
+    bullish-only PLAN after user spot-check — Hold / Sell tickers
+    benefit from the upper-bound reference, with chip color cueing
+    direction); off-chart annotation chips color-coded by direction
+    (green when reference > current price, red when reference <
+    current); current-price + USD + period-change indicator following
+    the Google Finance pattern; dynamic trend color (line + area fill
+    green on positive period, rose on negative); gradient area fill;
+    Y-axis hidden; X-axis format MM-YY / YYYY; inline legend; hero
+    card 3-column row refactor with `flex justify-evenly` + centered
+    content (closes #77).
+  - **Phase 4.2 (inlined)**: `HISTORY_TAIL_DAYS` 252 → 1260 (5Y
+    daily data persisted per stock); `compute/ingest/prices.py`
+    `PRICES_PERIOD = "5y"` already in place from PR 3c; total
+    `stocks/history/` grew 16 MB → 74 MB; per-file 31 KB → 155 KB.
+    `5Y` button now enabled.
+  - **Cron schedule change** (`compute-rankings.yml`): weekly Sunday
+    22:00 UTC → **Mon-Fri 22:00 UTC daily** (after US market close).
+    `_next_business_day_offset()` helper computes the correct
+    `next_update_utc` (Fri → Mon +3d, Sat → Mon +2d, Sun → Mon +1d,
+    Mon-Thu → next day +1d). Price staleness ≤ 24 h on trading days
+    (was ≤ 7 days).
+  - **SPY benchmark overlay** *(PLAN §4)* — initially scoped, reverted
+    on user request "vs SPY เอาออกยังไม่ต้องมีตอนนี้" before
+    Mark-Ready. Frontend toggle + backend SPY writer dropped. Deferred
+    to a future PR with no specific timeline.
+  - 14 commits, +527 / -85 LOC, 10 files. Schema unchanged
+    (additive-only-within-major rule per `v1-to-v1-1-migration/PLAN.md`).
+  - See
+    [`price-chart-enhancements/PLAN.md`](.claude/skills/phase-4/price-chart-enhancements/PLAN.md).
 - **exchange-pill** — adds an exchange-of-listing pill
   (`NASDAQ` / `NYSE` / `NYSE Arca` / `NYSE American` / `Cboe`)
   immediately before the existing Sector pill on both overview and
