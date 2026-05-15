@@ -518,11 +518,13 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                       Fair <span aria-hidden="true">⚠</span> N/A
                     </span>
                   )}
-                  <MoSCell mos={row.margin_of_safety_pct} align="right" />
                 </div>
-                <div className="flex items-center justify-between text-xs text-slate-500">
-                  <span className="text-slate-500">Loss Chance</span>
-                  <LossChanceBadge lossChancePct={row.loss_chance_pct} size="xs" />
+                <div className="flex items-center justify-between text-xs">
+                  <span className="inline-flex items-center gap-2 text-slate-500">
+                    <span>Loss Chance</span>
+                    <LossChanceBadge lossChancePct={row.loss_chance_pct} size="xs" />
+                  </span>
+                  <MoSCell mos={row.margin_of_safety_pct} align="right" />
                 </div>
                 {mos.tooltip && <span className="sr-only">{mos.tooltip}</span>}
               </Link>
