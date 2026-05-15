@@ -194,30 +194,78 @@ export function PriceHistoryChart({
     normalized ? `${v.toFixed(0)}` : `$${v.toFixed(0)}`;
   const fmtTooltip = (v: number) =>
     normalized ? `${v.toFixed(2)}` : `$${v.toFixed(2)}`;
+  const fmtPrice = (v: number) => `$${v.toFixed(2)}`;
+
+  // PR 4f post-spot-check: compute a y-axis domain anchored on the
+  // stock's own price range (with a ±10% pad). Reference lines render
+  // INSIDE this domain only — they never "extend" the axis. When the
+  // fair / target value falls outside it, the line is suppressed and
+  // we surface the price as a chip annotation below the period selector
+  // instead. This keeps the stock's price action filling the chart
+  // (vs the prior version where a 2-3× target compressed the line to
+  // ~20% of vertical space).
+  let yDomain: [number, number] | ['auto', 'auto'] = ['auto', 'auto'];
+  let stockMin = 0;
+  let stockMax = 0;
+  if (chartData.length > 0) {
+    stockMin = chartData[0].close;
+    stockMax = chartData[0].close;
+    for (const p of chartData) {
+      if (p.close < stockMin) stockMin = p.close;
+      if (p.close > stockMax) stockMax = p.close;
+      if (showSpy && typeof p.spy === 'number' && Number.isFinite(p.spy)) {
+        // In normalized mode the SPY series shares the axis with the
+        // stock; include it in min/max so the lines aren't clipped.
+        if (p.spy < stockMin) stockMin = p.spy;
+        if (p.spy > stockMax) stockMax = p.spy;
+      }
+    }
+    const range = stockMax - stockMin || stockMax || 1;
+    const pad = range * 0.1;
+    yDomain = [stockMin - pad, stockMax + pad];
+  }
 
   // Reference lines only meaningful in absolute mode — normalized
   // mode is showing % return, where a fair-price absolute level
   // has no meaning.
-  const showFairLine =
-    !normalized &&
-    typeof fairPriceMedian === 'number' &&
-    Number.isFinite(fairPriceMedian);
-  const showTargetLine =
-    !normalized &&
-    typeof fairPriceMax === 'number' &&
-    Number.isFinite(fairPriceMax) &&
+  const fairIsNumber =
+    typeof fairPriceMedian === 'number' && Number.isFinite(fairPriceMedian);
+  const targetIsNumber =
+    typeof fairPriceMax === 'number' && Number.isFinite(fairPriceMax);
+  const targetEligible =
+    targetIsNumber &&
     (recommendation === 'bullish' || recommendation === 'lean_bullish');
+
+  const fairInRange =
+    !normalized &&
+    fairIsNumber &&
+    (fairPriceMedian as number) >= (yDomain as [number, number])[0] &&
+    (fairPriceMedian as number) <= (yDomain as [number, number])[1];
+  const targetInRange =
+    !normalized &&
+    targetEligible &&
+    (fairPriceMax as number) >= (yDomain as [number, number])[0] &&
+    (fairPriceMax as number) <= (yDomain as [number, number])[1];
+
+  // Off-chart prices get surfaced as a chip annotation row instead of
+  // a reference line that would force the y-axis to stretch.
+  const fairOffChart = !normalized && fairIsNumber && !fairInRange;
+  const targetOffChart = !normalized && targetEligible && !targetInRange;
 
   return (
     <div className="space-y-3">
-      <div className="flex flex-wrap items-center justify-between gap-2">
+      {/* Toolbar — stacks vertically on narrow viewports so the
+          7-button selector and the "vs SPY" toggle don't overflow on
+          mobile (post-PR-4f spot-check, APA screenshot showed the
+          SPY toggle clipped at the right edge of the chip row). */}
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <PriceTimePeriodSelector value={period} onChange={setPeriod} />
         <button
           type="button"
           aria-pressed={showSpy}
           onClick={() => setShowSpy((v) => !v)}
           className={
-            'inline-flex items-center rounded-full ring-1 ring-inset ' +
+            'inline-flex w-fit items-center rounded-full ring-1 ring-inset ' +
             'px-2.5 py-1 text-xs font-medium transition-colors ' +
             (showSpy
               ? 'bg-emerald-50 text-emerald-800 ring-emerald-300'
@@ -232,11 +280,65 @@ export function PriceHistoryChart({
           vs SPY
         </button>
       </div>
+
+      {/* Off-chart reference price chips — surfaces fair / target
+          values that fall outside the stock's visible price range so
+          the user still sees the number, without warping the chart. */}
+      {(fairOffChart || targetOffChart) && (
+        <div className="flex flex-wrap gap-1.5 text-xs">
+          {fairOffChart && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-slate-50 px-2 py-0.5 ring-1 ring-inset ring-slate-200 text-slate-600">
+              <span className="h-0 w-3 border-t border-dashed border-slate-400" />
+              <span>Fair {fmtPrice(fairPriceMedian as number)}</span>
+              <span className="text-slate-400">
+                ({(fairPriceMedian as number) < stockMin ? 'below' : 'above'} range)
+              </span>
+            </span>
+          )}
+          {targetOffChart && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 ring-1 ring-inset ring-slate-300 text-slate-800 font-medium">
+              <span className="h-0.5 w-3 bg-slate-900" />
+              <span>Target {fmtPrice(fairPriceMax as number)}</span>
+              <span className="text-slate-500 font-normal">
+                ({(fairPriceMax as number) < stockMin ? 'below' : 'above'} range)
+              </span>
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* Inline legend — beginner-friendly, doesn't require hover to
+          decode the three line styles. */}
+      <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-500">
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-0.5 w-3.5 rounded-full bg-emerald-500" />
+          {normalized ? ticker : 'Price'}
+        </span>
+        {normalized && showSpy && (
+          <span className="inline-flex items-center gap-1.5">
+            <span className="h-0 w-3.5 border-t-[1.5px] border-dashed border-teal-700" />
+            SPY
+          </span>
+        )}
+        {!normalized && fairIsNumber && (
+          <span className="inline-flex items-center gap-1.5">
+            <span className="h-0 w-3.5 border-t border-dashed border-slate-400" />
+            Fair value
+          </span>
+        )}
+        {!normalized && targetEligible && (
+          <span className="inline-flex items-center gap-1.5">
+            <span className="h-0.5 w-3.5 bg-slate-900" />
+            Target
+          </span>
+        )}
+      </div>
+
       <div className="h-64 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={chartData}
-            margin={{ top: 8, right: 56, left: 0, bottom: 0 }}
+            margin={{ top: 8, right: 16, left: 0, bottom: 0 }}
           >
             <XAxis
               dataKey="date"
@@ -245,10 +347,10 @@ export function PriceHistoryChart({
               minTickGap={32}
             />
             <YAxis
-              domain={['auto', 'auto']}
+              domain={yDomain}
               tick={{ fontSize: 10, fill: '#64748b' }}
               tickFormatter={fmtY}
-              width={48}
+              width={52}
             />
             <Tooltip
               formatter={(v: number, name: string) => [
@@ -281,30 +383,31 @@ export function PriceHistoryChart({
                 isAnimationActive={false}
               />
             )}
-            {showFairLine && (
+            {fairInRange && (
               <ReferenceLine
                 y={fairPriceMedian as number}
                 stroke="#94a3b8"
                 strokeDasharray="5 3"
-                ifOverflow="extendDomain"
+                ifOverflow="hidden"
                 label={{
-                  value: `Fair $${(fairPriceMedian as number).toFixed(2)}`,
-                  position: 'right',
+                  value: `Fair ${fmtPrice(fairPriceMedian as number)}`,
+                  position: 'insideTopRight',
                   fill: '#64748b',
                   fontSize: 11,
                 }}
               />
             )}
-            {showTargetLine && (
+            {targetInRange && (
               <ReferenceLine
                 y={fairPriceMax as number}
-                stroke="#0f172a"
-                strokeWidth={1.5}
-                ifOverflow="extendDomain"
+                stroke="#1e293b"
+                strokeWidth={1.25}
+                strokeDasharray="8 4"
+                ifOverflow="hidden"
                 label={{
-                  value: `Target $${(fairPriceMax as number).toFixed(2)}`,
-                  position: 'right',
-                  fill: '#0f172a',
+                  value: `Target ${fmtPrice(fairPriceMax as number)}`,
+                  position: 'insideTopRight',
+                  fill: '#1e293b',
                   fontSize: 12,
                   fontWeight: 600,
                 }}
