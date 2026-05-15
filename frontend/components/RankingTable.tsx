@@ -500,13 +500,24 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                         const cls = positive
                           ? 'bg-emerald-600 text-white'
                           : 'bg-rose-600 text-white';
+                        // Derive absolute $ change from current_price +
+                        // pct (the same identity CurrentPriceLine uses
+                        // on the detail page: abs = price * pct / (100
+                        // + pct)). Avoids adding a schema field for
+                        // what is already implied by the two values
+                        // already in StockSummary.
+                        const abs = (row.current_price * pct) / (100 + pct);
                         return (
                           <span
                             className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-semibold tabular-nums ${cls}`}
                           >
                             <span aria-hidden="true">{positive ? '↗' : '↘'}</span>
                             {positive ? '+' : ''}
-                            {pct.toFixed(2)}%
+                            {abs.toFixed(2)}
+                            <span className="opacity-90">
+                              ({positive ? '+' : ''}
+                              {pct.toFixed(2)}%)
+                            </span>
                           </span>
                         );
                       })()}
