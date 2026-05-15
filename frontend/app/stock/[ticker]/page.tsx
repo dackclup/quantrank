@@ -118,7 +118,7 @@ export default function StockDetailPage({
                 stays narrow (regression #77). */}
             <div className="flex flex-wrap items-start justify-evenly gap-3">
               <div className="flex flex-col items-center gap-1 text-center">
-                <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
                   Price
                 </span>
                 <span className="flex h-6 items-center font-mono text-lg font-semibold tabular-nums leading-none text-slate-900">
@@ -126,7 +126,7 @@ export default function StockDetailPage({
                 </span>
               </div>
               <div className="flex flex-col items-center gap-1 text-center">
-                <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
                   Margin of safety
                 </span>
                 <div className="flex h-6 items-center">
@@ -134,7 +134,7 @@ export default function StockDetailPage({
                 </div>
               </div>
               <div className="flex flex-col items-center gap-1 text-center">
-                <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
                   Loss chance
                 </span>
                 <div className="flex h-6 items-center">
