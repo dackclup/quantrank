@@ -76,6 +76,7 @@ from compute.scoring.composite import (
     neutralize_pillar_scores,
 )
 from compute.scoring.dechow_f import compute_dechow_f
+from compute.scoring.loss_chance import derive_loss_chance
 from compute.scoring.pillars import TickerInputs, compute_all_pillars
 from compute.scoring.recommendation import derive_recommendation
 from compute.scoring.risk_overlay import compute_risk_flags
@@ -984,6 +985,18 @@ def run_weekly_compute() -> int:
             mos_pct=ensemble.mos_pct if ensemble is not None else None,
         )
 
+        # PR 4e — Loss Chance % heuristic (Option D locked: "Loss Chance %"
+        # label + small italic "heuristic" qualifier in the UI). Pure
+        # combiner over composite + risk_flags + valuation_warnings + MoS.
+        # Returns None when MoS unavailable (no ensemble) — frontend
+        # renders em-dash placeholder. See `compute/scoring/loss_chance.py`.
+        loss_chance_pct = derive_loss_chance(
+            composite_score=float(r["composite_score"]),
+            risk_flags=risk_flags.get(ticker, []),
+            valuation_warnings=valuation_warnings,
+            mos_pct=ensemble.mos_pct if ensemble is not None else None,
+        )
+
         summaries.append(
             StockSummary(
                 rank=int(r["rank"]),
@@ -999,6 +1012,7 @@ def run_weekly_compute() -> int:
                 risk_flags=risk_flags.get(ticker, []),
                 valuation_warnings=valuation_warnings,
                 recommendation=recommendation,
+                loss_chance_pct=loss_chance_pct,
                 entered_top5=ticker in entered,
                 exited_top5=ticker in exited,
             )
@@ -1030,6 +1044,7 @@ def run_weekly_compute() -> int:
             beneish_m_score=beneish_result.m_score,
             dechow_f_score=dechow_result.f_score,
             recommendation=recommendation,
+            loss_chance_pct=loss_chance_pct,
             entered_top5=ticker in entered,
             exited_top5=ticker in exited,
         )

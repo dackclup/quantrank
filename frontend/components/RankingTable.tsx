@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { FilterDrawer } from '@/components/FilterDrawer';
+import { LossChanceBadge } from '@/components/LossChanceBadge';
 import { MoSCell } from '@/components/MoSCell';
 import {
   RECOMMENDATION_CHIP_DOTS,
@@ -403,6 +404,9 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
               {headerCell('current_price', 'Price', 'text-right')}
               {headerCell('fair_price', 'Fair price', 'text-right')}
               {headerCell('margin_of_safety_pct', 'MoS', 'text-right')}
+              <th scope="col" className="px-3 py-2 text-right font-medium text-slate-600">
+                Loss Chance
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -449,6 +453,9 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                     ) : (
                       <MoSCell mos={row.margin_of_safety_pct} />
                     )}
+                  </td>
+                  <td className="px-3 py-2 text-right">
+                    <LossChanceBadge lossChancePct={row.loss_chance_pct} size="xs" />
                   </td>
                 </tr>
               );
@@ -512,6 +519,10 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                     </span>
                   )}
                   <MoSCell mos={row.margin_of_safety_pct} align="right" />
+                </div>
+                <div className="flex items-center justify-between text-xs text-slate-500">
+                  <span className="text-slate-500">Loss Chance</span>
+                  <LossChanceBadge lossChancePct={row.loss_chance_pct} size="xs" />
                 </div>
                 {mos.tooltip && <span className="sr-only">{mos.tooltip}</span>}
               </Link>

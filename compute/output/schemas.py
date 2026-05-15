@@ -69,6 +69,7 @@ class StockSummary(BaseModel):
     risk_flags: list[str] = Field(default_factory=list)
     valuation_warnings: list[str] = Field(default_factory=list)
     recommendation: Recommendation | None = None
+    loss_chance_pct: float | None = None
     entered_top5: bool = False
     exited_top5: bool = False
 
@@ -150,5 +151,6 @@ class StockDetail(BaseModel):
     beneish_m_score: float | None = None
     dechow_f_score: float | None = None
     recommendation: Recommendation | None = None
+    loss_chance_pct: float | None = None
     entered_top5: bool = False
     exited_top5: bool = False
