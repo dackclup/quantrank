@@ -51,7 +51,7 @@ Build a **static web app** (no backend server, no database) that:
 
 ### Compute Flow (Phase 0-3):
 ```
-[GitHub Actions cron, weekly Sunday 22:00 UTC]
+[GitHub Actions cron, Mon-Fri 22:00 UTC — PR 4f, was weekly Sunday]
     ↓
 Python script → fetch data → compute features → output JSON
     ↓
