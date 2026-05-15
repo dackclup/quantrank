@@ -33,8 +33,8 @@ export default function HomePage() {
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-6 text-center text-sm text-amber-900">
           <p className="font-medium">Compute pending.</p>
           <p className="mt-1">
-            The first weekly compute hasn&rsquo;t run yet. Scheduled cron: every Sunday
-            22:00 UTC, or trigger manually from the GitHub Actions tab.
+            The first compute hasn&rsquo;t run yet. Scheduled cron: Mon-Fri
+            22:00 UTC (after US market close), or trigger manually from the GitHub Actions tab.
           </p>
         </div>
       ) : (

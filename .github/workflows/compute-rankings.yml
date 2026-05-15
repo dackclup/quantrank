@@ -2,7 +2,9 @@ name: Compute Rankings
 
 on:
   schedule:
-    - cron: "0 22 * * 0"  # Sunday 22:00 UTC
+    # Mon-Fri 22:00 UTC = 18:00 EDT — runs ~2h after US market close (16:00 EDT)
+    # so EOD prices have settled. Weekends skipped (no new trading data).
+    - cron: "0 22 * * 1-5"
   workflow_dispatch:
 
 env:

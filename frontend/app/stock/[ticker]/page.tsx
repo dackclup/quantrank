@@ -53,7 +53,7 @@ export default function StockDetailPage({
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-6 text-sm text-amber-900">
           <p className="font-medium">Detail data pending</p>
           <p className="mt-1">
-            The latest weekly compute hasn&rsquo;t produced data for{' '}
+            The latest compute hasn&rsquo;t produced data for{' '}
             <span className="font-mono">{ticker}</span> yet. Trigger
             <span className="ml-1 font-mono">compute-rankings.yml</span> from
             the GitHub Actions tab; the detail page will populate after the

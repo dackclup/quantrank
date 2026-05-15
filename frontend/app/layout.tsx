@@ -57,7 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="mx-auto max-w-6xl px-4 py-10">{children}</main>
         <footer className="border-t border-slate-200 bg-white">
           <div className="mx-auto max-w-6xl px-4 py-6 text-xs text-slate-500">
-            QuantRank · MIT licensed · Data refreshed weekly via GitHub Actions.
+            QuantRank · MIT licensed · Data refreshed every US trading day via GitHub Actions.
           </div>
         </footer>
       </body>
