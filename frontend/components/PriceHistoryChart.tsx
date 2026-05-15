@@ -281,14 +281,12 @@ export function PriceHistoryChart({
               <ReferenceLine
                 y={fairPriceMax as number}
                 stroke="#0f172a"
-                strokeWidth={2}
                 ifOverflow="hidden"
                 label={{
                   value: `Target ${fmtPrice(fairPriceMax as number)}`,
                   position: 'insideTopRight',
                   fill: '#0f172a',
-                  fontSize: 12,
-                  fontWeight: 600,
+                  fontSize: 11,
                 }}
               />
             )}
