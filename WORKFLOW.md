@@ -612,6 +612,7 @@ These 6 PLANs close the P0 gaps surfaced by the comprehensive Phase 4 planning a
 - **`jkp-integration/PLAN.md`** — PR 4i. Jensen-Kelly-Pedersen 13 theme cluster returns + exposure regression + pillar blending. CC BY-NC 4.0 license (educational static-site OK). ~610 LOC, ~6 days
 - **`phase-4-kickoff-checklist/PLAN.md`** — Pre-flight decision registry. Locks UX terminology (Option B / D / fair_price.max), library version pins, license re-verification, sequencing, acceptance metric, Defense Matrix
 - **`issue-remapping/PLAN.md`** — Maps every open issue to a Phase 4 PR. Closes #10 + #16 immediately; pins #7 / #11 / #14 / #15 / #17 / #18 to specific PRs; defers #31 / #41 to a separate Next.js chore PR
+- **`changelog-scaffolding/PLAN.md`** *(audit add 2026-05-15)* — Public `CHANGELOG.md` following Keep a Changelog 1.1.0 convention. Auto-generated from PR titles + tag boundaries; CI gates ensure `[Unreleased]` section non-empty before tag push. Referenced by Phase 4 `schema-versioning` + Phase 11 `case-studies` + `public-api-docs`. ~1,070 LOC + markdown, ~5.5 days
 
 ### UI / UX features queued for Phase 4 (post-v1.0)
 
@@ -1161,6 +1162,131 @@ positives without proportional true positives.
 - [ ] **Liquidity backstop excludes <$5M ADV stocks**
 - [ ] **Defense set FROZEN — no new flags added unless rotation criteria met**
 - [ ] **v2.0 tag pushed**
+
+---
+
+# PHASE 9 — Free Alt-Data Expansion (toward v2.5)
+
+**Goal**: Match institutional-tool data breadth using only **free public
+sources**. Adds 5 new signal surfaces (insider, institutional flow,
+macro regime, news sentiment, earnings surprise) without touching the
+$0 budget.
+
+**Mandate (user, 2026-05-15)**: scope = "ใกล้เคียงหรือดีกว่าเครื่องมือ
+ของบริษัท / องค์กรชั้นนำของโลก ภายใต้ฟรี + เป็นมิตรกับมือใหม่"
+
+## Stubs
+
+| Stub | LOC | Days | Signal type |
+|---|---|---|---|
+| `macro-regime-fred/` | ~390 | ~3 | Macro context (FRED yield curve, unemployment, CPI, VIX) |
+| `insider-trading-form-4/` | ~510 | ~5 | SEC Form 4 — CEO/CFO buys (Cohen-Malloy-Pomorski 2012) |
+| `institutional-flow-13f/` | ~680 | ~7 | SEC 13F — ~50 tracker funds (Berkshire/Bridgewater/Tiger) |
+| `earnings-surprise-history/` | ~590 | ~5.5 | 8-quarter beats/misses (PEAD signal) |
+| `news-sentiment-free/` | ~990 | ~9 | NewsAPI free + Reddit + Wikipedia + HN |
+| `dividend-history/` *(audit add)* | ~980 | ~8 | Yield + growth + payout + aristocrat status |
+| `earnings-calendar/` *(audit add)* | ~720 | ~6 | Next earnings date + estimate + countdown |
+| **Phase 9 subtotal** | **~4860 LOC** | **~43.5 days (~9 wks mobile)** | |
+
+Cumulative compute time after Phase 9: stays under 60 min/week (each
+signal cached aggressively per `workflow-cache-improvements/PLAN.md`).
+
+## Phase 9 Acceptance Criteria
+
+- [ ] All 5 signals integrated; each passes PBO ≤ 0.5 + DSR > 0 + IC > 0.01
+- [ ] Per-stock detail page shows new chips/badges (insider buy,
+      institutional flow, earnings surprise, macro context)
+- [ ] News sentiment chip surfaces top decile / bottom decile only
+      (no chip when middle-of-pack)
+- [ ] **Cost stays $0** — all data sources free-tier or free-public
+- [ ] Tag `v2.5.0-phase9`
+
+---
+
+# PHASE 10 — Beginner UX Layer (toward v2.8)
+
+**Goal**: Make the rigor of Phase 4-9 **accessible to beginners**. Adds
+glossary + tooltips + recommendation explainer + watchlist + comparison
+view + onboarding + bilingual (TH/EN).
+
+**Mandate**: matches Jitta / Simply Wall St / Morningstar in UX
+accessibility while keeping methodology rigor at hedge-fund grade.
+
+## Stubs
+
+| Stub | LOC | Days | Feature |
+|---|---|---|---|
+| `explainer-tooltips/` | ~1410 | ~11 | Tooltips + Glossary modal + "Why X rated Y?" explainer |
+| `watchlist-localstorage/` | ~810 | ~6 | ⭐ Star to save stocks (no login) |
+| `comparison-view/` | ~1490 | ~12 | `/compare/NVDA-AMD-INTC/` 2-3 stock side-by-side |
+| `bilingual-i18n/` | ~2230 | ~14 | next-intl + Thai translations (TH + EN) |
+| `onboarding-tutorial/` | ~830 | ~6.5 | First-visit 6-step walkthrough |
+| **Phase 10 subtotal** | **~6770 LOC** | **~49.5 days (~10 wks mobile)** | |
+
+## Phase 10 Acceptance Criteria
+
+- [ ] Every metric in the UI has hover/tap tooltip
+- [ ] Glossary modal covers 40+ terms
+- [ ] "Why X rated Y?" explainer walks through rubric per stock
+- [ ] Watchlist persists across sessions in browser
+- [ ] Comparison view supports 2-3 stocks side-by-side with overlaid
+      pillar radar + normalized price chart
+- [ ] Bilingual: both `/en/` and `/th/` URL routes work
+- [ ] First-visit tutorial walks new users through the layout in 6 steps
+- [ ] Tag `v2.8.0-phase10`
+
+---
+
+# PHASE 11 — Community + Transparency (toward v3.0)
+
+**Goal**: Cement the open-source educational positioning with public
+methodology + case-studies + API documentation. Trust-building +
+academic-grade transparency.
+
+## Stubs
+
+| Stub | LOC | Days | Deliverable |
+|---|---|---|---|
+| `methodology-faq/` | ~4930 | ~17.5 | `/methodology/<section>` deep-dive pages (9 sections × bilingual) |
+| `case-studies/` | ~8800 | ~26 | 5 worked-example case studies (NVDA / SPG / CRWD / cautious-cluster / 2024 Fed pivot) |
+| `public-api-docs/` | ~2520 | ~14.5 | `/api-docs` for 3rd-party consumers of the JSON output |
+| `stock-story-llm/` *(audit add)* | ~1270 | ~11 | LLM-generated 2-3 sentence narrative per stock (Claude Haiku 4.5 via vendored `claude-api` skill); opt-in; transparency modal shows full prompt + response |
+| **Phase 11 subtotal** | **~17,520 LOC** | **~69 days (~14 wks mobile)** | |
+
+Note: bulk of Phase 11 LOC = **written prose**, not code. Effort dominated
+by writing quality educational content and Thai translation.
+
+## Phase 11 Acceptance Criteria
+
+- [ ] `/methodology` page with 9 deep-dive sections (TH + EN)
+- [ ] 5 case studies published; each includes honest critique
+- [ ] Public API doc page with quickstart + schema + examples in
+      curl / Python / JS / MCP server stub
+- [ ] CHANGELOG.md auto-generated from PR + tag history
+- [ ] Tag `v3.0.0-phase11` — flagship release for retail community
+
+---
+
+# v3.0 Vision (Phase 11 close)
+
+By Phase 11 close, QuantRank will be:
+
+- **Methodology rigor**: matches or exceeds Jitta / Simply Wall St /
+  Morningstar; matches academic SOTA (López de Prado, Bailey,
+  Kelly-Pruitt-Su, Angelopoulos-Bates, Cohen-Malloy)
+- **Data breadth**: 5+ free alt-data sources beyond fundamentals + prices
+  (insider, institutional flow, macro, news, earnings surprise)
+- **Beginner accessibility**: tooltips on every metric, glossary, "Why
+  rated X?" explainer, watchlist, comparison view, onboarding, Thai +
+  English
+- **Transparency**: methodology page, case studies (honest critique
+  included), public API docs, open-source MIT throughout
+- **Cost to user**: **$0** forever
+- **Cost to maintainer**: $0 hosting (Vercel free tier) + 1-3 hrs/day
+  mobile dev throughout
+
+Estimated calendar: **Phase 9 → 11 = ~28 weeks mobile-only**
+(~6-7 months from Phase 8 close).
 
 ---
 

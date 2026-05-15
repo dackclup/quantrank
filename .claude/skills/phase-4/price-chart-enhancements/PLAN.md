@@ -45,6 +45,28 @@ If `fair_price.median` is null (e.g., applicability gates failed for
 all 6 methods, or `data_quality_input_corruption` veto fired) → omit
 the line entirely.
 
+### 4. SPY benchmark overlay (toggleable, P0 retail feature)
+
+Added 2026-05-15 audit. Every comparable retail tool (Yahoo Finance /
+Public.com / Robinhood) shows "stock vs S&P 500" overlay. Critical
+context for retail user — "did NVDA actually outperform the index?"
+
+- **Toggle button** above the chart: `[ vs SPY ]`
+- **Green normalized line** of SPY closing prices, same time period
+  as the stock chart, **normalized to 100 at the start of the window**
+- Stock price also normalized to 100 at start so the two lines
+  share a single y-axis as "% return from window start"
+- When toggle on: title changes to "PRICE (1Y) — normalized to 100"
+- When toggle off: chart returns to absolute-dollar y-axis (default)
+
+SPY data **already in production** — `compute/ingest/prices.py::fetch_spy_benchmark`
+fetches it for the beta calculation. Just need to surface in the chart.
+
+### 5. Sub-industry-peer overlay (optional, P1 — defer to Phase 4.4)
+
+"NVDA vs sub-industry peers" = average of all Semis in S&P 500. Future
+addition; not in Phase 4.1 ship list.
+
 ## Mapping QuantRank fields → chart elements
 
 QuantRank's existing fair-price ensemble already produces the values
