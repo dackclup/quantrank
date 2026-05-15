@@ -10,10 +10,9 @@
 // from PR #70). See `.claude/skills/frontend-design-system/SKILL.md`
 // Rules 2 + 4.
 //
-// Display: "NN%" with optional italic "heuristic" qualifier per
-// Option D locked in `phase-4-kickoff-checklist/PLAN.md` §1. The
-// global Disclaimer banner covers the legal posture — no per-badge
-// popover required.
+// Display: "NN%" with a small leading dot in the band's accent. The
+// global Disclaimer banner covers the legal "not a backtested
+// probability" framing — no inline qualifier needed.
 
 type Band = {
   max: number;            // strictly less than `max` puts the value in this band
@@ -75,16 +74,10 @@ function bandFor(pct: number): Band {
 export function LossChanceBadge({
   lossChancePct,
   size = 'sm',
-  showQualifier = false,
   className = '',
 }: {
   lossChancePct: number | null;
   size?: 'xs' | 'sm' | 'md';
-  // When `true` (detail-page contexts), renders a small italic
-  // "heuristic" suffix next to the percentage. Off by default for
-  // table rows where horizontal space is tight; the tooltip carries
-  // the qualifier instead.
-  showQualifier?: boolean;
   className?: string;
 }) {
   // Missing MoS → em-dash placeholder. Matches existing MoSCell
@@ -106,14 +99,11 @@ export function LossChanceBadge({
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-full font-medium ring-1 ring-inset ${band.cls} ${sizeCls} ${className}`}
-      title={`Loss Chance ${rounded}% — heuristic (combines composite, defense flags, MoS). Not a backtested probability.`}
-      aria-label={`Loss Chance ${rounded}%. ${band.label}. Heuristic, not a backtested probability.`}
+      title={`Loss Chance ${rounded}% — combines composite, defense flags, MoS.`}
+      aria-label={`Loss Chance ${rounded}%. ${band.label}.`}
     >
       <span className={`inline-block h-1.5 w-1.5 rounded-full ${band.dot}`} aria-hidden="true" />
       {rounded}%
-      {showQualifier && (
-        <span className="italic font-normal opacity-70">heuristic</span>
-      )}
     </span>
   );
 }

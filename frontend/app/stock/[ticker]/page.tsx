@@ -121,9 +121,7 @@ export default function StockDetailPage({
                 equal space BEFORE / BETWEEN / AFTER the three columns
                 so the left edge of Price + the right edge of Loss
                 Chance feel equally inset from the card. Single
-                baseline: label + h-6 value box. `heuristic`
-                qualifier renders below the chip so the chip itself
-                stays narrow (regression #77). */}
+                baseline: label + h-6 value box. */}
             <div className="flex flex-wrap items-start justify-evenly gap-3">
               <div className="flex flex-col items-center gap-1 text-center">
                 <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
@@ -153,12 +151,6 @@ export default function StockDetailPage({
                     size="sm"
                   />
                 </div>
-                {detail.loss_chance_pct !== null &&
-                  detail.loss_chance_pct !== undefined && (
-                    <span className="text-[10px] italic text-slate-400">
-                      heuristic
-                    </span>
-                  )}
               </div>
             </div>
           </div>
