@@ -105,15 +105,27 @@ export default function StockDetailPage({
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:items-end">
-            <ScoreBadge score={detail.composite_score} size="lg" />
+            {/* Top row: composite donut + MoS — paired because both
+                are summary statistics ("how good overall" / "how
+                cheap"). MoS moved here from the 3-column metric row
+                so the lower row reads as three absolute-price cells
+                (Price / Target / Loss Chance). */}
+            <div className="flex items-center gap-5">
+              <ScoreBadge score={detail.composite_score} size="lg" />
+              <div className="flex flex-col items-center gap-1 text-center">
+                <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
+                  Margin of safety
+                </span>
+                <div className="flex h-6 items-center">
+                  <MoSCell mos={mosPct} align="left" />
+                </div>
+              </div>
+            </div>
             {/* 3-column metric row. `justify-evenly` distributes
                 equal space BEFORE / BETWEEN / AFTER the three columns
                 so the left edge of Price + the right edge of Loss
-                Chance feel equally inset from the card, regardless of
-                each column's intrinsic content width (grid-cols-3
-                gave equal column widths but the visual gutters still
-                looked uneven because column content varies in size).
-                Single baseline: label + h-6 value box. `heuristic`
+                Chance feel equally inset from the card. Single
+                baseline: label + h-6 value box. `heuristic`
                 qualifier renders below the chip so the chip itself
                 stays narrow (regression #77). */}
             <div className="flex flex-wrap items-start justify-evenly gap-3">
@@ -127,11 +139,13 @@ export default function StockDetailPage({
               </div>
               <div className="flex flex-col items-center gap-1 text-center">
                 <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
-                  Margin of safety
+                  Target
                 </span>
-                <div className="flex h-6 items-center">
-                  <MoSCell mos={mosPct} align="left" />
-                </div>
+                <span className="flex h-6 items-center font-mono text-lg font-semibold tabular-nums leading-none text-slate-900">
+                  {detail.fair_price?.max != null
+                    ? formatPrice(detail.fair_price.max)
+                    : <span className="text-slate-300">—</span>}
+                </span>
               </div>
               <div className="flex flex-col items-center gap-1 text-center">
                 <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
