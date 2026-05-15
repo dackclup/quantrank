@@ -469,11 +469,15 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                 <div className="flex items-center gap-2 text-xs text-slate-500">
                   <SectorChip sector={row.sector} size="xs" />
                 </div>
-                {/* Quote line — large price + USD label, then a solid-
-                    fill change pill on its own line. Mirrors the
-                    broker-app pattern the user referenced. */}
-                <div className="mt-1 flex items-end justify-between gap-2">
-                  <div className="flex flex-col items-start">
+                {/* 2-column symmetric quote block — each column uses
+                    the same 3-line stack (uppercase label, primary
+                    value, supporting pill) so the card no longer
+                    feels lopsided. */}
+                <div className="mt-1 grid grid-cols-2 gap-3">
+                  <div className="flex flex-col items-start gap-1">
+                    <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                      Price
+                    </span>
                     <div className="flex items-baseline gap-1">
                       <span className="font-mono text-base font-semibold tabular-nums text-slate-900">
                         ${row.current_price.toFixed(2)}
@@ -491,7 +495,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                           : 'bg-rose-600 text-white';
                         return (
                           <span
-                            className={`mt-1 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-semibold tabular-nums ${cls}`}
+                            className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-semibold tabular-nums ${cls}`}
                           >
                             <span aria-hidden="true">{positive ? '↗' : '↘'}</span>
                             {positive ? '+' : ''}
@@ -500,9 +504,40 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                         );
                       })()}
                   </div>
-                  <div className="flex flex-col items-end gap-1 text-xs">
-                    <span className="text-slate-500">Loss Chance</span>
-                    <LossChanceBadge lossChancePct={row.loss_chance_pct} size="xs" />
+                  <div className="flex flex-col items-end gap-1">
+                    <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                      Loss Chance
+                    </span>
+                    {row.loss_chance_pct !== null && row.loss_chance_pct !== undefined ? (
+                      (() => {
+                        const pct = row.loss_chance_pct;
+                        const rounded = Math.round(pct);
+                        // Match LossChanceBadge band rubric (band thresholds
+                        // mirror frontend/components/LossChanceBadge.tsx).
+                        const band =
+                          pct < 25 ? { tone: 'text-emerald-700', dot: 'bg-emerald-700', label: 'Low' } :
+                          pct < 40 ? { tone: 'text-emerald-700', dot: 'bg-emerald-500', label: 'Moderate-low' } :
+                          pct < 60 ? { tone: 'text-slate-700',   dot: 'bg-slate-500',   label: 'Neutral' } :
+                          pct < 80 ? { tone: 'text-red-700',     dot: 'bg-red-500',     label: 'Moderate-high' } :
+                                     { tone: 'text-red-700',     dot: 'bg-red-600',     label: 'High' };
+                        return (
+                          <>
+                            <span className={`font-mono text-base font-semibold tabular-nums ${band.tone}`}>
+                              {rounded}%
+                            </span>
+                            <span className="inline-flex items-center gap-1 text-[11px] text-slate-500">
+                              <span className={`inline-block h-1.5 w-1.5 rounded-full ${band.dot}`} aria-hidden="true" />
+                              {band.label}
+                            </span>
+                          </>
+                        );
+                      })()
+                    ) : (
+                      <>
+                        <span className="font-mono text-base font-semibold tabular-nums text-slate-300">—</span>
+                        <span className="text-[11px] text-slate-400">Unavailable</span>
+                      </>
+                    )}
                   </div>
                 </div>
                 {mos.tooltip && <span className="sr-only">{mos.tooltip}</span>}
