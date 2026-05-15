@@ -128,7 +128,6 @@ export function PriceHistoryChart({
   }
 
   const formatTick = (raw: string) => raw.slice(5); // YYYY-MM-DD → MM-DD
-  const fmtY = (v: number) => `$${v.toFixed(0)}`;
   const fmtTooltip = (v: number) => `$${v.toFixed(2)}`;
   const fmtPrice = (v: number) => `$${v.toFixed(2)}`;
 
@@ -240,12 +239,7 @@ export function PriceHistoryChart({
               tickFormatter={formatTick}
               minTickGap={32}
             />
-            <YAxis
-              domain={yDomain}
-              tick={{ fontSize: 10, fill: '#64748b' }}
-              tickFormatter={fmtY}
-              width={52}
-            />
+            <YAxis hide domain={yDomain} />
             <Tooltip
               formatter={(v: number) => [fmtTooltip(v), 'Close']}
               labelFormatter={(label: string) => label}
