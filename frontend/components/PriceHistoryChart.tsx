@@ -332,9 +332,14 @@ export function sliceByPeriod(
       cutoff = new Date(last);
       cutoff.setUTCFullYear(cutoff.getUTCFullYear() - 1);
       break;
+    case '5Y':
+      // PR 4f Phase 4.2 — the writer now persists ~5 trading years
+      // (HISTORY_TAIL_DAYS=1260). Return the full series unsliced
+      // so the chart shows the entire available history.
+      return points;
     default:
-      // 1D / 5D / 5Y — selector disables these in Phase 4.1; return
-      // the full series so the chart isn't blank if state is forced.
+      // 1D / 5D — selector disables these in Phase 4.1; return the
+      // full series so the chart isn't blank if state is forced.
       return points;
   }
 

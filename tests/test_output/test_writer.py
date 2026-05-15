@@ -146,21 +146,25 @@ def _ohlcv_df(n_rows: int) -> pd.DataFrame:
     )
 
 
-def test_write_stock_history_slices_to_252_when_input_longer(tmp_path):
-    df = _ohlcv_df(300)
+def test_write_stock_history_slices_to_tail_days_when_input_longer(tmp_path):
+    """Inputs longer than HISTORY_TAIL_DAYS get sliced to the last tail."""
+    from compute.output.writer import HISTORY_TAIL_DAYS
+
+    df = _ohlcv_df(HISTORY_TAIL_DAYS + 50)
     ok = write_stock_history(ticker="AAPL", prices_df=df, output_dir=tmp_path)
     assert ok is True
     out = tmp_path / "stocks" / "history" / "AAPL.json"
     assert out.exists()
     payload = json.loads(out.read_text())
     assert payload["ticker"] == "AAPL"
-    assert len(payload["dates"]) == 252
-    assert len(payload["closes"]) == 252
-    # First date in slice is row 300-252=48 (0-indexed); last date is row 299.
+    assert len(payload["dates"]) == HISTORY_TAIL_DAYS
+    assert len(payload["closes"]) == HISTORY_TAIL_DAYS
+    # Last date is row (N-1); index ends at the configured `end=` date.
     assert payload["dates"][-1] == "2026-05-01"
 
 
-def test_write_stock_history_uses_full_input_when_shorter_than_252(tmp_path):
+def test_write_stock_history_uses_full_input_when_shorter_than_tail(tmp_path):
+    """Inputs shorter than the tail are written verbatim — no padding."""
     df = _ohlcv_df(100)
     ok = write_stock_history(ticker="NEW", prices_df=df, output_dir=tmp_path)
     assert ok is True

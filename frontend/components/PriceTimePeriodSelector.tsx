@@ -21,21 +21,20 @@ export const TIME_PERIODS: readonly TimePeriod[] = [
   '5Y',
 ] as const;
 
-// Phase 4.1 ships 1M / 6M / YTD / 1Y. 1D / 5D need an intraday
-// data source (deferred to Phase 4.3 — separate architecture
-// decision per price-chart-enhancements/PLAN.md). 5Y needs a
-// 5y daily ingest extension (Phase 4.2 — small ingest PR).
+// Phase 4.1 + 4.2 ship 1M / 6M / YTD / 1Y / 5Y. 1D / 5D need an
+// intraday data source (deferred to Phase 4.3 — separate architecture
+// decision per price-chart-enhancements/PLAN.md).
 const ENABLED_PERIODS: ReadonlySet<TimePeriod> = new Set([
   '1M',
   '6M',
   'YTD',
   '1Y',
+  '5Y',
 ]);
 
-const DISABLED_TOOLTIP: Record<Exclude<TimePeriod, '1M' | '6M' | 'YTD' | '1Y'>, string> = {
+const DISABLED_TOOLTIP: Record<'1D' | '5D', string> = {
   '1D': 'Intraday data — coming in v1.3',
   '5D': 'Intraday data — coming in v1.3',
-  '5Y': '5-year history — coming in v1.2',
 };
 
 interface Props {
@@ -54,7 +53,7 @@ export function PriceTimePeriodSelector({ value, onChange }: Props) {
         const enabled = ENABLED_PERIODS.has(period);
         const selected = period === value;
         const tooltip = !enabled
-          ? DISABLED_TOOLTIP[period as keyof typeof DISABLED_TOOLTIP]
+          ? DISABLED_TOOLTIP[period as '1D' | '5D']
           : undefined;
 
         // Outlined-light chip pattern (Rule 2 of frontend-design-system).
