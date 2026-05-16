@@ -79,6 +79,10 @@ from compute.scoring.dechow_f import DechowResult, compute_dechow_f
 from compute.scoring.loss_chance import derive_loss_chance
 from compute.scoring.pillars import TickerInputs, compute_all_pillars
 from compute.scoring.recommendation import derive_recommendation
+from compute.scoring.restatement_filings import (
+    check_late_filing,
+    check_restatement_history,
+)
 from compute.scoring.risk_overlay import compute_risk_flags
 from compute.scoring.sanity import compute_mos_trailing_ic
 from compute.scoring.tier2 import (
@@ -1022,6 +1026,29 @@ def run_weekly_compute() -> int:
             current_price=current_price,
         ) and "cross_source_disagreement" not in valuation_warnings:
             valuation_warnings.append("cross_source_disagreement")
+
+        # PR 4.5b §1 — restatement_history annotate. 10-K/A or 10-Q/A
+        # filings in the trailing 5 years from SEC EDGAR. Hennes-Leone-
+        # Miller 2008 *TAR* — restating firms see -9% abnormal return
+        # on announcement; recurrent restaters compound the effect.
+        # ANNOTATE-only (sector-agnostic base rate, no veto).
+        restatement_result = check_restatement_history(ticker, asof=asof_date)
+        if (
+            restatement_result.fired
+            and "restatement_history" not in valuation_warnings
+        ):
+            valuation_warnings.append("restatement_history")
+
+        # PR 4.5b §2 — late_filing_notification annotate. SEC Form
+        # 12b-25 (NT 10-K / NT 10-Q) within the trailing 365 days.
+        # Bartov-Lai-Yeung 2002 *JAR* — late filers see -5-7%
+        # abnormal returns. ANNOTATE-only.
+        late_filing_result = check_late_filing(ticker, asof=asof_date)
+        if (
+            late_filing_result.fired
+            and "late_filing_notification" not in valuation_warnings
+        ):
+            valuation_warnings.append("late_filing_notification")
 
         # Price history JSON (sliced from already-fetched prices, no new
         # fetches per Step 5 spec).

@@ -115,6 +115,21 @@ EIGHT_K_LOOKBACK_DAYS_ANNOTATE: int = 730
 # all calendar-year filers + most off-cycle filers.
 GOING_CONCERN_FILING_LOOKBACK_DAYS: int = 400
 
+# PR 4.5b — Disclosure-driven manipulation defenses.
+#
+# Restatement history scan: 5-year window matches the Hennes-Leone-
+# Miller 2008 *TAR* original cohort. 1825 = 5 × 365; the leap-day
+# buffer is absorbed by the ``_filing_date_within`` inclusive bounds.
+# A ticker with even ONE 10-K/A in this window earns
+# `restatement_history` annotate; recurrent restaters (count >= 2)
+# get the same flag plus a higher displayed count.
+RESTATEMENT_HISTORY_LOOKBACK_DAYS: int = 1825
+
+# Late-filing notification scan: 365-day window per Bartov-Lai-Yeung
+# 2002 *JAR* baseline. Form 12b-25 (NT 10-K / NT 10-Q) within the
+# trailing year flags ``late_filing_notification``.
+LATE_FILING_LOOKBACK_DAYS: int = 365
+
 # 8-K event-fetch JSON cache. Per-ticker filing list refreshes weekly;
 # Item 4.02 / 4.01 disclosures are sticky once filed so even a 7-day
 # stale cache won't cause a flagged ticker to silently un-flag.
@@ -150,3 +165,10 @@ CROSS_SOURCE_MARKET_CAP_TOLERANCE: float = 0.05  # 5%
 # 24h per ticker — same cadence as `PRICES_CACHE_MAX_AGE_HOURS`.
 YFINANCE_INFO_CACHE_DIR: Path = CACHE_DIR / "yfinance_info"
 YFINANCE_INFO_CACHE_MAX_AGE_HOURS: int = 24
+
+# PR 4.5b — disclosure-driven defenses. 10-K/A + 10-Q/A list (5y) +
+# Form 12b-25 (NT 10-K / NT 10-Q, 1y) per-ticker JSON caches.
+# 7-day TTL matches the existing 8-K cache rhythm — restatements
+# don't unfile, so a 7-day stale cache won't miss a flag.
+EDGAR_AMENDMENTS_CACHE_DIR: Path = CACHE_DIR / "edgar_amendments"
+EDGAR_LATE_FILINGS_CACHE_DIR: Path = CACHE_DIR / "edgar_late_filings"
