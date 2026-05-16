@@ -3,7 +3,6 @@ import Link from 'next/link';
 import FairPriceCard from '@/components/FairPriceCard';
 import { CurrentPriceLine } from '@/components/CurrentPriceLine';
 import { FairPriceBarChart } from '@/components/FairPriceBarChart';
-import { LossChanceBadge } from '@/components/LossChanceBadge';
 import { MoSBadge } from '@/components/MoSBadge';
 import { PillarRadarChart } from '@/components/PillarRadarChart';
 import { PriceHistoryChart } from '@/components/PriceHistoryChart';
@@ -152,12 +151,30 @@ export default function StockDetailPage({
                 <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
                   Loss chance
                 </span>
-                <div className="flex h-6 items-center">
-                  <LossChanceBadge
-                    lossChancePct={detail.loss_chance_pct}
-                    size="sm"
-                  />
-                </div>
+                {(() => {
+                  const pct = detail.loss_chance_pct;
+                  if (pct == null) {
+                    return (
+                      <span className="flex h-6 items-center font-mono text-lg font-semibold tabular-nums leading-none text-slate-300">
+                        —
+                      </span>
+                    );
+                  }
+                  // Mirror the 5-band rubric used by the mobile ranking
+                  // card (frontend/components/RankingTable.tsx) so the
+                  // detail page and the front page agree on tone.
+                  const tone =
+                    pct < 25 ? 'text-emerald-700' :
+                    pct < 40 ? 'text-emerald-700' :
+                    pct < 60 ? 'text-slate-700' :
+                    pct < 80 ? 'text-red-700' :
+                               'text-red-700';
+                  return (
+                    <span className={`flex h-6 items-center font-mono text-lg font-semibold tabular-nums leading-none ${tone}`}>
+                      {Math.round(pct)}%
+                    </span>
+                  );
+                })()}
               </div>
             </div>
           </div>
