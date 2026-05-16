@@ -96,11 +96,14 @@
     "latest_filed_date": "2026-05-11"
   },
   "risk_flags": [
-    "sloan_accruals_top_decile"
+    "sloan_accruals_top_decile",
+    "beneish_manipulation_veto",
+    "dechow_manipulation_veto"
   ],
   "valuation_warnings": [
     "beneish_high",
-    "dechow_high"
+    "dechow_high",
+    "manipulation_triple_flag"
   ],
   "has_history": true,
   "tangible_book_value": 12.595938147441235,
@@ -126,7 +129,7 @@
   },
   "beneish_m_score": -0.8324584836047407,
   "dechow_f_score": 6.652106582990692,
-  "recommendation": "lean_bullish",
+  "recommendation": "neutral",
   "loss_chance_pct": 33.96532449177964,
   "price_change_1d_pct": -6.0248,
   "entered_top5": false,
