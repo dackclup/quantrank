@@ -17,7 +17,24 @@ permissions:
 jobs:
   compute:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    # 90m was set after PR 3d Part 2 (per-stock latency observability)
+    # and held through 4f (warm-cache wall-clock 5m14s). 4g re-enabled
+    # 8-K Tier-2 fetches (Items 4.01 + 4.02), which added ~15-30m of
+    # EDGAR work per cold-ish run. Two consecutive workflow_dispatch
+    # runs (#43 manual, #44 scheduled) hit the 90m ceiling at the
+    # "Commit JSON outputs" step — compute completed but couldn't
+    # commit. Bump to 150m to give a ~60m buffer over the observed
+    # ~85-90m ceiling without inflating GitHub Actions minute usage
+    # (worst-case 150m × 4 weekly compute runs/month = 600 min,
+    # comfortably under the 2000 min free-tier ceiling).
+    #
+    # Permanent fix is PR 4b §1 (cross-source validator + EDGAR
+    # health probe) + the off-cycle pre-cache workflow drafted in
+    # issue #15 — both will let weekly compute read warm 8-K
+    # extracts from a side workflow instead of fetching live each
+    # week. Until those land, the 150m ceiling is the cheap
+    # mitigation.
+    timeout-minutes: 150
     steps:
       - uses: actions/checkout@v5
         with:
