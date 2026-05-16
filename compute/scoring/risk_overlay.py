@@ -68,6 +68,7 @@ from compute import config
 from compute.features import health
 from compute.ingest.fundamentals import FundamentalsSnapshot
 from compute.scoring.beneish import BENEISH_VETO_THRESHOLD
+from compute.scoring.dechow_f import DECHOW_VETO_THRESHOLD
 from compute.scoring.eight_k_events import check_non_reliance
 from compute.valuation.tangible_book import tangible_book_value_per_share
 
@@ -265,6 +266,7 @@ def compute_risk_flags(
     today: date | None = None,
     non_reliance_by_ticker: dict[str, bool] | None = None,
     beneish_m_scores: dict[str, float | None] | None = None,
+    dechow_f_scores: dict[str, float | None] | None = None,
 ) -> dict[str, list[str]]:
     """Compute the risk-flag list per ticker.
 
@@ -434,6 +436,15 @@ def compute_risk_flags(
             m = beneish_m_scores.get(ticker)
             if m is not None and math.isfinite(float(m)) and float(m) > BENEISH_VETO_THRESHOLD:
                 flags.append("beneish_manipulation_veto")
+
+        # PR 4.5a.3 — Dechow F-score soft-veto (HARD VETO at the
+        # stricter ``DECHOW_VETO_THRESHOLD = 3.0``). Original
+        # ``dechow_high`` annotate at F > 2.45 still emits separately
+        # in ``compute/main.py`` per-ticker loop. Same inject pattern.
+        if dechow_f_scores is not None:
+            f = dechow_f_scores.get(ticker)
+            if f is not None and math.isfinite(float(f)) and float(f) > DECHOW_VETO_THRESHOLD:
+                flags.append("dechow_manipulation_veto")
 
         out[ticker] = flags
     return out
