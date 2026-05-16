@@ -52,6 +52,22 @@ _INTERCEPT: Final[float] = -4.84
 # Beneish 1999 manipulation threshold (Type-I ~17%, Type-II ~24%).
 BENEISH_THRESHOLD: Final[float] = -2.22
 
+# PR 4.5a.2 — soft-veto threshold for promoting Beneish from annotate
+# to active veto. Beneish 1999 *FAJ* original cutoff is M > −2.22 (the
+# `beneish_high` annotate above). For Top-5 suppression we use a
+# STRICTER threshold (M > −1.78) so only high-confidence manipulation
+# candidates lose `entered_top5`. The −2.22 to −1.78 band keeps
+# annotate-only treatment.
+#
+# Why −1.78 specifically: Beneish 1999 paper Table 4 shows that at
+# M > −1.78 the model's positive-predictive-value crosses ~60% on the
+# original 74-manipulator sample. Below that, precision drops into
+# FP-heavy territory (Table 3 Type-II error rate). The stricter cutoff
+# mirrors the precision/recall trade-off PR 3d locked for the
+# `non_reliance_filing` veto — high precision, narrower recall, won't
+# dilute Top-5 with marginal annotators.
+BENEISH_VETO_THRESHOLD: Final[float] = -1.78
+
 
 @dataclass(frozen=True)
 class BeneishResult:

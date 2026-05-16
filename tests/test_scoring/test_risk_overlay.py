@@ -7,6 +7,7 @@ from datetime import date, timedelta
 import pandas as pd
 
 from compute.ingest.fundamentals import FundamentalsSnapshot
+from compute.scoring.beneish import BENEISH_VETO_THRESHOLD
 from compute.scoring.risk_overlay import (
     ALTMAN_DISTRESS_THRESHOLD,
     NSI_MIN_POPULATION,
@@ -198,6 +199,49 @@ def test_compute_risk_flags_handles_none_snapshot():
     # A None snapshot must not crash and must produce no flags.
     flags = compute_risk_flags({"NULL": None})
     assert flags["NULL"] == []
+
+
+def test_beneish_veto_fires_above_strict_threshold():
+    # PR 4.5a.2 — when beneish_m_scores is supplied and a ticker's M is
+    # above BENEISH_VETO_THRESHOLD (= -1.78), the `beneish_manipulation_veto`
+    # flag fires (active veto, suppresses entered_top5).
+    snaps = {"AAA": _snap(), "BBB": _snap()}
+    m_scores = {
+        "AAA": BENEISH_VETO_THRESHOLD + 0.5,  # well above veto threshold
+        "BBB": BENEISH_VETO_THRESHOLD - 0.5,  # below threshold (annotate band)
+    }
+    flags = compute_risk_flags(snaps, beneish_m_scores=m_scores)
+    assert "beneish_manipulation_veto" in flags["AAA"]
+    assert "beneish_manipulation_veto" not in flags["BBB"]
+
+
+def test_beneish_veto_skipped_when_score_is_none():
+    # Banks / REITs / asset-light filers commonly fail AQI + DEPI ratios
+    # so compute_beneish returns m_score=None. Such tickers must not
+    # trigger the veto.
+    snaps = {"BANK": _snap()}
+    m_scores = {"BANK": None}
+    flags = compute_risk_flags(snaps, beneish_m_scores=m_scores)
+    assert "beneish_manipulation_veto" not in flags["BANK"]
+
+
+def test_beneish_veto_strict_inequality():
+    # Threshold must be strict (>) not (>=). A ticker sitting exactly AT
+    # BENEISH_VETO_THRESHOLD should not fire (per `m > THRESHOLD` semantics
+    # documented in beneish.py).
+    snaps = {"EDGE": _snap()}
+    m_scores = {"EDGE": BENEISH_VETO_THRESHOLD}
+    flags = compute_risk_flags(snaps, beneish_m_scores=m_scores)
+    assert "beneish_manipulation_veto" not in flags["EDGE"]
+
+
+def test_beneish_veto_disabled_when_dict_not_supplied():
+    # Backward-compat: callers (tests, future external users) that don't
+    # supply beneish_m_scores must not see the veto fire — same pattern
+    # as non_reliance_by_ticker.
+    snaps = {"T1": _snap()}
+    flags = compute_risk_flags(snaps)
+    assert "beneish_manipulation_veto" not in flags["T1"]
 
 
 def test_compute_risk_flags_empty_input():
