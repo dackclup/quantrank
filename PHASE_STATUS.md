@@ -6,7 +6,7 @@
 | 1 | Universe + prices ingestion | ✅ DONE — 2026-05-08 |
 | 2 | Fundamentals via SEC EDGAR | ✅ DONE — 2026-05-08 |
 | 3 | Classical features + composite + **defenses** → **v1.0** | ✅ **DONE — 2026-05-14** (v1.0.0 tagged + GitHub release) |
-| 4 | Factor consolidation (OSAP + JKP + Qlib + IPCA) → **v1.1** | 🟡 IN PROGRESS — 4a-4g + 4c.1/4c.2/4c.3 + PR 4b §1 (cross-source validator, production-wired) + §2 (PBO/DSR library) all merged (PR #60 on 2026-05-14, PR #79 4g 8-K re-enable on 2026-05-15); **PR 4b §3 polish** (`decay_report.json` writer + UI transparency surface — issue #75 remaining items) next |
+| 4 | Factor consolidation (OSAP + JKP + Qlib + IPCA) → **v1.1** | 🟡 IN PROGRESS — 4a-4g + 4c.1/4c.2/4c.3 + PR 4b §1 (cross-source validator, production-wired) + §2 (PBO/DSR library) all merged (PR #60 on 2026-05-14, PR #79 4g 8-K re-enable on 2026-05-15); PR 4b §3 IC-decay output deferred to Phase 5 (needs pillar time-series harness); **next: 4h / 4i / 4j / 4k factor integrations** (PBO/DSR gate ready) or **4.5a.1 sector-relative Sloan** in parallel |
 | **4.5** | **Earnings-manipulation defense cluster** → **v1.2** | ⚪ not started — 6 sub-PRs (4.5a-4.5f); depends on PR 4b PBO/DSR validation gate |
 | 5 | ML meta-learner (Triple-Barrier + Meta-Labeling + Conformal) + SHAP | ⚪ not started |
 | 6 | Sentiment v2 (FinBERT + Whisper + 8-K Lazy Prices) | ⚪ not started |
@@ -162,34 +162,32 @@ of 8 acceptance criteria are still pending — they form the
 |---|---|---|---|
 | **§1 Cross-source validator** | ✅ **DONE** (PR #60) | `compute/ingest/cross_source.py` | SEC-derived market cap vs yfinance `.info` with 5% tolerance per `config.CROSS_SOURCE_MARKET_CAP_TOLERANCE`. Wired into `compute/main.py` per-ticker loop after Beneish + Dechow. **Production verification (run #45, 2026-05-16)**: 23/502 tickers flagging `cross_source_disagreement` = 4.6%, within the < 5% sanity bound. Cache at `compute/cache/yfinance_info/` with 24h TTL. |
 | **§2 PBO + DSR library** | ✅ **DONE** (PR #60) | `compute/validation/pbo_dsr.py` | Bailey-Borwein-Lopez de Prado-Zhu 2014 CSCV (S=8 or 16) + Bailey-LdP DSR. Pure-numpy reimpl (avoids `mlfinlab` commercial license + 50MB scipy install). Beasley-Springer-Moro 1990 inverse normal CDF + hand-rolled sample skew/kurtosis. Golden-fixture tests against Bailey 2014 paper Table 1 within 5%. Entry point `factor_passes_gates()` ready for 4h/4i/4j/4k to call at signal-acceptance time. |
-| **§3 IC-decay monitor** | 🟡 **PARTIAL** | `compute/validation/ic_decay.py` | Module exists with rolling 12m + 36m IC per pillar + 50%-drop / 6-month sustained-alert logic. McLean-Pontiff 2016 anchor (26% OOS / 32% post-publication decay). **Missing 2 acceptance criteria**: (a) `decay_report.json` writer wiring in `compute/main.py` so the weekly compute produces the file; (b) UI transparency surface on the stock detail page so users can see the per-pillar decay state. |
+| **§3 IC-decay monitor** | 🟡 **DEFERRED to Phase 5** | `compute/validation/ic_decay.py` | Module exists with rolling 12m + 36m IC per pillar + 50%-drop / 6-month sustained-alert logic. McLean-Pontiff 2016 anchor. **The 2 unchecked acceptance criteria on issue #75 (`decay_report.json` writer + UI transparency surface) need a per-pillar monthly IC time series as input — and that time series only accumulates from the Phase 5 walk-forward backtest harness.** PR #60 + `ic_decay.py:51` always intended this sequencing ("until then, this module ships as a callable library"). Issue #75 stays open as a Phase-5 tracker; no work to do until Phase 5 backtest infra lands. |
 
-**Next deliverable**: **PR 4b §3 polish** — finish the remaining
-issue #75 acceptance criteria. Two concrete deliverables:
+**Next deliverable**: With PR 4b §1+§2 ✅ and §3 Phase-5-blocked,
+the two unblocked tracks are:
 
-1. **Production wiring** — call `ic_decay.run()` from `compute/main.py`
-   after the existing pillar normalization step; write the
-   resulting per-pillar decay table to
-   `frontend/public/data/decay_report.json` via a new writer in
-   `compute/output/writer.py`. Mirror the existing
-   `metadata.json` write pattern (atomic temp → rename).
-2. **UI transparency surface** — new `DecayReportCard.tsx`
-   component on the stock detail page below `PillarRadarChart`.
-   Shows 8-pillar IC trend (12m + 36m) with a small "decay
-   alert" badge per pillar that crossed the 50%-drop / 6-month
-   threshold. Reads `decay_report.json` on the client (same
-   pattern as `CurrentPriceLine.tsx`'s per-ticker history fetch
-   — fail-soft if the file isn't on disk yet so the detail page
-   still renders).
+1. **4h / 4i / 4j / 4k factor integrations** (OSAP / JKP / Qlib /
+   IPCA) — each gated by the now-complete `pbo_dsr.factor_passes_
+   gates()` harness. Sequencing per
+   `v1-to-v1-1-migration/PLAN.md`. Tag `v1.1.0-phase4` after all
+   four merge.
+2. **Phase 4.5a.1 — sector-relative Sloan** (folds in
+   [issue #7](https://github.com/dackclup/quantrank/issues/7)).
+   Replaces cross-sectional top-decile Sloan veto with a within-
+   GICS-sector top-decile gate. Removes the known over-fire on
+   Financials + REITs whose non-cash earnings are structural,
+   not manipulative. ~80 LOC + AAER backtest. **First sub-PR
+   of the Phase 4.5 manipulation-defense cluster** (see §"Phase
+   4.5 plan" below for the full 4.5a-4.5f roadmap).
 
-Effort: ~150 LOC (writer + UI) + ~80 LOC tests. ~2-3 days.
+These two tracks run in parallel — they touch disjoint code
+paths (`compute/scoring/` for 4.5a.1, `compute/ingest/factors/`
+for 4h-4k) and share the PR 4b §2 PBO/DSR gate.
 
-After §3 polish ships: → 4h / 4i / 4j / 4k (OSAP / JKP / Qlib /
-IPCA factor integrations, each gated by the now-complete PBO/DSR
-harness) → tag `v1.1.0-phase4`. **Phase 4.5 (manipulation-
-defense cluster, v1.2 target) follows v1.1.0 and runs in parallel
-where the touched files are disjoint — see "Phase 4.5 plan"
-section below.**
+**Phase 4.5 (manipulation-defense cluster, v1.2 target) follows
+v1.1.0 and runs in parallel where the touched files are
+disjoint — see "Phase 4.5 plan" section below.**
 
 ## Phase 4.5 plan — Earnings-Manipulation Defense Cluster (v1.2)
 
