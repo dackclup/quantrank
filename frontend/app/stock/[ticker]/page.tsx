@@ -3,7 +3,6 @@ import Link from 'next/link';
 import FairPriceCard from '@/components/FairPriceCard';
 import { CurrentPriceLine } from '@/components/CurrentPriceLine';
 import { FairPriceBarChart } from '@/components/FairPriceBarChart';
-import { LossChanceBadge } from '@/components/LossChanceBadge';
 import { MoSBadge } from '@/components/MoSBadge';
 import { PillarRadarChart } from '@/components/PillarRadarChart';
 import { PriceHistoryChart } from '@/components/PriceHistoryChart';
@@ -152,12 +151,11 @@ export default function StockDetailPage({
                 <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
                   Loss chance
                 </span>
-                <div className="flex h-6 items-center">
-                  <LossChanceBadge
-                    lossChancePct={detail.loss_chance_pct}
-                    size="sm"
-                  />
-                </div>
+                <span className="flex h-6 items-center font-mono text-lg font-semibold tabular-nums leading-none text-slate-900">
+                  {detail.loss_chance_pct != null
+                    ? `${Math.round(detail.loss_chance_pct)}%`
+                    : <span className="text-slate-300">—</span>}
+                </span>
               </div>
             </div>
           </div>
