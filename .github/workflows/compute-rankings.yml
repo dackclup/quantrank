@@ -84,6 +84,8 @@ jobs:
             compute/cache/edgar_8k
             compute/cache/edgar_10k_text
             compute/cache/yfinance_info
+            compute/cache/edgar_amendments
+            compute/cache/edgar_late_filings
           key: cache-v4-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
             cache-v4-${{ steps.quarter.outputs.q }}-
