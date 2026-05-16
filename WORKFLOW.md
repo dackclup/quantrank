@@ -43,13 +43,19 @@ You cannot run Python or Node locally. All execution happens in **GitHub Actions
 | 3 | Classical features + composite | Working v1.0 with 30+ metrics | 5 days | Both |
 | **v1.0 SHIPS** | | **Tag v1.0** | | |
 | 4 | **Factor Consolidation** ⭐ | OSAP + JKP + Qlib + IPCA | 1-2 weeks | **B (NEW)** |
+| **v1.1 SHIPS** | | **Tag v1.1.0-phase4** | | |
+| **4.5** | **Earnings-Manipulation Defense Cluster** ⭐ | Sector-relative Sloan + Beneish/Dechow veto + REM + restatement + insider Form 4 + composite penalty | 10-11 weeks | **B (NEW 2026-05-16)** |
+| **v1.2 SHIPS** | | **Tag v1.2.0-phase4.5** | | |
 | 5 | ML meta-learner + SHAP | LightGBM + Triple-Barrier + Conformal | 1-1.5 weeks | B (enhanced) |
 | 6 | Sentiment v2 | Whisper + 8-K + Lazy Prices | 1-1.5 weeks | B (enhanced) |
 | 7 | Regime + Portfolio v2 | Student-t HMM + TDA + NCO | 1 week | B (enhanced) |
 | 8 | Universe expansion | S&P 1500 → v2.0 | 3-5 days | Both |
 
-**To v1.0**: ~11 working days. Calendar (full-time): 2-3 weeks.
-**To v2.0 (Option B)**: ~32-37 working days. Calendar: 7-8 weeks.
+**To v1.0**: ~11 working days. Calendar (full-time): 2-3 weeks. ✅ shipped 2026-05-14.
+**To v1.1 (Phase 4)**: PR 4b + 4h/4i/4j/4k. Calendar 6-8 weeks full-time.
+**To v1.2 (Phase 4.5 — manipulation defense cluster)**: 6 sub-PRs over ~10-11 weeks full-time.
+**To v2.0 (Option B, original)**: ~32-37 working days. Calendar: 7-8 weeks (does NOT include 4.5).
+**To v2.0 (Option B + 4.5)**: ~17-19 calendar weeks total full-time.
 **To v2.0 (Option A fallback)**: ~25-28 working days. Calendar: 5-6 weeks.
 
 ---
@@ -134,6 +140,18 @@ Defense additions per phase (full bibliography in
 | 4 | PBO + Deflated Sharpe gating | (infra) | 200 LOC | Bailey-de Prado 2014 |
 | 4 | IC decay monitor | (infra) | 150 LOC | McLean-Pontiff 2016 |
 | 4 | Cross-source validator | GUARD | 150 LOC | (data-fragility defense) |
+| 4.5a | Sector-relative Sloan | VETO (replaces v1.0 cross-sec.) | 80 LOC | Sloan 1996 + Rule 6 |
+| 4.5a | Beneish M-score soft-veto (M > −1.78) | VETO | 40 LOC | Beneish 1999 *FAJ* |
+| 4.5a | Dechow F-score soft-veto (F > 3.0) | VETO | 40 LOC | Dechow et al. 2011 *CAR* |
+| 4.5a | `manipulation_triple_flag` joint gate | BADGE | 60 LOC | (composite gate) |
+| 4.5b | 10-K/A restatement history (5y) | ANNOTATE | 150 LOC | Hennes-Leone-Miller 2008 *TAR* |
+| 4.5b | NT 10-K/Q (Form 12b-25, 365d) | ANNOTATE | 120 LOC | Bartov-Lai-Yeung 2002 *JAR* |
+| 4.5c | Roychowdhury REM 3-proxy (sector-rel.) | ANNOTATE | 250 LOC | Roychowdhury 2006 *JAE* |
+| 4.5d | Beneish M-score 3y momentum | ANNOTATE | 80 LOC | (paper extension) |
+| 4.5d | Burgstahler-Dichev kink at zero (3y) | ANNOTATE | 100 LOC | Burgstahler-Dichev 1997 *JAE* |
+| 4.5e | Form 4 insider sell cluster (3+ / 30d) | ANNOTATE | 300 LOC | Cohen-Malloy-Pomorski 2012 *RFS* |
+| 4.5e | CEO/CFO unusual sell (> 5× comp / 90d) | ANNOTATE | 120 LOC | (paper extension) |
+| 4.5f | `manipulation_index` 0-100 composite | (schema + penalty) | 250 LOC | (rollup of 4.5a-4.5e) |
 | 5 | Bao-Ke ML fraud (RUSBoost) | ANNOTATE | 300 LOC | Bao et al. 2020 *JAR* |
 | 5 | MAPIE conformal wrappers | (arch) | 150 LOC | Angelopoulos-Bates 2021 |
 | 5 | Purged + Embargoed CV (skfolio) | (arch) | 100 LOC | López de Prado 2018 |
@@ -721,6 +739,144 @@ These close gaps surfaced by the comprehensive planning audit on
   Grand total: ~6,000 LOC, ~11-13 weeks full-time
   (3-4 months mobile-only). Aligns with this doc's "Phase Overview"
   headline + adds the UX trio + scaffolding overhead.
+
+---
+
+# PHASE 4.5 — Earnings-Manipulation Defense Cluster (v1.2)
+
+**Goal**: Harden the manipulation-defense layer from 9 to 18 layers
+(5 → 7 active vetoes, 4 → 11 annotates) using free SEC EDGAR data
++ peer-reviewed forensic models. **Validated against the SEC AAER
+2000-2024 cohort** through the PR 4b PBO/DSR harness — no addition
+ships without PBO ≤ 0.5 AND DSR > 0.
+
+**Research refs**: Sloan 1996 *TAR*, Beneish 1999 *FAJ*, Dechow et
+al. 2011 *CAR*, Roychowdhury 2006 *JAE*, Burgstahler-Dichev 1997
+*JAE*, Hennes-Leone-Miller 2008 *TAR*, Bartov-Lai-Yeung 2002 *JAR*,
+Cohen-Malloy-Pomorski 2012 *RFS*. Full bibliography in
+[`docs/RESEARCH_FINDINGS.md`](docs/RESEARCH_FINDINGS.md) §"Defense
+Playbook" (extend during 4.5a kickoff).
+
+**Sequencing**: PR 4b (defense-infrastructure) MUST land first —
+its PBO/DSR + IC-decay + AAER cohort fixtures are the gate every
+4.5 sub-PR uses to ship. Factor integrations 4h/4i/4j/4k can ship
+in parallel (disjoint code paths).
+
+## Tasks
+
+### 4.5a — Manipulation quick wins (3 sub-PRs, ~180 LOC, 1-2w)
+
+- [ ] **4.5a.1 — Sector-relative Sloan** (~80 LOC). Replace
+      cross-sectional top-decile in `compute/scoring/risk_overlay.py`
+      with within-GICS-sector top-decile. Re-run defense-scorecard;
+      confirm Financials + REITs over-fire drops (per issue #7).
+      AAER backtest: PBO ≤ 0.5 vs prior cross-sectional baseline.
+- [ ] **4.5a.2 — Beneish soft-veto** (~40 LOC). Promote
+      `beneish_high` from annotate to active veto at M > −1.78.
+      Original M > −2.22 annotate flag preserved for the −2.22 to
+      −1.78 band. AAER recall check against the Dechow et al. 2011
+      labelled cohort.
+- [ ] **4.5a.3 — Dechow soft-veto + `manipulation_triple_flag`**
+      (~60 LOC). Promote `dechow_high` from annotate to active veto
+      at F > 3.0. Add joint-gate `manipulation_triple_flag` for
+      stocks flagging Beneish + Sloan + Dechow simultaneously
+      (UI badge, doesn't stack veto on top of the three component
+      vetoes).
+- [ ] Defense-scorecard delta confirmed in PR description (active
+      vetoes 5 → 7).
+
+### 4.5b — Disclosure-driven catches (~270 LOC, 1w)
+
+- [ ] **`restatement_history` annotate** (~150 LOC). Scan SEC
+      EDGAR for 10-K/A filings per CIK in trailing 5y. Flag if
+      count ≥ 1. Module: `compute/scoring/restatement.py`.
+- [ ] **`late_filing_notification` annotate** (~120 LOC). Scan SEC
+      EDGAR for Form 12b-25 (NT 10-K / NT 10-Q) filings in
+      trailing 365d. Module: `compute/scoring/late_filing.py`.
+- [ ] 10-K/A and Form 12b-25 added to `WORKFLOW.md` "SEC Filing
+      Roadmap" table with `✅ active`.
+- [ ] Per-CIK on-disk cache (90-day TTL, mirrors
+      `filing_text.py` pattern).
+
+### 4.5c — Real Earnings Management (~250 LOC, 2w)
+
+- [ ] **Roychowdhury REM 3-proxy** (`rem_suspect` annotate).
+      Module: `compute/scoring/rem.py`.
+- [ ] Sector-industry quintile baselines used as model targets
+      (mirrors `_within_sector_decile` pattern from
+      `risk_overlay.py`).
+- [ ] **Golden tests** against Roychowdhury 2006 paper Table 6
+      values (within 5%).
+- [ ] Flag fires when **2 of 3 proxies** in the within-sector
+      worst decile.
+
+### 4.5d — Earnings-quality time-series + Burgstahler kink (~180 LOC, 2w)
+
+- [ ] **`m_score_deteriorating` annotate** (~80 LOC). Compute
+      Beneish M-score on each of trailing 3 fiscal years; flag if
+      Δ(latest − earliest) > +0.5.
+- [ ] **`loss_avoidance_pattern` annotate** (~100 LOC). Detect
+      tiny-positive NI ∈ [0, $5M] OR EPS ∈ [0, $0.05] for **3+
+      consecutive years**.
+
+### 4.5e — SEC Form 4 insider clustering (~420 LOC, 3w)
+
+- [ ] **Form 4 ingest layer** (~300 LOC,
+      `compute/ingest/form4.py`). SEC EDGAR fetch + XBRL/XML
+      parser for insider transaction tables. Per-CIK 30d cache.
+- [ ] **`insider_sell_cluster` annotate** (~80 LOC). Fire if 3+
+      insiders selling within 30d before next scheduled earnings
+      announcement.
+- [ ] **`c_suite_unusual_sell` annotate** (~40 LOC). CEO / CFO
+      selling > 5× annual comp within 90d. Comp source: DEF 14A
+      parser (if available) OR prior-year total transaction
+      volume as proxy.
+- [ ] Form 4 added to `WORKFLOW.md` "SEC Filing Roadmap" table.
+
+### 4.5f — Manipulation Composite + composite penalty + UI (~250 LOC, 1w, schema bump)
+
+- [ ] **`StockDetail.manipulation_index: float | None`** schema
+      field (additive — `0.7.x` → **`0.8.0-phase4.5f`**). Rollup
+      of 4.5a-4.5e flags into a 0-100 risk index.
+- [ ] **Composite-score penalty wiring** in
+      `compute/scoring/composite.py`:
+      `composite_score_adjusted = composite_score − 0.5 ×
+      (manipulation_index / 100) × 20`. Existing `composite_score`
+      preserved per SKILL.md Rule 9 (audit trail).
+- [ ] **Manipulation pillar card** on detail page UI — same visual
+      weight as the 8-pillar radar chart entries.
+- [ ] **`README.md` Honest Limitations** section updated covering:
+      what 4.5 catches, what it still misses (pre-disclosure
+      sophisticated fraud, off-balance-sheet SPEs, working-paper
+      audit data).
+- [ ] Schema-snapshot regenerated via
+      `python -m compute.output.schema_check --update-snapshot`.
+- [ ] Tag **`v1.2.0-phase4.5`**.
+
+## Phase 4.5 Fallback Triggers
+
+- AAER backtest PBO > 0.5 for any individual addition → reject
+  that flag; investigate before retrying with different threshold.
+- AAER recall drops vs PR 4b baseline → reject; the addition
+  introduced false negatives.
+- Form 4 parser cold-fetch latency > 30m for the full universe →
+  defer 4.5e to off-cycle pre-cache workflow per issue #15.
+- DEF 14A parser unavailable for 4.5e c-suite comp lookup →
+  fall back to transaction-volume proxy (already in plan).
+
+## Phase 4.5 Acceptance Criteria
+
+- [ ] All 6 sub-PRs (4.5a.1 / 4.5a.2 / 4.5a.3 / 4.5b / 4.5c / 4.5d
+      / 4.5e / 4.5f) merged
+- [ ] Defense layer grows **9 → 18** layers (verifiable via
+      `defense-scorecard` skill)
+- [ ] 7 active vetoes (was 5)
+- [ ] 11 annotate flags (was 4)
+- [ ] AAER cohort recall ≥ baseline (no false-negative regression)
+- [ ] AAER cohort precision ≥ baseline (no false-positive inflation)
+- [ ] Weekly compute time stays under 150m (the post-4g ceiling)
+- [ ] `manipulation_index` populated for ≥ 95% of universe
+- [ ] Tag `v1.2.0-phase4.5`
 
 ---
 

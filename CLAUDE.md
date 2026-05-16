@@ -99,12 +99,18 @@ Tier-2 re-enable). Production schema `0.7.0-phase4g`;
 ANNOTATE) → §2 PBO + DSR hard gate (Bailey-López de Prado-Zhu 2014,
 pure-numpy CSCV) → §3 IC-decay monitor — then 4h / 4i / 4j / 4k
 (OSAP / JKP / Qlib / IPCA factor integrations) → tag
-`v1.1.0-phase4`. See [`PHASE_STATUS.md`](PHASE_STATUS.md) for the
-chronological tracker and [`WORKFLOW.md`](WORKFLOW.md) for
-per-phase task lists. **5 open Phase 4+ issues**: #7 (Sloan
-sector-relative) / #15 (fundamentals throttling) / #41 (Next.js 14
-→ 16 CVEs) / #67 (Damodaran CoE Phase 5+) / #75 (PR 4b
-defense-infrastructure).
+`v1.1.0-phase4`. **Phase 4.5 (earnings-manipulation defense
+cluster) follows v1.1 → `v1.2.0-phase4.5`**: 6 sub-PRs (4.5a-4.5f)
+covering sector-relative Sloan + Beneish/Dechow soft-veto +
+restatement history + Form 12b-25 late filings + Roychowdhury REM
++ earnings-quality time-series + Burgstahler-Dichev kink + Form 4
+insider clustering + manipulation-composite penalty. Defense
+layer grows **9 → 18 layers** (5 → 7 active vetoes; 4 → 11 annotates).
+See [`PHASE_STATUS.md`](PHASE_STATUS.md) §"Phase 4.5 plan" for the
+full sub-PR breakdown + AAER backtest cohort. **5 open Phase 4+
+issues**: #7 (Sloan sector-relative — folded into 4.5a) / #15
+(fundamentals throttling) / #41 (Next.js 14 → 16 CVEs) / #67
+(Damodaran CoE Phase 5+) / #75 (PR 4b defense-infrastructure).
 
 ## Companion files
 
