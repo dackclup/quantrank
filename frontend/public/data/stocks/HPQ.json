@@ -3,19 +3,19 @@
   "name": "HP Inc.",
   "sector": "Information Technology",
   "industry": "Technology Hardware, Storage & Peripherals",
-  "market_cap": 19420474033.962143,
-  "current_price": 21.235,
-  "rank": 318,
-  "composite_score": 47.21,
+  "market_cap": 19031789152.7675,
+  "current_price": 20.81,
+  "rank": 311,
+  "composite_score": 47.52,
   "pillar_scores": {
     "quality": 29.79,
-    "value": 88.58,
+    "value": 88.81,
     "growth": 34.59,
-    "momentum": 26.05,
+    "momentum": 27.49,
     "health": 47.69,
     "profitability": 31.74,
-    "technical": 77.14,
-    "risk": 23.97,
+    "technical": 78.49,
+    "risk": 24.17,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.59,
     "eps_diluted": 0.58,
     "shares_outstanding": 914550199.0,
-    "market_cap": 19420474033.962143,
-    "pe_ratio_ttm": 7.740324445580765,
+    "market_cap": 19031789152.7675,
+    "pe_ratio_ttm": 7.585408191617177,
     "goodwill": 8724000000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 104.09372956890134,
+        "value": 106.48475653290913,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 107.84695032787786,
+        "value": 107.61785108807305,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,12 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 105.97033994838961,
-    "max": 104.09372956890134,
-    "low": 104.09372956890134,
-    "high": 107.84695032787786,
-    "mos_pct": 79.96137351197177,
+    "median": 107.05130381049109,
+    "max": null,
+    "low": 106.48475653290913,
+    "high": 107.61785108807305,
+    "mos_pct": 80.56072301297559,
     "valuation_warnings": [
+      "extreme_multiples_pe_estimate",
       "extreme_multiples_ev_ebitda_estimate",
       "value_trap_risk"
     ]
@@ -92,12 +93,13 @@
       "total_liabilities"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 79,
+    "filing_lag_days": 80,
     "latest_period_end": "2026-02-20",
     "latest_filed_date": "2026-02-25"
   },
   "risk_flags": [],
   "valuation_warnings": [
+    "extreme_multiples_pe_estimate",
     "extreme_multiples_ev_ebitda_estimate",
     "value_trap_risk"
   ],
@@ -114,20 +116,20 @@
     "label": "Information Technology median (n=73)",
     "values": {
       "Quality": 50.0,
-      "Value": 50.46,
+      "Value": 49.32,
       "Growth": 52.23,
-      "Momentum": 44.82,
+      "Momentum": 48.11,
       "Health": 69.52,
       "Profitability": 47.26,
-      "Technical": 64.14,
-      "Risk": 45.42
+      "Technical": 67.78,
+      "Risk": 46.12
     }
   },
   "beneish_m_score": -2.5411155308561955,
   "dechow_f_score": 0.5623923910737669,
   "recommendation": "neutral",
-  "loss_chance_pct": 16.407166713004568,
+  "loss_chance_pct": 17.044094914313717,
+  "price_change_1d_pct": 0.1926,
   "entered_top5": false,
-  "exited_top5": false,
-  "price_change_1d_pct": -0.1176
+  "exited_top5": false
 }
