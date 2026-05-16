@@ -65,6 +65,20 @@ _BASELINE: Final[float] = 0.0037
 # Top-decile cutoff per Dechow 2011 Table 7: "high risk" classification.
 DECHOW_HIGH_THRESHOLD: Final[float] = 2.45
 
+# PR 4.5a.3 — soft-veto threshold for promoting Dechow from annotate
+# to active veto. Dechow 2011 *CAR* Table 7 "high risk" cutoff is F >
+# 2.45 (the `dechow_high` annotate above). For Top-5 suppression we
+# use a STRICTER threshold (F > 3.0) so only high-confidence
+# manipulation candidates lose `entered_top5`. The 2.45 to 3.0 band
+# keeps annotate-only treatment.
+#
+# Why 3.0 specifically: Dechow 2011 Table 7 shows that at F > 3.0 the
+# AAER hit rate exceeds 4× the baseline (vs ~2× at F > 2.45). The
+# stricter cutoff matches the precision/recall trade-off PR 4.5a.2
+# locked for Beneish (high precision, narrower recall) and PR 3d
+# locked for `non_reliance_filing`.
+DECHOW_VETO_THRESHOLD: Final[float] = 3.0
+
 # Share-issuance dummy threshold — 1%+ year-over-year growth in
 # shares_outstanding flips the dummy.
 _ISSUANCE_THRESHOLD: Final[float] = 0.01

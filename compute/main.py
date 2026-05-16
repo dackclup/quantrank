@@ -75,7 +75,7 @@ from compute.scoring.composite import (
     compute_composite,
     neutralize_pillar_scores,
 )
-from compute.scoring.dechow_f import compute_dechow_f
+from compute.scoring.dechow_f import DechowResult, compute_dechow_f
 from compute.scoring.loss_chance import derive_loss_chance
 from compute.scoring.pillars import TickerInputs, compute_all_pillars
 from compute.scoring.recommendation import derive_recommendation
@@ -824,23 +824,30 @@ def run_weekly_compute() -> int:
         for t, r in tier2_results.items()
         if r.non_reliance_flag.fired
     }
-    # PR 4.5a.2 — pre-compute Beneish M-scores before risk-flag pass so
-    # `compute_risk_flags` can apply the soft-veto at M > -1.78. The
-    # per-ticker loop below (Step 8) reuses these cached results when
-    # writing `beneish_high` annotate at M > -2.22 and the numeric
-    # `beneish_m_score` on StockDetail.
+    # PR 4.5a.2 + 4.5a.3 — pre-compute Beneish + Dechow scores before
+    # risk-flag pass so `compute_risk_flags` can apply the soft-vetoes
+    # at M > -1.78 / F > 3.0. The per-ticker loop below (Step 8) reuses
+    # these cached results when writing `beneish_high` / `dechow_high`
+    # annotates at the looser thresholds and the numeric scores on
+    # StockDetail.
     beneish_results: dict[str, BeneishResult] = {}
     beneish_m_scores: dict[str, float | None] = {}
+    dechow_results: dict[str, DechowResult] = {}
+    dechow_f_scores: dict[str, float | None] = {}
     for ticker, snap in snapshots.items():
-        result = compute_beneish(snap, histories.get(ticker))
-        beneish_results[ticker] = result
-        beneish_m_scores[ticker] = result.m_score
+        b_result = compute_beneish(snap, histories.get(ticker))
+        beneish_results[ticker] = b_result
+        beneish_m_scores[ticker] = b_result.m_score
+        d_result = compute_dechow_f(snap, histories.get(ticker))
+        dechow_results[ticker] = d_result
+        dechow_f_scores[ticker] = d_result.f_score
     risk_flags = compute_risk_flags(
         snapshots,
         histories=histories,
         sectors=sectors_dict,
         non_reliance_by_ticker=non_reliance_by_ticker,
         beneish_m_scores=beneish_m_scores,
+        dechow_f_scores=dechow_f_scores,
     )
 
     # Step 5b — cross-sectional inputs for the fair-price ensemble.
@@ -977,16 +984,30 @@ def run_weekly_compute() -> int:
         if beneish_result.is_high and "beneish_high" not in valuation_warnings:
             valuation_warnings.append("beneish_high")
 
-        # Dechow F-score (PR 3e.2, ANNOTATE-only — same posture as Beneish:
-        # never enters composite, never suppresses Top-5). Lands in
-        # `valuation_warnings` as ``dechow_high`` when F > 2.45 (top-decile
-        # Dechow 2011 cutoff); numeric f_score on StockDetail for transparency.
-        # Complementary to Beneish — different inputs (RSST-style accruals +
-        # non-financial proxies) so the two signals reinforce a misstatement
-        # call when both fire.
-        dechow_result = compute_dechow_f(snap, histories.get(ticker))
+        # Dechow F-score (PR 3e.2 ANNOTATE at F > 2.45 + PR 4.5a.3
+        # soft-veto promotion at F > 3.0). Active-veto path is wired
+        # into ``risk_flags`` above via ``dechow_f_scores`` injection;
+        # this block keeps the ``dechow_high`` annotate (F > 2.45 band)
+        # on `valuation_warnings`. Cached from pre-compute pass.
+        dechow_result = dechow_results[ticker]
         if dechow_result.is_high and "dechow_high" not in valuation_warnings:
             valuation_warnings.append("dechow_high")
+
+        # PR 4.5a.3 — `manipulation_triple_flag` joint-gate badge.
+        # Fires when Sloan (cross-sectional or sector-relative)
+        # AND Beneish annotate AND Dechow annotate all fire on the
+        # SAME ticker. Rare but high-confidence — typically 0-3
+        # tickers per universe. UI-only badge in `valuation_warnings`;
+        # does NOT add a third veto on top of the individual vetoes
+        # already doing that work. Per PR #86 plan §4.5a.3.
+        ticker_risk = set(risk_flags.get(ticker) or [])
+        if (
+            "sloan_accruals_top_decile" in ticker_risk
+            and "beneish_high" in valuation_warnings
+            and "dechow_high" in valuation_warnings
+            and "manipulation_triple_flag" not in valuation_warnings
+        ):
+            valuation_warnings.append("manipulation_triple_flag")
 
         # Cross-source market-cap validator (PR 4b §1, ANNOTATE-only).
         # Compares SEC-derived market cap (shares × current_price) vs

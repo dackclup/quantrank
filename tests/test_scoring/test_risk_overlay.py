@@ -8,6 +8,7 @@ import pandas as pd
 
 from compute.ingest.fundamentals import FundamentalsSnapshot
 from compute.scoring.beneish import BENEISH_VETO_THRESHOLD
+from compute.scoring.dechow_f import DECHOW_VETO_THRESHOLD
 from compute.scoring.risk_overlay import (
     ALTMAN_DISTRESS_THRESHOLD,
     NSI_MIN_POPULATION,
@@ -628,3 +629,59 @@ def test_D11_corruption_fires_when_ni_negative_but_abs_exceeds_revenue():
     )
     flags = compute_risk_flags({"LOSS": snap_huge_loss})
     assert "data_quality_input_corruption" in flags["LOSS"]
+
+
+def test_dechow_veto_fires_above_strict_threshold():
+    # PR 4.5a.3 — when dechow_f_scores is supplied and a ticker's F is
+    # above DECHOW_VETO_THRESHOLD (= 3.0), the `dechow_manipulation_veto`
+    # flag fires (active veto, suppresses entered_top5).
+    snaps = {"AAA": _snap(), "BBB": _snap()}
+    f_scores = {
+        "AAA": DECHOW_VETO_THRESHOLD + 0.5,  # well above veto threshold
+        "BBB": DECHOW_VETO_THRESHOLD - 0.5,  # below threshold (annotate band)
+    }
+    flags = compute_risk_flags(snaps, dechow_f_scores=f_scores)
+    assert "dechow_manipulation_veto" in flags["AAA"]
+    assert "dechow_manipulation_veto" not in flags["BBB"]
+
+
+def test_dechow_veto_skipped_when_score_is_none():
+    # compute_dechow_f returns f_score=None on any missing input —
+    # tickers with incomplete fundamentals must not trigger the veto.
+    snaps = {"X": _snap()}
+    f_scores = {"X": None}
+    flags = compute_risk_flags(snaps, dechow_f_scores=f_scores)
+    assert "dechow_manipulation_veto" not in flags["X"]
+
+
+def test_dechow_veto_strict_inequality():
+    # Same `f > THRESHOLD` semantics as Beneish. Exact-threshold value
+    # must NOT trigger.
+    snaps = {"EDGE": _snap()}
+    f_scores = {"EDGE": DECHOW_VETO_THRESHOLD}
+    flags = compute_risk_flags(snaps, dechow_f_scores=f_scores)
+    assert "dechow_manipulation_veto" not in flags["EDGE"]
+
+
+def test_dechow_veto_disabled_when_dict_not_supplied():
+    # Backward-compat: same pattern as Beneish + non_reliance — when
+    # the inject dict is None, the veto path doesn't fire.
+    snaps = {"T1": _snap()}
+    flags = compute_risk_flags(snaps)
+    assert "dechow_manipulation_veto" not in flags["T1"]
+
+
+def test_dechow_and_beneish_vetos_independent():
+    # Both vetoes can fire on the same ticker — they encode different
+    # signals (Beneish 8-ratio model vs Dechow RSST-style accruals +
+    # non-financial proxies). Confirming co-firing path.
+    snaps = {"AAA": _snap()}
+    m_scores = {"AAA": BENEISH_VETO_THRESHOLD + 0.5}
+    f_scores = {"AAA": DECHOW_VETO_THRESHOLD + 0.5}
+    flags = compute_risk_flags(
+        snaps,
+        beneish_m_scores=m_scores,
+        dechow_f_scores=f_scores,
+    )
+    assert "beneish_manipulation_veto" in flags["AAA"]
+    assert "dechow_manipulation_veto" in flags["AAA"]
