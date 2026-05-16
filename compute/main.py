@@ -69,7 +69,7 @@ from compute.output.writer import (
     write_stock_detail,
     write_stock_history,
 )
-from compute.scoring.beneish import compute_beneish
+from compute.scoring.beneish import BeneishResult, compute_beneish
 from compute.scoring.composite import (
     build_sector_pillar_baselines,
     compute_composite,
@@ -824,11 +824,23 @@ def run_weekly_compute() -> int:
         for t, r in tier2_results.items()
         if r.non_reliance_flag.fired
     }
+    # PR 4.5a.2 — pre-compute Beneish M-scores before risk-flag pass so
+    # `compute_risk_flags` can apply the soft-veto at M > -1.78. The
+    # per-ticker loop below (Step 8) reuses these cached results when
+    # writing `beneish_high` annotate at M > -2.22 and the numeric
+    # `beneish_m_score` on StockDetail.
+    beneish_results: dict[str, BeneishResult] = {}
+    beneish_m_scores: dict[str, float | None] = {}
+    for ticker, snap in snapshots.items():
+        result = compute_beneish(snap, histories.get(ticker))
+        beneish_results[ticker] = result
+        beneish_m_scores[ticker] = result.m_score
     risk_flags = compute_risk_flags(
         snapshots,
         histories=histories,
         sectors=sectors_dict,
         non_reliance_by_ticker=non_reliance_by_ticker,
+        beneish_m_scores=beneish_m_scores,
     )
 
     # Step 5b — cross-sectional inputs for the fair-price ensemble.
@@ -953,12 +965,15 @@ def run_weekly_compute() -> int:
             if ensemble.median is not None or ensemble.max is not None:
                 fair_price_count += 1
 
-        # Beneish M-score (PR 3e.1, ANNOTATE-only — never enters composite,
-        # never suppresses Top-5). Lands in `valuation_warnings` as
-        # ``beneish_high`` when M > -2.22; numeric m_score on StockDetail
-        # for transparency. None on any missing ratio (banks / REITs / asset-
-        # light filers usually fail AQI + DEPI through missing PPE).
-        beneish_result = compute_beneish(snap, histories.get(ticker))
+        # Beneish M-score (PR 3e.1 ANNOTATE at M > -2.22 + PR 4.5a.2
+        # soft-veto promotion at M > -1.78). The active-veto path is
+        # already wired into ``risk_flags`` above via
+        # ``beneish_m_scores`` injection; this block keeps the
+        # ``beneish_high`` annotate (M > -2.22 band) on
+        # `valuation_warnings` and the numeric m_score on StockDetail
+        # for transparency. Cached from the pre-compute pass to avoid
+        # recomputing the 8-ratio model twice per ticker.
+        beneish_result = beneish_results[ticker]
         if beneish_result.is_high and "beneish_high" not in valuation_warnings:
             valuation_warnings.append("beneish_high")
 

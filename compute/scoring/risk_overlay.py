@@ -67,6 +67,7 @@ import pandas as pd
 from compute import config
 from compute.features import health
 from compute.ingest.fundamentals import FundamentalsSnapshot
+from compute.scoring.beneish import BENEISH_VETO_THRESHOLD
 from compute.scoring.eight_k_events import check_non_reliance
 from compute.valuation.tangible_book import tangible_book_value_per_share
 
@@ -263,6 +264,7 @@ def compute_risk_flags(
     sectors: dict[str, str] | None = None,
     today: date | None = None,
     non_reliance_by_ticker: dict[str, bool] | None = None,
+    beneish_m_scores: dict[str, float | None] | None = None,
 ) -> dict[str, list[str]]:
     """Compute the risk-flag list per ticker.
 
@@ -421,6 +423,17 @@ def compute_risk_flags(
             non_reliance_fired = check_non_reliance(ticker).fired
         if non_reliance_fired:
             flags.append("non_reliance_filing")
+
+        # PR 4.5a.2 — Beneish manipulation soft-veto (HARD VETO at the
+        # stricter ``BENEISH_VETO_THRESHOLD = -1.78``). Original
+        # ``beneish_high`` annotate at M > -2.22 still emits separately
+        # in ``compute/main.py`` per-ticker loop; this is the active-
+        # veto path that suppresses ``entered_top5``. Inject pattern
+        # mirrors ``non_reliance_by_ticker``.
+        if beneish_m_scores is not None:
+            m = beneish_m_scores.get(ticker)
+            if m is not None and math.isfinite(float(m)) and float(m) > BENEISH_VETO_THRESHOLD:
+                flags.append("beneish_manipulation_veto")
 
         out[ticker] = flags
     return out
