@@ -12,9 +12,11 @@ only place a flag changes behavior):
 - ``altman_distress`` — Altman Z″ < 1.1 (Altman 2003, *Corporate Financial
   Distress and Bankruptcy*, 3rd ed., Wiley)
 - ``sloan_accruals_top_decile`` — Sloan accruals = (NI − CFO) / TotalAssets,
-  flagged if this stock sits in the cross-sectional top decile (Sloan 1996).
-  Issue #7 tracks the over-firing on growers + financials; Phase 4 will
-  switch to within-sector / growth-adjusted variants.
+  flagged if this stock sits in the **within-sector** top decile when
+  ``sectors`` is supplied (PR 4.5a.1, closes issue #7 — Sloan economics
+  differ by sector, so Financials + REITs over-fire on cross-sectional
+  decile). Falls back to cross-sectional top decile when ``sectors`` is
+  not supplied. Original threshold rubric: Sloan 1996 *TAR*.
 - ``net_issuance_top_decile`` — Net Stock Issuance = ln(shares_t /
   shares_{t-12m}), flagged if **within sector** in the top decile
   (Pontiff-Woodgate 2008, *Journal of Finance*). Within-sector framing is
@@ -70,10 +72,25 @@ from compute.valuation.tangible_book import tangible_book_value_per_share
 
 ALTMAN_DISTRESS_THRESHOLD = 1.1
 SLOAN_TOP_DECILE = 0.90
-# Minimum sample size before Sloan accruals deciles are statistically
-# meaningful. Below this, we skip the Sloan flag entirely (a 1-ticker
-# universe trivially makes that ticker its own 90th percentile).
+# Minimum cross-sectional sample size before Sloan accruals deciles are
+# statistically meaningful. Below this, we skip the Sloan flag entirely
+# (a 1-ticker universe trivially makes that ticker its own 90th
+# percentile). Used as the fallback floor when ``sectors`` is not
+# supplied — production always supplies sectors so the per-sector path
+# (``SLOAN_MIN_POPULATION_SECTOR``) is the active threshold for the
+# S&P 500 universe.
 SLOAN_MIN_POPULATION = 10
+# Minimum per-sector population before within-sector Sloan decile is
+# meaningful (PR 4.5a.1, closes issue #7). Sloan accrual economics
+# differ structurally by sector — Financials and REITs report higher
+# accruals from non-cash items (D&A, loan-loss provisions, fair-value
+# adjustments) that aren't earnings manipulation. Cross-sectional
+# top-decile over-fires on those sectors; within-sector top-decile
+# compares each ticker to its own sector peers and removes that bias.
+# With S&P 500's 11 GICS sectors and smallest = Energy n=21, this
+# floor is comfortably satisfied. Sectors below the floor fall back
+# to cross-sectional Sloan (or skip if total population also < 10).
+SLOAN_MIN_POPULATION_SECTOR = 15
 # Minimum per-sector population before NSI within-sector decile is
 # meaningful. Same rationale as Sloan but applied per-sector. With S&P 500's
 # 11 GICS sectors and smallest = Energy n=21, this floor is comfortably
@@ -276,15 +293,38 @@ def compute_risk_flags(
     if not snapshots:
         return {}
 
-    # --- Sloan accruals panel (cross-sectional, legacy from PR-3b) ---
+    # --- Sloan accruals panel ---
+    #
+    # PR 4.5a.1 (issue #7) — switched from cross-sectional to within-sector
+    # top decile when ``sectors`` is supplied. Cross-sectional path stays
+    # as a fallback for callers that don't pass sectors (tests + future
+    # external integrations). Per-sector thresholds activate when
+    # len(sector_group) >= SLOAN_MIN_POPULATION_SECTOR; sectors below the
+    # floor fall back to the cross-sectional threshold for those tickers
+    # (or skip entirely when the total cross-sectional population also
+    # fails the SLOAN_MIN_POPULATION gate).
     accruals = pd.Series(
         {t: _sloan_accruals(s) for t, s in snapshots.items()}, dtype=float
     )
     finite = accruals.dropna()
-    sloan_enabled = len(finite) >= SLOAN_MIN_POPULATION
-    sloan_threshold = (
-        float(finite.quantile(SLOAN_TOP_DECILE)) if sloan_enabled else math.nan
+    sloan_cross_sectional_enabled = len(finite) >= SLOAN_MIN_POPULATION
+    sloan_cross_sectional_threshold = (
+        float(finite.quantile(SLOAN_TOP_DECILE))
+        if sloan_cross_sectional_enabled
+        else math.nan
     )
+    sloan_thresholds_by_sector: dict[str, float] = {}
+    if sectors is not None and not finite.empty:
+        sec_for_sloan = pd.Series(
+            {t: sectors.get(t) for t in finite.index},
+            dtype=object,
+        )
+        for sector_name, idx in finite.groupby(sec_for_sloan).groups.items():
+            group = finite.loc[idx]
+            if len(group) >= SLOAN_MIN_POPULATION_SECTOR:
+                sloan_thresholds_by_sector[str(sector_name)] = float(
+                    group.quantile(SLOAN_TOP_DECILE)
+                )
 
     # --- NSI panel (per-ticker float; per-sector threshold) ---
     nsi_values: dict[str, float] = {}
@@ -323,13 +363,32 @@ def compute_risk_flags(
 
         accrual_val = accruals.get(ticker)
         if (
-            sloan_enabled
-            and accrual_val is not None
+            accrual_val is not None
             and isinstance(accrual_val, float)
             and math.isfinite(accrual_val)
-            and accrual_val >= sloan_threshold
         ):
-            flags.append("sloan_accruals_top_decile")
+            # Prefer the per-sector threshold (PR 4.5a.1). Fall back to
+            # the cross-sectional threshold when the ticker's sector
+            # didn't reach SLOAN_MIN_POPULATION_SECTOR or when sectors
+            # weren't supplied at all.
+            ticker_sector = (
+                sectors.get(ticker) if sectors is not None else None
+            )
+            sector_threshold = (
+                sloan_thresholds_by_sector.get(str(ticker_sector))
+                if ticker_sector is not None
+                else None
+            )
+            sloan_threshold_for_ticker: float | None = None
+            if sector_threshold is not None:
+                sloan_threshold_for_ticker = sector_threshold
+            elif sloan_cross_sectional_enabled:
+                sloan_threshold_for_ticker = sloan_cross_sectional_threshold
+            if (
+                sloan_threshold_for_ticker is not None
+                and accrual_val >= sloan_threshold_for_ticker
+            ):
+                flags.append("sloan_accruals_top_decile")
 
         if sectors is not None:
             ticker_sector = sectors.get(ticker)
