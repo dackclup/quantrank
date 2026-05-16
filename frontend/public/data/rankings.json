@@ -211,14 +211,12 @@
       "sentiment": null,
       "ml": null
     },
-    "risk_flags": [
-      "sloan_accruals_top_decile"
-    ],
+    "risk_flags": [],
     "valuation_warnings": [],
-    "recommendation": "lean_bullish",
-    "loss_chance_pct": 32.35165075858281,
+    "recommendation": "bullish",
+    "loss_chance_pct": 29.351650758582807,
     "price_change_1d_pct": 0.425,
-    "entered_top5": false,
+    "entered_top5": true,
     "exited_top5": false
   },
   {
@@ -284,7 +282,7 @@
     "recommendation": "lean_bullish",
     "loss_chance_pct": 39.049552938246144,
     "price_change_1d_pct": -1.8779,
-    "entered_top5": true,
+    "entered_top5": false,
     "exited_top5": false
   },
   {
@@ -477,12 +475,10 @@
       "sentiment": null,
       "ml": null
     },
-    "risk_flags": [
-      "sloan_accruals_top_decile"
-    ],
+    "risk_flags": [],
     "valuation_warnings": [],
-    "recommendation": "lean_bullish",
-    "loss_chance_pct": 23.98696154389044,
+    "recommendation": "bullish",
+    "loss_chance_pct": 20.98696154389044,
     "price_change_1d_pct": 0.5564,
     "entered_top5": false,
     "exited_top5": false
@@ -2971,13 +2967,15 @@
       "sentiment": null,
       "ml": null
     },
-    "risk_flags": [],
+    "risk_flags": [
+      "sloan_accruals_top_decile"
+    ],
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
     ],
     "recommendation": "lean_bullish",
-    "loss_chance_pct": 49.791610519481345,
+    "loss_chance_pct": 52.791610519481345,
     "price_change_1d_pct": -0.7584,
     "entered_top5": false,
     "exited_top5": false
@@ -3649,12 +3647,14 @@
       "sentiment": null,
       "ml": null
     },
-    "risk_flags": [],
+    "risk_flags": [
+      "sloan_accruals_top_decile"
+    ],
     "valuation_warnings": [
       "beneish_high"
     ],
     "recommendation": "lean_bullish",
-    "loss_chance_pct": 58.185927660311386,
+    "loss_chance_pct": 61.185927660311386,
     "price_change_1d_pct": -2.2754,
     "entered_top5": false,
     "exited_top5": false
@@ -3681,13 +3681,15 @@
       "sentiment": null,
       "ml": null
     },
-    "risk_flags": [],
+    "risk_flags": [
+      "sloan_accruals_top_decile"
+    ],
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate"
     ],
     "recommendation": "neutral",
-    "loss_chance_pct": 58.36927133239195,
+    "loss_chance_pct": 61.36927133239195,
     "price_change_1d_pct": -1.2322,
     "entered_top5": false,
     "exited_top5": false
@@ -5878,10 +5880,12 @@
       "sentiment": null,
       "ml": null
     },
-    "risk_flags": [],
+    "risk_flags": [
+      "sloan_accruals_top_decile"
+    ],
     "valuation_warnings": [],
     "recommendation": "lean_bullish",
-    "loss_chance_pct": 44.752812192484846,
+    "loss_chance_pct": 47.752812192484846,
     "price_change_1d_pct": -2.1394,
     "entered_top5": false,
     "exited_top5": false
@@ -6970,12 +6974,14 @@
       "sentiment": null,
       "ml": null
     },
-    "risk_flags": [],
+    "risk_flags": [
+      "sloan_accruals_top_decile"
+    ],
     "valuation_warnings": [
       "goodwill_heavy"
     ],
     "recommendation": "lean_bullish",
-    "loss_chance_pct": 50.82121216071708,
+    "loss_chance_pct": 53.82121216071708,
     "price_change_1d_pct": 1.1115,
     "entered_top5": false,
     "exited_top5": false
@@ -7071,10 +7077,12 @@
       "sentiment": null,
       "ml": null
     },
-    "risk_flags": [],
+    "risk_flags": [
+      "sloan_accruals_top_decile"
+    ],
     "valuation_warnings": [],
     "recommendation": "lean_bullish",
-    "loss_chance_pct": 22.161167851528592,
+    "loss_chance_pct": 25.161167851528592,
     "price_change_1d_pct": -0.4226,
     "entered_top5": false,
     "exited_top5": false
@@ -7578,12 +7586,10 @@
       "sentiment": null,
       "ml": null
     },
-    "risk_flags": [
-      "sloan_accruals_top_decile"
-    ],
+    "risk_flags": [],
     "valuation_warnings": [],
     "recommendation": "lean_bullish",
-    "loss_chance_pct": 52.34361853913853,
+    "loss_chance_pct": 49.34361853913853,
     "price_change_1d_pct": -0.706,
     "entered_top5": false,
     "exited_top5": false
@@ -7705,6 +7711,7 @@
       "ml": null
     },
     "risk_flags": [
+      "sloan_accruals_top_decile",
       "net_issuance_top_decile"
     ],
     "valuation_warnings": [
@@ -7713,7 +7720,7 @@
       "extreme_dcf_estimate"
     ],
     "recommendation": "cautious",
-    "loss_chance_pct": 65.44197614304686,
+    "loss_chance_pct": 68.44197614304686,
     "price_change_1d_pct": -0.8571,
     "entered_top5": false,
     "exited_top5": false
@@ -8170,12 +8177,11 @@
       "ml": null
     },
     "risk_flags": [
-      "altman_distress",
-      "sloan_accruals_top_decile"
+      "altman_distress"
     ],
     "valuation_warnings": [],
     "recommendation": "cautious",
-    "loss_chance_pct": 74.89073705179283,
+    "loss_chance_pct": 71.89073705179283,
     "price_change_1d_pct": 0.5739,
     "entered_top5": false,
     "exited_top5": false
@@ -8421,15 +8427,14 @@
       "ml": null
     },
     "risk_flags": [
-      "altman_distress",
-      "sloan_accruals_top_decile"
+      "altman_distress"
     ],
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
     ],
     "recommendation": "cautious",
-    "loss_chance_pct": 77.0275675077468,
+    "loss_chance_pct": 74.0275675077468,
     "price_change_1d_pct": 0.3896,
     "entered_top5": false,
     "exited_top5": false
@@ -10370,12 +10375,10 @@
       "sentiment": null,
       "ml": null
     },
-    "risk_flags": [
-      "sloan_accruals_top_decile"
-    ],
+    "risk_flags": [],
     "valuation_warnings": [],
     "recommendation": "neutral",
-    "loss_chance_pct": 42.544948836259586,
+    "loss_chance_pct": 39.544948836259586,
     "price_change_1d_pct": -0.2858,
     "entered_top5": false,
     "exited_top5": false
@@ -10563,14 +10566,12 @@
       "sentiment": null,
       "ml": null
     },
-    "risk_flags": [
-      "sloan_accruals_top_decile"
-    ],
+    "risk_flags": [],
     "valuation_warnings": [
       "value_trap_risk"
     ],
     "recommendation": "neutral",
-    "loss_chance_pct": 48.43414681567327,
+    "loss_chance_pct": 45.43414681567327,
     "price_change_1d_pct": -1.1216,
     "entered_top5": false,
     "exited_top5": false
@@ -10980,12 +10981,14 @@
       "sentiment": null,
       "ml": null
     },
-    "risk_flags": [],
+    "risk_flags": [
+      "sloan_accruals_top_decile"
+    ],
     "valuation_warnings": [
       "value_trap_risk"
     ],
     "recommendation": "neutral",
-    "loss_chance_pct": 55.815263147750485,
+    "loss_chance_pct": 58.815263147750485,
     "price_change_1d_pct": -1.4931,
     "entered_top5": false,
     "exited_top5": false
@@ -11268,12 +11271,10 @@
       "sentiment": null,
       "ml": null
     },
-    "risk_flags": [
-      "sloan_accruals_top_decile"
-    ],
+    "risk_flags": [],
     "valuation_warnings": [],
     "recommendation": "neutral",
-    "loss_chance_pct": 39.2130041829234,
+    "loss_chance_pct": 36.2130041829234,
     "price_change_1d_pct": -0.5014,
     "entered_top5": false,
     "exited_top5": false
@@ -11464,13 +11465,14 @@
       "ml": null
     },
     "risk_flags": [
-      "altman_distress"
+      "altman_distress",
+      "sloan_accruals_top_decile"
     ],
     "valuation_warnings": [
       "value_trap_risk"
     ],
     "recommendation": "cautious",
-    "loss_chance_pct": 60.79964386619061,
+    "loss_chance_pct": 63.79964386619061,
     "price_change_1d_pct": -1.9692,
     "entered_top5": false,
     "exited_top5": false
@@ -12118,11 +12120,12 @@
       "ml": null
     },
     "risk_flags": [
+      "sloan_accruals_top_decile",
       "net_issuance_top_decile"
     ],
     "valuation_warnings": [],
     "recommendation": "neutral",
-    "loss_chance_pct": 63.12359276835201,
+    "loss_chance_pct": 66.12359276835201,
     "price_change_1d_pct": -2.7773,
     "entered_top5": false,
     "exited_top5": false
@@ -12829,13 +12832,15 @@
       "sentiment": null,
       "ml": null
     },
-    "risk_flags": [],
+    "risk_flags": [
+      "sloan_accruals_top_decile"
+    ],
     "valuation_warnings": [
       "goodwill_heavy",
       "value_trap_risk"
     ],
     "recommendation": "neutral",
-    "loss_chance_pct": 44.02865882936861,
+    "loss_chance_pct": 47.02865882936861,
     "price_change_1d_pct": -3.9296,
     "entered_top5": false,
     "exited_top5": false
@@ -12930,12 +12935,14 @@
       "sentiment": null,
       "ml": null
     },
-    "risk_flags": [],
+    "risk_flags": [
+      "sloan_accruals_top_decile"
+    ],
     "valuation_warnings": [
       "value_trap_risk"
     ],
     "recommendation": "neutral",
-    "loss_chance_pct": 49.912624270584885,
+    "loss_chance_pct": 52.912624270584885,
     "price_change_1d_pct": -2.5322,
     "entered_top5": false,
     "exited_top5": false
@@ -13455,13 +13462,15 @@
       "sentiment": null,
       "ml": null
     },
-    "risk_flags": [],
+    "risk_flags": [
+      "sloan_accruals_top_decile"
+    ],
     "valuation_warnings": [
       "extreme_dcf_estimate",
       "value_trap_risk"
     ],
     "recommendation": "neutral",
-    "loss_chance_pct": 46.747281527634925,
+    "loss_chance_pct": 49.747281527634925,
     "price_change_1d_pct": -0.5842,
     "entered_top5": false,
     "exited_top5": false
