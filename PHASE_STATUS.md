@@ -7,6 +7,7 @@
 | 2 | Fundamentals via SEC EDGAR | ✅ DONE — 2026-05-08 |
 | 3 | Classical features + composite + **defenses** → **v1.0** | ✅ **DONE — 2026-05-14** (v1.0.0 tagged + GitHub release) |
 | 4 | Factor consolidation (OSAP + JKP + Qlib + IPCA) → **v1.1** | 🟡 IN PROGRESS — 4a-4g + 4c.1/4c.2/4c.3 merged (2026-05-14 → 2026-05-15); PR 4b defense-infrastructure (issue #75) next |
+| **4.5** | **Earnings-manipulation defense cluster** → **v1.2** | ⚪ not started — 6 sub-PRs (4.5a-4.5f); depends on PR 4b PBO/DSR validation gate |
 | 5 | ML meta-learner (Triple-Barrier + Meta-Labeling + Conformal) + SHAP | ⚪ not started |
 | 6 | Sentiment v2 (FinBERT + Whisper + 8-K Lazy Prices) | ⚪ not started |
 | 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → **v1.5** | ⚪ not started |
@@ -166,7 +167,156 @@ writes `decay_report.json` (~150 LOC, `compute/validation/
 ic_decay.py`). Total ~500 LOC core + ~320 tests = ~820 LOC,
 ~5.5 days. Sequencing: 4b (defense-infrastructure) → 4h / 4i / 4j
 / 4k (OSAP / JKP / Qlib / IPCA factor integrations) → tag
-`v1.1.0-phase4`.
+`v1.1.0-phase4`. **Phase 4.5 (manipulation-defense cluster, v1.2
+target) follows v1.1.0 and runs in parallel where the touched
+files are disjoint — see "Phase 4.5 plan" section below.**
+
+## Phase 4.5 plan — Earnings-Manipulation Defense Cluster (v1.2)
+
+After PR 4b lands the validation infrastructure (PBO/DSR backtest
+gate + IC-decay monitor + AAER cohort fixtures), the next research
+priority is hardening QuantRank's earnings-manipulation defense.
+The v1.0 + 4g layer covers **5 active vetoes + 2 Tier-2 annotates +
+2 Tier-3 forensic models** — strong on Sloan accruals + 8-K
+disclosure events, weaker on Real Earnings Management, restatement
+history, insider signals, and earnings-quality time-series.
+
+Each sub-PR is validated against the **SEC AAER 2000-2024 cohort**
+(~600 confirmed manipulators per Dechow et al. 2011 dataset +
+ongoing) via the PR 4b PBO/DSR harness. **PBO ≤ 0.5 AND DSR > 0
+required to accept**; reject any flag that fails. Each
+sub-PR also runs against the Audit Analytics free-tier
+restatement subset (~1,200 firms 2000-2024) for second-source
+validation.
+
+### 4.5a — Manipulation quick wins (~1-2 weeks, +2 active veto + 1 badge)
+
+- **Sector-relative Sloan** — top-decile within GICS sector instead
+  of cross-sectional. Closes [issue #7](https://github.com/dackclup/quantrank/issues/7).
+  Removes the known over-fire on Financials + REITs whose non-cash
+  earnings are structural (not manipulative).
+- **Beneish soft-veto** — promote `beneish_high` from annotate to
+  active veto when M > −1.78 (tighter than the existing −2.22
+  annotate threshold). Original annotate flag stays for the −2.22
+  to −1.78 band.
+- **Dechow soft-veto** — same pattern for F > 3.0 (was annotate at
+  F > 2.45).
+- **`manipulation_triple_flag` badge** — joint gate that fires only
+  when Beneish + Sloan + Dechow flag simultaneously. Rare, high-
+  confidence. UI-only badge, doesn't suppress Top-N on top of the
+  individual vetoes already doing that.
+
+References: Sloan 1996 *TAR*, Beneish 1999 *FAJ*, Dechow et al.
+2011 *CAR*. Effort: ~180 LOC + AAER backtest, 3 sub-PRs (`4.5a.1` /
+`4.5a.2` / `4.5a.3`) that ship in parallel.
+
+### 4.5b — Disclosure-driven catches (~1 week, +2 annotate)
+
+- **`restatement_history`** — count of 10-K/A filings in trailing
+  5 years from SEC EDGAR. Recurrence is a strong predictor —
+  Hennes-Leone-Miller 2008 *TAR* shows restatement firms see −9%
+  abnormal return on announcement.
+- **`late_filing_notification`** — SEC Form 12b-25 (NT 10-K /
+  NT 10-Q) within trailing 365 days. Bartov-Lai-Yeung 2002 *JAR* —
+  late filers see −5-7% abnormal returns.
+
+Both use existing SEC EDGAR access, no new fetch surface. Effort:
+~270 LOC + tests, ~7 days.
+
+### 4.5c — Real Earnings Management (~2 weeks, +1 annotate)
+
+Beneish + Dechow + Sloan all target *accrual* manipulation. **Real**
+manipulation — cutting R&D, channel stuffing, deferring
+maintenance, manipulating production schedules — is invisible to
+those models.
+
+Roychowdhury 2006 *JAE* (REM): three abnormal proxies per ticker,
+each modelled against sector-industry quintile baselines:
+
+- `abnormal_CFO` = actual − model(Sales, ΔSales)
+- `abnormal_production` = actual − model(Sales, ΔSales, ΔSales_t−1)
+- `abnormal_discretionary_expenses` = actual − model(Sales_t−1)
+
+Flag `rem_suspect` fires if **2 of 3 proxies sit in the worst decile
+within sector**. Uses XBRL data already in cache (no new fetches).
+Effort: ~250 LOC + sector-relative thresholds + golden tests
+against Roychowdhury paper Table 6, ~10 days.
+
+### 4.5d — Earnings-quality time-series + Burgstahler kink (~2 weeks, +2 annotate)
+
+- **`m_score_deteriorating`** — Δ(Beneish M-score) > +0.5 over
+  trailing 3y = manipulation gathering steam. Snapshot M-score
+  today misses the trajectory entirely.
+- **`loss_avoidance_pattern`** — Burgstahler-Dichev 1997 *JAE* kink
+  at zero. Firms reporting tiny-positive earnings (NI ∈ [0, $5M]
+  OR EPS ∈ [0, $0.05]) for **3+ consecutive years** = avoiding
+  loss thresholds, classical manipulation pattern.
+
+Effort: ~180 LOC + 3-year history requirement (already on disk
+post-PR 4f 5y daily ingest), ~7 days.
+
+### 4.5e — SEC Form 4 insider clustering (~3 weeks, +2 annotate)
+
+Cohen-Malloy-Pomorski 2012 *RFS* — cluster of insider sells before
+bad news has 7-10% abnormal return predictive power.
+
+- **`insider_sell_cluster`** — 3+ insiders selling within 30d
+  before next earnings announcement.
+- **`c_suite_unusual_sell`** — CEO/CFO selling > 5x annual comp
+  within 90d (comp sourced from DEF 14A — Phase 4.5e or
+  deferred to Phase 5/6 if DEF 14A parser unavailable; fallback
+  uses prior-year total transaction volume as comp proxy).
+
+New Form 4 parser needed (no existing ingest); touches a new SEC
+form class so the ingest layer needs minor refactoring. Effort:
+~300 LOC parser + ~120 LOC clustering detector + tests, ~12 days.
+
+### 4.5f — Manipulation Composite + composite penalty + UI (~1 week, schema bump)
+
+Roll up 4.5a-4.5e into a single 0-100 **`manipulation_index`** and
+wire it as:
+
+1. **`StockDetail.manipulation_index`** schema field (additive,
+   patch bump within v0.x → 0.8.0-phase4.5f)
+2. **Composite-score penalty** —
+   `composite_score_adjusted = composite_score − 0.5 ×
+   (manipulation_index / 100) × 20`
+   so a max-100 manipulation index removes **10 composite points**
+   from the displayed score (current `composite_score` field
+   preserved untouched for the audit trail per SKILL.md Rule 9).
+3. **UI Manipulation pillar card** on detail page — same visual
+   weight as the existing 8-pillar radar chart entries.
+4. **README "Honest Limitations"** update covering the new
+   defenses and what they still miss (pre-disclosure sophisticated
+   fraud, off-balance-sheet SPEs, working-paper-level audit data).
+
+Schema bump 0.7.x → **0.8.0-phase4.5f**. Effort: ~250 LOC + UI +
+schema-snapshot regen, ~5 days.
+
+### Phase 4.5 timeline summary
+
+| Sub-PR | Effort | New flags | Status |
+|---|---|---|---|
+| 4.5a | 1-2w | +2 veto / +1 badge | ⚪ |
+| 4.5b | 1w | +2 annotate | ⚪ |
+| 4.5c | 2w | +1 annotate (sector-relative) | ⚪ |
+| 4.5d | 2w | +2 annotate | ⚪ |
+| 4.5e | 3w | +2 annotate (new Form 4 parser) | ⚪ |
+| 4.5f | 1w | composite penalty + UI + schema bump | ⚪ |
+
+Total: **~10-11 working weeks** for 4.5a-4.5f. Combined with PR 4b
+(6 weeks) the manipulation-defense + validation-infra cluster
+runs **~16-17 weeks** end-to-end.
+
+**Defense layer after 4.5**: **7 active vetoes + 8 annotate flags +
+3 forensic models = 18 layers** (was 9 after 4g).
+
+**Tag plan**: `v1.2.0-phase4.5` after 4.5f ships.
+
+**Sequencing**: PR 4b → 4.5a + 4.5b + 4.5c in parallel → 4.5d →
+4.5e → 4.5f → tag. **Factor integrations (4h/4i/4j/4k) can ship
+in parallel with 4.5** — they touch disjoint code paths and use
+the same PR 4b PBO/DSR harness as their gate.
 
 **Phase 3 sub-PR plan** (5 sub-PRs, defense-augmented 2026-05-09 per
 [`docs/RESEARCH_FINDINGS.md`](docs/RESEARCH_FINDINGS.md) §"Defense Playbook"):
