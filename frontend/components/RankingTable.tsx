@@ -466,8 +466,8 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                       <SectorChip sector={row.sector} size="xs" />
                     </div>
                     <div className="mt-1 flex items-center gap-2">
-                      <StockLogo ticker={row.ticker} size={24} />
-                      <span className="font-mono text-base font-semibold">{row.ticker}</span>
+                      <StockLogo ticker={row.ticker} size={32} />
+                      <span className="font-mono text-xl font-semibold">{row.ticker}</span>
                       <RecommendationBadge recommendation={row.recommendation} size="xs" />
                     </div>
                     <div className="truncate text-sm text-slate-700">{row.name}</div>
