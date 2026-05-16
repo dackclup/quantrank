@@ -93,31 +93,42 @@ flight**: 4a / 4b (`_avg_3y_roe` fix) / 4c+4c.1/4c.2/4c.3 / 4d / 4e
 Tier-2 re-enable). Production schema `0.7.0-phase4g`;
 `SCHEMA_VERSION` constant currently `0.7.1-phase4g` (additive
 `price_change_1d_pct` field — flips on next weekly compute).
-**Next deliverable**: **PR 4b §3 polish** — wire
-`compute/validation/ic_decay.py`'s output to produce
-`frontend/public/data/decay_report.json` + add a UI transparency
-card on the stock detail page (the last 2 acceptance criteria
-remaining on [issue #75](https://github.com/dackclup/quantrank/issues/75);
-~2-3 days). **PR 4b §1 cross-source validator and §2 PBO/DSR
-library already shipped in PR #60 (2026-05-14, pre-v1.0)** —
-production run #45 confirms 23 stocks flagging
-`cross_source_disagreement` (4.6%, within the < 5% sanity bound)
-and `pbo_dsr.factor_passes_gates()` is callable for 4h/4i/4j/4k.
-After §3 polish → 4h / 4i / 4j / 4k factor integrations (OSAP /
-JKP / Qlib / IPCA) → tag `v1.1.0-phase4`. **Phase 4.5
-(earnings-manipulation defense cluster) follows v1.1 →
-`v1.2.0-phase4.5`**: 6 sub-PRs (4.5a-4.5f) covering sector-
-relative Sloan + Beneish/Dechow soft-veto + restatement history +
-Form 12b-25 late filings + Roychowdhury REM + earnings-quality
-time-series + Burgstahler-Dichev kink + Form 4 insider clustering
-+ manipulation-composite penalty. Defense layer grows **9 → 18
+**Next deliverable**: **Phase 4.5a.1 — sector-relative Sloan**
+(folds in [issue #7](https://github.com/dackclup/quantrank/issues/7)).
+Replaces the cross-sectional top-decile Sloan veto with a
+within-GICS-sector top-decile gate. Removes the known over-fire
+on Financials + REITs whose non-cash earnings are structural, not
+manipulative. ~80 LOC + AAER backtest, ~3 days. **PR 4b §3
+(IC-decay writer + UI surface) is deferred to Phase 5** —
+`compute/validation/ic_decay.py` needs a per-pillar monthly IC
+time series that only the Phase 5 walk-forward backtest harness
+will accumulate. PR #60 + ic_decay.py:51 always intended this
+sequencing ("until then, this module ships as a callable
+library"); issue #75's last 2 acceptance criteria are Phase-5-
+blocked, not next-deliverable work. **PR 4b §1 cross-source
+validator and §2 PBO/DSR library already shipped in PR #60
+(2026-05-14, pre-v1.0)** — production run #45 confirms 23 stocks
+flagging `cross_source_disagreement` (4.6%, within the < 5%
+sanity bound) and `pbo_dsr.factor_passes_gates()` is callable for
+4h/4i/4j/4k.
+
+After 4.5a.1 → 4.5a.2 (Beneish soft-veto) + 4.5a.3 (Dechow soft-
+veto + `manipulation_triple_flag`) in parallel → 4.5b through
+4.5f. Factor integrations 4h/4i/4j/4k can run in parallel with
+4.5 (disjoint code paths, same PR 4b §2 PBO/DSR gate). Tag
+`v1.1.0-phase4` after 4h-4k land; tag `v1.2.0-phase4.5` after
+4.5a-4.5f. **Phase 4.5 (earnings-manipulation defense cluster)**:
+6 sub-PRs (4.5a-4.5f) covering sector-relative Sloan + Beneish/
+Dechow soft-veto + restatement history + Form 12b-25 late
+filings + Roychowdhury REM + earnings-quality time-series +
+Burgstahler-Dichev kink + Form 4 insider clustering +
+manipulation-composite penalty. Defense layer grows **9 → 18
 layers** (5 → 7 active vetoes; 4 → 11 annotates). See
 [`PHASE_STATUS.md`](PHASE_STATUS.md) §"Phase 4.5 plan" for the
 full sub-PR breakdown + AAER backtest cohort. **5 open Phase 4+
-issues**: #7 (Sloan sector-relative — folded into 4.5a) / #15
+issues**: #7 (Sloan sector-relative — addressed by 4.5a.1) / #15
 (fundamentals throttling) / #41 (Next.js 14 → 16 CVEs) / #67
-(Damodaran CoE Phase 5+) / #75 (PR 4b §3 polish — remaining
-items: `decay_report.json` writer + UI transparency surface).
+(Damodaran CoE Phase 5+) / #75 (PR 4b §3 — Phase-5-blocked).
 
 ## Companion files
 
