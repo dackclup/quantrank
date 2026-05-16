@@ -764,26 +764,32 @@ in parallel (disjoint code paths).
 
 ## Tasks
 
-### 4.5a — Manipulation quick wins (3 sub-PRs, ~180 LOC, 1-2w)
+### 4.5a — Manipulation quick wins ✅ **DONE 2026-05-16**
 
-- [ ] **4.5a.1 — Sector-relative Sloan** (~80 LOC). Replace
-      cross-sectional top-decile in `compute/scoring/risk_overlay.py`
-      with within-GICS-sector top-decile. Re-run defense-scorecard;
-      confirm Financials + REITs over-fire drops (per issue #7).
-      AAER backtest: PBO ≤ 0.5 vs prior cross-sectional baseline.
-- [ ] **4.5a.2 — Beneish soft-veto** (~40 LOC). Promote
-      `beneish_high` from annotate to active veto at M > −1.78.
-      Original M > −2.22 annotate flag preserved for the −2.22 to
-      −1.78 band. AAER recall check against the Dechow et al. 2011
-      labelled cohort.
-- [ ] **4.5a.3 — Dechow soft-veto + `manipulation_triple_flag`**
-      (~60 LOC). Promote `dechow_high` from annotate to active veto
-      at F > 3.0. Add joint-gate `manipulation_triple_flag` for
-      stocks flagging Beneish + Sloan + Dechow simultaneously
-      (UI badge, doesn't stack veto on top of the three component
-      vetoes).
-- [ ] Defense-scorecard delta confirmed in PR description (active
-      vetoes 5 → 7).
+- [x] **4.5a.1 — Sector-relative Sloan** (PR #89, ~80 LOC + 3 new
+      tests). Sloan top-decile now computed **within GICS sector**
+      with `SLOAN_MIN_POPULATION_SECTOR=15` floor; cross-sectional
+      fallback for sectors below the floor or callers without
+      `sectors` arg. Production verification run #46: Financials
+      Sloan rate **21.3% → 10.7%**; sector spread **7.7× → 1.4×**.
+      Closes [issue #7](https://github.com/dackclup/quantrank/issues/7).
+- [x] **4.5a.2 — Beneish soft-veto** (PR #90, ~40 LOC + 4 new
+      tests). Promoted `beneish_high` to active veto at
+      `BENEISH_VETO_THRESHOLD = -1.78` (Beneish 1999 Table 4 PPV
+      crossover). Existing M > −2.22 annotate flag unchanged.
+      `beneish_m_scores` inject pattern mirrors
+      `non_reliance_by_ticker`. Production: 11 new
+      `beneish_manipulation_veto` tickers (SMCI, WAT, PODD, WDC,
+      NVDA, CAT, PLTR, SNDK, BG, STX, LLY).
+- [x] **4.5a.3 — Dechow soft-veto + `manipulation_triple_flag`**
+      (PR #91, ~60 LOC + 5 new tests). Promoted `dechow_high` to
+      active veto at `DECHOW_VETO_THRESHOLD = 3.0` (Dechow 2011
+      Table 7 4× baseline crossover). Joint-gate
+      `manipulation_triple_flag` annotate fires when Sloan + Beneish-
+      high + Dechow-high co-fire on the same ticker. Production:
+      1 Dechow veto (SMCI F=6.65); 2 triple_flag tickers (SMCI, WAT).
+- [x] Defense-scorecard delta confirmed in PR description
+      (active vetoes 5 → 7 ✓).
 
 ### 4.5b — Disclosure-driven catches (~270 LOC, 1w)
 

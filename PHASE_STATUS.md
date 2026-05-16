@@ -6,8 +6,8 @@
 | 1 | Universe + prices ingestion | ✅ DONE — 2026-05-08 |
 | 2 | Fundamentals via SEC EDGAR | ✅ DONE — 2026-05-08 |
 | 3 | Classical features + composite + **defenses** → **v1.0** | ✅ **DONE — 2026-05-14** (v1.0.0 tagged + GitHub release) |
-| 4 | Factor consolidation (OSAP + JKP + Qlib + IPCA) → **v1.1** | 🟡 IN PROGRESS — 4a-4g + 4c.1/4c.2/4c.3 + PR 4b §1 (cross-source validator, production-wired) + §2 (PBO/DSR library) all merged (PR #60 on 2026-05-14, PR #79 4g 8-K re-enable on 2026-05-15); PR 4b §3 IC-decay output deferred to Phase 5 (needs pillar time-series harness); **next: 4h / 4i / 4j / 4k factor integrations** (PBO/DSR gate ready) or **4.5a.1 sector-relative Sloan** in parallel |
-| **4.5** | **Earnings-manipulation defense cluster** → **v1.2** | ⚪ not started — 6 sub-PRs (4.5a-4.5f); depends on PR 4b PBO/DSR validation gate |
+| 4 | Factor consolidation (OSAP + JKP + Qlib + IPCA) → **v1.1** | 🟡 IN PROGRESS — 4a-4g + 4c.1/4c.2/4c.3 + PR 4b §1+§2 all merged; PR 4b §3 IC-decay output deferred to Phase 5; **next: 4h / 4i / 4j / 4k factor integrations** (PBO/DSR gate ready), can run in parallel with Phase 4.5 |
+| **4.5** | **Earnings-manipulation defense cluster** → **v1.2** | 🟡 IN PROGRESS — **4.5a wave complete 2026-05-16** (PRs #89/#90/#91 — sector-relative Sloan + Beneish/Dechow soft-veto + `manipulation_triple_flag`); production verified run #47 active vetoes 5→7, Financials Sloan 21.3%→11.7%; **next: 4.5b** disclosure-driven catches |
 | 5 | ML meta-learner (Triple-Barrier + Meta-Labeling + Conformal) + SHAP | ⚪ not started |
 | 6 | Sentiment v2 (FinBERT + Whisper + 8-K Lazy Prices) | ⚪ not started |
 | 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → **v1.5** | ⚪ not started |
@@ -207,7 +207,33 @@ sub-PR also runs against the Audit Analytics free-tier
 restatement subset (~1,200 firms 2000-2024) for second-source
 validation.
 
-### 4.5a — Manipulation quick wins (~1-2 weeks, +2 active veto + 1 badge)
+### 4.5a — Manipulation quick wins ✅ **DONE 2026-05-16** (+2 active veto + 1 badge)
+
+**3 sub-PRs all merged**: 4.5a.1 (PR #89) + 4.5a.2 (PR #90) + 4.5a.3
+(PR #91). Production-verified on run #47 (commit `8cdf4886`):
+
+| Sub-PR | Delivered | Production effect (run #47) |
+|---|---|---|
+| **4.5a.1** | Sloan accruals top-decile **within sector** (closes [issue #7](https://github.com/dackclup/quantrank/issues/7)). `SLOAN_MIN_POPULATION_SECTOR=15` floor; cross-sectional fallback for under-floor sectors. | Financials Sloan rate **21.3% → 11.7%** (Δ −9.6pp). Cross-sector spread **7.7× → 1.4×**. Total Sloan flagged 51 → 56 (under-firing sectors now correctly at ~10%). |
+| **4.5a.2** | `beneish_manipulation_veto` active-veto path at `BENEISH_VETO_THRESHOLD = -1.78` (Beneish 1999 Table 4 PPV crossover). Existing `beneish_high` annotate at M > −2.22 unchanged. | **11 new active-veto tickers**: SMCI · WAT · PODD · WDC · NVDA · CAT · PLTR · SNDK · BG · STX · LLY. |
+| **4.5a.3** | `dechow_manipulation_veto` active-veto path at `DECHOW_VETO_THRESHOLD = 3.0` (Dechow 2011 Table 7 4× baseline crossover). + `manipulation_triple_flag` joint-gate annotate when Sloan + Beneish-high + Dechow-high co-fire. | **1 Dechow veto**: SMCI (F=6.65). **2 triple_flag tickers**: SMCI + WAT. SMCI carries the triple-stack (Sloan + Beneish + Dechow). |
+
+**End-state defense layer**: 9 → **11 layers** (5 → 7 active vetoes;
+4 → 5 annotate flags). Tier-3 forensic count unchanged (still 2 —
+Beneish + Dechow operating at two thresholds each). Reason
+taxonomy: 24 stable + 2 Tier-3 + 2 new veto IDs + 1 new joint flag
+= **29 stable identifiers**.
+
+**No schema delta** — all new flag identifiers are strings in
+existing `risk_flags: list[str]` + `valuation_warnings: list[str]`
+arrays. `SCHEMA_VERSION` stays `0.7.1-phase4g`.
+
+References: Sloan 1996 *TAR*, Beneish 1999 *FAJ*, Dechow et al.
+2011 *CAR*.
+
+### 4.5a — Manipulation quick wins (original plan, kept below for reference)
+
+⏬ Original plan text below — execution captured in the table above. ⏬
 
 - **Sector-relative Sloan** — top-decile within GICS sector instead
   of cross-sectional. Closes [issue #7](https://github.com/dackclup/quantrank/issues/7).
