@@ -23,7 +23,7 @@ export function ScoreBadge({
   size = 'sm',
 }: {
   score: number;
-  size?: 'sm' | 'lg';
+  size?: 'sm' | 'md' | 'lg';
 }): JSX.Element {
   if (size === 'lg') {
     const r = 26;
@@ -54,7 +54,7 @@ export function ScoreBadge({
         </div>
         <div className="flex flex-col">
           <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
-            Composite
+            Composite Score
           </span>
           <span className="font-mono text-lg font-semibold tabular-nums text-slate-900">
             {score.toFixed(1)}
@@ -63,6 +63,27 @@ export function ScoreBadge({
             {tierLabel(score)}
           </span>
         </div>
+      </div>
+    );
+  }
+
+  if (size === 'md') {
+    // Compact "label-above-number" stack for mobile cards. No donut
+    // (saves vertical height vs the lg variant), but the number is
+    // larger than the sm pill and gets the same tier-color caption
+    // the lg variant uses below.
+    const accent = scoreAccentColor(score);
+    return (
+      <div className="flex flex-col items-end gap-0.5 leading-none">
+        <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+          Composite Score
+        </span>
+        <span className="font-mono text-2xl font-bold tabular-nums text-slate-900">
+          {score.toFixed(1)}
+        </span>
+        <span className="text-[10px] font-medium uppercase tracking-wider" style={{ color: accent }}>
+          {tierLabel(score)}
+        </span>
       </div>
     );
   }

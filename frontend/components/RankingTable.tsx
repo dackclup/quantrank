@@ -473,7 +473,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                     <div className="truncate text-sm text-slate-700">{row.name}</div>
                   </div>
                   <div className="shrink-0">
-                    <ScoreBadge score={row.composite_score} />
+                    <ScoreBadge score={row.composite_score} size="md" />
                   </div>
                 </div>
                 {/* 2-column symmetric quote block — label sits inline
