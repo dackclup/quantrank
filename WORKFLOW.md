@@ -75,8 +75,12 @@ acceptance criterion changes.
 | **10-Q** | Quarterly report (unaudited) | Phase 2 | TTM aggregation (Q1+Q2+Q3 of fiscal year; Q4 from the 10-K), latest balance sheet items, EPS | ✅ active |
 | **8-K Item 4.01** | Auditor change | Phase 3d → 4g | Tier-2 `auditor_change` annotate flag (Cohen-Malloy-Nguyen 2020 type) | ✅ active (PR #79, 2026-05-15 — re-enabled after PR 3d workflow-timeout deferral) |
 | **8-K Item 4.02** | Non-reliance on prior financials | Phase 3d → 4g | Tier-2 `non_reliance_filing` hard veto | ✅ active (PR #79, 2026-05-15 — 5th active veto) |
+| **10-K/A** | Annual report amendment (restatement) | Phase 4.5b | `restatement_history` annotate (Hennes-Leone-Miller 2008 *TAR*; 5y lookback) | ✅ active (PR #93, 2026-05-16 — fires on 60 / 502 = 12.0%) |
+| **10-Q/A** | Quarterly report amendment | Phase 4.5b | Same `restatement_history` annotate, merged with 10-K/A in fetch path | ✅ active (PR #93, 2026-05-16) |
+| **NT 10-K** | Late annual report notification (Form 12b-25) | Phase 4.5b | `late_filing_notification` annotate (Bartov-Lai-Yeung 2002 *JAR*; 365d lookback) | ✅ active (PR #93, 2026-05-16 — fires on 2 / 502 = 0.4%) |
+| **NT 10-Q** | Late quarterly report notification | Phase 4.5b | Same `late_filing_notification` annotate, merged with NT 10-K in fetch path | ✅ active (PR #93, 2026-05-16) |
 | **8-K (other items)** | Material events (M&A, CEO change, guidance, restatements, NT-filings, …) | Phase 5+ | Sentiment v2 — event-driven re-rate signals (Lazy Prices pattern, Cohen-Malloy-Pomorski 2012) | ❌ not used (Phase 5 / 6 work) |
-| **Form 4** | Insider transactions (officers, directors, 10%+ holders) | Phase 5 | Insider-signal pillar (cluster buys vs. routine sells; Cohen-Malloy-Pomorski 2012 *Decoding Inside Information* — cited in bibliography but not implemented) | ❌ not used |
+| **Form 4** | Insider transactions (officers, directors, 10%+ holders) | Phase 4.5e | Insider-signal annotate (cluster sells before earnings; Cohen-Malloy-Pomorski 2012 *RFS*) — `insider_sell_cluster` + `c_suite_unusual_sell` | ⬜ planned (Phase 4.5e) |
 | **DEF 14A** | Proxy statement (exec comp, board composition, voting) | Phase 5 | Governance pillar (currently inactive in PillarScores schema) — CEO/CFO comp, board independence, dual-class structure penalties | ❌ not used |
 | **13F-HR** | Institutional holdings ($100M+ AUM funds) | Phase 5 / 6 | Smart-money / sentiment pillar — Bayesian update of holdings changes, hedge-fund-vs-mutual-fund divergence | ❌ not used |
 | **20-F** | Annual report (foreign private issuers — ADRs like ASML, TSM, NVS) | Phase 8 | Replaces 10-K when the universe expands beyond domestic S&P 500. Same intent (annual fundamentals + MD&A text) but different XBRL taxonomy. Phase 8 universe expansion will hit this. | ❌ not used |
@@ -791,18 +795,27 @@ in parallel (disjoint code paths).
 - [x] Defense-scorecard delta confirmed in PR description
       (active vetoes 5 → 7 ✓).
 
-### 4.5b — Disclosure-driven catches (~270 LOC, 1w)
+### 4.5b — Disclosure-driven catches ✅ **DONE 2026-05-16** (PR #93)
 
-- [ ] **`restatement_history` annotate** (~150 LOC). Scan SEC
-      EDGAR for 10-K/A filings per CIK in trailing 5y. Flag if
-      count ≥ 1. Module: `compute/scoring/restatement.py`.
-- [ ] **`late_filing_notification` annotate** (~120 LOC). Scan SEC
-      EDGAR for Form 12b-25 (NT 10-K / NT 10-Q) filings in
-      trailing 365d. Module: `compute/scoring/late_filing.py`.
-- [ ] 10-K/A and Form 12b-25 added to `WORKFLOW.md` "SEC Filing
-      Roadmap" table with `✅ active`.
-- [ ] Per-CIK on-disk cache (90-day TTL, mirrors
-      `filing_text.py` pattern).
+- [x] **`restatement_history` annotate** (PR #93, ~390 LOC combined
+      with late-filing in single module + 17 tests). Scans SEC
+      EDGAR for 10-K/A + 10-Q/A filings per CIK in trailing 5y
+      (`config.RESTATEMENT_HISTORY_LOOKBACK_DAYS = 1825`). Module:
+      `compute/scoring/restatement_filings.py`. Production
+      verification run #48: **60 / 502 tickers (12.0%)** flagged
+      — within expected 6-16%.
+- [x] **`late_filing_notification` annotate** (PR #93, same module).
+      Scans SEC EDGAR for Form 12b-25 (NT 10-K + NT 10-Q) in
+      trailing 365d (`config.LATE_FILING_LOOKBACK_DAYS = 365`).
+      Production: **2 / 502 tickers (0.4%)** — HAS + Q. Slightly
+      under expected 1-4% (S&P 500 firms tend to be more compliant
+      than the broader Bartov-Lai-Yeung 2002 sample).
+- [x] **10-K/A** and **Form 12b-25** added to "SEC Filing Roadmap"
+      table with `✅ active`.
+- [x] **Per-CIK on-disk cache** under
+      `compute/cache/edgar_amendments/` + `compute/cache/edgar_late_filings/`
+      (7-day TTL, mirrors the existing 8-K cache rhythm).
+      Workflow YAML cache paths updated.
 
 ### 4.5c — Real Earnings Management (~250 LOC, 2w)
 

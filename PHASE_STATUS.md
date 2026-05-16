@@ -7,7 +7,7 @@
 | 2 | Fundamentals via SEC EDGAR | ✅ DONE — 2026-05-08 |
 | 3 | Classical features + composite + **defenses** → **v1.0** | ✅ **DONE — 2026-05-14** (v1.0.0 tagged + GitHub release) |
 | 4 | Factor consolidation (OSAP + JKP + Qlib + IPCA) → **v1.1** | 🟡 IN PROGRESS — 4a-4g + 4c.1/4c.2/4c.3 + PR 4b §1+§2 all merged; PR 4b §3 IC-decay output deferred to Phase 5; **next: 4h / 4i / 4j / 4k factor integrations** (PBO/DSR gate ready), can run in parallel with Phase 4.5 |
-| **4.5** | **Earnings-manipulation defense cluster** → **v1.2** | 🟡 IN PROGRESS — **4.5a wave complete 2026-05-16** (PRs #89/#90/#91 — sector-relative Sloan + Beneish/Dechow soft-veto + `manipulation_triple_flag`); production verified run #47 active vetoes 5→7, Financials Sloan 21.3%→11.7%; **next: 4.5b** disclosure-driven catches |
+| **4.5** | **Earnings-manipulation defense cluster** → **v1.2** | 🟡 IN PROGRESS — **4.5a + 4.5b waves complete 2026-05-16** (PRs #89/#90/#91 + #93). 4.5a: sector-relative Sloan + Beneish/Dechow soft-veto + `manipulation_triple_flag` (active vetoes 5→7). 4.5b: `restatement_history` (60 stocks, 12.0%) + `late_filing_notification` (2 stocks, 0.4%) annotates. Defense layer **9 → 13** layers. **Next: 4.5c** Roychowdhury REM |
 | 5 | ML meta-learner (Triple-Barrier + Meta-Labeling + Conformal) + SHAP | ⚪ not started |
 | 6 | Sentiment v2 (FinBERT + Whisper + 8-K Lazy Prices) | ⚪ not started |
 | 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → **v1.5** | ⚪ not started |
@@ -254,15 +254,32 @@ References: Sloan 1996 *TAR*, Beneish 1999 *FAJ*, Dechow et al.
 2011 *CAR*. Effort: ~180 LOC + AAER backtest, 3 sub-PRs (`4.5a.1` /
 `4.5a.2` / `4.5a.3`) that ship in parallel.
 
-### 4.5b — Disclosure-driven catches (~1 week, +2 annotate)
+### 4.5b — Disclosure-driven catches ✅ **DONE 2026-05-16** (+2 annotate)
 
-- **`restatement_history`** — count of 10-K/A filings in trailing
-  5 years from SEC EDGAR. Recurrence is a strong predictor —
-  Hennes-Leone-Miller 2008 *TAR* shows restatement firms see −9%
-  abnormal return on announcement.
-- **`late_filing_notification`** — SEC Form 12b-25 (NT 10-K /
-  NT 10-Q) within trailing 365 days. Bartov-Lai-Yeung 2002 *JAR* —
-  late filers see −5-7% abnormal returns.
+**PR #93 merged**. Production-verified run #48 (commit `849b7ca8`,
+workflow 2h08m cold-cache populating the new `edgar_amendments`
++ `edgar_late_filings` dirs):
+
+| Flag | Lookback | Production fire | Tickers (sample) |
+|---|---|---|---|
+| **`restatement_history`** | 5y 10-K/A + 10-Q/A | **60 / 502 (12.0%)** — within expected 6-16% | AMD · DIS · CVX · BSX · EBAY · ELV · AON · DASH · DVN · ALB · APTV · AXON · BLDR · ADM · AES · AMP · CPAY · CNP · CRH · COHR + 40 more (large mature firms, mostly amendments for standard adoption / segment reclassification) |
+| **`late_filing_notification`** | 365d Form 12b-25 (NT 10-K + NT 10-Q) | **2 / 502 (0.4%)** — slightly under expected 1-4% | HAS (Hasbro) · Q |
+
+New module `compute/scoring/restatement_filings.py` (~390 LOC) +
+17 offline tests (~270 LOC) + 2 new cache dirs (7d TTL, mirrors
+8-K pattern) + workflow YAML cache paths. Per-CIK JSON cache
+shape: `{fetched_at, lookback_days, filings: [{accession, form,
+filing_date, filing_url}]}`. Workflow time impact: cold cache run
+2h08m (was 1h30m); warm runs return to ~1h30m once both caches
+populate.
+
+References: Hennes-Leone-Miller 2008 *TAR*, Bartov-Lai-Yeung 2002
+*JAR*. Both flags **ANNOTATE-only** — base rates sector-agnostic
+but moderate, no veto without sector adjustment.
+
+### 4.5b — Disclosure-driven catches (original plan, kept below for reference)
+
+⏬ Original plan text below — execution captured in the table above. ⏬
 
 Both use existing SEC EDGAR access, no new fetch surface. Effort:
 ~270 LOC + tests, ~7 days.
