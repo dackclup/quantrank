@@ -11,6 +11,7 @@ from compute.scoring.risk_overlay import (
     ALTMAN_DISTRESS_THRESHOLD,
     NSI_MIN_POPULATION,
     SLOAN_MIN_POPULATION,
+    SLOAN_MIN_POPULATION_SECTOR,
     SLOAN_TOP_DECILE,
     _net_stock_issuance,
     _shares_at_lookback,
@@ -107,6 +108,90 @@ def test_sloan_below_min_population_disables_flag():
     }
     flags = compute_risk_flags(snaps)
     assert all("sloan_accruals_top_decile" not in v for v in flags.values())
+
+
+def test_sloan_sector_relative_top_decile_when_sectors_supplied():
+    # PR 4.5a.1 — when `sectors` is supplied and the sector population
+    # meets SLOAN_MIN_POPULATION_SECTOR, Sloan top-decile is computed
+    # WITHIN sector rather than across the full universe.
+    # Build two sectors of SLOAN_MIN_POPULATION_SECTOR tickers each:
+    #   - "Financials": elevated baseline accruals (structurally non-cash
+    #     heavy); top ticker has the sector's highest accruals
+    #   - "Technology": near-zero baseline accruals; top ticker has the
+    #     sector's highest accruals
+    # The Financials sector's median accruals exceed the Tech sector's
+    # max, so cross-sectional top-decile would only flag a Financials
+    # ticker. Within-sector decile must flag the top ticker IN EACH sector.
+    snaps: dict[str, FundamentalsSnapshot] = {}
+    sectors: dict[str, str] = {}
+    n = SLOAN_MIN_POPULATION_SECTOR
+    for i in range(n):
+        # Financials: NI-CFO in [+50, +50+n*5] — high baseline
+        snaps[f"F{i:02d}"] = _snap(
+            net_income=100.0 + 50.0 + (i * 5.0),
+            operating_cash_flow=100.0,
+            total_assets=1000.0,
+        )
+        sectors[f"F{i:02d}"] = "Financials"
+        # Technology: NI-CFO in [-10, -10+n*1] — low baseline
+        snaps[f"T{i:02d}"] = _snap(
+            net_income=100.0 - 10.0 + (i * 1.0),
+            operating_cash_flow=100.0,
+            total_assets=1000.0,
+        )
+        sectors[f"T{i:02d}"] = "Technology"
+    flags = compute_risk_flags(snaps, sectors=sectors)
+    # Top ticker in EACH sector should be flagged (within-sector decile).
+    assert "sloan_accruals_top_decile" in flags[f"F{n-1:02d}"]
+    assert "sloan_accruals_top_decile" in flags[f"T{n-1:02d}"]
+    # Bottom ticker in each sector must NOT be flagged.
+    assert "sloan_accruals_top_decile" not in flags["F00"]
+    assert "sloan_accruals_top_decile" not in flags["T00"]
+
+
+def test_sloan_sector_relative_skips_undersized_sector():
+    # PR 4.5a.1 — sectors with fewer than SLOAN_MIN_POPULATION_SECTOR
+    # tickers fall back to the cross-sectional threshold (or skip when
+    # the total cross-sectional population also fails SLOAN_MIN_POPULATION).
+    # Build one "Small" sector under the floor and one "Large" sector at
+    # the floor. The Large sector should get per-sector treatment; the
+    # Small sector falls back to cross-sectional.
+    snaps: dict[str, FundamentalsSnapshot] = {}
+    sectors: dict[str, str] = {}
+    # Small sector — 3 tickers (below SLOAN_MIN_POPULATION_SECTOR=15)
+    for i in range(3):
+        snaps[f"S{i}"] = _snap(
+            net_income=100.0 + (i * 100.0),
+            operating_cash_flow=100.0,
+            total_assets=1000.0,
+        )
+        sectors[f"S{i}"] = "Small"
+    # Large sector — SLOAN_MIN_POPULATION_SECTOR tickers
+    for i in range(SLOAN_MIN_POPULATION_SECTOR):
+        snaps[f"L{i:02d}"] = _snap(
+            net_income=100.0 + (i * 5.0),
+            operating_cash_flow=100.0,
+            total_assets=1000.0,
+        )
+        sectors[f"L{i:02d}"] = "Large"
+    flags = compute_risk_flags(snaps, sectors=sectors)
+    # Large sector top ticker — flagged by per-sector decile
+    assert "sloan_accruals_top_decile" in flags[f"L{SLOAN_MIN_POPULATION_SECTOR-1:02d}"]
+    # Small sector top ticker has very-high accruals so cross-sectional
+    # fallback should still flag it (it's the highest in the combined
+    # pool). The contract is "small sector falls back to cross-sectional"
+    # not "small sector is silently ignored".
+    assert "sloan_accruals_top_decile" in flags["S2"]
+
+
+def test_sloan_sector_relative_floor_constant():
+    # Sanity — floor must be high enough for a top-decile within a sector
+    # to be meaningful. With n=15, top decile = floor(1.5) = 1 expected
+    # flag per sector, which is the minimum useful signal.
+    assert SLOAN_MIN_POPULATION_SECTOR >= 10
+    # And must be ≥ SLOAN_MIN_POPULATION so per-sector path is stricter
+    # than cross-sectional fallback.
+    assert SLOAN_MIN_POPULATION_SECTOR >= SLOAN_MIN_POPULATION
 
 
 def test_compute_risk_flags_handles_none_snapshot():
