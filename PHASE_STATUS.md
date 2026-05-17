@@ -7,7 +7,7 @@
 | 2 | Fundamentals via SEC EDGAR | ✅ DONE — 2026-05-08 |
 | 3 | Classical features + composite + **defenses** → **v1.0** | ✅ **DONE — 2026-05-14** (v1.0.0 tagged + GitHub release) |
 | 4 | Factor consolidation (OSAP + JKP + Qlib + IPCA) → **v1.1** | 🟡 IN PROGRESS — 4a-4g + 4c.1/4c.2/4c.3 + PR 4b §1+§2 all merged; PR 4b §3 IC-decay output deferred to Phase 5; **next: 4h / 4i / 4j / 4k factor integrations** (PBO/DSR gate ready), can run in parallel with Phase 4.5 |
-| **4.5** | **Earnings-manipulation defense cluster** → **v1.2** | 🟡 IN PROGRESS — **4.5a + 4.5b + 4.5c + 4.5d waves complete 2026-05-17** (PRs #89/#90/#91 + #93 + #95 + #97). Active vetoes **5 → 7**; defense layer **9 → 16**. 4.5d: `accruals_momentum_high` (50 stocks, 10.0%) + `loss_avoidance_pattern` (0 stocks — S&P 500 universe-mismatch with Burgstahler-Dichev 1997 cohort thresholds, file as Phase 4.5 follow-up). **Next: 4.5e** (Form 4 insider clustering) **or jump to 4.5f** (manipulation_index composite + tag v1.2.0) |
+| **4.5** | **Earnings-manipulation defense cluster** → **v1.2** | ✅ **DONE 2026-05-17** (PRs #89/#90/#91 + #93 + #95 + #97 + #100). Active vetoes **5 → 7**; defense layer **9 → 17** (= 7 vetoes + 10 annotates). 4.5f adds `manipulation_index` (0-100 rollup) + `composite_score_adjusted` (soft penalty, max 10 pts, informational only) + `ManipulationRiskCard` UI + schema bump **`0.7.1-phase4g` → `0.8.0-phase4.5f`**. Production verified run #51 (`e57f09cb`, 5m14s warm-cache): card fires on 158/502 (31.5%); HIGH band 2 (SMCI=84 · WAT=64), MODERATE 60, LOW 96. Tag **`v1.2.0-phase4.5`** ready to cut. |
 | 5 | ML meta-learner (Triple-Barrier + Meta-Labeling + Conformal) + SHAP | ⚪ not started |
 | 6 | Sentiment v2 (FinBERT + Whisper + 8-K Lazy Prices) | ⚪ not started |
 | 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → **v1.5** | ⚪ not started |
@@ -389,7 +389,68 @@ New Form 4 parser needed (no existing ingest); touches a new SEC
 form class so the ingest layer needs minor refactoring. Effort:
 ~300 LOC parser + ~120 LOC clustering detector + tests, ~12 days.
 
-### 4.5f — Manipulation Composite + composite penalty + UI (~1 week, schema bump)
+### 4.5f — Manipulation Composite + composite penalty + UI ✅ **DONE 2026-05-17** (PR #100, +1 annotate + 5 schema fields + 1 UI surface)
+
+**Shipped**: 0-100 manipulation rollup + soft composite penalty + new
+detail-page card. Production verified run #51 (commit `e57f09cb`,
+workflow `25983422610`, warm-cache **5m14s**):
+
+| Field | Value |
+|---|---|
+| Schema | **`0.8.0-phase4.5f`** (bumped from `0.7.1-phase4g`) |
+| `manipulation_index` populated | 502/502 (100%) |
+| Card fires (`manipulation_index > 0`) | **158/502 (31.5%)** |
+| HIGH band (≥ 50) | 2 (SMCI=84 · WAT=64) |
+| MODERATE (20-50) | 60 |
+| LOW (0-20) | 96 |
+| Max penalty observed | 8.40 pts (SMCI: 50.36 → 41.96) |
+| Fundamentals p95 | 14.7s (improved from 18.72s in run #50) |
+
+**Module**: `compute/scoring/manipulation_index.py` (~250 LOC, three
+pure functions: `compute_manipulation_index` + `compute_adjusted_composite`
++ `manipulation_components`). Tests: 25 new offline (suite **831 →
+856 + 17 @network**). Weight table additive; **Phase 4.5e flags
+declared as reserved-slot constants** (`INSIDER_SELL_CLUSTER_WEIGHT_RESERVED`
++ `C_SUITE_UNUSUAL_SELL_WEIGHT_RESERVED`) so the 4.5e PR is a
+one-line uncomment + entry addition in `FLAG_WEIGHTS`, no calibration
+cascade.
+
+**Schema fields added** (additive optional):
+- `StockSummary.manipulation_index: float | None`
+- `StockSummary.composite_score_adjusted: float | None`
+- `StockDetail.manipulation_index: float | None`
+- `StockDetail.composite_score_adjusted: float | None`
+- `StockDetail.manipulation_components: dict[str, bool] | None`
+
+**Rank-source contract**: rank stays the **raw** `composite_score`
+per SKILL.md Rule 16 ("composite rank unchanged"). `composite_score_adjusted`
+is informational only — surfaced on the new `ManipulationRiskCard`
+detail-page surface with the in-line qualifier "Composite penalty:
+−X.XX pts (informational; rank uses raw composite)". Penalize-the-rank
+flips can re-open in Phase 5 once walk-forward backtest IC evidence
+is in.
+
+**Frontend** (`frontend/components/ManipulationRiskCard.tsx`):
+3-band outlined-light chip family (emerald LOW · amber MODERATE ·
+rose HIGH), per-flag drill-down with human labels + `[raw_flag_id]`
+in mono. Card returns null when `manipulation_index == null || <= 0`
+(`== null` catches both legacy-data `undefined` + explicit `null`).
+
+**Live UI spot-check** (new Section I per verify-production-output
+SKILL.md update this same wave): 4 tickers via Playwright against
+`https://quantrank.vercel.app`. SMCI rendered 84/100 rose-tint with
+all 7 components; WAT 64/100 rose with 6; NVDA 48/100 amber with 4;
+CF (rank #1) 3/100 emerald with 1 (`beneish_high`). Visual hierarchy,
+penalty text, and the in-line rank-contract qualifier all confirmed
+in production rendering — no design-system regressions vs the
+existing Tier2EventCard / FairPriceCard rhythm.
+
+References: SKILL.md Rule 16 (annotate-and-veto-Top-N), Beneish-Vorst
+2021 (FP-rate motivation for keeping penalty informational only).
+
+### 4.5f — Manipulation Composite + composite penalty + UI (original plan, kept below for reference)
+
+⏬ Original plan text below — execution captured in the block above. ⏬
 
 Roll up 4.5a-4.5e into a single 0-100 **`manipulation_index`** and
 wire it as:
@@ -419,8 +480,8 @@ schema-snapshot regen, ~5 days.
 | 4.5b | 1w | +2 annotate | ✅ DONE 2026-05-16 |
 | 4.5c | 2w | +1 annotate (sector-relative) | ✅ DONE 2026-05-17 |
 | 4.5d | 2w | +2 annotate | ✅ DONE 2026-05-17 |
-| 4.5e | 3w | +2 annotate (new Form 4 parser) | ⚪ |
-| 4.5f | 1w | composite penalty + UI + schema bump | ⚪ |
+| 4.5e | 3w | +2 annotate (new Form 4 parser) | ⚪ (deferred — runs after v1.2.0 ships) |
+| 4.5f | 1w | composite penalty + UI + schema bump | ✅ DONE 2026-05-17 |
 
 Total: **~10-11 working weeks** for 4.5a-4.5f. Combined with PR 4b
 (6 weeks) the manipulation-defense + validation-infra cluster

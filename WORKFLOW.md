@@ -885,25 +885,63 @@ in parallel (disjoint code paths).
       volume as proxy.
 - [ ] Form 4 added to `WORKFLOW.md` "SEC Filing Roadmap" table.
 
-### 4.5f — Manipulation Composite + composite penalty + UI (~250 LOC, 1w, schema bump)
+### 4.5f — Manipulation Composite + composite penalty + UI ✅ **DONE 2026-05-17** (PR #100)
 
-- [ ] **`StockDetail.manipulation_index: float | None`** schema
-      field (additive — `0.7.x` → **`0.8.0-phase4.5f`**). Rollup
-      of 4.5a-4.5e flags into a 0-100 risk index.
-- [ ] **Composite-score penalty wiring** in
-      `compute/scoring/composite.py`:
+- [x] **5 schema fields** (additive — `0.7.1-phase4g` → **`0.8.0-phase4.5f`**):
+      `StockSummary.{manipulation_index, composite_score_adjusted}` +
+      `StockDetail.{manipulation_index, composite_score_adjusted,
+      manipulation_components}`. Subtle expansion vs the original
+      "1 field" plan because the UI needs `manipulation_components`
+      (per-flag boolean dict) for the drill-down list and the
+      `composite_score_adjusted` cohabits `StockSummary` for future
+      list-view filters.
+- [x] **Composite-score penalty wiring** in
+      `compute/scoring/manipulation_index.py` (separate module, not
+      composite.py — keeps `compute_composite` pure-pillar). Formula:
       `composite_score_adjusted = composite_score − 0.5 ×
-      (manipulation_index / 100) × 20`. Existing `composite_score`
-      preserved per SKILL.md Rule 9 (audit trail).
-- [ ] **Manipulation pillar card** on detail page UI — same visual
-      weight as the 8-pillar radar chart entries.
-- [ ] **`README.md` Honest Limitations** section updated covering:
-      what 4.5 catches, what it still misses (pre-disclosure
-      sophisticated fraud, off-balance-sheet SPEs, working-paper
-      audit data).
-- [ ] Schema-snapshot regenerated via
+      (manipulation_index / 100) × 20` (max 10-pt deduction at
+      index = 100). Original `composite_score` preserved untouched
+      per Rule 9. **Rank source stays raw composite per Rule 16** —
+      the adjusted value is informational only.
+- [x] **`ManipulationRiskCard` component** (`frontend/components/
+      ManipulationRiskCard.tsx`) on detail page. Outlined-light
+      Pattern B (per design-system Rule 2) with 3-band color ramp:
+      emerald LOW (0-20) · amber MODERATE (20-50) · rose HIGH
+      (≥ 50). Mounted right after `Tier2EventCard`. Returns null
+      on legacy data (`== null` catches both `undefined` and
+      `null`) + clean stocks (`index <= 0`). Per-flag drill-down
+      list with human label + `[raw_flag_id]` in mono.
+- [x] **`README.md` Honest Limitations** updated: defense inventory
+      split into "v1.0 layer" + "Phase 4.5 manipulation cluster"
+      subsections; new paragraph clarifying `manipulation_index`
+      penalty is informational only per Rule 16 — penalizing the
+      rank introduces more error than it removes when
+      fraud-detection FP rates run 15-30% (Beneish-Vorst 2021).
+- [x] Schema-snapshot regenerated via
       `python -m compute.output.schema_check --update-snapshot`.
-- [ ] Tag **`v1.2.0-phase4.5`**.
+- [x] **25 new offline tests** in
+      `tests/test_scoring/test_manipulation_index.py`. Threshold
+      assertions are symbolic (per Rule 17 #2) so weight tweaks
+      don't shower the suite red. Suite **831 → 856 offline + 17
+      @network**.
+- [x] **Phase 4.5e reserved-slot weights declared** as module
+      constants (`INSIDER_SELL_CLUSTER_WEIGHT_RESERVED = 10`,
+      `C_SUITE_UNUSUAL_SELL_WEIGHT_RESERVED = 5`). The 4.5e PR
+      uncomments 2 entries in `FLAG_WEIGHTS` — no calibration
+      cascade.
+- [x] Production verified run #51 (commit `e57f09cb`,
+      workflow `25983422610`, warm-cache 5m14s): 502/502 (100%)
+      populated; 158/502 (31.5%) fire the card; HIGH band 2 stocks
+      (SMCI = 84, WAT = 64); MODERATE 60; LOW 96. Max penalty
+      observed = 8.40 pts (SMCI: 50.36 → 41.96).
+- [x] **Live UI Section I spot-check** (new requirement —
+      verify-production-output SKILL.md updated this same wave):
+      Playwright vs production rendered all 4 representative
+      stocks correctly (SMCI rose / WAT rose / NVDA amber / CF
+      emerald) with matching headline numbers, band chips, fired
+      components, and penalty text. No design-system regressions.
+- [ ] Tag **`v1.2.0-phase4.5`** — pending (do after this docs PR
+      merges so the tag points at the docs-up-to-date commit).
 
 ## Phase 4.5 Fallback Triggers
 

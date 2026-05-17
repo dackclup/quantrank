@@ -51,6 +51,7 @@ An A-H section report. Each section answers a specific health question:
 | F | Tier-2 dict-shape spot-check (5 random tickers) | dict missing any of 5 required keys |
 | G | Fundamentals resilience (p50/p95/coverage) | coverage < 80% (ship anyway, file Phase 4 priority) |
 | H | Universe-size consistency across 3 files | mismatch beyond expected delisting delta |
+| I | **Live UI visual spot-check via Playwright** (REQUIRED 2026-05-17) | new UI surface fails to render against live production data |
 
 ## Running
 
@@ -110,6 +111,54 @@ priorities:
 The raw top-5 (by composite score) may differ from the effective top-5
 (after veto suppression). Both are reported. Comparison against the
 `--baseline-commit` reveals composition churn.
+
+### Live UI visual spot-check (Section I — REQUIRED 2026-05-17)
+
+The static A-H scan reads JSON only. Whenever a workflow run lands a
+schema bump or a new UI surface (e.g., PR 4.5f
+`ManipulationRiskCard`, PR 3d `Tier2EventCard`), the JSON contract can
+still pass A-H while the live page fails to render — wrong type
+binding, missed `== null` vs `=== null` guard for legacy fields, CSS
+class typo. Section I closes that gap with a one-shot Playwright pass
+against the live Vercel deployment.
+
+**Mandatory after every `workflow_dispatch` that lands a schema bump
+or new component on main.** Optional but recommended after pure
+data-refresh runs (no schema or UI change) — useful for catching
+upstream data drift that propagates into the rendered page.
+
+Minimum spot-check matrix — pick 4 representative tickers per the
+PR's UI change:
+
+1. **Worst-case stack** (e.g., SMCI for the manipulation cluster) —
+   the new surface should render its loudest state
+2. **Mid-band stock** (e.g., NVDA) — mid-severity render
+3. **Boundary stock** (e.g., index = 3, just above the "render-if > 0"
+   threshold) — confirm the guard doesn't false-negative
+4. **Top-of-leaderboard clean stock** (e.g., CF rank #1) — confirm
+   the surface either renders quietly or hides cleanly
+
+For each ticker, capture: card-present boolean, the headline number,
+the band-label chip, the per-flag / per-component drill-down count
++ first three labels, the penalty / qualifier text, and a
+full-page screenshot to `/tmp/preview_<ticker>.png`.
+
+Send all 4 screenshots to the user (status="normal") and read the
+worst-case one back inline to confirm the design-system colors
+(rose for HIGH, amber for MODERATE, emerald for LOW) actually
+render against the live light-mode background — the PR #70
+regression class (invisible `dark:text-*` on forced-light background)
+is the failure mode this catches.
+
+**Sandbox / browser-version caveat**: the system Playwright pkg often
+ships ahead of the bundled Chromium revision under
+`/opt/pw-browsers/`. If `playwright install chromium` is a no-op
+(silent failure on outbound download), launch with an explicit
+`executable_path` pointing at the existing
+`/opt/pw-browsers/chromium-<rev>/chrome-linux/chrome` binary +
+`args=["--no-sandbox"]`. Use `ignore_https_errors=True` on
+`new_context()` because the sandbox typically doesn't trust public
+CAs.
 
 ## Why this skill exists
 
