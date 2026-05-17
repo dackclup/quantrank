@@ -311,7 +311,8 @@
     "risk_flags": [],
     "valuation_warnings": [
       "goodwill_heavy",
-      "extreme_graham_estimate"
+      "extreme_graham_estimate",
+      "rem_suspect"
     ],
     "recommendation": "lean_bullish",
     "loss_chance_pct": 50.568836312956876,
@@ -2242,7 +2243,9 @@
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [],
+    "valuation_warnings": [
+      "rem_suspect"
+    ],
     "recommendation": "lean_bullish",
     "loss_chance_pct": 13.722407055057094,
     "price_change_1d_pct": -1.4815,
@@ -3669,7 +3672,8 @@
       "sloan_accruals_top_decile"
     ],
     "valuation_warnings": [
-      "beneish_high"
+      "beneish_high",
+      "rem_suspect"
     ],
     "recommendation": "lean_bullish",
     "loss_chance_pct": 61.185927660311386,
@@ -4546,7 +4550,8 @@
     },
     "risk_flags": [],
     "valuation_warnings": [
-      "extreme_dcf_estimate"
+      "extreme_dcf_estimate",
+      "rem_suspect"
     ],
     "recommendation": "lean_bullish",
     "loss_chance_pct": 57.99326893339884,
@@ -5562,7 +5567,9 @@
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [],
+    "valuation_warnings": [
+      "rem_suspect"
+    ],
     "recommendation": "lean_bullish",
     "loss_chance_pct": 20.0986883414228,
     "price_change_1d_pct": 0.7555,
@@ -8129,7 +8136,8 @@
     "valuation_warnings": [
       "beneish_high",
       "dechow_high",
-      "manipulation_triple_flag"
+      "manipulation_triple_flag",
+      "rem_suspect"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 33.96532449177964,
@@ -9068,7 +9076,8 @@
     "valuation_warnings": [
       "extreme_dcf_estimate",
       "value_trap_risk",
-      "restatement_history"
+      "restatement_history",
+      "rem_suspect"
     ],
     "recommendation": "cautious",
     "loss_chance_pct": 66.39539302834325,
@@ -10698,7 +10707,8 @@
     "risk_flags": [],
     "valuation_warnings": [
       "value_trap_risk",
-      "restatement_history"
+      "restatement_history",
+      "rem_suspect"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 56.15936714563168,
@@ -11180,8 +11190,7 @@
     },
     "risk_flags": [],
     "valuation_warnings": [
-      "value_trap_risk",
-      "restatement_history"
+      "value_trap_risk"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 38.68566632575749,
@@ -12333,7 +12342,8 @@
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
-      "value_trap_risk"
+      "value_trap_risk",
+      "rem_suspect"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 58.92814327869604,
@@ -14042,7 +14052,8 @@
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
-      "extreme_rim_estimate"
+      "extreme_rim_estimate",
+      "rem_suspect"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 53.592438612552556,
@@ -14962,7 +14973,8 @@
     "risk_flags": [],
     "valuation_warnings": [
       "extreme_multiples_pe_estimate",
-      "beneish_high"
+      "beneish_high",
+      "rem_suspect"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 70.20749068941625,
@@ -15296,7 +15308,8 @@
     "risk_flags": [],
     "valuation_warnings": [
       "goodwill_heavy",
-      "value_trap_risk"
+      "value_trap_risk",
+      "rem_suspect"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 46.897574003137755,
@@ -15861,7 +15874,8 @@
     "risk_flags": [],
     "valuation_warnings": [
       "value_trap_risk",
-      "beneish_high"
+      "beneish_high",
+      "rem_suspect"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 61.231322929624156,
@@ -15894,7 +15908,8 @@
     "risk_flags": [],
     "valuation_warnings": [
       "goodwill_heavy",
-      "value_trap_risk"
+      "value_trap_risk",
+      "rem_suspect"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 71.27046053075833,
@@ -16062,7 +16077,8 @@
     "valuation_warnings": [
       "beneish_high",
       "dechow_high",
-      "manipulation_triple_flag"
+      "manipulation_triple_flag",
+      "rem_suspect"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 81.48464897472257,
@@ -16227,7 +16243,8 @@
     },
     "risk_flags": [],
     "valuation_warnings": [
-      "value_trap_risk"
+      "value_trap_risk",
+      "rem_suspect"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 64.07413866733606,
