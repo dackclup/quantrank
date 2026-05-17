@@ -79,6 +79,7 @@ from compute.scoring.dechow_f import DechowResult, compute_dechow_f
 from compute.scoring.loss_chance import derive_loss_chance
 from compute.scoring.pillars import TickerInputs, compute_all_pillars
 from compute.scoring.recommendation import derive_recommendation
+from compute.scoring.rem import compute_rem_flags
 from compute.scoring.restatement_filings import (
     check_late_filing,
     check_restatement_history,
@@ -854,6 +855,19 @@ def run_weekly_compute() -> int:
         dechow_f_scores=dechow_f_scores,
     )
 
+    # PR 4.5c — Roychowdhury 2006 Real Earnings Management. Three
+    # abnormal proxies (CFO, production, discretionary expenses) fit
+    # per-sector via OLS; flag `rem_suspect` fires when 2 of 3
+    # residuals sit in their respective "worst" decile within sector.
+    # ANNOTATE-only — appended to `valuation_warnings` in the Step-8
+    # per-ticker loop below. Single pass (one sector regression per
+    # sector, then per-ticker residual lookup).
+    rem_results = compute_rem_flags(
+        snapshots,
+        histories=histories,
+        sectors=sectors_dict,
+    )
+
     # Step 5b — cross-sectional inputs for the fair-price ensemble.
     # Built ONCE; reused inside the per-ticker loop below.
     logger.info("Building cross-sectional inputs for fair-price ensemble…")
@@ -1049,6 +1063,21 @@ def run_weekly_compute() -> int:
             and "late_filing_notification" not in valuation_warnings
         ):
             valuation_warnings.append("late_filing_notification")
+
+        # PR 4.5c — Roychowdhury 2006 REM. `rem_suspect` annotate
+        # fires when 2 of 3 abnormal proxies (CFO, production,
+        # discretionary expenses) sit in their respective worst
+        # decile within sector. Results pre-computed above; this is
+        # just the per-ticker append. Catches REAL manipulation —
+        # cutting R&D, channel stuffing, deferring maintenance —
+        # invisible to Sloan/Beneish/Dechow accrual targets.
+        rem_result = rem_results.get(ticker)
+        if (
+            rem_result is not None
+            and rem_result.fired
+            and "rem_suspect" not in valuation_warnings
+        ):
+            valuation_warnings.append("rem_suspect")
 
         # Price history JSON (sliced from already-fetched prices, no new
         # fetches per Step 5 spec).
