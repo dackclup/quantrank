@@ -140,6 +140,22 @@
   "recommendation": "cautious",
   "loss_chance_pct": 64.57883437999415,
   "price_change_1d_pct": -0.005,
+  "manipulation_index": 48.0,
+  "composite_score_adjusted": 54.04,
+  "manipulation_components": {
+    "sloan_accruals_top_decile": true,
+    "beneish_manipulation_veto": true,
+    "dechow_manipulation_veto": false,
+    "non_reliance_filing": false,
+    "manipulation_triple_flag": false,
+    "rem_suspect": false,
+    "restatement_history": false,
+    "late_filing_notification": false,
+    "accruals_momentum_high": true,
+    "loss_avoidance_pattern": false,
+    "beneish_high": true,
+    "dechow_high": false
+  },
   "entered_top5": false,
   "exited_top5": false
 }
