@@ -76,6 +76,10 @@ from compute.scoring.composite import (
     neutralize_pillar_scores,
 )
 from compute.scoring.dechow_f import DechowResult, compute_dechow_f
+from compute.scoring.earnings_quality import (
+    check_accruals_momentum,
+    check_loss_avoidance,
+)
 from compute.scoring.loss_chance import derive_loss_chance
 from compute.scoring.pillars import TickerInputs, compute_all_pillars
 from compute.scoring.recommendation import derive_recommendation
@@ -1078,6 +1082,30 @@ def run_weekly_compute() -> int:
             and "rem_suspect" not in valuation_warnings
         ):
             valuation_warnings.append("rem_suspect")
+
+        # PR 4.5d §1 — accruals_momentum_high annotate.
+        # Δ(TATA = (NI − CFO)/TA) over trailing 3 fiscal years.
+        # Threshold +0.05 ≈ Beneish 1999 ΔM > +0.5 via the β_TATA
+        # coefficient. Catches manipulation gathering steam — the
+        # snapshot-only Sloan + Beneish flags miss the trajectory.
+        accruals_mom = check_accruals_momentum(snap, histories.get(ticker))
+        if (
+            accruals_mom.fired
+            and "accruals_momentum_high" not in valuation_warnings
+        ):
+            valuation_warnings.append("accruals_momentum_high")
+
+        # PR 4.5d §2 — loss_avoidance_pattern annotate.
+        # Burgstahler-Dichev 1997 *JAE* kink at zero. 3+ consecutive
+        # fiscal years of tiny-positive NI (∈ [0, $5M]) OR tiny-
+        # positive EPS (∈ [0, $0.05]) = managers shading reported
+        # earnings just enough to clear the loss threshold.
+        loss_avoid = check_loss_avoidance(snap, histories.get(ticker))
+        if (
+            loss_avoid.fired
+            and "loss_avoidance_pattern" not in valuation_warnings
+        ):
+            valuation_warnings.append("loss_avoidance_pattern")
 
         # Price history JSON (sliced from already-fetched prices, no new
         # fetches per Step 5 spec).
