@@ -90,7 +90,8 @@
     ],
     "valuation_warnings": [
       "extreme_graham_estimate",
-      "beneish_high"
+      "beneish_high",
+      "accruals_momentum_high"
     ],
     "recommendation": "cautious",
     "loss_chance_pct": 56.58754479797704,
@@ -213,7 +214,9 @@
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [],
+    "valuation_warnings": [
+      "accruals_momentum_high"
+    ],
     "recommendation": "bullish",
     "loss_chance_pct": 29.351650758582807,
     "price_change_1d_pct": 0.425,
@@ -478,7 +481,9 @@
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [],
+    "valuation_warnings": [
+      "accruals_momentum_high"
+    ],
     "recommendation": "bullish",
     "loss_chance_pct": 20.98696154389044,
     "price_change_1d_pct": 0.5564,
@@ -829,7 +834,8 @@
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_dcf_estimate",
-      "value_trap_risk"
+      "value_trap_risk",
+      "accruals_momentum_high"
     ],
     "recommendation": "lean_bullish",
     "loss_chance_pct": 52.430380104374954,
@@ -960,7 +966,8 @@
     "valuation_warnings": [
       "extreme_dcf_estimate",
       "value_trap_risk",
-      "beneish_high"
+      "beneish_high",
+      "accruals_momentum_high"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 61.5750963042806,
@@ -1025,7 +1032,9 @@
     "risk_flags": [
       "sloan_accruals_top_decile"
     ],
-    "valuation_warnings": [],
+    "valuation_warnings": [
+      "accruals_momentum_high"
+    ],
     "recommendation": "lean_bullish",
     "loss_chance_pct": 17.936928650660494,
     "price_change_1d_pct": 1.473,
@@ -1157,7 +1166,8 @@
       "sloan_accruals_top_decile"
     ],
     "valuation_warnings": [
-      "extreme_multiples_pe_estimate"
+      "extreme_multiples_pe_estimate",
+      "accruals_momentum_high"
     ],
     "recommendation": "lean_bullish",
     "loss_chance_pct": 25.928747999396737,
@@ -1319,7 +1329,8 @@
     "risk_flags": [],
     "valuation_warnings": [
       "extreme_graham_estimate",
-      "extreme_multiples_pb_estimate"
+      "extreme_multiples_pb_estimate",
+      "accruals_momentum_high"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 55.47098250832288,
@@ -1419,7 +1430,8 @@
       "net_issuance_top_decile"
     ],
     "valuation_warnings": [
-      "restatement_history"
+      "restatement_history",
+      "accruals_momentum_high"
     ],
     "recommendation": "lean_bullish",
     "loss_chance_pct": 56.57553171641999,
@@ -1610,7 +1622,9 @@
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [],
+    "valuation_warnings": [
+      "accruals_momentum_high"
+    ],
     "recommendation": "lean_bullish",
     "loss_chance_pct": 46.0219671785176,
     "price_change_1d_pct": 1.1978,
@@ -1982,7 +1996,9 @@
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [],
+    "valuation_warnings": [
+      "accruals_momentum_high"
+    ],
     "recommendation": "bullish",
     "loss_chance_pct": 29.951862078056372,
     "price_change_1d_pct": 0.6715,
@@ -2047,7 +2063,8 @@
     "valuation_warnings": [
       "extreme_rim_estimate",
       "extreme_dcf_estimate",
-      "beneish_high"
+      "beneish_high",
+      "accruals_momentum_high"
     ],
     "recommendation": "cautious",
     "loss_chance_pct": 59.54710054708701,
@@ -2180,7 +2197,8 @@
       "extreme_graham_estimate",
       "extreme_rim_estimate",
       "extreme_dcf_estimate",
-      "beneish_high"
+      "beneish_high",
+      "accruals_momentum_high"
     ],
     "recommendation": "cautious",
     "loss_chance_pct": 60.99390030457879,
@@ -2410,7 +2428,8 @@
     ],
     "valuation_warnings": [
       "extreme_multiples_pb_estimate",
-      "cross_source_disagreement"
+      "cross_source_disagreement",
+      "accruals_momentum_high"
     ],
     "recommendation": "lean_bullish",
     "loss_chance_pct": 48.3732225178805,
@@ -2721,7 +2740,9 @@
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [],
+    "valuation_warnings": [
+      "accruals_momentum_high"
+    ],
     "recommendation": "lean_bullish",
     "loss_chance_pct": 19.138962881359138,
     "price_change_1d_pct": 1.0575,
@@ -2822,7 +2843,8 @@
       "extreme_multiples_pb_estimate",
       "extreme_rim_estimate",
       "beneish_high",
-      "cross_source_disagreement"
+      "cross_source_disagreement",
+      "accruals_momentum_high"
     ],
     "recommendation": "cautious",
     "loss_chance_pct": 64.57883437999415,
@@ -2991,7 +3013,8 @@
     ],
     "valuation_warnings": [
       "goodwill_heavy",
-      "extreme_rim_estimate"
+      "extreme_rim_estimate",
+      "accruals_momentum_high"
     ],
     "recommendation": "lean_bullish",
     "loss_chance_pct": 52.791610519481345,
@@ -3029,7 +3052,8 @@
     "valuation_warnings": [
       "extreme_multiples_pb_estimate",
       "extreme_dcf_estimate",
-      "beneish_high"
+      "beneish_high",
+      "accruals_momentum_high"
     ],
     "recommendation": "cautious",
     "loss_chance_pct": 75.6920616620277,
@@ -3297,7 +3321,8 @@
       "sloan_accruals_top_decile"
     ],
     "valuation_warnings": [
-      "cross_source_disagreement"
+      "cross_source_disagreement",
+      "accruals_momentum_high"
     ],
     "recommendation": "lean_bullish",
     "loss_chance_pct": 27.66926625525242,
@@ -3808,7 +3833,9 @@
     "risk_flags": [
       "sloan_accruals_top_decile"
     ],
-    "valuation_warnings": [],
+    "valuation_warnings": [
+      "accruals_momentum_high"
+    ],
     "recommendation": "lean_bullish",
     "loss_chance_pct": 50.51297563703953,
     "price_change_1d_pct": 0.2624,
@@ -3936,7 +3963,9 @@
     "risk_flags": [
       "altman_distress"
     ],
-    "valuation_warnings": [],
+    "valuation_warnings": [
+      "accruals_momentum_high"
+    ],
     "recommendation": "cautious",
     "loss_chance_pct": 68.50829435422865,
     "price_change_1d_pct": 0.5355,
@@ -4711,7 +4740,8 @@
       "sloan_accruals_top_decile"
     ],
     "valuation_warnings": [
-      "value_trap_risk"
+      "value_trap_risk",
+      "accruals_momentum_high"
     ],
     "recommendation": "lean_bullish",
     "loss_chance_pct": 19.154633106541336,
@@ -5020,7 +5050,9 @@
     "risk_flags": [
       "sloan_accruals_top_decile"
     ],
-    "valuation_warnings": [],
+    "valuation_warnings": [
+      "accruals_momentum_high"
+    ],
     "recommendation": "neutral",
     "loss_chance_pct": 60.43869616470826,
     "price_change_1d_pct": 0.0,
@@ -5568,7 +5600,8 @@
     },
     "risk_flags": [],
     "valuation_warnings": [
-      "rem_suspect"
+      "rem_suspect",
+      "accruals_momentum_high"
     ],
     "recommendation": "lean_bullish",
     "loss_chance_pct": 20.0986883414228,
@@ -6318,7 +6351,8 @@
     ],
     "valuation_warnings": [
       "data_quality_input_corruption",
-      "cross_source_disagreement"
+      "cross_source_disagreement",
+      "accruals_momentum_high"
     ],
     "recommendation": "cautious",
     "loss_chance_pct": null,
@@ -6410,7 +6444,8 @@
     },
     "risk_flags": [],
     "valuation_warnings": [
-      "restatement_history"
+      "restatement_history",
+      "accruals_momentum_high"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 58.67897939492032,
@@ -6541,7 +6576,9 @@
     "risk_flags": [
       "sloan_accruals_top_decile"
     ],
-    "valuation_warnings": [],
+    "valuation_warnings": [
+      "accruals_momentum_high"
+    ],
     "recommendation": "lean_bullish",
     "loss_chance_pct": 49.22325217729433,
     "price_change_1d_pct": -0.7002,
@@ -6863,7 +6900,8 @@
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
-      "extreme_rim_estimate"
+      "extreme_rim_estimate",
+      "accruals_momentum_high"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 61.92390984584867,
@@ -7066,7 +7104,8 @@
       "extreme_multiples_ev_ebitda_estimate",
       "extreme_rim_estimate",
       "extreme_dcf_estimate",
-      "beneish_high"
+      "beneish_high",
+      "accruals_momentum_high"
     ],
     "recommendation": "cautious",
     "loss_chance_pct": 67.04588552183958,
@@ -7263,7 +7302,9 @@
       "altman_distress",
       "net_issuance_top_decile"
     ],
-    "valuation_warnings": [],
+    "valuation_warnings": [
+      "accruals_momentum_high"
+    ],
     "recommendation": "cautious",
     "loss_chance_pct": 39.53062338687847,
     "price_change_1d_pct": -2.5738,
@@ -8523,7 +8564,9 @@
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [],
+    "valuation_warnings": [
+      "accruals_momentum_high"
+    ],
     "recommendation": "neutral",
     "loss_chance_pct": 47.06518964356738,
     "price_change_1d_pct": 2.3197,
@@ -8557,7 +8600,8 @@
     ],
     "valuation_warnings": [
       "goodwill_heavy",
-      "value_trap_risk"
+      "value_trap_risk",
+      "accruals_momentum_high"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 44.498094369938954,
@@ -9077,7 +9121,8 @@
       "extreme_dcf_estimate",
       "value_trap_risk",
       "restatement_history",
-      "rem_suspect"
+      "rem_suspect",
+      "accruals_momentum_high"
     ],
     "recommendation": "cautious",
     "loss_chance_pct": 66.39539302834325,
@@ -9209,7 +9254,8 @@
     },
     "risk_flags": [],
     "valuation_warnings": [
-      "value_trap_risk"
+      "value_trap_risk",
+      "accruals_momentum_high"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 46.17402811663329,
@@ -9371,7 +9417,8 @@
     ],
     "valuation_warnings": [
       "goodwill_heavy",
-      "value_trap_risk"
+      "value_trap_risk",
+      "accruals_momentum_high"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 50.009944274966784,
@@ -10155,7 +10202,9 @@
       "ml": null
     },
     "risk_flags": [],
-    "valuation_warnings": [],
+    "valuation_warnings": [
+      "accruals_momentum_high"
+    ],
     "recommendation": "neutral",
     "loss_chance_pct": null,
     "price_change_1d_pct": 1.2375,
@@ -10285,7 +10334,8 @@
     ],
     "valuation_warnings": [
       "extreme_rim_estimate",
-      "cross_source_disagreement"
+      "cross_source_disagreement",
+      "accruals_momentum_high"
     ],
     "recommendation": "cautious",
     "loss_chance_pct": 65.41009849490925,
@@ -10578,7 +10628,8 @@
       "sloan_accruals_top_decile"
     ],
     "valuation_warnings": [
-      "restatement_history"
+      "restatement_history",
+      "accruals_momentum_high"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 22.312979493773007,
@@ -11418,7 +11469,8 @@
     },
     "risk_flags": [],
     "valuation_warnings": [
-      "value_trap_risk"
+      "value_trap_risk",
+      "accruals_momentum_high"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 37.95176143182135,
@@ -12700,7 +12752,8 @@
     },
     "risk_flags": [],
     "valuation_warnings": [
-      "value_trap_risk"
+      "value_trap_risk",
+      "accruals_momentum_high"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 49.501674672476035,
@@ -12926,7 +12979,8 @@
     ],
     "valuation_warnings": [
       "goodwill_heavy",
-      "value_trap_risk"
+      "value_trap_risk",
+      "accruals_momentum_high"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 47.02865882936861,
@@ -13630,7 +13684,8 @@
       "altman_distress"
     ],
     "valuation_warnings": [
-      "value_trap_risk"
+      "value_trap_risk",
+      "accruals_momentum_high"
     ],
     "recommendation": "cautious",
     "loss_chance_pct": 45.23030008213735,
@@ -14149,7 +14204,8 @@
     "risk_flags": [],
     "valuation_warnings": [
       "extreme_multiples_pb_estimate",
-      "value_trap_risk"
+      "value_trap_risk",
+      "accruals_momentum_high"
     ],
     "recommendation": "cautious",
     "loss_chance_pct": 68.13546762317817,
@@ -14348,7 +14404,8 @@
       "net_issuance_top_decile"
     ],
     "valuation_warnings": [
-      "value_trap_risk"
+      "value_trap_risk",
+      "accruals_momentum_high"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 69.68731377432593,
@@ -14807,7 +14864,8 @@
     "risk_flags": [],
     "valuation_warnings": [
       "extreme_dcf_estimate",
-      "value_trap_risk"
+      "value_trap_risk",
+      "accruals_momentum_high"
     ],
     "recommendation": "cautious",
     "loss_chance_pct": 68.9293158416562,
@@ -14843,7 +14901,8 @@
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
-      "extreme_rim_estimate"
+      "extreme_rim_estimate",
+      "accruals_momentum_high"
     ],
     "recommendation": "cautious",
     "loss_chance_pct": 71.97282729811349,
@@ -15577,7 +15636,8 @@
       "goodwill_heavy",
       "extreme_graham_estimate",
       "value_trap_risk",
-      "restatement_history"
+      "restatement_history",
+      "accruals_momentum_high"
     ],
     "recommendation": "cautious",
     "loss_chance_pct": 71.2093449120186,
@@ -15945,7 +16005,8 @@
     "valuation_warnings": [
       "extreme_multiples_ev_ebitda_estimate",
       "extreme_dcf_estimate",
-      "value_trap_risk"
+      "value_trap_risk",
+      "accruals_momentum_high"
     ],
     "recommendation": "cautious",
     "loss_chance_pct": 75.47163486465098,
@@ -16145,7 +16206,8 @@
     ],
     "valuation_warnings": [
       "extreme_dcf_estimate",
-      "beneish_high"
+      "beneish_high",
+      "accruals_momentum_high"
     ],
     "recommendation": "neutral",
     "loss_chance_pct": 76.62015920336917,
@@ -16283,7 +16345,8 @@
       "extreme_graham_estimate",
       "extreme_rim_estimate",
       "extreme_dcf_estimate",
-      "restatement_history"
+      "restatement_history",
+      "accruals_momentum_high"
     ],
     "recommendation": "cautious",
     "loss_chance_pct": 80.48795219964026,
