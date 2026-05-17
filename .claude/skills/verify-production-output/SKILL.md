@@ -127,6 +127,35 @@ or new component on main.** Optional but recommended after pure
 data-refresh runs (no schema or UI change) — useful for catching
 upstream data drift that propagates into the rendered page.
 
+#### Step 1 — Vercel MCP deploy health (added 2026-05-17)
+
+Before launching Playwright, do the cheap MCP pass:
+
+1. `mcp__vercel__list_deployments` (project=quantrank, limit=3) →
+   confirm the most recent deploy is `state=READY` and matches the
+   `git_commit` you expect to verify
+2. `mcp__vercel__get_deployment` on the matching deployment ID →
+   confirm no build error, build duration is in the normal band
+   (~30-60 s for a typical compute-output chore commit)
+3. `mcp__vercel__get_deployment_build_logs` → grep for `error` /
+   `failed` / `module not found` / `Type error` — Phase 4.5f's
+   `toFixed()` regression on undefined would surface here as a
+   TypeScript build error
+4. `mcp__vercel__get_runtime_logs` (if any 4xx/5xx) → catch
+   server-side rendering hiccups even though we ship static export
+
+This 4-call MCP pass takes ~10 seconds and rules out 90% of the
+"deploy is broken" cases before paying the ~30-60s Playwright
+browser-launch cost. **If any step in this MCP pass shows a hard
+failure, fix the deploy first; do not proceed to Step 2.**
+
+#### Step 2 — Playwright 4-ticker visual matrix
+
+If Step 1 is clean, run the live Playwright spot-check below. This
+is the part Vercel MCP cannot replace — actual rendered chip colors,
+card heights, MoS/CAG/recommendation badge visibility against the
+forced-light background.
+
 Minimum spot-check matrix — pick 4 representative tickers per the
 PR's UI change:
 
@@ -159,6 +188,15 @@ ships ahead of the bundled Chromium revision under
 `args=["--no-sandbox"]`. Use `ignore_https_errors=True` on
 `new_context()` because the sandbox typically doesn't trust public
 CAs.
+
+#### Step 3 — Sentry error surface (forward-looking, not yet wired)
+
+Once the `@sentry/nextjs` SDK is wired in a follow-up PR, the final
+Section I step will be: `mcp__sentry__list_recent_issues` (filtered
+to the last 30 minutes since the workflow_dispatch) → confirm no new
+issue groups appeared after the deploy. **Until that PR lands,
+Step 3 is skipped — Section I is Steps 1 + 2 only.** Track Sentry SDK
+wiring as part of Phase 5+ onboarding.
 
 ## Why this skill exists
 

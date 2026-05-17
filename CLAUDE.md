@@ -59,6 +59,33 @@ surface or schema bump. See
 spot-check (Section I)" for the 4-ticker matrix + sandbox / browser-
 version caveats.
 
+**Connector-aware first-line check** (post-2026-05-17): when MCP
+connectors are loaded (see §Connectors), use `mcp__vercel__list_
+deployments` → confirm `READY` → `get_runtime_logs` as the cheap
+pre-Playwright pass. The Playwright matrix is still required for any
+new UI surface, but Vercel MCP catches deploy / runtime failures
+before paying the browser-launch cost.
+
+## Connectors
+
+Claude Code sessions for this project have these MCP connectors
+enabled (managed in Claude app Settings → Connectors):
+
+| Connector | Status | Use |
+|---|---|---|
+| **GitHub** | ✅ active | PRs, issues, releases, CI runs, file ops |
+| **Vercel** | ✅ active (since 2026-05-17) | first-line deploy + runtime log check before Section I Playwright; `list_deployments` / `get_deployment` / `get_deployment_build_logs` / `get_runtime_logs` |
+| **Supabase** | ✅ active (since 2026-05-17) | **reserved for Phase 5+** (user accounts, ML experiment log, insider event time-series); **not used by current code** — do not add a Supabase client to compute/ or frontend/ without an explicit PR |
+| **Sentry** | ⚪ planned | post-deploy error monitor for 502 static routes; `@sentry/nextjs` SDK wiring is a separate PR (not yet filed) — connector is registered but no events flow yet |
+| Gmail · Google Drive | ✅ active | rarely used in this project; available for cross-tool comms / doc backup |
+
+New sessions surface connector tools as `mcp__<name>__*` after a
+fresh start — if `ToolSearch query="vercel"` returns no matches, the
+session was started before the connector was added; restart resolves
+it. Other agent runtimes (Copilot / Cursor / Devin) don't have these
+connectors — see `AGENTS.md` § "Claude-Code-specific tooling" for the
+graceful-degradation note.
+
 ## Conventions
 
 - **Pydantic and TypeScript schemas move together.** `compute/output/schemas.py`

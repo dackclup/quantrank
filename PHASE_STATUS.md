@@ -36,8 +36,18 @@ production run is `b1588b2a` (run #51, 5m14s warm-cache).
 
 **4 open Phase 4+ issues**: #15 (fundamentals throttling) · #41
 (Next.js 14 → 16 CVEs) · #67 (Damodaran CoE Phase 5+) · #75 (PR 4b
-§3 — Phase-5-blocked) · #103 (loss_avoidance universe mismatch,
-filed post-v1.2) · #104 (tag-naming inconsistency, filed post-v1.2).
+§3 — Phase-5-blocked). Post-v1.2 issues #103 (loss_avoidance
+universe mismatch) and #104 (tag-naming inconsistency) both closed
+2026-05-17 — #103 documented as deferred-but-tracked under
+manipulation_index reserved-slot logic; #104 resolved via hybrid
+Path A/B alias tag `v1.0.0-phase3e`.
+
+**Tooling note (2026-05-17, post-v1.2)**: Claude Code MCP connectors
+added for Vercel + Supabase + Sentry (Sentry SDK wiring deferred to
+Phase 5+ onboarding). Section I verification ladder updated in
+`.claude/skills/verify-production-output/SKILL.md` to use Vercel MCP
+as first-line deploy-health check before the 4-ticker Playwright
+matrix. See `CLAUDE.md` §Connectors for the registered table.
 
 **Earlier phase history below** — keep this header section under
 20 lines and let the per-phase blocks own the detail.
