@@ -279,7 +279,7 @@ deflated Sharpe, walk-forward IC).
 
 ## The full formula reference
 
-See [`../stock_ranking_knowledge.md`](../stock_ranking_knowledge.md) for the
+See [`./stock_ranking_knowledge.md`](./stock_ranking_knowledge.md) for the
 complete ~1600-line reference covering every formula, normalization rule, and
 data source. That file is the authoritative source — never reinvent formulas.
 
