@@ -7,7 +7,7 @@
 | 2 | Fundamentals via SEC EDGAR | ✅ DONE — 2026-05-08 |
 | 3 | Classical features + composite + **defenses** → **v1.0** | ✅ **DONE — 2026-05-14** (v1.0.0 tagged + GitHub release) |
 | 4 | Factor consolidation (OSAP + JKP + Qlib + IPCA) → **v1.1** | 🟡 IN PROGRESS — 4a-4g + 4c.1/4c.2/4c.3 + PR 4b §1+§2 all merged; PR 4b §3 IC-decay output deferred to Phase 5; **next: 4h / 4i / 4j / 4k factor integrations** (PBO/DSR gate ready), can run in parallel with Phase 4.5 |
-| **4.5** | **Earnings-manipulation defense cluster** → **v1.2** | 🟡 IN PROGRESS — **4.5a + 4.5b waves complete 2026-05-16** (PRs #89/#90/#91 + #93). 4.5a: sector-relative Sloan + Beneish/Dechow soft-veto + `manipulation_triple_flag` (active vetoes 5→7). 4.5b: `restatement_history` (60 stocks, 12.0%) + `late_filing_notification` (2 stocks, 0.4%) annotates. Defense layer **9 → 13** layers. **Next: 4.5c** Roychowdhury REM |
+| **4.5** | **Earnings-manipulation defense cluster** → **v1.2** | 🟡 IN PROGRESS — **4.5a + 4.5b + 4.5c waves complete 2026-05-17** (PRs #89/#90/#91 + #93 + #95). 4.5a: sector-relative Sloan + Beneish/Dechow soft-veto + `manipulation_triple_flag` (active vetoes 5→7). 4.5b: `restatement_history` (59 stocks, 11.8%) + `late_filing_notification` (2 stocks, 0.4%). 4.5c: `rem_suspect` Roychowdhury 2006 3-proxy REM (16 stocks, 3.2%). Defense layer **9 → 14** layers. **Next: 4.5d** earnings-quality time-series |
 | 5 | ML meta-learner (Triple-Barrier + Meta-Labeling + Conformal) + SHAP | ⚪ not started |
 | 6 | Sentiment v2 (FinBERT + Whisper + 8-K Lazy Prices) | ⚪ not started |
 | 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → **v1.5** | ⚪ not started |
@@ -284,7 +284,32 @@ but moderate, no veto without sector adjustment.
 Both use existing SEC EDGAR access, no new fetch surface. Effort:
 ~270 LOC + tests, ~7 days.
 
-### 4.5c — Real Earnings Management (~2 weeks, +1 annotate)
+### 4.5c — Real Earnings Management ✅ **DONE 2026-05-17** (PR #95, +1 annotate)
+
+**Shipped**: `rem_suspect` annotate via per-sector OLS regressions on
+3 abnormal proxies (CFO, Production, Discretionary Expenses).
+Production verified run #49 (commit `65097703`, warm-cache 6m25s):
+
+| Metric | Value |
+|---|---|
+| Fire rate | **16 / 502 (3.2%)** — within H0-to-correlation expected 2.8-7% |
+| Tickers fired | SMCI · WAT · ADM · TSN · HRL · STLD · FSLR · JBL · COHR · LII · LDOS · POOL · OMC · WY · TECH · RVTY |
+| Orthogonality check | NVDA / PLTR (Beneish-veto fired) **NOT** in REM list — confirms 4.5c captures real-manipulation signal orthogonal to accrual targets |
+| Real-world coverage | ADM (2024 SEC investigation) · SMCI (2024 investigation) · TSN / HRL (periodic accounting scrutiny) · FSLR (solar channel-stuffing history) |
+
+Module: `compute/scoring/rem.py` (~420 LOC, pure-numpy OLS via
+`np.linalg.lstsq`, no sklearn/statsmodels dep). 14 offline tests
+including golden numerical test recovering known-DGP coefficients
+from a 30-ticker synthetic panel. `REM_MIN_POPULATION_SECTOR = 15`
+floor (matches 4.5a.1 Sloan). DISEXP simplification: omits
+Advertising (rarely XBRL-tagged), uses `R&D + SGA` per Roychowdhury
+2006 footnote 7.
+
+References: Roychowdhury 2006 *JAE* 42(3), 335-370.
+
+### 4.5c — Real Earnings Management (original plan, kept below for reference)
+
+⏬ Original plan text below — execution captured in the table above. ⏬
 
 Beneish + Dechow + Sloan all target *accrual* manipulation. **Real**
 manipulation — cutting R&D, channel stuffing, deferring
