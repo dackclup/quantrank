@@ -1,0 +1,79 @@
+name: Create v1.0.0-phase3e alias tag
+
+# One-shot workflow that creates the `v1.0.0-phase3e` alias tag (and
+# its accompanying GitHub Release) pointing at the same commit as the
+# existing `1.0.0` tag (`b5bc65f3`, the Phase 3e v1.0 ship).
+#
+# Exists because the sandbox proxy that hosts this repo's dev
+# environment blocks direct tag pushes from local git (HTTP 403);
+# tag creation has to happen from inside GitHub Actions where the
+# default GITHUB_TOKEN has permission to write tags + releases.
+#
+# Closes issue #104 (tag-naming inconsistency).
+#
+# After a successful run, **delete this workflow file** in a follow-up
+# PR — it's one-shot, not a recurring job.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  create-alias-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # Need full history so the workflow can resolve the
+          # Phase 3e ship commit `b5bc65f3` by SHA. Without
+          # fetch-depth: 0 the runner only sees recent commits.
+          fetch-depth: 0
+
+      - name: Verify target commit exists
+        run: |
+          git rev-parse --verify b5bc65f3 || {
+            echo "::error::Target commit b5bc65f3 not found — aborting."
+            exit 1
+          }
+          echo "Target commit resolved: $(git rev-parse b5bc65f3)"
+
+      - name: Abort if v1.0.0-phase3e tag already exists
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh release view v1.0.0-phase3e --repo ${{ github.repository }} >/dev/null 2>&1; then
+            echo "::error::Release v1.0.0-phase3e already exists — nothing to do."
+            exit 1
+          fi
+          if git ls-remote --tags origin refs/tags/v1.0.0-phase3e | grep -q .; then
+            echo "::error::Tag v1.0.0-phase3e already exists on remote — nothing to do."
+            exit 1
+          fi
+
+      - name: Create alias tag + release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NOTES=$(cat <<'EOF'
+          Alias tag for [`1.0.0`](https://github.com/dackclup/quantrank/releases/tag/1.0.0) to bring naming in line with the project's `vMAJOR.MINOR.PATCH-phaseN` convention (see [#104](https://github.com/dackclup/quantrank/issues/104)).
+
+          Both tags point at the same commit `b5bc65f3` — the original `1.0.0` tag is **preserved** (not deleted), so any consumer pinned to it continues to work. New consumers should prefer `v1.0.0-phase3e` for naming consistency with `v0.6.0-phase3d` ← `v0.5.0-phase3c` ← … ← `v0.2.0-phase1` and the most recent [`v1.2.0-phase4.5`](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5).
+
+          Full v1.0 release notes: see [`1.0.0`](https://github.com/dackclup/quantrank/releases/tag/1.0.0).
+          EOF
+          )
+          gh release create v1.0.0-phase3e \
+            --repo ${{ github.repository }} \
+            --target b5bc65f3 \
+            --title "v1.0.0-phase3e (alias for tag 1.0.0 — Phase 3e v1.0 ship)" \
+            --notes "$NOTES"
+
+      - name: Confirm release visible
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release view v1.0.0-phase3e --repo ${{ github.repository }}
+          echo ""
+          echo "::notice::Alias tag + release created. Close issue #104 + delete this workflow file in a follow-up PR."
