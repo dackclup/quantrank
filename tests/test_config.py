@@ -10,8 +10,8 @@ from __future__ import annotations
 from compute import config
 
 
-def test_schema_version_is_phase4g():
-    assert config.SCHEMA_VERSION == "0.7.1-phase4g"
+def test_schema_version_is_phase4_5f():
+    assert config.SCHEMA_VERSION == "0.8.0-phase4.5f"
 
 
 def test_eight_k_lookback_veto_is_one_year():

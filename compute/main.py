@@ -81,6 +81,11 @@ from compute.scoring.earnings_quality import (
     check_loss_avoidance,
 )
 from compute.scoring.loss_chance import derive_loss_chance
+from compute.scoring.manipulation_index import (
+    compute_adjusted_composite,
+    compute_manipulation_index,
+    manipulation_components,
+)
 from compute.scoring.pillars import TickerInputs, compute_all_pillars
 from compute.scoring.recommendation import derive_recommendation
 from compute.scoring.rem import compute_rem_flags
@@ -1143,6 +1148,22 @@ def run_weekly_compute() -> int:
             mos_pct=ensemble.mos_pct if ensemble is not None else None,
         )
 
+        # PR 4.5f — manipulation_index rollup + soft composite penalty.
+        # Rank stays the raw composite per SKILL.md Rule 16 ("composite
+        # rank unchanged"); composite_score_adjusted is informational.
+        m_index = compute_manipulation_index(
+            risk_flags=risk_flags.get(ticker, []),
+            valuation_warnings=valuation_warnings,
+        )
+        composite_adj = compute_adjusted_composite(
+            composite_score=float(r["composite_score"]),
+            manipulation_index=m_index,
+        )
+        m_components = manipulation_components(
+            risk_flags=risk_flags.get(ticker, []),
+            valuation_warnings=valuation_warnings,
+        )
+
         summaries.append(
             StockSummary(
                 rank=int(r["rank"]),
@@ -1165,6 +1186,8 @@ def run_weekly_compute() -> int:
                     and not math.isnan(float(r["price_change_1d_pct"]))
                     else None
                 ),
+                manipulation_index=m_index,
+                composite_score_adjusted=composite_adj,
                 entered_top5=ticker in entered,
                 exited_top5=ticker in exited,
             )
@@ -1203,6 +1226,9 @@ def run_weekly_compute() -> int:
                 and not math.isnan(float(r["price_change_1d_pct"]))
                 else None
             ),
+            manipulation_index=m_index,
+            composite_score_adjusted=composite_adj,
+            manipulation_components=m_components,
             entered_top5=ticker in entered,
             exited_top5=ticker in exited,
         )

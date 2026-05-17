@@ -42,6 +42,13 @@ export type StockSummary = {
   // (compute/main.py _fetch_prices_one). Null when only one close
   // is available (newly-IPO'd tickers).
   price_change_1d_pct: number | null;
+  // PR 4.5f — manipulation_index rollup of the 4.5a-d defense flags
+  // into a 0-100 risk score. composite_score_adjusted = composite_score
+  // − soft penalty (max 10 composite points at index=100). RANK STILL
+  // USES THE RAW composite_score per SKILL.md Rule 16; the adjusted
+  // value is informational. See `compute/scoring/manipulation_index.py`.
+  manipulation_index: number | null;
+  composite_score_adjusted: number | null;
   entered_top5: boolean;
   exited_top5: boolean;
 };
@@ -198,6 +205,14 @@ export type StockDetail = {
   recommendation: Recommendation | null;
   loss_chance_pct: number | null;
   price_change_1d_pct: number | null;
+  // PR 4.5f manipulation_index — see comment on StockSummary.
+  // manipulation_components is the per-flag boolean breakdown the
+  // ManipulationRiskCard renders as a sorted-by-weight component grid.
+  // Keys come from `FLAG_WEIGHTS` in
+  // compute/scoring/manipulation_index.py.
+  manipulation_index: number | null;
+  composite_score_adjusted: number | null;
+  manipulation_components: Record<string, boolean> | null;
   entered_top5: boolean;
   exited_top5: boolean;
 };
