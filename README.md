@@ -268,7 +268,7 @@ acceptance checklist.
 ## Methodology
 
 See [`docs/METHODOLOGY.md`](./docs/METHODOLOGY.md) for the user-facing
-methodology summary, and [`stock_ranking_knowledge.md`](./stock_ranking_knowledge.md)
+methodology summary, and [`docs/stock_ranking_knowledge.md`](./docs/stock_ranking_knowledge.md)
 for the full formula reference (~1600 lines covering fundamental, technical,
 factor, sentiment, ML, regime, and validation techniques).
 
