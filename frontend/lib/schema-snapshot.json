@@ -240,6 +240,11 @@
       "required": true,
       "default": "<required>"
     },
+    "composite_score_adjusted": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
     "current_price": {
       "type": "float",
       "required": true,
@@ -281,6 +286,16 @@
       "default": null
     },
     "loss_chance_pct": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "manipulation_components": {
+      "type": "dict[str, bool] | None",
+      "required": false,
+      "default": null
+    },
+    "manipulation_index": {
       "type": "float | None",
       "required": false,
       "default": null
@@ -372,6 +387,11 @@
       "required": true,
       "default": "<required>"
     },
+    "composite_score_adjusted": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
     "current_price": {
       "type": "float",
       "required": true,
@@ -393,6 +413,11 @@
       "default": null
     },
     "loss_chance_pct": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "manipulation_index": {
       "type": "float | None",
       "required": false,
       "default": null

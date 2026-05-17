@@ -40,13 +40,25 @@ on quantitative models, do not use this app for investing.
 
 ## Honest Limitations
 
-QuantRank ships academic-quality defenses (Altman Z″, Sloan accruals,
-net-stock-issuance, going-concern phrase scan, Beneish M-score, Dechow
-F-score, tangible-book sanity guard). Despite this, several classes of
-manipulation and several structural realities remain outside what any
-filed-financials-based screener can address. v1.0 ships with the
-honest accounting below — readers should weight QuantRank's outputs
-accordingly.
+QuantRank ships academic-quality defenses across two waves:
+
+- **v1.0 layer** (Phase 3a-3e + 4g): Altman Z″, Sloan accruals, net-
+  stock-issuance, going-concern phrase scan, 8-K Item 4.02 non-
+  reliance veto, Beneish M-score, Dechow F-score, tangible-book
+  sanity guard.
+- **Phase 4.5 manipulation cluster** (4.5a-4.5f): sector-relative
+  Sloan, Beneish + Dechow soft-veto thresholds, `manipulation_triple_
+  flag` joint gate, restatement-history scan (10-K/A 5y), late-filing
+  notification (Form 12b-25 1y), Roychowdhury 2006 Real Earnings
+  Management 3-proxy, accruals momentum (Δ TATA over 3y), Burgstahler-
+  Dichev 1997 loss-avoidance kink, and the **`manipulation_index`
+  0-100 rollup** with a soft 10-point composite penalty (PR 4.5f,
+  tag `v1.2.0`).
+
+Despite all this, several classes of manipulation and several
+structural realities remain outside what any filed-financials-based
+screener can address. Each release ships with the honest accounting
+below — readers should weight QuantRank's outputs accordingly.
 
 ### Frauds we cannot catch
 
@@ -135,10 +147,27 @@ fraud signals:
 - Adding more produces proportionally more false positives without
   proportional true positives
 
-QuantRank's v1.0 defense set is intentionally fixed at this
-"diminishing-returns inflection point." Future versions will **rotate
-signals based on IC decay** rather than stacking. Treat the v1.0
+QuantRank's v1.0 defense set was intentionally fixed at this
+"diminishing-returns inflection point." Phase 4.5 (v1.2) extended
+the layer specifically for **structural-disclosure signals** that
+the accrual-targeting v1.0 set misses — restatement history, late-
+filing notifications, real (vs accrual) earnings management,
+loss-avoidance patterns. These complement rather than stack on top
+of the v1.0 accrual signals (Beneish + Sloan + Dechow), so the
+marginal-AAER curve flattens differently from the Beneish-Vorst
+2021 estimate. Future versions will **rotate signals based on IC
+decay** rather than continuing to add layers. Treat the post-4.5
 defense list as ceiling, not floor.
+
+**What `manipulation_index` does and does not do**: the 4.5f rollup
+combines the above flags into a single 0-100 risk score with a
+soft 10-point composite penalty. The penalty is **informational
+only** — the displayed ranking still uses the raw composite score
+per the annotate-and-veto-Top-N pattern (SKILL.md Rule 16). This is
+intentional: penalizing the rank introduces more error than it
+removes when fraud-detection FP rates run 15-30% (Beneish-Vorst
+2021), so the penalty exists as a UI signal for users, not as a
+correction to the canonical composite.
 
 ### What QuantRank is — and is not
 

@@ -71,6 +71,8 @@ class StockSummary(BaseModel):
     recommendation: Recommendation | None = None
     loss_chance_pct: float | None = None
     price_change_1d_pct: float | None = None
+    manipulation_index: float | None = None
+    composite_score_adjusted: float | None = None
     entered_top5: bool = False
     exited_top5: bool = False
 
@@ -154,5 +156,8 @@ class StockDetail(BaseModel):
     recommendation: Recommendation | None = None
     loss_chance_pct: float | None = None
     price_change_1d_pct: float | None = None
+    manipulation_index: float | None = None
+    composite_score_adjusted: float | None = None
+    manipulation_components: dict[str, bool] | None = None
     entered_top5: bool = False
     exited_top5: bool = False

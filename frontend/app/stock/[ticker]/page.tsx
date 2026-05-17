@@ -3,6 +3,7 @@ import Link from 'next/link';
 import FairPriceCard from '@/components/FairPriceCard';
 import { CurrentPriceLine } from '@/components/CurrentPriceLine';
 import { FairPriceBarChart } from '@/components/FairPriceBarChart';
+import { ManipulationRiskCard } from '@/components/ManipulationRiskCard';
 import { MoSBadge } from '@/components/MoSBadge';
 import { PillarRadarChart } from '@/components/PillarRadarChart';
 import { PriceHistoryChart } from '@/components/PriceHistoryChart';
@@ -202,6 +203,13 @@ export default function StockDetailPage({
       <Tier2EventCard
         tier2_events={detail.tier2_events}
         ticker={detail.ticker}
+      />
+
+      <ManipulationRiskCard
+        manipulationIndex={detail.manipulation_index}
+        compositeScore={detail.composite_score}
+        compositeScoreAdjusted={detail.composite_score_adjusted}
+        components={detail.manipulation_components}
       />
 
       <FairPriceBarChart
