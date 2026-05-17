@@ -2,10 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Fonts wired via next/font in app/layout.tsx; CSS variables exposed
- * here so any utility class or inline style can reference them. */
+/* PR 4.5d follow-up — self-hosted fonts via @fontsource packages.
+ * Replaces the previous `next/font/google` path that broke on a
+ * transient Google Fonts fetch failure during CI build (PR #96
+ * CI run #249, 2026-05-17). @fontsource ships woff2 files bundled
+ * in node_modules; no build-time external fetch.
+ *
+ * IBM Plex Sans, JetBrains Mono — weights 400 / 500 / 600 / 700
+ * (Plex) and 400 / 500 / 600 (JetBrains). Instrument Serif —
+ * weight 400 normal + italic. Matches the prior `next/font/google`
+ * config exactly. Each `@import` pulls one woff2 + its @font-face
+ * declaration.
+ *
+ * Font family CSS variables sit alongside the legacy
+ * `--font-{ibm-plex-sans, jetbrains-mono, instrument-serif}`
+ * names so existing utility classes + inline-style consumers
+ * (StockLogo.tsx: `fontFamily: 'var(--font-mono)'`) keep working
+ * without rename. */
+@import '@fontsource/ibm-plex-sans/400.css';
+@import '@fontsource/ibm-plex-sans/500.css';
+@import '@fontsource/ibm-plex-sans/600.css';
+@import '@fontsource/ibm-plex-sans/700.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';
+@import '@fontsource/jetbrains-mono/600.css';
+@import '@fontsource/instrument-serif/400.css';
+@import '@fontsource/instrument-serif/400-italic.css';
+
 :root {
   color-scheme: light;
+  --font-ibm-plex-sans: 'IBM Plex Sans';
+  --font-jetbrains-mono: 'JetBrains Mono';
+  --font-instrument-serif: 'Instrument Serif';
   --font-sans: var(--font-ibm-plex-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
