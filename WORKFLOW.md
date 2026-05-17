@@ -841,14 +841,35 @@ in parallel (disjoint code paths).
       COHR, LII + 6 more. NVDA/PLTR (Beneish-veto) correctly NOT
       in REM list — orthogonal signal confirmed.
 
-### 4.5d — Earnings-quality time-series + Burgstahler kink (~180 LOC, 2w)
+### 4.5d — Earnings-quality time-series ✅ **DONE 2026-05-17** (PR #97)
 
-- [ ] **`m_score_deteriorating` annotate** (~80 LOC). Compute
-      Beneish M-score on each of trailing 3 fiscal years; flag if
-      Δ(latest − earliest) > +0.5.
-- [ ] **`loss_avoidance_pattern` annotate** (~100 LOC). Detect
-      tiny-positive NI ∈ [0, $5M] OR EPS ∈ [0, $0.05] for **3+
-      consecutive years**.
+- [x] **`accruals_momentum_high` annotate** (PR #97, ~80 LOC of the
+      ~250 LOC module `compute/scoring/earnings_quality.py`).
+      Δ(TATA) > +0.05 over trailing 3 fiscal years — TATA =
+      (NetIncome − OperatingCashFlow) / TotalAssets, Sloan 1996 /
+      Beneish 1999 accruals backbone. Substituted for the original
+      plan's `m_score_deteriorating` (Δ(Beneish M) > +0.5) because
+      TATA is the only Beneish component that's a level (not a ratio
+      of ratios) and is the standalone Sloan accruals signal —
+      avoids rebuilding 3 historical 8-ratio Beneish snapshots
+      against XBRL history with frequent prior-year gaps.
+      Production verification run #50: **50 / 502 (10.0%)** —
+      slightly above expected 3-8% but within acceptable
+      annotate-only band.
+- [x] **`loss_avoidance_pattern` annotate** (PR #97, ~100 LOC of the
+      same module). Burgstahler-Dichev 1997 *JAE* kink at zero —
+      tiny-positive NI ∈ [$0, $5M] OR EPS ∈ [$0.00, $0.05] for **3+
+      consecutive fiscal years**. Walks per-ticker fundamentals
+      history newest → oldest counting consecutive in-band years.
+      Production verification run #50: **0 / 502 (0.0%)** — universe
+      mismatch with S&P 500 large-cap floor (smallest NI > $5M,
+      smallest EPS > $0.05). File as Phase 4.5 follow-up to
+      consider S&P-500-scaled thresholds or accept zero-fire as a
+      `entered_top5` floor-only guard.
+- [x] 13 offline tests added (`tests/test_scoring/test_earnings_quality.py`).
+      Suite **818 → 831 offline + 17 @network**.
+- [x] Defense-scorecard delta confirmed: defense layer **14 → 16**
+      after 4.5d (active vetoes unchanged at 7; annotates +2).
 
 ### 4.5e — SEC Form 4 insider clustering (~420 LOC, 3w)
 
