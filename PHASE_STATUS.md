@@ -7,7 +7,7 @@
 | 2 | Fundamentals via SEC EDGAR | ✅ DONE — 2026-05-08 |
 | 3 | Classical features + composite + **defenses** → **v1.0** | ✅ **DONE — 2026-05-14** (v1.0.0 tagged + GitHub release) |
 | 4 | Factor consolidation (OSAP + JKP + Qlib + IPCA) → **v1.1** | 🟡 IN PROGRESS — 4a-4g + 4c.1/4c.2/4c.3 + PR 4b §1+§2 all merged; PR 4b §3 IC-decay output deferred to Phase 5; **next: 4h / 4i / 4j / 4k factor integrations** (PBO/DSR gate ready), can run in parallel with Phase 4.5 |
-| **4.5** | **Earnings-manipulation defense cluster** → **v1.2** | 🟡 IN PROGRESS — **4.5a + 4.5b + 4.5c waves complete 2026-05-17** (PRs #89/#90/#91 + #93 + #95). 4.5a: sector-relative Sloan + Beneish/Dechow soft-veto + `manipulation_triple_flag` (active vetoes 5→7). 4.5b: `restatement_history` (59 stocks, 11.8%) + `late_filing_notification` (2 stocks, 0.4%). 4.5c: `rem_suspect` Roychowdhury 2006 3-proxy REM (16 stocks, 3.2%). Defense layer **9 → 14** layers. **Next: 4.5d** earnings-quality time-series |
+| **4.5** | **Earnings-manipulation defense cluster** → **v1.2** | 🟡 IN PROGRESS — **4.5a + 4.5b + 4.5c + 4.5d waves complete 2026-05-17** (PRs #89/#90/#91 + #93 + #95 + #97). Active vetoes **5 → 7**; defense layer **9 → 16**. 4.5d: `accruals_momentum_high` (50 stocks, 10.0%) + `loss_avoidance_pattern` (0 stocks — S&P 500 universe-mismatch with Burgstahler-Dichev 1997 cohort thresholds, file as Phase 4.5 follow-up). **Next: 4.5e** (Form 4 insider clustering) **or jump to 4.5f** (manipulation_index composite + tag v1.2.0) |
 | 5 | ML meta-learner (Triple-Barrier + Meta-Labeling + Conformal) + SHAP | ⚪ not started |
 | 6 | Sentiment v2 (FinBERT + Whisper + 8-K Lazy Prices) | ⚪ not started |
 | 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → **v1.5** | ⚪ not started |
@@ -328,7 +328,39 @@ within sector**. Uses XBRL data already in cache (no new fetches).
 Effort: ~250 LOC + sector-relative thresholds + golden tests
 against Roychowdhury paper Table 6, ~10 days.
 
-### 4.5d — Earnings-quality time-series + Burgstahler kink (~2 weeks, +2 annotate)
+### 4.5d — Earnings-quality time-series ✅ **DONE 2026-05-17** (PR #97, +2 annotate)
+
+**Shipped**: 2 annotate-only flags derived from per-ticker fundamentals
+history. Production verified run #50 (commit `c3b29af4`, workflow run
+`25982432928`, warm-cache **6m24s**):
+
+| Flag | Production fire | Expected | Status |
+|---|---|---|---|
+| **`accruals_momentum_high`** | **50 / 502 (10.0%)** | 3-8% | ⚠️ slightly hot — Δ(TATA) > +0.05 over trailing 3y; the 0.05 threshold (calibrated from Beneish 1999 β_TATA = 4.679 ⇒ ΔM > 0.5 ⇔ ΔTATA > 0.107, halved as the standard practitioner adaptation when shortening to one ratio) is loose enough to catch some normal-cycle noise. Within acceptable annotate-only band. |
+| **`loss_avoidance_pattern`** | **0 / 502 (0.0%)** | 1-3% | ⚠️ universe mismatch — Burgstahler-Dichev 1997 *JAE* cohort thresholds (NI ∈ [$0, $5M] OR EPS ∈ [$0.00, $0.05] for 3+ consecutive years) are too tight for the S&P 500 large-cap universe. Smallest constituent NI > $5M; smallest EPS > $0.05. Filed as Phase 4.5 follow-up — consider S&P-500-scaled thresholds (NI ≤ $25M / EPS ≤ $0.25) or accept zero-fire as `entered_top5` floor-only guard. |
+
+**Module**: `compute/scoring/earnings_quality.py` (~250 LOC,
+`AccrualsMomentumResult` + `LossAvoidanceResult` dataclasses +
+`check_accruals_momentum` + `check_loss_avoidance` + 2 helpers).
+**Tests**: 13 offline (total suite now **831 offline + 17 @network**,
+was 818 after 4.5c). No new ingest — both flags read from existing
+`compute/ingest/fundamentals.py` annual history. No new cache dirs.
+
+**Design substitution**: Original 4.5d plan called for
+`m_score_deteriorating` (Δ(Beneish M) > +0.5 over 3y). Substituted
+**`accruals_momentum_high`** (Δ(TATA) > +0.05 over 3y) as a
+practical equivalent — TATA is the only Beneish component that's a
+level (not a ratio of ratios) and Sloan 1996 established it as the
+standalone accruals signal. Avoids the bookkeeping cost of building
+3 historical 8-ratio Beneish snapshots from XBRL history that often
+has gaps for prior years.
+
+References: Sloan 1996 *TAR* 71(3), 289-315; Burgstahler-Dichev
+1997 *JAE* 24(1), 99-126; Beneish 1999 *FAJ*.
+
+### 4.5d — Earnings-quality time-series + Burgstahler kink (original plan, kept below for reference)
+
+⏬ Original plan text below — execution captured in the block above. ⏬
 
 - **`m_score_deteriorating`** — Δ(Beneish M-score) > +0.5 over
   trailing 3y = manipulation gathering steam. Snapshot M-score
@@ -383,10 +415,10 @@ schema-snapshot regen, ~5 days.
 
 | Sub-PR | Effort | New flags | Status |
 |---|---|---|---|
-| 4.5a | 1-2w | +2 veto / +1 badge | ⚪ |
-| 4.5b | 1w | +2 annotate | ⚪ |
-| 4.5c | 2w | +1 annotate (sector-relative) | ⚪ |
-| 4.5d | 2w | +2 annotate | ⚪ |
+| 4.5a | 1-2w | +2 veto / +1 badge | ✅ DONE 2026-05-16 |
+| 4.5b | 1w | +2 annotate | ✅ DONE 2026-05-16 |
+| 4.5c | 2w | +1 annotate (sector-relative) | ✅ DONE 2026-05-17 |
+| 4.5d | 2w | +2 annotate | ✅ DONE 2026-05-17 |
 | 4.5e | 3w | +2 annotate (new Form 4 parser) | ⚪ |
 | 4.5f | 1w | composite penalty + UI + schema bump | ⚪ |
 
