@@ -7,22 +7,40 @@
 | 2 | Fundamentals via SEC EDGAR | ✅ DONE — 2026-05-08 |
 | 3 | Classical features + composite + **defenses** → **v1.0** | ✅ **DONE — 2026-05-14** (v1.0.0 tagged + GitHub release) |
 | 4 | Factor consolidation (OSAP + JKP + Qlib + IPCA) → **v1.1** | 🟡 IN PROGRESS — 4a-4g + 4c.1/4c.2/4c.3 + PR 4b §1+§2 all merged; PR 4b §3 IC-decay output deferred to Phase 5; **next: 4h / 4i / 4j / 4k factor integrations** (PBO/DSR gate ready), can run in parallel with Phase 4.5 |
-| **4.5** | **Earnings-manipulation defense cluster** → **v1.2** | ✅ **DONE 2026-05-17** (PRs #89/#90/#91 + #93 + #95 + #97 + #100). Active vetoes **5 → 7**; defense layer **9 → 17** (= 7 vetoes + 10 annotates). 4.5f adds `manipulation_index` (0-100 rollup) + `composite_score_adjusted` (soft penalty, max 10 pts, informational only) + `ManipulationRiskCard` UI + schema bump **`0.7.1-phase4g` → `0.8.0-phase4.5f`**. Production verified run #51 (`e57f09cb`, 5m14s warm-cache): card fires on 158/502 (31.5%); HIGH band 2 (SMCI=84 · WAT=64), MODERATE 60, LOW 96. Tag **`v1.2.0-phase4.5`** ready to cut. |
+| **4.5** | **Earnings-manipulation defense cluster** → **v1.2** | ✅ **DONE 2026-05-17** — **tag [`v1.2.0-phase4.5`](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5) cut** at commit `6d414a9b`. 6 sub-PRs (#89/#90/#91 + #93 + #95 + #97 + #100). Active vetoes **5 → 7**; defense layer **9 → 17** (= 7 vetoes + 10 annotates). 4.5f adds `manipulation_index` (0-100 rollup) + `composite_score_adjusted` (soft penalty, max 10 pts, informational only) + `ManipulationRiskCard` UI + schema bump **`0.7.1-phase4g` → `0.8.0-phase4.5f`**. Production verified run #51 (`b1588b2a`, 5m14s warm-cache): card fires on 158/502 (31.5%); HIGH band 2 (SMCI=84 · WAT=64), MODERATE 60, LOW 96. 4.5e Form-4 insider clustering **deferred to v1.3.0** — reserved-slot weights already declared in `FLAG_WEIGHTS`. |
 | 5 | ML meta-learner (Triple-Barrier + Meta-Labeling + Conformal) + SHAP | ⚪ not started |
 | 6 | Sentiment v2 (FinBERT + Whisper + 8-K Lazy Prices) | ⚪ not started |
 | 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → **v1.5** | ⚪ not started |
 | 8 | Universe expansion (S&P 1500) | ⚪ not started |
 
-**Current focus**: Phase 4 in flight — **4a → 4e merged** (cache +
-ROE fix + UX trio backend) across PRs #58-72; **4f price-chart-enhancements
-implementation** next per locked sequencing in
-[`.claude/skills/phase-4/v1-to-v1-1-migration/PLAN.md`](.claude/skills/phase-4/v1-to-v1-1-migration/PLAN.md).
-Production data still on schema `0.6.0-phase3d` (4d / 4e additive
-schema fields didn't bump the constant — `recommendation` + `loss_chance_pct`
-ride at the existing version per `v1-to-v1-1-migration/PLAN.md`'s
-additive-only-within-major rule). Run #32 `b5bc65f3` was the v1.0.0
-shipping snapshot; latest production run is `e47fa37e` (2026-05-15
-weekly compute reflecting 4d + 4e fields).
+**Current focus**: **🎉 v1.2.0-phase4.5 SHIPPED 2026-05-17** —
+[release](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5)
+at commit `6d414a9b`. Production schema `0.8.0-phase4.5f`; latest
+production run is `b1588b2a` (run #51, 5m14s warm-cache).
+
+**Next deliverables** (parallelizable, pick by appetite):
+
+1. **4.5e — Form 4 insider clustering** (~420 LOC, ~3 weeks) —
+   `insider_sell_cluster` + `c_suite_unusual_sell` annotates;
+   reserved-slot weights already in `compute/scoring/manipulation_
+   index.py::FLAG_WEIGHTS` so integration is a one-line uncomment.
+   Tag `v1.3.0` after merge.
+2. **4h / 4i / 4j / 4k — Factor integrations** (OSAP / JKP / Qlib /
+   IPCA, ~6 weeks total) — each gated by PR 4b §2 PBO/DSR.
+   Disjoint code paths from 4.5e so can ship in parallel. Tag
+   `v1.1.0-phase4` after all four merge (back-numbered relative to
+   v1.2.0 since factor work was originally Phase 4 scope).
+3. **Phase 5 — ML meta-learner** (~10-12 weeks) — LightGBM +
+   Triple-Barrier + Meta-Labeling + Conformal Prediction; also
+   unblocks PR 4b §3 IC-decay writer (issue #75).
+
+**4 open Phase 4+ issues**: #15 (fundamentals throttling) · #41
+(Next.js 14 → 16 CVEs) · #67 (Damodaran CoE Phase 5+) · #75 (PR 4b
+§3 — Phase-5-blocked) · #103 (loss_avoidance universe mismatch,
+filed post-v1.2) · #104 (tag-naming inconsistency, filed post-v1.2).
+
+**Earlier phase history below** — keep this header section under
+20 lines and let the per-phase blocks own the detail.
 
 **Phase 4 sub-PR progress** (2026-05-14 → 2026-05-15):
 

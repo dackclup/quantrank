@@ -97,25 +97,21 @@ version caveats.
 
 ## Phase status
 
-Current schema: **`0.8.0-phase4.5f`** (4.5f bumped via 5 additive
-optional fields: `manipulation_index` + `composite_score_adjusted`
-on `StockSummary` + `StockDetail` + `manipulation_components` dict
-on `StockDetail`). Defense layer: **17** (7 active vetoes + 10
-annotates + 5 numerical guards + `manipulation_index` rollup).
-Latest release tag: `v1.0.0` (2026-05-14); **tag `v1.2.0-phase4.5`
-ready to cut**. Phase **4.5f merged 2026-05-17** (PR #100) —
-**Phase 4.5 cluster ✅ complete**. Production verified run #51
-(commit `e57f09cb`, warm-cache 5m14s). Test suite: 856 offline +
-17 `@network`.
+Current schema: **`0.8.0-phase4.5f`** · Defense layer: **17**
+(7 active vetoes + 10 annotates + 5 numerical guards +
+`manipulation_index` rollup). Latest release tag:
+[**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5)
+**SHIPPED 2026-05-17** at commit `6d414a9b` — **Phase 4.5 cluster
+✅ complete** (6 sub-PRs). Production verified run #51
+(`b1588b2a`, 5m14s warm-cache). Test suite: 856 offline + 17
+`@network`.
 
-**Next deliverable**: tag `v1.2.0-phase4.5` → then **Phase 4.5e**
-(Form 4 insider clustering — `insider_sell_cluster` +
-`c_suite_unusual_sell`, ~420 LOC, new SEC parser, ~3 weeks; reserved
-weight slots already declared in `FLAG_WEIGHTS` so the integration
-is a one-line uncomment). Factor integrations **4h/4i/4j/4k**
-(OSAP / JKP / Qlib / IPCA) run in parallel — disjoint code paths,
-share the PR 4b §2 PBO/DSR gate. Tag `v1.1.0-phase4` after 4h-4k
-land; `v1.3.0` after 4.5e.
+**Next deliverable** (pick by appetite — three tracks parallelize):
+**4.5e** (Form 4 insider, ~3w → v1.3.0) · **4h/4i/4j/4k** factor
+integrations (OSAP / JKP / Qlib / IPCA, ~6w total → v1.1.0-phase4) ·
+**Phase 5** ML meta-learner (~10-12w, unblocks PR 4b §3 IC-decay
+writer). 4.5e weight slots already declared in
+`FLAG_WEIGHTS` so integration is a one-line uncomment.
 
 See [`PHASE_STATUS.md`](PHASE_STATUS.md) for the canonical
 chronological tracker — keep this section under 15 lines and let
