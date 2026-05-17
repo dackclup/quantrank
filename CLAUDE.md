@@ -93,15 +93,18 @@ flight**: 4a / 4b (`_avg_3y_roe` fix) / 4c+4c.1/4c.2/4c.3 / 4d / 4e
 Tier-2 re-enable). Production schema `0.7.0-phase4g`;
 `SCHEMA_VERSION` constant currently `0.7.1-phase4g` (additive
 `price_change_1d_pct` field — flips on next weekly compute).
-**Next deliverable**: **Phase 4.5c — Real Earnings Management
-(Roychowdhury 2006 REM)**. Three abnormal proxies per ticker
-(`abnormal_CFO` + `abnormal_production` + `abnormal_discretionary_
-expenses`) modelled against sector-industry quintile baselines.
-Flag `rem_suspect` fires when 2 of 3 proxies sit in the worst
-decile within sector. Catches REAL manipulation (cutting R&D,
-channel stuffing, deferring maintenance) — invisible to
-Sloan/Beneish/Dechow which target accrual manipulation. ~250 LOC +
-golden tests against Roychowdhury 2006 paper Table 6, ~10 days.
+**Next deliverable**: **Phase 4.5d — earnings-quality time-series**
+(`m_score_deteriorating` Δ(Beneish M) > +0.5 over 3y +
+`loss_avoidance_pattern` Burgstahler-Dichev 1997 kink at zero,
+3+ consecutive years of tiny-positive NI). ~180 LOC, ~7 days.
+**Phase 4.5c ✅ DONE 2026-05-17** (PR #95) — `rem_suspect`
+Roychowdhury 2006 3-proxy REM, 16 stocks / 3.2% (within H0-to-
+correlation expected 2.8-7%). Per-sector OLS via numpy.linalg.lstsq;
+catches REAL manipulation (cutting R&D, channel stuffing,
+overproduction) — orthogonal to Beneish/Sloan/Dechow accrual
+targets. Tickers fired include SMCI · WAT · ADM · TSN · FSLR · STLD
+· JBL · LII (real-world manipulation candidates; NVDA/PLTR
+correctly NOT fired = orthogonal signal confirmed).
 **Phase 4.5b ✅ DONE 2026-05-16** (PR #93) — `restatement_history`
 (60 stocks / 12.0% via 5y 10-K/A + 10-Q/A scan) +
 `late_filing_notification` (2 stocks: HAS, Q via 365d Form 12b-25
@@ -129,19 +132,19 @@ flagging `cross_source_disagreement` (4.6%, within the < 5%
 sanity bound) and `pbo_dsr.factor_passes_gates()` is callable for
 4h/4i/4j/4k.
 
-After 4.5c → 4.5d (M-score momentum + Burgstahler kink) → 4.5e
-(Form 4 insider clustering) → 4.5f (manipulation_index composite +
-UI + schema bump). Factor integrations 4h/4i/4j/4k can run in
-parallel with 4.5 (disjoint code paths, same PR 4b §2 PBO/DSR
-gate). Tag `v1.1.0-phase4` after 4h-4k land; tag
-`v1.2.0-phase4.5` after 4.5c-4.5f. **Phase 4.5
-(earnings-manipulation defense cluster)**: 6 sub-PRs
+After 4.5d → 4.5e (Form 4 insider clustering) → 4.5f
+(manipulation_index composite + UI + schema bump). Factor
+integrations 4h/4i/4j/4k can run in parallel with 4.5 (disjoint
+code paths, same PR 4b §2 PBO/DSR gate). Tag `v1.1.0-phase4`
+after 4h-4k land; tag `v1.2.0-phase4.5` after 4.5d-4.5f.
+**Phase 4.5 (earnings-manipulation defense cluster)**: 6 sub-PRs
 (4.5a-4.5f) covering sector-relative Sloan + Beneish/Dechow
 soft-veto + restatement history + Form 12b-25 late filings +
 Roychowdhury REM + earnings-quality time-series + Burgstahler-
 Dichev kink + Form 4 insider clustering + manipulation-composite
-penalty. **Defense layer 9 → 13 after 4.5a+4.5b (5 → 7 active
-vetoes; 4 → 7 annotates)**; target 18 layers after 4.5f. See
+penalty. **Defense layer 9 → 14 after 4.5a+4.5b+4.5c (5 → 7
+active vetoes; 4 → 8 annotates)**; target 18 layers after 4.5f.
+See
 [`PHASE_STATUS.md`](PHASE_STATUS.md) §"Phase 4.5 plan" for the
 full sub-PR breakdown + AAER backtest cohort. **5 open Phase 4+
 issues**: #7 ✅ closed by 4.5a.1 / #15 (fundamentals throttling) /

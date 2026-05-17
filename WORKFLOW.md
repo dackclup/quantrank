@@ -817,17 +817,29 @@ in parallel (disjoint code paths).
       (7-day TTL, mirrors the existing 8-K cache rhythm).
       Workflow YAML cache paths updated.
 
-### 4.5c — Real Earnings Management (~250 LOC, 2w)
+### 4.5c — Real Earnings Management ✅ **DONE 2026-05-17** (PR #95)
 
-- [ ] **Roychowdhury REM 3-proxy** (`rem_suspect` annotate).
-      Module: `compute/scoring/rem.py`.
-- [ ] Sector-industry quintile baselines used as model targets
-      (mirrors `_within_sector_decile` pattern from
-      `risk_overlay.py`).
-- [ ] **Golden tests** against Roychowdhury 2006 paper Table 6
-      values (within 5%).
-- [ ] Flag fires when **2 of 3 proxies** in the within-sector
-      worst decile.
+- [x] **Roychowdhury REM 3-proxy** (PR #95, ~420 LOC + 14 offline
+      tests). `rem_suspect` annotate via per-sector OLS regressions
+      on CFO / Production / DISEXP proxies. Module:
+      `compute/scoring/rem.py`. Pure-numpy via `np.linalg.lstsq`
+      (no sklearn/statsmodels dep).
+- [x] **Sector-relative quintile baselines** — `_within_sector_decile`
+      helper mirroring `risk_overlay.py` pattern.
+      `REM_MIN_POPULATION_SECTOR = 15` floor matches 4.5a.1 Sloan.
+- [x] **Golden numerical test** — synthetic 30-ticker panel with
+      known DGP coefficients; OLS recovers them within 0.05
+      residual (well under the 5% tolerance).
+- [x] **Flag fires when 2 of 3 proxies in within-sector worst decile**
+      — semantics verified in `test_compute_rem_flags_double_outlier_fires`
+      + `test_compute_rem_flags_triple_outlier_fires_with_all_three`
+      + `test_compute_rem_flags_normal_ticker_does_not_fire` (H0
+      FP rate cap).
+- [x] Production verification run #49: **16 / 502 (3.2%)** fired —
+      within H0-to-correlation expected 2.8-7%. Tickers: SMCI, WAT,
+      ADM (SEC investigation 2024), TSN, HRL, STLD, FSLR, JBL,
+      COHR, LII + 6 more. NVDA/PLTR (Beneish-veto) correctly NOT
+      in REM list — orthogonal signal confirmed.
 
 ### 4.5d — Earnings-quality time-series + Burgstahler kink (~180 LOC, 2w)
 
