@@ -51,6 +51,14 @@ network"` → (if schemas touched) `schema_check` → (if frontend touched)
 `tsc --noEmit` + `next build` → (if compute output committed)
 `verify-production-output/helper.py`.
 
+**After every `workflow_dispatch` turns green** (REQUIRED 2026-05-17):
+run the existing Section A-H scan **AND** a Playwright spot-check
+against the live Vercel deployment for any PR that lands a new UI
+surface or schema bump. See
+`.claude/skills/verify-production-output/SKILL.md` §"Live UI visual
+spot-check (Section I)" for the 4-ticker matrix + sandbox / browser-
+version caveats.
+
 ## Conventions
 
 - **Pydantic and TypeScript schemas move together.** `compute/output/schemas.py`
@@ -89,23 +97,25 @@ network"` → (if schemas touched) `schema_check` → (if frontend touched)
 
 ## Phase status
 
-Current schema: `0.7.1-phase4g` (no shape delta across the 4.5a-d
-wave — new flag identifiers are strings on existing
-`risk_flags: list[str]` + `valuation_warnings: list[str]` arrays).
-Defense layer: **16** (7 active vetoes + 10 annotates + 5 numerical
-guards). Latest release tag: `v1.0.0` (2026-05-14). Phase **4.5d
-merged 2026-05-17** (PR #97). Production verified run #50 (commit
-`c3b29af4`, warm-cache 6m24s). Test suite: 831 offline + 17
-`@network`.
+Current schema: **`0.8.0-phase4.5f`** (4.5f bumped via 5 additive
+optional fields: `manipulation_index` + `composite_score_adjusted`
+on `StockSummary` + `StockDetail` + `manipulation_components` dict
+on `StockDetail`). Defense layer: **17** (7 active vetoes + 10
+annotates + 5 numerical guards + `manipulation_index` rollup).
+Latest release tag: `v1.0.0` (2026-05-14); **tag `v1.2.0-phase4.5`
+ready to cut**. Phase **4.5f merged 2026-05-17** (PR #100) —
+**Phase 4.5 cluster ✅ complete**. Production verified run #51
+(commit `e57f09cb`, warm-cache 5m14s). Test suite: 856 offline +
+17 `@network`.
 
-**Next deliverable**: choose between **4.5e** (Form 4 insider
-clustering — `insider_sell_cluster` + `c_suite_unusual_sell`, ~420
-LOC, new SEC parser, ~3 weeks) and **4.5f** (`manipulation_index`
-0-100 composite + composite-score penalty + UI Manipulation pillar
-card + schema bump → tag `v1.2.0-phase4.5`, ~250 LOC, ~1 week).
-Factor integrations **4h/4i/4j/4k** (OSAP / JKP / Qlib / IPCA) run
-in parallel — disjoint code paths, share the PR 4b §2 PBO/DSR gate.
-Tag `v1.1.0-phase4` after 4h-4k land.
+**Next deliverable**: tag `v1.2.0-phase4.5` → then **Phase 4.5e**
+(Form 4 insider clustering — `insider_sell_cluster` +
+`c_suite_unusual_sell`, ~420 LOC, new SEC parser, ~3 weeks; reserved
+weight slots already declared in `FLAG_WEIGHTS` so the integration
+is a one-line uncomment). Factor integrations **4h/4i/4j/4k**
+(OSAP / JKP / Qlib / IPCA) run in parallel — disjoint code paths,
+share the PR 4b §2 PBO/DSR gate. Tag `v1.1.0-phase4` after 4h-4k
+land; `v1.3.0` after 4.5e.
 
 See [`PHASE_STATUS.md`](PHASE_STATUS.md) for the canonical
 chronological tracker — keep this section under 15 lines and let
