@@ -181,3 +181,71 @@ EDGAR_LATE_FILINGS_CACHE_DIR: Path = CACHE_DIR / "edgar_late_filings"
 # more often is wasted bandwidth.
 OSAP_RETURNS_CACHE: Path = CACHE_DIR / "osap" / "returns.parquet"
 OSAP_RETURNS_MAX_AGE_DAYS: int = 31
+
+# --- Phase 4h: 100-signal manifest ---
+#
+# Theme buckets mirror the table at
+# `.claude/skills/phase-4/osap-integration/PLAN.md` L60-73
+# (Value/Quality/Momentum/Investment/Risk/EarningsNews/Trading +
+# Misc). CamelCase names follow the Chen-Zimmermann OSAP convention
+# (see github.com/OpenSourceAP/CrossSection signal docs).
+#
+# Aspirational manifest — commit 4's PBO/DSR gate
+# (`compute/validation/osap_validation.py`) will catch any signal that
+# does not resolve in the fetched OSAP returns DataFrame and log it
+# under `metadata.json::osap_excluded_signals` with reason
+# `not_found_in_osap_dataset` so the manifest can be tuned over
+# subsequent compute runs without a redeploy.
+OSAP_SIGNALS_BY_THEME: dict[str, tuple[str, ...]] = {
+    "Value": (
+        "BM", "EP", "SP", "CF", "DivYieldST", "NetEquityFinance",
+        "NetDebtFinance", "BookLeverage", "IntanBM", "IntanCFP",
+        "IntanEP", "IntanSP", "DebtIssuance", "OperatingLeverage",
+        "CompositeDebtIssuance",
+    ),  # 15
+    "Quality": (
+        "GP", "RoE", "RoA", "AssetTurnover", "AOP", "OperatingProfit",
+        "RDS", "RD", "ProfitMargin", "CashProf", "GrcapxThreeYears",
+        "AccrualsBM", "OperatingAccruals", "PctTotAcc", "Cash",
+    ),  # 15
+    "Momentum": (
+        "Mom12m", "Mom6m", "Mom36m", "Mom1m", "STreversal", "IndMom",
+        "IntMom", "EarnSupBig", "MomVol", "MomOffSeason", "MomSeason",
+        "Recomm_ShortInterest",
+    ),  # 12
+    "Investment": (
+        "AssetGrowth", "ChNNCOA", "ChNWC", "GrLTNOA", "ChInv",
+        "ShareIss1Y", "ShareIss5Y", "GrSaleToGrInv",
+    ),  # 8
+    "Risk": (
+        "MaxRet", "IdioVol3F", "IdioVolAHT", "BetaTailRisk", "Beta",
+        "BetaFP", "ReturnSkew", "ReturnSkew3F", "IndIPO",
+        "AbnormalAccruals",
+    ),  # 10
+    "EarningsNews": (
+        "SUE", "EarningsSurprise", "REV6", "RDIPO", "NumEarnIncrease",
+        "ConsRecomm", "Recomm", "EarningsForecastDisparity",
+    ),  # 8
+    "Trading": (
+        "Illiquidity", "Turnover", "Bid_Ask", "VolMkt", "VolSD",
+        "dVolCall", "Coskewness",
+    ),  # 7
+    "Misc": (
+        "Leverage", "OrgCapital", "Tax", "ChAssetTurnover", "BAR",
+        "GS", "AnnouncementReturn", "OScore", "ZScore", "CredRatDG",
+        "FailureProbability", "IRA", "FR", "BPEBM", "Activism1",
+        "Activism2", "AnalystValue", "ChForecastAccrual", "ChInvIA",
+        "AnalystRevision", "ForecastDispersion", "GrowthCapEx",
+        "MeanRankRevGrowth", "AbnormalAccrualsPercent", "ChEQ",
+    ),  # 25
+}
+
+OSAP_SIGNALS_100: tuple[str, ...] = tuple(
+    sig for theme_signals in OSAP_SIGNALS_BY_THEME.values() for sig in theme_signals
+)
+assert len(OSAP_SIGNALS_100) == 100, (
+    f"OSAP_SIGNALS_100 must have exactly 100 entries, got {len(OSAP_SIGNALS_100)}"
+)
+assert len(set(OSAP_SIGNALS_100)) == 100, (
+    "OSAP_SIGNALS_100 contains duplicate signal names"
+)
