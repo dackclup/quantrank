@@ -34,6 +34,15 @@ production run is `b1588b2a` (run #51, 5m14s warm-cache).
    Triple-Barrier + Meta-Labeling + Conformal Prediction; also
    unblocks PR 4b §3 IC-decay writer (issue #75).
 
+**In flight (2026-05-18)**: OSAP scout PR — `factors`
+optional-dependency extra + `compute/ingest/osap.py` skeleton + 6
+smoke tests. Validates `openassetpricing==0.0.2` package install +
+`OpenAP` API surface in CI before Phase 4h commits to the full
+~1,160 LOC integration. NOT wired into composite scoring. Discovered
+real schema = `signalname / port / date / ret / signallag / Nlong /
+Nshort` (differs from the hypothetical schema in the OSAP PLAN —
+Phase 4h must derive long-short from `port=01` vs `port=10`).
+
 **4 open Phase 4+ issues**: #15 (fundamentals throttling) · #41
 (Next.js 14 → 16 CVEs) · #67 (Damodaran CoE Phase 5+) · #75 (PR 4b
 §3 — Phase-5-blocked). Post-v1.2 issues #103 (loss_avoidance
