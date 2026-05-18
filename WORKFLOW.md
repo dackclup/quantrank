@@ -966,6 +966,15 @@ in parallel (disjoint code paths).
 - [ ] AAER cohort precision ≥ baseline (no false-positive inflation)
 - [ ] Weekly compute time stays under 150m (the post-4g ceiling)
 - [ ] `manipulation_index` populated for ≥ 95% of universe
+- [ ] **4.5e-specific**: Supabase `insider_filings` table created +
+      ingest path live (rolling 30/60/90-day queries fire the
+      `c_suite_unusual_sell` / `cluster_buy_last_60d` /
+      `net_sell_last_90d` annotates). Schema spec in
+      `.claude/skills/phase-9/insider-trading-form-4/PLAN.md`
+      §"Supabase usage". Reserved-slot weights in
+      `compute/scoring/manipulation_index.py`
+      (`INSIDER_SELL_CLUSTER_WEIGHT_RESERVED`,
+      `C_SUITE_UNUSUAL_SELL_WEIGHT_RESERVED`) uncommented post-merge.
 - [ ] Tag `v1.2.0-phase4.5`
 
 ---
@@ -1123,6 +1132,19 @@ Revert to Option A (original Phase 5) if:
 - [ ] Mean IC ≥ 0.02 OOS
 - [ ] PBO < 50%
 - [ ] **No mlfinlab dependency anywhere in `pyproject.toml`**
+- [ ] **Supabase cross-run tables operational** (schemas in
+      `phase-5/<plan>/PLAN.md` §"Supabase usage" for each stub):
+      - `experiments` (meta-label hyperparameter sweep tracking,
+        replaces MLflow / W&B)
+      - `backtest_runs` + `fold_metrics` (full IC / Sharpe / PBO
+        history — **unblocks PR 4b §3 IC-decay monitor** which is
+        currently Phase-5-blocked)
+      - `conformal_calibration` (empirical-vs-nominal coverage drift
+        alarm)
+      - `shap_values` (per-ticker drift queries + universe-wide
+        feature-volatility audit)
+      - `barrier_events` (optional — include only if analyst
+        workflow benefits)
 - [ ] Tag `v1.2.0-phase5`
 
 ---
@@ -1248,6 +1270,12 @@ Revert to Option A (original Phase 4 sentiment) if:
       documented decay if not)**
 - [ ] **All Phase 6 defenses ANNOTATE-only — no scoring penalties**
 - [ ] Sentiment pillar shows IC > 0.02
+- [ ] **Supabase `mda_embeddings` table** (pgvector + HNSW index)
+      operational — enables FinBERT MD&A similarity search +
+      YoY drift queries. Schema in
+      `.claude/skills/phase-6/finbert-score/PLAN.md` §"Supabase
+      usage". ~24 MB total at 7 500 rows; co-located with Phase 5
+      tables for cross-join queries.
 - [ ] Tag `v1.3.0-phase6`
 
 ---
