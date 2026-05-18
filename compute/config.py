@@ -172,3 +172,12 @@ YFINANCE_INFO_CACHE_MAX_AGE_HOURS: int = 24
 # don't unfile, so a 7-day stale cache won't miss a flag.
 EDGAR_AMENDMENTS_CACHE_DIR: Path = CACHE_DIR / "edgar_amendments"
 EDGAR_LATE_FILINGS_CACHE_DIR: Path = CACHE_DIR / "edgar_late_filings"
+
+# --- Phase 4h scout: OpenAssetPricing portfolio returns ingest ---
+# Chen-Zimmermann openassetpricing.com long-short portfolio returns
+# (MIT-licensed package). The scout PR adds an ingest skeleton only;
+# Phase 4h consumes this in compute/features/osap_replicate.py.
+# 31-day freshness matches OSAP's monthly release cadence — pulling
+# more often is wasted bandwidth.
+OSAP_RETURNS_CACHE: Path = CACHE_DIR / "osap" / "returns.parquet"
+OSAP_RETURNS_MAX_AGE_DAYS: int = 31

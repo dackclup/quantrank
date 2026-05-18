@@ -27,6 +27,15 @@ dev = [
   "pytest>=8.0",
   "ruff>=0.4",
 ]
+# Phase 4 factor libraries. Heavy transitive deps (wrds, polars,
+# psycopg2-binary, sqlalchemy, ipython) — kept out of the base install
+# so frontend builds, contributor onboarding, and anyone running only
+# the compute pipeline stay lean. Weekly compute CI installs
+# ".[factors]" once openassetpricing is consumed by scoring (Phase 4h);
+# the scout PR installs it solely for offline import + API-surface tests.
+factors = [
+  "openassetpricing==0.0.2",
+]
 
 [tool.setuptools.packages.find]
 include = ["compute*"]
