@@ -46,7 +46,10 @@ jobs:
       - name: Install
         run: |
           python -m pip install --upgrade pip
-          pip install -e .
+          # Phase 4h: weekly compute imports compute/ingest/osap.py which
+          # imports the `openassetpricing` package — installed via the
+          # `factors` extra (pinned to ==0.0.2 in pyproject.toml).
+          pip install -e ".[factors]"
 
       - name: Compute current quarter id
         id: quarter

@@ -43,6 +43,11 @@ import numpy as np
 import pandas as pd
 
 from compute import config
+from compute.features.osap_replicate import (
+    compute_long_short_returns,
+    compute_osap_signals,
+    coverage_by_signal,
+)
 from compute.ingest.cross_source import (
     validate_market_cap as cross_source_validate_market_cap,
 )
@@ -52,6 +57,7 @@ from compute.ingest.fundamentals import (
     fetch_fundamentals,
     fetch_fundamentals_history,
 )
+from compute.ingest.osap import fetch_osap_returns
 from compute.ingest.prices import fetch_prices, fetch_spy_benchmark
 from compute.ingest.universe import get_sp500_constituents
 from compute.output.schemas import (
@@ -86,6 +92,7 @@ from compute.scoring.manipulation_index import (
     compute_manipulation_index,
     manipulation_components,
 )
+from compute.scoring.osap_blend import aggregate_osap_signals, apply_osap_blend
 from compute.scoring.pillars import TickerInputs, compute_all_pillars
 from compute.scoring.recommendation import derive_recommendation
 from compute.scoring.rem import compute_rem_flags
@@ -102,6 +109,11 @@ from compute.scoring.tier2 import (
 )
 from compute.scoring.tier2 import (
     coverage_pct as tier2_coverage_pct_calc,
+)
+from compute.validation.osap_validation import (
+    compute_rolling_ic_12m,
+    filter_accepted_signals,
+    gate_osap_signals,
 )
 from compute.valuation.ensemble import (
     EnsembleResult,
@@ -929,6 +941,107 @@ def run_weekly_compute() -> int:
     now = _now_utc()
     asof_date = now.date()
 
+    # Phase 4h — OSAP signal replication + PBO/DSR gate + Path-b blend.
+    # Observability-only this phase: Top-5 ranking still uses raw
+    # ``composite_score`` per SKILL.md Rule 16. The blend writes a
+    # ``composite_score_osap_adjusted`` per ticker into
+    # ``StockDetail.osap_blended_score`` for delta-attribution. Wrapped
+    # in try/except so OSAP fetch / library / network failure NEVER
+    # blocks weekly production — every OSAP-bearing field degrades to
+    # ``None`` on the schema (already ``| None = None`` in
+    # ``compute/output/schemas.py``).
+    osap_signals_used: list[str] = []
+    osap_excluded_signals: list[str] = []
+    osap_signals_ic_12m: dict[str, float] = {}
+    osap_signal_map: dict[str, dict[str, float] | None] = {}
+    osap_signals_coverage_pct: dict[str, float] = {}
+    composite_osap_adjusted: pd.Series = pd.Series(dtype=float)
+    try:
+        logger.info(
+            "Phase 4h — fetching OSAP returns for %d-signal manifest "
+            "(as_of=%s)",
+            len(config.OSAP_SIGNALS_100),
+            asof_date.isoformat(),
+        )
+        osap_returns_raw = fetch_osap_returns(
+            signals=list(config.OSAP_SIGNALS_100),
+            as_of=asof_date,
+        )
+        osap_ls = compute_long_short_returns(osap_returns_raw)
+        logger.info(
+            "OSAP long-short rows: %d across %d signals",
+            len(osap_ls),
+            osap_ls["signalname"].nunique() if not osap_ls.empty else 0,
+        )
+
+        gate_results = gate_osap_signals(
+            osap_ls,
+            requested_signals=config.OSAP_SIGNALS_100,
+        )
+        osap_signals_used, osap_excluded_signals = filter_accepted_signals(
+            gate_results
+        )
+        logger.info(
+            "OSAP PBO/DSR gate: %d accepted, %d excluded "
+            "(of %d candidates)",
+            len(osap_signals_used),
+            len(osap_excluded_signals),
+            len(gate_results),
+        )
+
+        # Rolling-12m Spearman IC per accepted signal — observability only,
+        # NOT a gate decision (canonical full walk-forward + purged-embargo
+        # CV is deferred to Phase 5 per defense-infrastructure/PLAN.md:270).
+        for sig in osap_signals_used:
+            ic = compute_rolling_ic_12m(osap_ls, sig)
+            if ic is not None:
+                osap_signals_ic_12m[sig] = round(float(ic), 4)
+
+        # Per-ticker signal map (commit 2 proxy mode — every ticker gets
+        # the market-wide cross-sectional rank). Only the accepted signal
+        # subset is consumed; excluded signals never blend.
+        if osap_signals_used:
+            osap_filtered_returns = osap_returns_raw[
+                osap_returns_raw["signalname"].isin(osap_signals_used)
+            ]
+            osap_signal_map = compute_osap_signals(
+                osap_filtered_returns,
+                tickers=list(pillar_df.index),
+                as_of=asof_date,
+                requested_signals=tuple(osap_signals_used),
+            )
+            osap_signals_coverage_pct = {
+                sig: round(pct, 2)
+                for sig, pct in coverage_by_signal(osap_signal_map).items()
+            }
+
+            # Path-b blend (commit 3) — applied OUTSIDE compute_composite()
+            # so PHASE3_WEIGHTS sum-to-1.0 invariant at composite.py:43-45
+            # stays intact. 50/50 default locked in
+            # osap-integration/PLAN.md:168-170.
+            osap_aggregate = aggregate_osap_signals(osap_signal_map)
+            composite_osap_adjusted = apply_osap_blend(
+                composite, osap_aggregate
+            )
+        else:
+            logger.warning(
+                "OSAP gate accepted 0 signals — skipping per-ticker map + "
+                "blend; osap_blended_score will be None for every ticker"
+            )
+    except Exception as e:  # noqa: BLE001
+        logger.warning(
+            "OSAP pipeline failed (observability-only — production "
+            "continues); StockDetail.osap_* + metadata.osap_* → None. "
+            "Error: %s",
+            e,
+        )
+        osap_signals_used = []
+        osap_excluded_signals = []
+        osap_signals_ic_12m = {}
+        osap_signal_map = {}
+        osap_signals_coverage_pct = {}
+        composite_osap_adjusted = pd.Series(dtype=float)
+
     # Step 8 — combined per-ticker loop: fair-price ensemble + price history
     # write + StockSummary + StockDetail. Single pass so per-ticker outputs
     # stay synchronized (e.g., has_history reflects the actual write result;
@@ -1229,6 +1342,13 @@ def run_weekly_compute() -> int:
             manipulation_index=m_index,
             composite_score_adjusted=composite_adj,
             manipulation_components=m_components,
+            osap_signals=osap_signal_map.get(ticker),
+            osap_blended_score=(
+                round(float(composite_osap_adjusted[ticker]), 2)
+                if ticker in composite_osap_adjusted.index
+                and not pd.isna(composite_osap_adjusted[ticker])
+                else None
+            ),
             entered_top5=ticker in entered,
             exited_top5=ticker in exited,
         )
@@ -1268,6 +1388,10 @@ def run_weekly_compute() -> int:
         fundamentals_latency_p95_seconds=(
             round(fundamentals_p95, 2) if fundamentals_p95 is not None else None
         ),
+        osap_signals_used=osap_signals_used or None,
+        osap_excluded_signals=osap_excluded_signals or None,
+        osap_signals_ic_12m=osap_signals_ic_12m or None,
+        osap_signals_coverage_pct=osap_signals_coverage_pct or None,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)
