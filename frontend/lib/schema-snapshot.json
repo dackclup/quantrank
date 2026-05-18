@@ -67,6 +67,26 @@
       "required": true,
       "default": "<required>"
     },
+    "osap_excluded_signals": {
+      "type": "list[str] | None",
+      "required": false,
+      "default": null
+    },
+    "osap_signals_coverage_pct": {
+      "type": "dict[str, float] | None",
+      "required": false,
+      "default": null
+    },
+    "osap_signals_ic_12m": {
+      "type": "dict[str, float] | None",
+      "required": false,
+      "default": null
+    },
+    "osap_signals_used": {
+      "type": "list[str] | None",
+      "required": false,
+      "default": null
+    },
     "tier2_coverage_pct": {
       "type": "float | None",
       "required": false,
@@ -309,6 +329,16 @@
       "type": "str",
       "required": true,
       "default": "<required>"
+    },
+    "osap_blended_score": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "osap_signals": {
+      "type": "dict[str, float] | None",
+      "required": false,
+      "default": null
     },
     "pillar_baseline": {
       "type": "PillarBaseline | None",

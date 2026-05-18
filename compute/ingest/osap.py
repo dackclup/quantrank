@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import logging
 import time
+from datetime import date
 
 import openassetpricing
 import pandas as pd
@@ -78,12 +79,23 @@ def _is_fresh(cache_path, max_age_days: int) -> bool:
     return age_days < max_age_days
 
 
-def fetch_osap_returns(force_refresh: bool = False) -> pd.DataFrame:
+def fetch_osap_returns(
+    force_refresh: bool = False,
+    *,
+    signals: list[str] | None = None,
+    as_of: date | None = None,
+) -> pd.DataFrame:
     """Return OSAP long-short portfolio returns, hitting the cache when fresh.
 
     Returns a DataFrame whose columns include at minimum
-    ``REQUIRED_COLUMNS``. The scout PR enforces that contract; Phase 4h
-    will add keyword-only ``signals`` / ``as_of`` filters (non-breaking).
+    ``REQUIRED_COLUMNS``. When ``signals`` is provided, the returned
+    frame is filtered to rows whose ``signalname`` is in the list (the
+    cache always stores the full bulk parquet — filtering happens
+    post-load so a callsite that asks for 20 signals doesn't invalidate
+    a callsite that asks for all 1,188). When ``as_of`` is provided,
+    rows whose ``date`` is after ``as_of`` are dropped — Phase 4h's
+    replication callers use this to keep the cross-section honest
+    against the as-of point-in-time.
     """
     cache = config.OSAP_RETURNS_CACHE
     if not force_refresh and _is_fresh(cache, config.OSAP_RETURNS_MAX_AGE_DAYS):
@@ -103,4 +115,9 @@ def fetch_osap_returns(force_refresh: bool = False) -> pd.DataFrame:
             f"OSAP returns missing required columns {sorted(missing)}; "
             f"got {sorted(df.columns)}. Upstream API may have changed."
         )
+
+    if signals is not None:
+        df = df[df["signalname"].isin(signals)]
+    if as_of is not None:
+        df = df[pd.to_datetime(df["date"]) <= pd.Timestamp(as_of)]
     return df

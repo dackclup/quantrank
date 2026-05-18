@@ -70,6 +70,18 @@ export type Metadata = {
   fundamentals_coverage_pct: number | null;
   fundamentals_latency_p50_seconds: number | null;
   fundamentals_latency_p95_seconds: number | null;
+  // Phase 4h — OSAP signal observability. `osap_signals_used` lists
+  // the 100-signal manifest subset that PASSED the PBO/DSR gate
+  // (`pbo_dsr.factor_passes_gates`); `osap_excluded_signals` lists
+  // the rest. `osap_signals_ic_12m` is rolling-12m Spearman IC per
+  // accepted signal (observability only — NOT a hard gate; full
+  // walk-forward IC-decay is the Phase 5 stronger version).
+  // `osap_signals_coverage_pct` reports per-signal S&P 500 coverage.
+  // All null on legacy outputs from before 0.9.0-phase4h.
+  osap_signals_used: string[] | null;
+  osap_excluded_signals: string[] | null;
+  osap_signals_ic_12m: Record<string, number> | null;
+  osap_signals_coverage_pct: Record<string, number> | null;
 };
 
 // Phase 3d Tier-2 event defenses. Surfaces in StockDetail.tier2_events.
@@ -213,6 +225,15 @@ export type StockDetail = {
   manipulation_index: number | null;
   composite_score_adjusted: number | null;
   manipulation_components: Record<string, boolean> | null;
+  // Phase 4h — per-stock OSAP signal map (signalname → cross-sectional
+  // rank in [0, 1]) for the accepted-by-PBO/DSR subset of the
+  // 100-signal manifest. `osap_blended_score` is the 50/50 blend
+  // (composite_score × 0.5 + osap_signal_aggregate × 0.5) — informational
+  // observability only; Top-5 ranking still uses raw composite_score
+  // per SKILL.md Rule 16. Both null on legacy outputs from before
+  // 0.9.0-phase4h.
+  osap_signals: Record<string, number> | null;
+  osap_blended_score: number | null;
   entered_top5: boolean;
   exited_top5: boolean;
 };

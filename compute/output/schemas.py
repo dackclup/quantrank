@@ -92,6 +92,10 @@ class Metadata(BaseModel):
     fundamentals_coverage_pct: float | None = None
     fundamentals_latency_p50_seconds: float | None = None
     fundamentals_latency_p95_seconds: float | None = None
+    osap_signals_used: list[str] | None = None
+    osap_excluded_signals: list[str] | None = None
+    osap_signals_ic_12m: dict[str, float] | None = None
+    osap_signals_coverage_pct: dict[str, float] | None = None
 
 
 class RawMetrics(BaseModel):
@@ -159,5 +163,7 @@ class StockDetail(BaseModel):
     manipulation_index: float | None = None
     composite_score_adjusted: float | None = None
     manipulation_components: dict[str, bool] | None = None
+    osap_signals: dict[str, float] | None = None
+    osap_blended_score: float | None = None
     entered_top5: bool = False
     exited_top5: bool = False
