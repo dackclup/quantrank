@@ -217,3 +217,20 @@ this repo or any other project.
 - **Not a marketplace mirror** — the vendored skills are a frozen
   snapshot, not a live mirror of `anthropics/skills`. For the latest
   upstream content, see <https://github.com/anthropics/skills>.
+
+## Cross-run state planning
+
+Selected planning docs include §"Supabase usage" sections with
+concrete `CREATE TABLE` + query specs for the cross-run persistence
+layer that the static-site architecture cannot provide on its own.
+The Supabase MCP connector is documented in `CLAUDE.md` §Connectors;
+schemas live in:
+
+- `phase-9/insider-trading-form-4/PLAN.md` — `insider_filings` (4.5e)
+- `phase-5/backtest-infrastructure/PLAN.md` — `backtest_runs` +
+  `fold_metrics` (unblocks PR 4b §3 IC-decay)
+- `phase-5/meta-label/PLAN.md` — `experiments` (replaces MLflow / W&B)
+- `phase-5/conformal-predict/PLAN.md` — `conformal_calibration`
+- `phase-5/shap-explain/PLAN.md` — `shap_values`
+- `phase-5/triple-barrier-label/PLAN.md` — `barrier_events` (optional)
+- `phase-6/finbert-score/PLAN.md` — `mda_embeddings` (pgvector)

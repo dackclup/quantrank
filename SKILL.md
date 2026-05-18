@@ -136,7 +136,16 @@ sentence-transformers           # MD&A YoY similarity (Phase 6)
 openai-whisper                  # Audio transcription (Phase 6)
 skfolio                         # NCO portfolio optimization (Phase 7)
 gtda                            # Topological Data Analysis (Phase 7)
+supabase                        # Postgres + pgvector client (Phase 4.5e + Phase 5+ — cross-run state)
 ```
+
+**Note on Supabase**: connector is registered (`mcp__supabase__*`
+available in Claude Code sessions) but the Python client is
+**deferred** — add `supabase` to `pyproject.toml` only inside the
+implementation PR that first wires a real table call (4.5e Form 4
+insider, or Phase 5 backtest infra). See `CLAUDE.md` §Connectors for
+the boundary and `.claude/skills/phase-{5,6,9}/<plan>/PLAN.md`
+§"Supabase usage" for per-table schemas.
 
 **License caveats** (verify per phase):
 - OSAP signals: Free CSV/parquet, MIT-style for code; SIGNAL-LEVEL data needs WRDS for stock-level recompute
