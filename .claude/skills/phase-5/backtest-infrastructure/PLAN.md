@@ -128,6 +128,102 @@ This is THE foundation for Phase 5. Budget accordingly.
 ## Open questions
 
 1. Should we vendor mlfinlab (AGPL 2018) or re-implement? Per `docs/RESEARCH_FINDINGS.md`: **re-implement** — AGPL incompatible with project license. Triple-Barrier + DSR + PBO are all paper-implementable in <100 LOC each.
-2. Storage: where do backtest reports live? Proposed: `frontend/public/data/backtest/<feature>.json` — same Vercel-served pattern as production data
+2. Storage: where do backtest reports live? **Resolved (2026-05-17)** — split: latest snapshot to `frontend/public/data/backtest/<feature>.json` (UI render); full history to Supabase Postgres (analyst queries, IC-decay monitor). See §Supabase usage below.
 3. Cadence: monthly (default) vs quarterly vs ad-hoc per PR?
 4. Failure threshold: hard-block (PBO > 0.5 → CI fail) or annotate-only (warn + record)?
+
+## Supabase usage — full historical metrics
+
+The latest-snapshot JSON pattern (`frontend/public/data/backtest/<feature>.json`)
+serves the UI well but cannot answer cross-time questions:
+
+- "Did factor X's IC decay over the last 12 months?" (PR 4b §3
+  IC-decay monitor — currently Phase-5-blocked because no history
+  store exists)
+- "How does PBO of `meta_label` compare to `triple_barrier` across
+  20 monthly backtest runs?"
+- "Which features failed the PBO ≤ 0.5 gate in any of the last 6
+  runs?" (audit trail)
+
+Supabase complements the JSON-snapshot pattern by storing the **full
+history** of every backtest run. The Supabase MCP connector is
+already registered (see `CLAUDE.md` §Connectors).
+
+### Schema
+
+```sql
+create table backtest_runs (
+  run_id uuid primary key,
+  feature_name text not null,
+  feature_variant text,         -- e.g., 'lgbm_lambdarank_v1' | 'meta_label_k5'
+  run_date timestamptz not null,
+  git_commit text not null,
+  params jsonb not null,        -- hyperparameters
+  total_folds int,
+  inserted_at timestamptz default now()
+);
+
+create table fold_metrics (
+  run_id uuid references backtest_runs (run_id),
+  fold_index int not null,
+  fold_train_start date,
+  fold_train_end date,
+  fold_test_start date,
+  fold_test_end date,
+  ic_rank numeric,
+  ic_pearson numeric,
+  sharpe numeric,
+  sharpe_deflated numeric,
+  max_drawdown numeric,
+  pbo numeric,
+  calibration_coverage numeric,  -- nullable (conformal only)
+  primary key (run_id, fold_index)
+);
+
+create index fold_metrics_run on fold_metrics (run_id);
+create index backtest_runs_feature_date on backtest_runs (feature_name, run_date desc);
+```
+
+### Cross-time queries enabled
+
+```sql
+-- IC decay per feature over last 12 months (unblocks PR 4b §3)
+select date_trunc('month', run_date) as month,
+       avg(ic_rank) as avg_ic,
+       count(*) as folds
+from backtest_runs r
+join fold_metrics f using (run_id)
+where feature_name = 'pillar_value'
+  and run_date > now() - interval '12 months'
+group by 1
+order by 1;
+
+-- Features failing PBO gate in any recent run
+select feature_name, max(run_date) as latest_failing_run, avg(pbo) as avg_pbo
+from backtest_runs r
+join fold_metrics f using (run_id)
+where r.run_date > now() - interval '30 days'
+group by feature_name
+having avg(pbo) > 0.5;
+```
+
+### Write pattern
+
+The monthly backtest workflow (`backtest-monthly.yml`):
+
+1. `INSERT INTO backtest_runs` with the run-level metadata
+2. `INSERT INTO fold_metrics` (batch of N folds in a single tx)
+3. Write `frontend/public/data/backtest/<feature>.json` from the
+   aggregated metrics (this is the latest snapshot for UI)
+4. Commit JSON to repo (Vercel auto-deploy)
+
+If Supabase insert fails, fall back to JSON-only write + log an
+error. Supabase is a **complement** to the JSON snapshot, never a
+hard dependency for the production composite.
+
+### Capacity / cost
+
+- 1 backtest run per feature per month × ~20 features × ~60 folds =
+  ~14 400 rows/year in `fold_metrics`
+- Row size ~80 bytes → ~1.2 MB/year — trivial on the 500 MB free tier
+- Supabase MCP read latency well within the IC-decay-monitor SLA

@@ -83,3 +83,104 @@ Beginner-friendly badge next to ticker (after recommendation badge):
 - Form 13D/G (5%+ activist filings) — separate stub
 - Form 144 (planned insider sales) — moved to Phase 9.x
 - Hedge fund 13F flow — separate stub (`institutional-flow-13f/`)
+
+## Supabase usage (Phase 4.5e / Phase 9 implementation)
+
+Form 4 features require rolling-window aggregation across weekly
+compute runs (30 / 60 / 90 days). The static-site JSON snapshot
+per-run cannot store cross-run state — Supabase Postgres is the
+cross-run persistence layer. The Supabase MCP connector is already
+registered (see `CLAUDE.md` §Connectors); no additional infra to
+provision beyond schema + grants.
+
+### Schema
+
+```sql
+create table insider_filings (
+  filing_id text primary key,
+  ticker text not null,
+  filer_name text,
+  filer_role text,          -- 'CEO' | 'CFO' | 'DIRECTOR' | 'OFFICER' | '10%_OWNER'
+  txn_type text not null,   -- 'S' sell | 'P' purchase | 'A' grant | 'M' option-exercise
+  txn_classification text,  -- 'routine' | 'opportunistic' (Cohen-Malloy-Pomorski 2012)
+  shares bigint,
+  price numeric,
+  value_usd numeric,
+  filed_at timestamptz not null,
+  fiscal_year int,
+  ingested_at timestamptz default now()
+);
+
+create index insider_filings_ticker_filed_at on insider_filings (ticker, filed_at desc);
+create index insider_filings_filed_at on insider_filings (filed_at desc);
+```
+
+### Rolling-window queries
+
+Three queries run during the weekly compute, each emitting a
+risk-overlay annotate flag:
+
+```sql
+-- 30-day CEO/CFO opportunistic sell cluster (fires `c_suite_unusual_sell`)
+select ticker, count(*) as sells
+from insider_filings
+where filed_at > now() - interval '30 days'
+  and filer_role in ('CEO', 'CFO')
+  and txn_type = 'S'
+  and txn_classification = 'opportunistic'
+  and value_usd >= 10000          -- $10K floor per "Decisions (locked) #2"
+group by ticker
+having count(*) >= 2;
+
+-- 60-day cluster buy (3+ distinct insiders, fires `cluster_buy_last_60d`)
+select ticker, count(distinct filer_name) as insider_count
+from insider_filings
+where filed_at > now() - interval '60 days'
+  and txn_type = 'P'
+  and txn_classification = 'opportunistic'
+group by ticker
+having count(distinct filer_name) >= 3;
+
+-- 90-day net sell > $1M (fires `net_sell_last_90d`)
+select ticker,
+       sum(case when txn_type = 'S' then -value_usd else value_usd end) as net_usd
+from insider_filings
+where filed_at > now() - interval '90 days'
+  and value_usd >= 10000
+group by ticker
+having sum(case when txn_type = 'S' then -value_usd else value_usd end) < -1000000;
+```
+
+### Ingestion pattern
+
+`compute/ingest/form_4.py`:
+
+1. Query Supabase for `max(ingested_at)` per ticker (incremental fetch
+   watermark)
+2. SEC EDGAR fetch new Form 4 XML since watermark via edgartools
+3. Parse + classify routine vs opportunistic (Cohen-Malloy-Pomorski
+   2012 § "monthly scheduled grants")
+4. `INSERT INTO insider_filings ... ON CONFLICT (filing_id) DO
+   NOTHING` (idempotent re-runs)
+5. Weekly compute then runs the 3 rolling-window queries and writes
+   the flag fields into `StockDetail.insider_signal`
+
+### Capacity / cost
+
+- ~3 500 Form 4 filings/day across S&P 500 → ~1.3M rows/year
+- Row size ~150 bytes → ~200 MB for 1 full year
+- Supabase free tier: 500 MB database + 2 GB egress/month → fits
+- Year-3+ archival: move rows older than 5 years to Supabase Storage
+  cold tier (or drop — backfillable from EDGAR)
+
+### Reserved-slot wiring
+
+The 4.5e weights are already declared in
+`compute/scoring/manipulation_index.py`:
+
+- `INSIDER_SELL_CLUSTER_WEIGHT_RESERVED = 10.0`
+- `C_SUITE_UNUSUAL_SELL_WEIGHT_RESERVED = 5.0`
+
+Once the Supabase table exists + queries are integrated, uncomment
+the two `FLAG_WEIGHTS` lines and the integration goes live in
+the `manipulation_index` rollup with no code-path change elsewhere.
