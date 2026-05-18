@@ -271,12 +271,37 @@ export function FairPriceCard(props) {  // no types
 
 ## Phase + version state
 
-- Current version: `v0.6.0-phase3d` (tagged on `main`)
-- Active defenses: **3 vetoes** (altman / sloan / NSI), 5 numerical
-  guards, 6 annotate flags
-- Schema version: `0.6.0-phase3d` in `metadata.json`
-- Open Phase 4 issues: 8 (#7 / #10 / #11 / #14 / #15 / #16 / #17 /
-  #18) — see GitHub issues for triage order
+- Current release tag: [`v1.2.0-phase4.5`](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5)
+  (tagged 2026-05-17 on `main` at commit `6d414a9b`)
+- Active defenses: **7 vetoes** + 10 annotates + 5 numerical guards +
+  `manipulation_index` rollup = **17 total defense layer entries**
+- Schema version: `0.8.0-phase4.5f` in `metadata.json`
+- Test suite: 856 offline + 17 `@network` gated
+- Production-verified run: #51 (`b1588b2a`, 5m14s warm-cache)
+- Open Phase 4+ issues: **4** — #15 (SEC throttling) · #41 (Next 14→16
+  CVE bump) · #67 (Damodaran sector-adjusted CoE, Phase 5+) · #75
+  (PR 4b §3 IC-decay writer, Phase 5-blocked)
+- Next deliverable tracks (parallelizable): 4.5e Form 4 insider
+  (~3w → v1.3.0) · 4h/4i/4j/4k factor integrations OSAP/JKP/Qlib/IPCA
+  (~6w → v1.1.0-phase4) · Phase 5 ML meta-learner (~10-12w)
+
+## Claude-Code-specific tooling
+
+Claude Code sessions for this project have 6 MCP connectors enabled
+(GitHub · Gmail · Google Drive · Vercel · Supabase · Sentry-planned).
+Other agent runtimes (GitHub Copilot, Cursor, Devin, VS Code Agent
+Mode) do not have these connectors — when those tools work this repo,
+they should:
+
+- Use `gh` CLI for PRs / issues / CI status (instead of `mcp__github__*`)
+- Inspect Vercel deploys via `vercel.com` dashboard or `vercel` CLI
+  (instead of `mcp__vercel__*`)
+- Skip Supabase entirely — current code does not depend on it
+- Skip Sentry MCP — frontend SDK is not yet wired
+
+If a task requires the connector surface (e.g., automated batch deploy
+audit), prefer routing it through Claude Code rather than re-
+implementing the integration in a different agent.
 
 ## Companion files
 
