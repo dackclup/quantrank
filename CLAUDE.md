@@ -153,14 +153,16 @@ non-connector-bound work.
 
 ## Phase status
 
-Current schema: **`0.8.0-phase4.5f`** · Defense layer: **17**
-(7 active vetoes + 10 annotates + 5 numerical guards +
-`manipulation_index` rollup). Latest release tag:
+Current schema: **`0.9.0-phase4h`** (bumped from `0.8.0-phase4.5f` in
+PR #112). Defense layer: **17** (7 active vetoes + 10 annotates + 5
+numerical guards + `manipulation_index` rollup) — Phase 4h adds
+observability surface, no new veto. Latest release tag:
 [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5)
-**SHIPPED 2026-05-17** at commit `6d414a9b` — **Phase 4.5 cluster
-✅ complete** (6 sub-PRs). Production verified run #51
-(`b1588b2a`, 5m14s warm-cache). Test suite: 856 offline + 17
-`@network`.
+shipped 2026-05-17 at commit `6d414a9b`. **Phase 4h in flight in PR
+#112** — OSAP signal replication (factor-exposure proxy) + PBO/DSR
+hard gate (PR #60 reuse) + rolling-12m IC observability + Path-b
+composite × OSAP blend (50/50 default, Top-5 still ranks raw
+composite per Rule 16). Test suite: 906 offline + 19 `@network`.
 
 **Next deliverable** (pick by appetite — three tracks parallelize):
 **4.5e** (Form 4 insider, ~3w → v1.3.0) · **4h/4i/4j/4k** factor
