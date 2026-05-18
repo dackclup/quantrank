@@ -3,19 +3,19 @@
   "name": "Church & Dwight",
   "sector": "Consumer Staples",
   "industry": "Household Products",
-  "market_cap": 22284546491.19449,
-  "current_price": 94.05,
-  "rank": 206,
-  "composite_score": 52.36,
+  "market_cap": 22931401512.322205,
+  "current_price": 96.78,
+  "rank": 205,
+  "composite_score": 52.4,
   "pillar_scores": {
     "quality": 55.56,
-    "value": 25.46,
+    "value": 25.0,
     "growth": 81.25,
-    "momentum": 48.06,
+    "momentum": 50.35,
     "health": 60.2,
     "profitability": 63.89,
-    "technical": 58.52,
-    "risk": 59.99,
+    "technical": 55.23,
+    "risk": 60.62,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.91,
     "eps_diluted": 0.91,
     "shares_outstanding": 236943602.0,
-    "market_cap": 22284546491.19449,
-    "pe_ratio_ttm": 30.40183695933764,
+    "market_cap": 22931401512.322205,
+    "pe_ratio_ttm": 31.28431311367286,
     "goodwill": 2629400000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 70.22171543217532,
+        "value": 71.32117966793375,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 54.71091033294818,
+        "value": 54.934741244125625,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 64.19898515059813,
+        "value": 64.57613959459765,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 59.454947741773154,
-    "max": 70.22171543217532,
+    "median": 59.75544041936163,
+    "max": 71.32117966793375,
     "low": 40.553956201016184,
-    "high": 70.22171543217532,
-    "mos_pct": -58.187008186836074,
+    "high": 71.32117966793375,
+    "mos_pct": -61.960146390183326,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -87,7 +87,7 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 17,
     "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-05-01"
   },
@@ -106,22 +106,22 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 49.65,
-      "Value": 52.31,
+      "Value": 52.08,
       "Growth": 48.44,
-      "Momentum": 39.07,
+      "Momentum": 39.94,
       "Health": 39.29,
       "Profitability": 53.94,
-      "Technical": 54.13,
-      "Risk": 51.39
+      "Technical": 53.57,
+      "Risk": 51.71
     }
   },
   "beneish_m_score": -2.6345545856944055,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 58.820530378486055,
-  "price_change_1d_pct": -0.3095,
+  "loss_chance_pct": 58.79978004648074,
+  "price_change_1d_pct": 2.9027,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 52.36,
+  "composite_score_adjusted": 52.4,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -136,6 +136,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

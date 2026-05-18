@@ -3,19 +3,19 @@
   "name": "Norfolk Southern",
   "sector": "Industrials",
   "industry": "Rail Transportation",
-  "market_cap": 70960477357.57599,
-  "current_price": 315.95,
-  "rank": 382,
-  "composite_score": 43.86,
+  "market_cap": 71888044824.29141,
+  "current_price": 320.08,
+  "rank": 378,
+  "composite_score": 44.0,
   "pillar_scores": {
     "quality": 38.29,
     "value": 48.31,
     "growth": 22.15,
-    "momentum": 61.01,
+    "momentum": 62.62,
     "health": 30.6,
     "profitability": 52.95,
-    "technical": 57.12,
-    "risk": 75.76,
+    "technical": 55.63,
+    "risk": 76.1,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.43,
     "eps_diluted": 2.43,
     "shares_outstanding": 224594001.0,
-    "market_cap": 70960477357.57599,
-    "pe_ratio_ttm": 26.57695781182621,
+    "market_cap": 71888044824.29141,
+    "pe_ratio_ttm": 26.92436135741251,
     "goodwill": null
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 330.9405425026061,
+        "value": 336.248061586523,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 473.0110589476834,
+        "value": 464.4467864419231,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 373.4284348097777,
+        "value": 375.55977358658714,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 230.79161021583081,
-    "max": 473.0110589476834,
+    "median": 233.44536975778925,
+    "max": 464.4467864419231,
     "low": 81.84088375582319,
-    "high": 473.0110589476834,
-    "mos_pct": -36.898395878239384,
+    "high": 464.4467864419231,
+    "mos_pct": -37.111302273574296,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -95,7 +95,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 23,
+    "filing_lag_days": 24,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-24"
   },
@@ -114,22 +114,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.37,
+      "Value": 48.31,
       "Growth": 49.37,
-      "Momentum": 55.18,
+      "Momentum": 51.99,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 48.9,
-      "Risk": 55.18
+      "Technical": 50.85,
+      "Risk": 54.71
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 55.98362751883755,
-  "price_change_1d_pct": -0.532,
+  "loss_chance_pct": 55.988112386686836,
+  "price_change_1d_pct": 1.3072,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 43.86,
+  "composite_score_adjusted": 44.0,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,6 +144,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

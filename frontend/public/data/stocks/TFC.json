@@ -3,19 +3,19 @@
   "name": "Truist Financial",
   "sector": "Financials",
   "industry": "Diversified Banks",
-  "market_cap": 58506489613.36346,
-  "current_price": 46.96,
-  "rank": 373,
-  "composite_score": 44.2,
+  "market_cap": 58618618938.21954,
+  "current_price": 47.05,
+  "rank": 376,
+  "composite_score": 44.12,
   "pillar_scores": {
     "quality": 35.33,
-    "value": 54.67,
+    "value": 55.33,
     "growth": 31.0,
-    "momentum": 54.63,
+    "momentum": 53.93,
     "health": 45.78,
     "profitability": 45.56,
-    "technical": 39.84,
-    "risk": 55.08,
+    "technical": 36.85,
+    "risk": 55.21,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.1,
     "eps_diluted": 1.09,
     "shares_outstanding": 1245879275.0,
-    "market_cap": 58506489613.36346,
-    "pe_ratio_ttm": 10.58557800133227,
+    "market_cap": 58618618938.21954,
+    "pe_ratio_ttm": 10.605865557846851,
     "goodwill": 17125000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 61.22980025907763,
+        "value": 61.68606207288907,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 103.61966040414315,
+        "value": 104.87656840748733,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 61.22980025907763,
-    "max": 103.61966040414315,
+    "median": 61.68606207288907,
+    "max": 104.87656840748733,
     "low": 41.283045525088724,
-    "high": 103.61966040414315,
-    "mos_pct": 23.30532047177371,
+    "high": 104.87656840748733,
+    "mos_pct": 23.726693427981118,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -103,7 +103,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 17,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
@@ -124,22 +124,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.33,
+      "Value": 53.11,
       "Growth": 51.5,
-      "Momentum": 54.63,
+      "Momentum": 54.43,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 52.49,
-      "Risk": 55.11
+      "Technical": 51.89,
+      "Risk": 55.48
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 36.74162167728734,
-  "price_change_1d_pct": -0.3607,
+  "loss_chance_pct": 36.63492799520439,
+  "price_change_1d_pct": 0.1917,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 44.2,
+  "composite_score_adjusted": 44.12,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -154,6 +154,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

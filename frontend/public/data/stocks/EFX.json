@@ -3,18 +3,18 @@
   "name": "Equifax",
   "sector": "Industrials",
   "industry": "Research & Consulting Services",
-  "market_cap": 18857496831.921753,
-  "current_price": 158.37,
-  "rank": 458,
-  "composite_score": 37.95,
+  "market_cap": 19555261221.337784,
+  "current_price": 164.23,
+  "rank": 453,
+  "composite_score": 38.66,
   "pillar_scores": {
     "quality": 32.91,
-    "value": 63.29,
+    "value": 61.18,
     "growth": 41.77,
-    "momentum": 20.02,
+    "momentum": 26.25,
     "health": 20.0,
     "profitability": 44.73,
-    "technical": 25.3,
+    "technical": 33.42,
     "risk": 23.27,
     "sentiment": null,
     "ml": null
@@ -32,8 +32,8 @@
     "eps_basic": 1.43,
     "eps_diluted": 1.42,
     "shares_outstanding": 119072409.0,
-    "market_cap": 18857496831.921753,
-    "pe_ratio_ttm": 26.793828974029203,
+    "market_cap": 19555261221.337784,
+    "pe_ratio_ttm": 27.785253227248912,
     "goodwill": 6790900000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 164.54132394011174,
+        "value": 167.18018532077264,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 256.3386511895085,
+        "value": 251.69741919076827,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 217.12680596359448,
+        "value": 218.50614979556218,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 217.12680596359448,
-    "max": 256.3386511895085,
-    "low": 164.54132394011174,
-    "high": 256.3386511895085,
-    "mos_pct": 27.061057977456134,
+    "median": 218.50614979556218,
+    "max": 251.69741919076827,
+    "low": 167.18018532077264,
+    "high": 251.69741919076827,
+    "mos_pct": 24.839645986533903,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -92,7 +92,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 26,
+    "filing_lag_days": 27,
     "latest_period_end": "2026-04-10",
     "latest_filed_date": "2026-04-21"
   },
@@ -111,22 +111,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.37,
+      "Value": 48.31,
       "Growth": 49.37,
-      "Momentum": 55.18,
+      "Momentum": 51.99,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 48.9,
-      "Risk": 55.18
+      "Technical": 50.85,
+      "Risk": 54.71
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 36.55452664755784,
-  "price_change_1d_pct": 0.4121,
+  "loss_chance_pct": 36.97735564442097,
+  "price_change_1d_pct": 3.7002,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 37.95,
+  "composite_score_adjusted": 38.66,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -141,6 +141,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

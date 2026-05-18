@@ -3,19 +3,19 @@
   "name": "Lennar",
   "sector": "Consumer Discretionary",
   "industry": "Homebuilding",
-  "market_cap": 20117248145.965576,
-  "current_price": 82.3,
-  "rank": 384,
-  "composite_score": 43.69,
+  "market_cap": 20488793085.403442,
+  "current_price": 83.82,
+  "rank": 375,
+  "composite_score": 44.23,
   "pillar_scores": {
     "quality": 44.27,
     "value": 74.65,
     "growth": 35.42,
-    "momentum": 7.2,
+    "momentum": 8.24,
     "health": 43.78,
     "profitability": 41.84,
-    "technical": 30.58,
-    "risk": 23.14,
+    "technical": 38.89,
+    "risk": 23.11,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.93,
     "eps_diluted": 0.93,
     "shares_outstanding": 244438000.0,
-    "market_cap": 20117248145.965576,
-    "pe_ratio_ttm": 11.096428659821228,
+    "market_cap": 20488793085.403442,
+    "pe_ratio_ttm": 11.301368315805771,
     "goodwill": 3632058000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 159.96240632394094,
+        "value": 160.32570189305258,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 537.8060025944403,
+        "value": 549.602638224619,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 156.5252650497948,
-    "max": 159.96240632394094,
+    "max": 160.32570189305258,
     "low": 84.63607099160531,
-    "high": 537.8060025944403,
-    "mos_pct": 47.420626934842744,
+    "high": 549.602638224619,
+    "mos_pct": 46.4495398438336,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ]
@@ -103,7 +103,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 38,
+    "filing_lag_days": 39,
     "latest_period_end": "2026-02-28",
     "latest_filed_date": "2026-04-09"
   },
@@ -125,22 +125,22 @@
     "label": "Consumer Discretionary median (n=48)",
     "values": {
       "Quality": 46.35,
-      "Value": 49.65,
+      "Value": 49.83,
       "Growth": 51.69,
-      "Momentum": 40.46,
+      "Momentum": 41.36,
       "Health": 43.72,
       "Profitability": 52.6,
-      "Technical": 33.17,
-      "Risk": 40.11
+      "Technical": 34.46,
+      "Risk": 40.32
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 27.55871499483912,
-  "price_change_1d_pct": -3.4604,
+  "loss_chance_pct": 27.625936114142526,
+  "price_change_1d_pct": 1.8469,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 43.19,
+  "composite_score_adjusted": 43.73,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -155,6 +155,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

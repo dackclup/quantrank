@@ -3,19 +3,19 @@
   "name": "The Mosaic Company",
   "sector": "Materials",
   "industry": "Fertilizers & Agricultural Chemicals",
-  "market_cap": 6916343046.189323,
-  "current_price": 21.76,
+  "market_cap": 6805096599.540451,
+  "current_price": 21.41,
   "rank": 498,
-  "composite_score": 29.42,
+  "composite_score": 29.65,
   "pillar_scores": {
     "quality": 15.38,
-    "value": 54.81,
+    "value": 55.45,
     "growth": 30.77,
-    "momentum": 11.11,
+    "momentum": 14.19,
     "health": 44.46,
     "profitability": 19.87,
-    "technical": 23.41,
-    "risk": 20.52,
+    "technical": 17.93,
+    "risk": 19.65,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": -0.81,
     "eps_diluted": -0.81,
     "shares_outstanding": 317846644.0,
-    "market_cap": 6916343046.189323,
-    "pe_ratio_ttm": 97.55067766134448,
+    "market_cap": 6805096599.540451,
+    "pe_ratio_ttm": 95.98161635459029,
     "goodwill": 988900000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 5.479355649859655,
+        "value": 5.504674694229804,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 110.29510795385256,
+        "value": 109.72652646806908,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 44.488456693905604,
+        "value": 44.564936195978774,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 38.3063708319312,
-    "max": 44.488456693905604,
-    "low": 5.479355649859655,
-    "high": 110.29510795385256,
-    "mos_pct": 43.194826979685416,
+    "max": 44.564936195978774,
+    "low": 5.504674694229804,
+    "high": 109.72652646806908,
+    "mos_pct": 44.108514112839714,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate",
       "value_trap_risk"
@@ -96,7 +96,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 6,
+    "filing_lag_days": 7,
     "latest_period_end": "2026-05-08",
     "latest_filed_date": "2026-05-11"
   },
@@ -119,22 +119,22 @@
     "label": "Materials median (n=26)",
     "values": {
       "Quality": 51.68,
-      "Value": 50.0,
+      "Value": 50.48,
       "Growth": 48.56,
-      "Momentum": 49.48,
+      "Momentum": 51.82,
       "Health": 56.53,
       "Profitability": 54.33,
-      "Technical": 46.56,
-      "Risk": 47.81
+      "Technical": 37.45,
+      "Risk": 47.92
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 38.1694133510625,
-  "price_change_1d_pct": -4.0564,
+  "loss_chance_pct": 37.73766683239291,
+  "price_change_1d_pct": -1.6085,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 28.92,
+  "composite_score_adjusted": 29.15,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -149,6 +149,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

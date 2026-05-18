@@ -3,19 +3,19 @@
   "name": "State Street Corporation",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 42303842683.30191,
-  "current_price": 152.85,
-  "rank": 224,
-  "composite_score": 51.72,
+  "market_cap": 42550165173.74672,
+  "current_price": 153.74,
+  "rank": 228,
+  "composite_score": 51.62,
   "pillar_scores": {
     "quality": 39.33,
-    "value": 58.0,
+    "value": 58.67,
     "growth": 22.67,
-    "momentum": 88.79,
+    "momentum": 88.99,
     "health": 52.75,
     "profitability": 45.11,
-    "technical": 64.94,
-    "risk": 68.73,
+    "technical": 59.36,
+    "risk": 68.79,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.53,
     "eps_diluted": 2.49,
     "shares_outstanding": 276767033.0,
-    "market_cap": 42303842683.30191,
-    "pe_ratio_ttm": 13.802232523100134,
+    "market_cap": 42550165173.74672,
+    "pe_ratio_ttm": 13.882598751630251,
     "goodwill": 8121000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 179.53008367838314,
+        "value": 181.07492729184844,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 286.1743045709725,
+        "value": 283.22314131462025,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 179.53008367838314,
-    "max": 286.1743045709725,
+    "median": 181.07492729184844,
+    "max": 283.22314131462025,
     "low": 103.87148182988398,
-    "high": 286.1743045709725,
-    "mos_pct": 14.861062295644665,
+    "high": 283.22314131462025,
+    "mos_pct": 15.09591758920172,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -103,7 +103,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 18,
+    "filing_lag_days": 19,
     "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-29"
   },
@@ -124,22 +124,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.33,
+      "Value": 53.11,
       "Growth": 51.5,
-      "Momentum": 54.63,
+      "Momentum": 54.43,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 52.49,
-      "Risk": 55.11
+      "Technical": 51.89,
+      "Risk": 55.48
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 35.939677886652746,
-  "price_change_1d_pct": -0.5918,
+  "loss_chance_pct": 35.90822554585996,
+  "price_change_1d_pct": 0.5823,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 51.72,
+  "composite_score_adjusted": 51.62,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -154,6 +154,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "BlackRock",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 168089359426.58997,
-  "current_price": 1081.9,
-  "rank": 393,
-  "composite_score": 43.33,
+  "market_cap": 168707708952.818,
+  "current_price": 1085.88,
+  "rank": 394,
+  "composite_score": 43.08,
   "pillar_scores": {
     "quality": 42.67,
-    "value": 20.44,
+    "value": 21.11,
     "growth": 43.67,
-    "momentum": 49.8,
+    "momentum": 48.51,
     "health": 61.39,
     "profitability": 62.0,
-    "technical": 66.38,
-    "risk": 52.82,
+    "technical": 61.85,
+    "risk": 52.42,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 14.24,
     "eps_diluted": 14.06,
     "shares_outstanding": 155364965.0,
-    "market_cap": 168089359426.58997,
-    "pe_ratio_ttm": 24.891064627067966,
+    "market_cap": 168707708952.818,
+    "pe_ratio_ttm": 24.98263126800207,
     "goodwill": 35296000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 672.3671271740457,
+        "value": 680.1355395846512,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 851.8728500974684,
+        "value": 859.203155442366,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 762.119988635757,
-    "max": 851.8728500974684,
-    "low": 672.3671271740457,
-    "high": 851.8728500974684,
-    "mos_pct": -41.95927682604573,
+    "median": 769.6693475135086,
+    "max": 859.203155442366,
+    "low": 680.1355395846512,
+    "high": 859.203155442366,
+    "mos_pct": -41.08396136481895,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -102,7 +102,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 11,
+    "filing_lag_days": 12,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
@@ -125,22 +125,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.33,
+      "Value": 53.11,
       "Growth": 51.5,
-      "Momentum": 54.63,
+      "Momentum": 54.43,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 52.49,
-      "Risk": 55.11
+      "Technical": 51.89,
+      "Risk": 55.48
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 63.0201177390496,
-  "price_change_1d_pct": -2.0045,
+  "loss_chance_pct": 62.840450554711865,
+  "price_change_1d_pct": 0.3679,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 41.33,
+  "composite_score_adjusted": 41.08,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -155,6 +155,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

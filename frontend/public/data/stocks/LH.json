@@ -3,19 +3,19 @@
   "name": "Labcorp",
   "sector": "Health Care",
   "industry": "Health Care Services",
-  "market_cap": 20532799499.51172,
-  "current_price": 250.4,
-  "rank": 369,
-  "composite_score": 44.51,
+  "market_cap": 20956740600.585938,
+  "current_price": 255.57,
+  "rank": 355,
+  "composite_score": 45.66,
   "pillar_scores": {
     "quality": 34.32,
-    "value": 68.36,
+    "value": 67.51,
     "growth": 18.22,
-    "momentum": 42.73,
+    "momentum": 47.46,
     "health": 59.12,
     "profitability": 32.77,
-    "technical": 37.2,
-    "risk": 59.96,
+    "technical": 51.84,
+    "risk": 60.42,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 3.37,
     "eps_diluted": 3.35,
     "shares_outstanding": 82000000.0,
-    "market_cap": 20532799499.51172,
-    "pe_ratio_ttm": 21.780841730679665,
+    "market_cap": 20956740600.585938,
+    "pe_ratio_ttm": 22.23055118339444,
     "goodwill": 6955200000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 272.79160677187224,
+        "value": 279.4208365878909,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 309.5073908234964,
+        "value": 313.08186838136766,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 362.93700651521266,
+        "value": 356.73418829754036,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 291.1494987976843,
-    "max": 362.93700651521266,
+    "median": 296.25135248462925,
+    "max": 356.73418829754036,
     "low": 114.21955891133837,
-    "high": 362.93700651521266,
-    "mos_pct": 13.99607592301445,
+    "high": 356.73418829754036,
+    "mos_pct": 13.732036940665518,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -92,7 +92,7 @@
       "income_before_tax"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 13,
+    "filing_lag_days": 14,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-04"
   },
@@ -113,22 +113,22 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 52.97,
-      "Value": 51.41,
+      "Value": 51.13,
       "Growth": 49.58,
-      "Momentum": 39.59,
+      "Momentum": 38.65,
       "Health": 59.88,
       "Profitability": 51.13,
-      "Technical": 55.03,
-      "Risk": 40.27
+      "Technical": 55.23,
+      "Risk": 40.7
     }
   },
   "beneish_m_score": -2.5234089090729697,
   "dechow_f_score": 0.48706775221799803,
   "recommendation": "neutral",
-  "loss_chance_pct": 39.84760741753625,
-  "price_change_1d_pct": -1.4251,
+  "loss_chance_pct": 39.3649168173176,
+  "price_change_1d_pct": 2.0647,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 44.51,
+  "composite_score_adjusted": 45.66,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -143,6 +143,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

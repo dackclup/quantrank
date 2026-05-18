@@ -3,19 +3,19 @@
   "name": "Automatic Data Processing",
   "sector": "Industrials",
   "industry": "Human Resource & Employment Services",
-  "market_cap": 85735007095.5109,
-  "current_price": 214.48,
-  "rank": 92,
-  "composite_score": 58.68,
+  "market_cap": 89116761804.99377,
+  "current_price": 222.94,
+  "rank": 101,
+  "composite_score": 58.06,
   "pillar_scores": {
     "quality": 80.7,
-    "value": 51.05,
+    "value": 50.63,
     "growth": 68.04,
-    "momentum": 14.74,
+    "momentum": 13.55,
     "health": 60.08,
     "profitability": 56.54,
-    "technical": 70.52,
-    "risk": 42.2,
+    "technical": 63.25,
+    "risk": 41.93,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 8.51,
     "eps_diluted": 8.49,
     "shares_outstanding": 399734282.0,
-    "market_cap": 85735007095.5109,
-    "pe_ratio_ttm": 19.729606971697365,
+    "market_cap": 89116761804.99377,
+    "pe_ratio_ttm": 20.507826902541428,
     "goodwill": 3289100000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 302.6252933770366,
+        "value": 307.47870150808154,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 104.6230109537027,
+        "value": 101.63456022443641,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 74.27385281250234,
-    "max": 302.6252933770366,
+    "median": 72.7796274478692,
+    "max": 307.47870150808154,
     "low": 26.968204540942065,
-    "high": 302.6252933770366,
-    "mos_pct": -188.76918000870978,
+    "high": 307.47870150808154,
+    "mos_pct": -206.32198907736145,
     "valuation_warnings": [
       "goodwill_heavy",
-      "extreme_graham_estimate"
+      "extreme_graham_estimate",
+      "extreme_rim_estimate"
     ]
   },
   "top5_factors": [],
@@ -97,14 +98,15 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 17,
+    "filing_lag_days": 18,
     "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
-    "extreme_graham_estimate"
+    "extreme_graham_estimate",
+    "extreme_rim_estimate"
   ],
   "has_history": true,
   "tangible_book_value": 3.553360479599796,
@@ -119,22 +121,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.37,
+      "Value": 48.31,
       "Growth": 49.37,
-      "Momentum": 55.18,
+      "Momentum": 51.99,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 48.9,
-      "Risk": 55.18
+      "Technical": 50.85,
+      "Risk": 54.71
     }
   },
   "beneish_m_score": -2.5869037186960835,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 57.66189303965572,
-  "price_change_1d_pct": 2.9323,
+  "loss_chance_pct": 58.97081557735304,
+  "price_change_1d_pct": 3.9444,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 58.68,
+  "composite_score_adjusted": 58.06,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -149,6 +151,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

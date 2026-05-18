@@ -3,19 +3,19 @@
   "name": "BNY Mellon",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 92674901588.42766,
-  "current_price": 135.02,
-  "rank": 237,
-  "composite_score": 51.28,
+  "market_cap": 93745651222.89757,
+  "current_price": 136.58,
+  "rank": 236,
+  "composite_score": 51.22,
   "pillar_scores": {
     "quality": 45.33,
-    "value": 36.44,
+    "value": 36.22,
     "growth": 44.0,
-    "momentum": 86.4,
+    "momentum": 87.6,
     "health": 48.41,
     "profitability": 47.11,
-    "technical": 70.92,
-    "risk": 79.45,
+    "technical": 67.68,
+    "risk": 79.55,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.26,
     "eps_diluted": 2.24,
     "shares_outstanding": 686379045.0,
-    "market_cap": 92674901588.42766,
-    "pe_ratio_ttm": 15.469020462097756,
+    "market_cap": 93745651222.89757,
+    "pe_ratio_ttm": 15.647746824052339,
     "goodwill": 16734000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 141.49999221258614,
+        "value": 142.71758959123272,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 186.27578150227598,
+        "value": 184.3548185327251,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 105.05678450234468,
-    "max": 186.27578150227598,
+    "median": 105.66558319166798,
+    "max": 184.3548185327251,
     "low": 37.63045548399192,
-    "high": 186.27578150227598,
-    "mos_pct": -28.520975501061073,
+    "high": 184.3548185327251,
+    "mos_pct": -29.256847599384088,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -102,7 +102,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 17,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
@@ -121,22 +121,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.33,
+      "Value": 53.11,
       "Growth": 51.5,
-      "Momentum": 54.63,
+      "Momentum": 54.43,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 52.49,
-      "Risk": 55.11
+      "Technical": 51.89,
+      "Risk": 55.48
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 49.34361853913853,
-  "price_change_1d_pct": -0.706,
+  "loss_chance_pct": 49.63053134327269,
+  "price_change_1d_pct": 1.1554,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 51.28,
+  "composite_score_adjusted": 51.22,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -151,6 +151,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -5,17 +5,17 @@
   "industry": "Pharmaceuticals",
   "market_cap": 144366920365.93692,
   "current_price": 25.33,
-  "rank": 345,
-  "composite_score": 46.13,
+  "rank": 344,
+  "composite_score": 46.02,
   "pillar_scores": {
     "quality": 36.02,
     "value": 68.93,
     "growth": 9.32,
-    "momentum": 61.5,
+    "momentum": 61.25,
     "health": 59.88,
     "profitability": 40.96,
-    "technical": 27.54,
-    "risk": 51.63,
+    "technical": 26.54,
+    "risk": 50.8,
     "sentiment": null,
     "ml": null
   },
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 31.366384457780743,
+        "value": 32.12863287711028,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 45.966071902755104,
+        "value": 46.496930606977756,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 31.366384457780743,
-    "max": 45.966071902755104,
+    "median": 32.12863287711028,
+    "max": 46.496930606977756,
     "low": 21.2217215498857,
-    "high": 45.966071902755104,
-    "mos_pct": 19.244757208787266,
+    "high": 46.496930606977756,
+    "mos_pct": 21.16066680897537,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -95,7 +95,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 12,
+    "filing_lag_days": 13,
     "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-05-05"
   },
@@ -116,22 +116,22 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 52.97,
-      "Value": 51.41,
+      "Value": 51.13,
       "Growth": 49.58,
-      "Momentum": 39.59,
+      "Momentum": 38.65,
       "Health": 59.88,
       "Profitability": 51.13,
-      "Technical": 55.03,
-      "Risk": 40.27
+      "Technical": 55.23,
+      "Risk": 40.7
     }
   },
   "beneish_m_score": -2.333420297437823,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 37.20060402502584,
-  "price_change_1d_pct": -1.6311,
+  "loss_chance_pct": 36.58606156137435,
+  "price_change_1d_pct": 0.0,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 46.13,
+  "composite_score_adjusted": 46.02,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -146,6 +146,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

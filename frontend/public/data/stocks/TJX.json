@@ -3,19 +3,19 @@
   "name": "TJX Companies",
   "sector": "Consumer Discretionary",
   "industry": "Apparel Retail",
-  "market_cap": 163177086612.69666,
-  "current_price": 147.43,
-  "rank": 119,
-  "composite_score": 57.15,
+  "market_cap": 166298300763.5,
+  "current_price": 150.25,
+  "rank": 113,
+  "composite_score": 57.46,
   "pillar_scores": {
     "quality": 74.22,
-    "value": 31.94,
+    "value": 31.25,
     "growth": 74.48,
-    "momentum": 64.69,
+    "momentum": 62.6,
     "health": 37.21,
     "profitability": 59.55,
-    "technical": 34.56,
-    "risk": 79.68,
+    "technical": 48.75,
+    "risk": 80.18,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 4.93,
     "eps_diluted": 4.87,
     "shares_outstanding": 1106810654.0,
-    "market_cap": 163177086612.69666,
-    "pe_ratio_ttm": 29.70096225203798,
+    "market_cap": 166298300763.5,
+    "pe_ratio_ttm": 30.269075493902438,
     "goodwill": 96000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 103.34497378555936,
+        "value": 103.79508660732627,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 49.3863672941237,
+        "value": 50.54342530254912,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,11 +76,13 @@
       }
     },
     "median": 52.06797349415943,
-    "max": 103.34497378555936,
+    "max": 103.79508660732627,
     "low": 29.807818419031186,
-    "high": 103.34497378555936,
-    "mos_pct": -183.14908912734765,
-    "valuation_warnings": []
+    "high": 103.79508660732627,
+    "mos_pct": -188.56510041984606,
+    "valuation_warnings": [
+      "extreme_graham_estimate"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -95,12 +97,14 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 47,
+    "filing_lag_days": 48,
     "latest_period_end": "2026-03-20",
     "latest_filed_date": "2026-03-31"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "extreme_graham_estimate"
+  ],
   "has_history": true,
   "tangible_book_value": 9.119897756242596,
   "tier2_events": {
@@ -114,22 +118,22 @@
     "label": "Consumer Discretionary median (n=48)",
     "values": {
       "Quality": 46.35,
-      "Value": 49.65,
+      "Value": 49.83,
       "Growth": 51.69,
-      "Momentum": 40.46,
+      "Momentum": 41.36,
       "Health": 43.72,
       "Profitability": 52.6,
-      "Technical": 33.17,
-      "Risk": 40.11
+      "Technical": 34.46,
+      "Risk": 40.32
     }
   },
   "beneish_m_score": -2.586964496335156,
   "dechow_f_score": 0.3325479952831558,
   "recommendation": "cautious",
-  "loss_chance_pct": 56.42350217186809,
-  "price_change_1d_pct": 0.0543,
+  "loss_chance_pct": 57.26818593680832,
+  "price_change_1d_pct": 1.9128,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 57.15,
+  "composite_score_adjusted": 57.46,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,6 +148,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

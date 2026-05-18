@@ -3,18 +3,18 @@
   "name": "Danaher Corporation",
   "sector": "Health Care",
   "industry": "Life Sciences Tools & Services",
-  "market_cap": 114595144809.50345,
-  "current_price": 161.91,
-  "rank": 492,
-  "composite_score": 32.2,
+  "market_cap": 115975295372.20891,
+  "current_price": 163.86,
+  "rank": 494,
+  "composite_score": 31.57,
   "pillar_scores": {
     "quality": 24.15,
-    "value": 32.49,
+    "value": 32.2,
     "growth": 13.56,
-    "momentum": 26.2,
+    "momentum": 22.16,
     "health": 81.63,
     "profitability": 38.7,
-    "technical": 28.74,
+    "technical": 27.49,
     "risk": 33.53,
     "sentiment": null,
     "ml": null
@@ -32,8 +32,8 @@
     "eps_basic": 1.45,
     "eps_diluted": 1.45,
     "shares_outstanding": 707770627.0,
-    "market_cap": 114595144809.50345,
-    "pe_ratio_ttm": 31.06401323109337,
+    "market_cap": 115975295372.20891,
+    "pe_ratio_ttm": 31.438139162973407,
     "goodwill": 42765000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 121.7249083721038,
+        "value": 124.7092418273945,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 217.52316413656033,
+        "value": 220.03532278470936,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 107.19377107741916,
+        "value": 109.62101845616554,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 114.45933972476148,
-    "max": 217.52316413656033,
+    "median": 117.16513014178003,
+    "max": 220.03532278470936,
     "low": 86.20426434201745,
-    "high": 217.52316413656033,
-    "mos_pct": -41.45634952241708,
+    "high": 220.03532278470936,
+    "mos_pct": -39.853897155294135,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -91,7 +91,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 26,
+    "filing_lag_days": 27,
     "latest_period_end": "2026-04-16",
     "latest_filed_date": "2026-04-21"
   },
@@ -112,22 +112,22 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 52.97,
-      "Value": 51.41,
+      "Value": 51.13,
       "Growth": 49.58,
-      "Momentum": 39.59,
+      "Momentum": 38.65,
       "Health": 59.88,
       "Profitability": 51.13,
-      "Technical": 55.03,
-      "Risk": 40.27
+      "Technical": 55.23,
+      "Risk": 40.7
     }
   },
   "beneish_m_score": -2.5991797541506214,
   "dechow_f_score": 0.5583483212429124,
   "recommendation": "neutral",
-  "loss_chance_pct": 65.41125040136286,
-  "price_change_1d_pct": -1.5984,
+  "loss_chance_pct": 65.1654137657593,
+  "price_change_1d_pct": 1.2044,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 32.2,
+  "composite_score_adjusted": 31.57,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -142,6 +142,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

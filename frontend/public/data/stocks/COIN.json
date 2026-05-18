@@ -3,19 +3,19 @@
   "name": "Coinbase",
   "sector": "Financials",
   "industry": "Financial Exchanges & Data",
-  "market_cap": 51478409800.720215,
-  "current_price": 195.43,
-  "rank": 465,
-  "composite_score": 37.16,
+  "market_cap": 49900580483.09326,
+  "current_price": 189.44,
+  "rank": 468,
+  "composite_score": 36.92,
   "pillar_scores": {
     "quality": 30.0,
-    "value": 25.33,
+    "value": 26.44,
     "growth": 54.67,
-    "momentum": 28.14,
+    "momentum": 29.08,
     "health": 69.24,
     "profitability": 38.0,
-    "technical": 55.13,
-    "risk": 21.33,
+    "technical": 42.68,
+    "risk": 21.86,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": -1.49,
     "eps_diluted": -1.49,
     "shares_outstanding": 263411000.0,
-    "market_cap": 51478409800.720215,
-    "pe_ratio_ttm": 63.24198891722416,
+    "market_cap": 49900580483.09326,
+    "pe_ratio_ttm": 61.30360223036036,
     "goodwill": 4208389000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 77.39702884942523,
+        "value": 79.36646543690304,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 101.77096217800373,
+        "value": 103.63931526455504,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 67.06875970274254,
-    "max": 101.77096217800373,
+    "median": 68.05347799648143,
+    "max": 103.63931526455504,
     "low": 32.423447231216656,
-    "high": 101.77096217800373,
-    "mos_pct": -191.38751565103092,
+    "high": 103.63931526455504,
+    "mos_pct": -178.3693178050369,
     "valuation_warnings": [
       "extreme_rim_estimate"
     ]
@@ -94,7 +94,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 10,
+    "filing_lag_days": 11,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
@@ -115,22 +115,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.33,
+      "Value": 53.11,
       "Growth": 51.5,
-      "Momentum": 54.63,
+      "Momentum": 54.43,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 52.49,
-      "Risk": 55.11
+      "Technical": 51.89,
+      "Risk": 55.48
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
-  "recommendation": "cautious",
-  "loss_chance_pct": 67.42189160026561,
-  "price_change_1d_pct": -7.8204,
+  "recommendation": "neutral",
+  "loss_chance_pct": 67.5390479747676,
+  "price_change_1d_pct": -3.065,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 37.16,
+  "composite_score_adjusted": 36.92,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -145,6 +145,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

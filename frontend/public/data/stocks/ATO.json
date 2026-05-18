@@ -3,19 +3,19 @@
   "name": "Atmos Energy",
   "sector": "Utilities",
   "industry": "Gas Utilities",
-  "market_cap": 29458009473.40158,
-  "current_price": 176.48,
-  "rank": 392,
-  "composite_score": 43.36,
+  "market_cap": 29798527336.59842,
+  "current_price": 178.52,
+  "rank": 386,
+  "composite_score": 43.59,
   "pillar_scores": {
     "quality": 24.19,
-    "value": 38.71,
+    "value": 38.17,
     "growth": 60.48,
-    "momentum": 65.69,
+    "momentum": 65.14,
     "health": 46.97,
     "profitability": 51.61,
-    "technical": 21.91,
-    "risk": 85.52,
+    "technical": 30.68,
+    "risk": 84.96,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 5.98,
     "eps_diluted": 5.92,
     "shares_outstanding": 166919822.0,
-    "market_cap": 29458009473.40158,
-    "pe_ratio_ttm": 21.882618836667515,
+    "market_cap": 29798527336.59842,
+    "pe_ratio_ttm": 22.1355694854254,
     "goodwill": 731257000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 154.8852527359359,
+        "value": 156.51123507296526,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 195.17745044966736,
+        "value": 196.53407700305397,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 160.4045875237478,
+        "value": 160.25148397304523,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 157.64492012984186,
-    "max": 195.17745044966736,
+    "median": 158.38135952300524,
+    "max": 196.53407700305397,
     "low": 113.6846962067717,
-    "high": 195.17745044966736,
-    "mos_pct": -11.947784668344513,
+    "high": 196.53407700305397,
+    "mos_pct": -12.715287209370437,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -96,7 +96,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 11,
+    "filing_lag_days": 12,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-06"
   },
@@ -118,22 +118,22 @@
     "label": "Utilities median (n=31)",
     "values": {
       "Quality": 51.61,
-      "Value": 47.85,
+      "Value": 47.31,
       "Growth": 54.03,
-      "Momentum": 59.91,
+      "Momentum": 60.28,
       "Health": 17.85,
       "Profitability": 52.15,
-      "Technical": 32.82,
-      "Risk": 71.25
+      "Technical": 33.64,
+      "Risk": 70.32
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 49.501674672476035,
-  "price_change_1d_pct": -2.4272,
+  "loss_chance_pct": 49.65648164395823,
+  "price_change_1d_pct": 1.1559,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 42.86,
+  "composite_score_adjusted": 43.09,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -148,6 +148,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

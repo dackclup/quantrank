@@ -3,19 +3,19 @@
   "name": "Air Products",
   "sector": "Materials",
   "industry": "Industrial Gases",
-  "market_cap": 65775422117.98804,
-  "current_price": 295.38,
-  "rank": 388,
-  "composite_score": 43.49,
+  "market_cap": 65314471467.00598,
+  "current_price": 293.31,
+  "rank": 404,
+  "composite_score": 42.35,
   "pillar_scores": {
     "quality": 38.46,
     "value": 22.76,
     "growth": 43.27,
-    "momentum": 71.17,
+    "momentum": 66.88,
     "health": 63.35,
     "profitability": 50.64,
-    "technical": 35.58,
-    "risk": 58.9,
+    "technical": 24.13,
+    "risk": 58.0,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 6.23,
     "eps_diluted": 6.23,
     "shares_outstanding": 222680686.0,
-    "market_cap": 65775422117.98804,
-    "pe_ratio_ttm": 30.600335946958847,
+    "market_cap": 65314471467.00598,
+    "pe_ratio_ttm": 30.385890424287503,
     "goodwill": 958700000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 237.11322868870167,
+        "value": 238.20888313085715,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 198.4066814667131,
+        "value": 200.37838512984905,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 211.8634114483911,
+        "value": 212.02454999492045,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 198.4066814667131,
-    "max": 237.11322868870167,
+    "median": 200.37838512984905,
+    "max": 238.20888313085715,
     "low": 70.71218639292859,
-    "high": 237.11322868870167,
-    "mos_pct": -48.87603718747179,
+    "high": 238.20888313085715,
+    "mos_pct": -46.37806236861487,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -90,7 +90,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 17,
+    "filing_lag_days": 18,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
@@ -109,22 +109,22 @@
     "label": "Materials median (n=26)",
     "values": {
       "Quality": 51.68,
-      "Value": 50.0,
+      "Value": 50.48,
       "Growth": 48.56,
-      "Momentum": 49.48,
+      "Momentum": 51.82,
       "Health": 56.53,
       "Profitability": 54.33,
-      "Technical": 46.56,
-      "Risk": 47.81
+      "Technical": 37.45,
+      "Risk": 47.92
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.2029484418186148,
   "recommendation": "neutral",
-  "loss_chance_pct": 60.36213260392854,
-  "price_change_1d_pct": -1.4973,
+  "loss_chance_pct": 60.058683050794755,
+  "price_change_1d_pct": -0.7008,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 43.49,
+  "composite_score_adjusted": 42.35,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -139,6 +139,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

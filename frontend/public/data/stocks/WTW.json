@@ -3,19 +3,19 @@
   "name": "Willis Towers Watson",
   "sector": "Financials",
   "industry": "Insurance Brokers",
-  "market_cap": 23458988740.051758,
-  "current_price": 248.38,
-  "rank": 249,
-  "composite_score": 50.63,
+  "market_cap": 24259905731.844727,
+  "current_price": 256.86,
+  "rank": 265,
+  "composite_score": 50.22,
   "pillar_scores": {
     "quality": 60.0,
-    "value": 50.67,
+    "value": 49.56,
     "growth": 55.0,
-    "momentum": 35.66,
+    "momentum": 31.37,
     "health": 44.54,
     "profitability": 45.78,
-    "technical": 44.87,
-    "risk": 49.17,
+    "technical": 52.09,
+    "risk": 49.44,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 3.12,
     "eps_diluted": 3.1,
     "shares_outstanding": 94447976.0,
-    "market_cap": 23458988740.051758,
-    "pe_ratio_ttm": 13.98866353014416,
+    "market_cap": 24259905731.844727,
+    "pe_ratio_ttm": 14.466252672537104,
     "goodwill": 9662000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 240.56219113301583,
+        "value": 246.4967391835261,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 167.95632815502265,
+        "value": 171.03973935010794,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 204.25925964401924,
-    "max": 240.56219113301583,
-    "low": 167.95632815502265,
-    "high": 240.56219113301583,
-    "mos_pct": -21.600364808766273,
+    "median": 208.76823926681703,
+    "max": 246.4967391835261,
+    "low": 171.03973935010794,
+    "high": 246.4967391835261,
+    "mos_pct": -23.035949459381907,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -95,7 +95,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 17,
+    "filing_lag_days": 18,
     "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-30"
   },
@@ -116,22 +116,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.33,
+      "Value": 53.11,
       "Growth": 51.5,
-      "Momentum": 54.63,
+      "Momentum": 54.43,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 52.49,
-      "Risk": 55.11
+      "Technical": 51.89,
+      "Risk": 55.48
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 49.242694637472795,
-  "price_change_1d_pct": 0.2988,
+  "loss_chance_pct": 49.95232057992931,
+  "price_change_1d_pct": 3.4141,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 50.63,
+  "composite_score_adjusted": 50.22,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -146,6 +146,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

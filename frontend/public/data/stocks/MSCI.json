@@ -3,19 +3,19 @@
   "name": "MSCI Inc.",
   "sector": "Financials",
   "industry": "Financial Exchanges & Data",
-  "market_cap": 40893213867.1875,
-  "current_price": 561.72,
-  "rank": 440,
-  "composite_score": 39.42,
+  "market_cap": 42524664355.46875,
+  "current_price": 584.13,
+  "rank": 434,
+  "composite_score": 40.27,
   "pillar_scores": {
     "quality": 26.67,
-    "value": 20.44,
+    "value": 20.22,
     "growth": 60.67,
-    "momentum": 53.49,
+    "momentum": 55.93,
     "health": 56.06,
     "profitability": 72.44,
-    "technical": 26.99,
-    "risk": 46.18,
+    "technical": 38.0,
+    "risk": 47.38,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 5.54,
     "eps_diluted": 5.53,
     "shares_outstanding": 72800000.0,
-    "market_cap": 40893213867.1875,
-    "pe_ratio_ttm": 30.986632518015387,
+    "market_cap": 42524664355.46875,
+    "pe_ratio_ttm": 32.2228561348701,
     "goodwill": 2962300000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 454.0295046018715,
+        "value": 465.5826912222128,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 454.0295046018715,
-    "max": 454.0295046018715,
-    "low": 454.0295046018715,
-    "high": 454.0295046018715,
-    "mos_pct": -23.7188255410152,
+    "median": 465.5826912222128,
+    "max": 465.5826912222128,
+    "low": 465.5826912222128,
+    "high": 465.5826912222128,
+    "mos_pct": -25.462139356898806,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -93,7 +93,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 26,
+    "filing_lag_days": 27,
     "latest_period_end": "2026-04-14",
     "latest_filed_date": "2026-04-21"
   },
@@ -114,22 +114,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.33,
+      "Value": 53.11,
       "Growth": 51.5,
-      "Momentum": 54.63,
+      "Momentum": 54.43,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 52.49,
-      "Risk": 55.11
+      "Technical": 51.89,
+      "Risk": 55.48
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 55.592987235061386,
-  "price_change_1d_pct": -1.0429,
+  "loss_chance_pct": 55.77807236942543,
+  "price_change_1d_pct": 3.9895,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 39.42,
+  "composite_score_adjusted": 40.27,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,6 +144,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "Regions Financial Corporation",
   "sector": "Financials",
   "industry": "Regional Banks",
-  "market_cap": 22751098352.864616,
-  "current_price": 26.66,
-  "rank": 296,
-  "composite_score": 48.38,
+  "market_cap": 23015645553.890774,
+  "current_price": 26.97,
+  "rank": 293,
+  "composite_score": 48.56,
   "pillar_scores": {
     "quality": 41.33,
-    "value": 58.44,
+    "value": 58.22,
     "growth": 35.67,
-    "momentum": 56.92,
+    "momentum": 56.27,
     "health": 53.82,
     "profitability": 47.56,
-    "technical": 34.21,
-    "risk": 59.4,
+    "technical": 39.84,
+    "risk": 60.03,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.63,
     "eps_diluted": 0.62,
     "shares_outstanding": 853379538.0,
-    "market_cap": 22751098352.864616,
-    "pe_ratio_ttm": 10.225212742860503,
+    "market_cap": 23015645553.890774,
+    "pe_ratio_ttm": 10.344110361299224,
     "goodwill": 5733000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 35.9862944872927,
+        "value": 36.25445103730024,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 44.24035864571537,
+        "value": 44.77699484617905,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 31.404967605036376,
-    "max": 44.24035864571537,
+    "median": 31.539045880040142,
+    "max": 44.77699484617905,
     "low": 16.025343362990732,
-    "high": 44.24035864571537,
-    "mos_pct": 15.108971985894748,
+    "high": 44.77699484617905,
+    "mos_pct": 14.486952408339102,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -103,7 +103,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 10,
+    "filing_lag_days": 11,
     "latest_period_end": "2026-05-06",
     "latest_filed_date": "2026-05-07"
   },
@@ -122,22 +122,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.33,
+      "Value": 53.11,
       "Growth": 51.5,
-      "Momentum": 54.63,
+      "Momentum": 54.43,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 52.49,
-      "Risk": 55.11
+      "Technical": 51.89,
+      "Risk": 55.48
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 35.52037020776995,
-  "price_change_1d_pct": -0.5224,
+  "loss_chance_pct": 35.65102526708574,
+  "price_change_1d_pct": 1.1628,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 48.38,
+  "composite_score_adjusted": 48.56,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -152,6 +152,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

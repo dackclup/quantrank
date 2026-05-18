@@ -5,17 +5,17 @@
   "industry": "Consumer Finance",
   "market_cap": 116474539054.65788,
   "current_price": 187.17,
-  "rank": 408,
-  "composite_score": 42.01,
+  "rank": 406,
+  "composite_score": 42.02,
   "pillar_scores": {
     "quality": 28.0,
-    "value": 59.11,
+    "value": 59.33,
     "growth": 43.33,
-    "momentum": 36.8,
+    "momentum": 38.65,
     "health": 52.95,
     "profitability": 35.33,
-    "technical": 40.74,
-    "risk": 38.71,
+    "technical": 35.31,
+    "risk": 38.75,
     "sentiment": null,
     "ml": null
   },
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 70.1701661639683,
+        "value": 71.90122880872988,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 362.6791127370518,
+        "value": 367.0784157039504,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,9 +76,9 @@
       }
     },
     "median": 149.95333829635004,
-    "max": 362.6791127370518,
-    "low": 70.1701661639683,
-    "high": 362.6791127370518,
+    "max": 367.0784157039504,
+    "low": 71.90122880872988,
+    "high": 367.0784157039504,
     "mos_pct": -24.818827173453563,
     "valuation_warnings": [
       "value_trap_risk"
@@ -101,7 +101,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 10,
+    "filing_lag_days": 11,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-07"
   },
@@ -124,22 +124,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.33,
+      "Value": 53.11,
       "Growth": 51.5,
-      "Momentum": 54.63,
+      "Momentum": 54.43,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 52.49,
-      "Risk": 55.11
+      "Technical": 51.89,
+      "Risk": 55.48
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 57.68223194098763,
-  "price_change_1d_pct": 0.7428,
+  "loss_chance_pct": 57.67715225971273,
+  "price_change_1d_pct": 0.0,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 42.01,
+  "composite_score_adjusted": 42.02,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -154,6 +154,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

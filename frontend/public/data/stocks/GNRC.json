@@ -3,19 +3,19 @@
   "name": "Generac",
   "sector": "Industrials",
   "industry": "Electrical Components & Equipment",
-  "market_cap": 15522493374.912903,
-  "current_price": 263.68,
-  "rank": 470,
-  "composite_score": 36.61,
+  "market_cap": 14896719906.702957,
+  "current_price": 253.05,
+  "rank": 469,
+  "composite_score": 36.91,
   "pillar_scores": {
     "quality": 25.63,
-    "value": 20.46,
+    "value": 22.57,
     "growth": 23.73,
-    "momentum": 70.57,
+    "momentum": 67.83,
     "health": 56.93,
     "profitability": 36.92,
-    "technical": 71.56,
-    "risk": 42.5,
+    "technical": 75.35,
+    "risk": 41.93,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.25,
     "eps_diluted": 1.24,
     "shares_outstanding": 58868681.0,
-    "market_cap": 15522493374.912903,
-    "pe_ratio_ttm": 81.6165760979289,
+    "market_cap": 14896719906.702957,
+    "pe_ratio_ttm": 78.32628718269794,
     "goodwill": 1486807000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 88.94803106358822,
+        "value": 90.34938179962373,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 305.4160802244235,
+        "value": 299.88625911516186,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 127.22880574154492,
+        "value": 127.47690315279026,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 88.94803106358822,
-    "max": 305.4160802244235,
+    "median": 90.34938179962373,
+    "max": 299.88625911516186,
     "low": 27.225994935707984,
-    "high": 305.4160802244235,
-    "mos_pct": -196.4427537325459,
+    "high": 299.88625911516186,
+    "mos_pct": -180.0793962408846,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -91,7 +91,7 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 12,
+    "filing_lag_days": 13,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-05"
   },
@@ -114,22 +114,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.37,
+      "Value": 48.31,
       "Growth": 49.37,
-      "Momentum": 55.18,
+      "Momentum": 51.99,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 48.9,
-      "Risk": 55.18
+      "Technical": 50.85,
+      "Risk": 54.71
     }
   },
   "beneish_m_score": -2.861008263576969,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 70.69312570393532,
-  "price_change_1d_pct": -4.6331,
+  "loss_chance_pct": 70.54293532620572,
+  "price_change_1d_pct": -4.0314,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 36.61,
+  "composite_score_adjusted": 36.91,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,6 +144,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

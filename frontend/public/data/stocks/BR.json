@@ -3,19 +3,19 @@
   "name": "Broadridge Financial Solutions",
   "sector": "Industrials",
   "industry": "Data Processing & Outsourced Services",
-  "market_cap": 16842160644.402222,
-  "current_price": 145.62,
-  "rank": 83,
-  "composite_score": 58.97,
+  "market_cap": 17420452129.40222,
+  "current_price": 150.62,
+  "rank": 75,
+  "composite_score": 59.38,
   "pillar_scores": {
     "quality": 73.42,
-    "value": 72.78,
+    "value": 72.57,
     "growth": 77.22,
-    "momentum": 11.4,
+    "momentum": 9.36,
     "health": 40.24,
     "profitability": 57.81,
-    "technical": 45.82,
-    "risk": 37.42,
+    "technical": 60.11,
+    "risk": 37.32,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 6.22,
     "eps_diluted": 6.18,
     "shares_outstanding": 115658297.0,
-    "market_cap": 16842160644.402222,
-    "pe_ratio_ttm": 15.3040987227644,
+    "market_cap": 17420452129.40222,
+    "pe_ratio_ttm": 15.829579399729415,
     "goodwill": 3735200000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 264.8805799513772,
+        "value": 269.12865038245724,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 163.82866602924318,
+        "value": 160.8624069670321,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 163.82866602924318,
-    "max": 264.8805799513772,
+    "median": 160.8624069670321,
+    "max": 269.12865038245724,
     "low": 58.14161080460427,
-    "high": 264.8805799513772,
-    "mos_pct": 11.114459607945205,
+    "high": 269.12865038245724,
+    "mos_pct": 6.367187985657654,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -94,7 +94,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 17,
+    "filing_lag_days": 18,
     "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-30"
   },
@@ -113,22 +113,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.37,
+      "Value": 48.31,
       "Growth": 49.37,
-      "Momentum": 55.18,
+      "Momentum": 51.99,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 48.9,
-      "Risk": 55.18
+      "Technical": 50.85,
+      "Risk": 54.71
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 31.622614175462825,
-  "price_change_1d_pct": 1.5694,
+  "loss_chance_pct": 33.08005477506034,
+  "price_change_1d_pct": 3.4336,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 58.97,
+  "composite_score_adjusted": 59.38,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -143,6 +143,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

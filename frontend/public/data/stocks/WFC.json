@@ -3,19 +3,19 @@
   "name": "Wells Fargo",
   "sector": "Financials",
   "industry": "Diversified Banks",
-  "market_cap": 224679107046.10568,
-  "current_price": 73.42,
-  "rank": 351,
-  "composite_score": 45.9,
+  "market_cap": 227586301073.8415,
+  "current_price": 74.37,
+  "rank": 349,
+  "composite_score": 45.94,
   "pillar_scores": {
     "quality": 43.33,
     "value": 58.22,
     "growth": 48.0,
-    "momentum": 31.82,
+    "momentum": 30.73,
     "health": 45.26,
     "profitability": 48.22,
-    "technical": 28.34,
-    "risk": 52.03,
+    "technical": 31.23,
+    "risk": 52.72,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.62,
     "eps_diluted": 1.6,
     "shares_outstanding": 3060189494.0,
-    "market_cap": 224679107046.10568,
-    "pe_ratio_ttm": 10.355307510075388,
+    "market_cap": 227586301073.8415,
+    "pe_ratio_ttm": 10.489298109132207,
     "goodwill": 24965000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 97.85898541278489,
+        "value": 98.58819435995218,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 117.19934781459291,
+        "value": 118.62097762577294,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 88.11193613590649,
-    "max": 117.19934781459291,
+    "median": 88.47654060949014,
+    "max": 118.62097762577294,
     "low": 52.12448512241471,
-    "high": 117.19934781459291,
-    "mos_pct": 16.67417447767791,
+    "high": 118.62097762577294,
+    "mos_pct": 15.943817158460444,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -102,7 +102,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 18,
+    "filing_lag_days": 19,
     "latest_period_end": "2026-04-17",
     "latest_filed_date": "2026-04-29"
   },
@@ -123,22 +123,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.33,
+      "Value": 53.11,
       "Growth": 51.5,
-      "Momentum": 54.63,
+      "Momentum": 54.43,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 52.49,
-      "Risk": 55.11
+      "Technical": 51.89,
+      "Risk": 55.48
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 36.2130041829234,
-  "price_change_1d_pct": -0.5014,
+  "loss_chance_pct": 36.45182147572521,
+  "price_change_1d_pct": 1.2939,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 45.4,
+  "composite_score_adjusted": 45.44,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -153,6 +153,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

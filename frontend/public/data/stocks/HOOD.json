@@ -3,19 +3,19 @@
   "name": "Robinhood Markets",
   "sector": "Financials",
   "industry": "Investment Banking & Brokerage",
-  "market_cap": 70586094247.72462,
-  "current_price": 77.14,
-  "rank": 214,
-  "composite_score": 52.09,
+  "market_cap": 70595246590.68845,
+  "current_price": 77.15,
+  "rank": 206,
+  "composite_score": 52.37,
   "pillar_scores": {
     "quality": 62.0,
-    "value": 31.56,
+    "value": 31.78,
     "growth": 70.83,
-    "momentum": 45.87,
+    "momentum": 47.06,
     "health": 56.18,
     "profitability": 59.11,
-    "technical": 54.88,
-    "risk": 34.59,
+    "technical": 56.13,
+    "risk": 35.16,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.39,
     "eps_diluted": 0.38,
     "shares_outstanding": 915038823.0,
-    "market_cap": 70586094247.72462,
-    "pe_ratio_ttm": 37.20932748957545,
+    "market_cap": 70595246590.68845,
+    "pe_ratio_ttm": 37.21415213004135,
     "goodwill": 401000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 28.08760921041085,
+        "value": 28.780516377983872,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 18.61824244549197,
+        "value": 18.960043780516724,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 16.305605475171134,
-    "max": 28.08760921041085,
+    "median": 16.47650614268351,
+    "max": 28.780516377983872,
     "low": 8.728367124991047,
-    "high": 28.08760921041085,
-    "mos_pct": -373.0888374989266,
+    "high": 28.780516377983872,
+    "mos_pct": -368.24248331396285,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_rim_estimate"
@@ -103,7 +103,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 18,
+    "filing_lag_days": 19,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-29"
   },
@@ -126,22 +126,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.33,
+      "Value": 53.11,
       "Growth": 51.5,
-      "Momentum": 54.63,
+      "Momentum": 54.43,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 52.49,
-      "Risk": 55.11
+      "Technical": 51.89,
+      "Risk": 55.48
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 60.95460380699425,
-  "price_change_1d_pct": -4.4114,
+  "loss_chance_pct": 60.81319444444445,
+  "price_change_1d_pct": 0.013,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 51.59,
+  "composite_score_adjusted": 51.87,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -156,6 +156,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

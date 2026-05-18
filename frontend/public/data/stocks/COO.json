@@ -3,19 +3,19 @@
   "name": "The Cooper Companies",
   "sector": "Health Care",
   "industry": "Health Care Supplies",
-  "market_cap": 11630769383.868378,
-  "current_price": 59.61,
+  "market_cap": 11890271146.17115,
+  "current_price": 60.94,
   "rank": 476,
-  "composite_score": 35.87,
+  "composite_score": 35.61,
   "pillar_scores": {
     "quality": 21.19,
-    "value": 56.21,
+    "value": 54.52,
     "growth": 29.24,
-    "momentum": 19.82,
+    "momentum": 17.13,
     "health": 58.37,
     "profitability": 38.14,
-    "technical": 42.33,
-    "risk": 24.63,
+    "technical": 51.37,
+    "risk": 24.83,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.67,
     "eps_diluted": 0.66,
     "shares_outstanding": 195114398.0,
-    "market_cap": 11630769383.868378,
-    "pe_ratio_ttm": 28.97550917754952,
+    "market_cap": 11890271146.17115,
+    "pe_ratio_ttm": 29.622000862409443,
     "goodwill": 3905400000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 48.04535272080607,
+        "value": 49.22328216362505,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 124.63918644526308,
+        "value": 126.07863502707092,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 82.83151115410413,
+        "value": 81.48881512722805,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 48.04535272080607,
-    "max": 124.63918644526308,
+    "median": 49.22328216362505,
+    "max": 126.07863502707092,
     "low": 16.571954196953374,
-    "high": 124.63918644526308,
-    "mos_pct": -24.07027367818118,
+    "high": 126.07863502707092,
+    "mos_pct": -23.803200331371517,
     "valuation_warnings": [
       "goodwill_heavy",
       "value_trap_risk"
@@ -90,7 +90,7 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 72,
+    "filing_lag_days": 73,
     "latest_period_end": "2026-03-02",
     "latest_filed_date": "2026-03-06"
   },
@@ -112,22 +112,22 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 52.97,
-      "Value": 51.41,
+      "Value": 51.13,
       "Growth": 49.58,
-      "Momentum": 39.59,
+      "Momentum": 38.65,
       "Health": 59.88,
       "Profitability": 51.13,
-      "Technical": 55.03,
-      "Risk": 40.27
+      "Technical": 55.23,
+      "Risk": 40.7
     }
   },
   "beneish_m_score": -2.530867255679543,
   "dechow_f_score": 0.5162777202157934,
   "recommendation": "neutral",
-  "loss_chance_pct": 58.49094901850664,
-  "price_change_1d_pct": -1.2753,
+  "loss_chance_pct": 58.526522827169174,
+  "price_change_1d_pct": 2.2312,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 35.87,
+  "composite_score_adjusted": 35.61,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -142,6 +142,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

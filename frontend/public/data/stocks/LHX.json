@@ -3,19 +3,19 @@
   "name": "L3Harris",
   "sector": "Industrials",
   "industry": "Aerospace & Defense",
-  "market_cap": 56520027912.81995,
-  "current_price": 303.39,
-  "rank": 308,
-  "composite_score": 47.74,
+  "market_cap": 57967537635.39249,
+  "current_price": 311.16,
+  "rank": 312,
+  "composite_score": 47.45,
   "pillar_scores": {
     "quality": 22.15,
     "value": 71.31,
     "growth": 46.52,
-    "momentum": 70.07,
+    "momentum": 64.49,
     "health": 45.58,
     "profitability": 25.95,
-    "technical": 43.18,
-    "risk": 71.88,
+    "technical": 50.85,
+    "risk": 72.54,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.74,
     "eps_diluted": 2.72,
     "shares_outstanding": 186294951.0,
-    "market_cap": 56520027912.81995,
-    "pe_ratio_ttm": 32.632810573221676,
+    "market_cap": 57967537635.39249,
+    "pe_ratio_ttm": 33.46855521673931,
     "goodwill": 19999000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 281.96460170108924,
+        "value": 289.8216668508953,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 709.0813522356913,
+        "value": 722.1850602808429,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 446.70677046167947,
+        "value": 453.63936616912946,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 364.3356860813843,
-    "max": 709.0813522356913,
+    "median": 371.7305165100124,
+    "max": 722.1850602808429,
     "low": 112.1415701972421,
-    "high": 709.0813522356913,
-    "mos_pct": 16.727889625210345,
+    "high": 722.1850602808429,
+    "mos_pct": 16.294199738178236,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -93,7 +93,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 17,
+    "filing_lag_days": 18,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-30"
   },
@@ -115,22 +115,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.37,
+      "Value": 48.31,
       "Growth": 49.37,
-      "Momentum": 55.18,
+      "Momentum": 51.99,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 48.9,
-      "Risk": 55.18
+      "Technical": 50.85,
+      "Risk": 54.71
     }
   },
   "beneish_m_score": -1.7826266816931025,
   "dechow_f_score": 0.7506819520647404,
   "recommendation": "neutral",
-  "loss_chance_pct": 40.273437859579225,
-  "price_change_1d_pct": -1.3751,
+  "loss_chance_pct": 40.56965163079744,
+  "price_change_1d_pct": 2.5611,
   "manipulation_index": 3.0,
-  "composite_score_adjusted": 47.44,
+  "composite_score_adjusted": 47.15,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -145,6 +145,8 @@
     "beneish_high": true,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

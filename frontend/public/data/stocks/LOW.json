@@ -3,19 +3,19 @@
   "name": "Lowe's",
   "sector": "Consumer Discretionary",
   "industry": "Home Improvement Retail",
-  "market_cap": 122329053136.67323,
-  "current_price": 218.42,
-  "rank": 396,
-  "composite_score": 43.09,
+  "market_cap": 122105031183.42912,
+  "current_price": 218.02,
+  "rank": 391,
+  "composite_score": 43.37,
   "pillar_scores": {
     "quality": 42.71,
-    "value": 53.65,
+    "value": 54.34,
     "growth": 37.76,
-    "momentum": 34.11,
+    "momentum": 37.65,
     "health": 34.38,
     "profitability": 53.12,
-    "technical": 35.36,
-    "risk": 47.14,
+    "technical": 29.63,
+    "risk": 46.28,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 11.87,
     "eps_diluted": 11.85,
     "shares_outstanding": 560063429.0,
-    "market_cap": 122329053136.67323,
-    "pe_ratio_ttm": 18.381525640371635,
+    "market_cap": 122105031183.42912,
+    "pe_ratio_ttm": 18.3478634385318,
     "goodwill": 3945000000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 256.2784846845379,
+        "value": 256.8605266785548,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 207.0732777197498,
+        "value": 210.66399116889667,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 207.0732777197498,
-    "max": 256.2784846845379,
+    "median": 210.66399116889667,
+    "max": 256.8605266785548,
     "low": 106.2665550358951,
-    "high": 256.2784846845379,
-    "mos_pct": -5.479567703830919,
+    "high": 256.8605266785548,
+    "mos_pct": -3.49182271860913,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -93,7 +93,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 55,
+    "filing_lag_days": 56,
     "latest_period_end": "2026-03-19",
     "latest_filed_date": "2026-03-23"
   },
@@ -116,22 +116,22 @@
     "label": "Consumer Discretionary median (n=48)",
     "values": {
       "Quality": 46.35,
-      "Value": 49.65,
+      "Value": 49.83,
       "Growth": 51.69,
-      "Momentum": 40.46,
+      "Momentum": 41.36,
       "Health": 43.72,
       "Profitability": 52.6,
-      "Technical": 33.17,
-      "Risk": 40.11
+      "Technical": 34.46,
+      "Risk": 40.32
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 59.37096591496632,
-  "price_change_1d_pct": -2.321,
+  "loss_chance_pct": 58.53550168408292,
+  "price_change_1d_pct": -0.1831,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 43.09,
+  "composite_score_adjusted": 43.37,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -146,6 +146,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

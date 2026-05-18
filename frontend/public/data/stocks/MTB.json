@@ -3,19 +3,19 @@
   "name": "M&T Bank",
   "sector": "Financials",
   "industry": "Regional Banks",
-  "market_cap": 30006591900.170288,
-  "current_price": 204.9,
-  "rank": 350,
-  "composite_score": 45.93,
+  "market_cap": 30207223151.8808,
+  "current_price": 206.27,
+  "rank": 348,
+  "composite_score": 45.96,
   "pillar_scores": {
     "quality": 38.0,
-    "value": 51.11,
+    "value": 51.78,
     "growth": 35.83,
-    "momentum": 56.42,
+    "momentum": 54.73,
     "health": 49.08,
     "profitability": 55.33,
-    "technical": 35.36,
-    "risk": 61.55,
+    "technical": 37.0,
+    "risk": 61.85,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 4.16,
     "eps_diluted": 4.13,
     "shares_outstanding": 146445060.0,
-    "market_cap": 30006591900.170288,
-    "pe_ratio_ttm": 10.237663561982357,
+    "market_cap": 30207223151.8808,
+    "pe_ratio_ttm": 10.306115029642033,
     "goodwill": 8465000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 276.24245928955537,
+        "value": 278.30091587432105,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 384.00527980844,
+        "value": 388.6632694952924,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 276.24245928955537,
-    "max": 384.00527980844,
+    "median": 278.30091587432105,
+    "max": 388.6632694952924,
     "low": 217.44270256052087,
-    "high": 384.00527980844,
-    "mos_pct": 25.82603180428912,
+    "high": 388.6632694952924,
+    "mos_pct": 25.88238395679187,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -103,7 +103,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 12,
+    "filing_lag_days": 13,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-05"
   },
@@ -127,22 +127,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.33,
+      "Value": 53.11,
       "Growth": 51.5,
-      "Momentum": 54.63,
+      "Momentum": 54.43,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 52.49,
-      "Risk": 55.11
+      "Technical": 51.89,
+      "Risk": 55.48
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 49.99833906770199,
-  "price_change_1d_pct": -0.4083,
+  "loss_chance_pct": 49.962754260541175,
+  "price_change_1d_pct": 0.6686,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 45.43,
+  "composite_score_adjusted": 45.46,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -157,6 +157,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

@@ -3,19 +3,19 @@
   "name": "Chubb Limited",
   "sector": "Financials",
   "industry": "Property & Casualty Insurance",
-  "market_cap": 125724850992.58978,
-  "current_price": 324.15,
-  "rank": 108,
-  "composite_score": 57.53,
+  "market_cap": 128121823606.89752,
+  "current_price": 330.33,
+  "rank": 121,
+  "composite_score": 57.0,
   "pillar_scores": {
     "quality": 50.0,
-    "value": 57.33,
+    "value": 57.11,
     "growth": 67.0,
-    "momentum": 65.29,
+    "momentum": 64.19,
     "health": 55.66,
     "profitability": 51.56,
-    "technical": 48.13,
-    "risk": 84.06,
+    "technical": 41.73,
+    "risk": 83.23,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 5.94,
     "eps_diluted": 5.88,
     "shares_outstanding": 387860106.0,
-    "market_cap": 125724850992.58978,
-    "pe_ratio_ttm": 10.81411069951744,
+    "market_cap": 128121823606.89752,
+    "pe_ratio_ttm": 11.0202841567949,
     "goodwill": 20370000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 413.71812370298835,
+        "value": 416.80099806692044,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 382.4714564818718,
+        "value": 387.11084086923415,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 317.78083656563786,
-    "max": 413.71812370298835,
+    "median": 320.10052875931905,
+    "max": 416.80099806692044,
     "low": 148.99680513155695,
-    "high": 413.71812370298835,
-    "mos_pct": -2.004260986810942,
+    "high": 416.80099806692044,
+    "mos_pct": -3.195701629295971,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -101,7 +101,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 19,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-04-21",
     "latest_filed_date": "2026-04-28"
   },
@@ -120,22 +120,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.33,
+      "Value": 53.11,
       "Growth": 51.5,
-      "Momentum": 54.63,
+      "Momentum": 54.43,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 52.49,
-      "Risk": 55.11
+      "Technical": 51.89,
+      "Risk": 55.48
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 36.93495194742013,
-  "price_change_1d_pct": 1.2684,
+  "loss_chance_pct": 37.62098007667237,
+  "price_change_1d_pct": 1.9065,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 57.53,
+  "composite_score_adjusted": 57.0,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -150,6 +150,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

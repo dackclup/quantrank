@@ -3,19 +3,19 @@
   "name": "Principal Financial Group",
   "sector": "Financials",
   "industry": "Life & Health Insurance",
-  "market_cap": 21715724699.833008,
-  "current_price": 100.53,
-  "rank": 228,
-  "composite_score": 51.59,
+  "market_cap": 22119668451.20874,
+  "current_price": 102.4,
+  "rank": 234,
+  "composite_score": 51.44,
   "pillar_scores": {
     "quality": 46.67,
     "value": 57.33,
     "growth": 23.33,
-    "momentum": 76.64,
+    "momentum": 77.17,
     "health": 53.9,
     "profitability": 36.89,
-    "technical": 60.71,
-    "risk": 70.22,
+    "technical": 55.48,
+    "risk": 71.25,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.96,
     "eps_diluted": 1.93,
     "shares_outstanding": 216012384.0,
-    "market_cap": 21715724699.833008,
-    "pe_ratio_ttm": 13.525832886847093,
+    "market_cap": 22119668451.20874,
+    "pe_ratio_ttm": 13.777432856561035,
     "goodwill": 1588000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 102.58432366468982,
+        "value": 103.34874408392731,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 109.96500684630152,
+        "value": 111.29888399523094,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 102.58432366468982,
-    "max": 109.96500684630152,
+    "median": 103.34874408392731,
+    "max": 111.29888399523094,
     "low": 67.09556788089799,
-    "high": 109.96500684630152,
-    "mos_pct": 2.002571944723028,
+    "high": 111.29888399523094,
+    "mos_pct": 0.9180010521249827,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -106,7 +106,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 18,
+    "filing_lag_days": 19,
     "latest_period_end": "2026-04-22",
     "latest_filed_date": "2026-04-29"
   },
@@ -127,22 +127,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.33,
+      "Value": 53.11,
       "Growth": 51.5,
-      "Momentum": 54.63,
+      "Momentum": 54.43,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 52.49,
-      "Risk": 55.11
+      "Technical": 51.89,
+      "Risk": 55.48
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 40.501600926031315,
-  "price_change_1d_pct": -0.2382,
+  "loss_chance_pct": 40.959948248400785,
+  "price_change_1d_pct": 1.8601,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 51.59,
+  "composite_score_adjusted": 51.44,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -157,6 +157,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

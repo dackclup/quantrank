@@ -3,19 +3,19 @@
   "name": "Las Vegas Sands",
   "sector": "Consumer Discretionary",
   "industry": "Casinos & Gaming",
-  "market_cap": 33900525445.88957,
-  "current_price": 51.16,
-  "rank": 120,
-  "composite_score": 57.11,
+  "market_cap": 33257766431.756115,
+  "current_price": 50.19,
+  "rank": 133,
+  "composite_score": 56.13,
   "pillar_scores": {
     "quality": 74.48,
-    "value": 56.94,
+    "value": 57.29,
     "growth": 74.48,
-    "momentum": 43.08,
+    "momentum": 41.33,
     "health": 19.82,
     "profitability": 56.6,
-    "technical": 44.32,
-    "risk": 37.05,
+    "technical": 27.89,
+    "risk": 36.59,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.85,
     "eps_diluted": 0.85,
     "shares_outstanding": 662637325.0,
-    "market_cap": 33900525445.88957,
-    "pe_ratio_ttm": 16.15079821147669,
+    "market_cap": 33257766431.756115,
+    "pe_ratio_ttm": 15.844576670679427,
     "goodwill": 103000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 68.31842507257556,
+        "value": 68.4735851610484,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 9.698111029098566,
+        "value": 9.925325089326732,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 80.70236473147341,
+        "value": 80.9005953507693,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 10.355499360015415,
-    "max": 80.70236473147341,
+    "max": 80.9005953507693,
     "low": 8.3045433639879,
-    "high": 80.70236473147341,
-    "mos_pct": -394.0370142356511,
+    "high": 80.9005953507693,
+    "mos_pct": -384.66999882692545,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_multiples_pb_estimate"
@@ -94,7 +94,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 23,
+    "filing_lag_days": 24,
     "latest_period_end": "2026-04-22",
     "latest_filed_date": "2026-04-24"
   },
@@ -116,22 +116,22 @@
     "label": "Consumer Discretionary median (n=48)",
     "values": {
       "Quality": 46.35,
-      "Value": 49.65,
+      "Value": 49.83,
       "Growth": 51.69,
-      "Momentum": 40.46,
+      "Momentum": 41.36,
       "Health": 43.72,
       "Profitability": 52.6,
-      "Technical": 33.17,
-      "Risk": 40.11
+      "Technical": 34.46,
+      "Risk": 40.32
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.18324325543025138,
   "recommendation": "cautious",
-  "loss_chance_pct": 58.44307319333777,
-  "price_change_1d_pct": 1.0069,
+  "loss_chance_pct": 58.93252164951306,
+  "price_change_1d_pct": -1.896,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 57.11,
+  "composite_score_adjusted": 56.13,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -146,6 +146,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

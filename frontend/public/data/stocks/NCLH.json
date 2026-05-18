@@ -3,19 +3,19 @@
   "name": "Norwegian Cruise Line Holdings",
   "sector": "Consumer Discretionary",
   "industry": "Hotels, Resorts & Cruise Lines",
-  "market_cap": 7125389582.9639435,
-  "current_price": 15.52,
-  "rank": 225,
-  "composite_score": 51.64,
+  "market_cap": 7006020841.481972,
+  "current_price": 15.26,
+  "rank": 269,
+  "composite_score": 49.85,
   "pillar_scores": {
     "quality": 51.04,
-    "value": 80.9,
+    "value": 81.25,
     "growth": 57.29,
-    "momentum": 45.17,
+    "momentum": 32.22,
     "health": 27.93,
     "profitability": 30.21,
-    "technical": 25.3,
-    "risk": 17.23,
+    "technical": 20.17,
+    "risk": 17.36,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.23,
     "eps_diluted": 0.23,
     "shares_outstanding": 459110140.0,
-    "market_cap": 7125389582.9639435,
-    "pe_ratio_ttm": 12.540129887459928,
+    "market_cap": 7006020841.481972,
+    "pe_ratio_ttm": 12.33005021318282,
     "goodwill": 135764000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 26.692607324183797,
+        "value": 26.75322973035887,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 31.820513156520967,
+        "value": 32.51848788618544,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 76.17806517227777,
+        "value": 76.3523975836178,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,12 +75,14 @@
         "tier_used": null
       }
     },
-    "median": 26.692607324183797,
-    "max": 76.17806517227777,
+    "median": 26.75322973035887,
+    "max": 32.51848788618544,
     "low": 9.687202915885743,
-    "high": 76.17806517227777,
-    "mos_pct": 41.85655874949923,
-    "valuation_warnings": []
+    "high": 76.3523975836178,
+    "mos_pct": 42.96015702520887,
+    "valuation_warnings": [
+      "extreme_multiples_ev_ebitda_estimate"
+    ]
   },
   "top5_factors": [],
   "score_history": [],
@@ -92,7 +94,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 13,
+    "filing_lag_days": 14,
     "latest_period_end": "2026-04-22",
     "latest_filed_date": "2026-05-04"
   },
@@ -101,6 +103,7 @@
     "net_issuance_top_decile"
   ],
   "valuation_warnings": [
+    "extreme_multiples_ev_ebitda_estimate",
     "accruals_momentum_high"
   ],
   "has_history": true,
@@ -116,22 +119,22 @@
     "label": "Consumer Discretionary median (n=48)",
     "values": {
       "Quality": 46.35,
-      "Value": 49.65,
+      "Value": 49.83,
       "Growth": 51.69,
-      "Momentum": 40.46,
+      "Momentum": 41.36,
       "Health": 43.72,
       "Profitability": 52.6,
-      "Technical": 33.17,
-      "Risk": 40.11
+      "Technical": 34.46,
+      "Risk": 40.32
     }
   },
   "beneish_m_score": -2.650454581379706,
   "dechow_f_score": 0.3664667088872651,
   "recommendation": "cautious",
-  "loss_chance_pct": 39.53062338687847,
-  "price_change_1d_pct": -2.5738,
+  "loss_chance_pct": 41.04031145053945,
+  "price_change_1d_pct": -1.6753,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 51.14,
+  "composite_score_adjusted": 49.35,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -146,6 +149,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

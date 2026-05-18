@@ -3,19 +3,19 @@
   "name": "Ford Motor Company",
   "sector": "Consumer Discretionary",
   "industry": "Automobile Manufacturers",
-  "market_cap": 54551398447.03674,
-  "current_price": 13.4,
-  "rank": 401,
-  "composite_score": 42.51,
+  "market_cap": 53045128912.92572,
+  "current_price": 13.03,
+  "rank": 403,
+  "composite_score": 42.47,
   "pillar_scores": {
     "quality": 19.79,
-    "value": 74.83,
+    "value": 76.22,
     "growth": 38.02,
-    "momentum": 46.41,
+    "momentum": 44.47,
     "health": 40.54,
     "profitability": 9.72,
-    "technical": 67.98,
-    "risk": 42.99,
+    "technical": 66.73,
+    "risk": 41.97,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.64,
     "eps_diluted": 0.63,
     "shares_outstanding": 4071000000.0,
-    "market_cap": 54551398447.03674,
-    "pe_ratio_ttm": 29.858455636035437,
+    "market_cap": 53045128912.92572,
+    "pe_ratio_ttm": 29.03400597313942,
     "goodwill": 483000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 9.343540669158148,
+        "value": 9.384235898948571,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 55.27706088679256,
+        "value": 56.48954892679763,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 32.62282723233661,
+        "value": 32.685284442245376,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 20.98318395074738,
-    "max": 55.27706088679256,
+    "median": 21.034760170596975,
+    "max": 56.48954892679763,
     "low": 5.70459226249834,
-    "high": 55.27706088679256,
-    "mos_pct": 36.139340674021064,
+    "high": 56.48954892679763,
+    "mos_pct": 38.054916589042364,
     "valuation_warnings": [
       "value_trap_risk"
     ]
@@ -95,7 +95,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 17,
+    "filing_lag_days": 18,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
@@ -118,22 +118,22 @@
     "label": "Consumer Discretionary median (n=48)",
     "values": {
       "Quality": 46.35,
-      "Value": 49.65,
+      "Value": 49.83,
       "Growth": 51.69,
-      "Momentum": 40.46,
+      "Momentum": 41.36,
       "Health": 43.72,
       "Profitability": 52.6,
-      "Technical": 33.17,
-      "Risk": 40.11
+      "Technical": 34.46,
+      "Risk": 40.32
     }
   },
   "beneish_m_score": -2.774101184027201,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 45.09839488538523,
-  "price_change_1d_pct": -7.4586,
+  "loss_chance_pct": 44.44350606413177,
+  "price_change_1d_pct": -2.7612,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 42.51,
+  "composite_score_adjusted": 42.47,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -148,6 +148,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

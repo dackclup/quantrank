@@ -3,19 +3,19 @@
   "name": "Entergy",
   "sector": "Utilities",
   "industry": "Electric Utilities",
-  "market_cap": 49917430033.22296,
-  "current_price": 109.03,
-  "rank": 441,
-  "composite_score": 39.33,
+  "market_cap": 50169239068.91556,
+  "current_price": 109.58,
+  "rank": 444,
+  "composite_score": 39.49,
   "pillar_scores": {
     "quality": 46.77,
     "value": 18.82,
     "growth": 23.39,
-    "momentum": 79.43,
+    "momentum": 80.43,
     "health": 19.2,
     "profitability": 43.01,
-    "technical": 29.98,
-    "risk": 87.35,
+    "technical": 30.88,
+    "risk": 87.15,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.84,
     "eps_diluted": 0.83,
     "shares_outstanding": 457832070.0,
-    "market_cap": 49917430033.22296,
-    "pe_ratio_ttm": 27.70556989063338,
+    "market_cap": 50169239068.91556,
+    "pe_ratio_ttm": 27.845330948701296,
     "goodwill": 367582000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 73.07787694890885,
+        "value": 74.13053213944332,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 78.5033915364251,
+        "value": 79.75625550267941,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 71.33580403335476,
+        "value": 72.65741234587554,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 71.33580403335476,
-    "max": 78.5033915364251,
+    "median": 72.65741234587554,
+    "max": 79.75625550267941,
     "low": 39.096933577378316,
-    "high": 78.5033915364251,
-    "mos_pct": -52.840498900548305,
+    "high": 79.75625550267941,
+    "mos_pct": -50.817374708328835,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -95,7 +95,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 17,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
@@ -114,22 +114,22 @@
     "label": "Utilities median (n=31)",
     "values": {
       "Quality": 51.61,
-      "Value": 47.85,
+      "Value": 47.31,
       "Growth": 54.03,
-      "Momentum": 59.91,
+      "Momentum": 60.28,
       "Health": 17.85,
       "Profitability": 52.15,
-      "Technical": 32.82,
-      "Risk": 71.25
+      "Technical": 33.64,
+      "Risk": 70.32
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 63.82800595649337,
-  "price_change_1d_pct": -3.4278,
+  "loss_chance_pct": 63.03898619439583,
+  "price_change_1d_pct": 0.5045,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 39.33,
+  "composite_score_adjusted": 39.49,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,6 +144,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

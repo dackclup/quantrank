@@ -3,19 +3,19 @@
   "name": "Kenvue",
   "sector": "Consumer Staples",
   "industry": "Personal Care Products",
-  "market_cap": 32851349481.36029,
-  "current_price": 17.11,
-  "rank": 407,
-  "composite_score": 42.03,
+  "market_cap": 32985749502.180145,
+  "current_price": 17.18,
+  "rank": 400,
+  "composite_score": 42.57,
   "pillar_scores": {
     "quality": 45.83,
-    "value": 48.61,
+    "value": 50.0,
     "growth": 42.01,
-    "momentum": 27.74,
+    "momentum": 29.03,
     "health": 24.94,
     "profitability": 57.41,
-    "technical": 48.51,
-    "risk": 33.6,
+    "technical": 50.35,
+    "risk": 32.87,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.25,
     "eps_diluted": 0.25,
     "shares_outstanding": 1920008668.0,
-    "market_cap": 32851349481.36029,
-    "pe_ratio_ttm": 20.25360633869315,
+    "market_cap": 32985749502.180145,
+    "pe_ratio_ttm": 20.3364670173737,
     "goodwill": 9376000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 20.46203108698996,
+        "value": 20.508249244349585,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 18.811939790561816,
+        "value": 19.099830355221762,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 17.663518191677344,
+        "value": 17.882059807544547,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 18.23772899111958,
-    "max": 20.46203108698996,
+    "median": 18.490945081383153,
+    "max": 20.508249244349585,
     "low": 7.322695743472662,
-    "high": 20.46203108698996,
-    "mos_pct": 6.1834912741445995,
+    "high": 20.508249244349585,
+    "mos_pct": 7.089658048507442,
     "valuation_warnings": []
   },
   "top5_factors": [],
@@ -87,7 +87,7 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 10,
+    "filing_lag_days": 11,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-07"
   },
@@ -108,22 +108,22 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 49.65,
-      "Value": 52.31,
+      "Value": 52.08,
       "Growth": 48.44,
-      "Momentum": 39.07,
+      "Momentum": 39.94,
       "Health": 39.29,
       "Profitability": 53.94,
-      "Technical": 54.13,
-      "Risk": 51.39
+      "Technical": 53.57,
+      "Risk": 51.71
     }
   },
   "beneish_m_score": -2.4094358390425494,
   "dechow_f_score": 0.5698636747867754,
   "recommendation": "neutral",
-  "loss_chance_pct": 44.82176351037225,
-  "price_change_1d_pct": -0.4654,
+  "loss_chance_pct": 44.235058326596246,
+  "price_change_1d_pct": 0.4091,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 42.03,
+  "composite_score_adjusted": 42.57,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -138,6 +138,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

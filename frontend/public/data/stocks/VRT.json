@@ -3,19 +3,19 @@
   "name": "Vertiv",
   "sector": "Industrials",
   "industry": "Electrical Components & Equipment",
-  "market_cap": 142481325144.80566,
-  "current_price": 370.94,
-  "rank": 96,
-  "composite_score": 58.45,
+  "market_cap": 130493292279.62549,
+  "current_price": 339.73,
+  "rank": 108,
+  "composite_score": 57.72,
   "pillar_scores": {
     "quality": 78.16,
     "value": 1.9,
     "growth": 71.84,
-    "momentum": 96.12,
+    "momentum": 88.1,
     "health": 64.5,
     "profitability": 60.55,
-    "technical": 68.03,
-    "risk": 50.63,
+    "technical": 73.71,
+    "risk": 50.4,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.02,
     "eps_diluted": 0.99,
     "shares_outstanding": 384108816.0,
-    "market_cap": 142481325144.80566,
-    "pe_ratio_ttm": 91.42795504671821,
+    "market_cap": 130493292279.62549,
+    "pe_ratio_ttm": 83.735428824195,
     "goodwill": 2023700000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 111.7023210127025,
+        "value": 113.46215906528538,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 72.78321481593625,
+        "value": 70.70423573272785,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 99.84719562792864,
+        "value": 100.01787870441997,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,15 +75,14 @@
         "tier_used": null
       }
     },
-    "median": 51.55447748298713,
-    "max": 111.7023210127025,
+    "median": 50.514987941382934,
+    "max": 113.46215906528538,
     "low": 2.104139838125133,
-    "high": 111.7023210127025,
-    "mos_pct": -619.5107400008383,
+    "high": 113.46215906528538,
+    "mos_pct": -572.5330933079649,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
-      "extreme_multiples_pb_estimate",
       "extreme_rim_estimate",
       "extreme_dcf_estimate"
     ]
@@ -96,7 +95,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 25,
+    "filing_lag_days": 26,
     "latest_period_end": "2026-04-20",
     "latest_filed_date": "2026-04-22"
   },
@@ -106,7 +105,6 @@
   "valuation_warnings": [
     "goodwill_heavy",
     "extreme_graham_estimate",
-    "extreme_multiples_pb_estimate",
     "extreme_rim_estimate",
     "extreme_dcf_estimate"
   ],
@@ -123,22 +121,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.37,
+      "Value": 48.31,
       "Growth": 49.37,
-      "Momentum": 55.18,
+      "Momentum": 51.99,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 48.9,
-      "Risk": 55.18
+      "Technical": 50.85,
+      "Risk": 54.71
     }
   },
   "beneish_m_score": -2.533000075251267,
   "dechow_f_score": 0.5421279360611256,
   "recommendation": "cautious",
-  "loss_chance_pct": 63.77456366517054,
-  "price_change_1d_pct": -1.4061,
+  "loss_chance_pct": 63.138109481903605,
+  "price_change_1d_pct": -8.4138,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 58.45,
+  "composite_score_adjusted": 57.72,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -153,6 +151,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }

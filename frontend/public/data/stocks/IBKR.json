@@ -3,19 +3,19 @@
   "name": "Interactive Brokers",
   "sector": "Financials",
   "industry": "Investment Banking & Brokerage",
-  "market_cap": 39008128317.0,
-  "current_price": 87.0,
+  "market_cap": 38613564572.40304,
+  "current_price": 86.12,
   "rank": 46,
-  "composite_score": 62.66,
+  "composite_score": 62.82,
   "pillar_scores": {
     "quality": 73.33,
-    "value": 43.56,
+    "value": 44.0,
     "growth": 60.0,
-    "momentum": 85.01,
+    "momentum": 86.45,
     "health": 57.21,
     "profitability": 56.44,
-    "technical": 62.05,
-    "risk": 59.16,
+    "technical": 60.01,
+    "risk": 58.67,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.6,
     "eps_diluted": 0.59,
     "shares_outstanding": 448369291.0,
-    "market_cap": 39008128317.0,
-    "pe_ratio_ttm": 8.546916809158633,
+    "market_cap": 38613564572.40304,
+    "pe_ratio_ttm": 8.46046550666149,
     "goodwill": null
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 140.49443282552775,
+        "value": 141.54134534982398,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 24.77061290425667,
+        "value": 25.225361980859567,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 30.903010675837272,
-    "max": 140.49443282552775,
+    "median": 31.13038521413872,
+    "max": 141.54134534982398,
     "low": 17.217185754316187,
-    "high": 140.49443282552775,
-    "mos_pct": -181.52596817378816,
+    "high": 141.54134534982398,
+    "mos_pct": -176.64290741724668,
     "valuation_warnings": [
       "extreme_rim_estimate"
     ]
@@ -105,7 +105,7 @@
       "goodwill"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 10,
+    "filing_lag_days": 11,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
@@ -128,22 +128,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.33,
+      "Value": 53.11,
       "Growth": 51.5,
-      "Momentum": 54.63,
+      "Momentum": 54.43,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 52.49,
-      "Risk": 55.11
+      "Technical": 51.89,
+      "Risk": 55.48
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
-  "recommendation": "cautious",
-  "loss_chance_pct": 54.668489929172196,
-  "price_change_1d_pct": -1.4499,
+  "recommendation": "neutral",
+  "loss_chance_pct": 54.58860945108455,
+  "price_change_1d_pct": -1.0115,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 62.16,
+  "composite_score_adjusted": 62.32,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -158,6 +158,8 @@
     "beneish_high": false,
     "dechow_high": false
   },
+  "osap_signals": null,
+  "osap_blended_score": null,
   "entered_top5": false,
   "exited_top5": false
 }
