@@ -77,6 +77,28 @@ class StockSummary(BaseModel):
     exited_top5: bool = False
 
 
+class OsapGateDiagnostic(BaseModel):
+    """Per-signal PBO/DSR gate decision surfaced into
+    ``Metadata.osap_gate_diagnostics``. Phase 4h.2 Part 1 observability
+    addition (issue #116) — lets future debugging answer "why did this
+    signal reject?" without a local re-run of the PBO/DSR cohort.
+
+    All 4 fields default to ``None`` so legacy 0.9.0 JSONs without this
+    field deserialize cleanly. ``rejection_reason`` taxonomy mirrors
+    ``compute/validation/osap_validation.py::GateResult.rejection_reason``:
+    one of ``"high_pbo"`` / ``"low_dsr"`` / ``"insufficient_data"`` /
+    ``"gate_failed"`` for rejected signals; ``None`` for accepted
+    signals.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    pbo: float | None = None
+    dsr: float | None = None
+    sharpe: float | None = None
+    rejection_reason: str | None = None
+
+
 class Metadata(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -96,6 +118,15 @@ class Metadata(BaseModel):
     osap_excluded_signals: list[str] | None = None
     osap_signals_ic_12m: dict[str, float] | None = None
     osap_signals_coverage_pct: dict[str, float] | None = None
+    # Phase 4h.2 Part 1 — observability for the manifest-vs-dataset gap
+    # and per-signal gate decisions surfaced by issue #116.
+    # ``osap_signals_missing_from_dataset`` lists ``OSAP_SIGNALS_100``
+    # entries that the OSAP fetch returned no rows for (silent drop in
+    # 0.9.0-phase4h; visible here). ``osap_gate_diagnostics`` carries
+    # the per-signal PBO/DSR/Sharpe/rejection_reason for every signal
+    # that reached the gate.
+    osap_signals_missing_from_dataset: list[str] | None = None
+    osap_gate_diagnostics: dict[str, OsapGateDiagnostic] | None = None
 
 
 class RawMetrics(BaseModel):

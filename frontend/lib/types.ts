@@ -82,6 +82,28 @@ export type Metadata = {
   osap_excluded_signals: string[] | null;
   osap_signals_ic_12m: Record<string, number> | null;
   osap_signals_coverage_pct: Record<string, number> | null;
+  // Phase 4h.2 Part 1 — observability for the manifest-vs-dataset gap
+  // and per-signal gate decisions surfaced by issue #116.
+  // `osap_signals_missing_from_dataset` lists OSAP_SIGNALS_100 entries
+  // that the OSAP fetch returned no rows for (silent drops in
+  // 0.9.0-phase4h; visible here). `osap_gate_diagnostics` carries the
+  // per-signal PBO/DSR/Sharpe/rejection_reason for every signal that
+  // reached the gate. Both null on legacy outputs from before
+  // 0.9.1-phase4h.2.
+  osap_signals_missing_from_dataset: string[] | null;
+  osap_gate_diagnostics: Record<string, OsapGateDiagnostic> | null;
+};
+
+// Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors
+// `compute/output/schemas.py::OsapGateDiagnostic`. All 4 fields nullable
+// so legacy 0.9.0 JSONs deserialize cleanly. `rejection_reason` is one
+// of "high_pbo" / "low_dsr" / "insufficient_data" / "gate_failed" for
+// rejected signals; null for accepted signals.
+export type OsapGateDiagnostic = {
+  pbo: number | null;
+  dsr: number | null;
+  sharpe: number | null;
+  rejection_reason: string | null;
 };
 
 // Phase 3d Tier-2 event defenses. Surfaces in StockDetail.tier2_events.
