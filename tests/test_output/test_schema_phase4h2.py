@@ -126,6 +126,61 @@ def test_metadata_new_fields_default_to_none():
     assert meta.osap_gate_diagnostics is None
 
 
+def test_metadata_gate_diagnostics_round_trip_with_production_cohort_shape():
+    """Simulate the production cohort shape: 22 signals reach the gate,
+    all rejected with a mix of rejection_reason values across the
+    canonical taxonomy (matches issue #116 production observation:
+    22 excluded, 0 accepted, 78 silently dropped). Verify Metadata
+    round-trip preserves the ``dict[str, OsapGateDiagnostic]``
+    structure end-to-end."""
+    rejection_cycle = ["gate_failed", "high_pbo", "low_dsr", "insufficient_data"]
+    diagnostics = {
+        f"Signal_{i:02d}": OsapGateDiagnostic(
+            pbo=0.6 + i * 0.005,
+            dsr=-0.4 + i * 0.01,
+            sharpe=0.05 + i * 0.001,
+            rejection_reason=rejection_cycle[i % 4],
+        )
+        for i in range(22)
+    }
+    payload = _legacy_0_9_0_metadata_payload()
+    payload["osap_gate_diagnostics"] = {
+        sig: diag.model_dump() for sig, diag in diagnostics.items()
+    }
+
+    meta = Metadata.model_validate(payload)
+    assert meta.osap_gate_diagnostics is not None
+    assert len(meta.osap_gate_diagnostics) == 22
+
+    # Spot-check one entry from each rejection_reason bucket.
+    reasons_seen = {
+        diag.rejection_reason for diag in meta.osap_gate_diagnostics.values()
+    }
+    assert reasons_seen == set(rejection_cycle)
+
+    # Round-trip preserves the dict-of-OsapGateDiagnostic structure.
+    serialized = meta.model_dump()
+    restored = Metadata.model_validate(serialized)
+    assert restored.osap_gate_diagnostics is not None
+    assert len(restored.osap_gate_diagnostics) == 22
+    assert restored.osap_gate_diagnostics["Signal_05"].pbo == diagnostics[
+        "Signal_05"
+    ].pbo
+
+
+def test_metadata_gate_diagnostics_accepted_signal_has_null_rejection_reason():
+    """Accepted signals carry ``rejection_reason=None`` (per
+    ``GateResult`` contract). Tests that the Pydantic model preserves
+    ``None`` rather than coercing to a sentinel string."""
+    diag = OsapGateDiagnostic(pbo=0.3, dsr=0.5, sharpe=0.4, rejection_reason=None)
+    payload = _legacy_0_9_0_metadata_payload()
+    payload["osap_gate_diagnostics"] = {"BM": diag.model_dump()}
+    meta = Metadata.model_validate(payload)
+    assert meta.osap_gate_diagnostics is not None
+    assert meta.osap_gate_diagnostics["BM"].rejection_reason is None
+    assert meta.osap_gate_diagnostics["BM"].pbo == 0.3
+
+
 def test_metadata_extra_forbid_rejects_unknown_fields():
     """``model_config = ConfigDict(extra='forbid')`` catches typo'd
     field names. Locks the schema surface so future refactors that

@@ -153,10 +153,12 @@ non-connector-bound work.
 
 ## Phase status
 
-Current schema: **`0.9.0-phase4h`** (bumped from `0.8.0-phase4.5f` in
-PR #112). Defense layer: **17** (7 active vetoes + 10 annotates + 5
-numerical guards + `manipulation_index` rollup) — Phase 4h adds
-observability surface, no new veto. Latest release tag:
+Current schema: **`0.9.1-phase4h.2`** (PATCH bump from `0.9.0-phase4h`
+for the observability-only Phase 4h.2 Part 1 follow-up to issue #116;
+prior MINOR bump `0.8.0-phase4.5f` → `0.9.0-phase4h` shipped in PR
+#112). Defense layer: **17** (7 active vetoes + 10 annotates + 5
+numerical guards + `manipulation_index` rollup) — Phase 4h.2 Part 1
+adds two new optional `Metadata` fields, no new veto, no rank impact. Latest release tag:
 [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5)
 shipped 2026-05-17 at commit `6d414a9b`. **Phase 4h in flight in PR
 #112** — OSAP signal replication (factor-exposure proxy) + PBO/DSR

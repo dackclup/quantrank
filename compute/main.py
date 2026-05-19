@@ -64,6 +64,7 @@ from compute.ingest.universe import get_sp500_constituents
 from compute.output.schemas import (
     DataQuality,
     Metadata,
+    OsapGateDiagnostic,
     PillarScores,
     RawMetrics,
     StockDetail,
@@ -962,6 +963,10 @@ def run_weekly_compute() -> int:
     # empty when the OSAP pipeline fails entirely (graceful-degradation
     # path leaves every osap_* metadata field None).
     osap_signals_missing_from_dataset: list[str] = []
+    # Phase 4h.2 Part 1 (issue #116) — per-signal PBO/DSR/Sharpe/
+    # rejection_reason diagnostics for every signal that reaches the
+    # gate. Populated inside the try block from ``gate_results``.
+    osap_gate_diagnostics: dict[str, OsapGateDiagnostic] = {}
     try:
         logger.info(
             "Phase 4h — fetching OSAP returns for %d-signal manifest "
@@ -1001,6 +1006,22 @@ def run_weekly_compute() -> int:
             osap_ls,
             requested_signals=config.OSAP_SIGNALS_100,
         )
+        # Phase 4h.2 Part 1 — persist per-signal gate decisions into
+        # metadata (issue #116). Captures EVERY signal that reached the
+        # gate (both accepted and rejected); accepted signals carry
+        # ``rejection_reason=None`` while rejected carry one of the
+        # canonical taxonomy values (``high_pbo`` / ``low_dsr`` /
+        # ``insufficient_data`` / ``gate_failed``) per
+        # ``compute/validation/osap_validation.py::GateResult``.
+        osap_gate_diagnostics = {
+            sig: OsapGateDiagnostic(
+                pbo=result.pbo,
+                dsr=result.dsr,
+                sharpe=result.sharpe,
+                rejection_reason=result.rejection_reason,
+            )
+            for sig, result in gate_results.items()
+        }
         osap_signals_used, osap_excluded_signals = filter_accepted_signals(
             gate_results
         )
@@ -1065,6 +1086,7 @@ def run_weekly_compute() -> int:
         osap_signals_coverage_pct = {}
         composite_osap_adjusted = pd.Series(dtype=float)
         osap_signals_missing_from_dataset = []
+        osap_gate_diagnostics = {}
 
     # Step 8 — combined per-ticker loop: fair-price ensemble + price history
     # write + StockSummary + StockDetail. Single pass so per-ticker outputs
@@ -1419,6 +1441,7 @@ def run_weekly_compute() -> int:
         osap_signals_missing_from_dataset=(
             osap_signals_missing_from_dataset or None
         ),
+        osap_gate_diagnostics=osap_gate_diagnostics or None,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)
