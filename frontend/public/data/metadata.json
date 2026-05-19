@@ -1,16 +1,16 @@
 {
-  "version": "0.9.0-phase4h",
-  "last_update_utc": "2026-05-18T23:15:15Z",
-  "next_update_utc": "2026-05-19T23:15:15Z",
+  "version": "0.9.1-phase4h.2",
+  "last_update_utc": "2026-05-19T12:13:06Z",
+  "next_update_utc": "2026-05-20T12:13:06Z",
   "universe": "SP500",
   "universe_size": 502,
-  "compute_run_id": "26065569928",
-  "git_commit": "fbd1acf461847d835967bd701a098af93c9d2bd7",
-  "mos_trailing_ic_smoke": -0.2855003842986936,
+  "compute_run_id": "26095888044",
+  "git_commit": "182c02de90c56f00a3d4b0b8cf7c07720e1e3340",
+  "mos_trailing_ic_smoke": -0.28529061225405894,
   "tier2_coverage_pct": 100.0,
   "fundamentals_coverage_pct": 100.0,
   "fundamentals_latency_p50_seconds": 0.0,
-  "fundamentals_latency_p95_seconds": 18.39,
+  "fundamentals_latency_p95_seconds": 14.52,
   "osap_signals_used": null,
   "osap_excluded_signals": [
     "AbnormalAccruals",
@@ -37,5 +37,163 @@
     "dVolCall"
   ],
   "osap_signals_ic_12m": null,
-  "osap_signals_coverage_pct": null
+  "osap_signals_coverage_pct": null,
+  "osap_signals_missing_from_dataset": [
+    "AbnormalAccrualsPercent",
+    "AssetTurnover",
+    "BAR",
+    "Bid_Ask",
+    "CashProf",
+    "FailureProbability",
+    "GS",
+    "GrcapxThreeYears",
+    "GrowthCapEx",
+    "IRA",
+    "Mom1m",
+    "Mom36m",
+    "OperatingAccruals",
+    "OperatingLeverage",
+    "OperatingProfit",
+    "OrgCapital",
+    "ProfitMargin",
+    "Recomm",
+    "RoA",
+    "SUE",
+    "Turnover",
+    "ZScore"
+  ],
+  "osap_gate_diagnostics": {
+    "AbnormalAccruals": {
+      "pbo": 0.027117327117327117,
+      "dsr": -3.6544800853739514,
+      "sharpe": -0.2306382561334757,
+      "rejection_reason": "low_dsr"
+    },
+    "AssetGrowth": {
+      "pbo": 0.027117327117327117,
+      "dsr": -10.906529792874561,
+      "sharpe": -0.8743562925922677,
+      "rejection_reason": "low_dsr"
+    },
+    "BM": {
+      "pbo": 0.027117327117327117,
+      "dsr": -7.0817747370766995,
+      "sharpe": -0.555220038933302,
+      "rejection_reason": "low_dsr"
+    },
+    "BetaFP": {
+      "pbo": 0.027117327117327117,
+      "dsr": -1.9683316404774147,
+      "sharpe": -0.0026413204800099935,
+      "rejection_reason": "low_dsr"
+    },
+    "CF": {
+      "pbo": 0.027117327117327117,
+      "dsr": -4.573122702453801,
+      "sharpe": -0.3329254852691109,
+      "rejection_reason": "low_dsr"
+    },
+    "Cash": {
+      "pbo": 0.027117327117327117,
+      "dsr": -4.362541997455127,
+      "sharpe": -0.31508915047881225,
+      "rejection_reason": "low_dsr"
+    },
+    "ChInv": {
+      "pbo": 0.027117327117327117,
+      "dsr": -10.780744876273987,
+      "sharpe": -0.9595502728982188,
+      "rejection_reason": "low_dsr"
+    },
+    "EarningsSurprise": {
+      "pbo": 0.027117327117327117,
+      "dsr": -9.911735508894218,
+      "sharpe": -1.1634921650065058,
+      "rejection_reason": "low_dsr"
+    },
+    "FR": {
+      "pbo": 0.027117327117327117,
+      "dsr": -1.311165492241945,
+      "sharpe": 0.09410540902255152,
+      "rejection_reason": "low_dsr"
+    },
+    "GrLTNOA": {
+      "pbo": 0.027117327117327117,
+      "dsr": -4.815301122054739,
+      "sharpe": -0.3385747558839353,
+      "rejection_reason": "low_dsr"
+    },
+    "IntMom": {
+      "pbo": 0.027117327117327117,
+      "dsr": -6.677214641869032,
+      "sharpe": -0.6003185262815136,
+      "rejection_reason": "low_dsr"
+    },
+    "MaxRet": {
+      "pbo": 0.027117327117327117,
+      "dsr": -4.7754229787861835,
+      "sharpe": -0.2947661712641472,
+      "rejection_reason": "low_dsr"
+    },
+    "Mom12m": {
+      "pbo": 0.027117327117327117,
+      "dsr": -5.005792464073349,
+      "sharpe": -0.381199169525919,
+      "rejection_reason": "low_dsr"
+    },
+    "Mom6m": {
+      "pbo": 0.027117327117327117,
+      "dsr": -4.492954459574187,
+      "sharpe": -0.2985974531091863,
+      "rejection_reason": "low_dsr"
+    },
+    "MomOffSeason": {
+      "pbo": 0.027117327117327117,
+      "dsr": -9.334094562362845,
+      "sharpe": -0.5846376438445373,
+      "rejection_reason": "low_dsr"
+    },
+    "MomSeason": {
+      "pbo": 0.027117327117327117,
+      "dsr": -7.492946861461228,
+      "sharpe": -0.610101246616777,
+      "rejection_reason": "low_dsr"
+    },
+    "MomVol": {
+      "pbo": 0.027117327117327117,
+      "dsr": -5.850594481301147,
+      "sharpe": -0.46191472670291694,
+      "rejection_reason": "low_dsr"
+    },
+    "NetDebtFinance": {
+      "pbo": 0.027117327117327117,
+      "dsr": -10.447719885061156,
+      "sharpe": -1.1855177343809522,
+      "rejection_reason": "low_dsr"
+    },
+    "NetEquityFinance": {
+      "pbo": 0.027117327117327117,
+      "dsr": -5.792864700130052,
+      "sharpe": -0.5797950391513412,
+      "rejection_reason": "low_dsr"
+    },
+    "PctTotAcc": {
+      "pbo": 0.027117327117327117,
+      "dsr": -6.620591718278086,
+      "sharpe": -0.7790834017810502,
+      "rejection_reason": "low_dsr"
+    },
+    "STreversal": {
+      "pbo": 0.027117327117327117,
+      "dsr": -17.62149614488886,
+      "sharpe": -1.4032796693131377,
+      "rejection_reason": "low_dsr"
+    },
+    "dVolCall": {
+      "pbo": 0.027117327117327117,
+      "dsr": -5.679543802685362,
+      "sharpe": -0.6634450695176819,
+      "rejection_reason": "low_dsr"
+    }
+  }
 }
