@@ -82,6 +82,11 @@
       "required": false,
       "default": null
     },
+    "osap_signals_dropped_no_long_short": {
+      "type": "list[str] | None",
+      "required": false,
+      "default": null
+    },
     "osap_signals_ic_12m": {
       "type": "dict[str, float] | None",
       "required": false,

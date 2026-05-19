@@ -374,3 +374,191 @@ def test_signals_in_dataframe_setdiff_with_manifest_simulates_silent_drop():
     present = osap_replicate.signals_in_dataframe(df)
     missing = sorted(set(manifest) - present)
     assert missing == ["AOP", "AccrualsBM", "ChEQ"]
+
+
+# ---------------------------------------------------------------------------
+# Phase 4h.2 Part 2 — multi-port adapter + dropped-no-LS diagnostic (#116)
+# ---------------------------------------------------------------------------
+
+
+def test_compute_long_short_returns_handles_quintile_signal():
+    """5-port signal (quintile, ports 01..05) → LS computed as
+    ret[port=01] - ret[port=05]. Pre-Part-2 this signal silently
+    disappeared at the hardcoded port=10 filter."""
+    returns = _make_returns(
+        [
+            ("Quintile_Signal", "01", "2024-01-31", 3.0),
+            ("Quintile_Signal", "02", "2024-01-31", 2.5),
+            ("Quintile_Signal", "03", "2024-01-31", 2.0),
+            ("Quintile_Signal", "04", "2024-01-31", 1.5),
+            ("Quintile_Signal", "05", "2024-01-31", 1.0),
+        ]
+    )
+    ls = osap_replicate.compute_long_short_returns(returns)
+
+    assert len(ls) == 1
+    row = ls.iloc[0]
+    assert row["signalname"] == "Quintile_Signal"
+    assert row["ls_return"] == pytest.approx(2.0)  # 3.0 - 1.0
+
+
+def test_compute_long_short_returns_handles_tercile_signal():
+    """3-port signal (tercile, ports 01..03) → LS = ret[01] - ret[03]."""
+    returns = _make_returns(
+        [
+            ("Tercile_Signal", "01", "2024-02-29", 1.20),
+            ("Tercile_Signal", "02", "2024-02-29", 0.80),
+            ("Tercile_Signal", "03", "2024-02-29", 0.40),
+        ]
+    )
+    ls = osap_replicate.compute_long_short_returns(returns)
+
+    assert len(ls) == 1
+    assert ls.iloc[0]["ls_return"] == pytest.approx(0.80)
+
+
+def test_compute_long_short_returns_handles_mixed_port_universe():
+    """Decile (01/10) + quintile (01/05) + tercile (01/03) signals in
+    one DataFrame → all three produce LS rows, each using its own
+    inferred min/max port pair. This is the headline Part 2 fix:
+    pre-Part-2 only the decile signal would have survived."""
+    rows = [
+        # Decile signal (Phase 4h legacy — must still work)
+        ("Decile_Sig", "01", "2024-03-29", 5.0),
+        ("Decile_Sig", "05", "2024-03-29", 99.0),  # inner — ignored
+        ("Decile_Sig", "10", "2024-03-29", 1.0),
+        # Quintile signal (Phase 4h.2 Part 2 — newly recovered)
+        ("Quintile_Sig", "01", "2024-03-29", 2.5),
+        ("Quintile_Sig", "03", "2024-03-29", 99.0),  # inner — ignored
+        ("Quintile_Sig", "05", "2024-03-29", 0.5),
+        # Tercile signal (Phase 4h.2 Part 2 — newly recovered)
+        ("Tercile_Sig", "01", "2024-03-29", 1.8),
+        ("Tercile_Sig", "03", "2024-03-29", 0.6),
+    ]
+    returns = _make_returns(rows)
+    ls = osap_replicate.compute_long_short_returns(returns)
+
+    assert set(ls["signalname"]) == {"Decile_Sig", "Quintile_Sig", "Tercile_Sig"}
+    assert len(ls) == 3
+
+    decile = ls[ls["signalname"] == "Decile_Sig"].iloc[0]
+    quintile = ls[ls["signalname"] == "Quintile_Sig"].iloc[0]
+    tercile = ls[ls["signalname"] == "Tercile_Sig"].iloc[0]
+
+    assert decile["ls_return"] == pytest.approx(4.0)  # 5.0 - 1.0
+    assert quintile["ls_return"] == pytest.approx(2.0)  # 2.5 - 0.5
+    assert tercile["ls_return"] == pytest.approx(1.2)  # 1.8 - 0.6
+
+
+def test_compute_long_short_returns_drops_single_port_signal():
+    """Signal with only one port label → no LS pair possible →
+    silently dropped from compute_long_short_returns output (the
+    diagnostic surface lives in signals_dropped_no_long_short)."""
+    returns = _make_returns(
+        [
+            ("OnePort_Sig", "01", "2024-04-30", 7.0),
+            ("Decile_Sig", "01", "2024-04-30", 3.0),
+            ("Decile_Sig", "10", "2024-04-30", 1.0),
+        ]
+    )
+    ls = osap_replicate.compute_long_short_returns(returns)
+
+    assert "OnePort_Sig" not in ls["signalname"].values
+    assert "Decile_Sig" in ls["signalname"].values
+
+
+def test_signals_dropped_no_long_short_empty_input():
+    """Empty DataFrame → empty list. Defensive matching
+    signals_in_dataframe's empty-input behavior."""
+    df = pd.DataFrame(columns=["signalname", "port", "date", "ret"])
+    assert osap_replicate.signals_dropped_no_long_short(df) == []
+
+
+def test_signals_dropped_no_long_short_missing_port_column():
+    """DataFrame without ``port`` column → empty list (defensive)."""
+    df = pd.DataFrame(
+        {"signalname": ["BM", "Mom12m"], "date": ["2024-01-31"] * 2, "ret": [0.1, 0.2]}
+    )
+    assert osap_replicate.signals_dropped_no_long_short(df) == []
+
+
+def test_signals_dropped_no_long_short_identifies_single_port_signals():
+    """Multi-signal input where some signals have only one port →
+    returns the sorted list of dropped signal names. Headline accounting-
+    balance test: matches the 56-signal silent-drop diagnostic surface."""
+    returns = _make_returns(
+        [
+            # Decile (2 ports) — NOT dropped
+            ("Decile_OK", "01", "2024-05-31", 1.0),
+            ("Decile_OK", "10", "2024-05-31", 0.5),
+            # Quintile (2 distinct ports across multiple rows) — NOT dropped
+            ("Quintile_OK", "01", "2024-05-31", 2.0),
+            ("Quintile_OK", "05", "2024-05-31", 0.5),
+            # Single-port signals — DROPPED
+            ("OnePort_A", "01", "2024-05-31", 3.0),
+            ("OnePort_B", "01", "2024-05-31", 4.0),
+            ("OnePort_B", "01", "2024-06-30", 4.5),
+        ]
+    )
+    dropped = osap_replicate.signals_dropped_no_long_short(returns)
+    assert dropped == ["OnePort_A", "OnePort_B"]
+
+
+def test_signals_dropped_no_long_short_normalizes_int_ports():
+    """OSAP parquet may store ``port`` as int — normalizer must produce
+    the same diagnostic regardless of input dtype."""
+    df = pd.DataFrame(
+        [
+            ("OnePort_Int", 1, "2024-07-31", 5.0),  # int port=1
+            ("TwoPort_Int", 1, "2024-07-31", 5.0),
+            ("TwoPort_Int", 10, "2024-07-31", 1.0),
+        ],
+        columns=["signalname", "port", "date", "ret"],
+    )
+    df["signallag"] = 0.0
+    df["Nlong"] = 50
+    df["Nshort"] = 50
+    assert osap_replicate.signals_dropped_no_long_short(df) == ["OnePort_Int"]
+
+
+def test_part2_accounting_invariant_against_synthetic_manifest():
+    """Phase 4h.2 Part 2 accounting invariant. Mini-manifest of 5 signals;
+    dataset surfaces 4 (1 missing); of the 4, 1 has a single port (dropped),
+    3 form LS pairs. The accounting equation closes when
+    missing + dropped + reached_gate == manifest_size."""
+    manifest = ("BM", "Mom12m", "AOP", "AccrualsBM", "ChEQ")
+    returns = _make_returns(
+        [
+            # BM — decile, valid LS pair (will reach gate)
+            ("BM", "01", "2024-06-28", 1.5),
+            ("BM", "10", "2024-06-28", -0.5),
+            # Mom12m — quintile, valid LS pair (will reach gate)
+            ("Mom12m", "01", "2024-06-28", 2.0),
+            ("Mom12m", "05", "2024-06-28", 0.5),
+            # AOP — tercile, valid LS pair (will reach gate)
+            ("AOP", "01", "2024-06-28", 0.8),
+            ("AOP", "03", "2024-06-28", 0.3),
+            # AccrualsBM — single port, DROPPED (no LS)
+            ("AccrualsBM", "01", "2024-06-28", 1.0),
+            # ChEQ — NOT in returns at all (missing_from_dataset)
+        ]
+    )
+    missing = sorted(set(manifest) - osap_replicate.signals_in_dataframe(returns))
+    dropped = [
+        s for s in osap_replicate.signals_dropped_no_long_short(returns)
+        if s in set(manifest)
+    ]
+    reached_gate = osap_replicate.compute_long_short_returns(returns)
+    reached_gate_signals = set(reached_gate["signalname"])
+
+    assert missing == ["ChEQ"]
+    assert dropped == ["AccrualsBM"]
+    assert reached_gate_signals == {"BM", "Mom12m", "AOP"}
+    # The headline invariant — every manifest signal accounted for
+    # exactly once across the three diagnostic surfaces.
+    assert (
+        len(missing)
+        + len(dropped)
+        + len(reached_gate_signals)
+        == len(manifest)
+    )

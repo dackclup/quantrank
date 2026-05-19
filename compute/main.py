@@ -47,6 +47,7 @@ from compute.features.osap_replicate import (
     compute_long_short_returns,
     compute_osap_signals,
     coverage_by_signal,
+    signals_dropped_no_long_short,
     signals_in_dataframe,
 )
 from compute.ingest.cross_source import (
@@ -967,6 +968,12 @@ def run_weekly_compute() -> int:
     # rejection_reason diagnostics for every signal that reaches the
     # gate. Populated inside the try block from ``gate_results``.
     osap_gate_diagnostics: dict[str, OsapGateDiagnostic] = {}
+    # Phase 4h.2 Part 2 (issue #116) — signals present in the OSAP
+    # dataset but with <2 distinct port buckets (silent drop in
+    # 0.9.0-0.9.1; visible here). Closes the 100-signal accounting
+    # equation alongside ``osap_signals_missing_from_dataset`` and
+    # ``osap_signals_used`` / ``osap_excluded_signals``.
+    osap_signals_dropped_no_long_short_list: list[str] = []
     try:
         logger.info(
             "Phase 4h — fetching OSAP returns for %d-signal manifest "
@@ -994,6 +1001,23 @@ def run_weekly_compute() -> int:
                 len(osap_signals_missing_from_dataset),
                 len(config.OSAP_SIGNALS_100),
                 osap_signals_missing_from_dataset[:5],
+            )
+        # Phase 4h.2 Part 2 — signals with <2 port buckets (no LS pair).
+        # Restrict to the requested manifest so the accounting equation
+        # closes against OSAP_SIGNALS_100 (dataset rows for non-manifest
+        # signals are filtered out by fetch_osap_returns).
+        osap_signals_dropped_no_long_short_list = [
+            s
+            for s in signals_dropped_no_long_short(osap_returns_raw)
+            if s in set(config.OSAP_SIGNALS_100)
+        ]
+        if osap_signals_dropped_no_long_short_list:
+            logger.warning(
+                "OSAP signals in dataset but with <2 port buckets "
+                "(no LS pair possible): %d/%d dropped (first 5: %s)",
+                len(osap_signals_dropped_no_long_short_list),
+                len(config.OSAP_SIGNALS_100),
+                osap_signals_dropped_no_long_short_list[:5],
             )
         osap_ls = compute_long_short_returns(osap_returns_raw)
         logger.info(
@@ -1087,6 +1111,7 @@ def run_weekly_compute() -> int:
         composite_osap_adjusted = pd.Series(dtype=float)
         osap_signals_missing_from_dataset = []
         osap_gate_diagnostics = {}
+        osap_signals_dropped_no_long_short_list = []
 
     # Step 8 — combined per-ticker loop: fair-price ensemble + price history
     # write + StockSummary + StockDetail. Single pass so per-ticker outputs
@@ -1442,6 +1467,9 @@ def run_weekly_compute() -> int:
             osap_signals_missing_from_dataset or None
         ),
         osap_gate_diagnostics=osap_gate_diagnostics or None,
+        osap_signals_dropped_no_long_short=(
+            osap_signals_dropped_no_long_short_list or None
+        ),
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)

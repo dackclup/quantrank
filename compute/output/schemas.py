@@ -127,6 +127,15 @@ class Metadata(BaseModel):
     # that reached the gate.
     osap_signals_missing_from_dataset: list[str] | None = None
     osap_gate_diagnostics: dict[str, OsapGateDiagnostic] | None = None
+    # Phase 4h.2 Part 2 — signals present in the OSAP dataset but with
+    # fewer than 2 distinct port buckets (no long-short pair possible).
+    # Closes the 100-signal accounting equation:
+    #   len(OSAP_SIGNALS_100) == missing_from_dataset + dropped_no_long_short
+    #                         + signals_used + excluded_signals
+    # Pre-Part-2 (0.9.1-phase4h.2): the ~56 signals dropped silently at
+    # the hardcoded port=01/10 filter. Surfaced here so the gap is
+    # auditable. ``None`` when no signals were dropped on this dimension.
+    osap_signals_dropped_no_long_short: list[str] | None = None
 
 
 class RawMetrics(BaseModel):
