@@ -35,6 +35,13 @@ dev = [
 # the scout PR installs it solely for offline import + API-surface tests.
 factors = [
   "openassetpricing==0.0.2",
+  # Phase 4j scout — Microsoft Qlib (Alpha158). MIT licensed (verified
+  # via wheel METADATA 2026-05-19). Pin to 0.9.x so any future feature-
+  # set drift in 0.10+ requires a deliberate manual upgrade and
+  # re-verification of `ALPHA158_FEATURE_NAMES`. Pulls ~22 transitive
+  # deps (mlflow, lightgbm, cvxpy, pymongo, redis, gym, jupyter,
+  # nbconvert, etc.); CI install footprint bump ~150-180 MB.
+  "pyqlib>=0.9.7,<0.10",
 ]
 
 [tool.setuptools.packages.find]

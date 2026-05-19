@@ -197,6 +197,29 @@ OSAP_RETURNS_MAX_AGE_DAYS: int = 31
 JKP_RETURNS_CACHE: Path = CACHE_DIR / "jkp" / "returns.parquet"
 JKP_RETURNS_MAX_AGE_DAYS: int = 31
 
+# --- Phase 4j scout: Microsoft Qlib (Alpha158) integration ---
+# Microsoft Qlib factor library — per-stock per-date features
+# computed locally from OHLCV bars via the `pyqlib` package (MIT
+# licensed, verified via PyPI wheel METADATA 2026-05-19). Phase 4j
+# is structurally different from 4h (OSAP) + 4i (JKP): Qlib has NO
+# public US data bundle (`REG_US` exists but the cache is BYO), so
+# the integration PR will need to convert our existing yfinance
+# OHLCV cache (`compute/cache/prices/*.parquet`) into Qlib's `.bin`
+# format. The scout PR ships an install skeleton + 158-feature
+# manifest + offline tests; the BYO adapter is integration-PR scope.
+#
+# `compute/cache/` is already gitignored at .gitignore:221 — the
+# parent glob covers `compute/cache/qlib/` so no explicit
+# `.gitignore` edit needed for this scout.
+QLIB_DATA_CACHE: Path = CACHE_DIR / "qlib" / "us_data"
+QLIB_DATA_MAX_AGE_DAYS: int = 31
+
+# Alpha158 feature count. Asserted at module load in
+# `compute/ingest/qlib_features.py::ALPHA158_FEATURE_NAMES` against
+# the hardcoded 158-name tuple (which is itself test-asserted against
+# the runtime introspection from `Alpha158DL.get_feature_config()`).
+ALPHA158_FEATURE_COUNT: int = 158
+
 # --- Phase 4h: 100-signal manifest ---
 #
 # Theme buckets mirror the table at
