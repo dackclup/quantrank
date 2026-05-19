@@ -316,3 +316,61 @@ def test_compute_osap_signals_uses_shipped_fixture():
         "shipped fixture should produce a non-None signal map for every "
         f"ticker; got {non_none_count}/{len(tickers)}"
     )
+
+
+# ---------------------------------------------------------------------------
+# Phase 4h.2 Part 1 — signals_in_dataframe helper (issue #116)
+# ---------------------------------------------------------------------------
+
+
+def test_signals_in_dataframe_empty_returns_empty_frozenset():
+    """Empty DataFrame (correct schema, zero rows) → empty frozenset.
+    NOT a KeyError or NaN — the manifest-vs-dataset set diff downstream
+    expects a usable empty set."""
+    df = pd.DataFrame(columns=["signalname", "port", "date", "ret"])
+    result = osap_replicate.signals_in_dataframe(df)
+    assert result == frozenset()
+    assert isinstance(result, frozenset)
+
+
+def test_signals_in_dataframe_no_signalname_column_returns_empty_frozenset():
+    """DataFrame without the ``signalname`` column → empty frozenset
+    (defensive). Caller's set diff then surfaces the full manifest as
+    missing — safer than raising on a schema-drift edge case."""
+    df = pd.DataFrame({"other_col": [1, 2, 3]})
+    result = osap_replicate.signals_in_dataframe(df)
+    assert result == frozenset()
+
+
+def test_signals_in_dataframe_unique_signals_dedup():
+    """Multi-row input with duplicate signalnames → frozenset dedups.
+    Mirrors the real OSAP shape where each ``signalname`` appears once
+    per ``(port, date)`` cell."""
+    df = pd.DataFrame(
+        {
+            "signalname": ["Mom12m", "BM", "Mom12m", "Accruals", "BM"],
+            "port": ["01", "01", "10", "01", "10"],
+            "date": ["2024-01-31"] * 5,
+            "ret": [0.1, 0.2, -0.05, 0.15, -0.1],
+        }
+    )
+    assert osap_replicate.signals_in_dataframe(df) == frozenset(
+        {"Mom12m", "BM", "Accruals"}
+    )
+
+
+def test_signals_in_dataframe_setdiff_with_manifest_simulates_silent_drop():
+    """Simulates the issue-#116 silent-drop: manifest declares 5
+    signals; dataset surfaces only 2. Set diff is the missing-3."""
+    manifest = ("BM", "Mom12m", "AOP", "AccrualsBM", "ChEQ")
+    df = pd.DataFrame(
+        {
+            "signalname": ["BM", "BM", "Mom12m"],
+            "port": ["01", "10", "01"],
+            "date": ["2024-01-31"] * 3,
+            "ret": [0.1, -0.05, 0.2],
+        }
+    )
+    present = osap_replicate.signals_in_dataframe(df)
+    missing = sorted(set(manifest) - present)
+    assert missing == ["AOP", "AccrualsBM", "ChEQ"]

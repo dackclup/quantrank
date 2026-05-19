@@ -321,3 +321,34 @@ def coverage_by_signal(
             counts[sig] = counts.get(sig, 0) + 1
 
     return {sig: 100.0 * count / total for sig, count in counts.items()}
+
+
+def signals_in_dataframe(df: pd.DataFrame) -> frozenset[str]:
+    """Return unique ``signalname`` values present in an OSAP returns
+    DataFrame.
+
+    Phase 4h.2 Part 1 helper (issue #116). Used by
+    ``compute/main.py`` to compute the manifest-vs-dataset set diff
+    (``OSAP_SIGNALS_100 - signals_in_dataframe(returns)``) — the silent-
+    drop surface that was invisible in Phase 4h's first production
+    run.
+
+    Single-purpose pure helper, unit-testable without main.py
+    orchestration. Mirrors the shape of :func:`coverage_by_signal`
+    above (no I/O, no logging, no side effects).
+
+    Args:
+        df: OSAP returns DataFrame. Expected to satisfy the
+            ``signalname`` contract from
+            ``compute/ingest/osap.py::REQUIRED_COLUMNS`` but defensive
+            against absent column or empty input.
+
+    Returns:
+        ``frozenset[str]`` of unique signalname values. Empty
+        frozenset when input is empty OR ``signalname`` column is
+        absent (treat both as "no signals present" — caller's set
+        diff then reports the full manifest as missing).
+    """
+    if df.empty or "signalname" not in df.columns:
+        return frozenset()
+    return frozenset(df["signalname"].unique().tolist())

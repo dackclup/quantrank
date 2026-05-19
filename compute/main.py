@@ -47,6 +47,7 @@ from compute.features.osap_replicate import (
     compute_long_short_returns,
     compute_osap_signals,
     coverage_by_signal,
+    signals_in_dataframe,
 )
 from compute.ingest.cross_source import (
     validate_market_cap as cross_source_validate_market_cap,
@@ -956,6 +957,11 @@ def run_weekly_compute() -> int:
     osap_signal_map: dict[str, dict[str, float] | None] = {}
     osap_signals_coverage_pct: dict[str, float] = {}
     composite_osap_adjusted: pd.Series = pd.Series(dtype=float)
+    # Phase 4h.2 Part 1 (issue #116) — manifest entries the OSAP fetch
+    # returned no rows for. Populated inside the try block below; left
+    # empty when the OSAP pipeline fails entirely (graceful-degradation
+    # path leaves every osap_* metadata field None).
+    osap_signals_missing_from_dataset: list[str] = []
     try:
         logger.info(
             "Phase 4h — fetching OSAP returns for %d-signal manifest "
@@ -967,6 +973,23 @@ def run_weekly_compute() -> int:
             signals=list(config.OSAP_SIGNALS_100),
             as_of=asof_date,
         )
+        # Phase 4h.2 Part 1 — surface silent drops between manifest and
+        # dataset (issue #116). 100 manifest signals, but production
+        # observation has shown only ~22 reach the gate; the other ~78
+        # silently disappeared at this filter step in 0.9.0-phase4h.
+        # Now they land in metadata.osap_signals_missing_from_dataset.
+        present_signals = signals_in_dataframe(osap_returns_raw)
+        osap_signals_missing_from_dataset = sorted(
+            set(config.OSAP_SIGNALS_100) - present_signals
+        )
+        if osap_signals_missing_from_dataset:
+            logger.warning(
+                "OSAP manifest signals not in dataset: %d/%d missing "
+                "(first 5: %s)",
+                len(osap_signals_missing_from_dataset),
+                len(config.OSAP_SIGNALS_100),
+                osap_signals_missing_from_dataset[:5],
+            )
         osap_ls = compute_long_short_returns(osap_returns_raw)
         logger.info(
             "OSAP long-short rows: %d across %d signals",
@@ -1041,6 +1064,7 @@ def run_weekly_compute() -> int:
         osap_signal_map = {}
         osap_signals_coverage_pct = {}
         composite_osap_adjusted = pd.Series(dtype=float)
+        osap_signals_missing_from_dataset = []
 
     # Step 8 — combined per-ticker loop: fair-price ensemble + price history
     # write + StockSummary + StockDetail. Single pass so per-ticker outputs
@@ -1392,6 +1416,9 @@ def run_weekly_compute() -> int:
         osap_excluded_signals=osap_excluded_signals or None,
         osap_signals_ic_12m=osap_signals_ic_12m or None,
         osap_signals_coverage_pct=osap_signals_coverage_pct or None,
+        osap_signals_missing_from_dataset=(
+            osap_signals_missing_from_dataset or None
+        ),
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)
