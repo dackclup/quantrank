@@ -72,6 +72,11 @@
       "required": false,
       "default": null
     },
+    "osap_gate_diagnostics": {
+      "type": "dict[str, OsapGateDiagnostic] | None",
+      "required": false,
+      "default": null
+    },
     "osap_signals_coverage_pct": {
       "type": "dict[str, float] | None",
       "required": false,
@@ -79,6 +84,11 @@
     },
     "osap_signals_ic_12m": {
       "type": "dict[str, float] | None",
+      "required": false,
+      "default": null
+    },
+    "osap_signals_missing_from_dataset": {
+      "type": "list[str] | None",
       "required": false,
       "default": null
     },
@@ -106,6 +116,28 @@
       "type": "str",
       "required": true,
       "default": "<required>"
+    }
+  },
+  "OsapGateDiagnostic": {
+    "dsr": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "pbo": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "rejection_reason": {
+      "type": "str | None",
+      "required": false,
+      "default": null
+    },
+    "sharpe": {
+      "type": "float | None",
+      "required": false,
+      "default": null
     }
   },
   "PillarBaseline": {
