@@ -220,6 +220,35 @@ QLIB_DATA_MAX_AGE_DAYS: int = 31
 # the runtime introspection from `Alpha158DL.get_feature_config()`).
 ALPHA158_FEATURE_COUNT: int = 158
 
+# --- Phase 4k scout: Kelly-Pruitt-Su IPCA latent factor model ---
+# Instrumented Principal Component Analysis (Kelly, Pruitt, Su 2019,
+# JFE 134(3) 501-524) — characteristics-instrumented latent factor
+# decomposition. PyPI package `ipca` (MIT licensed, verified via wheel
+# LICENSE.md 2026-05-19, Buechner+Bybee 2019, github.com/bkelly-lab/ipca).
+# Phase 4k is the 4th of 4 factor-library scouts; structurally distinct
+# from 4h/4i (factor returns CSV) and 4j (per-stock OHLCV → features):
+# IPCA takes a panel (N entities × T dates × L characteristics) and
+# produces Gamma (L × K loadings) + Factors (K × T latent factor returns).
+# Scout ships install skeleton + 8-method API-surface lock + 6 offline
+# tests; characteristics-matrix construction + universe-wide fit + composite
+# blend decision are integration-PR scope. NO @network test (pure local
+# sklearn-style computation, no remote endpoint — mirrors Phase 4j Qlib).
+#
+# `compute/cache/` is already gitignored at .gitignore:221 — the parent
+# glob covers `compute/cache/ipca/` so no explicit `.gitignore` edit
+# needed for this scout.
+IPCA_FITTED_ARTIFACTS_CACHE: Path = CACHE_DIR / "ipca"
+IPCA_FITTED_ARTIFACTS_MAX_AGE_DAYS: int = 31
+
+# InstrumentedPCA public-method count. Asserted at module load in
+# `compute/features/ipca_factors.py::INSTRUMENTED_PCA_PUBLIC_API`
+# against the hardcoded 8-name tuple (fit / get_factors / fit_path /
+# predict / predict_panel / predict_portfolio / score / predictOOS).
+# Drift detector against any future `ipca` upgrade that drops or renames
+# a public method. Upstream last released 2021-04-22; pinning to 0.6.x
+# in pyproject.toml [factors].
+IPCA_PUBLIC_API_METHOD_COUNT: int = 8
+
 # --- Phase 4h: 100-signal manifest ---
 #
 # Theme buckets mirror the table at

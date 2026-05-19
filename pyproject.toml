@@ -42,6 +42,15 @@ factors = [
   # deps (mlflow, lightgbm, cvxpy, pymongo, redis, gym, jupyter,
   # nbconvert, etc.); CI install footprint bump ~150-180 MB.
   "pyqlib>=0.9.7,<0.10",
+  # Phase 4k scout — Kelly-Pruitt-Su Instrumented PCA (KPS 2019, JFE
+  # 134(3) 501-524). MIT licensed (verified via wheel LICENSE.md
+  # 2026-05-19, Buechner+Bybee 2019). Pin to 0.6.x — upstream last
+  # released 2021-04-22 (~5 years stale); any future minor requires
+  # deliberate manual upgrade + re-verification of the 8-method
+  # `INSTRUMENTED_PCA_PUBLIC_API` tuple. Pulls `numba` (~50 MB w/
+  # llvmlite ~30 MB) + tiny `progressbar`; CI install footprint
+  # bump ~50-80 MB. Substantially lighter than Qlib's 150-180 MB.
+  "ipca>=0.6.7,<0.7",
 ]
 
 [tool.setuptools.packages.find]
