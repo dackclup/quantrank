@@ -182,6 +182,21 @@ EDGAR_LATE_FILINGS_CACHE_DIR: Path = CACHE_DIR / "edgar_late_filings"
 OSAP_RETURNS_CACHE: Path = CACHE_DIR / "osap" / "returns.parquet"
 OSAP_RETURNS_MAX_AGE_DAYS: int = 31
 
+# --- Phase 4i scout: Jensen-Kelly-Pedersen factor library ingest ---
+# Jensen-Kelly-Pedersen 2023 *Journal of Finance* "Is There a
+# Replication Crisis in Finance?" — 153 individual signals collapsed
+# into 13 quasi-orthogonal theme clusters. Data lives on the
+# `jkpfactors.s3.amazonaws.com` public S3 bucket (CC BY-NC 4.0 data
+# license; MIT code license on `bkelly-lab/jkp-data`). The scout PR
+# adds an ingest skeleton + 6 smoke tests; Phase 4i full integration
+# (theme aggregation + pillar blending + PBO/DSR gate + main.py
+# wiring) ships in a follow-on ~5-commit PR after the scout merges.
+#
+# 31-day freshness matches JKP's monthly release cadence (S3
+# `LastModified` headers show ~monthly file updates).
+JKP_RETURNS_CACHE: Path = CACHE_DIR / "jkp" / "returns.parquet"
+JKP_RETURNS_MAX_AGE_DAYS: int = 31
+
 # --- Phase 4h: 100-signal manifest ---
 #
 # Theme buckets mirror the table at
