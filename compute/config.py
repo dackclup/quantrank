@@ -220,6 +220,31 @@ QLIB_DATA_MAX_AGE_DAYS: int = 31
 # the runtime introspection from `Alpha158DL.get_feature_config()`).
 ALPHA158_FEATURE_COUNT: int = 158
 
+# --- Phase 4k scout: Kelly-Pruitt-Su IPCA latent factor model ---
+# IPCA = Instrumented Principal Component Analysis. Reference:
+# Kelly, Pruitt, Su (2019) *Journal of Financial Economics*
+# "Characteristics are covariances: A unified model of risk and
+# return". The `ipca` PyPI package (MIT licensed, verified via
+# LICENSE.md 2026-05-19) implements `InstrumentedPCA` as a sklearn-
+# style estimator: a panel of (N stocks × T dates × L characteristics)
+# decomposes into Gamma (L × K factor loadings) + Factors (K × T
+# latent factor returns). Phase 4k is the final factor-library
+# scout; integration PR (4k.1) will wire characteristics-matrix
+# construction + universe-wide fit + composite blend decision.
+#
+# `compute/cache/` is already gitignored at .gitignore parent glob —
+# the `compute/cache/ipca/` subdir is covered, no explicit
+# `.gitignore` edit needed.
+IPCA_FITTED_ARTIFACTS_CACHE: Path = CACHE_DIR / "ipca"
+IPCA_FITTED_ARTIFACTS_MAX_AGE_DAYS: int = 31
+
+# InstrumentedPCA public-API method count. Asserted at module load in
+# `compute/features/ipca_factors.py::INSTRUMENTED_PCA_PUBLIC_API`
+# against the hardcoded 8-name tuple (drift detector against any
+# future `ipca` package upgrade — pin range `>=0.6.7,<0.7` plus this
+# manifest catches silent API renames).
+IPCA_PUBLIC_API_METHOD_COUNT: int = 8
+
 # --- Phase 4h: 100-signal manifest ---
 #
 # Theme buckets mirror the table at

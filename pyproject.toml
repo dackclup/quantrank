@@ -42,6 +42,14 @@ factors = [
   # deps (mlflow, lightgbm, cvxpy, pymongo, redis, gym, jupyter,
   # nbconvert, etc.); CI install footprint bump ~150-180 MB.
   "pyqlib>=0.9.7,<0.10",
+  # Phase 4k scout — Kelly-Pruitt-Su IPCA latent factor model. MIT
+  # licensed (verified via LICENSE.md 2026-05-19). Pin to 0.6.x band
+  # because upstream last released 2021-04-22 (~5 years stale); any
+  # future minor would require deliberate manual upgrade + re-
+  # verification of the 8-method `INSTRUMENTED_PCA_PUBLIC_API` tuple.
+  # Heavy transitive: numba (~50 MB w/ llvmlite ~30 MB); CI install
+  # footprint bump ~50-80 MB — substantially lighter than pyqlib.
+  "ipca>=0.6.7,<0.7",
 ]
 
 [tool.setuptools.packages.find]
