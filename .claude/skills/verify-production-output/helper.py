@@ -154,7 +154,20 @@ def section_a_schema(metadata: dict, baseline: dict | None) -> tuple[int, int]:
     return warnings, failures
 
 
-def section_b_tier2(stocks: list[dict]) -> tuple[int, int]:
+def section_b_tier2(stocks: list[dict], metadata: dict) -> tuple[int, int]:
+    """Tier-2 fired-flag inventory — post-PR-#79 (Phase 4g, 2026-05-15).
+
+    `non_reliance_filing` (Schroeder 2024) and `auditor_change`
+    (Cohen-Malloy-Nguyen 2020) are now ACTIVE — non-zero fires in the
+    normal cohort band are EXPECTED, not bugs. The regression guard
+    inverts: if the Tier-2 feature flag is OFF at compute time (proxied
+    by `metadata.tier2_coverage_pct` ≤ 5%), then any fire is the bug.
+
+    Soft bands per academic priors:
+      going_concern_disclosure  — Mayew 2015: 1-3% expected; warn > 5%
+      non_reliance_filing        — Schroeder 2024: rare Item 4.02s; warn > 2%
+      auditor_change             — Cohen-Malloy-Nguyen 2020: 1-5%; warn > 5%
+    """
     _section("B", "Tier-2 fired-flag inventory")
     warnings = failures = 0
 
@@ -170,8 +183,20 @@ def section_b_tier2(stocks: list[dict]) -> tuple[int, int]:
         if t2.get("auditor_change"):
             ac.append(s.get("ticker"))
 
-    # Soft warning thresholds for going_concern (Mayew expects 1-3%)
-    pct_gc = 100 * len(gc) / max(len(stocks), 1)
+    n = max(len(stocks), 1)
+    pct_gc = 100 * len(gc) / n
+    pct_nr = 100 * len(nr) / n
+    pct_ac = 100 * len(ac) / n
+
+    # Proxy for `compute/scoring/tier2._EIGHT_K_DEFENSES_ENABLED`. The
+    # compute layer doesn't currently emit an explicit `tier2_enabled` field
+    # (issue #117 leaves this as a future enhancement); coverage near 0%
+    # indicates the defenses produced no signal — either disabled at compute
+    # time or the entire layer failed.
+    t2_cov = metadata.get("tier2_coverage_pct") or 0
+    tier2_enabled = t2_cov > 5
+
+    # going_concern: Mayew 2015 expects 1-3% FP rate
     if pct_gc > 5:
         _emit(WARN, "going_concern_disclosure",
               f"{len(gc)} ({pct_gc:.1f}%) — over 5% FP-rate target, see issue #16")
@@ -179,17 +204,37 @@ def section_b_tier2(stocks: list[dict]) -> tuple[int, int]:
     else:
         _emit(OK, "going_concern_disclosure", f"{len(gc)} ({pct_gc:.1f}%)")
 
-    # Hard contract checks — feature flag must hold
-    if nr:
-        _emit(FAIL, "non_reliance_filing", f"{len(nr)} fired (expected 0; flag broken?)")
-        failures += 1
+    # non_reliance_filing — Schroeder 2024 (Item 4.02, 365d lookback).
+    # Item 4.02 filings are rare; expect 0-2% of universe.
+    if not tier2_enabled:
+        if nr:
+            _emit(FAIL, "non_reliance_filing",
+                  f"{len(nr)} fired but Tier-2 appears disabled (tier2_coverage_pct={t2_cov}%) — flag broken?")
+            failures += 1
+        else:
+            _emit(OK, "non_reliance_filing", "0 (Tier-2 disabled — contract holds)")
+    elif pct_nr > 2:
+        _emit(WARN, "non_reliance_filing",
+              f"{len(nr)} ({pct_nr:.1f}%) — over 2% expected band (Schroeder 2024)")
+        warnings += 1
     else:
-        _emit(OK, "non_reliance_filing", "0 (deferred-mode contract holds)")
-    if ac:
-        _emit(FAIL, "auditor_change", f"{len(ac)} fired (expected 0; flag broken?)")
-        failures += 1
+        _emit(OK, "non_reliance_filing", f"{len(nr)} ({pct_nr:.1f}%)")
+
+    # auditor_change — Cohen-Malloy-Nguyen 2020 (Item 4.01, 730d lookback).
+    # Annotate-only; expected 1-5% of universe in the lookback window.
+    if not tier2_enabled:
+        if ac:
+            _emit(FAIL, "auditor_change",
+                  f"{len(ac)} fired but Tier-2 appears disabled (tier2_coverage_pct={t2_cov}%) — flag broken?")
+            failures += 1
+        else:
+            _emit(OK, "auditor_change", "0 (Tier-2 disabled — contract holds)")
+    elif pct_ac > 5:
+        _emit(WARN, "auditor_change",
+              f"{len(ac)} ({pct_ac:.1f}%) — over 5% expected band (Cohen-Malloy-Nguyen 2020)")
+        warnings += 1
     else:
-        _emit(OK, "auditor_change", "0 (deferred-mode contract holds)")
+        _emit(OK, "auditor_change", f"{len(ac)} ({pct_ac:.1f}%)")
 
     return warnings, failures
 
@@ -348,7 +393,7 @@ def main(argv: list[str] | None = None) -> int:
     total_warnings = total_failures = 0
     for fn in (
         lambda: section_a_schema(metadata, baseline),
-        lambda: section_b_tier2(stocks),
+        lambda: section_b_tier2(stocks, metadata),
         lambda: section_c_coverage(stocks),
         lambda: section_d_top5(stocks),
         lambda: section_e_risk_flags(stocks),

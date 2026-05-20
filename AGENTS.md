@@ -280,12 +280,15 @@ note cross-tool-specific points only:
   #144 ✅ · PR E SKILL.md restructure #145 ✅ · PR F skill desc audit
   #146 ✅ · PR G PHASE_STATUS.md summary hoist #147 ✅ — **sequence
   complete**.
-- **Epic #125 Item 3 PR 2 in flight** — composite-score diff vs main +
-  top-10 movers append to PR 1's sticky comment. PR 1 (#140) shipped
-  the workflow skeleton; PR 2 adds `tools/pre_merge_diff.py` (18
-  offline tests), workflow integration (fetch main via
-  `git show origin/main:...`), and the failure-path comment that PR 1
-  deferred. Closes substantive remainder of Epic #125.
+- **Epic #125 Item 3 PR 2 merged via PR #148** (2026-05-20) — composite
+  diff + top-10 movers + universe-size delta + failure-path comment.
+  Closes substantive remainder of Epic #125.
+- **Issue #117 fix in flight** — `verify-production-output/helper.py`
+  Section B Tier-2 stale expectations post-PR-#79. Soft-band check
+  against Schroeder 2024 / Cohen-Malloy-Nguyen 2020 priors; regression
+  guard now fires only when a flag fires while `tier2_coverage_pct`
+  ≤ 5%. Paired with the 2026-05-20 quarterly cohort audit comment on
+  issue #130 (epic #125 Item 5 recurring tracker).
 
 ## Claude-Code-specific tooling
 

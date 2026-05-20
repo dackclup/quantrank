@@ -138,6 +138,9 @@ release tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releas
 (2026-05-17, `6d414a9b`).
 
 **Recently merged**:
+- [PR #148](https://github.com/dackclup/quantrank/pull/148) —
+  Pre-merge production simulation PR 2 (composite diff + top-10 movers,
+  closes Epic #125 Item 3)
 - [PR #147](https://github.com/dackclup/quantrank/pull/147) —
   PHASE_STATUS.md "Current state" summary block hoist (Optimization PR G)
 - [PR #146](https://github.com/dackclup/quantrank/pull/146) —
@@ -148,17 +151,15 @@ release tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releas
   WORKFLOW.md archive Phase 0-3 → docs/archived/ (Optimization PR D)
 - [PR #143](https://github.com/dackclup/quantrank/pull/143) —
   AGENTS.md sync + dedup with CLAUDE.md (Optimization PR C)
-- [PR #142](https://github.com/dackclup/quantrank/pull/142) —
-  CLAUDE.md token diet 236 → 172 lines (Optimization PR B)
 
-**Epic #125 Item 3 PR 2 in flight** — composite-score diff vs main +
-top-10 movers appended to PR 1's sticky comment. PR 1 (#140) shipped
-the workflow skeleton; PR 2 adds `tools/pre_merge_diff.py` (pure
-Python, 18 offline tests) plus the workflow steps that fetch main's
-committed `frontend/public/data/` via `git show origin/main:...`,
-compute per-ticker score+rank deltas, and post the diff table inline.
-Failure-path comment also lands (PR 1 was silent on red checks).
-Closes the substantive remainder of Epic [#125](https://github.com/dackclup/quantrank/issues/125).
+**Issue #117 fix in flight** — `verify-production-output/helper.py`
+Section B stale expectations: post-PR-#79 (Phase 4g) the 8-K Tier-2
+defenses are ACTIVE, so non-zero fires for `non_reliance_filing` and
+`auditor_change` are EXPECTED. Replaces "expected 0; flag broken?"
+hard-fail with soft-band check against academic priors (Schroeder 2024
+/ Cohen-Malloy-Nguyen 2020); inverts the regression guard to fire only
+when a flag fires while `tier2_coverage_pct` ≤ 5%. Paired with the
+2026-05-20 quarterly cohort audit on issue #130.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight
