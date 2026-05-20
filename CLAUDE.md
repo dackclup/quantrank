@@ -132,12 +132,19 @@ for the full 4-step pattern + Section I forcing example.
 
 ## Phase status
 
-Current schema **`0.9.2-phase4h.2`** · defense layer **17** (7 vetoes
-+ 10 annotates + 5 numerical guards + `manipulation_index`) · latest
-release tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5)
+Current schema **`0.9.2-phase4h.2`** · defense layer **17 declared
+veto+annotate flags** of [**27 boolean flags actually emitted**](https://github.com/dackclup/quantrank/issues/130#issuecomment-4496605644)
+(7 active vetoes + 10 annotates + 5 method-applicability +
+5 informational; epic [#150](https://github.com/dackclup/quantrank/issues/150)
+Phase 2 splits the method-applicability flags out of `manipulation_index`).
+Plus 5 numerical guards + `manipulation_index` rollup. Latest release
+tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5)
 (2026-05-17, `6d414a9b`).
 
 **Recently merged**:
+- [PR #153](https://github.com/dackclup/quantrank/pull/153) —
+  Epic #150 Phase 1.3: pre-merge-prod-sim workflow dogfood (composite.py
+  docstring cross-ref; sticky comment + diff table verified end-to-end)
 - [PR #151](https://github.com/dackclup/quantrank/pull/151) —
   Phase 0 of epic #150: Known Limitations + pillar label clarification
 - [PR #149](https://github.com/dackclup/quantrank/pull/149) —
@@ -149,25 +156,20 @@ release tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releas
   PHASE_STATUS.md "Current state" summary block hoist (Optimization PR G)
 - [PR #146](https://github.com/dackclup/quantrank/pull/146) —
   Skill description audit + light polish (Optimization PR F)
-- [PR #145](https://github.com/dackclup/quantrank/pull/145) —
-  SKILL.md restructure + TOC + Rules-at-a-glance (Optimization PR E)
 
-**Epic #150 Phase 1.3 smoke-test in flight** — throwaway PR that
-adds a docstring cross-reference in `compute/scoring/composite.py`
-(pointing to epic #150 Phase 3 correlation analysis). Triggers path
-filter `compute/scoring/**` to verify [`.github/workflows/pre-merge-prod-sim.yml`](https://github.com/dackclup/quantrank/blob/main/.github/workflows/pre-merge-prod-sim.yml)
-runs end-to-end (sticky comment + diff table) — first real dogfood
-since PR #148 + PR #149 didn't trigger the path filter on themselves.
+**Epic #150 Phase 1.2 in flight** — reconcile defense layer headline
+count (17 → 27 boolean flags emitted). Phase status reframed to
+declare 17 veto+annotate flags PLUS 10 method-applicability +
+informational flags discovered in the [2026-05-20 quarterly audit](https://github.com/dackclup/quantrank/issues/130#issuecomment-4496605644).
+Doc-only — no compute / schema change. Phase 2 of epic #150 splits
+the method-applicability flags out of `manipulation_index` (current
+semantic conflation per `compute/scoring/loss_chance.py:74-75`).
 Epic [#150](https://github.com/dackclup/quantrank/issues/150) META-
 epic tracks all 17 findings from the 2-round scrutinize session
-(2026-05-20, process + analytical). Phase 0 (this PR) closes the
-user-trust gaps: `docs/METHODOLOGY.md` adds §"Known limitations"
-(survivorship bias, percentile-rank semantics, pillar correlation,
-extreme-estimate semantic conflation, weight rationale, top-decile
-veto by-construction, calibration drift); `PillarRadarChart.tsx`
-sub-header clarifies scores are percentile rank against current
-S&P 500, not absolute. Phases 1-3 follow (defense layer inventory
-reconcile 17 → 27, threshold recalibration, correlation analysis).
+(2026-05-20, process + analytical). Phase 0 closed (PR #151).
+Phase 1.3 dogfood closed (PR #153). Phase 1.2 in progress (this PR).
+Phases 1.4-1.6 + Phase 2-3 remaining (threshold recalibration +
+correlation analysis + structural).
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight

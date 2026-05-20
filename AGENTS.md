@@ -289,13 +289,15 @@ note cross-tool-specific points only:
   Paired with quarterly cohort audit comment on issue #130.
 - **Phase 0 of epic #150 merged via PR #151** (2026-05-20) — adds
   METHODOLOGY.md §"Known limitations" + PillarRadarChart label fix.
-  Cross-tool agents should read epic #150 before touching
+- **Phase 1.3 smoke-test merged via PR #153** (2026-05-20) — dogfooded
+  the `pre-merge-prod-sim.yml` workflow end-to-end. Sticky comment +
+  diff table + Top-10 movers rendering verified.
+- **Phase 1.2 in flight** — reconcile CLAUDE.md defense layer headline
+  count (17 → 27 boolean flags emitted; 17 declared veto+annotate
+  flags PLUS 10 method-applicability + informational flags discovered
+  in [#130 quarterly audit](https://github.com/dackclup/quantrank/issues/130#issuecomment-4496605644)).
+  Doc-only. Cross-tool agents should read epic #150 before touching
   `compute/scoring/**` or `compute/valuation/**` paths.
-- **Phase 1.3 smoke-test in flight** — throwaway PR with docstring
-  cross-reference in `compute/scoring/composite.py` to dogfood the
-  `pre-merge-prod-sim.yml` workflow (path filter triggers on
-  `compute/scoring/**`). PR #148 + PR #149 didn't trigger the filter
-  on themselves; first real end-to-end test.
 
 ## Claude-Code-specific tooling
 
