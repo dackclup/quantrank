@@ -100,6 +100,14 @@ export type Metadata = {
   //                             + osap_signals_used + osap_excluded_signals
   // Null on legacy outputs from before 0.9.2-phase4h.2.
   osap_signals_dropped_no_long_short: string[] | null;
+  // Epic #150 Phase 1.6 (issue #155) — explicit compute-time state of
+  // the Tier-2 8-K defenses (`compute/scoring/tier2._EIGHT_K_DEFENSES_ENABLED`).
+  // Optional + nullable: absent / null on legacy outputs written before
+  // 0.9.3-phase4h.3; consumers should treat both as "assume enabled"
+  // (matches the Pydantic default). The static site doesn't currently
+  // render this; the verify-helper Section B branch is the primary
+  // consumer.
+  tier2_enabled?: boolean | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors

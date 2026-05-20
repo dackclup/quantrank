@@ -132,7 +132,7 @@ for the full 4-step pattern + Section I forcing example.
 
 ## Phase status
 
-Current schema **`0.9.2-phase4h.2`** · defense layer **17 declared
+Current schema **`0.9.3-phase4h.3`** · defense layer **17 declared
 veto+annotate flags** of [**27 boolean flags actually emitted**](https://github.com/dackclup/quantrank/issues/130#issuecomment-4496605644)
 (7 active vetoes + 10 annotates + 5 method-applicability +
 5 informational; epic [#150](https://github.com/dackclup/quantrank/issues/150)
@@ -164,12 +164,11 @@ tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releases/tag/v
 so the next quarterly cohort audit (2026-08-19) reads the full
 annotate-flag table off the helper instead of grepping source; paired
 with `tests/test_verify_helper.py` covering Section A schema reporter +
-Section B 4-branch Tier-2 matrix + the new Section J. Phase 1.6 tracker
-issue [#155](https://github.com/dackclup/quantrank/issues/155) filed
-2026-05-20 for the deferred `tier2_enabled: bool` metadata field. Phase
-0 + 1.1-1.6 complete; Phase 1 of epic #150 closed. Phases 2-3 remaining
-(threshold recalibration + correlation analysis + structural). See
-epic [#150](https://github.com/dackclup/quantrank/issues/150).
+Section B 4-branch Tier-2 matrix + the new Section J. Phase 1 of
+epic #150 (1.1-1.5) closed by PR #156; Phase 1.6 tracked separately
+under issue [#155](https://github.com/dackclup/quantrank/issues/155).
+Phases 2-3 remaining (threshold recalibration + correlation analysis +
+structural). See epic [#150](https://github.com/dackclup/quantrank/issues/150).
 
 **Skill-trigger-flip merged via PR #157** (2026-05-20) — 5 vendored
 `mattpocock-*` skill description lines rewritten from `Use when user
@@ -189,8 +188,8 @@ from PR #157 ("local sharpness wins on description; upstream wins on
 body"). Doc-only, no compute / schema change. Use this skill before
 pulling new commits from any vendored upstream.
 
-**3 workflow skills bundle in flight (this PR, off epic #150 critical
-path)** — three new project-internal workflow skills:
+**3 workflow skills bundle merged via PR #159** (2026-05-20) — three
+new project-internal workflow skills:
 - `claude-md-lockstep-check` — preflight that CLAUDE.md + AGENTS.md
   were both touched on the current branch (enforces the §Conventions
   "ship with every PR" rule that has no CI guard today)
@@ -204,6 +203,17 @@ path)** — three new project-internal workflow skills:
   2026-08-19 (Q3)
 
 Doc-only, no compute / schema change. Skill count 39 → 42.
+
+**Epic #150 Phase 1.6 in flight (this PR, closes issue #155)** —
+explicit `tier2_enabled: bool` field added to `Metadata` (sourced from
+`compute/scoring/tier2._EIGHT_K_DEFENSES_ENABLED` at writer time);
+verify-helper Section B now branches on the explicit flag instead of
+inferring from `tier2_coverage_pct > 5%`, with legacy-snapshot
+fallback. Schema bump `0.9.2-phase4h.2` → `0.9.3-phase4h.3`. Closes
+the last open AC item carried forward from issue #117 (PR #149
+deferred), and lets a future emergency-disable of Tier-2 surface
+explicitly in the verifier output instead of silently masking
+itself. Defense surface unchanged.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight

@@ -107,6 +107,11 @@
       "required": false,
       "default": null
     },
+    "tier2_enabled": {
+      "type": "bool",
+      "required": false,
+      "default": true
+    },
     "universe": {
       "type": "str",
       "required": true,

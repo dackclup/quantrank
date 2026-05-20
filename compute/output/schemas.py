@@ -136,6 +136,16 @@ class Metadata(BaseModel):
     # the hardcoded port=01/10 filter. Surfaced here so the gap is
     # auditable. ``None`` when no signals were dropped on this dimension.
     osap_signals_dropped_no_long_short: list[str] | None = None
+    # Epic #150 Phase 1.6 (issue #155) — explicit compute-time state of
+    # the Tier-2 8-K defenses (`compute/scoring/tier2._EIGHT_K_DEFENSES_ENABLED`).
+    # Lets `verify-production-output/helper.py` Section B branch on the
+    # actual flag instead of inferring from `tier2_coverage_pct > 5%`,
+    # so a future emergency-disable PR doesn't silently mask itself.
+    # Defaults to ``True`` for back-compat with snapshots written before
+    # 0.9.3-phase4h.3 (the field is required at the wire level but the
+    # helper falls back to coverage-based inference when the key is
+    # absent from a legacy `metadata.json`).
+    tier2_enabled: bool = True
 
 
 class RawMetrics(BaseModel):

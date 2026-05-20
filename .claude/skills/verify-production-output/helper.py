@@ -193,13 +193,18 @@ def section_b_tier2(stocks: list[dict], metadata: dict) -> tuple[int, int]:
     pct_nr = 100 * len(nr) / n
     pct_ac = 100 * len(ac) / n
 
-    # Proxy for `compute/scoring/tier2._EIGHT_K_DEFENSES_ENABLED`. The
-    # compute layer doesn't currently emit an explicit `tier2_enabled` field
-    # (issue #117 leaves this as a future enhancement); coverage near 0%
-    # indicates the defenses produced no signal — either disabled at compute
-    # time or the entire layer failed.
+    # Read the explicit compute-time flag emitted since 0.9.3-phase4h.3
+    # (epic #150 Phase 1.6, issue #155). On legacy snapshots written before
+    # that schema bump the key is absent — fall back to the prior coverage-
+    # based heuristic (`tier2_coverage_pct > 5%`) so the verifier can still
+    # run against an older `metadata.json`.
     t2_cov = metadata.get("tier2_coverage_pct") or 0
-    tier2_enabled = t2_cov > 5
+    if "tier2_enabled" in metadata:
+        tier2_enabled = bool(metadata["tier2_enabled"])
+        disabled_reason = "tier2_enabled=False"
+    else:
+        tier2_enabled = t2_cov > 5
+        disabled_reason = f"tier2_coverage_pct={t2_cov}%"
 
     # going_concern: Mayew 2015 expects 1-3% FP rate
     if pct_gc > 5:
@@ -214,7 +219,7 @@ def section_b_tier2(stocks: list[dict], metadata: dict) -> tuple[int, int]:
     if not tier2_enabled:
         if nr:
             _emit(FAIL, "non_reliance_filing",
-                  f"{len(nr)} fired but Tier-2 appears disabled (tier2_coverage_pct={t2_cov}%) — flag broken?")
+                  f"{len(nr)} fired but Tier-2 appears disabled ({disabled_reason}) — flag broken?")
             failures += 1
         else:
             _emit(OK, "non_reliance_filing", "0 (Tier-2 disabled — contract holds)")
@@ -230,7 +235,7 @@ def section_b_tier2(stocks: list[dict], metadata: dict) -> tuple[int, int]:
     if not tier2_enabled:
         if ac:
             _emit(FAIL, "auditor_change",
-                  f"{len(ac)} fired but Tier-2 appears disabled (tier2_coverage_pct={t2_cov}%) — flag broken?")
+                  f"{len(ac)} fired but Tier-2 appears disabled ({disabled_reason}) — flag broken?")
             failures += 1
         else:
             _emit(OK, "auditor_change", "0 (Tier-2 disabled — contract holds)")

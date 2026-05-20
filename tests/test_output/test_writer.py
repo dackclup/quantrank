@@ -79,6 +79,26 @@ def test_write_metadata_json_round_trip(tmp_path):
     payload = json.loads(out.read_text())
     assert payload["universe_size"] == 503
     assert payload["version"] == "0.3.0-phase2"
+    # Phase 1.6 (issue #155) — `tier2_enabled` defaults True and is
+    # always serialized so the verify-helper can read the explicit
+    # state rather than inferring from `tier2_coverage_pct`.
+    assert payload["tier2_enabled"] is True
+
+
+def test_write_metadata_json_tier2_disabled_round_trip(tmp_path):
+    meta = Metadata(
+        version="0.9.3-phase4h.3",
+        last_update_utc="2026-05-20T22:00:00Z",
+        next_update_utc="2026-05-27T22:00:00Z",
+        universe="SP500",
+        universe_size=502,
+        compute_run_id="run-456",
+        git_commit="def456",
+        tier2_enabled=False,
+    )
+    out = write_metadata_json(meta, tmp_path)
+    payload = json.loads(out.read_text())
+    assert payload["tier2_enabled"] is False
 
 
 def test_write_stock_detail_round_trip(tmp_path):

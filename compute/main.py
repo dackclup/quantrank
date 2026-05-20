@@ -106,6 +106,7 @@ from compute.scoring.restatement_filings import (
 from compute.scoring.risk_overlay import compute_risk_flags
 from compute.scoring.sanity import compute_mos_trailing_ic
 from compute.scoring.tier2 import (
+    _EIGHT_K_DEFENSES_ENABLED,
     Tier2Result,
     fetch_tier2_for_ticker,
     tier2_events_dict,
@@ -1470,6 +1471,7 @@ def run_weekly_compute() -> int:
         osap_signals_dropped_no_long_short=(
             osap_signals_dropped_no_long_short_list or None
         ),
+        tier2_enabled=_EIGHT_K_DEFENSES_ENABLED,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)
