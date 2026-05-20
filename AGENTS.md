@@ -278,8 +278,14 @@ note cross-tool-specific points only:
   PR A drift fix #141 ✅ · PR B CLAUDE.md token diet #142 ✅ ·
   PR C AGENTS.md sync + dedup #143 ✅ · PR D WORKFLOW.md archive
   #144 ✅ · PR E SKILL.md restructure #145 ✅ · PR F skill desc audit
-  #146 ✅ · **PR G this one** (PHASE_STATUS.md "Current state" summary
-  hoisted to top) — **last in sequence**.
+  #146 ✅ · PR G PHASE_STATUS.md summary hoist #147 ✅ — **sequence
+  complete**.
+- **Epic #125 Item 3 PR 2 in flight** — composite-score diff vs main +
+  top-10 movers append to PR 1's sticky comment. PR 1 (#140) shipped
+  the workflow skeleton; PR 2 adds `tools/pre_merge_diff.py` (18
+  offline tests), workflow integration (fetch main via
+  `git show origin/main:...`), and the failure-path comment that PR 1
+  deferred. Closes substantive remainder of Epic #125.
 
 ## Claude-Code-specific tooling
 

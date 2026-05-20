@@ -138,6 +138,8 @@ release tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releas
 (2026-05-17, `6d414a9b`).
 
 **Recently merged**:
+- [PR #147](https://github.com/dackclup/quantrank/pull/147) —
+  PHASE_STATUS.md "Current state" summary block hoist (Optimization PR G)
 - [PR #146](https://github.com/dackclup/quantrank/pull/146) —
   Skill description audit + light polish (Optimization PR F)
 - [PR #145](https://github.com/dackclup/quantrank/pull/145) —
@@ -148,20 +150,17 @@ release tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releas
   AGENTS.md sync + dedup with CLAUDE.md (Optimization PR C)
 - [PR #142](https://github.com/dackclup/quantrank/pull/142) —
   CLAUDE.md token diet 236 → 172 lines (Optimization PR B)
-- [PR #141](https://github.com/dackclup/quantrank/pull/141) — `.md`
-  drift fix + YAML frontmatter fix (Optimization PR A)
 
-**`.md` optimization PR G in flight (LAST in sequence)** —
-PHASE_STATUS.md restructure: hoisted a "Current state" summary block
-to the top (schema · defense · release · recently-merged · in-flight ·
-next deliverables · open issues) so future sessions reading
-PHASE_STATUS.md don't have to parse 900 lines of chronological history
-to find the immediate state. Chronological detail below the summary
-stays intact.
+**Epic #125 Item 3 PR 2 in flight** — composite-score diff vs main +
+top-10 movers appended to PR 1's sticky comment. PR 1 (#140) shipped
+the workflow skeleton; PR 2 adds `tools/pre_merge_diff.py` (pure
+Python, 18 offline tests) plus the workflow steps that fetch main's
+committed `frontend/public/data/` via `git show origin/main:...`,
+compute per-ticker score+rank deltas, and post the diff table inline.
+Failure-path comment also lands (PR 1 was silent on red checks).
+Closes the substantive remainder of Epic [#125](https://github.com/dackclup/quantrank/issues/125).
 
 **Next deliverables** (pick by appetite):
-- **Epic #125 Item 3 PR 2** — composite-score diff vs main + top-10
-  movers comment appended to PR 1's sticky comment
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight
   slots already declared in `FLAG_WEIGHTS`)
 - **Phase 4i.1 / 4j.1 / 4k.1** — JKP / Qlib / IPCA integration PRs
