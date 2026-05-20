@@ -3,6 +3,10 @@
 Phase 3 composite weights per ``PHASE_STATUS.md``. ``sentiment`` and ``ml``
 remain null in Phase 3 — their combined 0.20 weight is redistributed
 pro-rata across the active pillars (effective weights divided by 0.80).
+
+See epic #150 Phase 3 for planned pillar correlation analysis + weight
+re-justification (Quality + Profitability ROE double-counting, ~33%
+effective composite weight on ROE-like signals vs nominal 27%).
 """
 
 from __future__ import annotations
