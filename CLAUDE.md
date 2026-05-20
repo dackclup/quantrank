@@ -138,14 +138,18 @@ non-connector-bound work.
   the accounting equation is verified on real data. The Phase 4h →
   4h.2 retrofit (PRs #112 → #118 → #124) is the forcing precedent.
   See `WORKFLOW.md` §Observability-Before-Wiring Pattern.
-- **CLAUDE.md ships with every PR.** Every PR — current and future,
-  regardless of type (feat / fix / ci / docs / chore) — must include
-  a CLAUDE.md edit that records what is changing and why. At minimum,
-  a one-paragraph note under §Phase status (PR in flight) or in the
-  appropriate section (new gotcha, new convention, new connector,
-  layout change, command added). The PR is incomplete until CLAUDE.md
-  reflects it; reviewers should reject PRs that touch code/workflows/
-  schemas without a corresponding CLAUDE.md diff.
+- **CLAUDE.md + AGENTS.md ship with every PR.** Every PR — current and
+  future, regardless of type (feat / fix / ci / docs / chore) — must
+  include edits to **both** CLAUDE.md (Claude-specific session context)
+  and [`AGENTS.md`](AGENTS.md) (cross-tool agent instructions read by
+  Copilot / Cursor / Devin) that record what is changing and why. At
+  minimum, a one-paragraph note under §Phase status (PR in flight) or
+  in the appropriate section (new gotcha, new convention, new
+  connector, layout change, command added). The two agent docs must
+  stay in lockstep so behavior is consistent across runtimes. The PR
+  is incomplete until both reflect it; reviewers should reject PRs
+  that touch code / workflows / schemas without a corresponding
+  CLAUDE.md + AGENTS.md diff.
 
 ## Gotchas
 

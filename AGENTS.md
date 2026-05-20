@@ -207,6 +207,15 @@ export function FairPriceCard(props) {  // no types
   tsc / next build / schema-check) + "what this PR does NOT touch" +
   reviewer checklist. See `pr-iteration-flow/SKILL.md` for the canonical
   template.
+- **AGENTS.md + CLAUDE.md ship with every PR.** Every PR — current and
+  future, regardless of type (feat / fix / ci / docs / chore) — must
+  include an edit to both AGENTS.md (this file) and CLAUDE.md that
+  records what is changing and why. At minimum, a paragraph under
+  §"Phase + version state" (PR in flight) or in the appropriate section
+  (new gotcha / convention / boundary / command / connector). The PR
+  is incomplete until both agent docs reflect it. Non-Claude runtimes
+  (Copilot / Cursor / Devin) read AGENTS.md; Claude reads CLAUDE.md.
+  They must stay in lockstep so behavior is consistent across agents.
 
 ## Boundaries
 
@@ -284,6 +293,16 @@ export function FairPriceCard(props) {  // no types
 - Next deliverable tracks (parallelizable): 4.5e Form 4 insider
   (~3w → v1.3.0) · 4h/4i/4j/4k factor integrations OSAP/JKP/Qlib/IPCA
   (~6w → v1.1.0-phase4) · Phase 5 ML meta-learner (~10-12w)
+- **Epic #125 Item 3** (pre-merge production simulation) in flight via
+  [PR #140](https://github.com/dackclup/quantrank/pull/140) — closes
+  the CI-green-but-not-correct gap (Phase 4h.2 Part 1 silent-drop #116
+  was the forcing example). PR 1 ships the workflow harness
+  (`.github/workflows/pre-merge-prod-sim.yml`): warm-cache restore via
+  the cron's `cache-v4` key + `python -m compute.main` against the PR
+  branch + sticky PR comment with duration / universe / schema /
+  commit + PR-branch output uploaded as `pr-<n>-compute-output`
+  artifact (14-day retention). PR 2 adds the per-ticker
+  composite-score diff vs main + top-10 movers table.
 
 ## Claude-Code-specific tooling
 
