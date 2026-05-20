@@ -107,7 +107,7 @@ export function PillarRadarChart({
             Pillar breakdown
           </h2>
           <p className="mt-1 text-xs text-slate-500">
-            8 dimensions, each scored 0–100 against the universe
+            0–100 percentile rank against current S&amp;P 500 (sector-relative for Quality / Value / Growth / Profitability)
           </p>
         </div>
         {baseline && (
