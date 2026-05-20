@@ -44,7 +44,7 @@ An A-H section report. Each section answers a specific health question:
 | Section | Question | Hard failure trigger |
 |---|---|---|
 | A | Schema bumped? Coverage / latency healthy? | schema version doesn't match in-flight phase |
-| B | Tier-2 fired-flag counts within expectations? | `non_reliance_filing` or `auditor_change` > 0 while feature flag is False |
+| B | Tier-2 fired-flag counts within expectations? | post-PR-#79: soft-band check against academic cohort priors; hard fail only if a flag fires while `tier2_coverage_pct` ≤ 5% (defenses disabled at compute time) |
 | C | Fair-price + data-quality coverage | fair-price coverage < 95% |
 | D | Top-5 composition (raw + effective + entered/exited) | rotation invariant violated |
 | E | Risk-flag totals vs baseline | unexpected delta beyond drift |
@@ -89,9 +89,12 @@ proceed:
 These must pass for the deferred-mode contract to hold and for the
 universe to be consistent:
 
-- **Section B**: `non_reliance_filing` count = 0, `auditor_change` count = 0
-  while `_EIGHT_K_DEFENSES_ENABLED = False` (current Phase 3d state).
-  If either fires non-zero the feature flag is broken — halt and
+- **Section B**: post-PR-#79 (Phase 4g, 2026-05-15) the 8-K Tier-2
+  defenses are ACTIVE — non-zero fires in the normal cohort band are
+  expected, not bugs. Soft warn when fire-rate crosses academic priors
+  (going_concern > 5%, non_reliance_filing > 2%, auditor_change > 5%).
+  The hard-fail inverts: any fire while `tier2_coverage_pct` ≤ 5%
+  (proxy for `_EIGHT_K_DEFENSES_ENABLED = False`) is a real bug —
   investigate `compute/scoring/tier2.py`.
 - **Section H**: `metadata.universe_size` == `len(rankings.json.stocks)`
   == `len(glob frontend/public/data/stocks/*.json)`. Mismatch ≥ 2 means
