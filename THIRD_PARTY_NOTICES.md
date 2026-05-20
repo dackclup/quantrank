@@ -1,0 +1,56 @@
+# Third-Party Notices
+
+QuantRank vendors third-party code under permissive open-source
+licenses. Each entry below cites the source, license, and the path
+where the vendored copy lives in this repo.
+
+---
+
+## karpathy-guidelines (Claude Code skill)
+
+- **Source**: <https://github.com/multica-ai/andrej-karpathy-skills>
+- **License**: MIT (declared in upstream `README.md` § License + each
+  skill's YAML frontmatter `license: MIT`; upstream has no standalone
+  `LICENSE` file at the time of vendoring, 2026-05-20)
+- **Vendored at**: `.claude/skills/portable-karpathy-guidelines/SKILL.md`
+- **Vendored date**: 2026-05-20
+- **Upstream commit SHA**: `2c606141936f1eeef17fa3043a72095b4765b9c2`
+- **Upstream first commit**: 2026-01-27
+
+### MIT License (full text)
+
+The standard MIT License text, applied per upstream's `license: MIT`
+declaration. Copyright attributed to the upstream repository owner
+(multica-ai contributors) absent a more specific copyright line.
+
+```
+MIT License
+
+Copyright (c) 2026 multica-ai contributors
+(per https://github.com/multica-ai/andrej-karpathy-skills)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+### Attribution note
+
+The Karpathy guidelines themselves are derived from
+[Andrej Karpathy's observations](https://x.com/karpathy/status/2015883857489522876)
+on LLM coding pitfalls; the upstream `multica-ai/andrej-karpathy-skills`
+repo is the codification of those observations into a Claude Code skill.
