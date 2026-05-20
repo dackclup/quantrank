@@ -138,6 +138,9 @@ release tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releas
 (2026-05-17, `6d414a9b`).
 
 **Recently merged**:
+- [PR #142](https://github.com/dackclup/quantrank/pull/142) —
+  CLAUDE.md token diet 236 → 172 lines (Optimization PR B); the
+  multi-session audit pattern moved to AGENTS.md
 - [PR #141](https://github.com/dackclup/quantrank/pull/141) — `.md`
   drift fix + YAML frontmatter fix (Optimization PR A)
 - [PR #140](https://github.com/dackclup/quantrank/pull/140) —
@@ -145,6 +148,11 @@ release tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releas
   + Karpathy LLM-Wiki skill vendored
 - [PR #124](https://github.com/dackclup/quantrank/pull/124) — Phase
   4h.2 Part 2 (multi-port OSAP adapter + silent-drop diagnostic)
+
+**`.md` optimization PR C in flight** — AGENTS.md sync + dedup with
+CLAUDE.md: Tech stack / Commands / Project structure / Phase + version
+state now reference CLAUDE.md as canonical rather than duplicating.
+386 → ~250 lines.
 
 **Next deliverables** (pick by appetite):
 - **Epic #125 Item 3 PR 2** — composite-score diff vs main + top-10

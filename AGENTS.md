@@ -9,34 +9,26 @@
 
 ## Tech stack
 
-- **Python 3.11+** — pandas 2.2 · edgartools 2.30 · pydantic 2.6 ·
-  tenacity 8.2 · BeautifulSoup 4 · lxml 5 · pytest 8 · ruff 0.4 ·
-  pyarrow 15 · yfinance 0.2
-- **Next.js 14.2** (App Router, static export) · React 18.3 ·
-  TypeScript 5.4 · Tailwind 3.4 · Recharts 2.12
-- **GitHub Actions** for CI + weekly compute cron
-- **SEC EDGAR** + **yfinance** + Wikipedia (S&P 500 constituents) for
-  data ingestion
+See [`CLAUDE.md`](CLAUDE.md) §Stack for the canonical stack list
+(Python 3.11+ · Next.js 14.2 · pytest 8 · ruff 0.4 · etc.). Extra
+deps not auto-loaded into Claude context but relevant for build /
+test work: `pyarrow 15` (parquet on-disk caches), `yfinance 0.2`
+(price ingest). GitHub Actions runs CI + the weekly compute cron.
 
 ## Commands
+
+[`CLAUDE.md`](CLAUDE.md) §Commands has the canonical verification
+ladder. Setup + dev-loop commands that don't fit there:
 
 | Action | Command |
 |---|---|
 | Install Python deps | `pip install -e .` (from repo root) |
+| Install Python deps (with dev + factor extras) | `pip install -e ".[dev,factors]"` |
 | Install frontend deps | `cd frontend && npm install` |
-| Lint Python | `ruff check .` |
 | Auto-fix Python lint | `ruff check --fix .` |
-| Test (offline, default) | `pytest tests/ -m "not network"` |
-| Test (live SEC EDGAR) | `pytest --run-network` (requires `EDGAR_USER_AGENT` env var) |
 | Test one module | `pytest tests/test_scoring/test_tier2.py -v` |
-| Schema in-sync check | `python -m compute.output.schema_check` |
-| Schema snapshot regen | `python -m compute.output.schema_check --update-snapshot` |
-| Frontend type-check | `cd frontend && npx --no -- tsc --noEmit` |
 | Frontend dev server | `cd frontend && npm run dev` (port 3000) |
-| Frontend production build | `cd frontend && npx --no -- next build` |
 | Frontend lint | `cd frontend && npm run lint` |
-| Run weekly compute locally | `python -m compute.main` (writes `frontend/public/data/`) |
-| Section A-H production scan | `python .claude/skills/verify-production-output/helper.py` |
 
 ## Testing
 
@@ -60,57 +52,48 @@
 
 ## Project structure
 
+[`CLAUDE.md`](CLAUDE.md) §Layout has the top-level path table.
+Granular tree for cross-tool agents below — annotations are
+file-purpose only. Known bugs / drift live in CLAUDE.md §Gotchas;
+this section doesn't duplicate them.
+
 ```
-compute/                          # Python compute pipeline
-├── ingest/                       # SEC EDGAR + yfinance fetchers (read/write OK)
-│   ├── fundamentals.py           # XBRL fact extraction; gotcha: shares_outstanding bug for ~12 tickers (issue #10)
+compute/                          # Python compute pipeline (read/write OK)
+├── ingest/                       # SEC EDGAR + yfinance fetchers
+│   ├── fundamentals.py           # XBRL fact extraction
 │   ├── prices.py                 # yfinance wrapper
 │   ├── filing_text.py            # 10-K narrative text fetcher
 │   └── universe.py               # S&P 500 constituents
-├── scoring/                      # 8-pillar composite + risk overlay (read/write OK)
-│   ├── pillars.py
-│   ├── composite.py              # Weighted aggregation + sector neutralization
-│   ├── risk_overlay.py           # 3 active vetoes: altman / sloan / NSI
-│   ├── tier2.py                  # Tier-2 events orchestrator; _EIGHT_K_DEFENSES_ENABLED = False until Phase 4
-│   ├── eight_k_events.py
-│   └── going_concern.py
-├── valuation/                    # Fair-price ensemble (read/write OK)
-│   ├── ensemble.py               # 6-method aggregation + outlier guard + $10K ceiling
-│   ├── dcf.py · rim.py · graham.py · multiples.py · tangible_book.py
-├── output/                       # JSON output + schema snapshot guard (⚠️ schemas)
+├── scoring/                      # 8-pillar composite + risk overlay
+│   ├── pillars.py · composite.py · risk_overlay.py
+│   ├── tier2.py                  # Tier-2 events orchestrator
+│   └── eight_k_events.py · going_concern.py · beneish.py · dechow_f.py
+├── features/                     # Factor signals (OSAP / Qlib / IPCA …)
+├── valuation/                    # 6-method fair-price ensemble + Tier-1 defenses
+│   ├── ensemble.py · dcf.py · rim.py · graham.py · multiples.py · tangible_book.py
+├── output/                       # ⚠️ schemas live here (triple lockstep)
 │   ├── schemas.py                # Pydantic models — mirror frontend/lib/types.ts
 │   ├── schema_check.py           # Drift guard against frontend/lib/schema-snapshot.json
-│   └── writer.py                 # Atomic writes for rankings + per-stock detail JSON
-├── config.py                     # Constants: thresholds, lookbacks, paths
-├── main.py                       # Weekly compute orchestrator
-└── cache/                        # 🚫 GITIGNORED — never commit cache contents
+│   └── writer.py                 # Atomic writes
+├── config.py · main.py
+└── cache/                        # 🚫 GITIGNORED — never commit
 
-frontend/                         # Next.js static site
-├── app/                          # App Router (read/write OK)
-│   ├── page.tsx                  # Rankings page
-│   └── stock/[ticker]/page.tsx   # Per-stock detail page (502 static routes)
-├── components/                   # React UI (read/write OK)
-│   ├── RankingTable.tsx · FairPriceBarChart.tsx · PillarRadarChart.tsx · Tier2EventCard.tsx · …
-├── lib/                          # ⚠️ schemas live here
-│   ├── types.ts                  # Mirrors compute/output/schemas.py
-│   ├── schema-snapshot.json      # Canonical bridge — auto-generated, do not hand-edit
-│   └── format.ts                 # Display formatters
-├── public/data/                  # 🟡 generated by compute/main.py — gitignored except production snapshots
-│   ├── metadata.json · rankings.json · stocks/<TICKER>.json
+frontend/                         # Next.js static site (read/write OK)
+├── app/                          # App Router (page.tsx · stock/[ticker]/page.tsx)
+├── components/                   # React UI (RankingTable / FairPriceBarChart / …)
+├── lib/                          # ⚠️ types.ts · schema-snapshot.json · format.ts
+├── public/data/                  # 🟡 generated by compute/main.py
 └── package.json
 
-tests/                            # pytest suite (read/write OK)
-docs/                             # Academic methodology + research findings (read/write OK)
-.claude/skills/                   # 38 loaded skills + planning docs (read/write OK)
-.github/workflows/                # CI definitions (⚠️ ask before editing)
-pyproject.toml                    # Python project config + ruff + pytest (⚠️ ask before deps changes)
+tests/                            # pytest suite
+docs/                             # Academic methodology + research findings
+.claude/skills/                   # 38 loaded skills + phase-N/ planning docs
+.github/workflows/                # ⚠️ ask before editing
+pyproject.toml                    # ⚠️ ask before deps changes
 
 # 🚫 Never touch
-compute/cache/                    # Local caches, gitignored
-node_modules/                     # Frontend deps, gitignored
-.next/ · dist/                    # Build output
-.env · .env.local · *.secret.*    # Secrets
-frontend/public/data/             # ⚠️ DO commit only via the CI compute job, NEVER hand-edit
+compute/cache/ · node_modules/ · .next/ · dist/ · .env* · *.secret.*
+frontend/public/data/             # commit only via CI compute job
 ```
 
 ## Code style
@@ -280,49 +263,22 @@ export function FairPriceCard(props) {  // no types
 
 ## Phase + version state
 
-- Current release tag: [`v1.2.0-phase4.5`](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5)
-  (tagged 2026-05-17 on `main` at commit `6d414a9b`)
-- Active defenses: **7 vetoes** + 10 annotates + 5 numerical guards +
-  `manipulation_index` rollup = **17 total defense layer entries**
-- Schema version: `0.9.2-phase4h.2` in `metadata.json` (see
-  [`SKILL.md`](SKILL.md) §schema-version table for full history)
-- Test suite: see CI build artifact for current count
-- Production-verified run: #51 (`b1588b2a`, 5m14s warm-cache)
-- Open Phase 4+ issues: **4** — #15 (SEC throttling) · #41 (Next 14→16
-  CVE bump) · #67 (Damodaran sector-adjusted CoE, Phase 5+) · #75
-  (PR 4b §3 IC-decay writer, Phase 5-blocked)
-- Next deliverable tracks (parallelizable): 4.5e Form 4 insider
-  (~3w → v1.3.0) · 4h/4i/4j/4k factor integrations OSAP/JKP/Qlib/IPCA
-  (~6w → v1.1.0-phase4) · Phase 5 ML meta-learner (~10-12w)
-- **Epic #125 Item 3** (pre-merge production simulation) — **PR 1 of
-  2 shipped** via [PR #140](https://github.com/dackclup/quantrank/pull/140)
-  on 2026-05-20 at commit `a52aa2de`. PR 1 landed the workflow
-  harness (`.github/workflows/pre-merge-prod-sim.yml`): warm-cache
-  restore via the cron's `cache-v4` key + `python -m compute.main`
-  against the PR branch + sticky PR comment with duration / universe
-  / schema / commit + PR-branch output uploaded as
-  `pr-<n>-compute-output` artifact (14-day retention). Dogfoods on
-  the next PR touching `compute/scoring/**` or `compute/features/**`.
-  **PR 2 next** — per-ticker composite-score diff vs main + top-10
-  movers table.
-- **Karpathy LLM Wiki gist** vendored as a reference skill at
-  `.claude/skills/karpathy-llm-wiki/SKILL.md` (same PR #140) —
-  license-pending: gist has no declared LICENSE but explicit
-  copy-paste-to-your-LLM-agent permission in the gist body; see
-  `THIRD_PARTY_NOTICES.md` § karpathy-llm-wiki. Reference-only — does
-  **not** instantiate a QuantRank wiki. Non-Claude runtimes
-  (Copilot / Cursor / Devin) can read the file directly but it has no
-  procedural triggers in their skill systems (it's a Claude Code
-  `SKILL.md` with description-based dispatch).
-- **`.md` optimization** in flight (Option D — multi-PR overhaul).
-  PR A (drift fix + YAML frontmatter fix) shipped via
-  [PR #141](https://github.com/dackclup/quantrank/pull/141). PR B
-  (CLAUDE.md token diet, 236 → ~170 lines) ships next — moves the
-  multi-session audit pattern detail to this file (AGENTS.md) and
-  compresses the Phase status / Connector / Conventions sections.
-  Subsequent PRs: C (AGENTS.md sync + dedup) · D (WORKFLOW.md archive
-  Phase 0-3) · E (SKILL.md restructure) · F (skill description audit
-  ×38) · G (PHASE_STATUS.md "Current State" summary).
+Canonical "current state" + "recently merged" + "next deliverables"
+list lives in [`CLAUDE.md`](CLAUDE.md) §Phase status. Schema-version
+history table is in [`SKILL.md`](SKILL.md). This file's role is to
+note cross-tool-specific points only:
+
+- Production-verified run: #51 (`b1588b2a`, 5m14s warm-cache) — useful
+  for non-Claude agents validating local compute output against a
+  known-good baseline.
+- Open Phase 4+ issues: #15 (SEC throttling) · #41 (Next 14→16 CVE
+  bump) · #67 (Damodaran sector-adjusted CoE, Phase 5+) · #75
+  (PR 4b §3 IC-decay writer, Phase 5-blocked).
+- **`.md` optimization sequence** (Option D — multi-PR overhaul):
+  PR A drift fix #141 ✅ · PR B CLAUDE.md token diet #142 ✅ ·
+  **PR C this one** (AGENTS.md sync + dedup) · PR D-G planned
+  (WORKFLOW.md archive · SKILL.md restructure · skill desc audit ·
+  PHASE_STATUS.md restructure).
 
 ## Claude-Code-specific tooling
 
@@ -376,11 +332,11 @@ same pattern.
 ## Companion files
 
 - [`CLAUDE.md`](CLAUDE.md) — Claude Code-specific session context;
-  auto-loaded each session
-- [`SKILL.md`](SKILL.md) — long-form QuantRank rulebook (Rules 1-16)
+  auto-loaded each session; canonical for stack / commands / phase
+  status / gotchas / conventions / connectors
+- [`SKILL.md`](SKILL.md) — long-form QuantRank rulebook (Rules 1-18)
 - [`WORKFLOW.md`](WORKFLOW.md) — per-phase task lists
 - [`PHASE_STATUS.md`](PHASE_STATUS.md) — chronological phase tracker
-- [`.claude/skills/README.md`](.claude/skills/README.md) — index of
-  loaded skills + planning docs
-- [`.claude/skills/agent-Creator.md`](.claude/skills/agent-Creator.md)
-  — the meta-guide that shaped this file
+- [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) — vendor /
+  license posture per third-party source
+- [`.claude/skills/README.md`](.claude/skills/README.md) — skill index
