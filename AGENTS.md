@@ -287,14 +287,15 @@ note cross-tool-specific points only:
   Section B post-PR-#79 soft-band against Schroeder 2024 / CMN 2020;
   regression guard now fires only when `tier2_coverage_pct` ≤ 5%.
   Paired with quarterly cohort audit comment on issue #130.
-- **Phase 0 of epic #150 in flight** — foundation reconciliation
-  roadmap covering 17 findings from 2-round scrutinize. Phase 0 (this
-  PR) lands the user-trust METHODOLOGY.md §"Known limitations"
-  section (survivorship, percentile semantics, pillar correlation,
-  extreme-estimate conflation, weight rationale, top-decile by-
-  construction, calibration drift). Phases 1-3 follow per epic
-  tracker. Cross-tool agents should read epic #150 before touching
+- **Phase 0 of epic #150 merged via PR #151** (2026-05-20) — adds
+  METHODOLOGY.md §"Known limitations" + PillarRadarChart label fix.
+  Cross-tool agents should read epic #150 before touching
   `compute/scoring/**` or `compute/valuation/**` paths.
+- **Phase 1.3 smoke-test in flight** — throwaway PR with docstring
+  cross-reference in `compute/scoring/composite.py` to dogfood the
+  `pre-merge-prod-sim.yml` workflow (path filter triggers on
+  `compute/scoring/**`). PR #148 + PR #149 didn't trigger the filter
+  on themselves; first real end-to-end test.
 
 ## Claude-Code-specific tooling
 

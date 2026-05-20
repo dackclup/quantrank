@@ -138,6 +138,10 @@ release tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releas
 (2026-05-17, `6d414a9b`).
 
 **Recently merged**:
+- [PR #151](https://github.com/dackclup/quantrank/pull/151) —
+  Phase 0 of epic #150: Known Limitations + pillar label clarification
+- [PR #149](https://github.com/dackclup/quantrank/pull/149) —
+  verify-helper Section B post-PR-#79 stale expectations (closes #117)
 - [PR #148](https://github.com/dackclup/quantrank/pull/148) —
   Pre-merge production simulation PR 2 (composite diff + top-10 movers,
   closes Epic #125 Item 3)
@@ -147,12 +151,14 @@ release tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releas
   Skill description audit + light polish (Optimization PR F)
 - [PR #145](https://github.com/dackclup/quantrank/pull/145) —
   SKILL.md restructure + TOC + Rules-at-a-glance (Optimization PR E)
-- [PR #144](https://github.com/dackclup/quantrank/pull/144) —
-  WORKFLOW.md archive Phase 0-3 → docs/archived/ (Optimization PR D)
-- [PR #143](https://github.com/dackclup/quantrank/pull/143) —
-  AGENTS.md sync + dedup with CLAUDE.md (Optimization PR C)
 
-**Phase 0 foundation reconciliation in flight (epic #150)** — META-
+**Epic #150 Phase 1.3 smoke-test in flight** — throwaway PR that
+adds a docstring cross-reference in `compute/scoring/composite.py`
+(pointing to epic #150 Phase 3 correlation analysis). Triggers path
+filter `compute/scoring/**` to verify [`.github/workflows/pre-merge-prod-sim.yml`](https://github.com/dackclup/quantrank/blob/main/.github/workflows/pre-merge-prod-sim.yml)
+runs end-to-end (sticky comment + diff table) — first real dogfood
+since PR #148 + PR #149 didn't trigger the path filter on themselves.
+Epic [#150](https://github.com/dackclup/quantrank/issues/150) META-
 epic tracks all 17 findings from the 2-round scrutinize session
 (2026-05-20, process + analytical). Phase 0 (this PR) closes the
 user-trust gaps: `docs/METHODOLOGY.md` adds §"Known limitations"
