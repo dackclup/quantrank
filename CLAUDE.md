@@ -30,7 +30,7 @@ backing.
 | `frontend/components/` | React UI (RankingTable, FairPriceBarChart, …) |
 | `frontend/public/data/` | Compute output: `metadata.json` + `rankings.json` + `stocks/<TICKER>.json` |
 | `tests/` | pytest suite (offline + `@network` gated; see CI for current count) |
-| `.claude/skills/` | 38 invocation-triggerable skills (12 QuantRank operational + 6 QR-origin portable + 6 Anthropic vendored + 9 external MIT vendored — Karpathy guidelines + 8 mattpocock + 5 external license-pending — 4 thananon/9arm-skills under disclosure see issue #137 + 1 Karpathy LLM-Wiki gist see `THIRD_PARTY_NOTICES.md` § karpathy-llm-wiki) plus phase planning docs |
+| `.claude/skills/` | 38 invocation-triggerable skills + phase planning docs. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for vendoring / license posture per source. |
 
 ## Commands
 
@@ -51,20 +51,12 @@ network"` → (if schemas touched) `schema_check` → (if frontend touched)
 `tsc --noEmit` + `next build` → (if compute output committed)
 `verify-production-output/helper.py`.
 
-**After every `workflow_dispatch` turns green** (REQUIRED 2026-05-17):
-run the existing Section A-H scan **AND** a Playwright spot-check
-against the live Vercel deployment for any PR that lands a new UI
-surface or schema bump. See
-`.claude/skills/verify-production-output/SKILL.md` §"Live UI visual
-spot-check (Section I)" for the 4-ticker matrix + sandbox / browser-
-version caveats.
-
-**Connector-aware first-line check** (post-2026-05-17): when MCP
-connectors are loaded (see §Connectors), use `mcp__vercel__list_
-deployments` → confirm `READY` → `get_runtime_logs` as the cheap
-pre-Playwright pass. The Playwright matrix is still required for any
-new UI surface, but Vercel MCP catches deploy / runtime failures
-before paying the browser-launch cost.
+**After every `workflow_dispatch` green** (REQUIRED 2026-05-17): run
+Section A-H scan + Section I Playwright spot-check for any PR landing
+a new UI surface or schema bump. See
+`.claude/skills/verify-production-output/SKILL.md`. When Vercel MCP is
+loaded, `list_deployments` → `get_runtime_logs` is the cheap pre-
+Playwright pass.
 
 ## Connectors
 
@@ -74,46 +66,16 @@ enabled (managed in Claude app Settings → Connectors):
 | Connector | Status | Use |
 |---|---|---|
 | **GitHub** | ✅ active | PRs, issues, releases, CI runs, file ops |
-| **Vercel** | ✅ active (since 2026-05-17) | first-line deploy + runtime log check before Section I Playwright; `list_deployments` / `get_deployment` / `get_deployment_build_logs` / `get_runtime_logs` |
-| **Supabase** | ✅ active (since 2026-05-17) | **reserved for Phase 5+** (user accounts, ML experiment log, insider event time-series); **not used by current code** — do not add a Supabase client to compute/ or frontend/ without an explicit PR |
-| **Sentry** | ⚪ planned | post-deploy error monitor for 502 static routes; `@sentry/nextjs` SDK wiring is a separate PR (not yet filed) — connector is registered but no events flow yet |
-| Gmail · Google Drive | ✅ active | rarely used in this project; available for cross-tool comms / doc backup |
+| **Vercel** | ✅ active (since 2026-05-17) | pre-Playwright deploy + runtime log check: `list_deployments` / `get_deployment_build_logs` / `get_runtime_logs` |
+| **Supabase** | ✅ active (since 2026-05-17) | **reserved for Phase 5+** — not used by current code; do not add a client without an explicit PR |
+| **Sentry** | ⚪ planned | post-deploy error monitor; `@sentry/nextjs` SDK wiring is a separate PR (not yet filed) |
+| Gmail · Google Drive | ✅ active | rarely used; cross-tool comms / doc backup |
 
-New sessions surface connector tools as `mcp__<name>__*` after a
-fresh start — if `ToolSearch query="vercel"` returns no matches, the
-session was started before the connector was added; restart resolves
-it. Other agent runtimes (Copilot / Cursor / Devin) don't have these
-connectors — see `AGENTS.md` § "Claude-Code-specific tooling" for the
-graceful-degradation note.
-
-## Multi-session audit pattern
-
-When an in-flight session (mid-audit, mid-PR-review) discovers it lacks
-the connector needed for a verification step — typically because the
-session started before the connector was registered — **do not restart
-mid-task**. Restart loses audit context. Instead, delegate the
-connector-bound step to a sibling session:
-
-1. **Run what you CAN** with the tools you already have (Bash, file reads,
-   GitHub MCP, Playwright via `executable_path` workaround, etc.)
-2. **Identify the gap** — list the exact `mcp__<connector>__*` calls the
-   in-flight session cannot make
-3. **Write a short, focused prompt** for a new session: the specific calls,
-   parameter values, and the report-back format you expect (markdown table
-   / fixed sections / fail-fast verdict)
-4. **Synthesize** — when the sibling session pastes its report back, merge
-   it with your own findings into the single verdict
-
-Example — Section I post-`workflow_dispatch` (`verify-production-output/SKILL.md`)
-has three steps: Vercel MCP deploy-health (Step 1), Playwright 4-ticker
-matrix (Step 2), Sentry recent issues (Step 3). A session without Vercel
-MCP runs Step 2 itself, delegates Step 1 to a sibling session, and notes
-Step 3 as deferred-until-SDK-wires.
-
-The pattern preserves session continuity. Use it for: live-UI audits, post-
-deploy log inspection, Supabase row inspection during 4.5e / Phase 5 work,
-or any other case where a single session straddles connector-bound and
-non-connector-bound work.
+If `ToolSearch query="<name>"` returns no matches, this session
+started before that connector was registered. Don't restart mid-task
+(loses audit context) — delegate the connector-bound step to a sibling
+session. See [`AGENTS.md`](AGENTS.md) §"Multi-session audit pattern"
+for the full 4-step pattern + Section I forcing example.
 
 ## Conventions
 
@@ -138,18 +100,12 @@ non-connector-bound work.
   the accounting equation is verified on real data. The Phase 4h →
   4h.2 retrofit (PRs #112 → #118 → #124) is the forcing precedent.
   See `WORKFLOW.md` §Observability-Before-Wiring Pattern.
-- **CLAUDE.md + AGENTS.md ship with every PR.** Every PR — current and
-  future, regardless of type (feat / fix / ci / docs / chore) — must
-  include edits to **both** CLAUDE.md (Claude-specific session context)
-  and [`AGENTS.md`](AGENTS.md) (cross-tool agent instructions read by
-  Copilot / Cursor / Devin) that record what is changing and why. At
-  minimum, a one-paragraph note under §Phase status (PR in flight) or
-  in the appropriate section (new gotcha, new convention, new
-  connector, layout change, command added). The two agent docs must
-  stay in lockstep so behavior is consistent across runtimes. The PR
-  is incomplete until both reflect it; reviewers should reject PRs
-  that touch code / workflows / schemas without a corresponding
-  CLAUDE.md + AGENTS.md diff.
+- **CLAUDE.md + AGENTS.md ship with every PR.** Both agent docs must
+  move in lockstep on every PR (any type — feat / fix / ci / docs /
+  chore). At minimum a §Phase status note (PR in flight) or a
+  section update (new gotcha / convention / connector / layout /
+  command). Reject PRs that touch code / workflows / schemas without
+  the matching CLAUDE.md + AGENTS.md diff.
 
 ## Gotchas
 
@@ -169,68 +125,48 @@ non-connector-bound work.
   safe no-op; consider S&P-500-scaled thresholds in Phase 4.5
   follow-up.
 - **Hypothesis property-based tests** are the new defense line for
-  data-shape bugs (Process Hygiene Item #1, issue #126) — the class
-  that hid the OSAP quintile/tercile silent-drop until prod cron
-  caught it. When adding a new data-shape assumption (port cardinality,
-  pillar count, manifest partition), pair the example test with a
-  `@given` property in `tests/**/test_*_properties.py`. Don't use
+  data-shape bugs (issue #126). Pair each new shape assumption (port
+  cardinality, pillar count, manifest partition) with a `@given`
+  property in `tests/**/test_*_properties.py`. Don't use
   `@settings(deadline=None)` — a slow example is itself a signal.
 
 ## Phase status
 
-Current schema: **`0.9.2-phase4h.2`** (Phase 4h.2 Part 2 #124, multi-
-port OSAP adapter + `osap_signals_dropped_no_long_short` field
-closing the 100-signal accounting equation). Defense layer: **17**
-(7 active vetoes + 10 annotates + 5 numerical guards +
-`manipulation_index` rollup). Latest release tag:
-[**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5)
-shipped 2026-05-17 at commit `6d414a9b`. **Phase 4h shipped via PR
-#112** — OSAP signal replication (factor-exposure proxy) + PBO/DSR
-hard gate (PR #60 reuse) + rolling-12m IC observability + Path-b
-composite × OSAP blend (50/50 default, Top-5 still ranks raw
-composite per Rule 16). Phase 4h.2 Part 1 (PR #118) + Part 2 (PR
-#124) followed with observability-only schema bumps. Test suite: see
-CI build artifact for current count.
+Current schema **`0.9.2-phase4h.2`** · defense layer **17** (7 vetoes
++ 10 annotates + 5 numerical guards + `manipulation_index`) · latest
+release tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5)
+(2026-05-17, `6d414a9b`).
 
-**Next deliverable** (pick by appetite — three tracks parallelize):
-**4.5e** (Form 4 insider, ~3w → v1.3.0) · **4h/4i/4j/4k** factor
-integrations (OSAP / JKP / Qlib / IPCA, ~6w total → v1.1.0-phase4) ·
-**Phase 5** ML meta-learner (~10-12w, unblocks PR 4b §3 IC-decay
-writer). 4.5e weight slots already declared in
-`FLAG_WEIGHTS` so integration is a one-line uncomment.
+**Recently merged**:
+- [PR #141](https://github.com/dackclup/quantrank/pull/141) — `.md`
+  drift fix + YAML frontmatter fix (Optimization PR A)
+- [PR #140](https://github.com/dackclup/quantrank/pull/140) —
+  Pre-merge production simulation harness (Epic #125 Item 3 PR 1 of 2)
+  + Karpathy LLM-Wiki skill vendored
+- [PR #124](https://github.com/dackclup/quantrank/pull/124) — Phase
+  4h.2 Part 2 (multi-port OSAP adapter + silent-drop diagnostic)
 
-**Epic #125 Item 3** (pre-merge production simulation) — **PR 1 of 2
-shipped** via [PR #140](https://github.com/dackclup/quantrank/pull/140)
-on 2026-05-20 at commit `a52aa2de`. PR 1 landed the workflow harness
-(`.github/workflows/pre-merge-prod-sim.yml`): warm-cache restore via
-the cron's `cache-v4` key + `python -m compute.main` against the PR
-branch + sticky PR comment with duration / universe / schema / commit
-+ PR-branch output uploaded as `pr-<n>-compute-output` artifact (14-
-day retention). Dogfoods on the next PR touching `compute/scoring/**`
-or `compute/features/**`. **PR 2 next** — adds the per-ticker
-composite-score diff vs main + top-10 movers table appended to the
-same comment, closing Item 3 entirely.
-
-PR #140 also vendored Karpathy's **LLM Wiki** pattern gist as a
-reference skill at `.claude/skills/karpathy-llm-wiki/SKILL.md`
-(license-pending — gist has no declared LICENSE but explicit copy-
-paste-to-your-LLM-agent permission embedded; see
-`THIRD_PARTY_NOTICES.md` § karpathy-llm-wiki). Reference-only — not
-instantiated as a QuantRank wiki. Skill inventory: 38.
+**Next deliverables** (pick by appetite):
+- **Epic #125 Item 3 PR 2** — composite-score diff vs main + top-10
+  movers comment appended to PR 1's sticky comment
+- **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight
+  slots already declared in `FLAG_WEIGHTS`)
+- **Phase 4i.1 / 4j.1 / 4k.1** — JKP / Qlib / IPCA integration PRs
+  (~1-2w each → v1.1.0-phase4)
+- **Phase 5** — ML meta-learner (~10-12w, unblocks PR 4b §3
+  IC-decay writer #75)
 
 See [`PHASE_STATUS.md`](PHASE_STATUS.md) for the canonical
-chronological tracker — keep this section under 15 lines and let
-PHASE_STATUS.md own the per-sub-PR detail.
+chronological tracker.
 
 ## Companion files
 
-- [`AGENTS.md`](AGENTS.md) — cross-tool agent instructions (read by
-  Copilot / Cursor / Devin / …); procedural detail belongs there
-- [`SKILL.md`](SKILL.md) — the long-form QuantRank rulebook (Rules 1-16
-  + schema-version table + library matrix)
+- [`AGENTS.md`](AGENTS.md) — cross-tool agent instructions (Copilot /
+  Cursor / Devin) + multi-session audit pattern detail
+- [`SKILL.md`](SKILL.md) — long-form QuantRank rulebook (Rules 1-18 +
+  schema-version table + library matrix)
 - [`WORKFLOW.md`](WORKFLOW.md) — per-phase task lists, decision points
 - [`PHASE_STATUS.md`](PHASE_STATUS.md) — chronological phase tracker
-- [`.claude/skills/README.md`](.claude/skills/README.md) — index of
-  loaded skills + planning docs
-- [`.claude/skills/claude-Creator.md`](.claude/skills/claude-Creator.md)
-  — the meta-guide that shaped this file
+- [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) — vendor / license
+  posture per third-party source
+- [`.claude/skills/README.md`](.claude/skills/README.md) — skill index
