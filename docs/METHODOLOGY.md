@@ -283,6 +283,128 @@ See [`./stock_ranking_knowledge.md`](./stock_ranking_knowledge.md) for the
 complete ~1600-line reference covering every formula, normalization rule, and
 data source. That file is the authoritative source — never reinvent formulas.
 
+## Known limitations
+
+Honest accounting of what QuantRank's analytical layer does and does not
+guarantee. Read this before treating any score as an absolute claim about
+a stock's quality.
+
+### Survivorship bias (universe construction)
+
+The universe is the **current** S&P 500 constituents list, scraped from
+Wikipedia (`compute/ingest/universe.py`). It is **not point-in-time** —
+companies delisted from the index in the past 5 years (~10-15 per year
+per S&P annual turnover) are not in the dataset.
+
+Consequence: every cross-sectional statistic — pillar percentile ranks,
+sector medians, the "loss_chance_pct" estimate — is computed against a
+universe that **survived to today**. Baseline distributions are
+inflated upward relative to a true point-in-time universe. A backtest
+on this data would be optimistically biased.
+
+For point-in-time historical membership we would need CRSP / SHARADAR
+(paid data); current scope keeps the static-site model free.
+
+### Score semantics (cross-sectional normalization)
+
+Pillar scores (Quality, Value, etc., 0–100) are **percentile ranks
+within the current universe**, not absolute quality measures. "Quality
+92" means "top 8% quality among current S&P 500 sector peers", not
+"high-quality company in an absolute sense". The same company could
+score differently if the universe changes (e.g., index reconstitution,
+delisting renormalizes remaining peers).
+
+The composite_score (0–100) is similarly a rank-based blend; it is a
+**ranking signal**, not an absolute value claim.
+
+### Pillar correlation (no orthogonalization)
+
+The 8-pillar blend assumes pillars carry independent signal, but at
+least one pair is correlated by construction:
+
+- **Quality** (ROE, ROIC, Gross Profitability, Piotroski) and
+  **Profitability** (ROA, Gross Margin, Net Margin, Asset Turnover)
+  both measure return-on-something. A high-ROE firm scores high on
+  both — effective double-counting of the same underlying signal.
+
+The current pipeline does **not** apply orthogonalization or
+correlation correction (`compute/scoring/normalize.py` averages
+metrics within each pillar; the composite averages pillars). Effective
+weight on ROE-like signals in the current 8-pillar configuration
+(after sentiment + ml redistribute pro-rata) is ~33%, higher than the
+nominal Quality+Profitability sum of 27%.
+
+Phase 4i (JKP integration) plans "13 quasi-orthogonal theme clusters"
+to address this; not yet shipped.
+
+### `extreme_*_estimate` flags are method-applicability signals
+
+The 6-method fair-price ensemble (`compute/valuation/ensemble.py`)
+emits `extreme_dcf_estimate`, `extreme_rim_estimate`,
+`extreme_multiples_<method>_estimate` etc. when a method produces a
+value > 5× or < 0.2× current price. These fire on 10–15% of the
+universe per the 2026-05-20 quarterly audit (issue #130).
+
+**These flags indicate "the method doesn't apply to this stock"**,
+not "this stock is suspect":
+- `extreme_dcf_estimate` → DCF fails for negative-FCF firms (tech,
+  biotech, REITs)
+- `extreme_rim_estimate` → RIM fails for negative-book-value firms
+  (buyback-heavy mature firms)
+- `extreme_multiples_pb_estimate` → P/B fails for asset-light tech
+
+The current pipeline aggregates these flags into `manipulation_index`
+(`compute/scoring/loss_chance.py:74-75`, weight 1.0 each, cap 5.0)
+which then deducts up to 10 composite points via
+`composite_score_adjusted`. This conflates method-applicability with
+manipulation risk; Phase 2 of the foundation reconciliation roadmap
+(issue #150) splits these surfaces.
+
+### Pillar weight rationale (empirical, not academic-derived)
+
+The pillar weights (`compute/scoring/composite.py:17-28`):
+quality 0.22, value 0.18, growth 0.10, momentum 0.10, health 0.08,
+profitability 0.05, technical 0.04, risk 0.03 — are **empirically
+chosen**, not directly traceable to academic literature. The
+relative ordering follows multi-factor academic precedent (quality +
+value dominate, momentum + risk are smaller contributors), but the
+specific values are project-team judgment, not e.g. Fama-French
+factor weights.
+
+The sum-to-1.0 invariant lock (`composite.py:43-45`) prevents
+accidental drift; the choice of specific values remains a design
+decision pending Phase 5 ML meta-learner work that could re-calibrate
+empirically from out-of-sample performance.
+
+### Top-decile vetoes are mathematical certainties
+
+Two active vetoes — `sloan_accruals_top_decile` and
+`net_issuance_top_decile` — fire on the top 10% of the universe **by
+construction** (decile cutoff is relative, not academic threshold).
+This means ~10% of the universe is always Top-5-suppressed regardless
+of whether the firm is a genuine manipulation candidate.
+
+Phase 3 of the foundation reconciliation roadmap (issue #150)
+proposes converting these to joint gates ("top-decile AND
+(Beneish-high OR Dechow-high OR restatement_history)") to reduce
+false-positive suppression.
+
+### Known calibration drift
+
+Quarterly cohort audit (issue #130, 2026-05-20):
+- `value_trap_risk` 35.06% fire rate (issue #11 — `_avg_3y_roe`
+  denominator bias, partial fix shipped, fallback path still uses
+  old behavior)
+- `going_concern_disclosure` 10.8% FP rate vs Mayew 2015 1-3%
+  expected (issue #16 — negation lookbehind needs widening)
+- `loss_avoidance_pattern` 0% fire rate (Burgstahler-Dichev 1997
+  thresholds calibrated for micro-cap, not SP500 large-cap)
+- `restatement_history` 11.75% fire rate (immaterial-amendment noise;
+  does not distinguish material vs minor per Hennes-Leone-Miller
+  2008)
+
+These are tracked under issue #150 Phase 2.
+
 ## Realistic expectations
 
 Per Section 28 of the knowledge doc: net-of-cost top-decile alpha of **2–4%

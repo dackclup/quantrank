@@ -283,12 +283,18 @@ note cross-tool-specific points only:
 - **Epic #125 Item 3 PR 2 merged via PR #148** (2026-05-20) — composite
   diff + top-10 movers + universe-size delta + failure-path comment.
   Closes substantive remainder of Epic #125.
-- **Issue #117 fix in flight** — `verify-production-output/helper.py`
-  Section B Tier-2 stale expectations post-PR-#79. Soft-band check
-  against Schroeder 2024 / Cohen-Malloy-Nguyen 2020 priors; regression
-  guard now fires only when a flag fires while `tier2_coverage_pct`
-  ≤ 5%. Paired with the 2026-05-20 quarterly cohort audit comment on
-  issue #130 (epic #125 Item 5 recurring tracker).
+- **Issue #117 fix merged via PR #149** (2026-05-20) — `helper.py`
+  Section B post-PR-#79 soft-band against Schroeder 2024 / CMN 2020;
+  regression guard now fires only when `tier2_coverage_pct` ≤ 5%.
+  Paired with quarterly cohort audit comment on issue #130.
+- **Phase 0 of epic #150 in flight** — foundation reconciliation
+  roadmap covering 17 findings from 2-round scrutinize. Phase 0 (this
+  PR) lands the user-trust METHODOLOGY.md §"Known limitations"
+  section (survivorship, percentile semantics, pillar correlation,
+  extreme-estimate conflation, weight rationale, top-decile by-
+  construction, calibration drift). Phases 1-3 follow per epic
+  tracker. Cross-tool agents should read epic #150 before touching
+  `compute/scoring/**` or `compute/valuation/**` paths.
 
 ## Claude-Code-specific tooling
 

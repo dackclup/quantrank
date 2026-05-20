@@ -152,14 +152,16 @@ release tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releas
 - [PR #143](https://github.com/dackclup/quantrank/pull/143) —
   AGENTS.md sync + dedup with CLAUDE.md (Optimization PR C)
 
-**Issue #117 fix in flight** — `verify-production-output/helper.py`
-Section B stale expectations: post-PR-#79 (Phase 4g) the 8-K Tier-2
-defenses are ACTIVE, so non-zero fires for `non_reliance_filing` and
-`auditor_change` are EXPECTED. Replaces "expected 0; flag broken?"
-hard-fail with soft-band check against academic priors (Schroeder 2024
-/ Cohen-Malloy-Nguyen 2020); inverts the regression guard to fire only
-when a flag fires while `tier2_coverage_pct` ≤ 5%. Paired with the
-2026-05-20 quarterly cohort audit on issue #130.
+**Phase 0 foundation reconciliation in flight (epic #150)** — META-
+epic tracks all 17 findings from the 2-round scrutinize session
+(2026-05-20, process + analytical). Phase 0 (this PR) closes the
+user-trust gaps: `docs/METHODOLOGY.md` adds §"Known limitations"
+(survivorship bias, percentile-rank semantics, pillar correlation,
+extreme-estimate semantic conflation, weight rationale, top-decile
+veto by-construction, calibration drift); `PillarRadarChart.tsx`
+sub-header clarifies scores are percentile rank against current
+S&P 500, not absolute. Phases 1-3 follow (defense layer inventory
+reconcile 17 → 27, threshold recalibration, correlation analysis).
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight
