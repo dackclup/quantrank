@@ -276,9 +276,9 @@ note cross-tool-specific points only:
   (PR 4b §3 IC-decay writer, Phase 5-blocked).
 - **`.md` optimization sequence** (Option D — multi-PR overhaul):
   PR A drift fix #141 ✅ · PR B CLAUDE.md token diet #142 ✅ ·
-  PR C AGENTS.md sync + dedup #143 ✅ · **PR D this one** (WORKFLOW.md
-  archive Phase 0-3 → `docs/archived/`, 1732 → 1459 lines) · PR E-G
-  planned (SKILL.md restructure · skill desc audit ×38 ·
+  PR C AGENTS.md sync + dedup #143 ✅ · PR D WORKFLOW.md archive
+  #144 ✅ · **PR E this one** (SKILL.md restructure + TOC + "Rules at
+  a glance"; 641 → 574 lines) · PR F-G planned (skill desc audit ×38 ·
   PHASE_STATUS.md restructure).
 
 ## Claude-Code-specific tooling

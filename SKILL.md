@@ -12,6 +12,43 @@ A skill for building and extending **QuantRank**, a static-site US equity stock 
 - `WORKFLOW.md` — phase-by-phase build plan (9 phases, 0-8). Always check current phase before working.
 - `RESEARCH_FINDINGS.md` — research-backed stretch additions for Phase 4-8 (Option B roadmap).
 
+## Contents
+
+- [Core Project Goal](#core-project-goal)
+- [Architecture: Static-Site Pattern](#️-architecture-static-site-pattern-option-d)
+- [Required Tech Stack](#required-tech-stack)
+- [Roadmap Strategy](#roadmap-strategy-option-b-with-option-a-fallback)
+- [Repository Structure](#repository-structure)
+- [JSON Output Schema](#json-output-schema-critical-contract) — includes schema-version table
+- [**Core Behavior Rules**](#core-behavior-rules) — Rules 1-18, the canonical rulebook
+- [When the user asks for…](#when-the-user-asks-for)
+- [Anti-Patterns to Refuse](#anti-patterns-to-refuse)
+- [Communication Style](#communication-style)
+- [End State Definition](#end-state-definition)
+
+### Rules at a glance
+
+| # | Rule | Most-cited from |
+|---|---|---|
+| 1 | Always reference the knowledge documents | — |
+| 2 | Phase discipline | WORKFLOW.md |
+| 3 | GitHub-Actions-first development | — |
+| 4 | Free-tier first + license verification | THIRD_PARTY_NOTICES.md |
+| 5 | Point-in-time data discipline | — |
+| 6 | Sector-relative for fundamentals | — |
+| 7 | Missing data → sector median | — |
+| 8 | Test golden values | — |
+| 9 | JSON schema is sacred | CLAUDE.md §Conventions |
+| 10 | No paid data, no real-money, no live trading | — |
+| 11 | Trademark caution | — |
+| 12 | Atomic JSON writes | — |
+| 13 | Fallback discipline (Option B specific) | — |
+| 14 | Decay monitoring (Option B specific) | — |
+| 15 | Performance ceiling honesty | — |
+| 16 | **Defense layer is annotate-and-veto-Top-N** | CLAUDE.md §Conventions · `.claude/skills/top5-rotation-audit/SKILL.md` |
+| 17 | Frontend design system + threshold-symbolic tests | `.claude/skills/frontend-design-system/SKILL.md` |
+| 18 | **Observability-before-wiring** | CLAUDE.md §Conventions · WORKFLOW.md · `.claude/skills/portable-observability-before-wiring/SKILL.md` |
+
 ---
 
 ## Core Project Goal
@@ -89,71 +126,40 @@ All artifacts → repo public/data/ → Vercel deploy
 
 ## Required Tech Stack
 
-**DO NOT deviate without explicit approval.**
+**DO NOT deviate without explicit approval.** Canonical stack list
+lives in [`CLAUDE.md`](CLAUDE.md) §Stack — Python 3.11+ · Next.js 14.2
+· GitHub Actions · Vercel · SEC EDGAR + yfinance. Below covers only
+the phase-specific additions + license caveats that the long-form
+rulebook needs.
 
-### Phase 0-3 (v1.0)
+### Phase 4+ stretch additions (Option B)
 
-| Layer | Technology | Why |
-|---|---|---|
-| Compute Language | Python 3.11+ | All analysis libraries |
-| Compute Runtime | GitHub Actions (ubuntu-latest) | Free unlimited on public repos |
-| Frontend Framework | Next.js 14+ (App Router, Static Export) | Modern UX, free Vercel deploy |
-| Frontend Styling | TailwindCSS | Utility-first, mobile-first |
-| Charts | Recharts | React-native, lightweight |
-| Data Storage | JSON files in `public/data/` | Committed to repo |
-| Hosting | Vercel (frontend) + GitHub (data) | All free |
-| Package Manager (Python) | `uv` (or `pip` if needed) | Fast |
-| Package Manager (JS) | `npm` | Standard |
-
-### Phase 4+ Research Additions (Option B)
-
-| Layer | Technology | Why |
+| Layer | Tech | Why |
 |---|---|---|
 | Heavy ML Training | Kaggle Notebooks (30 GPU-hr/wk) | Free T4/P100 |
 | LLM Inference | Modal ($30/mo credits) | ~50 GPU-hrs T4 free |
 | Audio Transcription | OpenAI Whisper (open source) | Free local/Modal inference |
-| Factor Library | OSAP + JKP + Qlib | Peer-reviewed replicated factors |
+| Factor Library | OSAP + JKP + Qlib + IPCA | Peer-reviewed replicated factors |
 
-**Python libraries (Phase 0-3)**:
-```
-yfinance, edgartools, fredapi, finnhub-python, praw, pytrends    # Data
-pandas, numpy, scipy, statsmodels                                 # Core
-ta, pandas-ta, arch, hmmlearn                                     # Analysis
-lightgbm, scikit-learn, shap                                      # ML
-transformers, torch                                               # FinBERT (optional)
-tenacity, python-dotenv                                           # Utilities
-pytest, ruff                                                      # Quality
-```
+**Optional-dep additions by phase** (gated behind `[project.optional-dependencies]`):
 
-**Python libraries (Phase 4+ Option B additions)**:
-```
-openassetpricing                # Chen-Zimmermann 319 signals (Phase 4)
-ipca                            # Kelly-Pruitt-Su latent factors (Phase 4)
-pyqlib                          # Microsoft Qlib Alpha158 (Phase 4)
-mlfinlab                        # Triple-Barrier + Meta-Labeling (Phase 5)
-mapie                           # Conformal Prediction (Phase 5)
-sentence-transformers           # MD&A YoY similarity (Phase 6)
-openai-whisper                  # Audio transcription (Phase 6)
-skfolio                         # NCO portfolio optimization (Phase 7)
-gtda                            # Topological Data Analysis (Phase 7)
-supabase                        # Postgres + pgvector client (Phase 4.5e + Phase 5+ — cross-run state)
-```
+| Phase | Deps | License |
+|---|---|---|
+| 4 (factor scout) | `openassetpricing` · `ipca` · `pyqlib` | MIT (OSAP / IPCA / Qlib) |
+| 4i.1 (JKP integration) | uses CSV downloads, no pip dep | **CC BY-NC 4.0** — see #115 |
+| 5 (ML meta-learner) | `mapie` (conformal) | BSD-3-Clause |
+| 6 (Sentiment v2) | `sentence-transformers` · `openai-whisper` | Apache-2.0 / MIT |
+| 7 (Portfolio v2) | `skfolio` · `gtda` | BSD-3-Clause / AGPL-3.0 (verify) |
+| 4.5e + Phase 5+ | `supabase` (cross-run state) | Apache-2.0 |
 
-**Note on Supabase**: connector is registered (`mcp__supabase__*`
-available in Claude Code sessions) but the Python client is
-**deferred** — add `supabase` to `pyproject.toml` only inside the
-implementation PR that first wires a real table call (4.5e Form 4
-insider, or Phase 5 backtest infra). See `CLAUDE.md` §Connectors for
-the boundary and `.claude/skills/phase-{5,6,9}/<plan>/PLAN.md`
-§"Supabase usage" for per-table schemas.
+**Supabase note**: connector is registered (`mcp__supabase__*` in
+Claude Code) but the Python client is **deferred** — add `supabase`
+to `pyproject.toml` only inside the implementation PR that first
+wires a real table call. See `CLAUDE.md` §Connectors.
 
-**License caveats** (verify per phase):
-- OSAP signals: Free CSV/parquet, MIT-style for code; SIGNAL-LEVEL data needs WRDS for stock-level recompute
-- JKP: CC BY-NC 4.0 (non-commercial); factor returns CSV freely downloadable; stock-level needs WRDS
-- mlfinlab: AGPL-3.0 (verify before integration; may require open-sourcing of derivatives)
-- pyqlib: MIT
-- ipca: MIT
-- skfolio: BSD-3-Clause
+**mlfinlab is BANNED** — all-rights-reserved (Hudson & Thames commercial
+license). Reimplement Triple-Barrier + Meta-Labeling + Purged CV from
+López de Prado 2018 directly under MIT. Algorithms are not patented.
 
 ---
 
@@ -187,102 +193,29 @@ Each phase has explicit fallback triggers in WORKFLOW.md.
 
 ---
 
-## Mandatory Repository Structure
+## Repository Structure
 
-```
-quantrank/
-├── README.md                       # Public README with disclaimer
-├── PHASE_STATUS.md                 # Current phase tracker (9 phases)
-├── pyproject.toml                  # Python dependencies
-├── .gitignore                      # Includes .env, __pycache__, node_modules
-│
-├── .github/workflows/
-│   ├── compute-rankings.yml        # Sun 22:00 UTC: weekly compute
-│   ├── compute-monthly.yml         # 1st of month: ML retrain
-│   ├── compute-quarterly.yml       # Phase 6+: Whisper + LLM heavy jobs
-│   ├── ci.yml                      # Lint + test on PR
-│   └── manual-trigger.yml          # workflow_dispatch for ad-hoc runs
-│
-├── compute/                        # Python compute pipeline
-│   ├── __init__.py
-│   ├── config.py                   # Paths, defaults
-│   ├── main.py                     # Entry: orchestrates full weekly run
-│   │
-│   ├── ingest/                     # Data fetchers
-│   │   ├── universe.py             # S&P 500 from Wikipedia
-│   │   ├── prices.py               # yfinance OHLCV
-│   │   ├── fundamentals.py         # edgartools (SEC EDGAR)
-│   │   ├── insider.py              # edgartools Form 4 (Phase 6)
-│   │   ├── institutional.py        # edgartools 13F (Phase 6)
-│   │   ├── macro.py                # fredapi (Phase 7)
-│   │   ├── news.py                 # finnhub + yfinance (Phase 6)
-│   │   ├── reddit.py               # PRAW (Phase 6 - skip for megacap)
-│   │   ├── osap.py                 # ⭐ Chen-Zimmermann signals (Phase 4)
-│   │   ├── jkp.py                  # ⭐ JKP factor returns (Phase 4)
-│   │   ├── qlib_data.py            # ⭐ Microsoft Qlib (Phase 4)
-│   │   ├── earnings_audio.py       # ⭐ Audio scrape from IR (Phase 6)
-│   │   └── eight_k.py              # ⭐ 8-K item parser (Phase 6)
-│   │
-│   ├── features/                   # Pure feature computation
-│   │   ├── fundamental.py          # Piotroski, Altman Z, Beneish M
-│   │   ├── value.py                # P/E, P/B, EV/EBITDA, Graham
-│   │   ├── quality.py              # ROE, ROIC, MSCI 3-desc, QMJ
-│   │   ├── growth.py               # CAGR, SGR, PRAT
-│   │   ├── momentum.py             # 12-1, 6-1, 52w high, RSI
-│   │   ├── technical.py            # MACD, ADX, ATR, Ichimoku
-│   │   ├── health.py               # Current/Quick, D/E, IC
-│   │   ├── risk.py                 # Sharpe, Sortino, MaxDD, GARCH
-│   │   ├── sentiment.py            # FinBERT, Reddit (Phase 6)
-│   │   ├── advanced_valuation.py   # EVA, CFROI, Tobin's Q (Phase 4)
-│   │   ├── anomaly.py              # PEAD, IVOL, asset growth
-│   │   ├── macro_regime.py         # HMM, sector rotation (Phase 7)
-│   │   ├── ipca_factors.py         # ⭐ IPCA latent (Phase 4)
-│   │   ├── alpha158.py             # ⭐ Qlib Alpha158 wrapper (Phase 4)
-│   │   ├── lazy_prices.py          # ⭐ MD&A YoY similarity (Phase 6)
-│   │   ├── vdq.py                  # ⭐ Vocal Delivery Quality (Phase 6)
-│   │   └── tda_regime.py           # ⭐ Topological regime (Phase 7)
-│   │
-│   ├── scoring/
-│   │   ├── normalize.py            # Winsorize, sector-rank, percentile
-│   │   ├── pillars.py              # Aggregate features → pillars
-│   │   ├── composite.py            # Weighted sum → 0-100
-│   │   ├── fair_price.py           # DCF + Graham + RIM + multiples
-│   │   └── risk_overlay.py         # Beneish/Sloan/Z″ vetoes
-│   │
-│   ├── ml/                         # Phase 5
-│   │   ├── train.py                # LightGBM walk-forward
-│   │   ├── validate.py             # IC, IR, PBO
-│   │   ├── shap_explain.py         # Top-5 factors per stock
-│   │   ├── triple_barrier.py       # ⭐ mlfinlab labels (Phase 5)
-│   │   ├── meta_labeling.py        # ⭐ Secondary classifier (Phase 5)
-│   │   ├── conformal.py            # ⭐ Prediction intervals (Phase 5)
-│   │   └── autoencoder.py          # ⭐ Conditional AE (Phase 5)
-│   │
-│   ├── portfolio/                  # Phase 7
-│   │   ├── hrp.py                  # Hierarchical Risk Parity
-│   │   ├── nco.py                  # ⭐ Nested Clustered Opt (Phase 7)
-│   │   └── black_litterman.py
-│   │
-│   ├── output/                     # JSON writers
-│   │   ├── writer.py               # Atomic JSON output
-│   │   └── schemas.py              # Pydantic models
-│   │
-│   └── cache/                      # Local dev cache (gitignored)
-│
-├── tests/
-│   ├── test_features/              # Golden-value tests per metric
-│   ├── test_scoring/
-│   └── test_ingest/
-│
-├── frontend/                       # Next.js static site
-│   └── (unchanged structure)
-│
-└── docs/
-    ├── stock_ranking_knowledge.md   # Classical reference (~1600 lines)
-    ├── RESEARCH_FINDINGS.md         # ⭐ Option B research additions
-    ├── ARCHITECTURE.md              # Static-site pattern
-    └── METHODOLOGY.md               # User-facing scoring explanation
-```
+[`CLAUDE.md`](CLAUDE.md) §Layout has the live top-level path table.
+[`AGENTS.md`](AGENTS.md) §Project structure has the granular tree
+with file-purpose annotations. This file's role: lock the
+**module-level breakdown** that future phases must align with.
+
+| Path | Purpose | Phase introduced |
+|---|---|---|
+| `compute/ingest/` | Data fetchers (EDGAR / yfinance / FRED / 13F / 8-K / OSAP / JKP / Qlib) | 1-6 |
+| `compute/features/` | Pure feature computation (fundamental / value / quality / growth / momentum / technical / health / risk / sentiment / anomaly / macro_regime / IPCA / Alpha158 / lazy_prices / vdq / tda_regime) | 1-7 |
+| `compute/scoring/` | Normalize · pillars · composite · risk_overlay · Tier-2 events · going_concern · Beneish · Dechow | 2-4 |
+| `compute/valuation/` | 6-method fair-price ensemble (DCF · RIM · Graham · Multiples · Tangible Book · …) | 3 |
+| `compute/ml/` | LightGBM walk-forward · IC validation · SHAP · Triple-Barrier · Meta-Labeling · Conformal · Autoencoder | 5 |
+| `compute/portfolio/` | HRP · NCO · Black-Litterman | 7 |
+| `compute/output/` | Pydantic schemas · JSON writers · schema-snapshot guard | 0 |
+| `compute/main.py` | Weekly orchestrator | 0 |
+| `compute/cache/` | 🚫 gitignored | — |
+| `.github/workflows/` | `compute-rankings.yml` (cron) · `compute-monthly.yml` · `ci.yml` · `manual-trigger.yml` · `pre-merge-prod-sim.yml` | 0+ |
+| `frontend/` | Next.js static export (App Router; per-stock pages) | 0 |
+| `tests/` | pytest suite (offline + `@network` gated) | 0+ |
+| `docs/` | `stock_ranking_knowledge.md` · `RESEARCH_FINDINGS.md` · `ARCHITECTURE.md` · `METHODOLOGY.md` · `archived/PHASE_0_3_WORKFLOW.md` | — |
+| `.claude/skills/` | 38 invocation-triggerable skills + `phase-N/` planning docs | — |
 
 ---
 

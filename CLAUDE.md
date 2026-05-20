@@ -138,22 +138,21 @@ release tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releas
 (2026-05-17, `6d414a9b`).
 
 **Recently merged**:
+- [PR #144](https://github.com/dackclup/quantrank/pull/144) —
+  WORKFLOW.md archive Phase 0-3 → docs/archived/ (Optimization PR D);
+  WORKFLOW.md 1732 → 1460 lines
 - [PR #143](https://github.com/dackclup/quantrank/pull/143) —
   AGENTS.md sync + dedup with CLAUDE.md (Optimization PR C)
 - [PR #142](https://github.com/dackclup/quantrank/pull/142) —
-  CLAUDE.md token diet 236 → 172 lines (Optimization PR B); the
-  multi-session audit pattern moved to AGENTS.md
+  CLAUDE.md token diet 236 → 172 lines (Optimization PR B)
 - [PR #141](https://github.com/dackclup/quantrank/pull/141) — `.md`
   drift fix + YAML frontmatter fix (Optimization PR A)
-- [PR #140](https://github.com/dackclup/quantrank/pull/140) —
-  Pre-merge production simulation harness (Epic #125 Item 3 PR 1 of 2)
-  + Karpathy LLM-Wiki skill vendored
 
-**`.md` optimization PR D in flight** — WORKFLOW.md archive: Phase 0-3
-content (273 lines of v1.0 acceptance criteria + PR 3c/3d/3e task
-detail) moved to [`docs/archived/PHASE_0_3_WORKFLOW.md`](docs/archived/PHASE_0_3_WORKFLOW.md).
-WORKFLOW.md 1732 → 1459 lines. Forward-looking work now starts at
-Phase 4 in WORKFLOW.md.
+**`.md` optimization PR E in flight** — SKILL.md restructure: added
+TOC + "Rules at a glance" reference table for Rules 1-18; Tech Stack
+section dedup'd to reference CLAUDE.md §Stack; Repository Structure
+file-tree (97 lines, duplicated AGENTS.md §Project structure) replaced
+with module-level breakdown table. 641 → 574 lines.
 
 **Next deliverables** (pick by appetite):
 - **Epic #125 Item 3 PR 2** — composite-score diff vs main + top-10
