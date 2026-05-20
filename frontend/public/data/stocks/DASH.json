@@ -3,19 +3,19 @@
   "name": "DoorDash",
   "sector": "Consumer Discretionary",
   "industry": "Specialized Consumer Services",
-  "market_cap": 68405713200.25635,
-  "current_price": 154.65,
-  "rank": 483,
-  "composite_score": 34.41,
+  "market_cap": 71095056090.17944,
+  "current_price": 160.73,
+  "rank": 480,
+  "composite_score": 35.4,
   "pillar_scores": {
     "quality": 35.68,
-    "value": 14.24,
+    "value": 13.54,
     "growth": 65.36,
-    "momentum": 29.63,
-    "health": 53.03,
+    "momentum": 36.16,
+    "health": 52.95,
     "profitability": 31.25,
-    "technical": 26.89,
-    "risk": 24.67,
+    "technical": 33.17,
+    "risk": 25.13,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.42,
     "eps_diluted": 0.42,
     "shares_outstanding": 442326000.0,
-    "market_cap": 68405713200.25635,
-    "pe_ratio_ttm": 73.87226047543882,
+    "market_cap": 71095056090.17944,
+    "pe_ratio_ttm": 76.77651845591733,
     "goodwill": 5499000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 43.803262949261615,
+        "value": 45.14780370858245,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 125.30189074896509,
+        "value": 129.0110643509156,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 55.59075855056756,
+        "value": 56.27850008247324,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,16 +75,17 @@
         "tier_used": null
       }
     },
-    "median": 55.59075855056756,
-    "max": 125.30189074896509,
+    "median": 55.642582191956585,
+    "max": 129.0110643509156,
     "low": 6.6153587357176225,
-    "high": 125.30189074896509,
-    "mos_pct": -178.19371048122795,
+    "high": 129.0110643509156,
+    "mos_pct": -188.8614967095711,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -100,7 +101,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 13,
+    "filing_lag_days": 14,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
@@ -127,20 +128,20 @@
       "Quality": 46.35,
       "Value": 49.83,
       "Growth": 51.69,
-      "Momentum": 41.86,
+      "Momentum": 42.26,
       "Health": 43.72,
       "Profitability": 52.6,
-      "Technical": 34.99,
-      "Risk": 41.09
+      "Technical": 43.15,
+      "Risk": 41.87
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
-  "recommendation": "neutral",
-  "loss_chance_pct": 71.79279237217796,
-  "price_change_1d_pct": -4.9302,
+  "recommendation": "cautious",
+  "loss_chance_pct": 71.3015697626162,
+  "price_change_1d_pct": 3.9315,
   "manipulation_index": 10.0,
-  "composite_score_adjusted": 33.41,
+  "composite_score_adjusted": 34.4,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -155,8 +156,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 43.62,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 4
 }

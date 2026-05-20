@@ -3,19 +3,19 @@
   "name": "RTX Corporation",
   "sector": "Industrials",
   "industry": "Aerospace & Defense",
-  "market_cap": 234982798749.273,
-  "current_price": 174.49,
-  "rank": 411,
-  "composite_score": 41.49,
+  "market_cap": 235467605605.30334,
+  "current_price": 174.85,
+  "rank": 418,
+  "composite_score": 41.24,
   "pillar_scores": {
     "quality": 23.73,
-    "value": 47.89,
+    "value": 48.73,
     "growth": 52.53,
-    "momentum": 54.48,
+    "momentum": 53.49,
     "health": 33.27,
     "profitability": 33.76,
-    "technical": 52.84,
-    "risk": 72.94,
+    "technical": 46.86,
+    "risk": 72.54,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.53,
     "eps_diluted": 1.51,
     "shares_outstanding": 1346683428.0,
-    "market_cap": 234982798749.273,
-    "pe_ratio_ttm": 30.914721582590843,
+    "market_cap": 235467605605.30334,
+    "pe_ratio_ttm": 30.978503566018066,
     "goodwill": 53276000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 178.70300012581413,
+        "value": 181.5841836792225,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 333.8154375925665,
+        "value": 336.3874265879849,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,15 +75,16 @@
         "tier_used": null
       }
     },
-    "median": 178.70300012581413,
-    "max": 333.8154375925665,
+    "median": 181.5841836792225,
+    "max": 336.3874265879849,
     "low": 34.262654980787595,
-    "high": 333.8154375925665,
-    "mos_pct": 2.357539957182558,
+    "high": 336.3874265879849,
+    "mos_pct": 3.708570558988291,
     "valuation_warnings": [
       "extreme_dcf_estimate",
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 2
   },
   "top5_factors": [],
   "score_history": [],
@@ -96,7 +97,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 28,
+    "filing_lag_days": 29,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-21"
   },
@@ -118,22 +119,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 47.89,
+      "Value": 49.16,
       "Growth": 49.37,
-      "Momentum": 49.55,
+      "Momentum": 50.5,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 44.67,
-      "Risk": 54.05
+      "Technical": 45.57,
+      "Risk": 54.48
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 46.42857663772721,
-  "price_change_1d_pct": -0.8298,
+  "loss_chance_pct": 46.07990272421054,
+  "price_change_1d_pct": 0.2063,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 41.49,
+  "composite_score_adjusted": 41.24,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -148,8 +149,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 46.55,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 2
 }

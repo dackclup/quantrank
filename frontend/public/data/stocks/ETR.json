@@ -3,19 +3,19 @@
   "name": "Entergy",
   "sector": "Utilities",
   "industry": "Electric Utilities",
-  "market_cap": 50613336735.6926,
-  "current_price": 110.55,
-  "rank": 436,
-  "composite_score": 40.0,
+  "market_cap": 51245143734.81926,
+  "current_price": 111.93,
+  "rank": 437,
+  "composite_score": 40.21,
   "pillar_scores": {
     "quality": 46.77,
     "value": 18.82,
     "growth": 23.39,
-    "momentum": 81.23,
+    "momentum": 79.33,
     "health": 19.2,
     "profitability": 43.01,
-    "technical": 38.75,
-    "risk": 87.55,
+    "technical": 47.66,
+    "risk": 87.62,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.84,
     "eps_diluted": 0.83,
     "shares_outstanding": 457832070.0,
-    "market_cap": 50613336735.6926,
-    "pe_ratio_ttm": 28.091817575456105,
+    "market_cap": 51245143734.81926,
+    "pe_ratio_ttm": 28.442488132014102,
     "goodwill": 367582000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 75.20922763671726,
+        "value": 75.42959823654414,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 80.8075731374811,
+        "value": 81.11177902111058,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 71.17228922175057,
+        "value": 73.98036161959341,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,12 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 71.17228922175057,
-    "max": 80.8075731374811,
+    "median": 73.98036161959341,
+    "max": 81.11177902111058,
     "low": 39.096933577378316,
-    "high": 80.8075731374811,
-    "mos_pct": -55.32731103719119,
-    "valuation_warnings": []
+    "high": 81.11177902111058,
+    "mos_pct": -51.2969088752488,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 5
   },
   "top5_factors": [],
   "score_history": [],
@@ -95,7 +96,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 18,
+    "filing_lag_days": 19,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
@@ -114,22 +115,22 @@
     "label": "Utilities median (n=31)",
     "values": {
       "Quality": 51.61,
-      "Value": 47.85,
+      "Value": 48.39,
       "Growth": 54.03,
-      "Momentum": 59.46,
+      "Momentum": 56.03,
       "Health": 17.85,
       "Profitability": 52.15,
-      "Technical": 50.15,
-      "Risk": 70.98
+      "Technical": 47.71,
+      "Risk": 70.75
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 64.36347984575264,
-  "price_change_1d_pct": 0.8852,
+  "loss_chance_pct": 62.847012395845724,
+  "price_change_1d_pct": 1.2483,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 40.0,
+  "composite_score_adjusted": 40.21,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,8 +145,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 46.03,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 5
 }

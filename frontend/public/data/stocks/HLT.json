@@ -3,19 +3,19 @@
   "name": "Hilton Worldwide",
   "sector": "Consumer Discretionary",
   "industry": "Hotels, Resorts & Cruise Lines",
-  "market_cap": 71798023379.77295,
-  "current_price": 315.39,
-  "rank": 403,
-  "composite_score": 42.18,
+  "market_cap": 73728477128.07568,
+  "current_price": 323.87,
+  "rank": 406,
+  "composite_score": 42.33,
   "pillar_scores": {
     "quality": 33.85,
-    "value": 18.92,
+    "value": 18.58,
     "growth": 59.11,
-    "momentum": 78.44,
+    "momentum": 79.93,
     "health": 26.89,
     "profitability": 52.08,
-    "technical": 56.37,
-    "risk": 70.75,
+    "technical": 56.62,
+    "risk": 71.58,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.68,
     "eps_diluted": 1.66,
     "shares_outstanding": 227648372.0,
-    "market_cap": 71798023379.77295,
-    "pe_ratio_ttm": 46.501310479127554,
+    "market_cap": 73728477128.07568,
+    "pe_ratio_ttm": 47.751604357561966,
     "goodwill": 5070000000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 141.91251319292869,
+        "value": 146.2685164994989,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 170.21077992046904,
+        "value": 172.76097252078264,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 141.91251319292869,
-    "max": 170.21077992046904,
+    "median": 146.2685164994989,
+    "max": 172.76097252078264,
     "low": 104.35974011170488,
-    "high": 170.21077992046904,
-    "mos_pct": -122.24256871532381,
+    "high": 172.76097252078264,
+    "mos_pct": -121.42153545277601,
     "valuation_warnings": [
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 3
   },
   "top5_factors": [],
   "score_history": [],
@@ -94,7 +95,7 @@
       "long_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 21,
+    "filing_lag_days": 22,
     "latest_period_end": "2026-04-23",
     "latest_filed_date": "2026-04-28"
   },
@@ -119,20 +120,20 @@
       "Quality": 46.35,
       "Value": 49.83,
       "Growth": 51.69,
-      "Momentum": 41.86,
+      "Momentum": 42.26,
       "Health": 43.72,
       "Profitability": 52.6,
-      "Technical": 34.99,
-      "Risk": 41.09
+      "Technical": 43.15,
+      "Risk": 41.87
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 77.91106148323374,
-  "price_change_1d_pct": -0.8644,
+  "loss_chance_pct": 77.83495964060425,
+  "price_change_1d_pct": 2.6887,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 42.18,
+  "composite_score_adjusted": 42.33,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -147,8 +148,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 47.09,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 3
 }

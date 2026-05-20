@@ -3,19 +3,19 @@
   "name": "ConocoPhillips",
   "sector": "Energy",
   "industry": "Oil & Gas Exploration & Production",
-  "market_cap": 152420763959.35767,
-  "current_price": 125.11,
-  "rank": 170,
-  "composite_score": 54.33,
+  "market_cap": 149070455440.10767,
+  "current_price": 122.36,
+  "rank": 162,
+  "composite_score": 54.48,
   "pillar_scores": {
     "quality": 50.0,
-    "value": 50.79,
+    "value": 51.59,
     "growth": 34.52,
-    "momentum": 77.74,
+    "momentum": 76.25,
     "health": 63.55,
     "profitability": 62.7,
-    "technical": 45.57,
-    "risk": 68.56,
+    "technical": 49.1,
+    "risk": 67.93,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.78,
     "eps_diluted": 1.78,
     "shares_outstanding": 1218294007.0,
-    "market_cap": 152420763959.35767,
-    "pe_ratio_ttm": 20.816821081583946,
+    "market_cap": 149070455440.10767,
+    "pe_ratio_ttm": 20.359253679337293,
     "goodwill": 3332000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 78.4145101753342,
+        "value": 76.26884546394622,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 95.4610229962915,
+        "value": 93.44596323607581,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,12 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 85.97529201722202,
-    "max": 95.4610229962915,
+    "median": 84.85740435001102,
+    "max": 93.53607385910983,
     "low": 66.35970056460125,
-    "high": 95.4610229962915,
-    "mos_pct": -45.51855268521837,
-    "valuation_warnings": []
+    "high": 93.53607385910983,
+    "mos_pct": -44.19484256866227,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -94,7 +95,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 19,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
@@ -113,22 +114,22 @@
     "label": "Energy median (n=21)",
     "values": {
       "Quality": 50.0,
-      "Value": 47.62,
+      "Value": 51.59,
       "Growth": 55.95,
-      "Momentum": 73.51,
+      "Momentum": 73.11,
       "Health": 55.14,
       "Profitability": 54.76,
-      "Technical": 57.07,
-      "Risk": 67.07
+      "Technical": 56.52,
+      "Risk": 67.1
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 53.764486862959295,
-  "price_change_1d_pct": 0.4577,
+  "loss_chance_pct": 53.22871037680325,
+  "price_change_1d_pct": -2.1981,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 54.33,
+  "composite_score_adjusted": 54.48,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -143,8 +144,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 53.17,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 4
 }

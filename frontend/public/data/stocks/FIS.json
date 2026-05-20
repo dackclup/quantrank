@@ -3,19 +3,19 @@
   "name": "Fidelity National Information Services",
   "sector": "Financials",
   "industry": "Transaction & Payment Processing Services",
-  "market_cap": 22484243068.5,
-  "current_price": 43.5,
-  "rank": 424,
-  "composite_score": 40.91,
+  "market_cap": 22065570246.364506,
+  "current_price": 42.69,
+  "rank": 427,
+  "composite_score": 40.46,
   "pillar_scores": {
     "quality": 53.33,
-    "value": 59.33,
+    "value": 60.22,
     "growth": 31.0,
-    "momentum": 16.78,
+    "momentum": 16.38,
     "health": 12.55,
     "profitability": 41.33,
-    "technical": 45.17,
-    "risk": 21.95,
+    "technical": 33.47,
+    "risk": 21.6,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 4.59,
     "eps_diluted": 4.58,
     "shares_outstanding": 516879151.0,
-    "market_cap": 22484243068.5,
-    "pe_ratio_ttm": 8.405324511588784,
+    "market_cap": 22065570246.364506,
+    "pe_ratio_ttm": 8.24881130705215,
     "goodwill": 24585000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 70.94327573198721,
+        "value": 71.747928929924,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 62.64606117186551,
+        "value": 62.827816670567714,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 66.79466845192636,
-    "max": 70.94327573198721,
-    "low": 62.64606117186551,
-    "high": 70.94327573198721,
-    "mos_pct": 34.8750416639796,
+    "median": 67.28787280024585,
+    "max": 71.747928929924,
+    "low": 62.827816670567714,
+    "high": 71.747928929924,
+    "mos_pct": 36.556177435656714,
     "valuation_warnings": [
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 2
   },
   "top5_factors": [],
   "score_history": [],
@@ -93,7 +94,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 11,
+    "filing_lag_days": 12,
     "latest_period_end": "2026-05-06",
     "latest_filed_date": "2026-05-08"
   },
@@ -117,22 +118,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.11,
+      "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 54.38,
+      "Momentum": 53.29,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 50.7,
-      "Risk": 55.28
+      "Technical": 51.94,
+      "Risk": 54.88
     }
   },
   "beneish_m_score": -2.644750298123332,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 46.33910394350356,
-  "price_change_1d_pct": 0.2997,
+  "loss_chance_pct": 45.97472285767951,
+  "price_change_1d_pct": -1.8621,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 40.41,
+  "composite_score_adjusted": 39.96,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -147,8 +148,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 46.16,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 2
 }

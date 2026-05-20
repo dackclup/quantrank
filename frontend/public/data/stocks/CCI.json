@@ -3,19 +3,19 @@
   "name": "Crown Castle",
   "sector": "Real Estate",
   "industry": "Telecom Tower REITs",
-  "market_cap": 40301974511.8851,
-  "current_price": 92.34,
-  "rank": 389,
-  "composite_score": 43.58,
+  "market_cap": 40432911438.73085,
+  "current_price": 92.64,
+  "rank": 390,
+  "composite_score": 43.2,
   "pillar_scores": {
     "quality": 67.74,
-    "value": 30.11,
+    "value": 31.18,
     "growth": 31.45,
-    "momentum": 40.99,
+    "momentum": 37.0,
     "health": 2.99,
     "profitability": 68.01,
-    "technical": 60.76,
-    "risk": 40.84,
+    "technical": 58.57,
+    "risk": 40.6,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.34,
     "eps_diluted": 0.34,
     "shares_outstanding": 436451983.0,
-    "market_cap": 40301974511.8851,
-    "pe_ratio_ttm": 38.05663315569887,
+    "market_cap": 40432911438.73085,
+    "pe_ratio_ttm": 38.18027520182328,
     "goodwill": 5127000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 68.76401848332975,
+        "value": 69.14729494586844,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 38.904487294472716,
+        "value": 39.375479218260416,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 53.83425288890123,
-    "max": 68.76401848332975,
-    "low": 38.904487294472716,
-    "high": 68.76401848332975,
-    "mos_pct": -71.52647502781254,
+    "median": 54.26138708206443,
+    "max": 69.14729494586844,
+    "low": 39.375479218260416,
+    "high": 69.14729494586844,
+    "mos_pct": -70.72913976478438,
     "valuation_warnings": [
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 2
   },
   "top5_factors": [],
   "score_history": [],
@@ -95,7 +96,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 12,
+    "filing_lag_days": 13,
     "latest_period_end": "2026-05-05",
     "latest_filed_date": "2026-05-07"
   },
@@ -118,22 +119,22 @@
     "label": "Real Estate median (n=31)",
     "values": {
       "Quality": 50.81,
-      "Value": 47.85,
+      "Value": 47.31,
       "Growth": 48.79,
-      "Momentum": 56.97,
+      "Momentum": 57.32,
       "Health": 26.22,
       "Profitability": 52.15,
-      "Technical": 54.23,
-      "Risk": 52.22
+      "Technical": 55.83,
+      "Risk": 52.92
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 77.21168283853832,
-  "price_change_1d_pct": 2.6913,
+  "loss_chance_pct": 77.39885752688173,
+  "price_change_1d_pct": 0.3249,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 43.58,
+  "composite_score_adjusted": 43.2,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -148,8 +149,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 47.53,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 2
 }

@@ -3,19 +3,19 @@
   "name": "Hewlett Packard Enterprise",
   "sector": "Information Technology",
   "industry": "Technology Hardware, Storage & Peripherals",
-  "market_cap": 43281978965.94693,
-  "current_price": 32.62,
-  "rank": 328,
-  "composite_score": 46.71,
+  "market_cap": 44847667195.89067,
+  "current_price": 33.8,
+  "rank": 322,
+  "composite_score": 47.11,
   "pillar_scores": {
     "quality": 19.52,
-    "value": 65.53,
+    "value": 65.07,
     "growth": 50.68,
-    "momentum": 88.5,
+    "momentum": 92.68,
     "health": 21.39,
     "profitability": 25.34,
-    "technical": 71.12,
-    "risk": 51.13,
+    "technical": 70.37,
+    "risk": 51.76,
     "sentiment": null,
     "ml": null
   },
@@ -32,7 +32,7 @@
     "eps_basic": 0.32,
     "eps_diluted": 0.31,
     "shares_outstanding": 1326854089.0,
-    "market_cap": 43281978965.94693,
+    "market_cap": 44847667195.89067,
     "pe_ratio_ttm": null,
     "goodwill": 23828000000.0
   },
@@ -51,13 +51,13 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 186.56863715501999,
+        "value": 189.37966118025358,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 27.5466595258798,
+        "value": 28.282849087849527,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,15 +75,16 @@
         "tier_used": null
       }
     },
-    "median": 107.05764834044989,
-    "max": 27.5466595258798,
-    "low": 27.5466595258798,
-    "high": 186.56863715501999,
-    "mos_pct": 69.53043576284136,
+    "median": 108.83125513405156,
+    "max": 28.282849087849527,
+    "low": 28.282849087849527,
+    "high": 189.37966118025358,
+    "mos_pct": 68.94274609308896,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate",
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 1
   },
   "top5_factors": [],
   "score_history": [],
@@ -93,7 +94,7 @@
       "cost_of_revenue"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 70,
+    "filing_lag_days": 71,
     "latest_period_end": "2026-03-03",
     "latest_filed_date": "2026-03-10"
   },
@@ -115,22 +116,22 @@
     "label": "Information Technology median (n=73)",
     "values": {
       "Quality": 49.32,
-      "Value": 50.23,
+      "Value": 48.17,
       "Growth": 52.23,
-      "Momentum": 53.34,
+      "Momentum": 59.76,
       "Health": 69.52,
       "Profitability": 47.26,
-      "Technical": 64.59,
-      "Risk": 46.91
+      "Technical": 61.01,
+      "Risk": 46.85
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 1.6115329649119625,
   "recommendation": "neutral",
-  "loss_chance_pct": 20.311660627687072,
-  "price_change_1d_pct": -1.1515,
+  "loss_chance_pct": 20.314115301408936,
+  "price_change_1d_pct": 3.6174,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 46.71,
+  "composite_score_adjusted": 47.11,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -145,8 +146,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 49.48,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 1
 }

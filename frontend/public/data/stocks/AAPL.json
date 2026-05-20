@@ -3,19 +3,19 @@
   "name": "Apple Inc.",
   "sector": "Information Technology",
   "industry": "Technology Hardware, Storage & Peripherals",
-  "market_cap": 4391078841248.9014,
-  "current_price": 298.97,
-  "rank": 27,
-  "composite_score": 64.88,
+  "market_cap": 4439253351000.0,
+  "current_price": 302.25,
+  "rank": 25,
+  "composite_score": 64.99,
   "pillar_scores": {
     "quality": 92.47,
-    "value": 38.81,
+    "value": 37.9,
     "growth": 50.34,
-    "momentum": 67.18,
+    "momentum": 69.35,
     "health": 52.23,
     "profitability": 76.71,
-    "technical": 67.36,
-    "risk": 70.58,
+    "technical": 68.18,
+    "risk": 70.68,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 4.87,
     "eps_diluted": 4.85,
     "shares_outstanding": 14687356000.0,
-    "market_cap": 4391078841248.9014,
-    "pe_ratio_ttm": 35.82360873953826,
+    "market_cap": 4439253351000.0,
+    "pe_ratio_ttm": 36.21662941872324,
     "goodwill": 5889000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 309.79767087386756,
+        "value": 299.5859471572672,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 68.22113682758201,
+        "value": 67.71652182148529,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 219.00528603713593,
+        "value": 224.70872624707735,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 151.78065197000043,
+    "median": 154.63237207497113,
     "max": 358.21324656018174,
     "low": 27.41109056114927,
     "high": 358.21324656018174,
-    "mos_pct": -96.9750408502625,
+    "mos_pct": -95.4635992090057,
     "valuation_warnings": [
       "extreme_graham_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 5
   },
   "top5_factors": [],
   "score_history": [],
@@ -91,7 +92,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 18,
+    "filing_lag_days": 19,
     "latest_period_end": "2026-04-17",
     "latest_filed_date": "2026-05-01"
   },
@@ -112,22 +113,22 @@
     "label": "Information Technology median (n=73)",
     "values": {
       "Quality": 49.32,
-      "Value": 50.23,
+      "Value": 48.17,
       "Growth": 52.23,
-      "Momentum": 53.34,
+      "Momentum": 59.76,
       "Health": 69.52,
       "Profitability": 47.26,
-      "Technical": 64.59,
-      "Risk": 46.91
+      "Technical": 61.01,
+      "Risk": 46.85
     }
   },
   "beneish_m_score": -2.8265273739309493,
   "dechow_f_score": 0.3949419188277985,
   "recommendation": "neutral",
-  "loss_chance_pct": 53.55812708071822,
-  "price_change_1d_pct": 0.3794,
+  "loss_chance_pct": 53.50306053184522,
+  "price_change_1d_pct": 1.0971,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 64.88,
+  "composite_score_adjusted": 64.99,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -142,8 +143,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 58.42,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 5
 }

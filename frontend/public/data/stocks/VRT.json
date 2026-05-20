@@ -3,19 +3,19 @@
   "name": "Vertiv",
   "sector": "Industrials",
   "industry": "Electrical Components & Equipment",
-  "market_cap": 123925029181.61133,
-  "current_price": 322.63,
-  "rank": 120,
-  "composite_score": 57.02,
+  "market_cap": 121251635104.43115,
+  "current_price": 315.67,
+  "rank": 133,
+  "composite_score": 56.08,
   "pillar_scores": {
     "quality": 78.16,
-    "value": 2.32,
+    "value": 2.53,
     "growth": 71.84,
-    "momentum": 84.71,
+    "momentum": 83.17,
     "health": 64.5,
     "profitability": 60.55,
-    "technical": 66.28,
-    "risk": 50.27,
+    "technical": 50.55,
+    "risk": 50.07,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.02,
     "eps_diluted": 0.99,
     "shares_outstanding": 384108816.0,
-    "market_cap": 123925029181.61133,
-    "pe_ratio_ttm": 79.52068094302575,
+    "market_cap": 121251635104.43115,
+    "pe_ratio_ttm": 77.80520733087214,
     "goodwill": 2023700000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 111.65745280773287,
+        "value": 113.19934097281813,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 69.63550242704306,
+        "value": 70.25106303510717,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 100.17696920592712,
+        "value": 100.31098140715814,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,17 +75,18 @@
         "tier_used": null
       }
     },
-    "median": 49.98062128854054,
-    "max": 111.65745280773287,
+    "median": 50.28840159257259,
+    "max": 113.19934097281813,
     "low": 2.104139838125133,
-    "high": 111.65745280773287,
-    "mos_pct": -545.5101928810647,
+    "high": 113.19934097281813,
+    "mos_pct": -527.7193218134769,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
       "extreme_rim_estimate",
       "extreme_dcf_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 3
   },
   "top5_factors": [],
   "score_history": [],
@@ -95,7 +96,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 27,
+    "filing_lag_days": 28,
     "latest_period_end": "2026-04-20",
     "latest_filed_date": "2026-04-22"
   },
@@ -121,22 +122,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 47.89,
+      "Value": 49.16,
       "Growth": 49.37,
-      "Momentum": 49.55,
+      "Momentum": 50.5,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 44.67,
-      "Risk": 54.05
+      "Technical": 45.57,
+      "Risk": 54.48
     }
   },
   "beneish_m_score": -2.533000075251267,
   "dechow_f_score": 0.5421279360611256,
   "recommendation": "cautious",
-  "loss_chance_pct": 63.49029252189554,
-  "price_change_1d_pct": -5.0334,
+  "loss_chance_pct": 63.960208743086724,
+  "price_change_1d_pct": -2.1573,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 57.02,
+  "composite_score_adjusted": 56.08,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -151,8 +152,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 53.97,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 3
 }

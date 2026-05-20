@@ -3,19 +3,19 @@
   "name": "Caterpillar Inc.",
   "sector": "Industrials",
   "industry": "Construction Machinery & Heavy Transportation Equipment",
-  "market_cap": 396216949159.92114,
-  "current_price": 860.15,
-  "rank": 198,
-  "composite_score": 53.04,
+  "market_cap": 401933442281.9579,
+  "current_price": 872.56,
+  "rank": 205,
+  "composite_score": 52.7,
   "pillar_scores": {
     "quality": 68.35,
-    "value": 12.03,
+    "value": 11.81,
     "growth": 59.18,
-    "momentum": 83.32,
-    "health": 50.36,
+    "momentum": 84.31,
+    "health": 50.32,
     "profitability": 43.46,
-    "technical": 68.68,
-    "risk": 67.76,
+    "technical": 60.41,
+    "risk": 67.83,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 5.5,
     "eps_diluted": 5.47,
     "shares_outstanding": 460637026.0,
-    "market_cap": 396216949159.92114,
-    "pe_ratio_ttm": 42.01664360126417,
+    "market_cap": 401933442281.9579,
+    "pe_ratio_ttm": 42.622846477408046,
     "goodwill": 5865000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 563.398778390366,
+        "value": 571.1788045935381,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 255.25268587742744,
+        "value": 257.5090564506608,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 442.9145100683831,
+        "value": 443.5864984492308,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,15 +75,16 @@
         "tier_used": null
       }
     },
-    "median": 217.87828706277656,
-    "max": 563.398778390366,
+    "median": 219.00647234939325,
+    "max": 571.1788045935381,
     "low": 110.84983991178791,
-    "high": 563.398778390366,
-    "mos_pct": -294.78464605618564,
+    "high": 571.1788045935381,
+    "mos_pct": -298.41744775768547,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_rim_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -93,7 +94,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 13,
+    "filing_lag_days": 14,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
@@ -118,22 +119,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 47.89,
+      "Value": 49.16,
       "Growth": 49.37,
-      "Momentum": 49.55,
+      "Momentum": 50.5,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 44.67,
-      "Risk": 54.05
+      "Technical": 45.57,
+      "Risk": 54.48
     }
   },
   "beneish_m_score": -1.365232239831081,
   "dechow_f_score": 0.5447029785627931,
   "recommendation": "cautious",
-  "loss_chance_pct": 63.47907000689227,
-  "price_change_1d_pct": -0.4398,
+  "loss_chance_pct": 63.64797350681662,
+  "price_change_1d_pct": 1.4428,
   "manipulation_index": 23.0,
-  "composite_score_adjusted": 50.74,
+  "composite_score_adjusted": 50.4,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": true,
@@ -148,8 +149,37 @@
     "beneish_high": true,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 52.28,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 4
 }

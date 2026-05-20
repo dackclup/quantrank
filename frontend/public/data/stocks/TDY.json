@@ -3,19 +3,19 @@
   "name": "Teledyne Technologies",
   "sector": "Information Technology",
   "industry": "Electronic Equipment & Instruments",
-  "market_cap": 28096306305.641235,
-  "current_price": 606.45,
-  "rank": 301,
-  "composite_score": 48.07,
+  "market_cap": 28455357125.141235,
+  "current_price": 614.2,
+  "rank": 296,
+  "composite_score": 48.47,
   "pillar_scores": {
-    "quality": 20.89,
-    "value": 65.98,
+    "quality": 20.21,
+    "value": 66.21,
     "growth": 53.42,
-    "momentum": 60.81,
+    "momentum": 63.55,
     "health": 78.21,
-    "profitability": 29.0,
-    "technical": 22.51,
-    "risk": 65.11,
+    "profitability": 28.77,
+    "technical": 26.1,
+    "risk": 65.84,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 4.9,
     "eps_diluted": 4.85,
     "shares_outstanding": 46329138.0,
-    "market_cap": 28096306305.641235,
-    "pe_ratio_ttm": 30.091363720296922,
+    "market_cap": 28455357125.141235,
+    "pe_ratio_ttm": 30.475909955168937,
     "goodwill": 8687500000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 748.12300058993,
+        "value": 743.4105826158611,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 2308.733382639131,
+        "value": 2343.5189988360535,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 795.6823005046443,
+        "value": 803.5528254463317,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 771.9026505472872,
-    "max": 2308.733382639131,
+    "median": 773.4817040310963,
+    "max": 2343.5189988360535,
     "low": 149.827220573887,
-    "high": 2308.733382639131,
-    "mos_pct": 21.434391787999203,
+    "high": 2343.5189988360535,
+    "mos_pct": 20.592819583701683,
     "valuation_warnings": [
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -92,7 +93,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 25,
+    "filing_lag_days": 26,
     "latest_period_end": "2026-04-15",
     "latest_filed_date": "2026-04-24"
   },
@@ -113,22 +114,22 @@
     "label": "Information Technology median (n=73)",
     "values": {
       "Quality": 49.32,
-      "Value": 50.23,
+      "Value": 48.17,
       "Growth": 52.23,
-      "Momentum": 53.34,
+      "Momentum": 59.76,
       "Health": 69.52,
       "Profitability": 47.26,
-      "Technical": 64.59,
-      "Risk": 46.91
+      "Technical": 61.01,
+      "Risk": 46.85
     }
   },
   "beneish_m_score": -2.4870887493105545,
   "dechow_f_score": 0.6303873586338884,
   "recommendation": "neutral",
-  "loss_chance_pct": 35.4631648516785,
-  "price_change_1d_pct": -1.807,
+  "loss_chance_pct": 35.55881608463363,
+  "price_change_1d_pct": 1.2779,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 48.07,
+  "composite_score_adjusted": 48.47,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -143,8 +144,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 50.16,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 4
 }

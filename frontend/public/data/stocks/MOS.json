@@ -3,19 +3,19 @@
   "name": "The Mosaic Company",
   "sector": "Materials",
   "industry": "Fertilizers & Agricultural Chemicals",
-  "market_cap": 6801918060.351128,
-  "current_price": 21.4,
+  "market_cap": 6948127831.838196,
+  "current_price": 21.86,
   "rank": 498,
-  "composite_score": 29.49,
+  "composite_score": 29.73,
   "pillar_scores": {
     "quality": 15.38,
-    "value": 54.81,
+    "value": 55.45,
     "growth": 30.77,
-    "momentum": 13.79,
+    "momentum": 13.15,
     "health": 44.46,
     "profitability": 19.87,
-    "technical": 18.68,
-    "risk": 19.49,
+    "technical": 22.16,
+    "risk": 19.56,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": -0.81,
     "eps_diluted": -0.81,
     "shares_outstanding": 317846644.0,
-    "market_cap": 6801918060.351128,
-    "pe_ratio_ttm": 95.93678505431774,
+    "market_cap": 6948127831.838196,
+    "pe_ratio_ttm": 97.99898211337371,
     "goodwill": 988900000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 5.342769785330207,
+        "value": 5.535177816928367,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 105.16001641157908,
+        "value": 107.00201075469309,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 43.45560007481141,
+        "value": 44.73589328295065,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,13 +76,14 @@
       }
     },
     "median": 38.3063708319312,
-    "max": 105.16001641157908,
-    "low": 5.342769785330207,
-    "high": 105.16001641157908,
-    "mos_pct": 44.13462002855204,
+    "max": 107.00201075469309,
+    "low": 5.535177816928367,
+    "high": 107.00201075469309,
+    "mos_pct": 42.93377280175643,
     "valuation_warnings": [
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 5
   },
   "top5_factors": [],
   "score_history": [],
@@ -95,7 +96,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 9,
     "latest_period_end": "2026-05-08",
     "latest_filed_date": "2026-05-11"
   },
@@ -117,22 +118,22 @@
     "label": "Materials median (n=26)",
     "values": {
       "Quality": 51.68,
-      "Value": 50.16,
+      "Value": 50.48,
       "Growth": 48.56,
-      "Momentum": 51.79,
+      "Momentum": 51.32,
       "Health": 56.53,
       "Profitability": 54.33,
-      "Technical": 31.62,
-      "Risk": 46.43
+      "Technical": 38.75,
+      "Risk": 46.85
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 36.809982795911374,
-  "price_change_1d_pct": -0.0467,
+  "loss_chance_pct": 37.11023067374218,
+  "price_change_1d_pct": 2.1495,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 28.99,
+  "composite_score_adjusted": 29.23,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -147,8 +148,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 40.79,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 5
 }

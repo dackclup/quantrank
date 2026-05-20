@@ -3,19 +3,19 @@
   "name": "Vertex Pharmaceuticals",
   "sector": "Health Care",
   "industry": "Biotechnology",
-  "market_cap": 110230230037.62787,
-  "current_price": 434.31,
-  "rank": 84,
-  "composite_score": 58.92,
+  "market_cap": 109248004313.12213,
+  "current_price": 430.44,
+  "rank": 108,
+  "composite_score": 57.79,
   "pillar_scores": {
     "quality": 77.97,
-    "value": 24.29,
+    "value": 25.14,
     "growth": 58.9,
-    "momentum": 38.89,
+    "momentum": 34.51,
     "health": 94.4,
     "profitability": 82.2,
-    "technical": 68.92,
-    "risk": 47.08,
+    "technical": 54.23,
+    "risk": 46.02,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 4.06,
     "eps_diluted": 4.02,
     "shares_outstanding": 253805417.0,
-    "market_cap": 110230230037.62787,
-    "pe_ratio_ttm": 25.408623202090187,
+    "market_cap": 109248004313.12213,
+    "pe_ratio_ttm": 25.182215225577327,
     "goodwill": 1088000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 414.03972369721123,
+        "value": 417.67022212427065,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 224.22886217907075,
+        "value": 225.57447161626982,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 341.4433508470884,
+        "value": 346.3420286263319,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 205.8865317609637,
-    "max": 414.03972369721123,
+    "median": 206.55933647956323,
+    "max": 417.67022212427065,
     "low": 79.89439676619855,
-    "high": 414.03972369721123,
-    "mos_pct": -110.94628863962406,
+    "high": 417.67022212427065,
+    "mos_pct": -108.38564345601176,
     "valuation_warnings": [
       "extreme_rim_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 5
   },
   "top5_factors": [],
   "score_history": [],
@@ -94,7 +95,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-05"
   },
@@ -119,20 +120,20 @@
       "Quality": 52.97,
       "Value": 51.13,
       "Growth": 49.58,
-      "Momentum": 39.89,
+      "Momentum": 40.09,
       "Health": 59.88,
       "Profitability": 51.13,
-      "Technical": 59.81,
-      "Risk": 41.3
+      "Technical": 57.02,
+      "Risk": 41.14
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.4141820168984568,
   "recommendation": "neutral",
-  "loss_chance_pct": 59.53976255992977,
-  "price_change_1d_pct": -0.5199,
+  "loss_chance_pct": 60.10552915456817,
+  "price_change_1d_pct": -0.8911,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 56.92,
+  "composite_score_adjusted": 55.79,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -147,8 +148,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 54.82,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 5
 }

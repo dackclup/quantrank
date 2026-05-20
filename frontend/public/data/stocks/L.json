@@ -3,19 +3,19 @@
   "name": "Loews Corporation",
   "sector": "Financials",
   "industry": "Multi-line Insurance",
-  "market_cap": 22194230767.371353,
-  "current_price": 107.86,
-  "rank": 220,
-  "composite_score": 51.99,
+  "market_cap": 22383537753.757294,
+  "current_price": 108.78,
+  "rank": 235,
+  "composite_score": 51.39,
   "pillar_scores": {
     "quality": 36.0,
-    "value": 59.56,
+    "value": 59.33,
     "growth": 46.67,
-    "momentum": 66.24,
+    "momentum": 64.59,
     "health": 52.11,
     "profitability": 41.56,
-    "technical": 71.81,
-    "risk": 84.86,
+    "technical": 64.64,
+    "risk": 85.19,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.63,
     "eps_diluted": 1.63,
     "shares_outstanding": 205768873.0,
-    "market_cap": 22194230767.371353,
-    "pe_ratio_ttm": 12.799441042313354,
+    "market_cap": 22383537753.757294,
+    "pe_ratio_ttm": 12.908614621544,
     "goodwill": 348000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 115.51699429685041,
+        "value": 116.82721176169035,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 184.22236975759185,
+        "value": 184.75685553468696,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,13 +76,14 @@
       }
     },
     "median": 117.59803231245509,
-    "max": 184.22236975759185,
-    "low": 115.51699429685041,
-    "high": 184.22236975759185,
-    "mos_pct": 8.280777756748357,
+    "max": 184.75685553468696,
+    "low": 116.82721176169035,
+    "high": 184.75685553468696,
+    "mos_pct": 7.498453298715846,
     "valuation_warnings": [
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 3
   },
   "top5_factors": [],
   "score_history": [],
@@ -103,7 +104,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 16,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-04"
   },
@@ -124,22 +125,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.11,
+      "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 54.38,
+      "Momentum": 53.29,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 50.7,
-      "Risk": 55.28
+      "Technical": 51.94,
+      "Risk": 54.88
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 38.10472689979058,
-  "price_change_1d_pct": -0.1389,
+  "loss_chance_pct": 38.67931237245256,
+  "price_change_1d_pct": 0.853,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 51.99,
+  "composite_score_adjusted": 51.39,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -154,8 +155,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 51.62,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 3
 }

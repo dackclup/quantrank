@@ -3,19 +3,19 @@
   "name": "Otis Worldwide",
   "sector": "Industrials",
   "industry": "Industrial Machinery & Supplies & Components",
-  "market_cap": 27220819368.246826,
-  "current_price": 70.94,
-  "rank": 354,
-  "composite_score": 45.53,
+  "market_cap": 27347443448.410614,
+  "current_price": 71.27,
+  "rank": 358,
+  "composite_score": 45.37,
   "pillar_scores": {
     "quality": 39.24,
-    "value": 70.68,
+    "value": 71.1,
     "growth": 48.42,
-    "momentum": 16.83,
+    "momentum": 15.29,
     "health": 41.75,
     "profitability": 58.65,
-    "technical": 24.25,
-    "risk": 43.49,
+    "technical": 23.06,
+    "risk": 43.39,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.88,
     "eps_diluted": 0.87,
     "shares_outstanding": 383716076.0,
-    "market_cap": 27220819368.246826,
-    "pe_ratio_ttm": 17.53918773727244,
+    "market_cap": 27347443448.410614,
+    "pe_ratio_ttm": 17.620775417790345,
     "goodwill": 1682000000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 108.34243511056891,
+        "value": 108.76970277129466,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 108.34243511056891,
-    "max": 108.34243511056891,
-    "low": 108.34243511056891,
-    "high": 108.34243511056891,
-    "mos_pct": 34.52242201404426,
+    "median": 108.76970277129466,
+    "max": 108.76970277129466,
+    "low": 108.76970277129466,
+    "high": 108.76970277129466,
+    "mos_pct": 34.47624216375516,
     "valuation_warnings": [
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 1
   },
   "top5_factors": [],
   "score_history": [],
@@ -94,7 +95,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 26,
+    "filing_lag_days": 27,
     "latest_period_end": "2026-04-15",
     "latest_filed_date": "2026-04-23"
   },
@@ -117,22 +118,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 47.89,
+      "Value": 49.16,
       "Growth": 49.37,
-      "Momentum": 49.55,
+      "Momentum": 50.5,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 44.67,
-      "Risk": 54.05
+      "Technical": 45.57,
+      "Risk": 54.48
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.6041802298530912,
   "recommendation": "cautious",
-  "loss_chance_pct": 44.15021582156929,
-  "price_change_1d_pct": -0.2671,
+  "loss_chance_pct": 44.24714746653292,
+  "price_change_1d_pct": 0.4652,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 45.53,
+  "composite_score_adjusted": 45.37,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -147,8 +148,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 48.61,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 1
 }

@@ -3,19 +3,19 @@
   "name": "Verisk Analytics",
   "sector": "Industrials",
   "industry": "Research & Consulting Services",
-  "market_cap": 22366739186.063232,
-  "current_price": 170.71,
-  "rank": 288,
-  "composite_score": 49.11,
+  "market_cap": 22360187694.21631,
+  "current_price": 170.66,
+  "rank": 283,
+  "composite_score": 49.21,
   "pillar_scores": {
     "quality": 46.84,
-    "value": 51.27,
+    "value": 51.48,
     "growth": 61.08,
-    "momentum": 13.55,
+    "momentum": 15.69,
     "health": 62.99,
     "profitability": 88.19,
-    "technical": 47.46,
-    "risk": 31.61,
+    "technical": 43.43,
+    "risk": 31.21,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.73,
     "eps_diluted": 1.73,
     "shares_outstanding": 131021840.0,
-    "market_cap": 22366739186.063232,
-    "pe_ratio_ttm": 24.573433515780305,
+    "market_cap": 22360187694.21631,
+    "pe_ratio_ttm": 24.566235656137454,
     "goodwill": 1863100000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 194.1840052998197,
+        "value": 194.15958379734118,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 178.60684777920906,
+        "value": 179.29329547547462,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 178.60684777920906,
-    "max": 194.1840052998197,
+    "median": 179.29329547547462,
+    "max": 194.15958379734118,
     "low": 53.14308686286062,
-    "high": 194.1840052998197,
-    "mos_pct": 4.42135403179156,
+    "high": 194.15958379734118,
+    "mos_pct": 4.815178275612759,
     "valuation_warnings": [
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 3
   },
   "top5_factors": [],
   "score_history": [],
@@ -94,7 +95,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 20,
+    "filing_lag_days": 21,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-29"
   },
@@ -115,22 +116,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 47.89,
+      "Value": 49.16,
       "Growth": 49.37,
-      "Momentum": 49.55,
+      "Momentum": 50.5,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 44.67,
-      "Risk": 54.05
+      "Technical": 45.57,
+      "Risk": 54.48
     }
   },
   "beneish_m_score": -2.8603633446005023,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 40.89704968226311,
-  "price_change_1d_pct": -0.4722,
+  "loss_chance_pct": 40.70995411134396,
+  "price_change_1d_pct": -0.0293,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 49.11,
+  "composite_score_adjusted": 49.21,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -145,8 +146,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 50.53,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 3
 }

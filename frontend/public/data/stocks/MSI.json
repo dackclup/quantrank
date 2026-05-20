@@ -3,19 +3,19 @@
   "name": "Motorola Solutions",
   "sector": "Information Technology",
   "industry": "Communications Equipment",
-  "market_cap": 66187420234.54193,
-  "current_price": 398.73,
-  "rank": 53,
-  "composite_score": 62.15,
+  "market_cap": 65720973054.38458,
+  "current_price": 395.92,
+  "rank": 59,
+  "composite_score": 61.63,
   "pillar_scores": {
     "quality": 81.51,
-    "value": 55.02,
+    "value": 55.48,
     "growth": 67.81,
-    "momentum": 48.75,
+    "momentum": 48.06,
     "health": 45.38,
     "profitability": 54.57,
-    "technical": 52.34,
-    "risk": 59.23,
+    "technical": 42.13,
+    "risk": 58.47,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.21,
     "eps_diluted": 2.18,
     "shares_outstanding": 165995582.0,
-    "market_cap": 66187420234.54193,
-    "pe_ratio_ttm": 31.56290902934761,
+    "market_cap": 65720973054.38458,
+    "pe_ratio_ttm": 31.340473559553928,
     "goodwill": 6885000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 468.94484826557505,
+        "value": 465.99097018660797,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 144.20165544284293,
+        "value": 143.13503118789458,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 522.8114388683915,
+        "value": 527.7267637650699,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,12 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 468.94484826557505,
-    "max": 522.8114388683915,
-    "low": 144.20165544284293,
-    "high": 522.8114388683915,
-    "mos_pct": 14.972941389364092,
-    "valuation_warnings": []
+    "median": 465.99097018660797,
+    "max": 527.7267637650699,
+    "low": 143.13503118789458,
+    "high": 527.7267637650699,
+    "mos_pct": 15.03697737550867,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 3
   },
   "top5_factors": [],
   "score_history": [],
@@ -89,7 +90,7 @@
       "total_liabilities"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 12,
+    "filing_lag_days": 13,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-07"
   },
@@ -108,22 +109,22 @@
     "label": "Information Technology median (n=73)",
     "values": {
       "Quality": 49.32,
-      "Value": 50.23,
+      "Value": 48.17,
       "Growth": 52.23,
-      "Momentum": 53.34,
+      "Momentum": 59.76,
       "Health": 69.52,
       "Profitability": 47.26,
-      "Technical": 64.59,
-      "Risk": 46.91
+      "Technical": 61.01,
+      "Risk": 46.85
     }
   },
   "beneish_m_score": -2.3494797518952373,
   "dechow_f_score": 0.6045911994375418,
   "recommendation": "bullish",
-  "loss_chance_pct": 28.683818214244685,
-  "price_change_1d_pct": -2.8128,
+  "loss_chance_pct": 28.923158266040534,
+  "price_change_1d_pct": -0.7047,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 62.15,
+  "composite_score_adjusted": 61.63,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -138,8 +139,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 56.74,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 3
 }

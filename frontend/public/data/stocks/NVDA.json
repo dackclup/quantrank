@@ -3,67 +3,67 @@
   "name": "Nvidia",
   "sector": "Information Technology",
   "industry": "Semiconductors",
-  "market_cap": 5360823014831.543,
-  "current_price": 220.61,
-  "rank": 3,
-  "composite_score": 70.37,
+  "market_cap": 5407974029541.016,
+  "current_price": 223.47,
+  "rank": 2,
+  "composite_score": 72.59,
   "pillar_scores": {
-    "quality": 90.75,
-    "value": 23.52,
+    "quality": 91.1,
+    "value": 31.74,
     "growth": 84.08,
-    "momentum": 73.26,
-    "health": 95.54,
-    "profitability": 92.01,
-    "technical": 63.05,
-    "risk": 53.32,
+    "momentum": 74.7,
+    "health": 95.42,
+    "profitability": 91.78,
+    "technical": 65.39,
+    "risk": 53.42,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 215938000000.0,
-    "net_income": 120067000000.0,
-    "total_assets": 206803000000.0,
-    "total_liabilities": 49510000000.0,
-    "stockholders_equity": 157293000000.0,
-    "cash": 10605000000.0,
-    "operating_cash_flow": 102718000000.0,
+    "revenue": 253491000000.0,
+    "net_income": 159613000000.0,
+    "total_assets": 259474000000.0,
+    "total_liabilities": 64000000000.0,
+    "stockholders_equity": 195474000000.0,
+    "cash": 13237000000.0,
+    "operating_cash_flow": 125648000000.0,
     "capex": 588000000.0,
-    "free_cash_flow": 102130000000.0,
-    "eps_basic": 4.93,
-    "eps_diluted": 4.9,
-    "shares_outstanding": 24300000000.0,
-    "market_cap": 5360823014831.543,
-    "pe_ratio_ttm": 44.64859632398197,
-    "goodwill": 20832000000.0
+    "free_cash_flow": 125060000000.0,
+    "eps_basic": 2.4,
+    "eps_diluted": 2.39,
+    "shares_outstanding": 24200000000.0,
+    "market_cap": 5407974029541.016,
+    "pe_ratio_ttm": 33.8817892624098,
+    "goodwill": 20894000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 28.504246759620457,
+        "value": 32.412139025345844,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 253.29345889142647,
+        "value": 340.98550362581994,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 49.019487916588105,
+        "value": 62.642565761256506,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 184.3982799776713,
+        "value": 231.9978731713986,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "rim": {
-        "value": 62.787859966670005,
+        "value": 81.18427732367186,
         "applicable": true,
         "reason": null,
         "tier_used": null
@@ -75,23 +75,24 @@
         "tier_used": null
       }
     },
-    "median": 62.787859966670005,
-    "max": 253.29345889142647,
-    "low": 28.504246759620457,
-    "high": 253.29345889142647,
-    "mos_pct": -251.35773177722425,
+    "median": 81.18427732367186,
+    "max": 340.98550362581994,
+    "low": 32.412139025345844,
+    "high": 340.98550362581994,
+    "mos_pct": -175.26265994800366,
     "valuation_warnings": [
       "extreme_graham_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 83,
-    "latest_period_end": "2026-02-20",
-    "latest_filed_date": "2026-02-25"
+    "filing_lag_days": 0,
+    "latest_period_end": "2026-05-15",
+    "latest_filed_date": "2026-05-20"
   },
   "risk_flags": [
     "sloan_accruals_top_decile",
@@ -103,7 +104,7 @@
     "accruals_momentum_high"
   ],
   "has_history": true,
-  "tangible_book_value": 5.479629629629629,
+  "tangible_book_value": 7.085123966942149,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -115,22 +116,22 @@
     "label": "Information Technology median (n=73)",
     "values": {
       "Quality": 49.32,
-      "Value": 50.23,
+      "Value": 48.17,
       "Growth": 52.23,
-      "Momentum": 53.34,
+      "Momentum": 59.76,
       "Health": 69.52,
       "Profitability": 47.26,
-      "Technical": 64.59,
-      "Risk": 46.91
+      "Technical": 61.01,
+      "Risk": 46.85
     }
   },
-  "beneish_m_score": -1.1586452142087424,
-  "dechow_f_score": 1.077299499596611,
-  "recommendation": "cautious",
-  "loss_chance_pct": 56.81446246975568,
-  "price_change_1d_pct": -0.7692,
+  "beneish_m_score": -0.7352680804348426,
+  "dechow_f_score": 1.1816989697288243,
+  "recommendation": "neutral",
+  "loss_chance_pct": 55.705179282868535,
+  "price_change_1d_pct": 1.2964,
   "manipulation_index": 48.0,
-  "composite_score_adjusted": 65.57,
+  "composite_score_adjusted": 67.79,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": true,
@@ -145,8 +146,37 @@
     "beneish_high": true,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 62.22,
   "entered_top5": false,
-  "exited_top5": true
+  "exited_top5": true,
+  "valuation_methods_applicable": 4
 }

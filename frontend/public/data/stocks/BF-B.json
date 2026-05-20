@@ -3,19 +3,19 @@
   "name": "Brown–Forman",
   "sector": "Consumer Staples",
   "industry": "Distillers & Vintners",
-  "market_cap": 12155235875.778198,
-  "current_price": 25.92,
-  "rank": 218,
-  "composite_score": 52.04,
+  "market_cap": 12023928993.774414,
+  "current_price": 25.64,
+  "rank": 234,
+  "composite_score": 51.39,
   "pillar_scores": {
     "quality": 55.56,
-    "value": 62.96,
+    "value": 64.35,
     "growth": 27.78,
-    "momentum": 37.45,
-    "health": 70.12,
+    "momentum": 34.81,
+    "health": 70.08,
     "profitability": 63.89,
-    "technical": 51.34,
-    "risk": 23.24,
+    "technical": 38.94,
+    "risk": 23.04,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.41,
     "eps_diluted": 1.41,
     "shares_outstanding": 468952000.0,
-    "market_cap": 12155235875.778198,
-    "pe_ratio_ttm": 15.062250155858981,
+    "market_cap": 12023928993.774414,
+    "pe_ratio_ttm": 14.899540264900141,
     "goodwill": 1536000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 42.144784101625696,
+        "value": 41.91908812822862,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 31.027892936847604,
+        "value": 29.830574218039274,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 28.866451376030064,
+        "value": 28.92768441257407,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 20.151916709847747,
-    "max": 42.144784101625696,
+    "median": 20.18253322811975,
+    "max": 41.91908812822862,
     "low": 5.878681209804796,
-    "high": 42.144784101625696,
-    "mos_pct": -28.62300122363784,
+    "high": 41.91908812822862,
+    "mos_pct": -27.040540946192802,
     "valuation_warnings": [
       "goodwill_heavy"
-    ]
+    ],
+    "valuation_methods_applicable": 6
   },
   "top5_factors": [],
   "score_history": [],
@@ -92,7 +93,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 76,
+    "filing_lag_days": 77,
     "latest_period_end": "2026-01-31",
     "latest_filed_date": "2026-03-04"
   },
@@ -115,22 +116,22 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 49.65,
-      "Value": 51.16,
+      "Value": 50.93,
       "Growth": 48.44,
-      "Momentum": 40.91,
+      "Momentum": 37.77,
       "Health": 39.29,
       "Profitability": 53.94,
-      "Technical": 54.51,
-      "Risk": 51.63
+      "Technical": 55.27,
+      "Risk": 50.88
     }
   },
   "beneish_m_score": -2.391731627605287,
   "dechow_f_score": 0.5664740792269928,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 52.99720326138524,
-  "price_change_1d_pct": -1.2571,
+  "loss_chance_pct": 52.76779435551454,
+  "price_change_1d_pct": -1.0802,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 50.04,
+  "composite_score_adjusted": 49.39,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -145,8 +146,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 51.62,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 6
 }

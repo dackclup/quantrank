@@ -3,19 +3,19 @@
   "name": "UDR, Inc.",
   "sector": "Real Estate",
   "industry": "Multi-Family Residential REITs",
-  "market_cap": 12151845917.981941,
-  "current_price": 37.4,
-  "rank": 107,
-  "composite_score": 57.79,
+  "market_cap": 12291559747.92833,
+  "current_price": 37.83,
+  "rank": 94,
+  "composite_score": 58.39,
   "pillar_scores": {
     "quality": 74.19,
     "value": 67.74,
     "growth": 49.19,
-    "momentum": 41.04,
+    "momentum": 46.26,
     "health": 21.79,
     "profitability": 56.45,
-    "technical": 67.63,
-    "risk": 47.31,
+    "technical": 66.24,
+    "risk": 47.81,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.58,
     "eps_diluted": 0.57,
     "shares_outstanding": 324915653.0,
-    "market_cap": 12151845917.981941,
-    "pe_ratio_ttm": 23.166318273984345,
+    "market_cap": 12291559747.92833,
+    "pe_ratio_ttm": 23.432669170272938,
     "goodwill": null
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 46.96836347088755,
+        "value": 47.38183148115459,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 24.221011842675228,
+        "value": 24.514240253000203,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 53.28025294290293,
+        "value": 53.84267879210759,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 35.59468765678139,
-    "max": 53.28025294290293,
+    "median": 35.948035867077394,
+    "max": 53.84267879210759,
     "low": 14.341805949466542,
-    "high": 53.28025294290293,
-    "mos_pct": -5.071863213143197,
+    "high": 53.84267879210759,
+    "mos_pct": -5.2352400307380105,
     "valuation_warnings": [
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -102,7 +103,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 19,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-30"
   },
@@ -125,22 +126,22 @@
     "label": "Real Estate median (n=31)",
     "values": {
       "Quality": 50.81,
-      "Value": 47.85,
+      "Value": 47.31,
       "Growth": 48.79,
-      "Momentum": 56.97,
+      "Momentum": 57.32,
       "Health": 26.22,
       "Profitability": 52.15,
-      "Technical": 54.23,
-      "Risk": 52.22
+      "Technical": 55.83,
+      "Risk": 52.92
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 39.88166558688003,
-  "price_change_1d_pct": -0.1602,
+  "loss_chance_pct": 39.63755265232109,
+  "price_change_1d_pct": 1.1497,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 57.29,
+  "composite_score_adjusted": 57.89,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -155,8 +156,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 55.12,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 4
 }

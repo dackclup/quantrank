@@ -3,19 +3,19 @@
   "name": "Monolithic Power Systems",
   "sector": "Information Technology",
   "industry": "Semiconductors",
-  "market_cap": 72128243580.32227,
-  "current_price": 1468.11,
-  "rank": 154,
-  "composite_score": 55.01,
+  "market_cap": 76312156059.57031,
+  "current_price": 1553.27,
+  "rank": 145,
+  "composite_score": 55.57,
   "pillar_scores": {
     "quality": 55.82,
-    "value": 11.42,
+    "value": 10.73,
     "growth": 69.86,
-    "momentum": 86.01,
+    "momentum": 89.89,
     "health": 88.55,
-    "profitability": 63.93,
-    "technical": 56.52,
-    "risk": 51.43,
+    "profitability": 63.47,
+    "technical": 61.06,
+    "risk": 52.26,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 3.94,
     "eps_diluted": 3.92,
     "shares_outstanding": 49130000.0,
-    "market_cap": 72128243580.32227,
-    "pe_ratio_ttm": 105.49799921941904,
+    "market_cap": 76312156059.57031,
+    "pe_ratio_ttm": 111.61757698202308,
     "goodwill": 25944000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 621.3297937417506,
+        "value": 476.44303473184925,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 566.840583700846,
+        "value": 580.4852542632358,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 608.2939883788764,
+        "value": 591.3165746427916,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,16 +75,17 @@
         "tier_used": null
       }
     },
-    "median": 374.7961189048409,
-    "max": 621.3297937417506,
+    "median": 329.59734442034255,
+    "max": 591.3165746427916,
     "low": 174.41308926660147,
-    "high": 621.3297937417506,
-    "mos_pct": -291.70896156593045,
+    "high": 591.3165746427916,
+    "mos_pct": -371.2629048219307,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_rim_estimate",
       "extreme_dcf_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 3
   },
   "top5_factors": [],
   "score_history": [],
@@ -96,7 +97,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 16,
     "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-05-04"
   },
@@ -121,22 +122,22 @@
     "label": "Information Technology median (n=73)",
     "values": {
       "Quality": 49.32,
-      "Value": 50.23,
+      "Value": 48.17,
       "Growth": 52.23,
-      "Momentum": 53.34,
+      "Momentum": 59.76,
       "Health": 69.52,
       "Profitability": 47.26,
-      "Technical": 64.59,
-      "Risk": 46.91
+      "Technical": 61.01,
+      "Risk": 46.85
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 1.511914766408008,
   "recommendation": "cautious",
-  "loss_chance_pct": 60.49605459440775,
-  "price_change_1d_pct": -1.2258,
+  "loss_chance_pct": 60.21574034910586,
+  "price_change_1d_pct": 5.8007,
   "manipulation_index": 15.0,
-  "composite_score_adjusted": 53.51,
+  "composite_score_adjusted": 54.07,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -151,8 +152,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 53.71,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 3
 }

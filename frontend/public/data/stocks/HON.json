@@ -3,19 +3,19 @@
   "name": "Honeywell",
   "sector": "Industrials",
   "industry": "Industrial Conglomerates",
-  "market_cap": 137597770923.3383,
-  "current_price": 217.15,
-  "rank": 388,
-  "composite_score": 43.71,
+  "market_cap": 137749851152.6588,
+  "current_price": 217.39,
+  "rank": 395,
+  "composite_score": 42.8,
   "pillar_scores": {
     "quality": 43.99,
     "value": 36.08,
     "growth": 27.22,
-    "momentum": 56.47,
-    "health": 50.68,
+    "momentum": 50.5,
+    "health": 50.64,
     "profitability": 34.6,
-    "technical": 70.77,
-    "risk": 60.52,
+    "technical": 68.13,
+    "risk": 59.76,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.29,
     "eps_diluted": 1.29,
     "shares_outstanding": 633653119.0,
-    "market_cap": 137597770923.3383,
-    "pe_ratio_ttm": 33.55224845728805,
+    "market_cap": 137749851152.6588,
+    "pe_ratio_ttm": 33.58933215134329,
     "goodwill": 21079000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 178.11530718518023,
+        "value": 180.57491805094355,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 135.1404636610327,
+        "value": 136.3350719152404,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 210.80027115704587,
+        "value": 211.12779395136374,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,12 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 156.62788542310648,
-    "max": 210.80027115704587,
+    "median": 158.45499498309198,
+    "max": 211.12779395136374,
     "low": 61.56030643624944,
-    "high": 210.80027115704587,
-    "mos_pct": -38.64069818084219,
-    "valuation_warnings": []
+    "high": 211.12779395136374,
+    "mos_pct": -37.19352893409586,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -90,7 +91,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 26,
+    "filing_lag_days": 27,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-23"
   },
@@ -109,22 +110,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 47.89,
+      "Value": 49.16,
       "Growth": 49.37,
-      "Momentum": 49.55,
+      "Momentum": 50.5,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 44.67,
-      "Risk": 54.05
+      "Technical": 45.57,
+      "Risk": 54.48
     }
   },
   "beneish_m_score": -2.601615038592017,
   "dechow_f_score": 0.46197613696099904,
   "recommendation": "neutral",
-  "loss_chance_pct": 56.667762589966145,
-  "price_change_1d_pct": -0.0368,
+  "loss_chance_pct": 56.617055146433614,
+  "price_change_1d_pct": 0.1105,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 43.71,
+  "composite_score_adjusted": 42.8,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -139,8 +140,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 47.33,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 4
 }

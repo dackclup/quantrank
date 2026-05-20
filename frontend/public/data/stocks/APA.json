@@ -3,19 +3,19 @@
   "name": "APA Corporation",
   "sector": "Energy",
   "industry": "Oil & Gas Exploration & Production",
-  "market_cap": 14460466932.634724,
-  "current_price": 40.91,
-  "rank": 4,
-  "composite_score": 69.43,
+  "market_cap": 13898449217.769447,
+  "current_price": 39.32,
+  "rank": 5,
+  "composite_score": 68.94,
   "pillar_scores": {
     "quality": 79.76,
-    "value": 73.81,
+    "value": 74.21,
     "growth": 55.95,
-    "momentum": 89.19,
-    "health": 39.92,
+    "momentum": 85.41,
+    "health": 39.88,
     "profitability": 59.52,
-    "technical": 57.87,
-    "risk": 56.96,
+    "technical": 56.08,
+    "risk": 56.59,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.26,
     "eps_diluted": 1.26,
     "shares_outstanding": 353470227.0,
-    "market_cap": 14460466932.634724,
-    "pe_ratio_ttm": 6.785765806022864,
+    "market_cap": 13898449217.769447,
+    "pe_ratio_ttm": 6.522031542829398,
     "goodwill": 0.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 82.75626917022747,
+        "value": 80.97119812369522,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 32.911917430036844,
+        "value": 32.217189064854914,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 169.58225035817037,
+        "value": 168.98286290386994,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,12 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 82.632939181215,
-    "max": 169.58225035817037,
-    "low": 32.911917430036844,
-    "high": 169.58225035817037,
-    "mos_pct": 50.49189796130087,
-    "valuation_warnings": []
+    "median": 80.97119812369522,
+    "max": 168.98286290386994,
+    "low": 32.217189064854914,
+    "high": 168.98286290386994,
+    "mos_pct": 51.439523428124126,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 5
   },
   "top5_factors": [],
   "score_history": [],
@@ -97,7 +98,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 12,
+    "filing_lag_days": 13,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-07"
   },
@@ -116,22 +117,22 @@
     "label": "Energy median (n=21)",
     "values": {
       "Quality": 50.0,
-      "Value": 47.62,
+      "Value": 51.59,
       "Growth": 55.95,
-      "Momentum": 73.51,
+      "Momentum": 73.11,
       "Health": 55.14,
       "Profitability": 54.76,
-      "Technical": 57.07,
-      "Risk": 67.07
+      "Technical": 56.52,
+      "Risk": 67.1
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 12.614637909522695,
-  "price_change_1d_pct": 1.8929,
+  "loss_chance_pct": 12.528540282417993,
+  "price_change_1d_pct": -3.8866,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 69.43,
+  "composite_score_adjusted": 68.94,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -146,8 +147,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 60.39,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 5
 }

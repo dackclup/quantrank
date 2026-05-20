@@ -3,19 +3,19 @@
   "name": "Bristol Myers Squibb",
   "sector": "Health Care",
   "industry": "Pharmaceuticals",
-  "market_cap": 119073177216.9281,
-  "current_price": 58.31,
-  "rank": 39,
-  "composite_score": 63.5,
+  "market_cap": 119542852668.95206,
+  "current_price": 58.54,
+  "rank": 51,
+  "composite_score": 62.38,
   "pillar_scores": {
     "quality": 75.42,
-    "value": 58.47,
+    "value": 58.19,
     "growth": 47.46,
-    "momentum": 76.1,
-    "health": 53.47,
+    "momentum": 70.37,
+    "health": 53.43,
     "profitability": 64.69,
-    "technical": 52.14,
-    "risk": 57.5,
+    "technical": 45.62,
+    "risk": 57.3,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.31,
     "eps_diluted": 1.31,
     "shares_outstanding": 2042071247.0,
-    "market_cap": 119073177216.9281,
-    "pe_ratio_ttm": 16.367447040127573,
+    "market_cap": 119542852668.95206,
+    "pe_ratio_ttm": 16.432007239718498,
     "goodwill": 21740000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 86.36069763089931,
+        "value": 87.12824754544306,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 28.885349684097346,
+        "value": 29.0586922179442,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,13 +76,14 @@
       }
     },
     "median": 63.25728884710509,
-    "max": 86.36069763089931,
-    "low": 28.885349684097346,
-    "high": 86.36069763089931,
-    "mos_pct": 7.820897107638972,
+    "max": 87.12824754544306,
+    "low": 29.0586922179442,
+    "high": 87.12824754544306,
+    "mos_pct": 7.457303367805694,
     "valuation_warnings": [
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 3
   },
   "top5_factors": [],
   "score_history": [],
@@ -93,7 +94,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 19,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-04-21",
     "latest_filed_date": "2026-04-30"
   },
@@ -116,20 +117,20 @@
       "Quality": 52.97,
       "Value": 51.13,
       "Growth": 49.58,
-      "Momentum": 39.89,
+      "Momentum": 40.09,
       "Health": 59.88,
       "Profitability": 51.13,
-      "Technical": 59.81,
-      "Risk": 41.3
+      "Technical": 57.02,
+      "Risk": 41.14
     }
   },
   "beneish_m_score": -2.7740589273404175,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 32.514886250920014,
-  "price_change_1d_pct": 1.7449,
+  "loss_chance_pct": 33.20069164916546,
+  "price_change_1d_pct": 0.3944,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 63.5,
+  "composite_score_adjusted": 62.38,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,8 +145,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 57.12,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 3
 }

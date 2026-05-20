@@ -3,19 +3,19 @@
   "name": "Biogen",
   "sector": "Health Care",
   "industry": "Biotechnology",
-  "market_cap": 28133728655.07782,
-  "current_price": 190.56,
-  "rank": 231,
-  "composite_score": 51.58,
+  "market_cap": 27726251023.152725,
+  "current_price": 187.8,
+  "rank": 233,
+  "composite_score": 51.41,
   "pillar_scores": {
     "quality": 38.98,
-    "value": 65.25,
+    "value": 65.54,
     "growth": 34.32,
-    "momentum": 54.03,
+    "momentum": 57.62,
     "health": 73.11,
     "profitability": 46.89,
-    "technical": 62.7,
-    "risk": 46.71,
+    "technical": 50.15,
+    "risk": 45.42,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.17,
     "eps_diluted": 2.15,
     "shares_outstanding": 147637117.0,
-    "market_cap": 28133728655.07782,
-    "pe_ratio_ttm": 20.507127819139747,
+    "market_cap": 27726251023.152725,
+    "pe_ratio_ttm": 20.210110812123858,
     "goodwill": 6488700000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 225.25836881377097,
+        "value": 227.26040268422705,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 297.8847012442166,
+        "value": 296.7707695514344,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 225.25836881377097,
-    "max": 297.8847012442166,
+    "median": 227.26040268422705,
+    "max": 296.7707695514344,
     "low": 156.7106111436351,
-    "high": 297.8847012442166,
-    "mos_pct": 15.403810050610634,
+    "high": 296.7707695514344,
+    "mos_pct": 17.363517430398346,
     "valuation_warnings": [
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 3
   },
   "top5_factors": [],
   "score_history": [],
@@ -95,7 +96,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 20,
+    "filing_lag_days": 21,
     "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-29"
   },
@@ -118,20 +119,20 @@
       "Quality": 52.97,
       "Value": 51.13,
       "Growth": 49.58,
-      "Momentum": 39.89,
+      "Momentum": 40.09,
       "Health": 59.88,
       "Profitability": 51.13,
-      "Technical": 59.81,
-      "Risk": 41.3
+      "Technical": 57.02,
+      "Risk": 41.14
     }
   },
   "beneish_m_score": -2.6681306562666594,
   "dechow_f_score": 1.305785398533103,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 35.82102608342973,
-  "price_change_1d_pct": -0.7035,
+  "loss_chance_pct": 35.217268162196234,
+  "price_change_1d_pct": -1.4484,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 51.58,
+  "composite_score_adjusted": 51.41,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -146,8 +147,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 51.63,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 3
 }

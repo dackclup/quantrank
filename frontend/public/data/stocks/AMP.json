@@ -3,19 +3,19 @@
   "name": "Ameriprise Financial",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 41690672553.74121,
-  "current_price": 463.76,
-  "rank": 118,
-  "composite_score": 57.12,
+  "market_cap": 41107238613.04114,
+  "current_price": 457.27,
+  "rank": 123,
+  "composite_score": 56.6,
   "pillar_scores": {
     "quality": 71.33,
-    "value": 55.11,
+    "value": 56.44,
     "growth": 69.0,
-    "momentum": 34.76,
+    "momentum": 35.01,
     "health": 51.75,
     "profitability": 48.44,
-    "technical": 42.48,
-    "risk": 48.17,
+    "technical": 26.29,
+    "risk": 47.01,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 9.81,
     "eps_diluted": 9.68,
     "shares_outstanding": 89897084.0,
-    "market_cap": 41690672553.74121,
-    "pe_ratio_ttm": 10.703638653078617,
+    "market_cap": 41107238613.04114,
+    "pe_ratio_ttm": 10.553848167661396,
     "goodwill": 1440000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 694.1929512743861,
+        "value": 703.4368290150176,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 162.36657333821128,
+        "value": 163.40038204430954,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -76,11 +76,12 @@
       }
     },
     "median": 241.96154503387845,
-    "max": 694.1929512743861,
-    "low": 162.36657333821128,
-    "high": 694.1929512743861,
-    "mos_pct": -91.66682445373344,
-    "valuation_warnings": []
+    "max": 703.4368290150176,
+    "low": 163.40038204430954,
+    "high": 703.4368290150176,
+    "mos_pct": -88.98457147380458,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -100,7 +101,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 12,
+    "filing_lag_days": 13,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-05-07"
   },
@@ -121,22 +122,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.11,
+      "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 54.38,
+      "Momentum": 53.29,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 50.7,
-      "Risk": 55.28
+      "Technical": 51.94,
+      "Risk": 54.88
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 56.439804670208055,
-  "price_change_1d_pct": -1.5748,
+  "loss_chance_pct": 56.70066124391324,
+  "price_change_1d_pct": -1.3994,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 56.62,
+  "composite_score_adjusted": 56.1,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -151,8 +152,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 54.23,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 4
 }

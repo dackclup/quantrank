@@ -3,19 +3,19 @@
   "name": "Qnity Electronics",
   "sector": "Information Technology",
   "industry": "Semiconductor Materials & Equipment",
-  "market_cap": 30404427574.61461,
-  "current_price": 145.24,
-  "rank": 284,
-  "composite_score": 49.28,
+  "market_cap": 32037270833.804367,
+  "current_price": 153.04,
+  "rank": 293,
+  "composite_score": 48.66,
   "pillar_scores": {
-    "quality": 30.48,
-    "value": 50.23,
+    "quality": 29.45,
+    "value": 48.17,
     "growth": 43.15,
-    "momentum": 72.21,
+    "momentum": 76.05,
     "health": 75.14,
-    "profitability": 26.71,
-    "technical": 78.39,
-    "risk": 55.18,
+    "profitability": 26.48,
+    "technical": 71.12,
+    "risk": 55.88,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.72,
     "eps_diluted": 0.72,
     "shares_outstanding": 209339207.0,
-    "market_cap": 30404427574.61461,
-    "pe_ratio_ttm": 43.873632863801745,
+    "market_cap": 32037270833.804367,
+    "pe_ratio_ttm": 46.22982804300775,
     "goodwill": 7514000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 119.23399941746936,
+        "value": 116.61555331661712,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 343.00646932801294,
+        "value": 348.1745374491862,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 231.12023437274115,
-    "max": 343.00646932801294,
-    "low": 119.23399941746936,
-    "high": 343.00646932801294,
-    "mos_pct": 37.15824757302427,
+    "median": 232.39504538290166,
+    "max": 348.1745374491862,
+    "low": 116.61555331661712,
+    "high": 348.1745374491862,
+    "mos_pct": 34.14661959166164,
     "valuation_warnings": [
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 2
   },
   "top5_factors": [],
   "score_history": [],
@@ -96,7 +97,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 7,
+    "filing_lag_days": 8,
     "latest_period_end": "2026-05-08",
     "latest_filed_date": "2026-05-12"
   },
@@ -118,22 +119,22 @@
     "label": "Information Technology median (n=73)",
     "values": {
       "Quality": 49.32,
-      "Value": 50.23,
+      "Value": 48.17,
       "Growth": 52.23,
-      "Momentum": 53.34,
+      "Momentum": 59.76,
       "Health": 69.52,
       "Profitability": 47.26,
-      "Technical": 64.59,
-      "Risk": 46.91
+      "Technical": 61.01,
+      "Risk": 46.85
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 29.35688344713294,
-  "price_change_1d_pct": -2.5431,
+  "loss_chance_pct": 30.719553315197352,
+  "price_change_1d_pct": 5.3704,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 48.78,
+  "composite_score_adjusted": 48.16,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -148,8 +149,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 50.26,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 2
 }

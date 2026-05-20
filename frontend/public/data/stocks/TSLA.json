@@ -3,19 +3,19 @@
   "name": "Tesla, Inc.",
   "sector": "Consumer Discretionary",
   "industry": "Automobile Manufacturers",
-  "market_cap": 1517432994995.1172,
-  "current_price": 404.11,
-  "rank": 501,
-  "composite_score": 27.57,
+  "market_cap": 1566811336669.9219,
+  "current_price": 417.26,
+  "rank": 502,
+  "composite_score": 26.81,
   "pillar_scores": {
     "quality": 19.27,
     "value": 1.91,
     "growth": 20.31,
-    "momentum": 41.83,
+    "momentum": 39.24,
     "health": 82.35,
     "profitability": 12.85,
-    "technical": 77.19,
-    "risk": 31.34,
+    "technical": 67.63,
+    "risk": 32.57,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.15,
     "eps_diluted": 0.13,
     "shares_outstanding": 3755000000.0,
-    "market_cap": 1517432994995.1172,
-    "pe_ratio_ttm": 386.5086589391537,
+    "market_cap": 1566811336669.9219,
+    "pe_ratio_ttm": 399.0859237569847,
     "goodwill": 257000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 21.87652302753148,
+        "value": 22.548022703635695,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 121.74573494509451,
+        "value": 125.34963959097982,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 36.08404485689414,
+        "value": 36.60180499744132,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,17 +76,18 @@
       }
     },
     "median": 30.235834417974324,
-    "max": 121.74573494509451,
+    "max": 125.34963959097982,
     "low": 19.284663281707235,
-    "high": 121.74573494509451,
-    "mos_pct": -1236.5266516717356,
+    "high": 125.34963959097982,
+    "mos_pct": -1280.0181731302778,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_multiples_pe_estimate",
       "extreme_multiples_ev_ebitda_estimate",
       "extreme_rim_estimate",
       "extreme_dcf_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 1
   },
   "top5_factors": [],
   "score_history": [],
@@ -95,7 +96,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 26,
+    "filing_lag_days": 27,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-23"
   },
@@ -125,20 +126,20 @@
       "Quality": 46.35,
       "Value": 49.83,
       "Growth": 51.69,
-      "Momentum": 41.86,
+      "Momentum": 42.26,
       "Health": 43.72,
       "Profitability": 52.6,
-      "Technical": 34.99,
-      "Risk": 41.09
+      "Technical": 43.15,
+      "Risk": 41.87
     }
   },
   "beneish_m_score": -3.0637364928037103,
   "dechow_f_score": 0.9110866227917124,
   "recommendation": "cautious",
-  "loss_chance_pct": 79.21490773019035,
-  "price_change_1d_pct": -1.4342,
+  "loss_chance_pct": 79.59277127600708,
+  "price_change_1d_pct": 3.2541,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 27.07,
+  "composite_score_adjusted": 26.31,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -153,8 +154,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 39.33,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 1
 }

@@ -3,19 +3,19 @@
   "name": "Wynn Resorts",
   "sector": "Consumer Discretionary",
   "industry": "Casinos & Gaming",
-  "market_cap": 9836906047.927216,
-  "current_price": 94.78,
-  "rank": 458,
-  "composite_score": 37.56,
+  "market_cap": 10177326392.354431,
+  "current_price": 98.06,
+  "rank": 456,
+  "composite_score": 38.3,
   "pillar_scores": {
     "quality": 19.53,
     "value": 50.87,
     "growth": 60.68,
-    "momentum": 31.13,
+    "momentum": 32.27,
     "health": 47.75,
     "profitability": 37.5,
-    "technical": 21.91,
-    "risk": 28.05,
+    "technical": 32.97,
+    "risk": 29.38,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.17,
     "eps_diluted": 1.04,
     "shares_outstanding": 103786729.0,
-    "market_cap": 9836906047.927216,
-    "pe_ratio_ttm": 20.567769635282342,
+    "market_cap": 10177326392.354431,
+    "pe_ratio_ttm": 21.279547016221933,
     "goodwill": 18463000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 99.22852616652484,
+        "value": 101.8864921899738,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 126.00316768853409,
+        "value": 128.6747299483835,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,15 +75,16 @@
         "tier_used": null
       }
     },
-    "median": 99.22852616652484,
-    "max": 126.00316768853409,
+    "median": 101.8864921899738,
+    "max": 128.6747299483835,
     "low": 5.037312239163708,
-    "high": 126.00316768853409,
-    "mos_pct": 4.483113434298592,
+    "high": 128.6747299483835,
+    "mos_pct": 3.7556446876640948,
     "valuation_warnings": [
       "extreme_dcf_estimate",
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 2
   },
   "top5_factors": [],
   "score_history": [],
@@ -95,7 +96,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 12,
+    "filing_lag_days": 13,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-07"
   },
@@ -121,20 +122,20 @@
       "Quality": 46.35,
       "Value": 49.83,
       "Growth": 51.69,
-      "Momentum": 41.86,
+      "Momentum": 42.26,
       "Health": 43.72,
       "Profitability": 52.6,
-      "Technical": 34.99,
-      "Risk": 41.09
+      "Technical": 43.15,
+      "Risk": 41.87
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 59.65189095868607,
-  "price_change_1d_pct": -0.7643,
+  "loss_chance_pct": 59.53362155387268,
+  "price_change_1d_pct": 3.4606,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 37.56,
+  "composite_score_adjusted": 38.3,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -149,8 +150,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 45.08,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 2
 }

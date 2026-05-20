@@ -3,19 +3,19 @@
   "name": "W. W. Grainger",
   "sector": "Industrials",
   "industry": "Industrial Machinery & Supplies & Components",
-  "market_cap": 58752951620.77527,
-  "current_price": 1244.42,
-  "rank": 29,
-  "composite_score": 64.65,
+  "market_cap": 58735482997.278076,
+  "current_price": 1244.05,
+  "rank": 28,
+  "composite_score": 64.58,
   "pillar_scores": {
     "quality": 91.77,
-    "value": 30.17,
+    "value": 31.22,
     "growth": 55.7,
-    "momentum": 70.12,
+    "momentum": 69.77,
     "health": 69.72,
     "profitability": 72.57,
-    "technical": 58.91,
-    "risk": 65.07,
+    "technical": 53.74,
+    "risk": 64.97,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 11.67,
     "eps_diluted": 11.65,
     "shares_outstanding": 47213119.0,
-    "market_cap": 58752951620.77527,
-    "pe_ratio_ttm": 31.1026742301616,
+    "market_cap": 58735482997.278076,
+    "pe_ratio_ttm": 31.093426679342546,
     "goodwill": 358000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 1051.2427538073807,
+        "value": 1068.8898754844101,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 285.5575426369016,
+        "value": 289.3399961474129,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 1063.5610547043077,
+        "value": 1072.3259058594247,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -76,13 +76,14 @@
       }
     },
     "median": 350.6444158979907,
-    "max": 1063.5610547043077,
+    "max": 1072.3259058594247,
     "low": 240.6499606106458,
-    "high": 1063.5610547043077,
-    "mos_pct": -254.89515518403078,
+    "high": 1072.3259058594247,
+    "mos_pct": -254.7896365730357,
     "valuation_warnings": [
       "extreme_graham_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 5
   },
   "top5_factors": [],
   "score_history": [],
@@ -94,7 +95,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 12,
+    "filing_lag_days": 13,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-07"
   },
@@ -115,22 +116,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 47.89,
+      "Value": 49.16,
       "Growth": 49.37,
-      "Momentum": 49.55,
+      "Momentum": 50.5,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 44.67,
-      "Risk": 54.05
+      "Technical": 45.57,
+      "Risk": 54.48
     }
   },
   "beneish_m_score": -2.4133730633726405,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 53.67689264040884,
-  "price_change_1d_pct": -1.6292,
+  "loss_chance_pct": 53.711359204532094,
+  "price_change_1d_pct": -0.0297,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 64.65,
+  "composite_score_adjusted": 64.58,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -145,8 +146,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 58.21,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 5
 }

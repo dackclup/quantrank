@@ -3,19 +3,19 @@
   "name": "Eli Lilly",
   "sector": "Health Care",
   "industry": "Pharmaceuticals",
-  "market_cap": 961904064211.5531,
-  "current_price": 1021.41,
-  "rank": 86,
-  "composite_score": 58.89,
+  "market_cap": 959512061732.8733,
+  "current_price": 1018.87,
+  "rank": 84,
+  "composite_score": 58.75,
   "pillar_scores": {
     "quality": 82.2,
     "value": 20.06,
     "growth": 85.59,
-    "momentum": 41.19,
+    "momentum": 40.69,
     "health": 55.22,
     "profitability": 80.79,
-    "technical": 60.96,
-    "risk": 61.42,
+    "technical": 59.91,
+    "risk": 60.72,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 8.27,
     "eps_diluted": 8.26,
     "shares_outstanding": 941741406.0,
-    "market_cap": 961904064211.5531,
-    "pe_ratio_ttm": 38.054970158745135,
+    "market_cap": 959512061732.8733,
+    "pe_ratio_ttm": 37.96033745436996,
     "goodwill": 6130000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 650.1476912074123,
+        "value": 655.8484972779211,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 97.3732163561783,
+        "value": 97.95755825394284,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,16 +75,17 @@
         "tier_used": null
       }
     },
-    "median": 124.4933711300848,
-    "max": 650.1476912074123,
+    "median": 124.78554207896705,
+    "max": 655.8484972779211,
     "low": 75.50761443998918,
-    "high": 650.1476912074123,
-    "mos_pct": -720.4533011458468,
+    "high": 655.8484972779211,
+    "mos_pct": -716.4968297949325,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_multiples_pb_estimate",
       "extreme_rim_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 1
   },
   "top5_factors": [],
   "score_history": [],
@@ -97,7 +98,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 19,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-30"
   },
@@ -128,20 +129,20 @@
       "Quality": 52.97,
       "Value": 51.13,
       "Growth": 49.58,
-      "Momentum": 39.89,
+      "Momentum": 40.09,
       "Health": 59.88,
       "Profitability": 51.13,
-      "Technical": 59.81,
-      "Risk": 41.3
+      "Technical": 57.02,
+      "Risk": 41.14
     }
   },
   "beneish_m_score": -1.6513168956582036,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 64.55580151146825,
-  "price_change_1d_pct": 3.3722,
+  "loss_chance_pct": 64.62614513696626,
+  "price_change_1d_pct": -0.2487,
   "manipulation_index": 48.0,
-  "composite_score_adjusted": 54.09,
+  "composite_score_adjusted": 53.95,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": true,
@@ -156,8 +157,37 @@
     "beneish_high": true,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 55.3,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 1
 }

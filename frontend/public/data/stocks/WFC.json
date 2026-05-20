@@ -3,19 +3,19 @@
   "name": "Wells Fargo",
   "sector": "Financials",
   "industry": "Diversified Banks",
-  "market_cap": 228137136116.6572,
-  "current_price": 74.55,
-  "rank": 339,
-  "composite_score": 46.29,
+  "market_cap": 231992958068.97424,
+  "current_price": 75.81,
+  "rank": 335,
+  "composite_score": 46.59,
   "pillar_scores": {
     "quality": 43.33,
-    "value": 58.22,
+    "value": 58.0,
     "growth": 48.0,
-    "momentum": 31.52,
+    "momentum": 32.07,
     "health": 45.26,
     "profitability": 48.22,
-    "technical": 36.01,
-    "risk": 53.25,
+    "technical": 41.33,
+    "risk": 53.62,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.62,
     "eps_diluted": 1.6,
     "shares_outstanding": 3060189494.0,
-    "market_cap": 228137136116.6572,
-    "pe_ratio_ttm": 10.514685722296042,
+    "market_cap": 231992958068.97424,
+    "pe_ratio_ttm": 10.692397938377391,
     "goodwill": 24965000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 97.19139936896148,
+        "value": 98.29376417390273,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 118.1474471869937,
+        "value": 118.49022928346025,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,12 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 87.77814311399479,
-    "max": 118.1474471869937,
+    "median": 88.32932551646542,
+    "max": 118.49022928346025,
     "low": 52.12448512241471,
-    "high": 118.1474471869937,
-    "mos_pct": 15.069970260202467,
-    "valuation_warnings": []
+    "high": 118.49022928346025,
+    "mos_pct": 14.173467174882873,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -102,7 +103,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 20,
+    "filing_lag_days": 21,
     "latest_period_end": "2026-04-17",
     "latest_filed_date": "2026-04-29"
   },
@@ -123,22 +124,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.11,
+      "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 54.38,
+      "Momentum": 53.29,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 50.7,
-      "Risk": 55.28
+      "Technical": 51.94,
+      "Risk": 54.88
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 36.57838502158961,
-  "price_change_1d_pct": 0.242,
+  "loss_chance_pct": 36.74285831260684,
+  "price_change_1d_pct": 1.6901,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 45.79,
+  "composite_score_adjusted": 46.09,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -153,8 +154,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 49.22,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 4
 }

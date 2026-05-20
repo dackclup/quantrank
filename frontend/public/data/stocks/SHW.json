@@ -3,19 +3,19 @@
   "name": "Sherwin-Williams",
   "sector": "Materials",
   "industry": "Specialty Chemicals",
-  "market_cap": 73756379449.36127,
-  "current_price": 299.05,
-  "rank": 94,
-  "composite_score": 58.24,
+  "market_cap": 75889783592.38873,
+  "current_price": 307.7,
+  "rank": 86,
+  "composite_score": 58.63,
   "pillar_scores": {
     "quality": 87.98,
     "value": 40.38,
     "growth": 77.4,
-    "momentum": 37.45,
+    "momentum": 35.86,
     "health": 26.25,
     "profitability": 83.01,
-    "technical": 25.05,
-    "risk": 41.04,
+    "technical": 36.11,
+    "risk": 42.0,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.18,
     "eps_diluted": 2.15,
     "shares_outstanding": 246635621.0,
-    "market_cap": 73756379449.36127,
-    "pe_ratio_ttm": 28.375477801470115,
+    "market_cap": 75889783592.38873,
+    "pe_ratio_ttm": 29.196238830603907,
     "goodwill": 8003400000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 252.42854395677386,
+        "value": 261.51919940580154,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 50.25593140712807,
+        "value": 51.585219334728706,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 151.34223768195096,
-    "max": 252.42854395677386,
-    "low": 50.25593140712807,
-    "high": 252.42854395677386,
-    "mos_pct": -97.5984975334043,
+    "median": 156.55220937026513,
+    "max": 261.51919940580154,
+    "low": 51.585219334728706,
+    "high": 261.51919940580154,
+    "mos_pct": -96.54785674680775,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 1
   },
   "top5_factors": [],
   "score_history": [],
@@ -94,7 +95,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 21,
+    "filing_lag_days": 22,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-28"
   },
@@ -115,22 +116,22 @@
     "label": "Materials median (n=26)",
     "values": {
       "Quality": 51.68,
-      "Value": 50.16,
+      "Value": 50.48,
       "Growth": 48.56,
-      "Momentum": 51.79,
+      "Momentum": 51.32,
       "Health": 56.53,
       "Profitability": 54.33,
-      "Technical": 31.62,
-      "Risk": 46.43
+      "Technical": 38.75,
+      "Risk": 46.85
     }
   },
   "beneish_m_score": -2.3785671244153272,
   "dechow_f_score": 0.5644418333136934,
   "recommendation": "neutral",
-  "loss_chance_pct": 56.87843018949842,
-  "price_change_1d_pct": -1.2319,
+  "loss_chance_pct": 56.68358457196854,
+  "price_change_1d_pct": 2.8925,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 58.24,
+  "composite_score_adjusted": 58.63,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -145,8 +146,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 55.24,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 1
 }

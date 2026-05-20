@@ -3,19 +3,19 @@
   "name": "BNY Mellon",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 93567196441.59027,
-  "current_price": 136.32,
-  "rank": 235,
-  "composite_score": 51.4,
+  "market_cap": 94143752325.79514,
+  "current_price": 137.16,
+  "rank": 231,
+  "composite_score": 51.5,
   "pillar_scores": {
     "quality": 45.33,
-    "value": 36.22,
+    "value": 36.44,
     "growth": 44.0,
-    "momentum": 87.85,
+    "momentum": 88.65,
     "health": 48.41,
     "profitability": 47.11,
-    "technical": 70.67,
-    "risk": 79.61,
+    "technical": 69.52,
+    "risk": 79.75,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.26,
     "eps_diluted": 2.24,
     "shares_outstanding": 686379045.0,
-    "market_cap": 93567196441.59027,
-    "pe_ratio_ttm": 15.617959679784722,
+    "market_cap": 94143752325.79514,
+    "pe_ratio_ttm": 15.714196682656507,
     "goodwill": 16734000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 139.84715825143803,
+        "value": 141.70936389740123,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 178.4958756132811,
+        "value": 181.22363951265513,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,12 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 104.23036752177063,
-    "max": 178.4958756132811,
+    "median": 105.16147034475223,
+    "max": 181.22363951265513,
     "low": 37.63045548399192,
-    "high": 178.4958756132811,
-    "mos_pct": -30.787226952591855,
-    "valuation_warnings": []
+    "high": 181.22363951265513,
+    "mos_pct": -30.428001065842775,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -102,7 +103,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 18,
+    "filing_lag_days": 19,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
@@ -121,22 +122,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.11,
+      "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 54.38,
+      "Momentum": 53.29,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 50.7,
-      "Risk": 55.28
+      "Technical": 51.94,
+      "Risk": 54.88
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 50.07465515275199,
-  "price_change_1d_pct": -0.1904,
+  "loss_chance_pct": 49.90027071390376,
+  "price_change_1d_pct": 0.6162,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 51.4,
+  "composite_score_adjusted": 51.5,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -151,8 +152,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 51.68,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 4
 }

@@ -3,19 +3,19 @@
   "name": "PulteGroup",
   "sector": "Consumer Discretionary",
   "industry": "Homebuilding",
-  "market_cap": 21153510081.968216,
-  "current_price": 111.05,
-  "rank": 286,
-  "composite_score": 49.22,
+  "market_cap": 22145943806.70275,
+  "current_price": 116.26,
+  "rank": 259,
+  "composite_score": 50.54,
   "pillar_scores": {
     "quality": 39.32,
     "value": 70.83,
     "growth": 50.52,
-    "momentum": 43.08,
+    "momentum": 45.12,
     "health": 47.81,
     "profitability": 41.84,
-    "technical": 32.52,
-    "risk": 46.51,
+    "technical": 52.54,
+    "risk": 48.24,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.81,
     "eps_diluted": 1.79,
     "shares_outstanding": 190486353.0,
-    "market_cap": 21153510081.968216,
-    "pe_ratio_ttm": 10.354505925792889,
+    "market_cap": 22145943806.70275,
+    "pe_ratio_ttm": 10.840295794419946,
     "goodwill": 40377000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 230.93844401956744,
+        "value": 237.12443268055043,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 409.88321017559247,
+        "value": 418.1737942964223,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,11 +76,12 @@
       }
     },
     "median": 137.89057936509457,
-    "max": 409.88321017559247,
+    "max": 418.1737942964223,
     "low": 115.27663658847797,
-    "high": 409.88321017559247,
-    "mos_pct": 19.46512694117459,
-    "valuation_warnings": []
+    "high": 418.1737942964223,
+    "mos_pct": 15.68676941416901,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 5
   },
   "top5_factors": [],
   "score_history": [],
@@ -98,7 +99,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 26,
+    "filing_lag_days": 27,
     "latest_period_end": "2026-04-15",
     "latest_filed_date": "2026-04-23"
   },
@@ -121,20 +122,20 @@
       "Quality": 46.35,
       "Value": 49.83,
       "Growth": 51.69,
-      "Momentum": 41.86,
+      "Momentum": 42.26,
       "Health": 43.72,
       "Profitability": 52.6,
-      "Technical": 34.99,
-      "Risk": 41.09
+      "Technical": 43.15,
+      "Risk": 41.87
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
-  "recommendation": "neutral",
-  "loss_chance_pct": 36.57856547818075,
-  "price_change_1d_pct": -0.6531,
+  "recommendation": "lean_bullish",
+  "loss_chance_pct": 37.24050754490362,
+  "price_change_1d_pct": 4.6916,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 47.22,
+  "composite_score_adjusted": 48.54,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -149,8 +150,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 51.2,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 5
 }

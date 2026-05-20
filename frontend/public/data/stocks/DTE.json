@@ -3,19 +3,19 @@
   "name": "DTE Energy",
   "sector": "Utilities",
   "industry": "Multi-Utilities",
-  "market_cap": 29779251736.24594,
-  "current_price": 143.15,
-  "rank": 279,
-  "composite_score": 49.5,
+  "market_cap": 29700203135.80284,
+  "current_price": 142.77,
+  "rank": 290,
+  "composite_score": 48.79,
   "pillar_scores": {
     "quality": 62.9,
     "value": 41.94,
     "growth": 45.97,
-    "momentum": 61.65,
+    "momentum": 58.62,
     "health": 18.84,
     "profitability": 43.01,
-    "technical": 40.69,
-    "risk": 72.14,
+    "technical": 34.61,
+    "risk": 71.51,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.19,
     "eps_diluted": 1.19,
     "shares_outstanding": 208028313.0,
-    "market_cap": 29779251736.24594,
-    "pe_ratio_ttm": 19.387533682451785,
+    "market_cap": 29700203135.80284,
+    "pe_ratio_ttm": 19.336069749871644,
     "goodwill": 1993000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 145.67262509807315,
+        "value": 145.25833006931768,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 123.85156913151613,
+        "value": 124.05350520502317,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 110.70965973086854,
+        "value": 112.20741220748384,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,12 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 110.70965973086854,
-    "max": 145.67262509807315,
+    "median": 112.20741220748384,
+    "max": 145.25833006931768,
     "low": 53.79526513360503,
-    "high": 145.67262509807315,
-    "mos_pct": -29.3021713231503,
-    "valuation_warnings": []
+    "high": 145.25833006931768,
+    "mos_pct": -27.237587485275483,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 5
   },
   "top5_factors": [],
   "score_history": [],
@@ -96,7 +97,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 19,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
@@ -115,22 +116,22 @@
     "label": "Utilities median (n=31)",
     "values": {
       "Quality": 51.61,
-      "Value": 47.85,
+      "Value": 48.39,
       "Growth": 54.03,
-      "Momentum": 59.46,
+      "Momentum": 56.03,
       "Health": 17.85,
       "Profitability": 52.15,
-      "Technical": 50.15,
-      "Risk": 70.98
+      "Technical": 47.71,
+      "Risk": 70.75
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 50.50629143934817,
-  "price_change_1d_pct": 1.2734,
+  "loss_chance_pct": 50.1372727534625,
+  "price_change_1d_pct": -0.2654,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 49.5,
+  "composite_score_adjusted": 48.79,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -145,8 +146,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 50.32,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 5
 }

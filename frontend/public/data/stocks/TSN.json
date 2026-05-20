@@ -3,19 +3,19 @@
   "name": "Tyson Foods",
   "sector": "Consumer Staples",
   "industry": "Packaged Foods & Meats",
-  "market_cap": 23420641296.38672,
-  "current_price": 66.16,
-  "rank": 379,
-  "composite_score": 44.09,
+  "market_cap": 23548078811.645508,
+  "current_price": 66.52,
+  "rank": 387,
+  "composite_score": 43.27,
   "pillar_scores": {
     "quality": 17.36,
-    "value": 65.74,
+    "value": 65.28,
     "growth": 33.33,
-    "momentum": 71.81,
+    "momentum": 68.63,
     "health": 46.99,
     "profitability": 24.54,
-    "technical": 53.19,
-    "risk": 66.43,
+    "technical": 47.01,
+    "risk": 66.17,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": null,
     "eps_diluted": 0.97,
     "shares_outstanding": 354000000.0,
-    "market_cap": 23420641296.38672,
-    "pe_ratio_ttm": 48.691561946749935,
+    "market_cap": 23548078811.645508,
+    "pe_ratio_ttm": 48.95650480591581,
     "goodwill": 9472000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 31.479414417712313,
+        "value": 31.64052710003262,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 93.22934605064083,
+        "value": 92.14413823689466,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 96.15474205789802,
+        "value": 96.32597364775164,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,15 +76,16 @@
       }
     },
     "median": 49.12595109899289,
-    "max": 96.15474205789802,
+    "max": 96.32597364775164,
     "low": 10.597609260295375,
-    "high": 96.15474205789802,
-    "mos_pct": -34.67424483811305,
+    "high": 96.32597364775164,
+    "mos_pct": -35.4070407899545,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -96,7 +97,7 @@
       "long_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 16,
     "latest_period_end": "2026-03-28",
     "latest_filed_date": "2026-05-04"
   },
@@ -120,22 +121,22 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 49.65,
-      "Value": 51.16,
+      "Value": 50.93,
       "Growth": 48.44,
-      "Momentum": 40.91,
+      "Momentum": 37.77,
       "Health": 39.29,
       "Profitability": 53.94,
-      "Technical": 54.51,
-      "Risk": 51.63
+      "Technical": 55.27,
+      "Risk": 50.88
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 59.08966172993392,
-  "price_change_1d_pct": -0.7798,
+  "loss_chance_pct": 59.75678938346357,
+  "price_change_1d_pct": 0.5441,
   "manipulation_index": 8.0,
-  "composite_score_adjusted": 43.29,
+  "composite_score_adjusted": 42.47,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -150,8 +151,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 47.56,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 4
 }

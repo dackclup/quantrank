@@ -3,19 +3,19 @@
   "name": "Fastenal",
   "sector": "Industrials",
   "industry": "Trading Companies & Distributors",
-  "market_cap": 50019887257.4175,
-  "current_price": 43.57,
-  "rank": 158,
-  "composite_score": 54.76,
+  "market_cap": 50146171814.8325,
+  "current_price": 43.68,
+  "rank": 157,
+  "composite_score": 54.73,
   "pillar_scores": {
     "quality": 81.01,
-    "value": 16.46,
+    "value": 16.88,
     "growth": 25.0,
-    "momentum": 54.88,
+    "momentum": 54.48,
     "health": 87.73,
     "profitability": 85.86,
-    "technical": 46.12,
-    "risk": 62.52,
+    "technical": 44.92,
+    "risk": 62.25,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.3,
     "eps_diluted": 0.3,
     "shares_outstanding": 1148035061.0,
-    "market_cap": 50019887257.4175,
-    "pe_ratio_ttm": 38.48867902232803,
+    "market_cap": 50146171814.8325,
+    "pe_ratio_ttm": 38.58585088860611,
     "goodwill": null
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 31.15427168512618,
+        "value": 31.584483924392135,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 21.896809628080963,
+        "value": 22.090372006171748,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 27.782374432447156,
+        "value": 27.818608507443308,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,12 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 16.71862977339375,
-    "max": 31.15427168512618,
+    "median": 16.815410962439145,
+    "max": 31.584483924392135,
     "low": 8.891853759011836,
-    "high": 31.15427168512618,
-    "mos_pct": -160.6074797120162,
-    "valuation_warnings": []
+    "high": 31.584483924392135,
+    "mos_pct": -159.7617174075882,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 6
   },
   "top5_factors": [],
   "score_history": [],
@@ -92,7 +93,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 33,
+    "filing_lag_days": 34,
     "latest_period_end": "2026-04-10",
     "latest_filed_date": "2026-04-16"
   },
@@ -115,22 +116,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 47.89,
+      "Value": 49.16,
       "Growth": 49.37,
-      "Momentum": 49.55,
+      "Momentum": 50.5,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 44.67,
-      "Risk": 54.05
+      "Technical": 45.57,
+      "Risk": 54.48
     }
   },
   "beneish_m_score": -2.3166493300204385,
   "dechow_f_score": 1.404253294712701,
   "recommendation": "neutral",
-  "loss_chance_pct": 60.62215431522854,
-  "price_change_1d_pct": -0.9773,
+  "loss_chance_pct": 60.63444691697346,
+  "price_change_1d_pct": 0.2525,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 54.26,
+  "composite_score_adjusted": 54.23,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -145,8 +146,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 53.29,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 6
 }

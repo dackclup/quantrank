@@ -3,19 +3,19 @@
   "name": "AvalonBay Communities",
   "sector": "Real Estate",
   "industry": "Multi-Family Residential REITs",
-  "market_cap": 25751035177.49727,
-  "current_price": 185.11,
-  "rank": 68,
-  "composite_score": 59.75,
+  "market_cap": 25970832501.239075,
+  "current_price": 186.69,
+  "rank": 66,
+  "composite_score": 60.11,
   "pillar_scores": {
     "quality": 69.35,
     "value": 74.73,
     "growth": 54.84,
-    "momentum": 41.19,
+    "momentum": 44.32,
     "health": 31.51,
     "profitability": 68.01,
-    "technical": 51.49,
-    "risk": 50.2,
+    "technical": 51.05,
+    "risk": 50.03,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.33,
     "eps_diluted": 2.33,
     "shares_outstanding": 139112069.0,
-    "market_cap": 25751035177.49727,
-    "pe_ratio_ttm": 21.24150594779276,
+    "market_cap": 25970832501.239075,
+    "pe_ratio_ttm": 21.422812296348813,
     "goodwill": null
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 253.53353148155054,
+        "value": 255.7654168837879,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 210.7732055826683,
+        "value": 213.65278487473472,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 300.69245736414393,
+        "value": 303.61256446260177,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 232.15336853210943,
-    "max": 300.69245736414393,
+    "median": 234.7091008792613,
+    "max": 303.61256446260177,
     "low": 115.57132703521658,
-    "high": 300.69245736414393,
-    "mos_pct": 20.26391786568078,
+    "high": 303.61256446260177,
+    "mos_pct": 20.45898444413409,
     "valuation_warnings": [
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -103,7 +104,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 12,
+    "filing_lag_days": 13,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-07"
   },
@@ -124,22 +125,22 @@
     "label": "Real Estate median (n=31)",
     "values": {
       "Quality": 50.81,
-      "Value": 47.85,
+      "Value": 47.31,
       "Growth": 48.79,
-      "Momentum": 56.97,
+      "Momentum": 57.32,
       "Health": 26.22,
       "Profitability": 52.15,
-      "Technical": 54.23,
-      "Risk": 52.22
+      "Technical": 55.83,
+      "Risk": 52.92
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
-  "recommendation": "lean_bullish",
-  "loss_chance_pct": 30.03296342978601,
-  "price_change_1d_pct": -0.0756,
+  "recommendation": "bullish",
+  "loss_chance_pct": 29.78291721896082,
+  "price_change_1d_pct": 0.8535,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 59.75,
+  "composite_score_adjusted": 60.11,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -154,8 +155,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 55.98,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 4
 }

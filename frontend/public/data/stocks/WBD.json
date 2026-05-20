@@ -3,19 +3,19 @@
   "name": "Warner Bros. Discovery",
   "sector": "Communication Services",
   "industry": "Broadcasting",
-  "market_cap": 67918333639.7387,
-  "current_price": 27.09,
-  "rank": 467,
-  "composite_score": 37.06,
+  "market_cap": 68745688560.11935,
+  "current_price": 27.42,
+  "rank": 466,
+  "composite_score": 37.09,
   "pillar_scores": {
     "quality": 25.0,
-    "value": 41.3,
+    "value": 40.58,
     "growth": 39.67,
-    "momentum": 66.78,
+    "momentum": 65.59,
     "health": 12.39,
     "profitability": 28.26,
-    "technical": 53.54,
-    "risk": 50.6,
+    "technical": 60.23,
+    "risk": 50.8,
     "sentiment": null,
     "ml": null
   },
@@ -32,7 +32,7 @@
     "eps_basic": -1.17,
     "eps_diluted": -1.17,
     "shares_outstanding": 2507136702.0,
-    "market_cap": 67918333639.7387,
+    "market_cap": 68745688560.11935,
     "pe_ratio_ttm": null,
     "goodwill": 25874000000.0
   },
@@ -51,13 +51,13 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 33.875004475857054,
+        "value": 33.654590879792,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 8.22479115291652,
+        "value": 8.199436969312409,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,14 +75,16 @@
         "tier_used": null
       }
     },
-    "median": 8.22479115291652,
-    "max": 33.875004475857054,
+    "median": 8.199436969312409,
+    "max": 33.654590879792,
     "low": 5.4474588975836005,
-    "high": 33.875004475857054,
-    "mos_pct": -229.3700672628234,
+    "high": 33.654590879792,
+    "mos_pct": -234.413206405724,
     "valuation_warnings": [
+      "extreme_dcf_estimate",
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 2
   },
   "top5_factors": [],
   "score_history": [],
@@ -95,7 +97,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 13,
+    "filing_lag_days": 14,
     "latest_period_end": "2026-04-23",
     "latest_filed_date": "2026-05-06"
   },
@@ -103,6 +105,7 @@
     "altman_distress"
   ],
   "valuation_warnings": [
+    "extreme_dcf_estimate",
     "value_trap_risk"
   ],
   "has_history": true,
@@ -120,20 +123,20 @@
       "Quality": 52.17,
       "Value": 50.0,
       "Growth": 60.33,
-      "Momentum": 49.9,
+      "Momentum": 48.26,
       "Health": 45.5,
       "Profitability": 50.72,
-      "Technical": 52.19,
-      "Risk": 50.6
+      "Technical": 48.46,
+      "Risk": 50.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 80.47243634159017,
-  "price_change_1d_pct": -0.0369,
+  "loss_chance_pct": 81.4574690368959,
+  "price_change_1d_pct": 1.2182,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 37.06,
+  "composite_score_adjusted": 37.09,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -148,8 +151,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 44.47,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 2
 }

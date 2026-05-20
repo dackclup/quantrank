@@ -3,19 +3,19 @@
   "name": "Universal Health Services",
   "sector": "Health Care",
   "industry": "Health Care Facilities",
-  "market_cap": 10264638411.8042,
-  "current_price": 166.45,
-  "rank": 36,
-  "composite_score": 63.58,
+  "market_cap": 10133286211.669922,
+  "current_price": 164.32,
+  "rank": 42,
+  "composite_score": 62.82,
   "pillar_scores": {
     "quality": 64.41,
-    "value": 91.24,
+    "value": 91.81,
     "growth": 83.05,
-    "momentum": 12.85,
+    "momentum": 11.38,
     "health": 56.37,
     "profitability": 52.54,
-    "technical": 60.11,
-    "risk": 37.92,
+    "technical": 46.76,
+    "risk": 37.12,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 5.71,
     "eps_diluted": 5.65,
     "shares_outstanding": 61668000.0,
-    "market_cap": 10264638411.8042,
-    "pe_ratio_ttm": 6.629909736915526,
+    "market_cap": 10133286211.669922,
+    "pe_ratio_ttm": 6.545069609509377,
     "goodwill": 3980656000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 608.5975650665042,
+        "value": 614.0066113326056,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 359.71725905093956,
+        "value": 358.37210619943716,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 642.5797293399987,
+        "value": 644.6758904730024,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,15 +75,16 @@
         "tier_used": null
       }
     },
-    "median": 251.94890297962843,
-    "max": 642.5797293399987,
+    "median": 251.2763265538772,
+    "max": 644.6758904730024,
     "low": 23.451920880140015,
-    "high": 642.5797293399987,
-    "mos_pct": 33.93501818037261,
+    "high": 644.6758904730024,
+    "mos_pct": 34.60585420927577,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_dcf_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 5
   },
   "top5_factors": [],
   "score_history": [],
@@ -97,7 +98,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 12,
+    "filing_lag_days": 13,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
@@ -121,20 +122,20 @@
       "Quality": 52.97,
       "Value": 51.13,
       "Growth": 49.58,
-      "Momentum": 39.89,
+      "Momentum": 40.09,
       "Health": 59.88,
       "Profitability": 51.13,
-      "Technical": 59.81,
-      "Risk": 41.3
+      "Technical": 57.02,
+      "Risk": 41.14
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 23.333945439827254,
-  "price_change_1d_pct": -1.666,
+  "loss_chance_pct": 23.476019304489995,
+  "price_change_1d_pct": -1.2797,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 63.58,
+  "composite_score_adjusted": 62.82,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -149,8 +150,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 57.34,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 5
 }

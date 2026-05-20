@@ -3,19 +3,19 @@
   "name": "Hormel Foods",
   "sector": "Consumer Staples",
   "industry": "Packaged Foods & Meats",
-  "market_cap": 11234402189.922333,
-  "current_price": 20.4,
-  "rank": 466,
-  "composite_score": 37.08,
+  "market_cap": 11432656686.0466,
+  "current_price": 20.76,
+  "rank": 465,
+  "composite_score": 37.13,
   "pillar_scores": {
     "quality": 25.0,
-    "value": 63.43,
+    "value": 61.81,
     "growth": 12.5,
-    "momentum": 14.94,
-    "health": 67.47,
+    "momentum": 14.29,
+    "health": 67.43,
     "profitability": 34.72,
-    "technical": 49.1,
-    "risk": 30.31,
+    "technical": 58.86,
+    "risk": 30.58,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.33,
     "eps_diluted": 0.33,
     "shares_outstanding": 550706000.0,
-    "market_cap": 11234402189.922333,
-    "pe_ratio_ttm": 22.954381363201836,
+    "market_cap": 11432656686.0466,
+    "pe_ratio_ttm": 23.359459375727337,
     "goodwill": 4888532000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 21.765229839529447,
+        "value": 21.58372044637316,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 26.287177459504,
+        "value": 25.981189574907123,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 23.614092806938505,
+        "value": 23.663095039738174,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,15 +75,16 @@
         "tier_used": null
       }
     },
-    "median": 21.765229839529447,
-    "max": 26.287177459504,
+    "median": 21.58372044637316,
+    "max": 25.981189574907123,
     "low": 8.686479883073478,
-    "high": 26.287177459504,
-    "mos_pct": 6.272528390762395,
+    "high": 25.981189574907123,
+    "mos_pct": 3.816395878263605,
     "valuation_warnings": [
       "goodwill_heavy",
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 5
   },
   "top5_factors": [],
   "score_history": [],
@@ -93,7 +94,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 82,
+    "filing_lag_days": 83,
     "latest_period_end": "2026-01-25",
     "latest_filed_date": "2026-02-26"
   },
@@ -116,22 +117,22 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 49.65,
-      "Value": 51.16,
+      "Value": 50.93,
       "Growth": 48.44,
-      "Momentum": 40.91,
+      "Momentum": 37.77,
       "Health": 39.29,
       "Profitability": 53.94,
-      "Technical": 54.51,
-      "Risk": 51.63
+      "Technical": 55.27,
+      "Risk": 50.88
     }
   },
   "beneish_m_score": -2.7327424348092304,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 47.26216680072763,
-  "price_change_1d_pct": 0.0981,
+  "loss_chance_pct": 48.097556041988,
+  "price_change_1d_pct": 1.7647,
   "manipulation_index": 8.0,
-  "composite_score_adjusted": 36.28,
+  "composite_score_adjusted": 36.33,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -146,8 +147,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 44.49,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 5
 }

@@ -3,19 +3,19 @@
   "name": "Vulcan Materials Company",
   "sector": "Materials",
   "industry": "Construction Materials",
-  "market_cap": 33666201353.354645,
-  "current_price": 259.46,
-  "rank": 287,
-  "composite_score": 49.13,
+  "market_cap": 34159272292.23755,
+  "current_price": 263.26,
+  "rank": 264,
+  "composite_score": 50.27,
   "pillar_scores": {
     "quality": 56.73,
-    "value": 27.56,
+    "value": 31.73,
     "growth": 75.0,
-    "momentum": 38.2,
+    "momentum": 38.75,
     "health": 67.71,
     "profitability": 58.97,
-    "technical": 16.93,
-    "risk": 49.87,
+    "technical": 19.52,
+    "risk": 50.1,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.27,
     "eps_diluted": 1.26,
     "shares_outstanding": 129754885.0,
-    "market_cap": 33666201353.354645,
-    "pe_ratio_ttm": 30.204738339632733,
+    "market_cap": 34159272292.23755,
+    "pe_ratio_ttm": 30.647113127792522,
     "goodwill": 3780900000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 205.74684199972052,
+        "value": 213.15635924775918,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 182.19287005107714,
+        "value": 187.0119386838288,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 205.4008497690637,
+        "value": 213.18412845410796,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,16 +75,17 @@
         "tier_used": null
       }
     },
-    "median": 122.85539174752368,
-    "max": 205.74684199972052,
+    "median": 125.26492606389951,
+    "max": 213.18412845410796,
     "low": 26.962956497295067,
-    "high": 205.74684199972052,
-    "mos_pct": -111.19137529453027,
+    "high": 213.18412845410796,
+    "mos_pct": -110.16258743595327,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate",
       "extreme_dcf_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -94,7 +95,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 20,
+    "filing_lag_days": 21,
     "latest_period_end": "2026-04-21",
     "latest_filed_date": "2026-04-29"
   },
@@ -117,22 +118,22 @@
     "label": "Materials median (n=26)",
     "values": {
       "Quality": 51.68,
-      "Value": 50.16,
+      "Value": 50.48,
       "Growth": 48.56,
-      "Momentum": 51.79,
+      "Momentum": 51.32,
       "Health": 56.53,
       "Profitability": 54.33,
-      "Technical": 31.62,
-      "Risk": 46.43
+      "Technical": 38.75,
+      "Risk": 46.85
     }
   },
   "beneish_m_score": -2.7709968254404984,
   "dechow_f_score": 0.2646905100717187,
   "recommendation": "neutral",
-  "loss_chance_pct": 63.43700837674942,
-  "price_change_1d_pct": -2.5795,
+  "loss_chance_pct": 62.864921723362954,
+  "price_change_1d_pct": 1.4646,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 49.13,
+  "composite_score_adjusted": 50.27,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -147,8 +148,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 51.06,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 4
 }

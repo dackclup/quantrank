@@ -3,19 +3,19 @@
   "name": "Eaton Corporation",
   "sector": "Industrials",
   "industry": "Electrical Components & Equipment",
-  "market_cap": 144401005895.9961,
-  "current_price": 371.88,
-  "rank": 363,
-  "composite_score": 45.11,
+  "market_cap": 147433627947.99805,
+  "current_price": 379.69,
+  "rank": 354,
+  "composite_score": 45.66,
   "pillar_scores": {
     "quality": 38.29,
-    "value": 33.54,
+    "value": 33.12,
     "growth": 72.47,
-    "momentum": 66.58,
+    "momentum": 70.12,
     "health": 46.37,
     "profitability": 36.08,
-    "technical": 17.11,
-    "risk": 50.83,
+    "technical": 20.52,
+    "risk": 51.53,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.23,
     "eps_diluted": 2.22,
     "shares_outstanding": 388300000.0,
-    "market_cap": 144401005895.9961,
-    "pe_ratio_ttm": 36.17259666733369,
+    "market_cap": 147433627947.99805,
+    "pe_ratio_ttm": 36.93227153005964,
     "goodwill": 21402000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 282.93468694664836,
+        "value": 286.84175838993434,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 320.0214343214814,
+        "value": 322.85034460199336,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 282.93468694664836,
-    "max": 320.0214343214814,
+    "median": 286.84175838993434,
+    "max": 322.85034460199336,
     "low": 42.488498324546434,
-    "high": 320.0214343214814,
-    "mos_pct": -31.43669618456366,
+    "high": 322.85034460199336,
+    "mos_pct": -32.369151748558686,
     "valuation_warnings": [
       "extreme_dcf_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 2
   },
   "top5_factors": [],
   "score_history": [],
@@ -95,7 +96,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-05"
   },
@@ -116,22 +117,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 47.89,
+      "Value": 49.16,
       "Growth": 49.37,
-      "Momentum": 49.55,
+      "Momentum": 50.5,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 44.67,
-      "Risk": 54.05
+      "Technical": 45.57,
+      "Risk": 54.48
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 54.44650099729182,
-  "price_change_1d_pct": -2.6161,
+  "loss_chance_pct": 54.50098118955871,
+  "price_change_1d_pct": 2.1001,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 45.11,
+  "composite_score_adjusted": 45.66,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -146,8 +147,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 48.75,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 2
 }

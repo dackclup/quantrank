@@ -3,19 +3,19 @@
   "name": "Workday, Inc.",
   "sector": "Information Technology",
   "industry": "Application Software",
-  "market_cap": 34678251798.12622,
-  "current_price": 129.34,
-  "rank": 463,
-  "composite_score": 37.31,
+  "market_cap": 33946293533.64563,
+  "current_price": 126.61,
+  "rank": 459,
+  "composite_score": 37.72,
   "pillar_scores": {
-    "quality": 29.11,
-    "value": 53.42,
+    "quality": 28.42,
+    "value": 54.11,
     "growth": 49.66,
-    "momentum": 3.09,
+    "momentum": 6.27,
     "health": 50.4,
     "profitability": 33.33,
-    "technical": 57.47,
-    "risk": 18.56,
+    "technical": 58.57,
+    "risk": 18.33,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.61,
     "eps_diluted": 2.59,
     "shares_outstanding": 268117000.0,
-    "market_cap": 34678251798.12622,
-    "pe_ratio_ttm": 50.04076738546352,
+    "market_cap": 33946293533.64563,
+    "pe_ratio_ttm": 48.984550553601196,
     "goodwill": 5229000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 99.09916205463804,
+        "value": 101.4283117456979,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 262.42657961792037,
+        "value": 260.75932296960264,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 90.9324457528977,
+        "value": 91.70894781675885,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,16 +75,17 @@
         "tier_used": null
       }
     },
-    "median": 95.01580390376787,
-    "max": 262.42657961792037,
+    "median": 96.56862978122837,
+    "max": 260.75932296960264,
     "low": 8.670668298094618,
-    "high": 262.42657961792037,
-    "mos_pct": -36.12471928236942,
+    "high": 260.75932296960264,
+    "mos_pct": -31.10882995562896,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
       "extreme_rim_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -96,7 +97,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 74,
+    "filing_lag_days": 75,
     "latest_period_end": "2026-01-31",
     "latest_filed_date": "2026-03-06"
   },
@@ -120,22 +121,22 @@
     "label": "Information Technology median (n=73)",
     "values": {
       "Quality": 49.32,
-      "Value": 50.23,
+      "Value": 48.17,
       "Growth": 52.23,
-      "Momentum": 53.34,
+      "Momentum": 59.76,
       "Health": 69.52,
       "Profitability": 47.26,
-      "Technical": 64.59,
-      "Risk": 46.91
+      "Technical": 61.01,
+      "Risk": 46.85
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 61.98791226384686,
-  "price_change_1d_pct": 0.3569,
+  "loss_chance_pct": 60.02723823138203,
+  "price_change_1d_pct": -2.1107,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 37.31,
+  "composite_score_adjusted": 37.72,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -150,8 +151,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 44.79,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 4
 }

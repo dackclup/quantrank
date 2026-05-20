@@ -3,19 +3,19 @@
   "name": "Packaging Corporation of America",
   "sector": "Materials",
   "industry": "Paper & Plastic Packaging Products & Materials",
-  "market_cap": 18102171947.845505,
-  "current_price": 203.17,
-  "rank": 188,
-  "composite_score": 53.53,
+  "market_cap": 18996723125.066483,
+  "current_price": 213.21,
+  "rank": 153,
+  "composite_score": 55.13,
   "pillar_scores": {
     "quality": 61.06,
-    "value": 55.45,
+    "value": 54.17,
     "growth": 50.0,
-    "momentum": 40.69,
+    "momentum": 44.32,
     "health": 62.11,
     "profitability": 55.77,
-    "technical": 21.02,
-    "risk": 58.13,
+    "technical": 48.31,
+    "risk": 59.99,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.92,
     "eps_diluted": 1.91,
     "shares_outstanding": 89098647.0,
-    "market_cap": 18102171947.845505,
-    "pe_ratio_ttm": 24.42278999979156,
+    "market_cap": 18996723125.066483,
+    "pe_ratio_ttm": 25.629685813635298,
     "goodwill": 1381700000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 201.735215398818,
+        "value": 207.86182266330047,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 144.0339741944159,
+        "value": 147.84372595306746,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 259.4502226446979,
+        "value": 266.18152918920254,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,12 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 109.88749482630291,
-    "max": 259.4502226446979,
+    "median": 111.79237070562868,
+    "max": 266.18152918920254,
     "low": 41.95978043114268,
-    "high": 259.4502226446979,
-    "mos_pct": -84.88909815451912,
-    "valuation_warnings": []
+    "high": 266.18152918920254,
+    "mos_pct": -90.71963978229883,
+    "valuation_warnings": [
+      "extreme_rim_estimate"
+    ],
+    "valuation_methods_applicable": 5
   },
   "top5_factors": [],
   "score_history": [],
@@ -91,12 +94,14 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 11,
+    "filing_lag_days": 12,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-08"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "extreme_rim_estimate"
+  ],
   "has_history": true,
   "tangible_book_value": 29.43030100109152,
   "tier2_events": {
@@ -110,22 +115,22 @@
     "label": "Materials median (n=26)",
     "values": {
       "Quality": 51.68,
-      "Value": 50.16,
+      "Value": 50.48,
       "Growth": 48.56,
-      "Momentum": 51.79,
+      "Momentum": 51.32,
       "Health": 56.53,
       "Profitability": 54.33,
-      "Technical": 31.62,
-      "Risk": 46.43
+      "Technical": 38.75,
+      "Risk": 46.85
     }
   },
   "beneish_m_score": -2.6009305129032962,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 58.23485385381551,
-  "price_change_1d_pct": -3.5692,
+  "loss_chance_pct": 58.434737013484536,
+  "price_change_1d_pct": 4.9417,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 53.53,
+  "composite_score_adjusted": 55.13,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -140,8 +145,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 53.49,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 5
 }

@@ -3,19 +3,19 @@
   "name": "Tapestry, Inc.",
   "sector": "Consumer Discretionary",
   "industry": "Apparel, Accessories & Luxury Goods",
-  "market_cap": 26595146690.366455,
-  "current_price": 131.63,
-  "rank": 179,
-  "composite_score": 53.76,
+  "market_cap": 27435650357.558624,
+  "current_price": 135.79,
+  "rank": 180,
+  "composite_score": 53.65,
   "pillar_scores": {
     "quality": 79.43,
-    "value": 21.88,
+    "value": 21.18,
     "growth": 47.4,
-    "momentum": 73.01,
+    "momentum": 68.77,
     "health": 41.87,
     "profitability": 61.28,
-    "technical": 38.45,
-    "risk": 53.55,
+    "technical": 49.5,
+    "risk": 54.02,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 5.76,
     "eps_diluted": 5.58,
     "shares_outstanding": 202044714.0,
-    "market_cap": 26595146690.366455,
-    "pe_ratio_ttm": 40.125447631814204,
+    "market_cap": 27435650357.558624,
+    "pe_ratio_ttm": 41.39355817374566,
     "goodwill": 960400000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 68.63931664615512,
+        "value": 70.74619984865957,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 18.35593918723618,
+        "value": 18.89930979932623,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 59.426184790550856,
+        "value": 60.429530515274436,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 61.415145862762365,
-    "max": 68.63931664615512,
-    "low": 18.35593918723618,
-    "high": 68.63931664615512,
-    "mos_pct": -114.32824596224442,
+    "median": 61.91681872512416,
+    "max": 70.74619984865957,
+    "low": 18.89930979932623,
+    "high": 70.74619984865957,
+    "mos_pct": -119.3103523114842,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 3
   },
   "top5_factors": [],
   "score_history": [],
@@ -91,7 +92,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 12,
+    "filing_lag_days": 13,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-05-07"
   },
@@ -116,20 +117,20 @@
       "Quality": 46.35,
       "Value": 49.83,
       "Growth": 51.69,
-      "Momentum": 41.86,
+      "Momentum": 42.26,
       "Health": 43.72,
       "Profitability": 52.6,
-      "Technical": 34.99,
-      "Risk": 41.09
+      "Technical": 43.15,
+      "Risk": 41.87
     }
   },
   "beneish_m_score": -3.1170786900458145,
   "dechow_f_score": 0.3608223707714841,
   "recommendation": "cautious",
-  "loss_chance_pct": 71.11856393868969,
-  "price_change_1d_pct": 0.3507,
+  "loss_chance_pct": 71.17614611000442,
+  "price_change_1d_pct": 3.1604,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 53.76,
+  "composite_score_adjusted": 53.65,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,8 +145,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 52.75,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 3
 }

@@ -3,19 +3,19 @@
   "name": "McCormick & Company",
   "sector": "Consumer Staples",
   "industry": "Packaged Foods & Meats",
-  "market_cap": 12729150000.0,
-  "current_price": 47.25,
-  "rank": 319,
-  "composite_score": 47.01,
+  "market_cap": 12580980205.535889,
+  "current_price": 46.7,
+  "rank": 343,
+  "composite_score": 46.31,
   "pillar_scores": {
     "quality": 50.69,
-    "value": 65.74,
+    "value": 66.2,
     "growth": 62.15,
-    "momentum": 7.5,
+    "momentum": 6.2,
     "health": 25.14,
     "profitability": 54.63,
-    "technical": 49.35,
-    "risk": 31.41,
+    "technical": 36.5,
+    "risk": 31.31,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 3.78,
     "eps_diluted": 3.77,
     "shares_outstanding": 269400000.0,
-    "market_cap": 12729150000.0,
-    "pe_ratio_ttm": 7.746090184385079,
+    "market_cap": 12580980205.535889,
+    "pe_ratio_ttm": 7.655924180329757,
     "goodwill": 6316500000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 149.3887711773201,
+        "value": 148.58875654100936,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 38.98252518772066,
+        "value": 38.57746358600376,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 52.09633079173587,
+        "value": 52.21310866300934,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,12 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 45.53942798972827,
-    "max": 149.3887711773201,
+    "median": 45.395286124506555,
+    "max": 148.58875654100936,
     "low": 13.617811610256618,
-    "high": 149.3887711773201,
-    "mos_pct": -3.756243953388181,
-    "valuation_warnings": []
+    "high": 148.58875654100936,
+    "mos_pct": -2.8741192088853267,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -90,7 +91,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 49,
+    "filing_lag_days": 50,
     "latest_period_end": "2026-02-28",
     "latest_filed_date": "2026-03-31"
   },
@@ -113,22 +114,22 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 49.65,
-      "Value": 51.16,
+      "Value": 50.93,
       "Growth": 48.44,
-      "Momentum": 40.91,
+      "Momentum": 37.77,
       "Health": 39.29,
       "Profitability": 53.94,
-      "Technical": 54.51,
-      "Risk": 51.63
+      "Technical": 55.27,
+      "Risk": 50.88
     }
   },
   "beneish_m_score": -1.8384699281400236,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 48.808521382284056,
-  "price_change_1d_pct": 1.1777,
+  "loss_chance_pct": 48.85170335251815,
+  "price_change_1d_pct": -1.164,
   "manipulation_index": 23.0,
-  "composite_score_adjusted": 44.71,
+  "composite_score_adjusted": 44.01,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -143,8 +144,37 @@
     "beneish_high": true,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 49.08,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 4
 }

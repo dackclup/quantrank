@@ -3,19 +3,19 @@
   "name": "Mettler Toledo",
   "sector": "Health Care",
   "industry": "Life Sciences Tools & Services",
-  "market_cap": 21233541297.449707,
-  "current_price": 1050.77,
-  "rank": 397,
-  "composite_score": 42.72,
+  "market_cap": 21878164262.69934,
+  "current_price": 1082.67,
+  "rank": 401,
+  "composite_score": 42.5,
   "pillar_scores": {
     "quality": 36.02,
-    "value": 38.98,
+    "value": 38.7,
     "growth": 47.88,
-    "momentum": 34.96,
+    "momentum": 32.22,
     "health": 61.41,
     "profitability": 72.88,
-    "technical": 36.8,
-    "risk": 30.71,
+    "technical": 39.84,
+    "risk": 31.64,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 8.35,
     "eps_diluted": 8.33,
     "shares_outstanding": 20207601.0,
-    "market_cap": 21233541297.449707,
-    "pe_ratio_ttm": 24.265240437741078,
+    "market_cap": 21878164262.69934,
+    "pe_ratio_ttm": 25.001901884098622,
     "goodwill": 736872000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 1048.9297191492508,
+        "value": 1058.1272368691984,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 744.370623485866,
-    "max": 1048.9297191492508,
+    "median": 748.9693823458397,
+    "max": 1058.1272368691984,
     "low": 439.811527822481,
-    "high": 1048.9297191492508,
-    "mos_pct": -41.16220957384436,
+    "high": 1058.1272368691984,
+    "mos_pct": -44.55464662043891,
     "valuation_warnings": [
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 2
   },
   "top5_factors": [],
   "score_history": [],
@@ -94,7 +95,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 11,
+    "filing_lag_days": 12,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-08"
   },
@@ -117,20 +118,20 @@
       "Quality": 52.97,
       "Value": 51.13,
       "Growth": 49.58,
-      "Momentum": 39.89,
+      "Momentum": 40.09,
       "Health": 59.88,
       "Profitability": 51.13,
-      "Technical": 59.81,
-      "Risk": 41.3
+      "Technical": 57.02,
+      "Risk": 41.14
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.47955271432773877,
   "recommendation": "neutral",
-  "loss_chance_pct": 60.04710397749149,
-  "price_change_1d_pct": -2.2394,
+  "loss_chance_pct": 61.344050349836444,
+  "price_change_1d_pct": 3.0359,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 42.72,
+  "composite_score_adjusted": 42.5,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -145,8 +146,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 47.18,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 2
 }

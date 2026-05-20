@@ -3,19 +3,19 @@
   "name": "Darden Restaurants",
   "sector": "Consumer Discretionary",
   "industry": "Restaurants",
-  "market_cap": 22188865641.843674,
-  "current_price": 193.73,
-  "rank": 305,
-  "composite_score": 47.98,
+  "market_cap": 22594320531.156326,
+  "current_price": 197.27,
+  "rank": 294,
+  "composite_score": 48.63,
   "pillar_scores": {
     "quality": 63.54,
-    "value": 47.05,
+    "value": 47.74,
     "growth": 52.86,
-    "momentum": 48.16,
+    "momentum": 47.96,
     "health": 12.89,
     "profitability": 28.47,
-    "technical": 43.03,
-    "risk": 55.38,
+    "technical": 52.84,
+    "risk": 56.08,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 6.91,
     "eps_diluted": 6.87,
     "shares_outstanding": 114535003.0,
-    "market_cap": 22188865641.843674,
-    "pe_ratio_ttm": 20.069523916284073,
+    "market_cap": 22594320531.156326,
+    "pe_ratio_ttm": 20.436252289396098,
     "goodwill": 1658200000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 207.85804585999915,
+        "value": 213.42579583009547,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 99.83724511594956,
+        "value": 102.7926169133109,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 211.30756154530854,
+        "value": 214.05951963220716,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,16 +75,17 @@
         "tier_used": null
       }
     },
-    "median": 99.83724511594956,
-    "max": 211.30756154530854,
+    "median": 102.7926169133109,
+    "max": 214.05951963220716,
     "low": 15.13885556108193,
-    "high": 211.30756154530854,
-    "mos_pct": -94.04581476837006,
+    "high": 214.05951963220716,
+    "mos_pct": -91.91067432287144,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
       "extreme_rim_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 3
   },
   "top5_factors": [],
   "score_history": [],
@@ -98,7 +99,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 53,
+    "filing_lag_days": 54,
     "latest_period_end": "2026-03-16",
     "latest_filed_date": "2026-03-27"
   },
@@ -125,20 +126,20 @@
       "Quality": 46.35,
       "Value": 49.83,
       "Growth": 51.69,
-      "Momentum": 41.86,
+      "Momentum": 42.26,
       "Health": 43.72,
       "Profitability": 52.6,
-      "Technical": 34.99,
-      "Risk": 41.09
+      "Technical": 43.15,
+      "Risk": 41.87
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 76.00795688772686,
-  "price_change_1d_pct": -0.0103,
+  "loss_chance_pct": 75.68394045346392,
+  "price_change_1d_pct": 1.8273,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 47.98,
+  "composite_score_adjusted": 48.63,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -153,8 +154,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 50.24,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 3
 }

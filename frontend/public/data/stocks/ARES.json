@@ -3,19 +3,19 @@
   "name": "Ares Management",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 37928039600.9539,
-  "current_price": 121.11,
-  "rank": 296,
-  "composite_score": 48.44,
+  "market_cap": 38241209771.9539,
+  "current_price": 122.11,
+  "rank": 291,
+  "composite_score": 48.74,
   "pillar_scores": {
     "quality": 65.33,
-    "value": 32.44,
+    "value": 32.0,
     "growth": 68.0,
-    "momentum": 11.85,
-    "health": 58.25,
+    "momentum": 18.38,
+    "health": 58.21,
     "profitability": 48.89,
-    "technical": 68.28,
-    "risk": 23.8,
+    "technical": 60.01,
+    "risk": 23.87,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": null,
     "eps_diluted": null,
     "shares_outstanding": 313170171.0,
-    "market_cap": 37928039600.9539,
-    "pe_ratio_ttm": 38.29830763920978,
+    "market_cap": 38241209771.9539,
+    "pe_ratio_ttm": 38.61453509727435,
     "goodwill": 3463416000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 49.388373088701876,
+        "value": 49.692701509329204,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 30.20252216878382,
+        "value": 30.394825484190836,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,15 +75,16 @@
         "tier_used": null
       }
     },
-    "median": 30.20252216878382,
-    "max": 49.388373088701876,
+    "median": 30.394825484190836,
+    "max": 49.692701509329204,
     "low": 2.1947092390871212,
-    "high": 49.388373088701876,
-    "mos_pct": -300.99300294703954,
+    "high": 49.692701509329204,
+    "mos_pct": -301.74601651805585,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 2
   },
   "top5_factors": [],
   "score_history": [],
@@ -107,7 +108,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 11,
+    "filing_lag_days": 12,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-08"
   },
@@ -130,22 +131,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.11,
+      "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 54.38,
+      "Momentum": 53.29,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 50.7,
-      "Risk": 55.28
+      "Technical": 51.94,
+      "Risk": 54.88
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 62.78248948649845,
-  "price_change_1d_pct": -2.0938,
+  "loss_chance_pct": 62.63216578131916,
+  "price_change_1d_pct": 0.8257,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 48.44,
+  "composite_score_adjusted": 48.74,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -160,8 +161,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 50.29,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 2
 }

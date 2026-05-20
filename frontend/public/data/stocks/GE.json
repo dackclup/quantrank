@@ -3,19 +3,19 @@
   "name": "GE Aerospace",
   "sector": "Industrials",
   "industry": "Aerospace & Defense",
-  "market_cap": 297643245127.19495,
-  "current_price": 285.28,
-  "rank": 352,
-  "composite_score": 45.61,
+  "market_cap": 313178551839.6052,
+  "current_price": 300.17,
+  "rank": 349,
+  "composite_score": 46.14,
   "pillar_scores": {
     "quality": 59.18,
-    "value": 28.9,
+    "value": 27.43,
     "growth": 49.68,
-    "momentum": 40.29,
+    "momentum": 43.18,
     "health": 39.6,
     "profitability": 45.36,
-    "technical": 54.33,
-    "risk": 55.44,
+    "technical": 63.7,
+    "risk": 56.14,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.82,
     "eps_diluted": 1.81,
     "shares_outstanding": 1043337235.0,
-    "market_cap": 297643245127.19495,
-    "pe_ratio_ttm": 34.425543040388035,
+    "market_cap": 313178551839.6052,
+    "pe_ratio_ttm": 36.222363155170626,
     "goodwill": 9003000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 256.18627787503476,
+        "value": 256.7148308780451,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 70.63182790871355,
+        "value": 70.3956595421874,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -76,16 +76,17 @@
       }
     },
     "median": 45.66254312669264,
-    "max": 256.18627787503476,
+    "max": 256.7148308780451,
     "low": 14.803935963907225,
-    "high": 256.18627787503476,
-    "mos_pct": -524.7571406344485,
+    "high": 256.7148308780451,
+    "mos_pct": -557.3659565891898,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
       "extreme_rim_estimate",
       "extreme_dcf_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 2
   },
   "top5_factors": [],
   "score_history": [],
@@ -99,7 +100,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 28,
+    "filing_lag_days": 29,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-21"
   },
@@ -123,22 +124,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 47.89,
+      "Value": 49.16,
       "Growth": 49.37,
-      "Momentum": 49.55,
+      "Momentum": 50.5,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 44.67,
-      "Risk": 54.05
+      "Technical": 45.57,
+      "Risk": 54.48
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.2215970973349206,
   "recommendation": "cautious",
-  "loss_chance_pct": 66.1928304713635,
-  "price_change_1d_pct": -0.2483,
+  "loss_chance_pct": 65.93130536924033,
+  "price_change_1d_pct": 5.2194,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 45.61,
+  "composite_score_adjusted": 46.14,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -153,8 +154,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 48.99,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 2
 }

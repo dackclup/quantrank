@@ -3,19 +3,19 @@
   "name": "Camden Property Trust",
   "sector": "Real Estate",
   "industry": "Multi-Family Residential REITs",
-  "market_cap": 10560602798.510498,
-  "current_price": 105.06,
-  "rank": 348,
-  "composite_score": 45.86,
+  "market_cap": 10684242406.308563,
+  "current_price": 106.29,
+  "rank": 338,
+  "composite_score": 46.51,
   "pillar_scores": {
     "quality": 56.45,
-    "value": 41.4,
+    "value": 41.94,
     "growth": 48.39,
-    "momentum": 41.78,
+    "momentum": 45.02,
     "health": 23.78,
     "profitability": 54.03,
-    "technical": 45.77,
-    "risk": 45.52,
+    "technical": 47.81,
+    "risk": 46.15,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.4,
     "eps_diluted": 0.4,
     "shares_outstanding": 100519732.0,
-    "market_cap": 10560602798.510498,
-    "pe_ratio_ttm": 26.50055281241264,
+    "market_cap": 10684242406.308563,
+    "pe_ratio_ttm": 26.810811423466614,
     "goodwill": null
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 115.3382293071167,
+        "value": 116.35356526211322,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 96.00001677391285,
+        "value": 97.16222801812634,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 96.00001677391285,
-    "max": 115.3382293071167,
+    "median": 97.16222801812634,
+    "max": 116.35356526211322,
     "low": 51.256999115506055,
-    "high": 115.3382293071167,
-    "mos_pct": -9.43747833504845,
+    "high": 116.35356526211322,
+    "mos_pct": -9.394363513049688,
     "valuation_warnings": [
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 3
   },
   "top5_factors": [],
   "score_history": [],
@@ -108,7 +109,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 18,
+    "filing_lag_days": 19,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-05-01"
   },
@@ -131,22 +132,22 @@
     "label": "Real Estate median (n=31)",
     "values": {
       "Quality": 50.81,
-      "Value": 47.85,
+      "Value": 47.31,
       "Growth": 48.79,
-      "Momentum": 56.97,
+      "Momentum": 57.32,
       "Health": 26.22,
       "Profitability": 52.15,
-      "Technical": 54.23,
-      "Risk": 52.22
+      "Technical": 55.83,
+      "Risk": 52.92
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 62.372754192745695,
-  "price_change_1d_pct": 0.4302,
+  "loss_chance_pct": 62.0319908910505,
+  "price_change_1d_pct": 1.1708,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 45.86,
+  "composite_score_adjusted": 46.51,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -161,8 +162,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 49.18,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 3
 }

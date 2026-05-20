@@ -3,19 +3,19 @@
   "name": "Truist Financial",
   "sector": "Financials",
   "industry": "Diversified Banks",
-  "market_cap": 58269774262.06827,
-  "current_price": 46.77,
-  "rank": 376,
-  "composite_score": 44.26,
+  "market_cap": 59802205200.0,
+  "current_price": 48.0,
+  "rank": 367,
+  "composite_score": 45.02,
   "pillar_scores": {
     "quality": 35.33,
-    "value": 55.33,
+    "value": 54.67,
     "growth": 31.0,
-    "momentum": 55.43,
+    "momentum": 56.52,
     "health": 45.78,
     "profitability": 45.56,
-    "technical": 35.81,
-    "risk": 55.28,
+    "technical": 50.45,
+    "risk": 56.31,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.1,
     "eps_diluted": 1.09,
     "shares_outstanding": 1245879275.0,
-    "market_cap": 58269774262.06827,
-    "pe_ratio_ttm": 10.54274909753361,
+    "market_cap": 59802205200.0,
+    "pe_ratio_ttm": 10.820011796634702,
     "goodwill": 17125000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 60.81209553889651,
+        "value": 61.501838811161946,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 104.45790512844799,
+        "value": 104.7609696513383,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 60.81209553889651,
-    "max": 104.45790512844799,
+    "median": 61.501838811161946,
+    "max": 104.7609696513383,
     "low": 41.283045525088724,
-    "high": 104.45790512844799,
-    "mos_pct": 23.090957410193603,
+    "high": 104.7609696513383,
+    "mos_pct": 21.953553051671527,
     "valuation_warnings": [
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 3
   },
   "top5_factors": [],
   "score_history": [],
@@ -103,7 +104,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 18,
+    "filing_lag_days": 19,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
@@ -124,22 +125,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.11,
+      "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 54.38,
+      "Momentum": 53.29,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 50.7,
-      "Risk": 55.28
+      "Technical": 51.94,
+      "Risk": 54.88
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 36.7889595058125,
-  "price_change_1d_pct": -0.5951,
+  "loss_chance_pct": 36.808241270339046,
+  "price_change_1d_pct": 2.6299,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 44.26,
+  "composite_score_adjusted": 45.02,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -154,8 +155,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 48.43,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 3
 }

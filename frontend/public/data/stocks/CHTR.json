@@ -3,19 +3,19 @@
   "name": "Charter Communications",
   "sector": "Communication Services",
   "industry": "Cable & Satellite",
-  "market_cap": 18076021117.5,
-  "current_price": 142.5,
-  "rank": 201,
-  "composite_score": 52.86,
+  "market_cap": 18343673156.73265,
+  "current_price": 144.61,
+  "rank": 189,
+  "composite_score": 53.43,
   "pillar_scores": {
     "quality": 68.48,
     "value": 80.43,
     "growth": 35.87,
-    "momentum": 35.68,
+    "momentum": 40.16,
     "health": 19.44,
     "profitability": 44.2,
-    "technical": 34.41,
-    "risk": 15.02,
+    "technical": 34.31,
+    "risk": 15.22,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 9.27,
     "eps_diluted": 9.17,
     "shares_outstanding": 126849271.0,
-    "market_cap": 18076021117.5,
-    "pe_ratio_ttm": 3.16014355201049,
+    "market_cap": 18343673156.73265,
+    "pe_ratio_ttm": 3.2069358665616523,
     "goodwill": 29710000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 987.0466372019076,
+        "value": 991.0596412490327,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 336.73745628358535,
+        "value": 334.54641557915795,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 3658.685185898231,
+        "value": 3694.8052078918095,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,15 +75,16 @@
         "tier_used": null
       }
     },
-    "median": 987.0466372019076,
-    "max": 336.73745628358535,
-    "low": 336.73745628358535,
-    "high": 3658.685185898231,
-    "mos_pct": 85.56299220025096,
+    "median": 991.0596412490327,
+    "max": 334.54641557915795,
+    "low": 334.54641557915795,
+    "high": 3694.8052078918095,
+    "mos_pct": 85.4085471154794,
     "valuation_warnings": [
       "extreme_multiples_pe_estimate",
       "extreme_multiples_ev_ebitda_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 1
   },
   "top5_factors": [],
   "score_history": [],
@@ -100,7 +101,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 25,
+    "filing_lag_days": 26,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-24"
   },
@@ -125,20 +126,20 @@
       "Quality": 52.17,
       "Value": 50.0,
       "Growth": 60.33,
-      "Momentum": 49.9,
+      "Momentum": 48.26,
       "Health": 45.5,
       "Profitability": 50.72,
-      "Technical": 52.19,
-      "Risk": 50.6
+      "Technical": 48.46,
+      "Risk": 50.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 10.62084240310346,
-  "price_change_1d_pct": 0.9135,
+  "loss_chance_pct": 10.393523680781477,
+  "price_change_1d_pct": 1.4807,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 52.86,
+  "composite_score_adjusted": 53.43,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -153,8 +154,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 52.64,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 1
 }

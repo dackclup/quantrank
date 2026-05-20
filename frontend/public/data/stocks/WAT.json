@@ -3,19 +3,19 @@
   "name": "Waters Corporation",
   "sector": "Health Care",
   "industry": "Life Sciences Tools & Services",
-  "market_cap": 32721418996.14624,
-  "current_price": 333.26,
+  "market_cap": 33512796747.73468,
+  "current_price": 341.32,
   "rank": 497,
-  "composite_score": 30.49,
+  "composite_score": 30.43,
   "pillar_scores": {
     "quality": 14.83,
     "value": 23.45,
     "growth": 31.36,
-    "momentum": 31.32,
+    "momentum": 33.72,
     "health": 64.86,
     "profitability": 36.16,
-    "technical": 64.94,
-    "risk": 34.93,
+    "technical": 57.67,
+    "risk": 35.03,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": -0.87,
     "eps_diluted": -0.87,
     "shares_outstanding": 98185855.0,
-    "market_cap": 32721418996.14624,
-    "pe_ratio_ttm": 50.91805535720648,
+    "market_cap": 33512796747.73468,
+    "pe_ratio_ttm": 52.14952444993096,
     "goodwill": 9317000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 158.53848733345745,
+        "value": 159.92862865553363,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 462.8230816587023,
+        "value": 461.0923674036318,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 110.34470744404942,
+        "value": 112.18047682087965,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,12 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 158.53848733345745,
-    "max": 462.8230816587023,
-    "low": 110.34470744404942,
-    "high": 462.8230816587023,
-    "mos_pct": -110.20763813942034,
-    "valuation_warnings": []
+    "median": 159.92862865553363,
+    "max": 461.0923674036318,
+    "low": 112.18047682087965,
+    "high": 461.0923674036318,
+    "mos_pct": -113.42020512123541,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 3
   },
   "top5_factors": [],
   "score_history": [],
@@ -92,7 +93,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 7,
+    "filing_lag_days": 8,
     "latest_period_end": "2026-05-06",
     "latest_filed_date": "2026-05-12"
   },
@@ -122,20 +123,20 @@
       "Quality": 52.97,
       "Value": 51.13,
       "Growth": 49.58,
-      "Momentum": 39.89,
+      "Momentum": 40.09,
       "Health": 59.88,
       "Profitability": 51.13,
-      "Technical": 59.81,
-      "Risk": 41.3
+      "Technical": 57.02,
+      "Risk": 41.14
     }
   },
   "beneish_m_score": -0.905248226553823,
   "dechow_f_score": 2.6461813606784474,
   "recommendation": "neutral",
-  "loss_chance_pct": 81.75419578747159,
-  "price_change_1d_pct": 0.3221,
+  "loss_chance_pct": 81.78469877551939,
+  "price_change_1d_pct": 2.4185,
   "manipulation_index": 64.0,
-  "composite_score_adjusted": 24.09,
+  "composite_score_adjusted": 24.03,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": true,
@@ -150,8 +151,37 @@
     "beneish_high": true,
     "dechow_high": true
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 41.14,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 3
 }

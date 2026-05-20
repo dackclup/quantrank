@@ -3,19 +3,19 @@
   "name": "Amazon",
   "sector": "Consumer Discretionary",
   "industry": "Broadline Retail",
-  "market_cap": 2789748721738.529,
-  "current_price": 259.34,
-  "rank": 325,
-  "composite_score": 46.74,
+  "market_cap": 2850741676684.257,
+  "current_price": 265.01,
+  "rank": 339,
+  "composite_score": 46.48,
   "pillar_scores": {
     "quality": 39.06,
-    "value": 27.43,
+    "value": 27.78,
     "growth": 52.08,
-    "momentum": 74.4,
+    "momentum": 74.8,
     "health": 56.47,
     "profitability": 47.22,
-    "technical": 70.42,
-    "risk": 50.6,
+    "technical": 62.3,
+    "risk": 50.93,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.82,
     "eps_diluted": 2.78,
     "shares_outstanding": 10757109436.0,
-    "market_cap": 2789748721738.529,
-    "pe_ratio_ttm": 30.724781622266224,
+    "market_cap": 2850741676684.257,
+    "pe_ratio_ttm": 31.396524997073247,
     "goodwill": 23449000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 176.61136196076322,
+        "value": 182.03244611585157,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 223.2683990394446,
+        "value": 229.87756708085902,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 180.9909021487295,
+        "value": 183.77528324305987,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,12 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 176.61136196076322,
-    "max": 223.2683990394446,
+    "median": 182.03244611585157,
+    "max": 229.87756708085902,
     "low": 54.569785365736074,
-    "high": 223.2683990394446,
-    "mos_pct": -46.8421926305663,
-    "valuation_warnings": []
+    "high": 229.87756708085902,
+    "mos_pct": -45.58394144578144,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 5
   },
   "top5_factors": [],
   "score_history": [],
@@ -92,7 +93,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 19,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-04-22",
     "latest_filed_date": "2026-04-30"
   },
@@ -115,20 +116,20 @@
       "Quality": 46.35,
       "Value": 49.83,
       "Growth": 51.69,
-      "Momentum": 41.86,
+      "Momentum": 42.26,
       "Health": 43.72,
       "Profitability": 52.6,
-      "Technical": 34.99,
-      "Risk": 41.09
+      "Technical": 43.15,
+      "Risk": 41.87
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.7827362213662097,
   "recommendation": "neutral",
-  "loss_chance_pct": 61.02381546463357,
-  "price_change_1d_pct": -2.0841,
+  "loss_chance_pct": 60.71617779896286,
+  "price_change_1d_pct": 2.1863,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 46.74,
+  "composite_score_adjusted": 46.48,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -143,8 +144,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 49.16,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 5
 }

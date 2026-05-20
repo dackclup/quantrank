@@ -3,19 +3,19 @@
   "name": "BlackRock",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 161004720815.67993,
-  "current_price": 1036.3,
-  "rank": 404,
-  "composite_score": 42.14,
+  "market_cap": 163377127900.25208,
+  "current_price": 1051.5699,
+  "rank": 405,
+  "composite_score": 42.35,
   "pillar_scores": {
     "quality": 42.67,
-    "value": 21.56,
+    "value": 21.33,
     "growth": 43.67,
-    "momentum": 45.92,
+    "momentum": 45.47,
     "health": 61.39,
     "profitability": 62.0,
-    "technical": 49.5,
-    "risk": 49.87,
+    "technical": 55.43,
+    "risk": 50.4,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 14.24,
     "eps_diluted": 14.06,
     "shares_outstanding": 155364965.0,
-    "market_cap": 161004720815.67993,
-    "pe_ratio_ttm": 23.841954807593652,
+    "market_cap": 163377127900.25208,
+    "pe_ratio_ttm": 24.19326638534756,
     "goodwill": 35296000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 678.8408295112494,
+        "value": 683.0238091192527,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 857.3315898080762,
+        "value": 862.7903295186842,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 768.0862096596627,
-    "max": 857.3315898080762,
-    "low": 678.8408295112494,
-    "high": 857.3315898080762,
-    "mos_pct": -34.919757156857074,
+    "median": 772.9070693189685,
+    "max": 862.7903295186842,
+    "low": 683.0238091192527,
+    "high": 862.7903295186842,
+    "mos_pct": -36.053865727432424,
     "valuation_warnings": [
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 2
   },
   "top5_factors": [],
   "score_history": [],
@@ -102,7 +103,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 13,
+    "filing_lag_days": 14,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
@@ -125,22 +126,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.11,
+      "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 54.38,
+      "Momentum": 53.29,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 50.7,
-      "Risk": 55.28
+      "Technical": 51.94,
+      "Risk": 54.88
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 61.15152987873796,
-  "price_change_1d_pct": -4.5659,
+  "loss_chance_pct": 61.44336329676602,
+  "price_change_1d_pct": 1.4735,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 40.14,
+  "composite_score_adjusted": 40.35,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -155,8 +156,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 47.1,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 2
 }

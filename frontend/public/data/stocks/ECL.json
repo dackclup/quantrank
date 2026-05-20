@@ -3,19 +3,19 @@
   "name": "Ecolab",
   "sector": "Materials",
   "industry": "Specialty Chemicals",
-  "market_cap": 69157636164.02927,
-  "current_price": 245.73,
-  "rank": 169,
-  "composite_score": 54.36,
+  "market_cap": 69976620325.50418,
+  "current_price": 248.64,
+  "rank": 164,
+  "composite_score": 54.41,
   "pillar_scores": {
     "quality": 83.65,
     "value": 14.74,
     "growth": 88.46,
-    "momentum": 34.91,
+    "momentum": 34.66,
     "health": 41.69,
     "profitability": 79.49,
-    "technical": 30.03,
-    "risk": 52.82,
+    "technical": 31.47,
+    "risk": 53.09,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.53,
     "eps_diluted": 1.52,
     "shares_outstanding": 281437502.0,
-    "market_cap": 69157636164.02927,
-    "pe_ratio_ttm": 32.56929272112144,
+    "market_cap": 69976620325.50418,
+    "pe_ratio_ttm": 32.95498743783752,
     "goodwill": 9438700000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 180.71229525611827,
+        "value": 187.22024869841061,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 99.43034594702002,
+        "value": 102.0603152820582,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 129.6643735802365,
+        "value": 134.9114939002457,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 114.54735976362825,
-    "max": 180.71229525611827,
+    "median": 118.48590459115195,
+    "max": 187.22024869841061,
     "low": 44.444777853876055,
-    "high": 180.71229525611827,
-    "mos_pct": -114.52261862220998,
+    "high": 187.22024869841061,
+    "mos_pct": -109.84774539014313,
     "valuation_warnings": [
       "extreme_dcf_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 3
   },
   "top5_factors": [],
   "score_history": [],
@@ -92,7 +93,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 12,
+    "filing_lag_days": 13,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
@@ -113,22 +114,22 @@
     "label": "Materials median (n=26)",
     "values": {
       "Quality": 51.68,
-      "Value": 50.16,
+      "Value": 50.48,
       "Growth": 48.56,
-      "Momentum": 51.79,
+      "Momentum": 51.32,
       "Health": 56.53,
       "Profitability": 54.33,
-      "Technical": 31.62,
-      "Risk": 46.43
+      "Technical": 38.75,
+      "Risk": 46.85
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.5121436320970426,
   "recommendation": "neutral",
-  "loss_chance_pct": 58.81840267136582,
-  "price_change_1d_pct": -1.3964,
+  "loss_chance_pct": 58.792879762999284,
+  "price_change_1d_pct": 1.1842,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 54.36,
+  "composite_score_adjusted": 54.41,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -143,8 +144,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 53.13,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 3
 }

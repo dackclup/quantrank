@@ -3,19 +3,19 @@
   "name": "Stryker Corporation",
   "sector": "Health Care",
   "industry": "Health Care Equipment",
-  "market_cap": 121812882125.5,
-  "current_price": 317.75,
-  "rank": 126,
-  "composite_score": 56.59,
+  "market_cap": 123246647631.62256,
+  "current_price": 321.49,
+  "rank": 129,
+  "composite_score": 56.35,
   "pillar_scores": {
     "quality": 80.93,
-    "value": 22.03,
+    "value": 22.6,
     "growth": 77.97,
-    "momentum": 23.71,
+    "momentum": 21.31,
     "health": 73.23,
     "profitability": 60.45,
-    "technical": 75.95,
-    "risk": 47.05,
+    "technical": 74.55,
+    "risk": 47.14,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.95,
     "eps_diluted": 1.93,
     "shares_outstanding": 383360762.0,
-    "market_cap": 121812882125.5,
-    "pe_ratio_ttm": 36.50371055603836,
+    "market_cap": 123246647631.62256,
+    "pe_ratio_ttm": 36.93336758514311,
     "goodwill": 19188000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 227.72765105709317,
+        "value": 235.30294811917304,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 90.92640052992373,
+        "value": 90.58638374209326,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 311.05765712696547,
+        "value": 309.622280468668,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,12 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 167.52698686182165,
-    "max": 311.05765712696547,
-    "low": 90.92640052992373,
-    "high": 311.05765712696547,
-    "mos_pct": -89.67093359237946,
-    "valuation_warnings": []
+    "median": 171.3146353928616,
+    "max": 309.622280468668,
+    "low": 90.58638374209326,
+    "high": 309.622280468668,
+    "mos_pct": -87.66055188287257,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -89,7 +90,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 9,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-11"
   },
@@ -110,20 +111,20 @@
       "Quality": 52.97,
       "Value": 51.13,
       "Growth": 49.58,
-      "Momentum": 39.89,
+      "Momentum": 40.09,
       "Health": 59.88,
       "Profitability": 51.13,
-      "Technical": 59.81,
-      "Risk": 41.3
+      "Technical": 57.02,
+      "Risk": 41.14
     }
   },
   "beneish_m_score": -2.522911717909262,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 56.7073225459743,
-  "price_change_1d_pct": 1.4463,
+  "loss_chance_pct": 56.82615864226709,
+  "price_change_1d_pct": 1.177,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 56.59,
+  "composite_score_adjusted": 56.35,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -138,8 +139,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 54.1,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 4
 }

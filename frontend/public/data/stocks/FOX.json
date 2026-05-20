@@ -3,19 +3,19 @@
   "name": "Fox Corporation (Class B)",
   "sector": "Communication Services",
   "industry": "Broadcasting",
-  "market_cap": 25733870067.596436,
-  "current_price": 58.09,
-  "rank": 87,
-  "composite_score": 58.88,
+  "market_cap": 25419340473.17505,
+  "current_price": 57.38,
+  "rank": 91,
+  "composite_score": 58.41,
   "pillar_scores": {
     "quality": 51.09,
-    "value": 62.32,
+    "value": 63.04,
     "growth": 63.04,
-    "momentum": 56.47,
+    "momentum": 52.94,
     "health": 64.6,
     "profitability": 59.06,
-    "technical": 66.33,
-    "risk": 64.01,
+    "technical": 63.1,
+    "risk": 63.28,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.29,
     "eps_diluted": 2.24,
     "shares_outstanding": 443000000.0,
-    "market_cap": 25733870067.596436,
-    "pe_ratio_ttm": 14.705068610055106,
+    "market_cap": 25419340473.17505,
+    "pe_ratio_ttm": 14.525337413242886,
     "goodwill": 3647000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 86.46969808170257,
+        "value": 86.82125517665328,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 64.55000305175781,
+        "value": 64.12999725341797,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,13 +76,14 @@
       }
     },
     "median": 37.474481320000464,
-    "max": 86.46969808170257,
+    "max": 86.82125517665328,
     "low": 12.321330385340742,
-    "high": 86.46969808170257,
-    "mos_pct": -55.012152554022784,
+    "high": 86.82125517665328,
+    "mos_pct": -53.117532376601616,
     "valuation_warnings": [
       "goodwill_heavy"
-    ]
+    ],
+    "valuation_methods_applicable": 5
   },
   "top5_factors": [],
   "score_history": [],
@@ -97,7 +98,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 9,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-11"
   },
@@ -121,20 +122,20 @@
       "Quality": 52.17,
       "Value": 50.0,
       "Growth": 60.33,
-      "Momentum": 49.9,
+      "Momentum": 48.26,
       "Health": 45.5,
       "Profitability": 50.72,
-      "Technical": 52.19,
-      "Risk": 50.6
+      "Technical": 48.46,
+      "Risk": 50.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 55.814871429013934,
-  "price_change_1d_pct": -1.5257,
+  "loss_chance_pct": 55.38584517758688,
+  "price_change_1d_pct": -1.2222,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 58.88,
+  "composite_score_adjusted": 58.41,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -149,8 +150,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 55.13,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 5
 }

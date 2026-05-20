@@ -3,19 +3,19 @@
   "name": "CSX Corporation",
   "sector": "Industrials",
   "industry": "Rail Transportation",
-  "market_cap": 85623041886.83386,
-  "current_price": 46.08,
-  "rank": 173,
-  "composite_score": 54.3,
+  "market_cap": 85362896492.8746,
+  "current_price": 45.94,
+  "rank": 167,
+  "composite_score": 54.25,
   "pillar_scores": {
     "quality": 67.09,
     "value": 40.51,
     "growth": 31.65,
-    "momentum": 83.67,
+    "momentum": 82.97,
     "health": 28.69,
     "profitability": 53.8,
-    "technical": 65.59,
-    "risk": 75.07,
+    "technical": 66.28,
+    "risk": 75.0,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.43,
     "eps_diluted": 0.43,
     "shares_outstanding": 1858138856.0,
-    "market_cap": 85623041886.83386,
-    "pe_ratio_ttm": 28.073128487486514,
+    "market_cap": 85362896492.8746,
+    "pe_ratio_ttm": 27.98783491569659,
     "goodwill": 80000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 45.17360251304866,
+        "value": 45.7974089974136,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 28.67505991829142,
+        "value": 28.92854035146659,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 54.84672762950873,
+        "value": 55.037134282629104,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 23.586594203766843,
-    "max": 54.84672762950873,
+    "median": 23.71333442035443,
+    "max": 55.037134282629104,
     "low": 8.959996463205162,
-    "high": 54.84672762950873,
-    "mos_pct": -95.36522073922646,
+    "high": 55.037134282629104,
+    "mos_pct": -93.73065724268712,
     "valuation_warnings": [
       "extreme_rim_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 5
   },
   "top5_factors": [],
   "score_history": [],
@@ -96,7 +97,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 27,
+    "filing_lag_days": 28,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-22"
   },
@@ -117,22 +118,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 47.89,
+      "Value": 49.16,
       "Growth": 49.37,
-      "Momentum": 49.55,
+      "Momentum": 50.5,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 44.67,
-      "Risk": 54.05
+      "Technical": 45.57,
+      "Risk": 54.48
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 58.84880257451208,
-  "price_change_1d_pct": -0.2597,
+  "loss_chance_pct": 58.876193012759096,
+  "price_change_1d_pct": -0.3038,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 54.3,
+  "composite_score_adjusted": 54.25,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -147,8 +148,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 53.05,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 5
 }

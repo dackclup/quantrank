@@ -3,18 +3,18 @@
   "name": "Idexx Laboratories",
   "sector": "Health Care",
   "industry": "Health Care Equipment",
-  "market_cap": 43108768260.18823,
-  "current_price": 546.49,
-  "rank": 104,
-  "composite_score": 57.85,
+  "market_cap": 43668050827.35809,
+  "current_price": 553.58,
+  "rank": 112,
+  "composite_score": 57.67,
   "pillar_scores": {
     "quality": 94.49,
-    "value": 8.19,
+    "value": 7.63,
     "growth": 84.32,
-    "momentum": 26.89,
+    "momentum": 25.3,
     "health": 66.85,
     "profitability": 85.31,
-    "technical": 58.62,
+    "technical": 61.45,
     "risk": 31.34,
     "sentiment": null,
     "ml": null
@@ -32,8 +32,8 @@
     "eps_basic": 3.5,
     "eps_diluted": 3.47,
     "shares_outstanding": 78882997.0,
-    "market_cap": 43108768260.18823,
-    "pe_ratio_ttm": 39.36036282707719,
+    "market_cap": 43668050827.35809,
+    "pe_ratio_ttm": 39.87101450317704,
     "goodwill": 412104000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 363.2372156512062,
+        "value": 375.3202007423351,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 58.621183787538385,
+        "value": 58.40197147412785,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 349.5906689777325,
+        "value": 347.945768043595,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -76,15 +76,16 @@
       }
     },
     "median": 103.05163098019804,
-    "max": 363.2372156512062,
+    "max": 375.3202007423351,
     "low": 57.799132943235065,
-    "high": 363.2372156512062,
-    "mos_pct": -430.3069781975465,
+    "high": 375.3202007423351,
+    "mos_pct": -437.18705063117073,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_multiples_pb_estimate",
       "extreme_rim_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 3
   },
   "top5_factors": [],
   "score_history": [],
@@ -93,7 +94,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-05"
   },
@@ -118,20 +119,20 @@
       "Quality": 52.97,
       "Value": 51.13,
       "Growth": 49.58,
-      "Momentum": 39.89,
+      "Momentum": 40.09,
       "Health": 59.88,
       "Profitability": 51.13,
-      "Technical": 59.81,
-      "Risk": 41.3
+      "Technical": 57.02,
+      "Risk": 41.14
     }
   },
   "beneish_m_score": -2.40915176030195,
   "dechow_f_score": 0.4398201803846221,
   "recommendation": "cautious",
-  "loss_chance_pct": 59.07327329101672,
-  "price_change_1d_pct": 0.1283,
+  "loss_chance_pct": 59.16546807121796,
+  "price_change_1d_pct": 1.2974,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 57.85,
+  "composite_score_adjusted": 57.67,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -146,8 +147,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 54.76,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 3
 }

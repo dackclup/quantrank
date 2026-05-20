@@ -3,19 +3,19 @@
   "name": "Meta Platforms",
   "sector": "Communication Services",
   "industry": "Interactive Media & Services",
-  "market_cap": 1545092002441.4062,
-  "current_price": 602.61,
-  "rank": 21,
-  "composite_score": 65.97,
+  "market_cap": 1551373833740.2344,
+  "current_price": 605.06,
+  "rank": 24,
+  "composite_score": 65.18,
   "pillar_scores": {
     "quality": 89.13,
     "value": 28.99,
     "growth": 85.87,
-    "momentum": 55.13,
+    "momentum": 48.61,
     "health": 87.57,
     "profitability": 88.41,
-    "technical": 35.31,
-    "risk": 33.67,
+    "technical": 36.25,
+    "risk": 33.17,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 10.57,
     "eps_diluted": 10.44,
     "shares_outstanding": 2564000000.0,
-    "market_cap": 1545092002441.4062,
-    "pe_ratio_ttm": 21.889186428682425,
+    "market_cap": 1551373833740.2344,
+    "pe_ratio_ttm": 21.978180596147087,
     "goodwill": 24748000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 546.5794439479504,
+        "value": 537.3671287701611,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 222.96757718219817,
+        "value": 220.24237877884792,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 721.5228346693484,
+        "value": 724.5990221555153,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,12 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 215.1306219241102,
-    "max": 721.5228346693484,
+    "median": 213.76802272243506,
+    "max": 724.5990221555153,
     "low": 187.4115996086271,
-    "high": 721.5228346693484,
-    "mos_pct": -180.1135328675525,
-    "valuation_warnings": []
+    "high": 724.5990221555153,
+    "mos_pct": -183.04513923685764,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 6
   },
   "top5_factors": [],
   "score_history": [],
@@ -91,7 +92,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 19,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
@@ -112,20 +113,20 @@
       "Quality": 52.17,
       "Value": 50.0,
       "Growth": 60.33,
-      "Momentum": 49.9,
+      "Momentum": 48.26,
       "Health": 45.5,
       "Profitability": 50.72,
-      "Technical": 52.19,
-      "Risk": 50.6
+      "Technical": 48.46,
+      "Risk": 50.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 52.01614375830014,
-  "price_change_1d_pct": -1.4071,
+  "loss_chance_pct": 52.40957005312085,
+  "price_change_1d_pct": 0.4066,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 65.97,
+  "composite_score_adjusted": 65.18,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -140,8 +141,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 58.52,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 6
 }

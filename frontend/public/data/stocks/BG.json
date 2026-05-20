@@ -3,19 +3,19 @@
   "name": "Bunge Global",
   "sector": "Consumer Staples",
   "industry": "Agricultural Products & Services",
-  "market_cap": 23720655154.36741,
-  "current_price": 122.26,
-  "rank": 346,
-  "composite_score": 45.9,
+  "market_cap": 23272472302.1537,
+  "current_price": 119.95,
+  "rank": 359,
+  "composite_score": 45.36,
   "pillar_scores": {
     "quality": 27.43,
     "value": 59.95,
     "growth": 44.1,
-    "momentum": 71.56,
+    "momentum": 73.66,
     "health": 41.04,
     "profitability": 29.4,
-    "technical": 39.59,
-    "risk": 66.27,
+    "technical": 24.18,
+    "risk": 65.67,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.35,
     "eps_diluted": 0.35,
     "shares_outstanding": 194018115.0,
-    "market_cap": 23720655154.36741,
-    "pe_ratio_ttm": 29.069430336234568,
+    "market_cap": 23272472302.1537,
+    "pe_ratio_ttm": 28.5201866447962,
     "goodwill": 3291000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 97.43897539353333,
+        "value": 97.93767128666155,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 294.7848207698155,
+        "value": 283.4095274282201,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 97.43897539353333,
-    "max": 294.7848207698155,
+    "median": 97.93767128666155,
+    "max": 283.4095274282201,
     "low": 12.583137964492252,
-    "high": 294.7848207698155,
-    "mos_pct": -25.473406963128255,
+    "high": 283.4095274282201,
+    "mos_pct": -22.47585160275152,
     "valuation_warnings": [
       "extreme_dcf_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -94,7 +95,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 20,
+    "filing_lag_days": 21,
     "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-29"
   },
@@ -118,22 +119,22 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 49.65,
-      "Value": 51.16,
+      "Value": 50.93,
       "Growth": 48.44,
-      "Momentum": 40.91,
+      "Momentum": 37.77,
       "Health": 39.29,
       "Profitability": 53.94,
-      "Technical": 54.51,
-      "Risk": 51.63
+      "Technical": 55.27,
+      "Risk": 50.88
     }
   },
   "beneish_m_score": -1.528541237857401,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 54.96758325345906,
-  "price_change_1d_pct": -1.9095,
+  "loss_chance_pct": 54.18425063031525,
+  "price_change_1d_pct": -1.8894,
   "manipulation_index": 23.0,
-  "composite_score_adjusted": 43.6,
+  "composite_score_adjusted": 43.06,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": true,
@@ -148,8 +149,37 @@
     "beneish_high": true,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 48.61,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 4
 }

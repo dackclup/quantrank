@@ -3,19 +3,19 @@
   "name": "Keurig Dr Pepper",
   "sector": "Consumer Staples",
   "industry": "Soft Drinks & Non-alcoholic Beverages",
-  "market_cap": 39252141257.36225,
-  "current_price": 28.85,
-  "rank": 417,
-  "composite_score": 41.25,
+  "market_cap": 39034451949.60715,
+  "current_price": 28.69,
+  "rank": 425,
+  "composite_score": 40.52,
   "pillar_scores": {
     "quality": 27.08,
     "value": 47.69,
     "growth": 52.08,
-    "momentum": 25.6,
+    "momentum": 23.85,
     "health": 60.86,
     "profitability": 44.91,
-    "technical": 53.14,
-    "risk": 48.27,
+    "technical": 43.68,
+    "risk": 47.28,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.2,
     "eps_diluted": 0.2,
     "shares_outstanding": 1360559471.0,
-    "market_cap": 39252141257.36225,
-    "pe_ratio_ttm": 21.42584129768682,
+    "market_cap": 39034451949.60715,
+    "pe_ratio_ttm": 21.30701525633578,
     "goodwill": 20210000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 32.97665726504987,
+        "value": 32.800058928637235,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 66.18212160253076,
+        "value": 63.62825520862376,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 26.378921440619504,
+        "value": 26.384149913850706,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,15 +75,16 @@
         "tier_used": null
       }
     },
-    "median": 29.677789352834687,
-    "max": 66.18212160253076,
+    "median": 29.59210442124397,
+    "max": 63.62825520862376,
     "low": 4.352212595105785,
-    "high": 66.18212160253076,
-    "mos_pct": 2.789254150716901,
+    "high": 63.62825520862376,
+    "mos_pct": 3.048461421820136,
     "valuation_warnings": [
       "extreme_dcf_estimate",
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 3
   },
   "top5_factors": [],
   "score_history": [],
@@ -92,7 +93,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 26,
+    "filing_lag_days": 27,
     "latest_period_end": "2026-04-21",
     "latest_filed_date": "2026-04-23"
   },
@@ -116,22 +117,22 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 49.65,
-      "Value": 51.16,
+      "Value": 50.93,
       "Growth": 48.44,
-      "Momentum": 40.91,
+      "Momentum": 37.77,
       "Health": 39.29,
       "Profitability": 53.94,
-      "Technical": 54.51,
-      "Risk": 51.63
+      "Technical": 55.27,
+      "Risk": 50.88
     }
   },
   "beneish_m_score": -2.475428133332268,
   "dechow_f_score": 0.6695382738060286,
   "recommendation": "neutral",
-  "loss_chance_pct": 49.40040954584728,
-  "price_change_1d_pct": -1.9708,
+  "loss_chance_pct": 49.67385532765438,
+  "price_change_1d_pct": -0.5546,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 39.25,
+  "composite_score_adjusted": 38.52,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -146,8 +147,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 46.19,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 3
 }

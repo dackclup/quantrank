@@ -3,19 +3,19 @@
   "name": "Arch Capital Group",
   "sector": "Financials",
   "industry": "Property & Casualty Insurance",
-  "market_cap": 33677662174.06952,
-  "current_price": 96.39,
-  "rank": 12,
-  "composite_score": 67.03,
+  "market_cap": 33834886422.417114,
+  "current_price": 96.84,
+  "rank": 17,
+  "composite_score": 66.64,
   "pillar_scores": {
     "quality": 68.0,
-    "value": 72.67,
+    "value": 72.22,
     "growth": 82.33,
-    "momentum": 54.18,
+    "momentum": 53.34,
     "health": 50.64,
     "profitability": 61.56,
-    "technical": 69.17,
-    "risk": 67.9,
+    "technical": 65.89,
+    "risk": 67.3,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.94,
     "eps_diluted": 2.88,
     "shares_outstanding": 349389588.0,
-    "market_cap": 33677662174.06952,
-    "pe_ratio_ttm": 4.893586482718616,
+    "market_cap": 33834886422.417114,
+    "pe_ratio_ttm": 4.916432203199232,
     "goodwill": 607000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 270.0108249225899,
+        "value": 273.0733431318181,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 140.3064224304321,
+        "value": 140.71349453206037,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,12 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 135.39039337249073,
-    "max": 270.0108249225899,
+    "median": 135.59392942330487,
+    "max": 273.0733431318181,
     "low": 106.37064713135112,
-    "high": 270.0108249225899,
-    "mos_pct": 28.805879805329365,
-    "valuation_warnings": []
+    "high": 273.0733431318181,
+    "mos_pct": 28.580876186890347,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -103,7 +104,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-05"
   },
@@ -124,22 +125,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.11,
+      "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 54.38,
+      "Momentum": 53.29,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 50.7,
-      "Risk": 55.28
+      "Technical": 51.94,
+      "Risk": 54.88
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 21.40280539261458,
-  "price_change_1d_pct": 0.5424,
+  "loss_chance_pct": 21.677846499705687,
+  "price_change_1d_pct": 0.4669,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 66.53,
+  "composite_score_adjusted": 66.14,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -154,8 +155,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 59.24,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 4
 }

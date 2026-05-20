@@ -3,19 +3,19 @@
   "name": "Centene Corporation",
   "sector": "Health Care",
   "industry": "Managed Health Care",
-  "market_cap": 29208093303.474426,
-  "current_price": 59.15,
-  "rank": 421,
-  "composite_score": 41.14,
+  "market_cap": 28778488557.22046,
+  "current_price": 58.28,
+  "rank": 416,
+  "composite_score": 41.4,
   "pillar_scores": {
     "quality": 11.65,
     "value": 81.36,
     "growth": 49.58,
-    "momentum": 35.16,
+    "momentum": 37.9,
     "health": 30.7,
     "profitability": 22.03,
-    "technical": 69.15,
-    "risk": 30.35,
+    "technical": 67.7,
+    "risk": 29.88,
     "sentiment": null,
     "ml": null
   },
@@ -32,7 +32,7 @@
     "eps_basic": 3.13,
     "eps_diluted": 3.11,
     "shares_outstanding": 493797000.0,
-    "market_cap": 29208093303.474426,
+    "market_cap": 28778488557.22046,
     "pe_ratio_ttm": null,
     "goodwill": 10835000000.0
   },
@@ -51,7 +51,7 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 128.94739388600664,
+        "value": 128.465198633443,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,15 +75,16 @@
         "tier_used": null
       }
     },
-    "median": 130.91432265014026,
+    "median": 130.67322502385846,
     "max": 132.88125141427392,
-    "low": 128.94739388600664,
+    "low": 128.465198633443,
     "high": 132.88125141427392,
-    "mos_pct": 54.81777675010143,
+    "mos_pct": 55.40019864922133,
     "valuation_warnings": [
       "goodwill_heavy",
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 2
   },
   "top5_factors": [],
   "score_history": [],
@@ -96,7 +97,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 21,
+    "filing_lag_days": 22,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-28"
   },
@@ -122,20 +123,20 @@
       "Quality": 52.97,
       "Value": 51.13,
       "Growth": 49.58,
-      "Momentum": 39.89,
+      "Momentum": 40.09,
       "Health": 59.88,
       "Profitability": 51.13,
-      "Technical": 59.81,
-      "Risk": 41.3
+      "Technical": 57.02,
+      "Risk": 41.14
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 40.24192993704584,
-  "price_change_1d_pct": 1.5799,
+  "loss_chance_pct": 39.911712750441524,
+  "price_change_1d_pct": -1.4708,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 41.14,
+  "composite_score_adjusted": 41.4,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -150,8 +151,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 46.62,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 2
 }

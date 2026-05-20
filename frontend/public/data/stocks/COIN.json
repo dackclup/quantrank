@@ -3,19 +3,19 @@
   "name": "Coinbase",
   "sector": "Financials",
   "industry": "Financial Exchanges & Data",
-  "market_cap": 50956857146.13342,
-  "current_price": 193.45,
-  "rank": 465,
-  "composite_score": 37.1,
+  "market_cap": 50387888421.49353,
+  "current_price": 191.29,
+  "rank": 464,
+  "composite_score": 37.26,
   "pillar_scores": {
     "quality": 30.0,
-    "value": 25.33,
+    "value": 26.22,
     "growth": 54.67,
-    "momentum": 29.18,
+    "momentum": 31.23,
     "health": 69.24,
     "profitability": 38.0,
-    "technical": 51.39,
-    "risk": 21.35,
+    "technical": 45.62,
+    "risk": 21.08,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": -1.49,
     "eps_diluted": -1.49,
     "shares_outstanding": 263411000.0,
-    "market_cap": 50956857146.13342,
-    "pe_ratio_ttm": 62.60125375604082,
+    "market_cap": 50387888421.49353,
+    "pe_ratio_ttm": 61.902267250489906,
     "goodwill": 4208389000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 78.46095206909708,
+        "value": 78.14729371863983,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 103.22000108105019,
+        "value": 102.7586622233142,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 67.60072131257846,
-    "max": 103.22000108105019,
+    "median": 67.44389213734983,
+    "max": 102.7586622233142,
     "low": 32.423447231216656,
-    "high": 103.22000108105019,
-    "mos_pct": -186.16558106495674,
+    "high": 102.7586622233142,
+    "mos_pct": -183.6283423509571,
     "valuation_warnings": [
       "extreme_rim_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 3
   },
   "top5_factors": [],
   "score_history": [],
@@ -94,7 +95,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 12,
+    "filing_lag_days": 13,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
@@ -115,22 +116,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.11,
+      "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 54.38,
+      "Momentum": 53.29,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 50.7,
-      "Risk": 55.28
+      "Technical": 51.94,
+      "Risk": 54.88
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 67.4495932934927,
-  "price_change_1d_pct": 2.1168,
+  "loss_chance_pct": 67.37138114209827,
+  "price_change_1d_pct": -1.1166,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 37.1,
+  "composite_score_adjusted": 37.26,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -145,8 +146,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 44.55,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 3
 }

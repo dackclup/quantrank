@@ -3,18 +3,18 @@
   "name": "Keysight Technologies",
   "sector": "Information Technology",
   "industry": "Electronic Equipment & Instruments",
-  "market_cap": 59015721042.20642,
-  "current_price": 344.11,
-  "rank": 299,
-  "composite_score": 48.24,
+  "market_cap": 58667571186.71005,
+  "current_price": 342.08,
+  "rank": 307,
+  "composite_score": 47.97,
   "pillar_scores": {
     "quality": 39.38,
-    "value": 28.31,
+    "value": 28.08,
     "growth": 28.77,
-    "momentum": 91.88,
+    "momentum": 90.64,
     "health": 79.6,
     "profitability": 46.12,
-    "technical": 58.22,
+    "technical": 57.05,
     "risk": 58.8,
     "sentiment": null,
     "ml": null
@@ -32,8 +32,8 @@
     "eps_basic": 1.64,
     "eps_diluted": 1.63,
     "shares_outstanding": 171502495.0,
-    "market_cap": 59015721042.20642,
-    "pe_ratio_ttm": 61.34690337027695,
+    "market_cap": 58667571186.71005,
+    "pe_ratio_ttm": 60.98500123358634,
     "goodwill": 3474000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 202.03289227048438,
+        "value": 197.59613562729453,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 357.83857672921664,
+        "value": 362.7976075769708,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 142.9452080287242,
+        "value": 144.85848942935505,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,16 +75,17 @@
         "tier_used": null
       }
     },
-    "median": 113.700637491065,
-    "max": 357.83857672921664,
+    "median": 114.65727819138041,
+    "max": 362.7976075769708,
     "low": 11.448417330847448,
-    "high": 357.83857672921664,
-    "mos_pct": -202.64560775097144,
+    "high": 362.7976075769708,
+    "mos_pct": -198.34999746050326,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
       "extreme_rim_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -94,7 +95,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 75,
+    "filing_lag_days": 76,
     "latest_period_end": "2026-02-27",
     "latest_filed_date": "2026-03-05"
   },
@@ -117,22 +118,22 @@
     "label": "Information Technology median (n=73)",
     "values": {
       "Quality": 49.32,
-      "Value": 50.23,
+      "Value": 48.17,
       "Growth": 52.23,
-      "Momentum": 53.34,
+      "Momentum": 59.76,
       "Health": 69.52,
       "Profitability": 47.26,
-      "Technical": 64.59,
-      "Risk": 46.91
+      "Technical": 61.01,
+      "Risk": 46.85
     }
   },
   "beneish_m_score": -2.590008021116027,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 63.880046025941894,
-  "price_change_1d_pct": 1.0661,
+  "loss_chance_pct": 64.01280267059616,
+  "price_change_1d_pct": -0.5899,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 48.24,
+  "composite_score_adjusted": 47.97,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -147,8 +148,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 49.91,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 4
 }

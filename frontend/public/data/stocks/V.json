@@ -3,19 +3,19 @@
   "name": "Visa Inc.",
   "sector": "Financials",
   "industry": "Transaction & Payment Processing Services",
-  "market_cap": 154820444302.77777,
-  "current_price": 329.91,
-  "rank": 55,
-  "composite_score": 62.02,
+  "market_cap": 155214638491.5,
+  "current_price": 330.75,
+  "rank": 56,
+  "composite_score": 61.74,
   "pillar_scores": {
     "quality": 74.67,
-    "value": 60.89,
+    "value": 61.33,
     "growth": 66.33,
-    "momentum": 38.5,
+    "momentum": 35.71,
     "health": 51.2,
     "profitability": 73.78,
-    "technical": 57.57,
-    "risk": 55.35,
+    "technical": 57.72,
+    "risk": 54.38,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": null,
     "eps_diluted": null,
     "shares_outstanding": 469280842.0,
-    "market_cap": 154820444302.77777,
-    "pe_ratio_ttm": 6.962603179653614,
+    "market_cap": 155214638491.5,
+    "pe_ratio_ttm": 6.980330926942796,
     "goodwill": 20891000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 649.5316328750001,
+        "value": 656.8987540032723,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 113.62365620440637,
+        "value": 113.1158185061296,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,12 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 381.5776445397033,
-    "max": 649.5316328750001,
-    "low": 113.62365620440637,
-    "high": 649.5316328750001,
-    "mos_pct": 13.540531427075745,
-    "valuation_warnings": []
+    "median": 385.00728625470094,
+    "max": 656.8987540032723,
+    "low": 113.1158185061296,
+    "high": 656.8987540032723,
+    "mos_pct": 14.092534918626743,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 2
   },
   "top5_factors": [],
   "score_history": [],
@@ -94,7 +95,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 20,
+    "filing_lag_days": 21,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-29"
   },
@@ -115,22 +116,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.11,
+      "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 54.38,
+      "Momentum": 53.29,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 50.7,
-      "Risk": 55.28
+      "Technical": 51.94,
+      "Risk": 54.88
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 29.250029361302598,
-  "price_change_1d_pct": -0.8207,
+  "loss_chance_pct": 29.195448657188027,
+  "price_change_1d_pct": 0.2546,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 62.02,
+  "composite_score_adjusted": 61.74,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -145,8 +146,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 56.8,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 2
 }

@@ -3,19 +3,19 @@
   "name": "Alphabet Inc. (Class A)",
   "sector": "Communication Services",
   "industry": "Interactive Media & Services",
-  "market_cap": 4696888604370.117,
-  "current_price": 387.66,
-  "rank": 78,
-  "composite_score": 59.41,
+  "market_cap": 4712033604370.117,
+  "current_price": 388.91,
+  "rank": 88,
+  "composite_score": 58.61,
   "pillar_scores": {
     "quality": 68.48,
     "value": 10.87,
     "growth": 66.3,
-    "momentum": 84.21,
+    "momentum": 81.32,
     "health": 88.03,
     "profitability": 71.38,
-    "technical": 70.42,
-    "risk": 67.65,
+    "technical": 61.7,
+    "risk": 67.55,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 5.17,
     "eps_diluted": 5.11,
     "shares_outstanding": 12116000000.0,
-    "market_cap": 4696888604370.117,
-    "pe_ratio_ttm": 29.317441103878192,
+    "market_cap": 4712033604370.117,
+    "pe_ratio_ttm": 29.411974460514564,
     "goodwill": 57774000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 262.52551858357754,
+        "value": 258.10078610199014,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 92.70090224392035,
+        "value": 91.56787494920377,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 179.79001376326573,
+        "value": 179.55942012340088,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,15 +75,16 @@
         "tier_used": null
       }
     },
-    "median": 85.97179120692897,
-    "max": 262.52551858357754,
+    "median": 85.40527755957069,
+    "max": 258.10078610199014,
     "low": 73.12849127974656,
-    "high": 262.52551858357754,
-    "mos_pct": -350.9153505119312,
+    "high": 258.10078610199014,
+    "mos_pct": -355.36998974195984,
     "valuation_warnings": [
       "extreme_rim_estimate",
       "extreme_dcf_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -92,7 +93,7 @@
       "gross_profit"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 19,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
@@ -118,20 +119,20 @@
       "Quality": 52.17,
       "Value": 50.0,
       "Growth": 60.33,
-      "Momentum": 49.9,
+      "Momentum": 48.26,
       "Health": 45.5,
       "Profitability": 50.72,
-      "Technical": 52.19,
-      "Risk": 50.6
+      "Technical": 48.46,
+      "Risk": 50.55
     }
   },
   "beneish_m_score": -2.21807074723472,
   "dechow_f_score": 0.4126593083051625,
   "recommendation": "cautious",
-  "loss_chance_pct": 60.29332759541544,
-  "price_change_1d_pct": -2.3379,
+  "loss_chance_pct": 60.693601499797914,
+  "price_change_1d_pct": 0.3224,
   "manipulation_index": 8.0,
-  "composite_score_adjusted": 58.61,
+  "composite_score_adjusted": 57.81,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -146,8 +147,37 @@
     "beneish_high": true,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 55.23,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 4
 }

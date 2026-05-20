@@ -3,19 +3,19 @@
   "name": "Palantir Technologies",
   "sector": "Information Technology",
   "industry": "Application Software",
-  "market_cap": 324236196412.15515,
-  "current_price": 135.26,
-  "rank": 210,
-  "composite_score": 52.45,
+  "market_cap": 328766776319.0613,
+  "current_price": 137.15,
+  "rank": 197,
+  "composite_score": 53.04,
   "pillar_scores": {
     "quality": 66.1,
-    "value": 5.02,
+    "value": 5.48,
     "growth": 78.6,
-    "momentum": 42.28,
+    "momentum": 43.38,
     "health": 94.32,
     "profitability": 79.91,
-    "technical": 45.87,
-    "risk": 35.06,
+    "technical": 52.39,
+    "risk": 35.69,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.36,
     "eps_diluted": 0.34,
     "shares_outstanding": 2397133000.0,
-    "market_cap": 324236196412.15515,
-    "pe_ratio_ttm": 141.38232953586473,
+    "market_cap": 328766776319.0613,
+    "pe_ratio_ttm": 143.35787683278818,
     "goodwill": 37938000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 36.680507118409615,
+        "value": 37.54261725185008,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 20.44828886496588,
+        "value": 17.94474130477206,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 23.707435938074635,
+        "value": 23.890599256862064,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,18 +75,19 @@
         "tier_used": null
       }
     },
-    "median": 12.6689272888969,
-    "max": 36.680507118409615,
+    "median": 11.41715350879999,
+    "max": 37.54261725185008,
     "low": 3.906374647886225,
-    "high": 36.680507118409615,
-    "mos_pct": -967.6515179416837,
+    "high": 37.54261725185008,
+    "mos_pct": -1101.2625895830638,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_multiples_pb_estimate",
       "extreme_multiples_ev_ebitda_estimate",
       "extreme_rim_estimate",
       "extreme_dcf_estimate"
-    ]
+    ],
+    "valuation_methods_applicable": 1
   },
   "top5_factors": [],
   "score_history": [],
@@ -98,7 +99,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-05"
   },
@@ -127,22 +128,22 @@
     "label": "Information Technology median (n=73)",
     "values": {
       "Quality": 49.32,
-      "Value": 50.23,
+      "Value": 48.17,
       "Growth": 52.23,
-      "Momentum": 53.34,
+      "Momentum": 59.76,
       "Health": 69.52,
       "Profitability": 47.26,
-      "Technical": 64.59,
-      "Risk": 46.91
+      "Technical": 61.01,
+      "Risk": 46.85
     }
   },
   "beneish_m_score": -1.4993225610409617,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 66.77463320235042,
-  "price_change_1d_pct": 0.0888,
+  "loss_chance_pct": 66.4798619449144,
+  "price_change_1d_pct": 1.3973,
   "manipulation_index": 28.0,
-  "composite_score_adjusted": 49.65,
+  "composite_score_adjusted": 50.24,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": true,
@@ -157,8 +158,37 @@
     "beneish_high": true,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 52.45,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 1
 }

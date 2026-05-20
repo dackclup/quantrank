@@ -3,19 +3,19 @@
   "name": "Zimmer Biomet",
   "sector": "Health Care",
   "industry": "Health Care Equipment",
-  "market_cap": 16653250804.800385,
-  "current_price": 86.08,
-  "rank": 229,
-  "composite_score": 51.7,
+  "market_cap": 16517826181.799423,
+  "current_price": 85.38,
+  "rank": 226,
+  "composite_score": 51.61,
   "pillar_scores": {
     "quality": 28.39,
     "value": 81.07,
     "growth": 54.66,
-    "momentum": 38.05,
+    "momentum": 40.09,
     "health": 63.27,
     "profitability": 38.7,
-    "technical": 80.9,
-    "risk": 34.0,
+    "technical": 74.15,
+    "risk": 33.7,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.22,
     "eps_diluted": 1.22,
     "shares_outstanding": 193462482.0,
-    "market_cap": 16653250804.800385,
-    "pe_ratio_ttm": 21.880502962554704,
+    "market_cap": 16517826181.799423,
+    "pe_ratio_ttm": 21.702570203389072,
     "goodwill": 9931800000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 112.80816363454316,
+        "value": 116.89180223967497,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 213.86743914869302,
+        "value": 213.34038183374454,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 206.8744507330948,
+        "value": 205.0484619460783,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,14 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 159.84130718381897,
-    "max": 213.86743914869302,
+    "median": 160.97013209287664,
+    "max": 213.34038183374454,
     "low": 79.6292923302644,
-    "high": 213.86743914869302,
-    "mos_pct": 46.14658541795964,
+    "high": 213.34038183374454,
+    "mos_pct": 46.95910592646133,
     "valuation_warnings": [
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -93,7 +94,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 18,
+    "filing_lag_days": 19,
     "latest_period_end": "2026-04-23",
     "latest_filed_date": "2026-05-01"
   },
@@ -116,20 +117,20 @@
       "Quality": 52.97,
       "Value": 51.13,
       "Growth": 49.58,
-      "Momentum": 39.89,
+      "Momentum": 40.09,
       "Health": 59.88,
       "Profitability": 51.13,
-      "Technical": 59.81,
-      "Risk": 41.3
+      "Technical": 57.02,
+      "Risk": 41.14
     }
   },
   "beneish_m_score": -2.53942975743046,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 24.997304761129662,
-  "price_change_1d_pct": 1.1041,
+  "loss_chance_pct": 24.759610830166025,
+  "price_change_1d_pct": -0.8132,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 51.7,
+  "composite_score_adjusted": 51.61,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,8 +145,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 51.73,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 4
 }

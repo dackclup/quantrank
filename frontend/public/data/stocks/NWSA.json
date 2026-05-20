@@ -3,19 +3,19 @@
   "name": "News Corp (Class A)",
   "sector": "Communication Services",
   "industry": "Publishing",
-  "market_cap": 14733759871.48285,
-  "current_price": 26.24,
-  "rank": 261,
-  "composite_score": 50.39,
+  "market_cap": 14469855257.034302,
+  "current_price": 25.77,
+  "rank": 281,
+  "composite_score": 49.51,
   "pillar_scores": {
     "quality": 46.74,
-    "value": 60.14,
+    "value": 60.87,
     "growth": 19.57,
-    "momentum": 49.9,
+    "momentum": 48.26,
     "health": 64.28,
     "profitability": 61.96,
-    "technical": 64.64,
-    "risk": 47.78,
+    "technical": 48.46,
+    "risk": 46.85,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.7,
     "eps_diluted": 0.7,
     "shares_outstanding": 561500000.0,
-    "market_cap": 14733759871.48285,
-    "pe_ratio_ttm": 11.430380039940147,
+    "market_cap": 14469855257.034302,
+    "pe_ratio_ttm": 11.225644109413734,
     "goodwill": 4485000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 50.24961942399224,
+        "value": 50.45391769979269,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 39.85409073672222,
+        "value": 39.594773178153496,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,15 +75,16 @@
         "tier_used": null
       }
     },
-    "median": 27.01981002984097,
-    "max": 50.24961942399224,
+    "median": 26.890151250556606,
+    "max": 50.45391769979269,
     "low": 9.099758786544061,
-    "high": 50.24961942399224,
-    "mos_pct": 2.886068620991686,
+    "high": 50.45391769979269,
+    "mos_pct": 4.165654489465722,
     "valuation_warnings": [
       "goodwill_heavy",
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -98,7 +99,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 11,
+    "filing_lag_days": 12,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-08"
   },
@@ -125,20 +126,20 @@
       "Quality": 52.17,
       "Value": 50.0,
       "Growth": 60.33,
-      "Momentum": 49.9,
+      "Momentum": 48.26,
       "Health": 45.5,
       "Profitability": 50.72,
-      "Technical": 52.19,
-      "Risk": 50.6
+      "Technical": 48.46,
+      "Risk": 50.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
-  "recommendation": "lean_bullish",
-  "loss_chance_pct": 44.79322779280361,
-  "price_change_1d_pct": -0.1142,
+  "recommendation": "neutral",
+  "loss_chance_pct": 44.78862689612161,
+  "price_change_1d_pct": -1.7912,
   "manipulation_index": 25.0,
-  "composite_score_adjusted": 47.89,
+  "composite_score_adjusted": 47.01,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -153,8 +154,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 50.68,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 4
 }

@@ -3,19 +3,19 @@
   "name": "Generac",
   "sector": "Industrials",
   "industry": "Electrical Components & Equipment",
-  "market_cap": 14362192175.431183,
-  "current_price": 243.97,
+  "market_cap": 14434012038.112366,
+  "current_price": 245.19,
   "rank": 470,
-  "composite_score": 36.67,
+  "composite_score": 36.6,
   "pillar_scores": {
     "quality": 25.63,
-    "value": 23.42,
+    "value": 23.63,
     "growth": 23.73,
-    "momentum": 65.19,
+    "momentum": 66.43,
     "health": 56.93,
     "profitability": 36.92,
-    "technical": 74.4,
-    "risk": 40.5,
+    "technical": 68.65,
+    "risk": 40.7,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.25,
     "eps_diluted": 1.24,
     "shares_outstanding": 58868681.0,
-    "market_cap": 14362192175.431183,
-    "pe_ratio_ttm": 75.51576427235779,
+    "market_cap": 14434012038.112366,
+    "pe_ratio_ttm": 75.89338989900712,
     "goodwill": 1486807000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 88.91230272371824,
+        "value": 90.14010099291436,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 294.2117210335734,
+        "value": 296.1641654557364,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 127.70815010702276,
+        "value": 127.90294434722615,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,23 +75,24 @@
         "tier_used": null
       }
     },
-    "median": 88.91230272371824,
-    "max": 294.2117210335734,
+    "median": 90.14010099291436,
+    "max": 296.1641654557364,
     "low": 27.225994935707984,
-    "high": 294.2117210335734,
-    "mos_pct": -174.39397445233604,
+    "high": 296.1641654557364,
+    "mos_pct": -172.00990429407204,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
       "value_trap_risk"
-    ]
+    ],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-05"
   },
@@ -114,22 +115,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 47.89,
+      "Value": 49.16,
       "Growth": 49.37,
-      "Momentum": 49.55,
+      "Momentum": 50.5,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 44.67,
-      "Risk": 54.05
+      "Technical": 45.57,
+      "Risk": 54.48
     }
   },
   "beneish_m_score": -2.861008263576969,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 70.66338706356011,
-  "price_change_1d_pct": -3.5882,
+  "loss_chance_pct": 70.70190388236085,
+  "price_change_1d_pct": 0.5001,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 36.67,
+  "composite_score_adjusted": 36.6,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,8 +145,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 44.22,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 4
 }

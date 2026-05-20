@@ -3,19 +3,19 @@
   "name": "Cisco",
   "sector": "Information Technology",
   "industry": "Communications Equipment",
-  "market_cap": 454762720822.2264,
-  "current_price": 115.38,
+  "market_cap": 450703047928.59796,
+  "current_price": 114.35,
   "rank": 257,
-  "composite_score": 50.51,
+  "composite_score": 50.59,
   "pillar_scores": {
     "quality": 51.37,
-    "value": 45.21,
+    "value": 44.98,
     "growth": 26.03,
-    "momentum": 78.09,
+    "momentum": 79.53,
     "health": 35.62,
-    "profitability": 53.88,
-    "technical": 71.54,
-    "risk": 71.88,
+    "profitability": 53.65,
+    "technical": 70.82,
+    "risk": 71.78,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.38,
     "eps_diluted": 2.36,
     "shares_outstanding": 3941434665.0,
-    "market_cap": 454762720822.2264,
-    "pe_ratio_ttm": 38.02999839623904,
+    "market_cap": 450703047928.59796,
+    "pe_ratio_ttm": 37.690504091704135,
     "goodwill": 59292000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 109.27521479251116,
+        "value": 106.87546923762609,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 123.87215475503443,
+        "value": 125.73853277217421,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,12 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 109.27521479251116,
-    "max": 123.87215475503443,
+    "median": 106.87546923762609,
+    "max": 125.73853277217421,
     "low": 36.54979792733239,
-    "high": 123.87215475503443,
-    "mos_pct": -5.586612181452493,
-    "valuation_warnings": []
+    "high": 125.73853277217421,
+    "mos_pct": -6.993680860363,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 3
   },
   "top5_factors": [],
   "score_history": [],
@@ -90,7 +91,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 0,
+    "filing_lag_days": 1,
     "latest_period_end": "2026-05-14",
     "latest_filed_date": "2026-05-19"
   },
@@ -111,22 +112,22 @@
     "label": "Information Technology median (n=73)",
     "values": {
       "Quality": 49.32,
-      "Value": 50.23,
+      "Value": 48.17,
       "Growth": 52.23,
-      "Momentum": 53.34,
+      "Momentum": 59.76,
       "Health": 69.52,
       "Profitability": 47.26,
-      "Technical": 64.59,
-      "Risk": 46.91
+      "Technical": 61.01,
+      "Risk": 46.85
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.6284696242351766,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 41.698279616707445,
-  "price_change_1d_pct": -2.9441,
+  "loss_chance_pct": 42.153229663531306,
+  "price_change_1d_pct": -0.8927,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 50.01,
+  "composite_score_adjusted": 50.09,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -141,8 +142,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 51.22,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 3
 }

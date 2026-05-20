@@ -3,19 +3,19 @@
   "name": "Chubb Limited",
   "sector": "Financials",
   "industry": "Property & Casualty Insurance",
-  "market_cap": 128044258687.62817,
-  "current_price": 330.13,
+  "market_cap": 127365503502.12817,
+  "current_price": 328.38,
   "rank": 117,
-  "composite_score": 57.3,
+  "composite_score": 57.04,
   "pillar_scores": {
     "quality": 50.0,
-    "value": 56.89,
+    "value": 57.11,
     "growth": 67.0,
-    "momentum": 64.84,
+    "momentum": 61.9,
     "health": 55.66,
     "profitability": 51.56,
-    "technical": 46.96,
-    "risk": 83.53,
+    "technical": 49.0,
+    "risk": 82.37,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 5.94,
     "eps_diluted": 5.88,
     "shares_outstanding": 387860106.0,
-    "market_cap": 128044258687.62817,
-    "pe_ratio_ttm": 11.013612479582674,
+    "market_cap": 127365503502.12817,
+    "pe_ratio_ttm": 10.95522995889628,
     "goodwill": 20370000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 410.89577229298857,
+        "value": 415.5562364988326,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 385.5655090906401,
+        "value": 386.68415326516975,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,12 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 319.32786287002205,
-    "max": 410.89577229298857,
+    "median": 319.8871849572869,
+    "max": 415.5562364988326,
     "low": 148.99680513155695,
-    "high": 410.89577229298857,
-    "mos_pct": -3.382774655397771,
-    "valuation_warnings": []
+    "high": 415.5562364988326,
+    "mos_pct": -2.6549422186636304,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -101,7 +102,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 21,
+    "filing_lag_days": 22,
     "latest_period_end": "2026-04-21",
     "latest_filed_date": "2026-04-28"
   },
@@ -120,22 +121,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 53.11,
+      "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 54.38,
+      "Momentum": 53.29,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 50.7,
-      "Risk": 55.28
+      "Technical": 51.94,
+      "Risk": 54.88
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 37.53466280712273,
-  "price_change_1d_pct": -0.0605,
+  "loss_chance_pct": 37.4093039243853,
+  "price_change_1d_pct": -0.5301,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 57.3,
+  "composite_score_adjusted": 57.04,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -150,8 +151,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 54.45,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 4
 }

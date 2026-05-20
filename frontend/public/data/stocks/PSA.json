@@ -3,19 +3,19 @@
   "name": "Public Storage",
   "sector": "Real Estate",
   "industry": "Self-Storage REITs",
-  "market_cap": 52219593871.84924,
-  "current_price": 297.47,
-  "rank": 193,
-  "composite_score": 53.32,
+  "market_cap": 53167539839.60303,
+  "current_price": 302.87,
+  "rank": 187,
+  "composite_score": 53.5,
   "pillar_scores": {
     "quality": 79.03,
-    "value": 26.88,
+    "value": 26.34,
     "growth": 48.39,
-    "momentum": 66.38,
+    "momentum": 67.33,
     "health": 25.3,
     "profitability": 65.05,
-    "technical": 52.84,
-    "risk": 52.22,
+    "technical": 55.83,
+    "risk": 52.92,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.72,
     "eps_diluted": 2.71,
     "shares_outstanding": 175545748.0,
-    "market_cap": 52219593871.84924,
-    "pe_ratio_ttm": 27.259948691099492,
+    "market_cap": 53167539839.60303,
+    "pe_ratio_ttm": 27.754800460845505,
     "goodwill": 165843000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 317.4745879153487,
+        "value": 320.2693539339065,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 125.8585255633463,
+        "value": 127.38221481367569,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 213.89854918979566,
+        "value": 215.96363226697338,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,12 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 125.8585255633463,
-    "max": 317.4745879153487,
+    "median": 127.38221481367569,
+    "max": 320.2693539339065,
     "low": 81.75265598562,
-    "high": 317.4745879153487,
-    "mos_pct": -136.35268241799196,
-    "valuation_warnings": []
+    "high": 320.2693539339065,
+    "mos_pct": -137.7647425586068,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 5
   },
   "top5_factors": [],
   "score_history": [],
@@ -100,7 +101,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 22,
+    "filing_lag_days": 23,
     "latest_period_end": "2026-04-20",
     "latest_filed_date": "2026-04-27"
   },
@@ -119,22 +120,22 @@
     "label": "Real Estate median (n=31)",
     "values": {
       "Quality": 50.81,
-      "Value": 47.85,
+      "Value": 47.31,
       "Growth": 48.79,
-      "Momentum": 56.97,
+      "Momentum": 57.32,
       "Health": 26.22,
       "Profitability": 52.15,
-      "Technical": 54.23,
-      "Risk": 52.22
+      "Technical": 55.83,
+      "Risk": 52.92
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 58.337603885533134,
-  "price_change_1d_pct": 0.4457,
+  "loss_chance_pct": 58.25117540590327,
+  "price_change_1d_pct": 1.8153,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 53.32,
+  "composite_score_adjusted": 53.5,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -149,8 +150,37 @@
     "beneish_high": false,
     "dechow_high": false
   },
-  "osap_signals": null,
-  "osap_blended_score": null,
+  "osap_signals": {
+    "AbnormalAccruals": 0.8518518518518519,
+    "Activism1": 0.7777777777777778,
+    "BPEBM": 0.5555555555555556,
+    "Beta": 0.8888888888888888,
+    "BetaFP": 1.0,
+    "BetaTailRisk": 0.6666666666666666,
+    "BookLeverage": 0.3333333333333333,
+    "ChAssetTurnover": 0.6296296296296297,
+    "ChForecastAccrual": 0.48148148148148145,
+    "ChInvIA": 0.2962962962962963,
+    "ChNNCOA": 0.8148148148148148,
+    "ChNWC": 0.4444444444444444,
+    "CompositeDebtIssuance": 0.7407407407407407,
+    "Coskewness": 0.5185185185185185,
+    "DebtIssuance": 0.4074074074074074,
+    "EP": 0.5925925925925926,
+    "FR": 0.2222222222222222,
+    "GrLTNOA": 0.14814814814814814,
+    "GrSaleToGrInv": 0.7037037037037037,
+    "Illiquidity": 0.07407407407407407,
+    "IndMom": 0.9629629629629629,
+    "IntanCFP": 0.1111111111111111,
+    "IntanEP": 0.18518518518518517,
+    "IntanSP": 0.037037037037037035,
+    "MeanRankRevGrowth": 0.37037037037037035,
+    "RDS": 0.25925925925925924,
+    "ReturnSkew3F": 0.9259259259259259
+  },
+  "osap_blended_score": 52.67,
   "entered_top5": false,
-  "exited_top5": false
+  "exited_top5": false,
+  "valuation_methods_applicable": 5
 }
