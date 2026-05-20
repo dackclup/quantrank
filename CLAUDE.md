@@ -30,7 +30,7 @@ backing.
 | `frontend/components/` | React UI (RankingTable, FairPriceBarChart, …) |
 | `frontend/public/data/` | Compute output: `metadata.json` + `rankings.json` + `stocks/<TICKER>.json` |
 | `tests/` | pytest suite (offline + `@network` gated; see CI for current count) |
-| `.claude/skills/` | 39 invocation-triggerable skills + phase planning docs. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for vendoring / license posture per source. |
+| `.claude/skills/` | 42 invocation-triggerable skills + phase planning docs. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for vendoring / license posture per source. |
 
 ## Commands
 
@@ -180,14 +180,30 @@ SKILL.md remains upstream-verbatim; divergence catalogued in
 reduce false-positive auto-fires of interactive workflows (grill-me,
 tdd, to-prd, to-issues, write-a-skill).
 
-**Vendor-sync skill in flight (this PR, off epic #150 critical path)** —
-new `.claude/skills/vendor-sync/SKILL.md` codifies the disciplined
+**Vendor-sync skill merged via PR #158** (2026-05-20) — new
+`.claude/skills/vendor-sync/SKILL.md` codifies the disciplined
 upstream-sync workflow for the 4 vendored sources (mattpocock,
 multica-ai/karpathy-guidelines, karpathy LLM Wiki gist, 9arm-skills),
 including the description-divergence resolution policy carried forward
 from PR #157 ("local sharpness wins on description; upstream wins on
 body"). Doc-only, no compute / schema change. Use this skill before
 pulling new commits from any vendored upstream.
+
+**3 workflow skills bundle in flight (this PR, off epic #150 critical
+path)** — three new project-internal workflow skills:
+- `claude-md-lockstep-check` — preflight that CLAUDE.md + AGENTS.md
+  were both touched on the current branch (enforces the §Conventions
+  "ship with every PR" rule that has no CI guard today)
+- `release-tag` — end-to-end release workflow: `pyproject.toml`
+  version bump + release notes from merged-PR log + annotated tag +
+  GitHub Release. Codifies the `vX.Y.Z-phaseN` convention from the
+  last 3 releases (v1.0.0-phase3e → v1.2.0-phase4.5)
+- `quarterly-cohort-audit` — scheduled walk of defense layer vs
+  academic priors with per-flag expected-band table; output lands as
+  comment on issue #130 (rolling cohort thread). Next scheduled
+  2026-08-19 (Q3)
+
+Doc-only, no compute / schema change. Skill count 39 → 42.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight
