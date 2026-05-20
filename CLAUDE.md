@@ -138,9 +138,11 @@ release tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releas
 (2026-05-17, `6d414a9b`).
 
 **Recently merged**:
+- [PR #145](https://github.com/dackclup/quantrank/pull/145) —
+  SKILL.md restructure + TOC + Rules-at-a-glance (Optimization PR E);
+  641 → 574 lines
 - [PR #144](https://github.com/dackclup/quantrank/pull/144) —
-  WORKFLOW.md archive Phase 0-3 → docs/archived/ (Optimization PR D);
-  WORKFLOW.md 1732 → 1460 lines
+  WORKFLOW.md archive Phase 0-3 → docs/archived/ (Optimization PR D)
 - [PR #143](https://github.com/dackclup/quantrank/pull/143) —
   AGENTS.md sync + dedup with CLAUDE.md (Optimization PR C)
 - [PR #142](https://github.com/dackclup/quantrank/pull/142) —
@@ -148,11 +150,14 @@ release tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releas
 - [PR #141](https://github.com/dackclup/quantrank/pull/141) — `.md`
   drift fix + YAML frontmatter fix (Optimization PR A)
 
-**`.md` optimization PR E in flight** — SKILL.md restructure: added
-TOC + "Rules at a glance" reference table for Rules 1-18; Tech Stack
-section dedup'd to reference CLAUDE.md §Stack; Repository Structure
-file-tree (97 lines, duplicated AGENTS.md §Project structure) replaced
-with module-level breakdown table. 641 → 574 lines.
+**`.md` optimization PR F in flight** — skill description audit ×18
+QR-origin skills. Audit found all descriptions are well-formed
+(parseable YAML, TRIGGER + SKIP clauses present); applied light
+polish to 4 long ones (pr-quality-gate, pr-iteration-flow,
+phase-status-bump, verify-production-output) — cut redundant "ALSO
+use" clauses that duplicate the first TRIGGER list + drift refs +
+added Thai trigger phrases. Save ~650 chars (~162 tokens) per
+session-start. Vendored skills (20) FROZEN per upstream pact.
 
 **Next deliverables** (pick by appetite):
 - **Epic #125 Item 3 PR 2** — composite-score diff vs main + top-10

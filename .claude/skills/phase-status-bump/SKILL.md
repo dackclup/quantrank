@@ -1,18 +1,18 @@
 ---
 name: phase-status-bump
-description: Update PHASE_STATUS.md, SKILL.md, and WORKFLOW.md in lockstep when
-  a QuantRank phase or sub-PR completes. These three docs cross-reference each
-  other (current phase, schema version, active veto count, deferred items)
-  and tend to drift if updated piecemeal — this skill is the single update
-  flow that keeps them aligned. TRIGGER after merging a phase-completion PR
-  (e.g., PR 3d → tag v0.6.0-phase3d), after tagging a release version, when
-  a sub-PR within a phase finishes and the next sub-PR begins (e.g.,
-  3a→3b, 3c→3d), when the schema version moves, or when the user asks
-  "mark phase X complete" / "bump the status docs" / "update the phase
-  tracker". SKIP for compute / frontend code changes (no docs to bump),
-  for README or docs/ARCHITECTURE.md updates (different lifecycle), or
-  when only one of the three triple-docs needs editing (the value is in
-  doing all three together; if only one needs an edit, just edit it).
+description: >
+  Update PHASE_STATUS.md, SKILL.md, and WORKFLOW.md in lockstep when a
+  QuantRank phase or sub-PR completes. These three docs cross-reference
+  each other (current phase, schema version, active veto count,
+  deferred items) and tend to drift if updated piecemeal — this skill
+  is the single update flow that keeps them aligned. TRIGGER after
+  merging a phase-completion PR, after tagging a release version, when
+  a sub-PR within a phase finishes and the next begins, when the schema
+  version moves, or when the user asks "mark phase X complete" / "bump
+  the status docs" / "update the phase tracker". SKIP for compute /
+  frontend code changes (no docs to bump), for README /
+  docs/ARCHITECTURE.md updates (different lifecycle), or when only one
+  of the three triple-docs needs editing — if just one, edit it directly.
 ---
 
 # phase-status-bump

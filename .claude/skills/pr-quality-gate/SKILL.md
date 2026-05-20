@@ -1,23 +1,20 @@
 ---
 name: pr-quality-gate
 description: >
-  Final pre-merge completeness audit for a QuantRank PR. Runs
-  the Section A-G checklist that a senior reviewer would walk before
-  approving a Mark-Ready flip: diff scope vs PR description, skill
-  triggers met (schema-check / security-check / verify-production-output
-  /...), documentation drift (Pydantic↔TS, PHASE_STATUS, README), test
+  Final pre-merge completeness audit for a QuantRank PR. Runs the
+  Section A-G checklist a senior reviewer would walk before approving
+  a Mark-Ready flip: diff scope vs PR description, skill triggers met
+  (schema-check / security-check / verify-production-output /...),
+  documentation drift (Pydantic↔TS, PHASE_STATUS, README), test
   coverage delta, local verification ladder pass, commit hygiene, and
   CI/preview status. TRIGGER before authorizing the Draft→Ready flip,
-  before authorizing a merge, before tagging a release, when the user
-  asks "is this PR ready?" / "final check on PR #X" / "anything else
-  before we merge?" / "did I miss anything?" / "review the whole PR"
-  — invoke even when the user names a specific concern (e.g., "did I
-  remember to bump the snapshot?") since this skill verifies all such
-  surfaces in one pass. ALSO use right before flipping Draft→Ready as
-  the pilot pre-flight checklist for every non-trivial PR. SKIP for
-  routine doc-only PRs (README typos / SKILL.md wording) that have no
-  code surface — those don't need a verification ladder. SKIP also for
-  in-progress iteration commits (use `pr-iteration-flow` for that
+  before authorizing a merge, before tagging a release, or when the
+  user asks "is this PR ready?" / "final check on PR #X" / "anything
+  else before we merge?" / "did I miss anything?" / "review the whole
+  PR" — invoke even when the user names a single concern, since this
+  skill verifies all surfaces in one pass. SKIP for doc-only PRs
+  (README typos / SKILL.md wording) that have no code surface, and
+  for in-progress iteration commits (use `pr-iteration-flow` for that
   rhythm); this skill is the final gate, not the per-iteration nudge.
 ---
 
