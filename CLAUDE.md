@@ -30,7 +30,7 @@ backing.
 | `frontend/components/` | React UI (RankingTable, FairPriceBarChart, …) |
 | `frontend/public/data/` | Compute output: `metadata.json` + `rankings.json` + `stocks/<TICKER>.json` |
 | `tests/` | pytest suite (offline + `@network` gated; see CI for current count) |
-| `.claude/skills/` | 24 invocation-triggerable skills (7 QuantRank + 17 Anthropic vendored) plus phase planning docs |
+| `.claude/skills/` | 31 invocation-triggerable skills (12 QuantRank operational + 4 QR-origin portable + 6 Anthropic vendored + 9 external MIT vendored — Karpathy + 8 mattpocock) plus phase planning docs |
 
 ## Commands
 
