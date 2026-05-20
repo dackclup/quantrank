@@ -120,3 +120,56 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+---
+
+## 9arm-skills (Claude Code skills) — LICENSE PENDING
+
+> **⚠️ License status**: At the time of vendoring (2026-05-20), the
+> upstream `thananon/9arm-skills` repository ships **no `LICENSE`
+> file** at the root, declares **no `license:` field** in any
+> `SKILL.md` YAML frontmatter, and has **no license section** in
+> `README.md` or `CLAUDE.md`. Per default copyright law (US / TH /
+> EU), the copyright holder retains all rights absent an explicit
+> license grant, and public visibility on GitHub is **not** a
+> redistribution license.
+>
+> This vendoring proceeded against the auditor session's
+> recommendation, on the maintainer's explicit instruction. Tracker
+> issue **[dackclup/quantrank#137](https://github.com/dackclup/quantrank/issues/137)**
+> is the record of the license-clarification follow-up with the
+> upstream author. If `thananon` declines redistribution permission
+> (or doesn't respond within a reasonable window), the 4 vendored
+> skills below **must be removed** from this repo and replaced with
+> the "inspire-only" pattern (original prose covering the same
+> patterns, attributing thananon as inspiration without copying the
+> upstream text).
+
+- **Source**: <https://github.com/thananon/9arm-skills>
+- **License**: NOT DECLARED upstream at vendoring time (see warning
+  above)
+- **Original author**: thananon ("9arm")
+- **Upstream commit SHA**: `d714cb84f35e0c42b2ca29bca505e564ab9f2bcd`
+- **Vendored date**: 2026-05-20
+- **Vendored skills** (all 4 upstream skills):
+  - `.claude/skills/9arm-debug-mantra/SKILL.md` (upstream `engineering/debug-mantra/`)
+  - `.claude/skills/9arm-post-mortem/SKILL.md` (upstream `engineering/post-mortem/`)
+  - `.claude/skills/9arm-scrutinize/SKILL.md` (upstream `engineering/scrutinize/`)
+  - `.claude/skills/9arm-management-talk/SKILL.md` (upstream `productivity/management-talk/`)
+
+### Verbatim-preservation check
+
+Each vendored `SKILL.md` carries upstream content byte-for-byte plus
+an 18-line appended `## Provenance + Attribution` block (referencing
+the upstream SHA, the no-license disclosure, and tracker issue
+#137). The upstream skills do not ship sidecar `.md` files or
+bundled scripts, so the directory contents are 1-file each.
+
+### Action items on upstream license outcome
+
+| Upstream response | Action |
+|---|---|
+| Adds permissive `LICENSE` (MIT / Apache 2.0 / BSD) | Replace this section with the proper provenance block (modeled on karpathy / mattpocock entries above); update the attribution block in each `9arm-*/SKILL.md` to reference the now-declared license. |
+| Adds copyleft `LICENSE` (GPL / AGPL) | Either accept the copyleft (requires re-licensing QuantRank or making `.claude/skills/9arm-*/` a separate concern) or remove all 4 vendored skills. |
+| Adds non-OSI license forbidding redistribution | Remove all 4 vendored skills; close issue #137 with "vendor not permitted"; optionally pursue the "inspire-only" path. |
+| Doesn't respond | Re-evaluate at 4 weeks post-filing — either remove the skills or proceed with the explicit understanding that takedown may follow. |
