@@ -205,6 +205,11 @@ export type FairPriceEnsemble = {
   high: number | null;
   mos_pct: number | null;
   valuation_warnings: string[];
+  // Epic #150 Phase 2.1 (issue #150) — positive-framed count of
+  // valuation methods that produced a non-outlier applicable estimate.
+  // Inverse of the count of `extreme_*_estimate` warnings emitted.
+  // Optional + null on legacy outputs from before 0.9.4-phase4h.4.
+  valuation_methods_applicable?: number | null;
 };
 
 // Sector-median overlay for the per-stock pillar bars (#34).
@@ -274,4 +279,10 @@ export type StockDetail = {
   osap_blended_score: number | null;
   entered_top5: boolean;
   exited_top5: boolean;
+  // Epic #150 Phase 2.1 (issue #150) — positive-framed count of
+  // valuation methods that produced a non-outlier applicable estimate.
+  // Mirrors `fair_price.valuation_methods_applicable` at the top
+  // level so consumers can filter without unpacking the ensemble dict.
+  // Optional + null on legacy outputs from before 0.9.4-phase4h.4.
+  valuation_methods_applicable?: number | null;
 };

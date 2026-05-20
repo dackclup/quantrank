@@ -132,7 +132,7 @@ for the full 4-step pattern + Section I forcing example.
 
 ## Phase status
 
-Current schema **`0.9.3-phase4h.3`** · defense layer **17 declared
+Current schema **`0.9.4-phase4h.4`** · defense layer **17 declared
 veto+annotate flags** of [**27 boolean flags actually emitted**](https://github.com/dackclup/quantrank/issues/130#issuecomment-4496605644)
 (7 active vetoes + 10 annotates + 5 method-applicability +
 5 informational; epic [#150](https://github.com/dackclup/quantrank/issues/150)
@@ -204,16 +204,25 @@ new project-internal workflow skills:
 
 Doc-only, no compute / schema change. Skill count 39 → 42.
 
-**Epic #150 Phase 1.6 in flight (this PR, closes issue #155)** —
-explicit `tier2_enabled: bool` field added to `Metadata` (sourced from
+**Epic #150 Phase 1.6 merged via PR #160** (2026-05-20) — explicit
+`tier2_enabled: bool` field added to `Metadata` (sourced from
 `compute/scoring/tier2._EIGHT_K_DEFENSES_ENABLED` at writer time);
 verify-helper Section B now branches on the explicit flag instead of
 inferring from `tier2_coverage_pct > 5%`, with legacy-snapshot
-fallback. Schema bump `0.9.2-phase4h.2` → `0.9.3-phase4h.3`. Closes
+fallback. Schema bump `0.9.2-phase4h.2` → `0.9.3-phase4h.3`. Closed
 the last open AC item carried forward from issue #117 (PR #149
-deferred), and lets a future emergency-disable of Tier-2 surface
-explicitly in the verifier output instead of silently masking
-itself. Defense surface unchanged.
+deferred) and issue #155.
+
+**Epic #150 Phase 2.1 in flight (this PR)** — explicit
+`valuation_methods_applicable: int` field added to `StockDetail` (and
+nested in `fair_price` dict), counted as the positive-framed inverse
+of `extreme_*_estimate` warnings emitted in `compute/valuation/ensemble.py`.
+Surfaces the method-applicability signal explicitly at the schema-
+snapshot level so downstream filtering / audits can use it without
+deriving from the warning list. Additive only — no consumer migration
+in this PR; `loss_chance.py` and `FairPriceBarChart.tsx` keep reading
+`extreme_*_estimate` for back-compat. Schema bump `0.9.3-phase4h.3`
+→ `0.9.4-phase4h.4`. Defense surface unchanged.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight

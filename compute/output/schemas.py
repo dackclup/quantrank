@@ -217,3 +217,13 @@ class StockDetail(BaseModel):
     osap_blended_score: float | None = None
     entered_top5: bool = False
     exited_top5: bool = False
+    # Epic #150 Phase 2.1 (issue #150) — positive-framed count of
+    # valuation methods that produced a non-outlier applicable estimate
+    # for this ticker. Inverse of the count of ``extreme_*_estimate``
+    # warnings emitted; surfaces the method-applicability signal at the
+    # schema-snapshot level so it's separable from manipulation
+    # warnings in downstream filtering / audits. Mirrors the
+    # ``fair_price.valuation_methods_applicable`` nested field. Range
+    # ``[0, 6]`` once populated; ``None`` on legacy outputs from before
+    # 0.9.4-phase4h.4.
+    valuation_methods_applicable: int | None = None

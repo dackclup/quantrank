@@ -33,6 +33,7 @@ from compute.valuation.ensemble import (
     _all_methods_skipped,
     _bvps_reported,
     _classify_outliers,
+    _count_applicable_non_outliers,
     _data_quality_corrupt_result,
     _has_corrupt_input,
     _net_debt,
@@ -517,6 +518,99 @@ def test_H3_utilities_sector_skips_dcf_only():
     assert result.methods["multiples_ev_ebitda"].applicable is False
 
 
+# -- J. valuation_methods_applicable (Epic #150 Phase 2.1) --------------------
+
+
+def test_J1_count_excludes_outliers_and_skips():
+    """4 methods applicable, 1 outlier above 5×, 1 skipped → count = 3."""
+    methods = _methods_fixture({
+        "graham": 50.0,        # 0.25× — in band
+        "multiples_pe": 100.0,  # 0.50× — in band
+        "rim": 1500.0,         # 7.5× — OUTLIER
+        "dcf": 117.0,          # 0.585× — in band
+    })
+    extreme_warnings = ["extreme_rim_estimate"]
+    assert _count_applicable_non_outliers(methods, extreme_warnings) == 3
+
+
+def test_J2_all_skipped_returns_zero():
+    methods = _all_methods_skipped("test")
+    assert _count_applicable_non_outliers(methods, []) == 0
+
+
+def test_J3_all_outliers_returns_zero():
+    methods = _methods_fixture({
+        "graham": 10000.0,
+        "dcf": 0.001,
+    })
+    extreme_warnings = ["extreme_graham_estimate", "extreme_dcf_estimate"]
+    assert _count_applicable_non_outliers(methods, extreme_warnings) == 0
+
+
+def test_J4_ensemble_result_carries_default_zero_when_unset():
+    """Default value is 0 — matches the hard-stale / data-quality-null paths."""
+    er = EnsembleResult(
+        methods=_all_methods_skipped("x"),
+        median=None, max=None, low=None, high=None, mos_pct=None,
+    )
+    assert er.valuation_methods_applicable == 0
+
+
+def test_J5_ensemble_result_to_dict_emits_field():
+    er = EnsembleResult(
+        methods=_methods_fixture({"graham": 50.0, "dcf": 60.0}),
+        median=55.0, max=60.0, low=50.0, high=60.0, mos_pct=10.0,
+        valuation_warnings=[],
+        valuation_methods_applicable=2,
+    )
+    d = ensemble_result_to_dict(er)
+    assert d["valuation_methods_applicable"] == 2
+
+
+def test_J6_full_ensemble_path_populates_field():
+    """Synthetic IT stock — graham/rim/dcf compute, multiples skip on empty
+    peer panel, no outliers → field equals 3."""
+    snap = _make_snap_full()
+    result, _r = compute_fair_price_ensemble(
+        ticker="TST",
+        snap=snap,
+        sector="Information Technology",
+        sub_industry=None,
+        industry=None,
+        current_price=100.0,
+        filing_lag_days_value=30,
+        peer_panels={"pe": {}, "pb": {}, "ev_ebitda": {}},
+        universe_metrics={},
+        historical_metrics={
+            "TST": {
+                "eps_3y_avg": 2.5,
+                "avg_3y_roe": 0.15,
+                "fcf_5y": [80.0, 90.0, 100.0, 110.0, 120.0],
+            },
+        },
+    )
+    # graham + rim + dcf applicable, no outliers, no multiples → 3.
+    assert result.valuation_methods_applicable == 3
+
+
+def test_J7_hard_stale_path_yields_zero():
+    """Hard-stale short-circuit: every method skips → field defaults to 0."""
+    snap = _make_snap_full()
+    result, _r = compute_fair_price_ensemble(
+        ticker="TST",
+        snap=snap,
+        sector="Information Technology",
+        sub_industry=None,
+        industry=None,
+        current_price=100.0,
+        filing_lag_days_value=999,  # well past hard-stale threshold
+        peer_panels={"pe": {}, "pb": {}, "ev_ebitda": {}},
+        universe_metrics={},
+        historical_metrics={"TST": {}},
+    )
+    assert result.valuation_methods_applicable == 0
+
+
 # -- Helper invariants --------------------------------------------------------
 
 def test_net_debt_helper():
@@ -573,7 +667,8 @@ def test_I1_ensemble_result_to_dict_shape_matches_ts_type():
     )
     out = ensemble_result_to_dict(result)
     assert set(out.keys()) == {
-        "methods", "median", "max", "low", "high", "mos_pct", "valuation_warnings"
+        "methods", "median", "max", "low", "high", "mos_pct",
+        "valuation_warnings", "valuation_methods_applicable",
     }
     assert set(out["methods"].keys()) == set(METHOD_NAMES)
     for name, sub in out["methods"].items():

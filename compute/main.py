@@ -1414,6 +1414,9 @@ def run_weekly_compute() -> int:
             manipulation_index=m_index,
             composite_score_adjusted=composite_adj,
             manipulation_components=m_components,
+            valuation_methods_applicable=(
+                ensemble.valuation_methods_applicable if ensemble is not None else None
+            ),
             osap_signals=osap_signal_map.get(ticker),
             osap_blended_score=(
                 round(float(composite_osap_adjusted[ticker]), 2)
