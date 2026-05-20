@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
-"""Section A-H production verification scan for QuantRank compute output.
+"""Section A-J production verification scan for QuantRank compute output.
 
 Invoked by the `verify-production-output` skill. Reads
 `frontend/public/data/{metadata.json, rankings.json, stocks/*.json}` and
 emits a structured report covering schema, Tier-2 contract, fair-price
 coverage, Top-5 rotation, risk-flag totals, Tier-2 dict shape,
-fundamentals resilience, and universe-size consistency.
+fundamentals resilience, universe-size consistency, and the annotate-
+flag inventory used by quarterly audit automation.
+
+Section I is reserved for the Playwright UI spot-check (CLAUDE.md
+post-`workflow_dispatch` requirement); it lives outside this script
+because it drives a browser, not stdout.
 
 Pure stdlib. Run from the repo root:
 
@@ -363,6 +368,58 @@ def section_h_universe_consistency(
     return 0, 1
 
 
+def section_j_annotate_audit(stocks: list[dict]) -> tuple[int, int]:
+    """Auto-tabulate the annotate-flag surface for quarterly audit automation.
+
+    The Q2 2026-05 quarterly audit (issue #130 comment) discovered 10
+    undocumented flags by manual inventory walk. This section automates
+    that walk: it counts every entry in `valuation_warnings` (list[str])
+    plus every boolean-True key in `tier2_events` across the universe,
+    so the next quarterly review reads the table off the helper instead
+    of grepping source.
+
+    Complements Section E (risk_flags counter on the veto surface) by
+    covering the annotate surface. Flags with dual nature (e.g.,
+    `non_reliance_filing` is both an active veto AND a tier2 boolean)
+    appear in both Section E and Section J — that is intentional, the
+    annotate surface is the full set, not the veto-complement.
+    """
+    _section("J", "Annotate-flag inventory (quarterly audit auto-tabulator)")
+    vw_counter: collections.Counter = collections.Counter()
+    t2_counter: collections.Counter = collections.Counter()
+    n = max(len(stocks), 1)
+
+    for s in stocks:
+        for flag in (s.get("valuation_warnings") or []):
+            vw_counter[flag] += 1
+        t2 = s.get("tier2_events")
+        if isinstance(t2, dict):
+            for key, val in t2.items():
+                # Only boolean-True entries count as fires. The 5-key
+                # tier2 contract also stores `latest_8k_filing_date` +
+                # `_url` metadata, which aren't fire-state.
+                if isinstance(val, bool) and val:
+                    t2_counter[key] += 1
+
+    print("  valuation_warnings (annotate surface):")
+    if not vw_counter:
+        _emit(OK, "(none)", "no annotates fired on the universe")
+    else:
+        for flag, count in sorted(vw_counter.items(), key=lambda kv: -kv[1]):
+            pct = 100 * count / n
+            _emit(OK, flag, f"{count} ({pct:.1f}%)")
+
+    print("  tier2_events (8-K Tier-2 annotate surface):")
+    if not t2_counter:
+        _emit(OK, "(none)", "no Tier-2 8-K flags fired")
+    else:
+        for flag, count in sorted(t2_counter.items(), key=lambda kv: -kv[1]):
+            pct = 100 * count / n
+            _emit(OK, flag, f"{count} ({pct:.1f}%)")
+
+    return 0, 0
+
+
 # ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
@@ -400,6 +457,7 @@ def main(argv: list[str] | None = None) -> int:
         lambda: section_f_tier2_spotcheck(stocks, args.seed),
         lambda: section_g_fundamentals(metadata),
         lambda: section_h_universe_consistency(metadata, rankings, stocks),
+        lambda: section_j_annotate_audit(stocks),
     ):
         w, f = fn()
         total_warnings += w
