@@ -1653,6 +1653,69 @@ Most "improvements" past v2.0 are noise + maintenance burden.
 
 ---
 
+# Observability-Before-Wiring Pattern
+
+Process Hygiene Item #4 (epic #125). For every integration PR that
+consumes a NEW external data source (OSAP, JKP, Qlib, IPCA, Form 4,
+future Polygon / Alpaca / Sentry, etc.), ship the diagnostic surface
+**BEFORE** the production logic uses the data. The diagnostic surface
+exposes WHICH inputs were dropped at each decision point and WHY,
+making the silent-drop failure mode visible from the first cron run
+instead of after a multi-PR debugging cycle.
+
+## Mandatory checklist (per integration PR)
+
+- [ ] Identify the decision points where data is dropped, filtered,
+      or rejected (missing-column, gate-fail, NaN-strip, type-coerce
+      fallback, etc.)
+- [ ] For each decision point, add a `Metadata` field of shape
+      `dict[str, GateDiagnostic] | None` or `list[str] | None` that
+      surfaces which inputs were dropped and why
+- [ ] Ensure the accounting equation balances:
+      `len(input_universe) == sum(len(diagnostic_buckets))` — every
+      input lands in exactly one bucket (passed, filtered, gated,
+      etc.); no input disappears silently
+- [ ] Schema PATCH bump (additive optional fields only, default
+      `= None` so legacy outputs deserialize)
+- [ ] Schema triple lockstep (`compute/output/schemas.py` +
+      `frontend/lib/types.ts` + `frontend/lib/schema-snapshot.json`)
+- [ ] Production wiring follows ≥ 1 cron after the diagnostic surface
+      lands — verify the accounting equation balances on real data
+      before adding logic that consumes the same data
+
+## Anti-pattern (what NOT to do)
+
+Do NOT ship production wiring + gate logic without diagnostic surface
+"to keep PR small." Phase 4h (PR #112) tried this; the silent-drop
+took 2 PR follow-ups (Phase 4h.2 Parts 1 + 2) over 2 days to recover.
+
+## Reference precedents
+
+- **Bad**: PR #112 (Phase 4h, 2026-05-18) shipped OSAP signal
+  replication + PBO/DSR gate + Path-b blend with **no diagnostic
+  surface**. The first production cron showed 0% acceptance with no
+  observability into WHY signals were rejected; root cause invisible
+  for 1 cron cycle.
+- **Good**: PR #118 (Phase 4h.2 Part 1, 2026-05-19) retrofit the
+  diagnostic surface — `Metadata.osap_signals_missing_from_dataset`
+  + `Metadata.osap_gate_diagnostics`. The next production cron
+  immediately exposed 78/100 signals silently missing from the
+  dataset + 22/22 rejected with `rejection_reason="low_dsr"` — both
+  invisible before, both informing the Part 2 fix design.
+- **Good**: PR #124 (Phase 4h.2 Part 2, 2026-05-19) closed the
+  remaining ~56-signal accounting gap by adding one more diagnostic
+  field, `Metadata.osap_signals_dropped_no_long_short`, alongside
+  the multi-port adapter fix. The accounting equation now balances
+  100/100 on every cron — the same diagnostic surface that catches
+  any future silent-drop regression.
+
+The combined cost of Phase 4h.2 Parts 1 + 2 (~10 hours across 2 PRs)
+would have been ~30 minutes of additional Phase 4h scope if the
+diagnostic surface had been shipped in PR #112 alongside the
+production wiring.
+
+---
+
 # Initial Prompts to Give Claude Code
 
 ## Session 1: Phase 0 kickoff

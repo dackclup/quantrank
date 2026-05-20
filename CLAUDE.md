@@ -132,6 +132,12 @@ non-connector-bound work.
   `.claude/skills/phase-N/<name>/PLAN.md` is roadmap material — Claude
   Code doesn't recurse into nested directories. Promote a PLAN.md to a
   top-level `<name>/SKILL.md` when that phase begins.
+- **Observability-before-wiring** (SKILL.md Rule 18, Process Hygiene
+  Item #4). New external-data integrations ship the diagnostic
+  `Metadata` surface first; production wiring follows ≥ 1 cron after
+  the accounting equation is verified on real data. The Phase 4h →
+  4h.2 retrofit (PRs #112 → #118 → #124) is the forcing precedent.
+  See `WORKFLOW.md` §Observability-Before-Wiring Pattern.
 
 ## Gotchas
 

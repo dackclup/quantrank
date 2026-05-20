@@ -488,6 +488,20 @@ Two pattern locks landed during PRs 4d / 4e and apply to every Phase
    Strong Buy and 54% Sell) broke 5 hard-coded tests and was the
    forcing function for this rule.
 
+### Rule 18: Observability-before-wiring (NEW 2026-05-20)
+
+Every integration PR that consumes a NEW external data source ships
+the diagnostic `Metadata` surface BEFORE the production logic uses
+the data. The diagnostic exposes WHICH inputs were dropped and WHY
+at each filter / gate / NaN-strip point; production wiring lands
+≥ 1 cron later, after the accounting equation
+`len(input_universe) == sum(len(diagnostic_buckets))` is verified
+on real data. The Phase 4h → 4h.2 retrofit (PRs #112 → #118 → #124)
+is the forcing precedent: a 30-minute additional Phase 4h scope
+would have saved the ~10-hour 2-PR debugging cycle. Detail +
+mandatory checklist in `WORKFLOW.md` §Observability-Before-Wiring
+Pattern.
+
 ---
 
 ## When the user asks for...
