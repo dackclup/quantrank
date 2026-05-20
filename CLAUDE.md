@@ -138,6 +138,8 @@ release tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releas
 (2026-05-17, `6d414a9b`).
 
 **Recently merged**:
+- [PR #143](https://github.com/dackclup/quantrank/pull/143) —
+  AGENTS.md sync + dedup with CLAUDE.md (Optimization PR C)
 - [PR #142](https://github.com/dackclup/quantrank/pull/142) —
   CLAUDE.md token diet 236 → 172 lines (Optimization PR B); the
   multi-session audit pattern moved to AGENTS.md
@@ -146,13 +148,12 @@ release tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releas
 - [PR #140](https://github.com/dackclup/quantrank/pull/140) —
   Pre-merge production simulation harness (Epic #125 Item 3 PR 1 of 2)
   + Karpathy LLM-Wiki skill vendored
-- [PR #124](https://github.com/dackclup/quantrank/pull/124) — Phase
-  4h.2 Part 2 (multi-port OSAP adapter + silent-drop diagnostic)
 
-**`.md` optimization PR C in flight** — AGENTS.md sync + dedup with
-CLAUDE.md: Tech stack / Commands / Project structure / Phase + version
-state now reference CLAUDE.md as canonical rather than duplicating.
-386 → ~250 lines.
+**`.md` optimization PR D in flight** — WORKFLOW.md archive: Phase 0-3
+content (273 lines of v1.0 acceptance criteria + PR 3c/3d/3e task
+detail) moved to [`docs/archived/PHASE_0_3_WORKFLOW.md`](docs/archived/PHASE_0_3_WORKFLOW.md).
+WORKFLOW.md 1732 → 1459 lines. Forward-looking work now starts at
+Phase 4 in WORKFLOW.md.
 
 **Next deliverables** (pick by appetite):
 - **Epic #125 Item 3 PR 2** — composite-score diff vs main + top-10
