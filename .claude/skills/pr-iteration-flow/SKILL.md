@@ -1,20 +1,19 @@
 ---
 name: pr-iteration-flow
-description: Manage QuantRank's PR-review workflow — the Draft↔Ready flip cycle,
-  CI-event subscription, spot-check matrix generation, and the rhythm of
-  fix-commit-spot-check iterations before final user-authorized Mark-Ready.
-  Codifies the pattern used through PR-3c → PR-3d → PR-20 (5+ polish
-  iterations per PR is common). TRIGGER when opening a new PR (open as
-  Draft), when the user spot-checks a Vercel preview and requests a fix,
-  when a stop-the-line issue surfaces after Mark-Ready (flip back to
-  Draft), when CI fails on a PR branch (subscribe + investigate), when
-  the user says "open a PR for this" / "mark this ready" / "flip to
-  draft" / "watch this PR for me", or when authorizing the final
-  Mark-Ready after spot-check approval. ALSO use this skill as the
-  default workflow harness any time a PR is open and the user is
-  iterating on it — every iteration follows the same rhythm. SKIP for
-  the post-merge cleanup steps (branch deletion / tag / file follow-up
-  issues — those are different workflows).
+description: >
+  Manage QuantRank's PR-review workflow — the Draft↔Ready flip cycle,
+  CI-event subscription, spot-check matrix generation, and the rhythm
+  of fix-commit-spot-check iterations before final user-authorized
+  Mark-Ready (5+ polish iterations per PR is common). The default
+  workflow harness while any PR is open. TRIGGER when opening a new
+  PR (open as Draft), when the user spot-checks a Vercel preview and
+  requests a fix, when a stop-the-line issue surfaces after Mark-Ready
+  (flip back to Draft), when CI fails on a PR branch (subscribe +
+  investigate), when authorizing the final Mark-Ready after spot-check
+  approval, or when the user says "open a PR for this" / "mark this
+  ready" / "flip to draft" / "watch this PR for me" / "เช็ค CI" / "ดู
+  PR". SKIP post-merge cleanup steps (branch deletion / tag / file
+  follow-up issues — those are different workflows).
 ---
 
 # pr-iteration-flow

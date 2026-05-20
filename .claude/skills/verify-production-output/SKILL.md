@@ -1,20 +1,20 @@
 ---
 name: verify-production-output
-description: Run a Section A-H verification on the most recent QuantRank compute
-  output (frontend/public/data/metadata.json + stocks/*.json + rankings.json).
-  Surfaces schema version + git_commit + universe_size, Tier-2 fired-flag
-  inventory (deferred-mode contract checks), fair-price coverage, data-quality
-  guard counts, Top-5 rotation invariants, risk-flag totals vs baseline,
-  Tier-2 dict-shape spot-check, fundamentals latency p50/p95/coverage, and
-  universe-size consistency. TRIGGER whenever a weekly compute run lands on
-  main, after any workflow_dispatch completes, before authorizing a PR from
-  Draft to Mark-Ready, before tagging a release version, or before filing
-  post-merge issues — invoke even when the user just says "verify the
-  output" / "looks good?" / "check the latest run" without naming a section.
-  ALSO use after any change to scoring, risk-overlay, or fair-price layers
-  to confirm no regression. SKIP if the user is asking about Python test
-  execution against live SEC EDGAR (use network-test-runner instead) or
-  about Pydantic↔TypeScript schema drift only (use schema-check instead).
+description: >
+  Run a Section A-H verification on the most recent QuantRank compute
+  output (frontend/public/data/metadata.json + stocks/*.json +
+  rankings.json). Surfaces metadata fields, Tier-2 fired-flag
+  inventory, fair-price coverage, data-quality guard counts, Top-5
+  rotation invariants, risk-flag deltas vs baseline, fundamentals
+  latency p50/p95, and universe-size consistency. TRIGGER whenever a
+  weekly compute run lands on main, after any workflow_dispatch
+  completes, before authorizing a PR from Draft to Mark-Ready, before
+  tagging a release, after any change to scoring / risk-overlay /
+  fair-price layers, or when the user just says "verify the output" /
+  "looks good?" / "check the latest run" / "ตรวจ output" / "เช็ค
+  production" — invoke even without naming a section. SKIP if the
+  user is asking about Python test execution against live SEC EDGAR
+  (use network-test-runner) or schema drift only (use schema-check).
 ---
 
 # verify-production-output

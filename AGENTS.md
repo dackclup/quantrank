@@ -277,9 +277,10 @@ note cross-tool-specific points only:
 - **`.md` optimization sequence** (Option D — multi-PR overhaul):
   PR A drift fix #141 ✅ · PR B CLAUDE.md token diet #142 ✅ ·
   PR C AGENTS.md sync + dedup #143 ✅ · PR D WORKFLOW.md archive
-  #144 ✅ · **PR E this one** (SKILL.md restructure + TOC + "Rules at
-  a glance"; 641 → 574 lines) · PR F-G planned (skill desc audit ×38 ·
-  PHASE_STATUS.md restructure).
+  #144 ✅ · PR E SKILL.md restructure #145 ✅ · **PR F this one**
+  (skill desc audit — applied light polish to 4 longest QR-origin
+  descriptions; 20 vendored skills FROZEN per upstream pact) ·
+  PR G planned (PHASE_STATUS.md "Current State" summary).
 
 ## Claude-Code-specific tooling
 
