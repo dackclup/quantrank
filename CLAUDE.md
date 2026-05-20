@@ -150,6 +150,13 @@ non-connector-bound work.
   are too tight for large-cap universe. Annotate-only so it's a
   safe no-op; consider S&P-500-scaled thresholds in Phase 4.5
   follow-up.
+- **Hypothesis property-based tests** are the new defense line for
+  data-shape bugs (Process Hygiene Item #1, issue #126) — the class
+  that hid the OSAP quintile/tercile silent-drop until prod cron
+  caught it. When adding a new data-shape assumption (port cardinality,
+  pillar count, manifest partition), pair the example test with a
+  `@given` property in `tests/**/test_*_properties.py`. Don't use
+  `@settings(deadline=None)` — a slow example is itself a signal.
 
 ## Phase status
 
