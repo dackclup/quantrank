@@ -101,7 +101,7 @@ frontend/                         # Next.js static site
 
 tests/                            # pytest suite (read/write OK)
 docs/                             # Academic methodology + research findings (read/write OK)
-.claude/skills/                   # 24 loaded skills + planning docs (read/write OK)
+.claude/skills/                   # 38 loaded skills + planning docs (read/write OK)
 .github/workflows/                # CI definitions (⚠️ ask before editing)
 pyproject.toml                    # Python project config + ruff + pytest (⚠️ ask before deps changes)
 
@@ -284,7 +284,8 @@ export function FairPriceCard(props) {  // no types
   (tagged 2026-05-17 on `main` at commit `6d414a9b`)
 - Active defenses: **7 vetoes** + 10 annotates + 5 numerical guards +
   `manipulation_index` rollup = **17 total defense layer entries**
-- Schema version: `0.8.0-phase4.5f` in `metadata.json`
+- Schema version: `0.9.2-phase4h.2` in `metadata.json` (see
+  [`SKILL.md`](SKILL.md) §schema-version table for full history)
 - Test suite: see CI build artifact for current count
 - Production-verified run: #51 (`b1588b2a`, 5m14s warm-cache)
 - Open Phase 4+ issues: **4** — #15 (SEC throttling) · #41 (Next 14→16
@@ -293,16 +294,17 @@ export function FairPriceCard(props) {  // no types
 - Next deliverable tracks (parallelizable): 4.5e Form 4 insider
   (~3w → v1.3.0) · 4h/4i/4j/4k factor integrations OSAP/JKP/Qlib/IPCA
   (~6w → v1.1.0-phase4) · Phase 5 ML meta-learner (~10-12w)
-- **Epic #125 Item 3** (pre-merge production simulation) in flight via
-  [PR #140](https://github.com/dackclup/quantrank/pull/140) — closes
-  the CI-green-but-not-correct gap (Phase 4h.2 Part 1 silent-drop #116
-  was the forcing example). PR 1 ships the workflow harness
-  (`.github/workflows/pre-merge-prod-sim.yml`): warm-cache restore via
-  the cron's `cache-v4` key + `python -m compute.main` against the PR
-  branch + sticky PR comment with duration / universe / schema /
-  commit + PR-branch output uploaded as `pr-<n>-compute-output`
-  artifact (14-day retention). PR 2 adds the per-ticker
-  composite-score diff vs main + top-10 movers table.
+- **Epic #125 Item 3** (pre-merge production simulation) — **PR 1 of
+  2 shipped** via [PR #140](https://github.com/dackclup/quantrank/pull/140)
+  on 2026-05-20 at commit `a52aa2de`. PR 1 landed the workflow
+  harness (`.github/workflows/pre-merge-prod-sim.yml`): warm-cache
+  restore via the cron's `cache-v4` key + `python -m compute.main`
+  against the PR branch + sticky PR comment with duration / universe
+  / schema / commit + PR-branch output uploaded as
+  `pr-<n>-compute-output` artifact (14-day retention). Dogfoods on
+  the next PR touching `compute/scoring/**` or `compute/features/**`.
+  **PR 2 next** — per-ticker composite-score diff vs main + top-10
+  movers table.
 - **Karpathy LLM Wiki gist** vendored as a reference skill at
   `.claude/skills/karpathy-llm-wiki/SKILL.md` (same PR #140) —
   license-pending: gist has no declared LICENSE but explicit

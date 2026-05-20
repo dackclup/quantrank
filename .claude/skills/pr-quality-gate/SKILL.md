@@ -1,6 +1,7 @@
 ---
 name: pr-quality-gate
-description: Final pre-merge completeness audit for a QuantRank PR. Runs
+description: >
+  Final pre-merge completeness audit for a QuantRank PR. Runs
   the Section A-G checklist that a senior reviewer would walk before
   approving a Mark-Ready flip: diff scope vs PR description, skill
   triggers met (schema-check / security-check / verify-production-output
