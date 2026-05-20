@@ -29,7 +29,7 @@ backing.
 | `frontend/app/` | Next.js routes (one per stock at `/stock/[ticker]`) |
 | `frontend/components/` | React UI (RankingTable, FairPriceBarChart, …) |
 | `frontend/public/data/` | Compute output: `metadata.json` + `rankings.json` + `stocks/<TICKER>.json` |
-| `tests/` | pytest suite (831 offline + 17 `@network` gated) |
+| `tests/` | pytest suite (offline + `@network` gated; see CI for current count) |
 | `.claude/skills/` | 24 invocation-triggerable skills (7 QuantRank + 17 Anthropic vendored) plus phase planning docs |
 
 ## Commands
@@ -171,7 +171,7 @@ shipped 2026-05-17 at commit `6d414a9b`. **Phase 4h in flight in PR
 #112** — OSAP signal replication (factor-exposure proxy) + PBO/DSR
 hard gate (PR #60 reuse) + rolling-12m IC observability + Path-b
 composite × OSAP blend (50/50 default, Top-5 still ranks raw
-composite per Rule 16). Test suite: 906 offline + 19 `@network`.
+composite per Rule 16). Test suite: see CI build artifact for current count.
 
 **Next deliverable** (pick by appetite — three tracks parallelize):
 **4.5e** (Form 4 insider, ~3w → v1.3.0) · **4h/4i/4j/4k** factor
