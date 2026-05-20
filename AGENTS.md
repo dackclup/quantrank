@@ -319,7 +319,7 @@ note cross-tool-specific points only:
   descriptions: the local versions are sharper than upstream — expect
   divergence per `THIRD_PARTY_NOTICES.md` "Description divergence"
   section. Affects: grill-me, tdd, to-prd, to-issues, write-a-skill.
-- **Vendor-sync skill in flight (off epic #150 critical path)** — new
+- **Vendor-sync skill merged via PR #158** (2026-05-20) — new
   `.claude/skills/vendor-sync/SKILL.md` codifies the disciplined
   upstream-sync workflow for the 4 vendored sources (mattpocock,
   multica-ai/karpathy-guidelines, karpathy LLM Wiki gist, 9arm-skills).
@@ -327,6 +327,16 @@ note cross-tool-specific points only:
   from PR #157): local sharpened TRIGGER descriptions on 5 mattpocock-*
   skills win on conflict; upstream wins on body. Cross-tool agents
   doing skill maintenance should invoke this before pulling upstream.
+- **3-skill bundle in flight (off epic #150 critical path)** — three
+  new project-internal workflow skills: `claude-md-lockstep-check`
+  (preflight for the "ship with every PR" CLAUDE.md+AGENTS.md
+  invariant), `release-tag` (end-to-end release workflow codifying
+  the `vX.Y.Z-phaseN` convention), and `quarterly-cohort-audit`
+  (scheduled defense-layer audit, next 2026-08-19). Cross-tool agents:
+  these are read by Claude Code's skill registry on session start;
+  Copilot / Cursor / Devin don't auto-invoke them but should still
+  follow the workflows when working in those domains. Skill count
+  39 → 42.
 
 ## Claude-Code-specific tooling
 
