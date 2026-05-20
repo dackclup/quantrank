@@ -311,14 +311,22 @@ note cross-tool-specific points only:
   locally, expect a Section J block tabulating `valuation_warnings`
   + `tier2_events` annotate fires in addition to Section E
   (risk_flags veto totals).
-- **Skill-trigger-flip in flight (off epic #150 critical path)** —
-  5 vendored `mattpocock-*` skill `description:` lines rewritten from
+- **Skill-trigger-flip merged via PR #157** (2026-05-20) — 5 vendored
+  `mattpocock-*` skill `description:` lines rewritten from
   `Use when user wants ...` → explicit `TRIGGER when user explicitly
   says ...` with sharp keyword phrases + false-positive guardrails.
   Bodies remain upstream-verbatim. Cross-tool agents reading skill
   descriptions: the local versions are sharper than upstream — expect
   divergence per `THIRD_PARTY_NOTICES.md` "Description divergence"
   section. Affects: grill-me, tdd, to-prd, to-issues, write-a-skill.
+- **Vendor-sync skill in flight (off epic #150 critical path)** — new
+  `.claude/skills/vendor-sync/SKILL.md` codifies the disciplined
+  upstream-sync workflow for the 4 vendored sources (mattpocock,
+  multica-ai/karpathy-guidelines, karpathy LLM Wiki gist, 9arm-skills).
+  Encodes the description-divergence resolution policy (carried forward
+  from PR #157): local sharpened TRIGGER descriptions on 5 mattpocock-*
+  skills win on conflict; upstream wins on body. Cross-tool agents
+  doing skill maintenance should invoke this before pulling upstream.
 
 ## Claude-Code-specific tooling
 

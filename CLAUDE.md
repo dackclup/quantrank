@@ -30,7 +30,7 @@ backing.
 | `frontend/components/` | React UI (RankingTable, FairPriceBarChart, …) |
 | `frontend/public/data/` | Compute output: `metadata.json` + `rankings.json` + `stocks/<TICKER>.json` |
 | `tests/` | pytest suite (offline + `@network` gated; see CI for current count) |
-| `.claude/skills/` | 38 invocation-triggerable skills + phase planning docs. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for vendoring / license posture per source. |
+| `.claude/skills/` | 39 invocation-triggerable skills + phase planning docs. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for vendoring / license posture per source. |
 
 ## Commands
 
@@ -171,15 +171,23 @@ issue [#155](https://github.com/dackclup/quantrank/issues/155) filed
 (threshold recalibration + correlation analysis + structural). See
 epic [#150](https://github.com/dackclup/quantrank/issues/150).
 
-**Skill-trigger-flip in flight (this PR, off the epic #150 critical
-path)** — 5 vendored `mattpocock-*` skill description lines rewritten
-from `Use when user wants ...` → explicit `TRIGGER when user
-explicitly says ...` with sharp keyword phrases + false-positive
-guardrails. Body of every SKILL.md remains upstream-verbatim;
-divergence catalogued in `THIRD_PARTY_NOTICES.md` "Description
-divergence" section. Goal: reduce false-positive auto-fires of
-interactive workflows (grill-me, tdd, to-prd, to-issues,
-write-a-skill).
+**Skill-trigger-flip merged via PR #157** (2026-05-20) — 5 vendored
+`mattpocock-*` skill description lines rewritten from `Use when user
+wants ...` → explicit `TRIGGER when user explicitly says ...` with
+sharp keyword phrases + false-positive guardrails. Body of every
+SKILL.md remains upstream-verbatim; divergence catalogued in
+`THIRD_PARTY_NOTICES.md` "Description divergence" section. Goal:
+reduce false-positive auto-fires of interactive workflows (grill-me,
+tdd, to-prd, to-issues, write-a-skill).
+
+**Vendor-sync skill in flight (this PR, off epic #150 critical path)** —
+new `.claude/skills/vendor-sync/SKILL.md` codifies the disciplined
+upstream-sync workflow for the 4 vendored sources (mattpocock,
+multica-ai/karpathy-guidelines, karpathy LLM Wiki gist, 9arm-skills),
+including the description-divergence resolution policy carried forward
+from PR #157 ("local sharpness wins on description; upstream wins on
+body"). Doc-only, no compute / schema change. Use this skill before
+pulling new commits from any vendored upstream.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight
