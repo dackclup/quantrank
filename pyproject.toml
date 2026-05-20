@@ -26,6 +26,12 @@ dependencies = [
 dev = [
   "pytest>=8.0",
   "ruff>=0.4",
+  # Property-based testing — Process Hygiene Item #1 (issue #126).
+  # Hypothesis generates random inputs to catch data-shape bugs that
+  # example-based tests miss (the class of bug that hid the
+  # quintile/tercile silent-drop in OSAP_SIGNALS_100 from PR #112's
+  # CI until production cron diagnostics caught it 2026-05-19).
+  "hypothesis>=6.92",
 ]
 # Phase 4 factor libraries. Heavy transitive deps (wrds, polars,
 # psycopg2-binary, sqlalchemy, ipython) — kept out of the base install
