@@ -142,6 +142,10 @@ tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releases/tag/v
 (2026-05-17, `6d414a9b`).
 
 **Recently merged**:
+- [PR #154](https://github.com/dackclup/quantrank/pull/154) —
+  Epic #150 Phase 1.2: defense layer headline count reconcile 17 → 27
+  (declared veto+annotate flags PLUS method-applicability + informational
+  flags from the [2026-05-20 quarterly audit](https://github.com/dackclup/quantrank/issues/130#issuecomment-4496605644))
 - [PR #153](https://github.com/dackclup/quantrank/pull/153) —
   Epic #150 Phase 1.3: pre-merge-prod-sim workflow dogfood (composite.py
   docstring cross-ref; sticky comment + diff table verified end-to-end)
@@ -154,22 +158,19 @@ tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releases/tag/v
   closes Epic #125 Item 3)
 - [PR #147](https://github.com/dackclup/quantrank/pull/147) —
   PHASE_STATUS.md "Current state" summary block hoist (Optimization PR G)
-- [PR #146](https://github.com/dackclup/quantrank/pull/146) —
-  Skill description audit + light polish (Optimization PR F)
 
-**Epic #150 Phase 1.2 in flight** — reconcile defense layer headline
-count (17 → 27 boolean flags emitted). Phase status reframed to
-declare 17 veto+annotate flags PLUS 10 method-applicability +
-informational flags discovered in the [2026-05-20 quarterly audit](https://github.com/dackclup/quantrank/issues/130#issuecomment-4496605644).
-Doc-only — no compute / schema change. Phase 2 of epic #150 splits
-the method-applicability flags out of `manipulation_index` (current
-semantic conflation per `compute/scoring/loss_chance.py:74-75`).
-Epic [#150](https://github.com/dackclup/quantrank/issues/150) META-
-epic tracks all 17 findings from the 2-round scrutinize session
-(2026-05-20, process + analytical). Phase 0 closed (PR #151).
-Phase 1.3 dogfood closed (PR #153). Phase 1.2 in progress (this PR).
-Phases 1.4-1.6 + Phase 2-3 remaining (threshold recalibration +
-correlation analysis + structural).
+**Epic #150 Phase 1.4 + 1.5 in flight** (this PR) — add
+`section_j_annotate_audit()` to `verify-production-output/helper.py` so
+the next quarterly cohort audit (2026-08-19) reads the full annotate-
+flag table off the helper instead of grepping source; pair with
+`tests/test_verify_helper.py` covering Section A schema reporter +
+Section B 4-branch Tier-2 matrix + the new Section J. Phase 1.6 tracker
+issue [#155](https://github.com/dackclup/quantrank/issues/155) filed
+2026-05-20 for the deferred `tier2_enabled: bool` metadata field. Phase
+0 + 1.1-1.3 + 1.6 complete; Phase 1 closes once this PR merges.
+Phases 2-3 remaining (threshold recalibration + correlation analysis +
+structural). See epic
+[#150](https://github.com/dackclup/quantrank/issues/150).
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight

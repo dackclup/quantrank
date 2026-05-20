@@ -292,12 +292,24 @@ note cross-tool-specific points only:
 - **Phase 1.3 smoke-test merged via PR #153** (2026-05-20) — dogfooded
   the `pre-merge-prod-sim.yml` workflow end-to-end. Sticky comment +
   diff table + Top-10 movers rendering verified.
-- **Phase 1.2 in flight** — reconcile CLAUDE.md defense layer headline
-  count (17 → 27 boolean flags emitted; 17 declared veto+annotate
-  flags PLUS 10 method-applicability + informational flags discovered
-  in [#130 quarterly audit](https://github.com/dackclup/quantrank/issues/130#issuecomment-4496605644)).
-  Doc-only. Cross-tool agents should read epic #150 before touching
-  `compute/scoring/**` or `compute/valuation/**` paths.
+- **Phase 1.2 merged via PR #154** (2026-05-20) — defense layer headline
+  count reconcile 17 → 27 boolean flags emitted (17 declared
+  veto+annotate flags PLUS method-applicability + informational flags
+  from [#130 quarterly audit](https://github.com/dackclup/quantrank/issues/130#issuecomment-4496605644)).
+  Cross-tool agents reading defense layer counts should pull from the
+  reconciled list in CLAUDE.md §Phase status.
+- **Phase 1.6 tracker filed as issue #155** (2026-05-20) — deferred
+  `tier2_enabled: bool` metadata field carried forward from closed
+  issue #117 / PR #149. Implementation pending — either Phase 1
+  follow-up patch or fold into Phase 2's 0.10.0 schema bump.
+- **Phase 1.4 + 1.5 in flight** — `verify-production-output/helper.py`
+  gains Section J annotate-flag auto-tabulator (so the 2026-08-19
+  quarterly audit reads the table off the helper instead of grepping
+  source) + `tests/test_verify_helper.py` regression suite covering
+  Section A + Section B 4-branch matrix + new Section J. Cross-tool
+  agents: when the helper is invoked locally, expect a Section J
+  block tabulating `valuation_warnings` + `tier2_events` annotate
+  fires in addition to Section E (risk_flags veto totals).
 
 ## Claude-Code-specific tooling
 
