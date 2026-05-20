@@ -302,14 +302,23 @@ note cross-tool-specific points only:
   `tier2_enabled: bool` metadata field carried forward from closed
   issue #117 / PR #149. Implementation pending — either Phase 1
   follow-up patch or fold into Phase 2's 0.10.0 schema bump.
-- **Phase 1.4 + 1.5 in flight** — `verify-production-output/helper.py`
-  gains Section J annotate-flag auto-tabulator (so the 2026-08-19
-  quarterly audit reads the table off the helper instead of grepping
-  source) + `tests/test_verify_helper.py` regression suite covering
-  Section A + Section B 4-branch matrix + new Section J. Cross-tool
-  agents: when the helper is invoked locally, expect a Section J
-  block tabulating `valuation_warnings` + `tier2_events` annotate
-  fires in addition to Section E (risk_flags veto totals).
+- **Phase 1.4 + 1.5 merged via PR #156** (2026-05-20) —
+  `verify-production-output/helper.py` gained Section J annotate-flag
+  auto-tabulator (so the 2026-08-19 quarterly audit reads the table
+  off the helper instead of grepping source) + `tests/test_verify_helper.py`
+  regression suite covering Section A + Section B 4-branch matrix +
+  new Section J. Cross-tool agents: when the helper is invoked
+  locally, expect a Section J block tabulating `valuation_warnings`
+  + `tier2_events` annotate fires in addition to Section E
+  (risk_flags veto totals).
+- **Skill-trigger-flip in flight (off epic #150 critical path)** —
+  5 vendored `mattpocock-*` skill `description:` lines rewritten from
+  `Use when user wants ...` → explicit `TRIGGER when user explicitly
+  says ...` with sharp keyword phrases + false-positive guardrails.
+  Bodies remain upstream-verbatim. Cross-tool agents reading skill
+  descriptions: the local versions are sharper than upstream — expect
+  divergence per `THIRD_PARTY_NOTICES.md` "Description divergence"
+  section. Affects: grill-me, tdd, to-prd, to-issues, write-a-skill.
 
 ## Claude-Code-specific tooling
 

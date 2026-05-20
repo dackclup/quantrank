@@ -1,6 +1,6 @@
 ---
 name: write-a-skill
-description: Create new agent skills with proper structure, progressive disclosure, and bundled resources. Use when user wants to create, write, or build a new skill.
+description: Create new agent skills with proper structure, progressive disclosure, and bundled resources. TRIGGER when user explicitly says "create a skill", "write a new skill", "build me a skill", "add a skill for X", "scaffold a skill", or names a specific skill they want built. Note: QuantRank also ships the project-specific `skill-creator` skill — prefer that when the new skill is project-internal (uses QuantRank's helper conventions, references compute/ paths, etc.); use this `write-a-skill` for portable / generic skills.
 ---
 
 # Writing Skills
