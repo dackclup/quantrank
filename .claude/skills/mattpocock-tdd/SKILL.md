@@ -1,6 +1,6 @@
 ---
 name: tdd
-description: Test-driven development with red-green-refactor loop. Use when user wants to build features or fix bugs using TDD, mentions "red-green-refactor", wants integration tests, or asks for test-first development.
+description: Test-driven development with red-green-refactor loop. TRIGGER when user explicitly says "use TDD", "red-green-refactor", "test-first", "write a failing test first", "TDD this", or names a specific behavior to drive with tests before implementation. Do NOT auto-fire on generic "add tests" / "write tests" / "I need test coverage" — those are non-TDD test additions to existing code.
 ---
 
 # Test-Driven Development

@@ -159,18 +159,27 @@ tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releases/tag/v
 - [PR #147](https://github.com/dackclup/quantrank/pull/147) —
   PHASE_STATUS.md "Current state" summary block hoist (Optimization PR G)
 
-**Epic #150 Phase 1.4 + 1.5 in flight** (this PR) — add
-`section_j_annotate_audit()` to `verify-production-output/helper.py` so
-the next quarterly cohort audit (2026-08-19) reads the full annotate-
-flag table off the helper instead of grepping source; pair with
-`tests/test_verify_helper.py` covering Section A schema reporter +
+**Epic #150 Phase 1.4 + 1.5 merged via PR #156** (2026-05-20) —
+`section_j_annotate_audit()` added to `verify-production-output/helper.py`
+so the next quarterly cohort audit (2026-08-19) reads the full
+annotate-flag table off the helper instead of grepping source; paired
+with `tests/test_verify_helper.py` covering Section A schema reporter +
 Section B 4-branch Tier-2 matrix + the new Section J. Phase 1.6 tracker
 issue [#155](https://github.com/dackclup/quantrank/issues/155) filed
 2026-05-20 for the deferred `tier2_enabled: bool` metadata field. Phase
-0 + 1.1-1.3 + 1.6 complete; Phase 1 closes once this PR merges.
-Phases 2-3 remaining (threshold recalibration + correlation analysis +
-structural). See epic
-[#150](https://github.com/dackclup/quantrank/issues/150).
+0 + 1.1-1.6 complete; Phase 1 of epic #150 closed. Phases 2-3 remaining
+(threshold recalibration + correlation analysis + structural). See
+epic [#150](https://github.com/dackclup/quantrank/issues/150).
+
+**Skill-trigger-flip in flight (this PR, off the epic #150 critical
+path)** — 5 vendored `mattpocock-*` skill description lines rewritten
+from `Use when user wants ...` → explicit `TRIGGER when user
+explicitly says ...` with sharp keyword phrases + false-positive
+guardrails. Body of every SKILL.md remains upstream-verbatim;
+divergence catalogued in `THIRD_PARTY_NOTICES.md` "Description
+divergence" section. Goal: reduce false-positive auto-fires of
+interactive workflows (grill-me, tdd, to-prd, to-issues,
+write-a-skill).
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight

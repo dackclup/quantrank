@@ -127,10 +127,36 @@ overlaps with project's CI guardrails), or in-flux upstream.
 ### Verbatim-preservation check
 
 Each vendored `SKILL.md` carries upstream content byte-for-byte plus a
-10-line appended `## License + Attribution` block. Sidecars (`.md`
+10-line appended `## License + Attribution` block, **except** for the
+5 skills listed under "Description divergence" below. Sidecars (`.md`
 references via `./domain.md` style links) are vendored without
 modification. The Bash template script (`scripts/hitl-loop.template.sh`
 under `mattpocock-diagnose/`) is also verbatim.
+
+### Description divergence (2026-05-20)
+
+To enable auto-trigger on sharp keyword phrases (and to reduce false-
+positive auto-fires that the original "Use when user wants..." pattern
+would have caused), the YAML frontmatter `description:` field was
+rewritten for 5 vendored skills. **The body of every SKILL.md remains
+upstream-verbatim.** Diverging files:
+
+- `.claude/skills/mattpocock-grill-me/SKILL.md`
+- `.claude/skills/mattpocock-tdd/SKILL.md`
+- `.claude/skills/mattpocock-to-prd/SKILL.md`
+- `.claude/skills/mattpocock-to-issues/SKILL.md`
+- `.claude/skills/mattpocock-write-a-skill/SKILL.md`
+
+Pattern of change: original "Use when user wants X" → "TRIGGER when
+user explicitly says 'X' / 'Y' / 'Z'" with 4-6 sharp keyword phrases
+plus a `do NOT auto-fire on generic ...` guardrail.
+
+**Next vendor sync (from upstream `mattpocock/skills@HEAD`)**: expect
+merge conflicts on these 5 `description:` lines. Resolution policy:
+keep the local TRIGGER-style descriptions unless upstream has likewise
+adopted explicit TRIGGER syntax — in that case, take upstream's wording
+and re-evaluate sharp-keyword coverage. Body content of each SKILL.md
+should still pull upstream verbatim.
 
 ### MIT License (full text)
 
