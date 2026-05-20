@@ -1,0 +1,167 @@
+name: Pre-Merge Production Simulation
+
+# Epic #125 Item 3 — close the gap between CI-green and provably-correct.
+#
+# CI (ci.yml) verifies that the code lints, the schema is consistent, and the
+# unit tests pass. None of those catch a composite-score regression that only
+# materialises against the full S&P 500 universe with real EDGAR data — the
+# Phase 4h.2 Part 1 silent-drop (issue #116) was the forcing example.
+#
+# This workflow runs the weekly compute against the PR branch using the warm
+# cache the weekly cron (`compute-rankings.yml`) leaves behind, then surfaces
+# duration / universe size / schema version on the PR. PR 2 adds the per-
+# ticker composite-score diff vs main and the top-10 movers table.
+#
+# This check is intentionally NOT a required status — it's informational only,
+# slow (~10-15 min warm), and unavailable on fork PRs (no secrets).
+
+on:
+  pull_request:
+    paths:
+      - "compute/scoring/**"
+      - "compute/features/**"
+
+# Latest push on a PR cancels any in-flight simulation for the same PR.
+# A 15-min compute against a stale revision is dead weight.
+concurrency:
+  group: pre-merge-prod-sim-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  EDGAR_USER_AGENT: ${{ secrets.EDGAR_USER_AGENT }}
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  simulate:
+    # Fork PRs don't see `secrets.EDGAR_USER_AGENT`. Any cache miss would fall
+    # through to a live EDGAR fetch and 403 immediately. Skip cleanly instead
+    # of failing — maintainers can re-run locally against the fork if needed.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    # Warm-cache compute is ~10-15 min steady-state (per compute-rankings.yml
+    # comment). 45 min gives ~3x headroom for a partial cache miss without
+    # crossing into cold-cache territory (which needs the 150-min ceiling).
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          # Same extras as compute-rankings.yml — compute/ingest/osap.py
+          # imports `openassetpricing` from the `factors` extra.
+          pip install -e ".[factors]"
+
+      - name: Compute current quarter id
+        id: quarter
+        run: echo "q=$(date -u +%Y)Q$(( ($(date -u +%-m)-1)/3 + 1 ))" >> $GITHUB_OUTPUT
+
+      - name: Restore compute caches (from weekly cron)
+        # `restore` only — never save. We're piggybacking on the cache the
+        # weekly cron writes from main; saving here would let a PR branch's
+        # potentially-broken cache overwrite the canonical one.
+        # Keys + paths mirror compute-rankings.yml; bump together if either
+        # changes.
+        uses: actions/cache/restore@v5
+        with:
+          path: |
+            compute/cache/fundamentals
+            compute/cache/fundamentals_history
+            compute/cache/prices
+            compute/cache/universe-v2.parquet
+            compute/cache/edgar_8k
+            compute/cache/edgar_10k_text
+            compute/cache/yfinance_info
+            compute/cache/edgar_amendments
+            compute/cache/edgar_late_filings
+          key: cache-v4-${{ steps.quarter.outputs.q }}-${{ runner.os }}
+          restore-keys: |
+            cache-v4-${{ steps.quarter.outputs.q }}-
+            cache-v4-
+
+      - name: Run PR-branch compute
+        id: compute
+        run: |
+          start=$(date +%s)
+          python -m compute.main
+          end=$(date +%s)
+          echo "duration_s=$((end - start))" >> "$GITHUB_OUTPUT"
+
+      - name: Extract output metadata
+        id: meta
+        run: |
+          python <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          with open("frontend/public/data/metadata.json") as f:
+              m = json.load(f)
+          print(f"universe_size={m['universe_size']}")
+          print(f"schema_version={m['version']}")
+          print(f"git_commit={m['git_commit']}")
+          PY
+
+      - name: Upload PR-branch compute output
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-${{ github.event.pull_request.number }}-compute-output
+          path: frontend/public/data/
+          # PR 2 (diff vs main) will download this artifact in a separate
+          # workflow run. 14 days is enough for a PR's review window without
+          # accumulating dead artifacts.
+          retention-days: 14
+
+      - name: Post or update PR comment
+        uses: actions/github-script@v7
+        env:
+          DURATION_S: ${{ steps.compute.outputs.duration_s }}
+          UNIVERSE_SIZE: ${{ steps.meta.outputs.universe_size }}
+          SCHEMA_VERSION: ${{ steps.meta.outputs.schema_version }}
+          GIT_COMMIT: ${{ steps.meta.outputs.git_commit }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        with:
+          script: |
+            const marker = '<!-- pre-merge-prod-sim -->';
+            const artifactName = `pr-${process.env.PR_NUMBER}-compute-output`;
+            const body = [
+              marker,
+              '## Pre-merge production simulation',
+              '',
+              '| Field | Value |',
+              '|---|---|',
+              `| Duration | ${process.env.DURATION_S}s |`,
+              `| Universe size | ${process.env.UNIVERSE_SIZE} |`,
+              `| Schema version | \`${process.env.SCHEMA_VERSION}\` |`,
+              `| Compute commit | \`${process.env.GIT_COMMIT}\` |`,
+              `| PR-branch output | [\`${artifactName}\`](${process.env.RUN_URL}) (14-day retention) |`,
+              '',
+              '_Composite-score diff vs main lands in Epic #125 Item 3 PR 2._',
+            ].join('\n');
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find((c) => c.body && c.body.startsWith(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
