@@ -314,6 +314,15 @@ export function FairPriceCard(props) {  // no types
   (Copilot / Cursor / Devin) can read the file directly but it has no
   procedural triggers in their skill systems (it's a Claude Code
   `SKILL.md` with description-based dispatch).
+- **`.md` optimization** in flight (Option D — multi-PR overhaul).
+  PR A (drift fix + YAML frontmatter fix) shipped via
+  [PR #141](https://github.com/dackclup/quantrank/pull/141). PR B
+  (CLAUDE.md token diet, 236 → ~170 lines) ships next — moves the
+  multi-session audit pattern detail to this file (AGENTS.md) and
+  compresses the Phase status / Connector / Conventions sections.
+  Subsequent PRs: C (AGENTS.md sync + dedup) · D (WORKFLOW.md archive
+  Phase 0-3) · E (SKILL.md restructure) · F (skill description audit
+  ×38) · G (PHASE_STATUS.md "Current State" summary).
 
 ## Claude-Code-specific tooling
 
@@ -332,6 +341,37 @@ they should:
 If a task requires the connector surface (e.g., automated batch deploy
 audit), prefer routing it through Claude Code rather than re-
 implementing the integration in a different agent.
+
+## Multi-session audit pattern
+
+When an in-flight session (mid-audit, mid-PR-review) discovers it lacks
+the connector needed for a verification step — typically because the
+session started before the connector was registered — **do not restart
+mid-task**. Restart loses audit context. Instead, delegate the
+connector-bound step to a sibling session:
+
+1. **Run what you CAN** with the tools you already have (Bash, file reads,
+   GitHub MCP, Playwright via `executable_path` workaround, etc.)
+2. **Identify the gap** — list the exact `mcp__<connector>__*` calls the
+   in-flight session cannot make
+3. **Write a short, focused prompt** for a new session: the specific calls,
+   parameter values, and the report-back format you expect (markdown table
+   / fixed sections / fail-fast verdict)
+4. **Synthesize** — when the sibling session pastes its report back, merge
+   it with your own findings into the single verdict
+
+Example — Section I post-`workflow_dispatch` (`verify-production-output/SKILL.md`)
+has three steps: Vercel MCP deploy-health (Step 1), Playwright 4-ticker
+matrix (Step 2), Sentry recent issues (Step 3). A session without Vercel
+MCP runs Step 2 itself, delegates Step 1 to a sibling session, and notes
+Step 3 as deferred-until-SDK-wires.
+
+The pattern preserves session continuity. Use it for: live-UI audits,
+post-deploy log inspection, Supabase row inspection during 4.5e / Phase
+5 work, or any case where a single session straddles connector-bound and
+non-connector-bound work. CLAUDE.md keeps a 5-line reference to this
+section; the full procedure lives here so cross-tool agents see the
+same pattern.
 
 ## Companion files
 
