@@ -58,12 +58,17 @@ from compute import config
 
 logger = logging.getLogger(__name__)
 
-# Canonical port labels in OSAP's PredictorPortsFull.csv ("op" dataset
-# from openassetpricing). port=01 is the LONG bucket (highest signal
-# rank); port=10 is the SHORT bucket. Decile-bucketed signals also use
-# port=02..09 but Phase 4h only consumes the corner buckets.
-LONG_PORT_LABEL: str = "01"
-SHORT_PORT_LABEL: str = "10"
+# OSAP port-label convention (Chen-Zimmermann 2022, PredictorPortsFull.csv
+# from the openassetpricing "op" dataset). port=01 is consistently the
+# LONG bucket (highest-signal-rank portfolio) across signal cardinalities;
+# the SHORT bucket varies with the signal's bucket count:
+#   - decile signals:   ports 01..10 → SHORT = 10
+#   - quintile signals: ports 01..05 → SHORT = 05
+#   - tercile signals:  ports 01..03 → SHORT = 03
+# Phase 4h.2 Part 2 (issue #116) replaced the hardcoded port=10 SHORT
+# label with per-signal `min(port)` / `max(port)` inference, recovering
+# the ~56 quintile / tercile signals that 0.9.0-0.9.1 silently dropped
+# at the LS-derivation step.
 
 # Columns the inbound DataFrame must carry. This is a *load-bearing*
 # contract — the ingest layer already enforces
@@ -89,16 +94,29 @@ def _normalize_port_label(port_series: pd.Series) -> pd.Series:
 
 
 def compute_long_short_returns(returns: pd.DataFrame) -> pd.DataFrame:
-    """Compute long-short return per ``(signalname, date)``.
+    """Compute long-short return per ``(signalname, date)`` with per-signal
+    port-pair inference.
+
+    Phase 4h.2 Part 2 (issue #116) replaces the hardcoded ``port=01`` /
+    ``port=10`` corner-bucket assumption with per-signal
+    ``min(port)`` / ``max(port)`` inference, so quintile (01..05) and
+    tercile (01..03) signals form long-short pairs instead of silently
+    disappearing. Decile signals (01..10) degenerate to the same
+    ("01", "10") corners — backward-compatible.
 
     Algorithm:
-        1. Filter to rows where ``port`` is the LONG or SHORT bucket
-           (drops decile buckets 02..09).
-        2. Pivot ``port`` to columns indexed by ``(signalname, date)``,
-           with ``ret`` as the value.
-        3. Compute ``ls_return = ret[port=01] - ret[port=10]``.
-        4. Drop ``(signalname, date)`` rows where either port is
-           missing (incomplete coverage).
+        1. Normalize ``port`` to zero-padded string.
+        2. Per signal, derive ``(long_port, short_port) = (min(ports),
+           max(ports))``. Drop signals with fewer than 2 distinct ports
+           (no LS pair possible — surfaced via the sibling helper
+           :func:`signals_dropped_no_long_short`).
+        3. For each signal, keep only the rows whose port equals the
+           long or short bucket (intermediate quintile / tercile / decile
+           buckets are discarded).
+        4. Pivot per ``(signalname, date)`` with the bucket role
+           ("long" / "short") as the column axis, then compute
+           ``ls_return = ret[long] - ret[short]`` and drop rows where
+           either side is missing.
 
     Returns a DataFrame with columns: ``signalname``, ``date``,
     ``ls_return``. Empty DataFrame (same columns) when the input has
@@ -117,25 +135,42 @@ def compute_long_short_returns(returns: pd.DataFrame) -> pd.DataFrame:
 
     df = returns.copy()
     df["port"] = _normalize_port_label(df["port"])
-    df = df[df["port"].isin([LONG_PORT_LABEL, SHORT_PORT_LABEL])]
+
+    # Per-signal port-pair inference (Phase 4h.2 Part 2). Zero-padded
+    # string min/max is lexicographic and matches numeric order for the
+    # 2-char OSAP labels ('01' < '02' < ... < '10') because both
+    # operands share the same width after _normalize_port_label.
+    port_extents = df.groupby("signalname")["port"].agg(["min", "max"])
+    port_extents.columns = ["long_port", "short_port"]
+    port_extents = port_extents[
+        port_extents["long_port"] != port_extents["short_port"]
+    ]
+    if port_extents.empty:
+        return pd.DataFrame(columns=["signalname", "date", "ls_return"])
+
+    df = df.merge(port_extents, left_on="signalname", right_index=True)
+    keep = (df["port"] == df["long_port"]) | (df["port"] == df["short_port"])
+    df = df[keep].copy()
     if df.empty:
         return pd.DataFrame(columns=["signalname", "date", "ls_return"])
 
+    # Encode the role ("long" / "short") so the pivot column axis is
+    # stable across signals with heterogeneous port labels (a decile
+    # signal's "10" and a quintile signal's "05" both become "short").
+    df["side"] = "long"
+    df.loc[df["port"] == df["short_port"], "side"] = "short"
+
     pivot = df.pivot_table(
         index=["signalname", "date"],
-        columns="port",
+        columns="side",
         values="ret",
         aggfunc="first",
     )
 
-    # Both corner buckets must be present for a long-short return to be
-    # meaningful. A signal-date with only port=01 (or only port=10) is
-    # silently dropped — coverage shortfall surfaces in the
-    # `osap_signals_coverage_pct` metadata field.
-    if LONG_PORT_LABEL not in pivot.columns or SHORT_PORT_LABEL not in pivot.columns:
+    if "long" not in pivot.columns or "short" not in pivot.columns:
         return pd.DataFrame(columns=["signalname", "date", "ls_return"])
 
-    pivot["ls_return"] = pivot[LONG_PORT_LABEL] - pivot[SHORT_PORT_LABEL]
+    pivot["ls_return"] = pivot["long"] - pivot["short"]
     pivot = pivot.dropna(subset=["ls_return"])
     return pivot[["ls_return"]].reset_index()
 
@@ -352,3 +387,56 @@ def signals_in_dataframe(df: pd.DataFrame) -> frozenset[str]:
     if df.empty or "signalname" not in df.columns:
         return frozenset()
     return frozenset(df["signalname"].unique().tolist())
+
+
+def signals_dropped_no_long_short(returns: pd.DataFrame) -> list[str]:
+    """Signals present in the OSAP fetch but with fewer than 2 distinct
+    port buckets — the accounting-balance complement to
+    :func:`signals_in_dataframe`.
+
+    Phase 4h.2 Part 2 helper (issue #116). Before Part 2,
+    :func:`compute_long_short_returns` silently dropped signals whose
+    SHORT bucket label differed from the hardcoded ``"10"`` (i.e., every
+    quintile / tercile / binary signal in the OSAP universe). Part 2's
+    multi-port adapter brings them back, but signals with a single port
+    bucket genuinely have no long-short pair — this helper surfaces
+    them into ``Metadata.osap_signals_dropped_no_long_short`` so the
+    100-signal manifest accounting balances.
+
+    The Phase 4h.2 Part 2 accounting invariant:
+
+        len(OSAP_SIGNALS_100) == (
+            len(osap_signals_missing_from_dataset)    # 0 rows in dataset
+            + len(osap_signals_dropped_no_long_short) # <2 distinct ports
+            + len(osap_signals_used)                  # passed PBO/DSR gate
+            + len(osap_excluded_signals)              # reached gate, failed
+        )
+
+    Args:
+        returns: OSAP returns DataFrame from
+            :func:`compute.ingest.osap.fetch_osap_returns`. Defensive
+            against an empty input or a DataFrame missing ``signalname``
+            or ``port`` (returns ``[]`` in either case — caller's
+            accounting then treats this as "no diagnostic to surface").
+
+    Returns:
+        Sorted ``list[str]`` of signal names present in the dataset but
+        with fewer than 2 distinct ``port`` values. Empty list when the
+        input is empty / missing required columns / every signal has
+        ≥ 2 ports.
+    """
+    if (
+        returns.empty
+        or "signalname" not in returns.columns
+        or "port" not in returns.columns
+    ):
+        return []
+
+    normalized = _normalize_port_label(returns["port"])
+    per_signal_port_count = (
+        returns.assign(_port_norm=normalized)
+        .groupby("signalname")["_port_norm"]
+        .nunique()
+    )
+    dropped = per_signal_port_count[per_signal_port_count < 2].index.tolist()
+    return sorted(str(s) for s in dropped)

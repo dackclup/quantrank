@@ -92,6 +92,14 @@ export type Metadata = {
   // 0.9.1-phase4h.2.
   osap_signals_missing_from_dataset: string[] | null;
   osap_gate_diagnostics: Record<string, OsapGateDiagnostic> | null;
+  // Phase 4h.2 Part 2 — signals present in the OSAP dataset but with
+  // fewer than 2 distinct port buckets (no long-short pair possible).
+  // Closes the 100-signal accounting equation:
+  //   OSAP_SIGNALS_100.length === osap_signals_missing_from_dataset
+  //                             + osap_signals_dropped_no_long_short
+  //                             + osap_signals_used + osap_excluded_signals
+  // Null on legacy outputs from before 0.9.2-phase4h.2.
+  osap_signals_dropped_no_long_short: string[] | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors
