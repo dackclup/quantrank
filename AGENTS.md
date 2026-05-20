@@ -276,7 +276,7 @@ export function FairPriceCard(props) {  // no types
 - Active defenses: **7 vetoes** + 10 annotates + 5 numerical guards +
   `manipulation_index` rollup = **17 total defense layer entries**
 - Schema version: `0.8.0-phase4.5f` in `metadata.json`
-- Test suite: 856 offline + 17 `@network` gated
+- Test suite: see CI build artifact for current count
 - Production-verified run: #51 (`b1588b2a`, 5m14s warm-cache)
 - Open Phase 4+ issues: **4** — #15 (SEC throttling) · #41 (Next 14→16
   CVE bump) · #67 (Damodaran sector-adjusted CoE, Phase 5+) · #75
