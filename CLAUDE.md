@@ -178,18 +178,19 @@ non-connector-bound work.
 
 ## Phase status
 
-Current schema: **`0.9.1-phase4h.2`** (PATCH bump from `0.9.0-phase4h`
-for the observability-only Phase 4h.2 Part 1 follow-up to issue #116;
-prior MINOR bump `0.8.0-phase4.5f` → `0.9.0-phase4h` shipped in PR
-#112). Defense layer: **17** (7 active vetoes + 10 annotates + 5
-numerical guards + `manipulation_index` rollup) — Phase 4h.2 Part 1
-adds two new optional `Metadata` fields, no new veto, no rank impact. Latest release tag:
+Current schema: **`0.9.2-phase4h.2`** (Phase 4h.2 Part 2 #124, multi-
+port OSAP adapter + `osap_signals_dropped_no_long_short` field
+closing the 100-signal accounting equation). Defense layer: **17**
+(7 active vetoes + 10 annotates + 5 numerical guards +
+`manipulation_index` rollup). Latest release tag:
 [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5)
-shipped 2026-05-17 at commit `6d414a9b`. **Phase 4h in flight in PR
+shipped 2026-05-17 at commit `6d414a9b`. **Phase 4h shipped via PR
 #112** — OSAP signal replication (factor-exposure proxy) + PBO/DSR
 hard gate (PR #60 reuse) + rolling-12m IC observability + Path-b
 composite × OSAP blend (50/50 default, Top-5 still ranks raw
-composite per Rule 16). Test suite: see CI build artifact for current count.
+composite per Rule 16). Phase 4h.2 Part 1 (PR #118) + Part 2 (PR
+#124) followed with observability-only schema bumps. Test suite: see
+CI build artifact for current count.
 
 **Next deliverable** (pick by appetite — three tracks parallelize):
 **4.5e** (Form 4 insider, ~3w → v1.3.0) · **4h/4i/4j/4k** factor
@@ -198,23 +199,24 @@ integrations (OSAP / JKP / Qlib / IPCA, ~6w total → v1.1.0-phase4) ·
 writer). 4.5e weight slots already declared in
 `FLAG_WEIGHTS` so integration is a one-line uncomment.
 
-**Epic #125 Item 3** (pre-merge production simulation) in flight via
-[PR #140](https://github.com/dackclup/quantrank/pull/140) — closes the
-CI-green-but-not-correct gap (Phase 4h.2 Part 1 silent-drop #116 was
-the forcing example). PR 1 ships the workflow harness
+**Epic #125 Item 3** (pre-merge production simulation) — **PR 1 of 2
+shipped** via [PR #140](https://github.com/dackclup/quantrank/pull/140)
+on 2026-05-20 at commit `a52aa2de`. PR 1 landed the workflow harness
 (`.github/workflows/pre-merge-prod-sim.yml`): warm-cache restore via
 the cron's `cache-v4` key + `python -m compute.main` against the PR
 branch + sticky PR comment with duration / universe / schema / commit
 + PR-branch output uploaded as `pr-<n>-compute-output` artifact (14-
-day retention). PR 2 adds the per-ticker composite-score diff vs main
-+ top-10 movers table appended to the same comment.
+day retention). Dogfoods on the next PR touching `compute/scoring/**`
+or `compute/features/**`. **PR 2 next** — adds the per-ticker
+composite-score diff vs main + top-10 movers table appended to the
+same comment, closing Item 3 entirely.
 
-PR #140 also vendors Karpathy's **LLM Wiki** pattern gist as a
+PR #140 also vendored Karpathy's **LLM Wiki** pattern gist as a
 reference skill at `.claude/skills/karpathy-llm-wiki/SKILL.md`
 (license-pending — gist has no declared LICENSE but explicit copy-
 paste-to-your-LLM-agent permission embedded; see
 `THIRD_PARTY_NOTICES.md` § karpathy-llm-wiki). Reference-only — not
-instantiated as a QuantRank wiki. Skill inventory bumped 37 → 38.
+instantiated as a QuantRank wiki. Skill inventory: 38.
 
 See [`PHASE_STATUS.md`](PHASE_STATUS.md) for the canonical
 chronological tracker — keep this section under 15 lines and let

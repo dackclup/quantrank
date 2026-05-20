@@ -1,6 +1,7 @@
 ---
 name: branch-collision-check
-description: Preflight check for QuantRank worker sessions handed off via a
+description: >
+  Preflight check for QuantRank worker sessions handed off via a
   prompt. Lists active claude/* branches + recent merged PRs (last 48h) and
   flags scope-keyword collisions so a duplicate PR (like #123, closed as a
   duplicate of #119+#121 after 100% wasted effort) doesn't reach Draft. Pure

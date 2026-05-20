@@ -12,8 +12,12 @@ sub-directories like `phase-N/`. So this directory has two
 populations:
 
 - **Loaded skills** (sit flat under `.claude/skills/<name>/SKILL.md`) —
-  10 QuantRank cross-phase skills + 17 vendored Anthropic skills =
-  27 invocation-triggerable skills total
+  see [`CLAUDE.md`](../../CLAUDE.md) §Layout row for the canonical
+  breakdown (currently 38 invocation-triggerable skills: 12 QuantRank
+  operational + 6 QR-origin portable + 6 Anthropic vendored + 9
+  external MIT vendored + 5 external license-pending). Bump that
+  CLAUDE.md row when adding/removing a top-level skill; this file
+  references rather than duplicates the count to avoid drift.
 - **Planning documents** (nested under `phase-N/<name>/PLAN.md`) —
   roadmap docs for skills that don't yet exist. Renamed from
   `SKILL.md` to `PLAN.md` to honestly reflect that Claude Code does
