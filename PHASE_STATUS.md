@@ -13,43 +13,40 @@
 | 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → **v1.5** | ⚪ not started |
 | 8 | Universe expansion (S&P 1500) | ⚪ not started |
 
-**Current focus**: **🎉 v1.2.0-phase4.5 SHIPPED 2026-05-17** —
-[release](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5)
-at commit `6d414a9b`. Production schema `0.8.0-phase4.5f`; latest
-production run is `b1588b2a` (run #51, 5m14s warm-cache).
+## Current state (2026-05-20)
+
+| Field | Value |
+|---|---|
+| Schema | **`0.9.2-phase4h.2`** (PR #124, multi-port OSAP adapter) |
+| Defense layer | **17** (7 vetoes + 10 annotates + 5 numerical guards + `manipulation_index` rollup) |
+| Latest release tag | [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5) — 2026-05-17 at `6d414a9b` |
+| Production run | `b1588b2a` (run #51, 5m14s warm-cache; verified Section A-H) |
+| Universe | 502 stocks (S&P 500 minus 1 delisting) |
+| Skill inventory | 38 invocation-triggerable + phase planning docs |
+
+**Recently merged** (last 7):
+- PR #146 — Skill description audit + light polish (Optimization PR F)
+- PR #145 — SKILL.md restructure + TOC + Rules-at-a-glance (Optimization PR E)
+- PR #144 — WORKFLOW.md archive Phase 0-3 → `docs/archived/` (Optimization PR D)
+- PR #143 — AGENTS.md sync + dedup with CLAUDE.md (Optimization PR C)
+- PR #142 — CLAUDE.md token diet 236 → 172 lines (Optimization PR B)
+- PR #141 — `.md` drift fix + YAML frontmatter fix (Optimization PR A)
+- PR #140 — Pre-merge production simulation harness (Epic #125 Item 3 PR 1 of 2) + Karpathy LLM-Wiki
+
+**`.md` optimization PR G in flight** — PHASE_STATUS.md restructure: this "Current state" summary block hoists the immediate state to the top so Claude / contributors don't have to scroll the chronological history below to know where the project is.
 
 **Next deliverables** (parallelizable, pick by appetite):
 
-1. **4.5e — Form 4 insider clustering** (~420 LOC, ~3 weeks) —
-   `insider_sell_cluster` + `c_suite_unusual_sell` annotates;
-   reserved-slot weights already in `compute/scoring/manipulation_
-   index.py::FLAG_WEIGHTS` so integration is a one-line uncomment.
-   Tag `v1.3.0` after merge.
-2. **4h / 4i / 4j / 4k — Factor integrations** (OSAP / JKP / Qlib /
-   IPCA, ~6 weeks total) — each gated by PR 4b §2 PBO/DSR.
-   Disjoint code paths from 4.5e so can ship in parallel. Tag
-   `v1.1.0-phase4` after all four merge (back-numbered relative to
-   v1.2.0 since factor work was originally Phase 4 scope).
-3. **Phase 5 — ML meta-learner** (~10-12 weeks) — LightGBM +
-   Triple-Barrier + Meta-Labeling + Conformal Prediction; also
-   unblocks PR 4b §3 IC-decay writer (issue #75).
+1. **Epic #125 Item 3 PR 2** — composite-score diff vs main + top-10 movers comment appended to PR #140's sticky comment (closes Item 3)
+2. **Phase 4.5e — Form 4 insider clustering** (~420 LOC, ~3w → `v1.3.0`); reserved-slot weights already declared in `FLAG_WEIGHTS`
+3. **Phase 4i.1 / 4j.1 / 4k.1 — Factor integrations** (JKP / Qlib / IPCA; ~1-2w each → `v1.1.0-phase4`); 4i.1 license-review-required per #115
+4. **Phase 5 — ML meta-learner** (~10-12w); also unblocks PR 4b §3 IC-decay writer (#75)
 
-**In flight (2026-05-18)**: OSAP scout PR — `factors`
-optional-dependency extra + `compute/ingest/osap.py` skeleton + 6
-smoke tests. Validates `openassetpricing==0.0.2` package install +
-`OpenAP` API surface in CI before Phase 4h commits to the full
-~1,160 LOC integration. NOT wired into composite scoring. Discovered
-real schema = `signalname / port / date / ret / signallag / Nlong /
-Nshort` (differs from the hypothetical schema in the OSAP PLAN —
-Phase 4h must derive long-short from `port=01` vs `port=10`).
+**Open issues**: #15 (fundamentals throttling) · #41 (Next.js 14 → 16 CVEs) · #67 (Damodaran CoE Phase 5+) · #75 (PR 4b §3 IC-decay, Phase-5-blocked) · #115 (JKP license review) · #125 (process hygiene epic, Item 3 in flight) · #130 (quarterly cohort-threshold review) · #137 (9arm-skills license clarification)
 
-**4 open Phase 4+ issues**: #15 (fundamentals throttling) · #41
-(Next.js 14 → 16 CVEs) · #67 (Damodaran CoE Phase 5+) · #75 (PR 4b
-§3 — Phase-5-blocked). Post-v1.2 issues #103 (loss_avoidance
-universe mismatch) and #104 (tag-naming inconsistency) both closed
-2026-05-17 — #103 documented as deferred-but-tracked under
-manipulation_index reserved-slot logic; #104 resolved via hybrid
-Path A/B alias tag `v1.0.0-phase3e`.
+---
+
+## Chronological history
 
 **Tooling note (2026-05-17, post-v1.2)**: Claude Code MCP connectors
 added for Vercel + Supabase + Sentry (Sentry SDK wiring deferred to

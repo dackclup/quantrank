@@ -138,9 +138,10 @@ release tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releas
 (2026-05-17, `6d414a9b`).
 
 **Recently merged**:
+- [PR #146](https://github.com/dackclup/quantrank/pull/146) —
+  Skill description audit + light polish (Optimization PR F)
 - [PR #145](https://github.com/dackclup/quantrank/pull/145) —
-  SKILL.md restructure + TOC + Rules-at-a-glance (Optimization PR E);
-  641 → 574 lines
+  SKILL.md restructure + TOC + Rules-at-a-glance (Optimization PR E)
 - [PR #144](https://github.com/dackclup/quantrank/pull/144) —
   WORKFLOW.md archive Phase 0-3 → docs/archived/ (Optimization PR D)
 - [PR #143](https://github.com/dackclup/quantrank/pull/143) —
@@ -150,14 +151,13 @@ release tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releas
 - [PR #141](https://github.com/dackclup/quantrank/pull/141) — `.md`
   drift fix + YAML frontmatter fix (Optimization PR A)
 
-**`.md` optimization PR F in flight** — skill description audit ×18
-QR-origin skills. Audit found all descriptions are well-formed
-(parseable YAML, TRIGGER + SKIP clauses present); applied light
-polish to 4 long ones (pr-quality-gate, pr-iteration-flow,
-phase-status-bump, verify-production-output) — cut redundant "ALSO
-use" clauses that duplicate the first TRIGGER list + drift refs +
-added Thai trigger phrases. Save ~650 chars (~162 tokens) per
-session-start. Vendored skills (20) FROZEN per upstream pact.
+**`.md` optimization PR G in flight (LAST in sequence)** —
+PHASE_STATUS.md restructure: hoisted a "Current state" summary block
+to the top (schema · defense · release · recently-merged · in-flight ·
+next deliverables · open issues) so future sessions reading
+PHASE_STATUS.md don't have to parse 900 lines of chronological history
+to find the immediate state. Chronological detail below the summary
+stays intact.
 
 **Next deliverables** (pick by appetite):
 - **Epic #125 Item 3 PR 2** — composite-score diff vs main + top-10
