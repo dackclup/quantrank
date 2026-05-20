@@ -57,6 +57,45 @@ repo is the codification of those observations into a Claude Code skill.
 
 ---
 
+## karpathy-llm-wiki (Claude Code reference doc)
+
+- **Source**: <https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f>
+- **Author**: Andrej Karpathy
+- **License**: NONE DECLARED on the gist. Vendored under the gist's
+  explicit usage permission embedded in the gist text itself:
+  > "This is an idea file, it is designed to be copy pasted to your own
+  > LLM Agent (e.g. OpenAI Codex, Claude Code, OpenCode / Pi, or etc.).
+  > Its goal is to communicate the high level idea, but your agent will
+  > build out the specifics in collaboration with you."
+  This is an explicit invitation to copy and use; treat as the
+  vendoring basis until/unless Karpathy declares a formal license on
+  the gist.
+- **Vendored at**: `.claude/skills/karpathy-llm-wiki/SKILL.md`
+- **Vendored date**: 2026-05-20
+- **Vendored revision**: gist content as displayed on 2026-05-20 (gists
+  do not expose stable commit SHAs in the way repos do — record the
+  date and quote the in-text permission as the audit trail)
+
+### Why no MIT block
+
+Unlike `karpathy-guidelines` (vendored from `multica-ai/andrej-karpathy-skills`
+which declares MIT), this gist has no declared license. The vendoring
+basis is the in-text copy-paste permission, not a standard OSS license.
+If Karpathy later adds a `LICENSE` block to the gist or repos this
+content elsewhere with a formal license, update this section and the
+`SKILL.md` frontmatter to reflect the declared terms.
+
+### Attribution note
+
+The LLM Wiki pattern is Karpathy's design idea, communicated as an
+abstract pattern rather than a specific implementation. The gist
+explicitly says *"share it with your LLM agent and work together to
+instantiate a version that fits your needs"* — vendoring this here
+makes the pattern available to QuantRank's Claude Code sessions as a
+reference, not as a triggered behavioral skill in the usual sense.
+
+---
+
 ## mattpocock-skills (Claude Code skills)
 
 - **Source**: <https://github.com/mattpocock/skills>
