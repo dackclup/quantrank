@@ -300,8 +300,9 @@ note cross-tool-specific points only:
   reconciled list in CLAUDE.md §Phase status.
 - **Phase 1.6 tracker filed as issue #155** (2026-05-20) — deferred
   `tier2_enabled: bool` metadata field carried forward from closed
-  issue #117 / PR #149. Implementation pending — either Phase 1
-  follow-up patch or fold into Phase 2's 0.10.0 schema bump.
+  issue #117 / PR #149. Implementation lands as a Phase 1 follow-up
+  patch (this PR; see "in flight" entry below); 0.10.0 schema bump
+  preserved for Phase 2 structural work.
 - **Phase 1.4 + 1.5 merged via PR #156** (2026-05-20) —
   `verify-production-output/helper.py` gained Section J annotate-flag
   auto-tabulator (so the 2026-08-19 quarterly audit reads the table
@@ -327,8 +328,8 @@ note cross-tool-specific points only:
   from PR #157): local sharpened TRIGGER descriptions on 5 mattpocock-*
   skills win on conflict; upstream wins on body. Cross-tool agents
   doing skill maintenance should invoke this before pulling upstream.
-- **3-skill bundle in flight (off epic #150 critical path)** — three
-  new project-internal workflow skills: `claude-md-lockstep-check`
+- **3-skill bundle merged via PR #159** (2026-05-20) — three new
+  project-internal workflow skills: `claude-md-lockstep-check`
   (preflight for the "ship with every PR" CLAUDE.md+AGENTS.md
   invariant), `release-tag` (end-to-end release workflow codifying
   the `vX.Y.Z-phaseN` convention), and `quarterly-cohort-audit`
@@ -337,6 +338,16 @@ note cross-tool-specific points only:
   Copilot / Cursor / Devin don't auto-invoke them but should still
   follow the workflows when working in those domains. Skill count
   39 → 42.
+- **Phase 1.6 in flight (this PR, closes #155)** — `tier2_enabled: bool`
+  field added to `Metadata` schema (sourced from
+  `compute/scoring/tier2._EIGHT_K_DEFENSES_ENABLED` at writer time);
+  `verify-production-output/helper.py` Section B now branches on the
+  explicit flag instead of inferring from `tier2_coverage_pct > 5%`,
+  with legacy-snapshot fallback so older `metadata.json` files still
+  verify. Schema bump `0.9.2-phase4h.2` → `0.9.3-phase4h.3`. Cross-
+  tool agents: when reading `metadata.json` from 0.9.3+, prefer
+  `metadata.tier2_enabled` over inferring from `tier2_coverage_pct`;
+  treat missing / null as "assume enabled" (matches Pydantic default).
 
 ## Claude-Code-specific tooling
 

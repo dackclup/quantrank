@@ -141,6 +141,37 @@ def test_section_b_disabled_with_fires_fails(helper, capsys):
     assert "flag broken?" in capsys.readouterr().out
 
 
+# Phase 1.6 (issue #155) — explicit `tier2_enabled` field in metadata
+# overrides the coverage-based inference. Covers the two cases the
+# legacy heuristic could not distinguish:
+#   1. tier2_enabled=False but coverage non-zero (impossible normally,
+#      but tests the precedence is on the flag, not coverage)
+#   2. tier2_enabled=True but coverage near 0 (real failure mode where
+#      8-K fetch returned nothing — should NOT be treated as disabled)
+
+
+def test_section_b_explicit_flag_overrides_coverage_when_disabled(helper, capsys):
+    stocks = [_stock(f"S{i}") for i in range(100)]
+    stocks[0]["tier2_events"]["non_reliance_filing"] = True
+    metadata = {"tier2_coverage_pct": 99, "tier2_enabled": False}
+    w, f = helper.section_b_tier2(stocks, metadata)
+    assert f >= 1
+    out = capsys.readouterr().out
+    assert "flag broken?" in out
+    assert "tier2_enabled=False" in out
+
+
+def test_section_b_explicit_flag_enabled_with_zero_coverage(helper, capsys):
+    stocks = [_stock(f"S{i}") for i in range(100)]
+    stocks[0]["tier2_events"]["non_reliance_filing"] = True
+    metadata = {"tier2_coverage_pct": 0, "tier2_enabled": True}
+    w, f = helper.section_b_tier2(stocks, metadata)
+    assert (w, f) == (0, 0)
+    out = capsys.readouterr().out
+    assert "flag broken?" not in out
+    assert "Tier-2 disabled" not in out
+
+
 # ---------------------------------------------------------------------------
 # Section J — annotate-flag inventory (new in Phase 1.5)
 # ---------------------------------------------------------------------------
