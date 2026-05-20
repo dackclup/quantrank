@@ -30,7 +30,7 @@ backing.
 | `frontend/components/` | React UI (RankingTable, FairPriceBarChart, …) |
 | `frontend/public/data/` | Compute output: `metadata.json` + `rankings.json` + `stocks/<TICKER>.json` |
 | `tests/` | pytest suite (offline + `@network` gated; see CI for current count) |
-| `.claude/skills/` | 37 invocation-triggerable skills (12 QuantRank operational + 6 QR-origin portable + 6 Anthropic vendored + 9 external MIT vendored — Karpathy + 8 mattpocock + 4 thananon/9arm-skills under license-pending disclosure, see `THIRD_PARTY_NOTICES.md` § 9arm-skills + issue #137) plus phase planning docs |
+| `.claude/skills/` | 38 invocation-triggerable skills (12 QuantRank operational + 6 QR-origin portable + 6 Anthropic vendored + 9 external MIT vendored — Karpathy guidelines + 8 mattpocock + 5 external license-pending — 4 thananon/9arm-skills under disclosure see issue #137 + 1 Karpathy LLM-Wiki gist see `THIRD_PARTY_NOTICES.md` § karpathy-llm-wiki) plus phase planning docs |
 
 ## Commands
 
@@ -208,6 +208,13 @@ branch + sticky PR comment with duration / universe / schema / commit
 + PR-branch output uploaded as `pr-<n>-compute-output` artifact (14-
 day retention). PR 2 adds the per-ticker composite-score diff vs main
 + top-10 movers table appended to the same comment.
+
+PR #140 also vendors Karpathy's **LLM Wiki** pattern gist as a
+reference skill at `.claude/skills/karpathy-llm-wiki/SKILL.md`
+(license-pending — gist has no declared LICENSE but explicit copy-
+paste-to-your-LLM-agent permission embedded; see
+`THIRD_PARTY_NOTICES.md` § karpathy-llm-wiki). Reference-only — not
+instantiated as a QuantRank wiki. Skill inventory bumped 37 → 38.
 
 See [`PHASE_STATUS.md`](PHASE_STATUS.md) for the canonical
 chronological tracker — keep this section under 15 lines and let

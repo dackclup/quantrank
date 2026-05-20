@@ -303,6 +303,15 @@ export function FairPriceCard(props) {  // no types
   commit + PR-branch output uploaded as `pr-<n>-compute-output`
   artifact (14-day retention). PR 2 adds the per-ticker
   composite-score diff vs main + top-10 movers table.
+- **Karpathy LLM Wiki gist** vendored as a reference skill at
+  `.claude/skills/karpathy-llm-wiki/SKILL.md` (same PR #140) —
+  license-pending: gist has no declared LICENSE but explicit
+  copy-paste-to-your-LLM-agent permission in the gist body; see
+  `THIRD_PARTY_NOTICES.md` § karpathy-llm-wiki. Reference-only — does
+  **not** instantiate a QuantRank wiki. Non-Claude runtimes
+  (Copilot / Cursor / Devin) can read the file directly but it has no
+  procedural triggers in their skill systems (it's a Claude Code
+  `SKILL.md` with description-based dispatch).
 
 ## Claude-Code-specific tooling
 
