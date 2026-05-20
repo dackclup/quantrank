@@ -447,6 +447,11 @@
       "required": false,
       "default": "<factory:list>"
     },
+    "valuation_methods_applicable": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
     "valuation_warnings": {
       "type": "list[str]",
       "required": false,

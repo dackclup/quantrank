@@ -338,7 +338,7 @@ note cross-tool-specific points only:
   Copilot / Cursor / Devin don't auto-invoke them but should still
   follow the workflows when working in those domains. Skill count
   39 → 42.
-- **Phase 1.6 in flight (this PR, closes #155)** — `tier2_enabled: bool`
+- **Phase 1.6 merged via PR #160** (2026-05-20) — `tier2_enabled: bool`
   field added to `Metadata` schema (sourced from
   `compute/scoring/tier2._EIGHT_K_DEFENSES_ENABLED` at writer time);
   `verify-production-output/helper.py` Section B now branches on the
@@ -348,6 +348,18 @@ note cross-tool-specific points only:
   tool agents: when reading `metadata.json` from 0.9.3+, prefer
   `metadata.tier2_enabled` over inferring from `tier2_coverage_pct`;
   treat missing / null as "assume enabled" (matches Pydantic default).
+  Closed #155.
+- **Phase 2.1 in flight (this PR)** — `valuation_methods_applicable: int`
+  field added to `StockDetail` schema (top-level, mirrored inside
+  `fair_price` dict for nested-consumer convenience). Counted by
+  `compute/valuation/ensemble._count_applicable_non_outliers` as the
+  positive-framed inverse of `extreme_*_estimate` warning count.
+  Schema bump `0.9.3-phase4h.3` → `0.9.4-phase4h.4`. Additive only —
+  `extreme_*_estimate` flags stay in `valuation_warnings` for
+  back-compat with `loss_chance.py` + `FairPriceBarChart.tsx`. Cross-
+  tool agents: when reading per-stock JSON from 0.9.4+, prefer
+  `stock.valuation_methods_applicable` over counting `extreme_*_estimate`
+  flags; treat missing / null as "unknown" (legacy snapshot).
 
 ## Claude-Code-specific tooling
 

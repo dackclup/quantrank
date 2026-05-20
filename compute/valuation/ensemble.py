@@ -85,6 +85,15 @@ class EnsembleResult:
     high: float | None
     mos_pct: float | None
     valuation_warnings: list[str] = field(default_factory=list)
+    # Epic #150 Phase 2.1 (issue #150) — positive-framed count of
+    # valuation methods that produced a non-outlier applicable estimate
+    # for this ticker. Inverse of the count of ``extreme_*_estimate``
+    # warnings emitted; surfaces the method-applicability signal
+    # explicitly so downstream consumers (UI, filtering, audits)
+    # don't have to derive it from the warning list. Always in
+    # ``[0, len(METHOD_NAMES)]``; ``0`` means every method either
+    # skipped or produced an outlier estimate.
+    valuation_methods_applicable: int = 0
 
 
 def _all_methods_skipped(reason: str) -> dict[str, FairPriceMethodResult]:
@@ -131,6 +140,30 @@ def _classify_outliers(
             outliers.add(name)
             warnings.append(f"extreme_{name}_estimate")
     return (outliers, warnings)
+
+
+def _count_applicable_non_outliers(
+    methods: dict[str, FairPriceMethodResult],
+    extreme_warnings: list[str],
+) -> int:
+    """Count methods that produced an applicable, non-outlier estimate.
+
+    Epic #150 Phase 2.1 (issue #150) — the positive-framed inverse of
+    ``extreme_*_estimate`` warning count. ``extreme_warnings`` is the
+    list already produced by :func:`_classify_outliers` (avoids
+    recomputing the outlier set), and the result lands in
+    :class:`EnsembleResult.valuation_methods_applicable`.
+    """
+    outlier_names = {
+        w[len("extreme_"):-len("_estimate")]
+        for w in extreme_warnings
+        if w.startswith("extreme_") and w.endswith("_estimate")
+    }
+    return sum(
+        1
+        for name, r in methods.items()
+        if r.applicable and r.value is not None and name not in outlier_names
+    )
 
 
 def _aggregate_methods(
@@ -432,6 +465,9 @@ def compute_fair_price_ensemble(
             high=aggregates["high"],
             mos_pct=aggregates["mos_pct"],
             valuation_warnings=valuation_warnings,
+            valuation_methods_applicable=_count_applicable_non_outliers(
+                methods, extreme_warnings
+            ),
         ),
         [],
     )
@@ -543,6 +579,7 @@ def ensemble_result_to_dict(r: EnsembleResult) -> dict:
         "high": r.high,
         "mos_pct": r.mos_pct,
         "valuation_warnings": list(r.valuation_warnings),
+        "valuation_methods_applicable": r.valuation_methods_applicable,
     }
 
 
