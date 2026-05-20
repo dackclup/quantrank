@@ -186,6 +186,17 @@ integrations (OSAP / JKP / Qlib / IPCA, ~6w total → v1.1.0-phase4) ·
 writer). 4.5e weight slots already declared in
 `FLAG_WEIGHTS` so integration is a one-line uncomment.
 
+**Epic #125 Item 3** (pre-merge production simulation) in flight via
+[PR #140](https://github.com/dackclup/quantrank/pull/140) — closes the
+CI-green-but-not-correct gap (Phase 4h.2 Part 1 silent-drop #116 was
+the forcing example). PR 1 ships the workflow harness
+(`.github/workflows/pre-merge-prod-sim.yml`): warm-cache restore via
+the cron's `cache-v4` key + `python -m compute.main` against the PR
+branch + sticky PR comment with duration / universe / schema / commit
++ PR-branch output uploaded as `pr-<n>-compute-output` artifact (14-
+day retention). PR 2 adds the per-ticker composite-score diff vs main
++ top-10 movers table appended to the same comment.
+
 See [`PHASE_STATUS.md`](PHASE_STATUS.md) for the canonical
 chronological tracker — keep this section under 15 lines and let
 PHASE_STATUS.md own the per-sub-PR detail.
