@@ -31,7 +31,7 @@ backing.
 | `frontend/public/data/` | Compute output: `metadata.json` + `rankings.json` + `stocks/<TICKER>.json` |
 | `tests/` | pytest suite (526 tests, 3 `@network` gated) |
 | `.claude/skills/` | 24 invocation-triggerable skills (7 QuantRank + 17 Anthropic vendored) plus phase planning docs |
-| `.claude/agents/` | 2 project-specific subagents (sonnet) — `schema-sentinel` (deterministic schema-triple drift check) + `quantrank-reviewer` (full review against project invariants). Read-only. See [`.claude/agents/README.md`](.claude/agents/README.md) for the roster + author conventions + the deliberate "two-agent baseline" reasoning. |
+| `.claude/agents/` | 3 project-specific subagents (all sonnet, all read-only) — `schema-sentinel` (deterministic schema-triple drift), `quantrank-reviewer` (code review against project invariants), `stock-detail-auditor` (data correctness of the per-stock JSON the frontend renders: range / consistency / Rule 16 invariant / known-issue overlap; prefilter caps LLM-judgment at ≤ 20 tickers per run). See [`.claude/agents/README.md`](.claude/agents/README.md) for roster + author conventions + future slots. |
 | `.claude/hooks/` | 1 PostToolUse hook wired by `.claude/settings.json`: `schema-reminder.sh` injects an `additionalContext` reminder when Write/Edit touches any file in the Pydantic↔TS↔snapshot triple. Bash + `jq`, 5-second timeout, fail-open on missing deps / empty stdin. |
 
 ## Commands
@@ -84,6 +84,7 @@ cost zero tokens) cover the per-edit reminders.
 | Edit to `compute/output/schemas.py` / `frontend/lib/types.ts` / `frontend/lib/schema-snapshot.json` | **Hook fires** (`schema-reminder.sh`) — no agent spawn | zero |
 | User says "ก่อน push" / "ready to push" / "open PR" / "mark ready" / "ตรวจก่อน push" | Spawn `quantrank-reviewer` (sonnet). If schema triple was touched on the branch, also spawn `schema-sentinel` in parallel. | one or two sonnet spawns |
 | User explicitly asks "schema in sync?" / "ตรวจ schema" / Draft PR touches the triple | Spawn `schema-sentinel` (sonnet) | one sonnet spawn |
+| Weekly compute cron lands green on `main` / `workflow_dispatch` completes / pre-release / user says "ตรวจ data หุ้น" / "check stock data correctness" / "audit the output" | Spawn `stock-detail-auditor` (sonnet) — prefilter caps LLM-judgment at ≤ 20 tickers | one sonnet spawn (bounded) |
 | User says "full review" / "deep review" / diff > 200 lines on `compute/scoring/` | Spawn `quantrank-reviewer` with `model: opus` override | one opus spawn (rare) |
 
 ### Spawn discipline

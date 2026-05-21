@@ -3,15 +3,19 @@
 Project-specific Claude Code subagents. Spawned via the `Agent` tool
 with a separate context window. Read-only by default.
 
-## Roster (lean baseline)
+## Roster (lean baseline + 1 data-correctness reviewer)
 
 | Agent | Model | When it fires | Cost class |
 |---|---|---|---|
 | `schema-sentinel` | sonnet | Schema-triple edit + "ready to push" | low (1 Bash + 1 Read) |
 | `quantrank-reviewer` | sonnet | "ready to push" / Draft → Ready / explicit ask | medium (full diff walk) |
+| `stock-detail-auditor` | sonnet | Post-cron / pre-release / "ตรวจ data หุ้น" / "check stock data correctness" | bounded (Step 2 prefilter caps Step 3 at ≤ 20 tickers) |
 
-Two-agent baseline by design. Add more only when a real, repeated
-pain point justifies the per-spawn token cost. See
+Three-agent baseline. `stock-detail-auditor` covers what
+`quantrank-reviewer` deliberately won't: data correctness of the
+per-stock JSON the frontend renders (range / consistency / Rule 16
+invariants / known-issue overlap). Add more agents only when a real,
+repeated pain point justifies the per-spawn token cost. See
 [`CLAUDE.md`](../../CLAUDE.md) §Auto-routing policy for the firing
 cues and the gate-moment discipline that keeps spawn count low.
 
@@ -37,8 +41,12 @@ cues and the gate-moment discipline that keeps spawn count low.
 The lean baseline deliberately skips these. Add only when usage shows
 the cost is justified:
 
+- `methodology-scientist` — academic-prior validation (opus; fires
+  on threshold / weight edits in `compute/scoring/risk_overlay.py` /
+  `compute/scoring/manipulation_index.py`); covers FORMULA
+  correctness, which `stock-detail-auditor` deliberately does not
 - `edgar-debugger` — SEC throttling / retry policy debug
-- `defense-layer-auditor` — risk-overlay output diff
+- `defense-layer-auditor` — risk-overlay output diff vs baseline
 - `security-reviewer` — pre-release CVE + secret scan
 - `release-captain` — version bump + tag + GitHub release ladder
 

@@ -289,7 +289,7 @@ pre-commit hooks + manual review instead.
   Bash + `jq`, 5-second timeout, fail-open on missing deps /
   empty stdin.
 
-**Subagents (lean baseline, both sonnet)**:
+**Subagents (lean baseline + 1 data-correctness reviewer, all sonnet)**:
 
 - `schema-sentinel` — deterministic schema-triple drift check.
   Reads the three schema files and runs
@@ -297,13 +297,23 @@ pre-commit hooks + manual review instead.
   `--update-snapshot` itself.
 - `quantrank-reviewer` — full diff review against project
   invariants (Rule 16 annotate-and-veto, schema triple, tenacity
-  retry policy, EDGAR rate-limit, frontend/public/data/
+  retry policy, EDGAR rate-limit, `frontend/public/data/`
   read-only).
+- `stock-detail-auditor` — data correctness of the per-stock
+  JSON the frontend renders. Pre-filters the ~502-ticker
+  universe deterministically (range / consistency / Rule 16
+  invariant / known-issue overlap with #7 / #10 / #11), then
+  does LLM-judgment review on ≤ 20 flagged tickers. Read-only;
+  never modifies `frontend/public/data/`. Fires at hand-off
+  moments (post-cron, pre-release, "ตรวจ data หุ้น"), not on
+  every code edit. Covers OUTPUT correctness; formula
+  correctness (Altman Z weights, Beneish M coefficients, etc.)
+  is a separate concern handled outside the agent layer today.
 
-Both fire at gate moments only (`ready to push` / `Draft → Ready` /
-explicit ask) — not on every edit. See [`CLAUDE.md`](CLAUDE.md)
-§Auto-routing policy for the firing cues and the "lean by design"
-token-economy reasoning.
+All fire at gate moments only (`ready to push` / `Draft → Ready` /
+post-cron / explicit ask) — not on every edit. See
+[`CLAUDE.md`](CLAUDE.md) §Auto-routing policy for the firing cues
+and the "lean by design" token-economy reasoning.
 
 ## Phase + version state
 
