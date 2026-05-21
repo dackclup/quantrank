@@ -125,6 +125,16 @@ export type Metadata = {
   // Rule 18 observability surface shipped alongside the flag itself
   // so the next cron's firing rate is visible at-a-glance.
   share_count_extraction_missing_count?: number | null;
+  // Issue #177 (0.9.7-phase4h.7) — count of tickers where
+  // `extreme_estimate_majority` fired on this cron run (≥
+  // `EXTREME_MAJORITY_THRESHOLD = 3` of 6 fair-price methods past
+  // the Defense #4 5×/0.2× outlier guard — Huber 1981 §1.4
+  // breakdown-point cohort). Optional + nullable: absent / null on
+  // legacy snapshots pre-0.9.7. Rule 18 observability surface
+  // shipped alongside the flag itself so the next cron's firing
+  // rate is visible at-a-glance (gates the follow-up median-
+  // exclusion PR per methodology-scientist Mode B 2026-05-21).
+  extreme_estimate_majority_count?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors

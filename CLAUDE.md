@@ -238,9 +238,9 @@ that fired per-diff.
 
 ## Phase status
 
-Current schema **`0.9.6-phase4h.6`** · defense layer **19 declared
-veto+annotate flags** of [**29 boolean flags actually emitted**](https://github.com/dackclup/quantrank/issues/130#issuecomment-4496605644)
-(7 active vetoes + 12 annotates + 5 method-applicability +
+Current schema **`0.9.7-phase4h.7`** · defense layer **20 declared
+veto+annotate flags** of [**30 boolean flags actually emitted**](https://github.com/dackclup/quantrank/issues/130#issuecomment-4496605644)
+(7 active vetoes + 13 annotates + 5 method-applicability +
 5 informational; epic [#150](https://github.com/dackclup/quantrank/issues/150)
 Phase 2 splits the method-applicability flags out of `manipulation_index`).
 Plus 5 numerical guards + `manipulation_index` rollup. Latest release
@@ -664,7 +664,8 @@ Annotate-only per `portable-annotate-before-veto`. Schema bumped
 `Metadata.share_count_extraction_missing_count: int | None` Rule 18
 diagnostic. Defense layer 28 → 29 emitted flags. Tests 1031 → 1040.
 
-**Issue #176 root-cause fallback in flight (this PR)** — actually
+**Issue #176 root-cause fallback merged via PR #182** (2026-05-21,
+`a6129011`) — actually
 RECOVERS the missing share count via per-filing XBRL dimensional-fact
 aggregation, removing the dependency on a follow-up after PR #181
 shipped only the visibility surface. Live SEC probe on STZ
@@ -696,6 +697,39 @@ semantic — when the fallback succeeds, `shares_outstanding` is no
 longer `None` so the annotate doesn't fire; when the fallback also
 fails (e.g., the filer has no 10-K or 10-Q with XBRL), the annotate
 fires and surfaces the gap.
+
+**Issue #177 extreme_estimate_majority annotate in flight (this PR)** —
+the `stock-detail-auditor` dry-run on the 2026-05-14 cron flagged 15
+tickers with `|fair_price.mos_pct| > 500%` (APP -1255% / DDOG -1354%
+/ AXON -1113% / TSLA -1280% / …). Per-method universe-wide audit
+showed Defense #4 outlier guard (`extreme_*_estimate`, the 5×/0.2×
+band) over-fires on RIM (36.1%) and Graham (24.0%) for high-growth /
+goodwill-heavy stocks. With 4-5 of 6 methods routinely extreme on
+the affected cohort, the ensemble's median (a 50% trimmed estimator
+over 6 samples) is past its Huber 1981 §1.4 breakdown point
+(⌊5/2⌋ = 2 outliers) and collapses to the low-cluster — APP shows
+`fair_price.median = $36` against `current_price = $482` (4 methods
+extreme, 2 surviving in the low cluster). New annotate
+`extreme_estimate_majority` fires when ≥
+`EXTREME_MAJORITY_THRESHOLD = 3` of the 6 methods emit
+`extreme_*_estimate`. **Annotate-only** per Rule 16 +
+`portable-annotate-before-veto` — the actual median-exclusion logic +
+a `fair_price.methods_excluded_from_median: list[str]` field lands in
+a follow-up PR after ≥ 1 cron's firing-rate observation (per
+methodology-scientist Mode B verdict 2026-05-21). Methodology
+verdict: median-exclusion is **literature-anchored** (Damodaran 2019
+*Investment Valuation* 3rd ed. Ch. 18 + Penman 2013 *FSA/SV* §7.4 +
+Huber 1981 *Robust Statistics* §1.4); threshold = 3 is **gut-feel
+with Huber breakdown-point rationale**; the 5×/0.2× per-method bands
+are **gut-feel only** and need a separate recalibration PR (RIM-
+specific or per-cohort) — NOT bundled here. Schema bumped
+`0.9.6-phase4h.6` → `0.9.7-phase4h.7` for the
+`Metadata.extreme_estimate_majority_count: int | None` Rule 18
+diagnostic (gates the follow-up median-exclusion PR — the next cron's
+universe-wide firing rate is what tells us whether to promote).
+Defense layer 29 → 30 emitted flags. Tests 1049 → 1059 (+10: 6
+threshold-branch unit tests + 3 full-ensemble integration tests + 1
+config-constant pin).
 
 **Phase 4a osap-import guard merged via PR #179** (2026-05-21) —
 surfaced by the 14-subagent self-audit on 2026-05-21 (`test-engineer` follow-up).

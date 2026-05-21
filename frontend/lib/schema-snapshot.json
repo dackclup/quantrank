@@ -32,6 +32,11 @@
       "required": true,
       "default": "<required>"
     },
+    "extreme_estimate_majority_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
     "fundamentals_coverage_pct": {
       "type": "float | None",
       "required": false,

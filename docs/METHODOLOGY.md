@@ -159,7 +159,7 @@ composite.
 | Sector exclusions | EV/EBITDA skipped for Financials; DCF skipped for Financials + Utilities; Quality pillar metrics gated by sector (`magic_formula`, `ebit_based_roic`, `gross_profitability`, `asset_turnover` per Greenblatt 2005) | Greenblatt; sector-method spec |
 | Data-quality $10K ceiling | If any method computes > $10,000/share → null all 6 + emit `data_quality_input_corruption`. Catches upstream ingestion bugs (e.g., `shares_outstanding` in wrong units) before user-visible nonsense. | Internal — Step 7.5 (post-spot-check) |
 
-### Annotate-only flags (7) — surfaced in `valuation_warnings` or `tier2_events`, no behavioral effect
+### Annotate-only flags (10) — surfaced in `valuation_warnings` or `tier2_events`, no behavioral effect
 
 - `goodwill_heavy` — TBVPS / BVPS_reported < 0.5 (cautions that
   reported book is misleading)
@@ -210,6 +210,27 @@ composite.
   legitimately uncomputable TBVPS still degrades to a null fair-price
   rather than a Top-5 ban. Promotion to veto deferred to the Q3
   2026-08-19 cohort audit after firing-rate confirmation.
+- `extreme_estimate_majority` _(Issue #177)_ — ≥
+  `config.EXTREME_MAJORITY_THRESHOLD = 3` of the 6 fair-price methods
+  fired `extreme_*_estimate` (Defense #4 5×/0.2× per-method outlier
+  guard) on this ticker. The ensemble's median is a 50% trimmed
+  estimator over 6 samples and tolerates only ⌊5/2⌋ = 2 outliers
+  before degrading (Huber 1981 *Robust Statistics* §1.4 breakdown-
+  point); at 3+ outliers the median collapses toward the low-cluster
+  (Damodaran 2019 *Investment Valuation* 3rd ed. Ch. 18 — discard
+  methods whose inputs fall outside their domain of applicability).
+  APP/DDOG/AXON/TSLA pattern from the 2026-05-14 cron: 4-5 methods
+  extreme-low against the current price, ensemble median ~$36 vs
+  current ~$482 — the per-method warnings already surface but the
+  median itself is hard to interpret. Annotate-only **for this PR**;
+  the actual median-exclusion logic + a
+  `fair_price.methods_excluded_from_median: list[str]` field land in
+  a follow-up PR after ≥ 1 cron's firing-rate observation. Threshold
+  provenance: GUT-FEEL with Huber 1981 breakdown-point rationale
+  (per methodology-scientist Mode B, 2026-05-21). The 5×/0.2× per-
+  method bands themselves are GUT-FEEL only — a separate
+  recalibration PR (RIM-specific or per-cohort) is queued for the Q3
+  2026-08-19 quarterly cohort audit.
 
 Phase 3e adds `beneish_high` and `dechow_f_high`.
 

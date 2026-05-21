@@ -449,6 +449,20 @@ def compute_fair_price_ensemble(
     aggregates, extreme_warnings = _aggregate_methods(methods, current_price)
     valuation_warnings.extend(extreme_warnings)
 
+    # Issue #177 — extreme_estimate_majority annotate. The median is a
+    # 50% trimmed estimator over 6 methods, so it tolerates ⌊5/2⌋ = 2
+    # outliers before degrading (Huber 1981 §1.4 breakdown-point). When
+    # ≥ EXTREME_MAJORITY_THRESHOLD of the 6 fire extreme_*_estimate, the
+    # median has passed its breakdown point and collapses toward the
+    # low-cluster — Damodaran 2019 Ch. 18 calls for discarding methods
+    # whose inputs fall outside their domain in this case. Annotate-only
+    # this PR per Rule 16 + portable-annotate-before-veto; the actual
+    # median-exclusion + ``fair_price.methods_excluded_from_median``
+    # field lands in a follow-up PR after ≥ 1 cron's firing-rate
+    # observation (per methodology-scientist Mode B, 2026-05-21).
+    if len(extreme_warnings) >= config.EXTREME_MAJORITY_THRESHOLD:
+        valuation_warnings.append("extreme_estimate_majority")
+
     # RIM value_trap_risk warning.
     if (
         not rim_app.applicable

@@ -27,7 +27,7 @@ FUNDAMENTALS_HISTORY_CACHE_DIR: Path = CACHE_DIR / "fundamentals_history"
 MODELS_DIR: Path = PROJECT_ROOT / "models"
 
 UNIVERSE: str = "SP500"
-SCHEMA_VERSION: str = "0.9.6-phase4h.6"
+SCHEMA_VERSION: str = "0.9.7-phase4h.7"
 
 PRICES_PERIOD: str = "5y"
 MAX_PARALLEL_FETCHES: int = 10
@@ -80,6 +80,23 @@ GOODWILL_HEAVY_RATIO: float = 0.5
 # (still in MEDIAN — robust to one outlier per RESEARCH §V-4).
 EXTREME_ESTIMATE_HIGH: float = 5.0
 EXTREME_ESTIMATE_LOW: float = 0.2
+
+# Issue #177 (0.9.7-phase4h.7) — Defense #4 majority annotate threshold.
+# The ensemble's median is a 50% trimmed estimator over 6 methods, so it
+# tolerates ⌊5/2⌋ = 2 outliers before degrading (Huber 1981 *Robust
+# Statistics* §1.4 breakdown-point). When 3 or more of the 6 methods
+# fire ``extreme_*_estimate``, the median is past its breakdown point
+# and collapses toward the low-cluster (Damodaran 2019 *Investment
+# Valuation* 3rd ed. Ch. 18 — discard methods whose inputs fall outside
+# their domain of applicability). The new annotate
+# ``extreme_estimate_majority`` fires at that threshold. Annotate-only
+# in this PR per Rule 16 + ``portable-annotate-before-veto`` — a
+# follow-up PR after ≥ 1 cron's firing-rate observation will add the
+# actual median-exclusion + a ``fair_price.methods_excluded_from_median``
+# field for transparency. Provenance: GUT-FEEL with Huber 1981
+# breakdown-point rationale (per methodology-scientist Mode B,
+# 2026-05-21).
+EXTREME_MAJORITY_THRESHOLD: int = 3
 
 # Data-quality sanity ceiling. No S&P 500 stock has a sensible fair price
 # > $10,000/share (BRK-A trades ~$700K but is not in the index; BRK-B is).

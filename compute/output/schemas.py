@@ -163,6 +163,17 @@ class Metadata(BaseModel):
     # requires the diagnostic ship in the same PR as the flag emission
     # so the first cron's firing rate is visible at-a-glance.
     share_count_extraction_missing_count: int | None = None
+    # Issue #177 (0.9.7-phase4h.7) — observability surface for the new
+    # `extreme_estimate_majority` annotate. Count of tickers where
+    # ≥ ``config.EXTREME_MAJORITY_THRESHOLD`` of the 6 fair-price
+    # methods fired Defense #4 (``extreme_*_estimate``) on this cron —
+    # i.e., the cohort whose ensemble median is past its Huber 1981
+    # §1.4 breakdown point. Nullable on legacy snapshots (pre-0.9.7);
+    # Rule 18 observability-before-wiring requires the diagnostic ship
+    # in the same PR as the flag emission so the first cron's firing
+    # rate is visible at-a-glance (gates the follow-up median-exclusion
+    # PR per methodology-scientist Mode B, 2026-05-21).
+    extreme_estimate_majority_count: int | None = None
 
 
 class RawMetrics(BaseModel):

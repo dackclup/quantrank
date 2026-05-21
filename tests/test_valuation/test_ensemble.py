@@ -642,6 +642,175 @@ def test_J7_hard_stale_path_yields_zero():
     assert result.valuation_methods_applicable == 0
 
 
+# -- K. extreme_estimate_majority (issue #177) -------------------------------
+#
+# Annotate-only flag: fires when ≥ ``config.EXTREME_MAJORITY_THRESHOLD``
+# (= 3) of the 6 methods produce ``extreme_*_estimate`` warnings — the
+# Huber 1981 §1.4 breakdown-point cohort where median-on-all degrades.
+# The flag is appended inside ``compute_fair_price_ensemble`` after the
+# ``_aggregate_methods`` call; tests below build per-method dicts and
+# invoke the threshold-comparison branch via a tiny adapter rather than
+# the full per-method computation path (which would require crafting
+# 6 simultaneously-extreme inputs against 3 different per-method
+# gates). This keeps the threshold semantics testable in isolation.
+
+
+def _emit_majority_flag(extreme_warnings: list[str]) -> bool:
+    """Mirror the threshold branch in ``compute_fair_price_ensemble`` —
+    keeps the test against the actual config constant so a future bump
+    of EXTREME_MAJORITY_THRESHOLD flips these tests automatically."""
+    return len(extreme_warnings) >= config.EXTREME_MAJORITY_THRESHOLD
+
+
+def test_K1_silent_on_zero_extreme():
+    assert _emit_majority_flag([]) is False
+
+
+def test_K2_silent_on_one_extreme():
+    assert _emit_majority_flag(["extreme_graham_estimate"]) is False
+
+
+def test_K3_silent_at_breakdown_minus_one():
+    """Boundary — 2 outliers is the highest count median-of-6 still
+    tolerates per Huber breakdown-point math ⌊5/2⌋ = 2; flag silent."""
+    assert _emit_majority_flag(
+        ["extreme_graham_estimate", "extreme_rim_estimate"]
+    ) is False
+
+
+def test_K4_fires_at_threshold():
+    """At threshold = 3 extreme methods, the flag MUST fire (the median
+    has now passed its Huber breakdown point)."""
+    assert _emit_majority_flag(
+        [
+            "extreme_graham_estimate",
+            "extreme_rim_estimate",
+            "extreme_dcf_estimate",
+        ]
+    ) is True
+
+
+def test_K5_fires_at_four_extreme():
+    assert _emit_majority_flag(
+        [f"extreme_{n}_estimate" for n in ("graham", "rim", "dcf", "multiples_pb")]
+    ) is True
+
+
+def test_K6_fires_at_all_six_extreme():
+    """All 6 methods extreme — flag fires (and the median is at this
+    point fully past breakdown). Defensive — universe-wide this should
+    be rare, but the threshold logic must not short-circuit."""
+    assert _emit_majority_flag(
+        [f"extreme_{n}_estimate" for n in METHOD_NAMES]
+    ) is True
+
+
+def test_K7_full_ensemble_emits_flag_when_three_methods_extreme():
+    """Integration — synthetic snapshot + current_price chosen so ≥ 3 of
+    the 6 methods produce outliers above the 5× Defense #4 ceiling. The
+    full ensemble path must surface ``extreme_estimate_majority`` in
+    ``valuation_warnings`` alongside the per-method extreme flags."""
+    snap = _make_snap_full()
+    # current_price = $2 is small relative to the snapshot's $100 BVPS,
+    # $10 EPS-TTM (net_income $100 / 10 shares), and $100 FCF/yr.
+    # Per-method estimates:
+    #   graham:  EPS=2.5 + tbvps=$99.50 → > $10 (5× of $2)
+    #   multiples_pb: bvps_reported $100 × peer 1.0 = $100 → outlier
+    #   multiples_pe (peer empty): skipped, no value to flag
+    #   rim: tbvps $99.50 × residual income premium → outlier
+    #   dcf: 5× $100 FCF discounted → outlier
+    # Expect at least 3 outlier flags AND the majority annotate.
+    result, _r = compute_fair_price_ensemble(
+        ticker="TST",
+        snap=snap,
+        sector="Information Technology",
+        sub_industry=None,
+        industry=None,
+        current_price=2.0,
+        filing_lag_days_value=30,
+        peer_panels={
+            "pe": {},
+            "pb": {"sub_industry": ["PEER1", "PEER2", "PEER3"]},
+            "ev_ebitda": {},
+        },
+        universe_metrics={
+            "PEER1": {"pb_reported": 1.0},
+            "PEER2": {"pb_reported": 1.0},
+            "PEER3": {"pb_reported": 1.0},
+        },
+        historical_metrics={
+            "TST": {
+                "eps_3y_avg": 2.5,
+                "avg_3y_roe": 0.15,
+                "fcf_5y": [100.0] * 5,
+            },
+        },
+    )
+    extreme_flags = [
+        w for w in result.valuation_warnings
+        if w.startswith("extreme_") and w.endswith("_estimate")
+    ]
+    assert len(extreme_flags) >= config.EXTREME_MAJORITY_THRESHOLD, (
+        f"Synthetic setup did not produce ≥ {config.EXTREME_MAJORITY_THRESHOLD} "
+        f"extreme flags as expected; got {extreme_flags}. The K7 fixture "
+        "drifted relative to one of the 6 per-method gates — re-tune "
+        "current_price or peer fixture rather than weakening this assertion."
+    )
+    assert "extreme_estimate_majority" in result.valuation_warnings
+
+
+def test_K8_full_ensemble_silent_when_one_method_extreme():
+    """Counter-integration — synthetic IT stock with reasonable current
+    price produces at most 1 outlier (the per-method gates land most
+    methods in-band) → majority flag must NOT fire."""
+    snap = _make_snap_full()
+    result, _r = compute_fair_price_ensemble(
+        ticker="TST",
+        snap=snap,
+        sector="Information Technology",
+        sub_industry=None,
+        industry=None,
+        current_price=100.0,
+        filing_lag_days_value=30,
+        peer_panels={"pe": {}, "pb": {}, "ev_ebitda": {}},
+        universe_metrics={},
+        historical_metrics={
+            "TST": {
+                "eps_3y_avg": 2.5,
+                "avg_3y_roe": 0.15,
+                "fcf_5y": [80.0, 90.0, 100.0, 110.0, 120.0],
+            },
+        },
+    )
+    extreme_flags = [
+        w for w in result.valuation_warnings
+        if w.startswith("extreme_") and w.endswith("_estimate")
+    ]
+    assert len(extreme_flags) < config.EXTREME_MAJORITY_THRESHOLD
+    assert "extreme_estimate_majority" not in result.valuation_warnings
+
+
+def test_K9_hard_stale_path_silent_on_majority_flag():
+    """Hard-stale early return short-circuits the entire aggregation —
+    no per-method extreme flags fire so the majority annotate is also
+    silent (defensive: prevents the flag from being emitted at the
+    all-null path where there are no estimates to be extreme about)."""
+    snap = _make_snap_full()
+    result, _r = compute_fair_price_ensemble(
+        ticker="TST",
+        snap=snap,
+        sector="Information Technology",
+        sub_industry=None,
+        industry=None,
+        current_price=100.0,
+        filing_lag_days_value=999,  # past hard-stale
+        peer_panels={"pe": {}, "pb": {}, "ev_ebitda": {}},
+        universe_metrics={},
+        historical_metrics={"TST": {}},
+    )
+    assert "extreme_estimate_majority" not in result.valuation_warnings
+
+
 # -- Helper invariants --------------------------------------------------------
 
 def test_net_debt_helper():
