@@ -32,6 +32,7 @@ backing.
 | `tests/` | pytest suite (offline + `@network` gated; see CI for current count) |
 | `.claude/skills/` | 42 invocation-triggerable skills + phase planning docs. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for vendoring / license posture per source. |
 | `.claude/agents/` | 14 project-specific subagents in 4 tiers: **Tier 1 Core** (quantrank-reviewer · schema-sentinel · defense-layer-auditor · edgar-debugger), **Tier 2 Lifecycle** (security-reviewer · frontend-design-reviewer · release-captain · phase-coordinator), **Tier 3 Specialized** (test-engineer · methodology-scientist · performance-engineer · dependency-auditor), **Tier 4 Operations** (docs-reviewer · incident-commander). Spawned via the `Agent` tool with a separate context window; see [`.claude/agents/README.md`](.claude/agents/README.md) for the routing matrix + 6 coordination flows (pre-push gate / release ladder / new-defense flow / incident response / review escalation / quarterly audit). |
+| `.claude/hooks/` | Bash hook scripts wired by `.claude/settings.json`. 2 PostToolUse hooks: `log-bash.sh` (append every Bash command to gitignored `.claude/session.log`) + `schema-reminder.sh` (inject reminder when any file in the Pydantic↔TS↔snapshot triple is touched via Write/Edit). Both fail-open (missing `jq` / unwritable FS / empty stdin → exit 0). 5-second timeout each. |
 
 ## Commands
 
@@ -429,6 +430,20 @@ agent-doc lockstep before PR open, triple-doc lockstep after phase
 completion). Subagent count 4 → 8. Wrap-don't-duplicate pattern: each
 enterprise agent reads its wrapped skill on every invocation, so
 skill updates propagate automatically.
+
+**Safe settings + hooks in flight (this PR)** — `.claude/settings.json`
++ `.claude/hooks/` land 2 PostToolUse Bash hooks: `log-bash.sh`
+(append every Bash command to gitignored `.claude/session.log` for
+session audit trail; ~zero risk — pure side-effect, fail-open) and
+`schema-reminder.sh` (inject `additionalContext` reminder + the
+exact `python -m compute.output.schema_check` command when any file
+in the Pydantic↔TS↔snapshot triple — `compute/output/schemas.py`,
+`frontend/lib/types.ts`, `frontend/lib/schema-snapshot.json` — is
+touched via Write/Edit; closes the local-pre-commit gap left by the
+schema-drift CI guard). Both hooks fail-open on missing `jq` /
+unwritable FS / empty stdin; 5-second timeout. `.gitignore` appends
+`.claude/session.log` + `.claude/settings.local.json`. Doc-only
+otherwise — no compute / schema / output change.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight
