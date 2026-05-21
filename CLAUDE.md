@@ -213,7 +213,7 @@ fallback. Schema bump `0.9.2-phase4h.2` → `0.9.3-phase4h.3`. Closed
 the last open AC item carried forward from issue #117 (PR #149
 deferred) and issue #155.
 
-**Epic #150 Phase 2.1 in flight (this PR)** — explicit
+**Epic #150 Phase 2.1 merged via PR #161** (2026-05-20) — explicit
 `valuation_methods_applicable: int` field added to `StockDetail` (and
 nested in `fair_price` dict), counted as the positive-framed inverse
 of `extreme_*_estimate` warnings emitted in `compute/valuation/ensemble.py`.
@@ -223,6 +223,16 @@ deriving from the warning list. Additive only — no consumer migration
 in this PR; `loss_chance.py` and `FairPriceBarChart.tsx` keep reading
 `extreme_*_estimate` for back-compat. Schema bump `0.9.3-phase4h.3`
 → `0.9.4-phase4h.4`. Defense surface unchanged.
+
+**Epic #150 Phase 2.5 in flight (this PR)** — `compute/scoring/manipulation_index.py`
+weight constants (`SLOAN_WEIGHT` through `C_SUITE_UNUSUAL_SELL_WEIGHT_RESERVED`)
+now carry per-flag provenance docstrings citing the academic source
++ effect-size figure where one exists, OR labeling the weight as
+**gut-feel calibration** where the magnitude is engineering choice
+rather than literature-derived. Three provenance tiers introduced
+in the module docstring: literature-anchored / gut-feel / reserved.
+Doc-only — no compute / schema change. Future weight-recalibration
+PRs (Phase 2.2 / 2.4) now have a documented baseline to delta from.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight
