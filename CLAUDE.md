@@ -89,9 +89,13 @@ for the full 4-step pattern + Section I forcing example.
   their composite rank but lose the `entered_top5` badge; the
   next-in-line clean stock inherits it. Never modify the composite
   score retroactively. See `.claude/skills/top5-rotation-audit/SKILL.md`.
-- **EDGAR is rate-limited (10 req/s).** Use `EDGAR_MAX_WORKERS=5` and
-  the tightened tenacity retry policy in `compute/ingest/fundamentals.py`.
-  Off-cycle pre-cache jobs (Phase 4) for batch warming.
+- **EDGAR is rate-limited (10 req/s).** Use `EDGAR_MAX_WORKERS=8`
+  (PR-3d empirical bump from 5; ~1 req/s sustained vs 10/s ceiling
+  per `compute/config.py:34-42`) and the tightened tenacity retry
+  policy in `compute/ingest/fundamentals.py`. If
+  `Metadata.fundamentals_latency_p95_seconds` sustains > 15s on a
+  healthy SEC run, drop back to 5 or 6. Off-cycle pre-cache jobs
+  (Phase 4) for batch warming.
 - **Phase-N stubs are planning docs, not loaded skills.** Anything under
   `.claude/skills/phase-N/<name>/PLAN.md` is roadmap material — Claude
   Code doesn't recurse into nested directories. Promote a PLAN.md to a
@@ -176,8 +180,12 @@ authorization.
   emit a spurious `value_trap_risk` warning when RIM is skipped for
   missing data. Tickers with < 3y of equity history lose RIM as an
   applicable method; the 5 other valuation methods still cover them.
-- **Going-concern phrase scan has 10.8% FP rate** vs Mayew 2015 expected
-  1-3% (issue #16) — negation lookbehind needed.
+- **Going-concern phrase scan FP rate dropped to 1.0%** on the
+  2026-05-20 cron (within Mayew 2015 expected 1-3% band, down from
+  10.8% pre-Phase-4h). Mechanism not yet code-confirmed — issue #16
+  negation lookbehind may have been side-effect-fixed by the Tier-2
+  8-K scan integration. Verify root cause + decide whether to close
+  issue #16 at the Q3 cohort audit (2026-08-19).
 - **`loss_avoidance_pattern` thresholds rescaled** (Phase 2.4,
   2026-05-21) — Burgstahler-Dichev 1997 cohort thresholds were
   rescaled 10× to S&P 500 scale (NI ≤ $50M / EPS ≤ $0.50) after
@@ -444,6 +452,30 @@ schema-drift CI guard). Both hooks fail-open on missing `jq` /
 unwritable FS / empty stdin; 5-second timeout. `.gitignore` appends
 `.claude/session.log` + `.claude/settings.local.json`. Doc-only
 otherwise — no compute / schema / output change.
+
+**Phase 1 ops hardening in flight (this PR)** — surfaced by the
+14-subagent full self-audit (roll-call + deep-check pass on
+`claude/enable-subagents-standby-7lMN4`, 2026-05-21). Three reconciles
+in one focused diff: (a) `.github/workflows/compute-monthly.yml`
+`permissions: contents: write` → `contents: read` per
+`security-reviewer` Section C — the workflow's only step is the
+Phase-0 stub `echo`, so write perm is dead weight until Phase 5 ML
+retrain lands; (b) §Conventions EDGAR_MAX_WORKERS guideline 5 → 8 to
+match the PR-3d empirical bump documented inline at
+`compute/config.py:34-42` (this doc was stale, not the code — the
+`edgar-debugger` + `performance-engineer` audits both confirmed the
+code's ~1 req/s sustained load is comfortably under the 10/s SEC
+ceiling and the inline rationale is self-documenting); (c) §Gotchas
+`going_concern_disclosure` FP-rate stat 10.8% → 1.0% to match the
+2026-05-20 production cron (now within the Mayew 2015 1-3% band
+without a confirmed code mechanism — re-audit at Q3 2026-08-19).
+Deferred from this PR to keep scope tight: form4 module-load
+assertion (couples with Phase 4.5e PR 2 on the peer branch);
+edgar_form4 CI cache restore path (same coupling); PHASE_STATUS /
+SKILL.md schema table / METHODOLOGY.md vetoes-count drift (separate
+doc-reconcile PR); frontend 6-FAIL palette+null+chip-family bundle
+(separate UI PR); `loss_avoidance_pattern` size-invariant follow-up
+(separate recalibration PR). No compute / schema / output change.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight

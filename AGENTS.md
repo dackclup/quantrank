@@ -467,6 +467,23 @@ note cross-tool-specific points only:
   safely ignore it — your runtimes do not auto-route to subagent
   files; your workflow continues to read from `AGENTS.md` +
   `.claude/skills/`. Doc-only — no compute / schema / output change.
+- **Phase 1 ops hardening in flight (this PR)** — three reconciles
+  surfaced by a 14-subagent self-audit (roll-call + deep-check pass
+  on `claude/enable-subagents-standby-7lMN4`, 2026-05-21):
+  (a) `.github/workflows/compute-monthly.yml` `permissions: contents:
+  write` → `contents: read` — the workflow's only step is the
+  Phase-0 stub `echo`, so write perm is dead weight until Phase 5 ML
+  retrain lands; (b) CLAUDE.md §Conventions EDGAR_MAX_WORKERS
+  guideline 5 → 8 to match the PR-3d empirical bump documented inline
+  at `compute/config.py:34-42` — the doc was stale, not the code, and
+  ~1 req/s sustained sits comfortably under the 10/s SEC ceiling;
+  (c) CLAUDE.md §Gotchas going_concern FP-rate 10.8% → 1.0% to match
+  the 2026-05-20 production cron (now within the Mayew 2015 1-3%
+  band; mechanism not yet code-confirmed — re-audit at Q3 2026-08-19).
+  Cross-tool agents: only `.github/workflows/compute-monthly.yml`
+  changes is binding on Copilot / Cursor / Devin workflows; the
+  CLAUDE.md edits are guidance text only. No compute / schema /
+  output change.
 
 ## Claude-Code-specific tooling
 
