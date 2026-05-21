@@ -107,6 +107,9 @@ def test_B1_roe_below_ke_skipped_as_value_trap():
 
 
 def test_B2_none_roe_skipped():
+    """Issue #11 fix: None ROE skips under `insufficient_history_for_roe`,
+    not the value_trap reason — the ensemble doesn't append a spurious
+    value_trap_risk warning for tickers with incomplete equity history."""
     fair, app = rim_fair_price(
         tangible_book_value_per_share=10.0,
         avg_3y_roe=None,
@@ -114,7 +117,7 @@ def test_B2_none_roe_skipped():
     )
     assert fair is None
     assert app.applicable is False
-    assert app.reason == "value_trap_risk_roe_below_cost_of_equity"
+    assert app.reason == "insufficient_history_for_roe"
 
 
 def test_B3_none_tbvps_skipped():

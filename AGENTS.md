@@ -396,20 +396,29 @@ note cross-tool-specific points only:
   flags: target orthogonality vs `altman_distress` and
   `restatement_history` baselines — overlap with either is redundant
   with existing veto. Doc + script only.
-- **Phase 2.2 in flight (this PR)** — new annotate
+- **Phase 2.2 merged via PR #165** (2026-05-21) — new annotate
   `restatement_high_confidence` (10-K/A or 10-Q/A amendment co-occurs
   with an 8-K Item 4.02 within 90d, Hennes-Leone-Miller 2008
   "irregularity" signature; PPV ~70% vs bare `restatement_history`'s
   ~30%). Implementation is pure-function (`compute_high_confidence_restatement`)
   plus 2 cache-reading helpers; existing flag semantics + weight
-  untouched. Cross-tool agents reviewing the integration:
-  `restatement_high_confidence` is a Phase-2.2 ANNOTATE-only flag
-  (no veto, no rank change) per SKILL.md Rule 16 + the annotate-
-  before-veto pattern. The cohort acceptance check (≥ 1 production
-  cron firing-rate vs expected ~4% per Hennes-Leone-Miller) lands
-  in the follow-up PR — only THEN do we decide whether to retire
-  or downgrade the bare `restatement_history` flag. Schema shape
-  unchanged (new string in `valuation_warnings: list[str]`).
+  untouched. The cohort acceptance check (≥ 1 production cron
+  firing-rate vs expected ~4% per Hennes-Leone-Miller) drives the
+  retire/split-decision for the bare flag in a future follow-up PR.
+  Schema shape unchanged (new string in `valuation_warnings: list[str]`).
+- **Issue #11 fix in flight (this PR)** — removes the legacy
+  single-period-equity fallback in `compute/main.py::_avg_3y_roe`
+  that kept Issue #11 alive for ~30% of the universe even after the
+  PR 4c per-year denominator. New `insufficient_history_for_roe` skip
+  reason in `compute/valuation/applicability.py` distinguishes
+  "missing input data" from "real value trap signal" — the ensemble
+  no longer appends spurious `value_trap_risk` warnings for tickers
+  with incomplete equity history. Cross-tool agents extending the
+  RIM applicability path: keep the two skip reasons distinct (data
+  missing vs structurally low ROE). Side-effect: tickers with < 3y
+  of `stockholders_equity` history lose RIM as an applicable method;
+  the 5 other valuation methods cover them. SKIP_REASONS taxonomy
+  24 → 25.
 
 ## Claude-Code-specific tooling
 

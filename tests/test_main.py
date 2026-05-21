@@ -224,40 +224,44 @@ def test_avg_3y_roe_per_year_beats_legacy_for_grower():
     assert new_roe > 0.14  # within ~1% of true 0.147
 
 
-def test_avg_3y_roe_fallback_when_equity_history_missing():
-    """When the annual history lacks `stockholders_equity` rows, fall
-    back to the legacy mean-NI / current-equity path. Recent IPOs and
-    audit-#6 residual gaps land here."""
+def test_avg_3y_roe_none_when_equity_history_missing():
+    """Issue #11 fix: when the annual history lacks `stockholders_equity`
+    rows, return None (NOT the legacy mean-NI/current-equity fallback —
+    that fallback was the very bug PR 4c was meant to fix, but it stayed
+    in place until 2026-05-21). RIM then skips under the distinct
+    `insufficient_history_for_roe` reason at the applicability layer."""
     hist = _hist({
         "net_income": [(2023, 10.0), (2024, 20.0), (2025, 30.0)],
         # no `stockholders_equity` series
     })
     snap = _snap(stockholders_equity=200.0)
-    assert _avg_3y_roe(hist, snap) == 0.10  # legacy formula
+    assert _avg_3y_roe(hist, snap) is None
 
 
-def test_avg_3y_roe_fallback_when_one_year_equity_missing():
-    """If 2 of 3 years have equity but the 3rd year is missing, fall
-    back to legacy. Strict requirement: all 3 years OR none."""
+def test_avg_3y_roe_none_when_one_year_equity_missing():
+    """Issue #11 fix: strict requirement — all 3 years of equity OR
+    None. 2-of-3 partial history no longer trips the legacy single-
+    period-equity fallback."""
     hist = _hist({
         "net_income": [(2023, 10.0), (2024, 20.0), (2025, 30.0)],
         "stockholders_equity": [(2023, 80.0), (2024, 120.0)],
         # 2025 equity missing
     })
     snap = _snap(stockholders_equity=200.0)
-    assert _avg_3y_roe(hist, snap) == 0.10  # legacy formula
+    assert _avg_3y_roe(hist, snap) is None
 
 
-def test_avg_3y_roe_fallback_when_one_year_equity_non_positive():
-    """A zero or negative historical equity drops the per-year path
-    (negative equity = distressed firm; the ratio is meaningless)."""
+def test_avg_3y_roe_none_when_one_year_equity_non_positive():
+    """A zero or negative historical equity is treated as missing data —
+    return None (Issue #11 fix). Negative equity = distressed firm; the
+    ratio is meaningless, and conflating it with `value_trap_risk` was
+    a false signal."""
     hist = _hist({
         "net_income": [(2023, 10.0), (2024, 20.0), (2025, 30.0)],
         "stockholders_equity": [(2023, 80.0), (2024, 0.0), (2025, 200.0)],
     })
     snap = _snap(stockholders_equity=200.0)
-    # Falls back to legacy formula = 20 / 200 = 0.10
-    assert _avg_3y_roe(hist, snap) == 0.10
+    assert _avg_3y_roe(hist, snap) is None
 
 
 def test_avg_3y_roe_none_when_equity_non_positive():
@@ -323,6 +327,7 @@ def test_build_historical_metrics_per_ticker_dict_shape():
     hist = _hist({
         "eps_diluted": [(2023, 1.0), (2024, 2.0), (2025, 3.0)],
         "net_income": [(2023, 10.0), (2024, 20.0), (2025, 30.0)],
+        "stockholders_equity": [(2023, 80.0), (2024, 120.0), (2025, 200.0)],
         "operating_cash_flow": [(2024, 100.0), (2025, 110.0)],
         "capex": [(2024, 40.0), (2025, 50.0)],
     })
@@ -332,7 +337,9 @@ def test_build_historical_metrics_per_ticker_dict_shape():
     )
     assert set(out["AAA"].keys()) == {"eps_3y_avg", "avg_3y_roe", "fcf_5y"}
     assert out["AAA"]["eps_3y_avg"] == 2.0
-    assert out["AAA"]["avg_3y_roe"] == 0.10
+    # Per-year ROE: (10/80, 20/120, 30/200) → mean ≈ 0.1472
+    expected_roe = (10.0 / 80.0 + 20.0 / 120.0 + 30.0 / 200.0) / 3.0
+    assert abs(out["AAA"]["avg_3y_roe"] - expected_roe) < 1e-12
     assert out["AAA"]["fcf_5y"] == [60.0, 60.0]
 
 

@@ -115,8 +115,15 @@ for the full 4-step pattern + Section I forcing example.
 - **`shares_outstanding` is wrong for ~12 tickers** (issue #10) — Step
   7.5 sanity guard fires `data_quality_input_corruption` on the worst
   cases. Composite scoring doesn't yet respect this flag (issue #18).
-- **`_avg_3y_roe` uses single-period equity as denominator** (issue #11)
-  → inflated `value_trap_risk` flag on 44% of S&P 500. Phase 4 fix.
+- **`_avg_3y_roe` fallback removed** (issue #11, 2026-05-21) — PR 4c
+  earlier added the per-year stockholders_equity denominator path but
+  kept a fallback to single-period equity when history was incomplete,
+  preserving the original bug for ~30% of the universe. This PR drops
+  the fallback (returns `None` instead) AND introduces a distinct
+  `insufficient_history_for_roe` skip reason so the ensemble doesn't
+  emit a spurious `value_trap_risk` warning when RIM is skipped for
+  missing data. Tickers with < 3y of equity history lose RIM as an
+  applicable method; the 5 other valuation methods still cover them.
 - **Going-concern phrase scan has 10.8% FP rate** vs Mayew 2015 expected
   1-3% (issue #16) — negation lookbehind needed.
 - **`loss_avoidance_pattern` thresholds rescaled** (Phase 2.4,
@@ -261,28 +268,33 @@ schema / output change. Reproducible via the one-shot script;
 re-run after every quarterly cohort audit + after each Phase 2.x
 recalibration PR lands.
 
-**Epic #150 Phase 2.2 in flight (this PR)** — new annotate
-`restatement_high_confidence` fires when a 10-K/A or 10-Q/A
+**Epic #150 Phase 2.2 merged via PR #165** (2026-05-21) — new
+annotate `restatement_high_confidence` fires when a 10-K/A or 10-Q/A
 amendment co-occurs with an 8-K Item 4.02 (non-reliance) filing
 within 90 days. Hennes-Leone-Miller 2008 *TAR* "irregularity"
-signature — PPV ~70% vs bare `restatement_history`'s ~30%.
-Implementation: 2 new cache-reading helpers
-(`get_amendment_filing_dates`, `get_non_reliance_filing_dates`) +
-pure-function `compute_high_confidence_restatement` (90-day
-symmetric window join) + new `RESTATEMENT_HIGH_CONFIDENCE_WEIGHT =
-3.0` delta weight in `manipulation_index.py` FLAG_WEIGHTS. Annotate
-path (`valuation_warnings`); when both flags fire the combined
-manipulation_index contribution is 5+3=8 pts per Hennes-Leone-Miller
-PPV ratio. Bare `restatement_history` semantics + weight unchanged;
-the next-PR decision (retire bare flag or split weights) waits on a
-cohort acceptance check after ≥ 1 production cron. Two follow-up
-fix commits during PR review: (a) capped non-reliance lookback to
-1y instead of 5y (avoided 8-K cache 5y-refetch that cancelled the
-simulate workflow at 43m); (b) corrected the weight from 8.0 (total
-mis-spec, would have double-counted) to 3.0 (delta) per
-scrutinize-agent feedback. Phase 3 findings doc §2 + §Decision-matrix
-updated to mark this in-flight. Tests: 946 → 962 (+16 across both
-test modules). No schema / output-JSON-shape change.
+signature — PPV ~70% vs bare `restatement_history`'s ~30%. Three
+follow-up fix commits during PR review: (a) capped non-reliance
+lookback to 1y instead of 5y (avoided 8-K cache 5y-refetch that
+cancelled the simulate workflow at 43m); (b) corrected the weight
+from 8.0 (total mis-spec, would have double-counted) to 3.0 (delta);
+(c) added 4 missing tests for `get_non_reliance_filing_dates`. Bare
+`restatement_history` semantics + weight unchanged; the next-PR
+decision (retire bare flag or split weights) waits on a cohort
+acceptance check after ≥ 1 production cron. No schema / output-JSON
+shape change. Tests: 946 → 962 (+16).
+
+**Issue #11 fix in flight (this PR)** — `_avg_3y_roe` removes the
+legacy single-period-equity fallback that kept the original Issue #11
+bug alive for ~30% of the universe even after PR 4c added the per-year
+denominator path. New `insufficient_history_for_roe` skip reason in
+`compute/valuation/applicability.py` distinguishes "missing input
+data" from "real value trap signal" — the ensemble no longer appends
+a spurious `value_trap_risk` warning when RIM is skipped for missing
+data. SKIP_REASONS taxonomy 24 → 25. Tests: 962 → 965 (+3 new
+regression tests pinning the new skip reason and the ensemble's
+no-spurious-warning behavior). Side-effect: tickers with < 3y of
+stockholders_equity history lose RIM as an applicable method; the
+5 remaining valuation methods cover them.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight
