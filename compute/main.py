@@ -43,13 +43,6 @@ import numpy as np
 import pandas as pd
 
 from compute import config
-from compute.features.osap_replicate import (
-    compute_long_short_returns,
-    compute_osap_signals,
-    coverage_by_signal,
-    signals_dropped_no_long_short,
-    signals_in_dataframe,
-)
 from compute.ingest.cross_source import (
     validate_market_cap as cross_source_validate_market_cap,
 )
@@ -59,7 +52,6 @@ from compute.ingest.fundamentals import (
     fetch_fundamentals,
     fetch_fundamentals_history,
 )
-from compute.ingest.osap import fetch_osap_returns
 from compute.ingest.prices import fetch_prices, fetch_spy_benchmark
 from compute.ingest.universe import get_sp500_constituents
 from compute.output.schemas import (
@@ -96,7 +88,6 @@ from compute.scoring.manipulation_index import (
     compute_manipulation_index,
     manipulation_components,
 )
-from compute.scoring.osap_blend import aggregate_osap_signals, apply_osap_blend
 from compute.scoring.pillars import TickerInputs, compute_all_pillars
 from compute.scoring.recommendation import derive_recommendation
 from compute.scoring.rem import compute_rem_flags
@@ -117,11 +108,15 @@ from compute.scoring.tier2 import (
 from compute.scoring.tier2 import (
     coverage_pct as tier2_coverage_pct_calc,
 )
-from compute.validation.osap_validation import (
-    compute_rolling_ic_12m,
-    filter_accepted_signals,
-    gate_osap_signals,
-)
+
+# OSAP imports (compute.ingest.osap, compute.features.osap_replicate,
+# compute.scoring.osap_blend, compute.validation.osap_validation) are
+# deferred into the OSAP try-block in run_weekly_compute(). compute.ingest.osap
+# does `import openassetpricing` at module load, which is only installed
+# via the `.[factors]` optional extra; deferring keeps `tests/test_main.py`
+# collection green in base-install environments (Phase 4a). The existing
+# call-site try/except (graceful degradation per Rule 18) already catches
+# ImportError as a subclass of Exception.
 from compute.valuation.ensemble import (
     EnsembleResult,
     compute_fair_price_ensemble,
@@ -973,6 +968,29 @@ def run_weekly_compute() -> int:
     # ``osap_signals_used`` / ``osap_excluded_signals``.
     osap_signals_dropped_no_long_short_list: list[str] = []
     try:
+        # Phase 4a — deferred imports. `compute.ingest.osap` pulls in
+        # `openassetpricing` at module load (only installed via the
+        # `.[factors]` optional extra), so a top-level import would
+        # break `tests/test_main.py` collection in base-install envs.
+        # ImportError here is caught by the existing `except Exception`
+        # below and falls through to the same graceful-degradation path
+        # any other OSAP-pipeline failure takes (every osap_* field
+        # already nullable per Rule 18).
+        from compute.features.osap_replicate import (
+            compute_long_short_returns,
+            compute_osap_signals,
+            coverage_by_signal,
+            signals_dropped_no_long_short,
+            signals_in_dataframe,
+        )
+        from compute.ingest.osap import fetch_osap_returns
+        from compute.scoring.osap_blend import aggregate_osap_signals, apply_osap_blend
+        from compute.validation.osap_validation import (
+            compute_rolling_ic_12m,
+            filter_accepted_signals,
+            gate_osap_signals,
+        )
+
         logger.info(
             "Phase 4h — fetching OSAP returns for %d-signal manifest "
             "(as_of=%s)",

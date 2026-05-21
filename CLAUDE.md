@@ -605,6 +605,31 @@ extraction missing `shares_outstanding`) and **#177** (15 tickers
 growth/goodwill-heavy stocks). No compute / schema / scoring /
 valuation / frontend change.
 
+**Phase 4a osap-import guard in flight (this PR)** — surfaced by the
+14-subagent self-audit on 2026-05-21 (`test-engineer` follow-up).
+`compute/main.py` carried top-level imports of four OSAP modules
+(`compute.features.osap_replicate`, `compute.ingest.osap`,
+`compute.scoring.osap_blend`, `compute.validation.osap_validation`).
+Only one of them (`compute.ingest.osap`) directly `import
+openassetpricing` at module load — but that single transitive edge
+blocked `tests/test_main.py` collection in any environment without
+the `.[factors]` optional extra installed, since the 11 OSAP function
+references in `run_weekly_compute()` pulled the failing import chain
+in eagerly. The fix moves all four OSAP imports into the existing
+`try:` block at `compute/main.py:975` (which already wraps every
+OSAP function call in a graceful-degradation path per Rule 18 — every
+`StockDetail.osap_*` + `Metadata.osap_*` field is `| None = None` in
+the schema). The existing `except Exception` at the call site catches
+`ImportError` (subclass) cleanly; the failure path was already
+implemented and is now reachable for the "openassetpricing not
+installed" case it was designed for. Verification: `python -m pytest
+tests/test_main.py --collect-only -q` reports 39 tests collected, 0
+errors in a base-install env (was: ModuleNotFoundError on collection);
+the full offline suite still reports `1024 passed` in CI-mode (with
+`openassetpricing==0.0.2` installed via `.[factors]`). No compute
+logic / schema / scoring / valuation / frontend change — pure import
+topology refactor.
+
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight
   slots already declared in `FLAG_WEIGHTS`)
