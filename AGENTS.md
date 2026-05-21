@@ -88,7 +88,7 @@ frontend/                         # Next.js static site (read/write OK)
 tests/                            # pytest suite
 docs/                             # Academic methodology + research findings
 .claude/skills/                   # 42 loaded skills + phase-N/ planning docs
-.claude/agents/                   # 8 project-specific subagents in 2 tiers (core + enterprise; Claude Code only — Copilot / Cursor / Devin do not auto-route to these)
+.claude/agents/                   # 14 project-specific subagents in 4 tiers (core + lifecycle + specialized + operations; Claude Code only — Copilot / Cursor / Devin do not auto-route to these; full enterprise dev-team topology with 6 codified coordination flows)
 .github/workflows/                # ⚠️ ask before editing
 pyproject.toml                    # ⚠️ ask before deps changes
 
@@ -448,7 +448,19 @@ note cross-tool-specific points only:
   agent reads on every session) and 4 agent descriptions sharpened
   from "Use PROACTIVELY" → "MUST be invoked (no confirmation)" for
   the gating moments (schema edits, pre-Ready-flip review, branch /
-  PR / phase lifecycle, release tags). Cross-tool agents (Copilot /
+  PR / phase lifecycle, release tags). **Specialized + Operations
+  tiers (8 → 14 subagents)** complete the "full enterprise dev team"
+  topology — Tier 3 adds `test-engineer` (TDD discipline) +
+  `methodology-scientist` (academic-prior validation, owns the next
+  quarterly cohort audit 2026-08-19) + `performance-engineer`
+  (cron latency budgets) + `dependency-auditor` (CVE + supply chain;
+  owns the 25-active-CVE baseline + issue #41 tracker); Tier 4 adds
+  `docs-reviewer` (substance-check on the six top-level docs +
+  METHODOLOGY.md) + `incident-commander` (P1 production-failure
+  orchestrator). 6 coordination flows codified in
+  `.claude/agents/README.md` show how the agents integrate: pre-push
+  gate / release ladder / new-defense flow / incident response /
+  review escalation / quarterly audit. Cross-tool agents (Copilot /
   Cursor / Devin): this directory is Claude-Code-only and you can
   safely ignore it — your runtimes do not auto-route to subagent
   files; your workflow continues to read from `AGENTS.md` +

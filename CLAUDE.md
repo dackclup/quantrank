@@ -31,7 +31,7 @@ backing.
 | `frontend/public/data/` | Compute output: `metadata.json` + `rankings.json` + `stocks/<TICKER>.json` |
 | `tests/` | pytest suite (offline + `@network` gated; see CI for current count) |
 | `.claude/skills/` | 42 invocation-triggerable skills + phase planning docs. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for vendoring / license posture per source. |
-| `.claude/agents/` | 8 project-specific subagents organized into core (quantrank-reviewer · schema-sentinel · defense-layer-auditor · edgar-debugger) + enterprise tier (security-reviewer · frontend-design-reviewer · release-captain · phase-coordinator). Spawned via the `Agent` tool with a separate context window; see [`.claude/agents/README.md`](.claude/agents/README.md) for the routing matrix. |
+| `.claude/agents/` | 14 project-specific subagents in 4 tiers: **Tier 1 Core** (quantrank-reviewer · schema-sentinel · defense-layer-auditor · edgar-debugger), **Tier 2 Lifecycle** (security-reviewer · frontend-design-reviewer · release-captain · phase-coordinator), **Tier 3 Specialized** (test-engineer · methodology-scientist · performance-engineer · dependency-auditor), **Tier 4 Operations** (docs-reviewer · incident-commander). Spawned via the `Agent` tool with a separate context window; see [`.claude/agents/README.md`](.claude/agents/README.md) for the routing matrix + 6 coordination flows (pre-push gate / release ladder / new-defense flow / incident response / review escalation / quarterly audit). |
 
 ## Commands
 
@@ -128,6 +128,14 @@ authorization.
 | User asks to create a new `claude/*` branch from a handoff prompt | `phase-coordinator` Mode A | Before first non-trivial edit |
 | Phase / sub-PR marked complete on this branch | `phase-coordinator` Mode C | After merge / on close |
 | `workflow_dispatch` on `compute-rankings.yml` lands green | `defense-layer-auditor` Section A-J + Section I (Playwright) | Automatic post-cron |
+| New defense flag proposed (new risk_flag in `compute/scoring/`) | `methodology-scientist` (validate paper anchor) + `test-engineer` (positive + negative tests) | Sequential — methodology first |
+| Threshold / weight constant changed in `compute/scoring/manipulation_index.py` or `earnings_quality.py` | `methodology-scientist` Mode B | On the edit |
+| Production code added without a corresponding test in the same PR | `test-engineer` | Pre-push |
+| Weekly cron warm-cache exceeds 10 min OR p95 latency > 20s | `performance-engineer` | On detection |
+| Dependabot alert lands OR new dep added to `pyproject.toml` / `frontend/package.json` | `dependency-auditor` + `security-reviewer` | Parallel |
+| Any of CLAUDE.md / AGENTS.md / SKILL.md / WORKFLOW.md / PHASE_STATUS.md / README.md / METHODOLOGY.md modified | `docs-reviewer` (substance check; complements `phase-coordinator` Mode B which checks file-touch) | Parallel with the edit |
+| Production cron fails / hangs / produces corrupt output, OR Vercel deploy breaks, OR schema-snapshot CI fails, OR user says "production is broken" / "site is down" / "incident" | `incident-commander` (P1; orchestrator that fans out to relevant specialists) | Immediate |
+| Quarterly cohort audit scheduled date reached (next 2026-08-19) | `methodology-scientist` Mode C + `defense-layer-auditor` | Sequential — scientist drives |
 
 ### Spawn discipline
 
@@ -375,6 +383,34 @@ context window — distinct from `.claude/skills/` (prompt packs the
 main agent invokes via the `Skill` tool). Routing matrix + author
 conventions in [`.claude/agents/README.md`](.claude/agents/README.md).
 Doc-only — no compute / schema / output change.
+
+**Specialized + Operations tiers added (same PR; 8 → 14)** — 6 more
+subagents complete the "full enterprise dev team" topology with
+specialized-expertise and operations layers, plus 6 codified
+coordination flows in `.claude/agents/README.md` that show how the
+team integrates: pre-push gate, release ladder, new-defense flow,
+incident response, code-review escalation chain, and quarterly cohort
+audit. **Tier 3 Specialized**: `test-engineer` (sonnet; TDD + pytest
+discipline + Hypothesis property tests; writes test files only —
+never modifies production code), `methodology-scientist` (opus;
+academic-prior validation against the canonical literature map —
+Altman 1968 / Sloan 1996 / Beneish 1999 / Dechow 2011 / Mayew 2015 /
+Burgstahler-Dichev 1997 / Hennes-Leone-Miller 2008 / Daniel-Titman
+2006 / Damodaran 2019; drives the next quarterly cohort audit
+2026-08-19), `performance-engineer` (sonnet; cron latency + cache
+health; knows the warm < 5 min / cold 25-50 min / p95 < 15s budgets),
+`dependency-auditor` (sonnet; supply-chain + CVE deep triage; owns
+the 25-active-CVE baseline + issue #41 Next 14 → 16 tracker). **Tier
+4 Operations**: `docs-reviewer` (sonnet; substance-check across the
+six top-level docs + METHODOLOGY.md; complements `phase-coordinator`
+Mode B which only checks file-touch), `incident-commander` (opus;
+P1 production-failure orchestrator that triages symptoms via a
+matrix and spawns relevant specialists in parallel — edgar-debugger
+/ defense-layer-auditor / performance-engineer / schema-sentinel /
+dependency-auditor / frontend-design-reviewer / security-reviewer —
+then synthesizes findings into a mitigation plan + post-mortem
+skeleton). Subagent count 8 → 14; auto-routing policy table extended
+with 9 new cue rows. Doc-only — no compute / schema / output change.
 
 **Enterprise tier added (same PR)** — 4 more subagents wrap the
 project's existing lifecycle-event skills into auto-routable surfaces:

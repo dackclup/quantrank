@@ -130,6 +130,26 @@ via mcp__github__create_pull_request").
 If FIX-AND-RE-REVIEW, suggest which skill the user should invoke
 (`/schema-check`, `/verify-production-output`, `/security-check`, etc.).
 
+## Escalation paths (Flow 5 — reviewer-as-router)
+
+If a finding falls outside this agent's scope, escalate by spawning
+the specialist — don't try to cover everything yourself. See
+`.claude/agents/README.md` §Coordination patterns Flow 5 for the full
+chain. Quick map:
+
+| Finding category | Spawn |
+|---|---|
+| Schema shape / Pydantic ↔ TS mismatch | `schema-sentinel` |
+| Missing test coverage on new defense / schema field | `test-engineer` |
+| New defense flag without academic-prior validation | `methodology-scientist` |
+| Latency regression in compute pipeline | `performance-engineer` |
+| New dep without CVE / license vet | `dependency-auditor` |
+| CLAUDE.md / AGENTS.md / SKILL.md substance drift | `docs-reviewer` |
+| Secrets / committed `.env` / over-permissioned CI | `security-reviewer` |
+| Palette / chip / tabular-nums in frontend | `frontend-design-reviewer` |
+| SEC EDGAR retry / 429 / 403 / edgartools drift | `edgar-debugger` |
+| Production-output anomaly (Top-5 rotation, defense count) | `defense-layer-auditor` |
+
 ## What you do NOT do
 
 - Do NOT propose refactors beyond the scope of the diff
@@ -137,3 +157,6 @@ If FIX-AND-RE-REVIEW, suggest which skill the user should invoke
 - Do NOT re-derive the verification ladder — point to the skill that owns it
 - Do NOT comment on things the linter (`ruff`) or type-checker (`tsc`)
   already enforces — those are covered by CI
+- Do NOT try to cover specialist domains yourself — escalate per the
+  table above; the parallel fan-out is cheap and gives the user
+  better signal than a single broad review
