@@ -354,6 +354,37 @@ def test_E2_rim_value_trap_warning_when_roe_below_ke():
     )
 
 
+def test_E3_no_value_trap_warning_when_roe_history_missing_issue_11():
+    """Issue #11 regression test — a ticker with `avg_3y_roe=None`
+    (missing input) must NOT get a `value_trap_risk` warning. The
+    new `insufficient_history_for_roe` skip reason is the signal
+    that RIM had no data; it's NOT a value-trap signal."""
+    snap = _make_snap_full()
+    result, _r = compute_fair_price_ensemble(
+        ticker="TST",
+        snap=snap,
+        sector="Information Technology",
+        sub_industry=None,
+        industry=None,
+        current_price=100.0,
+        filing_lag_days_value=30,
+        peer_panels={"pe": {}, "pb": {}, "ev_ebitda": {}},
+        universe_metrics={},
+        historical_metrics={
+            "TST": {
+                "eps_3y_avg": 2.0,
+                "avg_3y_roe": None,  # missing 3y equity history
+                "fcf_5y": [100.0] * 5,
+            },
+        },
+    )
+    # Critical: the false-positive value_trap_risk warning is GONE.
+    assert "value_trap_risk" not in result.valuation_warnings
+    # RIM is still skipped, but under the distinct reason.
+    assert result.methods["rim"].applicable is False
+    assert result.methods["rim"].reason == "insufficient_history_for_roe"
+
+
 # -- F. EnsembleResult shape invariants --------------------------------------
 
 def test_F1_methods_dict_has_six_keys():

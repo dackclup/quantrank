@@ -39,6 +39,13 @@ SKIP_REASONS: tuple[str, ...] = (
     "non_positive_eps_3y_avg",
     "non_positive_or_missing_tangible_book",
     "value_trap_risk_roe_below_cost_of_equity",
+    # Issue #11 fix — distinguish "missing input data" from "real value
+    # trap signal". Pre-2026-05-21, a ticker with no 3y stockholders_equity
+    # history would skip RIM under value_trap_risk_roe_below_cost_of_equity,
+    # which caused the ensemble layer to append a spurious value_trap_risk
+    # warning. Now those tickers skip under insufficient_history_for_roe
+    # (which is NOT a value-trap signal — it just means RIM can't compute).
+    "insufficient_history_for_roe",
     "non_positive_or_missing_eps_ttm",
     "missing_or_non_positive_peer_pe",
     "non_positive_or_missing_bvps",
@@ -232,8 +239,16 @@ def check_rim_applicability(
     so its terminal-residual-income-based fair value is fictitious. The
     skip reason is exactly ``value_trap_risk_roe_below_cost_of_equity`` so
     Step 5 ensemble can append the corresponding warning.
+
+    Issue #11 fix: ``avg_3y_roe is None`` skips under the distinct
+    ``insufficient_history_for_roe`` reason — the ensemble does NOT
+    append the spurious ``value_trap_risk`` warning for those cases.
+    "Missing input" is not the same signal as "real value trap"
+    (firm has structurally low ROE).
     """
-    if avg_3y_roe is None or float(avg_3y_roe) <= float(cost_of_equity):
+    if avg_3y_roe is None:
+        return _skip("insufficient_history_for_roe")
+    if float(avg_3y_roe) <= float(cost_of_equity):
         return _skip("value_trap_risk_roe_below_cost_of_equity")
     if not _finite_positive(tbvps):
         return _skip("non_positive_or_missing_tangible_book")

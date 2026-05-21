@@ -191,11 +191,37 @@ def test_rim_skips_when_roe_exactly_equal_to_ke():
 
 
 def test_rim_skips_when_avg_roe_none():
+    """Issue #11 fix: missing-input case uses a DISTINCT skip reason so
+    the ensemble doesn't append the spurious value_trap_risk warning."""
     out = check_rim_applicability(
         avg_3y_roe=None, tbvps=10.0, lag_status="fresh"
     )
     assert out.applicable is False
-    assert out.reason == "value_trap_risk_roe_below_cost_of_equity"
+    assert out.reason == "insufficient_history_for_roe"
+
+
+def test_rim_insufficient_history_reason_is_in_skip_reasons_taxonomy():
+    """Pin the new skip reason in the canonical taxonomy — it's part
+    of the JSON contract surfaced via StockDetail.fair_price.methods.<m>.reason."""
+    from compute.valuation.applicability import SKIP_REASONS
+
+    assert "insufficient_history_for_roe" in SKIP_REASONS
+
+
+def test_rim_value_trap_signal_distinct_from_insufficient_history():
+    """Both cases skip RIM, but with different reasons. The ensemble
+    appends `value_trap_risk` only for the structurally-low-ROE case."""
+    no_data = check_rim_applicability(
+        avg_3y_roe=None, tbvps=10.0, lag_status="fresh"
+    )
+    real_value_trap = check_rim_applicability(
+        avg_3y_roe=0.05, tbvps=10.0, lag_status="fresh", cost_of_equity=0.10
+    )
+    assert no_data.applicable is False
+    assert real_value_trap.applicable is False
+    assert no_data.reason != real_value_trap.reason
+    assert no_data.reason == "insufficient_history_for_roe"
+    assert real_value_trap.reason == "value_trap_risk_roe_below_cost_of_equity"
 
 
 def test_rim_skips_when_tbvps_none():
