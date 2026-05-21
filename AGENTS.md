@@ -89,6 +89,8 @@ tests/                            # pytest suite
 docs/                             # Academic methodology + research findings
 .claude/skills/                   # 42 loaded skills + phase-N/ planning docs
 .claude/agents/                   # 14 project-specific subagents in 4 tiers (core + lifecycle + specialized + operations; Claude Code only — Copilot / Cursor / Devin do not auto-route to these; full enterprise dev-team topology with 6 codified coordination flows)
+.claude/hooks/                    # PostToolUse Bash hooks (log-bash.sh, schema-reminder.sh) wired by .claude/settings.json (Claude Code only — Copilot / Cursor / Devin ignore)
+.claude/settings.json             # Claude Code harness config (hooks, permissions). Per-user overrides go in .claude/settings.local.json (gitignored)
 .github/workflows/                # ⚠️ ask before editing
 pyproject.toml                    # ⚠️ ask before deps changes
 
@@ -483,6 +485,27 @@ they should:
 If a task requires the connector surface (e.g., automated batch deploy
 audit), prefer routing it through Claude Code rather than re-
 implementing the integration in a different agent.
+
+Claude Code also reads `.claude/settings.json` for the harness's hook
+configuration. Two PostToolUse Bash hooks ship today:
+
+- `.claude/hooks/log-bash.sh` — appends every Bash invocation
+  (one line per command: `[<ISO8601-UTC>] <command>`) to gitignored
+  `.claude/session.log` for per-session audit trail. Pure side-effect,
+  no stdout, fail-open.
+- `.claude/hooks/schema-reminder.sh` — when Write/Edit touches any
+  file in the Pydantic↔TS↔snapshot triple (`compute/output/schemas.py`,
+  `frontend/lib/types.ts`, `frontend/lib/schema-snapshot.json`),
+  emits `hookSpecificOutput.additionalContext` reminding the agent
+  to run `python -m compute.output.schema_check` (or spawn the
+  `schema-sentinel` subagent) before commit. Closes the local
+  pre-commit gap left by the schema-drift CI guard.
+
+Both hooks are bash + `jq` only, 5-second timeout, fail-open on
+missing dependencies / unwritable filesystem / empty stdin. Copilot
+/ Cursor / Devin do NOT execute `.claude/hooks/` — those tools
+should rely on git pre-commit hooks (run `ruff` + the
+schema-snapshot guard, see §Security considerations) instead.
 
 ## Multi-session audit pattern
 
