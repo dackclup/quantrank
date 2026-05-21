@@ -100,7 +100,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
       if (sectorSet.size > 0 && !sectorSet.has(row.sector)) return false;
       if (scoreRange[0] !== 0 || scoreRange[1] !== 100) {
         const sc = row.composite_score;
-        if (sc === null || sc === undefined || Number.isNaN(sc)) return false;
+        if (sc == null || Number.isNaN(sc)) return false;
         if (sc < scoreRange[0] || sc > scoreRange[1]) return false;
       }
       if (tierSet.size > 0) {

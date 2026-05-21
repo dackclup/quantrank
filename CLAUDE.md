@@ -508,6 +508,35 @@ blocks (full Hennes-Leone-Miller 2008 *TAR*, Cohen-Malloy-Pomorski
 2012, etc.) — needs `methodology-scientist` sign-off per the
 new-defense-flow rule.
 
+**Phase 3 frontend rule fixes in flight (this PR)** — third deliverable
+from the 14-subagent self-audit (2026-05-21). Six `frontend-design-reviewer`
+FAILs fixed in lockstep across 6 components — UI-only, no schema /
+compute / output / dep change. (a) `StockLogo.tsx` `LOGO_PALETTE` —
+12-color avatar fallback palette remapped to the four-family design
+system (slate / indigo / rose / amber in 500/600/700 shade triplets),
+replacing the 8 out-of-family entries (violet / pink / teal / orange /
+sky / lime / red) that violated SKILL.md Rule 0; inline `'#fff'`
+literals at the fallback letter-avatar + image-background style props
+swapped for the `'white'` CSS keyword. (b)-(e) Loose-null discipline
+fixed in `MoSCell` · `MoSBadge` · `LossChanceBadge` · `RankingTable`
+— `=== null || === undefined` → `== null` (catches both via JS coercion;
+preserves the existing `Number.isNaN()` follow-on check where present)
+on legacy-snapshot nullable fields (`margin_of_safety_pct`,
+`loss_chance_pct`, `composite_score`). (f) `FilterDrawer.tsx` chip
+pattern consolidation — local solid-fill overrides
+(`bg-emerald-600 text-white` for bullish + `bg-red-500 text-white` for
+cautious; pattern A retired by Rule 2 since PR #68) removed and
+replaced with the canonical `RECOMMENDATION_CHIP_TONES` +
+`RECOMMENDATION_CHIP_DOTS` imports from `RecommendationBadge.tsx` —
+one outlined-light pattern shared across the badge surface and the
+drawer-selection surface. Verified via `tsc --noEmit` filtered to
+edited files (no new TS errors introduced; pre-existing env-noise
+errors from missing `@types/node` / `react` types are untouched
+since they would also appear on `main`). Deferred from this PR (still
+WARNs from the audit, not FAILs): `FairPriceBarChart.tsx` tabular-nums
++ verdict-badge shape; `RawMetricsTable` + `PillarRadarChart`
+loose-null 5 instances; `RankingTable` toolbar-search aria-label.
+
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight
   slots already declared in `FLAG_WEIGHTS`)

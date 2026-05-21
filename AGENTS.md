@@ -501,6 +501,22 @@ note cross-tool-specific points only:
   Cross-tool agents (Copilot / Cursor / Devin): no behavioral
   binding — these are reference-text accuracy fixes only. No compute
   / schema / output change.
+- **Phase 3 frontend rule fixes in flight (this PR)** — third
+  deliverable from the 14-subagent self-audit (2026-05-21). Six
+  `frontend-design-reviewer` FAILs fixed across 6 components — UI-only,
+  no schema / compute / output change: (a) `StockLogo.tsx`
+  `LOGO_PALETTE` remapped to the four-family design system (slate /
+  indigo / rose / amber in 500/600/700 shade triplets), 8 out-of-family
+  entries removed; inline `'#fff'` → `'white'` CSS keyword; (b)-(e)
+  `=== null || === undefined` → `== null` in `MoSCell` / `MoSBadge` /
+  `LossChanceBadge` / `RankingTable` on legacy-snapshot nullable
+  fields; (f) `FilterDrawer.tsx` chip pattern consolidated with the
+  canonical `RECOMMENDATION_CHIP_TONES` from `RecommendationBadge.tsx`
+  — solid-fill pattern A (retired by Rule 2 since PR #68) removed.
+  Cross-tool agents: avatar fallback color set + filter-drawer
+  selected-chip visual will shift; if you maintain a styled
+  fork / Storybook captures of these components, expect a visual
+  regression there. No behavioral or accessibility-affordance change.
 
 ## Claude-Code-specific tooling
 

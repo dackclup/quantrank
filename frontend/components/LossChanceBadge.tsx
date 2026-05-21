@@ -82,7 +82,7 @@ export function LossChanceBadge({
 }) {
   // Missing MoS → em-dash placeholder. Matches existing MoSCell
   // missing-input UI.
-  if (lossChancePct === null || lossChancePct === undefined) {
+  if (lossChancePct == null) {
     return (
       <span
         className={`inline-flex items-center text-slate-400 ${SIZE_CLASSES[size]} ${className}`}
