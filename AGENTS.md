@@ -87,7 +87,8 @@ frontend/                         # Next.js static site (read/write OK)
 
 tests/                            # pytest suite
 docs/                             # Academic methodology + research findings
-.claude/skills/                   # 38 loaded skills + phase-N/ planning docs
+.claude/skills/                   # 42 loaded skills + phase-N/ planning docs
+.claude/agents/                   # 4 project-specific subagents (Claude Code only — Copilot / Cursor / Devin do not auto-route to these)
 .github/workflows/                # ⚠️ ask before editing
 pyproject.toml                    # ⚠️ ask before deps changes
 
@@ -427,6 +428,19 @@ note cross-tool-specific points only:
   `form` / `obj` MUST update the manifest in lockstep. The PR 2
   observability surface lands the `Metadata.form4_*` diagnostic
   fields next; PR 3 emits the annotate flags.
+- **Subagent integration in flight (this PR)** — new
+  `.claude/agents/` directory adds 4 Claude-Code-specific subagents
+  (`quantrank-reviewer` · `schema-sentinel` · `defense-layer-auditor`
+  · `edgar-debugger`). Cross-tool agents (Copilot / Cursor / Devin):
+  this directory is Claude-Code-only and you can safely ignore it —
+  your runtimes do not auto-route to subagent files. Your workflow
+  continues to read from `AGENTS.md` + `.claude/skills/` (which are
+  cross-tool by design). The subagent set codifies four common
+  in-session loops — code review against Rules 1-18, schema triple
+  drift, defense-layer audit, and EDGAR ingest debug — that Claude
+  Code can now spawn in a separate context window instead of
+  inlining into the main session. Doc-only — no compute / schema /
+  output change.
 
 ## Claude-Code-specific tooling
 

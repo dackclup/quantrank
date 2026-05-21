@@ -31,6 +31,7 @@ backing.
 | `frontend/public/data/` | Compute output: `metadata.json` + `rankings.json` + `stocks/<TICKER>.json` |
 | `tests/` | pytest suite (offline + `@network` gated; see CI for current count) |
 | `.claude/skills/` | 42 invocation-triggerable skills + phase planning docs. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for vendoring / license posture per source. |
+| `.claude/agents/` | 4 project-specific subagents (quantrank-reviewer · schema-sentinel · defense-layer-auditor · edgar-debugger). Spawned via the `Agent` tool with a separate context window; see [`.claude/agents/README.md`](.claude/agents/README.md) for the routing matrix. |
 
 ## Commands
 
@@ -308,6 +309,21 @@ PR 3 = annotate-only `insider_sell_cluster` + `c_suite_unusual_sell`
 emit + threshold calibration against PR-2 cron data + uncomment the
 already-reserved `INSIDER_SELL_CLUSTER_WEIGHT` / `C_SUITE_UNUSUAL_SELL_WEIGHT`
 constants in `manipulation_index.py`. Tests: 1009 → 1024 (+15).
+
+**Subagent integration in flight (this PR)** — first set of project-
+specific Claude Code subagents under `.claude/agents/`. Four agents
+land: `quantrank-reviewer` (opus; full code review against Rules 1-18
++ schema triple + tenacity policy), `schema-sentinel` (haiku;
+deterministic Pydantic↔TS↔snapshot drift guard), `defense-layer-
+auditor` (sonnet; verify-production-output Section A-J + 27-flag
+scorecard + Top-5 rotation Rule 16 check), and `edgar-debugger`
+(sonnet; SEC EDGAR ingest debug specialist that knows the PR-3d
+amplification incident + tenacity policy + edgartools drift-detector
+manifests). Subagents are spawned via the `Agent` tool and run in a
+separate context window — distinct from `.claude/skills/` (prompt
+packs the main agent invokes via the `Skill` tool). Routing matrix
++ author conventions in [`.claude/agents/README.md`](.claude/agents/README.md).
+Doc-only — no compute / schema / output change.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight
