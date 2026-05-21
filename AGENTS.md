@@ -371,17 +371,30 @@ note cross-tool-specific points only:
   provenance tiers and prefer evidence-backed recalibration over
   re-tuning gut-feel defaults blind. Doc-only, no compute / schema
   change.
-- **Phase 2.4 in flight (this PR)** — `compute/scoring/earnings_quality.py`
-  `LOSS_AVOID_NI_CEILING` and `LOSS_AVOID_EPS_CEILING` rescaled 10×
-  (`$5M → $50M` and `$0.05 → $0.50`) so the `loss_avoidance_pattern`
-  annotate-flag actually fires on the S&P 500 universe instead of
-  the documented 0%. Module + tests + CLAUDE.md gotcha updated; the
-  Phase 2.5 provenance comment in `manipulation_index.py` is the
-  forward link. Cross-tool agents extending earnings-quality
-  thresholds: the absolute-dollar bands are a stopgap — the
-  documented follow-up is a ratio-based threshold (NI/TotalAssets)
-  that survives universe market-cap inflation. Annotate-only
-  (composite rank unaffected); no schema / output-JSON change.
+- **Phase 2.4 merged via PR #163** (2026-05-20) —
+  `compute/scoring/earnings_quality.py` `LOSS_AVOID_NI_CEILING` and
+  `LOSS_AVOID_EPS_CEILING` rescaled 10× (`$5M → $50M` and `$0.05 →
+  $0.50`) so the `loss_avoidance_pattern` annotate-flag actually
+  fires on the S&P 500 universe instead of the documented 0%. Module
+  + tests + CLAUDE.md gotcha updated; the Phase 2.5 provenance
+  comment in `manipulation_index.py` is the forward link. Cross-tool
+  agents extending earnings-quality thresholds: the absolute-dollar
+  bands are a stopgap — the documented follow-up is a ratio-based
+  threshold (NI/TotalAssets) that survives universe market-cap
+  inflation. Annotate-only (composite rank unaffected); no schema /
+  output-JSON change.
+- **Phase 3 in flight (this PR)** — pairwise φ-coefficient analysis
+  on the 25 active production flags. `scripts/phase3_flag_correlation.py`
+  is reproducible one-shot; outputs land under `docs/phase3-correlation/`
+  (`summary.md` = raw firing rates + pair tables; `findings.md` =
+  interpreted decisions; `heatmap.png` = visual; CSVs = baseline for
+  Q3 audit diff). Headline: defense layer mostly orthogonal,
+  `restatement_history` independent of Sloan/Beneish (Phase 2.2 safe
+  to proceed), `manipulation_triple_flag` φ-locked to `dechow_high`
+  at current sample size (watch Q3 audit). Cross-tool agents
+  proposing new flags: target orthogonality vs `altman_distress` and
+  `restatement_history` baselines — overlap with either is redundant
+  with existing veto. Doc + script only.
 
 ## Claude-Code-specific tooling
 

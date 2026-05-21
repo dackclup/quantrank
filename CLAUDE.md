@@ -237,7 +237,7 @@ in the module docstring: literature-anchored / gut-feel / reserved.
 Doc-only — no compute / schema change. Future weight-recalibration
 PRs (Phase 2.2 / 2.4) now have a documented baseline to delta from.
 
-**Epic #150 Phase 2.4 in flight (this PR)** —
+**Epic #150 Phase 2.4 merged via PR #163** (2026-05-20) —
 `compute/scoring/earnings_quality.py` `LOSS_AVOID_NI_CEILING` rescaled
 `$5M → $50M` and `LOSS_AVOID_EPS_CEILING` rescaled `$0.05 → $0.50`
 (10× the original Burgstahler-Dichev 1997 Compustat-cohort thresholds)
@@ -247,6 +247,19 @@ universe instead of the documented 0% pre-rescale. Annotate-only flag
 Phase-2.5 provenance comment updated to match. New test
 `test_loss_avoidance_ni_just_above_new_ceiling_breaks_streak` pins the
 new upper bound. Tests: 945 → 946. No schema / output-JSON change.
+
+**Epic #150 Phase 3 in flight (this PR)** —
+`scripts/phase3_flag_correlation.py` + `docs/phase3-correlation/`
+produce a baseline pairwise-φ analysis of the 25 active flags on
+production output (502 stocks × 25 flags). Headline findings: defense
+layer is mostly orthogonal (35 diversity-confirmed pairs vs 15
+redundancy candidates); `restatement_history` is independent of the
+Sloan/Beneish manipulation cluster (φ ≈ 0) → Phase 2.2 safe to
+proceed; `TRIPLE_FLAG_WEIGHT` may be redundant with Dechow at current
+sample size (watch in Q3 audit). Doc + script only — no compute /
+schema / output change. Reproducible via the one-shot script;
+re-run after every quarterly cohort audit + after each Phase 2.x
+recalibration PR lands.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight
