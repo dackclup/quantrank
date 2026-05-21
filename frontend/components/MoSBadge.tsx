@@ -29,7 +29,7 @@ const accentColor = (mos: number): string =>
   mos >= 0 ? '#059669' /* emerald-600 */ : '#e11d48'; /* rose-600 */
 
 export function MoSBadge({ mos }: { mos: number | null | undefined }): JSX.Element {
-  if (mos === null || mos === undefined || Number.isNaN(mos)) {
+  if (mos == null || Number.isNaN(mos)) {
     return (
       <div className="flex items-center gap-2">
         <div className="relative h-16 w-16 shrink-0">

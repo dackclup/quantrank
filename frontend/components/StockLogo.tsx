@@ -12,10 +12,27 @@ import { useState } from 'react';
 // letter-avatar fallback. No PII flows in either direction (logo URL
 // only contains the ticker symbol, which is public market data).
 
+// 12-color avatar fallback palette built from the four-family design
+// system (slate / indigo / rose / amber) using the 500/600/700 shade
+// triplet per family. Keeps deterministic distinct-color hashing for
+// ticker avatars while staying within the design-token discipline
+// (`.claude/skills/frontend-design-system/SKILL.md` Rule 0). Pre-2026-05-21
+// the palette included violet/pink/teal/orange/sky/lime/red entries
+// outside the four-family — flagged by `frontend-design-reviewer`
+// and remapped here.
 const LOGO_PALETTE = [
-  '#6366f1', '#8b5cf6', '#ec4899', '#14b8a6',
-  '#f97316', '#0d9488', '#dc2626', '#64748b',
-  '#b45309', '#0ea5e9', '#84cc16', '#d97706',
+  '#6366f1', // indigo-500
+  '#4f46e5', // indigo-600
+  '#4338ca', // indigo-700
+  '#f43f5e', // rose-500
+  '#e11d48', // rose-600
+  '#be123c', // rose-700
+  '#f59e0b', // amber-500
+  '#d97706', // amber-600
+  '#b45309', // amber-700
+  '#64748b', // slate-500
+  '#475569', // slate-600
+  '#334155', // slate-700
 ];
 
 function tickerColor(ticker: string): string {
@@ -45,7 +62,7 @@ export function StockLogo({
       height: size,
       borderRadius: '50%',
       backgroundColor: bg,
-      color: '#fff',
+      color: 'white',
       fontSize,
       fontWeight: 700,
       fontFamily: 'var(--font-mono)',
@@ -67,7 +84,7 @@ export function StockLogo({
     objectFit: 'contain',
     flexShrink: 0,
     border: '1px solid rgb(226 232 240)',
-    background: '#fff',
+    background: 'white',
   };
   return (
     <img

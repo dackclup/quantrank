@@ -20,7 +20,7 @@ export function MoSCell({
   mos: number | null | undefined;
   align?: 'right' | 'left';
 }): JSX.Element {
-  if (mos === null || mos === undefined || Number.isNaN(mos)) {
+  if (mos == null || Number.isNaN(mos)) {
     return <span className="text-slate-300">—</span>;
   }
   const frac = mosVisualFraction(mos);

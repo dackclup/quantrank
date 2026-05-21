@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 
 import { DualRange } from '@/components/DualRange';
 import {
+  RECOMMENDATION_CHIP_DOTS,
+  RECOMMENDATION_CHIP_TONES,
   RECOMMENDATION_LABELS,
   RECOMMENDATION_VALUES,
 } from '@/components/RecommendationBadge';
@@ -36,21 +38,16 @@ export type FilterSetters = {
   clearAll: () => void;
 };
 
-// Soft-palette tone classes mirroring RecommendationBadge.tsx, but
-// muted slightly for the drawer-chip surface (drawer uses subtler tones
-// than the inline badge in the ranking-table row).
-const RECOMMENDATION_CHIP_CLS: Record<Recommendation, string> = {
-  bullish: 'bg-emerald-600 text-white ring-emerald-700',
-  lean_bullish: 'bg-emerald-100 text-emerald-900 ring-emerald-300',
-  neutral: 'bg-slate-200 text-slate-700 ring-slate-300',
-  cautious: 'bg-red-500 text-white ring-red-700',
-};
-const RECOMMENDATION_DOT_CLS: Record<Recommendation, string> = {
-  bullish: 'bg-emerald-700',
-  lean_bullish: 'bg-emerald-500',
-  neutral: 'bg-slate-500',
-  cautious: 'bg-red-600',
-};
+// Selected-state chip tones reuse the canonical
+// `RECOMMENDATION_CHIP_TONES` + `RECOMMENDATION_CHIP_DOTS` exports
+// from RecommendationBadge.tsx — one outlined-light pattern shared
+// across the badge surface and the drawer-selection surface per
+// SKILL.md Rule 2 (the 2026-05-14 user-feedback iteration retired
+// the prior solid-fill pattern A in favor of one unified outlined-
+// light family). Pre-2026-05-21 the drawer carried local solid-fill
+// overrides (`bg-emerald-600 text-white` for bullish + `bg-red-500
+// text-white` for cautious) — flagged by `frontend-design-reviewer`
+// and consolidated here.
 
 export function FilterDrawer({
   open,
@@ -214,11 +211,11 @@ export function FilterDrawer({
                     onClick={() => toggleRecommendation(rec)}
                     className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition ${
                       on
-                        ? RECOMMENDATION_CHIP_CLS[rec]
+                        ? RECOMMENDATION_CHIP_TONES[rec]
                         : 'bg-white text-slate-600 ring-slate-300 hover:bg-slate-50'
                     }`}
                   >
-                    <span className={`inline-block h-1.5 w-1.5 rounded-full ${RECOMMENDATION_DOT_CLS[rec]}`} />
+                    <span className={`inline-block h-1.5 w-1.5 rounded-full ${RECOMMENDATION_CHIP_DOTS[rec]}`} />
                     {RECOMMENDATION_LABELS[rec]}
                   </button>
                 );
