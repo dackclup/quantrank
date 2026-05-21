@@ -153,12 +153,21 @@ RESTATEMENT_HISTORY_WEIGHT: Final[float] = 5.0
 #: (PPV ~70% per Hennes-Leone-Miller's hand-classified cohort) from
 #: the broader error-class amendments. Schroeder 2024 SSRN §3.2
 #: validates the 90-day co-occurrence window — the typical lag from
-#: Item 4.02 disclosure to amended-filing landing. Weight is set at
-#: roughly 1.6× the bare ``RESTATEMENT_HISTORY_WEIGHT`` to reflect
-#: the PPV ratio (70 ÷ 30 ≈ 2.3, conservatively scaled down to 1.6
-#: while we wait for production cohort data). Provenance:
-#: **literature-anchored** — magnitude derived from the PPV gap.
-RESTATEMENT_HIGH_CONFIDENCE_WEIGHT: Final[float] = 8.0
+#: Item 4.02 disclosure to amended-filing landing.
+#:
+#: **Weight semantics — DELTA not total.** When the high-confidence
+#: flag fires, the bare ``restatement_history`` flag ALSO fires
+#: (strict superset — every co-occurrence pair is itself an amendment).
+#: Both flags are summed into the manipulation index, so the combined
+#: contribution is ``RESTATEMENT_HISTORY_WEIGHT + RESTATEMENT_HIGH_CONFIDENCE_WEIGHT``
+#: = 5.0 + 3.0 = 8.0 total. The 8.0 target represents the intended
+#: weight for confirmed-irregularity cases (1.6× the bare flag, scaled
+#: down from the ~2.3× PPV ratio 70÷30 while we wait for production
+#: cohort data). Provenance: **literature-anchored** — total magnitude
+#: derived from the PPV gap; the delta wiring keeps the bare flag's
+#: semantics + weight untouched in this PR per the annotate-before-veto
+#: scout discipline.
+RESTATEMENT_HIGH_CONFIDENCE_WEIGHT: Final[float] = 3.0
 
 #: Bartov-Lai-Yeung 2002 *JAR* §"Late Filings Around Earnings
 #: Surprises": NT-10K / NT-10Q filings correlate with subsequent

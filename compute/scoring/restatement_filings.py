@@ -110,7 +110,14 @@ class HighConfidenceRestatementResult:
     (fraud-class restatement) vs an "error" (clerical correction) —
     PPV ~70% vs the bare `restatement_history` flag's ~30%.
 
-    Annotate-only — composite rank unaffected per SKILL.md Rule 16.
+    Annotate path: lands in ``StockDetail.valuation_warnings`` (not
+    in ``risk_flags``). Composite-rank source stays the raw
+    ``composite_score`` per SKILL.md Rule 16. However, the flag DOES
+    contribute to ``manipulation_index`` (weight = 3.0 delta on top
+    of the bare flag's 5.0 → 8.0 total when both fire), which feeds
+    the soft 10-pt-max ``composite_score_adjusted`` penalty surfaced
+    on the detail-page Manipulation Risk card. The ranking-table
+    sort key is the raw composite; the adjusted score is informational.
     """
 
     fired: bool

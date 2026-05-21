@@ -270,12 +270,19 @@ Implementation: 2 new cache-reading helpers
 (`get_amendment_filing_dates`, `get_non_reliance_filing_dates`) +
 pure-function `compute_high_confidence_restatement` (90-day
 symmetric window join) + new `RESTATEMENT_HIGH_CONFIDENCE_WEIGHT =
-8.0` in `manipulation_index.py` FLAG_WEIGHTS. Additive only — bare
-`restatement_history` semantics + weight unchanged; the next-PR
-decision (retire bare flag or split weights) waits on a cohort
-acceptance check after ≥ 1 production cron. Phase 3 findings doc
-§2 + §Decision-matrix updated to mark this in-flight. Tests:
-946 → 958 (+12). No schema / output-JSON-shape change.
+3.0` delta weight in `manipulation_index.py` FLAG_WEIGHTS. Annotate
+path (`valuation_warnings`); when both flags fire the combined
+manipulation_index contribution is 5+3=8 pts per Hennes-Leone-Miller
+PPV ratio. Bare `restatement_history` semantics + weight unchanged;
+the next-PR decision (retire bare flag or split weights) waits on a
+cohort acceptance check after ≥ 1 production cron. Two follow-up
+fix commits during PR review: (a) capped non-reliance lookback to
+1y instead of 5y (avoided 8-K cache 5y-refetch that cancelled the
+simulate workflow at 43m); (b) corrected the weight from 8.0 (total
+mis-spec, would have double-counted) to 3.0 (delta) per
+scrutinize-agent feedback. Phase 3 findings doc §2 + §Decision-matrix
+updated to mark this in-flight. Tests: 946 → 962 (+16 across both
+test modules). No schema / output-JSON-shape change.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight
