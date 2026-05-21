@@ -3,19 +3,19 @@
   "name": "MSCI Inc.",
   "sector": "Financials",
   "industry": "Financial Exchanges & Data",
-  "market_cap": 42367413867.1875,
-  "current_price": 581.97,
-  "rank": 438,
-  "composite_score": 40.17,
+  "market_cap": 42394353955.078125,
+  "current_price": 582.34,
+  "rank": 418,
+  "composite_score": 41.28,
   "pillar_scores": {
     "quality": 26.67,
-    "value": 20.44,
+    "value": 20.22,
     "growth": 60.67,
-    "momentum": 53.29,
-    "health": 56.02,
+    "momentum": 63.25,
+    "health": 55.98,
     "profitability": 72.44,
-    "technical": 41.48,
-    "risk": 47.74,
+    "technical": 39.84,
+    "risk": 47.68,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 5.54,
     "eps_diluted": 5.53,
     "shares_outstanding": 72800000.0,
-    "market_cap": 42367413867.1875,
-    "pe_ratio_ttm": 32.10370034756821,
+    "market_cap": 42394353955.078125,
+    "pe_ratio_ttm": 32.124114067218144,
     "goodwill": 2962300000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 458.4307379819333,
+        "value": 458.83669586883923,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "insufficient_history_for_roe",
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 458.4307379819333,
-    "max": 458.4307379819333,
-    "low": 458.4307379819333,
-    "high": 458.4307379819333,
-    "mos_pct": -26.948287382522846,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "median": 458.83669586883923,
+    "max": 458.83669586883923,
+    "low": 458.83669586883923,
+    "high": 458.83669586883923,
+    "mos_pct": -26.916620248249185,
+    "valuation_warnings": [],
     "valuation_methods_applicable": 1
   },
   "top5_factors": [],
@@ -94,14 +92,12 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 29,
+    "filing_lag_days": 30,
     "latest_period_end": "2026-04-14",
     "latest_filed_date": "2026-04-21"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -117,20 +113,20 @@
       "Quality": 50.67,
       "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 53.29,
+      "Momentum": 54.28,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 51.94,
-      "Risk": 54.88
+      "Technical": 51.25,
+      "Risk": 54.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 56.346182345724515,
-  "price_change_1d_pct": 0.7409,
+  "loss_chance_pct": 53.781911597732716,
+  "price_change_1d_pct": 0.0636,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 40.17,
+  "composite_score_adjusted": 41.28,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -139,9 +135,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -174,7 +172,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 46.01,
+  "osap_blended_score": 46.56,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 1

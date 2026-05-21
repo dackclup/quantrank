@@ -3,19 +3,19 @@
   "name": "Verisign",
   "sector": "Information Technology",
   "industry": "Internet Services & Infrastructure",
-  "market_cap": 27573000000.0,
-  "current_price": 303.0,
-  "rank": 211,
-  "composite_score": 52.27,
+  "market_cap": 27839629333.496094,
+  "current_price": 305.93,
+  "rank": 210,
+  "composite_score": 52.24,
   "pillar_scores": {
     "quality": 39.55,
-    "value": 51.6,
-    "growth": 44.52,
-    "momentum": 70.92,
-    "health": 37.81,
+    "value": 51.83,
+    "growth": 44.18,
+    "momentum": 70.17,
+    "health": 37.85,
     "profitability": 97.03,
-    "technical": 67.85,
-    "risk": 56.47,
+    "technical": 68.5,
+    "risk": 56.94,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 6.24,
     "eps_diluted": 6.24,
     "shares_outstanding": 91000000.0,
-    "market_cap": 27573000000.0,
-    "pe_ratio_ttm": 32.78986799857296,
+    "market_cap": 27839629333.496094,
+    "pe_ratio_ttm": 33.106944147337494,
     "goodwill": 52500000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 340.86197829701206,
+        "value": 346.4575290352005,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 339.4319724948447,
+        "value": 335.4607317808106,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "insufficient_history_for_roe",
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 339.4319724948447,
-    "max": 340.86197829701206,
+    "median": 335.4607317808106,
+    "max": 346.4575290352005,
     "low": 120.02063761075242,
-    "high": 340.86197829701206,
-    "mos_pct": 10.733217683374836,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "high": 346.4575290352005,
+    "mos_pct": 8.803039016895923,
+    "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
   "top5_factors": [],
@@ -94,16 +92,14 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 27,
+    "filing_lag_days": 28,
     "latest_period_end": "2026-04-17",
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [
     "altman_distress"
   ],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -116,23 +112,23 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 49.32,
-      "Value": 48.17,
-      "Growth": 52.23,
-      "Momentum": 59.76,
+      "Quality": 49.66,
+      "Value": 48.86,
+      "Growth": 53.42,
+      "Momentum": 61.8,
       "Health": 69.52,
-      "Profitability": 47.26,
-      "Technical": 61.01,
-      "Risk": 46.85
+      "Profitability": 48.86,
+      "Technical": 59.76,
+      "Risk": 47.31
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 49.10707369166074,
-  "price_change_1d_pct": 0.1223,
+  "loss_chance_pct": 47.798151219743616,
+  "price_change_1d_pct": 0.967,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 52.27,
+  "composite_score_adjusted": 52.24,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -141,9 +137,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -176,7 +174,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.06,
+  "osap_blended_score": 52.05,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

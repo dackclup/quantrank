@@ -3,19 +3,19 @@
   "name": "Lockheed Martin",
   "sector": "Industrials",
   "industry": "Aerospace & Defense",
-  "market_cap": 120490242096.61377,
-  "current_price": 522.59,
-  "rank": 147,
-  "composite_score": 55.46,
+  "market_cap": 120536343560.2251,
+  "current_price": 522.79,
+  "rank": 146,
+  "composite_score": 55.5,
   "pillar_scores": {
     "quality": 66.14,
-    "value": 63.29,
+    "value": 63.5,
     "growth": 49.37,
-    "momentum": 46.56,
+    "momentum": 46.61,
     "health": 32.91,
     "profitability": 31.01,
-    "technical": 70.62,
-    "risk": 60.69,
+    "technical": 70.82,
+    "risk": 60.23,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 6.47,
     "eps_diluted": 6.44,
     "shares_outstanding": 230563608.0,
-    "market_cap": 120490242096.61377,
-    "pe_ratio_ttm": 25.13879451212472,
+    "market_cap": 120536343560.2251,
+    "pe_ratio_ttm": 25.14841301068748,
     "goodwill": 11306000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 668.7895378297543,
+        "value": 675.058260264459,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 132.11680485329632,
+        "value": 132.41016349334134,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 674.0298355085696,
+        "value": 672.9303429241743,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 668.7895378297543,
-    "max": 674.0298355085696,
-    "low": 132.11680485329632,
-    "high": 674.0298355085696,
-    "mos_pct": 21.86031669225989,
+    "median": 672.9303429241743,
+    "max": 675.058260264459,
+    "low": 132.41016349334134,
+    "high": 675.058260264459,
+    "mos_pct": 22.31142739743396,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
@@ -92,7 +92,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 27,
+    "filing_lag_days": 28,
     "latest_period_end": "2026-04-20",
     "latest_filed_date": "2026-04-23"
   },
@@ -111,22 +111,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.16,
+      "Value": 49.37,
       "Growth": 49.37,
-      "Momentum": 50.5,
-      "Health": 52.79,
+      "Momentum": 49.4,
+      "Health": 52.75,
       "Profitability": 47.68,
-      "Technical": 45.57,
-      "Risk": 54.48
+      "Technical": 45.22,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 29.62086297131537,
-  "price_change_1d_pct": -0.7671,
+  "loss_chance_pct": 29.439862557249416,
+  "price_change_1d_pct": 0.0383,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 55.46,
+  "composite_score_adjusted": 55.5,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -135,9 +135,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -170,7 +172,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.65,
+  "osap_blended_score": 53.68,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

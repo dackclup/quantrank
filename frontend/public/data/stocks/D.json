@@ -3,19 +3,19 @@
   "name": "Dominion Energy",
   "sector": "Utilities",
   "industry": "Multi-Utilities",
-  "market_cap": 59565517397.46339,
-  "current_price": 67.73,
+  "market_cap": 60058010276.03547,
+  "current_price": 68.29,
   "rank": 369,
-  "composite_score": 44.79,
+  "composite_score": 44.77,
   "pillar_scores": {
     "quality": 51.61,
     "value": 38.17,
     "growth": 43.55,
-    "momentum": 54.88,
+    "momentum": 54.03,
     "health": 10.96,
     "profitability": 52.15,
-    "technical": 55.13,
-    "risk": 69.06,
+    "technical": 57.57,
+    "risk": 68.13,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.69,
     "eps_diluted": 0.69,
     "shares_outstanding": 879455403.0,
-    "market_cap": 59565517397.46339,
-    "pe_ratio_ttm": 18.97595329642032,
+    "market_cap": 60058010276.03547,
+    "pe_ratio_ttm": 19.13284812871471,
     "goodwill": 4143000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 70.21821301605061,
+        "value": 70.96115638321109,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 73.54078196030154,
+        "value": 74.31887974756238,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 40.88793567450356,
+        "value": 41.62099770432037,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 55.55307434527708,
-    "max": 73.54078196030154,
+    "median": 56.291077043765725,
+    "max": 74.31887974756238,
     "low": 40.33511210700021,
-    "high": 73.54078196030154,
-    "mos_pct": -21.91945118279804,
+    "high": 74.31887974756238,
+    "mos_pct": -21.31585413161056,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -96,7 +96,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 19,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-05-01"
   },
@@ -120,22 +120,22 @@
     "label": "Utilities median (n=31)",
     "values": {
       "Quality": 51.61,
-      "Value": 48.39,
+      "Value": 47.85,
       "Growth": 54.03,
-      "Momentum": 56.03,
+      "Momentum": 55.18,
       "Health": 17.85,
       "Profitability": 52.15,
-      "Technical": 47.71,
-      "Risk": 70.75
+      "Technical": 48.85,
+      "Risk": 72.31
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 67.27830397275497,
-  "price_change_1d_pct": -0.5871,
+  "loss_chance_pct": 67.07638265424174,
+  "price_change_1d_pct": 0.8268,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 42.79,
+  "composite_score_adjusted": 42.77,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -144,9 +144,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -179,7 +181,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.32,
+  "osap_blended_score": 48.31,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

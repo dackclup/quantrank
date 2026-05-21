@@ -3,19 +3,19 @@
   "name": "ServiceNow",
   "sector": "Information Technology",
   "industry": "Systems Software",
-  "market_cap": 106502303146.3623,
-  "current_price": 103.3,
-  "rank": 378,
-  "composite_score": 43.87,
+  "market_cap": 102780392517.08984,
+  "current_price": 99.69,
+  "rank": 373,
+  "composite_score": 44.36,
   "pillar_scores": {
-    "quality": 48.29,
-    "value": 39.04,
-    "growth": 67.47,
-    "momentum": 9.56,
+    "quality": 47.95,
+    "value": 40.64,
+    "growth": 67.12,
+    "momentum": 10.93,
     "health": 47.89,
     "profitability": 53.88,
-    "technical": 65.29,
-    "risk": 20.19,
+    "technical": 67.53,
+    "risk": 19.72,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.45,
     "eps_diluted": 0.45,
     "shares_outstanding": 1031000000.0,
-    "market_cap": 106502303146.3623,
-    "pe_ratio_ttm": 60.61599496093472,
+    "market_cap": 102780392517.08984,
+    "pe_ratio_ttm": 58.49766221803634,
     "goodwill": 4541000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 60.03256690324074,
+        "value": 62.27882381800681,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 115.37870525539255,
+        "value": 116.73909603850127,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 64.67411254722909,
+        "value": 65.08696848346612,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 47.55903331300422,
-    "max": 115.37870525539255,
+    "median": 48.68216177038725,
+    "max": 116.73909603850127,
     "low": 7.53752239394028,
-    "high": 115.37870525539255,
-    "mos_pct": -117.2037483855084,
+    "high": 116.73909603850127,
+    "mos_pct": -104.77727121404543,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
@@ -95,7 +95,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 27,
+    "filing_lag_days": 28,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-23"
   },
@@ -118,23 +118,23 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 49.32,
-      "Value": 48.17,
-      "Growth": 52.23,
-      "Momentum": 59.76,
+      "Quality": 49.66,
+      "Value": 48.86,
+      "Growth": 53.42,
+      "Momentum": 61.8,
       "Health": 69.52,
-      "Profitability": 47.26,
-      "Technical": 61.01,
-      "Risk": 46.85
+      "Profitability": 48.86,
+      "Technical": 59.76,
+      "Risk": 47.31
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 68.06518333060453,
-  "price_change_1d_pct": 1.4436,
+  "loss_chance_pct": 67.82097608424749,
+  "price_change_1d_pct": -3.4947,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 43.87,
+  "composite_score_adjusted": 44.36,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -143,9 +143,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -178,7 +180,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.86,
+  "osap_blended_score": 48.1,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5

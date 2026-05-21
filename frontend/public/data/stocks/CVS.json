@@ -3,19 +3,19 @@
   "name": "CVS Health",
   "sector": "Health Care",
   "industry": "Health Care Services",
-  "market_cap": 119018497639.43155,
-  "current_price": 93.28,
-  "rank": 440,
-  "composite_score": 39.85,
+  "market_cap": 119069535899.85788,
+  "current_price": 93.32,
+  "rank": 433,
+  "composite_score": 40.28,
   "pillar_scores": {
     "quality": 37.29,
-    "value": 45.2,
+    "value": 45.76,
     "growth": 21.19,
-    "momentum": 57.37,
-    "health": 16.29,
+    "momentum": 60.21,
+    "health": 16.25,
     "profitability": 40.96,
-    "technical": 65.19,
-    "risk": 57.57,
+    "technical": 64.69,
+    "risk": 56.91,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.31,
     "eps_diluted": 2.3,
     "shares_outstanding": 1275927307.0,
-    "market_cap": 119018497639.43155,
-    "pe_ratio_ttm": 40.592939167609664,
+    "market_cap": 119069535899.85788,
+    "pe_ratio_ttm": 40.61034648699109,
     "goodwill": 85478000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 56.150399855499046,
+        "value": 55.762848608069994,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 179.7221905464931,
+        "value": 182.80119018901235,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 85.99354839674903,
+        "value": 85.20876474145699,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 71.07197412612405,
-    "max": 179.7221905464931,
+    "median": 70.4858066747635,
+    "max": 182.80119018901235,
     "low": 52.255523548030666,
-    "high": 179.7221905464931,
-    "mos_pct": -31.247232015481313,
+    "high": 182.80119018901235,
+    "mos_pct": -32.39544824310878,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -94,7 +94,7 @@
       "sga_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-05-06"
   },
@@ -117,22 +117,22 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 52.97,
-      "Value": 51.13,
+      "Value": 50.85,
       "Growth": 49.58,
-      "Momentum": 40.09,
-      "Health": 59.88,
+      "Momentum": 38.6,
+      "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 57.02,
-      "Risk": 41.14
+      "Technical": 56.82,
+      "Risk": 41.47
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 1.7751926696141438,
   "recommendation": "neutral",
-  "loss_chance_pct": 61.010938378984086,
-  "price_change_1d_pct": -0.9556,
+  "loss_chance_pct": 61.19873182825327,
+  "price_change_1d_pct": 0.0429,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 39.85,
+  "composite_score_adjusted": 40.28,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -141,9 +141,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -176,7 +178,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.85,
+  "osap_blended_score": 46.07,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

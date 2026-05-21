@@ -3,19 +3,19 @@
   "name": "Invitation Homes",
   "sector": "Real Estate",
   "industry": "Single-Family Residential REITs",
-  "market_cap": 17328203901.841805,
-  "current_price": 29.17,
-  "rank": 301,
-  "composite_score": 48.16,
+  "market_cap": 17245038390.57624,
+  "current_price": 29.03,
+  "rank": 303,
+  "composite_score": 48.1,
   "pillar_scores": {
     "quality": 45.16,
     "value": 59.68,
     "growth": 47.58,
-    "momentum": 46.61,
+    "momentum": 45.07,
     "health": 24.5,
     "profitability": 48.39,
-    "technical": 66.14,
-    "risk": 46.88,
+    "technical": 69.02,
+    "risk": 46.48,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.26,
     "eps_diluted": 0.26,
     "shares_outstanding": 594041956.0,
-    "market_cap": 17328203901.841805,
-    "pe_ratio_ttm": 29.636464842757906,
+    "market_cap": 17245038390.57624,
+    "pe_ratio_ttm": 29.49422668785658,
     "goodwill": 314154000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 28.049539668851647,
+        "value": 28.012956452652606,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 39.58353174198408,
+        "value": 39.55395647826399,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 28.049539668851647,
-    "max": 39.58353174198408,
+    "median": 28.012956452652606,
+    "max": 39.55395647826399,
     "low": 16.75510071964239,
-    "high": 39.58353174198408,
-    "mos_pct": -3.99457681184887,
+    "high": 39.55395647826399,
+    "mos_pct": -3.63062083686849,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -104,7 +104,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 20,
+    "filing_lag_days": 21,
     "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-04-30"
   },
@@ -125,22 +125,22 @@
     "label": "Real Estate median (n=31)",
     "values": {
       "Quality": 50.81,
-      "Value": 47.31,
+      "Value": 46.77,
       "Growth": 48.79,
-      "Momentum": 57.32,
+      "Momentum": 53.24,
       "Health": 26.22,
       "Profitability": 52.15,
-      "Technical": 55.83,
-      "Risk": 52.92
+      "Technical": 51.49,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 44.31801095753099,
-  "price_change_1d_pct": 1.7795,
+  "loss_chance_pct": 44.22237437425599,
+  "price_change_1d_pct": -0.4799,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 48.16,
+  "composite_score_adjusted": 48.1,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -149,9 +149,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -184,7 +186,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.01,
+  "osap_blended_score": 49.97,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

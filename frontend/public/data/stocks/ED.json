@@ -3,19 +3,19 @@
   "name": "Consolidated Edison",
   "sector": "Utilities",
   "industry": "Multi-Utilities",
-  "market_cap": 39174708766.16341,
-  "current_price": 106.3,
-  "rank": 245,
-  "composite_score": 50.99,
+  "market_cap": 39580090879.3317,
+  "current_price": 107.4,
+  "rank": 227,
+  "composite_score": 51.61,
   "pillar_scores": {
     "quality": 43.55,
-    "value": 63.44,
+    "value": 62.9,
     "growth": 49.19,
-    "momentum": 54.53,
+    "momentum": 55.18,
     "health": 33.71,
     "profitability": 53.23,
-    "technical": 47.76,
-    "risk": 71.66,
+    "technical": 60.41,
+    "risk": 72.36,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.55,
     "eps_diluted": 2.54,
     "shares_outstanding": 368529705.0,
-    "market_cap": 39174708766.16341,
-    "pe_ratio_ttm": 15.834562961262492,
+    "market_cap": 39580090879.3317,
+    "pe_ratio_ttm": 15.998419918889129,
     "goodwill": 406000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 132.06856966556063,
+        "value": 133.46592034751222,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 154.11602739619715,
+        "value": 155.74665106787833,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 104.58839540244986,
+        "value": 107.62060497067924,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 118.32848253400525,
-    "max": 154.11602739619715,
+    "median": 120.54326265909573,
+    "max": 155.74665106787833,
     "low": 96.30032418120557,
-    "high": 154.11602739619715,
-    "mos_pct": 10.165328942497585,
+    "high": 155.74665106787833,
+    "mos_pct": 10.90335605929867,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -97,7 +97,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 13,
+    "filing_lag_days": 14,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-07"
   },
@@ -118,22 +118,22 @@
     "label": "Utilities median (n=31)",
     "values": {
       "Quality": 51.61,
-      "Value": 48.39,
+      "Value": 47.85,
       "Growth": 54.03,
-      "Momentum": 56.03,
+      "Momentum": 55.18,
       "Health": 17.85,
       "Profitability": 52.15,
-      "Technical": 47.71,
-      "Risk": 70.75
+      "Technical": 48.85,
+      "Risk": 72.31
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 37.94806879571382,
-  "price_change_1d_pct": -1.7015,
+  "loss_chance_pct": 37.380472259466515,
+  "price_change_1d_pct": 1.0348,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 50.99,
+  "composite_score_adjusted": 51.61,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -142,9 +142,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -177,7 +179,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.42,
+  "osap_blended_score": 51.73,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

@@ -3,19 +3,19 @@
   "name": "Aptiv",
   "sector": "Consumer Discretionary",
   "industry": "Automotive Parts & Equipment",
-  "market_cap": 11548132093.80854,
-  "current_price": 54.57,
-  "rank": 481,
-  "composite_score": 35.17,
+  "market_cap": 11819006110.042702,
+  "current_price": 55.85,
+  "rank": 480,
+  "composite_score": 35.52,
   "pillar_scores": {
     "quality": 17.19,
     "value": 72.22,
-    "growth": 29.95,
-    "momentum": 10.58,
-    "health": 55.3,
+    "growth": 29.43,
+    "momentum": 10.23,
+    "health": 55.34,
     "profitability": 13.54,
-    "technical": 42.88,
-    "risk": 16.07,
+    "technical": 51.79,
+    "risk": 16.4,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.89,
     "eps_diluted": 0.88,
     "shares_outstanding": 211620527.0,
-    "market_cap": 11548132093.80854,
-    "pe_ratio_ttm": 30.151780923782088,
+    "market_cap": 11819006110.042702,
+    "pe_ratio_ttm": 30.859023786012276,
     "goodwill": 4548000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 39.030947296348835,
+        "value": 39.328951673275576,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 268.28521257060976,
+        "value": 270.0190166903824,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 110.32989516659,
+        "value": 111.61018440512547,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 40.496764397574225,
-    "max": 268.28521257060976,
+    "median": 40.645766586037595,
+    "max": 270.0190166903824,
     "low": 15.672012382564464,
-    "high": 268.28521257060976,
-    "mos_pct": -34.75150547605968,
+    "high": 270.0190166903824,
+    "mos_pct": -37.406680117349225,
     "valuation_warnings": [
       "goodwill_heavy"
     ],
@@ -93,7 +93,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 16,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-05"
   },
@@ -115,22 +115,22 @@
     "label": "Consumer Discretionary median (n=48)",
     "values": {
       "Quality": 46.35,
-      "Value": 49.83,
-      "Growth": 51.69,
-      "Momentum": 42.26,
-      "Health": 43.72,
+      "Value": 50.17,
+      "Growth": 51.43,
+      "Momentum": 41.36,
+      "Health": 43.75,
       "Profitability": 52.6,
-      "Technical": 43.15,
-      "Risk": 41.87
+      "Technical": 51.39,
+      "Risk": 41.77
     }
   },
   "beneish_m_score": -2.638590627365224,
   "dechow_f_score": 0.46843766005748894,
   "recommendation": "neutral",
-  "loss_chance_pct": 60.58020974779619,
-  "price_change_1d_pct": 3.8045,
+  "loss_chance_pct": 61.33278510697528,
+  "price_change_1d_pct": 2.3456,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 34.67,
+  "composite_score_adjusted": 35.02,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -139,9 +139,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": true,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -174,7 +176,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 43.51,
+  "osap_blended_score": 43.69,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 6

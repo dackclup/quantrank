@@ -3,19 +3,19 @@
   "name": "Camden Property Trust",
   "sector": "Real Estate",
   "industry": "Multi-Family Residential REITs",
-  "market_cap": 10684242406.308563,
-  "current_price": 106.29,
-  "rank": 338,
-  "composite_score": 46.51,
+  "market_cap": 10672179762.382874,
+  "current_price": 106.17,
+  "rank": 340,
+  "composite_score": 46.34,
   "pillar_scores": {
     "quality": 56.45,
     "value": 41.94,
     "growth": 48.39,
-    "momentum": 45.02,
+    "momentum": 42.53,
     "health": 23.78,
     "profitability": 54.03,
-    "technical": 47.81,
-    "risk": 46.15,
+    "technical": 50.45,
+    "risk": 46.31,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.4,
     "eps_diluted": 0.4,
     "shares_outstanding": 100519732.0,
-    "market_cap": 10684242406.308563,
-    "pe_ratio_ttm": 26.810811423466614,
+    "market_cap": 10672179762.382874,
+    "pe_ratio_ttm": 26.78054168048801,
     "goodwill": null
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 116.35356526211322,
+        "value": 115.83319961398009,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 97.16222801812634,
+        "value": 96.77887922388136,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 97.16222801812634,
-    "max": 116.35356526211322,
+    "median": 96.77887922388136,
+    "max": 115.83319961398009,
     "low": 51.256999115506055,
-    "high": 116.35356526211322,
-    "mos_pct": -9.394363513049688,
+    "high": 115.83319961398009,
+    "mos_pct": -9.703686403868355,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -109,7 +109,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 19,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-05-01"
   },
@@ -132,22 +132,22 @@
     "label": "Real Estate median (n=31)",
     "values": {
       "Quality": 50.81,
-      "Value": 47.31,
+      "Value": 46.77,
       "Growth": 48.79,
-      "Momentum": 57.32,
+      "Momentum": 53.24,
       "Health": 26.22,
       "Profitability": 52.15,
-      "Technical": 55.83,
-      "Risk": 52.92
+      "Technical": 51.49,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 62.0319908910505,
-  "price_change_1d_pct": 1.1708,
+  "loss_chance_pct": 62.226782787299186,
+  "price_change_1d_pct": -0.1129,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 46.51,
+  "composite_score_adjusted": 46.34,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -156,9 +156,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -191,7 +193,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.18,
+  "osap_blended_score": 49.1,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

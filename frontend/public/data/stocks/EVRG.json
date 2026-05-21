@@ -3,19 +3,19 @@
   "name": "Evergy",
   "sector": "Utilities",
   "industry": "Electric Utilities",
-  "market_cap": 19169464003.16391,
-  "current_price": 83.16,
-  "rank": 392,
-  "composite_score": 43.09,
+  "market_cap": 19282414892.984962,
+  "current_price": 83.65,
+  "rank": 386,
+  "composite_score": 43.03,
   "pillar_scores": {
     "quality": 32.26,
-    "value": 52.69,
+    "value": 53.23,
     "growth": 29.03,
-    "momentum": 69.97,
-    "health": 9.44,
+    "momentum": 68.77,
+    "health": 9.52,
     "profitability": 48.39,
-    "technical": 56.95,
-    "risk": 84.59,
+    "technical": 55.85,
+    "risk": 84.93,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.66,
     "eps_diluted": 0.64,
     "shares_outstanding": 230513025.0,
-    "market_cap": 19169464003.16391,
-    "pe_ratio_ttm": 21.4327638675804,
+    "market_cap": 19282414892.984962,
+    "pe_ratio_ttm": 21.55905064063614,
     "goodwill": 2336600000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 74.3702421742205,
+        "value": 74.62686940292146,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 104.14565442886482,
+        "value": 105.02249904245829,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 83.95894570790753,
+        "value": 85.23597787782359,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 79.16459394106401,
-    "max": 104.14565442886482,
+    "median": 79.93142364037251,
+    "max": 105.02249904245829,
     "low": 51.98146697521414,
-    "high": 104.14565442886482,
-    "mos_pct": -5.046965470472623,
+    "high": 105.02249904245829,
+    "mos_pct": -4.652210252424651,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -98,7 +98,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 13,
+    "filing_lag_days": 14,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-07"
   },
@@ -119,22 +119,22 @@
     "label": "Utilities median (n=31)",
     "values": {
       "Quality": 51.61,
-      "Value": 48.39,
+      "Value": 47.85,
       "Growth": 54.03,
-      "Momentum": 56.03,
+      "Momentum": 55.18,
       "Health": 17.85,
       "Profitability": 52.15,
-      "Technical": 47.71,
-      "Risk": 70.75
+      "Technical": 48.85,
+      "Risk": 72.31
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 47.22184210435826,
-  "price_change_1d_pct": 0.229,
+  "loss_chance_pct": 47.11507637719325,
+  "price_change_1d_pct": 0.5892,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 43.09,
+  "composite_score_adjusted": 43.03,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -143,9 +143,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -178,7 +180,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.47,
+  "osap_blended_score": 47.44,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

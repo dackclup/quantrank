@@ -3,19 +3,19 @@
   "name": "CME Group",
   "sector": "Financials",
   "industry": "Financial Exchanges & Data",
-  "market_cap": 105373903186.52344,
-  "current_price": 290.12,
-  "rank": 306,
-  "composite_score": 47.99,
+  "market_cap": 105072445423.58398,
+  "current_price": 289.29,
+  "rank": 314,
+  "composite_score": 47.48,
   "pillar_scores": {
     "quality": 58.0,
     "value": 19.78,
     "growth": 51.0,
-    "momentum": 47.01,
-    "health": 46.47,
+    "momentum": 46.36,
+    "health": 46.43,
     "profitability": 66.22,
-    "technical": 73.16,
-    "risk": 77.19,
+    "technical": 64.94,
+    "risk": 76.86,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 3.25,
     "eps_diluted": 3.18,
     "shares_outstanding": 363208000.0,
-    "market_cap": 105373903186.52344,
-    "pe_ratio_ttm": 19.872119938619438,
+    "market_cap": 105072445423.58398,
+    "pe_ratio_ttm": 19.81526900456078,
     "goodwill": 10506000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 417.58116988101114,
+        "value": 412.89047782930425,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 147.15237450068972,
+        "value": 147.60706502452672,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 114.62643417142925,
-    "max": 417.58116988101114,
+    "median": 114.85377943334774,
+    "max": 412.89047782930425,
     "low": 34.91279134593951,
-    "high": 417.58116988101114,
-    "mos_pct": -153.1004276756087,
+    "high": 412.89047782930425,
+    "mos_pct": -151.87678626875615,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
@@ -99,7 +99,7 @@
       "long_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 26,
+    "filing_lag_days": 27,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-24"
   },
@@ -125,20 +125,20 @@
       "Quality": 50.67,
       "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 53.29,
+      "Momentum": 54.28,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 51.94,
-      "Risk": 54.88
+      "Technical": 51.25,
+      "Risk": 54.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 75.00483344400178,
-  "price_change_1d_pct": -4.0513,
+  "loss_chance_pct": 75.25894200973883,
+  "price_change_1d_pct": -0.2861,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 47.99,
+  "composite_score_adjusted": 47.48,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -147,9 +147,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -182,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.92,
+  "osap_blended_score": 49.67,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

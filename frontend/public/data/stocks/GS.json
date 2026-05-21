@@ -3,19 +3,19 @@
   "name": "Goldman Sachs",
   "sector": "Financials",
   "industry": "Investment Banking & Brokerage",
-  "market_cap": 289732686872.0541,
-  "current_price": 982.12,
-  "rank": 218,
-  "composite_score": 51.97,
+  "market_cap": 291517478167.9393,
+  "current_price": 988.17,
+  "rank": 223,
+  "composite_score": 51.87,
   "pillar_scores": {
     "quality": 48.0,
-    "value": 41.11,
+    "value": 40.89,
     "growth": 53.0,
-    "momentum": 82.1,
+    "momentum": 80.93,
     "health": 42.51,
     "profitability": 49.56,
-    "technical": 54.16,
-    "risk": 68.63,
+    "technical": 55.98,
+    "risk": 68.99,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 17.74,
     "eps_diluted": 17.55,
     "shares_outstanding": 295007421.0,
-    "market_cap": 289732686872.0541,
-    "pe_ratio_ttm": 16.03568114191134,
+    "market_cap": 291517478167.9393,
+    "pe_ratio_ttm": 16.134463037853624,
     "goodwill": 6590000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 847.1900176570659,
+        "value": 849.9759501730459,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 835.6910646752644,
+        "value": 838.2732914945898,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 707.7547139658279,
-    "max": 847.1900176570659,
+    "median": 709.0458273754907,
+    "max": 849.9759501730459,
     "low": 407.1352493725961,
-    "high": 847.1900176570659,
-    "mos_pct": -38.76558866192258,
+    "high": 849.9759501730459,
+    "mos_pct": -39.366165734002585,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -100,7 +100,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 19,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-04-17",
     "latest_filed_date": "2026-05-01"
   },
@@ -125,20 +125,20 @@
       "Quality": 50.67,
       "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 53.29,
+      "Momentum": 54.28,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 51.94,
-      "Risk": 54.88
+      "Technical": 51.25,
+      "Risk": 54.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 55.584621314984105,
-  "price_change_1d_pct": 5.7476,
+  "loss_chance_pct": 55.84067737387744,
+  "price_change_1d_pct": 0.616,
   "manipulation_index": 25.0,
-  "composite_score_adjusted": 49.47,
+  "composite_score_adjusted": 49.37,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -147,9 +147,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": true,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -182,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.91,
+  "osap_blended_score": 51.86,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

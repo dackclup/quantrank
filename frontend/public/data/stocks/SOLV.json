@@ -3,19 +3,19 @@
   "name": "Solventum",
   "sector": "Health Care",
   "industry": "Health Care Technology",
-  "market_cap": 13183790348.921448,
-  "current_price": 76.13,
-  "rank": 41,
-  "composite_score": 62.89,
+  "market_cap": 13291159146.0,
+  "current_price": 76.75,
+  "rank": 43,
+  "composite_score": 62.76,
   "pillar_scores": {
     "quality": 78.39,
     "value": 77.97,
     "growth": 61.02,
-    "momentum": 32.47,
-    "health": 31.2,
+    "momentum": 30.88,
+    "health": 31.16,
     "profitability": 63.84,
-    "technical": 68.73,
-    "risk": 41.57,
+    "technical": 69.32,
+    "risk": 42.76,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.07,
     "eps_diluted": 0.07,
     "shares_outstanding": 173174712.0,
-    "market_cap": 13183790348.921448,
-    "pe_ratio_ttm": 9.206557506230062,
+    "market_cap": 13291159146.0,
+    "pe_ratio_ttm": 9.281535716480448,
     "goodwill": 5626000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 202.23457913485117,
+        "value": 201.15130950116716,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 84.94876960092228,
+        "value": 86.40411148407179,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 225.40514011032073,
+        "value": 225.4090700008889,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "insufficient_history_for_roe",
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 143.59167436788672,
-    "max": 225.40514011032073,
+    "median": 143.77771049261946,
+    "max": 225.4090700008889,
     "low": 31.34058291957482,
-    "high": 225.40514011032073,
-    "mos_pct": 46.9816076812571,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "high": 225.4090700008889,
+    "mos_pct": 46.6189858379058,
+    "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
   "top5_factors": [],
@@ -94,16 +92,14 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 16,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -117,22 +113,22 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 52.97,
-      "Value": 51.13,
+      "Value": 50.85,
       "Growth": 49.58,
-      "Momentum": 40.09,
-      "Health": 59.88,
+      "Momentum": 38.6,
+      "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 57.02,
-      "Risk": 41.14
+      "Technical": 56.82,
+      "Risk": 41.47
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.5704370054796583,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 22.11137997030357,
-  "price_change_1d_pct": 1.8734,
+  "loss_chance_pct": 20.302540643364978,
+  "price_change_1d_pct": 0.8144,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 60.89,
+  "composite_score_adjusted": 60.76,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -141,9 +137,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -176,7 +174,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 57.37,
+  "osap_blended_score": 57.31,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

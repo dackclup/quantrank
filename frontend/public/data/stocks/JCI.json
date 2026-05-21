@@ -3,19 +3,19 @@
   "name": "Johnson Controls",
   "sector": "Industrials",
   "industry": "Building Products",
-  "market_cap": 84043424313.25,
-  "current_price": 137.75,
-  "rank": 260,
-  "composite_score": 50.52,
+  "market_cap": 82652361483.18002,
+  "current_price": 135.47,
+  "rank": 276,
+  "composite_score": 49.87,
   "pillar_scores": {
     "quality": 47.15,
-    "value": 45.57,
+    "value": 45.78,
     "growth": 56.65,
-    "momentum": 71.12,
+    "momentum": 68.73,
     "health": 46.81,
     "profitability": 44.73,
-    "technical": 28.14,
-    "risk": 65.31,
+    "technical": 20.72,
+    "risk": 64.51,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.86,
     "eps_diluted": 1.86,
     "shares_outstanding": 610115603.0,
-    "market_cap": 84043424313.25,
-    "pe_ratio_ttm": 22.8565200743133,
+    "market_cap": 82652361483.18002,
+    "pe_ratio_ttm": 22.47820546183846,
     "goodwill": 16547000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 168.44076046961786,
+        "value": 169.2807819083923,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 144.42532268202345,
+        "value": 143.74532296176048,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 156.43304157582065,
-    "max": 168.44076046961786,
-    "low": 144.42532268202345,
-    "high": 168.44076046961786,
-    "mos_pct": 11.943155606780985,
+    "median": 156.5130524350764,
+    "max": 169.2807819083923,
+    "low": 143.74532296176048,
+    "high": 169.2807819083923,
+    "mos_pct": 13.44491777968626,
     "valuation_warnings": [],
     "valuation_methods_applicable": 2
   },
@@ -92,7 +92,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
@@ -113,22 +113,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.16,
+      "Value": 49.37,
       "Growth": 49.37,
-      "Momentum": 50.5,
-      "Health": 52.79,
+      "Momentum": 49.4,
+      "Health": 52.75,
       "Profitability": 47.68,
-      "Technical": 45.57,
-      "Risk": 54.48
+      "Technical": 45.22,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": -2.235366641460685,
   "dechow_f_score": null,
-  "recommendation": "lean_bullish",
-  "loss_chance_pct": 38.55862784468534,
-  "price_change_1d_pct": 1.7206,
+  "recommendation": "neutral",
+  "loss_chance_pct": 38.35912750456286,
+  "price_change_1d_pct": -1.6552,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 48.52,
+  "composite_score_adjusted": 47.87,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -137,9 +137,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -172,7 +174,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.19,
+  "osap_blended_score": 50.86,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2

@@ -3,19 +3,19 @@
   "name": "McKesson Corporation",
   "sector": "Health Care",
   "industry": "Health Care Distributors",
-  "market_cap": 90715592328.27924,
-  "current_price": 754.68,
-  "rank": 249,
-  "composite_score": 50.9,
+  "market_cap": 92136405091.5,
+  "current_price": 766.5,
+  "rank": 259,
+  "composite_score": 50.63,
   "pillar_scores": {
     "quality": 30.51,
-    "value": 76.98,
+    "value": 75.0,
     "growth": 72.03,
-    "momentum": 33.86,
+    "momentum": 32.22,
     "health": 56.89,
     "profitability": 32.77,
-    "technical": 35.66,
-    "risk": 64.91,
+    "technical": 42.28,
+    "risk": 66.17,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 38.55,
     "eps_diluted": 38.38,
     "shares_outstanding": 120204051.0,
-    "market_cap": 90715592328.27924,
-    "pe_ratio_ttm": 17.790859448574082,
+    "market_cap": 92136405091.5,
+    "pe_ratio_ttm": 18.069504822808394,
     "goodwill": 11316000000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 1037.4395000166821,
+        "value": 1031.8824547677436,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 940.130937535569,
+        "value": 940.1460288438778,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "insufficient_history_for_roe",
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 940.130937535569,
-    "max": 1037.4395000166821,
+    "median": 940.1460288438778,
+    "max": 1031.8824547677436,
     "low": 477.01237035808674,
-    "high": 1037.4395000166821,
-    "mos_pct": 19.726076172530107,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "high": 1031.8824547677436,
+    "mos_pct": 18.470112462998426,
+    "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
   "top5_factors": [],
@@ -94,14 +92,12 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 12,
+    "filing_lag_days": 13,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-08"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -115,22 +111,22 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 52.97,
-      "Value": 51.13,
+      "Value": 50.85,
       "Growth": 49.58,
-      "Momentum": 40.09,
-      "Health": 59.88,
+      "Momentum": 38.6,
+      "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 57.02,
-      "Risk": 41.14
+      "Technical": 56.82,
+      "Risk": 41.47
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 34.64527390120989,
-  "price_change_1d_pct": -0.9463,
+  "loss_chance_pct": 33.220789942202465,
+  "price_change_1d_pct": 1.5662,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 50.9,
+  "composite_score_adjusted": 50.63,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -139,9 +135,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -174,7 +172,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.38,
+  "osap_blended_score": 51.24,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

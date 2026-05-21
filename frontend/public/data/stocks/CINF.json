@@ -3,19 +3,19 @@
   "name": "Cincinnati Financial",
   "sector": "Financials",
   "industry": "Property & Casualty Insurance",
-  "market_cap": 26069356440.43341,
-  "current_price": 168.53,
-  "rank": 61,
-  "composite_score": 61.3,
+  "market_cap": 26044605995.233643,
+  "current_price": 168.37,
+  "rank": 58,
+  "composite_score": 61.53,
   "pillar_scores": {
     "quality": 54.67,
     "value": 66.22,
     "growth": 72.67,
-    "momentum": 61.01,
+    "momentum": 62.7,
     "health": 58.13,
     "profitability": 55.78,
-    "technical": 53.24,
-    "risk": 71.95,
+    "technical": 53.98,
+    "risk": 71.35,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.77,
     "eps_diluted": 1.75,
     "shares_outstanding": 154686742.0,
-    "market_cap": 26069356440.43341,
-    "pe_ratio_ttm": 9.455696931604429,
+    "market_cap": 26044605995.233643,
+    "pe_ratio_ttm": 9.446719621049562,
     "goodwill": null
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 247.09176478498998,
+        "value": 248.5609730752411,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 206.48067136438465,
+        "value": 206.69302134805926,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 191.99838097243895,
-    "max": 247.09176478498998,
+    "median": 192.10455596427624,
+    "max": 248.5609730752411,
     "low": 130.06744491855662,
-    "high": 247.09176478498998,
-    "mos_pct": 12.223218797095441,
+    "high": 248.5609730752411,
+    "mos_pct": 12.355022361626041,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -103,7 +103,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 23,
+    "filing_lag_days": 24,
     "latest_period_end": "2026-04-22",
     "latest_filed_date": "2026-04-27"
   },
@@ -126,20 +126,20 @@
       "Quality": 50.67,
       "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 53.29,
+      "Momentum": 54.28,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 51.94,
-      "Risk": 54.88
+      "Technical": 51.25,
+      "Risk": 54.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 30.071331145673522,
-  "price_change_1d_pct": 0.4051,
+  "loss_chance_pct": 29.911903085338807,
+  "price_change_1d_pct": -0.0949,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 60.8,
+  "composite_score_adjusted": 61.03,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -148,9 +148,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": true,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -183,7 +185,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 56.58,
+  "osap_blended_score": 56.69,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

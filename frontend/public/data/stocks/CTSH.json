@@ -3,19 +3,19 @@
   "name": "Cognizant",
   "sector": "Information Technology",
   "industry": "IT Consulting & Other Services",
-  "market_cap": 24309503398.166286,
-  "current_price": 51.3,
-  "rank": 169,
-  "composite_score": 54.15,
+  "market_cap": 24792850473.466515,
+  "current_price": 52.32,
+  "rank": 148,
+  "composite_score": 55.33,
   "pillar_scores": {
     "quality": 40.75,
-    "value": 96.12,
-    "growth": 29.45,
-    "momentum": 12.05,
+    "value": 95.89,
+    "growth": 32.19,
+    "momentum": 12.95,
     "health": 91.08,
     "profitability": 50.91,
-    "technical": 56.23,
-    "risk": 27.49,
+    "technical": 71.41,
+    "risk": 27.92,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.39,
     "eps_diluted": 1.39,
     "shares_outstanding": 473869469.0,
-    "market_cap": 24309503398.166286,
-    "pe_ratio_ttm": 10.906013188948537,
+    "market_cap": 24792850473.466515,
+    "pe_ratio_ttm": 11.122857996171609,
     "goodwill": 7681000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 173.5109709918947,
+        "value": 176.35930698603573,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 322.5204464223769,
+        "value": 326.3231745055698,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 216.9132796233755,
+        "value": 214.35364152385446,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 117.73730462529164,
-    "max": 216.9132796233755,
+    "median": 119.16147262236215,
+    "max": 214.35364152385446,
     "low": 15.889527080812988,
-    "high": 322.5204464223769,
-    "mos_pct": 56.42842393893177,
+    "high": 326.3231745055698,
+    "mos_pct": 56.093191412099316,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_multiples_pb_estimate"
@@ -96,7 +96,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 21,
+    "filing_lag_days": 22,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-29"
   },
@@ -117,23 +117,23 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 49.32,
-      "Value": 48.17,
-      "Growth": 52.23,
-      "Momentum": 59.76,
+      "Quality": 49.66,
+      "Value": 48.86,
+      "Growth": 53.42,
+      "Momentum": 61.8,
       "Health": 69.52,
-      "Profitability": 47.26,
-      "Technical": 61.01,
-      "Risk": 46.85
+      "Profitability": 48.86,
+      "Technical": 59.76,
+      "Risk": 47.31
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 20.173219679734046,
-  "price_change_1d_pct": 0.8255,
+  "loss_chance_pct": 19.701153517326304,
+  "price_change_1d_pct": 1.9883,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 54.15,
+  "composite_score_adjusted": 55.33,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -142,9 +142,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -177,7 +179,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.0,
+  "osap_blended_score": 53.59,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5

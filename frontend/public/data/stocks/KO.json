@@ -3,19 +3,19 @@
   "name": "The Coca-Cola Company",
   "sector": "Consumer Staples",
   "industry": "Soft Drinks & Non-alcoholic Beverages",
-  "market_cap": 350867454318.0343,
-  "current_price": 81.55,
-  "rank": 194,
-  "composite_score": 53.13,
+  "market_cap": 349232489990.9794,
+  "current_price": 81.17,
+  "rank": 205,
+  "composite_score": 52.68,
   "pillar_scores": {
     "quality": 74.31,
-    "value": 16.2,
+    "value": 15.74,
     "growth": 47.92,
-    "momentum": 55.28,
+    "momentum": 53.34,
     "health": 51.49,
     "profitability": 71.3,
-    "technical": 67.58,
-    "risk": 84.48,
+    "technical": 65.44,
+    "risk": 84.51,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.91,
     "eps_diluted": 0.91,
     "shares_outstanding": 4302482418.0,
-    "market_cap": 350867454318.0343,
-    "pe_ratio_ttm": 25.484271812756706,
+    "market_cap": 349232489990.9794,
+    "pe_ratio_ttm": 25.36552077215132,
     "goodwill": 15411000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 74.51670596268937,
+        "value": 74.98335462517346,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 24.505527831817595,
+        "value": 24.703608605484842,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 40.037534362995274,
+        "value": 40.290597174089605,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 23.401435829693334,
-    "max": 74.51670596268937,
+    "median": 23.50047621652696,
+    "max": 74.98335462517346,
     "low": 14.594283132374672,
-    "high": 74.51670596268937,
-    "mos_pct": -248.4829035502241,
+    "high": 74.98335462517346,
+    "mos_pct": -245.39724821347087,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_rim_estimate"
@@ -95,7 +95,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 20,
+    "filing_lag_days": 21,
     "latest_period_end": "2026-04-28",
     "latest_filed_date": "2026-04-30"
   },
@@ -118,22 +118,22 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 49.65,
-      "Value": 50.93,
+      "Value": 51.16,
       "Growth": 48.44,
-      "Momentum": 37.77,
+      "Momentum": 36.21,
       "Health": 39.29,
       "Profitability": 53.94,
-      "Technical": 55.27,
-      "Risk": 50.88
+      "Technical": 54.93,
+      "Risk": 50.78
     }
   },
   "beneish_m_score": -2.4802488904343734,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 60.434168418916926,
-  "price_change_1d_pct": -0.4517,
+  "loss_chance_pct": 60.66055454109488,
+  "price_change_1d_pct": -0.466,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 52.63,
+  "composite_score_adjusted": 52.18,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -142,9 +142,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": true,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -177,7 +179,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.49,
+  "osap_blended_score": 52.27,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

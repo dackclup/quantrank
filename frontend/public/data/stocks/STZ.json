@@ -4,18 +4,18 @@
   "sector": "Consumer Staples",
   "industry": "Distillers & Vintners",
   "market_cap": null,
-  "current_price": 151.18,
-  "rank": 308,
-  "composite_score": 47.84,
+  "current_price": 150.83,
+  "rank": 310,
+  "composite_score": 47.66,
   "pillar_scores": {
     "quality": 50.0,
     "value": 49.07,
     "growth": 44.1,
-    "momentum": 49.5,
-    "health": 36.22,
+    "momentum": 46.46,
+    "health": 36.18,
     "profitability": 58.33,
-    "technical": 57.27,
-    "risk": 32.5,
+    "technical": 61.3,
+    "risk": 32.54,
     "sentiment": null,
     "ml": null
   },
@@ -93,13 +93,14 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 28,
+    "filing_lag_days": 29,
     "latest_period_end": "2026-02-28",
     "latest_filed_date": "2026-04-22"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "accruals_momentum_high"
+    "accruals_momentum_high",
+    "share_count_extraction_missing"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -114,22 +115,22 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 49.65,
-      "Value": 50.93,
+      "Value": 51.16,
       "Growth": 48.44,
-      "Momentum": 37.77,
+      "Momentum": 36.21,
       "Health": 39.29,
       "Profitability": 53.94,
-      "Technical": 55.27,
-      "Risk": 50.88
+      "Technical": 54.93,
+      "Risk": 50.78
     }
   },
   "beneish_m_score": -2.7684580405110166,
   "dechow_f_score": null,
   "recommendation": "neutral",
   "loss_chance_pct": null,
-  "price_change_1d_pct": 3.2157,
+  "price_change_1d_pct": -0.2315,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 47.34,
+  "composite_score_adjusted": 47.16,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -138,9 +139,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": true,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -173,7 +176,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.85,
+  "osap_blended_score": 49.76,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 0

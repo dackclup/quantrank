@@ -3,19 +3,19 @@
   "name": "Dollar Tree",
   "sector": "Consumer Staples",
   "industry": "Consumer Staples Merchandise Retail",
-  "market_cap": 18443437987.477013,
-  "current_price": 93.48,
-  "rank": 45,
-  "composite_score": 62.64,
+  "market_cap": 18883412168.438087,
+  "current_price": 95.71,
+  "rank": 40,
+  "composite_score": 62.95,
   "pillar_scores": {
     "quality": 86.81,
-    "value": 78.24,
+    "value": 77.78,
     "growth": 43.4,
-    "momentum": 31.62,
-    "health": 42.33,
+    "momentum": 28.54,
+    "health": 42.29,
     "profitability": 62.96,
-    "technical": 48.95,
-    "risk": 31.27,
+    "technical": 65.54,
+    "risk": 30.41,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 6.23,
     "eps_diluted": 6.22,
     "shares_outstanding": 197298217.0,
-    "market_cap": 18443437987.477013,
-    "pe_ratio_ttm": 14.380848333315411,
+    "market_cap": 18883412168.438087,
+    "pe_ratio_ttm": 14.72390812353847,
     "goodwill": 423200000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 158.34373970976156,
+        "value": 159.4397375065503,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 59.66130837569161,
+        "value": 60.14355704228484,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 146.7984078731313,
+        "value": 147.46911495114765,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 146.7984078731313,
-    "max": 158.34373970976156,
-    "low": 59.66130837569161,
-    "high": 158.34373970976156,
-    "mos_pct": 36.3208329631732,
+    "median": 147.46911495114765,
+    "max": 159.4397375065503,
+    "low": 60.14355704228484,
+    "high": 159.4397375065503,
+    "mos_pct": 35.09827524483436,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -95,7 +95,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 65,
+    "filing_lag_days": 66,
     "latest_period_end": "2026-03-12",
     "latest_filed_date": "2026-03-16"
   },
@@ -116,22 +116,22 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 49.65,
-      "Value": 50.93,
+      "Value": 51.16,
       "Growth": 48.44,
-      "Momentum": 37.77,
+      "Momentum": 36.21,
       "Health": 39.29,
       "Profitability": 53.94,
-      "Technical": 55.27,
-      "Risk": 50.88
+      "Technical": 54.93,
+      "Risk": 50.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 22.96633308477222,
-  "price_change_1d_pct": 3.1674,
+  "loss_chance_pct": 23.242875364544073,
+  "price_change_1d_pct": 2.3855,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 62.64,
+  "composite_score_adjusted": 62.95,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -140,9 +140,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -175,7 +177,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 57.25,
+  "osap_blended_score": 57.4,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

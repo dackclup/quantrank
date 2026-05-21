@@ -3,19 +3,19 @@
   "name": "Texas Instruments",
   "sector": "Information Technology",
   "industry": "Semiconductors",
-  "market_cap": 277469094563.89246,
-  "current_price": 304.88,
-  "rank": 251,
-  "composite_score": 50.85,
+  "market_cap": 271562601237.92737,
+  "current_price": 298.39,
+  "rank": 266,
+  "composite_score": 50.36,
   "pillar_scores": {
-    "quality": 57.88,
-    "value": 26.03,
-    "growth": 7.53,
-    "momentum": 83.81,
+    "quality": 57.19,
+    "value": 27.63,
+    "growth": 7.88,
+    "momentum": 81.52,
     "health": 80.56,
-    "profitability": 64.16,
-    "technical": 66.76,
-    "risk": 60.26,
+    "profitability": 62.1,
+    "technical": 61.38,
+    "risk": 59.73,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.69,
     "eps_diluted": 1.68,
     "shares_outstanding": 910092791.0,
-    "market_cap": 277469094563.89246,
-    "pe_ratio_ttm": 51.69910463273569,
+    "market_cap": 271562601237.92737,
+    "pe_ratio_ttm": 50.59858416954115,
     "goodwill": 4330000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 201.90288935649156,
+        "value": 271.6419271451838,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 142.971811312999,
+        "value": 141.5501488397883,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 293.1770590477869,
+        "value": 287.74267350041174,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 91.10746603799964,
-    "max": 293.1770590477869,
+    "median": 90.3966348013943,
+    "max": 287.74267350041174,
     "low": 23.692642304812175,
-    "high": 293.1770590477869,
-    "mos_pct": -234.63778342342584,
+    "high": 287.74267350041174,
+    "mos_pct": -230.08973763682081,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_rim_estimate",
@@ -94,7 +94,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 26,
+    "filing_lag_days": 27,
     "latest_period_end": "2026-04-15",
     "latest_filed_date": "2026-04-24"
   },
@@ -116,23 +116,23 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 49.32,
-      "Value": 48.17,
-      "Growth": 52.23,
-      "Momentum": 59.76,
+      "Quality": 49.66,
+      "Value": 48.86,
+      "Growth": 53.42,
+      "Momentum": 61.8,
       "Health": 69.52,
-      "Profitability": 47.26,
-      "Technical": 61.01,
-      "Risk": 46.85
+      "Profitability": 48.86,
+      "Technical": 59.76,
+      "Risk": 47.31
     }
   },
   "beneish_m_score": -2.574481248353772,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 62.57301331204861,
-  "price_change_1d_pct": 0.8501,
+  "loss_chance_pct": 62.81780469446415,
+  "price_change_1d_pct": -2.1287,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 50.85,
+  "composite_score_adjusted": 50.36,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -141,9 +141,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -176,7 +178,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.35,
+  "osap_blended_score": 51.11,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

@@ -3,19 +3,19 @@
   "name": "Fair Isaac",
   "sector": "Information Technology",
   "industry": "Application Software",
-  "market_cap": 28530147835.432617,
-  "current_price": 1230.23,
-  "rank": 242,
-  "composite_score": 51.05,
+  "market_cap": 28480751092.41577,
+  "current_price": 1228.1,
+  "rank": 246,
+  "composite_score": 51.2,
   "pillar_scores": {
     "quality": 50.86,
-    "value": 44.75,
-    "growth": 69.52,
-    "momentum": 3.59,
+    "value": 45.21,
+    "growth": 68.84,
+    "momentum": 4.21,
     "health": 82.53,
     "profitability": 92.58,
-    "technical": 59.29,
-    "risk": 22.68,
+    "technical": 59.76,
+    "risk": 23.57,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 17.86,
     "eps_diluted": 17.73,
     "shares_outstanding": 23190906.0,
-    "market_cap": 28530147835.432617,
-    "pe_ratio_ttm": 37.55775522874518,
+    "market_cap": 28480751092.41577,
+    "pe_ratio_ttm": 37.4927281986006,
     "goodwill": 781390000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 1364.2375482920618,
+        "value": 1350.618608032853,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 1239.684930217012,
+        "value": 1212.0523298180767,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "insufficient_history_for_roe",
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 1239.684930217012,
-    "max": 1364.2375482920618,
+    "median": 1212.0523298180767,
+    "max": 1350.618608032853,
     "low": 132.5166086433077,
-    "high": 1364.2375482920618,
-    "mos_pct": 0.7626897381584526,
+    "high": 1350.618608032853,
+    "mos_pct": -1.324006016330125,
     "valuation_warnings": [
-      "extreme_dcf_estimate",
-      "value_trap_risk"
+      "extreme_dcf_estimate"
     ],
     "valuation_methods_applicable": 2
   },
@@ -95,14 +94,13 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 22,
+    "filing_lag_days": 23,
     "latest_period_end": "2026-04-16",
     "latest_filed_date": "2026-04-28"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "extreme_dcf_estimate",
-    "value_trap_risk",
     "restatement_history"
   ],
   "has_history": true,
@@ -117,23 +115,23 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 49.32,
-      "Value": 48.17,
-      "Growth": 52.23,
-      "Momentum": 59.76,
+      "Quality": 49.66,
+      "Value": 48.86,
+      "Growth": 53.42,
+      "Momentum": 61.8,
       "Health": 69.52,
-      "Profitability": 47.26,
-      "Technical": 61.01,
-      "Risk": 46.85
+      "Profitability": 48.86,
+      "Technical": 59.76,
+      "Risk": 47.31
     }
   },
   "beneish_m_score": -2.717513991430988,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 42.209964893378256,
-  "price_change_1d_pct": 3.7162,
+  "loss_chance_pct": 40.86420443293635,
+  "price_change_1d_pct": -0.1731,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 50.55,
+  "composite_score_adjusted": 50.7,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -142,9 +140,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": true,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -177,7 +177,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.45,
+  "osap_blended_score": 51.53,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2

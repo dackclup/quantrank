@@ -3,19 +3,19 @@
   "name": "Amgen",
   "sector": "Health Care",
   "industry": "Biotechnology",
-  "market_cap": 178951076363.12146,
-  "current_price": 331.57,
-  "rank": 113,
-  "composite_score": 57.66,
+  "market_cap": 182108373060.13934,
+  "current_price": 337.42,
+  "rank": 97,
+  "composite_score": 58.22,
   "pillar_scores": {
     "quality": 77.97,
-    "value": 40.96,
+    "value": 40.4,
     "growth": 65.25,
-    "momentum": 46.91,
+    "momentum": 46.71,
     "health": 40.72,
     "profitability": 61.86,
-    "technical": 49.85,
-    "risk": 67.93,
+    "technical": 63.65,
+    "risk": 68.73,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 3.37,
     "eps_diluted": 3.34,
     "shares_outstanding": 539708274.0,
-    "market_cap": 178951076363.12146,
-    "pe_ratio_ttm": 22.942445687579674,
+    "market_cap": 182108373060.13934,
+    "pe_ratio_ttm": 23.34722731540248,
     "goodwill": 18674000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 353.45359093702007,
+        "value": 351.56031658395636,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 50.349979535232954,
+        "value": 50.002462911537954,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 396.6818204495925,
+        "value": 396.68930880961847,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 233.29334310606362,
-    "max": 396.6818204495925,
-    "low": 50.349979535232954,
-    "high": 396.6818204495925,
-    "mos_pct": -42.12579017888007,
+    "median": 232.34670592953177,
+    "max": 396.68930880961847,
+    "low": 50.002462911537954,
+    "high": 396.68930880961847,
+    "mos_pct": -45.22263704055705,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ],
@@ -94,7 +94,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 19,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-05-01"
   },
@@ -115,22 +115,22 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 52.97,
-      "Value": 51.13,
+      "Value": 50.85,
       "Growth": 49.58,
-      "Momentum": 40.09,
-      "Health": 59.88,
+      "Momentum": 38.6,
+      "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 57.02,
-      "Risk": 41.14
+      "Technical": 56.82,
+      "Risk": 41.47
     }
   },
   "beneish_m_score": -2.4695480897378492,
   "dechow_f_score": 0.4776966005223047,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 51.91618538494579,
-  "price_change_1d_pct": 0.2479,
+  "loss_chance_pct": 52.71628055079771,
+  "price_change_1d_pct": 1.7643,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 57.66,
+  "composite_score_adjusted": 58.22,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -139,9 +139,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -174,7 +176,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.75,
+  "osap_blended_score": 55.04,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

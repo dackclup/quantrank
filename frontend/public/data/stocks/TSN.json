@@ -3,19 +3,19 @@
   "name": "Tyson Foods",
   "sector": "Consumer Staples",
   "industry": "Packaged Foods & Meats",
-  "market_cap": 23548078811.645508,
-  "current_price": 66.52,
-  "rank": 387,
-  "composite_score": 43.27,
+  "market_cap": 23530380432.128906,
+  "current_price": 66.47,
+  "rank": 378,
+  "composite_score": 43.8,
   "pillar_scores": {
     "quality": 17.36,
     "value": 65.28,
     "growth": 33.33,
-    "momentum": 68.63,
+    "momentum": 71.71,
     "health": 46.99,
     "profitability": 24.54,
-    "technical": 47.01,
-    "risk": 66.17,
+    "technical": 50.9,
+    "risk": 64.87,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": null,
     "eps_diluted": 0.97,
     "shares_outstanding": 354000000.0,
-    "market_cap": 23548078811.645508,
-    "pe_ratio_ttm": 48.95650480591581,
+    "market_cap": 23530380432.128906,
+    "pe_ratio_ttm": 48.91970983810583,
     "goodwill": 9472000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 31.64052710003262,
+        "value": 31.838670717101724,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 92.14413823689466,
+        "value": 92.65714296685879,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 96.32597364775164,
+        "value": 96.73711443941922,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 49.12595109899289,
-    "max": 96.32597364775164,
+    "max": 96.73711443941922,
     "low": 10.597609260295375,
-    "high": 96.32597364775164,
-    "mos_pct": -35.4070407899545,
+    "high": 96.73711443941922,
+    "mos_pct": -35.3052709081612,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -97,7 +97,7 @@
       "long_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 17,
     "latest_period_end": "2026-03-28",
     "latest_filed_date": "2026-05-04"
   },
@@ -121,22 +121,22 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 49.65,
-      "Value": 50.93,
+      "Value": 51.16,
       "Growth": 48.44,
-      "Momentum": 37.77,
+      "Momentum": 36.21,
       "Health": 39.29,
       "Profitability": 53.94,
-      "Technical": 55.27,
-      "Risk": 50.88
+      "Technical": 54.93,
+      "Risk": 50.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 59.75678938346357,
-  "price_change_1d_pct": 0.5441,
+  "loss_chance_pct": 59.45535817184786,
+  "price_change_1d_pct": -0.0752,
   "manipulation_index": 8.0,
-  "composite_score_adjusted": 42.47,
+  "composite_score_adjusted": 43.0,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -145,9 +145,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": true,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -180,7 +182,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.56,
+  "osap_blended_score": 47.83,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

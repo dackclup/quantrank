@@ -3,19 +3,19 @@
   "name": "Qnity Electronics",
   "sector": "Information Technology",
   "industry": "Semiconductor Materials & Equipment",
-  "market_cap": 32037270833.804367,
-  "current_price": 153.04,
-  "rank": 293,
+  "market_cap": 31978656111.38539,
+  "current_price": 152.76,
+  "rank": 296,
   "composite_score": 48.66,
   "pillar_scores": {
     "quality": 29.45,
-    "value": 48.17,
+    "value": 48.86,
     "growth": 43.15,
-    "momentum": 76.05,
-    "health": 75.14,
-    "profitability": 26.48,
-    "technical": 71.12,
-    "risk": 55.88,
+    "momentum": 75.35,
+    "health": 75.1,
+    "profitability": 26.03,
+    "technical": 70.32,
+    "risk": 55.98,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.72,
     "eps_diluted": 0.72,
     "shares_outstanding": 209339207.0,
-    "market_cap": 32037270833.804367,
-    "pe_ratio_ttm": 46.22982804300775,
+    "market_cap": 31978656111.38539,
+    "pe_ratio_ttm": 46.14524691397604,
     "goodwill": 7514000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 116.61555331661712,
+        "value": 120.9789931380215,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 348.1745374491862,
+        "value": 352.2797441301814,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "insufficient_history_for_roe",
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 232.39504538290166,
-    "max": 348.1745374491862,
-    "low": 116.61555331661712,
-    "high": 348.1745374491862,
-    "mos_pct": 34.14661959166164,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "median": 236.62936863410147,
+    "max": 352.2797441301814,
+    "low": 120.9789931380215,
+    "high": 352.2797441301814,
+    "mos_pct": 35.443349492662605,
+    "valuation_warnings": [],
     "valuation_methods_applicable": 2
   },
   "top5_factors": [],
@@ -97,13 +95,12 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 9,
     "latest_period_end": "2026-05-08",
     "latest_filed_date": "2026-05-12"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "value_trap_risk",
     "late_filing_notification"
   ],
   "has_history": true,
@@ -118,21 +115,21 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 49.32,
-      "Value": 48.17,
-      "Growth": 52.23,
-      "Momentum": 59.76,
+      "Quality": 49.66,
+      "Value": 48.86,
+      "Growth": 53.42,
+      "Momentum": 61.8,
       "Health": 69.52,
-      "Profitability": 47.26,
-      "Technical": 61.01,
-      "Risk": 46.85
+      "Profitability": 48.86,
+      "Technical": 59.76,
+      "Risk": 47.31
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 30.719553315197352,
-  "price_change_1d_pct": 5.3704,
+  "loss_chance_pct": 28.266532979647447,
+  "price_change_1d_pct": -0.183,
   "manipulation_index": 5.0,
   "composite_score_adjusted": 48.16,
   "manipulation_components": {
@@ -143,9 +140,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": true,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -178,7 +177,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.26,
+  "osap_blended_score": 50.25,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2

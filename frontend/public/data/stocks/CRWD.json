@@ -3,19 +3,19 @@
   "name": "CrowdStrike",
   "sector": "Information Technology",
   "industry": "Systems Software",
-  "market_cap": 162901959689.45312,
-  "current_price": 650.11,
-  "rank": 439,
-  "composite_score": 39.92,
+  "market_cap": 162430875585.9375,
+  "current_price": 648.23,
+  "rank": 431,
+  "composite_score": 40.4,
   "pillar_scores": {
     "quality": 19.18,
     "value": 27.97,
-    "growth": 68.84,
-    "momentum": 57.15,
+    "growth": 68.49,
+    "momentum": 61.21,
     "health": 54.84,
     "profitability": 29.22,
-    "technical": 71.12,
-    "risk": 46.48,
+    "technical": 71.51,
+    "risk": 46.15,
     "sentiment": null,
     "ml": null
   },
@@ -32,7 +32,7 @@
     "eps_basic": -0.65,
     "eps_diluted": -0.65,
     "shares_outstanding": 250576000.0,
-    "market_cap": 162901959689.45312,
+    "market_cap": 162430875585.9375,
     "pe_ratio_ttm": null,
     "goodwill": 1363294000.0
   },
@@ -51,7 +51,7 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 165.0561643442376,
+        "value": 166.69407058358902,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 117.0054861517394,
-    "max": 165.0561643442376,
+    "median": 117.82443927141512,
+    "max": 166.69407058358902,
     "low": 68.9548079592412,
-    "high": 165.0561643442376,
-    "mos_pct": -455.6235068400662,
+    "high": 166.69407058358902,
+    "mos_pct": -450.16597955159057,
     "valuation_warnings": [
       "extreme_dcf_estimate",
       "value_trap_risk"
@@ -97,7 +97,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 76,
+    "filing_lag_days": 77,
     "latest_period_end": "2026-01-31",
     "latest_filed_date": "2026-03-05"
   },
@@ -119,23 +119,23 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 49.32,
-      "Value": 48.17,
-      "Growth": 52.23,
-      "Momentum": 59.76,
+      "Quality": 49.66,
+      "Value": 48.86,
+      "Growth": 53.42,
+      "Momentum": 61.8,
       "Health": 69.52,
-      "Profitability": 47.26,
-      "Technical": 61.01,
-      "Risk": 46.85
+      "Profitability": 48.86,
+      "Technical": 59.76,
+      "Risk": 47.31
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 68.03805639314886,
-  "price_change_1d_pct": 5.3868,
+  "loss_chance_pct": 67.802052634212,
+  "price_change_1d_pct": -0.2892,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 39.42,
+  "composite_score_adjusted": 39.9,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,9 +144,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": true,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -179,7 +181,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.89,
+  "osap_blended_score": 46.12,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 1

@@ -3,19 +3,19 @@
   "name": "ExxonMobil",
   "sector": "Energy",
   "industry": "Integrated Oil & Gas",
-  "market_cap": 647772337417.6101,
-  "current_price": 156.28,
-  "rank": 334,
-  "composite_score": 46.63,
+  "market_cap": 643668816958.3552,
+  "current_price": 155.29,
+  "rank": 328,
+  "composite_score": 46.9,
   "pillar_scores": {
     "quality": 33.33,
-    "value": 42.06,
+    "value": 42.86,
     "growth": 33.33,
-    "momentum": 71.02,
+    "momentum": 72.36,
     "health": 55.14,
     "profitability": 50.79,
-    "technical": 60.06,
-    "risk": 86.92,
+    "technical": 58.72,
+    "risk": 86.72,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.0,
     "eps_diluted": 1.0,
     "shares_outstanding": 4144947162.0,
-    "market_cap": 647772337417.6101,
-    "pe_ratio_ttm": 24.721304332237153,
+    "market_cap": 643668816958.3552,
+    "pe_ratio_ttm": 24.564699345813658,
     "goodwill": null
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 120.79240081126314,
+        "value": 117.0203587885942,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 152.2355765944135,
+        "value": 149.0816981620523,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 103.84835266442732,
-    "max": 152.2355765944135,
+    "max": 149.0816981620523,
     "low": 72.80969405664202,
-    "high": 152.2355765944135,
-    "mos_pct": -50.48866425863847,
+    "high": 149.0816981620523,
+    "mos_pct": -49.53534582097087,
     "valuation_warnings": [],
     "valuation_methods_applicable": 5
   },
@@ -97,7 +97,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 17,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-04"
   },
@@ -116,22 +116,22 @@
     "label": "Energy median (n=21)",
     "values": {
       "Quality": 50.0,
-      "Value": 51.59,
+      "Value": 48.41,
       "Growth": 55.95,
-      "Momentum": 73.11,
+      "Momentum": 74.65,
       "Health": 55.14,
       "Profitability": 54.76,
-      "Technical": 56.52,
-      "Risk": 67.1
+      "Technical": 54.33,
+      "Risk": 66.5
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 59.35822815232072,
-  "price_change_1d_pct": -3.8573,
+  "loss_chance_pct": 58.888592737839396,
+  "price_change_1d_pct": -0.6335,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 46.63,
+  "composite_score_adjusted": 46.9,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -140,9 +140,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -175,7 +177,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.24,
+  "osap_blended_score": 49.37,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5

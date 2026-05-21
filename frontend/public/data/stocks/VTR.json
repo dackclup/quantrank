@@ -3,19 +3,19 @@
   "name": "Ventas",
   "sector": "Real Estate",
   "industry": "Health Care REITs",
-  "market_cap": 43074636715.963875,
-  "current_price": 88.6,
-  "rank": 385,
-  "composite_score": 43.36,
+  "market_cap": 42782935624.0,
+  "current_price": 88.0,
+  "rank": 390,
+  "composite_score": 42.82,
   "pillar_scores": {
     "quality": 33.87,
-    "value": 34.41,
+    "value": 34.95,
     "growth": 58.06,
-    "momentum": 66.63,
+    "momentum": 62.5,
     "health": 24.34,
     "profitability": 42.47,
-    "technical": 49.5,
-    "risk": 84.06,
+    "technical": 46.36,
+    "risk": 84.3,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.12,
     "eps_diluted": 0.11,
     "shares_outstanding": 486169723.0,
-    "market_cap": 43074636715.963875,
-    "pe_ratio_ttm": 158.2416266824042,
+    "market_cap": 42782935624.0,
+    "pe_ratio_ttm": 157.17001566449187,
     "goodwill": 1045774000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 15.9561709922633,
+        "value": 15.935360381465038,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 65.44463050194393,
+        "value": 65.18642192949284,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 15.9561709922633,
-    "max": 65.44463050194393,
+    "median": 15.935360381465038,
+    "max": 65.18642192949284,
     "low": 10.830238622436402,
-    "high": 65.44463050194393,
-    "mos_pct": -455.27105166446734,
+    "high": 65.18642192949284,
+    "mos_pct": -452.2310000742487,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_multiples_pe_estimate",
@@ -105,7 +105,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 22,
+    "filing_lag_days": 23,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-28"
   },
@@ -128,22 +128,22 @@
     "label": "Real Estate median (n=31)",
     "values": {
       "Quality": 50.81,
-      "Value": 47.31,
+      "Value": 46.77,
       "Growth": 48.79,
-      "Momentum": 57.32,
+      "Momentum": 53.24,
       "Health": 26.22,
       "Profitability": 52.15,
-      "Technical": 55.83,
-      "Risk": 52.92
+      "Technical": 51.49,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 67.31998886175728,
-  "price_change_1d_pct": 0.283,
+  "loss_chance_pct": 67.59192530951464,
+  "price_change_1d_pct": -0.6772,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 43.36,
+  "composite_score_adjusted": 42.82,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -152,9 +152,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -187,7 +189,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.61,
+  "osap_blended_score": 47.33,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 1

@@ -3,19 +3,19 @@
   "name": "MetLife",
   "sector": "Financials",
   "industry": "Life & Health Insurance",
-  "market_cap": 53089970009.81925,
-  "current_price": 82.51,
-  "rank": 248,
-  "composite_score": 50.91,
+  "market_cap": 54241722433.31322,
+  "current_price": 84.3,
+  "rank": 249,
+  "composite_score": 51.0,
   "pillar_scores": {
     "quality": 44.0,
-    "value": 64.89,
+    "value": 64.0,
     "growth": 43.33,
-    "momentum": 56.1,
+    "momentum": 57.57,
     "health": 47.25,
     "profitability": 27.56,
-    "technical": 63.45,
-    "risk": 57.57,
+    "technical": 64.82,
+    "risk": 58.57,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.75,
     "eps_diluted": 1.74,
     "shares_outstanding": 643436779.0,
-    "market_cap": 53089970009.81925,
-    "pe_ratio_ttm": 14.669789999950057,
+    "market_cap": 54241722433.31322,
+    "pe_ratio_ttm": 14.988041567646647,
     "goodwill": 9565000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 77.80121698467148,
+        "value": 78.05706152445943,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 86.31457615970488,
+        "value": 86.40334426917141,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 63.83487773420771,
-    "max": 86.31457615970488,
+    "median": 63.96280000410168,
+    "max": 86.40334426917141,
     "low": 27.962075559254455,
-    "high": 86.31457615970488,
-    "mos_pct": -29.255361747196034,
+    "high": 86.40334426917141,
+    "mos_pct": -31.795360813397767,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -101,7 +101,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 13,
+    "filing_lag_days": 14,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-07"
   },
@@ -122,20 +122,20 @@
       "Quality": 50.67,
       "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 53.29,
+      "Momentum": 54.28,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 51.94,
-      "Risk": 54.88
+      "Technical": 51.25,
+      "Risk": 54.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 49.78550736627736,
-  "price_change_1d_pct": 1.7762,
+  "loss_chance_pct": 50.629773473710905,
+  "price_change_1d_pct": 2.1694,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 50.91,
+  "composite_score_adjusted": 51.0,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,9 +144,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -179,7 +181,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.38,
+  "osap_blended_score": 51.42,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

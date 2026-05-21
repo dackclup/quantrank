@@ -3,19 +3,19 @@
   "name": "HP Inc.",
   "sector": "Information Technology",
   "industry": "Technology Hardware, Storage & Peripherals",
-  "market_cap": 19269572413.83143,
-  "current_price": 21.07,
-  "rank": 313,
-  "composite_score": 47.47,
+  "market_cap": 20028649009.226784,
+  "current_price": 21.9,
+  "rank": 304,
+  "composite_score": 48.02,
   "pillar_scores": {
     "quality": 29.79,
-    "value": 89.27,
-    "growth": 34.59,
-    "momentum": 31.52,
-    "health": 47.69,
-    "profitability": 31.51,
-    "technical": 65.89,
-    "risk": 23.97,
+    "value": 89.04,
+    "growth": 34.93,
+    "momentum": 36.8,
+    "health": 47.73,
+    "profitability": 30.82,
+    "technical": 63.84,
+    "risk": 24.9,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.59,
     "eps_diluted": 0.58,
     "shares_outstanding": 914550199.0,
-    "market_cap": 19269572413.83143,
-    "pe_ratio_ttm": 7.680180316393554,
+    "market_cap": 20028649009.226784,
+    "pe_ratio_ttm": 7.982721805192022,
     "goodwill": 8724000000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 101.19725045322433,
+        "value": 102.85849279038746,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 108.8078529671207,
+        "value": 109.55085574777107,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "insufficient_history_for_roe",
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 105.00255171017251,
-    "max": 101.19725045322433,
-    "low": 101.19725045322433,
-    "high": 108.8078529671207,
-    "mos_pct": 79.93382127228534,
+    "median": 106.20467426907926,
+    "max": 102.85849279038746,
+    "low": 102.85849279038746,
+    "high": 109.55085574777107,
+    "mos_pct": 79.37943902257577,
     "valuation_warnings": [
-      "extreme_multiples_ev_ebitda_estimate",
-      "value_trap_risk"
+      "extreme_multiples_ev_ebitda_estimate"
     ],
     "valuation_methods_applicable": 1
   },
@@ -93,14 +92,13 @@
       "total_liabilities"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 84,
+    "filing_lag_days": 85,
     "latest_period_end": "2026-02-20",
     "latest_filed_date": "2026-02-25"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "extreme_multiples_ev_ebitda_estimate",
-    "value_trap_risk",
     "restatement_history"
   ],
   "has_history": true,
@@ -115,23 +113,23 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 49.32,
-      "Value": 48.17,
-      "Growth": 52.23,
-      "Momentum": 59.76,
+      "Quality": 49.66,
+      "Value": 48.86,
+      "Growth": 53.42,
+      "Momentum": 61.8,
       "Health": 69.52,
-      "Profitability": 47.26,
-      "Technical": 61.01,
-      "Risk": 46.85
+      "Profitability": 48.86,
+      "Technical": 59.76,
+      "Risk": 47.31
     }
   },
   "beneish_m_score": -2.5411155308561955,
   "dechow_f_score": 0.5623923910737669,
   "recommendation": "neutral",
-  "loss_chance_pct": 16.285883929475006,
-  "price_change_1d_pct": 0.4769,
+  "loss_chance_pct": 14.207295875471843,
+  "price_change_1d_pct": 3.9392,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 46.97,
+  "composite_score_adjusted": 47.52,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -140,9 +138,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": true,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -175,7 +175,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.66,
+  "osap_blended_score": 49.94,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 1

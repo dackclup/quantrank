@@ -3,18 +3,18 @@
   "name": "The Mosaic Company",
   "sector": "Materials",
   "industry": "Fertilizers & Agricultural Chemicals",
-  "market_cap": 6948127831.838196,
-  "current_price": 21.86,
+  "market_cap": 6973555539.108421,
+  "current_price": 21.94,
   "rank": 498,
-  "composite_score": 29.73,
+  "composite_score": 30.22,
   "pillar_scores": {
     "quality": 15.38,
     "value": 55.45,
     "growth": 30.77,
-    "momentum": 13.15,
-    "health": 44.46,
+    "momentum": 15.09,
+    "health": 44.5,
     "profitability": 19.87,
-    "technical": 22.16,
+    "technical": 27.19,
     "risk": 19.56,
     "sentiment": null,
     "ml": null
@@ -32,8 +32,8 @@
     "eps_basic": -0.81,
     "eps_diluted": -0.81,
     "shares_outstanding": 317846644.0,
-    "market_cap": 6948127831.838196,
-    "pe_ratio_ttm": 97.99898211337371,
+    "market_cap": 6973555539.108421,
+    "pe_ratio_ttm": 98.35762396485785,
     "goodwill": 988900000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 5.535177816928367,
+        "value": 5.5840554267864775,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 107.00201075469309,
+        "value": 108.6681092748854,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 44.73589328295065,
+        "value": 45.33179166510968,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 38.3063708319312,
-    "max": 107.00201075469309,
-    "low": 5.535177816928367,
-    "high": 107.00201075469309,
-    "mos_pct": 42.93377280175643,
+    "max": 108.6681092748854,
+    "low": 5.5840554267864775,
+    "high": 108.6681092748854,
+    "mos_pct": 42.7249304552521,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -96,7 +96,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 9,
+    "filing_lag_days": 10,
     "latest_period_end": "2026-05-08",
     "latest_filed_date": "2026-05-11"
   },
@@ -120,20 +120,20 @@
       "Quality": 51.68,
       "Value": 50.48,
       "Growth": 48.56,
-      "Momentum": 51.32,
+      "Momentum": 49.88,
       "Health": 56.53,
       "Profitability": 54.33,
-      "Technical": 38.75,
+      "Technical": 39.94,
       "Risk": 46.85
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 37.11023067374218,
-  "price_change_1d_pct": 2.1495,
+  "loss_chance_pct": 36.934197008962926,
+  "price_change_1d_pct": 0.366,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 29.23,
+  "composite_score_adjusted": 29.72,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -142,9 +142,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": true,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -177,7 +179,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 40.79,
+  "osap_blended_score": 41.04,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5

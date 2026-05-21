@@ -3,19 +3,19 @@
   "name": "DoorDash",
   "sector": "Consumer Discretionary",
   "industry": "Specialized Consumer Services",
-  "market_cap": 71095056090.17944,
-  "current_price": 160.73,
-  "rank": 480,
-  "composite_score": 35.4,
+  "market_cap": 70449263909.82056,
+  "current_price": 159.27,
+  "rank": 485,
+  "composite_score": 34.5,
   "pillar_scores": {
     "quality": 35.68,
-    "value": 13.54,
+    "value": 13.89,
     "growth": 65.36,
-    "momentum": 36.16,
-    "health": 52.95,
+    "momentum": 30.73,
+    "health": 52.99,
     "profitability": 31.25,
-    "technical": 33.17,
-    "risk": 25.13,
+    "technical": 27.64,
+    "risk": 24.37,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.42,
     "eps_diluted": 0.42,
     "shares_outstanding": 442326000.0,
-    "market_cap": 71095056090.17944,
-    "pe_ratio_ttm": 76.77651845591733,
+    "market_cap": 70449263909.82056,
+    "pe_ratio_ttm": 76.07911869311076,
     "goodwill": 5499000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 45.14780370858245,
+        "value": 45.49251076915245,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 129.0110643509156,
+        "value": 131.70581205485772,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 56.27850008247324,
+        "value": 57.418988780519655,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 55.642582191956585,
-    "max": 129.0110643509156,
+    "max": 131.70581205485772,
     "low": 6.6153587357176225,
-    "high": 129.0110643509156,
-    "mos_pct": -188.8614967095711,
+    "high": 131.70581205485772,
+    "mos_pct": -186.23762233573015,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -101,7 +101,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
@@ -126,22 +126,22 @@
     "label": "Consumer Discretionary median (n=48)",
     "values": {
       "Quality": 46.35,
-      "Value": 49.83,
-      "Growth": 51.69,
-      "Momentum": 42.26,
-      "Health": 43.72,
+      "Value": 50.17,
+      "Growth": 51.43,
+      "Momentum": 41.36,
+      "Health": 43.75,
       "Profitability": 52.6,
-      "Technical": 43.15,
-      "Risk": 41.87
+      "Technical": 51.39,
+      "Risk": 41.77
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 71.3015697626162,
-  "price_change_1d_pct": 3.9315,
+  "loss_chance_pct": 71.7522980992696,
+  "price_change_1d_pct": -0.9084,
   "manipulation_index": 10.0,
-  "composite_score_adjusted": 34.4,
+  "composite_score_adjusted": 33.5,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -150,9 +150,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": true,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": true,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -185,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 43.62,
+  "osap_blended_score": 43.17,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

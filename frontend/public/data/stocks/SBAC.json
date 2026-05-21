@@ -3,19 +3,19 @@
   "name": "SBA Communications",
   "sector": "Real Estate",
   "industry": "Telecom Tower REITs",
-  "market_cap": 22033531734.201553,
-  "current_price": 207.74,
-  "rank": 280,
-  "composite_score": 49.63,
+  "market_cap": 22068532724.018738,
+  "current_price": 208.07,
+  "rank": 287,
+  "composite_score": 49.32,
   "pillar_scores": {
     "quality": 50.81,
-    "value": 45.7,
+    "value": 46.24,
     "growth": 51.61,
-    "momentum": 57.32,
+    "momentum": 54.28,
     "health": 28.23,
     "profitability": 86.02,
-    "technical": 43.97,
-    "risk": 36.35,
+    "technical": 42.83,
+    "risk": 36.42,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.75,
     "eps_diluted": 1.74,
     "shares_outstanding": 106063017.0,
-    "market_cap": 22033531734.201553,
-    "pe_ratio_ttm": 21.570795039024404,
+    "market_cap": 22068532724.018738,
+    "pe_ratio_ttm": 21.605060956382424,
     "goodwill": null
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 282.65145735229044,
+        "value": 281.38736107410966,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 96.95689107981657,
+        "value": 97.29331131347192,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "insufficient_history_for_roe",
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 189.8041742160535,
-    "max": 282.65145735229044,
-    "low": 96.95689107981657,
-    "high": 282.65145735229044,
-    "mos_pct": -9.449650594456509,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "median": 189.3403361937908,
+    "max": 281.38736107410966,
+    "low": 97.29331131347192,
+    "high": 281.38736107410966,
+    "mos_pct": -9.892066057840971,
+    "valuation_warnings": [],
     "valuation_methods_applicable": 2
   },
   "top5_factors": [],
@@ -96,13 +94,12 @@
       "goodwill"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 16,
     "latest_period_end": "2026-04-22",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "value_trap_risk",
     "accruals_momentum_high"
   ],
   "has_history": true,
@@ -118,22 +115,22 @@
     "label": "Real Estate median (n=31)",
     "values": {
       "Quality": 50.81,
-      "Value": 47.31,
+      "Value": 46.77,
       "Growth": 48.79,
-      "Momentum": 57.32,
+      "Momentum": 53.24,
       "Health": 26.22,
       "Profitability": 52.15,
-      "Technical": 55.83,
-      "Risk": 52.92
+      "Technical": 51.49,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": -2.301430363192699,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 45.49148268599748,
-  "price_change_1d_pct": 0.1108,
+  "loss_chance_pct": 43.803100203309924,
+  "price_change_1d_pct": 0.1589,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 49.13,
+  "composite_score_adjusted": 48.82,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -142,9 +139,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": true,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -177,7 +176,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.74,
+  "osap_blended_score": 50.59,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2

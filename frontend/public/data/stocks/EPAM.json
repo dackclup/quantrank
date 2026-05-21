@@ -3,19 +3,19 @@
   "name": "EPAM Systems",
   "sector": "Information Technology",
   "industry": "IT Consulting & Other Services",
-  "market_cap": 5449096398.7374115,
-  "current_price": 104.3,
-  "rank": 184,
-  "composite_score": 53.59,
+  "market_cap": 5391105026.239929,
+  "current_price": 103.19,
+  "rank": 187,
+  "composite_score": 53.45,
   "pillar_scores": {
-    "quality": 40.41,
+    "quality": 40.07,
     "value": 96.12,
     "growth": 42.81,
-    "momentum": 10.36,
-    "health": 87.41,
-    "profitability": 40.87,
-    "technical": 49.2,
-    "risk": 11.9,
+    "momentum": 12.0,
+    "health": 87.49,
+    "profitability": 40.64,
+    "technical": 44.57,
+    "risk": 11.67,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.53,
     "eps_diluted": 1.52,
     "shares_outstanding": 52244451.0,
-    "market_cap": 5449096398.7374115,
-    "pe_ratio_ttm": 14.090656471625016,
+    "market_cap": 5391105026.239929,
+    "pe_ratio_ttm": 13.940698304548103,
     "goodwill": 1204577000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 273.0415207895959,
+        "value": 277.52373875606867,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 666.1275140877196,
+        "value": 673.9815953805734,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 348.06961702376935,
+        "value": 344.16073167601036,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 211.28484466117197,
-    "max": 348.06961702376935,
+    "median": 213.5259536444084,
+    "max": 344.16073167601036,
     "low": 37.879588590785914,
-    "high": 666.1275140877196,
-    "mos_pct": 50.635359947837685,
+    "high": 673.9815953805734,
+    "mos_pct": 51.67332088667222,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ],
@@ -97,7 +97,7 @@
       "retained_earnings"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 13,
+    "filing_lag_days": 14,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-07"
   },
@@ -117,23 +117,23 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 49.32,
-      "Value": 48.17,
-      "Growth": 52.23,
-      "Momentum": 59.76,
+      "Quality": 49.66,
+      "Value": 48.86,
+      "Growth": 53.42,
+      "Momentum": 61.8,
       "Health": 69.52,
-      "Profitability": 47.26,
-      "Technical": 61.01,
-      "Risk": 46.85
+      "Profitability": 48.86,
+      "Technical": 59.76,
+      "Risk": 47.31
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 21.48395764493731,
-  "price_change_1d_pct": 3.7708,
+  "loss_chance_pct": 21.188341275776896,
+  "price_change_1d_pct": -1.0642,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 53.59,
+  "composite_score_adjusted": 53.45,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -142,9 +142,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -177,7 +179,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.72,
+  "osap_blended_score": 52.65,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5

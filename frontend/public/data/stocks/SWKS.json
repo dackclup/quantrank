@@ -3,19 +3,19 @@
   "name": "Skyworks Solutions",
   "sector": "Information Technology",
   "industry": "Semiconductors",
-  "market_cap": 11182683119.548714,
-  "current_price": 74.35,
-  "rank": 407,
-  "composite_score": 42.21,
+  "market_cap": 11060854656.720772,
+  "current_price": 73.54,
+  "rank": 396,
+  "composite_score": 42.59,
   "pillar_scores": {
     "quality": 16.78,
-    "value": 74.43,
-    "growth": 10.62,
-    "momentum": 40.94,
-    "health": 85.46,
-    "profitability": 23.74,
-    "technical": 67.63,
-    "risk": 26.43,
+    "value": 75.8,
+    "growth": 10.96,
+    "momentum": 41.88,
+    "health": 85.5,
+    "profitability": 23.29,
+    "technical": 67.08,
+    "risk": 25.6,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.77,
     "eps_diluted": 0.76,
     "shares_outstanding": 150405963.0,
-    "market_cap": 11182683119.548714,
-    "pe_ratio_ttm": 30.959809301076174,
+    "market_cap": 11060854656.720772,
+    "pe_ratio_ttm": 30.62252119800878,
     "goodwill": 2176700000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 124.15542722427921,
+        "value": 128.5750254406113,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 434.0117408073506,
+        "value": 435.96081776251026,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 149.78340948321832,
+        "value": 146.78457515018604,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 112.20448562442624,
-    "max": 149.78340948321832,
+    "median": 114.41428473259228,
+    "max": 146.78457515018604,
     "low": 20.202742239248913,
-    "high": 434.0117408073506,
-    "mos_pct": 33.737053326916595,
+    "high": 435.96081776251026,
+    "mos_pct": 35.72480823753418,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_multiples_pb_estimate"
@@ -93,7 +93,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 16,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-05"
   },
@@ -115,23 +115,23 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 49.32,
-      "Value": 48.17,
-      "Growth": 52.23,
-      "Momentum": 59.76,
+      "Quality": 49.66,
+      "Value": 48.86,
+      "Growth": 53.42,
+      "Momentum": 61.8,
       "Health": 69.52,
-      "Profitability": 47.26,
-      "Technical": 61.01,
-      "Risk": 46.85
+      "Profitability": 48.86,
+      "Technical": 59.76,
+      "Risk": 47.31
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 34.088164838098805,
-  "price_change_1d_pct": 5.6859,
+  "loss_chance_pct": 33.199333817185035,
+  "price_change_1d_pct": -1.0894,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 41.71,
+  "composite_score_adjusted": 42.09,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -140,9 +140,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": true,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -175,7 +177,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.03,
+  "osap_blended_score": 47.22,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5

@@ -3,19 +3,19 @@
   "name": "Berkshire Hathaway",
   "sector": "Financials",
   "industry": "Multi-Sector Holdings",
-  "market_cap": 790175436.1712036,
-  "current_price": 480.9,
-  "rank": 213,
-  "composite_score": 52.21,
+  "market_cap": 788663795.6918335,
+  "current_price": 479.98,
+  "rank": 216,
+  "composite_score": 52.05,
   "pillar_scores": {
     "quality": 37.33,
     "value": 81.78,
     "growth": 37.67,
-    "momentum": 36.95,
+    "momentum": 36.75,
     "health": 50.64,
     "profitability": 53.33,
-    "technical": 68.08,
-    "risk": 64.46,
+    "technical": 65.34,
+    "risk": 64.56,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 3035.0,
     "eps_diluted": null,
     "shares_outstanding": 1643118.0,
-    "market_cap": 790175436.1712036,
-    "pe_ratio_ttm": 0.010858980529239953,
+    "market_cap": 788663795.6918335,
+    "pe_ratio_ttm": 0.010838206820287128,
     "goodwill": 83180000000.0
   },
   "fair_price": {
@@ -107,7 +107,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 17,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-04"
   },
@@ -135,20 +135,20 @@
       "Quality": 50.67,
       "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 53.29,
+      "Momentum": 54.28,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 51.94,
-      "Risk": 54.88
+      "Technical": 51.25,
+      "Risk": 54.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
   "loss_chance_pct": null,
-  "price_change_1d_pct": 0.0916,
+  "price_change_1d_pct": -0.1913,
   "manipulation_index": 25.0,
-  "composite_score_adjusted": 49.71,
+  "composite_score_adjusted": 49.55,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -157,9 +157,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": true,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -192,7 +194,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.03,
+  "osap_blended_score": 51.95,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 0

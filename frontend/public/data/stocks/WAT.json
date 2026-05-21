@@ -3,19 +3,19 @@
   "name": "Waters Corporation",
   "sector": "Health Care",
   "industry": "Life Sciences Tools & Services",
-  "market_cap": 33512796747.73468,
-  "current_price": 341.32,
+  "market_cap": 33480393737.60376,
+  "current_price": 340.99,
   "rank": 497,
-  "composite_score": 30.43,
+  "composite_score": 30.34,
   "pillar_scores": {
     "quality": 14.83,
-    "value": 23.45,
+    "value": 23.16,
     "growth": 31.36,
-    "momentum": 33.72,
+    "momentum": 34.36,
     "health": 64.86,
     "profitability": 36.16,
-    "technical": 57.67,
-    "risk": 35.03,
+    "technical": 55.68,
+    "risk": 34.69,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": -0.87,
     "eps_diluted": -0.87,
     "shares_outstanding": 98185855.0,
-    "market_cap": 33512796747.73468,
-    "pe_ratio_ttm": 52.14952444993096,
+    "market_cap": 33480393737.60376,
+    "pe_ratio_ttm": 52.099101873092806,
     "goodwill": 9317000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 159.92862865553363,
+        "value": 158.8247978779332,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 461.0923674036318,
+        "value": 468.99179946645694,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 112.18047682087965,
+        "value": 111.49287956361997,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 159.92862865553363,
-    "max": 461.0923674036318,
-    "low": 112.18047682087965,
-    "high": 461.0923674036318,
-    "mos_pct": -113.42020512123541,
+    "median": 158.8247978779332,
+    "max": 468.99179946645694,
+    "low": 111.49287956361997,
+    "high": 468.99179946645694,
+    "mos_pct": -114.69568656177177,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
@@ -93,7 +93,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 9,
     "latest_period_end": "2026-05-06",
     "latest_filed_date": "2026-05-12"
   },
@@ -121,22 +121,22 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 52.97,
-      "Value": 51.13,
+      "Value": 50.85,
       "Growth": 49.58,
-      "Momentum": 40.09,
-      "Health": 59.88,
+      "Momentum": 38.6,
+      "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 57.02,
-      "Risk": 41.14
+      "Technical": 56.82,
+      "Risk": 41.47
     }
   },
   "beneish_m_score": -0.905248226553823,
   "dechow_f_score": 2.6461813606784474,
   "recommendation": "neutral",
-  "loss_chance_pct": 81.78469877551939,
-  "price_change_1d_pct": 2.4185,
+  "loss_chance_pct": 81.83204118554032,
+  "price_change_1d_pct": -0.0967,
   "manipulation_index": 64.0,
-  "composite_score_adjusted": 24.03,
+  "composite_score_adjusted": 23.94,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": true,
@@ -145,9 +145,11 @@
     "manipulation_triple_flag": true,
     "rem_suspect": true,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": true,
     "dechow_high": true
   },
@@ -180,7 +182,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 41.14,
+  "osap_blended_score": 41.09,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

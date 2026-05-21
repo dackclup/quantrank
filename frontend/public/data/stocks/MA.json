@@ -3,19 +3,19 @@
   "name": "Mastercard",
   "sector": "Financials",
   "industry": "Transaction & Payment Processing Services",
-  "market_cap": 444749727630.61523,
-  "current_price": 498.04,
-  "rank": 168,
-  "composite_score": 54.18,
+  "market_cap": 446160655639.64844,
+  "current_price": 499.62,
+  "rank": 162,
+  "composite_score": 54.37,
   "pillar_scores": {
     "quality": 75.33,
     "value": 14.67,
     "growth": 83.67,
-    "momentum": 33.42,
-    "health": 65.94,
+    "momentum": 32.47,
+    "health": 65.98,
     "profitability": 73.56,
-    "technical": 47.86,
-    "risk": 51.73,
+    "technical": 53.98,
+    "risk": 51.79,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 4.35,
     "eps_diluted": 4.35,
     "shares_outstanding": 893000000.0,
-    "market_cap": 444749727630.61523,
-    "pe_ratio_ttm": 28.564529712948957,
+    "market_cap": 446160655639.64844,
+    "pe_ratio_ttm": 28.6551480821868,
     "goodwill": 9525000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 241.17975108509617,
+        "value": 241.9728559337606,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 15.107659166279966,
+        "value": 15.154340774263359,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 128.14370512568806,
-    "max": 241.17975108509617,
-    "low": 15.107659166279966,
-    "high": 241.17975108509617,
-    "mos_pct": -288.6574124389692,
+    "median": 128.563598354012,
+    "max": 241.9728559337606,
+    "low": 15.154340774263359,
+    "high": 241.9728559337606,
+    "mos_pct": -288.6169969678639,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ],
@@ -95,7 +95,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 20,
+    "filing_lag_days": 21,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
@@ -118,20 +118,20 @@
       "Quality": 50.67,
       "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 53.29,
+      "Momentum": 54.28,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 51.94,
-      "Risk": 54.88
+      "Technical": 51.25,
+      "Risk": 54.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 58.912220562195664,
-  "price_change_1d_pct": -0.3322,
+  "loss_chance_pct": 58.81498450641877,
+  "price_change_1d_pct": 0.3172,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 54.18,
+  "composite_score_adjusted": 54.37,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -140,9 +140,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -175,7 +177,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.01,
+  "osap_blended_score": 53.11,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 1

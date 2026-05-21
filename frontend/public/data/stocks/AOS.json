@@ -3,19 +3,19 @@
   "name": "A. O. Smith",
   "sector": "Industrials",
   "industry": "Building Products",
-  "market_cap": 7888007140.870514,
-  "current_price": 56.68,
-  "rank": 32,
-  "composite_score": 64.23,
+  "market_cap": 7956198859.7769165,
+  "current_price": 57.17,
+  "rank": 31,
+  "composite_score": 64.4,
   "pillar_scores": {
     "quality": 73.1,
-    "value": 86.5,
+    "value": 86.08,
     "growth": 53.48,
-    "momentum": 22.91,
-    "health": 77.01,
+    "momentum": 22.96,
+    "health": 77.05,
     "profitability": 73.63,
-    "technical": 30.58,
-    "risk": 34.26,
+    "technical": 35.46,
+    "risk": 34.59,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.85,
     "eps_diluted": 0.85,
     "shares_outstanding": 139167380.0,
-    "market_cap": 7888007140.870514,
-    "pe_ratio_ttm": 14.950733777237517,
+    "market_cap": 7956198859.7769165,
+    "pe_ratio_ttm": 15.079982675847075,
     "goodwill": 919900000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 105.95782404585931,
+        "value": 106.48624034816203,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 87.95854706707931,
+        "value": 87.54441063802638,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 98.14485051387344,
+        "value": 98.36744313330718,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 87.95854706707931,
-    "max": 105.95782404585931,
+    "median": 87.54441063802638,
+    "max": 106.48624034816203,
     "low": 4.767067002664996,
-    "high": 105.95782404585931,
-    "mos_pct": 35.560554152912225,
+    "high": 106.48624034816203,
+    "mos_pct": 34.69600428823657,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
@@ -95,7 +95,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 20,
+    "filing_lag_days": 21,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
@@ -117,22 +117,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.16,
+      "Value": 49.37,
       "Growth": 49.37,
-      "Momentum": 50.5,
-      "Health": 52.79,
+      "Momentum": 49.4,
+      "Health": 52.75,
       "Profitability": 47.68,
-      "Technical": 45.57,
-      "Risk": 54.48
+      "Technical": 45.22,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 22.438666394119707,
-  "price_change_1d_pct": 1.3047,
+  "loss_chance_pct": 22.65538556772043,
+  "price_change_1d_pct": 0.8645,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 64.23,
+  "composite_score_adjusted": 64.4,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -141,9 +141,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -176,7 +178,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 58.04,
+  "osap_blended_score": 58.13,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

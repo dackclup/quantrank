@@ -1,16 +1,16 @@
 {
-  "version": "0.9.4-phase4h.4",
-  "last_update_utc": "2026-05-20T23:25:22Z",
-  "next_update_utc": "2026-05-21T23:25:22Z",
+  "version": "0.9.6-phase4h.6",
+  "last_update_utc": "2026-05-21T23:16:12Z",
+  "next_update_utc": "2026-05-22T23:16:12Z",
   "universe": "SP500",
   "universe_size": 502,
-  "compute_run_id": "26195477895",
-  "git_commit": "a16c887391e23861098ab9f5e4d027db7c614ffe",
-  "mos_trailing_ic_smoke": -0.276045800649212,
+  "compute_run_id": "26258253900",
+  "git_commit": "a6129011a8ccf9a12a7d7b39dcc864834c2081a7",
+  "mos_trailing_ic_smoke": -0.2677917485480313,
   "tier2_coverage_pct": 100.0,
   "fundamentals_coverage_pct": 100.0,
   "fundamentals_latency_p50_seconds": 0.0,
-  "fundamentals_latency_p95_seconds": 14.87,
+  "fundamentals_latency_p95_seconds": 15.44,
   "osap_signals_used": [
     "AbnormalAccruals",
     "Activism1",
@@ -646,5 +646,7 @@
     }
   },
   "osap_signals_dropped_no_long_short": null,
-  "tier2_enabled": true
+  "tier2_enabled": true,
+  "loss_avoidance_size_invariant_firing_count": 1,
+  "share_count_extraction_missing_count": 1
 }

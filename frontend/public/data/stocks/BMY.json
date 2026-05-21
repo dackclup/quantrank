@@ -3,19 +3,19 @@
   "name": "Bristol Myers Squibb",
   "sector": "Health Care",
   "industry": "Pharmaceuticals",
-  "market_cap": 119542852668.95206,
-  "current_price": 58.54,
-  "rank": 51,
-  "composite_score": 62.38,
+  "market_cap": 121605341200.87328,
+  "current_price": 59.55,
+  "rank": 39,
+  "composite_score": 63.13,
   "pillar_scores": {
     "quality": 75.42,
     "value": 58.19,
     "growth": 47.46,
-    "momentum": 70.37,
-    "health": 53.43,
+    "momentum": 74.1,
+    "health": 53.39,
     "profitability": 64.69,
-    "technical": 45.62,
-    "risk": 57.3,
+    "technical": 51.44,
+    "risk": 57.34,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.31,
     "eps_diluted": 1.31,
     "shares_outstanding": 2042071247.0,
-    "market_cap": 119542852668.95206,
-    "pe_ratio_ttm": 16.432007239718498,
+    "market_cap": 121605341200.87328,
+    "pe_ratio_ttm": 16.715510817989454,
     "goodwill": 21740000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 87.12824754544306,
+        "value": 86.66154503983869,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 29.0586922179442,
+        "value": 28.858128509641087,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 63.25728884710509,
-    "max": 87.12824754544306,
-    "low": 29.0586922179442,
-    "high": 87.12824754544306,
-    "mos_pct": 7.457303367805694,
+    "max": 86.66154503983869,
+    "low": 28.858128509641087,
+    "high": 86.66154503983869,
+    "mos_pct": 5.860652072846782,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -94,7 +94,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 20,
+    "filing_lag_days": 21,
     "latest_period_end": "2026-04-21",
     "latest_filed_date": "2026-04-30"
   },
@@ -115,22 +115,22 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 52.97,
-      "Value": 51.13,
+      "Value": 50.85,
       "Growth": 49.58,
-      "Momentum": 40.09,
-      "Health": 59.88,
+      "Momentum": 38.6,
+      "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 57.02,
-      "Risk": 41.14
+      "Technical": 56.82,
+      "Risk": 41.47
     }
   },
   "beneish_m_score": -2.7740589273404175,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 33.20069164916546,
-  "price_change_1d_pct": 0.3944,
+  "loss_chance_pct": 33.38178055857638,
+  "price_change_1d_pct": 1.7253,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 62.38,
+  "composite_score_adjusted": 63.13,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -139,9 +139,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -174,7 +176,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 57.12,
+  "osap_blended_score": 57.49,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

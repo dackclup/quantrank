@@ -3,19 +3,19 @@
   "name": "Parker Hannifin",
   "sector": "Industrials",
   "industry": "Industrial Machinery & Supplies & Components",
-  "market_cap": 108363686469.9881,
-  "current_price": 859.44,
-  "rank": 155,
-  "composite_score": 55.0,
+  "market_cap": 109030680697.34521,
+  "current_price": 864.73,
+  "rank": 152,
+  "composite_score": 55.02,
   "pillar_scores": {
     "quality": 60.13,
-    "value": 34.39,
+    "value": 33.97,
     "growth": 75.32,
-    "momentum": 60.36,
+    "momentum": 57.47,
     "health": 56.45,
     "profitability": 62.66,
-    "technical": 30.63,
-    "risk": 71.38,
+    "technical": 40.04,
+    "risk": 71.41,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 20.24,
     "eps_diluted": 19.95,
     "shares_outstanding": 126086389.0,
-    "market_cap": 108363686469.9881,
-    "pe_ratio_ttm": 28.999727158671522,
+    "market_cap": 109030680697.34521,
+    "pe_ratio_ttm": 29.17822469082333,
     "goodwill": 11096000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 791.7450364389119,
+        "value": 792.9556736698883,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 402.74568374530105,
+        "value": 398.89855267871485,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 667.9054030526975,
+        "value": 662.9363353779455,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 535.3255433989992,
-    "max": 791.7450364389119,
+    "median": 530.9174440283302,
+    "max": 792.9556736698883,
     "low": 210.71394024104313,
-    "high": 791.7450364389119,
-    "mos_pct": -60.54530052582074,
+    "high": 792.9556736698883,
+    "mos_pct": -62.874659741375396,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -91,7 +91,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 19,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-01"
   },
@@ -110,22 +110,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.16,
+      "Value": 49.37,
       "Growth": 49.37,
-      "Momentum": 50.5,
-      "Health": 52.79,
+      "Momentum": 49.4,
+      "Health": 52.75,
       "Profitability": 47.68,
-      "Technical": 45.57,
-      "Risk": 54.48
+      "Technical": 45.22,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": -2.4773356906728496,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 57.499372762116096,
-  "price_change_1d_pct": 0.807,
+  "loss_chance_pct": 57.491437730092294,
+  "price_change_1d_pct": 0.6155,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 55.0,
+  "composite_score_adjusted": 55.02,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -134,9 +134,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },

@@ -3,19 +3,19 @@
   "name": "Booking Holdings",
   "sector": "Consumer Discretionary",
   "industry": "Hotels, Resorts & Cruise Lines",
-  "market_cap": 121617168165.45868,
-  "current_price": 156.95,
-  "rank": 210,
-  "composite_score": 52.27,
+  "market_cap": 123732582985.10083,
+  "current_price": 159.68,
+  "rank": 211,
+  "composite_score": 52.19,
   "pillar_scores": {
     "quality": 41.41,
-    "value": 54.17,
+    "value": 52.26,
     "growth": 76.3,
-    "momentum": 43.03,
-    "health": 62.87,
+    "momentum": 41.28,
+    "health": 62.83,
     "profitability": 72.92,
-    "technical": 32.72,
-    "risk": 34.76,
+    "technical": 43.68,
+    "risk": 35.33,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.37,
     "eps_diluted": 1.36,
     "shares_outstanding": 774878436.0,
-    "market_cap": 121617168165.45868,
-    "pe_ratio_ttm": 19.7622957694928,
+    "market_cap": 123732582985.10083,
+    "pe_ratio_ttm": 20.106042084026786,
     "goodwill": 2662000000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 175.59454813764177,
+        "value": 179.6717834937836,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 152.19072650450846,
+        "value": 156.15278384774487,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "insufficient_history_for_roe",
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 152.19072650450846,
-    "max": 175.59454813764177,
+    "median": 156.15278384774487,
+    "max": 179.6717834937836,
     "low": 109.37260933201281,
-    "high": 175.59454813764177,
-    "mos_pct": -3.127175060559776,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "high": 179.6717834937836,
+    "mos_pct": -2.258819049601797,
+    "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
   "top5_factors": [],
@@ -95,14 +93,12 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 22,
+    "filing_lag_days": 23,
     "latest_period_end": "2026-04-20",
     "latest_filed_date": "2026-04-28"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -116,22 +112,22 @@
     "label": "Consumer Discretionary median (n=48)",
     "values": {
       "Quality": 46.35,
-      "Value": 49.83,
-      "Growth": 51.69,
-      "Momentum": 42.26,
-      "Health": 43.72,
+      "Value": 50.17,
+      "Growth": 51.43,
+      "Momentum": 41.36,
+      "Health": 43.75,
       "Profitability": 52.6,
-      "Technical": 43.15,
-      "Risk": 41.87
+      "Technical": 51.39,
+      "Risk": 41.77
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 41.95746051588384,
-  "price_change_1d_pct": 1.5595,
+  "loss_chance_pct": 39.694823885156126,
+  "price_change_1d_pct": 1.7394,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 52.27,
+  "composite_score_adjusted": 52.19,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -140,9 +136,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -175,7 +173,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.06,
+  "osap_blended_score": 52.02,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

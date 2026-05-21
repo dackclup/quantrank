@@ -3,19 +3,19 @@
   "name": "KLA Corporation",
   "sector": "Information Technology",
   "industry": "Semiconductor Materials & Equipment",
-  "market_cap": 238979127016.89185,
-  "current_price": 1829.47,
-  "rank": 38,
-  "composite_score": 63.23,
+  "market_cap": 240639413651.90662,
+  "current_price": 1842.1801,
+  "rank": 37,
+  "composite_score": 63.46,
   "pillar_scores": {
     "quality": 76.03,
-    "value": 28.77,
-    "growth": 63.01,
-    "momentum": 90.29,
+    "value": 29.22,
+    "growth": 62.67,
+    "momentum": 90.69,
     "health": 74.66,
     "profitability": 74.2,
-    "technical": 48.11,
-    "risk": 58.1,
+    "technical": 50.45,
+    "risk": 58.23,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 26.41,
     "eps_diluted": 26.26,
     "shares_outstanding": 130627521.0,
-    "market_cap": 238979127016.89185,
-    "pe_ratio_ttm": 51.16711397557849,
+    "market_cap": 240639413651.90662,
+    "pe_ratio_ttm": 51.5225930358059,
     "goodwill": 1788483000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 1259.5290275279979,
+        "value": 1306.6572103357303,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 416.8656414763019,
+        "value": 421.00233541837883,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 416.8656414763019,
-    "max": 1259.5290275279979,
+    "median": 421.00233541837883,
+    "max": 1306.6572103357303,
     "low": 126.75790853955291,
-    "high": 1259.5290275279979,
-    "mos_pct": -338.8632184279278,
+    "high": 1306.6572103357303,
+    "mos_pct": -337.57003197624476,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_dcf_estimate"
@@ -95,7 +95,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 20,
+    "filing_lag_days": 21,
     "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-30"
   },
@@ -118,23 +118,23 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 49.32,
-      "Value": 48.17,
-      "Growth": 52.23,
-      "Momentum": 59.76,
+      "Quality": 49.66,
+      "Value": 48.86,
+      "Growth": 53.42,
+      "Momentum": 61.8,
       "Health": 69.52,
-      "Profitability": 47.26,
-      "Technical": 61.01,
-      "Risk": 46.85
+      "Profitability": 48.86,
+      "Technical": 59.76,
+      "Risk": 47.31
     }
   },
   "beneish_m_score": -2.37178324441842,
   "dechow_f_score": 0.5169401006418554,
   "recommendation": "cautious",
-  "loss_chance_pct": 58.384594612417914,
-  "price_change_1d_pct": 5.1069,
+  "loss_chance_pct": 58.26872248449126,
+  "price_change_1d_pct": 0.6947,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 61.23,
+  "composite_score_adjusted": 61.46,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -143,9 +143,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -178,7 +180,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 57.54,
+  "osap_blended_score": 57.66,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

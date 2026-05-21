@@ -3,19 +3,19 @@
   "name": "Citigroup",
   "sector": "Financials",
   "industry": "Diversified Banks",
-  "market_cap": 218349998169.5302,
-  "current_price": 124.82,
-  "rank": 330,
-  "composite_score": 46.76,
+  "market_cap": 219049728442.37918,
+  "current_price": 125.22,
+  "rank": 335,
+  "composite_score": 46.54,
   "pillar_scores": {
     "quality": 32.0,
     "value": 55.33,
     "growth": 24.67,
-    "momentum": 86.45,
+    "momentum": 85.56,
     "health": 43.63,
     "profitability": 41.56,
-    "technical": 46.31,
-    "risk": 62.38,
+    "technical": 44.27,
+    "risk": 62.42,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 7.11,
     "eps_diluted": 6.99,
     "shares_outstanding": 1749319009.0,
-    "market_cap": 218349998169.5302,
-    "pe_ratio_ttm": 15.108635356319555,
+    "market_cap": 219049728442.37918,
+    "pe_ratio_ttm": 15.157052895265652,
     "goodwill": 19098000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 114.27799875618503,
+        "value": 114.65379496005963,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 246.66544533551192,
+        "value": 246.91912236466905,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 117.23664178124048,
-    "max": 246.66544533551192,
-    "low": 114.27799875618503,
-    "high": 246.66544533551192,
-    "mos_pct": -6.468419598485278,
+    "max": 246.91912236466905,
+    "low": 114.65379496005963,
+    "high": 246.91912236466905,
+    "mos_pct": -6.809611157541785,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -104,7 +104,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 89,
+    "filing_lag_days": 90,
     "latest_period_end": "2026-01-31",
     "latest_filed_date": "2026-02-20"
   },
@@ -127,20 +127,20 @@
       "Quality": 50.67,
       "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 53.29,
+      "Momentum": 54.28,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 51.94,
-      "Risk": 54.88
+      "Technical": 51.25,
+      "Risk": 54.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 45.88644298607454,
-  "price_change_1d_pct": 4.0427,
+  "loss_chance_pct": 46.11230923493157,
+  "price_change_1d_pct": 0.3205,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 46.76,
+  "composite_score_adjusted": 46.54,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -149,9 +149,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -184,7 +186,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.3,
+  "osap_blended_score": 49.2,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

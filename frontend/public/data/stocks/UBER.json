@@ -3,19 +3,19 @@
   "name": "Uber",
   "sector": "Industrials",
   "industry": "Passenger Ground Transportation",
-  "market_cap": 151855683263.7224,
-  "current_price": 74.6,
-  "rank": 126,
-  "composite_score": 56.43,
+  "market_cap": 149840444589.36102,
+  "current_price": 73.61,
+  "rank": 144,
+  "composite_score": 55.65,
   "pillar_scores": {
     "quality": 63.92,
-    "value": 56.75,
+    "value": 57.17,
     "growth": 82.91,
-    "momentum": 33.37,
+    "momentum": 33.52,
     "health": 47.41,
     "profitability": 58.86,
-    "technical": 38.97,
-    "risk": 31.54,
+    "technical": 21.49,
+    "risk": 31.04,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.13,
     "eps_diluted": 0.13,
     "shares_outstanding": 2035599013.0,
-    "market_cap": 151855683263.7224,
-    "pe_ratio_ttm": 17.655584613849832,
+    "market_cap": 149840444589.36102,
+    "pe_ratio_ttm": 17.42128177995129,
     "goodwill": 8919000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 118.09252575748567,
+        "value": 118.68145834790344,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 79.25808131283988,
+        "value": 78.8849094055839,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 55.6483830177852,
+        "value": 55.33499960520967,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 42.87016753142332,
-    "max": 118.09252575748567,
+    "median": 42.71347582513555,
+    "max": 118.68145834790344,
     "low": 18.999383212562964,
-    "high": 118.09252575748567,
-    "mos_pct": -74.0137787412195,
+    "high": 118.68145834790344,
+    "mos_pct": -72.33437267363375,
     "valuation_warnings": [],
     "valuation_methods_applicable": 6
   },
@@ -93,7 +93,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-06"
   },
@@ -116,22 +116,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.16,
+      "Value": 49.37,
       "Growth": 49.37,
-      "Momentum": 50.5,
-      "Health": 52.79,
+      "Momentum": 49.4,
+      "Health": 52.75,
       "Profitability": 47.68,
-      "Technical": 45.57,
-      "Risk": 54.48
+      "Technical": 45.22,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 68.78304976297342,
-  "price_change_1d_pct": 0.6884,
+  "loss_chance_pct": 69.17258340057492,
+  "price_change_1d_pct": -1.3271,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 55.93,
+  "composite_score_adjusted": 55.15,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -140,9 +140,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": true,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -175,7 +177,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.14,
+  "osap_blended_score": 53.75,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 6

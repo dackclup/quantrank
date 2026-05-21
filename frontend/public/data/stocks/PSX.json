@@ -3,19 +3,19 @@
   "name": "Phillips 66",
   "sector": "Energy",
   "industry": "Oil & Gas Refining & Marketing",
-  "market_cap": 71903685018.5321,
-  "current_price": 179.34,
-  "rank": 238,
-  "composite_score": 51.14,
+  "market_cap": 69782741454.55658,
+  "current_price": 174.05,
+  "rank": 225,
+  "composite_score": 51.65,
   "pillar_scores": {
     "quality": 39.29,
     "value": 57.94,
     "growth": 42.86,
-    "momentum": 70.67,
+    "momentum": 74.05,
     "health": 55.38,
     "profitability": 35.71,
-    "technical": 56.52,
-    "risk": 67.1,
+    "technical": 59.26,
+    "risk": 65.77,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.51,
     "eps_diluted": 0.51,
     "shares_outstanding": 400935020.0,
-    "market_cap": 71903685018.5321,
-    "pe_ratio_ttm": 17.034751248171546,
+    "market_cap": 69782741454.55658,
+    "pe_ratio_ttm": 16.53227705627969,
     "goodwill": 1433000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 217.7917636326731,
+        "value": 214.5667663903727,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 177.42644003493155,
+        "value": 175.84093975070078,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 150.51408992801515,
-    "max": 217.7917636326731,
+    "median": 149.72133978589977,
+    "max": 214.5667663903727,
     "low": 82.32428526731019,
-    "high": 217.7917636326731,
-    "mos_pct": -19.151633195046223,
+    "high": 214.5667663903727,
+    "mos_pct": -16.249295725410835,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -97,7 +97,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 21,
+    "filing_lag_days": 22,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-29"
   },
@@ -118,22 +118,22 @@
     "label": "Energy median (n=21)",
     "values": {
       "Quality": 50.0,
-      "Value": 51.59,
+      "Value": 48.41,
       "Growth": 55.95,
-      "Momentum": 73.11,
+      "Momentum": 74.65,
       "Health": 55.14,
       "Profitability": 54.76,
-      "Technical": 56.52,
-      "Risk": 67.1
+      "Technical": 54.33,
+      "Risk": 66.5
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 49.13196319481712,
-  "price_change_1d_pct": -1.6669,
+  "loss_chance_pct": 47.8609159967794,
+  "price_change_1d_pct": -2.9497,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 49.14,
+  "composite_score_adjusted": 49.65,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -142,9 +142,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -177,7 +179,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.5,
+  "osap_blended_score": 51.75,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

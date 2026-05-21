@@ -3,19 +3,19 @@
   "name": "Capital One",
   "sector": "Financials",
   "industry": "Consumer Finance",
-  "market_cap": 116511875102.3684,
-  "current_price": 187.23,
-  "rank": 408,
-  "composite_score": 42.19,
+  "market_cap": 116157173153.68423,
+  "current_price": 186.66,
+  "rank": 413,
+  "composite_score": 41.84,
   "pillar_scores": {
     "quality": 28.0,
-    "value": 59.11,
+    "value": 59.33,
     "growth": 43.33,
-    "momentum": 37.0,
+    "momentum": 35.31,
     "health": 52.95,
     "profitability": 35.33,
-    "technical": 44.32,
-    "risk": 38.21,
+    "technical": 40.89,
+    "risk": 37.75,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 3.34,
     "eps_diluted": 3.34,
     "shares_outstanding": 622292783.0,
-    "market_cap": 116511875102.3684,
-    "pe_ratio_ttm": 36.15013189648415,
+    "market_cap": 116157173153.68423,
+    "pe_ratio_ttm": 36.04007854597712,
     "goodwill": 28502000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 71.64225218692569,
+        "value": 71.87784334797074,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 366.6738085652074,
+        "value": 367.0509052529905,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 149.95333829635004,
-    "max": 366.6738085652074,
-    "low": 71.64225218692569,
-    "high": 366.6738085652074,
-    "mos_pct": -24.858837992335886,
+    "max": 367.0509052529905,
+    "low": 71.87784334797074,
+    "high": 367.0509052529905,
+    "mos_pct": -24.478725037262343,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -102,7 +102,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 13,
+    "filing_lag_days": 14,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-07"
   },
@@ -127,20 +127,20 @@
       "Quality": 50.67,
       "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 53.29,
+      "Momentum": 54.28,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 51.94,
-      "Risk": 54.88
+      "Technical": 51.25,
+      "Risk": 54.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 57.6034817435327,
-  "price_change_1d_pct": 2.8567,
+  "loss_chance_pct": 57.64589041642827,
+  "price_change_1d_pct": -0.3044,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 42.19,
+  "composite_score_adjusted": 41.84,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -149,9 +149,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -184,7 +186,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.02,
+  "osap_blended_score": 46.85,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

@@ -3,19 +3,19 @@
   "name": "Paramount Skydance Corporation",
   "sector": "Communication Services",
   "industry": "Movies & Entertainment",
-  "market_cap": 11325340127.944946,
-  "current_price": 10.13,
-  "rank": 409,
+  "market_cap": 11493039701.461792,
+  "current_price": 10.28,
+  "rank": 408,
   "composite_score": 42.1,
   "pillar_scores": {
     "quality": 29.35,
     "value": 69.57,
     "growth": 40.22,
-    "momentum": 32.77,
-    "health": 46.25,
+    "momentum": 31.37,
+    "health": 46.22,
     "profitability": 35.51,
-    "technical": 29.18,
-    "risk": 25.37,
+    "technical": 32.82,
+    "risk": 25.2,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.15,
     "eps_diluted": 0.15,
     "shares_outstanding": 1118000000.0,
-    "market_cap": 11325340127.944946,
-    "pe_ratio_ttm": 83.89140835514775,
+    "market_cap": 11493039701.461792,
+    "pe_ratio_ttm": 85.13362741823549,
     "goodwill": 1622000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 2.3569825003188005,
+        "value": 2.3661544818040756,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 27.11611864923175,
+        "value": 27.17108867852074,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 33.370300069557445,
+        "value": 33.63787506102211,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "insufficient_history_for_roe",
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 16.29351807637204,
-    "max": 33.370300069557445,
-    "low": 2.3569825003188005,
-    "high": 33.370300069557445,
-    "mos_pct": 37.82803648077155,
+    "median": 16.321003091016536,
+    "max": 33.63787506102211,
+    "low": 2.3661544818040756,
+    "high": 33.63787506102211,
+    "mos_pct": 37.013676943486736,
     "valuation_warnings": [
-      "goodwill_heavy",
-      "value_trap_risk"
+      "goodwill_heavy"
     ],
     "valuation_methods_applicable": 4
   },
@@ -102,14 +101,13 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 17,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-04"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
-    "value_trap_risk",
     "restatement_history"
   ],
   "has_history": true,
@@ -127,18 +125,18 @@
       "Quality": 52.17,
       "Value": 50.0,
       "Growth": 60.33,
-      "Momentum": 48.26,
+      "Momentum": 49.25,
       "Health": 45.5,
       "Profitability": 50.72,
-      "Technical": 48.46,
-      "Risk": 50.55
+      "Technical": 52.39,
+      "Risk": 50.05
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 33.70959972667771,
-  "price_change_1d_pct": 2.3232,
+  "loss_chance_pct": 31.99599508663974,
+  "price_change_1d_pct": 1.4807,
   "manipulation_index": 5.0,
   "composite_score_adjusted": 41.6,
   "manipulation_components": {
@@ -149,9 +147,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": true,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },

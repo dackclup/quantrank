@@ -3,18 +3,18 @@
   "name": "Sandisk",
   "sector": "Information Technology",
   "industry": "Technology Hardware, Storage & Peripherals",
-  "market_cap": 206223882077.61426,
-  "current_price": 1392.5601,
+  "market_cap": 228389946931.73096,
+  "current_price": 1542.24,
   "rank": 20,
-  "composite_score": 66.14,
+  "composite_score": 66.24,
   "pillar_scores": {
-    "quality": 76.03,
-    "value": 31.28,
+    "quality": 75.34,
+    "value": 27.63,
     "growth": 57.19,
-    "momentum": 88.67,
+    "momentum": 97.68,
     "health": 96.55,
-    "profitability": 76.26,
-    "technical": 68.53,
+    "profitability": 75.8,
+    "technical": 68.73,
     "risk": 56.49,
     "sentiment": null,
     "ml": null
@@ -32,8 +32,8 @@
     "eps_basic": 30.82,
     "eps_diluted": 29.42,
     "shares_outstanding": 148089758.0,
-    "market_cap": 206223882077.61426,
-    "pe_ratio_ttm": 45.756352801778185,
+    "market_cap": 228389946931.73096,
+    "pe_ratio_ttm": 50.6744945488642,
     "goodwill": 4994000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 1072.1026067518198,
+        "value": 1112.217797855284,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 868.8703841630477,
+        "value": 877.4924688277578,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 804.5195654448194,
+        "value": 816.8554569181636,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "insufficient_history_for_roe",
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 868.8703841630477,
-    "max": 1072.1026067518198,
-    "low": 804.5195654448194,
-    "high": 1072.1026067518198,
-    "mos_pct": -60.27247377468783,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "median": 877.4924688277578,
+    "max": 1112.217797855284,
+    "low": 816.8554569181636,
+    "high": 1112.217797855284,
+    "mos_pct": -75.75535346698229,
+    "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
   "top5_factors": [],
@@ -94,7 +92,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 19,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-05-01"
   },
@@ -102,7 +100,6 @@
     "beneish_manipulation_veto"
   ],
   "valuation_warnings": [
-    "value_trap_risk",
     "beneish_high",
     "restatement_history"
   ],
@@ -118,23 +115,23 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 49.32,
-      "Value": 48.17,
-      "Growth": 52.23,
-      "Momentum": 59.76,
+      "Quality": 49.66,
+      "Value": 48.86,
+      "Growth": 53.42,
+      "Momentum": 61.8,
       "Health": 69.52,
-      "Profitability": 47.26,
-      "Technical": 61.01,
-      "Risk": 46.85
+      "Profitability": 48.86,
+      "Technical": 59.76,
+      "Risk": 47.31
     }
   },
   "beneish_m_score": -1.5013205291387908,
   "dechow_f_score": 1.2926357453906987,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 56.92798782040787,
-  "price_change_1d_pct": 0.6701,
+  "loss_chance_pct": 54.87904261947644,
+  "price_change_1d_pct": 10.7485,
   "manipulation_index": 28.0,
-  "composite_score_adjusted": 63.34,
+  "composite_score_adjusted": 63.44,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": true,
@@ -143,9 +140,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": true,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": true,
     "dechow_high": false
   },
@@ -178,7 +177,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 59.0,
+  "osap_blended_score": 59.05,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

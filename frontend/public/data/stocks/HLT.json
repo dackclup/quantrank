@@ -3,19 +3,19 @@
   "name": "Hilton Worldwide",
   "sector": "Consumer Discretionary",
   "industry": "Hotels, Resorts & Cruise Lines",
-  "market_cap": 73728477128.07568,
-  "current_price": 323.87,
-  "rank": 406,
-  "composite_score": 42.33,
+  "market_cap": 73475790769.84863,
+  "current_price": 322.76,
+  "rank": 401,
+  "composite_score": 42.34,
   "pillar_scores": {
     "quality": 33.85,
-    "value": 18.58,
+    "value": 18.92,
     "growth": 59.11,
-    "momentum": 79.93,
+    "momentum": 78.24,
     "health": 26.89,
     "profitability": 52.08,
-    "technical": 56.62,
-    "risk": 71.58,
+    "technical": 59.31,
+    "risk": 71.75,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.68,
     "eps_diluted": 1.66,
     "shares_outstanding": 227648372.0,
-    "market_cap": 73728477128.07568,
-    "pe_ratio_ttm": 47.751604357561966,
+    "market_cap": 73475790769.84863,
+    "pe_ratio_ttm": 47.58794738979834,
     "goodwill": 5070000000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 146.2685164994989,
+        "value": 147.38528821893675,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 172.76097252078264,
+        "value": 176.98998255372345,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "insufficient_history_for_roe",
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 146.2685164994989,
-    "max": 172.76097252078264,
+    "median": 147.38528821893675,
+    "max": 176.98998255372345,
     "low": 104.35974011170488,
-    "high": 172.76097252078264,
-    "mos_pct": -121.42153545277601,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "high": 176.98998255372345,
+    "mos_pct": -118.99065616791682,
+    "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
   "top5_factors": [],
@@ -95,16 +93,14 @@
       "long_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 22,
+    "filing_lag_days": 23,
     "latest_period_end": "2026-04-23",
     "latest_filed_date": "2026-04-28"
   },
   "risk_flags": [
     "altman_distress"
   ],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -118,22 +114,22 @@
     "label": "Consumer Discretionary median (n=48)",
     "values": {
       "Quality": 46.35,
-      "Value": 49.83,
-      "Growth": 51.69,
-      "Momentum": 42.26,
-      "Health": 43.72,
+      "Value": 50.17,
+      "Growth": 51.43,
+      "Momentum": 41.36,
+      "Health": 43.75,
       "Profitability": 52.6,
-      "Technical": 43.15,
-      "Risk": 41.87
+      "Technical": 51.39,
+      "Risk": 41.77
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 77.83495964060425,
-  "price_change_1d_pct": 2.6887,
+  "loss_chance_pct": 75.83138020833333,
+  "price_change_1d_pct": -0.3427,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 42.33,
+  "composite_score_adjusted": 42.34,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -142,9 +138,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },

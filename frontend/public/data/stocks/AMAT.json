@@ -3,83 +3,83 @@
   "name": "Applied Materials",
   "sector": "Information Technology",
   "industry": "Semiconductor Materials & Equipment",
-  "market_cap": 338752376572.76025,
-  "current_price": 426.85,
-  "rank": 58,
-  "composite_score": 61.64,
+  "market_cap": 339306490374.5349,
+  "current_price": 427.36,
+  "rank": 62,
+  "composite_score": 61.35,
   "pillar_scores": {
-    "quality": 71.23,
-    "value": 31.74,
+    "quality": 69.52,
+    "value": 32.88,
     "growth": 50.68,
-    "momentum": 87.25,
-    "health": 88.53,
-    "profitability": 66.21,
-    "technical": 54.88,
-    "risk": 51.69,
+    "momentum": 87.6,
+    "health": 87.25,
+    "profitability": 66.44,
+    "technical": 54.98,
+    "risk": 51.33,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 28214000000.0,
-    "net_income": 7839000000.0,
-    "total_assets": 37644000000.0,
-    "total_liabilities": 15927000000.0,
-    "stockholders_equity": 21717000000.0,
-    "cash": 7218000000.0,
-    "operating_cash_flow": 8719000000.0,
-    "capex": 2525000000.0,
-    "free_cash_flow": 6194000000.0,
-    "eps_basic": 2.55,
-    "eps_diluted": 2.54,
-    "shares_outstanding": 793609867.0,
-    "market_cap": 338752376572.76025,
-    "pe_ratio_ttm": 43.21372325204238,
-    "goodwill": 3707000000.0
+    "revenue": 29024000000.0,
+    "net_income": 8508000000.0,
+    "total_assets": 40286000000.0,
+    "total_liabilities": 16377000000.0,
+    "stockholders_equity": 23909000000.0,
+    "cash": 6301000000.0,
+    "operating_cash_flow": 7993000000.0,
+    "capex": 2650000000.0,
+    "free_cash_flow": 5343000000.0,
+    "eps_basic": 6.09,
+    "eps_diluted": 6.05,
+    "shares_outstanding": 793959430.0,
+    "market_cap": 339306490374.5349,
+    "pe_ratio_ttm": 39.880875690471896,
+    "goodwill": 3824000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 65.3313913464663,
+        "value": 68.82017964491746,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 347.9584783604021,
+        "value": 391.61243689219936,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 255.57486021289756,
+        "value": 284.0382730897735,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 257.77604892255584,
+        "value": 268.46964061231586,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "rim": {
-        "value": 69.6703400806434,
+        "value": 77.31000825601153,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 95.04567888646854,
+        "value": 92.33870876754371,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 175.31026954968306,
-    "max": 347.9584783604021,
-    "low": 65.3313913464663,
-    "high": 347.9584783604021,
-    "mos_pct": -143.48260213161444,
+    "median": 180.4041746899298,
+    "max": 391.61243689219936,
+    "low": 68.82017964491746,
+    "high": 391.61243689219936,
+    "mos_pct": -136.89029707105655,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_rim_estimate"
@@ -91,17 +91,19 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 90,
-    "latest_period_end": "2026-01-25",
-    "latest_filed_date": "2026-02-19"
+    "filing_lag_days": 0,
+    "latest_period_end": "2026-04-26",
+    "latest_filed_date": "2026-05-21"
   },
-  "risk_flags": [],
+  "risk_flags": [
+    "sloan_accruals_top_decile"
+  ],
   "valuation_warnings": [
     "extreme_graham_estimate",
     "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 22.42285629243569,
+  "tangible_book_value": 24.88162398927613,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -112,34 +114,36 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 49.32,
-      "Value": 48.17,
-      "Growth": 52.23,
-      "Momentum": 59.76,
+      "Quality": 49.66,
+      "Value": 48.86,
+      "Growth": 53.42,
+      "Momentum": 61.8,
       "Health": 69.52,
-      "Profitability": 47.26,
-      "Technical": 61.01,
-      "Risk": 46.85
+      "Profitability": 48.86,
+      "Technical": 59.76,
+      "Risk": 47.31
     }
   },
-  "beneish_m_score": -2.8459617101252497,
-  "dechow_f_score": 0.3802248287683928,
+  "beneish_m_score": -2.3402184090282203,
+  "dechow_f_score": 0.4687096625378033,
   "recommendation": "neutral",
-  "loss_chance_pct": 56.17765979461151,
-  "price_change_1d_pct": 4.9003,
-  "manipulation_index": 0.0,
-  "composite_score_adjusted": 61.64,
+  "loss_chance_pct": 59.323860380396226,
+  "price_change_1d_pct": 0.1195,
+  "manipulation_index": 20.0,
+  "composite_score_adjusted": 59.35,
   "manipulation_components": {
-    "sloan_accruals_top_decile": false,
+    "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -172,7 +176,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 56.75,
+  "osap_blended_score": 56.6,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

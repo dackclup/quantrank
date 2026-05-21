@@ -3,19 +3,19 @@
   "name": "Kinder Morgan",
   "sector": "Energy",
   "industry": "Oil & Gas Storage & Transportation",
-  "market_cap": 74731897517.11147,
-  "current_price": 33.59,
-  "rank": 448,
-  "composite_score": 39.04,
+  "market_cap": 74531662859.5,
+  "current_price": 33.5,
+  "rank": 451,
+  "composite_score": 38.65,
   "pillar_scores": {
     "quality": 25.0,
-    "value": 23.81,
+    "value": 23.02,
     "growth": 57.14,
-    "momentum": 65.44,
-    "health": 21.51,
+    "momentum": 65.24,
+    "health": 21.55,
     "profitability": 46.83,
-    "technical": 63.5,
-    "risk": 86.29,
+    "technical": 59.76,
+    "risk": 86.06,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.44,
     "eps_diluted": 0.44,
     "shares_outstanding": 2224825757.0,
-    "market_cap": 74731897517.11147,
-    "pe_ratio_ttm": 21.864218115012132,
+    "market_cap": 74531662859.5,
+    "pe_ratio_ttm": 21.805635710795787,
     "goodwill": 20084000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 29.355105780562607,
+        "value": 28.438419864557122,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 35.66711453354678,
+        "value": 35.03022557103265,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 23.444375040335313,
+        "value": 23.523417057501792,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 23.444375040335313,
-    "max": 35.66711453354678,
+    "median": 23.523417057501792,
+    "max": 35.03022557103265,
     "low": 1.7185224226685796,
-    "high": 35.66711453354678,
-    "mos_pct": -43.275306314616394,
+    "high": 35.03022557103265,
+    "mos_pct": -42.411282842586004,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_dcf_estimate",
@@ -97,7 +97,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 26,
+    "filing_lag_days": 27,
     "latest_period_end": "2026-04-23",
     "latest_filed_date": "2026-04-24"
   },
@@ -122,22 +122,22 @@
     "label": "Energy median (n=21)",
     "values": {
       "Quality": 50.0,
-      "Value": 51.59,
+      "Value": 48.41,
       "Growth": 55.95,
-      "Momentum": 73.11,
+      "Momentum": 74.65,
       "Health": 55.14,
       "Profitability": 54.76,
-      "Technical": 56.52,
-      "Risk": 67.1
+      "Technical": 54.33,
+      "Risk": 66.5
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 76.62467212505913,
-  "price_change_1d_pct": -2.0985,
+  "loss_chance_pct": 76.51974185520992,
+  "price_change_1d_pct": -0.2679,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 39.04,
+  "composite_score_adjusted": 38.65,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -146,9 +146,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -181,7 +183,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.45,
+  "osap_blended_score": 45.25,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

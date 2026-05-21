@@ -3,19 +3,19 @@
   "name": "Prudential Financial",
   "sector": "Financials",
   "industry": "Life & Health Insurance",
-  "market_cap": 35817340423.583984,
-  "current_price": 103.22,
-  "rank": 305,
-  "composite_score": 48.01,
+  "market_cap": 36171279258.72803,
+  "current_price": 104.24,
+  "rank": 329,
+  "composite_score": 46.8,
   "pillar_scores": {
     "quality": 40.0,
-    "value": 67.78,
+    "value": 67.33,
     "growth": 32.0,
-    "momentum": 42.08,
-    "health": 49.88,
+    "momentum": 33.62,
+    "health": 49.84,
     "profitability": 35.33,
-    "technical": 65.99,
-    "risk": 53.42,
+    "technical": 64.74,
+    "risk": 53.92,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.69,
     "eps_diluted": 1.68,
     "shares_outstanding": 347000000.0,
-    "market_cap": 35817340423.583984,
-    "pe_ratio_ttm": 9.960328260173522,
+    "market_cap": 36171279258.72803,
+    "pe_ratio_ttm": 10.058753965163524,
     "goodwill": 1090000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 143.669574612127,
+        "value": 144.52383428468494,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 187.2952768672397,
+        "value": 187.4878961023588,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 143.669574612127,
-    "max": 187.2952768672397,
+    "median": 144.52383428468494,
+    "max": 187.4878961023588,
     "low": 126.3737637725047,
-    "high": 187.2952768672397,
-    "mos_pct": 28.1545856181644,
+    "high": 187.4878961023588,
+    "mos_pct": 27.873489947383888,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -104,13 +104,14 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "value_trap_risk"
+    "value_trap_risk",
+    "loss_avoidance_pattern_size_invariant"
   ],
   "has_history": true,
   "tangible_book_value": 87.88184438040346,
@@ -127,20 +128,20 @@
       "Quality": 50.67,
       "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 53.29,
+      "Momentum": 54.28,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 51.94,
-      "Risk": 54.88
+      "Technical": 51.25,
+      "Risk": 54.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 33.1413299606013,
-  "price_change_1d_pct": 2.0364,
-  "manipulation_index": 0.0,
-  "composite_score_adjusted": 48.01,
+  "loss_chance_pct": 33.84262679198801,
+  "price_change_1d_pct": 0.9882,
+  "manipulation_index": 5.0,
+  "composite_score_adjusted": 46.3,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -149,9 +150,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": true,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -184,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.93,
+  "osap_blended_score": 49.33,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

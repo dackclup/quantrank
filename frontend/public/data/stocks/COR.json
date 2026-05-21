@@ -3,19 +3,19 @@
   "name": "Cencora",
   "sector": "Health Care",
   "industry": "Health Care Distributors",
-  "market_cap": 51510040635.0,
-  "current_price": 264.75,
-  "rank": 266,
-  "composite_score": 50.26,
+  "market_cap": 51644288241.40259,
+  "current_price": 265.44,
+  "rank": 275,
+  "composite_score": 49.87,
   "pillar_scores": {
     "quality": 66.95,
     "value": 46.19,
     "growth": 70.76,
-    "momentum": 23.51,
-    "health": 32.27,
+    "momentum": 20.62,
+    "health": 32.19,
     "profitability": 25.14,
-    "technical": 57.02,
-    "risk": 53.88,
+    "technical": 56.82,
+    "risk": 53.78,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 11.32,
     "eps_diluted": 11.27,
     "shares_outstanding": 194561060.0,
-    "market_cap": 51510040635.0,
-    "pe_ratio_ttm": 20.181559701089043,
+    "market_cap": 51644288241.40259,
+    "pe_ratio_ttm": 20.234157719843104,
     "goodwill": 16452669000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 320.83232123673906,
+        "value": 319.11378273265683,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 51.6366321706845,
+        "value": 51.28023504328587,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 279.83852493865953,
+        "value": 279.8436793929157,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 212.74409878055837,
-    "max": 320.83232123673906,
-    "low": 51.6366321706845,
-    "high": 320.83232123673906,
-    "mos_pct": -24.445284977368402,
+    "median": 212.74667600768646,
+    "max": 319.11378273265683,
+    "low": 51.28023504328587,
+    "high": 319.11378273265683,
+    "mos_pct": -24.76810797824921,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ],
@@ -94,7 +94,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-06"
   },
@@ -117,22 +117,22 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 52.97,
-      "Value": 51.13,
+      "Value": 50.85,
       "Growth": 49.58,
-      "Momentum": 40.09,
-      "Health": 59.88,
+      "Momentum": 38.6,
+      "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 57.02,
-      "Risk": 41.14
+      "Technical": 56.82,
+      "Risk": 41.47
     }
   },
   "beneish_m_score": -2.4659328921685906,
   "dechow_f_score": 0.6318843133255636,
-  "recommendation": "lean_bullish",
-  "loss_chance_pct": 52.4274825610854,
-  "price_change_1d_pct": -0.5335,
+  "recommendation": "neutral",
+  "loss_chance_pct": 52.731830173146676,
+  "price_change_1d_pct": 0.2606,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 48.26,
+  "composite_score_adjusted": 47.87,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -141,9 +141,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -176,7 +178,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.05,
+  "osap_blended_score": 50.86,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

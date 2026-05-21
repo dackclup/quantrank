@@ -3,19 +3,19 @@
   "name": "Loews Corporation",
   "sector": "Financials",
   "industry": "Multi-line Insurance",
-  "market_cap": 22383537753.757294,
-  "current_price": 108.78,
-  "rank": 235,
-  "composite_score": 51.39,
+  "market_cap": 22465845616.935677,
+  "current_price": 109.18,
+  "rank": 230,
+  "composite_score": 51.53,
   "pillar_scores": {
     "quality": 36.0,
     "value": 59.33,
     "growth": 46.67,
-    "momentum": 64.59,
+    "momentum": 66.48,
     "health": 52.11,
     "profitability": 41.56,
-    "technical": 64.64,
-    "risk": 85.19,
+    "technical": 62.35,
+    "risk": 85.69,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.63,
     "eps_diluted": 1.63,
     "shares_outstanding": 205768873.0,
-    "market_cap": 22383537753.757294,
-    "pe_ratio_ttm": 12.908614621544,
+    "market_cap": 22465845616.935677,
+    "pe_ratio_ttm": 12.956081670666482,
     "goodwill": 348000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 116.82721176169035,
+        "value": 117.52186667338503,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 184.75685553468696,
+        "value": 184.9468641926273,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 117.59803231245509,
-    "max": 184.75685553468696,
-    "low": 116.82721176169035,
-    "high": 184.75685553468696,
-    "mos_pct": 7.498453298715846,
+    "max": 184.9468641926273,
+    "low": 117.52186667338503,
+    "high": 184.9468641926273,
+    "mos_pct": 7.158310255492034,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -104,7 +104,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 17,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-04"
   },
@@ -127,20 +127,20 @@
       "Quality": 50.67,
       "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 53.29,
+      "Momentum": 54.28,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 51.94,
-      "Risk": 54.88
+      "Technical": 51.25,
+      "Risk": 54.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 38.67931237245256,
-  "price_change_1d_pct": 0.853,
+  "loss_chance_pct": 38.72801881208288,
+  "price_change_1d_pct": 0.3677,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 51.39,
+  "composite_score_adjusted": 51.53,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -149,9 +149,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -184,7 +186,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.62,
+  "osap_blended_score": 51.69,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

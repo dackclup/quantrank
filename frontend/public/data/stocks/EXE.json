@@ -3,19 +3,19 @@
   "name": "Expand Energy",
   "sector": "Energy",
   "industry": "Oil & Gas Exploration & Production",
-  "market_cap": 23647771358.615746,
-  "current_price": 98.85,
-  "rank": 48,
-  "composite_score": 62.52,
+  "market_cap": 23346342497.82779,
+  "current_price": 97.59,
+  "rank": 50,
+  "composite_score": 62.21,
   "pillar_scores": {
     "quality": 63.1,
-    "value": 90.08,
+    "value": 90.87,
     "growth": 57.14,
-    "momentum": 17.83,
-    "health": 68.57,
+    "momentum": 17.33,
+    "health": 68.61,
     "profitability": 66.67,
-    "technical": 50.85,
-    "risk": 52.26,
+    "technical": 43.23,
+    "risk": 51.06,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 4.83,
     "eps_diluted": 4.81,
     "shares_outstanding": 239228849.0,
-    "market_cap": 23647771358.615746,
-    "pe_ratio_ttm": 7.328097725012626,
+    "market_cap": 23346342497.82779,
+    "pe_ratio_ttm": 7.234689339271084,
     "goodwill": 15000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 181.16961827587576,
+        "value": 177.6227468011278,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 167.68312246396374,
+        "value": 163.2698676717557,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 365.2295388317641,
+        "value": 359.6939778645518,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 167.68312246396374,
-    "max": 365.2295388317641,
+    "median": 163.2698676717557,
+    "max": 359.6939778645518,
     "low": 52.92005825341249,
-    "high": 365.2295388317641,
-    "mos_pct": 41.049524232610445,
+    "high": 359.6939778645518,
+    "mos_pct": 40.22779724787339,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -95,7 +95,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 22,
+    "filing_lag_days": 23,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-28"
   },
@@ -116,22 +116,22 @@
     "label": "Energy median (n=21)",
     "values": {
       "Quality": 50.0,
-      "Value": 51.59,
+      "Value": 48.41,
       "Growth": 55.95,
-      "Momentum": 73.11,
+      "Momentum": 74.65,
       "Health": 55.14,
       "Profitability": 54.76,
-      "Technical": 56.52,
-      "Risk": 67.1
+      "Technical": 54.33,
+      "Risk": 66.5
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 21.374805107089482,
-  "price_change_1d_pct": -2.022,
+  "loss_chance_pct": 21.81515570997169,
+  "price_change_1d_pct": -1.2747,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 62.52,
+  "composite_score_adjusted": 62.21,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -140,9 +140,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -175,7 +177,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 57.18,
+  "osap_blended_score": 57.03,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5

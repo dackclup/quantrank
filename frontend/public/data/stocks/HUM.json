@@ -3,19 +3,19 @@
   "name": "Humana",
   "sector": "Health Care",
   "industry": "Managed Health Care",
-  "market_cap": 36510702882.79724,
-  "current_price": 304.1,
-  "rank": 232,
-  "composite_score": 51.47,
+  "market_cap": 36460275440.64331,
+  "current_price": 303.68,
+  "rank": 222,
+  "composite_score": 51.89,
   "pillar_scores": {
     "quality": 36.86,
-    "value": 76.27,
+    "value": 76.55,
     "growth": 27.12,
-    "momentum": 53.39,
+    "momentum": 57.02,
     "health": 68.29,
     "profitability": 40.4,
-    "technical": 70.59,
-    "risk": 32.6,
+    "technical": 69.45,
+    "risk": 31.67,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 9.85,
     "eps_diluted": 9.83,
     "shares_outstanding": 120061500.0,
-    "market_cap": 36510702882.79724,
-    "pe_ratio_ttm": 31.887076753534707,
+    "market_cap": 36460275440.64331,
+    "pe_ratio_ttm": 31.843035319339133,
     "goodwill": 10489000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 233.0325251379868,
+        "value": 231.4241297206579,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 458.1571989286091,
+        "value": 466.00634570024204,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 455.75987131914343,
+        "value": 455.76683710573013,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 262.7065000060522,
-    "max": 458.1571989286091,
+    "max": 466.00634570024204,
     "low": 131.0383191720675,
-    "high": 458.1571989286091,
-    "mos_pct": -15.756559543258286,
+    "high": 466.00634570024204,
+    "mos_pct": -15.596680199684867,
     "valuation_warnings": [
       "goodwill_heavy",
       "value_trap_risk"
@@ -98,7 +98,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 21,
+    "filing_lag_days": 22,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-29"
   },
@@ -120,22 +120,22 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 52.97,
-      "Value": 51.13,
+      "Value": 50.85,
       "Growth": 49.58,
-      "Momentum": 40.09,
-      "Health": 59.88,
+      "Momentum": 38.6,
+      "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 57.02,
-      "Risk": 41.14
+      "Technical": 56.82,
+      "Risk": 41.47
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 47.78104088819676,
-  "price_change_1d_pct": -2.077,
+  "loss_chance_pct": 47.51215305852274,
+  "price_change_1d_pct": -0.1381,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 51.47,
+  "composite_score_adjusted": 51.89,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,9 +144,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -179,7 +181,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.66,
+  "osap_blended_score": 51.87,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5

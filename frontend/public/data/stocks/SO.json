@@ -3,19 +3,19 @@
   "name": "Southern Company",
   "sector": "Utilities",
   "industry": "Electric Utilities",
-  "market_cap": 105537931890.98494,
-  "current_price": 93.62,
-  "rank": 256,
-  "composite_score": 50.64,
+  "market_cap": 106236853067.34505,
+  "current_price": 94.24,
+  "rank": 269,
+  "composite_score": 50.11,
   "pillar_scores": {
     "quality": 64.52,
     "value": 41.4,
     "growth": 40.32,
-    "momentum": 54.73,
+    "momentum": 53.19,
     "health": 25.22,
     "profitability": 56.45,
-    "technical": 54.43,
-    "risk": 78.25,
+    "technical": 48.01,
+    "risk": 77.62,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.21,
     "eps_diluted": 1.2,
     "shares_outstanding": 1127301098.0,
-    "market_cap": 105537931890.98494,
-    "pe_ratio_ttm": 22.913141965042325,
+    "market_cap": 106236853067.34505,
+    "pe_ratio_ttm": 23.0648834275608,
     "goodwill": 5161000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 78.31534739637281,
+        "value": 78.58558788476603,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 68.3955412938988,
+        "value": 68.64156701022952,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 58.40689633072709,
-    "max": 78.31534739637281,
+    "median": 58.529909188892454,
+    "max": 78.58558788476603,
     "low": 30.5367950692587,
-    "high": 78.31534739637281,
-    "mos_pct": -60.28929566204289,
+    "high": 78.58558788476603,
+    "mos_pct": -61.01169328595846,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -99,7 +99,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 20,
+    "filing_lag_days": 21,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
@@ -120,22 +120,22 @@
     "label": "Utilities median (n=31)",
     "values": {
       "Quality": 51.61,
-      "Value": 48.39,
+      "Value": 47.85,
       "Growth": 54.03,
-      "Momentum": 56.03,
+      "Momentum": 55.18,
       "Health": 17.85,
       "Profitability": 52.15,
-      "Technical": 47.71,
-      "Risk": 70.75
+      "Technical": 48.85,
+      "Risk": 72.31
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 71.67778884462152,
-  "price_change_1d_pct": -0.5524,
+  "loss_chance_pct": 71.94671314741036,
+  "price_change_1d_pct": 0.6622,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 50.64,
+  "composite_score_adjusted": 50.11,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,9 +144,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -179,7 +181,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.25,
+  "osap_blended_score": 50.98,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

@@ -3,19 +3,19 @@
   "name": "PNC Financial Services",
   "sector": "Financials",
   "industry": "Diversified Banks",
-  "market_cap": 87071259891.8468,
-  "current_price": 216.83,
-  "rank": 312,
-  "composite_score": 47.5,
+  "market_cap": 87689666729.0752,
+  "current_price": 218.37,
+  "rank": 309,
+  "composite_score": 47.69,
   "pillar_scores": {
     "quality": 40.67,
     "value": 52.0,
     "growth": 30.33,
-    "momentum": 64.79,
+    "momentum": 67.03,
     "health": 46.06,
     "profitability": 52.22,
-    "technical": 48.31,
-    "risk": 64.97,
+    "technical": 46.56,
+    "risk": 64.91,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 4.13,
     "eps_diluted": 4.13,
     "shares_outstanding": 401564632.0,
-    "market_cap": 87071259891.8468,
-    "pe_ratio_ttm": 11.976789531203137,
+    "market_cap": 87689666729.0752,
+    "pe_ratio_ttm": 12.061852369886548,
     "goodwill": 13282000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 250.9883441146152,
+        "value": 252.4807214759185,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 322.0562553901528,
+        "value": 322.38746624937033,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 225.8691064679366,
-    "max": 322.0562553901528,
+    "median": 226.61529514858827,
+    "max": 322.38746624937033,
     "low": 126.48177924499703,
-    "high": 322.0562553901528,
-    "mos_pct": 4.001921634274082,
+    "high": 322.38746624937033,
+    "mos_pct": 3.6384569832298626,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -103,7 +103,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 16,
     "latest_period_end": "2026-04-14",
     "latest_filed_date": "2026-05-05"
   },
@@ -124,20 +124,20 @@
       "Quality": 50.67,
       "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 53.29,
+      "Momentum": 54.28,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 51.94,
-      "Risk": 54.88
+      "Technical": 51.25,
+      "Risk": 54.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 39.85174553336042,
-  "price_change_1d_pct": 1.6692,
+  "loss_chance_pct": 39.88371413732152,
+  "price_change_1d_pct": 0.7102,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 47.5,
+  "composite_score_adjusted": 47.69,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -146,9 +146,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -181,7 +183,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.67,
+  "osap_blended_score": 49.77,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

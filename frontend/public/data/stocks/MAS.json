@@ -3,19 +3,19 @@
   "name": "Masco",
   "sector": "Industrials",
   "industry": "Building Products",
-  "market_cap": 13451652320.724464,
-  "current_price": 66.68,
-  "rank": 119,
-  "composite_score": 56.8,
+  "market_cap": 13546467752.372322,
+  "current_price": 67.15,
+  "rank": 118,
+  "composite_score": 57.2,
   "pillar_scores": {
     "quality": 48.1,
     "value": 82.7,
     "growth": 38.29,
-    "momentum": 38.15,
+    "momentum": 40.09,
     "health": 71.31,
     "profitability": 74.47,
-    "technical": 41.04,
-    "risk": 41.93,
+    "technical": 43.82,
+    "risk": 42.4,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.05,
     "eps_diluted": 1.05,
     "shares_outstanding": 201734437.0,
-    "market_cap": 13451652320.724464,
-    "pe_ratio_ttm": 6.7494492326766,
+    "market_cap": 13546467752.372322,
+    "pe_ratio_ttm": 6.797023458290176,
     "goodwill": 618000000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 276.1168774641516,
+        "value": 277.4938844073089,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 108.14126400712834,
+        "value": 108.41738357595787,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "insufficient_history_for_roe",
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 192.12907073563997,
-    "max": 276.1168774641516,
-    "low": 108.14126400712834,
-    "high": 276.1168774641516,
-    "mos_pct": 65.294163944131,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "median": 192.95563399163336,
+    "max": 277.4938844073089,
+    "low": 108.41738357595787,
+    "high": 277.4938844073089,
+    "mos_pct": 65.19925324969233,
+    "valuation_warnings": [],
     "valuation_methods_applicable": 2
   },
   "top5_factors": [],
@@ -92,7 +90,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 28,
+    "filing_lag_days": 29,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-22"
   },
@@ -100,7 +98,6 @@
     "sloan_accruals_top_decile"
   ],
   "valuation_warnings": [
-    "value_trap_risk",
     "accruals_momentum_high"
   ],
   "has_history": true,
@@ -116,22 +113,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.16,
+      "Value": 49.37,
       "Growth": 49.37,
-      "Momentum": 50.5,
-      "Health": 52.79,
+      "Momentum": 49.4,
+      "Health": 52.75,
       "Profitability": 47.68,
-      "Technical": 45.57,
-      "Risk": 54.48
+      "Technical": 45.22,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": -2.5377686063309937,
   "dechow_f_score": 0.246818931117035,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 18.74678027231863,
-  "price_change_1d_pct": 3.4279,
+  "loss_chance_pct": 16.580173318161005,
+  "price_change_1d_pct": 0.7049,
   "manipulation_index": 25.0,
-  "composite_score_adjusted": 54.3,
+  "composite_score_adjusted": 54.7,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -140,9 +137,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": true,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -175,7 +174,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.33,
+  "osap_blended_score": 54.53,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2

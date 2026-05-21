@@ -3,19 +3,19 @@
   "name": "Charles Schwab Corporation",
   "sector": "Financials",
   "industry": "Investment Banking & Brokerage",
-  "market_cap": 156713501597.2541,
-  "current_price": 90.11,
-  "rank": 279,
-  "composite_score": 49.64,
+  "market_cap": 157235247556.77444,
+  "current_price": 90.41,
+  "rank": 282,
+  "composite_score": 49.5,
   "pillar_scores": {
     "quality": 56.0,
     "value": 42.22,
     "growth": 56.17,
-    "momentum": 42.93,
+    "momentum": 43.03,
     "health": 48.37,
     "profitability": 54.0,
-    "technical": 43.87,
-    "risk": 52.06,
+    "technical": 40.84,
+    "risk": 51.83,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.37,
     "eps_diluted": 1.37,
     "shares_outstanding": 1739135507.0,
-    "market_cap": 156713501597.2541,
-    "pe_ratio_ttm": 16.632721460120365,
+    "market_cap": 157235247556.77444,
+    "pe_ratio_ttm": 16.688096747694168,
     "goodwill": 12298000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 74.93994445891856,
+        "value": 75.18637987914603,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 56.84283050576716,
+        "value": 57.0184708681245,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 46.42205985011174,
-    "max": 74.93994445891856,
+    "median": 46.50988003129041,
+    "max": 75.18637987914603,
     "low": 20.46295590285276,
-    "high": 74.93994445891856,
-    "mos_pct": -94.11030208762843,
+    "high": 75.18637987914603,
+    "mos_pct": -94.38881287434911,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -101,7 +101,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 12,
+    "filing_lag_days": 13,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-08"
   },
@@ -122,20 +122,20 @@
       "Quality": 50.67,
       "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 53.29,
+      "Momentum": 54.28,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 51.94,
-      "Risk": 54.88
+      "Technical": 51.25,
+      "Risk": 54.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 60.17778054448871,
-  "price_change_1d_pct": -1.8516,
+  "loss_chance_pct": 60.25185922974768,
+  "price_change_1d_pct": 0.3329,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 49.64,
+  "composite_score_adjusted": 49.5,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,9 +144,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -179,7 +181,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.75,
+  "osap_blended_score": 50.67,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

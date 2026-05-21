@@ -3,19 +3,19 @@
   "name": "Ameriprise Financial",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 41107238613.04114,
-  "current_price": 457.27,
+  "market_cap": 40504929796.30591,
+  "current_price": 450.57,
   "rank": 123,
-  "composite_score": 56.6,
+  "composite_score": 56.82,
   "pillar_scores": {
     "quality": 71.33,
-    "value": 56.44,
+    "value": 56.89,
     "growth": 69.0,
-    "momentum": 35.01,
+    "momentum": 38.25,
     "health": 51.75,
     "profitability": 48.44,
-    "technical": 26.29,
-    "risk": 47.01,
+    "technical": 21.39,
+    "risk": 45.98,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 9.81,
     "eps_diluted": 9.68,
     "shares_outstanding": 89897084.0,
-    "market_cap": 41107238613.04114,
-    "pe_ratio_ttm": 10.553848167661396,
+    "market_cap": 40504929796.30591,
+    "pe_ratio_ttm": 10.399211757716536,
     "goodwill": 1440000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 703.4368290150176,
+        "value": 695.7711680101261,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 163.40038204430954,
+        "value": 164.5326394221858,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -76,10 +76,10 @@
       }
     },
     "median": 241.96154503387845,
-    "max": 703.4368290150176,
-    "low": 163.40038204430954,
-    "high": 703.4368290150176,
-    "mos_pct": -88.98457147380458,
+    "max": 695.7711680101261,
+    "low": 164.5326394221858,
+    "high": 695.7711680101261,
+    "mos_pct": -86.21554398701323,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -101,7 +101,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 13,
+    "filing_lag_days": 14,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-05-07"
   },
@@ -124,20 +124,20 @@
       "Quality": 50.67,
       "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 53.29,
+      "Momentum": 54.28,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 51.94,
-      "Risk": 54.88
+      "Technical": 51.25,
+      "Risk": 54.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 56.70066124391324,
-  "price_change_1d_pct": -1.3994,
+  "loss_chance_pct": 56.59027777777777,
+  "price_change_1d_pct": -1.4652,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 56.1,
+  "composite_score_adjusted": 56.32,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -146,9 +146,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": true,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -181,7 +183,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.23,
+  "osap_blended_score": 54.34,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

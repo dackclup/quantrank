@@ -3,19 +3,19 @@
   "name": "Stryker Corporation",
   "sector": "Health Care",
   "industry": "Health Care Equipment",
-  "market_cap": 123246647631.62256,
-  "current_price": 321.49,
-  "rank": 129,
-  "composite_score": 56.35,
+  "market_cap": 120183598887.0,
+  "current_price": 313.5,
+  "rank": 125,
+  "composite_score": 56.63,
   "pillar_scores": {
     "quality": 80.93,
-    "value": 22.6,
+    "value": 24.01,
     "growth": 77.97,
-    "momentum": 21.31,
+    "momentum": 17.88,
     "health": 73.23,
     "profitability": 60.45,
-    "technical": 74.55,
-    "risk": 47.14,
+    "technical": 82.79,
+    "risk": 46.71,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.95,
     "eps_diluted": 1.93,
     "shares_outstanding": 383360762.0,
-    "market_cap": 123246647631.62256,
-    "pe_ratio_ttm": 36.93336758514311,
+    "market_cap": 120183598887.0,
+    "pe_ratio_ttm": 36.0154626571771,
     "goodwill": 19188000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 235.30294811917304,
+        "value": 235.39925409361223,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 90.58638374209326,
+        "value": 92.1383092016645,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 309.622280468668,
+        "value": 307.6323355155275,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 171.3146353928616,
-    "max": 309.622280468668,
-    "low": 90.58638374209326,
-    "high": 309.622280468668,
-    "mos_pct": -87.66055188287257,
+    "median": 171.36278838008118,
+    "max": 307.6323355155275,
+    "low": 92.1383092016645,
+    "high": 307.6323355155275,
+    "mos_pct": -82.94520237652746,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -90,7 +90,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 9,
+    "filing_lag_days": 10,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-11"
   },
@@ -109,22 +109,22 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 52.97,
-      "Value": 51.13,
+      "Value": 50.85,
       "Growth": 49.58,
-      "Momentum": 40.09,
-      "Health": 59.88,
+      "Momentum": 38.6,
+      "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 57.02,
-      "Risk": 41.14
+      "Technical": 56.82,
+      "Risk": 41.47
     }
   },
   "beneish_m_score": -2.522911717909262,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 56.82615864226709,
-  "price_change_1d_pct": 1.177,
+  "loss_chance_pct": 56.68406810610665,
+  "price_change_1d_pct": -2.4853,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 56.35,
+  "composite_score_adjusted": 56.63,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -133,9 +133,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -168,7 +170,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.1,
+  "osap_blended_score": 54.24,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

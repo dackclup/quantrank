@@ -3,19 +3,19 @@
   "name": "Progressive Corporation",
   "sector": "Financials",
   "industry": "Property & Casualty Insurance",
-  "market_cap": 118386571172.90674,
-  "current_price": 202.6,
-  "rank": 64,
-  "composite_score": 60.98,
+  "market_cap": 116265426955.38135,
+  "current_price": 198.97,
+  "rank": 65,
+  "composite_score": 61.08,
   "pillar_scores": {
     "quality": 69.33,
-    "value": 62.22,
+    "value": 62.67,
     "growth": 82.83,
-    "momentum": 28.24,
+    "momentum": 31.77,
     "health": 57.61,
     "profitability": 52.0,
-    "technical": 58.91,
-    "risk": 55.25,
+    "technical": 50.65,
+    "risk": 54.38,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 4.81,
     "eps_diluted": 4.8,
     "shares_outstanding": 584336464.0,
-    "market_cap": 118386571172.90674,
-    "pe_ratio_ttm": 10.24193885049803,
+    "market_cap": 116265426955.38135,
+    "pe_ratio_ttm": 10.058432992073826,
     "goodwill": 228000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 274.24067750509045,
+        "value": 275.87131330254476,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 110.09306444734871,
+        "value": 110.43324430047197,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 126.33447056664733,
-    "max": 274.24067750509045,
-    "low": 110.09306444734871,
-    "high": 274.24067750509045,
-    "mos_pct": -60.36795436336172,
+    "max": 275.87131330254476,
+    "low": 110.43324430047197,
+    "high": 275.87131330254476,
+    "mos_pct": -57.49462544012259,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -100,7 +100,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 17,
     "latest_period_end": "2026-04-02",
     "latest_filed_date": "2026-05-04"
   },
@@ -121,20 +121,20 @@
       "Quality": 50.67,
       "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 53.29,
+      "Momentum": 54.28,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 51.94,
-      "Risk": 54.88
+      "Technical": 51.25,
+      "Risk": 54.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 54.51057436918991,
-  "price_change_1d_pct": -0.1331,
+  "loss_chance_pct": 54.462441899070384,
+  "price_change_1d_pct": -1.7917,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 60.98,
+  "composite_score_adjusted": 61.08,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -143,9 +143,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -178,7 +180,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 56.42,
+  "osap_blended_score": 56.46,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

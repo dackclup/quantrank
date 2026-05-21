@@ -3,19 +3,19 @@
   "name": "Dover Corporation",
   "sector": "Industrials",
   "industry": "Industrial Machinery & Supplies & Components",
-  "market_cap": 28410864550.38437,
-  "current_price": 210.98,
-  "rank": 375,
-  "composite_score": 44.27,
+  "market_cap": 27978602562.11563,
+  "current_price": 207.77,
+  "rank": 377,
+  "composite_score": 43.95,
   "pillar_scores": {
     "quality": 26.58,
-    "value": 49.16,
+    "value": 50.0,
     "growth": 37.34,
-    "momentum": 58.42,
+    "momentum": 57.12,
     "health": 75.66,
     "profitability": 47.68,
-    "technical": 23.46,
-    "risk": 58.86,
+    "technical": 17.38,
+    "risk": 57.77,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.77,
     "eps_diluted": 1.75,
     "shares_outstanding": 134661414.0,
-    "market_cap": 28410864550.38437,
-    "pe_ratio_ttm": 25.791294364382747,
+    "market_cap": 27978602562.11563,
+    "pe_ratio_ttm": 25.398888277542227,
     "goodwill": 5401395000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 219.98565422739685,
+        "value": 226.63680324921276,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 193.66035626601789,
+        "value": 192.10724577001784,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 209.3983360639242,
+        "value": 208.2847669510352,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 129.95662062645675,
-    "max": 219.98565422739685,
+    "median": 129.18006537845673,
+    "max": 226.63680324921276,
     "low": 5.380051646344954,
-    "high": 219.98565422739685,
-    "mos_pct": -62.34647739415552,
+    "high": 226.63680324921276,
+    "mos_pct": -60.837512865286556,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -94,7 +94,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 27,
+    "filing_lag_days": 28,
     "latest_period_end": "2026-04-17",
     "latest_filed_date": "2026-04-23"
   },
@@ -117,22 +117,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.16,
+      "Value": 49.37,
       "Growth": 49.37,
-      "Momentum": 50.5,
-      "Health": 52.79,
+      "Momentum": 49.4,
+      "Health": 52.75,
       "Profitability": 47.68,
-      "Technical": 45.57,
-      "Risk": 54.48
+      "Technical": 45.22,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": -2.5087709144976595,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 65.86702977121053,
-  "price_change_1d_pct": 1.6526,
+  "loss_chance_pct": 66.02545461613462,
+  "price_change_1d_pct": -1.5215,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 44.27,
+  "composite_score_adjusted": 43.95,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -141,9 +141,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -176,7 +178,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.06,
+  "osap_blended_score": 47.9,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

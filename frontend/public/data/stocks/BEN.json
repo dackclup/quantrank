@@ -3,19 +3,19 @@
   "name": "Franklin Resources",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 16212679850.851692,
-  "current_price": 31.2,
-  "rank": 273,
-  "composite_score": 49.93,
+  "market_cap": 16036003136.481354,
+  "current_price": 30.86,
+  "rank": 283,
+  "composite_score": 49.49,
   "pillar_scores": {
     "quality": 34.67,
-    "value": 64.22,
+    "value": 65.11,
     "growth": 7.33,
-    "momentum": 77.09,
+    "momentum": 73.36,
     "health": 77.21,
     "profitability": 37.11,
-    "technical": 66.19,
-    "risk": 54.52,
+    "technical": 62.85,
+    "risk": 54.25,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.95,
     "eps_diluted": 0.95,
     "shares_outstanding": 519637162.0,
-    "market_cap": 16212679850.851692,
-    "pe_ratio_ttm": 16.235409424045358,
+    "market_cap": 16036003136.481354,
+    "pe_ratio_ttm": 16.05848501550306,
     "goodwill": 6295600000.0
   },
   "fair_price": {
@@ -51,7 +51,7 @@
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 64.8043623910419,
+        "value": 65.09287425259072,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -76,10 +76,10 @@
       }
     },
     "median": 30.198372931805032,
-    "max": 64.8043623910419,
+    "max": 65.09287425259072,
     "low": 9.33996089243682,
-    "high": 64.8043623910419,
-    "mos_pct": -3.316827146271523,
+    "high": 65.09287425259072,
+    "mos_pct": -2.1909381675649873,
     "valuation_warnings": [
       "goodwill_heavy",
       "value_trap_risk"
@@ -98,7 +98,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 22,
+    "filing_lag_days": 23,
     "latest_period_end": "2026-04-22",
     "latest_filed_date": "2026-04-28"
   },
@@ -122,20 +122,20 @@
       "Quality": 50.67,
       "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 53.29,
+      "Momentum": 54.28,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 51.94,
-      "Risk": 54.88
+      "Technical": 51.25,
+      "Risk": 54.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 44.195589589729785,
-  "price_change_1d_pct": 1.3316,
+  "loss_chance_pct": 44.02336609658489,
+  "price_change_1d_pct": -1.0897,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 49.93,
+  "composite_score_adjusted": 49.49,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,9 +144,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -179,7 +181,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.89,
+  "osap_blended_score": 50.67,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

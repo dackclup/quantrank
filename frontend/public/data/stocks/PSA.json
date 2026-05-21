@@ -3,19 +3,19 @@
   "name": "Public Storage",
   "sector": "Real Estate",
   "industry": "Self-Storage REITs",
-  "market_cap": 53167539839.60303,
-  "current_price": 302.87,
-  "rank": 187,
-  "composite_score": 53.5,
+  "market_cap": 53539695968.206055,
+  "current_price": 304.99,
+  "rank": 189,
+  "composite_score": 53.35,
   "pillar_scores": {
     "quality": 79.03,
     "value": 26.34,
     "growth": 48.39,
-    "momentum": 67.33,
+    "momentum": 67.58,
     "health": 25.3,
     "profitability": 65.05,
-    "technical": 55.83,
-    "risk": 52.92,
+    "technical": 51.49,
+    "risk": 53.88,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.72,
     "eps_diluted": 2.71,
     "shares_outstanding": 175545748.0,
-    "market_cap": 53167539839.60303,
-    "pe_ratio_ttm": 27.754800460845505,
+    "market_cap": 53539695968.206055,
+    "pe_ratio_ttm": 27.949075372207194,
     "goodwill": 165843000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 320.2693539339065,
+        "value": 318.8370199133583,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 127.38221481367569,
+        "value": 126.87963454711401,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 215.96363226697338,
+        "value": 216.3453493874177,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 127.38221481367569,
-    "max": 320.2693539339065,
+    "median": 126.87963454711401,
+    "max": 318.8370199133583,
     "low": 81.75265598562,
-    "high": 320.2693539339065,
-    "mos_pct": -137.7647425586068,
+    "high": 318.8370199133583,
+    "mos_pct": -140.37741858495312,
     "valuation_warnings": [],
     "valuation_methods_applicable": 5
   },
@@ -101,7 +101,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 23,
+    "filing_lag_days": 24,
     "latest_period_end": "2026-04-20",
     "latest_filed_date": "2026-04-27"
   },
@@ -120,22 +120,22 @@
     "label": "Real Estate median (n=31)",
     "values": {
       "Quality": 50.81,
-      "Value": 47.31,
+      "Value": 46.77,
       "Growth": 48.79,
-      "Momentum": 57.32,
+      "Momentum": 53.24,
       "Health": 26.22,
       "Profitability": 52.15,
-      "Technical": 55.83,
-      "Risk": 52.92
+      "Technical": 51.49,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 58.25117540590327,
-  "price_change_1d_pct": 1.8153,
+  "loss_chance_pct": 58.3258766011224,
+  "price_change_1d_pct": 0.7,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 53.5,
+  "composite_score_adjusted": 53.35,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,9 +144,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -179,7 +181,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.67,
+  "osap_blended_score": 52.6,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5

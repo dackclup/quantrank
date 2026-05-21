@@ -3,18 +3,18 @@
   "name": "Huntington Bancshares",
   "sector": "Financials",
   "industry": "Regional Banks",
-  "market_cap": 32069205267.70884,
-  "current_price": 15.82,
-  "rank": 462,
-  "composite_score": 37.51,
+  "market_cap": 32130020577.238953,
+  "current_price": 15.85,
+  "rank": 458,
+  "composite_score": 37.67,
   "pillar_scores": {
     "quality": 32.67,
-    "value": 40.22,
+    "value": 40.67,
     "growth": 14.0,
-    "momentum": 45.42,
+    "momentum": 46.17,
     "health": 48.57,
     "profitability": 52.22,
-    "technical": 42.58,
+    "technical": 41.98,
     "risk": 47.97,
     "sentiment": null,
     "ml": null
@@ -32,8 +32,8 @@
     "eps_basic": 0.26,
     "eps_diluted": 0.25,
     "shares_outstanding": 2027130587.0,
-    "market_cap": 32069205267.70884,
-    "pe_ratio_ttm": 14.41312596301521,
+    "market_cap": 32130020577.238953,
+    "pe_ratio_ttm": 14.440458686399529,
     "goodwill": 9527000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 15.182803718431463,
+        "value": 15.232731439109639,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 32.6223191123734,
+        "value": 32.65586873658357,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 17.410696657317295,
-    "max": 32.6223191123734,
-    "low": 15.182803718431463,
-    "high": 32.6223191123734,
-    "mos_pct": 9.136320009484198,
+    "max": 32.65586873658357,
+    "low": 15.232731439109639,
+    "high": 32.65586873658357,
+    "mos_pct": 8.96400819890022,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -102,7 +102,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 20,
+    "filing_lag_days": 21,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
@@ -128,20 +128,20 @@
       "Quality": 50.67,
       "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 53.29,
+      "Momentum": 54.28,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 51.94,
-      "Risk": 54.88
+      "Technical": 51.25,
+      "Risk": 54.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 63.0477256903503,
-  "price_change_1d_pct": 2.3286,
+  "loss_chance_pct": 63.026286816086554,
+  "price_change_1d_pct": 0.1896,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 37.51,
+  "composite_score_adjusted": 37.67,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -150,9 +150,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -185,7 +187,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 44.68,
+  "osap_blended_score": 44.76,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

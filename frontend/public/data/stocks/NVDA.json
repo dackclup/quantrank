@@ -3,19 +3,19 @@
   "name": "Nvidia",
   "sector": "Information Technology",
   "industry": "Semiconductors",
-  "market_cap": 5407974029541.016,
-  "current_price": 223.47,
+  "market_cap": 5312141867065.43,
+  "current_price": 219.51,
   "rank": 2,
-  "composite_score": 72.59,
+  "composite_score": 72.64,
   "pillar_scores": {
     "quality": 91.1,
-    "value": 31.74,
+    "value": 32.65,
     "growth": 84.08,
-    "momentum": 74.7,
+    "momentum": 73.36,
     "health": 95.42,
     "profitability": 91.78,
-    "technical": 65.39,
-    "risk": 53.42,
+    "technical": 65.84,
+    "risk": 53.15,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.4,
     "eps_diluted": 2.39,
     "shares_outstanding": 24200000000.0,
-    "market_cap": 5407974029541.016,
-    "pe_ratio_ttm": 33.8817892624098,
+    "market_cap": 5312141867065.43,
+    "pe_ratio_ttm": 33.28138602159868,
     "goodwill": 20894000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 340.98550362581994,
+        "value": 353.1236675169355,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 62.642565761256506,
+        "value": 62.01966965222249,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 231.9978731713986,
+        "value": 227.2686531561807,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -76,10 +76,10 @@
       }
     },
     "median": 81.18427732367186,
-    "max": 340.98550362581994,
+    "max": 353.1236675169355,
     "low": 32.412139025345844,
-    "high": 340.98550362581994,
-    "mos_pct": -175.26265994800366,
+    "high": 353.1236675169355,
+    "mos_pct": -170.38485990541767,
     "valuation_warnings": [
       "extreme_graham_estimate"
     ],
@@ -90,7 +90,7 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 0,
+    "filing_lag_days": 1,
     "latest_period_end": "2026-05-15",
     "latest_filed_date": "2026-05-20"
   },
@@ -115,23 +115,23 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 49.32,
-      "Value": 48.17,
-      "Growth": 52.23,
-      "Momentum": 59.76,
+      "Quality": 49.66,
+      "Value": 48.86,
+      "Growth": 53.42,
+      "Momentum": 61.8,
       "Health": 69.52,
-      "Profitability": 47.26,
-      "Technical": 61.01,
-      "Risk": 46.85
+      "Profitability": 48.86,
+      "Technical": 59.76,
+      "Risk": 47.31
     }
   },
   "beneish_m_score": -0.7352680804348426,
   "dechow_f_score": 1.1816989697288243,
   "recommendation": "neutral",
-  "loss_chance_pct": 55.705179282868535,
-  "price_change_1d_pct": 1.2964,
+  "loss_chance_pct": 55.68025330186105,
+  "price_change_1d_pct": -1.7721,
   "manipulation_index": 48.0,
-  "composite_score_adjusted": 67.79,
+  "composite_score_adjusted": 67.84,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": true,
@@ -140,9 +140,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": true,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": true,
     "dechow_high": false
   },
@@ -175,7 +177,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 62.22,
+  "osap_blended_score": 62.25,
   "entered_top5": false,
   "exited_top5": true,
   "valuation_methods_applicable": 4

@@ -3,19 +3,19 @@
   "name": "3M",
   "sector": "Industrials",
   "industry": "Industrial Conglomerates",
-  "market_cap": 78120343715.90121,
-  "current_price": 149.78,
-  "rank": 144,
-  "composite_score": 55.58,
+  "market_cap": 79069599950.99393,
+  "current_price": 151.6,
+  "rank": 149,
+  "composite_score": 55.11,
   "pillar_scores": {
     "quality": 87.03,
-    "value": 49.37,
+    "value": 47.47,
     "growth": 29.43,
-    "momentum": 28.98,
+    "momentum": 28.34,
     "health": 52.27,
     "profitability": 60.13,
-    "technical": 50.0,
-    "risk": 46.68,
+    "technical": 50.45,
+    "risk": 47.11,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.23,
     "eps_diluted": 1.23,
     "shares_outstanding": 521567261.0,
-    "market_cap": 78120343715.90121,
-    "pe_ratio_ttm": 27.910090645195147,
+    "market_cap": 79069599950.99393,
+    "pe_ratio_ttm": 28.249231851016052,
     "goodwill": 6384000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 149.93963721280969,
+        "value": 149.3736205077283,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 39.76916410674963,
+        "value": 39.473614752456214,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 179.2433132211997,
+        "value": 179.70100157081615,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 111.2185512596414,
-    "max": 179.2433132211997,
-    "low": 39.76916410674963,
-    "high": 179.2433132211997,
-    "mos_pct": -34.67177650033688,
+    "median": 110.93554290710071,
+    "max": 179.70100157081615,
+    "low": 39.473614752456214,
+    "high": 179.70100157081615,
+    "mos_pct": -36.65593743068263,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -91,7 +91,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 29,
+    "filing_lag_days": 30,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-21"
   },
@@ -110,22 +110,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.16,
+      "Value": 49.37,
       "Growth": 49.37,
-      "Momentum": 50.5,
-      "Health": 52.79,
+      "Momentum": 49.4,
+      "Health": 52.75,
       "Profitability": 47.68,
-      "Technical": 45.57,
-      "Risk": 54.48
+      "Technical": 45.22,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": -2.441553283357582,
   "dechow_f_score": 0.4509840834162085,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 49.34669005894463,
-  "price_change_1d_pct": 0.2812,
+  "loss_chance_pct": 50.27591931814777,
+  "price_change_1d_pct": 1.2151,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 55.58,
+  "composite_score_adjusted": 55.11,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -134,9 +134,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -169,7 +171,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.71,
+  "osap_blended_score": 53.48,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

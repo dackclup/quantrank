@@ -3,19 +3,19 @@
   "name": "Exelon",
   "sector": "Utilities",
   "industry": "Electric Utilities",
-  "market_cap": 45911348238.635796,
-  "current_price": 44.87,
-  "rank": 274,
-  "composite_score": 49.9,
+  "market_cap": 46402487678.40828,
+  "current_price": 45.35,
+  "rank": 258,
+  "composite_score": 50.63,
   "pillar_scores": {
     "quality": 40.32,
     "value": 73.12,
     "growth": 54.84,
-    "momentum": 45.42,
+    "momentum": 47.16,
     "health": 20.16,
     "profitability": 40.32,
-    "technical": 55.03,
-    "risk": 67.63,
+    "technical": 64.49,
+    "risk": 68.76,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.9,
     "eps_diluted": 0.9,
     "shares_outstanding": 1023208142.0,
-    "market_cap": 45911348238.635796,
-    "pe_ratio_ttm": 16.520816206777905,
+    "market_cap": 46402487678.40828,
+    "pe_ratio_ttm": 16.697548642824138,
     "goodwill": 6630000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 55.486060965260855,
+        "value": 55.82838229819125,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 67.71956904247453,
+        "value": 68.28972763118765,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 48.066481918452126,
+        "value": 48.93845243296445,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 55.486060965260855,
-    "max": 67.71956904247453,
-    "low": 48.066481918452126,
-    "high": 67.71956904247453,
-    "mos_pct": 19.132844986099617,
+    "median": 55.82838229819125,
+    "max": 68.28972763118765,
+    "low": 48.93845243296445,
+    "high": 68.28972763118765,
+    "mos_pct": 18.768918948972736,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -97,7 +97,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
@@ -120,22 +120,22 @@
     "label": "Utilities median (n=31)",
     "values": {
       "Quality": 51.61,
-      "Value": 48.39,
+      "Value": 47.85,
       "Growth": 54.03,
-      "Momentum": 56.03,
+      "Momentum": 55.18,
       "Health": 17.85,
       "Profitability": 52.15,
-      "Technical": 47.71,
-      "Risk": 70.75
+      "Technical": 48.85,
+      "Risk": 72.31
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 47.355429617929005,
-  "price_change_1d_pct": 0.5603,
+  "loss_chance_pct": 47.11614536438955,
+  "price_change_1d_pct": 1.0698,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 49.9,
+  "composite_score_adjusted": 50.63,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,9 +144,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -179,7 +181,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.87,
+  "osap_blended_score": 51.24,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

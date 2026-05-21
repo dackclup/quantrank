@@ -3,19 +3,19 @@
   "name": "Kimberly-Clark",
   "sector": "Consumer Staples",
   "industry": "Household Products",
-  "market_cap": 32380782838.351578,
-  "current_price": 97.55,
-  "rank": 166,
-  "composite_score": 54.26,
+  "market_cap": 32772472560.911736,
+  "current_price": 98.73,
+  "rank": 169,
+  "composite_score": 54.15,
   "pillar_scores": {
     "quality": 85.42,
-    "value": 49.54,
+    "value": 50.0,
     "growth": 47.57,
-    "momentum": 17.18,
+    "momentum": 16.78,
     "health": 26.59,
     "profitability": 66.67,
-    "technical": 63.0,
-    "risk": 41.43,
+    "technical": 59.61,
+    "risk": 41.5,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.0,
     "eps_diluted": 2.0,
     "shares_outstanding": 331940357.0,
-    "market_cap": 32380782838.351578,
-    "pe_ratio_ttm": 15.053827446932393,
+    "market_cap": 32772472560.911736,
+    "pe_ratio_ttm": 15.235924017160269,
     "goodwill": 1840000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 157.85089117767475,
+        "value": 158.94347765611073,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 16.961483488144655,
+        "value": 17.09858495337054,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 108.1407289423859,
+        "value": 108.70427016675478,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 108.1407289423859,
-    "max": 157.85089117767475,
-    "low": 16.961483488144655,
-    "high": 157.85089117767475,
-    "mos_pct": 9.793466341687514,
+    "median": 108.70427016675478,
+    "max": 158.94347765611073,
+    "low": 17.09858495337054,
+    "high": 158.94347765611073,
+    "mos_pct": 9.175597972849125,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ],
@@ -94,7 +94,7 @@
       "sga_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 22,
+    "filing_lag_days": 23,
     "latest_period_end": "2026-04-21",
     "latest_filed_date": "2026-04-28"
   },
@@ -115,22 +115,22 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 49.65,
-      "Value": 50.93,
+      "Value": 51.16,
       "Growth": 48.44,
-      "Momentum": 37.77,
+      "Momentum": 36.21,
       "Health": 39.29,
       "Profitability": 53.94,
-      "Technical": 55.27,
-      "Risk": 50.88
+      "Technical": 54.93,
+      "Risk": 50.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.28866899266235363,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 35.44280125030756,
-  "price_change_1d_pct": 1.1195,
+  "loss_chance_pct": 35.71528857913539,
+  "price_change_1d_pct": 1.2096,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 54.26,
+  "composite_score_adjusted": 54.15,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -139,9 +139,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -174,7 +176,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.06,
+  "osap_blended_score": 53.0,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2

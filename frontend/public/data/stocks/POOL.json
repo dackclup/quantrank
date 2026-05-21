@@ -3,19 +3,19 @@
   "name": "Pool Corporation",
   "sector": "Consumer Discretionary",
   "industry": "Distributors",
-  "market_cap": 6626431302.219131,
-  "current_price": 181.83,
-  "rank": 399,
-  "composite_score": 42.62,
+  "market_cap": 6621329304.042175,
+  "current_price": 181.69,
+  "rank": 393,
+  "composite_score": 42.6,
   "pillar_scores": {
     "quality": 47.92,
-    "value": 64.41,
+    "value": 63.72,
     "growth": 16.15,
-    "momentum": 30.73,
+    "momentum": 31.03,
     "health": 43.13,
     "profitability": 36.81,
-    "technical": 36.6,
-    "risk": 17.26,
+    "technical": 38.35,
+    "risk": 17.73,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.46,
     "eps_diluted": 1.45,
     "shares_outstanding": 36443003.0,
-    "market_cap": 6626431302.219131,
-    "pe_ratio_ttm": 16.317722518811518,
+    "market_cap": 6621329304.042175,
+    "pe_ratio_ttm": 16.305158744021433,
     "goodwill": 706996000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 246.3729992053692,
+        "value": 252.0936819589786,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 183.39066881499983,
+        "value": 188.40098950817526,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 195.0522169773474,
+        "value": 197.26667392296426,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 153.33826930453466,
-    "max": 246.3729992053692,
+    "median": 155.8434296511224,
+    "max": 252.0936819589786,
     "low": 11.479616430783208,
-    "high": 246.3729992053692,
-    "mos_pct": -18.58096654914928,
+    "high": 252.0936819589786,
+    "mos_pct": -16.584961488684556,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -96,7 +96,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 22,
+    "filing_lag_days": 23,
     "latest_period_end": "2026-04-23",
     "latest_filed_date": "2026-04-28"
   },
@@ -120,22 +120,22 @@
     "label": "Consumer Discretionary median (n=48)",
     "values": {
       "Quality": 46.35,
-      "Value": 49.83,
-      "Growth": 51.69,
-      "Momentum": 42.26,
-      "Health": 43.72,
+      "Value": 50.17,
+      "Growth": 51.43,
+      "Momentum": 41.36,
+      "Health": 43.75,
       "Profitability": 52.6,
-      "Technical": 43.15,
-      "Risk": 41.87
+      "Technical": 51.39,
+      "Risk": 41.77
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 53.19380213129034,
-  "price_change_1d_pct": 1.8427,
+  "loss_chance_pct": 52.50235922466952,
+  "price_change_1d_pct": -0.077,
   "manipulation_index": 8.0,
-  "composite_score_adjusted": 41.82,
+  "composite_score_adjusted": 41.8,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,9 +144,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": true,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -179,7 +181,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.24,
+  "osap_blended_score": 47.23,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

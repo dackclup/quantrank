@@ -3,19 +3,19 @@
   "name": "McDonald's",
   "sector": "Consumer Discretionary",
   "industry": "Restaurants",
-  "market_cap": 199133469296.0795,
-  "current_price": 280.27,
-  "rank": 450,
-  "composite_score": 38.85,
+  "market_cap": 201911549806.71967,
+  "current_price": 284.18,
+  "rank": 444,
+  "composite_score": 39.53,
   "pillar_scores": {
     "quality": 27.6,
     "value": 28.3,
-    "growth": 51.82,
-    "momentum": 32.22,
-    "health": 56.57,
+    "growth": 51.3,
+    "momentum": 31.92,
+    "health": 56.53,
     "profitability": 68.75,
-    "technical": 46.76,
-    "risk": 55.71,
+    "technical": 61.75,
+    "risk": 56.77,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.79,
     "eps_diluted": 2.78,
     "shares_outstanding": 710505859.0,
-    "market_cap": 199133469296.0795,
-    "pe_ratio_ttm": 22.946931239465258,
+    "market_cap": 201911549806.71967,
+    "pe_ratio_ttm": 23.267060360304182,
     "goodwill": 3349000000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 263.4026207702366,
+        "value": 265.4137206620101,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 215.33451608252423,
+        "value": 222.03679769682623,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "insufficient_history_for_roe",
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 215.33451608252423,
-    "max": 263.4026207702366,
+    "median": 222.03679769682623,
+    "max": 265.4137206620101,
     "low": 74.59405695630709,
-    "high": 263.4026207702366,
-    "mos_pct": -30.15562674878464,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "high": 265.4137206620101,
+    "mos_pct": -27.98779104344977,
+    "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
   "top5_factors": [],
@@ -97,14 +95,12 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 13,
+    "filing_lag_days": 14,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -118,22 +114,22 @@
     "label": "Consumer Discretionary median (n=48)",
     "values": {
       "Quality": 46.35,
-      "Value": 49.83,
-      "Growth": 51.69,
-      "Momentum": 42.26,
-      "Health": 43.72,
+      "Value": 50.17,
+      "Growth": 51.43,
+      "Momentum": 41.36,
+      "Health": 43.75,
       "Profitability": 52.6,
-      "Technical": 43.15,
-      "Risk": 41.87
+      "Technical": 51.39,
+      "Risk": 41.77
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 58.131782505334925,
-  "price_change_1d_pct": -0.1887,
+  "loss_chance_pct": 55.0315881077373,
+  "price_change_1d_pct": 1.3951,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 38.85,
+  "composite_score_adjusted": 39.53,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -142,9 +138,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -177,7 +175,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.35,
+  "osap_blended_score": 45.69,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

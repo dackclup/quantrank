@@ -3,19 +3,19 @@
   "name": "Leidos",
   "sector": "Industrials",
   "industry": "Diversified Support Services",
-  "market_cap": 15646454038.966644,
-  "current_price": 124.39,
-  "rank": 83,
+  "market_cap": 15476643851.800034,
+  "current_price": 123.04,
+  "rank": 84,
   "composite_score": 58.76,
   "pillar_scores": {
     "quality": 54.75,
-    "value": 93.67,
+    "value": 94.3,
     "growth": 70.57,
-    "momentum": 15.79,
+    "momentum": 15.99,
     "health": 63.39,
     "profitability": 36.29,
-    "technical": 31.92,
-    "risk": 43.39,
+    "technical": 29.28,
+    "risk": 42.43,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.6,
     "eps_diluted": 2.56,
     "shares_outstanding": 125785466.0,
-    "market_cap": 15646454038.966644,
-    "pe_ratio_ttm": 10.926294719948773,
+    "market_cap": 15476643851.800034,
+    "pe_ratio_ttm": 10.807712187011196,
     "goodwill": 8094000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 318.1839363030899,
+        "value": 319.77073350836883,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 259.78273078752113,
+        "value": 258.5595922063902,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 325.93468981908,
+        "value": 326.69145335011,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 318.1839363030899,
-    "max": 325.93468981908,
-    "low": 259.78273078752113,
-    "high": 325.93468981908,
-    "mos_pct": 60.90626043699476,
+    "median": 319.77073350836883,
+    "max": 326.69145335011,
+    "low": 258.5595922063902,
+    "high": 326.69145335011,
+    "mos_pct": 61.52243216081962,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
@@ -93,7 +93,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 16,
     "latest_period_end": "2026-04-28",
     "latest_filed_date": "2026-05-05"
   },
@@ -114,20 +114,20 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.16,
+      "Value": 49.37,
       "Growth": 49.37,
-      "Momentum": 50.5,
-      "Health": 52.79,
+      "Momentum": 49.4,
+      "Health": 52.75,
       "Profitability": 47.68,
-      "Technical": 45.57,
-      "Risk": 54.48
+      "Technical": 45.22,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.6244456219808503,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 14.304897496672762,
-  "price_change_1d_pct": -1.2464,
+  "loss_chance_pct": 14.089623507106822,
+  "price_change_1d_pct": -1.0853,
   "manipulation_index": 8.0,
   "composite_score_adjusted": 57.96,
   "manipulation_components": {
@@ -138,9 +138,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": true,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },

@@ -3,19 +3,19 @@
   "name": "Amcor",
   "sector": "Materials",
   "industry": "Paper & Plastic Packaging Products & Materials",
-  "market_cap": 17610747402.648354,
-  "current_price": 38.09,
-  "rank": 411,
-  "composite_score": 41.95,
+  "market_cap": 17800309065.0,
+  "current_price": 38.5,
+  "rank": 406,
+  "composite_score": 42.12,
   "pillar_scores": {
     "quality": 32.69,
-    "value": 73.08,
+    "value": 72.44,
     "growth": 31.73,
-    "momentum": 21.41,
+    "momentum": 21.51,
     "health": 43.55,
     "profitability": 33.33,
-    "technical": 43.87,
-    "risk": 33.03,
+    "technical": 49.6,
+    "risk": 33.57,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.55,
     "eps_diluted": 1.55,
     "shares_outstanding": 462345690.0,
-    "market_cap": 17610747402.648354,
-    "pe_ratio_ttm": 25.97455369122176,
+    "market_cap": 17800309065.0,
+    "pe_ratio_ttm": 26.254143163716815,
     "goodwill": 11955000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 36.388642357548996,
+        "value": 36.70996715021945,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 72.60670982496562,
+        "value": 73.73724869000374,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 80.95279642922044,
+        "value": 81.87499520672507,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 72.60670982496562,
-    "max": 80.95279642922044,
-    "low": 36.388642357548996,
-    "high": 80.95279642922044,
-    "mos_pct": 47.53928356702544,
+    "median": 73.73724869000374,
+    "max": 81.87499520672507,
+    "low": 36.70996715021945,
+    "high": 81.87499520672507,
+    "mos_pct": 47.78758268855875,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
@@ -88,7 +88,7 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 13,
+    "filing_lag_days": 14,
     "latest_period_end": "2026-05-05",
     "latest_filed_date": "2026-05-07"
   },
@@ -109,20 +109,20 @@
       "Quality": 51.68,
       "Value": 50.48,
       "Growth": 48.56,
-      "Momentum": 51.32,
+      "Momentum": 49.88,
       "Health": 56.53,
       "Profitability": 54.33,
-      "Technical": 38.75,
+      "Technical": 39.94,
       "Risk": 46.85
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 27.38811764294982,
-  "price_change_1d_pct": 3.8158,
+  "loss_chance_pct": 27.21396578522775,
+  "price_change_1d_pct": 1.0764,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 41.95,
+  "composite_score_adjusted": 42.12,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -131,9 +131,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -166,7 +168,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 46.9,
+  "osap_blended_score": 46.99,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

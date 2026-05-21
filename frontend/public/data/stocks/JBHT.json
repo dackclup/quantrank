@@ -3,19 +3,19 @@
   "name": "J.B. Hunt",
   "sector": "Industrials",
   "industry": "Cargo Ground Transportation",
-  "market_cap": 24789374945.085327,
-  "current_price": 262.88,
-  "rank": 179,
-  "composite_score": 53.73,
+  "market_cap": 24445183429.691986,
+  "current_price": 259.23,
+  "rank": 184,
+  "composite_score": 53.51,
   "pillar_scores": {
     "quality": 41.77,
-    "value": 45.99,
-    "growth": 41.46,
-    "momentum": 92.01,
+    "value": 46.2,
+    "growth": 41.77,
+    "momentum": 90.29,
     "health": 71.91,
     "profitability": 45.15,
-    "technical": 61.3,
-    "risk": 57.01,
+    "technical": 59.56,
+    "risk": 56.64,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.5,
     "eps_diluted": 1.49,
     "shares_outstanding": 94299203.0,
-    "market_cap": 24789374945.085327,
-    "pe_ratio_ttm": 39.84821441272688,
+    "market_cap": 24445183429.691986,
+    "pe_ratio_ttm": 39.29493635166974,
     "goodwill": 134057000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 184.06360456409885,
+        "value": 183.6242438403109,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 242.29978036545512,
+        "value": 240.49910023448166,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 280.377755529931,
+        "value": 281.04251553361115,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 127.45610287084511,
-    "max": 280.377755529931,
+    "median": 127.23642250895114,
+    "max": 281.04251553361115,
     "low": 47.30623084945158,
-    "high": 280.377755529931,
-    "mos_pct": -106.25140653264462,
+    "high": 281.04251553361115,
+    "mos_pct": -103.73883977136435,
     "valuation_warnings": [
       "extreme_rim_estimate",
       "extreme_dcf_estimate"
@@ -96,7 +96,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 26,
+    "filing_lag_days": 27,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-24"
   },
@@ -118,22 +118,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.16,
+      "Value": 49.37,
       "Growth": 49.37,
-      "Momentum": 50.5,
-      "Health": 52.79,
+      "Momentum": 49.4,
+      "Health": 52.75,
       "Profitability": 47.68,
-      "Technical": 45.57,
-      "Risk": 54.48
+      "Technical": 45.22,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.1743410928635943,
   "recommendation": "neutral",
-  "loss_chance_pct": 60.13291007909291,
-  "price_change_1d_pct": 2.4753,
+  "loss_chance_pct": 60.24720369576546,
+  "price_change_1d_pct": -1.3885,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 53.73,
+  "composite_score_adjusted": 53.51,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -142,9 +142,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -177,7 +179,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.79,
+  "osap_blended_score": 52.68,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

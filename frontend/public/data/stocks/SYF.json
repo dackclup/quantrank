@@ -3,19 +3,19 @@
   "name": "Synchrony Financial",
   "sector": "Financials",
   "industry": "Consumer Finance",
-  "market_cap": 24277344787.093872,
-  "current_price": 72.05,
-  "rank": 110,
-  "composite_score": 57.77,
+  "market_cap": 24260496192.0,
+  "current_price": 72.0,
+  "rank": 111,
+  "composite_score": 57.46,
   "pillar_scores": {
     "quality": 61.33,
     "value": 59.78,
     "growth": 61.33,
-    "momentum": 61.16,
+    "momentum": 59.36,
     "health": 46.49,
     "profitability": 50.67,
-    "technical": 48.06,
-    "risk": 51.2,
+    "technical": 46.91,
+    "risk": 50.56,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.29,
     "eps_diluted": 2.27,
     "shares_outstanding": 336951336.0,
-    "market_cap": 24277344787.093872,
-    "pe_ratio_ttm": 6.743706885303853,
+    "market_cap": 24260496192.0,
+    "pe_ratio_ttm": 6.73902672,
     "goodwill": 1363000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 148.11870818301895,
+        "value": 148.99942241561646,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 99.39320760615422,
+        "value": 99.49542611345115,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 91.8795063856764,
-    "max": 148.11870818301895,
+    "median": 91.93061563932486,
+    "max": 148.99942241561646,
     "low": 62.281083279316675,
-    "high": 148.11870818301895,
-    "mos_pct": 21.582074299225788,
+    "high": 148.99942241561646,
+    "mos_pct": 21.680063274589017,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -105,7 +105,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 27,
+    "filing_lag_days": 28,
     "latest_period_end": "2026-04-17",
     "latest_filed_date": "2026-04-23"
   },
@@ -126,20 +126,20 @@
       "Quality": 50.67,
       "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 53.29,
+      "Momentum": 54.28,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 51.94,
-      "Risk": 54.88
+      "Technical": 51.25,
+      "Risk": 54.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 28.56300706300006,
-  "price_change_1d_pct": 3.8334,
+  "loss_chance_pct": 28.68122586186198,
+  "price_change_1d_pct": -0.0694,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 57.77,
+  "composite_score_adjusted": 57.46,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -148,9 +148,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -183,7 +185,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.81,
+  "osap_blended_score": 54.66,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

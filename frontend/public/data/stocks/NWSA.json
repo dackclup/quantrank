@@ -3,19 +3,19 @@
   "name": "News Corp (Class A)",
   "sector": "Communication Services",
   "industry": "Publishing",
-  "market_cap": 14469855257.034302,
-  "current_price": 25.77,
-  "rank": 281,
-  "composite_score": 49.51,
+  "market_cap": 14744990128.51715,
+  "current_price": 26.26,
+  "rank": 271,
+  "composite_score": 50.02,
   "pillar_scores": {
     "quality": 46.74,
-    "value": 60.87,
+    "value": 60.14,
     "growth": 19.57,
-    "momentum": 48.26,
+    "momentum": 50.25,
     "health": 64.28,
     "profitability": 61.96,
-    "technical": 48.46,
-    "risk": 46.85,
+    "technical": 56.67,
+    "risk": 47.41,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.7,
     "eps_diluted": 0.7,
     "shares_outstanding": 561500000.0,
-    "market_cap": 14469855257.034302,
-    "pe_ratio_ttm": 11.225644109413734,
+    "market_cap": 14744990128.51715,
+    "pe_ratio_ttm": 11.439092419330606,
     "goodwill": 4485000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 50.45391769979269,
+        "value": 50.647375305767895,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 39.594773178153496,
+        "value": 39.67504004338775,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 26.890151250556606,
-    "max": 50.45391769979269,
+    "median": 26.930284683173735,
+    "max": 50.647375305767895,
     "low": 9.099758786544061,
-    "high": 50.45391769979269,
-    "mos_pct": 4.165654489465722,
+    "high": 50.647375305767895,
+    "mos_pct": 2.488961636230671,
     "valuation_warnings": [
       "goodwill_heavy",
       "value_trap_risk"
@@ -99,7 +99,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 12,
+    "filing_lag_days": 13,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-08"
   },
@@ -126,20 +126,20 @@
       "Quality": 52.17,
       "Value": 50.0,
       "Growth": 60.33,
-      "Momentum": 48.26,
+      "Momentum": 49.25,
       "Health": 45.5,
       "Profitability": 50.72,
-      "Technical": 48.46,
-      "Risk": 50.55
+      "Technical": 52.39,
+      "Risk": 50.05
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
-  "recommendation": "neutral",
-  "loss_chance_pct": 44.78862689612161,
-  "price_change_1d_pct": -1.7912,
+  "recommendation": "lean_bullish",
+  "loss_chance_pct": 45.11647818567714,
+  "price_change_1d_pct": 1.9014,
   "manipulation_index": 25.0,
-  "composite_score_adjusted": 47.01,
+  "composite_score_adjusted": 47.52,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -148,9 +148,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": true,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -183,7 +185,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.68,
+  "osap_blended_score": 50.94,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

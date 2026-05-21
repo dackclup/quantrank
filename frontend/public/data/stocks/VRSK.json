@@ -3,19 +3,19 @@
   "name": "Verisk Analytics",
   "sector": "Industrials",
   "industry": "Research & Consulting Services",
-  "market_cap": 22360187694.21631,
-  "current_price": 170.66,
-  "rank": 283,
-  "composite_score": 49.21,
+  "market_cap": 22483348543.693848,
+  "current_price": 171.6,
+  "rank": 278,
+  "composite_score": 49.65,
   "pillar_scores": {
     "quality": 46.84,
-    "value": 51.48,
+    "value": 51.05,
     "growth": 61.08,
-    "momentum": 15.69,
-    "health": 62.99,
+    "momentum": 17.98,
+    "health": 62.95,
     "profitability": 88.19,
-    "technical": 43.43,
-    "risk": 31.21,
+    "technical": 48.31,
+    "risk": 31.37,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.73,
     "eps_diluted": 1.73,
     "shares_outstanding": 131021840.0,
-    "market_cap": 22360187694.21631,
-    "pe_ratio_ttm": 24.566235656137454,
+    "market_cap": 22483348543.693848,
+    "pe_ratio_ttm": 24.701547510100912,
     "goodwill": 1863100000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 194.15958379734118,
+        "value": 195.1278661327959,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 179.29329547547462,
+        "value": 179.7775522084215,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "insufficient_history_for_roe",
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 179.29329547547462,
-    "max": 194.15958379734118,
+    "median": 179.7775522084215,
+    "max": 195.1278661327959,
     "low": 53.14308686286062,
-    "high": 194.15958379734118,
-    "mos_pct": 4.815178275612759,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "high": 195.1278661327959,
+    "mos_pct": 4.548702551821041,
+    "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
   "top5_factors": [],
@@ -95,14 +93,12 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 21,
+    "filing_lag_days": 22,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -116,22 +112,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.16,
+      "Value": 49.37,
       "Growth": 49.37,
-      "Momentum": 50.5,
-      "Health": 52.79,
+      "Momentum": 49.4,
+      "Health": 52.75,
       "Profitability": 47.68,
-      "Technical": 45.57,
-      "Risk": 54.48
+      "Technical": 45.22,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": -2.8603633446005023,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 40.70995411134396,
-  "price_change_1d_pct": -0.0293,
+  "loss_chance_pct": 38.58437920814527,
+  "price_change_1d_pct": 0.5508,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 49.21,
+  "composite_score_adjusted": 49.65,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -140,9 +136,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -175,7 +173,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.53,
+  "osap_blended_score": 50.75,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

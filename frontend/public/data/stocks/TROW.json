@@ -3,18 +3,18 @@
   "name": "T. Rowe Price",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 21818768881.313873,
-  "current_price": 101.83,
-  "rank": 151,
-  "composite_score": 55.3,
+  "market_cap": 21844479827.81021,
+  "current_price": 101.95,
+  "rank": 150,
+  "composite_score": 55.08,
   "pillar_scores": {
     "quality": 58.67,
-    "value": 67.11,
+    "value": 66.89,
     "growth": 25.0,
-    "momentum": 57.57,
+    "momentum": 59.31,
     "health": 50.64,
     "profitability": 67.78,
-    "technical": 57.12,
+    "technical": 49.25,
     "risk": 42.46,
     "sentiment": null,
     "ml": null
@@ -32,8 +32,8 @@
     "eps_basic": 2.23,
     "eps_diluted": 2.23,
     "shares_outstanding": 214266606.0,
-    "market_cap": 21818768881.313873,
-    "pe_ratio_ttm": 9.975206364611108,
+    "market_cap": 21844479827.81021,
+    "pe_ratio_ttm": 9.98696101486317,
     "goodwill": 2642800000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 165.7360971742578,
+        "value": 163.92999791301983,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 139.7118525936794,
+        "value": 140.33385588458455,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 112.30470658182507,
-    "max": 165.7360971742578,
+    "median": 112.61570822727765,
+    "max": 163.92999791301983,
     "low": 55.480617975658284,
-    "high": 165.7360971742578,
-    "mos_pct": 9.327039862873892,
+    "high": 163.92999791301983,
+    "mos_pct": 9.470891269901925,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -104,7 +104,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 20,
+    "filing_lag_days": 21,
     "latest_period_end": "2026-04-28",
     "latest_filed_date": "2026-04-30"
   },
@@ -125,20 +125,20 @@
       "Quality": 50.67,
       "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 53.29,
+      "Momentum": 54.28,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 51.94,
-      "Risk": 54.88
+      "Technical": 51.25,
+      "Risk": 54.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 34.084105658441246,
-  "price_change_1d_pct": 0.1081,
+  "loss_chance_pct": 34.1465315703639,
+  "price_change_1d_pct": 0.1178,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 55.3,
+  "composite_score_adjusted": 55.08,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -147,9 +147,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -182,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.58,
+  "osap_blended_score": 53.46,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

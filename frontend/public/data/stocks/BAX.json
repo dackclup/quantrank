@@ -3,19 +3,19 @@
   "name": "Baxter International",
   "sector": "Health Care",
   "industry": "Health Care Equipment",
-  "market_cap": 9694123516.58075,
-  "current_price": 18.77,
+  "market_cap": 9828405576.871124,
+  "current_price": 19.03,
   "rank": 493,
-  "composite_score": 31.55,
+  "composite_score": 31.12,
   "pillar_scores": {
     "quality": 11.86,
     "value": 53.39,
     "growth": 39.41,
-    "momentum": 17.68,
+    "momentum": 14.69,
     "health": 47.49,
     "profitability": 16.1,
-    "technical": 59.66,
-    "risk": 10.69,
+    "technical": 58.47,
+    "risk": 10.66,
     "sentiment": null,
     "ml": null
   },
@@ -32,7 +32,7 @@
     "eps_basic": -0.03,
     "eps_diluted": -0.03,
     "shares_outstanding": 516469008.0,
-    "market_cap": 9694123516.58075,
+    "market_cap": 9828405576.871124,
     "pe_ratio_ttm": null,
     "goodwill": 4899000000.0
   },
@@ -51,13 +51,13 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 38.105567706357036,
+        "value": 38.428327561799115,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 8.89878738080718,
+        "value": 8.748480786631152,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 23.502177543582107,
-    "max": 38.105567706357036,
-    "low": 8.89878738080718,
-    "high": 38.105567706357036,
-    "mos_pct": 20.135058026189924,
+    "median": 23.588404174215135,
+    "max": 38.428327561799115,
+    "low": 8.748480786631152,
+    "high": 38.428327561799115,
+    "mos_pct": 19.324764210003202,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -90,7 +90,7 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 20,
+    "filing_lag_days": 21,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-30"
   },
@@ -111,22 +111,22 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 52.97,
-      "Value": 51.13,
+      "Value": 50.85,
       "Growth": 49.58,
-      "Momentum": 40.09,
-      "Health": 59.88,
+      "Momentum": 38.6,
+      "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 57.02,
-      "Risk": 41.14
+      "Technical": 56.82,
+      "Risk": 41.47
     }
   },
   "beneish_m_score": -2.860454007362568,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 44.17747688848361,
-  "price_change_1d_pct": 2.4004,
+  "loss_chance_pct": 44.678335700244574,
+  "price_change_1d_pct": 1.3852,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 31.55,
+  "composite_score_adjusted": 31.12,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -135,9 +135,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -170,7 +172,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 41.7,
+  "osap_blended_score": 41.48,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2

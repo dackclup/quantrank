@@ -3,19 +3,19 @@
   "name": "Devon Energy",
   "sector": "Energy",
   "industry": "Oil & Gas Exploration & Production",
-  "market_cap": 30113043431.09131,
-  "current_price": 48.46,
-  "rank": 99,
-  "composite_score": 58.12,
+  "market_cap": 29274154379.27246,
+  "current_price": 47.11,
+  "rank": 113,
+  "composite_score": 57.41,
   "pillar_scores": {
     "quality": 50.0,
     "value": 68.25,
     "growth": 50.0,
-    "momentum": 74.55,
+    "momentum": 74.65,
     "health": 49.64,
     "profitability": 56.35,
-    "technical": 56.77,
-    "risk": 56.64,
+    "technical": 42.68,
+    "risk": 55.94,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.19,
     "eps_diluted": 0.19,
     "shares_outstanding": 621400000.0,
-    "market_cap": 30113043431.09131,
-    "pe_ratio_ttm": 13.13832610431558,
+    "market_cap": 29274154379.27246,
+    "pe_ratio_ttm": 12.77231866460404,
     "goodwill": 753000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 47.88578190171099,
+        "value": 47.57559446429133,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 46.28867376053193,
+        "value": 45.30088663412332,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 47.08722783112146,
+    "median": 46.43824054920732,
     "max": 48.19586211366392,
     "low": 37.48278402426226,
     "high": 48.19586211366392,
-    "mos_pct": -2.915379215516033,
+    "mos_pct": -1.4465665649679902,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -96,7 +96,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-04-22",
     "latest_filed_date": "2026-05-06"
   },
@@ -118,22 +118,22 @@
     "label": "Energy median (n=21)",
     "values": {
       "Quality": 50.0,
-      "Value": 51.59,
+      "Value": 48.41,
       "Growth": 55.95,
-      "Momentum": 73.11,
+      "Momentum": 74.65,
       "Health": 55.14,
       "Profitability": 54.76,
-      "Technical": 56.52,
-      "Risk": 67.1
+      "Technical": 54.33,
+      "Risk": 66.5
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 36.95801513231103,
-  "price_change_1d_pct": -2.4753,
+  "loss_chance_pct": 36.80311895163116,
+  "price_change_1d_pct": -2.7858,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 57.62,
+  "composite_score_adjusted": 56.91,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -142,9 +142,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": true,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -177,7 +179,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.99,
+  "osap_blended_score": 54.63,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

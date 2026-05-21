@@ -3,19 +3,19 @@
   "name": "Lennox International",
   "sector": "Industrials",
   "industry": "Building Products",
-  "market_cap": 17167867746.155273,
-  "current_price": 493.33,
+  "market_cap": 16721732963.523438,
+  "current_price": 480.51,
   "rank": 15,
-  "composite_score": 66.68,
+  "composite_score": 66.53,
   "pillar_scores": {
     "quality": 94.94,
-    "value": 59.49,
+    "value": 61.39,
     "growth": 79.75,
-    "momentum": 26.69,
+    "momentum": 26.0,
     "health": 71.2,
     "profitability": 70.04,
-    "technical": 24.05,
-    "risk": 31.61,
+    "technical": 14.84,
+    "risk": 30.68,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 3.37,
     "eps_diluted": 3.35,
     "shares_outstanding": 34799968.0,
-    "market_cap": 17167867746.155273,
-    "pe_ratio_ttm": 21.635624128740105,
+    "market_cap": 16721732963.523438,
+    "pe_ratio_ttm": 21.073387477660287,
     "goodwill": 503700000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 637.2851252703392,
+        "value": 640.4632940600468,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 221.73986489256347,
+        "value": 220.09197826074504,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 570.8789078081708,
+        "value": 572.1706349571582,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 330.88495859076215,
-    "max": 637.2851252703392,
+    "median": 330.06101527485293,
+    "max": 640.4632940600468,
     "low": 76.63977547947931,
-    "high": 637.2851252703392,
-    "mos_pct": -49.09411073666094,
+    "high": 640.4632940600468,
+    "mos_pct": -45.58217648500176,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate"
@@ -95,7 +95,7 @@
       "long_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 21,
+    "filing_lag_days": 22,
     "latest_period_end": "2026-04-22",
     "latest_filed_date": "2026-04-29"
   },
@@ -118,22 +118,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.16,
+      "Value": 49.37,
       "Growth": 49.37,
-      "Momentum": 50.5,
-      "Health": 52.79,
+      "Momentum": 49.4,
+      "Health": 52.75,
       "Profitability": 47.68,
-      "Technical": 45.57,
-      "Risk": 54.48
+      "Technical": 45.22,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 50.84104578121458,
-  "price_change_1d_pct": 2.2043,
+  "loss_chance_pct": 49.68959585955175,
+  "price_change_1d_pct": -2.5987,
   "manipulation_index": 8.0,
-  "composite_score_adjusted": 65.88,
+  "composite_score_adjusted": 65.73,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -142,9 +142,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": true,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -177,7 +179,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 59.27,
+  "osap_blended_score": 59.19,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5

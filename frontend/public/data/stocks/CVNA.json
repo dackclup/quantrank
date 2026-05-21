@@ -3,19 +3,19 @@
   "name": "Carvana",
   "sector": "Consumer Discretionary",
   "industry": "Automotive Retail",
-  "market_cap": 14557820891.326904,
-  "current_price": 64.91,
-  "rank": 85,
-  "composite_score": 58.68,
+  "market_cap": 14441195893.112183,
+  "current_price": 64.39,
+  "rank": 78,
+  "composite_score": 59.19,
   "pillar_scores": {
     "quality": 51.56,
-    "value": 73.78,
+    "value": 74.48,
     "growth": 68.75,
-    "momentum": 66.48,
+    "momentum": 67.23,
     "health": 62.39,
     "profitability": 40.63,
-    "technical": 18.73,
-    "risk": 34.03,
+    "technical": 24.3,
+    "risk": 33.67,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 10.22,
     "eps_diluted": 8.45,
     "shares_outstanding": 224277000.0,
-    "market_cap": 14557820891.326904,
-    "pe_ratio_ttm": 7.546822649728826,
+    "market_cap": 14441195893.112183,
+    "pe_ratio_ttm": 7.486363863718084,
     "goodwill": 10000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 190.16675705355482,
+        "value": 194.5823532872934,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 101.99288897114285,
+        "value": 102.65202217267604,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 101.99288897114285,
+    "median": 102.65202217267604,
     "max": 196.43051569197038,
     "low": 35.424028467098005,
     "high": 196.43051569197038,
-    "mos_pct": 36.35830466526489,
+    "mos_pct": 37.27352074824709,
     "valuation_warnings": [],
     "valuation_methods_applicable": 5
   },
@@ -94,7 +94,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 21,
+    "filing_lag_days": 22,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-29"
   },
@@ -118,22 +118,22 @@
     "label": "Consumer Discretionary median (n=48)",
     "values": {
       "Quality": 46.35,
-      "Value": 49.83,
-      "Growth": 51.69,
-      "Momentum": 42.26,
-      "Health": 43.72,
+      "Value": 50.17,
+      "Growth": 51.43,
+      "Momentum": 41.36,
+      "Health": 43.75,
       "Profitability": 52.6,
-      "Technical": 43.15,
-      "Risk": 41.87
+      "Technical": 51.39,
+      "Risk": 41.77
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 25.93658602153976,
-  "price_change_1d_pct": 2.4625,
+  "loss_chance_pct": 25.358852523970093,
+  "price_change_1d_pct": -0.8011,
   "manipulation_index": 25.0,
-  "composite_score_adjusted": 56.18,
+  "composite_score_adjusted": 56.69,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -142,9 +142,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": true,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -177,7 +179,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 55.26,
+  "osap_blended_score": 55.52,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5

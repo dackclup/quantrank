@@ -3,19 +3,19 @@
   "name": "AbbVie",
   "sector": "Health Care",
   "industry": "Biotechnology",
-  "market_cap": 375090121290.1238,
-  "current_price": 212.3,
-  "rank": 458,
-  "composite_score": 38.25,
+  "market_cap": 378977060104.5,
+  "current_price": 214.5,
+  "rank": 452,
+  "composite_score": 38.57,
   "pillar_scores": {
     "quality": 41.1,
-    "value": 30.51,
+    "value": 30.23,
     "growth": 25.0,
-    "momentum": 35.51,
+    "momentum": 37.35,
     "health": 46.1,
     "profitability": 36.72,
-    "technical": 56.52,
-    "risk": 74.44,
+    "technical": 59.21,
+    "risk": 74.83,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.39,
     "eps_diluted": 0.39,
     "shares_outstanding": 1766792821.0,
-    "market_cap": 375090121290.1238,
-    "pe_ratio_ttm": 103.01843485034985,
+    "market_cap": 378977060104.5,
+    "pe_ratio_ttm": 104.0859819018127,
     "goodwill": 35570000000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 50.35584319349313,
+        "value": 50.00828609870481,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 122.31482818130036,
+        "value": 121.44848288564957,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "insufficient_history_for_roe",
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 122.31482818130036,
+    "median": 121.44848288564957,
     "max": 129.70232659815608,
-    "low": 50.35584319349313,
+    "low": 50.00828609870481,
     "high": 129.70232659815608,
-    "mos_pct": -73.56849223307374,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "mos_pct": -76.61809756978484,
+    "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
   "top5_factors": [],
@@ -93,14 +91,12 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 12,
+    "filing_lag_days": 13,
     "latest_period_end": "2026-04-28",
     "latest_filed_date": "2026-05-08"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -114,22 +110,22 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 52.97,
-      "Value": 51.13,
+      "Value": 50.85,
       "Growth": 49.58,
-      "Momentum": 40.09,
-      "Health": 59.88,
+      "Momentum": 38.6,
+      "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 57.02,
-      "Risk": 41.14
+      "Technical": 56.82,
+      "Risk": 41.47
     }
   },
   "beneish_m_score": -2.3741165137580476,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 67.87342086456434,
-  "price_change_1d_pct": -0.683,
+  "loss_chance_pct": 65.71533498773269,
+  "price_change_1d_pct": 1.0363,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 38.25,
+  "composite_score_adjusted": 38.57,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -138,9 +134,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -173,7 +171,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.05,
+  "osap_blended_score": 45.21,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

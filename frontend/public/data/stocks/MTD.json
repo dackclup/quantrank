@@ -3,19 +3,19 @@
   "name": "Mettler Toledo",
   "sector": "Health Care",
   "industry": "Life Sciences Tools & Services",
-  "market_cap": 21878164262.69934,
-  "current_price": 1082.67,
-  "rank": 401,
-  "composite_score": 42.5,
+  "market_cap": 22035377523.750732,
+  "current_price": 1090.45,
+  "rank": 391,
+  "composite_score": 42.77,
   "pillar_scores": {
     "quality": 36.02,
     "value": 38.7,
     "growth": 47.88,
-    "momentum": 32.22,
-    "health": 61.41,
+    "momentum": 34.06,
+    "health": 61.37,
     "profitability": 72.88,
-    "technical": 39.84,
-    "risk": 31.64,
+    "technical": 41.09,
+    "risk": 31.08,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 8.35,
     "eps_diluted": 8.33,
     "shares_outstanding": 20207601.0,
-    "market_cap": 21878164262.69934,
-    "pe_ratio_ttm": 25.001901884098622,
+    "market_cap": 22035377523.750732,
+    "pe_ratio_ttm": 25.181561862901667,
     "goodwill": 736872000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 1058.1272368691984,
+        "value": 1050.8240203000798,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "insufficient_history_for_roe",
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 748.9693823458397,
-    "max": 1058.1272368691984,
+    "median": 745.3177740612805,
+    "max": 1050.8240203000798,
     "low": 439.811527822481,
-    "high": 1058.1272368691984,
-    "mos_pct": -44.55464662043891,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "high": 1050.8240203000798,
+    "mos_pct": -46.30671495058395,
+    "valuation_warnings": [],
     "valuation_methods_applicable": 2
   },
   "top5_factors": [],
@@ -95,14 +93,12 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 12,
+    "filing_lag_days": 13,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-08"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -116,22 +112,22 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 52.97,
-      "Value": 51.13,
+      "Value": 50.85,
       "Growth": 49.58,
-      "Momentum": 40.09,
-      "Health": 59.88,
+      "Momentum": 38.6,
+      "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 57.02,
-      "Risk": 41.14
+      "Technical": 56.82,
+      "Risk": 41.47
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.47955271432773877,
   "recommendation": "neutral",
-  "loss_chance_pct": 61.344050349836444,
-  "price_change_1d_pct": 3.0359,
+  "loss_chance_pct": 59.82355912594498,
+  "price_change_1d_pct": 0.7186,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 42.5,
+  "composite_score_adjusted": 42.77,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -140,9 +136,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -175,7 +173,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.18,
+  "osap_blended_score": 47.31,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2

@@ -3,19 +3,19 @@
   "name": "Ametek",
   "sector": "Industrials",
   "industry": "Electrical Components & Equipment",
-  "market_cap": 51504208118.258514,
-  "current_price": 224.71,
-  "rank": 404,
-  "composite_score": 42.36,
+  "market_cap": 51151233536.65677,
+  "current_price": 223.17,
+  "rank": 410,
+  "composite_score": 42.03,
   "pillar_scores": {
     "quality": 21.84,
-    "value": 30.17,
+    "value": 30.8,
     "growth": 60.44,
-    "momentum": 70.87,
+    "momentum": 67.78,
     "health": 63.86,
     "profitability": 46.62,
-    "technical": 23.41,
-    "risk": 71.61,
+    "technical": 21.76,
+    "risk": 71.55,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.74,
     "eps_diluted": 1.74,
     "shares_outstanding": 229203002.0,
-    "market_cap": 51504208118.258514,
-    "pe_ratio_ttm": 33.71265686936366,
+    "market_cap": 51151233536.65677,
+    "pe_ratio_ttm": 33.48161339955972,
     "goodwill": 7266351000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 185.9724731174882,
+        "value": 185.52855591513284,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 310.5399032614257,
+        "value": 309.0777839915718,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 163.90168741581542,
+        "value": 162.9493926120707,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 174.9370802666518,
-    "max": 310.5399032614257,
+    "median": 174.2389742636018,
+    "max": 309.0777839915718,
     "low": 77.4605745115443,
-    "high": 310.5399032614257,
-    "mos_pct": -28.451901890295574,
+    "high": 309.0777839915718,
+    "mos_pct": -28.082708884245953,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -92,7 +92,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 20,
+    "filing_lag_days": 21,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-30"
   },
@@ -111,22 +111,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.16,
+      "Value": 49.37,
       "Growth": 49.37,
-      "Momentum": 50.5,
-      "Health": 52.79,
+      "Momentum": 49.4,
+      "Health": 52.75,
       "Profitability": 47.68,
-      "Technical": 45.57,
-      "Risk": 54.48
+      "Technical": 45.22,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 53.7768014559787,
-  "price_change_1d_pct": 1.5501,
+  "loss_chance_pct": 53.81169013715599,
+  "price_change_1d_pct": -0.6853,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 42.36,
+  "composite_score_adjusted": 42.03,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -135,9 +135,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -170,7 +172,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.11,
+  "osap_blended_score": 46.94,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

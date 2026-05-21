@@ -3,19 +3,19 @@
   "name": "Copart",
   "sector": "Industrials",
   "industry": "Diversified Support Services",
-  "market_cap": 31827710021.45517,
-  "current_price": 33.04,
-  "rank": 154,
-  "composite_score": 55.07,
+  "market_cap": 33137810017.09195,
+  "current_price": 34.4,
+  "rank": 155,
+  "composite_score": 54.81,
   "pillar_scores": {
     "quality": 58.86,
-    "value": 62.03,
+    "value": 57.59,
     "growth": 58.23,
-    "momentum": 8.72,
+    "momentum": 10.66,
     "health": 90.66,
     "profitability": 65.82,
-    "technical": 45.37,
-    "risk": 29.58,
+    "technical": 55.25,
+    "risk": 29.75,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.78,
     "eps_diluted": 0.77,
     "shares_outstanding": 963308388.0,
-    "market_cap": 31827710021.45517,
-    "pe_ratio_ttm": 20.43632085178342,
+    "market_cap": 33137810017.09195,
+    "pe_ratio_ttm": 21.27752569626344,
     "goodwill": 523473000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 45.18591005451872,
+        "value": 45.41125416404722,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 40.51528223538413,
+        "value": 40.324523578419985,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 35.54043683828868,
+        "value": 35.61620514238099,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 24.50977826198638,
-    "max": 45.18591005451872,
+    "median": 24.547662414032537,
+    "max": 45.41125416404722,
     "low": 8.164508397468772,
-    "high": 45.18591005451872,
-    "mos_pct": -34.80334486245017,
+    "high": 45.41125416404722,
+    "mos_pct": -40.13554914383348,
     "valuation_warnings": [],
     "valuation_methods_applicable": 6
   },
@@ -95,7 +95,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 78,
+    "filing_lag_days": 79,
     "latest_period_end": "2026-03-02",
     "latest_filed_date": "2026-03-03"
   },
@@ -114,22 +114,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.16,
+      "Value": 49.37,
       "Growth": 49.37,
-      "Momentum": 50.5,
-      "Health": 52.79,
+      "Momentum": 49.4,
+      "Health": 52.75,
       "Profitability": 47.68,
-      "Technical": 45.57,
-      "Risk": 54.48
+      "Technical": 45.22,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.24917621828728667,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 49.64733137561822,
-  "price_change_1d_pct": -0.2415,
+  "loss_chance_pct": 51.64038214940622,
+  "price_change_1d_pct": 4.1162,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 55.07,
+  "composite_score_adjusted": 54.81,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -138,9 +138,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -173,7 +175,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.46,
+  "osap_blended_score": 53.33,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 6

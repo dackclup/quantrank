@@ -3,38 +3,38 @@
   "name": "Gen Digital",
   "sector": "Information Technology",
   "industry": "Systems Software",
-  "market_cap": 15141594350.0,
-  "current_price": 25.0,
-  "rank": 364,
-  "composite_score": 45.22,
+  "market_cap": 14970481501.710278,
+  "current_price": 24.85,
+  "rank": 203,
+  "composite_score": 52.8,
   "pillar_scores": {
-    "quality": 42.47,
-    "value": 79.0,
-    "growth": 35.27,
-    "momentum": 15.59,
-    "health": 19.96,
-    "profitability": 41.78,
-    "technical": 70.04,
-    "risk": 34.63,
+    "quality": 53.42,
+    "value": 84.25,
+    "growth": 60.27,
+    "momentum": 14.54,
+    "health": 19.52,
+    "profitability": 49.77,
+    "technical": 69.3,
+    "risk": 34.03,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 4727000000.0,
-    "net_income": 603000000.0,
-    "total_assets": 15831000000.0,
-    "total_liabilities": 13499000000.0,
-    "stockholders_equity": 2332000000.0,
+    "revenue": 5000000000.0,
+    "net_income": 973000000.0,
+    "total_assets": 15589000000.0,
+    "total_liabilities": 12978000000.0,
+    "stockholders_equity": 2611000000.0,
     "cash": 1006000000.0,
-    "operating_cash_flow": 1539000000.0,
+    "operating_cash_flow": 1545000000.0,
     "capex": 22000000.0,
-    "free_cash_flow": 1517000000.0,
-    "eps_basic": 0.75,
-    "eps_diluted": 0.74,
-    "shares_outstanding": 605663774.0,
-    "market_cap": 15141594350.0,
-    "pe_ratio_ttm": 25.11043839137645,
-    "goodwill": 10847000000.0
+    "free_cash_flow": 1523000000.0,
+    "eps_basic": 1.59,
+    "eps_diluted": 1.57,
+    "shares_outstanding": 602433854.0,
+    "market_cap": 14970481501.710278,
+    "pe_ratio_ttm": 15.385900823957119,
+    "goodwill": 10996000000.0
   },
   "fair_price": {
     "methods": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 36.72495851008538,
+        "value": 60.55507056088914,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 39.05326216081569,
+        "value": 44.47833654907506,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 82.14479017297992,
+        "value": 98.96676688953993,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 8.044942285515287,
+        "value": 13.643329929346477,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 37.88911033545054,
-    "max": 82.14479017297992,
-    "low": 8.044942285515287,
-    "high": 82.14479017297992,
-    "mos_pct": 34.017980948449406,
+    "median": 52.5167035549821,
+    "max": 98.96676688953993,
+    "low": 13.643329929346477,
+    "high": 98.96676688953993,
+    "mos_pct": 52.68172086343321,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -90,12 +90,13 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 103,
-    "latest_period_end": "2026-02-03",
-    "latest_filed_date": "2026-02-06"
+    "filing_lag_days": 0,
+    "latest_period_end": "2026-05-18",
+    "latest_filed_date": "2026-05-21"
   },
   "risk_flags": [
-    "altman_distress"
+    "altman_distress",
+    "beneish_manipulation_veto"
   ],
   "valuation_warnings": [
     "beneish_high"
@@ -112,34 +113,36 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 49.32,
-      "Value": 48.17,
-      "Growth": 52.23,
-      "Momentum": 59.76,
+      "Quality": 49.66,
+      "Value": 48.86,
+      "Growth": 53.42,
+      "Momentum": 61.8,
       "Health": 69.52,
-      "Profitability": 47.26,
-      "Technical": 61.01,
-      "Risk": 46.85
+      "Profitability": 48.86,
+      "Technical": 59.76,
+      "Risk": 47.31
     }
   },
-  "beneish_m_score": -1.8184834883812275,
+  "beneish_m_score": -1.7251663796768728,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 45.484770836028304,
-  "price_change_1d_pct": 2.7961,
-  "manipulation_index": 3.0,
-  "composite_score_adjusted": 44.92,
+  "loss_chance_pct": 35.15980088868779,
+  "price_change_1d_pct": -0.6,
+  "manipulation_index": 23.0,
+  "composite_score_adjusted": 50.5,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
-    "beneish_manipulation_veto": false,
+    "beneish_manipulation_veto": true,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": true,
     "dechow_high": false
   },
@@ -172,7 +175,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.53,
+  "osap_blended_score": 52.33,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

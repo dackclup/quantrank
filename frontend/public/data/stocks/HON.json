@@ -3,19 +3,19 @@
   "name": "Honeywell",
   "sector": "Industrials",
   "industry": "Industrial Conglomerates",
-  "market_cap": 137749851152.6588,
-  "current_price": 217.39,
-  "rank": 395,
-  "composite_score": 42.8,
+  "market_cap": 141811569965.95587,
+  "current_price": 223.8,
+  "rank": 415,
+  "composite_score": 41.74,
   "pillar_scores": {
     "quality": 43.99,
-    "value": 36.08,
+    "value": 33.97,
     "growth": 27.22,
-    "momentum": 50.5,
+    "momentum": 49.15,
     "health": 50.64,
     "profitability": 34.6,
-    "technical": 68.13,
-    "risk": 59.76,
+    "technical": 58.57,
+    "risk": 61.25,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.29,
     "eps_diluted": 1.29,
     "shares_outstanding": 633653119.0,
-    "market_cap": 137749851152.6588,
-    "pe_ratio_ttm": 33.58933215134329,
+    "market_cap": 141811569965.95587,
+    "pe_ratio_ttm": 34.5797537103038,
     "goodwill": 21079000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 180.57491805094355,
+        "value": 180.14388483891503,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 136.3350719152404,
+        "value": 135.32188133462026,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 211.12779395136374,
+        "value": 209.77880473029575,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 158.45499498309198,
-    "max": 211.12779395136374,
+    "median": 157.73288308676763,
+    "max": 209.77880473029575,
     "low": 61.56030643624944,
-    "high": 211.12779395136374,
-    "mos_pct": -37.19352893409586,
+    "high": 209.77880473029575,
+    "mos_pct": -41.88544498273526,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -91,7 +91,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 27,
+    "filing_lag_days": 28,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-23"
   },
@@ -110,22 +110,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.16,
+      "Value": 49.37,
       "Growth": 49.37,
-      "Momentum": 50.5,
-      "Health": 52.79,
+      "Momentum": 49.4,
+      "Health": 52.75,
       "Profitability": 47.68,
-      "Technical": 45.57,
-      "Risk": 54.48
+      "Technical": 45.22,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": -2.601615038592017,
   "dechow_f_score": 0.46197613696099904,
   "recommendation": "neutral",
-  "loss_chance_pct": 56.617055146433614,
-  "price_change_1d_pct": 0.1105,
+  "loss_chance_pct": 58.79163725672483,
+  "price_change_1d_pct": 2.9486,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 42.8,
+  "composite_score_adjusted": 41.74,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -134,9 +134,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -169,7 +171,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.33,
+  "osap_blended_score": 46.79,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

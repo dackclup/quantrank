@@ -3,19 +3,19 @@
   "name": "Crown Castle",
   "sector": "Real Estate",
   "industry": "Telecom Tower REITs",
-  "market_cap": 40432911438.73085,
-  "current_price": 92.64,
-  "rank": 390,
-  "composite_score": 43.2,
+  "market_cap": 40171040914.903725,
+  "current_price": 92.04,
+  "rank": 392,
+  "composite_score": 42.68,
   "pillar_scores": {
     "quality": 67.74,
     "value": 31.18,
     "growth": 31.45,
-    "momentum": 37.0,
-    "health": 2.99,
+    "momentum": 32.97,
+    "health": 2.95,
     "profitability": 68.01,
-    "technical": 58.57,
-    "risk": 40.6,
+    "technical": 59.21,
+    "risk": 39.44,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.34,
     "eps_diluted": 0.34,
     "shares_outstanding": 436451983.0,
-    "market_cap": 40432911438.73085,
-    "pe_ratio_ttm": 38.18027520182328,
+    "market_cap": 40171040914.903725,
+    "pe_ratio_ttm": 37.93299425392231,
     "goodwill": 5127000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 69.14729494586844,
+        "value": 69.05711056243655,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 39.375479218260416,
+        "value": 39.220125200664995,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "insufficient_history_for_roe",
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 54.26138708206443,
-    "max": 69.14729494586844,
-    "low": 39.375479218260416,
-    "high": 69.14729494586844,
-    "mos_pct": -70.72913976478438,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "median": 54.13861788155077,
+    "max": 69.05711056243655,
+    "low": 39.220125200664995,
+    "high": 69.05711056243655,
+    "mos_pct": -70.00803588466286,
+    "valuation_warnings": [],
     "valuation_methods_applicable": 2
   },
   "top5_factors": [],
@@ -96,16 +94,14 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 13,
+    "filing_lag_days": 14,
     "latest_period_end": "2026-05-05",
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [
     "altman_distress"
   ],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -119,22 +115,22 @@
     "label": "Real Estate median (n=31)",
     "values": {
       "Quality": 50.81,
-      "Value": 47.31,
+      "Value": 46.77,
       "Growth": 48.79,
-      "Momentum": 57.32,
+      "Momentum": 53.24,
       "Health": 26.22,
       "Profitability": 52.15,
-      "Technical": 55.83,
-      "Risk": 52.92
+      "Technical": 51.49,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 77.39885752688173,
-  "price_change_1d_pct": 0.3249,
+  "loss_chance_pct": 75.65856868226021,
+  "price_change_1d_pct": -0.6477,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 43.2,
+  "composite_score_adjusted": 42.68,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -143,9 +139,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -178,7 +176,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.53,
+  "osap_blended_score": 47.27,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2

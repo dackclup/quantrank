@@ -3,19 +3,19 @@
   "name": "Carrier Global",
   "sector": "Industrials",
   "industry": "Building Products",
-  "market_cap": 52816609225.30652,
-  "current_price": 63.59,
-  "rank": 419,
-  "composite_score": 41.24,
+  "market_cap": 51645490955.61303,
+  "current_price": 62.18,
+  "rank": 435,
+  "composite_score": 40.17,
   "pillar_scores": {
-    "quality": 65.82,
-    "value": 23.63,
+    "quality": 65.51,
+    "value": 24.26,
     "growth": 41.46,
-    "momentum": 39.44,
+    "momentum": 39.64,
     "health": 17.73,
     "profitability": 31.22,
-    "technical": 54.26,
-    "risk": 33.93,
+    "technical": 31.72,
+    "risk": 33.33,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.29,
     "eps_diluted": 0.28,
     "shares_outstanding": 830580423.0,
-    "market_cap": 52816609225.30652,
-    "pe_ratio_ttm": 37.32622560092333,
+    "market_cap": 51645490955.61303,
+    "pe_ratio_ttm": 36.49858018064525,
     "goodwill": 15313000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 47.53286408984366,
+        "value": 47.419402910923004,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 20.64139134162515,
+        "value": 20.487992344694774,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 36.22634158220354,
+        "value": 35.96227126303955,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 36.22634158220354,
-    "max": 47.53286408984366,
-    "low": 20.64139134162515,
-    "high": 47.53286408984366,
-    "mos_pct": -75.53525245791575,
+    "median": 35.96227126303955,
+    "max": 47.419402910923004,
+    "low": 20.487992344694774,
+    "high": 47.419402910923004,
+    "mos_pct": -72.90342940347506,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
@@ -92,7 +92,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 20,
+    "filing_lag_days": 21,
     "latest_period_end": "2026-04-15",
     "latest_filed_date": "2026-04-30"
   },
@@ -111,22 +111,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.16,
+      "Value": 49.37,
       "Growth": 49.37,
-      "Momentum": 50.5,
-      "Health": 52.79,
+      "Momentum": 49.4,
+      "Health": 52.75,
       "Profitability": 47.68,
-      "Technical": 45.57,
-      "Risk": 54.48
+      "Technical": 45.22,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 64.38017182325551,
-  "price_change_1d_pct": 3.4994,
+  "loss_chance_pct": 64.91460844386168,
+  "price_change_1d_pct": -2.2173,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 41.24,
+  "composite_score_adjusted": 40.17,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -135,9 +135,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -170,7 +172,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 46.55,
+  "osap_blended_score": 46.01,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

@@ -3,19 +3,19 @@
   "name": "Universal Health Services",
   "sector": "Health Care",
   "industry": "Health Care Facilities",
-  "market_cap": 10133286211.669922,
-  "current_price": 164.32,
-  "rank": 42,
-  "composite_score": 62.82,
+  "market_cap": 10017966411.8042,
+  "current_price": 162.45,
+  "rank": 41,
+  "composite_score": 62.87,
   "pillar_scores": {
     "quality": 64.41,
-    "value": 91.81,
+    "value": 92.09,
     "growth": 83.05,
-    "momentum": 11.38,
+    "momentum": 11.7,
     "health": 56.37,
     "profitability": 52.54,
-    "technical": 46.76,
-    "risk": 37.12,
+    "technical": 45.67,
+    "risk": 36.92,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 5.71,
     "eps_diluted": 5.65,
     "shares_outstanding": 61668000.0,
-    "market_cap": 10133286211.669922,
-    "pe_ratio_ttm": 6.545069609509377,
+    "market_cap": 10017966411.8042,
+    "pe_ratio_ttm": 6.4705847778654615,
     "goodwill": 3980656000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 614.0066113326056,
+        "value": 610.7176845833661,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 358.37210619943716,
+        "value": 364.51173527652367,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 644.6758904730024,
+        "value": 644.6871970046371,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 251.2763265538772,
-    "max": 644.6758904730024,
+    "median": 254.34614109242045,
+    "max": 644.6871970046371,
     "low": 23.451920880140015,
-    "high": 644.6758904730024,
-    "mos_pct": 34.60585420927577,
+    "high": 644.6871970046371,
+    "mos_pct": 36.130347309175974,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_dcf_estimate"
@@ -98,7 +98,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 13,
+    "filing_lag_days": 14,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
@@ -120,22 +120,22 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 52.97,
-      "Value": 51.13,
+      "Value": 50.85,
       "Growth": 49.58,
-      "Momentum": 40.09,
-      "Health": 59.88,
+      "Momentum": 38.6,
+      "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 57.02,
-      "Risk": 41.14
+      "Technical": 56.82,
+      "Risk": 41.47
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 23.476019304489995,
-  "price_change_1d_pct": -1.2797,
+  "loss_chance_pct": 22.92156098281076,
+  "price_change_1d_pct": -1.138,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 62.82,
+  "composite_score_adjusted": 62.87,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,9 +144,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -179,7 +181,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 57.34,
+  "osap_blended_score": 57.36,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5

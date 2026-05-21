@@ -3,18 +3,18 @@
   "name": "Cardinal Health",
   "sector": "Health Care",
   "industry": "Health Care Distributors",
-  "market_cap": 46882008862.30151,
-  "current_price": 199.23,
-  "rank": 365,
-  "composite_score": 45.21,
+  "market_cap": 47206746113.3855,
+  "current_price": 200.61,
+  "rank": 370,
+  "composite_score": 44.65,
   "pillar_scores": {
     "quality": 19.49,
     "value": 69.07,
     "growth": 42.8,
-    "momentum": 47.36,
-    "health": 48.33,
+    "momentum": 44.32,
+    "health": 48.37,
     "profitability": 25.14,
-    "technical": 74.15,
+    "technical": 70.47,
     "risk": 78.15,
     "sentiment": null,
     "ml": null
@@ -32,8 +32,8 @@
     "eps_basic": 1.89,
     "eps_diluted": 1.88,
     "shares_outstanding": 235316016.0,
-    "market_cap": 46882008862.30151,
-    "pe_ratio_ttm": 27.97255898705341,
+    "market_cap": 47206746113.3855,
+    "pe_ratio_ttm": 28.16631629676939,
     "goodwill": 11609000000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 174.0353002307601,
+        "value": 172.83410490757996,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 245.06449540278726,
+        "value": 245.06828934163394,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "insufficient_history_for_roe",
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 174.0353002307601,
-    "max": 245.06449540278726,
+    "median": 172.83410490757996,
+    "max": 245.06828934163394,
     "low": 129.23828709227283,
-    "high": 245.06449540278726,
-    "mos_pct": -14.476773081881863,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "high": 245.06828934163394,
+    "mos_pct": -16.070841873265863,
+    "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
   "top5_factors": [],
@@ -94,14 +92,12 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 104,
+    "filing_lag_days": 105,
     "latest_period_end": "2026-01-31",
     "latest_filed_date": "2026-02-05"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -115,22 +111,22 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 52.97,
-      "Value": 51.13,
+      "Value": 50.85,
       "Growth": 49.58,
-      "Momentum": 40.09,
-      "Health": 59.88,
+      "Momentum": 38.6,
+      "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 57.02,
-      "Risk": 41.14
+      "Technical": 56.82,
+      "Risk": 41.47
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 49.46061410736867,
-  "price_change_1d_pct": -0.5689,
+  "loss_chance_pct": 48.29854316443275,
+  "price_change_1d_pct": 0.6927,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 45.21,
+  "composite_score_adjusted": 44.65,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -139,9 +135,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -174,7 +172,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.53,
+  "osap_blended_score": 48.25,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

@@ -3,19 +3,19 @@
   "name": "Wynn Resorts",
   "sector": "Consumer Discretionary",
   "industry": "Casinos & Gaming",
-  "market_cap": 10177326392.354431,
-  "current_price": 98.06,
-  "rank": 456,
-  "composite_score": 38.3,
+  "market_cap": 10227144370.679588,
+  "current_price": 98.54,
+  "rank": 455,
+  "composite_score": 38.48,
   "pillar_scores": {
     "quality": 19.53,
-    "value": 50.87,
+    "value": 51.56,
     "growth": 60.68,
-    "momentum": 32.27,
-    "health": 47.75,
+    "momentum": 32.52,
+    "health": 47.67,
     "profitability": 37.5,
-    "technical": 32.97,
-    "risk": 29.38,
+    "technical": 32.32,
+    "risk": 30.18,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.17,
     "eps_diluted": 1.04,
     "shares_outstanding": 103786729.0,
-    "market_cap": 10177326392.354431,
-    "pe_ratio_ttm": 21.279547016221933,
+    "market_cap": 10227144370.679588,
+    "pe_ratio_ttm": 21.383710327012444,
     "goodwill": 18463000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 101.8864921899738,
+        "value": 104.25225589207122,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 128.6747299483835,
+        "value": 130.8468184953435,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "insufficient_history_for_roe",
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 101.8864921899738,
-    "max": 128.6747299483835,
+    "median": 104.25225589207122,
+    "max": 130.8468184953435,
     "low": 5.037312239163708,
-    "high": 128.6747299483835,
-    "mos_pct": 3.7556446876640948,
+    "high": 130.8468184953435,
+    "mos_pct": 5.479262705315055,
     "valuation_warnings": [
-      "extreme_dcf_estimate",
-      "value_trap_risk"
+      "extreme_dcf_estimate"
     ],
     "valuation_methods_applicable": 2
   },
@@ -96,7 +95,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 13,
+    "filing_lag_days": 14,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-07"
   },
@@ -104,8 +103,7 @@
     "altman_distress"
   ],
   "valuation_warnings": [
-    "extreme_dcf_estimate",
-    "value_trap_risk"
+    "extreme_dcf_estimate"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -120,22 +118,22 @@
     "label": "Consumer Discretionary median (n=48)",
     "values": {
       "Quality": 46.35,
-      "Value": 49.83,
-      "Growth": 51.69,
-      "Momentum": 42.26,
-      "Health": 43.72,
+      "Value": 50.17,
+      "Growth": 51.43,
+      "Momentum": 41.36,
+      "Health": 43.75,
       "Profitability": 52.6,
-      "Technical": 43.15,
-      "Risk": 41.87
+      "Technical": 51.39,
+      "Risk": 41.77
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 59.53362155387268,
-  "price_change_1d_pct": 3.4606,
+  "loss_chance_pct": 56.8418965823562,
+  "price_change_1d_pct": 0.4895,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 38.3,
+  "composite_score_adjusted": 38.48,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,9 +142,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -179,7 +179,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.08,
+  "osap_blended_score": 45.17,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2

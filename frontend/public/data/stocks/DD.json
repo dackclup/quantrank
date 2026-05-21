@@ -3,19 +3,19 @@
   "name": "DuPont",
   "sector": "Materials",
   "industry": "Specialty Chemicals",
-  "market_cap": 19368781708.5,
-  "current_price": 47.25,
-  "rank": 377,
-  "composite_score": 43.93,
+  "market_cap": 19327790203.390274,
+  "current_price": 47.15,
+  "rank": 380,
+  "composite_score": 43.6,
   "pillar_scores": {
     "quality": 28.37,
     "value": 40.38,
     "growth": 40.87,
-    "momentum": 65.69,
-    "health": 66.22,
+    "momentum": 64.74,
+    "health": 66.29,
     "profitability": 33.01,
-    "technical": 55.38,
-    "risk": 60.66,
+    "technical": 50.85,
+    "risk": 60.79,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.39,
     "eps_diluted": 0.39,
     "shares_outstanding": 409921306.0,
-    "market_cap": 19368781708.5,
-    "pe_ratio_ttm": 2766.9688155,
+    "market_cap": 19327790203.390274,
+    "pe_ratio_ttm": 2761.1128861986103,
     "goodwill": 7865000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 0.4237410325103544,
+        "value": 0.42748281814993616,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 98.68405449293896,
+        "value": 100.22063643189145,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 6.744546976160656,
-    "max": 98.68405449293896,
-    "low": 0.4237410325103544,
-    "high": 98.68405449293896,
-    "mos_pct": -600.5659559791092,
+    "max": 100.22063643189145,
+    "low": 0.42748281814993616,
+    "high": 100.22063643189145,
+    "mos_pct": -599.083299331086,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -98,7 +98,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 16,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-05"
   },
@@ -124,20 +124,20 @@
       "Quality": 51.68,
       "Value": 50.48,
       "Growth": 48.56,
-      "Momentum": 51.32,
+      "Momentum": 49.88,
       "Health": 56.53,
       "Profitability": 54.33,
-      "Technical": 38.75,
+      "Technical": 39.94,
       "Risk": 46.85
     }
   },
   "beneish_m_score": -3.1613399994535785,
   "dechow_f_score": 0.34471320957433677,
   "recommendation": "cautious",
-  "loss_chance_pct": 68.03275519716007,
-  "price_change_1d_pct": 1.482,
+  "loss_chance_pct": 68.19871635253857,
+  "price_change_1d_pct": -0.2116,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 43.93,
+  "composite_score_adjusted": 43.6,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -146,9 +146,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -181,7 +183,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.89,
+  "osap_blended_score": 47.73,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 1

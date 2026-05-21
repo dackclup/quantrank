@@ -3,19 +3,19 @@
   "name": "Seagate Technology",
   "sector": "Information Technology",
   "industry": "Technology Hardware, Storage & Peripherals",
-  "market_cap": 168411670663.7422,
-  "current_price": 751.07,
-  "rank": 101,
-  "composite_score": 57.98,
+  "market_cap": 181728633783.22656,
+  "current_price": 810.46,
+  "rank": 91,
+  "composite_score": 58.56,
   "pillar_scores": {
     "quality": 95.03,
-    "value": 15.98,
-    "growth": 27.05,
-    "momentum": 88.92,
+    "value": 14.61,
+    "growth": 27.74,
+    "momentum": 95.94,
     "health": 39.04,
-    "profitability": 70.55,
-    "technical": 67.73,
-    "risk": 54.78,
+    "profitability": 70.32,
+    "technical": 66.48,
+    "risk": 54.81,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 8.71,
     "eps_diluted": 8.29,
     "shares_outstanding": 224228992.0,
-    "market_cap": 168411670663.7422,
-    "pe_ratio_ttm": 70.8207193707915,
+    "market_cap": 181728633783.22656,
+    "pe_ratio_ttm": 76.42078796603303,
     "goodwill": 1221000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 373.5888474685414,
+        "value": 387.5675356238933,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 45.60870213917682,
+        "value": 46.06129218995904,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 313.3662659648622,
+        "value": 318.3419409425291,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "reason": "insufficient_history_for_roe",
         "tier_used": null
       },
       "dcf": {
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 188.717086446255,
-    "max": 373.5888474685414,
-    "low": 45.60870213917682,
-    "high": 373.5888474685414,
-    "mos_pct": -297.9872842823466,
+    "median": 191.20492393508846,
+    "max": 387.5675356238933,
+    "low": 46.06129218995904,
+    "high": 387.5675356238933,
+    "mos_pct": -323.86984879521026,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate",
       "extreme_dcf_estimate"
@@ -93,7 +93,7 @@
       "gross_profit"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 21,
+    "filing_lag_days": 22,
     "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-29"
   },
@@ -120,23 +120,23 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 49.32,
-      "Value": 48.17,
-      "Growth": 52.23,
-      "Momentum": 59.76,
+      "Quality": 49.66,
+      "Value": 48.86,
+      "Growth": 53.42,
+      "Momentum": 61.8,
       "Health": 69.52,
-      "Profitability": 47.26,
-      "Technical": 61.01,
-      "Risk": 46.85
+      "Profitability": 48.86,
+      "Technical": 59.76,
+      "Risk": 47.31
     }
   },
   "beneish_m_score": -1.578909954056504,
   "dechow_f_score": 1.1937282784037488,
   "recommendation": "cautious",
-  "loss_chance_pct": 76.00928051492659,
-  "price_change_1d_pct": 2.4163,
+  "loss_chance_pct": 75.71935005412142,
+  "price_change_1d_pct": 7.9074,
   "manipulation_index": 28.0,
-  "composite_score_adjusted": 55.18,
+  "composite_score_adjusted": 55.76,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": true,
@@ -145,9 +145,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": true,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": true,
     "dechow_high": false
   },
@@ -180,7 +182,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.92,
+  "osap_blended_score": 55.21,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2

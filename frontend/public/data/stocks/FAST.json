@@ -3,19 +3,19 @@
   "name": "Fastenal",
   "sector": "Industrials",
   "industry": "Trading Companies & Distributors",
-  "market_cap": 50146171814.8325,
-  "current_price": 43.68,
-  "rank": 157,
-  "composite_score": 54.73,
+  "market_cap": 49973964803.92001,
+  "current_price": 43.53,
+  "rank": 160,
+  "composite_score": 54.42,
   "pillar_scores": {
     "quality": 81.01,
     "value": 16.88,
     "growth": 25.0,
-    "momentum": 54.48,
+    "momentum": 55.03,
     "health": 87.73,
     "profitability": 85.86,
-    "technical": 44.92,
-    "risk": 62.25,
+    "technical": 36.9,
+    "risk": 62.72,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.3,
     "eps_diluted": 0.3,
     "shares_outstanding": 1148035061.0,
-    "market_cap": 50146171814.8325,
-    "pe_ratio_ttm": 38.58585088860611,
+    "market_cap": 49973964803.92001,
+    "pe_ratio_ttm": 38.453343185534024,
     "goodwill": null
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 31.584483924392135,
+        "value": 31.509091606881274,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 22.090372006171748,
+        "value": 21.926204734136544,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 27.818608507443308,
+        "value": 27.669368889764243,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 16.815410962439145,
-    "max": 31.584483924392135,
+    "median": 16.73332732642154,
+    "max": 31.509091606881274,
     "low": 8.891853759011836,
-    "high": 31.584483924392135,
-    "mos_pct": -159.7617174075882,
+    "high": 31.509091606881274,
+    "mos_pct": -160.13952832061082,
     "valuation_warnings": [],
     "valuation_methods_applicable": 6
   },
@@ -93,7 +93,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 34,
+    "filing_lag_days": 35,
     "latest_period_end": "2026-04-10",
     "latest_filed_date": "2026-04-16"
   },
@@ -116,22 +116,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.16,
+      "Value": 49.37,
       "Growth": 49.37,
-      "Momentum": 50.5,
-      "Health": 52.79,
+      "Momentum": 49.4,
+      "Health": 52.75,
       "Profitability": 47.68,
-      "Technical": 45.57,
-      "Risk": 54.48
+      "Technical": 45.22,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": -2.3166493300204385,
   "dechow_f_score": 1.404253294712701,
   "recommendation": "neutral",
-  "loss_chance_pct": 60.63444691697346,
-  "price_change_1d_pct": 0.2525,
+  "loss_chance_pct": 60.79194193689378,
+  "price_change_1d_pct": -0.3434,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 54.23,
+  "composite_score_adjusted": 53.92,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -140,9 +140,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": true,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -175,7 +177,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.29,
+  "osap_blended_score": 53.13,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 6

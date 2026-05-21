@@ -3,19 +3,19 @@
   "name": "Fidelity National Information Services",
   "sector": "Financials",
   "industry": "Transaction & Payment Processing Services",
-  "market_cap": 22065570246.364506,
-  "current_price": 42.69,
-  "rank": 427,
-  "composite_score": 40.46,
+  "market_cap": 22546268014.533504,
+  "current_price": 43.62,
+  "rank": 423,
+  "composite_score": 40.83,
   "pillar_scores": {
     "quality": 53.33,
-    "value": 60.22,
+    "value": 60.0,
     "growth": 31.0,
-    "momentum": 16.38,
+    "momentum": 15.54,
     "health": 12.55,
     "profitability": 41.33,
-    "technical": 33.47,
-    "risk": 21.6,
+    "technical": 43.63,
+    "risk": 21.91,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 4.59,
     "eps_diluted": 4.58,
     "shares_outstanding": 516879151.0,
-    "market_cap": 22065570246.364506,
-    "pe_ratio_ttm": 8.24881130705215,
+    "market_cap": 22546268014.533504,
+    "pe_ratio_ttm": 8.428511407302244,
     "goodwill": 24585000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 71.747928929924,
+        "value": 72.17454230606755,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 62.827816670567714,
+        "value": 62.892430398119785,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 67.28787280024585,
-    "max": 71.747928929924,
-    "low": 62.827816670567714,
-    "high": 71.747928929924,
-    "mos_pct": 36.556177435656714,
+    "median": 67.53348635209366,
+    "max": 72.17454230606755,
+    "low": 62.892430398119785,
+    "high": 72.17454230606755,
+    "mos_pct": 35.409822166640645,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -94,7 +94,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 12,
+    "filing_lag_days": 13,
     "latest_period_end": "2026-05-06",
     "latest_filed_date": "2026-05-08"
   },
@@ -120,20 +120,20 @@
       "Quality": 50.67,
       "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 53.29,
+      "Momentum": 54.28,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 51.94,
-      "Risk": 54.88
+      "Technical": 51.25,
+      "Risk": 54.55
     }
   },
   "beneish_m_score": -2.644750298123332,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 45.97472285767951,
-  "price_change_1d_pct": -1.8621,
+  "loss_chance_pct": 46.19396264008215,
+  "price_change_1d_pct": 2.1785,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 39.96,
+  "composite_score_adjusted": 40.33,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -142,9 +142,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": true,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -177,7 +179,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 46.16,
+  "osap_blended_score": 46.34,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2

@@ -3,19 +3,19 @@
   "name": "F5, Inc.",
   "sector": "Information Technology",
   "industry": "Communications Equipment",
-  "market_cap": 21575849195.322662,
-  "current_price": 382.42,
+  "market_cap": 21648065762.61151,
+  "current_price": 383.7,
   "rank": 11,
-  "composite_score": 67.22,
+  "composite_score": 66.96,
   "pillar_scores": {
     "quality": 58.9,
-    "value": 62.56,
-    "growth": 70.55,
-    "momentum": 80.63,
-    "health": 84.12,
+    "value": 61.87,
+    "growth": 70.21,
+    "momentum": 80.18,
+    "health": 84.08,
     "profitability": 64.61,
-    "technical": 70.34,
-    "risk": 55.41,
+    "technical": 70.67,
+    "risk": 55.05,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 5.73,
     "eps_diluted": 5.68,
     "shares_outstanding": 56419247.0,
-    "market_cap": 21575849195.322662,
-    "pe_ratio_ttm": 30.465154875959332,
+    "market_cap": 21648065762.61151,
+    "pe_ratio_ttm": 30.56712485578019,
     "goodwill": 2443605000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 463.0339363508538,
+        "value": 470.63504779572344,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 656.1080655025453,
+        "value": 663.8440109099517,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 435.6149210428217,
+        "value": 430.7423696450593,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 300.9985517229899,
-    "max": 656.1080655025453,
+    "median": 298.56227602410866,
+    "max": 663.8440109099517,
     "low": 26.547846363461872,
-    "high": 656.1080655025453,
-    "mos_pct": -27.05044965786978,
+    "high": 663.8440109099517,
+    "mos_pct": -28.515905397253803,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -95,7 +95,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 16,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-05"
   },
@@ -117,23 +117,23 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 49.32,
-      "Value": 48.17,
-      "Growth": 52.23,
-      "Momentum": 59.76,
+      "Quality": 49.66,
+      "Value": 48.86,
+      "Growth": 53.42,
+      "Momentum": 61.8,
       "Health": 69.52,
-      "Profitability": 47.26,
-      "Technical": 61.01,
-      "Risk": 46.85
+      "Profitability": 48.86,
+      "Technical": 59.76,
+      "Risk": 47.31
     }
   },
   "beneish_m_score": -2.6994761535255325,
   "dechow_f_score": 0.43517772131695104,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 43.85935031172489,
-  "price_change_1d_pct": -0.2816,
+  "loss_chance_pct": 44.499478684778246,
+  "price_change_1d_pct": 0.3347,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 67.22,
+  "composite_score_adjusted": 66.96,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -142,9 +142,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -177,7 +179,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 59.53,
+  "osap_blended_score": 59.41,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

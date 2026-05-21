@@ -3,38 +3,38 @@
   "name": "Nordson Corporation",
   "sector": "Industrials",
   "industry": "Industrial Machinery & Supplies & Components",
-  "market_cap": 15407430448.552124,
-  "current_price": 276.2,
-  "rank": 255,
-  "composite_score": 50.73,
+  "market_cap": 15978235335.82434,
+  "current_price": 286.77,
+  "rank": 209,
+  "composite_score": 52.28,
   "pillar_scores": {
-    "quality": 46.52,
-    "value": 43.25,
-    "growth": 41.46,
-    "momentum": 67.88,
-    "health": 64.3,
-    "profitability": 70.04,
-    "technical": 25.6,
-    "risk": 65.37,
+    "quality": 46.84,
+    "value": 43.04,
+    "growth": 41.14,
+    "momentum": 72.31,
+    "health": 65.9,
+    "profitability": 69.83,
+    "technical": 41.98,
+    "risk": 66.24,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 2845728000.0,
+    "revenue": 2903637000.0,
     "net_income": 576722000.0,
-    "total_assets": 5960922000.0,
+    "total_assets": 5964418000.0,
     "total_liabilities": null,
-    "stockholders_equity": 3112106000.0,
-    "cash": 120392000.0,
-    "operating_cash_flow": 700481000.0,
-    "capex": 54174000.0,
-    "free_cash_flow": 646307000.0,
-    "eps_basic": 2.39,
-    "eps_diluted": 2.38,
-    "shares_outstanding": 55783598.0,
-    "market_cap": 15407430448.552124,
-    "pe_ratio_ttm": 26.71552402813162,
-    "goodwill": 3332244000.0
+    "stockholders_equity": 3202235000.0,
+    "cash": 102017000.0,
+    "operating_cash_flow": 761984000.0,
+    "capex": 48314000.0,
+    "free_cash_flow": 713670000.0,
+    "eps_basic": 4.49,
+    "eps_diluted": 4.47,
+    "shares_outstanding": 55717948.0,
+    "market_cap": 15978235335.82434,
+    "pe_ratio_ttm": 27.705264123484696,
+    "goodwill": 3332927000.0
   },
   "fair_price": {
     "methods": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 278.0265147294178,
+        "value": 276.94827453481633,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 193.9217274313193,
+        "value": 197.86467446793702,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 225.44585895655737,
+        "value": 234.14997015435685,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -69,17 +69,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 83.25361584392381,
+        "value": 84.96763445566725,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 209.68379319393836,
-    "max": 278.0265147294178,
-    "low": 83.25361584392381,
-    "high": 278.0265147294178,
-    "mos_pct": -31.722155537109852,
+    "median": 216.00732231114694,
+    "max": 276.94827453481633,
+    "low": 84.96763445566725,
+    "high": 276.94827453481633,
+    "mos_pct": -32.759383314142994,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -93,9 +93,9 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 90,
-    "latest_period_end": "2026-02-18",
-    "latest_filed_date": "2026-02-19"
+    "filing_lag_days": 0,
+    "latest_period_end": "2026-05-19",
+    "latest_filed_date": "2026-05-21"
   },
   "risk_flags": [],
   "valuation_warnings": [],
@@ -112,22 +112,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.16,
+      "Value": 49.37,
       "Growth": 49.37,
-      "Momentum": 50.5,
-      "Health": 52.79,
+      "Momentum": 49.4,
+      "Health": 52.75,
       "Profitability": 47.68,
-      "Technical": 45.57,
-      "Risk": 54.48
+      "Technical": 45.22,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 50.737880600007045,
-  "price_change_1d_pct": 1.6787,
+  "loss_chance_pct": 50.32500812905255,
+  "price_change_1d_pct": 3.8269,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 50.73,
+  "composite_score_adjusted": 52.28,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -136,9 +136,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -171,7 +173,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.29,
+  "osap_blended_score": 52.07,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

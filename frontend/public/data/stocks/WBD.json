@@ -3,19 +3,19 @@
   "name": "Warner Bros. Discovery",
   "sector": "Communication Services",
   "industry": "Broadcasting",
-  "market_cap": 68745688560.11935,
-  "current_price": 27.42,
-  "rank": 466,
-  "composite_score": 37.09,
+  "market_cap": 67943405580.596756,
+  "current_price": 27.1,
+  "rank": 468,
+  "composite_score": 36.83,
   "pillar_scores": {
     "quality": 25.0,
-    "value": 40.58,
+    "value": 41.3,
     "growth": 39.67,
-    "momentum": 65.59,
+    "momentum": 65.44,
     "health": 12.39,
     "profitability": 28.26,
-    "technical": 60.23,
-    "risk": 50.8,
+    "technical": 52.39,
+    "risk": 50.56,
     "sentiment": null,
     "ml": null
   },
@@ -32,7 +32,7 @@
     "eps_basic": -1.17,
     "eps_diluted": -1.17,
     "shares_outstanding": 2507136702.0,
-    "market_cap": 68745688560.11935,
+    "market_cap": 67943405580.596756,
     "pe_ratio_ttm": null,
     "goodwill": 25874000000.0
   },
@@ -51,13 +51,13 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 33.654590879792,
+        "value": 33.72281575630557,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 8.199436969312409,
+        "value": 8.364437704294188,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,16 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 8.199436969312409,
-    "max": 33.654590879792,
+    "median": 8.364437704294188,
+    "max": 33.72281575630557,
     "low": 5.4474588975836005,
-    "high": 33.654590879792,
-    "mos_pct": -234.413206405724,
+    "high": 33.72281575630557,
+    "mos_pct": -223.99070134214708,
     "valuation_warnings": [
-      "extreme_dcf_estimate",
       "value_trap_risk"
     ],
-    "valuation_methods_applicable": 2
+    "valuation_methods_applicable": 3
   },
   "top5_factors": [],
   "score_history": [],
@@ -97,7 +96,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-04-23",
     "latest_filed_date": "2026-05-06"
   },
@@ -105,7 +104,6 @@
     "altman_distress"
   ],
   "valuation_warnings": [
-    "extreme_dcf_estimate",
     "value_trap_risk"
   ],
   "has_history": true,
@@ -123,20 +121,20 @@
       "Quality": 52.17,
       "Value": 50.0,
       "Growth": 60.33,
-      "Momentum": 48.26,
+      "Momentum": 49.25,
       "Health": 45.5,
       "Profitability": 50.72,
-      "Technical": 48.46,
-      "Risk": 50.55
+      "Technical": 52.39,
+      "Risk": 50.05
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 81.4574690368959,
-  "price_change_1d_pct": 1.2182,
+  "loss_chance_pct": 80.58573315433917,
+  "price_change_1d_pct": -1.167,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 37.09,
+  "composite_score_adjusted": 36.83,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -145,9 +143,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -180,8 +180,8 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 44.47,
+  "osap_blended_score": 44.34,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 2
+  "valuation_methods_applicable": 3
 }

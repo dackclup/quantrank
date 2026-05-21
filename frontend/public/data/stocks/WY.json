@@ -3,19 +3,19 @@
   "name": "Weyerhaeuser",
   "sector": "Real Estate",
   "industry": "Timber REITs",
-  "market_cap": 16757039154.966354,
-  "current_price": 23.24,
-  "rank": 473,
-  "composite_score": 36.17,
+  "market_cap": 16958931690.067291,
+  "current_price": 23.52,
+  "rank": 479,
+  "composite_score": 35.68,
   "pillar_scores": {
     "quality": 20.97,
-    "value": 50.54,
+    "value": 46.77,
     "growth": 30.65,
-    "momentum": 54.33,
-    "health": 37.37,
+    "momentum": 52.49,
+    "health": 37.33,
     "profitability": 26.88,
-    "technical": 29.63,
-    "risk": 40.21,
+    "technical": 40.74,
+    "risk": 41.17,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.22,
     "eps_diluted": 0.22,
     "shares_outstanding": 721043000.0,
-    "market_cap": 16757039154.966354,
-    "pe_ratio_ttm": 42.20916663719485,
+    "market_cap": 16958931690.067291,
+    "pe_ratio_ttm": 42.717712065660685,
     "goodwill": 40000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 15.690798591026775,
+        "value": 15.670334088437144,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 33.85970725360386,
+        "value": 33.834408607236526,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 23.259469598156855,
+        "value": 23.194575421428212,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 19.475134094591816,
-    "max": 33.85970725360386,
+    "median": 19.432454754932678,
+    "max": 33.834408607236526,
     "low": 14.46431131925691,
-    "high": 33.85970725360386,
-    "mos_pct": -19.331654705123903,
+    "high": 33.834408607236526,
+    "mos_pct": -21.034633834891206,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -92,7 +92,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 19,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-05-01"
   },
@@ -115,22 +115,22 @@
     "label": "Real Estate median (n=31)",
     "values": {
       "Quality": 50.81,
-      "Value": 47.31,
+      "Value": 46.77,
       "Growth": 48.79,
-      "Momentum": 57.32,
+      "Momentum": 53.24,
       "Health": 26.22,
       "Profitability": 52.15,
-      "Technical": 55.83,
-      "Risk": 52.92
+      "Technical": 51.49,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": -2.1808532018397306,
   "dechow_f_score": 0.5251794515731361,
   "recommendation": "neutral",
-  "loss_chance_pct": 58.68319027218428,
-  "price_change_1d_pct": 1.5291,
+  "loss_chance_pct": 59.52408420780331,
+  "price_change_1d_pct": 1.2048,
   "manipulation_index": 11.0,
-  "composite_score_adjusted": 35.07,
+  "composite_score_adjusted": 34.58,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -139,9 +139,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": true,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": true,
     "dechow_high": false
   },
@@ -174,7 +176,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 44.01,
+  "osap_blended_score": 43.76,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

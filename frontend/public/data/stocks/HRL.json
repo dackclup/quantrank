@@ -3,19 +3,19 @@
   "name": "Hormel Foods",
   "sector": "Consumer Staples",
   "industry": "Packaged Foods & Meats",
-  "market_cap": 11432656686.0466,
-  "current_price": 20.76,
-  "rank": 465,
-  "composite_score": 37.13,
+  "market_cap": 11608882437.984467,
+  "current_price": 21.08,
+  "rank": 464,
+  "composite_score": 37.15,
   "pillar_scores": {
     "quality": 25.0,
-    "value": 61.81,
+    "value": 61.34,
     "growth": 12.5,
-    "momentum": 14.29,
-    "health": 67.43,
+    "momentum": 15.49,
+    "health": 67.51,
     "profitability": 34.72,
-    "technical": 58.86,
-    "risk": 30.58,
+    "technical": 57.82,
+    "risk": 30.98,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.33,
     "eps_diluted": 0.33,
     "shares_outstanding": 550706000.0,
-    "market_cap": 11432656686.0466,
-    "pe_ratio_ttm": 23.359459375727337,
+    "market_cap": 11608882437.984467,
+    "pe_ratio_ttm": 23.719527766338047,
     "goodwill": 4888532000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 21.58372044637316,
+        "value": 21.543164339665193,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 25.981189574907123,
+        "value": 26.125837659929697,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 23.663095039738174,
+        "value": 23.780753334004764,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 21.58372044637316,
-    "max": 25.981189574907123,
+    "median": 21.543164339665193,
+    "max": 26.125837659929697,
     "low": 8.686479883073478,
-    "high": 25.981189574907123,
-    "mos_pct": 3.816395878263605,
+    "high": 26.125837659929697,
+    "mos_pct": 2.1499367904201594,
     "valuation_warnings": [
       "goodwill_heavy",
       "value_trap_risk"
@@ -94,7 +94,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 83,
+    "filing_lag_days": 84,
     "latest_period_end": "2026-01-25",
     "latest_filed_date": "2026-02-26"
   },
@@ -117,22 +117,22 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 49.65,
-      "Value": 50.93,
+      "Value": 51.16,
       "Growth": 48.44,
-      "Momentum": 37.77,
+      "Momentum": 36.21,
       "Health": 39.29,
       "Profitability": 53.94,
-      "Technical": 55.27,
-      "Risk": 50.88
+      "Technical": 54.93,
+      "Risk": 50.78
     }
   },
   "beneish_m_score": -2.7327424348092304,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 48.097556041988,
-  "price_change_1d_pct": 1.7647,
+  "loss_chance_pct": 48.67289009590718,
+  "price_change_1d_pct": 1.5414,
   "manipulation_index": 8.0,
-  "composite_score_adjusted": 36.33,
+  "composite_score_adjusted": 36.35,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -141,9 +141,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": true,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -176,7 +178,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 44.49,
+  "osap_blended_score": 44.5,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5

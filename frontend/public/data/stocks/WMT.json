@@ -3,19 +3,19 @@
   "name": "Walmart",
   "sector": "Consumer Staples",
   "industry": "Consumer Staples Merchandise Retail",
-  "market_cap": 1043188915915.5332,
-  "current_price": 130.85,
-  "rank": 140,
-  "composite_score": 55.77,
+  "market_cap": 967371290275.53,
+  "current_price": 121.34,
+  "rank": 185,
+  "composite_score": 53.49,
   "pillar_scores": {
     "quality": 74.31,
-    "value": 22.92,
+    "value": 23.38,
     "growth": 60.42,
-    "momentum": 75.9,
+    "momentum": 72.56,
     "health": 37.55,
     "profitability": 55.09,
-    "technical": 54.66,
-    "risk": 85.66,
+    "technical": 18.8,
+    "risk": 80.91,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.74,
     "eps_diluted": 2.73,
     "shares_outstanding": 7972402501.0,
-    "market_cap": 1043188915915.5332,
-    "pe_ratio_ttm": 46.84278921937734,
+    "market_cap": 967371290275.53,
+    "pe_ratio_ttm": 43.438315683678944,
     "goodwill": 28735000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 65.04784239095687,
+        "value": 65.45519384667493,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 39.170742174698326,
+        "value": 39.487363427190196,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +76,10 @@
       }
     },
     "median": 21.68196122261879,
-    "max": 65.04784239095687,
+    "max": 65.45519384667493,
     "low": 14.089337876870175,
-    "high": 65.04784239095687,
-    "mos_pct": -503.4970949353599,
+    "high": 65.45519384667493,
+    "mos_pct": -459.63570404003775,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_rim_estimate",
@@ -100,7 +100,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 68,
+    "filing_lag_days": 69,
     "latest_period_end": "2026-03-11",
     "latest_filed_date": "2026-03-13"
   },
@@ -123,22 +123,22 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 49.65,
-      "Value": 50.93,
+      "Value": 51.16,
       "Growth": 48.44,
-      "Momentum": 37.77,
+      "Momentum": 36.21,
       "Health": 39.29,
       "Profitability": 53.94,
-      "Technical": 55.27,
-      "Risk": 50.88
+      "Technical": 54.93,
+      "Risk": 50.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 60.11367492990999,
-  "price_change_1d_pct": -2.4963,
+  "loss_chance_pct": 61.25556570016232,
+  "price_change_1d_pct": -7.2679,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 55.77,
+  "composite_score_adjusted": 53.49,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -147,9 +147,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -182,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.81,
+  "osap_blended_score": 52.67,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2

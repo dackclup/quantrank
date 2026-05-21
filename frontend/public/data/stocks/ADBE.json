@@ -3,19 +3,19 @@
   "name": "Adobe Inc.",
   "sector": "Information Technology",
   "industry": "Application Software",
-  "market_cap": 102412152026.36719,
-  "current_price": 253.37,
-  "rank": 12,
-  "composite_score": 67.13,
+  "market_cap": 98665222467.04102,
+  "current_price": 244.1,
+  "rank": 16,
+  "composite_score": 66.42,
   "pillar_scores": {
     "quality": 86.3,
-    "value": 81.28,
-    "growth": 66.44,
-    "momentum": 13.6,
+    "value": 81.74,
+    "growth": 66.1,
+    "momentum": 13.3,
     "health": 59.0,
     "profitability": 86.76,
-    "technical": 59.31,
-    "risk": 21.71,
+    "technical": 45.17,
+    "risk": 21.08,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 4.6,
     "eps_diluted": 4.6,
     "shares_outstanding": 404200000.0,
-    "market_cap": 102412152026.36719,
-    "pe_ratio_ttm": 14.208123200106437,
+    "market_cap": 98665222467.04102,
+    "pe_ratio_ttm": 13.688293904972396,
     "goodwill": 12869000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 742.7143039860689,
+        "value": 735.2999194836709,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 143.99713075748718,
+        "value": 123.44436845192897,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 685.2970482227557,
+        "value": 679.8502223706465,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 461.0473057393558,
-    "max": 742.7143039860689,
-    "low": 143.99713075748718,
-    "high": 742.7143039860689,
-    "mos_pct": 45.04468587862753,
+    "median": 458.3238928133012,
+    "max": 735.2999194836709,
+    "low": 123.44436845192897,
+    "high": 735.2999194836709,
+    "mos_pct": 46.740719842212094,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -92,7 +92,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 56,
+    "filing_lag_days": 57,
     "latest_period_end": "2026-03-20",
     "latest_filed_date": "2026-03-25"
   },
@@ -110,23 +110,23 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 49.32,
-      "Value": 48.17,
-      "Growth": 52.23,
-      "Momentum": 59.76,
+      "Quality": 49.66,
+      "Value": 48.86,
+      "Growth": 53.42,
+      "Momentum": 61.8,
       "Health": 69.52,
-      "Profitability": 47.26,
-      "Technical": 61.01,
-      "Risk": 46.85
+      "Profitability": 48.86,
+      "Technical": 59.76,
+      "Risk": 47.31
     }
   },
   "beneish_m_score": -3.0081580287962986,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 15.670635957143176,
-  "price_change_1d_pct": -0.6353,
+  "loss_chance_pct": 15.431146961882245,
+  "price_change_1d_pct": -3.6587,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 67.13,
+  "composite_score_adjusted": 66.42,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -135,9 +135,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -170,7 +172,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 59.49,
+  "osap_blended_score": 59.14,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

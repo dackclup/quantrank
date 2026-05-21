@@ -3,19 +3,19 @@
   "name": "American International Group",
   "sector": "Financials",
   "industry": "Multi-line Insurance",
-  "market_cap": 41371990777.40561,
-  "current_price": 78.03,
-  "rank": 376,
-  "composite_score": 43.98,
+  "market_cap": 41684814551.27488,
+  "current_price": 78.62,
+  "rank": 379,
+  "composite_score": 43.8,
   "pillar_scores": {
     "quality": 34.0,
     "value": 59.78,
     "growth": 19.17,
-    "momentum": 44.67,
+    "momentum": 45.97,
     "health": 55.62,
     "profitability": 42.89,
-    "technical": 52.14,
-    "risk": 62.68,
+    "technical": 45.27,
+    "risk": 62.65,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.42,
     "eps_diluted": 1.41,
     "shares_outstanding": 530206221.0,
-    "market_cap": 41371990777.40561,
-    "pe_ratio_ttm": 13.084121055472995,
+    "market_cap": 41684814551.27488,
+    "pe_ratio_ttm": 13.183053305273523,
     "goodwill": 3418000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 82.67832015520135,
+        "value": 83.16992566662647,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 154.8945150637767,
+        "value": 155.05381252986754,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 82.67832015520135,
-    "max": 154.8945150637767,
+    "median": 83.16992566662647,
+    "max": 155.05381252986754,
     "low": 65.39249801373434,
-    "high": 154.8945150637767,
-    "mos_pct": 5.622176850205445,
+    "high": 155.05381252986754,
+    "mos_pct": 5.470634828125356,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -102,7 +102,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 19,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-05-01"
   },
@@ -125,20 +125,20 @@
       "Quality": 50.67,
       "Value": 52.89,
       "Growth": 51.5,
-      "Momentum": 53.29,
+      "Momentum": 54.28,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 51.94,
-      "Risk": 54.88
+      "Technical": 51.25,
+      "Risk": 54.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 43.04237533129043,
-  "price_change_1d_pct": 0.6449,
+  "loss_chance_pct": 43.18692400316189,
+  "price_change_1d_pct": 0.7561,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 43.98,
+  "composite_score_adjusted": 43.8,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -147,9 +147,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -182,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.92,
+  "osap_blended_score": 47.82,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3

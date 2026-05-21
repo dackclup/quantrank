@@ -3,19 +3,19 @@
   "name": "IDEX Corporation",
   "sector": "Industrials",
   "industry": "Industrial Machinery & Supplies & Components",
-  "market_cap": 15409193856.58081,
-  "current_price": 208.19,
-  "rank": 384,
-  "composite_score": 43.39,
+  "market_cap": 15218234886.895203,
+  "current_price": 205.61,
+  "rank": 400,
+  "composite_score": 42.34,
   "pillar_scores": {
     "quality": 24.05,
-    "value": 44.73,
+    "value": 44.3,
     "growth": 25.95,
-    "momentum": 65.64,
+    "momentum": 63.2,
     "health": 80.32,
     "profitability": 51.05,
-    "technical": 42.83,
-    "risk": 50.73,
+    "technical": 30.33,
+    "risk": 50.1,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.61,
     "eps_diluted": 1.61,
     "shares_outstanding": 74015052.0,
-    "market_cap": 15409193856.58081,
-    "pe_ratio_ttm": 30.350982581407937,
+    "market_cap": 15218234886.895203,
+    "pe_ratio_ttm": 29.974856976354545,
     "goodwill": 3390200000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 183.25288144203998,
+        "value": 183.5330887698374,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 190.1919539567443,
+        "value": 188.37519116023856,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 176.16920174370495,
+        "value": 174.83940293367183,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 179.71104159287245,
-    "max": 190.1919539567443,
+    "median": 179.18624585175462,
+    "max": 188.37519116023856,
     "low": 87.82000065831032,
-    "high": 190.1919539567443,
-    "mos_pct": -15.847084628807423,
+    "high": 188.37519116023856,
+    "mos_pct": -14.746530702171187,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -92,7 +92,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 21,
+    "filing_lag_days": 22,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-29"
   },
@@ -111,22 +111,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.16,
+      "Value": 49.37,
       "Growth": 49.37,
-      "Momentum": 50.5,
-      "Health": 52.79,
+      "Momentum": 49.4,
+      "Health": 52.75,
       "Profitability": 47.68,
-      "Technical": 45.57,
-      "Risk": 54.48
+      "Technical": 45.22,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": -2.4248623798517337,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 48.85038320405893,
-  "price_change_1d_pct": 1.4818,
+  "loss_chance_pct": 48.98950031364869,
+  "price_change_1d_pct": -1.2393,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 43.39,
+  "composite_score_adjusted": 42.34,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -135,9 +135,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -170,7 +172,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.62,
+  "osap_blended_score": 47.1,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4

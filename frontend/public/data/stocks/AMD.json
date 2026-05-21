@@ -3,19 +3,19 @@
   "name": "Advanced Micro Devices",
   "sector": "Information Technology",
   "industry": "Semiconductors",
-  "market_cap": 729824212108.3478,
-  "current_price": 447.58,
-  "rank": 346,
-  "composite_score": 46.27,
+  "market_cap": 733101735316.5721,
+  "current_price": 449.59,
+  "rank": 339,
+  "composite_score": 46.35,
   "pillar_scores": {
-    "quality": 20.21,
+    "quality": 19.86,
     "value": 21.0,
-    "growth": 66.78,
-    "momentum": 92.13,
-    "health": 89.2,
-    "profitability": 32.65,
-    "technical": 67.48,
-    "risk": 47.74,
+    "growth": 66.44,
+    "momentum": 94.1,
+    "health": 89.16,
+    "profitability": 32.19,
+    "technical": 67.38,
+    "risk": 47.94,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.85,
     "eps_diluted": 0.84,
     "shares_outstanding": 1630600639.0,
-    "market_cap": 729824212108.3478,
-    "pe_ratio_ttm": 145.70257778166254,
+    "market_cap": 733101735316.5721,
+    "pe_ratio_ttm": 146.35690463497147,
     "goodwill": 25344000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 105.17197669189835,
+        "value": 132.465324710279,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 306.5858248349402,
+        "value": 303.53724093589466,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 66.6459085166059,
-    "max": 306.5858248349402,
+    "median": 80.29258252579622,
+    "max": 303.53724093589466,
     "low": 21.012065096054318,
-    "high": 306.5858248349402,
-    "mos_pct": -571.5790909516131,
+    "high": 303.53724093589466,
+    "mos_pct": -459.9396385007885,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -98,7 +98,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-05-06"
   },
@@ -122,23 +122,23 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 49.32,
-      "Value": 48.17,
-      "Growth": 52.23,
-      "Momentum": 59.76,
+      "Quality": 49.66,
+      "Value": 48.86,
+      "Growth": 53.42,
+      "Momentum": 61.8,
       "Health": 69.52,
-      "Profitability": 47.26,
-      "Technical": 61.01,
-      "Risk": 46.85
+      "Profitability": 48.86,
+      "Technical": 59.76,
+      "Risk": 47.31
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.6060518012826601,
   "recommendation": "cautious",
-  "loss_chance_pct": 66.86412114100675,
-  "price_change_1d_pct": 8.0981,
+  "loss_chance_pct": 66.8246849929051,
+  "price_change_1d_pct": 0.4491,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 45.77,
+  "composite_score_adjusted": 45.85,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -147,9 +147,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": true,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -182,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.06,
+  "osap_blended_score": 49.1,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2

@@ -3,19 +3,19 @@
   "name": "Illinois Tool Works",
   "sector": "Industrials",
   "industry": "Industrial Machinery & Supplies & Components",
-  "market_cap": 72146530229.18701,
-  "current_price": 250.77,
-  "rank": 102,
-  "composite_score": 57.98,
+  "market_cap": 71904858892.82227,
+  "current_price": 249.93,
+  "rank": 110,
+  "composite_score": 57.58,
   "pillar_scores": {
     "quality": 80.06,
-    "value": 46.84,
+    "value": 47.26,
     "growth": 38.92,
-    "momentum": 43.92,
+    "momentum": 43.87,
     "health": 51.43,
     "profitability": 85.44,
-    "technical": 47.76,
-    "risk": 58.47,
+    "technical": 38.2,
+    "risk": 58.33,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 2.66,
     "eps_diluted": 2.66,
     "shares_outstanding": 287700000.0,
-    "market_cap": 72146530229.18701,
-    "pe_ratio_ttm": 23.020590373065417,
+    "market_cap": 71904858892.82227,
+    "pe_ratio_ttm": 22.943477630128356,
     "goodwill": 5083000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 292.94450073047403,
+        "value": 301.80152159541547,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 99.58336556507143,
+        "value": 98.6321194689795,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 253.80886144532238,
+        "value": 250.5285931827074,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 137.83559137018403,
-    "max": 292.94450073047403,
+    "median": 137.35996832213806,
+    "max": 301.80152159541547,
     "low": 46.39626729462002,
-    "high": 292.94450073047403,
-    "mos_pct": -81.93414471518447,
+    "high": 301.80152159541547,
+    "mos_pct": -81.95257011827695,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate"
@@ -98,7 +98,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 13,
+    "filing_lag_days": 14,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
@@ -123,22 +123,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.16,
+      "Value": 49.37,
       "Growth": 49.37,
-      "Momentum": 50.5,
-      "Health": 52.79,
+      "Momentum": 49.4,
+      "Health": 52.75,
       "Profitability": 47.68,
-      "Technical": 45.57,
-      "Risk": 54.48
+      "Technical": 45.22,
+      "Risk": 53.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 61.01226581017701,
-  "price_change_1d_pct": 1.3745,
+  "loss_chance_pct": 61.20944387008927,
+  "price_change_1d_pct": -0.335,
   "manipulation_index": 25.0,
-  "composite_score_adjusted": 55.48,
+  "composite_score_adjusted": 55.08,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -147,9 +147,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": true,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -182,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.91,
+  "osap_blended_score": 54.72,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5

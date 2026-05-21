@@ -3,19 +3,19 @@
   "name": "Alphabet Inc. (Class C)",
   "sector": "Communication Services",
   "industry": "Interactive Media & Services",
-  "market_cap": 4663448326049.805,
-  "current_price": 384.9,
-  "rank": 73,
-  "composite_score": 59.61,
+  "market_cap": 4646122534790.039,
+  "current_price": 383.47,
+  "rank": 81,
+  "composite_score": 58.91,
   "pillar_scores": {
     "quality": 68.48,
     "value": 15.22,
     "growth": 66.3,
-    "momentum": 80.48,
-    "health": 88.03,
+    "momentum": 77.44,
+    "health": 88.11,
     "profitability": 71.38,
-    "technical": 63.84,
-    "risk": 67.94,
+    "technical": 57.27,
+    "risk": 67.98,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 5.17,
     "eps_diluted": 5.11,
     "shares_outstanding": 12116000000.0,
-    "market_cap": 4663448326049.805,
-    "pe_ratio_ttm": 29.108710713883234,
+    "market_cap": 4646122534790.039,
+    "pe_ratio_ttm": 29.00056510779761,
     "goodwill": 57774000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 258.10078610199014,
+        "value": 259.10516166741843,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 91.56787494920377,
+        "value": 91.96682873643229,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 179.55942012340088,
+        "value": 181.06008449713568,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,16 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 85.40527755957069,
-    "max": 258.10078610199014,
+    "median": 85.60475445318494,
+    "max": 259.10516166741843,
     "low": 73.12849127974656,
-    "high": 258.10078610199014,
-    "mos_pct": -350.67471811447996,
+    "high": 259.10516166741843,
+    "mos_pct": -347.9540928190071,
     "valuation_warnings": [
-      "extreme_rim_estimate",
       "extreme_dcf_estimate"
     ],
-    "valuation_methods_applicable": 4
+    "valuation_methods_applicable": 5
   },
   "top5_factors": [],
   "score_history": [],
@@ -93,13 +92,12 @@
       "gross_profit"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 20,
+    "filing_lag_days": 21,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_rim_estimate",
     "extreme_dcf_estimate",
     "beneish_high",
     "accruals_momentum_high"
@@ -119,20 +117,20 @@
       "Quality": 52.17,
       "Value": 50.0,
       "Growth": 60.33,
-      "Momentum": 48.26,
+      "Momentum": 49.25,
       "Health": 45.5,
       "Profitability": 50.72,
-      "Technical": 48.46,
-      "Risk": 50.55
+      "Technical": 52.39,
+      "Risk": 50.05
     }
   },
   "beneish_m_score": -2.21807074723472,
   "dechow_f_score": 0.4126593083051625,
   "recommendation": "cautious",
-  "loss_chance_pct": 60.196378435533234,
-  "price_change_1d_pct": 0.0,
+  "loss_chance_pct": 59.54598002915873,
+  "price_change_1d_pct": -0.3715,
   "manipulation_index": 8.0,
-  "composite_score_adjusted": 58.81,
+  "composite_score_adjusted": 58.11,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -141,9 +139,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": true,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": true,
     "dechow_high": false
   },
@@ -176,8 +176,8 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 55.73,
+  "osap_blended_score": 55.38,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 4
+  "valuation_methods_applicable": 5
 }

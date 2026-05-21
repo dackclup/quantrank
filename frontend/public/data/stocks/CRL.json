@@ -3,19 +3,19 @@
   "name": "Charles River Laboratories",
   "sector": "Health Care",
   "industry": "Life Sciences Tools & Services",
-  "market_cap": 7515610853.101501,
-  "current_price": 156.03,
-  "rank": 476,
-  "composite_score": 36.05,
+  "market_cap": 7651925617.199249,
+  "current_price": 158.86,
+  "rank": 475,
+  "composite_score": 36.18,
   "pillar_scores": {
     "quality": 23.31,
-    "value": 40.68,
+    "value": 40.11,
     "growth": 42.8,
-    "momentum": 58.12,
+    "momentum": 58.27,
     "health": 36.65,
     "profitability": 28.53,
-    "technical": 29.98,
-    "risk": 24.63,
+    "technical": 35.16,
+    "risk": 24.04,
     "sentiment": null,
     "ml": null
   },
@@ -32,7 +32,7 @@
     "eps_basic": -0.3,
     "eps_diluted": -0.3,
     "shares_outstanding": 48167730.0,
-    "market_cap": 7515610853.101501,
+    "market_cap": 7651925617.199249,
     "pe_ratio_ttm": null,
     "goodwill": 3040032000.0
   },
@@ -51,13 +51,13 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 180.73882609023556,
+        "value": 183.83524272765254,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 117.4563903324834,
+        "value": 116.62649703570737,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 149.09760821135947,
-    "max": 180.73882609023556,
-    "low": 117.4563903324834,
-    "high": 180.73882609023556,
-    "mos_pct": -4.649565241925348,
+    "median": 150.23086988167995,
+    "max": 183.83524272765254,
+    "low": 116.62649703570737,
+    "high": 183.83524272765254,
+    "mos_pct": -5.743913175413158,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -95,7 +95,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 13,
+    "filing_lag_days": 14,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-05-07"
   },
@@ -116,22 +116,22 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 52.97,
-      "Value": 51.13,
+      "Value": 50.85,
       "Growth": 49.58,
-      "Momentum": 40.09,
-      "Health": 59.88,
+      "Momentum": 38.6,
+      "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 57.02,
-      "Risk": 41.14
+      "Technical": 56.82,
+      "Risk": 41.47
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.447214018384792,
   "recommendation": "neutral",
-  "loss_chance_pct": 50.6038239921907,
-  "price_change_1d_pct": 2.3617,
+  "loss_chance_pct": 50.92279054911266,
+  "price_change_1d_pct": 1.8138,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 36.05,
+  "composite_score_adjusted": 36.18,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -140,9 +140,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -175,7 +177,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 43.95,
+  "osap_blended_score": 44.01,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2

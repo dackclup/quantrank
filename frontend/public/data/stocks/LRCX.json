@@ -3,19 +3,19 @@
   "name": "Lam Research",
   "sector": "Information Technology",
   "industry": "Semiconductor Materials & Equipment",
-  "market_cap": 365279278810.2722,
-  "current_price": 292.09,
-  "rank": 46,
-  "composite_score": 62.54,
+  "market_cap": 377972566827.3926,
+  "current_price": 302.24,
+  "rank": 44,
+  "composite_score": 62.76,
   "pillar_scores": {
     "quality": 85.27,
     "value": 19.86,
-    "growth": 40.75,
-    "momentum": 90.99,
-    "health": 84.78,
+    "growth": 41.1,
+    "momentum": 92.53,
+    "health": 84.82,
     "profitability": 76.71,
-    "technical": 57.92,
-    "risk": 52.79,
+    "technical": 57.52,
+    "risk": 52.92,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 3.97,
     "eps_diluted": 3.95,
     "shares_outstanding": 1250571000.0,
-    "market_cap": 365279278810.2722,
-    "pe_ratio_ttm": 54.45263556617291,
+    "market_cap": 377972566827.3926,
+    "pe_ratio_ttm": 56.344839768896726,
     "goodwill": 1600000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 188.96074636761358,
+        "value": 196.03114840175843,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 79.049440560238,
+        "value": 79.83387398279604,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 151.02496467716367,
+        "value": 152.00989418726405,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,27 +75,29 @@
         "tier_used": null
       }
     },
-    "median": 79.049440560238,
-    "max": 188.96074636761358,
+    "median": 79.83387398279604,
+    "max": 196.03114840175843,
     "low": 34.72945693556582,
-    "high": 188.96074636761358,
-    "mos_pct": -269.5029266087082,
+    "high": 196.03114840175843,
+    "mos_pct": -278.5861504096705,
     "valuation_warnings": [
+      "extreme_graham_estimate",
       "extreme_rim_estimate"
     ],
-    "valuation_methods_applicable": 4
+    "valuation_methods_applicable": 3
   },
   "top5_factors": [],
   "score_history": [],
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 27,
+    "filing_lag_days": 28,
     "latest_period_end": "2026-04-21",
     "latest_filed_date": "2026-04-23"
   },
   "risk_flags": [],
   "valuation_warnings": [
+    "extreme_graham_estimate",
     "extreme_rim_estimate"
   ],
   "has_history": true,
@@ -110,23 +112,23 @@
   "pillar_baseline": {
     "label": "Information Technology median (n=73)",
     "values": {
-      "Quality": 49.32,
-      "Value": 48.17,
-      "Growth": 52.23,
-      "Momentum": 59.76,
+      "Quality": 49.66,
+      "Value": 48.86,
+      "Growth": 53.42,
+      "Momentum": 61.8,
       "Health": 69.52,
-      "Profitability": 47.26,
-      "Technical": 61.01,
-      "Risk": 46.85
+      "Profitability": 48.86,
+      "Technical": 59.76,
+      "Risk": 47.31
     }
   },
   "beneish_m_score": -2.3315243868135314,
   "dechow_f_score": 0.363907181175394,
   "recommendation": "cautious",
-  "loss_chance_pct": 54.73246909621787,
-  "price_change_1d_pct": 6.844,
+  "loss_chance_pct": 55.62005403045353,
+  "price_change_1d_pct": 3.475,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 62.54,
+  "composite_score_adjusted": 62.76,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -135,9 +137,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -170,8 +174,8 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 57.19,
+  "osap_blended_score": 57.31,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 4
+  "valuation_methods_applicable": 3
 }

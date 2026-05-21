@@ -3,19 +3,19 @@
   "name": "Yum! Brands",
   "sector": "Consumer Discretionary",
   "industry": "Restaurants",
-  "market_cap": 42090115607.904144,
-  "current_price": 152.71,
-  "rank": 316,
-  "composite_score": 47.39,
+  "market_cap": 42533865911.349976,
+  "current_price": 154.32,
+  "rank": 305,
+  "composite_score": 47.96,
   "pillar_scores": {
-    "quality": 44.53,
-    "value": 38.02,
-    "growth": 60.68,
-    "momentum": 53.59,
-    "health": 24.36,
-    "profitability": 85.07,
-    "technical": 42.73,
-    "risk": 64.41,
+    "quality": 44.01,
+    "value": 38.37,
+    "growth": 60.16,
+    "momentum": 53.09,
+    "health": 24.32,
+    "profitability": 84.38,
+    "technical": 57.87,
+    "risk": 65.77,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.56,
     "eps_diluted": 1.55,
     "shares_outstanding": 275621202.0,
-    "market_cap": 42090115607.904144,
-    "pe_ratio_ttm": 24.217557887171544,
+    "market_cap": 42533865911.349976,
+    "pe_ratio_ttm": 24.472880271202516,
     "goodwill": 971000000.0
   },
   "fair_price": {
@@ -45,7 +45,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 135.98946313609358,
+        "value": 137.02775346819283,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -57,7 +57,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 129.0109448015174,
+        "value": 132.3535725056729,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "insufficient_history_for_roe",
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,12 @@
         "tier_used": null
       }
     },
-    "median": 129.0109448015174,
-    "max": 135.98946313609358,
+    "median": 132.3535725056729,
+    "max": 137.02775346819283,
     "low": 61.54370935849194,
-    "high": 135.98946313609358,
-    "mos_pct": -18.369807266205704,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "high": 137.02775346819283,
+    "mos_pct": -16.59678269553648,
+    "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
   "top5_factors": [],
@@ -94,16 +92,14 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [
     "altman_distress"
   ],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -117,22 +113,22 @@
     "label": "Consumer Discretionary median (n=48)",
     "values": {
       "Quality": 46.35,
-      "Value": 49.83,
-      "Growth": 51.69,
-      "Momentum": 42.26,
-      "Health": 43.72,
+      "Value": 50.17,
+      "Growth": 51.43,
+      "Momentum": 41.36,
+      "Health": 43.75,
       "Profitability": 52.6,
-      "Technical": 43.15,
-      "Risk": 41.87
+      "Technical": 51.39,
+      "Risk": 41.77
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 61.735176580909936,
-  "price_change_1d_pct": 0.3417,
+  "loss_chance_pct": 58.83053210246832,
+  "price_change_1d_pct": 1.0543,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 47.39,
+  "composite_score_adjusted": 47.96,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -141,9 +137,11 @@
     "manipulation_triple_flag": false,
     "rem_suspect": false,
     "restatement_history": false,
+    "restatement_high_confidence": false,
     "late_filing_notification": false,
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
+    "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false
   },
@@ -176,7 +174,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.62,
+  "osap_blended_score": 49.9,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3
