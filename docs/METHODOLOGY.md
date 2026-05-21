@@ -196,6 +196,20 @@ composite.
   because the asset base is multi-billion). Annotate-only — both
   flags ship side-by-side pending the Q3 2026-08-19 quarterly-audit
   decision.
+- `share_count_extraction_missing` _(Issue #176)_ —
+  `shares_outstanding is None AND revenue > 0 AND total_assets > 0`.
+  Operational data-quality annotate (not a literature-anchored
+  manipulation defense): surfaces tickers where the XBRL fact-name
+  manifest in `compute.ingest.fundamentals._FUNDAMENTALS_REQUIRED_ATTRS`
+  missed a share-class-scoped fact, cascading to null `market_cap` +
+  null EPS + null P/E without otherwise breaking the snapshot. STZ
+  2026-05-14 cron was the trigger case (Constellation Brands Class A /
+  Class B). Annotate-only — kept distinct from the
+  `data_quality_input_corruption` veto's existing
+  `shares_outstanding=None` silence contract (issue #18 / test_D3) so
+  legitimately uncomputable TBVPS still degrades to a null fair-price
+  rather than a Top-5 ban. Promotion to veto deferred to the Q3
+  2026-08-19 cohort audit after firing-rate confirmation.
 
 Phase 3e adds `beneish_high` and `dechow_f_high`.
 

@@ -165,6 +165,54 @@ def _data_quality_input_corruption(snap: FundamentalsSnapshot | None) -> bool:
     return False
 
 
+def check_share_count_extraction_missing(
+    snap: FundamentalsSnapshot | None,
+) -> bool:
+    """True iff the snapshot has company-level fundamentals but lost
+    ``shares_outstanding`` to a per-share XBRL fact-name miss.
+
+    Issue #176 (STZ, 2026-05-14 cron) — the snapshot carried revenue +
+    full balance sheet but ``shares_outstanding is None``, cascading to
+    ``market_cap = None`` + null EPS + null P/E with no risk flag.
+    Cause: Constellation Brands files share-count via a share-class-
+    scoped XBRL fact (Class A / Class B) that the
+    ``_FUNDAMENTALS_REQUIRED_ATTRS`` manifest in
+    ``compute.ingest.fundamentals`` does not cover.
+
+    Annotate-only — emitted to ``valuation_warnings`` in
+    ``compute.main`` per the ``portable-annotate-before-veto``
+    discipline; the existing veto path
+    (``_data_quality_input_corruption``) keeps its
+    ``shares_outstanding=None`` silence contract (issue #18 / test_D3)
+    so legitimately uncomputable TBVPS still degrades to a null
+    fair-price rather than a Top-5 ban. Promotion to veto deferred to
+    the Q3 2026-08-19 quarterly cohort audit after the first cron's
+    firing rate confirms the pattern is narrow (single-digit tickers,
+    not a universe-wide false-positive).
+
+    Pattern (all four must hold):
+
+    - ``shares_outstanding is None`` — the precise extraction hole;
+    - ``revenue > 0`` — guards against "entire XBRL extraction broken"
+      (a different bug class — see issue #15 throttling-resilience);
+    - ``total_assets > 0`` — second-source confirmation that the
+      balance-sheet path of the same filing did extract cleanly.
+
+    ``shares_outstanding == 0`` does NOT fire (no public S&P 500 issuer
+    legitimately has zero outstanding shares — that path lives in the
+    veto's TBVPS-uncomputable silence design).
+    """
+    if snap is None:
+        return False
+    if snap.shares_outstanding is not None:
+        return False
+    if snap.revenue is None or snap.revenue <= 0:
+        return False
+    if snap.total_assets is None or snap.total_assets <= 0:
+        return False
+    return True
+
+
 def _altman_distress(snap: FundamentalsSnapshot | None) -> bool:
     if snap is None:
         return False

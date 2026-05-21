@@ -117,6 +117,14 @@ export type Metadata = {
   // is visible without grepping per-stock JSONs; not currently
   // rendered by the static site.
   loss_avoidance_size_invariant_firing_count?: number | null;
+  // Issue #176 (0.9.6-phase4h.6) — count of tickers where
+  // `share_count_extraction_missing` fired on this cron run
+  // (snapshot has revenue + total_assets but `shares_outstanding`
+  // is None — STZ 2026-05-14 partial-XBRL-extraction pattern).
+  // Optional + nullable: absent / null on legacy snapshots pre-0.9.6.
+  // Rule 18 observability surface shipped alongside the flag itself
+  // so the next cron's firing rate is visible at-a-glance.
+  share_count_extraction_missing_count?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors

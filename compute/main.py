@@ -98,7 +98,10 @@ from compute.scoring.restatement_filings import (
     compute_high_confidence_restatement,
     get_amendment_filing_dates,
 )
-from compute.scoring.risk_overlay import compute_risk_flags
+from compute.scoring.risk_overlay import (
+    check_share_count_extraction_missing,
+    compute_risk_flags,
+)
 from compute.scoring.sanity import compute_mos_trailing_ic
 from compute.scoring.tier2 import (
     _EIGHT_K_DEFENSES_ENABLED,
@@ -1145,6 +1148,15 @@ def run_weekly_compute() -> int:
     # the next cron's firing rate is visible without grepping per-stock
     # JSONs (Rule 18 observability-before-wiring).
     loss_avoidance_size_invariant_firing_count: int = 0
+    # Issue #176 — same Rule 18 observability surface for the new
+    # ``share_count_extraction_missing`` annotate. Counter increments
+    # inside the per-ticker loop when the flag is appended to
+    # valuation_warnings; written to
+    # Metadata.share_count_extraction_missing_count so the universe-
+    # wide firing rate of the STZ-style partial-XBRL-extraction pattern
+    # is visible at-a-glance from the next cron without grepping
+    # per-stock JSONs.
+    share_count_extraction_missing_count: int = 0
     for _, r in df.iterrows():
         ticker = str(r["ticker"])
         snap = snapshots.get(ticker)
@@ -1361,6 +1373,19 @@ def run_weekly_compute() -> int:
             valuation_warnings.append("loss_avoidance_pattern_size_invariant")
             loss_avoidance_size_invariant_firing_count += 1
 
+        # Issue #176 — share_count_extraction_missing annotate.
+        # Fires when the snapshot has revenue + total_assets but
+        # shares_outstanding is None (STZ 2026-05-14 pattern). Annotate-
+        # only — distinct from the data_quality_input_corruption veto,
+        # which keeps its shares_outstanding=None silence contract per
+        # issue #18 / test_D3.
+        if (
+            check_share_count_extraction_missing(snap)
+            and "share_count_extraction_missing" not in valuation_warnings
+        ):
+            valuation_warnings.append("share_count_extraction_missing")
+            share_count_extraction_missing_count += 1
+
         # Price history JSON (sliced from already-fetched prices, no new
         # fetches per Step 5 spec).
         prices_df = prices_by_ticker.get(ticker)
@@ -1541,6 +1566,9 @@ def run_weekly_compute() -> int:
         tier2_enabled=_EIGHT_K_DEFENSES_ENABLED,
         loss_avoidance_size_invariant_firing_count=(
             loss_avoidance_size_invariant_firing_count
+        ),
+        share_count_extraction_missing_count=(
+            share_count_extraction_missing_count
         ),
     )
 
