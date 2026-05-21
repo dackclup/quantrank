@@ -91,7 +91,7 @@ for the full 4-step pattern + Section I forcing example.
   score retroactively. See `.claude/skills/top5-rotation-audit/SKILL.md`.
 - **EDGAR is rate-limited (10 req/s).** Use `EDGAR_MAX_WORKERS=8`
   (PR-3d empirical bump from 5; ~1 req/s sustained vs 10/s ceiling
-  per `compute/config.py:34-41`) and the tightened tenacity retry
+  per `compute/config.py:34-42`) and the tightened tenacity retry
   policy in `compute/ingest/fundamentals.py`. If
   `Metadata.fundamentals_latency_p95_seconds` sustains > 15s on a
   healthy SEC run, drop back to 5 or 6. Off-cycle pre-cache jobs
@@ -462,7 +462,7 @@ in one focused diff: (a) `.github/workflows/compute-monthly.yml`
 Phase-0 stub `echo`, so write perm is dead weight until Phase 5 ML
 retrain lands; (b) §Conventions EDGAR_MAX_WORKERS guideline 5 → 8 to
 match the PR-3d empirical bump documented inline at
-`compute/config.py:34-41` (this doc was stale, not the code — the
+`compute/config.py:34-42` (this doc was stale, not the code — the
 `edgar-debugger` + `performance-engineer` audits both confirmed the
 code's ~1 req/s sustained load is comfortably under the 10/s SEC
 ceiling and the inline rationale is self-documenting); (c) §Gotchas

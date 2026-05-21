@@ -475,7 +475,7 @@ note cross-tool-specific points only:
   Phase-0 stub `echo`, so write perm is dead weight until Phase 5 ML
   retrain lands; (b) CLAUDE.md §Conventions EDGAR_MAX_WORKERS
   guideline 5 → 8 to match the PR-3d empirical bump documented inline
-  at `compute/config.py:34-41` — the doc was stale, not the code, and
+  at `compute/config.py:34-42` — the doc was stale, not the code, and
   ~1 req/s sustained sits comfortably under the 10/s SEC ceiling;
   (c) CLAUDE.md §Gotchas going_concern FP-rate 10.8% → 1.0% to match
   the 2026-05-20 production cron (now within the Mayew 2015 1-3%
