@@ -27,18 +27,28 @@ in one report.
 python .claude/skills/verify-production-output/helper.py
 ```
 
-The helper runs Sections A-J automatically:
-- **A**: schema reporter (version + field count + universe size)
+The helper runs Sections A-J automatically (note: there is no Section I
+in helper.py — Section I is the post-cron Playwright spot-check, run
+separately per `verify-production-output/SKILL.md` §Section I):
+
+- **A**: schema + metadata (version, git_commit, universe_size, tier2
+  coverage, fundamentals coverage AND latency p50/p95 — the omnibus
+  metadata reporter, broader than just "schema")
 - **B**: Tier-2 4-branch matrix (gated by `tier2_enabled` since PR #160)
-- **C**: fair-price coverage (% with non-null median; Tier-1 defense counts)
+- **C**: coverage (fair-price + ranking coverage)
 - **D**: Top-5 rotation invariants (raw vs effective; flagged stocks lose
   `entered_top5` badge per Rule 16)
-- **E**: risk flag deltas vs baseline (7 active vetoes after Phase 4.5a)
-- **F**: fundamentals latency p50/p95
-- **G**: universe-size consistency
-- **H**: data-quality guard counts
-- **J**: annotate-flag auto-tabulator (added PR #156 — replaces the
-  source-grep that earlier quarterly audits had to do)
+- **E**: risk-flag totals (per-flag counter across the universe;
+  7 active vetoes after Phase 4.5a)
+- **F**: Tier-2 events spot-check (5 random tickers; verifies the
+  5-key dict shape on `tier2_events`)
+- **G**: Fundamentals resilience (interprets `fundamentals_coverage_pct`
+  ≥95 healthy / ≥80 throttled-graceful / <80 heavily throttled)
+- **H**: Universe-size consistency (metadata.universe_size vs
+  len(rankings) vs len(stock_files) — all three must agree)
+- **J**: Annotate-flag inventory (auto-tabulator added PR #156 —
+  replaces the source-grep that earlier quarterly audits had to do;
+  complements Section E on the annotate surface)
 
 Capture the helper output and parse the per-section verdicts.
 
@@ -107,7 +117,11 @@ Report:
   (PR #161 — should be ≤ 6 since 6 methods exist)
 - Universe size = 502 (S&P 500 minus the one delisting documented in
   CLAUDE.md)
-- Fundamentals latency p95 < 30 min (warm-cache target)
+- `metadata.fundamentals_latency_p95_seconds` < 15s (helper warns at
+  > 15; total cron runtime target is < 5 min warm-cache per
+  CLAUDE.md §Gotchas)
+- `metadata.fundamentals_coverage_pct` ≥ 95% (helper warns at < 95,
+  fails at < 80)
 
 ## Output format
 
@@ -115,14 +129,14 @@ Report:
 QuantRank Production Output Audit — <data timestamp>
 
 Section A-J (helper):
-- A schema: <version> | universe=<N> | <PASS/FAIL>
+- A schema+meta: version=<X> commit=<sha7> universe=<N> tier2_cov=<%> fund_cov=<%> fund_p50/p95=<s>/<s> | <PASS/FAIL>
 - B tier2: <enabled?> | coverage=<%> | <PASS/FAIL>
-- C fair-price: median coverage <%> | Tier-1 defenses <count> | <PASS/FAIL>
+- C coverage: fair-price + rankings | <PASS/FAIL>
 - D Top-5 rotation: raw=<ABC,DEF,...> effective=<...> churn=<N tickers> | <PASS/FAIL>
-- E veto deltas vs main: altman <prev→curr>, sloan <prev→curr>, ... | <PASS/FAIL>
-- F latency: p50=<s> p95=<s> | <PASS/FAIL>
-- G universe: <N> tickers, <discrepancies?> | <PASS/FAIL>
-- H data-quality: <N> guards fired | <PASS/FAIL>
+- E risk-flag totals: altman <N>, sloan <N>, ... (with Δ vs main) | <PASS/FAIL>
+- F tier2 spotcheck: 5 random tickers, 5-key dict shape ✓/✗ | <PASS/FAIL>
+- G fundamentals resilience: cov=<%> → <healthy|throttled-graceful|heavily-throttled> | <PASS/FAIL>
+- H universe consistency: metadata=<N> rankings=<N> files=<N> | <PASS/FAIL>
 - J annotates: <table from helper>
 
 Defense scorecard (27 boolean flags):

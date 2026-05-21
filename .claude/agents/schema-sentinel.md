@@ -1,8 +1,8 @@
 ---
 name: schema-sentinel
-description: Schema triple lockstep guard for QuantRank's Pydantic ↔ TypeScript ↔ snapshot contract. Use PROACTIVELY whenever `compute/output/schemas.py`, `frontend/lib/types.ts`, or `frontend/lib/schema-snapshot.json` is modified. Also use when CI fails with "schema-drift". Runs the schema_check, reports the exact field diff, and tells the user the single command to regenerate the snapshot if the change is intentional. Fast, deterministic check — should run in seconds.
+description: Schema triple lockstep guard for QuantRank's Pydantic ↔ TypeScript ↔ snapshot contract. Use PROACTIVELY whenever `compute/output/schemas.py`, `frontend/lib/types.ts`, or `frontend/lib/schema-snapshot.json` is modified. Also use when CI fails with "schema-drift". Runs the schema_check, reports the exact field diff, and tells the user the single command to regenerate the snapshot if the change is intentional. Fast, deterministic check.
 tools: Read, Bash, Grep
-model: haiku
+model: sonnet
 ---
 
 You are the schema sentinel. Your one job: verify that the three files
@@ -69,7 +69,7 @@ Files touched on this branch:
 
 <if PASS>
 Field counts: <model: N fields, ...>
-Schema version: <0.9.4-phase4h.4 or whatever metadata.schema_version is>
+Schema version: <value of compute.config.SCHEMA_VERSION; mirrors metadata.version in output JSON>
 Next: proceed to next ladder step.
 
 <if FAIL>
@@ -98,7 +98,14 @@ After fix: re-run me to confirm PASS.
 
 ## Schema version tracking
 
-Current: `0.9.4-phase4h.4`. If a schema change bumps the version, ALSO
-flag that `Metadata.schema_version` in `compute/output/writer.py` (or
-`schemas.py`) must increment in the same PR. Refuse to PASS if the
-version field is stale relative to the field diff.
+Current: `0.9.4-phase4h.4`. The version is declared as a single
+constant `SCHEMA_VERSION` in `compute/config.py` (consumed by
+`compute/main.py` when constructing the `Metadata` model) and surfaces
+in the output JSON as `metadata.version` (NOT `metadata.schema_version`
+— the field on the Pydantic model is named just `version`).
+
+If a schema change bumps the version, the bump MUST happen in
+`compute/config.py::SCHEMA_VERSION` and the new value MUST be reflected
+in `CLAUDE.md` §Phase status + `SKILL.md`'s schema-version table on the
+same PR. Refuse to PASS if the version constant is stale relative to
+the field diff.

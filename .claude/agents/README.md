@@ -27,7 +27,7 @@ specifically helps.
 | Subagent | Trigger | Model | Tools |
 |---|---|---|---|
 | [`quantrank-reviewer`](quantrank-reviewer.md) | After non-trivial edits in `compute/` / `frontend/` / `tests/`; before flipping a PR to Ready | opus | Read, Grep, Glob, Bash |
-| [`schema-sentinel`](schema-sentinel.md) | When `schemas.py` / `types.ts` / `schema-snapshot.json` changes; CI schema-drift failures | haiku | Read, Bash, Grep |
+| [`schema-sentinel`](schema-sentinel.md) | When `schemas.py` / `types.ts` / `schema-snapshot.json` changes; CI schema-drift failures | sonnet | Read, Bash, Grep |
 | [`defense-layer-auditor`](defense-layer-auditor.md) | After scoring / valuation changes; after weekly cron lands; before PR Ready-flip on scoring touches | sonnet | Read, Bash, Grep, Glob |
 | [`edgar-debugger`](edgar-debugger.md) | SEC EDGAR ingest test failures; live-run hangs; rate-limit / edgartools drift errors | sonnet | Read, Bash, Grep, Glob |
 
@@ -57,10 +57,12 @@ spawn it with that scope.
    from `THIRD_PARTY_NOTICES.md` "Description divergence" — concrete
    keywords ("verify the output", "ตรวจ output", "check the latest run"),
    false-positive guardrails, and a fail-fast verdict format.
-3. **Model selection:**
-   - `haiku` — deterministic checks (schema drift, lint-style guards)
-   - `sonnet` — multi-step audits with judgment (defense scorecard, debug)
-   - `opus` — full code review where breadth + nuance matter
+3. **Model selection (this project uses `opus` + `sonnet` only — no `haiku`):**
+   - `sonnet` — default for deterministic checks (schema drift) AND
+     multi-step audits with judgment (defense scorecard, debug).
+   - `opus` — full code review where breadth + nuance matter (one or
+     two passes over a multi-file diff, weighing project-specific
+     conventions against the change).
 4. **Tool allowlist.** Restrict to what the agent actually needs. A code
    reviewer doesn't need `Edit` or `Write`; an auditor doesn't need
    `Edit` either. Explicit allowlists reduce blast radius.

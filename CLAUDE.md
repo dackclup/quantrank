@@ -312,17 +312,26 @@ constants in `manipulation_index.py`. Tests: 1009 → 1024 (+15).
 
 **Subagent integration in flight (this PR)** — first set of project-
 specific Claude Code subagents under `.claude/agents/`. Four agents
-land: `quantrank-reviewer` (opus; full code review against Rules 1-18
-+ schema triple + tenacity policy), `schema-sentinel` (haiku;
-deterministic Pydantic↔TS↔snapshot drift guard), `defense-layer-
-auditor` (sonnet; verify-production-output Section A-J + 27-flag
-scorecard + Top-5 rotation Rule 16 check), and `edgar-debugger`
-(sonnet; SEC EDGAR ingest debug specialist that knows the PR-3d
-amplification incident + tenacity policy + edgartools drift-detector
-manifests). Subagents are spawned via the `Agent` tool and run in a
-separate context window — distinct from `.claude/skills/` (prompt
-packs the main agent invokes via the `Skill` tool). Routing matrix
-+ author conventions in [`.claude/agents/README.md`](.claude/agents/README.md).
+land, all on `opus` or `sonnet` (no `haiku` per user direction):
+`quantrank-reviewer` (opus; full code review against Rules 1-18 +
+schema triple + tenacity policy), `schema-sentinel` (sonnet;
+deterministic Pydantic↔TS↔snapshot drift guard pinned to
+`compute.config.SCHEMA_VERSION` as the bump point; output JSON key
+is `metadata.version`), `defense-layer-auditor` (sonnet; verify-
+production-output Section A-J + 27-flag scorecard + Top-5 rotation
+Rule 16 check, with accurate section labels A=schema+meta / F=tier2
+spotcheck / G=fundamentals resilience / H=universe consistency /
+J=annotate inventory), and `edgar-debugger` (sonnet; SEC EDGAR
+ingest debug specialist that knows the PR-3d amplification incident,
+the strict tenacity policy scoped to SEC-bound modules in
+`compute/ingest/fundamentals.py` / `jkp.py` / `osap.py` only — NOT
+the lenient policies in `universe.py` / `prices.py` /
+`cross_source.py` — plus the `_FORM4_REQUIRED_ATTRS` family of
+drift-detector manifests in `compute/scoring/form4_insider.py`).
+Subagents are spawned via the `Agent` tool and run in a separate
+context window — distinct from `.claude/skills/` (prompt packs the
+main agent invokes via the `Skill` tool). Routing matrix + author
+conventions in [`.claude/agents/README.md`](.claude/agents/README.md).
 Doc-only — no compute / schema / output change.
 
 **Next deliverables** (pick by appetite):
