@@ -102,6 +102,9 @@ frontend/                         # Next.js static site
 tests/                            # pytest suite (read/write OK)
 docs/                             # Academic methodology + research findings (read/write OK)
 .claude/skills/                   # 24 loaded skills + planning docs (read/write OK)
+.claude/agents/                   # 2 project subagents — sonnet, Claude Code only (Copilot / Cursor / Devin ignore)
+.claude/hooks/                    # PostToolUse Bash hooks (schema-reminder.sh) wired by .claude/settings.json (Claude Code only)
+.claude/settings.json             # Claude Code harness config — hooks. Per-user overrides go in .claude/settings.local.json (gitignored)
 .github/workflows/                # CI definitions (⚠️ ask before editing)
 pyproject.toml                    # Python project config + ruff + pytest (⚠️ ask before deps changes)
 
@@ -268,6 +271,39 @@ export function FairPriceCard(props) {  // no types
   bypass.
 - No telemetry / external network beacons in the frontend. The site is
   pure static HTML+JS; no analytics in v1.0.
+
+## Claude-Code-specific tooling
+
+Claude Code reads `.claude/settings.json` for hooks and uses
+`.claude/agents/` for project subagents. Both surfaces are
+Claude-Code-only — other agent runtimes (GitHub Copilot, Cursor,
+Devin, VS Code Agent Mode) should ignore them and rely on git
+pre-commit hooks + manual review instead.
+
+**Hook (PostToolUse)**:
+
+- `.claude/hooks/schema-reminder.sh` — emits an
+  `additionalContext` reminder when Write/Edit touches any file
+  in the Pydantic↔TS↔snapshot triple (`compute/output/schemas.py`,
+  `frontend/lib/types.ts`, `frontend/lib/schema-snapshot.json`).
+  Bash + `jq`, 5-second timeout, fail-open on missing deps /
+  empty stdin.
+
+**Subagents (lean baseline, both sonnet)**:
+
+- `schema-sentinel` — deterministic schema-triple drift check.
+  Reads the three schema files and runs
+  `python -m compute.output.schema_check`. Never runs
+  `--update-snapshot` itself.
+- `quantrank-reviewer` — full diff review against project
+  invariants (Rule 16 annotate-and-veto, schema triple, tenacity
+  retry policy, EDGAR rate-limit, frontend/public/data/
+  read-only).
+
+Both fire at gate moments only (`ready to push` / `Draft → Ready` /
+explicit ask) — not on every edit. See [`CLAUDE.md`](CLAUDE.md)
+§Auto-routing policy for the firing cues and the "lean by design"
+token-economy reasoning.
 
 ## Phase + version state
 

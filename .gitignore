@@ -223,6 +223,10 @@ models/
 *.parquet
 .DS_Store
 
+# Claude Code — local-only harness state
+.claude/session.log
+.claude/settings.local.json
+
 # Node / Next.js
 node_modules/
 .next/

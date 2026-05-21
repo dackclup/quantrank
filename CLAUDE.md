@@ -31,6 +31,8 @@ backing.
 | `frontend/public/data/` | Compute output: `metadata.json` + `rankings.json` + `stocks/<TICKER>.json` |
 | `tests/` | pytest suite (526 tests, 3 `@network` gated) |
 | `.claude/skills/` | 24 invocation-triggerable skills (7 QuantRank + 17 Anthropic vendored) plus phase planning docs |
+| `.claude/agents/` | 2 project-specific subagents (sonnet) — `schema-sentinel` (deterministic schema-triple drift check) + `quantrank-reviewer` (full review against project invariants). Read-only. See [`.claude/agents/README.md`](.claude/agents/README.md) for the roster + author conventions + the deliberate "two-agent baseline" reasoning. |
+| `.claude/hooks/` | 1 PostToolUse hook wired by `.claude/settings.json`: `schema-reminder.sh` injects an `additionalContext` reminder when Write/Edit touches any file in the Pydantic↔TS↔snapshot triple. Bash + `jq`, 5-second timeout, fail-open on missing deps / empty stdin. |
 
 ## Commands
 
@@ -68,6 +70,35 @@ network"` → (if schemas touched) `schema_check` → (if frontend touched)
   `.claude/skills/phase-N/<name>/PLAN.md` is roadmap material — Claude
   Code doesn't recurse into nested directories. Promote a PLAN.md to a
   top-level `<name>/SKILL.md` when that phase begins.
+
+## Auto-routing policy
+
+Lean-by-design: agents under [`.claude/agents/`](.claude/agents/)
+fire at **gate moments**, not on every edit. Each spawn costs a
+separate context window — the policy below keeps token use bounded
+while preserving the safety net at decision points. Hooks (which
+cost zero tokens) cover the per-edit reminders.
+
+| Cue / situation | Action | Cost |
+|---|---|---|
+| Edit to `compute/output/schemas.py` / `frontend/lib/types.ts` / `frontend/lib/schema-snapshot.json` | **Hook fires** (`schema-reminder.sh`) — no agent spawn | zero |
+| User says "ก่อน push" / "ready to push" / "open PR" / "mark ready" / "ตรวจก่อน push" | Spawn `quantrank-reviewer` (sonnet). If schema triple was touched on the branch, also spawn `schema-sentinel` in parallel. | one or two sonnet spawns |
+| User explicitly asks "schema in sync?" / "ตรวจ schema" / Draft PR touches the triple | Spawn `schema-sentinel` (sonnet) | one sonnet spawn |
+| User says "full review" / "deep review" / diff > 200 lines on `compute/scoring/` | Spawn `quantrank-reviewer` with `model: opus` override | one opus spawn (rare) |
+
+### Spawn discipline
+
+- **Default model = sonnet.** Opus only for cross-domain
+  orchestration / release-time work / large-scoring-diff reviews, and
+  only after the user authorizes the override.
+- **Do not spawn on every file edit.** The hook covers schema-triple
+  reminders; explicit gate phrases ("ready to push" / "review this PR")
+  cover everything else.
+- **Skip per session**: user can say "skip the reviewer this PR" /
+  "manual this time" and the main agent must comply + note the skip.
+- **De-duplicate**: if an agent ran on the same diff within ~10 min
+  and the diff hasn't moved, point at the prior result instead of
+  re-spawning.
 
 ## Gotchas
 
