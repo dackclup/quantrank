@@ -31,7 +31,7 @@ backing.
 | `frontend/public/data/` | Compute output: `metadata.json` + `rankings.json` + `stocks/<TICKER>.json` |
 | `tests/` | pytest suite (offline + `@network` gated; see CI for current count) |
 | `.claude/skills/` | 42 invocation-triggerable skills + phase planning docs. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for vendoring / license posture per source. |
-| `.claude/agents/` | 14 project-specific subagents in 4 tiers: **Tier 1 Core** (quantrank-reviewer · schema-sentinel · defense-layer-auditor · edgar-debugger), **Tier 2 Lifecycle** (security-reviewer · frontend-design-reviewer · release-captain · phase-coordinator), **Tier 3 Specialized** (test-engineer · methodology-scientist · performance-engineer · dependency-auditor), **Tier 4 Operations** (docs-reviewer · incident-commander). Spawned via the `Agent` tool with a separate context window; see [`.claude/agents/README.md`](.claude/agents/README.md) for the routing matrix + 6 coordination flows (pre-push gate / release ladder / new-defense flow / incident response / review escalation / quarterly audit). |
+| `.claude/agents/` | 15 project-specific subagents in 4 tiers + 1 data-correctness reviewer: **Tier 1 Core** (quantrank-reviewer · schema-sentinel · defense-layer-auditor · edgar-debugger · **stock-detail-auditor**), **Tier 2 Lifecycle** (security-reviewer · frontend-design-reviewer · release-captain · phase-coordinator), **Tier 3 Specialized** (test-engineer · methodology-scientist · performance-engineer · dependency-auditor), **Tier 4 Operations** (docs-reviewer · incident-commander). Spawned via the `Agent` tool with a separate context window; see [`.claude/agents/README.md`](.claude/agents/README.md) for the routing matrix + 6 coordination flows (pre-push gate / release ladder / new-defense flow / incident response / review escalation / quarterly audit). |
 | `.claude/hooks/` | Bash hook scripts wired by `.claude/settings.json`. 2 PostToolUse hooks: `log-bash.sh` (append every Bash command to gitignored `.claude/session.log`) + `schema-reminder.sh` (inject reminder when any file in the Pydantic↔TS↔snapshot triple is touched via Write/Edit). Both fail-open (missing `jq` / unwritable FS / empty stdin → exit 0). 5-second timeout each. |
 
 ## Commands
@@ -115,53 +115,70 @@ for the full 4-step pattern + Section I forcing example.
 
 ## Auto-routing policy
 
-Subagents under [`.claude/agents/`](.claude/agents/) auto-spawn on the
-cues below. The main agent MUST spawn them without asking for
-confirmation first — they are all read-only and their cost is bounded.
-Only destructive commands a subagent *proposes* require user
-authorization.
+Subagents under [`.claude/agents/`](.claude/agents/) auto-spawn on
+the cues below — **lean-by-design**. Most cues fire at GATE moments
+(`ready to push` / explicit ask / signal event), **not on every
+edit**. Each spawn costs a separate context window; the policy keeps
+that cost bounded while preserving the safety net at decision
+points. The hook layer covers per-edit reminders that don't need
+LLM judgment.
 
-| Cue / situation | Auto-spawn | Mode |
+The main agent MUST spawn without asking for confirmation — all
+subagents are read-only. Only destructive commands a subagent
+*proposes* require user authorization.
+
+**Edits alone do NOT auto-spawn.** Editing `schemas.py` /
+`compute/scoring/` / `frontend/components/` / docs no longer fires
+an agent on the edit. The schema-triple hook covers Pydantic ↔ TS
+reminders; everything else batches into one parallel review at
+"ready to push". This is the change vs the original wide policy
+that fired per-diff.
+
+| When | Auto-spawn | Notes |
 |---|---|---|
-| Edit to `compute/output/schemas.py` / `frontend/lib/types.ts` / `frontend/lib/schema-snapshot.json` | `schema-sentinel` | Parallel with the edit; report PASS/FAIL before commit |
-| Edit to anything under `compute/scoring/` or `compute/valuation/` | `quantrank-reviewer` after the edit set stabilizes; `defense-layer-auditor` if `frontend/public/data/` is committed in the same PR | Sequential — reviewer first, auditor on output |
-| Edit to `frontend/components/` / `frontend/app/` | `frontend-design-reviewer` | Parallel; emits Playwright matrix for user spot-check |
-| Test failure under `tests/test_ingest/` OR live-run hang OR `429`/`403` from SEC | `edgar-debugger` | On-demand, only when the failure signal appears |
-| Edit to `.github/workflows/*.yml` OR new dep added to `pyproject.toml` / `frontend/package.json` OR new env-var read introduced | `security-reviewer` | Pre-push |
-| User says "ก่อน push" / "ready to push" / "open PR" / "mark ready" / "ตรวจก่อน push" | `quantrank-reviewer` + `phase-coordinator` Mode B | Parallel pre-push gate |
-| User says "tag release" / "cut a release" / "release vX.Y.Z" / "ตัด release" / phase-epic PR just merged | `release-captain` (acts as orchestrator and spawns the others as the ladder demands) | Owns the release ladder |
+| Test failure under `tests/test_ingest/` OR live-run hang OR `429`/`403` from SEC | `edgar-debugger` | Signal-driven, on-demand |
+| Weekly cron warm-cache > 10 min OR p95 latency > 20s | `performance-engineer` | Signal-driven, on detection |
+| Dependabot alert lands OR new dep added to `pyproject.toml` / `frontend/package.json` | `dependency-auditor` + `security-reviewer` | Signal-driven, parallel |
+| Production cron fails / hangs / produces corrupt output, OR Vercel deploy breaks, OR schema-snapshot CI fails, OR user says "production is broken" / "site is down" / "incident" | `incident-commander` (P1; orchestrator that fans out to relevant specialists) | Immediate |
+| `workflow_dispatch` on `compute-rankings.yml` lands green | `defense-layer-auditor` Section A-J + Section I (Playwright) + `stock-detail-auditor` (per-stock data audit) | Auto post-cron, parallel |
+| Quarterly cohort audit scheduled date reached (next 2026-08-19) | `methodology-scientist` Mode C + `defense-layer-auditor` | Scheduled, sequential |
+| New defense flag proposed (new risk_flag in `compute/scoring/`) | `methodology-scientist` (validate paper anchor) + `test-engineer` (positive + negative tests) | Rare; sequential — methodology first |
+| Threshold / weight constant changed in `compute/scoring/manipulation_index.py` or `earnings_quality.py` | `methodology-scientist` Mode B | Rare; on the edit |
+| User says "ก่อน push" / "ready to push" / "open PR" / "mark ready" / "ตรวจก่อน push" | `quantrank-reviewer` + `phase-coordinator` Mode B. Conditional batch-mates on the same gate: `schema-sentinel` if schema triple touched · `defense-layer-auditor` if `compute/scoring/` or `compute/valuation/` touched · `frontend-design-reviewer` if `frontend/components/` or `frontend/app/` touched · `docs-reviewer` if any of the 7 docs modified · `security-reviewer` if `.github/workflows/` or new env-var or new dep touched · `test-engineer` if production code added without a test | Parallel pre-push gate; one report cycle |
+| User says "ตรวจ data หุ้น" / "check stock data correctness" / "audit the output" / "verify the output" / "ตรวจ output" / pre-release | `stock-detail-auditor` (deterministic prefilter caps LLM-judgment at ≤ 20 tickers) | One sonnet spawn, bounded |
+| User says "tag release" / "cut a release" / "release vX.Y.Z" / "ตัด release" / phase-epic PR just merged | `release-captain` (orchestrator; spawns ladder agents as needed) | Owns release ladder |
 | User asks to create a new `claude/*` branch from a handoff prompt | `phase-coordinator` Mode A | Before first non-trivial edit |
 | Phase / sub-PR marked complete on this branch | `phase-coordinator` Mode C | After merge / on close |
-| `workflow_dispatch` on `compute-rankings.yml` lands green | `defense-layer-auditor` Section A-J + Section I (Playwright) | Automatic post-cron |
-| New defense flag proposed (new risk_flag in `compute/scoring/`) | `methodology-scientist` (validate paper anchor) + `test-engineer` (positive + negative tests) | Sequential — methodology first |
-| Threshold / weight constant changed in `compute/scoring/manipulation_index.py` or `earnings_quality.py` | `methodology-scientist` Mode B | On the edit |
-| Production code added without a corresponding test in the same PR | `test-engineer` | Pre-push |
-| Weekly cron warm-cache exceeds 10 min OR p95 latency > 20s | `performance-engineer` | On detection |
-| Dependabot alert lands OR new dep added to `pyproject.toml` / `frontend/package.json` | `dependency-auditor` + `security-reviewer` | Parallel |
-| Any of CLAUDE.md / AGENTS.md / SKILL.md / WORKFLOW.md / PHASE_STATUS.md / README.md / METHODOLOGY.md modified | `docs-reviewer` (substance check; complements `phase-coordinator` Mode B which checks file-touch) | Parallel with the edit |
-| Production cron fails / hangs / produces corrupt output, OR Vercel deploy breaks, OR schema-snapshot CI fails, OR user says "production is broken" / "site is down" / "incident" | `incident-commander` (P1; orchestrator that fans out to relevant specialists) | Immediate |
-| Quarterly cohort audit scheduled date reached (next 2026-08-19) | `methodology-scientist` Mode C + `defense-layer-auditor` | Sequential — scientist drives |
+| Diff > 200 lines on `compute/scoring/` OR user says "full review" / "deep review" | `quantrank-reviewer` with `model: opus` override | Rare; user authorization required |
 
 ### Spawn discipline
 
-- **Spawn without asking** for read-only subagents (all 8 are
-  read-only). Do not pause the user's flow with "should I spawn X?"
-  — just spawn and report back.
+- **Default model = sonnet.** Opus only for cross-domain
+  orchestration (`incident-commander`, `release-captain`),
+  literature-heavy validation (`methodology-scientist` on new flag
+  / threshold), or large-diff reviews (`quantrank-reviewer` with
+  explicit user authorization for the opus override). 5 agents
+  currently default to opus by design; the rest are sonnet.
+- **Spawn without asking** for read-only subagents — just spawn
+  and report back. Do not pause the user's flow with "should I
+  spawn X?".
 - **Ask before authorizing the destructive command** a subagent
   proposes (e.g., `release-captain` emits `git tag` + `git push
-  origin <tag>` — that command needs explicit user authorization per
-  §Executing actions with care).
-- **Skip auto-spawn** if the user explicitly says "skip the X agent",
-  "don't review this one", "I'll handle it manually" — note the skip
-  in chat and proceed.
+  origin <tag>` — that command needs explicit user authorization
+  per §Executing actions with care).
+- **Skip auto-spawn** if the user explicitly says "skip the X
+  agent", "don't review this one", "I'll handle it manually" —
+  note the skip in chat and proceed.
 - **De-duplicate**: if a subagent ran on the same diff within the
-  last ~10 minutes and the diff hasn't moved, don't re-spawn — point
-  to the prior result instead.
-- **Parallel by default**: when multiple cues fire on the same edit
-  (e.g., `schemas.py` + `compute/scoring/*` together), spawn the
-  agents in parallel — they each have their own context window.
-- **Disable per-session**: user can `/agents` → toggle off any agent
-  they don't want auto-routing this session.
+  last ~10 minutes and the diff hasn't moved, don't re-spawn —
+  point to the prior result instead.
+- **Parallel at gate moments, not on every edit**: when multiple
+  conditional batch-mates fire at the "ready to push" gate, spawn
+  them in parallel — they each have their own context window, and
+  the user gets one consolidated report cycle.
+- **Disable per-session**: user can `/agents` → toggle off any
+  agent they don't want auto-routing this session, or say "spawn
+  only on explicit ask this session" to force the strictest mode.
 
 ## Gotchas
 
@@ -536,6 +553,34 @@ since they would also appear on `main`). Deferred from this PR (still
 WARNs from the audit, not FAILs): `FairPriceBarChart.tsx` tabular-nums
 + verdict-badge shape; `RawMetricsTable` + `PillarRadarChart`
 loose-null 5 instances; `RankingTable` toolbar-search aria-label.
+
+**Lean auto-routing + stock-detail-auditor in flight (this PR)** —
+two coupled changes to the agent layer. **(a) Auto-routing policy
+rewrite**: 17-row table collapsed and reshaped so most cues fire at
+GATE moments (`ready to push` / explicit ask / signal event) instead
+of on every edit. The schema-triple hook covers per-edit reminders
+that don't need LLM judgment; everything else batches into one
+parallel pre-push review. Edits to `compute/scoring/` /
+`compute/valuation/` / `frontend/components/` / docs no longer
+spawn an agent — they now ride the next "ready to push" gate as
+conditional batch-mates. Spawn discipline updated: default model
+sonnet (opus only for cross-domain orchestration / methodology /
+large-diff with user authorization). Token economy paragraph added
+to the §Auto-routing intro. **(b) New 15th agent**: Tier 1
+`stock-detail-auditor` (sonnet, read-only) audits per-stock JSON
+the frontend renders. Step 2 deterministic prefilter walks the
+~502-ticker universe for range / consistency (issue #10
+`shares_outstanding` gap > 5%, |eps_diluted| > 500 XBRL parse
+errors, |mos_pct| > 500%) / Rule 16 invariant (entered_top5 +
+risk_flags) / known-issue overlap (#7 Sloan-Financials, #11
+value_trap noise). Step 3 LLM-judgment review capped at ≤ 20
+tickers (real_outlier vs broken_data + upstream cause). Fires
+post-cron, pre-release, "ตรวจ data หุ้น"; folded into release
+ladder Flow 2 alongside `defense-layer-auditor`. Covers OUTPUT
+correctness; FORMULA correctness remains methodology-scientist's
+slot. No compute / schema / scoring / valuation / frontend code
+change. Closes the gap left when the previous "wide" policy spawn
+cost compounded across multi-file edits.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight
