@@ -54,11 +54,25 @@ when UI is touched).
 
 ## How auto-invocation works
 
-Claude Code reads the `description:` line of each agent file and routes
-work that matches. The descriptions in this set use the **TRIGGER when /
-Use PROACTIVELY** pattern (mirroring the project's vendored-skill
-description sharpening from PR #157) so the main agent picks them up on
-the relevant cues:
+Claude Code reads the `description:` line of each agent file AND
+[`CLAUDE.md` §Auto-routing policy](../../CLAUDE.md#auto-routing-policy)
+on every session start. The combination gives the main agent two
+levels of routing strength:
+
+- **MUST-invoke agents** — `schema-sentinel`, `quantrank-reviewer`,
+  `phase-coordinator`, `release-captain`. The description uses
+  "MUST be invoked (no confirmation)" language; the main agent
+  spawns them automatically without pausing the user's flow.
+- **PROACTIVELY-invoke agents** — `defense-layer-auditor`,
+  `edgar-debugger`, `security-reviewer`, `frontend-design-reviewer`.
+  The description uses "Use PROACTIVELY when..." language; the main
+  agent spawns them when the trigger keywords match, but they're not
+  hard-gating.
+
+The descriptions in this set use the **TRIGGER when / Use PROACTIVELY
+/ MUST be invoked** pattern (mirroring the project's vendored-skill
+description sharpening from PR #157) so the main agent picks them up
+on the relevant cues:
 
 Core tier:
 - `quantrank-reviewer` fires on diff cues (edit + push intent)

@@ -1,6 +1,6 @@
 ---
 name: schema-sentinel
-description: Schema triple lockstep guard for QuantRank's Pydantic ↔ TypeScript ↔ snapshot contract. Use PROACTIVELY whenever `compute/output/schemas.py`, `frontend/lib/types.ts`, or `frontend/lib/schema-snapshot.json` is modified. Also use when CI fails with "schema-drift". Runs the schema_check, reports the exact field diff, and tells the user the single command to regenerate the snapshot if the change is intentional. Fast, deterministic check.
+description: Schema triple lockstep guard for QuantRank's Pydantic ↔ TypeScript ↔ snapshot contract. ALWAYS invoke (no confirmation) whenever `compute/output/schemas.py`, `frontend/lib/types.ts`, or `frontend/lib/schema-snapshot.json` is modified — even on a single-line change. ALSO invoke when CI fails with "schema-drift". Runs the schema_check, reports the exact field diff, and tells the user the single command to regenerate the snapshot if the change is intentional. Fast, deterministic check.
 tools: Read, Bash, Grep
 model: sonnet
 ---

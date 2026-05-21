@@ -443,11 +443,16 @@ note cross-tool-specific points only:
   TRIGGER-keyword discipline as the vendored-skill description sharpening
   from PR #157. Wrap-don't-duplicate pattern — enterprise agents read
   their wrapped skill on every invocation, so skill updates propagate
-  automatically. Cross-tool agents (Copilot / Cursor / Devin): this
-  directory is Claude-Code-only and you can safely ignore it — your
-  runtimes do not auto-route to subagent files; your workflow
-  continues to read from `AGENTS.md` + `.claude/skills/`. Doc-only —
-  no compute / schema / output change.
+  automatically. **Auto-routing policy** added to CLAUDE.md
+  §Auto-routing policy (the cue → agent matrix the Claude Code main
+  agent reads on every session) and 4 agent descriptions sharpened
+  from "Use PROACTIVELY" → "MUST be invoked (no confirmation)" for
+  the gating moments (schema edits, pre-Ready-flip review, branch /
+  PR / phase lifecycle, release tags). Cross-tool agents (Copilot /
+  Cursor / Devin): this directory is Claude-Code-only and you can
+  safely ignore it — your runtimes do not auto-route to subagent
+  files; your workflow continues to read from `AGENTS.md` +
+  `.claude/skills/`. Doc-only — no compute / schema / output change.
 
 ## Claude-Code-specific tooling
 

@@ -108,6 +108,48 @@ for the full 4-step pattern + Section I forcing example.
   command). Reject PRs that touch code / workflows / schemas without
   the matching CLAUDE.md + AGENTS.md diff.
 
+## Auto-routing policy
+
+Subagents under [`.claude/agents/`](.claude/agents/) auto-spawn on the
+cues below. The main agent MUST spawn them without asking for
+confirmation first — they are all read-only and their cost is bounded.
+Only destructive commands a subagent *proposes* require user
+authorization.
+
+| Cue / situation | Auto-spawn | Mode |
+|---|---|---|
+| Edit to `compute/output/schemas.py` / `frontend/lib/types.ts` / `frontend/lib/schema-snapshot.json` | `schema-sentinel` | Parallel with the edit; report PASS/FAIL before commit |
+| Edit to anything under `compute/scoring/` or `compute/valuation/` | `quantrank-reviewer` after the edit set stabilizes; `defense-layer-auditor` if `frontend/public/data/` is committed in the same PR | Sequential — reviewer first, auditor on output |
+| Edit to `frontend/components/` / `frontend/app/` | `frontend-design-reviewer` | Parallel; emits Playwright matrix for user spot-check |
+| Test failure under `tests/test_ingest/` OR live-run hang OR `429`/`403` from SEC | `edgar-debugger` | On-demand, only when the failure signal appears |
+| Edit to `.github/workflows/*.yml` OR new dep added to `pyproject.toml` / `frontend/package.json` OR new env-var read introduced | `security-reviewer` | Pre-push |
+| User says "ก่อน push" / "ready to push" / "open PR" / "mark ready" / "ตรวจก่อน push" | `quantrank-reviewer` + `phase-coordinator` Mode B | Parallel pre-push gate |
+| User says "tag release" / "cut a release" / "release vX.Y.Z" / "ตัด release" / phase-epic PR just merged | `release-captain` (acts as orchestrator and spawns the others as the ladder demands) | Owns the release ladder |
+| User asks to create a new `claude/*` branch from a handoff prompt | `phase-coordinator` Mode A | Before first non-trivial edit |
+| Phase / sub-PR marked complete on this branch | `phase-coordinator` Mode C | After merge / on close |
+| `workflow_dispatch` on `compute-rankings.yml` lands green | `defense-layer-auditor` Section A-J + Section I (Playwright) | Automatic post-cron |
+
+### Spawn discipline
+
+- **Spawn without asking** for read-only subagents (all 8 are
+  read-only). Do not pause the user's flow with "should I spawn X?"
+  — just spawn and report back.
+- **Ask before authorizing the destructive command** a subagent
+  proposes (e.g., `release-captain` emits `git tag` + `git push
+  origin <tag>` — that command needs explicit user authorization per
+  §Executing actions with care).
+- **Skip auto-spawn** if the user explicitly says "skip the X agent",
+  "don't review this one", "I'll handle it manually" — note the skip
+  in chat and proceed.
+- **De-duplicate**: if a subagent ran on the same diff within the
+  last ~10 minutes and the diff hasn't moved, don't re-spawn — point
+  to the prior result instead.
+- **Parallel by default**: when multiple cues fire on the same edit
+  (e.g., `schemas.py` + `compute/scoring/*` together), spawn the
+  agents in parallel — they each have their own context window.
+- **Disable per-session**: user can `/agents` → toggle off any agent
+  they don't want auto-routing this session.
+
 ## Gotchas
 
 - **`compute/cache/` is gitignored.** Cold-cache compute runs hit SEC
