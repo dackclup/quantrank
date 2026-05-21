@@ -89,6 +89,7 @@ from compute.scoring.earnings_quality import (
     check_accruals_momentum,
     check_loss_avoidance,
 )
+from compute.scoring.eight_k_events import get_non_reliance_filing_dates
 from compute.scoring.loss_chance import derive_loss_chance
 from compute.scoring.manipulation_index import (
     compute_adjusted_composite,
@@ -102,6 +103,8 @@ from compute.scoring.rem import compute_rem_flags
 from compute.scoring.restatement_filings import (
     check_late_filing,
     check_restatement_history,
+    compute_high_confidence_restatement,
+    get_amendment_filing_dates,
 )
 from compute.scoring.risk_overlay import compute_risk_flags
 from compute.scoring.sanity import compute_mos_trailing_ic
@@ -1246,6 +1249,31 @@ def run_weekly_compute() -> int:
             and "restatement_history" not in valuation_warnings
         ):
             valuation_warnings.append("restatement_history")
+
+        # Epic #150 Phase 2.2 — restatement_high_confidence annotate.
+        # Co-occurrence of a 10-K/A or 10-Q/A amendment with an 8-K
+        # Item 4.02 (non-reliance) filing within 90 days. Hennes-Leone-
+        # Miller 2008 *TAR* "irregularity" signature — PPV ~70% vs
+        # bare `restatement_history`'s ~30%. Annotate path (lands in
+        # `valuation_warnings`, not `risk_flags`): composite-rank
+        # source stays raw composite per SKILL.md Rule 16, but the
+        # flag contributes to `manipulation_index` (delta +3.0 on top
+        # of bare flag's +5.0 → 8.0 total when both fire), which
+        # feeds the 10-pt-max soft penalty into `composite_score_adjusted`
+        # on the detail-page Manipulation Risk card. Existing
+        # `restatement_history` semantics + weight unchanged in this
+        # PR (Phase 2.2 follow-up will decide whether to retire the
+        # bare flag after a cohort acceptance check).
+        amendment_dates = get_amendment_filing_dates(ticker, asof=asof_date)
+        non_reliance_dates = get_non_reliance_filing_dates(ticker, asof=asof_date)
+        high_conf_result = compute_high_confidence_restatement(
+            amendment_dates, non_reliance_dates
+        )
+        if (
+            high_conf_result.fired
+            and "restatement_high_confidence" not in valuation_warnings
+        ):
+            valuation_warnings.append("restatement_high_confidence")
 
         # PR 4.5b §2 — late_filing_notification annotate. SEC Form
         # 12b-25 (NT 10-K / NT 10-Q) within the trailing 365 days.

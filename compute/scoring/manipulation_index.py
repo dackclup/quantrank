@@ -136,13 +136,38 @@ REM_SUSPECT_WEIGHT: Final[float] = 8.0
 #: Hennes-Leone-Miller 2008 *TAR* §"The Importance of Distinguishing
 #: Errors from Irregularities": restatements split ~80/20 between
 #: clerical errors (non-malicious) and irregularities (fraud). The
-#: current ``restatement_history`` flag fires on ANY amendment in the
-#: lookback window — so the effective material-restatement PPV is
-#: closer to ~30%. Provenance: **literature-anchored on the cite,
-#: gut-feel on the weight** — Phase 2.2 (epic #150) plans a
-#: recalibration to "amendment + Item 4.02 within 90d" which would
-#: lift PPV ~70% and warrant a weight bump.
+#: bare ``restatement_history`` flag fires on ANY amendment in the
+#: lookback window — effective material-restatement PPV ~30%.
+#: Phase 2.2 of epic #150 introduced the higher-PPV sibling
+#: ``restatement_high_confidence`` (amendment + Item 4.02 within 90d
+#: per Hennes-Leone-Miller's irregularity signature); see
+#: ``RESTATEMENT_HIGH_CONFIDENCE_WEIGHT`` below. The bare flag
+#: stays in place as a lower-confidence annotate pending a cohort
+#: acceptance check (next-PR decision: retire or split). Provenance:
+#: **literature-anchored on the cite, gut-feel on the weight**.
 RESTATEMENT_HISTORY_WEIGHT: Final[float] = 5.0
+
+#: Hennes-Leone-Miller 2008 *TAR* "irregularity" signature —
+#: amendment + 8-K Item 4.02 (non-reliance) within 90 days. The
+#: co-occurrence isolates the fraud-class subset of restatements
+#: (PPV ~70% per Hennes-Leone-Miller's hand-classified cohort) from
+#: the broader error-class amendments. Schroeder 2024 SSRN §3.2
+#: validates the 90-day co-occurrence window — the typical lag from
+#: Item 4.02 disclosure to amended-filing landing.
+#:
+#: **Weight semantics — DELTA not total.** When the high-confidence
+#: flag fires, the bare ``restatement_history`` flag ALSO fires
+#: (strict superset — every co-occurrence pair is itself an amendment).
+#: Both flags are summed into the manipulation index, so the combined
+#: contribution is ``RESTATEMENT_HISTORY_WEIGHT + RESTATEMENT_HIGH_CONFIDENCE_WEIGHT``
+#: = 5.0 + 3.0 = 8.0 total. The 8.0 target represents the intended
+#: weight for confirmed-irregularity cases (1.6× the bare flag, scaled
+#: down from the ~2.3× PPV ratio 70÷30 while we wait for production
+#: cohort data). Provenance: **literature-anchored** — total magnitude
+#: derived from the PPV gap; the delta wiring keeps the bare flag's
+#: semantics + weight untouched in this PR per the annotate-before-veto
+#: scout discipline.
+RESTATEMENT_HIGH_CONFIDENCE_WEIGHT: Final[float] = 3.0
 
 #: Bartov-Lai-Yeung 2002 *JAR* §"Late Filings Around Earnings
 #: Surprises": NT-10K / NT-10Q filings correlate with subsequent
@@ -223,6 +248,7 @@ FLAG_WEIGHTS: Final[dict[str, float]] = {
     "manipulation_triple_flag": TRIPLE_FLAG_WEIGHT,
     "rem_suspect": REM_SUSPECT_WEIGHT,
     "restatement_history": RESTATEMENT_HISTORY_WEIGHT,
+    "restatement_high_confidence": RESTATEMENT_HIGH_CONFIDENCE_WEIGHT,
     "late_filing_notification": LATE_FILING_WEIGHT,
     "accruals_momentum_high": ACCRUALS_MOMENTUM_WEIGHT,
     "loss_avoidance_pattern": LOSS_AVOIDANCE_WEIGHT,

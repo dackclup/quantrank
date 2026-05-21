@@ -248,7 +248,7 @@ Phase-2.5 provenance comment updated to match. New test
 `test_loss_avoidance_ni_just_above_new_ceiling_breaks_streak` pins the
 new upper bound. Tests: 945 → 946. No schema / output-JSON change.
 
-**Epic #150 Phase 3 in flight (this PR)** —
+**Epic #150 Phase 3 merged via PR #164** (2026-05-20) —
 `scripts/phase3_flag_correlation.py` + `docs/phase3-correlation/`
 produce a baseline pairwise-φ analysis of the 25 active flags on
 production output (502 stocks × 25 flags). Headline findings: defense
@@ -260,6 +260,29 @@ sample size (watch in Q3 audit). Doc + script only — no compute /
 schema / output change. Reproducible via the one-shot script;
 re-run after every quarterly cohort audit + after each Phase 2.x
 recalibration PR lands.
+
+**Epic #150 Phase 2.2 in flight (this PR)** — new annotate
+`restatement_high_confidence` fires when a 10-K/A or 10-Q/A
+amendment co-occurs with an 8-K Item 4.02 (non-reliance) filing
+within 90 days. Hennes-Leone-Miller 2008 *TAR* "irregularity"
+signature — PPV ~70% vs bare `restatement_history`'s ~30%.
+Implementation: 2 new cache-reading helpers
+(`get_amendment_filing_dates`, `get_non_reliance_filing_dates`) +
+pure-function `compute_high_confidence_restatement` (90-day
+symmetric window join) + new `RESTATEMENT_HIGH_CONFIDENCE_WEIGHT =
+3.0` delta weight in `manipulation_index.py` FLAG_WEIGHTS. Annotate
+path (`valuation_warnings`); when both flags fire the combined
+manipulation_index contribution is 5+3=8 pts per Hennes-Leone-Miller
+PPV ratio. Bare `restatement_history` semantics + weight unchanged;
+the next-PR decision (retire bare flag or split weights) waits on a
+cohort acceptance check after ≥ 1 production cron. Two follow-up
+fix commits during PR review: (a) capped non-reliance lookback to
+1y instead of 5y (avoided 8-K cache 5y-refetch that cancelled the
+simulate workflow at 43m); (b) corrected the weight from 8.0 (total
+mis-spec, would have double-counted) to 3.0 (delta) per
+scrutinize-agent feedback. Phase 3 findings doc §2 + §Decision-matrix
+updated to mark this in-flight. Tests: 946 → 962 (+16 across both
+test modules). No schema / output-JSON-shape change.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight

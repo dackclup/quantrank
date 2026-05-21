@@ -27,6 +27,7 @@ from compute.scoring.eight_k_events import (
     check_auditor_change,
     check_non_reliance,
     fetch_recent_8k_filings,
+    get_non_reliance_filing_dates,
     invalidate_cache,
 )
 
@@ -437,3 +438,44 @@ def test_C3_repeated_calls_use_cache_after_first(monkeypatch):
     assert t_second < t_first / 2 or t_second < 0.05, (
         f"Cache not effective: first={t_first:.3f}s second={t_second:.3f}s"
     )
+
+
+
+# ---------------------------------------------------------------------------
+# Phase 2.2 of epic #150 — get_non_reliance_filing_dates accessor
+# ---------------------------------------------------------------------------
+
+
+def test_get_non_reliance_filing_dates_returns_item_4_02_dates():
+    """All filings with Item 4.02 in lookback window → dates returned
+    desc-sorted as parsed `date` objects."""
+    filings = [
+        _filing(days_ago=10, items=["Item 4.02"]),
+        _filing(days_ago=100, items=["Item 4.02"]),
+        _filing(days_ago=50, items=["Item 5.02"]),  # excluded
+    ]
+    dates = get_non_reliance_filing_dates("TST", asof=ASOF, filings=filings)
+    assert dates == (ASOF - timedelta(days=10), ASOF - timedelta(days=100))
+
+
+def test_get_non_reliance_filing_dates_excludes_out_of_window():
+    """Filings older than the 1y lookback are dropped."""
+    filings = [
+        _filing(days_ago=10, items=["Item 4.02"]),
+        _filing(days_ago=400, items=["Item 4.02"]),  # > 365d
+    ]
+    dates = get_non_reliance_filing_dates("TST", asof=ASOF, filings=filings)
+    assert dates == (ASOF - timedelta(days=10),)
+
+
+def test_get_non_reliance_filing_dates_empty_list_returns_empty_tuple():
+    assert get_non_reliance_filing_dates("TST", asof=ASOF, filings=[]) == ()
+
+
+def test_get_non_reliance_filing_dates_no_item_4_02_returns_empty():
+    """Filings exist but none have Item 4.02 → empty tuple."""
+    filings = [
+        _filing(days_ago=10, items=["Item 5.02"]),
+        _filing(days_ago=30, items=["Item 8.01"]),
+    ]
+    assert get_non_reliance_filing_dates("TST", asof=ASOF, filings=filings) == ()

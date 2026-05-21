@@ -49,6 +49,15 @@ the Sloan / Beneish manipulation signals. The data says no:
 **Conclusion**: Phase 2.2 can proceed without worrying about redundant
 stacking. Recalibrated `restatement_history` would carry unique signal.
 
+> **Update 2026-05-21**: Phase 2.2 landed as a parallel-surface
+> annotate (`restatement_high_confidence`) rather than tightening
+> the existing flag in place — see
+> [PR #165](https://github.com/dackclup/quantrank/pull/165). The
+> orthogonality finding above still holds: the new flag is
+> additive to the existing layer, not a replacement (the
+> cohort acceptance check after ≥ 1 production cron decides
+> retire-or-split for the bare `restatement_history` flag).
+
 ### 3. Warning-band ↔ active-veto pairs are correlated by design — not a redundancy
 
 | Pair | φ | Status |
@@ -152,7 +161,7 @@ priors.
 
 | Action | Decision | Evidence |
 |---|---|---|
-| Phase 2.2 — recalibrate `restatement_history` | ✅ **Proceed** | Orthogonal to manipulation cluster (§2) |
+| Phase 2.2 — `restatement_high_confidence` annotate ([PR #165](https://github.com/dackclup/quantrank/pull/165)) | 🟡 **In flight** | Orthogonal to manipulation cluster (§2) — additive surface; bare-flag retire/split decision waits on cohort data |
 | Phase 2.5 — downgrade `TRIPLE_FLAG_WEIGHT` | ⏳ **Watch** Q3 audit | φ = +1.0 with `dechow_high` may be small-n artifact (§4) |
 | Phase 2.5 — keep `ACCRUALS_MOMENTUM_WEIGHT = 5.0` | ✅ **Keep** | Moderate (φ = +0.305), not redundant with Sloan (§5) |
 | Phase 2.5 — drop individual `extreme_*_estimate` annotates | ❌ **Don't drop** | Per-method debugging value preserved; downstream uses `valuation_methods_applicable` (§6) |
