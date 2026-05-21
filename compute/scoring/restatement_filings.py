@@ -544,6 +544,19 @@ def compute_high_confidence_restatement(
     ``co_occurrence_count`` is the count of *distinct amendments* with
     a paired Item 4.02 — a single Item 4.02 can pair with multiple
     amendments (10-K/A + 10-Q/A in the same fiscal cleanup).
+
+    Lookback asymmetry note: ``amendment_dates`` typically spans 5y
+    (matches the bare ``restatement_history`` window), while
+    ``non_reliance_dates`` defaults to the 1y 8-K veto window to
+    reuse the existing 8-K cache without triggering a 5y refetch.
+    The high-confidence flag therefore requires the Item 4.02 to land
+    within the trailing 1y, even if the paired amendment is older.
+    Acceptable per the signal model: manipulation risk is most
+    predictive for recent events, and Item 4.02 → amendment latency
+    is < 90d per Schroeder 2024 SSRN §3.2, so a paired Item 4.02
+    older than 1y would have a paired amendment also older than 1y
+    — at which point the bare ``restatement_history`` flag carries
+    the signal at lower-but-still-nonzero PPV.
     """
     if not amendment_dates or not non_reliance_dates:
         return HighConfidenceRestatementResult(

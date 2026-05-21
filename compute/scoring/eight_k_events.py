@@ -484,17 +484,22 @@ def get_non_reliance_filing_dates(
     to join against the 10-K/A + 10-Q/A amendment date list.
 
     Mirrors ``check_non_reliance``'s cache + override path so tests
-    with synthetic fixtures see the same data. Defaults to the longer
-    ``RESTATEMENT_HISTORY_LOOKBACK_DAYS`` window so we don't miss
-    Item 4.02 disclosures that landed before the 1-year veto window.
+    with synthetic fixtures see the same data. Defaults to the same
+    1y window as ``check_non_reliance`` (``EIGHT_K_LOOKBACK_DAYS_VETO``)
+    so we reuse the existing 8-K cache instead of triggering a 5y
+    refetch on every weekly cron. Trade-off documented in
+    `compute_high_confidence_restatement`: high-confidence pairing
+    requires the Item 4.02 8-K to land within the trailing 1y; older
+    pairings (e.g., amendment + Item 4.02 both from 3y ago) are not
+    detected. Acceptable per the high-confidence flag's signal model
+    — manipulation risk is most predictive for recent events
+    (Hennes-Leone-Miller 2008 abnormal-return measurement is at the
+    announcement event, not multi-year persistence).
     """
     if asof is None:
         asof = date.today()
     if lookback_days is None:
-        # Use the longer restatement lookback so the join can find
-        # Item 4.02 filings that landed up to 5y before today, paired
-        # with amendments anywhere in the same window.
-        lookback_days = config.RESTATEMENT_HISTORY_LOOKBACK_DAYS
+        lookback_days = config.EIGHT_K_LOOKBACK_DAYS_VETO
 
     if filings is None:
         filings = fetch_recent_8k_filings(ticker, lookback_days)
