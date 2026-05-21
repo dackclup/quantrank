@@ -1,6 +1,6 @@
-"""Earnings-quality time-series defenses — Phase 4.5d.
+"""Earnings-quality time-series defenses — Phase 4.5d + 4b.
 
-Two annotate-only flags derived from the per-ticker fundamentals
+Three annotate-only flags derived from the per-ticker fundamentals
 history (annual XBRL via ``compute/ingest/fundamentals.py``):
 
 - **`accruals_momentum_high`** — Δ(TATA) > +0.05 over trailing 3
@@ -28,9 +28,28 @@ history (annual XBRL via ``compute/ingest/fundamentals.py``):
   zero-bunching effect is preserved, only the band width is scaled
   (Phase 2.4 of epic #150, 2026-05-21).
 
-Both flags are **ANNOTATE-only** — sector-agnostic, both ideas have
-moderate base rates and high precision when the cohort is right.
-Mirrors the 4.5b posture (no veto without sector adjustment).
+- **`loss_avoidance_pattern_size_invariant`** — Roychowdhury 2006
+  *JAE* §5.2 "suspect-firm" definition: ``NI / TotalAssets ∈
+  [0, 0.005]`` (0.5% of assets) for **3+ consecutive fiscal years**.
+  Size-invariant operationalization of the same Burgstahler-Dichev
+  1997 kink-at-zero signature — the asset-scaled threshold doesn't
+  drift with universe market-cap inflation, so it generalizes
+  cleanly to firm-size distributions the absolute-dollar variant
+  misses (e.g., chronically thin-margin large caps where NI/TA
+  hovers near zero despite NI > $50M). Donelson-McInnis-Mergenthaler
+  2013 *TAR* reaffirms the 0.005 cutoff as canonical for small-
+  profit cohort selection. The size-invariant flag ships alongside
+  the absolute-$ variant per the `portable-annotate-before-veto`
+  discipline (Phase 4b, 2026-05-21); the next-PR decision (retire
+  the absolute-$ original, keep both, or split weights) waits on
+  the Q3 2026-08-19 quarterly cohort audit + a φ-correlation check
+  vs `rem_suspect` (same Roychowdhury 2006 anchor; different
+  sub-trigger).
+
+All three flags are **ANNOTATE-only** — sector-agnostic, all three
+ideas have moderate base rates and high precision when the cohort
+is right. Mirrors the 4.5b posture (no veto without sector
+adjustment).
 
 References
 ----------
@@ -41,6 +60,13 @@ References
 - Burgstahler, D., & Dichev, I. (1997). "Earnings management to
   avoid earnings decreases and losses."
   *Journal of Accounting and Economics* 24(1), 99-126.
+- Roychowdhury, S. (2006). "Earnings management through real
+  activities manipulation."
+  *Journal of Accounting and Economics* 42(3), 335-370.
+- Donelson, D. C., McInnis, J. M., & Mergenthaler, R. D. (2013).
+  "Discontinuities and earnings management: Evidence from
+  restatements related to securities litigation."
+  *The Accounting Review* 88(2), 387-411.
 """
 
 from __future__ import annotations
@@ -83,16 +109,36 @@ LOOKBACK_YEARS: Final[int] = 3
 # until Phase 2.4 landed). 10× lifts the NI band to ``[$0, $50M]``
 # and the EPS band to ``[$0, $0.50]``. The Burgstahler-Dichev kink-
 # at-zero signature is preserved — only the band width scales with
-# firm size. Future work: replace absolute-dollar with NI/TotalAssets
-# (size-invariant), tracked as a Phase 2.4 follow-up.
+# firm size. The size-invariant sibling `loss_avoidance_pattern_size_invariant`
+# (``LOSS_AVOID_NI_TO_ASSETS_CEILING`` below) closes the Phase 2.4
+# follow-up that originally read "replace absolute-dollar with
+# NI/TotalAssets"; both flags now ship side-by-side annotate-only
+# pending the Q3 2026-08-19 cohort-acceptance decision (retire one,
+# keep both, or split weights).
 LOSS_AVOID_NI_FLOOR: Final[float] = 0.0
 LOSS_AVOID_NI_CEILING: Final[float] = 50_000_000.0
 LOSS_AVOID_EPS_FLOOR: Final[float] = 0.0
 LOSS_AVOID_EPS_CEILING: Final[float] = 0.50
 
+# Size-invariant loss-avoidance band — Roychowdhury 2006 *JAE*
+# Table 1 + §5.2 "suspect-firm" definition: NI / TotalAssets ∈
+# [0, 0.005] (0.5% of assets). Donelson-McInnis-Mergenthaler 2013
+# *TAR* reaffirms 0.005 as the canonical small-profit cohort cutoff.
+# Same kink-at-zero signature as the absolute-dollar variant
+# (LOSS_AVOID_NI_CEILING above), but asset-scaled so the threshold
+# doesn't drift with universe market-cap inflation — catches
+# chronically-thin-margin large caps (NI > $50M, NI/TA < 0.5%) that
+# the absolute-$ band misses. Expected single-year suspect rate
+# ~8-12% on Compustat per Roychowdhury Table 1; on S&P 500 with the
+# 3-year persistence filter the expected firing rate is ~1.5-4%
+# (~8-20 tickers). Phase 4b, 2026-05-21.
+LOSS_AVOID_NI_TO_ASSETS_FLOOR: Final[float] = 0.0
+LOSS_AVOID_NI_TO_ASSETS_CEILING: Final[float] = 0.005
+
 # Minimum consecutive years in the tiny-positive band before
-# `loss_avoidance_pattern` fires. 3 matches Burgstahler-Dichev 1997
-# §4 (persistent earnings-management signature, not just one-year noise).
+# `loss_avoidance_pattern` (and `loss_avoidance_pattern_size_invariant`)
+# fires. 3 matches Burgstahler-Dichev 1997 §4 + Roychowdhury 2006
+# §5.2 (persistent earnings-management signature, not just one-year noise).
 LOSS_AVOID_MIN_CONSECUTIVE_YEARS: Final[int] = 3
 
 
@@ -116,6 +162,21 @@ class LossAvoidanceResult:
     """How many trailing fiscal years sat in the tiny-positive band.
     Could exceed ``LOSS_AVOID_MIN_CONSECUTIVE_YEARS`` for very
     consistent loss-avoiders. 0 when no eligible history found."""
+
+
+@dataclass(frozen=True)
+class LossAvoidanceSizeInvariantResult:
+    """`loss_avoidance_pattern_size_invariant` flag output (Phase 4b)."""
+
+    fired: bool
+    consecutive_years: int
+    """How many trailing fiscal years sat in the
+    ``NI / TotalAssets ∈ [0, LOSS_AVOID_NI_TO_ASSETS_CEILING]``
+    band. 0 when no eligible history found (missing NI or
+    TotalAssets at any year in the look-back, zero TotalAssets,
+    or non-finite ratio). Walks newest → oldest, stops at the
+    first year that doesn't qualify (matches the absolute-$
+    sibling's streak semantics)."""
 
 
 # ---------------------------------------------------------------------------
@@ -298,6 +359,79 @@ def check_loss_avoidance(
     return LossAvoidanceResult(fired=fired, consecutive_years=consecutive)
 
 
+# ---------------------------------------------------------------------------
+# loss_avoidance_pattern_size_invariant (Phase 4b — Roychowdhury 2006)
+# ---------------------------------------------------------------------------
+
+
+def check_loss_avoidance_size_invariant(
+    snap: FundamentalsSnapshot | None,
+    history: pd.DataFrame | None,
+) -> LossAvoidanceSizeInvariantResult:
+    """Detect ``LOSS_AVOID_MIN_CONSECUTIVE_YEARS`` or more consecutive
+    fiscal years where ``NI / TotalAssets ∈ [0, LOSS_AVOID_NI_TO_ASSETS_CEILING]``
+    (Roychowdhury 2006 *JAE* §5.2 suspect-firm signature).
+
+    Companion to ``check_loss_avoidance`` — same persistence-streak
+    construction (newest → oldest, stop at the first year that fails),
+    different threshold metric (asset-scaled instead of absolute-$).
+    Returns ``fired=False, consecutive_years=0`` when the snapshot or
+    history is missing the inputs needed to compute NI/TA at any year
+    in the candidate streak — graceful-degradation per Rule 18 (no
+    half-credit for partial history).
+    """
+    if snap is None:
+        return LossAvoidanceSizeInvariantResult(False, 0)
+
+    ni_series = _annual_values(history, "net_income")
+    ta_series = _annual_values(history, "total_assets")
+
+    # Build a chronological list of (period_end, NI, TA) including the
+    # snapshot as the most recent entry (when its inputs are available).
+    chronological: list[tuple[date, float | None, float | None]] = []
+    if (
+        snap.latest_period_end is not None
+        and snap.net_income is not None
+        and snap.total_assets is not None
+    ):
+        chronological.append(
+            (
+                snap.latest_period_end,
+                float(snap.net_income),
+                float(snap.total_assets),
+            )
+        )
+    for pe, ni in ni_series:
+        if snap is not None and snap.latest_period_end is not None and pe >= snap.latest_period_end:
+            # Skip same-period (already covered by snap) and future-dated rows.
+            continue
+        ta = _value_at_year(ta_series, pe)
+        chronological.append((pe, ni, ta))
+
+    # Walk newest first, counting consecutive in-band years.
+    chronological.sort(key=lambda t: t[0], reverse=True)
+
+    consecutive = 0
+    for _, ni, ta in chronological:
+        if ni is None or ta is None or ta <= 0:
+            # Missing input → cannot evaluate this year → streak breaks
+            # (no half-credit per Rule 18 — annotate is only meaningful
+            # when the full 3y window has data).
+            break
+        if not math.isfinite(ni) or not math.isfinite(ta):
+            break
+        ratio = ni / ta
+        if not math.isfinite(ratio):
+            break
+        if LOSS_AVOID_NI_TO_ASSETS_FLOOR <= ratio <= LOSS_AVOID_NI_TO_ASSETS_CEILING:
+            consecutive += 1
+        else:
+            break
+
+    fired = consecutive >= LOSS_AVOID_MIN_CONSECUTIVE_YEARS
+    return LossAvoidanceSizeInvariantResult(fired=fired, consecutive_years=consecutive)
+
+
 __all__ = [
     "ACCRUALS_MOMENTUM_THRESHOLD",
     "AccrualsMomentumResult",
@@ -307,7 +441,11 @@ __all__ = [
     "LOSS_AVOID_MIN_CONSECUTIVE_YEARS",
     "LOSS_AVOID_NI_CEILING",
     "LOSS_AVOID_NI_FLOOR",
+    "LOSS_AVOID_NI_TO_ASSETS_CEILING",
+    "LOSS_AVOID_NI_TO_ASSETS_FLOOR",
     "LossAvoidanceResult",
+    "LossAvoidanceSizeInvariantResult",
     "check_accruals_momentum",
     "check_loss_avoidance",
+    "check_loss_avoidance_size_invariant",
 ]

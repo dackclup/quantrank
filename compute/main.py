@@ -80,6 +80,7 @@ from compute.scoring.dechow_f import DechowResult, compute_dechow_f
 from compute.scoring.earnings_quality import (
     check_accruals_momentum,
     check_loss_avoidance,
+    check_loss_avoidance_size_invariant,
 )
 from compute.scoring.eight_k_events import get_non_reliance_filing_dates
 from compute.scoring.loss_chance import derive_loss_chance
@@ -1137,6 +1138,13 @@ def run_weekly_compute() -> int:
     detail_count = 0
     history_count = 0
     fair_price_count = 0
+    # Phase 4b — observability surface for the new Roychowdhury 2006
+    # size-invariant loss-avoidance annotate. Counter increments inside
+    # the per-ticker loop when the flag is appended to valuation_warnings;
+    # written to Metadata.loss_avoidance_size_invariant_firing_count so
+    # the next cron's firing rate is visible without grepping per-stock
+    # JSONs (Rule 18 observability-before-wiring).
+    loss_avoidance_size_invariant_firing_count: int = 0
     for _, r in df.iterrows():
         ticker = str(r["ticker"])
         snap = snapshots.get(ticker)
@@ -1327,15 +1335,31 @@ def run_weekly_compute() -> int:
 
         # PR 4.5d §2 — loss_avoidance_pattern annotate.
         # Burgstahler-Dichev 1997 *JAE* kink at zero. 3+ consecutive
-        # fiscal years of tiny-positive NI (∈ [0, $5M]) OR tiny-
-        # positive EPS (∈ [0, $0.05]) = managers shading reported
-        # earnings just enough to clear the loss threshold.
+        # fiscal years of tiny-positive NI (∈ [0, $50M]) OR tiny-
+        # positive EPS (∈ [0, $0.50]) = managers shading reported
+        # earnings just enough to clear the loss threshold. (Phase
+        # 2.4 of epic #150 rescaled the bands 10× for S&P 500 scale.)
         loss_avoid = check_loss_avoidance(snap, histories.get(ticker))
         if (
             loss_avoid.fired
             and "loss_avoidance_pattern" not in valuation_warnings
         ):
             valuation_warnings.append("loss_avoidance_pattern")
+
+        # Phase 4b — loss_avoidance_pattern_size_invariant annotate.
+        # Roychowdhury 2006 *JAE* §5.2 suspect-firm definition:
+        # NI / TotalAssets ∈ [0, 0.005] for 3+ consecutive fiscal years.
+        # Size-invariant sibling of the absolute-$ variant above; catches
+        # chronically thin-margin large caps the BD 1997 dollar band misses.
+        loss_avoid_si = check_loss_avoidance_size_invariant(
+            snap, histories.get(ticker)
+        )
+        if (
+            loss_avoid_si.fired
+            and "loss_avoidance_pattern_size_invariant" not in valuation_warnings
+        ):
+            valuation_warnings.append("loss_avoidance_pattern_size_invariant")
+            loss_avoidance_size_invariant_firing_count += 1
 
         # Price history JSON (sliced from already-fetched prices, no new
         # fetches per Step 5 spec).
@@ -1515,6 +1539,9 @@ def run_weekly_compute() -> int:
             osap_signals_dropped_no_long_short_list or None
         ),
         tier2_enabled=_EIGHT_K_DEFENSES_ENABLED,
+        loss_avoidance_size_invariant_firing_count=(
+            loss_avoidance_size_invariant_firing_count
+        ),
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)

@@ -146,6 +146,15 @@ class Metadata(BaseModel):
     # helper falls back to coverage-based inference when the key is
     # absent from a legacy `metadata.json`).
     tier2_enabled: bool = True
+    # Phase 4b (0.9.5-phase4h.5) — observability surface for the new
+    # Roychowdhury 2006 size-invariant loss-avoidance annotate
+    # `loss_avoidance_pattern_size_invariant`. Count of tickers where
+    # NI/TotalAssets ∈ [0, 0.005] for 3+ consecutive fiscal years on
+    # this cron run. Nullable on legacy snapshots (pre-0.9.5); Rule 18
+    # observability-before-wiring requires the diagnostic ship in the
+    # same PR as the flag emission so the first cron's firing rate is
+    # visible without grepping per-stock JSONs.
+    loss_avoidance_size_invariant_firing_count: int | None = None
 
 
 class RawMetrics(BaseModel):

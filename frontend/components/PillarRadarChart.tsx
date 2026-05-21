@@ -77,7 +77,7 @@ export function PillarRadarChart({
   const droppedActive: string[] = [];
   for (const [key, label] of ACTIVE_PILLARS) {
     const v = pillars[key];
-    if (v === null || v === undefined || Number.isNaN(v)) {
+    if (v == null || Number.isNaN(v)) {
       droppedActive.push(label);
       continue;
     }

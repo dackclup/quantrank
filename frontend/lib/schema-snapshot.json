@@ -57,6 +57,11 @@
       "required": true,
       "default": "<required>"
     },
+    "loss_avoidance_size_invariant_firing_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
     "mos_trailing_ic_smoke": {
       "type": "float | None",
       "required": false,

@@ -108,6 +108,15 @@ export type Metadata = {
   // render this; the verify-helper Section B branch is the primary
   // consumer.
   tier2_enabled?: boolean | null;
+  // Phase 4b (0.9.5-phase4h.5) — count of tickers where
+  // `loss_avoidance_pattern_size_invariant` fired on this cron run
+  // (Roychowdhury 2006 §5.2 suspect-firm: NI/TotalAssets ∈ [0, 0.005]
+  // for 3+ consecutive fiscal years). Optional + nullable: absent /
+  // null on legacy snapshots pre-0.9.5. Rule 18 observability surface
+  // shipped alongside the flag itself so the next cron's firing rate
+  // is visible without grepping per-stock JSONs; not currently
+  // rendered by the static site.
+  loss_avoidance_size_invariant_firing_count?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors

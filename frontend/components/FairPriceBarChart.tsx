@@ -216,7 +216,7 @@ export function FairPriceBarChart({
                   {fair_price.median !== null ? formatFairPrice(fair_price.median) : '—'}
                 </div>
                 {medianPct !== null && (
-                  <div className={`text-[11px] font-medium ${headline.cls}`}>
+                  <div className={`text-[11px] font-medium tabular-nums ${headline.cls}`}>
                     {medianPct >= 0
                       ? `+${medianPct.toFixed(0)}%`
                       : `${medianPct.toFixed(0)}%`}{' '}
@@ -318,7 +318,7 @@ export function FairPriceBarChart({
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-semibold text-slate-800">{r.label}</span>
                   <span
-                    className={`inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${v.bg} ${v.text} ring-1 ring-inset ${v.ring}`}
+                    className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide ${v.bg} ${v.text} ring-1 ring-inset ${v.ring}`}
                   >
                     {v.label}
                   </span>
