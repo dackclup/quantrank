@@ -13,6 +13,7 @@ A cached row is considered fresh if its newest ``filed_date`` is within
 from __future__ import annotations
 
 import logging
+import math
 import os
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
@@ -548,6 +549,107 @@ def _try_ttm_max_fresh(
     return max(candidates, key=lambda c: c[0])
 
 
+def _fetch_shares_from_per_filing_xbrl(company: Company) -> float | None:
+    """Issue #176 fallback — recover ``shares_outstanding`` from per-filing
+    XBRL when the SEC companyfacts aggregate API has nothing.
+
+    Background (2026-05-21 live SEC probe on STZ / Constellation Brands):
+
+    - ``https://data.sec.gov/api/xbrl/companyfacts/CIK<n>.json`` filters
+      out *dimensional* facts (those tagged with a member like a share
+      class).
+    - STZ files ``dei:EntityCommonStockSharesOutstanding`` only with a
+      Class A / Class B dimension, so the aggregate returns nothing —
+      cascading to a ``shares_outstanding = None`` snapshot even though
+      revenue + balance-sheet totals extract cleanly.
+    - The per-filing XBRL (``Filing.xbrl().facts.get_facts_by_concept``)
+      DOES expose the dimensional contexts, so we can sum across share
+      classes to get total common shares outstanding.
+
+    This function pulls the company's most recent 10-K (annual, largest
+    fact set; falls back to 10-Q if no 10-K is on file), aggregates the
+    cover-page common-shares-outstanding fact across all dimensional
+    contexts at the most-recent ``period_end``, and returns the sum.
+
+    Failure modes (all return ``None`` — graceful degradation per the
+    ``portable-graceful-degradation-try-except`` discipline):
+
+    - ``edgartools`` raises (network blip, schema drift, missing filing)
+    - The most-recent filing has no XBRL attachment
+    - Neither ``dei:EntityCommonStockSharesOutstanding`` nor
+      ``us-gaap:CommonStockSharesIssued`` returns dimensional rows
+    - The summed value is zero or non-finite
+
+    The upstream ``share_count_extraction_missing`` annotate (PR #181)
+    keeps firing on ``None`` returns so the visibility gap stays closed
+    even when this fallback can't recover the value.
+
+    Cost: ~5-10s per affected ticker (one extra XBRL HTTP fetch). The
+    caller gates the invocation on the narrow signature
+    ``shares is None AND revenue > 0 AND total_assets > 0`` so the
+    universe-wide cost is bounded (1-3 tickers per cron at most given
+    the 2026-05-14 baseline of 1 affected ticker).
+    """
+    try:
+        filings_10k = company.get_filings(form="10-K")
+        filings_10q = company.get_filings(form="10-Q")
+        # Prefer 10-K because it carries the larger fact set and the
+        # most recent end-of-fiscal-year share count; fall back to the
+        # latest 10-Q only when no 10-K is on file (rare on the S&P 500
+        # but cheap to guard).
+        candidates = []
+        for fset in (filings_10k, filings_10q):
+            if fset is None:
+                continue
+            try:
+                top = fset.head(1)
+            except Exception:  # noqa: BLE001
+                continue
+            if top is None or len(top) == 0:
+                continue
+            candidates.append(top[0])
+            break
+        if not candidates:
+            return None
+        filing = candidates[0]
+        xbrl = filing.xbrl()
+        if xbrl is None or not hasattr(xbrl, "facts"):
+            return None
+        facts_view = xbrl.facts
+        for concept in (
+            "dei:EntityCommonStockSharesOutstanding",
+            "us-gaap:CommonStockSharesIssued",
+        ):
+            try:
+                df = facts_view.get_facts_by_concept(concept)
+            except Exception:  # noqa: BLE001
+                continue
+            if df is None or len(df) == 0:
+                continue
+            if "numeric_value" not in df.columns:
+                continue
+            # Share-count facts are instant-type in edgartools' shape —
+            # the "as-of" date column is ``period_instant`` not
+            # ``period_end`` (which is for flow-type facts like revenue).
+            # Some shapes carry both; some carry just one. Use whichever
+            # the DataFrame supplies, in instant-first order since the
+            # canonical concepts here are instant-type.
+            for date_col in ("period_instant", "period_end"):
+                if date_col not in df.columns:
+                    continue
+                sub = df.dropna(subset=["numeric_value", date_col])
+                if len(sub) == 0:
+                    continue
+                latest = sub[date_col].max()
+                most_recent = sub[sub[date_col] == latest]
+                total = float(most_recent["numeric_value"].sum())
+                if math.isfinite(total) and total > 0:
+                    return total
+        return None
+    except Exception:  # noqa: BLE001
+        return None
+
+
 @retry(
     stop=(stop_after_delay(30) | stop_after_attempt(2)),
     wait=wait_exponential(min=2, max=8),
@@ -622,6 +724,33 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
         snapshot_dates.append(fd)
         if pe is not None:
             period_dates.append(pe)
+
+    # Issue #176 fallback — per-filing XBRL dimensional-fact aggregation
+    # for filers whose share-count facts are reported with share-class
+    # dimensions (STZ Class A / Class B) and therefore filtered out by
+    # the SEC companyfacts aggregate API. Triggers ONLY when the primary
+    # path above returned None AND the rest of the snapshot looks healthy
+    # (revenue + total_assets present) — i.e., the
+    # ``share_count_extraction_missing`` signature shipped in PR #181.
+    # See `_fetch_shares_from_per_filing_xbrl` docstring for the SEC API
+    # probe results that motivated this fallback. Graceful-degradation
+    # try/except keeps any per-filing fetch failure silent so the upstream
+    # annotate keeps firing and ranks don't depend on this fallback path.
+    if (
+        balance_values.get("shares_outstanding") is None
+        and (revenue_val or 0) > 0
+        and (balance_values.get("total_assets") or 0) > 0
+    ):
+        fallback_shares = _fetch_shares_from_per_filing_xbrl(company)
+        if fallback_shares is not None:
+            balance_values["shares_outstanding"] = fallback_shares
+            logger.info(
+                "shares_outstanding fallback fired for %s/%s — "
+                "per-filing XBRL dimensional aggregation returned %.0f",
+                ticker,
+                cik,
+                fallback_shares,
+            )
 
     # Latest EPS values via normalized snake_case API (per-share figures
     # don't have a clean TTM-via-tag concept; consumers like pe_ratio

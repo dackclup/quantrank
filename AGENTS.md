@@ -543,38 +543,40 @@ note cross-tool-specific points only:
   `FairPriceBarChart.tsx` `tabular-nums` + verdict badge `rounded-full`
   + `font-medium`; loose-null tightening in `RawMetricsTable` +
   `PillarRadarChart`; `RankingTable.tsx` toolbar search `aria-label`.
-- **Issue #176 share_count_extraction_missing annotate in flight (this PR)**
-  — new annotate-only defense flag emitted in `compute/main.py` from
-  the detector `check_share_count_extraction_missing` in
-  `compute/scoring/risk_overlay.py`. Closes the visibility-gap raised
-  by the stock-detail-auditor dry-run on PR #175 (filed as issue #176):
-  STZ on the 2026-05-14 cron shipped with `market_cap: null` and
-  `risk_flags: []` because `shares_outstanding` failed XBRL extraction
-  even though revenue + balance sheet extracted cleanly (Constellation
-  Brands likely uses a share-class-scoped fact name —
-  `_FUNDAMENTALS_REQUIRED_ATTRS` manifest extension is the deeper fix
-  and is left to a follow-up needing SEC live access). Pattern: fires
-  iff ``shares_outstanding is None AND revenue > 0 AND total_assets >
-  0`` — narrow guard distinguishing partial-extraction (STZ) from
-  entire-extraction-broken (issue #15 throttling territory).
-  **Annotate-only** per `portable-annotate-before-veto`: deliberately
-  does NOT extend the `data_quality_input_corruption` veto's existing
-  `shares_outstanding=None` silence contract (issue #18 / test_D3) so
-  the two pathways stay coherent; the asymmetry tests lock the
-  None-vs-zero behavior since ``shares_outstanding == 0`` is a
-  legitimate edge (not extraction failure). STZ is rank 308 so no
-  Top-5 impact either way; promotion to veto deferred to the Q3
-  2026-08-19 quarterly cohort audit. Blast-radius scan on the
-  2026-05-14 cron: 1/502 tickers match the signature (just STZ).
-  Schema bumps `0.9.5-phase4h.5` → `0.9.6-phase4h.6` for
-  `Metadata.share_count_extraction_missing_count: int | None` (Rule 18
-  diagnostic shipped in the same PR as the flag emission). Defense
-  layer headline count 28 → 29 emitted boolean flags. Tests
-  1031 → 1040 (+9: 8 unit + 1 explicit None-vs-zero asymmetry lock).
-  Cross-tool agents (Copilot / Cursor / Devin): schema-triple-lockstep
-  applies — `compute/output/schemas.py` + `frontend/lib/types.ts` +
-  `frontend/lib/schema-snapshot.json` ALL move together; CI fails on
-  drift. No compute composite / scoring weight / valuation change.
+- **Issue #176 share_count_extraction_missing annotate merged via
+  PR #181** (2026-05-21, `998cd530`) — landed the visibility-gap
+  annotate. Pattern fires when
+  ``shares_outstanding is None AND revenue > 0 AND total_assets > 0``.
+  Annotate-only. Schema 0.9.5 → 0.9.6 for the
+  `Metadata.share_count_extraction_missing_count: int | None`
+  diagnostic. Defense layer 28 → 29 flags.
+- **Issue #176 root-cause fallback in flight (this PR)** — actually
+  recovers the missing share count via per-filing XBRL dimensional-
+  fact aggregation. Live SEC probe on STZ (2026-05-21) confirmed:
+  SEC `companyfacts` aggregate filters out dimensional facts (the
+  `companyconcept` API returns 404 for STZ's
+  `dei:EntityCommonStockSharesOutstanding`), but per-filing XBRL
+  exposes them with `is_dimensioned=True` + `period_instant`
+  (share-count facts are instant-type, not flow-type). The new
+  function `_fetch_shares_from_per_filing_xbrl(company)` in
+  `compute/ingest/fundamentals.py` pulls the most recent 10-K
+  (falls back to 10-Q if none), aggregates
+  `dei:EntityCommonStockSharesOutstanding` across all dimensional
+  contexts at the most-recent `period_instant`, returns the sum;
+  falls back to `us-gaap:CommonStockSharesIssued` if dei is empty.
+  Graceful-degradation try/except wraps the whole chain — any
+  failure returns `None` and the PR-#181 annotate keeps firing as
+  the safety net. Triggered ONLY when the primary path returns
+  None AND revenue > 0 AND total_assets > 0 (the PR-#181 signature),
+  bounding universe-wide HTTP cost to ~1-3 tickers per cron
+  (blast radius = 1 on 2026-05-14). Live verification: STZ 172.20M,
+  AAPL 14.78B, WMT 7.97B. Tests 1040 → 1049 (+9 offline mocks + 1
+  `@network` STZ live drift-detector). No schema change. Cross-tool
+  agents (Copilot / Cursor / Devin): the `edgartools` per-filing
+  XBRL surface (`Filing.xbrl().facts.get_facts_by_concept`) is now
+  a load-bearing call site — treat it as a `_PER_FILING_XBRL_*`
+  drift-detector manifest candidate in a follow-up PR if edgartools
+  CHANGELOG shows a `get_facts_by_concept` shape change.
 
 ## Claude-Code-specific tooling
 

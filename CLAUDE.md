@@ -190,10 +190,18 @@ that fired per-diff.
   cases (issue #18 closed: this flag is a veto now). A separate
   **partial-extraction** failure mode — `shares_outstanding=None`
   despite company-level revenue + balance sheet being present (STZ
-  2026-05-14 pattern, issue #176) — surfaces via the new annotate
-  `share_count_extraction_missing` shipped in this PR. The deeper
-  XBRL-manifest fix (share-class-scoped fact names) is a follow-up
-  needing SEC live access.
+  2026-05-14 pattern, issue #176) — surfaces via the
+  `share_count_extraction_missing` annotate (PR #181) AND has a live
+  recovery path now via `_fetch_shares_from_per_filing_xbrl` shipped
+  in this PR. Root cause: SEC's `companyfacts` aggregate API filters
+  out dimensional facts; STZ files share counts only with
+  Class A / Class B dimensions. The fallback pulls per-filing XBRL
+  (`Filing.xbrl().facts.get_facts_by_concept`) for the most recent
+  10-K / 10-Q and sums the dimensional `dei:EntityCommonStockSharesOutstanding`
+  contexts. Triggered ONLY when the primary extraction returns
+  ``None`` AND `revenue > 0` AND `total_assets > 0` (PR-#181
+  signature); blast radius on the 2026-05-14 cron is 1 ticker, so the
+  extra HTTP cost is bounded.
 - **`_avg_3y_roe` fallback removed** (issue #11, 2026-05-21) — PR 4c
   earlier added the per-year stockholders_equity denominator path but
   kept a fallback to single-period equity when history was incomplete,
@@ -645,43 +653,49 @@ tightened to `== null`; `RankingTable.tsx:268` toolbar search gained
 `aria-label="Search by ticker or company name"` for screen-reader
 affordance.
 
-**Issue #176 share_count_extraction_missing annotate in flight (this PR)**
-— closes the visibility-gap follow-up surfaced by the stock-detail-auditor
-dry-run on PR #175 (filed as issue #176). STZ on the 2026-05-14 cron
-shipped with `market_cap: null` + `risk_flags: []` because
-`shares_outstanding` failed to extract from XBRL despite revenue +
-full balance sheet extracting cleanly (likely cause: Constellation
-Brands uses a share-class-scoped fact name — Class A / Class B — that
-`_FUNDAMENTALS_REQUIRED_ATTRS` does not yet cover, see issue #176 step
-1-3 for the manifest-fix path). New annotate
+**Issue #176 share_count_extraction_missing annotate merged via PR #181**
+(2026-05-21, `998cd530`) — landed the visibility-gap annotate. STZ on
+the 2026-05-14 cron shipped with `market_cap: null` + `risk_flags: []`
+because `shares_outstanding` failed to extract. The flag
 `share_count_extraction_missing` fires when
-``shares_outstanding is None AND revenue > 0 AND total_assets > 0`` —
-narrow guard distinguishing "partial XBRL extraction" (the STZ
-failure mode) from "entire extraction broken" (a different bug class,
-issue #15 throttling-resilience). **Annotate-only** per
-`portable-annotate-before-veto` discipline — preserves the existing
-`data_quality_input_corruption` veto's `shares_outstanding=None`
-silence contract (issue #18 / test_D3) so the two pathways stay
-coherent; the asymmetry tests lock None-vs-zero behavior since
-``shares_outstanding == 0`` is a legitimate edge (not extraction
-failure). STZ is currently rank 308 so no Top-5 impact either way;
-promotion to veto deferred to the Q3 2026-08-19 quarterly cohort audit
-after the first cron's firing rate confirms the pattern is narrow
-(blast-radius scan on the 2026-05-14 cron showed 1/502 tickers fit
-the signature, just STZ itself). Schema bumps `0.9.5-phase4h.5` →
-`0.9.6-phase4h.6` for the new
-`Metadata.share_count_extraction_missing_count: int | None`
-observability field (Rule 18 — diagnostic ships in the SAME PR as the
-flag emission so the next cron's firing rate is visible at-a-glance).
-Defense layer headline count 28 → 29 emitted boolean flags. Tests:
-1031 → 1040 (+9: 8 unit + 1 explicit None-vs-zero asymmetry lock).
-The deeper root-cause fix (extend `_FUNDAMENTALS_REQUIRED_ATTRS`
-manifest with share-class-scoped fact names, plus a cover-page
-fallback) is left to a follow-up PR that needs SEC EDGAR network
-access to discover the actual fact name STZ files under — this PR
-just closes the visibility gap so a future STZ-style failure mode is
-flagged on the next cron rather than discovered by a stock-detail-
-auditor pass.
+``shares_outstanding is None AND revenue > 0 AND total_assets > 0``.
+Annotate-only per `portable-annotate-before-veto`. Schema bumped
+`0.9.5-phase4h.5` → `0.9.6-phase4h.6` for the
+`Metadata.share_count_extraction_missing_count: int | None` Rule 18
+diagnostic. Defense layer 28 → 29 emitted flags. Tests 1031 → 1040.
+
+**Issue #176 root-cause fallback in flight (this PR)** — actually
+RECOVERS the missing share count via per-filing XBRL dimensional-fact
+aggregation, removing the dependency on a follow-up after PR #181
+shipped only the visibility surface. Live SEC probe on STZ
+(2026-05-21) confirmed the SEC `companyfacts` aggregate API filters
+out *dimensional* facts (companyconcept API returns HTTP 404 for both
+`dei:EntityCommonStockSharesOutstanding` and
+`us-gaap:CommonStockSharesOutstanding` on STZ) while the per-filing
+XBRL DOES expose them with `is_dimensioned=True` and a
+`period_instant` "as-of" date (share-count facts are instant-type,
+not flow-type). New `_fetch_shares_from_per_filing_xbrl(company)` in
+`compute/ingest/fundamentals.py` pulls the most recent 10-K (falls
+back to 10-Q if none on file), aggregates
+`dei:EntityCommonStockSharesOutstanding` across all dimensional
+contexts at the most-recent `period_instant`, and returns the sum;
+falls back to `us-gaap:CommonStockSharesIssued` if the dei concept
+is empty. Wrapped in graceful-degradation try/except — any failure
+returns `None`, keeping the upstream `share_count_extraction_missing`
+annotate (PR #181) firing as the safety net. Triggered ONLY when the
+primary extraction returns `None` AND `revenue > 0` AND
+`total_assets > 0` (the exact PR-#181 signature), so universe-wide
+HTTP cost is bounded to ~1-3 tickers per cron (blast radius = 1 on
+2026-05-14). Live verification (this session): STZ 172.20M shares
+(Class A 172.17M + Class B 26K), AAPL 14.78B, WMT 7.97B — all match
+ground truth. Tests: 1040 → 1049 (+9 offline mock tests + 1
+`@network` STZ live drift-detector). No schema change (operates at
+the snapshot-construction layer, doesn't add any field). The
+`share_count_extraction_missing` annotate keeps the same emission
+semantic — when the fallback succeeds, `shares_outstanding` is no
+longer `None` so the annotate doesn't fire; when the fallback also
+fails (e.g., the filer has no 10-K or 10-Q with XBRL), the annotate
+fires and surfaces the gap.
 
 **Phase 4a osap-import guard merged via PR #179** (2026-05-21) —
 surfaced by the 14-subagent self-audit on 2026-05-21 (`test-engineer` follow-up).
