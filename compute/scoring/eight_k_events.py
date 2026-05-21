@@ -471,6 +471,52 @@ def check_non_reliance(
     )
 
 
+def get_non_reliance_filing_dates(
+    ticker: str,
+    *,
+    asof: date | None = None,
+    lookback_days: int | None = None,
+    filings: list[dict] | None = None,
+) -> tuple[date, ...]:
+    """Return parsed dates for every 8-K filing that matched Item 4.02
+    in the lookback window. Used by Phase 2.2 of epic #150
+    (``compute.scoring.restatement_filings.compute_high_confidence_restatement``)
+    to join against the 10-K/A + 10-Q/A amendment date list.
+
+    Mirrors ``check_non_reliance``'s cache + override path so tests
+    with synthetic fixtures see the same data. Defaults to the longer
+    ``RESTATEMENT_HISTORY_LOOKBACK_DAYS`` window so we don't miss
+    Item 4.02 disclosures that landed before the 1-year veto window.
+    """
+    if asof is None:
+        asof = date.today()
+    if lookback_days is None:
+        # Use the longer restatement lookback so the join can find
+        # Item 4.02 filings that landed up to 5y before today, paired
+        # with amendments anywhere in the same window.
+        lookback_days = config.RESTATEMENT_HISTORY_LOOKBACK_DAYS
+
+    if filings is None:
+        filings = fetch_recent_8k_filings(ticker, lookback_days)
+    if filings is None:
+        return ()
+
+    dates: list[date] = []
+    for entry in filings:
+        if not isinstance(entry, dict):
+            continue
+        filing_date_str = entry.get("filing_date")
+        if not filing_date_str or not _filing_date_within(filing_date_str, asof, lookback_days):
+            continue
+        items = entry.get("items") or []
+        if any(_ITEM_4_02_PATTERN.search(str(item)) for item in items):
+            try:
+                dates.append(date.fromisoformat(str(filing_date_str)[:10]))
+            except ValueError:
+                continue
+    return tuple(sorted(dates, reverse=True))
+
+
 def check_auditor_change(
     ticker: str,
     *,
@@ -502,5 +548,6 @@ __all__ = [
     "check_auditor_change",
     "check_non_reliance",
     "fetch_recent_8k_filings",
+    "get_non_reliance_filing_dates",
     "invalidate_cache",
 ]

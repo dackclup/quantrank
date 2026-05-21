@@ -383,18 +383,33 @@ note cross-tool-specific points only:
   threshold (NI/TotalAssets) that survives universe market-cap
   inflation. Annotate-only (composite rank unaffected); no schema /
   output-JSON change.
-- **Phase 3 in flight (this PR)** — pairwise φ-coefficient analysis
-  on the 25 active production flags. `scripts/phase3_flag_correlation.py`
-  is reproducible one-shot; outputs land under `docs/phase3-correlation/`
-  (`summary.md` = raw firing rates + pair tables; `findings.md` =
-  interpreted decisions; `heatmap.png` = visual; CSVs = baseline for
-  Q3 audit diff). Headline: defense layer mostly orthogonal,
-  `restatement_history` independent of Sloan/Beneish (Phase 2.2 safe
-  to proceed), `manipulation_triple_flag` φ-locked to `dechow_high`
-  at current sample size (watch Q3 audit). Cross-tool agents
-  proposing new flags: target orthogonality vs `altman_distress` and
+- **Phase 3 merged via PR #164** (2026-05-20) — pairwise
+  φ-coefficient analysis on the 25 active production flags.
+  `scripts/phase3_flag_correlation.py` is reproducible one-shot;
+  outputs land under `docs/phase3-correlation/` (`summary.md` = raw
+  firing rates + pair tables; `findings.md` = interpreted decisions;
+  `heatmap.png` = visual; CSVs = baseline for Q3 audit diff).
+  Headline: defense layer mostly orthogonal, `restatement_history`
+  independent of Sloan/Beneish (Phase 2.2 safe to proceed),
+  `manipulation_triple_flag` φ-locked to `dechow_high` at current
+  sample size (watch Q3 audit). Cross-tool agents proposing new
+  flags: target orthogonality vs `altman_distress` and
   `restatement_history` baselines — overlap with either is redundant
   with existing veto. Doc + script only.
+- **Phase 2.2 in flight (this PR)** — new annotate
+  `restatement_high_confidence` (10-K/A or 10-Q/A amendment co-occurs
+  with an 8-K Item 4.02 within 90d, Hennes-Leone-Miller 2008
+  "irregularity" signature; PPV ~70% vs bare `restatement_history`'s
+  ~30%). Implementation is pure-function (`compute_high_confidence_restatement`)
+  plus 2 cache-reading helpers; existing flag semantics + weight
+  untouched. Cross-tool agents reviewing the integration:
+  `restatement_high_confidence` is a Phase-2.2 ANNOTATE-only flag
+  (no veto, no rank change) per SKILL.md Rule 16 + the annotate-
+  before-veto pattern. The cohort acceptance check (≥ 1 production
+  cron firing-rate vs expected ~4% per Hennes-Leone-Miller) lands
+  in the follow-up PR — only THEN do we decide whether to retire
+  or downgrade the bare `restatement_history` flag. Schema shape
+  unchanged (new string in `valuation_warnings: list[str]`).
 
 ## Claude-Code-specific tooling
 

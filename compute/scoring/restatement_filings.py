@@ -99,6 +99,31 @@ class LateFilingResult:
     latest_form: str | None
 
 
+@dataclass(frozen=True)
+class HighConfidenceRestatementResult:
+    """`restatement_high_confidence` flag output (Phase 2.2 of epic #150).
+
+    Fires when at least one 10-K/A or 10-Q/A amendment co-occurs with
+    an 8-K Item 4.02 (non-reliance) filing within
+    ``HIGH_CONFIDENCE_WINDOW_DAYS`` days. The co-occurrence is the
+    Hennes-Leone-Miller 2008 *TAR* signature of an "irregularity"
+    (fraud-class restatement) vs an "error" (clerical correction) —
+    PPV ~70% vs the bare `restatement_history` flag's ~30%.
+
+    Annotate-only — composite rank unaffected per SKILL.md Rule 16.
+    """
+
+    fired: bool
+    co_occurrence_count: int
+    """Number of amendment+Item-4.02 pairs found within the window."""
+
+    latest_amendment_date: str | None
+    """ISO date of the most recent amendment that co-occurred."""
+
+    latest_non_reliance_date: str | None
+    """ISO date of the Item 4.02 filing paired with the latest amendment."""
+
+
 # ---------------------------------------------------------------------------
 # Cache layer (mirrors compute.scoring.eight_k_events)
 # ---------------------------------------------------------------------------
@@ -444,4 +469,115 @@ def check_late_filing(
         latest_filing_date=latest.get("filing_date"),
         latest_filing_url=latest.get("filing_url"),
         latest_form=latest.get("form"),
+    )
+
+
+# ---------------------------------------------------------------------------
+# Phase 2.2 — high-confidence restatement (amendment + 8-K Item 4.02 co-occur)
+# ---------------------------------------------------------------------------
+
+# Co-occurrence window — amendment ↔ Item 4.02 (non-reliance) pairs
+# must land within this many days of each other to qualify as a
+# Hennes-Leone-Miller 2008 *TAR* "irregularity" signature. 90 days
+# matches Schroeder 2024 SSRN §3.2's typical lag between Item 4.02
+# disclosure and the corresponding amended-filing landing.
+HIGH_CONFIDENCE_WINDOW_DAYS: Final[int] = 90
+
+
+def _parse_iso_date(value: object) -> date | None:
+    if not isinstance(value, str):
+        return None
+    try:
+        return date.fromisoformat(value[:10])
+    except ValueError:
+        return None
+
+
+def get_amendment_filing_dates(
+    ticker: str,
+    *,
+    asof: date | None = None,
+    lookback_days: int | None = None,
+    filings_override: list[dict] | None = None,
+) -> tuple[date, ...]:
+    """Return parsed dates for every 10-K/A or 10-Q/A filing in the
+    lookback window. Used by ``check_restatement_high_confidence`` to
+    join against the 8-K Item 4.02 date list.
+
+    Mirrors ``check_restatement_history``'s cache + override path so
+    tests with synthetic fixtures see the same data.
+    """
+    if asof is None:
+        asof = date.today()
+    if lookback_days is None:
+        lookback_days = config.RESTATEMENT_HISTORY_LOOKBACK_DAYS
+
+    filings = (
+        filings_override
+        if filings_override is not None
+        else fetch_amendments(ticker, lookback_days=lookback_days)
+    )
+    if filings is None:
+        return ()
+
+    dates: list[date] = []
+    for f in filings:
+        if not _filing_date_within(f.get("filing_date", ""), asof, lookback_days):
+            continue
+        d = _parse_iso_date(f.get("filing_date"))
+        if d is not None:
+            dates.append(d)
+    return tuple(sorted(dates, reverse=True))
+
+
+def compute_high_confidence_restatement(
+    amendment_dates: tuple[date, ...] | list[date],
+    non_reliance_dates: tuple[date, ...] | list[date],
+    *,
+    window_days: int = HIGH_CONFIDENCE_WINDOW_DAYS,
+) -> HighConfidenceRestatementResult:
+    """Pure function — join amendment dates against Item 4.02 dates
+    within ``window_days`` on either side.
+
+    Returns ``fired=True`` when at least one amendment lands within
+    ``±window_days`` of an Item 4.02 (non-reliance) filing. The
+    ``co_occurrence_count`` is the count of *distinct amendments* with
+    a paired Item 4.02 — a single Item 4.02 can pair with multiple
+    amendments (10-K/A + 10-Q/A in the same fiscal cleanup).
+    """
+    if not amendment_dates or not non_reliance_dates:
+        return HighConfidenceRestatementResult(
+            fired=False,
+            co_occurrence_count=0,
+            latest_amendment_date=None,
+            latest_non_reliance_date=None,
+        )
+
+    pairs: list[tuple[date, date]] = []
+    nr_sorted = sorted(non_reliance_dates)
+    delta = timedelta(days=window_days)
+    for amd in amendment_dates:
+        # Best non-reliance pair: smallest |amd − nr| within window.
+        best: tuple[date, timedelta] | None = None
+        for nr in nr_sorted:
+            gap = abs(amd - nr)
+            if gap <= delta and (best is None or gap < best[1]):
+                best = (nr, gap)
+        if best is not None:
+            pairs.append((amd, best[0]))
+
+    if not pairs:
+        return HighConfidenceRestatementResult(
+            fired=False,
+            co_occurrence_count=0,
+            latest_amendment_date=None,
+            latest_non_reliance_date=None,
+        )
+
+    latest_amd, latest_nr = max(pairs, key=lambda p: p[0])
+    return HighConfidenceRestatementResult(
+        fired=True,
+        co_occurrence_count=len(pairs),
+        latest_amendment_date=latest_amd.isoformat(),
+        latest_non_reliance_date=latest_nr.isoformat(),
     )

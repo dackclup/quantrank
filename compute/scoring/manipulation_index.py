@@ -136,13 +136,29 @@ REM_SUSPECT_WEIGHT: Final[float] = 8.0
 #: Hennes-Leone-Miller 2008 *TAR* §"The Importance of Distinguishing
 #: Errors from Irregularities": restatements split ~80/20 between
 #: clerical errors (non-malicious) and irregularities (fraud). The
-#: current ``restatement_history`` flag fires on ANY amendment in the
-#: lookback window — so the effective material-restatement PPV is
-#: closer to ~30%. Provenance: **literature-anchored on the cite,
-#: gut-feel on the weight** — Phase 2.2 (epic #150) plans a
-#: recalibration to "amendment + Item 4.02 within 90d" which would
-#: lift PPV ~70% and warrant a weight bump.
+#: bare ``restatement_history`` flag fires on ANY amendment in the
+#: lookback window — effective material-restatement PPV ~30%.
+#: Phase 2.2 of epic #150 introduced the higher-PPV sibling
+#: ``restatement_high_confidence`` (amendment + Item 4.02 within 90d
+#: per Hennes-Leone-Miller's irregularity signature); see
+#: ``RESTATEMENT_HIGH_CONFIDENCE_WEIGHT`` below. The bare flag
+#: stays in place as a lower-confidence annotate pending a cohort
+#: acceptance check (next-PR decision: retire or split). Provenance:
+#: **literature-anchored on the cite, gut-feel on the weight**.
 RESTATEMENT_HISTORY_WEIGHT: Final[float] = 5.0
+
+#: Hennes-Leone-Miller 2008 *TAR* "irregularity" signature —
+#: amendment + 8-K Item 4.02 (non-reliance) within 90 days. The
+#: co-occurrence isolates the fraud-class subset of restatements
+#: (PPV ~70% per Hennes-Leone-Miller's hand-classified cohort) from
+#: the broader error-class amendments. Schroeder 2024 SSRN §3.2
+#: validates the 90-day co-occurrence window — the typical lag from
+#: Item 4.02 disclosure to amended-filing landing. Weight is set at
+#: roughly 1.6× the bare ``RESTATEMENT_HISTORY_WEIGHT`` to reflect
+#: the PPV ratio (70 ÷ 30 ≈ 2.3, conservatively scaled down to 1.6
+#: while we wait for production cohort data). Provenance:
+#: **literature-anchored** — magnitude derived from the PPV gap.
+RESTATEMENT_HIGH_CONFIDENCE_WEIGHT: Final[float] = 8.0
 
 #: Bartov-Lai-Yeung 2002 *JAR* §"Late Filings Around Earnings
 #: Surprises": NT-10K / NT-10Q filings correlate with subsequent
@@ -223,6 +239,7 @@ FLAG_WEIGHTS: Final[dict[str, float]] = {
     "manipulation_triple_flag": TRIPLE_FLAG_WEIGHT,
     "rem_suspect": REM_SUSPECT_WEIGHT,
     "restatement_history": RESTATEMENT_HISTORY_WEIGHT,
+    "restatement_high_confidence": RESTATEMENT_HIGH_CONFIDENCE_WEIGHT,
     "late_filing_notification": LATE_FILING_WEIGHT,
     "accruals_momentum_high": ACCRUALS_MOMENTUM_WEIGHT,
     "loss_avoidance_pattern": LOSS_AVOIDANCE_WEIGHT,
