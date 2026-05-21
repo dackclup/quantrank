@@ -517,6 +517,27 @@ note cross-tool-specific points only:
   selected-chip visual will shift; if you maintain a styled
   fork / Storybook captures of these components, expect a visual
   regression there. No behavioral or accessibility-affordance change.
+- **Phase 4a osap-import guard in flight (this PR)** — surfaced by
+  the 14-subagent self-audit on 2026-05-21 (`test-engineer` follow-up).
+  Four `compute/main.py` top-level imports of OSAP-family modules
+  (`compute.features.osap_replicate`, `compute.ingest.osap`,
+  `compute.scoring.osap_blend`, `compute.validation.osap_validation`)
+  are deferred into the existing `try:` block at
+  `compute/main.py:975`. Only `compute.ingest.osap` directly imports
+  `openassetpricing` (only installed via `.[factors]`), but the
+  module-load failure cascaded through `compute.main` and broke
+  `tests/test_main.py` collection in base-install environments. The
+  call site already wraps every OSAP function call in a
+  graceful-degradation `except Exception` (Rule 18 — every
+  `StockDetail.osap_*` + `Metadata.osap_*` schema field is nullable);
+  the new in-block imports surface `ImportError` to that same handler.
+  Verification: `python -m pytest tests/test_main.py --collect-only -q`
+  reports 39 collected / 0 errors (was: ModuleNotFoundError);
+  `pytest -m "not network"` reports `1024 passed` with
+  `openassetpricing==0.0.2` installed (CI parity). Cross-tool agents:
+  no behavioral binding — pure import-topology refactor that unblocks
+  test collection without the `[factors]` extra. No compute logic /
+  schema / output / dep change.
 
 ## Claude-Code-specific tooling
 
