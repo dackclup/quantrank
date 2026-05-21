@@ -526,38 +526,55 @@ note cross-tool-specific points only:
   failure. Unblocks `tests/test_main.py` collection in base-install
   environments without `.[factors]`. No compute logic / schema /
   output / dep change.
-- **Phase 4b loss_avoidance_pattern_size_invariant in flight (this PR)**
-  — new annotate-only defense flag in `compute/scoring/earnings_quality.py`
-  closing the Phase 2.4 size-invariance follow-up. Fires when
-  ``NI / TotalAssets ∈ [0, 0.005]`` for 3+ consecutive fiscal years
-  — Roychowdhury 2006 *JAE* §5.2 suspect-firm definition,
-  reaffirmed by Donelson-McInnis-Mergenthaler 2013 *TAR* as the
-  canonical small-profit cohort cutoff. `methodology-scientist`
-  Mode B verdict: **LITERATURE-ANCHORED**. Annotate-only — composite
-  rank unaffected per Rule 16; the absolute-$ sibling
-  `loss_avoidance_pattern` stays in place per
-  `portable-annotate-before-veto` discipline pending the Q3
-  2026-08-19 quarterly-audit decision. Schema bumps
-  `0.9.4-phase4h.4` → `0.9.5-phase4h.5` for the new
+- **Phase 4b loss_avoidance_pattern_size_invariant merged via PR #180**
+  (2026-05-21, `a24a57d4`) — landed the new annotate-only flag in
+  `compute/scoring/earnings_quality.py`. Roychowdhury 2006 *JAE* §5.2
+  suspect-firm definition (``NI / TotalAssets ∈ [0, 0.005]`` for 3+
+  consecutive fiscal years), reaffirmed by Donelson-McInnis-Mergenthaler
+  2013 *TAR*. `methodology-scientist` Mode B verdict:
+  **LITERATURE-ANCHORED**. Schema bumped `0.9.4-phase4h.4` →
+  `0.9.5-phase4h.5` for the diagnostic field
   `Metadata.loss_avoidance_size_invariant_firing_count: int | None`
-  diagnostic field (Rule 18 observability surface shipped in the
-  same PR as the flag emission). Weight 5 in `manipulation_index.py`
-  (parity with the absolute-$ sibling pending φ-correlation check
-  vs `REM_SUSPECT_WEIGHT` at Q3 audit). Defense layer headline
-  count 27 → 28 emitted boolean flags. Tests 1024 → 1031 (+7: 5
-  unit + 1 Hypothesis property test on streak monotonicity + 1
-  constants pin). Companion frontend WARN polish in the same PR
-  (carry-over from Phase 3 PR #172 deferral): `FairPriceBarChart.tsx`
-  headline %-delta gains `tabular-nums` + verdict badge moves to
-  canonical `rounded-full` + `font-medium` chip family; 6 loose-null
-  sites in `RawMetricsTable` + `PillarRadarChart` tightened to
-  `== null`; `RankingTable.tsx` toolbar search input gains
-  `aria-label` for screen-reader affordance. Cross-tool agents
-  (Copilot / Cursor / Devin): schema-triple-lockstep applies —
-  `compute/output/schemas.py` + `frontend/lib/types.ts` +
-  `frontend/lib/schema-snapshot.json` ALL move together; CI fails
-  on drift. No compute composite / scoring weight / valuation
-  change.
+  (Rule 18 observability shipped in the same PR as the flag emission).
+  Weight 5 in `manipulation_index.py` (parity with the absolute-$
+  sibling pending φ-correlation check vs `REM_SUSPECT_WEIGHT` at Q3
+  audit). Defense layer headline count 27 → 28 emitted boolean flags.
+  Tests 1024 → 1031 (+7). Companion frontend WARN polish:
+  `FairPriceBarChart.tsx` `tabular-nums` + verdict badge `rounded-full`
+  + `font-medium`; loose-null tightening in `RawMetricsTable` +
+  `PillarRadarChart`; `RankingTable.tsx` toolbar search `aria-label`.
+- **Issue #176 share_count_extraction_missing annotate in flight (this PR)**
+  — new annotate-only defense flag emitted in `compute/main.py` from
+  the detector `check_share_count_extraction_missing` in
+  `compute/scoring/risk_overlay.py`. Closes the visibility-gap raised
+  by the stock-detail-auditor dry-run on PR #175 (filed as issue #176):
+  STZ on the 2026-05-14 cron shipped with `market_cap: null` and
+  `risk_flags: []` because `shares_outstanding` failed XBRL extraction
+  even though revenue + balance sheet extracted cleanly (Constellation
+  Brands likely uses a share-class-scoped fact name —
+  `_FUNDAMENTALS_REQUIRED_ATTRS` manifest extension is the deeper fix
+  and is left to a follow-up needing SEC live access). Pattern: fires
+  iff ``shares_outstanding is None AND revenue > 0 AND total_assets >
+  0`` — narrow guard distinguishing partial-extraction (STZ) from
+  entire-extraction-broken (issue #15 throttling territory).
+  **Annotate-only** per `portable-annotate-before-veto`: deliberately
+  does NOT extend the `data_quality_input_corruption` veto's existing
+  `shares_outstanding=None` silence contract (issue #18 / test_D3) so
+  the two pathways stay coherent; the asymmetry tests lock the
+  None-vs-zero behavior since ``shares_outstanding == 0`` is a
+  legitimate edge (not extraction failure). STZ is rank 308 so no
+  Top-5 impact either way; promotion to veto deferred to the Q3
+  2026-08-19 quarterly cohort audit. Blast-radius scan on the
+  2026-05-14 cron: 1/502 tickers match the signature (just STZ).
+  Schema bumps `0.9.5-phase4h.5` → `0.9.6-phase4h.6` for
+  `Metadata.share_count_extraction_missing_count: int | None` (Rule 18
+  diagnostic shipped in the same PR as the flag emission). Defense
+  layer headline count 28 → 29 emitted boolean flags. Tests
+  1031 → 1040 (+9: 8 unit + 1 explicit None-vs-zero asymmetry lock).
+  Cross-tool agents (Copilot / Cursor / Devin): schema-triple-lockstep
+  applies — `compute/output/schemas.py` + `frontend/lib/types.ts` +
+  `frontend/lib/schema-snapshot.json` ALL move together; CI fails on
+  drift. No compute composite / scoring weight / valuation change.
 
 ## Claude-Code-specific tooling
 

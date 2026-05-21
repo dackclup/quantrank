@@ -155,6 +155,14 @@ class Metadata(BaseModel):
     # same PR as the flag emission so the first cron's firing rate is
     # visible without grepping per-stock JSONs.
     loss_avoidance_size_invariant_firing_count: int | None = None
+    # Issue #176 (0.9.6-phase4h.6) — observability surface for the new
+    # `share_count_extraction_missing` annotate. Count of tickers where
+    # ``shares_outstanding is None`` despite revenue + total_assets
+    # being populated (STZ-style partial XBRL extraction). Nullable on
+    # legacy snapshots (pre-0.9.6); Rule 18 observability-before-wiring
+    # requires the diagnostic ship in the same PR as the flag emission
+    # so the first cron's firing rate is visible at-a-glance.
+    share_count_extraction_missing_count: int | None = None
 
 
 class RawMetrics(BaseModel):

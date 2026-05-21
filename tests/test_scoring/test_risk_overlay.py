@@ -17,6 +17,7 @@ from compute.scoring.risk_overlay import (
     SLOAN_TOP_DECILE,
     _net_stock_issuance,
     _shares_at_lookback,
+    check_share_count_extraction_missing,
     compute_risk_flags,
 )
 
@@ -629,6 +630,104 @@ def test_D11_corruption_fires_when_ni_negative_but_abs_exceeds_revenue():
     )
     flags = compute_risk_flags({"LOSS": snap_huge_loss})
     assert "data_quality_input_corruption" in flags["LOSS"]
+
+
+# ---------------------------------------------------------------------------
+# Issue #176 — share_count_extraction_missing annotate (NEW 2026-05-21).
+#
+# Distinct from data_quality_input_corruption (VETO): this is an
+# ANNOTATE-only detector that fires when the snapshot has revenue +
+# total_assets populated but shares_outstanding is None. STZ 2026-05-14
+# pattern. The veto path keeps its shares_outstanding=None silence
+# contract (test_D3) — annotate-first per portable-annotate-before-veto.
+# ---------------------------------------------------------------------------
+
+
+def test_share_count_extraction_missing_fires_on_stz_signature():
+    """STZ-shape: revenue + total_assets present, shares_outstanding=None."""
+    stz_shape = _snap(
+        revenue=9_755_500_000.0,
+        total_assets=21_900_500_000.0,
+        shares_outstanding=None,
+    )
+    assert check_share_count_extraction_missing(stz_shape) is True
+
+
+def test_share_count_extraction_missing_silent_when_shares_present():
+    """Healthy snapshot with positive shares_outstanding — must not fire."""
+    healthy = _snap(shares_outstanding=180_000_000.0)
+    assert check_share_count_extraction_missing(healthy) is False
+
+
+def test_share_count_extraction_missing_silent_when_shares_zero():
+    """``shares_outstanding == 0`` is a legitimate edge (not extraction
+    failure) — the detector explicitly distinguishes ``None`` (missing)
+    from ``0`` (zero). Mirrors the veto's silence contract on shares=0
+    so the two pathways stay coherent."""
+    snap_zero = _snap(shares_outstanding=0)
+    assert check_share_count_extraction_missing(snap_zero) is False
+
+
+def test_share_count_extraction_missing_silent_when_revenue_missing():
+    """``revenue is None`` means the entire XBRL extraction broke (issue
+    #15 throttling-resilience territory) — a different bug class. The
+    annotate must not fire to keep its signal sharp."""
+    full_blackout = _snap(
+        revenue=None,
+        net_income=None,
+        total_assets=200_000_000.0,
+        shares_outstanding=None,
+    )
+    assert check_share_count_extraction_missing(full_blackout) is False
+
+
+def test_share_count_extraction_missing_silent_when_revenue_zero():
+    """Revenue == 0 fails the ``> 0`` second-source confirmation guard."""
+    no_rev = _snap(revenue=0.0, shares_outstanding=None)
+    assert check_share_count_extraction_missing(no_rev) is False
+
+
+def test_share_count_extraction_missing_silent_when_total_assets_missing():
+    """``total_assets is None`` removes the balance-sheet second-source
+    confirmation that the same filing extracted cleanly elsewhere; the
+    detector defers to the "entire extraction broken" interpretation."""
+    no_ta = _snap(
+        revenue=100_000_000.0,
+        total_assets=None,
+        shares_outstanding=None,
+    )
+    assert check_share_count_extraction_missing(no_ta) is False
+
+
+def test_share_count_extraction_missing_silent_when_total_assets_zero():
+    """``total_assets == 0`` fails the ``> 0`` guard."""
+    zero_ta = _snap(
+        total_assets=0.0,
+        shares_outstanding=None,
+    )
+    assert check_share_count_extraction_missing(zero_ta) is False
+
+
+def test_share_count_extraction_missing_silent_when_snap_none():
+    """Defensive: ``None`` snapshot (graceful-degradation path)."""
+    assert check_share_count_extraction_missing(None) is False
+
+
+def test_share_count_extraction_missing_asymmetry_none_vs_zero():
+    """Lock the None-vs-0 asymmetry: ``shares_outstanding`` is the only
+    input where ``None`` and ``0`` produce different decisions. This
+    property is load-bearing — if it ever flips, the detector would
+    start firing on legitimate edge cases (corporate restructurings,
+    pre-IPO snapshots, etc.) that semantically differ from extraction
+    failure."""
+    same_other_fields = {
+        "revenue": 100_000_000.0,
+        "total_assets": 200_000_000.0,
+    }
+    none_shape = _snap(shares_outstanding=None, **same_other_fields)
+    zero_shape = _snap(shares_outstanding=0, **same_other_fields)
+    assert check_share_count_extraction_missing(none_shape) is True
+    assert check_share_count_extraction_missing(zero_shape) is False
 
 
 def test_dechow_veto_fires_above_strict_threshold():
