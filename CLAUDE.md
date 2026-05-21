@@ -119,11 +119,13 @@ for the full 4-step pattern + Section I forcing example.
   → inflated `value_trap_risk` flag on 44% of S&P 500. Phase 4 fix.
 - **Going-concern phrase scan has 10.8% FP rate** vs Mayew 2015 expected
   1-3% (issue #16) — negation lookbehind needed.
-- **`loss_avoidance_pattern` fires 0% on S&P 500** (Phase 4.5d) —
-  Burgstahler-Dichev 1997 cohort thresholds (NI ≤ $5M / EPS ≤ $0.05)
-  are too tight for large-cap universe. Annotate-only so it's a
-  safe no-op; consider S&P-500-scaled thresholds in Phase 4.5
-  follow-up.
+- **`loss_avoidance_pattern` thresholds rescaled** (Phase 2.4,
+  2026-05-21) — Burgstahler-Dichev 1997 cohort thresholds were
+  rescaled 10× to S&P 500 scale (NI ≤ $50M / EPS ≤ $0.50) after
+  Phase 4.5d's original $5M / $0.05 fired 0% on the universe.
+  Annotate-only — composite rank unaffected. Follow-up: replace
+  absolute-dollar with NI/TotalAssets (size-invariant) so the
+  threshold doesn't drift with universe market-cap inflation.
 - **Hypothesis property-based tests** are the new defense line for
   data-shape bugs (issue #126). Pair each new shape assumption (port
   cardinality, pillar count, manifest partition) with a `@given`
@@ -224,8 +226,9 @@ in this PR; `loss_chance.py` and `FairPriceBarChart.tsx` keep reading
 `extreme_*_estimate` for back-compat. Schema bump `0.9.3-phase4h.3`
 → `0.9.4-phase4h.4`. Defense surface unchanged.
 
-**Epic #150 Phase 2.5 in flight (this PR)** — `compute/scoring/manipulation_index.py`
-weight constants (`SLOAN_WEIGHT` through `C_SUITE_UNUSUAL_SELL_WEIGHT_RESERVED`)
+**Epic #150 Phase 2.5 merged via PR #162** (2026-05-20) —
+`compute/scoring/manipulation_index.py` weight constants
+(`SLOAN_WEIGHT` through `C_SUITE_UNUSUAL_SELL_WEIGHT_RESERVED`)
 now carry per-flag provenance docstrings citing the academic source
 + effect-size figure where one exists, OR labeling the weight as
 **gut-feel calibration** where the magnitude is engineering choice
@@ -233,6 +236,17 @@ rather than literature-derived. Three provenance tiers introduced
 in the module docstring: literature-anchored / gut-feel / reserved.
 Doc-only — no compute / schema change. Future weight-recalibration
 PRs (Phase 2.2 / 2.4) now have a documented baseline to delta from.
+
+**Epic #150 Phase 2.4 in flight (this PR)** —
+`compute/scoring/earnings_quality.py` `LOSS_AVOID_NI_CEILING` rescaled
+`$5M → $50M` and `LOSS_AVOID_EPS_CEILING` rescaled `$0.05 → $0.50`
+(10× the original Burgstahler-Dichev 1997 Compustat-cohort thresholds)
+so the `loss_avoidance_pattern` flag actually fires on the S&P 500
+universe instead of the documented 0% pre-rescale. Annotate-only flag
+— composite rank unaffected. Module docstring + `manipulation_index.py`
+Phase-2.5 provenance comment updated to match. New test
+`test_loss_avoidance_ni_just_above_new_ceiling_breaks_streak` pins the
+new upper bound. Tests: 945 → 946. No schema / output-JSON change.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight

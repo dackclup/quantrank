@@ -18,11 +18,15 @@ history (annual XBRL via ``compute/ingest/fundamentals.py``):
 
 - **`loss_avoidance_pattern`** — Burgstahler-Dichev 1997 *JAE* kink
   at zero. Firms reporting *tiny-positive* NetIncome (in
-  ``[$0, $5M]``) OR tiny-positive EPS (in ``[$0.00, $0.05]``) for
+  ``[$0, $50M]``) OR tiny-positive EPS (in ``[$0.00, $0.50]``) for
   **3+ consecutive fiscal years** are over-represented above zero
   vs the smooth distribution below — the empirical signature of
   managers shading reported earnings just enough to clear the
-  loss/loss-threshold.
+  loss/loss-threshold. Thresholds are 10× the original
+  Burgstahler-Dichev 1997 Compustat-cohort values ($5M / $0.05) to
+  account for the S&P 500's larger firm-size distribution; the
+  zero-bunching effect is preserved, only the band width is scaled
+  (Phase 2.4 of epic #150, 2026-05-21).
 
 Both flags are **ANNOTATE-only** — sector-agnostic, both ideas have
 moderate base rates and high precision when the cohort is right.
@@ -70,14 +74,21 @@ ACCRUALS_MOMENTUM_THRESHOLD: Final[float] = 0.05
 LOOKBACK_YEARS: Final[int] = 3
 
 # Loss-avoidance NI band — Burgstahler-Dichev 1997 Table 2 "small
-# positive earnings" cohort. Both the absolute floor ($5M) and the
-# per-share floor ($0.05) are practitioner adaptations for the
-# modern S&P 500 size (1997 thresholds in inflation-adjusted dollars
-# would be ~$8M / $0.08; we use the more sensitive originals).
+# positive earnings" cohort, rescaled 10× for the S&P 500 universe
+# (Phase 2.4 of epic #150). Original BD 1997 thresholds ($5M / $0.05)
+# were calibrated to a 1990s Compustat universe dominated by small-
+# and mid-cap firms; at S&P 500 scale (mean NI > $1B, mean EPS > $5)
+# the absolute-dollar band catches 0 firms — the flag fired 0% on
+# the live universe pre-rescale (issue tracked in CLAUDE.md §Gotchas
+# until Phase 2.4 landed). 10× lifts the NI band to ``[$0, $50M]``
+# and the EPS band to ``[$0, $0.50]``. The Burgstahler-Dichev kink-
+# at-zero signature is preserved — only the band width scales with
+# firm size. Future work: replace absolute-dollar with NI/TotalAssets
+# (size-invariant), tracked as a Phase 2.4 follow-up.
 LOSS_AVOID_NI_FLOOR: Final[float] = 0.0
-LOSS_AVOID_NI_CEILING: Final[float] = 5_000_000.0
+LOSS_AVOID_NI_CEILING: Final[float] = 50_000_000.0
 LOSS_AVOID_EPS_FLOOR: Final[float] = 0.0
-LOSS_AVOID_EPS_CEILING: Final[float] = 0.05
+LOSS_AVOID_EPS_CEILING: Final[float] = 0.50
 
 # Minimum consecutive years in the tiny-positive band before
 # `loss_avoidance_pattern` fires. 3 matches Burgstahler-Dichev 1997

@@ -150,18 +150,18 @@ def test_loss_avoidance_no_snap_returns_false():
 
 
 def test_loss_avoidance_fires_for_3_consecutive_tiny_ni_years():
-    # 3 consecutive years all with NI in [$0, $5M] band.
+    # 3 consecutive years all with NI in [$0, $50M] band (S&P-500-scaled).
     snap = _snap(
-        net_income=2_500_000.0,
+        net_income=25_000_000.0,
         shares_outstanding=10_000_000.0,
         latest_period_end=date(2025, 12, 31),
     )
     hist = _history(
         [
-            {"metric": "net_income", "value": 3_000_000.0, "period_end": date(2024, 12, 31)},
-            {"metric": "net_income", "value": 1_000_000.0, "period_end": date(2023, 12, 31)},
+            {"metric": "net_income", "value": 30_000_000.0, "period_end": date(2024, 12, 31)},
+            {"metric": "net_income", "value": 10_000_000.0, "period_end": date(2023, 12, 31)},
             # Older year just for context
-            {"metric": "net_income", "value": 4_500_000.0, "period_end": date(2022, 12, 31)},
+            {"metric": "net_income", "value": 45_000_000.0, "period_end": date(2022, 12, 31)},
         ]
     )
     result = check_loss_avoidance(snap, hist)
@@ -172,14 +172,14 @@ def test_loss_avoidance_fires_for_3_consecutive_tiny_ni_years():
 def test_loss_avoidance_does_not_fire_for_one_year_break():
     # Current year tiny-positive, year ago LARGE loss → breaks streak
     snap = _snap(
-        net_income=2_000_000.0,
+        net_income=20_000_000.0,
         shares_outstanding=10_000_000.0,
         latest_period_end=date(2025, 12, 31),
     )
     hist = _history(
         [
-            {"metric": "net_income", "value": 3_000_000.0, "period_end": date(2024, 12, 31)},
-            {"metric": "net_income", "value": -50_000_000.0, "period_end": date(2023, 12, 31)},
+            {"metric": "net_income", "value": 30_000_000.0, "period_end": date(2024, 12, 31)},
+            {"metric": "net_income", "value": -500_000_000.0, "period_end": date(2023, 12, 31)},
         ]
     )
     result = check_loss_avoidance(snap, hist)
@@ -190,18 +190,18 @@ def test_loss_avoidance_does_not_fire_for_one_year_break():
 
 
 def test_loss_avoidance_eps_band_catches_high_share_count():
-    # Big NI but spread over so many shares EPS is ~$0.02 → tiny per-share
-    # band catches it even though NI is way above $5M floor.
+    # Big NI but spread over so many shares EPS is ~$0.20 → tiny per-share
+    # band catches it even though NI is way above $50M floor.
     snap = _snap(
-        net_income=20_000_000.0,  # > NI ceiling
-        shares_outstanding=1_000_000_000.0,  # EPS = $0.02 → tiny band
+        net_income=200_000_000.0,  # > NI ceiling
+        shares_outstanding=1_000_000_000.0,  # EPS = $0.20 → tiny EPS band
         latest_period_end=date(2025, 12, 31),
     )
     hist = _history(
         [
-            {"metric": "net_income", "value": 15_000_000.0, "period_end": date(2024, 12, 31)},
+            {"metric": "net_income", "value": 150_000_000.0, "period_end": date(2024, 12, 31)},
             {"metric": "shares_outstanding", "value": 1_000_000_000.0, "period_end": date(2024, 12, 31)},
-            {"metric": "net_income", "value": 10_000_000.0, "period_end": date(2023, 12, 31)},
+            {"metric": "net_income", "value": 100_000_000.0, "period_end": date(2023, 12, 31)},
             {"metric": "shares_outstanding", "value": 1_000_000_000.0, "period_end": date(2023, 12, 31)},
         ]
     )
@@ -210,7 +210,7 @@ def test_loss_avoidance_eps_band_catches_high_share_count():
 
 
 def test_loss_avoidance_negative_ni_breaks_streak():
-    # Tiny NEGATIVE NI is NOT in the [0, $5M] band (floor is 0).
+    # Tiny NEGATIVE NI is NOT in the [0, $50M] band (floor is 0).
     snap = _snap(
         net_income=-100_000.0,  # tiny but negative
         shares_outstanding=10_000_000.0,
@@ -221,18 +221,31 @@ def test_loss_avoidance_negative_ni_breaks_streak():
 
 
 def test_loss_avoidance_large_positive_ni_breaks_streak():
-    # NI = $500M is way above the absolute ceiling and EPS = $50
+    # NI = $5B is way above the absolute ceiling and EPS = $500
     # is way above the per-share ceiling.
     snap = _snap(
-        net_income=500_000_000.0,
+        net_income=5_000_000_000.0,
         shares_outstanding=10_000_000.0,
     )
     result = check_loss_avoidance(snap, None)
     assert result.fired is False
 
 
+def test_loss_avoidance_ni_just_above_new_ceiling_breaks_streak():
+    """Phase 2.4: NI = $60M (above new $50M ceiling) with EPS = $6.00
+    (above new $0.50 ceiling) must NOT fire — guards against the new
+    band's upper bound."""
+    snap = _snap(
+        net_income=60_000_000.0,
+        shares_outstanding=10_000_000.0,  # EPS = $6.00
+    )
+    result = check_loss_avoidance(snap, None)
+    assert result.fired is False
+    assert result.consecutive_years == 0
+
+
 def test_loss_avoidance_constants():
-    """Sanity-pin Burgstahler-Dichev 1997 thresholds."""
-    assert LOSS_AVOID_NI_CEILING == 5_000_000.0
-    assert LOSS_AVOID_EPS_CEILING == 0.05
+    """Pin Phase 2.4 S&P-500-scaled thresholds (10× original BD 1997)."""
+    assert LOSS_AVOID_NI_CEILING == 50_000_000.0
+    assert LOSS_AVOID_EPS_CEILING == 0.50
     assert LOSS_AVOID_MIN_CONSECUTIVE_YEARS == 3

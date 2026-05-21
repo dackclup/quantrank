@@ -361,15 +361,27 @@ note cross-tool-specific points only:
   stock JSON from 0.9.4+, prefer `stock.valuation_methods_applicable`
   over counting `extreme_*_estimate` flags; treat missing / null as
   "unknown" (legacy snapshot).
-- **Phase 2.5 in flight (this PR)** — `compute/scoring/manipulation_index.py`
-  weight constants now carry per-flag provenance docstrings (academic
-  citation + effect-size figure for literature-anchored weights;
-  explicit **gut-feel calibration** label for engineering-tuned
-  weights; **reserved** for Phase 4.5e placeholder weights). Cross-
-  tool agents reviewing weight changes: classify the proposed delta
-  against the three provenance tiers and prefer evidence-backed
-  recalibration over re-tuning gut-feel defaults blind. Doc-only,
-  no compute / schema change.
+- **Phase 2.5 merged via PR #162** (2026-05-20) —
+  `compute/scoring/manipulation_index.py` weight constants now carry
+  per-flag provenance docstrings (academic citation + effect-size
+  figure for literature-anchored weights; explicit **gut-feel
+  calibration** label for engineering-tuned weights; **reserved**
+  for Phase 4.5e placeholder weights). Cross-tool agents reviewing
+  weight changes: classify the proposed delta against the three
+  provenance tiers and prefer evidence-backed recalibration over
+  re-tuning gut-feel defaults blind. Doc-only, no compute / schema
+  change.
+- **Phase 2.4 in flight (this PR)** — `compute/scoring/earnings_quality.py`
+  `LOSS_AVOID_NI_CEILING` and `LOSS_AVOID_EPS_CEILING` rescaled 10×
+  (`$5M → $50M` and `$0.05 → $0.50`) so the `loss_avoidance_pattern`
+  annotate-flag actually fires on the S&P 500 universe instead of
+  the documented 0%. Module + tests + CLAUDE.md gotcha updated; the
+  Phase 2.5 provenance comment in `manipulation_index.py` is the
+  forward link. Cross-tool agents extending earnings-quality
+  thresholds: the absolute-dollar bands are a stopgap — the
+  documented follow-up is a ratio-based threshold (NI/TotalAssets)
+  that survives universe market-cap inflation. Annotate-only
+  (composite rank unaffected); no schema / output-JSON change.
 
 ## Claude-Code-specific tooling
 
