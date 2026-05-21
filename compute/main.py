@@ -1157,6 +1157,16 @@ def run_weekly_compute() -> int:
     # is visible at-a-glance from the next cron without grepping
     # per-stock JSONs.
     share_count_extraction_missing_count: int = 0
+    # Issue #177 — same Rule 18 observability surface for the new
+    # ``extreme_estimate_majority`` annotate. The flag itself is
+    # appended by ``compute.valuation.ensemble`` when ≥
+    # ``config.EXTREME_MAJORITY_THRESHOLD`` of the 6 methods fire
+    # Defense #4 outlier guard; this counter increments here when the
+    # flag is observed on the ensemble's ``valuation_warnings`` list.
+    # Written to Metadata.extreme_estimate_majority_count so the next
+    # cron's firing rate (gates the follow-up median-exclusion PR per
+    # methodology-scientist Mode B 2026-05-21) is visible at-a-glance.
+    extreme_estimate_majority_count: int = 0
     for _, r in df.iterrows():
         ticker = str(r["ticker"])
         snap = snapshots.get(ticker)
@@ -1386,6 +1396,15 @@ def run_weekly_compute() -> int:
             valuation_warnings.append("share_count_extraction_missing")
             share_count_extraction_missing_count += 1
 
+        # Issue #177 — extreme_estimate_majority annotate count.
+        # The flag is appended by ``compute.valuation.ensemble`` when
+        # ≥ config.EXTREME_MAJORITY_THRESHOLD of the 6 methods fire
+        # Defense #4; we just count here so the universe-wide firing
+        # rate is surfaced on Metadata for the next cron's audit (gates
+        # the follow-up median-exclusion PR).
+        if "extreme_estimate_majority" in valuation_warnings:
+            extreme_estimate_majority_count += 1
+
         # Price history JSON (sliced from already-fetched prices, no new
         # fetches per Step 5 spec).
         prices_df = prices_by_ticker.get(ticker)
@@ -1569,6 +1588,9 @@ def run_weekly_compute() -> int:
         ),
         share_count_extraction_missing_count=(
             share_count_extraction_missing_count
+        ),
+        extreme_estimate_majority_count=(
+            extreme_estimate_majority_count
         ),
     )
 

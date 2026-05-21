@@ -10,8 +10,16 @@ from __future__ import annotations
 from compute import config
 
 
-def test_schema_version_is_phase4h_6():
-    assert config.SCHEMA_VERSION == "0.9.6-phase4h.6"
+def test_schema_version_is_phase4h_7():
+    assert config.SCHEMA_VERSION == "0.9.7-phase4h.7"
+
+
+def test_extreme_majority_threshold_at_huber_breakdown_point():
+    """Issue #177 — for a 6-sample median the Huber 1981 §1.4 breakdown
+    point is ⌊5/2⌋ = 2 outliers; the majority annotate must fire at the
+    NEXT integer (3) so the median has actually passed breakdown when
+    the flag fires. Locks the threshold against gut-feel drift."""
+    assert config.EXTREME_MAJORITY_THRESHOLD == 3
 
 
 def test_eight_k_lookback_veto_is_one_year():

@@ -550,7 +550,8 @@ note cross-tool-specific points only:
   Annotate-only. Schema 0.9.5 → 0.9.6 for the
   `Metadata.share_count_extraction_missing_count: int | None`
   diagnostic. Defense layer 28 → 29 flags.
-- **Issue #176 root-cause fallback in flight (this PR)** — actually
+- **Issue #176 root-cause fallback merged via PR #182** (2026-05-21,
+  `a6129011`) — actually
   recovers the missing share count via per-filing XBRL dimensional-
   fact aggregation. Live SEC probe on STZ (2026-05-21) confirmed:
   SEC `companyfacts` aggregate filters out dimensional facts (the
@@ -577,6 +578,31 @@ note cross-tool-specific points only:
   a load-bearing call site — treat it as a `_PER_FILING_XBRL_*`
   drift-detector manifest candidate in a follow-up PR if edgartools
   CHANGELOG shows a `get_facts_by_concept` shape change.
+- **Issue #177 extreme_estimate_majority annotate in flight (this PR)**
+  — annotate-only flag wired into `compute/valuation/ensemble.py`.
+  Fires when ≥ `config.EXTREME_MAJORITY_THRESHOLD = 3` of the 6
+  fair-price methods emit `extreme_*_estimate` (Defense #4 5×/0.2×
+  outlier guard). Surfaces the cohort whose ensemble median has
+  passed its Huber 1981 §1.4 breakdown point (⌊5/2⌋ = 2 outliers on
+  a 6-sample median) and collapses to the low-cluster — APP / DDOG /
+  AXON / TSLA pattern from the stock-detail-auditor 2026-05-14
+  prefilter. Methodology verdict (`methodology-scientist` Mode B,
+  2026-05-21): median-exclusion is **literature-anchored** (Damodaran
+  2019 Ch. 18 + Penman 2013 §7.4 + Huber 1981 §1.4); threshold = 3
+  is **gut-feel with Huber breakdown-point rationale**; the 5×/0.2×
+  per-method bands are **gut-feel** and need a separate recalibration
+  PR (RIM over-fires at 36.1% — RIM-specific or per-cohort
+  thresholds) — **NOT bundled here**. Per Rule 16 +
+  `portable-annotate-before-veto`: this PR ships the annotate +
+  Rule 18 diagnostic (`Metadata.extreme_estimate_majority_count: int
+  | None`) only — a follow-up PR after ≥ 1 cron's firing-rate
+  observation adds the actual median-exclusion logic + a
+  `fair_price.methods_excluded_from_median: list[str]` field for
+  transparency. Schema 0.9.6 → 0.9.7. Defense layer 29 → 30 emitted
+  flags. Tests 1049 → 1059. Cross-tool agents: when reviewing this
+  branch, do NOT bundle a 5×/0.2× threshold change — the
+  recalibration is a separate methodology-scientist work item
+  blocking by Q3 2026-08-19 cohort audit.
 
 ## Claude-Code-specific tooling
 
