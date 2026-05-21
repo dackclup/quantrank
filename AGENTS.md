@@ -88,7 +88,7 @@ frontend/                         # Next.js static site (read/write OK)
 tests/                            # pytest suite
 docs/                             # Academic methodology + research findings
 .claude/skills/                   # 42 loaded skills + phase-N/ planning docs
-.claude/agents/                   # 4 project-specific subagents (Claude Code only — Copilot / Cursor / Devin do not auto-route to these)
+.claude/agents/                   # 8 project-specific subagents in 2 tiers (core + enterprise; Claude Code only — Copilot / Cursor / Devin do not auto-route to these)
 .github/workflows/                # ⚠️ ask before editing
 pyproject.toml                    # ⚠️ ask before deps changes
 
@@ -429,18 +429,25 @@ note cross-tool-specific points only:
   observability surface lands the `Metadata.form4_*` diagnostic
   fields next; PR 3 emits the annotate flags.
 - **Subagent integration in flight (this PR)** — new
-  `.claude/agents/` directory adds 4 Claude-Code-specific subagents
-  (`quantrank-reviewer` · `schema-sentinel` · `defense-layer-auditor`
-  · `edgar-debugger`). Cross-tool agents (Copilot / Cursor / Devin):
-  this directory is Claude-Code-only and you can safely ignore it —
-  your runtimes do not auto-route to subagent files. Your workflow
-  continues to read from `AGENTS.md` + `.claude/skills/` (which are
-  cross-tool by design). The subagent set codifies four common
-  in-session loops — code review against Rules 1-18, schema triple
-  drift, defense-layer audit, and EDGAR ingest debug — that Claude
-  Code can now spawn in a separate context window instead of
-  inlining into the main session. Doc-only — no compute / schema /
-  output change.
+  `.claude/agents/` directory adds 8 Claude-Code-specific subagents
+  organized in two tiers. **Core tier (4)**: `quantrank-reviewer` ·
+  `schema-sentinel` · `defense-layer-auditor` · `edgar-debugger` —
+  codifies the project's narrow invariants (Rules 1-18, schema
+  triple, defense layer Section A-J, SEC EDGAR throttle policy).
+  **Enterprise tier (4)**: `security-reviewer` ·
+  `frontend-design-reviewer` · `release-captain` ·
+  `phase-coordinator` — wraps the project's existing lifecycle-event
+  skills (`security-check` · `frontend-design-system` · `release-tag`
+  · `branch-collision-check` + `claude-md-lockstep-check` +
+  `phase-status-bump`) into auto-routable surfaces with the same
+  TRIGGER-keyword discipline as the vendored-skill description sharpening
+  from PR #157. Wrap-don't-duplicate pattern — enterprise agents read
+  their wrapped skill on every invocation, so skill updates propagate
+  automatically. Cross-tool agents (Copilot / Cursor / Devin): this
+  directory is Claude-Code-only and you can safely ignore it — your
+  runtimes do not auto-route to subagent files; your workflow
+  continues to read from `AGENTS.md` + `.claude/skills/`. Doc-only —
+  no compute / schema / output change.
 
 ## Claude-Code-specific tooling
 

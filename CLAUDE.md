@@ -31,7 +31,7 @@ backing.
 | `frontend/public/data/` | Compute output: `metadata.json` + `rankings.json` + `stocks/<TICKER>.json` |
 | `tests/` | pytest suite (offline + `@network` gated; see CI for current count) |
 | `.claude/skills/` | 42 invocation-triggerable skills + phase planning docs. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for vendoring / license posture per source. |
-| `.claude/agents/` | 4 project-specific subagents (quantrank-reviewer · schema-sentinel · defense-layer-auditor · edgar-debugger). Spawned via the `Agent` tool with a separate context window; see [`.claude/agents/README.md`](.claude/agents/README.md) for the routing matrix. |
+| `.claude/agents/` | 8 project-specific subagents organized into core (quantrank-reviewer · schema-sentinel · defense-layer-auditor · edgar-debugger) + enterprise tier (security-reviewer · frontend-design-reviewer · release-captain · phase-coordinator). Spawned via the `Agent` tool with a separate context window; see [`.claude/agents/README.md`](.claude/agents/README.md) for the routing matrix. |
 
 ## Commands
 
@@ -333,6 +333,24 @@ context window — distinct from `.claude/skills/` (prompt packs the
 main agent invokes via the `Skill` tool). Routing matrix + author
 conventions in [`.claude/agents/README.md`](.claude/agents/README.md).
 Doc-only — no compute / schema / output change.
+
+**Enterprise tier added (same PR)** — 4 more subagents wrap the
+project's existing lifecycle-event skills into auto-routable surfaces:
+`security-reviewer` (sonnet; wraps `security-check`, fires before
+release tags / CI workflow edits / new deps — Dependabot CVE triage,
+secret scan, EDGAR identity handling), `frontend-design-reviewer`
+(sonnet; wraps `frontend-design-system`, fires on `frontend/components/`
+diffs — palette discipline, tabular-nums, chip family consistency,
+emits Playwright spot-check matrix), `release-captain` (opus; wraps
+`release-tag`, fires on "tag release" cues — runs the full pre-flight
+ladder, drafts notes from merged-PR log, proposes the exact tag /
+release commands for user authorization), and `phase-coordinator`
+(sonnet; wraps `branch-collision-check` + `claude-md-lockstep-check`
++ `phase-status-bump` into 3 modes — branch preflight before edits,
+agent-doc lockstep before PR open, triple-doc lockstep after phase
+completion). Subagent count 4 → 8. Wrap-don't-duplicate pattern: each
+enterprise agent reads its wrapped skill on every invocation, so
+skill updates propagate automatically.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight

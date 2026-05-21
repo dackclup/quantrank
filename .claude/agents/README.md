@@ -22,7 +22,13 @@ skills are loaded each session, so the main agent already has the
 trigger map. Subagents add value where context isolation or parallelism
 specifically helps.
 
-## The current set (4)
+## The current set (8)
+
+Organized into two tiers — **core** (always loaded, narrow project
+invariants) and **enterprise** (broader engineering-org roles that
+wrap the project's existing skills into auto-routable surfaces):
+
+### Core tier (4)
 
 | Subagent | Trigger | Model | Tools |
 |---|---|---|---|
@@ -30,6 +36,21 @@ specifically helps.
 | [`schema-sentinel`](schema-sentinel.md) | When `schemas.py` / `types.ts` / `schema-snapshot.json` changes; CI schema-drift failures | sonnet | Read, Bash, Grep |
 | [`defense-layer-auditor`](defense-layer-auditor.md) | After scoring / valuation changes; after weekly cron lands; before PR Ready-flip on scoring touches | sonnet | Read, Bash, Grep, Glob |
 | [`edgar-debugger`](edgar-debugger.md) | SEC EDGAR ingest test failures; live-run hangs; rate-limit / edgartools drift errors | sonnet | Read, Bash, Grep, Glob |
+
+### Enterprise tier (4)
+
+| Subagent | Enterprise role analogue | Trigger | Model | Tools |
+|---|---|---|---|---|
+| [`security-reviewer`](security-reviewer.md) | AppSec / Security engineer | Before release tags; CI workflow edits; new deps; "scan for CVE" / "ตรวจ security" | sonnet | Read, Bash, Grep, Glob |
+| [`frontend-design-reviewer`](frontend-design-reviewer.md) | Design system / UI lead | Edits under `frontend/components/` / `frontend/app/`; new badge / chip / color; "doesn't match the rest" | sonnet | Read, Grep, Glob, Bash |
+| [`release-captain`](release-captain.md) | Release manager | "tag release" / "cut a release" / "release vX.Y.Z" / after phase epic merge | opus | Read, Bash, Grep, Glob |
+| [`phase-coordinator`](phase-coordinator.md) | Eng-program manager / docs PM | Before branch creation; before PR open / Ready-flip; after phase / sub-PR completes | sonnet | Read, Bash, Grep, Glob |
+
+The two tiers reflect QuantRank's actual workload distribution: core
+agents fire on most PRs (compute / schema / scoring touches happen
+weekly); enterprise agents fire at specific lifecycle moments (release
+cuts ~monthly, security baseline scans before release, frontend reviews
+when UI is touched).
 
 ## How auto-invocation works
 
@@ -39,14 +60,38 @@ Use PROACTIVELY** pattern (mirroring the project's vendored-skill
 description sharpening from PR #157) so the main agent picks them up on
 the relevant cues:
 
+Core tier:
 - `quantrank-reviewer` fires on diff cues (edit + push intent)
 - `schema-sentinel` fires on schema-triple cues
 - `defense-layer-auditor` fires on "verify the output" / scoring-edit cues
 - `edgar-debugger` fires on EDGAR / ingest / throttling cues
 
+Enterprise tier:
+- `security-reviewer` fires on release-tag / CI-workflow-edit / new-dep cues
+- `frontend-design-reviewer` fires on `frontend/components/` diff cues
+- `release-captain` fires on "tag release" / "cut release" cues
+- `phase-coordinator` fires on branch / PR-open / phase-completion cues
+
 The user can also invoke any subagent explicitly: "use the
 defense-layer-auditor to check the latest run", and the main agent will
 spawn it with that scope.
+
+### Wrap-don't-duplicate pattern
+
+Enterprise-tier agents do NOT re-implement the project's existing
+skills — they **wrap** them as auto-routing surfaces. Each enterprise
+agent's first action is to read the corresponding skill's `SKILL.md`:
+
+| Enterprise agent | Wrapped skill(s) |
+|---|---|
+| `security-reviewer` | `.claude/skills/security-check/` |
+| `frontend-design-reviewer` | `.claude/skills/frontend-design-system/` |
+| `release-captain` | `.claude/skills/release-tag/` (delegates to `phase-coordinator` for doc bumps) |
+| `phase-coordinator` | `.claude/skills/branch-collision-check/`, `claude-md-lockstep-check/`, `phase-status-bump/` |
+
+This keeps the skills as the source-of-truth playbooks. When the skill
+updates, the subagent benefits automatically because it reads the skill
+each invocation.
 
 ## Authoring conventions (when adding a new subagent)
 
