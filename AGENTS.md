@@ -406,19 +406,27 @@ note cross-tool-specific points only:
   firing-rate vs expected ~4% per Hennes-Leone-Miller) drives the
   retire/split-decision for the bare flag in a future follow-up PR.
   Schema shape unchanged (new string in `valuation_warnings: list[str]`).
-- **Issue #11 fix in flight (this PR)** — removes the legacy
-  single-period-equity fallback in `compute/main.py::_avg_3y_roe`
-  that kept Issue #11 alive for ~30% of the universe even after the
-  PR 4c per-year denominator. New `insufficient_history_for_roe` skip
-  reason in `compute/valuation/applicability.py` distinguishes
-  "missing input data" from "real value trap signal" — the ensemble
-  no longer appends spurious `value_trap_risk` warnings for tickers
-  with incomplete equity history. Cross-tool agents extending the
-  RIM applicability path: keep the two skip reasons distinct (data
-  missing vs structurally low ROE). Side-effect: tickers with < 3y
-  of `stockholders_equity` history lose RIM as an applicable method;
-  the 5 other valuation methods cover them. SKIP_REASONS taxonomy
-  24 → 25.
+- **Issue #11 fix merged via PR #166** (2026-05-21) — removed the
+  legacy single-period-equity fallback in `compute/main.py::_avg_3y_roe`
+  + introduced the distinct `insufficient_history_for_roe` skip
+  reason. Cross-tool agents extending the RIM applicability path
+  must keep the two skip reasons distinct (data-missing vs
+  structurally-low-ROE) — the ensemble's `value_trap_risk` warning
+  emit filters on the latter only.
+- **Phase 4.5e PR 1 (Scout) in flight (this PR)** — new
+  `compute/scoring/form4_insider.py` (SEC Form 4 fetcher + cache +
+  parser) lands per the `portable-scout-then-integrate` discipline:
+  NO production wiring, NO scoring impact. Cross-tool agents
+  reviewing this PR or extending the Form-4 surface: (a) the cache
+  shape is **one row per insider transaction** (not one per filing
+  — a single Form 4 can carry sells + grants + exercises); (b) the
+  CIK string (not the name) is the insider's stable key — name
+  variations ("DOE JOHN A" vs "Doe, John Alexander") are common; (c)
+  `_FORM4_REQUIRED_ATTRS` is the drift-detector manifest — any
+  future edgartools rename of `accession_no` / `filing_date` /
+  `form` / `obj` MUST update the manifest in lockstep. The PR 2
+  observability surface lands the `Metadata.form4_*` diagnostic
+  fields next; PR 3 emits the annotate flags.
 
 ## Claude-Code-specific tooling
 

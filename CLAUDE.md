@@ -283,18 +283,31 @@ decision (retire bare flag or split weights) waits on a cohort
 acceptance check after ≥ 1 production cron. No schema / output-JSON
 shape change. Tests: 946 → 962 (+16).
 
-**Issue #11 fix in flight (this PR)** — `_avg_3y_roe` removes the
-legacy single-period-equity fallback that kept the original Issue #11
-bug alive for ~30% of the universe even after PR 4c added the per-year
-denominator path. New `insufficient_history_for_roe` skip reason in
+**Issue #11 fix merged via PR #166** (2026-05-21) — `_avg_3y_roe`
+removes the legacy single-period-equity fallback that kept the
+original Issue #11 bug alive for ~30% of the universe even after
+PR 4c added the per-year denominator path. New
+`insufficient_history_for_roe` skip reason in
 `compute/valuation/applicability.py` distinguishes "missing input
 data" from "real value trap signal" — the ensemble no longer appends
 a spurious `value_trap_risk` warning when RIM is skipped for missing
-data. SKIP_REASONS taxonomy 24 → 25. Tests: 962 → 965 (+3 new
-regression tests pinning the new skip reason and the ensemble's
-no-spurious-warning behavior). Side-effect: tickers with < 3y of
-stockholders_equity history lose RIM as an applicable method; the
-5 remaining valuation methods cover them.
+data. SKIP_REASONS taxonomy 24 → 25. Side-effect: tickers with < 3y
+of stockholders_equity history lose RIM as an applicable method;
+the 5 remaining valuation methods cover them.
+
+**Phase 4.5e PR 1 (Scout) in flight (this PR)** — new
+`compute/scoring/form4_insider.py` lands the SEC Form 4 fetcher +
+cache layer + parser, per the `portable-scout-then-integrate`
+pattern. NO production wiring yet — the dep is exercised, the
+edgartools Form-4 API surface is locked via `_FORM4_REQUIRED_ATTRS`
+manifest tuple + drift-detector test, and the cache shape (one row
+per insider transaction, mirrors edgar_amendments/8K siblings) is
+validated against synthetic fixtures. PRs 2 + 3 follow:
+PR 2 = `Metadata.form4_*` observability surface (no scoring impact);
+PR 3 = annotate-only `insider_sell_cluster` + `c_suite_unusual_sell`
+emit + threshold calibration against PR-2 cron data + uncomment the
+already-reserved `INSIDER_SELL_CLUSTER_WEIGHT` / `C_SUITE_UNUSUAL_SELL_WEIGHT`
+constants in `manipulation_index.py`. Tests: 1009 → 1024 (+15).
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight
