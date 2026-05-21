@@ -167,14 +167,14 @@ ACCRUALS_MOMENTUM_WEIGHT: Final[float] = 5.0
 
 #: Burgstahler-Dichev 1997 *JAE* §"Earnings Management to Avoid
 #: Earnings Decreases and Losses": disproportionate bunching of
-#: just-positive earnings (NI ≤ $5M, EPS ≤ $0.05) → loss-avoidance
-#: pattern. Original Compustat cohort PPV ~60% but those thresholds
-#: are scaled to a 1990s small-cap universe. On S&P 500 the current
-#: thresholds fire 0% (issue tracked in CLAUDE.md §Gotchas) — the
-#: weight is the magnitude the flag SHOULD carry once Phase 2.4
-#: (epic #150) rescales thresholds 10× to S&P 500 market caps.
-#: Provenance: **literature-anchored on magnitude, dead on
-#: production** — re-evaluate after Phase 2.4.
+#: just-positive earnings → loss-avoidance pattern. Original
+#: Compustat cohort PPV ~60% on a 1990s small-cap universe. Phase
+#: 2.4 of epic #150 rescaled the bands 10× (NI ≤ $50M, EPS ≤ $0.50)
+#: so the kink-at-zero signature applies at S&P 500 firm sizes — see
+#: `earnings_quality.py` for the rescaling rationale. Provenance:
+#: **literature-anchored** — magnitude derived from BD 1997 cohort
+#: PPV; threshold scale is an engineering choice pending a follow-up
+#: ratio-based (NI/TotalAssets) recalibration.
 LOSS_AVOIDANCE_WEIGHT: Final[float] = 5.0
 
 # --- Tier-3 soft annotates — Beneish/Dechow warning band ---------------------
