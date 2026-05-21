@@ -268,6 +268,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
           <input
             type="search"
             placeholder="Search ticker or name…"
+            aria-label="Search by ticker or company name"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full rounded-md border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm shadow-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"

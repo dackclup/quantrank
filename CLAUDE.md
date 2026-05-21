@@ -207,9 +207,15 @@ that fired per-diff.
   2026-05-21) — Burgstahler-Dichev 1997 cohort thresholds were
   rescaled 10× to S&P 500 scale (NI ≤ $50M / EPS ≤ $0.50) after
   Phase 4.5d's original $5M / $0.05 fired 0% on the universe.
-  Annotate-only — composite rank unaffected. Follow-up: replace
-  absolute-dollar with NI/TotalAssets (size-invariant) so the
-  threshold doesn't drift with universe market-cap inflation.
+  Annotate-only — composite rank unaffected. Phase 4b
+  (2026-05-21) closed the size-invariance follow-up by adding the
+  sibling annotate `loss_avoidance_pattern_size_invariant`
+  (Roychowdhury 2006 *JAE* §5.2 suspect-firm:
+  ``NI / TotalAssets ∈ [0, 0.005]`` for 3+ consecutive years).
+  Both flags ship side-by-side annotate-only pending the Q3
+  2026-08-19 quarterly-audit decision (retire one, keep both,
+  or split weights vs `rem_suspect` which shares the Roychowdhury
+  paper anchor but a different sub-trigger).
 - **Hypothesis property-based tests** are the new defense line for
   data-shape bugs (issue #126). Pair each new shape assumption (port
   cardinality, pillar count, manifest partition) with a `@given`
@@ -218,9 +224,9 @@ that fired per-diff.
 
 ## Phase status
 
-Current schema **`0.9.4-phase4h.4`** · defense layer **17 declared
-veto+annotate flags** of [**27 boolean flags actually emitted**](https://github.com/dackclup/quantrank/issues/130#issuecomment-4496605644)
-(7 active vetoes + 10 annotates + 5 method-applicability +
+Current schema **`0.9.5-phase4h.5`** · defense layer **18 declared
+veto+annotate flags** of [**28 boolean flags actually emitted**](https://github.com/dackclup/quantrank/issues/130#issuecomment-4496605644)
+(7 active vetoes + 11 annotates + 5 method-applicability +
 5 informational; epic [#150](https://github.com/dackclup/quantrank/issues/150)
 Phase 2 splits the method-applicability flags out of `manipulation_index`).
 Plus 5 numerical guards + `manipulation_index` rollup. Latest release
@@ -605,8 +611,45 @@ extraction missing `shares_outstanding`) and **#177** (15 tickers
 growth/goodwill-heavy stocks). No compute / schema / scoring /
 valuation / frontend change.
 
-**Phase 4a osap-import guard in flight (this PR)** — surfaced by the
-14-subagent self-audit on 2026-05-21 (`test-engineer` follow-up).
+**Phase 4b loss_avoidance_pattern_size_invariant in flight (this PR)**
+— closes the long-running follow-up from CLAUDE.md §Gotchas
+(`loss_avoidance_pattern` threshold-drift) and Phase 2.4 (PR #163
+absolute-$ rescale to S&P 500 scale). New annotate
+`loss_avoidance_pattern_size_invariant` fires when
+``NI / TotalAssets ∈ [0, 0.005]`` for 3+ consecutive fiscal years —
+the size-invariant Roychowdhury 2006 *JAE* Table 1 + §5.2 suspect-firm
+signature. **methodology-scientist Mode B verdict on the 0.005
+threshold: LITERATURE-ANCHORED** (Roychowdhury's exact suspect-firm
+cutoff, with Donelson-McInnis-Mergenthaler 2013 *TAR* reaffirming it
+as canonical). Roychowdhury cohort single-year suspect rate ~8-12%;
+with the 3-year persistence filter the S&P 500 expected firing rate
+is ~1.5-4% (~8-20 tickers, vs the 0/502 the absolute-$ sibling fires
+on the current universe). Annotate-only — composite rank unaffected
+per Rule 16; `portable-annotate-before-veto` discipline says both
+the absolute-$ original and the new size-invariant sibling stay
+annotate-only until the Q3 2026-08-19 quarterly cohort audit decides
+whether to retire one. Schema bumps `0.9.4-phase4h.4` →
+`0.9.5-phase4h.5` for the new
+`Metadata.loss_avoidance_size_invariant_firing_count: int | None`
+observability field (Rule 18 — diagnostic ships in the SAME PR as the
+flag emission so the next cron's firing rate is visible without
+grepping per-stock JSONs). `LOSS_AVOIDANCE_SIZE_INVARIANT_WEIGHT = 5`
+in `manipulation_index.py` (parity with the absolute-$ sibling per
+methodology-scientist; revisit at Q3 audit + a φ-correlation check
+vs `REM_SUSPECT_WEIGHT` which shares the Roychowdhury anchor but
+fires on abnormal CFO/Production/DiscExp WITHIN the suspect cohort
+rather than cohort membership itself). Defense layer headline count
+27 → 28 emitted boolean flags. Tests: 1024 → 1031 (+7: 5 unit + 1
+Hypothesis property + 1 constants pin). Companion frontend WARN
+polish in the same PR — `FairPriceBarChart.tsx` headline %-delta
+gains `tabular-nums`, verdict badge moves to canonical `rounded-full`
++ `font-medium` chip family; 6 loose-null sites in `RawMetricsTable`
++ `PillarRadarChart` tightened to `== null`; `RankingTable.tsx:268`
+toolbar search gains `aria-label="Search by ticker or company name"`
+for screen-reader affordance. UI-only follow-on, no behavioral change.
+
+**Phase 4a osap-import guard merged via PR #179** (2026-05-21) —
+surfaced by the 14-subagent self-audit on 2026-05-21 (`test-engineer` follow-up).
 `compute/main.py` carried top-level imports of four OSAP modules
 (`compute.features.osap_replicate`, `compute.ingest.osap`,
 `compute.scoring.osap_blend`, `compute.validation.osap_validation`).

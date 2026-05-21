@@ -517,27 +517,47 @@ note cross-tool-specific points only:
   selected-chip visual will shift; if you maintain a styled
   fork / Storybook captures of these components, expect a visual
   regression there. No behavioral or accessibility-affordance change.
-- **Phase 4a osap-import guard in flight (this PR)** — surfaced by
-  the 14-subagent self-audit on 2026-05-21 (`test-engineer` follow-up).
-  Four `compute/main.py` top-level imports of OSAP-family modules
-  (`compute.features.osap_replicate`, `compute.ingest.osap`,
-  `compute.scoring.osap_blend`, `compute.validation.osap_validation`)
-  are deferred into the existing `try:` block at
-  `compute/main.py:975`. Only `compute.ingest.osap` directly imports
-  `openassetpricing` (only installed via `.[factors]`), but the
-  module-load failure cascaded through `compute.main` and broke
-  `tests/test_main.py` collection in base-install environments. The
-  call site already wraps every OSAP function call in a
-  graceful-degradation `except Exception` (Rule 18 — every
-  `StockDetail.osap_*` + `Metadata.osap_*` schema field is nullable);
-  the new in-block imports surface `ImportError` to that same handler.
-  Verification: `python -m pytest tests/test_main.py --collect-only -q`
-  reports 39 collected / 0 errors (was: ModuleNotFoundError);
-  `pytest -m "not network"` reports `1024 passed` with
-  `openassetpricing==0.0.2` installed (CI parity). Cross-tool agents:
-  no behavioral binding — pure import-topology refactor that unblocks
-  test collection without the `[factors]` extra. No compute logic /
-  schema / output / dep change.
+- **Phase 4a osap-import guard merged via PR #179** (2026-05-21) —
+  surfaced by the 14-subagent self-audit on 2026-05-21
+  (`test-engineer` follow-up). Four `compute/main.py` top-level
+  imports of OSAP-family modules deferred into the existing
+  `try:` block at `compute/main.py:975`; ImportError now caught by
+  the same `except Exception` that already handled OSAP-pipeline
+  failure. Unblocks `tests/test_main.py` collection in base-install
+  environments without `.[factors]`. No compute logic / schema /
+  output / dep change.
+- **Phase 4b loss_avoidance_pattern_size_invariant in flight (this PR)**
+  — new annotate-only defense flag in `compute/scoring/earnings_quality.py`
+  closing the Phase 2.4 size-invariance follow-up. Fires when
+  ``NI / TotalAssets ∈ [0, 0.005]`` for 3+ consecutive fiscal years
+  — Roychowdhury 2006 *JAE* §5.2 suspect-firm definition,
+  reaffirmed by Donelson-McInnis-Mergenthaler 2013 *TAR* as the
+  canonical small-profit cohort cutoff. `methodology-scientist`
+  Mode B verdict: **LITERATURE-ANCHORED**. Annotate-only — composite
+  rank unaffected per Rule 16; the absolute-$ sibling
+  `loss_avoidance_pattern` stays in place per
+  `portable-annotate-before-veto` discipline pending the Q3
+  2026-08-19 quarterly-audit decision. Schema bumps
+  `0.9.4-phase4h.4` → `0.9.5-phase4h.5` for the new
+  `Metadata.loss_avoidance_size_invariant_firing_count: int | None`
+  diagnostic field (Rule 18 observability surface shipped in the
+  same PR as the flag emission). Weight 5 in `manipulation_index.py`
+  (parity with the absolute-$ sibling pending φ-correlation check
+  vs `REM_SUSPECT_WEIGHT` at Q3 audit). Defense layer headline
+  count 27 → 28 emitted boolean flags. Tests 1024 → 1031 (+7: 5
+  unit + 1 Hypothesis property test on streak monotonicity + 1
+  constants pin). Companion frontend WARN polish in the same PR
+  (carry-over from Phase 3 PR #172 deferral): `FairPriceBarChart.tsx`
+  headline %-delta gains `tabular-nums` + verdict badge moves to
+  canonical `rounded-full` + `font-medium` chip family; 6 loose-null
+  sites in `RawMetricsTable` + `PillarRadarChart` tightened to
+  `== null`; `RankingTable.tsx` toolbar search input gains
+  `aria-label` for screen-reader affordance. Cross-tool agents
+  (Copilot / Cursor / Devin): schema-triple-lockstep applies —
+  `compute/output/schemas.py` + `frontend/lib/types.ts` +
+  `frontend/lib/schema-snapshot.json` ALL move together; CI fails
+  on drift. No compute composite / scoring weight / valuation
+  change.
 
 ## Claude-Code-specific tooling
 

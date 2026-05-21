@@ -1,7 +1,7 @@
 import type { RawMetrics } from '@/lib/types';
 
 function formatLargeNumber(n: number | null): string {
-  if (n === null || n === undefined || Number.isNaN(n)) return 'N/A';
+  if (n == null || Number.isNaN(n)) return 'N/A';
   const abs = Math.abs(n);
   if (abs >= 1e12) return `${(n / 1e12).toFixed(2)}T`;
   if (abs >= 1e9) return `${(n / 1e9).toFixed(2)}B`;
@@ -11,17 +11,17 @@ function formatLargeNumber(n: number | null): string {
 }
 
 function formatCurrency(n: number | null): string {
-  if (n === null || n === undefined || Number.isNaN(n)) return 'N/A';
+  if (n == null || Number.isNaN(n)) return 'N/A';
   return `$${formatLargeNumber(n)}`;
 }
 
 function formatPerShare(n: number | null): string {
-  if (n === null || n === undefined || Number.isNaN(n)) return 'N/A';
+  if (n == null || Number.isNaN(n)) return 'N/A';
   return `$${n.toFixed(2)}`;
 }
 
 function formatRatio(n: number | null): string {
-  if (n === null || n === undefined || Number.isNaN(n)) return 'N/A';
+  if (n == null || Number.isNaN(n)) return 'N/A';
   return n.toFixed(2);
 }
 
@@ -60,7 +60,7 @@ export default function RawMetricsTable({ metrics }: { metrics: RawMetrics }) {
         <tbody className="divide-y divide-slate-100">
           {ROWS.map(({ key, label, fmt, hint }) => {
             const v = metrics[key];
-            const isMissing = v === null || v === undefined;
+            const isMissing = v == null;
             return (
               <tr key={key} className="hover:bg-slate-50">
                 <td className="px-3 py-2 text-slate-700">

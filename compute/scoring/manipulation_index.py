@@ -199,8 +199,31 @@ ACCRUALS_MOMENTUM_WEIGHT: Final[float] = 5.0
 #: `earnings_quality.py` for the rescaling rationale. Provenance:
 #: **literature-anchored** — magnitude derived from BD 1997 cohort
 #: PPV; threshold scale is an engineering choice pending a follow-up
-#: ratio-based (NI/TotalAssets) recalibration.
+#: ratio-based (NI/TotalAssets) recalibration (now landed; see the
+#: ``LOSS_AVOIDANCE_SIZE_INVARIANT_WEIGHT`` sibling below).
 LOSS_AVOIDANCE_WEIGHT: Final[float] = 5.0
+
+#: Roychowdhury 2006 *JAE* Table 1 + §5.2 "suspect-firm" definition:
+#: ``NI / TotalAssets ∈ [0, 0.005]`` for 3+ consecutive years.
+#: Size-invariant operationalization of the same Burgstahler-Dichev
+#: 1997 kink-at-zero signature — catches chronically-thin-margin
+#: large caps the absolute-$ sibling misses. Donelson-McInnis-
+#: Mergenthaler 2013 *TAR* reaffirms 0.005 as the canonical small-
+#: profit cohort cutoff. Roychowdhury cohort single-year suspect rate
+#: ~8-12%; with 3-year persistence filter the S&P 500 expected
+#: firing rate is ~1.5-4% (~8-20 tickers, materially > 0/502 the
+#: absolute-$ flag fires on the current universe). Suspect-firm
+#: cohort PPV ~55-65% per Roychowdhury §6 when paired with REM
+#: confirming signals — same magnitude class as the absolute-$
+#: sibling, hence weight parity at 5.0. Provenance:
+#: **literature-anchored** — threshold (0.005) and 3-year window
+#: are Roychowdhury's exact suspect-firm specification. Re-evaluate
+#: at the Q3 2026-08-19 quarterly audit + a φ-correlation check vs
+#: ``REM_SUSPECT_WEIGHT`` (same paper anchor, different sub-trigger
+#: — REM_SUSPECT fires on abnormal CFO/Production/DiscExp WITHIN
+#: the suspect cohort; this flag fires on the cohort membership
+#: itself for 3+ years).
+LOSS_AVOIDANCE_SIZE_INVARIANT_WEIGHT: Final[float] = 5.0
 
 # --- Tier-3 soft annotates — Beneish/Dechow warning band ---------------------
 
@@ -252,6 +275,7 @@ FLAG_WEIGHTS: Final[dict[str, float]] = {
     "late_filing_notification": LATE_FILING_WEIGHT,
     "accruals_momentum_high": ACCRUALS_MOMENTUM_WEIGHT,
     "loss_avoidance_pattern": LOSS_AVOIDANCE_WEIGHT,
+    "loss_avoidance_pattern_size_invariant": LOSS_AVOIDANCE_SIZE_INVARIANT_WEIGHT,
     "beneish_high": BENEISH_HIGH_WEIGHT,
     "dechow_high": DECHOW_HIGH_WEIGHT,
     # "insider_sell_cluster": INSIDER_SELL_CLUSTER_WEIGHT_RESERVED,
@@ -364,6 +388,7 @@ __all__ = [
     "FLAG_WEIGHTS",
     "INSIDER_SELL_CLUSTER_WEIGHT_RESERVED",
     "LATE_FILING_WEIGHT",
+    "LOSS_AVOIDANCE_SIZE_INVARIANT_WEIGHT",
     "LOSS_AVOIDANCE_WEIGHT",
     "MAX_INDEX",
     "NON_RELIANCE_WEIGHT",

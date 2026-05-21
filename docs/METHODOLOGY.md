@@ -185,6 +185,17 @@ composite.
   veto: audit-firm restructuring fires the same item, and many
   changes are benign rotation. Surfaced for human review on the
   detail page.
+- `loss_avoidance_pattern_size_invariant` _(Phase 4b)_ —
+  `NI / TotalAssets ∈ [0, 0.005]` (0.5% of assets) for 3+
+  consecutive fiscal years. Roychowdhury 2006 *JAE* §5.2
+  suspect-firm definition (reaffirmed by Donelson-McInnis-Mergenthaler
+  2013 *TAR* as the canonical small-profit cohort cutoff). Size-
+  invariant sibling of the absolute-$ `loss_avoidance_pattern` flag;
+  catches chronically thin-margin large caps the BD 1997 dollar
+  band misses (e.g., where NI > $50M but NI/TA stays near zero
+  because the asset base is multi-billion). Annotate-only — both
+  flags ship side-by-side pending the Q3 2026-08-19 quarterly-audit
+  decision.
 
 Phase 3e adds `beneish_high` and `dechow_f_high`.
 
@@ -415,9 +426,20 @@ Quarterly cohort audit (issue #130, last refresh 2026-05-21 from
   threshold rescale** (PR #163, 2026-05-20). Thresholds bumped
   `$5M / $0.05` → `$50M / $0.50` to match S&P 500 scale, but production
   still emits 0 firings — S&P 500 firms with NI ≤ $50M for 3+
-  consecutive years remain structurally rare. Phase 4 follow-up:
-  replace absolute-$ with NI / TotalAssets (size-invariant) so the
-  threshold scales with universe market-cap inflation.
+  consecutive years remain structurally rare. Phase 4b (2026-05-21)
+  closed the size-invariance follow-up by shipping the sibling
+  annotate `loss_avoidance_pattern_size_invariant` — fires when
+  `NI / TotalAssets ∈ [0, 0.005]` for 3+ consecutive years,
+  Roychowdhury 2006 *JAE* §5.2 suspect-firm definition (reaffirmed
+  by Donelson-McInnis-Mergenthaler 2013 *TAR*). Roychowdhury cohort
+  single-year suspect rate ~8-12%; with the 3-year persistence
+  filter the S&P 500 expected firing rate is ~1.5-4% (~8-20 tickers,
+  materially > 0/502 the absolute-$ flag fires on). Both flags ship
+  side-by-side annotate-only — composite rank unaffected — pending
+  the Q3 2026-08-19 quarterly-audit decision (retire one, keep both,
+  or split weights vs `rem_suspect` which shares the Roychowdhury
+  paper anchor but fires on abnormal CFO/Production/DiscExp WITHIN
+  the suspect cohort rather than cohort membership for 3+ years).
 - `restatement_history` **11.75% → 11.8%** fire rate (immaterial-
   amendment noise). Phase 2.2 ships the `restatement_high_confidence`
   irregularity signature (10-K/A + 8-K Item 4.02 co-occurrence within
