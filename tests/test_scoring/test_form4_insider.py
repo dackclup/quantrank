@@ -23,6 +23,9 @@ from compute import config
 from compute.scoring import form4_insider
 from compute.scoring.form4_insider import (
     _FORM4_REQUIRED_ATTRS,
+    _NON_DERIVATIVE_TX_REQUIRED_ATTRS,
+    _OWNER_REQUIRED_ATTRS,
+    _OWNERSHIP_REQUIRED_ATTRS,
     CACHE_TTL_DAYS,
     FORM4_LOOKBACK_DAYS,
     Form4Transaction,
@@ -35,24 +38,69 @@ from compute.scoring.form4_insider import (
 # ---------------------------------------------------------------------------
 
 
+# Synthetic fixtures mirror the verified edgartools API (2026-05-21):
+# Filing → .obj (Ownership) → .reporting_owners.owners[0] (Owner)
+#                          → .non_derivative_table.transactions (rows)
+
+
 @dataclass
-class _FakeTxRow:
-    transaction_date: str
+class _FakeTx:
+    """Mirrors edgartools NonDerivativeTransaction field names."""
+
+    date: str
     transaction_code: str
     shares: float
-    price_per_share: float | None
-    shares_owned_following: float
+    price: float | None
+    remaining: float
+    acquired_disposed: str = "D"
 
 
 @dataclass
-class _FakeOwnershipObj:
-    reporting_owner_name: str
-    reporting_owner_cik: str
+class _FakeNonDerivativeTransactions:
+    """Mirrors edgartools NonDerivativeTransactions — DataHolder with
+    .empty + __getitem__ protocol for iteration."""
+
+    _rows: list[_FakeTx]
+
+    @property
+    def empty(self) -> bool:
+        return not self._rows
+
+    def __getitem__(self, idx: int) -> _FakeTx:
+        return self._rows[idx]
+
+    def __len__(self) -> int:
+        return len(self._rows)
+
+
+@dataclass
+class _FakeNonDerivativeTable:
+    transactions: _FakeNonDerivativeTransactions
+
+
+@dataclass
+class _FakeOwner:
+    """Mirrors edgartools Owner dataclass field names exactly."""
+
+    cik: str
+    name: str
     is_director: bool
     is_officer: bool
-    is_ten_percent_owner: bool
+    is_ten_pct_owner: bool  # note: edgartools spells it ten_pct, not ten_percent
     officer_title: str | None
-    non_derivative_transactions: list[_FakeTxRow]
+
+
+@dataclass
+class _FakeReportingOwners:
+    owners: list[_FakeOwner]
+
+
+@dataclass
+class _FakeOwnership:
+    """Mirrors edgartools Ownership/Form4."""
+
+    reporting_owners: _FakeReportingOwners
+    non_derivative_table: _FakeNonDerivativeTable
 
 
 @dataclass
@@ -60,7 +108,7 @@ class _FakeFiling:
     accession_no: str
     filing_date: str
     form: str
-    obj: _FakeOwnershipObj | None
+    obj: _FakeOwnership | None
     filing_url: str = "https://www.sec.gov/Archives/edgar/data/0/test.htm"
 
 
@@ -78,22 +126,32 @@ def _ceo_sell(
         accession_no=accession,
         filing_date=filing_date,
         form="4",
-        obj=_FakeOwnershipObj(
-            reporting_owner_name=name,
-            reporting_owner_cik=cik,
-            is_director=False,
-            is_officer=True,
-            is_ten_percent_owner=False,
-            officer_title=title,
-            non_derivative_transactions=[
-                _FakeTxRow(
-                    transaction_date=transaction_date,
-                    transaction_code="S",
-                    shares=shares,
-                    price_per_share=price,
-                    shares_owned_following=38200.0,
+        obj=_FakeOwnership(
+            reporting_owners=_FakeReportingOwners(
+                owners=[
+                    _FakeOwner(
+                        cik=cik,
+                        name=name,
+                        is_director=False,
+                        is_officer=True,
+                        is_ten_pct_owner=False,
+                        officer_title=title,
+                    ),
+                ],
+            ),
+            non_derivative_table=_FakeNonDerivativeTable(
+                transactions=_FakeNonDerivativeTransactions(
+                    _rows=[
+                        _FakeTx(
+                            date=transaction_date,
+                            transaction_code="S",
+                            shares=shares,
+                            price=price,
+                            remaining=38200.0,
+                        )
+                    ]
                 )
-            ],
+            ),
         ),
     )
 
@@ -146,29 +204,41 @@ def test_A3_grants_and_exercises_preserved_with_distinct_codes():
         accession_no="grant_and_exercise",
         filing_date="2026-04-12",
         form="4",
-        obj=_FakeOwnershipObj(
-            reporting_owner_name="DOE JOHN A",
-            reporting_owner_cik="0001000001",
-            is_director=False,
-            is_officer=True,
-            is_ten_percent_owner=False,
-            officer_title="CEO",
-            non_derivative_transactions=[
-                _FakeTxRow(
-                    transaction_date="2026-04-10",
-                    transaction_code="A",  # grant
-                    shares=5000.0,
-                    price_per_share=None,  # grants typically have no price
-                    shares_owned_following=43200.0,
-                ),
-                _FakeTxRow(
-                    transaction_date="2026-04-10",
-                    transaction_code="M",  # option exercise
-                    shares=2000.0,
-                    price_per_share=85.0,
-                    shares_owned_following=45200.0,
-                ),
-            ],
+        obj=_FakeOwnership(
+            reporting_owners=_FakeReportingOwners(
+                owners=[
+                    _FakeOwner(
+                        cik="0001000001",
+                        name="DOE JOHN A",
+                        is_director=False,
+                        is_officer=True,
+                        is_ten_pct_owner=False,
+                        officer_title="CEO",
+                    ),
+                ],
+            ),
+            non_derivative_table=_FakeNonDerivativeTable(
+                transactions=_FakeNonDerivativeTransactions(
+                    _rows=[
+                        _FakeTx(
+                            date="2026-04-10",
+                            transaction_code="A",  # grant
+                            shares=5000.0,
+                            price=None,  # grants typically have no price
+                            remaining=43200.0,
+                            acquired_disposed="A",
+                        ),
+                        _FakeTx(
+                            date="2026-04-10",
+                            transaction_code="M",  # option exercise
+                            shares=2000.0,
+                            price=85.0,
+                            remaining=45200.0,
+                            acquired_disposed="A",
+                        ),
+                    ]
+                )
+            ),
         ),
     )
     out = fetch_recent_form4("TST", filings_override=[filing])
@@ -299,39 +369,57 @@ def test_C3_cache_invalidate_removes_file(tmp_path, monkeypatch):
 # ---------------------------------------------------------------------------
 
 
+def _attrs_of_class(cls) -> set[str]:
+    """Return the union of ctor parameters + class-level attrs for a
+    class. Dataclass fields show up via dir(cls) at the class level
+    once the class is defined; ctor params cover __init__-assigned
+    instance attrs that may not show on dir(cls)."""
+    import inspect
+
+    params: set[str] = set()
+    try:
+        params = set(inspect.signature(cls.__init__).parameters)
+    except (TypeError, ValueError):
+        pass
+    return params | set(dir(cls))
+
+
 def test_D1_edgar_form4_api_surface_locked():
     """Catch silent API drift on edgartools minor-version bumps.
 
-    Scout-PR contract: every attribute in ``_FORM4_REQUIRED_ATTRS``
-    must be either (a) a constructor parameter on ``Filing`` (most are
-    instance attrs assigned in ``__init__``, NOT class-level
-    attributes — so ``hasattr(Filing, '<attr>')`` returns False) or
-    (b) a property / cached_property defined on the class.
-
-    If a future edgartools bump renames any of them, this test fails
-    LOUDLY on PR review — preventing a Sunday-night cron breakage.
+    Walks the full parser chain (Filing → obj → Ownership →
+    reporting_owners/non_derivative_table → Owner/NonDerivativeTransaction)
+    against the four manifest tuples. Any rename on the upstream
+    package fails this test loudly on PR review — preventing the
+    silent-empty-output failure mode where the parser returns ``[]``
+    for every live ticker and we discover it only after a PR-2 cron
+    cycle.
 
     Skips when edgartools isn't installed (e.g., minimal CI environments).
     """
     try:
         from edgar import Filing
+        from edgar.ownership import NonDerivativeTransaction, Ownership
+        from edgar.ownership.ownershipforms import Owner
     except ImportError:
         pytest.skip("edgartools not installed")
 
-    import inspect
-
-    init_params = set(inspect.signature(Filing.__init__).parameters)
-    class_attrs = set(dir(Filing))
-    accepted = init_params | class_attrs
-
-    for attr_name in _FORM4_REQUIRED_ATTRS:
-        assert attr_name in accepted, (
-            f"edgartools Filing class is missing expected attr '{attr_name}' — "
-            f"either the public API drifted (edgartools bump) or our manifest "
-            f"is wrong. Update _FORM4_REQUIRED_ATTRS in form4_insider.py. "
-            f"Init params: {sorted(init_params)}. "
-            f"Class attrs (first 20): {sorted(class_attrs)[:20]}"
-        )
+    chain = [
+        (Filing, _FORM4_REQUIRED_ATTRS),
+        (Ownership, _OWNERSHIP_REQUIRED_ATTRS),
+        (Owner, _OWNER_REQUIRED_ATTRS),
+        (NonDerivativeTransaction, _NON_DERIVATIVE_TX_REQUIRED_ATTRS),
+    ]
+    for cls, manifest in chain:
+        accepted = _attrs_of_class(cls)
+        for attr_name in manifest:
+            assert attr_name in accepted, (
+                f"edgartools {cls.__name__} is missing expected attr "
+                f"'{attr_name}' — either the public API drifted (edgartools "
+                f"bump) or our manifest is wrong. Update the corresponding "
+                f"_*_REQUIRED_ATTRS in form4_insider.py. "
+                f"Available (first 25): {sorted(accepted)[:25]}"
+            )
 
 
 def test_D2_required_attrs_manifest_is_non_empty_and_tupled():

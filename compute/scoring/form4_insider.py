@@ -128,7 +128,42 @@ _FORM4_REQUIRED_ATTRS: Final[tuple[str, ...]] = (
     "accession_no",
     "filing_date",
     "form",
-    "obj",  # edgartools exposes the parsed-XBRL view via .obj on Form 4
+    "obj",  # edgartools exposes the parsed Ownership view via .obj
+)
+
+#: Drift-detector manifest — attrs on the parsed Ownership object
+#: (``filing.obj`` for a Form 4 returns an ``edgar.ownership.Form4``
+#: which subclasses ``Ownership``). The parser walks down this chain
+#: to extract reporting-owner identity + transaction rows.
+_OWNERSHIP_REQUIRED_ATTRS: Final[tuple[str, ...]] = (
+    "reporting_owners",       # ReportingOwners(owners: list[Owner])
+    "non_derivative_table",   # NonDerivativeTable(transactions, ...)
+)
+
+#: Drift-detector manifest — fields on each ``Owner`` dataclass row
+#: inside ``Ownership.reporting_owners.owners``.
+_OWNER_REQUIRED_ATTRS: Final[tuple[str, ...]] = (
+    "cik",
+    "name",
+    "is_director",
+    "is_officer",
+    "is_ten_pct_owner",       # NOTE: edgartools uses "ten_pct", not "ten_percent"
+    "officer_title",
+)
+
+#: Drift-detector manifest — fields on each ``NonDerivativeTransaction``
+#: dataclass row inside ``Ownership.non_derivative_table.transactions``.
+#: Note the unconventional field names — edgartools uses ``date`` (not
+#: ``transaction_date``), ``price`` (not ``price_per_share``), and
+#: ``remaining`` (not ``shares_owned_following``). Our cache shape
+#: translates to the more descriptive QuantRank names.
+_NON_DERIVATIVE_TX_REQUIRED_ATTRS: Final[tuple[str, ...]] = (
+    "date",
+    "shares",
+    "price",
+    "remaining",
+    "transaction_code",
+    "acquired_disposed",
 )
 
 
@@ -292,20 +327,28 @@ def _form4_to_transactions(filing: object) -> list[dict]:
     - All transactions are derivative-only (Form 4 Table II)
     - The parser raises (logged at WARNING level)
 
-    Expected ``filing.obj`` duck-type:
-    - ``.reporting_owner_name`` / ``.reporting_owner_cik`` — str
-    - ``.is_director`` / ``.is_officer`` / ``.is_ten_percent_owner`` — bool
-    - ``.officer_title`` — str | None
-    - ``.non_derivative_transactions`` — iterable of TransactionRow with:
-      ``.transaction_date``, ``.transaction_code``, ``.shares``,
-      ``.price_per_share``, ``.shares_owned_following``
+    Call chain (verified against edgartools 5.31.3, 2026-05-21):
 
-    Scout-PR note: this duck-type is the agent-team's BEST GUESS at
-    edgartools' Form-4 API. The drift-detector test
-    (``test_edgar_form4_api_surface_locked``) verifies the top-level
-    Filing attrs. PR 2's first cron will validate the full chain end-
-    to-end against live SEC data; expect to refine the
-    ``filing.obj.<>`` attr names then.
+    - ``filing.obj`` → ``edgar.ownership.Form4`` (subclass of ``Ownership``)
+    - ``Ownership.reporting_owners`` → ``ReportingOwners(owners: list[Owner])``
+    - ``Ownership.non_derivative_table.transactions`` → iterable of
+      ``NonDerivativeTransaction`` (rows via ``__getitem__`` protocol)
+    - ``Owner`` fields: ``cik``, ``name``, ``is_director``, ``is_officer``,
+      ``is_ten_pct_owner`` (sic — edgartools uses ``ten_pct``, NOT
+      ``ten_percent``), ``officer_title``
+    - ``NonDerivativeTransaction`` fields: ``date`` (NOT
+      ``transaction_date``), ``shares``, ``price`` (NOT
+      ``price_per_share``), ``remaining`` (NOT ``shares_owned_following``),
+      ``transaction_code``, ``acquired_disposed``
+
+    Cache JSON schema preserves the more descriptive QuantRank names
+    (``transaction_date`` / ``price_per_share`` / ``shares_owned_following``
+    / ``is_ten_percent_owner``) — the translation happens here at the
+    boundary.
+
+    Multi-owner Form 4s (joint filers): this scout takes ``owners[0]``
+    only. Joint filers are rare; the function logs a WARNING when
+    ``len(owners) > 1`` so PR 3 can audit cohort impact.
     """
     try:
         accession = str(filing.accession_no)
@@ -322,23 +365,49 @@ def _form4_to_transactions(filing: object) -> list[dict]:
         parsed = getattr(filing, "obj", None)
         if parsed is None:
             return []
-        insider_name = str(getattr(parsed, "reporting_owner_name", ""))
-        insider_cik = str(getattr(parsed, "reporting_owner_cik", ""))
-        if not insider_name or not insider_cik:
+
+        # Walk the reporting_owners chain.
+        reporting_owners = getattr(parsed, "reporting_owners", None)
+        if reporting_owners is None:
             return []
-        transactions_iter = getattr(parsed, "non_derivative_transactions", None)
+        owners = getattr(reporting_owners, "owners", None) or []
+        if not owners:
+            return []
+        if len(owners) > 1:
+            logger.warning(
+                "form4 accession=%s has %d reporting owners — scout uses owners[0] only",
+                accession,
+                len(owners),
+            )
+        owner = owners[0]
+        insider_cik = str(getattr(owner, "cik", ""))
+        insider_name = str(getattr(owner, "name", ""))
+        if not insider_cik or not insider_name:
+            return []
+
+        # Walk the non_derivative_table chain.
+        nd_table = getattr(parsed, "non_derivative_table", None)
+        if nd_table is None:
+            return []
+        transactions_iter = getattr(nd_table, "transactions", None)
         if transactions_iter is None:
             return []
+        # NonDerivativeTransactions wraps a DataFrame and implements
+        # __getitem__; Python's for-loop falls back to the __getitem__
+        # protocol. The `.empty` flag is the explicit no-rows signal.
+        if getattr(transactions_iter, "empty", False):
+            return []
+
         rows: list[dict] = []
         for tx in transactions_iter:
-            tx_date_raw = getattr(tx, "transaction_date", None)
+            tx_date_raw = getattr(tx, "date", None)
             tx_date = (
                 tx_date_raw.isoformat()
                 if hasattr(tx_date_raw, "isoformat")
                 else (str(tx_date_raw) if tx_date_raw is not None else None)
             )
             shares = _safe_float(getattr(tx, "shares", None))
-            price = _safe_float(getattr(tx, "price_per_share", None))
+            price = _safe_float(getattr(tx, "price", None))
             dollar_value = (
                 shares * price
                 if shares is not None and price is not None
@@ -351,18 +420,18 @@ def _form4_to_transactions(filing: object) -> list[dict]:
                     "transaction_date": tx_date,
                     "insider_name": insider_name,
                     "insider_cik": insider_cik,
-                    "is_director": bool(getattr(parsed, "is_director", False)),
-                    "is_officer": bool(getattr(parsed, "is_officer", False)),
+                    "is_director": bool(getattr(owner, "is_director", False)),
+                    "is_officer": bool(getattr(owner, "is_officer", False)),
                     "is_ten_percent_owner": bool(
-                        getattr(parsed, "is_ten_percent_owner", False)
+                        getattr(owner, "is_ten_pct_owner", False)
                     ),
-                    "officer_title": getattr(parsed, "officer_title", None),
+                    "officer_title": getattr(owner, "officer_title", None) or None,
                     "transaction_code": str(getattr(tx, "transaction_code", "")),
                     "shares": shares,
                     "price_per_share": price,
                     "dollar_value": dollar_value,
                     "shares_owned_following": _safe_float(
-                        getattr(tx, "shares_owned_following", None)
+                        getattr(tx, "remaining", None)
                     ),
                     "filing_url": filing_url,
                 }
