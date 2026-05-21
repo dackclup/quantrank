@@ -31,6 +31,7 @@ backing.
 | `frontend/public/data/` | Compute output: `metadata.json` + `rankings.json` + `stocks/<TICKER>.json` |
 | `tests/` | pytest suite (offline + `@network` gated; see CI for current count) |
 | `.claude/skills/` | 42 invocation-triggerable skills + phase planning docs. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for vendoring / license posture per source. |
+| `.claude/agents/` | 14 project-specific subagents in 4 tiers: **Tier 1 Core** (quantrank-reviewer · schema-sentinel · defense-layer-auditor · edgar-debugger), **Tier 2 Lifecycle** (security-reviewer · frontend-design-reviewer · release-captain · phase-coordinator), **Tier 3 Specialized** (test-engineer · methodology-scientist · performance-engineer · dependency-auditor), **Tier 4 Operations** (docs-reviewer · incident-commander). Spawned via the `Agent` tool with a separate context window; see [`.claude/agents/README.md`](.claude/agents/README.md) for the routing matrix + 6 coordination flows (pre-push gate / release ladder / new-defense flow / incident response / review escalation / quarterly audit). |
 
 ## Commands
 
@@ -106,6 +107,56 @@ for the full 4-step pattern + Section I forcing example.
   section update (new gotcha / convention / connector / layout /
   command). Reject PRs that touch code / workflows / schemas without
   the matching CLAUDE.md + AGENTS.md diff.
+
+## Auto-routing policy
+
+Subagents under [`.claude/agents/`](.claude/agents/) auto-spawn on the
+cues below. The main agent MUST spawn them without asking for
+confirmation first — they are all read-only and their cost is bounded.
+Only destructive commands a subagent *proposes* require user
+authorization.
+
+| Cue / situation | Auto-spawn | Mode |
+|---|---|---|
+| Edit to `compute/output/schemas.py` / `frontend/lib/types.ts` / `frontend/lib/schema-snapshot.json` | `schema-sentinel` | Parallel with the edit; report PASS/FAIL before commit |
+| Edit to anything under `compute/scoring/` or `compute/valuation/` | `quantrank-reviewer` after the edit set stabilizes; `defense-layer-auditor` if `frontend/public/data/` is committed in the same PR | Sequential — reviewer first, auditor on output |
+| Edit to `frontend/components/` / `frontend/app/` | `frontend-design-reviewer` | Parallel; emits Playwright matrix for user spot-check |
+| Test failure under `tests/test_ingest/` OR live-run hang OR `429`/`403` from SEC | `edgar-debugger` | On-demand, only when the failure signal appears |
+| Edit to `.github/workflows/*.yml` OR new dep added to `pyproject.toml` / `frontend/package.json` OR new env-var read introduced | `security-reviewer` | Pre-push |
+| User says "ก่อน push" / "ready to push" / "open PR" / "mark ready" / "ตรวจก่อน push" | `quantrank-reviewer` + `phase-coordinator` Mode B | Parallel pre-push gate |
+| User says "tag release" / "cut a release" / "release vX.Y.Z" / "ตัด release" / phase-epic PR just merged | `release-captain` (acts as orchestrator and spawns the others as the ladder demands) | Owns the release ladder |
+| User asks to create a new `claude/*` branch from a handoff prompt | `phase-coordinator` Mode A | Before first non-trivial edit |
+| Phase / sub-PR marked complete on this branch | `phase-coordinator` Mode C | After merge / on close |
+| `workflow_dispatch` on `compute-rankings.yml` lands green | `defense-layer-auditor` Section A-J + Section I (Playwright) | Automatic post-cron |
+| New defense flag proposed (new risk_flag in `compute/scoring/`) | `methodology-scientist` (validate paper anchor) + `test-engineer` (positive + negative tests) | Sequential — methodology first |
+| Threshold / weight constant changed in `compute/scoring/manipulation_index.py` or `earnings_quality.py` | `methodology-scientist` Mode B | On the edit |
+| Production code added without a corresponding test in the same PR | `test-engineer` | Pre-push |
+| Weekly cron warm-cache exceeds 10 min OR p95 latency > 20s | `performance-engineer` | On detection |
+| Dependabot alert lands OR new dep added to `pyproject.toml` / `frontend/package.json` | `dependency-auditor` + `security-reviewer` | Parallel |
+| Any of CLAUDE.md / AGENTS.md / SKILL.md / WORKFLOW.md / PHASE_STATUS.md / README.md / METHODOLOGY.md modified | `docs-reviewer` (substance check; complements `phase-coordinator` Mode B which checks file-touch) | Parallel with the edit |
+| Production cron fails / hangs / produces corrupt output, OR Vercel deploy breaks, OR schema-snapshot CI fails, OR user says "production is broken" / "site is down" / "incident" | `incident-commander` (P1; orchestrator that fans out to relevant specialists) | Immediate |
+| Quarterly cohort audit scheduled date reached (next 2026-08-19) | `methodology-scientist` Mode C + `defense-layer-auditor` | Sequential — scientist drives |
+
+### Spawn discipline
+
+- **Spawn without asking** for read-only subagents (all 8 are
+  read-only). Do not pause the user's flow with "should I spawn X?"
+  — just spawn and report back.
+- **Ask before authorizing the destructive command** a subagent
+  proposes (e.g., `release-captain` emits `git tag` + `git push
+  origin <tag>` — that command needs explicit user authorization per
+  §Executing actions with care).
+- **Skip auto-spawn** if the user explicitly says "skip the X agent",
+  "don't review this one", "I'll handle it manually" — note the skip
+  in chat and proceed.
+- **De-duplicate**: if a subagent ran on the same diff within the
+  last ~10 minutes and the diff hasn't moved, don't re-spawn — point
+  to the prior result instead.
+- **Parallel by default**: when multiple cues fire on the same edit
+  (e.g., `schemas.py` + `compute/scoring/*` together), spawn the
+  agents in parallel — they each have their own context window.
+- **Disable per-session**: user can `/agents` → toggle off any agent
+  they don't want auto-routing this session.
 
 ## Gotchas
 
@@ -308,6 +359,76 @@ PR 3 = annotate-only `insider_sell_cluster` + `c_suite_unusual_sell`
 emit + threshold calibration against PR-2 cron data + uncomment the
 already-reserved `INSIDER_SELL_CLUSTER_WEIGHT` / `C_SUITE_UNUSUAL_SELL_WEIGHT`
 constants in `manipulation_index.py`. Tests: 1009 → 1024 (+15).
+
+**Subagent integration in flight (this PR)** — first set of project-
+specific Claude Code subagents under `.claude/agents/`. Four agents
+land, all on `opus` or `sonnet` (no `haiku` per user direction):
+`quantrank-reviewer` (opus; full code review against Rules 1-18 +
+schema triple + tenacity policy), `schema-sentinel` (sonnet;
+deterministic Pydantic↔TS↔snapshot drift guard pinned to
+`compute.config.SCHEMA_VERSION` as the bump point; output JSON key
+is `metadata.version`), `defense-layer-auditor` (sonnet; verify-
+production-output Section A-J + 27-flag scorecard + Top-5 rotation
+Rule 16 check, with accurate section labels A=schema+meta / F=tier2
+spotcheck / G=fundamentals resilience / H=universe consistency /
+J=annotate inventory), and `edgar-debugger` (sonnet; SEC EDGAR
+ingest debug specialist that knows the PR-3d amplification incident,
+the strict tenacity policy scoped to SEC-bound modules in
+`compute/ingest/fundamentals.py` / `jkp.py` / `osap.py` only — NOT
+the lenient policies in `universe.py` / `prices.py` /
+`cross_source.py` — plus the `_FORM4_REQUIRED_ATTRS` family of
+drift-detector manifests in `compute/scoring/form4_insider.py`).
+Subagents are spawned via the `Agent` tool and run in a separate
+context window — distinct from `.claude/skills/` (prompt packs the
+main agent invokes via the `Skill` tool). Routing matrix + author
+conventions in [`.claude/agents/README.md`](.claude/agents/README.md).
+Doc-only — no compute / schema / output change.
+
+**Specialized + Operations tiers added (same PR; 8 → 14)** — 6 more
+subagents complete the "full enterprise dev team" topology with
+specialized-expertise and operations layers, plus 6 codified
+coordination flows in `.claude/agents/README.md` that show how the
+team integrates: pre-push gate, release ladder, new-defense flow,
+incident response, code-review escalation chain, and quarterly cohort
+audit. **Tier 3 Specialized**: `test-engineer` (sonnet; TDD + pytest
+discipline + Hypothesis property tests; writes test files only —
+never modifies production code), `methodology-scientist` (opus;
+academic-prior validation against the canonical literature map —
+Altman 1968 / Sloan 1996 / Beneish 1999 / Dechow 2011 / Mayew 2015 /
+Burgstahler-Dichev 1997 / Hennes-Leone-Miller 2008 / Daniel-Titman
+2006 / Damodaran 2019; drives the next quarterly cohort audit
+2026-08-19), `performance-engineer` (sonnet; cron latency + cache
+health; knows the warm < 5 min / cold 25-50 min / p95 < 15s budgets),
+`dependency-auditor` (sonnet; supply-chain + CVE deep triage; owns
+the 25-active-CVE baseline + issue #41 Next 14 → 16 tracker). **Tier
+4 Operations**: `docs-reviewer` (sonnet; substance-check across the
+six top-level docs + METHODOLOGY.md; complements `phase-coordinator`
+Mode B which only checks file-touch), `incident-commander` (opus;
+P1 production-failure orchestrator that triages symptoms via a
+matrix and spawns relevant specialists in parallel — edgar-debugger
+/ defense-layer-auditor / performance-engineer / schema-sentinel /
+dependency-auditor / frontend-design-reviewer / security-reviewer —
+then synthesizes findings into a mitigation plan + post-mortem
+skeleton). Subagent count 8 → 14; auto-routing policy table extended
+with 9 new cue rows. Doc-only — no compute / schema / output change.
+
+**Enterprise tier added (same PR)** — 4 more subagents wrap the
+project's existing lifecycle-event skills into auto-routable surfaces:
+`security-reviewer` (sonnet; wraps `security-check`, fires before
+release tags / CI workflow edits / new deps — Dependabot CVE triage,
+secret scan, EDGAR identity handling), `frontend-design-reviewer`
+(sonnet; wraps `frontend-design-system`, fires on `frontend/components/`
+diffs — palette discipline, tabular-nums, chip family consistency,
+emits Playwright spot-check matrix), `release-captain` (opus; wraps
+`release-tag`, fires on "tag release" cues — runs the full pre-flight
+ladder, drafts notes from merged-PR log, proposes the exact tag /
+release commands for user authorization), and `phase-coordinator`
+(sonnet; wraps `branch-collision-check` + `claude-md-lockstep-check`
++ `phase-status-bump` into 3 modes — branch preflight before edits,
+agent-doc lockstep before PR open, triple-doc lockstep after phase
+completion). Subagent count 4 → 8. Wrap-don't-duplicate pattern: each
+enterprise agent reads its wrapped skill on every invocation, so
+skill updates propagate automatically.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight
