@@ -562,6 +562,14 @@ consistency / Rule 16 / known-issue overlap; prefilter caps
 LLM-judgment at ≤ 20 tickers per run; fires post-cron + pre-release
 + "ตรวจ data หุ้น").
 
+The 15 agent prompts are kept tight (total 2525 lines across all of
+`.claude/agents/`) so per-spawn context cost stays bounded. Common
+pattern: each agent's `What you do NOT do` section, hard constraints,
+workflow steps, and output-format template are required content;
+prose elaboration ("read these first" + verbose intros + duplicated
+boilerplate from CLAUDE.md / SKILL.md / AGENTS.md) is the trim target
+when an agent prompt grows past ~150 lines.
+
 Both hooks are bash + `jq` only, 5-second timeout, fail-open on
 missing dependencies / unwritable filesystem / empty stdin. Copilot
 / Cursor / Devin do NOT execute `.claude/hooks/` — those tools

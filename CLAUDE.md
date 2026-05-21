@@ -582,6 +582,29 @@ slot. No compute / schema / scoring / valuation / frontend code
 change. Closes the gap left when the previous "wide" policy spawn
 cost compounded across multi-file edits.
 
+**Trim agent prompts in flight (this PR)** — second-order
+token-economy optimization on top of the gate-moment policy rewrite.
+Six largest subagent prompts under `.claude/agents/` rewritten leaner
+without changing behavior: `incident-commander` 218 → 126 (−42%),
+`test-engineer` 189 → 113 (−40%), `stock-detail-auditor` 177 → 120
+(−32%), `docs-reviewer` 180 → 125 (−31%), `release-captain` 211 →
+145 (−31%), `security-reviewer` 185 → 131 (−29%). Total across the
+15-agent set: 2925 → 2525 lines (−400, −13.7%). Cuts target the
+genuine bloat — long "Read these first" prose enumerating files
+anyone knows, post-mortem template duplicated from
+`9arm-post-mortem` skill, "Project test conventions (memorize)"
+duplicate of `AGENTS.md` §Testing, Section-A-H verbose intros where
+a compressed table suffices. Hard constraints + workflow steps +
+output discipline + escalation tables all preserved. Each spawn of
+the 6 trimmed agents loads ~25-90 fewer prompt lines (~500-1500
+fewer tokens). Companion to #175 (which reduced spawn FREQUENCY);
+this PR reduces per-spawn SIZE. Also files 2 GitHub issues from the
+auditor dry-run: **#176** (STZ `market_cap: null` — XBRL fact
+extraction missing `shares_outstanding`) and **#177** (15 tickers
+`|mos_pct| > 500%` — fair-price ensemble extreme estimates on
+growth/goodwill-heavy stocks). No compute / schema / scoring /
+valuation / frontend change.
+
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight
   slots already declared in `FLAG_WEIGHTS`)
