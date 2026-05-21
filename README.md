@@ -51,9 +51,24 @@ QuantRank ships academic-quality defenses across two waves:
   flag` joint gate, restatement-history scan (10-K/A 5y), late-filing
   notification (Form 12b-25 1y), Roychowdhury 2006 Real Earnings
   Management 3-proxy, accruals momentum (Δ TATA over 3y), Burgstahler-
-  Dichev 1997 loss-avoidance kink, and the **`manipulation_index`
-  0-100 rollup** with a soft 10-point composite penalty (PR 4.5f,
-  tag `v1.2.0`).
+  Dichev 1997 loss-avoidance kink (thresholds 10× rescaled in Phase 2.4
+  / PR #163 to $50M / $0.50 for the S&P 500 universe), and the
+  **`manipulation_index` 0-100 rollup** with a soft 10-point composite
+  penalty (PR 4.5f, tag `v1.2.0`).
+- **Phase 2.2 high-confidence irregularity signature** (PR #165,
+  2026-05-21): `restatement_high_confidence` annotate fires when a
+  10-K/A or 10-Q/A amendment co-occurs with an 8-K Item 4.02 "non-
+  reliance" filing within 90 days — Hennes-Leone-Miller 2008 *TAR*
+  irregularity signature with PPV ~70% vs bare `restatement_history`'s
+  ~30%. Bare flag retained at weight 5; combined weight 8 when
+  high_confidence fires.
+- **Issue #11 closure** (PR #166, 2026-05-21): `_avg_3y_roe` removes
+  the legacy single-period-equity fallback that preserved the original
+  Issue #11 bug for ~30% of the universe even after PR 4c added the
+  per-year denominator path. New `insufficient_history_for_roe` skip
+  reason distinguishes "missing input data" from a real value-trap
+  signal, so the ensemble no longer emits spurious `value_trap_risk`
+  warnings when RIM is skipped for incomplete equity history.
 
 Despite all this, several classes of manipulation and several
 structural realities remain outside what any filed-financials-based

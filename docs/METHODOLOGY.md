@@ -137,14 +137,17 @@ defense set, lets the user see "this stock is high-rank but has flags X,
 Y, Z", and prevents defense overhaul from invalidating the historical
 composite.
 
-### Active vetoes (4) — suppress the entered-top-5 badge
+### Active vetoes (7) — suppress the entered-top-5 badge
 
 | Veto | Rule | Source |
 |---|---|---|
 | `altman_distress` | Z″ < 1.10 | Altman 1968, Hotchkiss 2003 update for non-manufacturers |
-| `sloan_accruals_top_decile` | Within-sector top decile of accruals/assets | Sloan 1996 |
-| `net_issuance_top_decile` | Within-sector top decile of NSI over 365 days | Pontiff-Woodgate 2008 |
+| `sloan_accruals_top_decile` | Within-sector top decile of accruals/assets | Sloan 1996 *TAR* |
+| `net_issuance_top_decile` | Within-sector top decile of NSI over 365 days | Pontiff-Woodgate 2008 / Daniel-Titman 2006 *JF* |
 | `non_reliance_filing` | 8-K Item 4.02 within trailing 365 days | Schroeder 2024 SSRN |
+| `beneish_manipulation_veto` _(Phase 4.5a)_ | Beneish M-score > −1.78 (full 8-ratio) | Beneish 1999 *FAJ* |
+| `dechow_manipulation_veto` _(Phase 4.5a)_ | Dechow F-score > 3.0 (Model 1, simplified RSST→TATA proxy) | Dechow et al. 2011 *CAR* |
+| `data_quality_input_corruption` _(Phase 3c)_ | TBVPS > $10,000/share (snapshot inputs, fires in `risk_overlay.py`) OR any fair-price method output > $10,000/share (`ensemble.py`) → null all 6 methods; suppresses `entered_top5` via the upstream snapshot path | Internal — Step 7.5 sanity guard catching upstream `shares_outstanding` corruption |
 
 ### Numerical guards (5) — null specific fair-price methods + emit a warning
 
@@ -391,17 +394,38 @@ false-positive suppression.
 
 ### Known calibration drift
 
-Quarterly cohort audit (issue #130, 2026-05-20):
-- `value_trap_risk` 35.06% fire rate (issue #11 — `_avg_3y_roe`
-  denominator bias, partial fix shipped, fallback path still uses
-  old behavior)
-- `going_concern_disclosure` 10.8% FP rate vs Mayew 2015 1-3%
-  expected (issue #16 — negation lookbehind needs widening)
-- `loss_avoidance_pattern` 0% fire rate (Burgstahler-Dichev 1997
-  thresholds calibrated for micro-cap, not SP500 large-cap)
-- `restatement_history` 11.75% fire rate (immaterial-amendment noise;
-  does not distinguish material vs minor per Hennes-Leone-Miller
-  2008)
+Quarterly cohort audit (issue #130, last refresh 2026-05-21 from
+2026-05-20 production cron):
+
+- `value_trap_risk` **35.06% → 35.1%** fire rate. Issue #11 closed via
+  PR #166 (2026-05-21) — the `_avg_3y_roe` legacy single-period
+  fallback was removed and `insufficient_history_for_roe` skip reason
+  added so the ensemble no longer emits spurious value_trap_risk
+  warnings when RIM is skipped for missing data. Net firing rate
+  stayed roughly flat → confirms the bulk of the 35% is genuine value-
+  trap signal, not denominator bias. Still above Lakonishok-Shleifer-
+  Vishny 1994 expected 15-25% band — φ-redundancy check with
+  `goodwill_heavy` (Q3 2026-08-19 audit).
+- `going_concern_disclosure` **1.0%** fire rate on 2026-05-20 cron
+  (within Mayew 2015 expected 1-3% band, down from 10.8% pre-Phase-4h).
+  Mechanism not yet code-confirmed — issue #16 negation-lookbehind may
+  have been side-effect-fixed by the Tier-2 8-K scan integration.
+  Verify root cause + decide whether to close issue #16 at Q3 audit.
+- `loss_avoidance_pattern` **0% fire rate even after Phase 2.4 10×
+  threshold rescale** (PR #163, 2026-05-20). Thresholds bumped
+  `$5M / $0.05` → `$50M / $0.50` to match S&P 500 scale, but production
+  still emits 0 firings — S&P 500 firms with NI ≤ $50M for 3+
+  consecutive years remain structurally rare. Phase 4 follow-up:
+  replace absolute-$ with NI / TotalAssets (size-invariant) so the
+  threshold scales with universe market-cap inflation.
+- `restatement_history` **11.75% → 11.8%** fire rate (immaterial-
+  amendment noise). Phase 2.2 ships the `restatement_high_confidence`
+  irregularity signature (10-K/A + 8-K Item 4.02 co-occurrence within
+  90 days, PR #165) as a higher-PPV complement. Bare `restatement_history`
+  retained at weight 5; combined weight 8 when high_confidence fires
+  (Hennes-Leone-Miller 2008 *TAR* irregularity PPV ~70% vs bare ~30%).
+  Decision on whether to retire bare flag deferred to ≥ 1 production
+  cron of cohort acceptance data.
 
 These are tracked under issue #150 Phase 2.
 

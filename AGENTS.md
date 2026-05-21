@@ -467,9 +467,9 @@ note cross-tool-specific points only:
   safely ignore it — your runtimes do not auto-route to subagent
   files; your workflow continues to read from `AGENTS.md` +
   `.claude/skills/`. Doc-only — no compute / schema / output change.
-- **Phase 1 ops hardening in flight (this PR)** — three reconciles
-  surfaced by a 14-subagent self-audit (roll-call + deep-check pass
-  on `claude/enable-subagents-standby-7lMN4`, 2026-05-21):
+- **Phase 1 ops hardening shipped via PR #170** (2026-05-21) — three
+  reconciles surfaced by a 14-subagent self-audit (roll-call +
+  deep-check pass on `claude/enable-subagents-standby-7lMN4`):
   (a) `.github/workflows/compute-monthly.yml` `permissions: contents:
   write` → `contents: read` — the workflow's only step is the
   Phase-0 stub `echo`, so write perm is dead weight until Phase 5 ML
@@ -481,9 +481,26 @@ note cross-tool-specific points only:
   the 2026-05-20 production cron (now within the Mayew 2015 1-3%
   band; mechanism not yet code-confirmed — re-audit at Q3 2026-08-19).
   Cross-tool agents: only `.github/workflows/compute-monthly.yml`
-  changes is binding on Copilot / Cursor / Devin workflows; the
+  change is binding on Copilot / Cursor / Devin workflows; the
   CLAUDE.md edits are guidance text only. No compute / schema /
   output change.
+- **Phase 2 doc-drift reconcile in flight (this PR)** — second
+  deliverable from the 14-subagent self-audit (2026-05-21). Doc drift
+  surfaced by `docs-reviewer` + `methodology-scientist` against the
+  current implementation state, fixed in lockstep across 5 documents:
+  (a) `PHASE_STATUS.md` §Current state — schema `0.9.2-phase4h.2` →
+  `0.9.4-phase4h.4`, defense layer headline 17 → 27 emitted, skill
+  inventory 38 → 42, subagent inventory added (14 in 4 tiers),
+  recently-merged block refreshed (~20 PRs); (b) `SKILL.md` schema-
+  version table — 2 missing rows added (`0.9.3-phase4h.3` PR #160 +
+  `0.9.4-phase4h.4` PR #161); (c) `WORKFLOW.md` Phase 4.5d
+  `loss_avoidance_pattern` threshold `$5M / $0.05` → `$50M / $0.50`
+  (PR #163 rescale); (d) `docs/METHODOLOGY.md` Active vetoes 4 → 7
+  rows + Known-calibration-drift block refresh; (e) `README.md`
+  §Honest Limitations — Phase 2.2 + Issue #11 closure entries.
+  Cross-tool agents (Copilot / Cursor / Devin): no behavioral
+  binding — these are reference-text accuracy fixes only. No compute
+  / schema / output change.
 
 ## Claude-Code-specific tooling
 
