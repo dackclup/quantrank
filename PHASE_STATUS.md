@@ -13,36 +13,50 @@
 | 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → **v1.5** | ⚪ not started |
 | 8 | Universe expansion (S&P 1500) | ⚪ not started |
 
-## Current state (2026-05-20)
+## Current state (2026-05-21)
 
 | Field | Value |
 |---|---|
-| Schema | **`0.9.2-phase4h.2`** (PR #124, multi-port OSAP adapter) |
-| Defense layer | **17** (7 vetoes + 10 annotates + 5 numerical guards + `manipulation_index` rollup) |
+| Schema | **`0.9.4-phase4h.4`** (PR #161, additive `valuation_methods_applicable` field on `StockDetail`) |
+| Defense layer | **27 boolean flags emitted** (17 declared veto+annotate per PR #154 reconcile + 5 method-applicability `extreme_*_estimate` + 5 informational) · plus 5 numerical guards + `manipulation_index` rollup |
+| Active vetoes | **7** — `altman_distress` · `sloan_accruals_top_decile` · `net_issuance_top_decile` · `non_reliance_filing` · `beneish_manipulation_veto` · `dechow_manipulation_veto` · `data_quality_input_corruption` |
 | Latest release tag | [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5) — 2026-05-17 at `6d414a9b` |
-| Production run | `b1588b2a` (run #51, 5m14s warm-cache; verified Section A-H) |
+| Production run | `a16c887` (2026-05-20 cron, p95 14.87s, 100% fund coverage, Section A-J PASS) |
 | Universe | 502 stocks (S&P 500 minus 1 delisting) |
-| Skill inventory | 38 invocation-triggerable + phase planning docs |
+| Skill inventory | **42** invocation-triggerable + phase planning docs |
+| Subagent inventory | **14** project-specific (4 Core + 4 Lifecycle + 4 Specialized + 2 Operations) |
 
-**Recently merged** (last 7):
-- PR #146 — Skill description audit + light polish (Optimization PR F)
-- PR #145 — SKILL.md restructure + TOC + Rules-at-a-glance (Optimization PR E)
-- PR #144 — WORKFLOW.md archive Phase 0-3 → `docs/archived/` (Optimization PR D)
-- PR #143 — AGENTS.md sync + dedup with CLAUDE.md (Optimization PR C)
-- PR #142 — CLAUDE.md token diet 236 → 172 lines (Optimization PR B)
-- PR #141 — `.md` drift fix + YAML frontmatter fix (Optimization PR A)
-- PR #140 — Pre-merge production simulation harness (Epic #125 Item 3 PR 1 of 2) + Karpathy LLM-Wiki
-
-**`.md` optimization PR G in flight** — PHASE_STATUS.md restructure: this "Current state" summary block hoists the immediate state to the top so Claude / contributors don't have to scroll the chronological history below to know where the project is.
+**Recently merged** (last ~20 since `v1.2.0-phase4.5`):
+- PR #169 — Safe settings + 2 PostToolUse Bash hooks (`log-bash.sh` + `schema-reminder.sh`)
+- PR #168 — `.claude/agents/` 14 project-specific subagents in 4 tiers + 6 coordination flows
+- PR #167 — Phase 4.5e PR 1 (Scout): Form-4 fetcher + cache + drift-detector manifests
+- PR #166 — Issue #11 fix: `_avg_3y_roe` legacy fallback removed + `insufficient_history_for_roe` skip reason
+- PR #165 — Phase 2.2: `restatement_high_confidence` annotate (HLM 2008 irregularity signature)
+- PR #164 — Phase 3: pairwise-φ correlation analysis of 25 active flags
+- PR #163 — Phase 2.4: `loss_avoidance_pattern` thresholds 10× rescale ($5M / $0.05 → $50M / $0.50)
+- PR #162 — Phase 2.5: `manipulation_index.py` per-weight provenance docstrings
+- PR #161 — Epic #150 Phase 2.1: `valuation_methods_applicable` schema field (`0.9.3 → 0.9.4-phase4h.4`)
+- PR #160 — Epic #150 Phase 1.6: explicit `Metadata.tier2_enabled` field (`0.9.2 → 0.9.3-phase4h.3`)
+- PR #159 — 3 workflow skills bundle (`claude-md-lockstep-check` + `release-tag` + `quarterly-cohort-audit`)
+- PR #158 — `vendor-sync` skill for the 4 vendored upstream sources
+- PR #157 — Skill-trigger-flip: 5 `mattpocock-*` skill description sharpening
+- PR #156 — Epic #150 Phase 1.4+1.5: `section_j_annotate_audit()` in verify-helper + tests
+- PR #154 — Epic #150 Phase 1.2: defense layer headline count reconcile 17 → 27
+- PR #153 — Epic #150 Phase 1.3: pre-merge-prod-sim workflow dogfood
+- PR #151 — Epic #150 Phase 0: Known Limitations + pillar label clarification
+- PR #149 — verify-helper Section B post-PR-#79 stale expectations (closes #117)
+- PR #148 — Pre-merge production simulation PR 2 (composite diff + top-10 movers, closes Epic #125 Item 3)
+- PR #147 — PHASE_STATUS.md "Current state" hoist (Optimization PR G)
 
 **Next deliverables** (parallelizable, pick by appetite):
 
-1. **Epic #125 Item 3 PR 2** — composite-score diff vs main + top-10 movers comment appended to PR #140's sticky comment (closes Item 3)
-2. **Phase 4.5e — Form 4 insider clustering** (~420 LOC, ~3w → `v1.3.0`); reserved-slot weights already declared in `FLAG_WEIGHTS`
+1. **Phase 4.5e PR 2** — `Metadata.form4_*` observability surface (still no scoring impact; pairs with module-load assertion for `_FORM4_REQUIRED_ATTRS` manifest family)
+2. **Phase 4.5e PR 3** — annotate-only `insider_sell_cluster` + `c_suite_unusual_sell` emit + threshold calibration from PR-2 cron data → `v1.3.0`
 3. **Phase 4i.1 / 4j.1 / 4k.1 — Factor integrations** (JKP / Qlib / IPCA; ~1-2w each → `v1.1.0-phase4`); 4i.1 license-review-required per #115
-4. **Phase 5 — ML meta-learner** (~10-12w); also unblocks PR 4b §3 IC-decay writer (#75)
+4. **`loss_avoidance_pattern` size-invariant follow-up** — Phase 2.4 10× rescale still fires 0% on production; cohort threshold needs NI/TotalAssets (size-invariant) per CLAUDE.md §Gotchas follow-up note
+5. **Phase 5 — ML meta-learner** (~10-12w); also unblocks PR 4b §3 IC-decay writer (#75)
 
-**Open issues**: #15 (fundamentals throttling) · #41 (Next.js 14 → 16 CVEs) · #67 (Damodaran CoE Phase 5+) · #75 (PR 4b §3 IC-decay, Phase-5-blocked) · #115 (JKP license review) · #125 (process hygiene epic, Item 3 in flight) · #130 (quarterly cohort-threshold review) · #137 (9arm-skills license clarification)
+**Open issues**: #15 (fundamentals throttling) · #16 (going-concern negation-lookbehind — FP rate now 1.0% in band, mechanism not yet code-confirmed) · #41 (Next.js 14 → 16 CVEs, 1c+8h chunk) · #67 (Damodaran CoE Phase 5+) · #75 (PR 4b §3 IC-decay, Phase-5-blocked) · #115 (JKP license review) · #130 (quarterly cohort-threshold review, next 2026-08-19) · #137 (9arm-skills license clarification, 4-week deadline from 2026-05-20) · #150 (Phase 2-3 epic) · #155 (Phase 1.6 fallback)
 
 ---
 

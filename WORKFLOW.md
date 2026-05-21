@@ -585,15 +585,19 @@ in parallel (disjoint code paths).
       slightly above expected 3-8% but within acceptable
       annotate-only band.
 - [x] **`loss_avoidance_pattern` annotate** (PR #97, ~100 LOC of the
-      same module). Burgstahler-Dichev 1997 *JAE* kink at zero —
-      tiny-positive NI ∈ [$0, $5M] OR EPS ∈ [$0.00, $0.05] for **3+
-      consecutive fiscal years**. Walks per-ticker fundamentals
-      history newest → oldest counting consecutive in-band years.
-      Production verification run #50: **0 / 502 (0.0%)** — universe
-      mismatch with S&P 500 large-cap floor (smallest NI > $5M,
-      smallest EPS > $0.05). File as Phase 4.5 follow-up to
-      consider S&P-500-scaled thresholds or accept zero-fire as a
-      `entered_top5` floor-only guard.
+      same module; thresholds rescaled by PR #163 / Phase 2.4
+      2026-05-20). Burgstahler-Dichev 1997 *JAE* kink at zero —
+      tiny-positive NI ∈ [$0, $50M] OR EPS ∈ [$0.00, $0.50] for **3+
+      consecutive fiscal years** (thresholds 10× the original
+      Compustat-cohort `$5M / $0.05` after PR-#97's S&P-500-scale-
+      mismatch zero-fire). Walks per-ticker fundamentals history
+      newest → oldest counting consecutive in-band years. Production
+      verification 2026-05-20 cron: **still 0 / 502 (0.0%)** — the
+      10× rescale was insufficient; S&P 500 firms with NI ≤ $50M
+      for 3+ consecutive years remain structurally rare. Phase 4
+      follow-up (CLAUDE.md §Gotchas): replace absolute-$ thresholds
+      with NI / TotalAssets (size-invariant) so the threshold scales
+      automatically with universe market-cap inflation.
 - [x] 13 offline tests added (`tests/test_scoring/test_earnings_quality.py`).
       Suite **818 → 831 offline + 17 @network**.
 - [x] Defense-scorecard delta confirmed: defense layer **14 → 16**

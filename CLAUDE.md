@@ -453,29 +453,60 @@ unwritable FS / empty stdin; 5-second timeout. `.gitignore` appends
 `.claude/session.log` + `.claude/settings.local.json`. Doc-only
 otherwise — no compute / schema / output change.
 
-**Phase 1 ops hardening in flight (this PR)** — surfaced by the
-14-subagent full self-audit (roll-call + deep-check pass on
-`claude/enable-subagents-standby-7lMN4`, 2026-05-21). Three reconciles
-in one focused diff: (a) `.github/workflows/compute-monthly.yml`
+**Phase 1 ops hardening shipped via PR #170** (2026-05-21) — surfaced
+by the 14-subagent full self-audit (roll-call + deep-check pass on
+`claude/enable-subagents-standby-7lMN4`). Three reconciles in one
+focused diff: (a) `.github/workflows/compute-monthly.yml`
 `permissions: contents: write` → `contents: read` per
 `security-reviewer` Section C — the workflow's only step is the
 Phase-0 stub `echo`, so write perm is dead weight until Phase 5 ML
 retrain lands; (b) §Conventions EDGAR_MAX_WORKERS guideline 5 → 8 to
 match the PR-3d empirical bump documented inline at
-`compute/config.py:34-42` (this doc was stale, not the code — the
+`compute/config.py:34-42` (the doc was stale, not the code — the
 `edgar-debugger` + `performance-engineer` audits both confirmed the
 code's ~1 req/s sustained load is comfortably under the 10/s SEC
 ceiling and the inline rationale is self-documenting); (c) §Gotchas
 `going_concern_disclosure` FP-rate stat 10.8% → 1.0% to match the
 2026-05-20 production cron (now within the Mayew 2015 1-3% band
 without a confirmed code mechanism — re-audit at Q3 2026-08-19).
-Deferred from this PR to keep scope tight: form4 module-load
+Deferred from PR #170 to keep scope tight: form4 module-load
 assertion (couples with Phase 4.5e PR 2 on the peer branch);
 edgar_form4 CI cache restore path (same coupling); PHASE_STATUS /
-SKILL.md schema table / METHODOLOGY.md vetoes-count drift (separate
-doc-reconcile PR); frontend 6-FAIL palette+null+chip-family bundle
-(separate UI PR); `loss_avoidance_pattern` size-invariant follow-up
-(separate recalibration PR). No compute / schema / output change.
+SKILL.md schema table / METHODOLOGY.md vetoes-count drift (this PR);
+frontend 6-FAIL palette+null+chip-family bundle (separate UI PR);
+`loss_avoidance_pattern` size-invariant follow-up (separate
+recalibration PR). No compute / schema / output change.
+
+**Phase 2 doc-drift reconcile in flight (this PR)** — second deliverable
+from the 14-subagent self-audit (2026-05-21). Doc drift surfaced by
+`docs-reviewer` + `methodology-scientist` against the current
+implementation state, fixed in lockstep across 5 documents — no
+compute / schema / output / dep change. (a) `PHASE_STATUS.md`
+§Current state block — schema `0.9.2-phase4h.2` → `0.9.4-phase4h.4`,
+defense layer headline 17 → 27 emitted flags (PR #154 reconcile), skill
+inventory 38 → 42, subagent inventory added (14 in 4 tiers), recently-
+merged block refreshed from PR #146-back to PRs #148-#169, next-
+deliverables list updated to drop PR #148-closed Epic-#125-Item-3
+entry and add the `loss_avoidance_pattern` size-invariant follow-up.
+(b) `SKILL.md` schema-version table — 2 missing rows added
+(`0.9.3-phase4h.3` PR #160 `tier2_enabled` field + `0.9.4-phase4h.4`
+PR #161 `valuation_methods_applicable` field). (c) `WORKFLOW.md`
+Phase 4.5d `loss_avoidance_pattern` task — threshold description
+`$5M / $0.05` → `$50M / $0.50` (PR-#163 Phase 2.4 rescale) + Phase 4
+size-invariant follow-up note. (d) `docs/METHODOLOGY.md` Active vetoes
+section — 4 → 7 rows (adds `beneish_manipulation_veto`,
+`dechow_manipulation_veto`, `data_quality_input_corruption`), and the
+Known-calibration-drift block refreshed to reflect Issue #11 closure
+(PR #166), Phase 2.4 rescale (PR #163), Phase 2.2 high-confidence
+irregularity (PR #165), and the going-concern FP-rate drop to 1.0%.
+(e) `README.md` §Honest Limitations — adds Phase 2.2
+`restatement_high_confidence` and Issue #11 closure entries; mentions
+PR #163's 10× rescale on the `loss_avoidance_pattern` line. Deferred
+to a follow-up Phase 2.x PR (too large for this scope): METHODOLOGY.md
+annotate-only section full refresh (7 → 14+ flags) + missing citation
+blocks (full Hennes-Leone-Miller 2008 *TAR*, Cohen-Malloy-Pomorski
+2012, etc.) — needs `methodology-scientist` sign-off per the
+new-defense-flow rule.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight
