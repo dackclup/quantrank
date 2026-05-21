@@ -22,7 +22,7 @@ skills are loaded each session, so the main agent already has the
 trigger map. Subagents add value where context isolation or parallelism
 specifically helps.
 
-## The current set (14)
+## The current set (15)
 
 Organized into four tiers — **core** (narrow project invariants),
 **lifecycle** (engineering-org roles for PR / release / phase
@@ -31,7 +31,7 @@ project knowledge), and **operations** (orchestrators + ops roles).
 This is the "full enterprise dev team" topology — every tier maps to
 roles a 20-person engineering org would have:
 
-### Tier 1 — Core (4)
+### Tier 1 — Core (5)
 
 | Subagent | Enterprise role analogue | Trigger | Model | Tools |
 |---|---|---|---|---|
@@ -39,6 +39,7 @@ roles a 20-person engineering org would have:
 | [`schema-sentinel`](schema-sentinel.md) | API / contract governance | When `schemas.py` / `types.ts` / `schema-snapshot.json` changes; CI schema-drift failures | sonnet | Read, Bash, Grep |
 | [`defense-layer-auditor`](defense-layer-auditor.md) | QA / data observability | After scoring / valuation changes; after weekly cron lands; before PR Ready-flip on scoring touches | sonnet | Read, Bash, Grep, Glob |
 | [`edgar-debugger`](edgar-debugger.md) | On-call for downstream dep | SEC EDGAR ingest test failures; live-run hangs; rate-limit / edgartools drift errors | sonnet | Read, Bash, Grep, Glob |
+| [`stock-detail-auditor`](stock-detail-auditor.md) | Data-correctness reviewer | Post-cron; pre-release; "ตรวจ data หุ้น" / "check stock data correctness" / "audit the output"; prefilter caps LLM-judgment at ≤ 20 tickers | sonnet | Read, Bash, Grep, Glob |
 
 ### Tier 2 — Lifecycle (4)
 
@@ -118,6 +119,7 @@ User: "tag release v1.3.0" / "ตัด release"
 [release-captain] (opus) drives the ladder; spawns in parallel:
   ├─ schema-sentinel         ──► no schema drift on release commit
   ├─ defense-layer-auditor   ──► Section A-J PASS on latest output
+  ├─ stock-detail-auditor    ──► per-stock data correctness (prefilter + ≤ 20 LLM verdicts)
   ├─ security-reviewer       ──► CVE + secrets baseline
   ├─ performance-engineer    ──► cron latency within budget
   ├─ dependency-auditor      ──► no new CVEs since last tag

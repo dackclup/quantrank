@@ -88,7 +88,7 @@ frontend/                         # Next.js static site (read/write OK)
 tests/                            # pytest suite
 docs/                             # Academic methodology + research findings
 .claude/skills/                   # 42 loaded skills + phase-N/ planning docs
-.claude/agents/                   # 14 project-specific subagents in 4 tiers (core + lifecycle + specialized + operations; Claude Code only — Copilot / Cursor / Devin do not auto-route to these; full enterprise dev-team topology with 6 codified coordination flows)
+.claude/agents/                   # 15 subagents — Tier 1 Core 5 (incl. stock-detail-auditor for per-stock JSON correctness) + Tier 2 Lifecycle 4 + Tier 3 Specialized 4 + Tier 4 Operations 2; Claude Code only — Copilot / Cursor / Devin do not auto-route to these
 .claude/hooks/                    # PostToolUse Bash hooks (log-bash.sh, schema-reminder.sh) wired by .claude/settings.json (Claude Code only — Copilot / Cursor / Devin ignore)
 .claude/settings.json             # Claude Code harness config (hooks, permissions). Per-user overrides go in .claude/settings.local.json (gitignored)
 .github/workflows/                # ⚠️ ask before editing
@@ -550,6 +550,17 @@ configuration. Two PostToolUse Bash hooks ship today:
   to run `python -m compute.output.schema_check` (or spawn the
   `schema-sentinel` subagent) before commit. Closes the local
   pre-commit gap left by the schema-drift CI guard.
+
+The 15 subagents under `.claude/agents/` follow the **gate-moment
+auto-routing policy** in [`CLAUDE.md`](CLAUDE.md) §Auto-routing
+policy — most cues fire at "ready to push" / explicit ask / signal
+event, not on every edit. This is the reduced-token policy
+introduced after the original "spawn-on-every-diff" rule proved
+too expensive. Notable Tier 1 addition: `stock-detail-auditor` for
+data correctness of per-stock JSON the frontend renders (range /
+consistency / Rule 16 / known-issue overlap; prefilter caps
+LLM-judgment at ≤ 20 tickers per run; fires post-cron + pre-release
++ "ตรวจ data หุ้น").
 
 Both hooks are bash + `jq` only, 5-second timeout, fail-open on
 missing dependencies / unwritable filesystem / empty stdin. Copilot
