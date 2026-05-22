@@ -181,7 +181,16 @@ export function FairPriceCard(props) {  // no types
   pattern on data tables (`#FFFFFF / #F1F5F9` per LedgerCraft spec).
   Existing palette + OKLCH semantic colors + Plex Sans body + JBM
   numerics retained — LedgerCraft is selectively adopted for slab
-  headlines + table polish, not a wholesale visual rewrite.
+  headlines + table polish, not a wholesale visual rewrite. **Phase 2
+  (2026-05-22)** propagated the tokens to per-stock detail-page
+  surfaces: hero card → `shadow-large`; company-name `<p>` →
+  `font-slab`; FairPriceBarChart headline → `shadow-medium`;
+  FairPriceBarChart method-list → `shadow-subtle`; PillarRadarChart
+  container → `shadow-medium`; FilterDrawer panel `shadow-2xl` →
+  `shadow-overlay`; RawMetricsTable → `shadow-medium` + alternating
+  rows. Section labels (the small `text-sm font-medium uppercase
+  tracking-wide` h2s) intentionally STAYED in IBM Plex Sans — slab
+  at that small uppercase size reads wrong; slab is hero-scale only.
 
 ## Git workflow
 

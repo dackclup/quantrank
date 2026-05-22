@@ -188,7 +188,7 @@ export function FairPriceBarChart({
           today-vs-median comparison. Color of the surround tracks
           the verdict. */}
       {headline && (
-        <div className={`mb-4 rounded-lg border border-slate-200 p-4 ${headline.bg}`}>
+        <div className={`mb-4 rounded-lg border border-slate-200 p-4 shadow-medium ${headline.bg}`}>
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <div className={`text-lg font-semibold ${headline.cls}`}>{headline.tag}</div>
@@ -265,7 +265,7 @@ export function FairPriceBarChart({
 
       {/* Per-method rows — accent bar (verdict color) + name + verdict
           badge + descriptive sentence in plain English. */}
-      <ul className="divide-y divide-slate-100 overflow-hidden rounded-lg border border-slate-200">
+      <ul className="divide-y divide-slate-100 overflow-hidden rounded-lg border border-slate-200 shadow-subtle">
         {rows.map((r) => {
           const v = VERDICT_STYLE[r.verdict];
           const pctRounded = Math.abs(r.pct) > 999

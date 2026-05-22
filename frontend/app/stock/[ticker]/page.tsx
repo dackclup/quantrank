@@ -82,7 +82,7 @@ export default function StockDetailPage({
           rank badge + sector chip on top row, big mono ticker, serif
           company name, radial-gauge ScoreBadge + price + MoSCell on
           the right side. */}
-      <header className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+      <header className="rounded-2xl border border-slate-200 bg-white p-5 shadow-large sm:p-6">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2 text-xs">
@@ -101,7 +101,11 @@ export default function StockDetailPage({
               </span>
               <RecommendationBadge recommendation={detail.recommendation} size="md" />
             </h1>
-            <p className="mt-1 text-2xl text-slate-700 sm:text-3xl">
+            {/* LedgerCraft Phase 2 — company name in slab-serif gives
+                the "editorial finance" register (Bloomberg / WSJ
+                headline) at hero scale. Ticker stays in mono (line
+                99); the slab handles the wordmark-style name read. */}
+            <p className="mt-1 font-slab text-2xl text-slate-700 sm:text-3xl">
               {detail.name}
             </p>
             <CurrentPriceLine
@@ -242,7 +246,7 @@ export default function StockDetailPage({
         </p>
       </section>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-4">
+      <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-medium">
         <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-slate-500">
           Data quality
         </h2>
