@@ -430,6 +430,19 @@ note cross-tool-specific points only:
   `form` / `obj` MUST update the manifest in lockstep. The PR 2
   observability surface lands the `Metadata.form4_*` diagnostic
   fields next; PR 3 emits the annotate flags.
+- **Phase 4.5e PR 2 (Observability) in flight (this PR)** — wires the
+  Form-4 fetch loop into `compute/main.py` as an observe-only pass
+  (`form4_enabled=False`; `_FORM4_FLAGS_ENABLED` stays False). Adds 7
+  `Metadata.form4_*` fields (coverage, latency p50/p95, insider-count
+  median, tickers-with-activity, failure list bounded ≤ 20) and 1
+  `StockDetail.form4_diagnostics` dict per Rule 18. Schema bump
+  `0.9.7-phase4h.7` → `0.10.0-phase4.5e` (MINOR, additive). New
+  helper Section K: Form-4 universe accounting equation. Cross-tool
+  agents extending the Form-4 surface: `form4_diagnostics` keys are
+  `insider_count` / `latest_filing_date` / `fetch_status` ("ok" |
+  "failed" | "skipped_no_identity"). ZERO scoring impact — do NOT
+  wire `INSIDER_SELL_CLUSTER_WEIGHT_RESERVED` or
+  `C_SUITE_UNUSUAL_SELL_WEIGHT_RESERVED` until PR 3 lands.
 - **Subagent integration in flight (this PR)** — new
   `.claude/agents/` directory adds 8 Claude-Code-specific subagents
   organized in two tiers. **Core tier (4)**: `quantrank-reviewer` ·

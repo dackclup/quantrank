@@ -149,6 +149,20 @@ export type Metadata = {
   sector_coe_enabled?: boolean | null;
   value_trap_risk_count_with_sector_coe?: number | null;
   value_trap_risk_count_without_sector_coe?: number | null;
+  // Phase 4.5e PR 2 (0.10.0-phase4.5e) — Form-4 insider-transaction
+  // fetch observability surface. `form4_enabled` mirrors
+  // `_FORM4_FLAGS_ENABLED` in tier2.py (False in this PR; PR 3 flips
+  // it). `form4_coverage_pct` = % of universe with a successful fetch.
+  // p50/p95 latency fields let the cron budget be verified.
+  // `form4_fetch_failures` is bounded ≤ 20 tickers. All optional +
+  // nullable on legacy snapshots pre-0.10.0.
+  form4_enabled?: boolean | null;
+  form4_coverage_pct?: number | null;
+  form4_fetch_latency_p50_seconds?: number | null;
+  form4_fetch_latency_p95_seconds?: number | null;
+  form4_universe_insider_count_median?: number | null;
+  form4_tickers_with_recent_activity?: number | null;
+  form4_fetch_failures?: string[] | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors
@@ -326,4 +340,12 @@ export type StockDetail = {
   // level so consumers can filter without unpacking the ensemble dict.
   // Optional + null on legacy outputs from before 0.9.4-phase4h.4.
   valuation_methods_applicable?: number | null;
+  // Phase 4.5e PR 2 (0.10.0-phase4.5e) — per-ticker Form-4 fetch
+  // diagnostic. Null when form4 fetch loop was skipped. PR 3 consumers
+  // keying on insider_count > 0 should prefer this over re-fetching.
+  form4_diagnostics?: {
+    insider_count: number;
+    latest_filing_date: string | null;
+    fetch_status: 'ok' | 'failed' | 'skipped_no_identity';
+  } | null;
 };

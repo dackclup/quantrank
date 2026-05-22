@@ -238,7 +238,7 @@ that fired per-diff.
 
 ## Phase status
 
-Current schema **`0.9.8-phase4h.8`** · defense layer **20 declared
+Current schema **`0.10.0-phase4.5e`** · defense layer **20 declared
 veto+annotate flags** of [**30 boolean flags actually emitted**](https://github.com/dackclup/quantrank/issues/130#issuecomment-4496605644)
 (7 active vetoes + 13 annotates + 5 method-applicability +
 5 informational; epic [#150](https://github.com/dackclup/quantrank/issues/150)
@@ -908,24 +908,46 @@ git-only (no auth), Step 2 GitHub API (7-day window). Skill count
 42 → 43. No compute / schema / scoring / valuation / frontend change.
 Closes issue #125 Item 6.
 
-**Issue #67 sector-adjusted CoE data-collection PR in flight (this PR)** —
-`compute/scoring/cost_of_equity.py` adds the GICS-keyed Damodaran 2019
-Table 8.4 + NYU January 2025 dataset sector-CoE dict (11 sectors, Ke range
-6%-12%). `config.USE_SECTOR_COE = False` (default OFF per Rule 18 —
-data-collection only). `compute/valuation/ensemble.py` reads the flag and
-passes the sector-adjusted Ke to `rim_fair_price` when enabled.
-`Metadata` gains 3 Rule 18 diagnostics: `sector_coe_enabled` +
-`value_trap_risk_count_without_sector_coe` (flat-10% baseline) +
-`value_trap_risk_count_with_sector_coe` (per-sector Ke). Both counts
-computed every cron so the delta is visible before the flag is flipped.
-Schema bumped `0.9.7-phase4h.7` → `0.9.8-phase4h.8`. Tests +20
-(11-sector dict pin + Hypothesis band test + sector-CoE RIM gate sanity
-tests). Methodology-scientist Mode B sign-off required before the flip
-PR lands. Closes issue #67 prep; flip follows after ≥ 1 cron delta-count.
+**Issue #67 sector-adjusted CoE data-collection merged via PR #204**
+(2026-05-22) — `compute/scoring/cost_of_equity.py` adds the GICS-keyed
+Damodaran 2019 Table 8.4 + NYU January 2025 dataset sector-CoE dict
+(11 sectors, Ke range 6%-12%). `config.USE_SECTOR_COE = False` (default
+OFF per Rule 18 — data-collection only). `compute/valuation/ensemble.py`
+reads the flag and passes the sector-adjusted Ke to `rim_fair_price`
+when enabled. `Metadata` gains 3 Rule 18 diagnostics:
+`sector_coe_enabled` + `value_trap_risk_count_without_sector_coe`
+(flat-10% baseline) + `value_trap_risk_count_with_sector_coe`
+(per-sector Ke). Both counts computed every cron so the delta is
+visible before the flag is flipped. Schema bumped `0.9.7-phase4h.7`
+→ `0.9.8-phase4h.8`. Tests +35 (11-sector dict pin + Hypothesis band
+test + sector-CoE RIM gate sanity tests). Pre-merge sim (PR #204):
+Δscore max ±0.17 / Δrank max ±3 — confirms data-collection only.
+Methodology-scientist Mode B (agent layer): LITERATURE-ANCHORED across
+all 11 sectors. Closes issue #67 prep; flip follows after ≥ 1 cron
+delta-count.
+
+**Phase 4.5e PR 2 — Form-4 observability surface in flight (this PR)**
+(2026-05-22) — wires the Form-4 fetch loop from PR 1 (Scout,
+`compute/scoring/form4_insider.py`) into `compute/main.py` as an
+observe-only loop (`form4_enabled=False`). 7 new `Metadata` fields:
+`form4_enabled` · `form4_coverage_pct` · `form4_fetch_latency_p50_seconds`
+· `form4_fetch_latency_p95_seconds` · `form4_universe_insider_count_median`
+· `form4_tickers_with_recent_activity` · `form4_fetch_failures`. 1 new
+`StockDetail` field: `form4_diagnostics` (per-ticker `{insider_count,
+latest_filing_date, fetch_status}`). New helper Section K: Form-4
+universe accounting equation (`universe_size == ok_active + ok_zero +
+failed + missing`). Schema bump `0.9.8-phase4h.8` → `0.10.0-phase4.5e`
+(MINOR — additive fields, no consumer migration; supersedes the PR-#204
+PATCH bump after rebase). ZERO scoring impact;
+`_FORM4_FLAGS_ENABLED` stays False. PR 3 wires the
+`insider_sell_cluster` + `c_suite_unusual_sell` annotates after ≥ 1
+cron's firing-rate data lands in the new `form4_*` Metadata fields.
 
 **Next deliverables** (pick by appetite):
 - **Issue #67 flip PR** — `USE_SECTOR_COE = True` after ≥ 1 cron confirms
   delta-flag-count (target: `value_trap_risk` drops from ~176 toward ~80-110)
+- **Phase 4.5e PR 3** — `insider_sell_cluster` + `c_suite_unusual_sell`
+  annotate emit + threshold calibration against PR-2 cron data
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight
   slots already declared in `FLAG_WEIGHTS`)
 - **Phase 4i.1 / 4j.1 / 4k.1** — JKP / Qlib / IPCA integration PRs

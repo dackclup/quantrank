@@ -93,6 +93,7 @@ from compute.scoring.earnings_quality import (
     check_loss_avoidance_size_invariant,
 )
 from compute.scoring.eight_k_events import get_non_reliance_filing_dates
+from compute.scoring.form4_insider import fetch_recent_form4
 from compute.scoring.loss_chance import derive_loss_chance
 from compute.scoring.manipulation_index import (
     compute_adjusted_composite,
@@ -783,6 +784,75 @@ def run_weekly_compute() -> int:
             except Exception as e:  # noqa: BLE001
                 logger.warning("History task raised for %s: %s", ticker, e)
                 histories[ticker] = pd.DataFrame()
+
+    # Phase 4.5e PR 2 — Form-4 insider-transaction fetch loop.
+    # Observability only in this PR: form4_enabled=False means the scoring
+    # layer (PR 3) is not yet wired. The loop populates form4_diagnostics
+    # per-ticker so PR 2's Metadata surface has real latency + coverage
+    # numbers after ≥ 1 cron run. Wrapped in outer try/except so any
+    # catastrophic failure resets to empty state and the cron continues.
+    form4_diagnostics: dict[str, dict] = {}
+    form4_latencies: list[float] = []
+    form4_failures: list[str] = []
+    try:
+        logger.info(
+            "Phase 4.5e PR 2 — fetching Form-4 insider data for %d tickers …",
+            len(df),
+        )
+        for _, _f4_row in df.iterrows():
+            _f4_ticker = str(_f4_row["ticker"])
+            _f4_t0 = time.perf_counter()
+            try:
+                _f4_transactions = fetch_recent_form4(_f4_ticker)
+                _f4_elapsed = time.perf_counter() - _f4_t0
+                form4_latencies.append(_f4_elapsed)
+                if _f4_transactions is None:
+                    # fetch_recent_form4 returns None on fetch error
+                    form4_failures.append(_f4_ticker)
+                    form4_diagnostics[_f4_ticker] = {
+                        "insider_count": 0,
+                        "latest_filing_date": None,
+                        "fetch_status": "failed",
+                    }
+                else:
+                    _f4_distinct = len(
+                        {t["insider_cik"] for t in _f4_transactions}
+                    )
+                    _f4_latest = (
+                        _f4_transactions[0]["filing_date"]
+                        if _f4_transactions
+                        else None
+                    )
+                    form4_diagnostics[_f4_ticker] = {
+                        "insider_count": _f4_distinct,
+                        "latest_filing_date": _f4_latest,
+                        "fetch_status": "ok",
+                    }
+            except Exception as _f4_e:  # noqa: BLE001
+                _f4_elapsed = time.perf_counter() - _f4_t0
+                form4_latencies.append(_f4_elapsed)
+                form4_failures.append(_f4_ticker)
+                form4_diagnostics[_f4_ticker] = {
+                    "insider_count": 0,
+                    "latest_filing_date": None,
+                    "fetch_status": "failed",
+                }
+                logger.warning("form4 fetch failed for %s: %s", _f4_ticker, _f4_e)
+        logger.info(
+            "Form-4 fetch complete: %d ok, %d failures, p50=%.2fs p95=%.2fs",
+            len(form4_diagnostics) - len(form4_failures),
+            len(form4_failures),
+            float(np.median(form4_latencies)) if form4_latencies else 0.0,
+            float(np.percentile(form4_latencies, 95)) if form4_latencies else 0.0,
+        )
+    except Exception as _f4_outer_e:  # noqa: BLE001
+        logger.warning(
+            "Form-4 fetch loop failed entirely (%s); form4_diagnostics → empty.",
+            _f4_outer_e,
+        )
+        form4_diagnostics = {}
+        form4_latencies = []
+        form4_failures = []
 
     # Step 4 — assemble TickerInputs and compute all pillars.
     inputs: dict[str, TickerInputs] = {}
@@ -1580,6 +1650,7 @@ def run_weekly_compute() -> int:
             ),
             entered_top5=ticker in entered,
             exited_top5=ticker in exited,
+            form4_diagnostics=form4_diagnostics.get(ticker),
         )
         write_stock_detail(detail, config.DATA_DIR)
         detail_count += 1
@@ -1644,6 +1715,44 @@ def run_weekly_compute() -> int:
         ),
         value_trap_risk_count_with_sector_coe=(
             value_trap_risk_count_with_sector_coe
+        ),
+        form4_enabled=False,
+        form4_coverage_pct=(
+            round(
+                100.0
+                * (len(form4_diagnostics) - len(form4_failures))
+                / max(len(form4_diagnostics), 1),
+                2,
+            )
+            if form4_diagnostics
+            else None
+        ),
+        form4_fetch_latency_p50_seconds=(
+            round(float(np.median(form4_latencies)), 2)
+            if form4_latencies
+            else None
+        ),
+        form4_fetch_latency_p95_seconds=(
+            round(float(np.percentile(form4_latencies, 95)), 2)
+            if form4_latencies
+            else None
+        ),
+        form4_universe_insider_count_median=(
+            int(np.median([d["insider_count"] for d in form4_diagnostics.values()]))
+            if form4_diagnostics
+            else None
+        ),
+        form4_tickers_with_recent_activity=(
+            sum(
+                1
+                for d in form4_diagnostics.values()
+                if d.get("insider_count", 0) > 0
+            )
+            if form4_diagnostics
+            else None
+        ),
+        form4_fetch_failures=(
+            sorted(form4_failures)[:20] if form4_failures else None
         ),
     )
 

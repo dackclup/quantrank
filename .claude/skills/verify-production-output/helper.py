@@ -151,6 +151,39 @@ def section_a_schema(metadata: dict, baseline: dict | None) -> tuple[int, int]:
     if f_p50 is not None:
         _emit(OK, "fundamentals_latency_p50_seconds", f"{f_p50}s")
 
+    # Phase 4.5e PR 2 — Form-4 observability fields
+    f4_enabled = metadata.get("form4_enabled", False)
+    f4_cov = metadata.get("form4_coverage_pct")
+    f4_p50 = metadata.get("form4_fetch_latency_p50_seconds")
+    f4_p95 = metadata.get("form4_fetch_latency_p95_seconds")
+    if f4_enabled:
+        _emit(OK, "form4_enabled", "True — PR 3 wired")
+        if f4_cov is None:
+            _emit(WARN, "form4_coverage_pct", "missing despite form4_enabled=True")
+            warnings += 1
+        elif f4_cov < 80:
+            _emit(FAIL, "form4_coverage_pct", f"{f4_cov}% — heavily failing")
+            failures += 1
+        elif f4_cov < 95:
+            _emit(WARN, "form4_coverage_pct", f"{f4_cov}% (target ≥95)")
+            warnings += 1
+        else:
+            _emit(OK, "form4_coverage_pct", f"{f4_cov}%")
+        if f4_p95 is not None and f4_p95 > 5:
+            _emit(WARN, "form4_fetch_latency_p95_seconds", f"{f4_p95}s (target <5)")
+            warnings += 1
+        elif f4_p95 is not None:
+            _emit(OK, "form4_fetch_latency_p95_seconds", f"{f4_p95}s")
+        if f4_p50 is not None:
+            _emit(OK, "form4_fetch_latency_p50_seconds", f"{f4_p50}s")
+    elif f4_cov is not None:
+        # form4_enabled=False but fetch loop ran (PR 2 observability mode)
+        _emit(OK, "form4_enabled", f"False (PR 2 observe-only); coverage={f4_cov}%")
+        if f4_p95 is not None:
+            _emit(OK, "form4_fetch_latency_p95_seconds", f"{f4_p95}s")
+    else:
+        _emit(OK, "form4_enabled", "False (pre-PR-2 snapshot — field absent)")
+
     if baseline:
         b_version = baseline.get("version")
         if b_version and b_version != version:
@@ -425,6 +458,92 @@ def section_j_annotate_audit(stocks: list[dict]) -> tuple[int, int]:
     return 0, 0
 
 
+def section_k_form4_universe(
+    metadata: dict, stocks: list[dict]
+) -> tuple[int, int]:
+    """Form-4 fetch accounting equation (Phase 4.5e PR 2).
+
+    Verifies the invariant:
+        universe_size == ok_active + ok_zero_activity + failed + missing_diag
+
+    Where:
+        ok_active      = tickers with fetch_status="ok" AND insider_count > 0
+        ok_zero        = tickers with fetch_status="ok" AND insider_count == 0
+        failed         = tickers with fetch_status="failed"
+        missing_diag   = tickers with form4_diagnostics=None (fetch skipped)
+
+    Cross-checks: metadata pre-aggregate ``form4_tickers_with_recent_activity``
+    must equal per-stock ground truth ``ok_active`` count.
+
+    Returns (0, 0) when form4_enabled=False AND form4_coverage_pct is None
+    (pre-PR-2 snapshots) — no assertion to make on legacy data.
+    """
+    _section("K", "Form-4 universe accounting equation")
+
+    f4_enabled = metadata.get("form4_enabled", False)
+    f4_cov = metadata.get("form4_coverage_pct")
+
+    if not f4_enabled and f4_cov is None:
+        _emit(OK, "skipped", "pre-PR-2 snapshot (form4_enabled absent + coverage absent)")
+        return 0, 0
+
+    warnings = failures = 0
+    universe_size = metadata.get("universe_size", 0)
+
+    ok_active = ok_zero = failed_count = missing_diag = 0
+    for s in stocks:
+        diag = s.get("form4_diagnostics")
+        if diag is None:
+            missing_diag += 1
+        elif diag.get("fetch_status") == "ok":
+            if diag.get("insider_count", 0) > 0:
+                ok_active += 1
+            else:
+                ok_zero += 1
+        else:
+            failed_count += 1
+
+    total_accounted = ok_active + ok_zero + failed_count + missing_diag
+
+    _emit(OK, "ok_active (insiders seen)", str(ok_active))
+    _emit(OK, "ok_zero_activity", str(ok_zero))
+    _emit(OK, "failed", str(failed_count))
+    _emit(OK, "missing_diag (fetch skipped)", str(missing_diag))
+    _emit(OK, "total_accounted", str(total_accounted))
+    _emit(OK, "universe_size", str(universe_size))
+
+    if total_accounted != universe_size:
+        _emit(FAIL, "accounting equation",
+              f"{total_accounted} != universe_size {universe_size}")
+        failures += 1
+    else:
+        _emit(OK, "accounting equation",
+              f"{ok_active} active + {ok_zero} zero + {failed_count} failed"
+              f" + {missing_diag} missing = {universe_size}")
+
+    # Cross-check metadata pre-aggregate vs per-stock ground truth
+    meta_active = metadata.get("form4_tickers_with_recent_activity")
+    if meta_active is not None and meta_active != ok_active:
+        _emit(WARN, "form4_tickers_with_recent_activity",
+              f"metadata={meta_active} vs per-stock ground truth={ok_active}")
+        warnings += 1
+    elif meta_active is not None:
+        _emit(OK, "form4_tickers_with_recent_activity cross-check",
+              f"metadata={meta_active} == per-stock={ok_active}")
+
+    # Cross-check failure list length
+    meta_failures = metadata.get("form4_fetch_failures") or []
+    if len(meta_failures) != min(failed_count, 20):
+        _emit(WARN, "form4_fetch_failures length",
+              f"metadata has {len(meta_failures)} entries; per-stock failed={failed_count}"
+              " (bounded ≤20 in metadata)")
+    else:
+        _emit(OK, "form4_fetch_failures length",
+              f"{len(meta_failures)} (bounded ≤20 in metadata)")
+
+    return warnings, failures
+
+
 # ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
@@ -463,6 +582,7 @@ def main(argv: list[str] | None = None) -> int:
         lambda: section_g_fundamentals(metadata),
         lambda: section_h_universe_consistency(metadata, rankings, stocks),
         lambda: section_j_annotate_audit(stocks),
+        lambda: section_k_form4_universe(metadata, stocks),
     ):
         w, f = fn()
         total_warnings += w

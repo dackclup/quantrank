@@ -10,9 +10,19 @@ from __future__ import annotations
 from compute import config
 
 
-def test_schema_version_is_phase4h_8():
-    # Issue #67 (0.9.8-phase4h.8) — sector-adjusted CoE Metadata fields added.
-    assert config.SCHEMA_VERSION == "0.9.8-phase4h.8"
+def test_schema_version_is_phase4_5e():
+    """Phase 4.5e PR 2 (0.10.0-phase4.5e) — MINOR bump for the Form-4
+    observability surface (supersedes the 0.9.8-phase4h.8 sector-coe
+    bump from PR #204). Locks the version against accidental revert."""
+    assert config.SCHEMA_VERSION == "0.10.0-phase4.5e"
+
+
+def test_form4_lookback_days_is_one_year():
+    """Phase 4.5e PR 2 — Form-4 fetch lookback matches the Cohen-Malloy-
+    Pomorski 2012 §3.1 trailing-year window. Annotate-only in this PR;
+    PR 3 will wire the scoring signal once ≥ 1 cron's firing-rate
+    data is visible from the observability surface here."""
+    assert config.FORM4_LOOKBACK_DAYS == 365
 
 
 def test_extreme_majority_threshold_at_huber_breakdown_point():
