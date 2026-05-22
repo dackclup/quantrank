@@ -16,11 +16,12 @@ design-system spec.
   TypeScript 5.4 · Tailwind 3.4 · Recharts 2.12. Self-hosted fonts
   via @fontsource: **IBM Plex Sans** (body) · **JetBrains Mono**
   (tabular numerics) · **Instrument Serif** (display marquee) ·
-  **Roboto Slab** (headlines, LedgerCraft adoption Phase 1 PR #211
-  2026-05-22; Phase 2 propagated tokens to per-stock detail-page
-  surfaces same day; Phase 3a spreadsheet polish on this PR — section
-  h2s + table theads gain `font-semibold` + `tracking-[0.14em]` +
-  `text-slate-600` for ledger-style column headers).
+  **Roboto Slab** (headlines, LedgerCraft adoption Phase 1 PR #211 +
+  Phase 2 PR #212 + Phase 3a PR #213 — `font-slab` + 4-tier shadow
+  tokens + spreadsheet header treatment `font-semibold` +
+  `tracking-[0.14em]` + `text-slate-600`; Phase 3c on this PR — left-
+  rail `AppShell` + `Sidebar` with collapsible desktop + mobile
+  drawer + active-route highlighting via `usePathname`).
 - **CI** — GitHub Actions; weekly `compute-rankings.yml` (cron Sun 22:00 UTC)
 - **Data** — SEC EDGAR via `edgartools` · yfinance for prices · S&P 500
   constituents scraped from Wikipedia

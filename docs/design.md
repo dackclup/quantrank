@@ -265,6 +265,49 @@ instead of `shadow-medium` — the only section-emphasis exception.
 
 `shadow-overlay` is the modal / drawer / popover-only tier.
 
+### App shell (Phase 3c)
+
+Layout shell is a left-rail sidebar + flex main column.
+
+```
++--------+-----------------------------+
+| Side   |  Slim header (mobile toggle) |
+| bar    +-----------------------------+
+| 240px  |  Disclaimer                  |
+|        +-----------------------------+
+| - Nav  |                              |
+| - Rsrc |  <main>                      |
+|        |                              |
+|        +-----------------------------+
+|        |  Footer                      |
++--------+-----------------------------+
+```
+
+| Surface | Pattern |
+|---|---|
+| Desktop sidebar | `md:sticky md:top-0 md:h-screen md:w-60` (240px default) / `md:w-16` collapsed (64px icon rail) |
+| Collapse state | Persisted in `localStorage["quantrank.sidebar.collapsed"]` ("0" / "1") |
+| Mobile drawer | Hidden by default (`-translate-x-full`), slides in via hamburger; backdrop `bg-slate-900/40` |
+| Active route | `usePathname()` — both `/` and `/stock/<ticker>/` highlight the "Rankings" item |
+| Sticky header | `sticky top-0 z-20 backdrop-blur bg-white/95` — only the mobile hamburger + status caption |
+
+Sidebar item structure:
+
+```html
+<li>
+  <Link className="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm
+                   text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+    <svg ... />
+    <span>Rankings</span>
+  </Link>
+</li>
+```
+
+Active item swaps `text-slate-600` + `hover:bg-slate-50` for
+`bg-slate-100 font-medium text-slate-900`. No accent color (slate
+only) — keeps the sidebar neutral so the data surfaces own the
+palette.
+
 ---
 
 ## Do's and Don'ts
@@ -329,9 +372,9 @@ weight delta between header and data is visible.
 |---|---|---|
 | Phase 1 | Roboto Slab + 4-tier shadow tokens (PR #211) | ✅ merged 2026-05-22 |
 | Phase 2 | Token propagation to detail page (PR #212) | ✅ merged 2026-05-22 |
-| Phase 3a | Spreadsheet polish on section h2s + table theads (PR #213) | ✅ shipped this PR |
+| Phase 3a | Spreadsheet polish on section h2s + table theads (PR #213) | ✅ merged 2026-05-22 |
+| Phase 3c | Sidebar pattern — left-rail nav + collapsible + mobile drawer | ✅ shipped this PR |
 | Phase 3b | Dark-mode toggle (optional, not committed) | ⏸ deferred |
-| Phase 3c | Sidebar pattern from LedgerCraft (optional, not committed) | ⏸ deferred |
 
 ---
 
