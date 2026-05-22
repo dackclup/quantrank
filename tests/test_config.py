@@ -10,8 +10,9 @@ from __future__ import annotations
 from compute import config
 
 
-def test_schema_version_is_phase4h_7():
-    assert config.SCHEMA_VERSION == "0.9.7-phase4h.7"
+def test_schema_version_is_phase4h_8():
+    # Issue #67 (0.9.8-phase4h.8) — sector-adjusted CoE Metadata fields added.
+    assert config.SCHEMA_VERSION == "0.9.8-phase4h.8"
 
 
 def test_extreme_majority_threshold_at_huber_breakdown_point():

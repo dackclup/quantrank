@@ -174,6 +174,25 @@ class Metadata(BaseModel):
     # rate is visible at-a-glance (gates the follow-up median-exclusion
     # PR per methodology-scientist Mode B, 2026-05-21).
     extreme_estimate_majority_count: int | None = None
+    # Issue #67 (0.9.8-phase4h.8) — sector-adjusted cost of equity
+    # (Damodaran 2019 *Investment Valuation* 3rd ed. Table 8.4 +
+    # Damodaran NYU online betas dataset, January 2025 update).
+    # Rule 18 observability surface: both counts are computed on
+    # EVERY cron regardless of ``config.USE_SECTOR_COE`` (default
+    # False) so the delta is visible before the flag is flipped.
+    # ``sector_coe_enabled`` mirrors the config-flag state at write
+    # time so the verify-helper and post-cron audit can branch on the
+    # actual flag without reading source code.
+    # ``value_trap_risk_count_without_sector_coe`` = tickers where
+    # RIM skips on ROE ≤ flat 0.10 threshold (baseline; always
+    # computed). ``value_trap_risk_count_with_sector_coe`` = same
+    # count under per-sector Ke from SECTOR_COST_OF_EQUITY dict; the
+    # delta is the expected reduction in false positives once
+    # USE_SECTOR_COE is flipped to True.  Both nullable on legacy
+    # snapshots (pre-0.9.8).
+    sector_coe_enabled: bool = False
+    value_trap_risk_count_with_sector_coe: int | None = None
+    value_trap_risk_count_without_sector_coe: int | None = None
 
 
 class RawMetrics(BaseModel):

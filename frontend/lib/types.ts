@@ -135,6 +135,20 @@ export type Metadata = {
   // rate is visible at-a-glance (gates the follow-up median-
   // exclusion PR per methodology-scientist Mode B 2026-05-21).
   extreme_estimate_majority_count?: number | null;
+  // Issue #67 (0.9.8-phase4h.8) — sector-adjusted cost of equity
+  // (Damodaran 2019 *Investment Valuation* 3rd ed. Table 8.4 +
+  // Damodaran NYU online betas dataset, January 2025 update).
+  // Rule 18 observability surface: both counts computed every cron
+  // regardless of USE_SECTOR_COE flag (default False) so the delta
+  // is visible before the production flip. `sector_coe_enabled`
+  // mirrors config.USE_SECTOR_COE at write time.
+  // `value_trap_risk_count_without_sector_coe` = baseline flat-10%
+  // count; `value_trap_risk_count_with_sector_coe` = count under
+  // per-sector Ke. Delta = expected FP-reduction once flipped.
+  // All three optional + nullable on legacy snapshots pre-0.9.8.
+  sector_coe_enabled?: boolean | null;
+  value_trap_risk_count_with_sector_coe?: number | null;
+  value_trap_risk_count_without_sector_coe?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors

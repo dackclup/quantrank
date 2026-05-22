@@ -76,6 +76,16 @@ from compute.scoring.composite import (
     compute_composite,
     neutralize_pillar_scores,
 )
+
+# OSAP imports (compute.ingest.osap, compute.features.osap_replicate,
+# compute.scoring.osap_blend, compute.validation.osap_validation) are
+# deferred into the OSAP try-block in run_weekly_compute(). compute.ingest.osap
+# does `import openassetpricing` at module load, which is only installed
+# via the `.[factors]` optional extra; deferring keeps `tests/test_main.py`
+# collection green in base-install environments (Phase 4a). The existing
+# call-site try/except (graceful degradation per Rule 18) already catches
+# ImportError as a subclass of Exception.
+from compute.scoring.cost_of_equity import get_cost_of_equity
 from compute.scoring.dechow_f import DechowResult, compute_dechow_f
 from compute.scoring.earnings_quality import (
     check_accruals_momentum,
@@ -112,15 +122,7 @@ from compute.scoring.tier2 import (
 from compute.scoring.tier2 import (
     coverage_pct as tier2_coverage_pct_calc,
 )
-
-# OSAP imports (compute.ingest.osap, compute.features.osap_replicate,
-# compute.scoring.osap_blend, compute.validation.osap_validation) are
-# deferred into the OSAP try-block in run_weekly_compute(). compute.ingest.osap
-# does `import openassetpricing` at module load, which is only installed
-# via the `.[factors]` optional extra; deferring keeps `tests/test_main.py`
-# collection green in base-install environments (Phase 4a). The existing
-# call-site try/except (graceful degradation per Rule 18) already catches
-# ImportError as a subclass of Exception.
+from compute.valuation.applicability import check_rim_applicability, stale_filing_status
 from compute.valuation.ensemble import (
     EnsembleResult,
     compute_fair_price_ensemble,
@@ -1167,6 +1169,14 @@ def run_weekly_compute() -> int:
     # cron's firing rate (gates the follow-up median-exclusion PR per
     # methodology-scientist Mode B 2026-05-21) is visible at-a-glance.
     extreme_estimate_majority_count: int = 0
+    # Issue #67 — Rule 18 observability surface for sector-adjusted CoE.
+    # Both counts are computed on EVERY cron regardless of USE_SECTOR_COE
+    # so the delta (flat-10% vs per-sector) is observable before the flag
+    # is flipped.  ``_without_sector_coe`` = baseline (ROE ≤ flat 0.10);
+    # ``_with_sector_coe`` = count under SECTOR_COST_OF_EQUITY dict lookup.
+    # See compute/scoring/cost_of_equity.py for the Damodaran 2019 table.
+    value_trap_risk_count_without_sector_coe: int = 0
+    value_trap_risk_count_with_sector_coe: int = 0
     for _, r in df.iterrows():
         ticker = str(r["ticker"])
         snap = snapshots.get(ticker)
@@ -1405,6 +1415,42 @@ def run_weekly_compute() -> int:
         if "extreme_estimate_majority" in valuation_warnings:
             extreme_estimate_majority_count += 1
 
+        # Issue #67 — Rule 18 dual-count for sector-adjusted CoE delta.
+        # We call check_rim_applicability twice — once with the flat 0.10
+        # baseline and once with the per-sector Ke — so the universe-wide
+        # delta is visible in Metadata on every cron regardless of the
+        # USE_SECTOR_COE flag.  The per-ticker inputs (avg_3y_roe, tbvps,
+        # lag_status) are already computed above; we just reuse them here.
+        # This is a read-only measurement pass — no risk_flags or
+        # valuation_warnings are modified by these calls.
+        _hist_67 = historical_metrics.get(ticker, {})
+        _avg_roe_67 = _hist_67.get("avg_3y_roe")
+        _tbvps_67 = tangible_book_value_per_share(snap) if snap is not None else None
+        _lag_67 = _filing_lag(snap, asof_date)
+        _lag_status_67 = stale_filing_status(_lag_67)
+        _rim_flat = check_rim_applicability(
+            avg_3y_roe=_avg_roe_67,
+            tbvps=_tbvps_67,
+            lag_status=_lag_status_67,
+            cost_of_equity=config.COST_OF_EQUITY,
+        )
+        if (
+            not _rim_flat.applicable
+            and _rim_flat.reason == "value_trap_risk_roe_below_cost_of_equity"
+        ):
+            value_trap_risk_count_without_sector_coe += 1
+        _rim_sector = check_rim_applicability(
+            avg_3y_roe=_avg_roe_67,
+            tbvps=_tbvps_67,
+            lag_status=_lag_status_67,
+            cost_of_equity=get_cost_of_equity(sector),
+        )
+        if (
+            not _rim_sector.applicable
+            and _rim_sector.reason == "value_trap_risk_roe_below_cost_of_equity"
+        ):
+            value_trap_risk_count_with_sector_coe += 1
+
         # Price history JSON (sliced from already-fetched prices, no new
         # fetches per Step 5 spec).
         prices_df = prices_by_ticker.get(ticker)
@@ -1591,6 +1637,13 @@ def run_weekly_compute() -> int:
         ),
         extreme_estimate_majority_count=(
             extreme_estimate_majority_count
+        ),
+        sector_coe_enabled=config.USE_SECTOR_COE,
+        value_trap_risk_count_without_sector_coe=(
+            value_trap_risk_count_without_sector_coe
+        ),
+        value_trap_risk_count_with_sector_coe=(
+            value_trap_risk_count_with_sector_coe
         ),
     )
 
