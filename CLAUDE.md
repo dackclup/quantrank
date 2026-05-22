@@ -30,7 +30,7 @@ backing.
 | `frontend/components/` | React UI (RankingTable, FairPriceBarChart, …) |
 | `frontend/public/data/` | Compute output: `metadata.json` + `rankings.json` + `stocks/<TICKER>.json` |
 | `tests/` | pytest suite (offline + `@network` gated; see CI for current count) |
-| `.claude/skills/` | 42 invocation-triggerable skills + phase planning docs. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for vendoring / license posture per source. |
+| `.claude/skills/` | 43 invocation-triggerable skills + phase planning docs. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for vendoring / license posture per source. |
 | `.claude/agents/` | 15 project-specific subagents in 4 tiers + 1 data-correctness reviewer: **Tier 1 Core** (quantrank-reviewer · schema-sentinel · defense-layer-auditor · edgar-debugger · **stock-detail-auditor**), **Tier 2 Lifecycle** (security-reviewer · frontend-design-reviewer · release-captain · phase-coordinator), **Tier 3 Specialized** (test-engineer · methodology-scientist · performance-engineer · dependency-auditor), **Tier 4 Operations** (docs-reviewer · incident-commander). Spawned via the `Agent` tool with a separate context window; see [`.claude/agents/README.md`](.claude/agents/README.md) for the routing matrix + 6 coordination flows (pre-push gate / release ladder / new-defense flow / incident response / review escalation / quarterly audit). |
 | `.claude/hooks/` | Bash hook scripts wired by `.claude/settings.json`. 2 PostToolUse hooks: `log-bash.sh` (append every Bash command to gitignored `.claude/session.log`) + `schema-reminder.sh` (inject reminder when any file in the Pydantic↔TS↔snapshot triple is touched via Write/Edit). Both fail-open (missing `jq` / unwritable FS / empty stdin → exit 0). 5-second timeout each. |
 
@@ -890,6 +890,22 @@ the full offline suite still reports `1024 passed` in CI-mode (with
 `openassetpricing==0.0.2` installed via `.[factors]`). No compute
 logic / schema / scoring / valuation / frontend change — pure import
 topology refactor.
+
+**Issue #125 Item 6 cross-session collision detector in flight (this PR)**
+— new `tools/check_cross_session_collision.py` hits the GitHub API for
+`claude/*` branches updated in the last 7 days + open PRs matching a
+scope keyword, exits 1 on collision and 0 when clean. Companion to the
+existing git-only `branch-collision-check` skill (which covers local
+origin state in a 48h window); this skill covers sibling sessions on
+OTHER machines that haven't pushed recently — the gap the git-only
+checker cannot cover. New `.claude/skills/cross-session-collision-check/SKILL.md`
+wraps the script with trigger/skip conditions, auth instructions (GH_TOKEN
+/ GITHUB_TOKEN / gh CLI), false-positive guard (merged+closed branches
+excluded by design), and a comparison table vs `branch-collision-check`.
+`phase-coordinator` Mode A wired to run BOTH skills in sequence: Step 1
+git-only (no auth), Step 2 GitHub API (7-day window). Skill count
+42 → 43. No compute / schema / scoring / valuation / frontend change.
+Closes issue #125 Item 6.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight

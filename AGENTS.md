@@ -440,7 +440,8 @@ note cross-tool-specific points only:
   `frontend-design-reviewer` · `release-captain` ·
   `phase-coordinator` — wraps the project's existing lifecycle-event
   skills (`security-check` · `frontend-design-system` · `release-tag`
-  · `branch-collision-check` + `claude-md-lockstep-check` +
+  · `branch-collision-check` + `cross-session-collision-check` +
+  `claude-md-lockstep-check` +
   `phase-status-bump`) into auto-routable surfaces with the same
   TRIGGER-keyword discipline as the vendored-skill description sharpening
   from PR #157. Wrap-don't-duplicate pattern — enterprise agents read
@@ -629,6 +630,13 @@ note cross-tool-specific points only:
   `compute/scoring/manipulation_index.py` weight docstrings for the
   Phase-2.5 provenance tier (LITERATURE-ANCHORED / GUT-FEEL /
   RESERVED).
+- **Issue #125 Item 6 cross-session collision detector in flight (this
+  PR)** — new `tools/check_cross_session_collision.py` + skill
+  `cross-session-collision-check` (skill count 42 → 43). Companion to
+  the git-only `branch-collision-check` skill; covers sibling sessions
+  on other machines (GitHub API, 7-day window). `phase-coordinator`
+  Mode A wired to run both skills in sequence. No compute / schema
+  change. Closes issue #125 Item 6.
 - **Phase 5 dependabot tailwindcss-ignore follow-up in flight (this
   PR)** — small backstop after Dependabot's second wave (2026-05-22)
   filed PR #200 (`tailwindcss 3.4.4 → 4.3.0`), a complete-engine-
