@@ -732,7 +732,19 @@ Defense layer 29 → 30 emitted flags. Tests 1049 → 1059 (+10: 6
 threshold-branch unit tests + 3 full-ensemble integration tests + 1
 config-constant pin).
 
-**Phase 5 dependabot ignore-list extension in flight (this PR)** —
+**Phase 5 dependabot tailwindcss-ignore follow-up in flight (this PR)**
+— small backstop after Dependabot's second wave (2026-05-22) filed
+PR #200 (`tailwindcss 3.4.4 → 4.3.0`), a complete-engine-rewrite
+major bump that the original PR #195 ignore list missed. Tailwind 4
+replaces `tailwind.config.js` with a CSS-based `@theme` directive +
+new `@tailwindcss/postcss` plugin chain — frontend build FAILED.
+This PR adds `tailwindcss` to the `.github/dependabot.yml` npm
+`ignore:` block (10 → 11 npm entries total). Closes the gap so a
+future Dependabot run doesn't re-file the same major bump. Minor +
+patch within `3.x` still flow automatically. Doc-only otherwise.
+
+**Phase 5 dependabot ignore-list extension merged via PR #195**
+(2026-05-22, `8c22cee9`) —
 durable backstop after Dependabot's first wave (2026-05-22) filed 8
 PRs from the config that landed in PR #185. Outcomes:
 

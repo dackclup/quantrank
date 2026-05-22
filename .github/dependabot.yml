@@ -120,6 +120,14 @@ updates:
         update-types: ["version-update:semver-major"]
       - dependency-name: "recharts"
         update-types: ["version-update:semver-major"]
+      # tailwindcss 4 is a complete engine rewrite (CSS-based `@theme`
+      # directive replacing tailwind.config.js, new PostCSS plugin
+      # chain `@tailwindcss/postcss`); needs a scoped migration PR
+      # touching the entire frontend design-system. Added 2026-05-22
+      # after PR #200 (Dependabot tailwindcss 3.4.4 → 4.3.0) failed
+      # the frontend build. Minor + patch within 3.x still flow.
+      - dependency-name: "tailwindcss"
+        update-types: ["version-update:semver-major"]
 
   # --- GitHub Actions (.github/workflows/) ---
   - package-ecosystem: "github-actions"
