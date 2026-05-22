@@ -101,7 +101,7 @@ export function ManipulationRiskCard({
       className={`rounded-lg border border-slate-200 bg-white p-4 ring-1 ring-inset ${tone.ring}`}
     >
       <header className="mb-3 flex items-center justify-between">
-        <h2 className="text-sm font-medium uppercase tracking-wide text-slate-500">
+        <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-600">
           Manipulation Risk Index
         </h2>
         <span

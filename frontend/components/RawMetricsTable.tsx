@@ -51,10 +51,10 @@ export default function RawMetricsTable({ metrics }: { metrics: RawMetrics }) {
   return (
     <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-medium">
       <table className="min-w-full divide-y divide-slate-200 text-sm">
-        <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+        <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">
           <tr>
-            <th className="px-3 py-2 text-left font-medium">Metric</th>
-            <th className="px-3 py-2 text-right font-medium">Value</th>
+            <th className="px-3 py-2 text-left">Metric</th>
+            <th className="px-3 py-2 text-right">Value</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100">

@@ -179,7 +179,7 @@ export function Tier2EventCard({
       aria-label={`Regulatory events for ${ticker}`}
       className="rounded-lg border border-slate-200 bg-white p-4"
     >
-      <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-slate-500">
+      <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600">
         Recent regulatory events
       </h2>
       <ul className="space-y-2">

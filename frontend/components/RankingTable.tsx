@@ -236,7 +236,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
     return (
       <th
         scope="col"
-        className={`cursor-pointer select-none px-3 py-2 text-left font-medium text-slate-600 hover:text-slate-900 ${extraClass}`}
+        className={`cursor-pointer select-none px-3 py-2 text-left font-semibold text-slate-600 hover:text-slate-900 ${extraClass}`}
         onClick={() => onSort(key)}
       >
         {label}
@@ -394,7 +394,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
       {/* Desktop / tablet table */}
       <div className="hidden overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-medium md:block">
         <table className="min-w-full divide-y divide-slate-200 text-sm">
-          <thead className="bg-slate-50 text-xs uppercase tracking-wide">
+          <thead className="bg-slate-50 text-xs uppercase tracking-[0.14em]">
             <tr>
               {headerCell('rank', 'Rank')}
               {headerCell('ticker', 'Ticker')}
@@ -402,7 +402,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
               {headerCell('sector', 'Sector')}
               {headerCell('composite_score', 'Score', 'text-right')}
               {headerCell('current_price', 'Price', 'text-right')}
-              <th scope="col" className="px-3 py-2 text-right font-medium text-slate-600">
+              <th scope="col" className="px-3 py-2 text-right font-semibold text-slate-600">
                 Loss Chance
               </th>
             </tr>

@@ -191,6 +191,18 @@ export function FairPriceCard(props) {  // no types
   rows. Section labels (the small `text-sm font-medium uppercase
   tracking-wide` h2s) intentionally STAYED in IBM Plex Sans — slab
   at that small uppercase size reads wrong; slab is hero-scale only.
+  **Phase 3a (this PR)** spreadsheet-polishes those same section h2s
+  + every table thead to the ledger pattern: `font-medium` →
+  `font-semibold`, `tracking-wide` (0.025em) → `tracking-[0.14em]`,
+  `text-slate-500` → `text-slate-600` — darker + heavier + wider
+  letter-spacing for Excel/Numbers column-header feel. Applied at
+  9 sites: PillarRadarChart h2, FairPriceBarChart h2, FairPriceCard
+  (2 h2s + thead), ManipulationRiskCard h2, Tier2EventCard h2,
+  RawMetricsTable thead, RankingTable thead + headerCell helper +
+  hardcoded Loss-Chance `<th>`, and the 3 `/stock/[ticker]` section
+  h2s. Sub-labels inside cards (`text-xs uppercase` dt's at micro
+  scale) intentionally untouched — polish at 12px tracking would
+  over-darken inline-with-data labels.
 
 ## Git workflow
 
