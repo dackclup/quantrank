@@ -629,8 +629,43 @@ note cross-tool-specific points only:
   `compute/scoring/manipulation_index.py` weight docstrings for the
   Phase-2.5 provenance tier (LITERATURE-ANCHORED / GUT-FEEL /
   RESERVED).
-- **Phase 5 dependabot housekeeping merged via PR #185** (2026-05-22) — new
-  `.github/dependabot.yml` configures weekly Dependabot PRs across
+- **Phase 5 dependabot ignore-list extension in flight (this PR)** —
+  durable backstop after Dependabot's first wave (2026-05-22) filed
+  8 PRs from the config that landed in PR #185. PR #186 / #187
+  (`actions/github-script v7 → v9` + `actions/upload-artifact
+  v4 → v7`) merged after manual check confirmed no v9-breaking
+  patterns + `ubuntu-latest` runner Node-24 ready. PR #192
+  (@types/node 20 → 25) merged (type-only metadata). PR #189
+  (grouped next/autoprefixer/postcss) auto-closed by Dependabot
+  (PR #194 already bumped next 14.2.x). PR #188 (`pandas
+  constraint <3 → <4`) closed — pandas 3.0 has untested breaking
+  changes. PR #190 (eslint 8 → 10), #191 (typescript 5 → 6), #193
+  (recharts 2 → 3) FAILED frontend build, closed via `@dependabot
+  ignore this major version`. THIS PR adds 4 deps (`pandas` on
+  pip; `eslint` / `eslint-config-next` / `typescript` /
+  `recharts` on npm) to `.github/dependabot.yml`'s `ignore:`
+  blocks as durable YAML backstop. Total ignore entries: 10
+  (1 pip + 9 npm + 0 github-actions; #186 + #187 confirmed
+  SAFE-TO-MERGE so actions block not needed). Minor + patch +
+  security updates still flow automatically — only
+  `version-update:semver-major` is blocked. Cross-tool agents
+  (Copilot / Cursor / Devin): do NOT propose removing any ignore
+  entry without a scoped breaking-change migration PR (React-stack
+  → #41; recharts → separate chart-lib migration; pandas →
+  separate compute-layer migration). No compute / schema / scoring
+  / valuation code change — `.github/`-only.
+- **Phase 5 Next.js 14.2 patch bump merged via PR #194** (2026-05-22,
+  `72f8a33c`) — partial progress on issue #41 (Next 14.2 → 16 CVE
+  refresh) via a within-branch patch bump. `frontend/package.json`:
+  `next 14.2.15 → 14.2.35` + `eslint-config-next 14.2.15 → 14.2.35`
+  + `postcss 8.4.38 → 8.5.15` + new `overrides: { postcss: 8.5.15 }`
+  block. Closes the 8 advisories #41 itemized at filing time. Issue
+  #41 STAYS OPEN — 14 new advisories surfaced post-filing all require
+  `<15.5.16` (no 14.2.x backport), all target SSR / Server-Components
+  / middleware features QR doesn't use. No compute / schema /
+  scoring / valuation / Python code change.
+- **Phase 5 dependabot housekeeping merged via PR #185** (2026-05-22)
+  — new `.github/dependabot.yml` configures weekly Dependabot PRs across
   3 ecosystems (pip / npm / github-actions). `next` / `react` /
   `react-dom` / `@types/react*` major bumps explicitly ignored —
   issue #41 owns that scoped breaking-change migration. Cross-tool

@@ -46,6 +46,20 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    # Block routine major bumps + constraint-widening upgrades on
+    # compute-critical packages. The pandas entry was added 2026-05-22
+    # after PR #188 (Dependabot widening `pandas>=2.2,<3` → `<4`)
+    # surfaced the risk: pandas 3.0 ships breaking changes (copy-on-
+    # write default; removed deprecated `Series` / `DataFrame` /
+    # `Index` APIs; dtype-inference behavior shifts) that QuantRank's
+    # compute layer hasn't been tested against. Tracked as a separate
+    # scoped pandas 2 → 3 migration work item if/when priority.
+    # Minor + patch + security updates on pandas STILL file
+    # automatically — only the major / constraint-widening transition
+    # is blocked.
+    ignore:
+      - dependency-name: "pandas"
+        update-types: ["version-update:semver-major"]
 
   # --- Frontend / Next.js (frontend/package.json) ---
   - package-ecosystem: "npm"
@@ -70,7 +84,23 @@ updates:
           - "patch"
     # Block routine major bumps on the React stack — those need a
     # scoped breaking-change migration PR (issue #41 owns Next 14 → 16
-    # and the React 18 → 19 typing follow-through).
+    # and the React 18 → 19 typing follow-through). The eslint /
+    # typescript / recharts entries below were added 2026-05-22 after
+    # PRs #190 / #191 / #193 confirmed each major bump fails the
+    # frontend build:
+    #  - eslint 9+ introduced flat config (`eslint.config.js`),
+    #    incompatible with `eslint-config-next 14.2.x`'s legacy
+    #    `.eslintrc.json` — coupled to the #41 eslint-config-next 16.x
+    #    migration
+    #  - typescript 6 strict-mode + new lib.dom typings surface previously-
+    #    silent any-flow issues; jumping without React 18→19 first
+    #    bundles unrelated regressions
+    #  - recharts 3 restructured chart component API; needs touching
+    #    FairPriceBarChart + PillarRadarChart + any sparkline surface
+    #    in one scoped migration
+    # Minor + patch + security updates on ALL these packages still file
+    # automatically (Dependabot default — the ignore only blocks the
+    # `version-update:semver-major` transition).
     ignore:
       - dependency-name: "next"
         update-types: ["version-update:semver-major"]
@@ -81,6 +111,14 @@ updates:
       - dependency-name: "@types/react"
         update-types: ["version-update:semver-major"]
       - dependency-name: "@types/react-dom"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "eslint-config-next"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "recharts"
         update-types: ["version-update:semver-major"]
 
   # --- GitHub Actions (.github/workflows/) ---

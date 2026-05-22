@@ -732,7 +732,50 @@ Defense layer 29 → 30 emitted flags. Tests 1049 → 1059 (+10: 6
 threshold-branch unit tests + 3 full-ensemble integration tests + 1
 config-constant pin).
 
-**Phase 5 Next.js 14.2 patch bump in flight (this PR)** — partial
+**Phase 5 dependabot ignore-list extension in flight (this PR)** —
+durable backstop after Dependabot's first wave (2026-05-22) filed 8
+PRs from the config that landed in PR #185. Outcomes:
+
+- PR #186 `actions/github-script v7 → v9` — major (GitHub Actions),
+  merged 2026-05-22 (v9 breaking patterns `require('@actions/github')`
+  + getOctokit redeclaration NOT used by our pre-merge-prod-sim
+  script; only `github.rest.*` calls which are unchanged)
+- PR #187 `actions/upload-artifact v4 → v7` — major, merged
+  2026-05-22 (only breaking change is Node 24 runner requirement;
+  `ubuntu-latest` runners already on v2.327.1+)
+- PR #188 `pandas` constraint `<3 → <4` — CLOSED + `ignore this
+  major version`; pandas 3.0 has untested breaking changes (copy-on-
+  write default, removed deprecated APIs)
+- PR #189 npm-minor-patch group (next/autoprefixer/postcss) —
+  auto-closed by Dependabot (PR #194 already bumped the same `next`
+  14.2.15 → 14.2.35)
+- PR #190 `eslint 8.57.0 → 10.4.0` — frontend build FAILED, closed
+  (eslint 9+ flat-config breaks `eslint-config-next 14.2.x`)
+- PR #191 `typescript 5.4.5 → 6.0.3` — frontend build FAILED,
+  closed (TS6 strict-mode + lib.dom typing changes)
+- PR #192 `@types/node 20.12.7 → 25.9.1` — merged 2026-05-22
+  (type-only metadata)
+- PR #193 `recharts 2.12.7 → 3.8.1` — frontend build FAILED,
+  closed (recharts 3 restructured chart-component API)
+
+PR #188, #190, #191, #193 closed via `@dependabot ignore this major
+version` comment commands. This PR adds the same 4 deps (`pandas`
+on the pip side; `eslint` / `typescript` / `recharts` PLUS
+`eslint-config-next` on the npm side) to the
+`.github/dependabot.yml` `ignore:` blocks — durable YAML-level
+backstop that survives Dependabot server resets and per-PR comment-
+ignore-history garbage collection. Total ignore entries: 10 (1 pip
++ 9 npm + 0 github-actions; #186 + #187 confirmed SAFE-TO-MERGE so
+no actions block needed). Minor + patch + security updates on ALL
+ignored packages STILL file automatically — the ignore only blocks
+`version-update:semver-major` transitions. Issue #41 still owns the
+scoped React-stack breaking-change migration; `recharts 3` and
+`pandas 3` are separate scoped migration work items if/when
+priority. No compute / schema / scoring / valuation / Python /
+TypeScript code change — `.github/`-only addition.
+
+**Phase 5 Next.js 14.2 patch bump merged via PR #194** (2026-05-22,
+`72f8a33c`) — partial
 progress on issue #41 (`next 14.2 → 16` CVE refresh) via a
 within-branch patch bump that closes the 8 advisories #41 originally
 itemized at filing time, without breaking-change migration.
@@ -745,7 +788,7 @@ the postcss XSS advisory `GHSA-qx2v-qp2m-jg93`). `package-lock.json`
 regenerated; `npm install` clean; `next build` produces all 506
 static routes; `tsc --noEmit` clean. Issue #41 STAYS OPEN — 14 new
 `next` advisories surfaced on the npm advisory database between
-2026-05-13 (issue filed) and 2026-05-22 (this PR), ALL requiring
+2026-05-13 (issue filed) and 2026-05-22 (PR #194), ALL requiring
 `<15.5.16` to fix, none with a 14.2.x backport. All 14 target
 SSR / Server-Components / middleware / runtime features QuantRank
 doesn't use (we ship static export only — `next build` → static
