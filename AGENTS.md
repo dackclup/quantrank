@@ -439,6 +439,15 @@ note cross-tool-specific points only:
   pyproject pins `edgartools>=5.30,<6` to block silent major-version
   drift. Cross-tool agents: do not "simplify" the callable branch
   back to direct attribute access without re-reading this section.
+  **Same hotfix also dropped `FORM4_LOOKBACK_DAYS` from 365 → 180**
+  because the fixed parser actually calls `filing.obj()` per
+  filing (vs the silent-fast-failure pre-fix) — 365d × 502 tickers
+  exceeded the 45-min CI cap on cold cache (pre-merge-prod-sim
+  timed out at 43m44s on first attempt). Cohen-Malloy-Pomorski 2012
+  *JF* §3.1 used parallel 6m / 12m windows, so 180d ≈ 6m remains
+  literature-anchored. Restoring 365d requires a per-filing cache
+  (avoid re-fetching `filing.obj()` for already-seen accession
+  numbers) — follow-up tracked out-of-band.
 - **Phase 4.5e PR 2 (Observability) in flight (this PR)** — wires the
   Form-4 fetch loop into `compute/main.py` as an observe-only pass
   (`form4_enabled=False`; `_FORM4_FLAGS_ENABLED` stays False). Adds 7

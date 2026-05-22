@@ -444,11 +444,16 @@ def test_E1_empty_override_returns_empty_list():
     assert out == []
 
 
-def test_E2_lookback_constant_is_365():
-    """Pin the lookback constant — PR 3's cluster detection needs ≥1y
-    of history for the per-CEO baseline. Don't drop below 365 without
-    re-checking the cold-start path."""
-    assert FORM4_LOOKBACK_DAYS == 365
+def test_E2_lookback_constant_is_180():
+    """Pin the lookback constant. 2026-05-22 hotfix dropped from 365
+    to 180 to fit the 45-min cron budget after the property→method
+    parser fix made the per-filing ``obj()`` call actually do its
+    HTTP round-trip (vs the pre-fix silent-fast-failure that "fit"
+    in 18 min). Cohen-Malloy-Pomorski 2012 §3.1 used parallel 6m / 12m
+    windows in their backtest, so 180d (≈ 6m) remains literature-
+    anchored. Don't drop below 90 without re-checking the cold-start
+    path."""
+    assert FORM4_LOOKBACK_DAYS == 180
 
 
 # ---------------------------------------------------------------------------

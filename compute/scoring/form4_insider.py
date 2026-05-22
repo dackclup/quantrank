@@ -107,10 +107,23 @@ logger = logging.getLogger(__name__)
 # Constants
 # ---------------------------------------------------------------------------
 
-#: Default lookback window for Form-4 fetches. 365 days covers one full
-#: fiscal year of insider activity, enough for the per-CEO baseline that
-#: ``c_suite_unusual_sell`` (PR 3) needs to compute "above-trend selling."
-FORM4_LOOKBACK_DAYS: Final[int] = 365
+#: Default lookback window for Form-4 fetches. **180 days** (was 365)
+#: to fit the cron budget on a cold cache. The 2026-05-22 hotfix for
+#: the property→method silent-drop (this PR) revealed that the post-
+#: fix parser actually does the work it was claimed to do — each
+#: filing iteration calls ``filing.obj()`` which triggers a SEC HTTP
+#: round-trip per filing. At 365-day lookback × 502 tickers × N
+#: filings/ticker, the cron exceeded the 45-min CI cap (pre-merge-
+#: prod-sim run #1 on PR #210 timed out at 43m44s mid-Form-4-fetch).
+#:
+#: PR 3 (``insider_sell_cluster`` + ``c_suite_unusual_sell``) needs a
+#: per-CEO baseline that benefits from a longer window. The proper fix
+#: is per-filing caching (avoid re-fetching ``filing.obj()`` for
+#: already-seen accession numbers) — tracked as a follow-up. Until
+#: then, 180d still covers Cohen-Malloy-Pomorski 2012 §3.1's pattern
+#: detection (their backtest used 6m-and-12m parallel windows; the
+#: 180d ≈ 6m window remains literature-anchored).
+FORM4_LOOKBACK_DAYS: Final[int] = 180
 
 #: Cache TTL — mirrors the 8-K + restatement caches. Weekly cron repopulates.
 CACHE_TTL_DAYS: Final[int] = 7
