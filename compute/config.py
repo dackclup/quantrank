@@ -212,11 +212,16 @@ EDGAR_LATE_FILINGS_CACHE_DIR: Path = CACHE_DIR / "edgar_late_filings"
 
 # --- Phase 4.5e scout: SEC Form 4 insider-transaction ingest ---
 # Form 4 is filed within 2 business days of a reportable insider transaction.
-# 365-day lookback captures ~4 earnings cycles worth of insider activity per
-# ticker (Cohen-Malloy-Pomorski 2012 *JF* §3.1 use the same trailing-year
-# window for the insider-sell signal). Adjust to 180d if the cron fetch loop
-# adds > 10 min to the weekly run (i.e., warm-cache run > 30 min total).
-FORM4_LOOKBACK_DAYS: int = 365
+# 180-day lookback (was 365). The 2026-05-22 hotfix for the edgartools
+# property→method silent-drop made the per-filing ``obj()`` call actually
+# do its HTTP round-trip (vs the pre-fix silent-fast-failure). 365d at
+# 502 tickers exceeded the 45-min CI cap on cold cache (pre-merge-prod-sim
+# on PR #210 timed out at 43m44s). Cohen-Malloy-Pomorski 2012 *JF* §3.1
+# used parallel 6m / 12m windows in their backtest, so 180d (≈ 6m)
+# remains literature-anchored. The 365d window will be restored once a
+# per-filing cache lands (avoid re-fetching ``filing.obj()`` for already-
+# seen accession numbers) — tracked as a follow-up to PR #210.
+FORM4_LOOKBACK_DAYS: int = 180
 # Per-ticker Form-4 JSON cache. 7-day TTL matches the existing 8-K rhythm —
 # Form 4 filings are weekly at most for any given insider, and the cache keys
 # by (ticker, asof_date) so a 7-day stale entry won't miss a NEW filing

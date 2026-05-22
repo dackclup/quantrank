@@ -38,6 +38,17 @@ concurrency:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
   EDGAR_USER_AGENT: ${{ secrets.EDGAR_USER_AGENT }}
+  # 2026-05-22 — pre-merge-prod-sim skips the Form-4 fetch loop.
+  # The Form-4 cache is brand-new (introduced by PR-2, this same
+  # branch's parent PR) and never populated by any prior cron, so
+  # every sim run is cold-cache. 502 tickers × N filings × per-
+  # filing HTTP = exceeds the 45-min CI cap. Form-4 is observability
+  # ONLY (form4_enabled=False; _FORM4_FLAGS_ENABLED=False) → zero
+  # scoring impact → the composite-score diff that this sim checks
+  # is unaffected by skipping the fetch. Weekly cron (compute-
+  # rankings.yml, default 360-min budget) still runs the full
+  # fetch and populates the cache for future sims.
+  FORM4_FETCH_SKIP: "1"
 
 permissions:
   contents: read

@@ -19,7 +19,14 @@ dependencies = [
   "lxml>=5.0",
   "requests>=2.31",
   "pyarrow>=15.0",
-  "edgartools>=2.30",
+  # 2026-05-22 hotfix: pin to 5.x band. edgartools 5.x reclassified
+  # ``Filing.obj`` from a property to a method, which caused the
+  # 502/502 Form-4 silent-drop on the first post-PR-#205 cron. The
+  # caller in ``compute/scoring/form4_insider.py`` now handles both
+  # shapes via ``callable()`` so a future 6.x revert is safe, but the
+  # upper bound here guards against a 6.x major-version footgun
+  # slipping in via ``>=2.30`` (no upper bound was the original gap).
+  "edgartools>=5.30,<6",
 ]
 
 [project.optional-dependencies]

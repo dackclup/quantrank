@@ -9,7 +9,7 @@ backing.
 
 ## Stack
 
-- **Python 3.11+** — pandas 2.2 · edgartools 2.30 · pydantic 2.6 ·
+- **Python 3.11+** — pandas 2.2 · edgartools 5.31 · pydantic 2.6 ·
   tenacity 8.2 · BeautifulSoup 4 · lxml 5 · pytest 8 · ruff 0.4
 - **Next.js 14.2** (App Router, static export) — React 18.3 ·
   TypeScript 5.4 · Tailwind 3.4 · Recharts 2.12. Self-hosted fonts

@@ -17,12 +17,14 @@ def test_schema_version_is_phase4_5e():
     assert config.SCHEMA_VERSION == "0.10.0-phase4.5e"
 
 
-def test_form4_lookback_days_is_one_year():
-    """Phase 4.5e PR 2 — Form-4 fetch lookback matches the Cohen-Malloy-
-    Pomorski 2012 §3.1 trailing-year window. Annotate-only in this PR;
-    PR 3 will wire the scoring signal once ≥ 1 cron's firing-rate
-    data is visible from the observability surface here."""
-    assert config.FORM4_LOOKBACK_DAYS == 365
+def test_form4_lookback_days_is_180():
+    """Phase 4.5e PR 2 — Form-4 fetch lookback. 2026-05-22 hotfix
+    dropped from 365 to 180 days to fit the 45-min cron budget on
+    cold cache; Cohen-Malloy-Pomorski 2012 §3.1 used parallel
+    6m / 12m windows so 180d (≈ 6m) remains literature-anchored.
+    PR 3 will wire the scoring signal once a per-filing cache lands
+    that lets us restore the longer window safely."""
+    assert config.FORM4_LOOKBACK_DAYS == 180
 
 
 def test_extreme_majority_threshold_at_huber_breakdown_point():
