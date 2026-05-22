@@ -90,6 +90,7 @@ docs/                             # Academic methodology + research findings
 .claude/skills/                   # 42 loaded skills + phase-N/ planning docs
 .claude/agents/                   # 15 subagents — Tier 1 Core 5 (incl. stock-detail-auditor for per-stock JSON correctness) + Tier 2 Lifecycle 4 + Tier 3 Specialized 4 + Tier 4 Operations 2; Claude Code only — Copilot / Cursor / Devin do not auto-route to these
 .claude/hooks/                    # PostToolUse Bash hooks (log-bash.sh, schema-reminder.sh) wired by .claude/settings.json (Claude Code only — Copilot / Cursor / Devin ignore)
+.claude/worktrees/                # Harness-managed isolation dirs for Agent-tool subagents (Claude Code on the web only; per-session transient; gitignored 2026-05-22)
 .claude/settings.json             # Claude Code harness config (hooks, permissions). Per-user overrides go in .claude/settings.local.json (gitignored)
 .github/workflows/                # ⚠️ ask before editing
 pyproject.toml                    # ⚠️ ask before deps changes
