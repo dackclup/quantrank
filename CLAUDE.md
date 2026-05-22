@@ -732,7 +732,27 @@ Defense layer 29 → 30 emitted flags. Tests 1049 → 1059 (+10: 6
 threshold-branch unit tests + 3 full-ensemble integration tests + 1
 config-constant pin).
 
-**Phase 2.x METHODOLOGY annotate refresh in flight (this PR)** —
+**Phase 5 dependabot housekeeping in flight (this PR)** — closes
+another deferred parking-lot item from the 14-subagent self-audit
+(2026-05-21). New `.github/dependabot.yml` configures automated
+weekly dependency-update PRs across QuantRank's three ecosystems:
+**pip** (`pyproject.toml` at repo root), **npm** (`frontend/package.json`),
+**github-actions** (`.github/workflows/`). Schedule: Monday 08:00
+Asia/Bangkok, weekly. Minor + patch updates grouped into one PR per
+ecosystem (reduces PR count when a multi-package sweep lands upstream);
+security updates always file separately at top priority. `next` /
+`react` / `react-dom` / `@types/react*` **major** bumps explicitly
+ignored — tracked under issue #41 (Next 14 → 16 needs scoped
+breaking-change migration with `dependency-auditor` triage; routine
+Dependabot PR would footgun the App Router async-API migration).
+Minor + patch + security updates on those packages still file
+automatically. Commit-prefix scheme: `chore(deps-py)` / `chore(deps-npm)` /
+`chore(deps-ci)` matching the project's `chore(X):` convention.
+`open-pull-requests-limit` capped at 5/5/3 per ecosystem. No
+compute / schema / scoring / valuation / frontend change — `.github/`
+addition only. The next Dependabot run lands Monday after merge.
+
+**Phase 2.x METHODOLOGY annotate refresh merged via PR #184**
 deferred parking-lot item from the 14-subagent self-audit (2026-05-21).
 `docs/METHODOLOGY.md` §"Annotate-only flags" section refreshed from 10
 documented bullets to 18, closing the doc-drift surfaced by the

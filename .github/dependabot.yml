@@ -1,0 +1,106 @@
+# Dependabot v2 — automated weekly dependency-update PRs for QuantRank's
+# 3 dependency ecosystems (pip / npm / github-actions). Phase 5 housekeeping
+# closing one of the 14-subagent self-audit (2026-05-21) parking-lot items.
+#
+# Design notes:
+# - Weekly cadence (Monday 08:00 Asia/Bangkok) — daily is too noisy for a
+#   solo-maintained project; monthly drifts CVE-fix latency too long.
+# - Minor + patch grouped into one PR per ecosystem (reduces PR count
+#   from N to 1 when a multi-package patch sweep lands upstream).
+# - Security updates always file separately + always at top priority
+#   (Dependabot default behaviour; security-updates PRs cut the group
+#   even if a version-update group is open).
+# - `next` / `react` / `react-dom` MAJOR bumps explicitly ignored —
+#   tracked under issue #41 (Next 14 → 16 needs scoped migration with
+#   dependency-auditor triage; bundling into a routine Dependabot PR
+#   would be a footgun). Minor + patch + security updates still file
+#   automatically — they're safe to merge.
+# - Commit prefix scheme matches the project's `chore(deps-X)` convention
+#   so the weekly-merged-PR log reads cleanly (mirrors `feat(defense):`,
+#   `docs(methodology):`, etc.).
+# - `open-pull-requests-limit` capped to 5 per ecosystem — keeps the PR
+#   queue manageable when a quiet week stacks updates against an active
+#   `claude/*` branch.
+
+version: 2
+updates:
+
+  # --- Python compute layer (pyproject.toml at repo root) ---
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "08:00"
+      timezone: "Asia/Bangkok"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps-py)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "python"
+    groups:
+      python-minor-patch:
+        applies-to: version-updates
+        update-types:
+          - "minor"
+          - "patch"
+
+  # --- Frontend / Next.js (frontend/package.json) ---
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "08:00"
+      timezone: "Asia/Bangkok"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps-npm)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "frontend"
+    groups:
+      npm-minor-patch:
+        applies-to: version-updates
+        update-types:
+          - "minor"
+          - "patch"
+    # Block routine major bumps on the React stack — those need a
+    # scoped breaking-change migration PR (issue #41 owns Next 14 → 16
+    # and the React 18 → 19 typing follow-through).
+    ignore:
+      - dependency-name: "next"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/react-dom"
+        update-types: ["version-update:semver-major"]
+
+  # --- GitHub Actions (.github/workflows/) ---
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "08:00"
+      timezone: "Asia/Bangkok"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "chore(deps-ci)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "ci"
+    groups:
+      github-actions:
+        applies-to: version-updates
+        update-types:
+          - "minor"
+          - "patch"
