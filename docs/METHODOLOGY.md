@@ -159,7 +159,7 @@ composite.
 | Sector exclusions | EV/EBITDA skipped for Financials; DCF skipped for Financials + Utilities; Quality pillar metrics gated by sector (`magic_formula`, `ebit_based_roic`, `gross_profitability`, `asset_turnover` per Greenblatt 2005) | Greenblatt; sector-method spec |
 | Data-quality $10K ceiling | If any method computes > $10,000/share → null all 6 + emit `data_quality_input_corruption`. Catches upstream ingestion bugs (e.g., `shares_outstanding` in wrong units) before user-visible nonsense. | Internal — Step 7.5 (post-spot-check) |
 
-### Annotate-only flags (10) — surfaced in `valuation_warnings` or `tier2_events`, no behavioral effect
+### Annotate-only flags (18) — surfaced in `valuation_warnings` or `tier2_events`, no behavioral effect
 
 - `goodwill_heavy` — TBVPS / BVPS_reported < 0.5 (cautions that
   reported book is misleading)
@@ -185,6 +185,33 @@ composite.
   veto: audit-firm restructuring fires the same item, and many
   changes are benign rotation. Surfaced for human review on the
   detail page.
+- `accruals_momentum_high` _(Phase 4.5d)_ — Δ(TATA) over the trailing
+  3 fiscal years > +0.05, where `TATA = (NetIncome − OperatingCashFlow)
+  / TotalAssets` (Sloan 1996 *TAR* 71(3) §IV accruals backbone).
+  Trajectory variant of the snapshot-only `sloan_accruals_top_decile`
+  veto — catches a year-over-year escalation in accrual reliance that
+  a single-snapshot top-decile filter misses. Calibration anchor:
+  Beneish 1999 *FAJ* Δ(M-score) > +0.5 maps via the TATA coefficient
+  β_TATA = 4.679 → ΔTATA > 0.107; we use +0.05 as the practitioner
+  one-ratio adaptation when shortening from the 8-ratio Beneish
+  signal. Xie 2001 *TAR* §IV established that accrual persistence
+  amplifies the Sloan anomaly, motivating the trajectory variant.
+  Threshold provenance: **GUT-FEEL** (one-ratio adaptation; PPV not
+  yet measured on the QuantRank universe). Cohort-acceptance check
+  queued for Q3 2026-08-19.
+- `loss_avoidance_pattern` _(Phase 4.5d, rescaled PR #163)_ —
+  `NetIncome ∈ [$0, $50M]` OR `EPS ∈ [$0, $0.50]` for 3+ consecutive
+  fiscal years. Burgstahler-Dichev 1997 *JAE* 24(1) §3 Table 2
+  kink-at-zero "small positive earnings" cohort signature, with bands
+  rescaled 10× from the original $5M / $0.05 1990s Compustat cutoffs
+  to match the S&P 500's larger firm-size distribution (mean NI > $1B,
+  mean EPS > $5; pre-rescale firing rate was 0/502). Ships side-by-
+  side with the size-invariant Roychowdhury sibling below. Threshold
+  provenance: **LITERATURE-ANCHORED** on the kink-at-zero signature;
+  **GUT-FEEL** on the 10× rescale magnitude (engineering choice
+  pending cohort acceptance). Q3 2026-08-19 decision: retire the
+  absolute-$ variant, keep both, or split weights vs the size-
+  invariant sibling.
 - `loss_avoidance_pattern_size_invariant` _(Phase 4b)_ —
   `NI / TotalAssets ∈ [0, 0.005]` (0.5% of assets) for 3+
   consecutive fiscal years. Roychowdhury 2006 *JAE* §5.2
@@ -196,6 +223,75 @@ composite.
   because the asset base is multi-billion). Annotate-only — both
   flags ship side-by-side pending the Q3 2026-08-19 quarterly-audit
   decision.
+- `beneish_high` _(Phase 3e)_ — Beneish M-score `∈ [−2.22, −1.78]`
+  (warning band immediately below the active-veto threshold of
+  −1.78). Beneish 1999 *FAJ* §"The Detection of Earnings
+  Manipulation" identifies M > −1.78 as the manipulation-candidate
+  threshold (76% manipulator capture, 17.5% FP); Beneish-Lee-Nichols
+  2013 *FAJ* §4 reports the warning-band PPV at ~35-40% vs ~75%
+  above the veto threshold. Annotate-only — the veto sibling
+  `beneish_manipulation_veto` already covers the high-PPV tail.
+  Threshold provenance: **LITERATURE-ANCHORED** (Beneish 1999 cohort
+  cutoff; warning-band width matches Beneish-Lee-Nichols 2013).
+- `dechow_high` _(Phase 3e)_ — Dechow F-score `∈ [2.45, 3.0]`
+  (warning band immediately below the active-veto threshold of 3.0).
+  Dechow-Ge-Larson-Sloan 2011 *CAR* 28(1) Table 9 reports the
+  warning-band PPV at ~25-30% vs ~50% above the veto threshold. The
+  veto sibling `dechow_manipulation_veto` already covers F > 3.0
+  cases (AAER ground truth). Threshold provenance:
+  **LITERATURE-ANCHORED** (DGLS 2011 cohort calibration);
+  φ-correlation with `accruals_momentum_high` watch-listed for Q3
+  cohort audit per PR #164 baseline analysis.
+- `manipulation_triple_flag` _(Phase 4.5a.3 joint-gate)_ — Co-fires
+  when `sloan_accruals_top_decile` AND `beneish_high` AND
+  `dechow_high` all fire on the same ticker. The three quant
+  defenses share an accruals / discretionary-items backbone
+  (Sloan 1996, Beneish 1999, Dechow 2011) → joint-gate isolates the
+  multi-signal regime where any single 20-pt veto already saturates
+  1/5 of the manipulation-index cap. PR #164 Phase 3 correlation
+  analysis flagged this gate as a redundancy-candidate with
+  `dechow_high` at current sample size (φ ≈ 0.6+); retain pending
+  Q3 2026-08-19 cohort decision. Threshold provenance: **GUT-FEEL**
+  (no academic source prescribes a joint-gate weight; tuned to push
+  triple-flag stocks past the 60-pt mid-band of the manipulation
+  index rollup).
+- `restatement_history` _(Phase 4.5d, bare flag)_ — Any 10-K/A or
+  10-Q/A amendment filing in the trailing 5-year window. Hennes-
+  Leone-Miller 2008 *TAR* 83(6) §"The Importance of Distinguishing
+  Errors from Irregularities" splits amendments roughly 80/20
+  between clerical errors (non-malicious) and irregularities
+  (fraud); bare-flag material-restatement PPV ~30%. Lower-confidence
+  sibling of `restatement_high_confidence` (next bullet). Threshold
+  provenance: **LITERATURE-ANCHORED on the cite, GUT-FEEL on the 5y
+  window** (practitioner default; HLM 2008 §3 used a 5y panel).
+  Next-PR decision (retire bare flag or split weights) waits on the
+  Q3 2026-08-19 cohort acceptance check.
+- `restatement_high_confidence` _(Phase 2.2, PR #165)_ — Joint
+  occurrence of a 10-K/A or 10-Q/A amendment AND an 8-K Item 4.02
+  (non-reliance) filing within 90 days. Hennes-Leone-Miller 2008
+  *TAR* §4 "irregularity signature" — the co-occurrence isolates
+  the fraud-class subset of restatements (PPV ~70% per HLM hand-
+  classified cohort) from the broader error-class amendments.
+  Schroeder 2024 SSRN §3.2 validates the 90-day co-occurrence window
+  as the typical lag from Item 4.02 disclosure to amended-filing
+  landing. Strict superset of `restatement_history` — both flags
+  fire together; the manipulation-index weight is a **delta** (+3.0
+  on top of the bare flag's 5.0) per PR #165 review fix. Threshold
+  provenance: **LITERATURE-ANCHORED** (HLM 2008 irregularity
+  signature; 90d window per Schroeder 2024 SSRN).
+- `late_filing_notification` _(Phase 4.5d)_ — NT-10K or NT-10Q form
+  filed (SEC Rule 12b-25 notice of inability to file on time) in
+  the lookback window. Bartov-Lai-Yeung 2002 *JAR* 40(5) §IV
+  documents late-filers exhibiting ~2× the restatement base-rate
+  over the subsequent 3 years. Weaker leading indicator than a
+  realized 10-K/A amendment, but precedes the restatement filing
+  itself (often by 6-18 months) so the annotate surfaces a
+  near-term audit-risk signal before the bare `restatement_history`
+  flag catches up. Threshold provenance: **GUT-FEEL** — no PPV
+  figure replicated on the QuantRank universe; weight matches the
+  `restatement_history` sibling on the "late filing is a weaker
+  leading indicator of restatement filing" assumption pending Q3
+  2026-08-19 cohort confirmation.
 - `share_count_extraction_missing` _(Issue #176)_ —
   `shares_outstanding is None AND revenue > 0 AND total_assets > 0`.
   Operational data-quality annotate (not a literature-anchored
@@ -231,8 +327,6 @@ composite.
   method bands themselves are GUT-FEEL only — a separate
   recalibration PR (RIM-specific or per-cohort) is queued for the Q3
   2026-08-19 quarterly cohort audit.
-
-Phase 3e adds `beneish_high` and `dechow_f_high`.
 
 ### Annotate-vs-veto philosophy
 

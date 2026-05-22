@@ -578,8 +578,9 @@ note cross-tool-specific points only:
   a load-bearing call site — treat it as a `_PER_FILING_XBRL_*`
   drift-detector manifest candidate in a follow-up PR if edgartools
   CHANGELOG shows a `get_facts_by_concept` shape change.
-- **Issue #177 extreme_estimate_majority annotate in flight (this PR)**
-  — annotate-only flag wired into `compute/valuation/ensemble.py`.
+- **Issue #177 extreme_estimate_majority annotate merged via PR #183**
+  (2026-05-21, `b881d544`) — annotate-only flag wired into
+  `compute/valuation/ensemble.py`.
   Fires when ≥ `config.EXTREME_MAJORITY_THRESHOLD = 3` of the 6
   fair-price methods emit `extreme_*_estimate` (Defense #4 5×/0.2×
   outlier guard). Surfaces the cohort whose ensemble median has
@@ -603,6 +604,31 @@ note cross-tool-specific points only:
   branch, do NOT bundle a 5×/0.2× threshold change — the
   recalibration is a separate methodology-scientist work item
   blocking by Q3 2026-08-19 cohort audit.
+- **Phase 2.x METHODOLOGY annotate refresh in flight (this PR)** —
+  doc-only refresh closing a parking-lot drift from the 14-subagent
+  self-audit (2026-05-21). `docs/METHODOLOGY.md` §"Annotate-only
+  flags" expanded from 10 documented bullets to 18; 8 previously-
+  emitted-but-undocumented flags now carry full bullets with
+  literature anchors verified by `methodology-scientist` Mode C
+  (`accruals_momentum_high` · `loss_avoidance_pattern` ·
+  `beneish_high` · `dechow_high` · `manipulation_triple_flag` ·
+  `restatement_history` · `restatement_high_confidence` ·
+  `late_filing_notification`). Each bullet's threshold provenance
+  is cross-checked against PR #162 Phase-2.5 weight docstrings in
+  `compute/scoring/manipulation_index.py` — zero drift verified.
+  CORRECTION surfaced during the audit: the hand-off attributed
+  `late_filing_notification` to Cohen-Malloy-Pomorski 2012; the
+  actual anchor is Bartov-Lai-Yeung 2002 *JAR* (CMP 2012 is
+  reserved-not-emitted for Phase 4.5e Form-4 slots). Stale Phase 3e
+  footnote removed (those flags are now full bullets; footnote also
+  misspelled `dechow_f_high` as `dechow_high` is the actual emit
+  name). No compute / schema / scoring / valuation / code change —
+  doc-only PR. Cross-tool agents (Copilot / Cursor / Devin):
+  METHODOLOGY's §Annotate-only section is now the canonical source
+  for per-flag literature anchors; cross-reference against
+  `compute/scoring/manipulation_index.py` weight docstrings for the
+  Phase-2.5 provenance tier (LITERATURE-ANCHORED / GUT-FEEL /
+  RESERVED).
 
 ## Claude-Code-specific tooling
 

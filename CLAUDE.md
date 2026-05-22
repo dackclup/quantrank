@@ -698,7 +698,8 @@ longer `None` so the annotate doesn't fire; when the fallback also
 fails (e.g., the filer has no 10-K or 10-Q with XBRL), the annotate
 fires and surfaces the gap.
 
-**Issue #177 extreme_estimate_majority annotate in flight (this PR)** —
+**Issue #177 extreme_estimate_majority annotate merged via PR #183**
+(2026-05-21, `b881d544`) —
 the `stock-detail-auditor` dry-run on the 2026-05-14 cron flagged 15
 tickers with `|fair_price.mos_pct| > 500%` (APP -1255% / DDOG -1354%
 / AXON -1113% / TSLA -1280% / …). Per-method universe-wide audit
@@ -730,6 +731,37 @@ universe-wide firing rate is what tells us whether to promote).
 Defense layer 29 → 30 emitted flags. Tests 1049 → 1059 (+10: 6
 threshold-branch unit tests + 3 full-ensemble integration tests + 1
 config-constant pin).
+
+**Phase 2.x METHODOLOGY annotate refresh in flight (this PR)** —
+deferred parking-lot item from the 14-subagent self-audit (2026-05-21).
+`docs/METHODOLOGY.md` §"Annotate-only flags" section refreshed from 10
+documented bullets to 18, closing the doc-drift surfaced by the
+methodology-scientist Mode C audit. Eight previously-emitted-but-
+undocumented annotates now carry full literature-anchored bullets:
+`accruals_momentum_high` (Sloan 1996 + Beneish 1999 + Xie 2001),
+`loss_avoidance_pattern` (Burgstahler-Dichev 1997 with PR #163 10×
+rescale note), `beneish_high` (Beneish 1999 + Beneish-Lee-Nichols
+2013 warning-band PPV), `dechow_high` (Dechow-Ge-Larson-Sloan 2011
+Table 9), `manipulation_triple_flag` (PR 4.5a.3 joint-gate + PR #164
+correlation watch), `restatement_history` (Hennes-Leone-Miller 2008
+bare-flag PPV), `restatement_high_confidence` (HLM 2008 irregularity
+signature + Schroeder 2024 90d window), and `late_filing_notification`
+(Bartov-Lai-Yeung 2002 — surfaced as a CORRECTION during the
+methodology-scientist audit; the hand-off had labeled it
+Cohen-Malloy-Pomorski 2012 but the actual anchor is BLY 2002).
+Each bullet carries the Phase 2.5 provenance tier (LITERATURE-ANCHORED
+/ GUT-FEEL with rationale) cross-checked against
+`compute/scoring/manipulation_index.py` weight docstrings — zero
+drift verified. Stale footnote "Phase 3e adds `beneish_high` and
+`dechow_f_high`" removed (those flags are now full bullets; the
+footnote also misspelled `dechow_f_high` as `dechow_high` is the
+actual emit name). No compute / schema / code change. Defense layer
+emit count unchanged at 30 (the 8 new bullets document flags that
+were already in the headline math — this PR closes the doc gap, not
+the emit gap). Cohen-Malloy-Pomorski 2012 confirmed NOT-NEEDED
+(provenances reserved-not-emitted Form-4 weight slots that wire in
+Phase 4.5e PR 3; not a live annotate today). Doc-only PR — `ruff` /
+`schema_check` / `pytest` / `tsc` trivially pass.
 
 **Phase 4a osap-import guard merged via PR #179** (2026-05-21) —
 surfaced by the 14-subagent self-audit on 2026-05-21 (`test-engineer` follow-up).
