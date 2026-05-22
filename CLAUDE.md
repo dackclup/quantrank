@@ -3,9 +3,10 @@
 QuantRank is a static-site US-equity ranking tool. Python compute layer
 generates JSON; a Next.js static site renders it. Currently ranks the
 S&P 500 (universe = 502 after one delisting). See
-[`README.md`](README.md) for the user-facing pitch and
+[`README.md`](README.md) for the user-facing pitch,
 [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) for the academic
-backing.
+backing, and [`docs/design.md`](docs/design.md) for the visual /
+design-system spec.
 
 ## Stack
 
