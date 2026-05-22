@@ -191,18 +191,25 @@ export function FairPriceCard(props) {  // no types
   rows. Section labels (the small `text-sm font-medium uppercase
   tracking-wide` h2s) intentionally STAYED in IBM Plex Sans — slab
   at that small uppercase size reads wrong; slab is hero-scale only.
-  **Phase 3a (this PR)** spreadsheet-polishes those same section h2s
+  **Phase 3a (PR #213)** spreadsheet-polished those same section h2s
   + every table thead to the ledger pattern: `font-medium` →
   `font-semibold`, `tracking-wide` (0.025em) → `tracking-[0.14em]`,
   `text-slate-500` → `text-slate-600` — darker + heavier + wider
-  letter-spacing for Excel/Numbers column-header feel. Applied at
-  9 sites: PillarRadarChart h2, FairPriceBarChart h2, FairPriceCard
-  (2 h2s + thead), ManipulationRiskCard h2, Tier2EventCard h2,
-  RawMetricsTable thead, RankingTable thead + headerCell helper +
-  hardcoded Loss-Chance `<th>`, and the 3 `/stock/[ticker]` section
-  h2s. Sub-labels inside cards (`text-xs uppercase` dt's at micro
-  scale) intentionally untouched — polish at 12px tracking would
-  over-darken inline-with-data labels.
+  letter-spacing for Excel/Numbers column-header feel.
+  **Phase 3c (this PR)** lands the LedgerCraft layout shell:
+  `frontend/components/AppShell.tsx` + `Sidebar.tsx` replace the
+  former top-banner header. Desktop: 240px sticky left rail with a
+  collapse-to-64px icon-only state persisted via
+  `localStorage["quantrank.sidebar.collapsed"]`. Mobile: sidebar
+  hidden by default, slides in as overlay drawer when the
+  `<header>` hamburger fires. Active-route highlighting uses
+  `usePathname()` from `next/navigation` — both `/` and
+  `/stock/<ticker>/` highlight the "Rankings" item. Body-scroll
+  lock kicks in while the mobile drawer is open. Two nav sections
+  — Navigation (internal: Rankings) and Resources (external:
+  Methodology / Design / GitHub). Slate-only palette in the
+  sidebar (no accent color) keeps the data surfaces owning the
+  palette.
 
 ## Git workflow
 

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { Disclaimer } from '@/components/Disclaimer';
+import { AppShell } from '@/components/AppShell';
 
 // PR 4.5d follow-up — self-host all 3 fonts via @fontsource packages
 // (SIL Open Font License). Previous `next/font/google` path failed
@@ -21,34 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        <header className="border-b border-slate-200 bg-white">
-          <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-            <div className="flex items-baseline gap-3">
-              {/* LedgerCraft adoption — slab-serif wordmark. Roboto Slab
-                  conveys the "professional accounting software" /
-                  editorial-finance register (Bloomberg / WSJ print). */}
-              <a href="/" className="font-slab text-xl font-semibold tracking-tight">QuantRank</a>
-              <span className="text-sm text-slate-500">US equity stock ranking</span>
-            </div>
-            <nav className="text-sm text-slate-600">
-              <a
-                href="https://github.com/dackclup/quantrank"
-                className="hover:text-slate-900"
-                target="_blank"
-                rel="noreferrer"
-              >
-                GitHub
-              </a>
-            </nav>
-          </div>
-        </header>
-        <Disclaimer />
-        <main className="mx-auto max-w-6xl px-4 py-10">{children}</main>
-        <footer className="border-t border-slate-200 bg-white">
-          <div className="mx-auto max-w-6xl px-4 py-6 text-xs text-slate-500">
-            QuantRank · MIT licensed · Data refreshed every US trading day via GitHub Actions.
-          </div>
-        </footer>
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );
