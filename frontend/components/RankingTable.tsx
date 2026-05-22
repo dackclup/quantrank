@@ -392,7 +392,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
       />
 
       {/* Desktop / tablet table */}
-      <div className="hidden overflow-x-auto rounded-lg border border-slate-200 bg-white md:block">
+      <div className="hidden overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-medium md:block">
         <table className="min-w-full divide-y divide-slate-200 text-sm">
           <thead className="bg-slate-50 text-xs uppercase tracking-wide">
             <tr>
@@ -410,7 +410,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
           <tbody className="divide-y divide-slate-100">
             {pageRows.map((row) => {
               return (
-                <tr key={row.ticker} className="hover:bg-slate-50">
+                <tr key={row.ticker} className="odd:bg-white even:bg-slate-50 hover:bg-slate-100">
                   <td className="px-3 py-2 tabular-nums text-slate-700">{row.rank}</td>
                   <td className="px-3 py-2 font-mono font-semibold">
                     <Link

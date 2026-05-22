@@ -12,7 +12,10 @@ backing.
 - **Python 3.11+** — pandas 2.2 · edgartools 2.30 · pydantic 2.6 ·
   tenacity 8.2 · BeautifulSoup 4 · lxml 5 · pytest 8 · ruff 0.4
 - **Next.js 14.2** (App Router, static export) — React 18.3 ·
-  TypeScript 5.4 · Tailwind 3.4 · Recharts 2.12
+  TypeScript 5.4 · Tailwind 3.4 · Recharts 2.12. Self-hosted fonts
+  via @fontsource: **IBM Plex Sans** (body) · **JetBrains Mono**
+  (tabular numerics) · **Instrument Serif** (display marquee) ·
+  **Roboto Slab** (headlines, LedgerCraft adoption 2026-05-22).
 - **CI** — GitHub Actions; weekly `compute-rankings.yml` (cron Sun 22:00 UTC)
 - **Data** — SEC EDGAR via `edgartools` · yfinance for prices · S&P 500
   constituents scraped from Wikipedia

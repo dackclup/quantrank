@@ -28,15 +28,29 @@
 @import '@fontsource/jetbrains-mono/600.css';
 @import '@fontsource/instrument-serif/400.css';
 @import '@fontsource/instrument-serif/400-italic.css';
+/* LedgerCraft adoption (2026-05-22) — Roboto Slab for headings.
+ * The slab-serif gives the "editorial finance" feel of Bloomberg /
+ * WSJ / FT print sections that LedgerCraft's "professional
+ * accounting software" aesthetic codifies. Applied via the new
+ * `font-slab` Tailwind class on headline surfaces (h1/h2 of the
+ * RankingTable header + the layout wordmark). Instrument Serif
+ * (display-serif) is preserved for true display-scale marquee
+ * surfaces; the two roles do not overlap. */
+@import '@fontsource/roboto-slab/400.css';
+@import '@fontsource/roboto-slab/500.css';
+@import '@fontsource/roboto-slab/600.css';
+@import '@fontsource/roboto-slab/700.css';
 
 :root {
   color-scheme: light;
   --font-ibm-plex-sans: 'IBM Plex Sans';
   --font-jetbrains-mono: 'JetBrains Mono';
   --font-instrument-serif: 'Instrument Serif';
+  --font-roboto-slab: 'Roboto Slab';
   --font-sans: var(--font-ibm-plex-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
+  --font-slab: var(--font-roboto-slab), 'Roboto Slab', ui-serif, Georgia, serif;
 
   /* Soft positive — muted sage green (oklch hue 155). Used wherever
    * the design called for "undervalued" / "strong" semantics. The
@@ -84,6 +98,14 @@ code {
   font-family: var(--font-serif);
   font-weight: 400;
   letter-spacing: -0.01em;
+}
+.font-slab {
+  /* LedgerCraft adoption — slab-serif headline face. Use for h1/h2
+   * surfaces (RankingTable header, /stock/[ticker] hero, layout
+   * wordmark). Distinct from `display-serif` which is reserved
+   * for marquee/hero scale only. */
+  font-family: var(--font-slab);
+  letter-spacing: -0.005em;
 }
 
 /*

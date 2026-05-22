@@ -24,7 +24,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <header className="border-b border-slate-200 bg-white">
           <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
             <div className="flex items-baseline gap-3">
-              <a href="/" className="text-xl font-semibold tracking-tight">QuantRank</a>
+              {/* LedgerCraft adoption — slab-serif wordmark. Roboto Slab
+                  conveys the "professional accounting software" /
+                  editorial-finance register (Bloomberg / WSJ print). */}
+              <a href="/" className="font-slab text-xl font-semibold tracking-tight">QuantRank</a>
               <span className="text-sm text-slate-500">US equity stock ranking</span>
             </div>
             <nav className="text-sm text-slate-600">

@@ -173,6 +173,15 @@ export function FairPriceCard(props) {  // no types
   pre-PR-3d snapshots
 - `tabular-nums` Tailwind class for all numeric columns so digits
   right-align cleanly
+- **LedgerCraft adoption (2026-05-22)** — `font-slab` class for
+  headlines + h1/h2 surfaces (slab-serif Roboto Slab, "editorial
+  finance" register); `shadow-{subtle,medium,large,overlay}` formal
+  elevation tokens (replace ad-hoc `shadow-sm` / `shadow` pairs);
+  `odd:bg-white even:bg-slate-50 hover:bg-slate-100` alternating-row
+  pattern on data tables (`#FFFFFF / #F1F5F9` per LedgerCraft spec).
+  Existing palette + OKLCH semantic colors + Plex Sans body + JBM
+  numerics retained — LedgerCraft is selectively adopted for slab
+  headlines + table polish, not a wholesale visual rewrite.
 
 ## Git workflow
 
