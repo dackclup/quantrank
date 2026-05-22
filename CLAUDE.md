@@ -17,7 +17,9 @@ backing.
   (tabular numerics) · **Instrument Serif** (display marquee) ·
   **Roboto Slab** (headlines, LedgerCraft adoption Phase 1 PR #211
   2026-05-22; Phase 2 propagated tokens to per-stock detail-page
-  surfaces same day).
+  surfaces same day; Phase 3a spreadsheet polish on this PR — section
+  h2s + table theads gain `font-semibold` + `tracking-[0.14em]` +
+  `text-slate-600` for ledger-style column headers).
 - **CI** — GitHub Actions; weekly `compute-rankings.yml` (cron Sun 22:00 UTC)
 - **Data** — SEC EDGAR via `edgartools` · yfinance for prices · S&P 500
   constituents scraped from Wikipedia

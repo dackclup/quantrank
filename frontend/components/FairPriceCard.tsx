@@ -69,7 +69,7 @@ export default function FairPriceCard({
   if (!ensemble) {
     return (
       <section className="rounded-lg border border-slate-200 bg-white p-4">
-        <h2 className="mb-2 text-sm font-medium uppercase tracking-wide text-slate-500">
+        <h2 className="mb-2 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600">
           Fair price ensemble
         </h2>
         <p className="text-sm text-slate-500">
@@ -84,7 +84,7 @@ export default function FairPriceCard({
 
   return (
     <section className="rounded-lg border border-slate-200 bg-white p-4">
-      <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-slate-500">
+      <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600">
         Fair price ensemble
       </h2>
 
@@ -132,10 +132,10 @@ export default function FairPriceCard({
       {/* Per-method breakdown */}
       <div className="overflow-hidden rounded-md border border-slate-200">
         <table className="min-w-full divide-y divide-slate-200 text-sm">
-          <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+          <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">
             <tr>
-              <th className="px-3 py-2 text-left font-medium">Method</th>
-              <th className="px-3 py-2 text-right font-medium">Value</th>
+              <th className="px-3 py-2 text-left">Method</th>
+              <th className="px-3 py-2 text-right">Value</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">

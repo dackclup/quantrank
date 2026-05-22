@@ -187,7 +187,7 @@ export default function StockDetailPage({
       </header>
 
       <section>
-        <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-slate-500">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600">
           Price (1y)
         </h2>
         {detail.has_history ? (
@@ -236,7 +236,7 @@ export default function StockDetailPage({
       />
 
       <section>
-        <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-slate-500">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600">
           Raw fundamentals (SEC EDGAR)
         </h2>
         <RawMetricsTable metrics={detail.raw_metrics} />
@@ -247,7 +247,7 @@ export default function StockDetailPage({
       </section>
 
       <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-medium">
-        <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-slate-500">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600">
           Data quality
         </h2>
         <dl className="grid grid-cols-1 gap-y-2 text-sm sm:grid-cols-2">

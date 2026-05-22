@@ -103,7 +103,7 @@ export function PillarRadarChart({
     >
       <div className="mb-4 flex flex-wrap items-baseline justify-between gap-3">
         <div>
-          <h2 className="text-sm font-medium uppercase tracking-wide text-slate-500">
+          <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-600">
             Pillar breakdown
           </h2>
           <p className="mt-1 text-xs text-slate-500">

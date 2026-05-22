@@ -174,7 +174,7 @@ export function FairPriceBarChart({
       className="mb-4 rounded-xl border border-slate-200 bg-white p-5"
     >
       <div className="mb-4">
-        <h2 className="text-sm font-medium uppercase tracking-wide text-slate-500">
+        <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-600">
           Fair price check
         </h2>
         <p className="mt-1 text-xs text-slate-500">
