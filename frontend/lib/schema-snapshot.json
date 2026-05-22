@@ -37,6 +37,41 @@
       "required": false,
       "default": null
     },
+    "form4_coverage_pct": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "form4_enabled": {
+      "type": "bool",
+      "required": false,
+      "default": false
+    },
+    "form4_fetch_failures": {
+      "type": "list[str] | None",
+      "required": false,
+      "default": null
+    },
+    "form4_fetch_latency_p50_seconds": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "form4_fetch_latency_p95_seconds": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "form4_tickers_with_recent_activity": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
+    "form4_universe_insider_count_median": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
     "fundamentals_coverage_pct": {
       "type": "float | None",
       "required": false,
@@ -363,6 +398,11 @@
       "default": false
     },
     "fair_price": {
+      "type": "dict | None",
+      "required": false,
+      "default": null
+    },
+    "form4_diagnostics": {
       "type": "dict | None",
       "required": false,
       "default": null

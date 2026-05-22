@@ -193,6 +193,25 @@ class Metadata(BaseModel):
     sector_coe_enabled: bool = False
     value_trap_risk_count_with_sector_coe: int | None = None
     value_trap_risk_count_without_sector_coe: int | None = None
+    # Phase 4.5e PR 2 (0.10.0-phase4.5e) — observability surface for the
+    # Form-4 insider-transaction fetch loop wired in this PR.
+    # ``form4_enabled`` mirrors ``_FORM4_FLAGS_ENABLED`` in
+    # ``compute/scoring/tier2.py`` — False in this PR (annotate flags
+    # land in PR 3). ``form4_coverage_pct`` = % of universe with a
+    # successful fetch (None = no fetch attempted). The p50/p95 latency
+    # fields let the cron latency budget be verified against the
+    # ``FORM4_LOOKBACK_DAYS=365`` 7-day-cache window. Nullable on legacy
+    # snapshots (pre-0.10.0); Rule 18 observability-before-wiring
+    # requires the diagnostic ship ≥ 1 cron before PR 3 wires scoring.
+    # ``form4_fetch_failures`` is bounded to max 20 tickers to keep the
+    # metadata.json size stable even on a mass-fail cache-cold run.
+    form4_enabled: bool = False
+    form4_coverage_pct: float | None = None
+    form4_fetch_latency_p50_seconds: float | None = None
+    form4_fetch_latency_p95_seconds: float | None = None
+    form4_universe_insider_count_median: int | None = None
+    form4_tickers_with_recent_activity: int | None = None
+    form4_fetch_failures: list[str] | None = None  # bounded ≤ 20 tickers
 
 
 class RawMetrics(BaseModel):
@@ -274,3 +293,12 @@ class StockDetail(BaseModel):
     # ``[0, 6]`` once populated; ``None`` on legacy outputs from before
     # 0.9.4-phase4h.4.
     valuation_methods_applicable: int | None = None
+    # Phase 4.5e PR 2 (0.10.0-phase4.5e) — per-ticker Form-4 fetch
+    # diagnostic. Keys: ``insider_count`` (distinct CIKs with ≥ 1
+    # transaction in the ``FORM4_LOOKBACK_DAYS`` window),
+    # ``latest_filing_date`` (ISO date string or None when no activity),
+    # ``fetch_status`` ("ok" | "failed" | "skipped_no_identity").
+    # Null when the outer form4 fetch loop was skipped (e.g., cold
+    # cache + form4_enabled=False branch). PR 3 consumers keying on
+    # ``insider_count > 0`` should prefer this over re-fetching.
+    form4_diagnostics: dict | None = None

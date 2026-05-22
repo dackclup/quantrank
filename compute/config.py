@@ -27,7 +27,7 @@ FUNDAMENTALS_HISTORY_CACHE_DIR: Path = CACHE_DIR / "fundamentals_history"
 MODELS_DIR: Path = PROJECT_ROOT / "models"
 
 UNIVERSE: str = "SP500"
-SCHEMA_VERSION: str = "0.9.8-phase4h.8"
+SCHEMA_VERSION: str = "0.10.0-phase4.5e"
 
 PRICES_PERIOD: str = "5y"
 MAX_PARALLEL_FETCHES: int = 10
@@ -209,6 +209,20 @@ YFINANCE_INFO_CACHE_MAX_AGE_HOURS: int = 24
 # don't unfile, so a 7-day stale cache won't miss a flag.
 EDGAR_AMENDMENTS_CACHE_DIR: Path = CACHE_DIR / "edgar_amendments"
 EDGAR_LATE_FILINGS_CACHE_DIR: Path = CACHE_DIR / "edgar_late_filings"
+
+# --- Phase 4.5e scout: SEC Form 4 insider-transaction ingest ---
+# Form 4 is filed within 2 business days of a reportable insider transaction.
+# 365-day lookback captures ~4 earnings cycles worth of insider activity per
+# ticker (Cohen-Malloy-Pomorski 2012 *JF* §3.1 use the same trailing-year
+# window for the insider-sell signal). Adjust to 180d if the cron fetch loop
+# adds > 10 min to the weekly run (i.e., warm-cache run > 30 min total).
+FORM4_LOOKBACK_DAYS: int = 365
+# Per-ticker Form-4 JSON cache. 7-day TTL matches the existing 8-K rhythm —
+# Form 4 filings are weekly at most for any given insider, and the cache keys
+# by (ticker, asof_date) so a 7-day stale entry won't miss a NEW filing
+# (the fetch covers the entire lookback window, not a delta).
+EDGAR_FORM4_CACHE_DIR: Path = CACHE_DIR / "edgar_form4"
+EDGAR_FORM4_CACHE_TTL_SECONDS: int = 7 * 86400  # 7 days
 
 # --- Phase 4h scout: OpenAssetPricing portfolio returns ingest ---
 # Chen-Zimmermann openassetpricing.com long-short portfolio returns
