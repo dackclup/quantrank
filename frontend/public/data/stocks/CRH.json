@@ -5,8 +5,8 @@
   "industry": "Construction Materials",
   "market_cap": 67508267006.80591,
   "current_price": 101.03,
-  "rank": 107,
-  "composite_score": 57.79,
+  "rank": 106,
+  "composite_score": 57.83,
   "pillar_scores": {
     "quality": 68.27,
     "value": 62.18,
@@ -14,7 +14,7 @@
     "momentum": 44.97,
     "health": 52.03,
     "profitability": 63.14,
-    "technical": 22.91,
+    "technical": 23.61,
     "risk": 49.07,
     "sentiment": null,
     "ml": null
@@ -95,7 +95,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 21,
+    "filing_lag_days": 22,
     "latest_period_end": "2026-04-20",
     "latest_filed_date": "2026-04-30"
   },
@@ -120,20 +120,20 @@
       "Quality": 51.68,
       "Value": 50.48,
       "Growth": 48.56,
-      "Momentum": 49.88,
+      "Momentum": 49.85,
       "Health": 56.53,
       "Profitability": 54.33,
-      "Technical": 39.94,
+      "Technical": 40.46,
       "Risk": 46.85
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 54.93358950774422,
+  "loss_chance_pct": 54.916159228859755,
   "price_change_1d_pct": -0.414,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 57.29,
+  "composite_score_adjusted": 57.33,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -179,8 +179,13 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.82,
+  "osap_blended_score": 54.84,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 5
+  "valuation_methods_applicable": 5,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

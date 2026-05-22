@@ -5,8 +5,8 @@
   "industry": "Apparel, Accessories & Luxury Goods",
   "market_cap": 28106440287.858307,
   "current_price": 139.11,
-  "rank": 171,
-  "composite_score": 54.1,
+  "rank": 170,
+  "composite_score": 54.13,
   "pillar_scores": {
     "quality": 79.43,
     "value": 21.18,
@@ -14,7 +14,7 @@
     "momentum": 67.68,
     "health": 41.79,
     "profitability": 61.28,
-    "technical": 61.11,
+    "technical": 61.7,
     "risk": 54.42,
     "sentiment": null,
     "ml": null
@@ -92,7 +92,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-05-07"
   },
@@ -117,20 +117,20 @@
       "Quality": 46.35,
       "Value": 50.17,
       "Growth": 51.43,
-      "Momentum": 41.36,
+      "Momentum": 41.33,
       "Health": 43.75,
       "Profitability": 52.6,
-      "Technical": 51.39,
+      "Technical": 51.29,
       "Risk": 41.77
     }
   },
   "beneish_m_score": -3.1170786900458145,
   "dechow_f_score": 0.3608223707714841,
   "recommendation": "cautious",
-  "loss_chance_pct": 70.9510465084108,
+  "loss_chance_pct": 70.93610626936697,
   "price_change_1d_pct": 2.445,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 54.1,
+  "composite_score_adjusted": 54.13,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -176,8 +176,13 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.97,
+  "osap_blended_score": 52.99,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 3
+  "valuation_methods_applicable": 3,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

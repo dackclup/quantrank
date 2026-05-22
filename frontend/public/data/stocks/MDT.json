@@ -5,8 +5,8 @@
   "industry": "Health Care Equipment",
   "market_cap": 100335611895.65298,
   "current_price": 78.15,
-  "rank": 385,
-  "composite_score": 43.04,
+  "rank": 386,
+  "composite_score": 43.02,
   "pillar_scores": {
     "quality": 33.05,
     "value": 63.28,
@@ -14,7 +14,7 @@
     "momentum": 19.07,
     "health": 74.34,
     "profitability": 45.48,
-    "technical": 50.55,
+    "technical": 50.15,
     "risk": 45.75,
     "sentiment": null,
     "ml": null
@@ -93,7 +93,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 86,
+    "filing_lag_days": 87,
     "latest_period_end": "2026-02-18",
     "latest_filed_date": "2026-02-24"
   },
@@ -119,17 +119,17 @@
       "Momentum": 38.6,
       "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 56.82,
+      "Technical": 56.42,
       "Risk": 41.47
     }
   },
   "beneish_m_score": -2.6061201366300053,
   "dechow_f_score": 0.6046230278055023,
   "recommendation": "neutral",
-  "loss_chance_pct": 35.252151237924224,
+  "loss_chance_pct": 35.26211139728677,
   "price_change_1d_pct": 0.0,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 43.04,
+  "composite_score_adjusted": 43.02,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -175,8 +175,13 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.44,
+  "osap_blended_score": 47.43,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 4
+  "valuation_methods_applicable": 4,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

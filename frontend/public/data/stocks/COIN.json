@@ -14,7 +14,7 @@
     "momentum": 27.14,
     "health": 69.24,
     "profitability": 38.0,
-    "technical": 48.11,
+    "technical": 48.06,
     "risk": 21.05,
     "sentiment": null,
     "ml": null
@@ -95,7 +95,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
@@ -121,14 +121,14 @@
       "Momentum": 54.28,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 51.25,
+      "Technical": 51.2,
       "Risk": 54.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 67.63998173970784,
+  "loss_chance_pct": 67.64122675962815,
   "price_change_1d_pct": 1.1867,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 36.72,
@@ -177,8 +177,13 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 44.29,
+  "osap_blended_score": 44.28,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 3
+  "valuation_methods_applicable": 3,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

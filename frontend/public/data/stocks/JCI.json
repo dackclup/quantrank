@@ -5,8 +5,8 @@
   "industry": "Building Products",
   "market_cap": 82652361483.18002,
   "current_price": 135.47,
-  "rank": 276,
-  "composite_score": 49.87,
+  "rank": 275,
+  "composite_score": 49.86,
   "pillar_scores": {
     "quality": 47.15,
     "value": 45.78,
@@ -14,7 +14,7 @@
     "momentum": 68.73,
     "health": 46.81,
     "profitability": 44.73,
-    "technical": 20.72,
+    "technical": 20.42,
     "risk": 64.51,
     "sentiment": null,
     "ml": null
@@ -92,7 +92,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 16,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
@@ -118,17 +118,17 @@
       "Momentum": 49.4,
       "Health": 52.75,
       "Profitability": 47.68,
-      "Technical": 45.22,
+      "Technical": 45.07,
       "Risk": 53.78
     }
   },
   "beneish_m_score": -2.235366641460685,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 38.35912750456286,
+  "loss_chance_pct": 38.366597624084775,
   "price_change_1d_pct": -1.6552,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 47.87,
+  "composite_score_adjusted": 47.86,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -174,8 +174,13 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.86,
+  "osap_blended_score": 50.85,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 2
+  "valuation_methods_applicable": 2,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

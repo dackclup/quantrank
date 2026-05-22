@@ -5,7 +5,7 @@
   "industry": "Agricultural Products & Services",
   "market_cap": 37168488685.97314,
   "current_price": 77.12,
-  "rank": 326,
+  "rank": 327,
   "composite_score": 46.98,
   "pillar_scores": {
     "quality": 26.74,
@@ -14,7 +14,7 @@
     "momentum": 74.7,
     "health": 47.93,
     "profitability": 30.32,
-    "technical": 65.84,
+    "technical": 65.74,
     "risk": 64.31,
     "sentiment": null,
     "ml": null
@@ -95,7 +95,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 17,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-05"
   },
@@ -123,14 +123,14 @@
       "Momentum": 36.21,
       "Health": 39.29,
       "Profitability": 53.94,
-      "Technical": 54.93,
+      "Technical": 55.08,
       "Risk": 50.78
     }
   },
   "beneish_m_score": -2.885069924563353,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 54.10796438632036,
+  "loss_chance_pct": 54.110454426161,
   "price_change_1d_pct": -0.5545,
   "manipulation_index": 13.0,
   "composite_score_adjusted": 45.68,
@@ -179,8 +179,13 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.42,
+  "osap_blended_score": 49.41,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 4
+  "valuation_methods_applicable": 4,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

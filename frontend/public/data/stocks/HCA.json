@@ -5,7 +5,7 @@
   "industry": "Health Care Facilities",
   "market_cap": 87085431346.39893,
   "current_price": 392.56,
-  "rank": 319,
+  "rank": 320,
   "composite_score": 47.25,
   "pillar_scores": {
     "quality": 28.81,
@@ -14,7 +14,7 @@
     "momentum": 31.13,
     "health": 50.56,
     "profitability": 60.17,
-    "technical": 26.02,
+    "technical": 25.92,
     "risk": 53.78,
     "sentiment": null,
     "ml": null
@@ -94,7 +94,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 22,
+    "filing_lag_days": 23,
     "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-29"
   },
@@ -118,14 +118,14 @@
       "Momentum": 38.6,
       "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 56.82,
+      "Technical": 56.42,
       "Risk": 41.47
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.24205407985776137,
   "recommendation": "neutral",
-  "loss_chance_pct": 35.72445073985618,
+  "loss_chance_pct": 35.72694077969682,
   "price_change_1d_pct": -1.0361,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 47.25,
@@ -177,5 +177,10 @@
   "osap_blended_score": 49.55,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 2
+  "valuation_methods_applicable": 2,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

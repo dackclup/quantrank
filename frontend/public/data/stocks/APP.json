@@ -5,7 +5,7 @@
   "industry": "Application Software",
   "market_cap": 163401896586.18164,
   "current_price": 485.89,
-  "rank": 13,
+  "rank": 12,
   "composite_score": 66.6,
   "pillar_scores": {
     "quality": 94.52,
@@ -14,7 +14,7 @@
     "momentum": 47.96,
     "health": 78.96,
     "profitability": 93.95,
-    "technical": 59.11,
+    "technical": 59.21,
     "risk": 36.59,
     "sentiment": null,
     "ml": null
@@ -85,7 +85,8 @@
       "extreme_graham_estimate",
       "extreme_multiples_pb_estimate",
       "extreme_rim_estimate",
-      "extreme_dcf_estimate"
+      "extreme_dcf_estimate",
+      "extreme_estimate_majority"
     ],
     "valuation_methods_applicable": 2
   },
@@ -98,7 +99,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 16,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
@@ -108,7 +109,8 @@
     "extreme_graham_estimate",
     "extreme_multiples_pb_estimate",
     "extreme_rim_estimate",
-    "extreme_dcf_estimate"
+    "extreme_dcf_estimate",
+    "extreme_estimate_majority"
   ],
   "has_history": true,
   "tangible_book_value": 1.4018596823017955,
@@ -125,17 +127,17 @@
       "Quality": 49.66,
       "Value": 48.86,
       "Growth": 53.42,
-      "Momentum": 61.8,
+      "Momentum": 61.75,
       "Health": 69.52,
       "Profitability": 48.86,
-      "Technical": 59.76,
+      "Technical": 59.81,
       "Risk": 47.31
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 56.70035156178938,
+  "loss_chance_pct": 56.697861521948745,
   "price_change_1d_pct": 0.7485,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 66.6,
@@ -187,5 +189,10 @@
   "osap_blended_score": 59.23,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 2
+  "valuation_methods_applicable": 2,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

@@ -5,7 +5,7 @@
   "industry": "Technology Distributors",
   "market_cap": 13654288491.994667,
   "current_price": 106.88,
-  "rank": 174,
+  "rank": 175,
   "composite_score": 53.95,
   "pillar_scores": {
     "quality": 59.93,
@@ -14,7 +14,7 @@
     "momentum": 37.15,
     "health": 41.59,
     "profitability": 34.7,
-    "technical": 36.45,
+    "technical": 36.35,
     "risk": 18.53,
     "sentiment": null,
     "ml": null
@@ -92,7 +92,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 16,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-06"
   },
@@ -113,17 +113,17 @@
       "Quality": 49.66,
       "Value": 48.86,
       "Growth": 53.42,
-      "Momentum": 61.8,
+      "Momentum": 61.75,
       "Health": 69.52,
       "Profitability": 48.86,
-      "Technical": 59.76,
+      "Technical": 59.81,
       "Risk": 47.31
     }
   },
   "beneish_m_score": -2.3227542594795842,
   "dechow_f_score": 0.8530543079664347,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 17.37361529418081,
+  "loss_chance_pct": 17.376105334021446,
   "price_change_1d_pct": 0.6308,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 53.95,
@@ -175,5 +175,10 @@
   "osap_blended_score": 52.9,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 4
+  "valuation_methods_applicable": 4,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

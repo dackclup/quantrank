@@ -5,16 +5,16 @@
   "industry": "Steel",
   "market_cap": 51569661274.00818,
   "current_price": 226.44,
-  "rank": 200,
-  "composite_score": 52.84,
+  "rank": 201,
+  "composite_score": 52.83,
   "pillar_scores": {
     "quality": 43.75,
     "value": 48.08,
     "growth": 29.33,
-    "momentum": 89.59,
+    "momentum": 89.49,
     "health": 69.12,
     "profitability": 52.24,
-    "technical": 55.18,
+    "technical": 55.23,
     "risk": 58.3,
     "sentiment": null,
     "ml": null
@@ -92,7 +92,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 8,
+    "filing_lag_days": 9,
     "latest_period_end": "2026-04-04",
     "latest_filed_date": "2026-05-13"
   },
@@ -113,20 +113,20 @@
       "Quality": 51.68,
       "Value": 50.48,
       "Growth": 48.56,
-      "Momentum": 49.88,
+      "Momentum": 49.85,
       "Health": 56.53,
       "Profitability": 54.33,
-      "Technical": 39.94,
+      "Technical": 40.46,
       "Risk": 46.85
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 34.04705686937106,
+  "loss_chance_pct": 34.05203694905234,
   "price_change_1d_pct": 0.3412,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 52.84,
+  "composite_score_adjusted": 52.83,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -175,5 +175,10 @@
   "osap_blended_score": 52.34,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 5
+  "valuation_methods_applicable": 5,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

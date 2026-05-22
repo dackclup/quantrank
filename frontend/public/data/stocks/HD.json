@@ -5,8 +5,8 @@
   "industry": "Home Improvement Retail",
   "market_cap": 312528476585.6457,
   "current_price": 313.78,
-  "rank": 239,
-  "composite_score": 51.4,
+  "rank": 237,
+  "composite_score": 51.41,
   "pillar_scores": {
     "quality": 81.77,
     "value": 35.94,
@@ -14,7 +14,7 @@
     "momentum": 27.74,
     "health": 38.69,
     "profitability": 54.17,
-    "technical": 53.44,
+    "technical": 53.69,
     "risk": 42.73,
     "sentiment": null,
     "ml": null
@@ -90,7 +90,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 64,
+    "filing_lag_days": 65,
     "latest_period_end": "2026-03-04",
     "latest_filed_date": "2026-03-18"
   },
@@ -111,20 +111,20 @@
       "Quality": 46.35,
       "Value": 50.17,
       "Growth": 51.43,
-      "Momentum": 41.36,
+      "Momentum": 41.33,
       "Health": 43.75,
       "Profitability": 52.6,
-      "Technical": 51.39,
+      "Technical": 51.29,
       "Risk": 41.77
     }
   },
   "beneish_m_score": -2.427033166573914,
   "dechow_f_score": 0.4440798925067986,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 44.523040672543175,
+  "loss_chance_pct": 44.51681557294158,
   "price_change_1d_pct": 1.0303,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 51.4,
+  "composite_score_adjusted": 51.41,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -170,8 +170,13 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.62,
+  "osap_blended_score": 51.63,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 3
+  "valuation_methods_applicable": 3,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

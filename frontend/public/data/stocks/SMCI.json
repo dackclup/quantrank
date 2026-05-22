@@ -14,7 +14,7 @@
     "momentum": 9.41,
     "health": 83.39,
     "profitability": 23.97,
-    "technical": 62.9,
+    "technical": 62.95,
     "risk": 19.12,
     "sentiment": null,
     "ml": null
@@ -92,7 +92,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 10,
+    "filing_lag_days": 11,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-11"
   },
@@ -122,17 +122,17 @@
       "Quality": 49.66,
       "Value": 48.86,
       "Growth": 53.42,
-      "Momentum": 61.8,
+      "Momentum": 61.75,
       "Health": 69.52,
       "Profitability": 48.86,
-      "Technical": 59.76,
+      "Technical": 59.81,
       "Risk": 47.31
     }
   },
   "beneish_m_score": -0.8324584836047407,
   "dechow_f_score": 6.652106582990692,
   "recommendation": "neutral",
-  "loss_chance_pct": 35.68390001273683,
+  "loss_chance_pct": 35.68265499281651,
   "price_change_1d_pct": 0.0,
   "manipulation_index": 84.0,
   "composite_score_adjusted": 41.21,
@@ -184,5 +184,10 @@
   "osap_blended_score": 50.73,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 6
+  "valuation_methods_applicable": 6,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

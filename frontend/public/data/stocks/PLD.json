@@ -5,8 +5,8 @@
   "industry": "Industrial REITs",
   "market_cap": 134844049492.43164,
   "current_price": 144.63,
-  "rank": 352,
-  "composite_score": 45.87,
+  "rank": 351,
+  "composite_score": 45.92,
   "pillar_scores": {
     "quality": 39.52,
     "value": 27.96,
@@ -14,7 +14,7 @@
     "momentum": 75.7,
     "health": 27.73,
     "profitability": 58.33,
-    "technical": 55.48,
+    "technical": 56.47,
     "risk": 66.5,
     "sentiment": null,
     "ml": null
@@ -102,7 +102,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 21,
+    "filing_lag_days": 22,
     "latest_period_end": "2026-04-28",
     "latest_filed_date": "2026-04-30"
   },
@@ -130,17 +130,17 @@
       "Momentum": 53.24,
       "Health": 26.22,
       "Profitability": 52.15,
-      "Technical": 51.49,
+      "Technical": 51.79,
       "Risk": 53.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 57.748099497669294,
+  "loss_chance_pct": 57.72319909926292,
   "price_change_1d_pct": -0.0346,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 43.87,
+  "composite_score_adjusted": 43.92,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -186,8 +186,13 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.86,
+  "osap_blended_score": 48.88,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 4
+  "valuation_methods_applicable": 4,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

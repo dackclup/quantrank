@@ -14,7 +14,7 @@
     "momentum": 30.88,
     "health": 31.16,
     "profitability": 63.84,
-    "technical": 69.32,
+    "technical": 69.22,
     "risk": 42.76,
     "sentiment": null,
     "ml": null
@@ -92,7 +92,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 17,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-05"
   },
@@ -118,14 +118,14 @@
       "Momentum": 38.6,
       "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 56.82,
+      "Technical": 56.42,
       "Risk": 41.47
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.5704370054796583,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 20.302540643364978,
+  "loss_chance_pct": 20.305030683205615,
   "price_change_1d_pct": 0.8144,
   "manipulation_index": 20.0,
   "composite_score_adjusted": 60.76,
@@ -174,8 +174,13 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 57.31,
+  "osap_blended_score": 57.3,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 4
+  "valuation_methods_applicable": 4,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

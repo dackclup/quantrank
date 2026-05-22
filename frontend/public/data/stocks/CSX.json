@@ -5,7 +5,7 @@
   "industry": "Rail Transportation",
   "market_cap": 85288576325.69489,
   "current_price": 45.9,
-  "rank": 170,
+  "rank": 171,
   "composite_score": 54.12,
   "pillar_scores": {
     "quality": 67.09,
@@ -14,8 +14,8 @@
     "momentum": 81.87,
     "health": 28.69,
     "profitability": 53.8,
-    "technical": 65.59,
-    "risk": 74.83,
+    "technical": 65.64,
+    "risk": 74.8,
     "sentiment": null,
     "ml": null
   },
@@ -97,7 +97,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 29,
+    "filing_lag_days": 30,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-22"
   },
@@ -123,14 +123,14 @@
       "Momentum": 49.4,
       "Health": 52.75,
       "Profitability": 47.68,
-      "Technical": 45.22,
+      "Technical": 45.07,
       "Risk": 53.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 58.94147775984669,
+  "loss_chance_pct": 58.94085524988653,
   "price_change_1d_pct": -0.0871,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 54.12,
@@ -179,8 +179,13 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.98,
+  "osap_blended_score": 52.99,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 5
+  "valuation_methods_applicable": 5,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

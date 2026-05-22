@@ -5,8 +5,8 @@
   "industry": "Health Care REITs",
   "market_cap": 42782935624.0,
   "current_price": 88.0,
-  "rank": 390,
-  "composite_score": 42.82,
+  "rank": 391,
+  "composite_score": 42.78,
   "pillar_scores": {
     "quality": 33.87,
     "value": 34.95,
@@ -14,8 +14,8 @@
     "momentum": 62.5,
     "health": 24.34,
     "profitability": 42.47,
-    "technical": 46.36,
-    "risk": 84.3,
+    "technical": 45.57,
+    "risk": 84.26,
     "sentiment": null,
     "ml": null
   },
@@ -105,7 +105,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 23,
+    "filing_lag_days": 24,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-28"
   },
@@ -133,17 +133,17 @@
       "Momentum": 53.24,
       "Health": 26.22,
       "Profitability": 52.15,
-      "Technical": 51.49,
+      "Technical": 51.79,
       "Risk": 53.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 67.59192530951464,
+  "loss_chance_pct": 67.61246813819989,
   "price_change_1d_pct": -0.6772,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 42.82,
+  "composite_score_adjusted": 42.78,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -189,8 +189,13 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.33,
+  "osap_blended_score": 47.31,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 1
+  "valuation_methods_applicable": 1,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

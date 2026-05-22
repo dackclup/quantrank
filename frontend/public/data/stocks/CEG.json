@@ -5,7 +5,7 @@
   "industry": "Electric Utilities",
   "market_cap": 103238950857.32578,
   "current_price": 285.83,
-  "rank": 383,
+  "rank": 382,
   "composite_score": 43.25,
   "pillar_scores": {
     "quality": 56.45,
@@ -14,7 +14,7 @@
     "momentum": 22.16,
     "health": 53.9,
     "profitability": 53.76,
-    "technical": 40.44,
+    "technical": 40.39,
     "risk": 36.39,
     "sentiment": null,
     "ml": null
@@ -93,7 +93,7 @@
       "sga_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 10,
+    "filing_lag_days": 11,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-11"
   },
@@ -120,14 +120,14 @@
       "Momentum": 55.18,
       "Health": 17.85,
       "Profitability": 52.15,
-      "Technical": 48.85,
+      "Technical": 48.36,
       "Risk": 72.31
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 68.84992279035473,
+  "loss_chance_pct": 68.85116781027504,
   "price_change_1d_pct": 1.6248,
   "manipulation_index": 20.0,
   "composite_score_adjusted": 41.25,
@@ -179,5 +179,10 @@
   "osap_blended_score": 47.55,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 5
+  "valuation_methods_applicable": 5,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

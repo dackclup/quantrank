@@ -5,8 +5,8 @@
   "industry": "Life & Health Insurance",
   "market_cap": 59963510297.601074,
   "current_price": 117.81,
-  "rank": 235,
-  "composite_score": 51.46,
+  "rank": 236,
+  "composite_score": 51.43,
   "pillar_scores": {
     "quality": 49.33,
     "value": 49.78,
@@ -14,7 +14,7 @@
     "momentum": 65.09,
     "health": 50.64,
     "profitability": 55.56,
-    "technical": 54.68,
+    "technical": 54.08,
     "risk": 83.23,
     "sentiment": null,
     "ml": null
@@ -105,7 +105,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 16,
     "latest_period_end": "2026-04-28",
     "latest_filed_date": "2026-05-06"
   },
@@ -131,17 +131,17 @@
       "Momentum": 54.28,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 51.25,
+      "Technical": 51.2,
       "Risk": 54.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 44.29250122159412,
+  "loss_chance_pct": 44.307441460637946,
   "price_change_1d_pct": 0.5033,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 49.46,
+  "composite_score_adjusted": 49.43,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -187,8 +187,13 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.66,
+  "osap_blended_score": 51.64,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 4
+  "valuation_methods_applicable": 4,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

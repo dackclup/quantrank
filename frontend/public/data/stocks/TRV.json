@@ -5,8 +5,8 @@
   "industry": "Property & Casualty Insurance",
   "market_cap": 65330831366.57437,
   "current_price": 307.23,
-  "rank": 54,
-  "composite_score": 62.08,
+  "rank": 53,
+  "composite_score": 62.09,
   "pillar_scores": {
     "quality": 63.33,
     "value": 60.67,
@@ -14,7 +14,7 @@
     "momentum": 60.91,
     "health": 56.33,
     "profitability": 50.89,
-    "technical": 52.94,
+    "technical": 53.24,
     "risk": 80.49,
     "sentiment": null,
     "ml": null
@@ -102,7 +102,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 35,
+    "filing_lag_days": 36,
     "latest_period_end": "2026-04-09",
     "latest_filed_date": "2026-04-16"
   },
@@ -126,17 +126,17 @@
       "Momentum": 54.28,
       "Health": 50.64,
       "Profitability": 49.11,
-      "Technical": 51.25,
+      "Technical": 51.2,
       "Risk": 54.55
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 38.20690031820044,
+  "loss_chance_pct": 38.19943019867853,
   "price_change_1d_pct": 0.088,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 62.08,
+  "composite_score_adjusted": 62.09,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -182,8 +182,13 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 56.96,
+  "osap_blended_score": 56.97,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 4
+  "valuation_methods_applicable": 4,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

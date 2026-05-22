@@ -5,8 +5,8 @@
   "industry": "Fertilizers & Agricultural Chemicals",
   "market_cap": 52863533412.323,
   "current_price": 79.04,
-  "rank": 231,
-  "composite_score": 51.49,
+  "rank": 233,
+  "composite_score": 51.48,
   "pillar_scores": {
     "quality": 48.56,
     "value": 47.44,
@@ -14,7 +14,7 @@
     "momentum": 69.87,
     "health": 59.16,
     "profitability": 53.53,
-    "technical": 32.97,
+    "technical": 32.67,
     "risk": 64.34,
     "sentiment": null,
     "ml": null
@@ -98,7 +98,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 16,
     "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-05-06"
   },
@@ -122,20 +122,20 @@
       "Quality": 51.68,
       "Value": 50.48,
       "Growth": 48.56,
-      "Momentum": 49.88,
+      "Momentum": 49.85,
       "Health": 56.53,
       "Profitability": 54.33,
-      "Technical": 39.94,
+      "Technical": 40.46,
       "Risk": 46.85
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.6306373773610252,
   "recommendation": "neutral",
-  "loss_chance_pct": 62.25407344979058,
+  "loss_chance_pct": 62.261543569312494,
   "price_change_1d_pct": 0.3046,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 51.49,
+  "composite_score_adjusted": 51.48,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -181,8 +181,13 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.67,
+  "osap_blended_score": 51.66,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 4
+  "valuation_methods_applicable": 4,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

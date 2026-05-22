@@ -6,7 +6,7 @@
   "market_cap": 286203246426.62463,
   "current_price": 115.88,
   "rank": 153,
-  "composite_score": 54.94,
+  "composite_score": 54.95,
   "pillar_scores": {
     "quality": 64.41,
     "value": 38.7,
@@ -14,7 +14,7 @@
     "momentum": 63.6,
     "health": 57.25,
     "profitability": 60.73,
-    "technical": 71.96,
+    "technical": 72.16,
     "risk": 64.61,
     "sentiment": null,
     "ml": null
@@ -93,7 +93,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 17,
+    "filing_lag_days": 18,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-04"
   },
@@ -119,17 +119,17 @@
       "Momentum": 38.6,
       "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 56.82,
+      "Technical": 56.42,
       "Risk": 41.47
     }
   },
   "beneish_m_score": -2.4763721404803998,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 57.52867836563351,
+  "loss_chance_pct": 57.523698285952236,
   "price_change_1d_pct": 2.5487,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 54.44,
+  "composite_score_adjusted": 54.45,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -178,5 +178,10 @@
   "osap_blended_score": 53.4,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 3
+  "valuation_methods_applicable": 3,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

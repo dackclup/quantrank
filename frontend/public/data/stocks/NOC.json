@@ -5,8 +5,8 @@
   "industry": "Aerospace & Defense",
   "market_cap": 78342827119.40991,
   "current_price": 551.58,
-  "rank": 190,
-  "composite_score": 53.25,
+  "rank": 191,
+  "composite_score": 53.24,
   "pillar_scores": {
     "quality": 48.1,
     "value": 72.57,
@@ -14,7 +14,7 @@
     "momentum": 38.75,
     "health": 46.49,
     "profitability": 48.31,
-    "technical": 34.19,
+    "technical": 33.94,
     "risk": 65.87,
     "sentiment": null,
     "ml": null
@@ -95,7 +95,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 30,
+    "filing_lag_days": 31,
     "latest_period_end": "2026-04-16",
     "latest_filed_date": "2026-04-21"
   },
@@ -121,17 +121,17 @@
       "Momentum": 49.4,
       "Health": 52.75,
       "Profitability": 47.68,
-      "Technical": 45.22,
+      "Technical": 45.07,
       "Risk": 53.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.4585224158978698,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 31.02516499581704,
+  "loss_chance_pct": 31.031390095418633,
   "price_change_1d_pct": -0.1068,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 53.25,
+  "composite_score_adjusted": 53.24,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -177,8 +177,13 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.55,
+  "osap_blended_score": 52.54,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 3
+  "valuation_methods_applicable": 3,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

@@ -6,7 +6,7 @@
   "market_cap": 314837454222.4402,
   "current_price": 301.76,
   "rank": 358,
-  "composite_score": 45.56,
+  "composite_score": 45.55,
   "pillar_scores": {
     "quality": 59.18,
     "value": 27.64,
@@ -14,7 +14,7 @@
     "momentum": 37.95,
     "health": 39.6,
     "profitability": 45.36,
-    "technical": 64.44,
+    "technical": 64.34,
     "risk": 55.81,
     "sentiment": null,
     "ml": null
@@ -84,7 +84,8 @@
       "goodwill_heavy",
       "extreme_graham_estimate",
       "extreme_rim_estimate",
-      "extreme_dcf_estimate"
+      "extreme_dcf_estimate",
+      "extreme_estimate_majority"
     ],
     "valuation_methods_applicable": 2
   },
@@ -100,7 +101,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 30,
+    "filing_lag_days": 31,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-21"
   },
@@ -109,7 +110,8 @@
     "goodwill_heavy",
     "extreme_graham_estimate",
     "extreme_rim_estimate",
-    "extreme_dcf_estimate"
+    "extreme_dcf_estimate",
+    "extreme_estimate_majority"
   ],
   "has_history": true,
   "tangible_book_value": 4.699343448621384,
@@ -129,17 +131,17 @@
       "Momentum": 49.4,
       "Health": 52.75,
       "Profitability": 47.68,
-      "Technical": 45.22,
+      "Technical": 45.07,
       "Risk": 53.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.2215970973349206,
   "recommendation": "cautious",
-  "loss_chance_pct": 66.22193872190563,
+  "loss_chance_pct": 66.22442876174627,
   "price_change_1d_pct": 0.5297,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 45.56,
+  "composite_score_adjusted": 45.55,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -188,5 +190,10 @@
   "osap_blended_score": 48.7,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 2
+  "valuation_methods_applicable": 2,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

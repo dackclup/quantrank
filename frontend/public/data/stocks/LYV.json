@@ -5,8 +5,8 @@
   "industry": "Movies & Entertainment",
   "market_cap": 39096100842.334366,
   "current_price": 165.98,
-  "rank": 351,
-  "composite_score": 45.87,
+  "rank": 352,
+  "composite_score": 45.88,
   "pillar_scores": {
     "quality": 42.39,
     "value": 39.86,
@@ -14,7 +14,7 @@
     "momentum": 55.73,
     "health": 45.5,
     "profitability": 45.65,
-    "technical": 60.66,
+    "technical": 60.96,
     "risk": 51.49,
     "sentiment": null,
     "ml": null
@@ -97,7 +97,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 17,
     "latest_period_end": "2026-04-28",
     "latest_filed_date": "2026-05-05"
   },
@@ -123,17 +123,17 @@
       "Momentum": 49.25,
       "Health": 45.5,
       "Profitability": 50.72,
-      "Technical": 52.39,
+      "Technical": 52.81,
       "Risk": 50.05
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.2544850967922378,
   "recommendation": "neutral",
-  "loss_chance_pct": 63.06591568508574,
+  "loss_chance_pct": 63.05844556556383,
   "price_change_1d_pct": 0.9365,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 45.87,
+  "composite_score_adjusted": 45.88,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -179,8 +179,13 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.86,
+  "osap_blended_score": 48.87,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 2
+  "valuation_methods_applicable": 2,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

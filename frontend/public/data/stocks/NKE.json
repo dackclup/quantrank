@@ -14,7 +14,7 @@
     "momentum": 5.95,
     "health": 53.94,
     "profitability": 47.92,
-    "technical": 75.4,
+    "technical": 75.25,
     "risk": 14.99,
     "sentiment": null,
     "ml": null
@@ -94,7 +94,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 50,
+    "filing_lag_days": 51,
     "latest_period_end": "2026-02-28",
     "latest_filed_date": "2026-04-01"
   },
@@ -117,17 +117,17 @@
       "Quality": 46.35,
       "Value": 50.17,
       "Growth": 51.43,
-      "Momentum": 41.36,
+      "Momentum": 41.33,
       "Health": 43.75,
       "Profitability": 52.6,
-      "Technical": 51.39,
+      "Technical": 51.29,
       "Risk": 41.77
     }
   },
   "beneish_m_score": -2.2322132972981725,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 60.13478765648473,
+  "loss_chance_pct": 60.13852271624569,
   "price_change_1d_pct": 0.4526,
   "manipulation_index": 20.0,
   "composite_score_adjusted": 37.81,
@@ -179,5 +179,10 @@
   "osap_blended_score": 45.83,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 5
+  "valuation_methods_applicable": 5,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

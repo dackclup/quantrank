@@ -14,7 +14,7 @@
     "momentum": 37.92,
     "health": 19.52,
     "profitability": 44.2,
-    "technical": 33.91,
+    "technical": 33.96,
     "risk": 15.16,
     "sentiment": null,
     "ml": null
@@ -101,7 +101,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 27,
+    "filing_lag_days": 28,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-24"
   },
@@ -129,14 +129,14 @@
       "Momentum": 49.25,
       "Health": 45.5,
       "Profitability": 50.72,
-      "Technical": 52.39,
+      "Technical": 52.81,
       "Risk": 50.05
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 10.67222788163081,
+  "loss_chance_pct": 10.670982861710492,
   "price_change_1d_pct": 2.9666,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 53.13,
@@ -188,5 +188,10 @@
   "osap_blended_score": 52.49,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 1
+  "valuation_methods_applicable": 1,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

@@ -5,8 +5,8 @@
   "industry": "Integrated Oil & Gas",
   "market_cap": 380415071849.1469,
   "current_price": 191.01,
-  "rank": 300,
-  "composite_score": 48.46,
+  "rank": 301,
+  "composite_score": 48.44,
   "pillar_scores": {
     "quality": 40.48,
     "value": 44.44,
@@ -14,7 +14,7 @@
     "momentum": 71.66,
     "health": 55.14,
     "profitability": 54.76,
-    "technical": 54.33,
+    "technical": 54.08,
     "risk": 83.8,
     "sentiment": null,
     "ml": null
@@ -94,7 +94,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
@@ -117,20 +117,20 @@
       "Quality": 50.0,
       "Value": 48.41,
       "Growth": 55.95,
-      "Momentum": 74.65,
+      "Momentum": 74.6,
       "Health": 55.14,
       "Profitability": 54.76,
-      "Technical": 54.33,
+      "Technical": 54.18,
       "Risk": 66.5
     }
   },
   "beneish_m_score": -2.2759618512066275,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 60.772036852589636,
+  "loss_chance_pct": 60.77826195219123,
   "price_change_1d_pct": -0.1673,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 47.96,
+  "composite_score_adjusted": 47.94,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -179,5 +179,10 @@
   "osap_blended_score": 50.15,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 4
+  "valuation_methods_applicable": 4,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

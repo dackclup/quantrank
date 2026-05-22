@@ -5,13 +5,13 @@
   "industry": "Publishing",
   "market_cap": 16889919957.16095,
   "current_price": 30.08,
-  "rank": 288,
-  "composite_score": 49.18,
+  "rank": 289,
+  "composite_score": 49.17,
   "pillar_scores": {
     "quality": 46.74,
     "value": 52.9,
     "growth": 19.57,
-    "momentum": 52.94,
+    "momentum": 52.89,
     "health": 64.28,
     "profitability": 61.96,
     "technical": 63.94,
@@ -99,7 +99,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 13,
+    "filing_lag_days": 14,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-08"
   },
@@ -129,17 +129,17 @@
       "Momentum": 49.25,
       "Health": 45.5,
       "Profitability": 50.72,
-      "Technical": 52.39,
+      "Technical": 52.81,
       "Risk": 50.05
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 50.5029397597211,
+  "loss_chance_pct": 50.50605230952189,
   "price_change_1d_pct": 1.2795,
   "manipulation_index": 25.0,
-  "composite_score_adjusted": 46.68,
+  "composite_score_adjusted": 46.67,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -185,8 +185,13 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.52,
+  "osap_blended_score": 50.51,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 4
+  "valuation_methods_applicable": 4,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

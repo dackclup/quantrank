@@ -6,7 +6,7 @@
   "market_cap": 71904858892.82227,
   "current_price": 249.93,
   "rank": 110,
-  "composite_score": 57.58,
+  "composite_score": 57.57,
   "pillar_scores": {
     "quality": 80.06,
     "value": 47.26,
@@ -14,7 +14,7 @@
     "momentum": 43.87,
     "health": 51.43,
     "profitability": 85.44,
-    "technical": 38.2,
+    "technical": 37.9,
     "risk": 58.33,
     "sentiment": null,
     "ml": null
@@ -98,7 +98,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
@@ -128,17 +128,17 @@
       "Momentum": 49.4,
       "Health": 52.75,
       "Profitability": 47.68,
-      "Technical": 45.22,
+      "Technical": 45.07,
       "Risk": 53.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 61.20944387008927,
+  "loss_chance_pct": 61.21691398961118,
   "price_change_1d_pct": -0.335,
   "manipulation_index": 25.0,
-  "composite_score_adjusted": 55.08,
+  "composite_score_adjusted": 55.07,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -184,8 +184,13 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.72,
+  "osap_blended_score": 54.71,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 5
+  "valuation_methods_applicable": 5,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

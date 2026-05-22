@@ -5,8 +5,8 @@
   "industry": "Pharmaceuticals",
   "market_cap": 19168535618.660202,
   "current_price": 16.46,
-  "rank": 252,
-  "composite_score": 50.87,
+  "rank": 253,
+  "composite_score": 50.86,
   "pillar_scores": {
     "quality": 52.97,
     "value": 55.65,
@@ -14,7 +14,7 @@
     "momentum": 71.36,
     "health": 46.12,
     "profitability": 10.03,
-    "technical": 68.38,
+    "technical": 68.28,
     "risk": 59.53,
     "sentiment": null,
     "ml": null
@@ -91,7 +91,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-05-04",
     "latest_filed_date": "2026-05-07"
   },
@@ -119,17 +119,17 @@
       "Momentum": 38.6,
       "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 56.82,
+      "Technical": 56.42,
       "Risk": 41.47
     }
   },
   "beneish_m_score": -3.152830324684186,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 39.76061196181561,
+  "loss_chance_pct": 39.76310200165625,
   "price_change_1d_pct": -0.7836,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 50.37,
+  "composite_score_adjusted": 50.36,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -178,5 +178,10 @@
   "osap_blended_score": 51.36,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 2
+  "valuation_methods_applicable": 2,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

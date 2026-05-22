@@ -5,7 +5,7 @@
   "industry": "Independent Power Producers & Energy Traders",
   "market_cap": 10476286504.717113,
   "current_price": 14.69,
-  "rank": 182,
+  "rank": 181,
   "composite_score": 53.57,
   "pillar_scores": {
     "quality": 63.71,
@@ -14,7 +14,7 @@
     "momentum": 48.16,
     "health": 12.15,
     "profitability": 53.23,
-    "technical": 58.81,
+    "technical": 58.76,
     "risk": 35.13,
     "sentiment": null,
     "ml": null
@@ -98,7 +98,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 17,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-05"
   },
@@ -126,14 +126,14 @@
       "Momentum": 55.18,
       "Health": 17.85,
       "Profitability": 52.15,
-      "Technical": 48.85,
+      "Technical": 48.36,
       "Risk": 72.31
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.15063629569373063,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 50.05154094455264,
+  "loss_chance_pct": 50.05278596447296,
   "price_change_1d_pct": -0.2716,
   "manipulation_index": 5.0,
   "composite_score_adjusted": 53.07,
@@ -185,5 +185,10 @@
   "osap_blended_score": 52.71,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 3
+  "valuation_methods_applicable": 3,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

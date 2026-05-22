@@ -5,16 +5,16 @@
   "industry": "Metal, Glass & Plastic Containers",
   "market_cap": 15002990488.590065,
   "current_price": 56.35,
-  "rank": 233,
-  "composite_score": 51.48,
+  "rank": 231,
+  "composite_score": 51.52,
   "pillar_scores": {
     "quality": 52.4,
     "value": 56.41,
     "growth": 61.06,
-    "momentum": 54.78,
+    "momentum": 54.73,
     "health": 36.29,
     "profitability": 41.99,
-    "technical": 39.44,
+    "technical": 40.29,
     "risk": 44.62,
     "sentiment": null,
     "ml": null
@@ -84,7 +84,8 @@
       "goodwill_heavy",
       "extreme_graham_estimate",
       "extreme_rim_estimate",
-      "extreme_dcf_estimate"
+      "extreme_dcf_estimate",
+      "extreme_estimate_majority"
     ],
     "valuation_methods_applicable": 2
   },
@@ -98,7 +99,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 17,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-05"
   },
@@ -107,7 +108,8 @@
     "goodwill_heavy",
     "extreme_graham_estimate",
     "extreme_rim_estimate",
-    "extreme_dcf_estimate"
+    "extreme_dcf_estimate",
+    "extreme_estimate_majority"
   ],
   "has_history": true,
   "tangible_book_value": 0.9126880164074713,
@@ -124,20 +126,20 @@
       "Quality": 51.68,
       "Value": 50.48,
       "Growth": 48.56,
-      "Momentum": 49.88,
+      "Momentum": 49.85,
       "Health": 56.53,
       "Profitability": 54.33,
-      "Technical": 39.94,
+      "Technical": 40.46,
       "Risk": 46.85
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 63.2588571994075,
+  "loss_chance_pct": 63.24080441056287,
   "price_change_1d_pct": -0.8097,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 51.48,
+  "composite_score_adjusted": 51.52,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -183,8 +185,13 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.67,
+  "osap_blended_score": 51.69,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 2
+  "valuation_methods_applicable": 2,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

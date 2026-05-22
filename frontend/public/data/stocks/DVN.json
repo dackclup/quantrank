@@ -5,16 +5,16 @@
   "industry": "Oil & Gas Exploration & Production",
   "market_cap": 29274154379.27246,
   "current_price": 47.11,
-  "rank": 113,
-  "composite_score": 57.41,
+  "rank": 114,
+  "composite_score": 57.39,
   "pillar_scores": {
     "quality": 50.0,
     "value": 68.25,
     "growth": 50.0,
-    "momentum": 74.65,
+    "momentum": 74.6,
     "health": 49.64,
     "profitability": 56.35,
-    "technical": 42.68,
+    "technical": 42.48,
     "risk": 55.94,
     "sentiment": null,
     "ml": null
@@ -96,7 +96,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 16,
     "latest_period_end": "2026-04-22",
     "latest_filed_date": "2026-05-06"
   },
@@ -120,20 +120,20 @@
       "Quality": 50.0,
       "Value": 48.41,
       "Growth": 55.95,
-      "Momentum": 74.65,
+      "Momentum": 74.6,
       "Health": 55.14,
       "Profitability": 54.76,
-      "Technical": 54.33,
+      "Technical": 54.18,
       "Risk": 66.5
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 36.80311895163116,
+  "loss_chance_pct": 36.811211581113234,
   "price_change_1d_pct": -2.7858,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 56.91,
+  "composite_score_adjusted": 56.89,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -179,8 +179,13 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.63,
+  "osap_blended_score": 54.62,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 4
+  "valuation_methods_applicable": 4,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }

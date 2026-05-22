@@ -5,8 +5,8 @@
   "industry": "Paper & Plastic Packaging Products & Materials",
   "market_cap": 17800309065.0,
   "current_price": 38.5,
-  "rank": 406,
-  "composite_score": 42.12,
+  "rank": 407,
+  "composite_score": 42.11,
   "pillar_scores": {
     "quality": 32.69,
     "value": 72.44,
@@ -14,7 +14,7 @@
     "momentum": 21.51,
     "health": 43.55,
     "profitability": 33.33,
-    "technical": 49.6,
+    "technical": 49.3,
     "risk": 33.57,
     "sentiment": null,
     "ml": null
@@ -88,7 +88,7 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 14,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-05-05",
     "latest_filed_date": "2026-05-07"
   },
@@ -109,20 +109,20 @@
       "Quality": 51.68,
       "Value": 50.48,
       "Growth": 48.56,
-      "Momentum": 49.88,
+      "Momentum": 49.85,
       "Health": 56.53,
       "Profitability": 54.33,
-      "Technical": 39.94,
+      "Technical": 40.46,
       "Risk": 46.85
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 27.21396578522775,
+  "loss_chance_pct": 27.22143590474966,
   "price_change_1d_pct": 1.0764,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 42.12,
+  "composite_score_adjusted": 42.11,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -168,8 +168,13 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 46.99,
+  "osap_blended_score": 46.98,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 3
+  "valuation_methods_applicable": 3,
+  "form4_diagnostics": {
+    "insider_count": 0,
+    "latest_filing_date": null,
+    "fetch_status": "ok"
+  }
 }
