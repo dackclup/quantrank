@@ -49,7 +49,7 @@ const ROWS: Array<{
 
 export default function RawMetricsTable({ metrics }: { metrics: RawMetrics }) {
   return (
-    <div className="overflow-hidden rounded-lg border border-slate-200 bg-white">
+    <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-medium">
       <table className="min-w-full divide-y divide-slate-200 text-sm">
         <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
           <tr>
@@ -62,7 +62,7 @@ export default function RawMetricsTable({ metrics }: { metrics: RawMetrics }) {
             const v = metrics[key];
             const isMissing = v == null;
             return (
-              <tr key={key} className="hover:bg-slate-50">
+              <tr key={key} className="odd:bg-white even:bg-slate-50 hover:bg-slate-100">
                 <td className="px-3 py-2 text-slate-700">
                   {label}
                   {hint && <span className="ml-1 text-xs text-slate-400">{hint}</span>}

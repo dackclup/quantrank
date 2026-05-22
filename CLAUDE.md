@@ -15,7 +15,9 @@ backing.
   TypeScript 5.4 · Tailwind 3.4 · Recharts 2.12. Self-hosted fonts
   via @fontsource: **IBM Plex Sans** (body) · **JetBrains Mono**
   (tabular numerics) · **Instrument Serif** (display marquee) ·
-  **Roboto Slab** (headlines, LedgerCraft adoption 2026-05-22).
+  **Roboto Slab** (headlines, LedgerCraft adoption Phase 1 PR #211
+  2026-05-22; Phase 2 propagated tokens to per-stock detail-page
+  surfaces same day).
 - **CI** — GitHub Actions; weekly `compute-rankings.yml` (cron Sun 22:00 UTC)
 - **Data** — SEC EDGAR via `edgartools` · yfinance for prices · S&P 500
   constituents scraped from Wikipedia
