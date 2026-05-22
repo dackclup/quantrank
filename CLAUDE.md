@@ -238,7 +238,7 @@ that fired per-diff.
 
 ## Phase status
 
-Current schema **`0.9.7-phase4h.7`** · defense layer **20 declared
+Current schema **`0.9.8-phase4h.8`** · defense layer **20 declared
 veto+annotate flags** of [**30 boolean flags actually emitted**](https://github.com/dackclup/quantrank/issues/130#issuecomment-4496605644)
 (7 active vetoes + 13 annotates + 5 method-applicability +
 5 informational; epic [#150](https://github.com/dackclup/quantrank/issues/150)
@@ -891,23 +891,41 @@ the full offline suite still reports `1024 passed` in CI-mode (with
 logic / schema / scoring / valuation / frontend change — pure import
 topology refactor.
 
-**Issue #125 Item 6 cross-session collision detector in flight (this PR)**
-— new `tools/check_cross_session_collision.py` hits the GitHub API for
-`claude/*` branches updated in the last 7 days + open PRs matching a
-scope keyword, exits 1 on collision and 0 when clean. Companion to the
-existing git-only `branch-collision-check` skill (which covers local
-origin state in a 48h window); this skill covers sibling sessions on
-OTHER machines that haven't pushed recently — the gap the git-only
-checker cannot cover. New `.claude/skills/cross-session-collision-check/SKILL.md`
-wraps the script with trigger/skip conditions, auth instructions (GH_TOKEN
-/ GITHUB_TOKEN / gh CLI), false-positive guard (merged+closed branches
-excluded by design), and a comparison table vs `branch-collision-check`.
+**Issue #125 Item 6 cross-session collision detector merged via PR #203**
+(2026-05-22) — new `tools/check_cross_session_collision.py` hits the
+GitHub API for `claude/*` branches updated in the last 7 days + open PRs
+matching a scope keyword, exits 1 on collision and 0 when clean.
+Companion to the existing git-only `branch-collision-check` skill (which
+covers local origin state in a 48h window); this skill covers sibling
+sessions on OTHER machines that haven't pushed recently — the gap the
+git-only checker cannot cover. New
+`.claude/skills/cross-session-collision-check/SKILL.md` wraps the script
+with trigger/skip conditions, auth instructions (GH_TOKEN / GITHUB_TOKEN
+/ gh CLI), false-positive guard (merged+closed branches excluded by
+design), and a comparison table vs `branch-collision-check`.
 `phase-coordinator` Mode A wired to run BOTH skills in sequence: Step 1
 git-only (no auth), Step 2 GitHub API (7-day window). Skill count
 42 → 43. No compute / schema / scoring / valuation / frontend change.
 Closes issue #125 Item 6.
 
+**Issue #67 sector-adjusted CoE data-collection PR in flight (this PR)** —
+`compute/scoring/cost_of_equity.py` adds the GICS-keyed Damodaran 2019
+Table 8.4 + NYU January 2025 dataset sector-CoE dict (11 sectors, Ke range
+6%-12%). `config.USE_SECTOR_COE = False` (default OFF per Rule 18 —
+data-collection only). `compute/valuation/ensemble.py` reads the flag and
+passes the sector-adjusted Ke to `rim_fair_price` when enabled.
+`Metadata` gains 3 Rule 18 diagnostics: `sector_coe_enabled` +
+`value_trap_risk_count_without_sector_coe` (flat-10% baseline) +
+`value_trap_risk_count_with_sector_coe` (per-sector Ke). Both counts
+computed every cron so the delta is visible before the flag is flipped.
+Schema bumped `0.9.7-phase4h.7` → `0.9.8-phase4h.8`. Tests +20
+(11-sector dict pin + Hypothesis band test + sector-CoE RIM gate sanity
+tests). Methodology-scientist Mode B sign-off required before the flip
+PR lands. Closes issue #67 prep; flip follows after ≥ 1 cron delta-count.
+
 **Next deliverables** (pick by appetite):
+- **Issue #67 flip PR** — `USE_SECTOR_COE = True` after ≥ 1 cron confirms
+  delta-flag-count (target: `value_trap_risk` drops from ~176 toward ~80-110)
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight
   slots already declared in `FLAG_WEIGHTS`)
 - **Phase 4i.1 / 4j.1 / 4k.1** — JKP / Qlib / IPCA integration PRs

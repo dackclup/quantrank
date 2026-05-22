@@ -24,6 +24,7 @@ from dataclasses import dataclass, field
 
 from compute import config
 from compute.ingest.fundamentals import FundamentalsSnapshot
+from compute.scoring.cost_of_equity import get_cost_of_equity
 from compute.valuation.applicability import (
     LagStatus,
     MethodApplicability,
@@ -405,10 +406,21 @@ def compute_fair_price_ensemble(
         lag_status=lag_status,
     )
 
+    # Issue #67 — sector-adjusted cost of equity (Damodaran 2019 Table 8.4).
+    # When USE_SECTOR_COE is True the per-GICS Ke from cost_of_equity.py
+    # is used instead of the flat COST_OF_EQUITY = 0.10 constant.
+    # Default False — data-collection PR per Rule 18; production behaviour
+    # unchanged until the flip PR lands after ≥ 1 cron's delta-flag-count.
+    rim_cost_of_equity = (
+        get_cost_of_equity(sector)
+        if config.USE_SECTOR_COE
+        else config.COST_OF_EQUITY
+    )
     rim_value, rim_app = rim_fair_price(
         tangible_book_value_per_share=tbvps,
         avg_3y_roe=avg_3y_roe,  # type: ignore[arg-type]
         lag_status=lag_status,
+        cost_of_equity=rim_cost_of_equity,
     )
 
     dcf_value, dcf_app = dcf_fair_price(

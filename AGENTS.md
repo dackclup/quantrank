@@ -712,6 +712,19 @@ note cross-tool-specific points only:
   post-filing all require `<15.5.16` (no 14.2.x backport), all target
   SSR / Server-Components / middleware features QR doesn't use.
   No compute / schema / scoring / valuation / Python code change.
+- **Issue #67 sector-adjusted CoE data-collection PR in flight (this
+  PR)** — `compute/scoring/cost_of_equity.py` adds GICS-keyed Ke dict
+  sourced from Damodaran 2019 Table 8.4 + NYU Jan-2025 dataset (11
+  sectors, 6%-12% range). `config.USE_SECTOR_COE = False` default
+  (Rule 18 data-collection: no production behaviour change).
+  `compute/valuation/ensemble.py` gates on flag. Three `Metadata`
+  Rule 18 diagnostics: `sector_coe_enabled` +
+  `value_trap_risk_count_without_sector_coe` (flat-10% baseline) +
+  `value_trap_risk_count_with_sector_coe` (sector Ke). Both counts
+  computed every cron. Schema `0.9.7-phase4h.7` → `0.9.8-phase4h.8`.
+  Tests +20. Methodology-scientist Mode B sign-off required before
+  the flip PR. Cross-tool agents: do NOT flip USE_SECTOR_COE to True
+  without the methodology-scientist verdict captured in the PR body.
 
 ## Claude-Code-specific tooling
 
