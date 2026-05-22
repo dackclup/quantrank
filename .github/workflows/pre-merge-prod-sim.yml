@@ -159,7 +159,7 @@ jobs:
       # (PR 1 fell through silently on red checks).
       - name: Post or update PR comment
         if: ${{ !cancelled() }}
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         env:
           COMPUTE_OUTCOME: ${{ steps.compute.outcome }}
           DIFF_OUTCOME: ${{ steps.diff.outcome }}
