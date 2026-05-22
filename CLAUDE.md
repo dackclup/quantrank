@@ -732,7 +732,35 @@ Defense layer 29 → 30 emitted flags. Tests 1049 → 1059 (+10: 6
 threshold-branch unit tests + 3 full-ensemble integration tests + 1
 config-constant pin).
 
-**Phase 5 dependabot housekeeping in flight (this PR)** — closes
+**Phase 5 Next.js 14.2 patch bump in flight (this PR)** — partial
+progress on issue #41 (`next 14.2 → 16` CVE refresh) via a
+within-branch patch bump that closes the 8 advisories #41 originally
+itemized at filing time, without breaking-change migration.
+`frontend/package.json`: `"next": "14.2.15" → "14.2.35"` +
+`"eslint-config-next": "14.2.15" → "14.2.35"` (lockstep with `next`
+minor) + `"postcss": "8.4.38" → "8.5.15"` + new `"overrides": {
+"postcss": "8.5.15" }` block (forces next's nested
+`postcss@8.4.31` exact-pin to lift to 8.5.15 transitively, closing
+the postcss XSS advisory `GHSA-qx2v-qp2m-jg93`). `package-lock.json`
+regenerated; `npm install` clean; `next build` produces all 506
+static routes; `tsc --noEmit` clean. Issue #41 STAYS OPEN — 14 new
+`next` advisories surfaced on the npm advisory database between
+2026-05-13 (issue filed) and 2026-05-22 (this PR), ALL requiring
+`<15.5.16` to fix, none with a 14.2.x backport. All 14 target
+SSR / Server-Components / middleware / runtime features QuantRank
+doesn't use (we ship static export only — `next build` → static
+HTML, no SSR runtime, no middleware, no rewrites). Real
+exploitability for the static-export site remains zero per #41's
+own original risk rating, but `npm audit` cannot infer the
+static-export posture so the advisories still surface in CI. The
+remaining 14→16 migration (App Router async APIs + React 18→19
+typing + Node 20+ requirement + eslint-config-next 16.x) is
+release-tag-cleanliness, not security-critical; tracked under #41.
+Dependency-auditor verdict (2026-05-22): SAFE-TO-MERGE as a focused
+patch PR. No compute / schema / scoring / valuation / Python code
+change — frontend dep-bump only.
+
+**Phase 5 dependabot housekeeping merged via PR #185** (2026-05-22) — closes
 another deferred parking-lot item from the 14-subagent self-audit
 (2026-05-21). New `.github/dependabot.yml` configures automated
 weekly dependency-update PRs across QuantRank's three ecosystems:
