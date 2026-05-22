@@ -604,7 +604,7 @@ note cross-tool-specific points only:
   branch, do NOT bundle a 5×/0.2× threshold change — the
   recalibration is a separate methodology-scientist work item
   blocking by Q3 2026-08-19 cohort audit.
-- **Phase 2.x METHODOLOGY annotate refresh in flight (this PR)** —
+- **Phase 2.x METHODOLOGY annotate refresh merged via PR #184**
   doc-only refresh closing a parking-lot drift from the 14-subagent
   self-audit (2026-05-21). `docs/METHODOLOGY.md` §"Annotate-only
   flags" expanded from 10 documented bullets to 18; 8 previously-
@@ -629,6 +629,18 @@ note cross-tool-specific points only:
   `compute/scoring/manipulation_index.py` weight docstrings for the
   Phase-2.5 provenance tier (LITERATURE-ANCHORED / GUT-FEEL /
   RESERVED).
+- **Phase 5 dependabot housekeeping in flight (this PR)** — new
+  `.github/dependabot.yml` configures weekly Dependabot PRs across
+  3 ecosystems (pip / npm / github-actions). `next` / `react` /
+  `react-dom` / `@types/react*` major bumps explicitly ignored —
+  issue #41 owns that scoped breaking-change migration. Cross-tool
+  agents (Copilot / Cursor / Devin) reviewing Dependabot PRs: the
+  commit-prefix scheme is `chore(deps-{py|npm|ci})` matching the
+  project's existing `chore(X):` convention; minor + patch updates
+  arrive grouped into one PR per ecosystem, security updates always
+  separate. Treat any Next/React major bump that shows up despite
+  the ignore-rule as a misfile — it should be re-routed through the
+  issue #41 migration plan, not auto-merged.
 
 ## Claude-Code-specific tooling
 
