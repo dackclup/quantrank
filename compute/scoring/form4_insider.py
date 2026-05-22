@@ -124,11 +124,18 @@ _CACHE_SUBDIR: Final[str] = "edgar_form4"
 #: A future minor-version bump that renames any of these fails the
 #: ``test_edgar_form4_api_surface_locked`` test loudly so we catch the
 #: drift on PR review, not on a Sunday-night cron.
+#:
+#: NOTE on ``"obj"``: edgartools 2.x exposed ``Filing.obj`` as a
+#: property; edgartools 5.x changed it to a method (must be called as
+#: ``filing.obj()``). The manifest check only verifies attribute
+#: presence — the *call site* in ``_form4_to_transactions`` handles
+#: both shapes via ``callable()``. A future 6.x revert to property
+#: form would NOT need a code change here.
 _FORM4_REQUIRED_ATTRS: Final[tuple[str, ...]] = (
     "accession_no",
     "filing_date",
     "form",
-    "obj",  # edgartools exposes the parsed Ownership view via .obj
+    "obj",  # property in edgartools 2.x; method in 5.x — caller handles both
 )
 
 #: Drift-detector manifest — attrs on the parsed Ownership object
@@ -362,7 +369,20 @@ def _form4_to_transactions(filing: object) -> list[dict]:
             getattr(filing, "filing_url", "")
             or getattr(filing, "homepage_url", "")
         )
-        parsed = getattr(filing, "obj", None)
+        # edgartools 5.x exposes ``Filing.obj`` as a METHOD (must be
+        # called), where 2.x exposed it as a property. The 2026-05-22
+        # silent-drop incident — 0/502 insider transactions across the
+        # entire S&P 500 universe — traced to ``getattr(filing, "obj")``
+        # returning the bound method instead of the parsed Ownership
+        # object, then ``getattr(bound_method, "reporting_owners")``
+        # returning ``None`` and short-circuiting ``return []`` on every
+        # filing. The ``callable()`` check below handles both API
+        # generations so a future 6.x reversion (or a downgrade) won't
+        # re-introduce the bug; the unit-test mocks pass through the
+        # attribute path because ``@dataclass`` instances are not
+        # callable.
+        _obj_attr = getattr(filing, "obj", None)
+        parsed = _obj_attr() if callable(_obj_attr) else _obj_attr
         if parsed is None:
             return []
 

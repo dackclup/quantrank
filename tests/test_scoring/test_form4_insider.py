@@ -449,3 +449,108 @@ def test_E2_lookback_constant_is_365():
     of history for the per-CEO baseline. Don't drop below 365 without
     re-checking the cold-start path."""
     assert FORM4_LOOKBACK_DAYS == 365
+
+
+# ---------------------------------------------------------------------------
+# F. edgartools 5.x property-→-method drift coverage (2026-05-22 hotfix)
+# ---------------------------------------------------------------------------
+#
+# The first post-PR-#205 cron landed 0/502 insider transactions across
+# the entire S&P 500 universe. Root cause: edgartools 5.x reclassified
+# ``Filing.obj`` from a property to a method, so ``getattr(filing,
+# "obj", None)`` returned the bound method (truthy) instead of the
+# parsed Ownership object; the downstream ``getattr(parsed,
+# "reporting_owners", None)`` on a bound method always returns ``None``
+# and short-circuited ``return []`` on every filing.
+#
+# The existing A-E test suite used ``@dataclass`` ``_FakeFiling`` mocks
+# with ``obj`` as a regular attribute — they exercise only the
+# property-shape path. Tests below cover both:
+#   F1 — synthetic callable-obj mock to lock the method-shape path
+#   F2 — @network live-AAPL fetch that would have caught the bug on PR
+#        review instead of after the first cron.
+
+
+def test_F1_callable_obj_attribute_is_invoked_in_parser():
+    """Mimic edgartools 5.x where ``filing.obj`` is a method that
+    must be called. The parser must call it and use the returned
+    Ownership view. Locks the ``callable()`` branch added in the
+    2026-05-22 hotfix."""
+
+    fake_ownership = _FakeOwnership(
+        reporting_owners=_FakeReportingOwners(
+            owners=[
+                _FakeOwner(
+                    cik="0001000099",
+                    name="CALLABLE INSIDER",
+                    is_director=False,
+                    is_officer=True,
+                    is_ten_pct_owner=False,
+                    officer_title="CEO",
+                )
+            ]
+        ),
+        non_derivative_table=_FakeNonDerivativeTable(
+            transactions=_FakeNonDerivativeTransactions(
+                _rows=[
+                    _FakeTx(
+                        date="2026-04-10",
+                        shares=5000.0,
+                        price=100.0,
+                        remaining=10000.0,
+                        transaction_code="S",
+                        acquired_disposed="D",
+                    )
+                ]
+            )
+        ),
+    )
+
+    class _CallableObjFiling:
+        """Mimic edgartools 5.x ``Filing`` — ``obj`` is a method, not
+        a property/attribute. ``callable(filing.obj)`` is True, and the
+        parser must invoke it to reach the Ownership view."""
+
+        accession_no = "callable-obj-test"
+        filing_date = "2026-04-10"
+        form = "4"
+        filing_url = "https://www.sec.gov/test"
+
+        def obj(self):
+            return fake_ownership
+
+    out = fetch_recent_form4("TST", filings_override=[_CallableObjFiling()])
+    assert len(out) == 1, (
+        "Parser silently dropped a Form 4 whose .obj is a method "
+        "(edgartools 5.x shape). The 2026-05-22 hotfix added a "
+        "callable() branch in _form4_to_transactions — this test "
+        "locks it against regression."
+    )
+    # fetch_recent_form4 returns list[dict] (cache JSON shape);
+    # Form4Transaction.from_dict() is the dataclass adapter.
+    assert out[0]["insider_cik"] == "0001000099"
+    assert out[0]["insider_name"] == "CALLABLE INSIDER"
+
+
+@pytest.mark.network
+def test_F2_live_aapl_returns_non_empty_insider_activity():
+    """Live SEC EDGAR fetch — AAPL has hundreds of Form-4 insider
+    transactions per year (officers + directors + 10% holders). A 365d
+    window MUST return ≥ 1 transaction. This test would have caught
+    the 2026-05-22 silent-drop incident on PR review.
+
+    Requires ``EDGAR_USER_AGENT`` env var. Skips cleanly when offline
+    via the ``@pytest.mark.network`` marker gate.
+    """
+    out = fetch_recent_form4("AAPL")
+    assert out is not None, (
+        "fetch_recent_form4 returned None for AAPL — fetch failed "
+        "(EDGAR_USER_AGENT missing? 429 throttle? identity mis-set?)."
+    )
+    assert len(out) > 0, (
+        f"fetch_recent_form4('AAPL') returned 0 transactions over 365d. "
+        f"AAPL files dozens of Form 4s per year — this is the 2026-05-22 "
+        f"silent-drop signature. Check whether edgartools released a "
+        f"new major version that changed Filing.obj or get_filings() "
+        f"semantics. Got: {out!r}"
+    )
