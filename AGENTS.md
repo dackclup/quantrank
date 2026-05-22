@@ -629,7 +629,7 @@ note cross-tool-specific points only:
   `compute/scoring/manipulation_index.py` weight docstrings for the
   Phase-2.5 provenance tier (LITERATURE-ANCHORED / GUT-FEEL /
   RESERVED).
-- **Phase 5 dependabot housekeeping in flight (this PR)** — new
+- **Phase 5 dependabot housekeeping merged via PR #185** (2026-05-22) — new
   `.github/dependabot.yml` configures weekly Dependabot PRs across
   3 ecosystems (pip / npm / github-actions). `next` / `react` /
   `react-dom` / `@types/react*` major bumps explicitly ignored —
@@ -641,6 +641,21 @@ note cross-tool-specific points only:
   separate. Treat any Next/React major bump that shows up despite
   the ignore-rule as a misfile — it should be re-routed through the
   issue #41 migration plan, not auto-merged.
+- **Phase 5 Next.js 14.2 patch bump in flight (this PR)** — partial
+  progress on issue #41 (Next 14.2 → 16 CVE refresh) via a within-
+  branch patch bump. `frontend/package.json`: `next 14.2.15 → 14.2.35`
+  + `eslint-config-next 14.2.15 → 14.2.35` + `postcss 8.4.38 → 8.5.15`
+  + new `overrides: { postcss: 8.5.15 }` block (forces next's nested
+  exact-pin to lift transitively). Closes the 8 advisories #41 itemized
+  at filing time. `next build` still produces all 506 static routes,
+  `tsc --noEmit` clean, 1059/1059 offline Python tests pass.
+  Dependency-auditor verdict 2026-05-22: SAFE-TO-MERGE. Cross-tool
+  agents reviewing this branch: do NOT bundle a `next 15+` bump — that
+  belongs to the scoped #41 migration with App Router async-API
+  breaking changes. Issue #41 STAYS OPEN — 14 new advisories surfaced
+  post-filing all require `<15.5.16` (no 14.2.x backport), all target
+  SSR / Server-Components / middleware features QR doesn't use.
+  No compute / schema / scoring / valuation / Python code change.
 
 ## Claude-Code-specific tooling
 
