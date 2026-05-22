@@ -30,7 +30,7 @@ backing.
 | `frontend/components/` | React UI (RankingTable, FairPriceBarChart, …) |
 | `frontend/public/data/` | Compute output: `metadata.json` + `rankings.json` + `stocks/<TICKER>.json` |
 | `tests/` | pytest suite (offline + `@network` gated; see CI for current count) |
-| `.claude/skills/` | 42 invocation-triggerable skills + phase planning docs. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for vendoring / license posture per source. |
+| `.claude/skills/` | 43 invocation-triggerable skills + phase planning docs. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for vendoring / license posture per source. |
 | `.claude/agents/` | 15 project-specific subagents in 4 tiers + 1 data-correctness reviewer: **Tier 1 Core** (quantrank-reviewer · schema-sentinel · defense-layer-auditor · edgar-debugger · **stock-detail-auditor**), **Tier 2 Lifecycle** (security-reviewer · frontend-design-reviewer · release-captain · phase-coordinator), **Tier 3 Specialized** (test-engineer · methodology-scientist · performance-engineer · dependency-auditor), **Tier 4 Operations** (docs-reviewer · incident-commander). Spawned via the `Agent` tool with a separate context window; see [`.claude/agents/README.md`](.claude/agents/README.md) for the routing matrix + 6 coordination flows (pre-push gate / release ladder / new-defense flow / incident response / review escalation / quarterly audit). |
 | `.claude/hooks/` | Bash hook scripts wired by `.claude/settings.json`. 2 PostToolUse hooks: `log-bash.sh` (append every Bash command to gitignored `.claude/session.log`) + `schema-reminder.sh` (inject reminder when any file in the Pydantic↔TS↔snapshot triple is touched via Write/Edit). Both fail-open (missing `jq` / unwritable FS / empty stdin → exit 0). 5-second timeout each. |
 
@@ -238,7 +238,7 @@ that fired per-diff.
 
 ## Phase status
 
-Current schema **`0.9.7-phase4h.7`** · defense layer **20 declared
+Current schema **`0.10.0-phase4.5e`** · defense layer **20 declared
 veto+annotate flags** of [**30 boolean flags actually emitted**](https://github.com/dackclup/quantrank/issues/130#issuecomment-4496605644)
 (7 active vetoes + 13 annotates + 5 method-applicability +
 5 informational; epic [#150](https://github.com/dackclup/quantrank/issues/150)
@@ -891,7 +891,45 @@ the full offline suite still reports `1024 passed` in CI-mode (with
 logic / schema / scoring / valuation / frontend change — pure import
 topology refactor.
 
+**Issue #125 Item 6 cross-session collision detector in flight (this PR)**
+— new `tools/check_cross_session_collision.py` hits the GitHub API for
+`claude/*` branches updated in the last 7 days + open PRs matching a
+scope keyword, exits 1 on collision and 0 when clean. Companion to the
+existing git-only `branch-collision-check` skill (which covers local
+origin state in a 48h window); this skill covers sibling sessions on
+OTHER machines that haven't pushed recently — the gap the git-only
+checker cannot cover. New `.claude/skills/cross-session-collision-check/SKILL.md`
+wraps the script with trigger/skip conditions, auth instructions (GH_TOKEN
+/ GITHUB_TOKEN / gh CLI), false-positive guard (merged+closed branches
+excluded by design), and a comparison table vs `branch-collision-check`.
+`phase-coordinator` Mode A wired to run BOTH skills in sequence: Step 1
+git-only (no auth), Step 2 GitHub API (7-day window). Skill count
+42 → 43. No compute / schema / scoring / valuation / frontend change.
+Closes issue #125 Item 6.
+
+**Phase 4.5e PR 2 — Form-4 observability surface in flight (this PR)**
+— `Metadata.form4_*` diagnostic surface + per-ticker fetch loop in
+`compute/main.py` + `StockDetail.form4_diagnostics`. Per
+`portable-observability-before-wiring` (Rule 18): this PR is the
+diagnostic-only wiring before PR 3 emits any scoring flag. Schema
+bumped `0.9.7-phase4h.7` → `0.10.0-phase4.5e` (MINOR bump — additive
+fields, no consumer migration). 7 new `Metadata` fields:
+`form4_enabled` + `form4_coverage_pct` + latency p50/p95 +
+`form4_universe_insider_count_median` + `form4_tickers_with_recent_activity`
++ `form4_fetch_failures`. 1 new `StockDetail` field:
+`form4_diagnostics` (dict with `insider_count` / `latest_filing_date`
+/ `fetch_status`). New Section K in
+`.claude/skills/verify-production-output/helper.py` validates the
+accounting equation
+`universe_size == active + zero_activity + failures` after each cron.
+ZERO scoring impact — `form4_enabled = False` in this PR; PR 3 flips
+the flag after ≥ 1 cron of firing-rate data. Tests: 1059 → 1061
+(+2 schema-version pin updates in `test_config.py` + `test_smoke.py`).
+
 **Next deliverables** (pick by appetite):
+- **Phase 4.5e PR 3** — `insider_sell_cluster` + `c_suite_unusual_sell`
+  annotate emit, threshold calibration from PR-2 cron data, uncomment
+  reserved weight constants
 - **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight
   slots already declared in `FLAG_WEIGHTS`)
 - **Phase 4i.1 / 4j.1 / 4k.1** — JKP / Qlib / IPCA integration PRs

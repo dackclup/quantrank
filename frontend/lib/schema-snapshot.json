@@ -37,6 +37,41 @@
       "required": false,
       "default": null
     },
+    "form4_coverage_pct": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "form4_enabled": {
+      "type": "bool",
+      "required": false,
+      "default": false
+    },
+    "form4_fetch_failures": {
+      "type": "list[str] | None",
+      "required": false,
+      "default": null
+    },
+    "form4_fetch_latency_p50_seconds": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "form4_fetch_latency_p95_seconds": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "form4_tickers_with_recent_activity": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
+    "form4_universe_insider_count_median": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
     "fundamentals_coverage_pct": {
       "type": "float | None",
       "required": false,
@@ -112,6 +147,11 @@
       "required": false,
       "default": null
     },
+    "sector_coe_enabled": {
+      "type": "bool",
+      "required": false,
+      "default": false
+    },
     "share_count_extraction_missing_count": {
       "type": "int | None",
       "required": false,
@@ -136,6 +176,16 @@
       "type": "int",
       "required": true,
       "default": "<required>"
+    },
+    "value_trap_risk_count_with_sector_coe": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
+    "value_trap_risk_count_without_sector_coe": {
+      "type": "int | None",
+      "required": false,
+      "default": null
     },
     "version": {
       "type": "str",
@@ -348,6 +398,11 @@
       "default": false
     },
     "fair_price": {
+      "type": "dict | None",
+      "required": false,
+      "default": null
+    },
+    "form4_diagnostics": {
       "type": "dict | None",
       "required": false,
       "default": null

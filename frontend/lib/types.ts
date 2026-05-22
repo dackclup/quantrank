@@ -135,6 +135,36 @@ export type Metadata = {
   // rate is visible at-a-glance (gates the follow-up median-
   // exclusion PR per methodology-scientist Mode B 2026-05-21).
   extreme_estimate_majority_count?: number | null;
+  // Phase 4.5e PR 2 (0.10.0-phase4.5e) — Form-4 insider-transaction
+  // observability surface. All optional + nullable: absent / null on
+  // legacy snapshots written before 0.10.0-phase4.5e. Rule 18
+  // (observability-before-wiring): diagnostics ship in this PR so the
+  // first production cron's fetch latency / success rate /
+  // universe-level insider-count distribution is visible BEFORE PR 3
+  // emits any scoring flag. `form4_enabled` mirrors the Tier-2 flag
+  // gate state at compute time (False in this PR; PR 3 flips it).
+  // `form4_fetch_failures` is capped at 20 tickers for JSON size.
+  form4_enabled?: boolean | null;
+  form4_coverage_pct?: number | null;
+  form4_fetch_latency_p50_seconds?: number | null;
+  form4_fetch_latency_p95_seconds?: number | null;
+  form4_universe_insider_count_median?: number | null;
+  form4_tickers_with_recent_activity?: number | null;
+  form4_fetch_failures?: string[] | null;
+  // Issue #67 (0.9.8-phase4h.8) — sector-adjusted cost of equity
+  // (Damodaran 2019 *Investment Valuation* 3rd ed. Table 8.4 +
+  // Damodaran NYU online betas dataset, January 2025 update).
+  // Rule 18 observability surface: both counts computed every cron
+  // regardless of USE_SECTOR_COE flag (default False) so the delta
+  // is visible before the production flip. `sector_coe_enabled`
+  // mirrors config.USE_SECTOR_COE at write time.
+  // `value_trap_risk_count_without_sector_coe` = baseline flat-10%
+  // count; `value_trap_risk_count_with_sector_coe` = count under
+  // per-sector Ke. Delta = expected FP-reduction once flipped.
+  // All three optional + nullable on legacy snapshots pre-0.9.8.
+  sector_coe_enabled?: boolean | null;
+  value_trap_risk_count_with_sector_coe?: number | null;
+  value_trap_risk_count_without_sector_coe?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors
@@ -312,4 +342,14 @@ export type StockDetail = {
   // level so consumers can filter without unpacking the ensemble dict.
   // Optional + null on legacy outputs from before 0.9.4-phase4h.4.
   valuation_methods_applicable?: number | null;
+  // Phase 4.5e PR 2 (0.10.0-phase4.5e) — per-ticker Form-4 fetch
+  // diagnostics. Shape: { insider_count: number, latest_filing_date:
+  // string | null, fetch_status: "ok" | "failed" | "skipped_no_identity" }.
+  // `insider_count` is distinct insider CIK count in the 365-day window.
+  // Optional + null on legacy per-stock JSONs before 0.10.0-phase4.5e.
+  form4_diagnostics?: {
+    insider_count: number;
+    latest_filing_date: string | null;
+    fetch_status: 'ok' | 'failed' | 'skipped_no_identity';
+  } | null;
 };

@@ -20,8 +20,10 @@ Trigger cues: user mentions a new `claude/*` branch, a Phase number /
 issue number / "Item #N" / "for the worker session", or pastes a
 handoff prompt.
 
-Action: read `.claude/skills/branch-collision-check/SKILL.md` and run
-the read-only collision scan:
+Action: run BOTH collision checks in order:
+
+**Step 1 — git-only check (no auth required).**
+Read `.claude/skills/branch-collision-check/SKILL.md` and run:
 
 ```bash
 # List active claude/* branches (other workers)
@@ -31,11 +33,24 @@ git ls-remote --heads origin 'claude/*'
 git log --merges --since="2 days ago" --format="%H %s" main | head -20
 ```
 
+**Step 2 — GitHub API check (7-day window, catches sibling sessions).**
+Read `.claude/skills/cross-session-collision-check/SKILL.md` and run:
+
+```bash
+python tools/check_cross_session_collision.py <scope-keyword>
+```
+
+where `<scope-keyword>` is the primary scope identifier from the handoff
+prompt (e.g., "form4", "sector", "cross-session"). If authentication is
+unavailable (exit 2), inform the user and ask them to set `GH_TOKEN` or
+confirm they accept proceeding without the GitHub-API check.
+
 For each open branch / recent merged PR, extract scope keywords (issue
 #, phase #, feature scope) and compare against the user's intended scope.
 
 Output: list of collision candidates (if any) with the exact PR /
-branch ref + scope overlap. If clean → "no collision; safe to proceed".
+branch ref + scope overlap. If clean on both checks → "no collision; safe
+to proceed".
 
 ### Mode B — Agent-doc lockstep (BEFORE PR open / Ready-flip)
 

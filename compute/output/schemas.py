@@ -174,6 +174,50 @@ class Metadata(BaseModel):
     # rate is visible at-a-glance (gates the follow-up median-exclusion
     # PR per methodology-scientist Mode B, 2026-05-21).
     extreme_estimate_majority_count: int | None = None
+    # Issue #67 (0.9.8-phase4h.8) — sector-adjusted cost of equity
+    # (Damodaran 2019 *Investment Valuation* 3rd ed. Table 8.4 +
+    # Damodaran NYU online betas dataset, January 2025 update).
+    # Rule 18 observability surface: both counts are computed on
+    # EVERY cron regardless of ``config.USE_SECTOR_COE`` (default
+    # False) so the delta is visible before the flag is flipped.
+    # ``sector_coe_enabled`` mirrors the config-flag state at write
+    # time so the verify-helper and post-cron audit can branch on the
+    # actual flag without reading source code.
+    # ``value_trap_risk_count_without_sector_coe`` = tickers where
+    # RIM skips on ROE ≤ flat 0.10 threshold (baseline; always
+    # computed). ``value_trap_risk_count_with_sector_coe`` = same
+    # count under per-sector Ke from SECTOR_COST_OF_EQUITY dict; the
+    # delta is the expected reduction in false positives once
+    # USE_SECTOR_COE is flipped to True.  Both nullable on legacy
+    # snapshots (pre-0.9.8).
+    sector_coe_enabled: bool = False
+    value_trap_risk_count_with_sector_coe: int | None = None
+    value_trap_risk_count_without_sector_coe: int | None = None
+    # Phase 4.5e PR 2 (0.10.0-phase4.5e) — Form-4 insider-transaction
+    # observability surface. Populated after the per-ticker form4 fetch
+    # loop in ``compute/main.py`` completes; all fields default-None so
+    # legacy-snapshot consumers (pre-0.10.0) don't break. Rule 18
+    # (observability-before-wiring): these diagnostics ship in this PR
+    # so the FIRST production cron's fetch latency / success rate /
+    # universe-level insider-count distribution is visible BEFORE PR 3
+    # emits any scoring flag or modifies composite ranks. PR 3 will use
+    # the universe-wide distributions to calibrate
+    # ``insider_sell_cluster`` + ``c_suite_unusual_sell`` thresholds.
+    #
+    # ``form4_enabled`` stays False in this PR; PR 3 flips it to True
+    # once ``compute/scoring/tier2._FORM4_FLAGS_ENABLED`` is enabled.
+    # ``form4_fetch_failures`` is capped at 20 tickers for JSON size.
+    # ``form4_tickers_with_recent_activity`` + zero-activity count +
+    # ``form4_fetch_failures`` should sum to ``universe_size``; the
+    # Section K accounting-equation invariant in
+    # ``.claude/skills/verify-production-output/helper.py`` asserts this.
+    form4_enabled: bool = False
+    form4_coverage_pct: float | None = None
+    form4_fetch_latency_p50_seconds: float | None = None
+    form4_fetch_latency_p95_seconds: float | None = None
+    form4_universe_insider_count_median: int | None = None
+    form4_tickers_with_recent_activity: int | None = None
+    form4_fetch_failures: list[str] | None = None  # bounded, max 20 tickers
 
 
 class RawMetrics(BaseModel):
@@ -255,3 +299,13 @@ class StockDetail(BaseModel):
     # ``[0, 6]`` once populated; ``None`` on legacy outputs from before
     # 0.9.4-phase4h.4.
     valuation_methods_applicable: int | None = None
+    # Phase 4.5e PR 2 (0.10.0-phase4.5e) — per-ticker Form-4 fetch
+    # diagnostics. Shape:
+    #   {"insider_count": int, "latest_filing_date": str | None,
+    #    "fetch_status": "ok" | "failed" | "skipped_no_identity"}
+    # ``insider_count`` is the count of DISTINCT insider CIKs that filed
+    # at least one non-derivative transaction in the lookback window
+    # (FORM4_LOOKBACK_DAYS = 365). ``latest_filing_date`` is the
+    # ISO-8601 date of the most-recent filing in the cache. Null on
+    # legacy per-stock JSONs written before 0.10.0-phase4.5e.
+    form4_diagnostics: dict | None = None

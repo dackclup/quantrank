@@ -10,8 +10,10 @@ from __future__ import annotations
 from compute import config
 
 
-def test_schema_version_is_phase4h_7():
-    assert config.SCHEMA_VERSION == "0.9.7-phase4h.7"
+def test_schema_version_is_phase4_5e():
+    """Phase 4.5e PR 2 (0.10.0-phase4.5e) — MINOR bump for the Form-4
+    observability surface. Locks the version against accidental revert."""
+    assert config.SCHEMA_VERSION == "0.10.0-phase4.5e"
 
 
 def test_extreme_majority_threshold_at_huber_breakdown_point():

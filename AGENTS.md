@@ -440,7 +440,8 @@ note cross-tool-specific points only:
   `frontend-design-reviewer` · `release-captain` ·
   `phase-coordinator` — wraps the project's existing lifecycle-event
   skills (`security-check` · `frontend-design-system` · `release-tag`
-  · `branch-collision-check` + `claude-md-lockstep-check` +
+  · `branch-collision-check` + `cross-session-collision-check` +
+  `claude-md-lockstep-check` +
   `phase-status-bump`) into auto-routable surfaces with the same
   TRIGGER-keyword discipline as the vendored-skill description sharpening
   from PR #157. Wrap-don't-duplicate pattern — enterprise agents read
@@ -629,6 +630,13 @@ note cross-tool-specific points only:
   `compute/scoring/manipulation_index.py` weight docstrings for the
   Phase-2.5 provenance tier (LITERATURE-ANCHORED / GUT-FEEL /
   RESERVED).
+- **Issue #125 Item 6 cross-session collision detector in flight (this
+  PR)** — new `tools/check_cross_session_collision.py` + skill
+  `cross-session-collision-check` (skill count 42 → 43). Companion to
+  the git-only `branch-collision-check` skill; covers sibling sessions
+  on other machines (GitHub API, 7-day window). `phase-coordinator`
+  Mode A wired to run both skills in sequence. No compute / schema
+  change. Closes issue #125 Item 6.
 - **Phase 5 dependabot tailwindcss-ignore follow-up in flight (this
   PR)** — small backstop after Dependabot's second wave (2026-05-22)
   filed PR #200 (`tailwindcss 3.4.4 → 4.3.0`), a complete-engine-
@@ -704,6 +712,20 @@ note cross-tool-specific points only:
   post-filing all require `<15.5.16` (no 14.2.x backport), all target
   SSR / Server-Components / middleware features QR doesn't use.
   No compute / schema / scoring / valuation / Python code change.
+- **Phase 4.5e PR 2 — Form-4 observability surface in flight (this PR)**
+  — `Metadata.form4_*` (7 fields) + `StockDetail.form4_diagnostics` +
+  per-ticker fetch loop wired in `compute/main.py`. Schema bumped
+  `0.9.7-phase4h.7` → `0.10.0-phase4.5e` (MINOR bump — additive,
+  no consumer migration). Cross-tool agents (Copilot / Cursor / Devin):
+  ZERO scoring impact in this PR — `form4_enabled = False`, composite
+  rank unchanged, risk_flags unchanged. The 365-day Form-4 cache loop
+  runs after annual history (Step 3) and BEFORE pillar computation;
+  all fetch failures are caught and logged without aborting the cron.
+  PR 3 (next) will flip `_FORM4_FLAGS_ENABLED`, uncomment reserved
+  weight constants, and emit `insider_sell_cluster` +
+  `c_suite_unusual_sell` annotates using the cron data this PR
+  collects. Section K added to `helper.py` with accounting-equation
+  invariant check. Tests 1059 → 1061 (+2 schema-version pin updates).
 
 ## Claude-Code-specific tooling
 

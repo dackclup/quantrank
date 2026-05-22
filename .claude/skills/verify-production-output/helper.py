@@ -151,6 +151,34 @@ def section_a_schema(metadata: dict, baseline: dict | None) -> tuple[int, int]:
     if f_p50 is not None:
         _emit(OK, "fundamentals_latency_p50_seconds", f"{f_p50}s")
 
+    # Phase 4.5e PR 2 — Form-4 observability fields.
+    f4_cov = metadata.get("form4_coverage_pct")
+    f4_p50 = metadata.get("form4_fetch_latency_p50_seconds")
+    f4_p95 = metadata.get("form4_fetch_latency_p95_seconds")
+    f4_enabled = metadata.get("form4_enabled", False)
+    if f4_enabled is None:
+        f4_enabled = False
+    _emit(OK, "form4_enabled", str(f4_enabled))
+    if f4_cov is not None:
+        if f4_cov < 80:
+            _emit(FAIL, "form4_coverage_pct", f"{f4_cov}% — heavily degraded")
+            failures += 1
+        elif f4_cov < 95:
+            _emit(WARN, "form4_coverage_pct", f"{f4_cov}% (target ≥95)")
+            warnings += 1
+        else:
+            _emit(OK, "form4_coverage_pct", f"{f4_cov}%")
+    if f4_p50 is not None:
+        _emit(OK, "form4_fetch_latency_p50_seconds", f"{f4_p50}s")
+    if f4_p95 is not None:
+        # Budget: 365d lookback × ~502 tickers — first cron cold-cache
+        # may run 10-20 min extra; warm-cache target < 30s p95.
+        if f4_p95 > 30:
+            _emit(WARN, "form4_fetch_latency_p95_seconds", f"{f4_p95}s (>30s budget)")
+            warnings += 1
+        else:
+            _emit(OK, "form4_fetch_latency_p95_seconds", f"{f4_p95}s")
+
     if baseline:
         b_version = baseline.get("version")
         if b_version and b_version != version:
@@ -373,6 +401,139 @@ def section_h_universe_consistency(
     return 0, 1
 
 
+def section_k_form4_universe(
+    metadata: dict, stocks: list[dict]
+) -> tuple[int, int]:
+    """Form-4 universe summary + accounting-equation invariant check.
+
+    Phase 4.5e PR 2 (0.10.0-phase4.5e) — observability-only, no scoring
+    impact. The accounting equation:
+
+        universe_size == tickers_with_recent_activity
+                       + tickers_with_zero_activity
+                       + fetch_failures
+
+    must balance exactly. An imbalance means ``form4_diagnostics`` on some
+    per-stock JSON was silently dropped during the compute run.
+
+    ``tickers_with_zero_activity`` is derived from the per-stock JSONs as
+    the count of stocks whose ``form4_diagnostics`` shows
+    ``fetch_status == "ok"`` AND ``insider_count == 0``. This is the ground
+    truth; the metadata field ``form4_tickers_with_recent_activity`` is the
+    complementary pre-aggregated count.
+
+    Note: when ``form4_enabled`` is False (this PR) or ``form4_coverage_pct``
+    is absent (legacy snapshot pre-0.10.0), this section emits a single INFO
+    line and returns no warnings/failures — the invariant is only meaningful
+    on a cron that actually ran the fetch loop.
+    """
+    _section("K", "Form-4 universe summary + accounting-equation invariant")
+    warnings = failures = 0
+
+    f4_enabled = bool(metadata.get("form4_enabled", False))
+    f4_cov = metadata.get("form4_coverage_pct")
+
+    if not f4_enabled or f4_cov is None:
+        _emit(
+            OK,
+            "form4_enabled",
+            f"{f4_enabled} — fetch loop not active; invariant check skipped",
+        )
+        return 0, 0
+
+    # Metadata aggregates.
+    universe_size = metadata.get("universe_size") or 0
+    meta_with_activity = metadata.get("form4_tickers_with_recent_activity") or 0
+    meta_failures_list = metadata.get("form4_fetch_failures") or []
+    meta_failures_count = len(meta_failures_list)
+    meta_median = metadata.get("form4_universe_insider_count_median")
+
+    _emit(OK, "form4_enabled", str(f4_enabled))
+    _emit(OK, "form4_coverage_pct", f"{f4_cov}%")
+    _emit(OK, "form4_universe_insider_count_median", str(meta_median))
+    _emit(
+        OK,
+        "form4_tickers_with_recent_activity",
+        f"{meta_with_activity}/{universe_size}",
+    )
+    _emit(
+        OK,
+        "form4_fetch_failures_count",
+        f"{meta_failures_count} (capped at 20 in metadata)",
+    )
+    if meta_failures_list:
+        _emit(WARN, "form4_fetch_failures", f"{sorted(meta_failures_list)}")
+        warnings += 1
+
+    # Ground-truth counts from per-stock JSONs.
+    ok_active = 0
+    ok_zero = 0
+    failed = 0
+    missing_diag = 0
+    for s in stocks:
+        diag = s.get("form4_diagnostics")
+        if diag is None:
+            missing_diag += 1
+            continue
+        status = diag.get("fetch_status")
+        count = diag.get("insider_count", 0)
+        if status == "failed":
+            failed += 1
+        elif status == "ok" and count > 0:
+            ok_active += 1
+        elif status == "ok" and count == 0:
+            ok_zero += 1
+        else:
+            # "skipped_no_identity" or unexpected status — treat as failure
+            # for accounting purposes.
+            failed += 1
+
+    _emit(OK, "per_stock_ok_active", str(ok_active))
+    _emit(OK, "per_stock_ok_zero_activity", str(ok_zero))
+    _emit(OK, "per_stock_failed", str(failed))
+    _emit(OK, "per_stock_missing_diag_field", str(missing_diag))
+
+    # Accounting equation: universe_size == ok_active + ok_zero + failed + missing
+    # (missing_diag covers legacy JSONs or stocks that were written before
+    # the form4 fetch loop ran — should be 0 on a fresh compute run).
+    total_accounted = ok_active + ok_zero + failed + missing_diag
+    n_stocks = len(stocks)  # ground truth file count
+    if total_accounted != n_stocks:
+        _emit(
+            FAIL,
+            "accounting_equation",
+            f"IMBALANCE: active({ok_active}) + zero({ok_zero}) + "
+            f"failed({failed}) + missing({missing_diag}) = {total_accounted} "
+            f"!= stock_files({n_stocks}) — silent drop detected",
+        )
+        failures += 1
+    else:
+        _emit(
+            OK,
+            "accounting_equation",
+            f"{ok_active} active + {ok_zero} zero + {failed} failed "
+            f"+ {missing_diag} missing = {total_accounted} ✓",
+        )
+
+    # Cross-check metadata pre-aggregate vs per-stock ground truth.
+    if meta_with_activity != ok_active:
+        _emit(
+            WARN,
+            "metadata_vs_perstock_drift",
+            f"metadata.form4_tickers_with_recent_activity={meta_with_activity} "
+            f"!= per_stock ok_active={ok_active}",
+        )
+        warnings += 1
+    else:
+        _emit(
+            OK,
+            "metadata_vs_perstock_drift",
+            f"metadata aggregate matches per-stock count ({meta_with_activity})",
+        )
+
+    return warnings, failures
+
+
 def section_j_annotate_audit(stocks: list[dict]) -> tuple[int, int]:
     """Auto-tabulate the annotate-flag surface for quarterly audit automation.
 
@@ -463,6 +624,7 @@ def main(argv: list[str] | None = None) -> int:
         lambda: section_g_fundamentals(metadata),
         lambda: section_h_universe_consistency(metadata, rankings, stocks),
         lambda: section_j_annotate_audit(stocks),
+        lambda: section_k_form4_universe(metadata, stocks),
     ):
         w, f = fn()
         total_warnings += w

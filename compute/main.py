@@ -83,6 +83,7 @@ from compute.scoring.earnings_quality import (
     check_loss_avoidance_size_invariant,
 )
 from compute.scoring.eight_k_events import get_non_reliance_filing_dates
+from compute.scoring.form4_insider import fetch_recent_form4
 from compute.scoring.loss_chance import derive_loss_chance
 from compute.scoring.manipulation_index import (
     compute_adjusted_composite,
@@ -781,6 +782,104 @@ def run_weekly_compute() -> int:
             except Exception as e:  # noqa: BLE001
                 logger.warning("History task raised for %s: %s", ticker, e)
                 histories[ticker] = pd.DataFrame()
+
+    # Phase 4.5e PR 2 — Form-4 insider-transaction observability fetch.
+    # Runs AFTER annual history (Step 3) so it doesn't delay the pillar
+    # inputs on the hot path. ZERO scoring impact — purely diagnostic.
+    #
+    # Design principles:
+    # - Entire loop is wrapped in graceful-degradation try/except per the
+    #   ``portable-graceful-degradation-try-except`` skill. Any unhandled
+    #   exception leaves every form4_* Metadata field at its default (None
+    #   / False) so the cron NEVER blocks on Form-4 fetch failure.
+    # - Per-ticker failures are caught individually so a single bad ticker
+    #   doesn't abort the rest of the universe fetch.
+    # - ``fetch_recent_form4`` returns None on EDGAR identity missing /
+    #   network error; returns [] when the ticker has no Form-4 activity
+    #   in the 365-day window (zero activity is NOT a failure).
+    # - Latencies are collected even on per-ticker failure so the p50/p95
+    #   histogram covers the full wall-clock picture.
+    # - ``form4_fetch_failures`` is capped at 20 tickers for JSON size.
+    #
+    # PR 3 wiring notes: PR 3 will flip
+    # ``compute/scoring/tier2._FORM4_FLAGS_ENABLED`` to True and emit
+    # ``insider_sell_cluster`` + ``c_suite_unusual_sell`` annotates using
+    # the cache this loop populates. The reserved weight constants
+    # ``INSIDER_SELL_CLUSTER_WEIGHT_RESERVED`` and
+    # ``C_SUITE_UNUSUAL_SELL_WEIGHT_RESERVED`` in ``manipulation_index.py``
+    # stay commented out until PR 3.
+    form4_diagnostics: dict[str, dict] = {}
+    form4_latencies: list[float] = []
+    form4_failures: list[str] = []
+    try:
+        logger.info(
+            "Phase 4.5e PR 2 — fetching Form-4 insider data for %d tickers "
+            "(observability-only, no scoring impact)…",
+            len(df),
+        )
+        for _, _f4_row in df.iterrows():
+            _f4_ticker = str(_f4_row["ticker"])
+            _f4_t0 = time.perf_counter()
+            try:
+                _f4_transactions = fetch_recent_form4(_f4_ticker)
+                _f4_elapsed = time.perf_counter() - _f4_t0
+                form4_latencies.append(_f4_elapsed)
+                if _f4_transactions is None:
+                    # None = fetch error (rate-limit / no EDGAR identity /
+                    # network failure). Distinct from [] (success, no activity).
+                    form4_failures.append(_f4_ticker)
+                    form4_diagnostics[_f4_ticker] = {
+                        "insider_count": 0,
+                        "latest_filing_date": None,
+                        "fetch_status": "failed",
+                    }
+                else:
+                    _f4_distinct = len({t["insider_cik"] for t in _f4_transactions})
+                    _f4_latest = (
+                        _f4_transactions[0]["filing_date"]
+                        if _f4_transactions
+                        else None
+                    )
+                    form4_diagnostics[_f4_ticker] = {
+                        "insider_count": _f4_distinct,
+                        "latest_filing_date": _f4_latest,
+                        "fetch_status": "ok",
+                    }
+            except Exception as _f4_e:  # noqa: BLE001
+                _f4_elapsed = time.perf_counter() - _f4_t0
+                form4_latencies.append(_f4_elapsed)
+                form4_failures.append(_f4_ticker)
+                form4_diagnostics[_f4_ticker] = {
+                    "insider_count": 0,
+                    "latest_filing_date": None,
+                    "fetch_status": "failed",
+                }
+                logger.warning(
+                    "form4 fetch failed for %s: %s", _f4_ticker, _f4_e
+                )
+
+        _f4_n = len(df)
+        _f4_success = _f4_n - len(form4_failures)
+        logger.info(
+            "Form-4 fetch complete: %d/%d succeeded (%d failures); "
+            "p50=%.2fs p95=%.2fs",
+            _f4_success,
+            _f4_n,
+            len(form4_failures),
+            float(np.median(form4_latencies)) if form4_latencies else 0.0,
+            float(np.percentile(form4_latencies, 95)) if form4_latencies else 0.0,
+        )
+    except Exception as _f4_outer_e:  # noqa: BLE001
+        logger.warning(
+            "Form-4 fetch loop failed entirely (observability-only — "
+            "production continues); form4_* Metadata fields → defaults. "
+            "Error: %s",
+            _f4_outer_e,
+        )
+        # Reset to safe defaults so Metadata aggregation below sees clean state.
+        form4_diagnostics = {}
+        form4_latencies = []
+        form4_failures = []
 
     # Step 4 — assemble TickerInputs and compute all pillars.
     inputs: dict[str, TickerInputs] = {}
@@ -1534,6 +1633,8 @@ def run_weekly_compute() -> int:
             ),
             entered_top5=ticker in entered,
             exited_top5=ticker in exited,
+            # Phase 4.5e PR 2 — per-ticker Form-4 diagnostics (observability only).
+            form4_diagnostics=form4_diagnostics.get(ticker),
         )
         write_stock_detail(detail, config.DATA_DIR)
         detail_count += 1
@@ -1591,6 +1692,52 @@ def run_weekly_compute() -> int:
         ),
         extreme_estimate_majority_count=(
             extreme_estimate_majority_count
+        ),
+        # Phase 4.5e PR 2 — Form-4 observability aggregates.
+        # ``form4_enabled`` stays False until PR 3 flips
+        # ``compute/scoring/tier2._FORM4_FLAGS_ENABLED``.
+        # All fields degrade to None / False when the fetch loop
+        # encountered an outer exception (form4_diagnostics empty).
+        form4_enabled=False,
+        form4_coverage_pct=(
+            round(
+                100.0 * (len(form4_diagnostics) - len(form4_failures))
+                / max(len(form4_diagnostics), 1),
+                2,
+            )
+            if form4_diagnostics
+            else None
+        ),
+        form4_fetch_latency_p50_seconds=(
+            round(float(np.median(form4_latencies)), 2)
+            if form4_latencies
+            else None
+        ),
+        form4_fetch_latency_p95_seconds=(
+            round(float(np.percentile(form4_latencies, 95)), 2)
+            if form4_latencies
+            else None
+        ),
+        form4_universe_insider_count_median=(
+            int(
+                np.median(
+                    [d["insider_count"] for d in form4_diagnostics.values()]
+                )
+            )
+            if form4_diagnostics
+            else None
+        ),
+        form4_tickers_with_recent_activity=(
+            sum(
+                1
+                for d in form4_diagnostics.values()
+                if d.get("insider_count", 0) > 0
+            )
+            if form4_diagnostics
+            else None
+        ),
+        form4_fetch_failures=(
+            sorted(form4_failures)[:20] if form4_failures else None
         ),
     )
 

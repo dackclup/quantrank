@@ -227,6 +227,11 @@ models/
 .claude/session.log
 .claude/settings.local.json
 
+# Claude Code Agent tool worktree-isolation transient — sub-agent worktrees
+# live here under .claude/worktrees/agent-<id>/; each is itself a full
+# `git worktree` with its own branch. Do NOT commit them from the parent.
+.claude/worktrees/
+
 # Node / Next.js
 node_modules/
 .next/

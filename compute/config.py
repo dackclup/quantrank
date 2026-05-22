@@ -27,7 +27,7 @@ FUNDAMENTALS_HISTORY_CACHE_DIR: Path = CACHE_DIR / "fundamentals_history"
 MODELS_DIR: Path = PROJECT_ROOT / "models"
 
 UNIVERSE: str = "SP500"
-SCHEMA_VERSION: str = "0.9.7-phase4h.7"
+SCHEMA_VERSION: str = "0.10.0-phase4.5e"
 
 PRICES_PERIOD: str = "5y"
 MAX_PARALLEL_FETCHES: int = 10
@@ -65,6 +65,26 @@ HTTP_USER_AGENT: str = "QuantRank/0.3 (+https://github.com/dackclup/quantrank)"
 DISCOUNT_RATE: float = 0.10  # WACC proxy for non-Financial/non-Utility S&P 500
 TERMINAL_GROWTH: float = 0.03  # long-run nominal GDP cap (Damodaran)
 COST_OF_EQUITY: float = 0.10  # used by RIM (Cost of Equity ≈ WACC for S&P 500 cash-flat names)
+
+# Issue #67 — sector-adjusted cost of equity (Damodaran 2019 Table 8.4).
+#
+# When ``True``, ``compute.valuation.ensemble.compute_fair_price_ensemble``
+# and ``compute.valuation.applicability.check_rim_applicability`` use the
+# per-GICS-Sector Ke from ``compute.scoring.cost_of_equity.get_cost_of_equity``
+# instead of the flat ``COST_OF_EQUITY = 0.10``.
+#
+# DEFAULT = False — this PR is DATA-COLLECTION ONLY per Rule 18
+# (observability-before-wiring).  The flip to ``True`` follows after ≥ 1 cron
+# confirms the delta-flag-count via
+# ``Metadata.value_trap_risk_count_with_sector_coe`` vs
+# ``Metadata.value_trap_risk_count_without_sector_coe``.
+# Expected direction: ``value_trap_risk`` drops from ~176 toward ~80-110
+# for cyclical sectors; Utilities/REITs (sector Ke < 10%) may gain new flags,
+# so net change needs empirical confirmation before the flip.
+#
+# Methodology-scientist Mode B sign-off REQUIRED before the flip PR lands.
+USE_SECTOR_COE: bool = False
+
 DCF_FORECAST_YEARS: int = 5
 DCF_FCF_WINDOW_YEARS: int = 5  # trailing window for FCF base estimation
 RIM_FORECAST_YEARS: int = 5  # explicit RIM residual-income forecast horizon
