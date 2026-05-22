@@ -82,7 +82,7 @@ export default function StockDetailPage({
           rank badge + sector chip on top row, big mono ticker, serif
           company name, radial-gauge ScoreBadge + price + MoSCell on
           the right side. */}
-      <header className="rounded-2xl border border-slate-200 bg-white p-5 shadow-large dark:border-slate-800 dark:bg-slate-900 sm:p-6">
+      <header className="rounded-lg border border-slate-200 bg-white p-5 shadow-large dark:border-slate-800 dark:bg-slate-900 sm:p-6">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2 text-xs">

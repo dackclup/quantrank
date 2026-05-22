@@ -22,7 +22,12 @@ design-system spec.
   / `Sidebar` left-rail nav; Phase 3b on this PR — `next-themes`
   class-strategy dark mode, OKLCH dark band, paired `dark:` variants
   across every chip family + table + card + drawer surface, three-
-  state theme toggle in sidebar footer + AppShell header).
+  state theme toggle in sidebar footer + AppShell header.
+  Phase 3d folded into the same PR: LedgerCraft canonical palette
+  alignment — body bg `#FAFAFA`, brand primary `emerald-700`
+  (`#15803D`) on wordmark Q logo + FilterDrawer submit CTA, OKLCH
+  hue 155 → 152 + chroma 0.09 → 0.13 closer to forest green,
+  border-radius normalization `rounded-2xl/xl` → `rounded-lg`).
 - **CI** — GitHub Actions; weekly `compute-rankings.yml` (cron Sun 22:00 UTC)
 - **Data** — SEC EDGAR via `edgartools` · yfinance for prices · S&P 500
   constituents scraped from Wikipedia

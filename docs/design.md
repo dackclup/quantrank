@@ -44,7 +44,7 @@ Three governing instincts:
 
 | Role | Token | Value | Purpose |
 |---|---|---|---|
-| App background | `slate-50` | `rgb(248 250 252)` | Body canvas |
+| App background | `neutral-50` | `#FAFAFA` | Body canvas (LedgerCraft canonical) |
 | Surface | `white` | `#FFFFFF` | Cards, table rows (odd) |
 | Surface (alt) | `slate-50` | `#F8FAFC` | Table rows (even) — alternating-row pattern |
 | Hover | `slate-100` | `#F1F5F9` | Table row hover, button hover |
@@ -53,6 +53,28 @@ Three governing instincts:
 | Body text | `slate-900` | `rgb(15 23 42)` | Primary content |
 | Subdued text | `slate-600` / `slate-500` | — | Section labels (600) / micro labels (500) |
 | Muted text | `slate-400` | — | Captions, "N/A", aria-hidden glyphs |
+
+### LedgerCraft canonical accents (Phase 3b)
+
+QuantRank's brand palette aligns to the LedgerCraft spec. The hex
+values below are the canonical truth; the Tailwind classes are the
+single approved way to reach them in code (no inline hex per Rule 0).
+
+| Role | LedgerCraft hex | Tailwind class | Use |
+|---|---|---|---|
+| **Primary** (forest green) | `#15803D` | `emerald-700` | CTAs, wordmark Q logo, "View N stocks" submit, positive balance |
+| **Primary hover** | `#166534` | `emerald-800` | Primary button hover |
+| **Secondary** (steel) | `#64748B` | `slate-500` | Secondary actions, column headers |
+| **Tertiary** (amber) | `#B45309` | `amber-700` | Alerts, overdue notices, warning chip text |
+| **Neutral** (gray) | `#9CA3AF` | ≈ `slate-400` | Borders, disabled states, placeholders |
+| **Error** | `#DC2626` | `red-600` | Hard errors, rejected entries (rare — `rose-*` preferred for "overvalued") |
+| **Info** | `#2563EB` | `blue-600` | Help links, informational notes |
+
+The primary CTA chip family (`bg-emerald-700` + white text) is the
+LedgerCraft "Primary button" pattern. Used for the FilterDrawer
+"View N stocks" submit + the sidebar wordmark Q logo. NOT used for
+chips / data surfaces — those follow the outlined-light pattern per
+Rule 2.
 
 ### Semantic (OKLCH, soft band)
 
@@ -410,6 +432,7 @@ weight delta between header and data is visible.
 | Phase 3a | Spreadsheet polish on section h2s + table theads (PR #213) | ✅ merged 2026-05-22 |
 | Phase 3c | Sidebar pattern — left-rail nav + collapsible + mobile drawer (PR #215) | ✅ merged 2026-05-22 |
 | Phase 3b | Dark-mode toggle — next-themes + OKLCH dark band + paired `dark:` variants | ✅ shipped this PR |
+| Phase 3d | LedgerCraft canonical palette alignment — `#FAFAFA` body bg + emerald-700 brand primary + OKLCH hue 155 → 152 + border-radius normalization (rounded-2xl/xl → rounded-lg) | ✅ shipped this PR (folded into Phase 3b) |
 
 ---
 

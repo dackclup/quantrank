@@ -231,6 +231,21 @@ export function FairPriceCard(props) {  // no types
   icon when collapsed). `<html suppressHydrationWarning>` on
   layout.tsx silences the harmless attribute mismatch
   `next-themes` introduces when it sets the class before paint.
+  **Phase 3d (folded into the same PR)** aligns to LedgerCraft's
+  canonical palette: body bg `#FAFAFA` (was slate-50 `#F8FAFC`);
+  brand primary `emerald-700` (`#15803D`) on the wordmark Q logo +
+  FilterDrawer "View N stocks" submit CTA — the LedgerCraft
+  "Primary button" pattern; OKLCH positive band shifted hue 155 →
+  152 + chroma 0.09 → 0.13 (light) / 0.13 → 0.16 (dark) so the
+  strong swatch sits closer to forest-green #15803D in
+  perceptually-uniform space without flipping to solid emerald-700;
+  border-radius normalization across cards — `rounded-2xl` (hero
+  card) + `rounded-xl` (PillarRadarChart + FairPriceBarChart) →
+  `rounded-lg` per LedgerCraft "max 8px / typical 4-6px" radius
+  scale; OKLCH negative kept on dusty-rose hue 18 (NOT shifted to
+  red-600 `#DC2626`) per the prior 2026-05-14 design feedback that
+  rejected alarm-red intensity. Canonical hex → Tailwind class
+  mapping table now in `docs/design.md` §Colors.
 
 ## Git workflow
 

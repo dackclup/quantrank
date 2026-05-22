@@ -175,7 +175,7 @@ export function FairPriceBarChart({
   return (
     <section
       aria-label={`Fair price methods for ${ticker}`}
-      className="mb-4 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900"
+      className="mb-4 rounded-lg border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900"
     >
       <div className="mb-4">
         <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">

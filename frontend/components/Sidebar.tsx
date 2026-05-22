@@ -104,7 +104,7 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose
             className="flex min-w-0 items-center gap-2 text-slate-900 hover:opacity-80 dark:text-slate-100"
             aria-label="QuantRank home"
           >
-            <span aria-hidden="true" className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-slate-900 font-mono text-xs font-semibold text-white dark:bg-slate-100 dark:text-slate-900">Q</span>
+            <span aria-hidden="true" className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-emerald-700 font-mono text-xs font-semibold text-white dark:bg-emerald-600 dark:text-white">Q</span>
             {!collapsed && (
               <span className="font-slab text-lg font-semibold tracking-tight">QuantRank</span>
             )}

@@ -293,7 +293,7 @@ export function FilterDrawer({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md bg-slate-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-300"
+            className="rounded-md bg-emerald-700 px-4 py-1.5 text-sm font-medium text-white hover:bg-emerald-800 dark:bg-emerald-600 dark:text-white dark:hover:bg-emerald-500"
           >
             View {filteredCount.toLocaleString()} stock{filteredCount === 1 ? '' : 's'}
           </button>
