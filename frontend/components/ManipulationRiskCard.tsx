@@ -39,27 +39,27 @@ function bandTone(index: number): {
 } {
   if (index >= 50) {
     return {
-      ring: 'ring-rose-300',
-      bg: 'bg-rose-50',
-      text: 'text-rose-900',
-      dot: 'bg-rose-600',
+      ring: 'ring-rose-300 dark:ring-rose-800',
+      bg: 'bg-rose-50 dark:bg-rose-900/30',
+      text: 'text-rose-900 dark:text-rose-200',
+      dot: 'bg-rose-600 dark:bg-rose-400',
       label: 'High',
     };
   }
   if (index >= 20) {
     return {
-      ring: 'ring-amber-300',
-      bg: 'bg-amber-50',
-      text: 'text-amber-900',
-      dot: 'bg-amber-600',
+      ring: 'ring-amber-300 dark:ring-amber-800',
+      bg: 'bg-amber-50 dark:bg-amber-900/30',
+      text: 'text-amber-900 dark:text-amber-200',
+      dot: 'bg-amber-600 dark:bg-amber-400',
       label: 'Moderate',
     };
   }
   return {
-    ring: 'ring-emerald-300',
-    bg: 'bg-emerald-50',
-    text: 'text-emerald-900',
-    dot: 'bg-emerald-600',
+    ring: 'ring-emerald-300 dark:ring-emerald-800',
+    bg: 'bg-emerald-50 dark:bg-emerald-900/30',
+    text: 'text-emerald-900 dark:text-emerald-200',
+    dot: 'bg-emerald-600 dark:bg-emerald-400',
     label: 'Low',
   };
 }
@@ -98,10 +98,10 @@ export function ManipulationRiskCard({
 
   return (
     <section
-      className={`rounded-lg border border-slate-200 bg-white p-4 ring-1 ring-inset ${tone.ring}`}
+      className={`rounded-lg border border-slate-200 bg-white p-4 ring-1 ring-inset dark:border-slate-800 dark:bg-slate-900 ${tone.ring}`}
     >
       <header className="mb-3 flex items-center justify-between">
-        <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-600">
+        <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
           Manipulation Risk Index
         </h2>
         <span
@@ -119,18 +119,18 @@ export function ManipulationRiskCard({
         <div>
           <div className={`text-3xl font-semibold tabular-nums ${tone.text}`}>
             {manipulationIndex.toFixed(0)}
-            <span className="text-base font-normal text-slate-400">/100</span>
+            <span className="text-base font-normal text-slate-400 dark:text-slate-500">/100</span>
           </div>
           {penalty !== null && penalty > 0 ? (
-            <div className="mt-1 text-xs text-slate-500">
+            <div className="mt-1 text-xs text-slate-500 dark:text-slate-400">
               Composite penalty:{' '}
-              <span className="font-mono tabular-nums text-slate-700">
+              <span className="font-mono tabular-nums text-slate-700 dark:text-slate-300">
                 −{penalty.toFixed(2)}
               </span>{' '}
               pts (informational; rank uses raw composite)
             </div>
           ) : (
-            <div className="mt-1 text-xs text-slate-500">
+            <div className="mt-1 text-xs text-slate-500 dark:text-slate-400">
               No composite-score penalty applied at this index.
             </div>
           )}
@@ -139,10 +139,10 @@ export function ManipulationRiskCard({
 
       {firedFlags.length > 0 && (
         <div className="mt-4">
-          <div className="mb-2 text-xs uppercase tracking-wide text-slate-500">
+          <div className="mb-2 text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
             Fired components ({firedFlags.length})
           </div>
-          <ul className="space-y-1.5 text-sm text-slate-700">
+          <ul className="space-y-1.5 text-sm text-slate-700 dark:text-slate-300">
             {firedFlags.map((flag) => (
               <li key={flag} className="flex items-start gap-2">
                 <span
@@ -151,7 +151,7 @@ export function ManipulationRiskCard({
                 />
                 <span>
                   {FLAG_LABELS[flag] ?? flag}
-                  <span className="ml-1.5 font-mono text-xs text-slate-400">
+                  <span className="ml-1.5 font-mono text-xs text-slate-400 dark:text-slate-500">
                     [{flag}]
                   </span>
                 </span>
@@ -161,7 +161,7 @@ export function ManipulationRiskCard({
         </div>
       )}
 
-      <p className="mt-4 text-xs text-slate-400">
+      <p className="mt-4 text-xs text-slate-400 dark:text-slate-500">
         Rolls up Phase 4.5 earnings-manipulation defenses (Sloan ·
         Beneish · Dechow · REM · restatement · late-filing · earnings-
         quality time-series) into a single 0-100 risk index. Soft

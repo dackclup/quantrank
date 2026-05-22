@@ -100,17 +100,16 @@ const ExternalLinkIcon = (
 );
 
 function severityClasses(severity: Severity): string {
-  // Light-theme palette — matches the existing rankings-table pattern
-  // (Score badge / filing-lag badge use the same ring-1 ring-inset
-  // approach with rose/amber/emerald families).
+  // Matches the rankings-table chip pattern (ring-1 ring-inset, rose
+  // / amber families). LedgerCraft Phase 3b adds paired dark: variants.
   if (severity === 'veto') {
-    return 'bg-rose-100 text-rose-800 ring-rose-200';
+    return 'bg-rose-100 text-rose-800 ring-rose-200 dark:bg-rose-900/30 dark:text-rose-200 dark:ring-rose-800';
   }
-  return 'bg-amber-100 text-amber-800 ring-amber-200';
+  return 'bg-amber-100 text-amber-800 ring-amber-200 dark:bg-amber-900/30 dark:text-amber-200 dark:ring-amber-800';
 }
 
 function rowTextClasses(severity: Severity): string {
-  return severity === 'veto' ? 'text-rose-700' : 'text-amber-700';
+  return severity === 'veto' ? 'text-rose-700 dark:text-rose-300' : 'text-amber-700 dark:text-amber-300';
 }
 
 export function Tier2EventCard({
@@ -177,9 +176,9 @@ export function Tier2EventCard({
   return (
     <section
       aria-label={`Regulatory events for ${ticker}`}
-      className="rounded-lg border border-slate-200 bg-white p-4"
+      className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900"
     >
-      <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600">
+      <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
         Recent regulatory events
       </h2>
       <ul className="space-y-2">
@@ -190,7 +189,7 @@ export function Tier2EventCard({
           >
             <span className={`flex items-center gap-2 ${rowTextClasses(row.severity)}`}>
               {row.icon}
-              <span className="text-slate-700">{row.label}</span>
+              <span className="text-slate-700 dark:text-slate-300">{row.label}</span>
             </span>
             <span className="flex flex-wrap items-center gap-2">
               <span
@@ -201,7 +200,7 @@ export function Tier2EventCard({
               </span>
               {row.url && (
                 <a
-                  className="inline-flex items-center text-xs text-slate-500 underline-offset-2 hover:text-slate-900 hover:underline"
+                  className="inline-flex items-center text-xs text-slate-500 underline-offset-2 hover:text-slate-900 hover:underline dark:text-slate-400 dark:hover:text-slate-100"
                   href={row.url}
                   rel="noopener noreferrer"
                   target="_blank"
@@ -215,7 +214,7 @@ export function Tier2EventCard({
         ))}
       </ul>
       {showDateFooter && (
-        <p className="mt-3 text-xs text-slate-400">
+        <p className="mt-3 text-xs text-slate-400 dark:text-slate-500">
           Latest 8-K: {latest_8k_filing_date}
         </p>
       )}

@@ -75,6 +75,27 @@
   --c-neg-dot: oklch(60% 0.10 18);
 }
 
+/* LedgerCraft Phase 3b — dark-mode OKLCH band. Same hues (155 / 18)
+ * but a brighter chroma + lighter lightness on text/dot so they
+ * read against dark surfaces. Backgrounds drop to a near-black
+ * tinted band so the chip surface still distinguishes from the
+ * page background (`oklch(20%) vs `oklch(15%)`). */
+.dark {
+  --c-pos-strong: oklch(72% 0.13 155);
+  --c-pos-medium: oklch(66% 0.12 155);
+  --c-pos-bg: oklch(22% 0.04 155);
+  --c-pos-bg-mid: oklch(28% 0.06 155);
+  --c-pos-ring: oklch(35% 0.07 155);
+  --c-pos-dot: oklch(70% 0.14 155);
+
+  --c-neg-strong: oklch(72% 0.13 18);
+  --c-neg-medium: oklch(66% 0.12 18);
+  --c-neg-bg: oklch(22% 0.04 18);
+  --c-neg-bg-mid: oklch(28% 0.06 18);
+  --c-neg-ring: oklch(35% 0.07 18);
+  --c-neg-dot: oklch(70% 0.14 18);
+}
+
 html,
 body {
   height: 100%;
@@ -85,6 +106,23 @@ body {
   color: rgb(15 23 42);
   -webkit-font-smoothing: antialiased;
   font-family: var(--font-sans);
+}
+
+.dark body {
+  /* Near-black tinted with slate hue — slate-950 territory. */
+  background: rgb(2 6 23);
+  color: rgb(226 232 240);
+}
+
+/* Smooth color-scheme transition prevents the "flash of dark"
+ * during initial theme detection. next-themes adds the class
+ * before paint, so most surfaces will be already correct on
+ * load; transition just smooths user-triggered toggles. */
+html {
+  color-scheme: light;
+}
+html.dark {
+  color-scheme: dark;
 }
 
 .font-mono,

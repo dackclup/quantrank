@@ -25,17 +25,24 @@ export type ScoreTierMeta = {
 
 // Score-tier thresholds match the QuantRank design package.
 // `max` is exclusive except for `exceptional` (top open bound = 101).
+// Each tone carries paired light + `dark:` variants — LedgerCraft
+// Phase 3b adds the dark variants behind a class-strategy toggle.
 export const TIERS: readonly ScoreTierMeta[] = [
   { id: 'exceptional', label: 'Exceptional', min: 70, max: 101,
-    cls: 'bg-emerald-50 text-emerald-700 ring-emerald-200', dot: 'bg-emerald-500' },
+    cls: 'bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-800',
+    dot: 'bg-emerald-500 dark:bg-emerald-400' },
   { id: 'strong', label: 'Strong', min: 55, max: 70,
-    cls: 'bg-teal-50 text-teal-700 ring-teal-200', dot: 'bg-teal-500' },
+    cls: 'bg-teal-50 text-teal-700 ring-teal-200 dark:bg-teal-900/30 dark:text-teal-300 dark:ring-teal-800',
+    dot: 'bg-teal-500 dark:bg-teal-400' },
   { id: 'average', label: 'Average', min: 40, max: 55,
-    cls: 'bg-amber-50 text-amber-700 ring-amber-200', dot: 'bg-amber-500' },
+    cls: 'bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:ring-amber-800',
+    dot: 'bg-amber-500 dark:bg-amber-400' },
   { id: 'weak', label: 'Weak', min: 25, max: 40,
-    cls: 'bg-orange-50 text-orange-700 ring-orange-200', dot: 'bg-orange-500' },
+    cls: 'bg-orange-50 text-orange-700 ring-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:ring-orange-800',
+    dot: 'bg-orange-500 dark:bg-orange-400' },
   { id: 'poor', label: 'Poor', min: 0, max: 25,
-    cls: 'bg-rose-50 text-rose-700 ring-rose-200', dot: 'bg-rose-500' },
+    cls: 'bg-rose-50 text-rose-700 ring-rose-200 dark:bg-rose-900/30 dark:text-rose-300 dark:ring-rose-800',
+    dot: 'bg-rose-500 dark:bg-rose-400' },
 ];
 
 export function getTier(score: number | null | undefined): ScoreTier | null {
@@ -56,11 +63,14 @@ export type MosBucketMeta = {
 
 export const MOS_BUCKETS: readonly MosBucketMeta[] = [
   { id: 'cheap', label: 'Undervalued', range: [10, Infinity], help: 'MoS ≥ +10%',
-    cls: 'bg-emerald-50 text-emerald-700 ring-emerald-200', dot: 'bg-emerald-500' },
+    cls: 'bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-800',
+    dot: 'bg-emerald-500 dark:bg-emerald-400' },
   { id: 'fair', label: 'Near fair', range: [-10, 10], help: '±10% MoS',
-    cls: 'bg-slate-50 text-slate-700 ring-slate-200', dot: 'bg-slate-400' },
+    cls: 'bg-slate-50 text-slate-700 ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700',
+    dot: 'bg-slate-400 dark:bg-slate-500' },
   { id: 'over', label: 'Overvalued', range: [-Infinity, -10], help: 'MoS < −10%',
-    cls: 'bg-rose-50 text-rose-700 ring-rose-200', dot: 'bg-rose-500' },
+    cls: 'bg-rose-50 text-rose-700 ring-rose-200 dark:bg-rose-900/30 dark:text-rose-300 dark:ring-rose-800',
+    dot: 'bg-rose-500 dark:bg-rose-400' },
 ];
 
 export function getMosBucket(mosPct: number | null | undefined): MosBucket | null {
@@ -77,31 +87,44 @@ export type SectorStyle = {
 
 // 11 GICS sectors. Anything outside this map falls back to the slate
 // neutral chip in sectorStyle() below — see fallback in that function.
+// LedgerCraft Phase 3b: each `bg` / `fg` / `ring` carries paired light
+// + `dark:` variants. Dot stays as a literal `rgb()` (inline style) so
+// it doesn't need a dark variant — the lightness in OKLCH terms reads
+// fine on both backgrounds at the 6px size.
 export const SECTOR_COLORS: Readonly<Record<string, SectorStyle>> = {
-  'Information Technology': { dot: 'rgb(99 102 241)', bg: 'bg-indigo-50', fg: 'text-indigo-700', ring: 'ring-indigo-200' },
-  'Communication Services': { dot: 'rgb(168 85 247)', bg: 'bg-purple-50', fg: 'text-purple-700', ring: 'ring-purple-200' },
-  'Consumer Discretionary': { dot: 'rgb(236 72 153)', bg: 'bg-pink-50', fg: 'text-pink-700', ring: 'ring-pink-200' },
-  'Consumer Staples': { dot: 'rgb(20 184 166)', bg: 'bg-teal-50', fg: 'text-teal-700', ring: 'ring-teal-200' },
-  'Energy': { dot: 'rgb(234 88 12)', bg: 'bg-orange-50', fg: 'text-orange-700', ring: 'ring-orange-200' },
-  'Financials': { dot: 'rgb(13 148 136)', bg: 'bg-teal-50', fg: 'text-teal-800', ring: 'ring-teal-200' },
-  'Health Care': { dot: 'rgb(220 38 38)', bg: 'bg-red-50', fg: 'text-red-700', ring: 'ring-red-200' },
-  'Industrials': { dot: 'rgb(100 116 139)', bg: 'bg-slate-100', fg: 'text-slate-700', ring: 'ring-slate-300' },
-  'Materials': { dot: 'rgb(180 83 9)', bg: 'bg-amber-50', fg: 'text-amber-800', ring: 'ring-amber-200' },
-  'Real Estate': { dot: 'rgb(132 204 22)', bg: 'bg-lime-50', fg: 'text-lime-800', ring: 'ring-lime-200' },
-  'Utilities': { dot: 'rgb(14 165 233)', bg: 'bg-sky-50', fg: 'text-sky-700', ring: 'ring-sky-200' },
+  'Information Technology': { dot: 'rgb(99 102 241)', bg: 'bg-indigo-50 dark:bg-indigo-900/30', fg: 'text-indigo-700 dark:text-indigo-300', ring: 'ring-indigo-200 dark:ring-indigo-800' },
+  'Communication Services': { dot: 'rgb(168 85 247)', bg: 'bg-purple-50 dark:bg-purple-900/30', fg: 'text-purple-700 dark:text-purple-300', ring: 'ring-purple-200 dark:ring-purple-800' },
+  'Consumer Discretionary': { dot: 'rgb(236 72 153)', bg: 'bg-pink-50 dark:bg-pink-900/30', fg: 'text-pink-700 dark:text-pink-300', ring: 'ring-pink-200 dark:ring-pink-800' },
+  'Consumer Staples': { dot: 'rgb(20 184 166)', bg: 'bg-teal-50 dark:bg-teal-900/30', fg: 'text-teal-700 dark:text-teal-300', ring: 'ring-teal-200 dark:ring-teal-800' },
+  'Energy': { dot: 'rgb(234 88 12)', bg: 'bg-orange-50 dark:bg-orange-900/30', fg: 'text-orange-700 dark:text-orange-300', ring: 'ring-orange-200 dark:ring-orange-800' },
+  'Financials': { dot: 'rgb(13 148 136)', bg: 'bg-teal-50 dark:bg-teal-900/30', fg: 'text-teal-800 dark:text-teal-200', ring: 'ring-teal-200 dark:ring-teal-800' },
+  'Health Care': { dot: 'rgb(220 38 38)', bg: 'bg-red-50 dark:bg-red-900/30', fg: 'text-red-700 dark:text-red-300', ring: 'ring-red-200 dark:ring-red-800' },
+  'Industrials': { dot: 'rgb(100 116 139)', bg: 'bg-slate-100 dark:bg-slate-800', fg: 'text-slate-700 dark:text-slate-300', ring: 'ring-slate-300 dark:ring-slate-700' },
+  'Materials': { dot: 'rgb(180 83 9)', bg: 'bg-amber-50 dark:bg-amber-900/30', fg: 'text-amber-800 dark:text-amber-200', ring: 'ring-amber-200 dark:ring-amber-800' },
+  'Real Estate': { dot: 'rgb(132 204 22)', bg: 'bg-lime-50 dark:bg-lime-900/30', fg: 'text-lime-800 dark:text-lime-200', ring: 'ring-lime-200 dark:ring-lime-800' },
+  'Utilities': { dot: 'rgb(14 165 233)', bg: 'bg-sky-50 dark:bg-sky-900/30', fg: 'text-sky-700 dark:text-sky-300', ring: 'ring-sky-200 dark:ring-sky-800' },
 };
 
 export function sectorStyle(sector: string): SectorStyle {
-  return SECTOR_COLORS[sector] ?? { dot: 'rgb(148 163 184)', bg: 'bg-slate-50', fg: 'text-slate-700', ring: 'ring-slate-200' };
+  return SECTOR_COLORS[sector] ?? {
+    dot: 'rgb(148 163 184)',
+    bg: 'bg-slate-50 dark:bg-slate-800',
+    fg: 'text-slate-700 dark:text-slate-300',
+    ring: 'ring-slate-200 dark:ring-slate-700',
+  };
 }
 
 // Score-badge color classes — matches the design's 5-step ramp.
+// LedgerCraft Phase 3b: paired light + `dark:` variants. Top tier
+// is solid-fill emerald (the legacy "score ≥ 80" surface predates
+// Rule 2's outlined-light retire); the dark variant softens to
+// `emerald-500` to avoid neon glare.
 export function scoreColorClasses(score: number): string {
-  if (score >= 80) return 'bg-emerald-600 text-white ring-emerald-700/20';
-  if (score >= 60) return 'bg-emerald-50 text-emerald-800 ring-emerald-200';
-  if (score >= 40) return 'bg-amber-50 text-amber-800 ring-amber-200';
-  if (score >= 20) return 'bg-orange-50 text-orange-800 ring-orange-200';
-  return 'bg-rose-50 text-rose-800 ring-rose-200';
+  if (score >= 80) return 'bg-emerald-600 text-white ring-emerald-700/20 dark:bg-emerald-500 dark:text-emerald-950 dark:ring-emerald-400/30';
+  if (score >= 60) return 'bg-emerald-50 text-emerald-800 ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-200 dark:ring-emerald-800';
+  if (score >= 40) return 'bg-amber-50 text-amber-800 ring-amber-200 dark:bg-amber-900/30 dark:text-amber-200 dark:ring-amber-800';
+  if (score >= 20) return 'bg-orange-50 text-orange-800 ring-orange-200 dark:bg-orange-900/30 dark:text-orange-200 dark:ring-orange-800';
+  return 'bg-rose-50 text-rose-800 ring-rose-200 dark:bg-rose-900/30 dark:text-rose-200 dark:ring-rose-800';
 }
 
 // Accent color for the radial gauge ring + tier-label text in
@@ -125,8 +148,8 @@ export function mosVisualFraction(mos: number | null | undefined): number | null
 }
 
 export function filingLagBadgeClasses(days: number | null): string {
-  if (days === null) return 'bg-slate-100 text-slate-600 ring-slate-200';
-  if (days < 60) return 'bg-emerald-50 text-emerald-700 ring-emerald-200';
-  if (days < 180) return 'bg-amber-50 text-amber-700 ring-amber-200';
-  return 'bg-red-50 text-red-700 ring-red-200';
+  if (days === null) return 'bg-slate-100 text-slate-600 ring-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:ring-slate-700';
+  if (days < 60) return 'bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-800';
+  if (days < 180) return 'bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:ring-amber-800';
+  return 'bg-red-50 text-red-700 ring-red-200 dark:bg-red-900/30 dark:text-red-300 dark:ring-red-800';
 }

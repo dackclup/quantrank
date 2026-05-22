@@ -196,20 +196,41 @@ export function FairPriceCard(props) {  // no types
   `font-semibold`, `tracking-wide` (0.025em) → `tracking-[0.14em]`,
   `text-slate-500` → `text-slate-600` — darker + heavier + wider
   letter-spacing for Excel/Numbers column-header feel.
-  **Phase 3c (this PR)** lands the LedgerCraft layout shell:
-  `frontend/components/AppShell.tsx` + `Sidebar.tsx` replace the
+  **Phase 3c (PR #215)** landed the LedgerCraft layout shell:
+  `frontend/components/AppShell.tsx` + `Sidebar.tsx` replaced the
   former top-banner header. Desktop: 240px sticky left rail with a
   collapse-to-64px icon-only state persisted via
   `localStorage["quantrank.sidebar.collapsed"]`. Mobile: sidebar
   hidden by default, slides in as overlay drawer when the
   `<header>` hamburger fires. Active-route highlighting uses
-  `usePathname()` from `next/navigation` — both `/` and
-  `/stock/<ticker>/` highlight the "Rankings" item. Body-scroll
-  lock kicks in while the mobile drawer is open. Two nav sections
-  — Navigation (internal: Rankings) and Resources (external:
-  Methodology / Design / GitHub). Slate-only palette in the
-  sidebar (no accent color) keeps the data surfaces owning the
-  palette.
+  `usePathname()` from `next/navigation`. Two nav sections —
+  Navigation (internal: Rankings) and Resources (external:
+  Methodology / Design / GitHub).
+  **Phase 3b (this PR)** lands class-strategy dark mode behind
+  `next-themes`. `tailwind.config.ts` flips to `darkMode: 'class'`;
+  `<ThemeProvider>` (uses `next-themes`, `attribute="class"`,
+  `defaultTheme="system"`) wraps `<AppShell>` so the `dark` class
+  toggles on `<html>`. `globals.css` gains a `.dark` block that
+  swaps the OKLCH `--c-pos-*` / `--c-neg-*` band to a brighter-
+  chroma / darker-bg variant + a `.dark body` rule that flips
+  background to slate-950 territory + a `color-scheme: dark`
+  metadata cue. The 4-family Tailwind ramp (slate / indigo / rose /
+  amber + emerald exception) gets paired `dark:` variants on every
+  surface: chip families in `frontend/lib/visual.ts` (TIERS /
+  MOS_BUCKETS / SECTOR_COLORS / scoreColorClasses /
+  filingLagBadgeClasses), badge components (Recommendation /
+  Score / MoS / LossChance), table containers (Ranking /
+  RawMetrics / FairPriceCard sub-table), cards (FairPriceBarChart /
+  PillarRadarChart / Tier2EventCard / ManipulationRiskCard /
+  Disclaimer / FilterDrawer), and the two app pages (home + stock
+  detail). New `<ThemeToggle layout="icon|row">` component renders
+  a three-state cycle button (system → light → dark → system) with
+  `useTheme()` + a `mounted` guard to suppress the SSR-fallback
+  hydration mismatch. Lives in both the AppShell sticky header
+  (icon layout) and the Sidebar footer (row layout when expanded,
+  icon when collapsed). `<html suppressHydrationWarning>` on
+  layout.tsx silences the harmless attribute mismatch
+  `next-themes` introduces when it sets the class before paint.
 
 ## Git workflow
 

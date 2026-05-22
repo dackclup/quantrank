@@ -42,7 +42,7 @@ export default function StockDetailPage({
       <article className="space-y-6">
         <Link
           href="/"
-          className="inline-block text-sm text-slate-500 hover:text-slate-900"
+          className="inline-block text-sm text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
         >
           ← Back to ranking
         </Link>
@@ -51,7 +51,7 @@ export default function StockDetailPage({
             {ticker}
           </h1>
         </header>
-        <div className="rounded-lg border border-amber-200 bg-amber-50 p-6 text-sm text-amber-900">
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-6 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-200">
           <p className="font-medium">Detail data pending</p>
           <p className="mt-1">
             The latest compute hasn&rsquo;t produced data for{' '}
@@ -82,21 +82,21 @@ export default function StockDetailPage({
           rank badge + sector chip on top row, big mono ticker, serif
           company name, radial-gauge ScoreBadge + price + MoSCell on
           the right side. */}
-      <header className="rounded-2xl border border-slate-200 bg-white p-5 shadow-large sm:p-6">
+      <header className="rounded-2xl border border-slate-200 bg-white p-5 shadow-large dark:border-slate-800 dark:bg-slate-900 sm:p-6">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2 text-xs">
-              <span className="inline-flex items-center rounded-md bg-slate-100 px-1.5 py-0.5 font-mono font-medium text-slate-600">
+              <span className="inline-flex items-center rounded-md bg-slate-100 px-1.5 py-0.5 font-mono font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">
                 #{detail.rank}
               </span>
               <SectorChip sector={detail.sector} />
               {detail.industry && (
-                <span className="truncate text-slate-400">· {detail.industry}</span>
+                <span className="truncate text-slate-400 dark:text-slate-500">· {detail.industry}</span>
               )}
             </div>
             <h1 className="mt-2 flex flex-wrap items-center gap-3">
               <StockLogo ticker={detail.ticker} size={48} />
-              <span className="font-mono text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+              <span className="font-mono text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-5xl">
                 {detail.ticker}
               </span>
               <RecommendationBadge recommendation={detail.recommendation} size="md" />
@@ -105,7 +105,7 @@ export default function StockDetailPage({
                 the "editorial finance" register (Bloomberg / WSJ
                 headline) at hero scale. Ticker stays in mono (line
                 99); the slab handles the wordmark-style name read. */}
-            <p className="mt-1 font-slab text-2xl text-slate-700 sm:text-3xl">
+            <p className="mt-1 font-slab text-2xl text-slate-700 dark:text-slate-300 sm:text-3xl">
               {detail.name}
             </p>
             <CurrentPriceLine
@@ -133,34 +133,34 @@ export default function StockDetailPage({
                 baseline: label + h-6 value box. */}
             <div className="flex flex-wrap items-start justify-evenly gap-3">
               <div className="flex flex-col items-center gap-1 text-center">
-                <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
+                <span className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Fair value
                 </span>
-                <span className="flex h-6 items-center font-mono text-lg font-semibold tabular-nums leading-none text-slate-900">
+                <span className="flex h-6 items-center font-mono text-lg font-semibold tabular-nums leading-none text-slate-900 dark:text-slate-100">
                   {detail.fair_price?.median != null
                     ? formatPrice(detail.fair_price.median)
-                    : <span className="text-slate-300">—</span>}
+                    : <span className="text-slate-300 dark:text-slate-600">—</span>}
                 </span>
               </div>
               <div className="flex flex-col items-center gap-1 text-center">
-                <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
+                <span className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Target
                 </span>
-                <span className="flex h-6 items-center font-mono text-lg font-semibold tabular-nums leading-none text-slate-900">
+                <span className="flex h-6 items-center font-mono text-lg font-semibold tabular-nums leading-none text-slate-900 dark:text-slate-100">
                   {detail.fair_price?.max != null
                     ? formatPrice(detail.fair_price.max)
-                    : <span className="text-slate-300">—</span>}
+                    : <span className="text-slate-300 dark:text-slate-600">—</span>}
                 </span>
               </div>
               <div className="flex flex-col items-center gap-1 text-center">
-                <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
+                <span className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Loss chance
                 </span>
                 {(() => {
                   const pct = detail.loss_chance_pct;
                   if (pct == null) {
                     return (
-                      <span className="flex h-6 items-center font-mono text-lg font-semibold tabular-nums leading-none text-slate-300">
+                      <span className="flex h-6 items-center font-mono text-lg font-semibold tabular-nums leading-none text-slate-300 dark:text-slate-600">
                         —
                       </span>
                     );
@@ -169,11 +169,11 @@ export default function StockDetailPage({
                   // card (frontend/components/RankingTable.tsx) so the
                   // detail page and the front page agree on tone.
                   const tone =
-                    pct < 25 ? 'text-emerald-700' :
-                    pct < 40 ? 'text-emerald-700' :
-                    pct < 60 ? 'text-slate-700' :
-                    pct < 80 ? 'text-red-700' :
-                               'text-red-700';
+                    pct < 25 ? 'text-emerald-700 dark:text-emerald-300' :
+                    pct < 40 ? 'text-emerald-700 dark:text-emerald-300' :
+                    pct < 60 ? 'text-slate-700 dark:text-slate-300' :
+                    pct < 80 ? 'text-red-700 dark:text-red-300' :
+                               'text-red-700 dark:text-red-300';
                   return (
                     <span className={`flex h-6 items-center font-mono text-lg font-semibold tabular-nums leading-none ${tone}`}>
                       {Math.round(pct)}%
@@ -198,7 +198,7 @@ export default function StockDetailPage({
             recommendation={detail.recommendation}
           />
         ) : (
-          <div className="flex h-64 items-center justify-center rounded-lg border border-slate-200 bg-white text-sm text-slate-400">
+          <div className="flex h-64 items-center justify-center rounded-lg border border-slate-200 bg-white text-sm text-slate-400 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-500">
             No price history available
           </div>
         )}
@@ -240,26 +240,26 @@ export default function StockDetailPage({
           Raw fundamentals (SEC EDGAR)
         </h2>
         <RawMetricsTable metrics={detail.raw_metrics} />
-        <p className="mt-2 text-xs text-slate-400">
+        <p className="mt-2 text-xs text-slate-400 dark:text-slate-500">
           TTM = trailing twelve months. Balance sheet items are point-in-time
           (latest filing).
         </p>
       </section>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-medium">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600">
+      <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-medium dark:border-slate-800 dark:bg-slate-900">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
           Data quality
         </h2>
         <dl className="grid grid-cols-1 gap-y-2 text-sm sm:grid-cols-2">
-          <dt className="text-slate-500">Latest filed date</dt>
-          <dd className="font-mono text-slate-900">
+          <dt className="text-slate-500 dark:text-slate-400">Latest filed date</dt>
+          <dd className="font-mono text-slate-900 dark:text-slate-100">
             {detail.data_quality.latest_filed_date ?? 'N/A'}
           </dd>
-          <dt className="text-slate-500">Latest period end</dt>
-          <dd className="font-mono text-slate-900">
+          <dt className="text-slate-500 dark:text-slate-400">Latest period end</dt>
+          <dd className="font-mono text-slate-900 dark:text-slate-100">
             {detail.data_quality.latest_period_end ?? 'N/A'}
           </dd>
-          <dt className="text-slate-500">Filing lag</dt>
+          <dt className="text-slate-500 dark:text-slate-400">Filing lag</dt>
           <dd>
             <span
               className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${filingLagBadgeClasses(
@@ -269,15 +269,15 @@ export default function StockDetailPage({
               {filingLag === null ? 'N/A' : `${filingLag} days`}
             </span>
           </dd>
-          <dt className="text-slate-500">Missing metrics</dt>
-          <dd className="text-slate-900">
+          <dt className="text-slate-500 dark:text-slate-400">Missing metrics</dt>
+          <dd className="text-slate-900 dark:text-slate-100">
             {missingCount === 0 ? (
               'none'
             ) : (
-              <span className="text-amber-700">
+              <span className="text-amber-700 dark:text-amber-300">
                 {missingCount}
                 {missingCount > 0 && (
-                  <span className="ml-2 text-xs text-slate-500">
+                  <span className="ml-2 text-xs text-slate-500 dark:text-slate-400">
                     ({detail.data_quality.missing_metrics.join(', ')})
                   </span>
                 )}
@@ -287,7 +287,7 @@ export default function StockDetailPage({
         </dl>
       </section>
 
-      <p className="text-xs text-slate-400">
+      <p className="text-xs text-slate-400 dark:text-slate-500">
         Phase 3c — composite is the 8-pillar weighted score over quality,
         value, growth, momentum, health, profitability, technical, and risk.
         Sentiment + ML pillars land in Phases 5-6; until then their weight

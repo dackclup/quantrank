@@ -39,22 +39,22 @@ export function MoSBadge({ mos }: { mos: number | null | undefined }): JSX.Eleme
               cy="32"
               r={26}
               fill="none"
-              stroke="rgb(241 245 249)"
+              className="stroke-slate-100 dark:stroke-slate-800"
               strokeWidth="6"
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-base text-slate-300">—</span>
+            <span className="text-base text-slate-300 dark:text-slate-600">—</span>
           </div>
         </div>
         <div className="flex flex-col">
-          <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+          <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
             Margin of safety
           </span>
-          <span className="font-mono text-lg font-semibold tabular-nums text-slate-300">
+          <span className="font-mono text-lg font-semibold tabular-nums text-slate-300 dark:text-slate-600">
             —
           </span>
-          <span className="text-[10px] uppercase tracking-wider text-slate-400">
+          <span className="text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500">
             Unavailable
           </span>
         </div>
@@ -91,7 +91,7 @@ export function MoSBadge({ mos }: { mos: number | null | undefined }): JSX.Eleme
             cy="32"
             r={r}
             fill="none"
-            stroke="rgb(241 245 249)"
+            className="stroke-slate-100 dark:stroke-slate-800"
             strokeWidth="6"
           />
           <circle
@@ -106,16 +106,16 @@ export function MoSBadge({ mos }: { mos: number | null | undefined }): JSX.Eleme
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="font-mono text-sm font-semibold tabular-nums text-slate-900">
+          <span className="font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
             {centerLabel}
           </span>
         </div>
       </div>
       <div className="flex flex-col">
-        <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+        <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
           Margin of safety
         </span>
-        <span className="font-mono text-lg font-semibold tabular-nums text-slate-900">
+        <span className="font-mono text-lg font-semibold tabular-nums text-slate-900 dark:text-slate-100">
           {fullLabel}
         </span>
         <span className="text-[10px] uppercase tracking-wider" style={{ color: accent }}>

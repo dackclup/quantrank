@@ -17,11 +17,12 @@ design-system spec.
   via @fontsource: **IBM Plex Sans** (body) · **JetBrains Mono**
   (tabular numerics) · **Instrument Serif** (display marquee) ·
   **Roboto Slab** (headlines, LedgerCraft adoption Phase 1 PR #211 +
-  Phase 2 PR #212 + Phase 3a PR #213 — `font-slab` + 4-tier shadow
-  tokens + spreadsheet header treatment `font-semibold` +
-  `tracking-[0.14em]` + `text-slate-600`; Phase 3c on this PR — left-
-  rail `AppShell` + `Sidebar` with collapsible desktop + mobile
-  drawer + active-route highlighting via `usePathname`).
+  Phase 2 PR #212 + Phase 3a PR #213 + Phase 3c PR #215 — `font-slab`
+  + 4-tier shadow tokens + spreadsheet header treatment + `AppShell`
+  / `Sidebar` left-rail nav; Phase 3b on this PR — `next-themes`
+  class-strategy dark mode, OKLCH dark band, paired `dark:` variants
+  across every chip family + table + card + drawer surface, three-
+  state theme toggle in sidebar footer + AppShell header).
 - **CI** — GitHub Actions; weekly `compute-rankings.yml` (cron Sun 22:00 UTC)
 - **Data** — SEC EDGAR via `edgartools` · yfinance for prices · S&P 500
   constituents scraped from Wikipedia

@@ -27,32 +27,32 @@ type Band = {
 const BANDS: readonly Band[] = [
   {
     max: 25,
-    cls: 'bg-emerald-50 text-emerald-900 ring-emerald-300',
-    dot: 'bg-emerald-700',
+    cls: 'bg-emerald-50 text-emerald-900 ring-emerald-300 dark:bg-emerald-900/30 dark:text-emerald-100 dark:ring-emerald-800',
+    dot: 'bg-emerald-700 dark:bg-emerald-400',
     label: 'Low loss chance',
   },
   {
     max: 40,
-    cls: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
-    dot: 'bg-emerald-500',
+    cls: 'bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-300 dark:ring-emerald-800',
+    dot: 'bg-emerald-500 dark:bg-emerald-300',
     label: 'Moderate-low loss chance',
   },
   {
     max: 60,
-    cls: 'bg-slate-100 text-slate-700 ring-slate-300',
-    dot: 'bg-slate-500',
+    cls: 'bg-slate-100 text-slate-700 ring-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700',
+    dot: 'bg-slate-500 dark:bg-slate-400',
     label: 'Neutral loss chance',
   },
   {
     max: 80,
-    cls: 'bg-red-50 text-red-700 ring-red-200',
-    dot: 'bg-red-500',
+    cls: 'bg-red-50 text-red-700 ring-red-200 dark:bg-red-900/30 dark:text-red-300 dark:ring-red-800',
+    dot: 'bg-red-500 dark:bg-red-400',
     label: 'Moderate-high loss chance',
   },
   {
     max: 100,
-    cls: 'bg-red-50 text-red-900 ring-red-300',
-    dot: 'bg-red-600',
+    cls: 'bg-red-50 text-red-900 ring-red-300 dark:bg-red-900/30 dark:text-red-100 dark:ring-red-800',
+    dot: 'bg-red-600 dark:bg-red-400',
     label: 'High loss chance',
   },
 ];
@@ -85,7 +85,7 @@ export function LossChanceBadge({
   if (lossChancePct == null) {
     return (
       <span
-        className={`inline-flex items-center text-slate-400 ${SIZE_CLASSES[size]} ${className}`}
+        className={`inline-flex items-center text-slate-400 dark:text-slate-500 ${SIZE_CLASSES[size]} ${className}`}
         title="Loss Chance unavailable — fair-price ensemble missing"
         aria-label="Loss Chance unavailable"
       >

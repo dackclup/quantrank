@@ -34,21 +34,21 @@ function MethodRow({
   result: FairPriceMethodResult;
 }) {
   return (
-    <tr className="hover:bg-slate-50">
-      <td className="px-3 py-2 text-slate-700">
+    <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+      <td className="px-3 py-2 text-slate-700 dark:text-slate-300">
         {label}
         {result.tier_used && (
-          <span className="ml-2 text-xs text-slate-400">
+          <span className="ml-2 text-xs text-slate-400 dark:text-slate-500">
             (vs {result.tier_used.replace(/_/g, ' ')} peers)
           </span>
         )}
       </td>
       <td className="px-3 py-2 text-right tabular-nums">
         {result.applicable && result.value !== null ? (
-          <span className="text-slate-900">{formatFairPrice(result.value)}</span>
+          <span className="text-slate-900 dark:text-slate-100">{formatFairPrice(result.value)}</span>
         ) : (
           <span
-            className="italic text-slate-400"
+            className="italic text-slate-400 dark:text-slate-500"
             title={result.reason ?? undefined}
           >
             skipped
@@ -68,11 +68,11 @@ export default function FairPriceCard({
   // No ensemble at all (snapshot was missing entirely).
   if (!ensemble) {
     return (
-      <section className="rounded-lg border border-slate-200 bg-white p-4">
-        <h2 className="mb-2 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600">
+      <section className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+        <h2 className="mb-2 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
           Fair price ensemble
         </h2>
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
           Not computed — fundamentals snapshot unavailable for this ticker.
         </p>
       </section>
@@ -83,23 +83,23 @@ export default function FairPriceCard({
   const mos = formatMosPct(ensemble.mos_pct);
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-4">
-      <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600">
+    <section className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+      <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
         Fair price ensemble
       </h2>
 
       {/* Headline median + MoS */}
       <div className="mb-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div>
-          <dt className="text-xs uppercase tracking-wide text-slate-500">
+          <dt className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
             Median fair
           </dt>
-          <dd className="mt-1 text-lg tabular-nums text-slate-900">
+          <dd className="mt-1 text-lg tabular-nums text-slate-900 dark:text-slate-100">
             {dataQualityIssue ? '—' : formatFairPrice(ensemble.median)}
           </dd>
         </div>
         <div>
-          <dt className="text-xs uppercase tracking-wide text-slate-500">
+          <dt className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
             Margin of safety
           </dt>
           <dd
@@ -110,18 +110,18 @@ export default function FairPriceCard({
           </dd>
         </div>
         <div>
-          <dt className="text-xs uppercase tracking-wide text-slate-500">
+          <dt className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
             Max (ex-outliers)
           </dt>
-          <dd className="mt-1 text-lg tabular-nums text-slate-700">
+          <dd className="mt-1 text-lg tabular-nums text-slate-700 dark:text-slate-300">
             {dataQualityIssue ? '—' : formatFairPrice(ensemble.max)}
           </dd>
         </div>
         <div>
-          <dt className="text-xs uppercase tracking-wide text-slate-500">
+          <dt className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
             Tangible BVPS
           </dt>
-          <dd className="mt-1 text-lg tabular-nums text-slate-700">
+          <dd className="mt-1 text-lg tabular-nums text-slate-700 dark:text-slate-300">
             {tangibleBookValue !== null
               ? formatFairPrice(tangibleBookValue)
               : '—'}
@@ -130,15 +130,15 @@ export default function FairPriceCard({
       </div>
 
       {/* Per-method breakdown */}
-      <div className="overflow-hidden rounded-md border border-slate-200">
-        <table className="min-w-full divide-y divide-slate-200 text-sm">
-          <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">
+      <div className="overflow-hidden rounded-md border border-slate-200 dark:border-slate-800">
+        <table className="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
+          <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-[0.14em] text-slate-600 dark:bg-slate-900/60 dark:text-slate-400">
             <tr>
               <th className="px-3 py-2 text-left">Method</th>
               <th className="px-3 py-2 text-right">Value</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
             {METHOD_ORDER.map((key) => (
               <MethodRow
                 key={key}
@@ -160,7 +160,7 @@ export default function FairPriceCard({
           {warnings.map((w) => (
             <li
               key={w}
-              className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-amber-800 ring-1 ring-inset ring-amber-200"
+              className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-amber-800 ring-1 ring-inset ring-amber-200 dark:bg-amber-900/30 dark:text-amber-200 dark:ring-amber-800"
             >
               {w.replace(/_/g, ' ')}
             </li>
@@ -168,7 +168,7 @@ export default function FairPriceCard({
         </ul>
       )}
 
-      <p className="mt-3 text-xs text-slate-400">
+      <p className="mt-3 text-xs text-slate-400 dark:text-slate-500">
         Median of all applicable methods (current price ${currentPrice.toFixed(2)}).
         Outliers above 5× or below 0.2× current price are excluded from the
         max but kept in the median. See methodology for the 6-method ensemble

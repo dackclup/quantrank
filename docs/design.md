@@ -89,6 +89,32 @@ palette, recommendation badges), the design uses the **slate / indigo
 | `amber` | Warnings, "Overdue / Pending" surfaces, manipulation index high |
 | `emerald` | Recommendation chip "bullish" / "lean_bullish" (the only `emerald` exception) |
 
+### Dark mode mapping (Phase 3b)
+
+Every light surface ships with a paired `dark:` variant. The
+canonical conversions:
+
+| Light | Dark | Use |
+|---|---|---|
+| `bg-white` | `dark:bg-slate-900` | Card surface |
+| `bg-slate-50` | `dark:bg-slate-900/50` or `dark:bg-slate-900/60` | Table thead, alternating row |
+| `bg-slate-100` | `dark:bg-slate-800` | Hover, neutral chip bg |
+| `border-slate-200` | `dark:border-slate-800` | Card border |
+| `border-slate-100` | `dark:border-slate-800/60` | Divider |
+| `text-slate-900` | `dark:text-slate-100` | Primary text |
+| `text-slate-700` | `dark:text-slate-300` | Body text |
+| `text-slate-600` | `dark:text-slate-400` | Section labels |
+| `text-slate-500` | `dark:text-slate-400` | Sub-labels (mid) |
+| `text-slate-400` | `dark:text-slate-500` | Captions, "N/A" |
+| `text-slate-300` | `dark:text-slate-600` | Placeholder, em-dash |
+| `hover:bg-slate-50` | `dark:hover:bg-slate-800/50` | Card hover |
+| `hover:bg-slate-100` | `dark:hover:bg-slate-800` | Stronger hover |
+| `bg-{tone}-50` | `dark:bg-{tone}-900/30` | Chip background |
+| `text-{tone}-700` | `dark:text-{tone}-300` | Chip text (mid) |
+| `text-{tone}-900` | `dark:text-{tone}-100` | Chip text (strong) |
+| `ring-{tone}-200` | `dark:ring-{tone}-800` | Chip ring |
+| `bg-{tone}-500` (dot) | `dark:bg-{tone}-400` | Chip dot |
+
 ---
 
 ## Typography
@@ -348,10 +374,19 @@ Every numeric column gets `tabular-nums` so the digits right-align
 across rows. Without it, "$3.42T" and "$19.84B" mis-align by a digit
 width.
 
-### Rule 4 — Light-mode only
+### Rule 4 — Dark mode is class-strategy (Phase 3b shipped)
 
-No `dark:` variants are wired. Adding dark mode is a deliberate
-Phase 3b decision, not an incremental option per component.
+Dark mode toggles via `next-themes` adding `class="dark"` to
+`<html>`. Tailwind `darkMode: 'class'` activates paired `dark:`
+variants. Three states cycle in the toggle: system → light →
+dark → system. The system default respects OS preference but
+defers to an explicit user choice.
+
+When adding a new surface, ALWAYS pair the light variant with a
+`dark:` variant per the mapping table in §Components — never ship
+a light-only surface. The build won't fail without `dark:`, but
+the eye will: missing variants leave white cards on a slate-950
+body.
 
 ### Rule 5 — Header treatment is reserved
 
@@ -373,8 +408,8 @@ weight delta between header and data is visible.
 | Phase 1 | Roboto Slab + 4-tier shadow tokens (PR #211) | ✅ merged 2026-05-22 |
 | Phase 2 | Token propagation to detail page (PR #212) | ✅ merged 2026-05-22 |
 | Phase 3a | Spreadsheet polish on section h2s + table theads (PR #213) | ✅ merged 2026-05-22 |
-| Phase 3c | Sidebar pattern — left-rail nav + collapsible + mobile drawer | ✅ shipped this PR |
-| Phase 3b | Dark-mode toggle (optional, not committed) | ⏸ deferred |
+| Phase 3c | Sidebar pattern — left-rail nav + collapsible + mobile drawer (PR #215) | ✅ merged 2026-05-22 |
+| Phase 3b | Dark-mode toggle — next-themes + OKLCH dark band + paired `dark:` variants | ✅ shipped this PR |
 
 ---
 

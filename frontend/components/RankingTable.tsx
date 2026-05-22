@@ -236,11 +236,11 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
     return (
       <th
         scope="col"
-        className={`cursor-pointer select-none px-3 py-2 text-left font-semibold text-slate-600 hover:text-slate-900 ${extraClass}`}
+        className={`cursor-pointer select-none px-3 py-2 text-left font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 ${extraClass}`}
         onClick={() => onSort(key)}
       >
         {label}
-        <span className="ml-1 text-slate-400">{active ? (sortDir === 'asc' ? '▲' : '▼') : ''}</span>
+        <span className="ml-1 text-slate-400 dark:text-slate-500">{active ? (sortDir === 'asc' ? '▲' : '▼') : ''}</span>
       </th>
     );
   };
@@ -252,14 +252,14 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
         <button
           type="button"
           onClick={() => setDrawerOpen(true)}
-          className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50"
+          className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
         >
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
             <path d="M2 4h12M4 8h8M6 12h4" strokeLinecap="round" />
           </svg>
           Filters
           {activeCount > 0 && (
-            <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-slate-900 px-1 text-[10px] font-semibold text-white">
+            <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-slate-900 px-1 text-[10px] font-semibold text-white dark:bg-slate-100 dark:text-slate-900">
               {activeCount}
             </span>
           )}
@@ -271,10 +271,10 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
             aria-label="Search by ticker or company name"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-md border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm shadow-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
+            className="w-full rounded-md border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm shadow-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:border-slate-500 dark:focus:ring-slate-500"
           />
           <svg
-            className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+            className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-slate-500"
             viewBox="0 0 20 20"
             fill="none"
             stroke="currentColor"
@@ -284,11 +284,11 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
             <path d="M14 14l4 4" strokeLinecap="round" />
           </svg>
         </div>
-        <div className="ml-auto text-xs text-slate-500">
-          <span className="font-mono font-semibold tabular-nums text-slate-700">
+        <div className="ml-auto text-xs text-slate-500 dark:text-slate-400">
+          <span className="font-mono font-semibold tabular-nums text-slate-700 dark:text-slate-300">
             {sorted.length.toLocaleString()}
           </span>
-          <span className="text-slate-400"> / {data.length.toLocaleString()} stocks</span>
+          <span className="text-slate-400 dark:text-slate-500"> / {data.length.toLocaleString()} stocks</span>
         </div>
       </div>
 
@@ -357,7 +357,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
             <button
               type="button"
               onClick={() => setScoreRange([0, 100])}
-              className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-700 ring-1 ring-inset ring-slate-300 hover:opacity-75"
+              className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-700 ring-1 ring-inset ring-slate-300 hover:opacity-75 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700"
             >
               Score {scoreRange[0]}–{scoreRange[1]}
               <span aria-hidden="true" className="opacity-60">×</span>
@@ -366,7 +366,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
           <button
             type="button"
             onClick={clearAll}
-            className="ml-1 text-xs font-medium text-slate-500 underline-offset-2 hover:text-slate-900 hover:underline"
+            className="ml-1 text-xs font-medium text-slate-500 underline-offset-2 hover:text-slate-900 hover:underline dark:text-slate-400 dark:hover:text-slate-100"
           >
             Clear all
           </button>
@@ -392,9 +392,9 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
       />
 
       {/* Desktop / tablet table */}
-      <div className="hidden overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-medium md:block">
-        <table className="min-w-full divide-y divide-slate-200 text-sm">
-          <thead className="bg-slate-50 text-xs uppercase tracking-[0.14em]">
+      <div className="hidden overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-medium dark:border-slate-800 dark:bg-slate-900 md:block">
+        <table className="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
+          <thead className="bg-slate-50 text-xs uppercase tracking-[0.14em] dark:bg-slate-900/60">
             <tr>
               {headerCell('rank', 'Rank')}
               {headerCell('ticker', 'Ticker')}
@@ -402,32 +402,32 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
               {headerCell('sector', 'Sector')}
               {headerCell('composite_score', 'Score', 'text-right')}
               {headerCell('current_price', 'Price', 'text-right')}
-              <th scope="col" className="px-3 py-2 text-right font-semibold text-slate-600">
+              <th scope="col" className="px-3 py-2 text-right font-semibold text-slate-600 dark:text-slate-400">
                 Loss Chance
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
             {pageRows.map((row) => {
               return (
-                <tr key={row.ticker} className="odd:bg-white even:bg-slate-50 hover:bg-slate-100">
-                  <td className="px-3 py-2 tabular-nums text-slate-700">{row.rank}</td>
-                  <td className="px-3 py-2 font-mono font-semibold">
+                <tr key={row.ticker} className="odd:bg-white even:bg-slate-50 hover:bg-slate-100 dark:odd:bg-slate-900 dark:even:bg-slate-900/50 dark:hover:bg-slate-800">
+                  <td className="px-3 py-2 tabular-nums text-slate-700 dark:text-slate-300">{row.rank}</td>
+                  <td className="px-3 py-2 font-mono font-semibold text-slate-900 dark:text-slate-100">
                     <Link
                       href={`/stock/${row.ticker}/`}
-                      className="inline-flex items-center gap-2 hover:text-slate-700 hover:underline"
+                      className="inline-flex items-center gap-2 hover:text-slate-700 hover:underline dark:hover:text-slate-300"
                     >
                       <StockLogo ticker={row.ticker} size={22} />
                       <span>{row.ticker}</span>
                       <RecommendationBadge recommendation={row.recommendation} size="xs" />
                     </Link>
                   </td>
-                  <td className="px-3 py-2 text-slate-700">{row.name}</td>
+                  <td className="px-3 py-2 text-slate-700 dark:text-slate-300">{row.name}</td>
                   <td className="px-3 py-2"><SectorChip sector={row.sector} /></td>
                   <td className="px-3 py-2 text-right">
                     <ScoreBadge score={row.composite_score} />
                   </td>
-                  <td className="px-3 py-2 text-right tabular-nums text-slate-700">
+                  <td className="px-3 py-2 text-right tabular-nums text-slate-700 dark:text-slate-300">
                     {formatPrice(row.current_price)}
                   </td>
                   <td className="px-3 py-2 text-right">
@@ -447,7 +447,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
           return (
             <li
               key={row.ticker}
-              className="min-h-[112px] rounded-lg border border-slate-200 bg-white shadow-sm hover:bg-slate-50"
+              className="min-h-[112px] rounded-lg border border-slate-200 bg-white shadow-sm hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/50"
             >
               <Link
                 href={`/stock/${row.ticker}/`}
@@ -461,7 +461,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-1.5 text-xs">
-                      <span className="inline-flex items-center rounded-md bg-slate-100 px-1.5 py-0.5 font-mono font-medium text-slate-600 tabular-nums">
+                      <span className="inline-flex items-center rounded-md bg-slate-100 px-1.5 py-0.5 font-mono font-medium text-slate-600 tabular-nums dark:bg-slate-800 dark:text-slate-300">
                         #{row.rank}
                       </span>
                       <SectorChip sector={row.sector} size="xs" />
@@ -471,7 +471,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                       <span className="font-mono text-xl font-semibold">{row.ticker}</span>
                       <RecommendationBadge recommendation={row.recommendation} size="xs" />
                     </div>
-                    <div className="truncate text-sm text-slate-700">{row.name}</div>
+                    <div className="truncate text-sm text-slate-700 dark:text-slate-300">{row.name}</div>
                   </div>
                   <div className="shrink-0">
                     <ScoreBadge score={row.composite_score} size="md" />
@@ -484,13 +484,13 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                 <div className="mt-1 grid grid-cols-2 gap-3">
                   <div className="flex flex-col items-start gap-1">
                     <div className="flex items-baseline gap-1.5">
-                      <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                      <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                         Price
                       </span>
-                      <span className="font-mono text-base font-semibold tabular-nums text-slate-900">
+                      <span className="font-mono text-base font-semibold tabular-nums text-slate-900 dark:text-slate-100">
                         ${row.current_price.toFixed(2)}
                       </span>
-                      <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                      <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                         USD
                       </span>
                     </div>
@@ -522,7 +522,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                               {positive ? '+' : ''}
                               {pct.toFixed(2)}%
                             </span>
-                            <span className="text-slate-500">past day</span>
+                            <span className="text-slate-500 dark:text-slate-400">past day</span>
                           </div>
                         );
                       })()}
@@ -535,22 +535,22 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                         // Match LossChanceBadge band rubric (band thresholds
                         // mirror frontend/components/LossChanceBadge.tsx).
                         const band =
-                          pct < 25 ? { tone: 'text-emerald-700', dot: 'bg-emerald-700', label: 'Low' } :
-                          pct < 40 ? { tone: 'text-emerald-700', dot: 'bg-emerald-500', label: 'Moderate-low' } :
-                          pct < 60 ? { tone: 'text-slate-700',   dot: 'bg-slate-500',   label: 'Neutral' } :
-                          pct < 80 ? { tone: 'text-red-700',     dot: 'bg-red-500',     label: 'Moderate-high' } :
-                                     { tone: 'text-red-700',     dot: 'bg-red-600',     label: 'High' };
+                          pct < 25 ? { tone: 'text-emerald-700 dark:text-emerald-300', dot: 'bg-emerald-700 dark:bg-emerald-400', label: 'Low' } :
+                          pct < 40 ? { tone: 'text-emerald-700 dark:text-emerald-300', dot: 'bg-emerald-500 dark:bg-emerald-400', label: 'Moderate-low' } :
+                          pct < 60 ? { tone: 'text-slate-700 dark:text-slate-300', dot: 'bg-slate-500 dark:bg-slate-400', label: 'Neutral' } :
+                          pct < 80 ? { tone: 'text-red-700 dark:text-red-300',     dot: 'bg-red-500 dark:bg-red-400',     label: 'Moderate-high' } :
+                                     { tone: 'text-red-700 dark:text-red-300',     dot: 'bg-red-600 dark:bg-red-400',     label: 'High' };
                         return (
                           <>
                             <div className="flex items-baseline gap-1.5">
-                              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                                 Loss Chance
                               </span>
                               <span className={`font-mono text-base font-semibold tabular-nums ${band.tone}`}>
                                 {rounded}%
                               </span>
                             </div>
-                            <span className="inline-flex items-center gap-1 text-[11px] text-slate-500">
+                            <span className="inline-flex items-center gap-1 text-[11px] text-slate-500 dark:text-slate-400">
                               <span className={`inline-block h-1.5 w-1.5 rounded-full ${band.dot}`} aria-hidden="true" />
                               {band.label}
                             </span>
@@ -560,12 +560,12 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                     ) : (
                       <>
                         <div className="flex items-baseline gap-1.5">
-                          <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                          <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                             Loss Chance
                           </span>
-                          <span className="font-mono text-base font-semibold tabular-nums text-slate-300">—</span>
+                          <span className="font-mono text-base font-semibold tabular-nums text-slate-300 dark:text-slate-600">—</span>
                         </div>
-                        <span className="text-[11px] text-slate-400">Unavailable</span>
+                        <span className="text-[11px] text-slate-400 dark:text-slate-500">Unavailable</span>
                       </>
                     )}
                   </div>
@@ -578,7 +578,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
       </ul>
 
       {pageRows.length === 0 && (
-        <div className="rounded-lg border border-slate-200 bg-white p-6 text-center text-sm text-slate-500">
+        <div className="rounded-lg border border-slate-200 bg-white p-6 text-center text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
           No stocks match the current filters.
         </div>
       )}
@@ -589,18 +589,18 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
             type="button"
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={safePage === 1}
-            className="rounded-md border border-slate-300 bg-white px-3 py-1 text-slate-700 shadow-sm enabled:hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-md border border-slate-300 bg-white px-3 py-1 text-slate-700 shadow-sm enabled:hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:enabled:hover:bg-slate-800"
           >
             ← Prev
           </button>
-          <span className="text-slate-500 tabular-nums">
+          <span className="text-slate-500 tabular-nums dark:text-slate-400">
             Page {safePage} of {totalPages}
           </span>
           <button
             type="button"
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={safePage === totalPages}
-            className="rounded-md border border-slate-300 bg-white px-3 py-1 text-slate-700 shadow-sm enabled:hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-md border border-slate-300 bg-white px-3 py-1 text-slate-700 shadow-sm enabled:hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:enabled:hover:bg-slate-800"
           >
             Next →
           </button>

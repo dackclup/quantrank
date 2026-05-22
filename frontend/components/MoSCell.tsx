@@ -21,7 +21,7 @@ export function MoSCell({
   align?: 'right' | 'left';
 }): JSX.Element {
   if (mos == null || Number.isNaN(mos)) {
-    return <span className="text-slate-300">—</span>;
+    return <span className="text-slate-300 dark:text-slate-600">—</span>;
   }
   const frac = mosVisualFraction(mos);
   if (frac === null) return <span className="text-slate-300">—</span>;
@@ -47,10 +47,10 @@ export function MoSCell({
     mos > -20 ? 'rgb(148 163 184)' :
     'rgb(225 29 72)';
   const labelColor =
-    mos >= 20 ? 'text-emerald-700' :
-    mos > 0 ? 'text-emerald-600' :
-    mos > -20 ? 'text-slate-500' :
-    'text-rose-600';
+    mos >= 20 ? 'text-emerald-700 dark:text-emerald-300' :
+    mos > 0 ? 'text-emerald-600 dark:text-emerald-400' :
+    mos > -20 ? 'text-slate-500 dark:text-slate-400' :
+    'text-rose-600 dark:text-rose-400';
 
   return (
     <div
@@ -58,9 +58,9 @@ export function MoSCell({
       title={`${mos.toFixed(1)}% margin of safety`}
     >
       <span className={`tabular-nums text-xs font-medium ${labelColor}`}>{label}</span>
-      <div className="relative h-3 w-16 overflow-hidden rounded-sm bg-slate-100">
+      <div className="relative h-3 w-16 overflow-hidden rounded-sm bg-slate-100 dark:bg-slate-800">
         {/* Center axis line */}
-        <div className="absolute inset-y-0 left-1/2 w-px bg-slate-300" />
+        <div className="absolute inset-y-0 left-1/2 w-px bg-slate-300 dark:bg-slate-600" />
         {/* Diverging bar — anchored at center, extends right (positive)
             or left (negative) by widthPct/2 of the track. */}
         <div
