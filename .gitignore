@@ -226,6 +226,11 @@ models/
 # Claude Code hooks — session-local audit log (PostToolUse Bash hook)
 .claude/session.log
 .claude/settings.local.json
+# Claude Code agent worktrees — harness-managed isolation dirs for
+# subagents spawned via the Agent tool with isolation: "worktree".
+# Per-session, transient, never committed; main-worktree contributors
+# should never see them in `git status`.
+.claude/worktrees/
 
 # Node / Next.js
 node_modules/
