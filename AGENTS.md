@@ -886,4 +886,8 @@ same pattern.
 - [`PHASE_STATUS.md`](PHASE_STATUS.md) — chronological phase tracker
 - [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) — vendor /
   license posture per third-party source
+- [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) — defense layer +
+  scoring + valuation method anchors against academic literature
+- [`docs/design.md`](docs/design.md) — visual / design-system
+  specification (LedgerCraft adoption Phase 1/2/3a as of 2026-05-22)
 - [`.claude/skills/README.md`](.claude/skills/README.md) — skill index
