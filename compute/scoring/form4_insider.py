@@ -1,19 +1,30 @@
-"""Form 4 insider-transaction scout (Phase 4.5e PR 1).
+"""Form 4 insider-transaction scout (Phase 4.5e PR 1 / 2 / 3 / 4-eq).
 
 Scout-level fetcher + cache layer for SEC Form 4 (insider transactions).
-**Production wiring intentionally NOT included** — this PR locks the
-edgartools Form-4 API surface, ships the cache shape, and validates
-the parser against synthetic fixtures. Two follow-up PRs land:
+The Phase 4.5e ladder landed in four sub-PRs:
 
+- **PR 1 (scout)** — dep + cache shape + drift-detector manifest +
+  parser against synthetic fixtures. No production wiring.
 - **PR 2** — observability surface: ``Metadata.form4_*`` diagnostic
   fields + per-ticker fetch in ``compute/main.py``. Still no scoring
-  impact. After ≥ 1 production cron, we know fetch latency, success
-  rate, and the universe-level insider-count distribution.
+  impact.
 - **PR 3** — production wiring: emit ``insider_sell_cluster`` +
   ``c_suite_unusual_sell`` annotates (per ``portable-annotate-before-
-  veto``); calibrate thresholds against the PR-2 cron data;
-  uncomment the reserved weight constants in
-  ``compute/scoring/manipulation_index.py``.
+  veto``); thresholds calibrated against PR-2 cron data; weight
+  constants uncommented in ``compute/scoring/manipulation_index.py``.
+- **PR 4-eq (this revision)** — 10b5-1 contamination filter. Per-
+  transaction ``is_rule_10b5_one: bool | None`` field added to the
+  cache shape, resolved via ``edgar.ownership.core.detect_10b5_1_plan``
+  pattern-scan on the RESOLVED footnote text (see "Footnote resolution"
+  below — edgartools 5.31.5 does NOT parse the SEC structured
+  ``<rule10b5_1>`` XML element added in the 2023-04-01 mandate, so the
+  footnote-text path is the only access surface available without
+  forking the library). ``compute/scoring/form4_signals.py``
+  ``_is_opportunistic_sell`` gates on NOT ``is_rule_10b5_one is True``
+  so 10b5-1 scheduled trades are excluded from cluster + C-suite
+  cohort counts. methodology-scientist Mode B verdict 2026-05-23
+  (Jagolinzer 2009 §3.1 + §5.2 + Cohen 2008 §III + CMP 2012 §III.B/§V.A
+  + SEC Release 33-11138) — APPROVED-AS-ANNOTATE.
 
 This pattern is the ``portable-scout-then-integrate`` skill applied:
 the dep + cache + parser land first under tests; the scoring impact
@@ -50,11 +61,60 @@ PR 3's cluster-detection logic).
           "price_per_share": 142.30,
           "dollar_value": 1778750.0,
           "shares_owned_following": 38200.0,
+          "is_rule_10b5_one": true,
           "filing_url": "https://..."
         },
         ...
       ]
     }
+
+PR 4-eq adds the ``is_rule_10b5_one`` field. Pre-PR-4-eq caches
+(missing the field) survive the 7-day TTL via
+``Form4Transaction.from_dict``'s ``.get()`` fallback (the field is
+``None`` on legacy rows — see "10b5-1 None-handling" below); the
+weekly cron repopulates within a week. No forced cache invalidation
+needed.
+
+Footnote resolution
+-------------------
+
+The 10b5-1 plan flag is NOT in the SEC structured XML accessible via
+edgartools 5.31.5. The ``<rule10b5_1>`` element added by SEC Release
+33-11138 (effective 2023-04-01) is silently dropped during
+edgartools' ``BeautifulSoup("xml")`` parse — verified by
+``edgar-debugger`` 2026-05-23 across the full ``edgar.ownership``
+module. The only access path is pattern-scanning the resolved
+FOOTNOTE TEXT via ``edgar.ownership.core.detect_10b5_1_plan``.
+
+``NonDerivativeTransaction.footnotes`` carries newline-joined
+footnote IDs (e.g. ``"F1\\nF2"``), NOT the resolved text. The
+parsed ``Ownership`` object exposes a ``footnotes: Footnotes`` dict
+that maps each ID to its resolved disclosure text. We resolve in the
+parse loop by walking ``ownership.footnotes.get(fid)`` for each ID,
+joining with newlines, and passing the result to
+``detect_10b5_1_plan``. ``Footnotes.get(id, default)`` is the
+public dict-like accessor (avoids the underscore-prefixed
+``_resolve_footnotes`` private method); pinned via
+``_FOOTNOTES_REQUIRED_ATTRS``.
+
+10b5-1 None-handling: ``detect_10b5_1_plan`` returns ``None`` when
+the resolved footnote text is empty or missing — typical for pre-
+2023-04 filings (no mandate) AND for post-mandate filings that
+simply have no disclosure text. ``_is_opportunistic_sell`` in
+``form4_signals.py`` treats ``None`` as not-10b5-1 (the trade
+remains opportunistic) per methodology-scientist Mode B verdict
+2026-05-23 option (a) — matches the CMP 2012 + Jagolinzer 2009
+empirical regime under which the cluster-detection thresholds
+were calibrated.
+
+FP caveat: ``detect_10b5_1_plan`` is a substring match on the
+pattern list ``["10b5-1", "10b-5-1", "rule 10b5", "rule 10b-5",
+"10b5 plan", "10b-5 plan"]``. Negated disclosures like "10b5-1
+plan terminated 2022" or "no 10b5-1 plan in effect" match True.
+edgar-debugger verified this on synthetic input. Tolerated for
+this PR — the bias direction is conservative (over-excludes from
+opportunistic cohort, never under-excludes). Q3 2026-08-19 cohort
+audit gates whether to harden with a negation guard.
 
 Transaction codes (SEC Form 4 Table II / III mapping):
 
@@ -162,10 +222,23 @@ _FORM4_REQUIRED_ATTRS: Final[tuple[str, ...]] = (
 #: Drift-detector manifest — attrs on the parsed Ownership object
 #: (``filing.obj`` for a Form 4 returns an ``edgar.ownership.Form4``
 #: which subclasses ``Ownership``). The parser walks down this chain
-#: to extract reporting-owner identity + transaction rows.
+#: to extract reporting-owner identity + transaction rows + the
+#: footnote dict used for 10b5-1 plan resolution (PR 4-eq).
 _OWNERSHIP_REQUIRED_ATTRS: Final[tuple[str, ...]] = (
     "reporting_owners",       # ReportingOwners(owners: list[Owner])
     "non_derivative_table",   # NonDerivativeTable(transactions, ...)
+    "footnotes",              # Footnotes(dict-like; id → resolved text) — PR 4-eq
+)
+
+#: Drift-detector manifest — accessor on the ``Footnotes`` dict
+#: returned by ``Ownership.footnotes``. PR 4-eq uses the public
+#: ``Footnotes.get(id, default)`` dict-like API to resolve a
+#: transaction's footnote-ID string into the full disclosure text;
+#: avoids edgartools' underscore-prefixed ``Ownership._resolve_footnotes``
+#: private method. A future minor-version bump that renames ``get``
+#: would fail the drift-detector test loudly.
+_FOOTNOTES_REQUIRED_ATTRS: Final[tuple[str, ...]] = (
+    "get",
 )
 
 #: Drift-detector manifest — fields on each ``Owner`` dataclass row
@@ -184,7 +257,10 @@ _OWNER_REQUIRED_ATTRS: Final[tuple[str, ...]] = (
 #: Note the unconventional field names — edgartools uses ``date`` (not
 #: ``transaction_date``), ``price`` (not ``price_per_share``), and
 #: ``remaining`` (not ``shares_owned_following``). Our cache shape
-#: translates to the more descriptive QuantRank names.
+#: translates to the more descriptive QuantRank names. ``footnotes``
+#: (PR 4-eq) is the newline-joined footnote-ID string used by the
+#: 10b5-1 plan resolver — see module docstring §"Footnote resolution"
+#: for the resolution path.
 _NON_DERIVATIVE_TX_REQUIRED_ATTRS: Final[tuple[str, ...]] = (
     "date",
     "shares",
@@ -192,6 +268,7 @@ _NON_DERIVATIVE_TX_REQUIRED_ATTRS: Final[tuple[str, ...]] = (
     "remaining",
     "transaction_code",
     "acquired_disposed",
+    "footnotes",
 )
 
 
@@ -221,13 +298,24 @@ class Form4Transaction:
     price_per_share: float | None
     dollar_value: float | None  # shares × price; None when transaction has no price (grants)
     shares_owned_following: float | None
+    is_rule_10b5_one: bool | None  # PR 4-eq; see module docstring §"Footnote resolution"
     filing_url: str
 
     @classmethod
     def from_dict(cls, d: dict) -> Form4Transaction | None:
         """Parse a cache dict back into a typed dataclass. Returns None
-        if any required field is missing — caller should log + skip."""
+        if any required field is missing — caller should log + skip.
+
+        ``is_rule_10b5_one`` (PR 4-eq) is read with a None default for
+        backward compatibility with pre-PR-4-eq cache rows. Pre-PR-4-eq
+        rows are treated as "no 10b5-1 disclosure detected" (option (a)
+        from methodology-scientist Mode B 2026-05-23) — the trade
+        remains in the opportunistic cohort, matching the empirical
+        regime under which the cluster-detection thresholds were
+        calibrated.
+        """
         try:
+            raw_10b5 = d.get("is_rule_10b5_one")
             return cls(
                 accession=str(d["accession"]),
                 filing_date=str(d["filing_date"]),
@@ -243,6 +331,7 @@ class Form4Transaction:
                 price_per_share=_safe_float(d.get("price_per_share")),
                 dollar_value=_safe_float(d.get("dollar_value")),
                 shares_owned_following=_safe_float(d.get("shares_owned_following")),
+                is_rule_10b5_one=bool(raw_10b5) if raw_10b5 is not None else None,
                 filing_url=str(d.get("filing_url", "")),
             )
         except (KeyError, TypeError, ValueError) as e:
@@ -344,6 +433,59 @@ def invalidate_cache(ticker: str) -> None:
 # ---------------------------------------------------------------------------
 
 
+def _detect_10b5_1_on_transaction(
+    tx: object, footnotes_dict: object | None
+) -> bool | None:
+    """Return ``True`` / ``False`` / ``None`` for the 10b5-1 plan flag
+    on a single ``NonDerivativeTransaction`` row (PR 4-eq).
+
+    ``tx.footnotes`` carries newline-joined footnote IDs (e.g.
+    ``"F1\\nF2"``); ``footnotes_dict`` (the parsed ``Ownership.footnotes``
+    object) resolves each ID to disclosure text via its public
+    ``.get(id, default)`` accessor. The joined text is then pattern-
+    scanned by ``edgar.ownership.core.detect_10b5_1_plan``.
+
+    Returns:
+        ``True`` — footnote text matches a 10b5-1 disclosure pattern
+        ``False`` — footnote text exists but no pattern matches
+        ``None`` — no footnotes / no footnote text resolvable / parse
+                  failure / edgartools detector unimportable
+
+    Duck-typed for tests: any object exposing ``footnotes: str`` works
+    for ``tx``, and any object exposing ``.get(key, default) -> str``
+    works for ``footnotes_dict``.
+    """
+    raw_ids = getattr(tx, "footnotes", "") or ""
+    if not raw_ids or footnotes_dict is None:
+        return None
+    try:
+        from edgar.ownership.core import detect_10b5_1_plan
+    except ImportError:
+        # edgartools not installed or sub-module path drifted; fail
+        # quietly — the cluster flag remains a (slightly noisier)
+        # detector without the 10b5-1 filter rather than crashing.
+        logger.debug(
+            "edgar.ownership.core.detect_10b5_1_plan not importable; "
+            "is_rule_10b5_one will be None for this filing."
+        )
+        return None
+    try:
+        ids = [fid for fid in str(raw_ids).split("\n") if fid]
+        if not ids:
+            return None
+        resolved_parts: list[str] = []
+        for fid in ids:
+            text = footnotes_dict.get(fid, "")
+            if text:
+                resolved_parts.append(str(text))
+        if not resolved_parts:
+            return None
+        return detect_10b5_1_plan("\n".join(resolved_parts))
+    except Exception as e:  # noqa: BLE001 — defensive; parser is best-effort
+        logger.warning("10b5-1 detection failed for a transaction: %s", e)
+        return None
+
+
 def _form4_to_transactions(filing: object) -> list[dict]:
     """Extract one or more transaction-row dicts from a single Form 4
     filing object. Duck-typed — accepts any object exposing the
@@ -439,6 +581,12 @@ def _form4_to_transactions(filing: object) -> list[dict]:
         if getattr(transactions_iter, "empty", False):
             return []
 
+        # PR 4-eq — bind the Footnotes dict once per filing for 10b5-1
+        # resolution. See module docstring §"Footnote resolution" for
+        # why this path is needed (edgartools 5.31.5 does not parse
+        # the SEC structured <rule10b5_1> XML element).
+        footnotes_dict = getattr(parsed, "footnotes", None)
+
         rows: list[dict] = []
         for tx in transactions_iter:
             tx_date_raw = getattr(tx, "date", None)
@@ -454,6 +602,7 @@ def _form4_to_transactions(filing: object) -> list[dict]:
                 if shares is not None and price is not None
                 else None
             )
+            is_rule_10b5_one = _detect_10b5_1_on_transaction(tx, footnotes_dict)
             rows.append(
                 {
                     "accession": accession,
@@ -474,6 +623,7 @@ def _form4_to_transactions(filing: object) -> list[dict]:
                     "shares_owned_following": _safe_float(
                         getattr(tx, "remaining", None)
                     ),
+                    "is_rule_10b5_one": is_rule_10b5_one,
                     "filing_url": filing_url,
                 }
             )

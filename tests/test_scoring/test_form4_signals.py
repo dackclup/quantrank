@@ -26,6 +26,8 @@ from compute.scoring.form4_signals import (
     INSIDER_SELL_CLUSTER_LOOKBACK_DAYS,
     INSIDER_SELL_CLUSTER_MIN_DISTINCT_INSIDERS,
     INSIDER_SELL_CLUSTER_MIN_DOLLAR_VALUE,
+    _is_opportunistic_sell,  # private helper, direct import
+    count_10b5_1_filtered_transactions,
     detect_c_suite_unusual_sell,
     detect_insider_sell_cluster,
 )
@@ -420,3 +422,273 @@ def test_c_suite_can_fire_alone_when_cluster_dollar_floor_missed():
     ]
     assert detect_c_suite_unusual_sell(txns, AS_OF) is True
     assert detect_insider_sell_cluster(txns, AS_OF) is False  # < $1M
+
+
+def _tx_10b5(
+    *,
+    cik: str,
+    days_ago: int,
+    code: str = "S",
+    dollar_value: float = 500_000.0,
+    is_officer: bool = False,
+    officer_title: str | None = None,
+    is_rule_10b5_one: bool | None = False,
+) -> dict:
+    """Variant of _tx that includes the PR 4-eq is_rule_10b5_one field."""
+    base = _tx(
+        cik=cik,
+        days_ago=days_ago,
+        code=code,
+        dollar_value=dollar_value,
+        is_officer=is_officer,
+        officer_title=officer_title,
+    )
+    base["is_rule_10b5_one"] = is_rule_10b5_one
+    return base
+
+
+# ---------------------------------------------------------------------------
+# PR 4-eq: _is_opportunistic_sell — 10b5-1 filter unit tests (#1-#4)
+# ---------------------------------------------------------------------------
+
+
+def test_opportunistic_sell_excludes_explicit_10b5_1_true():
+    """A transaction with is_rule_10b5_one=True must be excluded from
+    the opportunistic cohort — it is a pre-scheduled trade with near-zero
+    information-asymmetry signal (Jagolinzer 2009 §3.1)."""
+    tx = {"transaction_code": "S", "is_rule_10b5_one": True}
+    assert _is_opportunistic_sell(tx) is False
+
+
+def test_opportunistic_sell_includes_explicit_10b5_1_false():
+    """A transaction explicitly marked as NOT a 10b5-1 plan is
+    opportunistic per the CMP 2012 §III.A partition."""
+    tx = {"transaction_code": "S", "is_rule_10b5_one": False}
+    assert _is_opportunistic_sell(tx) is True
+
+
+def test_opportunistic_sell_includes_10b5_1_none_pre_mandate_compat():
+    """is_rule_10b5_one=None means 'no 10b5-1 footnote resolved' — the
+    option (a) None-handling pin per methodology-scientist Mode B 2026-05-23.
+    Such trades remain in the opportunistic cohort (matches the CMP 2012 /
+    Jagolinzer 2009 calibration regime)."""
+    tx = {"transaction_code": "S", "is_rule_10b5_one": None}
+    assert _is_opportunistic_sell(tx) is True
+
+
+def test_opportunistic_sell_legacy_row_without_10b5_field_passes():
+    """Pre-PR-4-eq cache rows have no is_rule_10b5_one key at all. The
+    dict.get() fallback returns None, which passes through as opportunistic.
+    Back-compat invariant: existing caches must not have their cluster
+    signals wiped until the TTL repopulates them."""
+    tx = {"transaction_code": "S"}  # no is_rule_10b5_one key
+    assert _is_opportunistic_sell(tx) is True
+
+
+# ---------------------------------------------------------------------------
+# PR 4-eq: cluster + c_suite with 10b5-1 filter (#5-#8)
+# ---------------------------------------------------------------------------
+
+
+def test_cluster_with_majority_10b5_1_drops_below_threshold():
+    """4 distinct insiders all selling $1M+ opportunistic codes, but 3 of 4
+    are 10b5-1 scheduled trades. Only 1 distinct CIK survives the filter —
+    below the MIN_DISTINCT_INSIDERS=3 threshold. Flag must NOT fire."""
+    txns = [
+        _tx_10b5(cik="A", days_ago=5, dollar_value=400_000, is_rule_10b5_one=True),
+        _tx_10b5(cik="B", days_ago=8, dollar_value=400_000, is_rule_10b5_one=True),
+        _tx_10b5(cik="C", days_ago=12, dollar_value=400_000, is_rule_10b5_one=True),
+        _tx_10b5(cik="D", days_ago=15, dollar_value=400_000, is_rule_10b5_one=False),
+    ]
+    assert detect_insider_sell_cluster(txns, AS_OF) is False
+
+
+def test_cluster_with_minority_10b5_1_still_fires():
+    """5 distinct insiders, only 1 is 10b5-1 scheduled. 4 distinct CIKs
+    survive the filter — above MIN_DISTINCT_INSIDERS=3 and with total
+    dollar_value ≥ $1M. Flag must fire."""
+    txns = [
+        _tx_10b5(cik="A", days_ago=3, dollar_value=300_000, is_rule_10b5_one=False),
+        _tx_10b5(cik="B", days_ago=5, dollar_value=300_000, is_rule_10b5_one=False),
+        _tx_10b5(cik="C", days_ago=8, dollar_value=300_000, is_rule_10b5_one=False),
+        _tx_10b5(cik="D", days_ago=10, dollar_value=300_000, is_rule_10b5_one=False),
+        _tx_10b5(cik="E", days_ago=12, dollar_value=400_000, is_rule_10b5_one=True),
+    ]
+    assert detect_insider_sell_cluster(txns, AS_OF) is True
+
+
+def test_c_suite_inherits_10b5_1_filter():
+    """CEO with is_rule_10b5_one=True + CFO with is_rule_10b5_one=False.
+    Only 1 distinct C-suite CIK survives — below MIN_DISTINCT_INSIDERS=2.
+    The c_suite flag must NOT fire: the 10b5-1 filter applies equally
+    to both predicates via _is_opportunistic_sell."""
+    txns = [
+        _tx_10b5(
+            cik="A", days_ago=5, is_officer=True, officer_title="CEO",
+            dollar_value=200_000, is_rule_10b5_one=True,
+        ),
+        _tx_10b5(
+            cik="B", days_ago=8, is_officer=True, officer_title="CFO",
+            dollar_value=200_000, is_rule_10b5_one=False,
+        ),
+    ]
+    assert detect_c_suite_unusual_sell(txns, AS_OF) is False
+
+
+def test_strict_superset_invariant_holds_under_10b5_1_filter():
+    """When the 10b5-1 filter drops the cluster below threshold, the
+    c_suite flag MUST also be False (c_suite ⊆ cluster strict-superset
+    invariant from PR #222 must survive the filter).
+
+    Scenario: 3 distinct insiders with sufficient dollar_value, but all 3
+    have is_rule_10b5_one=True — neither cluster nor c_suite should fire.
+    """
+    txns = [
+        _tx_10b5(
+            cik="A", days_ago=5, is_officer=True, officer_title="CEO",
+            dollar_value=500_000, is_rule_10b5_one=True,
+        ),
+        _tx_10b5(
+            cik="B", days_ago=8, is_officer=True, officer_title="CFO",
+            dollar_value=500_000, is_rule_10b5_one=True,
+        ),
+        _tx_10b5(
+            cik="C", days_ago=12, dollar_value=500_000, is_rule_10b5_one=True,
+        ),
+    ]
+    cluster_fires = detect_insider_sell_cluster(txns, AS_OF)
+    c_suite_fires = detect_c_suite_unusual_sell(txns, AS_OF)
+    # strict-superset invariant: if cluster is False, c_suite must also be False
+    assert cluster_fires is False
+    assert c_suite_fires is False
+    # Verify the invariant direction: c_suite cannot be True when cluster is False
+    # (c_suite requires a subset of the conditions cluster requires)
+    assert not (c_suite_fires and not cluster_fires), (
+        "Strict-superset invariant violated: c_suite fired but cluster did not. "
+        "This breaks the DELTA-weight semantic in manipulation_index.py."
+    )
+
+
+# ---------------------------------------------------------------------------
+# PR 4-eq: count_10b5_1_filtered_transactions (#9-#10)
+# ---------------------------------------------------------------------------
+
+
+def test_count_10b5_1_filtered_counts_only_opportunistic_codes():
+    """The counter must only count transactions that:
+    (a) have code ∈ {S, D}  AND  (b) have is_rule_10b5_one=True.
+    A grant (code=A) with is_rule_10b5_one=True must NOT be counted —
+    it was never in the opportunistic cohort in the first place."""
+    txns = [
+        # Grant with 10b5-1 True — should NOT count (wrong code)
+        _tx_10b5(cik="A", days_ago=5, code="A", dollar_value=200_000,
+                 is_rule_10b5_one=True),
+        # Sale with 10b5-1 True — SHOULD count
+        _tx_10b5(cik="B", days_ago=8, code="S", dollar_value=200_000,
+                 is_rule_10b5_one=True),
+        # Sale-back-to-issuer with 10b5-1 True — SHOULD count
+        _tx_10b5(cik="C", days_ago=10, code="D", dollar_value=200_000,
+                 is_rule_10b5_one=True),
+        # Sale with 10b5-1 False — should NOT count (not filtered)
+        _tx_10b5(cik="D", days_ago=12, code="S", dollar_value=200_000,
+                 is_rule_10b5_one=False),
+        # Sale with 10b5-1 None — should NOT count (None = no plan detected)
+        _tx_10b5(cik="E", days_ago=14, code="S", dollar_value=200_000,
+                 is_rule_10b5_one=None),
+    ]
+    result = count_10b5_1_filtered_transactions(txns, AS_OF)
+    assert result == 2  # only the code=S and code=D with True
+
+
+def test_count_10b5_1_filtered_respects_window():
+    """Transactions outside the 30-day cluster window must NOT be counted
+    even if is_rule_10b5_one=True. The counter tracks contamination
+    eliminated from the cluster-detection INPUT (which is window-filtered)."""
+    txns = [
+        # Inside window — should count
+        _tx_10b5(cik="A", days_ago=5, code="S", dollar_value=200_000,
+                 is_rule_10b5_one=True),
+        # Exactly at boundary — should count (inclusive)
+        _tx_10b5(cik="B", days_ago=30, code="S", dollar_value=200_000,
+                 is_rule_10b5_one=True),
+        # Outside window — should NOT count
+        _tx_10b5(cik="C", days_ago=31, code="S", dollar_value=200_000,
+                 is_rule_10b5_one=True),
+        # Well outside window — should NOT count
+        _tx_10b5(cik="D", days_ago=90, code="S", dollar_value=200_000,
+                 is_rule_10b5_one=True),
+    ]
+    result = count_10b5_1_filtered_transactions(txns, AS_OF)
+    assert result == 2  # only the 2 within-window ones
+
+
+# ---------------------------------------------------------------------------
+# PR 4-eq: Hypothesis property — filter monotonicity invariant (#11)
+# ---------------------------------------------------------------------------
+
+
+@settings(
+    suppress_health_check=[HealthCheck.too_slow, HealthCheck.filter_too_much],
+    max_examples=100,
+)
+@given(
+    n_opportunistic=st.integers(min_value=0, max_value=20),
+    n_10b5_opportunistic=st.integers(min_value=0, max_value=20),
+    n_non_opportunistic=st.integers(min_value=0, max_value=10),
+)
+def test_filter_monotonicity_property(
+    n_opportunistic: int,
+    n_10b5_opportunistic: int,
+    n_non_opportunistic: int,
+) -> None:
+    """The 10b5-1 filter never ADDS transactions — it only removes.
+
+    For any list of transactions:
+    - count_10b5_1_filtered_transactions(...) >= 0 (trivially)
+    - count_10b5_1_filtered_transactions(...) <= len(opportunistic_in_window)
+      where opportunistic_in_window = transactions with code ∈ {S, D} in the window.
+
+    The filter strictly removes a subset of opportunistic transactions;
+    it cannot inflate the count above the opportunistic ceiling.
+    """
+    # Build a cohort: n_opportunistic non-10b5-1 sells + n_10b5_opportunistic
+    # 10b5-1 sells + n_non_opportunistic grants (code=A)
+    txns = []
+    for i in range(n_opportunistic):
+        txns.append(_tx_10b5(
+            cik=f"OPP{i}", days_ago=(i % 25) + 1, code="S",
+            dollar_value=100_000.0, is_rule_10b5_one=False,
+        ))
+    for i in range(n_10b5_opportunistic):
+        txns.append(_tx_10b5(
+            cik=f"10B5{i}", days_ago=(i % 25) + 1, code="S",
+            dollar_value=100_000.0, is_rule_10b5_one=True,
+        ))
+    for i in range(n_non_opportunistic):
+        txns.append(_tx_10b5(
+            cik=f"GRANT{i}", days_ago=(i % 25) + 1, code="A",
+            dollar_value=100_000.0, is_rule_10b5_one=True,
+        ))
+
+    filtered_count = count_10b5_1_filtered_transactions(txns, AS_OF)
+
+    # Invariant 1: non-negative
+    assert filtered_count >= 0
+
+    # Invariant 2: cannot exceed the count of opportunistic-coded txns
+    # in the window (code ∈ {S, D}, regardless of 10b5-1 status)
+    opportunistic_in_window = sum(
+        1 for tx in txns
+        if str(tx.get("transaction_code", "")).upper() in {"S", "D"}
+    )
+    assert filtered_count <= opportunistic_in_window, (
+        f"filter monotonicity violated: "
+        f"filtered_count={filtered_count} > opportunistic_in_window={opportunistic_in_window}"
+    )
+
+    # Invariant 3: exactly equals n_10b5_opportunistic (all within-window)
+    # because all our synthetic txns are within 25 days
+    assert filtered_count == n_10b5_opportunistic, (
+        f"Expected exactly {n_10b5_opportunistic} 10b5-1 filtered transactions "
+        f"(all code=S within window), got {filtered_count}"
+    )

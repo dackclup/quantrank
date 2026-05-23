@@ -148,6 +148,20 @@ export type Metadata = {
   // weight from 5.0 → 10.0.
   insider_sell_cluster_firing_count?: number | null;
   c_suite_unusual_sell_firing_count?: number | null;
+  // Phase 4.5e PR 4-eq (0.10.2-phase4.5e) — Rule 18 observability surface
+  // for the 10b5-1 contamination filter applied in
+  // `compute/scoring/form4_signals._is_opportunistic_sell`. Counts the
+  // universe-wide total of Form-4 transactions that WOULD have been
+  // classified as opportunistic (code ∈ {S, D}) absent the filter but
+  // were dropped because `is_rule_10b5_one is True` (resolved from
+  // footnote-text scan; edgartools 5.31.5 does not parse the SEC
+  // structured <rule10b5_1> element added 2023-04-01). Counted within
+  // the 30d cluster-detection window per ticker. Gates the Q3
+  // 2026-08-19 cohort-acceptance check for the cluster-weight
+  // promotion 5.0 → 7.0 (separate follow-up PR per methodology
+  // Mode B 2026-05-23). Optional + nullable on legacy snapshots
+  // pre-0.10.2.
+  form4_rule10b5_one_excluded_count?: number | null;
   // Issue #67 (0.9.8-phase4h.8) — sector-adjusted cost of equity
   // (Damodaran 2019 *Investment Valuation* 3rd ed. Table 8.4 +
   // Damodaran NYU online betas dataset, January 2025 update).

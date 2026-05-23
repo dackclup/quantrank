@@ -95,6 +95,7 @@ from compute.scoring.earnings_quality import (
 from compute.scoring.eight_k_events import get_non_reliance_filing_dates
 from compute.scoring.form4_insider import fetch_recent_form4
 from compute.scoring.form4_signals import (
+    count_10b5_1_filtered_transactions,
     detect_c_suite_unusual_sell,
     detect_insider_sell_cluster,
 )
@@ -1341,6 +1342,15 @@ def run_weekly_compute() -> int:
     # check that may promote INSIDER_SELL_CLUSTER_WEIGHT from 5.0 → 10.0.
     insider_sell_cluster_firing_count: int = 0
     c_suite_unusual_sell_firing_count: int = 0
+    # Phase 4.5e PR 4-eq — Rule 18 observability for the 10b5-1
+    # contamination filter applied in _is_opportunistic_sell. Counts
+    # the universe-wide total of transactions excluded by the filter
+    # (would have been opportunistic absent the gate) — the empirical
+    # lever for the methodology-scientist Q3 2026-08-19 cohort-
+    # acceptance check (issue #130). Expected delta vs PR #222 baseline:
+    # -30% to -45% on insider_sell_cluster_firing_count per
+    # Jagolinzer 2009 §3.2 + SEC 2022 economic analysis.
+    form4_rule10b5_one_excluded_count: int = 0
     for _, r in df.iterrows():
         ticker = str(r["ticker"])
         snap = snapshots.get(ticker)
@@ -1612,6 +1622,13 @@ def run_weekly_compute() -> int:
                 if "c_suite_unusual_sell" not in valuation_warnings:
                     valuation_warnings.append("c_suite_unusual_sell")
                 c_suite_unusual_sell_firing_count += 1
+            # PR 4-eq Rule 18 diagnostic — sum the count of transactions
+            # excluded by the 10b5-1 filter (within the 30d cluster window
+            # only) so the universe-wide contamination-eliminated metric
+            # is visible on metadata.json for the Q3 cohort audit.
+            form4_rule10b5_one_excluded_count += (
+                count_10b5_1_filtered_transactions(_form4_txns, asof_date)
+            )
 
         # Issue #67 — Rule 18 dual-count for sector-adjusted CoE delta.
         # We call check_rim_applicability twice — once with the flat 0.10
@@ -1842,6 +1859,9 @@ def run_weekly_compute() -> int:
         ),
         c_suite_unusual_sell_firing_count=(
             c_suite_unusual_sell_firing_count
+        ),
+        form4_rule10b5_one_excluded_count=(
+            form4_rule10b5_one_excluded_count
         ),
         sector_coe_enabled=config.USE_SECTOR_COE,
         value_trap_risk_count_without_sector_coe=(
