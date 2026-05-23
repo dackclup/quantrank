@@ -366,9 +366,9 @@ whitespace / single-line fixes do not trigger.
 
 ## Phase status
 
-Current schema **`0.10.0-phase4.5e`** · defense layer **20 declared
-veto+annotate flags** of [**30 boolean flags actually emitted**](https://github.com/dackclup/quantrank/issues/130#issuecomment-4496605644)
-(7 active vetoes + 13 annotates + 5 method-applicability +
+Current schema **`0.10.2-phase4.5e`** · defense layer **22 declared
+veto+annotate flags** of [**32 boolean flags actually emitted**](https://github.com/dackclup/quantrank/issues/130#issuecomment-4496605644)
+(7 active vetoes + 15 annotates + 5 method-applicability +
 5 informational; epic [#150](https://github.com/dackclup/quantrank/issues/150)
 Phase 2 splits the method-applicability flags out of `manipulation_index`).
 Plus 5 numerical guards + `manipulation_index` rollup. Latest release
@@ -1305,13 +1305,78 @@ invariants + 1 schema-version bump on `tests/test_config.py`.
 Defense layer emitted-flag count 30 → 32. Closes Phase 4.5e ladder
 (PRs 1-3).
 
+**Phase 4.5e PR 4-eq — Form-4 10b5-1 contamination filter in flight (this PR)**
+(2026-05-23) — first follow-up after the Phase 4.5e ladder closed
+(PRs 1+2+3 = #210 + #205 + #222). Closes footgun #1 from
+`compute/scoring/form4_signals.py` module docstring (10b5-1
+contamination, Jagolinzer 2009 §3.2 expected FP rate 40-60% on
+`insider_sell_cluster`). `_is_opportunistic_sell` now requires NOT
+`is_rule_10b5_one is True` in addition to the `transaction_code ∈
+{S, D}` gate — 10b5-1 scheduled trades excluded from both cluster +
+C-suite cohort counts; None and False both pass (option (a)
+None-handling per methodology-scientist Mode B verdict 2026-05-23,
+matches CMP 2012 + Jagolinzer 2009 empirical regime used to
+calibrate the existing thresholds).
+
+**Access-path caveat — edgartools 5.31.5 does NOT parse the SEC
+structured `<rule10b5_1>` XML element** added by SEC Release 33-11138
+(effective 2023-04-01). Verified by `edgar-debugger` 2026-05-23 via
+exhaustive grep of `/usr/local/lib/python3.11/dist-packages/edgar/`
+(no `rule10b5`, `isRule10b5`, `tradingPlan`, `tradingArrangement`
+hits in any parse path). The `equity_swap: str` field on
+`NonDerivativeTransaction` carries `<equitySwapInvolved>` —
+unrelated SEC concept, red herring. Only access surface is footnote-
+text pattern scan via `edgar.ownership.core.detect_10b5_1_plan`
+(regex on `["10b5-1", "10b-5-1", "rule 10b5", "rule 10b-5", "10b5
+plan", "10b-5 plan"]`). `NonDerivativeTransaction.footnotes`
+carries newline-joined footnote IDs only — the parsed `Ownership`
+object exposes a `footnotes: Footnotes` dict that resolves IDs to
+text via public `.get(id, default)` accessor (avoids edgartools'
+underscore-prefixed `_resolve_footnotes` private method). PR adds
+`footnotes` to `_NON_DERIVATIVE_TX_REQUIRED_ATTRS` + `_OWNERSHIP_REQUIRED_ATTRS`
+manifests, plus new `_FOOTNOTES_REQUIRED_ATTRS = ("get",)` manifest.
+FP risk: terminated-plan disclosures ("10b5-1 plan terminated 2022")
+match True — bias is conservative (over-excludes from opportunistic
+cohort, never under-excludes); Q3 2026-08-19 audit gates negation
+guard.
+
+**Methodology verdict highlights** (Mode B 2026-05-23):
+- Q1 Filter semantic: LITERATURE-ANCHORED (Cohen 2008 §III + Jagolinzer
+  2009 §3.1 — 10b5-1 ⊊ routine; 75% lower predictability on NEO
+  scheduled trades)
+- Q2 None-handling: option (a) — None → not-10b5-1 (let cluster fire);
+  matches CMP/Jagolinzer empirical regime
+- Q3 Expected delta: cluster `-30% to -45%` (absolute 4-10%), C-suite
+  `-45% to -65%` (absolute 1-4%) per Jagolinzer 2009 §3.2 + SEC 2022
+  economic analysis
+- Q4 C-suite inherits filter: YES, with STRONGER lit support than
+  cluster (Jagolinzer 2009 §5.2 NEO subsample 80% predictability drop;
+  CMP 2012 §V.A CFO 9× ratio)
+- Q5 Weight: HOLD at 5.0 / 3.0 for this PR. Promotion 5.0 → 7.0
+  (Aboody et al. 2010 §3.2 vesting-residual mid-point) is a separate
+  follow-up PR after ≥ 1 cron's firing-rate data lands in
+  `Metadata.form4_rule10b5_one_excluded_count`
+
+**Rule 18 observability shipped in same PR**: new
+`Metadata.form4_rule10b5_one_excluded_count: int | None` counts the
+universe-wide total of transactions excluded by the filter (within
+the 30d cluster window — directly tracks contamination eliminated
+from cluster-detection input, not 10b5-1 trades in general). Gates
+the Q3 2026-08-19 cohort-acceptance check (issue #130). Schema bump
+`0.10.1-phase4.5e` → `0.10.2-phase4.5e` (PATCH — additive Metadata
+field only). Defense layer emitted-flag count UNCHANGED at 32
+(filter is signal-quality, not new flag). Tests 1144 → 1160+ (16
+new cases per methodology pre-condition table, written by
+`test-engineer` parallel-spawn).
+
 **Next deliverables** (pick by appetite):
+- **Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — after ≥ 1
+  cron's `form4_rule10b5_one_excluded_count` lands and firing-rate
+  delta confirms the -30% to -45% predicted band (Aboody et al. 2010
+  §3.2 mid-point; vesting-driven liquidation residual still argues
+  against full 10.0 restoration)
 - **Issue #67 flip PR** — `USE_SECTOR_COE = True` after ≥ 1 cron confirms
   delta-flag-count (target: `value_trap_risk` drops from ~176 toward ~80-110)
-- **Phase 4.5e PR 3** — `insider_sell_cluster` + `c_suite_unusual_sell`
-  annotate emit + threshold calibration against PR-2 cron data
-- **Phase 4.5e** — Form 4 insider clustering (~3w → v1.3.0; weight
-  slots already declared in `FLAG_WEIGHTS`)
 - **Phase 4i.1 / 4j.1 / 4k.1** — JKP / Qlib / IPCA integration PRs
   (~1-2w each → v1.1.0-phase4)
 - **Phase 5** — ML meta-learner (~10-12w, unblocks PR 4b §3

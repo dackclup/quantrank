@@ -62,6 +62,19 @@ Threshold provenance (per Phase 2.5 tier convention)
 - **Transaction codes {S, D}**: LITERATURE-ANCHORED to CMP 2012
   §III.A "opportunistic" definition. Code F (payment-via-shares) is
   compensation-mechanical and explicitly excluded by the literature.
+- **10b5-1 filter (PR 4-eq, 2026-05-23)**: LITERATURE-ANCHORED to
+  Cohen 2008 §III routine-vs-opportunistic partition (10b5-1 plans
+  are pre-scheduled, hence ⊊ routine), Jagolinzer 2009 §3.1
+  (10b5-1 trades exhibit ~75% lower forward-return predictability
+  vs unscheduled), and the SEC's "Insider Trading Arrangements and
+  Related Disclosures" final rule (Release 33-11138, effective
+  2023-04-01) that mandated structured 10b5-1 disclosure.
+  ``_is_opportunistic_sell`` requires NOT ``is_rule_10b5_one is True``
+  in addition to the code ∈ {S, D} gate so 10b5-1 scheduled trades
+  are excluded from BOTH cluster + C-suite cohort counts. None and
+  False both pass (None = no footnote disclosure parsed — option
+  (a) per methodology-scientist Mode B 2026-05-23, matches the
+  CMP/Jagolinzer empirical regime used to calibrate the thresholds).
 - **C-suite count ≥ 2 (CEO + CFO)**: LITERATURE-ANCHORED to
   Jeng-Metrick-Zeckhauser 2003 *RFS* §V; CFO + CEO co-sells precede
   ~5-7% 6-month negative abnormal returns. Title regex narrowed to
@@ -98,17 +111,42 @@ Weight provenance
 Footguns
 --------
 
-1. **10b5-1 contamination**: SEC Rule 10b5-1 allows insiders to set up
-   pre-scheduled trading plans that carry zero information-asymmetry
-   signal. Jagolinzer 2009 finds 10b5-1 trades are ~25-40% of S&P 500
-   insider sales post-2003. CMP 2012 §III.B opportunistic-only subset
-   carries 4× the predictive content; without filtering, expected FP
-   rate is 40-60% per Jagolinzer 2009. Mitigation deferred to a
-   follow-up PR (requires either scout-module parse of the SEC
-   `isRule10b5One` XML field added 2023-04, or a Cohen 2008
-   routine-vs-opportunistic classifier that needs a 5y lookback — the
-   current cache is 180d). Flag stays annotate-only until empirical
-   PPV check at Q3 2026-08-19 quarterly audit.
+1. **10b5-1 contamination — MITIGATED in PR 4-eq (2026-05-23).**
+   SEC Rule 10b5-1 allows insiders to set up pre-scheduled trading
+   plans that carry near-zero information-asymmetry signal.
+   Jagolinzer 2009 finds 10b5-1 trades are ~25-40% of S&P 500
+   insider sales post-2003 (SEC's 2022 economic analysis updates the
+   2018-2021 large-cap regime to ~50-60% by sale dollar-value).
+   CMP 2012 §III.B opportunistic-only subset carries 4× the
+   predictive content; without filtering, expected FP rate is
+   40-60% per Jagolinzer 2009.
+
+   **Mitigation in this PR**: ``_is_opportunistic_sell`` gates on
+   NOT ``is_rule_10b5_one is True`` so 10b5-1 scheduled trades are
+   excluded from both cluster + C-suite cohort counts. Source field
+   resolved per-transaction by ``form4_insider._detect_10b5_1_on_transaction``
+   via footnote-text pattern scan (edgartools 5.31.5 does NOT parse
+   the SEC structured ``<rule10b5_1>`` XML element added in the
+   2023-04-01 mandate — see ``form4_insider.py`` module docstring
+   §"Footnote resolution" for the access-path rationale).
+
+   Expected firing-rate delta (methodology Mode B 2026-05-23):
+   ``insider_sell_cluster`` -30% to -45% (absolute 4-10%),
+   ``c_suite_unusual_sell`` -45% to -65% (absolute 1-4%). Q3
+   2026-08-19 cohort audit gates whether to (a) promote
+   ``INSIDER_SELL_CLUSTER_WEIGHT`` 5.0 → 7.0 (mid-point — vesting-
+   driven liquidations remain a separate ~15-25% contamination per
+   Aboody et al. 2010 §3.2) and (b) harden ``detect_10b5_1_plan``
+   with a negation guard against FP matches on phrases like "10b5-1
+   plan terminated" (current bias is conservative — over-excludes
+   from opportunistic cohort, never under-excludes).
+
+   Residual: ~10-15% routine-but-not-10b5-1 trades per Jagolinzer
+   2009 §3.2 (insider whose Q1 sale 14d post-10-K is consistent
+   across 5y but never filed a 10b5-1 plan). Full Cohen 2008
+   routine-vs-opportunistic classifier requires a 5y per-insider
+   lookback the current 180d cache cannot satisfy without a
+   structural change — deferred to a future iteration.
 
 2. **Post-earnings-window seasonal clustering**: Insiders are barred
    from trading during the 30-day pre-earnings blackout window and
@@ -234,9 +272,25 @@ def _parse_transaction_date(tx: dict) -> date | None:
 
 
 def _is_opportunistic_sell(tx: dict) -> bool:
-    """Per CMP 2012 §III.A: open-market sale (S) or sale-back-to-issuer (D).
-    Codes A/M/F/G are compensation-mechanical and excluded."""
-    return str(tx.get("transaction_code", "")).upper() in _OPPORTUNISTIC_SELL_CODES
+    """Per CMP 2012 §III.A: open-market sale (S) or sale-back-to-issuer (D),
+    with the PR 4-eq 10b5-1 contamination filter applied.
+
+    Returns True only when:
+
+    - ``transaction_code ∈ {"S", "D"}`` (opportunistic-code partition;
+      A/M/F/G are compensation-mechanical and excluded)
+    - AND ``is_rule_10b5_one`` is NOT ``True`` (None and False both
+      pass — see module docstring §"Footguns" #1 for the option (a)
+      None-handling rationale per Cohen 2008 + Jagolinzer 2009)
+
+    Pre-PR-4-eq cache rows lack the ``is_rule_10b5_one`` key entirely;
+    ``dict.get`` returns None on those, which keeps the row in the
+    opportunistic cohort. Forward-compatible: when the field is True,
+    the row is dropped (10b5-1 scheduled trade excluded).
+    """
+    if str(tx.get("transaction_code", "")).upper() not in _OPPORTUNISTIC_SELL_CODES:
+        return False
+    return tx.get("is_rule_10b5_one") is not True
 
 
 def _is_c_suite(tx: dict) -> bool:
@@ -351,12 +405,53 @@ def detect_c_suite_unusual_sell(
     return len(distinct_ciks) >= C_SUITE_UNUSUAL_SELL_MIN_DISTINCT_INSIDERS
 
 
+def count_10b5_1_filtered_transactions(
+    transactions: list[dict] | None,
+    as_of: date,
+) -> int:
+    """Count transactions excluded by the PR 4-eq 10b5-1 filter — i.e.,
+    transactions that WOULD have been classified as opportunistic
+    (``code ∈ {S, D}``) absent the filter, but were dropped because
+    ``is_rule_10b5_one is True``.
+
+    Counted only WITHIN the broader cluster lookback window so the
+    metric directly tracks the contamination eliminated from the
+    cluster-detection input, not 10b5-1 trades in general.
+
+    Used by ``compute/main.py`` to populate
+    ``Metadata.form4_rule10b5_one_excluded_count`` — the Rule 18
+    diagnostic that gates the Q3 2026-08-19 cohort-acceptance check
+    (issue #130). Expected universe-wide delta vs PR #222 baseline:
+    -30% to -45% on ``insider_sell_cluster_firing_count`` per
+    methodology-scientist Mode B 2026-05-23 (Jagolinzer 2009 §3.2 +
+    SEC 2022 economic analysis).
+
+    Returns 0 on None / empty / no windowed transactions — safe
+    default for tickers with no Form-4 coverage.
+    """
+    if not transactions:
+        return 0
+    windowed = _window_filter(
+        transactions, as_of, INSIDER_SELL_CLUSTER_LOOKBACK_DAYS
+    )
+    if not windowed:
+        return 0
+    count = 0
+    for tx in windowed:
+        if str(tx.get("transaction_code", "")).upper() not in _OPPORTUNISTIC_SELL_CODES:
+            continue
+        if tx.get("is_rule_10b5_one") is True:
+            count += 1
+    return count
+
+
 __all__ = [
     "C_SUITE_UNUSUAL_SELL_LOOKBACK_DAYS",
     "C_SUITE_UNUSUAL_SELL_MIN_DISTINCT_INSIDERS",
     "INSIDER_SELL_CLUSTER_LOOKBACK_DAYS",
     "INSIDER_SELL_CLUSTER_MIN_DISTINCT_INSIDERS",
     "INSIDER_SELL_CLUSTER_MIN_DOLLAR_VALUE",
+    "count_10b5_1_filtered_transactions",
     "detect_c_suite_unusual_sell",
     "detect_insider_sell_cluster",
 ]
