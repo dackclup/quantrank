@@ -863,6 +863,33 @@ note cross-tool-specific points only:
   the flip PR. Cross-tool agents: do NOT flip USE_SECTOR_COE to True
   without the methodology-scientist verdict captured in the PR body.
 
+- **Issues #217 + #218 OSAP proxy contract codification in flight
+  (this PR)** — codifies the Phase 4h factor-exposure-proxy contract
+  (`compute/features/osap_replicate.py:14-35`) on both sides of the
+  audit surface, after a 2026-05-23 cron #3 false-positive
+  escalation where `stock-detail-auditor` flagged universe-wide
+  identical `osap_signals` (502 tickers × same dict) as cron-wide
+  corruption and woke `incident-commander` to a P1 that downgraded
+  to P3. `.claude/agents/stock-detail-auditor.md` gains the 3-row
+  recognition table at the top of Step 3 (proxy_active+blended_varies
+  → `documented_proxy`; proxy_active+uniform_blended → `broken_data`;
+  graduated → escalate to `methodology-scientist`), a third verdict
+  type `documented_proxy`, and a new escalation row routing
+  universe-wide scope-note-contract patterns to `methodology-
+  scientist` (NOT `incident-commander`).
+  `.claude/skills/verify-production-output/helper.py` gains
+  `section_l_osap_proxy_invariant()` — Section L emits
+  `phase4h_proxy` / `blending_regression` / `graduated` /
+  `schema_drift` / `unknown` modes against `osap_signals` +
+  `osap_blended_score`. Cross-tool agents: when running the helper
+  locally, expect a Section L block with the OSAP proxy verdict
+  added to the Section A-K block. Live-data verification:
+  2026-05-23 cron #3 output reports `mode=phase4h_proxy (1 signal
+  set × 428 blended scores)`. Tests 1056 → 1062 in the suite (+6
+  Section L cases). No compute / schema / scoring / valuation /
+  frontend change — agent prompt + helper script + tests only.
+  Closes issues #217 + #218.
+
 ## Claude-Code-specific tooling
 
 Claude Code sessions for this project have 6 MCP connectors enabled

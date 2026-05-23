@@ -62,6 +62,24 @@ Group output by severity.
 
 ### Step 3 — LLM-judgment review
 
+**Before walking findings, check for documented proxy contracts.**
+A universe-wide uniformity is NOT automatically corruption — some
+fields are intentionally identical across tickers by Phase scope-
+note. The factor-exposure proxy is the canonical example:
+
+| Pattern | Verdict | Contract anchor |
+|---|---|---|
+| ALL tickers share IDENTICAL `osap_signals` dict AND `osap_blended_score` varies per-ticker (≥ 50% distinct) | **documented_proxy** — Phase 4h factor-exposure proxy | `compute/features/osap_replicate.py:14-35` |
+| ALL tickers share IDENTICAL `osap_signals` AND `osap_blended_score` ALSO uniform | **broken_data** — blending pipeline regression | escalate to `incident-commander` |
+| `osap_signals` varies per-ticker | **graduated** (Phase 4i+) — confirm intent, NOT corruption | escalate to `methodology-scientist` |
+
+Genuine per-stock corruption would show varying signal inputs AND
+varying outputs of an unexpected kind, or identical-everywhere. Do
+NOT escalate the documented `phase4h_proxy` pattern to
+`incident-commander`. Section L of `verify-production-output/helper.py`
+asserts this invariant positively — cross-check with its output
+before escalating any OSAP-shaped finding.
+
 Walk every ticker that Step 2 flagged. Dedup multi-rule hits;
 order severity SCHEMA > CONSISTENCY > RULE_16 > KNOWN_ISSUE
 within the output, but do not skip lower-severity items just to
@@ -74,7 +92,8 @@ For each:
   `data_quality.imputed_metrics`, `tier2_events`, and any
   adjacent score-history entries
 - Verdict: **real_outlier** (plausible, flag informative) vs
-  **broken_data** (upstream mis-parse)
+  **broken_data** (upstream mis-parse) vs **documented_proxy**
+  (matches a Phase scope-note contract — cite the anchor)
 - For `broken_data`, point at likely upstream:
   - XBRL → `compute/ingest/fundamentals.py`
   - Price / market_cap → `compute/ingest/prices.py`
@@ -100,7 +119,7 @@ Prefilter (Step 2):
 - KNOWN_ISSUE: <N>  · <TICKER> · <issue ref>
 
 LLM-judgment (Step 3, every flagged ticker):
-- <TICKER> · <real_outlier|broken_data> · <upstream if broken> · <one-line evidence>
+- <TICKER> · <real_outlier|broken_data|documented_proxy> · <upstream if broken | contract anchor if proxy> · <one-line evidence>
 
 Summary: <N>/<M>/<K>/<J> violations. Top: <ticker> (<rule>).
 Next: <verify-production-output | issue on worst broken_data | none>
@@ -129,4 +148,5 @@ Next: <verify-production-output | issue on worst broken_data | none>
 | Defense-layer count regressed vs prior run | `defense-layer-auditor` |
 | Specific ticker hangs SEC fetch / 429 / 403 | `edgar-debugger` |
 | Multi-ticker pattern → cron-wide corruption | `incident-commander` |
+| Universe-wide pattern matching a Phase scope-note contract (e.g. OSAP factor-exposure proxy `osap_replicate.py:14-35`) | `methodology-scientist` (cohort review, NOT `incident-commander`) |
 | Frontend rendering bug given correct data | `frontend-design-reviewer` |

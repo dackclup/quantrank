@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""Section A-J production verification scan for QuantRank compute output.
+"""Section A-L production verification scan for QuantRank compute output.
 
 Invoked by the `verify-production-output` skill. Reads
 `frontend/public/data/{metadata.json, rankings.json, stocks/*.json}` and
 emits a structured report covering schema, Tier-2 contract, fair-price
 coverage, Top-5 rotation, risk-flag totals, Tier-2 dict shape,
-fundamentals resilience, universe-size consistency, and the annotate-
-flag inventory used by quarterly audit automation.
+fundamentals resilience, universe-size consistency, the annotate-flag
+inventory used by quarterly audit automation, the Form-4 universe
+accounting equation, and the OSAP factor-exposure proxy invariant.
 
 Section I is reserved for the Playwright UI spot-check (CLAUDE.md
 post-`workflow_dispatch` requirement); it lives outside this script
@@ -544,13 +545,116 @@ def section_k_form4_universe(
     return warnings, failures
 
 
+def section_l_osap_proxy_invariant(
+    metadata: dict, stocks: list[dict]
+) -> tuple[int, int]:
+    """OSAP factor-exposure proxy invariant (issue #218).
+
+    Phase 4h ships a universe-wide proxy: every ticker carries the SAME
+    ``osap_signals`` dict, derived from the market-wide OSAP long-short
+    cross-section. ``osap_blended_score`` is computed per-ticker as
+    ``universe_signal aggregate × ticker composite_score``, so blended
+    scores vary even though signal inputs are uniform. See
+    ``compute/features/osap_replicate.py:14-35`` for the design contract.
+
+    Pre-graduation (Phase 4h, current):
+        osap_signals          : 1 unique set across the universe
+        osap_blended_score    : varies per-ticker (≥ 50% distinct)
+
+    Post-graduation (Phase 4i+, future):
+        osap_signals          : varies per-ticker (cross-sectional ranks)
+        osap_blended_score    : continues to vary
+
+    Failure modes Section L catches:
+
+    1. ``blending_regression``: uniform signals AND uniform blended_score
+       (lost per-ticker scalar multiplication in osap_blend.py) — FAIL.
+    2. ``graduated``: varying signals (forces an intentional contract
+       bump — WARN until the Phase 4h scope-note is updated to declare
+       the graduation).
+    3. ``schema_drift``: osap_signals key set differs across tickers
+       (uniformity broken but not graduated cleanly) — FAIL.
+
+    Returns ``(warnings, failures)``.
+    """
+    _section("L", "OSAP factor-exposure proxy invariant")
+
+    tickers_with_osap = [
+        s for s in stocks
+        if isinstance(s.get("osap_signals"), dict) and s["osap_signals"]
+    ]
+    if not tickers_with_osap:
+        _emit(OK, "skipped", "no osap_signals populated (pre-Phase-4h snapshot)")
+        return 0, 0
+
+    ref_keys = frozenset(tickers_with_osap[0]["osap_signals"].keys())
+    schema_drift: list[str] = []
+    unique_signal_sets: set[tuple] = set()
+    blended_score_values: set[float] = set()
+
+    for s in tickers_with_osap:
+        sig = s["osap_signals"]
+        if frozenset(sig.keys()) != ref_keys:
+            schema_drift.append(s.get("ticker") or "?")
+        # Sorted tuple-of-items makes the dict hashable. Round to 9
+        # decimals so JSON-roundtrip float jitter doesn't fragment what
+        # is conceptually one signal set.
+        unique_signal_sets.add(tuple(sorted(
+            (k, round(v, 9) if isinstance(v, (int, float)) else v)
+            for k, v in sig.items()
+        )))
+        bs = s.get("osap_blended_score")
+        if isinstance(bs, (int, float)):
+            blended_score_values.add(round(bs, 6))
+
+    n_tickers = len(tickers_with_osap)
+    n_unique_signals = len(unique_signal_sets)
+    n_distinct_blended = len(blended_score_values)
+    proxy_active = n_unique_signals == 1
+    blended_varies = n_distinct_blended >= 0.5 * n_tickers
+
+    _emit(OK, "tickers with osap_signals", str(n_tickers))
+    _emit(OK, "unique signal sets", str(n_unique_signals))
+    _emit(OK, "distinct blended scores", str(n_distinct_blended))
+
+    if schema_drift:
+        _emit(FAIL, "schema_drift",
+              f"{len(schema_drift)} tickers with mismatched signal keys: "
+              f"{schema_drift[:10]}")
+        return 0, 1
+
+    if proxy_active and blended_varies:
+        _emit(OK, "mode",
+              f"phase4h_proxy (1 signal set × {n_distinct_blended} blended scores)")
+        return 0, 0
+
+    if proxy_active and not blended_varies:
+        _emit(FAIL, "mode",
+              "blending_regression — uniform signals AND uniform blended_score; "
+              "lost per-ticker scalar multiplication in osap_blend.py")
+        return 0, 1
+
+    if not proxy_active and blended_varies:
+        _emit(WARN, "mode",
+              f"graduated — osap_signals varies per-ticker "
+              f"({n_unique_signals} unique sets). Confirm Phase 4i+ "
+              f"replication is intentional and update "
+              f"compute/features/osap_replicate.py:14-35 scope-note.")
+        return 1, 0
+
+    _emit(FAIL, "mode",
+          f"unknown — {n_unique_signals} signal sets × "
+          f"{n_distinct_blended} blended values")
+    return 0, 1
+
+
 # ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
 
 
 def main(argv: list[str] | None = None) -> int:
-    p = argparse.ArgumentParser(description="QuantRank Section A-H verification")
+    p = argparse.ArgumentParser(description="QuantRank Section A-L verification")
     p.add_argument("--data-dir", default="frontend/public/data",
                    help="Path to compute output root")
     p.add_argument("--baseline-commit", default=None,
@@ -583,6 +687,7 @@ def main(argv: list[str] | None = None) -> int:
         lambda: section_h_universe_consistency(metadata, rankings, stocks),
         lambda: section_j_annotate_audit(stocks),
         lambda: section_k_form4_universe(metadata, stocks),
+        lambda: section_l_osap_proxy_invariant(metadata, stocks),
     ):
         w, f = fn()
         total_warnings += w

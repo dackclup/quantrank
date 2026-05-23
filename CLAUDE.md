@@ -1093,6 +1093,49 @@ actually moves more after this lands. Not in this PR's diff.
 
 No compute / schema / scoring / valuation / frontend code change.
 
+**Issues #217 + #218 OSAP proxy contract codification in flight (this PR)** —
+the 2026-05-23 cron #3 surfaced a false-positive escalation chain: the
+`stock-detail-auditor` interpreted the universe-wide identical
+`osap_signals` dict (502 tickers × same dict) as cron-wide data
+corruption and escalated to `incident-commander`, which then had to
+walk the schema + frontend + blending pipeline before downgrading the
+P1 to P3. Root cause: the documented Phase 4h factor-exposure proxy
+contract (`compute/features/osap_replicate.py:14-35`, locked
+2026-05-18) was nowhere in the agent prompts or the verify-helper —
+both directions of drift (regression OR Phase 4i+ graduation) were
+silent. This PR closes the loop on both sides. **(a)
+`.claude/agents/stock-detail-auditor.md`** gains a "Documented
+patterns — NOT broken_data" callout at the top of Step 3 with the
+3-row recognition table (proxy_active+blended_varies →
+documented_proxy / proxy_active+uniform_blended → broken_data /
+graduated → escalate to methodology-scientist), a third verdict
+type `documented_proxy`, and a new escalation row routing universe-
+wide proxy-shaped findings to `methodology-scientist` (NOT
+`incident-commander`). **(b)
+`.claude/skills/verify-production-output/helper.py`** gains
+`section_l_osap_proxy_invariant()` (issue #218's proposed code,
+cleaned up): walks `osap_signals` + `osap_blended_score` across the
+universe, classifies into `phase4h_proxy` / `blending_regression` /
+`graduated` / `schema_drift` / `unknown`, returns
+`(warnings, failures)` matching the existing Section A-K reporter
+shape. Section L passes on the 2026-05-23 cron #3 output with
+`mode=phase4h_proxy (1 signal set × 428 blended scores)` — confirming
+the contract holds. The blending-regression failure mode is the
+defensive guard: if a future code change accidentally drops the
+per-ticker scalar multiplication in `compute/scoring/osap_blend.py`,
+the helper FAILS instead of passing silently. The graduated WARN
+mode forces an intentional scope-note bump when Phase 4i+ true
+per-stock replication lands. **(c) `tests/test_verify_helper.py`**
+gains 6 Section L tests (empty/skip + populated-but-no-OSAP/skip +
+phase4h_proxy/pass + blending_regression/fail + graduated/warn +
+schema_drift/fail + None-coverage-gap exclusion), 12 → 18 tests in
+this file, 1056 → 1062 in the suite. **(d) Helper module docstring**
+header text updated from "Section A-J" to "Section A-L"; the
+`main()` argparse description and runner tuple both bumped to wire
+the new section. No compute / schema / scoring / valuation /
+frontend code change — agent prompt + helper script + tests only.
+Closes issues #217 + #218.
+
 **Next deliverables** (pick by appetite):
 - **Issue #67 flip PR** — `USE_SECTOR_COE = True` after ≥ 1 cron confirms
   delta-flag-count (target: `value_trap_risk` drops from ~176 toward ~80-110)
