@@ -105,26 +105,26 @@ export function FilterDrawer({
         role="dialog"
         aria-modal="true"
         aria-label="Filter stocks"
-        className={`fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col bg-white shadow-overlay transition-transform duration-300 ease-out ${
+        className={`fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col bg-white shadow-overlay transition-transform duration-300 ease-out dark:bg-slate-900 ${
           open ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        <header className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+        <header className="flex items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-slate-800">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               Filters
             </div>
             <div className="mt-0.5 font-mono text-sm tabular-nums">
-              <span className="font-semibold text-slate-900">
+              <span className="font-semibold text-slate-900 dark:text-slate-100">
                 {filteredCount.toLocaleString()}
               </span>
-              <span className="text-slate-400"> / {totalCount.toLocaleString()} stocks</span>
+              <span className="text-slate-400 dark:text-slate-500"> / {totalCount.toLocaleString()} stocks</span>
             </div>
           </div>
           <button
             onClick={onClose}
             aria-label="Close filters"
-            className="rounded-md p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+            className="rounded-md p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.75">
               <path d="M5 5l10 10M15 5L5 15" strokeLinecap="round" />
@@ -134,7 +134,7 @@ export function FilterDrawer({
 
         <div className="flex-1 space-y-6 overflow-y-auto px-5 py-5">
           <div>
-            <label className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-slate-700">
+            <label className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
               Search
             </label>
             <div className="relative">
@@ -143,10 +143,10 @@ export function FilterDrawer({
                 placeholder="Ticker or company name…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full rounded-md border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm shadow-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
+                className="w-full rounded-md border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm shadow-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500"
               />
               <svg
-                className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+                className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-slate-500"
                 viewBox="0 0 20 20"
                 fill="none"
                 stroke="currentColor"
@@ -160,10 +160,10 @@ export function FilterDrawer({
 
           <div>
             <div className="mb-2 flex items-baseline justify-between">
-              <label className="text-[11px] font-semibold uppercase tracking-wider text-slate-700">
+              <label className="text-[11px] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                 Composite score
               </label>
-              <span className="font-mono text-xs tabular-nums text-slate-700">
+              <span className="font-mono text-xs tabular-nums text-slate-700 dark:text-slate-300">
                 {scoreRange[0]}–{scoreRange[1]}
               </span>
             </div>
@@ -171,7 +171,7 @@ export function FilterDrawer({
           </div>
 
           <div>
-            <label className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-slate-700">
+            <label className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
               Score tier
             </label>
             <div className="flex flex-wrap gap-1.5">
@@ -183,7 +183,7 @@ export function FilterDrawer({
                     type="button"
                     onClick={() => toggleTier(t.id)}
                     className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition ${
-                      on ? t.cls : 'bg-white text-slate-600 ring-slate-300 hover:bg-slate-50'
+                      on ? t.cls : 'bg-white text-slate-600 ring-slate-300 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
                     }`}
                   >
                     <span className={`inline-block h-1.5 w-1.5 rounded-full ${t.dot}`} />
@@ -198,7 +198,7 @@ export function FilterDrawer({
           </div>
 
           <div>
-            <label className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-slate-700">
+            <label className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
               Recommendation
             </label>
             <div className="flex flex-wrap gap-1.5">
@@ -212,7 +212,7 @@ export function FilterDrawer({
                     className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition ${
                       on
                         ? RECOMMENDATION_CHIP_TONES[rec]
-                        : 'bg-white text-slate-600 ring-slate-300 hover:bg-slate-50'
+                        : 'bg-white text-slate-600 ring-slate-300 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
                     }`}
                   >
                     <span className={`inline-block h-1.5 w-1.5 rounded-full ${RECOMMENDATION_CHIP_DOTS[rec]}`} />
@@ -224,7 +224,7 @@ export function FilterDrawer({
           </div>
 
           <div>
-            <label className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-slate-700">
+            <label className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
               Valuation
             </label>
             <div className="flex flex-wrap gap-1.5">
@@ -250,10 +250,10 @@ export function FilterDrawer({
 
           <div>
             <div className="mb-2 flex items-baseline justify-between">
-              <label className="text-[11px] font-semibold uppercase tracking-wider text-slate-700">
+              <label className="text-[11px] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                 Sectors
               </label>
-              <span className="text-[11px] text-slate-400">
+              <span className="text-[11px] text-slate-400 dark:text-slate-500">
                 {sectorSet.size === 0 ? 'All' : `${sectorSet.size} selected`}
               </span>
             </div>
@@ -267,7 +267,7 @@ export function FilterDrawer({
                     type="button"
                     onClick={() => toggleSector(s)}
                     className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition ${
-                      on ? `${sty.bg} ${sty.fg} ${sty.ring}` : 'bg-white text-slate-600 ring-slate-300 hover:bg-slate-50'
+                      on ? `${sty.bg} ${sty.fg} ${sty.ring}` : 'bg-white text-slate-600 ring-slate-300 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
                     }`}
                   >
                     <span
@@ -282,18 +282,18 @@ export function FilterDrawer({
           </div>
         </div>
 
-        <footer className="flex items-center justify-between gap-3 border-t border-slate-200 bg-slate-50 px-5 py-3">
+        <footer className="flex items-center justify-between gap-3 border-t border-slate-200 bg-slate-50 px-5 py-3 dark:border-slate-800 dark:bg-slate-950">
           <button
             type="button"
             onClick={clearAll}
-            className="rounded-md px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+            className="rounded-md px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
           >
             Clear all
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md bg-slate-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-slate-800"
+            className="rounded-md bg-emerald-700 px-4 py-1.5 text-sm font-medium text-white hover:bg-emerald-800 dark:bg-emerald-600 dark:text-white dark:hover:bg-emerald-500"
           >
             View {filteredCount.toLocaleString()} stock{filteredCount === 1 ? '' : 's'}
           </button>

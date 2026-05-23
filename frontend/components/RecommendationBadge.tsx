@@ -22,34 +22,37 @@ import type { Recommendation } from '@/lib/types';
 // `phase-4-kickoff-checklist/PLAN.md` §1 + `recommendation-badge/
 // PLAN.md` for the full decision trail.
 
-// Tones match `SectorChip` / score-tier / MoS-bucket pattern: light-mode
-// only (NO `dark:` variants). `globals.css` sets `color-scheme: light`
-// to force the entire site to render in light mode, but Tailwind's
-// `dark:` variants are gated on `prefers-color-scheme: dark` at the
-// SYSTEM level, not the page's color-scheme. Users with system dark
-// mode would otherwise see `dark:text-{tone}-50` (very light text) on
-// the still-light `bg-{tone}-50` background — invisible label.
-// Lesson learned 2026-05-14 (PR #70 second iteration): adopting the
-// existing chip pattern means matching its absence of dark: variants.
+// Tones match `SectorChip` / score-tier / MoS-bucket pattern: outlined-
+// light family. LedgerCraft Phase 3b (2026-05-22) added `dark:` variants
+// — we control the `dark` class on `<html>` via next-themes (class
+// strategy) so the prior PR #70 invisible-label concern doesn't apply
+// here (the class only activates on explicit user toggle, never on
+// system preference alone unless theme="system" is selected, in which
+// case both the body bg AND chip dark variants activate together).
 //
 // Strong-end (bullish + cautious) uses `text-{tone}-900` for max
-// contrast vs `bg-{tone}-50` (~10:1, well above WCAG AA 4.5:1).
-// Middle tones (lean_bullish + neutral) use `text-{tone}-700` so the
-// 4-tier ramp still has visual hierarchy via text shade.
+// contrast vs `bg-{tone}-50` (~10:1 light, ~9:1 dark) — well above
+// WCAG AA 4.5:1. Middle tones (lean_bullish + neutral) use
+// `text-{tone}-700` so the 4-tier ramp keeps visual hierarchy via
+// text shade. Dark variants flip the ramp: `dark:text-{tone}-100`
+// for the strong end, `dark:text-{tone}-300` for the middle, with
+// translucent `dark:bg-{tone}-900/30` backgrounds.
 const TONES: Record<Recommendation, string> = {
-  bullish: 'bg-emerald-50 text-emerald-900 ring-emerald-300',
-  lean_bullish: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
-  neutral: 'bg-slate-100 text-slate-700 ring-slate-300',
-  cautious: 'bg-red-50 text-red-900 ring-red-300',
+  bullish: 'bg-emerald-50 text-emerald-900 ring-emerald-300 dark:bg-emerald-900/30 dark:text-emerald-100 dark:ring-emerald-800',
+  lean_bullish: 'bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-300 dark:ring-emerald-800',
+  neutral: 'bg-slate-100 text-slate-700 ring-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700',
+  cautious: 'bg-red-50 text-red-900 ring-red-300 dark:bg-red-900/30 dark:text-red-100 dark:ring-red-800',
 };
 
 // Small colored-dot indicator paired with the chip — same shape as
-// SectorChip / score-tier / MoS-bucket chips.
+// SectorChip / score-tier / MoS-bucket chips. Dots get a brighter
+// shade in dark mode (`-400` / `-300`) so they remain visible against
+// the translucent dark chip backgrounds.
 const DOTS: Record<Recommendation, string> = {
-  bullish: 'bg-emerald-700',
-  lean_bullish: 'bg-emerald-500',
-  neutral: 'bg-slate-500',
-  cautious: 'bg-red-600',
+  bullish: 'bg-emerald-700 dark:bg-emerald-400',
+  lean_bullish: 'bg-emerald-500 dark:bg-emerald-300',
+  neutral: 'bg-slate-500 dark:bg-slate-400',
+  cautious: 'bg-red-600 dark:bg-red-400',
 };
 
 const LABELS: Record<Recommendation, string> = {

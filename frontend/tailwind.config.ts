@@ -1,6 +1,12 @@
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
+  // LedgerCraft Phase 3b — class-strategy dark mode. `<html>` gains
+  // a `dark` class when the user toggles via next-themes; all `dark:`
+  // utility variants then activate. Class strategy chosen over `media`
+  // so the user's explicit choice (light / dark / system) overrides
+  // the OS preference.
+  darkMode: 'class',
   content: [
     './app/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',

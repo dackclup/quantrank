@@ -34,7 +34,7 @@ export function ScoreBadge({
       <div className="flex items-center gap-2">
         <div className="relative h-16 w-16 shrink-0">
           <svg viewBox="0 0 64 64" className="h-16 w-16 -rotate-90">
-            <circle cx="32" cy="32" r={r} fill="none" stroke="rgb(241 245 249)" strokeWidth="6" />
+            <circle cx="32" cy="32" r={r} fill="none" className="stroke-slate-100 dark:stroke-slate-800" strokeWidth="6" />
             <circle
               cx="32"
               cy="32"
@@ -47,16 +47,16 @@ export function ScoreBadge({
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="font-mono text-base font-semibold tabular-nums text-slate-900">
+            <span className="font-mono text-base font-semibold tabular-nums text-slate-900 dark:text-slate-100">
               {score.toFixed(0)}
             </span>
           </div>
         </div>
         <div className="flex flex-col">
-          <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+          <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
             Composite Score
           </span>
-          <span className="font-mono text-lg font-semibold tabular-nums text-slate-900">
+          <span className="font-mono text-lg font-semibold tabular-nums text-slate-900 dark:text-slate-100">
             {score.toFixed(1)}
           </span>
           <span className="text-[10px] uppercase tracking-wider" style={{ color: accent }}>
@@ -75,10 +75,10 @@ export function ScoreBadge({
     const accent = scoreAccentColor(score);
     return (
       <div className="flex flex-col items-end gap-0.5 leading-none">
-        <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+        <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
           Composite Score
         </span>
-        <span className="font-mono text-2xl font-bold tabular-nums text-slate-900">
+        <span className="font-mono text-2xl font-bold tabular-nums text-slate-900 dark:text-slate-100">
           {score.toFixed(1)}
         </span>
         <span className="text-[10px] font-medium uppercase tracking-wider" style={{ color: accent }}>

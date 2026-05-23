@@ -76,16 +76,16 @@ export function CurrentPriceLine({ ticker, fallbackPrice }: Props) {
   return (
     <div className="mt-3 flex flex-col gap-1">
       <div className="flex items-baseline gap-2">
-        <span className="font-mono text-2xl font-semibold tabular-nums leading-none text-slate-900">
+        <span className="font-mono text-2xl font-semibold tabular-nums leading-none text-slate-900 dark:text-slate-100">
           ${quote.price.toFixed(2)}
         </span>
-        <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
+        <span className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
           USD
         </span>
       </div>
       {quote.changeAbs !== null && quote.changePct !== null && (
         <div
-          className={`flex flex-wrap items-baseline gap-1.5 text-sm ${positive ? 'text-emerald-700' : 'text-rose-600'}`}
+          className={`flex flex-wrap items-baseline gap-1.5 text-sm ${positive ? 'text-emerald-700 dark:text-emerald-300' : 'text-rose-600 dark:text-rose-400'}`}
         >
           <span className="font-mono font-semibold tabular-nums">
             {positive ? '+' : ''}
@@ -96,7 +96,7 @@ export function CurrentPriceLine({ ticker, fallbackPrice }: Props) {
             {quote.changePct.toFixed(2)}%)
           </span>
           <span>{positive ? '↑' : '↓'}</span>
-          <span className="text-xs font-normal text-slate-500">past day</span>
+          <span className="text-xs font-normal text-slate-500 dark:text-slate-400">past day</span>
         </div>
       )}
     </div>

@@ -44,7 +44,7 @@ Three governing instincts:
 
 | Role | Token | Value | Purpose |
 |---|---|---|---|
-| App background | `slate-50` | `rgb(248 250 252)` | Body canvas |
+| App background | `neutral-50` | `#FAFAFA` | Body canvas (LedgerCraft canonical) |
 | Surface | `white` | `#FFFFFF` | Cards, table rows (odd) |
 | Surface (alt) | `slate-50` | `#F8FAFC` | Table rows (even) — alternating-row pattern |
 | Hover | `slate-100` | `#F1F5F9` | Table row hover, button hover |
@@ -53,6 +53,28 @@ Three governing instincts:
 | Body text | `slate-900` | `rgb(15 23 42)` | Primary content |
 | Subdued text | `slate-600` / `slate-500` | — | Section labels (600) / micro labels (500) |
 | Muted text | `slate-400` | — | Captions, "N/A", aria-hidden glyphs |
+
+### LedgerCraft canonical accents (Phase 3b)
+
+QuantRank's brand palette aligns to the LedgerCraft spec. The hex
+values below are the canonical truth; the Tailwind classes are the
+single approved way to reach them in code (no inline hex per Rule 0).
+
+| Role | LedgerCraft hex | Tailwind class | Use |
+|---|---|---|---|
+| **Primary** (forest green) | `#15803D` | `emerald-700` | CTAs, wordmark Q logo, "View N stocks" submit, positive balance |
+| **Primary hover** | `#166534` | `emerald-800` | Primary button hover |
+| **Secondary** (steel) | `#64748B` | `slate-500` | Secondary actions, column headers |
+| **Tertiary** (amber) | `#B45309` | `amber-700` | Alerts, overdue notices, warning chip text |
+| **Neutral** (gray) | `#9CA3AF` | ≈ `slate-400` | Borders, disabled states, placeholders |
+| **Error** | `#DC2626` | `red-600` | Hard errors, rejected entries (rare — `rose-*` preferred for "overvalued") |
+| **Info** | `#2563EB` | `blue-600` | Help links, informational notes |
+
+The primary CTA chip family (`bg-emerald-700` + white text) is the
+LedgerCraft "Primary button" pattern. Used for the FilterDrawer
+"View N stocks" submit + the sidebar wordmark Q logo. NOT used for
+chips / data surfaces — those follow the outlined-light pattern per
+Rule 2.
 
 ### Semantic (OKLCH, soft band)
 
@@ -88,6 +110,32 @@ palette, recommendation badges), the design uses the **slate / indigo
 | `rose` | Strong negative state (rare; OKLCH preferred) |
 | `amber` | Warnings, "Overdue / Pending" surfaces, manipulation index high |
 | `emerald` | Recommendation chip "bullish" / "lean_bullish" (the only `emerald` exception) |
+
+### Dark mode mapping (Phase 3b)
+
+Every light surface ships with a paired `dark:` variant. The
+canonical conversions:
+
+| Light | Dark | Use |
+|---|---|---|
+| `bg-white` | `dark:bg-slate-900` | Card surface |
+| `bg-slate-50` | `dark:bg-slate-900/50` or `dark:bg-slate-900/60` | Table thead, alternating row |
+| `bg-slate-100` | `dark:bg-slate-800` | Hover, neutral chip bg |
+| `border-slate-200` | `dark:border-slate-800` | Card border |
+| `border-slate-100` | `dark:border-slate-800/60` | Divider |
+| `text-slate-900` | `dark:text-slate-100` | Primary text |
+| `text-slate-700` | `dark:text-slate-300` | Body text |
+| `text-slate-600` | `dark:text-slate-400` | Section labels |
+| `text-slate-500` | `dark:text-slate-400` | Sub-labels (mid) |
+| `text-slate-400` | `dark:text-slate-500` | Captions, "N/A" |
+| `text-slate-300` | `dark:text-slate-600` | Placeholder, em-dash |
+| `hover:bg-slate-50` | `dark:hover:bg-slate-800/50` | Card hover |
+| `hover:bg-slate-100` | `dark:hover:bg-slate-800` | Stronger hover |
+| `bg-{tone}-50` | `dark:bg-{tone}-900/30` | Chip background |
+| `text-{tone}-700` | `dark:text-{tone}-300` | Chip text (mid) |
+| `text-{tone}-900` | `dark:text-{tone}-100` | Chip text (strong) |
+| `ring-{tone}-200` | `dark:ring-{tone}-800` | Chip ring |
+| `bg-{tone}-500` (dot) | `dark:bg-{tone}-400` | Chip dot |
 
 ---
 
@@ -348,10 +396,19 @@ Every numeric column gets `tabular-nums` so the digits right-align
 across rows. Without it, "$3.42T" and "$19.84B" mis-align by a digit
 width.
 
-### Rule 4 — Light-mode only
+### Rule 4 — Dark mode is class-strategy (Phase 3b shipped)
 
-No `dark:` variants are wired. Adding dark mode is a deliberate
-Phase 3b decision, not an incremental option per component.
+Dark mode toggles via `next-themes` adding `class="dark"` to
+`<html>`. Tailwind `darkMode: 'class'` activates paired `dark:`
+variants. Three states cycle in the toggle: system → light →
+dark → system. The system default respects OS preference but
+defers to an explicit user choice.
+
+When adding a new surface, ALWAYS pair the light variant with a
+`dark:` variant per the mapping table in §Components — never ship
+a light-only surface. The build won't fail without `dark:`, but
+the eye will: missing variants leave white cards on a slate-950
+body.
 
 ### Rule 5 — Header treatment is reserved
 
@@ -373,8 +430,9 @@ weight delta between header and data is visible.
 | Phase 1 | Roboto Slab + 4-tier shadow tokens (PR #211) | ✅ merged 2026-05-22 |
 | Phase 2 | Token propagation to detail page (PR #212) | ✅ merged 2026-05-22 |
 | Phase 3a | Spreadsheet polish on section h2s + table theads (PR #213) | ✅ merged 2026-05-22 |
-| Phase 3c | Sidebar pattern — left-rail nav + collapsible + mobile drawer | ✅ shipped this PR |
-| Phase 3b | Dark-mode toggle (optional, not committed) | ⏸ deferred |
+| Phase 3c | Sidebar pattern — left-rail nav + collapsible + mobile drawer (PR #215) | ✅ merged 2026-05-22 |
+| Phase 3b | Dark-mode toggle — next-themes + OKLCH dark band + paired `dark:` variants | ✅ shipped this PR |
+| Phase 3d | LedgerCraft canonical palette alignment — `#FAFAFA` body bg + emerald-700 brand primary + OKLCH hue 155 → 152 + border-radius normalization (rounded-2xl/xl → rounded-lg) | ✅ shipped this PR (folded into Phase 3b) |
 
 ---
 

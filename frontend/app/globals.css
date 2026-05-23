@@ -52,27 +52,53 @@
   --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
   --font-slab: var(--font-roboto-slab), 'Roboto Slab', ui-serif, Georgia, serif;
 
-  /* Soft positive — muted sage green (oklch hue 155). Used wherever
-   * the design called for "undervalued" / "strong" semantics. The
-   * three swatches (strong/medium/bg) cover text + bar fills +
-   * tinted backgrounds without ever reaching the "bright fresh green"
-   * that the design feedback rejected. */
-  --c-pos-strong: oklch(50% 0.09 155);
-  --c-pos-medium: oklch(56% 0.09 155);
-  --c-pos-bg: oklch(97% 0.025 155);
-  --c-pos-bg-mid: oklch(93% 0.04 155);
-  --c-pos-ring: oklch(86% 0.06 155);
-  --c-pos-dot: oklch(60% 0.10 155);
+  /* Soft positive — muted forest green (oklch hue 152, near
+   * LedgerCraft #15803D / emerald-700). LedgerCraft Phase 3b
+   * canonical palette alignment (2026-05-22) shifted hue 155 → 152
+   * + chroma 0.09 → 0.13 so the strong swatch reads closer to the
+   * spec's #15803D forest green without flipping all the way to
+   * Tailwind's solid emerald-700 (which loses the OKLCH-perceptual
+   * smoothness across the medium / bg swatches). */
+  --c-pos-strong: oklch(50% 0.13 152);
+  --c-pos-medium: oklch(56% 0.12 152);
+  --c-pos-bg: oklch(97% 0.03 152);
+  --c-pos-bg-mid: oklch(93% 0.05 152);
+  --c-pos-ring: oklch(86% 0.07 152);
+  --c-pos-dot: oklch(60% 0.13 152);
 
-  /* Soft negative — dusty rose / terracotta (oklch hue 18). Same
-   * three-swatch shape as positive. Reads as "overvalued" without
-   * the alarm-red intensity the design feedback rejected. */
-  --c-neg-strong: oklch(48% 0.09 18);
-  --c-neg-medium: oklch(54% 0.09 18);
+  /* Soft negative — dusty rose / terracotta (oklch hue 18). Stays
+   * muted vs LedgerCraft's alarm-red #DC2626 per the original
+   * 2026-05-14 design feedback that rejected the alarm-red
+   * intensity. The hex-to-OKLCH translation of #DC2626 is
+   * ~oklch(57% 0.21 28) — our 0.09 chroma keeps the negative
+   * surface from competing with the data for attention. */
+  --c-neg-strong: oklch(48% 0.10 18);
+  --c-neg-medium: oklch(54% 0.10 18);
   --c-neg-bg: oklch(97% 0.025 18);
   --c-neg-bg-mid: oklch(93% 0.04 18);
   --c-neg-ring: oklch(86% 0.06 18);
-  --c-neg-dot: oklch(60% 0.10 18);
+  --c-neg-dot: oklch(60% 0.12 18);
+}
+
+/* LedgerCraft Phase 3b — dark-mode OKLCH band. Hues match the light
+ * variant (152 / 18) so the warmth doesn't shift between themes.
+ * Brighter chroma + higher lightness on text/dot so they read
+ * against dark surfaces; bg drops to a near-black tinted band so
+ * the chip surface still distinguishes from the slate-950 page bg. */
+.dark {
+  --c-pos-strong: oklch(72% 0.16 152);
+  --c-pos-medium: oklch(66% 0.14 152);
+  --c-pos-bg: oklch(22% 0.04 152);
+  --c-pos-bg-mid: oklch(28% 0.07 152);
+  --c-pos-ring: oklch(35% 0.08 152);
+  --c-pos-dot: oklch(70% 0.16 152);
+
+  --c-neg-strong: oklch(72% 0.14 18);
+  --c-neg-medium: oklch(66% 0.13 18);
+  --c-neg-bg: oklch(22% 0.04 18);
+  --c-neg-bg-mid: oklch(28% 0.06 18);
+  --c-neg-ring: oklch(35% 0.07 18);
+  --c-neg-dot: oklch(70% 0.14 18);
 }
 
 html,
@@ -81,10 +107,30 @@ body {
 }
 
 body {
-  background: rgb(248 250 252);
+  /* LedgerCraft canonical background #FAFAFA — slightly warmer than
+   * the prior slate-50 #F8FAFC (PR #211-#215 default). Aligns with
+   * the LedgerCraft spec's spreadsheet-canvas register. */
+  background: rgb(250 250 250);
   color: rgb(15 23 42);
   -webkit-font-smoothing: antialiased;
   font-family: var(--font-sans);
+}
+
+.dark body {
+  /* Near-black tinted with slate hue — slate-950 territory. */
+  background: rgb(2 6 23);
+  color: rgb(226 232 240);
+}
+
+/* Smooth color-scheme transition prevents the "flash of dark"
+ * during initial theme detection. next-themes adds the class
+ * before paint, so most surfaces will be already correct on
+ * load; transition just smooths user-triggered toggles. */
+html {
+  color-scheme: light;
+}
+html.dark {
+  color-scheme: dark;
 }
 
 .font-mono,

@@ -117,7 +117,7 @@ export function PriceHistoryChart({
 
   if (loading) {
     return (
-      <div className="flex h-64 items-center justify-center text-sm text-slate-400">
+      <div className="flex h-64 items-center justify-center text-sm text-slate-400 dark:text-slate-500">
         Loading price history…
       </div>
     );
@@ -125,7 +125,7 @@ export function PriceHistoryChart({
 
   if (error || !data) {
     return (
-      <div className="flex h-64 items-center justify-center text-sm text-slate-400">
+      <div className="flex h-64 items-center justify-center text-sm text-slate-400 dark:text-slate-500">
         Price history unavailable
       </div>
     );
@@ -133,7 +133,7 @@ export function PriceHistoryChart({
 
   if (chartData.length === 0) {
     return (
-      <div className="flex h-64 items-center justify-center text-sm text-slate-400">
+      <div className="flex h-64 items-center justify-center text-sm text-slate-400 dark:text-slate-500">
         Price history unavailable
       </div>
     );
@@ -253,16 +253,16 @@ export function PriceHistoryChart({
       {chartData.length > 0 && (
         <div className="flex flex-col gap-1">
           <div className="flex items-baseline gap-2">
-            <span className="font-mono text-2xl font-semibold tabular-nums leading-none text-slate-900">
+            <span className="font-mono text-2xl font-semibold tabular-nums leading-none text-slate-900 dark:text-slate-100">
               ${chartData[chartData.length - 1].close.toFixed(2)}
             </span>
-            <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
+            <span className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
               USD
             </span>
           </div>
           {periodChange && (
             <div
-              className={`flex flex-wrap items-baseline gap-1.5 text-sm ${isPositive ? 'text-emerald-700' : 'text-rose-600'}`}
+              className={`flex flex-wrap items-baseline gap-1.5 text-sm ${isPositive ? 'text-emerald-700 dark:text-emerald-300' : 'text-rose-600 dark:text-rose-400'}`}
             >
               <span className="font-mono font-semibold tabular-nums">
                 {isPositive ? '+' : ''}
@@ -273,7 +273,7 @@ export function PriceHistoryChart({
                 {periodChange.pct.toFixed(2)}%)
               </span>
               <span>{isPositive ? '↑' : '↓'}</span>
-              <span className="text-xs font-normal text-slate-500">
+              <span className="text-xs font-normal text-slate-500 dark:text-slate-400">
                 {PERIOD_LABEL[period]}
               </span>
             </div>
@@ -314,7 +314,7 @@ export function PriceHistoryChart({
           decode the line styles. The Price swatch matches the trend
           color so the legend reflects what the chart is currently
           rendering. */}
-      <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-500">
+      <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-500 dark:text-slate-400">
         <span className="inline-flex items-center gap-1.5">
           <span
             className="h-0.5 w-3.5 rounded-full"
@@ -324,13 +324,13 @@ export function PriceHistoryChart({
         </span>
         {fairIsNumber && (
           <span className="inline-flex items-center gap-1.5">
-            <span className="h-0 w-3.5 border-t border-dashed border-slate-400" />
+            <span className="h-0 w-3.5 border-t border-dashed border-slate-400 dark:border-slate-500" />
             Fair value
           </span>
         )}
         {targetEligible && (
           <span className="inline-flex items-center gap-1.5">
-            <span className="h-[2px] w-3.5 bg-slate-900" />
+            <span className="h-[2px] w-3.5 bg-slate-900 dark:bg-slate-100" />
             Target
           </span>
         )}
