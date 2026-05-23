@@ -11,10 +11,13 @@ from compute import config
 
 
 def test_schema_version_is_phase4_5e():
-    """Phase 4.5e PR 2 (0.10.0-phase4.5e) — MINOR bump for the Form-4
-    observability surface (supersedes the 0.9.8-phase4h.8 sector-coe
-    bump from PR #204). Locks the version against accidental revert."""
-    assert config.SCHEMA_VERSION == "0.10.0-phase4.5e"
+    """Phase 4.5e PR 3 (0.10.1-phase4.5e) — PATCH bump for the new
+    ``insider_sell_cluster_firing_count`` + ``c_suite_unusual_sell_firing_count``
+    Metadata diagnostics (Rule 18 observability shipped with the flag
+    emission per ``portable-annotate-before-veto``). Supersedes PR 2's
+    0.10.0-phase4.5e Form-4 observability bump. Locks the version
+    against accidental revert."""
+    assert config.SCHEMA_VERSION == "0.10.1-phase4.5e"
 
 
 def test_form4_lookback_days_is_180():

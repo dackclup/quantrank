@@ -27,6 +27,11 @@
     }
   },
   "Metadata": {
+    "c_suite_unusual_sell_firing_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
     "compute_run_id": {
       "type": "str",
       "required": true,
@@ -91,6 +96,11 @@
       "type": "str",
       "required": true,
       "default": "<required>"
+    },
+    "insider_sell_cluster_firing_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
     },
     "last_update_utc": {
       "type": "str",

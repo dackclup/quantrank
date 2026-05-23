@@ -1151,7 +1151,8 @@ actually moves more after this lands. Not in this PR's diff.
 
 No compute / schema / scoring / valuation / frontend code change.
 
-**Issues #217 + #218 OSAP proxy contract codification in flight (this PR)** —
+**Issues #217 + #218 OSAP proxy contract codification merged via PR #221**
+(2026-05-23, `eba0fde`) —
 the 2026-05-23 cron #3 surfaced a false-positive escalation chain: the
 `stock-detail-auditor` interpreted the universe-wide identical
 `osap_signals` dict (502 tickers × same dict) as cron-wide data
@@ -1194,7 +1195,7 @@ the new section. No compute / schema / scoring / valuation /
 frontend code change — agent prompt + helper script + tests only.
 Closes issues #217 + #218.
 
-**Delegate-first orchestrator role in flight (this PR)** —
+**Delegate-first orchestrator role merged via PR #223** (2026-05-23) —
 behavioral fix for the under-delegation problem surfaced after PR
 #219. Even after PR #219 lifted spawn caps + frequency, the
 "Weekly · Sonnet only" pool remained under-utilized because the
@@ -1243,6 +1244,66 @@ sub-agents themselves are the bottleneck (e.g., descriptions don't
 match common request phrasings) — separate PR.
 
 No compute / schema / scoring / valuation / frontend code change.
+
+**Phase 4.5e PR 3 — insider-cluster annotates in flight (this PR)** —
+closes the Phase 4.5e ladder (PR 1 Scout + PR 2 Observability already
+merged). Two new annotate-only flags emit from a new
+`compute/scoring/form4_signals.py` module on the Form-4 cache surface
+populated by PR 2 (which now has 502/502 = 100% coverage on the
+2026-05-23 cron #3 with insider_count p50=14 / p95≈23). **(a)
+`insider_sell_cluster`** fires when ≥ 3 distinct insiders sold ≥ $1M
+cohort-aggregate in opportunistic transactions (codes `{S, D}` per
+Cohen-Malloy-Pomorski 2012 §III.A "opportunistic" partition — codes
+A/M/F/G are compensation-mechanical and explicitly excluded) within
+a rolling 30-day window. **(b) `c_suite_unusual_sell`** fires when
+≥ 2 distinct CEO + CFO + President insiders sold in the same window
+(narrow regex per Jeng-Metrick-Zeckhauser 2003 §V; deliberately
+EXCLUDES COO/CTO/CMO/CHRO which are operational not
+financial-information). **Methodology-scientist Mode B verdict
+(2026-05-23)**: distinct-insider thresholds and transaction-code
+partition are LITERATURE-ANCHORED (CMP 2012 + JMZ 2003 + Jagolinzer
+2009); 30-day window is GUT-FEEL-acceptable (compresses CMP's ~90d
+calendar-quarter into Jagolinzer 2009 §3.2 high-information regime);
+$1M cohort floor is GUT-FEEL (no paper anchors an absolute dollar
+floor — relative-sizing follow-up tracked for a future iteration).
+**Reserved weights downgraded per verdict**:
+`INSIDER_SELL_CLUSTER_WEIGHT_RESERVED = 10.0` → `INSIDER_SELL_CLUSTER_WEIGHT = 5.0`
+(annotate-mid peer group; Bushman-Smith 2003 post-SOX 30-50% signal
+degradation + unfiltered 10b5-1 contamination risk argue for
+conservative weight pending cohort-PPV acceptance check);
+`C_SUITE_UNUSUAL_SELL_WEIGHT_RESERVED = 5.0` → `C_SUITE_UNUSUAL_SELL_WEIGHT = 3.0`
+with **DELTA-not-total semantics** mirroring PR #165's
+`RESTATEMENT_HIGH_CONFIDENCE_WEIGHT` (strict superset of the cluster
+flag when the $1M floor is met → combined = 5 + 3 = 8 pts ≈
+`REM_SUSPECT_WEIGHT`). Both `FLAG_WEIGHTS` entries uncommented in
+`compute/scoring/manipulation_index.py`. **Rule 18 observability**:
+2 new `Metadata` fields `insider_sell_cluster_firing_count` +
+`c_suite_unusual_sell_firing_count` ship in the same PR; gate the
+Q3 2026-08-19 quarterly-audit cohort-acceptance check that may
+promote the cluster weight to 10.0. Annotate-only per Rule 16 +
+`portable-annotate-before-veto` — composite rank unchanged; only
+`manipulation_index` + `composite_score_adjusted` soft-penalty is
+affected. **Scout-module docstring fixes (same PR)**:
+`compute/scoring/form4_insider.py:62-89` corrected to (i) document
+the `{S, D}` opportunistic filter (was wrongly `{S, F}`) and (ii)
+remove the Cohen-Malloy-Nguyen 2020 "Lazy Prices" misattribution
+(Lazy Prices is about 10-K/10-Q disclosure-language changes, NOT
+insider trades), replaced with canonical CMP 2012 + JMZ 2003 +
+Jagolinzer 2009 anchor set. **Footguns acknowledged in module
+docstring** (per methodology-scientist verdict): (1) 10b5-1
+pre-scheduled-trade contamination — expected FP rate 40-60% per
+Jagolinzer 2009 absent filtering; (2) post-earnings-window quarterly
+clustering — compliance-window artifact unrelated to information
+asymmetry; (3) joint-filer attribution + stale officer-title noise.
+All three deferred to follow-up PRs with explicit Q3 cohort-audit
+gate before any weight promotion. Schema bump
+`0.10.0-phase4.5e` → `0.10.1-phase4.5e` (PATCH — additive Metadata
+fields only). Tests **1115 → 1144 (+29)** in this PR: 22 unit cases
+across both predicates + 2 Hypothesis monotonicity / lookback-window
+properties + 1 threshold-constants pin + 2 strict-superset
+invariants + 1 schema-version bump on `tests/test_config.py`.
+Defense layer emitted-flag count 30 → 32. Closes Phase 4.5e ladder
+(PRs 1-3).
 
 **Next deliverables** (pick by appetite):
 - **Issue #67 flip PR** — `USE_SECTOR_COE = True` after ≥ 1 cron confirms

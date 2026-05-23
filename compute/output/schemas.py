@@ -174,6 +174,22 @@ class Metadata(BaseModel):
     # rate is visible at-a-glance (gates the follow-up median-exclusion
     # PR per methodology-scientist Mode B, 2026-05-21).
     extreme_estimate_majority_count: int | None = None
+    # Phase 4.5e PR 3 (0.10.1-phase4.5e) — Rule 18 observability surface
+    # for the new Form-4 insider-cluster annotates emitted from
+    # ``compute/scoring/form4_signals.py``. ``insider_sell_cluster_firing_count``
+    # counts tickers where ≥ 3 distinct insiders sold $1M+ in opportunistic
+    # transactions (codes S, D — per Cohen-Malloy-Pomorski 2012 §III.A) in
+    # a rolling 30-day window. ``c_suite_unusual_sell_firing_count`` counts
+    # the narrower CEO + CFO co-sell subset (Jeng-Metrick-Zeckhauser 2003
+    # §V — strict subset of the cluster flag). Both nullable on legacy
+    # snapshots (pre-0.10.1). The next cron's universe-wide firing rate
+    # is the gate for the methodology-scientist Q3 2026-08-19 cohort-
+    # acceptance check that may promote ``INSIDER_SELL_CLUSTER_WEIGHT``
+    # from 5.0 → 10.0; expected base rate is ~2-5% per CMP 2012 quarterly
+    # cohort, possibly lower after the 30d window tightening per
+    # Jagolinzer 2009 §3.2 signal-decay curve.
+    insider_sell_cluster_firing_count: int | None = None
+    c_suite_unusual_sell_firing_count: int | None = None
     # Issue #67 (0.9.8-phase4h.8) — sector-adjusted cost of equity
     # (Damodaran 2019 *Investment Valuation* 3rd ed. Table 8.4 +
     # Damodaran NYU online betas dataset, January 2025 update).
