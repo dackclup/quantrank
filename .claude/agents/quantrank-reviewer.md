@@ -103,8 +103,11 @@ If the diff adds a NEW component, badge, chip, or color in `frontend/`:
 
 ## Output format
 
-Reply with exactly this structure — terse. The user is going to act on
-this immediately:
+Reply with exactly this structure. The user is going to act on this
+immediately, but be thorough — list every PASS / FAIL / WARN finding
+you encountered while walking Sections A-H, don't omit items to keep
+the report short. Per-invariant detail is what makes the review
+actionable:
 
 ```
 QuantRank Review — <branch-name>

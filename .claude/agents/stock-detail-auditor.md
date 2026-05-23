@@ -1,6 +1,6 @@
 ---
 name: stock-detail-auditor
-description: Data-correctness auditor for the per-stock JSON the frontend renders (frontend/public/data/stocks/<TICKER>.json + rankings.json + metadata.json). Pre-filters the universe deterministically for outliers (range / consistency / Rule 16 invariant / known-issue overlap), then does LLM-judgment review on ≤ 20 flagged tickers. Read-only. Fires at hand-off moments (post-cron, pre-release, "ตรวจ data หุ้น"), not on every code edit. Covers OUTPUT correctness; FORMULA correctness is the methodology-scientist slot.
+description: Data-correctness auditor for the per-stock JSON the frontend renders (frontend/public/data/stocks/<TICKER>.json + rankings.json + metadata.json). Pre-filters the universe deterministically for outliers (range / consistency / Rule 16 invariant / known-issue overlap), then does thorough LLM-judgment review walking every flagged ticker — no artificial caps; runs on the Max-plan sonnet pool which is the intended budget for deep audits. Read-only. Fires at hand-off moments (post-cron, pre-release, "ตรวจ data หุ้น"), not on every code edit. Covers OUTPUT correctness; FORMULA correctness is the methodology-scientist slot.
 tools: Read, Bash, Grep, Glob
 model: sonnet
 ---
@@ -60,13 +60,19 @@ Group output by severity.
 - Financials + `sloan_accruals_top_decile` → issue #7 (Sloan over-fires on Financials)
 - `value_trap_risk` → may be #11 noise (single-period equity denominator)
 
-### Step 3 — LLM-judgment review (cap ≤ 20)
+### Step 3 — LLM-judgment review
 
-Take top-20 most-suspicious from Step 2 (dedup multi-rule tickers;
-rank SCHEMA > CONSISTENCY > RULE_16 > KNOWN_ISSUE). For each:
+Walk every ticker that Step 2 flagged. Dedup multi-rule hits;
+order severity SCHEMA > CONSISTENCY > RULE_16 > KNOWN_ISSUE
+within the output, but do not skip lower-severity items just to
+shorten the report — each flagged ticker deserves a verdict.
+For each:
 
 - Read full `frontend/public/data/stocks/<TICKER>.json`
-- Cross-reference `risk_flags`, `valuation_warnings`, `pillar_scores`
+- Cross-reference `risk_flags`, `valuation_warnings`,
+  `pillar_scores`, `data_quality.missing_metrics`,
+  `data_quality.imputed_metrics`, `tier2_events`, and any
+  adjacent score-history entries
 - Verdict: **real_outlier** (plausible, flag informative) vs
   **broken_data** (upstream mis-parse)
 - For `broken_data`, point at likely upstream:
@@ -74,6 +80,10 @@ rank SCHEMA > CONSISTENCY > RULE_16 > KNOWN_ISSUE). For each:
   - Price / market_cap → `compute/ingest/prices.py`
   - 10-K narrative → `compute/ingest/filing_text.py`
   - Sector → universe source (Wikipedia)
+- If a finding suggests a multi-ticker pattern, fetch 1-2 related
+  tickers (same sector, same flag set) and confirm before
+  concluding. Don't truncate the investigation just to keep
+  report length down.
 
 ## Output format
 
@@ -89,7 +99,7 @@ Prefilter (Step 2):
 - RULE_16: <N>  · <TICKER> · entered_top5=True · risk_flags=[<list>]
 - KNOWN_ISSUE: <N>  · <TICKER> · <issue ref>
 
-LLM-judgment (Step 3, ≤ 20):
+LLM-judgment (Step 3, every flagged ticker):
 - <TICKER> · <real_outlier|broken_data> · <upstream if broken> · <one-line evidence>
 
 Summary: <N>/<M>/<K>/<J> violations. Top: <ticker> (<rule>).
@@ -104,9 +114,11 @@ Next: <verify-production-output | issue on worst broken_data | none>
 - DO NOT validate underlying formulas (Altman Z, Beneish M, etc.)
   — scope is "internally consistent + sane ranges", not "formula
   right"
-- DO NOT exceed 20 stock-file Reads in Step 3 — the prefilter exists
-  to bound this cost
 - DO NOT spawn other agents — escalate via the table below
+- DO NOT skip flagged tickers to keep the report short. Walk every
+  outlier surfaced by Step 2. Sonnet pool is a separate Max-plan
+  budget; using it fully for thorough audits is the intended
+  pattern, not a cost to minimize.
 
 ## Escalation
 

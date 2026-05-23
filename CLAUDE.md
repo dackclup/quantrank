@@ -169,12 +169,27 @@ that fired per-diff.
 
 ### Spawn discipline
 
-- **Default model = sonnet.** Opus only for cross-domain
-  orchestration (`incident-commander`, `release-captain`),
-  literature-heavy validation (`methodology-scientist` on new flag
-  / threshold), or large-diff reviews (`quantrank-reviewer` with
-  explicit user authorization for the opus override). 5 agents
-  currently default to opus by design; the rest are sonnet.
+- **Don't gatekeep sub-agent effort.** When a sub-agent is
+  spawned, let it do the full thorough job — read every relevant
+  file, walk every section, follow every escalation lead.
+  Sonnet sub-agent tokens come out of the "Weekly · Sonnet only"
+  pool on Max plans, which is a separate budget that empties
+  slowly and often goes unused. Bounding sub-agent output with
+  hard word caps or "≤ N items" limits wastes that pool without
+  improving signal. Keep model assignments (`incident-commander`
+  + `release-captain` + `methodology-scientist` + `quantrank-
+  reviewer` all opus by design; the other 11 sonnet) as they
+  are — opus agents land on the "Weekly · all models" pool;
+  sonnet agents drain the underutilized sonnet pool. Tune the
+  4-vs-11 split only when usage data justifies it.
+- **Prefer delegation to sub-agents** over inline main-session
+  work when both options exist. Main-session tokens land on the
+  "Weekly · all models" pool; sonnet sub-agents land on the
+  separate, often-under-utilized "Weekly · Sonnet only" pool.
+  Route work through sonnet sub-agents proactively to balance
+  pool usage — e.g., when the user edits a scoring file, spawn
+  `defense-layer-auditor` (sonnet) early to walk the diff before
+  the main agent (which costs all-models tokens) synthesizes.
 - **Spawn without asking** for read-only subagents — just spawn
   and report back. Do not pause the user's flow with "should I
   spawn X?".
@@ -958,6 +973,54 @@ PATCH bump after rebase). ZERO scoring impact;
 `_FORM4_FLAGS_ENABLED` stays False. PR 3 wires the
 `insider_sell_cluster` + `c_suite_unusual_sell` annotates after ≥ 1
 cron's firing-rate data lands in the new `form4_*` Metadata fields.
+
+**Sonnet sub-agent thoroughness reset in flight (this PR)** —
+reversal of the over-trim caps introduced incidentally during PR
+#178. User observation: "Weekly · Sonnet only" pool on the Max plan
+sits at ~2% utilization while "Weekly · all models" pool moves
+normally — meaning sonnet sub-agents are being under-used and the
+artificial work-bounding I added (e.g., `stock-detail-auditor`
+"cap ≤ 20 tickers in Step 3", `quantrank-reviewer` "Reply terse",
+`README.md` Flow 2 release-ladder "≤ 20 LLM verdicts") was wasting
+budget that's already paid for. Lifted:
+
+- `stock-detail-auditor.md` Step 3 — removed the 20-ticker hard cap;
+  agent now walks every prefilter-flagged ticker with a verdict,
+  fetches 1-2 adjacent peers when a multi-ticker pattern is
+  suspected, and adds a "DO NOT skip flagged tickers to keep the
+  report short" hard constraint that codifies the new principle.
+  Frontmatter `description:` rewritten to remove the "≤ 20" phrase.
+- `quantrank-reviewer.md` Output format — removed "terse"
+  instruction; agent now lists every PASS / FAIL / WARN finding it
+  encountered while walking Sections A-H.
+- `.claude/agents/README.md` Flow 2 (release ladder) — release-
+  captain's `stock-detail-auditor` lane no longer says "≤ 20 LLM
+  verdicts"; says "thorough LLM verdicts for every flagged ticker".
+  Roster row description updated to match.
+- `CLAUDE.md` §Auto-routing policy §Spawn discipline — added two
+  new principles: (a) "Don't gatekeep sub-agent effort" explaining
+  the Max-plan dual-pool topology (sonnet sub-agents drain the
+  Sonnet-only pool which is a separate, paid-for budget) and why
+  bounding sub-agent output wastes it; (b) "Prefer delegation to
+  sub-agents over inline main-session work" so the main agent
+  routes work proactively to sonnet sub-agents instead of doing it
+  inline (which lands on the all-models pool).
+
+Model assignments unchanged: 4 opus by design (`incident-commander`
+· `release-captain` · `methodology-scientist` · `quantrank-reviewer`)
++ 11 sonnet. The 4-vs-11 split was investigated — temporary swap of
+`quantrank-reviewer` + `methodology-scientist` to sonnet was tested
+and reverted in the same PR after re-reading the user intent. Opus
+on the most-fired reviewer remains correct because the project's
+defense-layer invariants are dense enough that opus headroom pays
+back on real diffs. The fix is to stop capping work, not to demote
+models.
+
+Companion artifact deferred to a follow-up: a per-session usage
+report (post-merge spot-check) that confirms the Sonnet-only pool
+actually moves more after this lands. Not in this PR's diff.
+
+No compute / schema / scoring / valuation / frontend code change.
 
 **Next deliverables** (pick by appetite):
 - **Issue #67 flip PR** — `USE_SECTOR_COE = True` after ≥ 1 cron confirms
