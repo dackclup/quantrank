@@ -94,6 +94,10 @@ from compute.scoring.earnings_quality import (
 )
 from compute.scoring.eight_k_events import get_non_reliance_filing_dates
 from compute.scoring.form4_insider import fetch_recent_form4
+from compute.scoring.form4_signals import (
+    detect_c_suite_unusual_sell,
+    detect_insider_sell_cluster,
+)
 from compute.scoring.loss_chance import derive_loss_chance
 from compute.scoring.manipulation_index import (
     compute_adjusted_composite,
@@ -1327,6 +1331,16 @@ def run_weekly_compute() -> int:
     # See compute/scoring/cost_of_equity.py for the Damodaran 2019 table.
     value_trap_risk_count_without_sector_coe: int = 0
     value_trap_risk_count_with_sector_coe: int = 0
+    # Phase 4.5e PR 3 — Rule 18 observability for the new Form-4 annotates.
+    # Counters increment inside the per-ticker loop when the flag is
+    # appended to valuation_warnings; written to
+    # Metadata.insider_sell_cluster_firing_count +
+    # Metadata.c_suite_unusual_sell_firing_count so the first cron with
+    # the flags wired shows the universe-wide firing rate at-a-glance.
+    # Gates the methodology-scientist Q3 2026-08-19 cohort-acceptance
+    # check that may promote INSIDER_SELL_CLUSTER_WEIGHT from 5.0 → 10.0.
+    insider_sell_cluster_firing_count: int = 0
+    c_suite_unusual_sell_firing_count: int = 0
     for _, r in df.iterrows():
         ticker = str(r["ticker"])
         snap = snapshots.get(ticker)
@@ -1565,6 +1579,40 @@ def run_weekly_compute() -> int:
         if "extreme_estimate_majority" in valuation_warnings:
             extreme_estimate_majority_count += 1
 
+        # Phase 4.5e PR 3 — Form-4 insider-cluster annotates.
+        #
+        # The per-ticker `fetch_recent_form4` is gated on PR 2's
+        # diagnostic dict — we ONLY consult the cache when PR 2's fetch
+        # loop above confirmed a populated entry (``fetch_status="ok"``).
+        # This is critical for pre-merge-prod-sim which sets
+        # ``FORM4_FETCH_SKIP=1`` to skip PR 2's bulk loop (cache is
+        # cold; 502 × per-filing HTTP would exceed the 45-min CI cap —
+        # confirmed by the 2026-05-23 cancellation on PR #222
+        # workflow_run 26330610740). Without the gate,
+        # ``fetch_recent_form4`` would cache-miss → fall through to a
+        # live SEC fetch in the scoring loop and reproduce the same
+        # blast radius PR 2 was carved out to avoid.
+        #
+        # On the weekly cron (compute-rankings.yml, no FORM4_FETCH_SKIP),
+        # the diagnostic check is essentially free (dict lookup) and
+        # all 502 tickers normally pass — the fast-path runs the
+        # predicates over the full universe.
+        #
+        # Annotate-only per Rule 16 + portable-annotate-before-veto:
+        # composite rank unchanged; only ``manipulation_index`` +
+        # ``composite_score_adjusted`` soft penalty is impacted.
+        _form4_diag = form4_diagnostics.get(ticker)
+        if _form4_diag and _form4_diag.get("fetch_status") == "ok":
+            _form4_txns = fetch_recent_form4(ticker)
+            if detect_insider_sell_cluster(_form4_txns, asof_date):
+                if "insider_sell_cluster" not in valuation_warnings:
+                    valuation_warnings.append("insider_sell_cluster")
+                insider_sell_cluster_firing_count += 1
+            if detect_c_suite_unusual_sell(_form4_txns, asof_date):
+                if "c_suite_unusual_sell" not in valuation_warnings:
+                    valuation_warnings.append("c_suite_unusual_sell")
+                c_suite_unusual_sell_firing_count += 1
+
         # Issue #67 — Rule 18 dual-count for sector-adjusted CoE delta.
         # We call check_rim_applicability twice — once with the flat 0.10
         # baseline and once with the per-sector Ke — so the universe-wide
@@ -1788,6 +1836,12 @@ def run_weekly_compute() -> int:
         ),
         extreme_estimate_majority_count=(
             extreme_estimate_majority_count
+        ),
+        insider_sell_cluster_firing_count=(
+            insider_sell_cluster_firing_count
+        ),
+        c_suite_unusual_sell_firing_count=(
+            c_suite_unusual_sell_firing_count
         ),
         sector_coe_enabled=config.USE_SECTOR_COE,
         value_trap_risk_count_without_sector_coe=(

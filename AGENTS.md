@@ -863,8 +863,9 @@ note cross-tool-specific points only:
   the flip PR. Cross-tool agents: do NOT flip USE_SECTOR_COE to True
   without the methodology-scientist verdict captured in the PR body.
 
-- **Issues #217 + #218 OSAP proxy contract codification in flight
-  (this PR)** — codifies the Phase 4h factor-exposure-proxy contract
+- **Issues #217 + #218 OSAP proxy contract codification merged via
+  PR #221** (2026-05-23, `eba0fde`) — codifies the Phase 4h factor-
+  exposure-proxy contract
   (`compute/features/osap_replicate.py:14-35`) on both sides of the
   audit surface, after a 2026-05-23 cron #3 false-positive
   escalation where `stock-detail-auditor` flagged universe-wide
@@ -889,6 +890,43 @@ note cross-tool-specific points only:
   Section L cases). No compute / schema / scoring / valuation /
   frontend change — agent prompt + helper script + tests only.
   Closes issues #217 + #218.
+
+- **Phase 4.5e PR 3 — insider-cluster annotates in flight (this PR)** —
+  closes the Phase 4.5e ladder. New `compute/scoring/form4_signals.py`
+  emits 2 annotate-only flags from the Form-4 cache surface populated
+  by PR 2: (a) `insider_sell_cluster` (≥ 3 distinct insiders, ≥ $1M
+  cohort total, opportunistic codes `{S, D}` per Cohen-Malloy-Pomorski
+  2012 §III.A, 30-day window per Jagolinzer 2009 §3.2 signal-decay);
+  (b) `c_suite_unusual_sell` (≥ 2 distinct CEO/CFO/President insiders
+  per Jeng-Metrick-Zeckhauser 2003 §V — narrow regex EXCLUDES
+  COO/CTO/CMO/CHRO). **Methodology-scientist Mode B verdict (2026-05-23)
+  downgraded both reserved weights**:
+  `INSIDER_SELL_CLUSTER_WEIGHT_RESERVED = 10.0` → `INSIDER_SELL_CLUSTER_WEIGHT = 5.0`
+  (annotate-mid; Bushman-Smith 2003 post-SOX signal-degradation +
+  unfiltered 10b5-1 contamination argue conservative);
+  `C_SUITE_UNUSUAL_SELL_WEIGHT_RESERVED = 5.0` → `C_SUITE_UNUSUAL_SELL_WEIGHT = 3.0`
+  with **DELTA-not-total semantics** (mirrors PR #165's
+  `RESTATEMENT_HIGH_CONFIDENCE_WEIGHT` — strict superset of cluster
+  when $1M floor met → combined 5 + 3 = 8 pts ≈ `REM_SUSPECT_WEIGHT`).
+  Both `FLAG_WEIGHTS` entries uncommented in `manipulation_index.py`.
+  Annotate-only per Rule 16 — composite rank untouched. Schema bump
+  `0.10.0-phase4.5e` → `0.10.1-phase4.5e` (PATCH, additive Metadata
+  fields). 2 new Rule 18 diagnostics: `insider_sell_cluster_firing_count`
+  + `c_suite_unusual_sell_firing_count` — gate the Q3 2026-08-19
+  cohort-acceptance check that may promote the cluster weight to 10.0.
+  **Scout-module docstring fixes (same PR)**: `form4_insider.py:62-89`
+  corrected — `{S, D}` opportunistic filter (was wrongly `{S, F}`);
+  Cohen-Malloy-Nguyen 2020 "Lazy Prices" misattribution removed
+  (Lazy Prices is about firm disclosure language, NOT insider trades);
+  canonical CMP 2012 + JMZ 2003 + Jagolinzer 2009 anchor set in its
+  place. **Footguns documented in module docstring**: 10b5-1
+  contamination (Jagolinzer 2009 expected FP 40-60% absent filtering),
+  post-earnings-window seasonal clustering, joint-filer + stale-title
+  noise — all deferred to follow-up PRs with explicit Q3 cohort-audit
+  gate before any weight promotion. Cross-tool agents: tests 1115 →
+  1144 (+29) including 22 unit + 2 Hypothesis property tests + 1
+  threshold-constants pin + 2 strict-superset invariants; defense
+  layer emitted-flag count 30 → 32.
 
 ## Claude-Code-specific tooling
 

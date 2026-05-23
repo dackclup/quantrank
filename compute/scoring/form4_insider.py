@@ -64,10 +64,14 @@ Transaction codes (SEC Form 4 Table II / III mapping):
 - ``M`` — exercise of derivative + acquisition of common
 - ``F`` — payment of exercise price or tax via shares
 - ``D`` — sale back to issuer
+- ``G`` — gift
 
-PR 3 cluster detection filters on ``transaction_code in {"S", "F"}``
-— compensation-tied codes (A, M) are NOT insider-info-asymmetry
-signals.
+PR 3 cluster detection (``compute/scoring/form4_signals.py``) filters
+on ``transaction_code in {"S", "D"}`` — the Cohen-Malloy-Pomorski
+2012 *J. Finance* §III.A "opportunistic" set. Codes ``A`` (grant),
+``M`` (derivative exercise), ``F`` (tax-via-shares), ``G`` (gift)
+are compensation-mechanical and explicitly excluded by CMP 2012;
+including them would inflate cluster firing on benign vesting events.
 
 Drift detection
 ---------------
@@ -82,10 +86,14 @@ References
 
 - SEC Form 4 official spec — https://www.sec.gov/about/forms/form4.pdf
 - Cohen-Malloy-Pomorski 2012 *J. Finance* §"Decoding Inside Information"
-  — opportunistic insider trades (codes S, P) predict 1-6 month
-  abnormal returns of ~10% annualized
-- Cohen-Malloy-Nguyen 2020 *RFS* "Lazy Prices" — insider-cluster
-  patterns predict subsequent disclosure quality + price drift
+  — canonical cluster definition (≥ 3 insiders, same direction,
+  calendar-quarter) + opportunistic-code partition (``{S, D}``);
+  cluster sells precede ~1.2% monthly abnormal returns
+- Jeng-Metrick-Zeckhauser 2003 *RFS* §V — CFO + CEO co-sell signature
+  used by ``compute/scoring/form4_signals.py`` for the narrower
+  ``c_suite_unusual_sell`` annotate
+- Jagolinzer 2009 *Mgmt Sci* §3.2 — signal-decay half-lives (~45d
+  C-suite, ~75d broader pool) + 10b5-1 contamination evidence
 """
 
 from __future__ import annotations

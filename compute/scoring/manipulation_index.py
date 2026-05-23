@@ -243,22 +243,50 @@ BENEISH_HIGH_WEIGHT: Final[float] = 3.0
 #: bands (both Tier-3, both half-PPV of their veto counterparts).
 DECHOW_HIGH_WEIGHT: Final[float] = 3.0
 
-# --- Reserved 4.5e slots — uncomment when those flags land -------------------
+# --- Phase 4.5e annotates — Form-4 insider-cluster signals -----------------
 
-#: Form-4 insider-sell-cluster flag from Phase 4.5e. Cohen-Malloy-
-#: Nguyen 2020 *RFS* §"Lazy Prices" + Cohen 2008 *J. Finance* on
-#: opportunistic insider trading suggest cluster patterns predict
-#: 1-6 month negative returns. Provenance: **reserved** — replication
-#: study lands with the Phase 4.5e integration PR; weight may move
-#: after the cohort calibration.
-INSIDER_SELL_CLUSTER_WEIGHT_RESERVED: Final[float] = 10.0
+#: Form-4 ``insider_sell_cluster`` annotate from Phase 4.5e PR 3.
+#: Cohen-Malloy-Pomorski 2012 *J. Finance* §IV.A "Decoding Inside
+#: Information" defines a cluster as ≥ 3 insiders trading in the same
+#: direction within a calendar quarter; cluster sells precede ~1.2%
+#: monthly abnormal returns. ``compute/scoring/form4_signals.py`` ships
+#: with the canonical CMP threshold (≥ 3 distinct insiders) over a
+#: tightened 30-day window (Jagolinzer 2009 *Mgmt Sci* §3.2 signal-
+#: decay half-life) and a $1M cohort-aggregate dollar floor.
+#: Provenance: **literature-anchored on the cite, gut-feel on the
+#: weight**. Original reserved slot at 10.0 (PR 1 reservation) was
+#: downgraded to 5.0 for PR 3 launch — Bushman-Smith 2003 *JAE* review
+#: documents post-SOX insider-signal degradation 30-50%, and the
+#: cluster flag is not yet 10b5-1-filtered (Jagolinzer 2009 expected
+#: FP rate 40-60% absent filtering). Promote to 10.0 only after a
+#: cohort acceptance check shows empirical PPV against forward 6-month
+#: returns matches CMP 2012's reported magnitude on the S&P 500
+#: universe. Weight at 5.0 puts it in the annotate-mid peer group
+#: (``restatement_history``, ``accruals_momentum_high``,
+#: ``loss_avoidance_pattern``) — appropriate PPV class.
+INSIDER_SELL_CLUSTER_WEIGHT: Final[float] = 5.0
 
-#: Form-4 C-suite-unusual-sell flag from Phase 4.5e. Same Cohen
-#: family of references; sub-signal of the cluster flag (CEO/CFO
-#: specifically, vs all named insiders). Provenance: **reserved** —
-#: gut-feel weight ahead of Phase 4.5e replication; expected to land
-#: at half the cluster weight given it's a narrower trigger.
-C_SUITE_UNUSUAL_SELL_WEIGHT_RESERVED: Final[float] = 5.0
+#: Form-4 ``c_suite_unusual_sell`` annotate from Phase 4.5e PR 3.
+#: Jeng-Metrick-Zeckhauser 2003 *RFS* §V CFO + CEO co-sell signature
+#: precedes ~5-7% 6-month negative abnormal returns; C-suite signal
+#: half-life ~45d per Jagolinzer 2009 §3.2.
+#:
+#: **Weight semantics — DELTA not total.** This flag is a strict
+#: subset of ``insider_sell_cluster`` — every C-suite firing where
+#: cohort-aggregate dollar value crosses $1M also fires the broader
+#: cluster flag. Both flags are summed into the manipulation index,
+#: so the combined contribution is
+#: ``INSIDER_SELL_CLUSTER_WEIGHT + C_SUITE_UNUSUAL_SELL_WEIGHT``
+#: = 5.0 + 3.0 = 8.0 total. The 8.0 target represents the intended
+#: weight for CEO/CFO co-sell cases (JMZ 2003 PPV ratio ~2-3× broad
+#: cluster); the delta wiring keeps the cluster flag's weight
+#: untouched per the annotate-before-veto scout discipline. Mirrors
+#: PR #165's ``RESTATEMENT_HIGH_CONFIDENCE_WEIGHT`` pattern.
+#: Provenance: **literature-anchored** — total magnitude derived
+#: from the PPV ratio; 3.0 puts the flag in the annotate-delta peer
+#: group (``beneish_high``, ``dechow_high``,
+#: ``restatement_high_confidence``).
+C_SUITE_UNUSUAL_SELL_WEIGHT: Final[float] = 3.0
 
 #: Authoritative flag → weight mapping. Iteration order is intentional:
 #: heavier weights first so a debug-printed dict reads top-down by
@@ -278,8 +306,8 @@ FLAG_WEIGHTS: Final[dict[str, float]] = {
     "loss_avoidance_pattern_size_invariant": LOSS_AVOIDANCE_SIZE_INVARIANT_WEIGHT,
     "beneish_high": BENEISH_HIGH_WEIGHT,
     "dechow_high": DECHOW_HIGH_WEIGHT,
-    # "insider_sell_cluster": INSIDER_SELL_CLUSTER_WEIGHT_RESERVED,
-    # "c_suite_unusual_sell": C_SUITE_UNUSUAL_SELL_WEIGHT_RESERVED,
+    "insider_sell_cluster": INSIDER_SELL_CLUSTER_WEIGHT,
+    "c_suite_unusual_sell": C_SUITE_UNUSUAL_SELL_WEIGHT,
 }
 
 #: Hard ceiling on the rolled-up index — Roychowdhury-style
@@ -382,11 +410,11 @@ __all__ = [
     "ACCRUALS_MOMENTUM_WEIGHT",
     "BENEISH_HIGH_WEIGHT",
     "BENEISH_VETO_WEIGHT",
-    "C_SUITE_UNUSUAL_SELL_WEIGHT_RESERVED",
+    "C_SUITE_UNUSUAL_SELL_WEIGHT",
     "DECHOW_HIGH_WEIGHT",
     "DECHOW_VETO_WEIGHT",
     "FLAG_WEIGHTS",
-    "INSIDER_SELL_CLUSTER_WEIGHT_RESERVED",
+    "INSIDER_SELL_CLUSTER_WEIGHT",
     "LATE_FILING_WEIGHT",
     "LOSS_AVOIDANCE_SIZE_INVARIANT_WEIGHT",
     "LOSS_AVOIDANCE_WEIGHT",
