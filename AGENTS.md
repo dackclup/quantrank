@@ -887,6 +887,20 @@ audit work and is separate from the "Weekly · all models" pool the
 main session consumes. Capping a sub-agent's report length or
 fan-out wastes that budget without improving signal.
 
+Spawn frequency follows the same dual-pool discipline: sonnet
+agents fire on **non-trivial edit** to their domain (schema-
+sentinel on the triple, defense-layer-auditor on `compute/
+scoring/*` or `compute/valuation/*`, frontend-design-reviewer on
+`frontend/components/*`, etc.) — see [`CLAUDE.md`](CLAUDE.md)
+§Auto-routing policy for the full cue table. Opus agents
+(`incident-commander` · `release-captain` · `methodology-scientist`
+· `quantrank-reviewer`) stay rare-fire on gates / signals so they
+don't drain the all-models pool. "Non-trivial" = > 5 added lines
+OR touches non-comment code OR adds/removes a public symbol;
+comment / whitespace / single-line fixes do not trigger. A 10-min
+dedup window prevents the same sonnet agent from firing twice on
+an unchanged diff.
+
 Both hooks are bash + `jq` only, 5-second timeout, fail-open on
 missing dependencies / unwritable filesystem / empty stdin. Copilot
 / Cursor / Devin do NOT execute `.claude/hooks/` — those tools
