@@ -1579,25 +1579,39 @@ def run_weekly_compute() -> int:
         if "extreme_estimate_majority" in valuation_warnings:
             extreme_estimate_majority_count += 1
 
-        # Phase 4.5e PR 3 — Form-4 insider-cluster annotates. Reads the
-        # cache populated by PR 2's fetch loop (above; ``fetch_recent_form4``
-        # call here is a cache HIT, not an HTTP round-trip). Returns
-        # ``None`` for tickers with no Form-4 coverage (small caps, or
-        # ``FORM4_FETCH_SKIP=true`` / missing ``EDGAR_USER_AGENT``); both
-        # predicates safely return ``False`` on ``None`` / empty input so
-        # the annotates don't spuriously fire on coverage gaps.
+        # Phase 4.5e PR 3 — Form-4 insider-cluster annotates.
+        #
+        # The per-ticker `fetch_recent_form4` is gated on PR 2's
+        # diagnostic dict — we ONLY consult the cache when PR 2's fetch
+        # loop above confirmed a populated entry (``fetch_status="ok"``).
+        # This is critical for pre-merge-prod-sim which sets
+        # ``FORM4_FETCH_SKIP=1`` to skip PR 2's bulk loop (cache is
+        # cold; 502 × per-filing HTTP would exceed the 45-min CI cap —
+        # confirmed by the 2026-05-23 cancellation on PR #222
+        # workflow_run 26330610740). Without the gate,
+        # ``fetch_recent_form4`` would cache-miss → fall through to a
+        # live SEC fetch in the scoring loop and reproduce the same
+        # blast radius PR 2 was carved out to avoid.
+        #
+        # On the weekly cron (compute-rankings.yml, no FORM4_FETCH_SKIP),
+        # the diagnostic check is essentially free (dict lookup) and
+        # all 502 tickers normally pass — the fast-path runs the
+        # predicates over the full universe.
+        #
         # Annotate-only per Rule 16 + portable-annotate-before-veto:
-        # composite rank is unaffected; only the manipulation_index +
-        # composite_score_adjusted soft penalty is impacted.
-        _form4_txns = fetch_recent_form4(ticker)
-        if detect_insider_sell_cluster(_form4_txns, asof_date):
-            if "insider_sell_cluster" not in valuation_warnings:
-                valuation_warnings.append("insider_sell_cluster")
-            insider_sell_cluster_firing_count += 1
-        if detect_c_suite_unusual_sell(_form4_txns, asof_date):
-            if "c_suite_unusual_sell" not in valuation_warnings:
-                valuation_warnings.append("c_suite_unusual_sell")
-            c_suite_unusual_sell_firing_count += 1
+        # composite rank unchanged; only ``manipulation_index`` +
+        # ``composite_score_adjusted`` soft penalty is impacted.
+        _form4_diag = form4_diagnostics.get(ticker)
+        if _form4_diag and _form4_diag.get("fetch_status") == "ok":
+            _form4_txns = fetch_recent_form4(ticker)
+            if detect_insider_sell_cluster(_form4_txns, asof_date):
+                if "insider_sell_cluster" not in valuation_warnings:
+                    valuation_warnings.append("insider_sell_cluster")
+                insider_sell_cluster_firing_count += 1
+            if detect_c_suite_unusual_sell(_form4_txns, asof_date):
+                if "c_suite_unusual_sell" not in valuation_warnings:
+                    valuation_warnings.append("c_suite_unusual_sell")
+                c_suite_unusual_sell_firing_count += 1
 
         # Issue #67 — Rule 18 dual-count for sector-adjusted CoE delta.
         # We call check_rim_applicability twice — once with the flat 0.10
