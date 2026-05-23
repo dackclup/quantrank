@@ -47,7 +47,7 @@ design-system spec.
 | `tests/` | pytest suite (offline + `@network` gated; see CI for current count) |
 | `.claude/skills/` | 43 invocation-triggerable skills + phase planning docs. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for vendoring / license posture per source. |
 | `.claude/agents/` | 15 project-specific subagents in 4 tiers + 1 data-correctness reviewer: **Tier 1 Core** (quantrank-reviewer · schema-sentinel · defense-layer-auditor · edgar-debugger · **stock-detail-auditor**), **Tier 2 Lifecycle** (security-reviewer · frontend-design-reviewer · release-captain · phase-coordinator), **Tier 3 Specialized** (test-engineer · methodology-scientist · performance-engineer · dependency-auditor), **Tier 4 Operations** (docs-reviewer · incident-commander). Spawned via the `Agent` tool with a separate context window; see [`.claude/agents/README.md`](.claude/agents/README.md) for the routing matrix + 6 coordination flows (pre-push gate / release ladder / new-defense flow / incident response / review escalation / quarterly audit). |
-| `.claude/hooks/` | Bash hook scripts wired by `.claude/settings.json`. 2 PostToolUse hooks: `log-bash.sh` (append every Bash command to gitignored `.claude/session.log`) + `schema-reminder.sh` (inject reminder when any file in the Pydantic↔TS↔snapshot triple is touched via Write/Edit). Both fail-open (missing `jq` / unwritable FS / empty stdin → exit 0). 5-second timeout each. |
+| `.claude/hooks/` | Bash hook scripts wired by `.claude/settings.json`. 3 hooks total: `log-bash.sh` (PostToolUse Bash → append every command to gitignored `.claude/session.log`) + `schema-reminder.sh` (PostToolUse Write/Edit → inject reminder when any file in the Pydantic↔TS↔snapshot triple is touched) + `delegate-first.sh` (UserPromptSubmit → inject orchestrator-role reminder every user turn so the main agent defaults to spawning sub-agents instead of doing work inline). All fail-open (missing `jq` / unwritable FS / empty stdin → exit 0). 5-second timeout each. |
 | `.claude/worktrees/` | Harness-managed isolation dirs for subagents spawned via the `Agent` tool with `isolation: "worktree"`. Per-session, transient, **gitignored** (added 2026-05-22 post the 3-PR fan-out so they don't show up as untracked on the main worktree's `git status`). Never commit them. |
 
 ## Commands
@@ -131,13 +131,71 @@ for the full 4-step pattern + Section I forcing example.
 
 ## Auto-routing policy
 
+### Main agent role — orchestrator, not laborer
+
+The main Claude Code session is the **orchestrator / tech lead** of
+the 15-agent team, not the laborer. Default action when given a
+task is to **identify the matching sub-agent in `.claude/agents/`
+and spawn it** — not to do the work inline. The
+`UserPromptSubmit` hook injects this reminder every turn so the
+rule stays loaded.
+
+**Inline work is the EXCEPTION**, acceptable only when:
+
+- (a) No sub-agent's `description:` matches the task.
+- (b) The request is a trivial lookup — answerable with ≤ 1 Read +
+  a single-sentence answer (e.g. "what's the current schema
+  version?").
+- (c) The user explicitly says "ทำเอง" / "inline this" / "don't
+  spawn agents" / "do it yourself".
+- (d) The work IS the meta-task of building or editing the agent /
+  hook / settings infrastructure itself (you can't delegate
+  building the delegation system).
+- (e) Cross-agent synthesis after multiple sub-agents have
+  reported — that's orchestrator work by definition.
+
+If none of (a)-(e) applies and you find yourself reading / grepping /
+investigating production code without having spawned an agent, STOP
+and spawn the relevant sub-agent first. Main-session tokens land on
+the "Weekly · all models" pool; sonnet sub-agents land on the
+separate "Weekly · Sonnet only" pool which on Max plans is paid-for
+and currently under-utilized.
+
+### Delegation patterns — common requests → which agent to spawn
+
+Concrete mapping so the delegate-first check doesn't become
+guesswork:
+
+| User pattern / task | Spawn (don't do inline) |
+|---|---|
+| "ตรวจ data หุ้น" / "check ticker X" / audit per-stock JSON correctness | `stock-detail-auditor` (sonnet) |
+| "review code" / "ก่อน push" / "ready to push" / "open PR" | `quantrank-reviewer` (opus) |
+| "schema in sync?" / edit to `schemas.py`/`types.ts`/snapshot | `schema-sentinel` (sonnet) |
+| "ทำไม cron ช้า" / p95 > 20s / cron > 10 min warm-cache | `performance-engineer` (sonnet) |
+| "design X" / new UI component / "doesn't match the rest" | `frontend-design-reviewer` (sonnet) |
+| "ตรวจ doc" / md edit / section header added | `docs-reviewer` (sonnet) |
+| "audit defenses" / new flag / defense count diff | `defense-layer-auditor` (sonnet) |
+| 429/403 from SEC / EDGAR hangs / edgartools drift | `edgar-debugger` (sonnet) |
+| "tag release" / "ตัด release" / phase-epic PR merged | `release-captain` (opus) |
+| "production is broken" / "site is down" / cron failure | `incident-commander` (opus, P1) |
+| "validate against literature" / threshold change / new flag academic prior | `methodology-scientist` (opus) |
+| Dependabot alert / new dep / "ตรวจ CVE" | `dependency-auditor` (sonnet) + `security-reviewer` (sonnet) parallel |
+| New prod code without test / "TDD this" / "write tests for X" | `test-engineer` (sonnet) |
+| "scan for secrets" / pre-release / new env-var / `.github/workflows/` edit | `security-reviewer` (sonnet) |
+| New `claude/*` branch from handoff / phase complete / PR open | `phase-coordinator` (sonnet) |
+
+Pattern not in the table → walk the description fields of all 15
+agents in `.claude/agents/` before defaulting to inline work.
+
+### Cue table — when each agent fires
+
 Subagents under [`.claude/agents/`](.claude/agents/) auto-spawn on
-the cues below — **lean-by-design**. Most cues fire at GATE moments
-(`ready to push` / explicit ask / signal event), **not on every
-edit**. Each spawn costs a separate context window; the policy keeps
-that cost bounded while preserving the safety net at decision
-points. The hook layer covers per-edit reminders that don't need
-LLM judgment.
+the cues below — **lean-by-design**. Most
+cues fire at GATE moments (`ready to push` / explicit ask / signal
+event), **not on every edit**. Each spawn costs a separate context
+window; the policy keeps that cost bounded while preserving the
+safety net at decision points. The hook layer covers per-edit
+reminders that don't need LLM judgment.
 
 The main agent MUST spawn without asking for confirmation — all
 subagents are read-only. Only destructive commands a subagent
@@ -1135,6 +1193,56 @@ header text updated from "Section A-J" to "Section A-L"; the
 the new section. No compute / schema / scoring / valuation /
 frontend code change — agent prompt + helper script + tests only.
 Closes issues #217 + #218.
+
+**Delegate-first orchestrator role in flight (this PR)** —
+behavioral fix for the under-delegation problem surfaced after PR
+#219. Even after PR #219 lifted spawn caps + frequency, the
+"Weekly · Sonnet only" pool remained under-utilized because the
+main Claude Code session (opus) was doing checks / reviews /
+investigations **inline** instead of delegating to sub-agents.
+Root cause: the "Prefer delegation" rule in §Spawn discipline was
+worded too softly; the main agent kept defaulting to inline work
+because it never hit a hard "delegate-first" reminder. Three-layer
+fix:
+
+- **Layer 1 — Identity statement in `CLAUDE.md` §Auto-routing
+  policy**: new `### Main agent role — orchestrator, not laborer`
+  sub-section at the top of the section reframes the main agent as
+  the team's tech lead whose DEFAULT action is to identify the
+  matching sub-agent + spawn it. Inline work is the EXCEPTION,
+  acceptable only under five enumerated conditions
+  ((a) no agent matches · (b) trivial 1-Read lookup · (c) user
+  explicitly says "ทำเอง" / "inline this" · (d) the work is
+  building agent/hook infrastructure itself · (e) cross-agent
+  synthesis after multi-agent reports).
+- **Layer 2 — Delegation patterns table in `CLAUDE.md`**: 15-row
+  mapping `user request pattern → which agent to spawn` so the
+  delegate-first check doesn't degrade into guesswork. Covers the
+  common phrases ("ตรวจ data หุ้น" / "ก่อน push" / "schema in
+  sync" / etc.) and which sub-agent owns each.
+- **Layer 3 — `UserPromptSubmit` hook
+  `.claude/hooks/delegate-first.sh`**: injects the "DELEGATE-FIRST
+  CHECK" reminder as `additionalContext` on every user turn so the
+  rule stays loaded — main agent can't lose it mid-session. ~120
+  tokens per turn cost; pays back the first time it prevents
+  main-session inline work that should have gone to sonnet pool.
+  Fail-open on missing jq / unwritable stdin per the existing hook
+  convention; 5-second timeout. Wired in `.claude/settings.json`
+  alongside the existing 2 PostToolUse hooks.
+
+`CLAUDE.md` §Layout `.claude/hooks/` row updated 2 hooks → 3.
+`AGENTS.md` §Claude-Code-specific tooling adds a paragraph on the
+delegate-first discipline so cross-tool readers (Copilot / Cursor /
+Devin) understand why the main session defaults to spawning rather
+than doing.
+
+Companion follow-up (not in this PR): per-session usage spot-check
+3-5 days post-merge to confirm Sonnet-only pool moves more (vs
+PR #219's flat 2% baseline). If still flat, re-investigate whether
+sub-agents themselves are the bottleneck (e.g., descriptions don't
+match common request phrasings) — separate PR.
+
+No compute / schema / scoring / valuation / frontend code change.
 
 **Next deliverables** (pick by appetite):
 - **Issue #67 flip PR** — `USE_SECTOR_COE = True` after ≥ 1 cron confirms

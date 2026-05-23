@@ -961,10 +961,27 @@ comment / whitespace / single-line fixes do not trigger. A 10-min
 dedup window prevents the same sonnet agent from firing twice on
 an unchanged diff.
 
-Both hooks are bash + `jq` only, 5-second timeout, fail-open on
-missing dependencies / unwritable filesystem / empty stdin. Copilot
-/ Cursor / Devin do NOT execute `.claude/hooks/` — those tools
-should rely on git pre-commit hooks (run `ruff` + the
+**Main agent is the orchestrator, not the laborer.** The Claude
+Code main session re-frames itself as the team's tech lead — its
+DEFAULT action when given a task is to identify the matching
+sub-agent in `.claude/agents/` and spawn it, NOT to do the work
+inline. Inline work is the EXCEPTION, acceptable only for trivial
+1-Read lookups, when no sub-agent matches the task, when the user
+explicitly opts out ("ทำเอง" / "inline this"), when the work IS
+building the agent / hook infrastructure itself, or when
+synthesizing across multiple sub-agent reports. A
+`UserPromptSubmit` hook (`.claude/hooks/delegate-first.sh`)
+injects this rule as `additionalContext` on every user turn so
+the main agent can't lose it mid-session. Cross-tool agents
+(Copilot / Cursor / Devin) do not have access to the
+sub-agent / hook layer and should fall back to running the
+canonical skills (`schema-check`, `verify-production-output`,
+`security-check`) inline.
+
+The three hooks are bash + `jq` only, 5-second timeout, fail-open
+on missing dependencies / unwritable filesystem / empty stdin.
+Copilot / Cursor / Devin do NOT execute `.claude/hooks/` — those
+tools should rely on git pre-commit hooks (run `ruff` + the
 schema-snapshot guard, see §Security considerations) instead.
 
 ## Multi-session audit pattern
