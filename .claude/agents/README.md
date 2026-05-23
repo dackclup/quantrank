@@ -22,7 +22,7 @@ skills are loaded each session, so the main agent already has the
 trigger map. Subagents add value where context isolation or parallelism
 specifically helps.
 
-## The current set (15)
+## The current set (18)
 
 Organized into four tiers — **core** (narrow project invariants),
 **lifecycle** (engineering-org roles for PR / release / phase
@@ -41,29 +41,32 @@ roles a 20-person engineering org would have:
 | [`edgar-debugger`](edgar-debugger.md) | On-call for downstream dep | SEC EDGAR ingest test failures; live-run hangs; rate-limit / edgartools drift errors | sonnet | Read, Bash, Grep, Glob |
 | [`stock-detail-auditor`](stock-detail-auditor.md) | Data-correctness reviewer | Post-cron; pre-release; "ตรวจ data หุ้น" / "check stock data correctness" / "audit the output". Deterministic prefilter surfaces outliers; LLM-judgment then walks every flagged ticker without truncation (sonnet pool intended for thorough audit work). | sonnet | Read, Bash, Grep, Glob |
 
-### Tier 2 — Lifecycle (4)
+### Tier 2 — Lifecycle (5)
 
 | Subagent | Enterprise role analogue | Trigger | Model | Tools |
 |---|---|---|---|---|
 | [`security-reviewer`](security-reviewer.md) | AppSec engineer | Before release tags; CI workflow edits; new deps; "scan for CVE" / "ตรวจ security" | sonnet | Read, Bash, Grep, Glob |
 | [`frontend-design-reviewer`](frontend-design-reviewer.md) | Design system / UI lead | Edits under `frontend/components/` / `frontend/app/`; new badge / chip / color; "doesn't match the rest" | sonnet | Read, Grep, Glob, Bash |
+| [`vercel-preview-auditor`](vercel-preview-auditor.md) | Release / preview-env QA | Before Mark-Ready on UI-touching PR; after `frontend/` / `compute/output/` edit; "ดู preview" / "is deploy green?". Wraps Vercel MCP (`list_deployments` → `get_deployment_build_logs` → `get_runtime_logs` → `web_fetch_vercel_url` 3-route UA probe). Codifies CLAUDE.md §Commands "Section I forcing example" pre-Playwright pass. | sonnet | Read, Bash, Grep, Glob |
 | [`release-captain`](release-captain.md) | Release manager | "tag release" / "cut a release" / "release vX.Y.Z" / after phase epic merge | opus | Read, Bash, Grep, Glob |
 | [`phase-coordinator`](phase-coordinator.md) | Eng-program manager / docs PM | Before branch creation; before PR open / Ready-flip; after phase / sub-PR completes | sonnet | Read, Bash, Grep, Glob |
 
-### Tier 3 — Specialized expertise (4)
+### Tier 3 — Specialized expertise (5)
 
 | Subagent | Enterprise role analogue | Trigger | Model | Tools |
 |---|---|---|---|---|
 | [`test-engineer`](test-engineer.md) | SDET / test architect | Missing test coverage; new defense / schema field without test; "add tests" / "TDD this" / "เพิ่ม test" | sonnet | Read, Bash, Grep, Glob, Edit, Write |
 | [`methodology-scientist`](methodology-scientist.md) | Research scientist / domain expert | New defense flag proposed; threshold recalibration; quarterly cohort audit; "validate against literature" / "ตรวจ academic prior" | opus | Read, Bash, Grep, Glob |
+| [`literature-searcher`](literature-searcher.md) | Research librarian / domain-knowledge retrieval | methodology-scientist verdict cites paper outside CLAUDE.md anchor list; new defense-flag academic prior proposed; "find me the paper that says X" / "หาเปเปอร์เรื่อง Y"; SEC rule release / EDGAR filing precise citation needed. Offloads retrieval from `methodology-scientist` (opus) → judgment stays on opus, fetch stays on sonnet. | sonnet | Read, Bash, Grep, Glob, WebSearch, WebFetch |
 | [`performance-engineer`](performance-engineer.md) | Performance engineer / SRE | Cron > 15 min warm-cache; per-ticker hang > 30s; p95 latency over budget; "why is the cron slow?" | sonnet | Read, Bash, Grep, Glob |
 | [`dependency-auditor`](dependency-auditor.md) | Supply-chain / FOSS-license engineer | Dependabot alert; `pyproject.toml` / `package.json` change; "should I bump X?" / "CVE check" | sonnet | Read, Bash, Grep, Glob |
 
-### Tier 4 — Operations (2)
+### Tier 4 — Operations (3)
 
 | Subagent | Enterprise role analogue | Trigger | Model | Tools |
 |---|---|---|---|---|
 | [`docs-reviewer`](docs-reviewer.md) | Tech writer / docs PM | CLAUDE.md / AGENTS.md / SKILL.md / WORKFLOW.md / PHASE_STATUS.md / README.md / METHODOLOGY.md touched; section header added/renamed; "review the docs" | sonnet | Read, Bash, Grep, Glob |
+| [`ci-triage-engineer`](ci-triage-engineer.md) | CI / build engineer on-call | GitHub Actions check fails on any open PR (webhook event); "CI failed" / "Python test red" / "build แตก" / "เช็คทำไม CI fail". Knows the CI matrix (Python lint+test · Frontend build · simulate · Vercel preview) + 10-class failure taxonomy (schema-pin-drift / ruff-I001 / F401 / F841 / dep-missing-ci-only / real-bug / simulate-45min-cap / flaky-transient / vercel-build-skew / schema-drift-CI). Read-only; proposes the one-line fix the user authorizes. | sonnet | Read, Bash, Grep, Glob |
 | [`incident-commander`](incident-commander.md) | Incident commander / SRE on-call | Cron fails / hangs / produces corrupt output; Vercel deploy breaks; schema-snapshot CI guard fails; "production is broken" / "site is wrong" / "incident" | opus | Read, Bash, Grep, Glob |
 
 ### Tier rationale
@@ -84,6 +87,8 @@ The four tiers reflect QuantRank's actual workload distribution + the
   audit. These are the "deep specialists" called in for domain depth.
 - **Tier 4 (Operations)** is the orchestrator / coordinator layer —
   `docs-reviewer` keeps the project's institutional memory clean;
+  `ci-triage-engineer` is the reactive triager for GitHub Actions
+  failures (signal-driven via the PR-activity webhook); and
   `incident-commander` is the P1 conductor when production breaks.
   These map to "staff+ engineers / SRE on-call" in a big org.
 

@@ -46,7 +46,7 @@ design-system spec.
 | `frontend/public/data/` | Compute output: `metadata.json` + `rankings.json` + `stocks/<TICKER>.json` |
 | `tests/` | pytest suite (offline + `@network` gated; see CI for current count) |
 | `.claude/skills/` | 43 invocation-triggerable skills + phase planning docs. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for vendoring / license posture per source. |
-| `.claude/agents/` | 15 project-specific subagents in 4 tiers + 1 data-correctness reviewer: **Tier 1 Core** (quantrank-reviewer · schema-sentinel · defense-layer-auditor · edgar-debugger · **stock-detail-auditor**), **Tier 2 Lifecycle** (security-reviewer · frontend-design-reviewer · release-captain · phase-coordinator), **Tier 3 Specialized** (test-engineer · methodology-scientist · performance-engineer · dependency-auditor), **Tier 4 Operations** (docs-reviewer · incident-commander). Spawned via the `Agent` tool with a separate context window; see [`.claude/agents/README.md`](.claude/agents/README.md) for the routing matrix + 6 coordination flows (pre-push gate / release ladder / new-defense flow / incident response / review escalation / quarterly audit). |
+| `.claude/agents/` | 18 project-specific subagents in 4 tiers + 1 data-correctness reviewer: **Tier 1 Core** (quantrank-reviewer · schema-sentinel · defense-layer-auditor · edgar-debugger · **stock-detail-auditor**), **Tier 2 Lifecycle** (security-reviewer · frontend-design-reviewer · **vercel-preview-auditor** · release-captain · phase-coordinator), **Tier 3 Specialized** (test-engineer · methodology-scientist · **literature-searcher** · performance-engineer · dependency-auditor), **Tier 4 Operations** (docs-reviewer · **ci-triage-engineer** · incident-commander). Spawned via the `Agent` tool with a separate context window; see [`.claude/agents/README.md`](.claude/agents/README.md) for the routing matrix + 6 coordination flows (pre-push gate / release ladder / new-defense flow / incident response / review escalation / quarterly audit). |
 | `.claude/hooks/` | Bash hook scripts wired by `.claude/settings.json`. 3 hooks total: `log-bash.sh` (PostToolUse Bash → append every command to gitignored `.claude/session.log`) + `schema-reminder.sh` (PostToolUse Write/Edit → inject reminder when any file in the Pydantic↔TS↔snapshot triple is touched) + `delegate-first.sh` (UserPromptSubmit → inject orchestrator-role reminder every user turn so the main agent defaults to spawning sub-agents instead of doing work inline). All fail-open (missing `jq` / unwritable FS / empty stdin → exit 0). 5-second timeout each. |
 | `.claude/worktrees/` | Harness-managed isolation dirs for subagents spawned via the `Agent` tool with `isolation: "worktree"`. Per-session, transient, **gitignored** (added 2026-05-22 post the 3-PR fan-out so they don't show up as untracked on the main worktree's `git status`). Never commit them. |
 
@@ -183,8 +183,11 @@ guesswork:
 | New prod code without test / "TDD this" / "write tests for X" | `test-engineer` (sonnet) |
 | "scan for secrets" / pre-release / new env-var / `.github/workflows/` edit | `security-reviewer` (sonnet) |
 | New `claude/*` branch from handoff / phase complete / PR open | `phase-coordinator` (sonnet) |
+| CI check failed (webhook event) / "CI fail" / "Python test red" / "build แตก" / "เช็คทำไม CI fail" | `ci-triage-engineer` (sonnet) |
+| "ดู preview" / "is deploy green?" / pre-Mark-Ready on UI-touching PR / Vercel preview URL just posted | `vercel-preview-auditor` (sonnet) |
+| "find me the paper that says X" / "หาเปเปอร์เรื่อง Y" / methodology cite outside CLAUDE.md anchor list / new defense-flag prior | `literature-searcher` (sonnet) |
 
-Pattern not in the table → walk the description fields of all 15
+Pattern not in the table → walk the description fields of all 18
 agents in `.claude/agents/` before defaulting to inline work.
 
 ### Cue table — when each agent fires
@@ -230,6 +233,9 @@ whitespace / single-line fixes do not trigger.
 | Weekly cron warm-cache > 10 min OR p95 latency > 20s | `performance-engineer` (sonnet) | Signal-driven, on detection |
 | Dependabot alert lands OR new dep added to `pyproject.toml` / `frontend/package.json` | `dependency-auditor` (sonnet) + `security-reviewer` (sonnet) | Signal-driven, parallel |
 | Production cron fails / hangs / produces corrupt output, OR Vercel deploy breaks, OR schema-snapshot CI fails, OR user says "production is broken" / "site is down" / "incident" | `incident-commander` (opus; P1 orchestrator) | Immediate |
+| GitHub Actions check fails on any open PR (webhook PR-activity event) OR user says "CI fail" / "Python test red" / "build แตก" / "เช็คทำไม CI fail" | `ci-triage-engineer` (sonnet) | Signal-driven, on webhook; reactive — proposes one-line fix |
+| Pre-Mark-Ready on a UI-touching PR OR new Vercel preview URL posted OR user says "ดู preview" / "is deploy green?" / "spot-check the preview" | `vercel-preview-auditor` (sonnet) | Gated; runs Vercel MCP build+runtime+UA-probe before Playwright is scheduled |
+| methodology-scientist verdict cites a paper outside CLAUDE.md anchor list AND the actual paper text matters, OR user says "find me the paper that says X" / "หาเปเปอร์เรื่อง Y" / new defense-flag academic prior is proposed | `literature-searcher` (sonnet) | On-demand; offloads retrieval so methodology-scientist (opus) stays on judgment |
 | `workflow_dispatch` on `compute-rankings.yml` lands green | `defense-layer-auditor` Section A-J + Section I (Playwright) + `stock-detail-auditor` (per-stock data audit) | Auto post-cron, parallel; all sonnet |
 | Quarterly cohort audit scheduled date reached (next 2026-08-19) | `methodology-scientist` (opus) Mode C + `defense-layer-auditor` (sonnet) | Scheduled, sequential |
 | New defense flag proposed (new risk_flag in `compute/scoring/`) | `methodology-scientist` (opus; validate paper anchor) + `test-engineer` (sonnet; positive + negative tests) | Rare; sequential — methodology first |
@@ -252,10 +258,10 @@ whitespace / single-line fixes do not trigger.
   hard word caps or "≤ N items" limits wastes that pool without
   improving signal. Keep model assignments (`incident-commander`
   + `release-captain` + `methodology-scientist` + `quantrank-
-  reviewer` all opus by design; the other 11 sonnet) as they
+  reviewer` all opus by design; the other 14 sonnet) as they
   are — opus agents land on the "Weekly · all models" pool;
   sonnet agents drain the underutilized sonnet pool. Tune the
-  4-vs-11 split only when usage data justifies it.
+  4-vs-14 split only when usage data justifies it.
 - **Prefer delegation to sub-agents** over inline main-session
   work when both options exist. Main-session tokens land on the
   "Weekly · all models" pool; sonnet sub-agents land on the
@@ -1305,9 +1311,9 @@ invariants + 1 schema-version bump on `tests/test_config.py`.
 Defense layer emitted-flag count 30 → 32. Closes Phase 4.5e ladder
 (PRs 1-3).
 
-**Phase 4.5e PR 4-eq — Form-4 10b5-1 contamination filter in flight (this PR)**
-(2026-05-23) — first follow-up after the Phase 4.5e ladder closed
-(PRs 1+2+3 = #210 + #205 + #222). Closes footgun #1 from
+**Phase 4.5e PR 4-eq merged via PR #224** (2026-05-23, `98e761e`) —
+Form-4 10b5-1 contamination filter. First follow-up after the
+Phase 4.5e ladder closed (PRs 1+2+3 = #210 + #205 + #222). Closes footgun #1 from
 `compute/scoring/form4_signals.py` module docstring (10b5-1
 contamination, Jagolinzer 2009 §3.2 expected FP rate 40-60% on
 `insider_sell_cluster`). `_is_opportunistic_sell` now requires NOT
@@ -1368,6 +1374,55 @@ field only). Defense layer emitted-flag count UNCHANGED at 32
 (filter is signal-quality, not new flag). Tests 1144 → 1160+ (16
 new cases per methodology pre-condition table, written by
 `test-engineer` parallel-spawn).
+
+**Three new subagents in flight (this PR)** — bumps roster 15 → 18
+to drain the underutilized "Weekly · Sonnet only" pool on Max plans
+while keeping the 4-opus roster fixed. All three identified as
+session-observed gaps where main-agent inline work was draining the
+"Weekly · all models" pool:
+
+- **`ci-triage-engineer`** (Tier 4 Operations, sonnet) — reactive to
+  GitHub Actions check failures via the PR-activity webhook. Knows
+  the CI matrix (Python lint+test · Frontend build · simulate ·
+  Vercel preview) + 10-class failure taxonomy (schema-pin-drift /
+  ruff-I001 / F401 / F841 / dep-missing-ci-only / real-bug /
+  simulate-45min-cap / flaky-transient / vercel-build-skew /
+  schema-drift-CI). Proposes one-line fix the user authorizes;
+  refuses to auto-flip test assertions or classify as flaky without
+  re-run evidence. Closes the gap from this session where PR #224
+  Python check failed and main-agent (opus) had to diagnose inline.
+- **`vercel-preview-auditor`** (Tier 2 Lifecycle, sonnet) — wraps
+  the Vercel MCP server (`list_deployments` → `get_deployment_build_logs`
+  → `get_runtime_logs` → `web_fetch_vercel_url` 3-route UA probe).
+  Codifies CLAUDE.md §Commands "When Vercel MCP is loaded, list_deployments
+  → get_runtime_logs is the cheap pre-Playwright pass" — which today
+  depends on main-agent memory. Fires before Mark-Ready on any UI-
+  touching PR; refuses to invoke `deploy_to_vercel` or promote
+  preview to production.
+- **`literature-searcher`** (Tier 3 Specialized, sonnet) — WebSearch +
+  WebFetch wrapper for academic papers + SEC rule releases + EDGAR
+  filings. Carries the canonical CLAUDE.md anchor list of 17 papers
+  in its prompt (Altman / Sloan / Beneish / Dechow / Mayew / BD /
+  HLM / DT / Damodaran / Roychowdhury / Cohen / CMP / JMZ /
+  Jagolinzer / Bushman-Smith / Aboody / Huber) and refuses to re-
+  fetch those. For new papers: WebSearch → preferred author/SSRN/NBER
+  free PDF → WebFetch → locate the section → return citation-ready
+  excerpt + suggested docstring format. Offloads retrieval from
+  `methodology-scientist` (opus) — judgment stays on opus, fetch
+  stays on sonnet. Refuses to make a methodology verdict (that's
+  methodology-scientist's slot exclusively) or paraphrase a paper
+  without direct quotes.
+
+Tier counts updated: Tier 1 Core 5 (unchanged) · Tier 2 Lifecycle
+4 → 5 · Tier 3 Specialized 4 → 5 · Tier 4 Operations 2 → 3 — total
+15 → 18. The 4-opus / 14-sonnet split is preserved (was 4 / 11);
+all three new agents are sonnet to drain the sonnet pool per the
+PR #219 + PR #223 token-economy rebalance.
+
+Auto-routing policy table extended with 3 new cue rows + 3
+delegation-pattern rows. README.md tier tables updated to match.
+Doc-only otherwise — no compute / schema / scoring / valuation /
+frontend code change.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — after ≥ 1

@@ -88,7 +88,7 @@ frontend/                         # Next.js static site (read/write OK)
 tests/                            # pytest suite
 docs/                             # Academic methodology + research findings
 .claude/skills/                   # 42 loaded skills + phase-N/ planning docs
-.claude/agents/                   # 15 subagents — Tier 1 Core 5 (incl. stock-detail-auditor for per-stock JSON correctness) + Tier 2 Lifecycle 4 + Tier 3 Specialized 4 + Tier 4 Operations 2; Claude Code only — Copilot / Cursor / Devin do not auto-route to these
+.claude/agents/                   # 18 subagents — Tier 1 Core 5 (incl. stock-detail-auditor for per-stock JSON correctness) + Tier 2 Lifecycle 5 (incl. vercel-preview-auditor) + Tier 3 Specialized 5 (incl. literature-searcher) + Tier 4 Operations 3 (incl. ci-triage-engineer); Claude Code only — Copilot / Cursor / Devin do not auto-route to these
 .claude/hooks/                    # PostToolUse Bash hooks (log-bash.sh, schema-reminder.sh) wired by .claude/settings.json (Claude Code only — Copilot / Cursor / Devin ignore)
 .claude/worktrees/                # Harness-managed isolation dirs for Agent-tool subagents (Claude Code on the web only; per-session transient; gitignored 2026-05-22)
 .claude/settings.json             # Claude Code harness config (hooks, permissions). Per-user overrides go in .claude/settings.local.json (gitignored)
@@ -928,9 +928,9 @@ note cross-tool-specific points only:
   threshold-constants pin + 2 strict-superset invariants; defense
   layer emitted-flag count 30 → 32.
 
-- **Phase 4.5e PR 4-eq — Form-4 10b5-1 contamination filter in flight
-  (this PR)** (2026-05-23) — first follow-up after the Phase 4.5e
-  ladder closed (PRs 1+2+3). Closes footgun #1 from
+- **Phase 4.5e PR 4-eq merged via PR #224** (2026-05-23, `98e761e`)
+  — Form-4 10b5-1 contamination filter. First follow-up after the
+  Phase 4.5e ladder closed (PRs 1+2+3). Closes footgun #1 from
   `form4_signals.py` module docstring (Jagolinzer 2009 §3.2 expected
   FP rate 40-60% on `insider_sell_cluster`). `_is_opportunistic_sell`
   now requires NOT `is_rule_10b5_one is True` in addition to the
@@ -971,6 +971,38 @@ note cross-tool-specific points only:
   filter semantics + None-handling + cluster threshold interaction +
   C-suite inheritance + strict-superset invariant under filter +
   Hypothesis monotonicity property.
+
+- **Three new subagents in flight (this PR)** — bumps roster
+  `.claude/agents/` 15 → 18 to drain the underutilized "Weekly ·
+  Sonnet only" pool on Max plans. Three session-observed gaps
+  closed: (a) `ci-triage-engineer` (Tier 4 Operations, sonnet) —
+  reactive to GitHub Actions check failures via PR-activity webhook;
+  knows the CI matrix (Python lint+test · Frontend build · simulate
+  · Vercel preview) + 10-class failure taxonomy (schema-pin-drift /
+  ruff-I001 / F401 / F841 / dep-missing-ci-only / real-bug /
+  simulate-45min-cap / flaky-transient / vercel-build-skew /
+  schema-drift-CI); refuses to auto-flip test assertions or classify
+  as flaky without re-run evidence. (b) `vercel-preview-auditor`
+  (Tier 2 Lifecycle, sonnet) — wraps Vercel MCP (`list_deployments`
+  → `get_deployment_build_logs` → `get_runtime_logs` →
+  `web_fetch_vercel_url` 3-route UA probe); codifies the
+  CLAUDE.md §Commands "Section I forcing example" pre-Playwright
+  pass; refuses to invoke `deploy_to_vercel` or promote preview to
+  production. (c) `literature-searcher` (Tier 3 Specialized, sonnet)
+  — WebSearch + WebFetch wrapper for academic papers + SEC rule
+  releases + EDGAR filings; carries CLAUDE.md's 17-paper canonical
+  anchor list in-prompt (Altman / Sloan / Beneish / Dechow / Mayew /
+  BD / HLM / DT / Damodaran / Roychowdhury / Cohen / CMP / JMZ /
+  Jagolinzer / Bushman-Smith / Aboody / Huber) and refuses to re-
+  fetch those; offloads retrieval from `methodology-scientist`
+  (opus) → judgment stays on opus, fetch stays on sonnet; refuses to
+  make a methodology verdict itself. Tier counts: T1 5 / T2 4→5 /
+  T3 4→5 / T4 2→3; 4-opus / 14-sonnet split preserved (was 4/11).
+  Cross-tool agents (Copilot / Cursor / Devin) do not auto-route to
+  these subagents — they remain a Claude-Code-specific facility.
+  Auto-routing policy table extended with 3 new cue rows; README.md
+  tier tables updated to match. Doc-only — no compute / schema /
+  scoring / valuation / frontend code change.
 
 ## Claude-Code-specific tooling
 
