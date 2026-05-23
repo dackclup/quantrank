@@ -3,19 +3,19 @@
   "name": "Microchip Technology",
   "sector": "Information Technology",
   "industry": "Semiconductors",
-  "market_cap": 51004237564.13638,
-  "current_price": 94.09,
+  "market_cap": 50646467389.25947,
+  "current_price": 93.43,
   "rank": 495,
-  "composite_score": 31.18,
+  "composite_score": 31.15,
   "pillar_scores": {
     "quality": 13.01,
-    "value": 24.43,
+    "value": 24.66,
     "growth": 14.21,
-    "momentum": 78.83,
-    "health": 54.46,
+    "momentum": 78.34,
+    "health": 54.5,
     "profitability": 20.55,
-    "technical": 45.82,
-    "risk": 38.61,
+    "technical": 45.67,
+    "risk": 38.45,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.22,
     "eps_diluted": 0.22,
     "shares_outstanding": 542079281.0,
-    "market_cap": 51004237564.13638,
-    "pe_ratio_ttm": 221.7575546266799,
+    "market_cap": 50646467389.25947,
+    "pe_ratio_ttm": 220.20203212721506,
     "goodwill": 6695500000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 18.873868001047164,
+        "value": 18.575420058441786,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 140.36723101480075,
+        "value": 138.69618954814123,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 63.30362640972522,
+        "value": 63.18864561578988,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,13 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 56.286305749831214,
-    "max": 140.36723101480075,
-    "low": 18.873868001047164,
-    "high": 140.36723101480075,
-    "mos_pct": -67.16321152089961,
-    "valuation_warnings": [],
-    "valuation_methods_applicable": 4
+    "median": 56.22881535286354,
+    "max": 138.69618954814123,
+    "low": 18.575420058441786,
+    "high": 138.69618954814123,
+    "mos_pct": -66.16035696085088,
+    "valuation_warnings": [
+      "extreme_multiples_pe_estimate"
+    ],
+    "valuation_methods_applicable": 3
   },
   "top5_factors": [],
   "score_history": [],
@@ -90,12 +92,14 @@
       "total_liabilities"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 1,
+    "filing_lag_days": 2,
     "latest_period_end": "2026-05-14",
     "latest_filed_date": "2026-05-21"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "extreme_multiples_pe_estimate"
+  ],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -111,20 +115,20 @@
       "Quality": 49.66,
       "Value": 48.86,
       "Growth": 53.42,
-      "Momentum": 63.79,
+      "Momentum": 63.82,
       "Health": 69.52,
       "Profitability": 48.86,
-      "Technical": 59.61,
+      "Technical": 59.16,
       "Risk": 47.51
     }
   },
   "beneish_m_score": -2.4768921009977882,
   "dechow_f_score": 0.5886303013605781,
   "recommendation": "neutral",
-  "loss_chance_pct": 69.41226361676581,
-  "price_change_1d_pct": 3.2708,
+  "loss_chance_pct": 70.42255976095618,
+  "price_change_1d_pct": 2.5464,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 31.18,
+  "composite_score_adjusted": 31.15,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -170,10 +174,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 41.51,
+  "osap_blended_score": 41.5,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 4,
+  "valuation_methods_applicable": 3,
   "form4_diagnostics": {
     "insider_count": 6,
     "latest_filing_date": "2026-05-21",

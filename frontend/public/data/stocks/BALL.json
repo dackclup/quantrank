@@ -3,19 +3,19 @@
   "name": "Ball Corporation",
   "sector": "Materials",
   "industry": "Metal, Glass & Plastic Containers",
-  "market_cap": 14879185820.349072,
-  "current_price": 55.885,
-  "rank": 248,
-  "composite_score": 51.14,
+  "market_cap": 15045589889.724072,
+  "current_price": 56.51,
+  "rank": 240,
+  "composite_score": 51.32,
   "pillar_scores": {
     "quality": 52.4,
     "value": 56.41,
     "growth": 61.06,
-    "momentum": 52.79,
+    "momentum": 53.34,
     "health": 36.29,
     "profitability": 41.99,
-    "technical": 38.35,
-    "risk": 43.56,
+    "technical": 40.24,
+    "risk": 44.02,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 0.77,
     "eps_diluted": 0.77,
     "shares_outstanding": 266246511.0,
-    "market_cap": 14879185820.349072,
-    "pe_ratio_ttm": 15.812099702815168,
+    "market_cap": 15045589889.724072,
+    "pe_ratio_ttm": 15.988937183553743,
     "goodwill": 4410000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 91.85241222372572,
+        "value": 92.11593846762322,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 61.03964547107882,
+        "value": 61.143209283202005,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,16 +76,18 @@
       }
     },
     "median": 11.262362855112968,
-    "max": 91.85241222372572,
+    "max": 92.11593846762322,
     "low": 2.5084991548715503,
-    "high": 91.85241222372572,
-    "mos_pct": -396.2102450478421,
+    "high": 92.11593846762322,
+    "mos_pct": -401.75970219143124,
     "valuation_warnings": [
       "goodwill_heavy",
+      "extreme_graham_estimate",
       "extreme_rim_estimate",
-      "extreme_dcf_estimate"
+      "extreme_dcf_estimate",
+      "extreme_estimate_majority"
     ],
-    "valuation_methods_applicable": 3
+    "valuation_methods_applicable": 2
   },
   "top5_factors": [],
   "score_history": [],
@@ -97,15 +99,17 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 17,
+    "filing_lag_days": 18,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-05"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
+    "extreme_graham_estimate",
     "extreme_rim_estimate",
-    "extreme_dcf_estimate"
+    "extreme_dcf_estimate",
+    "extreme_estimate_majority"
   ],
   "has_history": true,
   "tangible_book_value": 0.9126880164074713,
@@ -122,20 +126,20 @@
       "Quality": 51.68,
       "Value": 50.48,
       "Growth": 48.56,
-      "Momentum": 48.03,
+      "Momentum": 48.33,
       "Health": 56.51,
       "Profitability": 54.33,
-      "Technical": 41.09,
-      "Risk": 46.03
+      "Technical": 43.55,
+      "Risk": 46.22
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 62.430669948411484,
-  "price_change_1d_pct": -0.8252,
+  "loss_chance_pct": 63.340406004188374,
+  "price_change_1d_pct": 0.2839,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 51.14,
+  "composite_score_adjusted": 51.32,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -181,10 +185,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.5,
+  "osap_blended_score": 51.59,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 3,
+  "valuation_methods_applicable": 2,
   "form4_diagnostics": {
     "insider_count": 13,
     "latest_filing_date": "2026-05-01",

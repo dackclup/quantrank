@@ -3,83 +3,83 @@
   "name": "Workday, Inc.",
   "sector": "Information Technology",
   "industry": "Application Software",
-  "market_cap": 34022705814.949036,
-  "current_price": 126.895,
-  "rank": 458,
-  "composite_score": 37.66,
+  "market_cap": 32587667664.779663,
+  "current_price": 128.14,
+  "rank": 441,
+  "composite_score": 39.76,
   "pillar_scores": {
-    "quality": 28.42,
-    "value": 55.71,
-    "growth": 49.66,
-    "momentum": 7.42,
-    "health": 50.4,
-    "profitability": 32.88,
-    "technical": 48.26,
-    "risk": 17.9,
+    "quality": 33.56,
+    "value": 60.05,
+    "growth": 52.05,
+    "momentum": 7.47,
+    "health": 41.24,
+    "profitability": 36.99,
+    "technical": 49.35,
+    "risk": 18.09,
     "sentiment": null,
     "ml": null
   },
   "raw_metrics": {
-    "revenue": 9552000000.0,
-    "net_income": 693000000.0,
-    "total_assets": 18074000000.0,
-    "total_liabilities": 10269000000.0,
-    "stockholders_equity": 7805000000.0,
-    "cash": 1501000000.0,
-    "operating_cash_flow": 2939000000.0,
-    "capex": 162000000.0,
-    "free_cash_flow": 2777000000.0,
-    "eps_basic": 2.61,
-    "eps_diluted": 2.59,
-    "shares_outstanding": 268117000.0,
-    "market_cap": 34022705814.949036,
-    "pe_ratio_ttm": 49.09481358578504,
-    "goodwill": 5229000000.0
+    "revenue": 9854000000.0,
+    "net_income": 847000000.0,
+    "total_assets": 16091000000.0,
+    "total_liabilities": 9408000000.0,
+    "stockholders_equity": 6683000000.0,
+    "cash": 559000000.0,
+    "operating_cash_flow": 3178000000.0,
+    "capex": 206000000.0,
+    "free_cash_flow": 2972000000.0,
+    "eps_basic": 0.87,
+    "eps_diluted": 0.87,
+    "shares_outstanding": 254313000.0,
+    "market_cap": 32587667664.779663,
+    "pe_ratio_ttm": 38.474223925359695,
+    "goodwill": 5228000000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": 24.842197507098497,
+        "value": 18.11907701778712,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 102.31995665495991,
+        "value": 131.1041989056111,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 251.50199620607702,
+        "value": 227.39423000933456,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 91.33259198660922,
+        "value": 119.97365145780803,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "rim": {
-        "value": 8.670668298094618,
+        "value": 4.61258830762893,
         "applicable": true,
         "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": 114.2696274364419,
+        "value": 112.81621348250577,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 96.82627432078456,
-    "max": 251.50199620607702,
-    "low": 8.670668298094618,
-    "high": 251.50199620607702,
-    "mos_pct": -31.05430063606954,
+    "median": 116.3949324701569,
+    "max": 227.39423000933456,
+    "low": 4.61258830762893,
+    "high": 227.39423000933456,
+    "mos_pct": -10.090702980134392,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -97,19 +97,18 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 77,
-    "latest_period_end": "2026-01-31",
-    "latest_filed_date": "2026-03-06"
+    "filing_lag_days": 1,
+    "latest_period_end": "2026-04-30",
+    "latest_filed_date": "2026-05-22"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
     "extreme_graham_estimate",
-    "extreme_rim_estimate",
-    "cross_source_disagreement"
+    "extreme_rim_estimate"
   ],
   "has_history": true,
-  "tangible_book_value": 8.43944994162996,
+  "tangible_book_value": 4.48958566805472,
   "tier2_events": {
     "going_concern_disclosure": false,
     "non_reliance_filing": false,
@@ -123,20 +122,20 @@
       "Quality": 49.66,
       "Value": 48.86,
       "Growth": 53.42,
-      "Momentum": 63.79,
+      "Momentum": 63.82,
       "Health": 69.52,
       "Profitability": 48.86,
-      "Technical": 59.61,
+      "Technical": 59.16,
       "Risk": 47.51
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 60.03685096295071,
-  "price_change_1d_pct": 4.1403,
+  "loss_chance_pct": 51.65091832651591,
+  "price_change_1d_pct": 5.1621,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 37.66,
+  "composite_score_adjusted": 39.76,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -182,7 +181,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 44.76,
+  "osap_blended_score": 45.81,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
