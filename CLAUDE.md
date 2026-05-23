@@ -1484,6 +1484,32 @@ Doc-only PR — `ruff` / `schema_check` / `pytest` trivially pass; no
 compute / schema / scoring / valuation / frontend / Python / TS
 change.
 
+**PR-#224 review-nit polish in flight (this PR)** —
+two of the three `quantrank-reviewer` WARN-tier punch-list items
+from PR #224 land here. (a) `tests/test_scoring/test_form4_signals.py`
+— two PR-#222 Hypothesis property tests
+(`test_cluster_monotonic_under_added_compensation_txns` +
+`test_cluster_fires_only_within_lookback`) drop `@settings(deadline=None)`
+per CLAUDE.md §Gotchas "Don't use `@settings(deadline=None)` — a slow
+example is itself a signal." Both tests verified to run sub-millisecond
+under default 200ms Hypothesis deadline; `HealthCheck.too_slow` +
+`HealthCheck.filter_too_much` suppression retained (separate concern).
+(b) `test_strict_superset_invariant_holds_under_10b5_1_filter` docstring
++ inline contrapositive comment rewritten to remove the confusing `⊆`
++ "strict-superset" mixed set/boolean notation; replaced with the
+unambiguous implication form "c_suite firing implies cluster firing
+(PR #222 strict-superset, when the $1M floor is met)" + the
+contrapositive `¬cluster ⟹ ¬c_suite` framing. (c) `_FOOTNOTES_REQUIRED_ATTRS`
+manifest extension `("get",) → ("get", "__contains__")` **DEFERRED** —
+sandbox environment doesn't have edgartools installed so the
+`@network`-gated `test_D4_edgar_footnotes_api_surface_locked` cannot
+verify that `Footnotes.__contains__` actually exists on the live class;
+adding the attr blindly risks a silent break under `pytest --run-network`
+on a future CI cron run. Schedule the strengthening for a follow-up
+PR that can run network tests first. Tests 1168 → 1168 (no test added /
+removed; 3 edits in-place). No compute / schema / scoring / valuation /
+frontend / Python production-code change.
+
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — after ≥ 1
   cron's `form4_rule10b5_one_excluded_count` lands and firing-rate

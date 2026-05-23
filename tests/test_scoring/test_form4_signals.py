@@ -327,7 +327,6 @@ def test_threshold_constants_pinned_to_methodology_verdict():
 
 
 @settings(
-    deadline=None,
     suppress_health_check=[HealthCheck.too_slow, HealthCheck.filter_too_much],
     max_examples=50,
 )
@@ -365,7 +364,6 @@ def test_cluster_monotonic_under_added_compensation_txns(
 
 
 @settings(
-    deadline=None,
     suppress_health_check=[HealthCheck.too_slow, HealthCheck.filter_too_much],
     max_examples=50,
 )
@@ -536,12 +534,18 @@ def test_c_suite_inherits_10b5_1_filter():
 
 
 def test_strict_superset_invariant_holds_under_10b5_1_filter():
-    """When the 10b5-1 filter drops the cluster below threshold, the
-    c_suite flag MUST also be False (c_suite ⊆ cluster strict-superset
-    invariant from PR #222 must survive the filter).
+    """Regression test: the 10b5-1 filter must apply consistently to BOTH
+    detect_insider_sell_cluster and detect_c_suite_unusual_sell. PR #222
+    established that c_suite firing implies cluster firing (when the $1M
+    floor is met); this test verifies the implication survives the
+    filter in its contrapositive form — when the filter excludes enough
+    transactions to drop cluster below threshold, c_suite must also fall
+    below.
 
-    Scenario: 3 distinct insiders with sufficient dollar_value, but all 3
-    have is_rule_10b5_one=True — neither cluster nor c_suite should fire.
+    Scenario: 3 distinct C-suite insiders with sufficient dollar_value,
+    but all 3 carry is_rule_10b5_one=True. The filter excludes all 3 in
+    both predicates, so neither flag fires — preserving the contrapositive
+    ¬cluster ⟹ ¬c_suite.
     """
     txns = [
         _tx_10b5(
@@ -561,8 +565,8 @@ def test_strict_superset_invariant_holds_under_10b5_1_filter():
     # strict-superset invariant: if cluster is False, c_suite must also be False
     assert cluster_fires is False
     assert c_suite_fires is False
-    # Verify the invariant direction: c_suite cannot be True when cluster is False
-    # (c_suite requires a subset of the conditions cluster requires)
+    # Contrapositive check: c_suite firing implies cluster firing
+    # (PR #222 strict-superset), so c_suite cannot be True when cluster is False
     assert not (c_suite_fires and not cluster_fires), (
         "Strict-superset invariant violated: c_suite fired but cluster did not. "
         "This breaks the DELTA-weight semantic in manipulation_index.py."
