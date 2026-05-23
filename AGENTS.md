@@ -683,6 +683,39 @@ note cross-tool-specific points only:
   a load-bearing call site — treat it as a `_PER_FILING_XBRL_*`
   drift-detector manifest candidate in a follow-up PR if edgartools
   CHANGELOG shows a `get_facts_by_concept` shape change.
+- **DD eps_diluted TTM derivation + STZ fallback logger.warning on
+  this PR** (2026-05-23 cron #3 audit follow-ups) — two compute-layer
+  fixes folded into one PR after the cron-#3 stock-detail-auditor
+  surfaced both:
+  1. **DD**: `compute/main.py:_build_raw_metrics` previously passed
+     `snapshot.eps_diluted` (XBRL `EarningsPerShareDiluted`, single-
+     period for quarterly filers) raw to `RawMetrics`. DD on
+     2026-05-23 showed `eps_diluted=0.39` vs `NI/shares=$0.017`
+     (~23×). `pe_ratio_ttm` was already on the NI/shares path since
+     audit #6 / PR #49, but the EPS display field stayed wrong. Fix:
+     compute `ttm_eps = NI / shares` once and use for both
+     `eps_basic` + `eps_diluted` fields. Tests +5 in `test_main.py`
+     covering the DD case + loss-year negative-EPS preserves sign +
+     null-shares + zero-shares + audit-#6 regression guard.
+  2. **STZ**: PR #182's `_fetch_shares_from_per_filing_xbrl` outer
+     `except: return None` was bare — when the fallback failed
+     under cron load (2026-05-23 STZ regression: worked in
+     2026-05-21 live probe, returned None two days later under SEC
+     429), the operator had no log line distinguishing transient
+     429 from structural XBRL drift. Fix: thread `ticker` arg into
+     the function (optional kwarg, back-compat preserved) and emit
+     `logger.warning("shares_outstanding fallback FAILED for %s — %s:
+     %s", ticker, type(e).__name__, e)` on the outer except; inner
+     exceptions log at `DEBUG`. PR-3d amplification pattern
+     parallel — graceful degradation correct, but silence kills
+     observability. Tests +2 in `test_fundamentals_xbrl_fallback.py`:
+     pin the WARNING emission (with caplog) + back-compat path
+     (no ticker arg → "?" sentinel in the log message).
+  Tests 1049 → 1056 (+7 across both fixes). No schema change. No
+  Pydantic / TypeScript / snapshot triple touch. Issues filed:
+  **#217** (stock-detail-auditor factor-exposure proxy heuristic),
+  **#218** (verify-helper Section L OSAP invariant) — both from the
+  cron-#3 OSAP false-positive incident-commander downgrade.
 - **Issue #177 extreme_estimate_majority annotate merged via PR #183**
   (2026-05-21, `b881d544`) — annotate-only flag wired into
   `compute/valuation/ensemble.py`.

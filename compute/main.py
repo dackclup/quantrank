@@ -310,16 +310,33 @@ def _build_raw_metrics(
     # missed in PR #49 — production median PE stayed at 77.5 (broken)
     # instead of dropping to ~26 (correct) until this fix lands.
     pe_ttm: float | None = None
+    ttm_eps: float | None = None
     if (
         snapshot.net_income is not None
-        and snapshot.net_income > 0
         and snapshot.shares_outstanding is not None
         and snapshot.shares_outstanding > 0
-        and current_price > 0
     ):
         ttm_eps = snapshot.net_income / snapshot.shares_outstanding
-        if ttm_eps > 0:
+        # pe_ttm requires positive earnings (negative P/E is meaningless);
+        # eps_basic / eps_diluted display fields keep the signed TTM value
+        # so users see "−$0.42 EPS" on a loss-year stock.
+        if (
+            snapshot.net_income > 0
+            and current_price > 0
+            and ttm_eps > 0
+        ):
             pe_ttm = current_price / ttm_eps
+    # Issue #DD-eps mis-parse fix: snapshot.eps_diluted /
+    # snapshot.eps_basic carry the XBRL single-period value
+    # (`facts.get_concept` returns "latest single-period" per
+    # `fundamentals.py:114-117`) — for a quarterly filer that's one
+    # quarter's EPS, not TTM. Replace the display field with the
+    # NI/shares-derived TTM value so the /stock/<TICKER> page shows a
+    # number consistent with pe_ratio_ttm and the rest of the
+    # valuation chain. Basic and diluted share the same denominator
+    # here (shares_outstanding) — the basic-vs-diluted spread in XBRL
+    # is typically < 1-3% on the S&P 500, well within display
+    # precision.
     return RawMetrics(
         revenue=snapshot.revenue,
         net_income=snapshot.net_income,
@@ -330,8 +347,8 @@ def _build_raw_metrics(
         operating_cash_flow=snapshot.operating_cash_flow,
         capex=snapshot.capex,
         free_cash_flow=snapshot.free_cash_flow,
-        eps_basic=snapshot.eps_basic,
-        eps_diluted=snapshot.eps_diluted,
+        eps_basic=ttm_eps,
+        eps_diluted=ttm_eps,
         shares_outstanding=snapshot.shares_outstanding,
         market_cap=market_cap,
         pe_ratio_ttm=pe_ttm,

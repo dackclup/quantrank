@@ -24,6 +24,7 @@ from compute.main import (
     _avg_3y_roe,
     _build_historical_metrics,
     _build_peer_groupings,
+    _build_raw_metrics,
     _build_universe_metrics,
     _eps_3y_avg,
     _fcf_5y,
@@ -371,6 +372,88 @@ def test_build_universe_metrics_zero_shares_yields_null_pb_and_ev():
     metrics = _build_universe_metrics({"AAA": snap}, df)
     assert metrics["AAA"]["pb_reported"] is None
     assert metrics["AAA"]["ev_ebitda_ttm"] is None
+
+
+# -- _build_raw_metrics: DD eps_diluted TTM fix (2026-05-23 cron #3) ----------
+#
+# Background: the XBRL `EarningsPerShareDiluted` concept is single-period
+# (latest quarter for a quarterly filer), not TTM. The DD stock-detail
+# audit showed eps_diluted=0.39 (single-period) while net_income / shares
+# = 7M / 410M = $0.017 (TTM). pe_ratio_ttm already derives from NI/shares
+# (audit #6 / PR #49 fix); these tests pin the same NI/shares derivation
+# for the eps_basic + eps_diluted display fields.
+
+
+def test_build_raw_metrics_eps_diluted_derived_from_ni_not_xbrl_singleperiod():
+    """DD 2026-05-23 cron regression — eps_diluted carried the XBRL
+    single-period value (0.39) into RawMetrics while NI/shares = $0.017.
+    The fix is to compute TTM EPS = NI / shares the same way pe_ratio_ttm
+    does, and ignore the XBRL single-period field entirely."""
+    snap = _snap(
+        net_income=7_000_000.0,
+        shares_outstanding=410_000_000.0,
+        eps_diluted=0.39,  # XBRL single-period value (deliberate ~23× off)
+        eps_basic=0.41,  # likewise — should also be replaced
+    )
+    rm = _build_raw_metrics(snap, current_price=48.0)
+    # NI / shares = 7M / 410M ≈ 0.01707
+    expected_ttm = 7_000_000.0 / 410_000_000.0
+    assert rm.eps_diluted == pytest.approx(expected_ttm, rel=1e-6)
+    assert rm.eps_basic == pytest.approx(expected_ttm, rel=1e-6)
+    # The single-period XBRL value (0.39) must NOT appear in the output.
+    assert rm.eps_diluted != 0.39
+    assert rm.eps_basic != 0.41
+
+
+def test_build_raw_metrics_eps_preserves_negative_sign_on_loss_year():
+    """Loss-year tickers (negative net_income) should show signed EPS in the
+    display field, even though pe_ratio_ttm is null. Users seeing
+    "−$0.42 EPS" is informative; seeing "null" or "0" would mislead."""
+    snap = _snap(
+        net_income=-42_000_000.0,
+        shares_outstanding=100_000_000.0,
+        eps_diluted=999.0,  # XBRL single-period — should be ignored
+    )
+    rm = _build_raw_metrics(snap, current_price=10.0)
+    assert rm.eps_diluted == pytest.approx(-0.42, rel=1e-6)
+    assert rm.eps_basic == pytest.approx(-0.42, rel=1e-6)
+    # pe_ratio_ttm must be null on negative earnings.
+    assert rm.pe_ratio_ttm is None
+
+
+def test_build_raw_metrics_eps_null_when_shares_outstanding_missing():
+    """STZ 2026-05-23 cron — shares_outstanding=None after the per-filing
+    XBRL fallback silently fails. EPS display field must be None (not
+    raise, not propagate the stale snap.eps_diluted)."""
+    snap = _snap(
+        net_income=2_000_000_000.0,
+        shares_outstanding=None,
+        eps_diluted=4.20,
+    )
+    rm = _build_raw_metrics(snap, current_price=200.0)
+    assert rm.eps_diluted is None
+    assert rm.eps_basic is None
+    assert rm.market_cap is None
+    assert rm.pe_ratio_ttm is None
+
+
+def test_build_raw_metrics_eps_null_when_zero_shares():
+    """Defensive guard — divide-by-zero protection on the NI/shares path."""
+    snap = _snap(net_income=1_000_000.0, shares_outstanding=0.0)
+    rm = _build_raw_metrics(snap, current_price=10.0)
+    assert rm.eps_diluted is None
+    assert rm.eps_basic is None
+    assert rm.pe_ratio_ttm is None
+
+
+def test_build_raw_metrics_pe_ttm_unchanged_by_eps_fix():
+    """Regression guard — the audit #6 / PR #49 pe_ratio_ttm logic must
+    still produce 25.0 from NI=40, shares=10, current_price=100."""
+    snap = _snap(net_income=40.0, shares_outstanding=10.0, eps_diluted=999.0)
+    rm = _build_raw_metrics(snap, current_price=100.0)
+    assert rm.pe_ratio_ttm == pytest.approx(25.0, rel=1e-6)
+    # And the TTM-derived display EPS matches the implicit pe_ttm denominator.
+    assert rm.eps_diluted == pytest.approx(4.0, rel=1e-6)
 
 
 def test_build_universe_metrics_negative_equity_yields_null_pb():
