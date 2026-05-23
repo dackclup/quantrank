@@ -549,9 +549,18 @@ def _try_ttm_max_fresh(
     return max(candidates, key=lambda c: c[0])
 
 
-def _fetch_shares_from_per_filing_xbrl(company: Company) -> float | None:
+def _fetch_shares_from_per_filing_xbrl(company: Company, ticker: str | None = None) -> float | None:
     """Issue #176 fallback — recover ``shares_outstanding`` from per-filing
     XBRL when the SEC companyfacts aggregate API has nothing.
+
+    ``ticker`` is optional for back-compat (the function ran ticker-less
+    in PR #182 and the 8 offline tests pass it positionally). When
+    supplied, it's threaded into the failure-path ``logger.warning`` so
+    a silent fallback miss (e.g., the cron #3 STZ regression on
+    2026-05-23 where the recovery worked in a 2026-05-21 live probe but
+    returned ``None`` two days later under cron load) is no longer
+    invisible to the operator. See the PR-3d amplification precedent —
+    bare ``except: return None`` is the same silent-drop pattern.
 
     Background (2026-05-21 live SEC probe on STZ / Constellation Brands):
 
@@ -603,7 +612,13 @@ def _fetch_shares_from_per_filing_xbrl(company: Company) -> float | None:
                 continue
             try:
                 top = fset.head(1)
-            except Exception:  # noqa: BLE001
+            except Exception as e:  # noqa: BLE001
+                logger.debug(
+                    "shares_outstanding fallback filings.head() failed for %s: %s: %s",
+                    ticker or "?",
+                    type(e).__name__,
+                    e,
+                )
                 continue
             if top is None or len(top) == 0:
                 continue
@@ -622,7 +637,14 @@ def _fetch_shares_from_per_filing_xbrl(company: Company) -> float | None:
         ):
             try:
                 df = facts_view.get_facts_by_concept(concept)
-            except Exception:  # noqa: BLE001
+            except Exception as e:  # noqa: BLE001
+                logger.debug(
+                    "shares_outstanding fallback get_facts_by_concept(%s) failed for %s: %s: %s",
+                    concept,
+                    ticker or "?",
+                    type(e).__name__,
+                    e,
+                )
                 continue
             if df is None or len(df) == 0:
                 continue
@@ -646,7 +668,20 @@ def _fetch_shares_from_per_filing_xbrl(company: Company) -> float | None:
                 if math.isfinite(total) and total > 0:
                     return total
         return None
-    except Exception:  # noqa: BLE001
+    except Exception as e:  # noqa: BLE001
+        # Bug 2 fix (issue #220 / cron #3 STZ regression): on the outer
+        # except, surface the failure as a WARNING (not silent None
+        # return). The annotate `share_count_extraction_missing` still
+        # fires upstream as the safety net, but the operator now has a
+        # log line distinguishing "transient SEC 429" from "structural
+        # XBRL shape drift" without re-running a live probe.
+        logger.warning(
+            "shares_outstanding fallback FAILED for %s — %s: %s "
+            "(annotate share_count_extraction_missing will fire as safety net)",
+            ticker or "?",
+            type(e).__name__,
+            e,
+        )
         return None
 
 
@@ -741,7 +776,7 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
         and (revenue_val or 0) > 0
         and (balance_values.get("total_assets") or 0) > 0
     ):
-        fallback_shares = _fetch_shares_from_per_filing_xbrl(company)
+        fallback_shares = _fetch_shares_from_per_filing_xbrl(company, ticker=ticker)
         if fallback_shares is not None:
             balance_values["shares_outstanding"] = fallback_shares
             logger.info(

@@ -246,6 +246,62 @@ def test_per_filing_fallback_returns_none_when_xbrl_missing():
 
 
 # ---------------------------------------------------------------------------
+# Bug 2 fix (issue #220) — outer-except logger.warning makes the silent
+# fallback miss observable. The 2026-05-23 cron #3 STZ regression
+# (recovery worked in a 2026-05-21 live probe but returned None two days
+# later under cron load) was invisible because the bare `except: return
+# None` swallowed the failure entirely. Pin the warning emission so a
+# future refactor doesn't accidentally restore the silent-drop path.
+
+
+def test_per_filing_fallback_emits_warning_on_outer_except(caplog):
+    """When the SEC-bound call raises (e.g., a 429, a connection reset),
+    the bare `except Exception` returns None — but now also logs a
+    WARNING line so the operator can distinguish 'transient SEC 429' from
+    'structural XBRL shape drift' without re-running a live probe."""
+    import logging
+
+    company = MagicMock()
+    company.get_filings.side_effect = RuntimeError("simulated SEC 429")
+
+    with caplog.at_level(logging.WARNING, logger="compute.ingest.fundamentals"):
+        result = _fetch_shares_from_per_filing_xbrl(company, ticker="STZ")
+
+    assert result is None
+    warnings = [r for r in caplog.records if r.levelno == logging.WARNING]
+    assert len(warnings) == 1, f"expected 1 WARNING, got {len(warnings)}: {warnings}"
+    msg = warnings[0].getMessage()
+    assert "shares_outstanding fallback FAILED" in msg
+    assert "STZ" in msg
+    assert "RuntimeError" in msg
+    assert "simulated SEC 429" in msg
+    # The annotate safety-net note is included so the operator knows the
+    # universe-wide impact is still surfaced via share_count_extraction_missing.
+    assert "share_count_extraction_missing" in msg
+
+
+def test_per_filing_fallback_ticker_arg_optional_for_back_compat(caplog):
+    """The `ticker` kwarg is optional — existing call sites that pass
+    only `company` (8 of the offline tests above) must still work. The
+    failure-path WARNING will show '?' as the ticker, which is correct
+    for the back-compat path."""
+    import logging
+
+    company = MagicMock()
+    company.get_filings.side_effect = RuntimeError("any error")
+
+    with caplog.at_level(logging.WARNING, logger="compute.ingest.fundamentals"):
+        result = _fetch_shares_from_per_filing_xbrl(company)
+
+    assert result is None
+    assert any(
+        "? — RuntimeError" in r.getMessage()
+        for r in caplog.records
+        if r.levelno == logging.WARNING
+    )
+
+
+# ---------------------------------------------------------------------------
 # @network — live SEC verification for issue #176 root cause.
 #
 # Locks the actual STZ fact-name + dimensional-aggregation behavior

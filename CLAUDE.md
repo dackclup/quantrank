@@ -239,16 +239,39 @@ whitespace / single-line fixes do not trigger.
   despite company-level revenue + balance sheet being present (STZ
   2026-05-14 pattern, issue #176) — surfaces via the
   `share_count_extraction_missing` annotate (PR #181) AND has a live
-  recovery path now via `_fetch_shares_from_per_filing_xbrl` shipped
-  in this PR. Root cause: SEC's `companyfacts` aggregate API filters
-  out dimensional facts; STZ files share counts only with
-  Class A / Class B dimensions. The fallback pulls per-filing XBRL
+  recovery path via `_fetch_shares_from_per_filing_xbrl` (PR #182).
+  Root cause: SEC's `companyfacts` aggregate API filters out
+  dimensional facts; STZ files share counts only with Class A /
+  Class B dimensions. The fallback pulls per-filing XBRL
   (`Filing.xbrl().facts.get_facts_by_concept`) for the most recent
   10-K / 10-Q and sums the dimensional `dei:EntityCommonStockSharesOutstanding`
   contexts. Triggered ONLY when the primary extraction returns
   ``None`` AND `revenue > 0` AND `total_assets > 0` (PR-#181
-  signature); blast radius on the 2026-05-14 cron is 1 ticker, so the
-  extra HTTP cost is bounded.
+  signature). **Cron-#3 silent-failure gap closed on this PR**:
+  PR #182's outer `except: return None` was bare — when the fallback
+  failed under cron load (2026-05-23 STZ regression: worked in
+  2026-05-21 live probe, returned None two days later under SEC 429),
+  the operator had no log line distinguishing transient 429 from
+  structural XBRL drift. This PR threads `ticker` into
+  `_fetch_shares_from_per_filing_xbrl` and emits `logger.warning(...
+  shares_outstanding fallback FAILED ...)` on the outer except;
+  inner exceptions log at `DEBUG`. Annotate
+  `share_count_extraction_missing` keeps firing as the safety net.
+- **`eps_basic` / `eps_diluted` display fields now derive from
+  `NI_TTM / shares_outstanding`** (DD cron-#3 fix) — `compute/main.py`
+  `_build_raw_metrics` previously passed `snapshot.eps_diluted`
+  (XBRL `EarningsPerShareDiluted` concept) raw to `RawMetrics`. That
+  concept returns the **latest single-period value** per
+  `fundamentals.py:114-117` — for a quarterly filer that's one
+  quarter's EPS, NOT TTM. DD on the 2026-05-23 cron showed
+  `eps_diluted=0.39` against `net_income=$7M / shares=410M = $0.017`
+  (~23× off). The valuation chain (`pe_ratio_ttm`) was already on
+  the NI/shares path since audit #6 / PR #49, so internal consistency
+  held — but `/stock/DD` rendered the wrong EPS to users. This PR
+  computes `ttm_eps = NI / shares` once and uses it for BOTH
+  `eps_basic` and `eps_diluted` display fields (basic-vs-diluted
+  spread on the S&P 500 is typically < 1-3%, within display
+  precision). `pe_ratio_ttm` formula unchanged.
 - **`_avg_3y_roe` fallback removed** (issue #11, 2026-05-21) — PR 4c
   earlier added the per-year stockholders_equity denominator path but
   kept a fallback to single-period equity when history was incomplete,
