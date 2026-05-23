@@ -1009,6 +1009,25 @@ note cross-tool-specific points only:
   tier tables updated to match. Doc-only — no compute / schema /
   scoring / valuation / frontend code change.
 
+- **PR-#224 review-nit polish in flight (this PR)** — two of three
+  `quantrank-reviewer` WARN-tier punch-list items from PR #224 land
+  here as test-discipline polish. (a) `tests/test_scoring/test_form4_signals.py`:
+  two PR-#222 Hypothesis property tests drop `@settings(deadline=None)`
+  per CLAUDE.md §Gotchas "Don't use `@settings(deadline=None)` — a
+  slow example is itself a signal" (both verified sub-millisecond
+  under default 200ms Hypothesis deadline). (b)
+  `test_strict_superset_invariant_holds_under_10b5_1_filter` docstring +
+  inline comment rewritten to remove confusing mixed `⊆` /
+  "strict-superset" set+boolean notation; replaced with unambiguous
+  "c_suite firing implies cluster firing" implication form + the
+  `¬cluster ⟹ ¬c_suite` contrapositive framing. (c)
+  `_FOOTNOTES_REQUIRED_ATTRS` manifest extension deferred — needs
+  `@network`-gated edgartools verification that `Footnotes.__contains__`
+  exists on the live class before locking it. Tests count unchanged
+  (1168 → 1168; 3 in-place edits, no test added / removed). No
+  compute / schema / scoring / valuation / frontend / Python
+  production-code change.
+
 ## Claude-Code-specific tooling
 
 Claude Code sessions for this project have 6 MCP connectors enabled
