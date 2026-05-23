@@ -1444,8 +1444,8 @@ migration tracker). Exploitability on the static-export site is
 effectively zero per #41's own original risk rating (no SSR runtime,
 no middleware, no Server Actions, no Image endpoint, no API routes —
 Vercel CDN serves pre-built static HTML). 14 GHSA IDs confirmed; 1
-(the 7th MODERATE) needs Dependabot-alerts-API confirmation when
-token access is restored. CVE baseline updates from `25 open
+(the 7th MODERATE) — Dependabot-alerts-API confirmation pending
+(token access unavailable as of 2026-05-23). CVE baseline updates from `25 open
 (1C/8H/12M/4L)` → **`15 open (0C/6H/7M/2L)`** after PR #194's
 14.2.15→14.2.35 + postcss-override closed 10. Python side clean
 (`requests 2.33.1` past 2.32.0 fix · `pyarrow ≥15.0` past 14.0.1
