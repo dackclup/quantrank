@@ -39,7 +39,7 @@ roles a 20-person engineering org would have:
 | [`schema-sentinel`](schema-sentinel.md) | API / contract governance | When `schemas.py` / `types.ts` / `schema-snapshot.json` changes; CI schema-drift failures | sonnet | Read, Bash, Grep |
 | [`defense-layer-auditor`](defense-layer-auditor.md) | QA / data observability | After scoring / valuation changes; after weekly cron lands; before PR Ready-flip on scoring touches | sonnet | Read, Bash, Grep, Glob |
 | [`edgar-debugger`](edgar-debugger.md) | On-call for downstream dep | SEC EDGAR ingest test failures; live-run hangs; rate-limit / edgartools drift errors | sonnet | Read, Bash, Grep, Glob |
-| [`stock-detail-auditor`](stock-detail-auditor.md) | Data-correctness reviewer | Post-cron; pre-release; "ตรวจ data หุ้น" / "check stock data correctness" / "audit the output"; prefilter caps LLM-judgment at ≤ 20 tickers | sonnet | Read, Bash, Grep, Glob |
+| [`stock-detail-auditor`](stock-detail-auditor.md) | Data-correctness reviewer | Post-cron; pre-release; "ตรวจ data หุ้น" / "check stock data correctness" / "audit the output". Deterministic prefilter surfaces outliers; LLM-judgment then walks every flagged ticker without truncation (sonnet pool intended for thorough audit work). | sonnet | Read, Bash, Grep, Glob |
 
 ### Tier 2 — Lifecycle (4)
 
@@ -119,7 +119,7 @@ User: "tag release v1.3.0" / "ตัด release"
 [release-captain] (opus) drives the ladder; spawns in parallel:
   ├─ schema-sentinel         ──► no schema drift on release commit
   ├─ defense-layer-auditor   ──► Section A-J PASS on latest output
-  ├─ stock-detail-auditor    ──► per-stock data correctness (prefilter + ≤ 20 LLM verdicts)
+  ├─ stock-detail-auditor    ──► per-stock data correctness (prefilter + thorough LLM verdicts for every flagged ticker)
   ├─ security-reviewer       ──► CVE + secrets baseline
   ├─ performance-engineer    ──► cron latency within budget
   ├─ dependency-auditor      ──► no new CVEs since last tag

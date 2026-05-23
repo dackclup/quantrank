@@ -143,25 +143,41 @@ The main agent MUST spawn without asking for confirmation — all
 subagents are read-only. Only destructive commands a subagent
 *proposes* require user authorization.
 
-**Edits alone do NOT auto-spawn.** Editing `schemas.py` /
-`compute/scoring/` / `frontend/components/` / docs no longer fires
-an agent on the edit. The schema-triple hook covers Pydantic ↔ TS
-reminders; everything else batches into one parallel review at
-"ready to push". This is the change vs the original wide policy
-that fired per-diff.
+**Sonnet sub-agents fire on edit; opus agents wait for gate.** This
+is the split discipline that drains the Max-plan "Weekly · Sonnet
+only" pool without burning the "Weekly · all models" pool. Each
+sonnet agent has a non-trivial-edit cue in its domain (rows
+below). The four opus agents (`quantrank-reviewer` ·
+`methodology-scientist` · `release-captain` · `incident-commander`)
+stay rare-fire on gates or signals. Dedup window ~10 min — if the
+same sonnet agent ran on the same diff and it hasn't moved, point
+at the prior result instead of re-spawning. The "ready to push"
+gate still fires as a safety net (opus reviewer + a re-batch of
+sonnet agents in case earlier edit-triggered runs missed
+something).
+
+**What "non-trivial edit" means**: > 5 added lines OR touches
+non-comment code OR adds/removes a public symbol. Pure comment /
+whitespace / single-line fixes do not trigger.
 
 | When | Auto-spawn | Notes |
 |---|---|---|
-| Test failure under `tests/test_ingest/` OR live-run hang OR `429`/`403` from SEC | `edgar-debugger` | Signal-driven, on-demand |
-| Weekly cron warm-cache > 10 min OR p95 latency > 20s | `performance-engineer` | Signal-driven, on detection |
-| Dependabot alert lands OR new dep added to `pyproject.toml` / `frontend/package.json` | `dependency-auditor` + `security-reviewer` | Signal-driven, parallel |
-| Production cron fails / hangs / produces corrupt output, OR Vercel deploy breaks, OR schema-snapshot CI fails, OR user says "production is broken" / "site is down" / "incident" | `incident-commander` (P1; orchestrator that fans out to relevant specialists) | Immediate |
-| `workflow_dispatch` on `compute-rankings.yml` lands green | `defense-layer-auditor` Section A-J + Section I (Playwright) + `stock-detail-auditor` (per-stock data audit) | Auto post-cron, parallel |
-| Quarterly cohort audit scheduled date reached (next 2026-08-19) | `methodology-scientist` Mode C + `defense-layer-auditor` | Scheduled, sequential |
-| New defense flag proposed (new risk_flag in `compute/scoring/`) | `methodology-scientist` (validate paper anchor) + `test-engineer` (positive + negative tests) | Rare; sequential — methodology first |
-| Threshold / weight constant changed in `compute/scoring/manipulation_index.py` or `earnings_quality.py` | `methodology-scientist` Mode B | Rare; on the edit |
-| User says "ก่อน push" / "ready to push" / "open PR" / "mark ready" / "ตรวจก่อน push" | `quantrank-reviewer` + `phase-coordinator` Mode B. Conditional batch-mates on the same gate: `schema-sentinel` if schema triple touched · `defense-layer-auditor` if `compute/scoring/` or `compute/valuation/` touched · `frontend-design-reviewer` if `frontend/components/` or `frontend/app/` touched · `docs-reviewer` if any of the 7 docs modified · `security-reviewer` if `.github/workflows/` or new env-var or new dep touched · `test-engineer` if production code added without a test | Parallel pre-push gate; one report cycle |
-| User says "ตรวจ data หุ้น" / "check stock data correctness" / "audit the output" / "verify the output" / "ตรวจ output" / pre-release | `stock-detail-auditor` (deterministic prefilter caps LLM-judgment at ≤ 20 tickers) | One sonnet spawn, bounded |
+| **Non-trivial edit** to `compute/output/schemas.py` / `frontend/lib/types.ts` / `frontend/lib/schema-snapshot.json` | `schema-sentinel` (sonnet) | On-edit; sonnet pool; hook still fires its reminder regardless |
+| **Non-trivial edit** to `compute/scoring/*` or `compute/valuation/*` | `defense-layer-auditor` (sonnet) | On-edit; sonnet pool |
+| **Non-trivial edit** to `frontend/components/*` or `frontend/app/*` | `frontend-design-reviewer` (sonnet) | On-edit; sonnet pool; emits Playwright spot-check matrix |
+| **Non-trivial edit** to `.github/workflows/*` OR new dep in `pyproject.toml` / `frontend/package.json` OR new env-var read | `security-reviewer` (sonnet) | On-edit; sonnet pool |
+| Production code added without a corresponding test in the same diff | `test-engineer` (sonnet) | On-edit; sonnet pool; covers `compute/**/*.py` not under `tests/` |
+| **Non-trivial edit** to any of CLAUDE.md / AGENTS.md / SKILL.md / WORKFLOW.md / PHASE_STATUS.md / README.md / METHODOLOGY.md | `docs-reviewer` (sonnet) | On-edit; sonnet pool; substance check (file-touch lockstep handled separately by `phase-coordinator` Mode B at the push gate) |
+| Test failure under `tests/test_ingest/` OR live-run hang OR `429`/`403` from SEC | `edgar-debugger` (sonnet) | Signal-driven, on-demand |
+| Weekly cron warm-cache > 10 min OR p95 latency > 20s | `performance-engineer` (sonnet) | Signal-driven, on detection |
+| Dependabot alert lands OR new dep added to `pyproject.toml` / `frontend/package.json` | `dependency-auditor` (sonnet) + `security-reviewer` (sonnet) | Signal-driven, parallel |
+| Production cron fails / hangs / produces corrupt output, OR Vercel deploy breaks, OR schema-snapshot CI fails, OR user says "production is broken" / "site is down" / "incident" | `incident-commander` (opus; P1 orchestrator) | Immediate |
+| `workflow_dispatch` on `compute-rankings.yml` lands green | `defense-layer-auditor` Section A-J + Section I (Playwright) + `stock-detail-auditor` (per-stock data audit) | Auto post-cron, parallel; all sonnet |
+| Quarterly cohort audit scheduled date reached (next 2026-08-19) | `methodology-scientist` (opus) Mode C + `defense-layer-auditor` (sonnet) | Scheduled, sequential |
+| New defense flag proposed (new risk_flag in `compute/scoring/`) | `methodology-scientist` (opus; validate paper anchor) + `test-engineer` (sonnet; positive + negative tests) | Rare; sequential — methodology first |
+| Threshold / weight constant changed in `compute/scoring/manipulation_index.py` or `earnings_quality.py` | `methodology-scientist` (opus) Mode B | Rare; on the edit |
+| User says "ก่อน push" / "ready to push" / "open PR" / "mark ready" / "ตรวจก่อน push" | `quantrank-reviewer` (opus) + `phase-coordinator` (sonnet) Mode B. Conditional sonnet re-batch on the same gate: `schema-sentinel` / `defense-layer-auditor` / `frontend-design-reviewer` / `docs-reviewer` / `security-reviewer` / `test-engineer` (skipped per-agent if the dedup window confirms it already ran on this diff) | Parallel pre-push safety-net gate |
+| User says "ตรวจ data หุ้น" / "check stock data correctness" / "audit the output" / "verify the output" / "ตรวจ output" / pre-release | `stock-detail-auditor` (sonnet; deterministic prefilter then thorough LLM verdict for every flagged ticker) | One sonnet spawn, thorough |
 | User says "tag release" / "cut a release" / "release vX.Y.Z" / "ตัด release" / phase-epic PR just merged | `release-captain` (orchestrator; spawns ladder agents as needed) | Owns release ladder |
 | User asks to create a new `claude/*` branch from a handoff prompt | `phase-coordinator` Mode A | Before first non-trivial edit |
 | Phase / sub-PR marked complete on this branch | `phase-coordinator` Mode C | After merge / on close |
@@ -169,12 +185,27 @@ that fired per-diff.
 
 ### Spawn discipline
 
-- **Default model = sonnet.** Opus only for cross-domain
-  orchestration (`incident-commander`, `release-captain`),
-  literature-heavy validation (`methodology-scientist` on new flag
-  / threshold), or large-diff reviews (`quantrank-reviewer` with
-  explicit user authorization for the opus override). 5 agents
-  currently default to opus by design; the rest are sonnet.
+- **Don't gatekeep sub-agent effort.** When a sub-agent is
+  spawned, let it do the full thorough job — read every relevant
+  file, walk every section, follow every escalation lead.
+  Sonnet sub-agent tokens come out of the "Weekly · Sonnet only"
+  pool on Max plans, which is a separate budget that empties
+  slowly and often goes unused. Bounding sub-agent output with
+  hard word caps or "≤ N items" limits wastes that pool without
+  improving signal. Keep model assignments (`incident-commander`
+  + `release-captain` + `methodology-scientist` + `quantrank-
+  reviewer` all opus by design; the other 11 sonnet) as they
+  are — opus agents land on the "Weekly · all models" pool;
+  sonnet agents drain the underutilized sonnet pool. Tune the
+  4-vs-11 split only when usage data justifies it.
+- **Prefer delegation to sub-agents** over inline main-session
+  work when both options exist. Main-session tokens land on the
+  "Weekly · all models" pool; sonnet sub-agents land on the
+  separate, often-under-utilized "Weekly · Sonnet only" pool.
+  Route work through sonnet sub-agents proactively to balance
+  pool usage — e.g., when the user edits a scoring file, spawn
+  `defense-layer-auditor` (sonnet) early to walk the diff before
+  the main agent (which costs all-models tokens) synthesizes.
 - **Spawn without asking** for read-only subagents — just spawn
   and report back. Do not pause the user's flow with "should I
   spawn X?".
@@ -958,6 +989,86 @@ PATCH bump after rebase). ZERO scoring impact;
 `_FORM4_FLAGS_ENABLED` stays False. PR 3 wires the
 `insider_sell_cluster` + `c_suite_unusual_sell` annotates after ≥ 1
 cron's firing-rate data lands in the new `form4_*` Metadata fields.
+
+**Sonnet sub-agent thoroughness + frequency reset in flight (this PR)** —
+two-part reversal of the over-restriction introduced during PR
+#175 (spawn frequency) + PR #178 (per-spawn work caps). User
+observation: "Weekly · Sonnet only" pool on the Max plan sits at
+~2% utilization while "Weekly · all models" pool moves normally —
+meaning sonnet sub-agents are being under-used across both axes
+(spawned too rarely AND capped too tightly per-spawn). Combined
+fix in this PR.
+
+**(a) Per-spawn caps lifted** (PR #178 over-correction):
+
+- `stock-detail-auditor.md` Step 3 — removed the 20-ticker hard cap;
+  agent now walks every prefilter-flagged ticker with a verdict,
+  fetches 1-2 adjacent peers when a multi-ticker pattern is
+  suspected, and adds a "DO NOT skip flagged tickers to keep the
+  report short" hard constraint that codifies the new principle.
+  Frontmatter `description:` rewritten to remove the "≤ 20" phrase.
+- `quantrank-reviewer.md` Output format — removed "terse"
+  instruction; agent now lists every PASS / FAIL / WARN finding it
+  encountered while walking Sections A-H.
+- `.claude/agents/README.md` Flow 2 (release ladder) — release-
+  captain's `stock-detail-auditor` lane no longer says "≤ 20 LLM
+  verdicts"; says "thorough LLM verdicts for every flagged ticker".
+  Roster row description updated to match.
+- `CLAUDE.md` §Auto-routing policy §Spawn discipline — added two
+  new principles: (a) "Don't gatekeep sub-agent effort" explaining
+  the Max-plan dual-pool topology (sonnet sub-agents drain the
+  Sonnet-only pool which is a separate, paid-for budget) and why
+  bounding sub-agent output wastes it; (b) "Prefer delegation to
+  sub-agents over inline main-session work" so the main agent
+  routes work proactively to sonnet sub-agents instead of doing it
+  inline (which lands on the all-models pool).
+
+**(b) Spawn frequency lifted for sonnet agents** (PR #175 over-
+correction):
+
+The §Auto-routing policy cue table now fires sonnet agents on
+**non-trivial edit** to their domain, not only at "ready to push"
+gates. Six new edit-trigger rows:
+
+- Schema triple edit → `schema-sentinel` (sonnet)
+- `compute/scoring/*` / `compute/valuation/*` edit → `defense-layer-auditor` (sonnet)
+- `frontend/components/*` / `frontend/app/*` edit → `frontend-design-reviewer` (sonnet)
+- `.github/workflows/*` / new dep / new env-var → `security-reviewer` (sonnet)
+- Production code added without test → `test-engineer` (sonnet)
+- Any of 7 docs edited → `docs-reviewer` (sonnet)
+
+"Non-trivial" = > 5 added lines OR touches non-comment code OR
+adds/removes a public symbol. Comment / whitespace / single-line
+fixes do not trigger. The four **opus** agents (`incident-commander`
+· `release-captain` · `methodology-scientist` · `quantrank-reviewer`)
+keep the rare-fire policy — they land on the all-models pool, so
+firing them more often does not help drain the sonnet pool.
+
+The "ready to push" gate still fires as a **safety net** — opus
+reviewer + sonnet re-batch, with the 10-min dedup window skipping
+sonnet agents that already ran on the same diff during the
+edit-trigger pass. So a typical PR cycle is: edit X → sonnet agent
+fires immediately → user iterates → at "ready to push", opus
+reviewer + phase-coordinator fire fresh, sonnet agents skip via
+dedup. Worst case spawn count per PR rises ~2-3× vs PR #175
+baseline, but every extra spawn drains the Sonnet-only pool which
+is paid-for and currently idle.
+
+Model assignments unchanged: 4 opus by design (`incident-commander`
+· `release-captain` · `methodology-scientist` · `quantrank-reviewer`)
++ 11 sonnet. The 4-vs-11 split was investigated — temporary swap of
+`quantrank-reviewer` + `methodology-scientist` to sonnet was tested
+and reverted in the same PR after re-reading the user intent. Opus
+on the most-fired reviewer remains correct because the project's
+defense-layer invariants are dense enough that opus headroom pays
+back on real diffs. The fix is to stop capping work, not to demote
+models.
+
+Companion artifact deferred to a follow-up: a per-session usage
+report (post-merge spot-check) that confirms the Sonnet-only pool
+actually moves more after this lands. Not in this PR's diff.
+
+No compute / schema / scoring / valuation / frontend code change.
 
 **Next deliverables** (pick by appetite):
 - **Issue #67 flip PR** — `USE_SECTOR_COE = True` after ≥ 1 cron confirms
