@@ -333,6 +333,11 @@ export function FairPriceCard(props) {  // no types
 
 - `EDGAR_USER_AGENT` is required for SEC EDGAR fetches. Set via env
   var. CI uses a GitHub Actions secret. Never commit.
+- `FORM4_FETCH_SKIP=1` (optional) skips the Form-4 bulk fetch in
+  `compute/main.py:840` so the simulate CI workflow finishes under
+  the 45-min GitHub Actions cap. Set only in
+  `.github/workflows/pre-merge-prod-sim.yml`; weekly cron and local
+  dev must leave it unset. Safe default (absence = no skip).
 - Pre-commit hooks run `ruff` + the schema-snapshot guard. Do not
   bypass.
 - No telemetry / external network beacons in the frontend. The site is

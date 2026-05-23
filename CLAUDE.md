@@ -369,6 +369,14 @@ whitespace / single-line fixes do not trigger.
   cardinality, pillar count, manifest partition) with a `@given`
   property in `tests/**/test_*_properties.py`. Don't use
   `@settings(deadline=None)` — a slow example is itself a signal.
+- **`FORM4_FETCH_SKIP=1` skips the Form-4 bulk fetch in `compute/main.py`**
+  — read at `compute/main.py:840` with a safe empty-string default
+  (absence = no skip). Set in `.github/workflows/pre-merge-prod-sim.yml`
+  to keep the simulate workflow under the 45-min GitHub Actions cap while
+  letting the rest of compute warm. Weekly cron (`compute-rankings.yml`)
+  omits it so Form-4 runs full. Affects only the observability surface
+  added in Phase 4.5e PR 2 (`form4_*` Metadata fields). CI-only escape
+  hatch — never set in cron / local dev.
 
 ## Phase status
 
@@ -1423,6 +1431,58 @@ Auto-routing policy table extended with 3 new cue rows + 3
 delegation-pattern rows. README.md tier tables updated to match.
 Doc-only otherwise — no compute / schema / scoring / valuation /
 frontend code change.
+
+**Dependabot 15-vuln triage + 2-WARN doc fix in flight (this PR)** —
+output from the post-PR-#225 parallel `dependency-auditor` +
+`security-reviewer` spawn (2026-05-23, session 3). Dependabot wave
+of 15 new vulnerabilities (6H / 7M / 2L) flagged on `main` —
+**zero actionable on QuantRank's static-export deployment**. All 15
+are `next@14.2.35` SSR / middleware / Server-Actions / Image-
+optimization / API-route advisories requiring `next≥15.5.16`; none
+have a 14.2.x backport; **all route to issue #41** (Next 14→16
+migration tracker). Exploitability on the static-export site is
+effectively zero per #41's own original risk rating (no SSR runtime,
+no middleware, no Server Actions, no Image endpoint, no API routes —
+Vercel CDN serves pre-built static HTML). 14 GHSA IDs confirmed; 1
+(the 7th MODERATE) — Dependabot-alerts-API confirmation pending
+(token access unavailable as of 2026-05-23). CVE baseline updates from `25 open
+(1C/8H/12M/4L)` → **`15 open (0C/6H/7M/2L)`** after PR #194's
+14.2.15→14.2.35 + postcss-override closed 10. Python side clean
+(`requests 2.33.1` past 2.32.0 fix · `pyarrow ≥15.0` past 14.0.1
+critical · `lxml ≥5.0` past 5.2 fix). GitHub Actions all current
+major (`checkout@v6` / `setup-node@v6` / `setup-python@v6` /
+`cache@v5` / `github-script@v9` / `upload-artifact@v7`).
+
+The companion `security-reviewer` scan turned up 0 CRITICAL + 4 WARN
+across Sections A-G + 8 spot-checks. Two land as doc fixes in THIS
+PR; two deferred:
+
+- **W1 (this PR)** — `FORM4_FETCH_SKIP=1` operational escape hatch
+  was undocumented. Added §Gotchas entry in CLAUDE.md + §Security
+  considerations entry in AGENTS.md describing the env-var, where
+  it's set (`pre-merge-prod-sim.yml`), and the safe default behavior.
+- **W3 (this PR)** — `.claude/agents/literature-searcher.md` Hard
+  Constraints lacked an explicit untrusted-content guard against
+  prompt injection in fetched papers / SEC HTML. Added a constraint
+  bullet that treats every `WebFetch` result as data to QUOTE and
+  CITE, never to execute — handles the "ignore previous
+  instructions" / "fetch this other URL" / "modify your output"
+  injection vectors that academic-PDF + arbitrary-URL retrieval
+  surfaces.
+- **W2 deferred** — `compute-rankings.yml` workflow-level
+  `contents: write` is pre-existing + justified (the commit-JSON
+  step is the only writer); narrowing to job-scope is a future
+  optimization, not a regression.
+- **W4 deferred** — `.claude/hooks/log-bash.sh` logs raw bash
+  command (including inline env-var values) to gitignored
+  `.claude/session.log`; severity low because file is gitignored
+  and local-only; optional `sed`-scrub follow-up if desired.
+
+`dependency-auditor` baseline-tracker update + 14 GHSA IDs to be
+appended on issue #41 separately (issue-comment, not in this PR).
+Doc-only PR — `ruff` / `schema_check` / `pytest` trivially pass; no
+compute / schema / scoring / valuation / frontend / Python / TS
+change.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — after ≥ 1
