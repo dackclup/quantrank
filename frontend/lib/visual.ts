@@ -32,14 +32,14 @@ export const TIERS: readonly ScoreTierMeta[] = [
     cls: 'bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-800',
     dot: 'bg-emerald-500 dark:bg-emerald-400' },
   { id: 'strong', label: 'Strong', min: 55, max: 70,
-    cls: 'bg-teal-50 text-teal-700 ring-teal-200 dark:bg-teal-900/30 dark:text-teal-300 dark:ring-teal-800',
-    dot: 'bg-teal-500 dark:bg-teal-400' },
+    cls: 'bg-emerald-50 text-emerald-600 ring-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-300 dark:ring-emerald-800',
+    dot: 'bg-emerald-400 dark:bg-emerald-300' },
   { id: 'average', label: 'Average', min: 40, max: 55,
     cls: 'bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:ring-amber-800',
     dot: 'bg-amber-500 dark:bg-amber-400' },
   { id: 'weak', label: 'Weak', min: 25, max: 40,
-    cls: 'bg-orange-50 text-orange-700 ring-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:ring-orange-800',
-    dot: 'bg-orange-500 dark:bg-orange-400' },
+    cls: 'bg-amber-50 text-amber-800 ring-amber-300 dark:bg-amber-900/30 dark:text-amber-200 dark:ring-amber-700',
+    dot: 'bg-amber-600 dark:bg-amber-400' },
   { id: 'poor', label: 'Poor', min: 0, max: 25,
     cls: 'bg-rose-50 text-rose-700 ring-rose-200 dark:bg-rose-900/30 dark:text-rose-300 dark:ring-rose-800',
     dot: 'bg-rose-500 dark:bg-rose-400' },
@@ -141,7 +141,7 @@ export function scoreColorClasses(score: number): string {
   if (score >= 80) return 'bg-emerald-600 text-white ring-emerald-700/20 dark:bg-emerald-500 dark:text-emerald-950 dark:ring-emerald-400/30';
   if (score >= 60) return 'bg-emerald-50 text-emerald-800 ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-200 dark:ring-emerald-800';
   if (score >= 40) return 'bg-amber-50 text-amber-800 ring-amber-200 dark:bg-amber-900/30 dark:text-amber-200 dark:ring-amber-800';
-  if (score >= 20) return 'bg-orange-50 text-orange-800 ring-orange-200 dark:bg-orange-900/30 dark:text-orange-200 dark:ring-orange-800';
+  if (score >= 20) return 'bg-amber-50 text-amber-800 ring-amber-300 dark:bg-amber-900/30 dark:text-amber-200 dark:ring-amber-700';
   return 'bg-rose-50 text-rose-800 ring-rose-200 dark:bg-rose-900/30 dark:text-rose-200 dark:ring-rose-800';
 }
 
@@ -152,7 +152,7 @@ export function scoreAccentColor(score: number): string {
   if (score >= 80) return 'rgb(5 150 105)';
   if (score >= 60) return 'rgb(16 185 129)';
   if (score >= 40) return 'rgb(245 158 11)';
-  if (score >= 20) return 'rgb(249 115 22)';
+  if (score >= 20) return 'rgb(180 83 9)';
   return 'rgb(225 29 72)';
 }
 

@@ -1102,8 +1102,8 @@ note cross-tool-specific points only:
   Devin) editing chip surfaces post-A2 should reach for `rounded-sm`
   (not `rounded-full`) as the canonical chip body radius.
 
-- **Phase 4 LedgerCraft reskin — PR-A3 in flight (this PR)**
-  (2026-05-24) — third and final sub-PR. Table + frame polish: all
+- **Phase 4 LedgerCraft reskin — PR-A3 merged via PR #234**
+  (2026-05-24, `1a9501c`) — third and final sub-PR. Table + frame polish: all
   `rounded-md` button / input / list-item surfaces flip to
   `rounded-sm` (2px per Button + Text Input spec); all `rounded-lg`
   card surfaces flip to `rounded` (4px per Cards spec); the data
@@ -1121,6 +1121,28 @@ note cross-tool-specific points only:
   palette, sharp ≤4px radii throughout, borders-as-depth on the
   data grid. No schema / Python / scoring / valuation / output JSON
   change across the entire 3-PR series.
+
+- **Phase 4 LedgerCraft alignment — PR-B1 in flight (this PR)**
+  (2026-05-24) — follow-up surfaced by the post-A3 design audit (28
+  MUST-FIX + 5 SHOULD-FIX violations across 16 untouched components).
+  B1 = score-tier token fix in `frontend/lib/visual.ts` — removes
+  `teal-*` (TIERS[1] "Strong" 55-70) and `orange-*` (TIERS[3] "Weak"
+  25-40 + `scoreColorClasses` 20-40 band + `scoreAccentColor` 20-40
+  band) from the score-tier ramp. Strong steps down from "Exceptional"
+  via lighter emerald shade (`emerald-50/600/200` + `emerald-400`
+  dot); Weak steps down from "Average" via darker amber shade
+  (`amber-50/800/300` + `amber-600` dot + accent `rgb(180 83 9)`).
+  All four permitted families (slate / emerald / amber / rose) now
+  cover the full 0-100 score ramp; teal and orange purged. Cascade:
+  `ScoreBadge.tsx` (sm pill + lg radial), `FilterDrawer.tsx` score-
+  tier filter chips, and `RankingTable.tsx` Score column inherit
+  automatically — no component code changes. **B2 + B3 + B4 deferred**
+  to follow-up PRs (card surface normalization on FairPriceBarChart /
+  FairPriceCard / ManipulationRiskCard / PillarRadarChart /
+  RawMetricsTable / Tier2EventCard / detail-page; chip squaring on
+  remaining surfaces; stripe + hover polish). Cross-tool agents
+  editing score-tier-related surfaces post-B1 should expect the
+  emerald/amber 5-step ramp (no teal, no orange).
 
 ## Claude-Code-specific tooling
 
