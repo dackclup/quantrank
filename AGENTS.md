@@ -1211,6 +1211,28 @@ note cross-tool-specific points only:
   + `QR_SKIP_TIER2`) as the standard escape-hatch combo when running
   compute against tight time budgets.
 
+- **Rebase-discipline § for cross-tool contributors (bundled in
+  this PR)** — every PR adds an entry to CLAUDE.md §Phase status +
+  AGENTS.md §Phase + version state per the §Conventions lockstep
+  rule. The current shape inserts every "in flight" bullet at the
+  SAME line (just before "**Next deliverables**" in CLAUDE.md /
+  "## Claude-Code-specific tooling" in this file). Parallel PRs
+  → `mergeable_state: dirty` → blocked merge → repeated user
+  frustration ("merge ไม่ได้ หลังแก้แล้วกลับมาเป็นอีก"). PR #230
+  hit this twice in one session (against PR #229 then again
+  against PR #232 + PR #233). **Cross-tool mitigation**: every PR
+  author (Claude / Copilot / Cursor / Devin) must
+  `git fetch origin main && git rebase origin/main` before
+  flipping Mark-Ready if any other PR has landed on main since
+  the branch was created. The conflict is benign — both PRs add
+  distinct entries at the same insertion line; resolution is
+  always "keep both" in chronological order (older PR first,
+  yours second). See CLAUDE.md §Conventions for the canonical
+  recipe and §Gotchas "Parallel-PR §Phase status collision
+  pattern" for the recurring-symptom documentation + the
+  structural follow-up (move "in flight" to a side file) tracked
+  separately.
+
 ## Claude-Code-specific tooling
 
 Claude Code sessions for this project have 6 MCP connectors enabled

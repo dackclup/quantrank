@@ -128,6 +128,25 @@ for the full 4-step pattern + Section I forcing example.
   section update (new gotcha / convention / connector / layout /
   command). Reject PRs that touch code / workflows / schemas without
   the matching CLAUDE.md + AGENTS.md diff.
+- **Rebase onto `origin/main` before flipping any PR Draft → Ready.**
+  The §Phase status block in CLAUDE.md + the §Phase + version state
+  block in AGENTS.md are append-shaped — every PR inserts a new
+  "**X in flight (this PR)**" bullet at the SAME insertion point
+  (just before "**Next deliverables**" / "## Claude-Code-specific
+  tooling"). Two PRs that land in parallel both touch that anchor
+  line and `mergeable_state: dirty` blocks the second. The recurring
+  "merge ไม่ได้ หลังแก้แล้วกลับมาเป็นอีก" pattern (PR #230 hit it
+  twice after the simulate-fix iteration on 2026-05-24, with PR
+  #232 + PR #233 landing in the same window) traces here. **The
+  mitigation is local**: before authorizing Mark-Ready, run
+  `git fetch origin main && git rebase origin/main` and resolve
+  the §Phase status block by keeping BOTH PRs' entries in
+  chronological order (older PR's entry first, then your entry).
+  The CONFLICT is benign — both PRs are adding distinct entries
+  at the same insertion line; the resolution is always "keep both".
+  See §Gotchas "Parallel-PR §Phase status collision pattern" for
+  the operational workflow + the structural follow-up tracked under
+  separate issue.
 
 ## Auto-routing policy
 
@@ -394,6 +413,29 @@ whitespace / single-line fixes do not trigger.
   reachable in the sub-agent's context. The main agent retains full
   MCP access and can run the check inline OR re-spawn the sub-agent
   with the correct tool surface.
+- **Parallel-PR §Phase status collision pattern** — every PR must
+  add a §Phase status entry to CLAUDE.md + AGENTS.md per the
+  §Conventions "ship with every PR" rule. The current structure
+  inserts every "in flight" bullet at the SAME line (just before
+  "**Next deliverables**"). Two PRs opened in parallel both target
+  that line → second-to-rebase hits `mergeable_state: dirty` →
+  the recurring "merge ไม่ได้ หลังแก้แล้วกลับมาเป็นอีก" pattern.
+  Surfaced 2026-05-24 PR #230 (collided twice with PR #232 + #233
+  LedgerCraft series + PR #229 security PR in the same window).
+  **Operational mitigation** (local, no infrastructure change):
+  before authorizing Mark-Ready, run
+  `git fetch origin main && git rebase origin/main` and resolve
+  by keeping BOTH PRs' §Phase entries in chronological order
+  (older PR first, your entry second). The conflict is benign —
+  both PRs add distinct entries at the same insertion line; the
+  resolution is always "keep both" (which `git merge` cannot
+  auto-detect because both sides added text at the same line).
+  **Structural follow-up** (separate PR not yet filed): consider
+  moving the "in flight" sub-block to a side file
+  (`PHASE_STATUS_INFLIGHT.md`) that PRs append to; on merge a
+  housekeeping commit moves the entry into CLAUDE.md proper —
+  parallel PRs would touch disjoint paths = no conflict. Trade-off:
+  extra discipline at merge time; not yet adopted.
 
 ## Phase status
 
@@ -1866,6 +1908,31 @@ get the same budget with composite-score diff unchanged. Companion
 benefit: this PR doubles as the **live validation** of the fix
 (re-pushing the docstring change with the simulate-fix appended
 should produce the first sub-45m simulate run on this branch).
+
+**Rebase-discipline § + parallel-PR §Phase status §Gotcha bundled with this PR** —
+on top of Parts 1 + 2, this PR also closes a recurring CI-merge
+issue surfaced 2026-05-24: PR #230 hit `mergeable_state: dirty`
+twice in a single session — first when PR #229 (security) landed
+on main mid-iteration, then again when PR #232 + PR #233
+(LedgerCraft A1 + A2) landed before Mark-Ready. Each parallel PR
+adds a "**X in flight (this PR)**" bullet in CLAUDE.md §Phase
+status + AGENTS.md §Phase + version state at the SAME insertion
+line, and `git merge` cannot auto-resolve two adds at the same
+line. Three companion edits documenting + mitigating:
+- **§Conventions**: new bullet "Rebase onto `origin/main` before
+  flipping any PR Draft → Ready" with the operational `git fetch
+  origin main && git rebase origin/main` recipe + the "keep both
+  entries in chronological order" resolution discipline
+- **§Gotchas**: new "Parallel-PR §Phase status collision pattern"
+  entry recording the recurring symptom + the local-mitigation
+  workflow + a forward-looking structural follow-up note (move
+  in-flight entries to a side file like `PHASE_STATUS_INFLIGHT.md`
+  that's append-only-per-PR; not yet adopted)
+- **AGENTS.md mirror** of both notes for cross-tool agents
+No infrastructure / CI / behavior change — pure doc discipline.
+Future contributors who hit the same conflict find the §Gotchas
+entry + the §Conventions recipe and resolve in seconds, instead
+of re-discovering the pattern.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — after ≥ 1
