@@ -182,8 +182,8 @@ export function FilterDrawer({
                     key={t.id}
                     type="button"
                     onClick={() => toggleTier(t.id)}
-                    className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition ${
-                      on ? t.cls : 'bg-white text-slate-600 ring-slate-300 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
+                    className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition ${
+                      on ? t.cls : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
                     }`}
                   >
                     <span className={`inline-block h-1.5 w-1.5 rounded-full ${t.dot}`} />
@@ -209,10 +209,10 @@ export function FilterDrawer({
                     key={rec}
                     type="button"
                     onClick={() => toggleRecommendation(rec)}
-                    className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition ${
+                    className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition ${
                       on
                         ? RECOMMENDATION_CHIP_TONES[rec]
-                        : 'bg-white text-slate-600 ring-slate-300 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
+                        : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
                     }`}
                   >
                     <span className={`inline-block h-1.5 w-1.5 rounded-full ${RECOMMENDATION_CHIP_DOTS[rec]}`} />
@@ -235,8 +235,8 @@ export function FilterDrawer({
                     key={b.id}
                     type="button"
                     onClick={() => toggleMos(b.id)}
-                    className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition ${
-                      on ? b.cls : 'bg-white text-slate-600 ring-slate-300 hover:bg-slate-50'
+                    className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition ${
+                      on ? b.cls : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-50'
                     }`}
                   >
                     <span className={`inline-block h-1.5 w-1.5 rounded-full ${b.dot}`} />
@@ -266,8 +266,8 @@ export function FilterDrawer({
                     key={s}
                     type="button"
                     onClick={() => toggleSector(s)}
-                    className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition ${
-                      on ? `${sty.bg} ${sty.fg} ${sty.ring}` : 'bg-white text-slate-600 ring-slate-300 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
+                    className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition ${
+                      on ? `${sty.bg} ${sty.fg} ${sty.ring}` : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
                     }`}
                   >
                     <span

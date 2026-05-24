@@ -1070,28 +1070,42 @@ note cross-tool-specific points only:
   screen-share. No compute / schema / scoring / valuation / frontend /
   Python production-code change.
 
-- **Phase 4 LedgerCraft reskin — PR-A1 in flight (this PR)**
-  (2026-05-24) — first of three sub-PRs taking LedgerCraft from the
-  Phase 3d baseline already on main to full spec alignment.
-  Direction-approval mockups landed (then closed without merging) as
-  PR #231 — three self-contained HTML files under `design-mockups/`
-  (current-state snapshot, full LedgerCraft redesign, responsive
-  treatment). User-locked defaults on 2026-05-24: sector chip body
-  → mute to single neutral steel tone (sector identity carried by
-  the colored dot alone); all chip / badge `rounded-full` → 2px
-  squared (deferred to A2); keep soft OKLCH sage/terracotta tokens
-  for positive/negative semantics (no alarm-red revert); ship as
-  actual `frontend/` code changes (no mockup intermediate step).
-  **A1 scope**: `frontend/lib/visual.ts` only — `SECTOR_COLORS`
-  re-keyed to neutral `bg-slate-100 / text-slate-600 /
-  ring-slate-200` constants while preserving the 11 distinct dot
-  rgb() values for glance-affordance. Cross-tool agents (Copilot /
-  Cursor / Devin) editing any of the chip / badge components
-  downstream (A2: SectorChip · ScoreBadge · RecommendationBadge ·
-  LossChanceBadge · MoSBadge · MoSCell · FilterDrawer; A3:
-  RankingTable · Sidebar · AppShell) should expect the neutral chip
-  surface as the baseline and only adjust radius / border there. No
-  schema / Python / scoring / valuation / output JSON change.
+- **Phase 4 LedgerCraft reskin — PR-A1 merged via PR #232**
+  (2026-05-24, `5517b98`) — first of three sub-PRs taking
+  LedgerCraft from the Phase 3d baseline already on main to full
+  spec alignment. Direction-approval mockups landed (then closed
+  without merging) as PR #231 — three self-contained HTML files
+  under `design-mockups/` (current-state snapshot, full LedgerCraft
+  redesign, responsive treatment). User-locked defaults on
+  2026-05-24: sector chip body → mute to single neutral steel tone
+  (sector identity carried by the colored dot alone); all chip /
+  badge `rounded-full` → 2px squared (deferred to A2); keep soft
+  OKLCH sage/terracotta tokens for positive/negative semantics (no
+  alarm-red revert); ship as actual `frontend/` code changes (no
+  mockup intermediate step). **A1 scope**: `frontend/lib/visual.ts`
+  only — `SECTOR_COLORS` re-keyed to neutral `bg-slate-100 /
+  text-slate-600 / ring-slate-200` constants while preserving the
+  11 distinct dot rgb() values for glance-affordance.
+
+- **Phase 4 LedgerCraft reskin — PR-A2 in flight (this PR)**
+  (2026-05-24) — chip-family squaring. Every chip body across six
+  surfaces flips `rounded-full` → `rounded-sm` (2px) per LedgerCraft
+  Rule 8 + Chip spec. Touches `SectorChip.tsx` · `ScoreBadge.tsx`
+  (sm pill only — lg radial donut + md vertical stack keep their
+  shapes) · `RecommendationBadge.tsx` · `LossChanceBadge.tsx` ·
+  `FilterDrawer.tsx` (4 chip groups + inactive surface palette
+  alignment `bg-white → bg-slate-100`) · `RankingTable.tsx` (5
+  active-filter chip variants + Filters-button count badge).
+  Status dots (`h-1.5 w-1.5 rounded-full ${...dot}`) keep
+  `rounded-full` per LedgerCraft "Status dots / toggle switches"
+  9999px exception. `MoSBadge` (radial SVG) and `MoSCell` (already
+  `rounded-sm`) untouched. **Out of scope** (deferred to A3): table
+  card border + alternating-row stripe shift to slate-100 + sidebar
+  nav-item radius + FilterDrawer footer button + search-input
+  radius. No schema / Python / scoring / valuation / output JSON
+  change. Cross-tool agents (Copilot / Cursor / Devin) editing chip
+  surfaces post-A2 should reach for `rounded-sm` (not
+  `rounded-full`) as the canonical chip body radius.
 
 ## Claude-Code-specific tooling
 

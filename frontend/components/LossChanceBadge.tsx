@@ -98,7 +98,7 @@ export function LossChanceBadge({
   const rounded = Math.round(lossChancePct);
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full font-medium ring-1 ring-inset ${band.cls} ${sizeCls} ${className}`}
+      className={`inline-flex items-center gap-1.5 rounded-sm font-medium ring-1 ring-inset ${band.cls} ${sizeCls} ${className}`}
       title={`Loss Chance ${rounded}% — combines composite, defense flags, MoS.`}
       aria-label={`Loss Chance ${rounded}%. ${band.label}.`}
     >
