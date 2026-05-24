@@ -1009,9 +1009,10 @@ note cross-tool-specific points only:
   tier tables updated to match. Doc-only — no compute / schema /
   scoring / valuation / frontend code change.
 
-- **PR-#224 review-nit polish in flight (this PR)** — two of three
-  `quantrank-reviewer` WARN-tier punch-list items from PR #224 land
-  here as test-discipline polish. (a) `tests/test_scoring/test_form4_signals.py`:
+- **PR-#224 review-nit polish merged via PR #227** (2026-05-23,
+  `105d79e`) — two of three `quantrank-reviewer` WARN-tier punch-list
+  items from PR #224 landed as test-discipline polish.
+  (a) `tests/test_scoring/test_form4_signals.py`:
   two PR-#222 Hypothesis property tests drop `@settings(deadline=None)`
   per CLAUDE.md §Gotchas "Don't use `@settings(deadline=None)` — a
   slow example is itself a signal" (both verified sub-millisecond
@@ -1027,6 +1028,30 @@ note cross-tool-specific points only:
   (1168 → 1168; 3 in-place edits, no test added / removed). No
   compute / schema / scoring / valuation / frontend / Python
   production-code change.
+
+- **Sub-agent MCP-tools inheritance fix in flight (this PR)** —
+  post-PR-#225 live-fire of the three new sub-agents on 2026-05-23
+  (session 4) surfaced a real infrastructure gap. The Claude Code
+  sub-agent runtime does NOT auto-inherit MCP tools — each sub-agent
+  is restricted to the tools listed explicitly in its `tools:`
+  frontmatter, and MCP tools must be enumerated by full name
+  (`mcp__<server>__<tool>`). `vercel-preview-auditor` could not
+  reach the Vercel MCP tools at all (correctly escalated WAIT to
+  main per its own escalation table). `ci-triage-engineer` had to
+  fall back to git history + the squash-merge commit body when the
+  unauthenticated GitHub API hit rate-limit. Two-part fix lands here:
+  (a) `tools:` frontmatter on both agents extended with the specific
+  MCP tools their workflow requires (7 Vercel tools by UUID-namespaced
+  name for `vercel-preview-auditor`; 6 `mcp__github__*` tools for
+  `ci-triage-engineer`); (b) hard-constraint bullets covering the
+  MCP-access-gap failure mode (Vercel: surface `WAIT (MCP access gap)`
+  + escalate to main since the UUID is install-specific; GitHub:
+  fall back to local git primary evidence acceptable but must
+  explicitly cite the access gap, never fabricate check-run IDs).
+  Cross-tool note: the underlying inheritance limitation is a Claude
+  Code sub-agent runtime characteristic (not relevant to Copilot /
+  Cursor / Devin which use their own tool dispatch); documented in
+  CLAUDE.md §Gotchas for the project's agent authors.
 
 ## Claude-Code-specific tooling
 
