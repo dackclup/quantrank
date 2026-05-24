@@ -1909,6 +1909,48 @@ benefit: this PR doubles as the **live validation** of the fix
 (re-pushing the docstring change with the simulate-fix appended
 should produce the first sub-45m simulate run on this branch).
 
+**Simulate Part 4 — fundamentals freshness-gate skip (in flight, this PR)** —
+Parts 2 + 3 alone did NOT close the recurrence. Re-pushing the
+QR_SKIP_TIER2 fix (commit `ae1c2f2`) on 2026-05-24 07:06 UTC still
+hit simulate cancellation at 45m15s. `ci-triage-engineer` deep-dive
+#2 identified the gap: my session-5 root-cause analysis was
+INCOMPLETE — `compute/main.py` has THREE independent SEC EDGAR
+ThreadPoolExecutor loops:
+- Step 2 (`compute/main.py:717`) — fundamentals snapshot (502
+  tickers × `companyfacts` XBRL)
+- Step 3 (`compute/main.py:785`) — annual fundamentals history
+  (502 tickers × `_ANNUAL_TAGS` per-year XBRL)
+- Step 4b (`compute/main.py:972`) — Tier-2 / 8-K orchestrator
+QR_SKIP_TIER2 killed Step 4b (20-35m) but Steps 2 + 3 still ran
+unconditionally. Cold-cache cost of fundamentals alone is 25-50m
+per CLAUDE.md §Gotchas — enough to fill the entire 45m budget.
+`_is_fresh()` in `compute/ingest/fundamentals.py:917` gates the
+disk cache by `filed_date` inside the parquet (not by file mtime)
+with `FUNDAMENTALS_REFETCH_DAYS=45` — so even on a partial cache
+hit, any ticker with a > 45d-old most-recent filing forces a live
+EDGAR round-trip.
+
+**Part 4 fix**: `QR_SKIP_FUNDAMENTALS=1` escape hatch wired in
+TWO places — (a) `compute/ingest/fundamentals.py:fetch_fundamentals`
+at the top, BEFORE `_require_identity()`, returns cached snapshot
+unconditionally (no freshness check) when the env var is set;
+falls through to live fetch if no cache exists. (b)
+`compute/ingest/fundamentals.py:fetch_fundamentals_history`
+mirror — returns the cached annual parquet without the 180d age
+check when env var set. The env var is wired in
+`.github/workflows/pre-merge-prod-sim.yml` env block alongside
+`QR_SKIP_TIER2` + `FORM4_FETCH_SKIP`. SAFE for simulate because:
+the workflow's purpose is composite-score-diff vs main's COMMITTED
+`rankings.json`; both sides were produced from the same upstream
+fundamentals input (the cache the weekly cron wrote), so using
+that cache without re-fetch is the CORRECT input for the diff,
+not a quality compromise. Weekly cron (`compute-rankings.yml`)
+does NOT set `QR_SKIP_FUNDAMENTALS` — full live fetch still runs
+there and populates the warm cache for future simulate restores.
+Expected post-fix: simulate completes in 8-12m on a cache-hit
+restore (no live SEC fetch in Steps 2 + 3 + 4b). Live validation
+this PR: re-push after Part 4 → simulate green under 25m.
+
 **Rebase-discipline § + parallel-PR §Phase status §Gotcha bundled with this PR** —
 on top of Parts 1 + 2, this PR also closes a recurring CI-merge
 issue surfaced 2026-05-24: PR #230 hit `mergeable_state: dirty`

@@ -70,6 +70,24 @@ env:
   # (compute-rankings.yml) does NOT set this — full Tier-2 still
   # runs there and populates the warm cache for future sims.
   QR_SKIP_TIER2: "1"
+  # 2026-05-24 (PR #230 Part 4) — fundamentals freshness-gate skip.
+  # The QR_SKIP_TIER2 fix above eliminated 20-35m of cold Tier-2
+  # cost but simulate STILL cancelled at 45m. Root cause: even when
+  # cached fundamentals parquets exist (restored from the weekly
+  # cron), `compute/ingest/fundamentals.py:_is_fresh()` gates by
+  # filing_date — any ticker whose latest SEC filing is >45 days
+  # old (FUNDAMENTALS_REFETCH_DAYS=45) gets a live EDGAR re-fetch.
+  # 502 tickers × ~8 workers vs SEC's 10 req/s ceiling = 25-50 min
+  # alone, enough to fill the entire 45m budget. QR_SKIP_FUNDAMENTALS
+  # forces use of the cached parquet without the freshness check.
+  # SAFE for simulate because: (a) the diff compares PR-branch vs
+  # main's COMMITTED rankings.json, both produced from the SAME
+  # weekly-cron cache — using that cache without re-fetch is the
+  # correct input, not a quality compromise; (b) falls through to
+  # live fetch if no cache exists (cold runner has nothing to read).
+  # Weekly cron (compute-rankings.yml) does NOT set this — full
+  # fundamentals fetch runs there.
+  QR_SKIP_FUNDAMENTALS: "1"
 
 permissions:
   contents: read

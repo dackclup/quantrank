@@ -1208,8 +1208,29 @@ note cross-tool-specific points only:
   `_EIGHT_K_DEFENSES_ENABLED=False` which is stale since PR 4g
   re-enabled it). Cross-tool relevance: cross-tool agents working on
   CI workflows should now consult these env-var pairs (`FORM4_FETCH_SKIP`
-  + `QR_SKIP_TIER2`) as the standard escape-hatch combo when running
-  compute against tight time budgets.
+  + `QR_SKIP_TIER2` + `QR_SKIP_FUNDAMENTALS` — added Part 4 below) as the
+  standard escape-hatch combo when running compute against tight time
+  budgets.
+
+- **Simulate Part 4 — `QR_SKIP_FUNDAMENTALS` escape hatch (this PR)** —
+  Parts 2 + 3 above did not fully solve the recurring 45-min simulate
+  cancellation. Even after `QR_SKIP_TIER2` killed the Tier-2 loop
+  (20-35m), `compute/main.py` Steps 2 + 3 (fundamentals snapshot +
+  history fetch) ran unconditionally — cold-cache cost 25-50m alone
+  per CLAUDE.md §Gotchas. The `_is_fresh()` gate at
+  `compute/ingest/fundamentals.py:917` checks the `filed_date` INSIDE
+  each cached parquet (45d TTL), so a partial cache hit still triggers
+  live SEC re-fetches for any ticker with a stale filing. Part 4 wires
+  `QR_SKIP_FUNDAMENTALS=1` in BOTH `fetch_fundamentals` and
+  `fetch_fundamentals_history` to bypass the freshness gate when set,
+  returning the cached parquet unconditionally (falls through to live
+  fetch if no cache exists). SAFE for simulate because the diff is
+  PR-branch vs main's COMMITTED rankings.json — both produced from the
+  SAME weekly-cron cache; using it without re-fetch is the correct
+  input. Cross-tool relevance: contributors editing
+  `pre-merge-prod-sim.yml` should now keep ALL THREE env vars set
+  together. Weekly cron explicitly does NOT set these — full live
+  fetch runs there to populate the warm cache.
 
 - **Rebase-discipline § for cross-tool contributors (bundled in
   this PR)** — every PR adds an entry to CLAUDE.md §Phase status +
