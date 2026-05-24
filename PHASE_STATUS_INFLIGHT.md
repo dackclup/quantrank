@@ -98,6 +98,7 @@ keeps growing/draining as PRs cycle.
 
 ## In flight (current)
 
+<<<<<<< HEAD
 ## PR #242 — Light-mode soften + Strong Buy nowrap + StockLogo square (merged 2026-05-24, `a30c017`)
 
 Three user-direction visual polish tweaks landed post-LedgerCraft series:
@@ -130,6 +131,9 @@ satisfies §Conventions lockstep per PR #237 convention.
 ---
 
 ## PR (this PR) — Simulate Part 5: wire `QR_SKIP_OSAP` + add `compute/cache/osap` to cache paths (in flight, 2026-05-24)
+=======
+## PR (this PR) — Simulate Parts 5+6: wire `QR_SKIP_OSAP` + `QR_SKIP_CROSS_SOURCE` (closes the 4th + 5th external-data loops) (in flight, 2026-05-24)
+>>>>>>> 7eec245 (ci(simulate) Part 6: wire QR_SKIP_CROSS_SOURCE (closes the 5th external-data loop))
 
 Closes the 4th external-data loop missed by PR #230's Parts 2 + 4.
 `ci-triage-engineer` session-6 deep-dive on PR #238's simulate
@@ -182,6 +186,29 @@ simulate run with all four skip vars active + `compute/cache/osap`
 restored from the cron's artifact (Friday 2026-05-23 22:00 UTC's
 cron output should still be within the 7-day GitHub cache TTL).
 Expected: simulate completes in under 25 minutes.
+
+**Part 6 added 2026-05-24 13:50 UTC** — Part 5's live-fire attempt
+on PR #241 STILL cancelled at 45m14s. ci-triage-engineer session-6
+deep-dive identified the 5th loop:
+`compute/ingest/cross_source.py:fetch_yfinance_market_cap` calls
+`yf.Ticker(ticker).info` 502× serially in
+`compute/main.py:cross_source_validate_market_cap`. Even though
+`compute/cache/yfinance_info` IS in both workflows' cache `path:`
+blocks, the cache has a 24-hour freshness TTL in `_cache_read`. The
+weekly cron writes the cache Friday 22:00 UTC; Sunday simulate's
+restore gives 39-hour-old entries → fails the freshness check →
+live yfinance.info fetch for all 502 tickers (2-8s each with
+tenacity `wait_exponential(min=1, max=10)` × 3 attempts) =
+17-67 minutes alone. Fix: add `QR_SKIP_CROSS_SOURCE=1` escape
+hatch at the top of `fetch_yfinance_market_cap` that (a) bypasses
+the 24h TTL on stale-but-present entries (reads JSON directly) and
+(b) returns None when cache is empty (skip the validation entirely;
+semantically identical to a cold-cache fetch failure which the call
+site already handles per existing graceful-degradation). Wired in
+`pre-merge-prod-sim.yml` env block alongside the prior four skip
+vars. CLAUDE.md §Gotchas 4-var combo entry rewritten to a 5-var
+combo with the full mapping. The 5 env vars now collectively cover
+ALL FIVE independent external-data loops in `compute/main.py`.
 
 ---
 

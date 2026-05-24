@@ -107,6 +107,26 @@ env:
   # for cache-evicted scenarios. Weekly cron does NOT set this —
   # full live fetch runs there once a week.
   QR_SKIP_OSAP: "1"
+  # 2026-05-24 (PR #230 Part 6 — the 5th loop) — pre-merge-prod-sim
+  # also skips the cross-source yfinance.info validation loop. Even
+  # with the four prior skip vars (FORM4_FETCH_SKIP + QR_SKIP_TIER2 +
+  # QR_SKIP_FUNDAMENTALS + QR_SKIP_OSAP) ALL set + `compute/cache/yfinance_info`
+  # already in the workflow cache `path:` block, the simulate STILL
+  # cancelled at 45m14s on PR #241. Root cause: yfinance_info has a
+  # 24-hour freshness TTL in `_cache_read`. The weekly cron writes
+  # the cache Friday 22:00 UTC, but a Sunday simulate's cache restore
+  # gives 39-hour-old entries → fails freshness check → 502-ticker
+  # serial `yf.Ticker(ticker).info` cold fetch (2-8s per ticker with
+  # tenacity `wait_exponential(min=1, max=10)` × 3 attempts) = 17-67
+  # minutes alone. ci-triage-engineer session-6 root-cause from
+  # exhaustive code walk of compute/main.py's external-data loops.
+  # Wired in `compute/ingest/cross_source.py:fetch_yfinance_market_cap`
+  # at the TOP of the function: when set, stale-but-present cache
+  # entries are read directly (bypassing the 24h TTL); when cache
+  # is genuinely empty, returns None (skip the cross-source check
+  # entirely — semantically identical to a cold-cache fetch failure
+  # which the call site already handles).
+  QR_SKIP_CROSS_SOURCE: "1"
 
 permissions:
   contents: read

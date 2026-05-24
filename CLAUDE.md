@@ -389,7 +389,7 @@ whitespace / single-line fixes do not trigger.
   cardinality, pillar count, manifest partition) with a `@given`
   property in `tests/**/test_*_properties.py`. Don't use
   `@settings(deadline=None)` — a slow example is itself a signal.
-- **CI escape-hatch env-var combo for simulate** (4 vars, all set
+- **CI escape-hatch env-var combo for simulate** (5 vars, all set
   together in `.github/workflows/pre-merge-prod-sim.yml`; NONE set in
   weekly cron `compute-rankings.yml`): `FORM4_FETCH_SKIP=1` (skip Form-4
   bulk fetch — read at `compute/main.py:840`; safe empty default),
@@ -397,15 +397,22 @@ whitespace / single-line fixes do not trigger.
   `compute/scoring/tier2.py:162`), `QR_SKIP_FUNDAMENTALS=1` (skip
   fundamentals freshness gate — read at `compute/ingest/fundamentals.py`
   in BOTH `fetch_fundamentals` + `fetch_fundamentals_history` BEFORE
-  `_require_identity()`), and `QR_SKIP_OSAP=1` (skip OSAP openassetpricing.com
+  `_require_identity()`), `QR_SKIP_OSAP=1` (skip OSAP openassetpricing.com
   bulk download — read at `compute/ingest/osap.py:fetch_osap_returns`
-  BEFORE the `_is_fresh` check). Each falls through to live fetch if no
-  cached parquet exists. Together they cover the FOUR independent
-  external-data loops in `compute/main.py` (Form-4 / Tier-2 / fundamentals
-  × 2 / OSAP) that PR #230 + PR #238's post-merge investigation
-  identified. CI-only — never set in cron / local dev. Simulate workflow
-  expected steady-state with all four skips active on a warm-cache
-  restore: 8-15 min (vs the pre-fix 45-min cap breach).
+  BEFORE the `_is_fresh` check), and `QR_SKIP_CROSS_SOURCE=1` (skip
+  the 502-ticker yfinance.info cross-source validation loop — read at
+  `compute/ingest/cross_source.py:fetch_yfinance_market_cap` at the
+  TOP of the function; bypasses 24h cache TTL on stale-but-present
+  entries; returns None on cache-miss). Each falls through to live
+  fetch if no cached parquet exists, or to "no validation possible"
+  in the cross-source case. Together they cover the FIVE independent
+  external-data loops in `compute/main.py` — the four discovered by
+  PR #230's iteration plus the 5th (cross_source yfinance.info)
+  identified by PR #241's ci-triage-engineer session-6 root-cause.
+  CI-only — never set in cron / local dev. Simulate workflow
+  expected steady-state with all five skips active on a warm-cache
+  restore: 8-15 min (vs the pre-fix 45-min cap breach across PRs
+  #230 / #238 / #241).
 - **Sub-agent `tools:` frontmatter does NOT auto-inherit MCP tools**
   — surfaced 2026-05-23 by the post-PR-#225 live-fire of
   `vercel-preview-auditor`. The Claude Code sub-agent runtime restricts
