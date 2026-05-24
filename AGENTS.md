@@ -1029,29 +1029,46 @@ note cross-tool-specific points only:
   compute / schema / scoring / valuation / frontend / Python
   production-code change.
 
-- **Sub-agent MCP-tools inheritance fix in flight (this PR)** —
+- **Sub-agent MCP-tools inheritance fix merged via PR #228**
+  (2026-05-24, `b5ff8cc`) —
   post-PR-#225 live-fire of the three new sub-agents on 2026-05-23
   (session 4) surfaced a real infrastructure gap. The Claude Code
   sub-agent runtime does NOT auto-inherit MCP tools — each sub-agent
   is restricted to the tools listed explicitly in its `tools:`
   frontmatter, and MCP tools must be enumerated by full name
-  (`mcp__<server>__<tool>`). `vercel-preview-auditor` could not
-  reach the Vercel MCP tools at all (correctly escalated WAIT to
-  main per its own escalation table). `ci-triage-engineer` had to
-  fall back to git history + the squash-merge commit body when the
-  unauthenticated GitHub API hit rate-limit. Two-part fix lands here:
-  (a) `tools:` frontmatter on both agents extended with the specific
-  MCP tools their workflow requires (7 Vercel tools by UUID-namespaced
-  name for `vercel-preview-auditor`; 6 `mcp__github__*` tools for
-  `ci-triage-engineer`); (b) hard-constraint bullets covering the
-  MCP-access-gap failure mode (Vercel: surface `WAIT (MCP access gap)`
-  + escalate to main since the UUID is install-specific; GitHub:
-  fall back to local git primary evidence acceptable but must
-  explicitly cite the access gap, never fabricate check-run IDs).
-  Cross-tool note: the underlying inheritance limitation is a Claude
-  Code sub-agent runtime characteristic (not relevant to Copilot /
-  Cursor / Devin which use their own tool dispatch); documented in
-  CLAUDE.md §Gotchas for the project's agent authors.
+  (`mcp__<server>__<tool>`). Two-part fix landed:
+  (a) `tools:` frontmatter on both affected agents extended with the
+  specific MCP tools their workflow requires (7 Vercel tools by
+  UUID-namespaced name for `vercel-preview-auditor`; 6
+  `mcp__github__*` tools for `ci-triage-engineer`); (b) hard-constraint
+  bullets covering the MCP-access-gap failure mode (Vercel: surface
+  `WAIT (MCP access gap)` + escalate to main since the UUID is
+  install-specific; GitHub: fall back to local git primary evidence
+  acceptable but must explicitly cite the access gap, never fabricate
+  check-run IDs). Cross-tool note: the underlying inheritance
+  limitation is a Claude Code sub-agent runtime characteristic
+  (not relevant to Copilot / Cursor / Devin which use their own
+  tool dispatch); documented in CLAUDE.md §Gotchas for the project's
+  agent authors.
+
+- **Security WARN cleanup (W2 + W4) in flight (this PR)** — closes
+  the two remaining security-reviewer WARNs from PR #226 (W1 + W3
+  shipped in PR #226, W2 + W4 deferred to here). No cross-tool
+  surface — both fixes touch Claude-Code-managed infrastructure
+  (`.claude/hooks/log-bash.sh`) and the project CI workflow
+  (`.github/workflows/compute-rankings.yml`). (a) **W2 — workflow-perm
+  narrowing**: `compute-rankings.yml` workflow-level
+  `permissions: contents: write` narrowed to `contents: read`; the
+  `compute:` job that actually `git push`es the JSON output opts up
+  to `contents: write` per least-privilege. (b) **W4 — log-bash.sh
+  secret scrub**: `sed` pre-filter redacts the value half of known
+  secret prefixes (GitHub PATs / Anthropic / OpenAI / AWS / Google /
+  Slack / `Bearer` headers) before appending to gitignored
+  `.claude/session.log`; preserves prefix + structure for
+  readability. Defense-in-depth — file remains gitignored, this just
+  shrinks the blast radius of an accidental `cat` / paste during
+  screen-share. No compute / schema / scoring / valuation / frontend /
+  Python production-code change.
 
 ## Claude-Code-specific tooling
 
