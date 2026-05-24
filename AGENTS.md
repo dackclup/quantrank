@@ -1192,6 +1192,25 @@ note cross-tool-specific points only:
   Cursor / Devin reading these docstrings now see the canonical
   SEC element name when reasoning about the 10b5-1 access path.
 
+- **Simulate 45-min recurrence root-cause fix bundled in this PR** —
+  recurring CI hygiene issue across multiple PRs (PR #165, PR-form4-2
+  added piecemeal mitigations that addressed adjacent budget items but
+  left the Tier-2 loop running unconditionally). `ci-triage-engineer`
+  deep-dive (2026-05-24 session 5) identified that the `QR_SKIP_TIER2`
+  kill-switch wired in `compute/scoring/tier2.py:158` was never set in
+  `pre-merge-prod-sim.yml`. Four-part permanent fix: (a) `QR_SKIP_TIER2:
+  "1"` added to `pre-merge-prod-sim.yml` env (eliminates 20-35m
+  cold-cache Tier-2 cost); (b) `compute/cache/edgar_form4` added to
+  both workflows' cache restore paths; (c) path-filter widened to
+  include `compute/ingest/**` + `compute/valuation/**` +
+  `compute/output/schemas.py` + `compute/main.py` + `pyproject.toml`;
+  (d) `compute/scoring/tier2.py` docstring updated (old comment said
+  `_EIGHT_K_DEFENSES_ENABLED=False` which is stale since PR 4g
+  re-enabled it). Cross-tool relevance: cross-tool agents working on
+  CI workflows should now consult these env-var pairs (`FORM4_FETCH_SKIP`
+  + `QR_SKIP_TIER2`) as the standard escape-hatch combo when running
+  compute against tight time budgets.
+
 ## Claude-Code-specific tooling
 
 Claude Code sessions for this project have 6 MCP connectors enabled

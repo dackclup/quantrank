@@ -28,6 +28,11 @@ on:
     paths:
       - "compute/scoring/**"
       - "compute/features/**"
+      - "compute/ingest/**"
+      - "compute/valuation/**"
+      - "compute/output/schemas.py"
+      - "compute/main.py"
+      - "pyproject.toml"
 
 # Latest push on a PR cancels any in-flight simulation for the same PR.
 # A 15-min compute against a stale revision is dead weight.
@@ -49,6 +54,22 @@ env:
   # rankings.yml, default 360-min budget) still runs the full
   # fetch and populates the cache for future sims.
   FORM4_FETCH_SKIP: "1"
+  # 2026-05-24 — pre-merge-prod-sim skips the Tier-2 (10-K text + 8-K)
+  # fetch loop too. The Tier-2 loop is 502 tickers × (10-K full-text
+  # download for going-concern phrase scan + 8-K filing list); cold-
+  # cache cost is 20-35 min ALONE. Paired with fundamentals warm-up
+  # (~10 min on partial cache hit), the budget breaches the 45-min
+  # cap → cancelled at the deadline (e.g., PR #230 2026-05-24).
+  # `QR_SKIP_TIER2` is the existing kill-switch wired in
+  # `compute/scoring/tier2.py:158` since the module's introduction;
+  # we just never set it here. Tradeoff: the simulate's composite-
+  # score diff is unchanged (Tier-2 going_concern is annotate-only;
+  # the non_reliance veto, enabled since PR 4g, is suppressed in
+  # this run — acceptable because simulate is informational-only
+  # and the veto logic is covered by offline pytest). Weekly cron
+  # (compute-rankings.yml) does NOT set this — full Tier-2 still
+  # runs there and populates the warm cache for future sims.
+  QR_SKIP_TIER2: "1"
 
 permissions:
   contents: read
@@ -100,6 +121,7 @@ jobs:
             compute/cache/yfinance_info
             compute/cache/edgar_amendments
             compute/cache/edgar_late_filings
+            compute/cache/edgar_form4
           key: cache-v4-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
             cache-v4-${{ steps.quarter.outputs.q }}-

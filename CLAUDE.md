@@ -1830,6 +1830,43 @@ every common variant including `Rule 10b5-1(c)` subsection cites).
 Docstring-only PR — no compute / scoring / valuation / behavior
 change. `schema_check` clean, ruff clean, tests unchanged at 1168+.
 
+**Simulate 45-min recurrence root-cause fix bundled with this PR** —
+the docstring-only commit above triggered the `simulate` workflow
+(path filter matched `compute/scoring/**`) which then **cancelled
+at 45m02s** on the timeout cap. `ci-triage-engineer` deep-dive
+(2026-05-24 session 5) identified the recurring pattern: the
+`QR_SKIP_TIER2` kill-switch is fully wired in
+`compute/scoring/tier2.py:158` but **was never set in
+`pre-merge-prod-sim.yml`**. Past mitigations (PR #165's 1y
+non-reliance lookback, PR-form4-2's `FORM4_FETCH_SKIP=1`) addressed
+adjacent budget items but left the Tier-2 loop (502 tickers × 10-K
+text fetch + 8-K fetch, 20-35m cold-cache) running unconditionally
+on every simulate. Recurrence tally on the last 5 simulate runs:
+PR #165 ✅ 19m01s warm · PR #204 ✅ 19m37s warm · PR #222 ✅ 16m56s
+warm · PR #224 ✅ 17m08s warm · PR #230 ❌ 45m15s cold cancelled.
+Pattern is structural — when GitHub evicts the warm cache after a
+7-day gap without a simulate-triggering PR, the next compute/scoring
+PR hits full cold. Four-part permanent fix lands in this PR:
+(a) `QR_SKIP_TIER2: "1"` added to `pre-merge-prod-sim.yml` env
+block (PRIMARY — eliminates the 20-35m cold-cache cost);
+(b) `compute/cache/edgar_form4` added to both workflows' cache
+restore paths (future-proof for the Phase 4.5e PR 5 form4 weight
+promotion); (c) path-filter widened to include
+`compute/ingest/**` + `compute/valuation/**` + `compute/output/schemas.py`
++ `compute/main.py` + `pyproject.toml` (was: scoring + features
+only — a fundamentals fetcher regression would silently miss
+simulate); (d) `compute/scoring/tier2.py:154-155` docstring updated
+— old comment said `_EIGHT_K_DEFENSES_ENABLED=False` (stale since
+PR 4g 2026-05-17 re-enabled it); new comment correctly notes the
+non_reliance veto IS suppressed in simulate (acceptable — simulate
+is informational-only; veto correctness is offline pytest's slot).
+Expected: docstring/comment PRs that touch compute/ → simulate
+completes in 12-15m warm OR 17-20m partial-cold; real scoring PRs
+get the same budget with composite-score diff unchanged. Companion
+benefit: this PR doubles as the **live validation** of the fix
+(re-pushing the docstring change with the simulate-fix appended
+should produce the first sub-45m simulate run on this branch).
+
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — after ≥ 1
   cron's `form4_rule10b5_one_excluded_count` lands and firing-rate
