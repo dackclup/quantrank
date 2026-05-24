@@ -1291,7 +1291,7 @@ configuration. Two PostToolUse Bash hooks ship today:
   `schema-sentinel` subagent) before commit. Closes the local
   pre-commit gap left by the schema-drift CI guard.
 
-The 15 subagents under `.claude/agents/` follow the **gate-moment
+The 18 subagents under `.claude/agents/` follow the **gate-moment
 auto-routing policy** in [`CLAUDE.md`](CLAUDE.md) §Auto-routing
 policy — most cues fire at "ready to push" / explicit ask / signal
 event, not on every edit. This is the reduced-token policy

@@ -4,7 +4,7 @@ QuantRank has no backend server and no runtime database. The full pipeline:
 
 ```mermaid
 flowchart LR
-    A[GitHub Actions cron<br/>Sun 22:00 UTC] -->|run weekly| B[Python compute pipeline]
+    A[GitHub Actions cron<br/>Mon-Fri 22:00 UTC] -->|run weekdays| B[Python compute pipeline]
     B -->|fetch| C[(yfinance / SEC EDGAR<br/>FRED / Finnhub / Reddit)]
     B -->|write| D[JSON files in<br/>frontend/public/data/]
     D -->|git push| E[GitHub repo]

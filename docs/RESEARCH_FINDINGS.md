@@ -851,7 +851,7 @@ QuantRank target license: MIT (compatible with most)
 ### 4.2 Recommended Compute Cadence
 
 ```
-WEEKLY (GitHub Actions, Sunday 22:00 UTC):
+WEEKDAY (GitHub Actions, Mon-Fri 22:00 UTC; weekends skipped):
 ├─ Ingest: yfinance, EDGAR, FRED, OSAP/JKP CSV updates
 ├─ Light pipeline: feature compute + LightGBM scoring
 ├─ Output: rankings.json, stocks/{TICKER}.json
