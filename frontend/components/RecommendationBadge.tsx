@@ -101,7 +101,7 @@ export function RecommendationBadge({
   // so a row of "Materials [dot] · Buy [dot]" reads as one family.
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full font-medium ring-1 ring-inset ${tone} ${sizeCls} ${className}`}
+      className={`inline-flex items-center gap-1.5 rounded-sm font-medium ring-1 ring-inset ${tone} ${sizeCls} ${className}`}
       title={LABELS[recommendation]}
       aria-label={`Recommendation: ${LABELS[recommendation]}`}
     >

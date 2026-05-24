@@ -23,7 +23,7 @@ export function SectorChip({
   const textSize = size === 'xs' ? 'text-[11px]' : 'text-xs';
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full ring-1 ring-inset ${padX} ${textSize} ${s.bg} ${s.fg} ${s.ring}`}
+      className={`inline-flex items-center gap-1.5 rounded-sm ring-1 ring-inset ${padX} ${textSize} ${s.bg} ${s.fg} ${s.ring}`}
     >
       <span
         aria-hidden="true"

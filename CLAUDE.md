@@ -1601,13 +1601,13 @@ Both fixes ship under one PR per security-hardening bundle. CLAUDE.md
 new §Gotchas — these are not invariants future code authors need to
 remember; they're hardening of existing surfaces).
 
-**Phase 4 LedgerCraft reskin · PR-A1 in flight (this PR)** (2026-05-24) —
-first PR of a 3-step series taking LedgerCraft from the Phase 3d
-adopted baseline (canonical palette + `font-slab` + 4-tier shadow
-tokens + AppShell/Sidebar + dark mode + `rounded-lg` normalization)
-to full spec alignment (restrained palette on sector chips + sharp
-≤4px radius family + borders-as-depth). Direction approval gate
-landed via the now-closed PR #231 HTML mockups under
+**Phase 4 LedgerCraft reskin · PR-A1 merged via PR #232** (2026-05-24,
+`5517b98`) — first of three sub-PRs taking LedgerCraft from the
+Phase 3d adopted baseline (canonical palette + `font-slab` + 4-tier
+shadow tokens + AppShell/Sidebar + dark mode + `rounded-lg`
+normalization) to full spec alignment (restrained palette on sector
+chips + sharp ≤4px radius family + borders-as-depth). Direction
+approval gate landed via the now-closed PR #231 HTML mockups under
 `design-mockups/` (3 files: `current-app-snapshot.html`,
 `ledgercraft-redesign.html` w/ responsive treatment for every
 breakpoint + orientation). User-locked defaults on 2026-05-24:
@@ -1624,13 +1624,34 @@ re-keyed to `NEUTRAL_CHIP_BG / FG / RG` constants (Tailwind
 palette so returning users still associate sectors with their
 familiar dot cue. `sectorStyle()` fallback also collapses to the
 same neutral chip with a slate-400 dot for unknown-sector entries.
-**Out of scope this PR**: `SectorChip.tsx` still `rounded-full`
-(A2); `ScoreBadge` / `RecommendationBadge` / `LossChanceBadge` /
-`MoSBadge` / `MoSCell` / `FilterDrawer` chip squaring (A2); table
-card border + alternating-row treatment + sidebar nav-item radius
-(A3). No schema / Python / scoring / valuation change — token-only
-diff under `frontend/lib/`. Live `npm install` + `tsc --noEmit` +
-`next build` run by CI (sandbox has no `node_modules`; the
+
+**Phase 4 LedgerCraft reskin · PR-A2 in flight (this PR)** (2026-05-24) —
+second of three sub-PRs. **Chip-family squaring** — every chip body
+across the six chip surfaces flips `rounded-full` (Tailwind 9999px,
+violates LedgerCraft Rule 8 "no border-radius > 4px on data
+surfaces") → `rounded-sm` (Tailwind 2px, exactly LedgerCraft Chip
+spec line 95 "2px radius"). Touches: `SectorChip.tsx` ·
+`ScoreBadge.tsx` (sm pill only — lg radial donut + md vertical
+stack keep their respective shapes) · `RecommendationBadge.tsx` ·
+`LossChanceBadge.tsx` · `FilterDrawer.tsx` (4 chip groups — score
+tier · recommendation · valuation · sector) · `RankingTable.tsx`
+(5 active-filter chip variants at the top of the page + the
+notification count badge on the Filters button). The inactive
+filter chip surface in `FilterDrawer.tsx` also shifts `bg-white →
+bg-slate-100` + `ring-slate-300 → ring-slate-200` to match the
+LedgerCraft Filter Chip default-state spec (`#F1F5F9` bg / `#E2E8F0`
+border). Status dots (`h-1.5 w-1.5 rounded-full ${...dot}`) keep
+their `rounded-full` per LedgerCraft Border-Radius spec line 51
+("Full (9999px): Status dots, toggle switches" — explicit
+exception). `MoSBadge.tsx` is a radial SVG donut (no chip body)
+and `MoSCell.tsx` already uses `rounded-sm` (the micro diverging
+bar at the MoS column) — both untouched. **Out of scope this PR**:
+table card border treatment + alternating-row bg shift to
+`slate-100` (A3); sidebar nav-item radius normalization (A3); 
+FilterDrawer "View N stocks" footer button + search-input radius
+(A3 button + input pass). No schema / Python / scoring / valuation
+change — JSX className-only diff. Live `npm install` + `tsc
+--noEmit` + `next build` run by CI (sandbox has no `node_modules`;
 visible TS errors are pre-existing env noise).
 
 **Next deliverables** (pick by appetite):

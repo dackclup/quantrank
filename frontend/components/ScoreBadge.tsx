@@ -91,7 +91,7 @@ export function ScoreBadge({
   const accent = scoreAccentColor(score);
   return (
     <span
-      className={`inline-flex min-w-[3.25rem] items-center justify-center gap-1.5 rounded-full px-2 py-0.5 text-sm font-semibold tabular-nums ring-1 ring-inset ${scoreColorClasses(score)}`}
+      className={`inline-flex min-w-[3.25rem] items-center justify-center gap-1.5 rounded-sm px-2 py-0.5 text-sm font-semibold tabular-nums ring-1 ring-inset ${scoreColorClasses(score)}`}
     >
       {/* Skip the dot for top-tier (≥80) where the badge already has
           a solid color fill — the dot would be invisible anyway. */}
