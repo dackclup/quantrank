@@ -98,7 +98,13 @@ keeps growing/draining as PRs cycle.
 
 ## In flight (current)
 
-## PR (this PR) — Form-4 `<aff10b5One>` direct-XML parse closes the architectural gap (in flight, 2026-05-24)
+_(empty — most recent in-flight PR #238 merged 2026-05-24 as `cdf70bd`; see Merged section below)_
+
+---
+
+## Merged (awaiting housekeeping move to CLAUDE.md)
+
+## PR #238 — Form-4 `<aff10b5One>` direct-XML parse closes the architectural gap (merged 2026-05-24, `cdf70bd`)
 
 Closes the architectural-gap surfaced by PR #230's edgar-debugger
 audit + Part 1 §"Footnote resolution" docstring. Pre-fix: filers
@@ -164,9 +170,14 @@ status sections UNCHANGED in this PR (the in-flight entry is right
 here in the side file). Lockstep rule satisfied per the new
 §Conventions wording.
 
----
+**Known follow-up surfaced at merge time**: simulate workflow on
+this PR cancelled at 45m16s despite PR #230's QR_SKIP_TIER2 +
+QR_SKIP_FUNDAMENTALS fix being in place. Session 6 `ci-triage-engineer`
+investigation in flight to identify the remaining unkilled SEC EDGAR
+loop. Simulate is informational-only per workflow comment line 24
+so merge was allowed; user authorized.
 
-## PR (this PR) — Phase doc-triple lockstep refresh (PHASE_STATUS + SKILL + WORKFLOW) (in flight, 2026-05-24)
+## PR #239 — Phase doc-triple lockstep refresh (PHASE_STATUS + SKILL + WORKFLOW) (merged 2026-05-24, `3e102e1`)
 
 Addresses release-captain BLOCKED-ON-PRE-FLIGHT blocker #3 from
 the v1.3.0 tag attempt: `PHASE_STATUS.md` / `SKILL.md` /
@@ -210,8 +221,6 @@ file pattern (PR #237) satisfies the §Conventions "ship with every
 PR" lockstep rule.
 
 ---
-
-## Merged (awaiting housekeeping move to CLAUDE.md)
 
 ## PR #237 — adopt PHASE_STATUS_INFLIGHT.md side-file (merged 2026-05-24, 1ff6c11)
 
