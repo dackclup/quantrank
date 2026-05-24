@@ -166,6 +166,51 @@ here in the side file). Lockstep rule satisfied per the new
 
 ---
 
+## PR (this PR) — Phase doc-triple lockstep refresh (PHASE_STATUS + SKILL + WORKFLOW) (in flight, 2026-05-24)
+
+Addresses release-captain BLOCKED-ON-PRE-FLIGHT blocker #3 from
+the v1.3.0 tag attempt: `PHASE_STATUS.md` / `SKILL.md` /
+`WORKFLOW.md` were 3 days + ~32 PRs stale (last touched PR #171,
+2026-05-21). Brings all three docs current to main HEAD so the
+release-captain ladder can re-attempt cleanly.
+
+- **`PHASE_STATUS.md`** — "Current state" header date 2026-05-21
+  → 2026-05-24; schema `0.9.4-phase4h.4` → `0.10.2-phase4.5e`;
+  defense layer 27 → 32 emitted flags; subagent inventory 14 → 18
+  (named tier roster — 4 opus / 14 sonnet); skill inventory 42 → 43;
+  recently-merged block refreshed to cover PR #170 → PR #237 (~36
+  entries with commit shas); next-deliverables list updated (Phase
+  4.5e PR 5 cluster weight promotion / Issue #67 sector-CoE flip /
+  v1.3.0 release tag gate / Phase 4i.1-4j.1-4k.1 factor
+  integrations / Phase 5 ML meta-learner).
+- **`SKILL.md`** — schema-version table: 7 new rows added in
+  reverse-chronological order (matching existing 0.9.x convention)
+  for `0.9.5` → `0.9.6` → `0.9.7` → `0.9.8` → `0.10.0` → `0.10.1`
+  → `0.10.2` covering PRs #180/#181/#183/#204/#205/#222/#224. Each
+  row carries PR # + 1-line scope + backward-compat note +
+  literature anchor where applicable.
+- **`WORKFLOW.md`** — five edits: Phase Overview table 4.5 row
+  marked ✅ DONE 2026-05-23 + 10b5-1 filter scope note; Form 4 SEC
+  Filing Roadmap row flipped "planned" → "active" with 4-PR ladder
+  reference (#167/#205/#222/#224); Phase 4.5e task list 5 items
+  flipped `[ ]` → `[x]` with per-PR commits + methodology-scientist
+  Mode B verdicts inline; Phase 4.5 Acceptance Criteria 9 items
+  flipped; Phase 4.5f tag item marked ✅ at `6d414a9b`.
+
+Unblocks the v1.3.0 release tag — blockers 1 (wrong branch — need
+main checkout), 2 (`pyproject.toml` stale `0.3.0` → `1.3.0`),
+4 (production output 1 cycle behind code — next cron fixes), and
+5 (release notes draft scope — release-captain has the full draft
+staged) all still need resolution before tag cut; this PR closes
+blocker 3 only.
+
+No compute / schema / scoring / valuation / frontend / Python /
+TypeScript code change. Doc-only PR. PHASE_STATUS_INFLIGHT.md side-
+file pattern (PR #237) satisfies the §Conventions "ship with every
+PR" lockstep rule.
+
+---
+
 ## Merged (awaiting housekeeping move to CLAUDE.md)
 
 ## PR #237 — adopt PHASE_STATUS_INFLIGHT.md side-file (merged 2026-05-24, 1ff6c11)

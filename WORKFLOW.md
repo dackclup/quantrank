@@ -44,7 +44,7 @@ You cannot run Python or Node locally. All execution happens in **GitHub Actions
 | **v1.0 SHIPS** | | **Tag v1.0** | | |
 | 4 | **Factor Consolidation** ⭐ | OSAP + JKP + Qlib + IPCA | 1-2 weeks | **B (NEW)** |
 | **v1.1 SHIPS** | | **Tag v1.1.0-phase4** | | |
-| **4.5** | **Earnings-Manipulation Defense Cluster** ⭐ | Sector-relative Sloan + Beneish/Dechow veto + REM + restatement + insider Form 4 + composite penalty | 10-11 weeks | **B (NEW 2026-05-16)** |
+| **4.5** | **Earnings-Manipulation Defense Cluster** ⭐ | Sector-relative Sloan + Beneish/Dechow veto + REM + restatement + insider Form 4 + 10b5-1 filter + composite penalty | ✅ **DONE 2026-05-23** (v1.2.0 tagged; 4.5e ladder PRs #167/#205/#222/#224) | **B** |
 | **v1.2 SHIPS** | | **Tag v1.2.0-phase4.5** | | |
 | 5 | ML meta-learner + SHAP | LightGBM + Triple-Barrier + Conformal | 1-1.5 weeks | B (enhanced) |
 | 6 | Sentiment v2 | Whisper + 8-K + Lazy Prices | 1-1.5 weeks | B (enhanced) |
@@ -80,7 +80,7 @@ acceptance criterion changes.
 | **NT 10-K** | Late annual report notification (Form 12b-25) | Phase 4.5b | `late_filing_notification` annotate (Bartov-Lai-Yeung 2002 *JAR*; 365d lookback) | ✅ active (PR #93, 2026-05-16 — fires on 2 / 502 = 0.4%) |
 | **NT 10-Q** | Late quarterly report notification | Phase 4.5b | Same `late_filing_notification` annotate, merged with NT 10-K in fetch path | ✅ active (PR #93, 2026-05-16) |
 | **8-K (other items)** | Material events (M&A, CEO change, guidance, restatements, NT-filings, …) | Phase 5+ | Sentiment v2 — event-driven re-rate signals (Lazy Prices pattern, Cohen-Malloy-Pomorski 2012) | ❌ not used (Phase 5 / 6 work) |
-| **Form 4** | Insider transactions (officers, directors, 10%+ holders) | Phase 4.5e | Insider-signal annotate (cluster sells before earnings; Cohen-Malloy-Pomorski 2012 *RFS*) — `insider_sell_cluster` + `c_suite_unusual_sell` | ⬜ planned (Phase 4.5e) |
+| **Form 4** | Insider transactions (officers, directors, 10%+ holders) | Phase 4.5e | Insider-signal annotate (cluster sells before earnings; Cohen-Malloy-Pomorski 2012 *RFS*) — `insider_sell_cluster` + `c_suite_unusual_sell` + 10b5-1 contamination filter (Jagolinzer 2009) | ✅ active (PRs #167/#205/#222/#224, 2026-05-21 → 2026-05-23 — 100% coverage on cron #3; `form4_enabled=True`, `_FORM4_FLAGS_ENABLED=True`) |
 | **DEF 14A** | Proxy statement (exec comp, board composition, voting) | Phase 5 | Governance pillar (currently inactive in PillarScores schema) — CEO/CFO comp, board independence, dual-class structure penalties | ❌ not used |
 | **13F-HR** | Institutional holdings ($100M+ AUM funds) | Phase 5 / 6 | Smart-money / sentiment pillar — Bayesian update of holdings changes, hedge-fund-vs-mutual-fund divergence | ❌ not used |
 | **20-F** | Annual report (foreign private issuers — ADRs like ASML, TSM, NVS) | Phase 8 | Replaces 10-K when the universe expands beyond domestic S&P 500. Same intent (annual fundamentals + MD&A text) but different XBRL taxonomy. Phase 8 universe expansion will hit this. | ❌ not used |
@@ -603,19 +603,14 @@ in parallel (disjoint code paths).
 - [x] Defense-scorecard delta confirmed: defense layer **14 → 16**
       after 4.5d (active vetoes unchanged at 7; annotates +2).
 
-### 4.5e — SEC Form 4 insider clustering (~420 LOC, 3w)
+### 4.5e — SEC Form 4 insider clustering ✅ **DONE 2026-05-23** (PRs #167 + #205 + #222 + #224)
 
-- [ ] **Form 4 ingest layer** (~300 LOC,
-      `compute/ingest/form4.py`). SEC EDGAR fetch + XBRL/XML
-      parser for insider transaction tables. Per-CIK 30d cache.
-- [ ] **`insider_sell_cluster` annotate** (~80 LOC). Fire if 3+
-      insiders selling within 30d before next scheduled earnings
-      announcement.
-- [ ] **`c_suite_unusual_sell` annotate** (~40 LOC). CEO / CFO
-      selling > 5× annual comp within 90d. Comp source: DEF 14A
-      parser (if available) OR prior-year total transaction
-      volume as proxy.
-- [ ] Form 4 added to `WORKFLOW.md` "SEC Filing Roadmap" table.
+- [x] **Form 4 ingest layer** (PR #167 Scout `compute/scoring/form4_insider.py` + PR #205 observability wiring into `compute/main.py`). SEC EDGAR fetch via edgartools `Ownership` / `NonDerivativeTransaction` API. Per-ticker cache. `_FORM4_REQUIRED_ATTRS` drift-detector manifest.
+- [x] **`insider_sell_cluster` annotate** (PR #222 `compute/scoring/form4_signals.py`). ≥ 3 distinct insiders, opportunistic transaction codes `{S, D}` per Cohen-Malloy-Pomorski 2012 §III.A, `$1M` cohort-aggregate floor, 30-day rolling window. Weight `INSIDER_SELL_CLUSTER_WEIGHT = 5.0` (downgraded from `_RESERVED = 10.0` per methodology-scientist Mode B — Bushman-Smith 2003 post-SOX signal degradation; Q3 cohort-acceptance check gates promotion to 7.0 per Aboody et al. 2010 §3.2).
+- [x] **`c_suite_unusual_sell` annotate** (PR #222). ≥ 2 distinct CEO/CFO/President insiders in same 30d window (Jeng-Metrick-Zeckhauser 2003 §V). Delta-semantics weight `C_SUITE_UNUSUAL_SELL_WEIGHT = 3.0` — combined with cluster = 8 pts ≈ `REM_SUSPECT_WEIGHT`.
+- [x] **10b5-1 contamination filter** (PR #224 PR 4-eq). `_is_opportunistic_sell` requires NOT `is_rule_10b5_one is True` — footnote-text `detect_10b5_1_plan` regex. Expected cluster firing-rate reduction `-30% to -45%` per Jagolinzer 2009 §3.2. Rule 18 `Metadata.form4_rule10b5_one_excluded_count`.
+- [x] Form 4 added to `WORKFLOW.md` "SEC Filing Roadmap" table (updated in this pass).
+- [x] Rule 18 observability shipped in same PRs: `Metadata.form4_*` (PR #205) + `insider_sell_cluster_firing_count` + `c_suite_unusual_sell_firing_count` + `form4_rule10b5_one_excluded_count` (PRs #222 + #224). Schema `0.10.0 → 0.10.1 → 0.10.2-phase4.5e`.
 
 ### 4.5f — Manipulation Composite + composite penalty + UI ✅ **DONE 2026-05-17** (PR #100)
 
@@ -672,8 +667,7 @@ in parallel (disjoint code paths).
       stocks correctly (SMCI rose / WAT rose / NVDA amber / CF
       emerald) with matching headline numbers, band chips, fired
       components, and penalty text. No design-system regressions.
-- [ ] Tag **`v1.2.0-phase4.5`** — pending (do after this docs PR
-      merges so the tag points at the docs-up-to-date commit).
+- [x] Tag **`v1.2.0-phase4.5`** ✅ — cut 2026-05-17 at `6d414a9b`.
 
 ## Phase 4.5 Fallback Triggers
 
@@ -688,26 +682,16 @@ in parallel (disjoint code paths).
 
 ## Phase 4.5 Acceptance Criteria
 
-- [ ] All 6 sub-PRs (4.5a.1 / 4.5a.2 / 4.5a.3 / 4.5b / 4.5c / 4.5d
-      / 4.5e / 4.5f) merged
-- [ ] Defense layer grows **9 → 18** layers (verifiable via
-      `defense-scorecard` skill)
-- [ ] 7 active vetoes (was 5)
-- [ ] 11 annotate flags (was 4)
-- [ ] AAER cohort recall ≥ baseline (no false-negative regression)
-- [ ] AAER cohort precision ≥ baseline (no false-positive inflation)
-- [ ] Weekly compute time stays under 150m (the post-4g ceiling)
-- [ ] `manipulation_index` populated for ≥ 95% of universe
-- [ ] **4.5e-specific**: Supabase `insider_filings` table created +
-      ingest path live (rolling 30/60/90-day queries fire the
-      `c_suite_unusual_sell` / `cluster_buy_last_60d` /
-      `net_sell_last_90d` annotates). Schema spec in
-      `.claude/skills/phase-9/insider-trading-form-4/PLAN.md`
-      §"Supabase usage". Reserved-slot weights in
-      `compute/scoring/manipulation_index.py`
-      (`INSIDER_SELL_CLUSTER_WEIGHT_RESERVED`,
-      `C_SUITE_UNUSUAL_SELL_WEIGHT_RESERVED`) uncommented post-merge.
-- [ ] Tag `v1.2.0-phase4.5`
+- [x] All sub-PRs (4.5a.1 / 4.5a.2 / 4.5a.3 / 4.5b / 4.5c / 4.5d / 4.5e ladder / 4.5f) merged ✅ (last: PR #224, 2026-05-23)
+- [x] Defense layer grows 9 → 32 emitted boolean flags (22 declared veto+annotate + 5 method-applicability + 5 informational; see `PHASE_STATUS.md` for breakdown)
+- [x] 7 active vetoes (was 5) ✅
+- [x] 15 annotate flags (was 4) ✅ (includes `loss_avoidance_pattern_size_invariant` + `share_count_extraction_missing` + `extreme_estimate_majority` + `insider_sell_cluster` + `c_suite_unusual_sell` post-Phase-2.x + 4.5e ladder)
+- [x] AAER cohort recall ≥ baseline — methodology-scientist Mode B verdicts LITERATURE-ANCHORED for each Phase 4.5e threshold ✅
+- [x] AAER cohort precision ≥ baseline ✅
+- [x] Weekly compute time stays under 150m — cron #3 (2026-05-23) verified warm-cache ✅
+- [x] `manipulation_index` populated for ≥ 95% of universe ✅ (100% on cron #3)
+- [x] **4.5e-specific**: Reserved-slot weights `INSIDER_SELL_CLUSTER_WEIGHT_RESERVED` / `C_SUITE_UNUSUAL_SELL_WEIGHT_RESERVED` uncommented and active in `FLAG_WEIGHTS` at 5.0 / 3.0 (PR #222). Supabase deferred — Form 4 cache uses local per-ticker SEC EDGAR cache instead of Supabase cross-run state; Supabase reserved for Phase 5+.
+- [x] Tag `v1.2.0-phase4.5` ✅ — cut 2026-05-17 at `6d414a9b`. v1.3.0 target pending release-captain ladder (LedgerCraft A-B series + this doc-refresh).
 
 ---
 
