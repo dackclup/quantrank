@@ -11,12 +11,22 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
   EDGAR_USER_AGENT: ${{ secrets.EDGAR_USER_AGENT }}
 
+# Default to read for the workflow; the `compute` job explicitly elevates
+# to `contents: write` because its final step `git commit + push`-es the
+# generated JSON back to main. Any future job added to this file
+# inherits the read default unless it explicitly opts up — least-
+# privilege per security-reviewer 2026-05-23 (PR #226 WARN W2).
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   compute:
     runs-on: ubuntu-latest
+    # The `Commit JSON outputs` step at the end of this job is the only
+    # writer in the workflow; scope the elevated permission to this job
+    # so the workflow-level default stays read.
+    permissions:
+      contents: write
     # 90m was set after PR 3d Part 2 (per-stock latency observability)
     # and held through 4f (warm-cache wall-clock 5m14s). 4g re-enabled
     # 8-K Tier-2 fetches (Items 4.01 + 4.02), which added ~15-30m of

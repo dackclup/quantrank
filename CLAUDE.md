@@ -1561,6 +1561,46 @@ PR that can run network tests first. Tests 1168 → 1168 (no test added /
 removed; 3 edits in-place). No compute / schema / scoring / valuation /
 frontend / Python production-code change.
 
+**Security WARN cleanup (W2 + W4) in flight (this PR)** — closes the
+two remaining security-reviewer WARNs deferred from PR #226 (W1 + W3
+already shipped there). Both are operational hygiene with no
+compute / schema / production-code surface; bundled in a single
+focused PR.
+
+- **W2 — `compute-rankings.yml` workflow-perm narrowing**: the
+  workflow-level `permissions: contents: write` declaration was
+  flagged as wider-than-needed by `security-reviewer` Section C on
+  2026-05-23. The only writer in the workflow is the final `Commit
+  JSON outputs` step inside the `compute:` job. Fix: workflow-level
+  default narrowed to `contents: read`; the `compute:` job
+  explicitly opts up to `contents: write` per least-privilege. Any
+  future job added to this file now inherits `read` by default
+  unless it explicitly opts up. Behavior unchanged (the compute job
+  still has write); only the default surface shrinks. YAML
+  parse-verified.
+- **W4 — `.claude/hooks/log-bash.sh` inline-credential scrub**: the
+  hook previously appended the raw Bash command (including any
+  inline env-var dereference like `EDGAR_USER_AGENT=foo python ...`
+  or an `Authorization: Bearer <tok>` header) to gitignored
+  `.claude/session.log`. Severity was LOW because the file is
+  gitignored + local-only, but an accidental `cat .claude/session.log`
+  during a screen-share / pasted into a gist could leak the
+  credential. Fix: `sed` pre-filter redacts the value half of known
+  secret prefixes before logging, preserving prefix + structure for
+  readability. Covered prefixes: GitHub tokens
+  (`ghp_/gho_/ghu_/ghs_/ghr_/github_pat_`), Anthropic + OpenAI
+  (`sk-ant-api*` + generic `sk-*`), AWS (`AKIA*` / `ASIA*`), Google
+  (`AIza*`), Slack (`xox*-`), and bare `Bearer <tok>` /
+  `Authorization: Bearer <tok>` headers. Manual scrub test:
+  `Bearer ghp_abc...456` → `Bearer ghp_[REDACTED]`. Fail-open
+  preserved (sed errors return original command via the existing
+  `|| true` discipline).
+
+Both fixes ship under one PR per security-hardening bundle. CLAUDE.md
++ AGENTS.md lockstep satisfied via §Phase status in-flight notes (no
+new §Gotchas — these are not invariants future code authors need to
+remember; they're hardening of existing surfaces).
+
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — after ≥ 1
   cron's `form4_rule10b5_one_excluded_count` lands and firing-rate
