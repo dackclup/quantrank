@@ -140,9 +140,18 @@ jobs:
     if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     # Warm-cache compute is ~10-15 min steady-state (per compute-rankings.yml
-    # comment). 45 min gives ~3x headroom for a partial cache miss without
-    # crossing into cold-cache territory (which needs the 150-min ceiling).
-    timeout-minutes: 45
+    # comment). PR #230 + #241 wired 5 skip env vars (FORM4_FETCH_SKIP +
+    # QR_SKIP_TIER2 + QR_SKIP_FUNDAMENTALS + QR_SKIP_OSAP + QR_SKIP_CROSS_SOURCE)
+    # to keep simulate under 45 min, but PRs #230 / #238 / #241 ALL still hit
+    # the 45-min cap even after each round of skip-var additions. Bumped to
+    # 90 min 2026-05-24 as a pragmatic backstop — if the cache restore from
+    # the weekly cron is empty/partial (cache eviction OR cron didn't run OR
+    # the new path additions invalidated the key), the live fetch fallbacks
+    # need more headroom. Cron uses 150 min; simulate at 90 stays well below
+    # that. Simulate IS informational-only per the workflow comment at line
+    # 24, so the workflow can afford a wider budget without blocking PR
+    # merge.
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6

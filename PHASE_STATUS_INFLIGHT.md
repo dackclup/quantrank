@@ -98,7 +98,6 @@ keeps growing/draining as PRs cycle.
 
 ## In flight (current)
 
-<<<<<<< HEAD
 ## PR #242 — Light-mode soften + Strong Buy nowrap + StockLogo square (merged 2026-05-24, `a30c017`)
 
 Three user-direction visual polish tweaks landed post-LedgerCraft series:
@@ -130,10 +129,7 @@ satisfies §Conventions lockstep per PR #237 convention.
 
 ---
 
-## PR (this PR) — Simulate Part 5: wire `QR_SKIP_OSAP` + add `compute/cache/osap` to cache paths (in flight, 2026-05-24)
-=======
-## PR (this PR) — Simulate Parts 5+6: wire `QR_SKIP_OSAP` + `QR_SKIP_CROSS_SOURCE` (closes the 4th + 5th external-data loops) (in flight, 2026-05-24)
->>>>>>> 7eec245 (ci(simulate) Part 6: wire QR_SKIP_CROSS_SOURCE (closes the 5th external-data loop))
+## PR (this PR) — Simulate Parts 5+6+7: wire `QR_SKIP_OSAP` + `QR_SKIP_CROSS_SOURCE` + timeout-minutes 45→90 backstop (in flight, 2026-05-24)
 
 Closes the 4th external-data loop missed by PR #230's Parts 2 + 4.
 `ci-triage-engineer` session-6 deep-dive on PR #238's simulate
@@ -209,6 +205,20 @@ site already handles per existing graceful-degradation). Wired in
 vars. CLAUDE.md §Gotchas 4-var combo entry rewritten to a 5-var
 combo with the full mapping. The 5 env vars now collectively cover
 ALL FIVE independent external-data loops in `compute/main.py`.
+
+**Part 7 added 2026-05-24 15:15 UTC** — Part 6's live-fire on PR
+#241 STILL cancelled at 45m15s. Five skip env vars all set, all
+read-sites verified by direct smoke-tests, but the cancellation
+recurs. Pragmatic backstop: bump `timeout-minutes: 45 → 90` in
+`pre-merge-prod-sim.yml`. Rationale: simulate IS informational-only
+(per workflow comment line 24), so a wider budget doesn't block PR
+merge. Cron uses 150m; simulate at 90m stays well below. If 90m
+STILL cancels, we have hard evidence that EITHER (a) the cache is
+empty + all 5 fall-through-to-live paths trigger live fetches OR
+(b) there's a 6th loop OR (c) the env-vars aren't being read
+correctly in CI. The 90m bump buys diagnostic headroom — a 50m or
+70m completion (vs cancellation) surfaces the timing breakdown we
+need to root-cause definitively.
 
 ---
 
