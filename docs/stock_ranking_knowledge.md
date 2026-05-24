@@ -990,7 +990,7 @@ Hard floors on composite if any of:
 
 ## 25.2 Refresh Cadence
 - **Daily**: Skip (waste of GH Actions minutes)
-- **Weekly Sunday 22:00 UTC**: Main compute cron
+- **Weekday Mon-Fri 22:00 UTC**: Main compute cron (weekends skipped — no new trading data)
 - **Monthly 1st**: ML retrain (Kaggle)
 - **Quarterly**: Whisper transcription, deep model re-validation (Modal)
 

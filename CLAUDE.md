@@ -28,7 +28,7 @@ design-system spec.
   (`#15803D`) on wordmark Q logo + FilterDrawer submit CTA, OKLCH
   hue 155 → 152 + chroma 0.09 → 0.13 closer to forest green,
   border-radius normalization `rounded-2xl/xl` → `rounded-lg`).
-- **CI** — GitHub Actions; weekly `compute-rankings.yml` (cron Sun 22:00 UTC)
+- **CI** — GitHub Actions; weekday `compute-rankings.yml` (cron Mon-Fri 22:00 UTC; weekends skipped — no new trading data)
 - **Data** — SEC EDGAR via `edgartools` · yfinance for prices · S&P 500
   constituents scraped from Wikipedia
 
