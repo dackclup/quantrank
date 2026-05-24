@@ -1122,8 +1122,8 @@ note cross-tool-specific points only:
   data grid. No schema / Python / scoring / valuation / output JSON
   change across the entire 3-PR series.
 
-- **Phase 4 LedgerCraft alignment — PR-B1 in flight (this PR)**
-  (2026-05-24) — follow-up surfaced by the post-A3 design audit (28
+- **Phase 4 LedgerCraft alignment — PR-B1 merged via PR #235**
+  (2026-05-24, `2b588c8`) — follow-up surfaced by the post-A3 design audit (28
   MUST-FIX + 5 SHOULD-FIX violations across 16 untouched components).
   B1 = score-tier token fix in `frontend/lib/visual.ts` — removes
   `teal-*` (TIERS[1] "Strong" 55-70) and `orange-*` (TIERS[3] "Weak"
@@ -1143,6 +1143,32 @@ note cross-tool-specific points only:
   remaining surfaces; stripe + hover polish). Cross-tool agents
   editing score-tier-related surfaces post-B1 should expect the
   emerald/amber 5-step ramp (no teal, no orange).
+
+- **Phase 4 LedgerCraft alignment — PR-B2+B3+B4 combined in flight
+  (this PR)** (2026-05-24) — final follow-up of the post-A3 design
+  audit. Combined B2 (card surface normalization) + B3 (chip shape
+  squaring round 2) + B4 (stripe + hover polish) into one PR
+  because the three scopes share five files. Touches 10 files with
+  ~30 className edits — every `rounded-lg/md` card+button+input
+  surface in the per-stock detail page and 7 chart/card components
+  flips to `rounded-sm` / `rounded` (4px) per LedgerCraft Button /
+  Text Input / Cards spec; `shadow-medium` / `shadow-sm` /
+  `shadow-large` / `shadow-subtle` dropped from data surfaces per
+  Elevation philosophy ("borders as the primary depth indicator");
+  RawMetricsTable alt-row `even:bg-slate-50` → `even:bg-slate-100`
+  matches Rule 5 (#FFFFFF / #F1F5F9); FairPriceBarChart tally pills
+  + verdict badges + remaining `rounded-full` chip bodies across
+  ManipulationRiskCard / Tier2EventCard / PriceHistoryChart /
+  PriceTimePeriodSelector / ThemeToggle / detail-page rank+filing-
+  lag badges all square to `rounded-sm`. Status dots
+  (`h-1.5 w-1.5 rounded-full`) preserved per Border-Radius spec
+  line 51 exception. **Series complete** — after this PR the
+  project is at full LedgerCraft palette + theme alignment across
+  every component (A1 + A2 + A3 + B1 + this PR). Cross-tool agents
+  editing new chip / button / card surfaces should reach for
+  `rounded-sm` (chips/buttons/inputs) or `rounded` (cards) and
+  drop shadows from data-grid surfaces. No schema / Python /
+  scoring / valuation / output JSON change.
 
 ## Claude-Code-specific tooling
 

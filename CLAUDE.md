@@ -1715,7 +1715,8 @@ Python / scoring / valuation / output JSON change across the
 entire 3-PR series — all token-and-className diffs under
 `frontend/`.
 
-**Phase 4 LedgerCraft alignment · PR-B1 in flight (this PR)** (2026-05-24) —
+**Phase 4 LedgerCraft alignment · PR-B1 merged via PR #235** (2026-05-24,
+`2b588c8`) —
 follow-up surfaced by the post-A3 `frontend-design-reviewer` audit
 (28 MUST-FIX + 5 SHOULD-FIX violations across 16 untouched
 components). **B1 = score-tier token fix** — `frontend/lib/visual.ts`
@@ -1741,6 +1742,59 @@ since they all import from these tokens; no component code changes.
 normalization · chip shape squaring round 2 · stripe + hover polish —
 ~50-70 lines across 8 more components). No schema / Python /
 scoring / valuation / output JSON change — token-only diff.
+
+**Phase 4 LedgerCraft alignment · PR-B2+B3+B4 combined in flight (this PR)** (2026-05-24) —
+final follow-up of the post-A3 design-reviewer audit. Combined B2
+(card surface normalization) + B3 (chip shape squaring round 2) +
+B4 (stripe + hover polish) into one PR because the three scopes
+share five files (FairPriceBarChart · FairPriceCard ·
+ManipulationRiskCard · Tier2EventCard · `app/stock/[ticker]/page.tsx`)
+and splitting them would force the second/third PR to rebase on
+each merge. **Scope (10 files, ~30 className edits)**:
+
+- `app/stock/[ticker]/page.tsx` — detail-data-pending banner +
+  hero header + empty-state placeholder + data-quality section
+  `rounded-lg shadow-large/medium` → `rounded` (4px, no shadow) ·
+  rank badge `rounded-md` → `rounded-sm` · filing-lag badge
+  `rounded-full` → `rounded-sm`
+- `FairPriceBarChart.tsx` — outer section `rounded-lg` → `rounded` ·
+  headline card `rounded-lg shadow-medium` → `rounded` · per-method
+  list `rounded-lg shadow-subtle` → `rounded` · 3 tally pills +
+  per-method verdict badge `rounded-full` → `rounded-sm`
+- `FairPriceCard.tsx` — 2 section cards `rounded-lg` → `rounded` ·
+  inner table `rounded-md` → `rounded` · warning chip `rounded-full`
+  → `rounded-sm` · MethodRow hover `hover:bg-slate-50` →
+  `hover:bg-slate-100`
+- `ManipulationRiskCard.tsx` — section card `rounded-lg` →
+  `rounded` · severity chip `rounded-full` → `rounded-sm`
+- `PillarRadarChart.tsx` — section card `rounded-lg shadow-medium`
+  → `rounded` · pillar bar track `rounded-md` → `rounded-sm`
+- `RawMetricsTable.tsx` — outer container `rounded-lg shadow-medium`
+  → `rounded` · alt-row `even:bg-slate-50 hover:bg-slate-100` →
+  `even:bg-slate-100 hover:bg-slate-200` (per Rule 5 #FFFFFF /
+  #F1F5F9)
+- `Tier2EventCard.tsx` — section card `rounded-lg` → `rounded` ·
+  severity badge `rounded-full` → `rounded-sm`
+- `PriceHistoryChart.tsx` — 2 off-chart Fair/Target reference chips
+  `rounded-full` → `rounded-sm` (chart legend swatches kept
+  `rounded-full` per "decorative visual flourish" — fine since they're
+  not data chips)
+- `PriceTimePeriodSelector.tsx` — period button base `rounded-full`
+  → `rounded-sm` · unselected hover `hover:bg-slate-50` →
+  `hover:bg-slate-100`
+- `ThemeToggle.tsx` — both layouts (row + icon) `rounded-md` →
+  `rounded-sm`
+
+Status dots (`h-1.5 w-1.5 rounded-full`) preserved per Border-
+Radius spec line 51 exception. DualRange thumb pseudo-elements,
+MoSBadge SVG donut, MoSCell inline RGB, StockLogo `borderRadius:
+'50%'`, and Recharts adapter hex values all OK-TO-KEEP per
+spec / Rule 0 carve-outs. After this PR the project is at full
+LedgerCraft palette + theme alignment across every component —
+restrained 4-family palette, sharp ≤4px radii, borders-as-depth
+on every data surface (overlays and slide-overs keep their
+elevation shadows). No schema / Python / scoring / valuation /
+output JSON change.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — after ≥ 1

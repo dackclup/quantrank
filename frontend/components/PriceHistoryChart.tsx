@@ -289,7 +289,7 @@ export function PriceHistoryChart({
         <div className="flex flex-wrap gap-1.5 text-xs">
           {fairOffChart && (
             <span
-              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 ring-1 ring-inset ${fairAboveCurrent ? upChipCls : downChipCls}`}
+              className={`inline-flex items-center gap-1 rounded-sm px-2 py-0.5 ring-1 ring-inset ${fairAboveCurrent ? upChipCls : downChipCls}`}
             >
               <span
                 className={`h-0 w-3 border-t border-dashed ${fairAboveCurrent ? 'border-emerald-600' : 'border-rose-600'}`}
@@ -299,7 +299,7 @@ export function PriceHistoryChart({
           )}
           {targetOffChart && (
             <span
-              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 ring-1 ring-inset ${targetAboveCurrent ? upChipCls : downChipCls}`}
+              className={`inline-flex items-center gap-1 rounded-sm px-2 py-0.5 ring-1 ring-inset ${targetAboveCurrent ? upChipCls : downChipCls}`}
             >
               <span
                 className={`h-[2px] w-3 ${targetAboveCurrent ? 'bg-emerald-700' : 'bg-rose-700'}`}
