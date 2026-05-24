@@ -26,6 +26,7 @@ derive long-short returns from ``port=01`` vs ``port=10`` differences.
 from __future__ import annotations
 
 import logging
+import os
 import time
 from datetime import date
 
@@ -96,8 +97,43 @@ def fetch_osap_returns(
     rows whose ``date`` is after ``as_of`` are dropped — Phase 4h's
     replication callers use this to keep the cross-section honest
     against the as-of point-in-time.
+
+    ``QR_SKIP_OSAP=1`` escape hatch (PR #230 Part 5, 2026-05-24): when
+    set (and ``force_refresh=False``), the freshness gate is bypassed —
+    if the cached parquet exists at ``OSAP_RETURNS_CACHE``, it is
+    returned without a live ``openassetpricing.com`` download even when
+    older than ``OSAP_RETURNS_MAX_AGE_DAYS`` (31 days). Used by
+    ``.github/workflows/pre-merge-prod-sim.yml`` to skip the 30-second
+    to 45-minute bulk download (single external host, no SLA) that
+    accumulated cold-cache budget after PR #230's three SEC EDGAR
+    skips were already in place. Falls through to live fetch when no
+    cache exists (cold runner has nothing to read; first-cron path).
     """
     cache = config.OSAP_RETURNS_CACHE
+    if os.environ.get("QR_SKIP_OSAP") and not force_refresh:
+        if cache.exists():
+            age_days = (time.time() - cache.stat().st_mtime) / 86400
+            logger.info(
+                "OSAP cache FORCE-HIT (QR_SKIP_OSAP=1, age=%.1f days)",
+                age_days,
+            )
+            df = pd.read_parquet(cache)
+            missing = REQUIRED_COLUMNS - set(df.columns)
+            if missing:
+                raise ValueError(
+                    f"OSAP returns missing required columns {sorted(missing)}; "
+                    f"got {sorted(df.columns)}. Upstream API may have changed."
+                )
+            if signals is not None:
+                df = df[df["signalname"].isin(signals)]
+            if as_of is not None:
+                df = df[df["date"] <= pd.Timestamp(as_of)]
+            return df
+        logger.warning(
+            "QR_SKIP_OSAP set but no cached OSAP parquet at %s — "
+            "falling through to live fetch (first-cron / cache-evicted)",
+            cache,
+        )
     if not force_refresh and _is_fresh(cache, config.OSAP_RETURNS_MAX_AGE_DAYS):
         age_days = (time.time() - cache.stat().st_mtime) / 86400
         logger.info("OSAP cache hit (age=%.1f days)", age_days)

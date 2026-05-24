@@ -88,6 +88,45 @@ env:
   # Weekly cron (compute-rankings.yml) does NOT set this — full
   # fundamentals fetch runs there.
   QR_SKIP_FUNDAMENTALS: "1"
+  # 2026-05-24 (PR #230 Part 5 follow-up) — pre-merge-prod-sim skips
+  # the OSAP bulk fetch too. Parts 1-4 above killed three SEC EDGAR
+  # loops (Form-4, Tier-2, fundamentals × 2) but left the 4th
+  # external-data fetch — OSAP / openassetpricing.com — running
+  # unconditionally. ci-triage-engineer session 6 root-cause: the
+  # `compute/cache/osap/` directory was missing from BOTH workflow
+  # cache `path:` blocks, so every simulate started with an EMPTY
+  # OSAP cache. `fetch_osap_returns` then hits a 30-second to
+  # 45-minute live download from openassetpricing.com (single host,
+  # no SLA, tenacity 2-attempt × 30s stop_after_delay). When this
+  # was combined with any small fundamentals fall-through or
+  # cache-restore partial miss it pushed simulate past the 45-min
+  # cap on PR #238 (`cdf70bd`). Fix is two-part: (a) add
+  # `compute/cache/osap` to BOTH workflow cache paths below + in
+  # compute-rankings.yml (so weekly cron populates the warm cache);
+  # (b) wire `QR_SKIP_OSAP=1` here as the defense-in-depth backstop
+  # for cache-evicted scenarios. Weekly cron does NOT set this —
+  # full live fetch runs there once a week.
+  QR_SKIP_OSAP: "1"
+  # 2026-05-24 (PR #230 Part 6 — the 5th loop) — pre-merge-prod-sim
+  # also skips the cross-source yfinance.info validation loop. Even
+  # with the four prior skip vars (FORM4_FETCH_SKIP + QR_SKIP_TIER2 +
+  # QR_SKIP_FUNDAMENTALS + QR_SKIP_OSAP) ALL set + `compute/cache/yfinance_info`
+  # already in the workflow cache `path:` block, the simulate STILL
+  # cancelled at 45m14s on PR #241. Root cause: yfinance_info has a
+  # 24-hour freshness TTL in `_cache_read`. The weekly cron writes
+  # the cache Friday 22:00 UTC, but a Sunday simulate's cache restore
+  # gives 39-hour-old entries → fails freshness check → 502-ticker
+  # serial `yf.Ticker(ticker).info` cold fetch (2-8s per ticker with
+  # tenacity `wait_exponential(min=1, max=10)` × 3 attempts) = 17-67
+  # minutes alone. ci-triage-engineer session-6 root-cause from
+  # exhaustive code walk of compute/main.py's external-data loops.
+  # Wired in `compute/ingest/cross_source.py:fetch_yfinance_market_cap`
+  # at the TOP of the function: when set, stale-but-present cache
+  # entries are read directly (bypassing the 24h TTL); when cache
+  # is genuinely empty, returns None (skip the cross-source check
+  # entirely — semantically identical to a cold-cache fetch failure
+  # which the call site already handles).
+  QR_SKIP_CROSS_SOURCE: "1"
 
 permissions:
   contents: read
@@ -101,9 +140,18 @@ jobs:
     if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     # Warm-cache compute is ~10-15 min steady-state (per compute-rankings.yml
-    # comment). 45 min gives ~3x headroom for a partial cache miss without
-    # crossing into cold-cache territory (which needs the 150-min ceiling).
-    timeout-minutes: 45
+    # comment). PR #230 + #241 wired 5 skip env vars (FORM4_FETCH_SKIP +
+    # QR_SKIP_TIER2 + QR_SKIP_FUNDAMENTALS + QR_SKIP_OSAP + QR_SKIP_CROSS_SOURCE)
+    # to keep simulate under 45 min, but PRs #230 / #238 / #241 ALL still hit
+    # the 45-min cap even after each round of skip-var additions. Bumped to
+    # 90 min 2026-05-24 as a pragmatic backstop — if the cache restore from
+    # the weekly cron is empty/partial (cache eviction OR cron didn't run OR
+    # the new path additions invalidated the key), the live fetch fallbacks
+    # need more headroom. Cron uses 150 min; simulate at 90 stays well below
+    # that. Simulate IS informational-only per the workflow comment at line
+    # 24, so the workflow can afford a wider budget without blocking PR
+    # merge.
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
@@ -140,6 +188,7 @@ jobs:
             compute/cache/edgar_amendments
             compute/cache/edgar_late_filings
             compute/cache/edgar_form4
+            compute/cache/osap
           key: cache-v4-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
             cache-v4-${{ steps.quarter.outputs.q }}-

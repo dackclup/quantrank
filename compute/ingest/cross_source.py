@@ -140,7 +140,47 @@ def fetch_yfinance_market_cap(ticker: str) -> float | None:
     tenacity retry. Returns ``None`` on persistent failure rather than
     raising — the caller treats absence as "no validation possible"
     (same semantics as the going-concern Tier-2 quiet-skip).
+
+    ``QR_SKIP_CROSS_SOURCE=1`` escape hatch (PR #230 Part 6, 2026-05-24
+    — the 5th external-data loop): when set, the 24h freshness gate in
+    ``_cache_read`` is bypassed for stale-but-present entries; if cache
+    is genuinely empty (cold-runner / first-cron-since-eviction), the
+    live yfinance fetch is skipped entirely and ``None`` is returned.
+    Used by ``.github/workflows/pre-merge-prod-sim.yml`` to skip the
+    502-ticker serial loop ``yf.Ticker(ticker).info`` (2-8s per ticker
+    cold = 17-67m) that filled the simulate budget on PR #230 / #238 /
+    #241 despite the four prior skip vars (FORM4_FETCH_SKIP +
+    QR_SKIP_TIER2 + QR_SKIP_FUNDAMENTALS + QR_SKIP_OSAP) being in
+    place. Returning ``None`` means the downstream
+    ``validate_market_cap`` cross-check is skipped — semantically
+    identical to a cold-cache-fetch-failure, which the call site
+    already handles per the existing graceful-degradation pattern.
+    Weekly cron does NOT set this — full live fetch runs there.
     """
+    if os.environ.get("QR_SKIP_CROSS_SOURCE"):
+        # Stale-cache-tolerant path: bypass the 24h TTL in _cache_read
+        # by reading the JSON directly when it exists.
+        cache_file = _cache_path(ticker)
+        if cache_file.exists():
+            try:
+                with cache_file.open() as f:
+                    payload = json.load(f)
+                cached = float(payload.get("market_cap"))
+                logger.debug(
+                    "yfinance_info FORCE-HIT (QR_SKIP_CROSS_SOURCE=1) "
+                    "for %s (stale-tolerant)", ticker,
+                )
+                return cached
+            except Exception as e:  # noqa: BLE001
+                logger.debug(
+                    "QR_SKIP_CROSS_SOURCE stale-read failed for %s: %s — "
+                    "skipping validation", ticker, e,
+                )
+                return None
+        # No cache file at all → skip live fetch entirely; cross-check
+        # is treated as "no validation possible" (existing semantic).
+        return None
+
     cached = _cache_read(ticker)
     if cached is not None:
         return cached
