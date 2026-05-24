@@ -88,6 +88,25 @@ env:
   # Weekly cron (compute-rankings.yml) does NOT set this — full
   # fundamentals fetch runs there.
   QR_SKIP_FUNDAMENTALS: "1"
+  # 2026-05-24 (PR #230 Part 5 follow-up) — pre-merge-prod-sim skips
+  # the OSAP bulk fetch too. Parts 1-4 above killed three SEC EDGAR
+  # loops (Form-4, Tier-2, fundamentals × 2) but left the 4th
+  # external-data fetch — OSAP / openassetpricing.com — running
+  # unconditionally. ci-triage-engineer session 6 root-cause: the
+  # `compute/cache/osap/` directory was missing from BOTH workflow
+  # cache `path:` blocks, so every simulate started with an EMPTY
+  # OSAP cache. `fetch_osap_returns` then hits a 30-second to
+  # 45-minute live download from openassetpricing.com (single host,
+  # no SLA, tenacity 2-attempt × 30s stop_after_delay). When this
+  # was combined with any small fundamentals fall-through or
+  # cache-restore partial miss it pushed simulate past the 45-min
+  # cap on PR #238 (`cdf70bd`). Fix is two-part: (a) add
+  # `compute/cache/osap` to BOTH workflow cache paths below + in
+  # compute-rankings.yml (so weekly cron populates the warm cache);
+  # (b) wire `QR_SKIP_OSAP=1` here as the defense-in-depth backstop
+  # for cache-evicted scenarios. Weekly cron does NOT set this —
+  # full live fetch runs there once a week.
+  QR_SKIP_OSAP: "1"
 
 permissions:
   contents: read
@@ -140,6 +159,7 @@ jobs:
             compute/cache/edgar_amendments
             compute/cache/edgar_late_filings
             compute/cache/edgar_form4
+            compute/cache/osap
           key: cache-v4-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
             cache-v4-${{ steps.quarter.outputs.q }}-

@@ -389,14 +389,23 @@ whitespace / single-line fixes do not trigger.
   cardinality, pillar count, manifest partition) with a `@given`
   property in `tests/**/test_*_properties.py`. Don't use
   `@settings(deadline=None)` — a slow example is itself a signal.
-- **`FORM4_FETCH_SKIP=1` skips the Form-4 bulk fetch in `compute/main.py`**
-  — read at `compute/main.py:840` with a safe empty-string default
-  (absence = no skip). Set in `.github/workflows/pre-merge-prod-sim.yml`
-  to keep the simulate workflow under the 45-min GitHub Actions cap while
-  letting the rest of compute warm. Weekly cron (`compute-rankings.yml`)
-  omits it so Form-4 runs full. Affects only the observability surface
-  added in Phase 4.5e PR 2 (`form4_*` Metadata fields). CI-only escape
-  hatch — never set in cron / local dev.
+- **CI escape-hatch env-var combo for simulate** (4 vars, all set
+  together in `.github/workflows/pre-merge-prod-sim.yml`; NONE set in
+  weekly cron `compute-rankings.yml`): `FORM4_FETCH_SKIP=1` (skip Form-4
+  bulk fetch — read at `compute/main.py:840`; safe empty default),
+  `QR_SKIP_TIER2=1` (skip Tier-2 10-K text + 8-K fetch — read at
+  `compute/scoring/tier2.py:162`), `QR_SKIP_FUNDAMENTALS=1` (skip
+  fundamentals freshness gate — read at `compute/ingest/fundamentals.py`
+  in BOTH `fetch_fundamentals` + `fetch_fundamentals_history` BEFORE
+  `_require_identity()`), and `QR_SKIP_OSAP=1` (skip OSAP openassetpricing.com
+  bulk download — read at `compute/ingest/osap.py:fetch_osap_returns`
+  BEFORE the `_is_fresh` check). Each falls through to live fetch if no
+  cached parquet exists. Together they cover the FOUR independent
+  external-data loops in `compute/main.py` (Form-4 / Tier-2 / fundamentals
+  × 2 / OSAP) that PR #230 + PR #238's post-merge investigation
+  identified. CI-only — never set in cron / local dev. Simulate workflow
+  expected steady-state with all four skips active on a warm-cache
+  restore: 8-15 min (vs the pre-fix 45-min cap breach).
 - **Sub-agent `tools:` frontmatter does NOT auto-inherit MCP tools**
   — surfaced 2026-05-23 by the post-PR-#225 live-fire of
   `vercel-preview-auditor`. The Claude Code sub-agent runtime restricts

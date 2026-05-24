@@ -100,6 +100,7 @@ jobs:
             compute/cache/edgar_amendments
             compute/cache/edgar_late_filings
             compute/cache/edgar_form4
+            compute/cache/osap
           key: cache-v4-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
             cache-v4-${{ steps.quarter.outputs.q }}-

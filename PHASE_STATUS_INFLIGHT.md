@@ -98,7 +98,7 @@ keeps growing/draining as PRs cycle.
 
 ## In flight (current)
 
-## PR (this PR) — Light-mode soften + Strong Buy nowrap + StockLogo square (in flight, 2026-05-24)
+## PR #242 — Light-mode soften + Strong Buy nowrap + StockLogo square (merged 2026-05-24, `a30c017`)
 
 Three user-direction visual polish tweaks landed post-LedgerCraft series:
 
@@ -129,7 +129,63 @@ satisfies §Conventions lockstep per PR #237 convention.
 
 ---
 
-_(post-this-PR: in-flight section returns to empty until next PR)_
+## PR (this PR) — Simulate Part 5: wire `QR_SKIP_OSAP` + add `compute/cache/osap` to cache paths (in flight, 2026-05-24)
+
+Closes the 4th external-data loop missed by PR #230's Parts 2 + 4.
+`ci-triage-engineer` session-6 deep-dive on PR #238's simulate
+cancellation (45m16s despite QR_SKIP_TIER2 + QR_SKIP_FUNDAMENTALS
+being in place) identified that `compute/ingest/osap.py:fetch_osap_returns`
+hits `openassetpricing.com` for a bulk CSV download on every simulate
+run because `compute/cache/osap/` was missing from BOTH workflow
+cache `path:` blocks. Cold runner = no parquet on disk = `_is_fresh`
+returns False = live download. The host has no SLA — `stop_after_delay(30)`
+× 2 tenacity attempts = up to 60s per attempt + the actual download
+of a multi-MB CSV covering ~1,188 signals × hundreds of months can
+exceed the budget when combined with any other small step.
+
+Two-part fix:
+
+(a) **`compute/cache/osap` added to BOTH workflow cache `path:`
+    blocks** — `compute-rankings.yml` (save+restore via
+    `actions/cache@v5`) so the weekly cron's parquet (written every
+    cron at `osap.py:108-110`) becomes part of the cache artifact;
+    `pre-merge-prod-sim.yml` (restore-only via `actions/cache/restore@v5`)
+    so simulate sees the cron's warm parquet.
+
+(b) **`QR_SKIP_OSAP=1` escape hatch in `fetch_osap_returns`** — added
+    at the top of the function BEFORE the `_is_fresh` check, mirroring
+    the QR_SKIP_FUNDAMENTALS pattern. When set + `force_refresh=False`
+    + cached parquet exists, returns it unconditionally without the
+    31-day freshness gate AND without the live download. Falls through
+    to live fetch if no cache (cold-runner / cache-evicted scenario).
+    Wired in `pre-merge-prod-sim.yml` env block alongside
+    `FORM4_FETCH_SKIP` + `QR_SKIP_TIER2` + `QR_SKIP_FUNDAMENTALS` —
+    the four escape hatches now collectively cover all four external-
+    data loops in `compute/main.py`.
+
+CLAUDE.md §Gotchas consolidated: the previous `FORM4_FETCH_SKIP=1`
+entry has been rewritten as a "CI escape-hatch env-var combo for
+simulate" entry listing all four env vars with their read sites,
+purposes, and the expected post-fix steady-state (8-15 min on warm
+cache vs the pre-fix 45-min cap breach). AGENTS.md mirror touched
+later if cross-tool agents need the same context (current entry is
+Claude-Code-runtime-specific so the mirror is optional).
+
+No schema / scoring / valuation / behavior change. Defense layer
+flag count unchanged at 32. Cron path UNAFFECTED — weekly cron
+doesn't set any QR_SKIP var so full live fetch still runs there
+and populates the now-cached `compute/cache/osap/` directory for
+future simulate restores.
+
+Live validation: re-pushing this PR + landing it triggers a fresh
+simulate run with all four skip vars active + `compute/cache/osap`
+restored from the cron's artifact (Friday 2026-05-23 22:00 UTC's
+cron output should still be within the 7-day GitHub cache TTL).
+Expected: simulate completes in under 25 minutes.
+
+---
+
+_(no other in-flight PRs)_
 
 ---
 
