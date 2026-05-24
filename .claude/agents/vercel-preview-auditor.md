@@ -1,7 +1,7 @@
 ---
 name: vercel-preview-auditor
 description: Vercel preview deployment health-check for QuantRank. MUST be invoked (no confirmation) before flipping any UI-touching PR from Draft to Ready, after any change under `frontend/` / `compute/output/`, when a Vercel preview URL is posted on a PR and the user asks "ดู preview" / "check the preview" / "is the deploy green?" / "spot-check the preview", OR before tagging a release. Wraps the Vercel MCP server (`list_deployments` → `get_deployment_build_logs` → `get_runtime_logs` → `web_fetch_vercel_url`) to verify the latest preview deployed cleanly, no runtime errors appeared, and the key routes render before a Playwright spot-check is scheduled. Codifies the CLAUDE.md §Commands "Section I forcing example" that today depends on memory. Read-only; runs the Vercel MCP tool chain and reports — never deploys / redeploys / promotes itself.
-tools: Read, Bash, Grep, Glob
+tools: Read, Bash, Grep, Glob, mcp__0addee55-c9d7-44a2-b1b2-355b2d3fc4fd__list_deployments, mcp__0addee55-c9d7-44a2-b1b2-355b2d3fc4fd__get_deployment, mcp__0addee55-c9d7-44a2-b1b2-355b2d3fc4fd__get_deployment_build_logs, mcp__0addee55-c9d7-44a2-b1b2-355b2d3fc4fd__get_runtime_logs, mcp__0addee55-c9d7-44a2-b1b2-355b2d3fc4fd__web_fetch_vercel_url, mcp__0addee55-c9d7-44a2-b1b2-355b2d3fc4fd__get_project, mcp__0addee55-c9d7-44a2-b1b2-355b2d3fc4fd__list_projects
 model: sonnet
 ---
 
@@ -165,6 +165,16 @@ Do NOT flip the PR to Ready until this resolves.
   asset. The 3-route probe is the cheap way to catch that.
 - **NEVER fetch the same route more than 3× per audit** — quota /
   rate-limit hygiene on the Vercel CDN side.
+- **If Vercel MCP tools are NOT in your context** (the connector UUID
+  in your `tools:` frontmatter does not match this Claude installation's
+  registered Vercel MCP server — the UUID is OAuth-connection-specific
+  and may differ across users / installs), surface the gap explicitly
+  as `WAIT (MCP access gap — not a deployment failure)` and escalate
+  to main agent. DO NOT fabricate deployment status or skip the audit
+  silently. Per CLAUDE.md §Connectors, the main agent has the active
+  connector and can either run the check inline or re-spawn you with
+  the correct tool surface. The audit verdict is invalid without
+  authenticated MCP tool access.
 
 ## Escalation paths
 

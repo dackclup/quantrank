@@ -377,6 +377,23 @@ whitespace / single-line fixes do not trigger.
   omits it so Form-4 runs full. Affects only the observability surface
   added in Phase 4.5e PR 2 (`form4_*` Metadata fields). CI-only escape
   hatch — never set in cron / local dev.
+- **Sub-agent `tools:` frontmatter does NOT auto-inherit MCP tools**
+  — surfaced 2026-05-23 by the post-PR-#225 live-fire of
+  `vercel-preview-auditor`. The Claude Code sub-agent runtime restricts
+  each sub-agent's tool surface to what's listed explicitly in the
+  agent file's `tools:` field; MCP tools must be enumerated by their
+  full name (`mcp__<server>__<tool>`). The GitHub MCP server uses a
+  stable `mcp__github__*` namespace, but OAuth connectors like Vercel /
+  Supabase / Sentry register under an OAuth-connection UUID
+  (`mcp__0addee55-...__list_deployments`) that is **install-specific**
+  — a fresh clone by a different user would have a different UUID and
+  the agent's pinned tool list would silently fail to match. Both
+  affected agents (`vercel-preview-auditor` + `ci-triage-engineer`)
+  now carry a hard-constraint bullet that requires explicit gap
+  surfacing + main-agent escalation when the listed MCP tools aren't
+  reachable in the sub-agent's context. The main agent retains full
+  MCP access and can run the check inline OR re-spawn the sub-agent
+  with the correct tool surface.
 
 ## Phase status
 
@@ -1432,7 +1449,8 @@ delegation-pattern rows. README.md tier tables updated to match.
 Doc-only otherwise — no compute / schema / scoring / valuation /
 frontend code change.
 
-**Dependabot 15-vuln triage + 2-WARN doc fix in flight (this PR)** —
+**Dependabot 15-vuln triage + 2-WARN doc fix merged via PR #226**
+(2026-05-23, `d67e105`) —
 output from the post-PR-#225 parallel `dependency-auditor` +
 `security-reviewer` spawn (2026-05-23, session 3). Dependabot wave
 of 15 new vulnerabilities (6H / 7M / 2L) flagged on `main` —
@@ -1484,9 +1502,42 @@ Doc-only PR — `ruff` / `schema_check` / `pytest` trivially pass; no
 compute / schema / scoring / valuation / frontend / Python / TS
 change.
 
-**PR-#224 review-nit polish in flight (this PR)** —
+**Sub-agent MCP-tools inheritance fix in flight (this PR)** —
+post-PR-#225 live-fire of the three new sub-agents on 2026-05-23
+surfaced a real infrastructure gap: `vercel-preview-auditor` could
+not reach the Vercel MCP tools because the Claude Code sub-agent
+runtime does NOT auto-inherit MCP tools — the agent file's `tools:`
+frontmatter restricts the sub-agent's tool surface to what's listed
+explicitly. `ci-triage-engineer` worked around the same gap by
+falling back to git history, but hit GitHub API rate-limits during
+the audit-fallback. Two-part fix:
+
+- **`tools:` frontmatter extended** on both agents to list the
+  specific MCP tools their workflow requires:
+  `vercel-preview-auditor` gains 7 `mcp__0addee55-...__*` Vercel
+  tools (`list_deployments` · `get_deployment` ·
+  `get_deployment_build_logs` · `get_runtime_logs` ·
+  `web_fetch_vercel_url` · `get_project` · `list_projects`);
+  `ci-triage-engineer` gains 6 `mcp__github__*` GitHub tools
+  (`pull_request_read` · `list_pull_requests` · `list_commits` ·
+  `get_commit` · `search_pull_requests` · `search_code`).
+- **Hard-constraint bullets added** to both agents covering the
+  MCP-access-gap failure mode: `vercel-preview-auditor` surfaces
+  `WAIT (MCP access gap)` + escalates to main (the Vercel MCP UUID
+  is install-specific so a fresh clone by a different user would
+  silently fail to match); `ci-triage-engineer` may fall back to
+  local git primary evidence (squash-merge commit body, refs) but
+  must explicitly cite the access gap in the report — never
+  fabricate check-run IDs or log URLs.
+
+Companion §Gotcha entry documents the inheritance limitation so
+future agent authors don't repeat the gap. Doc-only PR otherwise —
+no compute / schema / scoring / valuation / frontend / Python / TS
+production-code change.
+
+**PR-#224 review-nit polish merged via PR #227** (2026-05-23, `105d79e`) —
 two of the three `quantrank-reviewer` WARN-tier punch-list items
-from PR #224 land here. (a) `tests/test_scoring/test_form4_signals.py`
+from PR #224 landed. (a) `tests/test_scoring/test_form4_signals.py`
 — two PR-#222 Hypothesis property tests
 (`test_cluster_monotonic_under_added_compensation_txns` +
 `test_cluster_fires_only_within_lookback`) drop `@settings(deadline=None)`
