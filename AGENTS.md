@@ -1233,26 +1233,30 @@ note cross-tool-specific points only:
   fetch runs there to populate the warm cache.
 
 - **Rebase-discipline § for cross-tool contributors (bundled in
-  this PR)** — every PR adds an entry to CLAUDE.md §Phase status +
-  AGENTS.md §Phase + version state per the §Conventions lockstep
-  rule. The current shape inserts every "in flight" bullet at the
-  SAME line (just before "**Next deliverables**" in CLAUDE.md /
-  "## Claude-Code-specific tooling" in this file). Parallel PRs
-  → `mergeable_state: dirty` → blocked merge → repeated user
-  frustration ("merge ไม่ได้ หลังแก้แล้วกลับมาเป็นอีก"). PR #230
-  hit this twice in one session (against PR #229 then again
-  against PR #232 + PR #233). **Cross-tool mitigation**: every PR
-  author (Claude / Copilot / Cursor / Devin) must
-  `git fetch origin main && git rebase origin/main` before
-  flipping Mark-Ready if any other PR has landed on main since
-  the branch was created. The conflict is benign — both PRs add
-  distinct entries at the same insertion line; resolution is
-  always "keep both" in chronological order (older PR first,
-  yours second). See CLAUDE.md §Conventions for the canonical
-  recipe and §Gotchas "Parallel-PR §Phase status collision
-  pattern" for the recurring-symptom documentation + the
-  structural follow-up (move "in flight" to a side file) tracked
-  separately.
+  PR #230)** — historical: every PR was required to add an entry
+  to CLAUDE.md §Phase status + AGENTS.md §Phase + version state per
+  the §Conventions lockstep rule. The pre-2026-05-24 shape inserted
+  every "in flight" bullet at the SAME line; parallel PRs collided
+  on that anchor line → `mergeable_state: dirty` → blocked merge
+  → repeated user frustration
+  ("merge ไม่ได้ หลังแก้แล้วกลับมาเป็นอีก"). PR #230 hit this
+  **3 times in one session** (vs PR #229, PR #232 + #233, then PR
+  #234 + #235 + #236). The structural fix landed in a separate
+  follow-up PR: new in-flight entries go in
+  [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md), an
+  append-only side-file at the repo root that parallel PRs can both
+  append to without colliding (each adds a new entry at the file's
+  end; `git merge` auto-resolves). **Cross-tool mitigation for
+  Copilot / Cursor / Devin / VS Code Agent Mode**: when authoring
+  a new PR, add the in-flight entry to `PHASE_STATUS_INFLIGHT.md`
+  (NOT directly to CLAUDE.md §Phase status / AGENTS.md §Phase +
+  version state). See CLAUDE.md §Conventions for the canonical
+  destination + §Gotchas "Parallel-PR §Phase status collision
+  pattern" for the resolved-symptom record. The
+  `git fetch origin main && git rebase origin/main` discipline
+  still applies as a backstop for other conflict surfaces (shared
+  code edits, workflow YAML, schema bumps) but the §Phase status
+  drag is no longer recurring.
 
 ## Claude-Code-specific tooling
 

@@ -124,29 +124,30 @@ for the full 4-step pattern + Section I forcing example.
   See `WORKFLOW.md` §Observability-Before-Wiring Pattern.
 - **CLAUDE.md + AGENTS.md ship with every PR.** Both agent docs must
   move in lockstep on every PR (any type — feat / fix / ci / docs /
-  chore). At minimum a §Phase status note (PR in flight) or a
-  section update (new gotcha / convention / connector / layout /
-  command). Reject PRs that touch code / workflows / schemas without
-  the matching CLAUDE.md + AGENTS.md diff.
+  chore). At minimum the PR's **in-flight entry lands in
+  [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md)** (the
+  append-only side-file adopted 2026-05-24 — see §Gotchas
+  "Parallel-PR §Phase status collision pattern" for why). Substance
+  updates to CLAUDE.md / AGENTS.md sections (new gotcha / convention
+  / connector / layout / command) still land directly in those
+  files. Reject PRs that touch code / workflows / schemas without
+  EITHER a `PHASE_STATUS_INFLIGHT.md` entry OR a matching CLAUDE.md +
+  AGENTS.md substance diff.
 - **Rebase onto `origin/main` before flipping any PR Draft → Ready.**
   The §Phase status block in CLAUDE.md + the §Phase + version state
-  block in AGENTS.md are append-shaped — every PR inserts a new
-  "**X in flight (this PR)**" bullet at the SAME insertion point
-  (just before "**Next deliverables**" / "## Claude-Code-specific
-  tooling"). Two PRs that land in parallel both touch that anchor
-  line and `mergeable_state: dirty` blocks the second. The recurring
-  "merge ไม่ได้ หลังแก้แล้วกลับมาเป็นอีก" pattern (PR #230 hit it
-  twice after the simulate-fix iteration on 2026-05-24, with PR
-  #232 + PR #233 landing in the same window) traces here. **The
-  mitigation is local**: before authorizing Mark-Ready, run
-  `git fetch origin main && git rebase origin/main` and resolve
-  the §Phase status block by keeping BOTH PRs' entries in
-  chronological order (older PR's entry first, then your entry).
-  The CONFLICT is benign — both PRs are adding distinct entries
-  at the same insertion line; the resolution is always "keep both".
-  See §Gotchas "Parallel-PR §Phase status collision pattern" for
-  the operational workflow + the structural follow-up tracked under
-  separate issue.
+  block in AGENTS.md were append-shaped (pre-2026-05-24) — every PR
+  inserted a new "**X in flight (this PR)**" bullet at the SAME
+  insertion point, and parallel PRs hit `mergeable_state: dirty`.
+  PR #230's adoption of [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md)
+  closes that pattern at the structural level: new PRs append their
+  in-flight entry to the side-file (parallel-safe), so the rebase
+  discipline is now a backstop for OTHER conflict surfaces (shared
+  code edits, workflow YAML changes, schema bumps) — not the
+  recurring §Phase status drag it used to be. **The mitigation
+  remains local**: before authorizing Mark-Ready, run
+  `git fetch origin main && git rebase origin/main` and resolve any
+  remaining benign conflicts ("keep both in chronological order" if
+  somebody added a CLAUDE.md substance change in the same area).
 
 ## Auto-routing policy
 
@@ -413,29 +414,31 @@ whitespace / single-line fixes do not trigger.
   reachable in the sub-agent's context. The main agent retains full
   MCP access and can run the check inline OR re-spawn the sub-agent
   with the correct tool surface.
-- **Parallel-PR §Phase status collision pattern** — every PR must
+- **Parallel-PR §Phase status collision pattern** (RESOLVED
+  2026-05-24 via [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md)
+  side-file adoption) — historical record: every PR was required to
   add a §Phase status entry to CLAUDE.md + AGENTS.md per the
-  §Conventions "ship with every PR" rule. The current structure
-  inserts every "in flight" bullet at the SAME line (just before
-  "**Next deliverables**"). Two PRs opened in parallel both target
-  that line → second-to-rebase hits `mergeable_state: dirty` →
-  the recurring "merge ไม่ได้ หลังแก้แล้วกลับมาเป็นอีก" pattern.
-  Surfaced 2026-05-24 PR #230 (collided twice with PR #232 + #233
-  LedgerCraft series + PR #229 security PR in the same window).
-  **Operational mitigation** (local, no infrastructure change):
-  before authorizing Mark-Ready, run
-  `git fetch origin main && git rebase origin/main` and resolve
-  by keeping BOTH PRs' §Phase entries in chronological order
-  (older PR first, your entry second). The conflict is benign —
-  both PRs add distinct entries at the same insertion line; the
-  resolution is always "keep both" (which `git merge` cannot
-  auto-detect because both sides added text at the same line).
-  **Structural follow-up** (separate PR not yet filed): consider
-  moving the "in flight" sub-block to a side file
-  (`PHASE_STATUS_INFLIGHT.md`) that PRs append to; on merge a
-  housekeeping commit moves the entry into CLAUDE.md proper —
-  parallel PRs would touch disjoint paths = no conflict. Trade-off:
-  extra discipline at merge time; not yet adopted.
+  §Conventions "ship with every PR" rule. The pre-2026-05-24
+  structure inserted every "in flight" bullet at the SAME line
+  (just before "**Next deliverables**"). Two PRs opened in parallel
+  both targeted that line → second-to-rebase hit
+  `mergeable_state: dirty` → the recurring
+  "merge ไม่ได้ หลังแก้แล้วกลับมาเป็นอีก" pattern. PR #230
+  (`docs(form4)+ci(simulate)`) hit this **3 times in one session**
+  while iterating on the simulate-cap fix (vs PR #229, then PR
+  #232 + #233, then PR #234 + #235 + #236). Structural fix landed
+  in this PR: new in-flight entries go in `PHASE_STATUS_INFLIGHT.md`
+  (append-only-per-PR; parallel PRs touch disjoint last-lines and
+  `git merge` auto-resolves). CLAUDE.md §Conventions updated to
+  point at the side-file as the canonical destination. The
+  rebase-before-Mark-Ready discipline still applies for OTHER
+  conflict surfaces (shared code edits, workflow YAML, schema
+  bumps) but is no longer the recurring drag it used to be.
+  Housekeeping workflow to drain merged entries from
+  `PHASE_STATUS_INFLIGHT.md` into CLAUDE.md §Phase status proper
+  deferred (manual cleanup is fine for the first few weeks while
+  the pattern proves itself; `tools/housekeep_phase_status.py`
+  may land later once volume + shape are known).
 
 ## Phase status
 
