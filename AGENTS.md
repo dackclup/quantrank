@@ -945,9 +945,12 @@ note cross-tool-specific points only:
   B 2026-05-23 — matches CMP 2012 + Jagolinzer 2009 empirical regime
   under which the existing thresholds were calibrated). **Access-
   path caveat for cross-tool agents**: edgartools 5.31.5 does NOT
-  parse the SEC structured `<rule10b5_1>` XML element added by SEC
-  Release 33-11138 (effective 2023-04-01) — verified by
-  `edgar-debugger` 2026-05-23 via exhaustive grep. The `equity_swap`
+  parse the SEC structured `<aff10b5One>` XML element added by SEC
+  Release 33-11138 (effective 2023-04-01, EDGAR schema X0609) —
+  verified by `edgar-debugger` 2026-05-23 + 2026-05-24 via exhaustive
+  grep + live-XML fetch. The element is DOCUMENT-LEVEL (one boolean
+  per Form 4 filing at `ownershipDocument/aff10b5One`), not per
+  transaction. The `equity_swap`
   field on `NonDerivativeTransaction` carries `<equitySwapInvolved>`
   (unrelated SEC concept — do NOT assume it carries 10b5-1).
   Resolution path: `Ownership.footnotes.get(id, default)` resolves
@@ -1051,9 +1054,10 @@ note cross-tool-specific points only:
   tool dispatch); documented in CLAUDE.md §Gotchas for the project's
   agent authors.
 
-- **Security WARN cleanup (W2 + W4) in flight (this PR)** — closes
+- **Security WARN cleanup (W2 + W4) merged via PR #229**
+  (2026-05-24, `dacf293`) — closed
   the two remaining security-reviewer WARNs from PR #226 (W1 + W3
-  shipped in PR #226, W2 + W4 deferred to here). No cross-tool
+  shipped in PR #226, W2 + W4 here). No cross-tool
   surface — both fixes touch Claude-Code-managed infrastructure
   (`.claude/hooks/log-bash.sh`) and the project CI workflow
   (`.github/workflows/compute-rankings.yml`). (a) **W2 — workflow-perm
@@ -1144,8 +1148,8 @@ note cross-tool-specific points only:
   editing score-tier-related surfaces post-B1 should expect the
   emerald/amber 5-step ramp (no teal, no orange).
 
-- **Phase 4 LedgerCraft alignment — PR-B2+B3+B4 combined in flight
-  (this PR)** (2026-05-24) — final follow-up of the post-A3 design
+- **Phase 4 LedgerCraft alignment — PR-B2+B3+B4 combined merged via PR #236**
+  (2026-05-24, `08d7563`) — final follow-up of the post-A3 design
   audit. Combined B2 (card surface normalization) + B3 (chip shape
   squaring round 2) + B4 (stripe + hover polish) into one PR
   because the three scopes share five files. Touches 10 files with
@@ -1169,6 +1173,86 @@ note cross-tool-specific points only:
   `rounded-sm` (chips/buttons/inputs) or `rounded` (cards) and
   drop shadows from data-grid surfaces. No schema / Python /
   scoring / valuation / output JSON change.
+
+- **Form-4 10b5-1 docstring precision fix in flight (this PR)** —
+  cross-tool-relevant correction surfaced by `literature-searcher`
+  + verified by `edgar-debugger` (session 5, 2026-05-24). The
+  colloquial `<rule10b5_1>` XML tag name used across `compute/scoring/
+  form4_insider.py` + `compute/scoring/form4_signals.py` +
+  `compute/output/schemas.py` docstrings was inaccurate. Live SEC
+  EDGAR Form 4 XMLs confirm the actual element is **`<aff10b5One>`**
+  at `ownershipDocument/aff10b5One`, a **document-level boolean**
+  (one per filing, covering all transactions). Updated 5 code +
+  2 doc references to use the canonical name. Architectural-gap
+  note added: a filer who checks `<aff10b5One>true` at the document
+  level but omits the per-transaction footnote text will currently
+  slip past the footnote-text fallback path — deferred to a
+  follow-up PR that direct-parses the raw XML. Docstring-only
+  change; no behavior change. Cross-tool relevance: Copilot /
+  Cursor / Devin reading these docstrings now see the canonical
+  SEC element name when reasoning about the 10b5-1 access path.
+
+- **Simulate 45-min recurrence root-cause fix bundled in this PR** —
+  recurring CI hygiene issue across multiple PRs (PR #165, PR-form4-2
+  added piecemeal mitigations that addressed adjacent budget items but
+  left the Tier-2 loop running unconditionally). `ci-triage-engineer`
+  deep-dive (2026-05-24 session 5) identified that the `QR_SKIP_TIER2`
+  kill-switch wired in `compute/scoring/tier2.py:158` was never set in
+  `pre-merge-prod-sim.yml`. Four-part permanent fix: (a) `QR_SKIP_TIER2:
+  "1"` added to `pre-merge-prod-sim.yml` env (eliminates 20-35m
+  cold-cache Tier-2 cost); (b) `compute/cache/edgar_form4` added to
+  both workflows' cache restore paths; (c) path-filter widened to
+  include `compute/ingest/**` + `compute/valuation/**` +
+  `compute/output/schemas.py` + `compute/main.py` + `pyproject.toml`;
+  (d) `compute/scoring/tier2.py` docstring updated (old comment said
+  `_EIGHT_K_DEFENSES_ENABLED=False` which is stale since PR 4g
+  re-enabled it). Cross-tool relevance: cross-tool agents working on
+  CI workflows should now consult these env-var pairs (`FORM4_FETCH_SKIP`
+  + `QR_SKIP_TIER2` + `QR_SKIP_FUNDAMENTALS` — added Part 4 below) as the
+  standard escape-hatch combo when running compute against tight time
+  budgets.
+
+- **Simulate Part 4 — `QR_SKIP_FUNDAMENTALS` escape hatch (this PR)** —
+  Parts 2 + 3 above did not fully solve the recurring 45-min simulate
+  cancellation. Even after `QR_SKIP_TIER2` killed the Tier-2 loop
+  (20-35m), `compute/main.py` Steps 2 + 3 (fundamentals snapshot +
+  history fetch) ran unconditionally — cold-cache cost 25-50m alone
+  per CLAUDE.md §Gotchas. The `_is_fresh()` gate at
+  `compute/ingest/fundamentals.py:917` checks the `filed_date` INSIDE
+  each cached parquet (45d TTL), so a partial cache hit still triggers
+  live SEC re-fetches for any ticker with a stale filing. Part 4 wires
+  `QR_SKIP_FUNDAMENTALS=1` in BOTH `fetch_fundamentals` and
+  `fetch_fundamentals_history` to bypass the freshness gate when set,
+  returning the cached parquet unconditionally (falls through to live
+  fetch if no cache exists). SAFE for simulate because the diff is
+  PR-branch vs main's COMMITTED rankings.json — both produced from the
+  SAME weekly-cron cache; using it without re-fetch is the correct
+  input. Cross-tool relevance: contributors editing
+  `pre-merge-prod-sim.yml` should now keep ALL THREE env vars set
+  together. Weekly cron explicitly does NOT set these — full live
+  fetch runs there to populate the warm cache.
+
+- **Rebase-discipline § for cross-tool contributors (bundled in
+  this PR)** — every PR adds an entry to CLAUDE.md §Phase status +
+  AGENTS.md §Phase + version state per the §Conventions lockstep
+  rule. The current shape inserts every "in flight" bullet at the
+  SAME line (just before "**Next deliverables**" in CLAUDE.md /
+  "## Claude-Code-specific tooling" in this file). Parallel PRs
+  → `mergeable_state: dirty` → blocked merge → repeated user
+  frustration ("merge ไม่ได้ หลังแก้แล้วกลับมาเป็นอีก"). PR #230
+  hit this twice in one session (against PR #229 then again
+  against PR #232 + PR #233). **Cross-tool mitigation**: every PR
+  author (Claude / Copilot / Cursor / Devin) must
+  `git fetch origin main && git rebase origin/main` before
+  flipping Mark-Ready if any other PR has landed on main since
+  the branch was created. The conflict is benign — both PRs add
+  distinct entries at the same insertion line; resolution is
+  always "keep both" in chronological order (older PR first,
+  yours second). See CLAUDE.md §Conventions for the canonical
+  recipe and §Gotchas "Parallel-PR §Phase status collision
+  pattern" for the recurring-symptom documentation + the
+  structural follow-up (move "in flight" to a side file) tracked
+  separately.
 
 ## Claude-Code-specific tooling
 

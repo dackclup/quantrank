@@ -924,7 +924,34 @@ def fetch_fundamentals(
 
     Returns ``None`` on persistent EDGAR failure so the orchestrator can skip
     the ticker.
+
+    ``QR_SKIP_FUNDAMENTALS=1`` escape hatch: when set, the freshness gate is
+    bypassed — if a cached snapshot exists for ``cik``, it is returned without
+    a live EDGAR round-trip even if older than ``FUNDAMENTALS_REFETCH_DAYS``.
+    Used by ``.github/workflows/pre-merge-prod-sim.yml`` to skip the 25-50 min
+    cold-cache SEC fetch on docstring / comment / scoring-only PRs (the
+    composite-score diff this workflow tracks compares PR-branch vs main's
+    committed JSON — both sides should use the same upstream fundamentals
+    input, so the cached parquets the weekly cron wrote are the CORRECT
+    input). Falls through to live fetch when no cache exists (cold runner).
+    Wired 2026-05-24 PR #230 — the QR_SKIP_TIER2 fix alone left the 25-50m
+    fundamentals loop running, so simulate still cancelled at 45m.
     """
+    if os.environ.get("QR_SKIP_FUNDAMENTALS"):
+        cached = _load_cached(cik) if cik else None
+        if cached is not None:
+            logger.debug(
+                "Fundamentals cache FORCE-HIT (QR_SKIP_FUNDAMENTALS=1) for %s "
+                "(filed=%s)", ticker, cached.latest_filed_date,
+            )
+            return cached
+        # No cache → fall through to live fetch (cold runner has nothing
+        # to read; the simulate workflow's cache restore failed or is empty)
+        logger.warning(
+            "QR_SKIP_FUNDAMENTALS set but no cached parquet for %s — "
+            "falling through to live EDGAR fetch", ticker,
+        )
+
     _require_identity()
 
     cached = _load_cached(cik) if cik else None
@@ -1026,7 +1053,26 @@ def fetch_fundamentals_history(
 
     Cache invalidates on the same 45-day rule as the snapshot — re-fetch when
     the latest annual filing is older than the threshold.
+
+    ``QR_SKIP_FUNDAMENTALS=1`` escape hatch: when set (and
+    ``force_refresh=False``), the annual cache is returned regardless of
+    age. Pairs with ``fetch_fundamentals`` above; see that docstring for the
+    simulate-workflow rationale.
     """
+    if os.environ.get("QR_SKIP_FUNDAMENTALS") and not force_refresh:
+        cache = _annual_cache_path(cik)
+        if cache.exists():
+            try:
+                cached_df = pd.read_parquet(cache)
+                if not cached_df.empty:
+                    return cached_df
+            except Exception as e:  # noqa: BLE001
+                logger.warning(
+                    "QR_SKIP_FUNDAMENTALS annual cache read failed for %s: %s "
+                    "— falling through to live fetch", cik, e,
+                )
+        # No cache or read failed → fall through to normal path
+
     _require_identity()
     cache = _annual_cache_path(cik)
 

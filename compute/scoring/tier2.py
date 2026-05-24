@@ -151,10 +151,14 @@ def fetch_tier2_for_ticker(
     # empty result without touching SEC EDGAR. Useful when the user
     # wants a fast compute run (e.g., a UI dry-run or a sanity-check
     # workflow) and is willing to skip the going-concern annotate
-    # flag. The veto layer is unaffected because all Tier-2 vetoes
-    # are currently deferred (_EIGHT_K_DEFENSES_ENABLED=False), and
-    # the annotate-only going-concern flag has a 10.8% FP rate
-    # anyway (issue #16). Cuts ~10-15 min off a cold-cache run.
+    # flag. The non_reliance veto IS active (_EIGHT_K_DEFENSES_ENABLED=True
+    # since PR 4g, 2026-05-17) — skipping Tier-2 suppresses that
+    # veto's firing in this run; that's acceptable for the
+    # pre-merge-prod-sim workflow (informational-only; veto
+    # correctness is covered by offline pytest). Cuts ~20-35 min off
+    # a cold-cache run; ~3-5 min on warm cache. Wired in
+    # `.github/workflows/pre-merge-prod-sim.yml` since 2026-05-24
+    # (the recurring 45-min cancellation root cause).
     if os.environ.get("QR_SKIP_TIER2"):
         return Tier2Result(
             going_concern_disclosure=False,

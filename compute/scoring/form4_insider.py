@@ -17,7 +17,7 @@ The Phase 4.5e ladder landed in four sub-PRs:
   cache shape, resolved via ``edgar.ownership.core.detect_10b5_1_plan``
   pattern-scan on the RESOLVED footnote text (see "Footnote resolution"
   below — edgartools 5.31.5 does NOT parse the SEC structured
-  ``<rule10b5_1>`` XML element added in the 2023-04-01 mandate, so the
+  ``<aff10b5One>`` XML element added in the 2023-04-01 mandate, so the
   footnote-text path is the only access surface available without
   forking the library). ``compute/scoring/form4_signals.py``
   ``_is_opportunistic_sell`` gates on NOT ``is_rule_10b5_one is True``
@@ -79,12 +79,30 @@ Footnote resolution
 -------------------
 
 The 10b5-1 plan flag is NOT in the SEC structured XML accessible via
-edgartools 5.31.5. The ``<rule10b5_1>`` element added by SEC Release
-33-11138 (effective 2023-04-01) is silently dropped during
-edgartools' ``BeautifulSoup("xml")`` parse — verified by
-``edgar-debugger`` 2026-05-23 across the full ``edgar.ownership``
-module. The only access path is pattern-scanning the resolved
-FOOTNOTE TEXT via ``edgar.ownership.core.detect_10b5_1_plan``.
+edgartools 5.31.5. The ``<aff10b5One>`` element added by SEC Release
+33-11138 (effective 2023-04-01, EDGAR schema X0609) is silently
+dropped during edgartools' ``BeautifulSoup("xml")`` parse — verified
+by ``edgar-debugger`` 2026-05-23 + 2026-05-24 across the full
+``edgar.ownership`` module (no ``aff10b5One`` / ``rule10b5`` /
+``tradingArrangement`` accessor on any parser path). The only
+access path is pattern-scanning the resolved FOOTNOTE TEXT via
+``edgar.ownership.core.detect_10b5_1_plan``.
+
+Important scope caveat: ``<aff10b5One>`` is a DOCUMENT-LEVEL boolean
+at ``ownershipDocument/aff10b5One`` (one boolean per Form 4 filing,
+covering ALL transactions in that filing), NOT a per-transaction
+attribute. The footnote-text fallback resolves per-transaction —
+which is the CONSERVATIVE direction (catches filers who annotated
+the specific transaction with the plan-pursuit footnote). The
+architectural gap: a filer who checks ``<aff10b5One>true`` at the
+document level but does NOT include the footnote text on a specific
+transaction (valid — the checkbox IS the formal affirmative defense,
+footnotes are supplemental) will slip past the footnote-text path
+and enter the opportunistic cohort. Deferred to a follow-up PR
+that parses the raw Form 4 XML directly for ``<aff10b5One>``
+(edgartools doesn't expose it, so the implementation would walk the
+filing text once per Ownership object). Tracked as the architectural
+follow-up after PR 4-eq.
 
 ``NonDerivativeTransaction.footnotes`` carries newline-joined
 footnote IDs (e.g. ``"F1\\nF2"``), NOT the resolved text. The
@@ -584,7 +602,7 @@ def _form4_to_transactions(filing: object) -> list[dict]:
         # PR 4-eq — bind the Footnotes dict once per filing for 10b5-1
         # resolution. See module docstring §"Footnote resolution" for
         # why this path is needed (edgartools 5.31.5 does not parse
-        # the SEC structured <rule10b5_1> XML element).
+        # the SEC structured <aff10b5One> XML element).
         footnotes_dict = getattr(parsed, "footnotes", None)
 
         rows: list[dict] = []

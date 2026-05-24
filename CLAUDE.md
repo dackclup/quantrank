@@ -128,6 +128,25 @@ for the full 4-step pattern + Section I forcing example.
   section update (new gotcha / convention / connector / layout /
   command). Reject PRs that touch code / workflows / schemas without
   the matching CLAUDE.md + AGENTS.md diff.
+- **Rebase onto `origin/main` before flipping any PR Draft → Ready.**
+  The §Phase status block in CLAUDE.md + the §Phase + version state
+  block in AGENTS.md are append-shaped — every PR inserts a new
+  "**X in flight (this PR)**" bullet at the SAME insertion point
+  (just before "**Next deliverables**" / "## Claude-Code-specific
+  tooling"). Two PRs that land in parallel both touch that anchor
+  line and `mergeable_state: dirty` blocks the second. The recurring
+  "merge ไม่ได้ หลังแก้แล้วกลับมาเป็นอีก" pattern (PR #230 hit it
+  twice after the simulate-fix iteration on 2026-05-24, with PR
+  #232 + PR #233 landing in the same window) traces here. **The
+  mitigation is local**: before authorizing Mark-Ready, run
+  `git fetch origin main && git rebase origin/main` and resolve
+  the §Phase status block by keeping BOTH PRs' entries in
+  chronological order (older PR's entry first, then your entry).
+  The CONFLICT is benign — both PRs are adding distinct entries
+  at the same insertion line; the resolution is always "keep both".
+  See §Gotchas "Parallel-PR §Phase status collision pattern" for
+  the operational workflow + the structural follow-up tracked under
+  separate issue.
 
 ## Auto-routing policy
 
@@ -394,6 +413,29 @@ whitespace / single-line fixes do not trigger.
   reachable in the sub-agent's context. The main agent retains full
   MCP access and can run the check inline OR re-spawn the sub-agent
   with the correct tool surface.
+- **Parallel-PR §Phase status collision pattern** — every PR must
+  add a §Phase status entry to CLAUDE.md + AGENTS.md per the
+  §Conventions "ship with every PR" rule. The current structure
+  inserts every "in flight" bullet at the SAME line (just before
+  "**Next deliverables**"). Two PRs opened in parallel both target
+  that line → second-to-rebase hits `mergeable_state: dirty` →
+  the recurring "merge ไม่ได้ หลังแก้แล้วกลับมาเป็นอีก" pattern.
+  Surfaced 2026-05-24 PR #230 (collided twice with PR #232 + #233
+  LedgerCraft series + PR #229 security PR in the same window).
+  **Operational mitigation** (local, no infrastructure change):
+  before authorizing Mark-Ready, run
+  `git fetch origin main && git rebase origin/main` and resolve
+  by keeping BOTH PRs' §Phase entries in chronological order
+  (older PR first, your entry second). The conflict is benign —
+  both PRs add distinct entries at the same insertion line; the
+  resolution is always "keep both" (which `git merge` cannot
+  auto-detect because both sides added text at the same line).
+  **Structural follow-up** (separate PR not yet filed): consider
+  moving the "in flight" sub-block to a side file
+  (`PHASE_STATUS_INFLIGHT.md`) that PRs append to; on merge a
+  housekeeping commit moves the entry into CLAUDE.md proper —
+  parallel PRs would touch disjoint paths = no conflict. Trade-off:
+  extra discipline at merge time; not yet adopted.
 
 ## Phase status
 
@@ -1350,13 +1392,16 @@ matches CMP 2012 + Jagolinzer 2009 empirical regime used to
 calibrate the existing thresholds).
 
 **Access-path caveat — edgartools 5.31.5 does NOT parse the SEC
-structured `<rule10b5_1>` XML element** added by SEC Release 33-11138
-(effective 2023-04-01). Verified by `edgar-debugger` 2026-05-23 via
-exhaustive grep of `/usr/local/lib/python3.11/dist-packages/edgar/`
-(no `rule10b5`, `isRule10b5`, `tradingPlan`, `tradingArrangement`
-hits in any parse path). The `equity_swap: str` field on
-`NonDerivativeTransaction` carries `<equitySwapInvolved>` —
-unrelated SEC concept, red herring. Only access surface is footnote-
+structured `<aff10b5One>` XML element** added by SEC Release 33-11138
+(effective 2023-04-01, EDGAR schema X0609). Verified by
+`edgar-debugger` 2026-05-23 + 2026-05-24 via exhaustive grep of
+`/usr/local/lib/python3.11/dist-packages/edgar/` (no `aff10b5One`,
+`rule10b5`, `tradingPlan`, `tradingArrangement` hits in any parse
+path) AND live-XML fetch from 3 AAPL Form 4 filings confirming the
+element lives at `ownershipDocument/aff10b5One` as a DOCUMENT-LEVEL
+boolean (one per filing, covering all transactions). The
+`equity_swap: str` field on `NonDerivativeTransaction` carries
+`<equitySwapInvolved>` — unrelated SEC concept, red herring. Only access surface is footnote-
 text pattern scan via `edgar.ownership.core.detect_10b5_1_plan`
 (regex on `["10b5-1", "10b-5-1", "rule 10b5", "rule 10b-5", "10b5
 plan", "10b-5 plan"]`). `NonDerivativeTransaction.footnotes`
@@ -1561,7 +1606,8 @@ PR that can run network tests first. Tests 1168 → 1168 (no test added /
 removed; 3 edits in-place). No compute / schema / scoring / valuation /
 frontend / Python production-code change.
 
-**Security WARN cleanup (W2 + W4) in flight (this PR)** — closes the
+**Security WARN cleanup (W2 + W4) merged via PR #229**
+(2026-05-24, `dacf293`) — closed the
 two remaining security-reviewer WARNs deferred from PR #226 (W1 + W3
 already shipped there). Both are operational hygiene with no
 compute / schema / production-code surface; bundled in a single
@@ -1596,7 +1642,7 @@ focused PR.
   preserved (sed errors return original command via the existing
   `|| true` discipline).
 
-Both fixes ship under one PR per security-hardening bundle. CLAUDE.md
+Both fixes shipped under one PR per security-hardening bundle. CLAUDE.md
 + AGENTS.md lockstep satisfied via §Phase status in-flight notes (no
 new §Gotchas — these are not invariants future code authors need to
 remember; they're hardening of existing surfaces).
@@ -1743,7 +1789,7 @@ normalization · chip shape squaring round 2 · stripe + hover polish —
 ~50-70 lines across 8 more components). No schema / Python /
 scoring / valuation / output JSON change — token-only diff.
 
-**Phase 4 LedgerCraft alignment · PR-B2+B3+B4 combined in flight (this PR)** (2026-05-24) —
+**Phase 4 LedgerCraft alignment · PR-B2+B3+B4 combined merged via PR #236** (2026-05-24, `08d7563`) —
 final follow-up of the post-A3 design-reviewer audit. Combined B2
 (card surface normalization) + B3 (chip shape squaring round 2) +
 B4 (stripe + hover polish) into one PR because the three scopes
@@ -1795,6 +1841,140 @@ restrained 4-family palette, sharp ≤4px radii, borders-as-depth
 on every data surface (overlays and slide-overs keep their
 elevation shadows). No schema / Python / scoring / valuation /
 output JSON change.
+
+**Form-4 10b5-1 docstring precision fix in flight (this PR)** —
+`edgar-debugger` follow-up to PR #224 (F2 deferred from session 4
+post-live-fire). The `literature-searcher` proof-of-life on
+2026-05-23 flagged a precision gap: the form4 module docstring
+referenced the colloquial `<rule10b5_1>` XML tag name (a label, not
+the actual SEC EDGAR Ownership XML element). `edgar-debugger`
+re-audit on 2026-05-24 fetched 3 live AAPL Form 4 XMLs from SEC
+EDGAR and confirmed the actual element is **`<aff10b5One>`** at
+`ownershipDocument/aff10b5One` — a **document-level boolean** (one
+per filing, covering ALL transactions in that Form 4), NOT a
+per-transaction attribute. Updated 7 references across 5 code files
+(`compute/scoring/form4_insider.py` ×3 + `compute/scoring/form4_signals.py`
+×1 + `compute/output/schemas.py` ×1) + 2 docs (CLAUDE.md +
+AGENTS.md) to use the canonical name. Added a §"Footnote resolution"
+architectural-gap note in `form4_insider.py` docstring: a filer who
+checks `<aff10b5One>true` at the document level but does NOT include
+the footnote text on a specific transaction (valid — the checkbox IS
+the formal affirmative defense, footnotes are supplemental) will
+slip past the current footnote-text path and enter the opportunistic
+cohort incorrectly. Deferred to a follow-up PR that parses the raw
+Form 4 XML directly for `<aff10b5One>` at the filing level (a
+non-trivial change requiring direct XML parse since edgartools 5.31.5
+still doesn't expose the element). PyPI confirmed 5.31.5 is the
+current edgartools release; no newer version adds a parse path.
+`detect_10b5_1_plan` regex set (6 patterns) is complete vs real-world
+footnote text — no additions needed (pattern `"10b5-1"` alone covers
+every common variant including `Rule 10b5-1(c)` subsection cites).
+Docstring-only PR — no compute / scoring / valuation / behavior
+change. `schema_check` clean, ruff clean, tests unchanged at 1168+.
+
+**Simulate 45-min recurrence root-cause fix bundled with this PR** —
+the docstring-only commit above triggered the `simulate` workflow
+(path filter matched `compute/scoring/**`) which then **cancelled
+at 45m02s** on the timeout cap. `ci-triage-engineer` deep-dive
+(2026-05-24 session 5) identified the recurring pattern: the
+`QR_SKIP_TIER2` kill-switch is fully wired in
+`compute/scoring/tier2.py:158` but **was never set in
+`pre-merge-prod-sim.yml`**. Past mitigations (PR #165's 1y
+non-reliance lookback, PR-form4-2's `FORM4_FETCH_SKIP=1`) addressed
+adjacent budget items but left the Tier-2 loop (502 tickers × 10-K
+text fetch + 8-K fetch, 20-35m cold-cache) running unconditionally
+on every simulate. Recurrence tally on the last 5 simulate runs:
+PR #165 ✅ 19m01s warm · PR #204 ✅ 19m37s warm · PR #222 ✅ 16m56s
+warm · PR #224 ✅ 17m08s warm · PR #230 ❌ 45m15s cold cancelled.
+Pattern is structural — when GitHub evicts the warm cache after a
+7-day gap without a simulate-triggering PR, the next compute/scoring
+PR hits full cold. Four-part permanent fix lands in this PR:
+(a) `QR_SKIP_TIER2: "1"` added to `pre-merge-prod-sim.yml` env
+block (PRIMARY — eliminates the 20-35m cold-cache cost);
+(b) `compute/cache/edgar_form4` added to both workflows' cache
+restore paths (future-proof for the Phase 4.5e PR 5 form4 weight
+promotion); (c) path-filter widened to include
+`compute/ingest/**` + `compute/valuation/**` + `compute/output/schemas.py`
++ `compute/main.py` + `pyproject.toml` (was: scoring + features
+only — a fundamentals fetcher regression would silently miss
+simulate); (d) `compute/scoring/tier2.py:154-155` docstring updated
+— old comment said `_EIGHT_K_DEFENSES_ENABLED=False` (stale since
+PR 4g 2026-05-17 re-enabled it); new comment correctly notes the
+non_reliance veto IS suppressed in simulate (acceptable — simulate
+is informational-only; veto correctness is offline pytest's slot).
+Expected: docstring/comment PRs that touch compute/ → simulate
+completes in 12-15m warm OR 17-20m partial-cold; real scoring PRs
+get the same budget with composite-score diff unchanged. Companion
+benefit: this PR doubles as the **live validation** of the fix
+(re-pushing the docstring change with the simulate-fix appended
+should produce the first sub-45m simulate run on this branch).
+
+**Simulate Part 4 — fundamentals freshness-gate skip (in flight, this PR)** —
+Parts 2 + 3 alone did NOT close the recurrence. Re-pushing the
+QR_SKIP_TIER2 fix (commit `ae1c2f2`) on 2026-05-24 07:06 UTC still
+hit simulate cancellation at 45m15s. `ci-triage-engineer` deep-dive
+#2 identified the gap: my session-5 root-cause analysis was
+INCOMPLETE — `compute/main.py` has THREE independent SEC EDGAR
+ThreadPoolExecutor loops:
+- Step 2 (`compute/main.py:717`) — fundamentals snapshot (502
+  tickers × `companyfacts` XBRL)
+- Step 3 (`compute/main.py:785`) — annual fundamentals history
+  (502 tickers × `_ANNUAL_TAGS` per-year XBRL)
+- Step 4b (`compute/main.py:972`) — Tier-2 / 8-K orchestrator
+QR_SKIP_TIER2 killed Step 4b (20-35m) but Steps 2 + 3 still ran
+unconditionally. Cold-cache cost of fundamentals alone is 25-50m
+per CLAUDE.md §Gotchas — enough to fill the entire 45m budget.
+`_is_fresh()` in `compute/ingest/fundamentals.py:917` gates the
+disk cache by `filed_date` inside the parquet (not by file mtime)
+with `FUNDAMENTALS_REFETCH_DAYS=45` — so even on a partial cache
+hit, any ticker with a > 45d-old most-recent filing forces a live
+EDGAR round-trip.
+
+**Part 4 fix**: `QR_SKIP_FUNDAMENTALS=1` escape hatch wired in
+TWO places — (a) `compute/ingest/fundamentals.py:fetch_fundamentals`
+at the top, BEFORE `_require_identity()`, returns cached snapshot
+unconditionally (no freshness check) when the env var is set;
+falls through to live fetch if no cache exists. (b)
+`compute/ingest/fundamentals.py:fetch_fundamentals_history`
+mirror — returns the cached annual parquet without the 180d age
+check when env var set. The env var is wired in
+`.github/workflows/pre-merge-prod-sim.yml` env block alongside
+`QR_SKIP_TIER2` + `FORM4_FETCH_SKIP`. SAFE for simulate because:
+the workflow's purpose is composite-score-diff vs main's COMMITTED
+`rankings.json`; both sides were produced from the same upstream
+fundamentals input (the cache the weekly cron wrote), so using
+that cache without re-fetch is the CORRECT input for the diff,
+not a quality compromise. Weekly cron (`compute-rankings.yml`)
+does NOT set `QR_SKIP_FUNDAMENTALS` — full live fetch still runs
+there and populates the warm cache for future simulate restores.
+Expected post-fix: simulate completes in 8-12m on a cache-hit
+restore (no live SEC fetch in Steps 2 + 3 + 4b). Live validation
+this PR: re-push after Part 4 → simulate green under 25m.
+
+**Rebase-discipline § + parallel-PR §Phase status §Gotcha bundled with this PR** —
+on top of Parts 1 + 2, this PR also closes a recurring CI-merge
+issue surfaced 2026-05-24: PR #230 hit `mergeable_state: dirty`
+twice in a single session — first when PR #229 (security) landed
+on main mid-iteration, then again when PR #232 + PR #233
+(LedgerCraft A1 + A2) landed before Mark-Ready. Each parallel PR
+adds a "**X in flight (this PR)**" bullet in CLAUDE.md §Phase
+status + AGENTS.md §Phase + version state at the SAME insertion
+line, and `git merge` cannot auto-resolve two adds at the same
+line. Three companion edits documenting + mitigating:
+- **§Conventions**: new bullet "Rebase onto `origin/main` before
+  flipping any PR Draft → Ready" with the operational `git fetch
+  origin main && git rebase origin/main` recipe + the "keep both
+  entries in chronological order" resolution discipline
+- **§Gotchas**: new "Parallel-PR §Phase status collision pattern"
+  entry recording the recurring symptom + the local-mitigation
+  workflow + a forward-looking structural follow-up note (move
+  in-flight entries to a side file like `PHASE_STATUS_INFLIGHT.md`
+  that's append-only-per-PR; not yet adopted)
+- **AGENTS.md mirror** of both notes for cross-tool agents
+No infrastructure / CI / behavior change — pure doc discipline.
+Future contributors who hit the same conflict find the §Gotchas
+entry + the §Conventions recipe and resolve in seconds, instead
+of re-discovering the pattern.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — after ≥ 1
