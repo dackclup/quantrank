@@ -719,6 +719,304 @@
     content: '§ '; color: var(--forest); font-weight: 700;
   }
 
+  /* ============================================================
+     RESPONSIVE — progressive enhancement, mobile-first defaults
+     are wrapped by max-width media queries (kept additive so the
+     existing desktop CSS above stays canonical).
+     Breakpoints:
+       xl  ≤ 1440  — slightly tighter outer padding
+       lg  ≤ 1280  — sidebar narrows + table loosens
+       md  ≤ 1024  — sidebar → icon rail · hide low-priority cols
+       sm  ≤ 768   — sidebar hidden · strip wraps · detail stacks
+       xs  ≤ 480   — KPI 2-col, all internal grids stack
+     ============================================================ */
+
+  /* xl — tighten outer rhythm */
+  @media (max-width: 1440px) {
+    .content { padding: 20px 24px 56px; }
+    .strip { padding: 12px 24px; gap: 16px; }
+    .detail-head { padding: 18px 20px 16px; gap: 16px; }
+  }
+
+  /* lg — sidebar 200, search 180, table allowed to scroll if it must */
+  @media (max-width: 1280px) {
+    .shell { grid-template-columns: 200px 1fr; }
+    .search { width: 180px; }
+    .ledger { overflow-x: auto; }
+    .ledger-counts { gap: 12px; font-size: 10.5px; }
+    .strip-title h1 { font-size: 20px; }
+    .meta-cell { padding: 6px 10px; }
+    .meta-cell .v { font-size: 11px; }
+    .tick-name { max-width: 120px; }
+  }
+
+  /* md — sidebar collapses to icon rail, low-priority cols hidden,
+     detail-grid keeps 2-col but tighter; strip-meta wraps under title */
+  @media (max-width: 1024px) {
+    .shell { grid-template-columns: 56px 1fr; }
+    .brand { padding: 14px 0; justify-content: center; border-bottom: 1px solid var(--rule); }
+    .brand-text { display: none; }
+    .nav-section { padding: 10px 4px 6px; }
+    .nav-label { display: none; }
+    .nav-item {
+      justify-content: center;
+      padding: 8px 0;
+      height: 36px;
+      gap: 0;
+      border-left: 0;
+      border-right: 2px solid transparent;
+      font-size: 0; /* hide label text, keep .ico */
+    }
+    .nav-item.is-active { border-right-color: var(--forest); border-left: 0; }
+    .nav-item .ico { width: 16px; height: 16px; opacity: 0.8; }
+    .nav-foot { flex-direction: column; gap: 8px; padding: 10px 4px; font-size: 0; }
+    .nav-foot > span:not(.theme-toggle) { display: none; }
+    .theme-toggle { transform: rotate(90deg) scale(0.85); transform-origin: center; }
+
+    .strip {
+      grid-template-columns: 1fr;
+      gap: 12px;
+      padding: 14px 20px;
+    }
+    .strip-meta { flex-wrap: wrap; }
+    .content { padding: 18px 20px 56px; gap: 18px; }
+
+    .toolbar { grid-template-columns: 1fr; }
+    .toolbar-actions { justify-content: flex-end; flex-wrap: wrap; }
+
+    /* progressive column hide — columns ordered:
+       1 # · 2 Ticker · 3 Sector · 4 Composite · 5 Adj · 6 Price
+       · 7 1D% · 8 Fair Px · 9 MoS% · 10 Loss% · 11 Rec · 12 Risk */
+    table.tbl thead th:nth-child(5),
+    table.tbl tbody td:nth-child(5),
+    table.tbl thead th:nth-child(7),
+    table.tbl tbody td:nth-child(7),
+    table.tbl thead th:nth-child(10),
+    table.tbl tbody td:nth-child(10) { display: none; }
+
+    .detail-head { grid-template-columns: auto 1fr; }
+    .detail-head .detail-price {
+      grid-column: 1 / -1;
+      border-left: 0;
+      border-top: 1px dashed var(--rule-strong);
+      padding-left: 0; padding-top: 14px;
+      text-align: left;
+    }
+    .price-row { justify-content: flex-start; }
+
+    .kpi-strip { grid-template-columns: repeat(3, 1fr); }
+    .kpi:nth-child(3) { border-right: 0; }
+    .kpi:nth-child(4),
+    .kpi:nth-child(5) { border-top: 1px solid var(--rule); }
+    .kpi:nth-child(4) { border-right: 1px solid var(--rule); }
+
+    .detail-grid { grid-template-columns: 1fr; }
+    .detail-grid > *:first-child {
+      border-right: 0 !important;
+      border-bottom: 1px solid var(--rule);
+    }
+  }
+
+  /* sm — sidebar hidden, content full width, strip stacks,
+     all internal grids collapse, table allows horizontal scroll */
+  @media (max-width: 768px) {
+    .shell { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+
+    /* compact brand re-injected into strip via inline structure */
+    .strip {
+      padding: 12px 16px;
+      gap: 10px;
+      border-bottom: 2px solid var(--ink);
+    }
+    .strip-title { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .strip-title h1 { font-size: 18px; }
+    .crumb-sep { display: none; }
+    .strip-meta {
+      width: 100%;
+      flex-wrap: wrap;
+      border: 0;
+      border-radius: 0;
+      gap: 0;
+      background: transparent;
+    }
+    .meta-cell {
+      flex: 1 1 calc(50% - 0px);
+      min-width: 0;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius-sm);
+      margin: 2px;
+      padding: 6px 8px;
+      background: var(--surface);
+    }
+
+    .content { padding: 14px 12px 48px; gap: 14px; }
+
+    .filters { gap: 4px; }
+    .chip { font-size: 11px; height: 22px; padding: 0 6px; }
+    .toolbar-actions { width: 100%; gap: 6px; }
+    .search { flex: 1; width: auto; min-width: 0; }
+
+    .ledger-head {
+      grid-template-columns: 1fr;
+      gap: 8px;
+      padding: 10px 12px;
+    }
+    .ledger-head h2 { font-size: 15px; }
+    .ledger-counts { flex-wrap: wrap; font-size: 10px; gap: 8px; }
+
+    .legend { flex-wrap: wrap; font-size: 9px; padding: 6px 12px; }
+    .legend > span:last-child { width: 100%; }
+
+    /* hide sector + adj + 1D% + fair px + loss%, keep core scan columns */
+    table.tbl thead th:nth-child(3),
+    table.tbl tbody td:nth-child(3),
+    table.tbl thead th:nth-child(8),
+    table.tbl tbody td:nth-child(8) { display: none; }
+
+    table.tbl { font-size: 12px; }
+    table.tbl thead th { padding: 6px 8px; font-size: 10px; }
+    table.tbl tbody td { padding: 6px 8px; height: 38px; }
+    .tick-name { max-width: 90px; font-size: 10px; }
+    .tick-logo { width: 22px; height: 22px; font-size: 10px; flex-basis: 22px; }
+    .score-bar { width: 40px; }
+    .score-val { min-width: 36px; font-size: 11px; }
+    .mos { min-width: 50px; font-size: 11px; }
+
+    .detail-head {
+      grid-template-columns: auto 1fr;
+      padding: 14px 14px 12px;
+      gap: 12px;
+    }
+    .detail-logo { width: 44px; height: 44px; font-size: 17px; }
+    .detail-ident .name { font-size: 18px; }
+    .detail-ident .sub { font-size: 11px; gap: 6px; }
+    .price-now { font-size: 24px; }
+
+    .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+    .kpi { padding: 10px 12px; }
+    .kpi:nth-child(odd) { border-right: 1px solid var(--rule); }
+    .kpi:nth-child(even) { border-right: 0; }
+    .kpi:nth-child(n+3) { border-top: 1px solid var(--rule); }
+    .kpi:last-child { grid-column: 1 / -1; border-right: 0; }
+    .kpi .val { font-size: 15px; }
+
+    .pillars { grid-template-columns: 1fr; }
+    .pillar { border-right: 0; }
+    .pillar:nth-last-child(-n+2) { border-bottom: 1px solid var(--rule); }
+    .pillar:last-child { border-bottom: 0; }
+
+    .fp-row {
+      grid-template-columns: 1fr auto;
+      gap: 6px 10px;
+      padding: 10px 14px;
+    }
+    .fp-name { grid-column: 1 / 2; }
+    .fp-val { grid-column: 2 / 3; grid-row: 1 / 2; }
+    .fp-track { grid-column: 1 / -1; }
+    .fp-current::after { display: none; }
+
+    .fp-foot { grid-template-columns: 1fr 1fr 1fr; }
+    .fp-foot .cell { padding: 8px 12px; }
+    .fp-foot .val { font-size: 12px; }
+
+    .flag-row { padding: 8px 12px; grid-template-columns: 12px 1fr auto; gap: 8px; font-size: 11px; }
+    .flag-name .anchor { display: block; margin-left: 0; margin-top: 2px; }
+
+    .dq { grid-template-columns: repeat(2, 1fr); }
+    .dq-cell { border-right: 0; border-bottom: 1px solid var(--rule); padding: 10px 12px; }
+    .dq-cell:nth-child(odd) { border-right: 1px solid var(--rule); }
+    .dq-cell:nth-last-child(-n+2) { border-bottom: 0; }
+
+    .ruler { padding: 12px 14px; gap: 10px; font-size: 10px; }
+    .ruler-mark { height: 36px; }
+  }
+
+  /* xs — extreme narrow, single-column for every grid */
+  @media (max-width: 480px) {
+    .strip { padding: 10px 12px; }
+    .strip-title h1 { font-size: 16px; }
+    .meta-cell { flex: 1 1 100%; }
+
+    .ledger { border-radius: 0; border-left: 0; border-right: 0; margin: 0 -12px; }
+
+    /* keep only the absolute essentials: rank · ticker · composite · MoS · risk */
+    table.tbl thead th:nth-child(6),  /* Price */
+    table.tbl tbody td:nth-child(6),
+    table.tbl thead th:nth-child(11), /* Recommendation */
+    table.tbl tbody td:nth-child(11) { display: none; }
+
+    .kpi-strip { grid-template-columns: 1fr 1fr; }
+    .kpi { padding: 8px 10px; }
+    .kpi .lbl { font-size: 9px; }
+    .kpi .val { font-size: 14px; }
+
+    .fp-foot { grid-template-columns: 1fr; }
+    .fp-foot .cell { border-right: 0; border-bottom: 1px solid var(--rule); }
+    .fp-foot .cell:last-child { border-bottom: 0; }
+
+    .detail-head {
+      grid-template-columns: 1fr;
+      text-align: left;
+    }
+    .detail-logo { width: 40px; height: 40px; font-size: 15px; }
+    .detail-ident .name { font-size: 17px; }
+
+    .mock-sep { margin: 16px 0 8px; font-size: 11px; }
+  }
+
+  /* ----- portrait-specific tweaks for mid-size tablets -----
+     when held in portrait at 600-900px wide, prefer the vertical
+     ledger reading rhythm — header gains a touch more room, table
+     density stays at sm/xs level set by the width-based rules above
+     (additive, no conflicts). */
+  @media (max-width: 1024px) and (orientation: portrait) {
+    .strip-title h1 { letter-spacing: -0.012em; }
+    .ledger-head h2 { letter-spacing: -0.005em; }
+    .detail-head { padding-top: 18px; padding-bottom: 16px; }
+  }
+
+  /* ----- landscape on short viewports (phones held sideways) -----
+     viewport height < 500px in landscape: collapse the sticky strip
+     vertical rhythm so the table gets more of the visible area */
+  @media (orientation: landscape) and (max-height: 500px) {
+    .strip { padding: 8px 16px; }
+    .strip-title h1 { font-size: 16px; }
+    .strip-meta { font-size: 10px; }
+    .meta-cell { padding: 4px 8px; }
+    .meta-cell .v { font-size: 10.5px; }
+    .content { padding-top: 10px; gap: 10px; }
+    .detail-head { padding: 12px 16px; }
+    .price-now { font-size: 22px; }
+    .kpi { padding: 8px 12px; }
+    .kpi .val { font-size: 14px; }
+  }
+
+  /* ----- print preview (and any user printing the ledger) -----
+     drop interactive chrome, force light palette */
+  @media print {
+    .sidebar, .toolbar, .ruler, .mock-sep { display: none; }
+    .shell { grid-template-columns: 1fr; }
+    .strip { border-bottom: 2px solid var(--ink); }
+    .ledger, .card { box-shadow: none; border-color: var(--ink); }
+    body { background: #fff; }
+    table.tbl tbody tr:hover { background: transparent; }
+    table.tbl thead th { background: #fff; border-bottom: 2px solid var(--ink); }
+  }
+
+  /* ----- hi-DPI tuning — 1px borders can render as 0.5 on retina,
+     bump to use a slightly stronger rule colour so the spreadsheet
+     grid still reads at the same weight as on 1x screens ----- */
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
+    :root { --rule: #DDE3EA; }
+  }
+
+  /* ----- reduced-motion — kill the chip hover lift if any animation
+     accumulates here later; safe no-op today ----- */
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+
 </style>
 </head>
 <body>
