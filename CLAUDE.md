@@ -1625,8 +1625,8 @@ palette so returning users still associate sectors with their
 familiar dot cue. `sectorStyle()` fallback also collapses to the
 same neutral chip with a slate-400 dot for unknown-sector entries.
 
-**Phase 4 LedgerCraft reskin · PR-A2 in flight (this PR)** (2026-05-24) —
-second of three sub-PRs. **Chip-family squaring** — every chip body
+**Phase 4 LedgerCraft reskin · PR-A2 merged via PR #233** (2026-05-24,
+`dc615ae`) — second of three sub-PRs. **Chip-family squaring** — every chip body
 across the six chip surfaces flips `rounded-full` (Tailwind 9999px,
 violates LedgerCraft Rule 8 "no border-radius > 4px on data
 surfaces") → `rounded-sm` (Tailwind 2px, exactly LedgerCraft Chip
@@ -1653,6 +1653,67 @@ FilterDrawer "View N stocks" footer button + search-input radius
 change — JSX className-only diff. Live `npm install` + `tsc
 --noEmit` + `next build` run by CI (sandbox has no `node_modules`;
 visible TS errors are pre-existing env noise).
+
+**Phase 4 LedgerCraft reskin · PR-A3 in flight (this PR)** (2026-05-24) —
+third and final of three sub-PRs. **Table + frame polish** — sharpens
+the remaining frame-level radii and drops the soft shadow tokens from
+the data grid per LedgerCraft Elevation philosophy ("flat design with
+borders as the primary depth indicator. Shadows are used sparingly —
+only for overlays and dropdowns that must appear above the data grid").
+Touched five files:
+
+- `RankingTable.tsx` — desktop table card `rounded-lg shadow-medium`
+  → `rounded` (4px, border-only) per Cards spec line 79 + Elevation
+  line 55 · alternating row `even:bg-slate-50` → `even:bg-slate-100`
+  + hover `hover:bg-slate-100` → `hover:bg-slate-200` to match the
+  LedgerCraft Rule 5 alternating-row palette (`#FFFFFF / #F1F5F9` =
+  white / slate-100) · Filters button `rounded-md shadow-sm` →
+  `rounded-sm` (no shadow) per Button spec line 70 (Secondary button
+  size Medium = 32px / 8px 16px / 13px / **2px radius**) · search
+  input `rounded-md shadow-sm` → `rounded-sm` (no shadow) per Text
+  Input spec line 91 · mobile cards `rounded-lg shadow-sm` →
+  `rounded` (4px, no shadow) + hover bg align to slate-100 · mobile
+  rank label + delta pill `rounded-md` → `rounded-sm` · empty-state
+  card `rounded-lg` → `rounded` · pagination Prev/Next buttons
+  `rounded-md shadow-sm` → `rounded-sm`.
+- `Sidebar.tsx` — brand mark `Q` `rounded-md` → `rounded-sm` (matches
+  LedgerCraft Filter Chip / Button radii at 2px) · collapse + mobile
+  close buttons `rounded-md` → `rounded-sm` · nav-item `rounded-md`
+  → `rounded-sm` (per LedgerCraft Lists "Default Item" spec line 101
+  which uses no radius itself; 2px matches the ambient button family).
+- `FilterDrawer.tsx` — close button + Clear-all button + footer "View
+  N stocks" primary CTA + search input all `rounded-md` → `rounded-sm`;
+  search input loses `shadow-sm` per Text Input spec.
+- `AppShell.tsx` — mobile hamburger `rounded-md` → `rounded-sm`.
+- `app/page.tsx` — "Compute pending" empty-state banner
+  `rounded-lg` → `rounded` (4px per Cards spec).
+
+Preserved (out of scope this PR, deferred to later polish or
+no-change-needed)
+- Status dots (`rounded-full` inside chips) — LedgerCraft Border-
+  Radius spec line 51 explicit exception ("Full (9999px): Status
+  dots, toggle switches").
+- `app/stock/[ticker]/page.tsx` — per-stock detail page chrome
+  not in scope; will inherit the new chip + table conventions
+  automatically through shared component imports
+  (`SectorChip` / `ScoreBadge` / `RecommendationBadge` /
+  `LossChanceBadge` already squared via A2).
+- `StockLogo.tsx` `rounded-md` — logo container, not a chip;
+  6px is acceptable per LedgerCraft Cards Medium radius
+  (4-6px band) and the larger size warrants a softer corner.
+- OKLCH soft sage/terracotta tokens.
+- Layout / column order / spacing / typography — UNCHANGED.
+
+The three-PR Phase 4 LedgerCraft reskin series (A1 + A2 + A3) lands
+the project on full spec alignment: restrained palette (sector chip
+body neutralized to steel, semantic colors stay OKLCH-soft for
+positive/negative pairs), sharp ≤4px radius family across every
+chip / button / input / card surface, and borders-as-depth with
+shadows only on overlays (FilterDrawer keeps `shadow-overlay`
+from its slide-over `<aside>` since it IS an overlay). No schema /
+Python / scoring / valuation / output JSON change across the
+entire 3-PR series — all token-and-className diffs under
+`frontend/`.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — after ≥ 1

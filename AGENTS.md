@@ -1087,25 +1087,40 @@ note cross-tool-specific points only:
   text-slate-600 / ring-slate-200` constants while preserving the
   11 distinct dot rgb() values for glance-affordance.
 
-- **Phase 4 LedgerCraft reskin — PR-A2 in flight (this PR)**
-  (2026-05-24) — chip-family squaring. Every chip body across six
-  surfaces flips `rounded-full` → `rounded-sm` (2px) per LedgerCraft
-  Rule 8 + Chip spec. Touches `SectorChip.tsx` · `ScoreBadge.tsx`
-  (sm pill only — lg radial donut + md vertical stack keep their
-  shapes) · `RecommendationBadge.tsx` · `LossChanceBadge.tsx` ·
-  `FilterDrawer.tsx` (4 chip groups + inactive surface palette
-  alignment `bg-white → bg-slate-100`) · `RankingTable.tsx` (5
-  active-filter chip variants + Filters-button count badge).
-  Status dots (`h-1.5 w-1.5 rounded-full ${...dot}`) keep
-  `rounded-full` per LedgerCraft "Status dots / toggle switches"
-  9999px exception. `MoSBadge` (radial SVG) and `MoSCell` (already
-  `rounded-sm`) untouched. **Out of scope** (deferred to A3): table
-  card border + alternating-row stripe shift to slate-100 + sidebar
-  nav-item radius + FilterDrawer footer button + search-input
-  radius. No schema / Python / scoring / valuation / output JSON
-  change. Cross-tool agents (Copilot / Cursor / Devin) editing chip
-  surfaces post-A2 should reach for `rounded-sm` (not
-  `rounded-full`) as the canonical chip body radius.
+- **Phase 4 LedgerCraft reskin — PR-A2 merged via PR #233**
+  (2026-05-24, `dc615ae`) — chip-family squaring. Every chip body
+  across six surfaces flips `rounded-full` → `rounded-sm` (2px) per
+  LedgerCraft Rule 8 + Chip spec. Touches `SectorChip.tsx` ·
+  `ScoreBadge.tsx` (sm pill only — lg radial donut + md vertical
+  stack keep their shapes) · `RecommendationBadge.tsx` ·
+  `LossChanceBadge.tsx` · `FilterDrawer.tsx` (4 chip groups +
+  inactive surface palette alignment `bg-white → bg-slate-100`) ·
+  `RankingTable.tsx` (5 active-filter chip variants + Filters-button
+  count badge). Status dots (`h-1.5 w-1.5 rounded-full ${...dot}`)
+  keep `rounded-full` per LedgerCraft "Status dots / toggle
+  switches" 9999px exception. Cross-tool agents (Copilot / Cursor /
+  Devin) editing chip surfaces post-A2 should reach for `rounded-sm`
+  (not `rounded-full`) as the canonical chip body radius.
+
+- **Phase 4 LedgerCraft reskin — PR-A3 in flight (this PR)**
+  (2026-05-24) — third and final sub-PR. Table + frame polish: all
+  `rounded-md` button / input / list-item surfaces flip to
+  `rounded-sm` (2px per Button + Text Input spec); all `rounded-lg`
+  card surfaces flip to `rounded` (4px per Cards spec); the data
+  grid drops its `shadow-medium` / `shadow-sm` tokens per LedgerCraft
+  Elevation philosophy ("borders as the primary depth indicator");
+  alternating row backgrounds shift `even:bg-slate-50` →
+  `even:bg-slate-100` to match the canonical `#FFFFFF / #F1F5F9`
+  palette (Rule 5). Touches `RankingTable.tsx` · `Sidebar.tsx` ·
+  `FilterDrawer.tsx` · `AppShell.tsx` · `app/page.tsx`. Status dots
+  retain `rounded-full`. FilterDrawer slide-over `<aside>` keeps
+  `shadow-overlay` since it IS an overlay (Elevation philosophy
+  exception). Stock-detail page chrome inherits the shared chip
+  components and needs no edit. **Series wrap-up**: A1 + A2 + A3
+  land the project on full LedgerCraft spec alignment — restrained
+  palette, sharp ≤4px radii throughout, borders-as-depth on the
+  data grid. No schema / Python / scoring / valuation / output JSON
+  change across the entire 3-PR series.
 
 ## Claude-Code-specific tooling
 

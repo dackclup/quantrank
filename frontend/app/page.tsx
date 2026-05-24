@@ -30,7 +30,7 @@ export default function HomePage() {
       </header>
 
       {metadata.universe_size === 0 || rankings.length === 0 ? (
-        <div className="rounded-lg border border-amber-200 bg-amber-50 p-6 text-center text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-200">
+        <div className="rounded border border-amber-200 bg-amber-50 p-6 text-center text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-200">
           <p className="font-medium">Compute pending.</p>
           <p className="mt-1">
             The first compute hasn&rsquo;t run yet. Scheduled cron: Mon-Fri
