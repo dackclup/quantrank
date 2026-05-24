@@ -1601,6 +1601,38 @@ Both fixes ship under one PR per security-hardening bundle. CLAUDE.md
 new §Gotchas — these are not invariants future code authors need to
 remember; they're hardening of existing surfaces).
 
+**Phase 4 LedgerCraft reskin · PR-A1 in flight (this PR)** (2026-05-24) —
+first PR of a 3-step series taking LedgerCraft from the Phase 3d
+adopted baseline (canonical palette + `font-slab` + 4-tier shadow
+tokens + AppShell/Sidebar + dark mode + `rounded-lg` normalization)
+to full spec alignment (restrained palette on sector chips + sharp
+≤4px radius family + borders-as-depth). Direction approval gate
+landed via the now-closed PR #231 HTML mockups under
+`design-mockups/` (3 files: `current-app-snapshot.html`,
+`ledgercraft-redesign.html` w/ responsive treatment for every
+breakpoint + orientation). User-locked defaults on 2026-05-24:
+sector palette → mute to single neutral tone (steel #475569 fg /
+slate-100 bg / slate-200 ring per LedgerCraft Filter Chip spec) with
+sector dots kept distinct for glance-affordance; pill shape → all
+`rounded-full` → `rounded-sm` (A2); colour intensity → keep soft
+sage/terracotta OKLCH tokens (no canonical alarm-red revert per
+feedback 2026-05-14); output → actual `frontend/` PR series. **A1
+scope**: `frontend/lib/visual.ts` — `SECTOR_COLORS` 11-entry literal
+re-keyed to `NEUTRAL_CHIP_BG / FG / RG` constants (Tailwind
+`slate-100 / slate-600 / slate-200` mapped to spec `#F1F5F9 /
+#475569 / #E2E8F0`). Dot rgb() values kept verbatim from the prior
+palette so returning users still associate sectors with their
+familiar dot cue. `sectorStyle()` fallback also collapses to the
+same neutral chip with a slate-400 dot for unknown-sector entries.
+**Out of scope this PR**: `SectorChip.tsx` still `rounded-full`
+(A2); `ScoreBadge` / `RecommendationBadge` / `LossChanceBadge` /
+`MoSBadge` / `MoSCell` / `FilterDrawer` chip squaring (A2); table
+card border + alternating-row treatment + sidebar nav-item radius
+(A3). No schema / Python / scoring / valuation change — token-only
+diff under `frontend/lib/`. Live `npm install` + `tsc --noEmit` +
+`next build` run by CI (sandbox has no `node_modules`; the
+visible TS errors are pre-existing env noise).
+
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — after ≥ 1
   cron's `form4_rule10b5_one_excluded_count` lands and firing-rate

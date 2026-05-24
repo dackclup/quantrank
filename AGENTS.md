@@ -1070,6 +1070,29 @@ note cross-tool-specific points only:
   screen-share. No compute / schema / scoring / valuation / frontend /
   Python production-code change.
 
+- **Phase 4 LedgerCraft reskin — PR-A1 in flight (this PR)**
+  (2026-05-24) — first of three sub-PRs taking LedgerCraft from the
+  Phase 3d baseline already on main to full spec alignment.
+  Direction-approval mockups landed (then closed without merging) as
+  PR #231 — three self-contained HTML files under `design-mockups/`
+  (current-state snapshot, full LedgerCraft redesign, responsive
+  treatment). User-locked defaults on 2026-05-24: sector chip body
+  → mute to single neutral steel tone (sector identity carried by
+  the colored dot alone); all chip / badge `rounded-full` → 2px
+  squared (deferred to A2); keep soft OKLCH sage/terracotta tokens
+  for positive/negative semantics (no alarm-red revert); ship as
+  actual `frontend/` code changes (no mockup intermediate step).
+  **A1 scope**: `frontend/lib/visual.ts` only — `SECTOR_COLORS`
+  re-keyed to neutral `bg-slate-100 / text-slate-600 /
+  ring-slate-200` constants while preserving the 11 distinct dot
+  rgb() values for glance-affordance. Cross-tool agents (Copilot /
+  Cursor / Devin) editing any of the chip / badge components
+  downstream (A2: SectorChip · ScoreBadge · RecommendationBadge ·
+  LossChanceBadge · MoSBadge · MoSCell · FilterDrawer; A3:
+  RankingTable · Sidebar · AppShell) should expect the neutral chip
+  surface as the baseline and only adjust radius / border there. No
+  schema / Python / scoring / valuation / output JSON change.
+
 ## Claude-Code-specific tooling
 
 Claude Code sessions for this project have 6 MCP connectors enabled

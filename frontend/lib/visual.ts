@@ -85,32 +85,50 @@ export type SectorStyle = {
   ring: string;
 };
 
-// 11 GICS sectors. Anything outside this map falls back to the slate
-// neutral chip in sectorStyle() below — see fallback in that function.
+// LedgerCraft Phase 4 A1 (2026-05-24) — sector chip body collapses to
+// a single neutral "steel" surface per LedgerCraft Filter Chip spec
+// (#F1F5F9 bg / #475569 fg / #E2E8F0 ring, expressed via Tailwind
+// `slate-100` / `slate-600` / `slate-200` here). Only the colored
+// dot retains sector identity; the chip body no longer competes with
+// the ranking-table data for attention. This matches the design-spec
+// "restrained palette" rule (forest / amber / steel / red only) while
+// preserving sector-glance affordance via the dot.
+//
+// The 11 `dot` rgb() values are kept verbatim from the previous palette
+// so a returning user still associates each sector with its familiar
+// color cue (e.g. IT → indigo, Energy → orange) at the dot level. Only
+// the surrounding tinted background + matching ring change.
+const NEUTRAL_CHIP_BG = 'bg-slate-100 dark:bg-slate-800';
+const NEUTRAL_CHIP_FG = 'text-slate-600 dark:text-slate-300';
+const NEUTRAL_CHIP_RG = 'ring-slate-200 dark:ring-slate-700';
+
+// 11 GICS sectors. Anything outside this map falls back to the same
+// neutral chip in sectorStyle() below, with a slate-400 dot for the
+// "unknown sector" case (e.g., new-listing entries pre-sector-tagging).
 // LedgerCraft Phase 3b: each `bg` / `fg` / `ring` carries paired light
 // + `dark:` variants. Dot stays as a literal `rgb()` (inline style) so
 // it doesn't need a dark variant — the lightness in OKLCH terms reads
 // fine on both backgrounds at the 6px size.
 export const SECTOR_COLORS: Readonly<Record<string, SectorStyle>> = {
-  'Information Technology': { dot: 'rgb(99 102 241)', bg: 'bg-indigo-50 dark:bg-indigo-900/30', fg: 'text-indigo-700 dark:text-indigo-300', ring: 'ring-indigo-200 dark:ring-indigo-800' },
-  'Communication Services': { dot: 'rgb(168 85 247)', bg: 'bg-purple-50 dark:bg-purple-900/30', fg: 'text-purple-700 dark:text-purple-300', ring: 'ring-purple-200 dark:ring-purple-800' },
-  'Consumer Discretionary': { dot: 'rgb(236 72 153)', bg: 'bg-pink-50 dark:bg-pink-900/30', fg: 'text-pink-700 dark:text-pink-300', ring: 'ring-pink-200 dark:ring-pink-800' },
-  'Consumer Staples': { dot: 'rgb(20 184 166)', bg: 'bg-teal-50 dark:bg-teal-900/30', fg: 'text-teal-700 dark:text-teal-300', ring: 'ring-teal-200 dark:ring-teal-800' },
-  'Energy': { dot: 'rgb(234 88 12)', bg: 'bg-orange-50 dark:bg-orange-900/30', fg: 'text-orange-700 dark:text-orange-300', ring: 'ring-orange-200 dark:ring-orange-800' },
-  'Financials': { dot: 'rgb(13 148 136)', bg: 'bg-teal-50 dark:bg-teal-900/30', fg: 'text-teal-800 dark:text-teal-200', ring: 'ring-teal-200 dark:ring-teal-800' },
-  'Health Care': { dot: 'rgb(220 38 38)', bg: 'bg-red-50 dark:bg-red-900/30', fg: 'text-red-700 dark:text-red-300', ring: 'ring-red-200 dark:ring-red-800' },
-  'Industrials': { dot: 'rgb(100 116 139)', bg: 'bg-slate-100 dark:bg-slate-800', fg: 'text-slate-700 dark:text-slate-300', ring: 'ring-slate-300 dark:ring-slate-700' },
-  'Materials': { dot: 'rgb(180 83 9)', bg: 'bg-amber-50 dark:bg-amber-900/30', fg: 'text-amber-800 dark:text-amber-200', ring: 'ring-amber-200 dark:ring-amber-800' },
-  'Real Estate': { dot: 'rgb(132 204 22)', bg: 'bg-lime-50 dark:bg-lime-900/30', fg: 'text-lime-800 dark:text-lime-200', ring: 'ring-lime-200 dark:ring-lime-800' },
-  'Utilities': { dot: 'rgb(14 165 233)', bg: 'bg-sky-50 dark:bg-sky-900/30', fg: 'text-sky-700 dark:text-sky-300', ring: 'ring-sky-200 dark:ring-sky-800' },
+  'Information Technology': { dot: 'rgb(99 102 241)',  bg: NEUTRAL_CHIP_BG, fg: NEUTRAL_CHIP_FG, ring: NEUTRAL_CHIP_RG },
+  'Communication Services': { dot: 'rgb(168 85 247)',  bg: NEUTRAL_CHIP_BG, fg: NEUTRAL_CHIP_FG, ring: NEUTRAL_CHIP_RG },
+  'Consumer Discretionary': { dot: 'rgb(236 72 153)',  bg: NEUTRAL_CHIP_BG, fg: NEUTRAL_CHIP_FG, ring: NEUTRAL_CHIP_RG },
+  'Consumer Staples':       { dot: 'rgb(20 184 166)',  bg: NEUTRAL_CHIP_BG, fg: NEUTRAL_CHIP_FG, ring: NEUTRAL_CHIP_RG },
+  'Energy':                 { dot: 'rgb(234 88 12)',   bg: NEUTRAL_CHIP_BG, fg: NEUTRAL_CHIP_FG, ring: NEUTRAL_CHIP_RG },
+  'Financials':             { dot: 'rgb(13 148 136)',  bg: NEUTRAL_CHIP_BG, fg: NEUTRAL_CHIP_FG, ring: NEUTRAL_CHIP_RG },
+  'Health Care':            { dot: 'rgb(220 38 38)',   bg: NEUTRAL_CHIP_BG, fg: NEUTRAL_CHIP_FG, ring: NEUTRAL_CHIP_RG },
+  'Industrials':            { dot: 'rgb(100 116 139)', bg: NEUTRAL_CHIP_BG, fg: NEUTRAL_CHIP_FG, ring: NEUTRAL_CHIP_RG },
+  'Materials':              { dot: 'rgb(180 83 9)',    bg: NEUTRAL_CHIP_BG, fg: NEUTRAL_CHIP_FG, ring: NEUTRAL_CHIP_RG },
+  'Real Estate':            { dot: 'rgb(132 204 22)',  bg: NEUTRAL_CHIP_BG, fg: NEUTRAL_CHIP_FG, ring: NEUTRAL_CHIP_RG },
+  'Utilities':              { dot: 'rgb(14 165 233)',  bg: NEUTRAL_CHIP_BG, fg: NEUTRAL_CHIP_FG, ring: NEUTRAL_CHIP_RG },
 };
 
 export function sectorStyle(sector: string): SectorStyle {
   return SECTOR_COLORS[sector] ?? {
     dot: 'rgb(148 163 184)',
-    bg: 'bg-slate-50 dark:bg-slate-800',
-    fg: 'text-slate-700 dark:text-slate-300',
-    ring: 'ring-slate-200 dark:ring-slate-700',
+    bg: NEUTRAL_CHIP_BG,
+    fg: NEUTRAL_CHIP_FG,
+    ring: NEUTRAL_CHIP_RG,
   };
 }
 
