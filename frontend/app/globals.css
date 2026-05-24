@@ -107,10 +107,15 @@ body {
 }
 
 body {
-  /* LedgerCraft canonical background #FAFAFA — slightly warmer than
-   * the prior slate-50 #F8FAFC (PR #211-#215 default). Aligns with
-   * the LedgerCraft spec's spreadsheet-canvas register. */
-  background: rgb(250 250 250);
+  /* LedgerCraft canonical background softened toward warm cream
+   * (2026-05-24 user-feedback iteration) — `#FAFAFA` (250,250,250)
+   * felt too cold/stark against the white card surfaces post-A3
+   * shadow-drop. Shifted ~3pts warm to `#F8F6F3` (248,246,243) so
+   * the canvas reads as "soft off-white parchment" rather than
+   * "neutral monitor white". The card surfaces remain pure white
+   * per LedgerCraft Cards spec — the contrast between bg and
+   * surface is now slightly more readable as a depth cue. */
+  background: rgb(248 246 243);
   color: rgb(15 23 42);
   -webkit-font-smoothing: antialiased;
   font-family: var(--font-sans);

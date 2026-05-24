@@ -98,7 +98,38 @@ keeps growing/draining as PRs cycle.
 
 ## In flight (current)
 
-_(empty — most recent in-flight PR #238 merged 2026-05-24 as `cdf70bd`; see Merged section below)_
+## PR (this PR) — Light-mode soften + Strong Buy nowrap + StockLogo square (in flight, 2026-05-24)
+
+Three user-direction visual polish tweaks landed post-LedgerCraft series:
+
+- **`frontend/app/globals.css`** — body bg `rgb(250 250 250)` (#FAFAFA
+  canonical LedgerCraft) → `rgb(248 246 243)` (warm-cream shift ~3pts
+  toward yellow, away from cold off-white). Reduces the stark contrast
+  vs pure-`#FFFFFF` card surfaces post-A3 shadow-drop while staying
+  within the LedgerCraft canvas register (perceptual lightness ~96%);
+  user feedback "ทำให้สีขาว soft ลงหน่อย".
+- **`frontend/components/RecommendationBadge.tsx`** — chip body gains
+  `whitespace-nowrap` so "Strong Buy" / "Lean Bullish" labels stay on
+  a single line in narrow contexts (mobile cards · sidebar · ranking
+  table ticker col). Previously could wrap to 2 rows when the parent
+  container squeezed; user feedback "strong buy แบบแนวนอนทำให้เป็น
+  แถวเดียวไม่ต้องตัดเป็นสองแถว".
+- **`frontend/components/StockLogo.tsx`** — both inline-style call
+  sites flipped `borderRadius: '50%'` (circle) → `borderRadius: '4px'`
+  (square with LedgerCraft Cards Medium radius). Applies to BOTH the
+  Parqet `<img>` logo path and the deterministic letter-avatar
+  fallback; user feedback "รูปโลโก้หุ้นเปลี่ยนจากวงกลมเป็นสี่เหลี่ยม".
+  Note: this overrides the post-A3 design-reviewer audit OK-TO-KEEP
+  carve-out ("logo container, not a chip — 50% acceptable") because
+  user explicitly directed the change.
+
+No schema / Python / scoring / valuation / output JSON change.
+className+style-only diff. PHASE_STATUS_INFLIGHT.md side-file
+satisfies §Conventions lockstep per PR #237 convention.
+
+---
+
+_(post-this-PR: in-flight section returns to empty until next PR)_
 
 ---
 
