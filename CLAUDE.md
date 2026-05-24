@@ -1654,8 +1654,8 @@ change — JSX className-only diff. Live `npm install` + `tsc
 --noEmit` + `next build` run by CI (sandbox has no `node_modules`;
 visible TS errors are pre-existing env noise).
 
-**Phase 4 LedgerCraft reskin · PR-A3 in flight (this PR)** (2026-05-24) —
-third and final of three sub-PRs. **Table + frame polish** — sharpens
+**Phase 4 LedgerCraft reskin · PR-A3 merged via PR #234** (2026-05-24,
+`1a9501c`) — third and final of three sub-PRs. **Table + frame polish** — sharpens
 the remaining frame-level radii and drops the soft shadow tokens from
 the data grid per LedgerCraft Elevation philosophy ("flat design with
 borders as the primary depth indicator. Shadows are used sparingly —
@@ -1714,6 +1714,33 @@ from its slide-over `<aside>` since it IS an overlay). No schema /
 Python / scoring / valuation / output JSON change across the
 entire 3-PR series — all token-and-className diffs under
 `frontend/`.
+
+**Phase 4 LedgerCraft alignment · PR-B1 in flight (this PR)** (2026-05-24) —
+follow-up surfaced by the post-A3 `frontend-design-reviewer` audit
+(28 MUST-FIX + 5 SHOULD-FIX violations across 16 untouched
+components). **B1 = score-tier token fix** — `frontend/lib/visual.ts`
+removes teal + orange (two color families outside the LedgerCraft
+restrained palette of forest / amber / steel / red) from the
+score-tier ramp. (a) `TIERS[1]` "Strong" (scores 55-70) shifts from
+`teal-50/700/200` + `teal-500` dot to `emerald-50/600/200` +
+`emerald-400` dot — emerald step-down from "Exceptional" (70+
+emerald-700/500) preserving the 5-step ramp via lighter shade rather
+than a new hue. (b) `TIERS[3]` "Weak" (scores 25-40) shifts from
+`orange-50/700/200` + `orange-500` dot to `amber-50/800/300` +
+`amber-600` dot — amber step-down from "Average" (40-55
+amber-50/700/200 + amber-500 dot) preserving the ramp via darker
+shade. (c) `scoreColorClasses` 20-40 band mirrors the same orange →
+amber shift. (d) `scoreAccentColor` 20-40 band shifts from
+`rgb(249 115 22)` (orange-500) to `rgb(180 83 9)` (amber-700) so the
+ScoreBadge `size='lg'` radial-gauge stroke + tier-label color stays
+consistent with the chip body. **Cascade** — `ScoreBadge.tsx`
+(sm pill + lg radial), `FilterDrawer.tsx` score-tier filter chips,
+and `RankingTable.tsx` Score column inherit the fix automatically
+since they all import from these tokens; no component code changes.
+**B2 + B3 + B4 deferred** to follow-up PRs (card surface
+normalization · chip shape squaring round 2 · stripe + hover polish —
+~50-70 lines across 8 more components). No schema / Python /
+scoring / valuation / output JSON change — token-only diff.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — after ≥ 1
