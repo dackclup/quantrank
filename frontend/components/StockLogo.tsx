@@ -60,7 +60,7 @@ export function StockLogo({
       justifyContent: 'center',
       width: size,
       height: size,
-      borderRadius: '50%',
+      borderRadius: '4px',
       backgroundColor: bg,
       color: 'white',
       fontSize,
@@ -80,7 +80,7 @@ export function StockLogo({
   const imgStyle: CSSProperties = {
     width: size,
     height: size,
-    borderRadius: '50%',
+    borderRadius: '4px',
     objectFit: 'contain',
     flexShrink: 0,
     border: '1px solid rgb(226 232 240)',
