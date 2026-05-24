@@ -77,7 +77,7 @@ export function ThemeToggle({ layout = 'icon' }: ThemeToggleProps) {
         type="button"
         onClick={cycle}
         aria-label={`Theme: ${label} — click to cycle`}
-        className="group flex w-full items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+        className="group flex w-full items-center gap-2.5 rounded-sm px-2 py-1.5 text-sm text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
       >
         <span className="shrink-0 text-slate-500 group-hover:text-slate-700 dark:text-slate-400 dark:group-hover:text-slate-200">
           {icon}
@@ -96,7 +96,7 @@ export function ThemeToggle({ layout = 'icon' }: ThemeToggleProps) {
       onClick={cycle}
       aria-label={`Theme: ${label} — click to cycle`}
       title={`Theme: ${label}`}
-      className="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+      className="inline-flex h-8 w-8 items-center justify-center rounded-sm text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
     >
       {icon}
     </button>

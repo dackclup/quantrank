@@ -51,7 +51,7 @@ export default function StockDetailPage({
             {ticker}
           </h1>
         </header>
-        <div className="rounded-lg border border-amber-200 bg-amber-50 p-6 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-200">
+        <div className="rounded border border-amber-200 bg-amber-50 p-6 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-200">
           <p className="font-medium">Detail data pending</p>
           <p className="mt-1">
             The latest compute hasn&rsquo;t produced data for{' '}
@@ -82,11 +82,11 @@ export default function StockDetailPage({
           rank badge + sector chip on top row, big mono ticker, serif
           company name, radial-gauge ScoreBadge + price + MoSCell on
           the right side. */}
-      <header className="rounded-lg border border-slate-200 bg-white p-5 shadow-large dark:border-slate-800 dark:bg-slate-900 sm:p-6">
+      <header className="rounded border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900 sm:p-6">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2 text-xs">
-              <span className="inline-flex items-center rounded-md bg-slate-100 px-1.5 py-0.5 font-mono font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+              <span className="inline-flex items-center rounded-sm bg-slate-100 px-1.5 py-0.5 font-mono font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">
                 #{detail.rank}
               </span>
               <SectorChip sector={detail.sector} />
@@ -198,7 +198,7 @@ export default function StockDetailPage({
             recommendation={detail.recommendation}
           />
         ) : (
-          <div className="flex h-64 items-center justify-center rounded-lg border border-slate-200 bg-white text-sm text-slate-400 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-500">
+          <div className="flex h-64 items-center justify-center rounded border border-slate-200 bg-white text-sm text-slate-400 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-500">
             No price history available
           </div>
         )}
@@ -246,7 +246,7 @@ export default function StockDetailPage({
         </p>
       </section>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-medium dark:border-slate-800 dark:bg-slate-900">
+      <section className="rounded border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
           Data quality
         </h2>
@@ -262,7 +262,7 @@ export default function StockDetailPage({
           <dt className="text-slate-500 dark:text-slate-400">Filing lag</dt>
           <dd>
             <span
-              className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${filingLagBadgeClasses(
+              className={`inline-flex items-center rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${filingLagBadgeClasses(
                 filingLag,
               )}`}
             >

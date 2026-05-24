@@ -98,14 +98,14 @@ export function ManipulationRiskCard({
 
   return (
     <section
-      className={`rounded-lg border border-slate-200 bg-white p-4 ring-1 ring-inset dark:border-slate-800 dark:bg-slate-900 ${tone.ring}`}
+      className={`rounded border border-slate-200 bg-white p-4 ring-1 ring-inset dark:border-slate-800 dark:bg-slate-900 ${tone.ring}`}
     >
       <header className="mb-3 flex items-center justify-between">
         <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
           Manipulation Risk Index
         </h2>
         <span
-          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset ${tone.bg} ${tone.text} ${tone.ring}`}
+          className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset ${tone.bg} ${tone.text} ${tone.ring}`}
         >
           <span
             className={`inline-block h-1.5 w-1.5 rounded-full ${tone.dot}`}

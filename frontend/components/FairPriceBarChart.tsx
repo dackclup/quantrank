@@ -175,7 +175,7 @@ export function FairPriceBarChart({
   return (
     <section
       aria-label={`Fair price methods for ${ticker}`}
-      className="mb-4 rounded-lg border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900"
+      className="mb-4 rounded border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900"
     >
       <div className="mb-4">
         <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
@@ -192,7 +192,7 @@ export function FairPriceBarChart({
           today-vs-median comparison. Color of the surround tracks
           the verdict. */}
       {headline && (
-        <div className={`mb-4 rounded-lg border border-slate-200 p-4 shadow-medium dark:border-slate-800 ${headline.bg}`}>
+        <div className={`mb-4 rounded border border-slate-200 p-4 dark:border-slate-800 ${headline.bg}`}>
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <div className={`text-lg font-semibold ${headline.cls}`}>{headline.tag}</div>
@@ -238,7 +238,7 @@ export function FairPriceBarChart({
         <span className="text-slate-500 dark:text-slate-400">Of {nonOutlier} methods:</span>
         {tally.cheap > 0 && (
           <span
-            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-medium ${VERDICT_STYLE.cheap.bg} ${VERDICT_STYLE.cheap.text} ring-1 ring-inset ${VERDICT_STYLE.cheap.ring}`}
+            className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 font-medium ${VERDICT_STYLE.cheap.bg} ${VERDICT_STYLE.cheap.text} ring-1 ring-inset ${VERDICT_STYLE.cheap.ring}`}
           >
             <span className={`inline-block h-1.5 w-1.5 rounded-full ${VERDICT_STYLE.cheap.dot}`} />
             <span className="font-mono tabular-nums">{tally.cheap}</span> say cheap
@@ -246,7 +246,7 @@ export function FairPriceBarChart({
         )}
         {tally.fair > 0 && (
           <span
-            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-medium ${VERDICT_STYLE.fair.bg} ${VERDICT_STYLE.fair.text} ring-1 ring-inset ${VERDICT_STYLE.fair.ring}`}
+            className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 font-medium ${VERDICT_STYLE.fair.bg} ${VERDICT_STYLE.fair.text} ring-1 ring-inset ${VERDICT_STYLE.fair.ring}`}
           >
             <span className={`inline-block h-1.5 w-1.5 rounded-full ${VERDICT_STYLE.fair.dot}`} />
             <span className="font-mono tabular-nums">{tally.fair}</span> say fair
@@ -254,7 +254,7 @@ export function FairPriceBarChart({
         )}
         {tally.pricey > 0 && (
           <span
-            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-medium ${VERDICT_STYLE.pricey.bg} ${VERDICT_STYLE.pricey.text} ring-1 ring-inset ${VERDICT_STYLE.pricey.ring}`}
+            className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 font-medium ${VERDICT_STYLE.pricey.bg} ${VERDICT_STYLE.pricey.text} ring-1 ring-inset ${VERDICT_STYLE.pricey.ring}`}
           >
             <span className={`inline-block h-1.5 w-1.5 rounded-full ${VERDICT_STYLE.pricey.dot}`} />
             <span className="font-mono tabular-nums">{tally.pricey}</span> say pricey
@@ -269,7 +269,7 @@ export function FairPriceBarChart({
 
       {/* Per-method rows — accent bar (verdict color) + name + verdict
           badge + descriptive sentence in plain English. */}
-      <ul className="divide-y divide-slate-100 overflow-hidden rounded-lg border border-slate-200 shadow-subtle dark:divide-slate-800/60 dark:border-slate-800">
+      <ul className="divide-y divide-slate-100 overflow-hidden rounded border border-slate-200 dark:divide-slate-800/60 dark:border-slate-800">
         {rows.map((r) => {
           const v = VERDICT_STYLE[r.verdict];
           const pctRounded = Math.abs(r.pct) > 999
@@ -322,7 +322,7 @@ export function FairPriceBarChart({
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">{r.label}</span>
                   <span
-                    className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide ${v.bg} ${v.text} ring-1 ring-inset ${v.ring}`}
+                    className={`inline-flex items-center rounded-sm px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide ${v.bg} ${v.text} ring-1 ring-inset ${v.ring}`}
                   >
                     {v.label}
                   </span>

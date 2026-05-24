@@ -99,7 +99,7 @@ export function PillarRadarChart({
   return (
     <section
       aria-label={`Pillar score breakdown for ${ticker}`}
-      className="mb-4 rounded-lg border border-slate-200 bg-white p-5 shadow-medium dark:border-slate-800 dark:bg-slate-900"
+      className="mb-4 rounded border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900"
     >
       <div className="mb-4 flex flex-wrap items-baseline justify-between gap-3">
         <div>
@@ -140,7 +140,7 @@ export function PillarRadarChart({
                   {PILLAR_DESCRIPTIONS[r.label]}
                 </div>
               </div>
-              <div className="relative h-7 rounded-md bg-slate-100 dark:bg-slate-800">
+              <div className="relative h-7 rounded-sm bg-slate-100 dark:bg-slate-800">
                 {/* Tier-boundary tick lines at 30 / 50 / 70 — visually
                     show which tier the bar lands in. */}
                 <div className="absolute inset-y-0 left-[30%] w-px bg-slate-200 dark:bg-slate-700" />
