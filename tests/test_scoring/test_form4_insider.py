@@ -22,6 +22,7 @@ import pytest
 from compute import config
 from compute.scoring import form4_insider
 from compute.scoring.form4_insider import (
+    _AFF10B5_REQUIRED_ATTRS,
     _FOOTNOTES_REQUIRED_ATTRS,
     _FORM4_REQUIRED_ATTRS,
     _NON_DERIVATIVE_TX_REQUIRED_ATTRS,
@@ -30,7 +31,9 @@ from compute.scoring.form4_insider import (
     CACHE_TTL_DAYS,
     FORM4_LOOKBACK_DAYS,
     Form4Transaction,
+    _combine_10b5_one_signals,
     _detect_10b5_1_on_transaction,
+    _extract_aff10b5_one,
     fetch_recent_form4,
     invalidate_cache,
 )
@@ -873,3 +876,214 @@ def test_D4_edgar_footnotes_api_surface_locked():
             )
     except ImportError:
         pytest.skip("edgartools not installed")
+
+
+# ---------------------------------------------------------------------------
+# H. aff10b5One direct-XML-parse tests (PR #230 / 2026-05-24)
+#
+# Covers _extract_aff10b5_one, _combine_10b5_one_signals, the
+# _AFF10B5_REQUIRED_ATTRS manifest, and the per-filing propagation
+# path in _form4_to_transactions.
+# ---------------------------------------------------------------------------
+
+
+def test_H1_extract_aff10b5_one_true_lexical():
+    """'true' and '1' both map to True per SEC boolean lexical forms."""
+    lexical_true = b"<ownershipDocument><aff10b5One>true</aff10b5One></ownershipDocument>"
+    numeric_true = b"<ownershipDocument><aff10b5One>1</aff10b5One></ownershipDocument>"
+    assert _extract_aff10b5_one(lexical_true) is True, (
+        "Expected True for <aff10b5One>true</aff10b5One>"
+    )
+    assert _extract_aff10b5_one(numeric_true) is True, (
+        "Expected True for <aff10b5One>1</aff10b5One>"
+    )
+
+
+def test_H2_extract_aff10b5_one_false():
+    """'false' and '0' both map to False per SEC boolean lexical forms."""
+    lexical_false = b"<ownershipDocument><aff10b5One>false</aff10b5One></ownershipDocument>"
+    numeric_false = b"<ownershipDocument><aff10b5One>0</aff10b5One></ownershipDocument>"
+    assert _extract_aff10b5_one(lexical_false) is False, (
+        "Expected False for <aff10b5One>false</aff10b5One>"
+    )
+    assert _extract_aff10b5_one(numeric_false) is False, (
+        "Expected False for <aff10b5One>0</aff10b5One>"
+    )
+
+
+def test_H3_extract_aff10b5_one_absent():
+    """When <aff10b5One> is not present returns None (pre-2023 filing or omission)."""
+    xml_no_element = (
+        b"<ownershipDocument>"
+        b"<periodOfReport>2026-05-08</periodOfReport>"
+        b"</ownershipDocument>"
+    )
+    result = _extract_aff10b5_one(xml_no_element)
+    assert result is None, (
+        f"Expected None when <aff10b5One> element absent, got {result!r}"
+    )
+
+
+def test_H4_extract_aff10b5_one_malformed_xml_returns_none_no_raise():
+    """Malformed XML must return None without raising — defensive path."""
+    result = _extract_aff10b5_one("garbled <not> xml <<<")
+    assert result is None, (
+        f"Expected None for malformed XML, got {result!r}"
+    )
+    # Also test None input
+    assert _extract_aff10b5_one(None) is None
+
+
+def test_H5_aff10b5_propagates_to_all_transactions():
+    """When filing.xml() returns <aff10b5One>1</aff10b5One>, every
+    transaction row emitted by _form4_to_transactions must carry
+    aff10b5_one_doc_level=True.  Uses a duck-typed filing with a
+    callable xml() method returning 3-transaction XML."""
+
+    _XML_WITH_AFF10B5_TRUE = (
+        "<ownershipDocument>"
+        "<aff10b5One>1</aff10b5One>"
+        "<periodOfReport>2026-05-01</periodOfReport>"
+        "</ownershipDocument>"
+    )
+
+    @dataclass
+    class _FilingWithXml:
+        accession_no: str
+        filing_date: str
+        form: str
+        filing_url: str
+        _ownership: _FakeOwnership
+
+        def obj(self) -> _FakeOwnership:
+            return self._ownership
+
+        def xml(self) -> str:
+            return _XML_WITH_AFF10B5_TRUE
+
+    three_txs = _FakeNonDerivativeTransactions(
+        _rows=[
+            _FakeTx(date="2026-05-01", transaction_code="S", shares=1000.0, price=100.0, remaining=9000.0),
+            _FakeTx(date="2026-05-02", transaction_code="S", shares=500.0, price=101.0, remaining=8500.0),
+            _FakeTx(date="2026-05-03", transaction_code="S", shares=750.0, price=102.0, remaining=7750.0),
+        ]
+    )
+    ownership = _FakeOwnership(
+        reporting_owners=_FakeReportingOwners(
+            owners=[
+                _FakeOwner(
+                    cik="0001000099",
+                    name="SMITH CAROL T",
+                    is_director=False,
+                    is_officer=True,
+                    is_ten_pct_owner=False,
+                    officer_title="CFO",
+                )
+            ]
+        ),
+        non_derivative_table=_FakeNonDerivativeTable(transactions=three_txs),
+    )
+    filing = _FilingWithXml(
+        accession_no="0001234567-26-099999",
+        filing_date="2026-05-04",
+        form="4",
+        filing_url="https://www.sec.gov/Archives/edgar/data/0/test.htm",
+        _ownership=ownership,
+    )
+
+    from compute.scoring.form4_insider import _form4_to_transactions
+
+    rows = _form4_to_transactions(filing)
+    assert len(rows) == 3, f"Expected 3 rows, got {len(rows)}"
+    for i, row in enumerate(rows):
+        assert row.get("aff10b5_one_doc_level") is True, (
+            f"Row {i} has aff10b5_one_doc_level={row.get('aff10b5_one_doc_level')!r}; "
+            "expected True — doc-level flag must propagate to every transaction"
+        )
+
+
+def test_H6_combine_doc_level_true_overrides_footnote_none():
+    """doc=True + footnote=None → True (checkbox is authoritative)."""
+    assert _combine_10b5_one_signals(True, None) is True
+
+
+def test_H7_combine_doc_level_none_footnote_true_is_true():
+    """doc=None + footnote=True → True (preserves existing footnote-path behavior)."""
+    assert _combine_10b5_one_signals(None, True) is True
+
+
+def test_H8_combine_negative_and_none_cases():
+    """At least one negative observation with no positive → False.
+    Also covers the symmetric (None, False) and (False, False) cases.
+    Only (None, None) is the 'no signal' None outcome."""
+    assert _combine_10b5_one_signals(False, None) is False, (
+        "doc=False + footnote=None should be False (at least one negative)"
+    )
+    assert _combine_10b5_one_signals(None, False) is False, (
+        "doc=None + footnote=False should be False (at least one negative)"
+    )
+    assert _combine_10b5_one_signals(False, False) is False, (
+        "doc=False + footnote=False should be False (both negative)"
+    )
+    # Guard: the true None-only case must remain None
+    assert _combine_10b5_one_signals(None, None) is None, (
+        "doc=None + footnote=None should be None (no signal either way)"
+    )
+
+
+def test_H9_aff10b5_one_manifest_locked():
+    """Drift-detector: _AFF10B5_REQUIRED_ATTRS must be a non-empty tuple
+    containing the canonical SEC EDGAR element name 'aff10b5One'.
+
+    Mirrors the pattern of test_D3_footnotes_required_attrs_manifest_is_non_empty_and_tupled.
+    Any rename of the element in the manifest (e.g., to rule10b5_1 or
+    aff_10b5_one) would silently break _extract_aff10b5_one's lxml
+    find() path; this test makes the contract explicit."""
+    assert isinstance(_AFF10B5_REQUIRED_ATTRS, tuple), (
+        "_AFF10B5_REQUIRED_ATTRS must be a tuple (immutable contract)"
+    )
+    assert len(_AFF10B5_REQUIRED_ATTRS) >= 1, (
+        "_AFF10B5_REQUIRED_ATTRS must be non-empty"
+    )
+    assert "aff10b5One" in _AFF10B5_REQUIRED_ATTRS, (
+        f"'aff10b5One' (canonical SEC EDGAR element name per SEC Release "
+        f"33-11138) must be in _AFF10B5_REQUIRED_ATTRS; "
+        f"current contents: {_AFF10B5_REQUIRED_ATTRS!r}"
+    )
+
+
+@pytest.mark.network
+def test_live_aapl_aff10b5_one_extraction():
+    """Network smoke test: fetch a recent AAPL Form 4 via edgartools and
+    call _extract_aff10b5_one on its raw XML.  Verifies that the helper
+    returns one of {True, False, None} without raising.
+
+    Gating: requires --run-network AND EDGAR_USER_AGENT env var.
+    Skips cleanly when edgartools is unavailable or the env var is unset."""
+    import os
+
+    if not os.environ.get("EDGAR_USER_AGENT"):
+        pytest.skip("EDGAR_USER_AGENT not set — network test requires identity")
+
+    try:
+        import edgar  # type: ignore[import]
+    except ImportError:
+        pytest.skip("edgartools not installed")
+
+    try:
+        edgar.set_identity(os.environ["EDGAR_USER_AGENT"])
+        company = edgar.Company("AAPL")
+        filings = company.get_filings(form="4")
+        if not filings or len(filings) == 0:
+            pytest.skip("No Form 4 filings returned for AAPL — SEC may be unavailable")
+
+        filing = filings[0]
+        xml_str = filing.xml() if callable(getattr(filing, "xml", None)) else None
+        result = _extract_aff10b5_one(xml_str)
+
+        assert result in (True, False, None), (
+            f"_extract_aff10b5_one must return True, False, or None; "
+            f"got {result!r} (type {type(result).__name__})"
+        )
+    except Exception as exc:  # noqa: BLE001
+        pytest.skip(f"Live EDGAR fetch failed (SEC may be unavailable): {exc}")

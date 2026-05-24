@@ -259,6 +259,20 @@ _FOOTNOTES_REQUIRED_ATTRS: Final[tuple[str, ...]] = (
     "get",
 )
 
+#: Drift-detector manifest — document-level ``<aff10b5One>`` XML
+#: element added by SEC Release 33-11138 (schema X0609, effective
+#: 2023-04-01). edgartools 5.31.5's ``Ownership.parse_xml`` walks a
+#: fixed set of child tags and never reads ``aff10b5One`` — the
+#: element is PRESENT in the underlying BeautifulSoup tree but
+#: discarded after parse. We work around this by calling
+#: ``filing.xml()`` (lru-cached, free after ``filing.obj()``) and
+#: doing a lightweight lxml find for the element. The manifest
+#: documents the canonical tag name for future edgartools versions
+#: that may surface it as a parsed attribute on ``Ownership``.
+_AFF10B5_REQUIRED_ATTRS: Final[tuple[str, ...]] = (
+    "aff10b5One",
+)
+
 #: Drift-detector manifest — fields on each ``Owner`` dataclass row
 #: inside ``Ownership.reporting_owners.owners``.
 _OWNER_REQUIRED_ATTRS: Final[tuple[str, ...]] = (
@@ -318,6 +332,15 @@ class Form4Transaction:
     shares_owned_following: float | None
     is_rule_10b5_one: bool | None  # PR 4-eq; see module docstring §"Footnote resolution"
     filing_url: str
+    # Document-level ``<aff10b5One>`` boolean — one per Form 4 filing
+    # (covers ALL transactions in that filing). Source-of-truth for
+    # the Rule 10b5-1 affirmative defense per SEC Release 33-11138
+    # (effective 2023-04-01). Pre-2023 filings + filer omissions →
+    # None. The combined per-tx ``is_rule_10b5_one`` signal above is
+    # ``True`` if EITHER this doc-level boolean OR the footnote-text
+    # scan returns True; ``None`` only when BOTH are None. Defaults
+    # to None for backward compat with pre-PR cache rows.
+    aff10b5_one_doc_level: bool | None = None
 
     @classmethod
     def from_dict(cls, d: dict) -> Form4Transaction | None:
@@ -334,6 +357,7 @@ class Form4Transaction:
         """
         try:
             raw_10b5 = d.get("is_rule_10b5_one")
+            raw_aff10b5_doc = d.get("aff10b5_one_doc_level")
             return cls(
                 accession=str(d["accession"]),
                 filing_date=str(d["filing_date"]),
@@ -351,6 +375,9 @@ class Form4Transaction:
                 shares_owned_following=_safe_float(d.get("shares_owned_following")),
                 is_rule_10b5_one=bool(raw_10b5) if raw_10b5 is not None else None,
                 filing_url=str(d.get("filing_url", "")),
+                aff10b5_one_doc_level=(
+                    bool(raw_aff10b5_doc) if raw_aff10b5_doc is not None else None
+                ),
             )
         except (KeyError, TypeError, ValueError) as e:
             logger.warning("Form4Transaction.from_dict failed: %s | dict=%s", e, d)
@@ -504,6 +531,72 @@ def _detect_10b5_1_on_transaction(
         return None
 
 
+def _extract_aff10b5_one(xml_str: str | bytes | None) -> bool | None:
+    """Parse the document-level ``<aff10b5One>`` boolean from a raw
+    Form 4 XML string.
+
+    Returns ``True`` / ``False`` / ``None``. ``None`` means the element
+    is absent (pre-2023 filing OR filer omission) OR the parse failed.
+    The element lives at ``ownershipDocument/aff10b5One`` per SEC
+    Release 33-11138 (schema X0609, effective 2023-04-01). SEC accepts
+    either ``true`` / ``false`` (boolean lexical) or ``1`` / ``0``
+    (boolean numeric) for the value — both variants are handled.
+
+    edgartools 5.31.5's ``Ownership.parse_xml`` discards the
+    BeautifulSoup tree after walking a fixed set of child tags;
+    ``aff10b5One`` is never read. This helper reaches into the raw XML
+    via ``filing.xml()`` (lru-cached, so calling it AFTER
+    ``filing.obj()`` is a cache hit — zero extra HTTP round-trips).
+
+    None semantics per methodology-scientist Mode B verdict 2026-05-23
+    (option (a)): a missing or unparseable ``aff10b5One`` is treated
+    as "we don't know" — caller (``_form4_to_transactions``) folds it
+    into the combined ``is_rule_10b5_one`` signal via the OR-of-True
+    rule, so a True footnote-text scan still fires.
+    """
+    if not xml_str:
+        return None
+    try:
+        from lxml import etree
+
+        payload = xml_str.encode() if isinstance(xml_str, str) else xml_str
+        root = etree.fromstring(payload)
+        # Ownership XML has no default namespace; direct tag find is sufficient.
+        el = root.find("aff10b5One")
+        if el is None or el.text is None:
+            return None
+        val = el.text.strip().lower()
+        if val in ("1", "true"):
+            return True
+        if val in ("0", "false"):
+            return False
+        return None
+    except Exception as e:  # noqa: BLE001 — defensive; absent element is the norm
+        logger.debug("aff10b5One extraction failed: %s", e)
+        return None
+
+
+def _combine_10b5_one_signals(
+    doc_level: bool | None, footnote_result: bool | None
+) -> bool | None:
+    """Fold document-level ``<aff10b5One>`` + per-transaction
+    footnote-text scan into one ``is_rule_10b5_one`` boolean.
+
+    Truth table:
+      doc=True  | footnote=anything → True   (checkbox is authoritative)
+      doc=any   | footnote=True     → True   (text confirms)
+      doc=None  | footnote=None     → None   (no signal either way)
+      doc=False | footnote=False    → False  (both negative)
+      otherwise (one False + one None)        → False (at least one
+          negative observation; not a confirmed 10b5-1 plan)
+    """
+    if doc_level is True or footnote_result is True:
+        return True
+    if doc_level is None and footnote_result is None:
+        return None
+    return False
+
+
 def _form4_to_transactions(filing: object) -> list[dict]:
     """Extract one or more transaction-row dicts from a single Form 4
     filing object. Duck-typed — accepts any object exposing the
@@ -605,6 +698,23 @@ def _form4_to_transactions(filing: object) -> list[dict]:
         # the SEC structured <aff10b5One> XML element).
         footnotes_dict = getattr(parsed, "footnotes", None)
 
+        # Document-level <aff10b5One> extraction — calls filing.xml()
+        # which is lru-cached and was already populated by filing.obj()
+        # above, so this is a zero-HTTP cache hit. None when element is
+        # absent (pre-2023 filing or filer omission) or parse fails;
+        # propagated to every transaction in this filing (one value
+        # covers all rows from the same Form 4 per SEC schema X0609).
+        xml_str: str | bytes | None = None
+        try:
+            _xml_method = getattr(filing, "xml", None)
+            if callable(_xml_method):
+                xml_str = _xml_method()
+        except Exception as e:  # noqa: BLE001
+            logger.debug(
+                "filing.xml() unavailable for aff10b5One extraction: %s", e
+            )
+        aff10b5_one_doc_level: bool | None = _extract_aff10b5_one(xml_str)
+
         rows: list[dict] = []
         for tx in transactions_iter:
             tx_date_raw = getattr(tx, "date", None)
@@ -620,7 +730,11 @@ def _form4_to_transactions(filing: object) -> list[dict]:
                 if shares is not None and price is not None
                 else None
             )
-            is_rule_10b5_one = _detect_10b5_1_on_transaction(tx, footnotes_dict)
+            footnote_result = _detect_10b5_1_on_transaction(tx, footnotes_dict)
+            # Combined signal — see _combine_10b5_one_signals() truth table
+            is_rule_10b5_one = _combine_10b5_one_signals(
+                aff10b5_one_doc_level, footnote_result
+            )
             rows.append(
                 {
                     "accession": accession,
@@ -643,6 +757,7 @@ def _form4_to_transactions(filing: object) -> list[dict]:
                     ),
                     "is_rule_10b5_one": is_rule_10b5_one,
                     "filing_url": filing_url,
+                    "aff10b5_one_doc_level": aff10b5_one_doc_level,
                 }
             )
         return rows

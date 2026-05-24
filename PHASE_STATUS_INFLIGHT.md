@@ -98,7 +98,77 @@ keeps growing/draining as PRs cycle.
 
 ## In flight (current)
 
-## PR (this PR) — adopt PHASE_STATUS_INFLIGHT.md side-file to break the parallel-PR collision pattern (in flight, 2026-05-24)
+## PR (this PR) — Form-4 `<aff10b5One>` direct-XML parse closes the architectural gap (in flight, 2026-05-24)
+
+Closes the architectural-gap surfaced by PR #230's edgar-debugger
+audit + Part 1 §"Footnote resolution" docstring. Pre-fix: filers
+who checked `<aff10b5One>true` at the document level but omitted
+the per-transaction footnote text slipped past the footnote-text
+regex path and INCORRECTLY entered the opportunistic-trades cohort
+that drives `insider_sell_cluster` + `c_suite_unusual_sell`.
+
+`edgar-debugger` session 5 design report confirmed the cleanest
+access path is `filing.xml()` — already `@lru_cache(maxsize=4)` so
+calling it AFTER `filing.obj()` is a free cache hit (zero extra
+HTTP per filing; universe-wide added cost ~1.5s for lxml find).
+The XML element lives at `ownershipDocument/aff10b5One` per SEC
+schema X0609 (Release 33-11138, effective 2023-04-01). Edgartools
+5.31.5's `Ownership.parse_xml` walks a fixed set of child tags and
+never reads it — the element is PRESENT in the BS4 tree but
+discarded after parse.
+
+Implementation in `compute/scoring/form4_insider.py`:
+- New `_AFF10B5_REQUIRED_ATTRS = ("aff10b5One",)` manifest tuple
+  (drift-detector documenting the canonical SEC element name)
+- New `_extract_aff10b5_one(xml_str)` helper — lxml-based, handles
+  `1`/`true`/`0`/`false` variants, returns None on absent / parse
+  fail (graceful-degradation per existing pattern + methodology-
+  scientist Mode B option (a) from PR #224)
+- New `_combine_10b5_one_signals(doc_level, footnote_result)` helper
+  — OR-of-True truth table: `True if either signal is True; None
+  only when both are None; False otherwise`
+- `_form4_to_transactions` modified to call `filing.xml()` +
+  `_extract_aff10b5_one()` ONCE per filing, then propagate via
+  `_combine_10b5_one_signals()` to every transaction in that
+  filing's rows
+- `Form4Transaction` dataclass gains `aff10b5_one_doc_level: bool
+  | None = None` field with backward-compat default; `from_dict`
+  reads it via `.get(...)` with None fallback
+
+Tests in `tests/test_scoring/test_form4_insider.py` — `test-engineer`
+spawn added 10 H-prefixed cases (9 offline + 1 @network-gated):
+- H1-H4: `_extract_aff10b5_one` truth + variants + malformed + absent
+- H5: doc-level propagation to all transactions in a filing
+- H6-H8: `_combine_10b5_one_signals` truth-table coverage
+- H9: `_AFF10B5_REQUIRED_ATTRS` manifest drift-detector
+- H10 (@network): live AAPL Form 4 extraction verifies access path
+
+Verification: `pytest tests/test_scoring/test_form4_insider.py -v -m
+"not network"` → **32 passed, 2 deselected** (1 @network H10 + 1
+@network D4). Smoke-test of helpers via direct `python3 -c` ✓ 14
+assertions. `ruff check` clean.
+
+Scope estimate from edgar-debugger held: ~30 LOC prod + ~80 LOC tests
++ 0 new deps + 0 schema changes (the new field lives in Form-4
+cache rows only; doesn't surface in `StockDetail` / `Metadata` in
+this PR). Defense layer flag count unchanged at 32. Downstream
+consumer `_is_opportunistic_sell` in `form4_signals.py` reads the
+existing combined `is_rule_10b5_one` field (now produced by
+`_combine_10b5_one_signals` instead of just the footnote-text scan)
+— no consumer changes needed.
+
+This PR ALSO dogfoods the new `PHASE_STATUS_INFLIGHT.md` convention
+adopted in PR #237 (`1ff6c11`) — this entry is the FIRST PR to
+test-drive the side-file pattern. CLAUDE.md + AGENTS.md §Phase
+status sections UNCHANGED in this PR (the in-flight entry is right
+here in the side file). Lockstep rule satisfied per the new
+§Conventions wording.
+
+---
+
+## Merged (awaiting housekeeping move to CLAUDE.md)
+
+## PR #237 — adopt PHASE_STATUS_INFLIGHT.md side-file (merged 2026-05-24, 1ff6c11)
 
 Closes the structural follow-up tracked in PR #230's §Gotcha
 "Parallel-PR §Phase status collision pattern". PR #230 itself hit
@@ -127,10 +197,3 @@ TS code change. Doc-only PR. CLAUDE.md + AGENTS.md lockstep
 satisfied via §Conventions + §Gotchas substantive updates (the
 "ship with every PR" rule now points at this file as the canonical
 destination).
-
----
-
-## Merged (awaiting housekeeping move to CLAUDE.md)
-
-_(empty — first run of this file; future merges land here for the
-housekeeping commit to drain into CLAUDE.md §Phase status proper)_
