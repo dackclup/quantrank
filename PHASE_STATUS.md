@@ -13,50 +13,68 @@
 | 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → **v1.5** | ⚪ not started |
 | 8 | Universe expansion (S&P 1500) | ⚪ not started |
 
-## Current state (2026-05-21)
+## Current state (2026-05-24)
 
 | Field | Value |
 |---|---|
-| Schema | **`0.9.4-phase4h.4`** (PR #161, additive `valuation_methods_applicable` field on `StockDetail`) |
-| Defense layer | **27 boolean flags emitted** (17 declared veto+annotate per PR #154 reconcile + 5 method-applicability `extreme_*_estimate` + 5 informational) · plus 5 numerical guards + `manipulation_index` rollup |
+| Schema | **`0.10.2-phase4.5e`** (PR #224, additive `Metadata.form4_rule10b5_one_excluded_count` field) |
+| Defense layer | **32 boolean flags emitted** (22 declared veto+annotate + 5 method-applicability `extreme_*_estimate` + 5 informational) · plus 5 numerical guards + `manipulation_index` rollup |
 | Active vetoes | **7** — `altman_distress` · `sloan_accruals_top_decile` · `net_issuance_top_decile` · `non_reliance_filing` · `beneish_manipulation_veto` · `dechow_manipulation_veto` · `data_quality_input_corruption` |
-| Latest release tag | [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5) — 2026-05-17 at `6d414a9b` |
-| Production run | `a16c887` (2026-05-20 cron, p95 14.87s, 100% fund coverage, Section A-J PASS) |
+| Latest release tag | [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5) — 2026-05-17 at `6d414a9b` (v1.3.0 target: LedgerCraft A1-A3+B1-B4 reskin series complete; pending tag cut) |
+| Production run | `90157482` (2026-05-23 cron #3, form4 100% coverage, Section A-L PASS) |
 | Universe | 502 stocks (S&P 500 minus 1 delisting) |
-| Skill inventory | **42** invocation-triggerable + phase planning docs |
-| Subagent inventory | **14** project-specific (4 Core + 4 Lifecycle + 4 Specialized + 2 Operations) |
+| Skill inventory | **43** invocation-triggerable + phase planning docs |
+| Subagent inventory | **18** project-specific in 4 tiers: **Tier 1 Core** (`quantrank-reviewer` · `schema-sentinel` · `defense-layer-auditor` · `edgar-debugger` · `stock-detail-auditor`) · **Tier 2 Lifecycle** (`security-reviewer` · `frontend-design-reviewer` · `vercel-preview-auditor` · `release-captain` · `phase-coordinator`) · **Tier 3 Specialized** (`test-engineer` · `methodology-scientist` · `literature-searcher` · `performance-engineer` · `dependency-auditor`) · **Tier 4 Operations** (`docs-reviewer` · `ci-triage-engineer` · `incident-commander`) |
 
-**Recently merged** (last ~20 since `v1.2.0-phase4.5`):
-- PR #169 — Safe settings + 2 PostToolUse Bash hooks (`log-bash.sh` + `schema-reminder.sh`)
-- PR #168 — `.claude/agents/` 14 project-specific subagents in 4 tiers + 6 coordination flows
-- PR #167 — Phase 4.5e PR 1 (Scout): Form-4 fetcher + cache + drift-detector manifests
-- PR #166 — Issue #11 fix: `_avg_3y_roe` legacy fallback removed + `insufficient_history_for_roe` skip reason
-- PR #165 — Phase 2.2: `restatement_high_confidence` annotate (HLM 2008 irregularity signature)
-- PR #164 — Phase 3: pairwise-φ correlation analysis of 25 active flags
-- PR #163 — Phase 2.4: `loss_avoidance_pattern` thresholds 10× rescale ($5M / $0.05 → $50M / $0.50)
-- PR #162 — Phase 2.5: `manipulation_index.py` per-weight provenance docstrings
-- PR #161 — Epic #150 Phase 2.1: `valuation_methods_applicable` schema field (`0.9.3 → 0.9.4-phase4h.4`)
-- PR #160 — Epic #150 Phase 1.6: explicit `Metadata.tier2_enabled` field (`0.9.2 → 0.9.3-phase4h.3`)
-- PR #159 — 3 workflow skills bundle (`claude-md-lockstep-check` + `release-tag` + `quarterly-cohort-audit`)
-- PR #158 — `vendor-sync` skill for the 4 vendored upstream sources
-- PR #157 — Skill-trigger-flip: 5 `mattpocock-*` skill description sharpening
-- PR #156 — Epic #150 Phase 1.4+1.5: `section_j_annotate_audit()` in verify-helper + tests
-- PR #154 — Epic #150 Phase 1.2: defense layer headline count reconcile 17 → 27
-- PR #153 — Epic #150 Phase 1.3: pre-merge-prod-sim workflow dogfood
-- PR #151 — Epic #150 Phase 0: Known Limitations + pillar label clarification
-- PR #149 — verify-helper Section B post-PR-#79 stale expectations (closes #117)
-- PR #148 — Pre-merge production simulation PR 2 (composite diff + top-10 movers, closes Epic #125 Item 3)
-- PR #147 — PHASE_STATUS.md "Current state" hoist (Optimization PR G)
+**Recently merged** (PR #170 → PR #237, 2026-05-21 → 2026-05-24):
+- PR #237 `1ff6c114` — docs: PHASE_STATUS_INFLIGHT.md side-file to break parallel-PR collision pattern
+- PR #236 `08d75636` — feat(frontend): B2+B3+B4 combined — full LedgerCraft alignment series complete (10 files)
+- PR #235 `2b588c83` — feat(frontend): B1 score-tier palette restraint (teal/orange → emerald/amber)
+- PR #234 `1a9501c0` — feat(frontend): A3 LedgerCraft table + frame polish
+- PR #233 `dc615aeb` — feat(frontend): A2 LedgerCraft chip-family squaring (`rounded-full` → `rounded-sm`)
+- PR #232 `5517b983` — feat(frontend): A1 LedgerCraft sector-chip neutralization (`SECTOR_COLORS` → neutral steel)
+- PR #230 `4c0d92f5` — docs(form4)+ci(simulate): correct `<rule10b5_1>` → `<aff10b5One>` + permanent 45-min simulate fix
+- PR #229 `dacf293b` — security(W2+W4): workflow-perm narrowing + log-bash secret scrub
+- PR #228 `b5ff8cc1` — feat(agents): explicit MCP-tools listing for `vercel-preview-auditor` + `ci-triage-engineer`
+- PR #227 `105d79ec` — test(form4_signals): PR-#224 review-nit polish (2 of 3 quantrank-reviewer WARNs)
+- PR #226 `d67e1051` — docs+agent: post-Dependabot-wave doc fixes (W1 FORM4_FETCH_SKIP + W3 injection guard)
+- PR #225 `2b343bb0` — feat(agents): add `ci-triage-engineer` + `vercel-preview-auditor` + `literature-searcher` (15 → 18)
+- PR #224 `98e761ef` — feat(scoring): Phase 4.5e PR 4-eq — Form-4 10b5-1 contamination filter (`0.10.1 → 0.10.2-phase4.5e`)
+- PR #223 `23ce42f1` — feat(orchestrator): delegate-first identity + `UserPromptSubmit` hook + patterns table
+- PR #222 `79bb5aec` — feat(scoring): Phase 4.5e PR 3 — `insider_sell_cluster` + `c_suite_unusual_sell` annotates (`0.10.0 → 0.10.1-phase4.5e`; flags 30 → 32)
+- PR #221 `eba0fde8` — feat(verify+auditor): OSAP proxy contract codification, Section L helper (closes #217 + #218)
+- PR #220 `92265167` — fix(ingest): DD `eps_diluted` TTM derivation + STZ fallback logger.warning
+- PR #219 `ef256ddd` — chore(agents): reset sonnet sub-agent thoroughness — lift artificial spawn caps
+- PR #216–#215–#213–#212–#211 — feat(frontend): LedgerCraft Phase 3b dark mode + 3c sidebar + 3a spreadsheet polish + Phase 1 + 2 token adoption
+- PR #210 `0f552ba1` — fix(form4): handle edgartools 5.x `Filing.obj` as method (P0 silent-drop hotfix)
+- PR #205 `e8823e07` — feat(form4): Phase 4.5e PR 2 — `Metadata.form4_*` observability surface (`0.9.8 → 0.10.0-phase4.5e`, MINOR)
+- PR #204 — feat(scoring): sector-keyed cost_of_equity behind config flag, 3 Rule 18 `Metadata` fields (`0.9.7 → 0.9.8-phase4h.8`; closes #67 prep)
+- PR #203 `278da499` — feat(skills): cross-session branch-collision detector (closes #125 item 6; skill count 42 → 43)
+- PR #201 `54092fa2` — chore(ci): add `tailwindcss` to dependabot ignore (blocks v4 engine-rewrite major)
+- PR #195 `8c22cee9` — chore(ci): extend dependabot ignore list — block `eslint`/`typescript`/`recharts`/`eslint-config-next` majors
+- PR #194 `72f8a33c` — chore(deps-npm): bump next `14.2.15 → 14.2.35` + postcss override (closes 8 advisories, partial #41)
+- PR #185 `cfcbe407` — chore(ci): add `.github/dependabot.yml` — weekly dep updates for 3 ecosystems
+- PR #184 `83b942d0` — docs(methodology): refresh annotate section 10 → 18 bullets (Phase 2.x)
+- PR #183 `b881d544` — feat(defense): add `extreme_estimate_majority` annotate, schema `0.9.7-phase4h.7`; flags 29 → 30
+- PR #182 `a6129011` — fix(ingest): per-filing XBRL fallback recovers STZ-style dimensional `shares_outstanding` (closes #176)
+- PR #181 `998cd530` — feat(defense): add `share_count_extraction_missing` annotate, schema `0.9.6-phase4h.6`; flags 28 → 29
+- PR #180 `a24a57d4` — feat(defense): add `loss_avoidance_pattern_size_invariant` annotate, schema `0.9.5-phase4h.5`; flags 27 → 28
+- PR #179 — fix(main): defer OSAP imports to unblock `test_main` collection in base-install (Phase 4a)
+- PR #178 `7ac4ac3f` — chore(agents): trim 6 largest agent prompts 2925 → 2525 lines (−13.7%)
+- PR #175 `ebcd4918` — feat(agents): lean auto-routing policy + 15th agent `stock-detail-auditor`
+- PR #172 `e9acaca7` — fix(frontend): 6 `frontend-design-reviewer` FAILs — palette + loose-null + chip family
+- PR #171 `842f68dd` — docs: Phase 2 doc-drift reconcile — 5 files match current implementation
+- PR #170 — Phase 1 ops hardening: `compute-monthly.yml` perm + EDGAR_MAX_WORKERS doc + going-concern FP stat
 
 **Next deliverables** (parallelizable, pick by appetite):
 
-1. **Phase 4.5e PR 2** — `Metadata.form4_*` observability surface (still no scoring impact; pairs with module-load assertion for `_FORM4_REQUIRED_ATTRS` manifest family)
-2. **Phase 4.5e PR 3** — annotate-only `insider_sell_cluster` + `c_suite_unusual_sell` emit + threshold calibration from PR-2 cron data → `v1.3.0`
-3. **Phase 4i.1 / 4j.1 / 4k.1 — Factor integrations** (JKP / Qlib / IPCA; ~1-2w each → `v1.1.0-phase4`); 4i.1 license-review-required per #115
-4. **`loss_avoidance_pattern` size-invariant follow-up** — Phase 2.4 10× rescale still fires 0% on production; cohort threshold needs NI/TotalAssets (size-invariant) per CLAUDE.md §Gotchas follow-up note
+1. **Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — after ≥ 1 cron's `form4_rule10b5_one_excluded_count` lands and the `-30%` to `-45%` firing-rate delta confirms the Aboody et al. 2010 §3.2 midpoint; vesting-residual risk still argues against full 10.0 restoration
+2. **Issue #67 sector-CoE flip PR** — `config.USE_SECTOR_COE = True` after ≥ 1 cron confirms `value_trap_risk` delta-count (target: ~176 → ~80-110); data-collection merged via PR #204
+3. **v1.3.0 release tag** — all LedgerCraft reskin PRs (A1-A3 + B1-B4) are merged; tag blocked only on this doc-refresh + release-captain ladder
+4. **Phase 4i.1 / 4j.1 / 4k.1 — Factor integrations** (JKP / Qlib / IPCA; ~1-2w each → `v1.1.0-phase4`); 4i.1 license-review-required per #115
 5. **Phase 5 — ML meta-learner** (~10-12w); also unblocks PR 4b §3 IC-decay writer (#75)
 
-**Open issues**: #15 (fundamentals throttling) · #16 (going-concern negation-lookbehind — FP rate now 1.0% in band, mechanism not yet code-confirmed) · #41 (Next.js 14 → 16 CVEs, 1c+8h chunk) · #67 (Damodaran CoE Phase 5+) · #75 (PR 4b §3 IC-decay, Phase-5-blocked) · #115 (JKP license review) · #130 (quarterly cohort-threshold review, next 2026-08-19) · #137 (9arm-skills license clarification, 4-week deadline from 2026-05-20) · #150 (Phase 2-3 epic) · #155 (Phase 1.6 fallback)
+**Open issues**: #15 (fundamentals throttling) · #16 (going-concern negation-lookbehind — FP rate 1.0% in band, mechanism not yet code-confirmed) · #41 (Next.js 14 → 16 CVEs, 15 open `next@14.x` advisories — zero exploitability on static-export) · #67 (sector-CoE flip, data-collection merged PR #204) · #75 (PR 4b §3 IC-decay, Phase-5-blocked) · #115 (JKP license review) · #130 (quarterly cohort-threshold review, next 2026-08-19) · #137 (9arm-skills license clarification, 4-week deadline from 2026-05-20) · #150 (Phase 2-3 epic, phases 2-3 remaining)
 
 ---
 
