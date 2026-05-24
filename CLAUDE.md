@@ -1350,13 +1350,16 @@ matches CMP 2012 + Jagolinzer 2009 empirical regime used to
 calibrate the existing thresholds).
 
 **Access-path caveat — edgartools 5.31.5 does NOT parse the SEC
-structured `<rule10b5_1>` XML element** added by SEC Release 33-11138
-(effective 2023-04-01). Verified by `edgar-debugger` 2026-05-23 via
-exhaustive grep of `/usr/local/lib/python3.11/dist-packages/edgar/`
-(no `rule10b5`, `isRule10b5`, `tradingPlan`, `tradingArrangement`
-hits in any parse path). The `equity_swap: str` field on
-`NonDerivativeTransaction` carries `<equitySwapInvolved>` —
-unrelated SEC concept, red herring. Only access surface is footnote-
+structured `<aff10b5One>` XML element** added by SEC Release 33-11138
+(effective 2023-04-01, EDGAR schema X0609). Verified by
+`edgar-debugger` 2026-05-23 + 2026-05-24 via exhaustive grep of
+`/usr/local/lib/python3.11/dist-packages/edgar/` (no `aff10b5One`,
+`rule10b5`, `tradingPlan`, `tradingArrangement` hits in any parse
+path) AND live-XML fetch from 3 AAPL Form 4 filings confirming the
+element lives at `ownershipDocument/aff10b5One` as a DOCUMENT-LEVEL
+boolean (one per filing, covering all transactions). The
+`equity_swap: str` field on `NonDerivativeTransaction` carries
+`<equitySwapInvolved>` — unrelated SEC concept, red herring. Only access surface is footnote-
 text pattern scan via `edgar.ownership.core.detect_10b5_1_plan`
 (regex on `["10b5-1", "10b-5-1", "rule 10b5", "rule 10b-5", "10b5
 plan", "10b-5 plan"]`). `NonDerivativeTransaction.footnotes`
@@ -1561,7 +1564,8 @@ PR that can run network tests first. Tests 1168 → 1168 (no test added /
 removed; 3 edits in-place). No compute / schema / scoring / valuation /
 frontend / Python production-code change.
 
-**Security WARN cleanup (W2 + W4) in flight (this PR)** — closes the
+**Security WARN cleanup (W2 + W4) merged via PR #229**
+(2026-05-24, `dacf293`) — closed the
 two remaining security-reviewer WARNs deferred from PR #226 (W1 + W3
 already shipped there). Both are operational hygiene with no
 compute / schema / production-code surface; bundled in a single
@@ -1596,7 +1600,7 @@ focused PR.
   preserved (sed errors return original command via the existing
   `|| true` discipline).
 
-Both fixes ship under one PR per security-hardening bundle. CLAUDE.md
+Both fixes shipped under one PR per security-hardening bundle. CLAUDE.md
 + AGENTS.md lockstep satisfied via §Phase status in-flight notes (no
 new §Gotchas — these are not invariants future code authors need to
 remember; they're hardening of existing surfaces).
@@ -1743,7 +1747,7 @@ normalization · chip shape squaring round 2 · stripe + hover polish —
 ~50-70 lines across 8 more components). No schema / Python /
 scoring / valuation / output JSON change — token-only diff.
 
-**Phase 4 LedgerCraft alignment · PR-B2+B3+B4 combined in flight (this PR)** (2026-05-24) —
+**Phase 4 LedgerCraft alignment · PR-B2+B3+B4 combined merged via PR #236** (2026-05-24, `08d7563`) —
 final follow-up of the post-A3 design-reviewer audit. Combined B2
 (card surface normalization) + B3 (chip shape squaring round 2) +
 B4 (stripe + hover polish) into one PR because the three scopes
@@ -1795,6 +1799,36 @@ restrained 4-family palette, sharp ≤4px radii, borders-as-depth
 on every data surface (overlays and slide-overs keep their
 elevation shadows). No schema / Python / scoring / valuation /
 output JSON change.
+
+**Form-4 10b5-1 docstring precision fix in flight (this PR)** —
+`edgar-debugger` follow-up to PR #224 (F2 deferred from session 4
+post-live-fire). The `literature-searcher` proof-of-life on
+2026-05-23 flagged a precision gap: the form4 module docstring
+referenced the colloquial `<rule10b5_1>` XML tag name (a label, not
+the actual SEC EDGAR Ownership XML element). `edgar-debugger`
+re-audit on 2026-05-24 fetched 3 live AAPL Form 4 XMLs from SEC
+EDGAR and confirmed the actual element is **`<aff10b5One>`** at
+`ownershipDocument/aff10b5One` — a **document-level boolean** (one
+per filing, covering ALL transactions in that Form 4), NOT a
+per-transaction attribute. Updated 7 references across 5 code files
+(`compute/scoring/form4_insider.py` ×3 + `compute/scoring/form4_signals.py`
+×1 + `compute/output/schemas.py` ×1) + 2 docs (CLAUDE.md +
+AGENTS.md) to use the canonical name. Added a §"Footnote resolution"
+architectural-gap note in `form4_insider.py` docstring: a filer who
+checks `<aff10b5One>true` at the document level but does NOT include
+the footnote text on a specific transaction (valid — the checkbox IS
+the formal affirmative defense, footnotes are supplemental) will
+slip past the current footnote-text path and enter the opportunistic
+cohort incorrectly. Deferred to a follow-up PR that parses the raw
+Form 4 XML directly for `<aff10b5One>` at the filing level (a
+non-trivial change requiring direct XML parse since edgartools 5.31.5
+still doesn't expose the element). PyPI confirmed 5.31.5 is the
+current edgartools release; no newer version adds a parse path.
+`detect_10b5_1_plan` regex set (6 patterns) is complete vs real-world
+footnote text — no additions needed (pattern `"10b5-1"` alone covers
+every common variant including `Rule 10b5-1(c)` subsection cites).
+Docstring-only PR — no compute / scoring / valuation / behavior
+change. `schema_check` clean, ruff clean, tests unchanged at 1168+.
 
 **Next deliverables** (pick by appetite):
 - **Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — after ≥ 1

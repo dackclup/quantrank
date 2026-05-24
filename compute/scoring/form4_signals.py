@@ -126,7 +126,7 @@ Footguns
    excluded from both cluster + C-suite cohort counts. Source field
    resolved per-transaction by ``form4_insider._detect_10b5_1_on_transaction``
    via footnote-text pattern scan (edgartools 5.31.5 does NOT parse
-   the SEC structured ``<rule10b5_1>`` XML element added in the
+   the SEC structured ``<aff10b5One>`` XML element added in the
    2023-04-01 mandate — see ``form4_insider.py`` module docstring
    §"Footnote resolution" for the access-path rationale).
 

@@ -197,7 +197,7 @@ class Metadata(BaseModel):
     # classified as opportunistic (code ∈ {S, D}) absent the filter but
     # were dropped because ``is_rule_10b5_one is True`` (resolved from
     # footnote-text scan per ``form4_insider._detect_10b5_1_on_transaction``;
-    # edgartools 5.31.5 does not parse the SEC structured <rule10b5_1>
+    # edgartools 5.31.5 does not parse the SEC structured <aff10b5One>
     # element added in the 2023-04-01 mandate). Counted within the
     # ``INSIDER_SELL_CLUSTER_LOOKBACK_DAYS`` (30) window per ticker so
     # the metric directly tracks contamination eliminated from the

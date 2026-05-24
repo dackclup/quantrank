@@ -945,9 +945,12 @@ note cross-tool-specific points only:
   B 2026-05-23 — matches CMP 2012 + Jagolinzer 2009 empirical regime
   under which the existing thresholds were calibrated). **Access-
   path caveat for cross-tool agents**: edgartools 5.31.5 does NOT
-  parse the SEC structured `<rule10b5_1>` XML element added by SEC
-  Release 33-11138 (effective 2023-04-01) — verified by
-  `edgar-debugger` 2026-05-23 via exhaustive grep. The `equity_swap`
+  parse the SEC structured `<aff10b5One>` XML element added by SEC
+  Release 33-11138 (effective 2023-04-01, EDGAR schema X0609) —
+  verified by `edgar-debugger` 2026-05-23 + 2026-05-24 via exhaustive
+  grep + live-XML fetch. The element is DOCUMENT-LEVEL (one boolean
+  per Form 4 filing at `ownershipDocument/aff10b5One`), not per
+  transaction. The `equity_swap`
   field on `NonDerivativeTransaction` carries `<equitySwapInvolved>`
   (unrelated SEC concept — do NOT assume it carries 10b5-1).
   Resolution path: `Ownership.footnotes.get(id, default)` resolves
@@ -1051,9 +1054,10 @@ note cross-tool-specific points only:
   tool dispatch); documented in CLAUDE.md §Gotchas for the project's
   agent authors.
 
-- **Security WARN cleanup (W2 + W4) in flight (this PR)** — closes
+- **Security WARN cleanup (W2 + W4) merged via PR #229**
+  (2026-05-24, `dacf293`) — closed
   the two remaining security-reviewer WARNs from PR #226 (W1 + W3
-  shipped in PR #226, W2 + W4 deferred to here). No cross-tool
+  shipped in PR #226, W2 + W4 here). No cross-tool
   surface — both fixes touch Claude-Code-managed infrastructure
   (`.claude/hooks/log-bash.sh`) and the project CI workflow
   (`.github/workflows/compute-rankings.yml`). (a) **W2 — workflow-perm
@@ -1144,8 +1148,8 @@ note cross-tool-specific points only:
   editing score-tier-related surfaces post-B1 should expect the
   emerald/amber 5-step ramp (no teal, no orange).
 
-- **Phase 4 LedgerCraft alignment — PR-B2+B3+B4 combined in flight
-  (this PR)** (2026-05-24) — final follow-up of the post-A3 design
+- **Phase 4 LedgerCraft alignment — PR-B2+B3+B4 combined merged via PR #236**
+  (2026-05-24, `08d7563`) — final follow-up of the post-A3 design
   audit. Combined B2 (card surface normalization) + B3 (chip shape
   squaring round 2) + B4 (stripe + hover polish) into one PR
   because the three scopes share five files. Touches 10 files with
@@ -1169,6 +1173,24 @@ note cross-tool-specific points only:
   `rounded-sm` (chips/buttons/inputs) or `rounded` (cards) and
   drop shadows from data-grid surfaces. No schema / Python /
   scoring / valuation / output JSON change.
+
+- **Form-4 10b5-1 docstring precision fix in flight (this PR)** —
+  cross-tool-relevant correction surfaced by `literature-searcher`
+  + verified by `edgar-debugger` (session 5, 2026-05-24). The
+  colloquial `<rule10b5_1>` XML tag name used across `compute/scoring/
+  form4_insider.py` + `compute/scoring/form4_signals.py` +
+  `compute/output/schemas.py` docstrings was inaccurate. Live SEC
+  EDGAR Form 4 XMLs confirm the actual element is **`<aff10b5One>`**
+  at `ownershipDocument/aff10b5One`, a **document-level boolean**
+  (one per filing, covering all transactions). Updated 5 code +
+  2 doc references to use the canonical name. Architectural-gap
+  note added: a filer who checks `<aff10b5One>true` at the document
+  level but omits the per-transaction footnote text will currently
+  slip past the footnote-text fallback path — deferred to a
+  follow-up PR that direct-parses the raw XML. Docstring-only
+  change; no behavior change. Cross-tool relevance: Copilot /
+  Cursor / Devin reading these docstrings now see the canonical
+  SEC element name when reasoning about the 10b5-1 access path.
 
 ## Claude-Code-specific tooling
 
