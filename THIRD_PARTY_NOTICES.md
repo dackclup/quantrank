@@ -101,8 +101,10 @@ reference, not as a triggered behavioral skill in the usual sense.
 - **Source**: <https://github.com/mattpocock/skills>
 - **License**: MIT (declared in upstream `LICENSE` at repo root)
 - **Upstream commit SHA**: `d54c497aa94400a496d3f2c38be10fa5f284c5a9`
-- **Vendored date**: 2026-05-20
-- **Vendored skills** (8 of 18 upstream skills selected):
+  (base sync 2026-05-20; `grill-with-docs` added 2026-05-25 from the
+  same upstream snapshot)
+- **Vendored date**: 2026-05-20 (base); 2026-05-25 (grill-with-docs add)
+- **Vendored skills** (9 of 18 upstream skills selected):
   - `.claude/skills/mattpocock-diagnose/` (engineering/diagnose + `scripts/hitl-loop.template.sh`)
   - `.claude/skills/mattpocock-tdd/` (engineering/tdd + 5 sidecar `.md` files: deep-modules, interface-design, mocking, refactoring, tests)
   - `.claude/skills/mattpocock-to-issues/` (engineering/to-issues)
@@ -111,18 +113,28 @@ reference, not as a triggered behavioral skill in the usual sense.
   - `.claude/skills/mattpocock-handoff/` (productivity/handoff)
   - `.claude/skills/mattpocock-write-a-skill/` (productivity/write-a-skill)
   - `.claude/skills/mattpocock-grill-me/` (productivity/grill-me)
+  - `.claude/skills/mattpocock-grill-with-docs/` (engineering/grill-with-docs + 2 sidecar `.md` files: CONTEXT-FORMAT, ADR-FORMAT)
 
 ### Vendoring rationale
 
 Skills selected as the "engineering core" most applicable to QuantRank's
-Python + TypeScript stack and PR-iteration workflow. Skipped: 10 upstream
+Python + TypeScript stack and PR-iteration workflow. Skipped: 9 upstream
 skills (caveman, scaffold-exercises, setup-pre-commit, migrate-to-shoehorn,
-git-guardrails-claude-code, grill-with-docs, improve-codebase-architecture,
-triage, prototype, zoom-out) plus all `in-progress/`, `deprecated/`, and
+git-guardrails-claude-code, improve-codebase-architecture, triage,
+prototype, zoom-out) plus all `in-progress/`, `deprecated/`, and
 `personal/` directories. Selection criteria: language-agnostic +
-project-applicable. The 10 skipped are either TypeScript-specific
+project-applicable. The 9 skipped are either TypeScript-specific
 (shoehorn), redundant with QuantRank's existing skills (setup-pre-commit
 overlaps with project's CI guardrails), or in-flux upstream.
+**`grill-with-docs` was initially skipped at the 2026-05-20 base sync
+as "in-flux upstream" — added 2026-05-25 after the skill stabilized
+upstream and proved useful in PR2a scope-design (the user-shared
+[AIHero post](https://www.aihero.dev/grill-with-docs) catalogued the
+mature form).** QuantRank adapts the skill's single-`CONTEXT.md`
+assumption to its multi-file equivalent (CLAUDE.md + METHODOLOGY.md +
+SKILL.md + WORKFLOW.md); ADRs land in `PHASE_STATUS_INFLIGHT.md`
+rather than `docs/adr/`. See the skill's `SKILL.md` "QuantRank
+adaptation notes" section for the divergence rationale.
 
 ### Verbatim-preservation check
 
