@@ -1092,3 +1092,75 @@ ensemble — meaning some Top-N rank moves are likely. STZ unchanged
 - IBKR NI-attribution issue (edgar-debugger surfaced, low priority,
   separate from PR2b scope).
 
+---
+
+## PR-harness — mattpocock-setup-harness scaffold (in flight, 2026-05-25)
+
+**Background** — the vendored `mattpocock-setup-harness` skill
+configures per-repo glue files (`docs/agents/issue-tracker.md`,
+`docs/agents/domain.md`, optional `docs/agents/triage-labels.md`) that
+the other vendored engineering skills (`to-issues`, `to-prd`,
+`improve-codebase-architecture`, `diagnose`, `tdd`) read on invocation.
+Until this PR they didn't exist; the skills fell back to upstream-
+default assumptions which don't match QuantRank's actual layout (no
+`CONTEXT.md`; ADRs live in `PHASE_STATUS_INFLIGHT.md`, not
+`docs/adr/0001-*.md`).
+
+**Scope** — locked in one chat round (no grill-me — the harness setup
+is itself a deterministic 3-decision script):
+
+- **Section A (issue tracker)** — GitHub via the GitHub MCP server
+  (NOT the `gh` CLI; the remote execution environment doesn't ship
+  `gh`). The MCP tools cover every operation `gh` would; surface is
+  restricted to the `dackclup/quantrank` repo per CLAUDE.md
+  §Connectors.
+- **Section B (triage labels)** — DELIBERATELY SKIPPED. The upstream
+  `triage` skill is not vendored in QuantRank (skipped at the
+  2026-05-20 base sync per `THIRD_PARTY_NOTICES.md`), so a triage
+  label vocabulary would be dead config. The CLAUDE.md §Agent skills
+  block documents the skip + the re-run gate if `triage` is later
+  vendored.
+- **Section C (domain docs)** — declared "single-context" for the
+  upstream binary axis, but the `docs/agents/domain.md` body
+  documents QuantRank's actual layout: the `CONTEXT.md` analog is
+  **multi-file** (CLAUDE.md + docs/METHODOLOGY.md + SKILL.md +
+  WORKFLOW.md) and the ADR analog is `PHASE_STATUS_INFLIGHT.md`.
+  This adaptation note pre-dates the harness scaffold — it was
+  written into `.claude/skills/mattpocock-grill-with-docs/SKILL.md`
+  trailer when grill-with-docs was vendored in PR #256.
+
+**Files** (4):
+
+- `docs/agents/issue-tracker.md` (new) — GitHub MCP conventions +
+  frugality note + skip rationale for `gh` / GitLab / `.scratch/`.
+- `docs/agents/domain.md` (new) — upstream-instruction →
+  QuantRank-file mapping + project vocabulary list + ADR-conflict
+  flag protocol.
+- `CLAUDE.md` — new `## Agent skills` section (3 subsections); new
+  `docs/agents/` row in §Layout table; 2 new entries in §Companion
+  files.
+- `PHASE_STATUS_INFLIGHT.md` (this entry).
+
+**ZERO behavior change** — doc-only chore. No compute / schema /
+scoring / valuation / frontend / Python / TS production-code change.
+`schema_check` trivially passes (no schema touched). `ruff` /
+`pytest` unaffected.
+
+**Cross-tool lockstep** — AGENTS.md is NOT touched in this PR; the
+`docs/agents/*` files are Claude-Code-skill-specific (consumed by
+the vendored mattpocock skills, which only run in Claude Code
+sessions). Cross-tool agents (Copilot / Cursor / Devin) don't
+invoke mattpocock skills, so a mirror to AGENTS.md would be
+no-op for them. The PR is doc-only and the §Conventions lockstep
+rule is satisfied via this `PHASE_STATUS_INFLIGHT.md` entry per
+the side-file convention adopted in PR #237.
+
+**Deferred follow-ups**:
+
+- If a future `vendor-sync` run pulls upstream `triage` skill,
+  re-run `/mattpocock-setup-harness` to add the §B triage label
+  block. Today the gate is a no-op.
+- If a future PR introduces a `CONTEXT.md` at the repo root
+  (unlikely — QuantRank's multi-file pattern is durable), update
+  `docs/agents/domain.md` accordingly.
+
