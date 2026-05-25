@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { useTheme } from 'next-themes';
 import {
   Area,
   AreaChart,
@@ -53,6 +54,10 @@ export function PriceHistoryChart({
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<TimePeriod>('1Y');
+  const [mounted, setMounted] = useState(false);
+  const { resolvedTheme } = useTheme();
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     let cancelled = false;
@@ -255,6 +260,28 @@ export function PriceHistoryChart({
   const trendStroke = isPositive ? '#10b981' : '#e11d48'; // emerald-500 / rose-600
   const trendFillId = `priceFill-${ticker}-${isPositive ? 'up' : 'down'}`;
 
+  // Dark-mode-aware tooltip surface. The pre-mount default is light
+  // to match the `color-scheme: light` initial value in globals.css
+  // (avoids hydration flicker). Without these explicit colors the
+  // Recharts default tooltip stays white-bg in dark mode AND the date
+  // label inherits the body's `rgb(226 232 240)` cascade → unreadable
+  // light-text-on-white. Shadow per LedgerCraft Elevation spec
+  // (overlays + dropdowns are the only surfaces that get a shadow).
+  const isDark = mounted && resolvedTheme === 'dark';
+  const tooltipContentStyle = {
+    fontSize: '0.75rem',
+    borderRadius: '0.25rem',
+    border: isDark ? '1px solid #334155' : '1px solid #e2e8f0',
+    backgroundColor: isDark ? '#0f172a' : '#ffffff',
+    boxShadow:
+      '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+  };
+  const tooltipLabelStyle = {
+    color: isDark ? '#f1f5f9' : '#0f172a',
+    fontWeight: 600,
+    marginBottom: '2px',
+  };
+
   return (
     <div className="space-y-3">
       {/* Current price + period change indicator — Google Finance
@@ -375,11 +402,8 @@ export function PriceHistoryChart({
             <Tooltip
               formatter={(v: number) => [fmtTooltip(v), 'Close']}
               labelFormatter={formatTooltipLabel}
-              contentStyle={{
-                fontSize: '0.75rem',
-                borderRadius: '0.25rem',
-                border: '1px solid #e2e8f0',
-              }}
+              contentStyle={tooltipContentStyle}
+              labelStyle={tooltipLabelStyle}
             />
             <Area
               type="monotone"
