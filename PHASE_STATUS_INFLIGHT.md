@@ -435,6 +435,43 @@ aesthetic doesn't reward page-level motion.
 
 ---
 
+## PR (this PR) — PriceTimePeriodSelector dark-mode bg lift (round 2 contrast fix) (in flight, 2026-05-25)
+
+Follow-up to PR #250's A11 contrast bump (`dark:text-slate-400` →
+`dark:text-slate-300`). User spot-check on Vercel preview reported
+"เดือนในกล่องสี่เหลี่ยมในโหมดมืด ยังมองไม่ชัด" — the text bump
+alone wasn't enough. Root cause: the 7 period buttons sit inside a
+`dark:bg-slate-900` parent card (the PriceHistoryChart container),
+and the buttons themselves used `dark:bg-slate-900` — same color as
+the card → buttons blend INTO the card, invisible regardless of
+text contrast.
+
+Fix lifts the dark-mode bg ladder (light mode UNCHANGED):
+- **Unselected enabled** `dark:bg-slate-900` → `dark:bg-slate-800`
+  (1 shade above card — visible)
+- **Selected** `dark:bg-slate-800` → `dark:bg-slate-700` (2 shades
+  above card — clearly distinguishable from unselected)
+- **Hover (unselected)** `dark:hover:bg-slate-800` →
+  `dark:hover:bg-slate-700` (matches selected bg — affordance cue
+  "hover looks selected → click to actually select")
+- **Selected ring** `dark:ring-slate-600` → `dark:ring-slate-500`
+  (brighter edge for extra differentiation)
+- **Disabled** UNCHANGED at `dark:bg-slate-900` (sunken appearance
+  CORRECTLY cues "not interactive" — should look depressed against
+  the slightly-elevated enabled siblings; 1D/5D buttons remain
+  visually distinct from the active periods)
+
+Text colors UNCHANGED from PR #250 (slate-300 unselected /
+slate-100 selected / slate-500 disabled — all sufficient on the
+new bg ladder; contrast was the bg's fault, not the text's).
+
+Single-file edit. Frontend-only PR. Branch from latest `main`
+(`6e37c25e`, includes PR #252 = animation polish PR 3).
+PHASE_STATUS_INFLIGHT.md side-file pattern (PR #237) satisfies
+§Conventions lockstep — CLAUDE.md / AGENTS.md substance UNCHANGED.
+
+---
+
 ## Merged (awaiting housekeeping move to CLAUDE.md)
 
 ## PR #241 — Simulate Parts 5+6+7: wire `QR_SKIP_OSAP` + `QR_SKIP_CROSS_SOURCE` + timeout-minutes 45→90 backstop (merged 2026-05-24, `e9d7836`)

@@ -68,11 +68,21 @@ export function PriceTimePeriodSelector({ value, onChange }: Props) {
         const base =
           'flex flex-1 items-center justify-center rounded-sm ring-1 ring-inset ' +
           'px-2 py-1 text-xs font-medium transition-colors';
+        // Dark-mode bg ladder (post-PR #250 contrast follow-up — user
+        // spot-check 2026-05-25 reported "เดือนในกล่องสี่เหลี่ยมในโหมดมืด
+        // ยังมองไม่ชัด"): parent card is `dark:bg-slate-900` so any button
+        // also at `slate-900` blends in. Lift unselected enabled to
+        // `slate-800` (1 shade above card → visible), selected to
+        // `slate-700` (2 shades above → distinguishable from unselected),
+        // hover-unselected to `slate-700` as a "looks-like-selected"
+        // affordance. Disabled stays at `slate-900` so the sunken
+        // appearance correctly cues "not interactive". Ring on selected
+        // bumps to `slate-500` for extra differentiation.
         const stateClasses = !enabled
           ? 'bg-slate-50 text-slate-400 ring-slate-200 cursor-not-allowed dark:bg-slate-900 dark:text-slate-500 dark:ring-slate-700'
           : selected
-            ? 'bg-slate-100 text-slate-800 ring-slate-300 dark:bg-slate-800 dark:text-slate-100 dark:ring-slate-600'
-            : 'bg-white text-slate-600 ring-slate-200 hover:bg-slate-100 dark:bg-slate-900 dark:text-slate-300 dark:ring-slate-600 dark:hover:bg-slate-800';
+            ? 'bg-slate-100 text-slate-800 ring-slate-300 dark:bg-slate-700 dark:text-slate-100 dark:ring-slate-500'
+            : 'bg-white text-slate-600 ring-slate-200 hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-600 dark:hover:bg-slate-700';
 
         return (
           <button
