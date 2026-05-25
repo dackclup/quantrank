@@ -69,10 +69,10 @@ export function PriceTimePeriodSelector({ value, onChange }: Props) {
           'flex flex-1 items-center justify-center rounded-sm ring-1 ring-inset ' +
           'px-2 py-1 text-xs font-medium transition-colors';
         const stateClasses = !enabled
-          ? 'bg-slate-50 text-slate-400 ring-slate-200 cursor-not-allowed dark:bg-slate-900 dark:text-slate-600 dark:ring-slate-800'
+          ? 'bg-slate-50 text-slate-400 ring-slate-200 cursor-not-allowed dark:bg-slate-900 dark:text-slate-500 dark:ring-slate-700'
           : selected
-            ? 'bg-slate-100 text-slate-800 ring-slate-300 dark:bg-slate-800 dark:text-slate-100 dark:ring-slate-700'
-            : 'bg-white text-slate-600 ring-slate-200 hover:bg-slate-100 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800';
+            ? 'bg-slate-100 text-slate-800 ring-slate-300 dark:bg-slate-800 dark:text-slate-100 dark:ring-slate-600'
+            : 'bg-white text-slate-600 ring-slate-200 hover:bg-slate-100 dark:bg-slate-900 dark:text-slate-300 dark:ring-slate-600 dark:hover:bg-slate-800';
 
         return (
           <button

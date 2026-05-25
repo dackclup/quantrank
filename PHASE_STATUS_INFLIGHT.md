@@ -236,6 +236,19 @@ bouncy / spring / overshoot; all transitions functional
 - **A10** `Sidebar.tsx:127` — add explicit `duration-200` to
   collapse chevron `transition-transform` (was bare default 150ms;
   bumped to match sibling 200ms transitions for visual consistency)
+- **A11** `PriceTimePeriodSelector.tsx:72-75` — dark-mode contrast
+  bump on the 7-button period selector (1D / 5D / 1M / 6M / YTD /
+  1Y / 5Y). Pre-fix: unselected enabled used `dark:text-slate-400`
+  on `dark:bg-slate-900` (~4.5:1, just barely WCAG AA) and disabled
+  1D/5D used `dark:text-slate-600` (~3:1, sub-AA) — user spot-check
+  on Vercel preview reported the buttons "มองไม่ค่อยเห็น". Bumped
+  unselected → `dark:text-slate-300` (~7:1, AAA), disabled →
+  `dark:text-slate-500` (~5:1, AA — visibly muted but readable),
+  and lifted both unselected + selected ring to `dark:ring-slate-600`
+  (was 700) for better button outline visibility in the same band.
+  Ride-along contrast polish — fits the PR's "polish" theme even
+  though it's a contrast fix not an animation; bundling avoids a
+  separate 1-line PR.
 
 **Out of scope this PR (queued for PR 2 + 3)**:
 - P2 polish items — 7 more button hover transitions + active chip
