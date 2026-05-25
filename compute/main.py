@@ -1862,10 +1862,15 @@ def run_weekly_compute() -> int:
     shares_fallback_stats = get_shares_fallback_stats()
     shares_fallback_triggered_count = shares_fallback_stats["triggered"]
     shares_fallback_too_low_count = shares_fallback_stats["too_low"]
+    shares_fallback_dimensional_override_count = shares_fallback_stats[
+        "dimensional_override"
+    ]
     logger.info(
-        "shares_outstanding fallback summary: triggered=%d, of which too_low=%d",
+        "shares_outstanding fallback summary: triggered=%d, of which too_low=%d, "
+        "dimensional_override=%d",
         shares_fallback_triggered_count,
         shares_fallback_too_low_count,
+        shares_fallback_dimensional_override_count,
     )
 
     meta = Metadata(
@@ -1926,6 +1931,9 @@ def run_weekly_compute() -> int:
         cross_source_delta_histogram=cross_source_delta_histogram,
         shares_fallback_triggered_count=shares_fallback_triggered_count,
         shares_fallback_too_low_count=shares_fallback_too_low_count,
+        shares_fallback_dimensional_override_count=(
+            shares_fallback_dimensional_override_count
+        ),
         form4_enabled=False,
         form4_coverage_pct=(
             round(

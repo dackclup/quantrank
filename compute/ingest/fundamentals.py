@@ -45,7 +45,11 @@ logger = logging.getLogger(__name__)
 #   - counters are NOT reset between successive ``run_weekly_compute`` calls
 #     within the same process; consumer responsibility (main.py calls reset).
 _FALLBACK_STATS_LOCK = threading.Lock()
-_FALLBACK_STATS: dict[str, int] = {"triggered": 0, "too_low": 0}
+_FALLBACK_STATS: dict[str, int] = {
+    "triggered": 0,
+    "too_low": 0,
+    "dimensional_override": 0,
+}
 
 
 def reset_fallback_stats() -> None:
@@ -55,13 +59,15 @@ def reset_fallback_stats() -> None:
     with _FALLBACK_STATS_LOCK:
         _FALLBACK_STATS["triggered"] = 0
         _FALLBACK_STATS["too_low"] = 0
+        _FALLBACK_STATS["dimensional_override"] = 0
 
 
 def get_fallback_stats() -> dict[str, int]:
     """Return a shallow copy of the module-level fallback counters. Read
     AFTER the fundamentals fetch loop completes to populate
     ``Metadata.shares_fallback_triggered_count`` +
-    ``Metadata.shares_fallback_too_low_count``.
+    ``Metadata.shares_fallback_too_low_count`` +
+    ``Metadata.shares_fallback_dimensional_override_count``.
     """
     with _FALLBACK_STATS_LOCK:
         return dict(_FALLBACK_STATS)
@@ -844,6 +850,42 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
                 cik,
                 "None" if primary_shares is None else f"{primary_shares:.0f}",
                 fallback_shares,
+            )
+    elif (
+        # Issue #248 PR2b (0.10.4-phase4.5e) — multi-class dimensional
+        # override path. Primary path returned a PLAUSIBLE value (not None,
+        # not implausibly low) but the ticker is a known multi-class issuer
+        # whose ``companyfacts`` aggregate filters out non-primary share
+        # classes. Peek the per-filing XBRL; if the dimensional sum across
+        # all classes exceeds primary, the summed value is the truth
+        # (Damodaran 2019 Ch. 16 — TSO = sum across all classes). The
+        # allowlist gate keeps the peek bounded to the 7 verified tickers
+        # so the universe-wide HTTP cost stays negligible.
+        ticker is not None
+        and ticker in config.MULTI_CLASS_SHARE_ALLOWLIST
+        and primary_shares is not None
+        and not primary_too_low
+        and (revenue_val or 0) > 0
+        and (balance_values.get("total_assets") or 0) > 0
+    ):
+        dimensional_summed = _fetch_shares_from_per_filing_xbrl(
+            company, ticker=ticker
+        )
+        if (
+            dimensional_summed is not None
+            and dimensional_summed > primary_shares
+        ):
+            balance_values["shares_outstanding"] = dimensional_summed
+            with _FALLBACK_STATS_LOCK:
+                _FALLBACK_STATS["dimensional_override"] += 1
+            logger.info(
+                "shares_outstanding dimensional override for %s/%s — "
+                "primary=%.0f, summed=%.0f (gain %.1f%%, multi-class allowlist)",
+                ticker,
+                cik,
+                primary_shares,
+                dimensional_summed,
+                (dimensional_summed - primary_shares) / primary_shares * 100.0,
             )
 
     # Latest EPS values via normalized snake_case API (per-share figures

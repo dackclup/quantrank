@@ -204,6 +204,12 @@ export type Metadata = {
   // (100K) trigger fired (ERIE-class).
   shares_fallback_triggered_count?: number | null;
   shares_fallback_too_low_count?: number | null;
+  // Issue #248 PR2b (0.10.4-phase4.5e) — Rule 18 observability for the
+  // multi-class dimensional override path. Counts tickers where the
+  // primary `companyfacts` shares_outstanding was overridden by the
+  // per-filing XBRL dimensional sum (V/NWS/NWSA/FOX/FOXA/BRK-B/STZ
+  // allowlist). Disjoint from triggered_count above.
+  shares_fallback_dimensional_override_count?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors
