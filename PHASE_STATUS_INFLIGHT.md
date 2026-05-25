@@ -192,6 +192,88 @@ satisfies §Conventions lockstep.
 
 ---
 
+## PR (this PR) — Animation polish PR 1: micro-interactions (Tier 1 P1, 10 className edits) (in flight, 2026-05-25)
+
+First PR of the post-LedgerCraft animation polish series surfaced by
+the `frontend-design-reviewer` open-scope animation audit (no PR
+number yet — fresh branch from `main` HEAD `fbbaeeec`). Ten P1
+micro-interaction polishes across 6 frontend components — pure
+className-level diff, zero new keyframes, zero new deps, zero schema
+/ Python / scoring / valuation / output JSON change.
+
+**LedgerCraft compliance**: every transition ≤ 200ms; easing defaults
+to Tailwind's `cubic-bezier(0.4,0,0.2,1)` (Material standard); no
+bouncy / spring / overshoot; all transitions functional
+(state-change feedback) not decorative.
+
+**The 10 edits**:
+- **A1** `FilterDrawer.tsx:238` — fix typo `transition-colors-colors`
+  → `transition-colors` (Valuation chip group had ZERO color
+  transition before — silent Tailwind class-validity drop)
+- **A2** `FilterDrawer.tsx:296` — add `transition-colors duration-150`
+  to "View N stocks" CTA (emerald-700 → emerald-800 smooth)
+- **A3** `RankingTable.tsx:244` — replace text sort-glyph (`▲` /
+  `▼` / `↕`) with rotating SVG chevron that smoothly transitions
+  `rotate-0` ↔ `rotate-180` on asc/desc toggle (150ms ease-out);
+  inactive columns keep the dual-arrow `↕` SVG. Most-frequent
+  interaction on the page — sort.
+- **A4** `RankingTable.tsx:256` — add `transition-colors duration-150`
+  to Filters toolbar button hover
+- **A5** `RankingTable.tsx:414` — add `transition-colors duration-100`
+  to desktop `<tr>` hover (50 rows × snap-color → smooth fade every
+  hover; most-frequent visual feedback on the page)
+- **A6** `RankingTable.tsx:451` — add `transition-colors duration-100`
+  to mobile `<li>` card hover (mobile parity with desktop A5)
+- **A7** `FairPriceCard.tsx:37` — add `transition-colors duration-100`
+  to `MethodRow` `<tr>` hover (6-row per-method table fade)
+- **A8** `RawMetricsTable.tsx:65` — add `transition-colors duration-100`
+  to `<tr>` hover (14-row raw-fundamentals table fade)
+- **A9** `Sidebar.tsx:95` — replace `transition-transform duration-200`
+  with `[transition:transform_200ms_ease-out,width_200ms_ease-out]`
+  so desktop collapse 240px → 64px (and 64 → 240) animates smoothly
+  instead of hard-jumping. Mobile slide-in keeps the same 200ms
+  timing — both transitions share the easing.
+- **A10** `Sidebar.tsx:127` — add explicit `duration-200` to
+  collapse chevron `transition-transform` (was bare default 150ms;
+  bumped to match sibling 200ms transitions for visual consistency)
+- **A11** `PriceTimePeriodSelector.tsx:72-75` — dark-mode contrast
+  bump on the 7-button period selector (1D / 5D / 1M / 6M / YTD /
+  1Y / 5Y). Pre-fix: unselected enabled used `dark:text-slate-400`
+  on `dark:bg-slate-900` (~4.5:1, just barely WCAG AA) and disabled
+  1D/5D used `dark:text-slate-600` (~3:1, sub-AA) — user spot-check
+  on Vercel preview reported the buttons "มองไม่ค่อยเห็น". Bumped
+  unselected → `dark:text-slate-300` (~7:1, AAA), disabled →
+  `dark:text-slate-500` (~5:1, AA — visibly muted but readable),
+  and lifted both unselected + selected ring to `dark:ring-slate-600`
+  (was 700) for better button outline visibility in the same band.
+  Ride-along contrast polish — fits the PR's "polish" theme even
+  though it's a contrast fix not an animation; bundling avoids a
+  separate 1-line PR.
+
+**Out of scope this PR (queued for PR 2 + 3)**:
+- P2 polish items — 7 more button hover transitions + active chip
+  opacity + AppShell mobile backdrop fade
+- Skeleton loaders — PriceHistoryChart shimmer + StockLogo fade-in
+  (requires `@keyframes shimmer` + `@keyframes fade-in` in globals.css
+  + Tailwind config keyframes/animation registration)
+
+**Out of scope permanently (LedgerCraft restraint)**:
+- ScoreBadge / MoSBadge radial gauge arc-draw animation (decorative)
+- ThemeToggle icon crossfade (asymmetric without Framer Motion
+  `AnimatePresence` — looks like a bug)
+- Body color crossfade on theme toggle (next-themes
+  `disableTransitionOnChange: true` blocks; flipping to false would
+  cause 50+ row simultaneous color sweep — noisy)
+- Recharts `Area` draw animation (already `isAnimationActive={false}`
+  per LedgerCraft "data instantly readable" register — keep)
+
+Frontend-only PR. Branch from latest `main` (`fbbaeeec`, includes PR
+#245 EMERGENCY cron fix). PHASE_STATUS_INFLIGHT.md side-file pattern
+(PR #237) satisfies §Conventions lockstep — CLAUDE.md / AGENTS.md
+substance UNCHANGED.
+
+---
+
 ## Merged (awaiting housekeeping move to CLAUDE.md)
 
 ## PR #241 — Simulate Parts 5+6+7: wire `QR_SKIP_OSAP` + `QR_SKIP_CROSS_SOURCE` + timeout-minutes 45→90 backstop (merged 2026-05-24, `e9d7836`)

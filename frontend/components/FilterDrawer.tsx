@@ -235,7 +235,7 @@ export function FilterDrawer({
                     key={b.id}
                     type="button"
                     onClick={() => toggleMos(b.id)}
-                    className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition-colors-colors ${
+                    className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition-colors ${
                       on ? b.cls : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
                     }`}
                   >
@@ -293,7 +293,7 @@ export function FilterDrawer({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-sm bg-emerald-700 px-4 py-1.5 text-sm font-medium text-white hover:bg-emerald-800 dark:bg-emerald-600 dark:text-white dark:hover:bg-emerald-500"
+            className="rounded-sm bg-emerald-700 px-4 py-1.5 text-sm font-medium text-white transition-colors duration-150 hover:bg-emerald-800 dark:bg-emerald-600 dark:text-white dark:hover:bg-emerald-500"
           >
             View {filteredCount.toLocaleString()} stock{filteredCount === 1 ? '' : 's'}
           </button>
