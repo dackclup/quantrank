@@ -478,6 +478,272 @@ def test_config_min_plausible_share_count_pinned():
 # ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
+# Issue #248 PR2b — multi-class dimensional override branch
+# Tests the new ``elif`` in ``_build_snapshot`` that fires when:
+#   ticker in MULTI_CLASS_SHARE_ALLOWLIST AND primary_shares is not None
+#   AND not primary_too_low AND revenue > 0 AND total_assets > 0
+# and replaces primary with the dimensional sum when sum > primary.
+# ---------------------------------------------------------------------------
+
+
+def test_v_class_dimensional_override_fires():
+    """V (Visa) — primary=469M (plausible); XBRL sum=5.4B (Class A+B+C).
+
+    The dimensional override branch must replace shares_outstanding with
+    the summed value and increment _FALLBACK_STATS["dimensional_override"].
+    """
+    from compute.ingest.fundamentals import (
+        _build_snapshot,
+        get_fallback_stats,
+        reset_fallback_stats,
+    )
+
+    reset_fallback_stats()
+    facts = _make_facts_stub(shares_outstanding=469_000_000.0)
+    company = _make_company_stub(facts)
+    summed = 5_400_000_000.0  # Class A + B + C
+
+    with (
+        patch("compute.ingest.fundamentals.Company", return_value=company),
+        patch(
+            "compute.ingest.fundamentals._fetch_shares_from_per_filing_xbrl",
+            return_value=summed,
+        ),
+    ):
+        snapshot = _build_snapshot("V", "0001403161")
+
+    assert snapshot.shares_outstanding == summed
+    assert get_fallback_stats()["dimensional_override"] == 1
+    # Primary fallback counter must not have incremented (primary was plausible).
+    assert get_fallback_stats()["triggered"] == 0
+
+
+def test_brk_b_dimensional_override_fires_with_naive_sum():
+    """BRK-B — primary=1.46M (Class A direct); XBRL naive sum=2.14B.
+
+    The naive sum (Class A 1.46M + Class B 2.14B) is definitionally > primary,
+    so the override fires.  The 1500x economic-weighting caveat is deferred to
+    the Q3 2026-08-19 cohort audit; for now any positive delta wins per
+    Damodaran 2019 Ch. 16 (TSO = sum across all classes).
+    """
+    from compute.ingest.fundamentals import (
+        _build_snapshot,
+        get_fallback_stats,
+        reset_fallback_stats,
+    )
+
+    reset_fallback_stats()
+    primary = 1_460_000.0  # Class A only from companyfacts aggregate
+    summed = 2_140_000_000.0  # naive Class A + Class B sum (no 1500x weighting)
+
+    facts = _make_facts_stub(shares_outstanding=primary)
+    company = _make_company_stub(facts)
+
+    with (
+        patch("compute.ingest.fundamentals.Company", return_value=company),
+        patch(
+            "compute.ingest.fundamentals._fetch_shares_from_per_filing_xbrl",
+            return_value=summed,
+        ),
+    ):
+        snapshot = _build_snapshot("BRK-B", "0001067983")
+
+    assert snapshot.shares_outstanding == summed
+    assert get_fallback_stats()["dimensional_override"] == 1
+
+
+def test_multi_class_summed_equals_primary_with_tiny_delta_overrides():
+    """STZ-like: primary=172.17M; XBRL sum=172.20M (Class A + Class B).
+
+    delta = +0.02% which is > 0, so the ``summed > primary`` condition is
+    True and the override fires.  Any positive delta is the truth per
+    Damodaran 2019 Ch. 16; no epsilon threshold suppresses it.
+    """
+    from compute.ingest.fundamentals import (
+        _build_snapshot,
+        get_fallback_stats,
+        reset_fallback_stats,
+    )
+
+    reset_fallback_stats()
+    primary = 172_170_000.0
+    summed = 172_200_000.0  # +30K Class B on top of Class A primary
+
+    facts = _make_facts_stub(shares_outstanding=primary)
+    company = _make_company_stub(facts)
+
+    with (
+        patch("compute.ingest.fundamentals.Company", return_value=company),
+        patch(
+            "compute.ingest.fundamentals._fetch_shares_from_per_filing_xbrl",
+            return_value=summed,
+        ),
+    ):
+        snapshot = _build_snapshot("STZ", "0000016160")
+
+    assert snapshot.shares_outstanding == summed
+    assert get_fallback_stats()["dimensional_override"] == 1
+
+
+def test_allowlist_excludes_non_multi_class_ticker():
+    """AAPL is NOT in MULTI_CLASS_SHARE_ALLOWLIST; per-filing XBRL must NOT be called.
+
+    The dimensional override elif only fires for tickers in the allowlist.
+    A plausible primary (15B shares) for a non-allowlist ticker must leave
+    shares_outstanding unchanged and never call _fetch_shares_from_per_filing_xbrl.
+    """
+    from compute.ingest.fundamentals import (
+        _build_snapshot,
+        get_fallback_stats,
+        reset_fallback_stats,
+    )
+
+    assert "AAPL" not in config.MULTI_CLASS_SHARE_ALLOWLIST
+
+    reset_fallback_stats()
+    primary = 15_000_000_000.0  # ~15B, plausible for AAPL
+    facts = _make_facts_stub(shares_outstanding=primary)
+    company = _make_company_stub(facts)
+
+    with (
+        patch("compute.ingest.fundamentals.Company", return_value=company),
+        patch(
+            "compute.ingest.fundamentals._fetch_shares_from_per_filing_xbrl",
+        ) as mock_fallback,
+    ):
+        snapshot = _build_snapshot("AAPL", "0000320193")
+
+    mock_fallback.assert_not_called()
+    assert snapshot.shares_outstanding == primary
+    assert get_fallback_stats()["dimensional_override"] == 0
+
+
+def test_summed_less_than_primary_does_not_override():
+    """Defensive guard: if XBRL sum < primary, the override must NOT fire.
+
+    Bad XBRL data (e.g., partial dimensional parse) must not downgrade a
+    correct primary value.  balance_values["shares_outstanding"] stays at
+    primary; dimensional_override counter stays at 0.
+    """
+    from compute.ingest.fundamentals import (
+        _build_snapshot,
+        get_fallback_stats,
+        reset_fallback_stats,
+    )
+
+    reset_fallback_stats()
+    primary = 469_000_000.0
+    summed = 200_000_000.0  # lower than primary — bad XBRL data
+
+    facts = _make_facts_stub(shares_outstanding=primary)
+    company = _make_company_stub(facts)
+
+    with (
+        patch("compute.ingest.fundamentals.Company", return_value=company),
+        patch(
+            "compute.ingest.fundamentals._fetch_shares_from_per_filing_xbrl",
+            return_value=summed,
+        ),
+    ):
+        snapshot = _build_snapshot("V", "0001403161")
+
+    # Override must NOT have fired; primary value preserved.
+    assert snapshot.shares_outstanding == primary
+    assert get_fallback_stats()["dimensional_override"] == 0
+
+
+def test_too_low_primary_does_not_fire_dimensional_branch():
+    """ERIE pattern (primary=2541): the EXISTING None/too_low branch fires,
+    NOT the new dimensional override elif.
+
+    The two branches are mutually exclusive (if/elif).  When primary_too_low
+    is True, the first ``if`` fires; the elif is skipped.  Counter:
+    ``too_low`` increments, ``dimensional_override`` stays at 0.
+    """
+    from compute.ingest.fundamentals import (
+        _build_snapshot,
+        get_fallback_stats,
+        reset_fallback_stats,
+    )
+
+    reset_fallback_stats()
+    # 2541 < MIN_PLAUSIBLE_SHARE_COUNT — triggers too_low path.
+    # ERIE is NOT in MULTI_CLASS_SHARE_ALLOWLIST anyway, but even if it
+    # were, the if/elif guarantees the dimensional branch is unreachable
+    # when primary_too_low is True.
+    primary = 2_541.0
+    fallback_return = 57_000_000.0
+
+    facts = _make_facts_stub(shares_outstanding=primary)
+    company = _make_company_stub(facts)
+
+    with (
+        patch("compute.ingest.fundamentals.Company", return_value=company),
+        patch(
+            "compute.ingest.fundamentals._fetch_shares_from_per_filing_xbrl",
+            return_value=fallback_return,
+        ),
+    ):
+        snapshot = _build_snapshot("ERIE", "0000049697")
+
+    # too_low branch fired → snapshot updated to fallback value
+    assert snapshot.shares_outstanding == fallback_return
+    stats = get_fallback_stats()
+    assert stats["too_low"] == 1
+    assert stats["triggered"] == 1
+    assert stats["dimensional_override"] == 0
+
+
+def test_get_fallback_stats_returns_three_keys_after_dimensional_path():
+    """Lifecycle sanity: reset → run dimensional override → inspect all three keys.
+
+    After reset_fallback_stats(): all three counters are 0.
+    After one dimensional override fires: only dimensional_override == 1;
+    triggered and too_low remain 0 (those belong to the first if branch).
+    """
+    from compute.ingest.fundamentals import (
+        _build_snapshot,
+        get_fallback_stats,
+        reset_fallback_stats,
+    )
+
+    reset_fallback_stats()
+    assert get_fallback_stats() == {"triggered": 0, "too_low": 0, "dimensional_override": 0}
+
+    facts = _make_facts_stub(shares_outstanding=469_000_000.0)
+    company = _make_company_stub(facts)
+
+    with (
+        patch("compute.ingest.fundamentals.Company", return_value=company),
+        patch(
+            "compute.ingest.fundamentals._fetch_shares_from_per_filing_xbrl",
+            return_value=5_400_000_000.0,
+        ),
+    ):
+        _build_snapshot("V", "0001403161")
+
+    stats = get_fallback_stats()
+    assert stats == {"triggered": 0, "too_low": 0, "dimensional_override": 1}
+
+
+# ---------------------------------------------------------------------------
+# Config constant drift-detector: MULTI_CLASS_SHARE_ALLOWLIST
+# ---------------------------------------------------------------------------
+
+
+def test_config_multi_class_share_allowlist_pinned():
+    """Drift-detector: MULTI_CLASS_SHARE_ALLOWLIST must contain exactly the
+    7 tickers verified 2026-05-25 via EPS cross-check (edgar-debugger).
+
+    Expansion requires: (a) edgar-debugger EPS cross-check confirmation,
+    (b) methodology-scientist Mode B sign-off, (c) Q3 2026-08-19 cohort
+    audit gate if the expansion is > 2 new tickers.
+    """
+    expected = frozenset({"V", "NWS", "NWSA", "STZ", "FOX", "FOXA", "BRK-B"})
+    assert config.MULTI_CLASS_SHARE_ALLOWLIST == expected
+
+
 @pytest.mark.network
 def test_erie_fallback_recovers_correct_share_count():
     """Live SEC probe — ERIE must recover ~50-65M shares total (Class A + Class B).
