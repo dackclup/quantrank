@@ -681,3 +681,51 @@ TS code change. Doc-only PR. CLAUDE.md + AGENTS.md lockstep
 satisfied via §Conventions + §Gotchas substantive updates (the
 "ship with every PR" rule now points at this file as the canonical
 destination).
+
+---
+
+## PR (this PR) — PriceHistoryChart tooltip dark-mode readability fix (in flight, 2026-05-25)
+
+User screenshot 2026-05-25 of `/stock/[ticker]` price chart in dark
+mode: the Recharts tooltip date label ("Feb 24, 2026") rendered in
+a barely-visible light-blue-gray on a white tooltip background.
+"Close : $192.84" stayed readable because Recharts colors item
+entries with the data-series stroke (`trendStroke` =
+`emerald-500` / `rose-600`) which is set explicitly on the entry
+element. The LABEL has no explicit color, so it inherited the
+cascade from `.dark body { color: rgb(226 232 240) }` (slate-200)
+in `globals.css:127` — light-text-on-white = invisible.
+
+Root cause: the Tooltip's `contentStyle` set only
+`fontSize / borderRadius / border` and didn't pin
+`backgroundColor` (Recharts default = white in both themes) or
+`labelStyle.color` (Recharts default = inherit). The white tooltip
+on a dark chart was also jarring as a depth cue — a real dark-mode
+tooltip should sit dark on the dark canvas.
+
+Fix in `frontend/components/PriceHistoryChart.tsx` (single file,
+~30 lines added):
+- Import `useTheme` from `next-themes` + add `mounted` guard
+  (same hydration-safety pattern as `ThemeToggle.tsx:62-65`).
+- Compute `isDark = mounted && resolvedTheme === 'dark'` and two
+  style objects — `tooltipContentStyle` (BG + border switches
+  white/slate-200 ↔ slate-900/slate-700) and `tooltipLabelStyle`
+  (color switches slate-900 ↔ slate-100, weight 600).
+- Pass both to `<Tooltip>` as `contentStyle` + `labelStyle`.
+- Add `boxShadow` per LedgerCraft Elevation spec ("shadows used
+  sparingly — only for overlays and dropdowns"); the Recharts
+  tooltip is exactly that.
+- Pre-mount default is light to match `color-scheme: light` initial
+  value in `globals.css:135` (avoids hydration flicker on the
+  first paint before the theme resolves).
+
+`itemStyle` deliberately left unset so Recharts continues to color
+the item entry with the trend stroke (emerald = up / rose = down)
+— that's the Google-Finance-style cue the chart already uses. Both
+emerald-500 (`#10b981`) and rose-600 (`#e11d48`) clear AA contrast
+against the new slate-900 (`#0f172a`) dark tooltip BG.
+
+No schema / Python / scoring / valuation / output JSON change —
+JSX + style-object diff inside one file. Tests unchanged (no
+existing tests on `PriceHistoryChart`; the dark-mode toggle path
+is exercised by `ThemeToggle.tsx`'s upstream production use).
