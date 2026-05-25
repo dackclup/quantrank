@@ -236,11 +236,12 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
     return (
       <th
         scope="col"
+        aria-sort={active ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}
         className={`cursor-pointer select-none px-3 py-2 text-left font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 ${extraClass}`}
         onClick={() => onSort(key)}
       >
         {label}
-        <span className="ml-1 text-slate-400 dark:text-slate-500">{active ? (sortDir === 'asc' ? '▲' : '▼') : ''}</span>
+        <span className="ml-1 text-slate-400 dark:text-slate-500">{active ? (sortDir === 'asc' ? '▲' : '▼') : <span aria-hidden="true" className="text-slate-300 dark:text-slate-700">↕</span>}</span>
       </th>
     );
   };

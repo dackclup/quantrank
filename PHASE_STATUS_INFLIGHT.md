@@ -198,6 +198,51 @@ No schema / Python / scoring / valuation / output JSON change.
 className+style-only diff. PHASE_STATUS_INFLIGHT.md side-file
 satisfies §Conventions lockstep per PR #237 convention.
 
+---
+
+## PR (this PR) — Post-LedgerCraft polish bundle A1-A10 (dark variants + sort affordance + a11y + stale copy) (in flight, 2026-05-25)
+
+10 quick-win design polish items surfaced by the post-#242
+`frontend-design-reviewer` open-scope audit. All single-line or
+two-line fixes across 6 files. No schema / Python / scoring /
+valuation / output JSON change. Closes the residual gaps that
+slipped through the LedgerCraft A1-B4 + #242 polish series.
+
+- **A1** `app/stock/[ticker]/page.tsx` 2 `h2` section headers
+  ("Price (1y)" + "Raw fundamentals") gain `dark:text-slate-400`
+- **A2** `app/stock/[ticker]/page.tsx` "← Back to ranking" link
+  gains `dark:text-slate-400 dark:hover:text-slate-100`
+- **A3** `FilterDrawer.tsx` MoS/Valuation chips gain dark hover
+  state matching the 3 sibling filter groups
+- **A4** `FairPriceCard.tsx` 4 KPI `dd` values gain `font-mono
+  font-semibold leading-none` to match hero-metric weight register
+- **A5** `RankingTable.tsx` inactive sortable columns now render
+  a subtle `↕` glyph in `text-slate-300` (sortability affordance
+  cue per Bloomberg/Google Finance pattern)
+- **A6** `RankingTable.tsx` `aria-sort={ascending | descending |
+  none}` attribute added for screen-reader column-sort announcement
+- **A7** `FilterDrawer.tsx` search input gains
+  `dark:focus:border-slate-500 dark:focus:ring-slate-500`
+- **A8** `FilterDrawer.tsx` 4 chip surfaces — `transition` (ALL
+  CSS props) → `transition-colors` (scoped) matching
+  `PriceTimePeriodSelector` pattern
+- **A9** `app/page.tsx` + `app/stock/[ticker]/page.tsx` — stale
+  "Phase 3b" / "Phase 3c" references stripped from user-facing
+  footer copy; explanatory content preserved
+- **A10** `PriceHistoryChart.tsx` Recharts tooltip `borderRadius:
+  '0.375rem'` (6px) → `'0.25rem'` (4px) matching post-A3 4px
+  card-radius normalization
+
+Out of scope (deferred from audit):
+- B1 dead-sort-key `SortKey` cleanup (no UI impact)
+- B2/C1 Instrument Serif use-or-remove (design taste call)
+- B3/C2 MoS column on desktop ranking table (data-density tradeoff)
+- C3 focus-visible ring system across all 23 buttons (a11y, wider scope)
+
+PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions lockstep
+per PR #237 convention. CLAUDE.md / AGENTS.md substance UNCHANGED.
+
+---
 
 ## PR #238 — Form-4 `<aff10b5One>` direct-XML parse closes the architectural gap (merged 2026-05-24, `cdf70bd`)
 

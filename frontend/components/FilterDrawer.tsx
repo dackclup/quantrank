@@ -143,7 +143,7 @@ export function FilterDrawer({
                 placeholder="Ticker or company name…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full rounded-sm border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500"
+                className="w-full rounded-sm border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:border-slate-500 dark:focus:ring-slate-500"
               />
               <svg
                 className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-slate-500"
@@ -182,7 +182,7 @@ export function FilterDrawer({
                     key={t.id}
                     type="button"
                     onClick={() => toggleTier(t.id)}
-                    className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition ${
+                    className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition-colors ${
                       on ? t.cls : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
                     }`}
                   >
@@ -209,7 +209,7 @@ export function FilterDrawer({
                     key={rec}
                     type="button"
                     onClick={() => toggleRecommendation(rec)}
-                    className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition ${
+                    className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition-colors ${
                       on
                         ? RECOMMENDATION_CHIP_TONES[rec]
                         : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
@@ -235,8 +235,8 @@ export function FilterDrawer({
                     key={b.id}
                     type="button"
                     onClick={() => toggleMos(b.id)}
-                    className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition ${
-                      on ? b.cls : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-50'
+                    className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition-colors-colors ${
+                      on ? b.cls : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
                     }`}
                   >
                     <span className={`inline-block h-1.5 w-1.5 rounded-full ${b.dot}`} />
@@ -266,7 +266,7 @@ export function FilterDrawer({
                     key={s}
                     type="button"
                     onClick={() => toggleSector(s)}
-                    className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition ${
+                    className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition-colors ${
                       on ? `${sty.bg} ${sty.fg} ${sty.ring}` : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
                     }`}
                   >

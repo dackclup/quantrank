@@ -365,7 +365,7 @@ export function PriceHistoryChart({
               labelFormatter={formatTooltipLabel}
               contentStyle={{
                 fontSize: '0.75rem',
-                borderRadius: '0.375rem',
+                borderRadius: '0.25rem',
                 border: '1px solid #e2e8f0',
               }}
             />
