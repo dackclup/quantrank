@@ -11,15 +11,36 @@ from compute import config
 
 
 def test_schema_version_is_phase4_5e():
-    """Issue #248 PR2a (0.10.3-phase4.5e) — PATCH bump for the new
-    cross-source delta observability surface (``cross_source_disagreement_count``
-    + ``cross_source_delta_histogram`` + ``shares_fallback_triggered_count``
-    + ``shares_fallback_too_low_count`` Metadata diagnostics + per-ticker
-    ``StockDetail.cross_source_delta``). Rule 18 retrofit for the
-    cross-source validator and ERIE fallback stats.
-    Supersedes PR 4-eq's 0.10.2-phase4.5e form4_rule10b5_one_excluded_count bump.
+    """Issue #248 PR2b (0.10.4-phase4.5e) — PATCH bump for the new
+    multi-class dimensional override observability counter
+    (``shares_fallback_dimensional_override_count`` Metadata field). Rule 18
+    diagnostic for the per-filing XBRL summed-dimensional path that fires
+    for the V/NWS/NWSA/STZ/FOX/FOXA/BRK-B allowlist (Damodaran 2019 Ch. 16).
+    Supersedes PR2a's 0.10.3-phase4.5e cross-source observability bump.
     Locks the version against accidental revert."""
-    assert config.SCHEMA_VERSION == "0.10.3-phase4.5e"
+    assert config.SCHEMA_VERSION == "0.10.4-phase4.5e"
+
+
+def test_multi_class_share_allowlist_membership():
+    """Issue #248 PR2b (0.10.4-phase4.5e) — pin the multi-class share-
+    structure allowlist that gates the per-filing XBRL dimensional override
+    path in ``compute/ingest/fundamentals.py::_build_snapshot``.
+
+    Verified 2026-05-25 by edgar-debugger via EPS cross-check on production
+    output: V (4.5x undercount), NWS/NWSA (1.56x), FOX/FOXA (2.2x), BRK-B
+    (1300x — Class A weighting deferred to Q3 2026-08-19 cohort audit),
+    STZ (already handled by None-trigger path; included for completeness).
+
+    GOOG/GOOGL deliberately excluded — they file non-dimensionally so
+    companyfacts returns the correct total. Adding them would be a no-op
+    HTTP cost.
+
+    Adding a ticker without an EPS cross-check verification is a regression
+    risk (false override of a single-class issuer). Quarterly cohort audit
+    is the canonical expansion venue."""
+    assert config.MULTI_CLASS_SHARE_ALLOWLIST == frozenset(
+        {"V", "NWS", "NWSA", "STZ", "FOX", "FOXA", "BRK-B"}
+    )
 
 
 def test_form4_lookback_days_is_180():

@@ -286,6 +286,18 @@ class Metadata(BaseModel):
     # Nullable on legacy snapshots (pre-0.10.3).
     shares_fallback_triggered_count: int | None = None
     shares_fallback_too_low_count: int | None = None
+    # Issue #248 PR2b (0.10.4-phase4.5e) — Rule 18 observability for the
+    # multi-class dimensional override path added in fundamentals.py. Counts
+    # the universe-wide total of tickers where the primary `companyfacts`
+    # ``shares_outstanding`` value was overridden by a per-filing XBRL
+    # dimensional sum (the V / NWS / NWSA / FOX / FOXA / BRK-B / STZ
+    # allowlist gate fired AND the summed value exceeded primary). Disjoint
+    # from `shares_fallback_triggered_count` — that counter covers the
+    # None / too-low trigger paths; this counter covers the allowlist
+    # plausible-primary path. Expected steady-state firing rate: 6-7
+    # (the allowlist size; STZ may not fire here because its primary path
+    # returns None and the None-trigger path captures it first).
+    shares_fallback_dimensional_override_count: int | None = None
 
 
 class RawMetrics(BaseModel):

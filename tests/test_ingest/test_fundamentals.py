@@ -433,9 +433,10 @@ def test_reset_fallback_stats_zeros_counters():
     with _FALLBACK_STATS_LOCK:
         _FALLBACK_STATS["triggered"] = 7
         _FALLBACK_STATS["too_low"] = 3
+        _FALLBACK_STATS["dimensional_override"] = 2
 
     reset_fallback_stats()
-    assert get_fallback_stats() == {"triggered": 0, "too_low": 0}
+    assert get_fallback_stats() == {"triggered": 0, "too_low": 0, "dimensional_override": 0}
 
 
 def test_get_fallback_stats_returns_copy_not_reference():
@@ -452,7 +453,7 @@ def test_get_fallback_stats_returns_copy_not_reference():
 
     second = get_fallback_stats()
     # Internal state must be unaffected — still 0 from the reset above.
-    assert second == {"triggered": 0, "too_low": 0}
+    assert second == {"triggered": 0, "too_low": 0, "dimensional_override": 0}
     # And the two dicts are distinct objects.
     assert first is not second
 

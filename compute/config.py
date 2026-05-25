@@ -27,7 +27,7 @@ FUNDAMENTALS_HISTORY_CACHE_DIR: Path = CACHE_DIR / "fundamentals_history"
 MODELS_DIR: Path = PROJECT_ROOT / "models"
 
 UNIVERSE: str = "SP500"
-SCHEMA_VERSION: str = "0.10.3-phase4.5e"
+SCHEMA_VERSION: str = "0.10.4-phase4.5e"
 
 PRICES_PERIOD: str = "5y"
 MAX_PARALLEL_FETCHES: int = 10
@@ -139,6 +139,60 @@ FAIR_PRICE_DATA_QUALITY_CEILING: float = 10000.0
 # ``compute/ingest/fundamentals.py:_fetch_shares_from_per_filing_xbrl``
 # is invoked to recover the correct sum across dimensional contexts.
 MIN_PLAUSIBLE_SHARE_COUNT: int = 100_000
+
+# Issue #248 PR2b — multi-class share-structure allowlist for the
+# per-filing XBRL dimensional override path. Tickers in this set have
+# their primary ``companyfacts`` ``shares_outstanding`` value compared
+# against the per-filing XBRL dimensional sum (Class A + Class B + ...).
+# If the dimensional sum exceeds the primary value, the dimensional
+# value wins.
+#
+# Provenance: **LITERATURE-ANCHORED on shape, EMPIRICAL on membership**.
+#   - Shape (always-sum-when-dimensional, 0% delta threshold): Damodaran
+#     2019 *Investment Valuation* 3rd ed. Ch. 16 — for multi-class
+#     issuers, total common shares outstanding = sum across all classes.
+#     The voting-premium discount applies to PRICE, not share-count
+#     aggregation. The summed value is definitionally the truth; no
+#     materiality bar applies. The methodology-scientist verdict
+#     2026-05-25 (Mode B) rejected a 10% gap threshold as suppressing
+#     the truth for any filer with minor classes < 10% of total.
+#   - Membership (the 7 tickers below): verified 2026-05-25 by the
+#     edgar-debugger via EPS cross-check on production output
+#     (``NI / shares_outstanding`` vs known-correct reported EPS). The
+#     listed tickers each show > 2x undercount via the companyfacts
+#     aggregate path. GOOG / GOOGL filed non-dimensionally and don't
+#     belong here despite their 3-class structure.
+#
+# Universal-scan rejected by the performance-engineer 2026-05-25 — a
+# per-ticker peek-XBRL adds ~5 min wall-clock and breaches the < 5 min
+# warm-cache budget; current p95 fundamentals latency is already 16.25s
+# (1.25s over the 15s warn threshold). Allowlist limits the peek to 7
+# tickers (~5s wall-clock) which is negligible.
+#
+# BRK-B caveat (deferred to Q3 2026-08-19 cohort audit follow-up):
+# Berkshire Class A shares carry 1500x economic weight per share vs
+# Class B. The naive dimensional sum (Class A 1.46M + Class B 2.14B)
+# yields a ~14% residual undercount on EPS attribution. The "perfect
+# fix" requires ticker-specific conversion math
+# (``Class_A_count * 1500 + Class_B_count``); pending methodology Mode B
+# verdict on whether economic-equivalence weighting belongs in the
+# ingest layer or a higher abstraction.
+#
+# Expansion gate: quarterly cohort audit (next 2026-08-19) walks the
+# universe-wide ``cross_source_disagreement`` annotate firing list and
+# adds any newly-detected multi-class structure that survives EPS
+# cross-check (see PR2b methodology + edgar-debugger verdicts).
+MULTI_CLASS_SHARE_ALLOWLIST: frozenset[str] = frozenset(
+    {
+        "V",      # Visa Class A + B + C (B held by member banks; C by Visa International)
+        "NWS",    # News Corp Class B (same CIK as NWSA)
+        "NWSA",   # News Corp Class A (same CIK as NWS)
+        "STZ",    # Constellation Brands Class A + Class B (already covered by None-trigger path; included for completeness)
+        "FOX",    # Fox Corporation Class B (same CIK as FOXA)
+        "FOXA",   # Fox Corporation Class A (same CIK as FOX)
+        "BRK-B",  # Berkshire Hathaway Class B (Class A weighting deferred; see caveat above)
+    }
+)
 
 # Sector-multiples peer-group floor; below this fall back to global median + flag.
 MULTIPLES_MIN_PEERS: int = 8

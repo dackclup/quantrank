@@ -938,3 +938,157 @@ that empirical distribution.
   `Metadata.cross_source_disagreement_count` + histogram as a
   defense-layer health signal alongside the existing 27 annotates.
 
+---
+
+## PR2b — V/FOX/BRK-B multi-class XBRL fix + Issue #248 mechanical recovery (in flight, 2026-05-25)
+
+**Background** — PR2a (PR #256, merged 2026-05-25) shipped the
+cross-source observability surface. PR2b is the **mechanical recovery
+half** of the Issue #248 split — the half that doesn't need cron-#4
+data because it's about the V/Visa undercount root cause (companyfacts
+aggregate API filters dimensional facts), not the severe-flag threshold
+calibration (that's PR2c, blocks on cron-#4 histogram data).
+
+**Scope** — locked across 6 grill-me questions (2026-05-25 session 9,
+grill-with-docs skill):
+
+- **Q1 / Option SPLIT** — PR2a (PR #256) shipped observability; PR2b
+  ships mechanical V/NWS/NWSA/FOX/FOXA/BRK-B XBRL recovery; PR2c later
+  ships the `cross_source_disagreement_severe` flag. Decoupling means
+  V holders see correct `market_cap` THIS WEEK without waiting on
+  cron-#4 + methodology Mode B verdict on severe threshold.
+
+- **Q2 / Option D (allowlist)** — performance-engineer Mode B (2026-05-25)
+  rejected universal peek-XBRL: adds ~5 min wall-clock at warm cache,
+  breaches the <5 min budget. Current p95 fundamentals latency 16.25s
+  (1.25s over the 15s warn threshold). Allowlist limits peek to 7
+  tickers → ~5s wall-clock total.
+
+- **Q3 / Option 0% threshold** — methodology-scientist Mode B
+  (2026-05-25) rejected the originally-proposed 10% gap threshold as
+  WRONG SHAPE not just wrong number. Damodaran 2019 *Investment
+  Valuation* 3rd ed. Ch. 16: total common shares outstanding = sum
+  across all classes; voting-premium discount applies to PRICE only.
+  The summed dimensional value is **definitionally** the truth when
+  the XBRL exposes dimensional contexts. A 10% gate would suppress
+  the truth for any filer with minor classes < 10% of total. New
+  rule: `summed_dimensional > primary` (any positive delta) wins.
+
+- **Q4 / Option SPAWN PARALLEL** — methodology-scientist (opus) +
+  performance-engineer (sonnet) ran in parallel pre-code. Both
+  agents independently rejected the original 10% / universal-peek
+  design, converging on the allowlist + 0% threshold combo. The
+  parallel-validate pattern caught a major design mismatch that
+  would have failed reviewer + cron post-merge — confirming the
+  Rule 18 observability-before-wiring discipline extends to
+  observability-before-design.
+
+- **Q5 / Option A (D allowlist + 0% threshold)** — rejected C
+  ("D now + scout PR later for universal discovery") as overengineering
+  per CLAUDE.md §"Doing tasks": "Don't design for hypothetical future
+  requirements." `cross_source_disagreement` annotate already serves
+  as the discovery mechanism for new multi-class tickers; Q3 cohort
+  audit is the canonical expansion venue (no separate scout PR
+  needed).
+
+- **Q6 / Option 6-A (defer BRK-B Class A weighting)** — edgar-debugger
+  verdict (2026-05-25) confirmed allowlist completeness: `{V, NWS,
+  NWSA, STZ, FOX, FOXA, BRK-B}` (7 tickers, not the originally-proposed
+  4). GOOG / GOOGL deliberately excluded — they file non-dimensionally,
+  companyfacts returns the correct total. BRK-B has a residual ~14%
+  undercount because Class A shares carry 1500x economic weight per
+  share vs Class B — the naive dimensional sum (Class A 1.46M +
+  Class B 2.14B) ignores the conversion ratio. Naive fix still a
+  1300x improvement on the current $799M → ~$1.04T market_cap;
+  perfect fix (`Class_A * 1500 + Class_B`) deferred to Q3 2026-08-19
+  cohort audit follow-up since it requires ticker-specific economic-
+  equivalence math (code smell that needs methodology Mode B before
+  landing in the ingest hot path).
+
+**Production code changes**:
+
+- `compute/config.py` — `SCHEMA_VERSION` bumped
+  `0.10.3-phase4.5e` → `0.10.4-phase4.5e` (PATCH; additive Metadata
+  field only). New `MULTI_CLASS_SHARE_ALLOWLIST: frozenset[str]` of
+  7 tickers with full Damodaran-anchored provenance docstring +
+  BRK-B caveat note + expansion-gate procedure.
+- `compute/ingest/fundamentals.py` — `_FALLBACK_STATS` dict gains
+  `dimensional_override` key; `reset_fallback_stats()` +
+  `get_fallback_stats()` cover the new counter. New `elif` branch
+  in `_build_snapshot` fires when ticker is in the allowlist AND
+  primary returned a PLAUSIBLE value (not None, not too low) AND
+  the rest of the snapshot looks healthy. Inside the branch: call
+  `_fetch_shares_from_per_filing_xbrl` (same function PR #182
+  introduced for the STZ None-trigger path — reused, not
+  duplicated), compare summed vs primary, override + increment
+  counter + log INFO if `summed > primary`.
+- `compute/main.py` — read the new counter from
+  `get_shares_fallback_stats()`, log it alongside the existing
+  pair, wire to `Metadata.shares_fallback_dimensional_override_count`.
+- `compute/output/schemas.py` — new
+  `Metadata.shares_fallback_dimensional_override_count: int | None`
+  with full docstring (disjoint from `triggered_count`, expected
+  steady-state firing rate 6-7).
+
+**Frontend lockstep** (schema-triple per §Conventions):
+
+- `frontend/lib/types.ts` — mirrors the new optional field.
+- `frontend/lib/schema-snapshot.json` — regenerated via
+  `python -m compute.output.schema_check --update-snapshot`;
+  schema check passes.
+
+**Test pin** (`tests/test_ingest/test_fundamentals.py`):
+
+7 new offline tests covering: (a) V Class A → A+B+C override fires;
+(b) BRK-B Class A → A+B naive sum override (with docstring note on
+14% residual); (c) STZ-like edge where summed ≈ primary (override
+fires per Damodaran 0% rule — any positive delta wins); (d) AAPL
+NOT in allowlist → peek is never called; (e) defensive: summed <
+primary → no override (guards against bad XBRL); (f) ERIE-style
+too-low primary → hits existing None / too_low branch, NOT the new
+dimensional branch; (g) `get_fallback_stats()` returns all 3 keys
+correctly after reset. Plus `tests/test_config.py` schema-version
+pin update `0.10.3 → 0.10.4` AND a new
+`test_multi_class_share_allowlist_membership` pin (catches
+accidental removal / addition of a ticker without the EPS cross-
+check verification step).
+
+**Allowlist verification** (edgar-debugger Mode B 2026-05-25):
+
+EPS cross-check on production `frontend/public/data/stocks/<TICKER>.json`
+(no live network needed):
+- V: 469M extracted → 5.4B true (4.5x undercount); calc EPS $47.38 vs
+  reported $10.50 ✓
+- NWS / NWSA: 561M → 877M (1.56x); same CIK confirmed ✓
+- STZ: None-trigger path already handles (existing PR #182) ✓
+- FOX / FOXA: 443M → 985M (2.2x); same CIK confirmed ✓
+- BRK-B: 1.46M → 2.14B naive sum (1300x improvement; ~14% residual
+  deferred) ✓
+- GOOG / GOOGL: extracted 12.12B = 99.3% of known 12.2B total →
+  companyfacts works correctly, NOT in allowlist
+- WBD: single-class Series A → NOT in allowlist
+- BF.A / BF.B / DISH / PARA: NOT in S&P 500 universe → irrelevant
+
+**ZERO behavior change for non-allowlist tickers** — composite /
+risk_flags / fair_price / top5 rotation unchanged for the 495 other
+S&P 500 tickers. The 7 allowlist tickers will see their
+`shares_outstanding` corrected (V/NWS/NWSA/FOX/FOXA/BRK-B), which
+flows downstream to `market_cap` + `pe_ratio_ttm` + fair-price
+ensemble — meaning some Top-N rank moves are likely. STZ unchanged
+(already on the None-trigger path).
+
+**Expected Metadata fingerprint** (post first cron after merge):
+- `shares_fallback_triggered_count` ≈ 1-3 (STZ + ERIE existing)
+- `shares_fallback_too_low_count` ≈ 1 (ERIE)
+- `shares_fallback_dimensional_override_count` ≈ 6 (V + NWS + NWSA
+  + FOX + FOXA + BRK-B; STZ may not appear here because the None-
+  trigger path captures it first)
+
+**Deferred follow-ups** (not in this PR):
+- BRK-B Class A 1500x weighting — Q3 2026-08-19 cohort audit gate.
+- PR2c — `cross_source_disagreement_severe` flag (the OTHER half of
+  Issue #248, blocked on cron-#4 histogram + methodology Mode B
+  verdict on severe threshold 75 / 100 / 150%).
+- IBKR NI-attribution issue (edgar-debugger surfaced, low priority,
+  separate from PR2b scope).
+
