@@ -44,6 +44,12 @@ import pandas as pd
 
 from compute import config
 from compute.ingest.cross_source import (
+    BUCKET_KEYS as CROSS_SOURCE_BUCKET_KEYS,
+)
+from compute.ingest.cross_source import (
+    bucket_delta as cross_source_bucket_delta,
+)
+from compute.ingest.cross_source import (
     validate_market_cap as cross_source_validate_market_cap,
 )
 from compute.ingest.fundamentals import (
@@ -51,6 +57,12 @@ from compute.ingest.fundamentals import (
     FundamentalsSnapshot,
     fetch_fundamentals,
     fetch_fundamentals_history,
+)
+from compute.ingest.fundamentals import (
+    get_fallback_stats as get_shares_fallback_stats,
+)
+from compute.ingest.fundamentals import (
+    reset_fallback_stats as reset_shares_fallback_stats,
 )
 from compute.ingest.prices import fetch_prices, fetch_spy_benchmark
 from compute.ingest.universe import get_sp500_constituents
@@ -714,6 +726,10 @@ def run_weekly_compute() -> int:
     )
     snapshots: dict[str, FundamentalsSnapshot | None] = {}
     fundamentals_latency: dict[str, float] = {}
+    # Issue #246 PR2a (0.10.3-phase4.5e) — reset Rule 18 shares-fallback
+    # counters before the fetch loop so this run's counts start at 0.
+    # Read back via ``get_shares_fallback_stats()`` after the loop.
+    reset_shares_fallback_stats()
     with ThreadPoolExecutor(max_workers=config.EDGAR_MAX_WORKERS) as ex:
         futures = {
             ex.submit(_fundamentals_one, r["ticker"], str(r.get("cik") or "")): r["ticker"]
@@ -1324,6 +1340,18 @@ def run_weekly_compute() -> int:
     # cron's firing rate (gates the follow-up median-exclusion PR per
     # methodology-scientist Mode B 2026-05-21) is visible at-a-glance.
     extreme_estimate_majority_count: int = 0
+    # Issue #248 PR2a (0.10.3-phase4.5e) — Rule 18 observability for the
+    # cross-source market-cap validator. Counter + histogram + per-ticker
+    # delta all populated from the validator's tuple-return refactor
+    # (`compute/ingest/cross_source.validate_market_cap` now returns
+    # ``(disagreement: bool, delta: float | None)``). Histogram buckets
+    # init to zero across all 9 keys so the schema-snapshot key set is
+    # stable even on a no-fire run.
+    cross_source_disagreement_count: int = 0
+    cross_source_delta_histogram: dict[str, int] = {
+        key: 0 for key in CROSS_SOURCE_BUCKET_KEYS
+    }
+    cross_source_delta_by_ticker: dict[str, float | None] = {}
     # Issue #67 — Rule 18 observability surface for sector-adjusted CoE.
     # Both counts are computed on EVERY cron regardless of USE_SECTOR_COE
     # so the delta (flat-10% vs per-sector) is observable before the flag
@@ -1450,19 +1478,28 @@ def run_weekly_compute() -> int:
         ):
             valuation_warnings.append("manipulation_triple_flag")
 
-        # Cross-source market-cap validator (PR 4b §1, ANNOTATE-only).
-        # Compares SEC-derived market cap (shares × current_price) vs
-        # yfinance .info marketCap. Delta > 5% surfaces as
-        # ``cross_source_disagreement``. Catches yfinance scraper drift
-        # (pre-split share counts, intraday vs EOD price snapshots, M&A
-        # ticker rotation). See compute/ingest/cross_source.py +
-        # `.claude/skills/phase-4/defense-infrastructure/PLAN.md` §1.
-        if cross_source_validate_market_cap(
+        # Cross-source market-cap validator (PR 4b §1 + PR2a Issue #248
+        # tuple-return refactor 0.10.3). Compares SEC-derived market cap
+        # (shares × current_price) vs yfinance .info marketCap. Delta > 5%
+        # surfaces as ``cross_source_disagreement`` annotate. Catches
+        # yfinance scraper drift (pre-split share counts, intraday vs EOD,
+        # M&A ticker rotation) AND multi-class XBRL extraction failures
+        # (V/Visa Class A-only, FOXA, NWS/NWSA — issue #248). The delta
+        # is now ALSO recorded per-ticker (StockDetail.cross_source_delta)
+        # and aggregated into a universe histogram
+        # (Metadata.cross_source_delta_histogram) for PR2b severe-threshold
+        # calibration per methodology-scientist Mode B verdict 2026-05-25.
+        disagreement, csd_delta = cross_source_validate_market_cap(
             ticker=ticker,
             snap=snap,
             current_price=current_price,
-        ) and "cross_source_disagreement" not in valuation_warnings:
-            valuation_warnings.append("cross_source_disagreement")
+        )
+        cross_source_delta_by_ticker[ticker] = csd_delta
+        cross_source_delta_histogram[cross_source_bucket_delta(csd_delta)] += 1
+        if disagreement:
+            cross_source_disagreement_count += 1
+            if "cross_source_disagreement" not in valuation_warnings:
+                valuation_warnings.append("cross_source_disagreement")
 
         # PR 4.5b §1 — restatement_history annotate. 10-K/A or 10-Q/A
         # filings in the trailing 5 years from SEC EDGAR. Hennes-Leone-
@@ -1796,6 +1833,7 @@ def run_weekly_compute() -> int:
             entered_top5=ticker in entered,
             exited_top5=ticker in exited,
             form4_diagnostics=form4_diagnostics.get(ticker),
+            cross_source_delta=cross_source_delta_by_ticker.get(ticker),
         )
         write_stock_detail(detail, config.DATA_DIR)
         detail_count += 1
@@ -1815,6 +1853,20 @@ def run_weekly_compute() -> int:
         prices_by_ticker=prices_by_ticker,
     )
     logger.info("MoS trailing IC smoke: %s", mos_ic)
+
+    # Issue #246 PR2a (0.10.3-phase4.5e) — read the universe-wide
+    # shares-fallback counters that accumulated inside
+    # ``_build_snapshot`` calls during the threaded fundamentals fetch
+    # loop. Lock acquired by ``get_fallback_stats()`` so this returns a
+    # consistent snapshot even if the loop is somehow still running.
+    shares_fallback_stats = get_shares_fallback_stats()
+    shares_fallback_triggered_count = shares_fallback_stats["triggered"]
+    shares_fallback_too_low_count = shares_fallback_stats["too_low"]
+    logger.info(
+        "shares_outstanding fallback summary: triggered=%d, of which too_low=%d",
+        shares_fallback_triggered_count,
+        shares_fallback_too_low_count,
+    )
 
     meta = Metadata(
         version=config.SCHEMA_VERSION,
@@ -1870,6 +1922,10 @@ def run_weekly_compute() -> int:
         value_trap_risk_count_with_sector_coe=(
             value_trap_risk_count_with_sector_coe
         ),
+        cross_source_disagreement_count=cross_source_disagreement_count,
+        cross_source_delta_histogram=cross_source_delta_histogram,
+        shares_fallback_triggered_count=shares_fallback_triggered_count,
+        shares_fallback_too_low_count=shares_fallback_too_low_count,
         form4_enabled=False,
         form4_coverage_pct=(
             round(
