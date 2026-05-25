@@ -351,6 +351,90 @@ AGENTS.md substance UNCHANGED.
 
 ---
 
+## PR (this PR) — Animation polish PR 3: skeleton loaders + @keyframes (in flight, 2026-05-25)
+
+Third (and final base-tier) PR of the post-LedgerCraft animation
+polish series. Adds the project's first `@keyframes` declarations
+(none existed prior to this PR) for skeleton-loading shimmer + image
+fade-in. Frontend-only; zero new deps, zero schema / Python /
+scoring / valuation / output JSON change.
+
+**LedgerCraft compliance**: shimmer runs at 1.5s linear (loading-
+state convention, not the 200ms transition budget — different
+animation class); fade-in matches the 200ms `ease-out` budget;
+`prefers-reduced-motion: reduce` guard suppresses both and falls
+back to static slate-200 / slate-800 placeholder blocks (still
+visible as loading cues, just non-animated).
+
+**The 5 edits across 4 files**:
+
+- **C1** `tailwind.config.ts` `theme.extend` — register the
+  `shimmer` + `fade-in` keyframes + `.animate-shimmer` +
+  `.animate-fade-in` animation utility classes so they're available
+  as Tailwind classes. Pure config addition — no existing tokens
+  modified.
+- **C2** `app/globals.css` (end of file, after the soft-color
+  overrides) — `@keyframes shimmer` (background-position sweep
+  -200% → +200%) + `@keyframes fade-in` (opacity 0 → 1) +
+  `.animate-shimmer` light + `.dark .animate-shimmer` dark base
+  gradient + `prefers-reduced-motion` guard. Light gradient uses
+  slate-200 base + slate-100 highlight; dark uses slate-800 +
+  slate-700 (preserves visual distinguishability against the
+  slate-950 dark canvas).
+- **C3** `PriceHistoryChart.tsx:118-124` — loading state replaced
+  from a centered text "Loading price history…" to a 4-block
+  shimmer skeleton (headline + change row + period selector + chart
+  canvas). Wrapped in `aria-busy + aria-live="polite"` with a
+  `sr-only` span so screen readers still hear the loading announcement.
+  Reduces perceived load time + layout shift (the skeleton roughly
+  matches the post-load layout shape).
+- **C4** `StockLogo.tsx:80-88` — `imgStyle` gains
+  `animation: 'fade-in 200ms ease-out'`. The Parqet SVG logo now
+  fades in on mount instead of flashing in from nothing. Typical
+  Parqet SVG load is < 50ms (cached) so the user sees the image
+  appear mid-animation; for slower loads, the element opacity
+  animates against white-bg-border while the SVG arrives.
+- **C5** `StockLogo.tsx:57-72` — `fallbackStyle` (the deterministic
+  letter-avatar) also gains the fade-in animation. When the Parqet
+  img errors and `setFailed(true)` swaps to the letter-avatar, the
+  swap reads as a smooth fade-in instead of a hard pop. Visual
+  symmetry with the img path.
+
+**Reduced-motion guard semantics**:
+- `.animate-shimmer` → `animation: none` + static slate-200 (light)
+  / slate-800 (dark) background. Skeleton STILL communicates
+  "loading" — just no motion.
+- `.animate-fade-in` → `animation: none`. Element appears at full
+  opacity immediately. The StockLogo + skeleton blocks render
+  instantly with no animation cycle. Hard-tested locally by
+  toggling Chrome DevTools "Emulate CSS prefers-reduced-motion".
+
+**Out of scope (deferred to follow-ups if user requests)**:
+- Skeleton states on RankingTable / detail page chrome — those are
+  STATICALLY GENERATED (no async client-side load) so no skeleton
+  is needed; data is on the wire at first paint
+- Number tickup animation on score changes — different scope
+  (deterministic recomputation, not an async load)
+- ScoreBadge / MoSBadge / PillarRadarChart entrance animations —
+  decorative per LedgerCraft restraint (covered already in PR 1
+  out-of-scope list)
+- ThemeToggle icon crossfade / body color cross-fade — same
+  permanent out-of-scope as PR 1 + PR 2
+
+Frontend-only PR. Branch from latest `main` (`e23861af`, includes
+PR #251 = animation polish PR 2). PHASE_STATUS_INFLIGHT.md side-file
+pattern (PR #237) satisfies §Conventions lockstep — CLAUDE.md /
+AGENTS.md substance UNCHANGED.
+
+**Series progress**: PR 1 (#250) + PR 2 (#251) + PR 3 (this) closes
+the 3-tier animation polish roadmap. Total: 11 + 13 + 5 = 29 edits
+across 9 files. Zero deps added; zero bundle-size impact (CSS
++ ~600 bytes uncompressed). Optional Tier 3 (Framer Motion page
+transitions ~50KB) deliberately NOT pursued — LedgerCraft accountant
+aesthetic doesn't reward page-level motion.
+
+---
+
 ## Merged (awaiting housekeeping move to CLAUDE.md)
 
 ## PR #241 — Simulate Parts 5+6+7: wire `QR_SKIP_OSAP` + `QR_SKIP_CROSS_SOURCE` + timeout-minutes 45→90 backstop (merged 2026-05-24, `e9d7836`)

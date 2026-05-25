@@ -69,6 +69,9 @@ export function StockLogo({
       flexShrink: 0,
       letterSpacing: '-0.02em',
       userSelect: 'none',
+      // Fade-in on mount — smooths the fallback transition when the
+      // Parqet img errors and the letter-avatar swaps in.
+      animation: 'fade-in 200ms ease-out',
     };
     return (
       <span aria-hidden="true" style={fallbackStyle}>
@@ -85,6 +88,11 @@ export function StockLogo({
     flexShrink: 0,
     border: '1px solid rgb(226 232 240)',
     background: 'white',
+    // Fade-in on mount — smooths the logo reveal when the Parqet
+    // SVG loads (typical case: cached, < 50ms). The 200ms easing
+    // matches the LedgerCraft animation budget; reduced-motion
+    // guard in globals.css disables the animation entirely.
+    animation: 'fade-in 200ms ease-out',
   };
   return (
     <img

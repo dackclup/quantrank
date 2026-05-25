@@ -38,6 +38,29 @@ const config: Config = {
         // Modal / drawer / dropdown — FilterDrawer, sort-menu popover.
         overlay: '0 12px 24px -6px rgb(15 23 42 / 0.12), 0 4px 8px -4px rgb(15 23 42 / 0.06)',
       },
+      // PR 3 animation polish (post-LedgerCraft) — skeleton shimmer for
+      // async-loading data placeholders + fade-in for image / fallback
+      // mount. Keyframe declarations live in `app/globals.css` so the
+      // `.animate-shimmer` background gradient + dark-variant + reduced-
+      // motion guard can co-locate with the keyframe. Tailwind registers
+      // the utility class names here. Durations match the LedgerCraft
+      // ≤ 200ms budget for functional transitions; shimmer runs at 1.5s
+      // (loading-state convention — fast enough to feel "loading", slow
+      // enough to be calming).
+      keyframes: {
+        shimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+        'fade-in': {
+          from: { opacity: '0' },
+          to: { opacity: '1' },
+        },
+      },
+      animation: {
+        shimmer: 'shimmer 1.5s linear infinite',
+        'fade-in': 'fade-in 200ms ease-out',
+      },
     },
   },
   plugins: [],

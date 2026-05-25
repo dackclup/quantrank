@@ -116,9 +116,21 @@ export function PriceHistoryChart({
   }, [chartData]);
 
   if (loading) {
+    // Skeleton placeholder — shimmer blocks roughly match the layout
+    // shipped after load (current-price headline + change indicator +
+    // period selector + chart canvas). Visual continuity reduces
+    // layout shift when the data arrives. The `sr-only` span keeps
+    // the loading state announceable to screen readers; `aria-busy`
+    // + `aria-live="polite"` cue the same to assistive tech. Static
+    // fallback for reduced-motion users handled by the globals.css
+    // `@media (prefers-reduced-motion: reduce)` guard.
     return (
-      <div className="flex h-64 items-center justify-center text-sm text-slate-400 dark:text-slate-500">
-        Loading price history…
+      <div className="space-y-3" aria-busy="true" aria-live="polite">
+        <span className="sr-only">Loading price history…</span>
+        <div className="h-7 w-32 animate-shimmer rounded-sm" />
+        <div className="h-4 w-24 animate-shimmer rounded-sm" />
+        <div className="h-7 w-full animate-shimmer rounded-sm" />
+        <div className="h-64 w-full animate-shimmer rounded-sm" />
       </div>
     );
   }
