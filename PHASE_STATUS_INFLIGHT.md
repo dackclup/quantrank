@@ -98,7 +98,54 @@ keeps growing/draining as PRs cycle.
 
 ## In flight (current)
 
-## PR (this PR) — Doc-staleness sweep: cron schedule Sun→Mon-Fri (4 files) + subagent count 15→18 + housekeep PR #241+#242 → Merged (in flight, 2026-05-24)
+## PR (this PR) — EMERGENCY: cron-rankings.yml add `FORM4_FETCH_SKIP=1` to unblock 2h30m timeout (in flight, 2026-05-25)
+
+`compute-rankings.yml` manual `workflow_dispatch` cancelled at the
+150m `timeout-minutes` ceiling (2026-05-25 00:13 UTC). Production
+data ~44h stale (last successful chore commit `9015748` Sat
+2026-05-23 03:38 UTC).
+
+**`incident-commander` session-8 verdict**: classification **(δ)
+budget exhausted, NOT code regression**. PR #238's `filing.xml()`
+cache-hit invariant verified intact against vendored edgartools
+5.31.5 source (load-bearing-correct, ~lxml-find cost only). Root
+cause: 150m timeout set in Phase 4g for 4-loop reality; PR #205
+added Form-4 (5th SEC EDGAR loop, +20-30m cold) 12 days ago
+without bumping the budget. Cache eviction over 44h Fri→Sun gap
+made all 5 cold simultaneously → > 150m.
+
+**Path B mitigation** (user-authorized): add `FORM4_FETCH_SKIP: "1"`
+to workflow-level `env:` block in `.github/workflows/compute-rankings.yml`.
+Form-4 fetch is observability-only (`form4_enabled=False`,
+`_FORM4_FLAGS_ENABLED=False`) so skipping has ZERO scoring impact —
+composite + risk_flags + rankings + per-stock JSON all identical.
+`Metadata.form4_*` fields coerce to None for this run (acceptable;
+Q3 cohort-audit gate 2026-08-19 has plenty of subsequent crons to
+repopulate).
+
+Expected: cron completes in 12-25m on warm partial cache; up to
+~90m worst-case if fundamentals/Tier-2 caches are ALSO cold (still
+under 150m).
+
+**Durable follow-ups** (NOT in this PR — separate sessions):
+- `performance-engineer` issue: rebaseline `timeout-minutes` against
+  5-loop cold-cache reality OR refactor to off-cycle pre-cache
+- Cache-restore canary step (size + age per cache dir, emit before
+  fetch — surfaces cache eviction in 30s instead of after 150m)
+- Per-loop wall-clock budget in Metadata (parity with existing
+  `fundamentals_latency_p95_seconds` — add for tier2 / form4 / OSAP)
+- `workflow_dispatch.inputs.*_skip` UI controls so operator can
+  mitigate without YAML edit
+- After fresh data lands: REVERT this env-var (Form-4 is the source
+  for Phase 4.5e PR 5 weight-promotion firing-rate observation)
+
+CI workflow YAML change ONLY (single env-var line + inline rationale
+comment). PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions
+lockstep.
+
+---
+
+## PR #243 — Doc-staleness sweep: cron schedule Sun→Mon-Fri (4 files) + subagent count 15→18 + housekeep PR #241+#242 → Merged (merged 2026-05-25, `af1079c`)
 
 The user called out that I repeatedly stated "cron Sun 22:00 UTC" in
 session 7 summaries; the actual `.github/workflows/compute-rankings.yml`
