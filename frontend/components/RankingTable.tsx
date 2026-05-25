@@ -241,7 +241,34 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
         onClick={() => onSort(key)}
       >
         {label}
-        <span className="ml-1 text-slate-400 dark:text-slate-500">{active ? (sortDir === 'asc' ? '▲' : '▼') : <span aria-hidden="true" className="text-slate-300 dark:text-slate-700">↕</span>}</span>
+        <span className="ml-1 inline-block text-slate-400 dark:text-slate-500" aria-hidden="true">
+          {active ? (
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 10 10"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              className={`transition-transform duration-150 ${sortDir === 'desc' ? 'rotate-180' : ''}`}
+            >
+              <polyline points="2 3 5 7 8 3" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          ) : (
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 10 10"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              className="text-slate-300 opacity-60 dark:text-slate-700"
+            >
+              <polyline points="2 3 5 5 8 3" strokeLinecap="round" strokeLinejoin="round" />
+              <polyline points="2 7 5 5 8 7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          )}
+        </span>
       </th>
     );
   };
@@ -253,7 +280,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
         <button
           type="button"
           onClick={() => setDrawerOpen(true)}
-          className="inline-flex items-center gap-2 rounded-sm border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+          className="inline-flex items-center gap-2 rounded-sm border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition-colors duration-150 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
         >
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
             <path d="M2 4h12M4 8h8M6 12h4" strokeLinecap="round" />
@@ -411,7 +438,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
           <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
             {pageRows.map((row) => {
               return (
-                <tr key={row.ticker} className="odd:bg-white even:bg-slate-100 hover:bg-slate-200 dark:odd:bg-slate-900 dark:even:bg-slate-900/50 dark:hover:bg-slate-800">
+                <tr key={row.ticker} className="transition-colors duration-100 odd:bg-white even:bg-slate-100 hover:bg-slate-200 dark:odd:bg-slate-900 dark:even:bg-slate-900/50 dark:hover:bg-slate-800">
                   <td className="px-3 py-2 tabular-nums text-slate-700 dark:text-slate-300">{row.rank}</td>
                   <td className="px-3 py-2 font-mono font-semibold text-slate-900 dark:text-slate-100">
                     <Link
@@ -448,7 +475,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
           return (
             <li
               key={row.ticker}
-              className="min-h-[112px] rounded border border-slate-200 bg-white hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/50"
+              className="min-h-[112px] rounded border border-slate-200 bg-white transition-colors duration-100 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/50"
             >
               <Link
                 href={`/stock/${row.ticker}/`}

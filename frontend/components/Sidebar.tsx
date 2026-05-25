@@ -92,7 +92,7 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose
 
       <aside
         aria-label="Primary navigation"
-        className={`fixed inset-y-0 left-0 z-40 flex flex-col border-r border-slate-200 bg-white transition-transform duration-200 dark:border-slate-800 dark:bg-slate-950 md:sticky md:top-0 md:h-screen md:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-40 flex flex-col border-r border-slate-200 bg-white [transition:transform_200ms_ease-out,width_200ms_ease-out] dark:border-slate-800 dark:bg-slate-950 md:sticky md:top-0 md:h-screen md:translate-x-0 ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         } ${collapsed ? 'md:w-16' : 'w-64 md:w-60'}`}
       >
@@ -124,7 +124,7 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className={`transition-transform ${collapsed ? 'rotate-180' : ''}`}
+              className={`transition-transform duration-200 ${collapsed ? 'rotate-180' : ''}`}
               aria-hidden="true"
             >
               <polyline points="15 18 9 12 15 6" />
