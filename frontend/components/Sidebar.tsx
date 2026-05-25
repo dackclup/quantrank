@@ -80,15 +80,21 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose
 
   return (
     <>
-      {/* Mobile overlay backdrop */}
-      {mobileOpen && (
-        <button
-          type="button"
-          aria-label="Close navigation"
-          onClick={onMobileClose}
-          className="fixed inset-0 z-30 bg-slate-900/40 md:hidden"
-        />
-      )}
+      {/* Mobile overlay backdrop — always-mounted opacity toggle (not
+          conditional render) so the fade-in/out animates instead of
+          snap-appearing. Mirrors the FilterDrawer backdrop pattern.
+          tabIndex flips to -1 when closed so the invisible backdrop
+          can't trap keyboard focus. */}
+      <button
+        type="button"
+        aria-label="Close navigation"
+        onClick={onMobileClose}
+        aria-hidden={!mobileOpen}
+        tabIndex={mobileOpen ? 0 : -1}
+        className={`fixed inset-0 z-30 bg-slate-900/40 transition-opacity duration-200 md:hidden ${
+          mobileOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
+        }`}
+      />
 
       <aside
         aria-label="Primary navigation"

@@ -313,7 +313,7 @@ export function FairPriceBarChart({
             </>
           );
           return (
-            <li key={r.key} className="flex items-center gap-3 px-3 py-3 sm:px-4">
+            <li key={r.key} className="flex items-center gap-3 px-3 py-3 transition-colors duration-100 hover:bg-slate-50 dark:hover:bg-slate-800/30 sm:px-4">
               <span
                 className={`inline-flex h-8 w-1 shrink-0 rounded-sm ${v.dot}`}
                 aria-hidden="true"

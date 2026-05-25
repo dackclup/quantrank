@@ -200,7 +200,7 @@ export function Tier2EventCard({
               </span>
               {row.url && (
                 <a
-                  className="inline-flex items-center text-xs text-slate-500 underline-offset-2 hover:text-slate-900 hover:underline dark:text-slate-400 dark:hover:text-slate-100"
+                  className="inline-flex items-center text-xs text-slate-500 underline-offset-2 transition-colors duration-150 hover:text-slate-900 hover:underline dark:text-slate-400 dark:hover:text-slate-100"
                   href={row.url}
                   rel="noopener noreferrer"
                   target="_blank"
