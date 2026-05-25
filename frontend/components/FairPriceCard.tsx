@@ -94,7 +94,7 @@ export default function FairPriceCard({
           <dt className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
             Median fair
           </dt>
-          <dd className="mt-1 text-lg tabular-nums text-slate-900 dark:text-slate-100">
+          <dd className="mt-1 font-mono text-lg font-semibold tabular-nums leading-none text-slate-900 dark:text-slate-100">
             {dataQualityIssue ? '—' : formatFairPrice(ensemble.median)}
           </dd>
         </div>
@@ -103,7 +103,7 @@ export default function FairPriceCard({
             Margin of safety
           </dt>
           <dd
-            className={`mt-1 text-lg tabular-nums ${mosColorClass(ensemble.mos_pct)}`}
+            className={`mt-1 font-mono text-lg font-semibold tabular-nums leading-none ${mosColorClass(ensemble.mos_pct)}`}
             title={mos.tooltip ?? undefined}
           >
             {mos.display}
@@ -113,7 +113,7 @@ export default function FairPriceCard({
           <dt className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
             Max (ex-outliers)
           </dt>
-          <dd className="mt-1 text-lg tabular-nums text-slate-700 dark:text-slate-300">
+          <dd className="mt-1 font-mono text-lg font-semibold tabular-nums leading-none text-slate-700 dark:text-slate-300">
             {dataQualityIssue ? '—' : formatFairPrice(ensemble.max)}
           </dd>
         </div>
@@ -121,7 +121,7 @@ export default function FairPriceCard({
           <dt className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
             Tangible BVPS
           </dt>
-          <dd className="mt-1 text-lg tabular-nums text-slate-700 dark:text-slate-300">
+          <dd className="mt-1 font-mono text-lg font-semibold tabular-nums leading-none text-slate-700 dark:text-slate-300">
             {tangibleBookValue !== null
               ? formatFairPrice(tangibleBookValue)
               : '—'}

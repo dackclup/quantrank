@@ -73,7 +73,7 @@ export default function StockDetailPage({
     <article className="space-y-8">
       <Link
         href="/"
-        className="inline-block text-sm text-slate-500 hover:text-slate-900"
+        className="inline-block text-sm text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
       >
         ← Back to ranking
       </Link>
@@ -187,7 +187,7 @@ export default function StockDetailPage({
       </header>
 
       <section>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
           Price (1y)
         </h2>
         {detail.has_history ? (
@@ -236,7 +236,7 @@ export default function StockDetailPage({
       />
 
       <section>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
           Raw fundamentals (SEC EDGAR)
         </h2>
         <RawMetricsTable metrics={detail.raw_metrics} />
@@ -288,9 +288,9 @@ export default function StockDetailPage({
       </section>
 
       <p className="text-xs text-slate-400 dark:text-slate-500">
-        Phase 3c — composite is the 8-pillar weighted score over quality,
-        value, growth, momentum, health, profitability, technical, and risk.
-        Sentiment + ML pillars land in Phases 5-6; until then their weight
+        Composite is the 8-pillar weighted score over quality, value, growth,
+        momentum, health, profitability, technical, and risk. Sentiment + ML
+        pillars are reserved for a later phase; until then their weight
         redistributes pro-rata. Fair price is the median of 6 valuation
         methods (Graham, P/E / P/B / EV-EBITDA multiples, RIM, DCF) with
         outliers above 5× current price excluded from the max. Risk-overlay
