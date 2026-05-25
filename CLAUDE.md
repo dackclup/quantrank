@@ -49,6 +49,7 @@ design-system spec.
 | `.claude/agents/` | 18 project-specific subagents in 4 tiers + 1 data-correctness reviewer: **Tier 1 Core** (quantrank-reviewer · schema-sentinel · defense-layer-auditor · edgar-debugger · **stock-detail-auditor**), **Tier 2 Lifecycle** (security-reviewer · frontend-design-reviewer · **vercel-preview-auditor** · release-captain · phase-coordinator), **Tier 3 Specialized** (test-engineer · methodology-scientist · **literature-searcher** · performance-engineer · dependency-auditor), **Tier 4 Operations** (docs-reviewer · **ci-triage-engineer** · incident-commander). Spawned via the `Agent` tool with a separate context window; see [`.claude/agents/README.md`](.claude/agents/README.md) for the routing matrix + 6 coordination flows (pre-push gate / release ladder / new-defense flow / incident response / review escalation / quarterly audit). |
 | `.claude/hooks/` | Bash hook scripts wired by `.claude/settings.json`. 3 hooks total: `log-bash.sh` (PostToolUse Bash → append every command to gitignored `.claude/session.log`) + `schema-reminder.sh` (PostToolUse Write/Edit → inject reminder when any file in the Pydantic↔TS↔snapshot triple is touched) + `delegate-first.sh` (UserPromptSubmit → inject orchestrator-role reminder every user turn so the main agent defaults to spawning sub-agents instead of doing work inline). All fail-open (missing `jq` / unwritable FS / empty stdin → exit 0). 5-second timeout each. |
 | `.claude/worktrees/` | Harness-managed isolation dirs for subagents spawned via the `Agent` tool with `isolation: "worktree"`. Per-session, transient, **gitignored** (added 2026-05-22 post the 3-PR fan-out so they don't show up as untracked on the main worktree's `git status`). Never commit them. |
+| `docs/agents/` | Per-repo configuration consumed by the vendored mattpocock engineering skills (`to-issues`, `to-prd`). Scaffolded 2026-05-25 via `mattpocock-setup-harness`. 2 files: `issue-tracker.md` (GitHub MCP conventions) + `domain.md` (the upstream-instruction → QuantRank-multi-file-CONTEXT-analog mapping). See §Agent skills below for the index. |
 
 ## Commands
 
@@ -2011,6 +2012,33 @@ of re-discovering the pattern.
 See [`PHASE_STATUS.md`](PHASE_STATUS.md) for the canonical
 chronological tracker.
 
+## Agent skills
+
+Per-repo configuration consumed by the vendored mattpocock engineering
+skills (`to-issues`, `to-prd`, et al.). Scaffolded 2026-05-25 via
+`mattpocock-setup-harness`.
+
+### Issue tracker
+
+GitHub Issues at `dackclup/quantrank` via the GitHub MCP server
+(`mcp__github__*` tools — `gh` CLI is not installed in the remote
+execution environment). See [`docs/agents/issue-tracker.md`](docs/agents/issue-tracker.md).
+
+### Domain docs
+
+Single-context. QuantRank's `CONTEXT.md` analog is **multi-file** —
+distributed across CLAUDE.md + docs/METHODOLOGY.md + SKILL.md +
+WORKFLOW.md; the ADR analog is `PHASE_STATUS_INFLIGHT.md` (append-only
+side-file). See [`docs/agents/domain.md`](docs/agents/domain.md) for the
+upstream-instruction-to-QuantRank-file mapping.
+
+### Triage labels
+
+Intentionally NOT scaffolded — the upstream `triage` skill is not
+vendored in QuantRank (skipped at 2026-05-20 base sync), so a triage
+label vocabulary would be dead config. If `triage` is vendored in a
+future sync, re-run `/mattpocock-setup-harness` to add this section.
+
 ## Companion files
 
 - [`AGENTS.md`](AGENTS.md) — cross-tool agent instructions (Copilot /
@@ -2021,4 +2049,9 @@ chronological tracker.
 - [`PHASE_STATUS.md`](PHASE_STATUS.md) — chronological phase tracker
 - [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) — vendor / license
   posture per third-party source
+- [`docs/agents/issue-tracker.md`](docs/agents/issue-tracker.md) — mattpocock
+  skill consumer rules for GitHub Issues access via the GitHub MCP server
+- [`docs/agents/domain.md`](docs/agents/domain.md) — mattpocock skill
+  consumer rules for QuantRank's multi-file CONTEXT analog +
+  PHASE_STATUS_INFLIGHT.md as ADR analog
 - [`.claude/skills/README.md`](.claude/skills/README.md) — skill index
