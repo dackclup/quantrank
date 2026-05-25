@@ -209,3 +209,65 @@ code {
 .ring-red-200 {
   --tw-ring-color: var(--c-neg-ring) !important;
 }
+
+/* ── PR 3 animation polish — skeleton shimmer + fade-in keyframes ──
+ *
+ * The Tailwind utility classes `animate-shimmer` + `animate-fade-in`
+ * are registered in `tailwind.config.ts` theme.extend.animation. The
+ * `@keyframes` declarations + the `.animate-shimmer` background
+ * gradient + the `prefers-reduced-motion` guard all live here so
+ * they're scoped together.
+ *
+ * Why a gradient + background-position keyframe (vs. opacity pulse)?
+ * The sweeping sheen reads as "data is streaming in" instead of
+ * "this whole region is blinking", matching the modern skeleton
+ * convention (LinkedIn / Facebook / Stripe). The base + highlight
+ * stops use slate-200 / slate-100 so the skeleton block is still
+ * distinguishable from the surrounding white card surface.
+ */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgb(226 232 240) 25%,    /* slate-200 base */
+    rgb(241 245 249) 50%,    /* slate-100 highlight */
+    rgb(226 232 240) 75%
+  );
+  background-size: 200% 100%;
+}
+
+.dark .animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgb(30 41 59) 25%,       /* slate-800 base */
+    rgb(51 65 85) 50%,       /* slate-700 highlight */
+    rgb(30 41 59) 75%
+  );
+  background-size: 200% 100%;
+}
+
+/* Reduced-motion guard — disable the shimmer sweep + fade-in for
+ * users with `prefers-reduced-motion: reduce`. Fall back to a static
+ * slate-200 / slate-800 placeholder block so the skeleton STILL
+ * communicates "loading" without the motion. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-shimmer,
+  .animate-fade-in {
+    animation: none !important;
+  }
+  .animate-shimmer {
+    background: rgb(226 232 240);
+  }
+  .dark .animate-shimmer {
+    background: rgb(30 41 59);
+  }
+}
