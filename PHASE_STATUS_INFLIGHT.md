@@ -684,7 +684,7 @@ destination).
 
 ---
 
-## PR (this PR) — PriceHistoryChart tooltip dark-mode readability fix (in flight, 2026-05-25)
+## PR #255 — PriceHistoryChart tooltip dark-mode readability fix (merged 2026-05-25, `bceb5fc`)
 
 User screenshot 2026-05-25 of `/stock/[ticker]` price chart in dark
 mode: the Recharts tooltip date label ("Feb 24, 2026") rendered in
@@ -729,3 +729,105 @@ No schema / Python / scoring / valuation / output JSON change —
 JSX + style-object diff inside one file. Tests unchanged (no
 existing tests on `PriceHistoryChart`; the dark-mode toggle path
 is exercised by `ThemeToggle.tsx`'s upstream production use).
+
+---
+
+## PR (this PR) — Issue #246 ERIE fix: extend `_fetch_shares_from_per_filing_xbrl` trigger to catch implausibly-low primary extraction (in flight, 2026-05-25)
+
+Closes [issue #246](https://github.com/dackclup/quantrank/issues/246).
+
+`stock-detail-auditor` 2026-05-25 audit on production `9015748` flagged
+ERIE with `raw_metrics.shares_outstanding = 2542` (real ~57M). Root
+cause traced by `edgar-debugger` session 2026-05-25: SEC `companyfacts`
+aggregate API filters out *dimensional* facts. ERIE Indemnity files
+Class A (~54.9M) only with a `dei:` share-class dimension and Class B
+(~2,541) without; the aggregate returns Class B only → 2,542 shares
+extracted → market_cap $570K → all 6 valuation methods skip via the
+existing `FAIR_PRICE_DATA_QUALITY_CEILING = $10K/share` TBVPS gate
+→ `data_quality_input_corruption` veto fires correctly. The veto is
+working — but ranking still shows ERIE at #69 / composite 60.42
+because non-valuation pillars don't observe shares_outstanding.
+
+The PR #182 STZ fallback `_fetch_shares_from_per_filing_xbrl`
+(`compute/ingest/fundamentals.py:552-685`) recovers correct shares by
+summing dimensional contexts at `period_instant` from per-filing XBRL.
+BUT the trigger condition was strict `shares is None` (Issue #176 STZ
+signature), so ERIE's non-None 2,542 slipped past → fallback never
+fired. PR1 closes the gap.
+
+**Production code changes** (2 files, ~12 net LOC):
+
+- `compute/config.py` — new `MIN_PLAUSIBLE_SHARE_COUNT: int = 100_000`.
+  Threshold rationale: S&P 500 index floor (~$15B mcap) at the most
+  extreme single-share-price seen on the index (BRK-B ~$500
+  post-50:1-split) implies ≥ 30M shares minimum. 100K is 30× safer
+  than any plausible legitimate value and catches the ERIE
+  dimensional-filter pattern without false-positives on any index
+  member.
+- `compute/ingest/fundamentals.py:774-803` — trigger extended from
+  strict `shares is None` to `shares is None OR shares < MIN_PLAUSIBLE_SHARE_COUNT`.
+  Existing `revenue > 0` + `total_assets > 0` gates preserved.
+  Logger message updated to surface `primary=<None|count>` so the
+  operator can distinguish None-case (STZ signature, PR #182) from
+  too-low-case (ERIE signature, this PR) without re-running a probe.
+
+**Side-effect coverage**:
+
+- **BRK-B**: extracted 1.64M shares — ABOVE the 100K threshold, so
+  fallback does NOT fire. Existing `data_quality_input_corruption`
+  veto stays in place (TBVPS gate fires). Class A → Class B 1500:1
+  conversion is a separate methodology call deferred to a follow-up
+  PR — bundling it here would couple unrelated entity-specific
+  conversion-ratio logic into the generic fix.
+- **V (Visa)**: extracted 469M shares — ABOVE threshold, fallback does
+  NOT fire. V's failure mode is covered by issue #248 PR2a/PR2b
+  (methodology-scientist 2026-05-25 verdict: SPLIT into observability-
+  first + escalation policy per Rule 18 Phase 4h.2 precedent).
+- **FOXA / NWS / NWSA**: ALL above 100K → not covered by this PR;
+  routed to PR2b per `methodology-scientist` Q4 verdict (include in
+  regression fixture for that PR, NOT here).
+
+**Backward-compat note**: ERIE's `risk_flags = ['data_quality_input_corruption']`
+will STOP firing after this PR lands (since shares_outstanding becomes
+plausible). No existing test pins ERIE's veto state (verified via
+`grep -r ERIE tests/` — zero hits). ERIE's rank will shift based on
+the now-valid valuation pillar values; expected behavior.
+
+**Test coverage** — `test-engineer` spawn writes 12 cases to
+`tests/test_ingest/test_fundamentals.py`:
+
+1. Fallback fires when primary returns 2542 (ERIE shape)
+2. Fallback does NOT fire when primary returns 100M (normal universe)
+3. Fallback fires when primary returns None (STZ backward-compat)
+4. Boundary at 99_999 fires
+5. Boundary at 100_000 does NOT fire (strict `<`)
+6. Boundary at 100_001 does NOT fire
+7. Fallback NOT invoked when too-low but revenue=0 (gate preserved)
+8. Fallback NOT invoked when too-low but total_assets=0 (gate preserved)
+9. Log distinguishes None-case vs too-low-case (caplog)
+10. Hypothesis property: fallback fires iff `primary is None or primary < 100_000`
+11. Config constant `MIN_PLAUSIBLE_SHARE_COUNT == 100_000` pin
+12. `@network` ERIE drift-detector — live SEC, recovered shares ≈ 57M
+
+Tests land in a follow-up commit on the same branch (test-engineer
+spawn finishing after the production-code commit).
+
+**Schema impact**: None — fix is in the ingest layer; no new
+`StockDetail` / `Metadata` field. Schema stays at `0.10.2-phase4.5e`.
+
+**No CLAUDE.md / AGENTS.md substance change** — this PR is a focused
+bug fix that doesn't introduce a new invariant, convention, or gotcha
+that future code authors need to remember. The §Gotchas entry for the
+shares-extraction pattern (issue #176 + #182) already covers the
+class of failure; this PR extends an existing fallback's trigger, not
+adds a new mechanism. PHASE_STATUS_INFLIGHT.md side-file satisfies
+the §Conventions "ship with every PR" lockstep rule per PR #237
+convention.
+
+**Sibling issues filed in same audit batch (2026-05-25)**:
+- [#247](https://github.com/dackclup/quantrank/issues/247) NVR
+  scoring-layer DQ gap → `methodology-scientist` Mode B owns
+- [#248](https://github.com/dackclup/quantrank/issues/248) V/Visa
+  cross-source escalation → PR2a + PR2b split per methodology verdict
+- [#249](https://github.com/dackclup/quantrank/issues/249) Rebaseline
+  `compute-rankings.yml` timeout (durable fix for 2026-05-25 P1)

@@ -127,6 +127,19 @@ EXTREME_MAJORITY_THRESHOLD: int = 3
 # than ship nonsense to the UI. See compute/valuation/ensemble.py.
 FAIR_PRICE_DATA_QUALITY_CEILING: float = 10000.0
 
+# Issue #246 — minimum plausible ``shares_outstanding`` for any S&P 500
+# constituent. The index floor (~$15B mcap) at the most extreme single-
+# share price seen on the index (BRK-B ~$500, post-50:1-split) implies
+# ~30M shares minimum; the smallest legitimate count is well above 1M.
+# A 100K floor is 30× safer than any plausible legitimate value and
+# catches the ERIE pattern: SEC ``companyfacts`` aggregate filters out
+# dimensional facts, so multi-class filers (ERIE Class A 54.9M / Class B
+# 2,541; the aggregate returns only Class B → 2,542 shares extracted).
+# Below this threshold, the per-filing XBRL fallback in
+# ``compute/ingest/fundamentals.py:_fetch_shares_from_per_filing_xbrl``
+# is invoked to recover the correct sum across dimensional contexts.
+MIN_PLAUSIBLE_SHARE_COUNT: int = 100_000
+
 # Sector-multiples peer-group floor; below this fall back to global median + flag.
 MULTIPLES_MIN_PEERS: int = 8
 

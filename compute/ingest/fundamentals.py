@@ -760,19 +760,32 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
         if pe is not None:
             period_dates.append(pe)
 
-    # Issue #176 fallback — per-filing XBRL dimensional-fact aggregation
-    # for filers whose share-count facts are reported with share-class
-    # dimensions (STZ Class A / Class B) and therefore filtered out by
-    # the SEC companyfacts aggregate API. Triggers ONLY when the primary
-    # path above returned None AND the rest of the snapshot looks healthy
-    # (revenue + total_assets present) — i.e., the
-    # ``share_count_extraction_missing`` signature shipped in PR #181.
+    # Issue #176 + #246 fallback — per-filing XBRL dimensional-fact
+    # aggregation for filers whose share-count facts are reported with
+    # share-class dimensions (STZ Class A / Class B, ERIE Class A /
+    # Class B) and therefore filtered out by the SEC companyfacts
+    # aggregate API.
+    #
+    # Triggers when the rest of the snapshot looks healthy (revenue +
+    # total_assets present) AND the primary path either returned None
+    # (Issue #176 STZ signature shipped in PR #181) OR returned a value
+    # below ``MIN_PLAUSIBLE_SHARE_COUNT`` (Issue #246 ERIE signature —
+    # the aggregate API returned only Class B's 2,541 shares).
+    # ``MIN_PLAUSIBLE_SHARE_COUNT`` is the S&P-500-floor sanity gate
+    # documented in compute/config.py — see that comment for the
+    # 30× safety margin rationale.
+    #
     # See `_fetch_shares_from_per_filing_xbrl` docstring for the SEC API
     # probe results that motivated this fallback. Graceful-degradation
     # try/except keeps any per-filing fetch failure silent so the upstream
     # annotate keeps firing and ranks don't depend on this fallback path.
+    primary_shares = balance_values.get("shares_outstanding")
+    primary_too_low = (
+        primary_shares is not None
+        and primary_shares < config.MIN_PLAUSIBLE_SHARE_COUNT
+    )
     if (
-        balance_values.get("shares_outstanding") is None
+        (primary_shares is None or primary_too_low)
         and (revenue_val or 0) > 0
         and (balance_values.get("total_assets") or 0) > 0
     ):
@@ -781,9 +794,10 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
             balance_values["shares_outstanding"] = fallback_shares
             logger.info(
                 "shares_outstanding fallback fired for %s/%s — "
-                "per-filing XBRL dimensional aggregation returned %.0f",
+                "primary=%s, fallback=%.0f (per-filing XBRL dimensional aggregation)",
                 ticker,
                 cik,
+                "None" if primary_shares is None else f"{primary_shares:.0f}",
                 fallback_shares,
             )
 
