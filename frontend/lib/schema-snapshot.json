@@ -37,6 +37,16 @@
       "required": true,
       "default": "<required>"
     },
+    "cross_source_delta_histogram": {
+      "type": "dict[str, int] | None",
+      "required": false,
+      "default": null
+    },
+    "cross_source_disagreement_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
     "extreme_estimate_majority_count": {
       "type": "int | None",
       "required": false,
@@ -168,6 +178,16 @@
       "default": false
     },
     "share_count_extraction_missing_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
+    "shares_fallback_too_low_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
+    "shares_fallback_triggered_count": {
       "type": "int | None",
       "required": false,
       "default": null
@@ -383,6 +403,11 @@
       "default": "<required>"
     },
     "composite_score_adjusted": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "cross_source_delta": {
       "type": "float | None",
       "required": false,
       "default": null

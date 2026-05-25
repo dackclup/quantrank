@@ -412,6 +412,52 @@ def test_property_fallback_fires_iff_primary_below_threshold_or_none(primary):
 
 
 # ---------------------------------------------------------------------------
+# _FALLBACK_STATS lifecycle — reset + copy-not-reference (Issue #246 PR2a)
+# ---------------------------------------------------------------------------
+
+
+def test_reset_fallback_stats_zeros_counters():
+    """reset_fallback_stats() must drive both counters to zero regardless of
+    any prior state. Exercises the threading.Lock-guarded write path.
+    """
+    from compute.ingest.fundamentals import (
+        _FALLBACK_STATS,
+        _FALLBACK_STATS_LOCK,
+        get_fallback_stats,
+        reset_fallback_stats,
+    )
+
+    # Put the module-level dict into a non-zero state to make the reset
+    # meaningful (avoids a trivially-passing test when counters happen to
+    # already be 0 from a previous test run in the same process).
+    with _FALLBACK_STATS_LOCK:
+        _FALLBACK_STATS["triggered"] = 7
+        _FALLBACK_STATS["too_low"] = 3
+
+    reset_fallback_stats()
+    assert get_fallback_stats() == {"triggered": 0, "too_low": 0}
+
+
+def test_get_fallback_stats_returns_copy_not_reference():
+    """Mutating the dict returned by get_fallback_stats() must NOT affect the
+    internal module-level counter. get_fallback_stats() returns a shallow copy
+    (``dict(_FALLBACK_STATS)``), not the live dict.
+    """
+    from compute.ingest.fundamentals import get_fallback_stats, reset_fallback_stats
+
+    reset_fallback_stats()
+
+    first = get_fallback_stats()
+    first["triggered"] = 9999  # mutate the returned copy
+
+    second = get_fallback_stats()
+    # Internal state must be unaffected — still 0 from the reset above.
+    assert second == {"triggered": 0, "too_low": 0}
+    # And the two dicts are distinct objects.
+    assert first is not second
+
+
+# ---------------------------------------------------------------------------
 # Config constant drift-detector
 # ---------------------------------------------------------------------------
 

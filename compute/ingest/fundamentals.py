@@ -15,6 +15,7 @@ from __future__ import annotations
 import logging
 import math
 import os
+import threading
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
 from pathlib import Path
@@ -27,6 +28,43 @@ from tenacity import retry, stop_after_attempt, stop_after_delay, wait_exponenti
 from compute import config
 
 logger = logging.getLogger(__name__)
+
+
+# Issue #246 PR2a (0.10.3-phase4.5e) — Rule 18 observability retrofit for
+# the ``_fetch_shares_from_per_filing_xbrl`` fallback trigger extended in
+# PR #253. Counters increment from inside ``_build_snapshot``, which runs
+# under a ThreadPoolExecutor in ``compute/main.py:717`` — hence the lock.
+# Sequential-loop counter pattern used by other Rule-18 surfaces in main.py
+# doesn't apply here because the fallback fires before the snapshot is
+# returned (snapshot doesn't carry per-ticker fallback metadata; adding
+# such a field would pollute the serialized schema).
+#
+# Lifecycle:
+#   - ``reset_fallback_stats()`` BEFORE the fundamentals fetch loop in main.py
+#   - ``get_fallback_stats()`` AFTER the fetch loop to read counters
+#   - counters are NOT reset between successive ``run_weekly_compute`` calls
+#     within the same process; consumer responsibility (main.py calls reset).
+_FALLBACK_STATS_LOCK = threading.Lock()
+_FALLBACK_STATS: dict[str, int] = {"triggered": 0, "too_low": 0}
+
+
+def reset_fallback_stats() -> None:
+    """Reset module-level fallback counters. Call BEFORE the per-ticker
+    fundamentals fetch loop in main.py so the new cron's count starts at 0.
+    """
+    with _FALLBACK_STATS_LOCK:
+        _FALLBACK_STATS["triggered"] = 0
+        _FALLBACK_STATS["too_low"] = 0
+
+
+def get_fallback_stats() -> dict[str, int]:
+    """Return a shallow copy of the module-level fallback counters. Read
+    AFTER the fundamentals fetch loop completes to populate
+    ``Metadata.shares_fallback_triggered_count`` +
+    ``Metadata.shares_fallback_too_low_count``.
+    """
+    with _FALLBACK_STATS_LOCK:
+        return dict(_FALLBACK_STATS)
 
 
 # Initialize EDGAR identity at module import. Failure is fatal — Phase 2
@@ -792,6 +830,13 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
         fallback_shares = _fetch_shares_from_per_filing_xbrl(company, ticker=ticker)
         if fallback_shares is not None:
             balance_values["shares_outstanding"] = fallback_shares
+            # Issue #246 PR2a (0.10.3-phase4.5e) — Rule 18 observability
+            # counter for the universe-wide fallback firing rate. Lock the
+            # increment because _build_snapshot runs under a ThreadPool.
+            with _FALLBACK_STATS_LOCK:
+                _FALLBACK_STATS["triggered"] += 1
+                if primary_too_low:
+                    _FALLBACK_STATS["too_low"] += 1
             logger.info(
                 "shares_outstanding fallback fired for %s/%s — "
                 "primary=%s, fallback=%.0f (per-filing XBRL dimensional aggregation)",

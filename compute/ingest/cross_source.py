@@ -205,8 +205,20 @@ def validate_market_cap(
     *,
     yf_market_cap: float | None = None,
     tolerance: float = config.CROSS_SOURCE_MARKET_CAP_TOLERANCE,
-) -> bool:
-    """Return True if SEC-derived market cap disagrees with yfinance > tolerance.
+) -> tuple[bool, float | None]:
+    """Return ``(disagreement_above_tolerance, delta_fraction_or_None)``.
+
+    Issue #248 PR2a (2026-05-25, schema 0.10.3) — signature changed from
+    ``-> bool`` to ``-> tuple[bool, float | None]`` so downstream
+    observability (``Metadata.cross_source_delta_histogram`` +
+    ``StockDetail.cross_source_delta``) can use the computed delta
+    instead of recomputing or hiding it. The methodology-scientist Mode B
+    verdict (2026-05-25) confirms the existing 5% tolerance + annotate
+    semantics are unchanged; only the second-tuple-element is new. The
+    second element is None when the inputs are insufficient to compute
+    a delta (missing snapshot, missing price, yfinance returned None,
+    or any value non-positive); the first element is False in all those
+    cases.
 
     Parameters
     ----------
@@ -228,31 +240,91 @@ def validate_market_cap(
 
     Returns
     -------
-    bool
-        True iff the two market-cap estimates disagree by more than
-        ``tolerance``. False on any missing input (quiet-skip).
+    tuple[bool, float | None]
+        ``(disagreement, delta)`` where ``disagreement`` is True iff the
+        two market-cap estimates disagree by more than ``tolerance``, and
+        ``delta`` is the absolute relative delta
+        ``|sec_mc - yf_mc| / sec_mc`` (a fraction in ``[0, +inf)``, not
+        a percentage). ``delta`` is None on any missing input — the same
+        quiet-skip conditions that produce ``disagreement = False``.
     """
     if snap is None or snap.shares_outstanding is None:
-        return False
+        return (False, None)
     if snap.shares_outstanding <= 0:
-        return False
+        return (False, None)
     if current_price is None or current_price <= 0:
-        return False
+        return (False, None)
 
     sec_mc = float(snap.shares_outstanding) * float(current_price)
     if sec_mc <= 0:
-        return False
+        return (False, None)
 
     if yf_market_cap is None:
         yf_market_cap = fetch_yfinance_market_cap(ticker)
     if yf_market_cap is None or yf_market_cap <= 0:
-        return False
+        return (False, None)
 
     delta = abs(sec_mc - yf_market_cap) / sec_mc
-    return delta > tolerance
+    return (delta > tolerance, delta)
+
+
+def bucket_delta(delta: float | None) -> str:
+    """Classify a cross-source delta into the observability histogram bucket.
+
+    Issue #248 PR2a (2026-05-25, schema 0.10.3) — used by main.py to
+    populate ``Metadata.cross_source_delta_histogram``. 9 buckets total
+    with boundaries at 5/25/50/75/100/150/200 % (relative deltas
+    expressed as fractions). Buckets are half-open intervals
+    ``[lower, upper)`` — an exact-floor value belongs to the next bucket.
+
+    Symmetric resolution around the 100% boundary is intentional per
+    methodology-scientist Mode B verdict 2026-05-25: PR2b's severe-
+    threshold decision (75 vs 100 vs 150%) will be calibrated from
+    histogram tail mass on the first 0.10.3 cron rather than gut-feel.
+    The ``"unavailable"`` bucket counts validator-skip cases (missing
+    snapshot, missing price, yfinance returned None).
+    """
+    if delta is None:
+        return "unavailable"
+    pct = delta * 100.0
+    if pct < 5.0:
+        return "<5"
+    if pct < 25.0:
+        return "5-25"
+    if pct < 50.0:
+        return "25-50"
+    if pct < 75.0:
+        return "50-75"
+    if pct < 100.0:
+        return "75-100"
+    if pct < 150.0:
+        return "100-150"
+    if pct < 200.0:
+        return "150-200"
+    return ">200"
+
+
+# Drift detector — schema-snapshot guard pins these keys so a bucket-
+# boundary rename / addition / deletion forces a coordinated PR2b
+# decision. If you change BUCKET_KEYS, also update bucket_delta() above,
+# the schema docstring in compute/output/schemas.py, and any consumer
+# (verify-production-output helper, audit comparisons).
+BUCKET_KEYS: tuple[str, ...] = (
+    "<5",
+    "5-25",
+    "25-50",
+    "50-75",
+    "75-100",
+    "100-150",
+    "150-200",
+    ">200",
+    "unavailable",
+)
 
 
 __all__ = [
     "fetch_yfinance_market_cap",
     "validate_market_cap",
+    "bucket_delta",
+    "BUCKET_KEYS",
 ]

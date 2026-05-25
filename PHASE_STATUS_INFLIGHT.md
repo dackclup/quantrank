@@ -831,3 +831,110 @@ convention.
   cross-source escalation → PR2a + PR2b split per methodology verdict
 - [#249](https://github.com/dackclup/quantrank/issues/249) Rebaseline
   `compute-rankings.yml` timeout (durable fix for 2026-05-25 P1)
+
+---
+
+## PR (this PR) — Issue #248 PR2a + #246 Rule 18 retrofit: cross-source observability surface + shares-fallback counter (in flight, 2026-05-25)
+
+Closes the Rule 18 observability gap surfaced by the post-PR-#253
+[methodology-scientist Mode B verdict](https://github.com/dackclup/quantrank/issues/248)
+on issue #248 (V/Visa cross-source escalation). Per the verdict's Q5
+`SPLIT into PR2a (observability) + PR2b (escalation)` decision and
+the Phase 4h.2 forcing precedent (PRs #112 → #118 → #124), this PR
+ships the observability surface FIRST so PR2b's severe-threshold
+decision (75 / 100 / 150 %) can be calibrated against empirical
+1-cron data instead of gut-feel.
+
+**Scope** — locked across 7 grill-me questions (2026-05-25 session 8):
+
+- **Q1 / Option C** — schema includes (a) universe counter
+  `Metadata.cross_source_disagreement_count`, (b) universe histogram
+  `Metadata.cross_source_delta_histogram`, AND (c) per-ticker
+  `StockDetail.cross_source_delta` so post-hoc threshold-sweep analysis
+  is possible on any of the 9 buckets.
+- **Q2 / Option A** — push hard, land before tonight's cron-#4
+  (Mon 22:00 UTC) so the new fields populate on the first cron rather
+  than waiting +24 / +48h for cron-#5 / cron-#6.
+- **Q3 / Option B** — symmetric histogram buckets around the 100%
+  decision boundary: `[<5, 5-25, 25-50, 50-75, 75-100, 100-150,
+  150-200, >200, unavailable]` (9 buckets) — gives 4 buckets of
+  resolution across 50-150% where the PR2b threshold candidates live.
+- **Q4 / Option A** — fold the PR1 (issue #246) Rule 18 retrofit
+  into the same schema bump:
+  `Metadata.shares_fallback_triggered_count` (union of None +
+  too_low) and `Metadata.shares_fallback_too_low_count` (ERIE-class
+  subset). One schema bump, one CR.
+- **Q5 / Option X** — refactor `validate_market_cap` signature
+  `bool` → `tuple[bool, float | None]` for single-source-of-truth
+  delta exposure; 1 production callsite update + test sweep. Internal
+  function, no external consumers.
+- **Q6 / Option A** — schema-only PR; UI rendering deferred to a
+  follow-up PR2c so frontend-design-reviewer can iterate against
+  real cron data (precedent: PRs #180 / #181 / #224 all schema-only).
+- **Q7 / Option C** — histogram covers ALL deltas (not just firing
+  > 5%): the `<5` and `unavailable` buckets are explicit so future
+  tolerance recalibration + yfinance coverage health are observable
+  without re-running the validator. Field renamed
+  `cross_source_disagreement_histogram` → `cross_source_delta_histogram`
+  to match the broader semantics.
+
+**Production code changes**:
+
+- `compute/config.py` — `SCHEMA_VERSION` bumped `0.10.2-phase4.5e`
+  → `0.10.3-phase4.5e` (PATCH; all 4 new fields nullable / additive).
+- `compute/ingest/cross_source.py` — `validate_market_cap` refactored
+  to tuple return; new `bucket_delta()` helper + `BUCKET_KEYS` public
+  tuple (drift-detector pin).
+- `compute/ingest/fundamentals.py` — `_FALLBACK_STATS_LOCK` +
+  module-level counter dict + `reset_fallback_stats()` /
+  `get_fallback_stats()` public functions. Lock acquired inside
+  `_build_snapshot` because the function runs under a ThreadPool
+  in main.py (sequential-counter pattern from share_count_extraction
+  doesn't apply — fallback fires before snapshot returns, and adding
+  per-snapshot metadata would pollute the serialized schema).
+- `compute/main.py` — import the new helpers; `reset_fallback_stats()`
+  before the fundamentals fetch loop; init `cross_source_*` counters
+  before the per-ticker scoring loop; update callsite to tuple-unpack
+  + increment counter / histogram bucket / per-ticker delta dict;
+  `get_fallback_stats()` after the loop; wire all 4 new fields into
+  `Metadata(...)` + `StockDetail.cross_source_delta` constructor.
+- `compute/output/schemas.py` — 3 `Metadata` fields + 1 `StockDetail`
+  field with full docstrings (bucket boundary table + lifecycle notes).
+
+**Frontend lockstep** (schema-triple per §Conventions):
+
+- `frontend/lib/types.ts` — mirrors the 4 new Pydantic fields.
+- `frontend/lib/schema-snapshot.json` — regenerated via
+  `python -m compute.output.schema_check --update-snapshot`; schema
+  check passes.
+
+**Empirical baseline** (Sat 9015748 production cron, pre-fix):
+22/502 = 4.4% tickers fire `cross_source_disagreement` (within
+expected 3-8% band per quarterly-cohort-audit/SKILL.md). The 22
+include V ($154B SEC vs ~$580B yf, 276% delta = `>200` bucket post-
+fix), FOXA (~26% = `25-50` bucket), and 20 others spanning the
+candidate decision range.
+
+**ZERO behavior change** — composite / risk_flags / fair_price /
+top5 rotation unchanged. Per-method valuation outputs unchanged.
+The validator fires the same annotate at the same 5% threshold;
+the only difference is the second tuple-element is now consumed
+by the observability layer instead of discarded.
+
+**PR2b gate** — after this PR lands + cron-#4 22:00 UTC populates
+the new Metadata fields, the histogram tail mass directly answers
+"if severe threshold = 75% → fire X; = 100% → fire Y; = 150% →
+fire Z". Methodology-scientist Mode B will pick the threshold from
+that empirical distribution.
+
+**Deferred follow-ups** (not in this PR):
+- PR2b — `cross_source_disagreement_severe` sibling flag + weight
+  10.0 (methodology Q1) + V XBRL conversion-equivalent fix (Q2-Q3)
+  + NWS/NWSA regression fixture (Q4). Gated on this PR's cron data.
+- PR2c — frontend UI surface for `cross_source_delta` chip /
+  histogram debug panel. Spawn frontend-design-reviewer with real
+  numbers from PR2a cron.
+- Q3 2026-08-19 quarterly cohort audit reads
+  `Metadata.cross_source_disagreement_count` + histogram as a
+  defense-layer health signal alongside the existing 27 annotates.
+

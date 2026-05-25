@@ -190,6 +190,20 @@ export type Metadata = {
   form4_universe_insider_count_median?: number | null;
   form4_tickers_with_recent_activity?: number | null;
   form4_fetch_failures?: string[] | null;
+  // Issue #248 PR2a (0.10.3-phase4.5e) — Rule 18 observability for the
+  // cross-source market-cap validator. count = # tickers above 5%
+  // tolerance; histogram aggregates ALL deltas (including <5% non-fire
+  // and yfinance-unavailable cases) across 9 buckets. See
+  // compute/output/schemas.py::Metadata for the bucket-boundary table.
+  cross_source_disagreement_count?: number | null;
+  cross_source_delta_histogram?: Record<string, number> | null;
+  // Issue #246 PR2a (0.10.3-phase4.5e) — Rule 18 retrofit for the
+  // `_fetch_shares_from_per_filing_xbrl` fallback trigger extended in
+  // PR #253. triggered_count = total fired (None-primary + too_low-
+  // primary); too_low_count = subset where the new < MIN_PLAUSIBLE_SHARE_COUNT
+  // (100K) trigger fired (ERIE-class).
+  shares_fallback_triggered_count?: number | null;
+  shares_fallback_too_low_count?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors
@@ -375,4 +389,11 @@ export type StockDetail = {
     latest_filing_date: string | null;
     fetch_status: 'ok' | 'failed' | 'skipped_no_identity';
   } | null;
+  // Issue #248 PR2a (0.10.3-phase4.5e) — per-ticker cross-source delta
+  // (fraction, NOT percent; multiply by 100 for display). Populated for
+  // all tickers where the validator could compute a delta (snapshot +
+  // price + yfinance all non-null); null otherwise. Populated for tickers
+  // BELOW the 5% tolerance threshold too — so post-hoc threshold sweeps
+  // are possible without re-running the validator.
+  cross_source_delta?: number | null;
 };

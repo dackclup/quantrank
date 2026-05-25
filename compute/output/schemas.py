@@ -245,6 +245,47 @@ class Metadata(BaseModel):
     form4_universe_insider_count_median: int | None = None
     form4_tickers_with_recent_activity: int | None = None
     form4_fetch_failures: list[str] | None = None  # bounded ≤ 20 tickers
+    # Issue #248 PR2a (0.10.3-phase4.5e) — Rule 18 observability surface for
+    # the cross-source market-cap validator (compute/ingest/cross_source.py).
+    # Per the methodology-scientist Mode B verdict 2026-05-25, the existing
+    # `cross_source_disagreement` annotate has shipped without a universe-
+    # wide counter since Phase 4b §1 — a Rule 18 violation. This PR closes
+    # the gap.
+    #
+    # ``cross_source_disagreement_count`` = # tickers where SEC-derived
+    # mcap (shares × price) diverged > CROSS_SOURCE_MARKET_CAP_TOLERANCE
+    # (5%) from yfinance .info marketCap. Direct counter for the existing
+    # per-ticker `valuation_warnings: ["cross_source_disagreement"]` flag.
+    # Pre-fix universe baseline (Sat 9015748): 22/502 = 4.4% (within
+    # expected 3-8% band per quarterly-cohort-audit/SKILL.md).
+    #
+    # ``cross_source_delta_histogram`` = universe-wide distribution of the
+    # delta (|sec_mc − yf_mc| / sec_mc) across 9 buckets:
+    #   - "<5"          delta < 5% (no fire; would fire if tolerance lowered)
+    #   - "5-25"        annotate-only band
+    #   - "25-50"       annotate-only band
+    #   - "50-75"       annotate-only band
+    #   - "75-100"      candidate severe threshold floor (methodology Q1)
+    #   - "100-150"     methodology Mode B proposed severe threshold (100%)
+    #   - "150-200"     above proposed severe — clear data corruption
+    #   - ">200"        extreme corruption (V at 276%)
+    #   - "unavailable" yfinance fetch returned None (no validation possible)
+    # Gates the PR2b severe-threshold decision (75% vs 100% vs 150%) with
+    # empirical 1-cron data instead of gut-feel calibration. Buckets are
+    # half-open intervals `[lower, upper)` (exact-floor = next bucket).
+    cross_source_disagreement_count: int | None = None
+    cross_source_delta_histogram: dict[str, int] | None = None
+    # Issue #246 PR1 retrofit (0.10.3-phase4.5e) — Rule 18 observability for
+    # the `_fetch_shares_from_per_filing_xbrl` fallback trigger extended in
+    # PR #253. ``shares_fallback_triggered_count`` = total tickers where the
+    # fallback fired (union of None-primary + too-low-primary cases).
+    # ``shares_fallback_too_low_count`` = subset where the trigger fired
+    # because primary returned `< MIN_PLAUSIBLE_SHARE_COUNT (100K)` — the
+    # new ERIE-class path added by PR #253. Separation lets the audit chain
+    # track ERIE-pattern growth distinct from the original STZ pattern.
+    # Nullable on legacy snapshots (pre-0.10.3).
+    shares_fallback_triggered_count: int | None = None
+    shares_fallback_too_low_count: int | None = None
 
 
 class RawMetrics(BaseModel):
@@ -335,3 +376,15 @@ class StockDetail(BaseModel):
     # cache + form4_enabled=False branch). PR 3 consumers keying on
     # ``insider_count > 0`` should prefer this over re-fetching.
     form4_diagnostics: dict | None = None
+    # Issue #248 PR2a (0.10.3-phase4.5e) — per-ticker cross-source delta
+    # surfaced from `compute/ingest/cross_source.validate_market_cap`'s
+    # tuple-return refactor (this PR). Value is the absolute relative
+    # delta ``|sec_mc - yf_mc| / sec_mc`` where ``sec_mc = shares × price``
+    # — a fraction (NOT percent); UI/audit consumers multiply by 100 for
+    # display. ``None`` when validator couldn't compute (snapshot/price
+    # missing, yfinance fetch returned None, or pre-0.10.3 legacy
+    # snapshots). Populated for ALL tickers with a successful validator
+    # run, including those below the 5% tolerance threshold — so post-hoc
+    # threshold-sweep analysis on the universe is possible without
+    # re-running the validator.
+    cross_source_delta: float | None = None
