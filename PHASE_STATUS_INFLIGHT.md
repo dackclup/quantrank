@@ -274,6 +274,83 @@ substance UNCHANGED.
 
 ---
 
+## PR (this PR) — Animation polish PR 2: secondary polish (Tier 1 P2 + Tier 2 layout, 13 edits across 6 files) (in flight, 2026-05-25)
+
+Second PR of the post-LedgerCraft animation polish series. Continues
+the `frontend-design-reviewer` open-scope animation audit Section C
+(PR 2 scope) — P2 micro-interaction polish + Tier 2 layout refactor.
+Pure className diff + 1 small JSX refactor; zero new keyframes, zero
+new deps, zero schema / Python / scoring / valuation / output JSON
+change.
+
+**LedgerCraft compliance**: every transition ≤ 200ms; functional
+state-change feedback only; same Material easing standard as PR 1.
+
+**The 13 edits**:
+
+P2 button hover transitions (smooth color fade on hover, was
+instant-snap):
+- **B1** `FilterDrawer.tsx:127` — Close button (X) — add
+  `transition-colors duration-150`
+- **B2** `FilterDrawer.tsx:289` — "Clear all" button — add
+  `transition-colors duration-150`
+- **B3** `AppShell.tsx:58` — mobile hamburger menu button — add
+  `transition-colors duration-150`
+
+Active filter chip dismissal (RankingTable toolbar — 5 chip variants
+gain opacity transition so the hover feedback is smooth):
+- **B4** `RankingTable.tsx:334` — active sector filter chip
+  `transition-opacity duration-100`
+- **B5** `RankingTable.tsx:349` — active tier filter chip same
+- **B6** `RankingTable.tsx:364` — active MoS filter chip same
+- **B7** `RankingTable.tsx:377` — active recommendation filter chip same
+- **B8** `RankingTable.tsx:388` — active score-range filter chip same
+
+Pagination buttons (RankingTable footer):
+- **B9** `RankingTable.tsx:620` — "← Prev" button — add
+  `transition-colors duration-150`
+- **B10** `RankingTable.tsx:631` — "Next →" button same
+
+Per-method row hover (Fair price card list):
+- **B11** `FairPriceBarChart.tsx:316` — `<li>` row gains
+  `hover:bg-slate-50 dark:hover:bg-slate-800/30
+  transition-colors duration-100`. Previously had ZERO hover state
+  (sibling `FairPriceCard.tsx` MethodRow already has hover post-PR 1)
+
+Filing link hover (Tier-2 event card):
+- **B12** `Tier2EventCard.tsx:202` — "View filing" external link
+  `transition-colors duration-150` (smoothens the hover →
+  text-slate-900 + underline)
+
+Tier 2 layout refactor (small JSX change, not a className diff):
+- **B13** `Sidebar.tsx:84-91` — mobile overlay backdrop refactored
+  from conditional render (`{mobileOpen && <button>}`) to
+  always-mounted opacity toggle. Mirrors the `FilterDrawer` backdrop
+  pattern: `transition-opacity duration-200` with `pointer-events-none
+  opacity-0` when closed. Added `aria-hidden={!mobileOpen}` +
+  `tabIndex={mobileOpen ? 0 : -1}` so the invisible backdrop can't
+  trap keyboard focus when closed. Visual result: mobile nav drawer
+  backdrop now FADES in/out instead of snap-appearing/disappearing
+  alongside the sidebar slide.
+
+**Out of scope this PR (queued for PR 3)**:
+- Skeleton loaders — PriceHistoryChart shimmer + StockLogo fade-in
+  (requires `@keyframes shimmer` + `@keyframes fade-in` in globals.css
+  + Tailwind config keyframes/animation registration)
+
+**Out of scope permanently** (carry-over from PR 1):
+- Decorative animations (ScoreBadge / MoSBadge radial arc-draw)
+- ThemeToggle icon crossfade
+- Body color crossfade on theme toggle
+- Recharts `Area` draw animation
+
+Frontend-only PR. Branch from latest `main` (`25c2f2b1`, includes
+PR #250 = animation polish PR 1). PHASE_STATUS_INFLIGHT.md side-file
+pattern (PR #237) satisfies §Conventions lockstep — CLAUDE.md /
+AGENTS.md substance UNCHANGED.
+
+---
+
 ## Merged (awaiting housekeeping move to CLAUDE.md)
 
 ## PR #241 — Simulate Parts 5+6+7: wire `QR_SKIP_OSAP` + `QR_SKIP_CROSS_SOURCE` + timeout-minutes 45→90 backstop (merged 2026-05-24, `e9d7836`)

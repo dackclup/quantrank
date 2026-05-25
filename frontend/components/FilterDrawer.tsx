@@ -124,7 +124,7 @@ export function FilterDrawer({
           <button
             onClick={onClose}
             aria-label="Close filters"
-            className="rounded-sm p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+            className="rounded-sm p-1.5 text-slate-500 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.75">
               <path d="M5 5l10 10M15 5L5 15" strokeLinecap="round" />
@@ -286,7 +286,7 @@ export function FilterDrawer({
           <button
             type="button"
             onClick={clearAll}
-            className="rounded-sm px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+            className="rounded-sm px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
           >
             Clear all
           </button>
