@@ -10,6 +10,22 @@ on:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
   EDGAR_USER_AGENT: ${{ secrets.EDGAR_USER_AGENT }}
+  # 2026-05-25 EMERGENCY MITIGATION — Form-4 fetch skipped on the cron
+  # too. incident-commander session 8 verdict: the 150m timeout-minutes
+  # ceiling (set in Phase 4g for the 4-loop reality) did not grow when
+  # PR #205 added the Form-4 fetch loop 12 days ago (5th SEC EDGAR
+  # loop, +20-30m cold cost). Cache eviction over the 44h Fri→Sun gap
+  # made all 5 loops cold simultaneously → manual workflow_dispatch
+  # 2026-05-25 00:13 UTC cancelled at the 2h30m cap. Form-4 is
+  # observability-only (form4_enabled=False, _FORM4_FLAGS_ENABLED=False)
+  # so skipping it has ZERO scoring impact — composite + risk_flags +
+  # rankings + per-stock JSON all identical. Metadata.form4_* fields
+  # coerce to None for this run (acceptable; Q3 cohort-audit gate is
+  # 2026-08-19, plenty of subsequent crons to repopulate). REVERT
+  # after fresh data is committed + durable fix (timeout-minutes
+  # rebaseline + cache-restore canary + per-loop wall-clock
+  # observability) lands via performance-engineer follow-up issue.
+  FORM4_FETCH_SKIP: "1"
 
 # Default to read for the workflow; the `compute` job explicitly elevates
 # to `contents: write` because its final step `git commit + push`-es the
