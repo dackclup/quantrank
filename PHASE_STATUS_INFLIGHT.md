@@ -98,7 +98,62 @@ keeps growing/draining as PRs cycle.
 
 ## In flight (current)
 
-## PR (this PR) — `chore(release): v1.3.0-phase4.5e` — Form-4 insider clustering + LedgerCraft frontend (in flight, 2026-05-26)
+## PR (this PR) — Post-release housekeeping: backfill v1.3.0-phase4.5e pointer + drain 11 stale (in flight) markers (in flight, 2026-05-26)
+
+Phase B (post-tag housekeeping) PR per the v1.3.0 release plan.
+Cuts no code; pure doc-pointer maintenance.
+
+**Scope (3 files)**:
+
+- **`CLAUDE.md`** §Phase status `Latest release tag` line — bumped
+  `v1.2.0-phase4.5` (2026-05-17, `6d414a9b`) → `v1.3.0-phase4.5e`
+  (2026-05-26, `5db3b978`); prior tag preserved as historical
+  reference per release-tag SKILL.md §7 convention.
+- **`PHASE_STATUS.md`** §Current state `Latest release tag` row —
+  same pointer bump, plus a one-line description of what the
+  release closes.
+- **`PHASE_STATUS_INFLIGHT.md`** — 11 stale `(in flight, YYYY-MM-DD)`
+  header markers updated to `(merged YYYY-MM-DD, <SHA>)` with the
+  PR number prefix. The bodies stay in place (full historical
+  record preserved); a future weekly housekeeping commit will
+  move them from the "In flight (current)" section into the
+  "Merged (awaiting housekeeping move to CLAUDE.md)" sub-section
+  per the PR #237 convention. PRs drained in this pass: #244,
+  #245, #246, #250, #251, #252, #256, #257, #258, #263, #266.
+
+**Note on the tag**: `v1.3.0-phase4.5e` was created locally during
+the release session but **the `git push origin` of the tag failed
+with HTTP 403** from the sandbox (the sandboxed git proxy permits
+branch pushes but not tag-ref pushes). The user must run
+`git tag -a v1.3.0-phase4.5e -F docs/release-notes/v1.3.0-phase4.5e.md`
+then `git push origin v1.3.0-phase4.5e` from their own machine on
+the squash-merge SHA `5db3b978`. This PR's pointer bumps reference
+the tag AS IF live (release-tag SKILL.md §7 anchors pointers to
+the commit SHA, not the tag-availability state).
+
+**Verification**:
+- `ruff check .` — N/A (no Python touched)
+- `python -m compute.output.schema_check` — N/A (no schemas touched)
+- `pytest tests/ -m "not network"` — N/A (no test surface)
+- Markdown-only diff; tracked by `docs-reviewer` if substance review needed
+
+**Deferred follow-ups**:
+- Future weekly housekeeping commit to move the drained PR bodies
+  from "In flight (current)" → "Merged (awaiting housekeeping)" →
+  CLAUDE.md §Phase status proper per the 3-step `tools/housekeep_phase_status.py`
+  pattern (script not yet implemented; manual for now)
+- The release tag itself needs `git push origin v1.3.0-phase4.5e`
+  from the user's machine — separate operation, not part of this PR
+- The GitHub Release page creation — separate operation via web UI
+  or `gh release create`
+
+No CLAUDE.md / AGENTS.md substance change beyond the pointer bump.
+PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship
+with every PR" lockstep per PR #237 convention.
+
+---
+
+## PR #266 — `chore(release): v1.3.0-phase4.5e` — Form-4 insider clustering + LedgerCraft frontend (merged 2026-05-26, `5db3b978`)
 
 Cuts the **v1.3.0-phase4.5e** release tag, closing the Phase 4.5e
 Form-4 insider-clustering ladder (PRs #167 + #205 + #222 + #224 + #238)
@@ -294,7 +349,7 @@ No CLAUDE.md / AGENTS.md substance change required — the annotate doesn't intr
 
 ---
 
-## PR (this PR) — EMERGENCY: cron-rankings.yml add `FORM4_FETCH_SKIP=1` to unblock 2h30m timeout (in flight, 2026-05-25)
+## PR #245 — EMERGENCY: cron-rankings.yml add `FORM4_FETCH_SKIP=1` to unblock 2h30m timeout (merged 2026-05-25, `fbbaeeec`)
 
 `compute-rankings.yml` manual `workflow_dispatch` cancelled at the
 150m `timeout-minutes` ceiling (2026-05-25 00:13 UTC). Production
@@ -388,7 +443,7 @@ satisfies §Conventions lockstep.
 
 ---
 
-## PR (this PR) — Animation polish PR 1: micro-interactions (Tier 1 P1, 10 className edits) (in flight, 2026-05-25)
+## PR #250 — Animation polish PR 1: micro-interactions (Tier 1 P1, 10 className edits) (merged 2026-05-25, `25c2f2b1`)
 
 First PR of the post-LedgerCraft animation polish series surfaced by
 the `frontend-design-reviewer` open-scope animation audit (no PR
@@ -470,7 +525,7 @@ substance UNCHANGED.
 
 ---
 
-## PR (this PR) — Animation polish PR 2: secondary polish (Tier 1 P2 + Tier 2 layout, 13 edits across 6 files) (in flight, 2026-05-25)
+## PR #251 — Animation polish PR 2: secondary polish (Tier 1 P2 + Tier 2 layout, 13 edits across 6 files) (merged 2026-05-25, `e23861af`)
 
 Second PR of the post-LedgerCraft animation polish series. Continues
 the `frontend-design-reviewer` open-scope animation audit Section C
@@ -547,7 +602,7 @@ AGENTS.md substance UNCHANGED.
 
 ---
 
-## PR (this PR) — Animation polish PR 3: skeleton loaders + @keyframes (in flight, 2026-05-25)
+## PR #252 — Animation polish PR 3: skeleton loaders + @keyframes (merged 2026-05-25, `6e37c25e`)
 
 Third (and final base-tier) PR of the post-LedgerCraft animation
 polish series. Adds the project's first `@keyframes` declarations
@@ -686,7 +741,7 @@ satisfies §Conventions lockstep per PR #237 convention.
 
 ---
 
-## PR (this PR) — Post-LedgerCraft polish bundle A1-A10 (dark variants + sort affordance + a11y + stale copy) (in flight, 2026-05-25)
+## PR #244 — Post-LedgerCraft polish bundle A1-A10 (dark variants + sort affordance + a11y + stale copy) (merged 2026-05-25, `a2f9ea8e`)
 
 10 quick-win design polish items surfaced by the post-#242
 `frontend-design-reviewer` open-scope audit. All single-line or
@@ -928,7 +983,7 @@ is exercised by `ThemeToggle.tsx`'s upstream production use).
 
 ---
 
-## PR (this PR) — Issue #246 ERIE fix: extend `_fetch_shares_from_per_filing_xbrl` trigger to catch implausibly-low primary extraction (in flight, 2026-05-25)
+## PR #246 — Issue #246 ERIE fix: extend `_fetch_shares_from_per_filing_xbrl` trigger to catch implausibly-low primary extraction (merged 2026-05-25, `4059b38e`)
 
 Closes [issue #246](https://github.com/dackclup/quantrank/issues/246).
 
@@ -1030,7 +1085,7 @@ convention.
 
 ---
 
-## PR (this PR) — Issue #248 PR2a + #246 Rule 18 retrofit: cross-source observability surface + shares-fallback counter (in flight, 2026-05-25)
+## PR #256 — Issue #248 PR2a + #246 Rule 18 retrofit: cross-source observability surface + shares-fallback counter (merged 2026-05-25, `bc57398a`)
 
 Closes the Rule 18 observability gap surfaced by the post-PR-#253
 [methodology-scientist Mode B verdict](https://github.com/dackclup/quantrank/issues/248)
@@ -1136,7 +1191,7 @@ that empirical distribution.
 
 ---
 
-## PR2b — V/FOX/BRK-B multi-class XBRL fix + Issue #248 mechanical recovery (in flight, 2026-05-25)
+## PR #257 — V/FOX/BRK-B multi-class XBRL fix + Issue #248 mechanical recovery (PR2b) (merged 2026-05-25, `4226b19c`)
 
 **Background** — PR2a (PR #256, merged 2026-05-25) shipped the
 cross-source observability surface. PR2b is the **mechanical recovery
@@ -1290,7 +1345,7 @@ ensemble — meaning some Top-N rank moves are likely. STZ unchanged
 
 ---
 
-## PR-harness — mattpocock-setup-harness scaffold (in flight, 2026-05-25)
+## PR #258 — mattpocock-setup-harness scaffold (merged 2026-05-25, `5a533ed5`)
 
 **Background** — the vendored `mattpocock-setup-harness` skill
 configures per-repo glue files (`docs/agents/issue-tracker.md`,
@@ -1362,7 +1417,7 @@ the side-file convention adopted in PR #237.
 
 ---
 
-## PR (this PR) — 15-agent self-audit follow-up: bug-fix bundle + doc-drift sweep + BLY 2002 citation correction (in flight, 2026-05-26)
+## PR #263 — 15-agent self-audit follow-up: bug-fix bundle + doc-drift sweep + BLY 2002 citation correction (merged 2026-05-26, `25080c33`)
 
 Output of the 15-parallel-agent self-audit run on `claude/eager-bohr-12bQi`
 (branch HEAD `ba13f80`). All 15 agents reported; consolidated synthesis
