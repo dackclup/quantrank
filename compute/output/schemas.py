@@ -298,6 +298,20 @@ class Metadata(BaseModel):
     # (the allowlist size; STZ may not fire here because its primary path
     # returns None and the None-trigger path captures it first).
     shares_fallback_dimensional_override_count: int | None = None
+    # Issue #261 (0.10.5-phase4.5e) — Rule 18 observability for the
+    # ``multi_class_aggregate_shares_suspected`` annotate. Counts the
+    # universe-wide total of tickers where the per-ticker emit fired —
+    # the CIK-collision signature of a multi-class issuer reporting the
+    # AGGREGATE share count on each per-class ticker (the GOOG/GOOGL
+    # overcount pattern, opposite direction to PR #257's allowlist which
+    # corrects companyfacts-undercount via per-filing XBRL dimensional
+    # sum). Expected steady-state firing rate: 6 (GOOG, GOOGL, NWS,
+    # NWSA, FOX, FOXA per 2026-05-23 cron #3 cohort). Nullable on
+    # legacy snapshots (pre-0.10.5). Gates the Q3 2026-08-19 quarterly-
+    # audit cohort acceptance check for the threshold recalibration
+    # (10% × universe median market_cap) per methodology-scientist
+    # Mode B 2026-05-26 verdict.
+    multi_class_aggregate_shares_suspected_count: int | None = None
 
 
 class RawMetrics(BaseModel):

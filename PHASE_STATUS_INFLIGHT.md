@@ -98,6 +98,64 @@ keeps growing/draining as PRs cycle.
 
 ## In flight (current)
 
+## PR (this PR) — Issue #261 PR-A: `multi_class_aggregate_shares_suspected` annotate (CIK-collision detector) (in flight, 2026-05-26)
+
+Closes the observability half of [issue #261](https://github.com/dackclup/quantrank/issues/261) (GOOG/GOOGL multi-class shares overcount). Per the methodology-scientist Mode B verdict 2026-05-26 (NEEDS-MORE-CALIBRATION) the issue splits into:
+
+- **PR-A (this PR)** — annotate-only `multi_class_aggregate_shares_suspected` flag fires on the CIK-collision signature (two or more tickers in the universe share the same CIK AND each ticker's market_cap > 10% of universe-median). Annotate-only per `portable-annotate-before-veto`; composite rank UNCHANGED.
+- **PR-B (next PR)** — reverse-allowlist per-class XBRL extraction (the structural fix). Gated on `edgar-debugger` probe 2026-05-26 which CONFIRMED per-class dimensional contexts are available — see "Edgar-debugger findings" below.
+
+**Production code (1 new module + 4 edits)**:
+
+- `compute/scoring/multi_class_shares.py` (NEW) — `detect_multi_class_aggregate_shares_suspected(cik_by_ticker, market_cap_by_ticker) -> set[str]` universe-level detector. `MARKET_CAP_FLOOR_RATIO: Final[float] = 0.10` constant. Pure function, no I/O, graceful on None inputs.
+- `compute/config.py` — `SCHEMA_VERSION` bumped `0.10.4-phase4.5e` → `0.10.5-phase4.5e` (PATCH; additive Metadata field only).
+- `compute/output/schemas.py` — new `Metadata.multi_class_aggregate_shares_suspected_count: int | None` with full docstring (expected steady-state firing rate 6 — GOOG / GOOGL / NWS / NWSA / FOX / FOXA per 2026-05-23 cron #3 cohort).
+- `compute/main.py` — import + pre-compute `cik_by_ticker` + `market_cap_by_ticker` dicts BEFORE the per-ticker scoring loop + call detector + emit annotate inside the loop + increment counter + wire to `Metadata(...)`.
+- `frontend/lib/types.ts` + `frontend/lib/schema-snapshot.json` — triple lockstep per §Conventions.
+
+**Tests (`tests/test_scoring/test_multi_class_shares.py`, NEW; 13 cases)**:
+
+1. `MARKET_CAP_FLOOR_RATIO` constant pin (10%)
+2. Empty universe → empty set
+3. No-collision universe → empty set
+4. GOOG/GOOGL canonical case → both fire
+5. Collision below floor (micro-class) → empty set
+6. Partial above floor → only above-floor sibling fires
+7. None CIK → excluded from collision detection
+8. None market_cap → excluded from firing set
+9. All-None market_caps → empty set (no median computable)
+10. Three-way collision all above floor → all three fire
+11. Threshold strict-inequality boundary → at-floor excluded
+12. Hypothesis property: firing set ⊆ collision set (regression guard)
+13. Plus `tests/test_config.py::test_schema_version_is_phase4_5e` pin updated `0.10.4` → `0.10.5-phase4.5e`
+
+Tests: 1216 passing offline (+13 new — `test_multi_class_shares.py` adds 12 cases; +1 from config pin).
+
+**Edgar-debugger findings (2026-05-26 live probe, AAPL filing accession `0001652044-26-000018`)**:
+
+- **VERDICT**: PER-CLASS-AVAILABLE-IN-XBRL ✅
+- Per-class share counts ARE present as dimensional facts in Alphabet's 10-K:
+  - `us-gaap:CommonClassAMember` → 5.822B shares (GOOGL)
+  - `us-gaap:CommonClassBMember` → 0.837B (not traded — founders)
+  - `goog:CapitalClassCMember` → 5.429B (GOOG)
+- **Critical gotcha for PR-B**: GOOG Class C uses **filer-specific namespace `goog:CapitalClassCMember`**, NOT the standard `us-gaap:CommonClassCMember`. An allowlist keyed to the standard namespace would silently return zero rows for GOOG.
+- Per-class sum (5.822 + 0.837 + 5.429 = 12.088B) reconciles to companyfacts aggregate exactly — confirms the overcount is the aggregate-vs-per-class disambiguation pattern, not a different data-quality issue.
+- PR-B's `MULTI_CLASS_SHARE_PER_CLASS_ALLOWLIST` will need: `{"GOOGL": "us-gaap:CommonClassAMember", "GOOG": "goog:CapitalClassCMember"}` keyed to the dimensional member, queried against `us-gaap:CommonStockSharesOutstanding` at `period_instant`.
+
+**ZERO behavior change for the 496 non-colliding S&P 500 tickers** — composite / risk_flags / fair_price / top5 rotation unchanged. The 6 multi-class tickers (GOOG / GOOGL / NWS / NWSA / FOX / FOXA) gain the new annotate in `valuation_warnings`; composite rank unaffected.
+
+**Expected Metadata fingerprint** (post first cron after merge):
+- `multi_class_aggregate_shares_suspected_count` ≈ 6
+
+**Deferred follow-ups** (not in this PR):
+- PR-B — reverse-allowlist per-class XBRL extraction, structural fix for GOOG/GOOGL market_cap overcount. Code shape proposed by edgar-debugger 2026-05-26.
+- Combined-per-class-MC reconcile invariant as Rule-18 diagnostic (`|Σ MC_per_class − MC_aggregate| / MC_aggregate < 0.05`) — methodology-scientist Mode B Q3 suggestion.
+- Q3 2026-08-19 quarterly audit: walk the `multi_class_aggregate_shares_suspected_count` history, decide whether to retire after ≥ 2 crons of clean reconcile + recalibrate the 10% floor against the empirical universe.
+
+No CLAUDE.md / AGENTS.md substance change required — the annotate doesn't introduce a new invariant, convention, or gotcha that future code authors need to remember. The pattern itself is already documented in CLAUDE.md §Gotchas under "shares_outstanding partial-extraction" and PR #257's allowlist precedent. PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" lockstep per PR #237 convention.
+
+---
+
 ## PR (this PR) — EMERGENCY: cron-rankings.yml add `FORM4_FETCH_SKIP=1` to unblock 2h30m timeout (in flight, 2026-05-25)
 
 `compute-rankings.yml` manual `workflow_dispatch` cancelled at the
