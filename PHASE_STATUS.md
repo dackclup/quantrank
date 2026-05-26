@@ -17,11 +17,11 @@
 
 | Field | Value |
 |---|---|
-| Schema | **`0.10.4-phase4.5e`** (PR #257, additive `Metadata.shares_fallback_dimensional_override_count` field; PR #256 added 4 cross-source observability fields + 1 StockSummary delta) |
-| Defense layer | **32 boolean flags emitted** (22 declared veto+annotate + 5 method-applicability `extreme_*_estimate` + 5 informational) · plus 5 numerical guards + `manipulation_index` rollup |
+| Schema | **`0.10.5-phase4.5e`** (PR #264, additive `Metadata.multi_class_aggregate_shares_suspected_count` field; PR #265 renamed Site-2 DQIC emission to `valuation_output_anomalous` without schema change) |
+| Defense layer | **33 declared boolean flags** (7 active vetoes + 26 annotates + reserved slots; 27 currently emit in production until next cron exercises PR #264 + #265 + Form-4 cluster revert) · plus 5 numerical guards + `manipulation_index` rollup |
 | Active vetoes | **7** — `altman_distress` · `sloan_accruals_top_decile` · `net_issuance_top_decile` · `non_reliance_filing` · `beneish_manipulation_veto` · `dechow_manipulation_veto` · `data_quality_input_corruption` |
-| Latest release tag | [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5) — 2026-05-17 at `6d414a9b` (v1.3.0 target: LedgerCraft A1-A3+B1-B4 reskin series complete; pending tag cut) |
-| Production run | `90157482` (2026-05-23 cron #3, form4 100% coverage, Section A-L PASS) |
+| Latest release tag | [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5) — 2026-05-17 at `6d414a9b` (v1.3.0-phase4.5e release in flight on `claude/release-v1.3.0`) |
+| Production run | `26423296287` (2026-05-26T01:12:47Z cron #4, schema `0.10.4-phase4.5e`; next cron Wed 2026-05-27 22:00 UTC re-renders at `0.10.5`) |
 | Universe | 502 stocks (S&P 500 minus 1 delisting) |
 | Skill inventory | **44** invocation-triggerable + phase planning docs |
 | Subagent inventory | **18** project-specific in 4 tiers: **Tier 1 Core** (`quantrank-reviewer` · `schema-sentinel` · `defense-layer-auditor` · `edgar-debugger` · `stock-detail-auditor`) · **Tier 2 Lifecycle** (`security-reviewer` · `frontend-design-reviewer` · `vercel-preview-auditor` · `release-captain` · `phase-coordinator`) · **Tier 3 Specialized** (`test-engineer` · `methodology-scientist` · `literature-searcher` · `performance-engineer` · `dependency-auditor`) · **Tier 4 Operations** (`docs-reviewer` · `ci-triage-engineer` · `incident-commander`) |
