@@ -98,7 +98,64 @@ keeps growing/draining as PRs cycle.
 
 ## In flight (current)
 
-## PR (this PR) — New skill: `good-code-bad-code-review` reference catalog (Miler / milerdev paired good/bad examples) (in flight, 2026-05-26)
+## PR (this PR) — Issue #261 PR-B: per-class XBRL extraction (structural fix for GOOG/GOOGL `$4.6T` overcount) (in flight, 2026-05-26)
+
+Closes the structural half of [issue #261](https://github.com/dackclup/quantrank/issues/261) — the OVERCOUNT pattern where SEC `companyfacts` returns Alphabet's 12.12B total shares to both per-class tickers, producing `$4.6T` market_cap per ticker vs the real ~$1.05T per class. PR-A (PR #264, merged) shipped the `multi_class_aggregate_shares_suspected` annotate observability; **this PR-B ships the actual fix**.
+
+Per methodology-scientist Mode B verdict 2026-05-26 (Path 1 — reverse-allowlist per-class XBRL extraction) + edgar-debugger live probe 2026-05-26 (Alphabet 10-K accession `0001652044-26-000018` confirms per-class dimensional contexts are available with one critical filer-namespace gotcha).
+
+**The fix**:
+
+- **`compute/config.py`** — new `MULTI_CLASS_OVERCOUNT_ALLOWLIST: dict[str, str]` mapping ticker → exact XBRL class-member string:
+  - `GOOGL → "us-gaap:CommonClassAMember"` (standard namespace)
+  - `GOOG  → "goog:CapitalClassCMember"` ← **filer-specific namespace gotcha** caught by the edgar-debugger probe. An allowlist keyed to the standard `us-gaap:CommonClassCMember` would silently return zero rows and let the overcount through. Each new allowlist entry needs live XBRL probe confirmation.
+- **`compute/ingest/fundamentals.py`** — extended `_fetch_shares_from_per_filing_xbrl` with `target_class_member: str | None = None` parameter. When set, filters dimensional contexts to ONLY rows whose `us-gaap:StatementClassOfStockAxis` equals the target member (vs the default sum-all mode that PR #257 uses for the OPPOSITE-direction undercount path).
+- **`compute/ingest/fundamentals.py`** — new elif branch in `_build_snapshot` fires when ticker is on the new allowlist + primary is plausible (aggregate-shape) + `QR_SKIP_FUNDAMENTALS` not set. Calls the filter mode; overrides primary IFF per_class < primary (sanity invariant — the per-class subset MUST be smaller than the aggregate). Skips the override on per_class >= primary AND increments `mc_reconcile_failure` defensive counter.
+- **`compute/output/schemas.py`** — two new `Metadata` fields (additive): `multi_class_per_class_override_count: int | None` (expected steady-state ≈ 2 = GOOG + GOOGL) + `multi_class_mc_reconcile_failure_count: int | None` (Rule-18 defensive guard per methodology Q3 — fires when per-class fraction is outside the expected 5-95% band of primary OR when override is skipped on per_class >= primary).
+- **`compute/main.py`** — wire both counters from `_FALLBACK_STATS` to the Metadata construction.
+- **`frontend/lib/types.ts` + `frontend/lib/schema-snapshot.json`** — triple lockstep.
+
+**Schema bump**: `0.10.5-phase4.5e` → `0.10.6-phase4.5e` (PATCH; two additive optional `Metadata` fields).
+
+**Tests** (1216 → 1225, +9 new):
+
+- `tests/test_config.py` — schema-version pin update, new `MULTI_CLASS_OVERCOUNT_ALLOWLIST` membership pin (verifies exact `goog:CapitalClassCMember` namespace string), disjoint-allowlist invariant test
+- `tests/test_ingest/test_fundamentals.py` — 7 new cases: GOOG override with filer-namespace, GOOGL override with standard namespace, non-allowlist ticker doesn't fire, `QR_SKIP_FUNDAMENTALS` escape-hatch, per_class >= primary sanity skip, mc_reconcile warning on <5% fraction, None return silently skipped. Plus 3 existing `_FALLBACK_STATS` tests updated to the new 5-key dict shape (was 3 keys).
+
+**Edgar-debugger live probe findings** (from PR-A INFLIGHT entry, repeated here for tag-cut completeness):
+
+- Filing inspected: Alphabet 10-K accession `0001652044-26-000018`, FY2025
+- Per-class breakdown via `us-gaap:CommonStockSharesOutstanding`:
+  - `us-gaap:CommonClassAMember` = 5.822B → **GOOGL**
+  - `us-gaap:CommonClassBMember` = 0.837B (founders, not traded)
+  - `goog:CapitalClassCMember` = 5.429B → **GOOG**
+- Per-class sum (5.822 + 0.837 + 5.429 = 12.088B) reconciles to the aggregate `companyfacts` value exactly (Damodaran 2019 Ch. 16 identity)
+
+**ZERO behavior change for 500 non-allowlist tickers**. The 2 allowlist tickers (GOOG + GOOGL) gain a corrected `shares_outstanding` (~5.4B / ~5.8B from the prior 12.12B overcount) which flows through to:
+- `market_cap` (corrected from ~$4.6T → ~$1.05T per class)
+- `pe_ratio_ttm` (re-derives from NI / corrected shares)
+- Fair-price ensemble (Graham / multiples / RIM / DCF re-anchor to corrected per-share inputs)
+- `multi_class_aggregate_shares_suspected` annotate continues to fire (CIK collision invariant holds for GOOG + GOOGL pair) — PR-A's observability surface stays informative
+
+Expected rank impact: GOOG + GOOGL likely move significantly in composite ranking (currently mid-rank with `value_trap_risk` from the overcount-inflated price ratios; with corrected MC the value pillar should normalize). Composite delta capped by the universe-level normalization but the per-stock display becomes correct.
+
+**Verification**:
+- `ruff check .` — clean
+- `python -m compute.output.schema_check` — triple in sync at `0.10.6-phase4.5e`
+- `pytest tests/ -m "not network"` — **1225 passed**, 7 skipped (factors extras), 24 deselected
+- `@network` GOOG / GOOGL drift-detector — deferred to a separate follow-up PR (live SEC fetch isn't a blocker; the unit tests with mocked XBRL fully exercise the code path, and edgar-debugger already did the live probe)
+
+**Deferred follow-ups** (not in this PR):
+
+- `@network` GOOG / GOOGL drift-detector tests (live SEC probe with `EDGAR_USER_AGENT`) — adds the `test_goog_googl_per_class_recovers_correct_shares` shape for cron-time regression catching
+- Q3 2026-08-19 quarterly cohort audit: walk `multi_class_per_class_override_count` + `multi_class_mc_reconcile_failure_count` history; consider promoting `multi_class_aggregate_shares_suspected` annotate retirement once override coverage is comprehensive (≥ 2 crons of clean reconcile with `mc_reconcile_failure_count = 0`)
+- Future multi-class S&P 500 additions discovery: walk universe-wide `multi_class_aggregate_shares_suspected` annotate firings that AREN'T already on the new allowlist — discovery signal for new aggregate-only filers requiring expansion
+
+PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" lockstep per PR #237 convention. No CLAUDE.md / AGENTS.md substance change required — the structural fix continues the documented Issue #261 split (PR-A annotate + PR-B structural) and doesn't introduce new invariants.
+
+---
+
+## PR #268 — New skill: `good-code-bad-code-review` reference catalog (Miler / milerdev paired good/bad examples) (merged 2026-05-26, `f79548f0`)
 
 New invocation-triggerable skill at
 `.claude/skills/good-code-bad-code-review/SKILL.md`. Wraps the

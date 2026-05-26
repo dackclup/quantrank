@@ -11,13 +11,49 @@ from compute import config
 
 
 def test_schema_version_is_phase4_5e():
-    """Issue #261 (0.10.5-phase4.5e) — PATCH bump for the new
-    ``multi_class_aggregate_shares_suspected_count`` Metadata field.
-    Rule 18 observability for the CIK-collision annotate that catches
-    the GOOG/GOOGL aggregate-overcount pattern (opposite direction to
-    PR #257's allowlist). Supersedes PR2b's 0.10.4-phase4.5e schema
+    """Issue #261 PR-B (0.10.6-phase4.5e) — PATCH bump for two new
+    ``multi_class_per_class_override_count`` +
+    ``multi_class_mc_reconcile_failure_count`` Metadata fields.
+    Rule 18 observability for the structural per-class XBRL extraction
+    path that overrides Alphabet's companyfacts aggregate with a single
+    class member's count for GOOG / GOOGL. Supersedes PR-A's 0.10.5-phase4.5e
     bump. Locks the version against accidental revert."""
-    assert config.SCHEMA_VERSION == "0.10.5-phase4.5e"
+    assert config.SCHEMA_VERSION == "0.10.6-phase4.5e"
+
+
+def test_multi_class_overcount_allowlist_membership():
+    """Issue #261 PR-B (0.10.6-phase4.5e) — pin the per-class XBRL
+    extraction allowlist that gates the new overcount-path elif branch
+    in ``compute/ingest/fundamentals.py::_build_snapshot``.
+
+    Verified 2026-05-26 by edgar-debugger live probe on Alphabet 10-K
+    accession ``0001652044-26-000018``:
+    - GOOGL → us-gaap:CommonClassAMember (standard namespace, 5.822B shares)
+    - GOOG → goog:CapitalClassCMember (FILER-SPECIFIC namespace gotcha,
+      5.429B shares; an allowlist keyed to the standard us-gaap:
+      namespace would silently return zero rows and let the overcount
+      through)
+
+    Adding a ticker without a live XBRL probe to confirm the exact
+    namespace + member string is a regression risk (would silently
+    fail the filter, leaving the aggregate-shape primary in place).
+    Quarterly cohort audit 2026-08-19 is the canonical expansion
+    venue."""
+    expected = {
+        "GOOGL": "us-gaap:CommonClassAMember",
+        "GOOG": "goog:CapitalClassCMember",
+    }
+    assert config.MULTI_CLASS_OVERCOUNT_ALLOWLIST == expected
+
+
+def test_overcount_and_undercount_allowlists_disjoint():
+    """Issue #261 PR-B — the two allowlists encode opposite mechanisms
+    (UNDERCOUNT sum-all vs OVERCOUNT per-class-filter). A ticker cannot
+    plausibly be on both since the share-structure-extraction problem
+    is direction-specific. Pin the disjoint invariant so a future PR
+    can't accidentally add the same ticker to both paths."""
+    overlap = config.MULTI_CLASS_OVERCOUNT_ALLOWLIST.keys() & config.MULTI_CLASS_SHARE_ALLOWLIST
+    assert overlap == set(), f"Allowlists overlap: {overlap}"
 
 
 def test_multi_class_share_allowlist_membership():

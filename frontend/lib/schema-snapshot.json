@@ -137,6 +137,16 @@
       "required": false,
       "default": null
     },
+    "multi_class_mc_reconcile_failure_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
+    "multi_class_per_class_override_count": {
+      "type": "int | None",
+      "required": false,
+      "default": null
+    },
     "next_update_utc": {
       "type": "str",
       "required": true,

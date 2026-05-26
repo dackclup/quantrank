@@ -27,7 +27,7 @@ FUNDAMENTALS_HISTORY_CACHE_DIR: Path = CACHE_DIR / "fundamentals_history"
 MODELS_DIR: Path = PROJECT_ROOT / "models"
 
 UNIVERSE: str = "SP500"
-SCHEMA_VERSION: str = "0.10.5-phase4.5e"
+SCHEMA_VERSION: str = "0.10.6-phase4.5e"
 
 PRICES_PERIOD: str = "5y"
 MAX_PARALLEL_FETCHES: int = 10
@@ -193,6 +193,49 @@ MULTI_CLASS_SHARE_ALLOWLIST: frozenset[str] = frozenset(
         "BRK-B",  # Berkshire Hathaway Class B (Class A weighting deferred; see caveat above)
     }
 )
+
+# Issue #261 PR-B (0.10.6-phase4.5e) — REVERSE allowlist: tickers where
+# the SEC ``companyfacts`` API returns the AGGREGATE share count across
+# all classes (not a per-class subset), producing the GOOG/GOOGL $4.6T
+# market_cap overcount. Opposite direction to MULTI_CLASS_SHARE_ALLOWLIST
+# above (which routes to SUM all dimensional contexts when companyfacts
+# UNDERCOUNTS). Here, the per-filing XBRL exposes per-class breakdowns
+# and we extract the SPECIFIC class member matching the ticker.
+#
+# Methodology anchor: methodology-scientist Mode B verdict 2026-05-26
+# (NEEDS-MORE-CALIBRATION → Path 1 reverse-allowlist) + Damodaran 2019
+# *Investment Valuation* 3rd ed. Ch. 16 §"Multiple Classes of Shares"
+# (per-share value × class-specific share count = class market cap;
+# Σ across classes must reconcile to enterprise common equity).
+#
+# Class-member string format: ``<namespace>:<MemberName>`` matching the
+# dimensional context's ``StatementClassOfStockAxis`` axis member on the
+# ``us-gaap:CommonStockSharesOutstanding`` concept.
+#
+# CRITICAL GOTCHA — filer-specific namespace: edgar-debugger live probe
+# 2026-05-26 on Alphabet 10-K accession ``0001652044-26-000018``
+# confirmed that GOOG (Class C) uses ``goog:CapitalClassCMember`` (the
+# filer's own namespace), NOT the standard ``us-gaap:CommonClassCMember``.
+# GOOGL (Class A) uses the standard ``us-gaap:CommonClassAMember``.
+# An allowlist keyed to the standard namespace alone would silently
+# return zero rows for GOOG and let the overcount through. Verify
+# namespace per-ticker via live XBRL probe before adding new entries.
+#
+# Live FY2025 values from the 2026-05-26 probe (sum reconciles to the
+# 12.088B aggregate exactly):
+#   - GOOGL (Class A) = 5.822B shares  ← us-gaap:CommonClassAMember
+#   - (Class B, founders, not traded) = 0.837B shares
+#   - GOOG  (Class C) = 5.429B shares  ← goog:CapitalClassCMember
+#
+# Expansion gate: quarterly cohort audit (next 2026-08-19) walks any
+# universe-wide ``multi_class_aggregate_shares_suspected`` annotate
+# firings that AREN'T on this allowlist — that's the discovery signal
+# for new candidate aggregate-only filers. Each new entry needs a live
+# XBRL probe to confirm namespace + EPS cross-check post-override.
+MULTI_CLASS_OVERCOUNT_ALLOWLIST: dict[str, str] = {
+    "GOOGL": "us-gaap:CommonClassAMember",   # Alphabet Class A — standard namespace
+    "GOOG":  "goog:CapitalClassCMember",     # Alphabet Class C — filer-specific namespace (gotcha)
+}
 
 # Sector-multiples peer-group floor; below this fall back to global median + flag.
 MULTIPLES_MIN_PEERS: int = 8

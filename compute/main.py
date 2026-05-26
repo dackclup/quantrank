@@ -2010,6 +2010,12 @@ def run_weekly_compute() -> int:
         multi_class_aggregate_shares_suspected_count=(
             multi_class_aggregate_shares_suspected_count
         ),
+        multi_class_per_class_override_count=(
+            shares_fallback_stats.get("per_class_override")
+        ),
+        multi_class_mc_reconcile_failure_count=(
+            shares_fallback_stats.get("mc_reconcile_failure")
+        ),
         form4_enabled=False,
         form4_coverage_pct=(
             round(
