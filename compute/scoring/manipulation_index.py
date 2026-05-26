@@ -53,8 +53,8 @@ overweighting a low-PPV flag drives false-positive penalties.
 
 References: Sloan 1996 *TAR*, Beneish 1999 *FAJ*, Dechow et al. 2011
 *CAR*, Roychowdhury 2006 *JAE*, Burgstahler-Dichev 1997 *JAE*,
-Hennes-Leone-Miller 2008 *TAR*, Bartov-Lai-Yeung 2002 *JAR*,
-Schroeder 2024 SSRN.
+Hennes-Leone-Miller 2008 *TAR*, Bartov-Konchitchki 2017
+*Accounting Horizons*, Schroeder 2024 SSRN.
 """
 
 from __future__ import annotations
@@ -169,14 +169,23 @@ RESTATEMENT_HISTORY_WEIGHT: Final[float] = 5.0
 #: scout discipline.
 RESTATEMENT_HIGH_CONFIDENCE_WEIGHT: Final[float] = 3.0
 
-#: Bartov-Lai-Yeung 2002 *JAR* §"Late Filings Around Earnings
-#: Surprises": NT-10K / NT-10Q filings correlate with subsequent
-#: material restatements (~2× base rate). Effect size lower than
-#: amendment-based signals. Provenance: **gut-feel calibration** —
-#: no direct PPV figure replicated in QuantRank's universe; weight
-#: matches the restatement-history sibling on the assumption that
-#: "late filing" is a weaker leading indicator of "restatement
-#: filing." Re-evaluate post a production-data audit.
+#: Bartov-Konchitchki 2017 *Accounting Horizons* 31(4) "SEC Filings,
+#: Regulatory Deadlines, and Capital Market Consequences": NT-10K /
+#: NT-10Q filings precede a significantly negative 5-day stock price
+#: reaction (-2.93% on NT-10Q / -1.96% on NT-10K) that continues
+#: drifting downward in post-filing months; effect amplifies when the
+#: filer subsequently misses the grace-period extended deadline. The
+#: authors interpret late filings as market-detected information about
+#: deeper operating problems. Effect size lower than amendment-based
+#: signals. Provenance: **gut-feel calibration** — no direct PPV
+#: figure replicated on the QuantRank universe; weight matches the
+#: restatement-history sibling on the assumption that "late filing" is
+#: a weaker leading indicator of "restatement filing." Re-evaluate
+#: post a production-data audit. Citation corrected on this PR after
+#: literature-searcher 2026-05-26 verified the prior "Bartov-Lai-Yeung
+#: 2002 *JAR*" attribution was hallucinated (no paper with that author
+#: tuple exists; Konchitchki is the actual second author, year 2017,
+#: venue *Accounting Horizons*).
 LATE_FILING_WEIGHT: Final[float] = 5.0
 
 #: ``accruals_momentum_high`` — proprietary composite (no single peer-

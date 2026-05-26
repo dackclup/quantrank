@@ -49,12 +49,27 @@ QuantRank ships academic-quality defenses across two waves:
 - **Phase 4.5 manipulation cluster** (4.5a-4.5f): sector-relative
   Sloan, Beneish + Dechow soft-veto thresholds, `manipulation_triple_
   flag` joint gate, restatement-history scan (10-K/A 5y), late-filing
-  notification (Form 12b-25 1y), Roychowdhury 2006 Real Earnings
-  Management 3-proxy, accruals momentum (Δ TATA over 3y), Burgstahler-
-  Dichev 1997 loss-avoidance kink (thresholds 10× rescaled in Phase 2.4
-  / PR #163 to $50M / $0.50 for the S&P 500 universe), and the
-  **`manipulation_index` 0-100 rollup** with a soft 10-point composite
-  penalty (PR 4.5f, tag `v1.2.0`).
+  notification (Form 12b-25 1y, Bartov & Konchitchki 2017
+  *Accounting Horizons* — citation corrected 2026-05-26 from the
+  prior hallucinated Bartov-Lai-Yeung 2002 *JAR* attribution),
+  Roychowdhury 2006 Real Earnings Management 3-proxy, accruals
+  momentum (Δ TATA over 3y), Burgstahler-Dichev 1997 loss-avoidance
+  kink (thresholds 10× rescaled in Phase 2.4 / PR #163 to $50M /
+  $0.50 for the S&P 500 universe), and the **`manipulation_index`
+  0-100 rollup** with a soft 10-point composite penalty (PR 4.5f,
+  tag `v1.2.0`).
+- **Phase 4.5e Form-4 insider clustering** (PR #222, 2026-05-23):
+  two new annotate flags from SEC Form 4 insider-trade data —
+  `insider_sell_cluster` (≥ 3 distinct insiders, opportunistic
+  transaction codes `{S, D}`, ≥ $1M cohort-aggregate, 30-day
+  rolling window; Cohen-Malloy-Pomorski 2012 *JFE*) and
+  `c_suite_unusual_sell` (≥ 2 distinct CEO/CFO/President insiders
+  in the same window; Jeng-Metrick-Zeckhauser 2003 *JAR* §V).
+  PR #224 added the 10b5-1 pre-scheduled-trade contamination
+  filter via the document-level `<aff10b5One>` boolean +
+  footnote-text regex per Jagolinzer 2009 (40-60% FP rate
+  reduction). Combined weight 5+3 = 8 pts under the delta-not-
+  total semantic when both fire on the strict-superset path.
 - **Phase 2.2 high-confidence irregularity signature** (PR #165,
   2026-05-21): `restatement_high_confidence` annotate fires when a
   10-K/A or 10-Q/A amendment co-occurs with an 8-K Item 4.02 "non-

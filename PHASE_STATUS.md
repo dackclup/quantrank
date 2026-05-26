@@ -13,17 +13,17 @@
 | 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → **v1.5** | ⚪ not started |
 | 8 | Universe expansion (S&P 1500) | ⚪ not started |
 
-## Current state (2026-05-24)
+## Current state (2026-05-26)
 
 | Field | Value |
 |---|---|
-| Schema | **`0.10.2-phase4.5e`** (PR #224, additive `Metadata.form4_rule10b5_one_excluded_count` field) |
+| Schema | **`0.10.4-phase4.5e`** (PR #257, additive `Metadata.shares_fallback_dimensional_override_count` field; PR #256 added 4 cross-source observability fields + 1 StockSummary delta) |
 | Defense layer | **32 boolean flags emitted** (22 declared veto+annotate + 5 method-applicability `extreme_*_estimate` + 5 informational) · plus 5 numerical guards + `manipulation_index` rollup |
 | Active vetoes | **7** — `altman_distress` · `sloan_accruals_top_decile` · `net_issuance_top_decile` · `non_reliance_filing` · `beneish_manipulation_veto` · `dechow_manipulation_veto` · `data_quality_input_corruption` |
 | Latest release tag | [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5) — 2026-05-17 at `6d414a9b` (v1.3.0 target: LedgerCraft A1-A3+B1-B4 reskin series complete; pending tag cut) |
 | Production run | `90157482` (2026-05-23 cron #3, form4 100% coverage, Section A-L PASS) |
 | Universe | 502 stocks (S&P 500 minus 1 delisting) |
-| Skill inventory | **43** invocation-triggerable + phase planning docs |
+| Skill inventory | **44** invocation-triggerable + phase planning docs |
 | Subagent inventory | **18** project-specific in 4 tiers: **Tier 1 Core** (`quantrank-reviewer` · `schema-sentinel` · `defense-layer-auditor` · `edgar-debugger` · `stock-detail-auditor`) · **Tier 2 Lifecycle** (`security-reviewer` · `frontend-design-reviewer` · `vercel-preview-auditor` · `release-captain` · `phase-coordinator`) · **Tier 3 Specialized** (`test-engineer` · `methodology-scientist` · `literature-searcher` · `performance-engineer` · `dependency-auditor`) · **Tier 4 Operations** (`docs-reviewer` · `ci-triage-engineer` · `incident-commander`) |
 
 **Recently merged** (PR #170 → PR #237, 2026-05-21 → 2026-05-24):

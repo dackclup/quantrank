@@ -10,9 +10,10 @@ Two annotate-only flags surfaced from the SEC EDGAR filing list:
   ``config.RESTATEMENT_HISTORY_LOOKBACK_DAYS = 1825`` (5 × 365 + 1
   leap-day buffer).
 - **`late_filing_notification`** — SEC Form 12b-25 (NT 10-K / NT 10-Q)
-  within the trailing 365 days. Bartov-Lai-Yeung 2002 *JAR*: late
-  filers see −5-7% abnormal returns. Lookback window:
-  ``config.LATE_FILING_LOOKBACK_DAYS = 365``.
+  within the trailing 365 days. Bartov-Konchitchki 2017 *Accounting
+  Horizons* 31(4): NT-10Q filers see −2.93% / NT-10K filers see −1.96%
+  5-day abnormal returns, continuing to drift downward in post-filing
+  months. Lookback window: ``config.LATE_FILING_LOOKBACK_DAYS = 365``.
 
 Both flags are **ANNOTATE-only** — they land in
 ``StockDetail.valuation_warnings`` (not the active veto layer). The
@@ -48,9 +49,12 @@ References
 - Hennes, Leone, Miller (2008). "The importance of distinguishing
   errors from irregularities in restatement research."
   *The Accounting Review* 83(6), 1487-1519.
-- Bartov, Lai, Yeung (2002). "Late filing notifications, NT 10-K and
-  NT 10-Q, and earnings management." *Journal of Accounting Research*
-  40(2), 477-516.
+- Bartov, E., & Konchitchki, Y. (2017). "SEC Filings, Regulatory
+  Deadlines, and Capital Market Consequences." *Accounting Horizons*
+  31(4), 109-131. The prior `Bartov-Lai-Yeung 2002 *JAR*` attribution
+  used here through PR #184 was a hallucinated citation; corrected
+  2026-05-26 after literature-searcher confirmation (no paper with
+  the Bartov-Lai-Yeung author tuple exists in JAR or related venues).
 """
 
 from __future__ import annotations

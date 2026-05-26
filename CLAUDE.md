@@ -155,7 +155,7 @@ for the full 4-step pattern + Section I forcing example.
 ### Main agent role — orchestrator, not laborer
 
 The main Claude Code session is the **orchestrator / tech lead** of
-the 15-agent team, not the laborer. Default action when given a
+the 18-agent team, not the laborer. Default action when given a
 task is to **identify the matching sub-agent in `.claude/agents/`
 and spawn it** — not to do the work inline. The
 `UserPromptSubmit` hook injects this reminder every turn so the
@@ -1070,9 +1070,12 @@ Table 9), `manipulation_triple_flag` (PR 4.5a.3 joint-gate + PR #164
 correlation watch), `restatement_history` (Hennes-Leone-Miller 2008
 bare-flag PPV), `restatement_high_confidence` (HLM 2008 irregularity
 signature + Schroeder 2024 90d window), and `late_filing_notification`
-(Bartov-Lai-Yeung 2002 — surfaced as a CORRECTION during the
-methodology-scientist audit; the hand-off had labeled it
-Cohen-Malloy-Pomorski 2012 but the actual anchor is BLY 2002).
+(Bartov & Konchitchki 2017 *Accounting Horizons* — citation
+corrected 2026-05-26 after literature-searcher verified the prior
+"Bartov-Lai-Yeung 2002 *JAR*" attribution was hallucinated; the
+hand-off originally labeled it Cohen-Malloy-Pomorski 2012, which
+also turned out to be wrong, and the late-filing 5-day abnormal-
+return finding is anchored in Bartov-Konchitchki 2017 §III).
 Each bullet carries the Phase 2.5 provenance tier (LITERATURE-ANCHORED
 / GUT-FEEL with rationale) cross-checked against
 `compute/scoring/manipulation_index.py` weight docstrings — zero

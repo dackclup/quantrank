@@ -1164,3 +1164,157 @@ the side-file convention adopted in PR #237.
   (unlikely — QuantRank's multi-file pattern is durable), update
   `docs/agents/domain.md` accordingly.
 
+---
+
+## PR (this PR) — 15-agent self-audit follow-up: bug-fix bundle + doc-drift sweep + BLY 2002 citation correction (in flight, 2026-05-26)
+
+Output of the 15-parallel-agent self-audit run on `claude/eager-bohr-12bQi`
+(branch HEAD `ba13f80`). All 15 agents reported; consolidated synthesis
+identified 5 BLOCKERS + 13 MAJORs + 12 NITs across code + docs + literature.
+This PR bundles the actionable items into one focused change.
+
+**Code fixes (3 files)**:
+
+- **`compute/ingest/fundamentals.py`** — `_build_snapshot` Issue #248
+  PR2b dimensional override `elif` branch now gates on
+  `not os.environ.get("QR_SKIP_FUNDAMENTALS")`. Closes the ci-triage-engineer
+  session-7 finding that PR #257's multi-class peek-XBRL path fired
+  unconditionally even when the CI escape-hatch env var was set,
+  contributing to the simulate 90m01s cancel pattern. Primary plausible
+  value is still written; only the multi-class refinement (V/NWS/NWSA/
+  FOX/FOXA/BRK-B/STZ allowlist) is skipped. Weekly cron unchanged
+  (env var unset → full precision path).
+- **`frontend/components/PriceHistoryChart.tsx`** — `<ReferenceLine y=
+  {fairPriceMax}>` `stroke` + `label.fill` were hard-coded `#0f172a`
+  (slate-950) which IS the dark-mode body bg → Target reference line
+  + its label rendered INVISIBLE in dark mode. Fixed via the existing
+  `isDark = mounted && resolvedTheme === 'dark'` guard already
+  imported for the tooltip path (PR #255). Light mode unchanged; dark
+  mode now shows the Target line as `#e2e8f0` (slate-200) for AAA
+  contrast against `slate-950` canvas.
+- **`compute/scoring/manipulation_index.py` + `compute/scoring/restatement_filings.py`**
+  — `late_filing_notification` flag academic citation corrected.
+  `literature-searcher` 2026-05-26 verified that the "Bartov-Lai-Yeung
+  2002 *JAR*" attribution in module docstring + LATE_FILING_WEIGHT
+  provenance block + module References list was **a hallucinated
+  citation**. No paper with the Bartov-Lai-Yeung author tuple exists
+  in JAR or any related accounting journal. The real anchor is
+  **Bartov & Konchitchki 2017 *Accounting Horizons* 31(4) "SEC
+  Filings, Regulatory Deadlines, and Capital Market Consequences"**
+  — NT-10Q late filings drive a -2.93% 5-day abnormal return, NT-10K
+  -1.96%, both drifting downward in post-filing months. 5 sites
+  corrected (module References list, LATE_FILING_WEIGHT provenance
+  docstring, restatement_filings module docstring + References block,
+  + 2 doc cross-references in CLAUDE.md / AGENTS.md). Weight 5.0
+  unchanged — the underlying finding (late filings carry negative
+  predictive power) holds; only the paper attribution was wrong.
+
+**Doc-drift sweep (7 files)**:
+
+- **`docs/METHODOLOGY.md`** — BLOCKER fixes: line 16 intro
+  rewritten "10 active defenses — 4 vetoes + 5 numerical guards +
+  7 annotate-only flags" → "33 active defenses — 7 vetoes + 5
+  numerical guards + 21 annotate-only flags, plus the
+  `manipulation_index` rollup" (intro arithmetic now reconciles
+  with the body sections). §"Annotate-only flags" section header
+  `(18)` → `(21)`. THREE missing bullets added per methodology-
+  scientist (opus) authoritative content: `rem_suspect` (Roychowdhury
+  2006 *JAE*), `insider_sell_cluster` (Cohen-Malloy-Pomorski 2012
+  *JFE*), `c_suite_unusual_sell` (Jeng-Metrick-Zeckhauser 2003 *JAR*
+  §V). `late_filing_notification` bullet citation also corrected to
+  Bartov & Konchitchki 2017 with effect-size figures inline.
+- **`PHASE_STATUS.md`** — §Current state table: schema `0.10.2` →
+  `0.10.4-phase4.5e` (catches up to PR #256 + #257); skill inventory
+  43 → 44 (mattpocock-grill-with-docs added on the harness chore);
+  date 2026-05-24 → 2026-05-26.
+- **`SKILL.md`** — §Repository Structure `38 skills` → `44`. Schema-
+  version table gains 2 missing rows: `0.10.4-phase4.5e` (PR #257
+  multi-class dimensional override) + `0.10.3-phase4.5e` (PR #256
+  cross-source observability 4-field surface).
+- **`CLAUDE.md`** — §Auto-routing §Main agent role: "15-agent team"
+  → "18-agent team" (post-PR #225 expansion: `ci-triage-engineer` +
+  `vercel-preview-auditor` + `literature-searcher`). §Phase status
+  PR #184 entry's `late_filing_notification` provenance corrected
+  to Bartov & Konchitchki 2017 with a note that the original
+  Cohen-Malloy-Pomorski 2012 mis-attribution was caught + replaced
+  with what turned out to also be hallucinated (BLY 2002 *JAR*),
+  then literature-searcher verified the correct anchor on 2026-05-26.
+- **`AGENTS.md`** — 6 lockstep fixes: §Project structure skill count
+  42 → 44; §Project structure hooks list adds `delegate-first.sh`;
+  §Security considerations expands `FORM4_FETCH_SKIP=1` single-bullet
+  to the full 5-var CI escape-hatch combo (`FORM4_FETCH_SKIP` +
+  `QR_SKIP_TIER2` + `QR_SKIP_FUNDAMENTALS` + `QR_SKIP_OSAP` +
+  `QR_SKIP_CROSS_SOURCE`); `dependency-auditor` CVE baseline
+  `25-active-CVE` → `15-active-CVE` (PR #194 + #226 wave closed 10);
+  Two PostToolUse hooks paragraph rewritten to "Three hooks
+  (2 PostToolUse + 1 UserPromptSubmit)" with `delegate-first.sh`
+  description; `stock-detail-auditor` "≤ 20 tickers per run" stale
+  claim removed (cap lifted in PR #219); "15 agent prompts" + "11 of
+  15 agents" → "18" / "14 of 18".
+- **`WORKFLOW.md`** — Phase 4.5 Defense Roadmap row for
+  `c_suite_unusual_sell` updated: spec `> 5× comp / 90d` → actual
+  implementation `≥ 2 distinct CEO/CFO/President insiders, 30-day
+  window` per Jeng-Metrick-Zeckhauser 2003 §V (matches PR #222
+  emit semantic); `late_filing_notification` citation corrected to
+  Bartov & Konchitchki 2017; `insider_sell_cluster` thresholds
+  expanded to match Phase 4.5e PR3 implementation.
+- **`README.md`** — §Honest Limitations gains explicit Phase 4.5e
+  Form-4 insider clustering paragraph (`insider_sell_cluster` +
+  `c_suite_unusual_sell` + 10b5-1 filter); `late_filing_notification`
+  citation corrected.
+
+**GitHub issues filed (2)**:
+
+- **[#261](https://github.com/dackclup/quantrank/issues/261) GOOG/GOOGL multi-class shares overcount** —
+  stock-detail-auditor surfaced that BOTH `GOOG` (Class C) and
+  `GOOGL` (Class A) tickers store Alphabet's 12.12B total shares
+  (companyfacts returns the aggregate without dimensional
+  disaggregation for this filer), giving each ticker a $4.6T market
+  cap vs real ~$1.05T per class (4.4× overcount, opposite direction
+  to the PR #257 allowlist pattern which fixes UNDERCOUNTS). The
+  allowlist's `summed > primary wins` invariant rules out a naive
+  extension — for GOOG/GOOGL the primary is ALREADY the summed
+  value and the per-class value would be smaller. No defense flag
+  catches it (`data_quality_input_corruption` doesn't fire because
+  shares are plausible-magnitude; `cross_source_disagreement`
+  doesn't fire because yfinance also uses the aggregate).
+- **[#262](https://github.com/dackclup/quantrank/issues/262) DQIC dual-surface emission inconsistency** —
+  defense-layer-auditor + stock-detail-auditor confirmed that
+  `data_quality_input_corruption` emits to TWO surfaces from TWO
+  distinct check sites: `risk_overlay.py:411` (veto surface, fires
+  when TBVPS > ceiling OR revenue tag mis-pick OR |NI| > |revenue|)
+  AND `valuation/ensemble.py:545` (annotate surface, fires when
+  ANY of the 6 valuation method outputs > ceiling). The valuation-
+  layer check is BROADER than the risk-overlay check, so a ticker
+  (e.g., NVR) can land in `valuation_warnings` but NOT
+  `risk_flags` — meaning the veto wouldn't fire if NVR ever rose
+  into Top-5 contention. Currently NVR is rank ~267 so no live
+  safety impact. Fix requires methodology-scientist Mode B sign-off
+  on which surface is authoritative; deferred to a focused PR.
+
+**Verification**:
+
+- `ruff check .` clean
+- `pytest tests/ -m "not network"` — full suite unchanged from
+  pre-PR baseline (no new tests added; no production logic changed
+  except the QR_SKIP guard which has zero behavior change on the
+  weekly cron's unset path)
+- `python -m compute.output.schema_check` clean (no schema fields
+  touched; only docstring + comment edits in `compute/`)
+- `cd frontend && npx --no -- tsc --noEmit` clean for edited files
+- `cd frontend && npx --no -- next build` clean
+
+**Sub-agent runtime**: 15 read-only audit agents ran fully thorough
+(no caps); the 2 follow-up agents (methodology-scientist Mode B for
+3 missing METHODOLOGY.md bullets + literature-searcher for BLY 2002
+verification) ran in parallel for the substance/citation deliverables.
+Total agent-hours: ~12h aggregate sonnet pool. Demonstrates the
+PR #219 + PR #223 "spawn-thorough-don't-cap-the-pool" discipline
+working as designed.
+
+CLAUDE.md + AGENTS.md substance touched in lockstep (multiple §sections
+each); §Conventions "ship with every PR" rule satisfied. This
+PHASE_STATUS_INFLIGHT.md entry mirrors the changes for parallel-PR
+safety per PR #237 convention.
+
+---

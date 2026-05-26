@@ -13,10 +13,12 @@ QuantRank produces, per stock:
 - **Fair-price ensemble** — median of 6 valuation methods + outlier-excluded
   max. _(Phase 3c)_
 - **Margin of safety** — `(median − current) / median × 100`. _(Phase 3c)_
-- **10 active defenses** — 4 vetoes + 5 numerical guards + 7 annotate-only
-  flags. Annotate-and-veto-Top-N philosophy: defenses **never modify the
-  composite**, only suppress the entered-top-5 badge or null specific
-  fair-price methods. _(Phase 3b/3c/3d)_
+- **33 active defenses** — 7 vetoes + 5 numerical guards + 21 annotate-only
+  flags, plus the `manipulation_index` rollup that composes the annotate set
+  into a single 0–100 severity dial. Annotate-and-veto-Top-N philosophy:
+  defenses **never modify the composite**, only suppress the entered-top-5
+  badge or null specific fair-price methods. _(Phase 3b/3c/3d, expanded
+  through Phase 4.5a–4.5e)_
 - **Top-5 SHAP factors** — why the score is what it is. _(Phase 5+)_
 
 ## How scoring works
@@ -159,7 +161,7 @@ composite.
 | Sector exclusions | EV/EBITDA skipped for Financials; DCF skipped for Financials + Utilities; Quality pillar metrics gated by sector (`magic_formula`, `ebit_based_roic`, `gross_profitability`, `asset_turnover` per Greenblatt 2005) | Greenblatt; sector-method spec |
 | Data-quality $10K ceiling | If any method computes > $10,000/share → null all 6 + emit `data_quality_input_corruption`. Catches upstream ingestion bugs (e.g., `shares_outstanding` in wrong units) before user-visible nonsense. | Internal — Step 7.5 (post-spot-check) |
 
-### Annotate-only flags (18) — surfaced in `valuation_warnings` or `tier2_events`, no behavioral effect
+### Annotate-only flags (21) — surfaced in `valuation_warnings` or `tier2_events`, no behavioral effect
 
 - `goodwill_heavy` — TBVPS / BVPS_reported < 0.5 (cautions that
   reported book is misleading)
@@ -223,6 +225,23 @@ composite.
   because the asset base is multi-billion). Annotate-only — both
   flags ship side-by-side pending the Q3 2026-08-19 quarterly-audit
   decision.
+- `rem_suspect` _(Phase 4.5c, PR #95)_ — Composite of three real-
+  activities earnings-management proxies: abnormal CFO, abnormal
+  Production, abnormal Discretionary Expenses (cuts to advertising /
+  R&D / SG&A). Roychowdhury 2006 *JAE* 42(3) §5.2 establishes the
+  three-proxy battery as the canonical REM signature; firms managing
+  earnings via real activities (rather than accruals) understate CFO
+  + DiscExp and overstate Production relative to sector-cohort
+  norms. Donelson-McInnis-Mergenthaler 2013 *TAR* reaffirms the
+  proxy set against the post-SOX cohort. Distinct from the
+  `loss_avoidance_pattern_size_invariant` sibling: that flag
+  identifies cohort *membership* (chronic small positives),
+  `rem_suspect` identifies the *mechanism* (which abnormal
+  accounting moves are being used within the cohort). Threshold
+  provenance: **LITERATURE-ANCHORED** (Roychowdhury 2006 three-
+  proxy cohort cutoffs); φ-correlation with the two loss-avoidance
+  flags watch-listed for the Q3 2026-08-19 quarterly audit per
+  PR #164 baseline analysis.
 - `beneish_high` _(Phase 3e)_ — Beneish M-score `∈ [−2.22, −1.78]`
   (warning band immediately below the active-veto threshold of
   −1.78). Beneish 1999 *FAJ* §"The Detection of Earnings
@@ -281,17 +300,65 @@ composite.
   signature; 90d window per Schroeder 2024 SSRN).
 - `late_filing_notification` _(Phase 4.5d)_ — NT-10K or NT-10Q form
   filed (SEC Rule 12b-25 notice of inability to file on time) in
-  the lookback window. Bartov-Lai-Yeung 2002 *JAR* 40(5) §IV
-  documents late-filers exhibiting ~2× the restatement base-rate
-  over the subsequent 3 years. Weaker leading indicator than a
-  realized 10-K/A amendment, but precedes the restatement filing
-  itself (often by 6-18 months) so the annotate surfaces a
-  near-term audit-risk signal before the bare `restatement_history`
-  flag catches up. Threshold provenance: **GUT-FEEL** — no PPV
-  figure replicated on the QuantRank universe; weight matches the
-  `restatement_history` sibling on the "late filing is a weaker
-  leading indicator of restatement filing" assumption pending Q3
-  2026-08-19 cohort confirmation.
+  the lookback window. Bartov & Konchitchki 2017 *Accounting
+  Horizons* 31(4) "SEC Filings, Regulatory Deadlines, and Capital
+  Market Consequences" documents a significantly negative 5-day
+  stock price reaction (NT-10Q: −2.93%; NT-10K: −1.96%) that
+  continues drifting downward in post-filing months; the penalty
+  amplifies when the filer subsequently misses the grace-period
+  extended deadline. The authors interpret the late filing as
+  market-detected information about deeper operating problems.
+  Weaker leading indicator than a realized 10-K/A amendment, but
+  precedes the restatement filing itself (often by 6-18 months) so
+  the annotate surfaces a near-term audit-risk signal before the
+  bare `restatement_history` flag catches up. Threshold provenance:
+  **GUT-FEEL** — no PPV figure replicated on the QuantRank universe;
+  weight matches the `restatement_history` sibling on the "late
+  filing is a weaker leading indicator of restatement filing"
+  assumption pending Q3 2026-08-19 cohort confirmation. _(Citation
+  corrected on 2026-05-26 from the prior hallucinated `Bartov-Lai-
+  Yeung 2002 *JAR*` attribution per literature-searcher verification.)_
+- `insider_sell_cluster` _(Phase 4.5e PR3, PR #222)_ — ≥ 3 distinct
+  insiders selling ≥ $1M cohort-aggregate in opportunistic
+  transactions (Form 4 transaction codes `{S, D}`) within a 30-day
+  rolling window. Cohen-Malloy-Pomorski 2012 *JFE* 103(2) §III.A
+  "Decoding Inside Information" partitions Form 4 transactions into
+  opportunistic vs compensation-mechanical via the transaction-code
+  taxonomy — codes `{A, M, F, G}` are vesting / option-exercise /
+  gift transfers and carry no information signal; the opportunistic
+  subset (`{S, D}`) drives the ~10% annualized abnormal-return
+  spread CMP documents. Rule 10b5-1 pre-scheduled trades
+  (Jagolinzer 2009 *MS* §3.2 expected 40-60% FP rate) are filtered
+  via the document-level `<aff10b5One>` boolean and the footnote-
+  text regex set added in PR #224. Current weight 5.0 — downgraded
+  from RESERVED 10.0 per methodology-scientist Mode B 2026-05-23
+  (Bushman-Smith 2003 *JAR* documents 30-50% post-SOX signal
+  degradation on insider-sell anomalies; conservative weight
+  pending Q3 cohort PPV acceptance). Threshold provenance:
+  **LITERATURE-ANCHORED** on the transaction-code partition +
+  distinct-insider count (CMP 2012 §III); **GUT-FEEL-acceptable**
+  on the $1M cohort floor and 30-day window (compresses CMP's
+  calendar-quarter into Jagolinzer 2009's high-information regime;
+  no paper anchors an absolute dollar floor).
+- `c_suite_unusual_sell` _(Phase 4.5e PR3, PR #222)_ — ≥ 2 distinct
+  CEO / CFO / President insiders selling in the same 30-day window
+  (narrow-regex match — deliberately excludes COO / CTO / CMO /
+  CHRO which are operational rather than financial-information
+  roles). Jeng-Metrick-Zeckhauser 2003 *JAR* 41(3) §V documents
+  that top-officer sales carry materially stronger signal than
+  broad-insider sales, driven by the asymmetric financial-
+  information access; Jagolinzer 2009 §5.2 NEO subsample reports
+  an 80% predictability drop when 10b5-1 scheduled trades are
+  excluded vs the full population. Strict superset of
+  `insider_sell_cluster` when the $1M cohort floor is also met →
+  combined weight = 5.0 + 3.0 = 8.0 pts (≈ `REM_SUSPECT_WEIGHT`),
+  with **delta-not-total semantics** mirroring PR #165's
+  `RESTATEMENT_HIGH_CONFIDENCE_WEIGHT` (the +3.0 is the
+  irregularity premium on top of the bare cluster signal, not a
+  re-counted total). Threshold provenance: **LITERATURE-ANCHORED**
+  on the role partition + distinct-officer count (JMZ 2003 §V;
+  Jagolinzer 2009 §5.2); **GUT-FEEL-acceptable** on the 30-day
+  window (inherits the `insider_sell_cluster` calibration).
 - `share_count_extraction_missing` _(Issue #176)_ —
   `shares_outstanding is None AND revenue > 0 AND total_assets > 0`.
   Operational data-quality annotate (not a literature-anchored

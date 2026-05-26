@@ -87,9 +87,9 @@ frontend/                         # Next.js static site (read/write OK)
 
 tests/                            # pytest suite
 docs/                             # Academic methodology + research findings
-.claude/skills/                   # 42 loaded skills + phase-N/ planning docs
+.claude/skills/                   # 44 loaded skills + phase-N/ planning docs
 .claude/agents/                   # 18 subagents — Tier 1 Core 5 (incl. stock-detail-auditor for per-stock JSON correctness) + Tier 2 Lifecycle 5 (incl. vercel-preview-auditor) + Tier 3 Specialized 5 (incl. literature-searcher) + Tier 4 Operations 3 (incl. ci-triage-engineer); Claude Code only — Copilot / Cursor / Devin do not auto-route to these
-.claude/hooks/                    # PostToolUse Bash hooks (log-bash.sh, schema-reminder.sh) wired by .claude/settings.json (Claude Code only — Copilot / Cursor / Devin ignore)
+.claude/hooks/                    # PostToolUse Bash hooks (log-bash.sh, schema-reminder.sh) + UserPromptSubmit hook (delegate-first.sh) wired by .claude/settings.json (Claude Code only — Copilot / Cursor / Devin ignore)
 .claude/worktrees/                # Harness-managed isolation dirs for Agent-tool subagents (Claude Code on the web only; per-session transient; gitignored 2026-05-22)
 .claude/settings.json             # Claude Code harness config (hooks, permissions). Per-user overrides go in .claude/settings.local.json (gitignored)
 .github/workflows/                # ⚠️ ask before editing
@@ -333,11 +333,27 @@ export function FairPriceCard(props) {  // no types
 
 - `EDGAR_USER_AGENT` is required for SEC EDGAR fetches. Set via env
   var. CI uses a GitHub Actions secret. Never commit.
-- `FORM4_FETCH_SKIP=1` (optional) skips the Form-4 bulk fetch in
-  `compute/main.py:840` so the simulate CI workflow finishes under
-  the 45-min GitHub Actions cap. Set only in
-  `.github/workflows/pre-merge-prod-sim.yml`; weekly cron and local
-  dev must leave it unset. Safe default (absence = no skip).
+- **CI escape-hatch env-var combo for simulate** (5 vars, all set
+  together in `.github/workflows/pre-merge-prod-sim.yml`; NONE set
+  in weekly cron `compute-rankings.yml`). Each is optional, fails
+  open on absence (= no skip), and falls through to live fetch if
+  no cached parquet exists. Cron and local dev must leave them
+  unset. The combo is the durable structural fix for the recurring
+  simulate 45-min cap breach pattern (PRs #230 / #238 / #241).
+  - `FORM4_FETCH_SKIP=1` — skips Form-4 bulk fetch
+    (`compute/main.py:840`)
+  - `QR_SKIP_TIER2=1` — skips Tier-2 10-K text + 8-K fetch
+    (`compute/scoring/tier2.py:162`)
+  - `QR_SKIP_FUNDAMENTALS=1` — skips fundamentals freshness gate
+    (`compute/ingest/fundamentals.py` in BOTH `fetch_fundamentals`
+    + `fetch_fundamentals_history`; PR #257-fix also gates the
+    `_fetch_shares_from_per_filing_xbrl` multi-class dimensional
+    override path)
+  - `QR_SKIP_OSAP=1` — skips OSAP openassetpricing.com bulk
+    download (`compute/ingest/osap.py:fetch_osap_returns`)
+  - `QR_SKIP_CROSS_SOURCE=1` — skips the 502-ticker yfinance.info
+    cross-source validation loop
+    (`compute/ingest/cross_source.py:fetch_yfinance_market_cap`)
 - Pre-commit hooks run `ruff` + the schema-snapshot guard. Do not
   bypass.
 - No telemetry / external network beacons in the frontend. The site is
@@ -566,7 +582,9 @@ note cross-tool-specific points only:
   `methodology-scientist` (academic-prior validation, owns the next
   quarterly cohort audit 2026-08-19) + `performance-engineer`
   (cron latency budgets) + `dependency-auditor` (CVE + supply chain;
-  owns the 25-active-CVE baseline + issue #41 tracker); Tier 4 adds
+  owns the 15-active-CVE baseline post PR #194 + #226 wave — Python
+  side clean, all 15 remaining are `next@14.2.x` SSR / middleware
+  advisories non-exploitable on the static-export site; issue #41 tracker); Tier 4 adds
   `docs-reviewer` (substance-check on the six top-level docs +
   METHODOLOGY.md) + `incident-commander` (P1 production-failure
   orchestrator). 6 coordination flows codified in
@@ -761,8 +779,16 @@ note cross-tool-specific points only:
   `compute/scoring/manipulation_index.py` — zero drift verified.
   CORRECTION surfaced during the audit: the hand-off attributed
   `late_filing_notification` to Cohen-Malloy-Pomorski 2012; the
-  actual anchor is Bartov-Lai-Yeung 2002 *JAR* (CMP 2012 is
-  reserved-not-emitted for Phase 4.5e Form-4 slots). Stale Phase 3e
+  actual anchor was originally documented as Bartov-Lai-Yeung
+  2002 *JAR*, which `literature-searcher` verified on 2026-05-26
+  was itself a hallucinated citation (no paper with the Bartov-
+  Lai-Yeung tuple exists in JAR or related venues). The real
+  anchor is Bartov & Konchitchki 2017 *Accounting Horizons* 31(4)
+  "SEC Filings, Regulatory Deadlines, and Capital Market
+  Consequences" — NT-10Q late filings drive a -2.93% 5-day
+  abnormal return, NT-10K -1.96%, both drifting downward in
+  post-filing months (CMP 2012 is reserved-not-emitted for
+  Phase 4.5e Form-4 slots). Stale Phase 3e
   footnote removed (those flags are now full bullets; footnote also
   misspelled `dechow_f_high` as `dechow_high` is the actual emit
   name). No compute / schema / scoring / valuation / code change —
@@ -1277,19 +1303,30 @@ audit), prefer routing it through Claude Code rather than re-
 implementing the integration in a different agent.
 
 Claude Code also reads `.claude/settings.json` for the harness's hook
-configuration. Two PostToolUse Bash hooks ship today:
+configuration. Three hooks ship today (2 PostToolUse + 1
+UserPromptSubmit):
 
-- `.claude/hooks/log-bash.sh` — appends every Bash invocation
-  (one line per command: `[<ISO8601-UTC>] <command>`) to gitignored
-  `.claude/session.log` for per-session audit trail. Pure side-effect,
-  no stdout, fail-open.
-- `.claude/hooks/schema-reminder.sh` — when Write/Edit touches any
-  file in the Pydantic↔TS↔snapshot triple (`compute/output/schemas.py`,
-  `frontend/lib/types.ts`, `frontend/lib/schema-snapshot.json`),
-  emits `hookSpecificOutput.additionalContext` reminding the agent
-  to run `python -m compute.output.schema_check` (or spawn the
+- `.claude/hooks/log-bash.sh` (PostToolUse Bash) — appends every Bash
+  invocation (one line per command: `[<ISO8601-UTC>] <command>`) to
+  gitignored `.claude/session.log` for per-session audit trail. Pure
+  side-effect, no stdout, fail-open. Includes a `sed` pre-filter
+  that redacts the value half of known secret prefixes (`ghp_*`,
+  `sk-ant-api*`, `AKIA*`, `Bearer <tok>`, etc.) before logging — PR
+  #229 W4 hardening.
+- `.claude/hooks/schema-reminder.sh` (PostToolUse Write/Edit) — when
+  Write/Edit touches any file in the Pydantic↔TS↔snapshot triple
+  (`compute/output/schemas.py`, `frontend/lib/types.ts`,
+  `frontend/lib/schema-snapshot.json`), emits
+  `hookSpecificOutput.additionalContext` reminding the agent to run
+  `python -m compute.output.schema_check` (or spawn the
   `schema-sentinel` subagent) before commit. Closes the local
   pre-commit gap left by the schema-drift CI guard.
+- `.claude/hooks/delegate-first.sh` (UserPromptSubmit) — injects the
+  "DELEGATE-FIRST CHECK" reminder as `additionalContext` on every
+  user turn so the main agent defaults to spawning the matching
+  sub-agent in `.claude/agents/` instead of doing the work inline.
+  Drains the under-utilized Max-plan "Weekly · Sonnet only" pool
+  (PR #223 token-economy rebalance).
 
 The 18 subagents under `.claude/agents/` follow the **gate-moment
 auto-routing policy** in [`CLAUDE.md`](CLAUDE.md) §Auto-routing
@@ -1298,17 +1335,18 @@ event, not on every edit. This is the reduced-token policy
 introduced after the original "spawn-on-every-diff" rule proved
 too expensive. Notable Tier 1 addition: `stock-detail-auditor` for
 data correctness of per-stock JSON the frontend renders (range /
-consistency / Rule 16 / known-issue overlap; prefilter caps
-LLM-judgment at ≤ 20 tickers per run; fires post-cron + pre-release
-+ "ตรวจ data หุ้น").
+consistency / Rule 16 / known-issue overlap; deterministic prefilter
+walks the universe for outliers then thorough LLM verdict on every
+flagged ticker — the original ≤ 20 hard cap was lifted in PR #219;
+fires post-cron + pre-release + "ตรวจ data หุ้น").
 
-The 15 agent prompts are kept tight (total ~2525 lines across all
+The 18 agent prompts are kept tight (total ~2525 lines across all
 of `.claude/agents/`) so per-spawn context cost stays bounded —
 trim target is the boilerplate ("read these first" + verbose intros
 + duplicated material from CLAUDE.md / SKILL.md / AGENTS.md), NOT
 the work the agent does. Hard constraints on prompt size do not
 imply hard caps on output size or investigation depth. Sub-agents
-on the sonnet pool (11 of 15 agents) should walk every relevant
+on the sonnet pool (14 of 18 agents) should walk every relevant
 file, list every finding, and follow every escalation lead — the
 Max-plan "Weekly · Sonnet only" budget is intended for thorough
 audit work and is separate from the "Weekly · all models" pool the

@@ -149,12 +149,12 @@ Defense additions per phase (full bibliography in
 | 4.5a | Dechow F-score soft-veto (F > 3.0) | VETO | 40 LOC | Dechow et al. 2011 *CAR* |
 | 4.5a | `manipulation_triple_flag` joint gate | BADGE | 60 LOC | (composite gate) |
 | 4.5b | 10-K/A restatement history (5y) | ANNOTATE | 150 LOC | Hennes-Leone-Miller 2008 *TAR* |
-| 4.5b | NT 10-K/Q (Form 12b-25, 365d) | ANNOTATE | 120 LOC | Bartov-Lai-Yeung 2002 *JAR* |
+| 4.5b | NT 10-K/Q (Form 12b-25, 365d) | ANNOTATE | 120 LOC | Bartov & Konchitchki 2017 *Accounting Horizons* (corrected from prior hallucinated Bartov-Lai-Yeung 2002 *JAR* attribution; literature-searcher 2026-05-26) |
 | 4.5c | Roychowdhury REM 3-proxy (sector-rel.) | ANNOTATE | 250 LOC | Roychowdhury 2006 *JAE* |
 | 4.5d | Beneish M-score 3y momentum | ANNOTATE | 80 LOC | (paper extension) |
 | 4.5d | Burgstahler-Dichev kink at zero (3y) | ANNOTATE | 100 LOC | Burgstahler-Dichev 1997 *JAE* |
-| 4.5e | Form 4 insider sell cluster (3+ / 30d) | ANNOTATE | 300 LOC | Cohen-Malloy-Pomorski 2012 *RFS* |
-| 4.5e | CEO/CFO unusual sell (> 5× comp / 90d) | ANNOTATE | 120 LOC | (paper extension) |
+| 4.5e | Form 4 insider sell cluster (≥ 3 distinct / $1M cohort / 30d) | ANNOTATE | 300 LOC | Cohen-Malloy-Pomorski 2012 *JFE* |
+| 4.5e | C-suite unusual sell (≥ 2 CEO/CFO/President / 30d) | ANNOTATE | 120 LOC | Jeng-Metrick-Zeckhauser 2003 *JAR* §V |
 | 4.5f | `manipulation_index` 0-100 composite | (schema + penalty) | 250 LOC | (rollup of 4.5a-4.5e) |
 | 5 | Bao-Ke ML fraud (RUSBoost) | ANNOTATE | 300 LOC | Bao et al. 2020 *JAR* |
 | 5 | MAPIE conformal wrappers | (arch) | 150 LOC | Angelopoulos-Bates 2021 |
