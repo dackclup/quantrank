@@ -250,3 +250,58 @@ bundled scripts, so the directory contents are 1-file each.
 | Adds copyleft `LICENSE` (GPL / AGPL) | Either accept the copyleft (requires re-licensing QuantRank or making `.claude/skills/9arm-*/` a separate concern) or remove all 4 vendored skills. |
 | Adds non-OSI license forbidding redistribution | Remove all 4 vendored skills; close issue #137 with "vendor not permitted"; optionally pursue the "inspire-only" path. |
 | Doesn't respond | Re-evaluate at 4 weeks post-filing — either remove the skills or proceed with the explicit understanding that takedown may follow. |
+
+---
+
+## good-code-bad-code-review (Claude Code reference-link skill)
+
+- **Source**: <https://good-code-bad-code.pages.dev/>
+- **Author**: Miler (`milerdev`)
+- **License**: NONE DECLARED on the site itself; no `LICENSE`
+  file or footer-text declaration visible as of 2026-05-26. The
+  vendoring posture for this skill is **REFERENCE LINK ONLY** —
+  no content is copied into the QuantRank repo; the skill at
+  `.claude/skills/good-code-bad-code-review/SKILL.md` contains
+  zero verbatim copy of any example, and the agent's invocation
+  pattern is to `WebFetch` the relevant track / example URL on
+  demand at review-time. The skill body itself is QuantRank-
+  original prose cataloging the resource's structure (track list,
+  per-track topic list, URL pattern) which is metadata, not the
+  copyrighted comparative-example content.
+- **Vendored at**: `.claude/skills/good-code-bad-code-review/SKILL.md`
+  (single file, no `bundled-resources/` subdirectory)
+- **Vendored date**: 2026-05-26
+- **Vendored revision**: site contents as displayed on 2026-05-26
+  (no commit-SHA exposed by the publication platform — record the
+  date as the audit trail)
+
+### Why no MIT block
+
+Unlike `karpathy-guidelines` (MIT) and `mattpocock-skills` (MIT),
+this resource has no declared license. The vendoring basis is the
+distinct **no-vendoring posture** — the skill is a pure index /
+lookup pattern, not a copy of upstream content. Direct WebFetch on
+the URL pattern at review-time preserves attribution + leaves the
+canonical content authoritatively with the upstream author.
+
+### Attribution note
+
+The 18-track × 10-example side-by-side review catalog is Miler's
+curatorial work. Any time the skill is invoked during a real code
+review, the relevant example URL **must be cited inline** in the
+review write-up (the SKILL.md body documents this as a hard
+constraint). Quoting short snippets (a few lines of the bad version
+or commentary) for the purpose of explaining a review finding is
+acceptable under standard fair-use commentary norms; **bulk
+quoting of multiple complete examples is NOT authorized** by the
+upstream and is explicitly disallowed by the skill's hard
+constraints.
+
+### Action items on upstream license outcome
+
+| Outcome | QuantRank action |
+|---|---|
+| Adds permissive `LICENSE` (MIT / Apache 2.0 / BSD) | Update this section to reflect declared terms. The reference-link posture stays — no project benefit from inlining 180 examples — but full per-example quoting in review write-ups becomes unambiguously permitted. |
+| Adds copyleft `LICENSE` (GPL / AGPL) | The reference-link posture stays — no vendoring means no copyleft propagation. No re-licensing required. |
+| Adds non-OSI license forbidding access | Remove the skill; close any review citations that linked to the resource. Effective protection: no `.claude/skills/good-code-bad-code-review/bundled-resources/` directory exists, so removal is a single-file delete. |
+| Site goes offline | The skill becomes a dead link. Mark STALE in `SKILL.md` frontmatter; remove during the next quarterly housekeeping pass. Q3 2026-08-19 health check covers this per the SKILL.md §Maintenance section. |

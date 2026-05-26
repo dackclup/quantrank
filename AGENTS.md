@@ -87,7 +87,7 @@ frontend/                         # Next.js static site (read/write OK)
 
 tests/                            # pytest suite
 docs/                             # Academic methodology + research findings
-.claude/skills/                   # 44 loaded skills + phase-N/ planning docs
+.claude/skills/                   # 45 loaded skills + phase-N/ planning docs
 .claude/agents/                   # 18 subagents — Tier 1 Core 5 (incl. stock-detail-auditor for per-stock JSON correctness) + Tier 2 Lifecycle 5 (incl. vercel-preview-auditor) + Tier 3 Specialized 5 (incl. literature-searcher) + Tier 4 Operations 3 (incl. ci-triage-engineer); Claude Code only — Copilot / Cursor / Devin do not auto-route to these
 .claude/hooks/                    # PostToolUse Bash hooks (log-bash.sh, schema-reminder.sh) + UserPromptSubmit hook (delegate-first.sh) wired by .claude/settings.json (Claude Code only — Copilot / Cursor / Devin ignore)
 .claude/worktrees/                # Harness-managed isolation dirs for Agent-tool subagents (Claude Code on the web only; per-session transient; gitignored 2026-05-22)

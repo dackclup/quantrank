@@ -23,7 +23,7 @@
 | Latest release tag | [**`v1.3.0-phase4.5e`**](https://github.com/dackclup/quantrank/releases/tag/v1.3.0-phase4.5e) — 2026-05-26 at `5db3b978` (closes Phase 4.5e Form-4 cluster + LedgerCraft reskin; defense layer headline 32 → 33; release notes in `docs/release-notes/v1.3.0-phase4.5e.md`) |
 | Production run | `26423296287` (2026-05-26T01:12:47Z cron #4, schema `0.10.4-phase4.5e`; next cron Wed 2026-05-27 22:00 UTC re-renders at `0.10.5`) |
 | Universe | 502 stocks (S&P 500 minus 1 delisting) |
-| Skill inventory | **44** invocation-triggerable + phase planning docs |
+| Skill inventory | **45** invocation-triggerable + phase planning docs |
 | Subagent inventory | **18** project-specific in 4 tiers: **Tier 1 Core** (`quantrank-reviewer` · `schema-sentinel` · `defense-layer-auditor` · `edgar-debugger` · `stock-detail-auditor`) · **Tier 2 Lifecycle** (`security-reviewer` · `frontend-design-reviewer` · `vercel-preview-auditor` · `release-captain` · `phase-coordinator`) · **Tier 3 Specialized** (`test-engineer` · `methodology-scientist` · `literature-searcher` · `performance-engineer` · `dependency-auditor`) · **Tier 4 Operations** (`docs-reviewer` · `ci-triage-engineer` · `incident-commander`) |
 
 **Recently merged** (PR #170 → PR #237, 2026-05-21 → 2026-05-24):
