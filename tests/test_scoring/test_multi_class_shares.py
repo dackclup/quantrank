@@ -13,7 +13,8 @@ cases (None data / single-ticker universe / threshold boundary).
 
 from __future__ import annotations
 
-from hypothesis import given, strategies as st
+from hypothesis import given
+from hypothesis import strategies as st
 
 from compute.scoring.multi_class_shares import (
     MARKET_CAP_FLOOR_RATIO,
