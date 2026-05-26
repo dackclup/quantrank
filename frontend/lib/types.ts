@@ -218,6 +218,21 @@ export type Metadata = {
   // Gates Q3 2026-08-19 quarterly-audit cohort acceptance check on
   // the 10% × universe-median market_cap floor recalibration.
   multi_class_aggregate_shares_suspected_count?: number | null;
+  // Issue #261 PR-B (0.10.6-phase4.5e) — Rule 18 observability for the
+  // structural per-class XBRL extraction path that overrides the
+  // companyfacts aggregate with a single class member's count for
+  // GOOG / GOOGL. Disjoint from `shares_fallback_dimensional_override_count`
+  // (which is the OPPOSITE-direction sum-all path for V/NWS/NWSA/FOX/
+  // FOXA/BRK-B/STZ). Expected steady-state firing rate: 2.
+  multi_class_per_class_override_count?: number | null;
+  // Issue #261 PR-B (0.10.6-phase4.5e) — Defensive sanity-check counter
+  // on the per-class override path. Fires when per-class is outside the
+  // expected 5-95% fraction of primary, or when per-class >= primary
+  // (override skipped). Expected steady-state firing rate = 0; non-zero
+  // signals possible XBRL shape drift or stale allowlist entry per
+  // methodology-scientist Q3 verdict 2026-05-26 (Damodaran 2019 Ch. 16
+  // identity check Σ per-class MC = aggregate MC).
+  multi_class_mc_reconcile_failure_count?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors

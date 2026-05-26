@@ -434,9 +434,17 @@ def test_reset_fallback_stats_zeros_counters():
         _FALLBACK_STATS["triggered"] = 7
         _FALLBACK_STATS["too_low"] = 3
         _FALLBACK_STATS["dimensional_override"] = 2
+        _FALLBACK_STATS["per_class_override"] = 4
+        _FALLBACK_STATS["mc_reconcile_failure"] = 1
 
     reset_fallback_stats()
-    assert get_fallback_stats() == {"triggered": 0, "too_low": 0, "dimensional_override": 0}
+    assert get_fallback_stats() == {
+        "triggered": 0,
+        "too_low": 0,
+        "dimensional_override": 0,
+        "per_class_override": 0,
+        "mc_reconcile_failure": 0,
+    }
 
 
 def test_get_fallback_stats_returns_copy_not_reference():
@@ -453,7 +461,13 @@ def test_get_fallback_stats_returns_copy_not_reference():
 
     second = get_fallback_stats()
     # Internal state must be unaffected — still 0 from the reset above.
-    assert second == {"triggered": 0, "too_low": 0, "dimensional_override": 0}
+    assert second == {
+        "triggered": 0,
+        "too_low": 0,
+        "dimensional_override": 0,
+        "per_class_override": 0,
+        "mc_reconcile_failure": 0,
+    }
     # And the two dicts are distinct objects.
     assert first is not second
 
@@ -695,12 +709,14 @@ def test_too_low_primary_does_not_fire_dimensional_branch():
     assert stats["dimensional_override"] == 0
 
 
-def test_get_fallback_stats_returns_three_keys_after_dimensional_path():
-    """Lifecycle sanity: reset → run dimensional override → inspect all three keys.
+def test_get_fallback_stats_returns_five_keys_after_dimensional_path():
+    """Lifecycle sanity: reset → run dimensional override → inspect all five keys.
 
-    After reset_fallback_stats(): all three counters are 0.
+    After reset_fallback_stats(): all five counters are 0
+    (Issue #261 PR-B added ``per_class_override`` + ``mc_reconcile_failure``
+    alongside the existing 3).
     After one dimensional override fires: only dimensional_override == 1;
-    triggered and too_low remain 0 (those belong to the first if branch).
+    the other four counters remain 0 (each belongs to a distinct path).
     """
     from compute.ingest.fundamentals import (
         _build_snapshot,
@@ -709,7 +725,13 @@ def test_get_fallback_stats_returns_three_keys_after_dimensional_path():
     )
 
     reset_fallback_stats()
-    assert get_fallback_stats() == {"triggered": 0, "too_low": 0, "dimensional_override": 0}
+    assert get_fallback_stats() == {
+        "triggered": 0,
+        "too_low": 0,
+        "dimensional_override": 0,
+        "per_class_override": 0,
+        "mc_reconcile_failure": 0,
+    }
 
     facts = _make_facts_stub(shares_outstanding=469_000_000.0)
     company = _make_company_stub(facts)
@@ -724,7 +746,13 @@ def test_get_fallback_stats_returns_three_keys_after_dimensional_path():
         _build_snapshot("V", "0001403161")
 
     stats = get_fallback_stats()
-    assert stats == {"triggered": 0, "too_low": 0, "dimensional_override": 1}
+    assert stats == {
+        "triggered": 0,
+        "too_low": 0,
+        "dimensional_override": 1,
+        "per_class_override": 0,
+        "mc_reconcile_failure": 0,
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -777,3 +805,239 @@ def test_erie_fallback_recovers_correct_share_count():
         "50M-65M expected band — possible duplicate-counting bug or ERIE "
         "corporate action (Class A: ~54.9M, Class B: ~2.5K)."
     )
+
+
+# ---------------------------------------------------------------------------
+# Issue #261 PR-B: per-class XBRL extraction (OVERCOUNT path, GOOG/GOOGL)
+#
+# The new elif branch fires when:
+#   ticker in MULTI_CLASS_OVERCOUNT_ALLOWLIST AND primary is plausible AND
+#   QR_SKIP_FUNDAMENTALS not set
+# It calls _fetch_shares_from_per_filing_xbrl(target_class_member=...) and
+# OVERRIDES primary IFF per_class < primary (the per-class subset must be
+# SMALLER than the aggregate — opposite of the PR #257 sum-all path).
+# ---------------------------------------------------------------------------
+
+
+def test_per_class_override_fires_for_goog_with_filer_namespace_member():
+    """GOOG case: primary=12.12B (Alphabet aggregate), per-class filter
+    returns 5.43B (Class C). The override fires; shares_outstanding ends
+    at 5.43B; ``per_class_override`` counter increments."""
+    from compute.ingest.fundamentals import (
+        _build_snapshot,
+        get_fallback_stats,
+        reset_fallback_stats,
+    )
+
+    assert "GOOG" in config.MULTI_CLASS_OVERCOUNT_ALLOWLIST
+    assert (
+        config.MULTI_CLASS_OVERCOUNT_ALLOWLIST["GOOG"] == "goog:CapitalClassCMember"
+    )
+
+    reset_fallback_stats()
+    primary = 12_120_000_000.0  # Alphabet aggregate (3-class sum)
+    per_class = 5_429_000_000.0  # Class C (GOOG) per the live probe
+    facts = _make_facts_stub(shares_outstanding=primary)
+    company = _make_company_stub(facts)
+
+    with (
+        patch("compute.ingest.fundamentals.Company", return_value=company),
+        patch(
+            "compute.ingest.fundamentals._fetch_shares_from_per_filing_xbrl",
+            return_value=per_class,
+        ) as mock_fallback,
+    ):
+        snapshot = _build_snapshot("GOOG", "0001652044")
+
+    mock_fallback.assert_called_once()
+    # Confirm the filter mode kwarg was passed correctly
+    _, kwargs = mock_fallback.call_args
+    assert kwargs.get("target_class_member") == "goog:CapitalClassCMember"
+    assert snapshot.shares_outstanding == per_class
+    assert get_fallback_stats()["per_class_override"] == 1
+    assert get_fallback_stats()["mc_reconcile_failure"] == 0
+
+
+def test_per_class_override_fires_for_googl_with_standard_namespace_member():
+    """GOOGL case: primary=12.12B aggregate, per-class returns 5.82B
+    (Class A standard namespace). Override fires."""
+    from compute.ingest.fundamentals import (
+        _build_snapshot,
+        get_fallback_stats,
+        reset_fallback_stats,
+    )
+
+    assert "GOOGL" in config.MULTI_CLASS_OVERCOUNT_ALLOWLIST
+    assert (
+        config.MULTI_CLASS_OVERCOUNT_ALLOWLIST["GOOGL"]
+        == "us-gaap:CommonClassAMember"
+    )
+
+    reset_fallback_stats()
+    primary = 12_120_000_000.0
+    per_class = 5_822_000_000.0  # Class A (GOOGL) per the live probe
+    facts = _make_facts_stub(shares_outstanding=primary)
+    company = _make_company_stub(facts)
+
+    with (
+        patch("compute.ingest.fundamentals.Company", return_value=company),
+        patch(
+            "compute.ingest.fundamentals._fetch_shares_from_per_filing_xbrl",
+            return_value=per_class,
+        ),
+    ):
+        snapshot = _build_snapshot("GOOGL", "0001652044")
+
+    assert snapshot.shares_outstanding == per_class
+    assert get_fallback_stats()["per_class_override"] == 1
+
+
+def test_per_class_override_does_not_fire_for_non_allowlist_ticker():
+    """AAPL is NOT in MULTI_CLASS_OVERCOUNT_ALLOWLIST; the per-class
+    fallback must NOT be called even with a plausible primary."""
+    from compute.ingest.fundamentals import (
+        _build_snapshot,
+        get_fallback_stats,
+        reset_fallback_stats,
+    )
+
+    assert "AAPL" not in config.MULTI_CLASS_OVERCOUNT_ALLOWLIST
+
+    reset_fallback_stats()
+    primary = 15_000_000_000.0
+    facts = _make_facts_stub(shares_outstanding=primary)
+    company = _make_company_stub(facts)
+
+    with (
+        patch("compute.ingest.fundamentals.Company", return_value=company),
+        patch(
+            "compute.ingest.fundamentals._fetch_shares_from_per_filing_xbrl",
+        ) as mock_fallback,
+    ):
+        snapshot = _build_snapshot("AAPL", "0000320193")
+
+    mock_fallback.assert_not_called()
+    assert snapshot.shares_outstanding == primary
+    assert get_fallback_stats()["per_class_override"] == 0
+
+
+def test_per_class_skipped_when_qr_skip_fundamentals_set(monkeypatch):
+    """``QR_SKIP_FUNDAMENTALS=1`` escape-hatch must skip the per-class
+    HTTP probe even when ticker is on the allowlist. Matches PR #257
+    elif behavior."""
+    from compute.ingest.fundamentals import (
+        _build_snapshot,
+        get_fallback_stats,
+        reset_fallback_stats,
+    )
+
+    reset_fallback_stats()
+    monkeypatch.setenv("QR_SKIP_FUNDAMENTALS", "1")
+    primary = 12_120_000_000.0
+    facts = _make_facts_stub(shares_outstanding=primary)
+    company = _make_company_stub(facts)
+
+    with (
+        patch("compute.ingest.fundamentals.Company", return_value=company),
+        patch(
+            "compute.ingest.fundamentals._fetch_shares_from_per_filing_xbrl",
+        ) as mock_fallback,
+    ):
+        snapshot = _build_snapshot("GOOG", "0001652044")
+
+    mock_fallback.assert_not_called()
+    assert snapshot.shares_outstanding == primary
+    assert get_fallback_stats()["per_class_override"] == 0
+
+
+def test_per_class_override_skipped_when_per_class_gte_primary():
+    """Defensive sanity: if the filter returns >= primary, override is
+    SKIPPED and ``mc_reconcile_failure`` increments. Could mean stale
+    allowlist member, XBRL shape drift, or wrong-member pick."""
+    from compute.ingest.fundamentals import (
+        _build_snapshot,
+        get_fallback_stats,
+        reset_fallback_stats,
+    )
+
+    reset_fallback_stats()
+    primary = 5_000_000_000.0
+    per_class = 5_500_000_000.0  # > primary; sanity fail
+    facts = _make_facts_stub(shares_outstanding=primary)
+    company = _make_company_stub(facts)
+
+    with (
+        patch("compute.ingest.fundamentals.Company", return_value=company),
+        patch(
+            "compute.ingest.fundamentals._fetch_shares_from_per_filing_xbrl",
+            return_value=per_class,
+        ),
+    ):
+        snapshot = _build_snapshot("GOOG", "0001652044")
+
+    # Override SKIPPED; primary preserved; reconcile failure recorded.
+    assert snapshot.shares_outstanding == primary
+    assert get_fallback_stats()["per_class_override"] == 0
+    assert get_fallback_stats()["mc_reconcile_failure"] == 1
+
+
+def test_per_class_override_mc_reconcile_warning_on_fraction_below_5pct():
+    """When per_class < primary BUT per_class / primary < 5%, the
+    override fires (primary > per_class so per-class IS the better
+    value) AND the reconcile-failure counter increments to flag
+    the unexpected ratio for cohort-audit review."""
+    from compute.ingest.fundamentals import (
+        _build_snapshot,
+        get_fallback_stats,
+        reset_fallback_stats,
+    )
+
+    reset_fallback_stats()
+    primary = 12_120_000_000.0
+    per_class = 100_000_000.0  # < 1% of primary; suspicious
+    facts = _make_facts_stub(shares_outstanding=primary)
+    company = _make_company_stub(facts)
+
+    with (
+        patch("compute.ingest.fundamentals.Company", return_value=company),
+        patch(
+            "compute.ingest.fundamentals._fetch_shares_from_per_filing_xbrl",
+            return_value=per_class,
+        ),
+    ):
+        snapshot = _build_snapshot("GOOG", "0001652044")
+
+    # Override DID fire (per_class < primary)
+    assert snapshot.shares_outstanding == per_class
+    assert get_fallback_stats()["per_class_override"] == 1
+    # AND reconcile counter incremented (fraction outside 5-95% band)
+    assert get_fallback_stats()["mc_reconcile_failure"] == 1
+
+
+def test_per_class_override_skipped_when_per_class_returns_none():
+    """If the filter mode returns None (allowlist member missing from
+    XBRL, shape drift, etc.), override is silently skipped (no counter
+    increments). Primary preserved."""
+    from compute.ingest.fundamentals import (
+        _build_snapshot,
+        get_fallback_stats,
+        reset_fallback_stats,
+    )
+
+    reset_fallback_stats()
+    primary = 12_120_000_000.0
+    facts = _make_facts_stub(shares_outstanding=primary)
+    company = _make_company_stub(facts)
+
+    with (
+        patch("compute.ingest.fundamentals.Company", return_value=company),
+        patch(
+            "compute.ingest.fundamentals._fetch_shares_from_per_filing_xbrl",
+            return_value=None,
+        ),
+    ):
+        snapshot = _build_snapshot("GOOG", "0001652044")
+
+    assert snapshot.shares_outstanding == primary
+    assert get_fallback_stats()["per_class_override"] == 0
+    assert get_fallback_stats()["mc_reconcile_failure"] == 0

@@ -312,6 +312,30 @@ class Metadata(BaseModel):
     # (10% × universe median market_cap) per methodology-scientist
     # Mode B 2026-05-26 verdict.
     multi_class_aggregate_shares_suspected_count: int | None = None
+    # Issue #261 PR-B (0.10.6-phase4.5e) — Rule 18 observability for the
+    # structural per-class XBRL extraction path. Counts tickers where
+    # the primary `companyfacts` aggregate ``shares_outstanding`` was
+    # OVERRIDDEN by a per-filing XBRL filter against the
+    # ``MULTI_CLASS_OVERCOUNT_ALLOWLIST`` (GOOG → goog:CapitalClassCMember,
+    # GOOGL → us-gaap:CommonClassAMember). Disjoint from
+    # ``shares_fallback_dimensional_override_count`` — that counter
+    # covers the UNDERCOUNT path (PR #257 sums all dimensional contexts
+    # for V/NWS/NWSA/FOX/FOXA/BRK-B/STZ); this counter covers the
+    # OVERCOUNT path (filters one specific class member for GOOG/GOOGL).
+    # Expected steady-state firing rate: 2 (GOOG + GOOGL).
+    multi_class_per_class_override_count: int | None = None
+    # Issue #261 PR-B (0.10.6-phase4.5e) — Defensive Rule-18 sanity
+    # check on the per-class override path. Fires when the extracted
+    # per-class share count falls OUTSIDE the expected 5%-95% fraction
+    # of the aggregate primary (signals possible XBRL shape drift,
+    # stale allowlist entry, or a wrong-member match) OR when per-class
+    # >= primary (the override is skipped in that case but the failure
+    # is counted so the operator notices). Methodology-scientist Q3
+    # 2026-05-26 recommended this as a defensive diagnostic alongside
+    # the structural fix (per Damodaran 2019 Ch. 16 identity check —
+    # Σ per-class MC = aggregate MC). Expected steady-state firing rate
+    # = 0; non-zero is a signal for cohort-audit investigation.
+    multi_class_mc_reconcile_failure_count: int | None = None
 
 
 class RawMetrics(BaseModel):

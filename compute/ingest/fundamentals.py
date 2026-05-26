@@ -49,6 +49,15 @@ _FALLBACK_STATS: dict[str, int] = {
     "triggered": 0,
     "too_low": 0,
     "dimensional_override": 0,
+    # Issue #261 PR-B (0.10.6-phase4.5e) — per-class XBRL extraction.
+    # ``per_class_override`` = tickers where the new MULTI_CLASS_OVERCOUNT
+    # allowlist path replaced the companyfacts aggregate with a single
+    # class member's count (GOOG / GOOGL). ``mc_reconcile_failure`` =
+    # defensive Rule-18 counter for the post-override sanity check
+    # |Σ per-class − aggregate| / aggregate < 5% (Damodaran 2019 Ch. 16
+    # identity check; expected steady-state = 0 firings).
+    "per_class_override": 0,
+    "mc_reconcile_failure": 0,
 }
 
 
@@ -60,6 +69,8 @@ def reset_fallback_stats() -> None:
         _FALLBACK_STATS["triggered"] = 0
         _FALLBACK_STATS["too_low"] = 0
         _FALLBACK_STATS["dimensional_override"] = 0
+        _FALLBACK_STATS["per_class_override"] = 0
+        _FALLBACK_STATS["mc_reconcile_failure"] = 0
 
 
 def get_fallback_stats() -> dict[str, int]:
@@ -593,9 +604,16 @@ def _try_ttm_max_fresh(
     return max(candidates, key=lambda c: c[0])
 
 
-def _fetch_shares_from_per_filing_xbrl(company: Company, ticker: str | None = None) -> float | None:
+def _fetch_shares_from_per_filing_xbrl(
+    company: Company,
+    ticker: str | None = None,
+    *,
+    target_class_member: str | None = None,
+) -> float | None:
     """Issue #176 fallback — recover ``shares_outstanding`` from per-filing
-    XBRL when the SEC companyfacts aggregate API has nothing.
+    XBRL when the SEC companyfacts aggregate API has nothing OR when the
+    aggregate is the wrong shape (returns total-across-classes when we
+    want a single class — Issue #261 PR-B GOOG/GOOGL case).
 
     ``ticker`` is optional for back-compat (the function ran ticker-less
     in PR #182 and the 8 offline tests pass it positionally). When
@@ -605,6 +623,26 @@ def _fetch_shares_from_per_filing_xbrl(company: Company, ticker: str | None = No
     returned ``None`` two days later under cron load) is no longer
     invisible to the operator. See the PR-3d amplification precedent —
     bare ``except: return None`` is the same silent-drop pattern.
+
+    ``target_class_member`` (Issue #261 PR-B, 2026-05-26) selects mode:
+
+    - **None (default, sum-all mode)** — the PR #182 STZ-pattern: sum
+      across ALL dimensional contexts at the most-recent date. Used for
+      the UNDERCOUNT case where SEC ``companyfacts`` returns a per-class
+      subset (or nothing) and the per-filing XBRL must aggregate every
+      share class to recover the total. Triggered by the
+      ``primary is None OR primary < MIN_PLAUSIBLE_SHARE_COUNT`` gate.
+    - **Set (per-class filter mode)** — Issue #261 PR-B path: filter
+      dimensional contexts to ONLY the row whose
+      ``us-gaap:StatementClassOfStockAxis`` dimension equals the
+      supplied member (e.g., ``"goog:CapitalClassCMember"`` for GOOG).
+      Returns that single class's share count. Used for the OVERCOUNT
+      case where ``companyfacts`` returns the AGGREGATE and the
+      per-class ticker's ``market_cap`` was inflated 2× as a result.
+      The filter requires ``xbrl.contexts[<context_ref>].dimensions``
+      lookup — when that table is unavailable (older edgartools,
+      missing context map), filter mode degrades to ``None`` rather
+      than guessing.
 
     Background (2026-05-21 live SEC probe on STZ / Constellation Brands):
 
@@ -619,10 +657,26 @@ def _fetch_shares_from_per_filing_xbrl(company: Company, ticker: str | None = No
       DOES expose the dimensional contexts, so we can sum across share
       classes to get total common shares outstanding.
 
+    Background (2026-05-26 live SEC probe on GOOG / Alphabet, Issue #261):
+
+    - Alphabet files ``us-gaap:CommonStockSharesOutstanding`` with THREE
+      dimensional contexts at FY2025 end: Class A (``us-gaap:Common-
+      ClassAMember``, 5.822B = GOOGL), Class B (``us-gaap:CommonClass-
+      BMember``, 0.837B, not traded), Class C (``goog:CapitalClass-
+      CMember``, 5.429B = GOOG). Per-class sum reconciles to the
+      non-dimensioned aggregate row (12.088B) exactly.
+    - **Critical gotcha**: GOOG's Class C uses the **filer-specific
+      namespace** ``goog:`` not the standard ``us-gaap:``. An allowlist
+      keyed to ``us-gaap:CommonClassCMember`` would silently return
+      zero rows. The :data:`compute.config.MULTI_CLASS_OVERCOUNT_ALLOWLIST`
+      maps each ticker to the exact namespace+member string verified
+      against the live filing.
+
     This function pulls the company's most recent 10-K (annual, largest
     fact set; falls back to 10-Q if no 10-K is on file), aggregates the
-    cover-page common-shares-outstanding fact across all dimensional
-    contexts at the most-recent ``period_end``, and returns the sum.
+    cover-page common-shares-outstanding fact across the requested
+    dimensional contexts (all of them in sum-all mode; just the target
+    in filter mode), and returns the sum.
 
     Failure modes (all return ``None`` — graceful degradation per the
     ``portable-graceful-degradation-try-except`` discipline):
@@ -632,16 +686,19 @@ def _fetch_shares_from_per_filing_xbrl(company: Company, ticker: str | None = No
     - Neither ``dei:EntityCommonStockSharesOutstanding`` nor
       ``us-gaap:CommonStockSharesIssued`` returns dimensional rows
     - The summed value is zero or non-finite
+    - **Filter mode only**: ``xbrl.contexts`` is missing or the target
+      member doesn't appear in any context (allowlist entry is stale)
 
     The upstream ``share_count_extraction_missing`` annotate (PR #181)
-    keeps firing on ``None`` returns so the visibility gap stays closed
-    even when this fallback can't recover the value.
+    +``multi_class_aggregate_shares_suspected`` (PR #264) keep firing
+    on ``None`` returns so the visibility gap stays closed even when
+    this fallback can't recover the value.
 
     Cost: ~5-10s per affected ticker (one extra XBRL HTTP fetch). The
-    caller gates the invocation on the narrow signature
-    ``shares is None AND revenue > 0 AND total_assets > 0`` so the
-    universe-wide cost is bounded (1-3 tickers per cron at most given
-    the 2026-05-14 baseline of 1 affected ticker).
+    caller gates the invocation on narrow signatures — either
+    ``shares is None AND revenue > 0 AND total_assets > 0`` (sum-all
+    mode) or ``ticker in MULTI_CLASS_OVERCOUNT_ALLOWLIST AND primary is
+    plausible`` (filter mode) — so the universe-wide cost is bounded.
     """
     try:
         filings_10k = company.get_filings(form="10-K")
@@ -708,7 +765,49 @@ def _fetch_shares_from_per_filing_xbrl(company: Company, ticker: str | None = No
                     continue
                 latest = sub[date_col].max()
                 most_recent = sub[sub[date_col] == latest]
-                total = float(most_recent["numeric_value"].sum())
+                if target_class_member is not None:
+                    # Issue #261 PR-B filter mode — narrow to rows whose
+                    # ``StatementClassOfStockAxis`` dimension equals the
+                    # target member. Requires ``xbrl.contexts`` to map
+                    # each row's ``context_ref`` to its dimensions dict.
+                    if "context_ref" not in most_recent.columns:
+                        continue
+                    contexts = getattr(xbrl, "contexts", None)
+                    if contexts is None:
+                        continue
+                    matched_values: list[float] = []
+                    for _, row in most_recent.iterrows():
+                        ctx_ref = row.get("context_ref")
+                        if ctx_ref is None:
+                            continue
+                        try:
+                            ctx = (
+                                contexts.get(ctx_ref)
+                                if hasattr(contexts, "get")
+                                else contexts[ctx_ref]
+                            )
+                        except (KeyError, TypeError):
+                            continue
+                        if ctx is None:
+                            continue
+                        dims = getattr(ctx, "dimensions", None) or {}
+                        # Match against the canonical axis; tolerate
+                        # both ``us-gaap:`` and bare-axis-name forms
+                        # (edgartools version drift).
+                        axis_value = (
+                            dims.get("us-gaap:StatementClassOfStockAxis")
+                            or dims.get("StatementClassOfStockAxis")
+                        )
+                        if axis_value == target_class_member:
+                            try:
+                                matched_values.append(float(row["numeric_value"]))
+                            except (TypeError, ValueError):
+                                continue
+                    if not matched_values:
+                        continue
+                    total = sum(matched_values)
+                else:
+                    total = float(most_recent["numeric_value"].sum())
                 if math.isfinite(total) and total > 0:
                     return total
         return None
@@ -894,6 +993,105 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
                 primary_shares,
                 dimensional_summed,
                 (dimensional_summed - primary_shares) / primary_shares * 100.0,
+            )
+    elif (
+        # Issue #261 PR-B (0.10.6-phase4.5e) — per-class XBRL extraction
+        # for the OVERCOUNT pattern. SEC ``companyfacts`` returns the
+        # AGGREGATE share count across all classes for filers like
+        # Alphabet (GOOG / GOOGL); each per-class ticker then renders a
+        # $4.6T market_cap vs the real ~$1.05T per class (4.4× inflation).
+        # Opposite direction to the PR #257 UNDERCOUNT allowlist elif
+        # branch above (which SUMS to recover the total; this branch
+        # FILTERS to extract a single class member).
+        #
+        # Trigger conditions:
+        # - Ticker is on ``MULTI_CLASS_OVERCOUNT_ALLOWLIST`` (currently
+        #   GOOG + GOOGL — see edgar-debugger probe 2026-05-26 for the
+        #   filer-namespace gotcha around Class C)
+        # - Primary path returned a PLAUSIBLE value (not None / too low)
+        #   — this is the aggregate value we need to OVERRIDE
+        # - ``QR_SKIP_FUNDAMENTALS`` not set (simulate / CI runs skip the
+        #   precision refinement; matches the PR #257 elif behavior)
+        #
+        # Override condition: per_class_shares < primary_shares (the
+        # per-class subset must be SMALLER than the aggregate — opposite
+        # of the PR #257 ``summed > primary`` invariant). If the filter
+        # returns >= primary, treat as a sanity-check failure and DO NOT
+        # override (rather log the unexpected and keep primary).
+        ticker is not None
+        and ticker in config.MULTI_CLASS_OVERCOUNT_ALLOWLIST
+        and primary_shares is not None
+        and not primary_too_low
+        and (revenue_val or 0) > 0
+        and (balance_values.get("total_assets") or 0) > 0
+        and not os.environ.get("QR_SKIP_FUNDAMENTALS")
+    ):
+        target_class = config.MULTI_CLASS_OVERCOUNT_ALLOWLIST[ticker]
+        per_class_shares = _fetch_shares_from_per_filing_xbrl(
+            company, ticker=ticker, target_class_member=target_class
+        )
+        if (
+            per_class_shares is not None
+            and per_class_shares > 0
+            and per_class_shares < primary_shares
+        ):
+            balance_values["shares_outstanding"] = per_class_shares
+            with _FALLBACK_STATS_LOCK:
+                _FALLBACK_STATS["per_class_override"] += 1
+            reduction_pct = (
+                (primary_shares - per_class_shares) / primary_shares * 100.0
+            )
+            logger.info(
+                "shares_outstanding per-class override for %s/%s — "
+                "primary=%.0f (aggregate), per_class=%.0f (%s), "
+                "reduction %.1f%%",
+                ticker,
+                cik,
+                primary_shares,
+                per_class_shares,
+                target_class,
+                reduction_pct,
+            )
+            # Defensive Rule-18 reconcile diagnostic (methodology Q3
+            # 2026-05-26): the per-class value should be ~50% of primary
+            # for GOOG/GOOGL (Alphabet's Class A ≈ Class C economic
+            # weight). If the per-class is < 5% or > 95% of primary,
+            # something looks structurally wrong — flag it. Does NOT
+            # block the override (the per-class value IS still better
+            # than the aggregate for the per-ticker MC display) but
+            # surfaces the surprise for cohort-audit review.
+            fraction = per_class_shares / primary_shares
+            if fraction < 0.05 or fraction > 0.95:
+                with _FALLBACK_STATS_LOCK:
+                    _FALLBACK_STATS["mc_reconcile_failure"] += 1
+                logger.warning(
+                    "multi_class reconcile sanity check for %s/%s — "
+                    "per_class=%.0f is %.1f%% of primary=%.0f "
+                    "(outside expected 5-95%% band; verify XBRL shape)",
+                    ticker,
+                    cik,
+                    per_class_shares,
+                    fraction * 100.0,
+                    primary_shares,
+                )
+        elif per_class_shares is not None and per_class_shares >= primary_shares:
+            # Per-class >= primary is the sanity-check failure case —
+            # the filter returned a value that's the same or larger
+            # than the aggregate. Could mean (a) the filer's XBRL is
+            # malformed, (b) we picked the wrong member, (c) the
+            # allowlist entry is stale. DO NOT override; log as warning
+            # so the operator notices.
+            with _FALLBACK_STATS_LOCK:
+                _FALLBACK_STATS["mc_reconcile_failure"] += 1
+            logger.warning(
+                "multi_class per-class override SKIPPED for %s/%s — "
+                "per_class=%.0f (%s) >= primary=%.0f; possible stale "
+                "allowlist or XBRL shape drift",
+                ticker,
+                cik,
+                per_class_shares,
+                target_class,
+                primary_shares,
             )
 
     # Latest EPS values via normalized snake_case API (per-share figures
