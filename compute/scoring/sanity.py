@@ -80,7 +80,18 @@ def compute_mos_trailing_ic(
     for stock in rankings:
         if stock.margin_of_safety_pct is None:
             continue
-        if "data_quality_input_corruption" in (stock.valuation_warnings or []):
+        # Issue #262 rename (2026-05-26) — check BOTH the legacy
+        # ``data_quality_input_corruption`` (still emitted by the
+        # writer-parity path in ``compute/main.py`` for the veto cohort
+        # AND present on pre-rename legacy snapshots) and the new
+        # ``valuation_output_anomalous`` identifier (emitted by
+        # ``compute/valuation/ensemble.py`` post-rename). Either flag
+        # marks an untrustworthy ``mos_pct`` for the IC smoke test.
+        warnings = stock.valuation_warnings or []
+        if (
+            "data_quality_input_corruption" in warnings
+            or "valuation_output_anomalous" in warnings
+        ):
             continue
         prices = prices_by_ticker.get(stock.ticker)
         if prices is None or len(prices) < lookback_days:

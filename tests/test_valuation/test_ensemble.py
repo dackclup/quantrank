@@ -940,20 +940,25 @@ def test_data_quality_sanity_guard_triggers_on_extreme_method_value():
     assert _has_corrupt_input(methods) is True
 
     result = _data_quality_corrupt_result(methods)
-    # All 6 methods nulled with the single canonical reason.
+    # Issue #262 rename (2026-05-26) — Site 2 emission renamed from
+    # ``data_quality_input_corruption`` (input-level corruption,
+    # exclusive to ``risk_overlay.py`` veto surface) to
+    # ``valuation_output_anomalous`` (output-level anomaly,
+    # semantically distinct per methodology-scientist Mode B).
     for name in METHOD_NAMES:
         m = result.methods[name]
         assert m.value is None
         assert m.applicable is False
-        assert m.reason == "data_quality_input_corruption"
+        assert m.reason == "valuation_output_anomalous"
     # Aggregates all None.
     assert result.median is None
     assert result.max is None
     assert result.low is None
     assert result.high is None
     assert result.mos_pct is None
+    # Issue #262 rename — single canonical warning identifier.
     # Single warning, no others.
-    assert result.valuation_warnings == ["data_quality_input_corruption"]
+    assert result.valuation_warnings == ["valuation_output_anomalous"]
     # tier_used preserved on multiples for diagnostics.
     assert result.methods["multiples_pe"].tier_used == "sub_industry"
     assert result.methods["multiples_pb"].tier_used == "sector"
@@ -1047,14 +1052,15 @@ def test_data_quality_guard_end_to_end_via_full_ensemble():
     # Guard fires whenever the corruption is severe enough — at least one
     # method (Graham/RIM via TBVPS) computed > $10,000/share. Confirm the
     # canonical all-null + single-warning + empty-flags shape.
-    assert result.valuation_warnings == ["data_quality_input_corruption"]
+    # Issue #262 rename (2026-05-26) — Site 2 emission renamed.
+    assert result.valuation_warnings == ["valuation_output_anomalous"]
     assert extra_flags == []
     assert result.median is None
     assert result.max is None
     for name in METHOD_NAMES:
         m = result.methods[name]
         assert m.value is None
-        assert m.reason == "data_quality_input_corruption"
+        assert m.reason == "valuation_output_anomalous"
 
 
 # -- Helpers ------------------------------------------------------------------

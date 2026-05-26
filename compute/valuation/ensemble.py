@@ -517,11 +517,24 @@ def _has_corrupt_input(methods: dict[str, FairPriceMethodResult]) -> bool:
 def _data_quality_corrupt_result(
     methods: dict[str, FairPriceMethodResult],
 ) -> EnsembleResult:
-    """Build the all-null EnsembleResult returned when the data-quality
-    sanity guard fires.
+    """Build the all-null EnsembleResult returned when the OUTPUT-level
+    data-quality sanity guard fires (any of the 6 valuation method
+    outputs exceeds ``FAIR_PRICE_DATA_QUALITY_CEILING``).
+
+    Issue #262 rename (2026-05-26, methodology Mode B Option 3): this
+    site emits ``valuation_output_anomalous`` — semantically distinct
+    from the INPUT-level ``data_quality_input_corruption`` veto in
+    ``compute/scoring/risk_overlay.py`` (which triggers on TBVPS-ceiling
+    break / partial-revenue tag / |NI| > |revenue| accounting-identity
+    break). The Site-2 signal is "a method produced an absurd output
+    despite plausible inputs" — could be a residual input bug Site-1
+    missed, a legitimately extreme valuation output (RIM > $10K/share
+    on a goodwill-heavy filer), OR a formula edge case — and lacks the
+    "we don't know what the underlying numbers are" certainty that
+    Rule 16 requires for a veto. Annotate-only.
 
     Each method becomes ``applicable=False`` with reason
-    ``data_quality_input_corruption``. ``tier_used`` is preserved from
+    ``valuation_output_anomalous``. ``tier_used`` is preserved from
     the original computation so the JSON still tells the operator which
     peer tier the multiples methods consulted before the guard fired
     (useful for upstream-bug triage).
@@ -530,7 +543,7 @@ def _data_quality_corrupt_result(
         name: FairPriceMethodResult(
             value=None,
             applicable=False,
-            reason="data_quality_input_corruption",
+            reason="valuation_output_anomalous",
             tier_used=r.tier_used,
         )
         for name, r in methods.items()
@@ -542,7 +555,7 @@ def _data_quality_corrupt_result(
         low=None,
         high=None,
         mos_pct=None,
-        valuation_warnings=["data_quality_input_corruption"],
+        valuation_warnings=["valuation_output_anomalous"],
     )
 
 
