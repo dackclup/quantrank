@@ -41,37 +41,37 @@
       "graham": {
         "value": null,
         "applicable": false,
-        "reason": "data_quality_input_corruption",
+        "reason": "valuation_output_anomalous",
         "tier_used": null
       },
       "multiples_pe": {
         "value": null,
         "applicable": false,
-        "reason": "data_quality_input_corruption",
+        "reason": "valuation_output_anomalous",
         "tier_used": "sector"
       },
       "multiples_pb": {
         "value": null,
         "applicable": false,
-        "reason": "data_quality_input_corruption",
+        "reason": "valuation_output_anomalous",
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
         "value": null,
         "applicable": false,
-        "reason": "data_quality_input_corruption",
+        "reason": "valuation_output_anomalous",
         "tier_used": null
       },
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "data_quality_input_corruption",
+        "reason": "valuation_output_anomalous",
         "tier_used": null
       },
       "dcf": {
         "value": null,
         "applicable": false,
-        "reason": "data_quality_input_corruption",
+        "reason": "valuation_output_anomalous",
         "tier_used": null
       }
     },
@@ -81,7 +81,7 @@
     "high": null,
     "mos_pct": null,
     "valuation_warnings": [
-      "data_quality_input_corruption"
+      "valuation_output_anomalous"
     ],
     "valuation_methods_applicable": 0
   },
@@ -112,7 +112,7 @@
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "data_quality_input_corruption"
+    "valuation_output_anomalous"
   ],
   "has_history": true,
   "tangible_book_value": 1293.5910601742976,

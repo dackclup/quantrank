@@ -2769,6 +2769,7 @@
     "valuation_warnings": [
       "extreme_dcf_estimate",
       "beneish_high",
+      "multi_class_aggregate_shares_suspected",
       "accruals_momentum_high"
     ],
     "recommendation": "cautious",
@@ -3294,6 +3295,7 @@
     "valuation_warnings": [
       "extreme_dcf_estimate",
       "beneish_high",
+      "multi_class_aggregate_shares_suspected",
       "accruals_momentum_high"
     ],
     "recommendation": "cautious",
@@ -3401,7 +3403,8 @@
     "risk_flags": [],
     "valuation_warnings": [
       "goodwill_heavy",
-      "cross_source_disagreement"
+      "cross_source_disagreement",
+      "multi_class_aggregate_shares_suspected"
     ],
     "recommendation": "lean_bullish",
     "loss_chance_pct": 55.72257673624229,
@@ -3855,7 +3858,8 @@
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate",
-      "cross_source_disagreement"
+      "cross_source_disagreement",
+      "multi_class_aggregate_shares_suspected"
     ],
     "recommendation": "lean_bullish",
     "loss_chance_pct": 58.25169070096426,
@@ -9248,7 +9252,7 @@
     },
     "risk_flags": [],
     "valuation_warnings": [
-      "data_quality_input_corruption"
+      "valuation_output_anomalous"
     ],
     "recommendation": "lean_bullish",
     "loss_chance_pct": null,
@@ -9462,6 +9466,7 @@
     "valuation_warnings": [
       "goodwill_heavy",
       "value_trap_risk",
+      "multi_class_aggregate_shares_suspected",
       "accruals_momentum_high"
     ],
     "recommendation": "neutral",
@@ -10142,6 +10147,7 @@
     "valuation_warnings": [
       "goodwill_heavy",
       "value_trap_risk",
+      "multi_class_aggregate_shares_suspected",
       "accruals_momentum_high"
     ],
     "recommendation": "neutral",
@@ -10976,6 +10982,7 @@
     ],
     "valuation_warnings": [
       "value_trap_risk",
+      "valuation_output_anomalous",
       "restatement_history"
     ],
     "recommendation": "cautious",
@@ -12083,7 +12090,8 @@
       "data_quality_input_corruption"
     ],
     "valuation_warnings": [
-      "value_trap_risk"
+      "value_trap_risk",
+      "valuation_output_anomalous"
     ],
     "recommendation": "cautious",
     "loss_chance_pct": 62.570597995246025,
@@ -15418,7 +15426,8 @@
       "net_issuance_top_decile"
     ],
     "valuation_warnings": [
-      "value_trap_risk"
+      "value_trap_risk",
+      "valuation_output_anomalous"
     ],
     "recommendation": "cautious",
     "loss_chance_pct": 59.88874714827597,
@@ -15835,7 +15844,8 @@
       "net_issuance_top_decile"
     ],
     "valuation_warnings": [
-      "value_trap_risk"
+      "value_trap_risk",
+      "valuation_output_anomalous"
     ],
     "recommendation": "cautious",
     "loss_chance_pct": 63.080674612524874,
