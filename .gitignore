@@ -238,6 +238,13 @@ node_modules/
 out/
 *.tsbuildinfo
 
+# graphify (https://github.com/safishamsi/graphify) — knowledge-graph build
+# output for the QuantRank codebase. Ephemeral / regeneratable via
+# `/graphify .` in a Claude Code session. The artifacts (graph.json /
+# graph.html / GRAPH_REPORT.md / per-chunk cache JSONs) are local-only
+# build products — not committed.
+graphify-out/
+
 # The Python template above ignores /lib/ (virtualenv); whitelist project libs.
 !frontend/lib/
 !frontend/lib/**
