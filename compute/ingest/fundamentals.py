@@ -861,12 +861,20 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
         # (Damodaran 2019 Ch. 16 — TSO = sum across all classes). The
         # allowlist gate keeps the peek bounded to the 7 verified tickers
         # so the universe-wide HTTP cost stays negligible.
+        #
+        # ``QR_SKIP_FUNDAMENTALS`` escape-hatch guard: simulate / CI runs
+        # explicitly trade precision for speed. Skip the extra per-filing
+        # XBRL probe (~10s/ticker × 7 tickers) on the cold-cache fallthrough
+        # path — the primary plausible value is still written; only the
+        # multi-class refinement is skipped. Closes the PR #257 simulate
+        # 90-min cancellation root cause (ci-triage-engineer 2026-05-23).
         ticker is not None
         and ticker in config.MULTI_CLASS_SHARE_ALLOWLIST
         and primary_shares is not None
         and not primary_too_low
         and (revenue_val or 0) > 0
         and (balance_values.get("total_assets") or 0) > 0
+        and not os.environ.get("QR_SKIP_FUNDAMENTALS")
     ):
         dimensional_summed = _fetch_shares_from_per_filing_xbrl(
             company, ticker=ticker
