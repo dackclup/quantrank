@@ -3,19 +3,19 @@
   "name": "Amphenol",
   "sector": "Information Technology",
   "industry": "Electronic Components",
-  "market_cap": 162464757803.19794,
-  "current_price": 132.06,
-  "rank": 69,
-  "composite_score": 60.09,
+  "market_cap": 171691516140.69794,
+  "current_price": 139.56,
+  "rank": 64,
+  "composite_score": 60.65,
   "pillar_scores": {
     "quality": 58.22,
-    "value": 54.34,
+    "value": 53.65,
     "growth": 76.37,
-    "momentum": 59.21,
+    "momentum": 64.14,
     "health": 73.71,
     "profitability": 44.06,
-    "technical": 51.64,
-    "risk": 58.7,
+    "technical": 52.54,
+    "risk": 59.96,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 3.6614159344237835,
     "eps_diluted": 3.6614159344237835,
     "shares_outstanding": 1230234445.0,
-    "market_cap": 162464757803.19794,
-    "pe_ratio_ttm": 36.06801301021178,
+    "market_cap": 171691516140.69794,
+    "pe_ratio_ttm": 38.116400883735444,
     "goodwill": 17542900000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 138.5965955809451,
+        "value": 140.8299489665999,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 109.58754900148084,
+        "value": 110.07575491370186,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 170.6941017520658,
+        "value": 169.93009516268773,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 124.09207229121296,
-    "max": 170.6941017520658,
+    "median": 125.45285194015088,
+    "max": 169.93009516268773,
     "low": 22.697488432027434,
-    "high": 170.6941017520658,
-    "mos_pct": -6.420978488200335,
+    "high": 169.93009516268773,
+    "mos_pct": -11.244978013870016,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ],
@@ -98,7 +98,8 @@
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_dcf_estimate"
+    "extreme_dcf_estimate",
+    "cross_source_disagreement"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -113,22 +114,22 @@
     "label": "Information Technology median (n=73)",
     "values": {
       "Quality": 49.66,
-      "Value": 48.86,
+      "Value": 47.72,
       "Growth": 53.42,
-      "Momentum": 63.79,
+      "Momentum": 61.33,
       "Health": 69.52,
       "Profitability": 48.86,
-      "Technical": 59.31,
-      "Risk": 47.51
+      "Technical": 59.11,
+      "Risk": 47.78
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 2.104693116647191,
-  "recommendation": "bullish",
-  "loss_chance_pct": 38.20131368646437,
-  "price_change_1d_pct": 5.7665,
+  "recommendation": "lean_bullish",
+  "loss_chance_pct": 39.612560147638625,
+  "price_change_1d_pct": 5.6792,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 60.09,
+  "composite_score_adjusted": 60.65,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -176,10 +177,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 55.97,
+  "osap_blended_score": 56.25,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3,
   "form4_diagnostics": null,
-  "cross_source_delta": 1.2339919685331405e-08
+  "cross_source_delta": 0.05374031600452981
 }

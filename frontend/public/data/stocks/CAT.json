@@ -3,19 +3,19 @@
   "name": "Caterpillar Inc.",
   "sector": "Industrials",
   "industry": "Construction Machinery & Heavy Transportation Equipment",
-  "market_cap": 405309919554.7527,
-  "current_price": 879.89,
-  "rank": 209,
-  "composite_score": 52.33,
+  "market_cap": 418511764349.2894,
+  "current_price": 908.55,
+  "rank": 200,
+  "composite_score": 52.9,
   "pillar_scores": {
     "quality": 68.35,
-    "value": 11.81,
+    "value": 11.6,
     "growth": 59.18,
-    "momentum": 84.61,
+    "momentum": 89.49,
     "health": 50.32,
     "profitability": 43.46,
-    "technical": 52.14,
-    "risk": 67.96,
+    "technical": 52.24,
+    "risk": 68.03,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 20.471650057935204,
     "eps_diluted": 20.471650057935204,
     "shares_outstanding": 460637026.0,
-    "market_cap": 405309919554.7527,
-    "pe_ratio_ttm": 42.980903452253735,
+    "market_cap": 418511764349.2894,
+    "pe_ratio_ttm": 44.38088699356197,
     "goodwill": 5865000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 570.7574452058687,
+        "value": 575.2911313977548,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 259.2881921551069,
+        "value": 263.95036628105566,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 445.3426024294667,
+        "value": 450.79246094951276,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,16 +75,18 @@
         "tier_used": null
       }
     },
-    "median": 219.8960402016163,
-    "max": 570.7574452058687,
+    "median": 222.22712726459068,
+    "max": 575.2911313977548,
     "low": 110.84983991178791,
-    "high": 570.7574452058687,
-    "mos_pct": -300.1390901999381,
+    "high": 575.2911313977548,
+    "mos_pct": -308.838470341751,
     "valuation_warnings": [
       "extreme_graham_estimate",
-      "extreme_rim_estimate"
+      "extreme_rim_estimate",
+      "extreme_dcf_estimate",
+      "extreme_estimate_majority"
     ],
-    "valuation_methods_applicable": 4
+    "valuation_methods_applicable": 3
   },
   "top5_factors": [],
   "score_history": [],
@@ -104,6 +106,8 @@
   "valuation_warnings": [
     "extreme_graham_estimate",
     "extreme_rim_estimate",
+    "extreme_dcf_estimate",
+    "extreme_estimate_majority",
     "beneish_high"
   ],
   "has_history": true,
@@ -119,22 +123,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 49.58,
+      "Value": 48.95,
       "Growth": 49.37,
-      "Momentum": 48.56,
+      "Momentum": 50.55,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 46.41,
-      "Risk": 53.19
+      "Technical": 49.9,
+      "Risk": 54.32
     }
   },
   "beneish_m_score": -1.365232239831081,
   "dechow_f_score": 0.5447029785627931,
   "recommendation": "cautious",
-  "loss_chance_pct": 63.83348147494411,
-  "price_change_1d_pct": 1.6098,
+  "loss_chance_pct": 64.54845071192025,
+  "price_change_1d_pct": 3.2572,
   "manipulation_index": 23.0,
-  "composite_score_adjusted": 50.03,
+  "composite_score_adjusted": 50.6,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": true,
@@ -182,10 +186,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.09,
+  "osap_blended_score": 52.38,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 4,
+  "valuation_methods_applicable": 3,
   "form4_diagnostics": null,
-  "cross_source_delta": 9.783550029134875e-05
+  "cross_source_delta": 0.031639489307732076
 }

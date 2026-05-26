@@ -3,19 +3,19 @@
   "name": "NVR, Inc.",
   "sector": "Consumer Discretionary",
   "industry": "Homebuilding",
-  "market_cap": 16295599443.726562,
-  "current_price": 6036.9902,
-  "rank": 269,
-  "composite_score": 50.15,
+  "market_cap": 16284342288.955078,
+  "current_price": 6032.8198,
+  "rank": 262,
+  "composite_score": 50.37,
   "pillar_scores": {
     "quality": 58.85,
-    "value": 65.62,
+    "value": 65.97,
     "growth": 31.77,
-    "momentum": 17.38,
+    "momentum": 17.88,
     "health": 45.18,
     "profitability": 68.92,
-    "technical": 57.67,
-    "risk": 35.86,
+    "technical": 59.21,
+    "risk": 35.96,
     "sentiment": null,
     "ml": null
   },
@@ -32,58 +32,56 @@
     "eps_basic": 458.86069384119986,
     "eps_diluted": 458.86069384119986,
     "shares_outstanding": 2699292.0,
-    "market_cap": 16295599443.726562,
-    "pe_ratio_ttm": 13.156477151787271,
+    "market_cap": 16284342288.955078,
+    "pe_ratio_ttm": 13.147388532491208,
     "goodwill": 441000.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": null,
-        "applicable": false,
-        "reason": "valuation_output_anomalous",
+        "value": 3694.083620150089,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": null,
-        "applicable": false,
-        "reason": "valuation_output_anomalous",
+        "value": 9936.21474458421,
+        "applicable": true,
+        "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": null,
-        "applicable": false,
-        "reason": "valuation_output_anomalous",
+        "value": 8031.202702249861,
+        "applicable": true,
+        "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
         "value": null,
         "applicable": false,
-        "reason": "valuation_output_anomalous",
+        "reason": "non_positive_or_missing_ebitda",
         "tier_used": null
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "valuation_output_anomalous",
+        "value": 3880.3362473351854,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
-        "value": null,
-        "applicable": false,
-        "reason": "valuation_output_anomalous",
+        "value": 7261.157186238666,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       }
     },
-    "median": null,
-    "max": null,
-    "low": null,
-    "high": null,
-    "mos_pct": null,
-    "valuation_warnings": [
-      "valuation_output_anomalous"
-    ],
-    "valuation_methods_applicable": 0
+    "median": 7261.157186238666,
+    "max": 9936.21474458421,
+    "low": 3694.083620150089,
+    "high": 9936.21474458421,
+    "mos_pct": 16.916551047095624,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 5
   },
   "top5_factors": [],
   "score_history": [],
@@ -111,9 +109,7 @@
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "valuation_output_anomalous"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": 1293.5910601742976,
   "tier2_events": {
@@ -127,22 +123,22 @@
     "label": "Consumer Discretionary median (n=48)",
     "values": {
       "Quality": 46.35,
-      "Value": 48.96,
+      "Value": 48.35,
       "Growth": 51.69,
-      "Momentum": 40.79,
+      "Momentum": 41.01,
       "Health": 43.75,
       "Profitability": 52.6,
-      "Technical": 52.51,
-      "Risk": 40.92
+      "Technical": 52.49,
+      "Risk": 41.62
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": null,
-  "price_change_1d_pct": -0.1799,
+  "loss_chance_pct": 33.89446779227041,
+  "price_change_1d_pct": -0.0691,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 50.15,
+  "composite_score_adjusted": 50.37,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -190,10 +186,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.0,
+  "osap_blended_score": 51.11,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 0,
+  "valuation_methods_applicable": 5,
   "form4_diagnostics": null,
-  "cross_source_delta": 2.0847748723400725e-08
+  "cross_source_delta": 0.0006912661773608662
 }
