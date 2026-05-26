@@ -108,11 +108,14 @@ def test_B3_auditor_change_in_skip_reasons():
     assert "auditor_change" in SKIP_REASONS
 
 
-def test_B4_skip_reasons_count_is_25():
+def test_B4_skip_reasons_count_is_26():
     """Was 21 in PR 3c (Step 7.5 + earlier). PR 3d Step 4 adds 3 Tier-2
     entries — total 24. Issue #11 fix adds `insufficient_history_for_roe`
-    → 25 stable identifiers."""
-    assert len(SKIP_REASONS) == 25
+    → 25 stable identifiers. Issue #262 rename (2026-05-26) adds
+    `valuation_output_anomalous` alongside the legacy
+    `data_quality_input_corruption` (kept for backward-compat on
+    legacy snapshots) → 26 stable identifiers."""
+    assert len(SKIP_REASONS) == 26
 
 
 def test_B5_skip_reasons_all_unique():

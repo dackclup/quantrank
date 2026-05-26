@@ -79,7 +79,15 @@ export default function FairPriceCard({
     );
   }
 
-  const dataQualityIssue = warnings.includes('data_quality_input_corruption');
+  // Issue #262 rename (2026-05-26) — check BOTH the legacy
+  // `data_quality_input_corruption` (still emitted by the writer-parity
+  // path in compute/main.py for the veto cohort AND present on pre-rename
+  // legacy snapshots) and the new `valuation_output_anomalous` identifier
+  // (emitted by compute/valuation/ensemble.py post-rename). Either flag
+  // surfaces the all-null fair-price ensemble UI placeholder.
+  const dataQualityIssue =
+    warnings.includes('data_quality_input_corruption') ||
+    warnings.includes('valuation_output_anomalous');
   const mos = formatMosPct(ensemble.mos_pct);
 
   return (

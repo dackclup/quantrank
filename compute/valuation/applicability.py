@@ -65,7 +65,17 @@ SKIP_REASONS: tuple[str, ...] = (
     # AFTER all 6 methods compute; nulls every method when any value
     # exceeds config.FAIR_PRICE_DATA_QUALITY_CEILING (typically caused
     # by upstream shares_outstanding ingestion bugs).
+    # ``data_quality_input_corruption`` kept for legacy-snapshot
+    # backward-compat (per-method ``reason`` field on cron output prior
+    # to Issue #262 rename 2026-05-26). New cron output emits
+    # ``valuation_output_anomalous`` instead from
+    # ``compute/valuation/ensemble.py::_data_quality_corrupt_result``;
+    # consumers (``compute/scoring/sanity.py``,
+    # ``compute/scoring/recommendation.py``,
+    # ``frontend/components/FairPriceCard.tsx``) read EITHER identifier
+    # for the transition window.
     "data_quality_input_corruption",
+    "valuation_output_anomalous",
     # PR 3d Tier-2 event defenses. These identifiers also appear in
     # StockDetail.tier2_events (display-side) and risk_flags (only
     # non_reliance_filing — hard veto). They are tracked here for the

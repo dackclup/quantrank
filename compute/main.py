@@ -1476,6 +1476,28 @@ def run_weekly_compute() -> int:
             if ensemble.median is not None or ensemble.max is not None:
                 fair_price_count += 1
 
+        # Issue #262 (2026-05-26) — writer-parity for the input-level
+        # ``data_quality_input_corruption`` veto. When the veto fires
+        # in ``risk_flags`` (input-level corruption per
+        # ``compute/scoring/risk_overlay.py::_data_quality_input_corruption``:
+        # TBVPS > $10K/share / TTM revenue < $50M / |NI| > |revenue|),
+        # ALSO append the parallel ``valuation_output_anomalous``
+        # annotate to ``valuation_warnings`` so the UI surface
+        # (``FairPriceCard.tsx``) renders the explanation chip for the
+        # all-null fair-price ensemble. Closes the veto-only-cohort
+        # UI explainability gap surfaced by methodology-scientist
+        # Mode B 2026-05-26 — 4 tickers (MTB / CPT / MRNA / HBAN on
+        # the 2026-05-23 cron #3) carried the veto but had no UI
+        # annotate because the ensemble-layer Site-2 check didn't
+        # additionally fire. Composite rank UNCHANGED — the veto
+        # surface already handles Top-5 suppression; this only adds
+        # the annotate for UI parity.
+        if (
+            "data_quality_input_corruption" in risk_flags.get(ticker, [])
+            and "valuation_output_anomalous" not in valuation_warnings
+        ):
+            valuation_warnings.append("valuation_output_anomalous")
+
         # Beneish M-score (PR 3e.1 ANNOTATE at M > -2.22 + PR 4.5a.2
         # soft-veto promotion at M > -1.78). The active-veto path is
         # already wired into ``risk_flags`` above via

@@ -98,7 +98,56 @@ keeps growing/draining as PRs cycle.
 
 ## In flight (current)
 
-## PR (this PR) — Issue #261 PR-A: `multi_class_aggregate_shares_suspected` annotate (CIK-collision detector) (in flight, 2026-05-26)
+## PR (this PR) — Issue #262: rename DQIC site-2 emission to `valuation_output_anomalous` + writer-parity for veto cohort (in flight, 2026-05-26)
+
+Closes [issue #262](https://github.com/dackclup/quantrank/issues/262) (DQIC dual-surface emission inconsistency). Per the methodology-scientist Mode B verdict 2026-05-26 (APPROVED-AS-ANNOTATE, Path 3 = rename):
+
+**The dual-surface bug**: `data_quality_input_corruption` was emitted from TWO independent check sites with DIFFERENT trigger conditions — `compute/scoring/risk_overlay.py:411` (INPUT-level corruption: TBVPS > $10K/share OR TTM revenue < $50M OR |NI| > |revenue|; appends to `risk_flags` VETO surface) AND `compute/valuation/ensemble.py:545` (OUTPUT-level anomaly: ANY of 6 method outputs > $10K/share; emits to `valuation_warnings` ANNOTATE surface). Site 2's check is strictly broader than Site 1's.
+
+**Universe scan on 2026-05-23 cron #3** (methodology-scientist universe-walk):
+
+| Surface pattern | Count | Tickers |
+|---|---|---|
+| BOTH `risk_flags` + `valuation_warnings` | 2 | ERIE (rank 69), BRK-B (rank 223) |
+| Site 1 only — veto with NO UI explanation chip | **4** | MTB (320), CPT (347), MRNA (447), HBAN (460) |
+| Site 2 only — annotate, Top-5-safety gap if rose | 1 | NVR (267) |
+
+The **bigger smell than the NVR Top-5 risk** is the UI explainability gap for the 4 veto-only tickers — `FairPriceCard.tsx:82` reads only `valuation_warnings`, so MTB/CPT/MRNA/HBAN render the all-null fair-price ensemble with NO explanation chip.
+
+**Path 3 fix (this PR)**:
+
+- **Rename Site 2** — `compute/valuation/ensemble.py::_data_quality_corrupt_result` now emits `valuation_output_anomalous` (per-method `reason` field + the `valuation_warnings` list). Semantically distinct from the input-level `data_quality_input_corruption`: "a method produced an absurd output despite plausible inputs" is NOT categorical evidence of input untrust (could be residual input bug Site-1 missed, legitimately extreme RIM, OR formula edge case) — annotate-only is the correct Rule 16 surface.
+- **Writer-parity emit** — `compute/main.py` per-ticker loop now ALSO appends `valuation_output_anomalous` to `valuation_warnings` when `data_quality_input_corruption` is in `risk_flags` for that ticker. Closes the veto-only-cohort UI explainability gap (MTB/CPT/MRNA/HBAN now gain the UI chip).
+- **Consumer updates**:
+  - `compute/valuation/applicability.py` — `SKIP_REASONS` taxonomy gains `valuation_output_anomalous`; legacy `data_quality_input_corruption` retained for backward-compat on pre-rename JSON snapshots. Count 25 → 26.
+  - `compute/scoring/sanity.py:83` — `compute_mos_trailing_ic` IC-smoke exclusion checks BOTH identifiers.
+  - `frontend/components/FairPriceCard.tsx:82` — `dataQualityIssue` flag check ORs both identifiers (backward-compat for pre-rename snapshots still on the static site between cron-#4 and cron-#5).
+
+**Test updates** (4 sites):
+
+- `tests/test_valuation/test_ensemble.py` (4 assertions) — assert new identifier on Site 2 emissions
+- `tests/test_output/test_tier2_schema.py::test_B4_skip_reasons_count_is_25` → `_is_26` (taxonomy gains the new identifier)
+- `tests/test_scoring/test_sanity_smoke.py` (2 sites) — unchanged; legacy-snapshot identifier path still verified via the OR check
+- `tests/test_scoring/test_recommendation.py` (2 sites) — unchanged; veto identifier never renamed
+
+**No schema bump** — string-identifier rename only, no new `Metadata` / `StockDetail` field. `SCHEMA_VERSION` stays at `0.10.5-phase4.5e`. The triple lockstep (`schemas.py` / `types.ts` / `schema-snapshot.json`) is unchanged.
+
+**ZERO composite-rank impact** — composite scores / risk_flags VETO identifiers / Top-5 rotation unchanged. The only behavioral effect is which identifier appears in `valuation_warnings` (a display field) and gains the writer-parity for the veto cohort UI.
+
+**Verification**:
+- `ruff check .` — clean
+- `python -m compute.output.schema_check` — clean (no schema change)
+- `pytest tests/ -m "not network"` — **1216 passed**, 7 skipped, 24 deselected
+
+**Deferred follow-ups** (not in this PR):
+- Cohort-PPV cohort-acceptance check at Q3 2026-08-19 quarterly audit per methodology-scientist Q6 — walk the `valuation_output_anomalous` firing list, decide whether to retire the legacy `data_quality_input_corruption` identifier from the taxonomy after ≥ 2 crons of clean rename adoption.
+- φ-correlation re-baseline of `valuation_output_anomalous` vs existing `extreme_*_estimate` annotates (methodology-scientist Q3 — confirms the new identifier is independent enough to justify the slot).
+
+No CLAUDE.md / AGENTS.md substance change required — the rename doesn't introduce a new invariant; methodology-scientist verdict already documented in this entry. PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" lockstep per PR #237 convention.
+
+---
+
+## PR #264 — Issue #261 PR-A: `multi_class_aggregate_shares_suspected` annotate (CIK-collision detector) (merged 2026-05-26, `d9c62292`)
 
 Closes the observability half of [issue #261](https://github.com/dackclup/quantrank/issues/261) (GOOG/GOOGL multi-class shares overcount). Per the methodology-scientist Mode B verdict 2026-05-26 (NEEDS-MORE-CALIBRATION) the issue splits into:
 
