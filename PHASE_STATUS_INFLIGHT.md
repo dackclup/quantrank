@@ -98,6 +98,78 @@ keeps growing/draining as PRs cycle.
 
 ## In flight (current)
 
+## PR (this PR) — New skill: `good-code-bad-code-review` reference catalog (Miler / milerdev paired good/bad examples) (in flight, 2026-05-26)
+
+New invocation-triggerable skill at
+`.claude/skills/good-code-bad-code-review/SKILL.md`. Wraps the
+publicly-hosted catalog at <https://good-code-bad-code.pages.dev/>
+(author: Miler / `milerdev`) — 18 language/framework tracks × 10
+paired side-by-side good/bad code-review examples.
+
+**Posture**: REFERENCE LINK ONLY — no content vendored. The skill
+body contains zero verbatim copy of any example; it's a QuantRank-
+original index that catalogs the resource's structure (track list,
+per-track topic list, URL pattern) and tells the agent how to deep-
+link via `WebFetch` to the relevant example at review-time.
+
+**Skill scope** (QuantRank-relevant tracks only):
+
+| Track | URL | Domain |
+|---|---|---|
+| Python | `/tracks/python` | `compute/**/*.py` |
+| TypeScript | `/tracks/typescript` | `frontend/lib/types.ts` |
+| React | `/tracks/react` | `frontend/components/**/*.tsx` |
+| Next.js | `/tracks/nextjs` | `frontend/app/**/*.tsx` |
+| Tailwind CSS | `/tracks/tailwindcss` | utility-token review |
+| Git | `/tracks/git` | workflow review |
+
+12 other tracks (PHP / Java / Go / Express / Django / FastAPI / SQL
+/ Docker / HTML / raw CSS / JavaScript / Node.js) explicitly listed
+as SKIP — QuantRank doesn't use those stacks (static-export only,
+no DB, no server-side runtime, TS exclusively).
+
+**Trigger conditions** in description follow the PR #157 sharp-
+keyword convention: "is this idiomatic" / "is this Pythonic" /
+"is this good code" / "review this function" / "any code-smells" /
+"ดู code นี้ดีมั้ย". Complements (does not replace)
+`quantrank-reviewer` (opus agent owns project invariants —
+Rules 1-18, schema triple, annotate-before-veto, tenacity policy);
+this skill covers generic-language idioms orthogonally.
+
+**Files** (4):
+
+- `.claude/skills/good-code-bad-code-review/SKILL.md` (new)
+- `THIRD_PARTY_NOTICES.md` — new section documenting reference-link
+  posture + attribution + action-table for upstream license outcomes
+- `CLAUDE.md` §Layout — skill count `44` → `45`
+- `AGENTS.md` §Project structure — skill count `44` → `45`
+- `SKILL.md` §Repository Structure — skill count `44` → `45`
+- `PHASE_STATUS.md` §Current state — skill inventory `44` → `45`
+
+**Hard constraints** built into the skill body:
+
+- DO NOT vendor the content (no declared license)
+- DO NOT block on `WebFetch` failure — fall back to
+  `portable-karpathy-guidelines` + project SKILL.md rules
+- DO NOT override `quantrank-reviewer` project-invariant findings
+  with generic-language idioms (Rule 16 / schema / tenacity win)
+- DO NOT fire on trivial diffs (single-line / typo / pure rename)
+
+**Maintenance gate**: quarterly health-check at the next cohort
+audit (2026-08-19) — re-confirm the home page resolves; refresh
+the track-list table if Miler renamed/added tracks; update license
+posture if Miler declares one.
+
+**ZERO behavior change** to compute / scoring / valuation /
+frontend code. Skill-config + docs only. No CI surface beyond the
+existing schema-check (which is N/A — no schema touched).
+
+PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship
+with every PR" lockstep per PR #237 convention. CLAUDE.md +
+AGENTS.md substance touched (skill count is substance-bearing).
+
+---
+
 ## PR (this PR) — Post-release housekeeping: backfill v1.3.0-phase4.5e pointer + drain 11 stale (in flight) markers (in flight, 2026-05-26)
 
 Phase B (post-tag housekeeping) PR per the v1.3.0 release plan.
