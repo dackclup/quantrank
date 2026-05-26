@@ -20,7 +20,7 @@
 | Schema | **`0.10.5-phase4.5e`** (PR #264, additive `Metadata.multi_class_aggregate_shares_suspected_count` field; PR #265 renamed Site-2 DQIC emission to `valuation_output_anomalous` without schema change) |
 | Defense layer | **33 declared boolean flags** (7 active vetoes + 26 annotates + reserved slots; 27 currently emit in production until next cron exercises PR #264 + #265 + Form-4 cluster revert) · plus 5 numerical guards + `manipulation_index` rollup |
 | Active vetoes | **7** — `altman_distress` · `sloan_accruals_top_decile` · `net_issuance_top_decile` · `non_reliance_filing` · `beneish_manipulation_veto` · `dechow_manipulation_veto` · `data_quality_input_corruption` |
-| Latest release tag | [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5) — 2026-05-17 at `6d414a9b` (v1.3.0-phase4.5e release in flight on `claude/release-v1.3.0`) |
+| Latest release tag | [**`v1.3.0-phase4.5e`**](https://github.com/dackclup/quantrank/releases/tag/v1.3.0-phase4.5e) — 2026-05-26 at `5db3b978` (closes Phase 4.5e Form-4 cluster + LedgerCraft reskin; defense layer headline 32 → 33; release notes in `docs/release-notes/v1.3.0-phase4.5e.md`) |
 | Production run | `26423296287` (2026-05-26T01:12:47Z cron #4, schema `0.10.4-phase4.5e`; next cron Wed 2026-05-27 22:00 UTC re-renders at `0.10.5`) |
 | Universe | 502 stocks (S&P 500 minus 1 delisting) |
 | Skill inventory | **44** invocation-triggerable + phase planning docs |

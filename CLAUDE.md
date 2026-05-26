@@ -465,7 +465,12 @@ veto+annotate flags** of [**32 boolean flags actually emitted**](https://github.
 5 informational; epic [#150](https://github.com/dackclup/quantrank/issues/150)
 Phase 2 splits the method-applicability flags out of `manipulation_index`).
 Plus 5 numerical guards + `manipulation_index` rollup. Latest release
-tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5)
+tag [**`v1.3.0-phase4.5e`**](https://github.com/dackclup/quantrank/releases/tag/v1.3.0-phase4.5e)
+(2026-05-26, `5db3b978`) — closes the Phase 4.5e Form-4 insider-
+clustering ladder + LedgerCraft frontend reskin; defense layer
+headline 32 → 33 declared (PR #264 `multi_class_aggregate_shares_suspected`);
+PR #265 renamed DQIC site-2 emission to `valuation_output_anomalous`.
+Prior tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5)
 (2026-05-17, `6d414a9b`).
 
 **Recently merged**:
