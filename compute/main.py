@@ -117,6 +117,9 @@ from compute.scoring.manipulation_index import (
     compute_manipulation_index,
     manipulation_components,
 )
+from compute.scoring.multi_class_shares import (
+    detect_multi_class_aggregate_shares_suspected,
+)
 from compute.scoring.pillars import TickerInputs, compute_all_pillars
 from compute.scoring.recommendation import derive_recommendation
 from compute.scoring.rem import compute_rem_flags
@@ -1379,6 +1382,38 @@ def run_weekly_compute() -> int:
     # -30% to -45% on insider_sell_cluster_firing_count per
     # Jagolinzer 2009 §3.2 + SEC 2022 economic analysis.
     form4_rule10b5_one_excluded_count: int = 0
+    # Issue #261 (0.10.5-phase4.5e) — pre-compute the CIK-collision set
+    # BEFORE the per-ticker loop so each ticker's annotate emit is a
+    # simple `ticker in flagged_set` membership test. The detector
+    # needs the FULL universe upfront (it's a universe-level scan, not
+    # a per-ticker check). cik_by_ticker is sourced from the already-
+    # built `snapshots` dict; market_cap_by_ticker mirrors the
+    # `_build_raw_metrics` line 319 computation (price × shares).
+    # Tickers with missing snapshots / shares fall out of both maps —
+    # the detector returns an empty set if no CIK collisions are
+    # observable on the available data (graceful degradation, no
+    # exception path).
+    cik_by_ticker: dict[str, str | None] = {}
+    market_cap_by_ticker: dict[str, float | None] = {}
+    for _, r in df.iterrows():
+        t = str(r["ticker"])
+        s = snapshots.get(t)
+        if s is None:
+            cik_by_ticker[t] = None
+            market_cap_by_ticker[t] = None
+            continue
+        cik_by_ticker[t] = s.cik
+        market_cap_by_ticker[t] = (
+            float(r["current_price"]) * s.shares_outstanding
+            if s.shares_outstanding is not None
+            else None
+        )
+    multi_class_flagged_tickers: set[str] = (
+        detect_multi_class_aggregate_shares_suspected(
+            cik_by_ticker, market_cap_by_ticker
+        )
+    )
+    multi_class_aggregate_shares_suspected_count: int = 0
     for _, r in df.iterrows():
         ticker = str(r["ticker"])
         snap = snapshots.get(ticker)
@@ -1500,6 +1535,22 @@ def run_weekly_compute() -> int:
             cross_source_disagreement_count += 1
             if "cross_source_disagreement" not in valuation_warnings:
                 valuation_warnings.append("cross_source_disagreement")
+
+        # Issue #261 — multi_class_aggregate_shares_suspected annotate.
+        # CIK-collision detector (precomputed before this loop) flags
+        # tickers from multi-class issuers where the SEC companyfacts
+        # API returns the AGGREGATE share count rather than the per-
+        # class breakdown — the GOOG/GOOGL overcount pattern (opposite
+        # direction to the PR #257 allowlist which corrects undercount
+        # via per-filing XBRL dimensional sum). Annotate-only —
+        # composite rank unchanged; surfaces the structural pattern
+        # for Q3 2026-08-19 quarterly-audit cohort visibility while
+        # PR-B (reverse-allowlist per-class XBRL extraction) lands as
+        # the structural fix.
+        if ticker in multi_class_flagged_tickers:
+            multi_class_aggregate_shares_suspected_count += 1
+            if "multi_class_aggregate_shares_suspected" not in valuation_warnings:
+                valuation_warnings.append("multi_class_aggregate_shares_suspected")
 
         # PR 4.5b §1 — restatement_history annotate. 10-K/A or 10-Q/A
         # filings in the trailing 5 years from SEC EDGAR. Hennes-Leone-
@@ -1933,6 +1984,9 @@ def run_weekly_compute() -> int:
         shares_fallback_too_low_count=shares_fallback_too_low_count,
         shares_fallback_dimensional_override_count=(
             shares_fallback_dimensional_override_count
+        ),
+        multi_class_aggregate_shares_suspected_count=(
+            multi_class_aggregate_shares_suspected_count
         ),
         form4_enabled=False,
         form4_coverage_pct=(

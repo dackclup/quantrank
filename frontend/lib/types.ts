@@ -210,6 +210,14 @@ export type Metadata = {
   // per-filing XBRL dimensional sum (V/NWS/NWSA/FOX/FOXA/BRK-B/STZ
   // allowlist). Disjoint from triggered_count above.
   shares_fallback_dimensional_override_count?: number | null;
+  // Issue #261 (0.10.5-phase4.5e) — Rule 18 observability for the
+  // `multi_class_aggregate_shares_suspected` annotate (CIK-collision
+  // detector for the GOOG/GOOGL-shape overcount pattern, opposite
+  // direction to PR #257's allowlist). Expected steady-state firing
+  // rate: 6 (GOOG, GOOGL, NWS, NWSA, FOX, FOXA per cron #3 cohort).
+  // Gates Q3 2026-08-19 quarterly-audit cohort acceptance check on
+  // the 10% × universe-median market_cap floor recalibration.
+  multi_class_aggregate_shares_suspected_count?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors

@@ -11,14 +11,13 @@ from compute import config
 
 
 def test_schema_version_is_phase4_5e():
-    """Issue #248 PR2b (0.10.4-phase4.5e) — PATCH bump for the new
-    multi-class dimensional override observability counter
-    (``shares_fallback_dimensional_override_count`` Metadata field). Rule 18
-    diagnostic for the per-filing XBRL summed-dimensional path that fires
-    for the V/NWS/NWSA/STZ/FOX/FOXA/BRK-B allowlist (Damodaran 2019 Ch. 16).
-    Supersedes PR2a's 0.10.3-phase4.5e cross-source observability bump.
-    Locks the version against accidental revert."""
-    assert config.SCHEMA_VERSION == "0.10.4-phase4.5e"
+    """Issue #261 (0.10.5-phase4.5e) — PATCH bump for the new
+    ``multi_class_aggregate_shares_suspected_count`` Metadata field.
+    Rule 18 observability for the CIK-collision annotate that catches
+    the GOOG/GOOGL aggregate-overcount pattern (opposite direction to
+    PR #257's allowlist). Supersedes PR2b's 0.10.4-phase4.5e schema
+    bump. Locks the version against accidental revert."""
+    assert config.SCHEMA_VERSION == "0.10.5-phase4.5e"
 
 
 def test_multi_class_share_allowlist_membership():
