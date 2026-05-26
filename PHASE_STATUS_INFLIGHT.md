@@ -98,7 +98,96 @@ keeps growing/draining as PRs cycle.
 
 ## In flight (current)
 
-## PR (this PR) — Issue #262: rename DQIC site-2 emission to `valuation_output_anomalous` + writer-parity for veto cohort (in flight, 2026-05-26)
+## PR (this PR) — `chore(release): v1.3.0-phase4.5e` — Form-4 insider clustering + LedgerCraft frontend (in flight, 2026-05-26)
+
+Cuts the **v1.3.0-phase4.5e** release tag, closing the Phase 4.5e
+Form-4 insider-clustering ladder (PRs #167 + #205 + #222 + #224 + #238)
+and shipping the LedgerCraft frontend reskin (A1-A3 + B1-B4 +
+animation PRs 1-3 + #244 polish + dark-mode tooltip fixes through
+PR #263) since the prior `v1.2.0-phase4.5` (`6d414a9b`, 2026-05-17).
+
+**Scope of this PR** (3 files):
+
+- `pyproject.toml` — `version = "0.3.0"` → `"1.3.0"` (matches the
+  `v1.3.0-phase4.5e` git-tag SemVer; tag carries the phase suffix
+  per release-tag SKILL.md convention)
+- `docs/release-notes/v1.3.0-phase4.5e.md` (NEW) — paste-ready
+  release body grouped by Phase 4.5e Form-4 / data-quality fixes /
+  defense layer / frontend / methodology + agent infra / CI hygiene.
+  ~800 words; cites every PR # back to v1.2.0.
+- `PHASE_STATUS.md` — Current state schema `0.10.4` → `0.10.5-phase4.5e`,
+  defense layer headline `32 → 33 declared`, production-run pointer
+  refreshed to `26423296287` (cron #4 2026-05-26T01:12).
+
+**Pre-flight ladder** (release-captain 2026-05-26):
+
+| Check | Status |
+|---|---|
+| `ruff check .` | PASS |
+| `pytest -m "not network"` | **1216 passed**, 7 skipped (factors extras), 24 deselected |
+| `python -m compute.output.schema_check` | PASS (triple in sync at `0.10.5-phase4.5e`) |
+| `verify-production-output/helper.py` Section A-G + I-L | PASS |
+| Section H | 1 known FAIL — orphan `BK.json` (legacy BNY Mellon snapshot from 2026-05-23 ticker rename in `compute/ingest/universe.py::TICKER_OVERRIDES`); pre-existing housekeeping debris, NOT a regression |
+| `tsc --noEmit` + `next build` | Verified via Vercel preview (UI-touching PRs since v1.2.0 all deployed clean) |
+
+**Defense scorecard verification**: 7 active vetoes confirmed in
+`compute/scoring/risk_overlay.py:411-495`. Headline 27 emitting / 33
+declared — the gap is explained by (a) `FORM4_FETCH_SKIP=1`
+suppressing `insider_sell_cluster` + `c_suite_unusual_sell` (-2);
+(b) PR #264 `multi_class_aggregate_shares_suspected` + PR #265
+`valuation_output_anomalous` ship with this release and don't emit
+until next cron (-2); (c) rare-fire annotates that didn't trip on
+the cron-#4 cohort.
+
+**Production output 1-PATCH lag** — `frontend/public/data/metadata.json`
+reports `0.10.4-phase4.5e` from cron `26423296287` (post-PR #257,
+pre-PR #264 + #265). Next weekday cron (Wed 2026-05-27 22:00 UTC,
+~21h post-tag) re-renders at full `0.10.5-phase4.5e` semantics
+including the 2 new annotates. Acceptable per release-tag SKILL.md
+§Gotchas — tag is anchored to code, not to the last committed
+snapshot.
+
+**Post-merge workflow** (USER AUTHORIZATION required for the tag
+push):
+
+```bash
+# After this PR merges, on the squash-merge SHA:
+git fetch origin main
+git checkout main
+git pull origin main
+git tag -a v1.3.0-phase4.5e -F docs/release-notes/v1.3.0-phase4.5e.md
+# DESTRUCTIVE — requires explicit user authorization:
+git push origin v1.3.0-phase4.5e
+```
+
+Then create GitHub Release via web UI or `gh release create`
+(target: post-merge SHA; title: "v1.3.0-phase4.5e — Form-4 insider
+clustering + LedgerCraft frontend"; body: paste from the new
+release-notes file; set-as-latest: YES).
+
+**Deferred follow-ups** (separate PRs):
+
+- INFLIGHT.md housekeeping drain — 6 stale "In flight (current)"
+  entries (PR #245, #244, #246, #250-252, #265, etc.) should move to
+  "Merged (awaiting housekeeping move to CLAUDE.md)" sub-section in a
+  follow-up commit.
+- CLAUDE.md "Latest release tag" pointer backfill to the post-tag SHA
+  (release-tag SKILL.md §7 post-release hygiene).
+- Issue #261 PR-B — reverse-allowlist per-class XBRL extraction
+  (structural fix for GOOG/GOOGL); edgar-debugger probe locked the
+  `goog:CapitalClassCMember` filer-namespace gotcha. Tracks as v1.3.1.
+- Revert `FORM4_FETCH_SKIP=1` from `.github/workflows/compute-rankings.yml`
+  once the durable timeout-rebaseline + cache-restore canary lands
+  (performance-engineer scope).
+
+PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with
+every PR" lockstep per PR #237 convention. No CLAUDE.md / AGENTS.md
+substance change required for this PR — release-tag is itself the
+documented "Phase + version state" update mechanism.
+
+---
+
+## PR #265 — Issue #262: rename DQIC site-2 emission to `valuation_output_anomalous` + writer-parity for veto cohort (merged 2026-05-26, `e6013bae`)
 
 Closes [issue #262](https://github.com/dackclup/quantrank/issues/262) (DQIC dual-surface emission inconsistency). Per the methodology-scientist Mode B verdict 2026-05-26 (APPROVED-AS-ANNOTATE, Path 3 = rename):
 
