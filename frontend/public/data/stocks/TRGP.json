@@ -5,16 +5,16 @@
   "industry": "Oil & Gas Storage & Transportation",
   "market_cap": 59402700155.25,
   "current_price": 276.75,
-  "rank": 120,
-  "composite_score": 56.94,
+  "rank": 118,
+  "composite_score": 56.95,
   "pillar_scores": {
     "quality": 80.95,
     "value": 10.32,
     "growth": 65.48,
-    "momentum": 84.74,
+    "momentum": 84.71,
     "health": 30.88,
     "profitability": 68.25,
-    "technical": 62.15,
+    "technical": 62.5,
     "risk": 83.17,
     "sentiment": null,
     "ml": null
@@ -100,7 +100,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 19,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-07"
   },
@@ -130,17 +130,17 @@
       "Momentum": 76.94,
       "Health": 55.18,
       "Profitability": 54.76,
-      "Technical": 48.61,
-      "Risk": 67.6
+      "Technical": 48.11,
+      "Risk": 67.56
     }
   },
   "beneish_m_score": -2.8176625663153607,
   "dechow_f_score": 0.13919233913930243,
   "recommendation": "cautious",
-  "loss_chance_pct": 60.53013442262695,
+  "loss_chance_pct": 60.52297555808512,
   "price_change_1d_pct": 2.409,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 56.94,
+  "composite_score_adjusted": 56.95,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -155,7 +155,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -190,9 +192,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2,
-  "form4_diagnostics": {
-    "insider_count": 19,
-    "latest_filing_date": "2026-05-15",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 2.3622663554562024e-08
 }

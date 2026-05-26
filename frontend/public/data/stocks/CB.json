@@ -5,16 +5,16 @@
   "industry": "Property & Casualty Insurance",
   "market_cap": 127175455837.88452,
   "current_price": 327.89,
-  "rank": 123,
-  "composite_score": 56.63,
+  "rank": 121,
+  "composite_score": 56.83,
   "pillar_scores": {
     "quality": 50.0,
-    "value": 57.11,
+    "value": 58.0,
     "growth": 67.0,
-    "momentum": 60.61,
+    "momentum": 60.51,
     "health": 55.7,
     "profitability": 51.56,
-    "technical": 44.67,
+    "technical": 45.07,
     "risk": 81.34,
     "sentiment": null,
     "ml": null
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 418.8225352609141,
+        "value": 432.91356215995825,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 389.3180670050441,
+        "value": 398.3887000354736,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 321.204141827224,
-    "max": 418.8225352609141,
+    "median": 325.73945834243875,
+    "max": 432.91356215995825,
     "low": 148.99680513155695,
-    "high": 418.8225352609141,
-    "mos_pct": -2.0815026802518055,
+    "high": 432.91356215995825,
+    "mos_pct": -0.6602074912698914,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -102,7 +102,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 25,
+    "filing_lag_days": 28,
     "latest_period_end": "2026-04-21",
     "latest_filed_date": "2026-04-28"
   },
@@ -121,22 +121,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 52.67,
+      "Value": 52.89,
       "Growth": 51.5,
       "Momentum": 52.54,
       "Health": 50.72,
       "Profitability": 49.11,
-      "Technical": 49.65,
+      "Technical": 49.75,
       "Risk": 54.81
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 37.41514889072205,
+  "loss_chance_pct": 36.813960514817424,
   "price_change_1d_pct": -0.7176,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 56.63,
+  "composite_score_adjusted": 56.83,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -151,7 +151,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -182,13 +184,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.24,
+  "osap_blended_score": 54.34,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
-  "form4_diagnostics": {
-    "insider_count": 11,
-    "latest_filing_date": "2026-03-20",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 4.0997568965907347e-08
 }

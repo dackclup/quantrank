@@ -5,16 +5,16 @@
   "industry": "Managed Health Care",
   "market_cap": 29203154278.61023,
   "current_price": 59.14,
-  "rank": 408,
-  "composite_score": 41.97,
+  "rank": 410,
+  "composite_score": 41.9,
   "pillar_scores": {
     "quality": 11.65,
-    "value": 81.07,
+    "value": 80.79,
     "growth": 49.58,
-    "momentum": 43.13,
+    "momentum": 43.08,
     "health": 30.82,
     "profitability": 22.03,
-    "technical": 67.9,
+    "technical": 67.85,
     "risk": 28.92,
     "sentiment": null,
     "ml": null
@@ -97,7 +97,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 25,
+    "filing_lag_days": 28,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-28"
   },
@@ -123,20 +123,20 @@
       "Quality": 52.97,
       "Value": 50.85,
       "Growth": 49.58,
-      "Momentum": 38.75,
+      "Momentum": 38.7,
       "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 55.63,
+      "Technical": 55.78,
       "Risk": 41.8
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 39.83251468097737,
+  "loss_chance_pct": 39.86865191171543,
   "price_change_1d_pct": 2.3715,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 41.97,
+  "composite_score_adjusted": 41.9,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -151,7 +151,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -182,13 +184,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 46.91,
+  "osap_blended_score": 46.88,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2,
-  "form4_diagnostics": {
-    "insider_count": 14,
-    "latest_filing_date": "2026-05-13",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 4.7344551081760256e-08
 }

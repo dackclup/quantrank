@@ -5,8 +5,8 @@
   "industry": "Oil & Gas Exploration & Production",
   "market_cap": 23430074055.114807,
   "current_price": 97.94,
-  "rank": 51,
-  "composite_score": 62.14,
+  "rank": 50,
+  "composite_score": 62.13,
   "pillar_scores": {
     "quality": 63.1,
     "value": 90.87,
@@ -14,7 +14,7 @@
     "momentum": 19.22,
     "health": 68.69,
     "profitability": 66.67,
-    "technical": 38.2,
+    "technical": 38.15,
     "risk": 49.27,
     "sentiment": null,
     "ml": null
@@ -95,7 +95,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 25,
+    "filing_lag_days": 28,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-28"
   },
@@ -121,17 +121,17 @@
       "Momentum": 76.94,
       "Health": 55.18,
       "Profitability": 54.76,
-      "Technical": 48.61,
-      "Risk": 67.6
+      "Technical": 48.11,
+      "Risk": 67.56
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 21.772852169163187,
+  "loss_chance_pct": 21.774097189083506,
   "price_change_1d_pct": 0.3586,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 62.14,
+  "composite_score_adjusted": 62.13,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -146,7 +146,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -181,9 +183,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5,
-  "form4_diagnostics": {
-    "insider_count": 8,
-    "latest_filing_date": "2026-05-07",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 1.3353999314517344e-08
 }

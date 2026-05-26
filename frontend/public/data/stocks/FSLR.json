@@ -5,8 +5,8 @@
   "industry": "Semiconductors",
   "market_cap": 27706850305.39328,
   "current_price": 257.85,
-  "rank": 155,
-  "composite_score": 54.67,
+  "rank": 154,
+  "composite_score": 54.66,
   "pillar_scores": {
     "quality": 35.62,
     "value": 76.03,
@@ -14,7 +14,7 @@
     "momentum": 31.03,
     "health": 90.72,
     "profitability": 46.8,
-    "technical": 64.39,
+    "technical": 64.24,
     "risk": 34.93,
     "sentiment": null,
     "ml": null
@@ -92,7 +92,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 23,
+    "filing_lag_days": 26,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-30"
   },
@@ -116,20 +116,20 @@
       "Quality": 49.66,
       "Value": 48.86,
       "Growth": 53.42,
-      "Momentum": 63.82,
+      "Momentum": 63.79,
       "Health": 69.52,
       "Profitability": 48.86,
-      "Technical": 59.16,
+      "Technical": 59.31,
       "Risk": 47.51
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.2192936315015349,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 20.520326671233512,
+  "loss_chance_pct": 20.524061730994468,
   "price_change_1d_pct": 3.6041,
   "manipulation_index": 13.0,
-  "composite_score_adjusted": 53.37,
+  "composite_score_adjusted": 53.36,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,7 +144,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -179,9 +181,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
-  "form4_diagnostics": {
-    "insider_count": 19,
-    "latest_filing_date": "2026-05-22",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 3.70086555753217e-08
 }

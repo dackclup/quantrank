@@ -5,16 +5,16 @@
   "industry": "Semiconductors",
   "market_cap": 79899522679.32224,
   "current_price": 316.47,
-  "rank": 247,
-  "composite_score": 51.16,
+  "rank": 248,
+  "composite_score": 51.15,
   "pillar_scores": {
     "quality": 45.55,
     "value": 62.79,
     "growth": 19.52,
-    "momentum": 68.65,
+    "momentum": 68.63,
     "health": 55.5,
     "profitability": 48.86,
-    "technical": 63.45,
+    "technical": 63.3,
     "risk": 45.58,
     "sentiment": null,
     "ml": null
@@ -88,7 +88,7 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 25,
+    "filing_lag_days": 28,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-28"
   },
@@ -109,20 +109,20 @@
       "Quality": 49.66,
       "Value": 48.86,
       "Growth": 53.42,
-      "Momentum": 63.82,
+      "Momentum": 63.79,
       "Health": 69.52,
       "Profitability": 48.86,
-      "Technical": 59.16,
+      "Technical": 59.31,
       "Risk": 47.51
     }
   },
   "beneish_m_score": -2.3667943676966177,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 24.57346637759372,
+  "loss_chance_pct": 24.578757712255076,
   "price_change_1d_pct": 5.7085,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 51.16,
+  "composite_score_adjusted": 51.15,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -137,7 +137,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -168,13 +170,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.51,
+  "osap_blended_score": 51.5,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
-  "form4_diagnostics": {
-    "insider_count": 6,
-    "latest_filing_date": "2026-05-01",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 7.19819348382146e-08
 }

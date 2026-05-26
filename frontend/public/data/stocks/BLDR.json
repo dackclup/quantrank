@@ -6,7 +6,7 @@
   "market_cap": 7975564969.523346,
   "current_price": 74.15,
   "rank": 399,
-  "composite_score": 42.53,
+  "composite_score": 42.5,
   "pillar_scores": {
     "quality": 34.18,
     "value": 89.66,
@@ -14,7 +14,7 @@
     "momentum": 9.61,
     "health": 59.12,
     "profitability": 33.33,
-    "technical": 51.59,
+    "technical": 51.15,
     "risk": 10.29,
     "sentiment": null,
     "ml": null
@@ -92,7 +92,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 23,
+    "filing_lag_days": 26,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-30"
   },
@@ -118,17 +118,17 @@
       "Momentum": 48.56,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 45.37,
-      "Risk": 53.22
+      "Technical": 46.41,
+      "Risk": 53.19
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.48552421375760196,
   "recommendation": "neutral",
-  "loss_chance_pct": 22.736069199762586,
+  "loss_chance_pct": 22.747274379045454,
   "price_change_1d_pct": 0.3926,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 42.03,
+  "composite_score_adjusted": 42.0,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -143,7 +143,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -174,13 +176,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.19,
+  "osap_blended_score": 47.18,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
-  "form4_diagnostics": {
-    "insider_count": 22,
-    "latest_filing_date": "2026-05-18",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 2.125534010381174e-08
 }

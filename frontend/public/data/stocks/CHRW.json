@@ -5,17 +5,17 @@
   "industry": "Air Freight & Logistics",
   "market_cap": 20537019604.052032,
   "current_price": 174.23,
-  "rank": 192,
-  "composite_score": 53.26,
+  "rank": 190,
+  "composite_score": 53.24,
   "pillar_scores": {
     "quality": 67.72,
     "value": 38.4,
     "growth": 20.57,
-    "momentum": 64.69,
+    "momentum": 64.64,
     "health": 69.64,
     "profitability": 47.68,
-    "technical": 64.04,
-    "risk": 58.57,
+    "technical": 63.79,
+    "risk": 58.53,
     "sentiment": null,
     "ml": null
   },
@@ -100,7 +100,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 22,
+    "filing_lag_days": 25,
     "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-05-01"
   },
@@ -129,17 +129,17 @@
       "Momentum": 48.56,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 45.37,
-      "Risk": 53.22
+      "Technical": 46.41,
+      "Risk": 53.19
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 61.368613625666114,
+  "loss_chance_pct": 61.37857378502867,
   "price_change_1d_pct": -2.1894,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 52.76,
+  "composite_score_adjusted": 52.74,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -154,7 +154,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -185,13 +187,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.56,
+  "osap_blended_score": 52.55,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
-  "form4_diagnostics": {
-    "insider_count": 7,
-    "latest_filing_date": "2026-05-07",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 6.018653418565298e-08
 }

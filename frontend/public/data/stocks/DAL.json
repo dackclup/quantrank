@@ -5,16 +5,16 @@
   "industry": "Passenger Airlines",
   "market_cap": 50023531286.68262,
   "current_price": 76.14,
-  "rank": 56,
-  "composite_score": 61.76,
+  "rank": 57,
+  "composite_score": 61.75,
   "pillar_scores": {
     "quality": 43.99,
     "value": 93.88,
     "growth": 70.25,
-    "momentum": 75.77,
+    "momentum": 75.75,
     "health": 34.06,
     "profitability": 37.55,
-    "technical": 55.58,
+    "technical": 55.48,
     "risk": 46.78,
     "sentiment": null,
     "ml": null
@@ -99,7 +99,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 45,
+    "filing_lag_days": 48,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-08"
   },
@@ -125,17 +125,17 @@
       "Momentum": 48.56,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 45.37,
-      "Risk": 53.22
+      "Technical": 46.41,
+      "Risk": 53.19
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 14.034518170049992,
+  "loss_chance_pct": 14.038564484791024,
   "price_change_1d_pct": 0.6477,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 61.76,
+  "composite_score_adjusted": 61.75,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -150,7 +150,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -181,13 +183,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 56.81,
+  "osap_blended_score": 56.8,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5,
-  "form4_diagnostics": {
-    "insider_count": 14,
-    "latest_filing_date": "2026-05-08",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 3.9360110884563315e-07
 }

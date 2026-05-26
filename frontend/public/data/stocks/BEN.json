@@ -5,16 +5,16 @@
   "industry": "Asset Management & Custody Banks",
   "market_cap": 16119145003.111015,
   "current_price": 31.02,
-  "rank": 283,
-  "composite_score": 49.53,
+  "rank": 273,
+  "composite_score": 49.93,
   "pillar_scores": {
     "quality": 34.67,
-    "value": 64.89,
+    "value": 66.67,
     "growth": 7.33,
-    "momentum": 74.8,
+    "momentum": 74.7,
     "health": 77.21,
     "profitability": 37.11,
-    "technical": 61.25,
+    "technical": 61.45,
     "risk": 54.15,
     "sentiment": null,
     "ml": null
@@ -98,7 +98,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 25,
+    "filing_lag_days": 28,
     "latest_period_end": "2026-04-22",
     "latest_filed_date": "2026-04-28"
   },
@@ -120,22 +120,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 52.67,
+      "Value": 52.89,
       "Growth": 51.5,
       "Momentum": 52.54,
       "Health": 50.72,
       "Profitability": 49.11,
-      "Technical": 49.65,
+      "Technical": 49.75,
       "Risk": 54.81
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 43.671095608945706,
+  "loss_chance_pct": 43.47234062886602,
   "price_change_1d_pct": 0.5185,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 49.53,
+  "composite_score_adjusted": 49.93,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -150,7 +150,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -181,13 +183,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.69,
+  "osap_blended_score": 50.89,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3,
-  "form4_diagnostics": {
-    "insider_count": 10,
-    "latest_filing_date": "2026-04-22",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 3.44379937777523e-08
 }

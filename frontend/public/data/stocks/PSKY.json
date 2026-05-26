@@ -5,8 +5,8 @@
   "industry": "Movies & Entertainment",
   "market_cap": 11694280042.648315,
   "current_price": 10.46,
-  "rank": 395,
-  "composite_score": 42.65,
+  "rank": 396,
+  "composite_score": 42.64,
   "pillar_scores": {
     "quality": 29.35,
     "value": 70.29,
@@ -14,7 +14,7 @@
     "momentum": 31.82,
     "health": 46.33,
     "profitability": 35.51,
-    "technical": 39.84,
+    "technical": 39.79,
     "risk": 24.27,
     "sentiment": null,
     "ml": null
@@ -51,7 +51,7 @@
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 27.05269504237517,
+        "value": 27.20755853101392,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 16.26180627294375,
+    "median": 16.339238017263128,
     "max": 40.185802852440766,
     "low": 2.3732195704786863,
     "high": 40.185802852440766,
-    "mos_pct": 35.677501855681136,
+    "mos_pct": 35.98232654977227,
     "valuation_warnings": [
       "goodwill_heavy"
     ],
@@ -101,7 +101,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 19,
+    "filing_lag_days": 22,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-04"
   },
@@ -128,17 +128,17 @@
       "Momentum": 50.85,
       "Health": 45.5,
       "Profitability": 50.72,
-      "Technical": 48.01,
+      "Technical": 47.51,
       "Risk": 49.85
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 32.190028054536086,
+  "loss_chance_pct": 32.08458443152451,
   "price_change_1d_pct": 1.751,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 42.15,
+  "composite_score_adjusted": 42.14,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -153,7 +153,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -188,9 +190,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
-  "form4_diagnostics": {
-    "insider_count": 7,
-    "latest_filing_date": "2026-05-11",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 0.0010493380786959154
 }

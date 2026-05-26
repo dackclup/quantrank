@@ -5,7 +5,7 @@
   "industry": "Multi-Utilities",
   "market_cap": 184656992292.75708,
   "current_price": 88.55,
-  "rank": 349,
+  "rank": 352,
   "composite_score": 45.96,
   "pillar_scores": {
     "quality": 66.13,
@@ -14,7 +14,7 @@
     "momentum": 61.4,
     "health": 8.61,
     "profitability": 62.37,
-    "technical": 22.66,
+    "technical": 22.61,
     "risk": 60.69,
     "sentiment": null,
     "ml": null
@@ -97,7 +97,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 30,
+    "filing_lag_days": 33,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-23"
   },
@@ -120,17 +120,17 @@
       "Quality": 51.61,
       "Value": 47.85,
       "Growth": 54.03,
-      "Momentum": 56.23,
+      "Momentum": 56.18,
       "Health": 17.93,
       "Profitability": 52.15,
-      "Technical": 47.26,
+      "Technical": 47.16,
       "Risk": 72.63
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.48236639139493515,
   "recommendation": "cautious",
-  "loss_chance_pct": 74.0181063380885,
+  "loss_chance_pct": 74.01935135800883,
   "price_change_1d_pct": -1.271,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 45.96,
@@ -148,7 +148,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -183,9 +185,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5,
-  "form4_diagnostics": {
-    "insider_count": 23,
-    "latest_filing_date": "2026-05-08",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 0.00012657948639097771
 }

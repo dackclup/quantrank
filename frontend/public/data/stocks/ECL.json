@@ -5,8 +5,8 @@
   "industry": "Specialty Chemicals",
   "market_cap": 71293750067.94983,
   "current_price": 253.32,
-  "rank": 154,
-  "composite_score": 54.82,
+  "rank": 152,
+  "composite_score": 54.8,
   "pillar_scores": {
     "quality": 83.65,
     "value": 14.74,
@@ -14,8 +14,8 @@
     "momentum": 32.27,
     "health": 41.69,
     "profitability": 79.49,
-    "technical": 45.62,
-    "risk": 52.92,
+    "technical": 45.27,
+    "risk": 52.86,
     "sentiment": null,
     "ml": null
   },
@@ -93,7 +93,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 19,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
@@ -116,20 +116,20 @@
       "Quality": 51.68,
       "Value": 50.48,
       "Growth": 48.56,
-      "Momentum": 48.33,
+      "Momentum": 48.31,
       "Health": 56.51,
       "Profitability": 54.33,
-      "Technical": 43.55,
+      "Technical": 43.35,
       "Risk": 46.22
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.5121436320970426,
   "recommendation": "neutral",
-  "loss_chance_pct": 58.591809045867805,
+  "loss_chance_pct": 58.601769205230354,
   "price_change_1d_pct": 1.2551,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 54.82,
+  "composite_score_adjusted": 54.8,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,7 +144,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -175,13 +177,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.33,
+  "osap_blended_score": 53.32,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3,
-  "form4_diagnostics": {
-    "insider_count": 24,
-    "latest_filing_date": "2026-05-14",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 4.022722645909535e-08
 }

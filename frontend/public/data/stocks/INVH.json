@@ -5,8 +5,8 @@
   "industry": "Single-Family Residential REITs",
   "market_cap": 17399489435.101654,
   "current_price": 29.29,
-  "rank": 306,
-  "composite_score": 47.9,
+  "rank": 307,
+  "composite_score": 47.92,
   "pillar_scores": {
     "quality": 45.16,
     "value": 59.68,
@@ -14,7 +14,7 @@
     "momentum": 43.97,
     "health": 24.5,
     "profitability": 48.39,
-    "technical": 67.23,
+    "technical": 67.68,
     "risk": 47.24,
     "sentiment": null,
     "ml": null
@@ -104,7 +104,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 23,
+    "filing_lag_days": 26,
     "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-04-30"
   },
@@ -127,20 +127,20 @@
       "Quality": 50.81,
       "Value": 46.77,
       "Growth": 48.79,
-      "Momentum": 52.09,
+      "Momentum": 52.04,
       "Health": 26.22,
       "Profitability": 52.15,
-      "Technical": 50.5,
+      "Technical": 50.8,
       "Risk": 54.45
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 44.632268383042316,
+  "loss_chance_pct": 44.62106320375945,
   "price_change_1d_pct": 0.8956,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 47.9,
+  "composite_score_adjusted": 47.92,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -155,7 +155,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -186,13 +188,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.88,
+  "osap_blended_score": 49.89,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3,
-  "form4_diagnostics": {
-    "insider_count": 14,
-    "latest_filing_date": "2026-05-11",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 6.46512272755487e-08
 }

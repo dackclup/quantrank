@@ -5,7 +5,7 @@
   "industry": "Construction Materials",
   "market_cap": 67067257515.18671,
   "current_price": 100.37,
-  "rank": 104,
+  "rank": 103,
   "composite_score": 57.82,
   "pillar_scores": {
     "quality": 68.27,
@@ -14,7 +14,7 @@
     "momentum": 43.33,
     "health": 52.03,
     "profitability": 63.14,
-    "technical": 25.45,
+    "technical": 25.55,
     "risk": 48.01,
     "sentiment": null,
     "ml": null
@@ -95,7 +95,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 23,
+    "filing_lag_days": 26,
     "latest_period_end": "2026-04-20",
     "latest_filed_date": "2026-04-30"
   },
@@ -120,17 +120,17 @@
       "Quality": 51.68,
       "Value": 50.48,
       "Growth": 48.56,
-      "Momentum": 48.33,
+      "Momentum": 48.31,
       "Health": 56.51,
       "Profitability": 54.33,
-      "Technical": 43.55,
+      "Technical": 43.35,
       "Risk": 46.22
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 54.68543863677501,
+  "loss_chance_pct": 54.682948596934374,
   "price_change_1d_pct": -0.6533,
   "manipulation_index": 5.0,
   "composite_score_adjusted": 57.32,
@@ -148,7 +148,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -183,9 +185,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5,
-  "form4_diagnostics": {
-    "insider_count": 20,
-    "latest_filing_date": "2026-05-18",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 1.018659077252813e-08
 }

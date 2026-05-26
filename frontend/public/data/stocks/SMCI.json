@@ -5,16 +5,16 @@
   "industry": "Technology Hardware, Storage & Peripherals",
   "market_cap": 21398470690.79013,
   "current_price": 35.58,
-  "rank": 268,
-  "composite_score": 49.98,
+  "rank": 272,
+  "composite_score": 49.96,
   "pillar_scores": {
     "quality": 34.25,
     "value": 83.79,
     "growth": 50.86,
-    "momentum": 13.2,
+    "momentum": 13.15,
     "health": 83.43,
     "profitability": 23.97,
-    "technical": 62.55,
+    "technical": 62.35,
     "risk": 19.49,
     "sentiment": null,
     "ml": null
@@ -92,7 +92,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 12,
+    "filing_lag_days": 15,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-11"
   },
@@ -122,20 +122,20 @@
       "Quality": 49.66,
       "Value": 48.86,
       "Growth": 53.42,
-      "Momentum": 63.82,
+      "Momentum": 63.79,
       "Health": 69.52,
       "Profitability": 48.86,
-      "Technical": 59.16,
+      "Technical": 59.31,
       "Risk": 47.51
     }
   },
   "beneish_m_score": -0.8324584836047407,
   "dechow_f_score": 6.652106582990692,
   "recommendation": "neutral",
-  "loss_chance_pct": 36.2802802431782,
+  "loss_chance_pct": 36.288372872660275,
   "price_change_1d_pct": 6.3359,
   "manipulation_index": 84.0,
-  "composite_score_adjusted": 41.58,
+  "composite_score_adjusted": 41.56,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": true,
@@ -150,7 +150,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": true,
-    "dechow_high": true
+    "dechow_high": true,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -185,9 +187,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 6,
-  "form4_diagnostics": {
-    "insider_count": 10,
-    "latest_filing_date": "2026-05-12",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 1.6258232243768706e-09
 }

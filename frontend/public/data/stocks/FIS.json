@@ -5,16 +5,16 @@
   "industry": "Transaction & Payment Processing Services",
   "market_cap": 22515256527.385494,
   "current_price": 43.56,
-  "rank": 426,
-  "composite_score": 40.67,
+  "rank": 419,
+  "composite_score": 41.1,
   "pillar_scores": {
     "quality": 53.33,
-    "value": 60.0,
+    "value": 62.0,
     "growth": 31.0,
     "momentum": 16.28,
     "health": 12.59,
     "profitability": 41.33,
-    "technical": 38.84,
+    "technical": 38.45,
     "risk": 21.51,
     "sentiment": null,
     "ml": null
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 72.31187226866481,
+        "value": 74.74476078700403,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 63.255770720863204,
+        "value": 64.72955252523681,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 67.78382149476401,
-    "max": 72.31187226866481,
-    "low": 63.255770720863204,
-    "high": 72.31187226866481,
-    "mos_pct": 35.736875831564284,
+    "median": 69.73715665612042,
+    "max": 74.74476078700403,
+    "low": 64.72955252523681,
+    "high": 74.74476078700403,
+    "mos_pct": 37.536883546759846,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -94,7 +94,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 18,
     "latest_period_end": "2026-05-06",
     "latest_filed_date": "2026-05-08"
   },
@@ -118,22 +118,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 52.67,
+      "Value": 52.89,
       "Growth": 51.5,
       "Momentum": 52.54,
       "Health": 50.72,
       "Profitability": 49.11,
-      "Technical": 49.65,
+      "Technical": 49.75,
       "Risk": 54.81
     }
   },
   "beneish_m_score": -2.644750298123332,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 46.15780561034693,
+  "loss_chance_pct": 45.312763069391025,
   "price_change_1d_pct": -0.1375,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 40.17,
+  "composite_score_adjusted": 40.6,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -148,7 +148,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -179,13 +181,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 46.26,
+  "osap_blended_score": 46.48,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2,
-  "form4_diagnostics": {
-    "insider_count": 8,
-    "latest_filing_date": "2026-04-17",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 5.469115986906182e-08
 }

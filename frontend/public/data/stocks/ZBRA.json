@@ -5,8 +5,8 @@
   "industry": "Electronic Equipment & Instruments",
   "market_cap": 12172713470.965576,
   "current_price": 255.55,
-  "rank": 356,
-  "composite_score": 45.71,
+  "rank": 355,
+  "composite_score": 45.7,
   "pillar_scores": {
     "quality": 37.33,
     "value": 79.0,
@@ -14,7 +14,7 @@
     "momentum": 21.17,
     "health": 44.58,
     "profitability": 37.21,
-    "technical": 53.14,
+    "technical": 52.99,
     "risk": 18.69,
     "sentiment": null,
     "ml": null
@@ -91,7 +91,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 11,
+    "filing_lag_days": 14,
     "latest_period_end": "2026-05-05",
     "latest_filed_date": "2026-05-12"
   },
@@ -112,20 +112,20 @@
       "Quality": 49.66,
       "Value": 48.86,
       "Growth": 53.42,
-      "Momentum": 63.82,
+      "Momentum": 63.79,
       "Health": 69.52,
       "Profitability": 48.86,
-      "Technical": 59.16,
+      "Technical": 59.31,
       "Risk": 47.51
     }
   },
   "beneish_m_score": -2.685108599907866,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 29.671849345129377,
+  "loss_chance_pct": 29.675584404890333,
   "price_change_1d_pct": 5.4858,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 45.71,
+  "composite_score_adjusted": 45.7,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -140,7 +140,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -175,9 +177,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
-  "form4_diagnostics": {
-    "insider_count": 20,
-    "latest_filing_date": "2026-05-21",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 4.197630851910159e-08
 }

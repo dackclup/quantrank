@@ -5,7 +5,7 @@
   "industry": "Cargo Ground Transportation",
   "market_cap": 24401803724.308014,
   "current_price": 258.77,
-  "rank": 193,
+  "rank": 191,
   "composite_score": 53.21,
   "pillar_scores": {
     "quality": 41.77,
@@ -14,8 +14,8 @@
     "momentum": 87.45,
     "health": 71.95,
     "profitability": 45.15,
-    "technical": 59.46,
-    "risk": 57.1,
+    "technical": 59.36,
+    "risk": 57.07,
     "sentiment": null,
     "ml": null
   },
@@ -96,7 +96,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 29,
+    "filing_lag_days": 32,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-24"
   },
@@ -123,14 +123,14 @@
       "Momentum": 48.56,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 45.37,
-      "Risk": 53.22
+      "Technical": 46.41,
+      "Risk": 53.19
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.1743410928635943,
   "recommendation": "neutral",
-  "loss_chance_pct": 60.39266772572159,
+  "loss_chance_pct": 60.395780275522384,
   "price_change_1d_pct": -0.1775,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 53.21,
@@ -148,7 +148,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -183,9 +185,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
-  "form4_diagnostics": {
-    "insider_count": 21,
-    "latest_filing_date": "2026-05-18",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 1.8863688074725266e-08
 }

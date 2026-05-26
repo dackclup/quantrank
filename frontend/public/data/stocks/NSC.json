@@ -5,8 +5,8 @@
   "industry": "Rail Transportation",
   "market_cap": 70641550860.3674,
   "current_price": 314.53,
-  "rank": 384,
-  "composite_score": 43.1,
+  "rank": 386,
+  "composite_score": 43.16,
   "pillar_scores": {
     "quality": 37.97,
     "value": 49.16,
@@ -14,8 +14,8 @@
     "momentum": 59.41,
     "health": 30.6,
     "profitability": 52.95,
-    "technical": 44.52,
-    "risk": 74.73,
+    "technical": 45.82,
+    "risk": 74.7,
     "sentiment": null,
     "ml": null
   },
@@ -96,7 +96,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 29,
+    "filing_lag_days": 32,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-24"
   },
@@ -120,17 +120,17 @@
       "Momentum": 48.56,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 45.37,
-      "Risk": 53.22
+      "Technical": 46.41,
+      "Risk": 53.19
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 55.82413199537546,
+  "loss_chance_pct": 55.792383987407334,
   "price_change_1d_pct": 0.9922,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 43.1,
+  "composite_score_adjusted": 43.16,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -145,7 +145,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -176,13 +178,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.47,
+  "osap_blended_score": 47.51,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 6,
-  "form4_diagnostics": {
-    "insider_count": 8,
-    "latest_filing_date": "2026-04-28",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 2.1918649608692835e-08
 }

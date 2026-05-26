@@ -5,13 +5,13 @@
   "industry": "Semiconductors",
   "market_cap": 762322120662.7244,
   "current_price": 467.51,
-  "rank": 332,
+  "rank": 334,
   "composite_score": 46.6,
   "pillar_scores": {
     "quality": 19.86,
     "value": 20.78,
     "growth": 66.44,
-    "momentum": 96.46,
+    "momentum": 96.44,
     "health": 89.16,
     "profitability": 32.19,
     "technical": 67.68,
@@ -98,7 +98,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 17,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-05-06"
   },
@@ -125,17 +125,17 @@
       "Quality": 49.66,
       "Value": 48.86,
       "Growth": 53.42,
-      "Momentum": 63.82,
+      "Momentum": 63.79,
       "Health": 69.52,
       "Profitability": 48.86,
-      "Technical": 59.16,
+      "Technical": 59.31,
       "Risk": 47.51
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.6060518012826601,
   "recommendation": "cautious",
-  "loss_chance_pct": 66.69816623915298,
+  "loss_chance_pct": 66.69972251405338,
   "price_change_1d_pct": 3.9859,
   "manipulation_index": 5.0,
   "composite_score_adjusted": 46.1,
@@ -153,7 +153,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -188,9 +190,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2,
-  "form4_diagnostics": {
-    "insider_count": 11,
-    "latest_filing_date": "2026-05-22",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 3.755725249103918e-08
 }

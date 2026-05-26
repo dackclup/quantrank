@@ -11,11 +11,11 @@
     "quality": 25.34,
     "value": 16.89,
     "growth": 59.59,
-    "momentum": 61.93,
+    "momentum": 61.9,
     "health": 69.64,
     "profitability": 38.36,
     "technical": 68.8,
-    "risk": 42.9,
+    "risk": 42.86,
     "sentiment": null,
     "ml": null
   },
@@ -100,7 +100,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 19,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-07"
   },
@@ -128,17 +128,17 @@
       "Quality": 49.66,
       "Value": 48.86,
       "Growth": 53.42,
-      "Momentum": 63.82,
+      "Momentum": 63.79,
       "Health": 69.52,
       "Profitability": 48.86,
-      "Technical": 59.16,
+      "Technical": 59.31,
       "Risk": 47.51
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 70.81497554303334,
+  "loss_chance_pct": 70.8171543278939,
   "price_change_1d_pct": 1.9629,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 40.37,
@@ -156,7 +156,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -191,9 +193,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 1,
-  "form4_diagnostics": {
-    "insider_count": 14,
-    "latest_filing_date": "2026-05-20",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 0.024047350638739345
 }

@@ -6,15 +6,15 @@
   "market_cap": 114911378865.3775,
   "current_price": 107.64,
   "rank": 37,
-  "composite_score": 63.7,
+  "composite_score": 63.68,
   "pillar_scores": {
     "quality": 70.19,
     "value": 55.77,
     "growth": 74.04,
-    "momentum": 60.41,
+    "momentum": 60.36,
     "health": 71.16,
     "profitability": 63.78,
-    "technical": 41.78,
+    "technical": 41.43,
     "risk": 49.5,
     "sentiment": null,
     "ml": null
@@ -96,7 +96,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 30,
+    "filing_lag_days": 33,
     "latest_period_end": "2026-04-16",
     "latest_filed_date": "2026-04-23"
   },
@@ -120,20 +120,20 @@
       "Quality": 51.68,
       "Value": 50.48,
       "Growth": 48.56,
-      "Momentum": 48.33,
+      "Momentum": 48.31,
       "Health": 56.51,
       "Profitability": 54.33,
-      "Technical": 43.55,
+      "Technical": 43.35,
       "Risk": 46.22
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 40.52467159429484,
+  "loss_chance_pct": 40.536499283537864,
   "price_change_1d_pct": -0.6369,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 63.2,
+  "composite_score_adjusted": 63.18,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -148,7 +148,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -179,13 +181,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 57.78,
+  "osap_blended_score": 57.77,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3,
-  "form4_diagnostics": {
-    "insider_count": 22,
-    "latest_filing_date": "2026-05-15",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 5.139808636797646e-09
 }

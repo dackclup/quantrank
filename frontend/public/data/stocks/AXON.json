@@ -6,7 +6,7 @@
   "market_cap": 31112401722.0,
   "current_price": 386.0,
   "rank": 499,
-  "composite_score": 27.81,
+  "composite_score": 27.79,
   "pillar_scores": {
     "quality": 26.9,
     "value": 14.98,
@@ -14,7 +14,7 @@
     "momentum": 9.16,
     "health": 54.9,
     "profitability": 44.73,
-    "technical": 32.07,
+    "technical": 31.72,
     "risk": 18.92,
     "sentiment": null,
     "ml": null
@@ -96,7 +96,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 19,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-07"
   },
@@ -131,17 +131,17 @@
       "Momentum": 48.56,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 45.37,
-      "Risk": 53.22
+      "Technical": 46.41,
+      "Risk": 53.19
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 81.09394909812228,
+  "loss_chance_pct": 81.10266423756451,
   "price_change_1d_pct": -0.985,
   "manipulation_index": 30.0,
-  "composite_score_adjusted": 24.81,
+  "composite_score_adjusted": 24.79,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -156,7 +156,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -187,13 +189,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 39.83,
+  "osap_blended_score": 39.82,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2,
-  "form4_diagnostics": {
-    "insider_count": 11,
-    "latest_filing_date": "2026-04-02",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 3.9276942066992765e-08
 }

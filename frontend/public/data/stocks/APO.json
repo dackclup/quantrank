@@ -5,16 +5,16 @@
   "industry": "Asset Management & Custody Banks",
   "market_cap": 74088262428.72472,
   "current_price": 128.51,
-  "rank": 318,
-  "composite_score": 47.36,
+  "rank": 315,
+  "composite_score": 47.47,
   "pillar_scores": {
     "quality": 48.67,
-    "value": 41.33,
+    "value": 42.0,
     "growth": 58.67,
-    "momentum": 47.16,
+    "momentum": 47.11,
     "health": 48.73,
     "profitability": 37.11,
-    "technical": 55.98,
+    "technical": 55.28,
     "risk": 38.81,
     "sentiment": null,
     "ml": null
@@ -105,7 +105,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 19,
     "latest_period_end": "2026-05-05",
     "latest_filed_date": "2026-05-07"
   },
@@ -124,22 +124,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 52.67,
+      "Value": 52.89,
       "Growth": 51.5,
       "Momentum": 52.54,
       "Health": 50.72,
       "Profitability": 49.11,
-      "Technical": 49.65,
+      "Technical": 49.75,
       "Risk": 54.81
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 61.320988269145644,
+  "loss_chance_pct": 61.2665310978309,
   "price_change_1d_pct": -1.8258,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 47.36,
+  "composite_score_adjusted": 47.47,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -154,7 +154,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -185,13 +187,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.6,
+  "osap_blended_score": 49.66,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
-  "form4_diagnostics": {
-    "insider_count": 14,
-    "latest_filing_date": "2026-05-19",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 3.839642910944551e-08
 }

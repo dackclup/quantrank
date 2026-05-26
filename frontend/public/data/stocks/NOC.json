@@ -5,8 +5,8 @@
   "industry": "Aerospace & Defense",
   "market_cap": 78910961023.40991,
   "current_price": 555.58,
-  "rank": 198,
-  "composite_score": 52.96,
+  "rank": 196,
+  "composite_score": 52.95,
   "pillar_scores": {
     "quality": 48.1,
     "value": 72.15,
@@ -14,7 +14,7 @@
     "momentum": 35.46,
     "health": 46.49,
     "profitability": 48.31,
-    "technical": 39.02,
+    "technical": 38.82,
     "risk": 65.11,
     "sentiment": null,
     "ml": null
@@ -95,7 +95,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 32,
+    "filing_lag_days": 35,
     "latest_period_end": "2026-04-16",
     "latest_filed_date": "2026-04-21"
   },
@@ -121,17 +121,17 @@
       "Momentum": 48.56,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 45.37,
-      "Risk": 53.22
+      "Technical": 46.41,
+      "Risk": 53.19
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.4585224158978698,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 31.367531707543012,
+  "loss_chance_pct": 31.372511787224287,
   "price_change_1d_pct": 0.7252,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 52.96,
+  "composite_score_adjusted": 52.95,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -146,7 +146,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -181,9 +183,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3,
-  "form4_diagnostics": {
-    "insider_count": 17,
-    "latest_filing_date": "2026-05-21",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 6.974202114300345e-08
 }

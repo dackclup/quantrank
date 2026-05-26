@@ -5,8 +5,8 @@
   "industry": "Aerospace & Defense",
   "market_cap": 67875962852.5564,
   "current_price": 1213.51,
-  "rank": 422,
-  "composite_score": 40.8,
+  "rank": 424,
+  "composite_score": 40.81,
   "pillar_scores": {
     "quality": 22.15,
     "value": 30.59,
@@ -14,8 +14,8 @@
     "momentum": 20.72,
     "health": 62.55,
     "profitability": 60.76,
-    "technical": 61.8,
-    "risk": 52.56,
+    "technical": 61.9,
+    "risk": 52.52,
     "sentiment": null,
     "ml": null
   },
@@ -90,7 +90,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 18,
+    "filing_lag_days": 21,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-05"
   },
@@ -118,17 +118,17 @@
       "Momentum": 48.56,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 45.37,
-      "Risk": 53.22
+      "Technical": 46.41,
+      "Risk": 53.19
     }
   },
   "beneish_m_score": -2.4620787379974534,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 53.06095650995367,
+  "loss_chance_pct": 53.05908898007319,
   "price_change_1d_pct": 0.3465,
   "manipulation_index": 25.0,
-  "composite_score_adjusted": 38.3,
+  "composite_score_adjusted": 38.31,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -143,7 +143,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -178,9 +180,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2,
-  "form4_diagnostics": {
-    "insider_count": 14,
-    "latest_filing_date": "2026-05-19",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 4.043199147721762e-10
 }

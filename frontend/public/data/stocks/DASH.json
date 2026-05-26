@@ -5,8 +5,8 @@
   "industry": "Specialized Consumer Services",
   "market_cap": 70882741500.0,
   "current_price": 160.25,
-  "rank": 482,
-  "composite_score": 34.81,
+  "rank": 483,
+  "composite_score": 34.79,
   "pillar_scores": {
     "quality": 35.68,
     "value": 14.24,
@@ -14,7 +14,7 @@
     "momentum": 31.57,
     "health": 53.03,
     "profitability": 31.25,
-    "technical": 30.88,
+    "technical": 30.38,
     "risk": 23.51,
     "sentiment": null,
     "ml": null
@@ -101,7 +101,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 17,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
@@ -128,20 +128,20 @@
       "Quality": 46.35,
       "Value": 48.96,
       "Growth": 51.69,
-      "Momentum": 40.81,
+      "Momentum": 40.79,
       "Health": 43.75,
       "Profitability": 52.6,
-      "Technical": 52.59,
-      "Risk": 40.94
+      "Technical": 52.51,
+      "Risk": 40.92
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 71.59358918492697,
+  "loss_chance_pct": 71.60603938413016,
   "price_change_1d_pct": 0.6153,
   "manipulation_index": 10.0,
-  "composite_score_adjusted": 33.81,
+  "composite_score_adjusted": 33.79,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -156,7 +156,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -187,13 +189,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 43.33,
+  "osap_blended_score": 43.32,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
-  "form4_diagnostics": {
-    "insider_count": 12,
-    "latest_filing_date": "2026-05-22",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 0.014937618122459329
 }

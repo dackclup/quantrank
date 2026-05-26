@@ -5,8 +5,8 @@
   "industry": "Gas Utilities",
   "market_cap": 29680013142.300903,
   "current_price": 177.81,
-  "rank": 381,
-  "composite_score": 43.38,
+  "rank": 383,
+  "composite_score": 43.41,
   "pillar_scores": {
     "quality": 24.19,
     "value": 40.86,
@@ -14,7 +14,7 @@
     "momentum": 59.46,
     "health": 46.93,
     "profitability": 51.61,
-    "technical": 30.18,
+    "technical": 30.83,
     "risk": 82.93,
     "sentiment": null,
     "ml": null
@@ -97,7 +97,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 17,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-06"
   },
@@ -121,20 +121,20 @@
       "Quality": 51.61,
       "Value": 47.85,
       "Growth": 54.03,
-      "Momentum": 56.23,
+      "Momentum": 56.18,
       "Health": 17.93,
       "Profitability": 52.15,
-      "Technical": 47.26,
+      "Technical": 47.16,
       "Risk": 72.63
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 48.309922752397526,
+  "loss_chance_pct": 48.29373749343338,
   "price_change_1d_pct": 0.1972,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 42.88,
+  "composite_score_adjusted": 42.91,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -149,7 +149,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -180,13 +182,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.61,
+  "osap_blended_score": 47.63,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
-  "form4_diagnostics": {
-    "insider_count": 13,
-    "latest_filing_date": "2026-05-04",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 5.717622019439975e-09
 }

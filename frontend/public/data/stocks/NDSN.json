@@ -5,8 +5,8 @@
   "industry": "Industrial Machinery & Supplies & Components",
   "market_cap": 16152632785.124634,
   "current_price": 289.9,
-  "rank": 213,
-  "composite_score": 52.16,
+  "rank": 214,
+  "composite_score": 52.17,
   "pillar_scores": {
     "quality": 46.84,
     "value": 42.62,
@@ -14,7 +14,7 @@
     "momentum": 70.72,
     "health": 65.86,
     "profitability": 69.83,
-    "technical": 44.87,
+    "technical": 45.02,
     "risk": 67.03,
     "sentiment": null,
     "ml": null
@@ -93,7 +93,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 2,
+    "filing_lag_days": 5,
     "latest_period_end": "2026-05-19",
     "latest_filed_date": "2026-05-21"
   },
@@ -117,17 +117,17 @@
       "Momentum": 48.56,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 45.37,
-      "Risk": 53.22
+      "Technical": 46.41,
+      "Risk": 53.19
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 50.39841991533993,
+  "loss_chance_pct": 50.39468485557897,
   "price_change_1d_pct": 1.0915,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 52.16,
+  "composite_score_adjusted": 52.17,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -142,7 +142,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -173,13 +175,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.0,
+  "osap_blended_score": 52.01,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
-  "form4_diagnostics": {
-    "insider_count": 13,
-    "latest_filing_date": "2026-05-08",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 2.8795592642792417e-08
 }

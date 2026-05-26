@@ -5,8 +5,8 @@
   "industry": "Communications Equipment",
   "market_cap": 193954973862.67746,
   "current_price": 154.03,
-  "rank": 122,
-  "composite_score": 56.85,
+  "rank": 120,
+  "composite_score": 56.84,
   "pillar_scores": {
     "quality": 57.88,
     "value": 28.54,
@@ -14,7 +14,7 @@
     "momentum": 82.02,
     "health": 90.52,
     "profitability": 64.16,
-    "technical": 45.17,
+    "technical": 45.07,
     "risk": 45.35,
     "sentiment": null,
     "ml": null
@@ -94,7 +94,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 17,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-06"
   },
@@ -118,20 +118,20 @@
       "Quality": 49.66,
       "Value": 48.86,
       "Growth": 53.42,
-      "Momentum": 63.82,
+      "Momentum": 63.79,
       "Health": 69.52,
       "Profitability": 48.86,
-      "Technical": 59.16,
+      "Technical": 59.31,
       "Risk": 47.51
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.6518033895089196,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 58.577341888155146,
+  "loss_chance_pct": 58.579831927995784,
   "price_change_1d_pct": 3.6611,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 56.85,
+  "composite_score_adjusted": 56.84,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -146,7 +146,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -181,9 +183,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3,
-  "form4_diagnostics": {
-    "insider_count": 11,
-    "latest_filing_date": "2026-05-22",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 2.6367061259694783e-05
 }

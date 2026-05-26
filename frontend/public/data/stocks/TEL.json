@@ -5,17 +5,17 @@
   "industry": "Electronic Manufacturing Services",
   "market_cap": 59190629764.901886,
   "current_price": 202.78,
-  "rank": 124,
-  "composite_score": 56.6,
+  "rank": 122,
+  "composite_score": 56.77,
   "pillar_scores": {
     "quality": 49.32,
     "value": 79.22,
     "growth": 42.47,
-    "momentum": 46.56,
+    "momentum": 46.81,
     "health": 78.53,
     "profitability": 43.15,
-    "technical": 32.42,
-    "risk": 51.1,
+    "technical": 35.06,
+    "risk": 51.26,
     "sentiment": null,
     "ml": null
   },
@@ -93,7 +93,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 29,
+    "filing_lag_days": 32,
     "latest_period_end": "2026-04-20",
     "latest_filed_date": "2026-04-24"
   },
@@ -117,20 +117,20 @@
       "Quality": 49.66,
       "Value": 48.86,
       "Growth": 53.42,
-      "Momentum": 63.82,
+      "Momentum": 63.79,
       "Health": 69.52,
       "Profitability": 48.86,
-      "Technical": 59.16,
+      "Technical": 59.31,
       "Risk": 47.51
     }
   },
   "beneish_m_score": -2.710240509832468,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 33.715498391306156,
-  "price_change_1d_pct": 0.1037,
+  "loss_chance_pct": 33.63083703672448,
+  "price_change_1d_pct": 0.4906,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 56.6,
+  "composite_score_adjusted": 56.77,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -145,7 +145,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -176,13 +178,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.23,
+  "osap_blended_score": 54.31,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5,
-  "form4_diagnostics": {
-    "insider_count": 7,
-    "latest_filing_date": "2026-05-18",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 4.5329778119790534e-08
 }

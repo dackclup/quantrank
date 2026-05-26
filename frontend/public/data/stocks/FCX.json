@@ -5,16 +5,16 @@
   "industry": "Copper",
   "market_cap": 89114338444.2465,
   "current_price": 61.99,
-  "rank": 18,
-  "composite_score": 66.19,
+  "rank": 19,
+  "composite_score": 66.18,
   "pillar_scores": {
     "quality": 76.92,
     "value": 49.36,
     "growth": 71.15,
-    "momentum": 80.58,
+    "momentum": 80.53,
     "health": 59.9,
     "profitability": 64.74,
-    "technical": 68.7,
+    "technical": 68.65,
     "risk": 39.74,
     "sentiment": null,
     "ml": null
@@ -92,7 +92,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 18,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-08"
   },
@@ -115,20 +115,20 @@
       "Quality": 51.68,
       "Value": 50.48,
       "Growth": 48.56,
-      "Momentum": 48.33,
+      "Momentum": 48.31,
       "Health": 56.51,
       "Profitability": 54.33,
-      "Technical": 43.55,
+      "Technical": 43.35,
       "Risk": 46.22
     }
   },
   "beneish_m_score": -2.3396570835237913,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 31.692140013041787,
+  "loss_chance_pct": 31.696497582762902,
   "price_change_1d_pct": -0.5136,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 65.69,
+  "composite_score_adjusted": 65.68,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -143,7 +143,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -178,9 +180,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
-  "form4_diagnostics": {
-    "insider_count": 8,
-    "latest_filing_date": "2026-04-01",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 1.3064637252126422e-08
 }

@@ -5,8 +5,8 @@
   "industry": "Application Software",
   "market_cap": 28754637051.11792,
   "current_price": 1239.91,
-  "rank": 242,
-  "composite_score": 51.29,
+  "rank": 238,
+  "composite_score": 51.28,
   "pillar_scores": {
     "quality": 50.86,
     "value": 45.43,
@@ -14,7 +14,7 @@
     "momentum": 3.64,
     "health": 82.49,
     "profitability": 92.58,
-    "technical": 59.91,
+    "technical": 59.76,
     "risk": 26.53,
     "sentiment": null,
     "ml": null
@@ -94,7 +94,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 25,
+    "filing_lag_days": 28,
     "latest_period_end": "2026-04-16",
     "latest_filed_date": "2026-04-28"
   },
@@ -118,20 +118,20 @@
       "Quality": 49.66,
       "Value": 48.86,
       "Growth": 53.42,
-      "Momentum": 63.82,
+      "Momentum": 63.79,
       "Health": 69.52,
       "Profitability": 48.86,
-      "Technical": 59.16,
+      "Technical": 59.31,
       "Risk": 47.51
     }
   },
   "beneish_m_score": -2.717513991430988,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 40.81851736728642,
+  "loss_chance_pct": 40.822252427047374,
   "price_change_1d_pct": 0.9617,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 50.79,
+  "composite_score_adjusted": 50.78,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -146,7 +146,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -181,9 +183,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2,
-  "form4_diagnostics": {
-    "insider_count": 14,
-    "latest_filing_date": "2026-05-19",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 8.733127789978906e-09
 }

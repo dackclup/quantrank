@@ -5,7 +5,7 @@
   "industry": "Air Freight & Logistics",
   "market_cap": 85866997146.60645,
   "current_price": 101.02,
-  "rank": 183,
+  "rank": 181,
   "composite_score": 53.58,
   "pillar_scores": {
     "quality": 59.81,
@@ -14,7 +14,7 @@
     "momentum": 45.32,
     "health": 47.45,
     "profitability": 45.15,
-    "technical": 60.56,
+    "technical": 60.51,
     "risk": 35.89,
     "sentiment": null,
     "ml": null
@@ -96,7 +96,7 @@
       "sga_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 17,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
@@ -122,14 +122,14 @@
       "Momentum": 48.56,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 45.37,
-      "Risk": 53.22
+      "Technical": 46.41,
+      "Risk": 53.19
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 40.40493044450257,
+  "loss_chance_pct": 40.40617546442289,
   "price_change_1d_pct": 2.8193,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 53.58,
@@ -147,7 +147,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -178,13 +180,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.72,
+  "osap_blended_score": 52.71,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 6,
-  "form4_diagnostics": {
-    "insider_count": 8,
-    "latest_filing_date": "2026-05-15",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 7.424754733954078e-06
 }

@@ -5,7 +5,7 @@
   "industry": "Environmental & Facilities Services",
   "market_cap": 25739046983.18685,
   "current_price": 53.46,
-  "rank": 176,
+  "rank": 173,
   "composite_score": 53.86,
   "pillar_scores": {
     "quality": 83.54,
@@ -14,8 +14,8 @@
     "momentum": 27.09,
     "health": 40.32,
     "profitability": 74.05,
-    "technical": 31.42,
-    "risk": 57.07,
+    "technical": 31.47,
+    "risk": 57.01,
     "sentiment": null,
     "ml": null
   },
@@ -92,7 +92,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 30,
+    "filing_lag_days": 33,
     "latest_period_end": "2026-04-13",
     "latest_filed_date": "2026-04-23"
   },
@@ -120,8 +120,8 @@
       "Momentum": 48.56,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 45.37,
-      "Risk": 53.22
+      "Technical": 46.41,
+      "Risk": 53.19
     }
   },
   "beneish_m_score": null,
@@ -145,7 +145,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -180,9 +182,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
-  "form4_diagnostics": {
-    "insider_count": 16,
-    "latest_filing_date": "2026-05-01",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 2.7657143462990377e-09
 }

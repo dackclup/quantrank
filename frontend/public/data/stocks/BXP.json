@@ -5,8 +5,8 @@
   "industry": "Office REITs",
   "market_cap": 9614892049.395912,
   "current_price": 60.29,
-  "rank": 421,
-  "composite_score": 40.88,
+  "rank": 423,
+  "composite_score": 40.89,
   "pillar_scores": {
     "quality": 43.55,
     "value": 64.52,
@@ -14,7 +14,7 @@
     "momentum": 27.69,
     "health": 27.37,
     "profitability": 28.49,
-    "technical": 48.61,
+    "technical": 48.8,
     "risk": 34.86,
     "sentiment": null,
     "ml": null
@@ -108,7 +108,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 19,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-07"
   },
@@ -132,20 +132,20 @@
       "Quality": 50.81,
       "Value": 46.77,
       "Growth": 48.79,
-      "Momentum": 52.09,
+      "Momentum": 52.04,
       "Health": 26.22,
       "Profitability": 52.15,
-      "Technical": 50.5,
+      "Technical": 50.8,
       "Risk": 54.45
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 38.05847523554874,
+  "loss_chance_pct": 38.053495155867466,
   "price_change_1d_pct": 0.2661,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 40.88,
+  "composite_score_adjusted": 40.89,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -160,7 +160,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -195,9 +197,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3,
-  "form4_diagnostics": {
-    "insider_count": 6,
-    "latest_filing_date": "2026-05-20",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 0.11809850394268646
 }

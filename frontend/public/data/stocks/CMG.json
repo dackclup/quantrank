@@ -5,8 +5,8 @@
   "industry": "Restaurants",
   "market_cap": 42189120477.0813,
   "current_price": 32.89,
-  "rank": 278,
-  "composite_score": 49.61,
+  "rank": 279,
+  "composite_score": 49.6,
   "pillar_scores": {
     "quality": 80.47,
     "value": 25.69,
@@ -14,7 +14,7 @@
     "momentum": 26.0,
     "health": 41.12,
     "profitability": 64.24,
-    "technical": 37.35,
+    "technical": 37.2,
     "risk": 18.06,
     "sentiment": null,
     "ml": null
@@ -96,7 +96,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 23,
+    "filing_lag_days": 26,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-30"
   },
@@ -117,20 +117,20 @@
       "Quality": 46.35,
       "Value": 48.96,
       "Growth": 51.69,
-      "Momentum": 40.81,
+      "Momentum": 40.79,
       "Health": 43.75,
       "Profitability": 52.6,
-      "Technical": 52.59,
-      "Risk": 40.94
+      "Technical": 52.51,
+      "Risk": 40.92
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 60.19463119743249,
+  "loss_chance_pct": 60.19836625719345,
   "price_change_1d_pct": 0.2744,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 49.61,
+  "composite_score_adjusted": 49.6,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -145,7 +145,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -180,9 +182,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 6,
-  "form4_diagnostics": {
-    "insider_count": 10,
-    "latest_filing_date": "2026-05-21",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 2.3443989531979715e-08
 }

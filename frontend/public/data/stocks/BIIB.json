@@ -5,16 +5,16 @@
   "industry": "Biotechnology",
   "market_cap": 28606166978.925095,
   "current_price": 193.76,
-  "rank": 208,
-  "composite_score": 52.54,
+  "rank": 206,
+  "composite_score": 52.53,
   "pillar_scores": {
     "quality": 38.98,
     "value": 64.97,
     "growth": 34.32,
-    "momentum": 67.93,
+    "momentum": 67.88,
     "health": 72.99,
     "profitability": 46.89,
-    "technical": 49.1,
+    "technical": 49.15,
     "risk": 46.22,
     "sentiment": null,
     "ml": null
@@ -96,7 +96,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 24,
+    "filing_lag_days": 27,
     "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-29"
   },
@@ -119,20 +119,20 @@
       "Quality": 52.97,
       "Value": 50.85,
       "Growth": 49.58,
-      "Momentum": 38.75,
+      "Momentum": 38.7,
       "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 55.63,
+      "Technical": 55.78,
       "Risk": 41.8
     }
   },
   "beneish_m_score": -2.6681306562666594,
   "dechow_f_score": 1.305785398533103,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 35.8052502509305,
+  "loss_chance_pct": 35.807117780810984,
   "price_change_1d_pct": 2.2642,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 52.54,
+  "composite_score_adjusted": 52.53,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -147,7 +147,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -182,9 +184,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3,
-  "form4_diagnostics": {
-    "insider_count": 10,
-    "latest_filing_date": "2026-05-05",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 2.1350258299374147e-09
 }

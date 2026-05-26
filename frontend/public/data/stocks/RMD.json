@@ -5,8 +5,8 @@
   "industry": "Health Care Equipment",
   "market_cap": 30178981133.876953,
   "current_price": 208.05,
-  "rank": 19,
-  "composite_score": 66.18,
+  "rank": 18,
+  "composite_score": 66.19,
   "pillar_scores": {
     "quality": 80.51,
     "value": 61.3,
@@ -14,7 +14,7 @@
     "momentum": 16.09,
     "health": 82.03,
     "profitability": 75.99,
-    "technical": 66.28,
+    "technical": 66.38,
     "risk": 35.39,
     "sentiment": null,
     "ml": null
@@ -92,7 +92,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 22,
+    "filing_lag_days": 25,
     "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-05-01"
   },
@@ -116,20 +116,20 @@
       "Quality": 52.97,
       "Value": 50.85,
       "Growth": 49.58,
-      "Momentum": 38.75,
+      "Momentum": 38.7,
       "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 55.63,
+      "Technical": 55.78,
       "Risk": 41.8
     }
   },
   "beneish_m_score": -2.6654462080473946,
   "dechow_f_score": 0.43795008495615667,
   "recommendation": "neutral",
-  "loss_chance_pct": 52.90849384946092,
+  "loss_chance_pct": 52.90600380962028,
   "price_change_1d_pct": -0.445,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 65.68,
+  "composite_score_adjusted": 65.69,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,7 +144,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -179,9 +181,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5,
-  "form4_diagnostics": {
-    "insider_count": 14,
-    "latest_filing_date": "2026-05-11",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 2.498835343478414e-08
 }

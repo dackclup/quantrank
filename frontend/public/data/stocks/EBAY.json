@@ -5,8 +5,8 @@
   "industry": "Broadline Retail",
   "market_cap": 51393000000.0,
   "current_price": 115.75,
-  "rank": 206,
-  "composite_score": 52.63,
+  "rank": 204,
+  "composite_score": 52.61,
   "pillar_scores": {
     "quality": 57.03,
     "value": 25.0,
@@ -14,7 +14,7 @@
     "momentum": 86.55,
     "health": 61.2,
     "profitability": 64.06,
-    "technical": 61.06,
+    "technical": 60.66,
     "risk": 57.4,
     "sentiment": null,
     "ml": null
@@ -90,7 +90,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 24,
+    "filing_lag_days": 27,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-29"
   },
@@ -114,20 +114,20 @@
       "Quality": 46.35,
       "Value": 48.96,
       "Growth": 51.69,
-      "Momentum": 40.81,
+      "Momentum": 40.79,
       "Health": 43.75,
       "Profitability": 52.6,
-      "Technical": 52.59,
-      "Risk": 40.94
+      "Technical": 52.51,
+      "Risk": 40.92
     }
   },
   "beneish_m_score": -2.380237295891116,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 58.68377272161354,
+  "loss_chance_pct": 58.6937328809761,
   "price_change_1d_pct": -1.1782,
   "manipulation_index": 10.0,
-  "composite_score_adjusted": 51.63,
+  "composite_score_adjusted": 51.61,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -142,7 +142,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -173,13 +175,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.24,
+  "osap_blended_score": 52.23,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
-  "form4_diagnostics": {
-    "insider_count": 12,
-    "latest_filing_date": "2026-05-22",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 1.120775202848637e-08
 }

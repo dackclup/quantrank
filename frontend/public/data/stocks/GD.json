@@ -5,8 +5,8 @@
   "industry": "Aerospace & Defense",
   "market_cap": 92727810781.8097,
   "current_price": 342.89,
-  "rank": 181,
-  "composite_score": 53.61,
+  "rank": 179,
+  "composite_score": 53.62,
   "pillar_scores": {
     "quality": 39.24,
     "value": 79.11,
@@ -14,7 +14,7 @@
     "momentum": 43.48,
     "health": 58.57,
     "profitability": 44.09,
-    "technical": 42.11,
+    "technical": 42.28,
     "risk": 77.16,
     "sentiment": null,
     "ml": null
@@ -98,7 +98,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 24,
+    "filing_lag_days": 27,
     "latest_period_end": "2026-04-05",
     "latest_filed_date": "2026-04-29"
   },
@@ -126,17 +126,17 @@
       "Momentum": 48.56,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 45.37,
-      "Risk": 53.22
+      "Technical": 46.41,
+      "Risk": 53.19
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.5348459600137555,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 50.47900442957434,
+  "loss_chance_pct": 50.47464685985322,
   "price_change_1d_pct": 1.2341,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 53.61,
+  "composite_score_adjusted": 53.62,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -151,7 +151,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -182,13 +184,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.73,
+  "osap_blended_score": 52.74,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
-  "form4_diagnostics": {
-    "insider_count": 25,
-    "latest_filing_date": "2026-05-13",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 7.417202708005724e-08
 }

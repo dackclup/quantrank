@@ -5,8 +5,8 @@
   "industry": "Health Care Equipment",
   "market_cap": 100913356211.34702,
   "current_price": 78.6,
-  "rank": 380,
-  "composite_score": 43.51,
+  "rank": 382,
+  "composite_score": 43.5,
   "pillar_scores": {
     "quality": 33.05,
     "value": 62.99,
@@ -14,7 +14,7 @@
     "momentum": 21.17,
     "health": 74.34,
     "profitability": 45.48,
-    "technical": 55.38,
+    "technical": 55.23,
     "risk": 46.61,
     "sentiment": null,
     "ml": null
@@ -93,7 +93,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 88,
+    "filing_lag_days": 91,
     "latest_period_end": "2026-02-18",
     "latest_filed_date": "2026-02-24"
   },
@@ -116,20 +116,20 @@
       "Quality": 52.97,
       "Value": 50.85,
       "Growth": 49.58,
-      "Momentum": 38.75,
+      "Momentum": 38.7,
       "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 55.63,
+      "Technical": 55.78,
       "Risk": 41.8
     }
   },
   "beneish_m_score": -2.6061201366300053,
   "dechow_f_score": 0.6046230278055023,
   "recommendation": "neutral",
-  "loss_chance_pct": 35.09060604966426,
+  "loss_chance_pct": 35.094341109425216,
   "price_change_1d_pct": 0.5758,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 43.51,
+  "composite_score_adjusted": 43.5,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,7 +144,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -179,9 +181,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
-  "form4_diagnostics": {
-    "insider_count": 18,
-    "latest_filing_date": "2026-05-04",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 5.833251481461982e-09
 }

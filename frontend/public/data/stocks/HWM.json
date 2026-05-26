@@ -5,7 +5,7 @@
   "industry": "Aerospace & Defense",
   "market_cap": 102647569879.52545,
   "current_price": 256.55,
-  "rank": 182,
+  "rank": 180,
   "composite_score": 53.6,
   "pillar_scores": {
     "quality": 62.97,
@@ -99,7 +99,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 16,
+    "filing_lag_days": 19,
     "latest_period_end": "2026-05-04",
     "latest_filed_date": "2026-05-07"
   },
@@ -129,8 +129,8 @@
       "Momentum": 48.56,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 45.37,
-      "Risk": 53.22
+      "Technical": 46.41,
+      "Risk": 53.19
     }
   },
   "beneish_m_score": null,
@@ -154,7 +154,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -189,9 +191,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3,
-  "form4_diagnostics": {
-    "insider_count": 9,
-    "latest_filing_date": "2026-05-12",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 5.38224673987185e-09
 }

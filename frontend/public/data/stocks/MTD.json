@@ -5,8 +5,8 @@
   "industry": "Life Sciences Tools & Services",
   "market_cap": 22290801896.400513,
   "current_price": 1103.09,
-  "rank": 396,
-  "composite_score": 42.61,
+  "rank": 397,
+  "composite_score": 42.63,
   "pillar_scores": {
     "quality": 36.02,
     "value": 38.14,
@@ -14,7 +14,7 @@
     "momentum": 32.72,
     "health": 61.33,
     "profitability": 72.88,
-    "technical": 43.38,
+    "technical": 43.63,
     "risk": 31.87,
     "sentiment": null,
     "ml": null
@@ -93,7 +93,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 15,
+    "filing_lag_days": 18,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-08"
   },
@@ -114,20 +114,20 @@
       "Quality": 52.97,
       "Value": 50.85,
       "Growth": 49.58,
-      "Momentum": 38.75,
+      "Momentum": 38.7,
       "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 55.63,
+      "Technical": 55.78,
       "Risk": 41.8
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.47955271432773877,
   "recommendation": "neutral",
-  "loss_chance_pct": 60.644722095262125,
+  "loss_chance_pct": 60.63849699566053,
   "price_change_1d_pct": 1.1592,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 42.61,
+  "composite_score_adjusted": 42.63,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -142,7 +142,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -173,13 +175,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.23,
+  "osap_blended_score": 47.24,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2,
-  "form4_diagnostics": {
-    "insider_count": 8,
-    "latest_filing_date": "2026-05-14",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 5.636407871437744e-08
 }

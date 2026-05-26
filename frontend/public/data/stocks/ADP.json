@@ -5,8 +5,8 @@
   "industry": "Human Resource & Employment Services",
   "market_cap": 90064130101.50623,
   "current_price": 225.31,
-  "rank": 96,
-  "composite_score": 58.23,
+  "rank": 95,
+  "composite_score": 58.22,
   "pillar_scores": {
     "quality": 80.7,
     "value": 50.63,
@@ -14,7 +14,7 @@
     "momentum": 15.89,
     "health": 60.12,
     "profitability": 56.54,
-    "technical": 61.3,
+    "technical": 61.11,
     "risk": 41.24,
     "sentiment": null,
     "ml": null
@@ -99,7 +99,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 23,
+    "filing_lag_days": 26,
     "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-30"
   },
@@ -127,17 +127,17 @@
       "Momentum": 48.56,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 45.37,
-      "Risk": 53.22
+      "Technical": 46.41,
+      "Risk": 53.19
     }
   },
   "beneish_m_score": -2.5869037186960835,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 58.88416219089885,
+  "loss_chance_pct": 58.88914227058013,
   "price_change_1d_pct": 2.3764,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 58.23,
+  "composite_score_adjusted": 58.22,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -152,7 +152,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -187,9 +189,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2,
-  "form4_diagnostics": {
-    "insider_count": 9,
-    "latest_filing_date": "2026-05-11",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 4.6072795250553824e-08
 }

@@ -6,7 +6,7 @@
   "market_cap": 18601340245.733448,
   "current_price": 46.88,
   "rank": 447,
-  "composite_score": 39.44,
+  "composite_score": 39.43,
   "pillar_scores": {
     "quality": 6.99,
     "value": 53.81,
@@ -14,7 +14,7 @@
     "momentum": 77.74,
     "health": 75.5,
     "profitability": 3.81,
-    "technical": 40.39,
+    "technical": 40.19,
     "risk": 28.34,
     "sentiment": null,
     "ml": null
@@ -95,7 +95,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 22,
+    "filing_lag_days": 25,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-05-01"
   },
@@ -121,20 +121,20 @@
       "Quality": 52.97,
       "Value": 50.85,
       "Growth": 49.58,
-      "Momentum": 38.75,
+      "Momentum": 38.7,
       "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 55.63,
+      "Technical": 55.78,
       "Risk": 41.8
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 1.06258754513651,
   "recommendation": "cautious",
-  "loss_chance_pct": 59.88376706859469,
+  "loss_chance_pct": 59.88874714827597,
   "price_change_1d_pct": -0.8041,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 39.44,
+  "composite_score_adjusted": 39.43,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -149,7 +149,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -180,13 +182,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.65,
+  "osap_blended_score": 45.64,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 1,
-  "form4_diagnostics": {
-    "insider_count": 11,
-    "latest_filing_date": "2026-05-22",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 3.667835451415527e-08
 }

@@ -5,7 +5,7 @@
   "industry": "Packaged Foods & Meats",
   "market_cap": 11023170316.932968,
   "current_price": 103.36,
-  "rank": 466,
+  "rank": 465,
   "composite_score": 36.97,
   "pillar_scores": {
     "quality": 14.58,
@@ -15,7 +15,7 @@
     "health": 18.15,
     "profitability": 17.36,
     "technical": 68.03,
-    "risk": 45.32,
+    "risk": 45.25,
     "sentiment": null,
     "ml": null
   },
@@ -93,7 +93,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 86,
+    "filing_lag_days": 89,
     "latest_period_end": "2026-02-19",
     "latest_filed_date": "2026-02-26"
   },
@@ -116,19 +116,19 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 49.65,
-      "Value": 51.85,
+      "Value": 53.7,
       "Growth": 48.44,
       "Momentum": 36.5,
       "Health": 39.29,
       "Profitability": 53.94,
-      "Technical": 57.15,
-      "Risk": 50.51
+      "Technical": 56.92,
+      "Risk": 50.46
     }
   },
   "beneish_m_score": -3.1198155194312376,
   "dechow_f_score": 0.4517231953496322,
   "recommendation": "cautious",
-  "loss_chance_pct": 80.51542095506862,
+  "loss_chance_pct": 80.51666597498894,
   "price_change_1d_pct": 1.4228,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 36.97,
@@ -146,7 +146,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -181,9 +183,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2,
-  "form4_diagnostics": {
-    "insider_count": 6,
-    "latest_filing_date": "2026-03-23",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 2.2050555772232805e-08
 }

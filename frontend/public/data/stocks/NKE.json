@@ -6,7 +6,7 @@
   "market_cap": 66129465289.30664,
   "current_price": 44.67,
   "rank": 444,
-  "composite_score": 39.63,
+  "composite_score": 39.62,
   "pillar_scores": {
     "quality": 53.39,
     "value": 43.06,
@@ -14,8 +14,8 @@
     "momentum": 5.25,
     "health": 53.94,
     "profitability": 47.92,
-    "technical": 76.1,
-    "risk": 15.75,
+    "technical": 75.9,
+    "risk": 15.79,
     "sentiment": null,
     "ml": null
   },
@@ -94,7 +94,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 52,
+    "filing_lag_days": 55,
     "latest_period_end": "2026-02-28",
     "latest_filed_date": "2026-04-01"
   },
@@ -117,20 +117,20 @@
       "Quality": 46.35,
       "Value": 48.96,
       "Growth": 51.69,
-      "Momentum": 40.81,
+      "Momentum": 40.79,
       "Health": 43.75,
       "Profitability": 52.6,
-      "Technical": 52.59,
-      "Risk": 40.94
+      "Technical": 52.51,
+      "Risk": 40.92
     }
   },
   "beneish_m_score": -2.2322132972981725,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 60.885929263550196,
+  "loss_chance_pct": 60.89028683327131,
   "price_change_1d_pct": 0.6308,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 37.63,
+  "composite_score_adjusted": 37.62,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -145,7 +145,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -180,9 +182,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5,
-  "form4_diagnostics": {
-    "insider_count": 13,
-    "latest_filing_date": "2026-05-15",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 0.00032902136132768216
 }

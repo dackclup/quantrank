@@ -5,8 +5,8 @@
   "industry": "Electric Utilities",
   "market_cap": 47302911936.272484,
   "current_price": 46.23,
-  "rank": 263,
-  "composite_score": 50.53,
+  "rank": 262,
+  "composite_score": 50.52,
   "pillar_scores": {
     "quality": 40.32,
     "value": 72.04,
@@ -14,8 +14,8 @@
     "momentum": 46.91,
     "health": 20.16,
     "profitability": 40.32,
-    "technical": 67.73,
-    "risk": 69.16,
+    "technical": 67.48,
+    "risk": 69.12,
     "sentiment": null,
     "ml": null
   },
@@ -97,7 +97,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 17,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
@@ -122,20 +122,20 @@
       "Quality": 51.61,
       "Value": 47.85,
       "Growth": 54.03,
-      "Momentum": 56.23,
+      "Momentum": 56.18,
       "Health": 17.93,
       "Profitability": 52.15,
-      "Technical": 47.26,
+      "Technical": 47.16,
       "Risk": 72.63
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 47.33462864483249,
+  "loss_chance_pct": 47.341476254394244,
   "price_change_1d_pct": 1.9405,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 50.53,
+  "composite_score_adjusted": 50.52,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -150,7 +150,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -185,9 +187,6 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3,
-  "form4_diagnostics": {
-    "insider_count": 13,
-    "latest_filing_date": "2026-04-01",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 4.1948210006583504e-08
 }

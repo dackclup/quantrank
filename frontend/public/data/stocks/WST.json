@@ -5,7 +5,7 @@
   "industry": "Health Care Supplies",
   "market_cap": 22354312958.53714,
   "current_price": 316.42,
-  "rank": 221,
+  "rank": 222,
   "composite_score": 51.9,
   "pillar_scores": {
     "quality": 62.29,
@@ -14,7 +14,7 @@
     "momentum": 70.62,
     "health": 92.19,
     "profitability": 60.45,
-    "technical": 64.74,
+    "technical": 64.84,
     "risk": 42.43,
     "sentiment": null,
     "ml": null
@@ -90,7 +90,7 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 30,
+    "filing_lag_days": 33,
     "latest_period_end": "2026-04-20",
     "latest_filed_date": "2026-04-23"
   },
@@ -113,17 +113,17 @@
       "Quality": 52.97,
       "Value": 50.85,
       "Growth": 49.58,
-      "Momentum": 38.75,
+      "Momentum": 38.7,
       "Health": 59.84,
       "Profitability": 51.13,
-      "Technical": 55.63,
+      "Technical": 55.78,
       "Risk": 41.8
     }
   },
   "beneish_m_score": -2.531475080893436,
   "dechow_f_score": 0.2754121704759475,
   "recommendation": "cautious",
-  "loss_chance_pct": 60.051802676300454,
+  "loss_chance_pct": 60.04931263645982,
   "price_change_1d_pct": 0.0917,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 51.9,
@@ -141,7 +141,9 @@
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
-    "dechow_high": false
+    "dechow_high": false,
+    "insider_sell_cluster": false,
+    "c_suite_unusual_sell": false
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -172,13 +174,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.87,
+  "osap_blended_score": 51.88,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5,
-  "form4_diagnostics": {
-    "insider_count": 17,
-    "latest_filing_date": "2026-05-14",
-    "fetch_status": "ok"
-  }
+  "form4_diagnostics": null,
+  "cross_source_delta": 8.009806175719526e-08
 }
