@@ -50,11 +50,18 @@ from __future__ import annotations
 
 import logging
 import math
+from collections.abc import Callable
 from dataclasses import dataclass
+from datetime import date as _date
+from datetime import datetime
 from itertools import combinations
+from typing import TYPE_CHECKING
 
 import numpy as np
 import pandas as pd
+
+if TYPE_CHECKING:
+    from compute.ingest.historical_universe import MembershipResult
 
 logger = logging.getLogger(__name__)
 
@@ -394,12 +401,56 @@ def factor_passes_gates(
     pbo_threshold: float = PBO_VETO_THRESHOLD,
     dsr_threshold: float = DSR_VETO_THRESHOLD,
     annualization: float = ANNUALIZATION_FACTOR_MONTHLY,
+    universe_provider: Callable[[_date], MembershipResult] | None = None,
+    as_of_date: _date | None = None,
+    current_universe: set[str] | frozenset[str] | None = None,
 ) -> tuple[bool, dict]:
     """Run both gates and return (passes, metrics_dict).
 
     Phase 4 ``osap-integration/PLAN.md`` § Validation / ``jkp-integration/
     PLAN.md`` § Validation will call this to decide whether a candidate
     factor is accepted into pillar blending.
+
+    Phase 4.6 (Research Report v1.0 §7.4) — optional ``universe_provider``
+    kwarg lets the caller pass a ``Callable[[date], MembershipResult]``
+    (typically ``functools.partial(historical_universe.members_at,
+    current_universe=...)``) so the diagnostic dict carries honest
+    universe provenance. The function does NOT filter ``returns_matrix``
+    itself — that's the caller's responsibility (the caller knows which
+    column → ticker mapping the matrix carries). What this function adds
+    is the **observability surface**: when ``universe_provider`` returns
+    a degraded (``is_complete=False``) result for ``as_of_date``, the
+    metrics dict's ``survivorship_bias_corrected`` flag flips False so
+    downstream Metadata + PR reviewers see the gap.
+
+    Backward compatibility: when all 3 new kwargs are None (default),
+    behavior is identical to pre-Phase-4.6. The 3 universe-related
+    metric keys are emitted but populated as ``None``.
+
+    Parameters
+    ----------
+    universe_provider:
+        Optional callable ``(as_of_date, current_universe, anchor_date)
+        -> MembershipResult``. Typically ``historical_universe.members_at``.
+        When provided alongside ``as_of_date`` AND ``current_universe``,
+        the function calls the provider once and includes the result's
+        ``is_complete`` flag + ticker count in the metrics dict.
+    as_of_date:
+        The validation as-of date (when the historical backtest is
+        evaluated). Defaults to None — when None, the provider call is
+        skipped even if ``universe_provider`` is set, and the metrics
+        ``universe_as_of`` is ``None``.
+    current_universe:
+        The current S&P 500 anchor set (typically ``set(
+        get_sp500_constituents().ticker)``). Required when both
+        ``universe_provider`` and ``as_of_date`` are provided.
+
+    Returns
+    -------
+    (passes: bool, metrics: dict)
+        ``metrics`` always contains the legacy 10 keys plus 3 new keys
+        (``universe_as_of``, ``universe_size``, ``survivorship_bias_corrected``)
+        populated either from the provider call or as ``None``.
     """
     pbo_result = compute_pbo(returns_matrix, n_partitions=n_partitions)
     dsr_result = compute_deflated_sharpe(
@@ -418,8 +469,57 @@ def factor_passes_gates(
         "n_strategies": pbo_result.n_strategies,
         "n_partitions": pbo_result.n_partitions,
         "n_trials": n_trials,
+        # Phase 4.6 observability — universe provenance for this validation
+        # run. Populated only when the caller passes all 3 universe kwargs;
+        # otherwise all 3 stay None (back-compat with pre-Phase-4.6 callers).
+        "universe_as_of": None,
+        "universe_size": None,
+        "survivorship_bias_corrected": None,
     }
+
+    if universe_provider is not None and as_of_date is not None and current_universe is not None:
+        try:
+            membership = universe_provider(
+                as_of_date,
+                current_universe=current_universe,
+            )
+            metrics["universe_as_of"] = membership.as_of_date.isoformat()
+            metrics["universe_size"] = len(membership.tickers)
+            metrics["survivorship_bias_corrected"] = bool(membership.is_complete)
+            if not membership.is_complete:
+                logger.warning(
+                    "factor_passes_gates: degraded universe for as_of=%s — "
+                    "is_complete=False, note=%r. Validation result still "
+                    "computed, but survivorship_bias_corrected=False signals "
+                    "caller to interpret with caution.",
+                    as_of_date,
+                    membership.note,
+                )
+        except Exception as exc:  # noqa: BLE001 — graceful degradation per Rule 18
+            logger.warning(
+                "factor_passes_gates: universe_provider raised %s for "
+                "as_of=%s — metrics universe fields stay None. Validation "
+                "result still computed from the supplied returns_matrix.",
+                type(exc).__name__,
+                as_of_date,
+            )
+    elif universe_provider is not None or as_of_date is not None or current_universe is not None:
+        # Partial-kwarg case: caller passed SOME of the 3 but not all.
+        # Likely an integration error — warn loud, don't fall over.
+        logger.warning(
+            "factor_passes_gates: universe_provider/as_of_date/current_universe "
+            "must be passed together (got provider=%s, as_of_date=%s, "
+            "current_universe=%s). Universe metrics stay None.",
+            universe_provider is not None,
+            as_of_date is not None,
+            current_universe is not None,
+        )
     return passes, metrics
+
+
+def today_utc_date() -> _date:
+    """Return today's UTC date — small helper for callers wiring as_of_date."""
+    return datetime.utcnow().date()
 
 
 __all__ = [
@@ -433,4 +533,5 @@ __all__ = [
     "compute_deflated_sharpe",
     "compute_pbo",
     "factor_passes_gates",
+    "today_utc_date",
 ]
