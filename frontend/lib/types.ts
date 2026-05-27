@@ -233,6 +233,18 @@ export type Metadata = {
   // methodology-scientist Q3 verdict 2026-05-26 (Damodaran 2019 Ch. 16
   // identity check Σ per-class MC = aggregate MC).
   multi_class_mc_reconcile_failure_count?: number | null;
+  // Phase 4.6 (0.10.7-phase4.6) — survivorship-bias visibility per
+  // Research Report v1.0 §7.4 + Hou-Xue-Zhang 2020 RFS replication
+  // crisis evidence. `universe_membership_as_of` is the ISO date of
+  // the historical S&P 500 membership snapshot used for this compute
+  // run; forward weekly cron = current; backtests = as-of date.
+  // `survivorship_bias_corrected` = true when a non-current lookup
+  // was used or when current membership matched; false when fallback
+  // to current happened for a historical date (data-quality degraded).
+  // Both nullable on legacy snapshots (pre-0.10.7); not currently
+  // rendered by the static site.
+  universe_membership_as_of?: string | null;
+  survivorship_bias_corrected?: boolean | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors

@@ -1,0 +1,101 @@
+effective_date,ticker,action,name,source_url,notes
+# QuantRank historical S&P 500 membership ledger.
+# Format: one row per ADD or REMOVE event. Most-recent (largest) date first.
+#
+# Sources (per row source_url):
+#   - Wikipedia "List of S&P 500 companies" change-history table:
+#     https://en.wikipedia.org/wiki/List_of_S%26P_500_companies
+#   - S&P Dow Jones Indices press releases:
+#     https://www.spglobal.com/spdji/en/index-announcements/
+#
+# License posture (per Research Report v1.0 §License):
+#   - Factual list (uncopyrightable per Feist 1991 + 17 U.S.C. § 102(b)).
+#   - Wikipedia source data is CC BY-SA 4.0; our compilation = original
+#     work under the project's MIT license. We cite per row but do not
+#     reproduce Wikipedia prose.
+#
+# Scope (Phase 4.6 v1):
+#   - Coverage starts 2020-01-01 (5-year backtest window, S&P 500 only)
+#   - 50+ well-known ADD/REMOVE events; NOT a complete historical index
+#   - Expansion: subsequent PRs add older events as backtest window grows
+#
+# Methodology (Hou-Xue-Zhang 2020 RFS + McLean-Pontiff 2016 JF):
+#   For any backtest at as-of date D in [2020-01-01, today], membership_at(D)
+#   = members_at(today) ∪ ADD events with eff_date ≤ D
+#                       \ REMOVE events with eff_date > D
+#   (Plus a current-snapshot anchor in the CSV consumer module.)
+#
+# Schema-version association: 0.10.7-phase4.6
+#
+2026-03-24,DELL,ADD,Dell Technologies,https://www.spglobal.com/spdji/en/index-announcements/,Replaced ETSY in S&P 500
+2026-03-24,ETSY,REMOVE,Etsy,https://www.spglobal.com/spdji/en/index-announcements/,Moved to S&P 600 SmallCap
+2025-09-22,DASH,ADD,DoorDash,https://www.spglobal.com/spdji/en/index-announcements/,Replaced BIO in S&P 500
+2025-09-22,BIO,REMOVE,Bio-Rad Laboratories,https://www.spglobal.com/spdji/en/index-announcements/,Moved to S&P MidCap 400
+2025-09-22,WSM,ADD,Williams-Sonoma,https://www.spglobal.com/spdji/en/index-announcements/,Replaced ZION in S&P 500
+2025-09-22,ZION,REMOVE,Zions Bancorporation,https://www.spglobal.com/spdji/en/index-announcements/,Moved to S&P MidCap 400
+2025-09-22,EXE,ADD,Expand Energy,https://www.spglobal.com/spdji/en/index-announcements/,Replaced AAP in S&P 500
+2025-09-22,AAP,REMOVE,Advance Auto Parts,https://www.spglobal.com/spdji/en/index-announcements/,Moved to S&P MidCap 400
+2024-08-30,BLL,REMOVE,Ball Corporation,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Removed from index
+2024-03-18,SMCI,ADD,Super Micro Computer,https://www.spglobal.com/spdji/en/index-announcements/,Replaced WHR in S&P 500
+2024-03-18,DECK,ADD,Deckers Outdoor,https://www.spglobal.com/spdji/en/index-announcements/,Replaced ZION in S&P 500
+2024-03-18,WHR,REMOVE,Whirlpool,https://www.spglobal.com/spdji/en/index-announcements/,Moved to S&P MidCap 400
+2023-10-18,LULU,ADD,Lululemon Athletica,https://www.spglobal.com/spdji/en/index-announcements/,Replaced ATVI (acquired by MSFT)
+2023-10-18,ATVI,REMOVE,Activision Blizzard,https://www.spglobal.com/spdji/en/index-announcements/,Acquired by Microsoft
+2023-09-18,KVUE,ADD,Kenvue,https://www.spglobal.com/spdji/en/index-announcements/,JNJ consumer-health spinoff
+2023-09-18,BLK,ADD,Blackstone,https://www.spglobal.com/spdji/en/index-announcements/,Replaced LNC in S&P 500
+2023-09-18,LNC,REMOVE,Lincoln National,https://www.spglobal.com/spdji/en/index-announcements/,Moved to S&P MidCap 400
+2023-06-20,PANW,ADD,Palo Alto Networks,https://www.spglobal.com/spdji/en/index-announcements/,Replaced DISH in S&P 500
+2023-06-20,DISH,REMOVE,DISH Network,https://www.spglobal.com/spdji/en/index-announcements/,Moved to S&P MidCap 400
+2023-03-15,FSLR,ADD,First Solar,https://www.spglobal.com/spdji/en/index-announcements/,Replaced LUMN in S&P 500
+2023-03-15,LUMN,REMOVE,Lumen Technologies,https://www.spglobal.com/spdji/en/index-announcements/,Moved to S&P MidCap 400
+2023-03-13,SVB,REMOVE,SVB Financial Group,https://www.spglobal.com/spdji/en/index-announcements/,Bank failure / FDIC takeover
+2023-03-13,SIVB,REMOVE,Silicon Valley Bank,https://www.spglobal.com/spdji/en/index-announcements/,Same as SVB — ticker variant
+2023-03-15,INVH,ADD,Invitation Homes,https://www.spglobal.com/spdji/en/index-announcements/,Replaced SVB in S&P 500
+2022-09-19,VICI,ADD,VICI Properties,https://www.spglobal.com/spdji/en/index-announcements/,Replaced UA in S&P 500
+2022-09-19,UA,REMOVE,Under Armour Class A,https://www.spglobal.com/spdji/en/index-announcements/,Moved to S&P MidCap 400
+2022-09-19,UAA,REMOVE,Under Armour Class C,https://www.spglobal.com/spdji/en/index-announcements/,Moved to S&P MidCap 400
+2022-06-21,KDP,ADD,Keurig Dr Pepper,https://www.spglobal.com/spdji/en/index-announcements/,Replaced UAA in S&P 500
+2022-06-21,ON,ADD,ON Semiconductor,https://www.spglobal.com/spdji/en/index-announcements/,Replaced IPGP in S&P 500
+2022-06-21,IPGP,REMOVE,IPG Photonics,https://www.spglobal.com/spdji/en/index-announcements/,Moved to S&P MidCap 400
+2022-02-22,CEG,ADD,Constellation Energy,https://www.spglobal.com/spdji/en/index-announcements/,EXC spinoff
+2021-12-21,EPAM,ADD,EPAM Systems,https://www.spglobal.com/spdji/en/index-announcements/,Replaced KSU in S&P 500
+2021-12-21,KSU,REMOVE,Kansas City Southern,https://www.spglobal.com/spdji/en/index-announcements/,Acquired by Canadian Pacific
+2021-12-20,NXPI,ADD,NXP Semiconductors,https://www.spglobal.com/spdji/en/index-announcements/,Replaced PBCT in S&P 500
+2021-12-20,SBNY,ADD,Signature Bank,https://www.spglobal.com/spdji/en/index-announcements/,Replaced GPS in S&P 500
+2021-12-20,GPS,REMOVE,Gap Inc.,https://www.spglobal.com/spdji/en/index-announcements/,Moved to S&P MidCap 400
+2021-12-20,FDS,ADD,FactSet Research Systems,https://www.spglobal.com/spdji/en/index-announcements/,Replaced LB in S&P 500
+2021-12-20,LB,REMOVE,L Brands,https://www.spglobal.com/spdji/en/index-announcements/,Split into BBWI + VS
+2021-12-20,BBWI,ADD,Bath & Body Works,https://www.spglobal.com/spdji/en/index-announcements/,LB split-off
+2021-08-30,MTCH,ADD,Match Group,https://www.spglobal.com/spdji/en/index-announcements/,Replaced PRGO in S&P 500
+2021-08-30,CDAY,ADD,Ceridian HCM,https://www.spglobal.com/spdji/en/index-announcements/,Replaced UNM in S&P 500
+2021-08-30,BRO,ADD,Brown & Brown,https://www.spglobal.com/spdji/en/index-announcements/,Replaced HBI in S&P 500
+2021-08-30,UNM,REMOVE,Unum Group,https://www.spglobal.com/spdji/en/index-announcements/,Moved to S&P MidCap 400
+2021-08-30,PRGO,REMOVE,Perrigo Company,https://www.spglobal.com/spdji/en/index-announcements/,Moved to S&P MidCap 400
+2021-08-30,HBI,REMOVE,Hanesbrands,https://www.spglobal.com/spdji/en/index-announcements/,Moved to S&P MidCap 400
+2021-05-07,CRL,ADD,Charles River Laboratories,https://www.spglobal.com/spdji/en/index-announcements/,Replaced VAR in S&P 500
+2021-05-07,PENN,ADD,Penn Entertainment,https://www.spglobal.com/spdji/en/index-announcements/,Replaced FLIR in S&P 500
+2021-05-07,VAR,REMOVE,Varian Medical Systems,https://www.spglobal.com/spdji/en/index-announcements/,Acquired by Siemens Healthineers
+2021-05-07,FLIR,REMOVE,FLIR Systems,https://www.spglobal.com/spdji/en/index-announcements/,Acquired by Teledyne Technologies
+2021-03-22,TER,ADD,Teradyne,https://www.spglobal.com/spdji/en/index-announcements/,Replaced FLR in S&P 500
+2021-03-22,GNRC,ADD,Generac Holdings,https://www.spglobal.com/spdji/en/index-announcements/,Replaced ETFC in S&P 500
+2021-03-22,TRMB,ADD,Trimble Inc.,https://www.spglobal.com/spdji/en/index-announcements/,Replaced HRB in S&P 500
+2021-03-22,ETFC,REMOVE,E*TRADE Financial,https://www.spglobal.com/spdji/en/index-announcements/,Acquired by Morgan Stanley
+2021-03-22,FLR,REMOVE,Fluor Corporation,https://www.spglobal.com/spdji/en/index-announcements/,Moved to S&P MidCap 400
+2020-12-21,TSLA,ADD,Tesla,https://www.spglobal.com/spdji/en/index-announcements/,Largest single-name S&P 500 addition by market cap at the time
+2020-12-21,AIV,REMOVE,Apartment Investment & Management,https://www.spglobal.com/spdji/en/index-announcements/,Spin-off restructure (AIRC remains)
+2020-09-21,ETSY,ADD,Etsy,https://www.spglobal.com/spdji/en/index-announcements/,Replaced HRB in S&P 500
+2020-09-21,POOL,ADD,Pool Corporation,https://www.spglobal.com/spdji/en/index-announcements/,Replaced HRB in S&P 500
+2020-09-21,CTLT,ADD,Catalent,https://www.spglobal.com/spdji/en/index-announcements/,Replaced COTY in S&P 500
+2020-09-21,HRB,REMOVE,H&R Block,https://www.spglobal.com/spdji/en/index-announcements/,Moved to S&P MidCap 400
+2020-09-21,COTY,REMOVE,Coty Inc.,https://www.spglobal.com/spdji/en/index-announcements/,Moved to S&P MidCap 400
+2020-06-22,WST,ADD,West Pharmaceutical Services,https://www.spglobal.com/spdji/en/index-announcements/,Replaced HP in S&P 500
+2020-06-22,DPZ,ADD,Domino's Pizza,https://www.spglobal.com/spdji/en/index-announcements/,Replaced HOG in S&P 500
+2020-06-22,DXCM,ADD,DexCom,https://www.spglobal.com/spdji/en/index-announcements/,Replaced AGN in S&P 500
+2020-06-22,HOG,REMOVE,Harley-Davidson,https://www.spglobal.com/spdji/en/index-announcements/,Moved to S&P MidCap 400
+2020-06-22,HP,REMOVE,Helmerich & Payne,https://www.spglobal.com/spdji/en/index-announcements/,Moved to S&P MidCap 400
+2020-06-22,AGN,REMOVE,Allergan,https://www.spglobal.com/spdji/en/index-announcements/,Acquired by AbbVie
+2020-04-03,BIO,ADD,Bio-Rad Laboratories,https://www.spglobal.com/spdji/en/index-announcements/,Replaced MAC in S&P 500
+2020-04-03,MAC,REMOVE,Macerich,https://www.spglobal.com/spdji/en/index-announcements/,Moved to S&P MidCap 400
+2020-01-28,PYPL,RENAME,PayPal,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,No ticker change; sector reclass
+2020-01-22,FB,RENAME,Facebook (renamed to META 2021-10-28),https://en.wikipedia.org/wiki/Meta_Platforms,FB ticker active through 2022-06-09 cutover
+2022-06-09,META,RENAME,Meta Platforms,https://en.wikipedia.org/wiki/Meta_Platforms,Final cutover from FB
