@@ -1774,3 +1774,137 @@ PHASE_STATUS_INFLIGHT.md entry mirrors the changes for parallel-PR
 safety per PR #237 convention.
 
 ---
+
+## PR (this PR) — Phase 4.6 task #2b: forward-return loader from gitignored price cache (in flight, 2026-05-27)
+
+Sixth unit of the Phase 4.6 honest re-validation harness (task chain
+#2a → #2b → #2c → #2d → #2e → #2f per
+`docs/research/historical-revalidation-harness.md`). After PR #277
+(universe-drift, #2 first unit) + PR #278 (`ranking_history`, #2a) +
+PR #279 (`manipulation_distribution`, #2e), this PR adds the forward-
+return loader (#2b) — the OTHER half of the honest IC re-baseline
+that #2c will compute (ranking @ T from #2a, paired with realized
+return at T + horizon from this PR).
+
+**The new module**: `compute/validation/forward_returns.py`
+
+- `compute_forward_return(ticker, as_of_date, horizon_months, *, cache_dir=None) -> float | None`
+  — close-to-close N-month total return at `as_of_date` for `ticker`.
+  Returns `None` when (a) no cached parquet, (b) no close column, (c)
+  as-of doesn't snap to a trading day within 5 calendar days, (d)
+  horizon-end is past the last cached row (censored), or (e)
+  start_close non-positive / NaN / end_close NaN.
+- `compute_forward_return_detailed(...) -> ForwardReturnResult` — the
+  same computation but returns a `@dataclass(frozen=True)` carrying
+  the actual `start_date` / `end_date` / `start_close` / `end_close`
+  the return was measured between, plus a `note: str` describing why
+  the return is `None` (when applicable). Use this when the IC
+  consumer needs to align ranking dates with realized-return start
+  dates exactly.
+- `compute_forward_returns_batch(tickers, as_of_date, horizon_months, *, cache_dir=None) -> dict[str, float | None]`
+  — universe batch wrapper. Preserves insertion order; maps missing
+  tickers to `None` (not filtered out) so the caller can distinguish
+  "missing data" from "computed zero".
+- `coverage_report(tickers, as_of_date, horizon_months, *, cache_dir=None) -> dict[str, int]`
+  — aggregate counts (total / ok / no_cache / no_close / no_snap /
+  censored / bad_price / nan_end / other) for surfacing how much of
+  the survivorship-bias-corrected cohort actually has measurable
+  realized returns at the horizon. The Hou-Xue-Zhang 2020 RFS
+  cross-section typically reports 5-15% missing depending on cache
+  freshness + delisting density.
+
+**Source semantics + honest disclosure (per Research Report v1.0)**:
+
+- Total return prefers `Adj Close` (dividend-adjusted) over bare
+  `Close`. Falls back to `Close` when `Adj Close` is missing; mixed-
+  source comparisons can leak ~1-3%/yr.
+- NAIVE returns — no transaction costs, no slippage, no bid-ask, no
+  borrow cost. The honest-baseline disclaimer per the autonomous
+  mission constraint "ห้าม overclaim α" requires every downstream
+  consumer to subtract a realistic frictions band before claiming
+  α-after-costs.
+- Survivorship-bias correction is NOT done here — it lives in PR #274
+  `compute.ingest.historical_universe.members_at`. Callers MUST pair
+  the two: load the historical universe at as-of, THEN look up forward
+  returns per ticker in that universe. Loading current-universe
+  tickers + forward returns silently excludes the `removed_since`
+  cohort and inflates Sharpe estimates per Hou-Xue-Zhang 2020 RFS.
+- Forward-snap window: 5 calendar days. As-of on a Saturday snaps to
+  Monday's close; as-of on a holiday in the middle of a 4-day weekend
+  fails (returns `None`) by design. Horizon-end snaps BACKWARD
+  symmetrically.
+- Horizon translation: `int(round(horizon_months × 30.44))` calendar
+  days, then bisected against the actual `DatetimeIndex` (no
+  assumption that the cache contains exactly `21 × horizon_months`
+  trading rows).
+
+**Tests (19 new + 1 live-cache smoke skipped without warm cache)**:
+
+`tests/test_validation/test_forward_returns.py` ships 20 tests against
+synthetic OHLCV parquets written to `tmp_path` and read back via
+`cache_dir=tmp_path` (the gitignored production cache isn't checked
+into git, so the test strategy mirrors PR #278's synthetic-fixture
+pattern).
+
+| Group | Cases |
+|---|---|
+| Happy path | flat-price → 0.0 · 1%/day geometric growth → 2.0 < r < 3.5 band · -1%/day drift → -0.80 < r < -0.65 band |
+| Result dataclass | detailed result carries start_date / end_date / start_close / end_close |
+| Missing-data paths | no cached parquet · missing Close column · `Adj Close` absent → falls back to `Close` · horizon past last row → censored · as-of pre-cache → no snap |
+| Weekend snap | Sat as-of → snaps forward to Mon |
+| Bad-price guards | start_close = 0 → None · NaN at horizon-end → None |
+| Input validation | horizon=0 → ValueError · horizon<0 → ValueError |
+| Batch API | dict-keyed batch + insertion-order preserved · empty input → empty dict |
+| Coverage report | classifies each failure mode into the right bucket · empty universe → all zeros |
+| Index recovery | string-index parquet round-trip → coerced back to DatetimeIndex |
+| Live-cache smoke | runs against real `compute/cache/prices/AAPL.parquet` IF present; otherwise skipped silently |
+
+**Schema impact**: zero. No new Pydantic / TypeScript / snapshot
+field — this is pure read-only consumer of the gitignored
+`compute/cache/prices/*.parquet` shape that
+`compute/ingest/prices.py` already writes. Triple-lockstep N/A.
+
+**Production-wiring impact**: zero. No `compute/main.py` import
+hook; no `Metadata` field; no consumer of the new module lands in
+this PR. The forward-return loader is exclusively a validation /
+backtest tool. Production wiring happens in #2c (per-pillar IC
+re-baseline) where this module becomes the realized-return source
+paired with `ranking_history` (PR #278) as the ranking source.
+
+**Honest-baseline disclaimer per the autonomous mission constraint**:
+the returns this module produces are inputs to IC / DSR / PBO
+re-baselining — they are NOT a backtest of QuantRank's composite
+score. Any downstream report claiming an α figure must (a) net out a
+realistic frictions band (≥ 30bp per leg per
+`docs/research/honest-baseline-2026-05-27.md` once filed), (b) cite
+the McLean-Pontiff 2016 32% post-publication decay, and (c) cap the
+honest-α claim at 2-5% net before fees per the Research Report v1.0
+ceiling.
+
+**Verification**:
+- `ruff check compute/validation/forward_returns.py tests/test_validation/test_forward_returns.py` — clean
+- `python -m pytest tests/test_validation/test_forward_returns.py` — 19 passed, 1 skipped (live-cache smoke, no cache present)
+- `python -m pytest tests/test_validation/` — 113 passed, 1 skipped (full validation suite; no regressions)
+- `python -m compute.output.schema_check` — N/A (no schema touched)
+
+**Deferred follow-ups (NOT in this PR)**:
+- #2c per-pillar IC re-baseline — pairs this module with PR #278's
+  `load_ranking_history`. Output: per-pillar IC at historical dates,
+  honest band vs current published.
+- #2d PBO/DSR re-baseline — uses #2c's output via PR #275's
+  `factor_passes_gates(universe_provider=members_at, ...)` kwarg.
+- #2f `docs/research/honest-baseline-2026-05-27.md` — the closing
+  report carrying the revised numbers + disclaimer.
+- Live-CI execution: this PR ships synthetic-fixture tests + a
+  live-cache smoke that auto-skips when `compute/cache/prices/` is
+  absent (CI / sandbox case). A future PR with warm-CI cache access
+  will run the live-cache execution end-to-end.
+
+No CLAUDE.md / AGENTS.md substance change required — the forward-
+return loader doesn't introduce a new invariant, gotcha, or routing
+cue. The harness doc (`docs/research/historical-revalidation-
+harness.md`) is updated with #2b status `✅ this PR`.
+PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with
+every PR" lockstep per PR #237 convention.
+
+---
