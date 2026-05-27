@@ -10,15 +10,14 @@ from __future__ import annotations
 from compute import config
 
 
-def test_schema_version_is_phase4_5e():
-    """Issue #261 PR-B (0.10.6-phase4.5e) — PATCH bump for two new
-    ``multi_class_per_class_override_count`` +
-    ``multi_class_mc_reconcile_failure_count`` Metadata fields.
-    Rule 18 observability for the structural per-class XBRL extraction
-    path that overrides Alphabet's companyfacts aggregate with a single
-    class member's count for GOOG / GOOGL. Supersedes PR-A's 0.10.5-phase4.5e
-    bump. Locks the version against accidental revert."""
-    assert config.SCHEMA_VERSION == "0.10.6-phase4.5e"
+def test_schema_version_is_phase4_6():
+    """Phase 4.6 (0.10.7-phase4.6) — PATCH bump for two new Metadata
+    fields ``universe_membership_as_of`` + ``survivorship_bias_corrected``.
+    Rule 18 observability for the historical S&P 500 membership lookup
+    path (Research Report v1.0 §7.4 — Hou-Xue-Zhang 2020 RFS replication-
+    crisis evidence). Supersedes PR #269's 0.10.6-phase4.5e bump.
+    Locks the version against accidental revert."""
+    assert config.SCHEMA_VERSION == "0.10.7-phase4.6"
 
 
 def test_multi_class_overcount_allowlist_membership():

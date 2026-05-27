@@ -336,6 +336,21 @@ class Metadata(BaseModel):
     # Σ per-class MC = aggregate MC). Expected steady-state firing rate
     # = 0; non-zero is a signal for cohort-audit investigation.
     multi_class_mc_reconcile_failure_count: int | None = None
+    # Phase 4.6 (0.10.7-phase4.6) — survivorship-bias visibility per
+    # Research Report v1.0 §7.4 + Hou-Xue-Zhang 2020 RFS replication
+    # crisis evidence. ``universe_membership_as_of`` is the ISO date
+    # of the historical S&P 500 membership snapshot used for THIS
+    # compute run; for the forward weekly cron this is the same as
+    # ``last_update_utc`` date (current membership). For backtests +
+    # validation, it's the as-of date being evaluated.
+    # ``survivorship_bias_corrected`` is True when a non-current
+    # membership lookup was used (or when the universe is forward-
+    # date and matches current membership exactly); False when the
+    # lookup fell back to current membership for a historical date
+    # (data-quality degraded — operator should investigate).
+    # Both nullable on legacy snapshots (pre-0.10.7).
+    universe_membership_as_of: str | None = None
+    survivorship_bias_corrected: bool | None = None
 
 
 class RawMetrics(BaseModel):
