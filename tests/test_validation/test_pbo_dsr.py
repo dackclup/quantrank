@@ -177,3 +177,129 @@ def test_factor_passes_gates_returns_metrics_dict():
     )
     assert isinstance(passes, bool)
     assert {"pbo", "dsr", "sharpe", "skew", "kurtosis", "n_strategies"} <= set(metrics.keys())
+
+
+# ----------------------------------------------------- Phase 4.6 universe_provider
+def _mock_returns_input():
+    """Shared rng-driven inputs for the universe-provider tests below."""
+    rng = np.random.default_rng(seed=4242)
+    returns_matrix = pd.DataFrame(rng.normal(0.0, 0.05, size=(256, 8)))
+    factor_returns = pd.Series(rng.normal(0.01, 0.04, size=60))
+    return factor_returns, returns_matrix
+
+
+def test_factor_passes_gates_backward_compat_no_universe_kwargs():
+    """No universe kwargs passed → metrics has the 3 new keys, all None.
+
+    Backward compat for every pre-Phase-4.6 caller (osap-integration,
+    jkp-integration, qlib/ipca scouts). They must continue to work
+    unchanged.
+    """
+    factor_returns, returns_matrix = _mock_returns_input()
+    _, metrics = factor_passes_gates(
+        factor_returns, returns_matrix, n_trials=10
+    )
+    assert metrics["universe_as_of"] is None
+    assert metrics["universe_size"] is None
+    assert metrics["survivorship_bias_corrected"] is None
+    # Pre-existing keys still present
+    assert "pbo" in metrics
+    assert "dsr" in metrics
+
+
+def test_factor_passes_gates_universe_complete_path():
+    """Real historical_universe.members_at integration — is_complete=True."""
+    from datetime import date
+
+    from compute.ingest.historical_universe import members_at
+
+    factor_returns, returns_matrix = _mock_returns_input()
+    current_universe = frozenset({"AAPL", "MSFT", "NVDA", "TSLA", "SMCI"})
+    _, metrics = factor_passes_gates(
+        factor_returns,
+        returns_matrix,
+        n_trials=10,
+        universe_provider=members_at,
+        as_of_date=date(2023, 6, 1),
+        current_universe=current_universe,
+    )
+    # 2023-06-01 is well within EARLIEST_EVENT_DATE coverage → is_complete=True
+    assert metrics["universe_as_of"] == "2023-06-01"
+    assert isinstance(metrics["universe_size"], int)
+    assert metrics["universe_size"] >= 1
+    assert metrics["survivorship_bias_corrected"] is True
+
+
+def test_factor_passes_gates_universe_degraded_path():
+    """Pre-EARLIEST_EVENT_DATE → is_complete=False → metrics flag flipped."""
+    from datetime import date
+
+    from compute.ingest.historical_universe import members_at
+
+    factor_returns, returns_matrix = _mock_returns_input()
+    current_universe = frozenset({"AAPL", "MSFT", "NVDA"})
+    _, metrics = factor_passes_gates(
+        factor_returns,
+        returns_matrix,
+        n_trials=10,
+        universe_provider=members_at,
+        as_of_date=date(2010, 1, 1),  # pre-coverage
+        current_universe=current_universe,
+    )
+    assert metrics["universe_as_of"] == "2010-01-01"
+    assert metrics["survivorship_bias_corrected"] is False
+    # Universe falls back to current anchor (degraded but loud)
+    assert metrics["universe_size"] == len(current_universe)
+
+
+def test_factor_passes_gates_universe_provider_raises_graceful():
+    """Universe provider raising → metrics fields stay None, validation completes."""
+    from datetime import date
+
+    def raising_provider(as_of_date, current_universe, anchor_date=None):
+        raise RuntimeError("simulated provider failure")
+
+    factor_returns, returns_matrix = _mock_returns_input()
+    passes, metrics = factor_passes_gates(
+        factor_returns,
+        returns_matrix,
+        n_trials=10,
+        universe_provider=raising_provider,
+        as_of_date=date(2023, 6, 1),
+        current_universe=frozenset({"AAPL"}),
+    )
+    # Universe fields stay None on provider failure
+    assert metrics["universe_as_of"] is None
+    assert metrics["universe_size"] is None
+    assert metrics["survivorship_bias_corrected"] is None
+    # Validation result still computed from the supplied returns_matrix
+    assert isinstance(passes, bool)
+    assert metrics["pbo"] is not None
+    assert metrics["dsr"] is not None
+
+
+def test_factor_passes_gates_partial_kwargs_warns_and_skips():
+    """Caller passes only some of the 3 universe kwargs → log warning + None fields."""
+    from compute.ingest.historical_universe import members_at
+
+    factor_returns, returns_matrix = _mock_returns_input()
+    # Only provider given, no as_of_date / current_universe → partial
+    _, metrics = factor_passes_gates(
+        factor_returns,
+        returns_matrix,
+        n_trials=10,
+        universe_provider=members_at,
+        # as_of_date intentionally omitted
+    )
+    assert metrics["universe_as_of"] is None
+    assert metrics["survivorship_bias_corrected"] is None
+
+
+def test_today_utc_date_helper():
+    """today_utc_date returns a real date instance (smoke)."""
+    from datetime import date
+
+    from compute.validation.pbo_dsr import today_utc_date
+
+    d = today_utc_date()
+    assert isinstance(d, date)
