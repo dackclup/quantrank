@@ -1908,3 +1908,103 @@ PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with
 every PR" lockstep per PR #237 convention.
 
 ---
+
+## PR (this PR) — Phase 4.6 task #2c: per-pillar IC at historical dates (in flight, 2026-05-27)
+
+Seventh unit of the Phase 4.6 honest re-validation harness, closes
+the IC re-baseline half of the chain. After PR #278 (ranking history,
+#2a) + PR #279 (manipulation distribution, #2e) + PR #280 (forward
+returns, #2b), this PR adds the orchestrator that PAIRS them — per-
+pillar Information Coefficient at historical dates.
+
+**The new module**: `compute/validation/historical_ic.py`
+
+- `compute_pillar_ic(pillar_scores, forward_returns, *, method="spearman", min_tickers=30) -> tuple[float | None, int, str]`
+  — pure cross-sectional IC for one (pillar, date) pair. Drops tickers
+  with None / NaN / inf in either input. Returns `(None, n_used, note)`
+  when cross-section < 30 (Grinold-Kahn 2000 §4.2) OR when std=0
+  (constant inputs → correlation undefined).
+- `compute_historical_ic_report(start_date, end_date, *, horizon_months=6, pillars=DEFAULT_PILLARS, method, min_tickers, path, repo, cache_dir) -> HistoricalICReport`
+  — orchestrator that walks git-archived rankings.json snapshots in
+  the window, loads each date's pillar scores, pulls forward returns
+  via PR #280's `compute_forward_returns_batch`, computes Spearman IC
+  per pillar per date, and aggregates into a per-pillar summary
+  (mean / std / median / min / max / IC IR / hit rate).
+- `format_ic_report(report)` — human-readable text rendering with
+  table per pillar + honest-baseline disclaimer printed inline.
+- `PillarICEntry` / `PillarICSummary` / `HistoricalICReport` —
+  three `@dataclass(frozen=True)` carriers for one-date, per-pillar,
+  full-window respectively.
+
+**Spearman without scipy**: pandas' `Series.corr(method="spearman")`
+pulls in scipy transitively — which QuantRank doesn't ship. Worked
+around by computing Spearman as Pearson on rank-transformed series
+(Spearman 1904 + Conover 1999 §5.4 — same definition). Zero new
+dependencies.
+
+**Honest-baseline disclaimer per Research Report v1.0**:
+
+- IC reported here is **NAIVE** — no transaction costs, no slippage,
+  no sector neutralization, no capacity discount. Real net-of-cost IC
+  is typically 30-50% smaller per McLean-Pontiff (2016) JF post-
+  publication decay.
+- The historical universe MUST come from PR #274's `members_at()` to
+  avoid survivorship bias — passing the current universe inflates IC
+  by 0.5-2 pts per Hou-Xue-Zhang 2020 RFS. The orchestrator does NOT
+  default to any universe; the caller supplies the universe via the
+  rankings.json snapshot at as-of T, which is itself the historical
+  universe at that date (correct by construction).
+- IC is reported as a TIME SERIES + summary, not as a single headline
+  number — a 1-quarter shock can mask a real decay trend. Decay > 32%
+  vs the published-period baseline is the McLean-Pontiff (2016)
+  expected post-publication mean.
+
+**Tests (28 new)**:
+
+`tests/test_validation/test_historical_ic.py` ships 28 tests covering
+the orchestrator + the pure IC computation:
+
+| Group | Cases |
+|---|---|
+| Module constants | DEFAULT_PILLARS = 10 keys mirroring PillarScores · MIN_TICKERS_PER_DATE = 30 |
+| `compute_pillar_ic` | perfect positive rank → IC ≈ 1.0 · perfect negative → IC ≈ -1.0 · uncorrelated → finite in [-1, 1] · below min_tickers → None · None returns dropped · None scores dropped · constant scores → None · constant returns → None · NaN/inf scores dropped · invalid method raises · Pearson method works (different from Spearman on quadratic) |
+| `_summarize_pillar` | empty entries → zero-shaped summary · multi-date aggregates mean/std/IC-IR · hit-rate counts strictly positive ICs · IC-IR = mean/std × sqrt(n) formula |
+| `compute_historical_ic_report` | zero horizon raises · empty pillars raises · no commits → empty report · full path one-date one-pillar → IC = 1.0 · too few tickers → no IC entries · multi-date aggregates per pillar correctly · missing pillar field → skipped · malformed JSON snapshot → date skipped |
+| `format_ic_report` | renders header + Honest-baseline disclaimer + McLean-Pontiff line · graceful "(no dates)" for empty pillar |
+| Live-git smoke | runs against the real repo's recent rankings.json + (likely empty) price cache without crashing |
+
+**Schema impact**: zero. Pure validation tool reading existing
+rankings.json shape; no new Pydantic / TypeScript / snapshot field.
+Triple-lockstep N/A.
+
+**Production-wiring impact**: zero. No `compute/main.py` import; no
+`Metadata` field. The orchestrator is purely a validation /
+re-baseline tool. Downstream PRs (#2d PBO/DSR re-baseline + #2f
+honest-baseline report) consume the output.
+
+**Verification**:
+- `ruff check compute/validation/historical_ic.py tests/test_validation/test_historical_ic.py` — clean
+- `python -m pytest tests/test_validation/test_historical_ic.py` — **28 passed**
+- `python -m pytest tests/test_validation/` — **141 passed, 1 skipped** (full validation suite; no regressions)
+- `python -m compute.output.schema_check` — N/A (no schema touched)
+
+**Deferred follow-ups (NOT in this PR)**:
+- #2d PBO/DSR re-baseline — pairs this report's output with PR #275's
+  `factor_passes_gates(universe_provider=members_at, ...)` kwarg.
+- #2f `docs/research/honest-baseline-2026-05-27.md` — closes the
+  chain with revised PBO / DSR / IC numbers + honest-α ceiling
+  reaffirmation (2-5% net per Research Report v1.0).
+- Live-CI execution: this PR ships synthetic-fixture tests + a
+  live-git smoke that auto-degrades when the gitignored price cache
+  is absent (the orchestrator returns `n_dates_with_ic = 0` instead
+  of crashing). A future PR with warm-CI cache access will run the
+  orchestrator end-to-end and publish the actual IC table.
+
+No CLAUDE.md / AGENTS.md substance change required — the historical
+IC orchestrator doesn't introduce a new invariant, gotcha, or
+routing cue. The harness doc (`docs/research/historical-revalidation-
+harness.md`) is updated with #2c status `✅ this PR`. PHASE_STATUS_INFLIGHT.md
+side-file satisfies §Conventions "ship with every PR" lockstep per
+PR #237 convention.
+
+---
