@@ -80,13 +80,14 @@ The 9 REMOVED tickers (AAP/ATVI/BIO/BLL/DISH/ETSY/LNC/WHR/ZION) are exactly the 
 
 ## Future-work TODO list
 
-| # | Item | Effort | Blocker |
-|---|---|---|---|
-| 1 | Git-archived `rankings.json` time-series loader | 1d | — |
-| 2 | Forward-return computation per ticker from `compute/cache/prices/` | 0.5d | gitignored cache; needs warm CI run |
-| 3 | Per-pillar IC at historical dates | 1d | needs #1 + #2 |
-| 4 | PBO/DSR re-baseline via `factor_passes_gates(universe_provider=members_at, ...)` | 1d | needs #3 |
-| 5 | `manipulation_index` distribution shift report | 0.5d | needs #1 |
-| 6 | `docs/research/honest-baseline-2026-05-27.md` with revised PBO/DSR numbers | 0.5d | needs #4 |
+| # | Item | Effort | Blocker | Status |
+|---|---|---|---|---|
+| 1 | Git-archived `rankings.json` time-series loader | 1d | — | ✅ PR #278 |
+| 2 | Forward-return computation per ticker from `compute/cache/prices/` | 0.5d | gitignored cache; needs warm CI run | ✅ this PR (synthetic-fixture tests; live cache execution deferred to a future warm-CI PR) |
+| 3 | Per-pillar IC at historical dates | 1d | needs #1 + #2 | — |
+| 4 | PBO/DSR re-baseline via `factor_passes_gates(universe_provider=members_at, ...)` | 1d | needs #3 | gate kwarg shipped PR #275 |
+| 5 | `manipulation_index` distribution shift report | 0.5d | needs #1 | ✅ PR #279 |
+| 6 | `docs/research/honest-baseline-2026-05-27.md` with revised PBO/DSR numbers | 0.5d | needs #4 | — |
 
 **Total to honest-baseline report**: ~4-5 days focused dev across a sequence of PRs.
+4 of 6 items now landed (universe drift PR #277 + ranking history PR #278 + manipulation distribution PR #279 + forward returns this PR + the gate kwarg landed early via PR #275). #3 (per-pillar IC) is the next unblocked unit; #6 closes the chain.
