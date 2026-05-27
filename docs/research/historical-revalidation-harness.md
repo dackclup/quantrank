@@ -84,10 +84,10 @@ The 9 REMOVED tickers (AAP/ATVI/BIO/BLL/DISH/ETSY/LNC/WHR/ZION) are exactly the 
 |---|---|---|---|---|
 | 1 | Git-archived `rankings.json` time-series loader | 1d | — | ✅ PR #278 |
 | 2 | Forward-return computation per ticker from `compute/cache/prices/` | 0.5d | gitignored cache; needs warm CI run | ✅ PR #280 (synthetic-fixture tests; live-cache execution deferred to a future warm-CI PR) |
-| 3 | Per-pillar IC at historical dates | 1d | needs #1 + #2 | ✅ this PR (synthetic-fixture tests; live-cache execution deferred) |
-| 4 | PBO/DSR re-baseline via `factor_passes_gates(universe_provider=members_at, ...)` | 1d | needs #3 | gate kwarg shipped PR #275 |
+| 3 | Per-pillar IC at historical dates | 1d | needs #1 + #2 | ✅ PR #281 (synthetic-fixture tests; live-cache execution deferred) |
+| 4 | PBO/DSR re-baseline via `factor_passes_gates(universe_provider=members_at, ...)` | 1d | needs #3 | gate kwarg shipped PR #275; warm-CI execution still pending |
 | 5 | `manipulation_index` distribution shift report | 0.5d | needs #1 | ✅ PR #279 |
-| 6 | `docs/research/honest-baseline-2026-05-27.md` with revised PBO/DSR numbers | 0.5d | needs #4 | — |
+| 6 | `docs/research/honest-baseline-2026-05-27.md` with revised PBO/DSR numbers | 0.5d | needs #4 | ✅ this PR (skeleton + CLI `scripts/generate_honest_baseline.py`; warm-CI run fills TBD cells) |
 
 **Total to honest-baseline report**: ~4-5 days focused dev across a sequence of PRs.
-5 of 6 items now landed (universe drift PR #277 + ranking history PR #278 + manipulation distribution PR #279 + forward returns PR #280 + historical IC this PR + the gate kwarg landed early via PR #275). #4 needs a warm-CI execution that runs the orchestrator end-to-end; #6 closes the chain.
+**6 of 6 items now structurally landed.** Universe drift PR #277 · ranking history PR #278 · manipulation distribution PR #279 · forward returns PR #280 · historical IC PR #281 · honest-baseline skeleton + CLI this PR. The only remaining work is a **warm-CI execution session** that runs `scripts/generate_honest_baseline.py` against a populated `compute/cache/prices/` to fill the TBD cells in `honest-baseline-2026-05-27.md` with actual figures. PBO/DSR numbers are produced via the orthogonal `compute.validation.pbo_dsr.factor_passes_gates(universe_provider=members_at, ...)` call (PR #275's gate kwarg) which takes factor-return inputs separately.
