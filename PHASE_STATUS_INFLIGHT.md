@@ -2008,3 +2008,111 @@ side-file satisfies §Conventions "ship with every PR" lockstep per
 PR #237 convention.
 
 ---
+
+## PR (this PR) — Phase 4.6 task #2f: honest-baseline skeleton + CLI (closing the chain) (in flight, 2026-05-27)
+
+Eighth and **final structural unit** of the Phase 4.6 honest re-
+validation harness. After PR #277 (universe drift) + #278 (ranking
+history) + #279 (manipulation distribution) + #280 (forward returns)
++ #281 (historical IC orchestrator), this PR lands the closing
+artifact: a methodology-final-form skeleton report + a CLI that
+wires the Phase 4.6 modules end-to-end. **6 of 6 chain items now
+structurally landed**; the only remaining work is a warm-CI
+execution session that fills the TBD numeric cells.
+
+**The new files**:
+
+- **`docs/research/honest-baseline-2026-05-27.md`** (≈260 lines) —
+  10-section skeleton report with TBD cells in §2 (per-pillar IC
+  table), §3 (PBO/DSR re-baseline), §4 (manipulation distribution
+  shift), §5 (survivorship-bias delta). All methodology + framing +
+  honest-α ceiling + disclaimer ladder is final-form. Citation
+  block carries 7 mandatory anchors: Hou-Xue-Zhang (2020) RFS,
+  McLean-Pontiff (2016) JF, Bailey-Lopez de Prado (2014) JPM,
+  Bailey-Borwein-Lopez de Prado-Zhu (2014) AMS Notices, Grinold-Kahn
+  (2000), Spearman (1904) + Conover (1999), Kissell-Glantz (2003).
+  Frictions ladder per Research Report v1.0: 30 bp/leg → 60 bp
+  round-trip → 120 bp/yr annualized. **Honest α ceiling**: 2-5% net.
+- **`scripts/generate_honest_baseline.py`** (≈230 lines) — argparse
+  CLI that runs `compute_historical_ic_report` (PR #281) +
+  `compute_manipulation_distribution_shift` (PR #279) and emits
+  text (with disclaimer banner on stderr) or JSON (with `__banner__`
+  embedded). Exit codes: `0` (report produced), `1` (input validation
+  failed), `2` (empty report; useful CI signal that warm cache is
+  needed). PBO / DSR section explicitly out of scope of this CLI —
+  that call requires factor-return inputs separately and is
+  delegated to `compute.validation.pbo_dsr.factor_passes_gates(
+  universe_provider=members_at, ...)` (PR #275's gate kwarg).
+- **`tests/test_validation/test_generate_honest_baseline_cli.py`**
+  (17 tests) — covers argparse shape, `_parse_date` validation,
+  exit codes, text-mode banner emission to stderr, JSON-mode payload
+  shape + alpha ceiling cells + disclaimer string + banner
+  embedding, `_report_to_payload` with synthetic + populated
+  manipulation reports, and a constant pin on the banner's 5
+  mandatory phrases.
+
+**5 mandatory phrases pin-tested into the disclaimer banner**:
+`"NAIVE"`, `"McLean-Pontiff"`, `"2-5%"`, `"Rule 16"`, `"S&P 500"`.
+
+**Schema impact**: ZERO. Pure doc + CLI consumer of existing
+validation modules. Triple-lockstep N/A.
+
+**Production-wiring impact**: ZERO. No `compute/main.py` import;
+no `Metadata` field.
+
+**Smoke run on real repo's recent rankings.json (no live price cache)**:
+
+```
+$ python -m scripts.generate_honest_baseline \
+    --start-date 2026-05-22 --end-date 2026-05-27 \
+    --horizon-months 6 --min-tickers 2 --json --no-banner
+{ "report_version": "0.1.0-skeleton", ...
+  "pillar_ic": { "n_dates_walked": 3, "n_dates_with_ic": 0, ... } }
+$ echo $?
+2  # → empty-report exit code (warm cache needed)
+```
+
+CLI degrades gracefully: orchestrator walks 3 commits, finds no
+warm price cache, returns `n_dates_with_ic = 0`, exit code 2
+surfaces the missing-cache signal cleanly to CI without crashing.
+
+**Verification**:
+
+- `ruff check scripts/generate_honest_baseline.py tests/test_validation/test_generate_honest_baseline_cli.py` — clean
+- `python -m pytest tests/test_validation/test_generate_honest_baseline_cli.py` — **17 passed**
+- `python -m pytest tests/test_validation/ tests/test_smoke.py` — **160 passed, 1 skipped** (no regressions)
+- `python -m compute.output.schema_check` — N/A (no schema touched)
+
+**Phase 4.6 chain — now closed structurally**:
+
+| # | Item | Status |
+|---|---|---|
+| 1/#2 | universe-drift first unit | ✅ PR #277 |
+| #2a | ranking history loader | ✅ PR #278 |
+| #2b | forward returns loader | ✅ PR #280 |
+| #2c | per-pillar IC at historical dates | ✅ PR #281 |
+| #2d | PBO/DSR re-baseline via gate kwarg | gate kwarg PR #275; warm-CI execution pending |
+| #2e | manipulation distribution shift | ✅ PR #279 |
+| #2f | honest-baseline skeleton + CLI | ✅ this PR |
+
+**Deferred follow-ups (NOT in this PR)**:
+
+- **Warm-CI execution session** — runs the CLI against a populated
+  `compute/cache/prices/` to fill the TBD cells in
+  `honest-baseline-2026-05-27.md` with actual figures.
+- **Markdown writer mode** — future `--markdown` flag that re-writes
+  the doc in-place with TBD cells replaced.
+- **PBO/DSR factor-return wiring** — future `--include-pbo-dsr` flag
+  that wires the factor-return path.
+
+No CLAUDE.md / AGENTS.md substance change required — the honest-
+baseline closing artifact is methodology + CLI only, no new
+invariant / gotcha / routing cue. The harness doc (`docs/research/
+historical-revalidation-harness.md`) is updated with #6 status
+`✅ this PR` + closing note. PHASE_STATUS_INFLIGHT.md side-file
+satisfies §Conventions "ship with every PR" lockstep per PR #237
+convention.
+
+---
+
+---
