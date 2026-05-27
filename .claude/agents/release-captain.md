@@ -91,19 +91,69 @@ entry), `SKILL.md` (schema-version table if version bumped),
 `WORKFLOW.md` (per-phase task list if phase completed). Any stale →
 route to `phase-coordinator` (wraps `phase-status-bump`).
 
-### Step 5 — Emit commands (user authorizes + runs)
+### Step 5 — Emit pre-filled URL (mobile-operator workflow)
 
-```bash
-# 1. Edit pyproject.toml version line
-# 2. Commit:
-git add pyproject.toml docs/release-notes/v<X.Y.Z>-phase<N>.md
-git commit -m "chore(release): v<X.Y.Z>-phase<N>"
-# 3. Tag:
-git tag -a v<X.Y.Z>-phase<N> -m "v<X.Y.Z>-phase<N> — <headline>"
-# 4. Push:
-git push origin v<X.Y.Z>-phase<N>
-# 5. Create GitHub Release via mcp__github__ or web UI
-#    Title / Body / Target sha / Latest / no Pre-release
+⚠️ **The user operates from a phone only — no desktop, no `gh` CLI,
+no terminal.** Sandbox itself **cannot push tag-refs** (HTTP 403
+from git proxy). The release-tag skill §"Mobile-operator release
+workflow" is the binding constraint — read it before emitting.
+
+For each release to cut, propose **ONE tappable URL** the user opens
+on their phone, verifies pre-filled fields, and taps Publish:
+
+```python
+# Generate the pre-filled URL programmatically — keeps body short
+# enough to stay under the 8 KB URL limit
+import urllib.parse
+
+# Short body — full notes file already on main, just link to it
+short_body = f"""Closes the **<headline phase/epic>** (PRs #<list>)
+since <prior-tag> (<prior-SHA-short>, <prior-date>).
+
+**Schema bump**: `<old>` → `<new>` (PATCH/MINOR/MAJOR; <rationale>)
+**Defense layer**: <old-count> → <new-count> declared boolean flags
+**CVE baseline**: <CVE-summary if changed>
+
+**Full release notes**: [`docs/release-notes/v<X.Y.Z>-phase<N>.md`](
+https://github.com/dackclup/quantrank/blob/main/docs/release-notes/v<X.Y.Z>-phase<N>.md)
+
+Compare: [<prior-tag>...v<X.Y.Z>-phase<N>](
+https://github.com/dackclup/quantrank/compare/<prior-tag>...v<X.Y.Z>-phase<N>)
+"""
+
+qs = urllib.parse.urlencode({
+    "tag": f"v<X.Y.Z>-phase<N>",
+    "target": "<40-char-target-SHA>",
+    "title": f"v<X.Y.Z>-phase<N> — <headline>",
+    "body": short_body,
+})
+url = f"https://github.com/dackclup/quantrank/releases/new?{qs}"
+assert len(url) < 8192, "URL too large — shorten body"
+```
+
+Present in chat as: `👉 [**กดที่นี่ — v<X.Y.Z>-phase<N>**](<url>)`
+
+For the **release commit** (pyproject.toml version bump + new release
+notes file) — that's still a normal PR. The mobile-operator
+constraint applies only to the tag-push + GitHub Release-creation
+steps, not to the PR. Propose those as standard branch + commit +
+draft PR flow, NOT as shell tag commands.
+
+If cutting **multiple releases in one session** (retroactive + new),
+emit one URL per release IN THIS ORDER:
+
+1. **Newest version FIRST** with note "**ติ๊ก Set as latest** ✅"
+2. **Older / retroactive versions LAST** with note "**uncheck Set as latest** ❌"
+
+This avoids the GitHub auto-flag-latest footgun documented in the
+release-tag skill §"Multi-release ladder ordering".
+
+After the user reports each URL tapped + Publish clicked, verify via
+`mcp__github__get_latest_release` that the Latest flag landed on the
+newest tag. If wrong, propose the edit URL:
+
+```
+https://github.com/dackclup/quantrank/releases/edit/v<X.Y.Z>-phase<N>
 ```
 
 Post-release checklist for the user (defer detail to `release-tag`
@@ -138,8 +188,23 @@ VERDICT: <READY-TO-TAG | BLOCKED-ON-<X>>
 
 - Do NOT run `git tag` or `git push origin <tag>` yourself —
   destructive + visible-to-the-world; needs user authorization per
-  CLAUDE.md §Executing actions with care
-- Do NOT create the GitHub Release directly
+  CLAUDE.md §Executing actions with care. ALSO sandbox blocks tag
+  pushes (HTTP 403); even with authorization, the push would fail
+- Do NOT propose `git tag` / `git push` / `gh release create` shell
+  commands the user would have to run on a desktop — the user has
+  **mobile-only access** (locked 2026-05-27 release-tag SKILL.md
+  §"OPERATOR CONSTRAINT — mobile-only"). Always emit the
+  pre-filled `/releases/new?tag=...&target=...&title=...&body=...`
+  URL pattern instead
+- Do NOT create the GitHub Release directly via MCP (no
+  `mcp__github__create_release` exists in the GitHub MCP surface
+  as of 2026-05-27); user-tap-to-publish is the only path
 - Do NOT bump `pyproject.toml` yourself — propose, user applies
+  via PR (this part IS doable in sandbox; it's only the
+  tag/release publish step that needs the mobile workflow)
 - Do NOT skip pre-flight checks even if user is in a hurry —
   releases are the LEAST hurriable surface
+- Do NOT publish multiple releases without verifying the Latest
+  flag landed on the newest tag — caught on 2026-05-27 when
+  v1.3.0 retroactive accidentally became Latest until manually
+  re-promoted via the edit URL

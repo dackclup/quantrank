@@ -6,10 +6,38 @@ description: Cut a versioned release for a QuantRank phase-completion PR — bum
 # Release Tag Workflow
 
 QuantRank releases at phase boundaries. The most recent tag is
-`v1.2.0-phase4.5` (2026-05-17, `6d414a9b`). Tag cadence is roughly
+`v1.4.0-phase4.6` (2026-05-27, `a820caee`). Tag cadence is roughly
 1-3 weeks, matching the phase-completion rhythm. This skill is the
 end-to-end release workflow so the next release doesn't have to
 re-derive the convention from looking at the last tag.
+
+## OPERATOR CONSTRAINT — mobile-only (locked 2026-05-27)
+
+**The user operates the GitHub UI from a mobile phone only — no
+desktop, no `gh` CLI, no terminal beyond reading.** All release
+steps that require pushing tags or creating Releases MUST be
+delivered as **pre-filled GitHub URLs the user taps once** — never
+as `git tag` / `git push origin <tag>` / `gh release create` shell
+commands the user would have to execute.
+
+This constraint is structural (not optional) because:
+
+1. The sandbox itself **cannot push tag-refs** (HTTP 403 from the
+   git proxy — branch pushes work, tag pushes do not). Confirmed
+   2026-05-27 when v1.3.0 + v1.4.0 tags were cut.
+2. The user has no terminal access — even `gh release create` is
+   not an option.
+3. GitHub's web UI accepts a single URL that pre-fills tag name,
+   target commit SHA, release title, AND release body via query
+   string parameters. The user only needs to **tap the link, verify
+   the pre-filled fields, and tap Publish**.
+
+The pattern is codified in §"Mobile-operator release workflow"
+below — that section REPLACES the historical "Step 5 (Tag + push)"
+and "Step 6 (Create GitHub release)" workflow. The old `git tag`
+shell pattern is kept in §"Reference: shell pattern (NOT for
+sandbox)" purely for documentation; do NOT propose it as a workflow
+for this user.
 
 ## Versioning convention
 
@@ -143,30 +171,123 @@ Template:
 Full changelog: <LAST_TAG>...<NEW_TAG>
 ```
 
-### 5. Tag + push
+### 5+6. Mobile-operator release workflow (REPLACES historical tag-push + release-create)
 
-```bash
-# Annotated tag with the release notes in the message body
-NEW_TAG="v<VERSION>-<PHASE>"
-git tag -a "$NEW_TAG" -m "$(cat release_notes_<VERSION>.md)"
-git push origin "$NEW_TAG"
+**Generate ONE pre-filled GitHub Release URL per release.** GitHub's
+`/releases/new` endpoint accepts these query parameters:
+
+| Param | Value |
+|---|---|
+| `tag` | tag name (e.g. `v1.4.0-phase4.6`) — auto-created on publish if it doesn't exist yet |
+| `target` | full 40-char commit SHA the tag points at |
+| `title` | release title (URL-encoded) |
+| `body` | release body markdown (URL-encoded) |
+
+URL pattern:
+
+```
+https://github.com/<owner>/<repo>/releases/new?tag=<TAG>&target=<SHA>&title=<URL-ENCODED-TITLE>&body=<URL-ENCODED-BODY>
 ```
 
-Annotated tags (`-a`) are the QuantRank convention — they store the
-message + tagger + timestamp, which is what GitHub Releases consumes
-from. Don't use lightweight tags.
+**URL size budget**: stay under 8 KB (GitHub server-side HTTP request
+limit; mobile browser URL bar caps too). A typical full release-notes
+body is 8-12 KB raw → 12-18 KB URL-encoded → **TOO LARGE**. Use the
+**short-body pattern** below:
 
-### 6. Create the GitHub release
+#### Short-body template (keeps URL under 2 KB)
 
-Via the MCP `mcp__github__*` tool surface (this skill prefers the API
-over the `gh` CLI since CLI may be unavailable in the sandbox):
+The full release notes file already lives on `main` at
+`docs/release-notes/v<VERSION>-<PHASE>.md`. The short body in the URL
+just links to it:
 
-- Title: `v<VERSION>-<PHASE>`
-- Tag: the tag just pushed
-- Body: the release notes from step 4
-- Pre-release: false (unless the phase is in flight — rare)
-- Generate auto changelog: false (we wrote curated notes; auto would
-  duplicate)
+```markdown
+Closes the **<headline phase or epic>** (PRs #<list>) since
+<prior-tag> (<prior-SHA-short>, <prior-date>).
+
+**Schema bump**: `<old>` → `<new>` (PATCH/MINOR/MAJOR; <one-line rationale>)
+**Defense layer**: <old-count> → <new-count> declared boolean flags
+**CVE baseline**: <CVE summary if changed>
+
+**Full release notes**: [`docs/release-notes/v<VERSION>-<PHASE>.md`](https://github.com/<owner>/<repo>/blob/main/docs/release-notes/v<VERSION>-<PHASE>.md)
+
+Compare: [<prior-tag>...v<VERSION>-<PHASE>](https://github.com/<owner>/<repo>/compare/<prior-tag>...v<VERSION>-<PHASE>)
+```
+
+This format keeps URL well under 2 KB AND the full notes stay
+readable on the release page (just one tap into the linked file).
+
+#### Generator helper (Python one-liner)
+
+When proposing the URL to the user, generate it programmatically:
+
+```python
+import urllib.parse
+base = "https://github.com/<owner>/<repo>/releases/new"
+qs = urllib.parse.urlencode({
+    "tag": "v<VERSION>-<PHASE>",
+    "target": "<40-char-SHA>",
+    "title": "v<VERSION>-<PHASE> — <headline>",
+    "body": short_body_text,
+})
+url = f"{base}?{qs}"
+assert len(url) < 8192, "URL too large — shorten body further"
+print(url)
+```
+
+Then present it as **one tappable markdown link** in chat — the user
+just taps it on their phone.
+
+#### What the user does
+
+After tapping the URL on their phone:
+
+1. ✅ verify pre-filled fields look correct (tag, target, title, body)
+2. **Set as the latest release** — ☑️ tick (for the newest release;
+   uncheck for retroactive/historical tags)
+3. **Pre-release** — ❌ uncheck
+4. Tap green **Publish release** button
+
+That's it. GitHub creates the tag + the release in one step. No
+shell, no `git`, no CLI needed.
+
+#### Multi-release ladder ordering
+
+When cutting **multiple releases in one session** (e.g., retroactive
+v1.3.0 + new v1.4.0):
+
+1. Publish the **newest version FIRST** with "Set as latest" ✅
+2. Publish older/retroactive versions AFTER with "Set as latest" ❌
+
+This ordering avoids the recurring footgun where GitHub auto-flags
+the most-recently-published release as Latest — caught on
+2026-05-27 when v1.3.0 retroactive ended up as Latest until manually
+re-promoted. Order matters; latest-flag matters more.
+
+#### Verify after publish
+
+Use `mcp__github__get_latest_release` to confirm Latest = the
+newest tag. If wrong, propose the **edit URL** to the user:
+
+```
+https://github.com/<owner>/<repo>/releases/edit/<TAG>
+```
+
+User taps → toggles "Set as latest" → Update.
+
+### Reference: shell pattern (NOT for this user)
+
+For posterity / contributors with desktop access:
+
+```bash
+# Annotated tag with the release notes file as body
+git tag -a "$NEW_TAG" -F docs/release-notes/$NEW_TAG.md
+git push origin "$NEW_TAG"
+gh release create "$NEW_TAG" "$TARGET_SHA" \
+  --title "$TITLE" --notes-file docs/release-notes/$NEW_TAG.md --latest
+```
+
+But **do not propose this to the current user** — they have no
+desktop. Always use the mobile-operator workflow above.
 
 ### 7. Backfill the CLAUDE.md commit SHA
 
