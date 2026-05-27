@@ -3,19 +3,19 @@
   "name": "Delta Air Lines",
   "sector": "Industrials",
   "industry": "Passenger Airlines",
-  "market_cap": 52158762150.68262,
-  "current_price": 79.39,
-  "rank": 56,
-  "composite_score": 61.14,
+  "market_cap": 53742120366.586914,
+  "current_price": 81.8,
+  "rank": 52,
+  "composite_score": 62.01,
   "pillar_scores": {
     "quality": 43.99,
-    "value": 93.25,
+    "value": 92.83,
     "growth": 70.25,
-    "momentum": 70.84,
-    "health": 34.06,
+    "momentum": 76.89,
+    "health": 34.1,
     "profitability": 37.55,
-    "technical": 57.77,
-    "risk": 47.68,
+    "technical": 61.01,
+    "risk": 48.64,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 6.814368528161178,
     "eps_diluted": 6.814368528161178,
     "shares_outstanding": 656994112.0,
-    "market_cap": 52158762150.68262,
-    "pe_ratio_ttm": 11.650382432584903,
+    "market_cap": 53742120366.586914,
+    "pe_ratio_ttm": 12.00404743502053,
     "goodwill": 9753000000.0
   },
   "fair_price": {
@@ -45,19 +45,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 194.26025614454105,
+        "value": 195.2529091281959,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 208.25208825959987,
+        "value": 212.33547954179934,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 202.56815728432582,
+        "value": 203.10421869929135,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,15 +75,16 @@
         "tier_used": null
       }
     },
-    "median": 194.26025614454105,
-    "max": 208.25208825959987,
+    "median": 195.2529091281959,
+    "max": 212.33547954179934,
     "low": 15.956487009228436,
-    "high": 208.25208825959987,
-    "mos_pct": 59.1321452131837,
+    "high": 212.33547954179934,
+    "mos_pct": 58.10561624049815,
     "valuation_warnings": [
-      "goodwill_heavy"
+      "goodwill_heavy",
+      "extreme_rim_estimate"
     ],
-    "valuation_methods_applicable": 5
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -99,13 +100,14 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 48,
+    "filing_lag_days": 49,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-08"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "goodwill_heavy"
+    "goodwill_heavy",
+    "extreme_rim_estimate"
   ],
   "has_history": true,
   "tangible_book_value": 7.091387753563308,
@@ -120,22 +122,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.15,
-      "Value": 48.95,
+      "Value": 48.31,
       "Growth": 49.37,
-      "Momentum": 50.55,
+      "Momentum": 51.05,
       "Health": 52.79,
       "Profitability": 47.68,
-      "Technical": 49.9,
-      "Risk": 54.32
+      "Technical": 47.76,
+      "Risk": 53.82
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 14.731700608051675,
-  "price_change_1d_pct": 4.2685,
+  "loss_chance_pct": 15.659308186587335,
+  "price_change_1d_pct": 3.0357,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 61.14,
+  "composite_score_adjusted": 62.01,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -183,10 +185,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 56.5,
+  "osap_blended_score": 56.93,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 5,
+  "valuation_methods_applicable": 4,
   "form4_diagnostics": null,
-  "cross_source_delta": 0.040936768562761475
+  "cross_source_delta": 3.9212098335888274e-07
 }

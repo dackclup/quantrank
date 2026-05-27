@@ -1,16 +1,16 @@
 {
-  "version": "0.10.6-phase4.5e",
-  "last_update_utc": "2026-05-26T23:19:25Z",
-  "next_update_utc": "2026-05-27T23:19:25Z",
+  "version": "0.10.7-phase4.6",
+  "last_update_utc": "2026-05-27T23:25:51Z",
+  "next_update_utc": "2026-05-28T23:25:51Z",
   "universe": "SP500",
   "universe_size": 502,
-  "compute_run_id": "26480502996",
-  "git_commit": "b7514cf80fc02c604f57ef56e4bb604326c89a78",
-  "mos_trailing_ic_smoke": -0.26437472483560515,
+  "compute_run_id": "26544480567",
+  "git_commit": "8f37375871396fd286e088ab0deb4ffdb60a3803",
+  "mos_trailing_ic_smoke": -0.25905648947448123,
   "tier2_coverage_pct": 99.8,
   "fundamentals_coverage_pct": 100.0,
   "fundamentals_latency_p50_seconds": 0.0,
-  "fundamentals_latency_p95_seconds": 16.49,
+  "fundamentals_latency_p95_seconds": 14.74,
   "osap_signals_used": [
     "AbnormalAccruals",
     "Activism1",
@@ -663,10 +663,10 @@
   "form4_universe_insider_count_median": null,
   "form4_tickers_with_recent_activity": null,
   "form4_fetch_failures": null,
-  "cross_source_disagreement_count": 37,
+  "cross_source_disagreement_count": 21,
   "cross_source_delta_histogram": {
-    "<5": 465,
-    "5-25": 31,
+    "<5": 481,
+    "5-25": 15,
     "25-50": 0,
     "50-75": 3,
     "75-100": 1,
@@ -680,5 +680,7 @@
   "shares_fallback_dimensional_override_count": 0,
   "multi_class_aggregate_shares_suspected_count": 6,
   "multi_class_per_class_override_count": 0,
-  "multi_class_mc_reconcile_failure_count": 0
+  "multi_class_mc_reconcile_failure_count": 0,
+  "universe_membership_as_of": "2026-05-27",
+  "survivorship_bias_corrected": true
 }

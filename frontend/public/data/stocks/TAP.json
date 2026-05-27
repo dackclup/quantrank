@@ -3,19 +3,19 @@
   "name": "Molson Coors Beverage Company",
   "sector": "Consumer Staples",
   "industry": "Brewers",
-  "market_cap": 8208892908.859253,
-  "current_price": 41.23,
-  "rank": 483,
-  "composite_score": 34.74,
+  "market_cap": 8336316787.338257,
+  "current_price": 41.87,
+  "rank": 476,
+  "composite_score": 35.57,
   "pillar_scores": {
     "quality": 15.62,
     "value": 74.07,
     "growth": 47.57,
-    "momentum": 22.01,
+    "momentum": 22.26,
     "health": 9.34,
     "profitability": 17.82,
-    "technical": 29.93,
-    "risk": 40.94,
+    "technical": 45.52,
+    "risk": 41.37,
     "sentiment": null,
     "ml": null
   },
@@ -32,7 +32,7 @@
     "eps_basic": -10.74635861376193,
     "eps_diluted": -10.74635861376193,
     "shares_outstanding": 199100000.0,
-    "market_cap": 8208892908.859253,
+    "market_cap": 8336316787.338257,
     "pe_ratio_ttm": null,
     "goodwill": 1944700000.0
   },
@@ -51,7 +51,7 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 171.60527032366113,
+        "value": 174.62250755058616,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 171.60527032366113,
-    "max": 171.60527032366113,
-    "low": 171.60527032366113,
-    "high": 171.60527032366113,
-    "mos_pct": 75.97393164879303,
+    "median": 174.62250755058616,
+    "max": 174.62250755058616,
+    "low": 174.62250755058616,
+    "high": 174.62250755058616,
+    "mos_pct": 76.0225646056792,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -92,7 +92,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 97,
+    "filing_lag_days": 98,
     "latest_period_end": "2025-12-31",
     "latest_filed_date": "2026-02-18"
   },
@@ -100,7 +100,8 @@
     "altman_distress"
   ],
   "valuation_warnings": [
-    "value_trap_risk"
+    "value_trap_risk",
+    "cross_source_disagreement"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -115,22 +116,22 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 49.65,
-      "Value": 53.7,
+      "Value": 54.51,
       "Growth": 48.44,
-      "Momentum": 39.07,
+      "Momentum": 38.47,
       "Health": 39.29,
       "Profitability": 53.94,
-      "Technical": 48.73,
-      "Risk": 50.43
+      "Technical": 52.42,
+      "Risk": 51.15
     }
   },
   "beneish_m_score": -3.426325967883362,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 35.03857025795269,
-  "price_change_1d_pct": -3.1022,
+  "loss_chance_pct": 34.608202109496716,
+  "price_change_1d_pct": 1.5523,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 34.74,
+  "composite_score_adjusted": 35.57,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -178,10 +179,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 43.3,
+  "osap_blended_score": 43.71,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 1,
   "form4_diagnostics": null,
-  "cross_source_delta": 0.027845763782904303
+  "cross_source_delta": 0.0580041972580374
 }

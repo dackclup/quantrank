@@ -3,19 +3,19 @@
   "name": "First Solar",
   "sector": "Information Technology",
   "industry": "Semiconductors",
-  "market_cap": 29007036653.53656,
-  "current_price": 269.95,
-  "rank": 126,
-  "composite_score": 56.55,
+  "market_cap": 29406763295.065216,
+  "current_price": 273.67,
+  "rank": 111,
+  "composite_score": 57.59,
   "pillar_scores": {
     "quality": 35.62,
-    "value": 75.34,
+    "value": 74.89,
     "growth": 58.9,
-    "momentum": 45.92,
+    "momentum": 54.03,
     "health": 90.72,
     "profitability": 46.8,
-    "technical": 66.53,
-    "risk": 36.72,
+    "technical": 68.87,
+    "risk": 37.08,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 15.498007261066366,
     "eps_diluted": 15.498007261066366,
     "shares_outstanding": 107453363.0,
-    "market_cap": 29007036653.53656,
-    "pe_ratio_ttm": 17.418369191579337,
+    "market_cap": 29406763295.065216,
+    "pe_ratio_ttm": 17.65840012962441,
     "goodwill": 30582000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 905.2774318021623,
+        "value": 892.015421794636,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 1171.8001951734357,
+        "value": 1152.3821902569748,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +75,11 @@
         "tier_used": null
       }
     },
-    "median": 528.7899175324081,
-    "max": 1171.8001951734357,
+    "median": 522.158912528645,
+    "max": 1152.3821902569748,
     "low": 113.11601598766285,
-    "high": 1171.8001951734357,
-    "mos_pct": 48.94947818469199,
+    "high": 1152.3821902569748,
+    "mos_pct": 47.588749926255225,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -92,13 +92,12 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 26,
+    "filing_lag_days": 27,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "rem_suspect",
     "accruals_momentum_high"
   ],
   "has_history": true,
@@ -114,29 +113,29 @@
     "label": "Information Technology median (n=73)",
     "values": {
       "Quality": 49.66,
-      "Value": 47.72,
+      "Value": 48.63,
       "Growth": 53.42,
-      "Momentum": 61.33,
+      "Momentum": 63.1,
       "Health": 69.52,
       "Profitability": 48.86,
-      "Technical": 59.11,
-      "Risk": 47.78
+      "Technical": 59.26,
+      "Risk": 47.76
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.2192936315015349,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 19.592803840036808,
-  "price_change_1d_pct": 4.6927,
-  "manipulation_index": 13.0,
-  "composite_score_adjusted": 55.25,
+  "loss_chance_pct": 19.54771943015676,
+  "price_change_1d_pct": 1.378,
+  "manipulation_index": 5.0,
+  "composite_score_adjusted": 57.09,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
     "dechow_manipulation_veto": false,
     "non_reliance_filing": false,
     "manipulation_triple_flag": false,
-    "rem_suspect": true,
+    "rem_suspect": false,
     "restatement_history": false,
     "restatement_high_confidence": false,
     "late_filing_notification": false,
@@ -177,10 +176,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.2,
+  "osap_blended_score": 54.72,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
   "form4_diagnostics": null,
-  "cross_source_delta": 0.04482317132446689
+  "cross_source_delta": 9.761877333593728e-09
 }
