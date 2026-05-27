@@ -328,6 +328,14 @@ export function FairPriceCard(props) {  // no types
   triggers production compute runs from GitHub mobile
 - Modify `compute/output/schema-snapshot.json` by hand (always
   regenerate via `--update-snapshot`)
+- Propose `git tag` / `git push origin <tag>` / `gh release create`
+  shell commands for release ladder — the user is **mobile-only**
+  (locked 2026-05-27); always emit a pre-filled
+  `https://github.com/dackclup/quantrank/releases/new?tag=...&target=...&title=...&body=...`
+  URL the user taps once on their phone. Sandbox itself blocks
+  tag-ref pushes (HTTP 403) so the shell pattern wouldn't work
+  even with authorization. See `.claude/skills/release-tag/SKILL.md`
+  §"Mobile-operator release workflow".
 
 ## Security considerations
 

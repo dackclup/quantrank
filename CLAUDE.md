@@ -437,6 +437,25 @@ whitespace / single-line fixes do not trigger.
   reachable in the sub-agent's context. The main agent retains full
   MCP access and can run the check inline OR re-spawn the sub-agent
   with the correct tool surface.
+- **Release tags are mobile-only (locked 2026-05-27)** — the user
+  operates GitHub from a phone only; no desktop, no `gh` CLI, no
+  terminal. The sandbox itself **cannot push tag-refs** either
+  (HTTP 403 from the git proxy — confirmed during the v1.3.0 +
+  v1.4.0 cut on 2026-05-27). All release-tag + GitHub-Release-
+  creation steps MUST be delivered as **pre-filled GitHub URLs the
+  user taps once**, never as `git tag` / `git push origin <tag>` /
+  `gh release create` shell commands. Pattern: build a single URL of
+  the shape `https://github.com/dackclup/quantrank/releases/new?tag=<TAG>&target=<40-char-SHA>&title=<URL-ENC>&body=<URL-ENC>`
+  with a **short body** (≤ 2 KB encoded) that links to the full
+  release notes file already on `main` — the URL must stay under
+  GitHub's 8 KB server-side limit. Multi-release ladder ordering:
+  **publish newest FIRST with "Set as latest" ✅, retroactive/older
+  LAST with "Set as latest" ❌** — avoids the auto-flag-latest
+  footgun caught on 2026-05-27 (v1.3.0 retroactive accidentally
+  became Latest until manually re-promoted via the edit URL).
+  Codified in [`.claude/skills/release-tag/SKILL.md`](.claude/skills/release-tag/SKILL.md)
+  §"Mobile-operator release workflow" + [`.claude/agents/release-captain.md`](.claude/agents/release-captain.md)
+  Step 5.
 - **Parallel-PR §Phase status collision pattern** (RESOLVED
   2026-05-24 via [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md)
   side-file adoption) — historical record: every PR was required to

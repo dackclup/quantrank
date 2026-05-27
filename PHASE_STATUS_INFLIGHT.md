@@ -2115,4 +2115,32 @@ convention.
 
 ---
 
+## PR (this PR) — Codify mobile-only release-tag convention (in flight, 2026-05-27)
+
+Locks the **mobile-operator release workflow** that was discovered + battle-tested during the v1.3.0 + v1.4.0 cut on 2026-05-27. The user operates GitHub from a phone only (no desktop / no `gh` CLI / no terminal); the sandbox itself can't push tag-refs (HTTP 403 from the git proxy). The only path that actually works = pre-filled `/releases/new` URL the user taps once.
+
+**3 files updated in lockstep**:
+
+- **`.claude/skills/release-tag/SKILL.md`** — adds top-of-file "OPERATOR CONSTRAINT — mobile-only (locked 2026-05-27)" section; rewrites historical Step 5+6 ("Tag + push" + "Create GitHub release") into a single new "Mobile-operator release workflow" section covering the URL pattern, query-parameter table, 8 KB URL-size budget, short-body template (links to full release-notes file already on `main`), Python generator helper, what-the-user-does click-flow, multi-release ladder ordering rule (newest FIRST + retroactive LAST to avoid the auto-flag-latest footgun), and the post-publish verify-via-`get_latest_release` + edit-URL fallback. Old shell pattern preserved in §"Reference: shell pattern (NOT for this user)" for posterity.
+- **`.claude/agents/release-captain.md`** — Step 5 rewritten to emit pre-filled URL via Python generator instead of shell commands; "What you do NOT do" gains 3 new bullets (no shell tag commands, no MCP-create-release attempt, no multi-release publish without Latest-flag verify); pre-existing rules preserved.
+- **`CLAUDE.md`** §Gotchas — new "Release tags are mobile-only (locked 2026-05-27)" entry above the existing Parallel-PR collision pattern entry; captures the constraint + URL pattern + ladder ordering + cross-refs to the SKILL.md + agent file.
+- **`AGENTS.md`** §"What you must NOT do" — mirror bullet added; cross-tool agents (Copilot / Cursor / Devin) see the same constraint.
+
+**Lessons codified from the 2026-05-27 session**:
+
+1. Sandbox `git push origin <tag>` → HTTP 403 (proxy blocks tag-refs but allows branch pushes)
+2. `gh` CLI not available in the remote execution environment
+3. GitHub MCP server (as of 2026-05-27) does NOT expose `create_release` — only `get_release_by_tag` / `get_latest_release` / `list_releases`
+4. Full release-notes body (12 KB raw, ~18 KB URL-encoded) exceeds GitHub's 8 KB URL limit → short-body pattern needed
+5. Publishing v1.3.0 retroactive AFTER v1.4.0 with default "Set as latest" checked → v1.3.0 became Latest (wrong!) → required edit-URL re-promotion
+6. Mobile UI's "Choose target" dropdown only shows recent branch commits — older SHA (`5db3b978`) doesn't appear → MUST pass `target=<40-char-SHA>` in query string, not via mobile UI selection
+
+**Scope: doc-only**. No compute / schema / scoring / valuation / frontend / Python / TypeScript code change. No test surface (the skill / agent doc updates aren't covered by pytest; they're prose). `ruff` / `schema_check` / `pytest` trivially pass.
+
+**Deferred follow-ups** (NOT in this PR):
+- A `tools/build_release_url.py` helper script that takes `(tag, target_sha, headline, prior_tag)` and emits the ready-to-tap URL — would let `release-captain` shell out instead of regenerating the URL-encoding logic inline each time. Low priority; the Python one-liner in SKILL.md is short enough.
+- Update `THIRD_PARTY_NOTICES.md` if `gh` CLI is ever vendored — currently N/A since gh isn't installed.
+
+PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" lockstep per PR #237 convention.
+
 ---
