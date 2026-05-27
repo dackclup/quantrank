@@ -233,11 +233,24 @@ def test_format_shift_report_caps_long_windows() -> None:
 
 
 def test_compute_shift_live_repo_recent_window() -> None:
-    """Smoke test against the real repo's recent cron commits."""
+    """Smoke test against the real repo's recent cron commits.
+
+    Skips gracefully on shallow git clones (CI `actions/checkout@v6`
+    defaults to ``fetch-depth: 1`` so the rankings.json commit history
+    isn't reachable). On a full local clone this exercises the real
+    git-archived snapshots.
+    """
+    import pytest
+
     report = compute_manipulation_distribution_shift(
         start_date=date(2026, 5, 22),
         end_date=date(2026, 5, 27),
     )
+    if report.n_dates == 0 and "empty window" in report.note:
+        pytest.skip(
+            "Shallow git clone — rankings.json commit history not "
+            "reachable in window (CI checkout fetch-depth=1)"
+        )
     # rankings.json is post-0.8.0-phase4.5f → manipulation_index present
     assert report.n_dates >= 1
     if report.n_dates >= 1:
