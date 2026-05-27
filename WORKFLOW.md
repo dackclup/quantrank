@@ -33,6 +33,40 @@ You cannot run Python or Node locally. All execution happens in **GitHub Actions
 
 ---
 
+## Agentic 6-Phase Cadence
+
+Meta-workflow over the 9 phases below — maps the classical agentic loop
+(Planning → Code Generation → Integration → Testing → Deployment →
+Monitoring) onto the 18 subagents already in `.claude/agents/` and the
+established commands. No new infrastructure.
+
+**Session-start protocol**: read [`PHASE_STATUS.md`](PHASE_STATUS.md)
+§"Current state" first — currently schema `0.10.5-phase4.5e` (PRs #264 +
+#265; cron #4 still at `0.10.4`, next cron Wed 2026-05-27 re-renders at
+`0.10.5`), defense layer **33 declared** = 7 vetoes + 26 annotates,
+release tag [`v1.3.0-phase4.5e`](https://github.com/dackclup/quantrank/releases/tag/v1.3.0-phase4.5e),
+CVE baseline **15 open** (0C / 6H / 7M / 2L) after PR #194 patch +
+PR #226 triage. Then route via the cadence below.
+
+| Step | Fire trigger | Subagent(s) (per `CLAUDE.md` §Auto-routing) | Done when |
+|---|---|---|---|
+| **1. Planning** | New `claude/*` branch · new defense flag · threshold change | `phase-coordinator` Mode A · `methodology-scientist` Mode B (academic prior) · `literature-searcher` (cite outside CLAUDE.md anchor list) | Branch collision clean · `PHASE_STATUS_INFLIGHT.md` entry drafted · academic verdict logged |
+| **2. Code Generation** | Non-trivial edit in `compute/` | `test-engineer` (red-green-refactor) · `edgar-debugger` (if ingest) · `defense-layer-auditor` (if scoring/valuation) | Failing → passing test · Rule 18 `Metadata` diagnostic wired before logic |
+| **3. Integration** | Schema triple touched · `frontend/components/` · `.github/workflows/` · new dep | `schema-sentinel` · `frontend-design-reviewer` · `security-reviewer` · `dependency-auditor` (dep bump) | `python -m compute.output.schema_check` clean · chip + tabular-nums + loose-null discipline preserved |
+| **4. Testing** | Logic added in step 2 | `test-engineer` · `defense-layer-auditor` Sections A-L · `stock-detail-auditor` (post-cron) · `performance-engineer` (p95 > 15s) | Offline pytest + Hypothesis + `@network` smoke · Sections A-L pass |
+| **5. Deployment** | Ready-to-push · Draft → Mark Ready · phase-tag boundary | `phase-coordinator` Mode B (lockstep) · `quantrank-reviewer` (opus) · `ci-triage-engineer` (if CI red) · `vercel-preview-auditor` (UI-touching PR) · `release-captain` (opus, tag) | CI green · preview 3-route UA probe green · release notes drafted (if tag) |
+| **6. Monitoring** | Post-cron · post-deploy · weekly | `defense-layer-auditor` Sections A-L · `stock-detail-auditor` · `vercel-preview-auditor` · `performance-engineer` · `incident-commander` (opus, P1 only) | 1-page metric × expected × actual × status report · Top-5 rotation symmetric |
+
+**Cadence invariants**:
+
+- Steps 1 / 5 / 6 = gate-only (branch open · push · cron). Steps 2 / 3 / 4 = on-edit auto-spawn per `CLAUDE.md` §Auto-routing.
+- Opus agents (`quantrank-reviewer` · `methodology-scientist` · `release-captain` · `incident-commander`) never on every edit — gate or signal only.
+- New academic prior or threshold change → step 1 + step 4 BOTH require `methodology-scientist` Mode B verdict before merge.
+- Dedup window ~10 min in step 5 — sonnet subagent that ran at on-edit trigger skips at push gate.
+- This cadence supersedes ad-hoc "Master Prompt / phase-N prompt" packaging — those are now expressed via `.claude/agents/*` + `CLAUDE.md` §Auto-routing, not standalone files.
+
+---
+
 ## Phase Overview (9 Phases — Option B Research-Backed)
 
 | Phase | Goal | Deliverable | Est. effort | Roadmap |

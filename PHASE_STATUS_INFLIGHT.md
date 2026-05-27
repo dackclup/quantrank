@@ -815,6 +815,82 @@ aesthetic doesn't reward page-level motion.
 
 ---
 
+## PR (this PR) — Distill Agentic 6-Phase Cadence into WORKFLOW.md + CLAUDE.md (in flight, 2026-05-27)
+
+Refactors the user-shared research report
+(`02d29fc4-Research_Report.md`, an artifact analysis + Master Prompt + 6
+phase sub-prompts + CLAUDE.md template) into the existing doc surface
+without creating a new `.claude/skills/agentic-6-phase/` skill. The
+report's underlying logic is already implemented in QuantRank's 18
+subagents + `CLAUDE.md` §Auto-routing policy; what was genuinely
+missing was a 6-phase mapping table a new session can scan in < 30 sec
+on top of the 9 phases below.
+
+**Scope (2 files, ≤ 1 page each)**:
+
+- **`WORKFLOW.md`** — new section "Agentic 6-Phase Cadence" inserted
+  between §"Tools You'll Use Daily" and §"Phase Overview". Single
+  mapping table (Step × Fire trigger × Subagent(s) × Done when) plus
+  5 invariant bullets. Reuses existing 18 subagents only — no new
+  agent files. Session-start protocol cites the actual numbers from
+  PHASE_STATUS.md: schema `0.10.5-phase4.5e` (PRs #264 + #265; cron
+  #4 still at `0.10.4`, next cron Wed 2026-05-27 re-renders at
+  `0.10.5`), defense layer **33 declared** = 7 vetoes + 26 annotates,
+  release tag `v1.3.0-phase4.5e`, CVE baseline **15 open** (down
+  from 25 after PR #194 patch + PR #226 triage).
+- **`CLAUDE.md`** — new §Conventions bullet "Session-start phase
+  identification" (~5 lines) pointing readers at PHASE_STATUS.md
+  §"Current state" + WORKFLOW.md §"Agentic 6-Phase Cadence" as the
+  routing source. No duplication of the cadence table.
+
+**Out of scope (deliberately NOT done per user direction 2026-05-27)**:
+
+- ❌ NOT creating `.claude/skills/agentic-6-phase/` — overhead
+  exceeds benefit (the 18 subagents ARE the per-phase prompts;
+  cadence is referenceable inline)
+- ❌ NOT copying Master Prompt + 6 phase sub-prompts from the
+  artifact into the repo — they stay outside the repo as a reference
+  card for new sessions
+- ❌ NOT touching any of the 18 subagent files under
+  `.claude/agents/`
+- ❌ NOT touching AGENTS.md substance — the cadence section is
+  Claude-Code-subagent-specific; cross-tool agents (Copilot / Cursor
+  / Devin) don't have access to `.claude/agents/` and would route
+  differently. This INFLIGHT.md entry satisfies the §Conventions
+  "ship with every PR" lockstep per PR #237 convention.
+
+**Verification**:
+- `ruff check .` — N/A (no Python touched)
+- `python -m compute.output.schema_check` — N/A (no schemas touched)
+- `pytest tests/ -m "not network"` — N/A (no test surface)
+- `docs-reviewer` subagent run BEFORE commit per user acceptance
+  criteria (drift check vs PHASE_STATUS.md + SKILL.md)
+- Markdown-only diff; ~45 added lines across `WORKFLOW.md` + ~6
+  added lines in `CLAUDE.md`
+
+**Deferred follow-ups** (not in this PR):
+- Re-evaluate the "Agentic 6-Phase Cadence" section at the Q3
+  2026-08-19 quarterly cohort audit — confirm the table's subagent
+  mapping still matches the live `.claude/agents/` roster (currently
+  18; could grow). If a new subagent doesn't fit a step cleanly,
+  consider adding a 7th cadence step OR a "Cross-cutting" row.
+- Optional companion in `AGENTS.md` §"Multi-session audit pattern"
+  pointing cross-tool agents at the same WORKFLOW.md section as a
+  read-only reference (substance is QuantRank-internal and uses
+  Claude Code's `Agent` tool which Copilot / Cursor / Devin don't
+  have; mirror is optional, not required).
+- **SKILL.md schema-version table backfill** — pre-existing drift
+  surfaced by `docs-reviewer` 2026-05-27 (not introduced by this
+  PR): SKILL.md's schema-version table stops at `0.10.4-phase4.5e`;
+  rows for `0.10.5-phase4.5e` (PR #264 `multi_class_aggregate_shares_suspected_count`)
+  and the `valuation_output_anomalous` identifier rename (PR #265,
+  no schema bump) are missing. Escalate to `schema-sentinel` /
+  `docs-reviewer` as a separate doc-only PR; this PR does NOT block
+  on it because the gap is pre-existing and orthogonal to the
+  cadence-distillation scope.
+
+---
+
 ## Merged (awaiting housekeeping move to CLAUDE.md)
 
 ## PR #241 — Simulate Parts 5+6+7: wire `QR_SKIP_OSAP` + `QR_SKIP_CROSS_SOURCE` + timeout-minutes 45→90 backstop (merged 2026-05-24, `e9d7836`)

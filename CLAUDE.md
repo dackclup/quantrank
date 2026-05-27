@@ -149,6 +149,12 @@ for the full 4-step pattern + Section I forcing example.
   `git fetch origin main && git rebase origin/main` and resolve any
   remaining benign conflicts ("keep both in chronological order" if
   somebody added a CLAUDE.md substance change in the same area).
+- **Session-start phase identification.** First action on any new
+  session: read [`PHASE_STATUS.md`](PHASE_STATUS.md) §"Current state"
+  for active schema + phase + defense-layer count + in-flight PRs, then
+  route through [`WORKFLOW.md`](WORKFLOW.md) §"Agentic 6-Phase Cadence"
+  (Planning → Code Gen → Integration → Test → Deploy → Monitor) using
+  the standing 18 subagents — don't spawn ad-hoc workflow agents on top.
 
 ## Auto-routing policy
 
