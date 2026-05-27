@@ -101,6 +101,47 @@ def test_write_metadata_json_tier2_disabled_round_trip(tmp_path):
     assert payload["tier2_enabled"] is False
 
 
+def test_write_metadata_json_universe_provenance_round_trip(tmp_path):
+    """Phase 4.6 — `universe_membership_as_of` + `survivorship_bias_corrected`
+    survive the Pydantic → JSON round trip and stay accessible to the
+    verify-helper + downstream backtest consumers."""
+    meta = Metadata(
+        version="0.10.7-phase4.6",
+        last_update_utc="2026-05-27T22:00:00Z",
+        next_update_utc="2026-05-28T22:00:00Z",
+        universe="SP500",
+        universe_size=502,
+        compute_run_id="run-789",
+        git_commit="abc789",
+        universe_membership_as_of="2026-05-27",
+        survivorship_bias_corrected=True,
+    )
+    out = write_metadata_json(meta, tmp_path)
+    payload = json.loads(out.read_text())
+    assert payload["universe_membership_as_of"] == "2026-05-27"
+    assert payload["survivorship_bias_corrected"] is True
+
+
+def test_write_metadata_json_universe_provenance_legacy_snapshot(tmp_path):
+    """Pre-0.10.7 metadata.json shapes (no universe-provenance fields)
+    still serialize cleanly — the two new fields default to None and the
+    payload contains them as null."""
+    meta = Metadata(
+        version="0.10.6-phase4.5e",
+        last_update_utc="2026-05-26T22:00:00Z",
+        next_update_utc="2026-05-27T22:00:00Z",
+        universe="SP500",
+        universe_size=502,
+        compute_run_id="run-legacy",
+        git_commit="legacy0",
+        # universe_membership_as_of / survivorship_bias_corrected omitted
+    )
+    out = write_metadata_json(meta, tmp_path)
+    payload = json.loads(out.read_text())
+    assert payload["universe_membership_as_of"] is None
+    assert payload["survivorship_bias_corrected"] is None
+
+
 def test_write_stock_detail_round_trip(tmp_path):
     detail = StockDetail(
         ticker="AAPL",

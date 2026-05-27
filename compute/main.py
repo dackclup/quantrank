@@ -1952,6 +1952,16 @@ def run_weekly_compute() -> int:
         next_update_utc=_iso(now + timedelta(days=_next_business_day_offset(now))),
         universe=config.UNIVERSE,
         universe_size=len(summaries),
+        # Phase 4.6 (0.10.7-phase4.6) — survivorship-bias provenance per
+        # Research Report v1.0 §7.4. Forward cron's as-of is today, and
+        # the universe we just scored IS today's current S&P 500 — so
+        # the lookup is honest by definition. survivorship_bias_corrected
+        # = True signals "this output's universe assumption is honest for
+        # its as_of_date" (vs False = historical query that fell back to
+        # current). Backtest / validation callers populate these from
+        # ``compute.ingest.historical_universe.members_at()`` directly.
+        universe_membership_as_of=now.date().isoformat(),
+        survivorship_bias_corrected=True,
         compute_run_id=os.environ.get("GITHUB_RUN_ID", "local"),
         git_commit=(os.environ.get("GITHUB_SHA") or "unknown")[:40],
         mos_trailing_ic_smoke=mos_ic,
