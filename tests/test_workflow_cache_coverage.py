@@ -67,27 +67,41 @@ def test_workflow_restores_each_cache_dir(cache_path: Path) -> None:
     )
 
 
-def test_workflow_cache_key_is_v4() -> None:
-    """Cache key bumped v3 → v4 in PR 4c.1.
+def test_workflow_cache_key_is_v5() -> None:
+    """Cache key bumped v4 → v5 in Issue #288 follow-up PR (2026-05-28).
 
-    Rationale: PR 4c extended `_ANNUAL_TAGS` with `stockholders_equity`
-    (issue #11 per-year ROE fix). The v3-era `fundamentals_history`
-    parquets pre-date that column and silently let `_avg_3y_roe` fall
-    back to the legacy single-period path — first post-PR-4c warm run
-    showed value_trap_risk count unchanged (197 → 196). Forcing a fresh
-    cold fetch via key bump is the established pattern (precedent:
-    PR #49 bumped v1 → v2 after audit-#6 `_TTM_*` expansion).
+    Rationale: PR #292 (`e9aaab31`, 2026-05-28) + PR #269 introduced the
+    GOOG/GOOGL per-class XBRL share-override at
+    `compute/ingest/fundamentals.py:1043-1067` (Branch 3 of `_build_snapshot`).
+    Branch 3 only executes on live EDGAR fetch — `fetch_fundamentals`
+    short-circuits at `_is_fresh()` (line 1292) when cached parquet age
+    by `latest_filed_date` < `FUNDAMENTALS_REFETCH_DAYS = 45`. The warm
+    cache replayed pre-PR-#292 aggregate `shares_outstanding = 12.116B`
+    for GOOG / GOOGL on cron Run #71 (`368dccd9`, 2026-05-28 08:44 UTC),
+    surfaced by the PR #292 Rule 18 disambiguator showing
+    `multi_class_per_class_attempt_count = 0`. Cache-key bump flushes
+    stale parquets so Branch 3 exercises on the next live fetch.
+    Established v3→v4 precedent (PR 4c.1) + v1→v2 precedent (PR #49).
 
-    Bump again to v5 when:
-      - any cache directory's parquet/JSON schema changes (column rename,
-        column add, shape change), OR
-      - `_TTM_*` / `_ANNUAL_TAGS` / `_BALANCE_TAGS` gains a new metric that
-        per-cache `_is_fresh()` checks can't detect through filing-date
-        staleness alone.
+    Bump rationale taxonomy (introduced this PR, expanded from PR 4c.1):
+
+    - Bump on parquet/JSON *schema* change (column rename / add / shape
+      change), OR
+    - Bump on `_TTM_*` / `_ANNUAL_TAGS` / `_BALANCE_TAGS` new metric that
+      per-cache `_is_fresh()` checks can't detect via filing-date alone,
+      OR
+    - **Bump on *value-correctness* fix inside a live-fetch-only code path
+      that cache replay short-circuits past** (e.g., the per-class XBRL
+      share-override Branch 3 — the fix code is correct but never reaches
+      execution on warm-cache crons).
+
+    Bump again to v6 next time any of the three triggers fires.
     """
     text = _workflow_text()
-    assert "key: cache-v4-" in text, (
-        "Workflow cache key must be `cache-v4-${{ ... }}` per PR 4c.1. "
-        "Bump to v5 only when a cache directory's *schema* changes or a "
-        "new metric is added to `_ANNUAL_TAGS` / `_TTM_*` / `_BALANCE_TAGS`."
+    assert "key: cache-v5-" in text, (
+        "Workflow cache key must be `cache-v5-${{ ... }}` per Issue #288 "
+        "follow-up (2026-05-28). Bump to v6 only when a cache directory's "
+        "*schema* changes, a new metric is added to `_ANNUAL_TAGS` / "
+        "`_TTM_*` / `_BALANCE_TAGS`, OR a value-correctness fix lands in a "
+        "live-fetch-only path that cache replay would short-circuit past."
     )

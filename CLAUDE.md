@@ -517,11 +517,18 @@ whitespace / single-line fixes do not trigger.
 
 ## Phase status
 
-Current schema **`0.10.9-phase4.6`** (in flight this PR — Issue #287
-PR A; 4 new `Metadata.*_wall_clock_seconds` fields for the Tier-2 /
+Current schema **`0.10.9-phase4.6`** (post-PR #297 Issue #287 PR A
+landed; 4 new `Metadata.*_wall_clock_seconds` fields for the Tier-2 /
 Form-4 / OSAP / Step-8 cross_source loops; paired with
 `compute-rankings.yml` `timeout-minutes: 150 → 195` + cache-restore
-canary step). Defense layer **33 declared boolean flags** (7 active
+canary step. Empirically validated on cron Run #71 / `368dccd9` at
+2026-05-28 08:44 UTC — all 4 fields populated correctly, total ~8.2
+min instrumented + warm-cache p50=0.0s). **In flight this PR**:
+Issue #288 follow-up — `cache-v4 → cache-v5` workflow cache-key
+bump (YAML-only) so the PR #292 GOOG/GOOGL per-class XBRL override
+actually fires on the next cron (currently bypassed by warm-cache
+replay of pre-PR-#292 parquet; surfaced by the PR #292 Rule 18
+disambiguator `multi_class_per_class_attempt_count = 0`). Defense layer **33 declared boolean flags** (7 active
 vetoes + 26 annotates + reserved slots; ~27 currently emit;
 `USE_SECTOR_COE = True` post-PR #294 flip). Plus 5 numerical guards
 + `manipulation_index` rollup. Latest release tag

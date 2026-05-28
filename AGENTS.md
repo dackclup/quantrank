@@ -393,13 +393,17 @@ note cross-tool-specific points only:
   scheduled 2026-08-19) · #137 (9arm-skills license clarification,
   deadline 2026-06-17) · #150 (Phase 2-3 epic, phases 2-3 remaining)
   · #287 (FORM4 revert + durable 5-loop timeout fix, blocks Phase
-  4.5e PR 5 cluster weight promotion — **PR A in flight this PR**:
+  4.5e PR 5 cluster weight promotion — **PR A merged via PR #297**:
   `timeout-minutes: 150 → 195` + cache-restore canary + 4 new
-  `Metadata.*_wall_clock_seconds` fields; PR B = FORM4 revert, gated
-  on ≥ 1 cron < 195m green) · #288 (GOOG/GOOGL per-class
-  XBRL override silently bypassed since PR #269) · #289 (NVR DQIC
-  ceiling false positive, methodology-scientist Mode B verdict
-  pending).
+  `Metadata.*_wall_clock_seconds` fields, empirically validated on
+  cron Run #71; PR B = FORM4 revert, gated on ≥ 1 cron < 195m green)
+  · #288 (GOOG/GOOGL per-class XBRL override silently bypassed since
+  PR #269 — **fix in flight this PR**: cache-key bump `cache-v4 →
+  cache-v5` so PR #292 Branch 3 actually fires on next cron; the
+  override code is correct, warm-cache replay was short-circuiting
+  it) · #289 (NVR DQIC ceiling false positive, **closed by PR #293**
+  Site-2 retirement per methodology-scientist Mode B Option C
+  verdict; NVR fair_price section now renders correctly).
 - **`.md` optimization sequence** (Option D — multi-PR overhaul):
   PR A drift fix #141 ✅ · PR B CLAUDE.md token diet #142 ✅ ·
   PR C AGENTS.md sync + dedup #143 ✅ · PR D WORKFLOW.md archive

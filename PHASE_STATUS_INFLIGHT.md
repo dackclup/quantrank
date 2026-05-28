@@ -2598,3 +2598,57 @@ accumulation — this PR is the pre-req that lets the cron actually
 populate the gate-data.
 
 ---
+
+## PR (this PR) — Issue #288 follow-up: cache-key bump `cache-v4 → cache-v5` (in flight, 2026-05-28)
+
+One-line YAML fix closing the silent-failure gap surfaced by Issue #287 PR A's Rule 18 instrumentation on cron Run #71 (`368dccd9`, 2026-05-28 08:44 UTC). Post-cron audit (`defense-layer-auditor` + `stock-detail-auditor` + `edgar-debugger` chain) confirmed:
+
+**Root cause** (per `edgar-debugger` 2026-05-28 session):
+- PR #292 (`e9aaab31`, merged 04:22 UTC) landed the GOOG/GOOGL per-class XBRL share-override at `compute/ingest/fundamentals.py:1043-1067` (Branch 3 of `_build_snapshot`)
+- Branch 3 only executes on live EDGAR fetch — `fetch_fundamentals` short-circuits at `_is_fresh()` (line 1292-1294) when cached parquet age by `latest_filed_date` < `FUNDAMENTALS_REFETCH_DAYS = 45`
+- Earlier cron `0ad1d574` (03:22 UTC, pre-PR-#292) wrote the stale parquet (GOOG `shares_outstanding = 12.116B` aggregate)
+- Cron Run #71 (08:44 UTC, post-PR-#292) restored that parquet from the GitHub Actions cache, `_is_fresh()` returned True on `latest_filed_date = 2026-04-30` (28d < 45d), and Branch 3 never ran
+- `metadata.multi_class_per_class_attempt_count = 0` (PR #292's Rule 18 disambiguator working perfectly — the signal that confirmed the bypass)
+
+**Smoking gun**: `metadata.fundamentals_latency_p50_seconds = 0.0` (warm cache replayed for nearly every ticker) + GOOG/GOOGL still at $4.66T/$4.71T (should be $2.09T/$2.59T per-class).
+
+**Fix scope (1 file, YAML-only)**:
+
+- **`.github/workflows/compute-rankings.yml`** line 129/131/132 — `cache-v4-` → `cache-v5-` (key + 2 restore-keys). Comment block at lines 105-126 expanded to:
+  - Cite Issue #288 follow-up + PR #292 + PR #269 anchor PRs
+  - Document the `_is_fresh()` short-circuit + Branch 3 placement gap
+  - Introduce a 2-trigger bump taxonomy (schema change OR value-correctness fix in live-fetch-only path)
+  - Pin the next bump (v5 → v6) trigger conditions
+
+**Why Option A (cache-key bump) over B (targeted invalidation) or C (refactor override out of fetch path)** per `edgar-debugger` verdict:
+- Option B: introduces cache-layer-knows-multi-class semantics + chicken-and-egg "detect stale aggregate from cached parquet" condition
+- Option C: cache hit triggering live SEC call violates cache semantics + `FundamentalsSnapshot` is frozen
+- Option A: matches PR 4c.1 v3→v4 precedent exactly + zero compute/ change + guaranteed correctness on next cron
+
+**One-time cost**: ~25-50 min cold-cache cron on the immediately-following weekly run (full S&P 500 universe live re-fetch). Subsequent crons return to warm-cache ~5-10 min budget. No `timeout-minutes` impact — PR #297 just bumped to 195m which absorbs cold-cache reality with headroom.
+
+**Verification (post-merge, on next cron Run #72)**:
+
+- `metadata.multi_class_per_class_attempt_count = 2` (was 0 — Branch 3 entered for GOOG + GOOGL)
+- `metadata.multi_class_per_class_override_count = 2` (Branch 3 succeeded for both)
+- `stocks/GOOG.json::raw_metrics.shares_outstanding ≈ 5.429B` (Class C, was 12.116B aggregate)
+- `stocks/GOOGL.json::raw_metrics.shares_outstanding ≈ 5.822B` (Class A, was 12.116B aggregate)
+- `stocks/GOOG.json::raw_metrics.market_cap ≈ $2.09T` (was $4.66T)
+- `stocks/GOOGL.json::raw_metrics.market_cap ≈ $2.59T` (was $4.71T)
+- `metadata.fundamentals_latency_p50_seconds > 0.0` (live fetch path active on cold restore)
+
+**Adjacent findings deferred** (not in this PR):
+
+- **FOX / FOXA / NWS / NWSA**: same `multi_class_aggregate_shares_suspected` annotate firing, but they are on `MULTI_CLASS_SHARE_ALLOWLIST` (UNDERCOUNT path, PR #257) NOT `MULTI_CLASS_OVERCOUNT_ALLOWLIST`. The annotate firing IS protective behavior. Decision on whether to add to overcount allowlist deferred to Q3 2026-08-19 quarterly cohort audit per methodology-scientist precedent (needs live XBRL probe).
+- **OSAP wall-clock 347.1s on Run #71**: cold OSAP download (cache > 31d mtime or evicted). Single observation; not a regression. Watch on next 2-3 crons for performance-engineer attention if pattern recurs.
+
+**Hard constraints honored**:
+- No compute / scoring / schema / valuation / Rule 16 / Top-5 invariant touched
+- No new defense flag · No new dep · No new env-var
+- YAML-only diff (workflow file + docs)
+- Schema version UNCHANGED at `0.10.9-phase4.6` (no Pydantic / TS / snapshot change)
+- AGENTS.md substance untouched (CLAUDE.md = SoT for §Phase status; this PR's substance lands in CLAUDE.md §Gotchas as a follow-up note to the "Cron-#3 silent-failure gap" entry + Phase status pointer mention)
+
+PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" lockstep per PR #237 convention. Closes the GOOG/GOOGL display-only bug that was opened by PR #292's incomplete coverage (the fix code was correct; just never reached due to cache-replay path).
+
+---
