@@ -95,7 +95,7 @@
 
 1. **Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — after ≥ 1 cron's `form4_rule10b5_one_excluded_count` lands and the `-30%` to `-45%` firing-rate delta confirms the Aboody et al. 2010 §3.2 midpoint; vesting-residual risk still argues against full 10.0 restoration
 2. **Issue #67 sector-CoE flip PR** — `config.USE_SECTOR_COE = True` after ≥ 1 cron confirms `value_trap_risk` delta-count (target: ~176 → ~80-110); data-collection merged via PR #204
-3. **v1.3.0 release tag** — all LedgerCraft reskin PRs (A1-A3 + B1-B4) are merged; tag blocked only on this doc-refresh + release-captain ladder
+3. **v1.5.0 release tag (next)** — gated on Phase 4.5e PR 5 cluster weight promotion (item 1) + Issue #67 sector-CoE flip (item 2) landing post-cron; or cut a `v1.4.x` patch sooner if a structural fix lands on its own
 4. **Phase 4i.1 / 4j.1 / 4k.1 — Factor integrations** (JKP / Qlib / IPCA; ~1-2w each → `v1.1.0-phase4`); 4i.1 license-review-required per #115
 5. **Phase 5 — ML meta-learner** (~10-12w); also unblocks PR 4b §3 IC-decay writer (#75)
 

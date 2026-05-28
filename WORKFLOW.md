@@ -727,7 +727,7 @@ in parallel (disjoint code paths).
 - [x] Weekly compute time stays under 150m — cron #3 (2026-05-23) verified warm-cache ✅
 - [x] `manipulation_index` populated for ≥ 95% of universe ✅ (100% on cron #3)
 - [x] **4.5e-specific**: Reserved-slot weights `INSIDER_SELL_CLUSTER_WEIGHT_RESERVED` / `C_SUITE_UNUSUAL_SELL_WEIGHT_RESERVED` uncommented and active in `FLAG_WEIGHTS` at 5.0 / 3.0 (PR #222). Supabase deferred — Form 4 cache uses local per-ticker SEC EDGAR cache instead of Supabase cross-run state; Supabase reserved for Phase 5+.
-- [x] Tag `v1.2.0-phase4.5` ✅ — cut 2026-05-17 at `6d414a9b`. v1.3.0 target pending release-captain ladder (LedgerCraft A-B series + this doc-refresh).
+- [x] Tag `v1.2.0-phase4.5` ✅ — cut 2026-05-17 at `6d414a9b`. v1.3.0-phase4.5e shipped 2026-05-26 at `5db3b978` (Form-4 cluster + LedgerCraft frontend); v1.4.0-phase4.6 shipped 2026-05-27 at `bbca9cac` (honest re-validation harness).
 
 ---
 
