@@ -2682,3 +2682,61 @@ Bodies preserved (historical record). CLAUDE.md §Phase status pointer updated t
 PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" lockstep per PR #237 convention. The drain pattern itself is the same template used in PR #286 (post-v1.4.0 cycle) — keeping the side-file disciplined as the project pattern.
 
 ---
+
+## PR (this PR) — End-of-day 2026-05-28 comprehensive .md sweep: fix 8 MUST-FIX + 6 SHOULD-FIX drifts across 6 canonical docs (in flight, 2026-05-28)
+
+Comprehensive `.md` housekeeping closing the 11-PR session day. Output of `docs-reviewer` (sonnet) full Tier 1 + Tier 2 audit on `main` (post-PR-#299) — verdict **NEEDS-CROSS-REF-FIX** with 14 prioritized findings.
+
+**Scope (6 canonical docs)**:
+
+- **`SKILL.md`** — schema-version history table at line 240 prepended with 2 new rows: `0.10.9-phase4.6` (PR #297 — 4 `*_wall_clock_seconds` fields + 195m timeout + cache canary, empirically validated cron Run #71) + `0.10.10-phase4.6` (PR #300 in flight — Issue #67 follow-up per-sector delta). Closes the gap where PR #297 + PR #300 schema bumps were absent from the canonical history.
+
+- **`PHASE_STATUS.md`** §Current state — schema row `0.10.8 → 0.10.9` + PR #300 in-flight note; Post-tag production patches row expanded with PR #295/#296/#297/#298/#299; Production run pointer `0ad1d574` cron #69 → `368dccd9` cron Run #71 with the PR #297 wall-clock empirical numbers + Issue #288 cache-replay smoking-gun. Recently merged block extended 6 PRs → 11 PRs. Issue closure status: #287 (PR A merged, PR B gated) · #288 (closed via #292 + #298) · #289 (closed via #293). Next deliverables refreshed: Issue #67 flip removed (PR #294 already executed); item 2 now = Issue #287 PR B FORM4 revert; PR #300 per-sector delta added as item 3.
+
+- **`CLAUDE.md`** §Phase status — Recently merged block extended 6 → 11 PRs with full SHA + one-liner per PR. New "In flight" sub-section added for PR #300.
+
+- **`AGENTS.md`** §Phase + version state — Production-verified run cron #69 (`233117ac`, 13m 16s) → cron Run #71 (`368dccd9`, 14m 32s, 2026-05-28 08:44 UTC, schema `0.10.7 → 0.10.9-phase4.6`); 4 new wall-clock field values cited (`tier2=10.6s`, `form4=null`, `osap=347.1s`, `cross_source=133.2s`); Issue #288 cache-replay smoking gun captured; closed-issue note for #288 + #289 + #287 PR A.
+
+- **`CONTEXT.md`** §Live snapshot — schema `0.10.8 → 0.10.9` + PR #300 in-flight note; new "Post-tag patches" row listing PRs #292-#299 + PR #300 in flight; cron status cron #69 2026-05-27 → Run #71 2026-05-28; Sector-CoE row updated with empirical 132 → 109 figure; §Roadmap Stage 0 description refreshed: "Cron #70 confirmation + Issue #287 closure" → "Issue #287 PR B FORM4 revert (single-line, gated on cron < 195m + form4 wall-clock populated) · PR #300 merge confirmation".
+
+- **`WORKFLOW.md`** §Agentic 6-Phase Cadence session-start protocol — inline schema `0.10.7-phase4.6` replaced with current `0.10.9-phase4.6` + pointer guidance to PHASE_STATUS.md §Current state as the canonical bump-per-schema-PR target (closes the recurring inline-schema drift pattern).
+
+**3 NICE-TO-FIX items deferred** (per docs-reviewer recommendation):
+
+1. README.md Honest Limitations section does not yet reference the Phase 4.6 honest re-validation harness (PR #283 Hou-Xue-Zhang 2020 survivorship-bias fix + McLean-Pontiff 2016 32% decay banner). Coverage gap, not a cross-reference break. Defer to a follow-up README polish PR.
+2. WORKFLOW.md Phase 4.5 row at line 83 cites `v1.2.0` tag; Phase 4.5e ladder technically closed at `v1.3.0-phase4.5e`. Historical-context only — no session confusion risk.
+3. METHODOLOGY.md `USE_SECTOR_COE` framing may still say "future flip" pending; needs Read confirmation before edit. Defer to follow-up methodology pass.
+
+**docs-reviewer Lockstep summary cross-check after this PR**:
+
+- `SCHEMA_VERSION`: ALIGNED across CLAUDE.md / PHASE_STATUS.md / SKILL.md / CONTEXT.md / WORKFLOW.md / AGENTS.md at `0.10.9-phase4.6` (main) with PR #300 in-flight note where applicable
+- Defense layer `33 declared`: ALIGNED (was already)
+- `USE_SECTOR_COE = True` post-PR #294: ALIGNED (was stale in AGENTS.md issue #67 framing + PHASE_STATUS.md Next deliverables — both fixed)
+- Subagent count 18: ALIGNED (was already)
+- Skill count 45: ALIGNED (was already)
+- Latest cron Run #71 `368dccd9`: ALIGNED (was stale in AGENTS.md + PHASE_STATUS.md + CONTEXT.md — all fixed)
+- Issue #288 + #289 closure status: ALIGNED (was stale as open in AGENTS.md + PHASE_STATUS.md — both fixed)
+
+**Scope (7 files, doc-only)**:
+
+- `SKILL.md` · `PHASE_STATUS.md` · `CLAUDE.md` · `AGENTS.md` · `CONTEXT.md` · `WORKFLOW.md` — substance updates per punch list
+- `PHASE_STATUS_INFLIGHT.md` — this entry appended per PR #237 side-file convention
+
+**Hard constraints honored**:
+
+- No code / scoring / schema / valuation / Rule 16 / Top-5 invariant touched
+- No new defense flag · No new dep · No new env-var
+- Markdown-only diff (no JSON / YAML / Python / TS change)
+- Schema version UNCHANGED on `main` at `0.10.9-phase4.6` (PR #300 will bump 0.10.10 on its merge)
+- AGENTS.md substance lockstep with CLAUDE.md per the established delegation pattern
+
+**Verification ladder**:
+
+- `ruff check .` — N/A (no Python touched)
+- `python -m compute.output.schema_check` — N/A (no schema touched; passes trivially)
+- `pytest tests/ -m "not network"` — N/A (no test surface)
+- `grep` cross-reference check — all 7 anchor strings (schema version / cron pointer / `USE_SECTOR_COE` / 18 / 45 / 33 / `v1.4.0-phase4.6`) consistent across all 6 docs after fix
+
+PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" lockstep per PR #237 convention. Doc-only PR; closes the comprehensive cross-doc drift surface tracked by `docs-reviewer` 2026-05-28 audit.
+
+---

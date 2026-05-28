@@ -374,16 +374,26 @@ list lives in [`CLAUDE.md`](CLAUDE.md) §Phase status. Schema-version
 history table is in [`SKILL.md`](SKILL.md). This file's role is to
 note cross-tool-specific points only:
 
-- Production-verified run: cron #69 (`233117ac`, 13m 16s warm-cache,
-  2026-05-28) — useful for non-Claude agents validating local compute
-  output against a known-good baseline. Verified by `defense-layer-
-  auditor` Section A-J + `stock-detail-auditor` deterministic prefilter
-  on schema `0.10.7-phase4.6`; 7 active vetoes firing as expected (NVDA
-  rank 1 correctly suppressed by `beneish_manipulation_veto`); Rule 16
-  Top-5 rotation invariant holds with PPG carrying the `entered_top5`
-  badge. Known follow-ups: issue #288 (GOOG/GOOGL display market_cap
-  2.2× inflated; composite unaffected), issue #289 (NVR DQIC ceiling
-  false positive; `/stock/NVR` renders empty fair-price section).
+- Production-verified run: cron **Run #71** (`368dccd9`, 14m 32s
+  warm-cache, 2026-05-28 08:44 UTC) — useful for non-Claude agents
+  validating local compute output against a known-good baseline.
+  Verified by `defense-layer-auditor` Section A-L + `stock-detail-
+  auditor` deterministic prefilter on schema `0.10.9-phase4.6`; 7
+  active vetoes firing as expected (NVDA rank 1 correctly suppressed
+  by `beneish_manipulation_veto` + `sloan_accruals_top_decile`);
+  Rule 16 Top-5 rotation invariant holds with PPG carrying the
+  `entered_top5` badge. PR #297 4 new `Metadata.*_wall_clock_seconds`
+  fields populated correctly (`tier2=10.6s`, `form4=null` per
+  FORM4_FETCH_SKIP, `osap=347.1s`, `cross_source=133.2s`); PR #294
+  sector-CoE flip empirically validated (`value_trap_risk` 132 → 109,
+  −23 tickers, −17.4%); PR #293 NVR fair_price section renders
+  correctly. **Closed same-day issues**: #288 (PR #292 + PR #298
+  cache-v5 follow-up; smoking gun `multi_class_per_class_attempt_count=0`
+  + `fundamentals_latency_p50_seconds=0.0` confirmed cache-replay
+  bypass; fix will land on cron Run #72 with fresh fetch) · #289
+  (PR #293 Site-2 retirement). Known follow-up: Issue #287 PR B
+  (FORM4 revert, gated on ≥ 1 cron < 195m green; PR #297 ceiling
+  bump active).
 - Open Phase 4+ issues: #15 (SEC throttling) · #41 (Next 14→16 CVE
   bump; 15 advisories open, all zero-exploitability on static-export
   deployment) · #67 (sector-CoE flip-PR; data-collection landed

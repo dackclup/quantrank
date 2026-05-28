@@ -17,25 +17,33 @@
 
 | Field | Value |
 |---|---|
-| Schema | **`0.10.8-phase4.6`** (PR #292 PATCH bump 2026-05-28 — Rule 18 disambiguator `Metadata.multi_class_per_class_attempt_count` for the GOOG/GOOGL XBRL concept-name omission fix; supersedes `0.10.7-phase4.6` PR #283 release) |
+| Schema | **`0.10.9-phase4.6`** (PR #297 PATCH bump 2026-05-28 — 4 new `Metadata.*_wall_clock_seconds` fields for Tier-2 / Form-4 / OSAP / Step-8 cross_source loops; paired with `compute-rankings.yml` `timeout-minutes: 150 → 195` + cache-restore canary; empirically validated on cron Run #71 / `368dccd9`. Supersedes `0.10.8-phase4.6` PR #292.) **In flight on PR #300**: `0.10.10-phase4.6` — Issue #67 follow-up `Metadata.value_trap_risk_delta_by_sector` per methodology-scientist Q2 verdict |
 | Defense layer | **33 declared boolean flags** (7 active vetoes + 26 annotates + reserved slots; ~27 currently emit; `USE_SECTOR_COE = True` post-PR #294 flip) · plus 5 numerical guards + `manipulation_index` rollup |
 | Active vetoes | **7** — `altman_distress` · `sloan_accruals_top_decile` · `net_issuance_top_decile` · `non_reliance_filing` · `beneish_manipulation_veto` · `dechow_manipulation_veto` · `data_quality_input_corruption` |
 | Latest release tag | [**`v1.4.0-phase4.6`**](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6) — 2026-05-27 at `bbca9cac` (Phase 4.6 honest re-validation harness) |
-| Post-tag production patches | PR #292 (`e9aaab31`, schema `0.10.7 → 0.10.8-phase4.6`, GOOG/GOOGL XBRL fix) · PR #293 (`95e638bf`, Site-2 DQIC retirement, NVR FP) · PR #294 (`0ddb6b81`, sector-CoE flip `USE_SECTOR_COE = True`, Issue #67 closure) |
+| Post-tag production patches | PR #292 (`e9aaab31`, schema `0.10.7 → 0.10.8-phase4.6`, GOOG/GOOGL XBRL fix) · PR #293 (`95e638bf`, Site-2 DQIC retirement, NVR FP) · PR #294 (`0ddb6b81`, sector-CoE flip `USE_SECTOR_COE = True`, Issue #67 closure) · PR #295 (`2d2ec83e`, post-session housekeeping drain 6 INFLIGHT + pointer bumps) · PR #296 (`e85dfbcf`, add root CONTEXT.md pointer + reconcile `docs/agents/domain.md`) · PR #297 (`ecb60e64`, schema `0.10.8 → 0.10.9-phase4.6`, Issue #287 PR A durable timeout + 4 `*_wall_clock_seconds` fields) · PR #298 (`030675e9`, cache-key `v4 → v5` to flush stale parquet so PR #292 GOOG/GOOGL fix actually fires; closes Issue #288 silent-failure gap) · PR #299 (`3ec4b29e`, end-of-day INFLIGHT drain of #295/#297/#298) |
 | Prior release tag | [**`v1.3.0-phase4.5e`**](https://github.com/dackclup/quantrank/releases/tag/v1.3.0-phase4.5e) — 2026-05-26 at `5db3b978` (Phase 4.5e Form-4 cluster + LedgerCraft reskin; defense layer headline 32 → 33) |
-| Production run | `0ad1d574` (2026-05-28 cron #69, post-PR #290 main HEAD; sector-CoE flip + #292 + #293 land in cron #70 Mon-Fri 22:00 UTC) |
+| Production run | `368dccd9` (2026-05-28 cron Run #71, 14m 32s warm cache, post-PR #298 cache-v5 bump; empirically validated PR #297 wall-clock fields — `tier2_wc=10.6s`, `form4_wc=null` per FORM4_FETCH_SKIP, `osap_wc=347.1s`, `cross_source_wc=133.2s`. Smoking gun for Issue #288 cache-replay bypass: `multi_class_per_class_attempt_count=0` + `fundamentals_latency_p50_seconds=0.0`) |
 | Universe | 502 stocks (S&P 500 minus 1 delisting) |
 | Skill inventory | **45** invocation-triggerable + phase planning docs |
 | Subagent inventory | **18** project-specific in 4 tiers: **Tier 1 Core** (`quantrank-reviewer` · `schema-sentinel` · `defense-layer-auditor` · `edgar-debugger` · `stock-detail-auditor`) · **Tier 2 Lifecycle** (`security-reviewer` · `frontend-design-reviewer` · `vercel-preview-auditor` · `release-captain` · `phase-coordinator`) · **Tier 3 Specialized** (`test-engineer` · `methodology-scientist` · `literature-searcher` · `performance-engineer` · `dependency-auditor`) · **Tier 4 Operations** (`docs-reviewer` · `ci-triage-engineer` · `incident-commander`) |
 
-**Recently merged** (PR #286 → PR #294, 2026-05-28; 6 PRs landed same day post-v1.4.0 release):
+**Recently merged** (PR #286 → PR #299, 2026-05-28; **11 PRs landed same day post-v1.4.0 release**):
+- PR #299 `3ec4b29e` — chore(docs): end-of-day housekeeping — drain 3 INFLIGHT markers + bump pointers (drains PR #295/#297/#298)
+- PR #298 `030675e9` — fix(ci): Issue #288 follow-up — bump workflow cache key `cache-v4 → cache-v5` (closes the GOOG/GOOGL silent-failure gap; PR #292 Branch 3 fix code was correct but warm-cache replay short-circuited it; surfaced by PR #297 Rule 18 disambiguator)
+- PR #297 `ecb60e64` — feat(perf): Issue #287 PR A — durable timeout + per-loop wall-clocks (schema `0.10.8 → 0.10.9-phase4.6`; `compute-rankings.yml` `timeout-minutes: 150 → 195` + cache-restore canary step; 4 new `Metadata.*_wall_clock_seconds` fields with 4 distinct defensive patterns; pre-push 3-reviewer gate green)
+- PR #296 `e85dfbcf` — docs(context): add root `CONTEXT.md` pointer + reconcile `docs/agents/domain.md` (single-file orientation bridge for upstream tools expecting CONTEXT.md; multi-file analog remains canonical)
+- PR #295 `2d2ec83e` — chore(docs): post-session-housekeeping — drain 6 INFLIGHT markers + bump pointers
 - PR #294 `0ddb6b81` — feat(valuation): Issue #67 — flip `USE_SECTOR_COE = True` (Damodaran 2019 Ch. 8.4 11-sector Ke; methodology-scientist Mode B APPROVED; `value_trap_risk` 132 → 109 cohort drop, within target [80, 110] band)
 - PR #293 `95e638bf` — fix(valuation): Issue #289 — retire Site-2 DQIC ceiling (NVR FP; methodology-scientist Option C; Site-1 + Defense #4 `extreme_*_estimate` + Issue #177 Huber-breakdown layer cover the remaining corruption + breakdown cases)
 - PR #292 `e9aaab31` — fix(ingest): Issue #288 — GOOG/GOOGL XBRL concept-name omission (`market_cap` 2.2× inflated since PR #269; schema `0.10.7 → 0.10.8-phase4.6` for Rule 18 disambiguator)
 - PR #291 `cb9114bb` — docs(agents): AGENTS.md substance refresh (production-verified run pointer cron #51 → cron #69; open-issues list 4 → 11 entries)
 - PR #290 `dea8e3ad` — chore(cleanup): post-cron-#69 — BK orphan removal + 3 doc drifts (security-reviewer W1+W2 + edgartools 2.30 → 5.31)
 - PR #286 `27361047` — chore(docs): housekeeping PR-B — drain INFLIGHT + bump pointers post-v1.4.0
-- (3 issues filed: #287 FORM4 revert + durable 5-loop timeout · #288 GOOG/GOOGL XBRL · #289 NVR DQIC; 4 comments posted on #41/#115/#130/#137)
+- (3 issues filed: #287 FORM4 revert + durable 5-loop timeout · #288 GOOG/GOOGL XBRL · #289 NVR DQIC; all closed same day via PR #297 / #298 / #292 / #293)
+
+**In flight** (not yet merged on `main`):
+- PR #300 — feat(scoring): Issue #67 follow-up — per-sector `value_trap_risk` delta instrumentation (schema `0.10.9 → 0.10.10-phase4.6`; new `Metadata.value_trap_risk_delta_by_sector: dict[str, int] | None`; methodology-scientist Mode B Q2 deferred from PR #294; sets up Q3 2026-08-19 cohort audit shape evidence)
 
 **Earlier** (PR #264 → PR #285, 2026-05-26 → 2026-05-27):
 - PR #285 `8f373758` — docs(release): codify mobile-only operator convention for tag releases (CLAUDE.md §Gotchas + release-tag SKILL.md + release-captain agent)
@@ -103,13 +111,14 @@
 
 **Next deliverables** (parallelizable, pick by appetite):
 
-1. **Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — after ≥ 1 cron's `form4_rule10b5_one_excluded_count` lands and the `-30%` to `-45%` firing-rate delta confirms the Aboody et al. 2010 §3.2 midpoint; vesting-residual risk still argues against full 10.0 restoration
-2. **Issue #67 sector-CoE flip PR** — `config.USE_SECTOR_COE = True` after ≥ 1 cron confirms `value_trap_risk` delta-count (target: ~176 → ~80-110); data-collection merged via PR #204
-3. **v1.5.0 release tag (next)** — gated on Phase 4.5e PR 5 cluster weight promotion (item 1) + Issue #67 sector-CoE flip (item 2) landing post-cron; or cut a `v1.4.x` patch sooner if a structural fix lands on its own
-4. **Phase 4i.1 / 4j.1 / 4k.1 — Factor integrations** (JKP / Qlib / IPCA; ~1-2w each → `v1.1.0-phase4`); 4i.1 license-review-required per #115
-5. **Phase 5 — ML meta-learner** (~10-12w); also unblocks PR 4b §3 IC-decay writer (#75)
+1. **Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — after Issue #287 PR B (FORM4 revert) merges + ≥ 1 cron's `form4_rule10b5_one_excluded_count` lands and the `-30%` to `-45%` firing-rate delta confirms the Aboody et al. 2010 §3.2 midpoint; vesting-residual risk still argues against full 10.0 restoration
+2. **Issue #287 PR B — FORM4 revert** — single-line revert of `FORM4_FETCH_SKIP=1` from `.github/workflows/compute-rankings.yml` env block, gated on ≥ 1 cron < 195m green with `form4_wall_clock_seconds` populated (PR #297's 195m timeout + canary now active; cron Run #71 confirmed 14m 32s warm cache leaves ample headroom). Unblocks PR 5 cluster weight gate-data accumulation for Q3 cohort audit
+3. **Issue #67 follow-up PR #300** (in flight) — per-sector `value_trap_risk` delta instrumentation; methodology-scientist Q2 deferred from PR #294; populates per-sector breakdown of the 132 → 109 aggregate drop on cron Run #72+ for Damodaran shape verification
+4. **v1.5.0 release tag (next)** — gated on Phase 4.5e PR 5 cluster weight promotion (item 1) + Issue #287 PR B (item 2) landing + ≥ 4 weekly crons of post-flip / post-revert data accumulating ahead of Q3 2026-08-19 cohort audit; or cut a `v1.4.x` patch sooner if a structural fix lands on its own
+5. **Phase 4i.1 / 4j.1 / 4k.1 — Factor integrations** (JKP / Qlib / IPCA; ~1-2w each → `v1.1.0-phase4`); 4i.1 license-review-required per #115
+6. **Phase 5 — ML meta-learner** (~10-12w); also unblocks PR 4b §3 IC-decay writer (#75)
 
-**Open issues**: #15 (fundamentals throttling) · #16 (going-concern negation-lookbehind — FP rate 1.0% in band, mechanism not yet code-confirmed) · #41 (Next.js 14 → 16 CVEs, 15 open `next@14.x` advisories — zero exploitability on static-export) · #67 (sector-CoE flip, data-collection merged PR #204) · #75 (PR 4b §3 IC-decay, Phase-5-blocked) · #115 (JKP license review) · #130 (quarterly cohort-threshold review, next 2026-08-19) · #137 (9arm-skills license clarification, 4-week deadline from 2026-05-20) · #150 (Phase 2-3 epic, phases 2-3 remaining)
+**Open issues** (as of post-PR-#299, with PR #300 in flight): #15 (fundamentals throttling) · #16 (going-concern negation-lookbehind — FP rate 1.0% in band, mechanism not yet code-confirmed) · #41 (Next.js 14 → 16 CVEs, 15 open `next@14.x` advisories — zero exploitability on static-export) · #67 (sector-CoE flipped via PR #294; per-sector delta follow-up in flight via PR #300) · #75 (PR 4b §3 IC-decay, Phase-5-blocked) · #115 (JKP license review, blocks Phase 4i.1) · #130 (quarterly cohort-threshold review, next 2026-08-19) · #137 (9arm-skills license clarification, deadline 2026-06-17) · #150 (Phase 2-3 epic, phases 2-3 remaining) · #287 (PR A merged via PR #297; PR B FORM4 revert gated on ≥ 1 cron < 195m green). **Closed same day 2026-05-28**: #288 (PR #292 + PR #298 cache-v5 follow-up) · #289 (PR #293 Site-2 DQIC retirement).
 
 ---
 
