@@ -2849,3 +2849,100 @@ The `hasattr` check catches BOTH direct re-add AND import re-add. Failure messag
 **Closes the PR #293 retirement contract**: "follow-up PR removes them after ≥ 1 cron of clean operation confirms no regression" — cron Run #71 was the empirical confirm cycle.
 
 ---
+
+## PR #303 — Phase 4.5e PR 6: Form-4 10b5-1 negation guard (residual footgun #1) (in flight, 2026-05-28)
+
+Closes the long-standing residual of footgun #1 from
+`compute/scoring/form4_signals.py` module docstring + the PR 4-eq Mode B
+verdict (2026-05-23, "Q3 2026-08-19 cohort audit gates whether to
+harden ``detect_10b5_1_plan`` with a negation guard against FP matches
+on phrases like '10b5-1 plan terminated'"). PR 6 implements the
+engineering of the pre-approved mitigation: a post-detector wrapper on
+`edgar.ownership.core.detect_10b5_1_plan` that downgrades a `True`
+detection to `False` when the resolved footnote text contains a
+negation phrase within ±5 word tokens of the 10b5-1 mention.
+
+**Architecture** — post-detector wrapper:
+
+- `compute/scoring/form4_insider.py` gains
+  `_NEGATION_PATTERNS: Final[frozenset[str]]` (11 tokens — `terminated`,
+  `cancelled`, `canceled`, `expired`, `rescinded`, `discontinued`, `no`,
+  `not in effect`, `previously`, `former`, `without`) +
+  `_NEGATION_REGEX: Final[re.Pattern[str]]` (compiled bidirectional
+  regex; case-insensitive, accepts both `10b5-1` and `10b-5-1`
+  spellings; ±5 word-token window before AND after the mention) +
+  `_has_negation(text: str) -> bool` helper.
+- `_detect_10b5_1_on_transaction` now wraps the upstream detector call:
+  detector returns True → check `_has_negation(resolved_text)` → on
+  match return False and `_bump_negation_downgrade_count()`; detector
+  returns False or None → pass through unchanged. The guard never
+  fabricates a positive signal (only downgrades True → False).
+
+**Rule 18 observability surface** —
+`Metadata.form4_negation_guard_downgrade_count: int | None` ships in
+the same PR. Counter is module-level + thread-safe (`threading.Lock`
+around an int) so the `EDGAR_MAX_WORKERS=8` parallel form-4 fetch loop
+in `compute/main.py` can accumulate downgrades across workers without
+race. `compute/main.py` calls
+`form4_insider.reset_negation_downgrade_count()` immediately before
+the `ThreadPoolExecutor` block and
+`form4_insider.get_negation_downgrade_count()` on the success path
+(success-path `int`; outer-try-failure or `FORM4_FETCH_SKIP=1` →
+`None`, mirroring `form4_wall_clock_seconds` semantics).
+
+**Schema bump** `0.10.10 → 0.10.11-phase4.6` (PATCH — additive
+Metadata field only). Triple touched:
+- Pydantic: `compute/output/schemas.py:Metadata.form4_negation_guard_downgrade_count`
+- TypeScript: `frontend/lib/types.ts:Metadata.form4_negation_guard_downgrade_count`
+- Snapshot: `frontend/lib/schema-snapshot.json` regenerated via
+  `python -m compute.output.schema_check --update-snapshot`; verified
+  clean.
+
+**Methodology gate** — SKIPPED per pre-approval. PR 4-eq Mode B
+verdict 2026-05-23 documented in `form4_signals.py` footgun §1:
+"Q3 2026-08-19 cohort audit gates whether to (a) promote
+``INSIDER_SELL_CLUSTER_WEIGHT`` ... and (b) harden
+``detect_10b5_1_plan`` with a negation guard against FP matches on
+phrases like '10b5-1 plan terminated'". PR 6 = pure engineering of
+the approved mitigation. The Q3 audit reads
+`form4_negation_guard_downgrade_count` from the surfaced metadata,
+no fresh methodology consultation needed.
+
+**Expected delta firing-rate** (per Cohen 2008 §III routine-vs-
+opportunistic + Jagolinzer 2009 §3.2 high-information regime):
+`insider_sell_cluster` `+5% to +10% relative` on a universe-baseline
+cron (absolute << 1%; most 10b5-1 disclosures are affirmative, not
+negated). `c_suite_unusual_sell` similar. The negation guard
+reverses the conservative bias direction noted in the original
+footgun caveat: pre-PR-6, terminated/former-plan footnotes caused
+over-exclusion of legitimate opportunistic trades from the cluster
+cohort; PR 6 returns those trades to the cohort, increasing cluster
+firing slightly toward ground truth.
+
+**Test surface** (`tests/test_scoring/test_form4_negation_guard.py`)
+— comprehensive: ~10-12 unit + 2 Hypothesis (idempotence +
+monotonicity) + 1 manifest pin + thread-safety stress + integration
+with `_detect_10b5_1_on_transaction` via mocked `footnotes_dict` and
+duck-typed `tx`. Written by `test-engineer` parallel-spawn (sonnet).
+`tests/test_config.py:test_schema_version_is_phase4_6` schema pin
+bumped `0.10.10 → 0.10.11-phase4.6` with PR 6 rationale docstring.
+
+**Footgun caveat preserved** in `form4_signals.py` module docstring
+§Footguns §1: residual ~10-15% routine-but-not-10b5-1 contamination
+per Jagolinzer 2009 (insiders without 10b5-1 plans but with 5y
+calendar-fixed trade timing) remains the deferred follow-up. Cohen
+2008 full routine-vs-opportunistic classifier needs the 5y per-
+insider lookback that the current 180d cache cannot satisfy without
+a structural change.
+
+**Sanity probe** (pre-test-engineer): 14-case matrix verified
+`_has_negation` returns expected True/False on all 14 positive +
+negative footnote-text examples; counter reset + bump cycle works.
+
+No composite-score change · No Rule 16 violation · Defense layer
+emit count unchanged at 33 declared boolean flags (PR 6 hardens an
+existing input filter; no new flag) · Cluster + C-suite weights
+UNCHANGED (5.0 / 3.0; promotion to 7.0 still gated on Q3 audit per
+PR 4-eq verdict).
+
+---

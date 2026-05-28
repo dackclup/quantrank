@@ -105,7 +105,11 @@ from compute.scoring.earnings_quality import (
     check_loss_avoidance_size_invariant,
 )
 from compute.scoring.eight_k_events import get_non_reliance_filing_dates
-from compute.scoring.form4_insider import fetch_recent_form4
+from compute.scoring.form4_insider import (
+    fetch_recent_form4,
+    get_negation_downgrade_count,
+    reset_negation_downgrade_count,
+)
 from compute.scoring.form4_signals import (
     count_10b5_1_filtered_transactions,
     detect_c_suite_unusual_sell,
@@ -852,6 +856,16 @@ def run_weekly_compute() -> int:
     # rounded float seconds on the happy path.
     form4_wall_clock_seconds: float | None = None
     _form4_wc_start: float | None = None
+    # PR 6 (residual footgun #1 from PR 4-eq) — count of True → False
+    # downgrades applied by the post-detector negation guard during cache
+    # build (e.g. "10b5-1 plan terminated 2022" + "no 10b5-1 plan in
+    # effect"). `None` semantics mirrors form4_wall_clock_seconds: None
+    # when FORM4_FETCH_SKIP=1 OR when the outer try/except fired. On the
+    # happy path the value is the integer count of downgrades across the
+    # universe-wide cache-build. Warm-cache runs report 0 (no detector
+    # ran this cron — cached `is_rule_10b5_one` is read as-is); cold-
+    # cache runs populate the real cohort number for Q3 cohort audit.
+    form4_negation_guard_downgrade_count: int | None = None
 
     # 2026-05-22 hotfix #3: env-var escape hatch for cold-cache CI
     # contexts (pre-merge-prod-sim). The Form-4 fetch is observability
@@ -929,6 +943,13 @@ def run_weekly_compute() -> int:
             # Issue #287 PR A — wall-clock start marker (inside else+try so
             # FORM4_FETCH_SKIP=1 leaves form4_wall_clock_seconds=None).
             _form4_wc_start = time.monotonic()
+            # PR 6 — reset the module-level negation-guard counter before
+            # the fetch loop begins. Counter accumulates True → False
+            # downgrades across all worker threads (thread-safe via
+            # ``_negation_lock`` inside form4_insider). Read after the
+            # ThreadPoolExecutor block completes and aliased to
+            # ``form4_negation_guard_downgrade_count`` for Metadata.
+            reset_negation_downgrade_count()
             with ThreadPoolExecutor(max_workers=config.EDGAR_MAX_WORKERS) as _f4_ex:
                 _f4_future_to_ticker = {
                     _f4_ex.submit(_fetch_one_form4, _t): _t for _t in _f4_tickers
@@ -955,13 +976,20 @@ def run_weekly_compute() -> int:
             form4_wall_clock_seconds = round(
                 time.monotonic() - _form4_wc_start, 1
             )
+            # PR 6 — read the negation-guard counter accumulated across
+            # all worker threads. Always populated on the happy path
+            # (zero is a valid value — warm-cache cron OR cold-cache cron
+            # with no negation-phrase footnotes in the universe).
+            form4_negation_guard_downgrade_count = get_negation_downgrade_count()
             logger.info(
-                "Form-4 fetch complete: %d ok, %d failures, p50=%.2fs p95=%.2fs, wall_clock=%ss",
+                "Form-4 fetch complete: %d ok, %d failures, p50=%.2fs p95=%.2fs, "
+                "wall_clock=%ss, negation_downgrades=%d",
                 len(form4_diagnostics) - len(form4_failures),
                 len(form4_failures),
                 float(np.median(form4_latencies)) if form4_latencies else 0.0,
                 float(np.percentile(form4_latencies, 95)) if form4_latencies else 0.0,
                 form4_wall_clock_seconds,
+                form4_negation_guard_downgrade_count,
             )
         except Exception as _f4_outer_e:  # noqa: BLE001
             logger.warning(
@@ -973,6 +1001,9 @@ def run_weekly_compute() -> int:
             form4_failures = []
             # Issue #287 PR A — leave form4_wall_clock_seconds = None on failure.
             form4_wall_clock_seconds = None
+            # PR 6 — leave negation-guard count = None on outer-try failure
+            # (mirrors form4_wall_clock_seconds semantics).
+            form4_negation_guard_downgrade_count = None
 
     # Step 4 — assemble TickerInputs and compute all pillars.
     inputs: dict[str, TickerInputs] = {}
@@ -2158,6 +2189,10 @@ def run_weekly_compute() -> int:
         form4_wall_clock_seconds=form4_wall_clock_seconds,
         osap_wall_clock_seconds=osap_wall_clock_seconds,
         cross_source_wall_clock_seconds=cross_source_wall_clock_seconds,
+        # PR 6 — negation-guard downgrade count (footgun #1 residual).
+        # Gates Q3 2026-08-19 cohort-acceptance check for INSIDER_SELL_CLUSTER_WEIGHT
+        # 5.0 → 7.0 promotion alongside form4_rule10b5_one_excluded_count.
+        form4_negation_guard_downgrade_count=form4_negation_guard_downgrade_count,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)

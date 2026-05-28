@@ -129,10 +129,24 @@ FP caveat: ``detect_10b5_1_plan`` is a substring match on the
 pattern list ``["10b5-1", "10b-5-1", "rule 10b5", "rule 10b-5",
 "10b5 plan", "10b-5 plan"]``. Negated disclosures like "10b5-1
 plan terminated 2022" or "no 10b5-1 plan in effect" match True.
-edgar-debugger verified this on synthetic input. Tolerated for
-this PR — the bias direction is conservative (over-excludes from
-opportunistic cohort, never under-excludes). Q3 2026-08-19 cohort
-audit gates whether to harden with a negation guard.
+edgar-debugger verified this on synthetic input.
+
+**PR 6 (this revision)** — HARDENED with a post-detector negation
+guard (see module-level §"PR 6 — 10b5-1 negation guard" + the
+``_has_negation()`` helper). When the upstream detector returns
+``True``, we re-scan the resolved footnote text for negation
+phrases (``terminated`` / ``cancelled`` / ``no`` / ``previously`` /
+``former`` / etc.) within ±5 word tokens of the 10b5-1 mention.
+On a match, the detection is downgraded ``True`` → ``False`` so
+the affirmative-defense gate stops over-claiming on stale or
+terminated plans. The PR 4-eq Mode B verdict (2026-05-23) pre-
+approved this hardening; PR 6 implements the engineering. Bias
+direction REVERSED relative to pre-PR-6: was conservative (over-
+excluded legit opportunistic trades whose footnotes referenced an
+old terminated plan); now closer to ground truth (terminated +
+former plans no longer fire the 10b5-1 filter). Rule 18 surface:
+``Metadata.form4_negation_guard_downgrade_count`` — gates the Q3
+2026-08-19 cohort-acceptance check.
 
 Transaction codes (SEC Form 4 Table II / III mapping):
 
@@ -179,6 +193,8 @@ from __future__ import annotations
 import json
 import logging
 import os
+import re
+import threading
 from dataclasses import dataclass
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
@@ -302,6 +318,123 @@ _NON_DERIVATIVE_TX_REQUIRED_ATTRS: Final[tuple[str, ...]] = (
     "acquired_disposed",
     "footnotes",
 )
+
+
+# ---------------------------------------------------------------------------
+# PR 6 — 10b5-1 negation guard (residual footgun #1 from PR 4-eq)
+# ---------------------------------------------------------------------------
+#
+# ``detect_10b5_1_plan`` is a substring match on the pattern list
+# ``["10b5-1", "10b-5-1", "rule 10b5", "rule 10b-5", "10b5 plan",
+# "10b-5 plan"]``. Negated disclosures like "10b5-1 plan terminated
+# 2022" or "no 10b5-1 plan in effect" match True even though the
+# affirmative defense is NOT in force at the transaction date.
+#
+# The PR 4-eq Mode B verdict (2026-05-23) pre-approved hardening
+# ``detect_10b5_1_plan`` with a negation guard ("Q3 2026-08-19 cohort
+# audit gates whether to harden ... against FP matches on phrases like
+# '10b5-1 plan terminated'"). PR 6 implements the approved mitigation:
+# a post-detector wrapper that downgrades a ``True`` detection to
+# ``False`` when the resolved footnote text contains a negation phrase
+# within ±5 word tokens of the 10b5-1 mention.
+#
+# Bias direction: REDUCES over-exclusion of legitimate opportunistic
+# trades whose footnotes reference an old terminated 10b5-1 plan; the
+# cluster + C-suite flags should fire slightly more often on tickers
+# with stale-plan disclosures. Expected delta firing-rate per Cohen
+# 2008 §III + Jagolinzer 2009 §3.2: ``insider_sell_cluster`` +5% to
+# +10% relative on a universe-baseline cron; absolute << 1% (most
+# 10b5-1 disclosures are affirmative, not negated).
+
+#: Negation tokens scanned bidirectionally around a 10b5-1 mention.
+#: Pinned for manifest-style audit + Q3 cohort-audit visibility.
+_NEGATION_PATTERNS: Final[frozenset[str]] = frozenset({
+    "terminated",
+    "cancelled",
+    "canceled",
+    "expired",
+    "rescinded",
+    "discontinued",
+    "no",
+    "not in effect",
+    "previously",
+    "former",
+    "without",
+})
+
+#: Compiled bidirectional regex matching any negation pattern within
+#: ±5 word tokens of a 10b5-1 mention. ``\b`` word boundaries on the
+#: negation prevent partial-word matches (e.g. ``no-vote`` won't
+#: trigger on ``no``). Case-insensitive. The pattern accepts both
+#: ``10b5-1`` and ``10b-5-1`` spellings to mirror the upstream
+#: ``detect_10b5_1_plan`` substring list. ``BEFORE`` branch handles
+#: phrases like "no Rule 10b5-1 plan" / "previously had a 10b5-1
+#: plan" / "former 10b5-1 plan"; ``AFTER`` branch handles "10b5-1
+#: plan terminated" / "Rule 10b5-1 plan canceled" / "10b5-1 was
+#: rescinded".
+_NEGATION_REGEX: Final[re.Pattern[str]] = re.compile(
+    r"(?ix)"
+    r"(?:"
+    # BEFORE: negation appears before the 10b5-1 mention, within 5 tokens
+    r"\b(?:terminated|cancell?ed|expired|rescinded|discontinued|no|"
+    r"not\s+in\s+effect|previously|former|without)\b"
+    r"(?:\W+\w+){0,5}\W+(?:rule\s+)?10b-?5-?1"
+    r"|"
+    # AFTER: negation appears after the 10b5-1 mention, within 5 tokens
+    r"(?:rule\s+)?10b-?5-?1"
+    r"(?:\W+\w+){0,5}\W+"
+    r"\b(?:terminated|cancell?ed|expired|rescinded|discontinued|"
+    r"not\s+in\s+effect|previously|former|without)\b"
+    r")"
+)
+
+
+# Thread-safe module-level counter for negation-guard True → False
+# downgrades. Reset at the start of each cron's form4 fetch loop;
+# read after the loop completes. The negation guard fires only at
+# detector-time (cache build), so on a warm-cache cron the counter
+# stays 0 — that's the expected signal ("we didn't run the detector
+# this cycle"). Cold-cache crons populate the universe-wide count.
+_negation_lock: Final[threading.Lock] = threading.Lock()
+_negation_downgrade_count: int = 0
+
+
+def _has_negation(text: str) -> bool:
+    """Return True iff ``text`` matches a negation pattern within ±5
+    word tokens of a 10b5-1 mention. See module-level
+    ``_NEGATION_REGEX`` for the compiled pattern.
+    """
+    if not text:
+        return False
+    return bool(_NEGATION_REGEX.search(text))
+
+
+def reset_negation_downgrade_count() -> None:
+    """Reset the module-level negation-guard downgrade counter.
+
+    Call at the start of each cron's form4 fetch loop. Thread-safe.
+    """
+    global _negation_downgrade_count
+    with _negation_lock:
+        _negation_downgrade_count = 0
+
+
+def get_negation_downgrade_count() -> int:
+    """Return the current count of True → False downgrades applied by
+    the PR 6 negation guard since the last
+    ``reset_negation_downgrade_count()`` call. Thread-safe.
+    """
+    with _negation_lock:
+        return _negation_downgrade_count
+
+
+def _bump_negation_downgrade_count() -> None:
+    """Internal — increment the negation-guard downgrade counter by 1.
+    Thread-safe; callers must not hold ``_negation_lock``.
+    """
+    global _negation_downgrade_count
+    with _negation_lock:
+        _negation_downgrade_count += 1
 
 
 # ---------------------------------------------------------------------------
@@ -482,7 +615,7 @@ def _detect_10b5_1_on_transaction(
     tx: object, footnotes_dict: object | None
 ) -> bool | None:
     """Return ``True`` / ``False`` / ``None`` for the 10b5-1 plan flag
-    on a single ``NonDerivativeTransaction`` row (PR 4-eq).
+    on a single ``NonDerivativeTransaction`` row (PR 4-eq + PR 6).
 
     ``tx.footnotes`` carries newline-joined footnote IDs (e.g.
     ``"F1\\nF2"``); ``footnotes_dict`` (the parsed ``Ownership.footnotes``
@@ -490,11 +623,24 @@ def _detect_10b5_1_on_transaction(
     ``.get(id, default)`` accessor. The joined text is then pattern-
     scanned by ``edgar.ownership.core.detect_10b5_1_plan``.
 
+    PR 6 negation guard: when the upstream detector returns ``True``,
+    we re-scan the resolved text for negation phrases (``terminated``,
+    ``cancelled``, ``no``, ``previously``, ``former``, etc. within ±5
+    word tokens of the 10b5-1 mention). On a match, the detection is
+    downgraded ``True`` → ``False`` and the module-level
+    ``_negation_downgrade_count`` is incremented (read by
+    ``compute/main.py`` after the form4 fetch loop completes; surfaced
+    via ``Metadata.form4_negation_guard_downgrade_count`` per Rule 18).
+    See module §"PR 6 — 10b5-1 negation guard" for the rationale.
+
     Returns:
         ``True`` — footnote text matches a 10b5-1 disclosure pattern
-        ``False`` — footnote text exists but no pattern matches
+                  AND no negation phrase appears within ±5 tokens.
+        ``False`` — footnote text exists but no pattern matches, OR
+                   the detector returned True but the negation guard
+                   fired (PR 6 downgrade).
         ``None`` — no footnotes / no footnote text resolvable / parse
-                  failure / edgartools detector unimportable
+                  failure / edgartools detector unimportable.
 
     Duck-typed for tests: any object exposing ``footnotes: str`` works
     for ``tx``, and any object exposing ``.get(key, default) -> str``
@@ -525,7 +671,16 @@ def _detect_10b5_1_on_transaction(
                 resolved_parts.append(str(text))
         if not resolved_parts:
             return None
-        return detect_10b5_1_plan("\n".join(resolved_parts))
+        resolved_text = "\n".join(resolved_parts)
+        raw_result = detect_10b5_1_plan(resolved_text)
+        # PR 6 negation guard — downgrade True → False on negation match.
+        # Detector returns True / False / None; only True is subject to
+        # downgrade (False stays False; None stays None — the guard never
+        # fabricates a positive signal).
+        if raw_result is True and _has_negation(resolved_text):
+            _bump_negation_downgrade_count()
+            return False
+        return raw_result
     except Exception as e:  # noqa: BLE001 — defensive; parser is best-effort
         logger.warning("10b5-1 detection failed for a transaction: %s", e)
         return None

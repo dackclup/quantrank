@@ -397,13 +397,15 @@ note cross-tool-specific points only:
 - Open Phase 4+ issues: #15 (SEC throttling) · #41 (Next 14→16 CVE
   bump; 15 advisories open, all zero-exploitability on static-export
   deployment) · #67 (sector-CoE — data-collection landed PR #204,
-  flip landed PR #294, **per-sector delta instrumentation in flight
-  this PR** as methodology-scientist Q2 follow-up: adds
+  flip landed PR #294, **per-sector delta instrumentation merged via
+  PR #300** as methodology-scientist Q2 follow-up: adds
   `Metadata.value_trap_risk_delta_by_sector` for Q3 2026-08-19 cohort
-  audit shape evidence) · #75 (PR 4b §3
+  audit shape evidence; populates from cron Run #72+) · #75 (PR 4b §3
   IC-decay writer, Phase 5-blocked) · #115 (JKP CC BY-NC 4.0 license
   review, blocks Phase 4i.1 integration) · #130 (Q3 cohort audit,
-  scheduled 2026-08-19) · #137 (9arm-skills license clarification,
+  scheduled 2026-08-19; reads `form4_negation_guard_downgrade_count`
+  + `form4_rule10b5_one_excluded_count` for INSIDER_SELL_CLUSTER_WEIGHT
+  5.0 → 7.0 promotion decision) · #137 (9arm-skills license clarification,
   deadline 2026-06-17) · #150 (Phase 2-3 epic, phases 2-3 remaining)
   · #287 (FORM4 revert + durable 5-loop timeout fix, blocks Phase
   4.5e PR 5 cluster weight promotion — **PR A merged via PR #297**:
@@ -419,8 +421,21 @@ note cross-tool-specific points only:
   Site-2 retirement per methodology-scientist Mode B Option C
   verdict; NVR fair_price section now renders correctly; dead-code
   helpers `_has_corrupt_input` + `_data_quality_corrupt_result`
-  REMOVED in the PR #293 follow-up after cron Run #71 confirmed the
-  retirement empirically — see in-flight entry).
+  REMOVED via PR #302 follow-up after cron Run #71 confirmed the
+  retirement empirically).
+- **Phase 4.5e PR 6 in flight (this PR)** — Form-4 10b5-1 negation
+  guard hardens the upstream substring detector against FP matches on
+  phrases like "10b5-1 plan terminated 2022" / "no 10b5-1 plan in
+  effect" / "previously had a 10b5-1 plan". Post-detector wrapper
+  downgrades True → False on negation match (11 negation tokens
+  bidirectional ±5-word-token regex). Schema PATCH bump
+  `0.10.10 → 0.10.11-phase4.6` for new
+  `Metadata.form4_negation_guard_downgrade_count: int | None` Rule 18
+  diagnostic. PR 4-eq Mode B verdict pre-approved the hardening; PR 6 =
+  pure engineering. Cross-tool agents: when the next cron run lands,
+  validate the new field populates (warm-cache cron may report 0;
+  cold-cache cron populates the real cohort). Closes the residual of
+  footgun #1 from `compute/scoring/form4_signals.py` module docstring.
 - **`.md` optimization sequence** (Option D — multi-PR overhaul):
   PR A drift fix #141 ✅ · PR B CLAUDE.md token diet #142 ✅ ·
   PR C AGENTS.md sync + dedup #143 ✅ · PR D WORKFLOW.md archive

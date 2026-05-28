@@ -274,6 +274,21 @@ export type Metadata = {
   // flags (Information Technology/Energy). Computed every cron for
   // Q3 cohort audit prep. null on legacy pre-0.10.10 snapshots.
   value_trap_risk_delta_by_sector?: Record<string, number> | null;
+  // Phase 4.5e PR 6 (0.10.11-phase4.6) — count of True → False
+  // downgrades applied by the post-detector 10b5-1 negation guard
+  // during cache build (residual footgun #1 from PR 4-eq). Tracks
+  // universe-wide cohort of footnote disclosures matching phrases
+  // like "10b5-1 plan terminated" / "no 10b5-1 plan in effect" /
+  // "previously had a 10b5-1 plan" — where the upstream substring
+  // detector returns True even though the affirmative defense is
+  // NOT in force. Null semantics mirror `form4_wall_clock_seconds`:
+  // null when FORM4_FETCH_SKIP=1 OR outer try/except fired before
+  // end marker. Warm-cache runs report 0 (detector didn't run);
+  // cold-cache runs populate real cohort number for Q3 2026-08-19
+  // cohort-acceptance check (issue #130) alongside
+  // `form4_rule10b5_one_excluded_count`. Null on legacy pre-0.10.11
+  // snapshots.
+  form4_negation_guard_downgrade_count?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors
