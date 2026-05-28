@@ -6,7 +6,7 @@
   "market_cap": 20998019623.095154,
   "current_price": 144.43,
   "rank": 373,
-  "composite_score": 44.46,
+  "composite_score": 44.45,
   "pillar_scores": {
     "quality": 24.32,
     "value": 60.96,
@@ -14,7 +14,7 @@
     "momentum": 58.02,
     "health": 72.63,
     "profitability": 26.03,
-    "technical": 54.33,
+    "technical": 54.23,
     "risk": 47.31,
     "sentiment": null,
     "ml": null
@@ -63,9 +63,9 @@
         "tier_used": "sector"
       },
       "rim": {
-        "value": 7.837725584838507,
-        "applicable": true,
-        "reason": null,
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
         "tier_used": null
       },
       "dcf": {
@@ -75,15 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 105.4086255075731,
+    "median": 114.64888481138931,
     "max": 371.3594318986358,
-    "low": 7.837725584838507,
+    "low": 23.83144772084168,
     "high": 371.3594318986358,
-    "mos_pct": -37.01914049282869,
+    "mos_pct": -25.975924592188846,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
-      "extreme_rim_estimate"
+      "value_trap_risk"
     ],
     "valuation_methods_applicable": 4
   },
@@ -106,7 +106,7 @@
   "valuation_warnings": [
     "goodwill_heavy",
     "extreme_graham_estimate",
-    "extreme_rim_estimate"
+    "value_trap_risk"
   ],
   "has_history": true,
   "tangible_book_value": 7.680025699407845,
@@ -126,17 +126,17 @@
       "Momentum": 63.1,
       "Health": 69.52,
       "Profitability": 48.86,
-      "Technical": 59.26,
+      "Technical": 59.46,
       "Risk": 47.76
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 58.726827563037446,
+  "loss_chance_pct": 55.86419203765414,
   "price_change_1d_pct": -2.5504,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 44.46,
+  "composite_score_adjusted": 44.45,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.16,
+  "osap_blended_score": 48.15,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,

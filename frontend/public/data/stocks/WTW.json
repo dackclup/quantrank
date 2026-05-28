@@ -5,8 +5,8 @@
   "industry": "Insurance Brokers",
   "market_cap": 23993563188.928833,
   "current_price": 254.04,
-  "rank": 273,
-  "composite_score": 50.07,
+  "rank": 272,
+  "composite_score": 50.06,
   "pillar_scores": {
     "quality": 60.0,
     "value": 51.78,
@@ -14,7 +14,7 @@
     "momentum": 28.49,
     "health": 44.54,
     "profitability": 45.78,
-    "technical": 47.26,
+    "technical": 47.16,
     "risk": 48.11,
     "sentiment": null,
     "ml": null
@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "reason": "non_positive_or_missing_tangible_book",
         "tier_used": null
       },
       "dcf": {
@@ -80,9 +80,7 @@
     "low": 171.94010557426017,
     "high": 255.33678928811787,
     "mos_pct": -18.911177431186278,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
+    "valuation_warnings": [],
     "valuation_methods_applicable": 2
   },
   "top5_factors": [],
@@ -101,9 +99,7 @@
     "latest_filed_date": "2026-04-30"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -122,17 +118,17 @@
       "Momentum": 53.54,
       "Health": 50.72,
       "Profitability": 49.11,
-      "Technical": 47.34,
+      "Technical": 47.46,
       "Risk": 54.61
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 48.58484558918434,
+  "loss_chance_pct": 46.58733562902498,
   "price_change_1d_pct": -0.9011,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 50.07,
+  "composite_score_adjusted": 50.06,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,

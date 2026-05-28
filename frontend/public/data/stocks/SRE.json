@@ -5,8 +5,8 @@
   "industry": "Multi-Utilities",
   "market_cap": 59655754994.39259,
   "current_price": 91.26,
-  "rank": 114,
-  "composite_score": 57.53,
+  "rank": 116,
+  "composite_score": 57.49,
   "pillar_scores": {
     "quality": 72.58,
     "value": 53.76,
@@ -14,7 +14,7 @@
     "momentum": 53.74,
     "health": 52.07,
     "profitability": 59.14,
-    "technical": 46.56,
+    "technical": 45.82,
     "risk": 68.86,
     "sentiment": null,
     "ml": null
@@ -63,9 +63,9 @@
         "tier_used": null
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "value": 55.5896304475132,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
@@ -75,15 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 111.88208191763815,
+    "median": 89.19712209490572,
     "max": 219.5931297045982,
-    "low": 66.51216227217328,
+    "low": 55.5896304475132,
     "high": 219.5931297045982,
-    "mos_pct": 18.43197715661798,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
-    "valuation_methods_applicable": 3
+    "mos_pct": -2.312720402716404,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -107,9 +105,7 @@
   "risk_flags": [
     "sloan_accruals_top_decile"
   ],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": 49.31848082630893,
   "tier2_events": {
@@ -128,17 +124,17 @@
       "Momentum": 56.72,
       "Health": 17.93,
       "Profitability": 52.15,
-      "Technical": 54.73,
+      "Technical": 54.68,
       "Risk": 72.11
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.3079876528694632,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 34.785499669347274,
+  "loss_chance_pct": 40.064819113919086,
   "price_change_1d_pct": -0.3168,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 55.53,
+  "composite_score_adjusted": 55.49,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -186,10 +182,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.69,
+  "osap_blended_score": 54.67,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 3,
+  "valuation_methods_applicable": 4,
   "form4_diagnostics": null,
   "cross_source_delta": 2.122833905132581e-08
 }

@@ -63,9 +63,9 @@
         "tier_used": "sub_industry"
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "value": 25.827780767899277,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
@@ -75,15 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 56.773156783805206,
+    "median": 53.11851476711569,
     "max": 68.5142207917918,
-    "low": 49.46387275042618,
+    "low": 25.827780767899277,
     "high": 68.5142207917918,
-    "mos_pct": 18.641130345098432,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
-    "valuation_methods_applicable": 3
+    "mos_pct": 13.043505020392576,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -104,9 +102,7 @@
   "risk_flags": [
     "altman_distress"
   ],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": 22.194897663353427,
   "tier2_events": {
@@ -125,14 +121,14 @@
       "Momentum": 56.72,
       "Health": 17.93,
       "Profitability": 52.15,
-      "Technical": 54.73,
+      "Technical": 54.68,
       "Risk": 72.11
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 46.93759110971291,
+  "loss_chance_pct": 46.89675997335996,
   "price_change_1d_pct": 0.3476,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 51.08,
@@ -186,7 +182,7 @@
   "osap_blended_score": 51.46,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 3,
+  "valuation_methods_applicable": 4,
   "form4_diagnostics": null,
   "cross_source_delta": 9.771606248870675e-10
 }

@@ -14,7 +14,7 @@
     "momentum": 62.65,
     "health": 11.0,
     "profitability": 52.15,
-    "technical": 57.57,
+    "technical": 57.52,
     "risk": 67.9,
     "sentiment": null,
     "ml": null
@@ -63,9 +63,9 @@
         "tier_used": "sector"
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "value": 29.726193077847373,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
@@ -75,15 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 56.91809842419954,
+    "median": 42.04810366650815,
     "max": 75.1849453478471,
-    "low": 40.33511210700021,
+    "low": 29.726193077847373,
     "high": 75.1849453478471,
-    "mos_pct": -18.064374616688088,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
-    "valuation_methods_applicable": 4
+    "mos_pct": -59.81695032246566,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 5
   },
   "top5_factors": [],
   "score_history": [],
@@ -104,9 +102,7 @@
     "altman_distress",
     "sloan_accruals_top_decile"
   ],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": 26.518684086133245,
   "tier2_events": {
@@ -125,14 +121,14 @@
       "Momentum": 56.72,
       "Health": 17.93,
       "Profitability": 52.15,
-      "Technical": 54.73,
+      "Technical": 54.68,
       "Risk": 72.11
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 65.16032376245866,
+  "loss_chance_pct": 76.83903766653816,
   "price_change_1d_pct": -0.1189,
   "manipulation_index": 20.0,
   "composite_score_adjusted": 44.32,
@@ -186,7 +182,7 @@
   "osap_blended_score": 49.09,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 4,
+  "valuation_methods_applicable": 5,
   "form4_diagnostics": null,
   "cross_source_delta": 6.490249070352913e-05
 }

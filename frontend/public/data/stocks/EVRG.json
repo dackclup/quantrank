@@ -5,7 +5,7 @@
   "industry": "Electric Utilities",
   "market_cap": 19402280892.168045,
   "current_price": 84.17,
-  "rank": 393,
+  "rank": 394,
   "composite_score": 43.02,
   "pillar_scores": {
     "quality": 32.26,
@@ -14,7 +14,7 @@
     "momentum": 70.02,
     "health": 9.52,
     "profitability": 48.39,
-    "technical": 54.73,
+    "technical": 54.68,
     "risk": 85.46,
     "sentiment": null,
     "ml": null
@@ -63,9 +63,9 @@
         "tier_used": "sub_industry"
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "value": 37.659576798727954,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
@@ -75,15 +75,13 @@
         "tier_used": null
       }
     },
-    "median": 80.91835400873148,
+    "median": 75.83123319340217,
     "max": 105.3677461764331,
-    "low": 51.98146697521414,
+    "low": 37.659576798727954,
     "high": 105.3677461764331,
-    "mos_pct": -4.018425980171273,
-    "valuation_warnings": [
-      "value_trap_risk"
-    ],
-    "valuation_methods_applicable": 4
+    "mos_pct": -10.996478132270004,
+    "valuation_warnings": [],
+    "valuation_methods_applicable": 5
   },
   "top5_factors": [],
   "score_history": [],
@@ -103,9 +101,7 @@
     "latest_filed_date": "2026-05-07"
   },
   "risk_flags": [],
-  "valuation_warnings": [
-    "value_trap_risk"
-  ],
+  "valuation_warnings": [],
   "has_history": true,
   "tangible_book_value": 33.92433030628096,
   "tier2_events": {
@@ -124,14 +120,14 @@
       "Momentum": 56.72,
       "Health": 17.93,
       "Profitability": 52.15,
-      "Technical": 54.73,
+      "Technical": 54.68,
       "Risk": 72.11
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 46.893974796697016,
+  "loss_chance_pct": 47.33753806985189,
   "price_change_1d_pct": 0.0713,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 43.02,
@@ -185,7 +181,7 @@
   "osap_blended_score": 47.44,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 4,
+  "valuation_methods_applicable": 5,
   "form4_diagnostics": null,
   "cross_source_delta": 3.496081483050575e-09
 }

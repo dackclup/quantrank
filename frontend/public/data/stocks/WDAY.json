@@ -5,7 +5,7 @@
   "industry": "Application Software",
   "market_cap": 31661968500.0,
   "current_price": 124.5,
-  "rank": 428,
+  "rank": 427,
   "composite_score": 40.46,
   "pillar_scores": {
     "quality": 33.56,
@@ -14,7 +14,7 @@
     "momentum": 6.05,
     "health": 41.24,
     "profitability": 37.21,
-    "technical": 52.14,
+    "technical": 52.19,
     "risk": 19.52,
     "sentiment": null,
     "ml": null
@@ -63,9 +63,9 @@
         "tier_used": "sub_industry"
       },
       "rim": {
-        "value": 4.61258830762893,
-        "applicable": true,
-        "reason": null,
+        "value": null,
+        "applicable": false,
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
         "tier_used": null
       },
       "dcf": {
@@ -75,15 +75,15 @@
         "tier_used": null
       }
     },
-    "median": 115.80996056522716,
+    "median": 118.80370764794854,
     "max": 221.33683535862568,
-    "low": 4.61258830762893,
+    "low": 18.11907701778712,
     "high": 221.33683535862568,
-    "mos_pct": -7.503706410363889,
+    "mos_pct": -4.794709243360739,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
-      "extreme_rim_estimate"
+      "value_trap_risk"
     ],
     "valuation_methods_applicable": 4
   },
@@ -105,7 +105,7 @@
   "valuation_warnings": [
     "goodwill_heavy",
     "extreme_graham_estimate",
-    "extreme_rim_estimate"
+    "value_trap_risk"
   ],
   "has_history": true,
   "tangible_book_value": 4.48958566805472,
@@ -125,14 +125,14 @@
       "Momentum": 63.1,
       "Health": 69.52,
       "Profitability": 48.86,
-      "Technical": 59.26,
+      "Technical": 59.46,
       "Risk": 47.76
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 50.396649339808846,
+  "loss_chance_pct": 50.44725531143743,
   "price_change_1d_pct": 0.387,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 40.46,

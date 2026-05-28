@@ -65,7 +65,7 @@
       "rim": {
         "value": null,
         "applicable": false,
-        "reason": "non_positive_or_missing_tangible_book",
+        "reason": "value_trap_risk_roe_below_cost_of_equity",
         "tier_used": null
       },
       "dcf": {
@@ -80,7 +80,9 @@
     "low": 20.63221915234893,
     "high": 148.74171729892146,
     "mos_pct": -66.6405604853819,
-    "valuation_warnings": [],
+    "valuation_warnings": [
+      "value_trap_risk"
+    ],
     "valuation_methods_applicable": 4
   },
   "top5_factors": [],
@@ -95,7 +97,9 @@
     "latest_filed_date": "2026-05-21"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "value_trap_risk"
+  ],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -114,14 +118,14 @@
       "Momentum": 63.1,
       "Health": 69.52,
       "Profitability": 48.86,
-      "Technical": 59.26,
+      "Technical": 59.46,
       "Risk": 47.76
     }
   },
   "beneish_m_score": -2.4768921009977882,
   "dechow_f_score": 0.5886303013605781,
   "recommendation": "neutral",
-  "loss_chance_pct": 68.79522605923339,
+  "loss_chance_pct": 70.79522605923339,
   "price_change_1d_pct": -1.2239,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 32.41,

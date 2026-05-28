@@ -63,9 +63,9 @@
         "tier_used": "sector"
       },
       "rim": {
-        "value": null,
-        "applicable": false,
-        "reason": "value_trap_risk_roe_below_cost_of_equity",
+        "value": 86.03281217921018,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "dcf": {
@@ -75,14 +75,14 @@
         "tier_used": null
       }
     },
-    "median": 395.7574694298881,
+    "median": 355.81952463146047,
     "max": 517.0939126999492,
-    "low": 142.37962588462239,
+    "low": 86.03281217921018,
     "high": 517.0939126999492,
-    "mos_pct": -170.42318929440293,
+    "mos_pct": -200.7760666904391,
     "valuation_warnings": [
       "extreme_graham_estimate",
-      "value_trap_risk"
+      "extreme_rim_estimate"
     ],
     "valuation_methods_applicable": 3
   },
@@ -102,7 +102,7 @@
   "risk_flags": [],
   "valuation_warnings": [
     "extreme_graham_estimate",
-    "value_trap_risk",
+    "extreme_rim_estimate",
     "restatement_history"
   ],
   "has_history": true,
@@ -123,14 +123,14 @@
       "Momentum": 56.97,
       "Health": 26.22,
       "Profitability": 52.15,
-      "Technical": 51.84,
+      "Technical": 52.64,
       "Risk": 55.35
     }
   },
   "beneish_m_score": -2.6590353239497455,
   "dechow_f_score": null,
-  "recommendation": "neutral",
-  "loss_chance_pct": 65.43955495223408,
+  "recommendation": "cautious",
+  "loss_chance_pct": 64.43955495223408,
   "price_change_1d_pct": -0.6876,
   "manipulation_index": 5.0,
   "composite_score_adjusted": 44.62,
