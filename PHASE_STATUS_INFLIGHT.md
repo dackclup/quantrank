@@ -2406,7 +2406,7 @@ PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" 
 
 ---
 
-## PR (this PR) — Post-session housekeeping 2026-05-28: drain 6 INFLIGHT markers + bump pointers (in flight, 2026-05-28)
+## PR #295 (merged 2026-05-28, `2d2ec83e`) — Post-session housekeeping 2026-05-28: drain 6 INFLIGHT markers + bump pointers
 
 End-of-day Track-A2 housekeeping. After 6 PRs landed on main today (#286 / #290 / #291 / #292 / #293 / #294), the CLAUDE.md / PHASE_STATUS.md / SKILL.md pointers drifted again — schema bumped via PR #292 (`0.10.7 → 0.10.8-phase4.6`); `USE_SECTOR_COE` flipped via PR #294. This PR closes the doc-drift loop so session N+1 reads correct state.
 
@@ -2480,7 +2480,7 @@ PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" 
 
 ---
 
-## PR (this PR) — Issue #287 PR A: durable timeout + cache canary + per-loop wall-clock Metadata (in flight, 2026-05-28)
+## PR #297 (merged 2026-05-28, `ecb60e64`) — Issue #287 PR A: durable timeout + cache canary + per-loop wall-clock Metadata
 
 Three-part durable fix for the 2026-05-25 cron cancellation at 150m
 (incident-commander session 8 verdict — PR #205 added Form-4 as the
@@ -2599,7 +2599,7 @@ populate the gate-data.
 
 ---
 
-## PR (this PR) — Issue #288 follow-up: cache-key bump `cache-v4 → cache-v5` (in flight, 2026-05-28)
+## PR #298 (merged 2026-05-28, `030675e9`) — Issue #288 follow-up: cache-key bump `cache-v4 → cache-v5`
 
 One-line YAML fix closing the silent-failure gap surfaced by Issue #287 PR A's Rule 18 instrumentation on cron Run #71 (`368dccd9`, 2026-05-28 08:44 UTC). Post-cron audit (`defense-layer-auditor` + `stock-detail-auditor` + `edgar-debugger` chain) confirmed:
 
@@ -2650,5 +2650,35 @@ One-line YAML fix closing the silent-failure gap surfaced by Issue #287 PR A's R
 - AGENTS.md substance untouched (CLAUDE.md = SoT for §Phase status; this PR's substance lands in CLAUDE.md §Gotchas as a follow-up note to the "Cron-#3 silent-failure gap" entry + Phase status pointer mention)
 
 PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" lockstep per PR #237 convention. Closes the GOOG/GOOGL display-only bug that was opened by PR #292's incomplete coverage (the fix code was correct; just never reached due to cache-replay path).
+
+---
+
+## PR (this PR) — End-of-day housekeeping 2026-05-28: drain 3 INFLIGHT markers + bump pointers (in flight, 2026-05-28)
+
+End-of-day Track-A3 housekeeping closing today's 10-PR cycle (#286 / #290 / #291 / #292 / #293 / #294 / #295 / #296 / **#297** / **#298**). Mirror of PR #286 (which drained the post-v1.4.0 cycle) for the post-cron-#71 cycle. Three stale `(in flight, 2026-05-28)` markers in `PHASE_STATUS_INFLIGHT.md` drained to `(merged 2026-05-28, <SHA>)`:
+
+- PR #295 (`2d2ec83e`) — Post-session housekeeping drain 6 INFLIGHT + bump pointers
+- PR #297 (`ecb60e64`) — Issue #287 PR A: durable timeout + cache canary + per-loop wall-clock Metadata (schema `0.10.8 → 0.10.9-phase4.6`)
+- PR #298 (`030675e9`) — Issue #288 follow-up: cache-key bump `v4 → v5`
+
+Bodies preserved (historical record). CLAUDE.md §Phase status pointer updated to note PR #298 cache-v5 active + production-verified cron Run #71 pointer (`368dccd9`); AGENTS.md open-issues list updated to mark #288 closed by PR #298 + clarify follow-up state.
+
+**Why this PR exists**: without end-of-day drain, session N+1 reads CLAUDE.md / PHASE_STATUS_INFLIGHT.md and sees 3 PRs still "in flight" despite them merging hours earlier — exact same friction pattern PR #286 closed for the post-v1.4.0 cycle. Three same-day drains in one PR keeps the side-file clean for next session.
+
+**Scope (3 files, doc-only)**:
+
+- `PHASE_STATUS_INFLIGHT.md` — 3 header substitutions (in flight → merged + SHA) + this entry appended at end
+- `CLAUDE.md` §Phase status — pointer block refresh: PR #298 cache-v5 active + Run #71 production-verified pointer + drain "(in flight this PR)" qualifier from the cache-v5 mention
+- `AGENTS.md` open-issues list — #288 status `(fix in flight this PR)` → `(closed by PR #298 cache-v5 bump)`; clarify #287 status post-Run-#71 empirical validation
+
+**Hard constraints honored**:
+
+- No code / scoring / schema / valuation / Rule 16 / Top-5 invariant touched
+- No new defense flag · No new dep · No new env-var
+- Doc-only diff (Markdown only)
+- Schema version UNCHANGED at `0.10.9-phase4.6` (no Pydantic / TS / snapshot change)
+- AGENTS.md substance touched per the existing delegation pattern (CLAUDE.md = SoT for §Phase status; this PR refreshes the open-issues lifecycle cross-reference)
+
+PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" lockstep per PR #237 convention. The drain pattern itself is the same template used in PR #286 (post-v1.4.0 cycle) — keeping the side-file disciplined as the project pattern.
 
 ---
