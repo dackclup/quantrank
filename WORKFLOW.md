@@ -41,12 +41,14 @@ Monitoring) onto the 18 subagents already in `.claude/agents/` and the
 established commands. No new infrastructure.
 
 **Session-start protocol**: read [`PHASE_STATUS.md`](PHASE_STATUS.md)
-§"Current state" first — currently schema `0.10.7-phase4.6` (PR #283
-release closes Phase 4.6 honest re-validation harness; bumped through
-PRs #269 GOOG/GOOGL per-class XBRL `0.10.5 → 0.10.6` + Phase 4.6
-Metadata additions `0.10.6 → 0.10.7-phase4.6`), defense layer
-**33 declared** = 7 vetoes + 26 annotates,
-release tag [`v1.4.0-phase4.6`](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6),
+§"Current state" first as the canonical pointer (it bumps on every
+schema PR; this prose stays stable). As of 2026-05-28 post-PR-#299:
+schema `0.10.9-phase4.6` on `main` (PR #297 PATCH bump — 4
+`Metadata.*_wall_clock_seconds` fields + `compute-rankings.yml`
+`timeout-minutes: 150 → 195` + cache-restore canary), with PR #300
+in flight bumping to `0.10.10-phase4.6` (Issue #67 follow-up per-
+sector delta). Defense layer **33 declared** = 7 vetoes + 26 annotates;
+release tag [`v1.4.0-phase4.6`](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6);
 CVE baseline **15 open** (0C / 6H / 7M / 2L) after PR #194 patch +
 PR #226 triage. Then route via the cadence below.
 

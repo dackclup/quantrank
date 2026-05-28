@@ -549,14 +549,22 @@ ladder closure + LedgerCraft frontend reskin (defense layer 32 → 33;
 PR #264 `multi_class_aggregate_shares_suspected` + PR #265 DQIC
 site-2 rename `valuation_output_anomalous`).
 
-**Recently merged** (PR #286 → PR #294, 2026-05-28 — 6 PRs same day post-v1.4.0):
-- PR #294 `0ddb6b81` — feat(valuation): Issue #67 — flip `USE_SECTOR_COE = True` (Damodaran 11-sector Ke)
+**Recently merged** (PR #286 → PR #299, 2026-05-28 — **11 PRs same day post-v1.4.0**):
+- PR #299 `3ec4b29e` — chore(docs): end-of-day housekeeping — drain 3 INFLIGHT (#295/#297/#298) + pointer bumps
+- PR #298 `030675e9` — fix(ci): Issue #288 follow-up — bump workflow cache key `cache-v4 → cache-v5` (forces fresh fetch on Run #72 so PR #292 GOOG/GOOGL Branch 3 actually fires; closes silent-failure gap surfaced by PR #297 Rule 18 disambiguator)
+- PR #297 `ecb60e64` — feat(perf): Issue #287 PR A — durable timeout + per-loop wall-clocks (schema `0.10.8 → 0.10.9-phase4.6`; `timeout-minutes: 150 → 195` + cache-restore canary + 4 `Metadata.*_wall_clock_seconds` fields; empirically validated cron Run #71)
+- PR #296 `e85dfbcf` — docs(context): add root `CONTEXT.md` pointer + reconcile `docs/agents/domain.md` (single-file orientation bridge for upstream tools)
+- PR #295 `2d2ec83e` — chore(docs): post-session housekeeping — drain 6 INFLIGHT + bump pointers
+- PR #294 `0ddb6b81` — feat(valuation): Issue #67 — flip `USE_SECTOR_COE = True` (Damodaran 11-sector Ke; `value_trap_risk` 132 → 109 cohort drop)
 - PR #293 `95e638bf` — fix(valuation): Issue #289 — retire Site-2 DQIC ceiling (NVR FP, methodology Option C)
 - PR #292 `e9aaab31` — fix(ingest): Issue #288 — GOOG/GOOGL XBRL concept-name omission (schema `0.10.7 → 0.10.8-phase4.6`)
 - PR #291 `cb9114bb` — docs(agents): AGENTS.md substance refresh (cron #51 → #69 pointer; 11 open-issues list)
 - PR #290 `dea8e3ad` — chore(cleanup): post-cron-#69 — BK orphan removal + 3 doc drifts
 - PR #286 `27361047` — chore(docs): housekeeping PR-B — drain INFLIGHT + bump pointers post-v1.4.0
-- (3 issues filed: #287 / #288 / #289; 4 comments posted on #41 / #115 / #130 / #137)
+- (3 issues filed + ALL closed same day: #287 PR A merged via #297 [PR B FORM4 revert remaining] · #288 closed via #292 + #298 · #289 closed via #293)
+
+**In flight** (not yet merged on `main`):
+- PR #300 — feat(scoring): Issue #67 follow-up — per-sector `value_trap_risk` delta instrumentation (schema `0.10.9 → 0.10.10-phase4.6`; methodology-scientist Mode B Q2 deferred from PR #294)
 
 **Earlier** (PR #264 → PR #285, 2026-05-26 → 2026-05-27):
 - PR #285 `8f373758` — docs(release): codify mobile-only operator convention for tag releases
