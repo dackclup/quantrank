@@ -10,6 +10,14 @@ Per kickoff Step 5 spec, ~23 cases:
   G. Edge cases (3)
   H. Integration (3)
 
+  L. Issue #289 — Site-2 output-level ceiling retired (3)
+     Regression guard against the NVR false-positive on cron #69
+     (2026-05-28): `multiples_pe ≈ 22× × $458.86 ≈ $10,094` tripped
+     the $10,000 absolute ceiling and nulled all 6 methods despite
+     legitimate inputs. Post-fix: Site-2 trigger deleted; the per-method
+     extreme_*_estimate outlier guard (Defense #4, 5×/0.2× of current
+     price) is the correct layer for out-of-distribution valuations.
+
 Most aggregation/outlier/stale tests use the private helpers
 (``_aggregate_methods``, ``_classify_outliers``, ``_all_methods_skipped``)
 to exercise the logic in isolation; integration tests then call the
@@ -994,11 +1002,38 @@ def test_data_quality_guard_skipped_methods_dont_trigger():
     assert _has_corrupt_input(methods) is False
 
 
-def test_data_quality_guard_end_to_end_via_full_ensemble():
-    """End-to-end: a corrupted snapshot (shares_outstanding=10 instead
-    of millions, mirroring the SPG-pattern bug) routes through
-    compute_fair_price_ensemble and returns the all-null payload with
-    no risk_flags appended."""
+def test_site2_data_quality_guard_retired_post_issue_289():
+    """Issue #289 (2026-05-28) — Site-2 (output-level) data-quality guard
+    RETIRED per methodology-scientist Mode B verdict Option C. End-to-end
+    regression guard: a corrupted snapshot that PRE-fix would have routed
+    through `_has_corrupt_input` → `_data_quality_corrupt_result` and
+    produced the all-null payload with `valuation_warnings ==
+    ["valuation_output_anomalous"]` POST-fix produces the normal ensemble
+    path output with `extreme_*_estimate` per-method annotates + the
+    `extreme_estimate_majority` Huber-breakdown annotate (Defense #4 +
+    Issue #177 = the correct ensemble-robustness layer).
+
+    The shape change is structural:
+    - Pre-fix: `valuation_warnings == ["valuation_output_anomalous"]`,
+      `result.median is None`, all 6 methods nulled with reason
+      `valuation_output_anomalous`
+    - Post-fix: `valuation_warnings` contains `extreme_*_estimate`
+      annotates for each method exceeding the 5×/0.2× Defense #4 band,
+      PLUS `extreme_estimate_majority` if ≥ 3 methods are extreme;
+      `valuation_output_anomalous` ABSENT from `ensemble`'s
+      `valuation_warnings` (writer-parity emit in `compute/main.py`
+      is the only remaining source, gated on Site-1 veto in risk_flags)
+
+    Site-1 input-level corruption guard at
+    `compute/scoring/risk_overlay.py::_data_quality_input_corruption`
+    continues to fire its VETO (`data_quality_input_corruption` in
+    risk_flags) — that's the canonical input-corruption defense, and
+    Site-2 was the redundant downstream layer that's now retired.
+
+    NVR's $458 EPS / $6,098 price case (the empirical false positive
+    on cron #69, 2026-05-28) is covered separately under
+    `test_NVR_*_no_longer_nulled_*` per the test-engineer follow-up.
+    """
     # Equity $5B / 10 shares = $500M/share TBVPS — far above the $10K ceiling.
     snap = FundamentalsSnapshot(
         ticker="CORRUPT",
@@ -1049,18 +1084,34 @@ def test_data_quality_guard_end_to_end_via_full_ensemble():
         universe_metrics=universe_metrics,
         historical_metrics=historical_metrics,
     )
-    # Guard fires whenever the corruption is severe enough — at least one
-    # method (Graham/RIM via TBVPS) computed > $10,000/share. Confirm the
-    # canonical all-null + single-warning + empty-flags shape.
-    # Issue #262 rename (2026-05-26) — Site 2 emission renamed.
-    assert result.valuation_warnings == ["valuation_output_anomalous"]
+    # Issue #289 retirement-guard assertions:
+    # 1. Site-2 emission `valuation_output_anomalous` ABSENT from ensemble's
+    #    valuation_warnings (the writer-parity emit in compute/main.py is
+    #    the only remaining source, gated on Site-1 risk_flags — not
+    #    exercised here since this test stays in the ensemble layer).
+    assert "valuation_output_anomalous" not in result.valuation_warnings
+    # 2. Defense #4 5×/0.2× per-method extreme guard fires correctly —
+    #    methods producing absurd values get `extreme_<method>_estimate`
+    #    annotates instead of being silently nulled. At least one method
+    #    in the corrupted-snapshot synthetic case should trip the band.
+    assert any(
+        w.startswith("extreme_") and w.endswith("_estimate")
+        for w in result.valuation_warnings
+    )
+    # 3. extra_flags (risk_flags appended by the ensemble path) remains
+    #    empty — Site-1 (`data_quality_input_corruption` veto) is in
+    #    risk_overlay.py, not in the ensemble path itself.
     assert extra_flags == []
-    assert result.median is None
-    assert result.max is None
+    # 4. No method has reason `valuation_output_anomalous` post-retirement
+    #    (each method either computed a value or skipped with its own
+    #    applicability reason like `non_positive_eps_3y_avg`).
     for name in METHOD_NAMES:
         m = result.methods[name]
-        assert m.value is None
-        assert m.reason == "valuation_output_anomalous"
+        assert m.reason != "valuation_output_anomalous", (
+            f"Site-2 retired by Issue #289 — method {name!r} should NOT carry "
+            f"`valuation_output_anomalous` reason from the ensemble path; "
+            f"got reason={m.reason!r}"
+        )
 
 
 # -- Helpers ------------------------------------------------------------------
@@ -1108,4 +1159,221 @@ def _make_snap_full() -> FundamentalsSnapshot:
         intangibles_net=5.0,
         latest_period_end=date(2025, 12, 31),
         latest_filed_date=date(2026, 2, 14),
+    )
+
+
+# -- L. Issue #289 — Site-2 output-level ceiling retired ----------------------
+#
+# Regression guard against the NVR false-positive on cron #69 (2026-05-28).
+# Pre-fix: `multiples_pe ≈ sector_PE × EPS_TTM ≈ 22× × $458.86 ≈ $10,094`
+# tripped the $10,000 absolute Site-2 ceiling in ensemble.py:457-458 and
+# nulled ALL 6 methods → `fair_price.median = null` + `valuation_warnings =
+# ["valuation_output_anomalous"]` despite legitimate inputs and a 65% MoS
+# signal. Post-fix (methodology-scientist Mode B verdict Option C, 2026-05-28):
+# Site-2 trigger deleted. The per-method Defense #4 outlier guard
+# (``extreme_*_estimate``, 5×/0.2× of current price) is the correct layer;
+# it correctly annotates out-of-distribution estimates while leaving the
+# other methods to produce a non-null ensemble median.
+
+
+def _make_nvr_snap() -> FundamentalsSnapshot:
+    """Synthetic NVR-shape snapshot.
+
+    Key numbers mirroring cron #69 (2026-05-28):
+      shares_outstanding = 2_700_000  (low-float homebuilder, ~2.7 M)
+      net_income         = 1_238_922_000  → EPS_TTM = NI/shares ≈ $458.86
+      current_price (caller-supplied) = $6,098
+
+    With a sector PE median of ~22×:
+      multiples_pe ≈ 22 × $458.86 ≈ $10,094 > old $10,000 Site-2 ceiling
+      → pre-fix: ALL 6 methods nulled.
+      → post-fix: Site-2 deleted; Defense #4 (5× of $6,098 = $30,490)
+        does NOT flag multiples_pe as an outlier at $10,094 (< 5×), so
+        the method contributes to the median normally.
+    """
+    return FundamentalsSnapshot(
+        ticker="NVR",
+        cik="0000012345",
+        revenue=9_525_000_000.0,
+        net_income=1_238_922_000.0,       # → EPS_TTM ≈ $458.86 / share
+        operating_income=1_500_000_000.0,
+        total_assets=6_000_000_000.0,
+        total_liabilities=2_500_000_000.0,
+        stockholders_equity=3_500_000_000.0,
+        cash=1_200_000_000.0,
+        operating_cash_flow=1_300_000_000.0,
+        capex=50_000_000.0,
+        free_cash_flow=1_250_000_000.0,
+        eps_basic=458.86,
+        eps_diluted=458.86,
+        shares_outstanding=2_700_000.0,   # low float → high EPS_TTM
+        long_term_debt=900_000_000.0,
+        short_term_debt=50_000_000.0,
+        ebitda=1_600_000_000.0,
+        goodwill=0.0,
+        intangibles_net=0.0,
+        latest_period_end=date(2025, 12, 31),
+        latest_filed_date=date(2026, 2, 14),
+    )
+
+
+def _make_nvr_peer_panels(n_peers: int = 10) -> tuple[
+    dict[str, dict[str, list[str]]],
+    dict[str, dict[str, float | None]],
+]:
+    """Build peer panels with ``n_peers`` sector-level PE peers at 22×.
+
+    sector median = 22.0 exactly → multiples_pe ≈ 22 × $458.86 ≈ $10,094.
+    pb + ev_ebitda panels are empty so those methods skip on
+    ``insufficient_peers_all_tiers`` (irrelevant to this regression).
+    """
+    peer_tickers = [f"HB{i}" for i in range(n_peers)]
+    peer_panels: dict[str, dict[str, list[str]]] = {
+        "pe": {"sector": peer_tickers},
+        "pb": {},
+        "ev_ebitda": {},
+    }
+    universe_metrics: dict[str, dict[str, float | None]] = {
+        t: {"pe_ttm": 22.0, "pb_reported": None, "ev_ebitda_ttm": None}
+        for t in peer_tickers
+    }
+    return peer_panels, universe_metrics
+
+
+def test_L1_NVR_fair_price_methods_no_longer_nulled_by_output_ceiling():
+    """Regression: pre-fix Site-2 ceiling (`FAIR_PRICE_DATA_QUALITY_CEILING
+    = $10,000`) nulled all 6 methods for NVR because `multiples_pe ≈ $10,094`
+    exceeded the absolute-dollar gate.  Post-fix (Site-2 trigger deleted per
+    Issue #289 Option C): ensemble computes normally and returns a non-null
+    median.
+
+    Empirical NVR inputs (cron #69, 2026-05-28):
+      current_price = $6,098 · shares ≈ 2.7 M · EPS_TTM ≈ $458.86
+      sector PE median ≈ 22× → multiples_pe ≈ $10,094
+    """
+    snap = _make_nvr_snap()
+    peer_panels, universe_metrics = _make_nvr_peer_panels(n_peers=10)
+
+    result, risk_flags = compute_fair_price_ensemble(
+        ticker="NVR",
+        snap=snap,
+        sector="Consumer Discretionary",
+        sub_industry=None,
+        industry=None,
+        current_price=6098.0,
+        filing_lag_days_value=30,
+        peer_panels=peer_panels,
+        universe_metrics=universe_metrics,
+        historical_metrics={
+            "NVR": {
+                "eps_3y_avg": 400.0,
+                "avg_3y_roe": 0.35,
+                "fcf_5y": [1_000_000_000.0] * 5,
+            },
+        },
+    )
+
+    # Post-fix: median must be non-null — graham/rim/dcf and multiples_pe
+    # all compute on this snapshot; pre-fix all 6 were blocked.
+    assert result.median is not None, (
+        "Site-2 ceiling regression: ensemble returned null median for NVR "
+        "despite legitimate inputs.  Verify that the Site-2 trigger in "
+        "ensemble.py was deleted per Issue #289."
+    )
+
+    # Post-fix: Site-2 emission must NOT appear from the ensemble layer.
+    # (Writer-parity emit for Site-1 veto cohort lives in compute/main.py,
+    # not here — that is not tested in this file per the hard constraint.)
+    assert "valuation_output_anomalous" not in result.valuation_warnings, (
+        "Site-2 ceiling regression: 'valuation_output_anomalous' surfaced "
+        "from ensemble.py despite the Site-2 trigger being deleted. "
+        "Verify ensemble.py:450-479 per Issue #289."
+    )
+
+    # Post-fix: at least one method must be applicable.
+    applicable_methods = [
+        name for name, m in result.methods.items() if m.applicable
+    ]
+    assert len(applicable_methods) > 0, (
+        f"All 6 methods are non-applicable — same null payload as pre-fix. "
+        f"Applicable: {applicable_methods}"
+    )
+
+    # Sanity: NVR has clean inputs, no risk_flags expected.
+    assert risk_flags == []
+
+
+def test_L2_dead_code_functions_still_callable_after_site2_deletion():
+    """Dead-code retention guard (one-cycle hold per Issue #289 Option C).
+
+    `_has_corrupt_input` and `_data_quality_corrupt_result` must remain
+    importable and callable after the Site-2 call site was deleted at
+    ensemble.py:457-458.  They are kept for one cycle so the reviewer can
+    confirm the deletion cleanly before a follow-up PR removes them.
+
+    If this test FAILS, one of the functions was removed too early.
+    """
+    import compute.valuation.ensemble as _ensemble
+
+    assert callable(_ensemble._has_corrupt_input), (
+        "_has_corrupt_input was removed prematurely — Issue #289 Option C "
+        "specifies dead-code retention for one cycle before removal."
+    )
+    assert callable(_ensemble._data_quality_corrupt_result), (
+        "_data_quality_corrupt_result was removed prematurely — Issue #289 "
+        "Option C specifies dead-code retention for one cycle before removal."
+    )
+
+
+def test_L3_site2_ceiling_not_invoked_when_method_value_exceeds_10k():
+    """Site-2 call-site deletion guard: a ticker whose method value exceeds
+    $10,000 but has CLEAN inputs (not an input-corruption case) must NOT
+    receive the `valuation_output_anomalous` warning from the ensemble.
+
+    Pre-fix: `_has_corrupt_input` was called inside `compute_fair_price_ensemble`
+    at ensemble.py:457-458 and would set all methods to null + emit the
+    warning whenever ANY applicable estimate exceeded $10K.
+
+    Post-fix: the call site is deleted; Defense #4 (5×/0.2× of current price)
+    is the only ensemble-layer outlier guard.  A value of $10,094 against a
+    current price of $6,098 is only 1.65× — well within the 5× Defense #4
+    band — so neither `extreme_multiples_pe_estimate` NOR
+    `valuation_output_anomalous` should appear in the ensemble warnings.
+
+    This test uses a minimal synthetic fixture rather than the full NVR
+    snapshot so the path is reproducible without depending on peer-panel
+    infrastructure: one method produces exactly $10,001 (just above the old
+    ceiling), current_price is set so that value stays within the Defense #4
+    5× band, ensuring no extreme-estimate annotate fires either.
+    """
+    # Build a methods dict where multiples_pe = $10,001 and current_price is
+    # $3,000 so that $10,001 / $3,000 = 3.33× — within the [0.2×, 5×] band.
+    methods = {
+        "graham": _result(2_800.0, applicable=True),
+        "multiples_pe": _result(10_001.0, applicable=True, tier_used="sector"),
+        "multiples_pb": _result(None, applicable=False, reason="insufficient_peers_all_tiers"),
+        "multiples_ev_ebitda": _result(None, applicable=False, reason="insufficient_peers_all_tiers"),
+        "rim": _result(3_100.0, applicable=True),
+        "dcf": _result(2_950.0, applicable=True),
+    }
+    # Defense #4 check: is $10,001 within [0.2×, 5×] of $3,000?
+    #   low bound: 0.2 × 3000 = $600 ✓  ($10,001 > $600)
+    #   high bound: 5 × 3000 = $15,000 ✓  ($10,001 < $15,000)
+    # → Defense #4 should NOT flag it; pre-fix Site-2 ceiling would have.
+    outliers, extreme_warnings = _classify_outliers(methods, current_price=3000.0)
+    assert "multiples_pe" not in outliers, (
+        "multiples_pe ($10,001) is within [0.2×, 5×] of current=$3,000 "
+        "so Defense #4 must NOT flag it as an outlier."
+    )
+    assert extreme_warnings == [], (
+        f"No extreme_*_estimate warnings expected; got {extreme_warnings}"
+    )
+
+    # Post-fix: aggregate proceeds normally, median is non-null.
+    aggs, agg_warnings = _aggregate_methods(methods, current_price=3000.0)
+    assert aggs["median"] is not None
+    # Site-2 emission must NOT appear in the aggregation-level warnings.
+    assert "valuation_output_anomalous" not in agg_warnings, (
+        "Site-2 ceiling regression: 'valuation_output_anomalous' appeared "
+        "in aggregation warnings despite the Site-2 call site being deleted."
     )

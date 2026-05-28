@@ -409,23 +409,24 @@ composite.
   `MULTI_CLASS_OVERCOUNT_ALLOWLIST` keyed to the filer-specific class-member
   dimension; the annotate continues to fire as the safety net for any
   multi-class filer NOT yet on the allowlist.
-- `valuation_output_anomalous` _(Issue #262, PR #265, renamed from
-  Site-2 emission of `data_quality_input_corruption`)_ — fires when ANY
-  of the 6 fair-price ensemble methods produces an output > $10K/share
-  despite plausible inputs (Site 2 check in
-  `compute/valuation/ensemble.py::_data_quality_corrupt_result`).
-  Semantically distinct from the veto `data_quality_input_corruption`
-  (Site 1, input-level corruption — TBVPS > $10K/share OR TTM revenue
-  &lt; $50M OR |NI| > |revenue| in `compute/scoring/risk_overlay.py`):
-  "a method produced an absurd output despite plausible inputs" is NOT
-  categorical evidence of input untrust (could be residual input bug
-  Site-1 missed, legitimately extreme RIM, OR formula edge case) —
-  annotate-only is the correct Rule 16 surface. Writer-parity emit:
-  `compute/main.py` also appends `valuation_output_anomalous` to
-  `valuation_warnings` when `data_quality_input_corruption` is in
-  `risk_flags`, so veto-cohort tickers (MTB / CPT / MRNA / HBAN on the
-  2026-05-23 cron #3) gain the UI explanation chip via
-  `FairPriceCard.tsx`. Pure data-quality detector — no academic prior.
+- `valuation_output_anomalous` _(Issue #262 PR #265, renamed from
+  Site-2 emission of `data_quality_input_corruption`; Issue #289 PR
+  retired the Site-2 trigger 2026-05-28)_ — historically emitted when
+  ANY of the 6 fair-price ensemble methods produced an output >
+  $10K/share. Issue #289 methodology-scientist Mode B verdict (Penman
+  2013 §7.4 + Damodaran 2019 Ch. 18 + Huber 1981 §1.4) confirmed the
+  Site-2 path was structurally redundant with Defense #4
+  (`extreme_*_estimate` per-method outlier guard) + Issue #177
+  `extreme_estimate_majority` (Huber breakdown-point); empirical PPV
+  on the 2026-05-28 cron #69 was 0/1 = 0% (NVR false positive).
+  Site-2 trigger DELETED; the annotate continues to emit via
+  writer-parity from `compute/main.py` when the Site-1
+  `data_quality_input_corruption` veto fires (MTB / CPT / MRNA /
+  HBAN cohort per PR #265 — preserves the UI explanation chip in
+  `FairPriceCard.tsx`). Pure data-quality detector — no academic prior.
+  Site-1's three patterns (TBVPS > $10K / TTM revenue < $50M /
+  |NI| > |revenue|) catch the upstream units-bug class at the source
+  per Penman 2013 §7.4 defend-at-source principle.
 
 ### Annotate-vs-veto philosophy
 
