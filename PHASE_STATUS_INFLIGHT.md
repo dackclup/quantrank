@@ -2439,7 +2439,7 @@ PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" 
 
 ---
 
-## PR (this PR) — Add root `CONTEXT.md` pointer + reconcile `docs/agents/domain.md` (in flight, 2026-05-28)
+## PR #296 (merged 2026-05-28, `e85dfbcf`) — Add root `CONTEXT.md` pointer + reconcile `docs/agents/domain.md`
 
 End-of-day Track-A3 follow-up to the post-session housekeeping commit (`0949a3c1`). Adds a single-file `CONTEXT.md` entry point at the repo root so external tools / fresh agents / vendored skills that expect the upstream mattpocock convention have one bridge file to read first. Reconciles `docs/agents/domain.md` which previously declared "QuantRank has NO `CONTEXT.md`" (now stale).
 
@@ -2477,5 +2477,124 @@ End-of-day Track-A3 follow-up to the post-session housekeeping commit (`0949a3c1
 - AGENTS.md substance untouched (CLAUDE.md = SoT for §Phase status / Stack; this PR adds a pointer file, not a rule change)
 
 PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" lockstep per PR #237 convention. CLAUDE.md substance untouched this PR — `CONTEXT.md` is a NEW top-level file that pointers TO CLAUDE.md, not a substance change WITHIN CLAUDE.md.
+
+---
+
+## PR (this PR) — Issue #287 PR A: durable timeout + cache canary + per-loop wall-clock Metadata (in flight, 2026-05-28)
+
+Three-part durable fix for the 2026-05-25 cron cancellation at 150m
+(incident-commander session 8 verdict — PR #205 added Form-4 as the
+5th SEC EDGAR loop without bumping the `timeout-minutes` ceiling).
+**Does NOT revert `FORM4_FETCH_SKIP=1`** — that is PR B (Issue #287
+Part 4), gated on ≥ 1 cron completing under the new 195m ceiling
+with all 4 wall-clock fields populated.
+
+**Part 1 — `timeout-minutes: 150 → 195`** in
+`.github/workflows/compute-rankings.yml`. Per-loop cold-cache budget
+math documented inline (5 EDGAR loops: prices ~5m + fundamentals ~25m
++ history ~15m + Form-4 ~10m + Tier-2 ~35m + OSAP ~5m + write ~3m =
+~98m warm-realistic, +20% SEC-throttle = ~118m, +headroom + Commit
+= 195m target). Old Phase 4g 90→150m rationale comment replaced
+with the 5-loop budget table.
+
+**Part 2 — Cache-restore canary step** inserted between `Restore
+compute caches` and `Run weekly compute`. Bash one-liner (`du -sm`
++ `find -printf '%T@'`) emits size (MB) + age (hours since newest
+file) for each of 10 cache directories (fundamentals /
+fundamentals_history / prices / edgar_8k / edgar_10k_text /
+yfinance_info / edgar_amendments / edgar_late_filings / edgar_form4 /
+osap) to the workflow log in ~15-30 seconds. Surfaces cache eviction
+BEFORE any SEC fetch begins instead of after 150-195m of polling.
+`bc` + GNU `find -printf` are standard on ubuntu-latest; fail-open
+on missing tools (size still prints, age falls back to "?").
+
+**Part 3 — 4 new `Metadata.*_wall_clock_seconds` fields**:
+
+- `tier2_wall_clock_seconds: float | None = None`
+- `form4_wall_clock_seconds: float | None = None`
+- `osap_wall_clock_seconds: float | None = None`
+- `cross_source_wall_clock_seconds: float | None = None`
+
+Parity with existing `fundamentals_latency_p95_seconds` BUT
+semantically different: those measure per-ticker fetch p95
+(tenacity-cascade detector); these measure total elapsed WALL-CLOCK
+seconds for the entire loop start-to-end (budget-overrun + cache-
+eviction detector). `None` semantic when loop was skipped via
+escape-hatch env-var (`FORM4_FETCH_SKIP` / `QR_SKIP_OSAP`) OR when
+the loop failed before the end marker. `cross_source_wall_clock_seconds`
+measures the entire Step 8 per-ticker loop (fair-price ensemble +
+manipulation + StockDetail write — documented limitation in the
+schema field docstring; on cold-cache cross-source dominates at
+17-67 min, on warm it doesn't).
+
+Schema bump `0.10.8-phase4.6` → `0.10.9-phase4.6` (PATCH — additive
+Metadata-only, no consumer migration). Schema triple lockstep
+satisfied: `compute/output/schemas.py` + `frontend/lib/types.ts` +
+`frontend/lib/schema-snapshot.json` all regenerated; in-sync per
+`python -m compute.output.schema_check`.
+
+**Files changed (6 + tests)**:
+
+- `.github/workflows/compute-rankings.yml` — timeout bump (150→195m)
+  + 5-loop budget docstring + cache-restore canary step (~50 lines added)
+- `compute/config.py` — `SCHEMA_VERSION = "0.10.9-phase4.6"`
+- `compute/output/schemas.py` — 4 new `Metadata` fields (+ docstring
+  explaining wall-clock vs per-ticker-p95 semantics)
+- `frontend/lib/types.ts` — 4 new optional TS properties (mirror)
+- `frontend/lib/schema-snapshot.json` — regenerated via
+  `python -m compute.output.schema_check --update-snapshot`
+- `compute/main.py` — `time.monotonic()` start/end markers wrapping
+  4 loops (Tier-2 / Form-4 / OSAP / cross_source/Step 8). Tier-2
+  loop wrapped in defensive outer try/except so an interpreter-level
+  failure keeps `tier2_wall_clock_seconds = None`. Form-4 path:
+  start marker INSIDE the `else:` branch (FORM4_FETCH_SKIP path
+  leaves wall-clock = None). OSAP path: start before try, end at
+  end of try success path, None in except. Step 8: start before
+  loop, end after the "Wrote N stock detail" logger.info.
+  4 new keyword arguments wired into the `Metadata(...)` constructor
+  at the end.
+- `tests/test_config.py` — schema version pin `0.10.8 → 0.10.9` +
+  docstring rewritten to document Issue #287 PR A as the bump reason
+- `tests/test_output/test_wall_clock_schema.py` (new) — schema
+  contract tests (instantiate Metadata with + without the 4 new
+  fields; assert serialization round-trip + None defaults). Behavior
+  tests (skipped-via-env-var, failed-before-end-marker) deferred
+  to a follow-up since the existing `tests/test_main.py` harness is
+  pandas-dep heavy and not amenable to a unit-test mock.
+
+**Part 4 (PR B — separate, gated)** — revert `FORM4_FETCH_SKIP=1`
+from `compute-rankings.yml` env block. Lands only after PR A merges
++ ≥ 1 weekly cron green at < 195m wall-clock with all 4 fields
+populated AND `form4_wall_clock_seconds` is not None (confirms the
+revert path will work). Unblocks Phase 4.5e PR 5 (cluster weight
+promotion 5.0 → 7.0) gate-data accumulation for Q3 2026-08-19
+quarterly cohort audit.
+
+**Verification ladder (pre-push)**:
+- `ruff check .` — PASS (run; clean)
+- `python -m compute.output.schema_check` — PASS (snapshot regenerated)
+- `pytest tests/test_config.py -v` — PASS 11/11 (schema-version pin held)
+- `pytest tests/ -m "not network"` — DEFERRED to CI (sandbox missing
+  pandas; CI installs full extras)
+- `cd frontend && npx --no -- tsc --noEmit` + `next build` — DEFERRED
+  to Vercel preview (sandbox missing node_modules)
+
+**Hard constraints honored**:
+- No new defense flag · No scoring formula change · No Rule 16 / Top-5 violation
+- Additive-only schema change (PATCH bump)
+- All 4 new fields nullable per Rule 18 graceful-degradation
+- `FORM4_FETCH_SKIP=1` UNCHANGED in this PR — strict Part-1-through-3 scope
+- AGENTS.md substance unchanged (no new agent / no roster change);
+  CLAUDE.md §Gotchas gains the `*_wall_clock_seconds` semantic note;
+  AGENTS.md §Production-verified run state pointer untouched (cron #69
+  still the latest)
+
+PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with
+every PR" lockstep per PR #237 convention. CLAUDE.md substance
+touched (Gotcha for wall-clock semantic + Phase status pointer for
+schema bump). Both Phase 4.5e PR 5 (cluster weight promotion) and
+Issue #67 follow-up per-sector delta are still gated on cron data
+accumulation — this PR is the pre-req that lets the cron actually
+populate the gate-data.
 
 ---

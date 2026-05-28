@@ -365,6 +365,31 @@ class Metadata(BaseModel):
     # Both nullable on legacy snapshots (pre-0.10.7).
     universe_membership_as_of: str | None = None
     survivorship_bias_corrected: bool | None = None
+    # Issue #287 PR A (0.10.9-phase4.6) — per-loop wall-clock observability.
+    # Parity with ``fundamentals_latency_p95_seconds`` but semantically
+    # different: those measure per-ticker fetch p95 (tenacity-cascade
+    # detector); these measure total elapsed WALL-CLOCK seconds for the
+    # entire loop start-to-end (budget-overrun + cache-eviction detector).
+    # Both are needed — slow p95 + short wall-clock = few slow tickers;
+    # fast p95 + long wall-clock = parallelism not helping (GIL / SEC
+    # queue throttle / too few workers). Gate the next ``timeout-minutes``
+    # rebaseline + close the 2026-05-25 150m incident loop.
+    # ``None`` when the loop was skipped via escape-hatch env-var
+    # (``FORM4_FETCH_SKIP`` only) OR when the loop failed before the end
+    # marker was reached. ``QR_SKIP_OSAP`` is NOT a skip-to-None — that
+    # env-var only bypasses the OSAP freshness gate; the try block still
+    # runs end-to-end so ``osap_wall_clock_seconds`` populates with a
+    # small float (~0.5-2s) on a cache-hit fast return.
+    # ``cross_source_wall_clock_seconds`` measures the ENTIRE Step 8
+    # per-ticker loop (fair-price + manipulation + StockDetail write),
+    # not just the cross-source validation sub-calls
+    # — documented limitation; the cross-source yfinance.info fetch
+    # dominates only on cold-cache (serial 2-8s/ticker × 502 = 17-67 min);
+    # on warm-cache hits the rest of Step 8 dominates (~50s).
+    tier2_wall_clock_seconds: float | None = None
+    form4_wall_clock_seconds: float | None = None
+    osap_wall_clock_seconds: float | None = None
+    cross_source_wall_clock_seconds: float | None = None
 
 
 class RawMetrics(BaseModel):

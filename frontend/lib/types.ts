@@ -251,6 +251,20 @@ export type Metadata = {
   // rendered by the static site.
   universe_membership_as_of?: string | null;
   survivorship_bias_corrected?: boolean | null;
+  // Issue #287 PR A (0.10.9-phase4.6) — per-loop wall-clock observability.
+  // Total elapsed wall-clock seconds for the entire loop start-to-end
+  // (parity with `fundamentals_latency_p95_seconds` but measures whole-
+  // loop duration not per-ticker p95). null when the loop was skipped
+  // via escape-hatch env-var (`FORM4_FETCH_SKIP` only) OR when the loop
+  // failed before the end marker. `QR_SKIP_OSAP` is NOT a skip-to-null
+  // — that env-var only bypasses the OSAP freshness gate; the try block
+  // still runs and `osap_wall_clock_seconds` populates with a small float
+  // on a cache-hit fast return. `cross_source_wall_clock_seconds`
+  // measures the ENTIRE Step 8 per-ticker loop, not just cross-source.
+  tier2_wall_clock_seconds?: number | null;
+  form4_wall_clock_seconds?: number | null;
+  osap_wall_clock_seconds?: number | null;
+  cross_source_wall_clock_seconds?: number | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors

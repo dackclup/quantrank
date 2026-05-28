@@ -846,6 +846,12 @@ def run_weekly_compute() -> int:
     form4_diagnostics: dict[str, dict] = {}
     form4_latencies: list[float] = []
     form4_failures: list[str] = []
+    # Issue #287 PR A — wall-clock for the Form-4 loop. `None` semantics:
+    # never assigned when FORM4_FETCH_SKIP=1 (loop didn't run) OR when the
+    # outer try/except fired before the end marker. Populated to the
+    # rounded float seconds on the happy path.
+    form4_wall_clock_seconds: float | None = None
+    _form4_wc_start: float | None = None
 
     # 2026-05-22 hotfix #3: env-var escape hatch for cold-cache CI
     # contexts (pre-merge-prod-sim). The Form-4 fetch is observability
@@ -865,7 +871,7 @@ def run_weekly_compute() -> int:
         )
         # form4_diagnostics / form4_latencies / form4_failures remain
         # empty; the Metadata constructor's `if form4_diagnostics`
-        # guards (lines 1721 onward) coerce each form4_* field to None.
+        # guards (lines 2092-2118) coerce each form4_* field to None.
 
     else:
 
@@ -920,6 +926,9 @@ def run_weekly_compute() -> int:
                 len(_f4_tickers),
                 config.EDGAR_MAX_WORKERS,
             )
+            # Issue #287 PR A — wall-clock start marker (inside else+try so
+            # FORM4_FETCH_SKIP=1 leaves form4_wall_clock_seconds=None).
+            _form4_wc_start = time.monotonic()
             with ThreadPoolExecutor(max_workers=config.EDGAR_MAX_WORKERS) as _f4_ex:
                 _f4_future_to_ticker = {
                     _f4_ex.submit(_fetch_one_form4, _t): _t for _t in _f4_tickers
@@ -942,12 +951,17 @@ def run_weekly_compute() -> int:
                         logger.warning(
                             "form4 future raised for %s: %s", _f4_ticker, _f4_e
                         )
+            # Issue #287 PR A — wall-clock end marker (success path).
+            form4_wall_clock_seconds = round(
+                time.monotonic() - _form4_wc_start, 1
+            )
             logger.info(
-                "Form-4 fetch complete: %d ok, %d failures, p50=%.2fs p95=%.2fs",
+                "Form-4 fetch complete: %d ok, %d failures, p50=%.2fs p95=%.2fs, wall_clock=%ss",
                 len(form4_diagnostics) - len(form4_failures),
                 len(form4_failures),
                 float(np.median(form4_latencies)) if form4_latencies else 0.0,
                 float(np.percentile(form4_latencies, 95)) if form4_latencies else 0.0,
+                form4_wall_clock_seconds,
             )
         except Exception as _f4_outer_e:  # noqa: BLE001
             logger.warning(
@@ -957,6 +971,8 @@ def run_weekly_compute() -> int:
             form4_diagnostics = {}
             form4_latencies = []
             form4_failures = []
+            # Issue #287 PR A — leave form4_wall_clock_seconds = None on failure.
+            form4_wall_clock_seconds = None
 
     # Step 4 — assemble TickerInputs and compute all pillars.
     inputs: dict[str, TickerInputs] = {}
@@ -988,25 +1004,35 @@ def run_weekly_compute() -> int:
     # and an empty tier2_events display dict for that ticker.
     logger.info("Fetching Tier-2 event defenses (10-K + 8-K) for %d tickers…", len(df))
     tier2_results: dict[str, Tier2Result] = {}
-    with ThreadPoolExecutor(max_workers=config.EDGAR_MAX_WORKERS) as ex:
-        futures = {
-            ex.submit(fetch_tier2_for_ticker, r["ticker"]): r["ticker"]
-            for _, r in df.iterrows()
-        }
-        for fut in as_completed(futures):
-            ticker = futures[fut]
-            try:
-                tier2_results[ticker] = fut.result()
-            except Exception as e:  # noqa: BLE001
-                logger.warning("Tier-2 task raised for %s: %s", ticker, e)
-                # Skip this ticker — downstream uses .get() with safe defaults.
+    # Issue #287 PR A — wall-clock start marker.
+    _tier2_wc_start = time.monotonic()
+    tier2_wall_clock_seconds: float | None = None
+    try:
+        with ThreadPoolExecutor(max_workers=config.EDGAR_MAX_WORKERS) as ex:
+            futures = {
+                ex.submit(fetch_tier2_for_ticker, r["ticker"]): r["ticker"]
+                for _, r in df.iterrows()
+            }
+            for fut in as_completed(futures):
+                ticker = futures[fut]
+                try:
+                    tier2_results[ticker] = fut.result()
+                except Exception as e:  # noqa: BLE001
+                    logger.warning("Tier-2 task raised for %s: %s", ticker, e)
+                    # Skip this ticker — downstream uses .get() with safe defaults.
+        tier2_wall_clock_seconds = round(time.monotonic() - _tier2_wc_start, 1)
+    except Exception as _t2_outer_e:  # noqa: BLE001
+        # Defensive: an interpreter-level failure before the end marker
+        # keeps `tier2_wall_clock_seconds = None` (skipped semantic).
+        logger.warning("Tier-2 loop failed entirely: %s", _t2_outer_e)
     tier2_coverage = tier2_coverage_pct_calc(tier2_results)
     logger.info(
-        "Tier-2 coverage: %s%% (gc=%d, nr=%d, ac=%d)",
+        "Tier-2 coverage: %s%% (gc=%d, nr=%d, ac=%d, wall_clock=%ss)",
         tier2_coverage if tier2_coverage is not None else "n/a",
         sum(1 for r in tier2_results.values() if r.going_concern_disclosure),
         sum(1 for r in tier2_results.values() if r.non_reliance_flag.fired),
         sum(1 for r in tier2_results.values() if r.auditor_change_flag.fired),
+        tier2_wall_clock_seconds if tier2_wall_clock_seconds is not None else "n/a",
     )
 
     # Step 5 — composite + risk flags. NSI flag (Defense Playbook §PR 3c §1)
@@ -1147,6 +1173,14 @@ def run_weekly_compute() -> int:
     # equation alongside ``osap_signals_missing_from_dataset`` and
     # ``osap_signals_used`` / ``osap_excluded_signals``.
     osap_signals_dropped_no_long_short_list: list[str] = []
+    # Issue #287 PR A — wall-clock for the OSAP pipeline. Measures the
+    # entire try block including the dataset fetch + gate + per-signal
+    # IC compute + blend. `None` semantics: only set to None when the
+    # outer except fires (full pipeline failure). On a QR_SKIP_OSAP
+    # cache-hit fast return the wall-clock will be a small float (~0.5-2s)
+    # — informative as "skipped fast" vs the cold ~120-300s download.
+    _osap_wc_start = time.monotonic()
+    osap_wall_clock_seconds: float | None = None
     try:
         # Phase 4a — deferred imports. `compute.ingest.osap` pulls in
         # `openassetpricing` at module load (only installed via the
@@ -1292,6 +1326,8 @@ def run_weekly_compute() -> int:
                 "OSAP gate accepted 0 signals — skipping per-ticker map + "
                 "blend; osap_blended_score will be None for every ticker"
             )
+        # Issue #287 PR A — wall-clock end marker (success path).
+        osap_wall_clock_seconds = round(time.monotonic() - _osap_wc_start, 1)
     except Exception as e:  # noqa: BLE001
         logger.warning(
             "OSAP pipeline failed (observability-only — production "
@@ -1308,11 +1344,21 @@ def run_weekly_compute() -> int:
         osap_signals_missing_from_dataset = []
         osap_gate_diagnostics = {}
         osap_signals_dropped_no_long_short_list = []
+        # Issue #287 PR A — leave osap_wall_clock_seconds = None on failure.
+        osap_wall_clock_seconds = None
 
     # Step 8 — combined per-ticker loop: fair-price ensemble + price history
     # write + StockSummary + StockDetail. Single pass so per-ticker outputs
     # stay synchronized (e.g., has_history reflects the actual write result;
     # ensemble warnings flow into both summary and detail consistently).
+    # Issue #287 PR A — wall-clock for the entire Step 8 loop. Documented
+    # limitation: this includes fair-price ensemble + manipulation_index
+    # + StockDetail write — not just the cross_source_validate_market_cap
+    # sub-call. On cold-cache cross-source (502 × 2-8s serial yfinance.info
+    # = 17-67 min) the sub-call dominates; on warm cache the other Step 8
+    # work (~50s total) dominates.
+    _cross_source_wc_start = time.monotonic()
+    cross_source_wall_clock_seconds: float | None = None
     summaries: list[StockSummary] = []
     detail_count = 0
     history_count = 0
@@ -1911,11 +1957,17 @@ def run_weekly_compute() -> int:
         write_stock_detail(detail, config.DATA_DIR)
         detail_count += 1
 
+    # Issue #287 PR A — wall-clock end marker for Step 8 (cross_source umbrella).
+    cross_source_wall_clock_seconds = round(
+        time.monotonic() - _cross_source_wc_start, 1
+    )
     logger.info(
-        "Wrote %d stock detail JSON files; %d with fair_price; %d with price history",
+        "Wrote %d stock detail JSON files; %d with fair_price; %d with price history; "
+        "Step 8 wall_clock=%ss",
         detail_count,
         fair_price_count,
         history_count,
+        cross_source_wall_clock_seconds,
     )
 
     # Step 9 — sanity smoke test (Phase 3c Step 8). Cross-sectional Spearman
@@ -2067,6 +2119,11 @@ def run_weekly_compute() -> int:
         form4_fetch_failures=(
             sorted(form4_failures)[:20] if form4_failures else None
         ),
+        # Issue #287 PR A — per-loop wall-clock observability.
+        tier2_wall_clock_seconds=tier2_wall_clock_seconds,
+        form4_wall_clock_seconds=form4_wall_clock_seconds,
+        osap_wall_clock_seconds=osap_wall_clock_seconds,
+        cross_source_wall_clock_seconds=cross_source_wall_clock_seconds,
     )
 
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)
