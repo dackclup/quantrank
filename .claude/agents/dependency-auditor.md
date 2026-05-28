@@ -29,8 +29,8 @@ license incompatibility on a transitive dep blocks distribution.
   — Next 14 → 16 CVE bump (the critical + several high are here)
 - **Frozen-by-design pins**:
   - Python 3.11+
-  - pandas 2.2 (compatibility with edgartools 2.30)
-  - edgartools 2.30 (project's primary SEC EDGAR client)
+  - pandas 2.2 (compatibility with edgartools 5.31)
+  - edgartools 5.31 (5.x band, `<6` upper bound per `pyproject.toml`; project's primary SEC EDGAR client)
   - pydantic 2.6 (schema triple lockstep depends on v2 API)
   - tenacity 8.2 (retry policy depends on `stop_after_delay`)
   - Next.js 14.2 (issue #41 schedules the 16 bump)
