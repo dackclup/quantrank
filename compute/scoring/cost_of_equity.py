@@ -70,13 +70,15 @@ This module is a pure lookup; it contains no external I/O.  Import
     from compute.scoring.cost_of_equity import get_cost_of_equity
     ke = get_cost_of_equity(ticker_sector)
 
-The module is gated behind ``compute.config.USE_SECTOR_COE = False``
-at the call site in ``compute.valuation.applicability`` and
-``compute.valuation.ensemble``.  When the flag is ``False`` the caller
-continues to pass ``config.COST_OF_EQUITY`` (flat 0.10) as before —
-zero production behaviour change until the flag is flipped to ``True``
-after ≥ 1 cron's delta-flag-count measurement (Rule 18,
-observability-before-wiring discipline).
+The module is gated behind ``compute.config.USE_SECTOR_COE`` at the
+call site in ``compute.valuation.ensemble``.  **Flipped to True
+2026-05-28** per methodology-scientist Mode B verdict + cron #69
+empirical confirmation (Issue #67 closure). Pre-flip, the caller passed
+the flat ``config.COST_OF_EQUITY`` (0.10) regardless of sector; post-
+flip the per-GICS Ke is the production path. The flat-CoE counter
+``Metadata.value_trap_risk_count_without_sector_coe`` remains as the
+monitoring baseline; flipping the flag back requires a separate
+methodology-scientist verdict (load-bearing default, not a toggle).
 """
 
 from __future__ import annotations

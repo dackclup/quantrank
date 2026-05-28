@@ -119,3 +119,20 @@ def test_eight_k_annotate_window_outlasts_veto_window():
         config.EIGHT_K_LOOKBACK_DAYS_ANNOTATE
         >= config.EIGHT_K_LOOKBACK_DAYS_VETO
     )
+
+
+def test_use_sector_coe_flipped_true():
+    """Issue #67 (2026-05-28) — `USE_SECTOR_COE` flipped True after
+    methodology-scientist Mode B verdict + cron #69 empirical
+    confirmation (`value_trap_risk_count_with_sector_coe = 109` vs
+    `_without_sector_coe = 132`, 17.4% reduction landing within the
+    original target band [80, 110]). The 11-sector GICS Ke table at
+    `compute/scoring/cost_of_equity.py::SECTOR_COST_OF_EQUITY` (Damodaran
+    2019 Ch. 8.4 + NYU January 2025 dataset, LITERATURE-ANCHORED per
+    PR #204) replaces the flat `COST_OF_EQUITY = 0.10` at the RIM
+    applicability check.
+
+    Flipping back to False requires a separate methodology-scientist
+    Mode B verdict (load-bearing default; not a feature toggle).
+    Pin protects against accidental revert."""
+    assert config.USE_SECTOR_COE is True

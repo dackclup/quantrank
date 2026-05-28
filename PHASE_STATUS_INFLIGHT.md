@@ -2354,3 +2354,54 @@ Initial main-agent edit commented out `FAIR_PRICE_DATA_QUALITY_CEILING` per the 
 PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" lockstep per PR #237 convention. CLAUDE.md + AGENTS.md substance untouched this PR — the methodology + code change IS substantive (Site-2 emission path retired) but the CLAUDE.md §Phase status entry will fold into a Q3 2026-08-19 cohort-audit comment per issue #130 (already noted in the 2026-05-28 dependency-auditor comment on that issue).
 
 ---
+
+## PR (this PR) — Issue #67 sector-CoE flip: `USE_SECTOR_COE = True` (in flight, 2026-05-28)
+
+Closes Issue #67 — flips `USE_SECTOR_COE` from `False` → `True` per methodology-scientist Mode B verdict 2026-05-28 + cron #69 empirical confirmation. Consumes the data-collection module landed in PR #204 (2026-05-22, Damodaran 2019 Ch. 8.4 + NYU January 2025 betas — LITERATURE-ANCHORED across all 11 GICS sectors).
+
+**Empirical gate satisfied** (cron #69 metadata, 2026-05-28):
+- `value_trap_risk_count_without_sector_coe: 132` (current baseline; flat `COST_OF_EQUITY = 0.10`)
+- `value_trap_risk_count_with_sector_coe: 109` (post-flip projection; per-GICS Ke 6%-12%)
+- **Delta: −23 tickers, −17.4% reduction**
+- Absolute landing point (109) inside the original PR #204 target band `[80, 110]` ✅
+- 38%-vs-17% spread vs original projection explained by baseline drift (PR #166 Issue #11 RIM equity-denominator fix already removed ~44 false positives from the pre-PR-#204 ~176 baseline; the proportional difference is baseline drift, not signal failure)
+
+**Methodology-scientist verdict**:
+
+> VERDICT = APPROVED. Cron #69's 132 → 109 reduction clears the gate per Damodaran 2019 Ch. 8.4 §"Industry Beta" framework. Lower-Ke sectors (Utilities/REIT/Staples) gain leniency; higher-Ke sectors (Tech/Energy) gain stringency; net is negative because S&P 500 has more market-cap exposure to defensives than the flat 10% baseline assumed. Per-sector delta verification recommended but NOT a blocker — Q3 2026-08-19 cohort audit (~12 weekly crons of post-flip data) is the natural shape-verification gate. The flat-CoE counter remains as monitoring baseline; flipping back requires a separate methodology-scientist verdict (load-bearing default).
+
+**Fix scope (5 files)**:
+
+- **`compute/config.py:86`** — `USE_SECTOR_COE: bool = False → True`. Docstring rewritten to: (a) cite the methodology verdict + cron #69 numbers; (b) explain the baseline-drift rationale for the smaller-than-projected delta; (c) mark the flag as a load-bearing default (flipping back requires separate verdict).
+
+- **`compute/scoring/cost_of_equity.py:73-79`** — Module docstring updated to reflect post-flip state ("flipped True 2026-05-28; flat-CoE remains as monitoring baseline").
+
+- **`tests/test_scoring/test_value_trap_risk_sector_coe.py:134-156`** — Test renamed `test_flat_coe_path_unchanged_by_sector_module_import` → `test_use_sector_coe_default_post_issue_67_flip`; assertion inverted from `not config.USE_SECTOR_COE` → `config.USE_SECTOR_COE` (would BREAK on flip otherwise). Docstring updated to document the regression-guard semantics post-flip.
+
+- **`tests/test_config.py`** — New `test_use_sector_coe_flipped_true` pin added (per methodology-scientist Q5b: every config-value flip should pin the new value in `tests/test_config.py` per Phase 2.4/2.5 convention).
+
+**Verification**:
+
+- `ruff check .` — PASS
+- `python -m compute.output.schema_check` — PASS (no schema change in this PR; the dual-counter Metadata fields already shipped in PR #204)
+- `python -m pytest tests/test_config.py tests/test_scoring/test_value_trap_risk_sector_coe.py tests/test_scoring/test_cost_of_equity.py tests/test_valuation/ -q -m "not network"` — **256 passed**
+- `python -m pytest tests/ -q -m "not network" --ignore=tests/test_validation` — **1207 passed**, 7 skipped (optional deps), 0 failed
+- methodology-scientist Mode B verdict — APPROVED (LITERATURE-ANCHORED across all 11 GICS sectors)
+
+**Impact (production behavior change — first methodology-affecting flip post-v1.4.0)**:
+
+- ✅ `value_trap_risk` annotate count: 132 → 109 universe-wide (per cron #69 dual-counter)
+- ✅ Affected pillar: `value` (via RIM applicability gate); the 23 newly-not-flagged tickers regain RIM as a contributing valuation method
+- ✅ Composite ranks DO shift for the cyclical-vs-defensive cohort — but the magnitude is bounded by the per-pillar weight and the median-of-6 aggregation; expected ranking-table impact: small (verified by pre-merge-prod-sim on this PR)
+- ✅ Rule 16 + Top-5 rotation MECHANICS unchanged (no scoring-formula change; only Ke parameter shift on RIM)
+- ✅ No schema change (Metadata dual-counter fields already shipped PR #204)
+- ✅ No new defense flag (defense layer count unchanged at 33 declared)
+
+**Deferred follow-ups** (NOT in this PR):
+
+- **Per-sector delta instrumentation** (methodology-scientist Q2 recommendation) — adds `Metadata.value_trap_risk_delta_by_sector: dict[str, int] | None` to confirm the shape matches Damodaran 2019 Ch. 8.4 §"Industry Beta" expectations (lower-Ke sectors gain flags, higher-Ke sectors lose flags). Separate PR; the universe-wide count is sufficient for THIS flip per the gate contract.
+- **Q3 2026-08-19 cohort audit** — natural review point for per-sector shape verification (~12 weekly crons of post-flip data by then). Already in the issue #130 pre-prep checklist (posted 2026-05-28 by dependency-auditor sweep).
+
+PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" lockstep per PR #237 convention. CLAUDE.md + AGENTS.md substance untouched this PR — the methodology flip IS substantive but Q3 cohort audit (issue #130) is the canonical narrative venue, where the pre-prep checklist comment already documents the gating decision.
+
+---

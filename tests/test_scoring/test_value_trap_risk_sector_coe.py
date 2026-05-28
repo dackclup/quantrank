@@ -131,19 +131,32 @@ def test_energy_roe_above_sector_ke_unflagged() -> None:
 # Sanity — flag-off behavior (USE_SECTOR_COE=False default path)
 # ---------------------------------------------------------------------------
 
-def test_flat_coe_path_unchanged_by_sector_module_import() -> None:
-    """Importing cost_of_equity module does not change the flat-CoE path.
+def test_use_sector_coe_default_post_issue_67_flip() -> None:
+    """Issue #67 (2026-05-28) — `USE_SECTOR_COE` flipped True after
+    methodology-scientist Mode B verdict + cron #69 empirical
+    confirmation (132 → 109 within target [80, 110] band).
 
-    The USE_SECTOR_COE=False default means no behavior change — callers
-    that pass config.COST_OF_EQUITY (0.10) explicitly get the same result
-    as before this PR.
+    Pre-flip: this test asserted `not config.USE_SECTOR_COE` (data-
+    collection-only default). Post-flip: assert it IS True so that an
+    accidental revert surfaces as a test failure.
+
+    The flat-CoE path remains accessible via direct
+    `check_rim_applicability(..., cost_of_equity=config.COST_OF_EQUITY)`
+    call — this test verifies that path still computes correctly,
+    independent of the new production default. Flipping the flag back
+    requires a separate methodology-scientist verdict; this assertion
+    is the regression guard against silent reverts.
     """
     from compute import config  # noqa: PLC0415
 
-    assert not config.USE_SECTOR_COE, (
-        "USE_SECTOR_COE must default to False (data-collection PR, Rule 18)"
+    assert config.USE_SECTOR_COE, (
+        "USE_SECTOR_COE flipped True 2026-05-28 (Issue #67 closure per "
+        "methodology-scientist Mode B); flipping back requires a separate "
+        "methodology-scientist verdict — this is a load-bearing default."
     )
-    # Verify the flat path gives the same answer as the pre-PR baseline.
+    # Verify the flat path still computes the same answer when called
+    # explicitly (used by the writer-side dual-counter pass that emits
+    # `value_trap_risk_count_without_sector_coe` as monitoring baseline).
     result_flat = check_rim_applicability(
         avg_3y_roe=0.09,
         tbvps=15.0,
