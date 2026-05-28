@@ -189,10 +189,10 @@ jobs:
             compute/cache/edgar_late_filings
             compute/cache/edgar_form4
             compute/cache/osap
-          key: cache-v4-${{ steps.quarter.outputs.q }}-${{ runner.os }}
+          key: cache-v5-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
-            cache-v4-${{ steps.quarter.outputs.q }}-
-            cache-v4-
+            cache-v5-${{ steps.quarter.outputs.q }}-
+            cache-v5-
 
       - name: Run PR-branch compute
         id: compute

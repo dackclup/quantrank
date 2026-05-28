@@ -109,11 +109,32 @@ jobs:
           # per-year ROE path in `_avg_3y_roe` silently falls back to the
           # legacy single-period denominator. Forcing fresh fetch via key
           # bump is the established pattern (precedent: PR #49 bumped v1 →
-          # v2 after the audit-#6 `_TTM_*` ingest expansion). Bump again to
-          # v5 if any cache directory's *schema* changes (parquet column
-          # rename, JSON shape change, new annual / TTM tag added). Value
-          # drift is handled by per-cache `_is_fresh()` checks in
-          # compute/ingest/*.py — those run regardless of key.
+          # v2 after the audit-#6 `_TTM_*` ingest expansion).
+          #
+          # Cache key bumped to `cache-v5` (Issue #288 follow-up, 2026-05-28)
+          # after PR #292 + PR #269 introduced the GOOG/GOOGL per-class XBRL
+          # share-override path inside `_build_snapshot`. That branch only
+          # runs on live EDGAR fetch — `fetch_fundamentals` short-circuits
+          # at `_is_fresh()` (compute/ingest/fundamentals.py:1292) when the
+          # cached parquet is < FUNDAMENTALS_REFETCH_DAYS old by filing
+          # date, so the warm cache from a pre-PR-#292 cron replays the
+          # aggregate `shares_outstanding = 12.116B` and the fix never
+          # executes (`Metadata.multi_class_per_class_attempt_count = 0`,
+          # surfaced by the PR #292 Rule 18 disambiguator on cron Run #71
+          # post-edgar-debugger audit). One-time full-universe cold cron
+          # (~25-50 min) flushes the stale parquets; Branch 3 then exercises
+          # on the next live fetch and per-class market_caps land correct
+          # (GOOG ~$2.09T / GOOGL ~$2.59T vs the current ~$4.66T / $4.71T).
+          #
+          # Bump rationale taxonomy:
+          # - Bump when a cache directory's *schema* changes (parquet column
+          #   rename, JSON shape change, new annual / TTM tag added).
+          # - Bump ALSO when a *value-correctness* fix lands inside the
+          #   live-fetch-only path that cache replay short-circuits past
+          #   (e.g., the per-class XBRL share override). Value drift NOT
+          #   covered by this taxonomy is still handled by per-cache
+          #   `_is_fresh()` checks in `compute/ingest/*.py`.
+          # Bump to v6 next time either trigger fires.
           path: |
             compute/cache/fundamentals
             compute/cache/fundamentals_history
@@ -126,10 +147,10 @@ jobs:
             compute/cache/edgar_late_filings
             compute/cache/edgar_form4
             compute/cache/osap
-          key: cache-v4-${{ steps.quarter.outputs.q }}-${{ runner.os }}
+          key: cache-v5-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
-            cache-v4-${{ steps.quarter.outputs.q }}-
-            cache-v4-
+            cache-v5-${{ steps.quarter.outputs.q }}-
+            cache-v5-
 
       - name: Cache restore canary (Issue #287 PR A)
         # Emits size (MB) + age (hours since newest file) for each of the
