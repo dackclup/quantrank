@@ -41,10 +41,12 @@ Monitoring) onto the 18 subagents already in `.claude/agents/` and the
 established commands. No new infrastructure.
 
 **Session-start protocol**: read [`PHASE_STATUS.md`](PHASE_STATUS.md)
-§"Current state" first — currently schema `0.10.5-phase4.5e` (PRs #264 +
-#265; cron #4 still at `0.10.4`, next cron Wed 2026-05-27 re-renders at
-`0.10.5`), defense layer **33 declared** = 7 vetoes + 26 annotates,
-release tag [`v1.3.0-phase4.5e`](https://github.com/dackclup/quantrank/releases/tag/v1.3.0-phase4.5e),
+§"Current state" first — currently schema `0.10.7-phase4.6` (PR #283
+release closes Phase 4.6 honest re-validation harness; bumped through
+PRs #269 GOOG/GOOGL per-class XBRL `0.10.5 → 0.10.6` + Phase 4.6
+Metadata additions `0.10.6 → 0.10.7-phase4.6`), defense layer
+**33 declared** = 7 vetoes + 26 annotates,
+release tag [`v1.4.0-phase4.6`](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6),
 CVE baseline **15 open** (0C / 6H / 7M / 2L) after PR #194 patch +
 PR #226 triage. Then route via the cadence below.
 
@@ -725,7 +727,7 @@ in parallel (disjoint code paths).
 - [x] Weekly compute time stays under 150m — cron #3 (2026-05-23) verified warm-cache ✅
 - [x] `manipulation_index` populated for ≥ 95% of universe ✅ (100% on cron #3)
 - [x] **4.5e-specific**: Reserved-slot weights `INSIDER_SELL_CLUSTER_WEIGHT_RESERVED` / `C_SUITE_UNUSUAL_SELL_WEIGHT_RESERVED` uncommented and active in `FLAG_WEIGHTS` at 5.0 / 3.0 (PR #222). Supabase deferred — Form 4 cache uses local per-ticker SEC EDGAR cache instead of Supabase cross-run state; Supabase reserved for Phase 5+.
-- [x] Tag `v1.2.0-phase4.5` ✅ — cut 2026-05-17 at `6d414a9b`. v1.3.0 target pending release-captain ladder (LedgerCraft A-B series + this doc-refresh).
+- [x] Tag `v1.2.0-phase4.5` ✅ — cut 2026-05-17 at `6d414a9b`. v1.3.0-phase4.5e shipped 2026-05-26 at `5db3b978` (Form-4 cluster + LedgerCraft frontend); v1.4.0-phase4.6 shipped 2026-05-27 at `bbca9cac` (honest re-validation harness).
 
 ---
 

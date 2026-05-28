@@ -98,7 +98,7 @@ keeps growing/draining as PRs cycle.
 
 ## In flight (current)
 
-## PR (this PR) — Issue #261 PR-B: per-class XBRL extraction (structural fix for GOOG/GOOGL `$4.6T` overcount) (in flight, 2026-05-26)
+## PR #269 — Issue #261 PR-B: per-class XBRL extraction (structural fix for GOOG/GOOGL `$4.6T` overcount) (merged 2026-05-26, `5bf38c12`)
 
 Closes the structural half of [issue #261](https://github.com/dackclup/quantrank/issues/261) — the OVERCOUNT pattern where SEC `companyfacts` returns Alphabet's 12.12B total shares to both per-class tickers, producing `$4.6T` market_cap per ticker vs the real ~$1.05T per class. PR-A (PR #264, merged) shipped the `multi_class_aggregate_shares_suspected` annotate observability; **this PR-B ships the actual fix**.
 
@@ -227,7 +227,7 @@ AGENTS.md substance touched (skill count is substance-bearing).
 
 ---
 
-## PR (this PR) — Post-release housekeeping: backfill v1.3.0-phase4.5e pointer + drain 11 stale (in flight) markers (in flight, 2026-05-26)
+## PR #267 — Post-release housekeeping: backfill v1.3.0-phase4.5e pointer + drain 11 stale (in flight) markers (merged 2026-05-26, `a70978af`)
 
 Phase B (post-tag housekeeping) PR per the v1.3.0 release plan.
 Cuts no code; pure doc-pointer maintenance.
@@ -815,7 +815,7 @@ aesthetic doesn't reward page-level motion.
 
 ---
 
-## PR (this PR) — Distill Agentic 6-Phase Cadence into WORKFLOW.md + CLAUDE.md (in flight, 2026-05-27)
+## PR #271 — Distill Agentic 6-Phase Cadence into WORKFLOW.md + CLAUDE.md (merged 2026-05-27, `75b6c682`)
 
 Refactors the user-shared research report
 (`02d29fc4-Research_Report.md`, an artifact analysis + Master Prompt + 6
@@ -1775,7 +1775,7 @@ safety per PR #237 convention.
 
 ---
 
-## PR (this PR) — Phase 4.6 task #2b: forward-return loader from gitignored price cache (in flight, 2026-05-27)
+## PR #280 — Phase 4.6 task #2b: forward-return loader from gitignored price cache (merged 2026-05-27, `1ef962cd`)
 
 Sixth unit of the Phase 4.6 honest re-validation harness (task chain
 #2a → #2b → #2c → #2d → #2e → #2f per
@@ -1909,7 +1909,7 @@ every PR" lockstep per PR #237 convention.
 
 ---
 
-## PR (this PR) — Phase 4.6 task #2c: per-pillar IC at historical dates (in flight, 2026-05-27)
+## PR #281 — Phase 4.6 task #2c: per-pillar IC at historical dates (merged 2026-05-27, `858e8666`)
 
 Seventh unit of the Phase 4.6 honest re-validation harness, closes
 the IC re-baseline half of the chain. After PR #278 (ranking history,
@@ -2009,7 +2009,7 @@ PR #237 convention.
 
 ---
 
-## PR (this PR) — Phase 4.6 task #2f: honest-baseline skeleton + CLI (closing the chain) (in flight, 2026-05-27)
+## PR #282 — Phase 4.6 task #2f: honest-baseline skeleton + CLI (closing the chain) (merged 2026-05-27, `c7cdd881`)
 
 Eighth and **final structural unit** of the Phase 4.6 honest re-
 validation harness. After PR #277 (universe drift) + #278 (ranking
@@ -2115,7 +2115,7 @@ convention.
 
 ---
 
-## PR (this PR) — Codify mobile-only release-tag convention (in flight, 2026-05-27)
+## PR #285 — Codify mobile-only release-tag convention (merged 2026-05-27, `8f373758`)
 
 Locks the **mobile-operator release workflow** that was discovered + battle-tested during the v1.3.0 + v1.4.0 cut on 2026-05-27. The user operates GitHub from a phone only (no desktop / no `gh` CLI / no terminal); the sandbox itself can't push tag-refs (HTTP 403 from the git proxy). The only path that actually works = pre-filled `/releases/new` URL the user taps once.
 
@@ -2142,5 +2142,32 @@ Locks the **mobile-operator release workflow** that was discovered + battle-test
 - Update `THIRD_PARTY_NOTICES.md` if `gh` CLI is ever vendored — currently N/A since gh isn't installed.
 
 PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" lockstep per PR #237 convention.
+
+---
+
+## PR (this PR) — Housekeeping PR-B: drain merged INFLIGHT entries + bump pointers post-v1.4.0 release (in flight, 2026-05-28)
+
+Phase B (post-v1.4.0-tag housekeeping) PR. Cuts no code; pure doc-pointer + INFLIGHT.md maintenance — addresses the doc drift that accumulated across PRs #264-#285 (13 PRs landed since the last housekeeping in PR #267).
+
+**Scope (5 files, doc-only)**:
+
+- **`CLAUDE.md`** §Phase status — schema pointer `0.10.2-phase4.5e` → **`0.10.7-phase4.6`**; defense-layer narrative refresh; `Latest release tag` bumped `v1.3.0-phase4.5e` → **`v1.4.0-phase4.6`** (2026-05-27, `bbca9cac`); `Prior tag` updated; "Recently merged" list refreshed from 6 stale entries (PRs #147-#154) → 22 current entries (PRs #264-#285).
+- **`PHASE_STATUS.md`** §Current state — schema + release tag pointers mirrored from CLAUDE.md; "Production run" pointer bumped to `559c5269` (cron-#5 2026-05-27 chore commit); "Recently merged" list prepended with 22 entries since v1.3.0 (PRs #264-#285), legacy list relabeled as "Earlier" sub-section.
+- **`SKILL.md`** schema-version history table — 3 new rows prepended for the schema bumps that landed since the last housekeeping: `0.10.7-phase4.6` (PR #283 release / Phase 4.6 Metadata fields), `0.10.6-phase4.5e` (PR #269 GOOG/GOOGL per-class XBRL — includes the filer-namespace `goog:CapitalClassCMember` gotcha), `0.10.5-phase4.5e` (PR #264 multi-class CIK-collision annotate).
+- **`WORKFLOW.md`** §Agentic 6-Phase Cadence Session-start protocol — stale schema/tag pointer block bumped `0.10.5-phase4.5e` / `v1.3.0-phase4.5e` → `0.10.7-phase4.6` / `v1.4.0-phase4.6`; defense layer narrative refreshed to reference Phase 4.6 honest re-validation harness closure.
+- **`PHASE_STATUS_INFLIGHT.md`** — 7 stale `(in flight, YYYY-MM-DD)` header markers updated to `(merged YYYY-MM-DD, <SHA>)` with PR-number prefix (PRs #269, #267, #271, #280, #281, #282, #285). Bodies stay in place (full historical record preserved); future `tools/housekeep_phase_status.py` will eventually move them from "In flight (current)" → "Merged (awaiting housekeeping move to CLAUDE.md)" sub-section per the PR #237 convention.
+
+**Verification**:
+- `ruff check .` — N/A (no Python touched)
+- `python -m compute.output.schema_check` — N/A (no schema touched)
+- `pytest tests/ -m "not network"` — N/A (no test surface)
+- Markdown-only diff; `docs-reviewer` (sonnet) spawned for substance review
+
+**Deferred follow-ups**:
+- `AGENTS.md` §Phase + version state already uses the `pointer-to-CLAUDE.md` delegation pattern — no bump needed; cross-tool agents reading state pull from CLAUDE.md per the existing convention.
+- Future `tools/housekeep_phase_status.py` script (PR #237 deferred) — would automate the INFLIGHT-drain + CLAUDE.md pointer bump as one command. Manual for now until volume + shape are stable enough to lock the script API.
+- `AGENTS.md` line 380-382 "Open Phase 4+ issues" — `#67 (Damodaran sector-adjusted CoE, Phase 5+)` is now mis-attributed since PR #204 (2026-05-22) landed the data-collection module; flip-PR `USE_SECTOR_COE = True` is a Phase 4 follow-up not Phase 5. Refresh in a separate substance PR after the cron data confirms the `value_trap_risk` delta-count.
+
+CLAUDE.md substance touched (pointer block + Recently merged list refresh — both materially substantive). AGENTS.md substance untouched per the delegation-pattern explanation above; the lockstep is satisfied by PHASE_STATUS_INFLIGHT.md side-file per PR #237 convention.
 
 ---

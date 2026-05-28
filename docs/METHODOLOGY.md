@@ -13,7 +13,7 @@ QuantRank produces, per stock:
 - **Fair-price ensemble** — median of 6 valuation methods + outlier-excluded
   max. _(Phase 3c)_
 - **Margin of safety** — `(median − current) / median × 100`. _(Phase 3c)_
-- **33 active defenses** — 7 vetoes + 5 numerical guards + 21 annotate-only
+- **33 active defenses** — 7 vetoes + 5 numerical guards + 23 annotate-only
   flags, plus the `manipulation_index` rollup that composes the annotate set
   into a single 0–100 severity dial. Annotate-and-veto-Top-N philosophy:
   defenses **never modify the composite**, only suppress the entered-top-5
@@ -161,7 +161,7 @@ composite.
 | Sector exclusions | EV/EBITDA skipped for Financials; DCF skipped for Financials + Utilities; Quality pillar metrics gated by sector (`magic_formula`, `ebit_based_roic`, `gross_profitability`, `asset_turnover` per Greenblatt 2005) | Greenblatt; sector-method spec |
 | Data-quality $10K ceiling | If any method computes > $10,000/share → null all 6 + emit `data_quality_input_corruption`. Catches upstream ingestion bugs (e.g., `shares_outstanding` in wrong units) before user-visible nonsense. | Internal — Step 7.5 (post-spot-check) |
 
-### Annotate-only flags (21) — surfaced in `valuation_warnings` or `tier2_events`, no behavioral effect
+### Annotate-only flags (23) — surfaced in `valuation_warnings` or `tier2_events`, no behavioral effect
 
 - `goodwill_heavy` — TBVPS / BVPS_reported < 0.5 (cautions that
   reported book is misleading)
@@ -394,6 +394,38 @@ composite.
   method bands themselves are GUT-FEEL only — a separate
   recalibration PR (RIM-specific or per-cohort) is queued for the Q3
   2026-08-19 quarterly cohort audit.
+- `multi_class_aggregate_shares_suspected` _(Issue #261 PR-A, PR #264)_
+  — fires when two or more S&P 500 tickers share the same CIK AND each
+  ticker's `market_cap > 10%` of universe-median
+  (`config.MARKET_CAP_FLOOR_RATIO = 0.10`). Catches the SEC `companyfacts`
+  aggregate-shares overcount pattern where multi-class issuers (GOOG / GOOGL
+  / NWS / NWSA / FOX / FOXA) get the same per-class share count returned
+  via the aggregate XBRL endpoint, inflating `market_cap` by 2-4×. Expected
+  steady-state firing ≈ 6 tickers (Alphabet + News Corp + Fox pairs). Pure
+  data-quality detector — no academic prior; identity-equation check per
+  Damodaran 2019 *Investment Valuation* 3rd ed. Ch. 16 (per-class market
+  cap = per-class shares × per-class price). PR #269 (Issue #261 PR-B)
+  ships the structural per-class XBRL extraction fix for GOOG/GOOGL via
+  `MULTI_CLASS_OVERCOUNT_ALLOWLIST` keyed to the filer-specific class-member
+  dimension; the annotate continues to fire as the safety net for any
+  multi-class filer NOT yet on the allowlist.
+- `valuation_output_anomalous` _(Issue #262, PR #265, renamed from
+  Site-2 emission of `data_quality_input_corruption`)_ — fires when ANY
+  of the 6 fair-price ensemble methods produces an output > $10K/share
+  despite plausible inputs (Site 2 check in
+  `compute/valuation/ensemble.py::_data_quality_corrupt_result`).
+  Semantically distinct from the veto `data_quality_input_corruption`
+  (Site 1, input-level corruption — TBVPS > $10K/share OR TTM revenue
+  &lt; $50M OR |NI| > |revenue| in `compute/scoring/risk_overlay.py`):
+  "a method produced an absurd output despite plausible inputs" is NOT
+  categorical evidence of input untrust (could be residual input bug
+  Site-1 missed, legitimately extreme RIM, OR formula edge case) —
+  annotate-only is the correct Rule 16 surface. Writer-parity emit:
+  `compute/main.py` also appends `valuation_output_anomalous` to
+  `valuation_warnings` when `data_quality_input_corruption` is in
+  `risk_flags`, so veto-cohort tickers (MTB / CPT / MRNA / HBAN on the
+  2026-05-23 cron #3) gain the UI explanation chip via
+  `FairPriceCard.tsx`. Pure data-quality detector — no academic prior.
 
 ### Annotate-vs-veto philosophy
 
