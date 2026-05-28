@@ -484,37 +484,45 @@ whitespace / single-line fixes do not trigger.
 
 ## Phase status
 
-Current schema **`0.10.2-phase4.5e`** · defense layer **22 declared
-veto+annotate flags** of [**32 boolean flags actually emitted**](https://github.com/dackclup/quantrank/issues/130#issuecomment-4496605644)
-(7 active vetoes + 15 annotates + 5 method-applicability +
-5 informational; epic [#150](https://github.com/dackclup/quantrank/issues/150)
-Phase 2 splits the method-applicability flags out of `manipulation_index`).
-Plus 5 numerical guards + `manipulation_index` rollup. Latest release
-tag [**`v1.3.0-phase4.5e`**](https://github.com/dackclup/quantrank/releases/tag/v1.3.0-phase4.5e)
-(2026-05-26, `5db3b978`) — closes the Phase 4.5e Form-4 insider-
-clustering ladder + LedgerCraft frontend reskin; defense layer
-headline 32 → 33 declared (PR #264 `multi_class_aggregate_shares_suspected`);
-PR #265 renamed DQIC site-2 emission to `valuation_output_anomalous`.
-Prior tag [**`v1.2.0-phase4.5`**](https://github.com/dackclup/quantrank/releases/tag/v1.2.0-phase4.5)
-(2026-05-17, `6d414a9b`).
+Current schema **`0.10.7-phase4.6`** · defense layer **33 declared
+boolean flags** (7 active vetoes + 26 annotates + reserved slots; 27
+currently emit until next cron exercises PRs #264 + #265 + Form-4
+cluster revert). Plus 5 numerical guards + `manipulation_index`
+rollup. Latest release tag [**`v1.4.0-phase4.6`**](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6)
+(2026-05-27, `bbca9cac`) — Phase 4.6 honest re-validation harness
+(universe survivorship-bias fix per Hou-Xue-Zhang 2020 + rankings.json
+time-series loader + forward-return loader + per-pillar Spearman IC
++ manipulation-index distribution shift + honest-baseline CLI with
+McLean-Pontiff 2016 32% post-publication decay banner). Prior tag
+[**`v1.3.0-phase4.5e`**](https://github.com/dackclup/quantrank/releases/tag/v1.3.0-phase4.5e)
+(2026-05-26, `5db3b978`) — Phase 4.5e Form-4 insider-clustering
+ladder closure + LedgerCraft frontend reskin (defense layer 32 → 33;
+PR #264 `multi_class_aggregate_shares_suspected` + PR #265 DQIC
+site-2 rename `valuation_output_anomalous`).
 
-**Recently merged**:
-- [PR #154](https://github.com/dackclup/quantrank/pull/154) —
-  Epic #150 Phase 1.2: defense layer headline count reconcile 17 → 27
-  (declared veto+annotate flags PLUS method-applicability + informational
-  flags from the [2026-05-20 quarterly audit](https://github.com/dackclup/quantrank/issues/130#issuecomment-4496605644))
-- [PR #153](https://github.com/dackclup/quantrank/pull/153) —
-  Epic #150 Phase 1.3: pre-merge-prod-sim workflow dogfood (composite.py
-  docstring cross-ref; sticky comment + diff table verified end-to-end)
-- [PR #151](https://github.com/dackclup/quantrank/pull/151) —
-  Phase 0 of epic #150: Known Limitations + pillar label clarification
-- [PR #149](https://github.com/dackclup/quantrank/pull/149) —
-  verify-helper Section B post-PR-#79 stale expectations (closes #117)
-- [PR #148](https://github.com/dackclup/quantrank/pull/148) —
-  Pre-merge production simulation PR 2 (composite diff + top-10 movers,
-  closes Epic #125 Item 3)
-- [PR #147](https://github.com/dackclup/quantrank/pull/147) —
-  PHASE_STATUS.md "Current state" summary block hoist (Optimization PR G)
+**Recently merged** (PR #264 → PR #285, 2026-05-26 → 2026-05-27):
+- PR #285 `8f373758` — docs(release): codify mobile-only operator convention for tag releases
+- PR #284 `a820caee` — fix(test): manipulation_distribution smoke resilient to shallow clones (CI `actions/checkout@v6` fetch-depth=1)
+- PR #283 `bbca9cac` — chore(release): **v1.4.0-phase4.6** — Honest re-validation harness
+- PR #282 `c7cdd881` — feat(validation): Phase 4.6 task #2f — honest-baseline skeleton + CLI (closing the chain)
+- PR #281 `858e8666` — feat(validation): Phase 4.6 task #2c — per-pillar Spearman IC at historical dates
+- PR #280 `1ef962cd` — feat(validation): Phase 4.6 task #2b — forward-return loader from gitignored price cache
+- PR #279 `6a712e82` — feat(validation): Phase 4.6 task #2e — manipulation_index distribution shift report
+- PR #278 `e169aba6` — feat(validation): Phase 4.6 task #2a — rankings.json time-series loader (via git-archive)
+- PR #277 `b70ea971` — feat(validation): Phase 4.6 task #2 — universe-drift harness
+- PR #276 `7480734b` — feat(main): Phase 4.6 writer wiring — universe-provenance Metadata in forward cron
+- PR #275 `78ab1d7d` — feat(validation): Phase 4.6 — wire `universe_provider` into pbo_dsr gates
+- PR #274 `f2888844` — feat(universe): Phase 4.6 — survivorship-bias fix (historical S&P 500 membership)
+- PR #273 `cfa1f709` — docs(research): calibration + 5 PLAN drafts from Research Report v1.0
+- PR #272 `65649993` — docs(phase-5): outline PLAN.md for Supabase hybrid (sub-PR 5.0 first commit)
+- PR #271 `75b6c682` — docs(workflow): distill Agentic 6-Phase Cadence into WORKFLOW.md + CLAUDE.md
+- PR #270 `1bf5bb81` — chore(gitignore): ignore `graphify-out/` build artifacts
+- PR #269 `5bf38c12` — feat(ingest): Issue #261 PR-B — per-class XBRL extraction (structural fix for GOOG/GOOGL `$4.6T` overcount; schema `0.10.5 → 0.10.6-phase4.5e`)
+- PR #268 `f79548f0` — docs(skill): `good-code-bad-code-review` reference catalog (Miler/milerdev paired good/bad examples; skill count 44 → 45)
+- PR #267 `a70978af` — docs: Phase B post-v1.3.0 housekeeping (pointer backfill + drain 11 stale INFLIGHT markers)
+- PR #266 `5db3b978` — chore(release): **v1.3.0-phase4.5e** — Form-4 insider clustering + LedgerCraft frontend
+- PR #265 `e6013bae` — fix(scoring): Issue #262 — rename DQIC site-2 emission to `valuation_output_anomalous` + writer-parity for veto cohort UI
+- PR #264 `d9c62292` — feat(scoring): Issue #261 PR-A — `multi_class_aggregate_shares_suspected` annotate (CIK-collision detector; schema `0.10.4 → 0.10.5-phase4.5e`; flags 32 → 33 declared)
 
 **Epic #150 Phase 1.4 + 1.5 merged via PR #156** (2026-05-20) —
 `section_j_annotate_audit()` added to `verify-production-output/helper.py`
