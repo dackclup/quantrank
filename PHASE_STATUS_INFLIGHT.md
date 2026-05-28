@@ -2208,3 +2208,47 @@ Post-cron-#69 cleanup bundle. Cron run #69 (workflow_dispatch by user 2026-05-28
 PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" lockstep per PR #237 convention. CLAUDE.md substance touched (Stack version refresh + Gotchas inventory completion — both materially substantive).
 
 ---
+
+## PR (this PR) — AGENTS.md substance refresh: production-verified run pointer + open-issues list (in flight, 2026-05-28)
+
+Second cleanup PR same day. PR #286 (housekeeping) opted to defer the AGENTS.md substance update under the `pointer-to-CLAUDE.md` delegation pattern; PR #290 (post-cron cleanup) noted the deferred AGENTS.md items but kept scope tight. This PR closes both deferred items.
+
+**Scope (1 file, doc-only)**:
+
+- **`AGENTS.md`** line 377 — Production-verified run pointer bumped from cron #51 (`b1588b2a`, 5m14s, ~2026-05-14) → cron #69 (`233117ac`, 13m 16s, 2026-05-28). Adds verification details (defense-layer-auditor + stock-detail-auditor on schema `0.10.7-phase4.6`, 7 active vetoes confirmed, Rule 16 Top-5 invariant holds with PPG carrying badge). Cross-tool agents (Copilot / Cursor / Devin) validating local output against a known-good baseline now have the current reference point. Closes `security-reviewer` 2026-05-28 informational finding.
+
+- **`AGENTS.md`** lines 380-382 — "Open Phase 4+ issues" list refreshed from 4 entries → 11 entries:
+  - REMOVED stale qualifier: `#67 (Damodaran sector-adjusted CoE, Phase 5+)` was mis-attributed; PR #204 (2026-05-22) landed the data-collection module so `#67` is Phase 4 follow-up, NOT Phase 5+. Now reads `#67 (sector-CoE flip-PR; data-collection landed PR #204, flip gated on cron data after #287 lands)`.
+  - ADDED context to #41: "15 advisories open, all zero-exploitability on static-export deployment" so cross-tool agents understand the migration is release-tag cleanliness not security-critical.
+  - ADDED 7 missing open issues: #115 (JKP license) · #130 (Q3 cohort 2026-08-19) · #137 (9arm-skills license deadline 2026-06-17) · #150 (Phase 2-3 epic) · #287 (FORM4 revert + durable timeout, NEW today) · #288 (GOOG/GOOGL XBRL broken, NEW today) · #289 (NVR DQIC false positive, NEW today).
+
+**Why this PR exists**:
+
+Cross-tool agents (Copilot / Cursor / Devin) reading AGENTS.md before doing work on the repo would have:
+- Validated against a 14-day-stale baseline (`b1588b2a` from ~2026-05-14)
+- Skipped `#67` thinking it was Phase 5+ work (when it's actually Phase 4 follow-up gated only on cron data)
+- Missed the 7 newly-filed issues entirely
+
+This is operationally a small-scope PR but high-leverage: AGENTS.md is the cross-tool agent SoT for "Open Phase 4+ issues", and stale pointers there cause repeated re-derivation across sessions.
+
+**Out of scope (deferred to scoped follow-ups)**:
+
+- CLAUDE.md §Phase status touched per the standing delegation pattern (CLAUDE.md is SoT for "Current state" + "Recently merged" + "Next deliverables"). The CLAUDE.md side already bumped in PR #286 and #290; this PR adds the AGENTS.md mirror only.
+- `tools/build_release_url.py` helper (PR #285 deferred follow-up) — different scope; queued for separate PR.
+- `tools/housekeep_phase_status.py` (PR #237 deferred) — different scope; queued for separate PR.
+- Issue #288 / #289 substantive fixes — agent verdicts (edgar-debugger + methodology-scientist) in flight as of this PR; fix-PRs follow once verdicts land.
+
+**Verification**:
+- `ruff check .` — N/A (no Python touched)
+- `python -m compute.output.schema_check` — N/A (no schema touched)
+- `pytest tests/ -m "not network"` — N/A (no test surface)
+- Markdown-only diff on a single file
+
+**Hard constraints honored**:
+- No scoring / composite / Rule 16 / Top-5 rotation invariant touched
+- No schema change
+- CLAUDE.md substance untouched THIS PR (PR #286 + PR #290 already bumped it); the lockstep flips this time — AGENTS.md substance touched while CLAUDE.md stays. PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions per PR #237 convention.
+
+PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" lockstep per PR #237 convention. AGENTS.md substance touched (production-verified run bump + open-issues list refresh — both materially substantive). CLAUDE.md substance untouched per the delegation-pattern (PR #286 + PR #290 already updated the CLAUDE.md side; this PR closes the AGENTS.md side of the lockstep).
+
+---
