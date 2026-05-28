@@ -11,13 +11,17 @@ from compute import config
 
 
 def test_schema_version_is_phase4_6():
-    """Phase 4.6 (0.10.7-phase4.6) — PATCH bump for two new Metadata
-    fields ``universe_membership_as_of`` + ``survivorship_bias_corrected``.
-    Rule 18 observability for the historical S&P 500 membership lookup
-    path (Research Report v1.0 §7.4 — Hou-Xue-Zhang 2020 RFS replication-
-    crisis evidence). Supersedes PR #269's 0.10.6-phase4.5e bump.
+    """Issue #288 (0.10.8-phase4.6, 2026-05-28) — PATCH bump for the
+    new ``Metadata.multi_class_per_class_attempt_count`` Rule 18
+    disambiguator. Increments when Branch 3 (per-class XBRL override
+    allowlist) enters the ``_fetch_shares_from_per_filing_xbrl`` call,
+    regardless of whether XBRL lookup succeeds. Disambiguates the
+    silent XBRL lookup failure mode PR #269 silently hit since landing
+    2026-05-26 (concept-name omission — `us-gaap:CommonStockSharesOutstanding`
+    was missing from the XBRL fallback query tuple at fundamentals.py:735).
+    Supersedes Phase 4.6 release's 0.10.7-phase4.6 bump.
     Locks the version against accidental revert."""
-    assert config.SCHEMA_VERSION == "0.10.7-phase4.6"
+    assert config.SCHEMA_VERSION == "0.10.8-phase4.6"
 
 
 def test_multi_class_overcount_allowlist_membership():

@@ -225,6 +225,12 @@ export type Metadata = {
   // (which is the OPPOSITE-direction sum-all path for V/NWS/NWSA/FOX/
   // FOXA/BRK-B/STZ). Expected steady-state firing rate: 2.
   multi_class_per_class_override_count?: number | null;
+  // Issue #288 (0.10.8-phase4.6) — Rule-18 disambiguator on the per-class
+  // override path. Increments each time Branch 3 enters the XBRL call
+  // regardless of success. Pre-fix this would be 2 with override = 0
+  // (surfacing the silent XBRL lookup failure PR #269 missed).
+  // Post-fix expected steady-state: attempt = override = 2.
+  multi_class_per_class_attempt_count?: number | null;
   // Issue #261 PR-B (0.10.6-phase4.5e) — Defensive sanity-check counter
   // on the per-class override path. Fires when per-class is outside the
   // expected 5-95% fraction of primary, or when per-class >= primary

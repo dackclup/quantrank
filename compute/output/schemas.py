@@ -324,6 +324,20 @@ class Metadata(BaseModel):
     # OVERCOUNT path (filters one specific class member for GOOG/GOOGL).
     # Expected steady-state firing rate: 2 (GOOG + GOOGL).
     multi_class_per_class_override_count: int | None = None
+    # Issue #288 (0.10.8-phase4.6, 2026-05-28) — Rule-18 disambiguator.
+    # Increments each time Branch 3 (per-class override allowlist) enters
+    # the ``_fetch_shares_from_per_filing_xbrl`` call, regardless of
+    # whether XBRL lookup succeeds. Pre-fix this counter was 2 (GOOG +
+    # GOOGL both entered Branch 3) while ``multi_class_per_class_override_count``
+    # stayed at 0 — surfacing the silent XBRL lookup failure mode that
+    # PR #269 missed (concept-name omission: `us-gaap:CommonStockSharesOutstanding`
+    # was not in the XBRL fallback query tuple). Post-fix expected
+    # steady-state: attempt = override = 2 (one per ticker per cron).
+    # Disambiguation rule for future regressions:
+    #   attempt == override == 0 : Branch 3 never triggered (allowlist empty or QR_SKIP_FUNDAMENTALS set)
+    #   attempt >  0, override == 0 : XBRL lookup returned None (regression class of #288)
+    #   attempt == override >  0 : normal operation
+    multi_class_per_class_attempt_count: int | None = None
     # Issue #261 PR-B (0.10.6-phase4.5e) — Defensive Rule-18 sanity
     # check on the per-class override path. Fires when the extracted
     # per-class share count falls OUTSIDE the expected 5%-95% fraction

@@ -436,6 +436,7 @@ def test_reset_fallback_stats_zeros_counters():
         _FALLBACK_STATS["dimensional_override"] = 2
         _FALLBACK_STATS["per_class_override"] = 4
         _FALLBACK_STATS["mc_reconcile_failure"] = 1
+        _FALLBACK_STATS["per_class_attempt"] = 5
 
     reset_fallback_stats()
     assert get_fallback_stats() == {
@@ -444,6 +445,7 @@ def test_reset_fallback_stats_zeros_counters():
         "dimensional_override": 0,
         "per_class_override": 0,
         "mc_reconcile_failure": 0,
+        "per_class_attempt": 0,
     }
 
 
@@ -467,6 +469,7 @@ def test_get_fallback_stats_returns_copy_not_reference():
         "dimensional_override": 0,
         "per_class_override": 0,
         "mc_reconcile_failure": 0,
+        "per_class_attempt": 0,
     }
     # And the two dicts are distinct objects.
     assert first is not second
@@ -709,14 +712,15 @@ def test_too_low_primary_does_not_fire_dimensional_branch():
     assert stats["dimensional_override"] == 0
 
 
-def test_get_fallback_stats_returns_five_keys_after_dimensional_path():
-    """Lifecycle sanity: reset → run dimensional override → inspect all five keys.
+def test_get_fallback_stats_returns_six_keys_after_dimensional_path():
+    """Lifecycle sanity: reset → run dimensional override → inspect all six keys.
 
-    After reset_fallback_stats(): all five counters are 0
+    After reset_fallback_stats(): all six counters are 0
     (Issue #261 PR-B added ``per_class_override`` + ``mc_reconcile_failure``
-    alongside the existing 3).
+    alongside the existing 3; Issue #288 added ``per_class_attempt`` as the
+    Rule-18 disambiguator on the per-class XBRL override path).
     After one dimensional override fires: only dimensional_override == 1;
-    the other four counters remain 0 (each belongs to a distinct path).
+    the other five counters remain 0 (each belongs to a distinct path).
     """
     from compute.ingest.fundamentals import (
         _build_snapshot,
@@ -731,6 +735,7 @@ def test_get_fallback_stats_returns_five_keys_after_dimensional_path():
         "dimensional_override": 0,
         "per_class_override": 0,
         "mc_reconcile_failure": 0,
+        "per_class_attempt": 0,
     }
 
     facts = _make_facts_stub(shares_outstanding=469_000_000.0)
@@ -752,6 +757,7 @@ def test_get_fallback_stats_returns_five_keys_after_dimensional_path():
         "dimensional_override": 1,
         "per_class_override": 0,
         "mc_reconcile_failure": 0,
+        "per_class_attempt": 0,
     }
 
 
