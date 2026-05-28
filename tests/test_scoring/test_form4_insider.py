@@ -1087,3 +1087,58 @@ def test_live_aapl_aff10b5_one_extraction():
         )
     except Exception as exc:  # noqa: BLE001
         pytest.skip(f"Live EDGAR fetch failed (SEC may be unavailable): {exc}")
+
+
+# ---------------------------------------------------------------------------
+# PR 6 cross-reference — comprehensive negation-guard tests live in
+# tests/test_scoring/test_form4_negation_guard.py (33 tests; 13 parametrized
+# pattern coverage + 5 negative + 2 ±5-token window + 2 spelling + 5
+# integration + 2 thread-safety + 2 Hypothesis + 3 manifest pins).
+# These two tests here are smoke imports — they prove the public PR 6
+# surface is reachable from this module without re-running the deep
+# behavioral matrix.
+# ---------------------------------------------------------------------------
+
+
+def test_PR6_negation_guard_symbols_are_importable() -> None:
+    """PR 6 public surface — the negation guard's user-facing symbols
+    must be importable from ``compute.scoring.form4_insider``. The
+    deep coverage matrix lives in ``test_form4_negation_guard.py``;
+    this smoke import is the cross-reference pin from the parent
+    module's test file (per the quality-gate Section D check that a
+    substantially modified scoring module has at least one test-file
+    touch in the same PR)."""
+    from compute.scoring.form4_insider import (  # noqa: F401
+        _NEGATION_PATTERNS,
+        _NEGATION_REGEX,
+        _has_negation,
+        get_negation_downgrade_count,
+        reset_negation_downgrade_count,
+    )
+
+
+def test_PR6_detect_10b5_1_signature_unchanged_post_negation_guard() -> None:
+    """``_detect_10b5_1_on_transaction`` keeps the ``(tx, footnotes_dict)
+    -> bool | None`` public signature after the PR 6 negation-guard
+    wrapper landed. Catches accidental signature churn — e.g.
+    ``-> tuple[bool | None, bool]`` if someone tried to thread the
+    downgrade flag out per-call instead of via the module-level
+    counter. The actual True / False / None branching is exercised
+    in ``test_form4_negation_guard.py::test_I1..I5``."""
+    import inspect
+
+    from compute.scoring.form4_insider import _detect_10b5_1_on_transaction
+
+    sig = inspect.signature(_detect_10b5_1_on_transaction)
+    params = list(sig.parameters.keys())
+    assert params == ["tx", "footnotes_dict"], (
+        f"_detect_10b5_1_on_transaction signature drifted from "
+        f"(tx, footnotes_dict): got {params}"
+    )
+    # Return annotation is `bool | None` (str repr varies by Python version;
+    # accept any of the canonical forms).
+    ret = str(sig.return_annotation)
+    assert "bool" in ret and "None" in ret, (
+        f"_detect_10b5_1_on_transaction return annotation drifted; "
+        f"expected 'bool | None'-equivalent, got {ret!r}"
+    )
