@@ -374,12 +374,29 @@ list lives in [`CLAUDE.md`](CLAUDE.md) §Phase status. Schema-version
 history table is in [`SKILL.md`](SKILL.md). This file's role is to
 note cross-tool-specific points only:
 
-- Production-verified run: #51 (`b1588b2a`, 5m14s warm-cache) — useful
-  for non-Claude agents validating local compute output against a
-  known-good baseline.
+- Production-verified run: cron #69 (`233117ac`, 13m 16s warm-cache,
+  2026-05-28) — useful for non-Claude agents validating local compute
+  output against a known-good baseline. Verified by `defense-layer-
+  auditor` Section A-J + `stock-detail-auditor` deterministic prefilter
+  on schema `0.10.7-phase4.6`; 7 active vetoes firing as expected (NVDA
+  rank 1 correctly suppressed by `beneish_manipulation_veto`); Rule 16
+  Top-5 rotation invariant holds with PPG carrying the `entered_top5`
+  badge. Known follow-ups: issue #288 (GOOG/GOOGL display market_cap
+  2.2× inflated; composite unaffected), issue #289 (NVR DQIC ceiling
+  false positive; `/stock/NVR` renders empty fair-price section).
 - Open Phase 4+ issues: #15 (SEC throttling) · #41 (Next 14→16 CVE
-  bump) · #67 (Damodaran sector-adjusted CoE, Phase 5+) · #75
-  (PR 4b §3 IC-decay writer, Phase 5-blocked).
+  bump; 15 advisories open, all zero-exploitability on static-export
+  deployment) · #67 (sector-CoE flip-PR; data-collection landed
+  PR #204, flip gated on cron data after #287 lands) · #75 (PR 4b §3
+  IC-decay writer, Phase 5-blocked) · #115 (JKP CC BY-NC 4.0 license
+  review, blocks Phase 4i.1 integration) · #130 (Q3 cohort audit,
+  scheduled 2026-08-19) · #137 (9arm-skills license clarification,
+  deadline 2026-06-17) · #150 (Phase 2-3 epic, phases 2-3 remaining)
+  · #287 (FORM4 revert + durable 5-loop timeout fix, blocks Phase
+  4.5e PR 5 cluster weight promotion) · #288 (GOOG/GOOGL per-class
+  XBRL override silently bypassed since PR #269) · #289 (NVR DQIC
+  ceiling false positive, methodology-scientist Mode B verdict
+  pending).
 - **`.md` optimization sequence** (Option D — multi-PR overhaul):
   PR A drift fix #141 ✅ · PR B CLAUDE.md token diet #142 ✅ ·
   PR C AGENTS.md sync + dedup #143 ✅ · PR D WORKFLOW.md archive
