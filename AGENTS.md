@@ -417,7 +417,10 @@ note cross-tool-specific points only:
   cache-v5 flushes pre-fix parquets so the override fires on next cron
   Run #72) · #289 (NVR DQIC ceiling false positive, **closed by PR #293**
   Site-2 retirement per methodology-scientist Mode B Option C
-  verdict; NVR fair_price section now renders correctly).
+  verdict; NVR fair_price section now renders correctly; dead-code
+  helpers `_has_corrupt_input` + `_data_quality_corrupt_result`
+  REMOVED in the PR #293 follow-up after cron Run #71 confirmed the
+  retirement empirically — see in-flight entry).
 - **`.md` optimization sequence** (Option D — multi-PR overhaul):
   PR A drift fix #141 ✅ · PR B CLAUDE.md token diet #142 ✅ ·
   PR C AGENTS.md sync + dedup #143 ✅ · PR D WORKFLOW.md archive
