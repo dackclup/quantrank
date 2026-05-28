@@ -386,3 +386,48 @@ def test_M2_negation_regex_is_compiled_pattern() -> None:
     # inline ``(?ix)`` group — re.IGNORECASE | re.VERBOSE).
     assert _NEGATION_REGEX.flags & re.IGNORECASE
     assert _NEGATION_REGEX.flags & re.VERBOSE
+
+
+def test_M3_negation_patterns_each_appear_in_compiled_regex() -> None:
+    """Drift-detector: every token in ``_NEGATION_PATTERNS`` must appear
+    somewhere in the compiled ``_NEGATION_REGEX.pattern`` source string.
+
+    Without this pin, someone could:
+    1. Add a 12th token to ``_NEGATION_PATTERNS`` without wiring it into
+       the regex alternation → frozenset claims coverage that the actual
+       guard doesn't deliver.
+    2. Remove a token from the regex alternation without bumping
+       ``_NEGATION_PATTERNS`` → frozenset overstates coverage.
+
+    The carve-outs handle:
+    - ``cancelled`` (double-L) and ``canceled`` (single-L) both appear in
+      ``_NEGATION_PATTERNS``; the regex collapses them to one
+      ``cancell?ed`` token, so we substring-match the shared prefix
+      ``cancel``.
+    - ``not in effect`` is multi-word; the regex uses ``\\s+`` for the
+      inner space, so we substring-match the visible-word fragments
+      ``not`` and ``effect`` separately.
+    - ``no`` is BEFORE-only by design (see ``_NEGATION_REGEX`` BEFORE
+      NOTE); the pattern still appears in the source string of the
+      BEFORE branch, so plain substring search succeeds.
+    """
+    pattern_source = _NEGATION_REGEX.pattern.lower()
+
+    for token in _NEGATION_PATTERNS:
+        if token in ("cancelled", "canceled"):
+            assert "cancel" in pattern_source, (
+                f"_NEGATION_PATTERNS contains {token!r} but the "
+                "regex source string is missing the 'cancel' "
+                "stem — drift detected."
+            )
+        elif token == "not in effect":
+            assert "not" in pattern_source and "effect" in pattern_source, (
+                "_NEGATION_PATTERNS contains 'not in effect' but the "
+                "regex source string is missing 'not' or 'effect' — "
+                "drift detected."
+            )
+        else:
+            assert token in pattern_source, (
+                f"_NEGATION_PATTERNS contains {token!r} but the regex "
+                "source string is missing it — drift detected."
+            )

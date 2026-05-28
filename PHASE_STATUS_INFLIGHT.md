@@ -2939,6 +2939,30 @@ a structural change.
 `_has_negation` returns expected True/False on all 14 positive +
 negative footnote-text examples; counter reset + bump cycle works.
 
+**quantrank-reviewer (opus) verdict** READY-TO-PUSH. 3 WARNs filed
+as non-blocking; 2 addressed inline, 1 deferred:
+- WARN-2 (BEFORE/AFTER asymmetry on ``no``) FIXED: added inline
+  comment at ``_NEGATION_REGEX`` BEFORE branch + cross-reference at
+  AFTER branch noting ``no`` is intentionally BEFORE-only (post-
+  mention ambiguity FP risk: "10b5-1 plan, no shares sold").
+- WARN-3 (M1 manifest test misses regex-vs-frozenset drift) FIXED:
+  added `test_M3_negation_patterns_each_appear_in_compiled_regex`
+  drift-detector — every token in ``_NEGATION_PATTERNS`` must appear
+  in ``_NEGATION_REGEX.pattern`` source string. Tests 33 → 34.
+- WARN-1 DEFERRED to follow-up PR: ``_NEGATION_REGEX`` anchor
+  ``(?:rule\s+)?10b-?5-?1`` matches only 2 of upstream
+  ``detect_10b5_1_plan``'s 6 substring patterns (the ones with the
+  ``-1`` suffix). A footnote like "Rule 10b5 plan terminated 2022"
+  triggers the upstream detector True but slips past the negation
+  guard. **Bias direction remains safe** (over-includes legit
+  trades in opportunistic cohort, never under-excludes); but the
+  docstring claim that PR 6 closes residual footgun #1 is somewhat
+  overstated. Fix path: extend regex anchor to
+  ``(?:rule\s+)?10b-?5(?:-1| plan)?``. Defer rationale: next cron's
+  ``form4_negation_guard_downgrade_count`` will measure whether the
+  gap is material; structural change worth a separate PR with its
+  own test surface walk. Tracked here pending cron Run #72+ data.
+
 No composite-score change · No Rule 16 violation · Defense layer
 emit count unchanged at 33 declared boolean flags (PR 6 hardens an
 existing input filter; no new flag) · Cluster + C-suite weights

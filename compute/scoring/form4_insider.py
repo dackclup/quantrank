@@ -375,12 +375,19 @@ _NEGATION_PATTERNS: Final[frozenset[str]] = frozenset({
 _NEGATION_REGEX: Final[re.Pattern[str]] = re.compile(
     r"(?ix)"
     r"(?:"
-    # BEFORE: negation appears before the 10b5-1 mention, within 5 tokens
+    # BEFORE: negation appears before the 10b5-1 mention, within 5 tokens.
+    # NOTE on asymmetry: ``no`` is deliberately BEFORE-only — it reads
+    # naturally as a pre-mention qualifier ("no Rule 10b5-1 plan") but
+    # post-mention it's ambiguous ("10b5-1 plan, no shares sold" =
+    # affirmative-plan disclosure with a non-negation use of ``no``),
+    # so the AFTER branch omits ``no`` to keep FP risk low. All 10
+    # other tokens are bidirectional (BEFORE + AFTER).
     r"\b(?:terminated|cancell?ed|expired|rescinded|discontinued|no|"
     r"not\s+in\s+effect|previously|former|without)\b"
     r"(?:\W+\w+){0,5}\W+(?:rule\s+)?10b-?5-?1"
     r"|"
-    # AFTER: negation appears after the 10b5-1 mention, within 5 tokens
+    # AFTER: negation appears after the 10b5-1 mention, within 5 tokens.
+    # See BEFORE NOTE — ``no`` is intentionally absent from this branch.
     r"(?:rule\s+)?10b-?5-?1"
     r"(?:\W+\w+){0,5}\W+"
     r"\b(?:terminated|cancell?ed|expired|rescinded|discontinued|"
