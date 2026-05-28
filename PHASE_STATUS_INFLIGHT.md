@@ -2438,3 +2438,44 @@ Without this housekeeping, the next session reading CLAUDE.md §Phase status wou
 PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" lockstep per PR #237 convention. CLAUDE.md substance touched (pointer block + Recently merged list refresh — both materially substantive).
 
 ---
+
+## PR (this PR) — Add root `CONTEXT.md` pointer + reconcile `docs/agents/domain.md` (in flight, 2026-05-28)
+
+End-of-day Track-A3 follow-up to the post-session housekeeping commit (`0949a3c1`). Adds a single-file `CONTEXT.md` entry point at the repo root so external tools / fresh agents / vendored skills that expect the upstream mattpocock convention have one bridge file to read first. Reconciles `docs/agents/domain.md` which previously declared "QuantRank has NO `CONTEXT.md`" (now stale).
+
+**Scope (3 files, doc-only — additive)**:
+
+- **`CONTEXT.md`** (NEW, ~245 lines) — bridge / live-snapshot pointer. 11 sections: Design note (explicit "not source of truth" framing) · What is QuantRank · Live snapshot (schema `0.10.8-phase4.6` · `v1.4.0-phase4.6` tag · 33 declared flags · `USE_SECTOR_COE=True` post-#294 · cron #69 green) · Multi-file mapping (12-row file→topic + 6-row topic→file tables mirroring `docs/agents/domain.md`) · 8 Key invariants (Rule 16 / schema triple / Rule 18 / lockstep / rebase / mobile-only / formula sacred / orchestrator role) · Stack · Layout · Quick-start commands (verification ladder + local compute + network tests) · 9 Standing constraints (license + scope) · 7 Vocabulary discipline terms · Roadmap pointer (Stage 0 → Stage 6 / v2.0) · Companion files index.
+
+- **`docs/agents/domain.md`** §"QuantRank has NO `CONTEXT.md`" — section header + opening paragraph rewritten to "`CONTEXT.md` is a pointer, not the source of truth" with the new framing (the four-file analog remains canonical; CONTEXT.md is a bridge). The topic-driven lookup table + "update `CONTEXT.md` inline when a term resolves" + "Use the project vocabulary" sections remain unchanged (their semantics still apply — updates land in the appropriate deep file, not in CONTEXT.md which is pointer-only).
+
+- **`PHASE_STATUS_INFLIGHT.md`** — this entry.
+
+**Why this PR exists**:
+
+`docs/agents/domain.md` referenced the upstream-vs-QuantRank divergence by stating QuantRank has NO `CONTEXT.md`. That statement was reasonable before this PR but creates friction for any tool / agent / vendored skill that genuinely expects to read `CONTEXT.md` first — they'd 404 and either error out or fall back to a generic search. Adding a pointer-only `CONTEXT.md` satisfies the upstream contract without compromising the multi-file design: the four canonical files (CLAUDE.md + SKILL.md + WORKFLOW.md + docs/METHODOLOGY.md) remain source of truth, and `CONTEXT.md` is explicit about its role as "bridge + snapshot" in its first paragraph.
+
+**Design discipline**:
+
+- `CONTEXT.md` MUST NOT duplicate content from the four canonical files — when content drifts, the four files win and `CONTEXT.md` updates to point at the new location.
+- "Live snapshot" block in `CONTEXT.md` IS expected to drift; the next end-of-session housekeeping commit refreshes the snapshot (schema version / latest tag / cron status) the same way it refreshes CLAUDE.md §Phase status.
+- "Roadmap pointer" block in `CONTEXT.md` is a 6-line summary; for full detail readers route to PHASE_STATUS.md §"Next deliverables" + WORKFLOW.md per-phase task lists (linked from the block).
+
+**Verification**:
+
+- `ruff check .` — N/A (no Python touched)
+- `python -m compute.output.schema_check` — N/A (no schema touched)
+- `pytest tests/ -m "not network"` — N/A (no test surface)
+- Markdown-only diff; broken-link check on the 12+ internal links in `CONTEXT.md` — all targets exist on `main` (CLAUDE.md, AGENTS.md, SKILL.md, WORKFLOW.md, PHASE_STATUS.md, PHASE_STATUS_INFLIGHT.md, docs/METHODOLOGY.md, docs/design.md, docs/agents/domain.md, docs/agents/issue-tracker.md, THIRD_PARTY_NOTICES.md, README.md, .claude/agents/README.md, .claude/skills/README.md, .claude/skills/release-tag/SKILL.md).
+
+**Hard constraints honored**:
+
+- No code / scoring / schema / Rule 16 / Top-5 invariant touched
+- No new defense flag · No new dep · No new env-var
+- Doc-only, pointer-only (no duplicated content from canonical files)
+- Four-file analog remains canonical per `docs/agents/domain.md` reconciliation
+- AGENTS.md substance untouched (CLAUDE.md = SoT for §Phase status / Stack; this PR adds a pointer file, not a rule change)
+
+PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" lockstep per PR #237 convention. CLAUDE.md substance untouched this PR — `CONTEXT.md` is a NEW top-level file that pointers TO CLAUDE.md, not a substance change WITHIN CLAUDE.md.
+
+---

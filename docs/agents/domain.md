@@ -3,12 +3,17 @@
 How the engineering skills should consume QuantRank's domain
 documentation when exploring the codebase.
 
-## QuantRank has NO `CONTEXT.md`
+## `CONTEXT.md` is a pointer, not the source of truth
 
 Upstream mattpocock skills assume a single `CONTEXT.md` at the repo root
 that serves as both glossary and decision-log entry point. QuantRank's
 domain language is instead distributed across **four canonical doc
-files** that pre-date this skill scaffold:
+files** that pre-date this skill scaffold. A
+[`CONTEXT.md`](../../CONTEXT.md) bridge file at the repo root (added
+2026-05-28) links to the four files below and captures the live
+snapshot (schema version, active phase, defense layer count) — but it
+does NOT duplicate their content. Read `CONTEXT.md` first for
+orientation; the four files below remain source of truth:
 
 | File | Owns |
 |---|---|
