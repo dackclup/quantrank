@@ -58,6 +58,15 @@ _FALLBACK_STATS: dict[str, int] = {
     # identity check; expected steady-state = 0 firings).
     "per_class_override": 0,
     "mc_reconcile_failure": 0,
+    # Issue #288 (0.10.8-phase4.6, 2026-05-28) — Rule-18 disambiguator.
+    # ``per_class_attempt`` increments each time Branch 3 ENTERS the
+    # ``_fetch_shares_from_per_filing_xbrl(target_class_member=...)`` call,
+    # regardless of whether XBRL lookup succeeds. Disambiguates the prior
+    # silent-None mode: pre-fix this counter would be 2 (GOOG + GOOGL
+    # both entered Branch 3) while ``per_class_override`` was 0, surfacing
+    # the XBRL lookup failure that PR #269 missed. Post-fix expected
+    # steady-state: per_class_attempt = per_class_override = 2.
+    "per_class_attempt": 0,
 }
 
 
@@ -71,6 +80,7 @@ def reset_fallback_stats() -> None:
         _FALLBACK_STATS["dimensional_override"] = 0
         _FALLBACK_STATS["per_class_override"] = 0
         _FALLBACK_STATS["mc_reconcile_failure"] = 0
+        _FALLBACK_STATS["per_class_attempt"] = 0
 
 
 def get_fallback_stats() -> dict[str, int]:
@@ -683,8 +693,9 @@ def _fetch_shares_from_per_filing_xbrl(
 
     - ``edgartools`` raises (network blip, schema drift, missing filing)
     - The most-recent filing has no XBRL attachment
-    - Neither ``dei:EntityCommonStockSharesOutstanding`` nor
-      ``us-gaap:CommonStockSharesIssued`` returns dimensional rows
+    - None of the 3 queried concepts (``dei:EntityCommonStockSharesOutstanding``,
+      ``us-gaap:CommonStockSharesOutstanding``, ``us-gaap:CommonStockSharesIssued``)
+      returns dimensional rows matching the target class member
     - The summed value is zero or non-finite
     - **Filter mode only**: ``xbrl.contexts`` is missing or the target
       member doesn't appear in any context (allowlist entry is stale)
@@ -734,6 +745,17 @@ def _fetch_shares_from_per_filing_xbrl(
         facts_view = xbrl.facts
         for concept in (
             "dei:EntityCommonStockSharesOutstanding",
+            # Issue #288 fix (2026-05-28): `us-gaap:CommonStockSharesOutstanding`
+            # was missing from the XBRL fallback concept list. Alphabet
+            # (GOOG / GOOGL) files per-class share counts under THIS concept,
+            # not under ``dei:EntityCommonStockSharesOutstanding``. Without
+            # this concept in the query tuple, the filter-mode lookup at
+            # lines 768-808 below would never find dimensional rows, so
+            # ``_fetch_shares_from_per_filing_xbrl`` returned None for both
+            # tickers since PR #269 landed (2026-05-26). The primary path at
+            # lines 115-124 already queries all 3 concepts in this order;
+            # this fix brings the XBRL fallback path to parity.
+            "us-gaap:CommonStockSharesOutstanding",
             "us-gaap:CommonStockSharesIssued",
         ):
             try:
@@ -1027,6 +1049,11 @@ def _build_snapshot(ticker: str, cik: str) -> FundamentalsSnapshot:
         and not os.environ.get("QR_SKIP_FUNDAMENTALS")
     ):
         target_class = config.MULTI_CLASS_OVERCOUNT_ALLOWLIST[ticker]
+        # Issue #288 (2026-05-28) — increment attempt counter BEFORE the
+        # XBRL call so the Rule-18 diagnostic captures "branch entered but
+        # XBRL returned None" (the regression mode PR #269 silently hit).
+        with _FALLBACK_STATS_LOCK:
+            _FALLBACK_STATS["per_class_attempt"] += 1
         per_class_shares = _fetch_shares_from_per_filing_xbrl(
             company, ticker=ticker, target_class_member=target_class
         )

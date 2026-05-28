@@ -2252,3 +2252,49 @@ This is operationally a small-scope PR but high-leverage: AGENTS.md is the cross
 PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" lockstep per PR #237 convention. AGENTS.md substance touched (production-verified run bump + open-issues list refresh — both materially substantive). CLAUDE.md substance untouched per the delegation-pattern (PR #286 + PR #290 already updated the CLAUDE.md side; this PR closes the AGENTS.md side of the lockstep).
 
 ---
+
+## PR (this PR) — Issue #288 fix: GOOG/GOOGL XBRL concept-name omission (in flight, 2026-05-28)
+
+Closes Issue #288 — `multi_class_per_class_override_count = 0` on every production cron since PR #269 landed (2026-05-26). Both GOOG and GOOGL render inflated `market_cap` (~$4.66T / $4.71T) instead of correct per-class values (~$2.09T / $2.59T).
+
+**Root cause** (from `edgar-debugger` verdict 2026-05-28): `compute/ingest/fundamentals.py:735` `_fetch_shares_from_per_filing_xbrl` queried only 2 XBRL concepts (`dei:EntityCommonStockSharesOutstanding` + `us-gaap:CommonStockSharesIssued`). Alphabet's 10-K files per-class share counts under **`us-gaap:CommonStockSharesOutstanding`** — missing 3rd concept. Primary path at lines 115-124 already queries all 3 in this order; XBRL fallback drifted out of parity. Existing tests at `test_fundamentals.py:822-857` mock `_fetch_shares_from_per_filing_xbrl` entirely with `return_value=per_class` — never exercised the actual concept-lookup path; bug survived the suite.
+
+**Fix scope (9 files)**:
+
+- **`compute/ingest/fundamentals.py:735-749`** — Add `us-gaap:CommonStockSharesOutstanding` to the concept tuple (between the 2 existing entries, matching primary path order); fix misleading docstring at lines 686-687.
+- **`compute/ingest/fundamentals.py:48-71`** — Add `"per_class_attempt": 0` to `_FALLBACK_STATS` dict + reset in `reset_fallback_stats()`.
+- **`compute/ingest/fundamentals.py:~1030`** — Increment `per_class_attempt` AT TOP of Branch 3 elif (before the XBRL call), so the counter captures "branch entered" regardless of whether XBRL lookup succeeded.
+- **`compute/config.py:30`** — Schema PATCH bump `0.10.7-phase4.6 → 0.10.8-phase4.6`.
+- **`compute/output/schemas.py:~340`** — New `Metadata.multi_class_per_class_attempt_count: int | None = None` field (Rule 18 disambiguator).
+- **`compute/main.py:~2023`** — Wire `multi_class_per_class_attempt_count=shares_fallback_stats.get("per_class_attempt")` to Metadata construction.
+- **`frontend/lib/types.ts:~233`** — Mirror TS field `multi_class_per_class_attempt_count?: number | null;`.
+- **`frontend/lib/schema-snapshot.json`** — Regenerated via `--update-snapshot` (in sync at `0.10.8-phase4.6`).
+- **`tests/test_config.py`** — Schema version pin `0.10.7 → 0.10.8`; docstring updated to reference Issue #288.
+- **`tests/test_ingest/test_fundamentals.py`** — New regression tests authored by `test-engineer` (sonnet) with synthetic XBRL fixture; exercise concept-lookup path directly (do NOT mock `_fetch_shares_from_per_filing_xbrl`); includes concept-tuple pin against re-omission.
+
+**Rule 18 diagnostic disambiguation** (the new counter):
+
+- `attempt == override == 0` → Branch 3 never triggered (allowlist empty OR `QR_SKIP_FUNDAMENTALS` set)
+- `attempt > 0`, `override = 0` → XBRL lookup returned None (regression class of #288)
+- `attempt == override > 0` → normal operation; post-fix steady-state = both equal 2 (GOOG + GOOGL)
+
+**Impact (display-only)**:
+- ✅ Composite scores / rankings / Rule 16 / Top-5 rotation **UNAFFECTED** (`market_cap` not an 8-pillar input)
+- ✅ Annotate safety net **continues to work** — `multi_class_aggregate_shares_suspected` fires (PR #264)
+- ✅ `/stock/GOOG` + `/stock/GOOGL` UI renders correct per-class market_cap on next cron
+- ✅ `pe_ratio_ttm` re-derives from corrected shares
+
+**Verification**:
+- `ruff check .` — PASS
+- `python -m compute.output.schema_check` — PASS (triple in sync at `0.10.8-phase4.6`)
+- `schema-sentinel` Mode A verdict — TRIPLE-IN-SYNC
+- `python -m pytest tests/test_config.py tests/test_output/ -q -m "not network"` — **70 passed**
+- `test-engineer` regression test PASS (synthetic XBRL fixture; would have FAILED pre-fix)
+
+**Deferred follow-ups**:
+- `@network` GOOG/GOOGL drift-detector test (live SEC, requires `EDGAR_USER_AGENT`) — separate follow-up PR
+- Issue #289 NVR DQIC fix (Option C delete Site-2 ceiling per methodology-scientist) — separate fix-PR; different code site + different test surface
+
+PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" lockstep per PR #237 convention. CLAUDE.md + AGENTS.md substance untouched this PR — the schema bump is itself substantive (the schema triple lockstep moved + the SKILL.md schema-version table will get the new row in a follow-up housekeeping PR, not THIS bug-fix PR which scopes tight).
+
+---
