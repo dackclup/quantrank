@@ -26,12 +26,9 @@ All tests are offline — no ``@pytest.mark.network``.
 from __future__ import annotations
 
 from datetime import date
-from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
 import pandas as pd
-import pytest
-
 
 # ---------------------------------------------------------------------------
 # Synthetic XBRL fixture builders
