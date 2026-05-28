@@ -2145,7 +2145,7 @@ PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" 
 
 ---
 
-## PR (this PR) — Housekeeping PR-B: drain merged INFLIGHT entries + bump pointers post-v1.4.0 release (in flight, 2026-05-28)
+## PR #286 — Housekeeping PR-B: drain merged INFLIGHT entries + bump pointers post-v1.4.0 release (merged 2026-05-28, `27361047`)
 
 Phase B (post-v1.4.0-tag housekeeping) PR. Cuts no code; pure doc-pointer + INFLIGHT.md maintenance — addresses the doc drift that accumulated across PRs #264-#285 (13 PRs landed since the last housekeeping in PR #267).
 
@@ -2172,7 +2172,7 @@ CLAUDE.md substance touched (pointer block + Recently merged list refresh — bo
 
 ---
 
-## PR (this PR) — Cleanup post cron #69: BK orphan removal + 3 doc drifts (in flight, 2026-05-28)
+## PR #290 — Cleanup post cron #69: BK orphan removal + 3 doc drifts (merged 2026-05-28, `dea8e3ad`)
 
 Post-cron-#69 cleanup bundle. Cron run #69 (workflow_dispatch by user 2026-05-28 ~01:00 UTC, landed `233117ac chore: update rankings 2026-05-28` at `27361047` PR #286 merge SHA) surfaced 3 findings via `defense-layer-auditor` Section A-J + `stock-detail-auditor` deterministic prefilter + LLM verdict pass. 2 findings filed as issues (deferred to scoped follow-up sessions); 1 + 3 doc drifts batched into this PR.
 
@@ -2209,7 +2209,7 @@ PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" 
 
 ---
 
-## PR (this PR) — AGENTS.md substance refresh: production-verified run pointer + open-issues list (in flight, 2026-05-28)
+## PR #291 — AGENTS.md substance refresh: production-verified run pointer + open-issues list (merged 2026-05-28, `cb9114bb`)
 
 Second cleanup PR same day. PR #286 (housekeeping) opted to defer the AGENTS.md substance update under the `pointer-to-CLAUDE.md` delegation pattern; PR #290 (post-cron cleanup) noted the deferred AGENTS.md items but kept scope tight. This PR closes both deferred items.
 
@@ -2253,7 +2253,7 @@ PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" 
 
 ---
 
-## PR (this PR) — Issue #288 fix: GOOG/GOOGL XBRL concept-name omission (in flight, 2026-05-28)
+## PR #292 — Issue #288 fix: GOOG/GOOGL XBRL concept-name omission (merged 2026-05-28, `e9aaab31`)
 
 Closes Issue #288 — `multi_class_per_class_override_count = 0` on every production cron since PR #269 landed (2026-05-26). Both GOOG and GOOGL render inflated `market_cap` (~$4.66T / $4.71T) instead of correct per-class values (~$2.09T / $2.59T).
 
@@ -2299,7 +2299,7 @@ PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" 
 
 ---
 
-## PR (this PR) — Issue #289 fix: retire Site-2 DQIC ceiling per Option C (in flight, 2026-05-28)
+## PR #293 — Issue #289 fix: retire Site-2 DQIC ceiling per Option C (merged 2026-05-28, `95e638bf`)
 
 Closes Issue #289 — NVR `/stock/NVR` rendered empty fair-price section despite legitimate inputs ($458 EPS / $6,098 price / ~2.7M shares / `risk_flags: []`). Site-2 output-level ceiling (`FAIR_PRICE_DATA_QUALITY_CEILING = $10,000` in `compute/config.py`) tripped on `multiples_pe ≈ 22× × $458.86 ≈ $10,094` and nulled all 6 valuation methods.
 
@@ -2355,7 +2355,7 @@ PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" 
 
 ---
 
-## PR (this PR) — Issue #67 sector-CoE flip: `USE_SECTOR_COE = True` (in flight, 2026-05-28)
+## PR #294 — Issue #67 sector-CoE flip: `USE_SECTOR_COE = True` (merged 2026-05-28, `0ddb6b81`)
 
 Closes Issue #67 — flips `USE_SECTOR_COE` from `False` → `True` per methodology-scientist Mode B verdict 2026-05-28 + cron #69 empirical confirmation. Consumes the data-collection module landed in PR #204 (2026-05-22, Damodaran 2019 Ch. 8.4 + NYU January 2025 betas — LITERATURE-ANCHORED across all 11 GICS sectors).
 
@@ -2403,5 +2403,38 @@ Closes Issue #67 — flips `USE_SECTOR_COE` from `False` → `True` per methodol
 - **Q3 2026-08-19 cohort audit** — natural review point for per-sector shape verification (~12 weekly crons of post-flip data by then). Already in the issue #130 pre-prep checklist (posted 2026-05-28 by dependency-auditor sweep).
 
 PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" lockstep per PR #237 convention. CLAUDE.md + AGENTS.md substance untouched this PR — the methodology flip IS substantive but Q3 cohort audit (issue #130) is the canonical narrative venue, where the pre-prep checklist comment already documents the gating decision.
+
+---
+
+## PR (this PR) — Post-session housekeeping 2026-05-28: drain 6 INFLIGHT markers + bump pointers (in flight, 2026-05-28)
+
+End-of-day Track-A2 housekeeping. After 6 PRs landed on main today (#286 / #290 / #291 / #292 / #293 / #294), the CLAUDE.md / PHASE_STATUS.md / SKILL.md pointers drifted again — schema bumped via PR #292 (`0.10.7 → 0.10.8-phase4.6`); `USE_SECTOR_COE` flipped via PR #294. This PR closes the doc-drift loop so session N+1 reads correct state.
+
+**Scope (4 files, doc-only)**:
+
+- **`CLAUDE.md`** §Phase status pointer block — schema `0.10.7-phase4.6 → 0.10.8-phase4.6`; defense layer narrative refreshed to note `USE_SECTOR_COE = True` post-#294; "Post-tag production patches" subsection added between Latest tag + Prior tag, citing PRs #292 / #293 / #294 + their SHAs + the substantive change each closes. "Recently merged" list prepended with 6 same-day entries; legacy "Earlier (PR #264 → PR #285)" subsection relabeled.
+
+- **`PHASE_STATUS.md`** §Current state — schema pointer mirrored (`0.10.7 → 0.10.8-phase4.6`); new "Post-tag production patches" row added (parallel structure to CLAUDE.md); Production-run pointer updated `559c5269 → 0ad1d574` (cron #69 chore-commit on 2026-05-28). "Recently merged" list prepended; legacy list relabeled "Earlier".
+
+- **`SKILL.md`** schema-version history table — new top row added for `0.10.8-phase4.6` (PR #292, GOOG/GOOGL XBRL fix + Rule 18 `multi_class_per_class_attempt_count` disambiguator); existing `0.10.7-phase4.6` row preserved as second entry.
+
+- **`PHASE_STATUS_INFLIGHT.md`** — 6 stale `(in flight, 2026-05-28)` markers updated to `(merged 2026-05-28, <SHA>)` (PRs #286 / #290 / #291 / #292 / #293 / #294). Bodies preserved (historical record).
+
+**Why this PR exists**:
+
+Without this housekeeping, the next session reading CLAUDE.md §Phase status would see schema `0.10.7` despite code shipping `0.10.8`, and "Recently merged" would list PRs #264-#285 as the latest (missing 6 PRs from today). The pattern surfaced 2026-05-28 morning (Track A PR #286 closed analogous drift across PRs #264-#285); applying the same housekeeping at end-of-day for PRs #286-#294 prevents the same friction tomorrow.
+
+**Verification**:
+- `ruff check .` — PASS (no Python touched)
+- `python -m compute.output.schema_check` — PASS (no schema touched)
+- `pytest tests/ -m "not network"` — N/A (no test surface)
+- Markdown-only diff
+
+**Hard constraints honored**:
+- No code / scoring / schema / Rule 16 / Top-5 invariant touched
+- No new defense flag · No new dep
+- AGENTS.md substance untouched per the existing delegation pattern (CLAUDE.md = SoT for §Phase status / Stack); PR #291 already bumped AGENTS.md production-verified run pointer this morning
+
+PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" lockstep per PR #237 convention. CLAUDE.md substance touched (pointer block + Recently merged list refresh — both materially substantive).
 
 ---

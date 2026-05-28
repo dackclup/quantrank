@@ -17,17 +17,27 @@
 
 | Field | Value |
 |---|---|
-| Schema | **`0.10.7-phase4.6`** (PR #283 release tag bumped through PRs #269 GOOG/GOOGL per-class XBRL fix `0.10.5 → 0.10.6` + Phase 4.6 Metadata additions `0.10.6 → 0.10.7-phase4.6`) |
-| Defense layer | **33 declared boolean flags** (7 active vetoes + 26 annotates + reserved slots; 27 currently emit in production until next cron exercises PR #264 + #265 + Form-4 cluster revert) · plus 5 numerical guards + `manipulation_index` rollup |
+| Schema | **`0.10.8-phase4.6`** (PR #292 PATCH bump 2026-05-28 — Rule 18 disambiguator `Metadata.multi_class_per_class_attempt_count` for the GOOG/GOOGL XBRL concept-name omission fix; supersedes `0.10.7-phase4.6` PR #283 release) |
+| Defense layer | **33 declared boolean flags** (7 active vetoes + 26 annotates + reserved slots; ~27 currently emit; `USE_SECTOR_COE = True` post-PR #294 flip) · plus 5 numerical guards + `manipulation_index` rollup |
 | Active vetoes | **7** — `altman_distress` · `sloan_accruals_top_decile` · `net_issuance_top_decile` · `non_reliance_filing` · `beneish_manipulation_veto` · `dechow_manipulation_veto` · `data_quality_input_corruption` |
-| Latest release tag | [**`v1.4.0-phase4.6`**](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6) — 2026-05-27 at `bbca9cac` (Phase 4.6 honest re-validation harness — survivorship-bias fix per Hou-Xue-Zhang 2020 + rankings.json time-series loader + forward-return loader + per-pillar Spearman IC + manipulation-index distribution shift + honest-baseline CLI; release notes in `docs/release-notes/v1.4.0-phase4.6.md`) |
+| Latest release tag | [**`v1.4.0-phase4.6`**](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6) — 2026-05-27 at `bbca9cac` (Phase 4.6 honest re-validation harness) |
+| Post-tag production patches | PR #292 (`e9aaab31`, schema `0.10.7 → 0.10.8-phase4.6`, GOOG/GOOGL XBRL fix) · PR #293 (`95e638bf`, Site-2 DQIC retirement, NVR FP) · PR #294 (`0ddb6b81`, sector-CoE flip `USE_SECTOR_COE = True`, Issue #67 closure) |
 | Prior release tag | [**`v1.3.0-phase4.5e`**](https://github.com/dackclup/quantrank/releases/tag/v1.3.0-phase4.5e) — 2026-05-26 at `5db3b978` (Phase 4.5e Form-4 cluster + LedgerCraft reskin; defense layer headline 32 → 33) |
-| Production run | `559c5269` (2026-05-27 cron, post-PR #285 main HEAD) |
+| Production run | `0ad1d574` (2026-05-28 cron #69, post-PR #290 main HEAD; sector-CoE flip + #292 + #293 land in cron #70 Mon-Fri 22:00 UTC) |
 | Universe | 502 stocks (S&P 500 minus 1 delisting) |
 | Skill inventory | **45** invocation-triggerable + phase planning docs |
 | Subagent inventory | **18** project-specific in 4 tiers: **Tier 1 Core** (`quantrank-reviewer` · `schema-sentinel` · `defense-layer-auditor` · `edgar-debugger` · `stock-detail-auditor`) · **Tier 2 Lifecycle** (`security-reviewer` · `frontend-design-reviewer` · `vercel-preview-auditor` · `release-captain` · `phase-coordinator`) · **Tier 3 Specialized** (`test-engineer` · `methodology-scientist` · `literature-searcher` · `performance-engineer` · `dependency-auditor`) · **Tier 4 Operations** (`docs-reviewer` · `ci-triage-engineer` · `incident-commander`) |
 
-**Recently merged** (PR #264 → PR #285, 2026-05-26 → 2026-05-27):
+**Recently merged** (PR #286 → PR #294, 2026-05-28; 6 PRs landed same day post-v1.4.0 release):
+- PR #294 `0ddb6b81` — feat(valuation): Issue #67 — flip `USE_SECTOR_COE = True` (Damodaran 2019 Ch. 8.4 11-sector Ke; methodology-scientist Mode B APPROVED; `value_trap_risk` 132 → 109 cohort drop, within target [80, 110] band)
+- PR #293 `95e638bf` — fix(valuation): Issue #289 — retire Site-2 DQIC ceiling (NVR FP; methodology-scientist Option C; Site-1 + Defense #4 `extreme_*_estimate` + Issue #177 Huber-breakdown layer cover the remaining corruption + breakdown cases)
+- PR #292 `e9aaab31` — fix(ingest): Issue #288 — GOOG/GOOGL XBRL concept-name omission (`market_cap` 2.2× inflated since PR #269; schema `0.10.7 → 0.10.8-phase4.6` for Rule 18 disambiguator)
+- PR #291 `cb9114bb` — docs(agents): AGENTS.md substance refresh (production-verified run pointer cron #51 → cron #69; open-issues list 4 → 11 entries)
+- PR #290 `dea8e3ad` — chore(cleanup): post-cron-#69 — BK orphan removal + 3 doc drifts (security-reviewer W1+W2 + edgartools 2.30 → 5.31)
+- PR #286 `27361047` — chore(docs): housekeeping PR-B — drain INFLIGHT + bump pointers post-v1.4.0
+- (3 issues filed: #287 FORM4 revert + durable 5-loop timeout · #288 GOOG/GOOGL XBRL · #289 NVR DQIC; 4 comments posted on #41/#115/#130/#137)
+
+**Earlier** (PR #264 → PR #285, 2026-05-26 → 2026-05-27):
 - PR #285 `8f373758` — docs(release): codify mobile-only operator convention for tag releases (CLAUDE.md §Gotchas + release-tag SKILL.md + release-captain agent)
 - PR #284 `a820caee` — fix(test): `test_compute_shift_live_repo_recent_window` resilient to shallow clones (CI `actions/checkout@v6` fetch-depth=1 default)
 - PR #283 `bbca9cac` — chore(release): **v1.4.0-phase4.6** — Honest re-validation harness (`pyproject.toml` 1.3.0 → 1.4.0 + release notes)

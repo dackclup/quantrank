@@ -493,23 +493,38 @@ whitespace / single-line fixes do not trigger.
 
 ## Phase status
 
-Current schema **`0.10.7-phase4.6`** · defense layer **33 declared
-boolean flags** (7 active vetoes + 26 annotates + reserved slots; 27
-currently emit until next cron exercises PRs #264 + #265 + Form-4
-cluster revert). Plus 5 numerical guards + `manipulation_index`
-rollup. Latest release tag [**`v1.4.0-phase4.6`**](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6)
+Current schema **`0.10.8-phase4.6`** · defense layer **33 declared
+boolean flags** (7 active vetoes + 26 annotates + reserved slots; ~27
+currently emit; `USE_SECTOR_COE = True` post-PR #294 flip). Plus 5
+numerical guards + `manipulation_index` rollup. Latest release tag
+[**`v1.4.0-phase4.6`**](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6)
 (2026-05-27, `bbca9cac`) — Phase 4.6 honest re-validation harness
 (universe survivorship-bias fix per Hou-Xue-Zhang 2020 + rankings.json
 time-series loader + forward-return loader + per-pillar Spearman IC
 + manipulation-index distribution shift + honest-baseline CLI with
-McLean-Pontiff 2016 32% post-publication decay banner). Prior tag
-[**`v1.3.0-phase4.5e`**](https://github.com/dackclup/quantrank/releases/tag/v1.3.0-phase4.5e)
+McLean-Pontiff 2016 32% post-publication decay banner). Post-tag
+production patches: PR #292 schema PATCH `0.10.7 → 0.10.8-phase4.6`
+(Rule 18 disambiguator `multi_class_per_class_attempt_count` for
+the GOOG/GOOGL XBRL concept-name omission fix); PR #293 Site-2 DQIC
+ceiling retirement (NVR FP, methodology-scientist Option C); PR #294
+sector-CoE flip (Issue #67 `USE_SECTOR_COE = True`, Damodaran 2019
+Ch. 8.4 11-sector Ke, `value_trap_risk` 132 → 109 cohort drop).
+Prior tag [**`v1.3.0-phase4.5e`**](https://github.com/dackclup/quantrank/releases/tag/v1.3.0-phase4.5e)
 (2026-05-26, `5db3b978`) — Phase 4.5e Form-4 insider-clustering
 ladder closure + LedgerCraft frontend reskin (defense layer 32 → 33;
 PR #264 `multi_class_aggregate_shares_suspected` + PR #265 DQIC
 site-2 rename `valuation_output_anomalous`).
 
-**Recently merged** (PR #264 → PR #285, 2026-05-26 → 2026-05-27):
+**Recently merged** (PR #286 → PR #294, 2026-05-28 — 6 PRs same day post-v1.4.0):
+- PR #294 `0ddb6b81` — feat(valuation): Issue #67 — flip `USE_SECTOR_COE = True` (Damodaran 11-sector Ke)
+- PR #293 `95e638bf` — fix(valuation): Issue #289 — retire Site-2 DQIC ceiling (NVR FP, methodology Option C)
+- PR #292 `e9aaab31` — fix(ingest): Issue #288 — GOOG/GOOGL XBRL concept-name omission (schema `0.10.7 → 0.10.8-phase4.6`)
+- PR #291 `cb9114bb` — docs(agents): AGENTS.md substance refresh (cron #51 → #69 pointer; 11 open-issues list)
+- PR #290 `dea8e3ad` — chore(cleanup): post-cron-#69 — BK orphan removal + 3 doc drifts
+- PR #286 `27361047` — chore(docs): housekeeping PR-B — drain INFLIGHT + bump pointers post-v1.4.0
+- (3 issues filed: #287 / #288 / #289; 4 comments posted on #41 / #115 / #130 / #137)
+
+**Earlier** (PR #264 → PR #285, 2026-05-26 → 2026-05-27):
 - PR #285 `8f373758` — docs(release): codify mobile-only operator convention for tag releases
 - PR #284 `a820caee` — fix(test): manipulation_distribution smoke resilient to shallow clones (CI `actions/checkout@v6` fetch-depth=1)
 - PR #283 `bbca9cac` — chore(release): **v1.4.0-phase4.6** — Honest re-validation harness
