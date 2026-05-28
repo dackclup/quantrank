@@ -447,15 +447,36 @@ def compute_fair_price_ensemble(
     }
 
     # Step 4.5 — Data-quality sanity sweep (Defense #7).
-    # If ANY applicable method produced a value above the per-share ceiling,
-    # the underlying snapshot is corrupted (typically shares_outstanding
-    # ingested with the wrong unit — see issue tracker for the Phase-3
-    # fundamentals follow-up). Null all 6 methods + surface a single
-    # warning rather than ship nonsense to the UI. No risk_flag is
-    # appended: data quality is an upstream-ingest concern, not a
-    # ranking veto.
-    if _has_corrupt_input(methods):
-        return (_data_quality_corrupt_result(methods), [])
+    # Issue #289 (2026-05-28, methodology-scientist Mode B verdict Option C):
+    # Site-2 output-level data-quality ceiling DELETED. The
+    # `_has_corrupt_input` check that lived here was a defense-in-depth
+    # layer that turned out to be structurally redundant with Defense #4
+    # (per-method `extreme_*_estimate` outlier guard) and Issue #177's
+    # `extreme_estimate_majority` annotate (Huber 1981 §1.4 breakdown-
+    # point check). Site-1 (`compute/scoring/risk_overlay.py::
+    # _data_quality_input_corruption`) catches the upstream units-bug
+    # class via TBVPS / revenue / NI patterns at the source.
+    #
+    # The empirical false-positive: NVR (~2.7M low share count, $458 EPS,
+    # $6,098 price) — `multiples_pe = sector_PE × EPS ≈ 22× × $458.86 ≈
+    # $10,094` tripped the $10K ceiling. ALL 6 methods got blocked →
+    # `/stock/NVR` rendered empty fair-price section despite legitimate
+    # inputs and a 65% MoS signal. PPV on the 2026-05-28 cron #69: 0/1 =
+    # 0% (the only firing was the false positive).
+    #
+    # Per Penman 2013 §7.4 + Damodaran 2019 Ch. 18: defend at the source
+    # of corruption (Site-1), not at an arbitrary downstream output
+    # magnitude (Site-2). Site-2 conflated input-corruption (Type A) with
+    # high-per-share-magnitude (Type C: out-of-distribution but valid).
+    #
+    # `_has_corrupt_input` + `_data_quality_corrupt_result` functions kept
+    # below as DEAD CODE for one cycle (easier review); follow-up PR
+    # removes them after ≥ 1 cron of clean operation confirms no
+    # regression. The writer-parity emit in `compute/main.py` preserves
+    # the UI explanation chip for the Site-1 veto cohort (MTB / CPT /
+    # MRNA / HBAN per PR #265) so the `valuation_output_anomalous`
+    # annotate's UI surface continues to render — it just no longer
+    # fires from this Site-2 path.
 
     # Defense #4 outlier guard + aggregation.
     aggregates, extreme_warnings = _aggregate_methods(methods, current_price)

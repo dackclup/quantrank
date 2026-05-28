@@ -2298,3 +2298,59 @@ Closes Issue #288 — `multi_class_per_class_override_count = 0` on every produc
 PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" lockstep per PR #237 convention. CLAUDE.md + AGENTS.md substance untouched this PR — the schema bump is itself substantive (the schema triple lockstep moved + the SKILL.md schema-version table will get the new row in a follow-up housekeeping PR, not THIS bug-fix PR which scopes tight).
 
 ---
+
+## PR (this PR) — Issue #289 fix: retire Site-2 DQIC ceiling per Option C (in flight, 2026-05-28)
+
+Closes Issue #289 — NVR `/stock/NVR` rendered empty fair-price section despite legitimate inputs ($458 EPS / $6,098 price / ~2.7M shares / `risk_flags: []`). Site-2 output-level ceiling (`FAIR_PRICE_DATA_QUALITY_CEILING = $10,000` in `compute/config.py`) tripped on `multiples_pe ≈ 22× × $458.86 ≈ $10,094` and nulled all 6 valuation methods.
+
+**Per methodology-scientist Mode B verdict 2026-05-28** = **Option C** (delete redundant Site-2 ceiling; LITERATURE-ANCHORED on Penman 2013 §7.4 + Damodaran 2019 Ch. 18 + Huber 1981 §1.4):
+
+- Site-2 was a defense-in-depth layer that turned out structurally redundant with Defense #4 (`extreme_*_estimate` per-method outlier guard) + Issue #177 `extreme_estimate_majority` (Huber breakdown-point check)
+- Site-1 input-level check (`compute/scoring/risk_overlay.py::_data_quality_input_corruption` — TBVPS > $10K / TTM revenue < $50M / |NI| > |revenue|) already catches the upstream units-bug class AT THE SOURCE
+- Cohort impact: Option A ($50K) = 0 newly flagged · Option B (5× ratio) = **12 newly nulled tickers** (CHTR/ROP/EPAM/LEN/SWKS/GM/BBY/CTSH/CMCSA/HPE/T/AES — clear regression) · Option C = 0 newly missed (Site-1 already covers the units-bug class)
+- PPV on 2026-05-28 cron #69 for Site-2: 0/1 = 0% (the only firing was NVR's false positive)
+
+**Fix scope (5 files)**:
+
+- **`compute/valuation/ensemble.py:450`** — Site-2 trigger DELETED. The `if _has_corrupt_input(methods): return (_data_quality_corrupt_result(methods), [])` 2-line check that lived just before `_aggregate_methods` is replaced with a long-form comment block citing Issue #289 + methodology verdict + NVR empirical case. **`_has_corrupt_input` + `_data_quality_corrupt_result` functions retained as DEAD CODE for one cycle** (easier review per methodology verdict; follow-up PR removes them after ≥ 1 cron of clean operation confirms no regression).
+
+- **`compute/config.py:121-138`** — `FAIR_PRICE_DATA_QUALITY_CEILING = 10000.0` **CONSTANT KEPT ACTIVE** (initially commented out by the main agent and immediately restored — see below). Site-1 input-level check at `compute/scoring/risk_overlay.py:149` USES the same constant for the TBVPS > $10K ceiling; commenting it out would break the input-corruption veto. Docstring rewritten to: (a) confirm Site-1 active use; (b) document Site-2 retirement per Issue #289 + methodology verdict; (c) note the post-fix expected behavior on the empirical NVR case.
+
+- **`compute/main.py:1495-1499`** — Writer-parity emit UNCHANGED. When `data_quality_input_corruption` veto fires in `risk_flags` (Site-1 path), `valuation_output_anomalous` is still appended to `valuation_warnings` so the UI explanation chip in `FairPriceCard.tsx` continues to render for the Site-1 veto cohort (MTB / CPT / MRNA / HBAN per PR #265). The annotate's UI surface persists; only the Site-2 ensemble-path trigger is retired.
+
+- **`docs/METHODOLOGY.md:412-428`** — `valuation_output_anomalous` annotate description re-anchored: now reflects "Site-2 retired per Issue #289; emit remains via writer-parity from compute/main.py on Site-1 cohort." Cites Penman 2013 §7.4 + Damodaran 2019 Ch. 18 + Huber 1981 §1.4 anchors + the empirical 0/1 PPV justification.
+
+- **`tests/test_valuation/test_ensemble.py:1005-1078`** — `test_data_quality_guard_end_to_end_via_full_ensemble` REWRITTEN as `test_site2_data_quality_guard_retired_post_issue_289` retirement-guard. Same corrupted-snapshot fixture (`shares_outstanding=10` → equity $5B / 10 shares = $500M/share TBVPS); post-fix assertions confirm: (1) `valuation_output_anomalous` ABSENT from ensemble's `valuation_warnings`; (2) Defense #4 `extreme_*_estimate` annotates fire correctly; (3) no method carries reason `valuation_output_anomalous` from the ensemble path. 3 other Site-2 tests (`test_data_quality_sanity_guard_triggers_on_extreme_method_value` / `_boundary_exactly_at_ceiling` / `_skipped_methods_dont_trigger`) call the standalone helpers and continue to pass (they exercise the dead-code functions which are retained for 1 cycle).
+
+- **`tests/test_valuation/test_ensemble.py`** — New NVR regression tests authored by `test-engineer` (sonnet) — synthetic NVR-shaped `raw_metrics` ($458 EPS / $6,098 price / ~2.7M shares); assert `result.median is not None`, `valuation_output_anomalous` not in ensemble warnings, ≥ 1 method applicable.
+
+**Construction error caught + corrected mid-PR**:
+
+Initial main-agent edit commented out `FAIR_PRICE_DATA_QUALITY_CEILING` per the verdict's "Retire from config.py" line. This BROKE Site-1 at `risk_overlay.py:149` which uses the same constant for the input-level TBVPS ceiling. Fix immediately reverted: constant kept active with rewritten docstring distinguishing Site-1 (preserved, active) from Site-2 (retired, dead code). 4 test_ensemble.py failures during the constant-commented-out window resolved automatically after restore (3 were dead-code function tests that lost their config reference; 1 was the end-to-end test that's now rewritten as a retirement guard).
+
+**Impact (display-only — NVR specifically)**:
+
+- ✅ `/stock/NVR` now renders fair-price section with the median of surviving methods (post-fix sanity check via offline test)
+- ✅ NVR ranking + composite UNCHANGED (composite = 50.99 didn't depend on Site-2; rank stays #252 per cron #69 data)
+- ✅ Rule 16 + Top-5 rotation UNAFFECTED (no scoring code touched)
+- ✅ Site-1 input-corruption veto unchanged — 4 cohort tickers (MTB / CPT / MRNA / HBAN) keep their VETO + UI explanation chip
+- ⏳ Defense layer count unchanged at 33 declared (Site-2 was an emission path, not a flag; the `valuation_output_anomalous` annotate identifier persists via writer-parity)
+
+**Verification**:
+
+- `ruff check .` — PASS
+- `python -m compute.output.schema_check` — PASS (no schema change in this PR)
+- `python -m pytest tests/test_valuation/test_ensemble.py -q -m "not network"` — **51 passed**
+- `python -m pytest tests/ -q -m "not network" --ignore=tests/test_validation` — **1203 passed**, 7 skipped (optional deps), 0 failed
+- methodology-scientist Mode B verdict — Option C LITERATURE-ANCHORED
+- NVR regression test (synthetic `raw_metrics`) authored by `test-engineer` — pending agent completion
+
+**Deferred follow-ups** (NOT in this PR):
+
+- Dead-code removal PR — delete `_has_corrupt_input` + `_data_quality_corrupt_result` + the 3 standalone helper tests (`test_data_quality_sanity_guard_triggers_on_extreme_method_value` / `_boundary_exactly_at_ceiling` / `_skipped_methods_dont_trigger`) after ≥ 1 cron of clean operation confirms no regression
+- `THIRD_PARTY_NOTICES.md` JKP entry (Issue #115 closure prep) — separate scope
+- Site-1 input-level threshold recalibration — Q3 2026-08-19 cohort audit will revisit the $10K TBVPS ceiling + $50M revenue / |NI|>|revenue| patterns. NVR's $1,294 TBVPS is comfortably below ceiling (no Site-1 regression from this PR)
+
+PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" lockstep per PR #237 convention. CLAUDE.md + AGENTS.md substance untouched this PR — the methodology + code change IS substantive (Site-2 emission path retired) but the CLAUDE.md §Phase status entry will fold into a Q3 2026-08-19 cohort-audit comment per issue #130 (already noted in the 2026-05-28 dependency-auditor comment on that issue).
+
+---

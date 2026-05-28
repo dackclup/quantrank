@@ -118,13 +118,28 @@ EXTREME_ESTIMATE_LOW: float = 0.2
 # 2026-05-21).
 EXTREME_MAJORITY_THRESHOLD: int = 3
 
-# Data-quality sanity ceiling. No S&P 500 stock has a sensible fair price
-# > $10,000/share (BRK-A trades ~$700K but is not in the index; BRK-B is).
-# If any applicable method computes a value above this ceiling, the
-# upstream snapshot inputs are corrupted (typically shares_outstanding
-# ingested with the wrong unit). The ensemble nulls all 6 methods and
-# surfaces ``data_quality_input_corruption`` as a single warning rather
-# than ship nonsense to the UI. See compute/valuation/ensemble.py.
+# Data-quality sanity ceiling. Used by Site-1 (input-level) check at
+# `compute/scoring/risk_overlay.py::_data_quality_input_corruption` —
+# fires `data_quality_input_corruption` VETO when TBVPS > $10K/share
+# (typically caused by `shares_outstanding` ingested in millions
+# instead of full units). Site-1 is the canonical input-corruption
+# guard; the active veto stays.
+#
+# Issue #289 (2026-05-28, methodology-scientist Mode B verdict Option C)
+# — RETIRED FROM SITE-2 only. The Site-2 OUTPUT-level check that lived
+# in `compute/valuation/ensemble.py::_has_corrupt_input` used this same
+# ceiling to null the ensemble when ANY method's OUTPUT exceeded $10K.
+# That conflated input-corruption (Type A) with high-per-share-magnitude
+# (Type C: out-of-distribution but valid). NVR ($458 EPS, $6,098 price,
+# ~2.7M shares) was the empirical false-positive — `multiples_pe ≈ 22×
+# × $458.86 ≈ $10,094` tripped Site-2 → all 6 methods blocked → `/stock/
+# NVR` empty fair-price section despite legitimate inputs and a 65% MoS
+# signal. Per Penman 2013 §7.4 + Damodaran 2019 Ch. 18: defend at the
+# source (Site-1 input layer), not at downstream output magnitude.
+# Site-2 trigger DELETED at `compute/valuation/ensemble.py:450`;
+# Defense #4 `extreme_*_estimate` + Issue #177 `extreme_estimate_majority`
+# (Huber 1981 §1.4 breakdown) provide the correct ensemble-robustness
+# layer. This ceiling remains active for Site-1 / input layer.
 FAIR_PRICE_DATA_QUALITY_CEILING: float = 10000.0
 
 # Issue #246 — minimum plausible ``shares_outstanding`` for any S&P 500
