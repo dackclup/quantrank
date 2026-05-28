@@ -66,24 +66,29 @@ DISCOUNT_RATE: float = 0.10  # WACC proxy for non-Financial/non-Utility S&P 500
 TERMINAL_GROWTH: float = 0.03  # long-run nominal GDP cap (Damodaran)
 COST_OF_EQUITY: float = 0.10  # used by RIM (Cost of Equity ≈ WACC for S&P 500 cash-flat names)
 
-# Issue #67 — sector-adjusted cost of equity (Damodaran 2019 Table 8.4).
+# Issue #67 — sector-adjusted cost of equity (Damodaran 2019 Ch. 8.4 +
+# NYU January 2025 betas dataset; 11 GICS sectors with Ke range 6%-12%).
 #
 # When ``True``, ``compute.valuation.ensemble.compute_fair_price_ensemble``
 # uses the per-GICS-Sector Ke from
 # ``compute.scoring.cost_of_equity.get_cost_of_equity`` instead of the
 # flat ``COST_OF_EQUITY = 0.10``.
 #
-# DEFAULT = False — this PR is DATA-COLLECTION ONLY per Rule 18
-# (observability-before-wiring).  The flip to ``True`` follows after ≥ 1
-# cron confirms the delta-flag-count via
-# ``Metadata.value_trap_risk_count_with_sector_coe`` vs
-# ``Metadata.value_trap_risk_count_without_sector_coe``.
-# Expected: ``value_trap_risk`` drops from ~176 toward ~80-110 for
-# cyclical sectors; Utilities/REITs (sector Ke < 10%) may pick up new
-# flags — net change needs empirical confirmation before the flip.
+# FLIPPED True 2026-05-28 per methodology-scientist Mode B verdict +
+# cron #69 empirical confirmation (`value_trap_risk_count_without_sector_coe`
+# 132 → `_with_sector_coe` 109 = 17.4% reduction, absolute landing
+# inside the original PR #204 target band [80, 110]). The 38%-vs-17%
+# spread vs the original PR #204 projection is explained by PR #166's
+# RIM equity-denominator fix (Issue #11 closure) already removing ~44
+# false positives from the pre-PR-#204 ~176 baseline — the
+# proportional difference is baseline drift, not signal failure.
 #
-# Methodology-scientist Mode B sign-off REQUIRED before the flip PR lands.
-USE_SECTOR_COE: bool = False
+# The flat-CoE counter ``Metadata.value_trap_risk_count_without_sector_coe``
+# remains in production Metadata as the comparison baseline; do NOT
+# remove it without a separate methodology-scientist verdict. Flipping
+# BACK to False also requires a methodology-scientist Mode B verdict —
+# this is now a load-bearing default, not a feature toggle.
+USE_SECTOR_COE: bool = True
 
 DCF_FORECAST_YEARS: int = 5
 DCF_FCF_WINDOW_YEARS: int = 5  # trailing window for FCF base estimation
