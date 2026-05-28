@@ -398,10 +398,11 @@ note cross-tool-specific points only:
   `Metadata.*_wall_clock_seconds` fields, empirically validated on
   cron Run #71; PR B = FORM4 revert, gated on ≥ 1 cron < 195m green)
   · #288 (GOOG/GOOGL per-class XBRL override silently bypassed since
-  PR #269 — **fix in flight this PR**: cache-key bump `cache-v4 →
-  cache-v5` so PR #292 Branch 3 actually fires on next cron; the
-  override code is correct, warm-cache replay was short-circuiting
-  it) · #289 (NVR DQIC ceiling false positive, **closed by PR #293**
+  PR #269 — **closed by PR #298 cache-key bump `cache-v4 → cache-v5`**;
+  PR #292's Branch 3 fix code was correct but never executed in
+  production due to warm-cache replay short-circuiting at `_is_fresh()`;
+  cache-v5 flushes pre-fix parquets so the override fires on next cron
+  Run #72) · #289 (NVR DQIC ceiling false positive, **closed by PR #293**
   Site-2 retirement per methodology-scientist Mode B Option C
   verdict; NVR fair_price section now renders correctly).
 - **`.md` optimization sequence** (Option D — multi-PR overhaul):
