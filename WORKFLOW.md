@@ -42,13 +42,15 @@ established commands. No new infrastructure.
 
 **Session-start protocol**: read [`PHASE_STATUS.md`](PHASE_STATUS.md)
 §"Current state" first as the canonical pointer (it bumps on every
-schema PR; this prose stays stable). As of 2026-05-28 post-PR-#299:
-schema `0.10.9-phase4.6` on `main` (PR #297 PATCH bump — 4
-`Metadata.*_wall_clock_seconds` fields + `compute-rankings.yml`
-`timeout-minutes: 150 → 195` + cache-restore canary), with PR #300
-in flight bumping to `0.10.10-phase4.6` (Issue #67 follow-up per-
-sector delta). Defense layer **33 declared** = 7 vetoes + 26 annotates;
-release tag [`v1.4.0-phase4.6`](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6);
+schema PR; this prose stays stable). As of 2026-05-28 post-PR-#302:
+schema `0.10.10-phase4.6` on `main` (PR #300 PATCH bump — new
+`Metadata.value_trap_risk_delta_by_sector: dict[str, int] | None`
+per methodology-scientist Mode B Q2 verdict deferred from PR #294),
+with PR #303 (Phase 4.5e PR 6 Form-4 10b5-1 negation guard) in
+flight bumping to `0.10.11-phase4.6` (residual footgun #1 from PR
+4-eq; new `Metadata.form4_negation_guard_downgrade_count`). Defense
+layer **33 declared** = 7 vetoes + 26 annotates; release tag
+[`v1.4.0-phase4.6`](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6);
 CVE baseline **15 open** (0C / 6H / 7M / 2L) after PR #194 patch +
 PR #226 triage. Then route via the cadence below.
 
