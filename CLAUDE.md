@@ -13,7 +13,7 @@ design-system spec.
 - **Python 3.11+** — pandas 2.2 · edgartools 5.31 · pydantic 2.6 ·
   tenacity 8.2 · BeautifulSoup 4 · lxml 5 · pytest 8 · ruff 0.4
 - **Next.js 14.2** (App Router, static export) — React 18.3 ·
-  TypeScript 5.4 · Tailwind 3.4 · Recharts 2.12. Self-hosted fonts
+  TypeScript 5.9 · Tailwind 3.4 · Recharts 2.15. Self-hosted fonts
   via @fontsource: **IBM Plex Sans** (body) · **JetBrains Mono**
   (tabular numerics) · **Instrument Serif** (display marquee) ·
   **Roboto Slab** (headlines, LedgerCraft adoption Phase 1 PR #211 +
@@ -420,6 +420,15 @@ whitespace / single-line fixes do not trigger.
   expected steady-state with all five skips active on a warm-cache
   restore: 8-15 min (vs the pre-fix 45-min cap breach across PRs
   #230 / #238 / #241).
+- **GitHub-Actions-injected env-vars `GITHUB_RUN_ID` + `GITHUB_SHA`**
+  — auto-provided by the GitHub Actions runner; read at
+  `compute/main.py:1965-1966` via `os.environ.get(...)` with safe
+  empty defaults; surface into `Metadata.compute_run_id` +
+  `Metadata.git_commit` for downstream audit trail (verify-helper
+  Section A reads both). Not operator-managed — no value to redact.
+  Listed here so the env-var inventory of CLAUDE.md §Gotchas stays
+  exhaustive (security-reviewer 2026-05-28 baseline flagged the doc
+  gap as W1).
 - **Sub-agent `tools:` frontmatter does NOT auto-inherit MCP tools**
   — surfaced 2026-05-23 by the post-PR-#225 live-fire of
   `vercel-preview-auditor`. The Claude Code sub-agent runtime restricts

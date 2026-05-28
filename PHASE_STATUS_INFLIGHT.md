@@ -2171,3 +2171,40 @@ Phase B (post-v1.4.0-tag housekeeping) PR. Cuts no code; pure doc-pointer + INFL
 CLAUDE.md substance touched (pointer block + Recently merged list refresh — both materially substantive). AGENTS.md substance untouched per the delegation-pattern explanation above; the lockstep is satisfied by PHASE_STATUS_INFLIGHT.md side-file per PR #237 convention.
 
 ---
+
+## PR (this PR) — Cleanup post cron #69: BK orphan removal + 3 doc drifts (in flight, 2026-05-28)
+
+Post-cron-#69 cleanup bundle. Cron run #69 (workflow_dispatch by user 2026-05-28 ~01:00 UTC, landed `233117ac chore: update rankings 2026-05-28` at `27361047` PR #286 merge SHA) surfaced 3 findings via `defense-layer-auditor` Section A-J + `stock-detail-auditor` deterministic prefilter + LLM verdict pass. 2 findings filed as issues (deferred to scoped follow-up sessions); 1 + 3 doc drifts batched into this PR.
+
+**Scope (5 files, doc-only + 1 stale-file removal)**:
+
+- **`frontend/public/data/stocks/BK.json`** (DELETED) — Bank of NY Mellon renamed to BNY on 2026-05-26 commit `b7514cf8`; `BK.json` was never purged from `frontend/public/data/stocks/` when `BNY.json` was created. Old file claims `rank: 230` which now belongs to GEHC; users navigating `/stock/BK` would see stale data conflicting with another stock's current position. `git rm` is the surgical fix; systematic writer-purge pattern (so this can't recur for future ticker renames) is tracked separately under issue #290 (filed next session).
+
+- **`CLAUDE.md`** §Stack — `TypeScript 5.4 · Recharts 2.12` → `TypeScript 5.9 · Recharts 2.15` to match actual `frontend/package.json` pins (typescript 5.9.3, recharts 2.15.4, both bumped within their major bands during PR #215 LedgerCraft Phase 3c, 2026-05-22). Closes security-reviewer 2026-05-28 W2 finding.
+
+- **`CLAUDE.md`** §Gotchas — new bullet documenting `GITHUB_RUN_ID` + `GITHUB_SHA` env-vars (auto-provided by GitHub Actions runner, read at `compute/main.py:1965-1966`, surface into `Metadata.compute_run_id` + `Metadata.git_commit` for audit trail). Closes security-reviewer 2026-05-28 W1 finding (the env-var inventory was incomplete).
+
+- **`.claude/agents/dependency-auditor.md`** Frozen-by-design pins — `edgartools 2.30` → `edgartools 5.31 (5.x band, <6 upper bound per pyproject.toml)`. The 2.30 reference predates the project's migration to the 5.x band that happened during the Form-4 integration work (Filing.obj method-vs-property reclassification in PR #210). Closes dependency-auditor 2026-05-28 informational finding (the agent's own frozen-pin baseline was self-stale, would have caused future confusion).
+
+**Findings deferred to scoped issues** (not in this PR):
+
+- Issue **#288** (`bug(ingest): PR #269 GOOG/GOOGL per-class XBRL fix never fires`) — `_fetch_shares_from_per_filing_xbrl` filter mode returns `None` for both tickers because `xbrl.contexts` dimension axis lookup doesn't match Alphabet's actual XBRL structure. Display-only impact (market_cap 2.2× inflated to $4.66T/$4.71T vs correct ~$2.09T/~$2.59T); composite/rankings/Rule 16 unaffected; `multi_class_aggregate_shares_suspected` annotate fires correctly as safety net. Needs `edgar-debugger` live XBRL probe of Alphabet 10-K before proposing the 1-line fix.
+
+- Issue **#289** (`bug(valuation): NVR DQIC ceiling false positive`) — `FAIR_PRICE_DATA_QUALITY_CEILING = $10,000` at `compute/config.py:128` too low for NVR ($458 EPS × ~22× sector PE = ~$10,094, trips ceiling); ALL 6 valuation methods blocked → `/stock/NVR` renders empty fair-price section. Needs `methodology-scientist` Mode B verdict on Option A (raise ceiling) / Option B (ratio-based) / Option C (input vs output split).
+
+**Verification**:
+- `ruff check .` — N/A (no Python touched)
+- `python -m compute.output.schema_check` — N/A (no schema touched)
+- `pytest tests/ -m "not network"` — N/A (no test surface)
+- BK orphan removal verified clean via `verify-production-output/helper.py` Section H (502 ranking entries == 502 stock files post-removal)
+- `defense-layer-auditor` Section H FAIL (orphan) clears after this PR merges
+- Markdown-only diff on the 3 doc-drift items
+
+**Hard constraints honored**:
+- No scoring / composite / Rule 16 / Top-5 rotation invariant touched
+- No schema change (snapshot triple unchanged)
+- AGENTS.md substance untouched per the delegation-pattern (line 372-375) — lockstep satisfied by PHASE_STATUS_INFLIGHT.md side-file per PR #237 convention.
+
+PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" lockstep per PR #237 convention. CLAUDE.md substance touched (Stack version refresh + Gotchas inventory completion — both materially substantive).
+
+---
