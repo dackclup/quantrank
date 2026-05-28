@@ -1409,6 +1409,16 @@ def run_weekly_compute() -> int:
     # See compute/scoring/cost_of_equity.py for the Damodaran 2019 table.
     value_trap_risk_count_without_sector_coe: int = 0
     value_trap_risk_count_with_sector_coe: int = 0
+    # Issue #67 follow-up (0.10.10-phase4.6) — per-sector breakdown of the
+    # same counts, keyed by GICS sector name. Methodology-scientist Q2
+    # verdict 2026-05-28 (deferred from PR #294) requested this for
+    # Q3 2026-08-19 quarterly cohort audit visibility — confirms the
+    # Damodaran 2019 Ch. 8.4 shape (lower-Ke sectors drop flags, higher-
+    # Ke sectors gain flags) before ≥ 12 cron weeks of post-flip data
+    # accumulate. The delta is computed below at Metadata-construction
+    # time as `_without - _with` per sector.
+    value_trap_risk_count_without_sector_coe_by_sector: dict[str, int] = {}
+    value_trap_risk_count_with_sector_coe_by_sector: dict[str, int] = {}
     # Phase 4.5e PR 3 — Rule 18 observability for the new Form-4 annotates.
     # Counters increment inside the per-ticker loop when the flag is
     # appended to valuation_warnings; written to
@@ -1810,6 +1820,9 @@ def run_weekly_compute() -> int:
             and _rim_flat.reason == "value_trap_risk_roe_below_cost_of_equity"
         ):
             value_trap_risk_count_without_sector_coe += 1
+            value_trap_risk_count_without_sector_coe_by_sector[sector] = (
+                value_trap_risk_count_without_sector_coe_by_sector.get(sector, 0) + 1
+            )
         _rim_sector = check_rim_applicability(
             avg_3y_roe=_avg_roe_67,
             tbvps=_tbvps_67,
@@ -1821,6 +1834,9 @@ def run_weekly_compute() -> int:
             and _rim_sector.reason == "value_trap_risk_roe_below_cost_of_equity"
         ):
             value_trap_risk_count_with_sector_coe += 1
+            value_trap_risk_count_with_sector_coe_by_sector[sector] = (
+                value_trap_risk_count_with_sector_coe_by_sector.get(sector, 0) + 1
+            )
 
         # Price history JSON (sliced from already-fetched prices, no new
         # fetches per Step 5 spec).
@@ -2062,6 +2078,24 @@ def run_weekly_compute() -> int:
         value_trap_risk_count_with_sector_coe=(
             value_trap_risk_count_with_sector_coe
         ),
+        # Issue #67 follow-up (0.10.10-phase4.6) — per-sector delta.
+        # `delta[sector] = without - with` so positive means sector dropped
+        # flags after sector-CoE flip (gained leniency per lower Ke);
+        # negative means sector gained flags (stricter per higher Ke).
+        # Universe of keys = union of both dicts (sectors with zero firings
+        # in either path are omitted to keep the dict small; sectors with
+        # zero delta after both paths fire are included as 0 for explicit
+        # parity signal).
+        value_trap_risk_delta_by_sector={
+            _sec: (
+                value_trap_risk_count_without_sector_coe_by_sector.get(_sec, 0)
+                - value_trap_risk_count_with_sector_coe_by_sector.get(_sec, 0)
+            )
+            for _sec in sorted(
+                set(value_trap_risk_count_without_sector_coe_by_sector)
+                | set(value_trap_risk_count_with_sector_coe_by_sector)
+            )
+        } or None,
         cross_source_disagreement_count=cross_source_disagreement_count,
         cross_source_delta_histogram=cross_source_delta_histogram,
         shares_fallback_triggered_count=shares_fallback_triggered_count,

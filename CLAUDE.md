@@ -517,17 +517,19 @@ whitespace / single-line fixes do not trigger.
 
 ## Phase status
 
-Current schema **`0.10.9-phase4.6`** (post-PR #297 Issue #287 PR A
-landed; 4 new `Metadata.*_wall_clock_seconds` fields for the Tier-2 /
-Form-4 / OSAP / Step-8 cross_source loops; paired with
-`compute-rankings.yml` `timeout-minutes: 150 → 195` + cache-restore
-canary step. Empirically validated on cron Run #71 / `368dccd9` at
-2026-05-28 08:44 UTC — all 4 fields populated correctly, total ~8.2
-min instrumented + warm-cache p50=0.0s). Post-PR #298 cache-v5 bump
-landed (workflow cache key flipped v4 → v5 to force live EDGAR
-re-fetch on cron Run #72 so the PR #292 GOOG/GOOGL per-class XBRL
-override actually fires; Run #71 confirmed the silent-failure pattern
-via `multi_class_per_class_attempt_count = 0`). Defense layer **33 declared boolean flags** (7 active
+Current schema **`0.10.10-phase4.6`** (in flight this PR — Issue #67
+follow-up; new `Metadata.value_trap_risk_delta_by_sector: dict[str, int] | None`
+per methodology-scientist Q2 verdict deferred from PR #294 sector-CoE
+flip; positive value = sector dropped flags after flip per lower
+sector Ke vs flat 10% baseline). Schema cluster history: PR #297
+Issue #287 PR A `0.10.7 → 0.10.9-phase4.6` (4 new `Metadata.*_wall_clock_seconds`
+fields for Tier-2 / Form-4 / OSAP / Step-8 cross_source loops; paired
+with `compute-rankings.yml` `timeout-minutes: 150 → 195` + cache-
+restore canary; empirically validated on cron Run #71 / `368dccd9` at
+2026-05-28 08:44 UTC). PR #298 cache-v5 bump landed (workflow cache
+key flipped v4 → v5 to force live EDGAR re-fetch on cron Run #72 so
+PR #292 GOOG/GOOGL per-class XBRL override actually fires; Run #71
+confirmed silent-failure pattern via `multi_class_per_class_attempt_count = 0`). Defense layer **33 declared boolean flags** (7 active
 vetoes + 26 annotates + reserved slots; ~27 currently emit;
 `USE_SECTOR_COE = True` post-PR #294 flip). Plus 5 numerical guards
 + `manipulation_index` rollup. Latest release tag

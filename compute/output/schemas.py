@@ -226,6 +226,22 @@ class Metadata(BaseModel):
     sector_coe_enabled: bool = False
     value_trap_risk_count_with_sector_coe: int | None = None
     value_trap_risk_count_without_sector_coe: int | None = None
+    # Issue #67 follow-up (0.10.10-phase4.6) — per-sector delta
+    # instrumentation requested by methodology-scientist Mode B Q2 verdict
+    # 2026-05-28 (deferred from PR #294 sector-CoE flip). Keys are GICS
+    # sector names; values are `without_sector_coe[sector] - with_sector_coe[sector]`
+    # so POSITIVE = sector DROPPED flags after the flip (Ke < flat 10%
+    # → ROE ≥ Ke threshold relaxed → fewer false positives; expected
+    # for Utilities / Real Estate / Consumer Staples per Damodaran 2019
+    # Ch. 8.4 §"Industry Beta"). NEGATIVE = sector GAINED flags
+    # (Ke > flat 10% → stricter; expected for Information Technology /
+    # Energy). Zero = neutral (sector Ke == 10% OR same cohort flagged
+    # under both baselines). Computed on EVERY cron regardless of
+    # ``config.USE_SECTOR_COE`` flag-state so the shape is visible for
+    # Q3 2026-08-19 quarterly cohort audit prep (~12 weekly crons of
+    # post-flip data accumulating). Nullable on legacy snapshots
+    # (pre-0.10.10) AND when `value_trap_risk_count_*` is None.
+    value_trap_risk_delta_by_sector: dict[str, int] | None = None
     # Phase 4.5e PR 2 (0.10.0-phase4.5e) — observability surface for the
     # Form-4 insider-transaction fetch loop wired in this PR.
     # ``form4_enabled`` mirrors ``_FORM4_FLAGS_ENABLED`` in

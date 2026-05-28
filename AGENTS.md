@@ -396,8 +396,11 @@ note cross-tool-specific points only:
   bump active).
 - Open Phase 4+ issues: #15 (SEC throttling) · #41 (Next 14→16 CVE
   bump; 15 advisories open, all zero-exploitability on static-export
-  deployment) · #67 (sector-CoE flip-PR; data-collection landed
-  PR #204, flip gated on cron data after #287 lands) · #75 (PR 4b §3
+  deployment) · #67 (sector-CoE — data-collection landed PR #204,
+  flip landed PR #294, **per-sector delta instrumentation in flight
+  this PR** as methodology-scientist Q2 follow-up: adds
+  `Metadata.value_trap_risk_delta_by_sector` for Q3 2026-08-19 cohort
+  audit shape evidence) · #75 (PR 4b §3
   IC-decay writer, Phase 5-blocked) · #115 (JKP CC BY-NC 4.0 license
   review, blocks Phase 4i.1 integration) · #130 (Q3 cohort audit,
   scheduled 2026-08-19) · #137 (9arm-skills license clarification,
