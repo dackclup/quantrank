@@ -393,7 +393,10 @@ note cross-tool-specific points only:
   scheduled 2026-08-19) · #137 (9arm-skills license clarification,
   deadline 2026-06-17) · #150 (Phase 2-3 epic, phases 2-3 remaining)
   · #287 (FORM4 revert + durable 5-loop timeout fix, blocks Phase
-  4.5e PR 5 cluster weight promotion) · #288 (GOOG/GOOGL per-class
+  4.5e PR 5 cluster weight promotion — **PR A in flight this PR**:
+  `timeout-minutes: 150 → 195` + cache-restore canary + 4 new
+  `Metadata.*_wall_clock_seconds` fields; PR B = FORM4 revert, gated
+  on ≥ 1 cron < 195m green) · #288 (GOOG/GOOGL per-class
   XBRL override silently bypassed since PR #269) · #289 (NVR DQIC
   ceiling false positive, methodology-scientist Mode B verdict
   pending).

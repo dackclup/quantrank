@@ -429,6 +429,30 @@ whitespace / single-line fixes do not trigger.
   Listed here so the env-var inventory of CLAUDE.md §Gotchas stays
   exhaustive (security-reviewer 2026-05-28 baseline flagged the doc
   gap as W1).
+- **`Metadata.*_wall_clock_seconds` ≠ `fundamentals_latency_p95_seconds`**
+  (Issue #287 PR A, 0.10.9-phase4.6) — they look like sibling latency
+  metrics but measure ORTHOGONAL things and BOTH are needed for cron
+  diagnostics. `fundamentals_latency_p95_seconds` = p95 of per-ticker
+  fetch times collected in the `fundamentals_latency` dict (tenacity-
+  cascade detector — useful for spotting per-ticker slowness or SEC
+  CIK-specific weirdness even when the loop wall-clock looks fine).
+  `tier2_wall_clock_seconds` / `form4_wall_clock_seconds` /
+  `osap_wall_clock_seconds` / `cross_source_wall_clock_seconds` = total
+  elapsed wall-clock for the entire loop start-to-end via
+  `time.monotonic()` (budget-overrun + cache-eviction detector). On a
+  warm cache the wall-clock may be 5-10s while p95 is 15s+ (most
+  tickers return instantly; a handful spike). On cold + throttled the
+  wall-clock can be 30+ min while p95 only reaches 30s (slow tickers
+  serialize through the thread pool). **None semantic varies per loop**:
+  `FORM4_FETCH_SKIP=1` → `form4_wall_clock_seconds = None` (start marker
+  is INSIDE the `else:` branch). `QR_SKIP_OSAP=1` → `osap_wall_clock_seconds`
+  populates a SMALL FLOAT (~0.5-2s; only the freshness gate is bypassed,
+  not the try block). `QR_SKIP_TIER2=1` → `tier2_wall_clock_seconds`
+  populates a small float (each worker returns ~0ms). Outer-try failure
+  on any loop → `None`. `cross_source_wall_clock_seconds` measures the
+  ENTIRE Step 8 per-ticker loop (fair-price + manipulation + StockDetail
+  write), not just the cross-source sub-calls — documented limitation;
+  on cold the cross-source dominates, on warm the rest does.
 - **Sub-agent `tools:` frontmatter does NOT auto-inherit MCP tools**
   — surfaced 2026-05-23 by the post-PR-#225 live-fire of
   `vercel-preview-auditor`. The Claude Code sub-agent runtime restricts
@@ -493,10 +517,14 @@ whitespace / single-line fixes do not trigger.
 
 ## Phase status
 
-Current schema **`0.10.8-phase4.6`** · defense layer **33 declared
-boolean flags** (7 active vetoes + 26 annotates + reserved slots; ~27
-currently emit; `USE_SECTOR_COE = True` post-PR #294 flip). Plus 5
-numerical guards + `manipulation_index` rollup. Latest release tag
+Current schema **`0.10.9-phase4.6`** (in flight this PR — Issue #287
+PR A; 4 new `Metadata.*_wall_clock_seconds` fields for the Tier-2 /
+Form-4 / OSAP / Step-8 cross_source loops; paired with
+`compute-rankings.yml` `timeout-minutes: 150 → 195` + cache-restore
+canary step). Defense layer **33 declared boolean flags** (7 active
+vetoes + 26 annotates + reserved slots; ~27 currently emit;
+`USE_SECTOR_COE = True` post-PR #294 flip). Plus 5 numerical guards
++ `manipulation_index` rollup. Latest release tag
 [**`v1.4.0-phase4.6`**](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6)
 (2026-05-27, `bbca9cac`) — Phase 4.6 honest re-validation harness
 (universe survivorship-bias fix per Hou-Xue-Zhang 2020 + rankings.json

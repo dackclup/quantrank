@@ -11,17 +11,18 @@ from compute import config
 
 
 def test_schema_version_is_phase4_6():
-    """Issue #288 (0.10.8-phase4.6, 2026-05-28) — PATCH bump for the
-    new ``Metadata.multi_class_per_class_attempt_count`` Rule 18
-    disambiguator. Increments when Branch 3 (per-class XBRL override
-    allowlist) enters the ``_fetch_shares_from_per_filing_xbrl`` call,
-    regardless of whether XBRL lookup succeeds. Disambiguates the
-    silent XBRL lookup failure mode PR #269 silently hit since landing
-    2026-05-26 (concept-name omission — `us-gaap:CommonStockSharesOutstanding`
-    was missing from the XBRL fallback query tuple at fundamentals.py:735).
-    Supersedes Phase 4.6 release's 0.10.7-phase4.6 bump.
+    """Issue #287 PR A (0.10.9-phase4.6, 2026-05-28) — PATCH bump for the
+    four new ``Metadata.*_wall_clock_seconds`` Rule 18 observability
+    fields (``tier2_wall_clock_seconds``, ``form4_wall_clock_seconds``,
+    ``osap_wall_clock_seconds``, ``cross_source_wall_clock_seconds``).
+    Each captures total wall-clock seconds for the corresponding SEC
+    EDGAR loop start-to-end; ``None`` when the loop was skipped via
+    escape-hatch env-var or failed before the end marker. Pairs with
+    the cache-restore canary step in ``compute-rankings.yml`` to surface
+    cache eviction in ~30s instead of after the 195m timeout cap.
+    Supersedes Issue #288's 0.10.8-phase4.6 bump.
     Locks the version against accidental revert."""
-    assert config.SCHEMA_VERSION == "0.10.8-phase4.6"
+    assert config.SCHEMA_VERSION == "0.10.9-phase4.6"
 
 
 def test_multi_class_overcount_allowlist_membership():

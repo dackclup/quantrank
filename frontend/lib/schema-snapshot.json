@@ -47,6 +47,11 @@
       "required": false,
       "default": null
     },
+    "cross_source_wall_clock_seconds": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
     "extreme_estimate_majority_count": {
       "type": "int | None",
       "required": false,
@@ -89,6 +94,11 @@
     },
     "form4_universe_insider_count_median": {
       "type": "int | None",
+      "required": false,
+      "default": null
+    },
+    "form4_wall_clock_seconds": {
+      "type": "float | None",
       "required": false,
       "default": null
     },
@@ -192,6 +202,11 @@
       "required": false,
       "default": null
     },
+    "osap_wall_clock_seconds": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
     "sector_coe_enabled": {
       "type": "bool",
       "required": false,
@@ -231,6 +246,11 @@
       "type": "bool",
       "required": false,
       "default": true
+    },
+    "tier2_wall_clock_seconds": {
+      "type": "float | None",
+      "required": false,
+      "default": null
     },
     "universe": {
       "type": "str",
