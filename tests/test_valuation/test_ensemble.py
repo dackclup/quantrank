@@ -1325,55 +1325,68 @@ def test_L2_dead_code_functions_still_callable_after_site2_deletion():
     )
 
 
-def test_L3_site2_ceiling_not_invoked_when_method_value_exceeds_10k():
-    """Site-2 call-site deletion guard: a ticker whose method value exceeds
-    $10,000 but has CLEAN inputs (not an input-corruption case) must NOT
-    receive the `valuation_output_anomalous` warning from the ensemble.
+def test_L3_site2_ceiling_not_invoked_for_high_share_price_ticker():
+    """Site-2 call-site deletion guard: a ticker with a legitimately high
+    per-share price (current_price = $3,500) and a multiples_pe estimate
+    of ~$10,094 that EXCEEDS the old $10,000 Site-2 ceiling but stays WITHIN
+    Defense #4's 5× band ($17,500) must return a non-null median.
 
-    Pre-fix: `_has_corrupt_input` was called inside `compute_fair_price_ensemble`
-    at ensemble.py:457-458 and would set all methods to null + emit the
-    warning whenever ANY applicable estimate exceeded $10K.
+    Pre-fix (ensemble.py:457-458 present):
+      `_has_corrupt_input` checks every applicable method value > $10,000 →
+      multiples_pe ≈ $10,094 > $10,000 → all 6 methods set to null +
+      `valuation_output_anomalous` emitted → `result.median = None`.
+      So: assert result.median is not None  →  FAIL (RED on pre-fix).
 
-    Post-fix: the call site is deleted; Defense #4 (5×/0.2× of current price)
-    is the only ensemble-layer outlier guard.  A value of $10,094 against a
-    current price of $6,098 is only 1.65× — well within the 5× Defense #4
-    band — so neither `extreme_multiples_pe_estimate` NOR
-    `valuation_output_anomalous` should appear in the ensemble warnings.
+    Post-fix (call site deleted):
+      No Site-2 check; Defense #4 (5× of $3,500 = $17,500) does not flag
+      $10,094; ensemble proceeds to non-null median.
+      So: assert result.median is not None  →  PASS (GREEN on post-fix).
 
-    This test uses a minimal synthetic fixture rather than the full NVR
-    snapshot so the path is reproducible without depending on peer-panel
-    infrastructure: one method produces exactly $10,001 (just above the old
-    ceiling), current_price is set so that value stays within the Defense #4
-    5× band, ensuring no extreme-estimate annotate fires either.
+    Uses a snapshot with shares_outstanding = 2_700_000 (NVR-pattern) and
+    net_income sized so that EPS_TTM × sector_PE_22 ≈ $10,094, while
+    current_price = $3,500 keeps multiples_pe within 5× ($17,500 > $10,094).
     """
-    # Build a methods dict where multiples_pe = $10,001 and current_price is
-    # $3,000 so that $10,001 / $3,000 = 3.33× — within the [0.2×, 5×] band.
-    methods = {
-        "graham": _result(2_800.0, applicable=True),
-        "multiples_pe": _result(10_001.0, applicable=True, tier_used="sector"),
-        "multiples_pb": _result(None, applicable=False, reason="insufficient_peers_all_tiers"),
-        "multiples_ev_ebitda": _result(None, applicable=False, reason="insufficient_peers_all_tiers"),
-        "rim": _result(3_100.0, applicable=True),
-        "dcf": _result(2_950.0, applicable=True),
-    }
-    # Defense #4 check: is $10,001 within [0.2×, 5×] of $3,000?
-    #   low bound: 0.2 × 3000 = $600 ✓  ($10,001 > $600)
-    #   high bound: 5 × 3000 = $15,000 ✓  ($10,001 < $15,000)
-    # → Defense #4 should NOT flag it; pre-fix Site-2 ceiling would have.
-    outliers, extreme_warnings = _classify_outliers(methods, current_price=3000.0)
-    assert "multiples_pe" not in outliers, (
-        "multiples_pe ($10,001) is within [0.2×, 5×] of current=$3,000 "
-        "so Defense #4 must NOT flag it as an outlier."
-    )
-    assert extreme_warnings == [], (
-        f"No extreme_*_estimate warnings expected; got {extreme_warnings}"
+    # NI / shares = $458.86 → multiples_pe = 22 × $458.86 ≈ $10,094.
+    # current_price = $3,500 → Defense #4 band: [$700, $17,500].
+    # $10,094 is inside the band → Defense #4 does NOT flag it.
+    # Pre-fix Site-2 ceiling ($10,000) WOULD have fired; post-fix it's gone.
+    snap = _make_nvr_snap()
+    peer_panels, universe_metrics = _make_nvr_peer_panels(n_peers=10)
+
+    result, risk_flags = compute_fair_price_ensemble(
+        ticker="NVR",
+        snap=snap,
+        sector="Consumer Discretionary",
+        sub_industry=None,
+        industry=None,
+        current_price=3500.0,   # lower than cron price but above $10,094 / 5×
+        filing_lag_days_value=30,
+        peer_panels=peer_panels,
+        universe_metrics=universe_metrics,
+        historical_metrics={
+            "NVR": {
+                "eps_3y_avg": 400.0,
+                "avg_3y_roe": 0.35,
+                "fcf_5y": [1_000_000_000.0] * 5,
+            },
+        },
     )
 
-    # Post-fix: aggregate proceeds normally, median is non-null.
-    aggs, agg_warnings = _aggregate_methods(methods, current_price=3000.0)
-    assert aggs["median"] is not None
-    # Site-2 emission must NOT appear in the aggregation-level warnings.
-    assert "valuation_output_anomalous" not in agg_warnings, (
+    # Post-fix: the Site-2 gate is gone; median must be non-null.
+    assert result.median is not None, (
+        "Site-2 ceiling regression: null median on a ticker with "
+        "multiples_pe ≈ $10,094 > old $10K ceiling but within 5× of "
+        "current_price=$3,500.  Verify ensemble.py:450 per Issue #289."
+    )
+
+    # `valuation_output_anomalous` must not come from the ensemble layer.
+    assert "valuation_output_anomalous" not in result.valuation_warnings, (
         "Site-2 ceiling regression: 'valuation_output_anomalous' appeared "
-        "in aggregation warnings despite the Site-2 call site being deleted."
+        "despite the Site-2 call site being deleted in ensemble.py."
+    )
+
+    # multiples_pe is within 5× band → Defense #4 should NOT flag it.
+    assert "extreme_multiples_pe_estimate" not in result.valuation_warnings, (
+        "Defense #4 false-positive: multiples_pe ≈ $10,094 is within "
+        "5× of current_price=$3,500 ($17,500) — it must NOT be flagged."
     )
