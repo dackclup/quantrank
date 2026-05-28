@@ -265,6 +265,15 @@ export type Metadata = {
   form4_wall_clock_seconds?: number | null;
   osap_wall_clock_seconds?: number | null;
   cross_source_wall_clock_seconds?: number | null;
+  // Issue #67 follow-up (0.10.10-phase4.6) — per-sector delta
+  // instrumentation per methodology-scientist Mode B Q2 verdict
+  // (deferred from PR #294 sector-CoE flip). Keys: GICS sector names;
+  // values: `without_sector_coe[sector] - with_sector_coe[sector]`.
+  // Positive = sector dropped flags after flip (Damodaran predicts
+  // Utilities/Real Estate/Consumer Staples); negative = sector gained
+  // flags (Information Technology/Energy). Computed every cron for
+  // Q3 cohort audit prep. null on legacy pre-0.10.10 snapshots.
+  value_trap_risk_delta_by_sector?: Record<string, number> | null;
 };
 
 // Phase 4h.2 Part 1 — per-signal gate decision shape. Mirrors

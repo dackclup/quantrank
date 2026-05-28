@@ -11,18 +11,19 @@ from compute import config
 
 
 def test_schema_version_is_phase4_6():
-    """Issue #287 PR A (0.10.9-phase4.6, 2026-05-28) — PATCH bump for the
-    four new ``Metadata.*_wall_clock_seconds`` Rule 18 observability
-    fields (``tier2_wall_clock_seconds``, ``form4_wall_clock_seconds``,
-    ``osap_wall_clock_seconds``, ``cross_source_wall_clock_seconds``).
-    Each captures total wall-clock seconds for the corresponding SEC
-    EDGAR loop start-to-end; ``None`` when the loop was skipped via
-    escape-hatch env-var or failed before the end marker. Pairs with
-    the cache-restore canary step in ``compute-rankings.yml`` to surface
-    cache eviction in ~30s instead of after the 195m timeout cap.
-    Supersedes Issue #288's 0.10.8-phase4.6 bump.
+    """Issue #67 follow-up (0.10.10-phase4.6, 2026-05-28) — PATCH bump
+    for the new ``Metadata.value_trap_risk_delta_by_sector: dict[str, int]
+    | None`` field added per methodology-scientist Mode B Q2 verdict
+    (deferred from PR #294 sector-CoE flip). Per-sector delta of
+    `value_trap_risk` flag counts between flat-10% baseline and per-sector
+    Ke under Damodaran 2019 Ch. 8.4. Positive = sector dropped flags
+    after flip (Utilities / Real Estate / Consumer Staples expected);
+    negative = sector gained flags (Information Technology / Energy
+    expected). Computed every cron regardless of `USE_SECTOR_COE` so
+    Q3 2026-08-19 quarterly cohort audit has visible shape evidence.
+    Supersedes Issue #287 PR A's 0.10.9-phase4.6 bump.
     Locks the version against accidental revert."""
-    assert config.SCHEMA_VERSION == "0.10.9-phase4.6"
+    assert config.SCHEMA_VERSION == "0.10.10-phase4.6"
 
 
 def test_multi_class_overcount_allowlist_membership():

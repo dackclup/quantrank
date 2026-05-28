@@ -2683,7 +2683,7 @@ PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" 
 
 ---
 
-## PR (this PR) — End-of-day 2026-05-28 comprehensive .md sweep: fix 8 MUST-FIX + 6 SHOULD-FIX drifts across 6 canonical docs (in flight, 2026-05-28)
+## PR #301 (merged 2026-05-28, `978cab65`) — End-of-day 2026-05-28 comprehensive .md sweep: fix 8 MUST-FIX + 6 SHOULD-FIX drifts across 6 canonical docs
 
 Comprehensive `.md` housekeeping closing the 11-PR session day. Output of `docs-reviewer` (sonnet) full Tier 1 + Tier 2 audit on `main` (post-PR-#299) — verdict **NEEDS-CROSS-REF-FIX** with 14 prioritized findings.
 
@@ -2738,5 +2738,55 @@ Comprehensive `.md` housekeeping closing the 11-PR session day. Output of `docs-
 - `grep` cross-reference check — all 7 anchor strings (schema version / cron pointer / `USE_SECTOR_COE` / 18 / 45 / 33 / `v1.4.0-phase4.6`) consistent across all 6 docs after fix
 
 PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR" lockstep per PR #237 convention. Doc-only PR; closes the comprehensive cross-doc drift surface tracked by `docs-reviewer` 2026-05-28 audit.
+
+---
+
+## PR (this PR) — Issue #67 follow-up: per-sector `value_trap_risk` delta instrumentation (in flight, 2026-05-28)
+
+Methodology-scientist Mode B Q2 follow-up deferred from PR #294 (sector-CoE flip, 2026-05-28 05:39 UTC). Adds `Metadata.value_trap_risk_delta_by_sector: dict[str, int] | None` so Q3 2026-08-19 quarterly cohort audit (~12 weekly crons of post-flip data away) has visible per-sector shape evidence — not just the aggregate `value_trap_risk_count_{without,with}_sector_coe` scalars that landed in PR #204.
+
+**Methodology context** (Damodaran 2019 *Investment Valuation* Ch. 8.4 §"Industry Beta"):
+
+After flipping `USE_SECTOR_COE = True` per-sector Ke replaces the flat 10% baseline at `compute/scoring/cost_of_equity.SECTOR_COST_OF_EQUITY` (11 GICS sectors, Ke 6%-12%). Directional predictions:
+
+- **Lower-Ke sectors** (Utilities ~6-7% / Real Estate ~7-8% / Consumer Staples ~7-8%) — ROE ≥ Ke threshold relaxed → fewer RIM-skipped → POSITIVE delta (sector DROPPED flags)
+- **Higher-Ke sectors** (Information Technology ~11-12% / Energy ~10-12%) — ROE ≥ Ke threshold tightened → more RIM-skipped → NEGATIVE delta
+- **Neutral sectors** (the other 6 GICS sectors at ~9-11%) — small absolute delta near zero
+
+Cron #69 + Run #71 universe-wide already confirmed the aggregate: `132 → 109` (−23 tickers, −17.4%). This PR breaks that −23 down by sector so the next cron's `metadata.json` shows whether the cohort shift matches Damodaran prediction shape OR has unexpected outliers (methodology-scientist re-review trigger).
+
+**Scope (7 files, additive only)**:
+
+- `compute/output/schemas.py` — new `Metadata.value_trap_risk_delta_by_sector: dict[str, int] | None = None` field with full docstring citing methodology-scientist verdict + Damodaran 2019 anchor + direction semantics
+- `frontend/lib/types.ts` — mirror TS field as `Record<string, number> | null` (optional, nullable)
+- `frontend/lib/schema-snapshot.json` — regenerated via `python -m compute.output.schema_check --update-snapshot`
+- `compute/config.py` — `SCHEMA_VERSION = "0.10.10-phase4.6"` (PATCH bump; additive Metadata-only)
+- `compute/main.py` — 3 surgical edits mirroring existing scalar dual-counter pattern (lines 1410-1411 init two `dict[str, int]` counters / per-sector increment alongside existing scalar bumps at the two `value_trap_risk_roe_below_cost_of_equity` branches / Metadata constructor computes `delta = sorted(without ∪ with) → {sector: without − with}` or falls back to `None` when both dicts empty)
+- `tests/test_config.py` — schema version pin `0.10.9 → 0.10.10` + docstring rewrite citing Issue #67 follow-up
+- `tests/test_output/test_value_trap_delta_by_sector_schema.py` (NEW, via `test-engineer`) — 2 active GREEN schema-contract tests mirroring `test_wall_clock_schema.py` pattern from PR #297
+
+**Verification ladder (pre-push)**:
+
+- `ruff check .` — PASS
+- `python -m compute.output.schema_check` — PASS (triple in sync at `0.10.10-phase4.6`)
+- `pytest tests/test_config.py -v` — 11/11 PASS (schema-version pin held)
+- `pytest tests/test_output/test_value_trap_delta_by_sector_schema.py -v` — expect 2 NEW GREEN
+
+**Empirical validation** (post-merge, next cron Run #72):
+
+- `metadata.value_trap_risk_delta_by_sector` populated as non-null dict
+- Damodaran shape directionally correct (Util/RE/Staples POSITIVE; IT/Energy NEGATIVE)
+- `sum(delta.values()) == value_trap_risk_count_without_sector_coe - value_trap_risk_count_with_sector_coe`
+
+Note: per-sector accumulation runs in the Step 8 per-ticker loop, INDEPENDENT of cache-v5 cache busting. Field populates on next cron regardless of warm/cold fetch path.
+
+**Hard constraints honored**:
+
+- No new defense flag · No scoring formula change · No Rule 16 / Top-5 violation
+- Additive-only schema change (PATCH bump)
+- Field nullable per Rule 18 graceful-degradation (both dicts empty → `None`)
+- Phase 4.5e PR 5 (cluster weight promotion) gate-data UNCHANGED — independent track
+
+**Methodology decision**: methodology-scientist verdict NOT re-requested — the per-sector instrumentation is the EXACT field shape Mode B Q2 verdict from PR #294 explicitly authorized. Future re-trigger only if (a) post-merge cron shows sector breakdown contradicting Damodaran prediction OR (b) Q3 2026-08-19 cohort audit reads ≥ 6 crons of data + per-sector decay pattern needs interpretation.
 
 ---
