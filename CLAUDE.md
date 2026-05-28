@@ -517,11 +517,16 @@ whitespace / single-line fixes do not trigger.
 
 ## Phase status
 
-Current schema **`0.10.10-phase4.6`** (in flight this PR — Issue #67
-follow-up; new `Metadata.value_trap_risk_delta_by_sector: dict[str, int] | None`
-per methodology-scientist Q2 verdict deferred from PR #294 sector-CoE
-flip; positive value = sector dropped flags after flip per lower
-sector Ke vs flat 10% baseline). Schema cluster history: PR #297
+Current schema **`0.10.10-phase4.6`** on `main` (PR #300 PATCH bump —
+new `Metadata.value_trap_risk_delta_by_sector: dict[str, int] | None`
+per methodology-scientist Q2 verdict deferred from PR #294; positive
+value = sector dropped flags after flip per lower sector Ke vs flat
+10% baseline; populates from cron Run #72+ as Step 8 per-ticker loop
+accumulation). **In flight this PR**: PR #293 follow-up — Site-2
+dead-code removal (`_has_corrupt_input` + `_data_quality_corrupt_result`
+in `compute/valuation/ensemble.py`); cron Run #71 confirmed clean
+NVR rendering + `valuation_output_anomalous` cohort drop 5 → 4 as
+PR #293's one-cycle retention gate. Schema cluster history: PR #297
 Issue #287 PR A `0.10.7 → 0.10.9-phase4.6` (4 new `Metadata.*_wall_clock_seconds`
 fields for Tier-2 / Form-4 / OSAP / Step-8 cross_source loops; paired
 with `compute-rankings.yml` `timeout-minutes: 150 → 195` + cache-

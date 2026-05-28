@@ -42,8 +42,6 @@ from compute.valuation.ensemble import (
     _bvps_reported,
     _classify_outliers,
     _count_applicable_non_outliers,
-    _data_quality_corrupt_result,
-    _has_corrupt_input,
     _net_debt,
     compute_fair_price_ensemble,
     ensemble_result_to_dict,
@@ -930,76 +928,15 @@ def test_I3_ensemble_result_to_dict_warnings_is_a_copy():
     assert result.valuation_warnings == ["goodwill_heavy"]
 
 
-# -- J. Step 7.5 data-quality sanity guard -----------------------------------
-
-def test_data_quality_sanity_guard_triggers_on_extreme_method_value():
-    """Synthetic SPG-pattern: 5 methods compute reasonable values, 1 produces
-    an absurd $10,001/share (just above the $10,000 ceiling). The guard
-    must null all 6 methods, surface a single warning, and return an empty
-    risk_flags list (data quality is not a ranking veto)."""
-    methods = {
-        "graham": _result(50.0, applicable=True),
-        "multiples_pe": _result(60.0, applicable=True, tier_used="sub_industry"),
-        "multiples_pb": _result(10001.0, applicable=True, tier_used="sector"),
-        "multiples_ev_ebitda": _result(70.0, applicable=True, tier_used="sub_industry"),
-        "rim": _result(55.0, applicable=True),
-        "dcf": _result(65.0, applicable=True),
-    }
-    assert _has_corrupt_input(methods) is True
-
-    result = _data_quality_corrupt_result(methods)
-    # Issue #262 rename (2026-05-26) — Site 2 emission renamed from
-    # ``data_quality_input_corruption`` (input-level corruption,
-    # exclusive to ``risk_overlay.py`` veto surface) to
-    # ``valuation_output_anomalous`` (output-level anomaly,
-    # semantically distinct per methodology-scientist Mode B).
-    for name in METHOD_NAMES:
-        m = result.methods[name]
-        assert m.value is None
-        assert m.applicable is False
-        assert m.reason == "valuation_output_anomalous"
-    # Aggregates all None.
-    assert result.median is None
-    assert result.max is None
-    assert result.low is None
-    assert result.high is None
-    assert result.mos_pct is None
-    # Issue #262 rename — single canonical warning identifier.
-    # Single warning, no others.
-    assert result.valuation_warnings == ["valuation_output_anomalous"]
-    # tier_used preserved on multiples for diagnostics.
-    assert result.methods["multiples_pe"].tier_used == "sub_industry"
-    assert result.methods["multiples_pb"].tier_used == "sector"
-    assert result.methods["multiples_ev_ebitda"].tier_used == "sub_industry"
-    assert result.methods["graham"].tier_used is None
-
-
-def test_data_quality_guard_boundary_exactly_at_ceiling():
-    """Method value = 10000.0 exactly → does NOT trigger (strict >)."""
-    methods = {
-        "graham": _result(50.0, applicable=True),
-        "multiples_pe": _result(60.0, applicable=True),
-        "multiples_pb": _result(config.FAIR_PRICE_DATA_QUALITY_CEILING, applicable=True),
-        "multiples_ev_ebitda": _result(70.0, applicable=True),
-        "rim": _result(55.0, applicable=True),
-        "dcf": _result(65.0, applicable=True),
-    }
-    assert _has_corrupt_input(methods) is False
-
-
-def test_data_quality_guard_skipped_methods_dont_trigger():
-    """Methods with applicable=False are pass-through. A skipped method
-    can never trip the guard (its value is None or stale; only applicable
-    values are checked)."""
-    methods = {
-        "graham": _result(None, applicable=False, reason="non_positive_eps_3y_avg"),
-        "multiples_pe": _result(60.0, applicable=True),
-        "multiples_pb": _result(None, applicable=False, reason="non_positive_or_missing_bvps"),
-        "multiples_ev_ebitda": _result(70.0, applicable=True),
-        "rim": _result(None, applicable=False, reason="value_trap_risk_roe_below_cost_of_equity"),
-        "dcf": _result(65.0, applicable=True),
-    }
-    assert _has_corrupt_input(methods) is False
+# -- J. Step 7.5 data-quality sanity guard (RETIRED post-Issue #289) ---------
+# The 3 tests that exercised _has_corrupt_input / _data_quality_corrupt_result
+# (triggers / boundary / skipped-methods) were removed alongside the functions
+# they tested in the PR #293 follow-up dead-code removal. The remaining tests
+# in this section (test_site2_data_quality_guard_retired_post_issue_289 + L1/L3
+# below) verify the POST-RETIREMENT invariant: Site-2 no longer fires, Site-1
+# input-level veto still does. test_L2_dead_code_functions_still_callable_after_site2_deletion
+# was the one-cycle retention guard from PR #293 and is removed in this PR;
+# its purpose is complete.
 
 
 def test_site2_data_quality_guard_retired_post_issue_289():
@@ -1303,25 +1240,35 @@ def test_L1_NVR_fair_price_methods_no_longer_nulled_by_output_ceiling():
     assert risk_flags == []
 
 
-def test_L2_dead_code_functions_still_callable_after_site2_deletion():
-    """Dead-code retention guard (one-cycle hold per Issue #289 Option C).
+def test_L2_dead_code_functions_removed_post_one_cycle():
+    """Issue #289 Option C dead-code retirement is complete.
 
-    `_has_corrupt_input` and `_data_quality_corrupt_result` must remain
-    importable and callable after the Site-2 call site was deleted at
-    ensemble.py:457-458.  They are kept for one cycle so the reviewer can
-    confirm the deletion cleanly before a follow-up PR removes them.
-
-    If this test FAILS, one of the functions was removed too early.
+    PR #293 retired the Site-2 call site at ``compute/valuation/ensemble.py``
+    (Step 4.5 — formerly invoked ``_has_corrupt_input`` → ``_data_quality_corrupt_result``)
+    but kept the two helper functions as dead code for one cycle so the
+    reviewer could confirm the deletion cleanly before a follow-up PR removed
+    them. Cron Run #71 (2026-05-28 08:44 UTC, ``368dccd9``) completed with
+    NVR rendering correctly and ``valuation_output_anomalous`` flag dropped
+    from cohort (5 → 4) — Site-2 retirement empirically validated. This
+    follow-up PR removes the helpers. This test pins the removal so a future
+    accidental re-introduction surfaces as a clear "Issue #289 retirement
+    reverted" failure.
     """
     import compute.valuation.ensemble as _ensemble
 
-    assert callable(_ensemble._has_corrupt_input), (
-        "_has_corrupt_input was removed prematurely — Issue #289 Option C "
-        "specifies dead-code retention for one cycle before removal."
+    assert not hasattr(_ensemble, "_has_corrupt_input"), (
+        "_has_corrupt_input was re-introduced — Issue #289 Option C retired "
+        "the Site-2 output-level data-quality ceiling. Site-1 "
+        "(`compute/scoring/risk_overlay.py::_data_quality_input_corruption`) "
+        "is the canonical input-corruption guard; Defense #4 + Issue #177 "
+        "cover the ensemble-robustness layer. Do not re-introduce without "
+        "methodology-scientist verdict."
     )
-    assert callable(_ensemble._data_quality_corrupt_result), (
-        "_data_quality_corrupt_result was removed prematurely — Issue #289 "
-        "Option C specifies dead-code retention for one cycle before removal."
+    assert not hasattr(_ensemble, "_data_quality_corrupt_result"), (
+        "_data_quality_corrupt_result was re-introduced — paired with "
+        "_has_corrupt_input retirement per Issue #289 Option C. "
+        "The writer-parity emit at compute/main.py preserves the "
+        "`valuation_output_anomalous` UI chip for the Site-1 veto cohort."
     )
 
 

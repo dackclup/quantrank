@@ -132,16 +132,18 @@ EXTREME_MAJORITY_THRESHOLD: int = 3
 #
 # Issue #289 (2026-05-28, methodology-scientist Mode B verdict Option C)
 # — RETIRED FROM SITE-2 only. The Site-2 OUTPUT-level check that lived
-# in `compute/valuation/ensemble.py::_has_corrupt_input` used this same
-# ceiling to null the ensemble when ANY method's OUTPUT exceeded $10K.
-# That conflated input-corruption (Type A) with high-per-share-magnitude
+# in `compute/valuation/ensemble.py` (Step 4.5) used this same ceiling
+# to null the ensemble when ANY method's OUTPUT exceeded $10K. That
+# conflated input-corruption (Type A) with high-per-share-magnitude
 # (Type C: out-of-distribution but valid). NVR ($458 EPS, $6,098 price,
 # ~2.7M shares) was the empirical false-positive — `multiples_pe ≈ 22×
 # × $458.86 ≈ $10,094` tripped Site-2 → all 6 methods blocked → `/stock/
 # NVR` empty fair-price section despite legitimate inputs and a 65% MoS
 # signal. Per Penman 2013 §7.4 + Damodaran 2019 Ch. 18: defend at the
 # source (Site-1 input layer), not at downstream output magnitude.
-# Site-2 trigger DELETED at `compute/valuation/ensemble.py:450`;
+# Site-2 trigger DELETED at `compute/valuation/ensemble.py` (PR #293);
+# dead-code helpers `_has_corrupt_input` + `_data_quality_corrupt_result`
+# REMOVED in the PR #293 follow-up after cron Run #71 confirmed clean.
 # Defense #4 `extreme_*_estimate` + Issue #177 `extreme_estimate_majority`
 # (Huber 1981 §1.4 breakdown) provide the correct ensemble-robustness
 # layer. This ceiling remains active for Site-1 / input layer.

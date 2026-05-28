@@ -520,9 +520,12 @@ def test_D3_data_quality_corruption_does_not_fire_when_tbvps_uncomputable():
 def test_D4_data_quality_corruption_fires_at_boundary_strict():
     """Strict `>` comparison: TBVPS == ceiling does NOT fire.
 
-    Mirrors compute.valuation.ensemble._has_corrupt_input's strict
-    inequality — keeping the two pathways consistent so test fixtures
-    that sit exactly at the ceiling don't flap between veto+annotate.
+    Site-1 (here, in ``compute/scoring/risk_overlay.py``) is the canonical
+    input-corruption guard. Site-2 (the former
+    ``compute/valuation/ensemble.py::_has_corrupt_input`` output-level
+    check) was retired per Issue #289 Option C (2026-05-28); the strict
+    `>` invariant lives ONLY here now. Test fixtures sitting exactly at
+    the ceiling pass through cleanly without veto.
     """
     from compute import config
 

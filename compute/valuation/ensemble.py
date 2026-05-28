@@ -448,35 +448,33 @@ def compute_fair_price_ensemble(
 
     # Step 4.5 — Data-quality sanity sweep (Defense #7).
     # Issue #289 (2026-05-28, methodology-scientist Mode B verdict Option C):
-    # Site-2 output-level data-quality ceiling DELETED. The
-    # `_has_corrupt_input` check that lived here was a defense-in-depth
-    # layer that turned out to be structurally redundant with Defense #4
-    # (per-method `extreme_*_estimate` outlier guard) and Issue #177's
-    # `extreme_estimate_majority` annotate (Huber 1981 §1.4 breakdown-
-    # point check). Site-1 (`compute/scoring/risk_overlay.py::
-    # _data_quality_input_corruption`) catches the upstream units-bug
-    # class via TBVPS / revenue / NI patterns at the source.
+    # Site-2 output-level data-quality ceiling DELETED. The Site-2 trigger
+    # that lived here was a defense-in-depth layer that turned out to be
+    # structurally redundant with Defense #4 (per-method `extreme_*_estimate`
+    # outlier guard) and Issue #177's `extreme_estimate_majority` annotate
+    # (Huber 1981 §1.4 breakdown-point check). Site-1
+    # (`compute/scoring/risk_overlay.py::_data_quality_input_corruption`)
+    # catches the upstream units-bug class via TBVPS / revenue / NI patterns
+    # at the source — defending at the corruption source per Penman 2013
+    # §7.4 + Damodaran 2019 Ch. 18, not at downstream output magnitude
+    # (Site-2 conflated input-corruption Type A with high-per-share-magnitude
+    # Type C: out-of-distribution but valid).
     #
-    # The empirical false-positive: NVR (~2.7M low share count, $458 EPS,
-    # $6,098 price) — `multiples_pe = sector_PE × EPS ≈ 22× × $458.86 ≈
-    # $10,094` tripped the $10K ceiling. ALL 6 methods got blocked →
-    # `/stock/NVR` rendered empty fair-price section despite legitimate
-    # inputs and a 65% MoS signal. PPV on the 2026-05-28 cron #69: 0/1 =
-    # 0% (the only firing was the false positive).
+    # The empirical false-positive that justified retirement: NVR (~2.7M low
+    # share count, $458 EPS, $6,098 price) — `multiples_pe = sector_PE × EPS
+    # ≈ 22× × $458.86 ≈ $10,094` tripped the $10K ceiling. All 6 methods got
+    # blocked → `/stock/NVR` rendered empty fair-price section despite
+    # legitimate inputs and a 65% MoS signal. PPV on 2026-05-28 cron #69:
+    # 0/1 = 0% (the only firing was the false positive).
     #
-    # Per Penman 2013 §7.4 + Damodaran 2019 Ch. 18: defend at the source
-    # of corruption (Site-1), not at an arbitrary downstream output
-    # magnitude (Site-2). Site-2 conflated input-corruption (Type A) with
-    # high-per-share-magnitude (Type C: out-of-distribution but valid).
-    #
-    # `_has_corrupt_input` + `_data_quality_corrupt_result` functions kept
-    # below as DEAD CODE for one cycle (easier review); follow-up PR
-    # removes them after ≥ 1 cron of clean operation confirms no
-    # regression. The writer-parity emit in `compute/main.py` preserves
-    # the UI explanation chip for the Site-1 veto cohort (MTB / CPT /
-    # MRNA / HBAN per PR #265) so the `valuation_output_anomalous`
-    # annotate's UI surface continues to render — it just no longer
-    # fires from this Site-2 path.
+    # `config.FAIR_PRICE_DATA_QUALITY_CEILING` remains active for Site-1.
+    # The writer-parity emit in `compute/main.py` preserves the UI
+    # explanation chip for the Site-1 veto cohort (MTB / CPT / MRNA / HBAN
+    # per PR #265) so the `valuation_output_anomalous` annotate's UI
+    # surface continues to render — it just no longer fires from this
+    # Site-2 path. Dead-code helpers `_has_corrupt_input` +
+    # `_data_quality_corrupt_result` removed in this PR after cron Run #71
+    # (2026-05-28 08:44 UTC) confirmed no Site-2 regression on NVR cohort.
 
     # Defense #4 outlier guard + aggregation.
     aggregates, extreme_warnings = _aggregate_methods(methods, current_price)
@@ -517,66 +515,6 @@ def compute_fair_price_ensemble(
             ),
         ),
         [],
-    )
-
-
-def _has_corrupt_input(methods: dict[str, FairPriceMethodResult]) -> bool:
-    """True if any applicable method produced a value > the data-quality
-    ceiling (config.FAIR_PRICE_DATA_QUALITY_CEILING).
-
-    Strict ``>`` so a method computing exactly the ceiling does NOT trip
-    the guard. Skipped methods (applicable=False) and missing values
-    are pass-through.
-    """
-    ceiling = config.FAIR_PRICE_DATA_QUALITY_CEILING
-    for r in methods.values():
-        if r.applicable and r.value is not None and r.value > ceiling:
-            return True
-    return False
-
-
-def _data_quality_corrupt_result(
-    methods: dict[str, FairPriceMethodResult],
-) -> EnsembleResult:
-    """Build the all-null EnsembleResult returned when the OUTPUT-level
-    data-quality sanity guard fires (any of the 6 valuation method
-    outputs exceeds ``FAIR_PRICE_DATA_QUALITY_CEILING``).
-
-    Issue #262 rename (2026-05-26, methodology Mode B Option 3): this
-    site emits ``valuation_output_anomalous`` — semantically distinct
-    from the INPUT-level ``data_quality_input_corruption`` veto in
-    ``compute/scoring/risk_overlay.py`` (which triggers on TBVPS-ceiling
-    break / partial-revenue tag / |NI| > |revenue| accounting-identity
-    break). The Site-2 signal is "a method produced an absurd output
-    despite plausible inputs" — could be a residual input bug Site-1
-    missed, a legitimately extreme valuation output (RIM > $10K/share
-    on a goodwill-heavy filer), OR a formula edge case — and lacks the
-    "we don't know what the underlying numbers are" certainty that
-    Rule 16 requires for a veto. Annotate-only.
-
-    Each method becomes ``applicable=False`` with reason
-    ``valuation_output_anomalous``. ``tier_used`` is preserved from
-    the original computation so the JSON still tells the operator which
-    peer tier the multiples methods consulted before the guard fired
-    (useful for upstream-bug triage).
-    """
-    nulled: dict[str, FairPriceMethodResult] = {
-        name: FairPriceMethodResult(
-            value=None,
-            applicable=False,
-            reason="valuation_output_anomalous",
-            tier_used=r.tier_used,
-        )
-        for name, r in methods.items()
-    }
-    return EnsembleResult(
-        methods=nulled,
-        median=None,
-        max=None,
-        low=None,
-        high=None,
-        mos_pct=None,
-        valuation_warnings=["valuation_output_anomalous"],
     )
 
 

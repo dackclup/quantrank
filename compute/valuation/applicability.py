@@ -68,10 +68,12 @@ SKIP_REASONS: tuple[str, ...] = (
     # ``data_quality_input_corruption`` kept for legacy-snapshot
     # backward-compat (per-method ``reason`` field on cron output prior
     # to Issue #262 rename 2026-05-26). New cron output emits
-    # ``valuation_output_anomalous`` instead from
-    # ``compute/valuation/ensemble.py::_data_quality_corrupt_result``;
-    # consumers (``compute/scoring/sanity.py``,
-    # ``compute/scoring/recommendation.py``,
+    # ``valuation_output_anomalous`` from ``compute/main.py``'s writer-
+    # parity emit on the Site-1 veto cohort (PR #265 + Issue #289
+    # Option C retirement of the Site-2 call site in
+    # ``compute/valuation/ensemble.py`` — Site-2 helpers + their tests
+    # removed in the PR #293 follow-up); consumers
+    # (``compute/scoring/sanity.py``, ``compute/scoring/recommendation.py``,
     # ``frontend/components/FairPriceCard.tsx``) read EITHER identifier
     # for the transition window.
     "data_quality_input_corruption",

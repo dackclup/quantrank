@@ -2790,3 +2790,62 @@ Note: per-sector accumulation runs in the Step 8 per-ticker loop, INDEPENDENT of
 **Methodology decision**: methodology-scientist verdict NOT re-requested — the per-sector instrumentation is the EXACT field shape Mode B Q2 verdict from PR #294 explicitly authorized. Future re-trigger only if (a) post-merge cron shows sector breakdown contradicting Damodaran prediction OR (b) Q3 2026-08-19 cohort audit reads ≥ 6 crons of data + per-sector decay pattern needs interpretation.
 
 ---
+
+## PR (this PR) — PR #293 follow-up: Site-2 dead-code removal (`_has_corrupt_input` + `_data_quality_corrupt_result`) (in flight, 2026-05-28)
+
+PR #293 (`95e638bf`, merged 2026-05-28 05:20 UTC) retired the Site-2 output-level data-quality ceiling per methodology-scientist Mode B Option C verdict (Penman 2013 §7.4 + Damodaran 2019 Ch. 18 + Huber 1981 §1.4 — defend at corruption source via Site-1, not at downstream output magnitude). PR #293 deleted the call site at `compute/valuation/ensemble.py` Step 4.5 but RETAINED the 2 helper functions as dead code for "one cycle hold" before removal — explicit `test_L2_dead_code_functions_still_callable_after_site2_deletion` retention guard pinned the deferred state. **This PR is that follow-up** — cron Run #71 (`368dccd9`, 2026-05-28 08:44 UTC) confirmed clean operation (NVR fair-price section renders correctly; `valuation_output_anomalous` cohort dropped 5 → 4 = NVR removed correctly; no regression on the Site-1 veto cohort MTB / CPT / MRNA / HBAN).
+
+**Scope (5 files, net −108 lines)**:
+
+- **`compute/valuation/ensemble.py`** — REMOVED 2 dead functions:
+  - `_has_corrupt_input(methods) -> bool` (13 lines)
+  - `_data_quality_corrupt_result(methods) -> EnsembleResult` (43 lines)
+  - Step 4.5 comment block at lines 449-479 updated: "functions kept below as DEAD CODE for one cycle" → "Dead-code helpers `_has_corrupt_input` + `_data_quality_corrupt_result` removed in this PR after cron Run #71 confirmed clean"
+- **`tests/test_valuation/test_ensemble.py`** — REMOVED:
+  - 2 imports at the top (`_data_quality_corrupt_result`, `_has_corrupt_input`)
+  - 3 tests that exercised the removed functions:
+    - `test_data_quality_sanity_guard_triggers_on_extreme_method_value` (40 lines)
+    - `test_data_quality_guard_boundary_exactly_at_ceiling` (11 lines)
+    - `test_data_quality_guard_skipped_methods_dont_trigger` (13 lines)
+  - The one-cycle retention guard `test_L2_dead_code_functions_still_callable_after_site2_deletion` (20 lines) — REPLACED with `test_L2_dead_code_functions_removed_post_one_cycle` (24 lines) that asserts `not hasattr(_ensemble, "_has_corrupt_input")` + `not hasattr(_ensemble, "_data_quality_corrupt_result")` — pins the removal so accidental re-introduction surfaces as a clear "Issue #289 retirement reverted" test failure.
+  - Section "J. Step 7.5 data-quality sanity guard" header comment refreshed to "(RETIRED post-Issue #289)" with summary of removed-test purpose.
+  - The 2 surviving tests (`test_site2_data_quality_guard_retired_post_issue_289` end-to-end + `test_L3_site2_ceiling_not_invoked_for_high_share_price_ticker`) keep verifying POST-RETIREMENT invariants on the NVR cohort.
+- **`compute/config.py:127-148`** — `FAIR_PRICE_DATA_QUALITY_CEILING` STAYS ACTIVE (Site-1 in `compute/scoring/risk_overlay.py` shares the constant). Comment block updated: "Site-2 trigger DELETED" → "Site-2 trigger DELETED (PR #293); dead-code helpers REMOVED in the PR #293 follow-up after cron Run #71 confirmed clean."
+- **`compute/valuation/applicability.py:65-78`** — reference to `_data_quality_corrupt_result` replaced with reference to the writer-parity emit at `compute/main.py` on the Site-1 veto cohort.
+- **`tests/test_scoring/test_risk_overlay.py:520-528`** — `test_D4_data_quality_corruption_fires_at_boundary_strict` docstring updated: "Mirrors compute.valuation.ensemble._has_corrupt_input's strict inequality" → "Site-1 (here) is the canonical input-corruption guard. Site-2 was retired per Issue #289 Option C; the strict `>` invariant lives ONLY here now." Test logic itself UNCHANGED (it tests Site-1 risk_overlay.py veto behavior, never the removed Site-2).
+
+**Removal-guard test design** (test_L2 renamed):
+
+```python
+def test_L2_dead_code_functions_removed_post_one_cycle():
+    """Issue #289 Option C dead-code retirement is complete."""
+    import compute.valuation.ensemble as _ensemble
+    assert not hasattr(_ensemble, "_has_corrupt_input"), (
+        "_has_corrupt_input was re-introduced — Issue #289 Option C retired ..."
+    )
+    assert not hasattr(_ensemble, "_data_quality_corrupt_result"), (
+        "_data_quality_corrupt_result was re-introduced ..."
+    )
+```
+
+The `hasattr` check catches BOTH direct re-add AND import re-add. Failure message cites the methodology anchor so a future re-introducer gets the verdict context without having to re-read the issue thread.
+
+**Verification ladder (pre-push)**:
+
+- `ruff check .` — PASS
+- `python -m compute.output.schema_check` — PASS (no schema touched; passes trivially)
+- `python -m pytest tests/test_valuation/test_ensemble.py tests/test_scoring/test_risk_overlay.py tests/test_config.py -q` — 120 PASS (was 123 — net −3 active tests as planned)
+- `grep -rn "_has_corrupt_input\|_data_quality_corrupt_result" compute/ tests/` — only legitimate references remain (comments documenting retirement + new removal-guard assertion strings)
+
+**Hard constraints honored**:
+
+- No scoring formula change · No Rule 16 / Top-5 violation
+- Schema version UNCHANGED at `0.10.10-phase4.6` (no Pydantic / TS / snapshot field touched)
+- Site-1 input-corruption veto path UNCHANGED — only the dead Site-2 helpers removed
+- `FAIR_PRICE_DATA_QUALITY_CEILING` constant retained (shared with Site-1)
+- Writer-parity `valuation_output_anomalous` emit at `compute/main.py` UNCHANGED — UI explanation chip continues rendering for Site-1 cohort (MTB / CPT / MRNA / HBAN per PR #265)
+- `test_L3_site2_ceiling_not_invoked_for_high_share_price_ticker` (PR #293's end-to-end guard) UNCHANGED — keeps verifying NVR cohort produces non-null median
+
+**Closes the PR #293 retirement contract**: "follow-up PR removes them after ≥ 1 cron of clean operation confirms no regression" — cron Run #71 was the empirical confirm cycle.
+
+---
