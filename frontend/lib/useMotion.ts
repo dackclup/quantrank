@@ -109,9 +109,16 @@ export function useInViewOnce<T extends Element = HTMLDivElement>(
 
 /**
  * Returns true the FIRST time a given `key` is seen this browser session,
- * false on every subsequent mount (sessionStorage-backed). Lets entrance
- * animations play once per session so a power user who navigates back and
- * forth between 502 stocks doesn't re-watch the same sweep every time.
+ * false on every subsequent mount (sessionStorage-backed).
+ *
+ * Effect-based: returns false on SSR + first paint, then flips true after
+ * mount if this is the first time the key is seen this session. Used for
+ * BOTH the JS-driven gauge/count-up AND the CSS row-stagger — in all cases
+ * the animate class/value must be ADDED client-side (never baked into the
+ * static prerender), otherwise a static export would replay the animation
+ * on every full page load and hydration-mismatch against the client gate.
+ * The one-frame delay before animating is imperceptible and flicker-free.
+ *
  * SSR-safe + degrades to "always play" (true) if sessionStorage is
  * unavailable — a harmless extra play beats a swallowed one.
  */
