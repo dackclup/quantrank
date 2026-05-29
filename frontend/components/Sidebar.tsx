@@ -197,7 +197,7 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose
             <ThemeToggle layout="icon" />
           </div>
           <div className={`mt-2 px-2 pb-1 text-[11px] leading-snug text-slate-500 dark:text-slate-400${collapsed ? ' md:hidden' : ''}`}>
-            <p className="font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">v1.2 · MIT</p>
+            <p className="font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">v1.4.0 · MIT</p>
             <p className="mt-1">Educational use only.</p>
           </div>
         </div>
