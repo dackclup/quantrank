@@ -1404,7 +1404,14 @@ walks the universe for outliers then thorough LLM verdict on every
 flagged ticker — the original ≤ 20 hard cap was lifted in PR #219;
 fires post-cron + pre-release + "ตรวจ data หุ้น").
 
-The 18 agent prompts are kept tight (total ~2525 lines across all
+Every subagent ends its report with a parseable `HANDOFF · status=… ·
+next=<DONE | SPAWN <agent>:<scope> | ESCALATE <agent> | NEEDS-USER:…>>`
+line so the opus-4.8 main session composes the next step *dynamically*
+from it — the documented coordination flows are canonical examples, not
+an exhaustive script. See [`.claude/agents/README.md`](.claude/agents/README.md)
+§Dynamic workflow.
+
+The 19 agent prompts are kept tight (total ~2.7k lines across all
 of `.claude/agents/`) so per-spawn context cost stays bounded —
 trim target is the boilerplate ("read these first" + verbose intros
 + duplicated material from CLAUDE.md / SKILL.md / AGENTS.md), NOT
