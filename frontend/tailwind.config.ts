@@ -77,14 +77,15 @@ const config: Config = {
           '70%': { opacity: '1', transform: 'scale(1.04)' },
           '100%': { opacity: '1', transform: 'scale(1)' },
         },
-        // flag-pulse — risk-veto rows draw one slow attention pulse on
-        // entrance (ring opacity), then rest. Communicates "look here"
-        // without a permanent blink. Single iteration only.
+        // flag-pulse — risk-veto rows draw one attention beat on entrance:
+        // a rise with a tiny scale settle. transform + opacity ONLY (Motion
+        // Rule 1) — an earlier draft pulsed box-shadow but that's a third
+        // animated property, so it was dropped to honor the rule. The
+        // rose tone the row already carries supplies the "look here" color.
         'flag-pulse': {
-          '0%': { opacity: '0', transform: 'translateY(6px)' },
-          '60%': { opacity: '1', transform: 'translateY(0)' },
-          '78%': { boxShadow: '0 0 0 3px rgb(244 63 94 / 0.18)' },
-          '100%': { boxShadow: '0 0 0 0 rgb(244 63 94 / 0)' },
+          '0%': { opacity: '0', transform: 'translateY(6px) scale(0.99)' },
+          '55%': { opacity: '1', transform: 'translateY(0) scale(1.012)' },
+          '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
         },
       },
       animation: {

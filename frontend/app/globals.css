@@ -277,11 +277,16 @@ code {
   100% { opacity: 1; transform: scale(1); }
 }
 
+/* flag-pulse — veto-row entrance. transform + opacity ONLY (Motion Rule 1):
+ * a rise with a brief scale "settle" that reads as an attention beat
+ * without the box-shadow that an earlier draft used (box-shadow is a third
+ * animated property — dropped to honor the rule rather than carve an
+ * exception). The rose tone the row already carries supplies the
+ * "look here" color; this keyframe supplies the motion. */
 @keyframes flag-pulse {
-  0%   { opacity: 0; transform: translateY(6px); }
-  60%  { opacity: 1; transform: translateY(0); }
-  78%  { box-shadow: 0 0 0 3px rgb(244 63 94 / 0.18); }
-  100% { box-shadow: 0 0 0 0 rgb(244 63 94 / 0); }
+  0%   { opacity: 0; transform: translateY(6px) scale(0.99); }
+  55%  { opacity: 1; transform: translateY(0) scale(1.012); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* Stagger helper — list/row entrances apply `animate-rise-in` plus an
@@ -314,9 +319,10 @@ code {
 
 /* Hover lift — table rows / cards rise a hair on hover. Kept tiny
  * (1px) + fast so it reads as "alive" not "bouncy"; pairs with the
- * existing slate hover-bg. transform-only so no reflow. */
+ * existing slate hover-bg. transform ONLY (Motion Rule 1) — no
+ * box-shadow transition (the row's hover-bg already carries the state). */
 .hover-lift {
-  transition: transform 160ms ease-out, box-shadow 160ms ease-out;
+  transition: transform 160ms ease-out;
 }
 .hover-lift:hover {
   transform: translateY(-1px);
