@@ -22,15 +22,21 @@ const tierLabel = (score: number): string => {
 export function ScoreBadge({
   score,
   size = 'sm',
+  ticker,
 }: {
   score: number;
   size?: 'sm' | 'md' | 'lg';
+  // Only the 'lg' (detail-header) variant uses this — passed to ScoreGauge
+  // so the once-per-session sweep gate is keyed PER TICKER (502 keys), not
+  // per score value (~269 unique → 46% of stocks would otherwise share a
+  // key and silently skip the signature sweep). expert-user-explorer catch.
+  ticker?: string;
 }): JSX.Element {
   if (size === 'lg') {
     // Signature gauge sweep + count-up lives in the client ScoreGauge
     // sub-component (the only animated score surface; sm/md stay
     // server-rendered for the 502 table cells). See docs/design.md §Motion.
-    return <ScoreGauge score={score} accent={scoreAccentColor(score)} />;
+    return <ScoreGauge score={score} accent={scoreAccentColor(score)} ticker={ticker} />;
   }
 
   if (size === 'md') {

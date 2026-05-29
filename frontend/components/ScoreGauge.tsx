@@ -26,18 +26,24 @@ const tierLabel = (score: number): string => {
 export function ScoreGauge({
   score,
   accent,
+  ticker,
 }: {
   score: number;
   accent: string;
+  ticker?: string;
 }): JSX.Element {
   const r = 26;
   const circumference = 2 * Math.PI * r;
   const frac = Math.max(0, Math.min(1, score / 100));
   const arcLen = circumference * frac;
 
-  // Gate the sweep + count-up to the first view this session. After that,
-  // `play` is false → hooks resolve to the final value at mount (no anim).
-  const play = usePlayedOnce(`score-gauge:${score.toFixed(1)}`);
+  // Gate the sweep + count-up to the first view this session. Keyed PER
+  // TICKER (not per score value — ~269 unique scores cover 502 stocks, so
+  // a score-keyed gate would make 46% of tickers silently skip the
+  // signature sweep on a comparison run). Falls back to the score only if
+  // ticker wasn't passed. After first view `play` is false → hooks resolve
+  // to the final value at mount (no anim).
+  const play = usePlayedOnce(`score-gauge:${ticker ?? score.toFixed(1)}`);
   const shown = useCountUp(score, play, 800);
 
   // Two-phase render for the stroke-dashoffset transition. Default
@@ -91,7 +97,11 @@ export function ScoreGauge({
           </span>
         </div>
       </div>
-      <div className="flex flex-col">
+      {/* min-w reserves space for the widest count-up value ("100.0" /
+          "-NN.N") so the column doesn't reflow as digit count changes
+          during the sweep (0.0 → 73.9). Eliminates the micro-CLS the
+          count-up otherwise introduces. */}
+      <div className="flex min-w-[3.5rem] flex-col">
         <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
           Composite Score
         </span>
