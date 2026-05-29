@@ -411,15 +411,25 @@ export function PriceHistoryChart({
           numbers, choose a window, see the chart). */}
       <PriceTimePeriodSelector value={period} onChange={setPeriod} />
 
-      {/* onPointerUp / onPointerLeave live on the wrapper div (not the SVG)
-          so finger-lift + pointer-exit are caught reliably on mobile —
-          Recharts' own onTouchEnd on SVG children can fail to bubble.
-          Bumping restKey remounts <AreaChart> → re-parks the crosshair at
-          the latest date. */}
+      {/* Re-park the crosshair at the latest date when an interaction ends.
+          onPointerUp covers BOTH a mouse click-release and a touch finger-
+          lift. onPointerLeave covers a mouse pointer leaving the chart — but
+          it is GUARDED to ignore pointerType==='touch': during a touch scrub
+          the browser fires spurious pointerleave events as the finger crosses
+          child-element boundaries (the wrapper never gets implicit pointer
+          capture because pointerdown lands on a child SVG). An unguarded
+          handler remounts <AreaChart> mid-drag → resets to defaultIndex →
+          the crosshair can never follow the finger (the touch-scrub
+          regression the park-at-latest fix introduced). touch-action:pan-y
+          keeps vertical page scroll while handing horizontal drags to the
+          chart for scrubbing. */}
       <div
         className="h-64 w-full"
+        style={{ touchAction: 'pan-y' }}
         onPointerUp={() => setRestKey((k) => k + 1)}
-        onPointerLeave={() => setRestKey((k) => k + 1)}
+        onPointerLeave={(e) => {
+          if (e.pointerType !== 'touch') setRestKey((k) => k + 1);
+        }}
       >
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart

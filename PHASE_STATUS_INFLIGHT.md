@@ -3454,4 +3454,29 @@ flagged the `PriceTimePeriodSelector` shows **1M** highlighted on initial load
 while the chart renders the 1Y window (state inits to `'1Y'`) — a selector
 active-chip mismatch, unrelated to the crosshair ask.
 
+**Follow-up commit — touch-drag scrub regression (same PR #322):** the maintainer
+real-device-tested the preview: park-at-latest worked but **touch-drag could not
+scrub the crosshair along the line**. This was a regression the park-at-latest
+handlers introduced. Two agents disagreed on cause; the EMPIRICAL reproduce won
+(verify-don't-trust): `frontend-design-reviewer` source-reasoned it was a missing
+`touch-action` (browser stealing the horizontal drag for page scroll) and claimed
+implicit pointer capture suppresses `pointerleave` during a touch drag.
+`expert-user-explorer` **refuted both with measurement** — scroll-delta = 0px
+during horizontal touch-drag (no page-steal), and a recorded **3× `pointerleave`
+(pointerType=touch) DURING the drag** → the `onPointerLeave → setRestKey`
+remount fired ~5ms after each touchmove, resetting to `defaultIndex` and wiping
+the scrub. (Implicit capture didn't apply: pointerdown lands on a child SVG, so
+the wrapper never captured the pointer.) **Fix:** guard `onPointerLeave` to
+ignore `e.pointerType === 'touch'` (mouse-leave still re-parks; touch re-park is
+handled by `onPointerUp` at finger-lift) + add `touch-action: pan-y` defensively
+(canonical for a scrub chart; preserves vertical page scroll). The reproduce
+agent's secondary "Recharts touch-coords don't update" doubt was a **red herring**
+(its fake-event fiber test bypassed React's synthetic events) — verified post-fix
+via CDP `Input.dispatchTouchEvent`: touch-drag scrubs **Dec 23 2025 → Sep 19 2025
+→ Jul 15 2025** following the finger, touchEnd re-parks **May 28 2026**, mouse
+drag still scrubs + re-parks, park-at-latest intact. Lesson logged: verify in the
+SAME input modality the user uses (the original verification used `page.mouse`,
+which masked the touch-only regression). `tsc` + `next build` (506 routes) +
+`ruff` clean.
+
 ---
