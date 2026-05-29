@@ -3387,3 +3387,17 @@ exact diff); main agent reconciled the two divergent fix proposals. No schema /
 compute / scoring / valuation change.
 
 ---
+
+## Fix stale sidebar footer version chip v1.2 → v1.4.0 (in flight, this PR · 2026-05-29)
+
+The left-rail footer hardcoded `v1.2 · MIT` while the latest release tag is
+`v1.4.0-phase4.6`. Flagged as a WARN by `quantrank-reviewer` during the PR #320
+gate: pre-existing staleness, but PR #320's mobile-drawer fix newly **un-hid**
+the chip on mobile when `collapsed='1'` (it was previously suppressed), so more
+users now see the stale string. One-character-class literal change in
+`frontend/components/Sidebar.tsx` (`v1.2` → `v1.4.0`, matching the current
+release tag in short form). Verified: `tsc --noEmit` clean · `next build` green
+(506 routes) · `ruff check .` clean. Frontend-only; no schema / compute /
+scoring / valuation change.
+
+---
