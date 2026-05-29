@@ -525,6 +525,26 @@ whitespace / single-line fixes do not trigger.
   deferred (manual cleanup is fine for the first few weeks while
   the pattern proves itself; `tools/housekeep_phase_status.py`
   may land later once volume + shape are known).
+- **Lint the WHOLE repo before push, never per-file** (recorded
+  2026-05-29 after PR #310 went CI-red on a self-inflicted lint
+  miss). The §Commands verification ladder already says
+  `ruff check .` — the trap is running `ruff check <changed-file>`
+  instead, to "save time" on a focused diff. It silently passes
+  while a DIFFERENT file fails. The PR #310 failure mode: commit 1
+  changed two `compute/` files (I linted just those two — clean);
+  commit 2 added a test file with two `UP037` redundant-quote
+  annotations (`df: "pd.DataFrame"` under `from __future__ import
+  annotations`) — never linted locally because it wasn't in my
+  per-file list. CI runs `ruff check .` and caught it instantly.
+  **Correct procedure**: run `ruff check .` (no path argument) as
+  the LAST step before every `git push`, especially on a multi-
+  commit branch where a later commit adds files the earlier
+  per-file pass never saw. Per-file `ruff check <f>` is fine for
+  fast inner-loop iteration, but it is NOT the pre-push gate — the
+  pre-push gate is the full ladder verbatim. Same discipline for
+  `pytest -m "not network"` (whole suite, not just the one test
+  file you touched) — a verbatim-copy test helper or a cross-module
+  import can fail elsewhere.
 
 ## Phase status
 
