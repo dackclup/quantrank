@@ -434,15 +434,16 @@ export function PriceHistoryChart({
             remount <AreaChart> mid-drag → reset to defaultIndex → the
             crosshair could never follow the finger.
           touch-action:pan-y keeps vertical page scroll while handing
-          horizontal drags to the chart for scrubbing. The
-          [&_.recharts-surface]:overflow-visible lets the latest-point dot +
-          crosshair line at the flush right edge render fully instead of being
-          clipped in half by the SVG viewport (margin.right is 0 so the last
-          point sits exactly on the surface edge; the dot pokes a few px into
-          the page gutter, which is harmless). Scoped to THIS chart's surface
-          only — the other charts keep default clipping. */}
+          horizontal drags to the chart for scrubbing. NOTE: the SVG surface
+          keeps its default overflow:hidden. Making it overflow:visible (to
+          render the edge dot fully at a perfectly-flush right edge) let SVG
+          content escape the surface and widened the whole PAGE → a phantom
+          horizontal scroll. Instead the AreaChart carries a small `right`
+          margin (below) so the latest-point dot + crosshair line sit just
+          inside the surface — fully visible, and clipped so nothing escapes
+          to create page overflow. */}
       <div
-        className="h-64 w-full [&_.recharts-surface]:overflow-visible"
+        className="h-64 w-full"
         style={{ touchAction: 'pan-y' }}
         onPointerUp={() => setRestKey((k) => k + 1)}
         onClick={() => setRestKey((k) => k + 1)}
@@ -455,7 +456,7 @@ export function PriceHistoryChart({
           <AreaChart
             key={`${period}-${restKey}-${layoutKey}`}
             data={chartData}
-            margin={{ top: 8, right: 0, left: 0, bottom: 0 }}
+            margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
           >
             <defs>
               <linearGradient id={trendFillId} x1="0" y1="0" x2="0" y2="1">

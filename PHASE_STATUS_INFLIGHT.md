@@ -3523,4 +3523,24 @@ complete dot at the edge; touch-scrub to Sep 15 2025 (no release) then a
 tap→latest, drag scrub + release→latest). `tsc` + `next build` (506) + `ruff`
 clean.
 
+**Follow-up commit 5 — revert overflow:visible (it caused a page horizontal
+scroll); small right margin instead (same PR #322):** the `overflow:visible`
+from commit 4 (added to un-clip the edge dot at the flush `right:0` edge) let
+SVG content escape the surface and **widened the whole page** — measured
+`innerWidth` jumped 390 → 449 under mobile emulation, i.e. ~59px of phantom
+horizontal scroll ("เลื่อน crosshair แล้วปล่อย หน้าจอเลื่อนแนวนอนได้"). This is
+the flush/full-dot/no-scroll **trilemma**: a full dot at a *perfectly* flush
+edge must either clip (overflow:hidden) or escape (overflow:visible → page
+scroll). Resolution: remove the `[&_.recharts-surface]:overflow-visible` (back
+to default clip → nothing escapes → no page scroll) and give the AreaChart a
+small `margin.right: 8` so the latest-point dot + crosshair sit just *inside*
+the surface, fully visible. Cost: the line ends ~8px short of the content edge
+(not pixel-flush) — the necessary trade to keep the dot whole AND kill the page
+scroll. `onPointerCancel` (from commit 4) is unrelated and stays. Verified
+(clean viewport, no isMobile): `innerWidth==390 == docScrollWidth` (**hOverflow
+= 0**, nothing past the viewport), dot fully inside (dotRight 370 <
+containerRight 374), behaviours intact (park-on-load / drag-scrub + release /
+tap / scrub+pointercancel all → latest). `tsc` + `next build` (506) + `ruff`
+clean.
+
 ---
