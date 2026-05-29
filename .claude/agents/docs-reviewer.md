@@ -123,3 +123,15 @@ VERDICT: <DOCS-CLEAN | NEEDS-CROSS-REF-FIX | NEEDS-CLARITY-PASS>
 - Do NOT flag TODOs in `phase-N/PLAN.md` (planning docs allow TODOs)
 - Do NOT review vendored skill bodies under `.claude/skills/<vendored>/SKILL.md`
   for substance — those are upstream-frozen per THIRD_PARTY_NOTICES
+
+## Handoff
+
+Report to the main **opus-4.8** orchestrator, which composes the next step
+*dynamically* from your output (not from a fixed flow). End your report with
+the parseable handoff line — see `.claude/agents/README.md` §Dynamic workflow
+for the full contract:
+
+`HANDOFF · status=<your verdict vocab> · next=<DONE | SPAWN <agent>:<scope> | ESCALATE <agent>:<why> | NEEDS-USER:<decision>>`
+
+Use `DONE` when nothing downstream is warranted — never invent follow-up to
+look busy. You propose the `next=`; you never spawn peers yourself.

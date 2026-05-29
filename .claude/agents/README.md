@@ -241,6 +241,47 @@ When a flow says "sequences", each step's output feeds the next —
 e.g., methodology-scientist's predicted firing rate becomes
 defense-layer-auditor's verification target.
 
+## Dynamic workflow & the opus-4.8 orchestrator
+
+The main Claude Code session runs on **opus-4.8** and is the orchestrator.
+The seven flows above are **canonical examples, not an exhaustive
+script** — opus-4.8 composes the next step *dynamically* from what each
+agent reports, so an unexpected finding routes to the right specialist
+even when no canned flow covers it. The live example from this team's
+own history: `expert-user-explorer` surfaced an unrendered-`risk_flags`
+bug → the orchestrator filed the issue → spawned `frontend-design-reviewer`
+to scope the fix → re-spawned `expert-user-explorer` to re-validate. That
+loop is not in the flow list above — it was composed on the fly.
+
+For dynamic composition to be reliable, **every agent ends its report
+with one parseable handoff line** the orchestrator routes on without
+re-reading the whole report:
+
+```
+HANDOFF · status=<agent's verdict vocab> · next=<DONE | SPAWN <agent>:<scope> | ESCALATE <agent>:<why> | NEEDS-USER:<decision>>
+```
+
+- `status` uses the agent's own verdict vocabulary (PASS/FAIL/WARN ·
+  GO/WAIT/NO-GO · P1/P2 severity · …).
+- `next` names a **concrete sibling agent + one-line scope** when more
+  work is warranted; `DONE` otherwise. Agents **propose**; they never
+  spawn peers themselves — the orchestrator dispatches. Agents never
+  invent follow-up to look busy.
+- `NEEDS-USER` flags a decision only the user can make (a destructive
+  command, an ambiguous requirement) — the orchestrator surfaces it via
+  `AskUserQuestion` rather than guessing.
+
+**Model split (why 4 opus / 15 sonnet under an opus-4.8 main):** the
+orchestrator carries cross-agent synthesis, so most agents are **sonnet**
+— focused, well-scoped work handing a crisp verdict back up. The four
+**opus** agents (`quantrank-reviewer` · `methodology-scientist` ·
+`release-captain` · `incident-commander`) stay opus because their job IS
+breadth-of-judgment (full-diff review · academic-prior weighing ·
+release-ladder orchestration · P1 incident triage) that doesn't compress
+to a sonnet pass. Sonnet agents also drain the separate Max-plan
+"Weekly · Sonnet only" pool (see [`CLAUDE.md`](../../CLAUDE.md)
+§Spawn discipline).
+
 ## How auto-invocation works
 
 Claude Code reads the `description:` line of each agent file AND

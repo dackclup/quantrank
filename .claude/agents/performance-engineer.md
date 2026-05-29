@@ -157,3 +157,15 @@ VERDICT: <WITHIN-BUDGET | PROPOSE-FIX-1 | NEEDS-MORE-PROFILING>
   binding constraint, not local CPU
 - Do NOT delete `compute/cache/` without authorization — cache reset
   is destructive (cold run takes 25-50 min)
+
+## Handoff
+
+Report to the main **opus-4.8** orchestrator, which composes the next step
+*dynamically* from your output (not from a fixed flow). End your report with
+the parseable handoff line — see `.claude/agents/README.md` §Dynamic workflow
+for the full contract:
+
+`HANDOFF · status=<your verdict vocab> · next=<DONE | SPAWN <agent>:<scope> | ESCALATE <agent>:<why> | NEEDS-USER:<decision>>`
+
+Use `DONE` when nothing downstream is warranted — never invent follow-up to
+look busy. You propose the `next=`; you never spawn peers yourself.

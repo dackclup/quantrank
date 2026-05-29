@@ -195,3 +195,15 @@ Do NOT flip the PR to Ready until this resolves.
   branch — historical logs are not actionable for a current PR audit.
 - Do NOT comment on the PR yourself. Your report goes back to the main
   agent, which decides what (if anything) to surface on the PR.
+
+## Handoff
+
+Report to the main **opus-4.8** orchestrator, which composes the next step
+*dynamically* from your output (not from a fixed flow). End your report with
+the parseable handoff line — see `.claude/agents/README.md` §Dynamic workflow
+for the full contract:
+
+`HANDOFF · status=<your verdict vocab> · next=<DONE | SPAWN <agent>:<scope> | ESCALATE <agent>:<why> | NEEDS-USER:<decision>>`
+
+Use `DONE` when nothing downstream is warranted — never invent follow-up to
+look busy. You propose the `next=`; you never spawn peers yourself.

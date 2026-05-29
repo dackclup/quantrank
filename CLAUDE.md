@@ -278,6 +278,15 @@ whitespace / single-line fixes do not trigger.
 
 ### Spawn discipline
 
+- **Route on the handoff line.** Every sub-agent ends its report
+  with a parseable `HANDOFF · status=… · next=<DONE | SPAWN
+  <agent>:<scope> | ESCALATE <agent> | NEEDS-USER:<decision>>` line
+  (convention in [`.claude/agents/README.md`](.claude/agents/README.md)
+  §Dynamic workflow). Compose the next step from it **dynamically** —
+  the 7 coordination flows are canonical examples, not an exhaustive
+  script; an unexpected finding still routes to the right specialist
+  (this session's `expert-user-explorer` → bug → `frontend-design-reviewer`
+  → re-validate loop was composed on the fly, not from a listed flow).
 - **Don't gatekeep sub-agent effort.** When a sub-agent is
   spawned, let it do the full thorough job — read every relevant
   file, walk every section, follow every escalation lead.
