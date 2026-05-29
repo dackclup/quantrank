@@ -22,7 +22,7 @@ skills are loaded each session, so the main agent already has the
 trigger map. Subagents add value where context isolation or parallelism
 specifically helps.
 
-## The current set (18)
+## The current set (19)
 
 Organized into four tiers — **core** (narrow project invariants),
 **lifecycle** (engineering-org roles for PR / release / phase
@@ -41,13 +41,14 @@ roles a 20-person engineering org would have:
 | [`edgar-debugger`](edgar-debugger.md) | On-call for downstream dep | SEC EDGAR ingest test failures; live-run hangs; rate-limit / edgartools drift errors | sonnet | Read, Bash, Grep, Glob |
 | [`stock-detail-auditor`](stock-detail-auditor.md) | Data-correctness reviewer | Post-cron; pre-release; "ตรวจ data หุ้น" / "check stock data correctness" / "audit the output". Deterministic prefilter surfaces outliers; LLM-judgment then walks every flagged ticker without truncation (sonnet pool intended for thorough audit work). | sonnet | Read, Bash, Grep, Glob |
 
-### Tier 2 — Lifecycle (5)
+### Tier 2 — Lifecycle (6)
 
 | Subagent | Enterprise role analogue | Trigger | Model | Tools |
 |---|---|---|---|---|
 | [`security-reviewer`](security-reviewer.md) | AppSec engineer | Before release tags; CI workflow edits; new deps; "scan for CVE" / "ตรวจ security" | sonnet | Read, Bash, Grep, Glob |
 | [`frontend-design-reviewer`](frontend-design-reviewer.md) | Design system / UI lead | Edits under `frontend/components/` / `frontend/app/`; new badge / chip / color; "doesn't match the rest" | sonnet | Read, Grep, Glob, Bash |
 | [`vercel-preview-auditor`](vercel-preview-auditor.md) | Release / preview-env QA | Before Mark-Ready on UI-touching PR; after `frontend/` / `compute/output/` edit; "ดู preview" / "is deploy green?". Wraps Vercel MCP (`list_deployments` → `get_deployment_build_logs` → `get_runtime_logs` → `web_fetch_vercel_url` 3-route UA probe). Codifies CLAUDE.md §Commands "Section I forcing example" pre-Playwright pass. | sonnet | Read, Bash, Grep, Glob |
+| [`expert-user-explorer`](expert-user-explorer.md) | Power user / beta tester / UX researcher | Post-cron green; pre-release; after `vercel-preview-auditor` GO on a UI PR; "ลองใช้ app" / "expert user feedback" / "UX จริง" / "is the app usable?". BUILDS + SERVES the static export locally and DRIVES headless Playwright through persona missions (value-quality screener primary; risk-checker / quant-comparer / skeptic panel). The only agent that interactively *uses* the app. Read-only — proposes issues, never files/fixes. | sonnet | Read, Bash, Grep, Glob |
 | [`release-captain`](release-captain.md) | Release manager | "tag release" / "cut a release" / "release vX.Y.Z" / after phase epic merge | opus | Read, Bash, Grep, Glob |
 | [`phase-coordinator`](phase-coordinator.md) | Eng-program manager / docs PM | Before branch creation; before PR open / Ready-flip; after phase / sub-PR completes | sonnet | Read, Bash, Grep, Glob |
 
@@ -96,7 +97,7 @@ The four tiers reflect QuantRank's actual workload distribution + the
 
 The team isn't a flat list of independent agents — it's a coordinated
 system where specialists escalate to each other and orchestrators
-spawn parallel workers. Six canonical flows codify the integration:
+spawn parallel workers. Seven canonical flows codify the integration:
 
 ### Flow 1 — Pre-push gate (every PR before Mark-Ready)
 
@@ -205,6 +206,28 @@ quantrank-reviewer finds an issue → escalates to specialist:
   6. Stage follow-up PRs: threshold recalibration / dead-flag removal
      proposals → spawn quantrank-reviewer for each draft
 ```
+
+### Flow 7 — Experiential UX pass (does the app actually work for a user?)
+
+```
+User: "ลองใช้ app" / post-cron green / pre-release / vercel-preview-auditor GO on a UI PR
+  │
+  ▼
+[expert-user-explorer] (sonnet) adopts an investor persona and:
+  1. Builds + serves the Next.js static export locally
+     (npm ci → next build → python http.server out/)
+  2. Drives headless Playwright through the persona's end-to-end mission
+     (navigate → paginate → filter → sort → drill into /stock/<T> → read charts)
+  3. Cross-checks each rendered value against the committed JSON
+  4. Reports severity-ranked friction + a did-they-accomplish-the-goal verdict
+```
+
+Runs AFTER `vercel-preview-auditor` (the deploy is green) and completes the
+correctness triad — `stock-detail-auditor` (data correct) +
+`frontend-design-reviewer` (design on-pattern) + `expert-user-explorer`
+(actually usable). It escalates a display-bug-given-correct-data →
+`frontend-design-reviewer`, a wrong-JSON-value → `stock-detail-auditor`.
+It is the only agent that *interacts* with the running app.
 
 ### Spawn discipline (cross-cutting)
 

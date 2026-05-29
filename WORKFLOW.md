@@ -37,7 +37,7 @@ You cannot run Python or Node locally. All execution happens in **GitHub Actions
 
 Meta-workflow over the 9 phases below — maps the classical agentic loop
 (Planning → Code Generation → Integration → Testing → Deployment →
-Monitoring) onto the 18 subagents already in `.claude/agents/` and the
+Monitoring) onto the 19 subagents already in `.claude/agents/` and the
 established commands. No new infrastructure.
 
 **Session-start protocol**: read [`PHASE_STATUS.md`](PHASE_STATUS.md)
