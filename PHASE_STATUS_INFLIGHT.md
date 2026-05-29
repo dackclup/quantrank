@@ -3495,4 +3495,13 @@ pure-tap @30 → re-parks **May 28 2026**, micro-tap @60 → **May 28 2026**, dr
 still scrubs (Dec 3 → Aug 5 2025) + release re-parks, mouse drag scrubs + leave
 re-parks. `tsc` + `next build` (506) + `ruff` clean.
 
+**Follow-up commit 3 — right-edge alignment (same PR #322):** the chart's drawn
+area aligned flush with the content on the LEFT but stopped ~16px short on the
+RIGHT (the `<AreaChart margin>` was `left: 0` / `right: 16`). Set `right: 0` to
+match `left`. Measured (Playwright): area path l/r now == container l/r exactly
+(leftGap = rightGap = 0); the last x-axis tick "May 26" end-anchors at the edge
+so it does NOT clip; the latest dot sits at the right edge (half pokes ~4px into
+the page gutter — fine, standard latest-price marker). One-character diff;
+`next build` (506) + `ruff` clean.
+
 ---

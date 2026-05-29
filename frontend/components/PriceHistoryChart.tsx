@@ -444,7 +444,7 @@ export function PriceHistoryChart({
           <AreaChart
             key={`${period}-${restKey}-${layoutKey}`}
             data={chartData}
-            margin={{ top: 8, right: 16, left: 0, bottom: 0 }}
+            margin={{ top: 8, right: 0, left: 0, bottom: 0 }}
           >
             <defs>
               <linearGradient id={trendFillId} x1="0" y1="0" x2="0" y2="1">
