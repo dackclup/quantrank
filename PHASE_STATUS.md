@@ -17,7 +17,7 @@
 
 | Field | Value |
 |---|---|
-| Schema | **`0.10.10-phase4.6`** (PR #300 merged 2026-05-28 `5fa9a443` — PATCH bump: new `Metadata.value_trap_risk_delta_by_sector: dict[str, int] | None` per methodology-scientist Mode B Q2 verdict deferred from PR #294; per-sector delta of `value_trap_risk` cohort between flat-10% baseline and per-sector Ke. Supersedes PR #297's `0.10.9-phase4.6` wall-clocks + PR #292's `0.10.8-phase4.6` Rule 18 disambiguator.) **In flight on PR #303**: `0.10.11-phase4.6` — Phase 4.5e PR 6 Form-4 10b5-1 negation guard (residual footgun #1); new `Metadata.form4_negation_guard_downgrade_count: int | None` counts True → False downgrades applied by the 11-token bidirectional ±5-word-token regex wrapping `edgar.ownership.core.detect_10b5_1_plan` |
+| Schema | **`0.10.11-phase4.6`** (PR #303 merged 2026-05-29 `847c21b` — PATCH bump: Phase 4.5e PR 6 Form-4 10b5-1 negation guard, residual footgun #1; new `Metadata.form4_negation_guard_downgrade_count: int | None` counts True → False downgrades applied by the 11-token bidirectional ±5-word-token regex wrapping `edgar.ownership.core.detect_10b5_1_plan`. Supersedes PR #300's `0.10.10-phase4.6` per-sector delta + PR #297's `0.10.9-phase4.6` wall-clocks + PR #292's `0.10.8-phase4.6` Rule 18 disambiguator.) |
 | Defense layer | **33 declared boolean flags** (7 active vetoes + 26 annotates + reserved slots; ~27 currently emit; `USE_SECTOR_COE = True` post-PR #294 flip) · plus 5 numerical guards + `manipulation_index` rollup |
 | Active vetoes | **7** — `altman_distress` · `sloan_accruals_top_decile` · `net_issuance_top_decile` · `non_reliance_filing` · `beneish_manipulation_veto` · `dechow_manipulation_veto` · `data_quality_input_corruption` |
 | Latest release tag | [**`v1.4.0-phase4.6`**](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6) — 2026-05-27 at `bbca9cac` (Phase 4.6 honest re-validation harness) |
@@ -26,9 +26,17 @@
 | Production run | `368dccd9` (2026-05-28 cron Run #71, 14m 32s warm cache, post-PR #298 cache-v5 bump; empirically validated PR #297 wall-clock fields — `tier2_wc=10.6s`, `form4_wc=null` per FORM4_FETCH_SKIP, `osap_wc=347.1s`, `cross_source_wc=133.2s`. Smoking gun for Issue #288 cache-replay bypass: `multi_class_per_class_attempt_count=0` + `fundamentals_latency_p50_seconds=0.0`) |
 | Universe | 502 stocks (S&P 500 minus 1 delisting) |
 | Skill inventory | **45** invocation-triggerable + phase planning docs |
-| Subagent inventory | **18** project-specific in 4 tiers: **Tier 1 Core** (`quantrank-reviewer` · `schema-sentinel` · `defense-layer-auditor` · `edgar-debugger` · `stock-detail-auditor`) · **Tier 2 Lifecycle** (`security-reviewer` · `frontend-design-reviewer` · `vercel-preview-auditor` · `release-captain` · `phase-coordinator`) · **Tier 3 Specialized** (`test-engineer` · `methodology-scientist` · `literature-searcher` · `performance-engineer` · `dependency-auditor`) · **Tier 4 Operations** (`docs-reviewer` · `ci-triage-engineer` · `incident-commander`) |
+| Subagent inventory | **19** project-specific in 4 tiers: **Tier 1 Core** (`quantrank-reviewer` · `schema-sentinel` · `defense-layer-auditor` · `edgar-debugger` · `stock-detail-auditor`) · **Tier 2 Lifecycle** (`security-reviewer` · `frontend-design-reviewer` · `vercel-preview-auditor` · `expert-user-explorer` · `release-captain` · `phase-coordinator`) · **Tier 3 Specialized** (`test-engineer` · `methodology-scientist` · `literature-searcher` · `performance-engineer` · `dependency-auditor`) · **Tier 4 Operations** (`docs-reviewer` · `ci-triage-engineer` · `incident-commander`) |
 
-**Recently merged** (PR #286 → PR #302, 2026-05-28; **14 PRs landed same day post-v1.4.0 release**):
+**Recently merged** (PR #303 → PR #310, 2026-05-29):
+- PR #310 `a941e2e` — fix(scoring): inject `stale_filing_hard` before Top-5 rotation (latent Rule-16 fix, closes #309; Step-6b pre-scan + `asof_date` hoist; +5 tests; zero scoring impact)
+- PR #308 `e77efbf` — fix(frontend): correct RiskFlagsCard footer over-claim + add latent `stale_filing_hard` key (header "Risk Vetoes" → "Risk Flags")
+- PR #307 `bb1d7fd` — feat(agents): Phase B — opus-4.8 orchestrator + dynamic-workflow tuning (uniform `## Handoff` contract on all 19 agents + README §"Dynamic workflow" + Flow 7)
+- PR #306 `6ce7c1b` — fix(frontend): render `risk_flags[]` vetoes on stock detail (`RiskFlagsCard`; closes #305)
+- PR #304 `e070db6` — feat(agents): add `expert-user-explorer` (19th subagent, Tier 2 Lifecycle)
+- PR #303 `847c21b` — feat(scoring): Phase 4.5e PR 6 — Form-4 10b5-1 negation guard (schema `0.10.10 → 0.10.11-phase4.6`; new `Metadata.form4_negation_guard_downgrade_count`; 34 new tests; quantrank-reviewer READY-TO-PUSH, WARN-1 regex-anchor gap deferred to a follow-up gated on cron Run #72+)
+
+**Earlier** (PR #286 → PR #302, 2026-05-28; **14 PRs landed same day post-v1.4.0 release**):
 - PR #302 `c956f06a` — chore(valuation): PR #293 follow-up — Site-2 dead-code removal (`_has_corrupt_input` + `_data_quality_corrupt_result`; cron Run #71 retention gate confirmed clean; NET −56 prod lines / −84 test lines)
 - PR #301 `978cab65` — chore(docs): end-of-day 2026-05-28 .md sweep — fix 8 MUST-FIX + 6 SHOULD-FIX cross-doc drifts (PHASE_STATUS.md schema row + SKILL.md table + WORKFLOW.md tag)
 - PR #300 `5fa9a443` — feat(scoring): Issue #67 follow-up — per-sector `value_trap_risk` delta instrumentation (schema `0.10.9 → 0.10.10-phase4.6`; methodology-scientist Mode B Q2 verdict deferred from PR #294)
@@ -46,7 +54,7 @@
 - (3 issues filed: #287 FORM4 revert + durable 5-loop timeout · #288 GOOG/GOOGL XBRL · #289 NVR DQIC; all closed same day via PR #297 / #298 / #292 / #293)
 
 **In flight** (not yet merged on `main`):
-- PR #303 — feat(scoring): Phase 4.5e PR 6 — Form-4 10b5-1 negation guard (residual footgun #1 from PR 4-eq); schema `0.10.10 → 0.10.11-phase4.6` PATCH bump for new `Metadata.form4_negation_guard_downgrade_count: int | None`; post-detector wrapper on `edgar.ownership.core.detect_10b5_1_plan` downgrades True → False when resolved footnote text matches 11 negation tokens (`terminated` / `cancelled` / `no` / `previously` / `former` / etc.) within ±5 word tokens of the 10b5-1 mention. PR 4-eq Mode B verdict (2026-05-23) pre-approved the hardening; PR 6 = pure engineering. Expected delta firing-rate `+5% to +10% relative` on `insider_sell_cluster` per Cohen 2008 §III + Jagolinzer 2009 §3.2. 34 new tests (33 from test-engineer + 1 review-cleanup M3 drift-detector); full suite 1399 → 1400 +1 / zero regressions. quantrank-reviewer (opus) verdict READY-TO-PUSH with 3 non-blocking WARNs — 2 fixed inline, WARN-1 (regex anchor coverage gap vs upstream 6-substring detector) DEFERRED to follow-up PR gated on cron Run #72+ empirical data.
+- (none — all session PRs through #310 merged 2026-05-29; the WARN-1 regex-anchor coverage gap from PR #303 remains a documented follow-up gated on cron Run #72+ empirical data)
 
 **Earlier** (PR #264 → PR #285, 2026-05-26 → 2026-05-27):
 - PR #285 `8f373758` — docs(release): codify mobile-only operator convention for tag releases (CLAUDE.md §Gotchas + release-tag SKILL.md + release-captain agent)

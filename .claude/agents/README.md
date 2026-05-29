@@ -17,7 +17,7 @@
 | Workflow harness (PR iteration, phase bump) | Skill |
 | One-shot lookup / search | Direct `Read` / `Grep` |
 
-When a task fits both, prefer the **skill** if it already exists — 42
+When a task fits both, prefer the **skill** if it already exists — 45
 skills are loaded each session, so the main agent already has the
 trigger map. Subagents add value where context isolation or parallelism
 specifically helps.

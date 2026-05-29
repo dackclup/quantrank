@@ -548,23 +548,17 @@ whitespace / single-line fixes do not trigger.
 
 ## Phase status
 
-Current schema **`0.10.10-phase4.6`** on `main` (PR #300 PATCH bump —
-new `Metadata.value_trap_risk_delta_by_sector: dict[str, int] | None`
-per methodology-scientist Q2 verdict deferred from PR #294; positive
-value = sector dropped flags after flip per lower sector Ke vs flat
-10% baseline; populates from cron Run #72+ as Step 8 per-ticker loop
-accumulation). **In flight this PR**: Phase 4.5e PR 6 — 10b5-1
-negation guard (residual footgun #1 from PR 4-eq); schema PATCH bump
-`0.10.10 → 0.10.11-phase4.6` for the new
-`Metadata.form4_negation_guard_downgrade_count: int | None` Rule 18
-diagnostic; post-detector wrapper on `edgar.ownership.core.detect_10b5_1_plan`
-downgrades True → False when resolved footnote text matches one of 11
-negation tokens (`terminated` / `cancelled` / `no` / `previously` /
-`former` / etc.) within ±5 word tokens of the 10b5-1 mention. PR 4-eq
-Mode B verdict pre-approved the hardening; PR 6 = engineering
-implementation. Expected delta firing-rate `+5% to +10% relative` on
-`insider_sell_cluster` per Cohen 2008 §III + Jagolinzer 2009 §3.2.
-Schema cluster history: PR #297
+Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged
+2026-05-29 `847c21b` — Phase 4.5e PR 6 Form-4 10b5-1 negation guard,
+residual footgun #1 from PR 4-eq; new
+`Metadata.form4_negation_guard_downgrade_count: int | None` counts
+True → False downgrades from the 11-token bidirectional ±5-word-token
+regex wrapping `edgar.ownership.core.detect_10b5_1_plan`. Prior: PR #300
+PATCH bump — new `Metadata.value_trap_risk_delta_by_sector: dict[str,
+int] | None` per methodology-scientist Q2 verdict deferred from PR #294;
+positive value = sector dropped flags after flip per lower sector Ke vs
+flat 10% baseline; populates from cron Run #72+ as Step 8 per-ticker
+loop accumulation). Schema cluster history: PR #297
 Issue #287 PR A `0.10.7 → 0.10.9-phase4.6` (4 new `Metadata.*_wall_clock_seconds`
 fields for Tier-2 / Form-4 / OSAP / Step-8 cross_source loops; paired
 with `compute-rankings.yml` `timeout-minutes: 150 → 195` + cache-
@@ -594,7 +588,15 @@ ladder closure + LedgerCraft frontend reskin (defense layer 32 → 33;
 PR #264 `multi_class_aggregate_shares_suspected` + PR #265 DQIC
 site-2 rename `valuation_output_anomalous`).
 
-**Recently merged** (PR #286 → PR #302, 2026-05-28 — **14 PRs same day post-v1.4.0**):
+**Recently merged** (PR #303 → PR #310, 2026-05-29):
+- PR #310 `a941e2e` — fix(scoring): inject `stale_filing_hard` before Top-5 rotation (latent Rule-16 fix, closes #309; Step-6b pre-scan + `asof_date` hoist + `ensemble.py` docstring; +5 tests; zero scoring impact, fires 0× on current universe)
+- PR #308 `e77efbf` — fix(frontend): correct RiskFlagsCard footer over-claim (only `altman_distress` + `data_quality_input_corruption` force cautious; 27/56 sloan-flagged are lean_bullish) + add latent `stale_filing_hard` key + header "Risk Vetoes" → "Risk Flags"
+- PR #307 `bb1d7fd` — feat(agents): Phase B — opus-4.8 orchestrator + dynamic-workflow tuning (uniform `## Handoff` contract on all 19 agents + README §"Dynamic workflow" + Flow 7)
+- PR #306 `6ce7c1b` — fix(frontend): render `risk_flags[]` vetoes on stock detail (`RiskFlagsCard`; closes #305 — 137/502 tickers carried an invisible flag)
+- PR #304 `e070db6` — feat(agents): add `expert-user-explorer` (19th subagent, Tier 2 Lifecycle; first agent that interactively uses the app)
+- PR #303 `847c21b` — feat(scoring): Phase 4.5e PR 6 — Form-4 10b5-1 negation guard (residual footgun #1; schema `0.10.10 → 0.10.11-phase4.6`, new `Metadata.form4_negation_guard_downgrade_count`)
+
+**Earlier** (PR #286 → PR #302, 2026-05-28 — **14 PRs same day post-v1.4.0**):
 - PR #302 `c956f06a` — chore(valuation): PR #293 follow-up — Site-2 dead-code removal (`_has_corrupt_input` + `_data_quality_corrupt_result`; cron Run #71 retention-gate confirmed clean; NET −56 prod lines / −84 test lines)
 - PR #301 `978cab65` — chore(docs): end-of-day 2026-05-28 .md sweep — fix 8 MUST-FIX + 6 SHOULD-FIX cross-doc drifts (PHASE_STATUS.md schema row + SKILL.md table + WORKFLOW.md tag)
 - PR #300 `5fa9a443` — feat(scoring): Issue #67 follow-up — per-sector `value_trap_risk` delta instrumentation (schema `0.10.9 → 0.10.10-phase4.6`; methodology-scientist Mode B Q2 verdict)
@@ -612,8 +614,7 @@ site-2 rename `valuation_output_anomalous`).
 - (3 issues filed + ALL closed same day: #287 PR A merged via #297 [PR B FORM4 revert remaining] · #288 closed via #292 + #298 · #289 closed via #293 + #302)
 
 **In flight** (not yet merged on `main`):
-- Phase 4.5e PR 6 (THIS PR) — Form-4 10b5-1 negation guard (residual footgun #1 from PR 4-eq); schema PATCH `0.10.10 → 0.10.11-phase4.6` for `Metadata.form4_negation_guard_downgrade_count`; post-detector wrapper on `detect_10b5_1_plan` (11-token bidirectional ±5-word-token regex)
-- See [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) for full descriptions
+- (none — all session PRs merged; see [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) for historical in-flight entries)
 
 **Earlier** (PR #264 → PR #285, 2026-05-26 → 2026-05-27):
 - PR #285 `8f373758` — docs(release): codify mobile-only operator convention for tag releases

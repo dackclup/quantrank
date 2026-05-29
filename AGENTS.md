@@ -434,19 +434,23 @@ note cross-tool-specific points only:
   helpers `_has_corrupt_input` + `_data_quality_corrupt_result`
   REMOVED via PR #302 follow-up after cron Run #71 confirmed the
   retirement empirically).
-- **Phase 4.5e PR 6 in flight (this PR)** — Form-4 10b5-1 negation
-  guard hardens the upstream substring detector against FP matches on
-  phrases like "10b5-1 plan terminated 2022" / "no 10b5-1 plan in
-  effect" / "previously had a 10b5-1 plan". Post-detector wrapper
-  downgrades True → False on negation match (11 negation tokens
-  bidirectional ±5-word-token regex). Schema PATCH bump
+- **Phase 4.5e PR 6 merged via PR #303** (`847c21b`, 2026-05-29) —
+  Form-4 10b5-1 negation guard hardens the upstream substring detector
+  against FP matches on phrases like "10b5-1 plan terminated 2022" /
+  "no 10b5-1 plan in effect" / "previously had a 10b5-1 plan".
+  Post-detector wrapper downgrades True → False on negation match (11
+  negation tokens bidirectional ±5-word-token regex). Schema PATCH bump
   `0.10.10 → 0.10.11-phase4.6` for new
   `Metadata.form4_negation_guard_downgrade_count: int | None` Rule 18
-  diagnostic. PR 4-eq Mode B verdict pre-approved the hardening; PR 6 =
-  pure engineering. Cross-tool agents: when the next cron run lands,
+  diagnostic. Cross-tool agents: when the next cron run lands,
   validate the new field populates (warm-cache cron may report 0;
   cold-cache cron populates the real cohort). Closes the residual of
   footgun #1 from `compute/scoring/form4_signals.py` module docstring.
+- **19th subagent `expert-user-explorer` added via PR #304** (`e070db6`,
+  2026-05-29; Tier 2 Lifecycle 5 → 6) + **Phase B dynamic-workflow
+  tuning via PR #307** (`bb1d7fd`) — uniform `## Handoff` contract on
+  all 19 agents + README §"Dynamic workflow & the opus-4.8 orchestrator"
+  + a 7th coordination flow (Experiential UX pass).
 - **`.md` optimization sequence** (Option D — multi-PR overhaul):
   PR A drift fix #141 ✅ · PR B CLAUDE.md token diet #142 ✅ ·
   PR C AGENTS.md sync + dedup #143 ✅ · PR D WORKFLOW.md archive
