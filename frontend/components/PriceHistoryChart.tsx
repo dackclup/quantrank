@@ -469,6 +469,35 @@ export function PriceHistoryChart({
       <div
         className="h-64 w-full [&_.recharts-surface]:overflow-visible"
         style={{ touchAction: 'pan-y' }}
+        onPointerDown={(e) => {
+          // A tap WITHOUT a drag must move the crosshair to the tap point.
+          // Recharts only updates the tooltip on touch-MOVE (handleTouchMove);
+          // handleTouchStart just calls handleMouseDown, which never touches the
+          // tooltip — so a bare tap would leave the crosshair parked at latest.
+          // Drive Recharts' onMouseMove directly: dispatch a synthetic mousemove
+          // at the touch point from INSIDE .recharts-wrapper (so it bubbles
+          // through Recharts' handler). getMouseInfo reads pageX, and a
+          // constructed MouseEvent derives pageX = clientX + scrollX, so passing
+          // clientX/clientY from the pointer is enough. Mouse pointers already
+          // hover-track, so this is touch-only.
+          if (e.pointerType !== 'touch') return;
+          const surface = e.currentTarget.querySelector('.recharts-surface');
+          if (!surface) return;
+          const { pageX, pageY, clientX, clientY } = e;
+          const ev = new MouseEvent('mousemove', {
+            bubbles: true,
+            cancelable: true,
+            clientX,
+            clientY,
+          });
+          // pageX/pageY are NOT part of MouseEventInit, so a constructed event
+          // leaves them at 0 — but Recharts' getMouseInfo reads pageX. Set them
+          // explicitly to the pointer's page coords or the crosshair lands
+          // off-chart (negative chartX) and Recharts clears the tooltip.
+          Object.defineProperty(ev, 'pageX', { get: () => pageX });
+          Object.defineProperty(ev, 'pageY', { get: () => pageY });
+          surface.dispatchEvent(ev);
+        }}
         onPointerUp={() => setRestKey((k) => k + 1)}
         onClick={() => setRestKey((k) => k + 1)}
         onPointerCancel={() => setRestKey((k) => k + 1)}
