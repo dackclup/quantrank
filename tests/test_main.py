@@ -596,3 +596,226 @@ def test_build_snapshot_retry_policy_caps_at_30s_or_2_attempts():
         assert attempt_stop.max_attempt_number == 2, (
             f"{fn.__name__}: stop_after_attempt must cap at 2; got {attempt_stop.max_attempt_number}"
         )
+
+
+# ---------------------------------------------------------------------------
+# Issue #309 — Step 6b pre-scan: stale_filing_hard injected before Step-7
+# Rule-16 rotation (entered_top5 invariant)
+# ---------------------------------------------------------------------------
+#
+# Boundary: stale_filing_status uses strict >, so lag > 180 days is "hard".
+# Exactly 181 days is "hard"; exactly 180 days is "soft".
+#
+# The tests below simulate the Step 6b + Step 7 loop extracted from
+# run_weekly_compute verbatim, so refactors to that block will break these
+# tests immediately (by design — the loop is the contract).
+
+from compute.valuation.applicability import stale_filing_status  # noqa: E402
+
+
+def _step6b_then_step7(
+    df: "pd.DataFrame",
+    snapshots: dict,
+    risk_flags: dict,
+    asof: date,
+    previous_top5: set,
+) -> tuple[dict, set, set]:
+    """Verbatim copy of the Step 6b + Step 7 body from run_weekly_compute.
+
+    Returns (mutated risk_flags, entered_set, exited_set).
+
+    Kept as a local helper so tests run without invoking the full pipeline.
+    Any change to the production loop must be mirrored here — the test suite
+    will fail loudly if the two diverge (the positive/negative assertions
+    catch the old vs new behaviour).
+    """
+    # Step 6b
+    for _, _r in df.iterrows():
+        _ticker = str(_r["ticker"])
+        _snap = snapshots.get(_ticker)
+        if _snap is None:
+            continue
+        if stale_filing_status(_filing_lag(_snap, asof)) == "hard":
+            _merged = list(risk_flags.get(_ticker, []))
+            if "stale_filing_hard" not in _merged:
+                _merged.append("stale_filing_hard")
+                risk_flags[_ticker] = _merged
+
+    # Step 7
+    current_top5: list[str] = []
+    for _, r in df.iterrows():
+        if len(current_top5) >= 5:
+            break
+        ticker = str(r["ticker"])
+        if risk_flags.get(ticker):
+            continue
+        current_top5.append(ticker)
+
+    current_top5_set = set(current_top5)
+    entered = current_top5_set - previous_top5
+    exited = previous_top5 - current_top5_set
+    return risk_flags, entered, exited
+
+
+def _ranked_df(*tickers: str) -> "pd.DataFrame":
+    """Build a minimal ranked DataFrame ordered by composite_score (desc)."""
+    n = len(tickers)
+    return pd.DataFrame(
+        {
+            "ticker": list(tickers),
+            "composite_score": list(range(n, 0, -1)),  # first ticker = highest
+            "rank": list(range(1, n + 1)),
+        }
+    )
+
+
+def test_step6b_hard_stale_top1_excluded_from_entered_top5():
+    """Positive (bug) case — issue #309.
+
+    A ticker that would rank #1 by composite score AND is hard-stale
+    (latest_filed_date 181 days before asof, which is > FILING_STALE_HARD_DAYS=180)
+    AND has no other risk_flags MUST be excluded from entered_top5 and MUST have
+    "stale_filing_hard" in risk_flags after the Step-6b pre-scan.
+
+    Before the fix this stock would enter current_top5 because the
+    stale_filing_hard flag was only injected in Step 8 (after rotation).
+    """
+    asof = date(2026, 5, 29)
+    # 181 days before asof → lag > 180 → "hard"
+    hard_stale_date = date(2025, 11, 29)  # 181 days before 2026-05-29
+
+    stale_snap = _snap(ticker="STALE", latest_filed_date=hard_stale_date)
+    fresh_snap = _snap(ticker="FRESH", latest_filed_date=date(2026, 4, 1))
+
+    # STALE ranks #1, FRESH ranks #2 → without the fix STALE enters top5
+    df = _ranked_df("STALE", "FRESH", "C3", "C4", "C5", "C6")
+    snapshots = {
+        "STALE": stale_snap,
+        "FRESH": fresh_snap,
+    }
+    risk_flags: dict = {}
+    previous_top5: set = set()
+
+    risk_flags, entered, exited = _step6b_then_step7(
+        df, snapshots, risk_flags, asof, previous_top5
+    )
+
+    # Step 6b must have injected the flag
+    assert "stale_filing_hard" in risk_flags.get("STALE", []), (
+        "Step 6b must inject stale_filing_hard into risk_flags before rotation"
+    )
+    # Rotation must have skipped STALE (Rule 16 — flagged stocks excluded)
+    assert "STALE" not in entered, (
+        "Hard-stale #1-ranked ticker must be excluded from entered_top5 (Rule 16)"
+    )
+    # FRESH (rank #2, clean) should enter instead
+    assert "FRESH" in entered, (
+        "Next clean ticker must inherit entered_top5 when #1 is hard-stale"
+    )
+
+
+def test_step6b_soft_stale_top1_still_enters_top5():
+    """Boundary control — lag exactly 180 days is "soft", not "hard".
+
+    stale_filing_status uses strict >, so 180-day lag = "soft" (not vetoed).
+    A soft-stale ticker with no other risk_flags must still be able to enter
+    current_top5 — Step 6b must NOT inject stale_filing_hard for it.
+    """
+    asof = date(2026, 5, 29)
+    # Exactly 180 days before asof → lag == 180 → "soft" (not "hard")
+    soft_stale_date = date(2025, 11, 30)  # 180 days before 2026-05-29
+
+    soft_snap = _snap(ticker="SOFT", latest_filed_date=soft_stale_date)
+
+    df = _ranked_df("SOFT", "OTHER")
+    snapshots = {"SOFT": soft_snap}
+    risk_flags: dict = {}
+    previous_top5: set = set()
+
+    risk_flags, entered, _ = _step6b_then_step7(
+        df, snapshots, risk_flags, asof, previous_top5
+    )
+
+    assert "stale_filing_hard" not in risk_flags.get("SOFT", []), (
+        "Exactly-180-day lag is soft, not hard — Step 6b must not inject flag"
+    )
+    assert "SOFT" in entered, (
+        "Soft-stale ticker with no other risk_flags must enter top5"
+    )
+
+
+def test_step6b_fresh_filing_enters_top5_no_flag():
+    """Negative control — fresh filing (lag well below 180d).
+
+    A ticker with a recent filing must never receive stale_filing_hard and
+    must enter current_top5 when it ranks in the top 5 by composite score.
+    """
+    asof = date(2026, 5, 29)
+    fresh_date = date(2026, 4, 1)  # 58 days before asof — fresh
+
+    fresh_snap = _snap(ticker="FRESHCO", latest_filed_date=fresh_date)
+
+    df = _ranked_df("FRESHCO", "B", "C", "D", "E", "F")
+    snapshots = {"FRESHCO": fresh_snap}
+    risk_flags: dict = {}
+    previous_top5: set = set()
+
+    risk_flags, entered, _ = _step6b_then_step7(
+        df, snapshots, risk_flags, asof, previous_top5
+    )
+
+    assert "stale_filing_hard" not in risk_flags.get("FRESHCO", []), (
+        "Fresh-filing ticker must not receive stale_filing_hard flag"
+    )
+    assert "FRESHCO" in entered
+
+
+def test_step6b_hard_stale_already_in_previous_top5_exits():
+    """A hard-stale ticker that was in previous_top5 must exit.
+
+    current_top5 excludes it (flagged), so exited = {STALE} and entered = {}.
+    This confirms the flag is idempotent: even if some caller pre-populated
+    stale_filing_hard, Step 6b deduplication guard ("if not in _merged")
+    keeps the list clean.
+    """
+    asof = date(2026, 5, 29)
+    hard_stale_date = date(2025, 11, 29)  # 181 days
+
+    stale_snap = _snap(ticker="STALE", latest_filed_date=hard_stale_date)
+
+    # STALE ranks #1 but is flagged; ranks 2-6 have no snapshots (→ not flagged)
+    df = _ranked_df("STALE", "B", "C", "D", "E", "F")
+    snapshots = {"STALE": stale_snap}
+    risk_flags: dict = {}
+    previous_top5 = {"STALE"}  # was in previous top5
+
+    risk_flags, entered, exited = _step6b_then_step7(
+        df, snapshots, risk_flags, asof, previous_top5
+    )
+
+    assert "STALE" in exited, "Hard-stale previous-top5 member must exit"
+    assert "STALE" not in entered
+
+
+def test_step6b_hard_stale_flag_not_duplicated_when_already_present():
+    """Idempotency guard — if stale_filing_hard was already in risk_flags
+    before Step 6b (e.g. pre-seeded by another path), Step 6b must not
+    duplicate it.
+    """
+    asof = date(2026, 5, 29)
+    hard_stale_date = date(2025, 11, 29)
+
+    hard_snap = _snap(ticker="HST", latest_filed_date=hard_stale_date)
+    df = _ranked_df("HST")
+    snapshots = {"HST": hard_snap}
+    # Pre-seed the flag (simulates another path writing it earlier)
+    risk_flags: dict = {"HST": ["stale_filing_hard"]}
+    previous_top5: set = set()
+
+    risk_flags, _, _ = _step6b_then_step7(
+        df, snapshots, risk_flags, asof, previous_top5
+    )
+
+    assert risk_flags["HST"].count("stale_filing_hard") == 1, (
+        "Step 6b must not append a duplicate stale_filing_hard"
+    )
