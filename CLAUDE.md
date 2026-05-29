@@ -614,7 +614,15 @@ site-2 rename `valuation_output_anomalous`).
 - (3 issues filed + ALL closed same day: #287 PR A merged via #297 [PR B FORM4 revert remaining] · #288 closed via #292 + #298 · #289 closed via #293 + #302)
 
 **In flight** (not yet merged on `main`):
-- (none — all session PRs merged; see [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) for historical in-flight entries)
+- **Phase 4 tasteful-motion** (THIS PR) — app-wide entrance + signature
+  animations (CSS/Tailwind only, no framer-motion). Signature = composite-
+  score gauge sweep (0→score + count-up, 800ms, per-ticker once/session);
+  home row stagger; risk-veto pulse. New `lib/useMotion.ts` hooks +
+  `ScoreGauge.tsx` + `docs/design.md` §Motion (5 rules: transform/opacity-
+  only · play-once-per-session · reduced-motion mandatory · never gate
+  content on JS · add-classes-client-side-for-static-export). Both review
+  gates passed (frontend-design-reviewer + expert-user-explorer). Frontend-
+  only; no schema/compute change. See [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md).
 
 **Earlier** (PR #264 → PR #285, 2026-05-26 → 2026-05-27):
 - PR #285 `8f373758` — docs(release): codify mobile-only operator convention for tag releases

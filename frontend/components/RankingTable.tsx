@@ -20,6 +20,7 @@ import {
   saveFilterSnapshot,
 } from '@/lib/filter-storage';
 import { formatMosPct } from '@/lib/format';
+import { usePlayedOnce } from '@/lib/useMotion';
 import type { Recommendation, StockSummary } from '@/lib/types';
 import {
   MOS_BUCKETS,
@@ -215,6 +216,18 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
   const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
   const pageRows = sorted.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+
+  // Row stagger-entrance gate. usePlayedOnce is EFFECT-based: returns
+  // false on SSR + first paint, then flips true after mount on the first
+  // home view this session. Deliberate for a static export — the animate
+  // class must NOT be in the prerendered HTML (every visitor's static
+  // markup is identical; baking it in would replay on every full load AND
+  // cause a hydration mismatch vs the client gate, leaving rows stuck
+  // mid-fade). So first paint is the static final state; the cascade plays
+  // ~1 frame later (flicker-free — rise-in is opacity 0→1 + 8px settle).
+  // Gated to unfiltered page 1 so sort/filter/paginate never re-trigger it.
+  const firstHomeView = usePlayedOnce('ranking-table');
+  const animateRows = firstHomeView && safePage === 1;
 
   const onSort = (key: SortKey) => {
     if (sortKey === key) {
@@ -436,9 +449,16 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
-            {pageRows.map((row) => {
+            {pageRows.map((row, i) => {
+              // Stagger entrance on first home view this session — rows
+              // cascade in (cap at 12 steps so the tail never waits > ~480ms;
+              // rows beyond share the last delay). Replay-suppressed +
+              // reduced-motion-safe via the shared motion system.
+              const staggerClass = animateRows
+                ? `animate-rise-in stagger-${Math.min(12, i + 1)}`
+                : '';
               return (
-                <tr key={row.ticker} className="transition-colors duration-100 odd:bg-white even:bg-slate-100 hover:bg-slate-200 dark:odd:bg-slate-900 dark:even:bg-slate-900/50 dark:hover:bg-slate-800">
+                <tr key={row.ticker} className={`transition-colors duration-100 odd:bg-white even:bg-slate-100 hover:bg-slate-200 dark:odd:bg-slate-900 dark:even:bg-slate-900/50 dark:hover:bg-slate-800 ${staggerClass}`}>
                   <td className="px-3 py-2 tabular-nums text-slate-700 dark:text-slate-300">{row.rank}</td>
                   <td className="px-3 py-2 font-mono font-semibold text-slate-900 dark:text-slate-100">
                     <Link
@@ -470,12 +490,15 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
 
       {/* Mobile cards */}
       <ul className="space-y-2 md:hidden">
-        {pageRows.map((row) => {
+        {pageRows.map((row, i) => {
           const mos = formatMosPct(row.margin_of_safety_pct);
+          const staggerClass = animateRows
+            ? `animate-rise-in stagger-${Math.min(12, i + 1)}`
+            : '';
           return (
             <li
               key={row.ticker}
-              className="min-h-[112px] rounded border border-slate-200 bg-white transition-colors duration-100 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/50"
+              className={`min-h-[112px] rounded border border-slate-200 bg-white transition-colors duration-100 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/50 ${staggerClass}`}
             >
               <Link
                 href={`/stock/${row.ticker}/`}

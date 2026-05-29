@@ -3095,3 +3095,49 @@ reviewer was wrong; `ruff` F821 caught the NameError before it shipped —
 verify sub-agent claims, don't trust them. Both fixed before merge.
 
 ---
+
+## Phase 4 tasteful-motion — app-wide entrance + signature animations (in flight, 2026-05-29)
+
+User ask: "ออกแบบ design และทำ animation ให้ส่วนต่างๆของ app ให้ดูสนุกสนาน
+น่าตื่นเต้น ดูแล้วไม่น่าเบื่อ" (make the app fun / exciting / not boring).
+Grill-resolved spec (5 Qs): **tasteful** (not playful — keeps LedgerCraft
+flat + finance-tool trust) · **CSS/Tailwind only** (no framer-motion;
++0 deps, +0 bundle) · **whole app** in one PR · **play once per session**
+(no replay annoyance for power users) · **signature = composite-score
+gauge sweep**.
+
+Scope (9 files, +503/−50, frontend-only — no schema/compute/scoring):
+- `tailwind.config.ts` + `app/globals.css`: rise-in / chip-pop / flag-pulse
+  keyframes + stagger-1..12 + .gauge-arc (800ms) + .hover-lift + EXTENDED
+  prefers-reduced-motion guard (every token snaps to static end-state).
+  transform+opacity ONLY (Motion Rule 1) — an early box-shadow draft on
+  flag-pulse/hover-lift was dropped per frontend-design-reviewer.
+- `lib/useMotion.ts` (new): useCountUp (inits at target → SSR/no-JS show
+  correct number; count-up is progressive enhancement) · useInViewOnce ·
+  usePlayedOnce (sessionStorage, effect-based so the animate class is
+  client-only — NEVER baked into the static prerender, which would replay
+  on every full load + hydration-mismatch; this is Motion Rule 5).
+- `ScoreGauge.tsx` (new client): signature — radial gauge sweeps 0→score +
+  synchronized count-up over 800ms on first view this session, keyed PER
+  TICKER (not score value — 269 uniques cover 502, would skip 46%).
+- `ScoreBadge.tsx`: lg branch delegates to ScoreGauge (sm/md stay
+  server-rendered across the 502 table cells).
+- `RankingTable.tsx`: row stagger-in (desktop + mobile), gated to first
+  home view + unfiltered page 1.
+- `RiskFlagsCard.tsx`: veto-row attention pulse (rise + scale settle).
+- `docs/design.md`: new §Motion (token table + 5 non-negotiable rules +
+  signature note) — locks the vocabulary for docs-reviewer.
+
+Charts: FairPriceBarChart + PillarRadarChart draw in free (Recharts default
+on mount); PriceHistoryChart animation deliberately stays OFF (re-renders
+on every period toggle → would re-sweep on each click).
+
+Gates passed: frontend-design-reviewer READY-FOR-SPOT-CHECK (A–G PASS;
+1 self-inflicted Rule-1 FAIL fixed). expert-user-explorer ACCOMPLISHED
+("polished, not toy-like; Stripe/Linear register; 0 looping anims") — 2
+MINOR fixed (per-ticker key + count-up CLS 0.026→0.0214). All motion
+verified animating via headless Playwright (not just build-passes);
+reduced-motion confirmed static + correct data. next build clean (506
+routes); ruff + tsc clean.
+
+---

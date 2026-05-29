@@ -226,6 +226,59 @@ used. Use the formal tier names.
 
 ---
 
+## Motion (Phase 4 tasteful-motion, 2026-05-29)
+
+LedgerCraft stays **flat** — motion is the **entrance**, never a permanent
+flourish. The bar is "tasteful, not playful" (Stripe / Linear, not a game
+UI): motion guides attention and rewards arrival without ever undermining
+the trust a finance tool needs. No animation library — pure CSS/Tailwind
+keyframes + Recharts' built-in chart animation. Tokens in
+`tailwind.config.ts`; keyframe bodies + utilities in `app/globals.css`;
+JS hooks in `lib/useMotion.ts`.
+
+### Tokens
+
+| Token | What | Timing | Use |
+|---|---|---|---|
+| `animate-rise-in` | fade + 8px upward settle | 320ms `cubic-bezier(.22,1,.36,1)` | card / row / list-item entrance |
+| `animate-chip-pop` | scale 0.85→1.04→1 overshoot | 260ms `cubic-bezier(.34,1.56,.64,1)` | verdict chips (recommendation / score-tier) |
+| `animate-flag-pulse` | rise + one rose ring pulse | 900ms ease-out, **single iteration** | risk-veto list items (attention, not blink) |
+| `.gauge-arc` | `stroke-dashoffset` ease | 800ms `cubic-bezier(.22,1,.36,1)` | **signature** — ScoreBadge composite-score sweep |
+| `.hover-lift` | `translateY(-1px)` | 160ms ease-out | table row / card hover (pairs with slate hover-bg) |
+| `.stagger-1..12` | `animation-delay` 40–480ms | — | cascade a row/list group (capped at 12 steps) |
+| `animate-shimmer` / `animate-fade-in` | (pre-existing) skeleton + mount | 1.5s / 200ms | async-loading placeholder |
+
+### Five non-negotiable rules
+
+1. **transform + opacity only** — never animate width/height/top/left (no
+   layout reflow; the compositor handles transform/opacity on the GPU).
+2. **Play once per session.** Entrances are gated by `usePlayedOnce`
+   (`lib/useMotion.ts`, sessionStorage) so a power user crossing 502 stocks
+   doesn't re-watch the same sweep. The **one signature** beat (gauge) is
+   the only > 320ms animation.
+3. **Reduced-motion is mandatory.** Every token has a
+   `prefers-reduced-motion: reduce` off-switch in `globals.css` that snaps
+   to the static end-state. Verify with Playwright `reducedMotion: 'reduce'`.
+4. **Never gate content on JS.** Numbers/values render correct at SSR /
+   pre-hydration / no-JS (`useCountUp` inits at the target; count-up is
+   progressive enhancement). The static export must show real data, never
+   a stuck `0.0`.
+5. **Static-export rule: add animate classes CLIENT-SIDE, never in SSR
+   markup.** Baking an entrance class into the prerendered HTML replays it
+   on every full page load AND hydration-mismatches the client play-once
+   gate (rows stuck mid-fade). Effect-based `usePlayedOnce` returns false on
+   first paint, flips true after mount — one imperceptible frame later.
+
+### Signature moment
+
+The composite-score radial gauge (`ScoreGauge.tsx`, the detail-page
+`ScoreBadge size="lg"`) sweeps 0→value with a synchronized count-up over
+800ms on first view this session. It is the app's headline number, so it
+earns the one longer beat. Everything else stays in the ≤ 320ms micro
+budget.
+
+---
+
 ## Components
 
 ### Recommendation chip (canonical chip pattern)

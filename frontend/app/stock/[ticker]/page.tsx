@@ -124,7 +124,7 @@ export default function StockDetailPage({
                 viewports (the badge widths are sized to fit a 375 px
                 card with `gap-3`). */}
             <div className="flex flex-nowrap items-center gap-3 sm:gap-5">
-              <ScoreBadge score={detail.composite_score} size="lg" />
+              <ScoreBadge score={detail.composite_score} size="lg" ticker={detail.ticker} />
               <MoSBadge mos={mosPct} />
             </div>
             {/* 3-column metric row. `justify-evenly` distributes

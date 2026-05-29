@@ -451,6 +451,20 @@ note cross-tool-specific points only:
   tuning via PR #307** (`bb1d7fd`) — uniform `## Handoff` contract on
   all 19 agents + README §"Dynamic workflow & the opus-4.8 orchestrator"
   + a 7th coordination flow (Experiential UX pass).
+- **Phase 4 tasteful-motion in flight (this PR)** — app-wide entrance +
+  micro-interaction animation, CSS/Tailwind only (no framer-motion).
+  LedgerCraft stays flat; motion is the ENTRANCE, plays once per session.
+  Signature = composite-score radial gauge sweep (0→score + count-up,
+  800ms, keyed per-ticker). Home ranking rows stagger-in; risk-veto rows
+  pulse. New `frontend/lib/useMotion.ts` hooks + `ScoreGauge.tsx`;
+  `docs/design.md` §Motion locks the 5 rules (transform/opacity-only ·
+  play-once-per-session · reduced-motion mandatory · never gate content on
+  JS · add animate classes CLIENT-SIDE for static export — baking them into
+  SSR markup replays on every full load + hydration-mismatches). Cross-tool
+  agents: this is frontend-only (no schema/compute/scoring); the motion
+  vocabulary + reduced-motion discipline are documented in `docs/design.md`
+  §Motion for any UI work you do. Both review gates (frontend-design-
+  reviewer + expert-user-explorer) passed.
 - **`.md` optimization sequence** (Option D — multi-PR overhaul):
   PR A drift fix #141 ✅ · PR B CLAUDE.md token diet #142 ✅ ·
   PR C AGENTS.md sync + dedup #143 ✅ · PR D WORKFLOW.md archive

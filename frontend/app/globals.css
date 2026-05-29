@@ -255,14 +255,101 @@ code {
   background-size: 200% 100%;
 }
 
-/* Reduced-motion guard — disable the shimmer sweep + fade-in for
- * users with `prefers-reduced-motion: reduce`. Fall back to a static
- * slate-200 / slate-800 placeholder block so the skeleton STILL
+/* ── Tasteful-motion vocabulary (2026-05-29) ───────────────────────
+ *
+ * Entrance + micro-interaction motion that keeps LedgerCraft flat but
+ * not boring. Keyframes for `rise-in` / `chip-pop` / `flag-pulse` are
+ * registered in tailwind.config.ts; their @keyframes bodies live here
+ * (Tailwind only needs the name — the CSS is co-located with the rest
+ * of the motion system + the reduced-motion guard). Rules of the road:
+ *   • transform + opacity ONLY (compositor-friendly, zero layout shift)
+ *   • entrances play ONCE per session (usePlayedOnce hook gates them)
+ *   • every utility has a reduced-motion off-switch below
+ * See docs/design.md §Motion for the full token table + timing budget. */
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes chip-pop {
+  0%   { opacity: 0; transform: scale(0.85); }
+  70%  { opacity: 1; transform: scale(1.04); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* flag-pulse — veto-row entrance. transform + opacity ONLY (Motion Rule 1):
+ * a rise with a brief scale "settle" that reads as an attention beat
+ * without the box-shadow that an earlier draft used (box-shadow is a third
+ * animated property — dropped to honor the rule rather than carve an
+ * exception). The rose tone the row already carries supplies the
+ * "look here" color; this keyframe supplies the motion. */
+@keyframes flag-pulse {
+  0%   { opacity: 0; transform: translateY(6px) scale(0.99); }
+  55%  { opacity: 1; transform: translateY(0) scale(1.012); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Stagger helper — list/row entrances apply `animate-rise-in` plus an
+ * inline `style={{ animationDelay }}` OR one of these step classes so a
+ * group cascades in instead of popping as a block. Capped at 12 steps
+ * (~480ms total cascade); rows beyond that share the last delay so a
+ * 502-row table never waits seconds for the tail. */
+.stagger-1  { animation-delay:  40ms; }
+.stagger-2  { animation-delay:  80ms; }
+.stagger-3  { animation-delay: 120ms; }
+.stagger-4  { animation-delay: 160ms; }
+.stagger-5  { animation-delay: 200ms; }
+.stagger-6  { animation-delay: 240ms; }
+.stagger-7  { animation-delay: 280ms; }
+.stagger-8  { animation-delay: 320ms; }
+.stagger-9  { animation-delay: 360ms; }
+.stagger-10 { animation-delay: 400ms; }
+.stagger-11 { animation-delay: 440ms; }
+.stagger-12 { animation-delay: 480ms; }
+
+/* Signature gauge sweep — ScoreBadge's radial progress arc eases from
+ * empty to its value via a stroke-dashoffset transition (set in the
+ * component on mount). 800ms with a calm decel curve; the partner
+ * count-up number is JS-driven (useCountUp) over the same window. The
+ * gauge is the ONE place we spend a longer beat — it's the app's
+ * headline number (composite score) and earns the emphasis. */
+.gauge-arc {
+  transition: stroke-dashoffset 800ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Hover lift — table rows / cards rise a hair on hover. Kept tiny
+ * (1px) + fast so it reads as "alive" not "bouncy"; pairs with the
+ * existing slate hover-bg. transform ONLY (Motion Rule 1) — no
+ * box-shadow transition (the row's hover-bg already carries the state). */
+.hover-lift {
+  transition: transform 160ms ease-out;
+}
+.hover-lift:hover {
+  transform: translateY(-1px);
+}
+
+/* Reduced-motion guard — disable the shimmer sweep + fade-in + every
+ * tasteful-motion utility for users with `prefers-reduced-motion:
+ * reduce`. Entrances snap straight to their end state (opacity 1, no
+ * transform); the gauge arc jumps to its final offset; hover lift is
+ * neutralized. The skeleton falls back to a static block so it STILL
  * communicates "loading" without the motion. */
 @media (prefers-reduced-motion: reduce) {
   .animate-shimmer,
-  .animate-fade-in {
+  .animate-fade-in,
+  .animate-rise-in,
+  .animate-chip-pop,
+  .animate-flag-pulse {
     animation: none !important;
+  }
+  .gauge-arc {
+    transition: none !important;
+  }
+  .hover-lift {
+    transition: none !important;
+  }
+  .hover-lift:hover {
+    transform: none !important;
   }
   .animate-shimmer {
     background: rgb(226 232 240);
