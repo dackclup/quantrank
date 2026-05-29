@@ -69,7 +69,7 @@ export function RiskFlagsCard({ riskFlags }: RiskFlagsCardProps) {
         <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
           Risk Vetoes
         </h2>
-        <span className="inline-flex items-center gap-1.5 rounded-sm bg-rose-50 px-2.5 py-0.5 text-xs font-medium text-rose-900 ring-1 ring-inset ring-rose-300 dark:bg-rose-900/30 dark:text-rose-200 dark:ring-rose-800">
+        <span className="inline-flex items-center gap-1.5 rounded-sm bg-rose-50 px-2.5 py-0.5 text-xs font-medium tabular-nums text-rose-900 ring-1 ring-inset ring-rose-300 dark:bg-rose-900/30 dark:text-rose-200 dark:ring-rose-800">
           <span
             className="inline-block h-1.5 w-1.5 rounded-full bg-rose-600 dark:bg-rose-400"
             aria-hidden="true"
