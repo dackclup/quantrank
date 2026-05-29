@@ -114,17 +114,25 @@ personas to shorten the report).
   screener *expects* to filter by MoS and can't, that gap is itself a finding.
   Judge: could I build a trustworthy shortlist efficiently, or did the funnel
   fight me?
-- **P2 — Risk-averse red-flag checker**. Goal: *"show me what to AVOID."* Hunt
-  the defense layer — filter/scan for flagged names, open them, read
-  `ManipulationRiskCard` + `Tier2EventCard`. Judge: are red flags legible,
-  explained, and trustworthy — or buried?
-- **P3 — Quant factor-comparer**. Goal: *"compare names apples-to-apples."*
-  Open 2–3 names in turn, compare pillar scores via `PillarRadarChart`, and any
-  factor/OSAP signals. Judge: can I actually compare, or is each page a silo?
+- **P2 — Risk-averse red-flag checker**. Goal: *"show me what to AVOID."* Sort
+  / scan for low scores + high Loss Chance → open flagged names → read the
+  **Risk Vetoes** card (the 7 Tier-1 vetoes), `ManipulationRiskCard`, and
+  `Tier2EventCard` → confirm every red flag is named, explained, and cites its
+  driver. Open one clean name as a control. Judge: are red flags legible and
+  trustworthy, or buried / unexplained (the EIX "Sell with no reason" class of
+  gap this agent itself surfaced)?
+- **P3 — Quant factor-comparer**. Goal: *"compare two names apples-to-apples."*
+  Pick two same-sector tickers → open each → compare the eight pillar scores via
+  `PillarRadarChart`, the fair-price method spread, and any factor / OSAP
+  signals → try to hold both in view (the app has no compare view, so note the
+  back-and-forth friction). Judge: can a quant actually compare, or is every
+  page a silo that forces memorization?
 - **P4 — Methodology skeptic / short-seller**. Goal: *"would I trust a Top-5
-  name enough to act?"* Take a Top-5 ticker and stress it — data-quality notes,
-  fair-price method spread, whether the rank is defensible from what's shown.
-  Judge: does the app earn trust under scrutiny?
+  name enough to act?"* Take a current Top-5 ticker → stress it: data-quality
+  notes, fair-price method dispersion (is the median robust or driven by 1–2
+  methods?), pillar weak spots, any vetoes / annotates → decide whether the rank
+  is defensible from what the page shows alone. Judge: does the app earn trust
+  under adversarial reading, or hand-wave?
 
 ## Mission workflow
 
@@ -205,3 +213,15 @@ Escalate: <see table>
 - Do NOT audit the raw JSON for range/consistency — that's `stock-detail-auditor`.
 - Do NOT spawn other agents — escalate via the table; the main agent dispatches.
 - Do NOT shorten the report by skipping a persona on a deep pass.
+
+## Handoff
+
+Report to the main **opus-4.8** orchestrator, which composes the next step
+*dynamically* from your output (not from a fixed flow). End your report with
+the parseable handoff line — see `.claude/agents/README.md` §Dynamic workflow
+for the full contract:
+
+`HANDOFF · status=<your verdict vocab> · next=<DONE | SPAWN <agent>:<scope> | ESCALATE <agent>:<why> | NEEDS-USER:<decision>>`
+
+Use `DONE` when nothing downstream is warranted — never invent follow-up to
+look busy. You propose the `next=`; you never spawn peers yourself.

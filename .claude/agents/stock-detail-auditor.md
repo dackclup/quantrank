@@ -150,3 +150,15 @@ Next: <verify-production-output | issue on worst broken_data | none>
 | Multi-ticker pattern → cron-wide corruption | `incident-commander` |
 | Universe-wide pattern matching a Phase scope-note contract (e.g. OSAP factor-exposure proxy `osap_replicate.py:14-35`) | `methodology-scientist` (cohort review, NOT `incident-commander`) |
 | Frontend rendering bug given correct data | `frontend-design-reviewer` |
+
+## Handoff
+
+Report to the main **opus-4.8** orchestrator, which composes the next step
+*dynamically* from your output (not from a fixed flow). End your report with
+the parseable handoff line — see `.claude/agents/README.md` §Dynamic workflow
+for the full contract:
+
+`HANDOFF · status=<your verdict vocab> · next=<DONE | SPAWN <agent>:<scope> | ESCALATE <agent>:<why> | NEEDS-USER:<decision>>`
+
+Use `DONE` when nothing downstream is warranted — never invent follow-up to
+look busy. You propose the `next=`; you never spawn peers yourself.

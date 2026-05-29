@@ -3038,3 +3038,25 @@ re-validation. No schema / compute / scoring change — frontend-only
 (1 new component + 2-line page wiring).
 
 ---
+
+## Phase B — opus-4.8 orchestrator + dynamic-workflow agent tuning (in flight, 2026-05-29)
+
+Second phase of this session's program (Phase A = the `expert-user-explorer`
+agent, merged #304). Tunes all 19 subagents to work with the opus-4.8 main
+session as orchestrator under a *dynamic* (composed-on-the-fly) workflow
+rather than only the fixed coordination flows.
+
+Audit finding: most agents lacked an explicit, parseable orchestrator handoff,
+so the main session had to re-read full reports to route. Fix: (a) new
+`.claude/agents/README.md` §"Dynamic workflow & the opus-4.8 orchestrator"
+documenting the model (orchestrator composes the next step from each agent's
+handoff; the 7 flows are canonical examples, not an exhaustive script) + the
+4-opus/15-sonnet rationale; (b) a uniform `## Handoff` section appended to all
+19 agents with the contract line `HANDOFF · status=… · next=<DONE | SPAWN
+<agent>:<scope> | ESCALATE <agent> | NEEDS-USER:<decision>>`; (c) CLAUDE.md
+§Spawn discipline "Route on the handoff line" bullet + AGENTS.md mirror; (d)
+`expert-user-explorer` P2–P4 personas fleshed from stubs into full missions
+(P2 now reads the new Risk Vetoes card). Doc/prompt-only — no compute / schema
+/ scoring / frontend code change.
+
+---

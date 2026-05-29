@@ -194,3 +194,15 @@ docs/METHODOLOGY.md edit>
   consumer's explicit ask. If a paper you fetched cites another
   paper that looks relevant, mention it as a follow-up suggestion;
   don't auto-fetch it.
+
+## Handoff
+
+Report to the main **opus-4.8** orchestrator, which composes the next step
+*dynamically* from your output (not from a fixed flow). End your report with
+the parseable handoff line — see `.claude/agents/README.md` §Dynamic workflow
+for the full contract:
+
+`HANDOFF · status=<your verdict vocab> · next=<DONE | SPAWN <agent>:<scope> | ESCALATE <agent>:<why> | NEEDS-USER:<decision>>`
+
+Use `DONE` when nothing downstream is warranted — never invent follow-up to
+look busy. You propose the `next=`; you never spawn peers yourself.
