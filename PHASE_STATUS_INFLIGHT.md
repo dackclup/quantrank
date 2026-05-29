@@ -3674,3 +3674,35 @@ Frontend-only; no schema/compute/scoring/valuation change. `ruff` + `tsc` +
 `next build` (506 routes) clean.
 
 ---
+
+## Fluid root font-size — app-wide responsive scaling (in flight, this PR · 2026-05-29)
+
+User request: "ตำแหน่งการจัดวางดูผิดเพี้ยน...เพราะขนาด...ตัวหนังสือและสิ่งอื่นไม่
+เปลี่ยนตามขนาด[หน้าจอ]" — the layout looks off at larger screens because text +
+elements don't scale with the viewport. **Empirically confirmed** (Playwright
+measure across 414/600/768/834/1024/1280): root font-size was a flat **16px at
+EVERY width**, price a flat 24px — phone-tuned sizes sat unchanged on a 1280px
+desktop, leaving text tiny + the hero content drifting apart in the wide canvas.
+
+**Fix (one rule, app-wide):** `frontend/app/globals.css`
+`html { font-size: clamp(1rem, 0.89rem + 0.45vw, 1.25rem) }`. The app is
+rem-based (Tailwind `text-*` / spacing / gaps / chart `h-64` all rem), so a
+fluid ROOT font-size scales every text + layout dimension proportionally —
+~16px phone (clamp floor, mobile unchanged) → ~20px desktop (ceiling) — with
+ZERO per-component edits, preserving every proportion + the LedgerCraft system
++ tabular-nums. The `rem` terms (not pure `vw`) keep browser zoom / user
+font-size prefs working (pure-vw breaks WCAG 1.4.4). Documented as a CLAUDE.md
+§Gotcha + AGENTS.md §Code-style mirror (the fluid root is a remember-this
+site-wide invariant: use rem text utilities, no second `font-size` on
+html/body).
+
+**Verified (Playwright, dark mode):** post-fix root scales 16.1 → 17.7 → 18.8
+→ 20px across 414 → 768 → 1024 → 1280; price 24 → 30px. Screenshots: detail page
+(414 unchanged / 768 squeeze-zone clean, hero stacks correctly / 1280 fills
+proportionally) + home ranking table (414 + 1280, NO horizontal overflow,
+`scrollW == docW` at both, table reads comfortably). Known minor holdouts:
+chart-internal SVG labels in raw px (Recharts `tick fontSize`) don't follow the
+rem scale — secondary, deferred. Frontend-only; no schema/compute/scoring/
+valuation change. `ruff` + `next build` (506 routes) clean.
+
+---
