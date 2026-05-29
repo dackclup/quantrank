@@ -69,9 +69,12 @@ export function StockLogo({
       flexShrink: 0,
       letterSpacing: '-0.02em',
       userSelect: 'none',
-      // Fade-in on mount — smooths the fallback transition when the
-      // Parqet img errors and the letter-avatar swaps in.
-      animation: 'fade-in 200ms ease-out',
+      // No mount fade: like the img above, a CSS `animation` here restarts
+      // whenever the ticker-keyed row node is moved by a ranking-table sort
+      // (audit 2026-05-29 — every logo flashed on every sort; in-sandbox
+      // ALL logos hit this fallback because the CDN cert fails, so it was
+      // the visible culprit). The letter-avatar appearing instantly on a
+      // genuine error is fine — it's a fallback, not a hero surface.
     };
     return (
       <span aria-hidden="true" style={fallbackStyle}>
@@ -88,11 +91,13 @@ export function StockLogo({
     flexShrink: 0,
     border: '1px solid rgb(226 232 240)',
     background: 'white',
-    // Fade-in on mount — smooths the logo reveal when the Parqet
-    // SVG loads (typical case: cached, < 50ms). The 200ms easing
-    // matches the LedgerCraft animation budget; reduced-motion
-    // guard in globals.css disables the animation entirely.
-    animation: 'fade-in 200ms ease-out',
+    // No mount fade on the img: cached SVGs load < 50ms so the fade
+    // barely showed anyway, and — because it was a CSS `animation` on a
+    // node keyed by ticker — sorting the ranking table (which re-keys +
+    // moves the row nodes) RESTARTED the fade on all ~50 visible logos,
+    // reading as a flash on every sort (audit 2026-05-29). The
+    // fallback-swap fade below stays — it only fires on a genuine img
+    // error→letter-avatar transition, which never happens on a sort-move.
   };
   return (
     <img

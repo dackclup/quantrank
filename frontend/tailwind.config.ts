@@ -61,8 +61,8 @@ const config: Config = {
         // handles them and no layout reflow occurs. Every utility below
         // has a `prefers-reduced-motion` off-switch in globals.css that
         // snaps to the end state. LedgerCraft stays flat; motion is the
-        // ENTRANCE, not a permanent visual flourish (plays once per
-        // session via the usePlayedOnce hook). See docs/design.md §Motion.
+        // ENTRANCE, not a permanent visual flourish (plays on every visit
+        // via the usePlayOnMount hook). See docs/design.md §Motion.
         //
         // rise-in — the workhorse entrance: fade + 8px upward settle.
         // Used by cards, table rows (staggered), risk/flag list items.

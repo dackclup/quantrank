@@ -242,7 +242,7 @@ JS hooks in `lib/useMotion.ts`.
 |---|---|---|---|
 | `animate-rise-in` | fade + 8px upward settle | 320ms `cubic-bezier(.22,1,.36,1)` | card / row / list-item entrance |
 | `animate-chip-pop` | scale 0.85→1.04→1 overshoot | 260ms `cubic-bezier(.34,1.56,.64,1)` | verdict chips (recommendation / score-tier) |
-| `animate-flag-pulse` | rise + one rose ring pulse | 900ms ease-out, **single iteration** | risk-veto list items (attention, not blink) |
+| `animate-flag-pulse` | rise + scale settle (8px rise, 0.99→1.012→1) | 900ms ease-out, **single iteration** | risk-veto list items (attention beat, not blink) |
 | `.gauge-arc` | `stroke-dashoffset` ease | 800ms `cubic-bezier(.22,1,.36,1)` | **signature** — ScoreBadge composite-score sweep |
 | `.hover-lift` | `translateY(-1px)` | 160ms ease-out | table row / card hover (pairs with slate hover-bg) |
 | `.stagger-1..12` | `animation-delay` 40–480ms | — | cascade a row/list group (capped at 12 steps) |
@@ -252,10 +252,14 @@ JS hooks in `lib/useMotion.ts`.
 
 1. **transform + opacity only** — never animate width/height/top/left (no
    layout reflow; the compositor handles transform/opacity on the GPU).
-2. **Play once per session.** Entrances are gated by `usePlayedOnce`
-   (`lib/useMotion.ts`, sessionStorage) so a power user crossing 502 stocks
-   doesn't re-watch the same sweep. The **one signature** beat (gauge) is
-   the only > 320ms animation.
+2. **Play on every visit, never loop.** Entrances fire once per mount via
+   `usePlayOnMount` (`lib/useMotion.ts`) — each time the user arrives at a
+   surface (open a stock, return to home) the entrance replays, so the app
+   feels alive on every navigation. What's forbidden is *looping* /
+   permanent motion (an animation that runs continuously after arrival) and
+   *re-firing on in-page interaction* (sort/filter must not re-stagger — the
+   RankingTable `interacted` latch enforces this within a mount). The **one
+   signature** beat (gauge) is the only > 320ms animation.
 3. **Reduced-motion is mandatory.** Every token has a
    `prefers-reduced-motion: reduce` off-switch in `globals.css` that snaps
    to the static end-state. Verify with Playwright `reducedMotion: 'reduce'`.
@@ -264,16 +268,16 @@ JS hooks in `lib/useMotion.ts`.
    progressive enhancement). The static export must show real data, never
    a stuck `0.0`.
 5. **Static-export rule: add animate classes CLIENT-SIDE, never in SSR
-   markup.** Baking an entrance class into the prerendered HTML replays it
-   on every full page load AND hydration-mismatches the client play-once
-   gate (rows stuck mid-fade). Effect-based `usePlayedOnce` returns false on
-   first paint, flips true after mount — one imperceptible frame later.
+   markup.** Baking an entrance class into the prerendered HTML
+   hydration-mismatches the client gate (rows stuck mid-fade). Effect-based
+   `usePlayOnMount` returns false on first paint, flips true after mount —
+   one imperceptible frame later.
 
 ### Signature moment
 
 The composite-score radial gauge (`ScoreGauge.tsx`, the detail-page
 `ScoreBadge size="lg"`) sweeps 0→value with a synchronized count-up over
-800ms on first view this session. It is the app's headline number, so it
+800ms on every visit to a stock's detail page. It is the app's headline number, so it
 earns the one longer beat. Everything else stays in the ≤ 320ms micro
 budget.
 

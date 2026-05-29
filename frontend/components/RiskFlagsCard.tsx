@@ -14,12 +14,12 @@
 // rose tone (vetoes are the highest-severity band), paired dark:
 // variants, [flag] mono code for the raw key.
 //
-// Motion (2026-05-29): on first view this session the veto rows enter
-// with a single rose attention-pulse (animate-flag-pulse) — communicates
+// Motion (2026-05-29): on every visit the veto rows enter with a single
+// attention beat (animate-flag-pulse, rise + scale settle) — communicates
 // "look here" without a permanent blink. Gated client-side via
-// usePlayedOnce + reduced-motion-safe (see docs/design.md §Motion).
+// usePlayOnMount + reduced-motion-safe (see docs/design.md §Motion).
 
-import { usePlayedOnce } from '@/lib/useMotion';
+import { usePlayOnMount } from '@/lib/useMotion';
 
 interface FlagMeta {
   label: string;
@@ -76,10 +76,10 @@ export interface RiskFlagsCardProps {
 }
 
 export function RiskFlagsCard({ riskFlags }: RiskFlagsCardProps) {
-  // Hook BEFORE the early return (rules-of-hooks). Keyed by the flag set so
-  // each distinct stock's veto list pulses once per session. Effect-based
-  // so the animate class is client-only (never in the static prerender).
-  const pulse = usePlayedOnce(`risk-flags:${(riskFlags ?? []).join(',')}`);
+  // Hook BEFORE the early return (rules-of-hooks). Pulses on every visit to
+  // a stock's detail page (usePlayOnMount). Effect-based so the animate
+  // class is client-only (never in the static prerender).
+  const pulse = usePlayOnMount(`risk-flags:${(riskFlags ?? []).join(',')}`);
 
   // `== null` catches both null and undefined (legacy snapshots predating
   // the field). Clean stocks (empty array) take no layout space —

@@ -17,8 +17,8 @@ function prefersReducedMotion(): boolean {
 
 /**
  * Count a number up from 0 → `target` over `durationMs`, but only after
- * `start` flips true (wire it to useInViewOnce so the count runs when the
- * element is first seen, not at mount-while-offscreen). Returns the live
+ * `start` flips true (wire it to usePlayOnMount so the count runs on each
+ * visit). Returns the live
  * value to render. Under reduced-motion (or when start is false) it
  * returns the target immediately — the number is always correct, the
  * animation is the only thing gated.
@@ -72,72 +72,34 @@ export function useCountUp(
 }
 
 /**
- * Fire `true` ONCE the first time the ref'd element scrolls into view,
- * then disconnect. Drives entrance animations so a card/row below the
- * fold animates when the user reaches it — not silently while offscreen.
- * Under reduced-motion (or no IntersectionObserver) it returns true
- * immediately so content is shown without waiting.
+ * Returns true after mount on EVERY visit (each page navigation / load),
+ * so entrance animations replay every time the user arrives at a surface —
+ * not just once per session. (Renamed from the earlier `usePlayedOnce`
+ * once-per-session gate per the 2026-05-29 "play every time" direction.)
+ *
+ * Two invariants are preserved from the session-gated version:
+ *  • Reduced-motion: returns false → no consumer adds an animate class and
+ *    no JS cycle fires (Rule 3 holds end-to-end, not just visually).
+ *  • Client-only: returns false on SSR + first paint, flips true one frame
+ *    after mount — so the animate class is NEVER in the static prerender
+ *    (Rule 5: baking it in would hydration-mismatch + double-play). The
+ *    one-frame delay is imperceptible and flicker-free (the entrance starts
+ *    from opacity 0 / empty arc, which is the natural "not yet arrived"
+ *    state).
+ *
+ * The `key` argument is kept for call-site clarity / future per-key logic
+ * but no longer gates anything (every mount animates).
  */
-export function useInViewOnce<T extends Element = HTMLDivElement>(
-  rootMargin = '0px 0px -10% 0px',
-): [React.RefObject<T>, boolean] {
-  const ref = useRef<T>(null);
-  const [inView, setInView] = useState(false);
+export function usePlayOnMount(_key?: string): boolean {
+  const [play, setPlay] = useState(false);
 
   useEffect(() => {
-    if (prefersReducedMotion() || typeof IntersectionObserver === 'undefined') {
-      setInView(true);
+    if (prefersReducedMotion()) {
+      setPlay(false);
       return;
     }
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      (entries) => {
-        if (entries[0]?.isIntersecting) {
-          setInView(true);
-          obs.disconnect();
-        }
-      },
-      { rootMargin, threshold: 0.1 },
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [rootMargin]);
+    setPlay(true);
+  }, []);
 
-  return [ref, inView];
-}
-
-/**
- * Returns true the FIRST time a given `key` is seen this browser session,
- * false on every subsequent mount (sessionStorage-backed).
- *
- * Effect-based: returns false on SSR + first paint, then flips true after
- * mount if this is the first time the key is seen this session. Used for
- * BOTH the JS-driven gauge/count-up AND the CSS row-stagger — in all cases
- * the animate class/value must be ADDED client-side (never baked into the
- * static prerender), otherwise a static export would replay the animation
- * on every full page load and hydration-mismatch against the client gate.
- * The one-frame delay before animating is imperceptible and flicker-free.
- *
- * SSR-safe + degrades to "always play" (true) if sessionStorage is
- * unavailable — a harmless extra play beats a swallowed one.
- */
-export function usePlayedOnce(key: string): boolean {
-  const [firstTime, setFirstTime] = useState(false);
-
-  useEffect(() => {
-    try {
-      const k = `qr-motion:${key}`;
-      if (sessionStorage.getItem(k)) {
-        setFirstTime(false);
-      } else {
-        sessionStorage.setItem(k, '1');
-        setFirstTime(true);
-      }
-    } catch {
-      setFirstTime(true); // storage blocked — let it play
-    }
-  }, [key]);
-
-  return firstTime;
+  return play;
 }
