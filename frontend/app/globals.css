@@ -263,7 +263,7 @@ code {
  * (Tailwind only needs the name — the CSS is co-located with the rest
  * of the motion system + the reduced-motion guard). Rules of the road:
  *   • transform + opacity ONLY (compositor-friendly, zero layout shift)
- *   • entrances play ONCE per session (usePlayedOnce hook gates them)
+ *   • entrances play on every visit/mount (usePlayOnMount), not looped
  *   • every utility has a reduced-motion off-switch below
  * See docs/design.md §Motion for the full token table + timing budget. */
 @keyframes rise-in {

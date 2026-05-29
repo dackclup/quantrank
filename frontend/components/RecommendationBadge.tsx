@@ -1,7 +1,7 @@
 'use client';
 
 import type { Recommendation } from '@/lib/types';
-import { usePlayedOnce } from '@/lib/useMotion';
+import { usePlayOnMount } from '@/lib/useMotion';
 
 // 4-tier recommendation badge. Outlined-light tone family matching
 // SectorChip / score-tier / MoS-bucket chips — one consistent visual
@@ -90,17 +90,17 @@ export function RecommendationBadge({
   // like the ranking-table ticker row on mobile. Default = full label.
   short?: boolean;
   className?: string;
-  // When true, the chip plays the chip-pop entrance once per session
+  // When true, the chip plays the chip-pop entrance on each detail visit
   // (verdict "stamped on"). Only the detail-page hero passes this — the
   // 502 ranking-table cells leave it false so they stay server-rendered
   // and don't each spin up a client gate. See docs/design.md §Motion.
   animateOnce?: boolean;
 }) {
-  // usePlayedOnce is a no-op-shaped hook (returns false) when animateOnce
-  // is off, but must still be called unconditionally (rules-of-hooks).
-  // Keyed by recommendation so the verdict pops once per session.
-  const popFirst = usePlayedOnce(`rec-chip:${recommendation ?? 'none'}`);
-  const popClass = animateOnce && popFirst ? 'animate-chip-pop' : '';
+  // usePlayOnMount must be called unconditionally (rules-of-hooks) even
+  // though only the detail-page hero sets animateOnce. Plays the chip-pop
+  // on every visit to a detail page (reduced-motion → returns false).
+  const playPop = usePlayOnMount(`rec-chip:${recommendation ?? 'none'}`);
+  const popClass = animateOnce && playPop ? 'animate-chip-pop' : '';
   // Legacy data (pre-PR-4d) has no recommendation field — render
   // nothing rather than a confusing placeholder. Once a few weekly
   // computes land, the null path is unreachable in production.

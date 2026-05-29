@@ -72,47 +72,34 @@ export function useCountUp(
 }
 
 /**
- * Returns true the FIRST time a given `key` is seen this browser session,
- * false on every subsequent mount (sessionStorage-backed).
+ * Returns true after mount on EVERY visit (each page navigation / load),
+ * so entrance animations replay every time the user arrives at a surface —
+ * not just once per session. (Renamed from the earlier `usePlayedOnce`
+ * once-per-session gate per the 2026-05-29 "play every time" direction.)
  *
- * Effect-based: returns false on SSR + first paint, then flips true after
- * mount if this is the first time the key is seen this session. Used for
- * BOTH the JS-driven gauge/count-up AND the CSS row-stagger — in all cases
- * the animate class/value must be ADDED client-side (never baked into the
- * static prerender), otherwise a static export would replay the animation
- * on every full page load and hydration-mismatch against the client gate.
- * The one-frame delay before animating is imperceptible and flicker-free.
+ * Two invariants are preserved from the session-gated version:
+ *  • Reduced-motion: returns false → no consumer adds an animate class and
+ *    no JS cycle fires (Rule 3 holds end-to-end, not just visually).
+ *  • Client-only: returns false on SSR + first paint, flips true one frame
+ *    after mount — so the animate class is NEVER in the static prerender
+ *    (Rule 5: baking it in would hydration-mismatch + double-play). The
+ *    one-frame delay is imperceptible and flicker-free (the entrance starts
+ *    from opacity 0 / empty arc, which is the natural "not yet arrived"
+ *    state).
  *
- * SSR-safe + degrades to "always play" (true) if sessionStorage is
- * unavailable — a harmless extra play beats a swallowed one.
+ * The `key` argument is kept for call-site clarity / future per-key logic
+ * but no longer gates anything (every mount animates).
  */
-export function usePlayedOnce(key: string): boolean {
-  const [firstTime, setFirstTime] = useState(false);
+export function usePlayOnMount(_key?: string): boolean {
+  const [play, setPlay] = useState(false);
 
   useEffect(() => {
-    // Reduced-motion: never report "first time" → no consumer adds an
-    // animate class, no double-rAF cycle fires. The CSS guard already
-    // neutralizes the visual, but this stops the JS-side cycle too so
-    // Rule 3 holds end-to-end (not just visually). Don't even write the
-    // sessionStorage key — a later non-reduced-motion session in the same
-    // tab is vanishingly rare and a harmless extra play beats suppressing
-    // a wanted one.
     if (prefersReducedMotion()) {
-      setFirstTime(false);
+      setPlay(false);
       return;
     }
-    try {
-      const k = `qr-motion:${key}`;
-      if (sessionStorage.getItem(k)) {
-        setFirstTime(false);
-      } else {
-        sessionStorage.setItem(k, '1');
-        setFirstTime(true);
-      }
-    } catch {
-      setFirstTime(true); // storage blocked — let it play
-    }
-  }, [key]);
+    setPlay(true);
+  }, []);
 
-  return firstTime;
+  return play;
 }

@@ -6,14 +6,14 @@
 // the same 800ms window (useCountUp + the .gauge-arc stroke-dashoffset
 // transition share the easing). This is the ONE place the app spends a
 // longer beat — it's the headline number, so it earns the emphasis.
-// Replays are suppressed per session (usePlayedOnce) so navigating across
-// 502 stocks doesn't re-trigger it every time. Reduced-motion → static
-// final state (hooks return the target immediately, transition disabled
-// in globals.css). Extracted from ScoreBadge's 'lg' branch so the 'sm' /
-// 'md' table-cell variants stay server-rendered (no client JS × 502 rows).
+// Plays on every visit to a stock's detail page (usePlayOnMount), so each
+// stock you open gets its signature reveal. Reduced-motion → static final
+// state (hooks return the target immediately, transition disabled in
+// globals.css). Extracted from ScoreBadge's 'lg' branch so the 'sm' / 'md'
+// table-cell variants stay server-rendered (no client JS × 502 rows).
 
 import { useEffect, useState, type JSX } from 'react';
-import { useCountUp, usePlayedOnce } from '@/lib/useMotion';
+import { useCountUp, usePlayOnMount } from '@/lib/useMotion';
 
 const tierLabel = (score: number): string => {
   if (score >= 80) return 'Exceptional';
@@ -37,13 +37,11 @@ export function ScoreGauge({
   const frac = Math.max(0, Math.min(1, score / 100));
   const arcLen = circumference * frac;
 
-  // Gate the sweep + count-up to the first view this session. Keyed PER
-  // TICKER (not per score value — ~269 unique scores cover 502 stocks, so
-  // a score-keyed gate would make 46% of tickers silently skip the
-  // signature sweep on a comparison run). Falls back to the score only if
-  // ticker wasn't passed. After first view `play` is false → hooks resolve
-  // to the final value at mount (no anim).
-  const play = usePlayedOnce(`score-gauge:${ticker ?? score.toFixed(1)}`);
+  // Play the sweep + count-up on EVERY visit to this stock's detail page
+  // (per the "animate every time" direction). The ticker key is kept for
+  // clarity but no longer gates — usePlayOnMount animates on each mount.
+  // reduced-motion → play=false → hooks resolve to the final value at mount.
+  const play = usePlayOnMount(`score-gauge:${ticker ?? score.toFixed(1)}`);
   const shown = useCountUp(score, play, 800);
 
   // Two-phase render for the stroke-dashoffset transition. Default

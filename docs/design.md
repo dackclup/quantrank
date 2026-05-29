@@ -252,10 +252,14 @@ JS hooks in `lib/useMotion.ts`.
 
 1. **transform + opacity only** — never animate width/height/top/left (no
    layout reflow; the compositor handles transform/opacity on the GPU).
-2. **Play once per session.** Entrances are gated by `usePlayedOnce`
-   (`lib/useMotion.ts`, sessionStorage) so a power user crossing 502 stocks
-   doesn't re-watch the same sweep. The **one signature** beat (gauge) is
-   the only > 320ms animation.
+2. **Play on every visit, never loop.** Entrances fire once per mount via
+   `usePlayOnMount` (`lib/useMotion.ts`) — each time the user arrives at a
+   surface (open a stock, return to home) the entrance replays, so the app
+   feels alive on every navigation. What's forbidden is *looping* /
+   permanent motion (an animation that runs continuously after arrival) and
+   *re-firing on in-page interaction* (sort/filter must not re-stagger — the
+   RankingTable `interacted` latch enforces this within a mount). The **one
+   signature** beat (gauge) is the only > 320ms animation.
 3. **Reduced-motion is mandatory.** Every token has a
    `prefers-reduced-motion: reduce` off-switch in `globals.css` that snaps
    to the static end-state. Verify with Playwright `reducedMotion: 'reduce'`.
@@ -264,10 +268,10 @@ JS hooks in `lib/useMotion.ts`.
    progressive enhancement). The static export must show real data, never
    a stuck `0.0`.
 5. **Static-export rule: add animate classes CLIENT-SIDE, never in SSR
-   markup.** Baking an entrance class into the prerendered HTML replays it
-   on every full page load AND hydration-mismatches the client play-once
-   gate (rows stuck mid-fade). Effect-based `usePlayedOnce` returns false on
-   first paint, flips true after mount — one imperceptible frame later.
+   markup.** Baking an entrance class into the prerendered HTML
+   hydration-mismatches the client gate (rows stuck mid-fade). Effect-based
+   `usePlayOnMount` returns false on first paint, flips true after mount —
+   one imperceptible frame later.
 
 ### Signature moment
 

@@ -20,7 +20,7 @@ import {
   saveFilterSnapshot,
 } from '@/lib/filter-storage';
 import { formatMosPct } from '@/lib/format';
-import { usePlayedOnce } from '@/lib/useMotion';
+import { usePlayOnMount } from '@/lib/useMotion';
 import type { Recommendation, StockSummary } from '@/lib/types';
 import {
   MOS_BUCKETS,
@@ -217,23 +217,21 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
   const safePage = Math.min(page, totalPages);
   const pageRows = sorted.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
-  // Row stagger-entrance gate. usePlayedOnce is EFFECT-based: returns
-  // false on SSR + first paint, then flips true after mount on the first
-  // home view this session. Deliberate for a static export — the animate
-  // class must NOT be in the prerendered HTML (every visitor's static
-  // markup is identical; baking it in would replay on every full load AND
-  // cause a hydration mismatch vs the client gate, leaving rows stuck
-  // mid-fade). So first paint is the static final state; the cascade plays
-  // ~1 frame later (flicker-free — rise-in is opacity 0→1 + 8px settle).
+  // Row stagger-entrance. usePlayOnMount is EFFECT-based: returns false on
+  // SSR + first paint, then flips true one frame after mount on EVERY home
+  // visit (the cascade replays each time you arrive at home, per the
+  // "animate every time" direction). Client-only so the animate class is
+  // never in the prerendered HTML (Rule 5 — baking it in would double-play
+  // on full load + hydration-mismatch, leaving rows stuck mid-fade).
   //
-  // The `interacted` latch fixes the sort-replay bug (audit MAJOR):
-  // `firstHomeView` stays true for the whole mounted session, so without a
-  // latch a sort/filter (which re-keys rows → fresh <tr>/<li> DOM elements)
-  // would re-apply animate-rise-in and replay the entire cascade on every
-  // click. The latch flips true on the FIRST user interaction (sort /
-  // filter / search / paginate) — set in the interaction handlers below —
-  // so the cascade plays exactly once on arrival and never again this mount.
-  const firstHomeView = usePlayedOnce('ranking-table');
+  // The `interacted` latch still matters WITHIN a mount: it fixes the
+  // sort-replay jank (audit MAJOR) — a sort/filter re-keys rows → fresh
+  // <tr>/<li> DOM elements that would re-run the cascade on every click.
+  // The latch flips true on the first interaction (sort / filter / search /
+  // paginate, set synchronously in the handlers) so the cascade plays once
+  // on arrival, then interactions render static — until the next fresh
+  // visit, which re-mounts and cascades again.
+  const firstHomeView = usePlayOnMount('ranking-table');
   // `interacted` spends the stagger latch on the first user interaction.
   // It MUST be flipped synchronously inside each interaction handler
   // (spendStagger, wired into onSort / filter toggles / search / paginate)
