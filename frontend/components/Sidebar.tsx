@@ -196,7 +196,7 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose
           <div className={`hidden justify-center${collapsed ? ' md:flex' : ''}`}>
             <ThemeToggle layout="icon" />
           </div>
-          <div className={`mt-2 px-2 pb-1 text-[11px] leading-snug text-slate-500 dark:text-slate-400${collapsed ? ' md:hidden' : ''}`}>
+          <div className={`mt-2 px-2 pb-1 text-[0.6875rem] leading-snug text-slate-500 dark:text-slate-400${collapsed ? ' md:hidden' : ''}`}>
             <p className="font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">v1.4.0 · MIT</p>
             <p className="mt-1">Educational use only.</p>
           </div>
@@ -217,7 +217,7 @@ function SidebarSection({
 }) {
   return (
     <div className="mb-4">
-      <div className={`px-2 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400${collapsed ? ' md:hidden' : ''}`}>
+      <div className={`px-2 pb-1.5 text-[0.625rem] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400${collapsed ? ' md:hidden' : ''}`}>
         {label}
       </div>
       <ul className="space-y-0.5">{children}</ul>

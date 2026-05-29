@@ -3700,9 +3700,24 @@ html/body).
 → 20px across 414 → 768 → 1024 → 1280; price 24 → 30px. Screenshots: detail page
 (414 unchanged / 768 squeeze-zone clean, hero stacks correctly / 1280 fills
 proportionally) + home ranking table (414 + 1280, NO horizontal overflow,
-`scrollW == docW` at both, table reads comfortably). Known minor holdouts:
-chart-internal SVG labels in raw px (Recharts `tick fontSize`) don't follow the
-rem scale — secondary, deferred. Frontend-only; no schema/compute/scoring/
-valuation change. `ruff` + `next build` (506 routes) clean.
+`scrollW == docW` at both, table reads comfortably). Frontend-only; no
+schema/compute/scoring/valuation change. `ruff` + `next build` (506 routes)
+clean.
+
+**Follow-up — micro-label px→rem conversion (same PR, post `frontend-design-reviewer`
+PASS):** the reviewer's audit found ~44 arbitrary `text-[10px]`/`text-[11px]`
+classes across 14 components (chip/badge labels, table column headers, chart
+legend, the `FairPriceBarChart` headline delta % — the one PRIMARY numeric)
+that, as fixed px, would NOT follow the fluid root and would drift smaller-
+relative on desktop. To honor "ทั้งหมด" (everything scales) they were converted
+to rem equivalents — `text-[10px]→text-[0.625rem]`, `text-[11px]→text-[0.6875rem]`
+— pixel-IDENTICAL at the 16px base (zero mobile change) but now scaling with the
+root on desktop (→12.5px / 13.75px at root 20px). Only the Recharts `tick
+fontSize` SVG number + the StockLogo px-prop letter-avatar remain px (both
+self-contained coordinate systems, intentional). Reviewer verdict overall:
+PASS on all five correctness axes (WCAG 1.4.4 sound · no compounding font-size
+on html/body · layout safe · design-token family intact). `tsc` + `next build`
+(506) clean; 1280 detail-page screenshot confirms converted labels render
+correctly + scaled.
 
 ---

@@ -64,7 +64,7 @@ export function DualRange({
           className={`pointer-events-none absolute inset-0 h-5 w-full appearance-none bg-transparent ${thumb}`}
         />
       </div>
-      <div className="flex justify-between text-[10px] font-mono tabular-nums text-slate-400 dark:text-slate-500">
+      <div className="flex justify-between text-[0.625rem] font-mono tabular-nums text-slate-400 dark:text-slate-500">
         <span>0</span>
         <span>25</span>
         <span>50</span>

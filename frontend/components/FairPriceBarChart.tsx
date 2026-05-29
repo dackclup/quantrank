@@ -200,7 +200,7 @@ export function FairPriceBarChart({
             </div>
             <div className="flex items-baseline gap-5">
               <div>
-                <div className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                <div className="text-[0.625rem] uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Today&apos;s price
                 </div>
                 <div className="font-mono text-xl font-semibold tabular-nums text-slate-900 dark:text-slate-100">
@@ -211,7 +211,7 @@ export function FairPriceBarChart({
                 →
               </div>
               <div>
-                <div className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                <div className="text-[0.625rem] uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Median fair price
                 </div>
                 <div
@@ -220,7 +220,7 @@ export function FairPriceBarChart({
                   {fair_price.median !== null ? formatFairPrice(fair_price.median) : '—'}
                 </div>
                 {medianPct !== null && (
-                  <div className={`text-[11px] font-medium tabular-nums ${headline.cls}`}>
+                  <div className={`text-[0.6875rem] font-medium tabular-nums ${headline.cls}`}>
                     {medianPct >= 0
                       ? `+${medianPct.toFixed(0)}%`
                       : `${medianPct.toFixed(0)}%`}{' '}
@@ -322,7 +322,7 @@ export function FairPriceBarChart({
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">{r.label}</span>
                   <span
-                    className={`inline-flex items-center rounded-sm px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide ${v.bg} ${v.text} ring-1 ring-inset ${v.ring}`}
+                    className={`inline-flex items-center rounded-sm px-1.5 py-0.5 text-[0.625rem] font-medium uppercase tracking-wide ${v.bg} ${v.text} ring-1 ring-inset ${v.ring}`}
                   >
                     {v.label}
                   </span>
@@ -336,7 +336,7 @@ export function FairPriceBarChart({
         })}
       </ul>
 
-      <p className="mt-3 text-[11px] text-slate-400 dark:text-slate-500">
+      <p className="mt-3 text-[0.6875rem] text-slate-400 dark:text-slate-500">
         <span className="font-medium text-slate-500 dark:text-slate-400">How to read this:</span>{' '}
         &ldquo;Cheap&rdquo; = method&apos;s fair price is at least 20% above today.
         &ldquo;Fair&rdquo; = within ±10–20%. &ldquo;Pricey&rdquo; = at least 10% below

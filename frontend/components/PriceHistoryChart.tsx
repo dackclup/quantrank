@@ -406,7 +406,7 @@ export function PriceHistoryChart({
           decode the line styles. The Price swatch matches the trend
           color so the legend reflects what the chart is currently
           rendering. */}
-      <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-500 dark:text-slate-400">
+      <div className="flex flex-wrap items-center gap-3 text-[0.6875rem] text-slate-500 dark:text-slate-400">
         <span className="inline-flex items-center gap-1.5">
           <span
             className="h-0.5 w-3.5 rounded-full"

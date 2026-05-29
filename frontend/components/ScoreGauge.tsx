@@ -104,14 +104,14 @@ export function ScoreGauge({
           during the sweep (0.0 → 73.9). Eliminates the micro-CLS the
           count-up otherwise introduces. */}
       <div className="flex min-w-[3.5rem] flex-col">
-        <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
+        <span className="text-[0.625rem] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
           Composite Score
         </span>
         <span className="font-mono text-lg font-semibold tabular-nums text-slate-900 dark:text-slate-100">
           {shown.toFixed(1)}
         </span>
         <span
-          className="text-[10px] uppercase tracking-wider"
+          className="text-[0.625rem] uppercase tracking-wider"
           style={{ color: accent }}
         >
           {tierLabel(score)}
