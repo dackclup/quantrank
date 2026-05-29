@@ -545,6 +545,20 @@ whitespace / single-line fixes do not trigger.
   `pytest -m "not network"` (whole suite, not just the one test
   file you touched) — a verbatim-copy test helper or a cross-module
   import can fail elsewhere.
+- **`html, body` are globally `overflow-x: clip`** (`frontend/app/globals.css`,
+  PR #322). Keep `clip` — NOT `hidden`: both stop the page from widening, but
+  `clip` creates NO scroll container, so the `position: sticky` sidebar +
+  header keep working (`overflow: hidden` would break them). Consequence:
+  page-level horizontal scroll is intentionally impossible — a genuinely wide
+  surface must nest its OWN scroll container (`overflow-x-auto` on the inner
+  element, as `RankingTable`'s desktop table does), never rely on the page
+  scrolling. Why it exists: the price-chart `AreaChart` remount (crosshair
+  re-park on release) transiently overflowed, and the `fixed inset-0` sidebar
+  backdrop then sized itself to the widened layout viewport and SUSTAINED it
+  as phantom right-side scroll (only reproducible under mobile emulation — a
+  plain desktop viewport hid it). `overflow: clip` is Safari 16+ / Chrome 90+;
+  pre-Safari-16 silently degrades to the prior behavior (not a regression,
+  just unfixed on that old sliver).
 
 ## Phase status
 

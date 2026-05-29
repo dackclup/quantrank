@@ -3572,3 +3572,22 @@ overflow:visible, contained by the doc clip); sticky header `top==0` after a
 re-park. `tsc` + `next build` (506) + `ruff` clean.
 
 ---
+
+## Document the global `overflow-x: clip` invariant (§Gotcha) (in flight, this PR · 2026-05-29)
+
+Fast-follow to PR #322 (merged `fd045277`), recommended by BOTH the
+`quantrank-reviewer` (opus) and `phase-coordinator` at the #322 merge gate: the
+`html, body { overflow-x: clip }` added in #322 is a non-obvious **site-wide**
+invariant a future frontend author will trip over, so it gets a durable home in
+CLAUDE.md §Gotchas (+ AGENTS.md §Code-style mirror) rather than living only in
+the globals.css comment + the (drains-over-time) INFLIGHT entry. The §Gotcha
+records: keep `clip` NOT `hidden` (hidden creates a scroll container → breaks
+the sticky sidebar/header; clip does not); page-level horizontal scroll is
+intentionally impossible → wide content nests its own `overflow-x-auto`
+(`RankingTable` pattern); the chart-remount + fixed-backdrop root cause; and the
+Safari-16+/Chrome-90+ support floor (older silently degrades to prior behavior,
+not a regression). Doc-only — no compute / schema / scoring / valuation /
+frontend-code change; lockstep satisfied by the CLAUDE.md + AGENTS.md substance
+diff. `ruff` clean.
+
+---

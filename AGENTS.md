@@ -257,6 +257,11 @@ export function FairPriceCard(props) {  // no types
   red-600 `#DC2626`) per the prior 2026-05-14 design feedback that
   rejected alarm-red intensity. Canonical hex → Tailwind class
   mapping table now in `docs/design.md` §Colors.
+- **Global `overflow-x: clip` on `html, body`** (`frontend/app/globals.css`,
+  PR #322): the page never scrolls horizontally — wide content nests its own
+  `overflow-x-auto` (e.g. `RankingTable`'s desktop table). Keep `clip`, never
+  `hidden` (`hidden` creates a scroll container and breaks the sticky
+  sidebar/header). Full rationale in CLAUDE.md §Gotchas.
 
 ## Git workflow
 
