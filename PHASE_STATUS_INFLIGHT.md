@@ -3616,7 +3616,10 @@ four coupled tweaks to the fair-value + target reference lines and the chip row:
    new line look (both near-black/white, fair `border-t-2` dashed, target solid,
    equal weight, `dark:*-slate-200` matching the line's `#e2e8f0`); chip price
    spans gained `tabular-nums` (the one pre-existing `frontend-design-reviewer`
-   WARN, fixed in-block since the chips are now always visible).
+   WARN, fixed in-block since the chips are now always visible). Each chip value
+   is followed by the **signed % distance from the current price** — upside (+) /
+   downside (−), e.g. `Fair $126 (-14.7%)` — with the sign matching the chip's
+   green/red direction cue.
 
 Frontend-only; no schema / compute / scoring / valuation change. Verified:
 `frontend-design-reviewer` zero-FAIL (`READY-FOR-SPOT-CHECK`); DOM inspection +

@@ -281,6 +281,20 @@ export function PriceHistoryChart({
   const downChipCls =
     'bg-rose-50 text-rose-700 ring-rose-300';
 
+  // Signed % distance of each reference price from the current price —
+  // upside when positive, downside when negative. Rendered after the chip
+  // dollar value (e.g. "Fair $126 (-14.7%)"); the sign matches the chip's
+  // green/red direction cue. Suppressed if current price is missing / 0.
+  const fmtDeltaPct = (ref: number): string | null => {
+    if (currentPrice === null || currentPrice <= 0) return null;
+    const pct = ((ref - currentPrice) / currentPrice) * 100;
+    return `${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%`;
+  };
+  const fairDeltaPct = fairIsNumber ? fmtDeltaPct(fairPriceMedian as number) : null;
+  const targetDeltaPct = targetEligible
+    ? fmtDeltaPct(fairPriceMax as number)
+    : null;
+
   // Color the chart line + area fill based on direction of the
   // visible window — Google-Finance-style cue ("green = up over the
   // selected period, red = down").
@@ -363,7 +377,10 @@ export function PriceHistoryChart({
               <span
                 className={`h-0 w-3 border-t border-dashed ${fairAboveCurrent ? 'border-emerald-600' : 'border-rose-600'}`}
               />
-              <span className="tabular-nums">Fair {fmtPrice(fairPriceMedian as number)}</span>
+              <span className="tabular-nums">
+                Fair {fmtPrice(fairPriceMedian as number)}
+                {fairDeltaPct ? ` (${fairDeltaPct})` : ''}
+              </span>
             </span>
           )}
           {targetEligible && (
@@ -373,7 +390,10 @@ export function PriceHistoryChart({
               <span
                 className={`h-[2px] w-3 ${targetAboveCurrent ? 'bg-emerald-700' : 'bg-rose-700'}`}
               />
-              <span className="tabular-nums">Target {fmtPrice(fairPriceMax as number)}</span>
+              <span className="tabular-nums">
+                Target {fmtPrice(fairPriceMax as number)}
+                {targetDeltaPct ? ` (${targetDeltaPct})` : ''}
+              </span>
             </span>
           )}
         </div>
