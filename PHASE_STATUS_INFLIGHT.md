@@ -3543,4 +3543,32 @@ containerRight 374), behaviours intact (park-on-load / drag-scrub + release /
 tap / scrub+pointercancel all → latest). `tsc` + `next build` (506) + `ruff`
 clean.
 
+**Follow-up commit 6 — REAL root cause of "page widens right after scrub"
+(same PR #322; commits 4-5 fixed the wrong spot).** The maintainer pushed back
+that the dot/margin work was the wrong target — the actual symptom is the PAGE
+expanding rightward after scrubbing. Found it with mobile-emulation measurement
+(the no-isMobile clean viewport had hidden it — lesson: this class of layout-
+viewport bug only shows under real mobile emulation): BEFORE/DURING scrub
+`innerWidth==390`; AFTER release `innerWidth` jumps to **441** and the sole
+element past the device width is the **`fixed inset-0` mobile sidebar backdrop**
+(`Sidebar.tsx`, always-mounted for its fade) at width 441. Mechanism: the
+crosshair re-park **remounts `<AreaChart>`** (the `key` bump) → a transient
+horizontal overflow during the ResponsiveContainer re-measure → the mobile
+layout viewport grows → the `fixed inset-0` backdrop sizes itself to the widened
+ICB and, being fixed + full-width, **sustains** it = phantom right-side scroll
+space. **Fix (document level):** `html, body { overflow-x: clip }` in
+globals.css — `clip` (NOT `hidden`) clips the transient overflow so the layout
+viewport never grows, and crucially does NOT create a scroll container so it
+does NOT break the `position: sticky` sidebar + header. With the document clip
+in place the dot/margin tug-of-war dissolves: reverted to `margin.right: 0`
+(line truly flush) + restored `[&_.recharts-surface]:overflow-visible` (full
+edge dot) — both now safe because the document clip contains any escape. The
+margin:8 / overflow:hidden compromise from commit 5 is superseded. Verified
+(isMobile emulation, the test that exposed the bug): before / after scrub+release
+/ after tap all → `innerWidth == scrollWidth == 390`, **zero offenders** (no 441
+backdrop); `areaRight == containerRight` (flush); dot full (`dotRight 378` via
+overflow:visible, contained by the doc clip); sticky header `top==0` after a
+600px scroll (sticky NOT broken); park / scrub / tap / pointercancel all
+re-park. `tsc` + `next build` (506) + `ruff` clean.
+
 ---
