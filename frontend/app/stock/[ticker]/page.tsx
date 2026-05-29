@@ -89,10 +89,17 @@ export default function StockDetailPage({
             < 470px — too narrow for the right stats block's ~360px intrinsic
             width. Under the old `sm:flex-row` the left block (min-w-0) was
             crushed to ~30–80px and its sector chip overflowed onto the score
-            gauge (2026-05-29 hero-overlap fix). Below lg the hero stacks
-            cleanly; the right block keeps min-w-0 as a shrink guard. */}
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-          <div className="min-w-0 flex-1">
+            gauge (2026-05-29 hero-overlap fix). Below XL the hero stacks
+            cleanly; the 2-col split waits for xl (1280) — NOT lg (1024) —
+            because at 1024 the sidebar leaves only ~666px of content width,
+            which crushes the left block to ~156px (responsive-density audit
+            2026-05-29). At xl the content is ~1040px → a balanced split, and
+            the left block is capped at `xl:max-w-2xl` so it doesn't spread
+            across 1000px+ on ultrawide. `justify-between` was a no-op (the
+            `flex-1` left child already consumes the free space) and is
+            dropped. The right block keeps min-w-0 as a shrink guard. */}
+        <div className="flex flex-col gap-5 xl:flex-row xl:items-start">
+          <div className="min-w-0 flex-1 xl:max-w-2xl">
             <div className="flex flex-wrap items-center gap-2 text-xs">
               <span className="inline-flex items-center rounded-sm bg-slate-100 px-1.5 py-0.5 font-mono font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">
                 #{detail.rank}
@@ -121,7 +128,7 @@ export default function StockDetailPage({
               fallbackPrice={detail.current_price}
             />
           </div>
-          <div className="flex min-w-0 flex-col gap-3 lg:items-end">
+          <div className="flex min-w-0 flex-col gap-3 xl:items-end">
             {/* Top row: composite donut + MoS donut — paired because
                 both are summary statistics ("how good overall" / "how
                 cheap"). Both badges share the radial-gauge family
@@ -299,7 +306,7 @@ export default function StockDetailPage({
         </dl>
       </section>
 
-      <p className="text-xs text-slate-400 dark:text-slate-500">
+      <p className="max-w-3xl text-xs text-slate-400 dark:text-slate-500">
         Composite is the 8-pillar weighted score over quality, value, growth,
         momentum, health, profitability, technical, and risk. Sentiment + ML
         pillars are reserved for a later phase; until then their weight

@@ -3720,4 +3720,41 @@ on html/body · layout safe · design-token family intact). `tsc` + `next build`
 (506) clean; 1280 detail-page screenshot confirms converted labels render
 correctly + scaled.
 
+**Follow-up 2 — cross-platform layout-density audit fixes (same PR):** user asked
+to verify "ทุก platform" + audit that the UX/UI is well-arranged with balanced
+whitespace (not too sparse / not too cramped). Ran TWO parallel read-only audits
+— `expert-user-explorer` (empirical: live browser render across 10 widths
+360→1920 × home + detail × dark/light) + `frontend-design-reviewer` (code-level
+responsive-pattern review). Both PASSED the scaling itself (WCAG, no overflow at
+any width, mobile/phablet excellent) and CONVERGED on the same layout-density
+imbalances (all side-effects of rem growing 16→20px on desktop). Fixed in this
+PR:
+- **Detail hero broke at exactly 1024px** (`app/stock/[ticker]/page.tsx`): the
+  2-col `lg:flex-row` fired when the sidebar left only ~666px content → left
+  block crushed to ~156px. Raised the split to `xl:` (1280, ~1040px content →
+  balanced) so 1024 STACKS cleanly; capped the left col `xl:max-w-2xl` so it
+  doesn't spread 1000px+ on ultrawide; dropped the no-op `lg:justify-between`
+  (the `flex-1` left child already ate the free space — confirmed by the
+  reviewer). Verified: hero=column@1024, row@1280/1920.
+- **Content `max-w-6xl` (72rem) expanded to 1440px** at the 20px root
+  (`AppShell.tsx`) → sparse table/cards on 1920px. Pinned to fixed
+  `max-w-[1152px]` (both main + footer) so the cap is viewport-stable while
+  inner rem spacing/text still scales. Verified: content=1152px@1920 (was 1440).
+- **Sidebar inflated 240→300px** at desktop (`Sidebar.tsx`): capped
+  `md:max-w-[240px]` / collapsed `md:max-w-[64px]`. Verified: sidebar=240@1024/
+  1280/1920 (was 300); content gains ~60px.
+- **Mobile card `min-h-[112px]`** fixed-px (`RankingTable.tsx`) → `min-h-[7rem]`
+  (scales). **Search wrapper** `style={{minWidth:'200px'}}` inline-px → class
+  `min-w-[12.5rem]`. **Home header + detail disclaimer** gained `max-w-3xl` for
+  prose line-length on ultrawide.
+- **DEFERRED (flagged to user, judgment calls):** (a) the audit recommended
+  lowering the fluid ceiling 1.25rem→1.125rem (20→18px) for finer data-density,
+  but the user had just asked for LARGER text twice — KEPT 20px, offered the
+  knob; (b) home desktop table partially clips the Sector column at 768–834px
+  (7 cols in ~500px content) — a tablet-breakpoint decision (push table md→lg,
+  or column-priority hide) deferred to a focused follow-up.
+`tsc` + `next build` (506) clean; verified via Playwright measure (sidebar/
+content/hero-direction across 1024/1280/1920/414, zero overflow) + before/after
+screenshots (detail@1024 stacked, home@1920 capped 1152).
+
 ---

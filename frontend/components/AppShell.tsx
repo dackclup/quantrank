@@ -69,10 +69,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </header>
         <Disclaimer />
         <main className="flex-1 px-4 py-8 md:px-8 md:py-10">
-          <div className="mx-auto max-w-6xl">{children}</div>
+          {/* Content cap is a FIXED px (not max-w-6xl=72rem): with the fluid
+              root font-size, a rem max-width expands to 1440px at the 20px
+              ceiling, leaving the table/cards sparse on ultrawide. Pinning to
+              1152px keeps the cap viewport-stable while inner rem spacing/text
+              still scales (2026-05-29 responsive layout-density audit). */}
+          <div className="mx-auto max-w-[1152px]">{children}</div>
         </main>
         <footer className="border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
-          <div className="mx-auto max-w-6xl px-4 py-6 text-xs text-slate-500 dark:text-slate-400 md:px-8">
+          <div className="mx-auto max-w-[1152px] px-4 py-6 text-xs text-slate-500 dark:text-slate-400 md:px-8">
             QuantRank · MIT licensed · Data refreshed every US trading day via GitHub Actions.
           </div>
         </footer>

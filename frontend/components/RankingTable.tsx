@@ -335,7 +335,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
             </span>
           )}
         </button>
-        <div className="relative max-w-xs flex-1" style={{ minWidth: '200px' }}>
+        <div className="relative min-w-[12.5rem] max-w-xs flex-1">
           <input
             type="search"
             placeholder="Search ticker or name…"
@@ -528,7 +528,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
           return (
             <li
               key={row.ticker}
-              className={`hover-lift min-h-[112px] rounded border border-slate-200 bg-white transition-colors duration-100 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/50 ${staggerClass}`}
+              className={`hover-lift min-h-[7rem] rounded border border-slate-200 bg-white transition-colors duration-100 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/50 ${staggerClass}`}
             >
               <Link
                 href={`/stock/${row.ticker}/`}

@@ -100,7 +100,7 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose
         aria-label="Primary navigation"
         className={`fixed inset-y-0 left-0 z-40 flex flex-col border-r border-slate-200 bg-white [transition:transform_200ms_ease-out,width_200ms_ease-out] dark:border-slate-800 dark:bg-slate-950 md:sticky md:top-0 md:h-screen md:translate-x-0 ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
-        } w-64 ${collapsed ? 'md:w-16' : 'md:w-60'}`}
+        } w-64 ${collapsed ? 'md:w-16 md:max-w-[64px]' : 'md:w-60 md:max-w-[240px]'}`}
       >
         {/* Wordmark + collapse toggle */}
         <div className="flex h-14 items-center gap-2 border-b border-slate-200 px-3 dark:border-slate-800">
