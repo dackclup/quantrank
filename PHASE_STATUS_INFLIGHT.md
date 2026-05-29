@@ -2970,3 +2970,43 @@ UNCHANGED (5.0 / 3.0; promotion to 7.0 still gated on Q3 audit per
 PR 4-eq verdict).
 
 ---
+
+## `expert-user-explorer` subagent — interactive app-usage tester (in flight, 2026-05-29)
+
+New **19th subagent** `expert-user-explorer` (Tier 2 Lifecycle,
+sonnet, read-only) — the first agent that **interactively *uses*** the
+QuantRank app end-to-end as a sophisticated-investor persona and
+reports experiential feedback. Phase A of a 2-phase program requested
+this session (Phase B = tune all 19 agents for the opus-4.8 main model
++ "dynamic workflow", one agent at a time per "ค่อยๆทำทีละ subagents").
+
+**Mechanic (validated in-sandbox this session)**: `npm ci` (430 pkgs,
+~20s; npm-registry egress allowed) → `next build` (505 static routes,
+~2min) → `python3 -m http.server --directory out` → headless **node**
+Playwright (`/opt/node22` bin, v1.56.1; python-playwright is NOT
+installed) drives navigate → filter → sort → drill into `/stock/<T>/`
+→ read charts. Real console errors = **0** once the
+`ERR_CERT_AUTHORITY_INVALID` logo-CDN noise is carved out (sandbox
+cert artifact, ≈1/visible-row, NOT an app bug — the agent excludes it).
+
+**Persona panel**: P1 value-quality screener (primary, shipped fully) +
+P2 risk-averse red-flag checker / P3 quant factor-comparer / P4
+methodology skeptic (documented modes, expanded incrementally).
+Distinct from the three nearby agents — `stock-detail-auditor` (is the
+data right?) / `frontend-design-reviewer` (is the component code
+on-pattern? — static) / `vercel-preview-auditor` (did it build/deploy?).
+This is the only agent that *clicks*. Output = severity-ranked friction
++ a mandatory "data-right-but-display-wrong" JSON cross-check + a
+per-persona accomplish-the-goal verdict; proposes issues, never files
+or fixes them.
+
+**Lockstep**: CLAUDE.md §Layout (18→19, Tier 2 5→6, 6→7 flows) +
+§Auto-routing delegation + cue tables + post-cron batch · AGENTS.md
+§Project structure count (2 refs) · `.claude/agents/README.md` set
+header (19) + Tier 2 (6) roster row + new **Flow 7 — Experiential UX
+pass**. Tools `Read, Bash, Grep, Glob` (no Edit/Write, no issue-write,
+no Vercel MCP — local-first by design, sidesteps the install-specific
+MCP-UUID inheritance gotcha). No compute / schema / scoring / valuation
+/ frontend production-code change — agent file + doc lockstep only.
+
+---

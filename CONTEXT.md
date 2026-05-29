@@ -165,7 +165,7 @@ append-only side-file [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md).
 | `frontend/public/data/` | Compute output: `metadata.json` + `rankings.json` + `stocks/<TICKER>.json` |
 | `tests/` | pytest suite (offline + `@network` gated) |
 | `.claude/skills/` | 45 invocation-triggerable skills + phase planning docs |
-| `.claude/agents/` | 18 project-specific sub-agents in 4 tiers |
+| `.claude/agents/` | 19 project-specific sub-agents in 4 tiers |
 | `.claude/hooks/` | 3 hook scripts (`log-bash.sh` + `schema-reminder.sh` + `delegate-first.sh`) |
 | `docs/` | METHODOLOGY.md, design.md, agents/ |
 
