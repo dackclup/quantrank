@@ -3757,4 +3757,17 @@ PR:
 content/hero-direction across 1024/1280/1920/414, zero overflow) + before/after
 screenshots (detail@1024 stacked, home@1920 capped 1152).
 
+**Follow-up 3 — collapsed-sidebar Q/chevron overlap (same PR, user-reported on
+real device):** on a landscape-phone / tablet (md+) with the sidebar COLLAPSED,
+the green Q logo box (28px) and the expand-chevron toggle (32px) **overlapped**
+in the 64px rail header (px-3 leaves only ~40px content; 28+32 don't fit).
+Reproduced via Playwright (collapsed @900px: Q 14–46px, chevron 35–49px →
+overlap=true). Pre-existing tightness, surfaced now. Fix (`Sidebar.tsx`): when
+collapsed at md+, the Q home-link is `md:hidden` and the chevron centers
+(`md:mx-auto`) as the sole header control — the Q returns the instant the rail
+expands. Expanded + mobile-drawer states unchanged (Q + wordmark + chevron/close-X
+all show with room). Verified: collapsed @900 overlap=false (link hidden,
+chevron centered 14–49); expanded @900 Q 14–46 / chevron 189–225 (no overlap);
+before/after screenshots confirm. `tsc` + `next build` (506) clean.
+
 ---

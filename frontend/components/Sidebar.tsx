@@ -102,12 +102,18 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         } w-64 ${collapsed ? 'md:w-16 md:max-w-[64px]' : 'md:w-60 md:max-w-[240px]'}`}
       >
-        {/* Wordmark + collapse toggle */}
+        {/* Header: wordmark (Q + "QuantRank") + collapse toggle. When COLLAPSED
+            at md+ the 64px rail cannot fit the Q box (28px) AND the chevron
+            (32px) side-by-side — they overlapped (2026-05-29 fix). So the
+            Q-link is md:hidden when collapsed and the chevron centers
+            (md:mx-auto) as the sole header control; the Q returns on expand.
+            On the mobile drawer (< md) collapsed never applies, so the Q + the
+            close-X always show. */}
         <div className="flex h-14 items-center gap-2 border-b border-slate-200 px-3 dark:border-slate-800">
           <Link
             href="/"
             onClick={onMobileClose}
-            className="flex min-w-0 items-center gap-2 text-slate-900 hover:opacity-80 dark:text-slate-100"
+            className={`flex min-w-0 items-center gap-2 text-slate-900 hover:opacity-80 dark:text-slate-100${collapsed ? ' md:hidden' : ''}`}
             aria-label="QuantRank home"
           >
             <span aria-hidden="true" className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-sm bg-emerald-700 font-mono text-xs font-semibold text-white dark:bg-emerald-600 dark:text-white">Q</span>
@@ -119,7 +125,7 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose
             type="button"
             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             onClick={onToggleCollapse}
-            className="ml-auto hidden h-8 w-8 items-center justify-center rounded-sm text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100 md:inline-flex"
+            className={`hidden h-8 w-8 items-center justify-center rounded-sm text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100 md:inline-flex ${collapsed ? 'md:mx-auto' : 'ml-auto'}`}
           >
             <svg
               width="14"
