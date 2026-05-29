@@ -305,3 +305,48 @@ constraints.
 | Adds copyleft `LICENSE` (GPL / AGPL) | The reference-link posture stays — no vendoring means no copyleft propagation. No re-licensing required. |
 | Adds non-OSI license forbidding access | Remove the skill; close any review citations that linked to the resource. Effective protection: no `.claude/skills/good-code-bad-code-review/bundled-resources/` directory exists, so removal is a single-file delete. |
 | Site goes offline | The skill becomes a dead link. Mark STALE in `SKILL.md` frontmatter; remove during the next quarterly housekeeping pass. Q3 2026-08-19 health check covers this per the SKILL.md §Maintenance section. |
+
+---
+
+## web-animation-design (Claude Code skill — ORIGINAL PROSE / INSPIRE-ONLY)
+
+- **Source of inspiration**: Emil Kowalski, "Animations on the Web"
+  (<https://animations.dev/>) — a paid course. The `cubic-bezier`
+  constants are the public easing-curve values catalogued at
+  <https://easings.net/>.
+- **Author**: Emil Kowalski (the "Animations on the Web" course); the
+  easing constants are Robert Penner's equations (public since 2001,
+  catalogued at easings.net).
+- **Channel that surfaced it**: an `mcpmarket` (app.mcpmarket.com) skill
+  bundle (`mcpmarket-version: 1.0.0`) the maintainer uploaded 2026-05-29.
+- **License**: NONE DECLARED on the uploaded file (no `license:` field in
+  frontmatter); the underlying course is a commercial product. To avoid
+  redistributing commercial-course-derived expression, **no upstream text
+  was copied** — the vendoring posture is **ORIGINAL PROSE / INSPIRE-ONLY**
+  (the same posture used for `good-code-bad-code-review` and the
+  recommended `9arm` fallback).
+- **Vendored at**: `.claude/skills/web-animation-design/SKILL.md`
+- **Vendored date**: 2026-05-29
+- **Vendored revision**: inspire-only — no upstream text content to pin
+  (nothing was copied); the vendored date is the audit trail.
+
+### Why no license block
+
+The skill body is QuantRank-original prose written for this repo (it ties
+into `docs/design.md` §Motion + `frontend/lib/useMotion.ts`). The
+*principles* it covers — easing families, sub-300 ms duration bands, the
+transform/opacity GPU rule, the `prefers-reduced-motion` contract, the
+touch-hover guard, the public `cubic-bezier` constants — are standard,
+widely-published front-end facts (MDN, web.dev, CSS-Tricks, easings.net)
+and are not protectable expression. The specific prose / curation of Emil
+Kowalski's commercial course is **NOT copied**; he is credited as
+inspiration in the skill's Attribution section. No license grant is
+therefore required, but the inspiration is attributed.
+
+### Action items on license outcome
+
+| Outcome | QuantRank action |
+|---|---|
+| Course author objects to the inspired-by skill | Already minimal-risk (standard facts only, original prose, attributed). If asked, further generalize the attribution or remove the skill (single-file delete). |
+| Maintainer later wants the verbatim mcpmarket file | Re-evaluate license posture FIRST — a verbatim copy of commercial-course-derived text needs an explicit grant before it ships to a public repo. |
+| Note on the `mcpmarket` channel | The earlier `curl https://app.mcpmarket.com/install/... \| bash` one-liner (2026-05-29) was DECLINED as an unverified remote-code-execution vector. Only the inspected, hand-vendored skill content (this entry) was adopted — no marketplace installer was run. |

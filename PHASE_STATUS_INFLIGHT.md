@@ -3222,3 +3222,33 @@ Platform caveat: chromium-only in-sandbox — mobile-Safari / Firefox not
 certified.
 
 ---
+
+## Install `web-animation-design` skill (in flight, this PR · 2026-05-29)
+
+New top-level skill `.claude/skills/web-animation-design/SKILL.md` — a
+front-end animation decision guide (easing families · sub-300 ms duration
+bands · transform/opacity GPU rule · springs · `prefers-reduced-motion` +
+touch-hover a11y · before/after review-table format). Ties into the
+existing motion system (`docs/design.md` §Motion + `frontend/lib/useMotion.ts`
+`useCountUp` / `usePlayOnMount` + the `gauge-sweep` keyframe) so new motion
+matches the app's existing hand.
+
+**License posture** — the file the maintainer uploaded was an `mcpmarket`
+bundle distilled from Emil Kowalski's PAID "Animations on the Web" course
+with NO declared license. Per the user's explicit choice (and matching the
+project's `good-code-bad-code` / `9arm`-fallback precedent for
+undeclared-license sources), the skill ships as **ORIGINAL PROSE /
+INSPIRE-ONLY** — zero upstream text copied; the principles are standard
+published front-end facts; Emil Kowalski + easings.net are credited as
+inspiration in the skill's Attribution section. It is NOT the verbatim
+mcpmarket file. (The earlier `curl … | bash` from the same marketplace was
+DECLINED as an unrelated RCE vector — only inspected, hand-written content
+was adopted.)
+
+Doc updates: skill count 45 → 46 in CLAUDE.md §Layout + SKILL.md layout
+table + `.claude/skills/README.md`; new THIRD_PARTY_NOTICES.md entry
+documenting the inspire-only posture. No compute / schema / scoring /
+valuation / frontend-code change — `.claude/` + docs only. No build / test
+impact (markdown skill; not in any CI code path).
+
+---
