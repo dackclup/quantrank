@@ -33,7 +33,7 @@ const RISK_FLAG_META: Record<string, FlagMeta> = {
   },
   net_issuance_top_decile: {
     label: 'Net share issuance — top decile',
-    detail: 'Top-decile net issuance over the trailing year (Daniel-Titman 2006).',
+    detail: 'Top-decile net issuance over the trailing year (Pontiff-Woodgate 2008 / Daniel-Titman 2006).',
   },
   non_reliance_filing: {
     label: '8-K Item 4.02 non-reliance',
@@ -51,9 +51,20 @@ const RISK_FLAG_META: Record<string, FlagMeta> = {
     label: 'Data-quality guard',
     detail: 'Upstream input out of range (e.g. share-count units) — fair-price methods suppressed (Step 7.5 sanity guard).',
   },
+  // Not a compute_risk_flags veto — a fair-price ensemble GUARD merged into
+  // risk_flags[] at compute/main.py after Step-7 rotation, so it does NOT
+  // forfeit entered_top5 the way the 7 vetoes do. Fires 0× in the current
+  // cron but is structurally reachable; labelled so it never renders raw.
+  stale_filing_hard: {
+    label: 'Stale filing — fair-price suppressed',
+    detail: 'Most recent filing older than 180 days — all 6 fair-price methods skipped (practitioner freshness guard, not a veto).',
+  },
 };
 
 export interface RiskFlagsCardProps {
+  // Schema field is non-nullable (`list[str]`, default_factory=list), but the
+  // prop stays `| null` as defensive cover for legacy snapshots that predate
+  // the field — the `== null` runtime guard below relies on it.
   riskFlags: string[] | null;
 }
 
@@ -67,7 +78,7 @@ export function RiskFlagsCard({ riskFlags }: RiskFlagsCardProps) {
     <section className="rounded border border-slate-200 bg-white p-4 ring-1 ring-inset ring-rose-300 dark:border-slate-800 dark:bg-slate-900 dark:ring-rose-800">
       <header className="mb-3 flex items-center justify-between">
         <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
-          Risk Vetoes
+          Risk Flags
         </h2>
         <span className="inline-flex items-center gap-1.5 rounded-sm bg-rose-50 px-2.5 py-0.5 text-xs font-medium tabular-nums text-rose-900 ring-1 ring-inset ring-rose-300 dark:bg-rose-900/30 dark:text-rose-200 dark:ring-rose-800">
           <span
@@ -106,11 +117,13 @@ export function RiskFlagsCard({ riskFlags }: RiskFlagsCardProps) {
       </ul>
 
       <p className="mt-4 text-xs text-slate-400 dark:text-slate-500">
-        Tier-1 hard vetoes from the risk overlay. A stock carrying any of
-        these keeps its raw composite rank (project Rule 16) but forfeits
-        its <span className="font-mono">entered_top5</span> badge and is
-        steered toward a cautious recommendation — this is the reason
-        behind a Sell/Hold that the headline valuation alone does not explain.
+        Risk-overlay flags. A stock carrying any of these keeps its raw
+        composite rank (project Rule 16) but forfeits its{' '}
+        <span className="font-mono">entered_top5</span> badge. Two of them —{' '}
+        <span className="font-mono">altman_distress</span> and{' '}
+        <span className="font-mono">data_quality_input_corruption</span> —
+        additionally force a cautious recommendation; the others act as Top-5
+        disqualifiers without dictating the buy/hold/sell label on their own.
       </p>
     </section>
   );
