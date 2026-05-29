@@ -3303,3 +3303,20 @@ it as fitting at 0, so the right block never wraps). No schema / compute /
 scoring / valuation change.
 
 ---
+
+## Add docs/LESSONS_LEARNED.md (agent-process dos/don'ts) (in flight, this PR · 2026-05-29)
+
+New companion doc `docs/LESSONS_LEARNED.md` — a running "กันลืม" log of
+agent-process mistakes + dos/don'ts (workflow / git / review discipline /
+orchestration), complementing CLAUDE.md §Gotchas which owns code-domain
+invariants. Seeded with the 2026-05-29 session: verify-don't-trust (re-derive
+sub-agent numbers — the "broken to 1280px" overstatement + the no-op
+`sm:flex-wrap` proposal were both caught pre-apply), don't-push-a-merged-branch
+(stop-hook false positive after #317 → prune, not push), full-repo lint/test
+gate (PR #310), viewport × sidebar-state responsive matrix, Read-before-Edit
+after `git reset`, `curl | bash` decline, and original-prose-for-undeclared-
+license. Pointer added to CLAUDE.md + AGENTS.md §Companion files (lockstep + so
+future sessions find it). Doc-only — no compute / schema / scoring / valuation /
+frontend code change.
+
+---

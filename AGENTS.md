@@ -1535,4 +1535,7 @@ same pattern.
   scoring + valuation method anchors against academic literature
 - [`docs/design.md`](docs/design.md) — visual / design-system
   specification (LedgerCraft adoption Phase 1/2/3a as of 2026-05-22)
+- [`docs/LESSONS_LEARNED.md`](docs/LESSONS_LEARNED.md) — agent-process
+  dos/don'ts + per-session mistakes log (workflow / git / review discipline;
+  complements CLAUDE.md §Gotchas, which owns code/domain invariants)
 - [`.claude/skills/README.md`](.claude/skills/README.md) — skill index

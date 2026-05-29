@@ -2220,3 +2220,6 @@ future sync, re-run `/mattpocock-setup-harness` to add this section.
   consumer rules for QuantRank's multi-file CONTEXT analog +
   PHASE_STATUS_INFLIGHT.md as ADR analog
 - [`.claude/skills/README.md`](.claude/skills/README.md) — skill index
+- [`docs/LESSONS_LEARNED.md`](docs/LESSONS_LEARNED.md) — running log of
+  agent-process dos/don'ts + per-session mistakes (workflow / git / review
+  discipline; complements §Gotchas, which owns code/domain invariants)
