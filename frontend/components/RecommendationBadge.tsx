@@ -1,6 +1,7 @@
 'use client';
 
 import type { Recommendation } from '@/lib/types';
+import { usePlayedOnce } from '@/lib/useMotion';
 
 // 4-tier recommendation badge. Outlined-light tone family matching
 // SectorChip / score-tier / MoS-bucket chips — one consistent visual
@@ -81,6 +82,7 @@ export function RecommendationBadge({
   size = 'sm',
   short = false,
   className = '',
+  animateOnce = false,
 }: {
   recommendation: Recommendation | null;
   size?: 'xs' | 'sm' | 'md' | 'lg';
@@ -88,7 +90,17 @@ export function RecommendationBadge({
   // like the ranking-table ticker row on mobile. Default = full label.
   short?: boolean;
   className?: string;
+  // When true, the chip plays the chip-pop entrance once per session
+  // (verdict "stamped on"). Only the detail-page hero passes this — the
+  // 502 ranking-table cells leave it false so they stay server-rendered
+  // and don't each spin up a client gate. See docs/design.md §Motion.
+  animateOnce?: boolean;
 }) {
+  // usePlayedOnce is a no-op-shaped hook (returns false) when animateOnce
+  // is off, but must still be called unconditionally (rules-of-hooks).
+  // Keyed by recommendation so the verdict pops once per session.
+  const popFirst = usePlayedOnce(`rec-chip:${recommendation ?? 'none'}`);
+  const popClass = animateOnce && popFirst ? 'animate-chip-pop' : '';
   // Legacy data (pre-PR-4d) has no recommendation field — render
   // nothing rather than a confusing placeholder. Once a few weekly
   // computes land, the null path is unreachable in production.
@@ -101,7 +113,7 @@ export function RecommendationBadge({
   // so a row of "Materials [dot] · Buy [dot]" reads as one family.
   return (
     <span
-      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-sm font-medium ring-1 ring-inset ${tone} ${sizeCls} ${className}`}
+      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-sm font-medium ring-1 ring-inset ${tone} ${sizeCls} ${popClass} ${className}`}
       title={LABELS[recommendation]}
       aria-label={`Recommendation: ${LABELS[recommendation]}`}
     >

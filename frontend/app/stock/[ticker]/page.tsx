@@ -100,7 +100,7 @@ export default function StockDetailPage({
               <span className="font-mono text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-5xl">
                 {detail.ticker}
               </span>
-              <RecommendationBadge recommendation={detail.recommendation} size="md" />
+              <RecommendationBadge recommendation={detail.recommendation} size="md" animateOnce />
             </h1>
             {/* LedgerCraft Phase 2 — company name in slab-serif gives
                 the "editorial finance" register (Bloomberg / WSJ

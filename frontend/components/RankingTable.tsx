@@ -225,11 +225,30 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
   // cause a hydration mismatch vs the client gate, leaving rows stuck
   // mid-fade). So first paint is the static final state; the cascade plays
   // ~1 frame later (flicker-free — rise-in is opacity 0→1 + 8px settle).
-  // Gated to unfiltered page 1 so sort/filter/paginate never re-trigger it.
+  //
+  // The `interacted` latch fixes the sort-replay bug (audit MAJOR):
+  // `firstHomeView` stays true for the whole mounted session, so without a
+  // latch a sort/filter (which re-keys rows → fresh <tr>/<li> DOM elements)
+  // would re-apply animate-rise-in and replay the entire cascade on every
+  // click. The latch flips true on the FIRST user interaction (sort /
+  // filter / search / paginate) — set in the interaction handlers below —
+  // so the cascade plays exactly once on arrival and never again this mount.
   const firstHomeView = usePlayedOnce('ranking-table');
-  const animateRows = firstHomeView && safePage === 1;
+  // `interacted` spends the stagger latch on the first user interaction.
+  // It MUST be flipped synchronously inside each interaction handler
+  // (spendStagger, wired into onSort / filter toggles / search / paginate)
+  // — NOT via a watching useEffect, because an effect fires AFTER the
+  // render that already applied the animate class to the freshly re-keyed
+  // sorted rows, so the cascade would still play once before the latch
+  // caught up (the bug the first attempt hit). Flipping it in the handler
+  // means the re-render triggered by the same interaction already sees
+  // animateRows=false → no class on the new rows.
+  const [interacted, setInteracted] = useState(false);
+  const spendStagger = () => setInteracted(true);
+  const animateRows = firstHomeView && safePage === 1 && !interacted;
 
   const onSort = (key: SortKey) => {
+    spendStagger(); // first sort ends the entrance cascade (no replay)
     if (sortKey === key) {
       setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
     } else {
@@ -458,7 +477,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                 ? `animate-rise-in stagger-${Math.min(12, i + 1)}`
                 : '';
               return (
-                <tr key={row.ticker} className={`transition-colors duration-100 odd:bg-white even:bg-slate-100 hover:bg-slate-200 dark:odd:bg-slate-900 dark:even:bg-slate-900/50 dark:hover:bg-slate-800 ${staggerClass}`}>
+                <tr key={row.ticker} className={`hover-lift transition-colors duration-100 odd:bg-white even:bg-slate-100 hover:bg-slate-200 dark:odd:bg-slate-900 dark:even:bg-slate-900/50 dark:hover:bg-slate-800 ${staggerClass}`}>
                   <td className="px-3 py-2 tabular-nums text-slate-700 dark:text-slate-300">{row.rank}</td>
                   <td className="px-3 py-2 font-mono font-semibold text-slate-900 dark:text-slate-100">
                     <Link
@@ -498,7 +517,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
           return (
             <li
               key={row.ticker}
-              className={`min-h-[112px] rounded border border-slate-200 bg-white transition-colors duration-100 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/50 ${staggerClass}`}
+              className={`hover-lift min-h-[112px] rounded border border-slate-200 bg-white transition-colors duration-100 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/50 ${staggerClass}`}
             >
               <Link
                 href={`/stock/${row.ticker}/`}

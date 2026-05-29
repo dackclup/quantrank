@@ -72,42 +72,6 @@ export function useCountUp(
 }
 
 /**
- * Fire `true` ONCE the first time the ref'd element scrolls into view,
- * then disconnect. Drives entrance animations so a card/row below the
- * fold animates when the user reaches it — not silently while offscreen.
- * Under reduced-motion (or no IntersectionObserver) it returns true
- * immediately so content is shown without waiting.
- */
-export function useInViewOnce<T extends Element = HTMLDivElement>(
-  rootMargin = '0px 0px -10% 0px',
-): [React.RefObject<T>, boolean] {
-  const ref = useRef<T>(null);
-  const [inView, setInView] = useState(false);
-
-  useEffect(() => {
-    if (prefersReducedMotion() || typeof IntersectionObserver === 'undefined') {
-      setInView(true);
-      return;
-    }
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      (entries) => {
-        if (entries[0]?.isIntersecting) {
-          setInView(true);
-          obs.disconnect();
-        }
-      },
-      { rootMargin, threshold: 0.1 },
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [rootMargin]);
-
-  return [ref, inView];
-}
-
-/**
  * Returns true the FIRST time a given `key` is seen this browser session,
  * false on every subsequent mount (sessionStorage-backed).
  *
@@ -126,6 +90,17 @@ export function usePlayedOnce(key: string): boolean {
   const [firstTime, setFirstTime] = useState(false);
 
   useEffect(() => {
+    // Reduced-motion: never report "first time" → no consumer adds an
+    // animate class, no double-rAF cycle fires. The CSS guard already
+    // neutralizes the visual, but this stops the JS-side cycle too so
+    // Rule 3 holds end-to-end (not just visually). Don't even write the
+    // sessionStorage key — a later non-reduced-motion session in the same
+    // tab is vanishingly rare and a harmless extra play beats suppressing
+    // a wanted one.
+    if (prefersReducedMotion()) {
+      setFirstTime(false);
+      return;
+    }
     try {
       const k = `qr-motion:${key}`;
       if (sessionStorage.getItem(k)) {
