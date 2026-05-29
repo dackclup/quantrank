@@ -3337,3 +3337,53 @@ the homes (different phrasings), needing broader passes. The 7 homes: CLAUDE.md
 / schema / scoring / valuation / frontend code change; `ruff` clean.
 
 ---
+
+## Fix mobile sidebar drawer when desktop `collapsed` is set (in flight, this PR · 2026-05-29)
+
+**Bug** (reported by the maintainer, who operates from a phone, with two
+`/stock/NVDA/` screenshots): on mobile, when `localStorage['quantrank.sidebar.collapsed']`
+is `'1'` (a state the user reaches by collapsing the rail on desktop — an
+ordinary action — that then persists), opening the hamburger drawer renders an
+**icon-only ~93px strip** — no nav labels ("Rankings"/"Methodology"/"Design"/
+"GitHub"), no "NAVIGATION"/"RESOURCES" section headers, no "QuantRank" wordmark,
+and **no theme toggle at all**. There is **no recovery path on mobile** (the
+collapse/expand toggle is `md:inline-flex` = desktop-only). Reproduced + measured
+(drawer 93px / all-false at collapsed=1 vs 256px / all-true at collapsed=0).
+
+**Root cause** (PRE-EXISTING — shipped with the sidebar in LedgerCraft Phase 3c,
+not a regression from any in-flight work): `frontend/components/Sidebar.tsx`
+treats `collapsed` — a desktop-only concept — as a GLOBAL flag. The width class
+`${collapsed ? 'md:w-16' : 'w-64 md:w-60'}` gives the collapsed branch **no
+mobile width** (`md:w-16` is inert < md → drawer shrinks to content), and five
+`{!collapsed && …}` render-guards (wordmark / section header / nav label /
+external icon / version chip) plus the footer theme-toggle ternary (collapsed
+branch `hidden … md:flex` → invisible on mobile) all strip content on mobile.
+
+**Fix** (frontend className-only, 1 file, +29 / −25): make `collapsed` take
+effect **only at md+** via CSS — never via the `mobileOpen` runtime state.
+Width → `w-64 ${collapsed ? 'md:w-16' : 'md:w-60'}` (mobile always full 256px).
+Each `{!collapsed && X}` → always render X + `md:hidden` when collapsed. Footer →
+render both the row toggle (`${collapsed ? 'md:hidden' : ''}`) and the icon
+toggle (`hidden ${collapsed ? 'md:flex' : ''}`) so mobile always gets a usable
+row toggle; only one is visible per breakpoint (the other is `display:none`, so
+a11y sees exactly one). **Chosen the CSS-`md:hidden` approach over the
+`|| mobileOpen` approach** the reproduce agent proposed: it models the real
+invariant ("collapsed ⇒ md+ only") declaratively, mirrors the already-correct
+`md:justify-center md:px-0` pattern at the link base, keeps all content in the
+DOM at every breakpoint (no hydration mismatch — `collapsed` defaults false so
+SSR emits no `md:hidden`), and avoids the `mobileOpen`-leaks-into-desktop
+coupling (open drawer on mobile → resize to desktop would otherwise break the
+collapse).
+
+**Verification** (local): `tsc --noEmit` clean · `next build` green (506 routes) ·
+`ruff check .` clean; Playwright DOM measurement on NVDA dark mode across 4
+states — **mobile collapsed=1 now 256px with wordmark + "Rankings" + section
+headers + row theme toggle all visible** (was 93px / all-hidden); mobile
+collapsed=0 = 256px full; **desktop collapsed=1 still 64px icon rail with labels
+hidden + icon toggle** (no regression); desktop collapsed=0 = 240px full. Two
+agents confirmed the bug + mechanism identically (`expert-user-explorer`
+measured + screenshotted; `frontend-design-reviewer` code-traced + proposed the
+exact diff); main agent reconciled the two divergent fix proposals. No schema /
+compute / scoring / valuation change.
+
+---

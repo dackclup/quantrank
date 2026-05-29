@@ -100,7 +100,7 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose
         aria-label="Primary navigation"
         className={`fixed inset-y-0 left-0 z-40 flex flex-col border-r border-slate-200 bg-white [transition:transform_200ms_ease-out,width_200ms_ease-out] dark:border-slate-800 dark:bg-slate-950 md:sticky md:top-0 md:h-screen md:translate-x-0 ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
-        } ${collapsed ? 'md:w-16' : 'w-64 md:w-60'}`}
+        } w-64 ${collapsed ? 'md:w-16' : 'md:w-60'}`}
       >
         {/* Wordmark + collapse toggle */}
         <div className="flex h-14 items-center gap-2 border-b border-slate-200 px-3 dark:border-slate-800">
@@ -111,9 +111,9 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose
             aria-label="QuantRank home"
           >
             <span aria-hidden="true" className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-sm bg-emerald-700 font-mono text-xs font-semibold text-white dark:bg-emerald-600 dark:text-white">Q</span>
-            {!collapsed && (
-              <span className="font-slab text-lg font-semibold tracking-tight">QuantRank</span>
-            )}
+            {/* Mobile drawer always shows the wordmark; `collapsed` is a
+                desktop-only (md+) concept, so it only hides at md+ via CSS. */}
+            <span className={`font-slab text-lg font-semibold tracking-tight${collapsed ? ' md:hidden' : ''}`}>QuantRank</span>
           </Link>
           <button
             type="button"
@@ -179,21 +179,27 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose
           </SidebarSection>
         </nav>
 
-        {/* Footer block — theme toggle + version chip */}
+        {/* Footer block — theme toggle + version chip.
+            `collapsed` is a DESKTOP-only (md+) feature — its toggle button is
+            `md:inline-flex` and unreachable on mobile. So the mobile drawer
+            ALWAYS shows the full row toggle + version chip; `collapsed` only
+            swaps to the icon toggle / hides the chip at md+, via CSS only.
+            Driving this off `collapsed` alone (not a JS/`mobileOpen` branch)
+            keeps content in the DOM at all breakpoints → no hydration mismatch
+            and no `mobileOpen`-leaks-into-desktop coupling. The two toggles are
+            mutually exclusive per breakpoint (the hidden one is display:none,
+            so a11y sees exactly one). 2026-05-29 mobile-drawer fix. */}
         <div className="border-t border-slate-200 px-2 py-2 dark:border-slate-800">
-          {collapsed ? (
-            <div className="hidden justify-center md:flex">
-              <ThemeToggle layout="icon" />
-            </div>
-          ) : (
+          <div className={collapsed ? 'md:hidden' : ''}>
             <ThemeToggle layout="row" />
-          )}
-          {!collapsed && (
-            <div className="mt-2 px-2 pb-1 text-[11px] leading-snug text-slate-500 dark:text-slate-400">
-              <p className="font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">v1.2 · MIT</p>
-              <p className="mt-1">Educational use only.</p>
-            </div>
-          )}
+          </div>
+          <div className={`hidden justify-center${collapsed ? ' md:flex' : ''}`}>
+            <ThemeToggle layout="icon" />
+          </div>
+          <div className={`mt-2 px-2 pb-1 text-[11px] leading-snug text-slate-500 dark:text-slate-400${collapsed ? ' md:hidden' : ''}`}>
+            <p className="font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">v1.2 · MIT</p>
+            <p className="mt-1">Educational use only.</p>
+          </div>
         </div>
       </aside>
     </>
@@ -211,11 +217,9 @@ function SidebarSection({
 }) {
   return (
     <div className="mb-4">
-      {!collapsed && (
-        <div className="px-2 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
-          {label}
-        </div>
-      )}
+      <div className={`px-2 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400${collapsed ? ' md:hidden' : ''}`}>
+        {label}
+      </div>
       <ul className="space-y-0.5">{children}</ul>
     </div>
   );
@@ -249,8 +253,8 @@ function SidebarLink({
       <span className={`shrink-0 ${active ? 'text-slate-900 dark:text-slate-100' : 'text-slate-500 group-hover:text-slate-700 dark:text-slate-400 dark:group-hover:text-slate-200'}`}>
         {icon}
       </span>
-      {!collapsed && <span className="truncate">{label}</span>}
-      {!collapsed && external && (
+      <span className={`truncate${collapsed ? ' md:hidden' : ''}`}>{label}</span>
+      {external && (
         <svg
           width="11"
           height="11"
@@ -260,7 +264,7 @@ function SidebarLink({
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="ml-auto text-slate-400 dark:text-slate-500"
+          className={`ml-auto text-slate-400 dark:text-slate-500${collapsed ? ' md:hidden' : ''}`}
           aria-hidden="true"
         >
           <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
