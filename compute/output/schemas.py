@@ -406,6 +406,33 @@ class Metadata(BaseModel):
     form4_wall_clock_seconds: float | None = None
     osap_wall_clock_seconds: float | None = None
     cross_source_wall_clock_seconds: float | None = None
+    # Phase 4.5e PR 6 (0.10.11-phase4.6) — count of True → False downgrades
+    # applied by the post-detector 10b5-1 negation guard during cache build
+    # (residual footgun #1 from PR 4-eq). Tracks the universe-wide cohort
+    # of footnote disclosures matching phrases like "10b5-1 plan terminated
+    # 2022" / "no 10b5-1 plan in effect" / "previously had a 10b5-1 plan"
+    # — where the upstream ``edgar.ownership.core.detect_10b5_1_plan``
+    # substring match returns True even though the affirmative defense is
+    # NOT in force on the transaction date. The PR 6 negation guard re-
+    # scans the resolved text for negation tokens (``terminated`` /
+    # ``cancelled`` / ``no`` / ``previously`` / ``former`` / etc.) within
+    # ±5 word tokens of the 10b5-1 mention and downgrades the detection.
+    # Pre-PR-4-eq verdict (2026-05-23) pre-approved this hardening; PR 6
+    # implements the engineering.
+    #
+    # ``None`` semantics mirrors ``form4_wall_clock_seconds``: None when
+    # FORM4_FETCH_SKIP=1 (loop didn't run; detector never invoked) OR when
+    # the outer try/except fired before the end marker. On the happy path
+    # the value is the integer count of downgrades across the universe-wide
+    # cache-build. WARM-cache runs report 0 (no detector ran this cron —
+    # cached ``is_rule_10b5_one`` is read as-is); COLD-cache runs populate
+    # the real cohort number for the Q3 2026-08-19 cohort-acceptance check
+    # (issue #130) alongside ``form4_rule10b5_one_excluded_count``. Expected
+    # delta-firing-rate per Cohen 2008 §III + Jagolinzer 2009 §3.2:
+    # ``insider_sell_cluster`` +5% to +10% relative on a universe-baseline
+    # cron (absolute << 1%; most 10b5-1 disclosures are affirmative).
+    # Nullable on legacy snapshots (pre-0.10.11).
+    form4_negation_guard_downgrade_count: int | None = None
 
 
 class RawMetrics(BaseModel):

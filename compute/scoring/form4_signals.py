@@ -133,13 +133,26 @@ Footguns
    Expected firing-rate delta (methodology Mode B 2026-05-23):
    ``insider_sell_cluster`` -30% to -45% (absolute 4-10%),
    ``c_suite_unusual_sell`` -45% to -65% (absolute 1-4%). Q3
-   2026-08-19 cohort audit gates whether to (a) promote
+   2026-08-19 cohort audit gates whether to promote
    ``INSIDER_SELL_CLUSTER_WEIGHT`` 5.0 → 7.0 (mid-point — vesting-
    driven liquidations remain a separate ~15-25% contamination per
-   Aboody et al. 2010 §3.2) and (b) harden ``detect_10b5_1_plan``
-   with a negation guard against FP matches on phrases like "10b5-1
-   plan terminated" (current bias is conservative — over-excludes
-   from opportunistic cohort, never under-excludes).
+   Aboody et al. 2010 §3.2).
+
+   **PR 6 (2026-05-28)** — residual negation-guard hardening landed.
+   ``detect_10b5_1_plan`` is now wrapped by a post-detector regex
+   guard that downgrades a True detection to False when the resolved
+   footnote text contains a negation phrase (``terminated`` /
+   ``cancelled`` / ``no`` / ``previously`` / ``former`` / etc.)
+   within ±5 word tokens of the 10b5-1 mention. Pre-PR-6 the
+   detector matched True on FP phrases like "10b5-1 plan terminated
+   2022" or "no 10b5-1 plan in effect" — conservatively over-
+   excluding legitimate opportunistic trades from the cluster
+   cohort. PR 6 reverses this bias toward ground truth. Expected
+   delta-firing-rate per Cohen 2008 §III + Jagolinzer 2009 §3.2:
+   ``insider_sell_cluster`` +5% to +10% relative on a universe-
+   baseline cron (absolute << 1%; most 10b5-1 disclosures are
+   affirmative, not negated). Universe count surfaces as
+   ``Metadata.form4_negation_guard_downgrade_count`` per Rule 18.
 
    Residual: ~10-15% routine-but-not-10b5-1 trades per Jagolinzer
    2009 §3.2 (insider whose Q1 sale 14d post-10-K is consistent

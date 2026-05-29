@@ -11,19 +11,23 @@ from compute import config
 
 
 def test_schema_version_is_phase4_6():
-    """Issue #67 follow-up (0.10.10-phase4.6, 2026-05-28) — PATCH bump
-    for the new ``Metadata.value_trap_risk_delta_by_sector: dict[str, int]
-    | None`` field added per methodology-scientist Mode B Q2 verdict
-    (deferred from PR #294 sector-CoE flip). Per-sector delta of
-    `value_trap_risk` flag counts between flat-10% baseline and per-sector
-    Ke under Damodaran 2019 Ch. 8.4. Positive = sector dropped flags
-    after flip (Utilities / Real Estate / Consumer Staples expected);
-    negative = sector gained flags (Information Technology / Energy
-    expected). Computed every cron regardless of `USE_SECTOR_COE` so
-    Q3 2026-08-19 quarterly cohort audit has visible shape evidence.
-    Supersedes Issue #287 PR A's 0.10.9-phase4.6 bump.
+    """Phase 4.5e PR 6 (0.10.11-phase4.6, 2026-05-28) — PATCH bump for
+    the new ``Metadata.form4_negation_guard_downgrade_count: int | None``
+    field. Tracks the universe-wide count of True → False downgrades
+    applied by the post-detector 10b5-1 negation guard during Form-4
+    cache build (residual footgun #1 from PR 4-eq). Pre-PR-4-eq Mode B
+    verdict (2026-05-23) pre-approved the hardening; PR 6 implements
+    the engineering: an 8-pattern bidirectional ±5-token regex wrapping
+    ``edgar.ownership.core.detect_10b5_1_plan`` that downgrades a True
+    detection to False when the resolved footnote text contains a
+    negation phrase (``terminated`` / ``cancelled`` / ``no`` /
+    ``previously`` / ``former`` / etc.) within ±5 word tokens of the
+    10b5-1 mention. Gates the Q3 2026-08-19 cohort-acceptance check
+    (issue #130) for the ``INSIDER_SELL_CLUSTER_WEIGHT`` 5.0 → 7.0
+    promotion alongside ``form4_rule10b5_one_excluded_count``.
+    Supersedes Issue #67 follow-up's 0.10.10-phase4.6 bump.
     Locks the version against accidental revert."""
-    assert config.SCHEMA_VERSION == "0.10.10-phase4.6"
+    assert config.SCHEMA_VERSION == "0.10.11-phase4.6"
 
 
 def test_multi_class_overcount_allowlist_membership():

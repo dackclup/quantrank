@@ -42,11 +42,11 @@ See [`README.md`](README.md) for the user-facing pitch +
 
 | Field | Value |
 |---|---|
-| Schema version | **`0.10.9-phase4.6`** on `main` (verify: `python -m compute.output.schema_check`). PR #300 in flight: `0.10.10-phase4.6` (Issue #67 follow-up per-sector delta) |
-| Active phase | **Phase 4.6** — Honest re-validation harness (Hou-Xue-Zhang 2020 + McLean-Pontiff 2016 32% decay banner) |
+| Schema version | **`0.10.10-phase4.6`** on `main` (verify: `python -m compute.output.schema_check`). **Phase 4.5e PR 6 in flight**: `0.10.11-phase4.6` (Form-4 10b5-1 negation guard, residual footgun #1 from PR 4-eq) |
+| Active phase | **Phase 4.6** — Honest re-validation harness (Hou-Xue-Zhang 2020 + McLean-Pontiff 2016 32% decay banner). **Phase 4.5e ladder continues** — PR 6 closes residual footgun #1 |
 | Defense layer | **33 declared boolean flags** (7 active vetoes + 26 annotates + reserved; ~27 currently emit) + 5 numerical guards + `manipulation_index` rollup |
 | Latest release | [**`v1.4.0-phase4.6`**](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6) (2026-05-27, `bbca9cac`) — Phase 4.6 honest re-validation harness |
-| Post-tag patches | PR #292 GOOG/GOOGL XBRL · #293 NVR DQIC retire · #294 sector-CoE flip · #295 housekeeping · #296 CONTEXT.md · #297 PR #287 PR A wall-clocks · #298 cache-v5 · #299 housekeeping (all merged 2026-05-28); PR #300 per-sector delta in flight |
+| Post-tag patches | PR #292 GOOG/GOOGL XBRL · #293 NVR DQIC retire · #294 sector-CoE flip · #295 housekeeping · #296 CONTEXT.md · #297 Issue #287 PR A wall-clocks · #298 cache-v5 · #299 housekeeping · #300 per-sector delta · #301 .md sweep · #302 Site-2 dead-code removal (all merged 2026-05-28); Phase 4.5e PR 6 negation guard in flight |
 | Universe provider | historical S&P 500 membership (PR #274 Hou-Xue-Zhang 2020) |
 | Sector-CoE | `USE_SECTOR_COE = True` (PR #294 flip; Damodaran 2019 Ch. 8.4 11-sector Ke; cron Run #71 confirmed `value_trap_risk` 132 → 109) |
 | Sub-agent roster | 18 agents in 4 tiers (4 opus + 14 sonnet) |
