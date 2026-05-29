@@ -60,7 +60,7 @@ mobile → "overlap = none in all 8 cases". Numbers, not vibes.
 | Run the **full** verification ladder before push: `ruff check .` (whole repo) · `pytest -m "not network"` (whole suite) · `schema_check` (if schemas touched) · `tsc --noEmit` + `next build` (if frontend touched) | A per-file `ruff check <f>` passes while a *different* file fails — PR #310 went CI-red exactly this way. CLAUDE.md §Gotchas. |
 | Open PRs as **Draft**; run `quantrank-reviewer` (opus) + `phase-coordinator` Mode B before flipping to Ready | Codified gate; catches lockstep + invariant misses. |
 | `git fetch --prune` after a PR merges (remote head branch is auto-deleted) | Clears the stale tracking ref that makes the stop-hook cry "unpushed commit". |
-| Before bumping a **count** that lives in several docs, grep the *number* AND every surrounding phrasing across **all** surfaces | #316: bumped 45→46 in 3 docs but missed AGENTS.md because it said "loaded skills" not "invocation-triggerable". The skill count lives in CLAUDE.md §Layout + SKILL.md + README + AGENTS.md. |
+| Before bumping a **count** that lives in several docs, grep the *number* AND every surrounding phrasing across **all** surfaces | #316: bumped 45→46 but missed 3 homes — `AGENTS.md` (phrased "loaded skills", not "invocation-triggerable") plus `PHASE_STATUS.md` + `CONTEXT.md`, which stayed stale at 45 until a follow-up caught them. The count lives in **7 homes**: CLAUDE.md §Layout · AGENTS.md · SKILL.md · `.claude/skills/README.md` · PHASE_STATUS.md §Current state · CONTEXT.md (×3) · `.claude/agents/README.md`. |
 | Test responsive across **viewport × every width-consuming chrome state** (sidebar expanded/collapsed, drawers) | The hero bug survived #315 because that audit was viewport-only and never opened the expanded sidebar. |
 | For a layout beside a sidebar, gate the columns on a breakpoint that accounts for **content width**, not raw viewport (`lg`, not `sm`, when a 240px rail is present) | content-width = viewport − sidebar − paddings; `sm:640px` viewport can be ~400px of content. |
 | Use the **Read tool** before `Edit` (especially after `git reset`) | Bash `head` / `tail` / `grep` does NOT satisfy the harness's read-before-edit guard. |
@@ -83,11 +83,20 @@ mobile → "overlap = none in all 8 cases". Numbers, not vibes.
 
 ### 2026-05-29 — hero-overlap fix (PR #317) · skill install (#316) · responsive (#315)
 
-1. **Doc-count lockstep miss (#316).** Bumped skill count 45→46 in CLAUDE.md
-   §Layout, SKILL.md, and README — but missed `AGENTS.md` because the grep
-   keyed on "invocation-triggerable" while AGENTS.md phrased it "loaded
-   skills". `docs-reviewer` caught it at the gate. *Fix:* grep the number +
-   all phrasings; the skill count has 4 doc homes.
+1. **Doc-count lockstep miss (#316).** Bumped the skill count 45→46 in
+   CLAUDE.md §Layout, SKILL.md, and `.claude/skills/README.md` — but missed
+   `AGENTS.md` (it phrases the count "loaded skills", not the
+   "invocation-triggerable" the grep keyed on; `docs-reviewer` caught that at
+   the gate) AND missed `PHASE_STATUS.md` §Current state + `CONTEXT.md` (×3) +
+   `.claude/agents/README.md`, which stayed stale at 45 until a follow-up PR
+   caught them — and even that follow-up's *first* grep missed one CONTEXT.md
+   mention (different phrasing) AND the `.claude/agents/README.md` prose
+   mention, needing two more passes. The lesson is real. *Fix:* grep the
+   *number* (`45`/`46`) AND every phrasing across **all 7 homes**: CLAUDE.md
+   §Layout · AGENTS.md · SKILL.md · `.claude/skills/README.md` ·
+   PHASE_STATUS.md §Current state · CONTEXT.md · `.claude/agents/README.md`.
+   (Top-level `README.md` has no skill count — don't confuse it with
+   `.claude/skills/README.md`.)
 2. **Two sub-agent claims overruled (verify-don't-trust).** (a) "Hero BROKEN
    to 1280px" — false; the left block is 543px at 1280px. Real window
    ~768–900px. (b) The proposed `sm:flex-wrap` outer-row fix — a no-op,

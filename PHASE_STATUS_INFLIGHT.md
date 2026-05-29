@@ -3320,3 +3320,20 @@ future sessions find it). Doc-only — no compute / schema / scoring / valuation
 frontend code change.
 
 ---
+
+## Fix stale skill-count (45→46) in 4 docs + correct LESSONS_LEARNED home-count (in flight, this PR · 2026-05-29)
+
+Follow-up to #318 (caught by its `docs-reviewer` gate, which returned after
+#318 had already merged). The skill-count 45→46 bump from #316 had only
+updated 4 of the **7** doc homes — `PHASE_STATUS.md` §Current state +
+`CONTEXT.md` (×3 mentions) + `.claude/agents/README.md` stayed stale at 45.
+This PR brings all 7 homes to 46 and corrects the `docs/LESSONS_LEARNED.md`
+entry that itself under-counted the homes ("4 doc homes" → "7"; bare "README"
+→ "`.claude/skills/README.md`"; top-level `README.md` has no skill count). The
+fix demonstrates its own lesson — the first follow-up grep still missed two of
+the homes (different phrasings), needing broader passes. The 7 homes: CLAUDE.md
+§Layout · AGENTS.md · SKILL.md · `.claude/skills/README.md` · PHASE_STATUS.md
+§Current state · CONTEXT.md · `.claude/agents/README.md`. Doc-only — no compute
+/ schema / scoring / valuation / frontend code change; `ruff` clean.
+
+---
