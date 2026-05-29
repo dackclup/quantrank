@@ -3,19 +3,19 @@
   "name": "Corteva",
   "sector": "Materials",
   "industry": "Fertilizers & Agricultural Chemicals",
-  "market_cap": 53432029391.78467,
-  "current_price": 79.89,
-  "rank": 254,
-  "composite_score": 50.82,
+  "market_cap": 53906890979.46167,
+  "current_price": 80.6,
+  "rank": 233,
+  "composite_score": 51.59,
   "pillar_scores": {
     "quality": 48.56,
     "value": 46.79,
     "growth": 43.27,
     "momentum": 64.34,
-    "health": 59.16,
+    "health": 59.2,
     "profitability": 53.53,
-    "technical": 37.1,
-    "risk": 63.31,
+    "technical": 52.09,
+    "risk": 63.61,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +32,8 @@
     "eps_basic": 1.7523399419873809,
     "eps_diluted": 1.7523399419873809,
     "shares_outstanding": 668820000.0,
-    "market_cap": 53432029391.78467,
-    "pe_ratio_ttm": 45.590468764321386,
+    "market_cap": 53906890979.46167,
+    "pe_ratio_ttm": 45.99564076745876,
     "goodwill": 10409000000.0
   },
   "fair_price": {
@@ -45,13 +45,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 46.661551622847256,
+        "value": 46.426407734432395,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 112.09153553314762,
+        "value": 112.62957715738536,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,16 +75,17 @@
         "tier_used": null
       }
     },
-    "median": 35.458683652538625,
-    "max": 112.09153553314762,
+    "median": 35.34111170833119,
+    "max": 112.62957715738536,
     "low": 15.995977952802606,
-    "high": 112.09153553314762,
-    "mos_pct": -125.30447033086296,
+    "high": 112.62957715738536,
+    "mos_pct": -128.0629968273486,
     "valuation_warnings": [
       "goodwill_heavy",
+      "extreme_graham_estimate",
       "value_trap_risk"
     ],
-    "valuation_methods_applicable": 4
+    "valuation_methods_applicable": 3
   },
   "top5_factors": [],
   "score_history": [],
@@ -98,13 +99,14 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 22,
+    "filing_lag_days": 23,
     "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
+    "extreme_graham_estimate",
     "value_trap_risk"
   ],
   "has_history": true,
@@ -122,20 +124,20 @@
       "Quality": 51.68,
       "Value": 50.8,
       "Growth": 48.56,
-      "Momentum": 49.65,
-      "Health": 56.51,
+      "Momentum": 54.28,
+      "Health": 56.57,
       "Profitability": 54.33,
-      "Technical": 49.6,
-      "Risk": 47.58
+      "Technical": 51.67,
+      "Risk": 47.53
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.6306373773610252,
   "recommendation": "neutral",
-  "loss_chance_pct": 62.5876430176729,
-  "price_change_1d_pct": 1.0115,
+  "loss_chance_pct": 63.205297400143024,
+  "price_change_1d_pct": 0.8887,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 50.82,
+  "composite_score_adjusted": 51.59,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -183,10 +185,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.34,
+  "osap_blended_score": 51.72,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 4,
+  "valuation_methods_applicable": 3,
   "form4_diagnostics": null,
-  "cross_source_delta": 8.054690635857581e-08
+  "cross_source_delta": 8.020239326302639e-08
 }
