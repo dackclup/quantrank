@@ -3060,3 +3060,38 @@ handoff; the 7 flows are canonical examples, not an exhaustive script) + the
 / scoring / frontend code change.
 
 ---
+
+## PR #310 — stale_filing_hard pre-Step-7 injection (latent Rule-16 fix, in flight, 2026-05-29)
+
+Closes **issue #309**. Surfaced by the opus-4.8 re-audit of the prior
+opus-4.7 session work (user asked to re-check what the earlier model got
+wrong). `quantrank-reviewer` flagged it during a fresh-eyes pass of #306;
+`defense-layer-auditor` confirmed the execution order.
+
+**Bug (latent):** `stale_filing_hard` was merged into `risk_flags[ticker]`
+only in the Step-8 per-ticker loop (`compute/main.py`), AFTER the Step-7
+Top-5 rotation had already frozen `entered_top5` from the 7
+`compute_risk_flags` vetoes. A hard-stale stock (filing > 180d) ranking
+top-5 by raw composite + tripping none of the 7 vetoes could be written
+with both `risk_flags=["stale_filing_hard"]` AND `entered_top5=True` —
+a Rule-16 violation. Fires 0× on the current S&P 500 cron (all timely
+filers), so it was latent, not an active production defect; pre-existing,
+not introduced by the recent RiskFlagsCard work.
+
+**Fix:** Step-6b pre-scan injects `stale_filing_hard` before the rotation
+reads `risk_flags`; `asof_date` hoisted above the rotation so the lag
+check can reference it (behavior-neutral). Step-8 merge stays (idempotent,
+deduped). `ensemble.py:289` docstring corrected ("Step 7" → Step 8).
+Tests +5 in `tests/test_main.py` (positive/negative/boundary 180-vs-181/
+exit/idempotency) via a verbatim-copy `_step6b_then_step7` helper — logic
+test matching the file's convention, not a main.py regression guard (noted
+honestly in the commit). Zero scoring impact, no schema change.
+
+**Process lessons recorded this PR** (CLAUDE.md §Gotchas + AGENTS.md
+§Code style): (1) lint the WHOLE repo (`ruff check .`) before push, never
+per-file — the per-file pass let a second-commit test file's `UP037`
+escape and turned CI red. (2) The `asof_date`-in-scope assumption from the
+reviewer was wrong; `ruff` F821 caught the NameError before it shipped —
+verify sub-agent claims, don't trust them. Both fixed before merge.
+
+---

@@ -108,6 +108,17 @@ Ruff enforces formatting + import sort + lint rules (E / F / I / B / UP /
 W; ignore `E501` since we cap at 100 chars). Run `ruff check --fix .`
 to auto-fix. Do not hand-format what the linter handles.
 
+**Pre-push lint is whole-repo, never per-file.** CI runs `ruff check .`
+(no path). Running `ruff check <one-file>` for a focused diff is fine for
+inner-loop iteration but is NOT the pre-push gate — a later commit on the
+same branch can add a file the per-file pass never saw and it sails
+through locally while CI goes red (PR #310, 2026-05-29: a test file added
+in a second commit carried two `UP037` redundant-quote annotations that a
+per-file lint of the first commit's production files never checked). The
+last step before every push is the full ladder verbatim: `ruff check .`
+then `pytest -m "not network"` (whole suite, not just the file you
+touched).
+
 **Type hints required** on all public functions. Modern union syntax
 (`int | None`, not `Optional[int]`).
 
