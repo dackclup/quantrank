@@ -3504,4 +3504,23 @@ so it does NOT clip; the latest dot sits at the right edge (half pokes ~4px into
 the page gutter — fine, standard latest-price marker). One-character diff;
 `next build` (506) + `ruff` clean.
 
+**Follow-up commit 4 — two right-edge / scroll polish items (same PR #322):**
+real-device test surfaced two after-effects. (1) The `right: 0` flush made the
+latest-point **dot + crosshair line clip in half** at the edge. Inspected: NOT a
+Recharts clipPath (dot has no clip ancestor) — it's the `.recharts-surface` SVG's
+own `overflow: hidden` (viewBox width 358; dot center sits on the svg right edge,
+right half spilled past and was cut). Fix: scope `overflow: visible` to THIS
+chart's surface via the Tailwind arbitrary variant
+`[&_.recharts-surface]:overflow-visible` on the wrapper (other charts keep
+default clipping) — keeps `margin.right:0` flush AND lets the edge dot/cursor
+render fully into the harmless page gutter. (2) A touch that STARTED on the chart
+then became a vertical **page scroll** (touch-action:pan-y hands it to the
+browser) fires `pointercancel`, NOT pointerup/click — so the crosshair stayed
+stuck at the touched point after scrolling. Fix: add `onPointerCancel` → re-park.
+Verified (CDP): surface `overflow==='visible'`; full-width screenshot shows a
+complete dot at the edge; touch-scrub to Sep 15 2025 (no release) then a
+`pointercancel` re-parks to **May 28 2026**; regressions intact (park-on-load,
+tap→latest, drag scrub + release→latest). `tsc` + `next build` (506) + `ruff`
+clean.
+
 ---

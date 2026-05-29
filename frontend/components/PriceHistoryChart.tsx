@@ -412,7 +412,7 @@ export function PriceHistoryChart({
       <PriceTimePeriodSelector value={period} onChange={setPeriod} />
 
       {/* Re-park the crosshair at the latest date when an interaction ends.
-          Three triggers cover the cases:
+          Four triggers cover the cases:
           - onPointerUp → a drag-release (touch finger-lift or mouse-up after
             a drag). A drag moves far enough that the browser suppresses the
             synthetic click, so pointerUp is the last event and owns this case.
@@ -422,6 +422,10 @@ export function PriceHistoryChart({
             early and the tap point sticks. `click` is the last event of a tap
             and bubbles to this wrapper AFTER Recharts has set the tap point,
             so re-parking here wins. (Drags don't fire click → no double work.)
+          - onPointerCancel → a touch that STARTED on the chart then became a
+            vertical page scroll: touch-action:pan-y hands the gesture to the
+            browser, which fires pointercancel (NOT pointerup/click), so without
+            this the crosshair stays stuck at the touched point after scrolling.
           - onPointerLeave → a mouse pointer leaving the chart. GUARDED to
             ignore pointerType==='touch': during a touch scrub the browser
             fires spurious pointerleave events as the finger crosses child-SVG
@@ -430,12 +434,19 @@ export function PriceHistoryChart({
             remount <AreaChart> mid-drag → reset to defaultIndex → the
             crosshair could never follow the finger.
           touch-action:pan-y keeps vertical page scroll while handing
-          horizontal drags to the chart for scrubbing. */}
+          horizontal drags to the chart for scrubbing. The
+          [&_.recharts-surface]:overflow-visible lets the latest-point dot +
+          crosshair line at the flush right edge render fully instead of being
+          clipped in half by the SVG viewport (margin.right is 0 so the last
+          point sits exactly on the surface edge; the dot pokes a few px into
+          the page gutter, which is harmless). Scoped to THIS chart's surface
+          only — the other charts keep default clipping. */}
       <div
-        className="h-64 w-full"
+        className="h-64 w-full [&_.recharts-surface]:overflow-visible"
         style={{ touchAction: 'pan-y' }}
         onPointerUp={() => setRestKey((k) => k + 1)}
         onClick={() => setRestKey((k) => k + 1)}
+        onPointerCancel={() => setRestKey((k) => k + 1)}
         onPointerLeave={(e) => {
           if (e.pointerType !== 'touch') setRestKey((k) => k + 1);
         }}
