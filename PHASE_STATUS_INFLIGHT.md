@@ -3629,4 +3629,14 @@ both-in-range, AAPL both-off-chart chip-only, AMD well-separated) confirm both
 no label, and the chips show "Fair $X" + "Target $X" in all three cases. `ruff`
 + `tsc` + `next build` (506 routes) clean.
 
+Follow-up tweaks on the same PR (user requests): (a) each chip gained a **signed
+`%` delta** from the current price after the dollar value (`Fair $125.92
+(-14.7%)` / `Target $169.82 (+15.0%)`; + = upside / − = downside, sign matching
+the green/red chip cue; one decimal; suppressed when current price is missing or
+≤ 0). (b) the current price's **as-of date** now renders below the change
+indicator (`as of May 28, 2026`) via the existing `formatTooltipLabel` helper —
+the date stays constant across period switches (it's always the latest close's
+date, matching the headline price + the latest-point tooltip). Both verified on
+the regenerated APH/AAPL dark-mode screenshots; `tsc` + `next build` (506) clean.
+
 ---

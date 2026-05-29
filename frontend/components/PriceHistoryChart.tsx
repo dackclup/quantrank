@@ -359,6 +359,9 @@ export function PriceHistoryChart({
               </span>
             </div>
           )}
+          <div className="text-xs tabular-nums text-slate-500 dark:text-slate-400">
+            as of {formatTooltipLabel(chartData[chartData.length - 1].date)}
+          </div>
         </div>
       )}
 
