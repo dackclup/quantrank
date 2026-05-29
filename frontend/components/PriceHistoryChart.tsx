@@ -39,11 +39,13 @@ type ChartPoint = {
 //
 // PR 4f extends this with:
 // - 7-button time-period selector (1D/5D/5Y disabled with tooltip)
-// - Gray dashed fair-price line at fair_price.median (all tickers)
-// - Black solid target-price line at fair_price.max
-//   (bullish / lean_bullish only)
-// - Off-chart fair/target values surface as chip annotations so they
-//   don't warp the y-axis when far from the stock's price range.
+// - Fair-value + target reference lines, both the same theme-aware
+//   near-white/near-black color + weight, distinguished only by dash
+//   (fair dashed, target solid) so neither line dominates the other.
+// - Fair/target values always surface as chips below the price headline
+//   (the canonical number read); the in-chart lines carry no text label.
+//   Off-range values show as a chip only (a line can't be drawn outside
+//   the chart's y-axis).
 export function PriceHistoryChart({
   ticker,
   fairPriceMedian,
@@ -258,12 +260,7 @@ export function PriceHistoryChart({
     (fairPriceMax as number) >= (yDomain as [number, number])[0] &&
     (fairPriceMax as number) <= (yDomain as [number, number])[1];
 
-  // Off-chart prices get surfaced as a chip annotation row instead of
-  // a reference line that would force the y-axis to stretch.
-  const fairOffChart = fairIsNumber && !fairInRange;
-  const targetOffChart = targetEligible && !targetInRange;
-
-  // Direction cue for the off-chart chips: green when the reference
+  // Direction cue for the chips: green when the reference
   // sits ABOVE current price (upside to that level), red when it sits
   // below (current price has run past it). Removes the need for the
   // wordy "(below range)" / "(above range)" qualifier the user asked
@@ -283,6 +280,20 @@ export function PriceHistoryChart({
     'bg-emerald-50 text-emerald-800 ring-emerald-300';
   const downChipCls =
     'bg-rose-50 text-rose-700 ring-rose-300';
+
+  // Signed % distance of each reference price from the current price —
+  // upside when positive, downside when negative. Rendered after the chip
+  // dollar value (e.g. "Fair $126 (-14.7%)"); the sign matches the chip's
+  // green/red direction cue. Suppressed if current price is missing / 0.
+  const fmtDeltaPct = (ref: number): string | null => {
+    if (currentPrice === null || currentPrice <= 0) return null;
+    const pct = ((ref - currentPrice) / currentPrice) * 100;
+    return `${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%`;
+  };
+  const fairDeltaPct = fairIsNumber ? fmtDeltaPct(fairPriceMedian as number) : null;
+  const targetDeltaPct = targetEligible
+    ? fmtDeltaPct(fairPriceMax as number)
+    : null;
 
   // Color the chart line + area fill based on direction of the
   // visible window — Google-Finance-style cue ("green = up over the
@@ -348,33 +359,44 @@ export function PriceHistoryChart({
               </span>
             </div>
           )}
+          <div className="text-sm tabular-nums text-slate-900 dark:text-slate-100">
+            as of {formatTooltipLabel(chartData[chartData.length - 1].date)}
+          </div>
         </div>
       )}
 
-      {/* Off-chart reference price chips. Chip color cues direction:
-          green when the reference sits ABOVE current price (upside to
-          that level), red when it sits BELOW (current price has run
-          past it — overvalued vs that yardstick). */}
-      {(fairOffChart || targetOffChart) && (
+      {/* Reference price chips — always shown below the price headline
+          as the canonical fair-value + target number read (the in-chart
+          lines carry no text label). Chip color cues direction: green
+          when the reference sits ABOVE current price (upside to that
+          level), red when it sits BELOW (current price has run past it —
+          overvalued vs that yardstick). */}
+      {(fairIsNumber || targetEligible) && (
         <div className="flex flex-wrap gap-1.5 text-xs">
-          {fairOffChart && (
+          {fairIsNumber && (
             <span
               className={`inline-flex items-center gap-1 rounded-sm px-2 py-0.5 ring-1 ring-inset ${fairAboveCurrent ? upChipCls : downChipCls}`}
             >
               <span
                 className={`h-0 w-3 border-t border-dashed ${fairAboveCurrent ? 'border-emerald-600' : 'border-rose-600'}`}
               />
-              <span>Fair {fmtPrice(fairPriceMedian as number)}</span>
+              <span className="tabular-nums">
+                Fair {fmtPrice(fairPriceMedian as number)}
+                {fairDeltaPct ? ` (${fairDeltaPct})` : ''}
+              </span>
             </span>
           )}
-          {targetOffChart && (
+          {targetEligible && (
             <span
               className={`inline-flex items-center gap-1 rounded-sm px-2 py-0.5 ring-1 ring-inset ${targetAboveCurrent ? upChipCls : downChipCls}`}
             >
               <span
                 className={`h-[2px] w-3 ${targetAboveCurrent ? 'bg-emerald-700' : 'bg-rose-700'}`}
               />
-              <span>Target {fmtPrice(fairPriceMax as number)}</span>
+              <span className="tabular-nums">
+                Target {fmtPrice(fairPriceMax as number)}
+                {targetDeltaPct ? ` (${targetDeltaPct})` : ''}
+              </span>
             </span>
           )}
         </div>
@@ -394,13 +416,13 @@ export function PriceHistoryChart({
         </span>
         {fairIsNumber && (
           <span className="inline-flex items-center gap-1.5">
-            <span className="h-0 w-3.5 border-t border-dashed border-slate-400 dark:border-slate-500" />
+            <span className="h-0 w-3.5 border-t-2 border-dashed border-slate-900 dark:border-slate-200" />
             Fair value
           </span>
         )}
         {targetEligible && (
           <span className="inline-flex items-center gap-1.5">
-            <span className="h-[2px] w-3.5 bg-slate-900 dark:bg-slate-100" />
+            <span className="h-[2px] w-3.5 bg-slate-900 dark:bg-slate-200" />
             Target
           </span>
         )}
@@ -493,28 +515,18 @@ export function PriceHistoryChart({
             {fairInRange && (
               <ReferenceLine
                 y={fairPriceMedian as number}
-                stroke="#94a3b8"
+                stroke={isDark ? '#e2e8f0' : '#0f172a'}
+                strokeWidth={1.5}
                 strokeDasharray="5 3"
                 ifOverflow="hidden"
-                label={{
-                  value: `Fair ${fmtPrice(fairPriceMedian as number)}`,
-                  position: 'insideTopRight',
-                  fill: '#64748b',
-                  fontSize: 11,
-                }}
               />
             )}
             {targetInRange && (
               <ReferenceLine
                 y={fairPriceMax as number}
                 stroke={isDark ? '#e2e8f0' : '#0f172a'}
+                strokeWidth={1.5}
                 ifOverflow="hidden"
-                label={{
-                  value: `Target ${fmtPrice(fairPriceMax as number)}`,
-                  position: 'insideTopRight',
-                  fill: isDark ? '#e2e8f0' : '#0f172a',
-                  fontSize: 11,
-                }}
               />
             )}
           </AreaChart>

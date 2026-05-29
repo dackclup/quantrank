@@ -3572,3 +3572,71 @@ overflow:visible, contained by the doc clip); sticky header `top==0` after a
 re-park. `tsc` + `next build` (506) + `ruff` clean.
 
 ---
+
+## Document the global `overflow-x: clip` invariant (§Gotcha) (in flight, this PR · 2026-05-29)
+
+Fast-follow to PR #322 (merged `fd045277`), recommended by BOTH the
+`quantrank-reviewer` (opus) and `phase-coordinator` at the #322 merge gate: the
+`html, body { overflow-x: clip }` added in #322 is a non-obvious **site-wide**
+invariant a future frontend author will trip over, so it gets a durable home in
+CLAUDE.md §Gotchas (+ AGENTS.md §Code-style mirror) rather than living only in
+the globals.css comment + the (drains-over-time) INFLIGHT entry. The §Gotcha
+records: keep `clip` NOT `hidden` (hidden creates a scroll container → breaks
+the sticky sidebar/header; clip does not); page-level horizontal scroll is
+intentionally impossible → wide content nests its own `overflow-x-auto`
+(`RankingTable` pattern); the chart-remount + fixed-backdrop root cause; and the
+Safari-16+/Chrome-90+ support floor (older silently degrades to prior behavior,
+not a regression). Doc-only — no compute / schema / scoring / valuation /
+frontend-code change; lockstep satisfied by the CLAUDE.md + AGENTS.md substance
+diff. `ruff` clean.
+
+---
+
+## Price-chart fair/target reference-line + chip restyle (in flight, this PR · 2026-05-29)
+
+User-requested polish on the per-stock price chart (`PriceHistoryChart.tsx`) —
+four coupled tweaks to the fair-value + target reference lines and the chip row:
+1. **Target line same stroke-width as the fair-value line** — both now
+   `strokeWidth={1.5}` (were both implicit default 1; the user perceived a
+   mismatch, reinforced by the legend swatches sitting at 1px-vs-2px).
+2. **Fair-value line the same "white" as the target line** — fair `stroke`
+   flips from the always-gray `#94a3b8` to the target's theme-aware
+   `isDark ? '#e2e8f0' : '#0f172a'`. Both lines read near-white in dark mode
+   (the user's mode) and near-black in light mode (`#0f172a` on `#FAFAFA`
+   ≈ 19:1 contrast — deliberately NOT literally white, which would vanish on
+   the light page bg). The two lines stay distinguishable by dash only (fair
+   `5 3` dashed, target solid).
+3. **In-chart text labels removed** — dropped the `label={{...}}` prop from both
+   `<ReferenceLine>`s (no more "Fair $X" / "Target $X" stuck on the lines).
+4. **Fair/target chips below the price headline now always shown** — the render
+   condition flips from `fairOffChart`/`targetOffChart` (off-y-domain only) to
+   `fairIsNumber`/`targetEligible` (always when the value exists); the chips are
+   now the canonical number read. Removed the now-unused
+   `fairOffChart`/`targetOffChart` consts; legend swatches updated to match the
+   new line look (both near-black/white, fair `border-t-2` dashed, target solid,
+   equal weight, `dark:*-slate-200` matching the line's `#e2e8f0`); chip price
+   spans gained `tabular-nums` (the one pre-existing `frontend-design-reviewer`
+   WARN, fixed in-block since the chips are now always visible). Each chip value
+   is followed by the **signed % distance from the current price** — upside (+) /
+   downside (−), e.g. `Fair $126 (-14.7%)` — with the sign matching the chip's
+   green/red direction cue.
+
+Frontend-only; no schema / compute / scoring / valuation change. Verified:
+`frontend-design-reviewer` zero-FAIL (`READY-FOR-SPOT-CHECK`); DOM inspection +
+3 dark-mode mobile (414×896, `isMobile`) Playwright screenshots (APH
+both-in-range, AAPL both-off-chart chip-only, AMD well-separated) confirm both
+`<line>`s render stroke `#e2e8f0` / width `1.5` / fair dashed / target solid /
+no label, and the chips show "Fair $X" + "Target $X" in all three cases. `ruff`
++ `tsc` + `next build` (506 routes) clean.
+
+Follow-up tweaks on the same PR (user requests): (a) each chip gained a **signed
+`%` delta** from the current price after the dollar value (`Fair $125.92
+(-14.7%)` / `Target $169.82 (+15.0%)`; + = upside / − = downside, sign matching
+the green/red chip cue; one decimal; suppressed when current price is missing or
+≤ 0). (b) the current price's **as-of date** now renders below the change
+indicator (`as of May 28, 2026`) via the existing `formatTooltipLabel` helper —
+the date stays constant across period switches (it's always the latest close's
+date, matching the headline price + the latest-point tooltip). Both verified on
+the regenerated APH/AAPL dark-mode screenshots; `tsc` + `next build` (506) clean.
+
+---
