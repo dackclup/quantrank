@@ -13,8 +13,9 @@ QuantRank produces, per stock:
 - **Fair-price ensemble** — median of 6 valuation methods + outlier-excluded
   max. _(Phase 3c)_
 - **Margin of safety** — `(median − current) / median × 100`. _(Phase 3c)_
-- **33 active defenses** — 7 vetoes + 5 numerical guards + 23 annotate-only
-  flags, plus the `manipulation_index` rollup that composes the annotate set
+- **33 declared boolean flags** — 7 active vetoes + 26 annotate-only flags
+  (declared; ~21 currently emit, the rest reserved) — plus 5 numerical guards
+  and the `manipulation_index` rollup that composes the annotate set
   into a single 0–100 severity dial. Annotate-and-veto-Top-N philosophy:
   defenses **never modify the composite**, only suppress the entered-top-5
   badge or null specific fair-price methods. _(Phase 3b/3c/3d, expanded

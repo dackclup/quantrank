@@ -38,18 +38,18 @@ See [`README.md`](README.md) for the user-facing pitch +
 
 ---
 
-## Live snapshot (2026-05-28)
+## Live snapshot (2026-05-29)
 
 | Field | Value |
 |---|---|
-| Schema version | **`0.10.10-phase4.6`** on `main` (verify: `python -m compute.output.schema_check`). **Phase 4.5e PR 6 in flight**: `0.10.11-phase4.6` (Form-4 10b5-1 negation guard, residual footgun #1 from PR 4-eq) |
-| Active phase | **Phase 4.6** — Honest re-validation harness (Hou-Xue-Zhang 2020 + McLean-Pontiff 2016 32% decay banner). **Phase 4.5e ladder continues** — PR 6 closes residual footgun #1 |
+| Schema version | **`0.10.11-phase4.6`** on `main` (PR #303 merged 2026-05-29; verify: `python -m compute.output.schema_check`) |
+| Active phase | **Phase 4.6** — Honest re-validation harness (Hou-Xue-Zhang 2020 + McLean-Pontiff 2016 32% decay banner). Phase 4.5e ladder closed (PR #303 = PR 6, final residual footgun) |
 | Defense layer | **33 declared boolean flags** (7 active vetoes + 26 annotates + reserved; ~27 currently emit) + 5 numerical guards + `manipulation_index` rollup |
 | Latest release | [**`v1.4.0-phase4.6`**](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6) (2026-05-27, `bbca9cac`) — Phase 4.6 honest re-validation harness |
-| Post-tag patches | PR #292 GOOG/GOOGL XBRL · #293 NVR DQIC retire · #294 sector-CoE flip · #295 housekeeping · #296 CONTEXT.md · #297 Issue #287 PR A wall-clocks · #298 cache-v5 · #299 housekeeping · #300 per-sector delta · #301 .md sweep · #302 Site-2 dead-code removal (all merged 2026-05-28); Phase 4.5e PR 6 negation guard in flight |
+| Post-tag patches | PR #292 GOOG/GOOGL XBRL · #293 NVR DQIC retire · #294 sector-CoE flip · #295 housekeeping · #296 CONTEXT.md · #297 Issue #287 PR A wall-clocks · #298 cache-v5 · #299 housekeeping · #300 per-sector delta · #301 .md sweep · #302 Site-2 dead-code removal (2026-05-28); PR #303 `847c21b` Form-4 negation guard (schema `0.10.11-phase4.6`) · #304 `e070db6` expert-user-explorer (19th agent) · #306 `6ce7c1b` RiskFlagsCard · #307 `bb1d7fd` Phase B orchestrator tuning · #308 `e77efbf` RiskFlagsCard footer fix · #310 `a941e2e` stale_filing_hard Rule-16 fix (2026-05-29) |
 | Universe provider | historical S&P 500 membership (PR #274 Hou-Xue-Zhang 2020) |
 | Sector-CoE | `USE_SECTOR_COE = True` (PR #294 flip; Damodaran 2019 Ch. 8.4 11-sector Ke; cron Run #71 confirmed `value_trap_risk` 132 → 109) |
-| Sub-agent roster | 18 agents in 4 tiers (4 opus + 14 sonnet) |
+| Sub-agent roster | 19 agents in 4 tiers (4 opus + 15 sonnet) |
 | Skill inventory | 45 (vendored + project-internal) |
 | Cron status | weekday cron Run #71 green (2026-05-28 08:44 UTC, `368dccd9`, 14m 32s warm cache; empirically validated PR #297 wall-clock fields) |
 
@@ -71,7 +71,7 @@ append-only side-file [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md).
 | Cross-tool agent rules (Copilot / Cursor / Devin) | [`AGENTS.md`](AGENTS.md) |
 | Visual / design-system spec (LedgerCraft) | [`docs/design.md`](docs/design.md) |
 | Vendor + license posture per third-party source | [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) |
-| Sub-agent catalog (18 agents, 4 tiers, 6 coordination flows) | [`.claude/agents/README.md`](.claude/agents/README.md) |
+| Sub-agent catalog (19 agents, 4 tiers, 7 coordination flows) | [`.claude/agents/README.md`](.claude/agents/README.md) |
 | Skill index (45 vendored + project-internal) | [`.claude/skills/README.md`](.claude/skills/README.md) |
 | mattpocock harness consumer rules (issue-tracker, domain) | [`docs/agents/`](docs/agents/) |
 | User-facing pitch + Honest Limitations | [`README.md`](README.md) |
@@ -242,7 +242,7 @@ S&P 1500 universe expansion), see
 [`PHASE_STATUS.md`](PHASE_STATUS.md) §"Next deliverables" +
 [`WORKFLOW.md`](WORKFLOW.md) per-phase task lists. Headline phases:
 
-- **Stage 0** (immediate): Issue #287 PR B FORM4 revert (single-line, gated on ≥ 1 cron < 195m green with `form4_wall_clock_seconds` populated; PR #297 ceiling bump active so headroom confirmed by cron Run #71 14m 32s) · PR #300 per-sector delta merge confirmation
+- **Stage 0** (immediate): Issue #287 PR B FORM4 revert (single-line, gated on ≥ 1 cron < 195m green with `form4_wall_clock_seconds` populated; PR #297 ceiling bump active so headroom confirmed by cron Run #71 14m 32s)
 - **Stage 1**: Phase 4.5e PR 5 cluster-weight promotion 5.0 -> 7.0
 - **Stage 2**: Phase 4 factor integrations (4h.2 / 4j.1 / 4k.1) -> `v1.5.0-phase4`
 - **Stage 3**: Phase 5 ML meta-learner (LightGBM + Triple-Barrier + Conformal + SHAP) -> `v1.6.0-phase5`

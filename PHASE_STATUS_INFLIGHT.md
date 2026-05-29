@@ -2850,7 +2850,7 @@ The `hasattr` check catches BOTH direct re-add AND import re-add. Failure messag
 
 ---
 
-## PR #303 — Phase 4.5e PR 6: Form-4 10b5-1 negation guard (residual footgun #1) (in flight, 2026-05-28)
+## PR #303 — Phase 4.5e PR 6: Form-4 10b5-1 negation guard (residual footgun #1) (merged 2026-05-29, 847c21b)
 
 Closes the long-standing residual of footgun #1 from
 `compute/scoring/form4_signals.py` module docstring + the PR 4-eq Mode B
@@ -2971,7 +2971,7 @@ PR 4-eq verdict).
 
 ---
 
-## `expert-user-explorer` subagent — interactive app-usage tester (in flight, 2026-05-29)
+## `expert-user-explorer` subagent — interactive app-usage tester (merged 2026-05-29 via PR #304, e070db6)
 
 New **19th subagent** `expert-user-explorer` (Tier 2 Lifecycle,
 sonnet, read-only) — the first agent that **interactively *uses*** the
@@ -3011,7 +3011,7 @@ MCP-UUID inheritance gotcha). No compute / schema / scoring / valuation
 
 ---
 
-## `RiskFlagsCard` — render `risk_flags[]` vetoes on stock detail (in flight, 2026-05-29)
+## `RiskFlagsCard` — render `risk_flags[]` vetoes on stock detail (merged 2026-05-29 via PR #306, 6ce7c1b)
 
 Closes **issue #305** — surfaced by the `expert-user-explorer` agent's
 first live-fire (its run on PR #304's just-merged agent).
@@ -3039,7 +3039,7 @@ re-validation. No schema / compute / scoring change — frontend-only
 
 ---
 
-## Phase B — opus-4.8 orchestrator + dynamic-workflow agent tuning (in flight, 2026-05-29)
+## Phase B — opus-4.8 orchestrator + dynamic-workflow agent tuning (merged 2026-05-29 via PR #307, bb1d7fd)
 
 Second phase of this session's program (Phase A = the `expert-user-explorer`
 agent, merged #304). Tunes all 19 subagents to work with the opus-4.8 main
@@ -3061,7 +3061,7 @@ handoff; the 7 flows are canonical examples, not an exhaustive script) + the
 
 ---
 
-## PR #310 — stale_filing_hard pre-Step-7 injection (latent Rule-16 fix, in flight, 2026-05-29)
+## PR #310 — stale_filing_hard pre-Step-7 injection (latent Rule-16 fix, merged 2026-05-29, a941e2e)
 
 Closes **issue #309**. Surfaced by the opus-4.8 re-audit of the prior
 opus-4.7 session work (user asked to re-check what the earlier model got
