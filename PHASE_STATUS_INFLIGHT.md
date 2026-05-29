@@ -3010,3 +3010,31 @@ MCP-UUID inheritance gotcha). No compute / schema / scoring / valuation
 / frontend production-code change — agent file + doc lockstep only.
 
 ---
+
+## `RiskFlagsCard` — render `risk_flags[]` vetoes on stock detail (in flight, 2026-05-29)
+
+Closes **issue #305** — surfaced by the `expert-user-explorer` agent's
+first live-fire (its run on PR #304's just-merged agent).
+`StockDetail.risk_flags[]` (the 7 Tier-1 hard vetoes) was typed in
+`frontend/lib/types.ts` + present in the committed JSON but rendered
+NOWHERE on `/stock/<T>/` — so EIX showed "Sell" + MoS +34% +
+manipulation 0/100 with **no on-page reason** (the `altman_distress`
+veto driving the recommendation was invisible). Scope: **137/502
+tickers (27%)** carried ≥1 invisible flag (sloan 56 / altman 46 /
+net_issuance 37 / beneish 12 / dqic 4 / dechow 1 / non_reliance 1).
+
+New `frontend/components/RiskFlagsCard.tsx` mirrors `ManipulationRiskCard`
+(null-when-empty, rose veto tone, paired `dark:` variants, `[flag]`
+mono code) and renders just before `ManipulationRiskCard` on the detail
+page. Each veto carries a human-readable label + one-line academic-
+anchored detail (Altman 1968 / Sloan 1996 / Daniel-Titman 2006 /
+Beneish 1999 / Dechow 2011 / Schroeder 2024 / Step-7.5 guard) sourced
+from `docs/METHODOLOGY.md`; footer states Rule 16 (raw rank unchanged;
+`entered_top5` forfeited). Verified: `next build` clean (506 routes);
+EIX renders the card, clean AAPL does not (null-when-empty). Multi-agent
+loop closing this: expert-user-explorer found it → METHODOLOGY.md
+anchors → frontend-design-reviewer review → expert-user-explorer
+re-validation. No schema / compute / scoring change — frontend-only
+(1 new component + 2-line page wiring).
+
+---
