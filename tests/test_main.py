@@ -614,7 +614,7 @@ from compute.valuation.applicability import stale_filing_status  # noqa: E402
 
 
 def _step6b_then_step7(
-    df: "pd.DataFrame",
+    df: pd.DataFrame,
     snapshots: dict,
     risk_flags: dict,
     asof: date,
@@ -657,7 +657,7 @@ def _step6b_then_step7(
     return risk_flags, entered, exited
 
 
-def _ranked_df(*tickers: str) -> "pd.DataFrame":
+def _ranked_df(*tickers: str) -> pd.DataFrame:
     """Build a minimal ranked DataFrame ordered by composite_score (desc)."""
     n = len(tickers)
     return pd.DataFrame(
