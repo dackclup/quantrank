@@ -93,8 +93,10 @@ const config: Config = {
         'fade-in': 'fade-in 200ms ease-out',
         // Functional micro-entrances — within the LedgerCraft ≤ 200ms
         // budget for the fast ones; the gauge/signature sweep (≤ 800ms)
-        // is driven by a CSS transition on stroke-dashoffset in the
-        // component, not a keyframe, so it can ease from the live value.
+        // is driven by the `gauge-sweep` @keyframes in globals.css — a
+        // keyframe, NOT a transition (a transition needs two committed
+        // paint frames Chromium batches away, so the sweep stayed
+        // invisible until the 2026-05-29 audit caught it; see ScoreGauge.tsx).
         'rise-in': 'rise-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both',
         'chip-pop': 'chip-pop 260ms cubic-bezier(0.34, 1.56, 0.64, 1) both',
         'flag-pulse': 'flag-pulse 900ms ease-out both',

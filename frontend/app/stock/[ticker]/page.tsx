@@ -119,11 +119,13 @@ export default function StockDetailPage({
                 both are summary statistics ("how good overall" / "how
                 cheap"). Both badges share the radial-gauge family
                 (ScoreBadge "lg" + MoSBadge); arc length = score/100
-                or |MoS|/100, color = sign-driven for MoS. `flex-nowrap`
-                keeps them on a single row even at narrow mobile
-                viewports (the badge widths are sized to fit a 375 px
-                card with `gap-3`). */}
-            <div className="flex flex-nowrap items-center gap-3 sm:gap-5">
+                or |MoS|/100, color = sign-driven for MoS. `flex-wrap`
+                lets them sit side-by-side wherever there's room (≥ 375 px
+                cards) and stack vertically on the narrowest phones instead
+                of overflowing — under the prior `flex-nowrap`, an EIX-style
+                long MoS label ("UNDERVALUED") clipped the viewport edge at
+                320 px (2026-05-29 responsive audit M1). */}
+            <div className="flex flex-wrap items-center gap-3 sm:gap-5">
               <ScoreBadge score={detail.composite_score} size="lg" ticker={detail.ticker} />
               <MoSBadge mos={mosPct} />
             </div>

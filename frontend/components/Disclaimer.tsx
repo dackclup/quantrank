@@ -40,7 +40,11 @@ export function Disclaimer() {
           <button
             type="button"
             onClick={() => setExpanded((e) => !e)}
-            className="ml-1 text-slate-500 underline-offset-2 hover:text-slate-900 hover:underline dark:text-slate-400 dark:hover:text-slate-100"
+            // -my-1 + min-h-[24px] inline-flex lifts the tap target to the
+            // WCAG 2.5.8 (AA) 24×24 floor without growing the disclaimer's
+            // line-height (the negative margin absorbs the extra height).
+            // Was 28×16 — below the 24px minimum (2026-05-29 audit).
+            className="-my-1 ml-1 inline-flex min-h-[24px] items-center px-1 align-middle text-slate-500 underline-offset-2 hover:text-slate-900 hover:underline dark:text-slate-400 dark:hover:text-slate-100"
           >
             {expanded ? 'less' : 'more'}
           </button>
