@@ -55,9 +55,40 @@ export function PriceHistoryChart({
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<TimePeriod>('1Y');
   const [mounted, setMounted] = useState(false);
+  // Remount keys: bumping either forces <AreaChart> to remount, which
+  // re-runs Recharts' componentDidMount → displayDefaultTooltip(defaultIndex),
+  // re-parking the crosshair + tooltip at the latest date. `restKey` bumps
+  // when the pointer is released / leaves the chart (snap back to latest
+  // after a drag); `layoutKey` bumps on orientation change (re-park after
+  // rotate). Recharts 2.15 applies `defaultIndex` only on mount, so a
+  // remount is how we re-assert it on those events.
+  const [restKey, setRestKey] = useState(0);
+  const [layoutKey, setLayoutKey] = useState(0);
   const { resolvedTheme } = useTheme();
 
   useEffect(() => setMounted(true), []);
+
+  // Re-park the tooltip at the latest date when the device rotates
+  // portrait↔landscape. matchMedia is browser-only; the guard keeps SSR
+  // clean (component is 'use client', so this never runs server-side).
+  // The bump is DEBOUNCED ~300ms after the orientation event so the
+  // remount lands AFTER ResponsiveContainer has re-measured the new
+  // width — remounting mid-resize makes Recharts' displayDefaultTooltip
+  // park on index 0 instead of the latest.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(orientation: portrait)');
+    let t: ReturnType<typeof setTimeout>;
+    const handler = () => {
+      clearTimeout(t);
+      t = setTimeout(() => setLayoutKey((k) => k + 1), 300);
+    };
+    mq.addEventListener('change', handler);
+    return () => {
+      clearTimeout(t);
+      mq.removeEventListener('change', handler);
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -380,9 +411,19 @@ export function PriceHistoryChart({
           numbers, choose a window, see the chart). */}
       <PriceTimePeriodSelector value={period} onChange={setPeriod} />
 
-      <div className="h-64 w-full">
+      {/* onPointerUp / onPointerLeave live on the wrapper div (not the SVG)
+          so finger-lift + pointer-exit are caught reliably on mobile —
+          Recharts' own onTouchEnd on SVG children can fail to bubble.
+          Bumping restKey remounts <AreaChart> → re-parks the crosshair at
+          the latest date. */}
+      <div
+        className="h-64 w-full"
+        onPointerUp={() => setRestKey((k) => k + 1)}
+        onPointerLeave={() => setRestKey((k) => k + 1)}
+      >
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
+            key={`${period}-${restKey}-${layoutKey}`}
             data={chartData}
             margin={{ top: 8, right: 16, left: 0, bottom: 0 }}
           >
@@ -404,6 +445,8 @@ export function PriceHistoryChart({
               labelFormatter={formatTooltipLabel}
               contentStyle={tooltipContentStyle}
               labelStyle={tooltipLabelStyle}
+              defaultIndex={chartData.length - 1}
+              isAnimationActive={false}
             />
             <Area
               type="monotone"

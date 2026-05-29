@@ -3401,3 +3401,57 @@ release tag in short form). Verified: `tsc --noEmit` clean · `next build` green
 scoring / valuation change.
 
 ---
+
+## Fix price-chart crosshair: kill drag lag + park tooltip at latest in all resting states (in flight, this PR · 2026-05-29)
+
+**Bug** (reported by the maintainer, mobile): on the per-stock price chart
+(`PriceHistoryChart.tsx`, Recharts 2.15.4 `<AreaChart>` + `<Tooltip>`), (1)
+dragging fast → the tooltip box **lags behind** the finger; (2) the crosshair
+line + box do not **park at the latest date** in any resting state — on page
+open nothing shows, after a drag-release it freezes at the last-touched point
+then vanishes when the pointer leaves, and orientation/period changes leave it
+at an arbitrary point. Reproduced + measured by `expert-user-explorer`; root
+cause source-traced by `frontend-design-reviewer` against the recharts source.
+
+**Root cause:** the `<Tooltip>` used Recharts defaults — no `defaultIndex`
+(so no rest state) and `isAnimationActive` unset (default true → an inline
+`transition: transform 400ms` on the tooltip wrapper makes the box chase the
+finger = the lag; measured target 220px vs computed 186px mid-animation). The
+`<Area>` already had `isAnimationActive={false}`; the `<Tooltip>` did not.
+
+**Fix** (frontend className/props + 2 hooks, +44 / −1, 1 file): on `<Tooltip>`,
+add `defaultIndex={chartData.length - 1}` (park at latest on mount) +
+`isAnimationActive={false}` (kill the lag). Recharts applies `defaultIndex`
+only on mount, so re-assert it on the other resting events by **remounting
+`<AreaChart>` via a `key={`${period}-${restKey}-${layoutKey}`}`**: `restKey`
+bumps on `onPointerUp`/`onPointerLeave` (snap back to latest after a
+drag-release / pointer-exit), `layoutKey` bumps on a `matchMedia('(orientation:
+portrait)')` change (re-park after rotate). Period change is covered by
+`period` already being in the key.
+
+**Two refinements over the first proposal, both verified necessary:**
+1. **Rest handlers on the wrapper `<div>`, not `<AreaChart>`** — `onPointerUp` /
+   `onPointerLeave` (pointer events unify mouse+touch and bubble reliably to a
+   plain div) instead of `onMouseLeave` / `onTouchEnd` on the SVG, which the
+   reviewer warned can fail to bubble on mobile (the maintainer's case).
+2. **Debounce the orientation key-bump ~300ms** — remounting *during* the
+   ResponsiveContainer re-measure made `displayDefaultTooltip` land on index 0
+   (verified: landscape parked at the FIRST point "May 28, 2025" instead of the
+   latest). Debouncing so the remount lands after the width settles fixed it.
+
+**Verification** (local, Playwright DOM on NVDA dark mobile 390×844): `tsc
+--noEmit` clean · `next build` green (506 routes) · `ruff` clean. Tooltip label
+across states — on-load **May 28, 2026** (latest) · during-drag updates per
+hover (Aug 29 2025 / Dec 3 2025 / Mar 11 2026 — inspection still works) ·
+after-pointerup **May 28, 2026** · after-pointer-leave **May 28, 2026** ·
+landscape (debounced) **May 28, 2026** · back-to-portrait (debounced) **May 28,
+2026** · after 6M→1Y **May 28, 2026**. Inline `transition` = none in every state
+(lag gone). Cursor line + box + active dot all park at latest (screenshots
+portrait + landscape). No schema / compute / scoring / valuation change.
+
+**Bonus found, NOT bundled** (separate follow-up if wanted): `expert-user-explorer`
+flagged the `PriceTimePeriodSelector` shows **1M** highlighted on initial load
+while the chart renders the 1Y window (state inits to `'1Y'`) — a selector
+active-chip mismatch, unrelated to the crosshair ask.
+
+---
