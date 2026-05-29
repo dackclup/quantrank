@@ -13,7 +13,7 @@ populations:
 
 - **Loaded skills** (sit flat under `.claude/skills/<name>/SKILL.md`) —
   see [`CLAUDE.md`](../../CLAUDE.md) §Layout row for the canonical
-  breakdown (currently 45 invocation-triggerable skills). Bump that
+  breakdown (currently 46 invocation-triggerable skills). Bump that
   CLAUDE.md row when adding/removing a top-level skill; this file
   references rather than duplicates the count to avoid drift.
 - **Planning documents** (nested under `phase-N/<name>/PLAN.md`) —
