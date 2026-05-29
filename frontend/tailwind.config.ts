@@ -56,10 +56,47 @@ const config: Config = {
           from: { opacity: '0' },
           to: { opacity: '1' },
         },
+        // Tasteful-motion vocabulary (2026-05-29). All transform/opacity
+        // only — never width/height/top/left — so the GPU compositor
+        // handles them and no layout reflow occurs. Every utility below
+        // has a `prefers-reduced-motion` off-switch in globals.css that
+        // snaps to the end state. LedgerCraft stays flat; motion is the
+        // ENTRANCE, not a permanent visual flourish (plays once per
+        // session via the usePlayedOnce hook). See docs/design.md §Motion.
+        //
+        // rise-in — the workhorse entrance: fade + 8px upward settle.
+        // Used by cards, table rows (staggered), risk/flag list items.
+        'rise-in': {
+          from: { opacity: '0', transform: 'translateY(8px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        // chip-pop — recommendation / score-tier / sector chips land with
+        // a tiny overshoot so the verdict feels "stamped on", not faded.
+        'chip-pop': {
+          '0%': { opacity: '0', transform: 'scale(0.85)' },
+          '70%': { opacity: '1', transform: 'scale(1.04)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
+        },
+        // flag-pulse — risk-veto rows draw one slow attention pulse on
+        // entrance (ring opacity), then rest. Communicates "look here"
+        // without a permanent blink. Single iteration only.
+        'flag-pulse': {
+          '0%': { opacity: '0', transform: 'translateY(6px)' },
+          '60%': { opacity: '1', transform: 'translateY(0)' },
+          '78%': { boxShadow: '0 0 0 3px rgb(244 63 94 / 0.18)' },
+          '100%': { boxShadow: '0 0 0 0 rgb(244 63 94 / 0)' },
+        },
       },
       animation: {
         shimmer: 'shimmer 1.5s linear infinite',
         'fade-in': 'fade-in 200ms ease-out',
+        // Functional micro-entrances — within the LedgerCraft ≤ 200ms
+        // budget for the fast ones; the gauge/signature sweep (≤ 800ms)
+        // is driven by a CSS transition on stroke-dashoffset in the
+        // component, not a keyframe, so it can ease from the live value.
+        'rise-in': 'rise-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both',
+        'chip-pop': 'chip-pop 260ms cubic-bezier(0.34, 1.56, 0.64, 1) both',
+        'flag-pulse': 'flag-pulse 900ms ease-out both',
       },
     },
   },

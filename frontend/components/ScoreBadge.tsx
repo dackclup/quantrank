@@ -1,5 +1,6 @@
 import type { JSX } from 'react';
 import { scoreAccentColor, scoreColorClasses } from '@/lib/visual';
+import { ScoreGauge } from '@/components/ScoreGauge';
 
 // Two-size component: the pill ('sm' default) for rankings table cells
 // + mobile cards, and the radial-gauge variant ('lg') for the stock
@@ -26,45 +27,10 @@ export function ScoreBadge({
   size?: 'sm' | 'md' | 'lg';
 }): JSX.Element {
   if (size === 'lg') {
-    const r = 26;
-    const circumference = 2 * Math.PI * r;
-    const frac = Math.max(0, Math.min(1, score / 100));
-    const accent = scoreAccentColor(score);
-    return (
-      <div className="flex items-center gap-2">
-        <div className="relative h-16 w-16 shrink-0">
-          <svg viewBox="0 0 64 64" className="h-16 w-16 -rotate-90">
-            <circle cx="32" cy="32" r={r} fill="none" className="stroke-slate-100 dark:stroke-slate-800" strokeWidth="6" />
-            <circle
-              cx="32"
-              cy="32"
-              r={r}
-              fill="none"
-              stroke={accent}
-              strokeWidth="6"
-              strokeLinecap="round"
-              strokeDasharray={`${circumference * frac} ${circumference}`}
-            />
-          </svg>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="font-mono text-base font-semibold tabular-nums text-slate-900 dark:text-slate-100">
-              {score.toFixed(0)}
-            </span>
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            Composite Score
-          </span>
-          <span className="font-mono text-lg font-semibold tabular-nums text-slate-900 dark:text-slate-100">
-            {score.toFixed(1)}
-          </span>
-          <span className="text-[10px] uppercase tracking-wider" style={{ color: accent }}>
-            {tierLabel(score)}
-          </span>
-        </div>
-      </div>
-    );
+    // Signature gauge sweep + count-up lives in the client ScoreGauge
+    // sub-component (the only animated score surface; sm/md stay
+    // server-rendered for the 502 table cells). See docs/design.md §Motion.
+    return <ScoreGauge score={score} accent={scoreAccentColor(score)} />;
   }
 
   if (size === 'md') {
