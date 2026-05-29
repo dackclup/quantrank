@@ -3640,3 +3640,37 @@ date, matching the headline price + the latest-point tooltip). Both verified on
 the regenerated APH/AAPL dark-mode screenshots; `tsc` + `next build` (506) clean.
 
 ---
+
+## Price-chart: tap (no drag) moves the crosshair to the tap point (in flight, this PR · 2026-05-29)
+
+User request: "เวลา tab ที่จุดไหนในกราฟ crosshair ต้องมาอยู่ตรงที่ tab เสมอ แม้จะไม่
+ลากก็ตาม และเวลาปล่อย tab ต้องกลับไปอยู่ที่เดิม" — a tap anywhere on the chart
+must move the crosshair to the tap point even WITHOUT a drag, and releasing must
+snap it back to the latest date.
+
+**Root cause (empirically reproduced via CDP touch):** Recharts 2.15
+`handleTouchStart` only calls `handleMouseDown` (which never touches the
+tooltip); only `handleTouchMove` updates the crosshair. So a tap-without-move
+left the crosshair parked at latest the entire press
+(`generateCategoricalChart.js:1061-1063`). Reset-on-release already worked (the
+#322 remount-on-`onPointerUp`/`onClick`/`onPointerCancel`).
+
+**Fix:** a touch-only `onPointerDown` on the chart wrapper dispatches a synthetic
+`mousemove` at the touch point from INSIDE `.recharts-wrapper` (so it bubbles
+through Recharts' `onMouseMove` → `getMouseInfo`). Two non-obvious details: (1)
+`getMouseInfo` reads **`pageX`** (`:1693`), not `clientX`; (2) `pageX`/`pageY`
+are NOT part of `MouseEventInit`, so a constructed `MouseEvent` leaves them at 0
+→ negative chartX → Recharts CLEARS the tooltip (observed: dot vanished). Fixed
+by `Object.defineProperty(ev, 'pageX'/'pageY', …)` to the pointer's page coords.
+Mouse pointers already hover-track, so the handler early-returns for non-touch.
+
+**Verified (CDP touch, mobile 414×896):** tap@30% → crosshair jumps to that date
+(Sep 16 2025, dot cx 115.7) and HOLDS during the press; release → reset to latest
+(May 28 2026, cx 382). No regression: drag-scrub still follows (Mar 17 2026 @
+~80%), tap-then-vertical-scroll still resets via the pointercancel path. Held-tap
+screenshot (Oct 13 2025 · $123.43 with crosshair + dot + tooltip at the tap)
+captured. Component-local mechanism documented in-file; lockstep via this entry.
+Frontend-only; no schema/compute/scoring/valuation change. `ruff` + `tsc` +
+`next build` (506 routes) clean.
+
+---
