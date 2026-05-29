@@ -1,7 +1,7 @@
 'use client';
 
 // Signature moment (2026-05-29): the composite-score radial gauge on the
-// stock detail header. On first view this session, the arc sweeps from
+// stock detail header. On every visit, the arc sweeps from
 // empty → the score's percentile and the partner number counts up over
 // the same 800ms window (useCountUp + the .gauge-arc stroke-dashoffset
 // transition share the easing). This is the ONE place the app spends a
@@ -12,7 +12,7 @@
 // globals.css). Extracted from ScoreBadge's 'lg' branch so the 'sm' / 'md'
 // table-cell variants stay server-rendered (no client JS × 502 rows).
 
-import { useEffect, useState, type JSX } from 'react';
+import type { CSSProperties, JSX } from 'react';
 import { useCountUp, usePlayOnMount } from '@/lib/useMotion';
 
 const tierLabel = (score: number): string => {
@@ -44,25 +44,19 @@ export function ScoreGauge({
   const play = usePlayOnMount(`score-gauge:${ticker ?? score.toFixed(1)}`);
   const shown = useCountUp(score, play, 800);
 
-  // Two-phase render for the stroke-dashoffset transition. Default
-  // `filled = true` so SSR / pre-hydration / replay / reduced-motion all
-  // paint the arc at its correct final length. Only on first view this
-  // session do we briefly set it EMPTY then flip back to filled across
-  // two animation frames, giving the .gauge-arc CSS transition two
-  // distinct values to ease between (a single frame can batch into one
-  // paint and skip the transition — the double-rAF guarantees a paint at
-  // the empty state first).
-  const [filled, setFilled] = useState(true);
-  useEffect(() => {
-    if (!play) return; // replay / reduced-motion / not-yet-resolved: stay filled
-    setFilled(false); // empty now…
-    const id = requestAnimationFrame(() =>
-      requestAnimationFrame(() => setFilled(true)),
-    ); // …filled after a guaranteed paint → transition eases the sweep
-    return () => cancelAnimationFrame(id);
-  }, [play]);
-
-  const dashOffset = filled ? circumference - arcLen : circumference;
+  // The arc is always rendered at its FINAL strokeDashoffset (correct on
+  // SSR / no-JS / reduced-motion / replay). When `play` is true we add the
+  // `gauge-sweep` class, which runs a CSS @keyframes that animates the
+  // dashoffset from empty (full circumference) → 0 delta, easing into the
+  // rendered final value. A keyframe (not a transition + double-rAF) is
+  // used deliberately: the earlier transition approach needed two
+  // committed paint frames between empty→filled, which Chromium batches
+  // away, so the transition never fired (the sweep was invisible — caught
+  // by the 2026-05-29 audit's transitionstart/end event probe). A keyframe
+  // added via class plays reliably on mount with no frame-commit race.
+  // The animation's "from" offset is the full circumference (empty); the
+  // "to" is the rendered strokeDashoffset, passed as a CSS var.
+  const dashOffset = circumference - arcLen;
 
   return (
     <div className="flex items-center gap-2">
@@ -84,9 +78,19 @@ export function ScoreGauge({
             stroke={accent}
             strokeWidth="6"
             strokeLinecap="round"
-            className="gauge-arc"
+            className={play ? 'gauge-sweep' : undefined}
             strokeDasharray={circumference}
             strokeDashoffset={dashOffset}
+            style={
+              play
+                ? ({
+                    // keyframe reads these: --gauge-from = empty (full
+                    // circumference), animation eases to the rendered
+                    // strokeDashoffset above.
+                    '--gauge-from': `${circumference}`,
+                  } as CSSProperties)
+                : undefined
+            }
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">

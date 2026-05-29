@@ -277,7 +277,7 @@ JS hooks in `lib/useMotion.ts`.
 
 The composite-score radial gauge (`ScoreGauge.tsx`, the detail-page
 `ScoreBadge size="lg"`) sweeps 0→value with a synchronized count-up over
-800ms on first view this session. It is the app's headline number, so it
+800ms on every visit to a stock's detail page. It is the app's headline number, so it
 earns the one longer beat. Everything else stays in the ≤ 320ms micro
 budget.
 

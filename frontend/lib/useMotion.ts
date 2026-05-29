@@ -17,8 +17,8 @@ function prefersReducedMotion(): boolean {
 
 /**
  * Count a number up from 0 → `target` over `durationMs`, but only after
- * `start` flips true (wire it to useInViewOnce so the count runs when the
- * element is first seen, not at mount-while-offscreen). Returns the live
+ * `start` flips true (wire it to usePlayOnMount so the count runs on each
+ * visit). Returns the live
  * value to render. Under reduced-motion (or when start is false) it
  * returns the target immediately — the number is always correct, the
  * animation is the only thing gated.
