@@ -3,8 +3,8 @@
 // Signature moment (2026-05-29): the composite-score radial gauge on the
 // stock detail header. On every visit, the arc sweeps from
 // empty → the score's percentile and the partner number counts up over
-// the same 800ms window (useCountUp + the .gauge-arc stroke-dashoffset
-// transition share the easing). This is the ONE place the app spends a
+// the same 800ms window (useCountUp + the `gauge-sweep` @keyframes share
+// the easing). This is the ONE place the app spends a
 // longer beat — it's the headline number, so it earns the emphasis.
 // Plays on every visit to a stock's detail page (usePlayOnMount), so each
 // stock you open gets its signature reveal. Reduced-motion → static final
