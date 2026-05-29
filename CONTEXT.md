@@ -50,7 +50,7 @@ See [`README.md`](README.md) for the user-facing pitch +
 | Universe provider | historical S&P 500 membership (PR #274 Hou-Xue-Zhang 2020) |
 | Sector-CoE | `USE_SECTOR_COE = True` (PR #294 flip; Damodaran 2019 Ch. 8.4 11-sector Ke; cron Run #71 confirmed `value_trap_risk` 132 → 109) |
 | Sub-agent roster | 19 agents in 4 tiers (4 opus + 15 sonnet) |
-| Skill inventory | 45 (vendored + project-internal) |
+| Skill inventory | 46 (vendored + project-internal) |
 | Cron status | weekday cron Run #71 green (2026-05-28 08:44 UTC, `368dccd9`, 14m 32s warm cache; empirically validated PR #297 wall-clock fields) |
 
 For chronological detail: [`PHASE_STATUS.md`](PHASE_STATUS.md) +
@@ -72,7 +72,7 @@ append-only side-file [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md).
 | Visual / design-system spec (LedgerCraft) | [`docs/design.md`](docs/design.md) |
 | Vendor + license posture per third-party source | [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) |
 | Sub-agent catalog (19 agents, 4 tiers, 7 coordination flows) | [`.claude/agents/README.md`](.claude/agents/README.md) |
-| Skill index (45 vendored + project-internal) | [`.claude/skills/README.md`](.claude/skills/README.md) |
+| Skill index (46 vendored + project-internal) | [`.claude/skills/README.md`](.claude/skills/README.md) |
 | mattpocock harness consumer rules (issue-tracker, domain) | [`docs/agents/`](docs/agents/) |
 | User-facing pitch + Honest Limitations | [`README.md`](README.md) |
 
@@ -164,7 +164,7 @@ append-only side-file [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md).
 | `frontend/components/` | React UI (RankingTable, FairPriceBarChart, ...) |
 | `frontend/public/data/` | Compute output: `metadata.json` + `rankings.json` + `stocks/<TICKER>.json` |
 | `tests/` | pytest suite (offline + `@network` gated) |
-| `.claude/skills/` | 45 invocation-triggerable skills + phase planning docs |
+| `.claude/skills/` | 46 invocation-triggerable skills + phase planning docs |
 | `.claude/agents/` | 19 project-specific sub-agents in 4 tiers |
 | `.claude/hooks/` | 3 hook scripts (`log-bash.sh` + `schema-reminder.sh` + `delegate-first.sh`) |
 | `docs/` | METHODOLOGY.md, design.md, agents/ |
