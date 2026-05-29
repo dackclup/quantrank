@@ -3252,3 +3252,54 @@ valuation / frontend-code change — `.claude/` + docs only. No build / test
 impact (markdown skill; not in any CI code path).
 
 ---
+
+## Fix stock-detail hero overlap when sidebar expanded (in flight, this PR · 2026-05-29)
+
+**Bug** (reported by maintainer with two `/stock/NVDA/` screenshots): on
+the per-stock detail hero, when the left-rail **sidebar is EXPANDED** at
+md-ish viewports (~768–900px CSS width — small laptop window / tablet
+landscape / split-screen), the composite-score gauge donut ("74") rendered
+**directly on top of** the "Information Technology" sector chip, and
+"Semiconductors" truncated to "Semic…"/"S…". Clean when the sidebar was
+collapsed. Confirmed visually + with bounding-box measurement.
+
+**Root cause** (PRE-EXISTING — *not* a #315 regression): the hero's outer
+row at `app/stock/[ticker]/page.tsx:87` flips to two columns at
+`sm:flex-row` (640px **viewport**). But the expanded sidebar consumes 240px
+(`md:w-60`), so at md the hero's *content* area can be < 470px — too narrow
+for the right stats block's ~**360px intrinsic** width (two `h-16 w-16`
+donuts + labels). With `nowrap` the right block claims its full width
+first; the left identity block (`min-w-0 flex-1`) is crushed to **31–83px**
+and, being `min-w-0` + `overflow:visible`, its 157px sector chip paints
+*outside* its cell onto the gauge (measured **54×20px** collision at 820px).
+The broken `sm:flex-row` predates #315 — it arrived with the sidebar
+(LedgerCraft Phase 3c, PRs #232–#234). #315 only touched the *inner*
+gauge-row `flex-wrap` (line 128, the 320px MoS-label fix) and never covered
+the sidebar-expanded state (its sweep was viewport-only).
+
+**Fix** (frontend className-only, 9 insert / 2 delete, 1 file): raise the
+two-column breakpoint `sm → lg` on the outer hero row
+(`lg:flex-row lg:items-start lg:justify-between`) + add a `min-w-0` shrink
+guard on the right block (`flex min-w-0 flex-col gap-3 lg:items-end`) + a
+rationale comment so it isn't "optimized" back to `sm`. Below `lg` the hero
+**stacks** cleanly in BOTH sidebar states (impossible to overlap); at `lg+`
+there is provably enough room (1024px expanded → left block **287px**
+measured, 157px chip fits with margin). Trade-off: 640–1023px viewports
+that *could* do two-column (collapsed sidebar, or below-md full-width) now
+stack — clean, safe, and arguably better tablet UX.
+
+**Verification** (local, node_modules present): `next build` green (506
+routes) + `tsc --noEmit` clean + `ruff check .` clean; Playwright DOM
+measurement on NVDA dark mode at 768/820/900/1024/1280 × expanded/collapsed
++ 375 mobile → gauge-vs-sector-chip overlap = **none in all 8 cases** (was
+54×20px @820 expanded, 31px-crush @768). Two agents confirmed the mechanism
+(`expert-user-explorer` measured + screenshotted; `frontend-design-reviewer`
+code-traced + proposed the `lg`+`min-w-0` fix); main agent overruled two
+sub-agent claims via verify-don't-trust: (a) the "BROKEN to 1280px"
+overstatement — at 1280px expanded the left block is 543px = fine; the real
+window is ~768–900px expanded; (b) the alternative "add `sm:flex-wrap` to
+the outer row" idea — defeated by the left block's `min-w-0` (flexbox treats
+it as fitting at 0, so the right block never wraps). No schema / compute /
+scoring / valuation change.
+
+---
