@@ -3591,3 +3591,39 @@ frontend-code change; lockstep satisfied by the CLAUDE.md + AGENTS.md substance
 diff. `ruff` clean.
 
 ---
+
+## Price-chart fair/target reference-line + chip restyle (in flight, this PR · 2026-05-29)
+
+User-requested polish on the per-stock price chart (`PriceHistoryChart.tsx`) —
+four coupled tweaks to the fair-value + target reference lines and the chip row:
+1. **Target line same stroke-width as the fair-value line** — both now
+   `strokeWidth={1.5}` (were both implicit default 1; the user perceived a
+   mismatch, reinforced by the legend swatches sitting at 1px-vs-2px).
+2. **Fair-value line the same "white" as the target line** — fair `stroke`
+   flips from the always-gray `#94a3b8` to the target's theme-aware
+   `isDark ? '#e2e8f0' : '#0f172a'`. Both lines read near-white in dark mode
+   (the user's mode) and near-black in light mode (`#0f172a` on `#FAFAFA`
+   ≈ 19:1 contrast — deliberately NOT literally white, which would vanish on
+   the light page bg). The two lines stay distinguishable by dash only (fair
+   `5 3` dashed, target solid).
+3. **In-chart text labels removed** — dropped the `label={{...}}` prop from both
+   `<ReferenceLine>`s (no more "Fair $X" / "Target $X" stuck on the lines).
+4. **Fair/target chips below the price headline now always shown** — the render
+   condition flips from `fairOffChart`/`targetOffChart` (off-y-domain only) to
+   `fairIsNumber`/`targetEligible` (always when the value exists); the chips are
+   now the canonical number read. Removed the now-unused
+   `fairOffChart`/`targetOffChart` consts; legend swatches updated to match the
+   new line look (both near-black/white, fair `border-t-2` dashed, target solid,
+   equal weight, `dark:*-slate-200` matching the line's `#e2e8f0`); chip price
+   spans gained `tabular-nums` (the one pre-existing `frontend-design-reviewer`
+   WARN, fixed in-block since the chips are now always visible).
+
+Frontend-only; no schema / compute / scoring / valuation change. Verified:
+`frontend-design-reviewer` zero-FAIL (`READY-FOR-SPOT-CHECK`); DOM inspection +
+3 dark-mode mobile (414×896, `isMobile`) Playwright screenshots (APH
+both-in-range, AAPL both-off-chart chip-only, AMD well-separated) confirm both
+`<line>`s render stroke `#e2e8f0` / width `1.5` / fair dashed / target solid /
+no label, and the chips show "Fair $X" + "Target $X" in all three cases. `ruff`
++ `tsc` + `next build` (506 routes) clean.
+
+---
