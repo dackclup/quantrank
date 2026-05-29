@@ -13,6 +13,13 @@
 // on-page "why". Mirrors ManipulationRiskCard: returns null when empty,
 // rose tone (vetoes are the highest-severity band), paired dark:
 // variants, [flag] mono code for the raw key.
+//
+// Motion (2026-05-29): on first view this session the veto rows enter
+// with a single rose attention-pulse (animate-flag-pulse) — communicates
+// "look here" without a permanent blink. Gated client-side via
+// usePlayedOnce + reduced-motion-safe (see docs/design.md §Motion).
+
+import { usePlayedOnce } from '@/lib/useMotion';
 
 interface FlagMeta {
   label: string;
@@ -69,6 +76,11 @@ export interface RiskFlagsCardProps {
 }
 
 export function RiskFlagsCard({ riskFlags }: RiskFlagsCardProps) {
+  // Hook BEFORE the early return (rules-of-hooks). Keyed by the flag set so
+  // each distinct stock's veto list pulses once per session. Effect-based
+  // so the animate class is client-only (never in the static prerender).
+  const pulse = usePlayedOnce(`risk-flags:${(riskFlags ?? []).join(',')}`);
+
   // `== null` catches both null and undefined (legacy snapshots predating
   // the field). Clean stocks (empty array) take no layout space —
   // matches the ManipulationRiskCard / Tier2EventCard convention.
@@ -90,10 +102,15 @@ export function RiskFlagsCard({ riskFlags }: RiskFlagsCardProps) {
       </header>
 
       <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
-        {riskFlags.map((flag) => {
+        {riskFlags.map((flag, i) => {
           const meta = RISK_FLAG_META[flag];
+          // First view this session: each veto row rises + pulses once,
+          // staggered so a multi-veto stock (e.g. SMCI: 3) cascades.
+          const pulseClass = pulse
+            ? `animate-flag-pulse stagger-${Math.min(12, i + 1)}`
+            : '';
           return (
-            <li key={flag} className="flex items-start gap-2">
+            <li key={flag} className={`flex items-start gap-2 rounded-sm ${pulseClass}`}>
               <span
                 className="mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-rose-600 dark:bg-rose-400"
                 aria-hidden="true"
