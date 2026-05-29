@@ -286,8 +286,13 @@ def compute_fair_price_ensemble(
     Returns ``(EnsembleResult, risk_flags_to_append)``. The
     ``risk_flags_to_append`` list contains ONLY new flags from this
     function (specifically ``stale_filing_hard`` when filing is
-    hard-stale). The caller (Step 7 in compute/main.py) merges these
-    into the existing risk_flags from compute_risk_flags.
+    hard-stale). The caller (the Step-8 per-ticker loop in
+    compute/main.py) merges these into the existing risk_flags from
+    compute_risk_flags. NOTE: ``stale_filing_hard`` is ALSO injected into
+    risk_flags by a dedicated pre-Step-7 lag scan so the Top-5 rotation
+    veto check sees it (issue #309); this Step-8 merge is idempotent
+    (deduped by the caller) and remains the source for tickers the
+    pre-scan may not cover.
 
     Defense application order:
 

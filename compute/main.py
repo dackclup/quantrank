@@ -1150,6 +1150,29 @@ def run_weekly_compute() -> int:
     ).reset_index(drop=True)
     df["rank"] = np.arange(1, len(df) + 1)
 
+    # asof_date is needed by the Step-6b stale-filing pre-scan below (and
+    # reused throughout Step 8); hoisted here from its later definition so
+    # the pre-Step-7 lag check can reference it.
+    now = _now_utc()
+    asof_date = now.date()
+
+    # Step 6b — inject stale_filing_hard into risk_flags BEFORE the Step-7
+    # rotation so the veto check below sees it (issue #309). The fair-price
+    # ensemble also returns stale_filing_hard and the Step-8 loop merges it,
+    # but that merge runs AFTER rotation — without this pre-scan a hard-stale
+    # stock could keep entered_top5 despite a non-empty risk_flags (Rule 16
+    # violation). The Step-8 merge stays (idempotent; deduped there).
+    for _, _r in df.iterrows():
+        _ticker = str(_r["ticker"])
+        _snap = snapshots.get(_ticker)
+        if _snap is None:
+            continue
+        if stale_filing_status(_filing_lag(_snap, asof_date)) == "hard":
+            _merged = list(risk_flags.get(_ticker, []))
+            if "stale_filing_hard" not in _merged:
+                _merged.append("stale_filing_hard")
+                risk_flags[_ticker] = _merged
+
     # Step 7 — Top-5 rotation. Flagged stocks never earn entered_top5
     # regardless of rank (per PR-3b veto enforcement decision 2026-05-08).
     previous_top5 = read_previous_top5(config.DATA_DIR)
@@ -1170,9 +1193,6 @@ def run_weekly_compute() -> int:
         sorted(exited),
         sum(1 for f in risk_flags.values() if f),
     )
-
-    now = _now_utc()
-    asof_date = now.date()
 
     # Phase 4h — OSAP signal replication + PBO/DSR gate + Path-b blend.
     # Observability-only this phase: Top-5 ranking still uses raw
