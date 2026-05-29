@@ -1405,7 +1405,7 @@ flagged ticker — the original ≤ 20 hard cap was lifted in PR #219;
 fires post-cron + pre-release + "ตรวจ data หุ้น").
 
 Every subagent ends its report with a parseable `HANDOFF · status=… ·
-next=<DONE | SPAWN <agent>:<scope> | ESCALATE <agent> | NEEDS-USER:…>>`
+next=<DONE | SPAWN <agent>:<scope> | ESCALATE <agent>:<why> | NEEDS-USER:…>`
 line so the opus-4.8 main session composes the next step *dynamically*
 from it — the documented coordination flows are canonical examples, not
 an exhaustive script. See [`.claude/agents/README.md`](.claude/agents/README.md)
@@ -1417,7 +1417,7 @@ trim target is the boilerplate ("read these first" + verbose intros
 + duplicated material from CLAUDE.md / SKILL.md / AGENTS.md), NOT
 the work the agent does. Hard constraints on prompt size do not
 imply hard caps on output size or investigation depth. Sub-agents
-on the sonnet pool (14 of 18 agents) should walk every relevant
+on the sonnet pool (15 of 19 agents) should walk every relevant
 file, list every finding, and follow every escalation lead — the
 Max-plan "Weekly · Sonnet only" budget is intended for thorough
 audit work and is separate from the "Weekly · all models" pool the

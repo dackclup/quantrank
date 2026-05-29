@@ -280,7 +280,7 @@ whitespace / single-line fixes do not trigger.
 
 - **Route on the handoff line.** Every sub-agent ends its report
   with a parseable `HANDOFF · status=… · next=<DONE | SPAWN
-  <agent>:<scope> | ESCALATE <agent> | NEEDS-USER:<decision>>` line
+  <agent>:<scope> | ESCALATE <agent>:<why> | NEEDS-USER:<decision>>` line
   (convention in [`.claude/agents/README.md`](.claude/agents/README.md)
   §Dynamic workflow). Compose the next step from it **dynamically** —
   the 7 coordination flows are canonical examples, not an exhaustive
@@ -296,10 +296,10 @@ whitespace / single-line fixes do not trigger.
   hard word caps or "≤ N items" limits wastes that pool without
   improving signal. Keep model assignments (`incident-commander`
   + `release-captain` + `methodology-scientist` + `quantrank-
-  reviewer` all opus by design; the other 14 sonnet) as they
+  reviewer` all opus by design; the other 15 sonnet) as they
   are — opus agents land on the "Weekly · all models" pool;
   sonnet agents drain the underutilized sonnet pool. Tune the
-  4-vs-14 split only when usage data justifies it.
+  4-vs-15 split only when usage data justifies it.
 - **Prefer delegation to sub-agents** over inline main-session
   work when both options exist. Main-session tokens land on the
   "Weekly · all models" pool; sonnet sub-agents land on the
