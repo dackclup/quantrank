@@ -3479,4 +3479,20 @@ SAME input modality the user uses (the original verification used `page.mouse`,
 which masked the touch-only regression). `tsc` + `next build` (506 routes) +
 `ruff` clean.
 
+**Follow-up commit 2 — tap (not drag) didn't reset (same PR #322):** real-device
+test: drag scrub + drag-release re-park now work, but a single **tap** left the
+crosshair stuck at the tapped point. Reproduced via CDP: a tap fires
+`pointerdown → pointerup → click`, and the tooltip is set to the tapped point by
+the compatibility **synthetic-mouse + `click` that fire AFTER `pointerup`** — so
+the `onPointerUp` re-park fired too early and the tap point re-applied. (A drag
+moves far enough that the browser suppresses the synthetic click, so `pointerUp`
+re-park wins — which is why drag worked and tap didn't, exactly matching the
+report. CDP `dispatchTouchEvent` doesn't emit the compat-mouse events, so the
+earlier CDP drag test never surfaced this.) **Fix:** also re-park on `onClick`
+(the last event of a tap; bubbles to the wrapper AFTER Recharts sets the tap
+point, so it wins — drags don't fire click, so no double work). Verified via CDP:
+pure-tap @30 → re-parks **May 28 2026**, micro-tap @60 → **May 28 2026**, drag
+still scrubs (Dec 3 → Aug 5 2025) + release re-parks, mouse drag scrubs + leave
+re-parks. `tsc` + `next build` (506) + `ruff` clean.
+
 ---

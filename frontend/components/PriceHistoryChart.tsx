@@ -412,21 +412,30 @@ export function PriceHistoryChart({
       <PriceTimePeriodSelector value={period} onChange={setPeriod} />
 
       {/* Re-park the crosshair at the latest date when an interaction ends.
-          onPointerUp covers BOTH a mouse click-release and a touch finger-
-          lift. onPointerLeave covers a mouse pointer leaving the chart — but
-          it is GUARDED to ignore pointerType==='touch': during a touch scrub
-          the browser fires spurious pointerleave events as the finger crosses
-          child-element boundaries (the wrapper never gets implicit pointer
-          capture because pointerdown lands on a child SVG). An unguarded
-          handler remounts <AreaChart> mid-drag → resets to defaultIndex →
-          the crosshair can never follow the finger (the touch-scrub
-          regression the park-at-latest fix introduced). touch-action:pan-y
-          keeps vertical page scroll while handing horizontal drags to the
-          chart for scrubbing. */}
+          Three triggers cover the cases:
+          - onPointerUp → a drag-release (touch finger-lift or mouse-up after
+            a drag). A drag moves far enough that the browser suppresses the
+            synthetic click, so pointerUp is the last event and owns this case.
+          - onClick → a TAP (touch) / plain click. On a tap the tooltip is set
+            to the tapped point by the compatibility synthetic-mouse + click
+            that fire AFTER pointerUp, so a pointerUp-only re-park fires too
+            early and the tap point sticks. `click` is the last event of a tap
+            and bubbles to this wrapper AFTER Recharts has set the tap point,
+            so re-parking here wins. (Drags don't fire click → no double work.)
+          - onPointerLeave → a mouse pointer leaving the chart. GUARDED to
+            ignore pointerType==='touch': during a touch scrub the browser
+            fires spurious pointerleave events as the finger crosses child-SVG
+            boundaries (the wrapper never gets implicit pointer capture because
+            pointerdown lands on a child), and an unguarded handler would
+            remount <AreaChart> mid-drag → reset to defaultIndex → the
+            crosshair could never follow the finger.
+          touch-action:pan-y keeps vertical page scroll while handing
+          horizontal drags to the chart for scrubbing. */}
       <div
         className="h-64 w-full"
         style={{ touchAction: 'pan-y' }}
         onPointerUp={() => setRestKey((k) => k + 1)}
+        onClick={() => setRestKey((k) => k + 1)}
         onPointerLeave={(e) => {
           if (e.pointerType !== 'touch') setRestKey((k) => k + 1);
         }}
