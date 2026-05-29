@@ -3141,3 +3141,84 @@ reduced-motion confirmed static + correct data. next build clean (506
 routes); ruff + tsc clean.
 
 ---
+
+## Responsive + a11y audit fixes (in flight, this PR · 2026-05-29)
+
+Frontend-only fix batch from the "audit responsive ทุกขนาดทุก platform"
+two-angle sweep: `frontend-design-reviewer` (code) + `expert-user-explorer`
+(live headless-chromium across 22 viewports 320→2560px, 89 screenshots).
+Main-agent reconciled the two and caught a false-positive in EACH (verify-
+don't-trust):
+- code-audit M2 (FairPriceBarChart 320px overflow) — REFUTED: parent
+  `:196` already has `flex-wrap`; live measured 0 overflow there.
+- live "ultrawide no max-width cap" — REFUTED: `AppShell:72` has
+  `mx-auto max-w-6xl` (1152px); live measured `<main>` (the flex-1
+  wrapper, correctly full-width) not the capped content div.
+- live "sidebar backdrop 1px @320px" — DROPPED (not fixed): the named
+  `fixed inset-0` backdrop is shared with the home page, which measured
+  CLEAN, so it cannot be the differentiator; 1px sub-pixel, deferred.
+
+6 confirmed fixes (all evidence-backed; the 7th — S5 iPad-Safari `dvh` —
+was deferred during review, see the Sidebar bullet):
+- `app/stock/[ticker]/page.tsx` — hero score+MoS donut pair
+  `flex-nowrap → flex-wrap` (M1; EIX-style long "UNDERVALUED" MoS label
+  clipped the viewport at ≤329px, confirmed by screenshot; stacks on the
+  narrowest phones, side-by-side ≥375px unchanged).
+- `app/globals.css` — global `:focus-visible` outline baseline,
+  `2px solid rgb(99 102 241)` = indigo-500 (M4; Tailwind preflight strips
+  the native outline → all ~24 buttons/links + the sortable headers had NO
+  keyboard focus indicator; `:focus-visible` not `:focus` so it is
+  keyboard-only; the two search inputs keep their `focus:ring` via
+  specificity; intentionally outside the reduced-motion guard since it is
+  not motion). Authored as `rgb()` (not hex / `theme()`) to match the
+  file's house style — globals.css tokenizes nothing and uses raw
+  `rgb()` / `oklch()` literals throughout, so Rule 0's "no hex in
+  className" does not apply and `rgb()` is the consistent representation.
+- `components/RankingTable.tsx` — sortable `<th>` keyboard parity
+  (`tabIndex={0}` + Enter/Space `onKeyDown`; WCAG 2.1.1 / 4.1.2; aria-sort
+  already present) + mobile card "past day" `whitespace-nowrap` (was
+  breaking mid-phrase at 375px).
+- `components/Disclaimer.tsx` — "more/less" toggle lifted to the WCAG
+  2.5.8 (AA) 24px floor (was 28×16) via `-my-1 min-h-[24px] inline-flex`
+  (negative margin absorbs the height so the line does not grow).
+- `components/Sidebar.tsx` — S5 (iPad-Safari `100dvh` address-bar gap)
+  **DEFERRED from this PR**: the Tailwind two-utility `h-screen` /
+  `h-[100dvh]` emission order is ambiguous + uncertifiable in-sandbox
+  (chromium only), and the review's "reverse the class order" fix is moot
+  (class-attribute order does NOT drive CSS cascade — stylesheet source
+  order + specificity do). Worst case the change was a no-op (= prior
+  `md:h-screen`), so reverting loses nothing; the dvh enhancement is
+  deferred to a follow-up that does it order-independently
+  (`height: 100vh; height: 100dvh;` in globals.css, guaranteed order) and
+  tests on real iPad Safari. Sidebar stays `md:h-screen` (unchanged from
+  pre-PR).
+- `tailwind.config.ts` — stale gauge comment ("driven by a CSS
+  transition") corrected to the `gauge-sweep` @keyframes reality (same
+  drift class PR #314 fixed in ScoreGauge.tsx, different file).
+
+Deliberately NOT changed (per user "ชุดแนะนำ — ไม่แตะ density บน desktop"):
+the broad touch-target 44px bump on Filters / pagination / chips (they
+pass WCAG AA 24px; 44px would chunk up the desktop UI). PillarRadarChart
+24px bar @320px is legibility not overflow (live clean) — deferred. Home
+page: 0 overflow across all 22 viewports; table↔card swap @768px clean.
+
+Verification: `next build` clean (506 routes, type-check + lint pass);
+`ruff check .` clean (no Python touched). Branch rebased onto `origin/main`
+(PR #314 duplicate commit auto-skipped). No schema / compute / scoring /
+valuation change — className / CSS / comment diff only.
+
+Gates (all passed): quantrank-reviewer **READY-TO-PUSH** (0 FAIL);
+phase-coordinator **LOCKSTEP-SATISFIED**; frontend-design-reviewer raised
+2 FAILs both reconciled by the main agent against ground truth — (1) raw
+hex overruled (globals.css uses raw `rgb()` / `oklch()` throughout;
+converted to `rgb()` for house-style anyway) and (2) the `h-dvh` order fix
+was logically moot so S5 was reverted/deferred (above);
+expert-user-explorer **ACCOMPLISHED 5/5** with measured DOM evidence —
+EIX@320 `scrollWidth == clientWidth` on 4 tickers; focus ring
+`2px solid rgb(99,102,241)` on all tabbed elements + suppressed on mouse
+click; `<th>` Enter/Space re-sorts with `aria-sort` update; "past day"
+`white-space: nowrap` (1 client rect); "more" button height 24px.
+Platform caveat: chromium-only in-sandbox — mobile-Safari / Firefox not
+certified.
+
+---

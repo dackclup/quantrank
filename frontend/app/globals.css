@@ -368,3 +368,19 @@ code {
     background: rgb(30 41 59);
   }
 }
+
+/* Keyboard focus baseline (2026-05-29 responsive + a11y audit M4).
+ * Tailwind's preflight strips the native button / link outline, and
+ * nothing replaced it — so keyboard + switch-access users had NO visible
+ * focus indicator on any of the app's ~24 buttons, links, or the
+ * sortable table headers. `:focus-visible` (not `:focus`) means the ring
+ * shows for keyboard navigation but NOT on mouse click, so pointer users
+ * never see a "stuck" outline. Inputs that already declare a Tailwind
+ * `focus:ring-*` (the two search boxes) win on specificity and keep their
+ * existing treatment; this is the fallback for everything else. Indigo-500
+ * reads on both the light (#FAFAFA) and dark (slate-950) surfaces. Not
+ * motion — intentionally outside the reduced-motion guard above. */
+:focus-visible {
+  outline: 2px solid rgb(99 102 241);
+  outline-offset: 2px;
+}

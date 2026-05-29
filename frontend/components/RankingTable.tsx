@@ -267,8 +267,21 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
       <th
         scope="col"
         aria-sort={active ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}
+        tabIndex={0}
         className={`cursor-pointer select-none px-3 py-2 text-left font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 ${extraClass}`}
         onClick={() => onSort(key)}
+        // Keyboard parity for the click-to-sort header (2026-05-29 audit
+        // S1 — WCAG 2.1.1 / 4.1.2). tabIndex makes the columnheader
+        // focusable; Enter/Space activate the same sort. preventDefault on
+        // Space stops the page from scrolling. aria-sort already announces
+        // the current direction to screen readers; the global :focus-visible
+        // ring (globals.css) supplies the visible focus indicator.
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onSort(key);
+          }
+        }}
       >
         {label}
         <span className="ml-1 inline-block text-slate-400 dark:text-slate-500" aria-hidden="true">
@@ -590,7 +603,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                               {positive ? '+' : ''}
                               {pct.toFixed(2)}%
                             </span>
-                            <span className="text-slate-500 dark:text-slate-400">past day</span>
+                            <span className="whitespace-nowrap text-slate-500 dark:text-slate-400">past day</span>
                           </div>
                         );
                       })()}
