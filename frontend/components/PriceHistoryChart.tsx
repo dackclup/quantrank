@@ -55,9 +55,40 @@ export function PriceHistoryChart({
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<TimePeriod>('1Y');
   const [mounted, setMounted] = useState(false);
+  // Remount keys: bumping either forces <AreaChart> to remount, which
+  // re-runs Recharts' componentDidMount → displayDefaultTooltip(defaultIndex),
+  // re-parking the crosshair + tooltip at the latest date. `restKey` bumps
+  // when the pointer is released / leaves the chart (snap back to latest
+  // after a drag); `layoutKey` bumps on orientation change (re-park after
+  // rotate). Recharts 2.15 applies `defaultIndex` only on mount, so a
+  // remount is how we re-assert it on those events.
+  const [restKey, setRestKey] = useState(0);
+  const [layoutKey, setLayoutKey] = useState(0);
   const { resolvedTheme } = useTheme();
 
   useEffect(() => setMounted(true), []);
+
+  // Re-park the tooltip at the latest date when the device rotates
+  // portrait↔landscape. matchMedia is browser-only; the guard keeps SSR
+  // clean (component is 'use client', so this never runs server-side).
+  // The bump is DEBOUNCED ~300ms after the orientation event so the
+  // remount lands AFTER ResponsiveContainer has re-measured the new
+  // width — remounting mid-resize makes Recharts' displayDefaultTooltip
+  // park on index 0 instead of the latest.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(orientation: portrait)');
+    let t: ReturnType<typeof setTimeout>;
+    const handler = () => {
+      clearTimeout(t);
+      t = setTimeout(() => setLayoutKey((k) => k + 1), 300);
+    };
+    mq.addEventListener('change', handler);
+    return () => {
+      clearTimeout(t);
+      mq.removeEventListener('change', handler);
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -380,11 +411,54 @@ export function PriceHistoryChart({
           numbers, choose a window, see the chart). */}
       <PriceTimePeriodSelector value={period} onChange={setPeriod} />
 
-      <div className="h-64 w-full">
+      {/* Re-park the crosshair at the latest date when an interaction ends.
+          Four triggers cover the cases:
+          - onPointerUp → a drag-release (touch finger-lift or mouse-up after
+            a drag). A drag moves far enough that the browser suppresses the
+            synthetic click, so pointerUp is the last event and owns this case.
+          - onClick → a TAP (touch) / plain click. On a tap the tooltip is set
+            to the tapped point by the compatibility synthetic-mouse + click
+            that fire AFTER pointerUp, so a pointerUp-only re-park fires too
+            early and the tap point sticks. `click` is the last event of a tap
+            and bubbles to this wrapper AFTER Recharts has set the tap point,
+            so re-parking here wins. (Drags don't fire click → no double work.)
+          - onPointerCancel → a touch that STARTED on the chart then became a
+            vertical page scroll: touch-action:pan-y hands the gesture to the
+            browser, which fires pointercancel (NOT pointerup/click), so without
+            this the crosshair stays stuck at the touched point after scrolling.
+          - onPointerLeave → a mouse pointer leaving the chart. GUARDED to
+            ignore pointerType==='touch': during a touch scrub the browser
+            fires spurious pointerleave events as the finger crosses child-SVG
+            boundaries (the wrapper never gets implicit pointer capture because
+            pointerdown lands on a child), and an unguarded handler would
+            remount <AreaChart> mid-drag → reset to defaultIndex → the
+            crosshair could never follow the finger.
+          touch-action:pan-y keeps vertical page scroll while handing
+          horizontal drags to the chart for scrubbing.
+          [&_.recharts-surface]:overflow-visible lets the latest-point dot +
+          crosshair render fully at the FLUSH right edge (margin.right is 0 so
+          the last point sits on the surface edge; otherwise the SVG viewport
+          clips the dot in half). This is safe because `html, body {
+          overflow-x: clip }` (globals.css) clips overflow at the DOCUMENT
+          level — the real "page widens right after scrub" bug was the chart
+          remount transiently overflowing, which the fixed sidebar backdrop
+          then sized itself to and sustained; the document clip stops the
+          layout viewport from ever growing. */}
+      <div
+        className="h-64 w-full [&_.recharts-surface]:overflow-visible"
+        style={{ touchAction: 'pan-y' }}
+        onPointerUp={() => setRestKey((k) => k + 1)}
+        onClick={() => setRestKey((k) => k + 1)}
+        onPointerCancel={() => setRestKey((k) => k + 1)}
+        onPointerLeave={(e) => {
+          if (e.pointerType !== 'touch') setRestKey((k) => k + 1);
+        }}
+      >
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
+            key={`${period}-${restKey}-${layoutKey}`}
             data={chartData}
-            margin={{ top: 8, right: 16, left: 0, bottom: 0 }}
+            margin={{ top: 8, right: 0, left: 0, bottom: 0 }}
           >
             <defs>
               <linearGradient id={trendFillId} x1="0" y1="0" x2="0" y2="1">
@@ -404,6 +478,8 @@ export function PriceHistoryChart({
               labelFormatter={formatTooltipLabel}
               contentStyle={tooltipContentStyle}
               labelStyle={tooltipLabelStyle}
+              defaultIndex={chartData.length - 1}
+              isAnimationActive={false}
             />
             <Area
               type="monotone"

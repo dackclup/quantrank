@@ -104,6 +104,16 @@
 html,
 body {
   height: 100%;
+  /* Never let the PAGE scroll/expand horizontally. `clip` (not `hidden`)
+   * does NOT create a scroll container, so it does NOT break the
+   * position:sticky sidebar + header. This guards against transient
+   * horizontal overflow widening the layout viewport — e.g. the price
+   * chart's AreaChart remount (crosshair re-park on release) briefly
+   * overflowed, and the fixed inset-0 sidebar backdrop then sized itself
+   * to the widened viewport and SUSTAINED it as phantom right-side scroll
+   * space. Clipping at the document level stops the layout from ever
+   * growing past the viewport (2026-05-29 fix). */
+  overflow-x: clip;
 }
 
 body {

@@ -3401,3 +3401,174 @@ release tag in short form). Verified: `tsc --noEmit` clean · `next build` green
 scoring / valuation change.
 
 ---
+
+## Fix price-chart crosshair: kill drag lag + park tooltip at latest in all resting states (in flight, this PR · 2026-05-29)
+
+**Bug** (reported by the maintainer, mobile): on the per-stock price chart
+(`PriceHistoryChart.tsx`, Recharts 2.15.4 `<AreaChart>` + `<Tooltip>`), (1)
+dragging fast → the tooltip box **lags behind** the finger; (2) the crosshair
+line + box do not **park at the latest date** in any resting state — on page
+open nothing shows, after a drag-release it freezes at the last-touched point
+then vanishes when the pointer leaves, and orientation/period changes leave it
+at an arbitrary point. Reproduced + measured by `expert-user-explorer`; root
+cause source-traced by `frontend-design-reviewer` against the recharts source.
+
+**Root cause:** the `<Tooltip>` used Recharts defaults — no `defaultIndex`
+(so no rest state) and `isAnimationActive` unset (default true → an inline
+`transition: transform 400ms` on the tooltip wrapper makes the box chase the
+finger = the lag; measured target 220px vs computed 186px mid-animation). The
+`<Area>` already had `isAnimationActive={false}`; the `<Tooltip>` did not.
+
+**Fix** (frontend className/props + 2 hooks, +44 / −1, 1 file): on `<Tooltip>`,
+add `defaultIndex={chartData.length - 1}` (park at latest on mount) +
+`isAnimationActive={false}` (kill the lag). Recharts applies `defaultIndex`
+only on mount, so re-assert it on the other resting events by **remounting
+`<AreaChart>` via a `key={`${period}-${restKey}-${layoutKey}`}`**: `restKey`
+bumps on `onPointerUp`/`onPointerLeave` (snap back to latest after a
+drag-release / pointer-exit), `layoutKey` bumps on a `matchMedia('(orientation:
+portrait)')` change (re-park after rotate). Period change is covered by
+`period` already being in the key.
+
+**Two refinements over the first proposal, both verified necessary:**
+1. **Rest handlers on the wrapper `<div>`, not `<AreaChart>`** — `onPointerUp` /
+   `onPointerLeave` (pointer events unify mouse+touch and bubble reliably to a
+   plain div) instead of `onMouseLeave` / `onTouchEnd` on the SVG, which the
+   reviewer warned can fail to bubble on mobile (the maintainer's case).
+2. **Debounce the orientation key-bump ~300ms** — remounting *during* the
+   ResponsiveContainer re-measure made `displayDefaultTooltip` land on index 0
+   (verified: landscape parked at the FIRST point "May 28, 2025" instead of the
+   latest). Debouncing so the remount lands after the width settles fixed it.
+
+**Verification** (local, Playwright DOM on NVDA dark mobile 390×844): `tsc
+--noEmit` clean · `next build` green (506 routes) · `ruff` clean. Tooltip label
+across states — on-load **May 28, 2026** (latest) · during-drag updates per
+hover (Aug 29 2025 / Dec 3 2025 / Mar 11 2026 — inspection still works) ·
+after-pointerup **May 28, 2026** · after-pointer-leave **May 28, 2026** ·
+landscape (debounced) **May 28, 2026** · back-to-portrait (debounced) **May 28,
+2026** · after 6M→1Y **May 28, 2026**. Inline `transition` = none in every state
+(lag gone). Cursor line + box + active dot all park at latest (screenshots
+portrait + landscape). No schema / compute / scoring / valuation change.
+
+**Bonus found, NOT bundled** (separate follow-up if wanted): `expert-user-explorer`
+flagged the `PriceTimePeriodSelector` shows **1M** highlighted on initial load
+while the chart renders the 1Y window (state inits to `'1Y'`) — a selector
+active-chip mismatch, unrelated to the crosshair ask.
+
+**Follow-up commit — touch-drag scrub regression (same PR #322):** the maintainer
+real-device-tested the preview: park-at-latest worked but **touch-drag could not
+scrub the crosshair along the line**. This was a regression the park-at-latest
+handlers introduced. Two agents disagreed on cause; the EMPIRICAL reproduce won
+(verify-don't-trust): `frontend-design-reviewer` source-reasoned it was a missing
+`touch-action` (browser stealing the horizontal drag for page scroll) and claimed
+implicit pointer capture suppresses `pointerleave` during a touch drag.
+`expert-user-explorer` **refuted both with measurement** — scroll-delta = 0px
+during horizontal touch-drag (no page-steal), and a recorded **3× `pointerleave`
+(pointerType=touch) DURING the drag** → the `onPointerLeave → setRestKey`
+remount fired ~5ms after each touchmove, resetting to `defaultIndex` and wiping
+the scrub. (Implicit capture didn't apply: pointerdown lands on a child SVG, so
+the wrapper never captured the pointer.) **Fix:** guard `onPointerLeave` to
+ignore `e.pointerType === 'touch'` (mouse-leave still re-parks; touch re-park is
+handled by `onPointerUp` at finger-lift) + add `touch-action: pan-y` defensively
+(canonical for a scrub chart; preserves vertical page scroll). The reproduce
+agent's secondary "Recharts touch-coords don't update" doubt was a **red herring**
+(its fake-event fiber test bypassed React's synthetic events) — verified post-fix
+via CDP `Input.dispatchTouchEvent`: touch-drag scrubs **Dec 23 2025 → Sep 19 2025
+→ Jul 15 2025** following the finger, touchEnd re-parks **May 28 2026**, mouse
+drag still scrubs + re-parks, park-at-latest intact. Lesson logged: verify in the
+SAME input modality the user uses (the original verification used `page.mouse`,
+which masked the touch-only regression). `tsc` + `next build` (506 routes) +
+`ruff` clean.
+
+**Follow-up commit 2 — tap (not drag) didn't reset (same PR #322):** real-device
+test: drag scrub + drag-release re-park now work, but a single **tap** left the
+crosshair stuck at the tapped point. Reproduced via CDP: a tap fires
+`pointerdown → pointerup → click`, and the tooltip is set to the tapped point by
+the compatibility **synthetic-mouse + `click` that fire AFTER `pointerup`** — so
+the `onPointerUp` re-park fired too early and the tap point re-applied. (A drag
+moves far enough that the browser suppresses the synthetic click, so `pointerUp`
+re-park wins — which is why drag worked and tap didn't, exactly matching the
+report. CDP `dispatchTouchEvent` doesn't emit the compat-mouse events, so the
+earlier CDP drag test never surfaced this.) **Fix:** also re-park on `onClick`
+(the last event of a tap; bubbles to the wrapper AFTER Recharts sets the tap
+point, so it wins — drags don't fire click, so no double work). Verified via CDP:
+pure-tap @30 → re-parks **May 28 2026**, micro-tap @60 → **May 28 2026**, drag
+still scrubs (Dec 3 → Aug 5 2025) + release re-parks, mouse drag scrubs + leave
+re-parks. `tsc` + `next build` (506) + `ruff` clean.
+
+**Follow-up commit 3 — right-edge alignment (same PR #322):** the chart's drawn
+area aligned flush with the content on the LEFT but stopped ~16px short on the
+RIGHT (the `<AreaChart margin>` was `left: 0` / `right: 16`). Set `right: 0` to
+match `left`. Measured (Playwright): area path l/r now == container l/r exactly
+(leftGap = rightGap = 0); the last x-axis tick "May 26" end-anchors at the edge
+so it does NOT clip; the latest dot sits at the right edge (half pokes ~4px into
+the page gutter — fine, standard latest-price marker). One-character diff;
+`next build` (506) + `ruff` clean.
+
+**Follow-up commit 4 — two right-edge / scroll polish items (same PR #322):**
+real-device test surfaced two after-effects. (1) The `right: 0` flush made the
+latest-point **dot + crosshair line clip in half** at the edge. Inspected: NOT a
+Recharts clipPath (dot has no clip ancestor) — it's the `.recharts-surface` SVG's
+own `overflow: hidden` (viewBox width 358; dot center sits on the svg right edge,
+right half spilled past and was cut). Fix: scope `overflow: visible` to THIS
+chart's surface via the Tailwind arbitrary variant
+`[&_.recharts-surface]:overflow-visible` on the wrapper (other charts keep
+default clipping) — keeps `margin.right:0` flush AND lets the edge dot/cursor
+render fully into the harmless page gutter. (2) A touch that STARTED on the chart
+then became a vertical **page scroll** (touch-action:pan-y hands it to the
+browser) fires `pointercancel`, NOT pointerup/click — so the crosshair stayed
+stuck at the touched point after scrolling. Fix: add `onPointerCancel` → re-park.
+Verified (CDP): surface `overflow==='visible'`; full-width screenshot shows a
+complete dot at the edge; touch-scrub to Sep 15 2025 (no release) then a
+`pointercancel` re-parks to **May 28 2026**; regressions intact (park-on-load,
+tap→latest, drag scrub + release→latest). `tsc` + `next build` (506) + `ruff`
+clean.
+
+**Follow-up commit 5 — revert overflow:visible (it caused a page horizontal
+scroll); small right margin instead (same PR #322):** the `overflow:visible`
+from commit 4 (added to un-clip the edge dot at the flush `right:0` edge) let
+SVG content escape the surface and **widened the whole page** — measured
+`innerWidth` jumped 390 → 449 under mobile emulation, i.e. ~59px of phantom
+horizontal scroll ("เลื่อน crosshair แล้วปล่อย หน้าจอเลื่อนแนวนอนได้"). This is
+the flush/full-dot/no-scroll **trilemma**: a full dot at a *perfectly* flush
+edge must either clip (overflow:hidden) or escape (overflow:visible → page
+scroll). Resolution: remove the `[&_.recharts-surface]:overflow-visible` (back
+to default clip → nothing escapes → no page scroll) and give the AreaChart a
+small `margin.right: 8` so the latest-point dot + crosshair sit just *inside*
+the surface, fully visible. Cost: the line ends ~8px short of the content edge
+(not pixel-flush) — the necessary trade to keep the dot whole AND kill the page
+scroll. `onPointerCancel` (from commit 4) is unrelated and stays. Verified
+(clean viewport, no isMobile): `innerWidth==390 == docScrollWidth` (**hOverflow
+= 0**, nothing past the viewport), dot fully inside (dotRight 370 <
+containerRight 374), behaviours intact (park-on-load / drag-scrub + release /
+tap / scrub+pointercancel all → latest). `tsc` + `next build` (506) + `ruff`
+clean.
+
+**Follow-up commit 6 — REAL root cause of "page widens right after scrub"
+(same PR #322; commits 4-5 fixed the wrong spot).** The maintainer pushed back
+that the dot/margin work was the wrong target — the actual symptom is the PAGE
+expanding rightward after scrubbing. Found it with mobile-emulation measurement
+(the no-isMobile clean viewport had hidden it — lesson: this class of layout-
+viewport bug only shows under real mobile emulation): BEFORE/DURING scrub
+`innerWidth==390`; AFTER release `innerWidth` jumps to **441** and the sole
+element past the device width is the **`fixed inset-0` mobile sidebar backdrop**
+(`Sidebar.tsx`, always-mounted for its fade) at width 441. Mechanism: the
+crosshair re-park **remounts `<AreaChart>`** (the `key` bump) → a transient
+horizontal overflow during the ResponsiveContainer re-measure → the mobile
+layout viewport grows → the `fixed inset-0` backdrop sizes itself to the widened
+ICB and, being fixed + full-width, **sustains** it = phantom right-side scroll
+space. **Fix (document level):** `html, body { overflow-x: clip }` in
+globals.css — `clip` (NOT `hidden`) clips the transient overflow so the layout
+viewport never grows, and crucially does NOT create a scroll container so it
+does NOT break the `position: sticky` sidebar + header. With the document clip
+in place the dot/margin tug-of-war dissolves: reverted to `margin.right: 0`
+(line truly flush) + restored `[&_.recharts-surface]:overflow-visible` (full
+edge dot) — both now safe because the document clip contains any escape. The
+margin:8 / overflow:hidden compromise from commit 5 is superseded. Verified
+(isMobile emulation, the test that exposed the bug): before / after scrub+release
+/ after tap all → `innerWidth == scrollWidth == 390`, **zero offenders** (no 441
+backdrop); `areaRight == containerRight` (flush); dot full (`dotRight 378` via
+overflow:visible, contained by the doc clip); sticky header `top==0` after a
+600px scroll (sticky NOT broken); park / scrub / tap / pointercancel all
+re-park. `tsc` + `next build` (506) + `ruff` clean.
+
+---
