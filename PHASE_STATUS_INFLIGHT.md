@@ -3011,7 +3011,7 @@ MCP-UUID inheritance gotcha). No compute / schema / scoring / valuation
 
 ---
 
-## `RiskFlagsCard` — render `risk_flags[]` vetoes on stock detail (in flight, 2026-05-29)
+## `RiskFlagsCard` — render `risk_flags[]` vetoes on stock detail (merged 2026-05-29 via PR #306, 6ce7c1b)
 
 Closes **issue #305** — surfaced by the `expert-user-explorer` agent's
 first live-fire (its run on PR #304's just-merged agent).
