@@ -107,12 +107,15 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose
             (ml-auto). When COLLAPSED at md+ the 64px rail is too narrow to put
             the Q + chevron side-by-side, so the header switches to a VERTICAL
             STACK (md:flex-col, auto-height): the green Q logo on TOP (home
-            link; the "QuantRank" wordmark hides) + the square expand-chevron
-            centered BELOW. Keeps the Q visible (2026-05-29 user request). The
+            link; the "QuantRank" wordmark hides) + a full-width
+            rounded-rectangle expand-chevron BELOW, styled to match the collapsed
+            nav-item boxes (md:px-2 header + md:w-full chevron + subtle fill, so
+            it reads as a box "like the one below"). Keeps the Q visible
+            (2026-05-29 user request). The
             mobile drawer (< md) always shows the full horizontal row (Q +
             wordmark + close-X). */}
         <div
-          className={`flex h-14 items-center gap-2 border-b border-slate-200 px-3 dark:border-slate-800${collapsed ? ' md:h-auto md:flex-col md:justify-center md:gap-1.5 md:py-3' : ''}`}
+          className={`flex h-14 items-center gap-2 border-b border-slate-200 px-3 dark:border-slate-800${collapsed ? ' md:h-auto md:flex-col md:justify-center md:gap-1.5 md:px-2 md:py-3' : ''}`}
         >
           <Link
             href="/"
@@ -129,7 +132,7 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose
             type="button"
             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             onClick={onToggleCollapse}
-            className={`hidden h-8 w-8 items-center justify-center rounded-sm text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100 md:inline-flex ${collapsed ? 'md:mx-auto' : 'ml-auto'}`}
+            className={`hidden h-8 w-8 items-center justify-center rounded-sm text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100 md:inline-flex ${collapsed ? 'md:h-auto md:w-full md:bg-slate-100 md:py-1.5 md:dark:bg-slate-800' : 'ml-auto'}`}
           >
             <svg
               width="14"

@@ -3855,4 +3855,15 @@ Verified: `pytest tests/test_validation/test_ranking_history.py` 18 passed
 touch on this PR; test-hygiene only, no compute/schema surface, no new §Gotcha
 needed (pattern documented in #284).
 
+**Follow-up 12 — collapsed expand-chevron as a full-width box matching the
+nav items (user "ปรับขนาดลูกศรให้เป็นสี่เหลี่ยมผืนผ้าเหมือนข้างล่าง"):** the
+collapsed chevron was a 32px square; the user wanted it sized + shaped like the
+nav-item boxes below it (`SidebarLink` collapsed = `rounded-sm px-0 py-1.5`
+full-width). Changed (`Sidebar.tsx`): collapsed header gains `md:px-2` (matches
+the nav's `px-2`), chevron becomes `md:h-auto md:w-full md:py-1.5` + a subtle
+fill (`md:bg-slate-100 md:dark:bg-slate-800`) so it renders as a full-width
+rounded rectangle. Verified @900: chevron 45×28 / nav-item 45×30 — same width +
+x-position (x9), same fill, rounded-sm; screenshot confirms the chevron box now
+matches the nav-item box. `tsc` + `next build` (506) clean.
+
 ---
