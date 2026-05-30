@@ -321,10 +321,12 @@ export function PriceHistoryChart({
       if (p < 1) {
         drawRafRef.current = requestAnimationFrame(tick);
       } else {
-        // full reveal: drop the clip (overflow-visible flush-right dot shows),
-        // hide the overlay, hand the rest crosshair to Recharts' parked cursor.
+        // full reveal: drop the clip (overflow-visible flush-right dot shows).
+        // LEAVE the overlay visible at the latest point — it's now the permanent
+        // crosshair (the scrub effect maintains it at rest / on hover). The last
+        // tick already positioned line+dot at the latest point, so this is a
+        // seamless handoff (no hide-then-reshow flash).
         clearAreaClip();
-        svg.style.opacity = '0';
         drawRafRef.current = null;
         setPlayDraw(false);
       }
@@ -339,10 +341,6 @@ export function PriceHistoryChart({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sweepKey, playDraw]);
 
-  // Crosshair re-park on layout change (rotation / window resize / sidebar
-  // expand-collapse) is handled by the ResizeObserver effect just below the
-  // chartData memo — a width-driven detector that subsumes the old
-  // orientation-only matchMedia listener. See that effect for the rationale.
 
   useEffect(() => {
     let cancelled = false;
@@ -479,6 +477,55 @@ export function PriceHistoryChart({
     // (only the inner <AreaChart> remounts via key), so the observer stays valid
     // and a period change needn't disconnect/re-observe.
   }, [loading, error, data]);
+
+  // Scrub crosshair — we draw our OWN crosshair (the overlay SVG) at hoverIndex
+  // instead of relying on Recharts' built-in `cursor`. Why: every scrub fires
+  // setHoverIndex → a parent re-render → Recharts re-applies `defaultIndex`
+  // (latest point) and snaps its cursor back to the right edge, so the built-in
+  // cursor can't track a dragged finger across re-renders (the "crosshair ดีด
+  // กลับขวา / คาอยู่ขวา / มาตอนหยุดลาก" 2026-05-30 bug). The headline already
+  // tracks via hoverIndex; this positions the matching vertical line + on-curve
+  // dot at the same index, so the visible crosshair and the numbers move
+  // together. hoverIndex null = REST → park at the latest point. Skipped while
+  // the intro draw owns the overlay (playDraw). Imperative (refs) — no re-render.
+  useEffect(() => {
+    const svg = overlaySvgRef.current;
+    const line = overlayLineRef.current;
+    const dot = overlayDotRef.current;
+    const wrap = wrapperRef.current;
+    if (!svg || !line || !dot || !wrap) return;
+    if (playDraw) return; // the draw rAF is driving the overlay
+    if (chartData.length < 2) {
+      svg.style.opacity = '0';
+      return;
+    }
+    // Padded y-domain + closes, same formula as the render `yDomain`.
+    const closesArr = chartData.map((d) => d.close);
+    let lo = closesArr[0];
+    let hi = closesArr[0];
+    for (const c of closesArr) {
+      if (c < lo) lo = c;
+      if (c > hi) hi = c;
+    }
+    const pad = (hi - lo || hi || 1) * 0.1;
+    const geom = measurePlot(wrap, lo - pad, hi + pad, closesArr);
+    if (!geom) {
+      svg.style.opacity = '0';
+      return;
+    }
+    const rawIdx = hoverIndex ?? chartData.length - 1;
+    const i = Math.max(0, Math.min(chartData.length - 1, rawIdx));
+    const x = (i / (chartData.length - 1)) * geom.w;
+    const y = geom.closeToY(chartData[i].close);
+    line.setAttribute('x1', String(x));
+    line.setAttribute('x2', String(x));
+    line.setAttribute('y1', String(geom.plotTop));
+    line.setAttribute('y2', String(geom.plotTop + geom.plotH));
+    dot.setAttribute('cx', String(x));
+    dot.setAttribute('cy', String(y));
+    svg.style.opacity = '1';
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hoverIndex, chartData, playDraw, mounted, resolvedTheme, restKey, layoutKey, sweepKey]);
 
   if (loading) {
     // Skeleton placeholder — shimmer blocks roughly match the layout
@@ -903,28 +950,17 @@ export function PriceHistoryChart({
               minTickGap={32}
             />
             <YAxis hide domain={yDomain} />
-            {/* Tooltip kept ONLY for its crosshair `cursor` (the vertical line +
-                the active-point dot Recharts draws at the hovered/parked index).
-                The price BOX is removed per user request — `content={() => null}`
-                renders no popup, so the chart shows just the crosshair line
-                tracking the finger/pointer with no obscuring panel. The cursor
-                is suppressed (transparent) WHILE the intro draw plays so only
-                the self-drawn animated crosshair shows; once the draw ends
-                (playDraw → false) this parked cursor takes over at the latest
-                point. Bolder color than before (slate-600/300 + 1.5px solid) so
-                it reads clearly against both the line and the slate page bg
-                (user: "crosshair กลืนกับกราฟและพื้นหลัง"). */}
+            {/* Tooltip is kept ONLY to harvest the scrubbed index via
+                onMouseMove (state.activeTooltipIndex). Its visual cursor is
+                DISABLED (cursor={false}) — we draw the crosshair ourselves with
+                the overlay SVG so it tracks the dragged point across re-renders.
+                Recharts' built-in cursor can't: every setHoverIndex re-render
+                re-applies defaultIndex and snaps the built-in cursor back to the
+                right edge (the "ดีดกลับขวา / คาอยู่ขวา" bug). content={()=>null}
+                keeps the price popup box off. */}
             <Tooltip
               content={() => null}
-              cursor={
-                playDraw
-                  ? false
-                  : {
-                      stroke: isDark ? '#cbd5e1' : '#475569',
-                      strokeWidth: 1.5,
-                      strokeDasharray: '4 3',
-                    }
-              }
+              cursor={false}
               defaultIndex={chartData.length - 1}
               isAnimationActive={false}
             />
@@ -935,16 +971,11 @@ export function PriceHistoryChart({
               strokeWidth={2}
               fill={`url(#${trendFillId})`}
               dot={false}
-              activeDot={
-                playDraw
-                  ? false
-                  : {
-                      r: 4,
-                      fill: trendStroke,
-                      stroke: isDark ? '#0f172a' : '#ffffff',
-                      strokeWidth: 2,
-                    }
-              }
+              // activeDot DISABLED — the on-curve dot is now part of our own
+              // overlay crosshair (driven by hoverIndex), so Recharts' activeDot
+              // (which also follows the defaultIndex-reset index) is redundant +
+              // would double-draw / fight the scrub.
+              activeDot={false}
               // Recharts' own draw animation is OFF — the unified intro rAF
               // (above) reveals the line by clipping `.recharts-area`, in
               // lockstep with the crosshair, so the two never desync. Keeping
@@ -1021,6 +1052,47 @@ const _MONTH_ABBR = [
   'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
 ];
+// Plot geometry read off the rendered Recharts curve — shared by the intro-draw
+// rAF AND the scrub-crosshair effect so both position the overlay identically.
+// Returns the surface width + the linear price→y mapping over the REAL plot area
+// (top + height derived from the curve bbox, not the naive [marginTop, height]).
+// null until Recharts has painted the curve (or on a degenerate flat series).
+export type PlotGeom = {
+  w: number;
+  plotTop: number;
+  plotH: number;
+  closeToY: (close: number) => number;
+};
+export function measurePlot(
+  wrap: HTMLElement,
+  yLo: number,
+  yHi: number,
+  closes: number[],
+): PlotGeom | null {
+  const surf = wrap.querySelector('.recharts-surface') as SVGSVGElement | null;
+  const curve = wrap.querySelector('.recharts-area-curve') as SVGPathElement | null;
+  if (!surf || !curve || closes.length === 0) return null;
+  const rect = surf.getBoundingClientRect();
+  const w = rect.width || 1;
+  let bb: DOMRect;
+  try {
+    bb = curve.getBBox();
+  } catch {
+    return null;
+  }
+  if (bb.height === 0 || bb.width === 0) return null;
+  const ySpan = yHi - yLo || 1;
+  const dataMax = Math.max(...closes);
+  const dataMin = Math.min(...closes);
+  const dataSpan = dataMax - dataMin || 1;
+  const pxPerPrice = bb.height / dataSpan;
+  const plotH = ySpan * pxPerPrice;
+  const plotTop = bb.y - (yHi - dataMax) * pxPerPrice;
+  const closeToY = (close: number) =>
+    plotTop + (1 - (close - yLo) / ySpan) * plotH;
+  return { w, plotTop, plotH, closeToY };
+}
+
 export function fmtDateLabel(raw: string): string {
   const monthIdx = Number(raw.slice(5, 7)) - 1;
   const day = Number(raw.slice(8, 10));
