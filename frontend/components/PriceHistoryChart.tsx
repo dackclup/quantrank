@@ -66,11 +66,55 @@ export function PriceHistoryChart({
   // remount is how we re-assert it on those events.
   const [restKey, setRestKey] = useState(0);
   const [layoutKey, setLayoutKey] = useState(0);
+  // `sweepKey` keys the clip-path intro-sweep wrapper: bumping it remounts the
+  // wrapper, which re-adds the `chart-sweep` class → the line + crosshair
+  // re-reveal left→right (ease-out, fast→slow into the latest point). Bumped on
+  // (a) the chart first scrolling into view (IntersectionObserver below) and
+  // (b) every period change (the period effect below).
+  const [sweepKey, setSweepKey] = useState(0);
+  // Gate so the scroll-into-view sweep fires only the FIRST time the chart
+  // enters the viewport (not on every scroll up/down past it).
+  const hasSwept = useRef(false);
   // Chart wrapper — observed for WIDTH changes to re-park the crosshair (Bug B).
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const { resolvedTheme } = useTheme();
 
   useEffect(() => setMounted(true), []);
+
+  // Fire the intro sweep the first time the chart scrolls into view on the
+  // detail page ("เลื่อนลงมาเห็นกราฟแบบเต็ม"). IntersectionObserver so the
+  // animation starts when the user actually sees it, not on mount (the chart is
+  // below the hero fold). One-shot via hasSwept. Browser-only; deps re-attach
+  // once the chart wrapper exists (after loading/error/data resolve).
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    if (hasSwept.current) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting && !hasSwept.current) {
+          hasSwept.current = true;
+          setSweepKey((k) => k + 1);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.35 }, // most of the chart visible before it draws in
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [loading, error, data]);
+
+  // Re-run the sweep on every period change (1D-5Y). The period state drives
+  // chartData, so a new window's line draws in left→right too. Skipped on the
+  // very first render (the scroll-into-view observer owns the first sweep).
+  const firstPeriodRender = useRef(true);
+  useEffect(() => {
+    if (firstPeriodRender.current) {
+      firstPeriodRender.current = false;
+      return;
+    }
+    setSweepKey((k) => k + 1);
+  }, [period]);
 
   // Crosshair re-park on layout change (rotation / window resize / sidebar
   // expand-collapse) is handled by the ResizeObserver effect just below the
@@ -236,7 +280,6 @@ export function PriceHistoryChart({
     if (!mon || Number.isNaN(day)) return raw;
     return `${mon} ${day}, ${year}`;
   };
-  const fmtTooltip = (v: number) => `$${v.toFixed(2)}`;
   const fmtPrice = (v: number) => `$${v.toFixed(2)}`;
 
   // PR 4f post-spot-check: compute a y-axis domain anchored on the
@@ -323,27 +366,12 @@ export function PriceHistoryChart({
   const trendStroke = isPositive ? '#10b981' : '#e11d48'; // emerald-500 / rose-600
   const trendFillId = `priceFill-${ticker}-${isPositive ? 'up' : 'down'}`;
 
-  // Dark-mode-aware tooltip surface. The pre-mount default is light
-  // to match the `color-scheme: light` initial value in globals.css
-  // (avoids hydration flicker). Without these explicit colors the
-  // Recharts default tooltip stays white-bg in dark mode AND the date
-  // label inherits the body's `rgb(226 232 240)` cascade → unreadable
-  // light-text-on-white. Shadow per LedgerCraft Elevation spec
-  // (overlays + dropdowns are the only surfaces that get a shadow).
+  // Dark-mode flag — drives the crosshair cursor + active-dot colors (the
+  // price tooltip box was removed per user request; only the crosshair line +
+  // point remain). The pre-mount default is light to match the
+  // `color-scheme: light` initial value in globals.css (avoids hydration
+  // flicker).
   const isDark = mounted && resolvedTheme === 'dark';
-  const tooltipContentStyle = {
-    fontSize: '0.75rem',
-    borderRadius: '0.25rem',
-    border: isDark ? '1px solid #334155' : '1px solid #e2e8f0',
-    backgroundColor: isDark ? '#0f172a' : '#ffffff',
-    boxShadow:
-      '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-  };
-  const tooltipLabelStyle = {
-    color: isDark ? '#f1f5f9' : '#0f172a',
-    fontWeight: 600,
-    marginBottom: '2px',
-  };
 
   return (
     <div className="space-y-3">
@@ -527,6 +555,12 @@ export function PriceHistoryChart({
           if (e.pointerType !== 'touch') setRestKey((k) => k + 1);
         }}
       >
+        {/* Intro-sweep wrapper — keyed by sweepKey so a bump remounts it and
+            re-adds the `chart-sweep` class, replaying the left→right clip-path
+            reveal. h-full so the clip covers the whole chart canvas. The
+            ResponsiveContainer + AreaChart live INSIDE so the line, fill, and
+            parked crosshair are all revealed by the one clip together. */}
+        <div key={sweepKey} className="chart-sweep h-full w-full">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             key={`${period}-${restKey}-${layoutKey}`}
@@ -546,11 +580,19 @@ export function PriceHistoryChart({
               minTickGap={32}
             />
             <YAxis hide domain={yDomain} />
+            {/* Tooltip kept ONLY for its crosshair `cursor` (the vertical line +
+                the active-point dot Recharts draws at the hovered/parked index).
+                The price BOX is removed per user request — `content={() => null}`
+                renders no popup, so the chart shows just the crosshair line
+                tracking the finger/pointer with no obscuring panel. The dot at
+                the active point is the Area's activeDot, set below. */}
             <Tooltip
-              formatter={(v: number) => [fmtTooltip(v), 'Close']}
-              labelFormatter={formatTooltipLabel}
-              contentStyle={tooltipContentStyle}
-              labelStyle={tooltipLabelStyle}
+              content={() => null}
+              cursor={{
+                stroke: isDark ? '#64748b' : '#94a3b8',
+                strokeWidth: 1,
+                strokeDasharray: '3 3',
+              }}
               defaultIndex={chartData.length - 1}
               isAnimationActive={false}
             />
@@ -561,6 +603,12 @@ export function PriceHistoryChart({
               strokeWidth={2}
               fill={`url(#${trendFillId})`}
               dot={false}
+              activeDot={{
+                r: 4,
+                fill: trendStroke,
+                stroke: isDark ? '#0f172a' : '#ffffff',
+                strokeWidth: 2,
+              }}
               isAnimationActive={false}
             />
             {fairInRange && (
@@ -582,6 +630,7 @@ export function PriceHistoryChart({
             )}
           </AreaChart>
         </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );

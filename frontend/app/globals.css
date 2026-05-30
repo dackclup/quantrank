@@ -405,6 +405,33 @@ code {
   animation: gauge-sweep 800ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* Price-chart intro sweep — the line + area + crosshair are revealed
+ * left→right by animating a clip-path inset from "fully clipped on the right"
+ * (inset 0 100% 0 0 → nothing visible) to "fully revealed" (inset 0 0 0 0).
+ * The ease-out curve (fast→slow, decelerating into the latest point on the
+ * right) matches the gauge-sweep family. One clip wrapper reveals EVERYTHING
+ * inside the SVG at once — line, gradient fill, and the parked crosshair —
+ * so they appear to "draw in" together rather than animating separately.
+ * Plays on (a) the chart first scrolling into view on the detail page and
+ * (b) every 1D-5Y period change, by re-adding the class via a key remount of
+ * the wrapper. transform/clip + opacity only (Motion Rule 1); the chart
+ * renders at its FINAL state with no class (SSR / no-JS / reduced-motion all
+ * show the full chart immediately). 1100ms — the longest beat after the gauge,
+ * justified because it IS the page's primary data visual. */
+@keyframes chart-sweep {
+  from {
+    clip-path: inset(0 100% 0 0);
+    -webkit-clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+    -webkit-clip-path: inset(0 0 0 0);
+  }
+}
+.chart-sweep {
+  animation: chart-sweep 1100ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 /* Hover lift — table rows / cards rise a hair on hover. Kept tiny
  * (1px) + fast so it reads as "alive" not "bouncy"; pairs with the
  * existing slate hover-bg. transform ONLY (Motion Rule 1) — no
@@ -428,8 +455,16 @@ code {
   .animate-rise-in,
   .animate-chip-pop,
   .animate-flag-pulse,
-  .gauge-sweep {
+  .gauge-sweep,
+  .chart-sweep {
     animation: none !important;
+  }
+  /* The sweep clips the chart while running; reduced-motion skips the
+   * animation, so force the clip OFF too or the chart would stay hidden
+   * at the keyframe's `from` (inset 0 100% — fully clipped). */
+  .chart-sweep {
+    clip-path: none !important;
+    -webkit-clip-path: none !important;
   }
   .hover-lift {
     transition: none !important;
