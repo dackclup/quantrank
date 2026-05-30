@@ -3783,4 +3783,17 @@ the table returns at lg (1024, ~784px content). Verified (Playwright): root
 1920; zero overflow at all widths; screenshots confirm 768 cards clean + 1280
 table dense-but-scannable. `tsc` + `next build` (506) clean.
 
+**Follow-up 5 — keep the Q logo visible in the collapsed rail (user request,
+revises Follow-up 3):** Follow-up 3 fixed the Q/chevron overlap by HIDING the Q
+when collapsed (centered chevron only). User wanted the green Q to stay visible.
+New approach (`Sidebar.tsx`): when collapsed at md+ the header switches to a
+**vertical stack** (`md:flex-col md:h-auto md:justify-center md:gap-1.5 md:py-3`)
+— the green Q logo on top (still a home link; "QuantRank" wordmark stays hidden)
++ the expand-chevron centered below. No overlap (they're stacked, not
+side-by-side). Verified (Playwright, collapsed @900): qVisible=true, Q y14–45 /
+chevron y52–88 (chevron below Q), overlap2D=false, both centered in the 64px
+rail; expanded unchanged (header 63px, Q left / chevron right). Collapsed header
+grows to ~102px (Q + chevron + py-3) vs 63px expanded — acceptable mode
+difference. `tsc` + `next build` (506) clean; screenshot confirms.
+
 ---
