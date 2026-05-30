@@ -68,9 +68,9 @@ export function PriceHistoryChart({
   const [layoutKey, setLayoutKey] = useState(0);
   // `sweepKey` keys the chart on an intro replay (remounts <AreaChart> so
   // Recharts re-runs its left→right area-draw animation); `playDraw` is the
-  // gate that says "this remount should ANIMATE" (true only for a sweep — IO
-  // scroll-in or period change — NOT for the rest/resize re-park remounts, which
-  // must stay instant). Bumped together by the sweep triggers below.
+  // gate that says "this remount should ANIMATE" (true only for a sweep — a
+  // 1D-5Y period change — NOT for the rest/resize re-park remounts, which must
+  // stay instant). Bumped together by the period effect below.
   const [sweepKey, setSweepKey] = useState(0);
   const [playDraw, setPlayDraw] = useState(false);
   // Self-drawn intro crosshair overlay (a vertical line + a dot that RIDES the
