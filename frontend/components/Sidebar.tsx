@@ -100,23 +100,19 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose
         aria-label="Primary navigation"
         className={`fixed inset-y-0 left-0 z-40 flex flex-col border-r border-slate-200 bg-white [transition:transform_200ms_ease-out,width_200ms_ease-out] dark:border-slate-800 dark:bg-slate-950 md:sticky md:top-0 md:h-screen md:translate-x-0 ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
-        } w-64 ${collapsed ? 'md:w-[84px]' : 'md:w-60 md:max-w-[240px]'}`}
+        } w-64 ${collapsed ? 'md:w-16 md:max-w-[64px]' : 'md:w-60 md:max-w-[240px]'}`}
       >
         {/* Header: wordmark (Q + "QuantRank") + collapse toggle. The expanded
             rail (240px) shows Q + wordmark with the chevron pushed right
-            (ml-auto). When COLLAPSED at md+ the rail narrows to a FIXED 96px
-            and centers the green Q logo + the expand-chevron side-by-side in
-            ONE ROW (md:justify-center; 84px snugly fits the 32px Q + the 27px
-            vertical-rectangle expand-chevron `md:h-7 md:w-6` — same HEIGHT as
-            the Q (h-7), just narrower (w-6) so it reads as a slim portrait
-            rectangle — plus the gap + px-2; a 64px rail could not, hence the
-            earlier overlap). The chevron is square (h-8 w-8) when
-            expanded, a taller portrait rectangle when collapsed. The
-            "QuantRank" wordmark hides when collapsed; the green Q stays visible
-            (2026-05-29 user request). The mobile drawer (< md) always shows the
-            full row (Q + wordmark + close-X). */}
+            (ml-auto). When COLLAPSED at md+ the 64px rail is too narrow to put
+            the Q + chevron side-by-side, so the header switches to a VERTICAL
+            STACK (md:flex-col, auto-height): the green Q logo on TOP (home
+            link; the "QuantRank" wordmark hides) + the square expand-chevron
+            centered BELOW. Keeps the Q visible (2026-05-29 user request). The
+            mobile drawer (< md) always shows the full horizontal row (Q +
+            wordmark + close-X). */}
         <div
-          className={`flex h-14 items-center gap-2 border-b border-slate-200 px-3 dark:border-slate-800${collapsed ? ' md:justify-center md:gap-1 md:px-2' : ''}`}
+          className={`flex h-14 items-center gap-2 border-b border-slate-200 px-3 dark:border-slate-800${collapsed ? ' md:h-auto md:flex-col md:justify-center md:gap-1.5 md:py-3' : ''}`}
         >
           <Link
             href="/"
@@ -133,7 +129,7 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose
             type="button"
             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             onClick={onToggleCollapse}
-            className={`hidden h-8 w-8 items-center justify-center rounded-sm text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100 md:inline-flex ${collapsed ? 'md:h-7 md:w-6' : 'ml-auto'}`}
+            className={`hidden h-8 w-8 items-center justify-center rounded-sm text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100 md:inline-flex ${collapsed ? 'md:mx-auto' : 'ml-auto'}`}
           >
             <svg
               width="14"

@@ -3829,4 +3829,14 @@ both 32px @18root, tops/bottoms flush) while staying narrower (`w-6`, 27px) so i
 still reads as a slim portrait rectangle. Verified @900: Q 32×32 / chevron 27×32,
 both y15–47 (aligned), no overlap. `tsc` + `next build` (506) clean.
 
+**Follow-up 10 — revert collapsed header to the VERTICAL STACK (user "ปรับกลับ
+เป็นโลโก้อยู่ข้างบน ลูกศรอยู่ข้างล่างเหมือนเดิม"):** after iterating the side-by-side
+row (FU6–FU9), the user chose the earlier stack arrangement. Reverted
+(`Sidebar.tsx`): collapsed header back to `md:h-auto md:flex-col md:justify-center
+md:gap-1.5 md:py-3` (Q logo on TOP, square `h-8 w-8` expand-chevron centered
+BELOW), rail narrowed back to a fixed **64px** (`md:w-16 md:max-w-[64px]`).
+Verified @900: rail 64px, Q y14–45 (top) / chevron y52–88 (below), centered,
+overlap2D=false, header ~102px (tall stack); expanded + mobile drawer unchanged.
+`tsc` + `next build` (506) clean.
+
 ---
