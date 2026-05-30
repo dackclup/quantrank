@@ -3822,4 +3822,11 @@ chevron w27×h54 (vertical), Q 32×32, still one row / no overlap / 96px rail.
 @900: rail 84px, Q x10–42 / chevron x46–73 (group fills the content area with
 ~1–2px slack beyond px-2), no overlap. `tsc` + `next build` (506) clean.
 
+**Follow-up 9 — chevron height = logo height (user "ใช้ความสูงเท่ากับ logo"):**
+the `md:h-12` (48px) collapsed chevron stood taller than the Q and stuck out
+above/below it. Changed to `md:h-7 md:w-6` — height now matches the Q (`h-7`,
+both 32px @18root, tops/bottoms flush) while staying narrower (`w-6`, 27px) so it
+still reads as a slim portrait rectangle. Verified @900: Q 32×32 / chevron 27×32,
+both y15–47 (aligned), no overlap. `tsc` + `next build` (506) clean.
+
 ---
