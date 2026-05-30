@@ -168,7 +168,11 @@ export function PriceHistoryChart({
       clearTimeout(t);
       ro.disconnect();
     };
-  }, [loading, error, data, chartData.length]);
+    // Re-attach only when the wrapper's existence changes (loading/error/data);
+    // NOT on chartData.length — the wrapper div persists across period switches
+    // (only the inner <AreaChart> remounts via key), so the observer stays valid
+    // and a period change needn't disconnect/re-observe.
+  }, [loading, error, data]);
 
   if (loading) {
     // Skeleton placeholder — shimmer blocks roughly match the layout

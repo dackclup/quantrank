@@ -107,7 +107,7 @@ export function Sidebar({ collapsed, animate, onToggleCollapse, mobileOpen, onMo
           animate
             ? '[transition:transform_200ms_ease-out,width_200ms_ease-out]'
             : 'transition-none'
-        } dark:border-slate-800 dark:bg-slate-950 md:sticky md:top-0 md:h-screen md:translate-x-0 ${
+        } motion-reduce:transition-none dark:border-slate-800 dark:bg-slate-950 md:sticky md:top-0 md:h-screen md:translate-x-0 ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         } w-64 ${collapsed ? 'md:w-16 md:max-w-[64px]' : 'md:w-60 md:max-w-[240px]'}`}
       >
