@@ -73,9 +73,6 @@ export function PriceHistoryChart({
   // must stay instant). Bumped together by the sweep triggers below.
   const [sweepKey, setSweepKey] = useState(0);
   const [playDraw, setPlayDraw] = useState(false);
-  // Gate so the scroll-into-view sweep fires only the FIRST time the chart
-  // enters the viewport (not on every scroll up/down past it).
-  const hasSwept = useRef(false);
   // Self-drawn intro crosshair overlay (a vertical line + a dot that RIDES the
   // price curve), animated left→right by rAF in sync with the area draw. During
   // the sweep the Recharts cursor + activeDot are suppressed (playDraw) so only
@@ -92,62 +89,13 @@ export function PriceHistoryChart({
 
   useEffect(() => setMounted(true), []);
 
-  // Fire the intro draw the first time the chart is visible on the detail page
-  // ("เลื่อนลงมาเห็นกราฟแบบเต็ม"). IntersectionObserver so it starts when the
-  // user sees it. One-shot via hasSwept. Two robustness fixes after the
-  // "เล่นเฉพาะตอนเปลี่ยน period" report: (1) a LOW threshold (0.1) + rootMargin
-  // so the draw fires as soon as a sliver enters — a tall-screen layout where
-  // the chart is already partly visible at mount, OR a slow scrub past it,
-  // would miss a 0.35 gate; (2) a deferred re-check (rAF) so if the chart is
-  // ALREADY in view at mount (short hero / large viewport), the draw still
-  // fires (IO does emit an initial callback for an already-intersecting target,
-  // but we also guard with an explicit getBoundingClientRect check in case the
-  // very first callback raced the layout). Browser-only; deps re-attach once
-  // the wrapper exists (after loading/error/data resolve).
-  useEffect(() => {
-    const el = wrapperRef.current;
-    if (!el || typeof IntersectionObserver === 'undefined') return;
-    if (hasSwept.current) return;
-    const fire = () => {
-      if (hasSwept.current) return;
-      hasSwept.current = true;
-      setPlayDraw(true);
-      setSweepKey((k) => k + 1);
-    };
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries[0]?.isIntersecting) {
-          fire();
-          io.disconnect();
-        }
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -10% 0px' },
-    );
-    io.observe(el);
-    // Fallback: if the chart already occupies the viewport at mount (the IO
-    // initial callback can race the first paint), fire on the next frame.
-    const raf = requestAnimationFrame(() => {
-      const r = el.getBoundingClientRect();
-      const vh = window.innerHeight || 0;
-      if (r.top < vh * 0.9 && r.bottom > 0) {
-        fire();
-        io.disconnect();
-      }
-    });
-    return () => {
-      io.disconnect();
-      cancelAnimationFrame(raf);
-    };
-  }, [loading, error, data]);
-
-  // Re-run the sweep on every period change (1D-5Y). The period state drives
-  // chartData, so a new window's line draws in left→right too. Skipped on the
-  // very first render (the scroll-into-view observer owns the first sweep).
-  // Motion Rule 2 ("no re-firing on in-page interaction") gray zone: a period
-  // switch REPLACES the entire data series (a new line arriving), not a
-  // re-stagger of existing content — the case Rule 2 actually targets — so
-  // re-sweeping the new series reads as "new data drawing in", which is the
-  // intended affordance (user-requested 2026-05-30).
+  // Replay the draw ONLY on a period change (1D-5Y) — NOT on entering the detail
+  // page or on refresh (user 2026-05-30: "ไม่ต้องเล่น animation ตอนเข้าหน้า /
+  // ตอนรีเฟรช ... ให้เล่นเฉพาะตอนเปลี่ยน 1D-5Y"). `firstPeriodRender` skips the
+  // initial mount (and any refresh, which is a fresh mount), so the chart paints
+  // statically on arrival; only an explicit period switch sets playDraw + bumps
+  // sweepKey to run the sweep. (No IntersectionObserver / scroll-into-view
+  // trigger anymore — that was the on-enter behavior the user asked to drop.)
   const firstPeriodRender = useRef(true);
   useEffect(() => {
     if (firstPeriodRender.current) {
@@ -295,10 +243,14 @@ export function PriceHistoryChart({
       const frac = fseg - s0;
       const close = closes[s0] + (closes[s0 + 1] - closes[s0]) * frac;
       const y = closeToY(close);
+      // Span the crosshair line over the PLOT AREA only ([plotTop, plotTop+plotH]),
+      // NOT the full surface — the surface includes ~29px top pad + the ~51px
+      // X-axis band below, so y1=0/y2=h overflowed the line above the chart top
+      // and below into the date axis (user 2026-05-30 "เส้นล้นออกด้านบนและล่าง").
       line.setAttribute('x1', String(x));
       line.setAttribute('x2', String(x));
-      line.setAttribute('y1', '0');
-      line.setAttribute('y2', String(h));
+      line.setAttribute('y1', String(plotTop));
+      line.setAttribute('y2', String(plotTop + plotH));
       dot.setAttribute('cx', String(x));
       dot.setAttribute('cy', String(y));
       svg.style.opacity = '1';
