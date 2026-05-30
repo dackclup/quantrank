@@ -560,11 +560,11 @@ whitespace / single-line fixes do not trigger.
   pre-Safari-16 silently degrades to the prior behavior (not a regression,
   just unfixed on that old sliver).
 - **Root font-size is FLUID** (`frontend/app/globals.css` `html { font-size:
-  clamp(1rem, 0.89rem + 0.45vw, 1.25rem) }`, 2026-05-29). The whole app is
+  clamp(1rem, 0.89rem + 0.45vw, 1.125rem) }`, 2026-05-29). The whole app is
   rem-based (Tailwind `text-*` / spacing / gaps / chart `h-64` all in rem), so
   the root font-size scaling with the viewport scales EVERYTHING proportionally
-  — ~16px on phones (≤~390px, the clamp floor) → ~20px on desktop (≥~1280px,
-  the ceiling). Consequences for future code: (a) use rem-based Tailwind text
+  — ~16px on phones (≤~390px, the clamp floor) → ~18px on tablet+ (the ceiling
+  engages ~835px; lowered from 20px per the 2026-05-29 layout-density audit). Consequences for future code: (a) use rem-based Tailwind text
   utilities (`text-sm`, `text-2xl`, …) so new text scales with the system —
   an arbitrary `text-[14px]` is a FIXED px that will NOT scale and will drift
   out of proportion on desktop; (b) do NOT add a second `font-size` on `html`

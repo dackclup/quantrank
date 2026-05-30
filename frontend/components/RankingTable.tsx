@@ -462,8 +462,11 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
         filteredCount={filtered.length}
       />
 
-      {/* Desktop / tablet table */}
-      <div className="hidden overflow-x-auto rounded border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 md:block">
+      {/* Desktop table (lg+). Portrait tablets (md→lg, 768–1023px) fall back
+          to the card list below: the 7-col table needs ~700px but the md
+          content area is only ~530px beside the sidebar, which clipped the
+          Sector column (2026-05-29 layout-density audit). */}
+      <div className="hidden overflow-x-auto rounded border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 lg:block">
         <table className="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
           <thead className="bg-slate-50 text-xs uppercase tracking-[0.14em] dark:bg-slate-900/60">
             <tr>
@@ -518,8 +521,8 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
         </table>
       </div>
 
-      {/* Mobile cards */}
-      <ul className="space-y-2 md:hidden">
+      {/* Mobile + tablet cards (below lg) */}
+      <ul className="space-y-2 lg:hidden">
         {pageRows.map((row, i) => {
           const mos = formatMosPct(row.margin_of_safety_pct);
           const staggerClass = animateRows

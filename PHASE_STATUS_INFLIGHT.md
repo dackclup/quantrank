@@ -3770,4 +3770,17 @@ all show with room). Verified: collapsed @900 overlap=false (link hidden,
 chevron centered 14–49); expanded @900 Q 14–46 / chevron 189–225 (no overlap);
 before/after screenshots confirm. `tsc` + `next build` (506) clean.
 
+**Follow-up 4 — adopt the two deferred audit recommendations (user authorized
+"ตามที่แนะนำ"):** (1) **Fluid ceiling 20px→18px** (`globals.css` clamp
+`1.25rem → 1.125rem`) for tighter desktop data-density (audit MAJOR-3). Now caps
+at ~835px so tablet+ is a flat 18px (H1 27px not 37.5px, table cells ~15.75px);
+mobile 360–390 still 16px floor. §Gotcha + AGENTS.md mirror updated to match.
+(2) **Ranking table↔card breakpoint `md`→`lg`** (`RankingTable.tsx`): portrait
+tablets (768–1023px, ~530px content beside the sidebar) now use the mobile CARD
+list instead of the 7-col table that clipped the Sector column (audit MINOR-4);
+the table returns at lg (1024, ~784px content). Verified (Playwright): root
+16.1→17.7→18.0px capping at 834px; view = cards @414/768/834, TABLE @1024/1280/
+1920; zero overflow at all widths; screenshots confirm 768 cards clean + 1280
+table dense-but-scannable. `tsc` + `next build` (506) clean.
+
 ---
