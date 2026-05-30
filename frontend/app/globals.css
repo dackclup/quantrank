@@ -207,7 +207,10 @@ html.dark {
     padding-right: 0;
   }
   html.sidebar-collapsed [data-rail="chevron"] {
-    margin-left: 0; /* drops ml-auto so the 32px chevron centers in the rail */
+    /* Drop the expanded ml-auto; actual centering comes from the parent
+     * [data-rail="header"] justify-content:center (the chevron is the only
+     * remaining flex child once the brand Link hides). */
+    margin-left: 0;
   }
 }
 
