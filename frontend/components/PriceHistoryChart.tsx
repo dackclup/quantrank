@@ -92,28 +92,52 @@ export function PriceHistoryChart({
 
   useEffect(() => setMounted(true), []);
 
-  // Fire the intro sweep the first time the chart scrolls into view on the
-  // detail page ("เลื่อนลงมาเห็นกราฟแบบเต็ม"). IntersectionObserver so the
-  // animation starts when the user actually sees it, not on mount (the chart is
-  // below the hero fold). One-shot via hasSwept. Browser-only; deps re-attach
-  // once the chart wrapper exists (after loading/error/data resolve).
+  // Fire the intro draw the first time the chart is visible on the detail page
+  // ("เลื่อนลงมาเห็นกราฟแบบเต็ม"). IntersectionObserver so it starts when the
+  // user sees it. One-shot via hasSwept. Two robustness fixes after the
+  // "เล่นเฉพาะตอนเปลี่ยน period" report: (1) a LOW threshold (0.1) + rootMargin
+  // so the draw fires as soon as a sliver enters — a tall-screen layout where
+  // the chart is already partly visible at mount, OR a slow scrub past it,
+  // would miss a 0.35 gate; (2) a deferred re-check (rAF) so if the chart is
+  // ALREADY in view at mount (short hero / large viewport), the draw still
+  // fires (IO does emit an initial callback for an already-intersecting target,
+  // but we also guard with an explicit getBoundingClientRect check in case the
+  // very first callback raced the layout). Browser-only; deps re-attach once
+  // the wrapper exists (after loading/error/data resolve).
   useEffect(() => {
     const el = wrapperRef.current;
     if (!el || typeof IntersectionObserver === 'undefined') return;
     if (hasSwept.current) return;
+    const fire = () => {
+      if (hasSwept.current) return;
+      hasSwept.current = true;
+      setPlayDraw(true);
+      setSweepKey((k) => k + 1);
+    };
     const io = new IntersectionObserver(
       (entries) => {
-        if (entries[0]?.isIntersecting && !hasSwept.current) {
-          hasSwept.current = true;
-          setPlayDraw(true);
-          setSweepKey((k) => k + 1);
+        if (entries[0]?.isIntersecting) {
+          fire();
           io.disconnect();
         }
       },
-      { threshold: 0.35 }, // most of the chart visible before it draws in
+      { threshold: 0.1, rootMargin: '0px 0px -10% 0px' },
     );
     io.observe(el);
-    return () => io.disconnect();
+    // Fallback: if the chart already occupies the viewport at mount (the IO
+    // initial callback can race the first paint), fire on the next frame.
+    const raf = requestAnimationFrame(() => {
+      const r = el.getBoundingClientRect();
+      const vh = window.innerHeight || 0;
+      if (r.top < vh * 0.9 && r.bottom > 0) {
+        fire();
+        io.disconnect();
+      }
+    });
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(raf);
+    };
   }, [loading, error, data]);
 
   // Re-run the sweep on every period change (1D-5Y). The period state drives
@@ -134,88 +158,135 @@ export function PriceHistoryChart({
     setSweepKey((k) => k + 1);
   }, [period]);
 
-  // Drive the intro crosshair left→right in sync with the area-draw animation.
-  // Runs on each sweep (sweepKey bump while playDraw is true). Each frame:
-  //   1. ease-out progress p (fast→slow) over DRAW_MS
-  //   2. target x = p · surfaceWidth
-  //   3. find the price-curve point at that x via getPointAtLength binary
-  //      search → the dot RIDES the line; the vertical line spans full height
-  //   4. write x/y straight onto the SVG line+dot refs (no React re-render)
-  // When p reaches 1 the overlay fades and playDraw flips false, handing the
-  // rest-state crosshair back to Recharts' parked cursor + activeDot at the
-  // latest point. Reduced-motion: skip the rAF, leave playDraw false so the
-  // Recharts cursor shows immediately (the area also renders un-animated).
-  const DRAW_MS = 1100;
+  // Drive the WHOLE intro from ONE rAF so the line reveal and the crosshair
+  // share a single eased progress → they reach the right edge at the exact same
+  // frame (the prior version let Recharts animate the area on its own timeline
+  // while a separate rAF moved the crosshair, so they desynced — "ถึงขวาสุดไม่
+  // พร้อมกัน" — and Recharts' per-frame React re-render made it stutter). Here
+  // Recharts' own area animation is OFF (static path), and each frame we:
+  //   1. ease progress p (fast→slow), x = ease(p)·width
+  //   2. reveal the price line+fill by clipping ONLY `.recharts-area` to [0,x]
+  //      (a sibling of `.recharts-xAxis`, so the axis + date labels stay PUT)
+  //   3. place the crosshair line + dot at x; the dot y comes from a ONE-TIME
+  //      precomputed x→y table off the (now static) curve, so per-frame cost is
+  //      an array lookup, not a path walk → smooth
+  // At p=1 the area clip is cleared (full line, flush-right dot via overflow-
+  // visible) and the overlay fades, handing the rest crosshair to Recharts.
+  const DRAW_MS = 850;
   useEffect(() => {
     if (!playDraw) return;
-    if (typeof window === 'undefined') return;
-    const reduce =
-      window.matchMedia &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce) {
+    if (typeof window === 'undefined') {
       setPlayDraw(false);
       return;
     }
+    const reduce =
+      window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const wrap = wrapperRef.current;
     const svg = overlaySvgRef.current;
     const line = overlayLineRef.current;
     const dot = overlayDotRef.current;
-    if (!wrap || !svg || !line || !dot) {
+    if (reduce || !wrap || !svg || !line || !dot) {
       setPlayDraw(false);
       return;
     }
-    // Recharts renders async after the remount; poll briefly for the curve.
-    let t0 = 0;
-    let startedAt = performance.now();
+
+    const clearAreaClip = () => {
+      const a = wrap.querySelector('.recharts-area') as SVGGElement | null;
+      if (a) a.style.clipPath = '';
+    };
+
     const easeOut = (t: number) => 1 - Math.pow(1 - t, 3); // fast→slow
-    const tick = (now: number) => {
+    const N = 120; // x→y samples across the curve (precomputed once)
+    let ys: number[] = [];
+    let area: SVGGElement | null = null;
+    let w = 1;
+    let h = 1;
+    let t0 = 0;
+    const startedAt = performance.now();
+
+    // One-time prep: measure + sample the STATIC curve. Returns false until
+    // Recharts has painted the path (we poll a few frames for it).
+    const prep = (): boolean => {
       const curve = wrap.querySelector(
         '.recharts-area-curve',
       ) as SVGPathElement | null;
-      const surf = wrap.querySelector('.recharts-surface') as SVGSVGElement | null;
-      if (!curve || !surf) {
-        // curve not painted yet — wait up to ~400ms, then bail to Recharts
-        if (now - startedAt > 400) {
+      area = wrap.querySelector('.recharts-area') as SVGGElement | null;
+      const surf = wrap.querySelector(
+        '.recharts-surface',
+      ) as SVGSVGElement | null;
+      if (!curve || !area || !surf) return false;
+      const rect = surf.getBoundingClientRect();
+      w = rect.width || 1;
+      h = rect.height || 1;
+      const L = curve.getTotalLength();
+      if (L === 0) return false;
+      ys = new Array(N + 1);
+      for (let i = 0; i <= N; i += 1) {
+        const tx = (i / N) * w;
+        let lo = 0;
+        let hi = L;
+        for (let k = 0; k < 16; k += 1) {
+          const mid = (lo + hi) / 2;
+          if (curve.getPointAtLength(mid).x < tx) lo = mid;
+          else hi = mid;
+        }
+        ys[i] = curve.getPointAtLength((lo + hi) / 2).y;
+      }
+      // hide the line/fill immediately so it reveals from x=0 (no full-flash).
+      // -20px vertical insets keep the stroke top/bottom from being clipped.
+      area.style.clipPath = 'inset(-20px 100% -20px 0)';
+      return true;
+    };
+
+    const tick = (now: number) => {
+      if (t0 === 0) {
+        if (now - startedAt > 500) {
+          // curve never painted — bail to the static chart
+          clearAreaClip();
           setPlayDraw(false);
           return;
         }
-        drawRafRef.current = requestAnimationFrame(tick);
-        return;
+        if (!prep()) {
+          drawRafRef.current = requestAnimationFrame(tick);
+          return;
+        }
+        t0 = now;
       }
-      if (t0 === 0) t0 = now; // start the clock when the curve first exists
-      const w = surf.getBoundingClientRect().width || 1;
-      const h = surf.getBoundingClientRect().height || 1;
       const p = Math.min(1, (now - t0) / DRAW_MS);
-      const x = easeOut(p) * w;
-      // binary-search the curve length whose point.x ≈ target x
-      const L = curve.getTotalLength();
-      let lo = 0;
-      let hi = L;
-      for (let i = 0; i < 18; i += 1) {
-        const mid = (lo + hi) / 2;
-        if (curve.getPointAtLength(mid).x < x) lo = mid;
-        else hi = mid;
-      }
-      const pt = curve.getPointAtLength((lo + hi) / 2);
+      const e = easeOut(p);
+      const x = e * w;
+      // reveal the line+fill up to x (clip the part to the RIGHT of x)
+      if (area) area.style.clipPath = `inset(-20px ${Math.max(0, w - x)}px -20px 0)`;
+      // crosshair dot y — interpolate the precomputed table at x
+      const fi = e * N;
+      const i0 = Math.min(N - 1, Math.floor(fi));
+      const frac = fi - i0;
+      const y = ys[i0] + (ys[i0 + 1] - ys[i0]) * frac;
       line.setAttribute('x1', String(x));
       line.setAttribute('x2', String(x));
       line.setAttribute('y1', '0');
       line.setAttribute('y2', String(h));
       dot.setAttribute('cx', String(x));
-      dot.setAttribute('cy', String(pt.y));
+      dot.setAttribute('cy', String(y));
       svg.style.opacity = '1';
       if (p < 1) {
         drawRafRef.current = requestAnimationFrame(tick);
       } else {
-        // hand off to Recharts' parked cursor/dot, then hide the overlay
+        // full reveal: drop the clip (overflow-visible flush-right dot shows),
+        // hide the overlay, hand the rest crosshair to Recharts' parked cursor.
+        clearAreaClip();
         svg.style.opacity = '0';
-        drawRafRef.current = null; // no pending frame — clear the stale id
+        drawRafRef.current = null;
         setPlayDraw(false);
       }
     };
     drawRafRef.current = requestAnimationFrame(tick);
     return () => {
       if (drawRafRef.current !== null) cancelAnimationFrame(drawRafRef.current);
+      // if interrupted mid-draw (e.g. a period switch), never leave the line
+      // stuck hidden — clear the clip on the (old) area.
+      clearAreaClip();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sweepKey, playDraw]);
@@ -727,12 +798,12 @@ export function PriceHistoryChart({
                       strokeWidth: 2,
                     }
               }
-              // Animate the left→right area draw ONLY on a sweep remount
-              // (playDraw). The rest/resize re-park remounts keep it instant so
-              // the crosshair re-park doesn't visibly redraw the whole line.
-              isAnimationActive={playDraw}
-              animationDuration={DRAW_MS}
-              animationEasing="ease-out"
+              // Recharts' own draw animation is OFF — the unified intro rAF
+              // (above) reveals the line by clipping `.recharts-area`, in
+              // lockstep with the crosshair, so the two never desync. Keeping
+              // Recharts static also avoids its per-frame React re-render
+              // (the stutter source).
+              isAnimationActive={false}
             />
             {fairInRange && (
               <ReferenceLine
