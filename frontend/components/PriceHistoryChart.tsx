@@ -57,6 +57,23 @@ export function PriceHistoryChart({
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<TimePeriod>('1Y');
   const [mounted, setMounted] = useState(false);
+  // Index the HEADLINE (price / change / date) reflects. null = the latest
+  // point (rest state). Set by a scrub (Recharts onMouseMove → activeTooltipIndex)
+  // so the headline tracks the crosshair the user drags; cleared on pointer
+  // leave / release so it snaps back to latest. During the intro ANIMATION the
+  // headline is instead written imperatively (refs below) frame-by-frame — NOT
+  // via this state — so the 60fps sweep never triggers a React re-render (that
+  // was the "ค้างหนัก" trap). React re-render on animation end restores the
+  // latest value (= the last animated frame).
+  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+  // Headline span refs — the rAF writes price/change/date text straight onto
+  // these during the animation (imperative, zero re-render).
+  const priceRef = useRef<HTMLSpanElement | null>(null);
+  const changeAbsRef = useRef<HTMLSpanElement | null>(null);
+  const changePctRef = useRef<HTMLSpanElement | null>(null);
+  const changeArrowRef = useRef<HTMLSpanElement | null>(null);
+  const changeRowRef = useRef<HTMLDivElement | null>(null);
+  const asOfRef = useRef<HTMLSpanElement | null>(null);
   // Remount keys: bumping either forces <AreaChart> to remount, which
   // re-runs Recharts' componentDidMount → displayDefaultTooltip(defaultIndex),
   // re-parking the crosshair + tooltip at the latest date. `restKey` bumps
@@ -158,6 +175,39 @@ export function PriceHistoryChart({
     const easeOut = (t: number) => 1 - Math.pow(1 - t, 3); // fast→slow
     const closes = chartData.map((d) => d.close);
     const nSeg = closes.length - 1; // x maps [0,nSeg] across the plot width
+    const firstClose = closes[0];
+    // Nearest data index for an eased progress e∈[0,1] (for the date label,
+    // which is discrete per point — the price itself is interpolated).
+    const idxAt = (e: number) => Math.round(e * nSeg);
+    // Imperative headline writer — used ONLY by the rAF (scrub uses hoverIndex
+    // state + JSX). Mirrors the JSX formatting exactly so the handoff to React
+    // on animation end is seamless. Guards each ref (the row may be absent when
+    // periodChange is null, e.g. <2 points — but then the draw effect's early
+    // chartData.length<2 bail prevents this from running anyway).
+    const writeHeadline = (price: number, isoDate: string) => {
+      const abs = price - firstClose;
+      const pct = firstClose > 0 ? (abs / firstClose) * 100 : 0;
+      const positive = abs >= 0;
+      const sign = positive ? '+' : '';
+      if (priceRef.current) priceRef.current.textContent = `$${price.toFixed(2)}`;
+      if (changeAbsRef.current)
+        changeAbsRef.current.textContent = `${sign}${abs.toFixed(2)}`;
+      if (changePctRef.current)
+        changePctRef.current.textContent = `(${sign}${pct.toFixed(2)}%)`;
+      if (changeArrowRef.current)
+        changeArrowRef.current.textContent = positive ? '↑' : '↓';
+      if (changeRowRef.current) {
+        // swap the up/down color class pair on the row
+        const up = ['text-emerald-700', 'dark:text-emerald-300'];
+        const down = ['text-rose-600', 'dark:text-rose-400'];
+        const add = positive ? up : down;
+        const rm = positive ? down : up;
+        changeRowRef.current.classList.remove(...rm);
+        changeRowRef.current.classList.add(...add);
+      }
+      if (asOfRef.current)
+        asOfRef.current.textContent = fmtDateLabel(isoDate);
+    };
     let area: SVGGElement | null = null;
     let w = 1;
     let h = 1;
@@ -254,6 +304,14 @@ export function PriceHistoryChart({
       dot.setAttribute('cx', String(x));
       dot.setAttribute('cy', String(y));
       svg.style.opacity = '1';
+      // Drive the HEADLINE (price / change / date) to the swept point too, so it
+      // counts up alongside the crosshair. IMPERATIVE writes (refs, no setState)
+      // — a per-frame setState here would re-render Recharts 60×/s and re-freeze
+      // the page (the "ค้างหนัก" trap). The change is measured from the window's
+      // first close (same convention as the static headline). On the final frame
+      // the end-of-draw setPlayDraw(false) re-render restores the same latest
+      // values via JSX, so there's no visible snap.
+      writeHeadline(close, chartData[idxAt(e)].date);
       if (p < 1) {
         drawRafRef.current = requestAnimationFrame(tick);
       } else {
@@ -349,6 +407,29 @@ export function PriceHistoryChart({
     return { abs, pct, positive: abs >= 0 };
   }, [chartData]);
 
+  // Headline values at an arbitrary point index — the price, the change vs the
+  // window's FIRST close (Google-Finance convention: the change is always
+  // measured from the window start, not from the previous point), the change %,
+  // direction, and the date. Used to render the headline at the crosshair
+  // position both on scrub (via hoverIndex state) and during the animation (via
+  // the imperative writer below). Pure — no side effects.
+  const headlineAt = (idx: number) => {
+    const n = chartData.length;
+    if (n === 0) return null;
+    const i = Math.max(0, Math.min(n - 1, idx));
+    const price = chartData[i].close;
+    const first = chartData[0].close;
+    const abs = price - first;
+    const pct = first > 0 ? (abs / first) * 100 : 0;
+    return {
+      price,
+      abs,
+      pct,
+      positive: abs >= 0,
+      date: chartData[i].date,
+    };
+  };
+
   // Re-park the crosshair at the latest date after any WIDTH change settles —
   // device rotation, window resize, OR the left sidebar expanding/collapsing
   // (which reflows the main-content width). A width change makes
@@ -437,16 +518,10 @@ export function PriceHistoryChart({
     const yy = raw.slice(2, 4);
     return `${MONTH_ABBR[monthIdx] ?? raw.slice(5, 7)} ${yy}`;
   };
-  // Tooltip label — "Mon DD, YYYY" reads more cleanly than the raw
-  // ISO date and stays consistent with the X-axis month-abbr style.
-  const formatTooltipLabel = (raw: string) => {
-    const monthIdx = Number(raw.slice(5, 7)) - 1;
-    const day = Number(raw.slice(8, 10));
-    const year = raw.slice(0, 4);
-    const mon = MONTH_ABBR[monthIdx];
-    if (!mon || Number.isNaN(day)) return raw;
-    return `${mon} ${day}, ${year}`;
-  };
+  // Tooltip / headline date label — "Mon DD, YYYY". Delegates to the
+  // module-level fmtDateLabel so the rAF headline writer (which is outside this
+  // render scope) formats dates identically.
+  const formatTooltipLabel = (raw: string) => fmtDateLabel(raw);
   const fmtPrice = (v: number) => `$${v.toFixed(2)}`;
 
   // PR 4f post-spot-check: compute a y-axis domain anchored on the
@@ -547,39 +622,63 @@ export function PriceHistoryChart({
           absolute + percent move on a second row beneath it. Mobile
           viewports were squeezing both onto a single line, leaving
           the change indicator clipped against the edge. */}
-      {chartData.length > 0 && (
-        <div className="flex flex-col gap-1">
-          <div className="flex items-baseline gap-2">
-            <span className="font-mono text-2xl font-semibold tabular-nums leading-none text-slate-900 dark:text-slate-100">
-              ${chartData[chartData.length - 1].close.toFixed(2)}
-            </span>
-            <span className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
-              USD
-            </span>
-          </div>
-          {periodChange && (
-            <div
-              className={`flex flex-wrap items-baseline gap-1.5 text-sm ${isPositive ? 'text-emerald-700 dark:text-emerald-300' : 'text-rose-600 dark:text-rose-400'}`}
-            >
-              <span className="font-mono font-semibold tabular-nums">
-                {isPositive ? '+' : ''}
-                {periodChange.abs.toFixed(2)}
+      {chartData.length > 0 && (() => {
+        // Headline reflects the crosshair: the scrubbed point (hoverIndex) when
+        // dragging, else the latest. During the animation the rAF overwrites
+        // these spans imperatively (hoverIndex stays null), then the end-of-draw
+        // re-render restores the latest. The change row is colored by direction;
+        // when scrubbing we show the date (PERIOD_LABEL is only meaningful for
+        // the full window = latest), else the period label.
+        const lastIdx = chartData.length - 1;
+        const di = hoverIndex ?? lastIdx;
+        const hv = headlineAt(di) ?? {
+          price: chartData[lastIdx].close,
+          abs: 0,
+          pct: 0,
+          positive: true,
+          date: chartData[lastIdx].date,
+        };
+        const scrubbing = hoverIndex !== null;
+        const upCls = 'text-emerald-700 dark:text-emerald-300';
+        const downCls = 'text-rose-600 dark:text-rose-400';
+        return (
+          <div className="flex flex-col gap-1">
+            <div className="flex items-baseline gap-2">
+              <span
+                ref={priceRef}
+                className="font-mono text-2xl font-semibold tabular-nums leading-none text-slate-900 dark:text-slate-100"
+              >
+                ${hv.price.toFixed(2)}
               </span>
-              <span className="font-mono tabular-nums">
-                ({isPositive ? '+' : ''}
-                {periodChange.pct.toFixed(2)}%)
-              </span>
-              <span>{isPositive ? '↑' : '↓'}</span>
-              <span className="text-xs font-normal text-slate-500 dark:text-slate-400">
-                {PERIOD_LABEL[period]}
+              <span className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                USD
               </span>
             </div>
-          )}
-          <div className="text-sm tabular-nums text-slate-900 dark:text-slate-100">
-            as of {formatTooltipLabel(chartData[chartData.length - 1].date)}
+            {periodChange && (
+              <div
+                ref={changeRowRef}
+                className={`flex flex-wrap items-baseline gap-1.5 text-sm ${hv.positive ? upCls : downCls}`}
+              >
+                <span ref={changeAbsRef} className="font-mono font-semibold tabular-nums">
+                  {hv.positive ? '+' : ''}
+                  {hv.abs.toFixed(2)}
+                </span>
+                <span ref={changePctRef} className="font-mono tabular-nums">
+                  ({hv.positive ? '+' : ''}
+                  {hv.pct.toFixed(2)}%)
+                </span>
+                <span ref={changeArrowRef}>{hv.positive ? '↑' : '↓'}</span>
+                <span className="text-xs font-normal text-slate-500 dark:text-slate-400">
+                  {PERIOD_LABEL[period]}
+                </span>
+              </div>
+            )}
+            <div className="text-sm tabular-nums text-slate-900 dark:text-slate-100">
+              as of <span ref={asOfRef}>{formatTooltipLabel(hv.date)}</span>
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Reference price chips — always shown below the price headline
           as the canonical fair-value + target number read (the in-chart
@@ -715,11 +814,23 @@ export function PriceHistoryChart({
           Object.defineProperty(ev, 'pageY', { get: () => pageY });
           surface.dispatchEvent(ev);
         }}
-        onPointerUp={() => setRestKey((k) => k + 1)}
-        onClick={() => setRestKey((k) => k + 1)}
-        onPointerCancel={() => setRestKey((k) => k + 1)}
+        onPointerUp={() => {
+          setHoverIndex(null);
+          setRestKey((k) => k + 1);
+        }}
+        onClick={() => {
+          setHoverIndex(null);
+          setRestKey((k) => k + 1);
+        }}
+        onPointerCancel={() => {
+          setHoverIndex(null);
+          setRestKey((k) => k + 1);
+        }}
         onPointerLeave={(e) => {
-          if (e.pointerType !== 'touch') setRestKey((k) => k + 1);
+          if (e.pointerType !== 'touch') {
+            setHoverIndex(null);
+            setRestKey((k) => k + 1);
+          }
         }}
       >
         {/* The intro is now driven by (a) Recharts' OWN left→right area-draw
@@ -734,6 +845,18 @@ export function PriceHistoryChart({
             key={`${period}-${restKey}-${layoutKey}-${sweepKey}`}
             data={chartData}
             margin={{ top: 8, right: 0, left: 0, bottom: 0 }}
+            onMouseMove={(state: { activeTooltipIndex?: number | null }) => {
+              // Track the scrubbed point so the headline (price/change/date)
+              // follows the crosshair the user drags. Ignored during the intro
+              // animation — the rAF owns the headline then (and the Recharts
+              // cursor is suppressed). activeTooltipIndex is null when the
+              // pointer is off the plot.
+              if (playDraw) return;
+              const idx = state?.activeTooltipIndex;
+              setHoverIndex(
+                typeof idx === 'number' && idx >= 0 ? idx : null,
+              );
+            }}
           >
             <defs>
               <linearGradient id={trendFillId} x1="0" y1="0" x2="0" y2="1">
@@ -857,6 +980,22 @@ export function PriceHistoryChart({
       </div>
     </div>
   );
+}
+
+// Module-level date formatter: "YYYY-MM-DD" → "Mon DD, YYYY". Shared by the
+// in-render formatTooltipLabel AND the rAF headline writer (which runs outside
+// render scope), so both format the crosshair date identically.
+const _MONTH_ABBR = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+];
+export function fmtDateLabel(raw: string): string {
+  const monthIdx = Number(raw.slice(5, 7)) - 1;
+  const day = Number(raw.slice(8, 10));
+  const year = raw.slice(0, 4);
+  const mon = _MONTH_ABBR[monthIdx];
+  if (!mon || Number.isNaN(day)) return raw;
+  return `${mon} ${day}, ${year}`;
 }
 
 // Plain-English period labels for the change indicator. Matches the
