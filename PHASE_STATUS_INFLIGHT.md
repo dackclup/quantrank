@@ -3952,3 +3952,57 @@ remember beyond what the existing §Gotchas (`overflow-x: clip`, fluid root
 font-size, chart remount-key) already frame.
 
 ---
+
+## Docs housekeeping — CLAUDE.md §Phase status drain + A-L label fix + 2 PR #326 §Gotchas (in flight, 2026-05-30)
+
+Doc-only housekeeping on `claude/docs-housekeep-phase-status` (off `main`
+`b82b845c`). Surfaced by a full `docs-reviewer` substance pass on CLAUDE.md
+(5 MUST-FIX + 4 SHOULD-FIX). Fixes all 9 in one focused diff — CLAUDE.md only,
+no code / schema / compute / frontend change.
+
+**MUST-FIX (factual / contradiction):**
+1. §Phase status "In flight" block marked PR #312 (tasteful-motion) as "THIS PR
+   / not yet merged" — it merged as `e602485`. Replaced with "No current
+   in-flight PR on this branch" + pointer to this side-file.
+2. §Phase status "Recently merged (PR #303 → PR #310)" was 16 PRs stale.
+   Refreshed header to "PR #303 → PR #326, 2026-05-29 → 2026-05-30" and
+   inserted the 16 missing entries (#311–#326) newest-first with SHAs.
+3. §Phase status "Next deliverables" listed "Issue #67 flip PR" as pending —
+   `USE_SECTOR_COE = True` already flipped via PR #294 (`config.py` confirms).
+   Replaced with "Issue #67 — DONE (PR #294)".
+4. §Commands + §"After every workflow_dispatch green" said "Section A-H" — the
+   verify-production-output helper is Section A-L (PR #221 extended A-J → A-L).
+   Fixed both labels.
+5. §Cue table defense-layer-auditor row said "Section A-J" → A-L. (The
+   edgar-debugger HISTORICAL narrative at the old ~line 829 keeps its
+   self-contained "A=…/…/J=annotate inventory" legend — a point-in-time
+   4.5-era record, preserved per the doc's historical-narrative convention.)
+
+**SHOULD-FIX (staleness):**
+6. §Stack "Phase 3b on this PR" → "Phase 3b (merged)" (no dangling "this PR").
+7. §Gotchas `compute/main.py` line refs re-anchored to the current file
+   (840→879 · 1965-1966→2084-2085 · 717→728 · 785→805 · 972→1025).
+8. §Gotchas gained 2 new entries for the PR #326 invariants (below).
+9. §Stack edgartools `5.31` → `5.32` (installed version).
+
+**The 2 new §Gotchas (item 8)** codify PR #326 invariants previously only in
+this side-file: (a) Sidebar `data-rail` attrs ↔ `globals.css`
+`html.sidebar-collapsed [data-rail=…]` pre-paint rules move in lockstep (drift
+→ refresh text-flash returns); (b) the price-chart crosshair re-park MUST
+debounce the `<AreaChart>` remount ≥ ~300ms so it lands after
+`ResponsiveContainer` re-measures (immediate remount → crosshair parks at
+index 0 / far-left).
+
+**Confirmed no drift:** schema `0.10.11-phase4.6` (config.py) · skills 46 ·
+agents 19 · hooks 3 · defense-layer 33 declared — all §Layout counts accurate.
+
+**Verification:** Markdown-only; no ruff / pytest / build surface. Edits
+verified via sentinel grep (all 6 old strings → 0 occurrences; all 5 new
+strings → 1). `docs-reviewer` re-check spawned at the push gate.
+
+PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR"
+lockstep per PR #237 convention. AGENTS.md substance mirror of the 2 frontend
+gotchas deferred — they live in CLAUDE.md §Gotchas (the canonical home);
+AGENTS.md is the cross-tool surface and carries no §Gotchas mirror today.
+
+---
