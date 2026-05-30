@@ -180,6 +180,45 @@ html.dark {
     max-width: 4rem;
     overflow: hidden;
   }
+  /* Render the FULL collapsed layout pre-hydration, not just the width — else
+   * the expanded inner content (wordmark "QuantRank" + nav labels + section
+   * headers) paints for a frame on a collapsed refresh, then React hydrates
+   * and hides it ("text pops up then disappears"). These rules mirror the
+   * `collapsed ? 'md:…'` Tailwind classes the React tree applies, keyed to the
+   * pre-paint `.sidebar-collapsed` class so the rail looks collapsed from the
+   * FIRST paint. They AGREE with React's classes post-hydration (both collapse
+   * when the class/prop is set, kept in sync by AppShell), so they never fight.
+   * Keep the data-rail values in step with the matching `collapsed ? …` classes
+   * in Sidebar.tsx. */
+  html.sidebar-collapsed [data-rail="hide"] {
+    display: none;
+  }
+  html.sidebar-collapsed [data-rail="show"] {
+    display: flex;
+  }
+  html.sidebar-collapsed [data-rail="header"] {
+    height: auto;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.375rem; /* md:gap-1.5 */
+    padding: 0.75rem 0.5rem; /* md:py-3 md:px-2 */
+  }
+  html.sidebar-collapsed [data-rail="navlink"] {
+    justify-content: center; /* md:justify-center */
+    padding-left: 0; /* md:px-0 */
+    padding-right: 0;
+  }
+  html.sidebar-collapsed [data-rail="chevron"] {
+    width: 100%; /* md:w-full */
+    height: auto; /* md:h-auto */
+    margin-left: 0; /* drops ml-auto */
+    padding-top: 0.375rem; /* md:py-1.5 */
+    padding-bottom: 0.375rem;
+    background-color: rgb(241 245 249); /* md:bg-slate-100 */
+  }
+  html.dark.sidebar-collapsed [data-rail="chevron"] {
+    background-color: rgb(30 41 59); /* md:dark:bg-slate-800 */
+  }
 }
 
 .font-mono,

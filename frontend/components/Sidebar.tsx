@@ -124,6 +124,7 @@ export function Sidebar({ collapsed, animate, onToggleCollapse, mobileOpen, onMo
             mobile drawer (< md) always shows the full horizontal row (Q +
             wordmark + close-X). */}
         <div
+          data-rail="header"
           className={`flex h-14 items-center gap-2 border-b border-slate-200 px-3 dark:border-slate-800${collapsed ? ' md:h-auto md:flex-col md:justify-center md:gap-1.5 md:px-2 md:py-3' : ''}`}
         >
           <Link
@@ -135,10 +136,11 @@ export function Sidebar({ collapsed, animate, onToggleCollapse, mobileOpen, onMo
             <span aria-hidden="true" className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-sm bg-emerald-700 font-mono text-xs font-semibold text-white dark:bg-emerald-600 dark:text-white">Q</span>
             {/* Mobile drawer always shows the wordmark; `collapsed` is a
                 desktop-only (md+) concept, so it only hides at md+ via CSS. */}
-            <span className={`font-slab text-lg font-semibold tracking-tight${collapsed ? ' md:hidden' : ''}`}>QuantRank</span>
+            <span data-rail="hide" className={`font-slab text-lg font-semibold tracking-tight${collapsed ? ' md:hidden' : ''}`}>QuantRank</span>
           </Link>
           <button
             type="button"
+            data-rail="chevron"
             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             onClick={onToggleCollapse}
             className={`hidden h-8 w-8 items-center justify-center rounded-sm text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100 md:inline-flex ${collapsed ? 'md:h-auto md:w-full md:bg-slate-100 md:py-1.5 md:dark:bg-slate-800' : 'ml-auto'}`}
@@ -212,13 +214,13 @@ export function Sidebar({ collapsed, animate, onToggleCollapse, mobileOpen, onMo
             mutually exclusive per breakpoint (the hidden one is display:none,
             so a11y sees exactly one). 2026-05-29 mobile-drawer fix. */}
         <div className="border-t border-slate-200 px-2 py-2 dark:border-slate-800">
-          <div className={collapsed ? 'md:hidden' : ''}>
+          <div data-rail="hide" className={collapsed ? 'md:hidden' : ''}>
             <ThemeToggle layout="row" />
           </div>
-          <div className={`hidden justify-center${collapsed ? ' md:flex' : ''}`}>
+          <div data-rail="show" className={`hidden justify-center${collapsed ? ' md:flex' : ''}`}>
             <ThemeToggle layout="icon" />
           </div>
-          <div className={`mt-2 px-2 pb-1 text-[0.6875rem] leading-snug text-slate-500 dark:text-slate-400${collapsed ? ' md:hidden' : ''}`}>
+          <div data-rail="hide" className={`mt-2 px-2 pb-1 text-[0.6875rem] leading-snug text-slate-500 dark:text-slate-400${collapsed ? ' md:hidden' : ''}`}>
             <p className="font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">v1.4.0 · MIT</p>
             <p className="mt-1">Educational use only.</p>
           </div>
@@ -239,7 +241,7 @@ function SidebarSection({
 }) {
   return (
     <div className="mb-4">
-      <div className={`px-2 pb-1.5 text-[0.625rem] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400${collapsed ? ' md:hidden' : ''}`}>
+      <div data-rail="hide" className={`px-2 pb-1.5 text-[0.625rem] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400${collapsed ? ' md:hidden' : ''}`}>
         {label}
       </div>
       <ul className="space-y-0.5">{children}</ul>
@@ -275,7 +277,7 @@ function SidebarLink({
       <span className={`shrink-0 ${active ? 'text-slate-900 dark:text-slate-100' : 'text-slate-500 group-hover:text-slate-700 dark:text-slate-400 dark:group-hover:text-slate-200'}`}>
         {icon}
       </span>
-      <span className={`truncate${collapsed ? ' md:hidden' : ''}`}>{label}</span>
+      <span data-rail="hide" className={`truncate${collapsed ? ' md:hidden' : ''}`}>{label}</span>
       {external && (
         <svg
           width="11"
@@ -286,6 +288,7 @@ function SidebarLink({
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
+          data-rail="hide"
           className={`ml-auto text-slate-400 dark:text-slate-500${collapsed ? ' md:hidden' : ''}`}
           aria-hidden="true"
         >
@@ -300,11 +303,11 @@ function SidebarLink({
   return (
     <li>
       {external ? (
-        <a href={href} target="_blank" rel="noreferrer" className={base} title={collapsed ? label : undefined}>
+        <a href={href} target="_blank" rel="noreferrer" data-rail="navlink" className={base} title={collapsed ? label : undefined}>
           {content}
         </a>
       ) : (
-        <Link href={href} onClick={onClick} className={base} title={collapsed ? label : undefined}>
+        <Link href={href} onClick={onClick} data-rail="navlink" className={base} title={collapsed ? label : undefined}>
           {content}
         </Link>
       )}
