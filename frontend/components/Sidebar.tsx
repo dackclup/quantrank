@@ -106,8 +106,10 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose
             rail (240px) shows Q + wordmark with the chevron pushed right
             (ml-auto). When COLLAPSED at md+ the rail narrows to a FIXED 96px
             and centers the green Q logo + the expand-chevron side-by-side in
-            ONE ROW (md:justify-center; 96px fits the 28px Q + 32px chevron with
-            a gap — a 64px rail could not, hence the earlier overlap). The
+            ONE ROW (md:justify-center; 96px fits the Q + the vertical-rectangle
+            expand-chevron `md:h-12 md:w-6` with a gap — a 64px rail could not,
+            hence the earlier overlap). The chevron is square (h-8 w-8) when
+            expanded, a taller portrait rectangle when collapsed. The
             "QuantRank" wordmark hides when collapsed; the green Q stays visible
             (2026-05-29 user request). The mobile drawer (< md) always shows the
             full row (Q + wordmark + close-X). */}
@@ -129,7 +131,7 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose
             type="button"
             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             onClick={onToggleCollapse}
-            className={`hidden h-8 w-8 items-center justify-center rounded-sm text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100 md:inline-flex ${collapsed ? '' : 'ml-auto'}`}
+            className={`hidden h-8 w-8 items-center justify-center rounded-sm text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100 md:inline-flex ${collapsed ? 'md:h-12 md:w-6' : 'ml-auto'}`}
           >
             <svg
               width="14"

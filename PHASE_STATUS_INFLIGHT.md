@@ -3807,4 +3807,12 @@ chevron x48–84 (same row, 5px gap), overlap2D=false, header back to 63px (no
 more tall stack); expanded unchanged. `tsc` + `next build` (506) clean;
 screenshot confirms Q + › side-by-side with a gap.
 
+**Follow-up 7 — collapsed expand-chevron as a vertical rectangle (user
+request):** the chevron button was a 32px square; user wanted a portrait
+rectangle. Changed to `md:h-12 md:w-6` WHEN COLLAPSED only (`Sidebar.tsx`) — so
+collapsed renders a 27×54px (@18px root) taller-than-wide button beside the Q;
+expanded keeps the `h-8 w-8` square. Verified (Playwright, collapsed @900):
+chevron w27×h54 (vertical), Q 32×32, still one row / no overlap / 96px rail.
+`tsc` + `next build` (506) clean.
+
 ---
