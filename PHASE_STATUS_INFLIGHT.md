@@ -4006,3 +4006,56 @@ gotchas deferred — they live in CLAUDE.md §Gotchas (the canonical home);
 AGENTS.md is the cross-tool surface and carries no §Gotchas mirror today.
 
 ---
+
+## PR #330 — feat(frontend): app-wide ease-in-out motion curve (in flight, 2026-05-30)
+
+Per user direction "เปลี่ยนไปใช้ animation ขยับแบบ ease in and out ทั้ง app" —
+unify every discrete move / entrance / slide / sweep animation in the app onto
+a single `ease-in-out` timing curve (accelerate out of the start, decelerate
+into the end — one calm, symmetric feel). Replaces the prior mix of `ease-out`,
+ease-out `cubic-bezier(0.22,1,0.36,1)`, back-out `cubic-bezier(0.34,1.56,0.64,1)`,
+and `easeOutCubic`.
+
+**Touched (6 files, timing-function-only diff)**:
+
+- `tailwind.config.ts` `animation` block — `fade-in` / `rise-in` / `chip-pop` /
+  `flag-pulse` timing → `ease-in-out`. `shimmer` DELIBERATELY kept
+  `linear infinite` (ease-in-out on a seamless background-position loop stutters
+  at the wrap boundary — slow-end meets slow-start = a visible stall).
+- `app/globals.css` — `.gauge-sweep` (was ease-out `cubic-bezier(0.22,1,0.36,1)`)
+  + `.hover-lift` (was `ease-out`) → `ease-in-out`; 2 stale comments corrected.
+- `components/FilterDrawer.tsx` — slide-over `duration-300 ease-out` →
+  `ease-in-out`.
+- `components/Sidebar.tsx` — collapse/expand
+  `[transition:transform_200ms_ease-out,width_200ms_ease-out]` → `ease-in-out`.
+- `components/PriceHistoryChart.tsx` — intro-sweep rAF `easeOutCubic` →
+  `easeInOutCubic`. **NOTE**: supersedes the prior-session "เร็วไปช้า"
+  (fast→slow) ask for this specific sweep — the new "ทั้ง app" directive makes
+  it match the rest, so the left→right reveal now starts gently. One-line
+  revert (`easeInOut` → `easeOut`) if the user prefers the chart keep fast→slow.
+- `lib/useMotion.ts` — `useCountUp` rAF `easeOutCubic` → `easeInOutCubic`
+  (pairs with the gauge-sweep arc, which the comment already cross-references).
+
+`chip-pop`'s overshoot + `flag-pulse`'s settle still read (the overshoot lives
+in the keyframe %-stops — 70% → 1.04 / 55% → 1.012 — not the timing curve, so
+ease-in-out just eases INTO them). Reduced-motion guard untouched — every
+animation still snaps to its end state under `prefers-reduced-motion: reduce`.
+Bare Tailwind `transition-*` (no explicit ease) already defaults to
+`cubic-bezier(0.4,0,0.2,1)` ≈ ease-in-out, left as-is.
+
+**Verification**: `next build` → 502 routes; `tsc --noEmit` clean on edited
+files; compiled CSS confirms `ease-in-out` on every `animation:` /
+`transition:` rule (`chip-pop`/`rise-in`/`flag-pulse`/`gauge-sweep .8s`/
+`hover-lift .16s`/Sidebar `.2s,width .2s`) + `linear` preserved on `shimmer`;
+`node frontend/components/downsample.test.mjs` → 14/14; `ruff check .` clean
+(no Python touched). `frontend-design-reviewer` (sonnet) spawned at the push gate.
+
+Companion CLAUDE.md §Gotchas entry ("App-wide motion uses ONE `ease-in-out`
+timing curve") documents the convention for future components — a new animated
+component must use ease-in-out, not a one-off `ease-out`. No schema / Python /
+scoring / valuation / output JSON change — frontend timing-function-only.
+PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR"
+lockstep per PR #237 convention; AGENTS.md carries no §Gotchas mirror (per the
+PR #327 precedent — frontend gotchas live in CLAUDE.md, the canonical home).
+
+---

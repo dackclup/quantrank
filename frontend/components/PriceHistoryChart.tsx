@@ -182,7 +182,11 @@ export function PriceHistoryChart({
     const yLo = (yDomain as [number, number])[0];
     const yHi = (yDomain as [number, number])[1];
     const ySpan = yHi - yLo || 1;
-    const easeOut = (t: number) => 1 - Math.pow(1 - t, 3); // fast→slow
+    // easeInOutCubic — eases out of the start and into the end (app-wide
+    // motion curve, 2026-05-30). The sweep accelerates through the middle of
+    // the curve and decelerates as the line + crosshair land at the right edge.
+    const easeInOut = (t: number) =>
+      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
     const closes = chartData.map((d) => d.close);
     const nSeg = closes.length - 1; // x maps [0,nSeg] across the plot width
     const firstClose = closes[0];
@@ -293,7 +297,7 @@ export function PriceHistoryChart({
         t0 = now;
       }
       const p = Math.min(1, (now - t0) / DRAW_MS);
-      const e = easeOut(p);
+      const e = easeInOut(p);
       const x = e * w;
       // reveal the line+fill up to x (clip the part to the RIGHT of x)
       if (area) area.style.clipPath = `inset(-20px ${Math.max(0, w - x)}px -20px 0)`;
@@ -1022,7 +1026,7 @@ export function PriceHistoryChart({
         {/* Self-drawn intro crosshair overlay — absolutely positioned ON TOP of
             the chart, spanning the same box. The rAF effect above animates the
             line (full-height vertical) + the dot (riding the price curve) from
-            x=0 → right edge in ease-out lockstep with the area draw, then sets
+            x=0 → right edge in ease-in-out lockstep with the area draw, then sets
             opacity 0 and hands the rest-state crosshair back to Recharts. It is
             opacity 0 + pointer-events-none at rest so it never blocks scrubbing.
             Colors match the bolder Recharts cursor (slate-600/300) so the

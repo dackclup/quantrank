@@ -105,7 +105,7 @@ export function Sidebar({ collapsed, animate, onToggleCollapse, mobileOpen, onMo
         data-sidebar-rail=""
         className={`fixed inset-y-0 left-0 z-40 flex flex-col border-r border-slate-200 bg-white ${
           animate
-            ? '[transition:transform_200ms_ease-out,width_200ms_ease-out]'
+            ? '[transition:transform_200ms_ease-in-out,width_200ms_ease-in-out]'
             : 'transition-none'
         } motion-reduce:transition-none dark:border-slate-800 dark:bg-slate-950 md:sticky md:top-0 md:h-screen md:translate-x-0 ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'

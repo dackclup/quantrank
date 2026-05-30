@@ -23,9 +23,10 @@ function prefersReducedMotion(): boolean {
  * returns the target immediately — the number is always correct, the
  * animation is the only thing gated.
  *
- * Uses requestAnimationFrame with an ease-out curve so the tail decelerates
- * into the final value (matches the gauge-arc easing). Cancels cleanly on
- * unmount or if the target changes mid-flight.
+ * Uses requestAnimationFrame with an ease-in-out curve so the count eases out
+ * of 0 and decelerates into the final value (matches the gauge-arc easing +
+ * the app-wide ease-in-out motion). Cancels cleanly on unmount or if the
+ * target changes mid-flight.
  */
 export function useCountUp(
   target: number,
@@ -49,8 +50,10 @@ export function useCountUp(
     const delta = target - from;
     setValue(from); // dip to 0, then animate up (client-only, first view)
     const t0 = performance.now();
-    // easeOutCubic — fast out of the gate, calm settle into the value.
-    const ease = (t: number) => 1 - Math.pow(1 - t, 3);
+    // easeInOutCubic — eases out of 0 and decelerates into the value (app-wide
+    // motion curve, 2026-05-30; pairs with the gauge-sweep ease-in-out arc).
+    const ease = (t: number) =>
+      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
     const tick = (now: number) => {
       const p = Math.min(1, (now - t0) / durationMs);

@@ -603,6 +603,26 @@ whitespace / single-line fixes do not trigger.
   → the "crosshair jumps left on sidebar toggle" regression returns. This
   ResizeObserver subsumes the old orientation-only `matchMedia` re-park
   (rotation changes width too).
+- **App-wide motion uses ONE `ease-in-out` timing curve** (2026-05-30,
+  PR #330). Every discrete move / entrance / slide / sweep accelerates out
+  of the start and decelerates into the end — one calm, symmetric feel across
+  the whole app. Concretely: `tailwind.config.ts` `animation` (`fade-in` /
+  `rise-in` / `chip-pop` / `flag-pulse`), `globals.css` `.gauge-sweep` +
+  `.hover-lift`, the `Sidebar` collapse/expand + `FilterDrawer` slide-over
+  transitions, and the JS rAF easings in `PriceHistoryChart.tsx` (intro sweep)
+  + `useMotion.ts` (`useCountUp`) all use `ease-in-out` — the CSS keyword /
+  Tailwind `ease-in-out` class / `easeInOutCubic = t<0.5 ? 4t³ :
+  1−(−2t+2)³/2` in JS. A NEW animated component MUST follow suit — do not
+  introduce a one-off `ease-out` / `ease-in` / `cubic-bezier`. TWO deliberate
+  carve-outs: (1) `shimmer` stays `linear infinite` — ease-in-out on a
+  seamless background-position loop stutters at the wrap boundary (slow-end
+  meets slow-start = a visible stall); (2) a bare Tailwind `transition-*`
+  with no explicit `ease-*` already compiles to `cubic-bezier(0.4,0,0.2,1)`
+  ≈ ease-in-out, so it needs no change. `chip-pop`'s overshoot (70% → 1.04)
+  and `flag-pulse`'s settle (55% → 1.012) now live entirely in the keyframe
+  %-stops, not the timing curve — the curve just eases into them. The
+  `@media (prefers-reduced-motion: reduce)` guard in `globals.css` still
+  neutralizes every one of these.
 
 ## Phase status
 

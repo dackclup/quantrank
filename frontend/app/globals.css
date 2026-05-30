@@ -384,8 +384,9 @@ code {
 .stagger-12 { animation-delay: 480ms; }
 
 /* Signature gauge sweep — ScoreGauge's radial progress arc eases from
- * empty → its value over 800ms (calm decel curve), synchronized with the
- * JS count-up (useCountUp). The ONE longer beat — it's the app's headline
+ * empty → its value over 800ms (ease-in-out curve — matches the app-wide
+ * motion timing), synchronized with the JS count-up (useCountUp, also
+ * ease-in-out). The ONE longer beat — it's the app's headline
  * number (composite score) and earns the emphasis.
  *
  * Implemented as a @keyframes (added via the `gauge-sweep` class on mount)
@@ -402,12 +403,13 @@ code {
   /* `to` omitted → animates to the element's own strokeDashoffset (final). */
 }
 .gauge-sweep {
-  animation: gauge-sweep 800ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: gauge-sweep 800ms ease-in-out both;
 }
 
 /* Price-chart intro draw — the line + fill are revealed left→right by
- * Recharts' OWN area-draw animation (the component sets `isAnimationActive` +
- * ease-out on a sweep remount), and a self-drawn crosshair overlay rides the
+ * a JS-driven rAF clip-path reveal (the component keeps `isAnimationActive`
+ * false and eases the clip with an ease-in-out curve), and a self-drawn
+ * crosshair overlay rides the
  * curve left→right in lockstep (rAF in PriceHistoryChart.tsx). This replaced an
  * earlier clip-path-on-the-wrapper approach, which also revealed the X-axis +
  * date labels — the user wanted those to stay PUT. Recharts animates only the
@@ -422,7 +424,7 @@ code {
  * existing slate hover-bg. transform ONLY (Motion Rule 1) — no
  * box-shadow transition (the row's hover-bg already carries the state). */
 .hover-lift {
-  transition: transform 160ms ease-out;
+  transition: transform 160ms ease-in-out;
 }
 .hover-lift:hover {
   transform: translateY(-1px);
