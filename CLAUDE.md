@@ -10,7 +10,7 @@ design-system spec.
 
 ## Stack
 
-- **Python 3.11+** — pandas 2.2 · edgartools 5.31 · pydantic 2.6 ·
+- **Python 3.11+** — pandas 2.2 · edgartools 5.32 · pydantic 2.6 ·
   tenacity 8.2 · BeautifulSoup 4 · lxml 5 · pytest 8 · ruff 0.4
 - **Next.js 14.2** (App Router, static export) — React 18.3 ·
   TypeScript 5.9 · Tailwind 3.4 · Recharts 2.15. Self-hosted fonts
@@ -19,7 +19,7 @@ design-system spec.
   **Roboto Slab** (headlines, LedgerCraft adoption Phase 1 PR #211 +
   Phase 2 PR #212 + Phase 3a PR #213 + Phase 3c PR #215 — `font-slab`
   + 4-tier shadow tokens + spreadsheet header treatment + `AppShell`
-  / `Sidebar` left-rail nav; Phase 3b on this PR — `next-themes`
+  / `Sidebar` left-rail nav; Phase 3b (merged) — `next-themes`
   class-strategy dark mode, OKLCH dark band, paired `dark:` variants
   across every chip family + table + card + drawer surface, three-
   state theme toggle in sidebar footer + AppShell header.
@@ -63,7 +63,7 @@ design-system spec.
 | Frontend build | `cd frontend && npx --no -- next build` |
 | Frontend type-check | `cd frontend && npx --no -- tsc --noEmit` |
 | Local weekly compute | `python -m compute.main` (writes `frontend/public/data/`) |
-| Section A-H verification | `python .claude/skills/verify-production-output/helper.py` |
+| Section A-L verification | `python .claude/skills/verify-production-output/helper.py` |
 
 Verification ladder before any push: `ruff check .` → `pytest -m "not
 network"` → (if schemas touched) `schema_check` → (if frontend touched)
@@ -71,7 +71,7 @@ network"` → (if schemas touched) `schema_check` → (if frontend touched)
 `verify-production-output/helper.py`.
 
 **After every `workflow_dispatch` green** (REQUIRED 2026-05-17): run
-Section A-H scan + Section I Playwright spot-check for any PR landing
+Section A-L scan + Section I Playwright spot-check for any PR landing
 a new UI surface or schema bump. See
 `.claude/skills/verify-production-output/SKILL.md`. When Vercel MCP is
 loaded, `list_deployments` → `get_runtime_logs` is the cheap pre-
@@ -265,7 +265,7 @@ whitespace / single-line fixes do not trigger.
 | Pre-Mark-Ready on a UI-touching PR OR new Vercel preview URL posted OR user says "ดู preview" / "is deploy green?" / "spot-check the preview" | `vercel-preview-auditor` (sonnet) | Gated; runs Vercel MCP build+runtime+UA-probe before Playwright is scheduled |
 | Post-cron green OR pre-release OR after `vercel-preview-auditor` GO on a UI PR OR user says "ลองใช้ app" / "expert user feedback" / "UX จริง" / "is the app usable?" | `expert-user-explorer` (sonnet) | Gated; builds+serves the static export locally, drives headless Playwright through a persona mission; read-only, proposes issues. NOT per-edit (that's `frontend-design-reviewer`) |
 | methodology-scientist verdict cites a paper outside CLAUDE.md anchor list AND the actual paper text matters, OR user says "find me the paper that says X" / "หาเปเปอร์เรื่อง Y" / new defense-flag academic prior is proposed | `literature-searcher` (sonnet) | On-demand; offloads retrieval so methodology-scientist (opus) stays on judgment |
-| `workflow_dispatch` on `compute-rankings.yml` lands green | `defense-layer-auditor` Section A-J + Section I (Playwright) + `stock-detail-auditor` (per-stock data audit) + `expert-user-explorer` (experiential P1 mission on the fresh data) | Auto post-cron, parallel; all sonnet |
+| `workflow_dispatch` on `compute-rankings.yml` lands green | `defense-layer-auditor` Section A-L + Section I (Playwright) + `stock-detail-auditor` (per-stock data audit) + `expert-user-explorer` (experiential P1 mission on the fresh data) | Auto post-cron, parallel; all sonnet |
 | Quarterly cohort audit scheduled date reached (next 2026-08-19) | `methodology-scientist` (opus) Mode C + `defense-layer-auditor` (sonnet) | Scheduled, sequential |
 | New defense flag proposed (new risk_flag in `compute/scoring/`) | `methodology-scientist` (opus; validate paper anchor) + `test-engineer` (sonnet; positive + negative tests) | Rare; sequential — methodology first |
 | Threshold / weight constant changed in `compute/scoring/manipulation_index.py` or `earnings_quality.py` | `methodology-scientist` (opus) Mode B | Rare; on the edit |
@@ -410,7 +410,7 @@ whitespace / single-line fixes do not trigger.
 - **CI escape-hatch env-var combo for simulate** (5 vars, all set
   together in `.github/workflows/pre-merge-prod-sim.yml`; NONE set in
   weekly cron `compute-rankings.yml`): `FORM4_FETCH_SKIP=1` (skip Form-4
-  bulk fetch — read at `compute/main.py:840`; safe empty default),
+  bulk fetch — read at `compute/main.py:879`; safe empty default),
   `QR_SKIP_TIER2=1` (skip Tier-2 10-K text + 8-K fetch — read at
   `compute/scoring/tier2.py:162`), `QR_SKIP_FUNDAMENTALS=1` (skip
   fundamentals freshness gate — read at `compute/ingest/fundamentals.py`
@@ -433,7 +433,7 @@ whitespace / single-line fixes do not trigger.
   #230 / #238 / #241).
 - **GitHub-Actions-injected env-vars `GITHUB_RUN_ID` + `GITHUB_SHA`**
   — auto-provided by the GitHub Actions runner; read at
-  `compute/main.py:1965-1966` via `os.environ.get(...)` with safe
+  `compute/main.py:2084-2085` via `os.environ.get(...)` with safe
   empty defaults; surface into `Metadata.compute_run_id` +
   `Metadata.git_commit` for downstream audit trail (verify-helper
   Section A reads both). Not operator-managed — no value to redact.
@@ -575,6 +575,35 @@ whitespace / single-line fixes do not trigger.
   chart-internal SVG labels sized in raw px (Recharts `tick fontSize`) are a
   known minor holdout — they don't follow the rem scale.
 
+- **Sidebar `data-rail` attrs ↔ `globals.css` pre-paint rules move in
+  lockstep** (`frontend/components/Sidebar.tsx` + `frontend/app/globals.css`,
+  PR #326). The collapsed sidebar is rendered BEFORE React hydrates: a
+  pre-paint inline script in `frontend/app/layout.tsx` adds `.sidebar-collapsed`
+  to `<html>` from `localStorage['quantrank.sidebar.collapsed']`, and
+  `html.sidebar-collapsed [data-rail="…"]` rules in `globals.css` mirror the
+  `collapsed ? 'md:…'` Tailwind classes `Sidebar.tsx` applies at runtime. Five
+  `data-rail` values are in use: `hide` · `show` · `header` · `navlink` ·
+  `chevron`. Add a new collapsible Sidebar element WITHOUT a matching
+  `html.sidebar-collapsed [data-rail="<new>"]` rule and the "sidebar opens then
+  shrinks back / text flashes for a frame on refresh + rotation" regression
+  returns for that element. `AppShell` keeps the `<html>` class synced to the
+  live collapsed state (`classList.toggle`) so the CSS never fights React
+  post-hydration. The aside transition is also gated behind an `animate` flag
+  (true only ~250ms around an explicit toggle) + `motion-reduce:transition-none`
+  so refresh / rotation switch width INSTANTLY (no animated shrink).
+- **Re-parking the price-chart crosshair MUST debounce the `<AreaChart>`
+  remount ≥ ~300ms** (`frontend/components/PriceHistoryChart.tsx`, PR #326).
+  Recharts 2.15 applies `defaultIndex` (latest-point park) only on MOUNT. A
+  WIDTH change — window resize, device rotation, OR the sidebar expand/collapse
+  reflowing the content width — makes `ResponsiveContainer` re-measure over
+  ~100-200ms. Bumping the `<AreaChart key>` remount key immediately re-parks
+  against the OLD width → the crosshair lands at index 0 (far LEFT). A
+  width-delta `ResizeObserver` debounced ~300ms lands the remount AFTER the
+  re-measure so it re-parks at the latest point. Shorten / remove the debounce
+  → the "crosshair jumps left on sidebar toggle" regression returns. This
+  ResizeObserver subsumes the old orientation-only `matchMedia` re-park
+  (rotation changes width too).
+
 ## Phase status
 
 Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged
@@ -617,7 +646,23 @@ ladder closure + LedgerCraft frontend reskin (defense layer 32 → 33;
 PR #264 `multi_class_aggregate_shares_suspected` + PR #265 DQIC
 site-2 rename `valuation_output_anomalous`).
 
-**Recently merged** (PR #303 → PR #310, 2026-05-29):
+**Recently merged** (PR #303 → PR #326, 2026-05-29 → 2026-05-30):
+- PR #326 `b82b845` — fix(frontend): sidebar refresh/rotate flash + chart crosshair re-park (width-delta ResizeObserver debounced remount) + no-text-flash pre-paint (`html.sidebar-collapsed` + `data-rail` CSS) + 2 flaky-test guards (`test_ranking_history` shallow-clone skip · `test_osap` class-level API check)
+- PR #325 `732853c` — feat(frontend): app-wide fluid responsive scaling (clamp root font-size) + layout-density audit + sidebar collapsed-state polish
+- PR #324 `6ca174f` — fix(frontend): tap (no drag) moves the price-chart crosshair to the tap point
+- PR #323 `4f7edf1` — fix(frontend): chart reference-line + chip polish (post-#322) + `overflow-x: clip` §Gotcha
+- PR #322 `fd04527` — fix(frontend): price-chart crosshair — park-at-latest · touch scrub · tap/scroll re-park · flush right edge + no page-widen
+- PR #321 `3640a8e` — fix(frontend): bump stale sidebar footer version chip v1.2 → v1.4.0
+- PR #320 `22cd579` — fix(frontend): keep mobile sidebar drawer full when desktop collapsed pref is set
+- PR #319 `a49f21c` — docs: fix stale skill-count (45 → 46) across 4 doc homes + correct LESSONS_LEARNED
+- PR #318 `79c0aac` — docs: add `docs/LESSONS_LEARNED.md` — agent-process dos & don'ts
+- PR #317 `fc886de` — fix(frontend): stack detail hero below `lg` to fix sidebar-expanded gauge/chip overlap
+- PR #316 `89c5ee0` — docs(skill): add `web-animation-design` skill (skill count 45 → 46)
+- PR #315 `aeca318` — fix(frontend): responsive + a11y audit fixes — 320px hero overflow · focus rings · touch targets
+- PR #314 `a5e756b` — docs(frontend): fix stale `.gauge-arc` comment ref in ScoreGauge header
+- PR #313 `c5251f7` — fix(frontend): animation audit fixes + play-every-visit + gauge keyframe sweep
+- PR #312 `e602485` — feat(frontend): app-wide tasteful motion — gauge sweep · row stagger · veto pulse
+- PR #311 `10c6221` — docs: reconcile cross-doc drift after the 6-PR session (#303–#310)
 - PR #310 `a941e2e` — fix(scoring): inject `stale_filing_hard` before Top-5 rotation (latent Rule-16 fix, closes #309; Step-6b pre-scan + `asof_date` hoist + `ensemble.py` docstring; +5 tests; zero scoring impact, fires 0× on current universe)
 - PR #308 `e77efbf` — fix(frontend): correct RiskFlagsCard footer over-claim (only `altman_distress` + `data_quality_input_corruption` force cautious; 27/56 sloan-flagged are lean_bullish) + add latent `stale_filing_hard` key + header "Risk Vetoes" → "Risk Flags"
 - PR #307 `bb1d7fd` — feat(agents): Phase B — opus-4.8 orchestrator + dynamic-workflow tuning (uniform `## Handoff` contract on all 19 agents + README §"Dynamic workflow" + Flow 7)
@@ -643,15 +688,11 @@ site-2 rename `valuation_output_anomalous`).
 - (3 issues filed + ALL closed same day: #287 PR A merged via #297 [PR B FORM4 revert remaining] · #288 closed via #292 + #298 · #289 closed via #293 + #302)
 
 **In flight** (not yet merged on `main`):
-- **Phase 4 tasteful-motion** (THIS PR) — app-wide entrance + signature
-  animations (CSS/Tailwind only, no framer-motion). Signature = composite-
-  score gauge sweep (0→score + count-up, 800ms, per-ticker once/session);
-  home row stagger; risk-veto pulse. New `lib/useMotion.ts` hooks +
-  `ScoreGauge.tsx` + `docs/design.md` §Motion (5 rules: transform/opacity-
-  only · play-once-per-session · reduced-motion mandatory · never gate
-  content on JS · add-classes-client-side-for-static-export). Both review
-  gates passed (frontend-design-reviewer + expert-user-explorer). Frontend-
-  only; no schema/compute change. See [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md).
+- _No current in-flight PR on this branch._ The append-only
+  [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) is the canonical
+  in-flight tracker (PR #237 convention); merged entries drain into the
+  **Recently merged** block above during housekeeping. (Phase 4
+  tasteful-motion merged via PR #312 `e602485`.)
 
 **Earlier** (PR #264 → PR #285, 2026-05-26 → 2026-05-27):
 - PR #285 `8f373758` — docs(release): codify mobile-only operator convention for tag releases
@@ -2130,11 +2171,11 @@ hit simulate cancellation at 45m15s. `ci-triage-engineer` deep-dive
 #2 identified the gap: my session-5 root-cause analysis was
 INCOMPLETE — `compute/main.py` has THREE independent SEC EDGAR
 ThreadPoolExecutor loops:
-- Step 2 (`compute/main.py:717`) — fundamentals snapshot (502
+- Step 2 (`compute/main.py:728`) — fundamentals snapshot (502
   tickers × `companyfacts` XBRL)
-- Step 3 (`compute/main.py:785`) — annual fundamentals history
+- Step 3 (`compute/main.py:805`) — annual fundamentals history
   (502 tickers × `_ANNUAL_TAGS` per-year XBRL)
-- Step 4b (`compute/main.py:972`) — Tier-2 / 8-K orchestrator
+- Step 4b (`compute/main.py:1025`) — Tier-2 / 8-K orchestrator
 QR_SKIP_TIER2 killed Step 4b (20-35m) but Steps 2 + 3 still ran
 unconditionally. Cold-cache cost of fundamentals alone is 25-50m
 per CLAUDE.md §Gotchas — enough to fill the entire 45m budget.
@@ -2196,8 +2237,9 @@ of re-discovering the pattern.
   delta confirms the -30% to -45% predicted band (Aboody et al. 2010
   §3.2 mid-point; vesting-driven liquidation residual still argues
   against full 10.0 restoration)
-- **Issue #67 flip PR** — `USE_SECTOR_COE = True` after ≥ 1 cron confirms
-  delta-flag-count (target: `value_trap_risk` drops from ~176 toward ~80-110)
+- **Issue #67 — DONE** (PR #294, 2026-05-28): `USE_SECTOR_COE = True` flipped
+  (`value_trap_risk` 132 → 109); now tracking per-sector delta via
+  `Metadata.value_trap_risk_delta_by_sector` (PR #300)
 - **Phase 4i.1 / 4j.1 / 4k.1** — JKP / Qlib / IPCA integration PRs
   (~1-2w each → v1.1.0-phase4)
 - **Phase 5** — ML meta-learner (~10-12w, unblocks PR 4b §3
