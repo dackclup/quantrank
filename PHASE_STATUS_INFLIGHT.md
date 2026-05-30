@@ -3796,4 +3796,15 @@ rail; expanded unchanged (header 63px, Q left / chevron right). Collapsed header
 grows to ~102px (Q + chevron + py-3) vs 63px expanded — acceptable mode
 difference. `tsc` + `next build` (506) clean; screenshot confirms.
 
+**Follow-up 6 — collapsed Q + chevron side-by-side in ONE ROW (user
+clarification, supersedes Follow-up 5):** user wanted them in the same row (not
+stacked). A 64px rail can't fit both (the original overlap), so the collapsed
+rail widens to a FIXED **96px** (`md:w-[96px]`, was `md:w-16`) and the header
+stays a row but centers the group (`md:justify-center md:gap-1 md:px-2`); the
+chevron drops its `ml-auto` when collapsed so it sits next to the Q rather than
+at the far edge. Verified (Playwright, collapsed @900): rail 96px, Q x12–43 +
+chevron x48–84 (same row, 5px gap), overlap2D=false, header back to 63px (no
+more tall stack); expanded unchanged. `tsc` + `next build` (506) clean;
+screenshot confirms Q + › side-by-side with a gap.
+
 ---

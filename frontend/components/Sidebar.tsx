@@ -100,18 +100,19 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose
         aria-label="Primary navigation"
         className={`fixed inset-y-0 left-0 z-40 flex flex-col border-r border-slate-200 bg-white [transition:transform_200ms_ease-out,width_200ms_ease-out] dark:border-slate-800 dark:bg-slate-950 md:sticky md:top-0 md:h-screen md:translate-x-0 ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
-        } w-64 ${collapsed ? 'md:w-16 md:max-w-[64px]' : 'md:w-60 md:max-w-[240px]'}`}
+        } w-64 ${collapsed ? 'md:w-[96px]' : 'md:w-60 md:max-w-[240px]'}`}
       >
-        {/* Header: wordmark (Q + "QuantRank") + collapse toggle. When COLLAPSED
-            at md+ the 64px rail can't fit the Q box (28px) AND the chevron
-            (32px) side-by-side, so the header switches to a VERTICAL STACK
-            (md:flex-col, auto-height): the green Q logo on top (still a home
-            link; the "QuantRank" wordmark hides) + the expand-chevron centered
-            below. Keeps the Q visible in the collapsed rail (2026-05-29 user
-            request). Expanded + the mobile drawer use the horizontal row
-            (Q + wordmark + chevron / close-X). */}
+        {/* Header: wordmark (Q + "QuantRank") + collapse toggle. The expanded
+            rail (240px) shows Q + wordmark with the chevron pushed right
+            (ml-auto). When COLLAPSED at md+ the rail narrows to a FIXED 96px
+            and centers the green Q logo + the expand-chevron side-by-side in
+            ONE ROW (md:justify-center; 96px fits the 28px Q + 32px chevron with
+            a gap — a 64px rail could not, hence the earlier overlap). The
+            "QuantRank" wordmark hides when collapsed; the green Q stays visible
+            (2026-05-29 user request). The mobile drawer (< md) always shows the
+            full row (Q + wordmark + close-X). */}
         <div
-          className={`flex h-14 items-center gap-2 border-b border-slate-200 px-3 dark:border-slate-800${collapsed ? ' md:h-auto md:flex-col md:justify-center md:gap-1.5 md:py-3' : ''}`}
+          className={`flex h-14 items-center gap-2 border-b border-slate-200 px-3 dark:border-slate-800${collapsed ? ' md:justify-center md:gap-1 md:px-2' : ''}`}
         >
           <Link
             href="/"
@@ -128,7 +129,7 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose
             type="button"
             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             onClick={onToggleCollapse}
-            className={`hidden h-8 w-8 items-center justify-center rounded-sm text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100 md:inline-flex ${collapsed ? 'md:mx-auto' : 'ml-auto'}`}
+            className={`hidden h-8 w-8 items-center justify-center rounded-sm text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100 md:inline-flex ${collapsed ? '' : 'ml-auto'}`}
           >
             <svg
               width="14"
