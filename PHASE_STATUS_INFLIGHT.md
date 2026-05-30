@@ -3839,4 +3839,20 @@ Verified @900: rail 64px, Q y14–45 (top) / chevron y52–88 (below), centered,
 overlap2D=false, header ~102px (tall stack); expanded + mobile drawer unchanged.
 `tsc` + `next build` (506) clean.
 
+**Follow-up 11 — fix recurring flaky CI (shallow-clone test guard):** the
+"Python (lint + test)" check failed intermittently across this PR's pushes (cold
+runner → FAIL, warm-workspace runner → PASS). `ci-triage-engineer` root-caused
+it (NOT this PR's code — all commits are frontend/docs): `test_validation/
+test_ranking_history.py::test_list_ranking_commits_returns_real_commits` runs
+`git log -- frontend/public/data/rankings.json` then `assert len(commits) >= 1`;
+on CI's shallow clone (`actions/checkout@v6` → `fetch-depth: 1`) where the tip
+commit doesn't touch `rankings.json`, `git log` returns empty → the assert
+fails. Same bug PR #284 (`a820caee`) fixed in a sibling test but this one was
+missed. Fix: add a `pytest.skip()` guard when `commits` is empty (shallow clone),
+matching the #284 precedent — a full clone still exercises the real assertion.
+Verified: `pytest tests/test_validation/test_ranking_history.py` 18 passed
+(full clone) / would skip 1 on a shallow clone; `ruff` clean. First + only Python
+touch on this PR; test-hygiene only, no compute/schema surface, no new §Gotcha
+needed (pattern documented in #284).
+
 ---
