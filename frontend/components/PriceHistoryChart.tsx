@@ -209,6 +209,7 @@ export function PriceHistoryChart({
       } else {
         // hand off to Recharts' parked cursor/dot, then hide the overlay
         svg.style.opacity = '0';
+        drawRafRef.current = null; // no pending frame — clear the stale id
         setPlayDraw(false);
       }
     };
