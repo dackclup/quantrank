@@ -111,39 +111,38 @@ export function Sidebar({ collapsed, animate, onToggleCollapse, mobileOpen, onMo
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         } w-64 ${collapsed ? 'md:w-16 md:max-w-[64px]' : 'md:w-60 md:max-w-[240px]'}`}
       >
-        {/* Header: wordmark (Q + "QuantRank") + collapse toggle. The expanded
-            rail (240px) shows Q + wordmark with the chevron pushed right
-            (ml-auto). When COLLAPSED at md+ the 64px rail is too narrow to put
-            the Q + chevron side-by-side, so the header switches to a VERTICAL
-            STACK (md:flex-col, auto-height): the green Q logo on TOP (home
-            link; the "QuantRank" wordmark hides) + a full-width
-            rounded-rectangle expand-chevron BELOW, styled to match the collapsed
-            nav-item boxes (md:px-2 header + md:w-full chevron + subtle fill, so
-            it reads as a box "like the one below"). Keeps the Q visible
-            (2026-05-29 user request). The
-            mobile drawer (< md) always shows the full horizontal row (Q +
-            wordmark + close-X). */}
+        {/* Header: brand (Q + "QuantRank") + collapse toggle. The expanded rail
+            (240px) shows Q + wordmark on the left with the chevron pushed right
+            (ml-auto). When COLLAPSED at md+ the 64px rail keeps ONLY the chevron
+            (original 32px square, centered) — the brand moves OUT to the top
+            header (AppShell, `data-rail="show"`), since the narrow rail has no
+            room for it (2026-05-30 user request). The mobile drawer (< md) always
+            shows the full horizontal row (Q + wordmark + close-X) — `data-rail`
+            CSS only fires at md+, so the drawer brand never hides. */}
         <div
           data-rail="header"
-          className={`flex h-14 items-center gap-2 border-b border-slate-200 px-3 dark:border-slate-800${collapsed ? ' md:h-auto md:flex-col md:justify-center md:gap-1.5 md:px-2 md:py-3' : ''}`}
+          className={`flex h-14 items-center gap-2 border-b border-slate-200 px-3 dark:border-slate-800${collapsed ? ' md:justify-center md:px-2' : ''}`}
         >
           <Link
             href="/"
             onClick={onMobileClose}
+            data-rail="hide"
             className="flex min-w-0 items-center gap-2 text-slate-900 hover:opacity-80 dark:text-slate-100"
             aria-label="QuantRank home"
           >
             <span aria-hidden="true" className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-sm bg-emerald-700 font-mono text-xs font-semibold text-white dark:bg-emerald-600 dark:text-white">Q</span>
-            {/* Mobile drawer always shows the wordmark; `collapsed` is a
-                desktop-only (md+) concept, so it only hides at md+ via CSS. */}
-            <span data-rail="hide" className={`font-slab text-lg font-semibold tracking-tight${collapsed ? ' md:hidden' : ''}`}>QuantRank</span>
+            {/* The whole brand Link carries `data-rail="hide"`, so it (Q +
+                wordmark together) hides at md+ when collapsed — it lives in the
+                top header then. On mobile (< md) the rule doesn't apply, so the
+                drawer keeps the full brand. */}
+            <span className="font-slab text-lg font-semibold tracking-tight">QuantRank</span>
           </Link>
           <button
             type="button"
             data-rail="chevron"
             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             onClick={onToggleCollapse}
-            className={`hidden h-8 w-8 items-center justify-center rounded-sm text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100 md:inline-flex ${collapsed ? 'md:h-auto md:w-full md:bg-slate-100 md:py-1.5 md:dark:bg-slate-800' : 'ml-auto'}`}
+            className={`hidden h-8 w-8 items-center justify-center rounded-sm text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100 md:inline-flex ${collapsed ? '' : 'ml-auto'}`}
           >
             <svg
               width="14"

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { Sidebar } from './Sidebar';
 import { Disclaimer } from './Disclaimer';
 import { ThemeToggle } from './ThemeToggle';
@@ -99,6 +100,22 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </svg>
           </button>
           <span className="font-slab text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100 md:hidden">QuantRank</span>
+          {/* Desktop brand — Q + wordmark live in the TOP header ONLY while the
+              sidebar is COLLAPSED (the 64px rail is too narrow for them, so they
+              move out here). Hidden when expanded (brand lives in the rail then)
+              and on mobile (the md:hidden wordmark above covers mobile). The
+              `data-rail="show"` hook makes globals.css render it from the first
+              paint on a collapsed refresh — same pre-paint mechanism as the rail
+              brand, so no flash. Mirror of the rail Link's `data-rail="hide"`. */}
+          <Link
+            href="/"
+            data-rail="show"
+            aria-label="QuantRank home"
+            className={`hidden min-w-0 items-center gap-2 text-slate-900 transition-opacity hover:opacity-80 dark:text-slate-100 ${collapsed ? 'md:flex' : ''}`}
+          >
+            <span aria-hidden="true" className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-sm bg-emerald-700 font-mono text-xs font-semibold text-white dark:bg-emerald-600 dark:text-white">Q</span>
+            <span className="font-slab text-base font-semibold tracking-tight">QuantRank</span>
+          </Link>
           <span className="ml-auto text-xs text-slate-500 dark:text-slate-400">US equity stock ranking</span>
           <ThemeToggle layout="icon" />
         </header>
