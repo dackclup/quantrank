@@ -3867,3 +3867,88 @@ x-position (x9), same fill, rounded-sm; screenshot confirms the chevron box now
 matches the nav-item box. `tsc` + `next build` (506) clean.
 
 ---
+
+## Stability bug-fix bundle — sidebar refresh/rotate flash + chart crosshair re-park + 2 flaky-test guards (in flight, 2026-05-30)
+
+Three stability fixes on `claude/optimistic-brown-UUcXA`, all post-#325. Two
+are the user-reported sidebar/chart bugs; two are flaky-test hardening
+("เก็บ flaky ให้ครบ"). Frontend + test-only — zero schema / compute / scoring /
+valuation / output-JSON change.
+
+**Bug A — "sidebar opens then shrinks back by itself" on refresh OR
+portrait↔landscape rotation.** Two root causes, two-part fix:
+- The static export bakes the EXPANDED rail into every page's HTML, so on
+  refresh the rail painted wide, then `AppShell`'s mount effect read
+  `localStorage['quantrank.sidebar.collapsed']` and collapsed it — a visible
+  width shrink. Fix: a pre-paint inline `<script>` in `layout.tsx` adds
+  `.sidebar-collapsed` to `<html>` BEFORE the body paints (mirrors next-themes'
+  dark-mode pre-paint), and a new `globals.css` rule
+  (`@media (min-width:768px) html.sidebar-collapsed aside[data-sidebar-rail]`)
+  renders the rail at its collapsed 4rem width immediately → React's
+  post-hydration collapse is a no-op. `AppShell` keeps the class in lockstep
+  with the live state (removed on expand) so the rule never fights React.
+- The aside carried a permanent `width 200ms` transition, so the
+  hydration-collapse AND the breakpoint cross on rotation both ANIMATED the
+  shrink. Fix: a new `animate` flag (owned by `AppShell`, passed to `Sidebar`)
+  is true only for ~250ms around an EXPLICIT user toggle (collapse chevron /
+  mobile hamburger / backdrop); at rest the aside is `transition-none`, so
+  refresh + rotation + resize switch width/position INSTANTLY (no shrink
+  motion). Explicit toggles still animate smoothly.
+
+**Bug B — chart crosshair jumps to the far LEFT when the sidebar is
+expanded/collapsed.** Toggling the rail reflows the main-content width →
+`ResponsiveContainer` re-measures the chart, but Recharts applies `defaultIndex`
+(latest-point park) only on MOUNT, so the crosshair drifted to a stale/left x.
+Fix (`PriceHistoryChart.tsx`): replaced the orientation-only `matchMedia`
+re-park with a width-delta `ResizeObserver` on the chart wrapper that
+debounce-bumps the remount key (`layoutKey`) ~300ms after any width change
+settles → `<AreaChart>` remounts → re-parks at the latest point AFTER the
+re-measure. Subsumes the old orientation listener (rotation changes width too)
+and now also catches sidebar toggle + window resize. A width-only delta gate
+(`<1px → ignore`) prevents height-only / crosshair-render churn from triggering
+spurious remounts. Empirically: cursor x-ratio before=1.0, transient@120ms=0.0
+(the bug), after-repark=1.0 (fixed).
+
+**Flaky-test hardening (เก็บ flaky ให้ครบ):**
+- `test_ranking_history.py::test_load_ranking_history_smoke_recent_window` —
+  added an explicit `if df.empty: pytest.skip(...)` guard (mirrors the
+  `list_ranking_commits` guard from #325 + PR #284). On a shallow CI clone
+  (`actions/checkout` fetch-depth=1) `rankings.json` history may be unreachable
+  → empty frame; the populated-MultiIndex-shape assertions need a full clone.
+  The test previously passed-on-empty only by coincidence of the empty-return
+  path's `.set_index(...)`; the guard makes the shallow-safety explicit +
+  edit-proof (proven via a real depth-1 clone: 46/46 git-dependent tests pass).
+- `test_osap.py::test_package_imports_and_exposes_openap_class` — was a
+  default-lane (non-`@network`) test that instantiated
+  `openassetpricing.OpenAP()`, whose 0.0.2 constructor does a LIVE Google-Drive
+  metadata fetch → flaky whenever Drive rate-limits (returns a "Quota exceeded"
+  HTML page; polars then raises `ColumnNotFoundError` on the missing "Acronym"
+  column — hit live in this session's pre-push gate). Fix: check the API surface
+  on the OpenAP CLASS (`hasattr(openassetpricing.OpenAP, method)`) instead of an
+  instance — the 4 methods are class-level defs, so the scout signal (import
+  resolves + class exposed + methods present) stays in the default offline lane
+  with ZERO network dependency. The live instantiation+fetch path remains
+  covered by the `@network test_fetch_osap_returns_live` in the same file.
+
+**Files** (7): `frontend/app/layout.tsx` (pre-paint script) ·
+`frontend/app/globals.css` (pre-hydration width rule) ·
+`frontend/components/AppShell.tsx` (`animate` flag + class sync) ·
+`frontend/components/Sidebar.tsx` (`animate` prop + `data-sidebar-rail` +
+gated transition) · `frontend/components/PriceHistoryChart.tsx` (ResizeObserver
+re-park) · `tests/test_validation/test_ranking_history.py` +
+`tests/test_ingest/test_osap.py` (flaky guards).
+
+**Verification**: `ruff check .` clean · `pytest -m "not network"` → 1407
+passed (was 1406 + 1 OSAP-flake; now deterministic) · `tsc --noEmit` clean on
+edited files · `next build` → 506 routes · Playwright empirical: A.1 no-flash
+(rail 72px across 62 frames, never wide) / A.2 transition gated (rest→none,
+toggle→width, settle→none) / A.3 rotation instant (transition none, rail 72px) /
+B crosshair re-park (ratio before=1 / transient=0 / after=1) — all PASS.
+
+PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR"
+lockstep per PR #237 convention. No CLAUDE.md / AGENTS.md substance change
+required — the fixes don't introduce a new invariant future authors must
+remember beyond what the existing §Gotchas (`overflow-x: clip`, fluid root
+font-size, chart remount-key) already frame.
+
+---

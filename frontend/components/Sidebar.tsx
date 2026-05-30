@@ -70,12 +70,16 @@ const RESOURCE_ITEMS: Array<{ label: string; href: string; external: true; icon:
 
 interface SidebarProps {
   collapsed: boolean;
+  /** True only for the ~250ms around an explicit user toggle — gates the
+   *  width/transform transition so refresh + rotation switch instantly
+   *  (no "opens then shrinks back" flash). Owned by AppShell. */
+  animate: boolean;
   onToggleCollapse: () => void;
   mobileOpen: boolean;
   onMobileClose: () => void;
 }
 
-export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose }: SidebarProps) {
+export function Sidebar({ collapsed, animate, onToggleCollapse, mobileOpen, onMobileClose }: SidebarProps) {
   const pathname = usePathname() ?? '/';
 
   return (
@@ -98,7 +102,12 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose
 
       <aside
         aria-label="Primary navigation"
-        className={`fixed inset-y-0 left-0 z-40 flex flex-col border-r border-slate-200 bg-white [transition:transform_200ms_ease-out,width_200ms_ease-out] dark:border-slate-800 dark:bg-slate-950 md:sticky md:top-0 md:h-screen md:translate-x-0 ${
+        data-sidebar-rail=""
+        className={`fixed inset-y-0 left-0 z-40 flex flex-col border-r border-slate-200 bg-white ${
+          animate
+            ? '[transition:transform_200ms_ease-out,width_200ms_ease-out]'
+            : 'transition-none'
+        } dark:border-slate-800 dark:bg-slate-950 md:sticky md:top-0 md:h-screen md:translate-x-0 ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         } w-64 ${collapsed ? 'md:w-16 md:max-w-[64px]' : 'md:w-60 md:max-w-[240px]'}`}
       >

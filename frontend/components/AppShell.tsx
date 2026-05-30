@@ -17,6 +17,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  // `animate` gates the sidebar's width/transform transition. It is true ONLY
+  // for the ~250ms around an explicit user toggle (collapse chevron, mobile
+  // hamburger, backdrop). Hydration (refresh) and breakpoint/orientation
+  // changes (rotate) leave it false → the sidebar switches width/position
+  // INSTANTLY there, never animating. An animated width on those events is the
+  // "sidebar opens then shrinks back by itself" flash (Bug A).
+  const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
     const stored = typeof window !== 'undefined' && window.localStorage.getItem(STORAGE_KEY);
@@ -27,7 +34,34 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!hydrated) return;
     window.localStorage.setItem(STORAGE_KEY, collapsed ? '1' : '0');
+    // Keep the <html> class in lockstep with the live state so (a) the
+    // pre-paint script in layout.tsx reflects the latest choice on the NEXT
+    // refresh and (b) the pre-hydration width CSS (globals.css) never fights
+    // React once interactive — the class is removed the instant we expand.
+    document.documentElement.classList.toggle('sidebar-collapsed', collapsed);
   }, [collapsed, hydrated]);
+
+  // Turn the transition back off after an explicit toggle settles, so the next
+  // refresh / rotation / resize switches width instantly (Bug A). Re-armed by
+  // collapsed/mobileOpen so a second toggle inside the window resets the timer.
+  useEffect(() => {
+    if (!animate) return;
+    const t = window.setTimeout(() => setAnimate(false), 250);
+    return () => window.clearTimeout(t);
+  }, [animate, collapsed, mobileOpen]);
+
+  const toggleCollapse = () => {
+    setAnimate(true);
+    setCollapsed((c) => !c);
+  };
+  const openMobile = () => {
+    setAnimate(true);
+    setMobileOpen(true);
+  };
+  const closeMobile = () => {
+    setAnimate(true);
+    setMobileOpen(false);
+  };
 
   useEffect(() => {
     if (mobileOpen) {
@@ -44,9 +78,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-screen">
       <Sidebar
         collapsed={collapsed}
-        onToggleCollapse={() => setCollapsed((c) => !c)}
+        animate={animate}
+        onToggleCollapse={toggleCollapse}
         mobileOpen={mobileOpen}
-        onMobileClose={() => setMobileOpen(false)}
+        onMobileClose={closeMobile}
       />
 
       <div className="flex min-w-0 flex-1 flex-col">
@@ -54,7 +89,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <button
             type="button"
             aria-label="Open navigation"
-            onClick={() => setMobileOpen(true)}
+            onClick={openMobile}
             className="inline-flex h-9 w-9 items-center justify-center rounded-sm text-slate-600 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100 md:hidden"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

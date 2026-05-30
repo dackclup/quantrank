@@ -32,12 +32,17 @@ def test_package_imports_and_exposes_openap_class():
     larger Phase 4h integration commits to it.
     """
     assert hasattr(openassetpricing, "OpenAP")
-    # OpenAP() ctor takes optional release_year; instantiating it
-    # without args proves the default release path works without
-    # needing a network call.
-    instance = openassetpricing.OpenAP()
+    # Check the API surface on the CLASS, not an instance. Instantiating
+    # OpenAP() in openassetpricing 0.0.2 triggers a live Google-Drive metadata
+    # download inside the constructor — which made this default-lane scout test
+    # flaky whenever Drive rate-limits (the fetch returns a "Quota exceeded"
+    # HTML page and polars then raises ColumnNotFoundError on the missing
+    # "Acronym" column). The four methods are class-level defs, so hasattr
+    # resolves them without constructing an instance / hitting the network. The
+    # live instantiation + fetch path stays covered by the @network
+    # test_fetch_osap_returns_live below.
     for method in ("dl_port", "dl_signal", "dl_all_signals", "list_port"):
-        assert hasattr(instance, method), f"OpenAP missing method: {method}"
+        assert hasattr(openassetpricing.OpenAP, method), f"OpenAP missing method: {method}"
 
 
 def test_cache_hit_returns_parquet(monkeypatch, tmp_path):

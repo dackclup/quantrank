@@ -160,6 +160,28 @@ html.dark {
   color-scheme: dark;
 }
 
+/* Pre-hydration sidebar width (Bug A — "the sidebar opens then shrinks back
+ * by itself" on refresh). The static export bakes the EXPANDED sidebar markup
+ * into every page, so on refresh the rail paints at full width, then React
+ * reads localStorage and collapses it — a visible widthward flash. The inline
+ * script in layout.tsx adds `.sidebar-collapsed` to <html> BEFORE paint when
+ * the user's stored choice was collapsed; this rule then renders the rail at
+ * its collapsed width immediately, so React's post-hydration collapse causes
+ * no width change at all. Mirrors how next-themes pre-paints the dark class.
+ * Scoped to md+ — below md the sidebar is an off-canvas drawer, not a rail, so
+ * `collapsed` is a no-op there. `overflow:hidden` clips the not-yet-collapsed
+ * inner labels for the sub-paint moment until React applies the collapsed
+ * layout. AppShell keeps the class in sync with the live collapsed state once
+ * hydrated, so the rule never fights React's width after the app is
+ * interactive (the class is removed the instant the rail is expanded). */
+@media (min-width: 768px) {
+  html.sidebar-collapsed aside[data-sidebar-rail] {
+    width: 4rem;
+    max-width: 4rem;
+    overflow: hidden;
+  }
+}
+
 .font-mono,
 code {
   font-family: var(--font-mono);
