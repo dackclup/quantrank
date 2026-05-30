@@ -100,15 +100,16 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose
         aria-label="Primary navigation"
         className={`fixed inset-y-0 left-0 z-40 flex flex-col border-r border-slate-200 bg-white [transition:transform_200ms_ease-out,width_200ms_ease-out] dark:border-slate-800 dark:bg-slate-950 md:sticky md:top-0 md:h-screen md:translate-x-0 ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
-        } w-64 ${collapsed ? 'md:w-[96px]' : 'md:w-60 md:max-w-[240px]'}`}
+        } w-64 ${collapsed ? 'md:w-[84px]' : 'md:w-60 md:max-w-[240px]'}`}
       >
         {/* Header: wordmark (Q + "QuantRank") + collapse toggle. The expanded
             rail (240px) shows Q + wordmark with the chevron pushed right
             (ml-auto). When COLLAPSED at md+ the rail narrows to a FIXED 96px
             and centers the green Q logo + the expand-chevron side-by-side in
-            ONE ROW (md:justify-center; 96px fits the Q + the vertical-rectangle
-            expand-chevron `md:h-12 md:w-6` with a gap — a 64px rail could not,
-            hence the earlier overlap). The chevron is square (h-8 w-8) when
+            ONE ROW (md:justify-center; 84px snugly fits the 32px Q + the 27px
+            vertical-rectangle expand-chevron `md:h-12 md:w-6` + the gap + px-2 —
+            a 64px rail could not, hence the earlier overlap). The chevron is
+            square (h-8 w-8) when
             expanded, a taller portrait rectangle when collapsed. The
             "QuantRank" wordmark hides when collapsed; the green Q stays visible
             (2026-05-29 user request). The mobile drawer (< md) always shows the

@@ -3815,4 +3815,11 @@ expanded keeps the `h-8 w-8` square. Verified (Playwright, collapsed @900):
 chevron w27×h54 (vertical), Q 32×32, still one row / no overlap / 96px rail.
 `tsc` + `next build` (506) clean.
 
+**Follow-up 8 — tune collapsed rail width for a snug fit (user "ปรับ px ...
+ให้พอดี"):** with the narrower vertical chevron (27px vs the old 32px square) the
+96px rail had ~7px of excess slack each side. Narrowed to a fixed **84px**
+(`md:w-[84px]`) = 32px Q + gap + 27px chevron + px-2 (≈81px content). Verified
+@900: rail 84px, Q x10–42 / chevron x46–73 (group fills the content area with
+~1–2px slack beyond px-2), no overlap. `tsc` + `next build` (506) clean.
+
 ---
