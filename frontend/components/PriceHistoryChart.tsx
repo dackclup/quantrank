@@ -124,6 +124,11 @@ export function PriceHistoryChart({
       firstPeriodRender.current = false;
       return;
     }
+    // Clear the scrub index from the OLD period — otherwise hoverIndex stays
+    // non-null on the new window (scrubbing=true), which suppresses the period
+    // label ("past year") permanently after a switch + parks the crosshair at a
+    // clamped stale index until the next hover (frontend-design-reviewer 4b).
+    setHoverIndex(null);
     setPlayDraw(true);
     setSweepKey((k) => k + 1);
   }, [period]);
@@ -508,22 +513,33 @@ export function PriceHistoryChart({
       if (c > hi) hi = c;
     }
     const pad = (hi - lo || hi || 1) * 0.1;
-    const geom = measurePlot(wrap, lo - pad, hi + pad, closesArr);
-    if (!geom) {
-      svg.style.opacity = '0';
-      return;
-    }
-    const rawIdx = hoverIndex ?? chartData.length - 1;
-    const i = Math.max(0, Math.min(chartData.length - 1, rawIdx));
-    const x = (i / (chartData.length - 1)) * geom.w;
-    const y = geom.closeToY(chartData[i].close);
-    line.setAttribute('x1', String(x));
-    line.setAttribute('x2', String(x));
-    line.setAttribute('y1', String(geom.plotTop));
-    line.setAttribute('y2', String(geom.plotTop + geom.plotH));
-    dot.setAttribute('cx', String(x));
-    dot.setAttribute('cy', String(y));
-    svg.style.opacity = '1';
+    let raf = 0;
+    const place = (tries: number) => {
+      const geom = measurePlot(wrap, lo - pad, hi + pad, closesArr);
+      if (!geom) {
+        // On the FIRST mount the curve isn't painted yet, so measurePlot returns
+        // null and the rest crosshair would never appear until the first hover.
+        // Retry on the next frame (capped) until Recharts has painted the curve.
+        if (tries < 20) raf = requestAnimationFrame(() => place(tries + 1));
+        else svg.style.opacity = '0';
+        return;
+      }
+      const rawIdx = hoverIndex ?? chartData.length - 1;
+      const i = Math.max(0, Math.min(chartData.length - 1, rawIdx));
+      const x = (i / (chartData.length - 1)) * geom.w;
+      const y = geom.closeToY(chartData[i].close);
+      line.setAttribute('x1', String(x));
+      line.setAttribute('x2', String(x));
+      line.setAttribute('y1', String(geom.plotTop));
+      line.setAttribute('y2', String(geom.plotTop + geom.plotH));
+      dot.setAttribute('cx', String(x));
+      dot.setAttribute('cy', String(y));
+      svg.style.opacity = '1';
+    };
+    place(0);
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hoverIndex, chartData, playDraw, mounted, resolvedTheme, restKey, layoutKey, sweepKey]);
 
@@ -1017,6 +1033,11 @@ export function PriceHistoryChart({
         <svg
           ref={overlaySvgRef}
           className="pointer-events-none absolute inset-0 h-full w-full"
+          // overflow:visible so the rest-state dot at the flush-right edge
+          // (cx=w, r=4) isn't half-clipped by the overlay's own viewport. Safe:
+          // globals.css `html,body { overflow-x: clip }` (PR #322) is the
+          // document-level backstop against any 4px overflow widening the layout.
+          overflow="visible"
           style={{ opacity: 0 }}
           aria-hidden="true"
         >
