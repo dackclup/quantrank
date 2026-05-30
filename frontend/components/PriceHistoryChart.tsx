@@ -107,6 +107,11 @@ export function PriceHistoryChart({
   // Re-run the sweep on every period change (1D-5Y). The period state drives
   // chartData, so a new window's line draws in left→right too. Skipped on the
   // very first render (the scroll-into-view observer owns the first sweep).
+  // Motion Rule 2 ("no re-firing on in-page interaction") gray zone: a period
+  // switch REPLACES the entire data series (a new line arriving), not a
+  // re-stagger of existing content — the case Rule 2 actually targets — so
+  // re-sweeping the new series reads as "new data drawing in", which is the
+  // intended affordance (user-requested 2026-05-30).
   const firstPeriodRender = useRef(true);
   useEffect(() => {
     if (firstPeriodRender.current) {
@@ -559,8 +564,19 @@ export function PriceHistoryChart({
             re-adds the `chart-sweep` class, replaying the left→right clip-path
             reveal. h-full so the clip covers the whole chart canvas. The
             ResponsiveContainer + AreaChart live INSIDE so the line, fill, and
-            parked crosshair are all revealed by the one clip together. */}
-        <div key={sweepKey} className="chart-sweep h-full w-full">
+            parked crosshair are all revealed by the one clip together.
+            The class is GATED on sweepKey > 0: the initial key=0 mount renders
+            WITHOUT the class (no animation) so the sweep plays exactly ONCE,
+            driven by the IntersectionObserver when the chart scrolls into view
+            (sweepKey 0→1) — never a double-play from the static class animating
+            on mount AND the observer firing (the gauge `usePlayOnMount` gate,
+            adapted: here the IO is the play trigger, so sweepKey itself is the
+            client-side gate). Period changes bump it further (1→2→…), each a
+            fresh sweep. Reduced-motion still no-ops via the globals.css guard. */}
+        <div
+          key={sweepKey}
+          className={`h-full w-full${sweepKey > 0 ? ' chart-sweep' : ''}`}
+        >
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             key={`${period}-${restKey}-${layoutKey}`}

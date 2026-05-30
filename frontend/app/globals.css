@@ -414,10 +414,15 @@ code {
  * so they appear to "draw in" together rather than animating separately.
  * Plays on (a) the chart first scrolling into view on the detail page and
  * (b) every 1D-5Y period change, by re-adding the class via a key remount of
- * the wrapper. transform/clip + opacity only (Motion Rule 1); the chart
- * renders at its FINAL state with no class (SSR / no-JS / reduced-motion all
- * show the full chart immediately). 1100ms — the longest beat after the gauge,
- * justified because it IS the page's primary data visual. */
+ * the wrapper. Motion Rule 1 says "transform + opacity only" — clip-path is a
+ * documented EXTENSION (same posture as the gauge's stroke-dashoffset, which is
+ * also neither transform nor opacity): clip-path:inset() causes NO layout
+ * reflow and is GPU-compositable on Chrome 90+/Safari 16+, so it honors the
+ * rule's intent (no reflow, compositor-friendly) the way the literal
+ * transform/opacity pair does. The chart renders at its FINAL state with no
+ * class (SSR / no-JS / reduced-motion all show the full chart immediately).
+ * 1100ms — the longest beat after the gauge, justified because it IS the page's
+ * primary data visual. */
 @keyframes chart-sweep {
   from {
     clip-path: inset(0 100% 0 -8px);
