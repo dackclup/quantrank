@@ -167,12 +167,20 @@ export function PriceHistoryChart({
   //   1. ease progress p (fast→slow), x = ease(p)·width
   //   2. reveal the price line+fill by clipping ONLY `.recharts-area` to [0,x]
   //      (a sibling of `.recharts-xAxis`, so the axis + date labels stay PUT)
-  //   3. place the crosshair line + dot at x; the dot y comes from a ONE-TIME
-  //      precomputed x→y table off the (now static) curve, so per-frame cost is
-  //      an array lookup, not a path walk → smooth
+  //   3. place the crosshair line + dot at x; the dot y is computed by PURE MATH
+  //      from chartData close values + the y-domain (NOT getPointAtLength — see
+  //      the perf note below), so per-frame cost is O(1) → smooth even on a 5Y
+  //      / 1260-point series on a throttled phone.
   // At p=1 the area clip is cleared (full line, flush-right dot via overflow-
   // visible) and the overlay fades, handing the rest crosshair to Recharts.
-  const DRAW_MS = 850;
+  //
+  // PERF (2026-05-30 "app ค้างหนัก" fix): the previous version sampled the dot y
+  // by walking the SVG path with getPointAtLength (121 samples × 16 binary-search
+  // iters ≈ 2057 calls per sweep). getPointAtLength is O(path length) PER CALL —
+  // on a 5Y curve (56 KB `d` string) that was ~47 s of main-thread work under a
+  // 4-6× CPU throttle → the whole page froze. Computing y from the in-memory
+  // close[] array instead is O(1) per point: zero path walks, zero freeze.
+  const DRAW_MS = 650;
   useEffect(() => {
     if (!playDraw) return;
     if (typeof window === 'undefined') {
@@ -186,7 +194,7 @@ export function PriceHistoryChart({
     const svg = overlaySvgRef.current;
     const line = overlayLineRef.current;
     const dot = overlayDotRef.current;
-    if (reduce || !wrap || !svg || !line || !dot) {
+    if (reduce || !wrap || !svg || !line || !dot || chartData.length < 2) {
       setPlayDraw(false);
       return;
     }
@@ -196,43 +204,65 @@ export function PriceHistoryChart({
       if (a) a.style.clipPath = '';
     };
 
+    const yLo = (yDomain as [number, number])[0];
+    const yHi = (yDomain as [number, number])[1];
+    const ySpan = yHi - yLo || 1;
     const easeOut = (t: number) => 1 - Math.pow(1 - t, 3); // fast→slow
-    const N = 120; // x→y samples across the curve (precomputed once)
-    let ys: number[] = [];
+    const closes = chartData.map((d) => d.close);
+    const nSeg = closes.length - 1; // x maps [0,nSeg] across the plot width
     let area: SVGGElement | null = null;
     let w = 1;
     let h = 1;
+    // Real plot-area vertical extent (top y + height), read ONCE from the
+    // curve's bounding box — NOT assumed from margin. Recharts' plot area is
+    // inset from the surface by the X-axis height (~51 px) at the bottom + an
+    // auto top pad (~29 px), so a naive [marginTop, surfaceHeight] map put the
+    // crosshair dot ~27 px off the line. getBBox is O(1) (no path walk like
+    // getPointAtLength) so it's cheap to read once. closeToY maps a price
+    // through the SAME linear y-scale Recharts uses over [plotTop, plotTop+plotH].
+    let plotTop = 0;
+    let plotH = 1;
+    const closeToY = (close: number) =>
+      plotTop + (1 - (close - yLo) / ySpan) * plotH;
     let t0 = 0;
     const startedAt = performance.now();
 
-    // One-time prep: measure + sample the STATIC curve. Returns false until
-    // Recharts has painted the path (we poll a few frames for it).
+    // One-time prep: grab the area node + surface size + the real plot extent
+    // from the curve bbox. Returns false until Recharts has painted the curve.
     const prep = (): boolean => {
-      const curve = wrap.querySelector(
-        '.recharts-area-curve',
-      ) as SVGPathElement | null;
       area = wrap.querySelector('.recharts-area') as SVGGElement | null;
       const surf = wrap.querySelector(
         '.recharts-surface',
       ) as SVGSVGElement | null;
-      if (!curve || !area || !surf) return false;
+      const curve = wrap.querySelector(
+        '.recharts-area-curve',
+      ) as SVGPathElement | null;
+      if (!area || !surf || !curve) return false;
       const rect = surf.getBoundingClientRect();
       w = rect.width || 1;
       h = rect.height || 1;
-      const L = curve.getTotalLength();
-      if (L === 0) return false;
-      ys = new Array(N + 1);
-      for (let i = 0; i <= N; i += 1) {
-        const tx = (i / N) * w;
-        let lo = 0;
-        let hi = L;
-        for (let k = 0; k < 16; k += 1) {
-          const mid = (lo + hi) / 2;
-          if (curve.getPointAtLength(mid).x < tx) lo = mid;
-          else hi = mid;
-        }
-        ys[i] = curve.getPointAtLength((lo + hi) / 2).y;
+      let bb: DOMRect;
+      try {
+        bb = curve.getBBox();
+      } catch {
+        return false; // not laid out yet
       }
+      if (bb.height === 0 || bb.width === 0) return false;
+      // The curve bbox spans the visible price range, but the y-DOMAIN is padded
+      // ±10% beyond [min,max] (see yDomain), so the plot area is taller than the
+      // bbox. Recover the full plot extent: the bbox top/bottom correspond to the
+      // domain's data-max/data-min, which sit 10%/(120%) in from the padded
+      // domain edges. plotH = bbox.h / (dataSpan/paddedSpan). Simpler + robust:
+      // derive px-per-price from the bbox (price min→max over bbox.height) and
+      // extend to the padded domain.
+      const dataMax = Math.max(...closes);
+      const dataMin = Math.min(...closes);
+      const dataSpan = dataMax - dataMin || 1;
+      const pxPerPrice = bb.height / dataSpan; // px per $ on the real plot
+      plotH = ySpan * pxPerPrice; // full padded-domain height in px
+      // bbox.y is where dataMax sits; that price is (yHi - dataMax) below the
+      // padded-domain top → plotTop = bbox.y - (yHi - dataMax)*pxPerPrice.
+      plotTop = bb.y - (yHi - dataMax) * pxPerPrice;
       // hide the line/fill immediately so it reveals from x=0 (no full-flash).
       // -20px vertical insets keep the stroke top/bottom from being clipped.
       area.style.clipPath = 'inset(-20px 100% -20px 0)';
@@ -242,7 +272,7 @@ export function PriceHistoryChart({
     const tick = (now: number) => {
       if (t0 === 0) {
         if (now - startedAt > 500) {
-          // curve never painted — bail to the static chart
+          // area never painted — bail to the static chart
           clearAreaClip();
           setPlayDraw(false);
           return;
@@ -258,11 +288,13 @@ export function PriceHistoryChart({
       const x = e * w;
       // reveal the line+fill up to x (clip the part to the RIGHT of x)
       if (area) area.style.clipPath = `inset(-20px ${Math.max(0, w - x)}px -20px 0)`;
-      // crosshair dot y — interpolate the precomputed table at x
-      const fi = e * N;
-      const i0 = Math.min(N - 1, Math.floor(fi));
-      const frac = fi - i0;
-      const y = ys[i0] + (ys[i0 + 1] - ys[i0]) * frac;
+      // crosshair dot y — interpolate the close[] array at the swept fraction,
+      // then map through the y-scale. plot area height = h - marginTop.
+      const fseg = e * nSeg;
+      const s0 = Math.min(nSeg - 1, Math.floor(fseg));
+      const frac = fseg - s0;
+      const close = closes[s0] + (closes[s0 + 1] - closes[s0]) * frac;
+      const y = closeToY(close);
       line.setAttribute('x1', String(x));
       line.setAttribute('x2', String(x));
       line.setAttribute('y1', '0');
@@ -341,7 +373,15 @@ export function PriceHistoryChart({
   }, [data]);
 
   const chartData = useMemo(
-    () => sliceByPeriod(fullChartData, period),
+    // Downsample after slicing so the path Recharts builds stays small. A 5Y
+    // window is ~1260 daily points → a ~56 KB SVG `d` string, whose ONE-TIME
+    // render is a ~380 ms main-thread task on a throttled phone (the "เปิดหน้า
+    // ค้างหนัก" report). At a ~360-700 px chart width there are far more points
+    // than pixels, so capping to MAX_POINTS (evenly, always keeping the last
+    // point so the latest price + flush-right crosshair are exact) is visually
+    // lossless but cuts the path ~5× → no freeze. Shorter windows (≤ MAX_POINTS)
+    // pass through untouched.
+    () => downsample(sliceByPeriod(fullChartData, period), 260),
     [fullChartData, period],
   );
 
@@ -883,6 +923,26 @@ const PERIOD_LABEL: Record<TimePeriod, string> = {
 // array down to the visible window for the selected period. 1D / 5D
 // / 5Y are deferred (selector disables them) so they never reach
 // here, but the function returns the full series as a safe fallback.
+// Cap a point series to at most `maxPoints` by even stride sampling, ALWAYS
+// keeping the first and last points (so the visible price range + the latest
+// price / flush-right crosshair stay exact). Series already ≤ maxPoints pass
+// through unchanged. Purely for render cost — at typical chart widths there are
+// far more daily points than pixels, so the dropped points are sub-pixel.
+export function downsample(
+  points: ChartPoint[],
+  maxPoints: number,
+): ChartPoint[] {
+  const n = points.length;
+  if (n <= maxPoints || maxPoints < 2) return points;
+  const out: ChartPoint[] = [];
+  const stride = (n - 1) / (maxPoints - 1);
+  for (let i = 0; i < maxPoints - 1; i += 1) {
+    out.push(points[Math.round(i * stride)]);
+  }
+  out.push(points[n - 1]); // exact last point
+  return out;
+}
+
 export function sliceByPeriod(
   points: ChartPoint[],
   period: TimePeriod,
