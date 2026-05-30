@@ -405,43 +405,17 @@ code {
   animation: gauge-sweep 800ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* Price-chart intro sweep — the line + area + crosshair are revealed
- * left→right by animating a clip-path inset from "fully clipped on the right"
- * (inset 0 100% 0 0 → nothing visible) to "fully revealed" (inset 0 0 0 0).
- * The ease-out curve (fast→slow, decelerating into the latest point on the
- * right) matches the gauge-sweep family. One clip wrapper reveals EVERYTHING
- * inside the SVG at once — line, gradient fill, and the parked crosshair —
- * so they appear to "draw in" together rather than animating separately.
- * Plays on (a) the chart first scrolling into view on the detail page and
- * (b) every 1D-5Y period change, by re-adding the class via a key remount of
- * the wrapper. Motion Rule 1 says "transform + opacity only" — clip-path is a
- * documented EXTENSION (same posture as the gauge's stroke-dashoffset, which is
- * also neither transform nor opacity): clip-path:inset() causes NO layout
- * reflow and is GPU-compositable on Chrome 90+/Safari 16+, so it honors the
- * rule's intent (no reflow, compositor-friendly) the way the literal
- * transform/opacity pair does. The chart renders at its FINAL state with no
- * class (SSR / no-JS / reduced-motion all show the full chart immediately).
- * 1100ms — the longest beat after the gauge, justified because it IS the page's
- * primary data visual. */
-@keyframes chart-sweep {
-  from {
-    clip-path: inset(0 100% 0 -8px);
-    -webkit-clip-path: inset(0 100% 0 -8px);
-  }
-  to {
-    clip-path: inset(0 -8px 0 -8px);
-    -webkit-clip-path: inset(0 -8px 0 -8px);
-  }
-}
-.chart-sweep {
-  /* The RIGHT inset ends at -8px (not 0) so the flush-right parked crosshair
-   * dot — which half-overflows the surface via `[&_.recharts-surface]:
-   * overflow-visible` (PR #322) — is NOT re-clipped at the box edge when the
-   * sweep finishes. A plain `inset(0 0 0 0)` clip cuts that dot in half (clip
-   * respects the box edge, ignoring overflow-visible). The -8px left inset
-   * keeps the reveal symmetric so the leftmost point isn't clipped either. */
-  animation: chart-sweep 1100ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
+/* Price-chart intro draw — the line + fill are revealed left→right by
+ * Recharts' OWN area-draw animation (the component sets `isAnimationActive` +
+ * ease-out on a sweep remount), and a self-drawn crosshair overlay rides the
+ * curve left→right in lockstep (rAF in PriceHistoryChart.tsx). This replaced an
+ * earlier clip-path-on-the-wrapper approach, which also revealed the X-axis +
+ * date labels — the user wanted those to stay PUT. Recharts animates only the
+ * `.recharts-area` layer (a sibling of `.recharts-xAxis`), so the axis no
+ * longer moves. No CSS keyframe is needed here anymore; the animation is
+ * JS-driven and reduced-motion is handled in the component (skip the rAF + pass
+ * isAnimationActive=false), so SSR / no-JS / reduced-motion show the full chart
+ * immediately. */
 
 /* Hover lift — table rows / cards rise a hair on hover. Kept tiny
  * (1px) + fast so it reads as "alive" not "bouncy"; pairs with the
@@ -466,16 +440,8 @@ code {
   .animate-rise-in,
   .animate-chip-pop,
   .animate-flag-pulse,
-  .gauge-sweep,
-  .chart-sweep {
+  .gauge-sweep {
     animation: none !important;
-  }
-  /* The sweep clips the chart while running; reduced-motion skips the
-   * animation, so force the clip OFF too or the chart would stay hidden
-   * at the keyframe's `from` (inset 0 100% — fully clipped). */
-  .chart-sweep {
-    clip-path: none !important;
-    -webkit-clip-path: none !important;
   }
   .hover-lift {
     transition: none !important;

@@ -66,15 +66,26 @@ export function PriceHistoryChart({
   // remount is how we re-assert it on those events.
   const [restKey, setRestKey] = useState(0);
   const [layoutKey, setLayoutKey] = useState(0);
-  // `sweepKey` keys the clip-path intro-sweep wrapper: bumping it remounts the
-  // wrapper, which re-adds the `chart-sweep` class → the line + crosshair
-  // re-reveal left→right (ease-out, fast→slow into the latest point). Bumped on
-  // (a) the chart first scrolling into view (IntersectionObserver below) and
-  // (b) every period change (the period effect below).
+  // `sweepKey` keys the chart on an intro replay (remounts <AreaChart> so
+  // Recharts re-runs its left→right area-draw animation); `playDraw` is the
+  // gate that says "this remount should ANIMATE" (true only for a sweep — IO
+  // scroll-in or period change — NOT for the rest/resize re-park remounts, which
+  // must stay instant). Bumped together by the sweep triggers below.
   const [sweepKey, setSweepKey] = useState(0);
+  const [playDraw, setPlayDraw] = useState(false);
   // Gate so the scroll-into-view sweep fires only the FIRST time the chart
   // enters the viewport (not on every scroll up/down past it).
   const hasSwept = useRef(false);
+  // Self-drawn intro crosshair overlay (a vertical line + a dot that RIDES the
+  // price curve), animated left→right by rAF in sync with the area draw. During
+  // the sweep the Recharts cursor + activeDot are suppressed (playDraw) so only
+  // this animated crosshair shows; at the end it fades and Recharts' parked
+  // cursor/dot take over at the latest point. Refs let the rAF mutate the SVG
+  // attributes directly (no per-frame React re-render).
+  const overlaySvgRef = useRef<SVGSVGElement | null>(null);
+  const overlayLineRef = useRef<SVGLineElement | null>(null);
+  const overlayDotRef = useRef<SVGCircleElement | null>(null);
+  const drawRafRef = useRef<number | null>(null);
   // Chart wrapper — observed for WIDTH changes to re-park the crosshair (Bug B).
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const { resolvedTheme } = useTheme();
@@ -94,6 +105,7 @@ export function PriceHistoryChart({
       (entries) => {
         if (entries[0]?.isIntersecting && !hasSwept.current) {
           hasSwept.current = true;
+          setPlayDraw(true);
           setSweepKey((k) => k + 1);
           io.disconnect();
         }
@@ -118,8 +130,94 @@ export function PriceHistoryChart({
       firstPeriodRender.current = false;
       return;
     }
+    setPlayDraw(true);
     setSweepKey((k) => k + 1);
   }, [period]);
+
+  // Drive the intro crosshair left→right in sync with the area-draw animation.
+  // Runs on each sweep (sweepKey bump while playDraw is true). Each frame:
+  //   1. ease-out progress p (fast→slow) over DRAW_MS
+  //   2. target x = p · surfaceWidth
+  //   3. find the price-curve point at that x via getPointAtLength binary
+  //      search → the dot RIDES the line; the vertical line spans full height
+  //   4. write x/y straight onto the SVG line+dot refs (no React re-render)
+  // When p reaches 1 the overlay fades and playDraw flips false, handing the
+  // rest-state crosshair back to Recharts' parked cursor + activeDot at the
+  // latest point. Reduced-motion: skip the rAF, leave playDraw false so the
+  // Recharts cursor shows immediately (the area also renders un-animated).
+  const DRAW_MS = 1100;
+  useEffect(() => {
+    if (!playDraw) return;
+    if (typeof window === 'undefined') return;
+    const reduce =
+      window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) {
+      setPlayDraw(false);
+      return;
+    }
+    const wrap = wrapperRef.current;
+    const svg = overlaySvgRef.current;
+    const line = overlayLineRef.current;
+    const dot = overlayDotRef.current;
+    if (!wrap || !svg || !line || !dot) {
+      setPlayDraw(false);
+      return;
+    }
+    // Recharts renders async after the remount; poll briefly for the curve.
+    let t0 = 0;
+    let startedAt = performance.now();
+    const easeOut = (t: number) => 1 - Math.pow(1 - t, 3); // fast→slow
+    const tick = (now: number) => {
+      const curve = wrap.querySelector(
+        '.recharts-area-curve',
+      ) as SVGPathElement | null;
+      const surf = wrap.querySelector('.recharts-surface') as SVGSVGElement | null;
+      if (!curve || !surf) {
+        // curve not painted yet — wait up to ~400ms, then bail to Recharts
+        if (now - startedAt > 400) {
+          setPlayDraw(false);
+          return;
+        }
+        drawRafRef.current = requestAnimationFrame(tick);
+        return;
+      }
+      if (t0 === 0) t0 = now; // start the clock when the curve first exists
+      const w = surf.getBoundingClientRect().width || 1;
+      const h = surf.getBoundingClientRect().height || 1;
+      const p = Math.min(1, (now - t0) / DRAW_MS);
+      const x = easeOut(p) * w;
+      // binary-search the curve length whose point.x ≈ target x
+      const L = curve.getTotalLength();
+      let lo = 0;
+      let hi = L;
+      for (let i = 0; i < 18; i += 1) {
+        const mid = (lo + hi) / 2;
+        if (curve.getPointAtLength(mid).x < x) lo = mid;
+        else hi = mid;
+      }
+      const pt = curve.getPointAtLength((lo + hi) / 2);
+      line.setAttribute('x1', String(x));
+      line.setAttribute('x2', String(x));
+      line.setAttribute('y1', '0');
+      line.setAttribute('y2', String(h));
+      dot.setAttribute('cx', String(x));
+      dot.setAttribute('cy', String(pt.y));
+      svg.style.opacity = '1';
+      if (p < 1) {
+        drawRafRef.current = requestAnimationFrame(tick);
+      } else {
+        // hand off to Recharts' parked cursor/dot, then hide the overlay
+        svg.style.opacity = '0';
+        setPlayDraw(false);
+      }
+    };
+    drawRafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (drawRafRef.current !== null) cancelAnimationFrame(drawRafRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sweepKey, playDraw]);
 
   // Crosshair re-park on layout change (rotation / window resize / sidebar
   // expand-collapse) is handled by the ResizeObserver effect just below the
@@ -522,7 +620,7 @@ export function PriceHistoryChart({
           layout viewport from ever growing. */}
       <div
         ref={wrapperRef}
-        className="h-64 w-full [&_.recharts-surface]:overflow-visible"
+        className="relative h-64 w-full [&_.recharts-surface]:overflow-visible"
         style={{ touchAction: 'pan-y' }}
         onPointerDown={(e) => {
           // A tap WITHOUT a drag must move the crosshair to the tap point.
@@ -560,26 +658,16 @@ export function PriceHistoryChart({
           if (e.pointerType !== 'touch') setRestKey((k) => k + 1);
         }}
       >
-        {/* Intro-sweep wrapper — keyed by sweepKey so a bump remounts it and
-            re-adds the `chart-sweep` class, replaying the left→right clip-path
-            reveal. h-full so the clip covers the whole chart canvas. The
-            ResponsiveContainer + AreaChart live INSIDE so the line, fill, and
-            parked crosshair are all revealed by the one clip together.
-            The class is GATED on sweepKey > 0: the initial key=0 mount renders
-            WITHOUT the class (no animation) so the sweep plays exactly ONCE,
-            driven by the IntersectionObserver when the chart scrolls into view
-            (sweepKey 0→1) — never a double-play from the static class animating
-            on mount AND the observer firing (the gauge `usePlayOnMount` gate,
-            adapted: here the IO is the play trigger, so sweepKey itself is the
-            client-side gate). Period changes bump it further (1→2→…), each a
-            fresh sweep. Reduced-motion still no-ops via the globals.css guard. */}
-        <div
-          key={sweepKey}
-          className={`h-full w-full${sweepKey > 0 ? ' chart-sweep' : ''}`}
-        >
+        {/* The intro is now driven by (a) Recharts' OWN left→right area-draw
+            animation (animated only on a sweep remount via `playDraw`), which
+            reveals the line + fill WITHOUT touching the X-axis or its date
+            labels (the axis is a sibling layer, so it stays put — user request),
+            and (b) a self-drawn crosshair overlay (below) that rides the curve
+            left→right in lockstep. `sweepKey` remounts the chart to replay the
+            draw; the remount is keyed together with restKey/layoutKey. */}
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
-            key={`${period}-${restKey}-${layoutKey}`}
+            key={`${period}-${restKey}-${layoutKey}-${sweepKey}`}
             data={chartData}
             margin={{ top: 8, right: 0, left: 0, bottom: 0 }}
           >
@@ -600,15 +688,24 @@ export function PriceHistoryChart({
                 the active-point dot Recharts draws at the hovered/parked index).
                 The price BOX is removed per user request — `content={() => null}`
                 renders no popup, so the chart shows just the crosshair line
-                tracking the finger/pointer with no obscuring panel. The dot at
-                the active point is the Area's activeDot, set below. */}
+                tracking the finger/pointer with no obscuring panel. The cursor
+                is suppressed (transparent) WHILE the intro draw plays so only
+                the self-drawn animated crosshair shows; once the draw ends
+                (playDraw → false) this parked cursor takes over at the latest
+                point. Bolder color than before (slate-600/300 + 1.5px solid) so
+                it reads clearly against both the line and the slate page bg
+                (user: "crosshair กลืนกับกราฟและพื้นหลัง"). */}
             <Tooltip
               content={() => null}
-              cursor={{
-                stroke: isDark ? '#64748b' : '#94a3b8',
-                strokeWidth: 1,
-                strokeDasharray: '3 3',
-              }}
+              cursor={
+                playDraw
+                  ? false
+                  : {
+                      stroke: isDark ? '#cbd5e1' : '#475569',
+                      strokeWidth: 1.5,
+                      strokeDasharray: '4 3',
+                    }
+              }
               defaultIndex={chartData.length - 1}
               isAnimationActive={false}
             />
@@ -619,13 +716,22 @@ export function PriceHistoryChart({
               strokeWidth={2}
               fill={`url(#${trendFillId})`}
               dot={false}
-              activeDot={{
-                r: 4,
-                fill: trendStroke,
-                stroke: isDark ? '#0f172a' : '#ffffff',
-                strokeWidth: 2,
-              }}
-              isAnimationActive={false}
+              activeDot={
+                playDraw
+                  ? false
+                  : {
+                      r: 4,
+                      fill: trendStroke,
+                      stroke: isDark ? '#0f172a' : '#ffffff',
+                      strokeWidth: 2,
+                    }
+              }
+              // Animate the left→right area draw ONLY on a sweep remount
+              // (playDraw). The rest/resize re-park remounts keep it instant so
+              // the crosshair re-park doesn't visibly redraw the whole line.
+              isAnimationActive={playDraw}
+              animationDuration={DRAW_MS}
+              animationEasing="ease-out"
             />
             {fairInRange && (
               <ReferenceLine
@@ -646,7 +752,44 @@ export function PriceHistoryChart({
             )}
           </AreaChart>
         </ResponsiveContainer>
-        </div>
+
+        {/* Self-drawn intro crosshair overlay — absolutely positioned ON TOP of
+            the chart, spanning the same box. The rAF effect above animates the
+            line (full-height vertical) + the dot (riding the price curve) from
+            x=0 → right edge in ease-out lockstep with the area draw, then sets
+            opacity 0 and hands the rest-state crosshair back to Recharts. It is
+            opacity 0 + pointer-events-none at rest so it never blocks scrubbing.
+            Colors match the bolder Recharts cursor (slate-600/300) so the
+            animated and parked crosshairs look identical. preserveAspectRatio
+            none + a viewBox synced to the surface px size would over-engineer
+            this — instead the rAF writes RAW px coords (the SVG has no viewBox,
+            so user units == px), matching the surface 1:1 since margins are 0. */}
+        <svg
+          ref={overlaySvgRef}
+          className="pointer-events-none absolute inset-0 h-full w-full"
+          style={{ opacity: 0 }}
+          aria-hidden="true"
+        >
+          <line
+            ref={overlayLineRef}
+            x1={0}
+            x2={0}
+            y1={0}
+            y2={0}
+            stroke={isDark ? '#cbd5e1' : '#475569'}
+            strokeWidth={1.5}
+            strokeDasharray="4 3"
+          />
+          <circle
+            ref={overlayDotRef}
+            cx={0}
+            cy={0}
+            r={4}
+            fill={trendStroke}
+            stroke={isDark ? '#0f172a' : '#ffffff'}
+            strokeWidth={2}
+          />
+        </svg>
       </div>
     </div>
   );
