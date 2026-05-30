@@ -83,7 +83,7 @@ export function ThemeToggle({ layout = 'icon' }: ThemeToggleProps) {
           {icon}
         </span>
         <span className="truncate">Theme</span>
-        <span className="ml-auto text-[11px] font-medium text-slate-500 dark:text-slate-400">
+        <span className="ml-auto text-[0.6875rem] font-medium text-slate-500 dark:text-slate-400">
           {label}
         </span>
       </button>

@@ -7,7 +7,7 @@ export default function HomePage() {
 
   return (
     <section className="space-y-6">
-      <header className="space-y-2">
+      <header className="max-w-3xl space-y-2">
         <h1 className="font-slab text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-3xl">S&amp;P 500 ranking</h1>
         <p className="text-sm text-slate-500 dark:text-slate-400">
           Last updated:{' '}

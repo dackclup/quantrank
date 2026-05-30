@@ -111,7 +111,7 @@ export function PillarRadarChart({
           </p>
         </div>
         {baseline && (
-          <div className="inline-flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+          <div className="inline-flex items-center gap-1.5 text-[0.6875rem] text-slate-500 dark:text-slate-400">
             <span aria-hidden="true" className="inline-block h-3 w-0.5 bg-slate-400 dark:bg-slate-500" />
             {baseline.label}
           </div>
@@ -136,7 +136,7 @@ export function PillarRadarChart({
             >
               <div className="min-w-0">
                 <div className="text-sm font-medium text-slate-800 dark:text-slate-200">{r.label}</div>
-                <div className="truncate text-[10px] text-slate-400 dark:text-slate-500">
+                <div className="truncate text-[0.625rem] text-slate-400 dark:text-slate-500">
                   {PILLAR_DESCRIPTIONS[r.label]}
                 </div>
               </div>
@@ -166,7 +166,7 @@ export function PillarRadarChart({
                 >
                   {r.value.toFixed(0)}
                 </div>
-                <div className="text-[10px] text-slate-400 dark:text-slate-500">{tierLabel(r.value)}</div>
+                <div className="text-[0.625rem] text-slate-400 dark:text-slate-500">{tierLabel(r.value)}</div>
               </div>
             </li>
           );
@@ -178,7 +178,7 @@ export function PillarRadarChart({
           inside align with the bars above). */}
       <div className="mt-2 grid grid-cols-[8rem_1fr_4.5rem] items-center gap-3">
         <div />
-        <div className="relative h-4 text-[10px] text-slate-400 dark:text-slate-500">
+        <div className="relative h-4 text-[0.625rem] text-slate-400 dark:text-slate-500">
           <span className="absolute left-0">0</span>
           <span className="absolute left-[30%] -translate-x-1/2">30</span>
           <span className="absolute left-[50%] -translate-x-1/2">50</span>
@@ -189,7 +189,7 @@ export function PillarRadarChart({
       </div>
 
       {/* Legend — explains the 4-tier color ramp. */}
-      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-500 dark:text-slate-400">
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[0.6875rem] text-slate-500 dark:text-slate-400">
         <span className="inline-flex items-center gap-1.5">
           <span
             className="inline-block h-2 w-3 rounded-sm"

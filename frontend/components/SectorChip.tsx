@@ -20,7 +20,7 @@ export function SectorChip({
 }): JSX.Element {
   const s = sectorStyle(sector);
   const padX = size === 'xs' ? 'px-1.5 py-0' : 'px-2 py-0.5';
-  const textSize = size === 'xs' ? 'text-[11px]' : 'text-xs';
+  const textSize = size === 'xs' ? 'text-[0.6875rem]' : 'text-xs';
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-sm ring-1 ring-inset ${padX} ${textSize} ${s.bg} ${s.fg} ${s.ring}`}

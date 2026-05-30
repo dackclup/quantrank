@@ -100,10 +100,23 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose
         aria-label="Primary navigation"
         className={`fixed inset-y-0 left-0 z-40 flex flex-col border-r border-slate-200 bg-white [transition:transform_200ms_ease-out,width_200ms_ease-out] dark:border-slate-800 dark:bg-slate-950 md:sticky md:top-0 md:h-screen md:translate-x-0 ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
-        } w-64 ${collapsed ? 'md:w-16' : 'md:w-60'}`}
+        } w-64 ${collapsed ? 'md:w-16 md:max-w-[64px]' : 'md:w-60 md:max-w-[240px]'}`}
       >
-        {/* Wordmark + collapse toggle */}
-        <div className="flex h-14 items-center gap-2 border-b border-slate-200 px-3 dark:border-slate-800">
+        {/* Header: wordmark (Q + "QuantRank") + collapse toggle. The expanded
+            rail (240px) shows Q + wordmark with the chevron pushed right
+            (ml-auto). When COLLAPSED at md+ the 64px rail is too narrow to put
+            the Q + chevron side-by-side, so the header switches to a VERTICAL
+            STACK (md:flex-col, auto-height): the green Q logo on TOP (home
+            link; the "QuantRank" wordmark hides) + a full-width
+            rounded-rectangle expand-chevron BELOW, styled to match the collapsed
+            nav-item boxes (md:px-2 header + md:w-full chevron + subtle fill, so
+            it reads as a box "like the one below"). Keeps the Q visible
+            (2026-05-29 user request). The
+            mobile drawer (< md) always shows the full horizontal row (Q +
+            wordmark + close-X). */}
+        <div
+          className={`flex h-14 items-center gap-2 border-b border-slate-200 px-3 dark:border-slate-800${collapsed ? ' md:h-auto md:flex-col md:justify-center md:gap-1.5 md:px-2 md:py-3' : ''}`}
+        >
           <Link
             href="/"
             onClick={onMobileClose}
@@ -119,7 +132,7 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose
             type="button"
             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             onClick={onToggleCollapse}
-            className="ml-auto hidden h-8 w-8 items-center justify-center rounded-sm text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100 md:inline-flex"
+            className={`hidden h-8 w-8 items-center justify-center rounded-sm text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100 md:inline-flex ${collapsed ? 'md:h-auto md:w-full md:bg-slate-100 md:py-1.5 md:dark:bg-slate-800' : 'ml-auto'}`}
           >
             <svg
               width="14"
@@ -196,7 +209,7 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onMobileClose
           <div className={`hidden justify-center${collapsed ? ' md:flex' : ''}`}>
             <ThemeToggle layout="icon" />
           </div>
-          <div className={`mt-2 px-2 pb-1 text-[11px] leading-snug text-slate-500 dark:text-slate-400${collapsed ? ' md:hidden' : ''}`}>
+          <div className={`mt-2 px-2 pb-1 text-[0.6875rem] leading-snug text-slate-500 dark:text-slate-400${collapsed ? ' md:hidden' : ''}`}>
             <p className="font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">v1.4.0 · MIT</p>
             <p className="mt-1">Educational use only.</p>
           </div>
@@ -217,7 +230,7 @@ function SidebarSection({
 }) {
   return (
     <div className="mb-4">
-      <div className={`px-2 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400${collapsed ? ' md:hidden' : ''}`}>
+      <div className={`px-2 pb-1.5 text-[0.625rem] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400${collapsed ? ' md:hidden' : ''}`}>
         {label}
       </div>
       <ul className="space-y-0.5">{children}</ul>

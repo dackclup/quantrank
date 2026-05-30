@@ -79,6 +79,13 @@ def test_dedupe_by_date_returns_sorted_ascending() -> None:
 def test_list_ranking_commits_returns_real_commits() -> None:
     """Smoke test against the real repo's git history."""
     commits = list_ranking_commits()
+    if not commits:
+        pytest.skip(
+            "Shallow git clone — rankings.json commit history not reachable "
+            "(CI actions/checkout fetch-depth=1 default; the tip commit may not "
+            "touch rankings.json). A full clone exercises the real assertion "
+            "below. Mirrors the PR #284 (a820caee) guard on the sibling test."
+        )
     assert len(commits) >= 1  # rankings.json is committed daily by the cron
     # Sorted ascending
     for prev, curr in zip(commits, commits[1:], strict=False):

@@ -3674,3 +3674,196 @@ Frontend-only; no schema/compute/scoring/valuation change. `ruff` + `tsc` +
 `next build` (506 routes) clean.
 
 ---
+
+## Fluid root font-size — app-wide responsive scaling (in flight, this PR · 2026-05-29)
+
+User request: "ตำแหน่งการจัดวางดูผิดเพี้ยน...เพราะขนาด...ตัวหนังสือและสิ่งอื่นไม่
+เปลี่ยนตามขนาด[หน้าจอ]" — the layout looks off at larger screens because text +
+elements don't scale with the viewport. **Empirically confirmed** (Playwright
+measure across 414/600/768/834/1024/1280): root font-size was a flat **16px at
+EVERY width**, price a flat 24px — phone-tuned sizes sat unchanged on a 1280px
+desktop, leaving text tiny + the hero content drifting apart in the wide canvas.
+
+**Fix (one rule, app-wide):** `frontend/app/globals.css`
+`html { font-size: clamp(1rem, 0.89rem + 0.45vw, 1.25rem) }`. The app is
+rem-based (Tailwind `text-*` / spacing / gaps / chart `h-64` all rem), so a
+fluid ROOT font-size scales every text + layout dimension proportionally —
+~16px phone (clamp floor, mobile unchanged) → ~20px desktop (ceiling) — with
+ZERO per-component edits, preserving every proportion + the LedgerCraft system
++ tabular-nums. The `rem` terms (not pure `vw`) keep browser zoom / user
+font-size prefs working (pure-vw breaks WCAG 1.4.4). Documented as a CLAUDE.md
+§Gotcha + AGENTS.md §Code-style mirror (the fluid root is a remember-this
+site-wide invariant: use rem text utilities, no second `font-size` on
+html/body).
+
+**Verified (Playwright, dark mode):** post-fix root scales 16.1 → 17.7 → 18.8
+→ 20px across 414 → 768 → 1024 → 1280; price 24 → 30px. Screenshots: detail page
+(414 unchanged / 768 squeeze-zone clean, hero stacks correctly / 1280 fills
+proportionally) + home ranking table (414 + 1280, NO horizontal overflow,
+`scrollW == docW` at both, table reads comfortably). Frontend-only; no
+schema/compute/scoring/valuation change. `ruff` + `next build` (506 routes)
+clean.
+
+**Follow-up — micro-label px→rem conversion (same PR, post `frontend-design-reviewer`
+PASS):** the reviewer's audit found ~44 arbitrary `text-[10px]`/`text-[11px]`
+classes across 14 components (chip/badge labels, table column headers, chart
+legend, the `FairPriceBarChart` headline delta % — the one PRIMARY numeric)
+that, as fixed px, would NOT follow the fluid root and would drift smaller-
+relative on desktop. To honor "ทั้งหมด" (everything scales) they were converted
+to rem equivalents — `text-[10px]→text-[0.625rem]`, `text-[11px]→text-[0.6875rem]`
+— pixel-IDENTICAL at the 16px base (zero mobile change) but now scaling with the
+root on desktop (→12.5px / 13.75px at root 20px). Only the Recharts `tick
+fontSize` SVG number + the StockLogo px-prop letter-avatar remain px (both
+self-contained coordinate systems, intentional). Reviewer verdict overall:
+PASS on all five correctness axes (WCAG 1.4.4 sound · no compounding font-size
+on html/body · layout safe · design-token family intact). `tsc` + `next build`
+(506) clean; 1280 detail-page screenshot confirms converted labels render
+correctly + scaled.
+
+**Follow-up 2 — cross-platform layout-density audit fixes (same PR):** user asked
+to verify "ทุก platform" + audit that the UX/UI is well-arranged with balanced
+whitespace (not too sparse / not too cramped). Ran TWO parallel read-only audits
+— `expert-user-explorer` (empirical: live browser render across 10 widths
+360→1920 × home + detail × dark/light) + `frontend-design-reviewer` (code-level
+responsive-pattern review). Both PASSED the scaling itself (WCAG, no overflow at
+any width, mobile/phablet excellent) and CONVERGED on the same layout-density
+imbalances (all side-effects of rem growing 16→20px on desktop). Fixed in this
+PR:
+- **Detail hero broke at exactly 1024px** (`app/stock/[ticker]/page.tsx`): the
+  2-col `lg:flex-row` fired when the sidebar left only ~666px content → left
+  block crushed to ~156px. Raised the split to `xl:` (1280, ~1040px content →
+  balanced) so 1024 STACKS cleanly; capped the left col `xl:max-w-2xl` so it
+  doesn't spread 1000px+ on ultrawide; dropped the no-op `lg:justify-between`
+  (the `flex-1` left child already ate the free space — confirmed by the
+  reviewer). Verified: hero=column@1024, row@1280/1920.
+- **Content `max-w-6xl` (72rem) expanded to 1440px** at the 20px root
+  (`AppShell.tsx`) → sparse table/cards on 1920px. Pinned to fixed
+  `max-w-[1152px]` (both main + footer) so the cap is viewport-stable while
+  inner rem spacing/text still scales. Verified: content=1152px@1920 (was 1440).
+- **Sidebar inflated 240→300px** at desktop (`Sidebar.tsx`): capped
+  `md:max-w-[240px]` / collapsed `md:max-w-[64px]`. Verified: sidebar=240@1024/
+  1280/1920 (was 300); content gains ~60px.
+- **Mobile card `min-h-[112px]`** fixed-px (`RankingTable.tsx`) → `min-h-[7rem]`
+  (scales). **Search wrapper** `style={{minWidth:'200px'}}` inline-px → class
+  `min-w-[12.5rem]`. **Home header + detail disclaimer** gained `max-w-3xl` for
+  prose line-length on ultrawide.
+- **DEFERRED (flagged to user, judgment calls):** (a) the audit recommended
+  lowering the fluid ceiling 1.25rem→1.125rem (20→18px) for finer data-density,
+  but the user had just asked for LARGER text twice — KEPT 20px, offered the
+  knob; (b) home desktop table partially clips the Sector column at 768–834px
+  (7 cols in ~500px content) — a tablet-breakpoint decision (push table md→lg,
+  or column-priority hide) deferred to a focused follow-up.
+`tsc` + `next build` (506) clean; verified via Playwright measure (sidebar/
+content/hero-direction across 1024/1280/1920/414, zero overflow) + before/after
+screenshots (detail@1024 stacked, home@1920 capped 1152).
+
+**Follow-up 3 — collapsed-sidebar Q/chevron overlap (same PR, user-reported on
+real device):** on a landscape-phone / tablet (md+) with the sidebar COLLAPSED,
+the green Q logo box (28px) and the expand-chevron toggle (32px) **overlapped**
+in the 64px rail header (px-3 leaves only ~40px content; 28+32 don't fit).
+Reproduced via Playwright (collapsed @900px: Q 14–46px, chevron 35–49px →
+overlap=true). Pre-existing tightness, surfaced now. Fix (`Sidebar.tsx`): when
+collapsed at md+, the Q home-link is `md:hidden` and the chevron centers
+(`md:mx-auto`) as the sole header control — the Q returns the instant the rail
+expands. Expanded + mobile-drawer states unchanged (Q + wordmark + chevron/close-X
+all show with room). Verified: collapsed @900 overlap=false (link hidden,
+chevron centered 14–49); expanded @900 Q 14–46 / chevron 189–225 (no overlap);
+before/after screenshots confirm. `tsc` + `next build` (506) clean.
+
+**Follow-up 4 — adopt the two deferred audit recommendations (user authorized
+"ตามที่แนะนำ"):** (1) **Fluid ceiling 20px→18px** (`globals.css` clamp
+`1.25rem → 1.125rem`) for tighter desktop data-density (audit MAJOR-3). Now caps
+at ~835px so tablet+ is a flat 18px (H1 27px not 37.5px, table cells ~15.75px);
+mobile 360–390 still 16px floor. §Gotcha + AGENTS.md mirror updated to match.
+(2) **Ranking table↔card breakpoint `md`→`lg`** (`RankingTable.tsx`): portrait
+tablets (768–1023px, ~530px content beside the sidebar) now use the mobile CARD
+list instead of the 7-col table that clipped the Sector column (audit MINOR-4);
+the table returns at lg (1024, ~784px content). Verified (Playwright): root
+16.1→17.7→18.0px capping at 834px; view = cards @414/768/834, TABLE @1024/1280/
+1920; zero overflow at all widths; screenshots confirm 768 cards clean + 1280
+table dense-but-scannable. `tsc` + `next build` (506) clean.
+
+**Follow-up 5 — keep the Q logo visible in the collapsed rail (user request,
+revises Follow-up 3):** Follow-up 3 fixed the Q/chevron overlap by HIDING the Q
+when collapsed (centered chevron only). User wanted the green Q to stay visible.
+New approach (`Sidebar.tsx`): when collapsed at md+ the header switches to a
+**vertical stack** (`md:flex-col md:h-auto md:justify-center md:gap-1.5 md:py-3`)
+— the green Q logo on top (still a home link; "QuantRank" wordmark stays hidden)
++ the expand-chevron centered below. No overlap (they're stacked, not
+side-by-side). Verified (Playwright, collapsed @900): qVisible=true, Q y14–45 /
+chevron y52–88 (chevron below Q), overlap2D=false, both centered in the 64px
+rail; expanded unchanged (header 63px, Q left / chevron right). Collapsed header
+grows to ~102px (Q + chevron + py-3) vs 63px expanded — acceptable mode
+difference. `tsc` + `next build` (506) clean; screenshot confirms.
+
+**Follow-up 6 — collapsed Q + chevron side-by-side in ONE ROW (user
+clarification, supersedes Follow-up 5):** user wanted them in the same row (not
+stacked). A 64px rail can't fit both (the original overlap), so the collapsed
+rail widens to a FIXED **96px** (`md:w-[96px]`, was `md:w-16`) and the header
+stays a row but centers the group (`md:justify-center md:gap-1 md:px-2`); the
+chevron drops its `ml-auto` when collapsed so it sits next to the Q rather than
+at the far edge. Verified (Playwright, collapsed @900): rail 96px, Q x12–43 +
+chevron x48–84 (same row, 5px gap), overlap2D=false, header back to 63px (no
+more tall stack); expanded unchanged. `tsc` + `next build` (506) clean;
+screenshot confirms Q + › side-by-side with a gap.
+
+**Follow-up 7 — collapsed expand-chevron as a vertical rectangle (user
+request):** the chevron button was a 32px square; user wanted a portrait
+rectangle. Changed to `md:h-12 md:w-6` WHEN COLLAPSED only (`Sidebar.tsx`) — so
+collapsed renders a 27×54px (@18px root) taller-than-wide button beside the Q;
+expanded keeps the `h-8 w-8` square. Verified (Playwright, collapsed @900):
+chevron w27×h54 (vertical), Q 32×32, still one row / no overlap / 96px rail.
+`tsc` + `next build` (506) clean.
+
+**Follow-up 8 — tune collapsed rail width for a snug fit (user "ปรับ px ...
+ให้พอดี"):** with the narrower vertical chevron (27px vs the old 32px square) the
+96px rail had ~7px of excess slack each side. Narrowed to a fixed **84px**
+(`md:w-[84px]`) = 32px Q + gap + 27px chevron + px-2 (≈81px content). Verified
+@900: rail 84px, Q x10–42 / chevron x46–73 (group fills the content area with
+~1–2px slack beyond px-2), no overlap. `tsc` + `next build` (506) clean.
+
+**Follow-up 9 — chevron height = logo height (user "ใช้ความสูงเท่ากับ logo"):**
+the `md:h-12` (48px) collapsed chevron stood taller than the Q and stuck out
+above/below it. Changed to `md:h-7 md:w-6` — height now matches the Q (`h-7`,
+both 32px @18root, tops/bottoms flush) while staying narrower (`w-6`, 27px) so it
+still reads as a slim portrait rectangle. Verified @900: Q 32×32 / chevron 27×32,
+both y15–47 (aligned), no overlap. `tsc` + `next build` (506) clean.
+
+**Follow-up 10 — revert collapsed header to the VERTICAL STACK (user "ปรับกลับ
+เป็นโลโก้อยู่ข้างบน ลูกศรอยู่ข้างล่างเหมือนเดิม"):** after iterating the side-by-side
+row (FU6–FU9), the user chose the earlier stack arrangement. Reverted
+(`Sidebar.tsx`): collapsed header back to `md:h-auto md:flex-col md:justify-center
+md:gap-1.5 md:py-3` (Q logo on TOP, square `h-8 w-8` expand-chevron centered
+BELOW), rail narrowed back to a fixed **64px** (`md:w-16 md:max-w-[64px]`).
+Verified @900: rail 64px, Q y14–45 (top) / chevron y52–88 (below), centered,
+overlap2D=false, header ~102px (tall stack); expanded + mobile drawer unchanged.
+`tsc` + `next build` (506) clean.
+
+**Follow-up 11 — fix recurring flaky CI (shallow-clone test guard):** the
+"Python (lint + test)" check failed intermittently across this PR's pushes (cold
+runner → FAIL, warm-workspace runner → PASS). `ci-triage-engineer` root-caused
+it (NOT this PR's code — all commits are frontend/docs): `test_validation/
+test_ranking_history.py::test_list_ranking_commits_returns_real_commits` runs
+`git log -- frontend/public/data/rankings.json` then `assert len(commits) >= 1`;
+on CI's shallow clone (`actions/checkout@v6` → `fetch-depth: 1`) where the tip
+commit doesn't touch `rankings.json`, `git log` returns empty → the assert
+fails. Same bug PR #284 (`a820caee`) fixed in a sibling test but this one was
+missed. Fix: add a `pytest.skip()` guard when `commits` is empty (shallow clone),
+matching the #284 precedent — a full clone still exercises the real assertion.
+Verified: `pytest tests/test_validation/test_ranking_history.py` 18 passed
+(full clone) / would skip 1 on a shallow clone; `ruff` clean. First + only Python
+touch on this PR; test-hygiene only, no compute/schema surface, no new §Gotcha
+needed (pattern documented in #284).
+
+**Follow-up 12 — collapsed expand-chevron as a full-width box matching the
+nav items (user "ปรับขนาดลูกศรให้เป็นสี่เหลี่ยมผืนผ้าเหมือนข้างล่าง"):** the
+collapsed chevron was a 32px square; the user wanted it sized + shaped like the
+nav-item boxes below it (`SidebarLink` collapsed = `rounded-sm px-0 py-1.5`
+full-width). Changed (`Sidebar.tsx`): collapsed header gains `md:px-2` (matches
+the nav's `px-2`), chevron becomes `md:h-auto md:w-full md:py-1.5` + a subtle
+fill (`md:bg-slate-100 md:dark:bg-slate-800`) so it renders as a full-width
+rounded rectangle. Verified @900: chevron 45×28 / nav-item 45×30 — same width +
+x-position (x9), same fill, rounded-sm; screenshot confirms the chevron box now
+matches the nav-item box. `tsc` + `next build` (506) clean.
+
+---

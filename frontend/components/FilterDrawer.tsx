@@ -111,7 +111,7 @@ export function FilterDrawer({
       >
         <header className="flex items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-slate-800">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <div className="text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               Filters
             </div>
             <div className="mt-0.5 font-mono text-sm tabular-nums">
@@ -134,7 +134,7 @@ export function FilterDrawer({
 
         <div className="flex-1 space-y-6 overflow-y-auto px-5 py-5">
           <div>
-            <label className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+            <label className="mb-2 block text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
               Search
             </label>
             <div className="relative">
@@ -160,7 +160,7 @@ export function FilterDrawer({
 
           <div>
             <div className="mb-2 flex items-baseline justify-between">
-              <label className="text-[11px] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              <label className="text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                 Composite score
               </label>
               <span className="font-mono text-xs tabular-nums text-slate-700 dark:text-slate-300">
@@ -171,7 +171,7 @@ export function FilterDrawer({
           </div>
 
           <div>
-            <label className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+            <label className="mb-2 block text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
               Score tier
             </label>
             <div className="flex flex-wrap gap-1.5">
@@ -188,7 +188,7 @@ export function FilterDrawer({
                   >
                     <span className={`inline-block h-1.5 w-1.5 rounded-full ${t.dot}`} />
                     {t.label}
-                    <span className="font-mono text-[10px] tabular-nums opacity-60">
+                    <span className="font-mono text-[0.625rem] tabular-nums opacity-60">
                       {t.min}–{t.max === 101 ? '100' : t.max}
                     </span>
                   </button>
@@ -198,7 +198,7 @@ export function FilterDrawer({
           </div>
 
           <div>
-            <label className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+            <label className="mb-2 block text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
               Recommendation
             </label>
             <div className="flex flex-wrap gap-1.5">
@@ -224,7 +224,7 @@ export function FilterDrawer({
           </div>
 
           <div>
-            <label className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+            <label className="mb-2 block text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
               Valuation
             </label>
             <div className="flex flex-wrap gap-1.5">
@@ -241,7 +241,7 @@ export function FilterDrawer({
                   >
                     <span className={`inline-block h-1.5 w-1.5 rounded-full ${b.dot}`} />
                     {b.label}
-                    <span className="text-[10px] opacity-60">{b.help}</span>
+                    <span className="text-[0.625rem] opacity-60">{b.help}</span>
                   </button>
                 );
               })}
@@ -250,10 +250,10 @@ export function FilterDrawer({
 
           <div>
             <div className="mb-2 flex items-baseline justify-between">
-              <label className="text-[11px] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              <label className="text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                 Sectors
               </label>
-              <span className="text-[11px] text-slate-400 dark:text-slate-500">
+              <span className="text-[0.6875rem] text-slate-400 dark:text-slate-500">
                 {sectorSet.size === 0 ? 'All' : `${sectorSet.size} selected`}
               </span>
             </div>

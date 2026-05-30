@@ -71,7 +71,7 @@ const SHORT_LABELS: Record<Recommendation, string> = {
 };
 
 const SIZE_CLASSES: Record<'xs' | 'sm' | 'md' | 'lg', string> = {
-  xs: 'px-1.5 py-0 text-[10px]',
+  xs: 'px-1.5 py-0 text-[0.625rem]',
   sm: 'px-2 py-0.5 text-xs',
   md: 'px-2.5 py-0.5 text-sm',
   lg: 'px-3 py-1 text-base',

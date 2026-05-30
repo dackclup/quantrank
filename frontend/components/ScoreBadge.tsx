@@ -47,13 +47,13 @@ export function ScoreBadge({
     const accent = scoreAccentColor(score);
     return (
       <div className="flex flex-col items-end gap-0.5 leading-none">
-        <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
+        <span className="text-[0.625rem] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
           Composite Score
         </span>
         <span className="font-mono text-2xl font-bold tabular-nums text-slate-900 dark:text-slate-100">
           {score.toFixed(1)}
         </span>
-        <span className="text-[10px] font-medium uppercase tracking-wider" style={{ color: accent }}>
+        <span className="text-[0.625rem] font-medium uppercase tracking-wider" style={{ color: accent }}>
           {tierLabel(score)}
         </span>
       </div>

@@ -262,6 +262,13 @@ export function FairPriceCard(props) {  // no types
   `overflow-x-auto` (e.g. `RankingTable`'s desktop table). Keep `clip`, never
   `hidden` (`hidden` creates a scroll container and breaks the sticky
   sidebar/header). Full rationale in CLAUDE.md §Gotchas.
+- **Fluid root font-size** (`frontend/app/globals.css` `html { font-size:
+  clamp(1rem, 0.89rem + 0.45vw, 1.125rem) }`, 2026-05-29): the rem-based app
+  scales everything with the viewport (~16px phone → ~18px tablet+). Use
+  rem-based Tailwind text utilities (`text-sm`/`text-2xl`), not arbitrary
+  `text-[Npx]` (fixed px won't scale); never add a second `font-size` on
+  `html`/`:root`/`body` (compounds the scale). Full rationale in CLAUDE.md
+  §Gotchas.
 
 ## Git workflow
 

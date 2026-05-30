@@ -330,12 +330,12 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
           </svg>
           Filters
           {activeCount > 0 && (
-            <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-sm bg-slate-900 px-1 text-[10px] font-semibold text-white dark:bg-slate-100 dark:text-slate-900">
+            <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-sm bg-slate-900 px-1 text-[0.625rem] font-semibold text-white dark:bg-slate-100 dark:text-slate-900">
               {activeCount}
             </span>
           )}
         </button>
-        <div className="relative max-w-xs flex-1" style={{ minWidth: '200px' }}>
+        <div className="relative min-w-[12.5rem] max-w-xs flex-1">
           <input
             type="search"
             placeholder="Search ticker or name…"
@@ -462,8 +462,11 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
         filteredCount={filtered.length}
       />
 
-      {/* Desktop / tablet table */}
-      <div className="hidden overflow-x-auto rounded border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 md:block">
+      {/* Desktop table (lg+). Portrait tablets (md→lg, 768–1023px) fall back
+          to the card list below: the 7-col table needs ~700px but the md
+          content area is only ~530px beside the sidebar, which clipped the
+          Sector column (2026-05-29 layout-density audit). */}
+      <div className="hidden overflow-x-auto rounded border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 lg:block">
         <table className="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
           <thead className="bg-slate-50 text-xs uppercase tracking-[0.14em] dark:bg-slate-900/60">
             <tr>
@@ -518,8 +521,8 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
         </table>
       </div>
 
-      {/* Mobile cards */}
-      <ul className="space-y-2 md:hidden">
+      {/* Mobile + tablet cards (below lg) */}
+      <ul className="space-y-2 lg:hidden">
         {pageRows.map((row, i) => {
           const mos = formatMosPct(row.margin_of_safety_pct);
           const staggerClass = animateRows
@@ -528,7 +531,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
           return (
             <li
               key={row.ticker}
-              className={`hover-lift min-h-[112px] rounded border border-slate-200 bg-white transition-colors duration-100 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/50 ${staggerClass}`}
+              className={`hover-lift min-h-[7rem] rounded border border-slate-200 bg-white transition-colors duration-100 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/50 ${staggerClass}`}
             >
               <Link
                 href={`/stock/${row.ticker}/`}
@@ -565,13 +568,13 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                 <div className="mt-1 grid grid-cols-2 gap-3">
                   <div className="flex flex-col items-start gap-1">
                     <div className="flex items-baseline gap-1.5">
-                      <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                      <span className="text-[0.625rem] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                         Price
                       </span>
                       <span className="font-mono text-base font-semibold tabular-nums text-slate-900 dark:text-slate-100">
                         ${row.current_price.toFixed(2)}
                       </span>
-                      <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                      <span className="text-[0.625rem] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                         USD
                       </span>
                     </div>
@@ -591,7 +594,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                         // already in StockSummary.
                         const abs = (row.current_price * pct) / (100 + pct);
                         return (
-                          <div className="flex items-center gap-1.5 text-[11px]">
+                          <div className="flex items-center gap-1.5 text-[0.6875rem]">
                             <span className={`font-mono font-semibold tabular-nums ${absCls}`}>
                               {positive ? '+' : ''}
                               {abs.toFixed(2)}
@@ -624,14 +627,14 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                         return (
                           <>
                             <div className="flex items-baseline gap-1.5">
-                              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                              <span className="text-[0.625rem] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                                 Loss Chance
                               </span>
                               <span className={`font-mono text-base font-semibold tabular-nums ${band.tone}`}>
                                 {rounded}%
                               </span>
                             </div>
-                            <span className="inline-flex items-center gap-1 text-[11px] text-slate-500 dark:text-slate-400">
+                            <span className="inline-flex items-center gap-1 text-[0.6875rem] text-slate-500 dark:text-slate-400">
                               <span className={`inline-block h-1.5 w-1.5 rounded-full ${band.dot}`} aria-hidden="true" />
                               {band.label}
                             </span>
@@ -641,12 +644,12 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                     ) : (
                       <>
                         <div className="flex items-baseline gap-1.5">
-                          <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                          <span className="text-[0.625rem] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                             Loss Chance
                           </span>
                           <span className="font-mono text-base font-semibold tabular-nums text-slate-300 dark:text-slate-600">—</span>
                         </div>
-                        <span className="text-[11px] text-slate-400 dark:text-slate-500">Unavailable</span>
+                        <span className="text-[0.6875rem] text-slate-400 dark:text-slate-500">Unavailable</span>
                       </>
                     )}
                   </div>

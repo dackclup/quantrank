@@ -58,7 +58,7 @@ const BANDS: readonly Band[] = [
 ];
 
 const SIZE_CLASSES: Record<'xs' | 'sm' | 'md', string> = {
-  xs: 'px-1.5 py-0 text-[10px]',
+  xs: 'px-1.5 py-0 text-[0.625rem]',
   sm: 'px-2 py-0.5 text-xs',
   md: 'px-2.5 py-0.5 text-sm',
 };

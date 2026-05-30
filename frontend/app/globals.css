@@ -143,6 +143,18 @@ body {
  * load; transition just smooths user-triggered toggles. */
 html {
   color-scheme: light;
+  /* Fluid root font-size (2026-05-29 responsive-scaling fix). The whole app
+   * is rem-based (Tailwind text-*, spacing, gaps, chart height all in rem), so
+   * scaling the ROOT font-size scales every text + layout dimension
+   * proportionally with the viewport — one rule, app-wide, preserving every
+   * proportion + the LedgerCraft system + tabular-nums alignment. Resolves
+   * "text/elements don't change with screen size": ~16px on phones (≤~390px)
+   * → ~18px on tablet+ (ceiling engages ~835px; lowered from 20px per the
+   * 2026-05-29 layout-density audit). The `rem` terms (NOT pure vw) keep browser
+   * zoom / user font-size prefs working — a pure-vw font-size would break
+   * WCAG 1.4.4 (resize text). Mobile stays at the tuned ~16px (clamp floor);
+   * only tablet/desktop grow. */
+  font-size: clamp(1rem, 0.89rem + 0.45vw, 1.125rem);
 }
 html.dark {
   color-scheme: dark;

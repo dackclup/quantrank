@@ -48,13 +48,13 @@ export function MoSBadge({ mos }: { mos: number | null | undefined }): JSX.Eleme
           </div>
         </div>
         <div className="flex flex-col">
-          <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <span className="text-[0.625rem] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
             Margin of safety
           </span>
           <span className="font-mono text-lg font-semibold tabular-nums text-slate-300 dark:text-slate-600">
             —
           </span>
-          <span className="text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500">
+          <span className="text-[0.625rem] uppercase tracking-wider text-slate-400 dark:text-slate-500">
             Unavailable
           </span>
         </div>
@@ -112,13 +112,13 @@ export function MoSBadge({ mos }: { mos: number | null | undefined }): JSX.Eleme
         </div>
       </div>
       <div className="flex flex-col">
-        <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
+        <span className="text-[0.625rem] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
           Margin of safety
         </span>
         <span className="font-mono text-lg font-semibold tabular-nums text-slate-900 dark:text-slate-100">
           {fullLabel}
         </span>
-        <span className="text-[10px] uppercase tracking-wider" style={{ color: accent }}>
+        <span className="text-[0.625rem] uppercase tracking-wider" style={{ color: accent }}>
           {tierLabel(mos)}
         </span>
       </div>
