@@ -90,6 +90,11 @@ export function PriceHistoryChart({
   // stay instant). Bumped together by the period effect below.
   const [sweepKey, setSweepKey] = useState(0);
   const [playDraw, setPlayDraw] = useState(false);
+  // Mirror of playDraw readable from callbacks that close over a stale render
+  // (the ResizeObserver's debounced timer): lets them skip work WHILE the intro
+  // draw is running without re-subscribing on every playDraw flip.
+  const playDrawRef = useRef(false);
+  playDrawRef.current = playDraw;
   // Self-drawn intro crosshair overlay (a vertical line + a dot that RIDES the
   // price curve), animated left→right by rAF in sync with the area draw. During
   // the sweep the Recharts cursor + activeDot are suppressed (playDraw) so only
@@ -453,7 +458,15 @@ export function PriceHistoryChart({
       if (Math.abs(w - lastWidth) < 1) return; // height-only change → ignore
       lastWidth = w;
       clearTimeout(t);
-      t = setTimeout(() => setLayoutKey((k) => k + 1), 300);
+      t = setTimeout(() => {
+        // Don't bump layoutKey WHILE the intro draw is running — a re-park
+        // remount mid-draw would reconcile the headline spans back to latest for
+        // ~1 frame (fighting the rAF's imperative writes → a flicker). The draw
+        // is ≤650ms; the re-park can wait for it to finish (the next genuine
+        // resize, or the rest state, re-parks correctly anyway).
+        if (playDrawRef.current) return;
+        setLayoutKey((k) => k + 1);
+      }, 300);
     });
     ro.observe(el);
     return () => {
@@ -668,9 +681,15 @@ export function PriceHistoryChart({
                   {hv.pct.toFixed(2)}%)
                 </span>
                 <span ref={changeArrowRef}>{hv.positive ? '↑' : '↓'}</span>
-                <span className="text-xs font-normal text-slate-500 dark:text-slate-400">
-                  {PERIOD_LABEL[period]}
-                </span>
+                {/* Hide the period label ("past year" etc.) WHILE scrubbing — at
+                    a scrubbed point the change is measured from the window start
+                    to THAT point, so "past year" would mislabel it. At rest /
+                    during the animation it correctly describes the full window. */}
+                {!scrubbing && (
+                  <span className="text-xs font-normal text-slate-500 dark:text-slate-400">
+                    {PERIOD_LABEL[period]}
+                  </span>
+                )}
               </div>
             )}
             <div className="text-sm tabular-nums text-slate-900 dark:text-slate-100">
