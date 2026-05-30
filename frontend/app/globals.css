@@ -420,15 +420,21 @@ code {
  * justified because it IS the page's primary data visual. */
 @keyframes chart-sweep {
   from {
-    clip-path: inset(0 100% 0 0);
-    -webkit-clip-path: inset(0 100% 0 0);
+    clip-path: inset(0 100% 0 -8px);
+    -webkit-clip-path: inset(0 100% 0 -8px);
   }
   to {
-    clip-path: inset(0 0 0 0);
-    -webkit-clip-path: inset(0 0 0 0);
+    clip-path: inset(0 -8px 0 -8px);
+    -webkit-clip-path: inset(0 -8px 0 -8px);
   }
 }
 .chart-sweep {
+  /* The RIGHT inset ends at -8px (not 0) so the flush-right parked crosshair
+   * dot — which half-overflows the surface via `[&_.recharts-surface]:
+   * overflow-visible` (PR #322) — is NOT re-clipped at the box edge when the
+   * sweep finishes. A plain `inset(0 0 0 0)` clip cuts that dot in half (clip
+   * respects the box edge, ignoring overflow-visible). The -8px left inset
+   * keeps the reveal symmetric so the leftmost point isn't clipped either. */
   animation: chart-sweep 1100ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
