@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTheme } from 'next-themes';
 import {
   Area,
@@ -66,31 +66,16 @@ export function PriceHistoryChart({
   // remount is how we re-assert it on those events.
   const [restKey, setRestKey] = useState(0);
   const [layoutKey, setLayoutKey] = useState(0);
+  // Chart wrapper — observed for WIDTH changes to re-park the crosshair (Bug B).
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
   const { resolvedTheme } = useTheme();
 
   useEffect(() => setMounted(true), []);
 
-  // Re-park the tooltip at the latest date when the device rotates
-  // portrait↔landscape. matchMedia is browser-only; the guard keeps SSR
-  // clean (component is 'use client', so this never runs server-side).
-  // The bump is DEBOUNCED ~300ms after the orientation event so the
-  // remount lands AFTER ResponsiveContainer has re-measured the new
-  // width — remounting mid-resize makes Recharts' displayDefaultTooltip
-  // park on index 0 instead of the latest.
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const mq = window.matchMedia('(orientation: portrait)');
-    let t: ReturnType<typeof setTimeout>;
-    const handler = () => {
-      clearTimeout(t);
-      t = setTimeout(() => setLayoutKey((k) => k + 1), 300);
-    };
-    mq.addEventListener('change', handler);
-    return () => {
-      clearTimeout(t);
-      mq.removeEventListener('change', handler);
-    };
-  }, []);
+  // Crosshair re-park on layout change (rotation / window resize / sidebar
+  // expand-collapse) is handled by the ResizeObserver effect just below the
+  // chartData memo — a width-driven detector that subsumes the old
+  // orientation-only matchMedia listener. See that effect for the rationale.
 
   useEffect(() => {
     let cancelled = false;
@@ -152,6 +137,42 @@ export function PriceHistoryChart({
     const pct = (abs / first) * 100;
     return { abs, pct, positive: abs >= 0 };
   }, [chartData]);
+
+  // Re-park the crosshair at the latest date after any WIDTH change settles —
+  // device rotation, window resize, OR the left sidebar expanding/collapsing
+  // (which reflows the main-content width). A width change makes
+  // ResponsiveContainer re-measure the chart, but Recharts applies
+  // `defaultIndex` only on MOUNT — so without re-asserting it the crosshair
+  // drifts to a stale/left x after a re-measure (the "crosshair jumps left on
+  // sidebar toggle" bug). Bumping `layoutKey` remounts <AreaChart>, re-running
+  // displayDefaultTooltip(defaultIndex) at the latest point. DEBOUNCED ~300ms
+  // so the remount lands AFTER the re-measure — remounting mid-resize parks on
+  // index 0 (far left). The width-only delta gate ignores height-only changes
+  // so the chart's own crosshair rendering can't trigger a spurious remount.
+  // ResizeObserver is browser-only; wrapperRef is null during loading/error/
+  // empty, so the deps re-attach the observer once the chart wrapper mounts.
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    let lastWidth = el.getBoundingClientRect().width;
+    let t: ReturnType<typeof setTimeout>;
+    const ro = new ResizeObserver((entries) => {
+      const w = entries[0].contentRect.width;
+      if (Math.abs(w - lastWidth) < 1) return; // height-only change → ignore
+      lastWidth = w;
+      clearTimeout(t);
+      t = setTimeout(() => setLayoutKey((k) => k + 1), 300);
+    });
+    ro.observe(el);
+    return () => {
+      clearTimeout(t);
+      ro.disconnect();
+    };
+    // Re-attach only when the wrapper's existence changes (loading/error/data);
+    // NOT on chartData.length — the wrapper div persists across period switches
+    // (only the inner <AreaChart> remounts via key), so the observer stays valid
+    // and a period change needn't disconnect/re-observe.
+  }, [loading, error, data]);
 
   if (loading) {
     // Skeleton placeholder — shimmer blocks roughly match the layout
@@ -467,6 +488,7 @@ export function PriceHistoryChart({
           then sized itself to and sustained; the document clip stops the
           layout viewport from ever growing. */}
       <div
+        ref={wrapperRef}
         className="h-64 w-full [&_.recharts-surface]:overflow-visible"
         style={{ touchAction: 'pan-y' }}
         onPointerDown={(e) => {

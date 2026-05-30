@@ -149,6 +149,17 @@ def test_load_ranking_history_smoke_recent_window() -> None:
         end_date=date(2026, 5, 27),
     )
     assert isinstance(df, pd.DataFrame)
+    if df.empty:
+        pytest.skip(
+            "Shallow git clone — no rankings.json history reachable in the "
+            "window (CI actions/checkout fetch-depth=1 default; the tip commit "
+            "may not touch rankings.json). The populated-shape assertions below "
+            "need a full clone — an empty clone legitimately yields an empty "
+            "frame. The 2-level MultiIndex on the empty frame is an "
+            "implementation detail of the empty-return path, not a contract "
+            "this test should pin; skipping keeps it from depending on it. "
+            "Mirrors the list_ranking_commits guard above + PR #284 (a820caee)."
+        )
     # Multi-index (date, ticker)
     assert df.index.nlevels == 2
     assert df.index.names == ["date", "ticker"]

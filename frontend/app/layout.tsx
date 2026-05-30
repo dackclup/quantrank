@@ -26,6 +26,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     // the harmless attr mismatch on <html> needs to be suppressed.
     <html lang="en" suppressHydrationWarning>
       <body>
+        {/* Pre-paint the collapsed sidebar (Bug A). The static export always
+            bakes the EXPANDED rail into the HTML, so without this the rail
+            flashes wide → narrow on refresh once React reads localStorage.
+            Setting the class before the body paints lets globals.css render
+            the collapsed width immediately. Mirrors next-themes' pre-paint
+            dark-mode class; IIFE + try/catch, browser-only, never throws. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{if(localStorage.getItem('quantrank.sidebar.collapsed')==='1'){document.documentElement.classList.add('sidebar-collapsed')}}catch(e){}})()",
+          }}
+        />
         <ThemeProvider>
           <AppShell>{children}</AppShell>
         </ThemeProvider>
