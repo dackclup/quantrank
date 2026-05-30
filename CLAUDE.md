@@ -657,7 +657,7 @@ site-2 rename `valuation_output_anomalous`).
 - PR #319 `a49f21c` — docs: fix stale skill-count (45 → 46) across 4 doc homes + correct LESSONS_LEARNED
 - PR #318 `79c0aac` — docs: add `docs/LESSONS_LEARNED.md` — agent-process dos & don'ts
 - PR #317 `fc886de` — fix(frontend): stack detail hero below `lg` to fix sidebar-expanded gauge/chip overlap
-- PR #316 `89c5ee0` — docs(skill): add `web-animation-design` skill (skill count 45 → 46)
+- PR #316 `89c5ee0` — docs(skill): add `web-animation-design` skill (original-prose, inspire-only; skill count 45 → 46)
 - PR #315 `aeca318` — fix(frontend): responsive + a11y audit fixes — 320px hero overflow · focus rings · touch targets
 - PR #314 `a5e756b` — docs(frontend): fix stale `.gauge-arc` comment ref in ScoreGauge header
 - PR #313 `c5251f7` — fix(frontend): animation audit fixes + play-every-visit + gauge keyframe sweep
