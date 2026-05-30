@@ -201,15 +201,16 @@ export function PriceHistoryChart({
         changePctRef.current.textContent = `(${sign}${pct.toFixed(2)}%)`;
       if (changeArrowRef.current)
         changeArrowRef.current.textContent = positive ? '↑' : '↓';
-      if (changeRowRef.current) {
-        // swap the up/down color class pair on the row
-        const up = ['text-emerald-700', 'dark:text-emerald-300'];
-        const down = ['text-rose-600', 'dark:text-rose-400'];
-        const add = positive ? up : down;
-        const rm = positive ? down : up;
-        changeRowRef.current.classList.remove(...rm);
-        changeRowRef.current.classList.add(...add);
-      }
+      // NB: the change-row COLOR is intentionally NOT touched here. React owns
+      // the row's className (the `hv.positive ? upCls : downCls` template), and
+      // those classes carry an OKLCH `!important` override in globals.css — an
+      // imperative classList swap would both fight React's className reconcile
+      // (stale/doubled class for a frame) and lose to the !important rule. During
+      // the draw hoverIndex is null, so React already paints the row in the
+      // period's overall direction; the animated NUMBERS count up within that
+      // steady color (Google-Finance behavior — the headline color doesn't flip
+      // per frame). The arrow textContent above is on its own single-node span,
+      // so it's safe to drive imperatively.
       if (asOfRef.current)
         asOfRef.current.textContent = fmtDateLabel(isoDate);
     };
@@ -657,11 +658,25 @@ export function PriceHistoryChart({
         return (
           <div className="flex flex-col gap-1">
             <div className="flex items-baseline gap-2">
+              {/* Each imperatively-written span (priceRef / changeAbsRef /
+                  changePctRef / changeArrowRef / asOfRef) MUST hold exactly ONE
+                  text node — a single template-literal child. The rAF does
+                  `ref.textContent = …` every frame; textContent replaces ALL
+                  children with one text node. If the JSX gave the span MULTIPLE
+                  children (e.g. literal "$" + an expression = two text nodes),
+                  the imperative write collapses them to one, but React's vdom
+                  still believes there are two — so the next re-render (a scrub
+                  setHoverIndex) reconciles against a detached text node: the
+                  scrub silently stops updating ("เลื่อนได้บ้างไม่ได้บ้าง") and a
+                  structural reconcile (insertBefore/removeChild on the missing
+                  node) throws "app error". One text node per written span keeps
+                  React's vdom and the live DOM in agreement (2026-05-30 crash
+                  fix). */}
               <span
                 ref={priceRef}
                 className="font-mono text-2xl font-semibold tabular-nums leading-none text-slate-900 dark:text-slate-100"
               >
-                ${hv.price.toFixed(2)}
+                {`$${hv.price.toFixed(2)}`}
               </span>
               <span className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 USD
@@ -673,12 +688,10 @@ export function PriceHistoryChart({
                 className={`flex flex-wrap items-baseline gap-1.5 text-sm ${hv.positive ? upCls : downCls}`}
               >
                 <span ref={changeAbsRef} className="font-mono font-semibold tabular-nums">
-                  {hv.positive ? '+' : ''}
-                  {hv.abs.toFixed(2)}
+                  {`${hv.positive ? '+' : ''}${hv.abs.toFixed(2)}`}
                 </span>
                 <span ref={changePctRef} className="font-mono tabular-nums">
-                  ({hv.positive ? '+' : ''}
-                  {hv.pct.toFixed(2)}%)
+                  {`(${hv.positive ? '+' : ''}${hv.pct.toFixed(2)}%)`}
                 </span>
                 <span ref={changeArrowRef}>{hv.positive ? '↑' : '↓'}</span>
                 {/* Hide the period label ("past year" etc.) WHILE scrubbing — at
