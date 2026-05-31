@@ -815,13 +815,12 @@ whitespace / single-line fixes do not trigger.
   order is hero → price → pillars → fair-price → raw. The two-agent audit
   deliberately did NOT move the warning group above the price chart (the
   `frontend-design-reviewer` IA suggestion) — `expert-user-explorer` showed
-  the current spot optimizes the risk-checker persona correctly; the real gap
-  was the **hero being silent about flags**, fixed by (3) the hero **"N risk
-  vetoes" rose chip** (renders only when `risk_flags.length > 0`, anchors to
-  `#risk-summary` — a `scroll-mt-20` wrapper div around `RiskSummaryCard` so
-  the jump clears the sticky header). The chip is keyed on `risk_flags`
-  (rank gates — the entered_top5 suppressors), NOT `manipulation_index`
-  (informational). Singular/plural via `=== 1 ? 'veto' : 'vetoes'`.
+  the current spot optimizes the risk-checker persona correctly. **A hero
+  "N risk vetoes" chip was tried and REVERTED in the same PR** (user call,
+  2026-05-31 — "ไม่เอา"): keep the hero visually quiet; the rank-gate detail
+  lives in `RiskSummaryCard` below, the recommendation badge ("Hold" etc.)
+  already carries the cautious signal, and the MoS donut conveys overvaluation.
+  Do NOT re-add a hero flag chip without a fresh user request.
 
 ## Phase status
 

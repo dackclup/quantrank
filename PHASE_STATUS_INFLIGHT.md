@@ -4429,28 +4429,30 @@ pillar breakdown answers "why is the composite score X?" (NVDA value-pillar
 order: hero → price → PillarRadarChart → Tier2EventCard → RiskSummaryCard →
 FairPriceBarChart → FairPriceCard → RawMetricsTable → data-quality → footnote.
 
-**Change 2 — hero "N risk vetoes" chip**. A flagged stock (NVDA: 2 rank-gate
-vetoes) was visually identical to a clean one (HST) in the hero — the only
-trouble signal was scrolling ~570px to RiskSummaryCard. Added a compact rose
-count chip next to the RecommendationBadge, rendered only when
-`risk_flags.length > 0`, anchored to `#risk-summary` (a `scroll-mt-20`
-wrapper div around RiskSummaryCard clears the sticky header on jump). Keyed
-on `risk_flags` (the entered_top5 suppressors), NOT `manipulation_index`
-(informational). Singular/plural via `=== 1 ? 'veto' : 'vetoes'`.
+**Change 2 — hero "N risk vetoes" chip: TRIED then REVERTED in this PR**
+(user call on the live preview, 2026-05-31 — "2 risk vetoes ไม่เอาอันนี้
+เอากลับเป็นเหมือนเดิม"). The chip (rose count next to the RecommendationBadge,
+rendered when `risk_flags.length > 0`, anchored to `#risk-summary` via a
+`scroll-mt-20` wrapper) was built + verified on the preview, but the user
+decided the hero should stay visually quiet: the recommendation badge
+("Hold") already carries the cautious signal, the MoS donut conveys
+overvaluation, and the rank-gate detail lives in RiskSummaryCard below. The
+chip + its `rankGateCount` var + the `#risk-summary` wrapper div were ALL
+removed — only Change 1 (the pillar reorder) ships in this PR.
 
 **NOT taken** (per main-agent synthesis of the two-agent split): the
 `frontend-design-reviewer` suggestion to move the warning group
 (Tier2+Risk) ABOVE the price chart. `expert-user-explorer` showed the
-current position optimizes the risk-checker persona correctly and the real
-gap was the hero's silence about flags — which Change 2 fixes at the root.
-Moving PillarRadar further up (ahead of price) was also declined — it would
-push the fair-price pair (what the primary value-screener persona wants
-after seeing MoS) further from the hero.
+current position optimizes the risk-checker persona correctly. Moving
+PillarRadar further up (ahead of price) was also declined — it would push
+the fair-price pair (what the primary value-screener persona wants after
+seeing MoS) further from the hero.
 
 **Verification (real data, no fixture)**: `tsc --noEmit` clean · `next
-build` 506/506 · NVDA HTML — hero chip renders "2 risk vetoes" + anchor
-`href="#risk-summary"` + target `id="risk-summary"` present + section order
-Price < Risk < FP-check < FP-ensemble confirmed; HST HTML — no chip (clean
-stock), order intact. **No schema / Python / scoring / valuation / output-
-JSON change** — JSX reorder + additive hero chip only. CLAUDE.md §Gotcha +
-AGENTS.md inventory note + this entry.
+build` 506/506. The pillar reorder is confirmed in the NVDA HTML (section
+order Price < Pillar < Risk < FP-check < FP-ensemble). The hero chip was
+verified rendering "2 risk vetoes" on NVDA / absent on HST BEFORE the
+revert; post-revert the hero is back to its prior shape (no chip on any
+stock). **No schema / Python / scoring / valuation / output-JSON change** —
+JSX reorder only (the additive chip was added then removed in-PR, net zero).
+CLAUDE.md §Gotcha + AGENTS.md inventory note + this entry.
