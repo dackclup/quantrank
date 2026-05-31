@@ -232,7 +232,7 @@ export function RiskSummaryCard({
             {rankGates.map((flag) => {
               const meta = RANK_GATE_META[flag];
               return (
-                <li key={flag} className="flex items-start gap-2 rounded-sm">
+                <li key={flag} className="flex items-start gap-2">
                   <span
                     className="mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-rose-600 dark:bg-rose-400"
                     aria-hidden="true"
@@ -273,15 +273,17 @@ export function RiskSummaryCard({
             hasGates ? 'mt-4 border-t border-slate-100 pt-4 dark:border-slate-800' : ''
           }
         >
-          <div className="mb-2 flex items-center justify-between">
-            <div className="text-xs font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+          <div className="mb-2 flex items-center justify-between gap-2">
+            <div className="min-w-0 text-xs font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
               Manipulation index
             </div>
             {/* Band chip lives here when gates already own the outer-header
-                chip — so the Moderate/High/Low label is never lost. */}
+                chip — so the Moderate/High/Low label is never lost.
+                `shrink-0` protects the chip from being compressed by the
+                label at 320px / large system font (per design review). */}
             {hasGates && (
               <span
-                className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset ${tone.bg} ${tone.text} ${tone.ring}`}
+                className={`inline-flex shrink-0 items-center gap-1.5 rounded-sm px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset ${tone.bg} ${tone.text} ${tone.ring}`}
               >
                 <span
                   className={`inline-block h-1.5 w-1.5 rounded-full ${tone.dot}`}
@@ -314,7 +316,7 @@ export function RiskSummaryCard({
 
           {alsoFired.length > 0 ? (
             <div className="mt-3">
-              <div className="mb-2 text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
+              <div className="mb-2 text-xs font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
                 {hasGates
                   ? `Also fired — not rank-gating (${alsoFired.length})`
                   : `Fired components (${alsoFired.length})`}

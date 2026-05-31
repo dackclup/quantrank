@@ -729,7 +729,9 @@ whitespace / single-line fixes do not trigger.
   worst-case (rose if any rank gate, else the manipulation band tone); the
   band chip (Low/Moderate/High) moves into the manipulation sub-header when
   gates own the outer-header count chip so it's never lost. Returns `null`
-  only when BOTH halves are empty. The two flag-label maps stay separate on
+  only when BOTH halves are empty (no rank gates AND `manipulation_index`
+  is `null` / `undefined` / `0` — `hasIndex` suppresses on a zero index,
+  not just null). The two flag-label maps stay separate on
   purpose: `RANK_GATE_META` carries the academic-anchor detail line,
   `MANIPULATION_FLAG_LABELS` is label-only.
 

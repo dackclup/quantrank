@@ -119,8 +119,8 @@ personas to shorten the report).
   / scan for low scores + high Loss Chance → open flagged names → read the
   **Risk Summary** card (rank-gate vetoes + the manipulation-index rollup, one
   card / two sub-sections) and `Tier2EventCard` → confirm every red flag is
-  named, explained, and cites its
-  driver. Open one clean name as a control. Judge: are red flags legible and
+  named, explained, and cites its driver. Open one clean name as a control.
+  Judge: are red flags legible and
   trustworthy, or buried / unexplained (the EIX "Sell with no reason" class of
   gap this agent itself surfaced)?
 - **P3 — Quant factor-comparer**. Goal: *"compare two names apples-to-apples."*

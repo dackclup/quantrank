@@ -678,6 +678,8 @@ in parallel (disjoint code paths).
       on legacy data (`== null` catches both `undefined` and
       `null`) + clean stocks (`index <= 0`). Per-flag drill-down
       list with human label + `[raw_flag_id]` in mono.
+      _(Merged into `RiskSummaryCard.tsx` — one card, two sub-sections
+      RANK GATES + MANIPULATION INDEX — via PR #337, 2026-05-31.)_
 - [x] **`README.md` Honest Limitations** updated: defense inventory
       split into "v1.0 layer" + "Phase 4.5 manipulation cluster"
       subsections; new paragraph clarifying `manipulation_index`
