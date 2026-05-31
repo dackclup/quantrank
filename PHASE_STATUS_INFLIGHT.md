@@ -4466,14 +4466,16 @@ to 260 points, and 1D/5D are intraday (disabled, separate v1.3 feature). This
 PR ships ONLY the 5Y→monthly change per the user's "ทำแค่ 5Y รายเดือนก่อน".
 
 **Change**: new `aggregateMonthly()` helper — yields one point per calendar
-month (the close of that month's LAST trading day, the standard monthly-chart
-convention) from the ascending daily series. The `chartData` memo now routes
-`period === '5Y'` through `aggregateMonthly(sliced)` instead of
-`downsample(sliced, 260)`; every shorter window stays daily + keeps the
-`downsample` render-cost cap. NVDA 5Y: 1254 daily → 60 monthly (= 5y × 12),
-month-end dates (2021-06-30 … 2026-05-28), last point = the actual latest
-daily close (partial current month keeps its most-recent close). The 5Y X-axis
-label stays `YYYY` (page.tsx) — still appropriate at ~60 points / 12 year ticks.
+month (the close of that month's FIRST trading day, per user follow-up
+"ปรับเป็นวันแรกของเดือน") from the ascending daily series, and ALWAYS appends
+the real latest daily point last (de-duped) so the right edge + park-at-latest
+crosshair show the current price, not the weeks-stale 1st-of-this-month close.
+The `chartData` memo now routes `period === '5Y'` through
+`aggregateMonthly(sliced)` instead of `downsample(sliced, 260)`; every shorter
+window stays daily + keeps the `downsample` render-cost cap. NVDA 5Y: 1254
+daily → 61 points (60 month-firsts 2021-06-01 … 2026-05-01 + the real latest
+2026-05-28 $214.25). The 5Y X-axis label stays `YYYY` (page.tsx) — still
+appropriate at ~60 points / 12 year ticks.
 
 **Intraday (1D 1-min / 5D 15-min) NOT done this PR** — user deferred ("ทำแค่
 5Y รายเดือนก่อน"). It's a v1.3 feature: NEW compute/ingest path (yfinance
@@ -4483,8 +4485,10 @@ be the last cron's session, not real-time). The on-disk history file has no
 intraday data, so 1D/5D stay disabled in `PriceTimePeriodSelector`.
 
 **Verification (real data)**: `tsc --noEmit` clean · `next build` 506/506 ·
-`aggregateMonthly` unit-checked against the real NVDA daily series (60 monthly
-points, all months distinct, last monthly date == last daily date 2026-05-28).
+`aggregateMonthly` unit-checked against the real NVDA daily series (61 points:
+every non-final sample is an early-of-month first trading day, last point ==
+the real latest daily 2026-05-28 $214.25, current month 2026-05 carries 2
+samples = its 1st + the latest by the de-dup rule).
 **No schema / Python / scoring / valuation / output-JSON change** — pure
 frontend render logic + 1 new exported helper. CLAUDE.md §Gotcha + AGENTS.md
 ingest note + this entry.

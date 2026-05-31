@@ -395,10 +395,10 @@ export function PriceHistoryChart({
   }, [data]);
 
   const chartData = useMemo(
-    // 5Y aggregates to monthly samples (month-end close, ~60 points over 5y)
+    // 5Y aggregates to monthly samples (month-START close, ~60 points over 5y)
     // per the user's per-period resolution spec — daily granularity over 5
-    // years is more than the eye (or the ~360-700 px chart width) can read, and
-    // monthly is the standard long-range convention. Every shorter window
+    // years is more than the eye (or the ~360-700 px chart width) can read.
+    // Every shorter window
     // (1M / 6M / YTD / 1Y) stays DAILY, then passes through `downsample` as a
     // pure render-cost cap: a 1Y window is ~252 daily points → fine, but the
     // even-stride MAX_POINTS guard (keeping the exact last point so the latest
@@ -1165,28 +1165,31 @@ export function downsample(
 }
 
 // Aggregate a daily series to ONE point per calendar month — the close of the
-// LAST trading day in each month (month-end close, the standard monthly-chart
-// convention). Used for the 5Y window so the curve tags monthly samples
-// (~60 points over 5y) instead of even-stride daily downsampling. The series
-// is assumed ascending by `date` (YYYY-MM-DD, as written by write_stock_history),
-// so the last point seen for a given YYYY-MM key is that month's last trading
-// day. The final element is always kept exact (it IS its month's last point by
-// construction, so no separate append is needed — but the most-recent partial
-// month correctly yields its latest available close, e.g. mid-month "today").
+// FIRST trading day in each month (month-start close). Used for the 5Y window
+// so the curve tags monthly samples (~60 points over 5y) instead of even-stride
+// daily downsampling. The series is assumed ascending by `date` (YYYY-MM-DD, as
+// written by write_stock_history), so the FIRST point seen for a given YYYY-MM
+// key is that month's first trading day. The actual latest daily point is
+// ALWAYS appended last (de-duped if it's already the first-of-its-month) so the
+// chart's right edge + park-at-latest crosshair show the current price, not the
+// 1st-of-this-month close which can be weeks stale.
 export function aggregateMonthly(points: ChartPoint[]): ChartPoint[] {
   if (points.length === 0) return points;
-  const out: ChartPoint[] = [];
+  const out: ChartPoint[] = [points[0]]; // first trading day of the first month
   let curKey = points[0].date.slice(0, 7); // YYYY-MM
-  let curPoint = points[0];
   for (let i = 1; i < points.length; i += 1) {
     const key = points[i].date.slice(0, 7);
     if (key !== curKey) {
-      out.push(curPoint); // last point of the month that just ended
+      out.push(points[i]); // first trading day of the new month
       curKey = key;
     }
-    curPoint = points[i];
   }
-  out.push(curPoint); // last (possibly partial) month's most-recent close
+  // Keep the real latest point exact (current price) unless it's already the
+  // first-of-month sample we just pushed for the current month.
+  const last = points[points.length - 1];
+  if (out[out.length - 1].date !== last.date) {
+    out.push(last);
+  }
   return out;
 }
 
