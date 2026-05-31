@@ -99,16 +99,16 @@ export function ScoreGauge({
           </span>
         </div>
       </div>
-      {/* min-w reserves space for the widest count-up value ("100.0" /
-          "-NN.N") so the column doesn't reflow as digit count changes
-          during the sweep (0.0 → 73.9). Eliminates the micro-CLS the
-          count-up otherwise introduces. */}
-      <div className="flex min-w-[3.5rem] flex-col">
+      {/* min-w reserves space for the widest count-up value ("100/100") so the
+          column doesn't reflow as digit count changes during the sweep
+          (0/100 → 73/100). Eliminates the micro-CLS the count-up introduces. */}
+      <div className="flex min-w-[4.5rem] flex-col">
         <span className="text-[0.625rem] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
           Composite Score
         </span>
         <span className="font-mono text-lg font-semibold tabular-nums text-slate-900 dark:text-slate-100">
-          {shown.toFixed(1)}
+          {shown.toFixed(0)}
+          <span className="text-slate-400 dark:text-slate-500">/100</span>
         </span>
         <span
           className="text-[0.625rem] uppercase tracking-wider"

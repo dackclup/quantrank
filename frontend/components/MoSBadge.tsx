@@ -48,10 +48,12 @@ const centerOf = (v: number): string =>
   v < -99 ? '<−99' : v > 99 ? '>+99' : `${v < 0 ? '−' : '+'}${Math.abs(Math.round(v))}`;
 
 // Right-side big label from a (possibly mid-count) value: matches ScoreGauge's
-// `tabular-nums text-lg` weight; clamps the same long-tail values the rankings
-// table uses.
+// `tabular-nums text-lg` weight. Shows the REAL percentage with no clamp (the
+// center label inside the 64px donut carries the compact <−99 / >+99 clamp;
+// out here there's room for the true value, e.g. −1362%), so deeply over-/
+// under-valued tickers read their actual margin. Rounded to a whole percent.
 const fullOf = (v: number): string =>
-  v < -99 ? '<−99%' : v > 500 ? '>+500%' : `${v < 0 ? '−' : '+'}${Math.abs(v).toFixed(0)}%`;
+  `${v < 0 ? '−' : '+'}${Math.abs(v).toFixed(0)}%`;
 
 export function MoSBadge({ mos }: { mos: number | null | undefined }): JSX.Element {
   // Hooks run unconditionally (before any early return) per the Rules of Hooks.
