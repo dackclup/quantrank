@@ -4209,3 +4209,34 @@ the lockstep rule.
 
 ---
 
+**Two §Gotchas entries documenting the PR #332 hero rework (this PR)** —
+post-merge doc backstop for the stock-detail hero changes that shipped as a
+fast UI iteration (PR #332, merged `43838c6`, frontend-only, no schema/compute).
+That PR skipped the CLAUDE.md/AGENTS.md substance lockstep because it was a
+rapid spot-check-driven iteration; this PR adds the two invariants future
+editors need so they don't regress them:
+
+1. **Hero splits on a CSS CONTAINER QUERY, not a viewport breakpoint**
+   (`frontend/app/stock/[ticker]/page.tsx` + `globals.css` `.hero-card` /
+   `@container hero (min-width: 46rem)`). The left Sidebar eats a
+   viewport-variable width slice (expanded 240 / collapsed 64 / drawer 0), so a
+   `md:`/`lg:` viewport gate left a dead band where the sidebar was a desktop
+   rail but the hero still stacked. The container query measures the hero's real
+   inline-size after the sidebar's cut. JSX default = stacked `flex-col`; the
+   `@container` rule only ADDS the row (pre-2023 browsers degrade to the safe
+   stack). Raw CSS — no `@tailwindcss/container-queries` plugin/dep.
+2. **MoS gauge arc is SIGN-AWARE** (`frontend/components/MoSBadge.tsx`):
+   MoS ≥ 0 sweeps clockwise (like the score gauge), MoS < 0 sweeps
+   counter-clockwise via `-scale-x-100` on the gauge container, with the number
+   `<span>` carrying its own `-scale-x-100` to un-mirror back to readable. 329/502
+   of the universe is negative MoS → CCW is the common case. Both mirrors move in
+   lockstep.
+
+CLAUDE.md §Gotchas carries the full rationale for both; AGENTS.md §Code style
+mirrors each as a one-paragraph pointer (the PR #327 precedent — frontend
+gotchas live in CLAUDE.md, AGENTS.md points at them). Doc-only PR — no compute /
+schema / scoring / valuation / frontend CODE change (the hero code already
+landed via PR #332; this is the documentation backstop only).
+
+---
+
