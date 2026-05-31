@@ -866,6 +866,11 @@ whitespace / single-line fixes do not trigger.
   and matches `RankingTable` (NVDA 55% → slate, not red — the band is `<60`).
   `useCountUp` inits at the target so SSR / no-JS / reduced-motion render the
   exact value (the count-up is progressive enhancement, never a visibility gate).
+  `HeroMetric` also ADDS `dark:` variants the old inline hero metrics lacked
+  (`dark:text-slate-100` value / `dark:text-slate-400` label / `dark:text-slate-600`
+  em-dash + the dark band tones) — a dark-mode correctness fix (the old
+  `text-slate-900` value was near-invisible on the `dark:bg-slate-900` hero
+  card), WCAG-AA on the dark surface, not a regression.
 
 ## Phase status
 
