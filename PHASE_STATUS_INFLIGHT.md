@@ -4091,6 +4091,19 @@ comment itself. Verified via Playwright on `/stock/AEP` (1 veto = altman_distres
 card renders, row className is exactly `flex items-start gap-2 rounded-sm`,
 `anyAnimated:false`, no new console errors. `next build` → 502 routes; `tsc` clean.
 
+**Follow-up commit (same PR) — price chart: drop the headline period label + move
+the 1D–5Y selector below the date axis**: user 2026-05-31 "ตรงหัวข้อ price เอา (1Y)
+ออก และย้าย 1D-5Y ลงมาไว้ใต้เส้นแนวนอนวันที่ด้านล่างกราฟ". (1) Removed the
+`PERIOD_LABEL[period]` span ("past year" / "year-to-date" / …) from the price-change
+row in `PriceHistoryChart.tsx`, plus the now-unused `scrubbing` local + the
+module-level `PERIOD_LABEL` map + 2 stale comments. (2) Moved
+`<PriceTimePeriodSelector>` from ABOVE the chart canvas to BELOW the chart wrapper
+(under the X-axis date labels). Verified via Playwright on `/stock/AAPL` at 1280px:
+`selectorTop=1019 > chartBottom=1006 > xAxisBottom=994` (selector sits below the
+date axis) and the headline change row renders no period word (only the
+`FairPriceBarChart` "today" copy remains, unrelated). `next build` → 502 routes;
+`tsc` clean; screenshot captured.
+
 PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR"
 lockstep per PR #237 convention; AGENTS.md carries no §Gotchas mirror (per the
 PR #327 precedent — frontend gotchas live in CLAUDE.md, the canonical home).
