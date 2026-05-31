@@ -19,7 +19,7 @@
 // icons via NAMED imports only (tree-shaken — never `import * as Icons`, which
 // pulls the 224 KB barrel; dependency-auditor 2026-05-31).
 
-import { Building2, Coins, Factory, Gauge } from 'lucide-react';
+import { Building2, Coins, Gauge, Layers } from 'lucide-react';
 import type { JSX } from 'react';
 
 function capTierLabel(marketCap: number | null): string | null {
@@ -72,10 +72,15 @@ function Tile({
         </span>
       ) : (
         <span className="min-w-0">
-          <span className="block text-sm font-semibold text-slate-400 dark:text-slate-500">
+          {/* Reserved tile — same UPPERCASE caption vocabulary as a filled
+              tile (so promoting a placeholder later doesn't flip the type
+              treatment), de-emphasized via COLOR only. slate-500 keeps the
+              caption at ~3.4:1 (WCAG large/bold floor) instead of the
+              too-faint slate-400. */}
+          <span className="block text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
             {caption}
           </span>
-          <span className="mt-0.5 block text-xs text-slate-400 dark:text-slate-600">
+          <span className="mt-0.5 block text-xs text-slate-400 dark:text-slate-500">
             Coming soon
           </span>
         </span>
@@ -94,14 +99,18 @@ export function HeroAttributeTiles({
   sector: string | null;
 }) {
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+    // `<section>` + sr-only heading completes the document outline (every
+    // other detail-page block carries an <h2>); the tiles are self-labeled
+    // per-tile so the heading is screen-reader-only.
+    <section aria-label="Company attributes" className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <h2 className="sr-only">Company attributes</h2>
       <Tile
         icon={<Building2 className={ICON_CLS} strokeWidth={1.75} />}
         caption="Size"
         value={capTierLabel(marketCap)}
       />
       <Tile
-        icon={<Factory className={ICON_CLS} strokeWidth={1.75} />}
+        icon={<Layers className={ICON_CLS} strokeWidth={1.75} />}
         caption="Sector"
         value={sector && sector.trim() !== '' ? sector : null}
       />
@@ -115,6 +124,6 @@ export function HeroAttributeTiles({
         caption="More"
         value={null}
       />
-    </div>
+    </section>
   );
 }
