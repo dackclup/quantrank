@@ -241,7 +241,7 @@ JS hooks in `lib/useMotion.ts`.
 | Token | What | Timing | Use |
 |---|---|---|---|
 | `animate-rise-in` | fade + 8px upward settle | 320ms `cubic-bezier(.22,1,.36,1)` | card / row / list-item entrance |
-| `animate-chip-pop` | scale 0.85→1.04→1 overshoot | 260ms `cubic-bezier(.34,1.56,.64,1)` | verdict chips (recommendation / score-tier) |
+| `animate-chip-pop` | scale 0.85→1.04→1 overshoot | 260ms `cubic-bezier(.34,1.56,.64,1)` | _(reusable, currently unused — the recommendation-badge consumer was removed 2026-05-31, PR #342)_ |
 | `animate-flag-pulse` | rise + scale settle (8px rise, 0.99→1.012→1) | 900ms ease-out, **single iteration** | risk-veto list items (attention beat, not blink) |
 | `.gauge-arc` | `stroke-dashoffset` ease | 800ms `cubic-bezier(.22,1,.36,1)` | **signature** — ScoreBadge composite-score sweep |
 | `.hover-lift` | `translateY(-1px)` | 160ms ease-out | table row / card hover (pairs with slate hover-bg) |

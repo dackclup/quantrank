@@ -440,7 +440,10 @@ code {
   .animate-shimmer,
   .animate-fade-in,
   .animate-rise-in,
-  .animate-chip-pop,
+  /* .animate-chip-pop has no live consumer since PR #342 (recommendation
+     badge de-animated); the @keyframes is kept above as a reusable utility,
+     but no element carries the class so it needs no reduced-motion guard.
+     Re-add this line if a future surface starts using animate-chip-pop. */
   .animate-flag-pulse,
   .gauge-sweep {
     animation: none !important;

@@ -4492,3 +4492,39 @@ samples = its 1st + the latest by the de-dup rule).
 **No schema / Python / scoring / valuation / output-JSON change** — pure
 frontend render logic + 1 new exported helper. CLAUDE.md §Gotcha + AGENTS.md
 ingest note + this entry.
+
+## Hero: remove recommendation-badge animation + count-up the metric values (frontend, this PR)
+
+**Scope**: frontend-only. Two coupled hero changes per user request
+2026-05-31 ("เอา animation ตรง hold buy strong buy sell ออก และเพิ่ม
+animation ตัวเลขวิ่งให้ fair value target loss chance แบบ ease in and out").
+
+**Change 1 — RecommendationBadge is now STATIC**. Removed the `animateOnce`
+prop + the `usePlayOnMount` chip-pop gate + the `'use client'` directive — the
+badge is a pure server component again (hero badge + all 502 ranking-table
+cells render with no motion). The `chip-pop` keyframe stays defined in
+`tailwind.config.ts` + `globals.css` as a reusable utility but now has ZERO
+consumers (Tailwind purges it from the bundle); the tailwind comment +
+`docs/design.md` §Motion row updated to mark it unused (not deleted — kept
+for any future chip surface).
+
+**Change 2 — Fair value / Target / Loss chance count-up**. New `HeroMetric`
+client leaf wraps the existing `useCountUp(value, play, 800)` (easeInOutCubic
+— the SAME app-wide ease-in-out curve as the Score/MoS gauge sweep). `page.tsx`
+stays a Server Component; `HeroMetric` is the small `'use client'` leaf that
+holds the hook (lifting it into the page would force the whole detail page
+client-side). The loss-chance 5-band tone is computed server-side in `page.tsx`
+(`lossChanceTone`, verified byte-for-byte parity with the old inline rubric at
+every boundary 0/25/40/60/80) and passed as a prop. `useCountUp` inits at the
+target → SSR / no-JS / reduced-motion render the exact value (count-up is
+progressive enhancement, never a visibility gate). The unused `formatPrice`
+helper was removed from `page.tsx` (HeroMetric formats internally).
+
+**Verification (real data)**: `tsc --noEmit` clean · `next build` 506/506 ·
+NVDA HTML — no `animate-chip-pop` on the page, "Hold" badge still renders,
+Fair value $77.59 / Target $379.81 / Loss chance 55% all present (static
+prerender = exact value), loss-chance band parity PASS (55% → slate, matches
+the screenshot grey). `HeroMetric` confirmed a separate `'use client'` chunk;
+`page.tsx` still server. **No schema / Python / scoring / valuation / output-
+JSON change** — 1 new client component + badge simplification + page wiring.
+CLAUDE.md §Gotcha + AGENTS.md inventory + tailwind/design.md comment fixes.

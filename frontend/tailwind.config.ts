@@ -70,8 +70,11 @@ const config: Config = {
           from: { opacity: '0', transform: 'translateY(8px)' },
           to: { opacity: '1', transform: 'translateY(0)' },
         },
-        // chip-pop — recommendation / score-tier / sector chips land with
-        // a tiny overshoot so the verdict feels "stamped on", not faded.
+        // chip-pop — a tiny entrance overshoot for verdict chips so a chip
+        // feels "stamped on", not faded. Currently UNUSED in production: the
+        // recommendation-badge consumer was removed 2026-05-31 per user
+        // request (PR #342). Kept as a reusable utility for any future chip
+        // surface; Tailwind purges the class from the bundle while it's unused.
         'chip-pop': {
           '0%': { opacity: '0', transform: 'scale(0.85)' },
           '70%': { opacity: '1', transform: 'scale(1.04)' },

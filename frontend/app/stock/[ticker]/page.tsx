@@ -2,6 +2,7 @@ import Link from 'next/link';
 
 import FairPriceCard from '@/components/FairPriceCard';
 import { FairPriceBarChart } from '@/components/FairPriceBarChart';
+import { HeroMetric } from '@/components/HeroMetric';
 import { MoSBadge } from '@/components/MoSBadge';
 import { PillarRadarChart } from '@/components/PillarRadarChart';
 import { PriceHistoryChart } from '@/components/PriceHistoryChart';
@@ -19,14 +20,6 @@ export const dynamicParams = false;
 
 export async function generateStaticParams() {
   return listTickersForStaticBuild().map((ticker) => ({ ticker }));
-}
-
-function formatPrice(p: number): string {
-  return p.toLocaleString('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: 2,
-  });
 }
 
 export default function StockDetailPage({
@@ -80,6 +73,16 @@ export default function StockDetailPage({
   const filingLag = detail.data_quality.filing_lag_days;
   const missingCount = detail.data_quality.missing_metrics.length;
   const mosPct = detail.fair_price?.mos_pct ?? null;
+
+  // Loss-chance tone — mirror the 5-band rubric used by the mobile ranking
+  // card (RankingTable.tsx) so the detail page and the front page agree.
+  // Computed here (server) and passed to the HeroMetric client leaf so the
+  // band logic stays in one place and the leaf stays presentation-only.
+  const lc = detail.loss_chance_pct;
+  const lossChanceTone =
+    lc == null ? 'text-slate-900 dark:text-slate-100'
+    : lc < 60 ? (lc < 40 ? 'text-emerald-700 dark:text-emerald-300' : 'text-slate-700 dark:text-slate-300')
+    : 'text-red-700 dark:text-red-300';
 
   return (
     <article className="space-y-4">
@@ -144,7 +147,7 @@ export default function StockDetailPage({
               <span className="font-mono text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-5xl">
                 {detail.ticker}
               </span>
-              <RecommendationBadge recommendation={detail.recommendation} size="md" animateOnce />
+              <RecommendationBadge recommendation={detail.recommendation} size="md" />
             </h1>
             {/* LedgerCraft Phase 2 — company name in slab-serif gives
                 the "editorial finance" register (Bloomberg / WSJ
@@ -188,57 +191,25 @@ export default function StockDetailPage({
                 equal space BEFORE / BETWEEN / AFTER the three columns
                 so the left edge of Price + the right edge of Loss
                 Chance feel equally inset from the card. Single
-                baseline: label + h-6 value box. */}
+                baseline: label + h-6 value box. Each value count-ups on
+                visit via HeroMetric (ease-in-out, shared useCountUp curve). */}
             <div className="flex flex-wrap items-start justify-evenly gap-3">
-              <div className="flex flex-col items-center gap-1 text-center">
-                <span className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                  Fair value
-                </span>
-                <span className="flex h-6 items-center font-mono text-lg font-semibold tabular-nums leading-none text-slate-900 dark:text-slate-100">
-                  {detail.fair_price?.median != null
-                    ? formatPrice(detail.fair_price.median)
-                    : <span className="text-slate-300 dark:text-slate-600">—</span>}
-                </span>
-              </div>
-              <div className="flex flex-col items-center gap-1 text-center">
-                <span className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                  Target
-                </span>
-                <span className="flex h-6 items-center font-mono text-lg font-semibold tabular-nums leading-none text-slate-900 dark:text-slate-100">
-                  {detail.fair_price?.max != null
-                    ? formatPrice(detail.fair_price.max)
-                    : <span className="text-slate-300 dark:text-slate-600">—</span>}
-                </span>
-              </div>
-              <div className="flex flex-col items-center gap-1 text-center">
-                <span className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                  Loss chance
-                </span>
-                {(() => {
-                  const pct = detail.loss_chance_pct;
-                  if (pct == null) {
-                    return (
-                      <span className="flex h-6 items-center font-mono text-lg font-semibold tabular-nums leading-none text-slate-300 dark:text-slate-600">
-                        —
-                      </span>
-                    );
-                  }
-                  // Mirror the 5-band rubric used by the mobile ranking
-                  // card (frontend/components/RankingTable.tsx) so the
-                  // detail page and the front page agree on tone.
-                  const tone =
-                    pct < 25 ? 'text-emerald-700 dark:text-emerald-300' :
-                    pct < 40 ? 'text-emerald-700 dark:text-emerald-300' :
-                    pct < 60 ? 'text-slate-700 dark:text-slate-300' :
-                    pct < 80 ? 'text-red-700 dark:text-red-300' :
-                               'text-red-700 dark:text-red-300';
-                  return (
-                    <span className={`flex h-6 items-center font-mono text-lg font-semibold tabular-nums leading-none ${tone}`}>
-                      {Math.round(pct)}%
-                    </span>
-                  );
-                })()}
-              </div>
+              <HeroMetric
+                label="Fair value"
+                value={detail.fair_price?.median ?? null}
+                format="price"
+              />
+              <HeroMetric
+                label="Target"
+                value={detail.fair_price?.max ?? null}
+                format="price"
+              />
+              <HeroMetric
+                label="Loss chance"
+                value={detail.loss_chance_pct ?? null}
+                format="percent"
+                tone={lossChanceTone}
+              />
             </div>
           </div>
         </div>
