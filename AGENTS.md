@@ -236,7 +236,12 @@ export function FairPriceCard(props) {  // no types
   (FairPriceBarChart / FairPriceCard /
   PillarRadarChart / Tier2EventCard / RiskSummaryCard /
   Disclaimer / FilterDrawer), and the two app pages (home + stock
-  detail). New `<ThemeToggle layout="icon|row">` component renders
+  detail). The stock-detail SECTION ORDER is deliberate (PR #340 — see
+  CLAUDE.md §Gotchas "Stock-detail section order"): hero → price →
+  PillarRadarChart → Tier2EventCard → RiskSummaryCard → fair-price pair →
+  raw → data-quality; the hero also carries a "N risk vetoes" chip when
+  `risk_flags` is non-empty. Don't reorder these without re-reading that
+  gotcha. New `<ThemeToggle layout="icon|row">` component renders
   a three-state cycle button (system → light → dark → system) with
   `useTheme()` + a `mounted` guard to suppress the SSR-fallback
   hydration mismatch. Lives in both the AppShell sticky header

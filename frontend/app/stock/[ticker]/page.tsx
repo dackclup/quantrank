@@ -81,6 +81,16 @@ export default function StockDetailPage({
   const missingCount = detail.data_quality.missing_metrics.length;
   const mosPct = detail.fair_price?.mos_pct ?? null;
 
+  // Hero risk indicator — a flagged stock (NVDA: 2 rank-gate vetoes) was
+  // visually indistinguishable from a clean one in the hero, so the only
+  // signal of trouble was scrolling ~570px to the RiskSummaryCard
+  // (expert-user-explorer reading-order pass, 2026-05-31). Surface a compact
+  // count chip at the fold, next to the RecommendationBadge. `== null` cover
+  // for legacy snapshots; rank gates are the load-bearing signal (they
+  // suppress the entered_top5 badge), so they own the chip. The full
+  // breakdown still lives in the RiskSummaryCard below.
+  const rankGateCount = detail.risk_flags?.length ?? 0;
+
   return (
     <article className="space-y-4">
       <Link
@@ -145,6 +155,19 @@ export default function StockDetailPage({
                 {detail.ticker}
               </span>
               <RecommendationBadge recommendation={detail.recommendation} size="md" animateOnce />
+              {rankGateCount > 0 && (
+                <a
+                  href="#risk-summary"
+                  title="Risk vetoes active — suppresses the Top-5 badge. See the Risk summary below."
+                  className="inline-flex items-center gap-1.5 rounded-sm bg-rose-50 px-2.5 py-0.5 text-xs font-medium tabular-nums text-rose-900 ring-1 ring-inset ring-rose-300 transition-opacity hover:opacity-70 dark:bg-rose-900/30 dark:text-rose-200 dark:ring-rose-800"
+                >
+                  <span
+                    className="inline-block h-1.5 w-1.5 rounded-full bg-rose-600 dark:bg-rose-400"
+                    aria-hidden="true"
+                  />
+                  {rankGateCount} risk {rankGateCount === 1 ? 'veto' : 'vetoes'}
+                </a>
+              )}
             </h1>
             {/* LedgerCraft Phase 2 — company name in slab-serif gives
                 the "editorial finance" register (Bloomberg / WSJ
@@ -262,18 +285,35 @@ export default function StockDetailPage({
         )}
       </section>
 
+      {/* Pillar breakdown sits directly after the price chart, near the
+          hero's score donut — it answers "why is the composite score what
+          it is?" (e.g. NVDA's value pillar 35 vs quality 91) while the score
+          is still fresh, instead of being stranded below both fair-price
+          cards (expert-user-explorer + frontend-design-reviewer reading-order
+          pass, 2026-05-31). The warning group (Tier2 + Risk) stays just
+          ABOVE the fair-price pair so red flags frame the valuation read. */}
+      <PillarRadarChart
+        pillars={detail.pillar_scores}
+        ticker={detail.ticker}
+        baseline={detail.pillar_baseline}
+      />
+
       <Tier2EventCard
         tier2_events={detail.tier2_events}
         ticker={detail.ticker}
       />
 
-      <RiskSummaryCard
-        riskFlags={detail.risk_flags}
-        manipulationIndex={detail.manipulation_index}
-        compositeScore={detail.composite_score}
-        compositeScoreAdjusted={detail.composite_score_adjusted}
-        components={detail.manipulation_components}
-      />
+      {/* scroll-margin-top so the hero "N risk vetoes" anchor jump doesn't
+          park the card flush under the sticky AppShell header. */}
+      <div id="risk-summary" className="scroll-mt-20">
+        <RiskSummaryCard
+          riskFlags={detail.risk_flags}
+          manipulationIndex={detail.manipulation_index}
+          compositeScore={detail.composite_score}
+          compositeScoreAdjusted={detail.composite_score_adjusted}
+          components={detail.manipulation_components}
+        />
+      </div>
 
       <FairPriceBarChart
         fair_price={detail.fair_price}
@@ -286,12 +326,6 @@ export default function StockDetailPage({
         currentPrice={detail.current_price}
         warnings={detail.valuation_warnings}
         tangibleBookValue={detail.tangible_book_value}
-      />
-
-      <PillarRadarChart
-        pillars={detail.pillar_scores}
-        ticker={detail.ticker}
-        baseline={detail.pillar_baseline}
       />
 
       <section>

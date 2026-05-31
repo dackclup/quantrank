@@ -4411,3 +4411,46 @@ footnote cross-ref present.
 className/JSX diff only (net deletion). `FairPriceMethodResult` stays
 exported from `types.ts` (still used by `FairPriceBarChart`); Card B just
 stops importing it. CLAUDE.md §Gotcha + AGENTS.md inventory + this entry.
+
+## Stock-detail reading-order pass — pillar-up reorder + hero risk chip (frontend, this PR)
+
+**Scope**: frontend-only (`frontend/app/stock/[ticker]/page.tsx`). End-of-
+session reading-order audit of the detail page by TWO agents in parallel
+(`frontend-design-reviewer` IA pass + `expert-user-explorer` 3-persona pass).
+Both concluded the order is "largely sound" — hero surfaces score+MoS at
+zero scroll, fair-price pair ordered correctly (verdict→reference). Two
+actionable, low-risk improvements landed; one proposal deliberately NOT taken.
+
+**Change 1 — move `PillarRadarChart` up** (was below both fair-price cards →
+now right after the price chart, before the warning group). Rationale: the
+pillar breakdown answers "why is the composite score X?" (NVDA value-pillar
+35 vs quality 91) and belongs near the hero's score donut, not stranded
+~1000px below it (expert-user-explorer single-highest-impact move). New
+order: hero → price → PillarRadarChart → Tier2EventCard → RiskSummaryCard →
+FairPriceBarChart → FairPriceCard → RawMetricsTable → data-quality → footnote.
+
+**Change 2 — hero "N risk vetoes" chip**. A flagged stock (NVDA: 2 rank-gate
+vetoes) was visually identical to a clean one (HST) in the hero — the only
+trouble signal was scrolling ~570px to RiskSummaryCard. Added a compact rose
+count chip next to the RecommendationBadge, rendered only when
+`risk_flags.length > 0`, anchored to `#risk-summary` (a `scroll-mt-20`
+wrapper div around RiskSummaryCard clears the sticky header on jump). Keyed
+on `risk_flags` (the entered_top5 suppressors), NOT `manipulation_index`
+(informational). Singular/plural via `=== 1 ? 'veto' : 'vetoes'`.
+
+**NOT taken** (per main-agent synthesis of the two-agent split): the
+`frontend-design-reviewer` suggestion to move the warning group
+(Tier2+Risk) ABOVE the price chart. `expert-user-explorer` showed the
+current position optimizes the risk-checker persona correctly and the real
+gap was the hero's silence about flags — which Change 2 fixes at the root.
+Moving PillarRadar further up (ahead of price) was also declined — it would
+push the fair-price pair (what the primary value-screener persona wants
+after seeing MoS) further from the hero.
+
+**Verification (real data, no fixture)**: `tsc --noEmit` clean · `next
+build` 506/506 · NVDA HTML — hero chip renders "2 risk vetoes" + anchor
+`href="#risk-summary"` + target `id="risk-summary"` present + section order
+Price < Risk < FP-check < FP-ensemble confirmed; HST HTML — no chip (clean
+stock), order intact. **No schema / Python / scoring / valuation / output-
+JSON change** — JSX reorder + additive hero chip only. CLAUDE.md §Gotcha +
+AGENTS.md inventory note + this entry.

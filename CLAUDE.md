@@ -796,6 +796,33 @@ whitespace / single-line fixes do not trigger.
   future "merge these two cards" idea must FIRST resolve that two-formula
   clash (the reason they stay separate cards, not one).
 
+- **Stock-detail section order is deliberate — score-explanation rides high,
+  the warning group frames valuation, raw data sinks** (`frontend/app/stock/[ticker]/page.tsx`,
+  PR #340; two-agent reading-order audit `frontend-design-reviewer` +
+  `expert-user-explorer`). Top-to-bottom: back-link → hero (identity + Score
+  donut + MoS donut + Fair-value/Target/Loss-chance) → Price chart →
+  **`PillarRadarChart`** → `Tier2EventCard` → `RiskSummaryCard` →
+  `FairPriceBarChart` ("Fair price check") → `FairPriceCard` ("Fair price
+  ensemble") → `RawMetricsTable` → Data quality → methodology footnote.
+  Load-bearing ordering rules: (1) **`PillarRadarChart` sits right after the
+  price chart, NOT below the fair-price pair** — it answers "why is the
+  composite score what it is?" (NVDA value-pillar 35 vs quality 91) while the
+  hero's score donut is still fresh; moving it back down re-strands the score
+  explanation ~1000px from the score. (2) **The warning group
+  (`Tier2EventCard` + `RiskSummaryCard`) stays ABOVE the fair-price pair** so
+  red flags frame the valuation read (a Beneish veto makes a $36 fair-value
+  estimate suspect); both `null`-collapse on clean stocks so the clean-stock
+  order is hero → price → pillars → fair-price → raw. The two-agent audit
+  deliberately did NOT move the warning group above the price chart (the
+  `frontend-design-reviewer` IA suggestion) — `expert-user-explorer` showed
+  the current spot optimizes the risk-checker persona correctly; the real gap
+  was the **hero being silent about flags**, fixed by (3) the hero **"N risk
+  vetoes" rose chip** (renders only when `risk_flags.length > 0`, anchors to
+  `#risk-summary` — a `scroll-mt-20` wrapper div around `RiskSummaryCard` so
+  the jump clears the sticky header). The chip is keyed on `risk_flags`
+  (rank gates — the entered_top5 suppressors), NOT `manipulation_index`
+  (informational). Singular/plural via `=== 1 ? 'veto' : 'vetoes'`.
+
 ## Phase status
 
 Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged
