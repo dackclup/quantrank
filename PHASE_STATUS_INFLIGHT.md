@@ -4456,3 +4456,35 @@ revert; post-revert the hero is back to its prior shape (no chip on any
 stock). **No schema / Python / scoring / valuation / output-JSON change** —
 JSX reorder only (the additive chip was added then removed in-PR, net zero).
 CLAUDE.md §Gotcha + AGENTS.md inventory note + this entry.
+
+## Price-chart 5Y monthly resolution (frontend, this PR)
+
+**Scope**: frontend-only (`frontend/components/PriceHistoryChart.tsx`). User
+spec: 1D=1-min · 5D=15-min · 1M/6M/YTD/1Y=daily · 5Y=monthly. Of these,
+1M-1Y were ALREADY daily (no change), 5Y was daily-even-stride-downsampled
+to 260 points, and 1D/5D are intraday (disabled, separate v1.3 feature). This
+PR ships ONLY the 5Y→monthly change per the user's "ทำแค่ 5Y รายเดือนก่อน".
+
+**Change**: new `aggregateMonthly()` helper — yields one point per calendar
+month (the close of that month's LAST trading day, the standard monthly-chart
+convention) from the ascending daily series. The `chartData` memo now routes
+`period === '5Y'` through `aggregateMonthly(sliced)` instead of
+`downsample(sliced, 260)`; every shorter window stays daily + keeps the
+`downsample` render-cost cap. NVDA 5Y: 1254 daily → 60 monthly (= 5y × 12),
+month-end dates (2021-06-30 … 2026-05-28), last point = the actual latest
+daily close (partial current month keeps its most-recent close). The 5Y X-axis
+label stays `YYYY` (page.tsx) — still appropriate at ~60 points / 12 year ticks.
+
+**Intraday (1D 1-min / 5D 15-min) NOT done this PR** — user deferred ("ทำแค่
+5Y รายเดือนก่อน"). It's a v1.3 feature: NEW compute/ingest path (yfinance
+`1m`=7-day cap / `15m`=60-day cap) + `StockHistory` schema-triple bump + cron
+volume + the static-site freshness caveat (daily post-close cron ⇒ "1D" would
+be the last cron's session, not real-time). The on-disk history file has no
+intraday data, so 1D/5D stay disabled in `PriceTimePeriodSelector`.
+
+**Verification (real data)**: `tsc --noEmit` clean · `next build` 506/506 ·
+`aggregateMonthly` unit-checked against the real NVDA daily series (60 monthly
+points, all months distinct, last monthly date == last daily date 2026-05-28).
+**No schema / Python / scoring / valuation / output-JSON change** — pure
+frontend render logic + 1 new exported helper. CLAUDE.md §Gotcha + AGENTS.md
+ingest note + this entry.
