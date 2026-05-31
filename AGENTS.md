@@ -377,6 +377,16 @@ export function FairPriceCard(props) {  // no types
 
 - `EDGAR_USER_AGENT` is required for SEC EDGAR fetches. Set via env
   var. CI uses a GitHub Actions secret. Never commit.
+- **Subagent model-downgrade guard.** The 20 Claude Code subagents use
+  floating `model: opus` / `model: sonnet` aliases (always resolve to the
+  latest). Do NOT commit a `CLAUDE_CODE_SUBAGENT_MODEL` or
+  `ANTHROPIC_DEFAULT_{OPUS,SONNET,HAIKU}_MODEL` override into
+  `.claude/settings.json` — it pins every subagent to a fixed (possibly older)
+  version invisibly. CI's "Subagent model-pin guard" step
+  (`tools/check_model_pin.py`) fails the build if one is present (the only
+  benign value is `CLAUDE_CODE_SUBAGENT_MODEL='inherit'`) or if an agent pins a
+  dated model ID. Per-user `.claude/settings.local.json` is gitignored and out
+  of scope — a local override can't reach `main`.
 - **CI escape-hatch env-var combo for simulate** (5 vars, all set
   together in `.github/workflows/pre-merge-prod-sim.yml`; NONE set
   in weekly cron `compute-rankings.yml`). Each is optional, fails
@@ -505,6 +515,21 @@ note cross-tool-specific points only:
   updated so new agents inherit the convention. Cross-tool agents: this is
   Claude-Code subagent frontmatter — Copilot / Cursor / Devin ignore it.
   Agent-infra only — no compute / schema / output change.
+- **Subagent model-pin guard added (2026-05-31)** — bare `model: opus` /
+  `model: sonnet` aliases on all 20 agents float forward to the LATEST
+  Opus/Sonnet at runtime (Claude Code design), so the project is "always
+  latest" without action. The downgrade risk is environmental, not in the
+  agent files: a `CLAUDE_CODE_SUBAGENT_MODEL` or
+  `ANTHROPIC_DEFAULT_{OPUS,SONNET,HAIKU}_MODEL` committed into
+  `.claude/settings.json` would pin every subagent to a (possibly older)
+  version invisibly. New `tools/check_model_pin.py` (wired into `ci.yml` as the
+  "Subagent model-pin guard" step) fails CI if committed settings carry such an
+  override (benign exception: `CLAUDE_CODE_SUBAGENT_MODEL='inherit'`) OR if an
+  agent frontmatter pins a dated/numbered model ID instead of the alias. See
+  CLAUDE.md §Gotchas "Subagent model aliases float forward" + §Security
+  considerations. Cross-tool agents: Claude-Code-specific; Copilot / Cursor /
+  Devin ignore the `.claude/` surface. CI + doc only — no compute / schema /
+  output change.
 - **Phase 4 tasteful-motion in flight (this PR)** — app-wide entrance +
   micro-interaction animation, CSS/Tailwind only (no framer-motion).
   LedgerCraft stays flat; motion is the ENTRANCE, plays once per session.

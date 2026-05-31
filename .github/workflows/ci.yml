@@ -29,6 +29,8 @@ jobs:
         run: ruff check .
       - name: Doc test-count drift guard
         run: python tools/check_doc_test_counts.py
+      - name: Subagent model-pin guard
+        run: python tools/check_model_pin.py
       - name: Schema snapshot guard
         run: python -m compute.output.schema_check
       - name: Pytest

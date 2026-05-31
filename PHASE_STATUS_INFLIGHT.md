@@ -4263,3 +4263,31 @@ schema / scoring / valuation / frontend code change; `ruff` / `pytest` /
 
 ---
 
+**Subagent model-downgrade guard added (same PR as effort:max)** — answers the
+user's question "are the agents always on the latest Opus/Sonnet, and is there
+protection against a self-inflicted downgrade?". Findings (confirmed via
+`claude-code-guide` against the official Claude Code docs): the 20 agents use
+bare `model: opus` / `model: sonnet` aliases, which RESOLVE TO THE LATEST
+Opus/Sonnet at runtime and FLOAT FORWARD automatically on a CLI update — so the
+project is "always latest" by design, no action needed. The real downgrade
+vector is NOT the agent files but the ENVIRONMENT: a `CLAUDE_CODE_SUBAGENT_MODEL`
+or `ANTHROPIC_DEFAULT_{OPUS,SONNET,HAIKU}_MODEL` committed into
+`.claude/settings.json` would pin every subagent to a fixed (possibly older)
+version WITHOUT changing a single agent file — invisible in a diff. Audited the
+current `.claude/settings.json`: no `env` block, no override var → clean today.
+
+New `tools/check_model_pin.py` (wired into `.github/workflows/ci.yml` Python job
+as the "Subagent model-pin guard" step, mirroring the existing
+`check_doc_test_counts.py` precedent) fails CI if (a) committed settings carry
+any of the 6 override env vars — the one benign value being
+`CLAUDE_CODE_SUBAGENT_MODEL='inherit'` — or (b) any agent frontmatter pins a
+dated/numbered model ID (`claude-opus-4-8`) instead of the floating alias.
+Guard runs clean locally (exit 0); negative test confirmed it rejects a pinned
+ID. Lockstep docs: CLAUDE.md §Gotchas "Subagent model aliases float forward"
+(full rationale) + AGENTS.md §Security considerations + a §Phase-status entry.
+`.claude/settings.local.json` (gitignored, per-user) is out of scope — a local
+override can't land on `main`. CI + agent-infra + doc only — no compute / schema
+/ scoring / valuation / frontend code change.
+
+---
+
