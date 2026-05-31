@@ -1470,8 +1470,8 @@ from it — the documented coordination flows are canonical examples, not
 an exhaustive script. See [`.claude/agents/README.md`](.claude/agents/README.md)
 §Dynamic workflow.
 
-The 20 agent prompts are kept tight (total ~3.5k lines across all
-of `.claude/agents/`) so per-spawn context cost stays bounded —
+The 20 agent prompts are kept tight (total ~3.5k lines across the 20
+agent files in `.claude/agents/`) so per-spawn context cost stays bounded —
 trim target is the boilerplate ("read these first" + verbose intros
 + duplicated material from CLAUDE.md / SKILL.md / AGENTS.md), NOT
 the work the agent does. Hard constraints on prompt size do not
@@ -1490,8 +1490,8 @@ scoring/*` or `compute/valuation/*`, frontend-design-reviewer on
 `frontend/components/*`, etc.) — see [`CLAUDE.md`](CLAUDE.md)
 §Auto-routing policy for the full cue table. Opus agents
 (`incident-commander` · `release-captain` · `methodology-scientist`
-· `quantrank-reviewer`) stay rare-fire on gates / signals so they
-don't drain the all-models pool. "Non-trivial" = > 5 added lines
+· `quantrank-reviewer` · `financial-engineer`) stay rare-fire on gates /
+signals so they don't drain the all-models pool. "Non-trivial" = > 5 added lines
 OR touches non-comment code OR adds/removes a public symbol;
 comment / whitespace / single-line fixes do not trigger. A 10-min
 dedup window prevents the same sonnet agent from firing twice on
