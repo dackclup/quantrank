@@ -4075,6 +4075,22 @@ appended to the CLAUDE.md §Gotchas sidebar-`data-rail` entry. `next build` → 
 routes; compiled CSS confirms `transition:transform .2s,width .2s,max-width .2s
 ease-in-out`.
 
+**Follow-up commit (same PR) — remove the risk-flags card entrance animation**:
+user 2026-05-31 "ช่อง risk flag เอา animation ออก". `RiskFlagsCard.tsx` dropped
+the `animate-flag-pulse stagger-*` veto-row entrance beat (+ the now-unused
+`usePlayOnMount` hook / import / `i` index). The veto rows render STATICALLY; the
+card's rose ring + tone already carry the "look here" weight without motion. The
+`flag-pulse` keyframe + Tailwind `animation` entry are RETAINED as defined
+tasteful-motion vocabulary (PR #312 / `docs/design.md` §Motion /
+`web-animation-design` skill all still cite it) — RiskFlagsCard was its only
+runtime consumer, so the `.animate-flag-pulse{…}` UTILITY is no longer emitted
+(verified: 0 occurrences in compiled CSS) while the keyframe stays available for
+reuse. The explanatory comment writes the token WITHOUT the `animate-` prefix on
+purpose — else Tailwind's content scanner re-emits the unused utility from the
+comment itself. Verified via Playwright on `/stock/AEP` (1 veto = altman_distress):
+card renders, row className is exactly `flex items-start gap-2 rounded-sm`,
+`anyAnimated:false`, no new console errors. `next build` → 502 routes; `tsc` clean.
+
 PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR"
 lockstep per PR #237 convention; AGENTS.md carries no §Gotchas mirror (per the
 PR #327 precedent — frontend gotchas live in CLAUDE.md, the canonical home).
