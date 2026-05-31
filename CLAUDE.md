@@ -899,12 +899,15 @@ whitespace / single-line fixes do not trigger.
   the reference app's black boxes (which break in light mode); `rounded` ≤4px,
   border-as-depth, paired `dark:`. Four FIXED tiles: (1) **Size** =
   market-cap tier (Mega ≥$200B / Large ≥$10B / Mid ≥$2B / Small) — DATA;
-  (2) **Sector** = `detail.sector` — DATA; (3) **Dividend** + (4) **More** =
+  (2) **Sector** = `detail.sector` — DATA; (3) **Dividend** + (4) **Type** =
   intentional PLACEHOLDERS rendered in a dashed-border "reserved" state with a
   "Coming soon" sub-line (per the user's "ช่องเปล่า + label บอกว่าจะมีอะไร" —
-  QuantRank has NO dividend data in the schema, so the reference app's
-  "จ่ายปันผล" tile can't be filled; the empty tile reads as reserved, not
-  broken). A `null` value flips a tile to the reserved treatment via the
+  the empty tile reads as reserved, not broken). The **Type** tile is reserved
+  for a future security-type signal (Common stock / ADR / etc. — the analog of
+  the reference app's "Common · หุ้นสามัญ" tile, user direction 2026-05-31);
+  the **Dividend** tile mirrors the reference app's "จ่ายปันผล" tile. NEITHER
+  field exists in the schema yet — when one lands, swap the tile's `value`
+  from `null` to the real field and it auto-promotes out of the reserved state. A `null` value flips a tile to the reserved treatment via the
   `filled` flag. INFO tiles, NOT filters (single-stock detail page — nothing
   to filter). Pure server component. Lives in its own section directly under
   the hero `</header>`, above the Price chart. Distinct from the earlier

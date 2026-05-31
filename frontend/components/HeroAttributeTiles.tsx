@@ -19,7 +19,7 @@
 // icons via NAMED imports only (tree-shaken — never `import * as Icons`, which
 // pulls the 224 KB barrel; dependency-auditor 2026-05-31).
 
-import { Building2, Coins, Gauge, Layers } from 'lucide-react';
+import { Building2, Coins, Layers, ScrollText } from 'lucide-react';
 import type { JSX } from 'react';
 
 function capTierLabel(marketCap: number | null): string | null {
@@ -119,9 +119,13 @@ export function HeroAttributeTiles({
         caption="Dividend"
         value={null}
       />
+      {/* Reserved for a future security-type signal — Common stock / ADR /
+          etc. (the analog of the reference app's "Common · หุ้นสามัญ" tile).
+          QuantRank has no security-type field in the schema yet, so it shows
+          the "Coming soon" reserved state for now. */}
       <Tile
-        icon={<Gauge className={ICON_CLS} strokeWidth={1.75} />}
-        caption="More"
+        icon={<ScrollText className={ICON_CLS} strokeWidth={1.75} />}
+        caption="Type"
         value={null}
       />
     </section>
