@@ -219,15 +219,15 @@ export function FairPriceBarChart({
                 )}
               </div>
               <svg
-                width="18"
-                height="18"
+                width="1em"
+                height="1em"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="shrink-0 text-slate-400 dark:text-slate-500"
+                className="shrink-0 text-xl text-slate-400 dark:text-slate-500"
                 aria-hidden="true"
               >
                 <polyline points="9 18 15 12 9 6" />
