@@ -83,22 +83,23 @@ export default function StockDetailPage({
           company name, radial-gauge ScoreBadge + price + MoSCell on
           the right side. */}
       <header className="rounded border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900 sm:p-6">
-        {/* Two-column only at lg+ (not sm). The expanded sidebar (240px)
-            consumes viewport width, so at md the hero's content area can be
-            < 470px — too narrow for the right stats block's ~360px intrinsic
-            width. Under the old `sm:flex-row` the left block (min-w-0) was
-            crushed to ~30–80px and its sector chip overflowed onto the score
-            gauge (2026-05-29 hero-overlap fix). Below XL the hero stacks
-            cleanly; the 2-col split waits for xl (1280) — NOT lg (1024) —
-            because at 1024 the sidebar leaves only ~666px of content width,
-            which crushes the left block to ~156px (responsive-density audit
-            2026-05-29). At xl the content is ~1040px → a balanced split, and
-            the left block is capped at `xl:max-w-2xl` so it doesn't spread
-            across 1000px+ on ultrawide. `justify-between` was a no-op (the
-            `flex-1` left child already consumes the free space) and is
-            dropped. The right block keeps min-w-0 as a shrink guard. */}
-        <div className="flex flex-col gap-5 xl:flex-row xl:items-start">
-          <div className="min-w-0 flex-1 xl:max-w-2xl">
+        {/* Two-column split at lg+ (1024px) — "desktop": logo/ticker/name on
+            the left, the stats block (score · MoS · fair value · target · loss
+            chance) on the top-right, opposite each other (user direction
+            2026-05-31). Below lg the hero stacks vertically (mobile / narrow
+            tablet). The split was previously gated at xl (1280) because the
+            hero ALSO carried a ~360px live-price block, which at lg + an
+            expanded 240px sidebar (~666px content) crushed the left block
+            (2026-05-29 responsive-density audit). That price block was removed
+            from the hero (2026-05-31), so the stats block is now narrower and
+            the split is safe at lg. Guards retained: left keeps `min-w-0` so a
+            long company name WRAPS instead of overflowing onto the gauges
+            (the old chip-overflow failure mode), and is capped at
+            `lg:max-w-2xl` so it doesn't spread on ultrawide; the right block
+            keeps `min-w-0` as a shrink guard. If the expanded sidebar at
+            1024–1279 ever feels tight, bump these back to `xl:`. */}
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-start">
+          <div className="min-w-0 flex-1 lg:max-w-2xl">
             <div className="flex flex-wrap items-center gap-2 text-xs">
               <span className="inline-flex items-center rounded-sm bg-slate-100 px-1.5 py-0.5 font-mono font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">
                 #{detail.rank}
@@ -123,7 +124,7 @@ export default function StockDetailPage({
               {detail.name}
             </p>
           </div>
-          <div className="flex min-w-0 flex-col gap-3 xl:items-end">
+          <div className="flex min-w-0 flex-col gap-3 lg:items-end">
             {/* Top row: composite donut + MoS donut — paired summary stats
                 ("how good overall" / "how cheap"). Side-by-side on EVERY width
                 via `grid-cols-2` (2026-05-31 — user wants them sharing one row
@@ -144,7 +145,7 @@ export default function StockDetailPage({
                 outer margins on both edges. The 1fr tracks still bound each
                 label's wrap so nothing clips at 320px; `w-full` keeps the
                 centerline = the card's at every width, overriding the parent's
-                `xl:items-end` shrink for this row (2026-05-31). */}
+                `lg:items-end` shrink for this row (2026-05-31). */}
             <div className="grid w-full grid-cols-2 items-center gap-3 sm:gap-5">
               <div className="justify-self-end">
                 <ScoreBadge score={detail.composite_score} size="lg" ticker={detail.ticker} />
