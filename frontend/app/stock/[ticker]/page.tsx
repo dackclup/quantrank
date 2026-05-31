@@ -141,8 +141,13 @@ export default function StockDetailPage({
                 (1fr 1fr) bound each badge so its label wraps WITHIN its track
                 instead of pushing the row wider — this is what fixes the 320px
                 clip the old `flex-nowrap` had (EIX-style long "UNDERVALUED"
-                label) without falling back to the `flex-wrap` vertical stack. */}
-            <div className="grid grid-cols-2 items-center gap-3 sm:gap-5">
+                label) without falling back to the `flex-wrap` vertical stack.
+                `w-full` + `justify-items-center` center each donut inside its
+                own 1fr half, so the score↔MoS pair stays balanced left↔right
+                (equal outer margins, symmetric about the card centerline) at
+                EVERY breakpoint — including xl, where `w-full` overrides the
+                parent's `xl:items-end` shrink for this row (2026-05-31). */}
+            <div className="grid w-full grid-cols-2 items-center justify-items-center gap-3 sm:gap-5">
               <ScoreBadge score={detail.composite_score} size="lg" ticker={detail.ticker} />
               <MoSBadge mos={mosPct} />
             </div>

@@ -133,6 +133,9 @@ export function MoSBadge({ mos }: { mos: number | null | undefined }): JSX.Eleme
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
+          {/* text-sm here (vs ScoreGauge's text-base center) on purpose: the
+              MoS center label carries a sign char (+/−), so it needs the extra
+              room to stay inside the 64px donut at the fluid font-size ceiling. */}
           <span
             className={`font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100${
               reverse ? ' -scale-x-100' : ''
