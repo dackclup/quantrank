@@ -590,7 +590,15 @@ whitespace / single-line fixes do not trigger.
   live collapsed state (`classList.toggle`) so the CSS never fights React
   post-hydration. The aside transition is also gated behind an `animate` flag
   (true only ~250ms around an explicit toggle) + `motion-reduce:transition-none`
-  so refresh / rotation switch width INSTANTLY (no animated shrink).
+  so refresh / rotation switch width INSTANTLY (no animated shrink). The
+  animated transition list MUST include `max-width` alongside `width` (PR #330):
+  the collapsed rail toggles `md:max-w-[64px]` AND the pre-paint rule sets
+  `max-width:4rem`, so an un-transitioned `max-width` snaps to the collapsed cap
+  the instant `collapsed` flips and CLAMPS the rendered width to 64px — the
+  `width` animation is nullified, so collapse "snaps" while expand (a GROWING
+  max-width never clamps) stays smooth = asymmetric jank. `max-width` is
+  load-bearing (not removable): it caps the fluid-rem `md:w-60` — which is
+  ~270px at the font-size ceiling — down to a stable 240px.
 - **Re-parking the price-chart crosshair MUST debounce the `<AreaChart>`
   remount ≥ ~300ms** (`frontend/components/PriceHistoryChart.tsx`, PR #326).
   Recharts 2.15 applies `defaultIndex` (latest-point park) only on MOUNT. A
@@ -603,6 +611,26 @@ whitespace / single-line fixes do not trigger.
   → the "crosshair jumps left on sidebar toggle" regression returns. This
   ResizeObserver subsumes the old orientation-only `matchMedia` re-park
   (rotation changes width too).
+- **App-wide motion uses ONE `ease-in-out` timing curve** (2026-05-30,
+  PR #330). Every discrete move / entrance / slide / sweep accelerates out
+  of the start and decelerates into the end — one calm, symmetric feel across
+  the whole app. Concretely: `tailwind.config.ts` `animation` (`fade-in` /
+  `rise-in` / `chip-pop` / `flag-pulse`), `globals.css` `.gauge-sweep` +
+  `.hover-lift`, the `Sidebar` collapse/expand + `FilterDrawer` slide-over
+  transitions, and the JS rAF easings in `PriceHistoryChart.tsx` (intro sweep)
+  + `useMotion.ts` (`useCountUp`) all use `ease-in-out` — the CSS keyword /
+  Tailwind `ease-in-out` class / `easeInOutCubic = t<0.5 ? 4t³ :
+  1−(−2t+2)³/2` in JS. A NEW animated component MUST follow suit — do not
+  introduce a one-off `ease-out` / `ease-in` / `cubic-bezier`. TWO deliberate
+  carve-outs: (1) `shimmer` stays `linear infinite` — ease-in-out on a
+  seamless background-position loop stutters at the wrap boundary (slow-end
+  meets slow-start = a visible stall); (2) a bare Tailwind `transition-*`
+  with no explicit `ease-*` already compiles to `cubic-bezier(0.4,0,0.2,1)`
+  ≈ ease-in-out, so it needs no change. `chip-pop`'s overshoot (70% → 1.04)
+  and `flag-pulse`'s settle (55% → 1.012) now live entirely in the keyframe
+  %-stops, not the timing curve — the curve just eases into them. The
+  `@media (prefers-reduced-motion: reduce)` guard in `globals.css` still
+  neutralizes every one of these.
 
 ## Phase status
 

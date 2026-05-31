@@ -71,8 +71,13 @@ const RESOURCE_ITEMS: Array<{ label: string; href: string; external: true; icon:
 interface SidebarProps {
   collapsed: boolean;
   /** True only for the ~250ms around an explicit user toggle — gates the
-   *  width/transform transition so refresh + rotation switch instantly
-   *  (no "opens then shrinks back" flash). Owned by AppShell. */
+   *  width/max-width/transform transition so refresh + rotation switch
+   *  instantly (no "opens then shrinks back" flash). Owned by AppShell.
+   *  max-width MUST be transitioned alongside width: the collapsed rail
+   *  toggles `md:max-w-[64px]` (+ the globals.css pre-paint rule sets
+   *  `max-width:4rem`), and an un-transitioned max-width snaps to 64px on
+   *  collapse → clamps width instantly → the shrink "snaps" while expand
+   *  (growing max-width never clamps) stays smooth = asymmetric jank. */
   animate: boolean;
   onToggleCollapse: () => void;
   mobileOpen: boolean;
@@ -105,7 +110,7 @@ export function Sidebar({ collapsed, animate, onToggleCollapse, mobileOpen, onMo
         data-sidebar-rail=""
         className={`fixed inset-y-0 left-0 z-40 flex flex-col border-r border-slate-200 bg-white ${
           animate
-            ? '[transition:transform_200ms_ease-out,width_200ms_ease-out]'
+            ? '[transition:transform_200ms_ease-in-out,width_200ms_ease-in-out,max-width_200ms_ease-in-out]'
             : 'transition-none'
         } motion-reduce:transition-none dark:border-slate-800 dark:bg-slate-950 md:sticky md:top-0 md:h-screen md:translate-x-0 ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'

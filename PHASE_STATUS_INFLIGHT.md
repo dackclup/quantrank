@@ -4006,3 +4006,130 @@ gotchas deferred — they live in CLAUDE.md §Gotchas (the canonical home);
 AGENTS.md is the cross-tool surface and carries no §Gotchas mirror today.
 
 ---
+
+## PR #330 — feat(frontend): app-wide ease-in-out motion curve (in flight, 2026-05-30)
+
+Per user direction "เปลี่ยนไปใช้ animation ขยับแบบ ease in and out ทั้ง app" —
+unify every discrete move / entrance / slide / sweep animation in the app onto
+a single `ease-in-out` timing curve (accelerate out of the start, decelerate
+into the end — one calm, symmetric feel). Replaces the prior mix of `ease-out`,
+ease-out `cubic-bezier(0.22,1,0.36,1)`, back-out `cubic-bezier(0.34,1.56,0.64,1)`,
+and `easeOutCubic`.
+
+**Touched (6 files, timing-function-only diff)**:
+
+- `tailwind.config.ts` `animation` block — `fade-in` / `rise-in` / `chip-pop` /
+  `flag-pulse` timing → `ease-in-out`. `shimmer` DELIBERATELY kept
+  `linear infinite` (ease-in-out on a seamless background-position loop stutters
+  at the wrap boundary — slow-end meets slow-start = a visible stall).
+- `app/globals.css` — `.gauge-sweep` (was ease-out `cubic-bezier(0.22,1,0.36,1)`)
+  + `.hover-lift` (was `ease-out`) → `ease-in-out`; 2 stale comments corrected.
+- `components/FilterDrawer.tsx` — slide-over `duration-300 ease-out` →
+  `ease-in-out`.
+- `components/Sidebar.tsx` — collapse/expand
+  `[transition:transform_200ms_ease-out,width_200ms_ease-out]` → `ease-in-out`.
+- `components/PriceHistoryChart.tsx` — intro-sweep rAF `easeOutCubic` →
+  `easeInOutCubic`. **NOTE**: supersedes the prior-session "เร็วไปช้า"
+  (fast→slow) ask for this specific sweep — the new "ทั้ง app" directive makes
+  it match the rest, so the left→right reveal now starts gently. One-line
+  revert (`easeInOut` → `easeOut`) if the user prefers the chart keep fast→slow.
+- `lib/useMotion.ts` — `useCountUp` rAF `easeOutCubic` → `easeInOutCubic`
+  (pairs with the gauge-sweep arc, which the comment already cross-references).
+
+`chip-pop`'s overshoot + `flag-pulse`'s settle still read (the overshoot lives
+in the keyframe %-stops — 70% → 1.04 / 55% → 1.012 — not the timing curve, so
+ease-in-out just eases INTO them). Reduced-motion guard untouched — every
+animation still snaps to its end state under `prefers-reduced-motion: reduce`.
+Bare Tailwind `transition-*` (no explicit ease) already defaults to
+`cubic-bezier(0.4,0,0.2,1)` ≈ ease-in-out, left as-is.
+
+**Verification**: `next build` → 502 routes; `tsc --noEmit` clean on edited
+files; compiled CSS confirms `ease-in-out` on every `animation:` /
+`transition:` rule (`chip-pop`/`rise-in`/`flag-pulse`/`gauge-sweep .8s`/
+`hover-lift .16s`/Sidebar `.2s,width .2s`) + `linear` preserved on `shimmer`;
+`node frontend/components/downsample.test.mjs` → 14/14; `ruff check .` clean
+(no Python touched). `frontend-design-reviewer` (sonnet) spawned at the push gate.
+
+Companion CLAUDE.md §Gotchas entry ("App-wide motion uses ONE `ease-in-out`
+timing curve") documents the convention for future components — a new animated
+component must use ease-in-out, not a one-off `ease-out`. No schema / Python /
+scoring / valuation / output JSON change — frontend timing-function-only.
+
+**Follow-up commit (same PR) — desktop sidebar collapse smoothness**: the
+ease-in-out swap alone did NOT make the desktop sidebar collapse/expand feel
+smooth (user 2026-05-30 "แถบด้านข้าง animation เลื่อนเข้าออกยังดูไม่ smooth").
+Root cause was NOT the easing — the aside's `[transition:…]` listed `transform`
++ `width` but NOT `max-width`, while the collapsed state toggles `md:max-w-[64px]`
+(and the `globals.css` pre-paint rule sets `max-width:4rem`). On collapse the
+un-transitioned `max-width` snapped to the 64px cap the instant `collapsed`
+flipped → clamped the rendered width to 64px → the `width` animation was
+nullified → collapse "snapped" while expand (a growing max-width never clamps)
+looked smooth = asymmetric jank. Fix: add `max-width_200ms_ease-in-out` to the
+`Sidebar.tsx` transition list so width + max-width animate in lockstep. Verified
+via Playwright frame-sampling at 1280px viewport: collapse now interpolates
+240→72px across **13 distinct steps** `[240, 238, 231, 218, 201, 180, 156, 132,
+111, 94, 81, 74, 72]` (was a 1-2 frame snap), expand 72→240px across **10 steps**.
+`max-width` kept (NOT removed) — it's load-bearing: it caps the fluid-rem
+`md:w-60` (~270px at the font-size ceiling) to a stable 240px. Companion note
+appended to the CLAUDE.md §Gotchas sidebar-`data-rail` entry. `next build` → 502
+routes; compiled CSS confirms `transition:transform .2s,width .2s,max-width .2s
+ease-in-out`.
+
+**Follow-up commit (same PR) — remove the risk-flags card entrance animation**:
+user 2026-05-31 "ช่อง risk flag เอา animation ออก". `RiskFlagsCard.tsx` dropped
+the `animate-flag-pulse stagger-*` veto-row entrance beat (+ the now-unused
+`usePlayOnMount` hook / import / `i` index). The veto rows render STATICALLY; the
+card's rose ring + tone already carry the "look here" weight without motion. The
+`flag-pulse` keyframe + Tailwind `animation` entry are RETAINED as defined
+tasteful-motion vocabulary (PR #312 / `docs/design.md` §Motion /
+`web-animation-design` skill all still cite it) — RiskFlagsCard was its only
+runtime consumer, so the `.animate-flag-pulse{…}` UTILITY is no longer emitted
+(verified: 0 occurrences in compiled CSS) while the keyframe stays available for
+reuse. The explanatory comment writes the token WITHOUT the `animate-` prefix on
+purpose — else Tailwind's content scanner re-emits the unused utility from the
+comment itself. Verified via Playwright on `/stock/AEP` (1 veto = altman_distress):
+card renders, row className is exactly `flex items-start gap-2 rounded-sm`,
+`anyAnimated:false`, no new console errors. `next build` → 502 routes; `tsc` clean.
+
+**Follow-up commit (same PR) — price chart: drop the headline period label + move
+the 1D–5Y selector below the date axis**: user 2026-05-31 "ตรงหัวข้อ price เอา (1Y)
+ออก และย้าย 1D-5Y ลงมาไว้ใต้เส้นแนวนอนวันที่ด้านล่างกราฟ". (1) Removed the
+`PERIOD_LABEL[period]` span ("past year" / "year-to-date" / …) from the price-change
+row in `PriceHistoryChart.tsx`, plus the now-unused `scrubbing` local + the
+module-level `PERIOD_LABEL` map + 2 stale comments. (2) Moved
+`<PriceTimePeriodSelector>` from ABOVE the chart canvas to BELOW the chart wrapper
+(under the X-axis date labels). Verified via Playwright on `/stock/AAPL` at 1280px:
+`selectorTop=1019 > chartBottom=1006 > xAxisBottom=994` (selector sits below the
+date axis) and the headline change row renders no period word (only the
+`FairPriceBarChart` "today" copy remains, unrelated). `next build` → 502 routes;
+`tsc` clean; screenshot captured.
+
+**Correction (same PR) — the `(1Y)` the user wanted gone was the BIG SECTION
+HEADING, not the change-row label**: the prior commit `a974c824` removed the
+WRONG "(1Y)" — it stripped the `PERIOD_LABEL` ("past year") from the price-change
+ROW, but the user meant the big `<h2>Price (1y)</h2>` SECTION HEADING in
+`app/stock/[ticker]/page.tsx`. This commit (1) removes `(1y)` from that `h2` → just
+"Price", and (2) RESTORES the change-row `PERIOD_LABEL` map + `scrubbing` local +
+the conditional span + 2 comments that `a974c824` wrongly deleted. The
+selector-below-the-chart move from `a974c824` was CORRECT and is kept. Verified via
+Playwright on `/stock/AAPL`: `h2` text = "Price" (no `1y`), change row shows "past
+year" again, selector still below the date axis. `next build` → 502 routes; `tsc`
+clean; screenshot captured.
+
+**Follow-up commit (same PR) — keep the period label visible WHILE scrubbing**:
+user 2026-05-31 "ตอนกำลังเลื่อน crosshair แล้ว past year มันหายไป … ช่วยทำให้ past
+year ไม่หายตอนกำลังเลื่อน". The change-row period label was gated by
+`{!scrubbing && …}` (hidden during a scrub, restored on release). Removed the gate
+so the label renders UNCONDITIONALLY, and dropped the now-unused `scrubbing` local +
+updated 3 comments. Semantically safe: `headlineAt` always measures the change from
+the window START (`price[i] − price[0]`), so the baseline is constant and "past
+year" correctly names the window at any scrubbed point ("+X% over the past year up
+to the hovered point"). `next build` → 502 routes; `tsc` clean. (Headless Playwright
+couldn't trigger a real Recharts hover to exercise the scrub path, so the label was
+verified present + unconditionally rendered in source; live scrub-verify on device.)
+
+PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR"
+lockstep per PR #237 convention; AGENTS.md carries no §Gotchas mirror (per the
+PR #327 precedent — frontend gotchas live in CLAUDE.md, the canonical home).
+
+---

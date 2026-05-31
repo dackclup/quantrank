@@ -205,7 +205,7 @@ export default function StockDetailPage({
 
       <section>
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
-          Price (1y)
+          Price
         </h2>
         {detail.has_history ? (
           <PriceHistoryChart

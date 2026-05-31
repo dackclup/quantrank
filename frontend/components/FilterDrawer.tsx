@@ -105,7 +105,7 @@ export function FilterDrawer({
         role="dialog"
         aria-modal="true"
         aria-label="Filter stocks"
-        className={`fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col bg-white shadow-overlay transition-transform duration-300 ease-out dark:bg-slate-900 ${
+        className={`fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col bg-white shadow-overlay transition-transform duration-300 ease-in-out dark:bg-slate-900 ${
           open ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
