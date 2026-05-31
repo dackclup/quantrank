@@ -262,6 +262,19 @@ export default function StockDetailPage({
         )}
       </section>
 
+      {/* Pillar breakdown sits directly after the price chart, near the
+          hero's score donut — it answers "why is the composite score what
+          it is?" (e.g. NVDA's value pillar 35 vs quality 91) while the score
+          is still fresh, instead of being stranded below both fair-price
+          cards (expert-user-explorer + frontend-design-reviewer reading-order
+          pass, 2026-05-31). The warning group (Tier2 + Risk) stays just
+          ABOVE the fair-price pair so red flags frame the valuation read. */}
+      <PillarRadarChart
+        pillars={detail.pillar_scores}
+        ticker={detail.ticker}
+        baseline={detail.pillar_baseline}
+      />
+
       <Tier2EventCard
         tier2_events={detail.tier2_events}
         ticker={detail.ticker}
@@ -286,12 +299,6 @@ export default function StockDetailPage({
         currentPrice={detail.current_price}
         warnings={detail.valuation_warnings}
         tangibleBookValue={detail.tangible_book_value}
-      />
-
-      <PillarRadarChart
-        pillars={detail.pillar_scores}
-        ticker={detail.ticker}
-        baseline={detail.pillar_baseline}
       />
 
       <section>
