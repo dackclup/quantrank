@@ -129,17 +129,20 @@ export default function StockDetailPage({
             />
           </div>
           <div className="flex min-w-0 flex-col gap-3 xl:items-end">
-            {/* Top row: composite donut + MoS donut — paired because
-                both are summary statistics ("how good overall" / "how
-                cheap"). Both badges share the radial-gauge family
-                (ScoreBadge "lg" + MoSBadge); arc length = score/100
-                or |MoS|/100, color = sign-driven for MoS. `flex-wrap`
-                lets them sit side-by-side wherever there's room (≥ 375 px
-                cards) and stack vertically on the narrowest phones instead
-                of overflowing — under the prior `flex-nowrap`, an EIX-style
-                long MoS label ("UNDERVALUED") clipped the viewport edge at
-                320 px (2026-05-29 responsive audit M1). */}
-            <div className="flex flex-wrap items-center gap-3 sm:gap-5">
+            {/* Top row: composite donut + MoS donut — paired summary stats
+                ("how good overall" / "how cheap"). Side-by-side on EVERY width
+                via `grid-cols-2` (2026-05-31 — user wants them sharing one row
+                on mobile portrait, not stacking). Both badges share the
+                radial-gauge family AND the 800ms gauge-sweep + count-up motion
+                (ScoreBadge "lg" + MoSBadge); arc length = score/100 or
+                |MoS|/100, color = sign-driven for MoS. MoS sweeps clockwise
+                like the score when ≥ 0 and mirrors to counter-clockwise when
+                < 0 (overvalued reads as "runs the other way"). The grid tracks
+                (1fr 1fr) bound each badge so its label wraps WITHIN its track
+                instead of pushing the row wider — this is what fixes the 320px
+                clip the old `flex-nowrap` had (EIX-style long "UNDERVALUED"
+                label) without falling back to the `flex-wrap` vertical stack. */}
+            <div className="grid grid-cols-2 items-center gap-3 sm:gap-5">
               <ScoreBadge score={detail.composite_score} size="lg" ticker={detail.ticker} />
               <MoSBadge mos={mosPct} />
             </div>
