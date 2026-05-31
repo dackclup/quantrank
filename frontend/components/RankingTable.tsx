@@ -20,7 +20,6 @@ import {
   saveFilterSnapshot,
 } from '@/lib/filter-storage';
 import { formatMosPct } from '@/lib/format';
-import { usePlayOnMount } from '@/lib/useMotion';
 import type { Recommendation, StockSummary } from '@/lib/types';
 import {
   MOS_BUCKETS,
@@ -217,33 +216,41 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
   const safePage = Math.min(page, totalPages);
   const pageRows = sorted.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
-  // Row stagger-entrance. usePlayOnMount is EFFECT-based: returns false on
-  // SSR + first paint, then flips true one frame after mount on EVERY home
-  // visit (the cascade replays each time you arrive at home, per the
-  // "animate every time" direction). Client-only so the animate class is
-  // never in the prerendered HTML (Rule 5 — baking it in would double-play
-  // on full load + hydration-mismatch, leaving rows stuck mid-fade).
+  // Row stagger-entrance. The animate class is intentionally BAKED into the
+  // static HTML (NOT gated behind a usePlayOnMount effect) so the rows start at
+  // the `rise-in` keyframe's `from` state (opacity:0) from the very FIRST paint.
+  // Why: on a static-export site the browser paints the static HTML BEFORE any
+  // JS runs — so an effect that adds the animate class one frame after mount
+  // leaves a window where the row is painted OPAQUE (no class yet) and then
+  // snaps to invisible when the class lands (`fill-mode: both` applies `from`).
+  // That snap is the refresh FLASH the user reported (2026-05-31, mobile). With
+  // the class in the static HTML there is no opaque frame and no flash.
+  //
+  // Hydration-safe: `animateRows` derives ONLY from `safePage` (1) + `interacted`
+  // (false) at first render, identical on the build-time prerender and the
+  // client's first render — so the same classes appear on both sides, no
+  // mismatch (this is why baking it in is safe HERE, unlike the general Rule-5
+  // warning which assumes a state/effect-derived class). reduced-motion is still
+  // honored: globals.css `animation: none !important` disables the keyframe AND
+  // its fill-mode, so rows render at their natural opacity:1 (content never
+  // hidden — no-JS users likewise just get the CSS animation playing once, rows
+  // fully visible by ~800ms). Plays on EVERY visit because a fresh mount (full
+  // load or client-nav back to /) re-renders page-1 rows with the class present.
   //
   // The `interacted` latch still matters WITHIN a mount: it fixes the
   // sort-replay jank (audit MAJOR) — a sort/filter re-keys rows → fresh
   // <tr>/<li> DOM elements that would re-run the cascade on every click.
   // The latch flips true on the first interaction (sort / filter / search /
   // paginate, set synchronously in the handlers) so the cascade plays once
-  // on arrival, then interactions render static — until the next fresh
-  // visit, which re-mounts and cascades again.
-  const firstHomeView = usePlayOnMount('ranking-table');
-  // `interacted` spends the stagger latch on the first user interaction.
-  // It MUST be flipped synchronously inside each interaction handler
-  // (spendStagger, wired into onSort / filter toggles / search / paginate)
-  // — NOT via a watching useEffect, because an effect fires AFTER the
-  // render that already applied the animate class to the freshly re-keyed
-  // sorted rows, so the cascade would still play once before the latch
-  // caught up (the bug the first attempt hit). Flipping it in the handler
-  // means the re-render triggered by the same interaction already sees
-  // animateRows=false → no class on the new rows.
+  // on arrival, then interactions render static. It MUST be flipped
+  // synchronously inside each interaction handler (spendStagger, wired into
+  // onSort / filter toggles / search / paginate) — NOT via a watching
+  // useEffect, because an effect fires AFTER the render that already applied
+  // the animate class to the freshly re-keyed sorted rows, so the cascade
+  // would still play once before the latch caught up.
   const [interacted, setInteracted] = useState(false);
   const spendStagger = () => setInteracted(true);
-  const animateRows = firstHomeView && safePage === 1 && !interacted;
+  const animateRows = safePage === 1 && !interacted;
 
   const onSort = (key: SortKey) => {
     spendStagger(); // first sort ends the entrance cascade (no replay)
@@ -673,9 +680,22 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
             type="button"
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={safePage === 1}
-            className="rounded-sm border border-slate-300 bg-white px-3 py-1 text-slate-700 transition-colors duration-150 enabled:hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:enabled:hover:bg-slate-800"
+            className="inline-flex items-center gap-1 rounded-sm border border-slate-300 bg-white px-3 py-1 text-slate-700 transition-colors duration-150 enabled:hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:enabled:hover:bg-slate-800"
           >
-            ← Prev
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+            Prev
           </button>
           <span className="text-slate-500 tabular-nums dark:text-slate-400">
             Page {safePage} of {totalPages}
@@ -684,9 +704,22 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
             type="button"
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={safePage === totalPages}
-            className="rounded-sm border border-slate-300 bg-white px-3 py-1 text-slate-700 transition-colors duration-150 enabled:hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:enabled:hover:bg-slate-800"
+            className="inline-flex items-center gap-1 rounded-sm border border-slate-300 bg-white px-3 py-1 text-slate-700 transition-colors duration-150 enabled:hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:enabled:hover:bg-slate-800"
           >
-            Next →
+            Next
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
           </button>
         </div>
       )}

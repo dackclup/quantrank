@@ -120,7 +120,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <ThemeToggle layout="icon" />
         </header>
         <Disclaimer />
-        <main className="flex-1 px-4 py-8 md:px-8 md:py-10">
+        {/* Top padding kept tight (pt-4/pt-6) so the page content sits higher
+            under the sticky header — the user wanted the app's overview pulled
+            up (2026-05-31). Bottom padding stays roomy (pb-8/pb-10) so content
+            doesn't crowd the footer. */}
+        <main className="flex-1 px-4 pb-8 pt-4 md:px-8 md:pb-10 md:pt-6">
           {/* Content cap is a FIXED px (not max-w-6xl=72rem): with the fluid
               root font-size, a rem max-width expands to 1440px at the 20px
               ceiling, leaving the table/cards sparse on ultrawide. Pinning to
