@@ -1,7 +1,4 @@
-'use client';
-
 import type { Recommendation } from '@/lib/types';
-import { usePlayOnMount } from '@/lib/useMotion';
 
 // 4-tier recommendation badge. Outlined-light tone family matching
 // SectorChip / score-tier / MoS-bucket chips — one consistent visual
@@ -82,7 +79,6 @@ export function RecommendationBadge({
   size = 'sm',
   short = false,
   className = '',
-  animateOnce = false,
 }: {
   recommendation: Recommendation | null;
   size?: 'xs' | 'sm' | 'md' | 'lg';
@@ -90,17 +86,11 @@ export function RecommendationBadge({
   // like the ranking-table ticker row on mobile. Default = full label.
   short?: boolean;
   className?: string;
-  // When true, the chip plays the chip-pop entrance on each detail visit
-  // (verdict "stamped on"). Only the detail-page hero passes this — the
-  // 502 ranking-table cells leave it false so they stay server-rendered
-  // and don't each spin up a client gate. See docs/design.md §Motion.
-  animateOnce?: boolean;
 }) {
-  // usePlayOnMount must be called unconditionally (rules-of-hooks) even
-  // though only the detail-page hero sets animateOnce. Plays the chip-pop
-  // on every visit to a detail page (reduced-motion → returns false).
-  const playPop = usePlayOnMount(`rec-chip:${recommendation ?? 'none'}`);
-  const popClass = animateOnce && playPop ? 'animate-chip-pop' : '';
+  // Static badge — the chip-pop entrance animation was removed 2026-05-31
+  // per user request ("เอา animation ตรง hold buy strong buy sell ออก"). The
+  // badge now server-renders with no client motion gate (the recommendation
+  // tone + dot already carry the verdict without an entrance beat).
   // Legacy data (pre-PR-4d) has no recommendation field — render
   // nothing rather than a confusing placeholder. Once a few weekly
   // computes land, the null path is unreachable in production.
@@ -113,7 +103,7 @@ export function RecommendationBadge({
   // so a row of "Materials [dot] · Buy [dot]" reads as one family.
   return (
     <span
-      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-sm font-medium ring-1 ring-inset ${tone} ${sizeCls} ${popClass} ${className}`}
+      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-sm font-medium ring-1 ring-inset ${tone} ${sizeCls} ${className}`}
       title={LABELS[recommendation]}
       aria-label={`Recommendation: ${LABELS[recommendation]}`}
     >

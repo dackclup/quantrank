@@ -245,7 +245,11 @@ export function FairPriceCard(props) {  // no types
   PillarRadarChart → Tier2EventCard → RiskSummaryCard → fair-price pair →
   raw → data-quality. Don't reorder these without re-reading that gotcha.
   (A hero "N risk vetoes" chip was tried + reverted same PR per user call —
-  keep the hero quiet.) New `<ThemeToggle layout="icon|row">` component renders
+  keep the hero quiet.) The hero's Fair-value / Target / Loss-chance values
+  count-up via the `HeroMetric` client leaf (PR #342, `useCountUp` ease-in-out);
+  the `RecommendationBadge` is now STATIC (its chip-pop entrance was removed
+  same PR — see CLAUDE.md §Gotchas "Hero metric values count-up").
+  New `<ThemeToggle layout="icon|row">` component renders
   a three-state cycle button (system → light → dark → system) with
   `useTheme()` + a `mounted` guard to suppress the SSR-fallback
   hydration mismatch. Lives in both the AppShell sticky header

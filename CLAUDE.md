@@ -845,6 +845,28 @@ whitespace / single-line fixes do not trigger.
   would be the last cron's session, not real-time). Do NOT wire 1D/5D from the
   existing daily file — there is no intraday data in it.
 
+- **Hero metric values count-up; the recommendation badge is STATIC**
+  (`frontend/components/HeroMetric.tsx` + `RecommendationBadge.tsx`, PR #342).
+  Two coupled changes per user request 2026-05-31: (1) the `RecommendationBadge`
+  chip-pop entrance was REMOVED — the badge no longer takes `animateOnce`, no
+  longer imports `usePlayOnMount`, and dropped its `'use client'` (it's a pure
+  server component again; the 502 ranking-table cells + the hero badge all
+  static-render with no motion gate). The `chip-pop` keyframe stays defined in
+  `tailwind.config.ts` + `globals.css` as a reusable utility but has ZERO
+  consumers now (Tailwind purges it from the bundle) — don't "clean it up" by
+  deleting the keyframe unless you also confirm no future surface wants it. (2)
+  Fair value / Target / Loss chance in the hero now COUNT-UP on each visit via
+  the new `HeroMetric` client leaf, which wraps the existing
+  `useCountUp(value, play, 800)` (easeInOutCubic — the SAME app-wide ease-in-out
+  curve as the Score / MoS gauge sweep). `page.tsx` stays a Server Component;
+  `HeroMetric` is the small `'use client'` leaf that holds the hook (don't lift
+  the hook into the page — that would force the whole detail page client-side).
+  The loss-chance 5-band tone is computed server-side in `page.tsx`
+  (`lossChanceTone`) and passed as a prop so the band rubric stays in one place
+  and matches `RankingTable` (NVDA 55% → slate, not red — the band is `<60`).
+  `useCountUp` inits at the target so SSR / no-JS / reduced-motion render the
+  exact value (the count-up is progressive enhancement, never a visibility gate).
+
 ## Phase status
 
 Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged
