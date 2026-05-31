@@ -82,27 +82,29 @@ export default function StockDetailPage({
           rank badge + sector chip on top row, big mono ticker, serif
           company name, radial-gauge ScoreBadge + price + MoSCell on
           the right side. */}
-      <header className="rounded border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900 sm:p-6">
-        {/* Two-column split at lg+ (1024px) — "desktop": logo/ticker/name on
-            the left, the stats block (score · MoS · fair value · target · loss
-            chance) on the top-right, opposite each other (user direction
-            2026-05-31). Below lg the hero stacks vertically (mobile / narrow
-            tablet). The split was previously gated at xl (1280) because the
-            hero ALSO carried a ~360px live-price block, which at lg + an
-            expanded 240px sidebar (~666px content) crushed the left block
-            (2026-05-29 responsive-density audit). That live-price block (it
-            lived in the LEFT block, under the name) was removed from the hero
-            (2026-05-31), easing the left column, so the split is safe at lg.
-            Guards retained: left keeps `min-w-0` so a long company name WRAPS
-            instead of overflowing onto the gauges (the old chip-overflow
-            failure mode), and is capped at `lg:max-w-2xl` so it doesn't spread
-            on ultrawide; the right block keeps `min-w-0` as a shrink guard.
-            `lg:justify-between` anchors the stats block to the card's RIGHT
-            edge (it would otherwise sit just after the capped left block with
-            trailing space on wide screens). If the expanded sidebar at
-            1024–1279 ever feels tight, bump these back to `xl:`. */}
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-          <div className="min-w-0 flex-1 lg:max-w-2xl">
+      <header className="hero-card rounded border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900 sm:p-6">
+        {/* Two-column split driven by a CSS CONTAINER QUERY, not a viewport
+            breakpoint (globals.css `.hero-card`/`.hero-split`/`.hero-left`/
+            `.hero-right` under `@container hero (min-width: 46rem)`). Why a
+            container query: the sidebar (expanded 240px / collapsed 64px /
+            mobile-drawer 0px) changes the hero's ACTUAL width independently of
+            the viewport, so a viewport `md:`/`lg:` gate left a dead band where
+            the sidebar was a desktop rail but the hero still stacked (the bug
+            the user reported 2026-05-31). The container query measures the
+            hero's real inline-size AFTER the sidebar takes its cut, so the
+            split fires exactly when there's room — and when space is squeezed
+            (narrow viewport OR expanded sidebar) it falls back to the SAME
+            vertical mobile-portrait stack, per the user's "if it's squeezed,
+            just drop to the mobile layout" direction. Default (no @container
+            support / below threshold) = the stacked `flex flex-col`; the query
+            flips it to a `justify-between` row, caps the left at `max-w-2xl`,
+            and right-aligns the stats block. Inner guards (`min-w-0`,
+            `flex-wrap`, `truncate`) keep a long name/chip wrapping instead of
+            overflowing onto the gauges in the tight band. ~46rem threshold
+            chosen so both columns clear their min-content (left name block +
+            the ~290px stats block) before the row engages. */}
+        <div className="hero-split flex flex-col gap-5">
+          <div className="hero-left min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2 text-xs">
               <span className="inline-flex items-center rounded-sm bg-slate-100 px-1.5 py-0.5 font-mono font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">
                 #{detail.rank}
@@ -127,7 +129,7 @@ export default function StockDetailPage({
               {detail.name}
             </p>
           </div>
-          <div className="flex min-w-0 flex-col gap-3 lg:items-end">
+          <div className="hero-right flex min-w-0 flex-col gap-3">
             {/* Top row: composite donut + MoS donut — paired summary stats
                 ("how good overall" / "how cheap"). Side-by-side on EVERY width
                 via `grid-cols-2` (2026-05-31 — user wants them sharing one row
@@ -148,7 +150,7 @@ export default function StockDetailPage({
                 outer margins on both edges. The 1fr tracks still bound each
                 label's wrap so nothing clips at 320px; `w-full` keeps the
                 centerline = the card's at every width, overriding the parent's
-                `lg:items-end` shrink for this row (2026-05-31). */}
+                `hero-right` end-alignment for this row (2026-05-31). */}
             <div className="grid w-full grid-cols-2 items-center gap-3 sm:gap-5">
               <div className="justify-self-end">
                 <ScoreBadge score={detail.composite_score} size="lg" ticker={detail.ticker} />
