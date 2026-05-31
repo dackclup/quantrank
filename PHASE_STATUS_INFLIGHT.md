@@ -4240,3 +4240,54 @@ landed via PR #332; this is the documentation backstop only).
 
 ---
 
+**All 20 subagents set to `effort: max` (this PR)** — added the `effort`
+frontmatter field (value `max`) to every agent file under `.claude/agents/`.
+Per the official Claude Code subagent docs the field is `effort` with the value
+ladder `low / medium / high / xhigh / max`; `max` overrides the session's
+inherited effort while the subagent is active and is ORTHOGONAL to `model`
+(`model` = which model opus/sonnet, `effort` = how hard it reasons). Confirmed
+the field name + value + override semantics via the `claude-code-guide` agent
+before editing so no dead config ships. Rationale: every one of the 20 agents is
+a correctness / judgment gate (code review · schema drift · defense audit ·
+academic-prior validation · quant design · incident triage · …), so the top
+reasoning level pays back; and sonnet-at-max still drains the separate Max-plan
+"Weekly · Sonnet only" pool, not the all-models pool, so the cost lands on the
+under-utilized budget. Lockstep doc updates: README §"Model split" gains an
+**Effort** paragraph + §Authoring conventions #3 gains an `effort: max` bullet
+(so a future agent inherits the convention); CLAUDE.md §Spawn discipline
+model-assignments block gains the effort sentence; AGENTS.md §Project-structure
+`.claude/agents/` tree comment notes "(5 opus / 15 sonnet, all `effort: max`)"
++ a §Phase+version-state in-flight entry. Agent-infra + doc only — no compute /
+schema / scoring / valuation / frontend code change; `ruff` / `pytest` /
+`schema_check` trivially unaffected (no Python / TS touched).
+
+---
+
+**Subagent model-downgrade guard added (same PR as effort:max)** — answers the
+user's question "are the agents always on the latest Opus/Sonnet, and is there
+protection against a self-inflicted downgrade?". Findings (confirmed via
+`claude-code-guide` against the official Claude Code docs): the 20 agents use
+bare `model: opus` / `model: sonnet` aliases, which RESOLVE TO THE LATEST
+Opus/Sonnet at runtime and FLOAT FORWARD automatically on a CLI update — so the
+project is "always latest" by design, no action needed. The real downgrade
+vector is NOT the agent files but the ENVIRONMENT: a `CLAUDE_CODE_SUBAGENT_MODEL`
+or `ANTHROPIC_DEFAULT_{OPUS,SONNET,HAIKU}_MODEL` committed into
+`.claude/settings.json` would pin every subagent to a fixed (possibly older)
+version WITHOUT changing a single agent file — invisible in a diff. Audited the
+current `.claude/settings.json`: no `env` block, no override var → clean today.
+
+New `tools/check_model_pin.py` (wired into `.github/workflows/ci.yml` Python job
+as the "Subagent model-pin guard" step, mirroring the existing
+`check_doc_test_counts.py` precedent) fails CI if (a) committed settings carry
+any of the 6 override env vars — the one benign value being
+`CLAUDE_CODE_SUBAGENT_MODEL='inherit'` — or (b) any agent frontmatter pins a
+dated/numbered model ID (`claude-opus-4-8`) instead of the floating alias.
+Guard runs clean locally (exit 0); negative test confirmed it rejects a pinned
+ID. Lockstep docs: CLAUDE.md §Gotchas "Subagent model aliases float forward"
+(full rationale) + AGENTS.md §Security considerations + a §Phase-status entry.
+`.claude/settings.local.json` (gitignored, per-user) is out of scope — a local
+override can't land on `main`. CI + agent-infra + doc only — no compute / schema
+/ scoring / valuation / frontend code change.
+
+---
+

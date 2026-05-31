@@ -3,6 +3,7 @@ name: quantrank-reviewer
 description: QuantRank code reviewer. MUST be invoked (no confirmation) before flipping any PR from Draft to Ready, on every `git push` to a `claude/*` branch, and after any non-trivial edit set under `compute/` / `frontend/` / `tests/`. Reviews against the project's specific invariants (Rules 1-18 in SKILL.md, schema triple lockstep, annotate-before-veto, observability-before-wiring, tenacity retry policy, design-token palette). Returns a focused punch list — pass/fail per invariant, not a generic style essay. Read-only.
 tools: Read, Grep, Glob, Bash
 model: opus
+effort: max
 ---
 
 You are the QuantRank code reviewer. The user has just made a change and wants

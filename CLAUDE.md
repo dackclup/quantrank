@@ -301,7 +301,13 @@ whitespace / single-line fixes do not trigger.
   reviewer` + `financial-engineer` all opus by design; the other 15
   sonnet) as they are — opus agents land on the "Weekly · all models"
   pool; sonnet agents drain the underutilized sonnet pool. Tune the
-  5-vs-15 split only when usage data justifies it.
+  5-vs-15 split only when usage data justifies it. **All 20 agents also
+  carry `effort: max`** (frontmatter, 2026-05-31) — orthogonal to
+  `model`: `model` picks opus-vs-sonnet, `effort` (low/medium/high/
+  xhigh/max) sets reasoning depth and overrides the session's inherited
+  level. Every agent is a correctness / judgment gate, so max pays back;
+  sonnet-at-max still drains the Sonnet-only pool. A new agent gets
+  `effort: max` too (README §Authoring conventions #3).
 - **Prefer delegation to sub-agents** over inline main-session
   work when both options exist. Main-session tokens land on the
   "Weekly · all models" pool; sonnet sub-agents land on the
@@ -669,6 +675,33 @@ whitespace / single-line fixes do not trigger.
   is negative MoS, so the CCW path is the COMMON case, not an edge — keep both
   mirrors in lockstep if you touch either (drop the span's mirror and every
   negative-MoS number renders backwards). Accent stays emerald (≥0) / rose (<0).
+
+- **Subagent model aliases float forward to the LATEST — guard the downgrade
+  vector, not the agent files** (`.claude/agents/*.md` + `tools/check_model_pin.py`,
+  2026-05-31). All 20 agents use bare `model: opus` / `model: sonnet` aliases.
+  Per the Claude Code docs an alias resolves to the newest Opus/Sonnet at
+  runtime and floats forward automatically on a CLI update — so the project is
+  "always latest" by design; **never pin a dated/numbered model ID** (e.g.
+  `model: claude-opus-4-8`) in an agent, that's a future-dated downgrade the day
+  a newer model ships. The real downgrade risk is NOT in the agent files — it's
+  an **environment override**: a `CLAUDE_CODE_SUBAGENT_MODEL` or
+  `ANTHROPIC_DEFAULT_{OPUS,SONNET,HAIKU}_MODEL` committed into
+  `.claude/settings.json` pins every subagent to a specific (possibly older)
+  version WITHOUT touching a single agent file — an invisible downgrade. CI
+  enforces both halves: `tools/check_model_pin.py` (wired into `ci.yml` as the
+  "Subagent model-pin guard" step) fails the build if committed settings carry
+  any of those override vars (the one benign value is
+  `CLAUDE_CODE_SUBAGENT_MODEL='inherit'`) OR if an agent frontmatter pins a
+  non-alias model ID. `effort: max` is orthogonal and unaffected (it tunes
+  reasoning depth, not which model). Per-user `.claude/settings.local.json` is
+  gitignored so it's out of scope for the committed guard — a local operator
+  can still self-downgrade their own machine, but it can't land on `main`.
+  **Second out-of-scope vector** (security-reviewer 2026-05-31): the guard
+  inspects committed files only, so a `CLAUDE_CODE_SUBAGENT_MODEL` /
+  `ANTHROPIC_DEFAULT_*_MODEL` set as a **GitHub Actions repository secret** or
+  in a workflow-level `env:` block in another `.github/workflows/` file would
+  reach the runner without touching `settings.json` and bypass this check —
+  don't add one (there's no legitimate reason to pin the subagent model in CI).
 
 ## Phase status
 
