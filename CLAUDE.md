@@ -46,7 +46,7 @@ design-system spec.
 | `frontend/public/data/` | Compute output: `metadata.json` + `rankings.json` + `stocks/<TICKER>.json` |
 | `tests/` | pytest suite (offline + `@network` gated; see CI for current count) |
 | `.claude/skills/` | 46 invocation-triggerable skills + phase planning docs. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for vendoring / license posture per source. |
-| `.claude/agents/` | 19 project-specific subagents in 4 tiers + 1 data-correctness reviewer: **Tier 1 Core** (quantrank-reviewer · schema-sentinel · defense-layer-auditor · edgar-debugger · **stock-detail-auditor**), **Tier 2 Lifecycle** (security-reviewer · frontend-design-reviewer · **vercel-preview-auditor** · **expert-user-explorer** · release-captain · phase-coordinator), **Tier 3 Specialized** (test-engineer · methodology-scientist · **literature-searcher** · performance-engineer · dependency-auditor), **Tier 4 Operations** (docs-reviewer · **ci-triage-engineer** · incident-commander). Spawned via the `Agent` tool with a separate context window; see [`.claude/agents/README.md`](.claude/agents/README.md) for the routing matrix + 7 coordination flows (pre-push gate / release ladder / new-defense flow / incident response / review escalation / quarterly audit / experiential UX pass). |
+| `.claude/agents/` | 20 project-specific subagents in 4 tiers + 1 data-correctness reviewer: **Tier 1 Core** (quantrank-reviewer · schema-sentinel · defense-layer-auditor · edgar-debugger · **stock-detail-auditor**), **Tier 2 Lifecycle** (security-reviewer · frontend-design-reviewer · **vercel-preview-auditor** · **expert-user-explorer** · release-captain · phase-coordinator), **Tier 3 Specialized** (test-engineer · methodology-scientist · **literature-searcher** · performance-engineer · dependency-auditor · **financial-engineer**), **Tier 4 Operations** (docs-reviewer · **ci-triage-engineer** · incident-commander). Spawned via the `Agent` tool with a separate context window; see [`.claude/agents/README.md`](.claude/agents/README.md) for the routing matrix + 8 coordination flows (pre-push gate / release ladder / new-defense flow / incident response / review escalation / quarterly audit / experiential UX pass / quant design). |
 | `.claude/hooks/` | Bash hook scripts wired by `.claude/settings.json`. 3 hooks total: `log-bash.sh` (PostToolUse Bash → append every command to gitignored `.claude/session.log`) + `schema-reminder.sh` (PostToolUse Write/Edit → inject reminder when any file in the Pydantic↔TS↔snapshot triple is touched) + `delegate-first.sh` (UserPromptSubmit → inject orchestrator-role reminder every user turn so the main agent defaults to spawning sub-agents instead of doing work inline). All fail-open (missing `jq` / unwritable FS / empty stdin → exit 0). 5-second timeout each. |
 | `.claude/worktrees/` | Harness-managed isolation dirs for subagents spawned via the `Agent` tool with `isolation: "worktree"`. Per-session, transient, **gitignored** (added 2026-05-22 post the 3-PR fan-out so they don't show up as untracked on the main worktree's `git status`). Never commit them. |
 | `docs/agents/` | Per-repo configuration consumed by the vendored mattpocock engineering skills (`to-issues`, `to-prd`). Scaffolded 2026-05-25 via `mattpocock-setup-harness`. 2 files: `issue-tracker.md` (GitHub MCP conventions) + `domain.md` (the upstream-instruction → QuantRank-multi-file-CONTEXT-analog mapping). See §Agent skills below for the index. |
@@ -154,14 +154,14 @@ for the full 4-step pattern + Section I forcing example.
   for active schema + phase + defense-layer count + in-flight PRs, then
   route through [`WORKFLOW.md`](WORKFLOW.md) §"Agentic 6-Phase Cadence"
   (Planning → Code Gen → Integration → Test → Deploy → Monitor) using
-  the standing 19 subagents — don't spawn ad-hoc workflow agents on top.
+  the standing 20 subagents — don't spawn ad-hoc workflow agents on top.
 
 ## Auto-routing policy
 
 ### Main agent role — orchestrator, not laborer
 
 The main Claude Code session is the **orchestrator / tech lead** of
-the 19-agent team, not the laborer. Default action when given a
+the 20-agent team, not the laborer. Default action when given a
 task is to **identify the matching sub-agent in `.claude/agents/`
 and spawn it** — not to do the work inline. The
 `UserPromptSubmit` hook injects this reminder every turn so the
@@ -214,8 +214,9 @@ guesswork:
 | "ดู preview" / "is deploy green?" / pre-Mark-Ready on UI-touching PR / Vercel preview URL just posted | `vercel-preview-auditor` (sonnet) |
 | "ลองใช้ app (จริง)" / "expert user feedback" / "ใช้งานจริงดูหน่อย" / "UX จริง" / "is the app actually usable?" / post-cron experiential pass | `expert-user-explorer` (sonnet) |
 | "find me the paper that says X" / "หาเปเปอร์เรื่อง Y" / methodology cite outside CLAUDE.md anchor list / new defense-flag prior | `literature-searcher` (sonnet) |
+| "design a new valuation method / factor / scoring pillar / defense flag" / "ออกแบบ factor / โมเดล quant" / "scope Phase 5/6/7" / "should we add signal X" (construct doesn't exist yet) | `financial-engineer` (opus; generative design) → then `methodology-scientist` to ratify |
 
-Pattern not in the table → walk the description fields of all 19
+Pattern not in the table → walk the description fields of all 20
 agents in `.claude/agents/` before defaulting to inline work.
 
 ### Cue table — when each agent fires
@@ -236,9 +237,9 @@ subagents are read-only. Only destructive commands a subagent
 is the split discipline that drains the Max-plan "Weekly · Sonnet
 only" pool without burning the "Weekly · all models" pool. Each
 sonnet agent has a non-trivial-edit cue in its domain (rows
-below). The four opus agents (`quantrank-reviewer` ·
-`methodology-scientist` · `release-captain` · `incident-commander`)
-stay rare-fire on gates or signals. Dedup window ~10 min — if the
+below). The five opus agents (`quantrank-reviewer` ·
+`methodology-scientist` · `release-captain` · `incident-commander` ·
+`financial-engineer`) stay rare-fire on gates or signals. Dedup window ~10 min — if the
 same sonnet agent ran on the same diff and it hasn't moved, point
 at the prior result instead of re-spawning. The "ready to push"
 gate still fires as a safety net (opus reviewer + a re-batch of
@@ -267,6 +268,7 @@ whitespace / single-line fixes do not trigger.
 | methodology-scientist verdict cites a paper outside CLAUDE.md anchor list AND the actual paper text matters, OR user says "find me the paper that says X" / "หาเปเปอร์เรื่อง Y" / new defense-flag academic prior is proposed | `literature-searcher` (sonnet) | On-demand; offloads retrieval so methodology-scientist (opus) stays on judgment |
 | `workflow_dispatch` on `compute-rankings.yml` lands green | `defense-layer-auditor` Section A-L + Section I (Playwright) + `stock-detail-auditor` (per-stock data audit) + `expert-user-explorer` (experiential P1 mission on the fresh data) | Auto post-cron, parallel; all sonnet |
 | Quarterly cohort audit scheduled date reached (next 2026-08-19) | `methodology-scientist` (opus) Mode C + `defense-layer-auditor` (sonnet) | Scheduled, sequential |
+| User says "design a new valuation method / factor / scoring pillar / defense flag" / "ออกแบบ factor / โมเดล quant" / "scope Phase 5/6/7" / "should we add signal X" (the construct doesn't exist yet) | `financial-engineer` (opus; generative design) → then `methodology-scientist` to ratify the prior | Rare; design precedes validation (Flow 8) |
 | New defense flag proposed (new risk_flag in `compute/scoring/`) | `methodology-scientist` (opus; validate paper anchor) + `test-engineer` (sonnet; positive + negative tests) | Rare; sequential — methodology first |
 | Threshold / weight constant changed in `compute/scoring/manipulation_index.py` or `earnings_quality.py` | `methodology-scientist` (opus) Mode B | Rare; on the edit |
 | User says "ก่อน push" / "ready to push" / "open PR" / "mark ready" / "ตรวจก่อน push" | `quantrank-reviewer` (opus) + `phase-coordinator` (sonnet) Mode B. Conditional sonnet re-batch on the same gate: `schema-sentinel` / `defense-layer-auditor` / `frontend-design-reviewer` / `docs-reviewer` / `security-reviewer` / `test-engineer` (skipped per-agent if the dedup window confirms it already ran on this diff) | Parallel pre-push safety-net gate |
@@ -283,7 +285,7 @@ whitespace / single-line fixes do not trigger.
   <agent>:<scope> | ESCALATE <agent>:<why> | NEEDS-USER:<decision>>` line
   (convention in [`.claude/agents/README.md`](.claude/agents/README.md)
   §Dynamic workflow). Compose the next step from it **dynamically** —
-  the 7 coordination flows are canonical examples, not an exhaustive
+  the 8 coordination flows are canonical examples, not an exhaustive
   script; an unexpected finding still routes to the right specialist
   (this session's `expert-user-explorer` → bug → `frontend-design-reviewer`
   → re-validate loop was composed on the fly, not from a listed flow).
@@ -296,10 +298,10 @@ whitespace / single-line fixes do not trigger.
   hard word caps or "≤ N items" limits wastes that pool without
   improving signal. Keep model assignments (`incident-commander`
   + `release-captain` + `methodology-scientist` + `quantrank-
-  reviewer` all opus by design; the other 15 sonnet) as they
-  are — opus agents land on the "Weekly · all models" pool;
-  sonnet agents drain the underutilized sonnet pool. Tune the
-  4-vs-15 split only when usage data justifies it.
+  reviewer` + `financial-engineer` all opus by design; the other 15
+  sonnet) as they are — opus agents land on the "Weekly · all models"
+  pool; sonnet agents drain the underutilized sonnet pool. Tune the
+  5-vs-15 split only when usage data justifies it.
 - **Prefer delegation to sub-agents** over inline main-session
   work when both options exist. Main-session tokens land on the
   "Weekly · all models" pool; sonnet sub-agents land on the
@@ -674,7 +676,11 @@ ladder closure + LedgerCraft frontend reskin (defense layer 32 → 33;
 PR #264 `multi_class_aggregate_shares_suspected` + PR #265 DQIC
 site-2 rename `valuation_output_anomalous`).
 
-**Recently merged** (PR #303 → PR #326, 2026-05-29 → 2026-05-30):
+**Recently merged** (PR #303 → PR #330, 2026-05-29 → 2026-05-31):
+- PR #330 `ba218ff` — feat(frontend): motion + price-chart polish — app-wide ONE `ease-in-out` timing-curve unification + `max-width` transition fix for symmetric sidebar collapse/expand (§Gotchas "ONE ease-in-out curve" + sidebar `max-width` load-bearing notes)
+- PR #329 `9ee1b32` — feat(frontend): price-chart intro sweep (line + crosshair draw left→right) + remove tooltip price box
+- PR #328 `c80b5e8` — fix(frontend): move brand to top header when sidebar collapsed; chevron-only rail (`data-rail="header"` family)
+- PR #327 `0303e9f` — docs: CLAUDE.md §Phase status drain (#311–#326) + Section A-L label fix + 2 PR #326 §Gotchas (`data-rail` lockstep · crosshair debounce)
 - PR #326 `b82b845` — fix(frontend): sidebar refresh/rotate flash + chart crosshair re-park (width-delta ResizeObserver debounced remount) + no-text-flash pre-paint (`html.sidebar-collapsed` + `data-rail` CSS) + 2 flaky-test guards (`test_ranking_history` shallow-clone skip · `test_osap` class-level API check)
 - PR #325 `732853c` — feat(frontend): app-wide fluid responsive scaling (clamp root font-size) + layout-density audit + sidebar collapsed-state polish
 - PR #324 `6ca174f` — fix(frontend): tap (no drag) moves the price-chart crosshair to the tap point
@@ -716,11 +722,20 @@ site-2 rename `valuation_output_anomalous`).
 - (3 issues filed + ALL closed same day: #287 PR A merged via #297 [PR B FORM4 revert remaining] · #288 closed via #292 + #298 · #289 closed via #293 + #302)
 
 **In flight** (not yet merged on `main`):
-- _No current in-flight PR on this branch._ The append-only
-  [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) is the canonical
-  in-flight tracker (PR #237 convention); merged entries drain into the
-  **Recently merged** block above during housekeeping. (Phase 4
-  tasteful-motion merged via PR #312 `e602485`.)
+- **20th subagent `financial-engineer` + doc-drain housekeeping (this PR)** —
+  adds the generative quant-design seat (Tier 3 Specialized · opus ·
+  read-only; the design counterpart to `methodology-scientist`'s
+  validation seat — it PROPOSES a new valuation method / factor / pillar /
+  defense flag + academic anchor, then hands off to `methodology-scientist`
+  to ratify). Roster 19 → 20 (5 opus / 15 sonnet); coordination flows
+  7 → 8 (new Flow 8 quant-design in README). Also drains the #311–#330 doc
+  drift surfaced at session start: PRs #327–#330 into this **Recently
+  merged** block + #311–#330 into PHASE_STATUS.md §Recently merged +
+  subagent-count lockstep across CLAUDE.md / AGENTS.md / CONTEXT.md /
+  WORKFLOW.md / PHASE_STATUS.md / README.md. Full entry in
+  [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (PR #237 convention).
+  Doc + agent-infra only — no compute / schema / scoring / valuation /
+  frontend code change.
 
 **Earlier** (PR #264 → PR #285, 2026-05-26 → 2026-05-27):
 - PR #285 `8f373758` — docs(release): codify mobile-only operator convention for tag releases

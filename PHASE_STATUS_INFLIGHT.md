@@ -4133,3 +4133,79 @@ lockstep per PR #237 convention; AGENTS.md carries no §Gotchas mirror (per the
 PR #327 precedent — frontend gotchas live in CLAUDE.md, the canonical home).
 
 ---
+**20th subagent `financial-engineer` + #311–#330 doc-drain housekeeping (this PR)**
+— adds the team's first **generative quant-design** seat and drains the
+documentation drift the session-start orientation surfaced. Two coupled
+deliverables in one PR (they share the same six current-state doc homes, so
+splitting them would force a rebase on each merge — the §Phase-status-collision
+lesson).
+
+**(a) New 20th subagent `financial-engineer`** (`.claude/agents/financial-engineer.md`)
+— Tier 3 Specialized, **opus**, read-only (Read/Bash/Grep/Glob — no Edit/Write,
+mirrors `methodology-scientist`). This is the DESIGN counterpart to the existing
+VALIDATION layer: QuantRank already has `methodology-scientist` (ratifies priors),
+`defense-layer-auditor` + `stock-detail-auditor` (check output) — what it lacked
+was the seat that PROPOSES a new construct in the first place. The agent emits a
+structured design proposal (problem → academic anchor → math spec → architecture
+fit → annotate-before-veto rollout → observability fields → test plan →
+orthogonality check → footguns) for a new valuation method / factor signal /
+scoring pillar / risk-overlay defense flag / cost-of-equity refinement, then hands
+off down the canonical chain: `methodology-scientist` (ratify the academic prior —
+can REJECT) → `test-engineer` (tests) → `quantrank-reviewer` (implementation
+review the main agent + user write). New **README Flow 8 (quant-design flow)** is
+the generative complement to Flow 3 (new-defense flow): Flow 3 starts at
+validation; Flow 8 starts one step earlier at design. Designer proposes, validator
+gates — deliberately separate seats so no agent both invents and ratifies its own
+prior. The agent carries the project's non-negotiable design discipline in-prompt:
+academic-anchor-or-labeled-gut-feel (Phase 2.5 provenance), annotate-before-veto
+(Rule 16), observability-before-wiring (Rule 18), scout-then-integrate for new
+deps, orthogonality (φ vs nearest signal), sum-to-1 + no-retroactive-composite
+invariants, graceful-degradation try/except.
+
+**User-locked decisions (this session, via AskUserQuestion):** model = **opus**
+(the 5th opus agent; generative quant design is breadth-of-judgment per README
+authoring-conv #3, and the agent is rare-fire so the all-models-pool impact is
+small); charter = **broad, Phase 4–7** (factor consolidation / ML meta-learner /
+sentiment v2 / regime + portfolio construction, plus the core valuation/scoring
+surface) — staying inside the fundamentals-equity-ranking research framework (NOT
+technical-indicator / options-flow / HFT, the same boundary `methodology-scientist`
+holds). Roster **19 → 20** (now **5 opus / 15 sonnet**); coordination flows
+**7 → 8**.
+
+**(b) Doc-drain housekeeping** — session-start orientation found the docs trailing
+the repo: `PHASE_STATUS.md` §Recently merged stopped at **#310** (8 PRs behind
+HEAD = #330) and CLAUDE.md §Recently merged stopped at **#326**. Drained PRs
+#311–#330 into PHASE_STATUS.md (demoted #303–#310 to a new "Earlier" sub-block) and
+#327–#330 into CLAUDE.md; bumped the PHASE_STATUS.md "Current state" snapshot date
+2026-05-28 → 2026-05-31. The 20th-agent + 5-opus + 8-flows counts were updated in
+**lockstep across all six current-state doc homes** (the stale-count trap PR #319
+had to fix): CLAUDE.md §Layout + §Auto-routing (delegation-pattern row + cue-table
+row + "four/five opus" + "4-vs-15/5-vs-15 split" + "7/8 flows"), AGENTS.md
+§Project-structure tree + §Phase+version-state + gate-moment line, CONTEXT.md (3
+rows: roster / catalog / layout), WORKFLOW.md §Agentic-6-Phase-Cadence,
+PHASE_STATUS.md §Subagent-inventory, and `.claude/agents/README.md` (set count +
+Tier 3 header + Tier 3 row + Tier rationale + Flow 8 + model-split paragraph).
+Historical PR-note counts ("14 in 4 tiers", "18-subagent topology", PR #307's "all
+19 agents") were left untouched — they record what was true at the time.
+
+**(c) `frontend/node_modules` installed** — the second "thing to know before
+starting" from session orientation. `npm install` ran clean (5 known
+`next@14.2.x` advisories, all zero-exploitability on the static-export deployment
+per issue #41 — not addressed here). Not committable (gitignored); this is local
+env-prep so a future frontend task can run `tsc --noEmit` / `next build` without a
+cold install.
+
+Doc + agent-infra only — **no compute / schema / scoring / valuation / frontend
+code change**. `ruff check .` + `pytest -m "not network"` trivially pass (no Python
+touched); `schema_check` not applicable (no schema field moved). The new agent file
+follows all six README authoring conventions (one job · sharp TRIGGER description
+with skip-guards · opus model selection justified · restricted read-only tool
+allowlist · project-anchored references · pinned output format + Handoff line).
+
+PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR"
+lockstep per PR #237 convention; CLAUDE.md + AGENTS.md both carry the substance
+diff (roster counts + §Phase-status / §Phase+version-state in-flight entries) per
+the lockstep rule.
+
+---
+

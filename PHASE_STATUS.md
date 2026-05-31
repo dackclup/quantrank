@@ -13,7 +13,7 @@
 | 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → **v1.5** | ⚪ not started |
 | 8 | Universe expansion (S&P 1500) | ⚪ not started |
 
-## Current state (2026-05-28)
+## Current state (2026-05-31)
 
 | Field | Value |
 |---|---|
@@ -26,9 +26,31 @@
 | Production run | `368dccd9` (2026-05-28 cron Run #71, 14m 32s warm cache, post-PR #298 cache-v5 bump; empirically validated PR #297 wall-clock fields — `tier2_wc=10.6s`, `form4_wc=null` per FORM4_FETCH_SKIP, `osap_wc=347.1s`, `cross_source_wc=133.2s`. Smoking gun for Issue #288 cache-replay bypass: `multi_class_per_class_attempt_count=0` + `fundamentals_latency_p50_seconds=0.0`) |
 | Universe | 502 stocks (S&P 500 minus 1 delisting) |
 | Skill inventory | **46** invocation-triggerable + phase planning docs |
-| Subagent inventory | **19** project-specific in 4 tiers: **Tier 1 Core** (`quantrank-reviewer` · `schema-sentinel` · `defense-layer-auditor` · `edgar-debugger` · `stock-detail-auditor`) · **Tier 2 Lifecycle** (`security-reviewer` · `frontend-design-reviewer` · `vercel-preview-auditor` · `expert-user-explorer` · `release-captain` · `phase-coordinator`) · **Tier 3 Specialized** (`test-engineer` · `methodology-scientist` · `literature-searcher` · `performance-engineer` · `dependency-auditor`) · **Tier 4 Operations** (`docs-reviewer` · `ci-triage-engineer` · `incident-commander`) |
+| Subagent inventory | **20** project-specific in 4 tiers (5 opus + 15 sonnet): **Tier 1 Core** (`quantrank-reviewer` · `schema-sentinel` · `defense-layer-auditor` · `edgar-debugger` · `stock-detail-auditor`) · **Tier 2 Lifecycle** (`security-reviewer` · `frontend-design-reviewer` · `vercel-preview-auditor` · `expert-user-explorer` · `release-captain` · `phase-coordinator`) · **Tier 3 Specialized** (`test-engineer` · `methodology-scientist` · `literature-searcher` · `performance-engineer` · `dependency-auditor` · `financial-engineer`) · **Tier 4 Operations** (`docs-reviewer` · `ci-triage-engineer` · `incident-commander`) |
 
-**Recently merged** (PR #303 → PR #310, 2026-05-29):
+**Recently merged** (PR #311 → PR #330, 2026-05-29 → 2026-05-31):
+- PR #330 `ba218ff` — feat(frontend): motion + price-chart polish (app-wide ONE `ease-in-out` timing-curve unification + `max-width` transition fix for symmetric sidebar collapse/expand)
+- PR #329 `9ee1b32` — feat(frontend): price-chart intro sweep (line + crosshair draw left→right) + remove tooltip price box
+- PR #328 `c80b5e8` — fix(frontend): move brand to top header when sidebar collapsed; chevron-only rail (`data-rail="header"`)
+- PR #327 `0303e9f` — docs: CLAUDE.md §Phase status drain (#311–#326) + Section A-L label fix + 2 PR #326 §Gotchas
+- PR #326 `b82b845` — fix(frontend): sidebar refresh/rotate flash + chart crosshair re-park (width-delta ResizeObserver debounced remount) + no-text-flash pre-paint + 2 flaky-test guards
+- PR #325 `732853c` — feat(frontend): app-wide fluid responsive scaling (clamp root font-size) + layout-density audit + sidebar collapsed-state polish
+- PR #324 `6ca174f` — fix(frontend): tap (no drag) moves the price-chart crosshair to the tap point
+- PR #323 `4f7edf1` — fix(frontend): chart reference-line + chip polish (post-#322) + `overflow-x: clip` §Gotcha
+- PR #322 `fd04527` — fix(frontend): price-chart crosshair — park-at-latest · touch scrub · tap/scroll re-park · flush right edge + no page-widen
+- PR #321 `3640a8e` — fix(frontend): bump stale sidebar footer version chip v1.2 → v1.4.0
+- PR #320 `22cd579` — fix(frontend): keep mobile sidebar drawer full when desktop collapsed pref is set
+- PR #319 `a49f21c` — docs: fix stale skill-count (45 → 46) across 4 doc homes + correct LESSONS_LEARNED
+- PR #318 `79c0aac` — docs: add `docs/LESSONS_LEARNED.md` — agent-process dos & don'ts
+- PR #317 `fc886de` — fix(frontend): stack detail hero below `lg` to fix sidebar-expanded gauge/chip overlap
+- PR #316 `89c5ee0` — docs(skill): add `web-animation-design` skill (original-prose, inspire-only; skill count 45 → 46)
+- PR #315 `aeca318` — fix(frontend): responsive + a11y audit fixes — 320px hero overflow · focus rings · touch targets
+- PR #314 `a5e756b` — docs(frontend): fix stale `.gauge-arc` comment ref in ScoreGauge header
+- PR #313 `c5251f7` — fix(frontend): animation audit fixes + play-every-visit + gauge keyframe sweep
+- PR #312 `e602485` — feat(frontend): app-wide tasteful motion — gauge sweep · row stagger · veto pulse
+- PR #311 `10c6221` — docs: reconcile cross-doc drift after the 6-PR session (#303–#310)
+
+**Earlier** (PR #303 → PR #310, 2026-05-29):
 - PR #310 `a941e2e` — fix(scoring): inject `stale_filing_hard` before Top-5 rotation (latent Rule-16 fix, closes #309; Step-6b pre-scan + `asof_date` hoist; +5 tests; zero scoring impact)
 - PR #308 `e77efbf` — fix(frontend): correct RiskFlagsCard footer over-claim + add latent `stale_filing_hard` key (header "Risk Vetoes" → "Risk Flags")
 - PR #307 `bb1d7fd` — feat(agents): Phase B — opus-4.8 orchestrator + dynamic-workflow tuning (uniform `## Handoff` contract on all 19 agents + README §"Dynamic workflow" + Flow 7)
