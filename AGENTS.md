@@ -248,7 +248,12 @@ export function FairPriceCard(props) {  // no types
   keep the hero quiet.) The hero's Fair-value / Target / Loss-chance values
   count-up via the `HeroMetric` client leaf (PR #342, `useCountUp` ease-in-out);
   the `RecommendationBadge` is now STATIC (its chip-pop entrance was removed
-  same PR — see CLAUDE.md §Gotchas "Hero metric values count-up").
+  same PR — see CLAUDE.md §Gotchas "Hero metric values count-up"). Under the
+  hero (own section, above the price chart) sits `HeroAttributeTiles` — a 4-box
+  icon-over-label grid (Size · Sector · 2 reserved "Coming soon" placeholders),
+  the theme-reskinned answer to a reference app's category tiles (PR #344; uses
+  `lucide-react` icons via NAMED imports only — see CLAUDE.md §Gotchas
+  "lucide-react … named imports ONLY" + "Hero attribute tiles").
   New `<ThemeToggle layout="icon|row">` component renders
   a three-state cycle button (system → light → dark → system) with
   `useTheme()` + a `mounted` guard to suppress the SSR-fallback
