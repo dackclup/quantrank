@@ -198,7 +198,13 @@ export function FairPriceBarChart({
               <div className={`text-lg font-semibold ${headline.cls}`}>{headline.tag}</div>
               <div className="mt-0.5 text-xs text-slate-600 dark:text-slate-400">{headline.desc}</div>
             </div>
-            <div className="flex items-baseline gap-5">
+            {/* items-center + equal-height columns so the chevron sits at the
+                vertical middle of the price NUMBERS. The median column has a
+                third line ("vs today"); the today column gets a matching
+                invisible spacer line so both columns are the same height and
+                items-center lands the chevron exactly on the number row (no
+                absolute positioning → nothing overflows toward the pills). */}
+            <div className="flex items-center gap-5">
               <div>
                 <div className="text-[0.625rem] uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Today&apos;s price
@@ -206,10 +212,26 @@ export function FairPriceBarChart({
                 <div className="font-mono text-xl font-semibold tabular-nums text-slate-900 dark:text-slate-100">
                   {formatFairPrice(current_price)}
                 </div>
+                {medianPct !== null && (
+                  <div className="text-[0.6875rem] font-medium tabular-nums" aria-hidden="true">
+                    &nbsp;
+                  </div>
+                )}
               </div>
-              <div className="text-slate-400 dark:text-slate-500" aria-hidden="true">
-                →
-              </div>
+              <svg
+                width="1em"
+                height="1em"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="shrink-0 text-xl text-slate-400 dark:text-slate-500"
+                aria-hidden="true"
+              >
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
               <div>
                 <div className="text-[0.625rem] uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Median fair price
