@@ -107,8 +107,7 @@ export function ScoreGauge({
           Composite Score
         </span>
         <span className="font-mono text-lg font-semibold tabular-nums text-slate-900 dark:text-slate-100">
-          {shown.toFixed(0)}
-          <span className="text-slate-400 dark:text-slate-500">/100</span>
+          {shown.toFixed(0)}/100
         </span>
         <span
           className="text-[0.625rem] uppercase tracking-wider"
