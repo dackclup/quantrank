@@ -42,9 +42,22 @@ export default function StockDetailPage({
       <article className="space-y-6">
         <Link
           href="/"
-          className="inline-block text-sm text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+          className="inline-flex items-center gap-1 text-sm text-slate-900 transition-opacity hover:opacity-70 dark:text-slate-100"
         >
-          ← Back to ranking
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+          Back to ranking
         </Link>
         <header>
           <h1 className="font-mono text-3xl font-bold tracking-tight sm:text-4xl">
