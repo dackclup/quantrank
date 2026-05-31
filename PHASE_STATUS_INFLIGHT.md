@@ -4054,6 +4054,27 @@ Companion CLAUDE.md §Gotchas entry ("App-wide motion uses ONE `ease-in-out`
 timing curve") documents the convention for future components — a new animated
 component must use ease-in-out, not a one-off `ease-out`. No schema / Python /
 scoring / valuation / output JSON change — frontend timing-function-only.
+
+**Follow-up commit (same PR) — desktop sidebar collapse smoothness**: the
+ease-in-out swap alone did NOT make the desktop sidebar collapse/expand feel
+smooth (user 2026-05-30 "แถบด้านข้าง animation เลื่อนเข้าออกยังดูไม่ smooth").
+Root cause was NOT the easing — the aside's `[transition:…]` listed `transform`
++ `width` but NOT `max-width`, while the collapsed state toggles `md:max-w-[64px]`
+(and the `globals.css` pre-paint rule sets `max-width:4rem`). On collapse the
+un-transitioned `max-width` snapped to the 64px cap the instant `collapsed`
+flipped → clamped the rendered width to 64px → the `width` animation was
+nullified → collapse "snapped" while expand (a growing max-width never clamps)
+looked smooth = asymmetric jank. Fix: add `max-width_200ms_ease-in-out` to the
+`Sidebar.tsx` transition list so width + max-width animate in lockstep. Verified
+via Playwright frame-sampling at 1280px viewport: collapse now interpolates
+240→72px across **13 distinct steps** `[240, 238, 231, 218, 201, 180, 156, 132,
+111, 94, 81, 74, 72]` (was a 1-2 frame snap), expand 72→240px across **10 steps**.
+`max-width` kept (NOT removed) — it's load-bearing: it caps the fluid-rem
+`md:w-60` (~270px at the font-size ceiling) to a stable 240px. Companion note
+appended to the CLAUDE.md §Gotchas sidebar-`data-rail` entry. `next build` → 502
+routes; compiled CSS confirms `transition:transform .2s,width .2s,max-width .2s
+ease-in-out`.
+
 PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR"
 lockstep per PR #237 convention; AGENTS.md carries no §Gotchas mirror (per the
 PR #327 precedent — frontend gotchas live in CLAUDE.md, the canonical home).

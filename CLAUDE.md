@@ -590,7 +590,15 @@ whitespace / single-line fixes do not trigger.
   live collapsed state (`classList.toggle`) so the CSS never fights React
   post-hydration. The aside transition is also gated behind an `animate` flag
   (true only ~250ms around an explicit toggle) + `motion-reduce:transition-none`
-  so refresh / rotation switch width INSTANTLY (no animated shrink).
+  so refresh / rotation switch width INSTANTLY (no animated shrink). The
+  animated transition list MUST include `max-width` alongside `width` (PR #330):
+  the collapsed rail toggles `md:max-w-[64px]` AND the pre-paint rule sets
+  `max-width:4rem`, so an un-transitioned `max-width` snaps to the collapsed cap
+  the instant `collapsed` flips and CLAMPS the rendered width to 64px — the
+  `width` animation is nullified, so collapse "snaps" while expand (a GROWING
+  max-width never clamps) stays smooth = asymmetric jank. `max-width` is
+  load-bearing (not removable): it caps the fluid-rem `md:w-60` — which is
+  ~270px at the font-size ceiling — down to a stable 240px.
 - **Re-parking the price-chart crosshair MUST debounce the `<AreaChart>`
   remount ≥ ~300ms** (`frontend/components/PriceHistoryChart.tsx`, PR #326).
   Recharts 2.15 applies `defaultIndex` (latest-point park) only on MOUNT. A
