@@ -142,14 +142,21 @@ export default function StockDetailPage({
                 instead of pushing the row wider — this is what fixes the 320px
                 clip the old `flex-nowrap` had (EIX-style long "UNDERVALUED"
                 label) without falling back to the `flex-wrap` vertical stack.
-                `w-full` + `justify-items-center` center each donut inside its
-                own 1fr half, so the score↔MoS pair stays balanced left↔right
-                (equal outer margins, symmetric about the card centerline) at
-                EVERY breakpoint — including xl, where `w-full` overrides the
-                parent's `xl:items-end` shrink for this row (2026-05-31). */}
-            <div className="grid w-full grid-cols-2 items-center justify-items-center gap-3 sm:gap-5">
-              <ScoreBadge score={detail.composite_score} size="lg" ticker={detail.ticker} />
-              <MoSBadge mos={mosPct} />
+                The two donuts are pulled TOGETHER at the card centerline:
+                score is `justify-self-end` in the left 1fr track, MoS is
+                `justify-self-start` in the right — so they sit adjacent in the
+                middle (just the grid gap between them) with equal, symmetric
+                outer margins on both edges. The 1fr tracks still bound each
+                label's wrap so nothing clips at 320px; `w-full` keeps the
+                centerline = the card's at every width, overriding the parent's
+                `xl:items-end` shrink for this row (2026-05-31). */}
+            <div className="grid w-full grid-cols-2 items-center gap-3 sm:gap-5">
+              <div className="justify-self-end">
+                <ScoreBadge score={detail.composite_score} size="lg" ticker={detail.ticker} />
+              </div>
+              <div className="justify-self-start">
+                <MoSBadge mos={mosPct} />
+              </div>
             </div>
             {/* 3-column metric row. `justify-evenly` distributes
                 equal space BEFORE / BETWEEN / AFTER the three columns
