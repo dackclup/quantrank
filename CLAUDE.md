@@ -822,6 +822,29 @@ whitespace / single-line fixes do not trigger.
   already carries the cautious signal, and the MoS donut conveys overvaluation.
   Do NOT re-add a hero flag chip without a fresh user request.
 
+- **Price-chart resolution is PER-PERIOD — 5Y aggregates to monthly, the
+  shorter windows stay daily** (`frontend/components/PriceHistoryChart.tsx`,
+  PR #341). The on-disk history (`/data/stocks/history/<T>.json`) is and stays
+  **daily OHLCV, ~1254 points over 5y** (`compute/config.PRICES_PERIOD="5y"`,
+  yfinance `1d`) — the per-period resolution is a pure FRONTEND render
+  decision in the `chartData` memo: **5Y → `aggregateMonthly()`** (one point
+  per calendar month = the close of that month's FIRST trading day, ~60 points
+  over 5y); **1M / 6M / YTD / 1Y → daily**,
+  then `downsample(…, 260)` as a render-cost cap (even-stride, keeps the exact
+  last point so the latest price + flush-right crosshair stay correct). So 5Y
+  no longer even-stride-downsamples daily points — it month-start-aggregates.
+  `aggregateMonthly` assumes the series is ascending by `date` (it is, per
+  `write_stock_history`), takes the FIRST trading day of each month, and ALWAYS
+  appends the real latest daily point last (de-duped) so the chart's right edge
+  + park-at-latest crosshair show the current price, not the weeks-stale
+  1st-of-this-month close. **1D (1-min) / 5D (15-min) are
+  still DISABLED** (`PriceTimePeriodSelector` `ENABLED_PERIODS`) — true intraday
+  is a separate v1.3 feature requiring a NEW compute/ingest path (yfinance
+  `1m`=7-day / `15m`=60-day caps) + a `StockHistory` schema-triple bump + cron
+  volume + the static-site freshness caveat (cron is daily post-close, so 1D
+  would be the last cron's session, not real-time). Do NOT wire 1D/5D from the
+  existing daily file — there is no intraday data in it.
+
 ## Phase status
 
 Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged

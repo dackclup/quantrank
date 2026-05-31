@@ -395,15 +395,20 @@ export function PriceHistoryChart({
   }, [data]);
 
   const chartData = useMemo(
-    // Downsample after slicing so the path Recharts builds stays small. A 5Y
-    // window is ~1260 daily points → a ~56 KB SVG `d` string, whose ONE-TIME
-    // render is a ~380 ms main-thread task on a throttled phone (the "เปิดหน้า
-    // ค้างหนัก" report). At a ~360-700 px chart width there are far more points
-    // than pixels, so capping to MAX_POINTS (evenly, always keeping the last
-    // point so the latest price + flush-right crosshair are exact) is visually
-    // lossless but cuts the path ~5× → no freeze. Shorter windows (≤ MAX_POINTS)
-    // pass through untouched.
-    () => downsample(sliceByPeriod(fullChartData, period), 260),
+    // 5Y aggregates to monthly samples (month-START close, ~60 points over 5y)
+    // per the user's per-period resolution spec — daily granularity over 5
+    // years is more than the eye (or the ~360-700 px chart width) can read.
+    // Every shorter window
+    // (1M / 6M / YTD / 1Y) stays DAILY, then passes through `downsample` as a
+    // pure render-cost cap: a 1Y window is ~252 daily points → fine, but the
+    // even-stride MAX_POINTS guard (keeping the exact last point so the latest
+    // price + flush-right crosshair stay exact) protects against any window
+    // that exceeds it. Monthly 5Y is already ~60 points so it skips the cap.
+    () => {
+      const sliced = sliceByPeriod(fullChartData, period);
+      if (period === '5Y') return aggregateMonthly(sliced);
+      return downsample(sliced, 260);
+    },
     [fullChartData, period],
   );
 
@@ -1156,6 +1161,35 @@ export function downsample(
     out.push(points[Math.round(i * stride)]);
   }
   out.push(points[n - 1]); // exact last point
+  return out;
+}
+
+// Aggregate a daily series to ONE point per calendar month — the close of the
+// FIRST trading day in each month (month-start close). Used for the 5Y window
+// so the curve tags monthly samples (~60 points over 5y) instead of even-stride
+// daily downsampling. The series is assumed ascending by `date` (YYYY-MM-DD, as
+// written by write_stock_history), so the FIRST point seen for a given YYYY-MM
+// key is that month's first trading day. The actual latest daily point is
+// ALWAYS appended last (de-duped if it's already the first-of-its-month) so the
+// chart's right edge + park-at-latest crosshair show the current price, not the
+// 1st-of-this-month close which can be weeks stale.
+export function aggregateMonthly(points: ChartPoint[]): ChartPoint[] {
+  if (points.length === 0) return points;
+  const out: ChartPoint[] = [points[0]]; // first trading day of the first month
+  let curKey = points[0].date.slice(0, 7); // YYYY-MM
+  for (let i = 1; i < points.length; i += 1) {
+    const key = points[i].date.slice(0, 7);
+    if (key !== curKey) {
+      out.push(points[i]); // first trading day of the new month
+      curKey = key;
+    }
+  }
+  // Keep the real latest point exact (current price) unless it's already the
+  // first-of-month sample we just pushed for the current month.
+  const last = points[points.length - 1];
+  if (out[out.length - 1].date !== last.date) {
+    out.push(last);
+  }
   return out;
 }
 

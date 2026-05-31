@@ -61,7 +61,11 @@ this section doesn't duplicate them.
 compute/                          # Python compute pipeline (read/write OK)
 ├── ingest/                       # SEC EDGAR + yfinance fetchers
 │   ├── fundamentals.py           # XBRL fact extraction
-│   ├── prices.py                 # yfinance wrapper
+│   ├── prices.py                 # yfinance wrapper (5y DAILY OHLCV; the
+│   │                             #   chart's per-period resolution — 5Y
+│   │                             #   monthly, shorter daily — is frontend-
+│   │                             #   side, see CLAUDE.md §Gotchas "Price-
+│   │                             #   chart resolution"; 1D/5D intraday = v1.3)
 │   ├── filing_text.py            # 10-K narrative text fetcher
 │   └── universe.py               # S&P 500 constituents
 ├── scoring/                      # 8-pillar composite + risk overlay
