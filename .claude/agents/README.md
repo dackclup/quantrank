@@ -22,7 +22,7 @@ skills are loaded each session, so the main agent already has the
 trigger map. Subagents add value where context isolation or parallelism
 specifically helps.
 
-## The current set (19)
+## The current set (20)
 
 Organized into four tiers — **core** (narrow project invariants),
 **lifecycle** (engineering-org roles for PR / release / phase
@@ -52,12 +52,13 @@ roles a 20-person engineering org would have:
 | [`release-captain`](release-captain.md) | Release manager | "tag release" / "cut a release" / "release vX.Y.Z" / after phase epic merge | opus | Read, Bash, Grep, Glob |
 | [`phase-coordinator`](phase-coordinator.md) | Eng-program manager / docs PM | Before branch creation; before PR open / Ready-flip; after phase / sub-PR completes | sonnet | Read, Bash, Grep, Glob |
 
-### Tier 3 — Specialized expertise (5)
+### Tier 3 — Specialized expertise (6)
 
 | Subagent | Enterprise role analogue | Trigger | Model | Tools |
 |---|---|---|---|---|
 | [`test-engineer`](test-engineer.md) | SDET / test architect | Missing test coverage; new defense / schema field without test; "add tests" / "TDD this" / "เพิ่ม test" | sonnet | Read, Bash, Grep, Glob, Edit, Write |
 | [`methodology-scientist`](methodology-scientist.md) | Research scientist / domain expert | New defense flag proposed; threshold recalibration; quarterly cohort audit; "validate against literature" / "ตรวจ academic prior" | opus | Read, Bash, Grep, Glob |
+| [`financial-engineer`](financial-engineer.md) | Quant strategist / financial engineer | DESIGN a new valuation method / factor / scoring pillar / defense flag; scope a roadmap phase (Phase 4-7 — factors / ML / sentiment / regime + portfolio); "ออกแบบ factor / โมเดล quant" / "should we add signal X" / "scope Phase 5". Generative-design seat — proposes the construct + academic anchor, then hands to `methodology-scientist` to ratify. Read-only; never implements code, never ships the final verdict. | opus | Read, Bash, Grep, Glob |
 | [`literature-searcher`](literature-searcher.md) | Research librarian / domain-knowledge retrieval | methodology-scientist verdict cites paper outside CLAUDE.md anchor list; new defense-flag academic prior proposed; "find me the paper that says X" / "หาเปเปอร์เรื่อง Y"; SEC rule release / EDGAR filing precise citation needed. Offloads retrieval from `methodology-scientist` (opus) → judgment stays on opus, fetch stays on sonnet. | sonnet | Read, Bash, Grep, Glob, WebSearch, WebFetch |
 | [`performance-engineer`](performance-engineer.md) | Performance engineer / SRE | Cron > 15 min warm-cache; per-ticker hang > 30s; p95 latency over budget; "why is the cron slow?" | sonnet | Read, Bash, Grep, Glob |
 | [`dependency-auditor`](dependency-auditor.md) | Supply-chain / FOSS-license engineer | Dependabot alert; `pyproject.toml` / `package.json` change; "should I bump X?" / "CVE check" | sonnet | Read, Bash, Grep, Glob |
@@ -85,7 +86,9 @@ The four tiers reflect QuantRank's actual workload distribution + the
 - **Tier 3 (Specialized)** fires at specific knowledge moments — a new
   defense flag needs a research scientist's academic-prior check; a
   cron-slowdown needs a perf engineer; a new dep needs a supply-chain
-  audit. These are the "deep specialists" called in for domain depth.
+  audit; designing a brand-new quant construct (valuation method /
+  factor / pillar) or scoping a roadmap phase needs the financial
+  engineer. These are the "deep specialists" called in for domain depth.
 - **Tier 4 (Operations)** is the orchestrator / coordinator layer —
   `docs-reviewer` keeps the project's institutional memory clean;
   `ci-triage-engineer` is the reactive triager for GitHub Actions
@@ -97,7 +100,7 @@ The four tiers reflect QuantRank's actual workload distribution + the
 
 The team isn't a flat list of independent agents — it's a coordinated
 system where specialists escalate to each other and orchestrators
-spawn parallel workers. Seven canonical flows codify the integration:
+spawn parallel workers. Eight canonical flows codify the integration:
 
 ### Flow 1 — Pre-push gate (every PR before Mark-Ready)
 
@@ -229,6 +232,33 @@ correctness triad — `stock-detail-auditor` (data correct) +
 `frontend-design-reviewer`, a wrong-JSON-value → `stock-detail-auditor`.
 It is the only agent that *interacts* with the running app.
 
+### Flow 8 — Quant-design flow (financial-engineer originates, validators gate)
+
+```
+User: "design a new factor / valuation method / scoring pillar" / "scope Phase 5"
+  │
+  ▼
+[financial-engineer] (opus) produces the design proposal (problem →
+academic anchor → math spec → architecture fit → annotate-before-veto
+rollout → observability fields → test plan → orthogonality → footguns);
+the orchestrator then sequences the gate:
+  1. methodology-scientist  ──► ratify the proposed academic prior +
+                                threshold (can REJECT the design)
+  2. literature-searcher    ──► (if the anchor is outside the CLAUDE.md
+                                list) retrieve the paper for the verdict
+  3. test-engineer          ──► positive + negative + Hypothesis tests
+                                once the design is ratified
+  4. quantrank-reviewer     ──► review the implementation the main agent
+                                + user write from the ratified design
+```
+
+This is the GENERATIVE complement to Flow 3 (new-defense flow): Flow 3
+starts at validation ("add a flag for X" → methodology-scientist);
+Flow 8 starts one step earlier, at design ("how should we model X" →
+financial-engineer), when the construct doesn't exist yet. The designer
+proposes; the validator gates; they are deliberately separate seats so
+no single agent both invents and ratifies its own prior.
+
 ### Spawn discipline (cross-cutting)
 
 When a flow says "spawn in parallel", the main agent uses ONE Agent
@@ -244,7 +274,7 @@ defense-layer-auditor's verification target.
 ## Dynamic workflow & the opus-4.8 orchestrator
 
 The main Claude Code session runs on **opus-4.8** and is the orchestrator.
-The seven flows above are **canonical examples, not an exhaustive
+The eight flows above are **canonical examples, not an exhaustive
 script** — opus-4.8 composes the next step *dynamically* from what each
 agent reports, so an unexpected finding routes to the right specialist
 even when no canned flow covers it. The live example from this team's
@@ -271,14 +301,15 @@ HANDOFF · status=<agent's verdict vocab> · next=<DONE | SPAWN <agent>:<scope> 
   command, an ambiguous requirement) — the orchestrator surfaces it via
   `AskUserQuestion` rather than guessing.
 
-**Model split (why 4 opus / 15 sonnet under an opus-4.8 main):** the
+**Model split (why 5 opus / 15 sonnet under an opus-4.8 main):** the
 orchestrator carries cross-agent synthesis, so most agents are **sonnet**
-— focused, well-scoped work handing a crisp verdict back up. The four
+— focused, well-scoped work handing a crisp verdict back up. The five
 **opus** agents (`quantrank-reviewer` · `methodology-scientist` ·
-`release-captain` · `incident-commander`) stay opus because their job IS
-breadth-of-judgment (full-diff review · academic-prior weighing ·
-release-ladder orchestration · P1 incident triage) that doesn't compress
-to a sonnet pass. Sonnet agents also drain the separate Max-plan
+`release-captain` · `incident-commander` · `financial-engineer`) stay
+opus because their job IS breadth-of-judgment (full-diff review ·
+academic-prior weighing · release-ladder orchestration · P1 incident
+triage · generative quant design) that doesn't compress to a sonnet
+pass. Sonnet agents also drain the separate Max-plan
 "Weekly · Sonnet only" pool (see [`CLAUDE.md`](../../CLAUDE.md)
 §Spawn discipline).
 

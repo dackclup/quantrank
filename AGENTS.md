@@ -88,7 +88,7 @@ frontend/                         # Next.js static site (read/write OK)
 tests/                            # pytest suite
 docs/                             # Academic methodology + research findings
 .claude/skills/                   # 46 loaded skills + phase-N/ planning docs
-.claude/agents/                   # 19 subagents — Tier 1 Core 5 (incl. stock-detail-auditor for per-stock JSON correctness) + Tier 2 Lifecycle 6 (incl. vercel-preview-auditor + expert-user-explorer for interactive end-to-end app usage) + Tier 3 Specialized 5 (incl. literature-searcher) + Tier 4 Operations 3 (incl. ci-triage-engineer); Claude Code only — Copilot / Cursor / Devin do not auto-route to these
+.claude/agents/                   # 20 subagents — Tier 1 Core 5 (incl. stock-detail-auditor for per-stock JSON correctness) + Tier 2 Lifecycle 6 (incl. vercel-preview-auditor + expert-user-explorer for interactive end-to-end app usage) + Tier 3 Specialized 6 (incl. literature-searcher + financial-engineer for generative quant design) + Tier 4 Operations 3 (incl. ci-triage-engineer); Claude Code only — Copilot / Cursor / Devin do not auto-route to these
 .claude/hooks/                    # PostToolUse Bash hooks (log-bash.sh, schema-reminder.sh) + UserPromptSubmit hook (delegate-first.sh) wired by .claude/settings.json (Claude Code only — Copilot / Cursor / Devin ignore)
 .claude/worktrees/                # Harness-managed isolation dirs for Agent-tool subagents (Claude Code on the web only; per-session transient; gitignored 2026-05-22)
 .claude/settings.json             # Claude Code harness config (hooks, permissions). Per-user overrides go in .claude/settings.local.json (gitignored)
@@ -463,6 +463,24 @@ note cross-tool-specific points only:
   tuning via PR #307** (`bb1d7fd`) — uniform `## Handoff` contract on
   all 19 agents + README §"Dynamic workflow & the opus-4.8 orchestrator"
   + a 7th coordination flow (Experiential UX pass).
+- **20th subagent `financial-engineer` added (this PR)** — generative
+  quant-design seat (Tier 3 Specialized 5 → 6; opus, read-only). The
+  DESIGN counterpart to `methodology-scientist`'s validation seat: it
+  proposes a new valuation method / factor / scoring pillar / defense
+  flag + academic anchor (charter spans Phase 4-7 — factor consolidation
+  / ML meta-learner / sentiment v2 / regime + portfolio), then hands off
+  to `methodology-scientist` to ratify, `test-engineer` for tests, and
+  `quantrank-reviewer` for the implementation review (new README Flow 8,
+  the generative complement to Flow 3 new-defense flow). Roster 19 → 20
+  (5 opus / 15 sonnet); coordination flows 7 → 8. Same PR drains the
+  #311–#330 doc drift surfaced at session start (PHASE_STATUS.md
+  §Recently merged was 8 PRs behind at #310) + the subagent-count
+  lockstep across all six current-state doc homes (CLAUDE.md / AGENTS.md
+  / CONTEXT.md / WORKFLOW.md / PHASE_STATUS.md / README.md). Cross-tool
+  agents (Copilot / Cursor / Devin): `.claude/agents/` is Claude-Code-only
+  — your runtimes don't auto-route to subagent files, so no behavioral
+  binding here. Doc + agent-infra only — no compute / schema / output
+  change.
 - **Phase 4 tasteful-motion in flight (this PR)** — app-wide entrance +
   micro-interaction animation, CSS/Tailwind only (no framer-motion).
   LedgerCraft stays flat; motion is the ENTRANCE, plays once per session.
@@ -1433,7 +1451,7 @@ UserPromptSubmit):
   Drains the under-utilized Max-plan "Weekly · Sonnet only" pool
   (PR #223 token-economy rebalance).
 
-The 19 subagents under `.claude/agents/` follow the **gate-moment
+The 20 subagents under `.claude/agents/` follow the **gate-moment
 auto-routing policy** in [`CLAUDE.md`](CLAUDE.md) §Auto-routing
 policy — most cues fire at "ready to push" / explicit ask / signal
 event, not on every edit. This is the reduced-token policy
@@ -1452,13 +1470,13 @@ from it — the documented coordination flows are canonical examples, not
 an exhaustive script. See [`.claude/agents/README.md`](.claude/agents/README.md)
 §Dynamic workflow.
 
-The 19 agent prompts are kept tight (total ~2.7k lines across all
-of `.claude/agents/`) so per-spawn context cost stays bounded —
+The 20 agent prompts are kept tight (total ~3.5k lines across the 20
+agent files in `.claude/agents/`) so per-spawn context cost stays bounded —
 trim target is the boilerplate ("read these first" + verbose intros
 + duplicated material from CLAUDE.md / SKILL.md / AGENTS.md), NOT
 the work the agent does. Hard constraints on prompt size do not
 imply hard caps on output size or investigation depth. Sub-agents
-on the sonnet pool (15 of 19 agents) should walk every relevant
+on the sonnet pool (15 of 20 agents) should walk every relevant
 file, list every finding, and follow every escalation lead — the
 Max-plan "Weekly · Sonnet only" budget is intended for thorough
 audit work and is separate from the "Weekly · all models" pool the
@@ -1472,8 +1490,8 @@ scoring/*` or `compute/valuation/*`, frontend-design-reviewer on
 `frontend/components/*`, etc.) — see [`CLAUDE.md`](CLAUDE.md)
 §Auto-routing policy for the full cue table. Opus agents
 (`incident-commander` · `release-captain` · `methodology-scientist`
-· `quantrank-reviewer`) stay rare-fire on gates / signals so they
-don't drain the all-models pool. "Non-trivial" = > 5 added lines
+· `quantrank-reviewer` · `financial-engineer`) stay rare-fire on gates /
+signals so they don't drain the all-models pool. "Non-trivial" = > 5 added lines
 OR touches non-comment code OR adds/removes a public symbol;
 comment / whitespace / single-line fixes do not trigger. A 10-min
 dedup window prevents the same sonnet agent from firing twice on
