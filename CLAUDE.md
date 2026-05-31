@@ -735,6 +735,40 @@ whitespace / single-line fixes do not trigger.
   purpose: `RANK_GATE_META` carries the academic-anchor detail line,
   `MANIPULATION_FLAG_LABELS` is label-only.
 
+- **Background runs (`Agent run_in_background:true` / `Bash run_in_background:true`)
+  default to SYNC — and if you go background, you OWN the teardown in the
+  SAME session** (process hygiene, 2026-05-31, after a "chevron review"
+  agent + an `npm install` bash showed as perpetually-"Running" in the
+  Background-tasks panel across a `/compact`). Two distinct zombie classes,
+  two distinct fixes:
+  - **Background AGENT orphaned by `/compact`** — an async sub-agent spawned
+    with `run_in_background:true` is tracked by an `agentId` the harness
+    returns at spawn time. A `/compact` (or a context-window roll) drops that
+    `agentId` from the live transcript, so the post-compact main agent has NO
+    handle to `SendMessage`/stop it — it runs (or sits "Running") forever,
+    still billing tokens, and `ps aux` CANNOT see it (it lives in the harness,
+    not as an OS process in the container — do NOT "confirm it's dead" with
+    `ps`/`pgrep`, that only sees Bash). **Prevention**: default to SYNCHRONOUS
+    `Agent` calls (await the result in the one tool block) — that is the
+    normal mode and it self-cleans. Reserve `run_in_background:true` for a
+    genuinely long job whose completion you will collect in the SAME session,
+    BEFORE any compact. If a long run must straddle a compact, tell the user
+    so they can Stop it from the panel — the orphaned `agentId` is
+    unrecoverable from the agent side.
+  - **Background BASH left "Running"** — a `run_in_background:true` Bash with
+    no natural exit (`next dev`, `tail -f`, `while true`, an `npm install`
+    whose panel entry lingers) shows "Running" until killed. **Prevention**:
+    background Bash must have a DETERMINISTIC exit (an `until grep -q …; do
+    sleep 0.5; done` that ends in seconds, per the Monitor/Bash guidance) —
+    never a server/`-f`/`while true` parked in the background. If you must
+    serve (e.g. `next dev` for a Playwright pass), KILL it in the same turn
+    you finish with it (`ps … | grep next | awk '{print $2}' | xargs kill`,
+    NOT a broad `pkill` — a `pkill` that catches the harness's own shell
+    returns a non-zero/144 and CANCELS the rest of your tool batch, which is
+    how the parallel-batch nuke on 2026-05-31 happened). A finished
+    background Bash that still shows in the panel is harmless (no tokens) —
+    the user can Stop it; only flag it if `ps` shows a real live PID.
+
 ## Phase status
 
 Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged

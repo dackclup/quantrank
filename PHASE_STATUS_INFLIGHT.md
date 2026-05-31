@@ -4336,3 +4336,35 @@ the two old cards' props (same `risk_flags` / `manipulation_index` /
 `composite_score` / `composite_score_adjusted` / `manipulation_components`
 fields; `types.ts` touched for a COMMENT-only consumer-name update — no
 field shape change, snapshot + Pydantic untouched). Net +1 / −2 components.
+
+## Background-run hygiene §Gotcha — prevent zombie panel tasks (docs, this PR)
+
+**Scope**: doc-only. Adds a CLAUDE.md §Gotchas entry (+ AGENTS.md
+§Claude-Code-specific-tooling mirror) codifying how to avoid the
+perpetually-"Running" Background-tasks panel entries the user hit
+2026-05-31 (a "chevron review" sub-agent + an `npm install` bash both
+showing Running across a `/compact`).
+
+**Two zombie classes documented**:
+1. **Background AGENT orphaned by `/compact`** — an async sub-agent
+   (`Agent run_in_background:true`) is tracked by an `agentId` the harness
+   returns at spawn. A `/compact` drops that id from the live transcript →
+   the post-compact main agent can't `SendMessage`/stop it → it sits
+   "Running" billing tokens. It is NOT an OS process (`ps`/`pgrep` only see
+   Bash — so "ps shows nothing" does NOT prove it's dead; that was my
+   mis-call earlier in the session). Prevention: default SYNC agent spawns;
+   reserve background for a long job collected in the SAME session pre-compact;
+   if it must straddle a compact, tell the user (only the panel Stop can kill it).
+2. **Background BASH with no exit** — `next dev` / `tail -f` / `while true` /
+   a lingering `npm install` parked with `run_in_background:true`. Prevention:
+   deterministic-exit background Bash only (`until grep -q …; do sleep …; done`);
+   if you must serve, kill it the same turn with a TARGETED `kill` (NOT a broad
+   `pkill` — a `pkill` catching the harness shell returns exit 144 and cancels
+   the rest of the parallel tool batch, which is the batch-nuke that happened
+   during PR #337's verify step).
+
+**No code / schema / scoring / valuation / frontend change** — CLAUDE.md +
+AGENTS.md + this INFLIGHT entry only. The discipline is behavioral
+(applies to the main agent's own spawn/Bash choices), enforced by
+documentation, not a new hook (per user direction: "บันทึกเป็น discipline
+ถาวร", not "สอบสวน hook กัน zombie เพิ่ม").
