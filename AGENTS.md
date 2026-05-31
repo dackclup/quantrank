@@ -1500,6 +1500,23 @@ UserPromptSubmit):
   Drains the under-utilized Max-plan "Weekly · Sonnet only" pool
   (PR #223 token-economy rebalance).
 
+**Background-run hygiene** (2026-05-31): prefer SYNCHRONOUS sub-agent
+spawns and foreground Bash. A `run_in_background:true` sub-agent is
+tracked by an `agentId` that a `/compact` or context roll drops from
+the live transcript — the post-compact session then can't stop it, so
+it sits "Running" in the Background-tasks panel billing tokens, and it
+is NOT an OS process (`ps`/`pgrep` can't see it — they only see Bash).
+Only background a sub-agent for a long job whose result you'll collect
+in the SAME session before any compact; if it must straddle a compact,
+tell the user (only they can Stop it from the panel). Background Bash
+must have a deterministic exit (an `until grep -q …; do sleep …; done`
+that ends in seconds) — never park a `next dev` / `tail -f` /
+`while true`; if you must serve for a Playwright pass, kill it the same
+turn (`ps … | grep next | awk '{print $2}' | xargs kill` — NOT a broad
+`pkill`, which can catch the harness's own shell, return exit 144, and
+cancel the rest of the tool batch). Full rationale in CLAUDE.md
+§Gotchas "Background runs default to SYNC".
+
 The 20 subagents under `.claude/agents/` follow the **gate-moment
 auto-routing policy** in [`CLAUDE.md`](CLAUDE.md) §Auto-routing
 policy — most cues fire at "ready to push" / explicit ask / signal
