@@ -4291,3 +4291,48 @@ override can't land on `main`. CI + agent-infra + doc only — no compute / sche
 
 ---
 
+
+## Merge RiskFlagsCard + ManipulationRiskCard → RiskSummaryCard (frontend, this PR)
+
+**Scope**: frontend-only. Combines the two adjacent stock-detail cards
+(`RiskFlagsCard` + `ManipulationRiskCard`) into ONE `RiskSummaryCard`
+container with two clearly-labelled sub-sections — **RANK GATES**
+(`risk_flags[]`, Rule-16 Top-5 disqualifiers) and **MANIPULATION INDEX**
+(the 0-100 informational rollup). User request 2026-05-31: the two cards
+showed partially-overlapping flag lists so the manipulation-linked vetoes
+(`sloan_accruals_top_decile` / `beneish_manipulation_veto` / …) rendered
+TWICE on screen and read like duplicated data.
+
+**Why restructure not flatten**: the overlap is asymmetric BOTH ways —
+`altman_distress` / `data_quality_input_corruption` / `net_issuance_top_decile`
+/ `stale_filing_hard` are rank gates NOT in the manipulation index; the
+annotate-only flags (`accruals_momentum_high`, `beneish_high`,
+`restatement_history`, `rem_suspect`, …) are in the index but never in
+`risk_flags`. A flat merge under one "Manipulation Risk" header would
+mislabel `altman_distress` (financial distress, not earnings manipulation).
+The two sub-sections preserve the gating-vs-informational semantic.
+
+**De-dup contract**: a flag that is BOTH a rank gate and a fired
+manipulation component is shown ONLY in RANK GATES; the manipulation
+sub-section lists only the annotate-only SURPLUS (`alsoFired =
+firedComponents − gateSet`) under "Also fired — not rank-gating". Same
+flag never renders twice. Outer ring = worst-case (rose if any rank gate,
+else the manipulation band tone); the Low/Moderate/High band chip moves
+into the manipulation sub-header when gates own the outer-header count
+chip so it's never lost. Returns `null` only when BOTH halves are empty.
+
+**Verification (real data, no fixture)**: `tsc --noEmit` clean · `next
+build` 506/506 pages · grep-verified the generated HTML of 5 real
+tickers covering every branch — NVDA / SMCI / STX (gate + surplus: each
+shared flag renders EXACTLY ONCE, deduped into rank gates; annotate
+surplus under "Also fired") · COF (gate-only, idx 0 → no manipulation
+sub-section) · KIM (index-only, no gates → "Fired components" label, not
+"Also fired"). 82/502 of the current universe carry both a gate and a
+manipulation component (the de-dup target cohort).
+
+**No schema / Python / scoring / valuation / output-JSON change** —
+component merge + page wiring + doc lockstep only. Props are the union of
+the two old cards' props (same `risk_flags` / `manipulation_index` /
+`composite_score` / `composite_score_adjusted` / `manipulation_components`
+fields; `types.ts` touched for a COMMENT-only consumer-name update — no
+field shape change, snapshot + Pydantic untouched). Net +1 / −2 components.
