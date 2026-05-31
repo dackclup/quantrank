@@ -703,6 +703,36 @@ whitespace / single-line fixes do not trigger.
   reach the runner without touching `settings.json` and bypass this check —
   don't add one (there's no legitimate reason to pin the subagent model in CI).
 
+- **`RiskSummaryCard` merges rank-gates + manipulation-index into ONE card
+  but the two sub-sections are SEMANTICALLY DISTINCT — never flatten them
+  into a single list** (`frontend/components/RiskSummaryCard.tsx`, PR #337;
+  replaced the former `RiskFlagsCard` + `ManipulationRiskCard`). The card
+  renders TWO sub-sections: **RANK GATES** (`risk_flags[]` — Rule-16 Top-5
+  disqualifiers; `altman_distress` + `data_quality_input_corruption` also
+  force a cautious recommendation) and **MANIPULATION INDEX** (the 0-100
+  rollup — INFORMATIONAL soft penalty, rank uses raw composite). They share
+  some flag NAMES but the overlap is asymmetric BOTH directions:
+  `altman_distress` / `data_quality_input_corruption` /
+  `net_issuance_top_decile` / `stale_filing_hard` are rank gates NOT in the
+  manipulation index; the annotate-only flags (`accruals_momentum_high`,
+  `beneish_high`, `restatement_history`, `rem_suspect`, …) are in the index
+  but NEVER in `risk_flags`. A flat merge under one "Manipulation Risk"
+  header would mislabel `altman_distress` (financial distress, not earnings
+  manipulation) — that is the footgun. **De-dup contract** (load-bearing):
+  a flag that is BOTH a rank gate AND a fired manipulation component shows
+  ONLY in RANK GATES; the manipulation sub-section lists only the
+  annotate-only SURPLUS via `alsoFired = firedComponents − gateSet` under
+  the "Also fired — not rank-gating" label. Drop the set-difference and the
+  shared flags (sloan / beneish_veto / …) render TWICE again — the exact
+  on-screen duplication this card was built to fix (82/502 of the current
+  universe carry both a gate and a manipulation component). Outer ring =
+  worst-case (rose if any rank gate, else the manipulation band tone); the
+  band chip (Low/Moderate/High) moves into the manipulation sub-header when
+  gates own the outer-header count chip so it's never lost. Returns `null`
+  only when BOTH halves are empty. The two flag-label maps stay separate on
+  purpose: `RANK_GATE_META` carries the academic-anchor detail line,
+  `MANIPULATION_FLAG_LABELS` is label-only.
+
 ## Phase status
 
 Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged

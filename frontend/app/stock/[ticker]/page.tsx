@@ -2,12 +2,11 @@ import Link from 'next/link';
 
 import FairPriceCard from '@/components/FairPriceCard';
 import { FairPriceBarChart } from '@/components/FairPriceBarChart';
-import { ManipulationRiskCard } from '@/components/ManipulationRiskCard';
-import { RiskFlagsCard } from '@/components/RiskFlagsCard';
 import { MoSBadge } from '@/components/MoSBadge';
 import { PillarRadarChart } from '@/components/PillarRadarChart';
 import { PriceHistoryChart } from '@/components/PriceHistoryChart';
 import RawMetricsTable from '@/components/RawMetricsTable';
+import { RiskSummaryCard } from '@/components/RiskSummaryCard';
 import { ScoreBadge } from '@/components/ScoreBadge';
 import { RecommendationBadge } from '@/components/RecommendationBadge';
 import { SectorChip } from '@/components/SectorChip';
@@ -268,9 +267,8 @@ export default function StockDetailPage({
         ticker={detail.ticker}
       />
 
-      <RiskFlagsCard riskFlags={detail.risk_flags} />
-
-      <ManipulationRiskCard
+      <RiskSummaryCard
+        riskFlags={detail.risk_flags}
         manipulationIndex={detail.manipulation_index}
         compositeScore={detail.composite_score}
         compositeScoreAdjusted={detail.composite_score_adjusted}

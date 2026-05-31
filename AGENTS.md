@@ -232,7 +232,7 @@ export function FairPriceCard(props) {  // no types
   filingLagBadgeClasses), badge components (Recommendation /
   Score / MoS / LossChance), table containers (Ranking /
   RawMetrics / FairPriceCard sub-table), cards (FairPriceBarChart /
-  PillarRadarChart / Tier2EventCard / ManipulationRiskCard /
+  PillarRadarChart / Tier2EventCard / RiskSummaryCard /
   Disclaimer / FilterDrawer), and the two app pages (home + stock
   detail). New `<ThemeToggle layout="icon|row">` component renders
   a three-state cycle button (system → light → dark → system) with

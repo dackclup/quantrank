@@ -443,7 +443,8 @@ export type StockDetail = {
   price_change_1d_pct: number | null;
   // PR 4.5f manipulation_index — see comment on StockSummary.
   // manipulation_components is the per-flag boolean breakdown the
-  // ManipulationRiskCard renders as a sorted-by-weight component grid.
+  // RiskSummaryCard renders (manipulation sub-section) — keys NOT already
+  // shown as a rank gate appear under "Also fired — not rank-gating".
   // Keys come from `FLAG_WEIGHTS` in
   // compute/scoring/manipulation_index.py.
   manipulation_index: number | null;
