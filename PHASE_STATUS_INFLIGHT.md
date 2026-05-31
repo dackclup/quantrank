@@ -4116,6 +4116,18 @@ Playwright on `/stock/AAPL`: `h2` text = "Price" (no `1y`), change row shows "pa
 year" again, selector still below the date axis. `next build` → 502 routes; `tsc`
 clean; screenshot captured.
 
+**Follow-up commit (same PR) — keep the period label visible WHILE scrubbing**:
+user 2026-05-31 "ตอนกำลังเลื่อน crosshair แล้ว past year มันหายไป … ช่วยทำให้ past
+year ไม่หายตอนกำลังเลื่อน". The change-row period label was gated by
+`{!scrubbing && …}` (hidden during a scrub, restored on release). Removed the gate
+so the label renders UNCONDITIONALLY, and dropped the now-unused `scrubbing` local +
+updated 3 comments. Semantically safe: `headlineAt` always measures the change from
+the window START (`price[i] − price[0]`), so the baseline is constant and "past
+year" correctly names the window at any scrubbed point ("+X% over the past year up
+to the hovered point"). `next build` → 502 routes; `tsc` clean. (Headless Playwright
+couldn't trigger a real Recharts hover to exercise the scrub path, so the label was
+verified present + unconditionally rendered in source; live scrub-verify on device.)
+
 PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR"
 lockstep per PR #237 convention; AGENTS.md carries no §Gotchas mirror (per the
 PR #327 precedent — frontend gotchas live in CLAUDE.md, the canonical home).

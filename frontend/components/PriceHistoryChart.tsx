@@ -125,9 +125,8 @@ export function PriceHistoryChart({
       return;
     }
     // Clear the scrub index from the OLD period — otherwise hoverIndex stays
-    // non-null on the new window (scrubbing=true), which suppresses the period
-    // label ("past year") permanently after a switch + parks the crosshair at a
-    // clamped stale index until the next hover (frontend-design-reviewer 4b).
+    // non-null on the new window and parks the crosshair at a clamped stale
+    // index until the next hover (frontend-design-reviewer 4b).
     setHoverIndex(null);
     setPlayDraw(true);
     setSweepKey((k) => k + 1);
@@ -707,9 +706,9 @@ export function PriceHistoryChart({
         // Headline reflects the crosshair: the scrubbed point (hoverIndex) when
         // dragging, else the latest. During the animation the rAF overwrites
         // these spans imperatively (hoverIndex stays null), then the end-of-draw
-        // re-render restores the latest. The change row is colored by direction;
-        // when scrubbing we show the date (PERIOD_LABEL is only meaningful for
-        // the full window = latest), else the period label.
+        // re-render restores the latest. The change row is colored by direction
+        // and labeled with the window (PERIOD_LABEL) — shown at rest AND while
+        // scrubbing, since the change is always measured from the window start.
         const lastIdx = chartData.length - 1;
         const di = hoverIndex ?? lastIdx;
         const hv = headlineAt(di) ?? {
@@ -719,7 +718,6 @@ export function PriceHistoryChart({
           positive: true,
           date: chartData[lastIdx].date,
         };
-        const scrubbing = hoverIndex !== null;
         const upCls = 'text-emerald-700 dark:text-emerald-300';
         const downCls = 'text-rose-600 dark:text-rose-400';
         return (
@@ -761,15 +759,13 @@ export function PriceHistoryChart({
                   {`(${hv.positive ? '+' : ''}${hv.pct.toFixed(2)}%)`}
                 </span>
                 <span ref={changeArrowRef}>{hv.positive ? '↑' : '↓'}</span>
-                {/* Hide the period label ("past year" etc.) WHILE scrubbing — at
-                    a scrubbed point the change is measured from the window start
-                    to THAT point, so "past year" would mislabel it. At rest /
-                    during the animation it correctly describes the full window. */}
-                {!scrubbing && (
-                  <span className="text-xs font-normal text-slate-500 dark:text-slate-400">
-                    {PERIOD_LABEL[period]}
-                  </span>
-                )}
+                {/* Period label stays visible WHILE scrubbing too (user request
+                    2026-05-31). It names the chart window ("past year"), and the
+                    change is always measured from the window START — so it reads
+                    correctly as "+X% over the past year, up to the hovered point". */}
+                <span className="text-xs font-normal text-slate-500 dark:text-slate-400">
+                  {PERIOD_LABEL[period]}
+                </span>
               </div>
             )}
             <div className="text-sm tabular-nums text-slate-900 dark:text-slate-100">
