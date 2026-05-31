@@ -90,15 +90,18 @@ export default function StockDetailPage({
             tablet). The split was previously gated at xl (1280) because the
             hero ALSO carried a ~360px live-price block, which at lg + an
             expanded 240px sidebar (~666px content) crushed the left block
-            (2026-05-29 responsive-density audit). That price block was removed
-            from the hero (2026-05-31), so the stats block is now narrower and
-            the split is safe at lg. Guards retained: left keeps `min-w-0` so a
-            long company name WRAPS instead of overflowing onto the gauges
-            (the old chip-overflow failure mode), and is capped at
-            `lg:max-w-2xl` so it doesn't spread on ultrawide; the right block
-            keeps `min-w-0` as a shrink guard. If the expanded sidebar at
+            (2026-05-29 responsive-density audit). That live-price block (it
+            lived in the LEFT block, under the name) was removed from the hero
+            (2026-05-31), easing the left column, so the split is safe at lg.
+            Guards retained: left keeps `min-w-0` so a long company name WRAPS
+            instead of overflowing onto the gauges (the old chip-overflow
+            failure mode), and is capped at `lg:max-w-2xl` so it doesn't spread
+            on ultrawide; the right block keeps `min-w-0` as a shrink guard.
+            `lg:justify-between` anchors the stats block to the card's RIGHT
+            edge (it would otherwise sit just after the capped left block with
+            trailing space on wide screens). If the expanded sidebar at
             1024–1279 ever feels tight, bump these back to `xl:`. */}
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-start">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0 flex-1 lg:max-w-2xl">
             <div className="flex flex-wrap items-center gap-2 text-xs">
               <span className="inline-flex items-center rounded-sm bg-slate-100 px-1.5 py-0.5 font-mono font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">
