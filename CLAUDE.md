@@ -696,6 +696,12 @@ whitespace / single-line fixes do not trigger.
   reasoning depth, not which model). Per-user `.claude/settings.local.json` is
   gitignored so it's out of scope for the committed guard — a local operator
   can still self-downgrade their own machine, but it can't land on `main`.
+  **Second out-of-scope vector** (security-reviewer 2026-05-31): the guard
+  inspects committed files only, so a `CLAUDE_CODE_SUBAGENT_MODEL` /
+  `ANTHROPIC_DEFAULT_*_MODEL` set as a **GitHub Actions repository secret** or
+  in a workflow-level `env:` block in another `.github/workflows/` file would
+  reach the runner without touching `settings.json` and bypass this check —
+  don't add one (there's no legitimate reason to pin the subagent model in CI).
 
 ## Phase status
 
