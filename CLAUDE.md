@@ -872,6 +872,30 @@ whitespace / single-line fixes do not trigger.
   `text-slate-900` value was near-invisible on the `dark:bg-slate-900` hero
   card), WCAG-AA on the dark surface, not a regression.
 
+- **Hero attribute chips are DERIVED + each independently silent on missing
+  data** (`frontend/components/HeroAttributeChips.tsx`, PR #343). The "what is
+  this company" tag row under the stock name (the QuantRank answer to "กล่อง
+  สี่เหลี่ยมแบบนี้บ้าง" — a reference app's category tiles) renders up to THREE
+  chips, each computed from real per-stock fields and each rendering ONLY when
+  its inputs are present (a missing field = the chip is absent, NEVER a "—"):
+  (1) **Market-cap tier** from `raw_metrics.market_cap` — Mega ≥$200B / Large
+  ≥$10B / Mid ≥$2B / Small (GICS-style index-provider cutoffs); neutral slate.
+  (2) **Net-margin tier** from `net_income/revenue` — High margin ≥20% (emerald)
+  / Profitable ≥0 (slate) / Loss-making <0 (rose); the ONLY semantic-colored
+  chip so the hero keeps one accent without fighting the Score/MoS donuts.
+  (3) **Valuation tone** from `pillar_scores.value` (NOT raw P/E, so it never
+  contradicts the radar below) — Value ≥65 / Growth ≤35 / silent in the 36-64
+  neutral band; slate. The whole component returns `null` when all three are
+  silent. **Deliberately NOT included**: a dividend chip (no dividend/yield in
+  the schema — don't add one claiming there is), a sector/industry chip (already
+  in the hero's top meta row), an FCF-positive chip (fires on ~85% of the
+  universe = non-discriminating), quality/growth pillar chips (redundant with
+  the radar). It's a pure SERVER component (computation + markup, no hooks) —
+  keep it static per the recommendation-badge direction. The thresholds split
+  the S&P 500 into meaningful groups (NVDA `Mega·High margin`, F `Large·
+  Profitable·Value`, KO `Mega·High margin·Growth`) — if you retune them, keep
+  that "different tickers get visibly different chips" property.
+
 ## Phase status
 
 Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged

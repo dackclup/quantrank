@@ -248,7 +248,10 @@ export function FairPriceCard(props) {  // no types
   keep the hero quiet.) The hero's Fair-value / Target / Loss-chance values
   count-up via the `HeroMetric` client leaf (PR #342, `useCountUp` ease-in-out);
   the `RecommendationBadge` is now STATIC (its chip-pop entrance was removed
-  same PR — see CLAUDE.md §Gotchas "Hero metric values count-up").
+  same PR — see CLAUDE.md §Gotchas "Hero metric values count-up"). The hero
+  also shows a derived attribute-chip row under the stock name (`HeroAttributeChips`,
+  PR #343 — cap tier · net-margin · valuation tone, each silent on missing data;
+  see CLAUDE.md §Gotchas "Hero attribute chips").
   New `<ThemeToggle layout="icon|row">` component renders
   a three-state cycle button (system → light → dark → system) with
   `useTheme()` + a `mounted` guard to suppress the SSR-fallback

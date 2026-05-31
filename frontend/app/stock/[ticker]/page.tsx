@@ -2,6 +2,7 @@ import Link from 'next/link';
 
 import FairPriceCard from '@/components/FairPriceCard';
 import { FairPriceBarChart } from '@/components/FairPriceBarChart';
+import { HeroAttributeChips } from '@/components/HeroAttributeChips';
 import { HeroMetric } from '@/components/HeroMetric';
 import { MoSBadge } from '@/components/MoSBadge';
 import { PillarRadarChart } from '@/components/PillarRadarChart';
@@ -156,6 +157,14 @@ export default function StockDetailPage({
             <p className="mt-1 font-slab text-2xl text-slate-700 dark:text-slate-300 sm:text-3xl">
               {detail.name}
             </p>
+            {/* Attribute chips — at-a-glance "what is this company": cap
+                tier · net-margin · valuation tone. Each renders only when its
+                data is present. See HeroAttributeChips.tsx. */}
+            <HeroAttributeChips
+              marketCap={detail.market_cap}
+              rawMetrics={detail.raw_metrics}
+              pillarScores={detail.pillar_scores}
+            />
           </div>
           <div className="hero-right flex min-w-0 flex-col gap-3">
             {/* Top row: composite donut + MoS donut — paired summary stats

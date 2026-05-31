@@ -4528,3 +4528,40 @@ the screenshot grey). `HeroMetric` confirmed a separate `'use client'` chunk;
 `page.tsx` still server. **No schema / Python / scoring / valuation / output-
 JSON change** — 1 new client component + badge simplification + page wiring.
 CLAUDE.md §Gotcha + AGENTS.md inventory + tailwind/design.md comment fixes.
+
+## Hero attribute chips — "what is this company" tag row (frontend, this PR)
+
+**Scope**: frontend-only. User saw a reference stock app's category tiles
+(Common / mega-cap / sector / dividend) and asked QuantRank to have "กล่อง
+สี่เหลี่ยมแบบนี้บ้าง". Chosen direction (user): attribute CHIPS in the
+stock-detail HERO describing the single stock (not ranking-page filters, not
+the reference app's big dark squares — the QuantRank `rounded-sm` outlined-
+light chip family).
+
+**Design** (frontend-design-reviewer spec, user picked the full 3-chip set):
+new `HeroAttributeChips.tsx` SERVER component renders up to 3 chips under the
+company name, each silent when its data is missing:
+- **Market-cap tier** `raw_metrics.market_cap` — Mega ≥$200B / Large ≥$10B /
+  Mid ≥$2B / Small (GICS index-provider cutoffs); neutral slate. This is the
+  direct analog of the reference app's "ขนาดใหญ่มาก" tile.
+- **Net-margin tier** `net_income/revenue` — High margin ≥20% (emerald) /
+  Profitable ≥0 (slate) / Loss-making <0 (rose); the only colored chip.
+- **Valuation tone** `pillar_scores.value` (NOT raw P/E — stays consistent
+  with the radar) — Value ≥65 / Growth ≤35 / silent 36-64; neutral slate.
+
+**Rejected** (per reviewer): dividend chip (no data in schema), sector/industry
+chip (already in hero meta row), FCF-positive (fires ~85% = non-discriminating),
+quality/growth pillar chips (redundant with the radar 150px below). Restrained
+palette — most chips neutral, one semantic accent (margin) so the row doesn't
+compete with the Score/MoS donuts. Placed in `hero-left` under the slab company
+name, `flex flex-wrap gap-2` (wraps cleanly at 320px, no overflow). Returns
+`null` when all three silent (no empty row).
+
+**Verification (real data, no fixture)**: `tsc --noEmit` clean · `next build`
+506/506 · generated HTML across 5 tickers matches the predicted chip set
+exactly — NVDA `Mega cap·High margin`, AAPL `Mega cap·High margin`, F `Large
+cap·Profitable·Value`, KO `Mega cap·High margin·Growth`, JPM `Mega cap·
+Profitable` (different tickers → visibly different chips = informative, not
+decoration). Palette clean (only slate/emerald/rose, no hex). **No schema /
+Python / scoring / valuation / output-JSON change** — 1 new server component +
+hero wiring. CLAUDE.md §Gotcha + AGENTS.md inventory + this entry.
