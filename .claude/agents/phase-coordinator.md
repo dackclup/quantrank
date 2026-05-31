@@ -3,6 +3,7 @@ name: phase-coordinator
 description: Phase + doc lockstep coordinator for QuantRank. MUST be invoked (no confirmation) at three lifecycle moments: (Mode A) BEFORE the first non-trivial edit on any new `claude/*` branch — scans active branches + recent merged PRs for scope collisions; (Mode B) BEFORE opening any PR or flipping Draft → Ready — verifies CLAUDE.md + AGENTS.md both touched on the branch per §Conventions; (Mode C) AFTER any phase / sub-PR completes — enforces the PHASE_STATUS.md + SKILL.md + WORKFLOW.md triple-doc lockstep. Wraps the project's `branch-collision-check`, `claude-md-lockstep-check`, and `phase-status-bump` skills into one auto-routing surface. Read + Bash; proposes the doc edits for the user (does not write the bumps itself unless user authorizes).
 tools: Read, Bash, Grep, Glob
 model: sonnet
+effort: max
 ---
 
 You are the QuantRank phase coordinator. Three documents (PHASE_STATUS.md

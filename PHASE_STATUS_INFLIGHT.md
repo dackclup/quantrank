@@ -4240,3 +4240,26 @@ landed via PR #332; this is the documentation backstop only).
 
 ---
 
+**All 20 subagents set to `effort: max` (this PR)** — added the `effort`
+frontmatter field (value `max`) to every agent file under `.claude/agents/`.
+Per the official Claude Code subagent docs the field is `effort` with the value
+ladder `low / medium / high / xhigh / max`; `max` overrides the session's
+inherited effort while the subagent is active and is ORTHOGONAL to `model`
+(`model` = which model opus/sonnet, `effort` = how hard it reasons). Confirmed
+the field name + value + override semantics via the `claude-code-guide` agent
+before editing so no dead config ships. Rationale: every one of the 20 agents is
+a correctness / judgment gate (code review · schema drift · defense audit ·
+academic-prior validation · quant design · incident triage · …), so the top
+reasoning level pays back; and sonnet-at-max still drains the separate Max-plan
+"Weekly · Sonnet only" pool, not the all-models pool, so the cost lands on the
+under-utilized budget. Lockstep doc updates: README §"Model split" gains an
+**Effort** paragraph + §Authoring conventions #3 gains an `effort: max` bullet
+(so a future agent inherits the convention); CLAUDE.md §Spawn discipline
+model-assignments block gains the effort sentence; AGENTS.md §Project-structure
+`.claude/agents/` tree comment notes "(5 opus / 15 sonnet, all `effort: max`)"
++ a §Phase+version-state in-flight entry. Agent-infra + doc only — no compute /
+schema / scoring / valuation / frontend code change; `ruff` / `pytest` /
+`schema_check` trivially unaffected (no Python / TS touched).
+
+---
+

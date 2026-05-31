@@ -301,7 +301,13 @@ whitespace / single-line fixes do not trigger.
   reviewer` + `financial-engineer` all opus by design; the other 15
   sonnet) as they are — opus agents land on the "Weekly · all models"
   pool; sonnet agents drain the underutilized sonnet pool. Tune the
-  5-vs-15 split only when usage data justifies it.
+  5-vs-15 split only when usage data justifies it. **All 20 agents also
+  carry `effort: max`** (frontmatter, 2026-05-31) — orthogonal to
+  `model`: `model` picks opus-vs-sonnet, `effort` (low/medium/high/
+  xhigh/max) sets reasoning depth and overrides the session's inherited
+  level. Every agent is a correctness / judgment gate, so max pays back;
+  sonnet-at-max still drains the Sonnet-only pool. A new agent gets
+  `effort: max` too (README §Authoring conventions #3).
 - **Prefer delegation to sub-agents** over inline main-session
   work when both options exist. Main-session tokens land on the
   "Weekly · all models" pool; sonnet sub-agents land on the

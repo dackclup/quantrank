@@ -88,7 +88,7 @@ frontend/                         # Next.js static site (read/write OK)
 tests/                            # pytest suite
 docs/                             # Academic methodology + research findings
 .claude/skills/                   # 46 loaded skills + phase-N/ planning docs
-.claude/agents/                   # 20 subagents — Tier 1 Core 5 (incl. stock-detail-auditor for per-stock JSON correctness) + Tier 2 Lifecycle 6 (incl. vercel-preview-auditor + expert-user-explorer for interactive end-to-end app usage) + Tier 3 Specialized 6 (incl. literature-searcher + financial-engineer for generative quant design) + Tier 4 Operations 3 (incl. ci-triage-engineer); Claude Code only — Copilot / Cursor / Devin do not auto-route to these
+.claude/agents/                   # 20 subagents (5 opus / 15 sonnet, all `effort: max`) — Tier 1 Core 5 (incl. stock-detail-auditor for per-stock JSON correctness) + Tier 2 Lifecycle 6 (incl. vercel-preview-auditor + expert-user-explorer for interactive end-to-end app usage) + Tier 3 Specialized 6 (incl. literature-searcher + financial-engineer for generative quant design) + Tier 4 Operations 3 (incl. ci-triage-engineer); Claude Code only — Copilot / Cursor / Devin do not auto-route to these
 .claude/hooks/                    # PostToolUse Bash hooks (log-bash.sh, schema-reminder.sh) + UserPromptSubmit hook (delegate-first.sh) wired by .claude/settings.json (Claude Code only — Copilot / Cursor / Devin ignore)
 .claude/worktrees/                # Harness-managed isolation dirs for Agent-tool subagents (Claude Code on the web only; per-session transient; gitignored 2026-05-22)
 .claude/settings.json             # Claude Code harness config (hooks, permissions). Per-user overrides go in .claude/settings.local.json (gitignored)
@@ -494,6 +494,17 @@ note cross-tool-specific points only:
   — your runtimes don't auto-route to subagent files, so no behavioral
   binding here. Doc + agent-infra only — no compute / schema / output
   change.
+- **All 20 subagents set to `effort: max` (2026-05-31)** — added the
+  `effort` frontmatter field (value `max`, top of the
+  low/medium/high/xhigh/max ladder) to every agent in `.claude/agents/`.
+  Orthogonal to `model`: `model` chooses opus-vs-sonnet, `effort` sets
+  reasoning depth and overrides the session's inherited level while the
+  subagent is active. Every agent is a correctness / judgment gate, so the
+  max reasoning headroom is justified; sonnet-at-max still drains the
+  separate "Weekly · Sonnet only" pool. README §Authoring conventions #3
+  updated so new agents inherit the convention. Cross-tool agents: this is
+  Claude-Code subagent frontmatter — Copilot / Cursor / Devin ignore it.
+  Agent-infra only — no compute / schema / output change.
 - **Phase 4 tasteful-motion in flight (this PR)** — app-wide entrance +
   micro-interaction animation, CSS/Tailwind only (no framer-motion).
   LedgerCraft stays flat; motion is the ENTRANCE, plays once per session.
