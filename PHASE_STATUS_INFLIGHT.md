@@ -4368,3 +4368,46 @@ AGENTS.md + this INFLIGHT entry only. The discipline is behavioral
 (applies to the main agent's own spawn/Bash choices), enforced by
 documentation, not a new hook (per user direction: "บันทึกเป็น discipline
 ถาวร", not "สอบสวน hook กัน zombie เพิ่ม").
+
+## De-dup the fair-price detail pair — drop FairPriceCard method table (frontend, this PR)
+
+**Scope**: frontend-only. The stock-detail page renders two adjacent
+fair-price cards that both read the SAME `detail.fair_price` object:
+`FairPriceBarChart` ("Fair price check", first) + `FairPriceCard`
+("Fair price ensemble", second). They showed the SAME six per-method
+dollar values twice — Card A in its narrative ("estimates $379.81, …")
+and Card B in a METHOD→VALUE table. User asked whether to merge them.
+
+**Verdict (frontend-design-reviewer): DON'T-MERGE, targeted de-dup**
+— unlike the RiskFlags+Manipulation merge (PR #337, same question →
+merged), these two cards answer DIFFERENT questions: Card A =
+INTERPRETATION (verdict banner + cheap/fair/pricey badges + plain-English
+narrative + tally), Card B = REFERENCE/metadata (Median/MoS/Max/BVPS stat
+grid + warning chips + methodology footnote). A full merge was rejected
+for three reasons: (1) the two cards carry DIFFERENT MoS formulas —
+Card B `mos_pct = (median−price)/median` vs fair value (official scoring
+field, ensemble.py) vs Card A `(median−price)/price` vs market price; for
+NVDA that's −175% (clamped "< −99%") vs −64%, which would look
+contradictory side-by-side; (2) a merged card would be ~900-1100px tall on
+mobile (longest on the page); (3) different reading-mode audiences.
+
+**Change**: removed the per-method METHOD→VALUE table (+ `MethodRow`,
+`METHOD_LABELS`, `METHOD_ORDER`, unused `FairPriceMethodResult` import)
+from `FairPriceCard`. Card B now = stat grid + warning chips + footnote
+(metadata only). Per-method dollars live in Card A exclusively; Card B's
+footnote cross-references "the Fair price check above". No data lost —
+Card A already renders every applicable method's estimate (DCF, the only
+skipped method on NVDA, has no value to show anyway).
+
+**Verification (real data, no fixture)**: `tsc --noEmit` clean · `next
+build` 506/506 · grep of generated NVDA HTML: Card B method table gone
+(`<table>`/`>Method</th>` absent — the remaining `>Value</th>` is
+`RawMetricsTable`'s "Metric|Value", a different table), Card B stat grid
+(Median/MoS/Max/BVPS) + 3 warning chips intact, Card A still shows all 5
+applicable per-method dollar values ($379.81/$77.59/$65.38/$243.67/$32.41),
+footnote cross-ref present.
+
+**No schema / Python / scoring / valuation / output-JSON change** — Card B
+className/JSX diff only (net deletion). `FairPriceMethodResult` stays
+exported from `types.ts` (still used by `FairPriceBarChart`); Card B just
+stops importing it. CLAUDE.md §Gotcha + AGENTS.md inventory + this entry.

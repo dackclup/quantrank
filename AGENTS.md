@@ -231,7 +231,9 @@ export function FairPriceCard(props) {  // no types
   MOS_BUCKETS / SECTOR_COLORS / scoreColorClasses /
   filingLagBadgeClasses), badge components (Recommendation /
   Score / MoS / LossChance), table containers (Ranking /
-  RawMetrics / FairPriceCard sub-table), cards (FairPriceBarChart /
+  RawMetrics — the former `FairPriceCard` method sub-table was removed
+  PR #339, per-method values live in `FairPriceBarChart` only), cards
+  (FairPriceBarChart / FairPriceCard /
   PillarRadarChart / Tier2EventCard / RiskSummaryCard /
   Disclaimer / FilterDrawer), and the two app pages (home + stock
   detail). New `<ThemeToggle layout="icon|row">` component renders
