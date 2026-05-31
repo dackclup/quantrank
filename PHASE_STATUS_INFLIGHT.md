@@ -4104,6 +4104,18 @@ date axis) and the headline change row renders no period word (only the
 `FairPriceBarChart` "today" copy remains, unrelated). `next build` → 502 routes;
 `tsc` clean; screenshot captured.
 
+**Correction (same PR) — the `(1Y)` the user wanted gone was the BIG SECTION
+HEADING, not the change-row label**: the prior commit `a974c824` removed the
+WRONG "(1Y)" — it stripped the `PERIOD_LABEL` ("past year") from the price-change
+ROW, but the user meant the big `<h2>Price (1y)</h2>` SECTION HEADING in
+`app/stock/[ticker]/page.tsx`. This commit (1) removes `(1y)` from that `h2` → just
+"Price", and (2) RESTORES the change-row `PERIOD_LABEL` map + `scrubbing` local +
+the conditional span + 2 comments that `a974c824` wrongly deleted. The
+selector-below-the-chart move from `a974c824` was CORRECT and is kept. Verified via
+Playwright on `/stock/AAPL`: `h2` text = "Price" (no `1y`), change row shows "past
+year" again, selector still below the date axis. `next build` → 502 routes; `tsc`
+clean; screenshot captured.
+
 PHASE_STATUS_INFLIGHT.md side-file satisfies §Conventions "ship with every PR"
 lockstep per PR #237 convention; AGENTS.md carries no §Gotchas mirror (per the
 PR #327 precedent — frontend gotchas live in CLAUDE.md, the canonical home).

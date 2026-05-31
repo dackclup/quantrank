@@ -125,8 +125,9 @@ export function PriceHistoryChart({
       return;
     }
     // Clear the scrub index from the OLD period — otherwise hoverIndex stays
-    // non-null on the new window and parks the crosshair at a clamped stale
-    // index until the next hover (frontend-design-reviewer 4b).
+    // non-null on the new window (scrubbing=true), which suppresses the period
+    // label ("past year") permanently after a switch + parks the crosshair at a
+    // clamped stale index until the next hover (frontend-design-reviewer 4b).
     setHoverIndex(null);
     setPlayDraw(true);
     setSweepKey((k) => k + 1);
@@ -707,7 +708,8 @@ export function PriceHistoryChart({
         // dragging, else the latest. During the animation the rAF overwrites
         // these spans imperatively (hoverIndex stays null), then the end-of-draw
         // re-render restores the latest. The change row is colored by direction;
-        // the "as of <date>" row always shows the crosshair's date.
+        // when scrubbing we show the date (PERIOD_LABEL is only meaningful for
+        // the full window = latest), else the period label.
         const lastIdx = chartData.length - 1;
         const di = hoverIndex ?? lastIdx;
         const hv = headlineAt(di) ?? {
@@ -717,6 +719,7 @@ export function PriceHistoryChart({
           positive: true,
           date: chartData[lastIdx].date,
         };
+        const scrubbing = hoverIndex !== null;
         const upCls = 'text-emerald-700 dark:text-emerald-300';
         const downCls = 'text-rose-600 dark:text-rose-400';
         return (
@@ -758,6 +761,15 @@ export function PriceHistoryChart({
                   {`(${hv.positive ? '+' : ''}${hv.pct.toFixed(2)}%)`}
                 </span>
                 <span ref={changeArrowRef}>{hv.positive ? '↑' : '↓'}</span>
+                {/* Hide the period label ("past year" etc.) WHILE scrubbing — at
+                    a scrubbed point the change is measured from the window start
+                    to THAT point, so "past year" would mislabel it. At rest /
+                    during the animation it correctly describes the full window. */}
+                {!scrubbing && (
+                  <span className="text-xs font-normal text-slate-500 dark:text-slate-400">
+                    {PERIOD_LABEL[period]}
+                  </span>
+                )}
               </div>
             )}
             <div className="text-sm tabular-nums text-slate-900 dark:text-slate-100">
@@ -1114,6 +1126,18 @@ export function fmtDateLabel(raw: string): string {
   if (!mon || Number.isNaN(day)) return raw;
   return `${mon} ${day}, ${year}`;
 }
+
+// Plain-English period labels for the change indicator. Matches the
+// Google Finance phrasing the user referenced as the desired design.
+const PERIOD_LABEL: Record<TimePeriod, string> = {
+  '1D': 'today',
+  '5D': 'past 5 days',
+  '1M': 'past month',
+  '6M': 'past 6 months',
+  YTD: 'year-to-date',
+  '1Y': 'past year',
+  '5Y': 'past 5 years',
+};
 
 // Pure helper: slice the (already-loaded, ascending-date) point
 // array down to the visible window for the selected period. 1D / 5D
