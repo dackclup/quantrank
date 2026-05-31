@@ -1,7 +1,6 @@
 import Link from 'next/link';
 
 import FairPriceCard from '@/components/FairPriceCard';
-import { CurrentPriceLine } from '@/components/CurrentPriceLine';
 import { FairPriceBarChart } from '@/components/FairPriceBarChart';
 import { ManipulationRiskCard } from '@/components/ManipulationRiskCard';
 import { RiskFlagsCard } from '@/components/RiskFlagsCard';
@@ -83,23 +82,29 @@ export default function StockDetailPage({
           rank badge + sector chip on top row, big mono ticker, serif
           company name, radial-gauge ScoreBadge + price + MoSCell on
           the right side. */}
-      <header className="rounded border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900 sm:p-6">
-        {/* Two-column only at lg+ (not sm). The expanded sidebar (240px)
-            consumes viewport width, so at md the hero's content area can be
-            < 470px — too narrow for the right stats block's ~360px intrinsic
-            width. Under the old `sm:flex-row` the left block (min-w-0) was
-            crushed to ~30–80px and its sector chip overflowed onto the score
-            gauge (2026-05-29 hero-overlap fix). Below XL the hero stacks
-            cleanly; the 2-col split waits for xl (1280) — NOT lg (1024) —
-            because at 1024 the sidebar leaves only ~666px of content width,
-            which crushes the left block to ~156px (responsive-density audit
-            2026-05-29). At xl the content is ~1040px → a balanced split, and
-            the left block is capped at `xl:max-w-2xl` so it doesn't spread
-            across 1000px+ on ultrawide. `justify-between` was a no-op (the
-            `flex-1` left child already consumes the free space) and is
-            dropped. The right block keeps min-w-0 as a shrink guard. */}
-        <div className="flex flex-col gap-5 xl:flex-row xl:items-start">
-          <div className="min-w-0 flex-1 xl:max-w-2xl">
+      <header className="hero-card rounded border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900 sm:p-6">
+        {/* Two-column split driven by a CSS CONTAINER QUERY, not a viewport
+            breakpoint (globals.css `.hero-card`/`.hero-split`/`.hero-left`/
+            `.hero-right` under `@container hero (min-width: 46rem)`). Why a
+            container query: the sidebar (expanded 240px / collapsed 64px /
+            mobile-drawer 0px) changes the hero's ACTUAL width independently of
+            the viewport, so a viewport `md:`/`lg:` gate left a dead band where
+            the sidebar was a desktop rail but the hero still stacked (the bug
+            the user reported 2026-05-31). The container query measures the
+            hero's real inline-size AFTER the sidebar takes its cut, so the
+            split fires exactly when there's room — and when space is squeezed
+            (narrow viewport OR expanded sidebar) it falls back to the SAME
+            vertical mobile-portrait stack, per the user's "if it's squeezed,
+            just drop to the mobile layout" direction. Default (no @container
+            support / below threshold) = the stacked `flex flex-col`; the query
+            flips it to a `justify-between` row, caps the left at `max-w-2xl`,
+            and right-aligns the stats block. Inner guards (`min-w-0`,
+            `flex-wrap`, `truncate`) keep a long name/chip wrapping instead of
+            overflowing onto the gauges in the tight band. ~46rem threshold
+            chosen so both columns clear their min-content (left name block +
+            the ~290px stats block) before the row engages. */}
+        <div className="hero-split flex flex-col gap-5">
+          <div className="hero-left min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2 text-xs">
               <span className="inline-flex items-center rounded-sm bg-slate-100 px-1.5 py-0.5 font-mono font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">
                 #{detail.rank}
@@ -123,25 +128,36 @@ export default function StockDetailPage({
             <p className="mt-1 font-slab text-2xl text-slate-700 dark:text-slate-300 sm:text-3xl">
               {detail.name}
             </p>
-            <CurrentPriceLine
-              ticker={detail.ticker}
-              fallbackPrice={detail.current_price}
-            />
           </div>
-          <div className="flex min-w-0 flex-col gap-3 xl:items-end">
-            {/* Top row: composite donut + MoS donut — paired because
-                both are summary statistics ("how good overall" / "how
-                cheap"). Both badges share the radial-gauge family
-                (ScoreBadge "lg" + MoSBadge); arc length = score/100
-                or |MoS|/100, color = sign-driven for MoS. `flex-wrap`
-                lets them sit side-by-side wherever there's room (≥ 375 px
-                cards) and stack vertically on the narrowest phones instead
-                of overflowing — under the prior `flex-nowrap`, an EIX-style
-                long MoS label ("UNDERVALUED") clipped the viewport edge at
-                320 px (2026-05-29 responsive audit M1). */}
-            <div className="flex flex-wrap items-center gap-3 sm:gap-5">
-              <ScoreBadge score={detail.composite_score} size="lg" ticker={detail.ticker} />
-              <MoSBadge mos={mosPct} />
+          <div className="hero-right flex min-w-0 flex-col gap-3">
+            {/* Top row: composite donut + MoS donut — paired summary stats
+                ("how good overall" / "how cheap"). Side-by-side on EVERY width
+                via `grid-cols-2` (2026-05-31 — user wants them sharing one row
+                on mobile portrait, not stacking). Both badges share the
+                radial-gauge family AND the 800ms gauge-sweep + count-up motion
+                (ScoreBadge "lg" + MoSBadge); arc length = score/100 or
+                |MoS|/100, color = sign-driven for MoS. MoS sweeps clockwise
+                like the score when ≥ 0 and mirrors to counter-clockwise when
+                < 0 (overvalued reads as "runs the other way"). The grid tracks
+                (1fr 1fr) bound each badge so its label wraps WITHIN its track
+                instead of pushing the row wider — this is what fixes the 320px
+                clip the old `flex-nowrap` had (EIX-style long "UNDERVALUED"
+                label) without falling back to the `flex-wrap` vertical stack.
+                The two donuts are pulled TOGETHER at the card centerline:
+                score is `justify-self-end` in the left 1fr track, MoS is
+                `justify-self-start` in the right — so they sit adjacent in the
+                middle (just the grid gap between them) with equal, symmetric
+                outer margins on both edges. The 1fr tracks still bound each
+                label's wrap so nothing clips at 320px; `w-full` keeps the
+                centerline = the card's at every width, overriding the parent's
+                `hero-right` end-alignment for this row (2026-05-31). */}
+            <div className="grid w-full grid-cols-2 items-center gap-3 sm:gap-5">
+              <div className="justify-self-end">
+                <ScoreBadge score={detail.composite_score} size="lg" ticker={detail.ticker} />
+              </div>
+              <div className="justify-self-start">
+                <MoSBadge mos={mosPct} />
+              </div>
             </div>
             {/* 3-column metric row. `justify-evenly` distributes
                 equal space BEFORE / BETWEEN / AFTER the three columns

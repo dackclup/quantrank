@@ -474,3 +474,42 @@ code {
   outline: 2px solid rgb(99 102 241);
   outline-offset: 2px;
 }
+
+/* Stock-detail hero — container-query split (2026-05-31).
+ *
+ * The hero header lays out as TWO columns (name block left · stats block
+ * top-right) when there's room, and falls back to the vertical mobile-portrait
+ * stack when space is squeezed. The decision is driven by the hero's OWN width
+ * (`container-type: inline-size` on `.hero-card`), NOT the viewport — because
+ * the left sidebar (expanded 240px / collapsed 64px / mobile-drawer 0) eats a
+ * viewport-variable slice, so a viewport `md:`/`lg:` gate left a dead band
+ * where the sidebar was already a desktop rail but the hero still stacked
+ * (user-reported bug 2026-05-31). A container query measures the real space the
+ * hero has AFTER the sidebar's cut, so the row engages exactly when both
+ * columns fit and otherwise drops to the mobile stack — matching the user's
+ * "if it's too squeezed, just use the mobile layout" direction.
+ *
+ * Default (the JSX `flex flex-col` classes) = stacked. The query only ADDS the
+ * row behaviour, so browsers without @container support (pre-2023) keep the
+ * safe stacked layout. Threshold 46rem ≈ left name block + the ~18rem stats
+ * block + gap/padding headroom; below it neither column is starved, so the
+ * stack is the right call. */
+.hero-card {
+  container: hero / inline-size;
+}
+@container hero (min-width: 46rem) {
+  .hero-split {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  /* Cap the left so the name block doesn't spread across an ultrawide card
+     (Tailwind max-w-2xl = 42rem). */
+  .hero-left {
+    max-width: 42rem;
+  }
+  /* Right-align the stats column's contents (mirrors the old md:items-end). */
+  .hero-right {
+    align-items: flex-end;
+  }
+}
