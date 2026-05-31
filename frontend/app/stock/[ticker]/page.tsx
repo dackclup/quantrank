@@ -1,7 +1,6 @@
 import Link from 'next/link';
 
 import FairPriceCard from '@/components/FairPriceCard';
-import { CurrentPriceLine } from '@/components/CurrentPriceLine';
 import { FairPriceBarChart } from '@/components/FairPriceBarChart';
 import { ManipulationRiskCard } from '@/components/ManipulationRiskCard';
 import { RiskFlagsCard } from '@/components/RiskFlagsCard';
@@ -123,10 +122,6 @@ export default function StockDetailPage({
             <p className="mt-1 font-slab text-2xl text-slate-700 dark:text-slate-300 sm:text-3xl">
               {detail.name}
             </p>
-            <CurrentPriceLine
-              ticker={detail.ticker}
-              fallbackPrice={detail.current_price}
-            />
           </div>
           <div className="flex min-w-0 flex-col gap-3 xl:items-end">
             {/* Top row: composite donut + MoS donut — paired summary stats
