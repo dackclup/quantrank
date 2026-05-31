@@ -1,5 +1,5 @@
 import { formatFairPrice, formatMosPct, mosColorClass } from '@/lib/format';
-import type { FairPriceEnsemble, FairPriceMethodResult } from '@/lib/types';
+import type { FairPriceEnsemble } from '@/lib/types';
 
 interface Props {
   ensemble: FairPriceEnsemble | null;
@@ -8,56 +8,27 @@ interface Props {
   tangibleBookValue: number | null;
 }
 
-const METHOD_LABELS: Record<keyof FairPriceEnsemble['methods'], string> = {
-  graham: 'Graham (defensive)',
-  multiples_pe: 'P/E multiples',
-  multiples_pb: 'P/B multiples',
-  multiples_ev_ebitda: 'EV/EBITDA',
-  rim: 'Residual Income',
-  dcf: 'DCF (2-stage)',
-};
-
-const METHOD_ORDER: Array<keyof FairPriceEnsemble['methods']> = [
-  'graham',
-  'multiples_pe',
-  'multiples_pb',
-  'multiples_ev_ebitda',
-  'rim',
-  'dcf',
-];
-
-function MethodRow({
-  label,
-  result,
-}: {
-  label: string;
-  result: FairPriceMethodResult;
-}) {
-  return (
-    <tr className="transition-colors duration-100 hover:bg-slate-100 dark:hover:bg-slate-800/50">
-      <td className="px-3 py-2 text-slate-700 dark:text-slate-300">
-        {label}
-        {result.tier_used && (
-          <span className="ml-2 text-xs text-slate-400 dark:text-slate-500">
-            (vs {result.tier_used.replace(/_/g, ' ')} peers)
-          </span>
-        )}
-      </td>
-      <td className="px-3 py-2 text-right tabular-nums">
-        {result.applicable && result.value !== null ? (
-          <span className="text-slate-900 dark:text-slate-100">{formatFairPrice(result.value)}</span>
-        ) : (
-          <span
-            className="italic text-slate-400 dark:text-slate-500"
-            title={result.reason ?? undefined}
-          >
-            skipped
-          </span>
-        )}
-      </td>
-    </tr>
-  );
-}
+// "Fair price ensemble" — the REFERENCE-DATA half of the fair-price pair.
+// The sibling `FairPriceBarChart` ("Fair price check", rendered directly
+// above this on the detail page) owns the INTERPRETATION layer: the
+// per-method dollar values + verdict badges + plain-English narrative.
+//
+// This card deliberately does NOT repeat the per-method dollar table
+// (removed 2026-05-31). Card A already renders every applicable method's
+// estimate ($379.81 / $77.59 / …) with a cheap/fair/pricey badge, so a
+// second METHOD→VALUE table here was pure on-screen duplication. What
+// stays is what Card A does NOT show and Card B uniquely owns:
+//   • the canonical ensemble outputs — Median / Margin-of-Safety / Max
+//     (ex-outliers) / Tangible BVPS
+//   • the defense-flag warning chips (extreme_*_estimate, beneish_high, …)
+//   • the methodology footnote
+// One important formula caveat the two cards keep DISTINCT by living in
+// separate cards: this card's "Margin of safety" is the schema
+// `mos_pct = (median − price)/median` (vs FAIR VALUE, the Damodaran/Graham
+// definition, the official scoring field); Card A's "−X% vs today" is
+// `(median − price)/price` (vs MARKET PRICE). Both are correct for their
+// own anchor; the card boundary does the labelling so the two %'s never
+// sit side-by-side looking contradictory.
 
 export default function FairPriceCard({
   ensemble,
@@ -97,7 +68,7 @@ export default function FairPriceCard({
       </h2>
 
       {/* Headline median + MoS */}
-      <div className="mb-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div>
           <dt className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
             Median fair
@@ -137,34 +108,13 @@ export default function FairPriceCard({
         </div>
       </div>
 
-      {/* Per-method breakdown */}
-      <div className="overflow-hidden rounded border border-slate-200 dark:border-slate-800">
-        <table className="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
-          <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-[0.14em] text-slate-600 dark:bg-slate-900/60 dark:text-slate-400">
-            <tr>
-              <th className="px-3 py-2 text-left">Method</th>
-              <th className="px-3 py-2 text-right">Value</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
-            {METHOD_ORDER.map((key) => (
-              <MethodRow
-                key={key}
-                label={METHOD_LABELS[key]}
-                result={ensemble.methods[key]}
-              />
-            ))}
-          </tbody>
-        </table>
-      </div>
-
       {/* Warnings — flex-wrap with gap-2 so adjacent chips have visible
           breathing room (user feedback 2026-05-14: pills were touching
           when multiple fired on the same stock). Outlined-light chip
           pattern matches SectorChip / RecommendationBadge — see
           `.claude/skills/frontend-design-system/SKILL.md` Rule 2. */}
       {warnings.length > 0 && (
-        <ul className="mt-3 flex flex-wrap gap-2 text-xs">
+        <ul className="mt-4 flex flex-wrap gap-2 text-xs">
           {warnings.map((w) => (
             <li
               key={w}
@@ -178,9 +128,10 @@ export default function FairPriceCard({
 
       <p className="mt-3 text-xs text-slate-400 dark:text-slate-500">
         Median of all applicable methods (current price ${currentPrice.toFixed(2)}).
-        Outliers above 5× or below 0.2× current price are excluded from the
-        max but kept in the median. See methodology for the 6-method ensemble
-        + 7 defenses.
+        Per-method estimates + each method&rsquo;s cheap/fair/pricey read are in
+        the Fair price check above. Outliers above 5× or below 0.2× current
+        price are excluded from the max but kept in the median. See methodology
+        for the 6-method ensemble + 7 defenses.
       </p>
     </section>
   );

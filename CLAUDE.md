@@ -769,6 +769,33 @@ whitespace / single-line fixes do not trigger.
     background Bash that still shows in the panel is harmless (no tokens) —
     the user can Stop it; only flag it if `ps` shows a real live PID.
 
+- **The fair-price detail pair is split INTERPRETATION vs REFERENCE on
+  purpose — `FairPriceCard` does NOT repeat the per-method dollar values**
+  (`frontend/components/FairPriceBarChart.tsx` + `FairPriceCard.tsx`, PR #339).
+  Two adjacent cards both read the SAME `detail.fair_price` object but answer
+  DIFFERENT questions, so they were de-duplicated rather than merged (unlike
+  the RiskFlags+Manipulation merge — those asked the SAME question). **Card A
+  `FairPriceBarChart` ("Fair price check", renders first)** owns the
+  INTERPRETATION layer: every applicable method's dollar estimate + a
+  cheap/fair/pricey/outlier verdict badge + plain-English narrative + the
+  tally ("Of N methods: X cheap …"). **Card B `FairPriceCard` ("Fair price
+  ensemble", renders second)** owns the REFERENCE/metadata layer: Median /
+  MoS / Max-ex-outliers / Tangible-BVPS stat grid + the defense-flag warning
+  chips + the methodology footnote. The former METHOD→VALUE table in Card B
+  was REMOVED (PR #339) — it restated the exact dollar values Card A already
+  shows per method, so it was pure on-screen duplication. **Do NOT re-add a
+  per-method value table to Card B** — per-method dollars live in Card A only;
+  Card B's footnote cross-references "the Fair price check above". **The two
+  cards also carry DIFFERENT MoS formulas by design and the card boundary is
+  what keeps them from looking contradictory**: Card B "Margin of safety" =
+  schema `mos_pct = (median − price) / median` (vs FAIR VALUE — the
+  Damodaran/Graham definition, the official scoring field, `ensemble.py`);
+  Card A "−X% vs today" = `(median − price) / price` (vs MARKET PRICE,
+  recomputed inline in `FairPriceBarChart.tsx`). For NVDA that's −175% (Card B,
+  clamped "< −99%") vs −64% (Card A) — both correct for their own anchor. A
+  future "merge these two cards" idea must FIRST resolve that two-formula
+  clash (the reason they stay separate cards, not one).
+
 ## Phase status
 
 Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged
