@@ -634,6 +634,42 @@ whitespace / single-line fixes do not trigger.
   `@media (prefers-reduced-motion: reduce)` guard in `globals.css` still
   neutralizes every one of these.
 
+- **The stock-detail hero splits on a CSS CONTAINER QUERY, not a viewport
+  breakpoint** (`frontend/app/stock/[ticker]/page.tsx` + `frontend/app/globals.css`
+  `.hero-card` / `@container hero (min-width: 46rem)`, PR #332). The hero lays
+  out name-block-left / stats-block-top-right when there's room and falls back
+  to the vertical mobile-portrait stack when squeezed — but the decision is
+  driven by the hero's OWN inline-size (`container: hero / inline-size` on the
+  `<header>`), NOT `md:`/`lg:` viewport prefixes. **Why it must stay a container
+  query**: the left `Sidebar` eats a viewport-VARIABLE slice (expanded 240px /
+  collapsed 64px / mobile-drawer 0px), so at one fixed viewport the hero's real
+  width differs by ~180px depending on sidebar state. A viewport `md:`/`lg:`
+  gate therefore left a DEAD BAND (768–1023px) where the sidebar was already a
+  desktop rail but the hero still stacked — the bug the user hit 2026-05-31.
+  The container query measures the space the hero actually has AFTER the sidebar
+  takes its cut, so the row engages exactly when both columns fit. Consequences
+  for future edits: (a) the JSX default classes are the STACKED `flex flex-col`
+  (`hero-split` / `hero-left` / `hero-right`); the `@container` rule only ADDS
+  the row behavior, so pre-2023 browsers without `@container` degrade to the
+  safe stack — do NOT "simplify" the hooks back to `md:flex-row`; (b) the 46rem
+  threshold ≈ left name block + the ~18rem stats block + gap headroom — retune
+  it against BOTH sidebar states, not just one viewport; (c) `@container` is
+  raw CSS in `globals.css` (no `@tailwindcss/container-queries` plugin / no new
+  dep — Tailwind compiles the raw rule through fine, verified in the built CSS).
+- **MoS gauge arc direction is SIGN-AWARE** (`frontend/components/MoSBadge.tsx`,
+  PR #332). The Margin-of-Safety donut shares `ScoreGauge`'s sweep + count-up
+  motion, but unlike the score (0–100, always clockwise) MoS is signed:
+  **MoS ≥ 0 sweeps clockwise** (same as the score gauge — upside reads like a
+  high score); **MoS < 0 sweeps counter-clockwise** (overvalued visibly "runs
+  the other way"). The reversal is a `-scale-x-100` on the gauge CONTAINER when
+  `mos < 0` — it mirrors the rendered ring CW→CCW robustly, with no fragile
+  `rotate ∘ scale` composition against the SVG's internal `-rotate-90`; the
+  centered number `<span>` carries its OWN `-scale-x-100` so it un-mirrors back
+  to readable (scaleX(-1)×scaleX(-1)=identity). 329/502 of the current universe
+  is negative MoS, so the CCW path is the COMMON case, not an edge — keep both
+  mirrors in lockstep if you touch either (drop the span's mirror and every
+  negative-MoS number renders backwards). Accent stays emerald (≥0) / rose (<0).
+
 ## Phase status
 
 Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged

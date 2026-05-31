@@ -269,6 +269,19 @@ export function FairPriceCard(props) {  // no types
   `text-[Npx]` (fixed px won't scale); never add a second `font-size` on
   `html`/`:root`/`body` (compounds the scale). Full rationale in CLAUDE.md
   §Gotchas.
+- **Stock-detail hero splits on a CSS container query, not a viewport
+  breakpoint** (`frontend/app/stock/[ticker]/page.tsx` + `globals.css`
+  `.hero-card` / `@container hero (min-width: 46rem)`, PR #332): the sidebar
+  eats a viewport-variable width slice, so the hero's two-column (name-left /
+  stats-top-right) vs stacked decision keys off the hero's OWN inline-size, not
+  `md:`/`lg:`. JSX default = the stacked `flex-col`; the `@container` rule only
+  ADDS the row. Don't refactor back to viewport prefixes. Raw CSS, no
+  container-query plugin/dep. Full rationale in CLAUDE.md §Gotchas.
+- **MoS gauge arc is sign-aware** (`frontend/components/MoSBadge.tsx`, PR #332):
+  MoS ≥ 0 sweeps clockwise (like the score gauge), MoS < 0 sweeps
+  counter-clockwise via `-scale-x-100` on the gauge container, with the number
+  span mirrored back to stay readable. Keep both `-scale-x-100` in lockstep.
+  Full rationale in CLAUDE.md §Gotchas.
 
 ## Git workflow
 
