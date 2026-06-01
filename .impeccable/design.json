@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-01T06:30:00Z",
+  "title": "Design System: QuantRank",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Forest Green",
+        "canonical": "#15803D",
+        "tonalRamp": ["oklch(25% 0.07 150)", "oklch(33% 0.10 150)", "oklch(41% 0.12 150)", "oklch(50% 0.13 150)", "oklch(58% 0.13 150)", "oklch(68% 0.11 150)", "oklch(80% 0.07 150)", "oklch(94% 0.03 150)"]
+      },
+      "secondary": {
+        "role": "secondary",
+        "displayName": "Steel",
+        "canonical": "#64748B",
+        "tonalRamp": ["oklch(25% 0.02 255)", "oklch(33% 0.025 255)", "oklch(42% 0.03 255)", "oklch(52% 0.035 255)", "oklch(60% 0.035 255)", "oklch(71% 0.03 255)", "oklch(84% 0.02 255)", "oklch(96% 0.008 255)"]
+      },
+      "tertiary": {
+        "role": "tertiary",
+        "displayName": "Amber",
+        "canonical": "#B45309",
+        "tonalRamp": ["oklch(28% 0.07 65)", "oklch(38% 0.10 65)", "oklch(48% 0.12 65)", "oklch(58% 0.13 65)", "oklch(67% 0.13 65)", "oklch(77% 0.11 65)", "oklch(88% 0.07 65)", "oklch(96% 0.03 65)"]
+      },
+      "positive": {
+        "role": "semantic-positive",
+        "displayName": "Sage",
+        "canonical": "oklch(50% 0.09 155)",
+        "tonalRamp": ["oklch(28% 0.06 155)", "oklch(36% 0.08 155)", "oklch(44% 0.09 155)", "oklch(50% 0.09 155)", "oklch(58% 0.09 155)", "oklch(68% 0.07 155)", "oklch(82% 0.05 155)", "oklch(95% 0.02 155)"]
+      },
+      "negative": {
+        "role": "semantic-negative",
+        "displayName": "Dusty Rose",
+        "canonical": "oklch(48% 0.09 18)",
+        "tonalRamp": ["oklch(28% 0.07 18)", "oklch(36% 0.08 18)", "oklch(44% 0.09 18)", "oklch(48% 0.09 18)", "oklch(57% 0.09 18)", "oklch(68% 0.08 18)", "oklch(82% 0.05 18)", "oklch(95% 0.02 18)"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#0F172A",
+        "tonalRamp": ["oklch(21% 0.04 255)", "oklch(28% 0.04 255)", "oklch(37% 0.035 255)", "oklch(45% 0.03 255)", "oklch(55% 0.03 255)", "oklch(70% 0.025 255)", "oklch(85% 0.015 255)", "oklch(98% 0.003 255)"]
+      },
+      "canvas": {
+        "role": "neutral",
+        "displayName": "Canvas",
+        "canonical": "#FAFAFA",
+        "tonalRamp": ["oklch(21% 0.005 255)", "oklch(30% 0.005 255)", "oklch(45% 0.005 255)", "oklch(60% 0.004 255)", "oklch(75% 0.004 255)", "oklch(88% 0.003 255)", "oklch(97% 0.002 255)", "oklch(99% 0.001 255)"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "The one hero stat (e.g. manipulation index). Roboto Slab, the editorial-finance headline voice." },
+      "headline": { "displayName": "Headline", "purpose": "Page H1 and large badges. Roboto Slab." },
+      "title": { "displayName": "Title", "purpose": "Card titles and headline panels. IBM Plex Sans 600." },
+      "body": { "displayName": "Body", "purpose": "Default body and table cells. IBM Plex Sans, prose capped 65-75ch." },
+      "label": { "displayName": "Label", "purpose": "Section headers + table thead. Uppercase, 0.14em tracking — the spreadsheet-column register." },
+      "mono": { "displayName": "Numeric", "purpose": "Tickers, prices, ratios. JetBrains Mono, always right-aligned with tabular-nums." }
+    },
+    "shadows": [
+      { "name": "subtle", "value": "0 1px 2px 0 rgb(15 23 42 / 0.04), 0 1px 1px -1px rgb(15 23 42 / 0.02)", "purpose": "Table-row hover, badge surface, method-list ul." },
+      { "name": "medium", "value": "0 1px 3px 0 rgb(15 23 42 / 0.06), 0 1px 2px -1px rgb(15 23 42 / 0.04)", "purpose": "Card resting state — RankingTable, RawMetricsTable, PillarRadarChart." },
+      { "name": "large", "value": "0 4px 8px -2px rgb(15 23 42 / 0.08), 0 2px 4px -2px rgb(15 23 42 / 0.04)", "purpose": "Section emphasis — the per-stock hero card only." },
+      { "name": "overlay", "value": "0 12px 24px -6px rgb(15 23 42 / 0.12), 0 4px 8px -4px rgb(15 23 42 / 0.06)", "purpose": "Modal / drawer / popover — the FilterDrawer. The only shadow above the data grid." }
+    ],
+    "motion": [
+      { "name": "rise-in", "value": "320ms ease-in-out (fade + 8px upward settle)", "purpose": "Workhorse entrance for cards, staggered table rows, flag list items." },
+      { "name": "gauge-sweep", "value": "800ms cubic-bezier(.22,1,.36,1) (stroke-dashoffset + count-up)", "purpose": "Signature: the composite-score radial gauge, the one longer beat." },
+      { "name": "hover-lift", "value": "160ms ease-out (translateY(-1px))", "purpose": "Table row / card hover, paired with the slate hover background." },
+      { "name": "ease-curve", "value": "ease-in-out", "purpose": "App-wide single timing curve for every discrete move; shimmer is the one linear carve-out." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Forest-green CTA — the one place solid fill is allowed. FilterDrawer submit, wordmark.",
+      "html": "<button class=\"ds-btn-primary\">View 412 stocks</button>",
+      "css": ".ds-btn-primary { background: #15803D; color: #FFFFFF; font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; font-weight: 600; padding: 8px 16px; border: none; border-radius: 2px; cursor: pointer; transition: background 160ms ease-in-out, transform 160ms ease-in-out; } .ds-btn-primary:hover { background: #166534; transform: translateY(-1px); } .ds-btn-primary:focus-visible { outline: 2px solid #15803D; outline-offset: 2px; }"
+    },
+    {
+      "name": "Recommendation Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "The canonical outlined-light chip: tinted bg + inset ring + status dot. Never solid-fill. Shown here in the 'lean bullish' emerald tone.",
+      "html": "<span class=\"ds-chip\"><span class=\"ds-chip-dot\"></span>Lean bullish</span>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 6px; background: #ECFDF5; color: #047857; font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.75rem; padding: 2px 8px; border-radius: 2px; box-shadow: inset 0 0 0 1px #A7F3D0; } .ds-chip-dot { width: 6px; height: 6px; border-radius: 9999px; background: #10B981; }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Flat surface; a 1px border and a hairline shadow carry depth. 4px radius — never softer on a data surface.",
+      "html": "<section class=\"ds-card\"><h2 class=\"ds-card-title\">Fair price check</h2><p class=\"ds-card-body\">Of 6 methods: 4 cheap, 1 fair, 1 outlier.</p></section>",
+      "css": ".ds-card { background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 4px; padding: 16px; box-shadow: 0 1px 3px 0 rgb(15 23 42 / 0.06), 0 1px 2px -1px rgb(15 23 42 / 0.04); } .ds-card-title { font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #475569; margin: 0 0 12px; } .ds-card-body { font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; color: #0F172A; margin: 0; }"
+    },
+    {
+      "name": "Data Table Row",
+      "kind": "custom",
+      "refersTo": "table-cell",
+      "description": "Alternating-row table with a right-aligned monospaced numeric column — the ledger core.",
+      "html": "<table class=\"ds-table\"><thead><tr><th class=\"ds-th\">Metric</th><th class=\"ds-th ds-num\">Value</th></tr></thead><tbody><tr class=\"ds-tr\"><td class=\"ds-td\">Market cap</td><td class=\"ds-td ds-num\">$3.42T</td></tr><tr class=\"ds-tr ds-alt\"><td class=\"ds-td\">P/E (TTM)</td><td class=\"ds-td ds-num\">28.4</td></tr></tbody></table>",
+      "css": ".ds-table { width: 100%; border-collapse: collapse; font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; } .ds-th { padding: 8px 12px; text-align: left; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #475569; background: #F8FAFC; border-bottom: 1px solid #E2E8F0; } .ds-td { padding: 8px 12px; color: #0F172A; border-bottom: 1px solid #F1F5F9; } .ds-tr.ds-alt { background: #F8FAFC; } .ds-tr:hover { background: #F1F5F9; } .ds-num { text-align: right; font-family: 'JetBrains Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Sidebar Nav Item",
+      "kind": "nav",
+      "refersTo": "navigation",
+      "description": "Slate-only left-rail item — no accent, so the data surfaces own the palette. Active state is a tonal fill, not a color.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-navitem ds-active\">Rankings</a><a class=\"ds-navitem\">Methodology</a></nav>",
+      "css": ".ds-nav { display: flex; flex-direction: column; gap: 2px; width: 240px; } .ds-navitem { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 2px; font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; color: #475569; text-decoration: none; transition: background 160ms ease-in-out, color 160ms ease-in-out; } .ds-navitem:hover { background: #F8FAFC; color: #0F172A; } .ds-navitem.ds-active { background: #F1F5F9; color: #0F172A; font-weight: 500; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Numbers you can read like a ledger",
+    "overview": "QuantRank looks and behaves like a well-typeset financial broadsheet, not a software dashboard. The register sits deliberately between a Bloomberg terminal and a printed annual report: dense enough to compare hundreds of stocks at a glance, calm enough that a careful individual investor never feels shouted at. Surfaces are flat; depth comes from crisp 1px borders, not drop shadows. Every number rides a monospaced, right-aligned column so a reader can scan it the way they'd scan a ledger. The personality is Precise, Honest, Editorial — the visual language must never overclaim or celebrate, because the product shows its own limits beside every number.",
+    "keyCharacteristics": [
+      "Flat surfaces; borders carry depth, shadows are reserved for overlays.",
+      "Monospaced, right-aligned numerics in every data column (tabular-nums).",
+      "One outlined-light chip pattern across the entire app — never solid-fill.",
+      "A four-family restrained palette (forest / steel / amber / soft semantic).",
+      "Calm by default: motion is an entrance, never a permanent flourish.",
+      "Light and dark are first-class; every surface ships a paired dark: variant."
+    ],
+    "rules": [
+      { "name": "The Soft-Band Rule", "body": "Positive/negative state rides the OKLCH soft band (hue 155 / hue 18, chroma <= 0.10). The 'bright fresh green' and 'alarm red' intensities are forbidden for value state.", "section": "colors" },
+      { "name": "The Tailwind-Class Rule", "body": "Reach every color through a Tailwind utility class, never an inline hex. Inline hex bypasses chip-family discipline and is invisible to the purge.", "section": "colors" },
+      { "name": "The Tabular-Nums Rule", "body": "Every numeric column gets tabular-nums so digits right-align across rows. Non-negotiable.", "section": "typography" },
+      { "name": "The Spreadsheet-Header Rule", "body": "The font-semibold uppercase tracking-[0.14em] text-slate-600 triple is reserved for top-level section h2s and table theads. The weight delta between header and data creates the spreadsheet feel.", "section": "typography" },
+      { "name": "The Borders-As-Depth Rule", "body": "Surfaces are flat. A border, not a shadow, is the default depth cue. Only the Overlay tier appears above the data grid.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do reach colors through Tailwind utility classes, never an inline hex.",
+      "Do put tabular-nums on every numeric column so digits right-align.",
+      "Do use the one outlined-light chip pattern (tinted bg + ring + dot) for every chip family.",
+      "Do ship a paired dark: variant on every surface; never a light-only card.",
+      "Do keep radii <= 4px on data surfaces (2px chips/buttons, 4px cards) and reserve rounded-full for status dots.",
+      "Do give every animation a prefers-reduced-motion off-switch and render real values at SSR.",
+      "Do let borders carry depth; reserve shadow for overlays."
+    ],
+    "donts": [
+      "Don't build a gamified retail-trading feel — no confetti, no dopamine green/red, no celebratory big-number hero, no 'buy now' urgency.",
+      "Don't drift toward a generic SaaS-cream dashboard — no cream/sand/beige canvas, no icon + heading + lorem card grids, no uppercase tracked eyebrow above every section.",
+      "Don't write hype AI-marketing — no 'supercharge / unleash / next-generation / seamless', no gradient text, no decorative glassmorphism.",
+      "Don't ship Bloomberg-terminal overload — dense is fine, an undifferentiated wall of numbers a non-professional can't parse is not.",
+      "Don't use a solid fill for a chip — chips are outlined-light only; the one solid-fill exception is the primary CTA button.",
+      "Don't use text-green-500 / text-red-600 for value state — use the OKLCH sage/rose soft band.",
+      "Don't exceed a 4px radius on cards/inputs, and don't use a colored border-left/right > 1px as a stripe accent."
+    ]
+  }
+}
