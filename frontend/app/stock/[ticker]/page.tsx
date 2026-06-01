@@ -11,7 +11,7 @@ import RawMetricsTable from '@/components/RawMetricsTable';
 import { RiskSummaryCard } from '@/components/RiskSummaryCard';
 import { ScoreBadge } from '@/components/ScoreBadge';
 import { RecommendationBadge } from '@/components/RecommendationBadge';
-import { SectorChip } from '@/components/SectorChip';
+import { ListingChips } from '@/components/ListingChips';
 import { StockLogo } from '@/components/StockLogo';
 import { Tier2EventCard } from '@/components/Tier2EventCard';
 import { getStockDetail, listTickersForStaticBuild } from '@/lib/data';
@@ -138,10 +138,7 @@ export default function StockDetailPage({
               <span className="inline-flex items-center rounded-sm bg-slate-100 px-1.5 py-0.5 font-mono font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">
                 #{detail.rank}
               </span>
-              <SectorChip sector={detail.sector} />
-              {detail.industry && (
-                <span className="truncate text-slate-400 dark:text-slate-500">· {detail.industry}</span>
-              )}
+              <ListingChips country={detail.country} exchange={detail.exchange} />
             </div>
             <h1 className="mt-2 flex flex-wrap items-center gap-3">
               <StockLogo ticker={detail.ticker} size={48} />
