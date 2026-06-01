@@ -447,6 +447,15 @@ list lives in [`CLAUDE.md`](CLAUDE.md) §Phase status. Schema-version
 history table is in [`SKILL.md`](SKILL.md). This file's role is to
 note cross-tool-specific points only:
 
+- **In flight — PR-A1 (schema `0.10.11 → 0.10.12-phase4.6`)**: additive
+  listing-metadata fields `StockDetail.exchange` / `.country` +
+  `Metadata.exchange_coverage_pct`, ingested from yfinance
+  `fast_info.exchange` via new `cross_source.exchange_name` /
+  `country_for_exchange` / `fetch_yfinance_exchange`. Display-only (feeds the
+  hero country/exchange chips in a later PR-B); main.py field-population is
+  PR-A2. Cross-tool agents: a `StockDetail` consumed at 0.10.12+ carries
+  `exchange` + `country` (both `str | None`).
+
 - Production-verified run: cron **Run #71** (`368dccd9`, 14m 32s
   warm-cache, 2026-05-28 08:44 UTC) — useful for non-Claude agents
   validating local compute output against a known-good baseline.

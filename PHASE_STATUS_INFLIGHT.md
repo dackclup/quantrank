@@ -4618,3 +4618,49 @@ space-y-3); `line-clamp-1` confirmed compiled into the CSS bundle (Tailwind
 3.4.19 built-in, no plugin). **No schema / Python / scoring / valuation /
 output-JSON change** — grid-template classes only, no color/token/font change.
 CLAUDE.md §Gotcha + AGENTS.md inventory note + this entry.
+
+## PR-A1 — country + exchange ingest (compute + schema, this PR)
+
+**Scope**: compute + schema-triple. First of a 2-PR sequence (a `/grill-me`
+session locked the plan) to replace the hero's sector+industry chips (next to
+the #1 rank chip) with a **country tag (🇺🇸 US) + exchange tag (NYSE/NASDAQ)**,
+each with a logo. The 5 locked decisions: (1) ingest country + exchange for
+real; (2) remove BOTH sector + industry chips from the #1 row (sector still
+shows in the SECTOR tile below; industry stays in raw data); (3) real SVG flag
++ exchange logo; (4) flag real (public domain) + exchange a GENERIC icon
+(avoid the NYSE/NASDAQ trademark); (5) split into PR-A (ingest) + PR-B (chips).
+
+**PR-A1 (this PR) — the compute + schema half**:
+- `compute/ingest/cross_source.py`: new `exchange_name(code)` (maps yfinance
+  `fast_info.exchange` codes NMS/NGM/NCM→NASDAQ, NYQ→NYSE, ASE→"NYSE
+  American", PCX/NyseArca→"NYSE Arca", BATS→"Cboe BZX"; unknown passthrough) +
+  `country_for_exchange(code)` ("US" for all known US venues, else None) +
+  `fetch_yfinance_exchange(ticker)` (cache-first via the SAME
+  `yfinance_info/<ticker>.json` file as market-cap — exchange merged in,
+  market_cap preserved; tenacity-retried `_yf_fast_exchange`; QR_SKIP_CROSS_SOURCE
+  honored; graceful-degradation → None on failure).
+- Schema triple (MINOR bump `0.10.11 → 0.10.12-phase4.6`): `StockDetail.exchange:
+  str | None` + `StockDetail.country: str | None` + `Metadata.exchange_coverage_pct:
+  float | None` (Rule-18 observability) — added in lockstep across `schemas.py`
+  + `types.ts` + `schema-snapshot.json` (snapshot regen'd programmatically:
+  fields inserted in alphabetical position, value-key order type/required/default
+  preserved, diff = +15/−0, trailing-newline matched; CI schema guard is the
+  final verifier since pydantic isn't installed in the sandbox). `config.py`
+  SCHEMA_VERSION bumped; `test_config.py` pin + SKILL.md schema-table row updated.
+- Tests: `test-engineer` wrote `tests/test_ingest/test_cross_source_exchange.py`
+  (pure-helper cases + cache round-trip/merge + QR_SKIP path + 1 @network drift).
+
+**Observability-before-wiring**: the schema fields ship FIRST. **main.py wiring
+(populate exchange/country per ticker + compute exchange_coverage_pct) is
+PR-A2** — deferred from this PR because the orchestrator is 2000+ lines and the
+session was long; doing it under fresh focus avoids a careless miss. Until PR-A2
+lands the fields are None-default (valid — they're `| None`), and PR-B (chips)
+waits for ≥ 1 cron confirming coverage. **No ranking / scoring / valuation /
+defense-layer change** — display metadata only.
+
+**Verification**: `ruff check` clean; the pure helpers `exchange_name` +
+`country_for_exchange` unit-verified standalone (NMS→NASDAQ/US, NYQ→NYSE/US,
+unknown→passthrough/None, None/""→None/None all pass); snapshot diff confirmed
++15/−0 with correct sort + value-key order. `pytest` + `schema_check` run on CI
+(sandbox lacks pydantic/tenacity/yfinance). CLAUDE.md + AGENTS.md + SKILL.md +
+test_config.py + this entry move in lockstep.

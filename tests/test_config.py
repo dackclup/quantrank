@@ -26,8 +26,15 @@ def test_schema_version_is_phase4_6():
     (issue #130) for the ``INSIDER_SELL_CLUSTER_WEIGHT`` 5.0 → 7.0
     promotion alongside ``form4_rule10b5_one_excluded_count``.
     Supersedes Issue #67 follow-up's 0.10.10-phase4.6 bump.
+
+    PR-A1 (0.10.12-phase4.6) — MINOR bump for the additive listing-metadata
+    fields: ``StockDetail.exchange`` + ``StockDetail.country`` (yfinance
+    ``fast_info.exchange`` → display name + derived country) and the Rule-18
+    observability field ``Metadata.exchange_coverage_pct``. Display-only;
+    frontend wiring (hero country/exchange chips) lands in PR-B after ≥ 1 cron
+    confirms coverage (observability-before-wiring).
     Locks the version against accidental revert."""
-    assert config.SCHEMA_VERSION == "0.10.11-phase4.6"
+    assert config.SCHEMA_VERSION == "0.10.12-phase4.6"
 
 
 def test_multi_class_overcount_allowlist_membership():

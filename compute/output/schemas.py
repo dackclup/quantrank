@@ -291,6 +291,14 @@ class Metadata(BaseModel):
     # half-open intervals `[lower, upper)` (exact-floor = next bucket).
     cross_source_disagreement_count: int | None = None
     cross_source_delta_histogram: dict[str, int] | None = None
+    # Listing-metadata observability (0.10.12-phase4.6, Rule 18) —
+    # ``exchange_coverage_pct`` = % of the universe whose `StockDetail.exchange`
+    # resolved to a non-null display name (the rest had a cold-cache miss or an
+    # unknown venue code). Ships BEFORE the hero country/exchange chips read the
+    # field (observability-before-wiring) so the frontend wiring waits for ≥ 1
+    # cron confirming coverage is high. `country` rides the same fetch, so its
+    # coverage tracks `exchange` 1:1 — no separate counter needed.
+    exchange_coverage_pct: float | None = None
     # Issue #246 PR1 retrofit (0.10.3-phase4.5e) — Rule 18 observability for
     # the `_fetch_shares_from_per_filing_xbrl` fallback trigger extended in
     # PR #253. ``shares_fallback_triggered_count`` = total tickers where the
@@ -476,6 +484,15 @@ class StockDetail(BaseModel):
     name: str
     sector: str
     industry: str | None = None
+    # Listing metadata (0.10.12-phase4.6) — `exchange` is the human display
+    # name mapped from the yfinance `fast_info.exchange` code (NMS→NASDAQ,
+    # NYQ→NYSE, …) by `cross_source.exchange_name`; `country` is derived from
+    # the exchange ("US" for the whole S&P 500 universe today) by
+    # `cross_source.country_for_exchange`. Both `| None` — a ticker whose
+    # exchange code didn't resolve (cold-cache miss / unknown venue) renders
+    # no listing tag. Display-only; feeds the hero country/exchange chips.
+    exchange: str | None = None
+    country: str | None = None
     market_cap: float | None = None
     current_price: float
     rank: int
