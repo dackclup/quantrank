@@ -66,7 +66,7 @@ export function PriceTimePeriodSelector({ value, onChange }: Props) {
         // (PR 4f post-spot-check — user wanted "ปุ่ม 1D ถึง 5Y ปรับให้
         // ยาวพอดีกับ ความยาวของกราฟราคา").
         const base =
-          'flex flex-1 items-center justify-center rounded-sm ring-1 ring-inset ' +
+          'flex min-h-[44px] flex-1 items-center justify-center rounded-sm ring-1 ring-inset ' +
           'px-2 py-1 text-xs font-medium transition-colors';
         const stateClasses = !enabled
           ? 'bg-slate-50 text-slate-400 ring-slate-200 cursor-not-allowed dark:bg-slate-900 dark:text-slate-500 dark:ring-slate-700'
