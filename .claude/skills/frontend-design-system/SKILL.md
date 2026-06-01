@@ -55,10 +55,10 @@ for hierarchy.
 ```tsx
 // Outlined-light chip — same shape across sector / recommendation /
 // score-tier / MoS-bucket / future exchange / loss-chance.
-<span className="inline-flex items-center gap-1.5 rounded-full
+<span className="inline-flex items-center gap-1.5 rounded-sm
                  ring-1 ring-inset px-2 py-0.5 text-xs font-medium
                  bg-emerald-50 text-emerald-800 ring-emerald-300
-                 dark:bg-emerald-900 dark:text-emerald-100 dark:ring-emerald-700">
+                 dark:bg-emerald-900/30 dark:text-emerald-100 dark:ring-emerald-800">
   <span className="inline-block h-1.5 w-1.5 rounded-full
                    bg-emerald-700 dark:bg-emerald-300" aria-hidden="true" />
   Strong Buy

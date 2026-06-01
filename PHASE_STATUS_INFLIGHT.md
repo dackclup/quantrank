@@ -4839,7 +4839,18 @@ spots fixed coherently: (1) Rule 4 heading + body rewritten to "Paired light +
 now (class-gated, not media-gated)" note + the original PR #70 lesson preserved
 in a collapsed `<details>` History block; (2) the "Tone palette (light-mode
 only)" caption → "paired light + `dark:`"; (3) the "Why no `dark:` variants"
-note → "Why paired `dark:` variants". DOC-ONLY (one skill file) — no compute /
-schema / scoring / valuation / frontend-code change. Separate from PR #352 (the
-UI polish) by user direction to keep that PR focused. Verified: `docs-reviewer`
-pass. Branch `claude/frontend-skill-rule4-darkmode`.
+note → "Why paired `dark:` variants". The `docs-reviewer` pass then found the
+SAME retired "no `dark:`" logic copy-pasted in two OTHER homes that now
+contradicted the corrected Rule 4, so this PR un-stales them in lockstep too:
+(4) top-level `SKILL.md` Rule 17 item 1 ("Never add `dark:` variants" → "Ship a
+paired `dark:` variant", class-strategy explanation + PR #70 retired-history
+pointer); (5) `frontend/components/LossChanceBadge.tsx` block comment (the "NO
+`dark:` variants … see Rules 2+4" comment that already contradicted its own
+`dark:`-carrying BANDS data) → paired-variant prose; (6) the Rule 2 canonical
+code example's stale values (`rounded-full` → `rounded-sm` per PR #233,
+`dark:bg-emerald-900` → `/30`, `dark:ring-emerald-700` → `-800`). Scope: docs
+(`SKILL.md` Rule 17 + the `frontend-design-system` skill) + 1 frontend code
+COMMENT (LossChanceBadge — no behavior/build change) + this side-file — no
+compute / schema / scoring / valuation / frontend-LOGIC change. Separate from
+PR #352 (the UI polish) by user direction to keep that PR focused. Verified:
+`docs-reviewer` DOCS-CLEAN; CI green. Branch `claude/frontend-skill-rule4-darkmode`.
