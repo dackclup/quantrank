@@ -136,7 +136,7 @@ export function PillarRadarChart({
             >
               <div className="min-w-0">
                 <div className="text-sm font-medium text-slate-800 dark:text-slate-200">{r.label}</div>
-                <div className="line-clamp-1 text-[0.625rem] text-slate-400 dark:text-slate-500 sm:truncate">
+                <div className="line-clamp-1 text-[0.625rem] text-slate-500 dark:text-slate-400 sm:truncate">
                   {PILLAR_DESCRIPTIONS[r.label]}
                 </div>
               </div>
@@ -178,7 +178,7 @@ export function PillarRadarChart({
           inside align with the bars above). */}
       <div className="mt-2 grid grid-cols-[1fr_auto] items-center gap-x-3 sm:grid-cols-[8rem_1fr_4.5rem] sm:gap-3">
         <div className="hidden sm:block" />
-        <div className="relative col-span-2 h-4 text-[0.625rem] text-slate-400 dark:text-slate-500 sm:col-span-1">
+        <div className="relative col-span-2 h-4 text-[0.625rem] text-slate-500 dark:text-slate-400 sm:col-span-1">
           <span className="absolute left-0">0</span>
           <span className="absolute left-[30%] -translate-x-1/2">30</span>
           <span className="absolute left-[50%] -translate-x-1/2">50</span>
@@ -220,7 +220,7 @@ export function PillarRadarChart({
         </span>
       </div>
 
-      <p className="mt-3 text-xs text-slate-400 dark:text-slate-500">Pillars not shown: {footer.join('; ')}.</p>
+      <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">Pillars not shown: {footer.join('; ')}.</p>
     </section>
   );
 }

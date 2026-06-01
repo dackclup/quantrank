@@ -223,7 +223,7 @@ export function Tier2EventCard({
         ))}
       </ul>
       {showDateFooter && (
-        <p className="mt-3 text-xs text-slate-400 dark:text-slate-500">
+        <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
           Latest 8-K: {latest_8k_filing_date}
         </p>
       )}

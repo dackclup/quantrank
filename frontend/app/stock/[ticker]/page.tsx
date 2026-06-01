@@ -239,7 +239,7 @@ export default function StockDetailPage({
             />
           </>
         ) : (
-          <div className="flex h-64 items-center justify-center rounded border border-slate-200 bg-white text-sm text-slate-400 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-500">
+          <div className="flex h-64 items-center justify-center rounded border border-slate-200 bg-white text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
             No price history available
           </div>
         )}
@@ -289,7 +289,7 @@ export default function StockDetailPage({
           Raw fundamentals (SEC EDGAR)
         </h2>
         <RawMetricsTable metrics={detail.raw_metrics} />
-        <p className="mt-2 text-xs text-slate-400 dark:text-slate-500">
+        <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
           TTM = trailing twelve months. Balance sheet items are point-in-time
           (latest filing).
         </p>
@@ -336,7 +336,7 @@ export default function StockDetailPage({
         </dl>
       </section>
 
-      <p className="max-w-3xl text-xs text-slate-400 dark:text-slate-500">
+      <p className="max-w-3xl text-xs text-slate-500 dark:text-slate-400">
         Composite is the 8-pillar weighted score over quality, value, growth,
         momentum, health, profitability, technical, and risk. Sentiment + ML
         pillars are reserved for a later phase; until then their weight

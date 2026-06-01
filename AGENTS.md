@@ -327,6 +327,14 @@ export function FairPriceCard(props) {  // no types
   `Tier2EventCard` / `RiskSummaryCard` `<h2>` takes a rose/amber severity tone so
   warning cards outweigh the neutral data-section eyebrows. A new control / modal
   / warning card must follow suit. Full rationale in CLAUDE.md §Gotchas.
+- **Secondary / muted text = `text-slate-500 dark:text-slate-400`, never the
+  inverted `text-slate-400 dark:text-slate-500`** (2026-06-01): the inverted
+  token fails WCAG AA in BOTH modes (~2.6:1 light / ~3.75:1 dark); the standard
+  clears both (~4.8:1 / ~7:1). slate-* is OUTSIDE the globals.css soft-override
+  allowlist → check contrast on the raw hex, not an OKLCH token. Normalized
+  app-wide (16 components); disabled controls + decorative `aria-hidden` icons
+  stay faint by design. Same pass added `min-h-[44px] lg:min-h-0` to the
+  FilterDrawer selection chips. Full rationale in CLAUDE.md §Gotchas.
 
 ## Git workflow
 

@@ -227,7 +227,7 @@ export function FairPriceBarChart({
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="shrink-0 text-xl text-slate-400 dark:text-slate-500"
+                className="shrink-0 text-xl text-slate-500 dark:text-slate-400"
                 aria-hidden="true"
               >
                 <polyline points="9 18 15 12 9 6" />
@@ -283,7 +283,7 @@ export function FairPriceBarChart({
           </span>
         )}
         {tally.outlier > 0 && (
-          <span className="text-slate-400 dark:text-slate-500">
+          <span className="text-slate-500 dark:text-slate-400">
             ({tally.outlier} outlier{tally.outlier > 1 ? 's' : ''} excluded)
           </span>
         )}
@@ -358,7 +358,7 @@ export function FairPriceBarChart({
         })}
       </ul>
 
-      <p className="mt-3 text-[0.6875rem] text-slate-400 dark:text-slate-500">
+      <p className="mt-3 text-[0.6875rem] text-slate-500 dark:text-slate-400">
         <span className="font-medium text-slate-500 dark:text-slate-400">How to read this:</span>{' '}
         &ldquo;Cheap&rdquo; = method&apos;s fair price is at least 20% above today.
         &ldquo;Fair&rdquo; = within ±10–20%. &ldquo;Pricey&rdquo; = at least 10% below

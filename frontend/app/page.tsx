@@ -18,7 +18,7 @@ export default function HomePage() {
           {' · '}
           Schema <span className="font-mono">{metadata.version}</span>
         </p>
-        <p className="text-xs text-slate-400 dark:text-slate-500">
+        <p className="text-xs text-slate-500 dark:text-slate-400">
           Composite is the 8-pillar weighted score (quality, value, growth,
           momentum, health, profitability, technical, risk).{' '}
           <span className="font-mono">sentiment</span> and{' '}

@@ -89,7 +89,7 @@ export function MoSBadge({ mos }: { mos: number | null | undefined }): JSX.Eleme
           <span className="font-mono text-lg font-semibold tabular-nums text-slate-300 dark:text-slate-600">
             —
           </span>
-          <span className="text-[0.625rem] uppercase tracking-wider text-slate-400 dark:text-slate-500">
+          <span className="text-[0.625rem] uppercase tracking-wider text-slate-500 dark:text-slate-400">
             Unavailable
           </span>
         </div>

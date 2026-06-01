@@ -252,7 +252,7 @@ export function RiskSummaryCard({
                     <span className="font-medium text-slate-900 dark:text-slate-100">
                       {meta?.label ?? flag}
                     </span>
-                    <span className="ml-1.5 font-mono text-xs text-slate-400 dark:text-slate-500">
+                    <span className="ml-1.5 font-mono text-xs text-slate-500 dark:text-slate-400">
                       [{flag}]
                     </span>
                     {meta?.detail ? (
@@ -265,7 +265,7 @@ export function RiskSummaryCard({
               );
             })}
           </ul>
-          <p className="mt-3 text-xs text-slate-400 dark:text-slate-500">
+          <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
             These flags keep the raw composite rank (project Rule 16) but
             forfeit the <span className="font-mono">entered_top5</span> badge.
             Two of them — <span className="font-mono">altman_distress</span> and{' '}
@@ -307,7 +307,7 @@ export function RiskSummaryCard({
 
           <div className={`text-3xl font-semibold tabular-nums ${tone.text}`}>
             {manipulationIndex!.toFixed(0)}
-            <span className="text-base font-normal text-slate-400 dark:text-slate-500">
+            <span className="text-base font-normal text-slate-500 dark:text-slate-400">
               /100
             </span>
           </div>
@@ -341,7 +341,7 @@ export function RiskSummaryCard({
                     />
                     <span>
                       {MANIPULATION_FLAG_LABELS[flag] ?? flag}
-                      <span className="ml-1.5 font-mono text-xs text-slate-400 dark:text-slate-500">
+                      <span className="ml-1.5 font-mono text-xs text-slate-500 dark:text-slate-400">
                         [{flag}]
                       </span>
                     </span>
@@ -352,13 +352,13 @@ export function RiskSummaryCard({
           ) : hasGates ? (
             // Every fired component is already shown as a rank gate above —
             // tell the user so the index number doesn't look unexplained.
-            <p className="mt-2 text-xs text-slate-400 dark:text-slate-500">
+            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
               Driven entirely by the rank-gate flag(s) above — no additional
               annotate-only components fired.
             </p>
           ) : null}
 
-          <p className="mt-3 text-xs text-slate-400 dark:text-slate-500">
+          <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
             Rolls up Phase 4.5 earnings-manipulation defenses (Sloan ·
             Beneish · Dechow · REM · restatement · late-filing · earnings-
             quality time-series) into a single 0-100 risk index. The soft

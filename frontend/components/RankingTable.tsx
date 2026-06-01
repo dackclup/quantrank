@@ -291,7 +291,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
         }}
       >
         {label}
-        <span className="ml-1 inline-block text-slate-400 dark:text-slate-500" aria-hidden="true">
+        <span className="ml-1 inline-block text-slate-500 dark:text-slate-400" aria-hidden="true">
           {active ? (
             <svg
               width="10"
@@ -352,7 +352,8 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
             className="min-h-[44px] w-full rounded-sm border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:border-slate-500 dark:focus:ring-slate-500"
           />
           <svg
-            className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-slate-500"
+            aria-hidden="true"
+            className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500 dark:text-slate-400"
             viewBox="0 0 20 20"
             fill="none"
             stroke="currentColor"
@@ -366,7 +367,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
           <span className="font-mono font-semibold tabular-nums text-slate-700 dark:text-slate-300">
             {sorted.length.toLocaleString()}
           </span>
-          <span className="text-slate-400 dark:text-slate-500"> / {data.length.toLocaleString()} stocks</span>
+          <span className="text-slate-500 dark:text-slate-400"> / {data.length.toLocaleString()} stocks</span>
         </div>
       </div>
 
@@ -665,7 +666,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                           </span>
                           <span className="font-mono text-base font-semibold tabular-nums text-slate-300 dark:text-slate-600">—</span>
                         </div>
-                        <span className="text-[0.6875rem] text-slate-400 dark:text-slate-500">Unavailable</span>
+                        <span className="text-[0.6875rem] text-slate-500 dark:text-slate-400">Unavailable</span>
                       </>
                     )}
                   </div>

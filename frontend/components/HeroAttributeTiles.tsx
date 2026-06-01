@@ -80,7 +80,7 @@ function Tile({
           <span className="block text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
             {caption}
           </span>
-          <span className="mt-0.5 block text-xs text-slate-400 dark:text-slate-500">
+          <span className="mt-0.5 block text-xs text-slate-500 dark:text-slate-400">
             Coming soon
           </span>
         </span>

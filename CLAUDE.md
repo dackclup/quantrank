@@ -1012,6 +1012,30 @@ whitespace / single-line fixes do not trigger.
   `text-red-700` remap wins over `dark:text-red-300`; the period selector already
   uses the correct `role="radio"`+`aria-checked`, not `aria-pressed`.)
 
+- **Secondary / muted text uses `text-slate-500 dark:text-slate-400` — NOT the
+  inverted `text-slate-400 dark:text-slate-500`** (`$impeccable critique`
+  follow-up 2026-06-01). The inverted token fails WCAG AA in BOTH modes
+  (slate-400 `#94a3b8` on white ≈ 2.6:1 · slate-500 `#64748b` on slate-900
+  `#0f172a` ≈ 3.75:1); the standard token clears both (≈ 4.8:1 light / ≈ 7:1
+  dark). slate-* classes are NOT in the `globals.css` soft-override allowlist
+  (entry above), so they render RAW Tailwind hex — check contrast against the
+  raw value, not an OKLCH token. The inverted token was normalized app-wide
+  across 16 components (pillar descriptions / footnotes / secondary counts /
+  placeholders / "Coming soon" reserved tiles / chart-empty states).
+  **Striped-table exception**: secondary text on `even:bg-slate-100` rows
+  (`RawMetricsTable`) uses `text-slate-600` — `slate-500` is only 4.34:1 on the
+  slate-100 stripe (vs 4.76:1 on white), so striped tables need one shade
+  darker. Correctly LEFT faint (do NOT "re-fix"): DISABLED controls
+  (`PriceTimePeriodSelector`
+  disabled period buttons — WCAG 1.4.3 inactive exemption) and decorative
+  `aria-hidden` icons. Same PR lifted the `FilterDrawer` filter-SELECTION chips
+  to `min-h-[44px] lg:min-h-0` (44px tap target on touch viewports, compact
+  ~24px on desktop) — the in-drawer chips were the one touch-target the
+  2026-06-01 `min-h` sweep above missed. **Audit caveat**: a browser-tool "dark
+  contrast" finding can mis-name the token (an agent reported `slate-400` @
+  4.2:1; the real failing token was `slate-500` and the fail spanned BOTH
+  modes) — verify the actual class + surface before fixing.
+
 ## Phase status
 
 Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged
