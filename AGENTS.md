@@ -342,6 +342,14 @@ export function FairPriceCard(props) {  // no types
   different register from the decision eyebrows). A new provenance section goes
   INSIDE it; a new decision signal goes above the fair-price pair. Don't
   re-flatten into a 12th top-level section. Full rationale in CLAUDE.md §Gotchas.
+- **Ranking-table filter state lives in 3 synced places: React state +
+  sessionStorage + URL query** (`RankingTable.tsx` + `lib/filter-storage.ts` +
+  `lib/filter-url.ts`, 2026-06-01): a filtered view is now shareable /
+  bookmarkable / reload-safe (`q`/`sector`/`score`/`tier`/`mos`/`rec` params).
+  URL wins on mount, else sessionStorage; persist writes both. `filter-url.ts`
+  uses `history.replaceState` (not `useSearchParams` → no Suspense on the static
+  export). A NEW filter dimension must be added to all three (FilterSnapshot, the
+  URL param scheme, the RankingTable effects). Full rationale in CLAUDE.md §Gotchas.
 
 ## Git workflow
 

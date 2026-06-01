@@ -4983,3 +4983,32 @@ the gate (the persona verdict on closed-vs-open default is the deciding input �
 flip to open-by-default if it reads as hiding too much). CLAUDE.md §Gotchas +
 AGENTS.md mirror record the decision-vs-reference-zone IA. No compute / schema /
 scoring / valuation change. Branch `claude/sharp-newton-8pj6p`.
+
+---
+
+### `$impeccable harden` P2 — URL-serialized filter state (this PR)
+
+Critique P2 (Nielsen H7 "Flexibility & efficiency" = 2/4): a filtered ranking
+view (sector + tier + recommendation + score range + search) couldn't be
+bookmarked, shared, or survive a reload — only a within-tab sessionStorage
+snapshot existed. Fix: new `frontend/lib/filter-url.ts` mirrors the filter state
+into the URL query (`q`/`sector`/`score=min-max`/`tier`/`mos`/`rec`, omitted at
+default) via `history.replaceState` (NOT `useSearchParams` → no `<Suspense>` on
+the Next 14 static export; `replaceState` not `pushState` → no back-stack
+pollution). `RankingTable.tsx` mount effect now prefers the URL
+(`parseFiltersFromUrl() ?? loadFilterSnapshot()`) and the persist effect
+dual-writes sessionStorage + URL; `filter-storage.ts` docstring updated (the two
+now coexist). Fail-soft (SSR guard + try/catch-swallow).
+
+The OTHER listed P2 (price-chart loading skeleton) was a **FALSE POSITIVE** —
+`PriceHistoryChart.tsx:554` already renders a shimmer skeleton with `aria-busy` +
+`aria-live` + `sr-only`; the critique's Assessment A mis-read the code. No work
+needed there.
+
+Verified: `tsc` clean + `next build` 506 routes + no lint/Suspense warning;
+`expert-user-explorer` (browser round-trip proof: apply → URL updates → reload →
+restored → share → clear) + `frontend-design-reviewer` (code review) at the gate.
+No JS test runner in the project (frontend verified via tsc + build + browser
+review, same as `filter-storage.ts`). CLAUDE.md §Gotchas + AGENTS.md mirror record
+the 3-place filter-state contract. No compute / schema / scoring / valuation
+change. Branch `claude/sharp-newton-8pj6p`.

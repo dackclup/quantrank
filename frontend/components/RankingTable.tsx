@@ -18,7 +18,9 @@ import {
   clearFilterSnapshot,
   loadFilterSnapshot,
   saveFilterSnapshot,
+  type FilterSnapshot,
 } from '@/lib/filter-storage';
+import { parseFiltersFromUrl, writeFiltersToUrl } from '@/lib/filter-url';
 import { formatMosPct } from '@/lib/format';
 import type { Recommendation, StockSummary } from '@/lib/types';
 import {
@@ -65,9 +67,13 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
   // (the load effect runs after that initial render).
   const hydratedRef = useRef(false);
 
-  // Rehydrate from sessionStorage on mount (client-only). Runs once.
+  // Rehydrate filters on mount (client-only, runs once). The URL query
+  // string wins when present (a shared / bookmarked / reloaded filtered
+  // view is an explicit intent); otherwise fall back to the within-tab
+  // sessionStorage snapshot (return-from-detail navigation). A clean `/`
+  // URL parses to `null`, so it never clobbers a restored snapshot.
   useEffect(() => {
-    const saved = loadFilterSnapshot();
+    const saved = parseFiltersFromUrl() ?? loadFilterSnapshot();
     if (saved.search) setSearch(saved.search);
     if (saved.sectors.length > 0) setSectorSet(new Set(saved.sectors));
     if (saved.scoreRange[0] !== 0 || saved.scoreRange[1] !== 100) {
@@ -130,16 +136,21 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
   // Persist filter state on every change (post-hydration). Skipping the
   // initial render via `hydratedRef` avoids clobbering a saved snapshot
   // with empty defaults before the load effect has a chance to read it.
+  // Mirror to BOTH sessionStorage (within-tab return nav) AND the URL
+  // (shareable / bookmarkable view) so the two stay in sync; clearing the
+  // last filter writes the bare pathname (no `?`).
   useEffect(() => {
     if (!hydratedRef.current) return;
-    saveFilterSnapshot({
+    const snapshot: FilterSnapshot = {
       search,
       sectors: Array.from(sectorSet),
       scoreRange,
       tiers: Array.from(tierSet),
       mos: Array.from(mosSet),
       recommendations: Array.from(recommendationSet),
-    });
+    };
+    saveFilterSnapshot(snapshot);
+    writeFiltersToUrl(snapshot);
   }, [search, sectorSet, scoreRange, tierSet, mosSet, recommendationSet]);
 
   const toggleSector = (s: string) =>

@@ -1059,6 +1059,27 @@ whitespace / single-line fixes do not trigger.
   frames the composite). Inner section `<h2>`s are kept (the summary is a styled
   span, not a heading) so the document outline stays intact.
 
+- **Ranking-table filter state lives in THREE synced places — React state ·
+  sessionStorage · URL query** (`frontend/components/RankingTable.tsx` +
+  `lib/filter-storage.ts` + `lib/filter-url.ts`, `$impeccable harden` P2 /
+  Nielsen H7, 2026-06-01). A filtered view (sector + tier + recommendation +
+  score range + search) is now shareable / bookmarkable / reload-safe via the
+  URL query (`q` · `sector` · `score=min-max` · `tier` · `mos` · `rec`, each
+  omitted at its default). On mount the **URL wins** (an explicit shared link),
+  else it falls back to the within-tab sessionStorage snapshot; the persist
+  effect writes BOTH. **`filter-url.ts` uses `history.replaceState` +
+  `window.location.search`, NOT `useSearchParams`** — deliberate: the Next 14
+  static export would force a `<Suspense>` boundary around `useSearchParams`,
+  and `replaceState` (not `pushState`) keeps filter toggles out of the browser
+  back-stack. **Adding a NEW filter dimension means touching all three:**
+  `FilterSnapshot` in `filter-storage.ts` (+ its validators), the param scheme
+  in `filter-url.ts` (parse + write), and the mount/persist effects + drawer in
+  `RankingTable.tsx` — miss one and the dimension silently won't round-trip.
+  Unknown `sector`/`tier`/`mos` URL values are harmless (the predicates match
+  nothing); `rec` is validated against the known set so the typed
+  `Recommendation[]` holds. Both helpers fail-soft (SSR guard +
+  try/catch-swallow) — filter state is convenience, never a throw.
+
 ## Phase status
 
 Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged
