@@ -647,10 +647,10 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                         // Match LossChanceBadge band rubric (band thresholds
                         // mirror frontend/components/LossChanceBadge.tsx).
                         const band =
-                          pct < 25 ? { tone: 'text-emerald-700 dark:text-emerald-300', dot: 'bg-emerald-700 dark:bg-emerald-400', label: 'Low' } :
-                          pct < 40 ? { tone: 'text-emerald-700 dark:text-emerald-300', dot: 'bg-emerald-500 dark:bg-emerald-400', label: 'Moderate-low' } :
-                          pct < 60 ? { tone: 'text-slate-700 dark:text-slate-300', dot: 'bg-slate-500 dark:bg-slate-400', label: 'Neutral' } :
-                          pct < 80 ? { tone: 'text-red-700 dark:text-red-300',     dot: 'bg-red-500 dark:bg-red-400',     label: 'Moderate-high' } :
+                          rounded < 25 ? { tone: 'text-emerald-700 dark:text-emerald-300', dot: 'bg-emerald-700 dark:bg-emerald-400', label: 'Low' } :
+                          rounded < 40 ? { tone: 'text-emerald-700 dark:text-emerald-300', dot: 'bg-emerald-500 dark:bg-emerald-400', label: 'Moderate-low' } :
+                          rounded < 60 ? { tone: 'text-slate-700 dark:text-slate-300', dot: 'bg-slate-500 dark:bg-slate-400', label: 'Neutral' } :
+                          rounded < 80 ? { tone: 'text-red-700 dark:text-red-300',     dot: 'bg-red-500 dark:bg-red-400',     label: 'Moderate-high' } :
                                      { tone: 'text-red-700 dark:text-red-300',     dot: 'bg-red-600 dark:bg-red-400',     label: 'High' };
                         return (
                           <>
@@ -690,8 +690,19 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
       </ul>
 
       {pageRows.length === 0 && (
-        <div className="rounded border border-slate-200 bg-white p-6 text-center text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
-          No stocks match the current filters.
+        <div className="rounded border border-slate-200 bg-white p-6 text-center dark:border-slate-800 dark:bg-slate-900">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            No stocks match the current filters.
+          </p>
+          {activeCount > 0 && (
+            <button
+              type="button"
+              onClick={clearAll}
+              className="mt-3 inline-flex min-h-[44px] items-center rounded-sm border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors duration-150 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+            >
+              Clear all filters
+            </button>
+          )}
         </div>
       )}
 

@@ -28,17 +28,10 @@
  * `Recommendation[]` holds.
  */
 
-import type { FilterSnapshot } from '@/lib/filter-storage';
+import { VALID_RECOMMENDATIONS, type FilterSnapshot } from '@/lib/filter-storage';
 import type { Recommendation } from '@/lib/types';
 
 const PARAM_KEYS = ['q', 'sector', 'score', 'tier', 'mos', 'rec'] as const;
-
-const VALID_RECOMMENDATIONS: ReadonlySet<Recommendation> = new Set([
-  'bullish',
-  'lean_bullish',
-  'neutral',
-  'cautious',
-]);
 
 function csv(raw: string | null): string[] {
   if (!raw) return [];

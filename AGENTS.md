@@ -350,6 +350,12 @@ export function FairPriceCard(props) {  // no types
   uses `history.replaceState` (not `useSearchParams` → no Suspense on the static
   export). A NEW filter dimension must be added to all three (FilterSnapshot, the
   URL param scheme, the RankingTable effects). Full rationale in CLAUDE.md §Gotchas.
+- **Loss-chance band/tone derives from `Math.round(pct)`, not the raw float**
+  (`LossChanceBadge` + `RankingTable` mobile card + detail-hero `lossChanceTone`,
+  2026-06-01): the display rounds (`HeroMetric` prints `${Math.round(v)}%`), so
+  banding off the raw value showed "60% · Neutral" for a 59.7. The 5-band rubric
+  is duplicated across all three — keep them in lockstep. Full rationale in
+  CLAUDE.md §Gotchas.
 
 ## Git workflow
 
