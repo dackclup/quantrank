@@ -12,13 +12,16 @@
  * tab restores filters on remount. New tabs / fresh sessions start
  * clean (different from `localStorage` which would persist across days).
  *
- * Why sessionStorage over URL query params:
- *   - The active filter dimensions would clutter the URL noticeably
- *   - Next.js 14 static export requires `<Suspense>` boundaries around
- *     `useSearchParams()` — extra boilerplate we don't need for this
- *     localized fix
- *   - Future filter chips (exchange-pill — see Phase 4 PLANs) can opt
- *     into URL params for shareability; the two approaches coexist
+ * sessionStorage and URL query params now COEXIST (the URL path lives in
+ * `filter-url.ts`, added for critique P2 — H7 shareability):
+ *   - sessionStorage covers within-tab return navigation (back from a
+ *     detail page) and never clutters the URL on a plain visit.
+ *   - URL params make a filtered view shareable / bookmarkable / reload-
+ *     safe. On mount RankingTable prefers the URL (an explicit shared link)
+ *     and falls back to this snapshot; the persist effect writes both.
+ *   - `filter-url.ts` uses `history.replaceState` (not `useSearchParams`),
+ *     so no `<Suspense>` boundary is needed under the Next.js 14 static
+ *     export.
  *
  * Schema versioning: the key includes a version suffix. v2 (PR 4d
  * 2026-05-14) added `recommendations: Recommendation[]`. Bump again
