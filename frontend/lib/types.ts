@@ -197,6 +197,10 @@ export type Metadata = {
   // compute/output/schemas.py::Metadata for the bucket-boundary table.
   cross_source_disagreement_count?: number | null;
   cross_source_delta_histogram?: Record<string, number> | null;
+  // Listing-metadata observability (0.10.12-phase4.6) — % of universe whose
+  // StockDetail.exchange resolved to a non-null display name. Ships before the
+  // hero country/exchange chips read the field (observability-before-wiring).
+  exchange_coverage_pct?: number | null;
   // Issue #246 PR2a (0.10.3-phase4.5e) — Rule 18 retrofit for the
   // `_fetch_shares_from_per_filing_xbrl` fallback trigger extended in
   // PR #253. triggered_count = total fired (None-primary + too_low-
@@ -420,6 +424,12 @@ export type StockDetail = {
   name: string;
   sector: string;
   industry: string | null;
+  // Listing metadata (0.10.12-phase4.6) — `exchange` = display name mapped
+  // from yfinance fast_info.exchange (NASDAQ / NYSE / …); `country` = derived
+  // from the exchange ("US" for the S&P 500 universe). Both null when the
+  // exchange code didn't resolve. Display-only — feeds the hero listing chips.
+  exchange: string | null;
+  country: string | null;
   market_cap: number | null;
   current_price: number;
   rank: number;

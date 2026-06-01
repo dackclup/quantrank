@@ -1026,6 +1026,17 @@ site-2 rename `valuation_output_anomalous`).
 - (3 issues filed + ALL closed same day: #287 PR A merged via #297 [PR B FORM4 revert remaining] · #288 closed via #292 + #298 · #289 closed via #293 + #302)
 
 **In flight** (not yet merged on `main`):
+- **PR-A1 — country + exchange ingest (compute + schema, this PR)** — schema
+  MINOR bump `0.10.11 → 0.10.12-phase4.6`: 3 additive fields
+  `StockDetail.exchange: str | None` + `StockDetail.country: str | None` +
+  `Metadata.exchange_coverage_pct: float | None` (Rule-18). New
+  `cross_source.exchange_name` / `country_for_exchange` / `fetch_yfinance_exchange`
+  (yfinance `fast_info.exchange` code → display name, cache-merged into the
+  existing `yfinance_info/` file). DISPLAY-ONLY — the hero country/exchange
+  chips (replacing sector+industry on the #1 row) land in **PR-B** after ≥ 1
+  cron; **main.py wiring is PR-A2** (deferred — populate the fields + compute
+  coverage). Full entry in [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md).
+  No ranking/scoring/valuation/defense change.
 - **20th subagent `financial-engineer` + doc-drain housekeeping (this PR)** —
   adds the generative quant-design seat (Tier 3 Specialized · opus ·
   read-only; the design counterpart to `methodology-scientist`'s

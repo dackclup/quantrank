@@ -78,6 +78,45 @@ logger = logging.getLogger(__name__)
 
 _CACHE_TTL_SECONDS = config.YFINANCE_INFO_CACHE_MAX_AGE_HOURS * 3600
 
+# yfinance `fast_info.exchange` returns a terse MIC-ish code, not the
+# human exchange name. Map the codes that appear on the S&P 500 universe to
+# a display name. Unknown codes pass through verbatim (forward-safe — better
+# to show the raw code than to drop the field). Sourced from the Yahoo
+# Finance exchange-code set: NMS/NGM/NCM = the three NASDAQ tiers (Global
+# Select / Global Market / Capital Market), NYQ = NYSE, PCX = NYSE Arca,
+# ASE = NYSE American, BATS = Cboe BZX.
+_EXCHANGE_NAME_BY_CODE: dict[str, str] = {
+    "NMS": "NASDAQ",
+    "NGM": "NASDAQ",
+    "NCM": "NASDAQ",
+    "NyseArca": "NYSE Arca",
+    "PCX": "NYSE Arca",
+    "NYQ": "NYSE",
+    "ASE": "NYSE American",
+    "BATS": "Cboe BZX",
+}
+
+# Every venue above is a US listing. The S&P 500 is a US-large-cap index, so
+# country is "US" for the whole universe today; deriving it from the exchange
+# (rather than hardcoding) keeps the field correct if a non-US ADR's primary
+# venue ever surfaces a foreign code — that code would simply not be in this
+# set and country would fall back to None (display layer treats None as "—").
+_US_EXCHANGE_CODES: frozenset[str] = frozenset(_EXCHANGE_NAME_BY_CODE)
+
+
+def exchange_name(code: str | None) -> str | None:
+    """Map a yfinance exchange code to a display name (passthrough on unknown)."""
+    if not code:
+        return None
+    return _EXCHANGE_NAME_BY_CODE.get(code, code)
+
+
+def country_for_exchange(code: str | None) -> str | None:
+    """Derive ISO-ish country tag from the exchange code. US-only universe today."""
+    if not code:
+        return None
+    return "US" if code in _US_EXCHANGE_CODES else None
+
 
 def _cache_path(ticker: str) -> Path:
     config.YFINANCE_INFO_CACHE_DIR.mkdir(parents=True, exist_ok=True)
@@ -196,6 +235,111 @@ def fetch_yfinance_market_cap(ticker: str) -> float | None:
 
     _cache_write(ticker, market_cap)
     return market_cap
+
+
+def _exchange_cache_read(ticker: str) -> str | None:
+    """Return cached raw exchange code, or None on miss / expired / corrupt.
+
+    Reuses the same `yfinance_info/<ticker>.json` file as the market-cap
+    cache (one Ticker round-trip populates both). Backward-compatible: a
+    pre-existing cache entry written before this field existed simply has no
+    `exchange` key and returns None (a later fetch re-populates it).
+    """
+    path = _cache_path(ticker)
+    if not path.exists():
+        return None
+    try:
+        age_seconds = time.time() - path.stat().st_mtime
+        if age_seconds > _CACHE_TTL_SECONDS:
+            return None
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as e:
+        logger.warning("yfinance_info exchange cache read failed for %s: %s", ticker, e)
+        return None
+    val = payload.get("exchange")
+    return val if isinstance(val, str) and val else None
+
+
+def _exchange_cache_write(ticker: str, exchange_code: str) -> None:
+    """Merge the exchange code into the existing cache file (preserves market_cap)."""
+    path = _cache_path(ticker)
+    payload: dict[str, object] = {}
+    if path.exists():
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            if not isinstance(payload, dict):
+                payload = {}
+        except (OSError, json.JSONDecodeError):
+            payload = {}
+    payload["exchange"] = exchange_code
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    try:
+        with tmp.open("w", encoding="utf-8") as f:
+            json.dump(payload, f)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp, path)
+    except OSError as e:
+        logger.warning("yfinance_info exchange cache write failed for %s: %s", ticker, e)
+        if tmp.exists():
+            try:
+                tmp.unlink()
+            except OSError:
+                pass
+
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(min=1, max=10), reraise=True)
+def _yf_fast_exchange(ticker: str) -> str | None:
+    """Pull the raw exchange code from yfinance `fast_info`. Raises on net error.
+
+    Uses `fast_info` (the lightweight scraper) rather than `.info` — exchange
+    is one of its native attributes and it avoids the heavier `.info` payload.
+    """
+    fi = yf.Ticker(ticker).fast_info
+    code = fi.get("exchange") if hasattr(fi, "get") else getattr(fi, "exchange", None)
+    return code if isinstance(code, str) and code else None
+
+
+def fetch_yfinance_exchange(ticker: str) -> str | None:
+    """Return the raw yfinance exchange code for ``ticker`` (display-mapped by
+    `exchange_name`), or ``None``.
+
+    Same graceful-degradation contract as `fetch_yfinance_market_cap`: 24h
+    disk cache first, then a tenacity-retried live fetch, returning ``None``
+    on persistent failure rather than raising (the caller treats absence as
+    "no exchange shown"). Honors the same ``QR_SKIP_CROSS_SOURCE=1`` escape
+    hatch — stale-cache-tolerant read when set, no live fetch on a cold miss.
+    """
+    if os.environ.get("QR_SKIP_CROSS_SOURCE"):
+        path = _cache_path(ticker)
+        if path.exists():
+            try:
+                payload = json.loads(path.read_text(encoding="utf-8"))
+                val = payload.get("exchange")
+                return val if isinstance(val, str) and val else None
+            except Exception as e:  # noqa: BLE001
+                logger.debug(
+                    "QR_SKIP_CROSS_SOURCE exchange stale-read failed for %s: %s",
+                    ticker, e,
+                )
+                return None
+        return None
+
+    cached = _exchange_cache_read(ticker)
+    if cached is not None:
+        return cached
+
+    try:
+        code = _yf_fast_exchange(ticker)
+    except Exception as e:  # noqa: BLE001
+        logger.warning("yfinance exchange fetch failed for %s: %s", ticker, e)
+        return None
+
+    if code is None:
+        return None
+
+    _exchange_cache_write(ticker, code)
+    return code
 
 
 def validate_market_cap(
