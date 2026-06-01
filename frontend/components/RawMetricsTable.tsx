@@ -65,12 +65,12 @@ export default function RawMetricsTable({ metrics }: { metrics: RawMetrics }) {
               <tr key={key} className="transition-colors duration-100 odd:bg-white even:bg-slate-100 hover:bg-slate-200 dark:odd:bg-slate-900 dark:even:bg-slate-900/50 dark:hover:bg-slate-800">
                 <td className="px-3 py-2 text-slate-700 dark:text-slate-300">
                   {label}
-                  {hint && <span className="ml-1 text-xs text-slate-400 dark:text-slate-500">{hint}</span>}
+                  {hint && <span className="ml-1 text-xs text-slate-500 dark:text-slate-400">{hint}</span>}
                 </td>
                 <td
                   className={
                     isMissing
-                      ? 'px-3 py-2 text-right italic text-slate-400 dark:text-slate-500'
+                      ? 'px-3 py-2 text-right italic text-slate-500 dark:text-slate-400'
                       : 'px-3 py-2 text-right tabular-nums text-slate-900 dark:text-slate-100'
                   }
                 >

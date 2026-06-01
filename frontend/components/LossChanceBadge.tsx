@@ -86,7 +86,7 @@ export function LossChanceBadge({
   if (lossChancePct == null) {
     return (
       <span
-        className={`inline-flex items-center text-slate-400 dark:text-slate-500 ${SIZE_CLASSES[size]} ${className}`}
+        className={`inline-flex items-center text-slate-500 dark:text-slate-400 ${SIZE_CLASSES[size]} ${className}`}
         title="Loss Chance unavailable — fair-price ensemble missing"
         aria-label="Loss Chance unavailable"
       >

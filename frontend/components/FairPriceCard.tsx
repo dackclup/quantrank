@@ -80,7 +80,7 @@ export default function FairPriceCard({
         <div>
           <dt className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
             Margin of safety
-            <span className="ml-1 normal-case tracking-normal text-slate-400 dark:text-slate-500">
+            <span className="ml-1 normal-case tracking-normal text-slate-500 dark:text-slate-400">
               (vs fair value)
             </span>
           </dt>
@@ -129,7 +129,7 @@ export default function FairPriceCard({
         </ul>
       )}
 
-      <p className="mt-3 text-xs text-slate-400 dark:text-slate-500">
+      <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
         Median of all applicable methods (current price ${currentPrice.toFixed(2)}).
         Per-method estimates + each method&rsquo;s cheap/fair/pricey read are in
         the Fair price check above. Outliers above 5× or below 0.2× current

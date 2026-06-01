@@ -293,7 +293,7 @@ function SidebarLink({
           strokeLinecap="round"
           strokeLinejoin="round"
           data-rail="hide"
-          className={`ml-auto text-slate-400 dark:text-slate-500${collapsed ? ' md:hidden' : ''}`}
+          className={`ml-auto text-slate-500 dark:text-slate-400${collapsed ? ' md:hidden' : ''}`}
           aria-hidden="true"
         >
           <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />

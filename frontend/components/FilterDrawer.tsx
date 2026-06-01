@@ -160,7 +160,7 @@ export function FilterDrawer({
               <span className="font-semibold text-slate-900 dark:text-slate-100">
                 {filteredCount.toLocaleString()}
               </span>
-              <span className="text-slate-400 dark:text-slate-500"> / {totalCount.toLocaleString()} stocks</span>
+              <span className="text-slate-500 dark:text-slate-400"> / {totalCount.toLocaleString()} stocks</span>
             </div>
           </div>
           <button
@@ -189,7 +189,7 @@ export function FilterDrawer({
                 className="min-h-[44px] w-full rounded-sm border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:border-slate-500 dark:focus:ring-slate-500"
               />
               <svg
-                className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-slate-500"
+                className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500 dark:text-slate-400"
                 viewBox="0 0 20 20"
                 fill="none"
                 stroke="currentColor"
@@ -225,7 +225,7 @@ export function FilterDrawer({
                     key={t.id}
                     type="button"
                     onClick={() => toggleTier(t.id)}
-                    className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition-colors ${
+                    className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition-colors lg:min-h-0 ${
                       on ? t.cls : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
                     }`}
                   >
@@ -252,7 +252,7 @@ export function FilterDrawer({
                     key={rec}
                     type="button"
                     onClick={() => toggleRecommendation(rec)}
-                    className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition-colors ${
+                    className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition-colors lg:min-h-0 ${
                       on
                         ? RECOMMENDATION_CHIP_TONES[rec]
                         : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
@@ -278,7 +278,7 @@ export function FilterDrawer({
                     key={b.id}
                     type="button"
                     onClick={() => toggleMos(b.id)}
-                    className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition-colors ${
+                    className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition-colors lg:min-h-0 ${
                       on ? b.cls : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
                     }`}
                   >
@@ -296,7 +296,7 @@ export function FilterDrawer({
               <label className="text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                 Sectors
               </label>
-              <span className="text-[0.6875rem] text-slate-400 dark:text-slate-500">
+              <span className="text-[0.6875rem] text-slate-500 dark:text-slate-400">
                 {sectorSet.size === 0 ? 'All' : `${sectorSet.size} selected`}
               </span>
             </div>
@@ -309,7 +309,7 @@ export function FilterDrawer({
                     key={s}
                     type="button"
                     onClick={() => toggleSector(s)}
-                    className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition-colors ${
+                    className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition-colors lg:min-h-0 ${
                       on ? `${sty.bg} ${sty.fg} ${sty.ring}` : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
                     }`}
                   >

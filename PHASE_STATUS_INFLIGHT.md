@@ -4919,3 +4919,40 @@ browser review gate. 11 component/page files + the committed critique snapshot;
 no compute / schema / scoring / valuation change. CLAUDE.md §Gotchas + AGENTS.md
 mirror record the touch-target / focus-trap / warning-heading standards.
 Branch `claude/sharp-newton-8pj6p`.
+
+---
+
+### `$impeccable` re-critique follow-up — secondary-text contrast + filter-chip touch target (this PR)
+
+Frontend a11y fix from a fresh `$impeccable critique` re-run (two independent
+unanchored assessments: design-director review A + real-browser persona pass B,
+plus the bundled detector). Re-critique held at **27/40 Nielsen + 16/20 audit** —
+the #355 P1 blockers (focus-trap, primary touch targets) confirmed CLOSED in a
+real browser (15-Tab focus-trap with restore, 21/21 on-screen-vs-JSON, 0 console
+errors); the plateau is the IA / help / flexibility ceiling, not a11y. Snapshot
+committed at `.impeccable/critique/2026-06-01T13-08-11Z__frontend-app-all-pages.md`.
+
+Ships the user-chosen "a11y residuals + verify dark contrast" thread:
+- **Secondary-text contrast (BOTH modes)** — normalized the too-light inverted
+  token `text-slate-400 dark:text-slate-500` → the project standard
+  `text-slate-500 dark:text-slate-400` across 16 components/pages. The inverted
+  token failed WCAG AA in BOTH light (~2.6:1) and dark (~3.75:1); the standard
+  clears both (~4.8:1 / ~7:1). slate-* is OUTSIDE the globals.css soft-override
+  allowlist, so contrast is on the raw Tailwind hex.
+- **FilterDrawer selection chips** → `min-h-[44px] lg:min-h-0` (44px tap target
+  on touch viewports, compact ~24px desktop) — the one touch-target the #355
+  sweep missed.
+- **Detail-page price-chart placeholder** text flipped to the standard token.
+
+**Verify-before-fix caught 4 false positives** in the browser agent's a11y list
+(declined, NOT changed): 1D/5D `aria-disabled` already present; Loss-Chance
+column correctly not-sortable (so omitting `aria-sort` is right); default Score
+header `aria-sort="none"` correct (Rank is the active default sort); `Disclaimer`
+"more" button deliberately `min-h-[24px]` (documented AA-floor decision). The
+agent also mis-named the contrast token (`slate-400` @ 4.2:1) — the real failing
+token was `slate-500` and the fail spanned both modes.
+
+Verified: `tsc --noEmit` clean + `next build` 506 routes; `frontend-design-reviewer`
+gate. 16 component/page files + the committed critique snapshot; no compute /
+schema / scoring / valuation change. CLAUDE.md §Gotchas + AGENTS.md mirror record
+the secondary-text-token standard. Branch `claude/sharp-newton-8pj6p`.

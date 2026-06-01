@@ -573,7 +573,7 @@ export function PriceHistoryChart({
 
   if (error || !data) {
     return (
-      <div className="flex h-64 items-center justify-center text-sm text-slate-400 dark:text-slate-500">
+      <div className="flex h-64 items-center justify-center text-sm text-slate-500 dark:text-slate-400">
         Price history unavailable
       </div>
     );
@@ -581,7 +581,7 @@ export function PriceHistoryChart({
 
   if (chartData.length === 0) {
     return (
-      <div className="flex h-64 items-center justify-center text-sm text-slate-400 dark:text-slate-500">
+      <div className="flex h-64 items-center justify-center text-sm text-slate-500 dark:text-slate-400">
         Price history unavailable
       </div>
     );
