@@ -320,6 +320,13 @@ export function FairPriceCard(props) {  // no types
   family). For any positive/negative surface use a listed class or the chip
   family; inline `style`/svg `stroke` (gauge accents) are never reached and stay
   raw rgb by design. Full rationale in CLAUDE.md §Gotchas.
+- **44px touch targets + modal focus-trap + severity-toned warning headings**
+  (`frontend/components/*`, 2026-06-01): primary interactive controls carry
+  `min-h-[44px]` (mobile-first per PRODUCT.md); `FilterDrawer` traps + restores
+  focus like a real modal (WCAG 2.4.3), not just Esc + scroll-lock; the
+  `Tier2EventCard` / `RiskSummaryCard` `<h2>` takes a rose/amber severity tone so
+  warning cards outweigh the neutral data-section eyebrows. A new control / modal
+  / warning card must follow suit. Full rationale in CLAUDE.md §Gotchas.
 
 ## Git workflow
 

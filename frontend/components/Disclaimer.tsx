@@ -13,7 +13,7 @@ export function Disclaimer() {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <div role="alert" className="border-b border-slate-200 bg-slate-50 text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
+    <div role="note" className="border-b border-slate-200 bg-slate-50 text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
       <div className="mx-auto flex max-w-6xl items-start gap-2 px-4 py-2 text-xs">
         <svg
           aria-hidden="true"
@@ -40,6 +40,8 @@ export function Disclaimer() {
           <button
             type="button"
             onClick={() => setExpanded((e) => !e)}
+            aria-expanded={expanded}
+            aria-label={expanded ? 'Show less disclaimer detail' : 'Show more disclaimer detail'}
             // -my-1 + min-h-[24px] inline-flex lifts the tap target to the
             // WCAG 2.5.8 (AA) 24×24 floor without growing the disclaimer's
             // line-height (the negative margin absorbs the extra height).

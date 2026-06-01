@@ -80,6 +80,9 @@ export default function FairPriceCard({
         <div>
           <dt className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
             Margin of safety
+            <span className="ml-1 normal-case tracking-normal text-slate-400 dark:text-slate-500">
+              (vs fair value)
+            </span>
           </dt>
           <dd
             className={`mt-1 font-mono text-lg font-semibold tabular-nums leading-none ${mosColorClass(ensemble.mos_pct)}`}

@@ -246,7 +246,7 @@ export function FairPriceBarChart({
                     {medianPct >= 0
                       ? `+${medianPct.toFixed(0)}%`
                       : `${medianPct.toFixed(0)}%`}{' '}
-                    vs today
+                    vs today&apos;s price
                   </div>
                 )}
               </div>

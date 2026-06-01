@@ -4885,3 +4885,37 @@ DOC-ONLY (root `DESIGN.md` + `.impeccable/design.json` sidecar + this side-file)
 — no compute / schema / scoring / valuation / frontend-code change. JSON
 validated (schemaVersion 2, 8 components); the 6 Stitch section headers present
 in order; YAML frontmatter parses. Branch `claude/sharp-newton-8pj6p`.
+
+**Frontend a11y + clarity punch-down (`$impeccable audit`+`critique`, this PR)** —
+implements the full P1+P2+P3 punch-down from the whole-app audit+critique
+(snapshot `.impeccable/critique/2026-06-01T11-26-29Z__frontend-app-all-pages.md`,
+committed here per the user's "commit the snapshot" choice). User chose "full
+punch-down"; the placeholder hero tiles are KEPT as reserved (PR #344 decision
+stands).
+- **P1 focus-trap** — `FilterDrawer` now traps Tab/Shift+Tab within the `<aside>`,
+  focuses in on open, restores to the trigger on close (WCAG 2.4.3; assessments
+  A + B agreed Tab escaped behind the backdrop). + `type="button"` on the close X.
+- **P1 touch targets ≥ 44px** — `min-h-[44px]` / `h-11 w-11` across Sidebar nav +
+  mobile-close + brand link, AppShell hamburger, ThemeToggle, FilterDrawer
+  buttons + drawer search, RankingTable Filters / search / pagination,
+  `PriceTimePeriodSelector`, `DualRange` (44px grab zone + h-5 thumbs), and the
+  detail back-link.
+- **P2 MoS-anchor labels** — `FairPriceCard` "Margin of safety" → "(vs fair
+  value)"; `FairPriceBarChart` "vs today" → "vs today's price" — so the two
+  different %s on one page no longer read as a contradiction.
+- **P2 warning-card hierarchy** — `Tier2EventCard` + `RiskSummaryCard` `<h2>`
+  take a severity tone (rose veto / amber annotate, else neutral) so they
+  outweigh the flat neutral data-section eyebrows.
+- **P3 a11y** — `DualRange` min/max `aria-label`; `Disclaimer` `role="alert"` →
+  `role="note"` + `aria-expanded` on the more/less toggle; price-chart `<section>`
+  `aria-label` + an sr-only latest-price summary (the Recharts SVG is opaque to AT).
+Skipped as VERIFIED false positives: dark loss-chance "pink-salmon" (the
+`!important` `text-red-700` remap wins in dark → already soft); period-selector
+`aria-pressed` (already `role="radio"`+`aria-checked`); sort first-click (the
+chevron does move); StockLogo alt (`alt="" aria-hidden`, correct decorative);
+loss-chance "color-only" (badge `aria-label` carries the band + mobile shows it
+as text). Verified: `tsc --noEmit` clean + `next build` 506 routes; design +
+browser review gate. 11 component/page files + the committed critique snapshot;
+no compute / schema / scoring / valuation change. CLAUDE.md §Gotchas + AGENTS.md
+mirror record the touch-target / focus-trap / warning-heading standards.
+Branch `claude/sharp-newton-8pj6p`.

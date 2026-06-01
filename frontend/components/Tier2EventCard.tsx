@@ -178,7 +178,16 @@ export function Tier2EventCard({
       aria-label={`Regulatory events for ${ticker}`}
       className="rounded border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900"
     >
-      <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
+      {/* Heading takes the worst-severity tone so this warning card visually
+          outweighs the neutral data-reference sections below it (audit P2 —
+          flat eyebrow hierarchy). Veto → rose, annotate-only → amber. */}
+      <h2
+        className={`mb-3 text-sm font-semibold uppercase tracking-[0.14em] ${
+          non_reliance_filing
+            ? 'text-rose-700 dark:text-rose-300'
+            : 'text-amber-700 dark:text-amber-300'
+        }`}
+      >
         Recent regulatory events
       </h2>
       <ul className="space-y-2">
