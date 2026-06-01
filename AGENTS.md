@@ -250,10 +250,14 @@ export function FairPriceCard(props) {  // no types
   the `RecommendationBadge` is now STATIC (its chip-pop entrance was removed
   same PR — see CLAUDE.md §Gotchas "Hero metric values count-up"). Under the
   hero (own section, above the price chart) sits `HeroAttributeTiles` — a 4-box
-  icon-over-label grid (Size · Sector · 2 reserved "Coming soon" placeholders),
-  the theme-reskinned answer to a reference app's category tiles (PR #344; uses
-  `lucide-react` icons via NAMED imports only — see CLAUDE.md §Gotchas
-  "lucide-react … named imports ONLY" + "Hero attribute tiles").
+  icon-over-label grid (Size · Sector · 2 reserved "Coming soon" placeholders —
+  Dividend + Type), the theme-reskinned answer to a reference app's category
+  tiles (PR #344; uses `lucide-react` icons via NAMED imports only — see
+  CLAUDE.md §Gotchas "lucide-react … named imports ONLY" + "Hero attribute
+  tiles"). The two reserved tiles are a roadmap item (PHASE_STATUS.md §Next
+  deliverables #7 — Dividend + Security-type ingest, display-only, behind a
+  `*_coverage_pct` observability cron); they auto-promote out of "reserved"
+  when their schema field lands.
   New `<ThemeToggle layout="icon|row">` component renders
   a three-state cycle button (system → light → dark → system) with
   `useTheme()` + a `mounted` guard to suppress the SSR-fallback

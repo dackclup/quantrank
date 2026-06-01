@@ -4567,3 +4567,19 @@ inline SVG (tree-shaken, +2 KB route). **No schema / Python / scoring /
 valuation / output-JSON change** — 1 new dep + 1 new server component + hero
 wiring. CLAUDE.md §Gotcha ×2 (lucide import discipline + the tiles) + AGENTS.md
 inventory + this entry.
+
+**Follow-up edits in the same PR**: (a) review polish (frontend-design-reviewer
+READY, no blocker) — reserved-tile caption contrast slate-400 → slate-500
+(WCAG), reserved caption now UPPERCASE to match filled tiles, Sector icon
+Factory → Layers (neutral, not manufacturing-specific), `<section aria-label>`
++ sr-only `<h2>` for the document outline. (b) 4th tile renamed `More` → `Type`
+(icon Gauge → ScrollText) per user direction — reserved for a future
+security-type signal (Common stock / ADR / etc., the analog of the reference
+app's "Common · หุ้นสามัญ" tile). (c) **Roadmap added** (PHASE_STATUS.md +
+CLAUDE.md §Next deliverables #7): the two reserved tiles (Dividend + Type) now
+have a planned ingest path — 7a Dividend (`dividend_yield_pct`/`pays_dividend`
+from yfinance, already in the stack, no new dep) + 7b Security-type (Common/
+ADR/REIT from yfinance `quoteType`/SEC filer flags); both DISPLAY-ONLY (no
+ranking/scoring impact), each behind a `Metadata.*_coverage_pct` diagnostic
+cron (observability-before-wiring) before the tile reads live data. Tiles
+auto-promote out of "reserved" when the schema field lands.

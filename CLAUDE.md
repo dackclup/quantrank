@@ -2567,6 +2567,16 @@ of re-discovering the pattern.
   (~1-2w each → v1.1.0-phase4)
 - **Phase 5** — ML meta-learner (~10-12w, unblocks PR 4b §3
   IC-decay writer #75)
+- **Stock-attribute data — Dividend + Security-type** — fills the two
+  reserved `HeroAttributeTiles` slots (PR #344; both show "Coming soon" until
+  data lands). 7a Dividend: `dividend_yield_pct` / `pays_dividend` from
+  yfinance (already in the stack — rides `compute/ingest/prices.py`, no new
+  dep) + schema triple + `Metadata.dividend_coverage_pct` observability-first.
+  7b Security-type: Common / ADR / REIT label from yfinance `quoteType` /
+  SEC filer flags. Both DISPLAY-ONLY (no ranking/scoring/veto impact); each
+  behind a `*_coverage_pct` diagnostic cron before the tile reads live data
+  (observability-before-wiring). Tiles auto-promote out of "reserved" when
+  `value` flips non-null. See PHASE_STATUS.md §Next deliverables item 7.
 
 See [`PHASE_STATUS.md`](PHASE_STATUS.md) for the canonical
 chronological tracker.
