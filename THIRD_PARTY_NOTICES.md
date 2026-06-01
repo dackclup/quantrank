@@ -350,3 +350,64 @@ therefore required, but the inspiration is attributed.
 | Course author objects to the inspired-by skill | Already minimal-risk (standard facts only, original prose, attributed). If asked, further generalize the attribution or remove the skill (single-file delete). |
 | Maintainer later wants the verbatim mcpmarket file | Re-evaluate license posture FIRST — a verbatim copy of commercial-course-derived text needs an explicit grant before it ships to a public repo. |
 | Note on the `mcpmarket` channel | The earlier `curl https://app.mcpmarket.com/install/... \| bash` one-liner (2026-05-29) was DECLINED as an unverified remote-code-execution vector. Only the inspected, hand-vendored skill content (this entry) was adopted — no marketplace installer was run. |
+
+---
+
+## pbakaus/impeccable (Claude Code + agent skill)
+
+- **Source**: <https://github.com/pbakaus/impeccable>
+- **Installed via**: `npx skills add pbakaus/impeccable` — the cross-tool
+  [skills.sh](https://skills.sh) layout (content in `.agents/skills/impeccable/`,
+  a Claude Code symlink at `.claude/skills/impeccable`, a root `skills-lock.json`
+  pin with SKILL.md SHA256 `5e8c66ee…`).
+- **License**: **Apache-2.0** — verified 2026-06-01 against the upstream repo
+  (LICENSE file at root + README "Apache 2.0. See LICENSE."). Copyright 2025
+  Paul Bakaus. The installer did NOT copy the upstream LICENSE into the bundle;
+  a verbatim copy of the Apache License 2.0 was added at
+  `.agents/skills/impeccable/LICENSE` at vendoring time to satisfy Apache-2.0
+  §4(a) (redistribution must include a copy of the License). No upstream
+  `NOTICE` file was present in the installed bundle; if one is added upstream,
+  propagate it per §4(d).
+- **Vendored at**: `.agents/skills/impeccable/` (`SKILL.md` + `reference/*.md` +
+  `agents/*.toml` + `scripts/*.mjs|js` + the added `LICENSE`)
+- **Symlinked at**: `.claude/skills/impeccable` → `../../.agents/skills/impeccable`
+- **Vendored date**: 2026-06-01
+- **Skill type**: frontend design (design review, live browser iteration,
+  visual critique, typography, color, motion). The `scripts/` tree is marked
+  `linguist-vendored` in `.gitattributes`.
+
+### Vendored sub-library: modern-screenshot (MIT)
+
+`scripts/modern-screenshot.umd.js` is a compiled UMD build of the
+`modern-screenshot` npm package (<https://github.com/qq15725/modern-screenshot>),
+MIT-licensed; the license header was stripped during upstream bundling. SHA256
+of the vendored copy `bb366658…`. DOM-to-canvas serialization, browser-only, no
+network surface. `scripts/live-copy-edit-agent.mjs` also lazily `require()`s
+`@babel/parser` (MIT) inside a try/except — the package is NOT present in the
+project's `node_modules`, so that one syntax-validation path degrades gracefully
+to a warning rather than failing (dependency-auditor 2026-06-01).
+
+### Security posture (audited 2026-06-01)
+
+`security-reviewer` verdict **COMMIT-WITH-MITIGATIONS**; `dependency-auditor`
+**SAFE-TO-MERGE** (0 new pip/npm manifest deps, CVE baseline 15 unchanged).
+Nothing in the bundle auto-executes on `git clone` / CI / `npm install` — there
+is no `package.json` and no install hooks; the scripts run ONLY when an agent
+explicitly invokes the `live` / `detect` / `context.mjs` workflows in a local
+dev session, never in CI or the Vercel static export. `scripts/context.mjs`
+makes a once-daily `GET https://impeccable.style/api/version` version check (no
+repo content / paths / credentials sent — only a version probe); opt out with
+`IMPECCABLE_NO_UPDATE_CHECK=1`, override the host with `IMPECCABLE_UPDATE_HOST`
+(both documented in CLAUDE.md §Gotchas). The `live` "Apply" feature spawns a
+`claude` subprocess with `--permission-mode bypassPermissions` (writes source
+without per-op prompts) — expected for that workflow, dev-session only.
+
+### Why committed (reverses the earlier local-only PR #346)
+
+PR #346 first gitignored the bundle (local-only). This entry's PR reverses that
+per user direction (2026-06-01) so the skill is committed and permanently
+findable in-repo across ephemeral web sessions. Trade-off recorded by
+`dependency-auditor`: the `modern-screenshot` UMD blob is opaque (minified, no
+version pin) and Dependabot does not scan `.agents/`, so this vendored blob will
+not receive CVE alerts — acceptable because the scripts never run in CI / prod
+and a re-`npx skills add` refreshes the bundle to the latest upstream release.

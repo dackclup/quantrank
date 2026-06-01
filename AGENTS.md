@@ -91,11 +91,12 @@ frontend/                         # Next.js static site (read/write OK)
 
 tests/                            # pytest suite
 docs/                             # Academic methodology + research findings
-.claude/skills/                   # 46 loaded skills + phase-N/ planning docs
+.claude/skills/                   # 46 first-party skills + phase-N/ planning docs (+ symlink to the vendored impeccable skill at .agents/skills/)
 .claude/agents/                   # 20 subagents (5 opus / 15 sonnet, all `effort: max`) — Tier 1 Core 5 (incl. stock-detail-auditor for per-stock JSON correctness) + Tier 2 Lifecycle 6 (incl. vercel-preview-auditor + expert-user-explorer for interactive end-to-end app usage) + Tier 3 Specialized 6 (incl. literature-searcher + financial-engineer for generative quant design) + Tier 4 Operations 3 (incl. ci-triage-engineer); Claude Code only — Copilot / Cursor / Devin do not auto-route to these
 .claude/hooks/                    # PostToolUse Bash hooks (log-bash.sh, schema-reminder.sh) + UserPromptSubmit hook (delegate-first.sh) wired by .claude/settings.json (Claude Code only — Copilot / Cursor / Devin ignore)
 .claude/worktrees/                # Harness-managed isolation dirs for Agent-tool subagents (Claude Code on the web only; per-session transient; gitignored 2026-05-22)
 .claude/settings.json             # Claude Code harness config (hooks, permissions). Per-user overrides go in .claude/settings.local.json (gitignored)
+.agents/skills/                   # Vendored third-party skills (skills.sh layout) — currently impeccable (pbakaus/impeccable, Apache-2.0); symlinked into .claude/skills/, dev-session tooling only (never CI). See THIRD_PARTY_NOTICES.md
 .github/workflows/                # ⚠️ ask before editing
 pyproject.toml                    # ⚠️ ask before deps changes
 
@@ -414,6 +415,14 @@ export function FairPriceCard(props) {  // no types
   benign value is `CLAUDE_CODE_SUBAGENT_MODEL='inherit'`) or if an agent pins a
   dated model ID. Per-user `.claude/settings.local.json` is gitignored and out
   of scope — a local override can't reach `main`.
+- **`impeccable` skill phone-home env-vars** (vendored third-party skill,
+  2026-06-01). `.agents/skills/impeccable/scripts/context.mjs` makes a
+  once-daily `GET https://impeccable.style/api/version` version check (no repo
+  content / paths / credentials sent — `security-reviewer` verified).
+  `IMPECCABLE_NO_UPDATE_CHECK=1` disables it; `IMPECCABLE_UPDATE_HOST` overrides
+  the host. The skill's `scripts/` run ONLY in a local dev agent session (no
+  `package.json` / install hooks) — never in CI or the static export. See
+  CLAUDE.md §Gotchas + `THIRD_PARTY_NOTICES.md` §pbakaus/impeccable.
 - **CI escape-hatch env-var combo for simulate** (5 vars, all set
   together in `.github/workflows/pre-merge-prod-sim.yml`; NONE set
   in weekly cron `compute-rankings.yml`). Each is optional, fails

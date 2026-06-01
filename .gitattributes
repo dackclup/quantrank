@@ -1,0 +1,6 @@
+# Vendored third-party skill (pbakaus/impeccable, Apache-2.0). The script
+# bundle is upstream code — exclude it from GitHub language statistics and
+# collapse it by default in diffs. The human-readable SKILL.md / reference/*.md
+# / agents/*.toml stay visible. See THIRD_PARTY_NOTICES.md §pbakaus/impeccable.
+.agents/skills/impeccable/scripts/** linguist-vendored
+.agents/skills/impeccable/LICENSE linguist-vendored
