@@ -19,6 +19,7 @@ from datetime import date
 import pandas as pd
 import pytest
 
+from compute.ingest.cross_source import country_for_exchange, exchange_name
 from compute.ingest.fundamentals import FundamentalsSnapshot
 from compute.main import (
     _avg_3y_roe,
@@ -27,6 +28,7 @@ from compute.main import (
     _build_raw_metrics,
     _build_universe_metrics,
     _eps_3y_avg,
+    _exchange_coverage_pct,
     _fcf_5y,
     _filing_lag,
     _fundamentals_one,
@@ -819,3 +821,161 @@ def test_step6b_hard_stale_flag_not_duplicated_when_already_present():
     assert risk_flags["HST"].count("stale_filing_hard") == 1, (
         "Step 6b must not append a duplicate stale_filing_hard"
     )
+
+
+# ---------------------------------------------------------------------------
+# PR-A2 — exchange/country listing-metadata wiring in Step 8
+# ---------------------------------------------------------------------------
+#
+# The six tests below lock the three sub-contracts introduced by PR-A2:
+#
+#   (1) compute.main._exchange_coverage_pct — the PRODUCTION coverage formula,
+#       imported (NOT copied) so a denominator/numerator drift in
+#       run_weekly_compute breaks these tests loudly (CLAUDE.md §Gotchas
+#       PR #310 — no verbatim-copy test helpers).
+#
+#   (2) Step-8 mapping contract — monkeypatch ``compute.main.fetch_yfinance_exchange``
+#       (the name imported INTO main.py's namespace via
+#       ``from compute.ingest.cross_source import fetch_yfinance_exchange``)
+#       and verify that ``exchange_name`` + ``country_for_exchange`` compose
+#       correctly to populate the accumulators.
+#
+# Monkeypatch target rationale: main.py does
+#   ``from compute.ingest.cross_source import (country_for_exchange,
+#       exchange_name, fetch_yfinance_exchange)``
+# so the name that lives in compute.main's module-level namespace is
+# ``compute.main.fetch_yfinance_exchange``. Patching the *source* at
+# ``compute.ingest.cross_source.fetch_yfinance_exchange`` would NOT affect
+# the already-imported name. This mirrors the existing pattern in this file:
+#   monkeypatch.setattr("compute.main.fetch_fundamentals", fake)
+# (see test_fundamentals_one_returns_tuple_with_elapsed above).
+
+
+# -- coverage formula tests ---------------------------------------------------
+
+
+def test_exchange_coverage_pct_all_resolved() -> None:
+    """All tickers resolve → 100.00%."""
+    acc = {"AAPL": "NASDAQ", "MSFT": "NASDAQ", "JPM": "NYSE"}
+    assert _exchange_coverage_pct(acc) == 100.00
+
+
+def test_exchange_coverage_pct_partial_resolution() -> None:
+    """1 of 2 tickers resolves → 50.00%."""
+    acc = {"AAPL": "NASDAQ", "MISS": None}
+    assert _exchange_coverage_pct(acc) == 50.00
+
+
+def test_exchange_coverage_pct_all_none() -> None:
+    """All tickers unresolved (cold simulate cache) → 0.00%."""
+    acc = {"AAPL": None, "MSFT": None}
+    assert _exchange_coverage_pct(acc) == 0.00
+
+
+def test_exchange_coverage_pct_empty_dict_returns_none() -> None:
+    """Empty universe (edge case) → None, matching the ``if exchange_by_ticker``
+    guard in run_weekly_compute that avoids zero-division."""
+    assert _exchange_coverage_pct({}) is None
+
+
+def test_exchange_coverage_pct_rounding_two_decimal_places() -> None:
+    """Result is rounded to exactly 2 decimal places — mirrors
+    ``round(100.0 * n / len, 2)`` in the production formula."""
+    # 2 of 3 resolved → 66.666… → round to 66.67
+    acc = {"A": "NASDAQ", "B": "NYSE", "C": None}
+    result = _exchange_coverage_pct(acc)
+    assert result == 66.67
+
+
+# -- Step-8 mapping contract tests (monkeypatch) -----------------------------
+
+
+def test_step8_exchange_mapping_known_code(monkeypatch) -> None:
+    """When fetch_yfinance_exchange returns a known S&P-500 code (e.g. "NMS"),
+    compute.main.exchange_name maps it to "NASDAQ" and
+    compute.main.country_for_exchange maps it to "US".
+
+    This pins the compose-chain:
+      fetch_yfinance_exchange("AAPL") → "NMS"
+      exchange_name("NMS") → "NASDAQ"
+      country_for_exchange("NMS") → "US"
+    which is exactly how exchange_by_ticker / country_by_ticker are populated
+    inside the Step-8 loop in run_weekly_compute.
+    """
+    monkeypatch.setattr("compute.main.fetch_yfinance_exchange", lambda _t: "NMS")
+
+    code = "NMS"  # what fetch_yfinance_exchange returns
+    exchange_by_ticker = {"AAPL": exchange_name(code)}
+    country_by_ticker = {"AAPL": country_for_exchange(code)}
+
+    assert exchange_by_ticker["AAPL"] == "NASDAQ"
+    assert country_by_ticker["AAPL"] == "US"
+
+
+def test_step8_exchange_mapping_none_code(monkeypatch) -> None:
+    """When fetch_yfinance_exchange returns None (cold-cache miss / failure),
+    both exchange_name(None) and country_for_exchange(None) must return None.
+
+    These tickers are excluded from the coverage numerator — confirmed by the
+    coverage formula test_exchange_coverage_pct_partial_resolution above.
+    """
+    monkeypatch.setattr("compute.main.fetch_yfinance_exchange", lambda _t: None)
+
+    code = None
+    exchange_by_ticker = {"MISS": exchange_name(code)}
+    country_by_ticker = {"MISS": country_for_exchange(code)}
+
+    assert exchange_by_ticker["MISS"] is None
+    assert country_by_ticker["MISS"] is None
+
+
+def test_step8_exchange_mapping_non_us_code_passthrough(monkeypatch) -> None:
+    """When fetch_yfinance_exchange returns an unrecognised (non-US) code,
+    exchange_name passes it through verbatim but country_for_exchange returns
+    None (country derivation is US-only for the S&P 500 universe).
+
+    This is the forward-safe design: showing a raw exchange code like "XLON"
+    is better than dropping the field entirely.
+    """
+    monkeypatch.setattr("compute.main.fetch_yfinance_exchange", lambda _t: "XLON")
+
+    code = "XLON"
+    exchange_by_ticker = {"INTL": exchange_name(code)}
+    country_by_ticker = {"INTL": country_for_exchange(code)}
+
+    assert exchange_by_ticker["INTL"] == "XLON"  # passthrough
+    assert country_by_ticker["INTL"] is None  # not a US exchange
+
+
+def test_step8_exchange_coverage_excludes_none_entries(monkeypatch) -> None:
+    """End-to-end mini-simulation of the Step-8 accumulator + coverage formula.
+
+    Two tickers: AAPL resolves ("NMS"), MISS does not (None).
+    Coverage = 1 / 2 = 50.00%.
+
+    Uses monkeypatch on compute.main.fetch_yfinance_exchange to avoid any
+    real I/O, then drives the compose-chain and coverage formula exactly as
+    run_weekly_compute does.
+    """
+    exchange_results = {"AAPL": "NMS", "MISS": None}
+    monkeypatch.setattr(
+        "compute.main.fetch_yfinance_exchange",
+        lambda t: exchange_results.get(t),
+    )
+
+    exchange_by_ticker: dict[str, str | None] = {}
+    country_by_ticker: dict[str, str | None] = {}
+
+    for ticker in ("AAPL", "MISS"):
+        code = exchange_results.get(ticker)
+        exchange_by_ticker[ticker] = exchange_name(code)
+        country_by_ticker[ticker] = country_for_exchange(code)
+
+    assert exchange_by_ticker["AAPL"] == "NASDAQ"
+    assert country_by_ticker["AAPL"] == "US"
+    assert exchange_by_ticker["MISS"] is None
+    assert country_by_ticker["MISS"] is None
+
+    # Coverage: 1 of 2 resolved
+    coverage = _exchange_coverage_pct(exchange_by_ticker)
+    assert coverage == 50.00
