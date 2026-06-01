@@ -140,14 +140,14 @@ export function PillarRadarChart({
                   {PILLAR_DESCRIPTIONS[r.label]}
                 </div>
               </div>
-              <div className="relative order-last col-span-2 h-7 rounded-sm bg-slate-100 dark:bg-slate-800 sm:order-none sm:col-span-1">
+              <div className="relative order-last col-span-2 h-5 rounded-sm bg-slate-100 dark:bg-slate-800 sm:order-none sm:col-span-1">
                 {/* Tier-boundary tick lines at 30 / 50 / 70 — visually
                     show which tier the bar lands in. */}
                 <div className="absolute inset-y-0 left-[30%] w-px bg-slate-200 dark:bg-slate-700" />
                 <div className="absolute inset-y-0 left-[50%] w-px bg-slate-200 dark:bg-slate-700" />
                 <div className="absolute inset-y-0 left-[70%] w-px bg-slate-200 dark:bg-slate-700" />
                 <div
-                  className="absolute inset-y-1 left-1 rounded-sm"
+                  className="absolute inset-y-0.5 left-1 rounded-sm"
                   style={{ width: `calc(${widthClamped}% - 8px)`, backgroundColor: c }}
                 />
                 {/* Sector-median notch — vertical mark slightly taller
