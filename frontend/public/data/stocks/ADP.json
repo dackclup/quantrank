@@ -5,19 +5,19 @@
   "industry": "Human Resource & Employment Services",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 88677051655.00934,
-  "current_price": 221.84,
-  "rank": 74,
-  "composite_score": 59.89,
+  "market_cap": 90871595058.99533,
+  "current_price": 227.33,
+  "rank": 75,
+  "composite_score": 59.59,
   "pillar_scores": {
     "quality": 80.7,
-    "value": 50.63,
+    "value": 49.79,
     "growth": 68.04,
-    "momentum": 26.54,
+    "momentum": 25.5,
     "health": 60.2,
     "profitability": 56.33,
-    "technical": 68.48,
-    "risk": 40.47,
+    "technical": 68.33,
+    "risk": 41.24,
     "sentiment": null,
     "ml": null
   },
@@ -34,8 +34,8 @@
     "eps_basic": 10.870971532033872,
     "eps_diluted": 10.870971532033872,
     "shares_outstanding": 399734282.0,
-    "market_cap": 88677051655.00934,
-    "pe_ratio_ttm": 20.40663943274867,
+    "market_cap": 90871595058.99533,
+    "pe_ratio_ttm": 20.911654598779275,
     "goodwill": 3289100000.0
   },
   "fair_price": {
@@ -47,13 +47,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 303.3465667892944,
+        "value": 301.8824912577594,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 102.84515043986055,
+        "value": 103.39803564977325,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -77,16 +77,17 @@
         "tier_used": null
       }
     },
-    "median": 73.89094617778474,
-    "max": 303.3465667892944,
+    "median": 74.16738878274109,
+    "max": 301.8824912577594,
     "low": 26.968204540942065,
-    "high": 303.3465667892944,
-    "mos_pct": -200.22622230893376,
+    "high": 301.8824912577594,
+    "mos_pct": -206.50937772256435,
     "valuation_warnings": [
       "goodwill_heavy",
-      "extreme_graham_estimate"
+      "extreme_graham_estimate",
+      "extreme_rim_estimate"
     ],
-    "valuation_methods_applicable": 3
+    "valuation_methods_applicable": 2
   },
   "top5_factors": [],
   "score_history": [],
@@ -107,7 +108,8 @@
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
-    "extreme_graham_estimate"
+    "extreme_graham_estimate",
+    "extreme_rim_estimate"
   ],
   "has_history": true,
   "tangible_book_value": 3.553360479599796,
@@ -122,22 +124,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.47,
-      "Value": 50.21,
+      "Value": 49.79,
       "Growth": 49.37,
-      "Momentum": 53.24,
+      "Momentum": 52.09,
       "Health": 52.71,
       "Profitability": 47.68,
-      "Technical": 48.66,
-      "Risk": 53.75
+      "Technical": 48.95,
+      "Risk": 53.42
     }
   },
   "beneish_m_score": -2.5869037186960835,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 57.055720157345306,
-  "price_change_1d_pct": 0.9006,
+  "loss_chance_pct": 58.20543774270009,
+  "price_change_1d_pct": 2.4748,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 59.89,
+  "composite_score_adjusted": 59.59,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -185,10 +187,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 55.87,
+  "osap_blended_score": 55.72,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 3,
+  "valuation_methods_applicable": 2,
   "form4_diagnostics": null,
-  "cross_source_delta": 3.7608482421737264e-08
+  "cross_source_delta": 0.007654025623222718
 }
