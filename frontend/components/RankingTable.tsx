@@ -589,9 +589,18 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                       row.price_change_1d_pct !== undefined && (() => {
                         const pct = row.price_change_1d_pct;
                         const positive = pct >= 0;
+                        // Daily change reads as an outlined-light chip in the one
+                        // shared chip family — NOT a solid green/red dopamine pill
+                        // (PRODUCT.md "calm, never urgent" + the "no gamified
+                        // red-green" anti-reference). The ↗/↘ arrow is a non-color
+                        // affordance so direction still reads without color (state
+                        // is never color-only). Symmetric tokens also fix the prior
+                        // asymmetry: globals.css softens bg-emerald-600 but has no
+                        // bg-rose-600 remap, so the old down-pill rendered raw
+                        // alarm-red while the up-pill was soft sage.
                         const pillCls = positive
-                          ? 'bg-emerald-600 text-white'
-                          : 'bg-rose-600 text-white';
+                          ? 'bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-800'
+                          : 'bg-rose-50 text-rose-700 ring-rose-200 dark:bg-rose-900/30 dark:text-rose-300 dark:ring-rose-800';
                         const absCls = positive ? 'text-emerald-700' : 'text-rose-700';
                         // Derive absolute $ change from current_price +
                         // pct (the same identity CurrentPriceLine uses
@@ -607,7 +616,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                               {abs.toFixed(2)}
                             </span>
                             <span
-                              className={`inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 font-semibold tabular-nums ${pillCls}`}
+                              className={`inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 font-semibold tabular-nums ring-1 ring-inset ${pillCls}`}
                             >
                               <span aria-hidden="true">{positive ? '↗' : '↘'}</span>
                               {positive ? '+' : ''}

@@ -4797,3 +4797,30 @@ compiled OK, `/stock/[ticker]` 115 KB (flag tree-shaken ~2 KB, no barrel bloat) 
 `frontend-design-reviewer` chip-family + a11y review. No compute / schema /
 scoring / valuation change. CLAUDE.md (§Gotchas country-flag-icons entry +
 §Phase status PR-B bullet) + AGENTS.md move in lockstep.
+
+**Frontend polish — calm daily-change chip + honest gauge-accent comments
+(`$impeccable polish redesign`, this PR)** — Flagship polish pass on the
+redesigned rankings surface (impeccable skill, PRODUCT.md/DESIGN.md context
+from PR #350). Two findings, both ALIGN-to-system (no invented patterns):
+- **(a) `RankingTable.tsx` mobile-card daily price-change indicator** — the
+  solid-fill `bg-emerald-600 | bg-rose-600 text-white` "dopamine pill" (the
+  gamified-retail anti-reference PRODUCT.md explicitly names, and the ONLY
+  solid-fill semantic chip on the surface) → the shared outlined-light chip
+  family (`bg-{tone}-50 text-{tone}-700 ring-1 ring-inset ring-{tone}-200` +
+  paired `dark:`), symmetric across up/down. Also fixes a latent asymmetry:
+  globals.css softens `.bg-emerald-600` but has NO `.bg-rose-600` remap, so the
+  old DOWN pill rendered raw alarm-red while the UP pill was soft sage. The ↗/↘
+  arrow stays as a non-color affordance (state never color-only). Mobile/tablet
+  card only — the desktop table has no price-change column.
+- **(b) `visual.ts scoreAccentColor` + `MoSBadge accentColor` doc-comments** —
+  corrected the false claim that the inline gauge accent is "soft / remapped by
+  globals.css" (class overrides can't reach an inline `stroke`/`style` value).
+  COMMENT-ONLY; accent VALUES unchanged (the 5-tier ramp has no soft amber
+  token — a separate design decision, deliberately out of scope, not relitigated
+  here). "Honest by construction" applied to the comments themselves.
+New CLAUDE.md §Gotchas bullet + AGENTS.md mirror record the globals.css
+soft-override ALLOWLIST invariant (only the enumerated `.text-*`/`.bg-*`/`.ring-*`
+classes are remapped; `bg-rose-600`/`bg-emerald-700` etc. are NOT — use a listed
+soft class or the chip family). DISPLAY-ONLY. No schema / compute / scoring /
+valuation change. Verified: `frontend-design-reviewer` chip-family + a11y pass;
+`tsc --noEmit` + `next build` run by CI (sandbox has no `node_modules`).
