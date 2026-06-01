@@ -872,6 +872,48 @@ whitespace / single-line fixes do not trigger.
   `text-slate-900` value was near-invisible on the `dark:bg-slate-900` hero
   card), WCAG-AA on the dark surface, not a regression.
 
+- **`lucide-react` is the project's FIRST icon library — named imports ONLY**
+  (`frontend/package.json` + `frontend/components/HeroAttributeTiles.tsx`,
+  PR #344). Added for the hero attribute-tile grid. The whole library is
+  ~28 MB on disk (1,962 icons as individual `.mjs`) but tree-shakes to
+  ~1.5-2 KB gzipped IF you import by NAME — `import { Building2, Coins } from
+  'lucide-react'`. **NEVER** `import * as Icons from 'lucide-react'` or
+  `import Lucide from 'lucide-react'` — either pulls the full 224 KB barrel
+  (dependency-auditor 2026-05-31). `sideEffects: false` + the ESM `module`
+  field make webpack-5/Next-14 drop the unused icons; a dynamic
+  `Icons[name]` access defeats it (forces the barrel) — so the icon set is
+  STATIC per call site, not data-driven. Pinned `^1.17.0` (ISC license,
+  React-18.3 peer, 0 transitive, 0 install-script, SLSA-attested — both
+  dependency-auditor + security-reviewer SAFE). NOT in the dependabot
+  ignore-list (normal minor/patch flow; a `2.0.0` major would get the usual
+  migration-PR handling). Runtime npm deps aren't tracked in
+  `THIRD_PARTY_NOTICES.md` (that file is vendored-source / skills only —
+  next/react/recharts aren't listed either), so lucide isn't added there.
+
+- **Hero attribute tiles = the 4-box category grid, theme-reskinned, 2 data +
+  2 reserved** (`frontend/components/HeroAttributeTiles.tsx`, PR #344). The
+  QuantRank answer to "กรอบสี่เหลี่ยมสี่อันในภาพ" (a reference stock app's
+  icon-over-label category tiles). Modeled on that STRUCTURE (lucide icon top,
+  caption + value below, `grid grid-cols-2 sm:grid-cols-4`) but RESKINNED to
+  the LedgerCraft theme — light = soft slate surface, dark = deep slate, NOT
+  the reference app's black boxes (which break in light mode); `rounded` ≤4px,
+  border-as-depth, paired `dark:`. Four FIXED tiles: (1) **Size** =
+  market-cap tier (Mega ≥$200B / Large ≥$10B / Mid ≥$2B / Small) — DATA;
+  (2) **Sector** = `detail.sector` — DATA; (3) **Dividend** + (4) **Type** =
+  intentional PLACEHOLDERS rendered in a dashed-border "reserved" state with a
+  "Coming soon" sub-line (per the user's "ช่องเปล่า + label บอกว่าจะมีอะไร" —
+  the empty tile reads as reserved, not broken). The **Type** tile is reserved
+  for a future security-type signal (Common stock / ADR / etc. — the analog of
+  the reference app's "Common · หุ้นสามัญ" tile, user direction 2026-05-31);
+  the **Dividend** tile mirrors the reference app's "จ่ายปันผล" tile. NEITHER
+  field exists in the schema yet — when one lands, swap the tile's `value`
+  from `null` to the real field and it auto-promotes out of the reserved state. A `null` value flips a tile to the reserved treatment via the
+  `filled` flag. INFO tiles, NOT filters (single-stock detail page — nothing
+  to filter). Pure server component. Lives in its own section directly under
+  the hero `</header>`, above the Price chart. Distinct from the earlier
+  inline-chip attempt (closed PR #343 — the user wanted the BOX grid, not a
+  compact chip row).
+
 ## Phase status
 
 Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged
@@ -2525,6 +2567,20 @@ of re-discovering the pattern.
   (~1-2w each → v1.1.0-phase4)
 - **Phase 5** — ML meta-learner (~10-12w, unblocks PR 4b §3
   IC-decay writer #75)
+- **Stock-attribute data — Dividend + Security-type** — fills the two
+  reserved `HeroAttributeTiles` slots (PR #344; both show "Coming soon" until
+  data lands). 7a Dividend: `dividend_yield_pct` / `pays_dividend` from
+  yfinance `Ticker.info` (already in the stack — extends the
+  `compute/ingest/cross_source.py` info-cache pattern, NOT `prices.py` which
+  is `yf.download` OHLCV-only; no new dep) + schema triple +
+  `Metadata.dividend_coverage_pct` observability-first.
+  7b Security-type: Common / ADR / REIT label from yfinance
+  `fast_info.quote_type` (NOT the retired `.info["quoteType"]`) + SEC
+  `dei:DocumentType == "20-F"` / EDGAR submissions `entityType` for ADR
+  detection. Both DISPLAY-ONLY (no ranking/scoring/veto impact); each
+  behind a `*_coverage_pct` diagnostic cron before the tile reads live data
+  (observability-before-wiring). Tiles auto-promote out of "reserved" when
+  `value` flips non-null. See PHASE_STATUS.md §Next deliverables item 7.
 
 See [`PHASE_STATUS.md`](PHASE_STATUS.md) for the canonical
 chronological tracker.

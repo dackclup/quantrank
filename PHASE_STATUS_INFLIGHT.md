@@ -4528,3 +4528,62 @@ the screenshot grey). `HeroMetric` confirmed a separate `'use client'` chunk;
 `page.tsx` still server. **No schema / Python / scoring / valuation / output-
 JSON change** — 1 new client component + badge simplification + page wiring.
 CLAUDE.md §Gotcha + AGENTS.md inventory + tailwind/design.md comment fixes.
+
+## Hero attribute tiles — 4-box category grid + lucide-react (frontend, this PR)
+
+**Scope**: frontend. User asked for "กรอบสี่เหลี่ยมสี่อันในภาพ" — a reference
+stock app's 4 category tiles (icon-over-label boxes). A `/grill-me` session
+locked the spec (6 decisions): (1) match the STRUCTURE (grid/icon-top/label-
+bottom) but reskin to the QuantRank theme — light slate / dark slate, NOT the
+reference app's black boxes (break in light mode); (2) 2 tiles have data
+(Size = market-cap tier, Sector), 2 don't; (3) the empty tiles render as
+"reserved" placeholders (dashed border + "Coming soon" sub-line) NOT a bare
+"—" — so they read as intentional, not broken; (4) icons via a NEW dep
+`lucide-react`; (5) supersede + CLOSE the earlier inline-chip attempt (PR #343
+closed — the user wanted the BOX grid, not a compact chip row); (6) own section
+under the hero, info tiles (not filters).
+
+**New dep — `lucide-react@^1.17.0`** (the project's first icon library).
+dependency-auditor + security-reviewer both SAFE: ISC license (MIT-tier),
+React-18.3 peer, 0 transitive deps, 0 install-scripts, SLSA-attested, 0 CVE.
+Tree-shakes to ~1.5-2 KB gzipped for 4 named-imported icons (stock-detail
+route 113 → 115 KB First Load JS, as predicted). NAMED imports only — never
+the `import * as Icons` barrel (224 KB). NOT added to the dependabot
+ignore-list (normal flow). NOT added to THIRD_PARTY_NOTICES.md (that file
+tracks vendored sources/skills only — next/react/recharts aren't listed
+either, so a runtime npm dep doesn't belong there; auditor suggested adding
+it but the project convention is the opposite — noted here for the record).
+
+**New component** `HeroAttributeTiles.tsx` (pure server component): `grid
+grid-cols-2 sm:grid-cols-4`, 4 fixed tiles via a `Tile` sub-component. A tile
+with a `null` value flips to the dashed "reserved" treatment. Wired as its own
+section in `page.tsx` directly under the hero `</header>`, above the Price
+chart.
+
+**Verification (real data)**: `tsc --noEmit` clean · `next build` 506/506 ·
+NVDA HTML — Size→"Mega cap", Sector→"Information Technology", 2 "Coming soon"
+placeholders, `grid-cols-2`+`sm:grid-cols-4` present, lucide icons render as
+inline SVG (tree-shaken, +2 KB route). **No schema / Python / scoring /
+valuation / output-JSON change** — 1 new dep + 1 new server component + hero
+wiring. CLAUDE.md §Gotcha ×2 (lucide import discipline + the tiles) + AGENTS.md
+inventory + this entry.
+
+**Follow-up edits in the same PR**: (a) review polish (frontend-design-reviewer
+READY, no blocker) — reserved-tile caption contrast slate-400 → slate-500
+(WCAG), reserved caption now UPPERCASE to match filled tiles, Sector icon
+Factory → Layers (neutral, not manufacturing-specific), `<section aria-label>`
++ sr-only `<h2>` for the document outline. (b) 4th tile renamed `More` → `Type`
+(icon Gauge → ScrollText) per user direction — reserved for a future
+security-type signal (Common stock / ADR / etc., the analog of the reference
+app's "Common · หุ้นสามัญ" tile). (c) **Roadmap added** (PHASE_STATUS.md +
+CLAUDE.md §Next deliverables #7): the two reserved tiles (Dividend + Type) now
+have a planned ingest path — 7a Dividend (`dividend_yield_pct`/`pays_dividend`
+from yfinance `Ticker.info`, extends the `cross_source.py` info-cache pattern,
+no new dep) + 7b Security-type (Common/ADR/REIT from yfinance
+`fast_info.quote_type` + SEC `dei:DocumentType == "20-F"` / EDGAR `entityType`
+for ADR detection); both DISPLAY-ONLY (no ranking/scoring impact), each behind
+a `Metadata.*_coverage_pct` diagnostic cron (observability-before-wiring)
+before the tile reads live data. Tiles auto-promote out of "reserved" when the
+schema field lands. (Doc-reviewer 2026-06-01 corrected the field names — the
+original roadmap draft cited the retired `.info["quoteType"]`, funds-only
+`.info["legalType"]`, and a non-existent `IsForeignPrivateIssuer` SEC field.)

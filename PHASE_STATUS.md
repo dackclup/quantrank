@@ -150,6 +150,42 @@
 4. **v1.5.0 release tag (next)** — gated on Phase 4.5e PR 5 cluster weight promotion (item 1) + Issue #287 PR B (item 2) landing + ≥ 4 weekly crons of post-flip / post-revert data accumulating ahead of Q3 2026-08-19 cohort audit; or cut a `v1.4.x` patch sooner if a structural fix lands on its own
 5. **Phase 4i.1 / 4j.1 / 4k.1 — Factor integrations** (JKP / Qlib / IPCA; ~1-2w each → `v1.1.0-phase4`); 4i.1 license-review-required per #115
 6. **Phase 5 — ML meta-learner** (~10-12w); also unblocks PR 4b §3 IC-decay writer (#75)
+7. **Stock-attribute data — Dividend + Security-type** (frontend tiles already
+   reserved via PR #344 `HeroAttributeTiles`; both render a "Coming soon"
+   placeholder until the data lands). Two independent ingest + schema-triple
+   deliverables:
+   - **7a. Dividend signal** — add a `dividend` block to the per-stock schema
+     (Pydantic `StockDetail` + TS `types.ts` + snapshot, the triple-lockstep).
+     Source: yfinance already in the stack — `yf.Ticker(t).info["dividendYield"]`
+     / `["payoutRatio"]` (the `Ticker.info` API surface already used by
+     `compute/ingest/cross_source.py:129` for `marketCap` + cached under
+     `YFINANCE_INFO_CACHE_DIR`; dividend ingest extends that SAME pattern —
+     `prices.py` only does `yf.download()` OHLCV, so it's the wrong anchor),
+     no new dependency. Ship the diagnostic `Metadata.dividend_coverage_pct`
+     FIRST (observability-before-wiring, Rule 18) — confirm the field
+     populates on a real cron before the `HeroAttributeTiles` "Dividend" tile
+     reads it. Fields to consider: `dividend_yield_pct`, `pays_dividend: bool`,
+     optional `payout_ratio`. Tile auto-promotes out of the reserved state
+     once `value` is non-null. **Methodology note**: dividend yield is
+     descriptive metadata, NOT a new scoring pillar or veto — keep it out of
+     the composite unless a separate `financial-engineer` +
+     `methodology-scientist` design says otherwise.
+   - **7b. Security-type signal** — the `Type` tile (Common stock / ADR /
+     REIT / etc.). Source: yfinance `yf.Ticker(t).fast_info.quote_type`
+     (NOT `.info["quoteType"]` — that key is retired into `fast_info` on
+     current yfinance; and `.info["legalType"]` is funds-only, `None` for
+     equities — don't use it), AND for ADR/foreign-issuer detection the SEC
+     route `dei:DocumentType == "20-F"` in the XBRL filing (the standard
+     foreign-private-issuer annual-report form) or the EDGAR submissions JSON
+     `entityType` field (already fetched by `compute/ingest/sec_health.py`).
+     The universe is S&P 500 so ADRs are rare but present. Same schema-triple
+     + observability-first discipline. Smaller than 7a (a categorical label,
+     no numeric).
+   Both are **annotate/display-only** — they fill the two reserved
+   `HeroAttributeTiles` slots, they do NOT touch ranking, scoring, or the
+   defense layer. Sequence each behind a `Metadata.*_coverage_pct` diagnostic
+   cron before flipping the tile to read live data (the Phase 4h → 4h.2
+   observability-before-wiring precedent). Schema bumps: one MINOR per signal.
 
 **Open issues** (as of post-PR-#299, with PR #300 in flight): #15 (fundamentals throttling) · #16 (going-concern negation-lookbehind — FP rate 1.0% in band, mechanism not yet code-confirmed) · #41 (Next.js 14 → 16 CVEs, 15 open `next@14.x` advisories — zero exploitability on static-export) · #67 (sector-CoE flipped via PR #294; per-sector delta follow-up in flight via PR #300) · #75 (PR 4b §3 IC-decay, Phase-5-blocked) · #115 (JKP license review, blocks Phase 4i.1) · #130 (quarterly cohort-threshold review, next 2026-08-19) · #137 (9arm-skills license clarification, deadline 2026-06-17) · #150 (Phase 2-3 epic, phases 2-3 remaining) · #287 (PR A merged via PR #297; PR B FORM4 revert gated on ≥ 1 cron < 195m green). **Closed same day 2026-05-28**: #288 (PR #292 + PR #298 cache-v5 follow-up) · #289 (PR #293 Site-2 DQIC retirement).
 

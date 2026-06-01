@@ -2,6 +2,7 @@ import Link from 'next/link';
 
 import FairPriceCard from '@/components/FairPriceCard';
 import { FairPriceBarChart } from '@/components/FairPriceBarChart';
+import { HeroAttributeTiles } from '@/components/HeroAttributeTiles';
 import { HeroMetric } from '@/components/HeroMetric';
 import { MoSBadge } from '@/components/MoSBadge';
 import { PillarRadarChart } from '@/components/PillarRadarChart';
@@ -214,6 +215,11 @@ export default function StockDetailPage({
           </div>
         </div>
       </header>
+
+      {/* Attribute tiles — the 4-box "what is this company" grid (cap tier ·
+          sector · 2 reserved placeholders). Its own section under the hero,
+          above the price chart — see HeroAttributeTiles.tsx. */}
+      <HeroAttributeTiles marketCap={detail.market_cap} sector={detail.sector} />
 
       <section>
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
