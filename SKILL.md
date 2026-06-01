@@ -418,15 +418,20 @@ Full defense schedule and bibliography in
 Two pattern locks landed during PRs 4d / 4e and apply to every Phase
 4+ UI / scoring contribution:
 
-1. **Outlined-light chip family, no `dark:` variants** — every new
-   pill / badge / chip (sector, score-tier, MoS bucket, recommendation,
+1. **Outlined-light chip family, with paired `dark:` variants** — every
+   new pill / badge / chip (sector, score-tier, MoS bucket, recommendation,
    loss-chance) uses the **Pattern B** outlined-light style codified in
    `.claude/skills/frontend-design-system/SKILL.md` Rule 2. Solid-bg
-   chips are an anti-pattern. **Never add `dark:` Tailwind variants** —
-   `globals.css` forces `color-scheme: light` but Tailwind `dark:`
-   triggers on system `prefers-color-scheme: dark`, producing invisible
-   text against the forced-light background (the PR #70 regression).
-   Light-mode only; trigger the design-system skill before any new UI.
+   chips are an anti-pattern. **Ship a paired `dark:` variant** on every
+   colored surface — since Phase 3b the site runs class-strategy dark mode
+   (`darkMode: 'class'` + a `next-themes` toggle), so `dark:` activates on
+   the `.dark` class (an explicit user choice), NOT bare system
+   `prefers-color-scheme`; a light-only surface is now the bug
+   (near-invisible on the dark band). (The pre-Phase-3b "no `dark:`" rule —
+   PR #70's invisible-label regression on a force-light + `darkMode: 'media'`
+   page — is retired; see `frontend-design-system` SKILL.md Rule 4 for the
+   pairing table + full history.) Trigger the design-system skill before any
+   new UI.
 
 2. **Tests reference thresholds symbolically, not by literal value** —
    pure-function scorers like `derive_recommendation` and

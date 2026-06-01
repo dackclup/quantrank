@@ -4824,3 +4824,33 @@ classes are remapped; `bg-rose-600`/`bg-emerald-700` etc. are NOT — use a list
 soft class or the chip family). DISPLAY-ONLY. No schema / compute / scoring /
 valuation change. Verified: `frontend-design-reviewer` chip-family + a11y pass;
 `tsc --noEmit` + `next build` run by CI (sandbox has no `node_modules`).
+
+**Doc — un-stale `frontend-design-system` SKILL.md Rule 4 (dark mode), this PR** —
+follow-up surfaced by the `frontend-design-reviewer` pass on PR #352
+(`$impeccable polish`). `.claude/skills/frontend-design-system/SKILL.md` Rule 4
+("Light-mode only — NO `dark:` variants") was the INVERSE of reality since
+Phase 3b shipped class-strategy dark mode (`darkMode: 'class'` + `next-themes`
+three-state toggle); every canonical component now carries paired `dark:`
+variants, and the file's OWN canonical code example (lines 58-63) already uses
+them — so the prose contradicted the example AND the code. Left as-is it could
+make a future agent wrongly FAIL a PR that adds `dark:` variants. Three stale
+spots fixed coherently: (1) Rule 4 heading + body rewritten to "Paired light +
+`dark:` (class-strategy)" with a light↔dark pairing table + a "why it's safe
+now (class-gated, not media-gated)" note + the original PR #70 lesson preserved
+in a collapsed `<details>` History block; (2) the "Tone palette (light-mode
+only)" caption → "paired light + `dark:`"; (3) the "Why no `dark:` variants"
+note → "Why paired `dark:` variants". The `docs-reviewer` pass then found the
+SAME retired "no `dark:`" logic copy-pasted in two OTHER homes that now
+contradicted the corrected Rule 4, so this PR un-stales them in lockstep too:
+(4) top-level `SKILL.md` Rule 17 item 1 ("Never add `dark:` variants" → "Ship a
+paired `dark:` variant", class-strategy explanation + PR #70 retired-history
+pointer); (5) `frontend/components/LossChanceBadge.tsx` block comment (the "NO
+`dark:` variants … see Rules 2+4" comment that already contradicted its own
+`dark:`-carrying BANDS data) → paired-variant prose; (6) the Rule 2 canonical
+code example's stale values (`rounded-full` → `rounded-sm` per PR #233,
+`dark:bg-emerald-900` → `/30`, `dark:ring-emerald-700` → `-800`). Scope: docs
+(`SKILL.md` Rule 17 + the `frontend-design-system` skill) + 1 frontend code
+COMMENT (LossChanceBadge — no behavior/build change) + this side-file — no
+compute / schema / scoring / valuation / frontend-LOGIC change. Separate from
+PR #352 (the UI polish) by user direction to keep that PR focused. Verified:
+`docs-reviewer` DOCS-CLEAN; CI green. Branch `claude/frontend-skill-rule4-darkmode`.

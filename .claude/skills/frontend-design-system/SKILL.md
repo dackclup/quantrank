@@ -55,17 +55,17 @@ for hierarchy.
 ```tsx
 // Outlined-light chip — same shape across sector / recommendation /
 // score-tier / MoS-bucket / future exchange / loss-chance.
-<span className="inline-flex items-center gap-1.5 rounded-full
+<span className="inline-flex items-center gap-1.5 rounded-sm
                  ring-1 ring-inset px-2 py-0.5 text-xs font-medium
                  bg-emerald-50 text-emerald-800 ring-emerald-300
-                 dark:bg-emerald-900 dark:text-emerald-100 dark:ring-emerald-700">
+                 dark:bg-emerald-900/30 dark:text-emerald-100 dark:ring-emerald-800">
   <span className="inline-block h-1.5 w-1.5 rounded-full
                    bg-emerald-700 dark:bg-emerald-300" aria-hidden="true" />
   Strong Buy
 </span>
 ```
 
-Tone palette (light-mode only — see Rule 4):
+Tone palette (paired light + `dark:` — see Rule 4):
 
 | Tier | Background | Text | Ring | Dot |
 |---|---|---|---|---|
@@ -80,11 +80,13 @@ labels like "Strong Buy" / "Sell" stay readable against `bg-50` even on
 low-contrast displays. WCAG AA target ≥ 4.5:1; text-900 on bg-50 gives
 ~10:1.
 
-**Why no `dark:` variants**: Rule 4 above. Tailwind's `dark:` triggers on
-system `prefers-color-scheme: dark`, not the page's `color-scheme: light`
-declaration. Mixing them = invisible-label bug on every user with system
-dark mode. Add `dark:` only when the site ships an explicit dark-mode
-toggle (not on the current roadmap).
+**Why paired `dark:` variants** (see Rule 4): since Phase 3b the site ships
+class-strategy dark mode (`darkMode: 'class'` + `next-themes`), so `dark:`
+activates ONLY on the `.dark` class next-themes writes on an explicit user
+toggle — never on bare system `prefers-color-scheme`. Every chip therefore
+carries a paired `dark:` tone (strong-end → `dark:text-{tone}-100`, middle →
+`dark:text-{tone}-300`, over a translucent `dark:bg-{tone}-900/30`). A
+light-only surface is now the bug (near-invisible on the dark band).
 
 ### Visual hierarchy via dot color (not by switching patterns)
 
@@ -152,30 +154,58 @@ pattern: export both an inline-badge tone map and an active-chip tone map
 from the badge component file. Don't put tone classes inline in `RankingTable`
 or `FilterDrawer` — keep them with the badge module.
 
-## Rule 4 — Light-mode only (NO `dark:` variants)
+## Rule 4 — Paired light + `dark:` variants (class-strategy dark mode)
 
-The QuantRank site is **force-light-mode** via `:root { color-scheme: light }`
-in `frontend/app/globals.css`. The page itself never renders dark mode.
+> Updated 2026-06-01. This rule was the INVERSE ("light-mode only, NO `dark:`
+> variants") until Phase 3b shipped a real dark mode; it was stale and is
+> rewritten here. The original PR #70 lesson is preserved in the History block
+> at the bottom so it isn't lost.
 
-**Critical**: Tailwind's `dark:` variants (default `darkMode: 'media'`) are
-gated on the SYSTEM-level `prefers-color-scheme: dark` media query, NOT on
-the page's `color-scheme` declaration. So a user whose phone/laptop is set
-to system dark mode will trigger every `dark:` class on the page, even
-though the page background stays white.
+QuantRank ships **class-strategy dark mode** since Phase 3b:
+`tailwind.config.ts` sets `darkMode: 'class'`, and `next-themes`
+(`ThemeProvider attribute="class"`) writes a `.dark` class on `<html>` from a
+three-state (light / dark / system) toggle in the sidebar footer + AppShell
+header. `frontend/app/globals.css` carries a `.dark` block (OKLCH dark band +
+near-black page bg).
 
-**Result of mixing dark: variants on this site**: text colors flip to the
-dark-mode tone (`dark:text-{tone}-50` = very light) while backgrounds keep
-their light-mode tone (`bg-{tone}-50` = also very light) → label disappears
-into the background.
+**So every chip / badge / colored surface carries a PAIRED `dark:` variant.**
+A light-only surface is now the bug (near-invisible text on the dark band) —
+the exact opposite of the pre-Phase-3b rule. Canonical pairing (see
+`RecommendationBadge` / `LossChanceBadge` / `TIERS` / `MOS_BUCKETS`):
 
-Lesson 2026-05-14 (PR #70 second iteration): the recommendation badge was
-introduced with `dark:` variants per "good Tailwind practice." User on
-system dark mode saw blank/invisible "Strong Buy" and "Sell" labels.
-SectorChip / score-tier / MoS-bucket chips were already (correctly) without
-`dark:` variants — match them.
+| Light | Paired dark |
+|---|---|
+| `bg-{tone}-50` | `dark:bg-{tone}-900/30` (translucent band) |
+| `text-{tone}-900` (strong end) | `dark:text-{tone}-100` |
+| `text-{tone}-700` (middle) | `dark:text-{tone}-300` |
+| `ring-{tone}-200/300` | `dark:ring-{tone}-800` |
+| dot `bg-{tone}-500/600/700` | `dark:bg-{tone}-300/400` (brighter on the dark band) |
 
-**Rule**: Don't add `dark:` variants to any QuantRank component until the
-site adopts a dark-mode toggle (no such plan currently). Light tones only.
+**Why this is safe now (it wasn't pre-Phase-3b)**: `darkMode: 'class'` gates
+`dark:` on the `.dark` class next-themes controls — NOT on bare system
+`prefers-color-scheme`. So `dark:` activates only when the user (or their
+"system" choice) actually selects dark, in lockstep with the page bg. The old
+invisible-label failure required `darkMode: 'media'` (system-gated) on a
+force-light page — that combination no longer exists.
+
+**Rule**: ship a paired `dark:` variant on every new colored surface, and
+verify it reads on the dark band (WCAG-AA in BOTH themes). The soft-OKLCH
+`!important` overrides in `globals.css` remap the base utility classes
+per-theme via the CSS variables, so the `dark:` variant and the var override
+agree — keep both.
+
+<details><summary>History — the original (now-retired) Rule 4</summary>
+
+Pre-Phase-3b the site was force-light (`:root { color-scheme: light }`) with
+Tailwind's default `darkMode: 'media'`. In that combo a `dark:` class fired on
+system `prefers-color-scheme: dark` even though the page stayed white, so
+`dark:text-{tone}-50` on a `bg-{tone}-50` made labels vanish. Lesson
+2026-05-14 (PR #70 second iteration): the recommendation badge shipped `dark:`
+variants and a system-dark user saw blank "Strong Buy" / "Sell" labels; the
+fix THEN was to REMOVE them. Phase 3b's switch to `darkMode: 'class'` +
+`next-themes` inverted the rule — `dark:` is now correct and required.
+
+</details>
 
 ## Rule 5 — Typography
 

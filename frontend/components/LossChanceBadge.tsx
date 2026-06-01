@@ -3,11 +3,12 @@
 // Loss Chance % chip (PR 4e, Phase 4 UX trio §2).
 //
 // 5-band color gradient — outlined-light pattern matching SectorChip /
-// RecommendationBadge / score-tier / MoS-bucket chips. NO `dark:`
-// variants (the site is force-light via `globals.css :root
-// color-scheme: light`; Tailwind dark: triggers on SYSTEM
-// `prefers-color-scheme: dark` and would make text vanish — lesson
-// from PR #70). See `.claude/skills/frontend-design-system/SKILL.md`
+// RecommendationBadge / score-tier / MoS-bucket chips, with a PAIRED
+// `dark:` variant on every band (see the BANDS table below). Since
+// Phase 3b the site runs class-strategy dark mode (`darkMode: 'class'` +
+// `next-themes`), so `dark:` fires on the `.dark` class (an explicit
+// toggle), never on bare system `prefers-color-scheme` — a light-only
+// surface is the bug now. See `.claude/skills/frontend-design-system/SKILL.md`
 // Rules 2 + 4.
 //
 // Display: "NN%" with a small leading dot in the band's accent. The
