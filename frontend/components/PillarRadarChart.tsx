@@ -166,7 +166,7 @@ export function PillarRadarChart({
                 >
                   {r.value.toFixed(0)}
                 </div>
-                <div className="text-[0.625rem] text-slate-400 dark:text-slate-500">{tierLabel(r.value)}</div>
+                <div className="text-[0.625rem]" style={{ color: c }}>{tierLabel(r.value)}</div>
               </div>
             </li>
           );
