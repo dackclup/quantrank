@@ -4664,3 +4664,39 @@ unknown→passthrough/None, None/""→None/None all pass); snapshot diff confirm
 +15/−0 with correct sort + value-key order. `pytest` + `schema_check` run on CI
 (sandbox lacks pydantic/tenacity/yfinance). CLAUDE.md + AGENTS.md + SKILL.md +
 test_config.py + this entry move in lockstep.
+
+---
+
+### impeccable third-party frontend-design skill — committed (full vendoring) [in flight]
+
+`npx skills add pbakaus/impeccable` vendored the
+[pbakaus/impeccable](https://github.com/pbakaus/impeccable) frontend-design skill
+(skills.sh cross-tool layout: content in `.agents/skills/impeccable/`, a
+`.claude/skills/impeccable` symlink, a root `skills-lock.json` pin). Initially
+gitignored local-only (PR #346, merged `9575d22`); this PR **reverses** that per
+user direction (2026-06-01) and **commits** the bundle so the skill is
+permanently findable in-repo across ephemeral web sessions.
+
+**Audited before commit** (both read-only, spawned in parallel):
+`security-reviewer` → **COMMIT-WITH-MITIGATIONS** (no secrets; nothing
+auto-executes on `git clone` / CI / `npm install` — no `package.json`/install
+hooks; phone-home is a benign once-daily version probe with a real opt-out;
+`live` "Apply" spawns a `claude` subprocess with `--permission-mode
+bypassPermissions`, dev-session only). `dependency-auditor` → **SAFE-TO-MERGE**
+(0 new pip/npm manifest deps, CVE baseline 15 unchanged; `modern-screenshot.umd.js`
+= MIT sub-lib, `@babel/parser` require degrades gracefully). License **verified
+via WebFetch = Apache-2.0** (Copyright 2025 Paul Bakaus) — correcting BOTH agents
+(security-reviewer guessed MIT, dependency-auditor guessed undeclared; neither
+has web access).
+
+**Lands**: remove the impeccable block from `.gitignore` (un-ignore `.agents/` +
+`skills-lock.json` + the symlink); add `.agents/skills/impeccable/LICENSE`
+(verbatim Apache-2.0, §4(a) compliance); new `.gitattributes` marks
+`.agents/skills/impeccable/scripts/**` + `LICENSE` `linguist-vendored`;
+`THIRD_PARTY_NOTICES.md` §pbakaus/impeccable (Apache-2.0 + modern-screenshot MIT
+sub-lib + audited security posture + reversal rationale); CLAUDE.md §Layout
+(`.agents/skills/` row + skill-count note) + §Gotchas
+(`IMPECCABLE_NO_UPDATE_CHECK` / `IMPECCABLE_UPDATE_HOST` env-vars + the `live`
+`bypassPermissions` note); AGENTS.md mirror (skill-count line + `.agents/` tree
+row + §Security bullet). **No compute / schema / scoring / valuation / frontend
+code change** — vendored third-party dev-tooling skill + doc lockstep only.
