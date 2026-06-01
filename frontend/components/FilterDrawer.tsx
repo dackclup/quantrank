@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { DualRange } from '@/components/DualRange';
 import {
@@ -77,11 +77,50 @@ export function FilterDrawer({
     clearAll,
   } = setters;
 
-  // Esc-to-close + body scroll lock while drawer is open.
+  const asideRef = useRef<HTMLElement>(null);
+  const triggerRef = useRef<HTMLElement | null>(null);
+
+  // Esc-to-close + body scroll lock + FOCUS TRAP while the drawer is open.
+  // A modal dialog must contain keyboard focus (WCAG 2.4.3 / 2.1.2): on open
+  // we remember the element that opened it, move focus into the drawer, and
+  // cycle Tab/Shift+Tab within it; on close we restore focus to the trigger.
+  // Without this, Tab escaped to the page behind the backdrop (audit P1).
   useEffect(() => {
     if (!open) return;
+    triggerRef.current = document.activeElement as HTMLElement | null;
+    const aside = asideRef.current;
+    const focusables = (): HTMLElement[] =>
+      aside
+        ? Array.from(
+            aside.querySelectorAll<HTMLElement>(
+              'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+            ),
+          ).filter((el) => el.offsetParent !== null)
+        : [];
+    // Move focus into the drawer (first focusable = the Close button).
+    focusables()[0]?.focus();
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+      const els = focusables();
+      if (els.length === 0) return;
+      const firstEl = els[0];
+      const lastEl = els[els.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey && active === firstEl) {
+        e.preventDefault();
+        lastEl.focus();
+      } else if (!e.shiftKey && active === lastEl) {
+        e.preventDefault();
+        firstEl.focus();
+      } else if (aside && active instanceof Node && !aside.contains(active)) {
+        // Focus escaped the drawer (e.g. via the address bar) — pull it back.
+        e.preventDefault();
+        firstEl.focus();
+      }
     };
     document.addEventListener('keydown', onKey);
     const prevOverflow = document.body.style.overflow;
@@ -89,6 +128,8 @@ export function FilterDrawer({
     return () => {
       document.removeEventListener('keydown', onKey);
       document.body.style.overflow = prevOverflow;
+      // Restore focus to whatever opened the drawer.
+      triggerRef.current?.focus?.();
     };
   }, [open, onClose]);
 
@@ -102,6 +143,7 @@ export function FilterDrawer({
         aria-hidden="true"
       />
       <aside
+        ref={asideRef}
         role="dialog"
         aria-modal="true"
         aria-label="Filter stocks"
@@ -122,9 +164,10 @@ export function FilterDrawer({
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
             aria-label="Close filters"
-            className="rounded-sm p-1.5 text-slate-500 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+            className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm text-slate-500 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.75">
               <path d="M5 5l10 10M15 5L5 15" strokeLinecap="round" />
@@ -143,7 +186,7 @@ export function FilterDrawer({
                 placeholder="Ticker or company name…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full rounded-sm border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:border-slate-500 dark:focus:ring-slate-500"
+                className="min-h-[44px] w-full rounded-sm border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:border-slate-500 dark:focus:ring-slate-500"
               />
               <svg
                 className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-slate-500"
@@ -286,14 +329,14 @@ export function FilterDrawer({
           <button
             type="button"
             onClick={clearAll}
-            className="rounded-sm px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+            className="inline-flex min-h-[44px] items-center rounded-sm px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
           >
             Clear all
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-sm bg-emerald-700 px-4 py-1.5 text-sm font-medium text-white transition-colors duration-150 hover:bg-emerald-800 dark:bg-emerald-600 dark:text-white dark:hover:bg-emerald-500"
+            className="inline-flex min-h-[44px] items-center rounded-sm bg-emerald-700 px-4 py-1.5 text-sm font-medium text-white transition-colors duration-150 hover:bg-emerald-800 dark:bg-emerald-600 dark:text-white dark:hover:bg-emerald-500"
           >
             View {filteredCount.toLocaleString()} stock{filteredCount === 1 ? '' : 's'}
           </button>

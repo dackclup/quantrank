@@ -990,6 +990,28 @@ whitespace / single-line fixes do not trigger.
   stay raw mid-saturation rgb BY DESIGN (thin ring needs the saturation; the
   amber mid-band has no soft token anyway).
 
+- **Interactive controls carry a `min-h-[44px]` touch target; modals trap +
+  restore focus; warning-card headings are severity-toned** (`frontend/components/*`,
+  `$impeccable audit`+`critique` punch-down 2026-06-01). Three a11y standards
+  landed across the UI: (1) every primary interactive control (Sidebar nav items
+  + mobile-close + brand link, AppShell hamburger, FilterDrawer buttons + drawer
+  search, RankingTable Filters / search / pagination, `PriceTimePeriodSelector`,
+  the `DualRange` grab zone + thumbs, the detail back-link, ThemeToggle) carries
+  `min-h-[44px]` (often `min-w-[44px]` / `h-11 w-11`) so the tap target clears
+  the mobile-first floor PRODUCT.md mandates — a NEW button/input/link MUST
+  follow suit (never ship a `py-1`/`h-8` control as a touch target). (2)
+  `FilterDrawer` is a true modal: it traps Tab/Shift+Tab within the `<aside>`
+  (a focusables sweep keyed off `asideRef`), moves focus IN on open, and restores
+  it to the trigger on close (WCAG 2.4.3) — a future slide-over/dialog must do
+  the same, not just body-scroll-lock + Esc. (3) Warning cards (`Tier2EventCard`
+  / `RiskSummaryCard`) tone their `<h2>` by severity (rose veto / amber annotate,
+  else neutral slate) so they outweigh the neutral data-section eyebrows — a
+  deliberate break from the uniform `text-slate-600` header treatment, gated on
+  the card actually carrying a warning. (Verified-false-positive, do NOT
+  "re-fix": the dark loss-chance band is already soft — the `!important`
+  `text-red-700` remap wins over `dark:text-red-300`; the period selector already
+  uses the correct `role="radio"`+`aria-checked`, not `aria-pressed`.)
+
 ## Phase status
 
 Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged

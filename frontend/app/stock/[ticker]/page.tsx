@@ -35,7 +35,7 @@ export default function StockDetailPage({
       <article className="space-y-6">
         <Link
           href="/"
-          className="inline-flex items-center gap-1 text-sm text-slate-900 transition-opacity hover:opacity-70 dark:text-slate-100"
+          className="inline-flex min-h-[44px] items-center gap-1 text-sm text-slate-900 transition-opacity hover:opacity-70 dark:text-slate-100"
         >
           <svg
             width="14"
@@ -218,17 +218,26 @@ export default function StockDetailPage({
           above the price chart — see HeroAttributeTiles.tsx. */}
       <HeroAttributeTiles marketCap={detail.market_cap} sector={detail.sector} />
 
-      <section>
+      <section aria-label={`Price history for ${detail.ticker}`}>
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
           Price
         </h2>
         {detail.has_history ? (
-          <PriceHistoryChart
-            ticker={detail.ticker}
-            fairPriceMedian={detail.fair_price?.median ?? null}
-            fairPriceMax={detail.fair_price?.max ?? null}
-            recommendation={detail.recommendation}
-          />
+          <>
+            {/* Screen-reader summary — the Recharts SVG below carries no
+                accessible data, so this sr-only line gives a non-visual reader
+                the headline the chart conveys (audit P3). */}
+            <p className="sr-only">
+              Interactive 5-year price history chart for {detail.ticker}. Latest
+              close ${detail.current_price.toFixed(2)}.
+            </p>
+            <PriceHistoryChart
+              ticker={detail.ticker}
+              fairPriceMedian={detail.fair_price?.median ?? null}
+              fairPriceMax={detail.fair_price?.max ?? null}
+              recommendation={detail.recommendation}
+            />
+          </>
         ) : (
           <div className="flex h-64 items-center justify-center rounded border border-slate-200 bg-white text-sm text-slate-400 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-500">
             No price history available

@@ -189,6 +189,17 @@ export function RiskSummaryCard({
   // manipulation band tone.
   const outerRing = hasGates ? 'ring-rose-300 dark:ring-rose-800' : tone.ring;
 
+  // Heading tone signals decision-criticality so this warning card outweighs
+  // the neutral data sections below it (audit P2 — flat eyebrow hierarchy).
+  // Gates or a high index → rose; a moderate index → amber; a low index stays
+  // neutral (a low-risk stock's Risk Summary shouldn't shout).
+  const headingTone =
+    hasGates || (manipulationIndex ?? 0) >= 50
+      ? 'text-rose-700 dark:text-rose-300'
+      : (manipulationIndex ?? 0) >= 20
+        ? 'text-amber-700 dark:text-amber-300'
+        : 'text-slate-600 dark:text-slate-400';
+
   // Exactly ONE status chip in the outer header (rose gate-count when gates
   // fire, else the band chip) so the band label still surfaces when it's
   // the only signal. When gates fire, the band chip moves into the
@@ -198,7 +209,7 @@ export function RiskSummaryCard({
       className={`rounded border border-slate-200 bg-white p-4 ring-1 ring-inset dark:border-slate-800 dark:bg-slate-900 ${outerRing}`}
     >
       <header className="mb-3 flex items-center justify-between">
-        <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
+        <h2 className={`text-sm font-semibold uppercase tracking-[0.14em] ${headingTone}`}>
           Risk Summary
         </h2>
         {hasGates ? (
