@@ -37,8 +37,11 @@ const tierLabel = (mos: number): string => {
   return 'Expensive';
 };
 
-// Match ScoreBadge's mid-saturation accent. Soft emerald + rose per the
-// design-system Rule 1 "no pure red / no pure green" guideline.
+// Mid-saturation accent for the MoS gauge ring + tier label, matching
+// ScoreBadge's inline gauge accent. Used INLINE (svg `stroke` / inline
+// `color`), so the globals.css soft-color class overrides do NOT reach
+// it — kept a touch punchier than the soft chip tokens so the thin 6px
+// ring reads (emerald-600 / rose-600; no pure red/green per Rule 1).
 const accentColor = (mos: number): string =>
   mos >= 0 ? '#059669' /* emerald-600 */ : '#e11d48'; /* rose-600 */
 

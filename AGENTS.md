@@ -310,6 +310,16 @@ export function FairPriceCard(props) {  // no types
   counter-clockwise via `-scale-x-100` on the gauge container, with the number
   span mirrored back to stay readable. Keep both `-scale-x-100` in lockstep.
   Full rationale in CLAUDE.md §Gotchas.
+- **`globals.css` soft-color overrides are an ALLOWLIST** (`frontend/app/globals.css`,
+  2026-06-01): the `--c-pos-*`/`--c-neg-*` cascade remaps only the ENUMERATED
+  utility classes (`.text-emerald-700`, `.bg-emerald-50/600`, `.bg-rose-50/500`,
+  `.ring-rose-200`, `.text-red-700`, …). An un-listed class (notably
+  `.bg-rose-600`) renders RAW alarm-red, not muted terracotta — the gap that made
+  the rankings daily-change DOWN pill loud while the UP pill softened (fixed via
+  the `$impeccable polish` PR by moving the pill to the outlined-light chip
+  family). For any positive/negative surface use a listed class or the chip
+  family; inline `style`/svg `stroke` (gauge accents) are never reached and stay
+  raw rgb by design. Full rationale in CLAUDE.md §Gotchas.
 
 ## Git workflow
 

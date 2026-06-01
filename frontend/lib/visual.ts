@@ -145,9 +145,13 @@ export function scoreColorClasses(score: number): string {
   return 'bg-rose-50 text-rose-800 ring-rose-200 dark:bg-rose-900/30 dark:text-rose-200 dark:ring-rose-800';
 }
 
-// Accent color for the radial gauge ring + tier-label text in
-// ScoreBadge size=lg. The soft-color overrides in globals.css will
-// remap these to oklch sage/terracotta at render time.
+// Accent for the score gauge ring + tier label + the sm-pill dot.
+// Returned as a raw rgb() used INLINE (svg `stroke` / inline `color` /
+// dot `backgroundColor`). The globals.css soft-color overrides remap
+// utility CLASSES only, so they do NOT reach this inline value — these
+// accents stay a touch punchier than the soft chip tokens on purpose
+// (the thin ring + 6px dot need the saturation to read), and the amber
+// mid-band has no soft-token equivalent in globals.css anyway.
 export function scoreAccentColor(score: number): string {
   if (score >= 80) return 'rgb(5 150 105)';
   if (score >= 60) return 'rgb(16 185 129)';

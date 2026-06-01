@@ -970,6 +970,26 @@ whitespace / single-line fixes do not trigger.
   breathe on the wider mobile line). `space-y-3 sm:space-y-2` on the `<ul>`
   (the 2-line mobile rows need a touch more separation).
 
+- **`globals.css` soft-color overrides are an ALLOWLIST — `bg-rose-600` /
+  `bg-emerald-700` are NOT remapped** (`frontend/app/globals.css`, 2026-06-01).
+  The soft-OKLCH cascade (`--c-pos-*` / `--c-neg-*`) remaps only the SPECIFIC
+  Tailwind utility classes enumerated in the `!important` override block (e.g.
+  `.text-emerald-700`, `.bg-emerald-50`, `.bg-emerald-600`, `.bg-rose-50`,
+  `.bg-rose-500`, `.ring-rose-200`, `.text-red-700`, `.bg-red-50`). A class
+  OUTSIDE that list renders its RAW Tailwind value — notably `.bg-rose-600` is
+  absent, so a `bg-rose-600` surface shows raw alarm-red, not the muted
+  terracotta. That exact gap made the rankings mobile daily-change DOWN pill
+  render alarm-red while the `bg-emerald-600` UP pill softened (fixed in the
+  `$impeccable polish` PR by moving the pill to the chip family). Rule of the
+  road: for any new positive/negative surface, use a class ALREADY in the
+  override list OR (better) the shared outlined-light chip family
+  (`bg-{tone}-50 text-{tone}-700 ring-{tone}-200`, fully covered in light + dark)
+  — never reach for an un-listed shade expecting it to soften. Note the override
+  remaps utility CLASSES only: inline `style` / svg `stroke` values (the score
+  + MoS gauge accents via `scoreAccentColor` / `MoSBadge`) are never reached and
+  stay raw mid-saturation rgb BY DESIGN (thin ring needs the saturation; the
+  amber mid-band has no soft token anyway).
+
 ## Phase status
 
 Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged
