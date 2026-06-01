@@ -3,19 +3,21 @@
   "name": "Steris",
   "sector": "Health Care",
   "industry": "Health Care Equipment",
-  "market_cap": 21023574673.281708,
-  "current_price": 215.4,
-  "rank": 267,
-  "composite_score": 50.2,
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 20762976217.047195,
+  "current_price": 212.73,
+  "rank": 281,
+  "composite_score": 49.35,
   "pillar_scores": {
     "quality": 39.41,
-    "value": 50.85,
+    "value": 51.69,
     "growth": 68.01,
-    "momentum": 21.61,
+    "momentum": 19.02,
     "health": 81.24,
     "profitability": 48.87,
-    "technical": 77.79,
-    "risk": 43.99,
+    "technical": 64.14,
+    "risk": 43.26,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 8.04385257199138,
     "eps_diluted": 8.04385257199138,
     "shares_outstanding": 97602485.0,
-    "market_cap": 21023574673.281708,
-    "pe_ratio_ttm": 26.778212550352446,
+    "market_cap": 20762976217.047195,
+    "pe_ratio_ttm": 26.446282278750726,
     "goodwill": 4194800000.0
   },
   "fair_price": {
@@ -45,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 216.63007719024026,
+        "value": 218.1869607093427,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 212.5107759477265,
+        "value": 210.7870388596603,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 269.56612400643263,
+        "value": 271.0127664160399,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 212.5107759477265,
-    "max": 269.56612400643263,
+    "median": 210.7870388596603,
+    "max": 271.0127664160399,
     "low": 43.43915932117885,
-    "high": 269.56612400643263,
-    "mos_pct": -1.359563031979407,
+    "high": 271.0127664160399,
+    "mos_pct": -0.9217629691037895,
     "valuation_warnings": [
       "goodwill_heavy",
       "value_trap_risk"
@@ -91,7 +93,7 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 0,
+    "filing_lag_days": 3,
     "latest_period_end": "2026-05-27",
     "latest_filed_date": "2026-05-29"
   },
@@ -113,22 +115,22 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 52.97,
-      "Value": 51.13,
+      "Value": 51.98,
       "Growth": 49.58,
-      "Momentum": 33.76,
+      "Momentum": 30.88,
       "Health": 59.8,
       "Profitability": 50.85,
-      "Technical": 56.62,
-      "Risk": 43.29
+      "Technical": 56.18,
+      "Risk": 43.13
     }
   },
   "beneish_m_score": -7.352048910457745,
   "dechow_f_score": 0.4430959641098462,
-  "recommendation": "lean_bullish",
-  "loss_chance_pct": 43.377210533855816,
-  "price_change_1d_pct": 1.1885,
+  "recommendation": "neutral",
+  "loss_chance_pct": 43.64532479573077,
+  "price_change_1d_pct": -1.2396,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 50.2,
+  "composite_score_adjusted": 49.35,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -176,10 +178,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.02,
+  "osap_blended_score": 50.6,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5,
   "form4_diagnostics": null,
-  "cross_source_delta": 0.005578991800445496
+  "cross_source_delta": 0.005579015539096847
 }

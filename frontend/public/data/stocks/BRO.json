@@ -3,19 +3,21 @@
   "name": "Brown & Brown",
   "sector": "Financials",
   "industry": "Insurance Brokers",
-  "market_cap": 19265795334.159336,
-  "current_price": 56.84,
-  "rank": 353,
-  "composite_score": 45.87,
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 19065816056.25,
+  "current_price": 56.25,
+  "rank": 359,
+  "composite_score": 45.61,
   "pillar_scores": {
     "quality": 59.33,
-    "value": 38.89,
+    "value": 39.33,
     "growth": 69.0,
-    "momentum": 9.16,
+    "momentum": 8.27,
     "health": 39.8,
     "profitability": 50.44,
-    "technical": 54.48,
-    "risk": 31.37,
+    "technical": 49.65,
+    "risk": 31.18,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 3.4164548639210834,
     "eps_diluted": 3.4164548639210834,
     "shares_outstanding": 338947841.0,
-    "market_cap": 19265795334.159336,
-    "pe_ratio_ttm": 16.63712895868682,
+    "market_cap": 19065816056.25,
+    "pe_ratio_ttm": 16.46443528173575,
     "goodwill": 15076000000.0
   },
   "fair_price": {
@@ -45,13 +47,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 48.49009614914234,
+        "value": 48.03984953239603,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 33.7799213284766,
+        "value": 34.250523900658166,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 41.13500873880947,
-    "max": 48.49009614914234,
-    "low": 33.7799213284766,
-    "high": 48.49009614914234,
-    "mos_pct": -38.179137176069936,
+    "median": 41.1451867165271,
+    "max": 48.03984953239603,
+    "low": 34.250523900658166,
+    "high": 48.03984953239603,
+    "mos_pct": -36.71100920634694,
     "valuation_warnings": [],
     "valuation_methods_applicable": 2
   },
@@ -97,7 +99,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 32,
+    "filing_lag_days": 35,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-27"
   },
@@ -118,22 +120,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 52.0,
+      "Value": 51.78,
       "Growth": 51.5,
-      "Momentum": 51.2,
+      "Momentum": 48.9,
       "Health": 50.72,
       "Profitability": 49.11,
-      "Technical": 46.22,
-      "Risk": 54.45
+      "Technical": 50.35,
+      "Risk": 54.61
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 58.42740308023891,
-  "price_change_1d_pct": 0.0528,
+  "loss_chance_pct": 58.044086179282075,
+  "price_change_1d_pct": -1.038,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 45.87,
+  "composite_score_adjusted": 45.61,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -181,10 +183,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.86,
+  "osap_blended_score": 48.73,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2,
   "form4_diagnostics": null,
-  "cross_source_delta": 3.954369132942702e-08
+  "cross_source_delta": 5.330220311586722e-08
 }

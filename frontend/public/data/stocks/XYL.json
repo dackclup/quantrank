@@ -3,19 +3,21 @@
   "name": "Xylem Inc.",
   "sector": "Industrials",
   "industry": "Industrial Machinery & Supplies & Components",
-  "market_cap": 25968014110.25,
-  "current_price": 109.25,
-  "rank": 419,
-  "composite_score": 41.2,
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 26036945440.834892,
+  "current_price": 109.54,
+  "rank": 418,
+  "composite_score": 41.37,
   "pillar_scores": {
     "quality": 14.24,
-    "value": 62.66,
+    "value": 62.24,
     "growth": 60.13,
-    "momentum": 22.66,
+    "momentum": 21.26,
     "health": 74.62,
     "profitability": 36.08,
-    "technical": 35.21,
-    "risk": 36.29,
+    "technical": 43.63,
+    "risk": 36.89,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 4.127163884961714,
     "eps_diluted": 4.127163884961714,
     "shares_outstanding": 237693493.0,
-    "market_cap": 25968014110.25,
-    "pe_ratio_ttm": 26.47096239576962,
+    "market_cap": 26036945440.834892,
+    "pe_ratio_ttm": 26.541228787803153,
     "goodwill": 8292000000.0
   },
   "fair_price": {
@@ -45,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 114.88245517886483,
+        "value": 114.56745405852956,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 176.77760419623033,
+        "value": 176.63785805707153,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 131.59110461941611,
+        "value": 130.0326952984405,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 123.23677989914047,
-    "max": 176.77760419623033,
+    "median": 122.30007467848503,
+    "max": 176.63785805707153,
     "low": 12.355499380734537,
-    "high": 176.77760419623033,
-    "mos_pct": 11.349517498418527,
+    "high": 176.63785805707153,
+    "mos_pct": 10.433414531023532,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -92,7 +94,7 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 31,
+    "filing_lag_days": 34,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-28"
   },
@@ -115,22 +117,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.47,
-      "Value": 49.58,
+      "Value": 50.21,
       "Growth": 49.37,
-      "Momentum": 50.2,
+      "Momentum": 53.24,
       "Health": 52.71,
       "Profitability": 47.68,
-      "Technical": 49.25,
-      "Risk": 53.92
+      "Technical": 48.66,
+      "Risk": 53.75
     }
   },
   "beneish_m_score": -2.5224223695851657,
   "dechow_f_score": 0.585438701345465,
   "recommendation": "neutral",
-  "loss_chance_pct": 44.42734548556915,
-  "price_change_1d_pct": -0.772,
+  "loss_chance_pct": 44.66098772719336,
+  "price_change_1d_pct": 0.2654,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 41.2,
+  "composite_score_adjusted": 41.37,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -178,10 +180,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 46.53,
+  "osap_blended_score": 46.61,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3,
   "form4_diagnostics": null,
-  "cross_source_delta": 3.073973992046306e-08
+  "cross_source_delta": 2.092545354488705e-08
 }

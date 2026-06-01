@@ -3,19 +3,21 @@
   "name": "The Hershey Company",
   "sector": "Consumer Staples",
   "industry": "Packaged Foods & Meats",
-  "market_cap": 39967524456.40149,
-  "current_price": 197.04,
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 39356978206.073,
+  "current_price": 194.03,
   "rank": 377,
-  "composite_score": 44.32,
+  "composite_score": 44.16,
   "pillar_scores": {
     "quality": 62.5,
     "value": 22.69,
     "growth": 37.15,
-    "momentum": 38.25,
+    "momentum": 38.4,
     "health": 37.25,
     "profitability": 54.17,
-    "technical": 67.18,
-    "risk": 57.01,
+    "technical": 63.94,
+    "risk": 56.57,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 5.3942164050998,
     "eps_diluted": 5.3942164050998,
     "shares_outstanding": 202839656.0,
-    "market_cap": 39967524456.40149,
-    "pe_ratio_ttm": 36.52801046317817,
+    "market_cap": 39356978206.073,
+    "pe_ratio_ttm": 35.9700064305646,
     "goodwill": 2994696000.0
   },
   "fair_price": {
@@ -45,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 129.4983546506476,
+        "value": 128.6353689762809,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 37.36462220322746,
+        "value": 36.7944108123114,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 124.50894769502251,
+        "value": 122.51894121465871,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 106.74877783350749,
-    "max": 129.4983546506476,
-    "low": 37.36462220322746,
-    "high": 129.4983546506476,
-    "mos_pct": -84.58290322859669,
+    "median": 105.75377459332559,
+    "max": 128.6353689762809,
+    "low": 36.7944108123114,
+    "high": 128.6353689762809,
+    "mos_pct": -83.47335546691933,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ],
@@ -92,7 +94,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 29,
+    "filing_lag_days": 32,
     "latest_period_end": "2026-03-29",
     "latest_filed_date": "2026-04-30"
   },
@@ -114,22 +116,22 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 49.31,
-      "Value": 51.85,
+      "Value": 52.31,
       "Growth": 47.74,
-      "Momentum": 40.49,
+      "Momentum": 39.34,
       "Health": 39.14,
       "Profitability": 53.7,
-      "Technical": 55.58,
-      "Risk": 51.01
+      "Technical": 53.83,
+      "Risk": 50.71
     }
   },
   "beneish_m_score": -2.5067719525810466,
   "dechow_f_score": 0.4516189689227314,
   "recommendation": "neutral",
-  "loss_chance_pct": 63.83804020030988,
-  "price_change_1d_pct": -0.3943,
+  "loss_chance_pct": 63.91772147521027,
+  "price_change_1d_pct": -1.5276,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 43.82,
+  "composite_score_adjusted": 43.66,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -177,10 +179,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.09,
+  "osap_blended_score": 48.01,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3,
   "form4_diagnostics": null,
-  "cross_source_delta": 1.830345032524457e-05
+  "cross_source_delta": 1.829007103220332e-05
 }

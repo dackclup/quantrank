@@ -3,19 +3,21 @@
   "name": "Raymond James Financial",
   "sector": "Financials",
   "industry": "Investment Banking & Brokerage",
-  "market_cap": 27673390828.0,
-  "current_price": 142.0,
-  "rank": 169,
-  "composite_score": 54.19,
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 27948176619.622986,
+  "current_price": 143.41,
+  "rank": 155,
+  "composite_score": 54.79,
   "pillar_scores": {
     "quality": 54.0,
-    "value": 61.56,
+    "value": 60.89,
     "growth": 65.33,
-    "momentum": 46.07,
+    "momentum": 47.21,
     "health": 59.28,
     "profitability": 45.56,
-    "technical": 18.6,
-    "risk": 49.7,
+    "technical": 29.93,
+    "risk": 50.6,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 11.016864608132076,
     "eps_diluted": 11.016864608132076,
     "shares_outstanding": 194883034.0,
-    "market_cap": 27673390828.0,
-    "pe_ratio_ttm": 12.88932968234746,
+    "market_cap": 27948176619.622986,
+    "pe_ratio_ttm": 13.017315612306932,
     "goodwill": 1451000000.0
   },
   "fair_price": {
@@ -45,13 +47,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 156.79263620419775,
+        "value": 157.04477270768103,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 132.34523100280475,
+        "value": 134.18898917856404,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 119.88287439687365,
-    "max": 156.79263620419775,
+    "median": 120.80475348475329,
+    "max": 157.04477270768103,
     "low": 81.14353138430188,
-    "high": 156.79263620419775,
-    "mos_pct": -18.448945034390277,
+    "high": 157.04477270768103,
+    "mos_pct": -18.712219118272593,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -102,7 +104,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 23,
+    "filing_lag_days": 26,
     "latest_period_end": "2026-05-04",
     "latest_filed_date": "2026-05-06"
   },
@@ -121,22 +123,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 52.0,
+      "Value": 51.78,
       "Growth": 51.5,
-      "Momentum": 51.2,
+      "Momentum": 48.9,
       "Health": 50.72,
       "Profitability": 49.11,
-      "Technical": 46.22,
-      "Risk": 54.45
+      "Technical": 50.35,
+      "Risk": 54.61
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 44.36002197496267,
-  "price_change_1d_pct": -2.3384,
+  "loss_chance_pct": 44.155529458106344,
+  "price_change_1d_pct": 0.993,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 54.19,
+  "composite_score_adjusted": 54.79,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,10 +186,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.02,
+  "osap_blended_score": 53.32,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
   "form4_diagnostics": null,
-  "cross_source_delta": 9.973479640259428e-09
+  "cross_source_delta": 2.8208531271647275e-08
 }

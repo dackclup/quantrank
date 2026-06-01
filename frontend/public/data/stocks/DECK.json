@@ -3,19 +3,21 @@
   "name": "Deckers Brands",
   "sector": "Consumer Discretionary",
   "industry": "Footwear",
-  "market_cap": 15875481855.605164,
-  "current_price": 114.31,
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 15811596742.534477,
+  "current_price": 113.85,
   "rank": 4,
-  "composite_score": 69.52,
+  "composite_score": 69.08,
   "pillar_scores": {
     "quality": 81.25,
-    "value": 63.89,
+    "value": 64.24,
     "growth": 67.71,
-    "momentum": 52.09,
+    "momentum": 46.46,
     "health": 81.18,
     "profitability": 89.24,
-    "technical": 61.45,
-    "risk": 28.32,
+    "technical": 64.54,
+    "risk": 29.12,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 7.373732310902783,
     "eps_diluted": 7.373732310902783,
     "shares_outstanding": 138880957.0,
-    "market_cap": 15875481855.605164,
-    "pe_ratio_ttm": 15.502325381350671,
+    "market_cap": 15811596742.534477,
+    "pe_ratio_ttm": 15.439941901034672,
     "goodwill": 13990000.0
   },
   "fair_price": {
@@ -45,13 +47,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 168.18173071970062,
+        "value": 167.48520879256327,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 112.34975244532812,
+        "value": 111.69514392626394,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +78,10 @@
       }
     },
     "median": 101.58474405105716,
-    "max": 168.18173071970062,
+    "max": 167.48520879256327,
     "low": 56.24696874730577,
-    "high": 168.18173071970062,
-    "mos_pct": -12.526736791442616,
+    "high": 167.48520879256327,
+    "mos_pct": -12.073913792507405,
     "valuation_warnings": [],
     "valuation_methods_applicable": 5
   },
@@ -97,7 +99,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 7,
+    "filing_lag_days": 10,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-22"
   },
@@ -116,22 +118,22 @@
     "label": "Consumer Discretionary median (n=48)",
     "values": {
       "Quality": 46.35,
-      "Value": 48.61,
+      "Value": 50.0,
       "Growth": 51.69,
-      "Momentum": 38.25,
+      "Momentum": 38.92,
       "Health": 43.83,
       "Profitability": 52.26,
-      "Technical": 57.07,
-      "Risk": 42.99
+      "Technical": 57.97,
+      "Risk": 43.08
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.21081840756796452,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 34.62273596188761,
-  "price_change_1d_pct": -0.0525,
+  "loss_chance_pct": 34.68477206564674,
+  "price_change_1d_pct": -0.4024,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 69.52,
+  "composite_score_adjusted": 69.08,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -179,10 +181,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 60.69,
+  "osap_blended_score": 60.47,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5,
   "form4_diagnostics": null,
-  "cross_source_delta": 4.84013552101717e-08
+  "cross_source_delta": 3.601568722241726e-08
 }

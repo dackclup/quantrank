@@ -3,19 +3,21 @@
   "name": "KKR & Co.",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 84426991546.1937,
-  "current_price": 94.03,
-  "rank": 332,
-  "composite_score": 46.92,
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 86141932151.61261,
+  "current_price": 95.94,
+  "rank": 321,
+  "composite_score": 47.35,
   "pillar_scores": {
     "quality": 55.33,
     "value": 39.78,
     "growth": 67.83,
-    "momentum": 32.62,
+    "momentum": 31.37,
     "health": 45.3,
     "profitability": 52.0,
-    "technical": 28.64,
-    "risk": 26.23,
+    "technical": 39.99,
+    "risk": 26.66,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 6.391125890940509,
     "eps_diluted": 6.391125890940509,
     "shares_outstanding": 897872941.0,
-    "market_cap": 84426991546.1937,
-    "pe_ratio_ttm": 14.712587482056241,
+    "market_cap": 86141932151.61261,
+    "pe_ratio_ttm": 15.011439936960445,
     "goodwill": 83500000.0
   },
   "fair_price": {
@@ -45,13 +47,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 103.79579716323595,
+        "value": 103.16391444943636,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 81.47175888062247,
+        "value": 80.06832057896446,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 81.47175888062247,
-    "max": 103.79579716323595,
+    "median": 80.06832057896446,
+    "max": 103.16391444943636,
     "low": 40.285508578373936,
-    "high": 103.79579716323595,
-    "mos_pct": -15.414224599073062,
+    "high": 103.16391444943636,
+    "mos_pct": -19.822673621321833,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
@@ -104,7 +106,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 21,
+    "filing_lag_days": 24,
     "latest_period_end": "2026-05-07",
     "latest_filed_date": "2026-05-08"
   },
@@ -123,22 +125,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 52.0,
+      "Value": 51.78,
       "Growth": 51.5,
-      "Momentum": 51.2,
+      "Momentum": 48.9,
       "Health": 50.72,
       "Profitability": 49.11,
-      "Technical": 46.22,
-      "Risk": 54.45
+      "Technical": 50.35,
+      "Risk": 54.61
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 46.935732261734,
-  "price_change_1d_pct": -1.0523,
+  "loss_chance_pct": 48.26454599322626,
+  "price_change_1d_pct": 2.0313,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 46.92,
+  "composite_score_adjusted": 47.35,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -186,10 +188,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.39,
+  "osap_blended_score": 49.6,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3,
   "form4_diagnostics": null,
-  "cross_source_delta": 0.03850054654651318
+  "cross_source_delta": 0.03850053052618119
 }

@@ -3,19 +3,21 @@
   "name": "CME Group",
   "sector": "Financials",
   "industry": "Financial Exchanges & Data",
-  "market_cap": 100761168237.06055,
-  "current_price": 277.42,
+  "exchange": "NASDAQ",
+  "country": "US",
+  "market_cap": 99351919423.58398,
+  "current_price": 273.54,
   "rank": 357,
-  "composite_score": 45.75,
+  "composite_score": 45.7,
   "pillar_scores": {
     "quality": 58.0,
     "value": 21.78,
     "growth": 51.0,
-    "momentum": 41.48,
+    "momentum": 43.43,
     "health": 46.51,
     "profitability": 66.22,
-    "technical": 37.65,
-    "risk": 70.98,
+    "technical": 33.07,
+    "risk": 69.39,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 14.599348031981675,
     "eps_diluted": 14.599348031981675,
     "shares_outstanding": 363208000.0,
-    "market_cap": 100761168237.06055,
-    "pe_ratio_ttm": 19.002219333357324,
+    "market_cap": 99351919423.58398,
+    "pe_ratio_ttm": 18.736453706405158,
     "goodwill": 10506000000.0
   },
   "fair_price": {
@@ -45,13 +47,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 409.4017194252034,
+        "value": 406.07776767005805,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 150.40905811860992,
+        "value": 152.5044712174662,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 116.25477598038935,
-    "max": 409.4017194252034,
+    "median": 117.3024825298175,
+    "max": 406.07776767005805,
     "low": 37.39377476110473,
-    "high": 409.4017194252034,
-    "mos_pct": -138.63106791804535,
+    "high": 406.07776767005805,
+    "mos_pct": -133.19200297009047,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
@@ -99,7 +101,7 @@
       "long_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 35,
+    "filing_lag_days": 38,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-24"
   },
@@ -123,22 +125,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 52.0,
+      "Value": 51.78,
       "Growth": 51.5,
-      "Momentum": 51.2,
+      "Momentum": 48.9,
       "Health": 50.72,
       "Profitability": 49.11,
-      "Technical": 46.22,
-      "Risk": 54.45
+      "Technical": 50.35,
+      "Risk": 54.61
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 76.12744300575476,
-  "price_change_1d_pct": -0.6019,
+  "loss_chance_pct": 76.15047587428066,
+  "price_change_1d_pct": -1.3986,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 45.75,
+  "composite_score_adjusted": 45.7,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -186,10 +188,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.8,
+  "osap_blended_score": 48.78,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3,
   "form4_diagnostics": null,
-  "cross_source_delta": 0.005190533994505463
+  "cross_source_delta": 0.005190572850287279
 }

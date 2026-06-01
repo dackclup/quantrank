@@ -3,19 +3,21 @@
   "name": "Pfizer",
   "sector": "Health Care",
   "industry": "Pharmaceuticals",
-  "market_cap": 148983467098.99536,
-  "current_price": 26.14,
-  "rank": 335,
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 149211450083.75232,
+  "current_price": 26.18,
+  "rank": 334,
   "composite_score": 46.71,
   "pillar_scores": {
     "quality": 36.02,
     "value": 68.36,
     "growth": 9.32,
-    "momentum": 56.67,
+    "momentum": 56.77,
     "health": 59.8,
     "profitability": 40.96,
-    "technical": 56.27,
-    "risk": 48.51,
+    "technical": 55.13,
+    "risk": 49.8,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 1.3218832883701856,
     "eps_diluted": 1.3218832883701856,
     "shares_outstanding": 5699444169.0,
-    "market_cap": 148983467098.99536,
-    "pe_ratio_ttm": 19.774816445313956,
+    "market_cap": 149211450083.75232,
+    "pe_ratio_ttm": 19.80507699545425,
     "goodwill": 71409000000.0
   },
   "fair_price": {
@@ -45,13 +47,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 34.64362670872621,
+        "value": 34.07859124591599,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 46.95824128625061,
+        "value": 46.795104607249,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 34.64362670872621,
-    "max": 46.95824128625061,
+    "median": 34.07859124591599,
+    "max": 46.795104607249,
     "low": 21.2217215498857,
-    "high": 46.95824128625061,
-    "mos_pct": 24.546007814291094,
+    "high": 46.795104607249,
+    "mos_pct": 23.177574694161635,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -96,7 +98,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 24,
+    "filing_lag_days": 27,
     "latest_period_end": "2026-04-29",
     "latest_filed_date": "2026-05-05"
   },
@@ -117,20 +119,20 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 52.97,
-      "Value": 51.13,
+      "Value": 51.98,
       "Growth": 49.58,
-      "Momentum": 33.76,
+      "Momentum": 30.88,
       "Health": 59.8,
       "Profitability": 50.85,
-      "Technical": 56.62,
-      "Risk": 43.29
+      "Technical": 56.18,
+      "Risk": 43.13
     }
   },
   "beneish_m_score": -2.333420297437823,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 35.05476647178678,
-  "price_change_1d_pct": -0.2671,
+  "loss_chance_pct": 35.53185053395161,
+  "price_change_1d_pct": 0.153,
   "manipulation_index": 0.0,
   "composite_score_adjusted": 46.71,
   "manipulation_components": {
@@ -185,5 +187,5 @@
   "exited_top5": false,
   "valuation_methods_applicable": 3,
   "form4_diagnostics": null,
-  "cross_source_delta": 2.1230512505299685e-08
+  "cross_source_delta": 1.8683233208786413e-08
 }

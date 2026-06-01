@@ -3,19 +3,21 @@
   "name": "Take-Two Interactive",
   "sector": "Communication Services",
   "industry": "Interactive Home Entertainment",
-  "market_cap": 40451194961.2345,
-  "current_price": 217.87,
-  "rank": 481,
-  "composite_score": 34.73,
+  "exchange": "NASDAQ",
+  "country": "US",
+  "market_cap": 41619039858.01163,
+  "current_price": 224.16,
+  "rank": 473,
+  "composite_score": 36.01,
   "pillar_scores": {
     "quality": 32.61,
-    "value": 21.01,
+    "value": 19.57,
     "growth": 55.98,
-    "momentum": 36.21,
+    "momentum": 41.14,
     "health": 37.11,
     "profitability": 36.96,
-    "technical": 38.6,
-    "risk": 41.67,
+    "technical": 58.12,
+    "risk": 42.03,
     "sentiment": null,
     "ml": null
   },
@@ -32,7 +34,7 @@
     "eps_basic": -1.6061041609823083,
     "eps_diluted": -1.6061041609823083,
     "shares_outstanding": 185666663.0,
-    "market_cap": 40451194961.2345,
+    "market_cap": 41619039858.01163,
     "pe_ratio_ttm": null,
     "goodwill": 1061900000.0
   },
@@ -51,13 +53,13 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 45.49272819026501,
+        "value": 44.07948106113011,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 4.954082343912425,
+        "value": 4.855086250828773,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,17 +77,18 @@
         "tier_used": null
       }
     },
-    "median": 25.22340526708872,
-    "max": 45.49272819026501,
-    "low": 4.954082343912425,
-    "high": 45.49272819026501,
-    "mos_pct": -763.7612281536879,
+    "median": 24.467283655979443,
+    "max": null,
+    "low": 4.855086250828773,
+    "high": 44.07948106113011,
+    "mos_pct": -816.1621977081546,
     "valuation_warnings": [
       "goodwill_heavy",
+      "extreme_multiples_pb_estimate",
       "extreme_multiples_ev_ebitda_estimate",
       "value_trap_risk"
     ],
-    "valuation_methods_applicable": 1
+    "valuation_methods_applicable": 0
   },
   "top5_factors": [],
   "score_history": [],
@@ -95,7 +98,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 7,
+    "filing_lag_days": 10,
     "latest_period_end": "2026-05-11",
     "latest_filed_date": "2026-05-22"
   },
@@ -104,6 +107,7 @@
   ],
   "valuation_warnings": [
     "goodwill_heavy",
+    "extreme_multiples_pb_estimate",
     "extreme_multiples_ev_ebitda_estimate",
     "value_trap_risk"
   ],
@@ -120,22 +124,22 @@
     "label": "Communication Services median (n=23)",
     "values": {
       "Quality": 52.17,
-      "Value": 49.28,
+      "Value": 47.1,
       "Growth": 55.98,
-      "Momentum": 48.8,
+      "Momentum": 48.46,
       "Health": 45.5,
       "Profitability": 50.72,
-      "Technical": 45.62,
+      "Technical": 48.51,
       "Risk": 50.35
     }
   },
   "beneish_m_score": -2.8599390854837288,
   "dechow_f_score": 0.8266892358396878,
   "recommendation": "cautious",
-  "loss_chance_pct": 83.63409947167851,
-  "price_change_1d_pct": -0.2701,
+  "loss_chance_pct": 83.9941051013338,
+  "price_change_1d_pct": 2.887,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 34.73,
+  "composite_score_adjusted": 36.01,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -183,10 +187,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 43.29,
+  "osap_blended_score": 43.93,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 1,
+  "valuation_methods_applicable": 0,
   "form4_diagnostics": null,
-  "cross_source_delta": 2.0082100701391336e-09
+  "cross_source_delta": 3.964559568953247e-08
 }

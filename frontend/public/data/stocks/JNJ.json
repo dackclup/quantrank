@@ -3,19 +3,21 @@
   "name": "Johnson & Johnson",
   "sector": "Health Care",
   "industry": "Pharmaceuticals",
-  "market_cap": 555585684253.0432,
-  "current_price": 230.8,
-  "rank": 126,
-  "composite_score": 56.75,
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 542418204483.1759,
+  "current_price": 225.33,
+  "rank": 130,
+  "composite_score": 56.15,
   "pillar_scores": {
     "quality": 68.64,
-    "value": 32.77,
+    "value": 33.9,
     "growth": 63.98,
-    "momentum": 62.7,
+    "momentum": 61.21,
     "health": 43.94,
     "profitability": 63.56,
-    "technical": 56.37,
-    "risk": 92.68,
+    "technical": 43.58,
+    "risk": 92.02,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 8.740383710098062,
     "eps_diluted": 8.740383710098062,
     "shares_outstanding": 2407216971.0,
-    "market_cap": 555585684253.0432,
-    "pe_ratio_ttm": 26.4061637002397,
+    "market_cap": 542418204483.1759,
+    "pe_ratio_ttm": 25.780332912698476,
     "goodwill": 48558000000.0
   },
   "fair_price": {
@@ -45,13 +47,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 208.54613515484752,
+        "value": 206.85455642837533,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 99.44130170883213,
+        "value": 98.78241283165057,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 99.44130170883213,
-    "max": 208.54613515484752,
+    "median": 98.78241283165057,
+    "max": 206.85455642837533,
     "low": 94.04636085125007,
-    "high": 208.54613515484752,
-    "mos_pct": -132.0967234796955,
+    "high": 206.85455642837533,
+    "mos_pct": -128.1074083653658,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
@@ -93,7 +95,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 37,
+    "filing_lag_days": 40,
     "latest_period_end": "2026-04-17",
     "latest_filed_date": "2026-04-22"
   },
@@ -112,22 +114,22 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 52.97,
-      "Value": 51.13,
+      "Value": 51.98,
       "Growth": 49.58,
-      "Momentum": 33.76,
+      "Momentum": 30.88,
       "Health": 59.8,
       "Profitability": 50.85,
-      "Technical": 56.62,
-      "Risk": 43.29
+      "Technical": 56.18,
+      "Risk": 43.13
     }
   },
   "beneish_m_score": -2.3514273446148843,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 56.62682005030725,
-  "price_change_1d_pct": -0.2119,
+  "loss_chance_pct": 56.92549821898845,
+  "price_change_1d_pct": -2.37,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 56.75,
+  "composite_score_adjusted": 56.15,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -175,10 +177,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.3,
+  "osap_blended_score": 54.0,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3,
   "form4_diagnostics": null,
-  "cross_source_delta": 8.990340217287021e-08
+  "cross_source_delta": 5.6287151963144136e-08
 }

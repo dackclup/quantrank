@@ -3,19 +3,21 @@
   "name": "Prudential Financial",
   "sector": "Financials",
   "industry": "Life & Health Insurance",
-  "market_cap": 34911670211.79199,
-  "current_price": 100.61,
-  "rank": 308,
-  "composite_score": 47.81,
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 34922079788.20801,
+  "current_price": 100.64,
+  "rank": 312,
+  "composite_score": 47.83,
   "pillar_scores": {
     "quality": 40.0,
-    "value": 69.11,
+    "value": 68.89,
     "growth": 32.0,
     "momentum": 39.94,
     "health": 49.88,
     "profitability": 35.33,
-    "technical": 62.35,
-    "risk": 52.22,
+    "technical": 62.75,
+    "risk": 53.32,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 10.363112391930835,
     "eps_diluted": 10.363112391930835,
     "shares_outstanding": 347000000.0,
-    "market_cap": 34911670211.79199,
-    "pe_ratio_ttm": 9.708473362567295,
+    "market_cap": 34922079788.20801,
+    "pe_ratio_ttm": 9.711368127977755,
     "goodwill": 1090000000.0
   },
   "fair_price": {
@@ -45,13 +47,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 147.48839792510822,
+        "value": 147.72557238595954,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 191.07243709428434,
+        "value": 192.80035384397286,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 136.93108084880646,
-    "max": 191.07243709428434,
+    "median": 137.0496680792321,
+    "max": 192.80035384397286,
     "low": 93.77281525507465,
-    "high": 191.07243709428434,
-    "mos_pct": 26.52508109430547,
+    "high": 192.80035384397286,
+    "mos_pct": 26.56676896768131,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -102,7 +104,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 23,
+    "filing_lag_days": 26,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-06"
   },
@@ -123,22 +125,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 52.0,
+      "Value": 51.78,
       "Growth": 51.5,
-      "Momentum": 51.2,
+      "Momentum": 48.9,
       "Health": 50.72,
       "Profitability": 49.11,
-      "Technical": 46.22,
-      "Risk": 54.45
+      "Technical": 50.35,
+      "Risk": 54.61
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 31.808792998135186,
-  "price_change_1d_pct": -0.8671,
+  "loss_chance_pct": 31.78869925440583,
+  "price_change_1d_pct": 0.0298,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 47.31,
+  "composite_score_adjusted": 47.33,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -186,10 +188,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.83,
+  "osap_blended_score": 49.84,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
   "form4_diagnostics": null,
-  "cross_source_delta": 0.0009369564964829219
+  "cross_source_delta": 0.0009369821038849202
 }

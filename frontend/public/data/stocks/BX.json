@@ -3,19 +3,21 @@
   "name": "Blackstone Inc.",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 86278060331.56215,
-  "current_price": 116.14,
-  "rank": 315,
-  "composite_score": 47.58,
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 86894651931.6257,
+  "current_price": 116.97,
+  "rank": 307,
+  "composite_score": 48.0,
   "pillar_scores": {
     "quality": 72.67,
-    "value": 32.89,
+    "value": 32.22,
     "growth": 43.0,
-    "momentum": 31.62,
+    "momentum": 31.03,
     "health": 43.94,
     "profitability": 63.78,
-    "technical": 28.54,
-    "risk": 28.39,
+    "technical": 41.09,
+    "risk": 28.75,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 8.205575037254983,
     "eps_diluted": 8.205575037254983,
     "shares_outstanding": 742879807.0,
-    "market_cap": 86278060331.56215,
-    "pe_ratio_ttm": 14.153791643163236,
+    "market_cap": 86894651931.6257,
+    "pe_ratio_ttm": 14.25494260787763,
     "goodwill": 1890202000.0
   },
   "fair_price": {
@@ -45,13 +47,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 133.26356211851976,
+        "value": 132.45228706130698,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 27.028613851029785,
+        "value": 26.56301703023644,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 25.750625523380005,
-    "max": 133.26356211851976,
+    "median": 25.517827112983333,
+    "max": 132.45228706130698,
     "low": 20.879281151954245,
-    "high": 133.26356211851976,
-    "mos_pct": -351.0181676332498,
+    "high": 132.45228706130698,
+    "mos_pct": -358.3854287545879,
     "valuation_warnings": [
       "extreme_rim_estimate"
     ],
@@ -103,7 +105,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 21,
+    "filing_lag_days": 24,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-08"
   },
@@ -128,22 +130,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 52.0,
+      "Value": 51.78,
       "Growth": 51.5,
-      "Momentum": 51.2,
+      "Momentum": 48.9,
       "Health": 50.72,
       "Profitability": 49.11,
-      "Technical": 46.22,
-      "Risk": 54.45
+      "Technical": 50.35,
+      "Risk": 54.61
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 65.20845506861443,
-  "price_change_1d_pct": -1.5763,
+  "loss_chance_pct": 65.00021303674191,
+  "price_change_1d_pct": 0.7147,
   "manipulation_index": 25.0,
-  "composite_score_adjusted": 45.08,
+  "composite_score_adjusted": 45.5,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -191,10 +193,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.72,
+  "osap_blended_score": 49.93,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3,
   "form4_diagnostics": null,
-  "cross_source_delta": 0.6453025830029088
+  "cross_source_delta": 0.6453025961654857
 }

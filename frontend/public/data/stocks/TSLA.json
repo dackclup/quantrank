@@ -3,19 +3,21 @@
   "name": "Tesla, Inc.",
   "sector": "Consumer Discretionary",
   "industry": "Automobile Manufacturers",
-  "market_cap": 1660085522918.7012,
-  "current_price": 442.1,
+  "exchange": "NASDAQ",
+  "country": "US",
+  "market_cap": 1636391482086.1816,
+  "current_price": 435.79,
   "rank": 502,
-  "composite_score": 26.31,
+  "composite_score": 26.1,
   "pillar_scores": {
     "quality": 19.27,
     "value": 1.91,
     "growth": 19.79,
-    "momentum": 38.5,
+    "momentum": 37.65,
     "health": 82.43,
     "profitability": 12.85,
-    "technical": 61.85,
-    "risk": 30.84,
+    "technical": 60.06,
+    "risk": 30.51,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 1.0455392809587216,
     "eps_diluted": 1.0455392809587216,
     "shares_outstanding": 3755000000.0,
-    "market_cap": 1660085522918.7012,
-    "pe_ratio_ttm": 422.84399463033657,
+    "market_cap": 1636391482086.1816,
+    "pe_ratio_ttm": 416.8088339496133,
     "goodwill": 257000000.0
   },
   "fair_price": {
@@ -45,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 23.5237513098041,
+        "value": 23.309412150817494,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 137.66253035719527,
+        "value": 136.18764909033547,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 36.8476083795496,
+        "value": 36.252460950667306,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -76,10 +78,10 @@
       }
     },
     "median": 30.235834417974324,
-    "max": 137.66253035719527,
+    "max": 136.18764909033547,
     "low": 19.284663281707235,
-    "high": 137.66253035719527,
-    "mos_pct": -1362.1723349586146,
+    "high": 136.18764909033547,
+    "mos_pct": -1341.3030661586683,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_multiples_pe_estimate",
@@ -97,7 +99,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 36,
+    "filing_lag_days": 39,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-23"
   },
@@ -126,22 +128,22 @@
     "label": "Consumer Discretionary median (n=48)",
     "values": {
       "Quality": 46.35,
-      "Value": 48.61,
+      "Value": 50.0,
       "Growth": 51.69,
-      "Momentum": 38.25,
+      "Momentum": 38.92,
       "Health": 43.83,
       "Profitability": 52.26,
-      "Technical": 57.07,
-      "Risk": 42.99
+      "Technical": 57.97,
+      "Risk": 43.08
     }
   },
   "beneish_m_score": -3.0637364928037103,
   "dechow_f_score": 0.9110866227917124,
   "recommendation": "cautious",
-  "loss_chance_pct": 79.84482037129261,
-  "price_change_1d_pct": 0.3951,
+  "loss_chance_pct": 79.94877953463921,
+  "price_change_1d_pct": -1.4273,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 25.81,
+  "composite_score_adjusted": 25.6,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -189,10 +191,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 39.08,
+  "osap_blended_score": 38.98,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 1,
   "form4_diagnostics": null,
-  "cross_source_delta": 0.00019277566419359743
+  "cross_source_delta": 0.00019277837441208668
 }

@@ -3,19 +3,21 @@
   "name": "Southwest Airlines",
   "sector": "Industrials",
   "industry": "Passenger Airlines",
-  "market_cap": 21168790181.25855,
-  "current_price": 43.31,
-  "rank": 420,
-  "composite_score": 41.13,
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 20992831346.25475,
+  "current_price": 42.95,
+  "rank": 425,
+  "composite_score": 40.95,
   "pillar_scores": {
     "quality": 24.68,
     "value": 72.15,
     "growth": 36.08,
-    "momentum": 38.5,
+    "momentum": 36.21,
     "health": 27.33,
     "profitability": 31.01,
-    "technical": 55.78,
-    "risk": 35.49,
+    "technical": 58.37,
+    "risk": 34.69,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 1.673576091028447,
     "eps_diluted": 1.673576091028447,
     "shares_outstanding": 488773713.0,
-    "market_cap": 21168790181.25855,
-    "pe_ratio_ttm": 25.87871660300556,
+    "market_cap": 20992831346.25475,
+    "pe_ratio_ttm": 25.663608002756416,
     "goodwill": 970000000.0
   },
   "fair_price": {
@@ -45,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 47.27758550702235,
+        "value": 46.69992557501854,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 94.71983283393995,
+        "value": 93.96977494290066,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 87.22602486821842,
+        "value": 87.10672245343154,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 67.25180518762039,
-    "max": 94.71983283393995,
+    "median": 66.90332401422503,
+    "max": 93.96977494290066,
     "low": 14.100204818414484,
-    "high": 94.71983283393995,
-    "mos_pct": 35.60023964789654,
+    "high": 93.96977494290066,
+    "mos_pct": 35.80288962352993,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -97,7 +99,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 36,
+    "filing_lag_days": 39,
     "latest_period_end": "2026-04-22",
     "latest_filed_date": "2026-04-23"
   },
@@ -119,22 +121,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.47,
-      "Value": 49.58,
+      "Value": 50.21,
       "Growth": 49.37,
-      "Momentum": 50.2,
+      "Momentum": 53.24,
       "Health": 52.71,
       "Profitability": 47.68,
-      "Technical": 49.25,
-      "Risk": 53.92
+      "Technical": 48.66,
+      "Risk": 53.75
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 33.97252745008073,
-  "price_change_1d_pct": -0.8471,
+  "loss_chance_pct": 33.994976452632955,
+  "price_change_1d_pct": -0.8312,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 40.63,
+  "composite_score_adjusted": 40.45,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -182,10 +184,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 46.49,
+  "osap_blended_score": 46.4,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
   "form4_diagnostics": null,
-  "cross_source_delta": 6.475294239899415e-08
+  "cross_source_delta": 6.7520787626959396e-09
 }

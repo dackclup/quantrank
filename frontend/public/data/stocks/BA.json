@@ -3,19 +3,21 @@
   "name": "Boeing",
   "sector": "Industrials",
   "industry": "Aerospace & Defense",
-  "market_cap": 180347806323.89688,
-  "current_price": 228.78,
-  "rank": 412,
-  "composite_score": 41.92,
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 182216078999.2344,
+  "current_price": 231.15,
+  "rank": 417,
+  "composite_score": 41.4,
   "pillar_scores": {
     "quality": 42.41,
     "value": 23.42,
     "growth": 68.04,
-    "momentum": 64.54,
+    "momentum": 60.61,
     "health": 40.94,
     "profitability": 8.23,
-    "technical": 48.51,
-    "risk": 36.89,
+    "technical": 47.91,
+    "risk": 36.85,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 2.8770687473712417,
     "eps_diluted": 2.8770687473712417,
     "shares_outstanding": 788302331.0,
-    "market_cap": 180347806323.89688,
-    "pe_ratio_ttm": 79.51843312341133,
+    "market_cap": 182216078999.2344,
+    "pe_ratio_ttm": 80.34218650759894,
     "goodwill": 17633000000.0
   },
   "fair_price": {
@@ -45,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 91.22229835176066,
+        "value": 91.57911176292669,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 31.433162545322062,
+        "value": 31.625517361433463,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 77.34140088670806,
+        "value": 74.92006287916855,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 77.34140088670806,
-    "max": 91.22229835176066,
-    "low": 31.433162545322062,
-    "high": 91.22229835176066,
-    "mos_pct": -195.8053463686551,
+    "median": 74.92006287916855,
+    "max": 91.57911176292669,
+    "low": 31.625517361433463,
+    "high": 91.57911176292669,
+    "mos_pct": -208.52883061414968,
     "valuation_warnings": [
       "extreme_multiples_pb_estimate"
     ],
@@ -93,7 +95,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 37,
+    "filing_lag_days": 40,
     "latest_period_end": "2026-04-15",
     "latest_filed_date": "2026-04-22"
   },
@@ -115,22 +117,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.47,
-      "Value": 49.58,
+      "Value": 50.21,
       "Growth": 49.37,
-      "Momentum": 50.2,
+      "Momentum": 53.24,
       "Health": 52.71,
       "Profitability": 47.68,
-      "Technical": 49.25,
-      "Risk": 53.92
+      "Technical": 48.66,
+      "Risk": 53.75
     }
   },
   "beneish_m_score": -2.826973276422411,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 65.04038119673206,
-  "price_change_1d_pct": 1.9973,
+  "loss_chance_pct": 65.30183537999899,
+  "price_change_1d_pct": 1.0359,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 41.42,
+  "composite_score_adjusted": 40.9,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -178,10 +180,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 46.89,
+  "osap_blended_score": 46.62,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2,
   "form4_diagnostics": null,
-  "cross_source_delta": 4.194175284456569e-08
+  "cross_source_delta": 1.321928123858127e-08
 }

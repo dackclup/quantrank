@@ -3,19 +3,21 @@
   "name": "Trane Technologies",
   "sector": "Industrials",
   "industry": "Building Products",
-  "market_cap": 99974552186.7649,
-  "current_price": 452.26,
-  "rank": 82,
-  "composite_score": 59.29,
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 99762334071.66888,
+  "current_price": 451.3,
+  "rank": 78,
+  "composite_score": 59.61,
   "pillar_scores": {
     "quality": 75.32,
-    "value": 31.65,
+    "value": 31.22,
     "growth": 81.96,
-    "momentum": 63.6,
+    "momentum": 64.84,
     "health": 52.71,
     "profitability": 63.08,
-    "technical": 41.38,
-    "risk": 52.72,
+    "technical": 46.86,
+    "risk": 52.49,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 13.19171114679054,
     "eps_diluted": 13.19171114679054,
     "shares_outstanding": 221055477.0,
-    "market_cap": 99974552186.7649,
-    "pe_ratio_ttm": 34.28365014463321,
+    "market_cap": 99762334071.66888,
+    "pe_ratio_ttm": 34.21087550895679,
     "goodwill": 6957400000.0
   },
   "fair_price": {
@@ -45,13 +47,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 370.00733458816416,
+        "value": 366.1674317254319,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 248.64246105010628,
+        "value": 251.60080896426172,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 248.64246105010628,
-    "max": 370.00733458816416,
+    "median": 251.60080896426172,
+    "max": 366.1674317254319,
     "low": 63.80573358986512,
-    "high": 370.00733458816416,
-    "mos_pct": -81.89170419869912,
+    "high": 366.1674317254319,
+    "mos_pct": -79.37143749687745,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ],
@@ -96,7 +98,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 29,
+    "filing_lag_days": 32,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-30"
   },
@@ -117,22 +119,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.47,
-      "Value": 49.58,
+      "Value": 50.21,
       "Growth": 49.37,
-      "Momentum": 50.2,
+      "Momentum": 53.24,
       "Health": 52.71,
       "Profitability": 47.68,
-      "Technical": 49.25,
-      "Risk": 53.92
+      "Technical": 48.66,
+      "Risk": 53.75
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
-  "recommendation": "neutral",
-  "loss_chance_pct": 56.35663726948745,
-  "price_change_1d_pct": -1.1842,
+  "recommendation": "lean_bullish",
+  "loss_chance_pct": 56.19369725738396,
+  "price_change_1d_pct": -0.2123,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 59.29,
+  "composite_score_adjusted": 59.61,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -180,10 +182,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 55.57,
+  "osap_blended_score": 55.73,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2,
   "form4_diagnostics": null,
-  "cross_source_delta": 1.4135948363957421e-08
+  "cross_source_delta": 2.4294428421614405e-08
 }

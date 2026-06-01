@@ -3,19 +3,21 @@
   "name": "Diamondback Energy",
   "sector": "Energy",
   "industry": "Oil & Gas Exploration & Production",
-  "market_cap": 54614163307.87999,
-  "current_price": 194.14,
-  "rank": 464,
-  "composite_score": 37.31,
+  "exchange": "NASDAQ",
+  "country": "US",
+  "market_cap": 53865868907.65993,
+  "current_price": 191.48,
+  "rank": 465,
+  "composite_score": 36.99,
   "pillar_scores": {
     "quality": 16.67,
     "value": 34.92,
     "growth": 55.95,
-    "momentum": 80.78,
+    "momentum": 80.98,
     "health": 19.16,
     "profitability": 20.63,
-    "technical": 41.93,
-    "risk": 66.04,
+    "technical": 35.46,
+    "risk": 65.5,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 1.0095505723641638,
     "eps_diluted": 1.0095505723641638,
     "shares_outstanding": 281313297.0,
-    "market_cap": 54614163307.87999,
-    "pe_ratio_ttm": 192.30339192915488,
+    "market_cap": 53865868907.65993,
+    "pe_ratio_ttm": 189.6685524917603,
     "goodwill": null
   },
   "fair_price": {
@@ -45,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 12.053417943200895,
+        "value": 12.032993769415281,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 244.8280760046724,
+        "value": 245.46534963144063,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 158.2118897733084,
+        "value": 153.64188762451394,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 175.96566769043025,
-    "max": 244.8280760046724,
-    "low": 12.053417943200895,
-    "high": 244.8280760046724,
-    "mos_pct": -10.328339577690576,
+    "median": 173.68066661603302,
+    "max": 245.46534963144063,
+    "low": 12.032993769415281,
+    "high": 245.46534963144063,
+    "mos_pct": -10.248307689223786,
     "valuation_warnings": [
       "extreme_multiples_pe_estimate",
       "value_trap_risk"
@@ -99,7 +101,7 @@
       "goodwill"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 23,
+    "filing_lag_days": 26,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-06"
   },
@@ -123,20 +125,20 @@
       "Quality": 50.0,
       "Value": 51.59,
       "Growth": 55.95,
-      "Momentum": 76.1,
+      "Momentum": 77.54,
       "Health": 55.18,
       "Profitability": 54.76,
-      "Technical": 44.52,
-      "Risk": 66.04
+      "Technical": 36.65,
+      "Risk": 65.5
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.11417165781828965,
   "recommendation": "neutral",
-  "loss_chance_pct": 52.95961348635346,
-  "price_change_1d_pct": 0.6741,
+  "loss_chance_pct": 53.09096487519089,
+  "price_change_1d_pct": -1.3701,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 37.31,
+  "composite_score_adjusted": 36.99,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,10 +186,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 44.58,
+  "osap_blended_score": 44.42,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3,
   "form4_diagnostics": null,
-  "cross_source_delta": 7.771097739702285e-08
+  "cross_source_delta": 8.354715451349325e-08
 }

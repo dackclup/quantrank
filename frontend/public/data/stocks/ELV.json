@@ -3,19 +3,21 @@
   "name": "Elevance Health",
   "sector": "Health Care",
   "industry": "Managed Health Care",
-  "market_cap": 85290524745.0,
-  "current_price": 392.75,
-  "rank": 112,
-  "composite_score": 57.42,
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 85386076722.38159,
+  "current_price": 393.19,
+  "rank": 99,
+  "composite_score": 57.96,
   "pillar_scores": {
     "quality": 54.45,
-    "value": 73.16,
+    "value": 72.6,
     "growth": 33.9,
-    "momentum": 67.78,
+    "momentum": 72.36,
     "health": 50.24,
     "profitability": 59.46,
-    "technical": 62.75,
-    "risk": 37.32,
+    "technical": 64.89,
+    "risk": 36.92,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 24.143224070393778,
     "eps_diluted": 24.143224070393778,
     "shares_outstanding": 217162380.0,
-    "market_cap": 85290524745.0,
-    "pe_ratio_ttm": 16.267504242799923,
+    "market_cap": 85386076722.38159,
+    "pe_ratio_ttm": 16.285728919012318,
     "goodwill": 28340000000.0
   },
   "fair_price": {
@@ -45,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 632.740310433234,
+        "value": 622.4203541206268,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 600.5019588346054,
+        "value": 598.415767090305,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 356.17570716195695,
+        "value": 354.90365500899,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 329.22248274199774,
-    "max": 632.740310433234,
+    "median": 328.5864566655142,
+    "max": 622.4203541206268,
     "low": 24.266109144087096,
-    "high": 632.740310433234,
-    "mos_pct": -19.296226894621583,
+    "high": 622.4203541206268,
+    "mos_pct": -19.661049463659253,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
@@ -97,7 +99,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 37,
+    "filing_lag_days": 40,
     "latest_period_end": "2026-04-15",
     "latest_filed_date": "2026-04-22"
   },
@@ -120,22 +122,22 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 52.97,
-      "Value": 51.13,
+      "Value": 51.98,
       "Growth": 49.58,
-      "Momentum": 33.76,
+      "Momentum": 30.88,
       "Health": 59.8,
       "Profitability": 50.85,
-      "Technical": 56.62,
-      "Risk": 43.29
+      "Technical": 56.18,
+      "Risk": 43.13
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 45.04255850128466,
-  "price_change_1d_pct": 0.327,
+  "loss_chance_pct": 44.90138540375664,
+  "price_change_1d_pct": 0.112,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 56.92,
+  "composite_score_adjusted": 57.46,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -183,10 +185,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.64,
+  "osap_blended_score": 54.91,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5,
   "form4_diagnostics": null,
-  "cross_source_delta": 8.558981225435536e-10
+  "cross_source_delta": 6.586338351454696e-09
 }

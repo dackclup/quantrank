@@ -3,19 +3,21 @@
   "name": "Aon plc",
   "sector": "Financials",
   "industry": "Insurance Brokers",
-  "market_cap": 67981540259.55951,
-  "current_price": 318.3,
-  "rank": 284,
-  "composite_score": 49.47,
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 67503129979.5119,
+  "current_price": 316.06,
+  "rank": 292,
+  "composite_score": 48.96,
   "pillar_scores": {
     "quality": 70.67,
-    "value": 36.67,
+    "value": 36.89,
     "growth": 53.67,
-    "momentum": 33.17,
+    "momentum": 33.91,
     "health": 28.41,
     "profitability": 51.33,
-    "technical": 57.94,
-    "risk": 52.99,
+    "technical": 45.09,
+    "risk": 52.76,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 18.761387962331085,
     "eps_diluted": 18.761387962331085,
     "shares_outstanding": 213576949.0,
-    "market_cap": 67981540259.55951,
-    "pe_ratio_ttm": 16.96569509846756,
+    "market_cap": 67503129979.5119,
+    "pe_ratio_ttm": 16.846301467310184,
     "goodwill": 15925000000.0
   },
   "fair_price": {
@@ -45,13 +47,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 266.2823138077934,
+        "value": 263.8097942540565,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 94.49885344000077,
+        "value": 95.81535749768146,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 180.3905836238971,
-    "max": 266.2823138077934,
-    "low": 94.49885344000077,
-    "high": 266.2823138077934,
-    "mos_pct": -76.45044513886822,
+    "median": 179.812575875869,
+    "max": 263.8097942540565,
+    "low": 95.81535749768146,
+    "high": 263.8097942540565,
+    "mos_pct": -75.77190917768799,
     "valuation_warnings": [],
     "valuation_methods_applicable": 2
   },
@@ -95,7 +97,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 28,
+    "filing_lag_days": 31,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-01"
   },
@@ -118,22 +120,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 52.0,
+      "Value": 51.78,
       "Growth": 51.5,
-      "Momentum": 51.2,
+      "Momentum": 48.9,
       "Health": 50.72,
       "Profitability": 49.11,
-      "Technical": 46.22,
-      "Risk": 54.45
+      "Technical": 50.35,
+      "Risk": 54.61
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 72.26461653386454,
-  "price_change_1d_pct": -0.0754,
+  "loss_chance_pct": 72.51850099601594,
+  "price_change_1d_pct": -0.7037,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 48.97,
+  "composite_score_adjusted": 48.46,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -181,10 +183,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.66,
+  "osap_blended_score": 50.41,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2,
   "form4_diagnostics": null,
-  "cross_source_delta": 4.382894971048204e-08
+  "cross_source_delta": 2.0791804798998998e-08
 }

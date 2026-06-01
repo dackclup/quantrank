@@ -3,19 +3,21 @@
   "name": "Dominion Energy",
   "sector": "Utilities",
   "industry": "Multi-Utilities",
-  "market_cap": 59257702638.64359,
-  "current_price": 67.38,
-  "rank": 342,
-  "composite_score": 46.33,
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 58870746823.92792,
+  "current_price": 66.94,
+  "rank": 344,
+  "composite_score": 46.32,
   "pillar_scores": {
     "quality": 51.61,
-    "value": 38.71,
+    "value": 39.78,
     "growth": 43.55,
-    "momentum": 64.39,
+    "momentum": 63.99,
     "health": 10.96,
     "profitability": 52.15,
-    "technical": 60.61,
-    "risk": 68.06,
+    "technical": 55.88,
+    "risk": 68.89,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 3.5692543240876535,
     "eps_diluted": 3.5692543240876535,
     "shares_outstanding": 879455403.0,
-    "market_cap": 59257702638.64359,
-    "pe_ratio_ttm": 18.877891888704553,
+    "market_cap": 58870746823.92792,
+    "pe_ratio_ttm": 18.754618293701153,
     "goodwill": 4143000000.0
   },
   "fair_price": {
@@ -45,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 70.37326150940814,
+        "value": 69.7530626070753,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 73.70316700192417,
+        "value": 73.05362167330618,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 40.70653775639125,
+        "value": 40.572044384584785,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 40.70653775639125,
-    "max": 73.70316700192417,
+    "median": 40.572044384584785,
+    "max": 73.05362167330618,
     "low": 29.726193077847373,
-    "high": 73.70316700192417,
-    "mos_pct": -65.52622985687053,
+    "high": 73.05362167330618,
+    "mos_pct": -64.9904594574482,
     "valuation_warnings": [],
     "valuation_methods_applicable": 5
   },
@@ -94,7 +96,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 28,
+    "filing_lag_days": 31,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-05-01"
   },
@@ -116,22 +118,22 @@
     "label": "Utilities median (n=31)",
     "values": {
       "Quality": 51.61,
-      "Value": 47.85,
+      "Value": 47.31,
       "Growth": 54.03,
-      "Momentum": 56.97,
+      "Momentum": 56.37,
       "Health": 17.97,
       "Profitability": 52.15,
-      "Technical": 48.8,
-      "Risk": 71.02
+      "Technical": 44.12,
+      "Risk": 71.85
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 76.83323828342544,
-  "price_change_1d_pct": 0.2679,
+  "loss_chance_pct": 76.83988508332263,
+  "price_change_1d_pct": 0.3418,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 44.33,
+  "composite_score_adjusted": 44.32,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -184,5 +186,5 @@
   "exited_top5": false,
   "valuation_methods_applicable": 5,
   "form4_diagnostics": null,
-  "cross_source_delta": 6.493591862432089e-05
+  "cross_source_delta": 6.491985032078993e-05
 }

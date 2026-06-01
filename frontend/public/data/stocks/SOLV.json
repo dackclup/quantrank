@@ -3,19 +3,21 @@
   "name": "Solventum",
   "sector": "Health Care",
   "industry": "Health Care Technology",
-  "market_cap": 13150888052.069824,
-  "current_price": 75.94,
-  "rank": 47,
-  "composite_score": 62.23,
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 12979444135.91272,
+  "current_price": 74.95,
+  "rank": 57,
+  "composite_score": 61.48,
   "pillar_scores": {
     "quality": 78.39,
     "value": 78.53,
     "growth": 61.02,
-    "momentum": 28.49,
+    "momentum": 27.19,
     "health": 31.12,
     "profitability": 63.84,
-    "technical": 62.25,
-    "risk": 42.66,
+    "technical": 51.34,
+    "risk": 41.43,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 8.269105711000114,
     "eps_diluted": 8.269105711000114,
     "shares_outstanding": 173174712.0,
-    "market_cap": 13150888052.069824,
-    "pe_ratio_ttm": 9.183581041948202,
+    "market_cap": 12979444135.91272,
+    "pe_ratio_ttm": 9.063857636810559,
     "goodwill": 5626000000.0
   },
   "fair_price": {
@@ -45,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 216.71490515633118,
+        "value": 213.18029811987915,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 85.23132467756908,
+        "value": 84.93522425144691,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 222.65913127892335,
+        "value": 222.63376397155884,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 150.97311491695012,
-    "max": 222.65913127892335,
+    "median": 149.05776118566303,
+    "max": 222.63376397155884,
     "low": 31.34058291957482,
-    "high": 222.65913127892335,
-    "mos_pct": 49.6996518332548,
+    "high": 222.63376397155884,
+    "mos_pct": 49.71748109453614,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -92,7 +94,7 @@
       "dividends_paid"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 24,
+    "filing_lag_days": 27,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-05"
   },
@@ -113,22 +115,22 @@
     "label": "Health Care median (n=59)",
     "values": {
       "Quality": 52.97,
-      "Value": 51.13,
+      "Value": 51.98,
       "Growth": 49.58,
-      "Momentum": 33.76,
+      "Momentum": 30.88,
       "Health": 59.8,
       "Profitability": 50.85,
-      "Technical": 56.62,
-      "Risk": 43.29
+      "Technical": 56.18,
+      "Risk": 43.13
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.5704370054796583,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 19.490803003835424,
-  "price_change_1d_pct": 0.0659,
+  "loss_chance_pct": 19.86118128828337,
+  "price_change_1d_pct": -1.3037,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 60.23,
+  "composite_score_adjusted": 59.48,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -176,10 +178,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 57.04,
+  "osap_blended_score": 56.66,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
   "form4_diagnostics": null,
-  "cross_source_delta": 6.903945742571739e-08
+  "cross_source_delta": 4.623366563234098e-08
 }

@@ -3,19 +3,21 @@
   "name": "Aflac",
   "sector": "Financials",
   "industry": "Life & Health Insurance",
-  "market_cap": 57326968339.55121,
-  "current_price": 112.63,
-  "rank": 257,
-  "composite_score": 50.7,
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 57220081975.700806,
+  "current_price": 112.42,
+  "rank": 256,
+  "composite_score": 50.37,
   "pillar_scores": {
     "quality": 49.33,
-    "value": 51.33,
+    "value": 51.11,
     "growth": 33.33,
-    "momentum": 65.39,
+    "momentum": 65.94,
     "health": 50.72,
     "profitability": 55.56,
-    "technical": 34.21,
-    "risk": 79.68,
+    "technical": 26.84,
+    "risk": 80.35,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 9.108325145926136,
     "eps_diluted": 9.108325145926136,
     "shares_outstanding": 508984904.0,
-    "market_cap": 57326968339.55121,
-    "pe_ratio_ttm": 12.365610081870408,
+    "market_cap": 57220081975.700806,
+    "pe_ratio_ttm": 12.342554351963072,
     "goodwill": 260000000.0
   },
   "fair_price": {
@@ -45,13 +47,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 129.63019532622562,
+        "value": 129.8386522090657,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 122.05859525477241,
+        "value": 123.16240224227685,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 112.51781994827603,
-    "max": 129.63019532622562,
+    "median": 113.06972344202825,
+    "max": 129.8386522090657,
     "low": 89.29941908168215,
-    "high": 129.63019532622562,
-    "mos_pct": -0.09969736810889906,
+    "high": 129.8386522090657,
+    "mos_pct": 0.5746235626162607,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -105,7 +107,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 23,
+    "filing_lag_days": 26,
     "latest_period_end": "2026-04-28",
     "latest_filed_date": "2026-05-06"
   },
@@ -126,22 +128,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 52.0,
+      "Value": 51.78,
       "Growth": 51.5,
-      "Momentum": 51.2,
+      "Momentum": 48.9,
       "Health": 50.72,
       "Profitability": 49.11,
-      "Technical": 46.22,
-      "Risk": 54.45
+      "Technical": 50.35,
+      "Risk": 54.61
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 42.685129249267504,
-  "price_change_1d_pct": -1.933,
+  "loss_chance_pct": 42.611691624708925,
+  "price_change_1d_pct": -0.1865,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 48.7,
+  "composite_score_adjusted": 48.37,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -189,10 +191,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.28,
+  "osap_blended_score": 51.11,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
   "form4_diagnostics": null,
-  "cross_source_delta": 8.590176766144362e-09
+  "cross_source_delta": 4.1239032245115235e-08
 }

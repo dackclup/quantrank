@@ -3,19 +3,21 @@
   "name": "Globe Life",
   "sector": "Financials",
   "industry": "Life & Health Insurance",
-  "market_cap": 11940987272.893387,
-  "current_price": 153.79,
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 11898283602.15541,
+  "current_price": 153.24,
   "rank": 85,
-  "composite_score": 58.98,
+  "composite_score": 59.08,
   "pillar_scores": {
     "quality": 57.33,
     "value": 62.44,
     "growth": 48.33,
-    "momentum": 76.29,
+    "momentum": 76.44,
     "health": 55.26,
     "profitability": 50.67,
-    "technical": 54.23,
-    "risk": 58.07,
+    "technical": 55.43,
+    "risk": 58.63,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 15.161370642895017,
     "eps_diluted": 15.161370642895017,
     "shares_outstanding": 77644761.0,
-    "market_cap": 11940987272.893387,
-    "pe_ratio_ttm": 10.143541564179259,
+    "market_cap": 11898283602.15541,
+    "pe_ratio_ttm": 10.107265965757259,
     "goodwill": 490446000.0
   },
   "fair_price": {
@@ -45,13 +47,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 215.77747899467906,
+        "value": 216.12446837122926,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 162.49371010835114,
+        "value": 163.96318214568484,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 151.06123341616967,
-    "max": 215.77747899467906,
+    "median": 151.7959694348365,
+    "max": 216.12446837122926,
     "low": 121.3196431350888,
-    "high": 215.77747899467906,
-    "mos_pct": -1.8063932143632648,
+    "high": 216.12446837122926,
+    "mos_pct": -0.9513006594996949,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -102,7 +104,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 22,
+    "filing_lag_days": 25,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-07"
   },
@@ -121,22 +123,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 52.0,
+      "Value": 51.78,
       "Growth": 51.5,
-      "Momentum": 51.2,
+      "Momentum": 48.9,
       "Health": 50.72,
       "Profitability": 49.11,
-      "Technical": 46.22,
-      "Risk": 54.45
+      "Technical": 50.35,
+      "Risk": 54.61
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 36.143766509489296,
-  "price_change_1d_pct": -0.3886,
+  "loss_chance_pct": 35.7946833184743,
+  "price_change_1d_pct": -0.3576,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 58.98,
+  "composite_score_adjusted": 59.08,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,10 +186,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 55.41,
+  "osap_blended_score": 55.46,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
   "form4_diagnostics": null,
-  "cross_source_delta": 3.290292317224951e-08
+  "cross_source_delta": 4.993622867242536e-08
 }

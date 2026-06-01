@@ -3,19 +3,21 @@
   "name": "The Travelers Companies",
   "sector": "Financials",
   "industry": "Property & Casualty Insurance",
-  "market_cap": 62583459077.67792,
-  "current_price": 294.31,
-  "rank": 53,
-  "composite_score": 61.79,
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 62068862554.682495,
+  "current_price": 291.89,
+  "rank": 61,
+  "composite_score": 61.21,
   "pillar_scores": {
     "quality": 63.33,
-    "value": 63.33,
+    "value": 64.0,
     "growth": 71.33,
-    "momentum": 62.75,
+    "momentum": 58.57,
     "health": 56.33,
     "profitability": 50.89,
-    "technical": 33.96,
-    "risk": 76.08,
+    "technical": 29.83,
+    "risk": 75.88,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 35.759180691144735,
     "eps_diluted": 35.759180691144735,
     "shares_outstanding": 212644693.0,
-    "market_cap": 62583459077.67792,
-    "pe_ratio_ttm": 8.23033391342424,
+    "market_cap": 62068862554.682495,
+    "pe_ratio_ttm": 8.16265946274099,
     "goodwill": 4060000000.0
   },
   "fair_price": {
@@ -45,13 +47,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 508.9266691113004,
+        "value": 509.74506845699415,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 311.90500884273075,
+        "value": 314.7256453368639,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 278.46938937167624,
-    "max": 508.9266691113004,
+    "median": 279.8797076187428,
+    "max": 509.74506845699415,
     "low": 184.0401221091628,
-    "high": 508.9266691113004,
-    "mos_pct": -5.6884558201026785,
+    "high": 509.74506845699415,
+    "mos_pct": -4.291238951148016,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -102,7 +104,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 43,
+    "filing_lag_days": 46,
     "latest_period_end": "2026-04-09",
     "latest_filed_date": "2026-04-16"
   },
@@ -121,22 +123,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 52.0,
+      "Value": 51.78,
       "Growth": 51.5,
-      "Momentum": 51.2,
+      "Momentum": 48.9,
       "Health": 50.72,
       "Profitability": 49.11,
-      "Technical": 46.22,
-      "Risk": 54.45
+      "Technical": 50.35,
+      "Risk": 54.61
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 36.09488411649588,
-  "price_change_1d_pct": -1.877,
+  "loss_chance_pct": 35.89938410877609,
+  "price_change_1d_pct": -0.8223,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 61.79,
+  "composite_score_adjusted": 61.21,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,10 +186,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 56.82,
+  "osap_blended_score": 56.53,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
   "form4_diagnostics": null,
-  "cross_source_delta": 5.3267715888678245e-08
+  "cross_source_delta": 6.787904394278741e-09
 }

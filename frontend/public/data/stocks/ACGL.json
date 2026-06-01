@@ -3,19 +3,21 @@
   "name": "Arch Capital Group",
   "sector": "Financials",
   "industry": "Property & Casualty Insurance",
-  "market_cap": 31679153304.208557,
-  "current_price": 90.67,
-  "rank": 29,
-  "composite_score": 64.86,
+  "exchange": "NASDAQ",
+  "country": "US",
+  "market_cap": 31214464512.417114,
+  "current_price": 89.34,
+  "rank": 35,
+  "composite_score": 63.9,
   "pillar_scores": {
     "quality": 68.0,
-    "value": 75.67,
+    "value": 76.0,
     "growth": 82.33,
-    "momentum": 47.81,
+    "momentum": 40.39,
     "health": 50.72,
     "profitability": 61.56,
-    "technical": 32.07,
-    "risk": 62.58,
+    "technical": 29.63,
+    "risk": 62.98,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 19.697209751997534,
     "eps_diluted": 19.697209751997534,
     "shares_outstanding": 349389588.0,
-    "market_cap": 31679153304.208557,
-    "pe_ratio_ttm": 4.603189959925683,
+    "market_cap": 31214464512.417114,
+    "pe_ratio_ttm": 4.535667612963835,
     "goodwill": 607000000.0
   },
   "fair_price": {
@@ -45,13 +47,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 280.3317960904272,
+        "value": 280.7825945500524,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 143.5512458296102,
+        "value": 144.84941633436614,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 137.0128050720798,
-    "max": 280.3317960904272,
+    "median": 137.66189032445777,
+    "max": 280.7825945500524,
     "low": 113.92959046470816,
-    "high": 280.3317960904272,
-    "mos_pct": 33.823704929443956,
+    "high": 280.7825945500524,
+    "mos_pct": 35.10186724348795,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -104,7 +106,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 24,
+    "filing_lag_days": 27,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-05"
   },
@@ -125,22 +127,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 52.0,
+      "Value": 51.78,
       "Growth": 51.5,
-      "Momentum": 51.2,
+      "Momentum": 48.9,
       "Health": 50.72,
       "Profitability": 49.11,
-      "Technical": 46.22,
-      "Risk": 54.45
+      "Technical": 50.35,
+      "Risk": 54.61
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "bullish",
-  "loss_chance_pct": 20.730630344194402,
-  "price_change_1d_pct": -0.7987,
+  "loss_chance_pct": 20.763079311171435,
+  "price_change_1d_pct": -1.4669,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 64.36,
+  "composite_score_adjusted": 63.4,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -188,10 +190,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 58.36,
+  "osap_blended_score": 57.88,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
   "form4_diagnostics": null,
-  "cross_source_delta": 2.7519404780154802e-08
+  "cross_source_delta": 1.6389289187987827e-08
 }

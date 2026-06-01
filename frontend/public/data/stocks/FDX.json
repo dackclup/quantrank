@@ -3,19 +3,21 @@
   "name": "FedEx",
   "sector": "Industrials",
   "industry": "Air Freight & Logistics",
-  "market_cap": 98162817962.05994,
-  "current_price": 411.4,
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 98246331783.0,
+  "current_price": 411.75,
   "rank": 139,
-  "composite_score": 55.72,
+  "composite_score": 55.61,
   "pillar_scores": {
     "quality": 33.54,
-    "value": 76.16,
+    "value": 75.95,
     "growth": 40.19,
-    "momentum": 86.01,
+    "momentum": 85.21,
     "health": 63.75,
     "profitability": 36.29,
-    "technical": 53.49,
-    "risk": 60.46,
+    "technical": 54.08,
+    "risk": 60.69,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 18.792426816280088,
     "eps_diluted": 18.792426816280088,
     "shares_outstanding": 238606756.0,
-    "market_cap": 98162817962.05994,
-    "pe_ratio_ttm": 21.891797047738613,
+    "market_cap": 98246331783.0,
+    "pe_ratio_ttm": 21.91042189629795,
     "goodwill": 6758000000.0
   },
   "fair_price": {
@@ -45,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 530.8755128935693,
+        "value": 524.3890244362635,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 841.1392128237114,
+        "value": 834.4784841762371,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 684.3922527866608,
+        "value": 683.4283542331591,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -75,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 530.8755128935693,
-    "max": 841.1392128237114,
+    "median": 524.3890244362635,
+    "max": 834.4784841762371,
     "low": 123.20186733364707,
-    "high": 841.1392128237114,
-    "mos_pct": 22.505373876801425,
+    "high": 834.4784841762371,
+    "mos_pct": 21.48004996049534,
     "valuation_warnings": [],
     "valuation_methods_applicable": 5
   },
@@ -97,7 +99,7 @@
       "accounts_receivable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 71,
+    "filing_lag_days": 74,
     "latest_period_end": "2026-03-17",
     "latest_filed_date": "2026-03-19"
   },
@@ -116,22 +118,22 @@
     "label": "Industrials median (n=79)",
     "values": {
       "Quality": 47.47,
-      "Value": 49.58,
+      "Value": 50.21,
       "Growth": 49.37,
-      "Momentum": 50.2,
+      "Momentum": 53.24,
       "Health": 52.71,
       "Profitability": 47.68,
-      "Technical": 49.25,
-      "Risk": 53.92
+      "Technical": 48.66,
+      "Risk": 53.75
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 29.263539529086188,
-  "price_change_1d_pct": -0.0923,
+  "loss_chance_pct": 29.67664006505631,
+  "price_change_1d_pct": 0.0851,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 55.72,
+  "composite_score_adjusted": 55.61,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -179,10 +181,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.79,
+  "osap_blended_score": 53.73,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5,
   "form4_diagnostics": null,
-  "cross_source_delta": 1.1307133255949884e-08
+  "cross_source_delta": 3.524813534665951e-08
 }

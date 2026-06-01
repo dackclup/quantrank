@@ -3,19 +3,21 @@
   "name": "Ares Management",
   "sector": "Financials",
   "industry": "Asset Management & Custody Banks",
-  "market_cap": 39459441546.0,
-  "current_price": 126.0,
-  "rank": 288,
-  "composite_score": 49.08,
+  "exchange": "NYSE",
+  "country": "US",
+  "market_cap": 40242366973.5,
+  "current_price": 128.5,
+  "rank": 290,
+  "composite_score": 49.05,
   "pillar_scores": {
     "quality": 65.33,
-    "value": 33.11,
+    "value": 33.56,
     "growth": 68.0,
-    "momentum": 23.61,
+    "momentum": 22.16,
     "health": 58.21,
     "profitability": 48.89,
-    "technical": 48.21,
-    "risk": 24.73,
+    "technical": 49.1,
+    "risk": 24.93,
     "sentiment": null,
     "ml": null
   },
@@ -32,8 +34,8 @@
     "eps_basic": 3.1622807396940753,
     "eps_diluted": 3.1622807396940753,
     "shares_outstanding": 313170171.0,
-    "market_cap": 39459441546.0,
-    "pe_ratio_ttm": 39.844659716135595,
+    "market_cap": 40242366973.5,
+    "pe_ratio_ttm": 40.63522836129702,
     "goodwill": 3463416000.0
   },
   "fair_price": {
@@ -45,13 +47,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 50.92451018037413,
+        "value": 50.515112441627934,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 30.832543075278497,
+        "value": 30.301419499650645,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -75,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 30.832543075278497,
-    "max": 50.92451018037413,
+    "median": 30.301419499650645,
+    "max": 50.515112441627934,
     "low": 2.3506703356758165,
-    "high": 50.92451018037413,
-    "mos_pct": -308.6591225782692,
+    "high": 50.515112441627934,
+    "mos_pct": -324.07254221697934,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_rim_estimate"
@@ -108,7 +110,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 21,
+    "filing_lag_days": 24,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-08"
   },
@@ -131,22 +133,22 @@
     "label": "Financials median (n=75)",
     "values": {
       "Quality": 50.67,
-      "Value": 52.0,
+      "Value": 51.78,
       "Growth": 51.5,
-      "Momentum": 51.2,
+      "Momentum": 48.9,
       "Health": 50.72,
       "Profitability": 49.11,
-      "Technical": 46.22,
-      "Risk": 54.45
+      "Technical": 50.35,
+      "Risk": 54.61
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 62.4592325143869,
-  "price_change_1d_pct": -0.4582,
+  "loss_chance_pct": 62.473351040283305,
+  "price_change_1d_pct": 1.9841,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 49.08,
+  "composite_score_adjusted": 49.05,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -194,10 +196,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.47,
+  "osap_blended_score": 50.45,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2,
   "form4_diagnostics": null,
-  "cross_source_delta": 0.05325044338375848
+  "cross_source_delta": 0.053250402589667144
 }
