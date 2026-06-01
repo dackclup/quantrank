@@ -5,19 +5,19 @@
   "industry": "Brewers",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 7920197756.958008,
-  "current_price": 39.78,
+  "market_cap": 7770872756.958008,
+  "current_price": 39.03,
   "rank": 483,
-  "composite_score": 34.76,
+  "composite_score": 34.44,
   "pillar_scores": {
     "quality": 15.62,
     "value": 74.54,
     "growth": 47.57,
-    "momentum": 20.77,
+    "momentum": 20.17,
     "health": 9.38,
     "profitability": 17.82,
-    "technical": 31.57,
-    "risk": 40.41,
+    "technical": 27.39,
+    "risk": 39.61,
     "sentiment": null,
     "ml": null
   },
@@ -34,7 +34,7 @@
     "eps_basic": -10.74635861376193,
     "eps_diluted": -10.74635861376193,
     "shares_outstanding": 199100000.0,
-    "market_cap": 7920197756.958008,
+    "market_cap": 7770872756.958008,
     "pe_ratio_ttm": null,
     "goodwill": 1944700000.0
   },
@@ -53,7 +53,7 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 169.43146186750255,
+        "value": 168.72614041203528,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -77,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 169.43146186750255,
-    "max": 169.43146186750255,
-    "low": 169.43146186750255,
-    "high": 169.43146186750255,
-    "mos_pct": 76.52148052030306,
+    "median": 168.72614041203528,
+    "max": 168.72614041203528,
+    "low": 168.72614041203528,
+    "high": 168.72614041203528,
+    "mos_pct": 76.86784117506379,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -102,7 +102,8 @@
     "altman_distress"
   ],
   "valuation_warnings": [
-    "value_trap_risk"
+    "value_trap_risk",
+    "cross_source_disagreement"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -117,22 +118,22 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 49.31,
-      "Value": 51.85,
+      "Value": 51.39,
       "Growth": 47.74,
-      "Momentum": 37.57,
+      "Momentum": 37.2,
       "Health": 39.14,
       "Profitability": 53.7,
-      "Technical": 53.14,
-      "Risk": 50.25
+      "Technical": 49.23,
+      "Risk": 50.61
     }
   },
   "beneish_m_score": -3.426325967883362,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 34.83954103473029,
-  "price_change_1d_pct": 0.6324,
+  "loss_chance_pct": 34.87518731552419,
+  "price_change_1d_pct": -1.2649,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 34.76,
+  "composite_score_adjusted": 34.44,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -180,10 +181,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 43.3,
+  "osap_blended_score": 43.15,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 1,
   "form4_diagnostics": null,
-  "cross_source_delta": 0.042967249985524834
+  "cross_source_delta": 0.0580041952886713
 }

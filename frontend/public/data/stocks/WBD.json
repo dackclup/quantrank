@@ -5,19 +5,19 @@
   "industry": "Broadcasting",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 67767906776.57416,
-  "current_price": 27.03,
-  "rank": 481,
-  "composite_score": 34.88,
+  "market_cap": 68319475129.5,
+  "current_price": 27.25,
+  "rank": 473,
+  "composite_score": 36.19,
   "pillar_scores": {
     "quality": 23.91,
-    "value": 37.68,
+    "value": 39.13,
     "growth": 39.67,
-    "momentum": 66.78,
+    "momentum": 68.13,
     "health": 12.39,
     "profitability": 26.81,
-    "technical": 33.27,
-    "risk": 51.86,
+    "technical": 49.45,
+    "risk": 51.89,
     "sentiment": null,
     "ml": null
   },
@@ -34,7 +34,7 @@
     "eps_basic": -0.6812552337642737,
     "eps_diluted": -0.6812552337642737,
     "shares_outstanding": 2507136702.0,
-    "market_cap": 67767906776.57416,
+    "market_cap": 68319475129.5,
     "pe_ratio_ttm": null,
     "goodwill": 25874000000.0
   },
@@ -53,13 +53,13 @@
         "tier_used": null
       },
       "multiples_pb": {
-        "value": 33.93169552494387,
+        "value": 35.261727529901556,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 6.96506476576099,
+        "value": 7.030206390430383,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -77,15 +77,16 @@
         "tier_used": null
       }
     },
-    "median": 6.96506476576099,
-    "max": 33.93169552494387,
+    "median": 7.030206390430383,
+    "max": 35.261727529901556,
     "low": 5.4474588975836005,
-    "high": 33.93169552494387,
-    "mos_pct": -288.0796747148734,
+    "high": 35.261727529901556,
+    "mos_pct": -287.61308682335545,
     "valuation_warnings": [
+      "extreme_dcf_estimate",
       "value_trap_risk"
     ],
-    "valuation_methods_applicable": 3
+    "valuation_methods_applicable": 2
   },
   "top5_factors": [],
   "score_history": [],
@@ -106,6 +107,7 @@
     "altman_distress"
   ],
   "valuation_warnings": [
+    "extreme_dcf_estimate",
     "value_trap_risk"
   ],
   "has_history": true,
@@ -123,20 +125,20 @@
       "Quality": 52.17,
       "Value": 47.83,
       "Growth": 55.98,
-      "Momentum": 45.47,
+      "Momentum": 47.76,
       "Health": 45.5,
       "Profitability": 50.72,
-      "Technical": 49.55,
-      "Risk": 50.08
+      "Technical": 51.25,
+      "Risk": 50.66
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 81.55785914313759,
-  "price_change_1d_pct": 0.074,
+  "loss_chance_pct": 81.90552283619147,
+  "price_change_1d_pct": 0.8886,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 34.88,
+  "composite_score_adjusted": 36.19,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,10 +186,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 43.37,
+  "osap_blended_score": 44.02,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 3,
+  "valuation_methods_applicable": 2,
   "form4_diagnostics": null,
-  "cross_source_delta": 0.00037001643725714475
+  "cross_source_delta": 3.85029304603683e-08
 }
