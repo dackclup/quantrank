@@ -50,6 +50,11 @@ from compute.ingest.cross_source import (
     bucket_delta as cross_source_bucket_delta,
 )
 from compute.ingest.cross_source import (
+    country_for_exchange,
+    exchange_name,
+    fetch_yfinance_exchange,
+)
+from compute.ingest.cross_source import (
     validate_market_cap as cross_source_validate_market_cap,
 )
 from compute.ingest.fundamentals import (
@@ -660,6 +665,22 @@ def _pillar_scores_to_schema(row: pd.Series) -> PillarScores:
         sentiment=None,
         ml=None,
     )
+
+
+def _exchange_coverage_pct(by_ticker: dict[str, str | None]) -> float | None:
+    """PR-A2 — % of the iterated universe with a resolved exchange (display-only).
+
+    Rule-18 observability for the country/exchange listing-metadata fields.
+    ``None`` only on an empty universe (avoids ZeroDivisionError); otherwise a
+    0-100 float (0.0 is a real "nothing resolved" signal — e.g. a cold simulate
+    cache under ``QR_SKIP_CROSS_SOURCE``). Pure helper so the tests import the
+    production formula instead of copying it (CLAUDE.md §Gotchas PR #310 — no
+    verbatim-copy test helpers).
+    """
+    if not by_ticker:
+        return None
+    n_with_exchange = sum(1 for v in by_ticker.values() if v is not None)
+    return round(100.0 * n_with_exchange / len(by_ticker), 2)
 
 
 def run_weekly_compute() -> int:
@@ -1452,6 +1473,12 @@ def run_weekly_compute() -> int:
         key: 0 for key in CROSS_SOURCE_BUCKET_KEYS
     }
     cross_source_delta_by_ticker: dict[str, float | None] = {}
+    # PR-A2 — listing-metadata wiring (StockDetail.exchange / .country).
+    # Display-mapped exchange name + derived country, one entry per ticker
+    # iterated in Step 8. Skip-safe: fetch_yfinance_exchange honors
+    # QR_SKIP_CROSS_SOURCE internally (returns None on cold simulate cache).
+    exchange_by_ticker: dict[str, str | None] = {}
+    country_by_ticker: dict[str, str | None] = {}
     # Issue #67 — Rule 18 observability surface for sector-adjusted CoE.
     # Both counts are computed on EVERY cron regardless of USE_SECTOR_COE
     # so the delta (flat-10% vs per-sector) is observable before the flag
@@ -1664,6 +1691,13 @@ def run_weekly_compute() -> int:
             cross_source_disagreement_count += 1
             if "cross_source_disagreement" not in valuation_warnings:
                 valuation_warnings.append("cross_source_disagreement")
+
+        # PR-A2 — listing metadata (display-only; no scoring/ranking impact).
+        # Piggybacks the cross_source yfinance loop; skip-safe via
+        # QR_SKIP_CROSS_SOURCE inside fetch_yfinance_exchange.
+        exchange_code = fetch_yfinance_exchange(ticker)
+        exchange_by_ticker[ticker] = exchange_name(exchange_code)
+        country_by_ticker[ticker] = country_for_exchange(exchange_code)
 
         # Issue #261 — multi_class_aggregate_shares_suspected annotate.
         # CIK-collision detector (precomputed before this loop) flags
@@ -1979,6 +2013,8 @@ def run_weekly_compute() -> int:
             name=str(r["name"]),
             sector=sector,
             industry=sub_industry,
+            exchange=exchange_by_ticker.get(ticker),
+            country=country_by_ticker.get(ticker),
             market_cap=raw_metrics.market_cap,
             current_price=round(current_price, 4),
             rank=int(r["rank"]),
@@ -2065,6 +2101,18 @@ def run_weekly_compute() -> int:
         shares_fallback_dimensional_override_count,
     )
 
+    # PR-A2 — Rule 18 observability: exchange-resolution coverage across the
+    # universe (display-only fields). Watch this for >= 1 cron before PR-B
+    # wires the frontend country/exchange chips (observability-before-wiring).
+    n_with_exchange = sum(1 for v in exchange_by_ticker.values() if v is not None)
+    exchange_coverage_pct = _exchange_coverage_pct(exchange_by_ticker)
+    logger.info(
+        "Exchange coverage: %d / %d (%.1f%%)",
+        n_with_exchange,
+        len(exchange_by_ticker),
+        exchange_coverage_pct if exchange_coverage_pct is not None else 0.0,
+    )
+
     meta = Metadata(
         version=config.SCHEMA_VERSION,
         last_update_utc=_iso(now),
@@ -2149,6 +2197,7 @@ def run_weekly_compute() -> int:
         } or None,
         cross_source_disagreement_count=cross_source_disagreement_count,
         cross_source_delta_histogram=cross_source_delta_histogram,
+        exchange_coverage_pct=exchange_coverage_pct,
         shares_fallback_triggered_count=shares_fallback_triggered_count,
         shares_fallback_too_low_count=shares_fallback_too_low_count,
         shares_fallback_dimensional_override_count=(

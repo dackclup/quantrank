@@ -4665,6 +4665,56 @@ unknown→passthrough/None, None/""→None/None all pass); snapshot diff confirm
 (sandbox lacks pydantic/tenacity/yfinance). CLAUDE.md + AGENTS.md + SKILL.md +
 test_config.py + this entry move in lockstep.
 
+## PR-A2 — country + exchange `main.py` wiring (compute, this PR)
+
+**Scope**: compute orchestrator wiring only. Second of the 2-PR ingest sequence
+(PR-A1 = schema + `cross_source` helpers, **merged via PR #347** `5f39d644`).
+PR-A2 populates the fields PR-A1 declared. **No schema change** — SCHEMA_VERSION
+stays `0.10.12-phase4.6` (fields already exist; no `schema_check` regen, no
+`test_config.py` bump, no SKILL.md row).
+
+**The 6 edits to `compute/main.py::run_weekly_compute`** (all display-only):
+- New import block: `country_for_exchange` / `exchange_name` /
+  `fetch_yfinance_exchange` from `compute.ingest.cross_source` (ruff `--fix`
+  placed the non-aliased block alphabetically among the existing aliased
+  `cross_source` blocks).
+- Two accumulators before the Step-8 per-ticker loop:
+  `exchange_by_ticker` / `country_by_ticker` (`dict[str, str | None]`).
+- Inside the Step-8 loop (piggybacks the existing `cross_source_validate_market_cap`
+  block): `exchange_code = fetch_yfinance_exchange(ticker)` →
+  `exchange_by_ticker[ticker] = exchange_name(exchange_code)` +
+  `country_by_ticker[ticker] = country_for_exchange(exchange_code)`. **Skip-safe**:
+  `fetch_yfinance_exchange` honors `QR_SKIP_CROSS_SOURCE` internally — confirmed
+  NO `QR_SKIP_CROSS_SOURCE` ref in `main.py`, so the call site needs no wrapper.
+- `StockDetail(...)`: `exchange=exchange_by_ticker.get(ticker)` +
+  `country=country_by_ticker.get(ticker)` (siblings of `industry=sub_industry`).
+- Before `meta = Metadata(`: `n_with_exchange = sum(... is not None)` +
+  `exchange_coverage_pct = round(100.0 * n_with_exchange / len(exchange_by_ticker),
+  2) if exchange_by_ticker else None` + an "Exchange coverage: N / M (P%)"
+  `logger.info` (mirrors the fundamentals-coverage log).
+- `Metadata(...)`: `exchange_coverage_pct=exchange_coverage_pct` (beside the
+  cross_source fields).
+
+**Observability-before-wiring**: PR-A2 populates the fields + the Rule-18
+`exchange_coverage_pct` diagnostic. **PR-B (frontend chips) still waits for ≥ 1
+cron** confirming coverage is high (expected ~99% on the US S&P 500 universe)
+before the hero country/exchange chips replace sector+industry on the #1 row.
+Until cron Run #73+ lands, the fields populate but nothing in the frontend reads
+them yet.
+
+**Perf note**: adds one cache-first `fast_info` round-trip per ticker on a COLD
+cache (warm = disk read merged into the existing `yfinance_info/<ticker>.json`).
+Incremental over the existing per-ticker `.info` market-cap call; bounded +
+tenacity-retried + graceful → None. Weekly cron cold (25-50 min) is EDGAR-
+dominated, so negligible; simulate sets `QR_SKIP_CROSS_SOURCE=1` → no live fetch.
+
+**Verification**: `python -m py_compile compute/main.py` OK; `ruff check .` clean
+(I001 auto-fixed on the new import block). `test-engineer` wrote orchestrator-
+level tests (StockDetail field population + `exchange_coverage_pct` formula +
+None-safe, monkeypatching `compute.main.fetch_yfinance_exchange`). `pytest` runs
+on CI (sandbox lacks pydantic/tenacity/yfinance). No ranking / scoring /
+valuation / defense-layer change. CLAUDE.md + AGENTS.md move in lockstep.
+
 ---
 
 ### impeccable third-party frontend-design skill — committed (full vendoring) [in flight]
