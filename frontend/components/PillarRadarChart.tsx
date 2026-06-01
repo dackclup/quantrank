@@ -118,7 +118,7 @@ export function PillarRadarChart({
         )}
       </div>
 
-      <ul className="space-y-2">
+      <ul className="space-y-3 sm:space-y-2">
         {rows.map((r) => {
           const widthClamped = Math.max(2, Math.min(100, r.value));
           const c = colorFor(r.value);
@@ -127,7 +127,7 @@ export function PillarRadarChart({
           return (
             <li
               key={r.key as string}
-              className="grid grid-cols-[8rem_1fr_4.5rem] items-center gap-3"
+              className="grid grid-cols-[1fr_auto] grid-rows-[auto_auto] gap-x-3 gap-y-1.5 sm:grid-cols-[8rem_1fr_4.5rem] sm:grid-rows-1 sm:items-center sm:gap-3"
               title={`${r.label}: ${r.value.toFixed(1)} (${tierLabel(r.value)})${
                 r.baselineValue !== null && baseline
                   ? ` — ${baseline.label.toLowerCase()}: ${r.baselineValue.toFixed(1)}`
@@ -136,18 +136,18 @@ export function PillarRadarChart({
             >
               <div className="min-w-0">
                 <div className="text-sm font-medium text-slate-800 dark:text-slate-200">{r.label}</div>
-                <div className="truncate text-[0.625rem] text-slate-400 dark:text-slate-500">
+                <div className="line-clamp-1 text-[0.625rem] text-slate-400 dark:text-slate-500 sm:truncate">
                   {PILLAR_DESCRIPTIONS[r.label]}
                 </div>
               </div>
-              <div className="relative h-7 rounded-sm bg-slate-100 dark:bg-slate-800">
+              <div className="relative order-last col-span-2 h-5 rounded-sm bg-slate-100 dark:bg-slate-800 sm:order-none sm:col-span-1">
                 {/* Tier-boundary tick lines at 30 / 50 / 70 — visually
                     show which tier the bar lands in. */}
                 <div className="absolute inset-y-0 left-[30%] w-px bg-slate-200 dark:bg-slate-700" />
                 <div className="absolute inset-y-0 left-[50%] w-px bg-slate-200 dark:bg-slate-700" />
                 <div className="absolute inset-y-0 left-[70%] w-px bg-slate-200 dark:bg-slate-700" />
                 <div
-                  className="absolute inset-y-1 left-1 rounded-sm"
+                  className="absolute inset-y-0.5 left-1 rounded-sm"
                   style={{ width: `calc(${widthClamped}% - 8px)`, backgroundColor: c }}
                 />
                 {/* Sector-median notch — vertical mark slightly taller
@@ -159,14 +159,14 @@ export function PillarRadarChart({
                   />
                 )}
               </div>
-              <div className="text-right">
+              <div className="self-start text-right sm:self-auto">
                 <div
                   className="font-mono text-sm font-semibold tabular-nums"
                   style={{ color: c }}
                 >
                   {r.value.toFixed(0)}
                 </div>
-                <div className="text-[0.625rem] text-slate-400 dark:text-slate-500">{tierLabel(r.value)}</div>
+                <div className="text-[0.625rem]" style={{ color: c }}>{tierLabel(r.value)}</div>
               </div>
             </li>
           );
@@ -176,16 +176,16 @@ export function PillarRadarChart({
       {/* Axis ticks — labels under the bar column only (the bar
           width is 1fr in the grid, so the absolute-positioned spans
           inside align with the bars above). */}
-      <div className="mt-2 grid grid-cols-[8rem_1fr_4.5rem] items-center gap-3">
-        <div />
-        <div className="relative h-4 text-[0.625rem] text-slate-400 dark:text-slate-500">
+      <div className="mt-2 grid grid-cols-[1fr_auto] items-center gap-x-3 sm:grid-cols-[8rem_1fr_4.5rem] sm:gap-3">
+        <div className="hidden sm:block" />
+        <div className="relative col-span-2 h-4 text-[0.625rem] text-slate-400 dark:text-slate-500 sm:col-span-1">
           <span className="absolute left-0">0</span>
           <span className="absolute left-[30%] -translate-x-1/2">30</span>
           <span className="absolute left-[50%] -translate-x-1/2">50</span>
           <span className="absolute left-[70%] -translate-x-1/2">70</span>
           <span className="absolute right-0">100</span>
         </div>
-        <div />
+        <div className="hidden sm:block" />
       </div>
 
       {/* Legend — explains the 4-tier color ramp. */}

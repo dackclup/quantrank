@@ -914,6 +914,30 @@ whitespace / single-line fixes do not trigger.
   inline-chip attempt (closed PR #343 — the user wanted the BOX grid, not a
   compact chip row).
 
+- **`PillarRadarChart` row REFLOWS on mobile — bar drops to its own full-width
+  line; the axis-tick row MUST mirror the same breakpoint** (`frontend/components/PillarRadarChart.tsx`,
+  PR #345). The 8-pillar bar list was a fixed 3-column grid
+  `grid-cols-[8rem_1fr_4.5rem]` (label · bar · value) at EVERY width — on
+  mobile portrait the bar `1fr` got squeezed to ~56px (label 8rem + value
+  4.5rem ate a 280px card). Fix: each `<li>` is now mobile
+  `grid-cols-[1fr_auto] grid-rows-[auto_auto]` (row 1 = label-left + value-
+  right; row 2 = the bar `col-span-2 order-last` full-width) → `sm:` collapses
+  back to the single-row `grid-cols-[8rem_1fr_4.5rem]` (`sm:order-none
+  sm:col-span-1 sm:grid-rows-1 sm:items-center`). The **`order-last` is
+  load-bearing**: the bar is the 2nd DOM child (before the value), so without
+  `order-last` the mobile auto-flow would place it at row1-col2 ON TOP of the
+  value — `order-last` forces it to row 2; `sm:order-none` restores DOM order
+  for the desktop single-row. **The axis-ticks row (0/30/50/70/100) reuses the
+  IDENTICAL responsive grid** (`grid-cols-[1fr_auto] sm:grid-cols-[8rem_1fr_4.5rem]`
+  + `col-span-2 sm:col-span-1` on the tick container + `hidden sm:block`
+  spacers) so the ticks stay aligned under the bar in BOTH layouts — if you
+  touch the row grid, touch the axis grid in lockstep or the ticks drift off
+  the bar. Bar internals (30/50/70 lines, fill `calc(% - 8px)`, baseline
+  notch) are all %-relative to the bar's own box, so they scale at any
+  width untouched. Description is `line-clamp-1 sm:truncate` (it has room to
+  breathe on the wider mobile line). `space-y-3 sm:space-y-2` on the `<ul>`
+  (the 2-line mobile rows need a touch more separation).
+
 ## Phase status
 
 Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged
