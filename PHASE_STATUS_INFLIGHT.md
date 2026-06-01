@@ -4854,3 +4854,34 @@ COMMENT (LossChanceBadge — no behavior/build change) + this side-file — no
 compute / schema / scoring / valuation / frontend-LOGIC change. Separate from
 PR #352 (the UI polish) by user direction to keep that PR focused. Verified:
 `docs-reviewer` DOCS-CLEAN; CI green. Branch `claude/frontend-skill-rule4-darkmode`.
+
+**Doc — full-regenerate `DESIGN.md` + `.impeccable/design.json` (`$impeccable
+document`, this PR)** — refreshed the impeccable design-context (created PR #350)
+against the current code; user chose FULL REGENERATE. The creative decisions
+locked in #350 (North Star "Numbers you can read like a ledger", palette,
+typography, Named Rules, the 4 anti-references) are preserved verbatim — only
+the spec's ACCURACY drifted, fixed here:
+- **Elevation §4 rewritten** — DESIGN.md/sidecar claimed cards rest on
+  `shadow-medium` (RankingTable / Pillar / RawMetrics) and the hero on
+  `shadow-large`; in reality (post-A3 reskin) **only `shadow-overlay` is used
+  anywhere** (FilterDrawer) — every card/table/hero is border-only `rounded`.
+  Subtle/Medium/Large are now documented as defined-but-unused; an agent reading
+  §4 will no longer reach for a resting shadow.
+- **Two components added** to §5 + the sidecar: `ListingChips` (PR #351
+  country/exchange neutral-steel chips) + `HeroAttributeTiles` (PR #344 4-box
+  tile grid, filled + dashed-"reserved" states); plus an `Icons` subsection
+  (lucide named-import / country-flag-icons per-country tree-shake discipline)
+  and the signature `Score Gauge` as the 8th sidecar component.
+- **Two motion-token easings corrected** in the sidecar: `gauge-sweep`
+  `cubic-bezier(.22,1,.36,1)` → `ease-in-out` and `hover-lift` `ease-out` →
+  `ease-in-out` (the app-wide single curve, PR #330).
+- **`Card` sidecar css dropped its stale `box-shadow`** (border-only now); the
+  `Recommendation Chip` now shows the **soft-OKLCH** values that actually render
+  after the globals.css override (expert-user-explorer-measured) instead of raw
+  emerald hex. New §Colors + §Do's note on the soft-override **allowlist** (the
+  `bg-rose-600` gap from PR #352) + the gauge-stroke inline-rgb carve-out to the
+  Tailwind-Class Rule.
+DOC-ONLY (root `DESIGN.md` + `.impeccable/design.json` sidecar + this side-file)
+— no compute / schema / scoring / valuation / frontend-code change. JSON
+validated (schemaVersion 2, 8 components); the 6 Stitch section headers present
+in order; YAML frontmatter parses. Branch `claude/sharp-newton-8pj6p`.

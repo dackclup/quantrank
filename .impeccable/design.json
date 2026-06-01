@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-06-01T06:30:00Z",
+  "generatedAt": "2026-06-01T11:05:00Z",
   "title": "Design System: QuantRank",
   "extensions": {
     "colorMeta": {
@@ -26,12 +26,14 @@
         "role": "semantic-positive",
         "displayName": "Sage",
         "canonical": "oklch(50% 0.09 155)",
+        "note": "Applied via the globals.css soft-color override; chip surface renders bg oklch(97% 0.03 152) / text oklch(56% 0.12 152) / ring oklch(86% 0.07 152) / dot oklch(60% 0.13 152).",
         "tonalRamp": ["oklch(28% 0.06 155)", "oklch(36% 0.08 155)", "oklch(44% 0.09 155)", "oklch(50% 0.09 155)", "oklch(58% 0.09 155)", "oklch(68% 0.07 155)", "oklch(82% 0.05 155)", "oklch(95% 0.02 155)"]
       },
       "negative": {
         "role": "semantic-negative",
         "displayName": "Dusty Rose",
         "canonical": "oklch(48% 0.09 18)",
+        "note": "Soft band, deliberately far from alarm red. The globals.css override is an allowlist — bg-rose-600 is NOT remapped and renders raw, so use a listed class or the chip family.",
         "tonalRamp": ["oklch(28% 0.07 18)", "oklch(36% 0.08 18)", "oklch(44% 0.09 18)", "oklch(48% 0.09 18)", "oklch(57% 0.09 18)", "oklch(68% 0.08 18)", "oklch(82% 0.05 18)", "oklch(95% 0.02 18)"]
       },
       "ink": {
@@ -56,16 +58,16 @@
       "mono": { "displayName": "Numeric", "purpose": "Tickers, prices, ratios. JetBrains Mono, always right-aligned with tabular-nums." }
     },
     "shadows": [
-      { "name": "subtle", "value": "0 1px 2px 0 rgb(15 23 42 / 0.04), 0 1px 1px -1px rgb(15 23 42 / 0.02)", "purpose": "Table-row hover, badge surface, method-list ul." },
-      { "name": "medium", "value": "0 1px 3px 0 rgb(15 23 42 / 0.06), 0 1px 2px -1px rgb(15 23 42 / 0.04)", "purpose": "Card resting state — RankingTable, RawMetricsTable, PillarRadarChart." },
-      { "name": "large", "value": "0 4px 8px -2px rgb(15 23 42 / 0.08), 0 2px 4px -2px rgb(15 23 42 / 0.04)", "purpose": "Section emphasis — the per-stock hero card only." },
-      { "name": "overlay", "value": "0 12px 24px -6px rgb(15 23 42 / 0.12), 0 4px 8px -4px rgb(15 23 42 / 0.06)", "purpose": "Modal / drawer / popover — the FilterDrawer. The only shadow above the data grid." }
+      { "name": "overlay", "value": "0 12px 24px -6px rgb(15 23 42 / 0.12), 0 4px 8px -4px rgb(15 23 42 / 0.06)", "purpose": "Modal / drawer / popover — the FilterDrawer slide-over. The ONLY shadow that renders in the shipped app; the only surface allowed above the data grid." },
+      { "name": "subtle", "value": "0 1px 2px 0 rgb(15 23 42 / 0.04), 0 1px 1px -1px rgb(15 23 42 / 0.02)", "purpose": "Defined in tailwind.config but currently UNUSED — resting surfaces are border-only. Kept for a future floating surface." },
+      { "name": "medium", "value": "0 1px 3px 0 rgb(15 23 42 / 0.06), 0 1px 2px -1px rgb(15 23 42 / 0.04)", "purpose": "Defined but currently UNUSED — cards/tables are border-only after the LedgerCraft reskin. Do not reintroduce onto a resting card." },
+      { "name": "large", "value": "0 4px 8px -2px rgb(15 23 42 / 0.08), 0 2px 4px -2px rgb(15 23 42 / 0.04)", "purpose": "Defined but currently UNUSED — the per-stock hero was once the shadow-large exception, but is now border-only too." }
     ],
     "motion": [
       { "name": "rise-in", "value": "320ms ease-in-out (fade + 8px upward settle)", "purpose": "Workhorse entrance for cards, staggered table rows, flag list items." },
-      { "name": "gauge-sweep", "value": "800ms cubic-bezier(.22,1,.36,1) (stroke-dashoffset + count-up)", "purpose": "Signature: the composite-score radial gauge, the one longer beat." },
-      { "name": "hover-lift", "value": "160ms ease-out (translateY(-1px))", "purpose": "Table row / card hover, paired with the slate hover background." },
-      { "name": "ease-curve", "value": "ease-in-out", "purpose": "App-wide single timing curve for every discrete move; shimmer is the one linear carve-out." }
+      { "name": "gauge-sweep", "value": "800ms ease-in-out (stroke-dashoffset + synchronized count-up)", "purpose": "Signature: the composite-score / MoS radial gauge, the one longer beat. MoS is sign-aware (CCW when negative)." },
+      { "name": "hover-lift", "value": "160ms ease-in-out (translateY(-1px))", "purpose": "Table row / card hover, paired with the slate hover background." },
+      { "name": "ease-curve", "value": "ease-in-out", "purpose": "App-wide single timing curve for every discrete move / entrance; shimmer (linear infinite) is the one carve-out." }
     ],
     "breakpoints": [
       { "name": "sm", "value": "640px" },
@@ -86,17 +88,17 @@
       "name": "Recommendation Chip",
       "kind": "chip",
       "refersTo": "chip",
-      "description": "The canonical outlined-light chip: tinted bg + inset ring + status dot. Never solid-fill. Shown here in the 'lean bullish' emerald tone.",
-      "html": "<span class=\"ds-chip\"><span class=\"ds-chip-dot\"></span>Lean bullish</span>",
-      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 6px; background: #ECFDF5; color: #047857; font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.75rem; padding: 2px 8px; border-radius: 2px; box-shadow: inset 0 0 0 1px #A7F3D0; } .ds-chip-dot { width: 6px; height: 6px; border-radius: 9999px; background: #10B981; }"
+      "description": "The canonical outlined-light chip: tinted bg + inset ring + status dot, never solid-fill. Shown in the 'lean bullish' tone with the soft-OKLCH values that actually render after the globals.css override (not raw emerald hex).",
+      "html": "<span class=\"ds-chip\"><span class=\"ds-chip-dot\"></span>Buy</span>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 6px; background: oklch(97% 0.03 152); color: oklch(56% 0.12 152); font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.75rem; font-weight: 500; padding: 2px 8px; border-radius: 2px; box-shadow: inset 0 0 0 1px oklch(86% 0.07 152); } .ds-chip-dot { width: 6px; height: 6px; border-radius: 9999px; background: oklch(60% 0.13 152); }"
     },
     {
       "name": "Card",
       "kind": "card",
       "refersTo": "card",
-      "description": "Flat surface; a 1px border and a hairline shadow carry depth. 4px radius — never softer on a data surface.",
+      "description": "Flat surface — a 1px border carries depth, with NO resting shadow (border-only after the reskin). 4px radius; never softer on a data surface.",
       "html": "<section class=\"ds-card\"><h2 class=\"ds-card-title\">Fair price check</h2><p class=\"ds-card-body\">Of 6 methods: 4 cheap, 1 fair, 1 outlier.</p></section>",
-      "css": ".ds-card { background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 4px; padding: 16px; box-shadow: 0 1px 3px 0 rgb(15 23 42 / 0.06), 0 1px 2px -1px rgb(15 23 42 / 0.04); } .ds-card-title { font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #475569; margin: 0 0 12px; } .ds-card-body { font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; color: #0F172A; margin: 0; }"
+      "css": ".ds-card { background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 4px; padding: 16px; } .ds-card-title { font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #475569; margin: 0 0 12px; } .ds-card-body { font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; color: #0F172A; margin: 0; }"
     },
     {
       "name": "Data Table Row",
@@ -104,7 +106,7 @@
       "refersTo": "table-cell",
       "description": "Alternating-row table with a right-aligned monospaced numeric column — the ledger core.",
       "html": "<table class=\"ds-table\"><thead><tr><th class=\"ds-th\">Metric</th><th class=\"ds-th ds-num\">Value</th></tr></thead><tbody><tr class=\"ds-tr\"><td class=\"ds-td\">Market cap</td><td class=\"ds-td ds-num\">$3.42T</td></tr><tr class=\"ds-tr ds-alt\"><td class=\"ds-td\">P/E (TTM)</td><td class=\"ds-td ds-num\">28.4</td></tr></tbody></table>",
-      "css": ".ds-table { width: 100%; border-collapse: collapse; font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; } .ds-th { padding: 8px 12px; text-align: left; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #475569; background: #F8FAFC; border-bottom: 1px solid #E2E8F0; } .ds-td { padding: 8px 12px; color: #0F172A; border-bottom: 1px solid #F1F5F9; } .ds-tr.ds-alt { background: #F8FAFC; } .ds-tr:hover { background: #F1F5F9; } .ds-num { text-align: right; font-family: 'JetBrains Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }"
+      "css": ".ds-table { width: 100%; border-collapse: collapse; font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; } .ds-th { padding: 8px 12px; text-align: left; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #475569; background: #F8FAFC; border-bottom: 1px solid #E2E8F0; } .ds-td { padding: 8px 12px; color: #0F172A; border-bottom: 1px solid #F1F5F9; } .ds-tr.ds-alt { background: #F1F5F9; } .ds-tr:hover { background: #F1F5F9; } .ds-num { text-align: right; font-family: 'JetBrains Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }"
     },
     {
       "name": "Sidebar Nav Item",
@@ -112,14 +114,38 @@
       "refersTo": "navigation",
       "description": "Slate-only left-rail item — no accent, so the data surfaces own the palette. Active state is a tonal fill, not a color.",
       "html": "<nav class=\"ds-nav\"><a class=\"ds-navitem ds-active\">Rankings</a><a class=\"ds-navitem\">Methodology</a></nav>",
-      "css": ".ds-nav { display: flex; flex-direction: column; gap: 2px; width: 240px; } .ds-navitem { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 2px; font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; color: #475569; text-decoration: none; transition: background 160ms ease-in-out, color 160ms ease-in-out; } .ds-navitem:hover { background: #F8FAFC; color: #0F172A; } .ds-navitem.ds-active { background: #F1F5F9; color: #0F172A; font-weight: 500; }"
+      "css": ".ds-nav { display: flex; flex-direction: column; gap: 2px; width: 240px; } .ds-navitem { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 2px; font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; color: #475569; text-decoration: none; cursor: pointer; transition: background 160ms ease-in-out, color 160ms ease-in-out; } .ds-navitem:hover { background: #F8FAFC; color: #0F172A; } .ds-navitem.ds-active { background: #F1F5F9; color: #0F172A; font-weight: 500; }"
+    },
+    {
+      "name": "Listing Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Neutral-steel hero chip for exchange + country listing metadata (mirrors the sector chip body). Shown as the exchange variant (generic Landmark glyph + name); the country variant swaps the icon for an inline flag SVG. Null-safe — renders nothing until a cron populates the field.",
+      "html": "<span class=\"ds-listing-chip\"><svg class=\"ds-listing-ico\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><line x1=\"3\" y1=\"22\" x2=\"21\" y2=\"22\"/><line x1=\"6\" y1=\"18\" x2=\"6\" y2=\"11\"/><line x1=\"10\" y1=\"18\" x2=\"10\" y2=\"11\"/><line x1=\"14\" y1=\"18\" x2=\"14\" y2=\"11\"/><line x1=\"18\" y1=\"18\" x2=\"18\" y2=\"11\"/><polygon points=\"12 2 20 7 4 7\"/></svg>NASDAQ</span>",
+      "css": ".ds-listing-chip { display: inline-flex; align-items: center; gap: 6px; background: #F1F5F9; color: #475569; font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.75rem; font-weight: 500; padding: 2px 8px; border-radius: 2px; box-shadow: inset 0 0 0 1px #E2E8F0; } .ds-listing-ico { color: #64748B; flex-shrink: 0; }"
+    },
+    {
+      "name": "Attribute Tile",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Hero category tile (icon over uppercase caption over value), in a 2x2 / 1x4 grid. A filled tile (left) carries data; a reserved tile (right) uses a dashed border + dimmed icon + 'Coming soon' so an empty tile reads as intentional, not broken.",
+      "html": "<div class=\"ds-tiles\"><div class=\"ds-tile\"><svg class=\"ds-tile-ico\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z\"/><path d=\"M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2\"/><path d=\"M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2\"/><path d=\"M10 6h4M10 10h4M10 14h4\"/></svg><span class=\"ds-tile-cap\">Size</span><span class=\"ds-tile-val\">Mega cap</span></div><div class=\"ds-tile ds-tile-reserved\"><svg class=\"ds-tile-ico\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"8\" cy=\"8\" r=\"6\"/><path d=\"M18.09 10.37A6 6 0 1 1 10.34 18\"/></svg><span class=\"ds-tile-cap\">Dividend</span><span class=\"ds-tile-soon\">Coming soon</span></div></div>",
+      "css": ".ds-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 22rem; } .ds-tile { display: flex; flex-direction: column; gap: 8px; padding: 12px; border: 1px solid #E2E8F0; border-radius: 4px; background: #F8FAFC; } .ds-tile-reserved { border-style: dashed; background: rgba(248,250,252,0.5); } .ds-tile-ico { color: #64748B; } .ds-tile-reserved .ds-tile-ico { color: #CBD5E1; } .ds-tile-cap { font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.75rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: #64748B; } .ds-tile-val { font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; font-weight: 600; color: #0F172A; } .ds-tile-soon { font-size: 0.75rem; color: #94A3B8; }"
+    },
+    {
+      "name": "Score Gauge",
+      "kind": "custom",
+      "refersTo": "card",
+      "description": "Signature radial gauge — the composite score (here 73). The arc sweeps 0->value over 800ms ease-in-out with a synchronized count-up on every visit; the stroke is an inline rgb accent (the documented gauge carve-out to the Tailwind-class rule), and the MoS sibling mirrors counter-clockwise when negative. Shown here in its final rest state.",
+      "html": "<div class=\"ds-gauge\"><svg class=\"ds-gauge-ring\" width=\"64\" height=\"64\" viewBox=\"0 0 64 64\"><circle cx=\"32\" cy=\"32\" r=\"26\" fill=\"none\" stroke=\"#F1F5F9\" stroke-width=\"6\"/><circle cx=\"32\" cy=\"32\" r=\"26\" fill=\"none\" stroke=\"rgb(16 185 129)\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-dasharray=\"163.4\" stroke-dashoffset=\"44.1\"/></svg><span class=\"ds-gauge-num\">73</span></div>",
+      "css": ".ds-gauge { position: relative; width: 64px; height: 64px; } .ds-gauge-ring { transform: rotate(-90deg); } .ds-gauge-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 1rem; font-weight: 600; font-variant-numeric: tabular-nums; color: #0F172A; }"
     }
   ],
   "narrative": {
     "northStar": "Numbers you can read like a ledger",
     "overview": "QuantRank looks and behaves like a well-typeset financial broadsheet, not a software dashboard. The register sits deliberately between a Bloomberg terminal and a printed annual report: dense enough to compare hundreds of stocks at a glance, calm enough that a careful individual investor never feels shouted at. Surfaces are flat; depth comes from crisp 1px borders, not drop shadows. Every number rides a monospaced, right-aligned column so a reader can scan it the way they'd scan a ledger. The personality is Precise, Honest, Editorial — the visual language must never overclaim or celebrate, because the product shows its own limits beside every number.",
     "keyCharacteristics": [
-      "Flat surfaces; borders carry depth, shadows are reserved for overlays.",
+      "Flat surfaces; borders carry depth. No resting surface uses a shadow — the FilterDrawer overlay is the one live shadow in the app.",
       "Monospaced, right-aligned numerics in every data column (tabular-nums).",
       "One outlined-light chip pattern across the entire app — never solid-fill.",
       "A four-family restrained palette (forest / steel / amber / soft semantic).",
@@ -128,19 +154,21 @@
     ],
     "rules": [
       { "name": "The Soft-Band Rule", "body": "Positive/negative state rides the OKLCH soft band (hue 155 / hue 18, chroma <= 0.10). The 'bright fresh green' and 'alarm red' intensities are forbidden for value state.", "section": "colors" },
-      { "name": "The Tailwind-Class Rule", "body": "Reach every color through a Tailwind utility class, never an inline hex. Inline hex bypasses chip-family discipline and is invisible to the purge.", "section": "colors" },
+      { "name": "The Tailwind-Class Rule", "body": "Reach every color through a Tailwind utility class, never an inline hex — it bypasses the globals.css soft-color override (an allowlist; bg-rose-600 is not on it). Sole carve-out: the gauge stroke + tiny status dots take an inline rgb accent on purpose.", "section": "colors" },
       { "name": "The Tabular-Nums Rule", "body": "Every numeric column gets tabular-nums so digits right-align across rows. Non-negotiable.", "section": "typography" },
       { "name": "The Spreadsheet-Header Rule", "body": "The font-semibold uppercase tracking-[0.14em] text-slate-600 triple is reserved for top-level section h2s and table theads. The weight delta between header and data creates the spreadsheet feel.", "section": "typography" },
-      { "name": "The Borders-As-Depth Rule", "body": "Surfaces are flat. A border, not a shadow, is the default depth cue. Only the Overlay tier appears above the data grid.", "section": "elevation" }
+      { "name": "The Borders-As-Depth Rule", "body": "Surfaces are flat. A border, not a shadow, is the default depth cue. No resting surface uses a shadow; only the Overlay tier (FilterDrawer) renders, above the data grid.", "section": "elevation" },
+      { "name": "The Flat-Card Rule", "body": "A card is a 1px #E2E8F0 border + rounded (4px), no resting shadow. If a card needs a blur >= 16px to read as separate, the layout is wrong, not the shadow.", "section": "elevation" }
     ],
     "dos": [
-      "Do reach colors through Tailwind utility classes, never an inline hex.",
+      "Do reach colors through Tailwind utility classes, never an inline hex (the gauge stroke + status dots are the one documented inline-rgb carve-out).",
       "Do put tabular-nums on every numeric column so digits right-align.",
-      "Do use the one outlined-light chip pattern (tinted bg + ring + dot) for every chip family.",
+      "Do use the one outlined-light chip pattern (tinted bg + ring + dot/arrow) for every chip family, including directional values like daily price change.",
       "Do ship a paired dark: variant on every surface; never a light-only card.",
       "Do keep radii <= 4px on data surfaces (2px chips/buttons, 4px cards) and reserve rounded-full for status dots.",
+      "Do import icons by name (lucide) and flags per-country (country-flag-icons) — never a barrel or import *; the tree-shake depends on it.",
       "Do give every animation a prefers-reduced-motion off-switch and render real values at SSR.",
-      "Do let borders carry depth; reserve shadow for overlays."
+      "Do let borders carry depth; reserve shadow for the FilterDrawer-class overlay."
     ],
     "donts": [
       "Don't build a gamified retail-trading feel — no confetti, no dopamine green/red, no celebratory big-number hero, no 'buy now' urgency.",
@@ -148,7 +176,8 @@
       "Don't write hype AI-marketing — no 'supercharge / unleash / next-generation / seamless', no gradient text, no decorative glassmorphism.",
       "Don't ship Bloomberg-terminal overload — dense is fine, an undifferentiated wall of numbers a non-professional can't parse is not.",
       "Don't use a solid fill for a chip — chips are outlined-light only; the one solid-fill exception is the primary CTA button.",
-      "Don't use text-green-500 / text-red-600 for value state — use the OKLCH sage/rose soft band.",
+      "Don't use text-green-500 / text-red-600 for value state, or reach for an un-allowlisted shade like bg-rose-600 expecting it to soften — use the OKLCH sage/rose soft band.",
+      "Don't add shadow-medium / -large (or any resting shadow) to a card, table, or the hero — they are border-only; shadow is for the FilterDrawer-class overlay only.",
       "Don't exceed a 4px radius on cards/inputs, and don't use a colored border-left/right > 1px as a stripe accent."
     ]
   }
