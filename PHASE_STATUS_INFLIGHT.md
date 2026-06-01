@@ -5012,3 +5012,32 @@ No JS test runner in the project (frontend verified via tsc + build + browser
 review, same as `filter-storage.ts`). CLAUDE.md §Gotchas + AGENTS.md mirror record
 the 3-place filter-state contract. No compute / schema / scoring / valuation
 change. Branch `claude/sharp-newton-8pj6p`.
+
+---
+
+### `$impeccable` P3 polish — loss-chance band-from-rounded + empty-state recovery + pending nits (this PR)
+
+Critique P3 cluster + the small post-merge nits deferred from #357/#358:
+- **Loss-chance "60% · Neutral" boundary** (the user-flagged P3): band/tone now
+  derives from `Math.round(pct)` in all 3 sites (`LossChanceBadge`, `RankingTable`
+  mobile card, detail-hero `lossChanceTone`) so the band matches the displayed
+  integer (`HeroMetric` already prints `${Math.round(v)}%`).
+- **Empty-state recovery** (H5 error-prevention; also closes the
+  `expert-user-explorer` #358 MINOR "unknown sector → empty table, no recovery"):
+  the "No stocks match" empty state gains a "Clear all filters" button (shown
+  when `activeCount > 0`).
+- **Pending nits folded in**: detail `<summary aria-label="Supporting data">`
+  (#357 — SR read the two summary spans concatenated); subdescription
+  `slate-500 → slate-600` (#357 design-review — tight 4.6:1 on the recessed
+  surface); `VALID_RECOMMENDATIONS` exported from `filter-storage.ts` + imported
+  in `filter-url.ts` (#358 review WARN — was duplicated).
+
+Verify-before-fix: the other listed P3s were already handled / are deferred — the
+chart "Failed to load" already shows a styled "Price history unavailable" message
+(not a blank box); `FairPriceBarChart` null-collapse (low-frequency) + the inline
+"what is this?" help (H10, a tooltip feature) are DEFERRED to their own PRs.
+
+Verified: `tsc` clean + `next build` 506 routes; `frontend-design-reviewer` at the
+gate. CLAUDE.md §Gotchas + AGENTS.md mirror record the band-from-rounded
+invariant. No compute / schema / scoring / valuation change. Branch
+`claude/sharp-newton-8pj6p`.

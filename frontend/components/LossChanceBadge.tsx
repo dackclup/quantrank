@@ -94,9 +94,12 @@ export function LossChanceBadge({
       </span>
     );
   }
-  const band = bandFor(lossChancePct);
-  const sizeCls = SIZE_CLASSES[size];
+  // Band from the DISPLAYED integer (not the raw float): a 59.7 rounds to
+  // "60%", which must read in the 60-79 "Moderate-high" band — never the
+  // <60 "Neutral" tone the raw value would pick (the "60% · Neutral" bug).
   const rounded = Math.round(lossChancePct);
+  const band = bandFor(rounded);
+  const sizeCls = SIZE_CLASSES[size];
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-sm font-medium ring-1 ring-inset ${band.cls} ${sizeCls} ${className}`}

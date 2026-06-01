@@ -51,7 +51,7 @@ export const EMPTY_FILTER: FilterSnapshot = {
   recommendations: [],
 };
 
-const VALID_RECOMMENDATIONS: ReadonlySet<Recommendation> = new Set([
+export const VALID_RECOMMENDATIONS: ReadonlySet<Recommendation> = new Set([
   'bullish',
   'lean_bullish',
   'neutral',

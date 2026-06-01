@@ -1080,6 +1080,21 @@ whitespace / single-line fixes do not trigger.
   `Recommendation[]` holds. Both helpers fail-soft (SSR guard +
   try/catch-swallow) — filter state is convenience, never a throw.
 
+- **Loss-chance (and any rounded-display band/tone) must derive from the
+  ROUNDED integer, NOT the raw float** (`LossChanceBadge.tsx` +
+  `RankingTable.tsx` mobile card + `app/stock/[ticker]/page.tsx` hero
+  `lossChanceTone`, `$impeccable clarify` P3, 2026-06-01). All three display
+  `Math.round(pct)` (`HeroMetric` prints `${Math.round(v)}%`) but previously
+  banded off the raw `pct` — so a 59.7 rendered "**60% · Neutral**" (the number
+  reads as the start of the 60-79 Moderate-high band while the tone said <60
+  Neutral). Now all three band off `Math.round(pct)`. The 5-band rubric (`<25`
+  Low / `<40` Moderate-low / `<60` Neutral / `<80` Moderate-high / else High) is
+  DUPLICATED across those three sites (LossChanceBadge `BANDS` array · the inline
+  ternary in the mobile card · the 3-tone collapse in the hero) — they move in
+  lockstep, so a threshold change touches all three. General rule for any new
+  threshold chip whose value is shown rounded: band off the same rounded value
+  you render.
+
 ## Phase status
 
 Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged

@@ -79,7 +79,11 @@ export default function StockDetailPage({
   // card (RankingTable.tsx) so the detail page and the front page agree.
   // Computed here (server) and passed to the HeroMetric client leaf so the
   // band logic stays in one place and the leaf stays presentation-only.
-  const lc = detail.loss_chance_pct;
+  // Round before banding so the tone matches the displayed integer:
+  // HeroMetric prints `${Math.round(v)}%`, so a raw 59.7 shows "60%" and
+  // must read in the same band as 60 (not the <60 slate tone).
+  const lc =
+    detail.loss_chance_pct == null ? null : Math.round(detail.loss_chance_pct);
   const lossChanceTone =
     lc == null ? 'text-slate-900 dark:text-slate-100'
     : lc < 60 ? (lc < 40 ? 'text-emerald-700 dark:text-emerald-300' : 'text-slate-700 dark:text-slate-300')
@@ -296,12 +300,15 @@ export default function StockDetailPage({
           slate-50 surface + collapsed state mark it as the demoted zone vs the
           white decision cards above. */}
       <details className="group rounded border border-slate-200 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900/40">
-        <summary className="flex min-h-[44px] cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden">
+        <summary
+          aria-label="Supporting data"
+          className="flex min-h-[44px] cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden"
+        >
           <span className="min-w-0">
             <span className="block font-slab text-base font-semibold text-slate-900 dark:text-slate-100">
               Supporting data
             </span>
-            <span className="mt-0.5 block text-xs text-slate-500 dark:text-slate-400">
+            <span className="mt-0.5 block text-xs text-slate-600 dark:text-slate-400">
               Raw fundamentals &amp; data-quality provenance behind the scores above
             </span>
           </span>
