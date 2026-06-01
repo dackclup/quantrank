@@ -335,6 +335,13 @@ export function FairPriceCard(props) {  // no types
   app-wide (16 components); disabled controls + decorative `aria-hidden` icons
   stay faint by design. Same pass added `min-h-[44px] lg:min-h-0` to the
   FilterDrawer selection chips. Full rationale in CLAUDE.md §Gotchas.
+- **Stock-detail page = DECISION zone + collapsed "Supporting data" reference
+  zone** (`app/stock/[ticker]/page.tsx`, 2026-06-01): raw fundamentals +
+  data-quality are grouped into one native `<details>` (Server-Component-safe,
+  collapsed by default, recessed slate-50 surface, `font-slab` summary that's a
+  different register from the decision eyebrows). A new provenance section goes
+  INSIDE it; a new decision signal goes above the fair-price pair. Don't
+  re-flatten into a 12th top-level section. Full rationale in CLAUDE.md §Gotchas.
 
 ## Git workflow
 

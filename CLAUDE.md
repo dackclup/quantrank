@@ -1036,6 +1036,29 @@ whitespace / single-line fixes do not trigger.
   4.2:1; the real failing token was `slate-500` and the fail spanned BOTH
   modes) — verify the actual class + surface before fixing.
 
+- **The stock-detail page splits into a DECISION zone and a collapsed
+  "Supporting data" reference zone — don't re-flatten it** (`frontend/app/stock/[ticker]/page.tsx`,
+  `$impeccable distill` P1, 2026-06-01). The page had 11 same-weight sections so
+  the 14-row raw-fundamentals table + data-quality block read as loud as the
+  decision signals (cognitive-load FAIL 5/8). Now everything through the
+  fair-price pair is the DECISION zone (hero → attribute tiles → price →
+  pillars → Tier-2 → Risk → Fair-price check → Fair-price ensemble); Raw
+  fundamentals + Data quality are grouped into ONE collapsible **`<details>`
+  "Supporting data"** card (recessed `bg-slate-50/60 dark:bg-slate-900/40`
+  surface + a `font-slab` summary label that is deliberately a DIFFERENT
+  register from the `uppercase tracking-[0.14em]` decision-section eyebrows),
+  **collapsed by default** (progressive disclosure — the dense balance sheet is
+  verification, one click away; cuts ~600px of mobile scroll before the
+  methodology note). Native `<details>`/`<summary>` keeps the page a **Server
+  Component** (no JS / no client leaf) and is keyboard + SR accessible; the
+  chevron rotates via `group-open:rotate-180` (Tailwind 3.4 supports the
+  `group-open` variant — confirmed in the compiled CSS). **A NEW
+  reference/provenance section goes INSIDE this `<details>`, not as a 12th
+  top-level section; a new DECISION signal goes above, before the fair-price
+  pair.** The methodology footnote stays visible AFTER the details (short,
+  frames the composite). Inner section `<h2>`s are kept (the summary is a styled
+  span, not a heading) so the document outline stays intact.
+
 ## Phase status
 
 Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged
