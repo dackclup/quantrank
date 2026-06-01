@@ -284,57 +284,95 @@ export default function StockDetailPage({
         tangibleBookValue={detail.tangible_book_value}
       />
 
-      <section>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
-          Raw fundamentals (SEC EDGAR)
-        </h2>
-        <RawMetricsTable metrics={detail.raw_metrics} />
-        <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-          TTM = trailing twelve months. Balance sheet items are point-in-time
-          (latest filing).
-        </p>
-      </section>
-
-      <section className="rounded border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
-          Data quality
-        </h2>
-        <dl className="grid grid-cols-1 gap-y-2 text-sm sm:grid-cols-2">
-          <dt className="text-slate-500 dark:text-slate-400">Latest filed date</dt>
-          <dd className="font-mono text-slate-900 dark:text-slate-100">
-            {detail.data_quality.latest_filed_date ?? 'N/A'}
-          </dd>
-          <dt className="text-slate-500 dark:text-slate-400">Latest period end</dt>
-          <dd className="font-mono text-slate-900 dark:text-slate-100">
-            {detail.data_quality.latest_period_end ?? 'N/A'}
-          </dd>
-          <dt className="text-slate-500 dark:text-slate-400">Filing lag</dt>
-          <dd>
-            <span
-              className={`inline-flex items-center rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${filingLagBadgeClasses(
-                filingLag,
-              )}`}
-            >
-              {filingLag === null ? 'N/A' : `${filingLag} days`}
+      {/* Supporting data — the reference/audit zone (raw fundamentals +
+          data-quality provenance), grouped into ONE collapsible card and
+          collapsed by default ($impeccable distill P1, 2026-06-01). The
+          decision signals (hero -> pillars -> risk -> fair price) are
+          everything ABOVE; these are verification, one click away — so the
+          dense 14-row balance sheet no longer flattens the page hierarchy or
+          adds ~600px of mobile scroll before the methodology note. Native
+          <details> keeps the page a Server Component (no JS) and is keyboard +
+          screen-reader accessible (announces expanded/collapsed); the recessed
+          slate-50 surface + collapsed state mark it as the demoted zone vs the
+          white decision cards above. */}
+      <details className="group rounded border border-slate-200 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900/40">
+        <summary className="flex min-h-[44px] cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden">
+          <span className="min-w-0">
+            <span className="block font-slab text-base font-semibold text-slate-900 dark:text-slate-100">
+              Supporting data
             </span>
-          </dd>
-          <dt className="text-slate-500 dark:text-slate-400">Missing metrics</dt>
-          <dd className="text-slate-900 dark:text-slate-100">
-            {missingCount === 0 ? (
-              'none'
-            ) : (
-              <span className="text-amber-700 dark:text-amber-300">
-                {missingCount}
-                {missingCount > 0 && (
-                  <span className="ml-2 text-xs text-slate-500 dark:text-slate-400">
-                    ({detail.data_quality.missing_metrics.join(', ')})
+            <span className="mt-0.5 block text-xs text-slate-500 dark:text-slate-400">
+              Raw fundamentals &amp; data-quality provenance behind the scores above
+            </span>
+          </span>
+          <svg
+            className="h-4 w-4 shrink-0 text-slate-500 transition-transform duration-200 group-open:rotate-180 dark:text-slate-400"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </summary>
+
+        <div className="space-y-6 border-t border-slate-200 px-4 py-4 dark:border-slate-800">
+          <section aria-label="Raw fundamentals">
+            <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
+              Raw fundamentals (SEC EDGAR)
+            </h2>
+            <RawMetricsTable metrics={detail.raw_metrics} />
+            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+              TTM = trailing twelve months. Balance sheet items are point-in-time
+              (latest filing).
+            </p>
+          </section>
+
+          <section aria-label="Data quality">
+            <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
+              Data quality
+            </h2>
+            <dl className="grid grid-cols-1 gap-y-2 text-sm sm:grid-cols-2">
+              <dt className="text-slate-500 dark:text-slate-400">Latest filed date</dt>
+              <dd className="font-mono text-slate-900 dark:text-slate-100">
+                {detail.data_quality.latest_filed_date ?? 'N/A'}
+              </dd>
+              <dt className="text-slate-500 dark:text-slate-400">Latest period end</dt>
+              <dd className="font-mono text-slate-900 dark:text-slate-100">
+                {detail.data_quality.latest_period_end ?? 'N/A'}
+              </dd>
+              <dt className="text-slate-500 dark:text-slate-400">Filing lag</dt>
+              <dd>
+                <span
+                  className={`inline-flex items-center rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${filingLagBadgeClasses(
+                    filingLag,
+                  )}`}
+                >
+                  {filingLag === null ? 'N/A' : `${filingLag} days`}
+                </span>
+              </dd>
+              <dt className="text-slate-500 dark:text-slate-400">Missing metrics</dt>
+              <dd className="text-slate-900 dark:text-slate-100">
+                {missingCount === 0 ? (
+                  'none'
+                ) : (
+                  <span className="text-amber-700 dark:text-amber-300">
+                    {missingCount}
+                    {missingCount > 0 && (
+                      <span className="ml-2 text-xs text-slate-500 dark:text-slate-400">
+                        ({detail.data_quality.missing_metrics.join(', ')})
+                      </span>
+                    )}
                   </span>
                 )}
-              </span>
-            )}
-          </dd>
-        </dl>
-      </section>
+              </dd>
+            </dl>
+          </section>
+        </div>
+      </details>
 
       <p className="max-w-3xl text-xs text-slate-500 dark:text-slate-400">
         Composite is the 8-pillar weighted score over quality, value, growth,

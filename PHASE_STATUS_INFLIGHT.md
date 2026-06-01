@@ -4960,3 +4960,26 @@ the secondary-text-token standard. Post-review follow-up commit closed the two
 text → `text-slate-600` (clears AA on the `slate-100` stripe, where `slate-500`
 is 4.34:1), and `aria-hidden="true"` on the two decorative search-icon SVGs.
 Branch `claude/sharp-newton-8pj6p`.
+
+---
+
+### `$impeccable distill` P1 — stock-detail IA: decision zone + collapsed "Supporting data" (this PR)
+
+Critique P1 (detail-page flat hierarchy): the 11 same-weight sections let the
+14-row raw-fundamentals table + data-quality block compete with the decision
+signals (cognitive-load FAIL 5/8 clustered here). Fix —
+`frontend/app/stock/[ticker]/page.tsx` ONLY: merged Raw fundamentals + Data
+quality into ONE collapsible "Supporting data" `<details>` (native,
+Server-Component-safe — no JS / no client leaf), **collapsed by default**
+(progressive disclosure; cuts ~600px of mobile scroll), recessed
+`bg-slate-50/60` surface + a `font-slab` summary that reads as a demoted
+register vs the `uppercase tracking-[0.14em]` decision eyebrows; chevron via
+`group-open:rotate-180` (confirmed in compiled CSS). Decision sections (hero →
+attribute tiles → price → pillars → Tier-2 → Risk → fair-price pair) UNCHANGED;
+methodology footnote stays visible after. De-nested the Data-quality card border
+(now a plain `<section>` inside the details). Verified: `tsc` clean + `next
+build` 506 routes; `frontend-design-reviewer` + `expert-user-explorer` review at
+the gate (the persona verdict on closed-vs-open default is the deciding input —
+flip to open-by-default if it reads as hiding too much). CLAUDE.md §Gotchas +
+AGENTS.md mirror record the decision-vs-reference-zone IA. No compute / schema /
+scoring / valuation change. Branch `claude/sharp-newton-8pj6p`.
