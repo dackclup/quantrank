@@ -2570,10 +2570,14 @@ of re-discovering the pattern.
 - **Stock-attribute data — Dividend + Security-type** — fills the two
   reserved `HeroAttributeTiles` slots (PR #344; both show "Coming soon" until
   data lands). 7a Dividend: `dividend_yield_pct` / `pays_dividend` from
-  yfinance (already in the stack — rides `compute/ingest/prices.py`, no new
-  dep) + schema triple + `Metadata.dividend_coverage_pct` observability-first.
-  7b Security-type: Common / ADR / REIT label from yfinance `quoteType` /
-  SEC filer flags. Both DISPLAY-ONLY (no ranking/scoring/veto impact); each
+  yfinance `Ticker.info` (already in the stack — extends the
+  `compute/ingest/cross_source.py` info-cache pattern, NOT `prices.py` which
+  is `yf.download` OHLCV-only; no new dep) + schema triple +
+  `Metadata.dividend_coverage_pct` observability-first.
+  7b Security-type: Common / ADR / REIT label from yfinance
+  `fast_info.quote_type` (NOT the retired `.info["quoteType"]`) + SEC
+  `dei:DocumentType == "20-F"` / EDGAR submissions `entityType` for ADR
+  detection. Both DISPLAY-ONLY (no ranking/scoring/veto impact); each
   behind a `*_coverage_pct` diagnostic cron before the tile reads live data
   (observability-before-wiring). Tiles auto-promote out of "reserved" when
   `value` flips non-null. See PHASE_STATUS.md §Next deliverables item 7.

@@ -4578,8 +4578,12 @@ security-type signal (Common stock / ADR / etc., the analog of the reference
 app's "Common · หุ้นสามัญ" tile). (c) **Roadmap added** (PHASE_STATUS.md +
 CLAUDE.md §Next deliverables #7): the two reserved tiles (Dividend + Type) now
 have a planned ingest path — 7a Dividend (`dividend_yield_pct`/`pays_dividend`
-from yfinance, already in the stack, no new dep) + 7b Security-type (Common/
-ADR/REIT from yfinance `quoteType`/SEC filer flags); both DISPLAY-ONLY (no
-ranking/scoring impact), each behind a `Metadata.*_coverage_pct` diagnostic
-cron (observability-before-wiring) before the tile reads live data. Tiles
-auto-promote out of "reserved" when the schema field lands.
+from yfinance `Ticker.info`, extends the `cross_source.py` info-cache pattern,
+no new dep) + 7b Security-type (Common/ADR/REIT from yfinance
+`fast_info.quote_type` + SEC `dei:DocumentType == "20-F"` / EDGAR `entityType`
+for ADR detection); both DISPLAY-ONLY (no ranking/scoring impact), each behind
+a `Metadata.*_coverage_pct` diagnostic cron (observability-before-wiring)
+before the tile reads live data. Tiles auto-promote out of "reserved" when the
+schema field lands. (Doc-reviewer 2026-06-01 corrected the field names — the
+original roadmap draft cited the retired `.info["quoteType"]`, funds-only
+`.info["legalType"]`, and a non-existent `IsForeignPrivateIssuer` SEC field.)

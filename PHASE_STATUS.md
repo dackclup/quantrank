@@ -156,23 +156,31 @@
    deliverables:
    - **7a. Dividend signal** — add a `dividend` block to the per-stock schema
      (Pydantic `StockDetail` + TS `types.ts` + snapshot, the triple-lockstep).
-     Source: yfinance already in the stack (`compute/ingest/prices.py`) exposes
-     `Ticker.dividends` / `.info["dividendYield"]` / `.info["payoutRatio"]` —
-     so this rides the EXISTING price-ingest path, no new dependency. Ship the
-     diagnostic `Metadata.dividend_coverage_pct` FIRST (observability-before-
-     wiring, Rule 18) — confirm the field populates on a real cron before the
-     `HeroAttributeTiles` "Dividend" tile reads it. Fields to consider:
-     `dividend_yield_pct`, `pays_dividend: bool`, optional `payout_ratio`.
-     Tile auto-promotes out of the reserved state once `value` is non-null.
-     **Methodology note**: dividend yield is descriptive metadata, NOT a new
-     scoring pillar or veto — keep it out of the composite unless a separate
-     `financial-engineer` + `methodology-scientist` design says otherwise.
+     Source: yfinance already in the stack — `yf.Ticker(t).info["dividendYield"]`
+     / `["payoutRatio"]` (the `Ticker.info` API surface already used by
+     `compute/ingest/cross_source.py:129` for `marketCap` + cached under
+     `YFINANCE_INFO_CACHE_DIR`; dividend ingest extends that SAME pattern —
+     `prices.py` only does `yf.download()` OHLCV, so it's the wrong anchor),
+     no new dependency. Ship the diagnostic `Metadata.dividend_coverage_pct`
+     FIRST (observability-before-wiring, Rule 18) — confirm the field
+     populates on a real cron before the `HeroAttributeTiles` "Dividend" tile
+     reads it. Fields to consider: `dividend_yield_pct`, `pays_dividend: bool`,
+     optional `payout_ratio`. Tile auto-promotes out of the reserved state
+     once `value` is non-null. **Methodology note**: dividend yield is
+     descriptive metadata, NOT a new scoring pillar or veto — keep it out of
+     the composite unless a separate `financial-engineer` +
+     `methodology-scientist` design says otherwise.
    - **7b. Security-type signal** — the `Type` tile (Common stock / ADR /
-     REIT / etc.). Source: SEC submissions metadata / yfinance
-     `.info["quoteType"]` + `.info["legalType"]`, OR derive ADR from the SEC
-     `IsForeignPrivateIssuer` / 20-F-filer flag (the universe is S&P 500 so
-     ADRs are rare but present). Same schema-triple + observability-first
-     discipline. Smaller than 7a (mostly a categorical label, no numeric).
+     REIT / etc.). Source: yfinance `yf.Ticker(t).fast_info.quote_type`
+     (NOT `.info["quoteType"]` — that key is retired into `fast_info` on
+     current yfinance; and `.info["legalType"]` is funds-only, `None` for
+     equities — don't use it), AND for ADR/foreign-issuer detection the SEC
+     route `dei:DocumentType == "20-F"` in the XBRL filing (the standard
+     foreign-private-issuer annual-report form) or the EDGAR submissions JSON
+     `entityType` field (already fetched by `compute/ingest/sec_health.py`).
+     The universe is S&P 500 so ADRs are rare but present. Same schema-triple
+     + observability-first discipline. Smaller than 7a (a categorical label,
+     no numeric).
    Both are **annotate/display-only** — they fill the two reserved
    `HeroAttributeTiles` slots, they do NOT touch ranking, scoring, or the
    defense layer. Sequence each behind a `Metadata.*_coverage_pct` diagnostic
