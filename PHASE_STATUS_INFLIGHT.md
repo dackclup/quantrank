@@ -4587,3 +4587,34 @@ before the tile reads live data. Tiles auto-promote out of "reserved" when the
 schema field lands. (Doc-reviewer 2026-06-01 corrected the field names — the
 original roadmap draft cited the retired `.info["quoteType"]`, funds-only
 `.info["legalType"]`, and a non-existent `IsForeignPrivateIssuer` SEC field.)
+
+## PillarRadarChart mobile reflow — bar drops full-width under the text (frontend, this PR)
+
+**Scope**: frontend-only (`frontend/components/PillarRadarChart.tsx`). User
+report: on mobile portrait the 8-pillar bars are squeezed too short — the
+fixed 3-column grid `grid-cols-[8rem_1fr_4.5rem]` (label · bar · value) at
+EVERY width left the bar `1fr` at ~56px on a 280px card (label 8rem + value
+4.5rem ate the row). User asked: on mobile, drop the bar to its own line under
+the text and run it full-width to the right-side number.
+
+**Fix** (frontend-design-reviewer grid-reflow spec): each `<li>` is mobile
+`grid-cols-[1fr_auto] grid-rows-[auto_auto]` — row 1 = label-left + value-
+right; row 2 = the bar `col-span-2 order-last` full-width — then `sm:` collapses
+back to the original single-row `grid-cols-[8rem_1fr_4.5rem]`
+(`sm:order-none sm:col-span-1 sm:grid-rows-1 sm:items-center`). The
+`order-last` is load-bearing (the bar is the 2nd DOM child, before the value;
+without it the mobile auto-flow would stack it on top of the value at
+row1-col2). The axis-tick row (0/30/50/70/100) reuses the IDENTICAL responsive
+grid + `col-span-2 sm:col-span-1` + `hidden sm:block` spacers so the ticks stay
+aligned under the bar in both layouts. Bar internals (30/50/70 lines, fill
+`calc(% - 8px)`, baseline notch) are %-relative to the bar's own box → scale
+untouched at any width. Description `line-clamp-1 sm:truncate`; `<ul>`
+`space-y-3 sm:space-y-2` (2-line mobile rows need a touch more separation).
+
+**Verification (real data)**: `tsc --noEmit` clean · `next build` 506/506 ·
+NVDA HTML — all 8 responsive markers present (mobile 2-row grid + sm 3-col
+restore + bar col-span-2/order-last + sm:col-span-1 + axis col-span-2 +
+space-y-3); `line-clamp-1` confirmed compiled into the CSS bundle (Tailwind
+3.4.19 built-in, no plugin). **No schema / Python / scoring / valuation /
+output-JSON change** — grid-template classes only, no color/token/font change.
+CLAUDE.md §Gotcha + AGENTS.md inventory note + this entry.

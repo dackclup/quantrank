@@ -257,7 +257,10 @@ export function FairPriceCard(props) {  // no types
   tiles"). The two reserved tiles are a roadmap item (PHASE_STATUS.md §Next
   deliverables #7 — Dividend + Security-type ingest, display-only, behind a
   `*_coverage_pct` observability cron); they auto-promote out of "reserved"
-  when their schema field lands.
+  when their schema field lands. `PillarRadarChart` reflows on mobile (PR #345):
+  the bar drops to its own full-width line under the label/value text (was a
+  squeezed fixed 3-col grid); the axis-tick row mirrors the same breakpoint —
+  see CLAUDE.md §Gotchas "PillarRadarChart row REFLOWS on mobile".
   New `<ThemeToggle layout="icon|row">` component renders
   a three-state cycle button (system → light → dark → system) with
   `useTheme()` + a `mounted` guard to suppress the SSR-fallback
