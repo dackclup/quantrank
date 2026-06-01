@@ -4955,4 +4955,8 @@ token was `slate-500` and the fail spanned both modes.
 Verified: `tsc --noEmit` clean + `next build` 506 routes; `frontend-design-reviewer`
 gate. 16 component/page files + the committed critique snapshot; no compute /
 schema / scoring / valuation change. CLAUDE.md §Gotchas + AGENTS.md mirror record
-the secondary-text-token standard. Branch `claude/sharp-newton-8pj6p`.
+the secondary-text-token standard. Post-review follow-up commit closed the two
+`frontend-design-reviewer` WARNs: `RawMetricsTable` even-row stripe secondary
+text → `text-slate-600` (clears AA on the `slate-100` stripe, where `slate-500`
+is 4.34:1), and `aria-hidden="true"` on the two decorative search-icon SVGs.
+Branch `claude/sharp-newton-8pj6p`.

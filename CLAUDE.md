@@ -1021,8 +1021,12 @@ whitespace / single-line fixes do not trigger.
   (entry above), so they render RAW Tailwind hex — check contrast against the
   raw value, not an OKLCH token. The inverted token was normalized app-wide
   across 16 components (pillar descriptions / footnotes / secondary counts /
-  placeholders / "Coming soon" reserved tiles / chart-empty states). Correctly
-  LEFT faint (do NOT "re-fix"): DISABLED controls (`PriceTimePeriodSelector`
+  placeholders / "Coming soon" reserved tiles / chart-empty states).
+  **Striped-table exception**: secondary text on `even:bg-slate-100` rows
+  (`RawMetricsTable`) uses `text-slate-600` — `slate-500` is only 4.34:1 on the
+  slate-100 stripe (vs 4.76:1 on white), so striped tables need one shade
+  darker. Correctly LEFT faint (do NOT "re-fix"): DISABLED controls
+  (`PriceTimePeriodSelector`
   disabled period buttons — WCAG 1.4.3 inactive exemption) and decorative
   `aria-hidden` icons. Same PR lifted the `FilterDrawer` filter-SELECTION chips
   to `min-h-[44px] lg:min-h-0` (44px tap target on touch viewports, compact
