@@ -906,6 +906,22 @@ whitespace / single-line fixes do not trigger.
   `THIRD_PARTY_NOTICES.md` (that file is vendored-source / skills only —
   next/react/recharts aren't listed either), so lucide isn't added there.
 
+- **`country-flag-icons` flag SVGs — per-country STATIC imports ONLY**
+  (`frontend/package.json` + `frontend/components/ListingChips.tsx`, PR-B).
+  Added for the stock-detail hero country chip. Import per-country via the
+  subpath — `import US from 'country-flag-icons/react/3x2/US'` (tree-shakes to
+  ~2 KB gzipped). **NEVER** the barrel `import { US } from
+  'country-flag-icons/react/3x2'` / `import * as Flags` / a dynamic
+  `Flags[code]` — each pulls the full ~330 KB / 267-country monolith and
+  defeats tree-shaking (same discipline as `lucide-react` above). The flag set
+  is STATIC per call site via the `FLAG_BY_COUNTRY` lookup table; add a non-US
+  country by importing its component + adding one row, never a dynamic import.
+  Pinned `^1.6.17` (MIT, 0 transitive, 0 install-script, registry-signed; NO
+  SLSA attestation — acceptable for a pure-SVG static lib; both
+  dependency-auditor + security-reviewer SAFE 2026-06-01). NOT in the dependabot
+  ignore-list (normal minor/patch flow). Runtime npm dep → NOT in
+  `THIRD_PARTY_NOTICES.md` (like lucide / next / recharts).
+
 - **Hero attribute tiles = the 4-box category grid, theme-reskinned, 2 data +
   2 reserved** (`frontend/components/HeroAttributeTiles.tsx`, PR #344). The
   QuantRank answer to "กรอบสี่เหลี่ยมสี่อันในภาพ" (a reference stock app's
@@ -1042,18 +1058,19 @@ site-2 rename `valuation_output_anomalous`).
 - (3 issues filed + ALL closed same day: #287 PR A merged via #297 [PR B FORM4 revert remaining] · #288 closed via #292 + #298 · #289 closed via #293 + #302)
 
 **In flight** (not yet merged on `main`):
-- **PR-A2 — country + exchange `main.py` wiring (compute, this PR)** — wires the
-  fields PR-A1 declared (**PR-A1 merged via PR #347** `5f39d644`). 6 edits to
-  `run_weekly_compute`: import the 3 `cross_source` helpers · two
-  `{exchange,country}_by_ticker` accumulators · per-ticker
-  `fetch_yfinance_exchange` in the Step-8 loop (piggybacks the cross_source
-  market-cap block; skip-safe via `QR_SKIP_CROSS_SOURCE` inside the helper) ·
-  `exchange=` + `country=` kwargs on `StockDetail` · `exchange_coverage_pct`
-  compute + log + the `Metadata` kwarg. **No schema change** (SCHEMA_VERSION
-  stays `0.10.12-phase4.6` — fields already exist from PR-A1). DISPLAY-ONLY;
-  **PR-B (hero chips) still waits for ≥ 1 cron** confirming coverage. Full
-  entry in [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md). No
-  ranking/scoring/valuation/defense change.
+- **PR-B — country + exchange hero chips (frontend, this PR)** — replaces the
+  detail-hero `#rank`-row's `SectorChip` + `· industry` text with a **country
+  chip** (`country-flag-icons` flag + ISO tag) + an **exchange chip** (lucide
+  `Landmark` icon + display name), reading `detail.country` / `detail.exchange`
+  (populated by **PR-A2, merged via PR #347 → #349**). New
+  `frontend/components/ListingChips.tsx` + new dep `country-flag-icons ^1.6.17`
+  (MIT, 0 transitive, 0 install-script — dependency-auditor + security-reviewer
+  both SAFE). NULL-SAFE: renders nothing until ≥ 1 cron populates the fields
+  (current data has them null), so the row degrades to the bare `#rank` chip.
+  **Held Draft — merge after the next cron** confirms `exchange_coverage_pct`
+  (observability-before-wiring). Sector still shows in the `HeroAttributeTiles`
+  Sector tile. Full entry in [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md).
+  No compute / schema / scoring / valuation change — frontend + 1 dep only.
 - **20th subagent `financial-engineer` + doc-drain housekeeping (this PR)** —
   adds the generative quant-design seat (Tier 3 Specialized · opus ·
   read-only; the design counterpart to `methodology-scientist`'s

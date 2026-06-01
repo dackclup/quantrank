@@ -4626,7 +4626,8 @@ session locked the plan) to replace the hero's sector+industry chips (next to
 the #1 rank chip) with a **country tag (🇺🇸 US) + exchange tag (NYSE/NASDAQ)**,
 each with a logo. The 5 locked decisions: (1) ingest country + exchange for
 real; (2) remove BOTH sector + industry chips from the #1 row (sector still
-shows in the SECTOR tile below; industry stays in raw data); (3) real SVG flag
+shows in the SECTOR tile below; industry dropped from the UI — it had no other
+render site); (3) real SVG flag
 + exchange logo; (4) flag real (public domain) + exchange a GENERIC icon
 (avoid the NYSE/NASDAQ trademark); (5) split into PR-A (ingest) + PR-B (chips).
 
@@ -4750,3 +4751,49 @@ sub-lib + audited security posture + reversal rationale); CLAUDE.md §Layout
 `bypassPermissions` note); AGENTS.md mirror (skill-count line + `.agents/` tree
 row + §Security bullet). **No compute / schema / scoring / valuation / frontend
 code change** — vendored third-party dev-tooling skill + doc lockstep only.
+
+## PR-B — country + exchange hero chips (frontend, this PR)
+
+**Scope**: frontend display only + 1 new npm dep. Third and final of the
+country/exchange sequence (PR-A1 schema+helpers **#347** · PR-A2 main.py wiring
+**#349** · PR-B chips, this PR). Replaces the stock-detail hero `#rank`-row's
+`SectorChip` + `· industry` text with a **country chip** (flag + ISO tag,
+🇺🇸 US) + an **exchange chip** (lucide `Landmark` generic icon + display name,
+NASDAQ/NYSE), reading `detail.country` / `detail.exchange` (populated by PR-A2).
+
+**Decisions (locked in the /grill-me session 2026-06-01)**: (1) ingest both for
+real (done in A1+A2); (2) remove BOTH sector + industry chips from the #rank row
+(sector still shows in the `HeroAttributeTiles` Sector tile; industry dropped
+from the UI — it had no other render site); (3) real flag SVG + generic exchange icon; (4) flag real
+(country-flag-icons) + exchange a GENERIC icon (lucide `Landmark`, avoids the
+NYSE/NASDAQ trademark); (5) flag LIBRARY over inline-SVG (user re-confirmed
+2026-06-01 for future non-US, despite the US-only universe today).
+
+**Lands**:
+- New dep `country-flag-icons ^1.6.17` in `frontend/package.json` (+ lock, +1
+  package, 0 transitive). MIT, 0 install-script, registry-signed (no SLSA —
+  acceptable for pure-SVG), 2.75M downloads/wk. **dependency-auditor +
+  security-reviewer both SAFE-TO-ADD** (2026-06-01). Per-country STATIC subpath
+  import only (`country-flag-icons/react/3x2/US`) — barrel/dynamic = 330 KB
+  footgun (new §Gotchas entry mirrors lucide).
+- New `frontend/components/ListingChips.tsx` — renders the country + exchange
+  chips, LedgerCraft neutral-steel (mirrors `SectorChip`: slate-100/600/200,
+  `rounded-sm`, paired `dark:`), NULL-SAFE (returns null / omits a chip when its
+  field is null), `FLAG_BY_COUNTRY` static lookup (US today).
+- `frontend/app/stock/[ticker]/page.tsx` — swap `SectorChip` + the industry span
+  → `<ListingChips country={detail.country} exchange={detail.exchange} />`; drop
+  the now-unused `SectorChip` import.
+
+**Held Draft — merge AFTER the next weekly cron**: the current production data
+predates PR-A2's wiring (`exchange`/`country` null, `exchange_coverage_pct` =
+None, 0/502 populated), so on live TODAY the chips render NOTHING (row = bare
+`#rank` chip). Merging only after a cron populates the fields + confirms
+`exchange_coverage_pct` is high (~99% expected) avoids an empty-chip regression
+(observability-before-wiring). The null-safe code degrades gracefully on an
+early merge, but the hold is intentional.
+
+**Verification**: `tsc --noEmit` clean · `next build` 506/506 static pages,
+compiled OK, `/stock/[ticker]` 115 KB (flag tree-shaken ~2 KB, no barrel bloat) ·
+`frontend-design-reviewer` chip-family + a11y review. No compute / schema /
+scoring / valuation change. CLAUDE.md (§Gotchas country-flag-icons entry +
+§Phase status PR-B bullet) + AGENTS.md move in lockstep.
