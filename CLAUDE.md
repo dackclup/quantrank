@@ -45,7 +45,8 @@ design-system spec.
 | `frontend/components/` | React UI (RankingTable, FairPriceBarChart, …) |
 | `frontend/public/data/` | Compute output: `metadata.json` + `rankings.json` + `stocks/<TICKER>.json` |
 | `tests/` | pytest suite (offline + `@network` gated; see CI for current count) |
-| `.claude/skills/` | 46 invocation-triggerable skills + phase planning docs. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for vendoring / license posture per source. |
+| `.claude/skills/` | 46 first-party invocation-triggerable skills + phase planning docs, plus a symlink to the 1 vendored third-party skill (`impeccable`, row below). See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for vendoring / license posture per source. |
+| `.agents/skills/` | Vendored third-party agent skills in the cross-tool [skills.sh](https://skills.sh) layout. Currently 1: **`impeccable`** ([pbakaus/impeccable](https://github.com/pbakaus/impeccable), **Apache-2.0**) — a frontend-design skill (design review / live browser iteration / critique / typography / color / motion), symlinked into `.claude/skills/impeccable`; installed via `npx skills add`, pinned by root `skills-lock.json`, bundled `scripts/` marked `linguist-vendored`. Dev-session tooling only — never runs in CI / the static export / the compute cron. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md). |
 | `.claude/agents/` | 20 project-specific subagents in 4 tiers + 1 data-correctness reviewer: **Tier 1 Core** (quantrank-reviewer · schema-sentinel · defense-layer-auditor · edgar-debugger · **stock-detail-auditor**), **Tier 2 Lifecycle** (security-reviewer · frontend-design-reviewer · **vercel-preview-auditor** · **expert-user-explorer** · release-captain · phase-coordinator), **Tier 3 Specialized** (test-engineer · methodology-scientist · **literature-searcher** · performance-engineer · dependency-auditor · **financial-engineer**), **Tier 4 Operations** (docs-reviewer · **ci-triage-engineer** · incident-commander). Spawned via the `Agent` tool with a separate context window; see [`.claude/agents/README.md`](.claude/agents/README.md) for the routing matrix + 8 coordination flows (pre-push gate / release ladder / new-defense flow / incident response / review escalation / quarterly audit / experiential UX pass / quant design). |
 | `.claude/hooks/` | Bash hook scripts wired by `.claude/settings.json`. 3 hooks total: `log-bash.sh` (PostToolUse Bash → append every command to gitignored `.claude/session.log`) + `schema-reminder.sh` (PostToolUse Write/Edit → inject reminder when any file in the Pydantic↔TS↔snapshot triple is touched) + `delegate-first.sh` (UserPromptSubmit → inject orchestrator-role reminder every user turn so the main agent defaults to spawning sub-agents instead of doing work inline). All fail-open (missing `jq` / unwritable FS / empty stdin → exit 0). 5-second timeout each. |
 | `.claude/worktrees/` | Harness-managed isolation dirs for subagents spawned via the `Agent` tool with `isolation: "worktree"`. Per-session, transient, **gitignored** (added 2026-05-22 post the 3-PR fan-out so they don't show up as untracked on the main worktree's `git status`). Never commit them. |
@@ -448,6 +449,21 @@ whitespace / single-line fixes do not trigger.
   Listed here so the env-var inventory of CLAUDE.md §Gotchas stays
   exhaustive (security-reviewer 2026-05-28 baseline flagged the doc
   gap as W1).
+- **`IMPECCABLE_NO_UPDATE_CHECK` + `IMPECCABLE_UPDATE_HOST`** (vendored
+  `impeccable` skill, 2026-06-01) — read by
+  `.agents/skills/impeccable/scripts/context.mjs`, which makes a once-daily
+  `GET https://impeccable.style/api/version` version check when the skill's
+  Setup step runs in a dev agent session. The request sends NO repo content /
+  paths / env / tokens (security-reviewer verified 2026-06-01) — only a version
+  probe. `IMPECCABLE_NO_UPDATE_CHECK=1` disables the phone-home entirely;
+  `IMPECCABLE_UPDATE_HOST` overrides the host (both fully offline-capable).
+  These are NOT operator-managed in CI — the skill's `scripts/` NEVER run in CI
+  / the Vercel static export / the compute cron (no `package.json`, no install
+  hooks), so there is nothing to set or redact there. Separately, the skill's
+  `live` "Apply" feature spawns a `claude` subprocess with `--permission-mode
+  bypassPermissions` (writes source files without per-op prompts) — expected for
+  that workflow, dev-session only. Full posture in
+  [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) §pbakaus/impeccable.
 - **`Metadata.*_wall_clock_seconds` ≠ `fundamentals_latency_p95_seconds`**
   (Issue #287 PR A, 0.10.9-phase4.6) — they look like sibling latency
   metrics but measure ORTHOGONAL things and BOTH are needed for cron

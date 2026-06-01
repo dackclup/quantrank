@@ -248,18 +248,3 @@ graphify-out/
 # The Python template above ignores /lib/ (virtualenv); whitelist project libs.
 !frontend/lib/
 !frontend/lib/**
-
-# impeccable (https://skills.sh/pbakaus/impeccable) — third-party frontend-design
-# skill installed locally via `npx skills add pbakaus/impeccable` (the skills.sh
-# cross-tool layout: content in /.agents/, a Claude Code symlink at
-# .claude/skills/impeccable, a /skills-lock.json pin). Local-only personal
-# tooling — deliberately NOT part of QuantRank's vendored
-# `.claude/skills/<name>/SKILL.md` set, the CLAUDE.md skill count, or
-# THIRD_PARTY_NOTICES.md tracking. Scanners rate it Med Risk (bundled scripts
-# spawn child processes, run a localhost live-edit server, and phone home to
-# impeccable.style for a version check), so it stays out of the committed
-# finance repo. Re-installable any session via the same `npx skills add`
-# command. Never commit these.
-/.agents/
-/skills-lock.json
-/.claude/skills/impeccable
