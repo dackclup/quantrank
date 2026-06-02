@@ -53,7 +53,14 @@ export function HeroMetric({
   // Hooks must run unconditionally, so always call useCountUp — fall back to
   // 0 as the target when the value is null (the null branch below renders the
   // em-dash and never reads `shown`).
-  const shown = useCountUp(value ?? 0, play && value != null, 800);
+  // 300ms (within the design.md ≤320ms micro budget) — deliberately NOT 800ms.
+  // $impeccable quieter (2026-06-02): the secondary hero metrics settle fast so
+  // the 800ms Score-gauge sweep stays the page's SINGLE >320ms signature. The
+  // prior 800ms here made the score gauge + MoS gauge + all three of these
+  // count-ups race at 800ms on every detail load — the "orchestrated page-load
+  // sequence" the product register warns against. Do NOT bump back to 800 to
+  // "match the gauge"; the gauge being the lone long beat is the point.
+  const shown = useCountUp(value ?? 0, play && value != null, 300);
 
   return (
     <div className="flex flex-col items-center gap-1 text-center">

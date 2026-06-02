@@ -247,7 +247,9 @@ export function FairPriceCard(props) {  // no types
   raw → data-quality. Don't reorder these without re-reading that gotcha.
   (A hero "N risk vetoes" chip was tried + reverted same PR per user call —
   keep the hero quiet.) The hero's Fair-value / Target / Loss-chance values
-  count-up via the `HeroMetric` client leaf (PR #342, `useCountUp` ease-in-out);
+  count-up via the `HeroMetric` client leaf (PR #342; `useCountUp` ease-in-out, 300ms
+  since the $impeccable quieter pass — within the ≤320ms micro budget so the 800ms
+  score-gauge sweep stays the lone >320ms beat);
   the `RecommendationBadge` is now STATIC (its chip-pop entrance was removed
   same PR — see CLAUDE.md §Gotchas "Hero metric values count-up"). Under the
   hero (own section, above the price chart) sits `HeroAttributeTiles` — a 4-box
