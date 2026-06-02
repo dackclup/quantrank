@@ -400,6 +400,14 @@ export function FairPriceCard(props) {  // no types
   `PriceHistoryChart` directly (that would pull Recharts back). Zero-CLS — the
   chart already client-fetched + showed a skeleton. Full rationale in CLAUDE.md
   §Gotchas.
+- **Score gauge/caption tier WORD = canonical `scoreTierLabel`** (`ScoreGauge` +
+  `ScoreBadge` + `lib/visual.ts`, 2026-06-02): both carried local `tierLabel()`
+  copies on the wrong `80/60/40/20` accent boundaries, so 81 tickers (incl. top-3)
+  showed the wrong composite-score tier word vs the pillar bars. Now both call
+  `scoreTierLabel(<displayed value>)` (TIERS), finishing the #363 P3 consolidation.
+  `scoreAccentColor` (the COLOR) stays on its own heat-signal boundaries. A new
+  score-tier-word surface must call `scoreTierLabel`, never a local copy. Full
+  rationale in CLAUDE.md §Gotchas.
 
 ## Git workflow
 

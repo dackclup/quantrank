@@ -3,7 +3,7 @@
 import type { JSX } from 'react';
 
 import type { PillarBaseline, PillarScores } from '@/lib/types';
-import { TIERS } from '@/lib/visual';
+import { scoreTierLabel } from '@/lib/visual';
 
 // "Pillar breakdown" — horizontal bar list from the QuantRank.html
 // design. The previous Recharts polar radar was hard to read for
@@ -58,13 +58,10 @@ const colorFor = (v: number): string =>
   v >= 25 ? 'rgb(180 83 9)' :
   'rgb(225 29 72)';
 
-// Tier WORD from the shared composite `TIERS` rubric (Exceptional / Strong /
-// Average / Weak / Poor) so the pillar and the score gauge speak ONE
-// vocabulary — single source of truth in visual.ts, so a threshold change
-// there flows to both surfaces. Matches `getTier` semantics (min inclusive,
-// max exclusive; top open bound 101).
-const tierLabel = (v: number): string =>
-  TIERS.find((t) => v >= t.min && v < t.max)?.label ?? 'Poor';
+// Tier WORD comes from the shared `scoreTierLabel` (lib/visual.ts TIERS) — the
+// SAME single source the composite-score gauge + mobile caption use, so the
+// pillar and the score speak ONE vocabulary (a threshold change in visual.ts
+// flows to all three). Called with the rounded value (band-from-rounded).
 
 export function PillarRadarChart({
   pillars,
@@ -146,7 +143,7 @@ export function PillarRadarChart({
             <li
               key={r.key as string}
               className="grid grid-cols-[1fr_auto] grid-rows-[auto_auto] gap-x-3 gap-y-1.5 sm:grid-cols-[8rem_1fr_4.5rem] sm:grid-rows-1 sm:items-center sm:gap-3"
-              title={`${r.label}: ${r.value.toFixed(1)} (${tierLabel(rounded)})${
+              title={`${r.label}: ${r.value.toFixed(1)} (${scoreTierLabel(rounded)})${
                 r.baselineValue !== null && baseline
                   ? ` — ${baseline.label.toLowerCase()}: ${r.baselineValue.toFixed(1)}`
                   : ''
@@ -185,7 +182,7 @@ export function PillarRadarChart({
                 >
                   {rounded}
                 </div>
-                <div className="text-[0.625rem]" style={{ color: c }}>{tierLabel(rounded)}</div>
+                <div className="text-[0.625rem]" style={{ color: c }}>{scoreTierLabel(rounded)}</div>
                 {/* Sector-median value is otherwise only in the mouse `title`
                     + the visual notch on the bar — surface it to keyboard/SR
                     too ($impeccable a11y minor). */}
