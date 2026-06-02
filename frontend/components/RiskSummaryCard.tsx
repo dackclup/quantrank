@@ -124,7 +124,7 @@ function bandTone(index: number): {
   }
   if (index >= 20) {
     return {
-      ring: 'ring-amber-300 dark:ring-amber-800',
+      ring: 'ring-amber-200 dark:ring-amber-800',
       bg: 'bg-amber-50 dark:bg-amber-900/30',
       text: 'text-amber-900 dark:text-amber-200',
       dot: 'bg-amber-600 dark:bg-amber-400',

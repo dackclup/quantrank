@@ -1368,7 +1368,7 @@ whitespace / single-line fixes do not trigger.
 
 ## Phase status
 
-Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged
+Current schema **`0.10.12-phase4.6`** on `main` (PR #303 merged
 2026-05-29 `847c21b` — Phase 4.5e PR 6 Form-4 10b5-1 negation guard,
 residual footgun #1 from PR 4-eq; new
 `Metadata.form4_negation_guard_downgrade_count: int | None` counts

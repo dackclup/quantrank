@@ -28,7 +28,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[dev]"
       - name: Echo run context
+        env:
+          NOTE: ${{ inputs.note }}
         run: |
-          echo "Note: ${{ inputs.note }}"
+          echo "Note: $NOTE"
           echo "Ref: ${{ github.ref }}"
           echo "Phase 0 stub — wire up real ad-hoc tasks in later phases."

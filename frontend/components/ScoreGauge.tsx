@@ -52,9 +52,13 @@ export function ScoreGauge({
   const dashOffset = circumference - arcLen;
 
   return (
-    <div className="flex items-center gap-2">
+    <div
+      className="flex items-center gap-2"
+      role="img"
+      aria-label={`Composite score: ${Math.round(score)}/100, ${scoreTierLabel(Math.round(score))}`}
+    >
       <div className="relative h-16 w-16 shrink-0">
-        <svg viewBox="0 0 64 64" className="h-16 w-16 -rotate-90">
+        <svg viewBox="0 0 64 64" className="h-16 w-16 -rotate-90" aria-hidden="true">
           <circle
             cx="32"
             cy="32"

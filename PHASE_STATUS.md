@@ -17,7 +17,7 @@
 
 | Field | Value |
 |---|---|
-| Schema | **`0.10.11-phase4.6`** (PR #303 merged 2026-05-29 `847c21b` — PATCH bump: Phase 4.5e PR 6 Form-4 10b5-1 negation guard, residual footgun #1; new `Metadata.form4_negation_guard_downgrade_count: int | None` counts True → False downgrades applied by the 11-token bidirectional ±5-word-token regex wrapping `edgar.ownership.core.detect_10b5_1_plan`. Supersedes PR #300's `0.10.10-phase4.6` per-sector delta + PR #297's `0.10.9-phase4.6` wall-clocks + PR #292's `0.10.8-phase4.6` Rule 18 disambiguator.) |
+| Schema | **`0.10.12-phase4.6`** (PR #303 merged 2026-05-29 `847c21b` — PATCH bump: Phase 4.5e PR 6 Form-4 10b5-1 negation guard, residual footgun #1; new `Metadata.form4_negation_guard_downgrade_count: int | None` counts True → False downgrades applied by the 11-token bidirectional ±5-word-token regex wrapping `edgar.ownership.core.detect_10b5_1_plan`. Supersedes PR #300's `0.10.10-phase4.6` per-sector delta + PR #297's `0.10.9-phase4.6` wall-clocks + PR #292's `0.10.8-phase4.6` Rule 18 disambiguator.) |
 | Defense layer | **33 declared boolean flags** (7 active vetoes + 26 annotates + reserved slots; ~27 currently emit; `USE_SECTOR_COE = True` post-PR #294 flip) · plus 5 numerical guards + `manipulation_index` rollup |
 | Active vetoes | **7** — `altman_distress` · `sloan_accruals_top_decile` · `net_issuance_top_decile` · `non_reliance_filing` · `beneish_manipulation_veto` · `dechow_manipulation_veto` · `data_quality_input_corruption` |
 | Latest release tag | [**`v1.4.0-phase4.6`**](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6) — 2026-05-27 at `bbca9cac` (Phase 4.6 honest re-validation harness) |
