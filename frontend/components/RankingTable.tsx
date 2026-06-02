@@ -598,8 +598,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                         USD
                       </span>
                     </div>
-                    {row.price_change_1d_pct !== null &&
-                      row.price_change_1d_pct !== undefined && (() => {
+                    {row.price_change_1d_pct != null && (() => {
                         const pct = row.price_change_1d_pct;
                         const positive = pct >= 0;
                         // Daily change reads as an outlined-light chip in the one
@@ -641,7 +640,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                       })()}
                   </div>
                   <div className="flex flex-col items-end gap-1">
-                    {row.loss_chance_pct !== null && row.loss_chance_pct !== undefined ? (
+                    {row.loss_chance_pct != null ? (
                       (() => {
                         const pct = row.loss_chance_pct;
                         const rounded = Math.round(pct);

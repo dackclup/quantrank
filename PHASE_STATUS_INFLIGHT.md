@@ -5514,3 +5514,47 @@ at the gate (sonnet pool was 529-ing earlier — fall back to inline review if i
 can't run). CLAUDE.md §Gotchas (amended the spacing clause + 2 new entries) +
 AGENTS.md mirror updated. No compute / schema / scoring / valuation change — 2
 frontend files + docs. Branch `claude/sharp-newton-8pj6p`.
+
+---
+
+### fix(audit): Commit A — full-system deep-audit MUST-FIX sweep (this PR)
+
+12 MUST-FIX items applied to the branch (`claude/sharp-knuth-WNM3i`) after a
+parallel 8-agent deep-audit session. All fixes are non-scoring, non-schema,
+non-compute: frontend code polish + CI security hardening + stale-doc corrections.
+
+**Frontend (6 files):**
+- `PriceHistoryChart.tsx` — add dark-mode variants to `upChipCls` / `downChipCls`
+  reference chips; fix `ring-rose-300` → `ring-rose-200` (globals.css soft-allowlist
+  requires `-200` for negative-strong rings).
+- `RawMetricsTable.tsx` — add `font-mono` to metric value `<td>` (had `tabular-nums`
+  but not `font-mono`; app-wide convention is `font-mono tabular-nums` for numerics).
+- `ScoreGauge.tsx` — add `role="img"` + `aria-label={Composite score: N/100, Tier}`
+  using `Math.round(score)` (not raw float); `<svg aria-hidden="true">` mirrors the
+  MoSBadge a11y pattern from PR #364.
+- `RankingTable.tsx` — 2 loose-null fixes: `!== null && !== undefined` → `!= null`
+  for `price_change_1d_pct` + `loss_chance_pct` (§Gotchas loose-null discipline).
+- `RiskSummaryCard.tsx` — `ring-amber-300` → `ring-amber-200` (globals.css
+  soft-allowlist: negative-strong uses `-200` not raw `-300`).
+
+**Security (1 file):**
+- `.github/workflows/manual-trigger.yml` — route `${{ inputs.note }}` through
+  `env: NOTE:` instead of direct `run:` interpolation (script injection guard;
+  OWASP GitHub Actions security best practice; severity LOW since this is a
+  debug-only workflow but still a footgun to close).
+
+**Docs schema-pointer corrections (3 files):**
+- CLAUDE.md / PHASE_STATUS.md / WORKFLOW.md — `0.10.11-phase4.6` → `0.10.12-phase4.6`
+  (branch already has schema `0.10.12` in `compute/config.py`; these pointers
+  lagged behind).
+
+**Docs content corrections (2 files):**
+- `docs/METHODOLOGY.md` line 17 — `~21 currently emit` → `~27 currently emit`
+  (defense layer has grown; 27 is the current cron-verified figure).
+- `SKILL.md` schema row for `0.10.12` — `is PR-A2` → `was PR-A2 (merged as PR #349)`
+  (PR-A2 merged; past tense is now correct).
+
+`ruff check .` clean · `python -m pytest -m "not network"` 1343 passed (2 OSAP
+collection errors are pre-existing: `openassetpricing` optional dep not installed
+in remote env) · `tsc` errors are pre-existing env noise (missing `@types/node`).
+No compute / schema / scoring / valuation change.

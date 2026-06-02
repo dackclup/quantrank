@@ -668,9 +668,9 @@ export function PriceHistoryChart({
     (fairPriceMax as number) > currentPrice;
 
   const upChipCls =
-    'bg-emerald-50 text-emerald-800 ring-emerald-300';
+    'bg-emerald-50 text-emerald-800 ring-emerald-300 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-800';
   const downChipCls =
-    'bg-rose-50 text-rose-700 ring-rose-300';
+    'bg-rose-50 text-rose-700 ring-rose-200 dark:bg-rose-900/30 dark:text-rose-300 dark:ring-rose-800';
 
   // Signed % distance of each reference price from the current price —
   // upside when positive, downside when negative. Rendered after the chip

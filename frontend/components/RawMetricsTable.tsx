@@ -71,7 +71,7 @@ export default function RawMetricsTable({ metrics }: { metrics: RawMetrics }) {
                   className={
                     isMissing
                       ? 'px-3 py-2 text-right italic text-slate-600 dark:text-slate-400'
-                      : 'px-3 py-2 text-right tabular-nums text-slate-900 dark:text-slate-100'
+                      : 'px-3 py-2 text-right font-mono tabular-nums text-slate-900 dark:text-slate-100'
                   }
                 >
                   {fmt(v as number | null)}
