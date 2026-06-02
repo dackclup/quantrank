@@ -32,6 +32,14 @@ const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffec
 //    300ms; reduced-motion → no animation; first render / entering rows → none.
 //  • Zero-height rects are skipped, so the off-screen layout (desktop table on
 //    mobile, or vice-versa) is a no-op — each call animates only its visible list.
+//  • The visual overlap / gap between rows DURING the slide is intentional FLIP
+//    behaviour — the vacated slot keeps its `space-y` margin while the row
+//    translates from its old position. Do NOT "fix" it with `position:absolute`
+//    or `will-change`; that breaks the layout. It settles cleanly at the end.
+//  • WAAPI `fill` is left default ('none') ON PURPOSE: the row's DOM position IS
+//    the authoritative end state, so the transform releases to `translateY(0)`
+//    via layout, not a frozen fill. If you ever add an opacity fade ALONGSIDE the
+//    translateY (e.g. for entering rows), that property would need `fill:'forwards'`.
 export function useFlip<T extends HTMLElement = HTMLElement>(orderKey: string, filterKey: string) {
   const ref = useRef<T | null>(null);
   const prevPos = useRef<Map<string, number>>(new Map());
@@ -55,6 +63,9 @@ export function useFlip<T extends HTMLElement = HTMLElement>(orderKey: string, f
       if (!play || reduce) return;
       const old = prevPos.current.get(key);
       if (old != null && Math.abs(old - top) > 0.5) {
+        // CSS transitions on the node (.hover-lift / .press) are overridden by
+        // this WAAPI play for its 300ms — acceptable: the lift is 1px and the
+        // beat is short; hover/press resume the instant it releases.
         node.animate(
           [{ transform: `translateY(${old - top}px)` }, { transform: 'translateY(0)' }],
           { duration: 300, easing: 'cubic-bezier(0.4, 0, 0.2, 1)' },

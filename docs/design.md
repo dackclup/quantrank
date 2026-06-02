@@ -246,6 +246,7 @@ JS hooks in `lib/useMotion.ts`.
 | `.gauge-arc` | `stroke-dashoffset` ease | 800ms `cubic-bezier(.22,1,.36,1)` | **signature** — ScoreBadge composite-score sweep |
 | `.hover-lift` | `translateY(-1px)` | 160ms ease-out | table row / card hover (pairs with slate hover-bg) |
 | `.stagger-1..12` | `animation-delay` 40–480ms | — | cascade a row/list group (capped at 12 steps) |
+| `useFlip` (`lib/useFlip.ts`) | `translateY` FLIP reshuffle | 300ms `cubic-bezier(.4,0,.2,1)` | RankingTable rows slide to new positions on a **filter/search** change (NOT sort — see Rule 2) |
 | `animate-shimmer` / `animate-fade-in` | (pre-existing) skeleton + mount | 1.5s / 200ms | async-loading placeholder |
 
 ### Five non-negotiable rules
@@ -258,7 +259,12 @@ JS hooks in `lib/useMotion.ts`.
    feels alive on every navigation. What's forbidden is *looping* /
    permanent motion (an animation that runs continuously after arrival) and
    *re-firing on in-page interaction* (sort/filter must not re-stagger — the
-   RankingTable `interacted` latch enforces this within a mount). The **one
+   RankingTable `interacted` latch enforces this within a mount). The
+   filter-driven FLIP reshuffle (`useFlip`, $impeccable overdrive) is a
+   DISTINCT, intentional exception — it is NOT the entrance stagger re-firing
+   but a positional slide that CONVEYS the filter result (the surviving rows
+   answer the query); it fires only on a filter/search change, never on sort,
+   and is transform-only within the micro budget. The **one
    signature** beat (gauge) is the only > 320ms animation.
 3. **Reduced-motion is mandatory.** Every token has a
    `prefers-reduced-motion: reduce` off-switch in `globals.css` that snaps
