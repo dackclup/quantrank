@@ -11,14 +11,14 @@ requires-python = ">=3.11"
 license = { text = "MIT" }
 dependencies = [
   "pandas>=2.2,<3",
-  "numpy>=1.26",
+  "numpy>=1.26,<3",
   "pydantic>=2.6",
-  "tenacity>=8.2",
-  "yfinance>=0.2.40",
+  "tenacity>=8.2,<10",
+  "yfinance>=0.2.40,<2",
   "beautifulsoup4>=4.12",
-  "lxml>=5.0",
+  "lxml>=5.0,<7",
   "requests>=2.31",
-  "pyarrow>=15.0",
+  "pyarrow>=15.0,<25",
   # 2026-05-22 hotfix: pin to 5.x band. edgartools 5.x reclassified
   # ``Filing.obj`` from a property to a method, which caused the
   # 502/502 Form-4 silent-drop on the first post-PR-#205 cron. The

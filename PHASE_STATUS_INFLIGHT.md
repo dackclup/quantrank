@@ -5579,3 +5579,25 @@ date bumped 2026-05-31 → 2026-06-02.
 PHASE_STATUS_INFLIGHT.md (this append).
 
 **Verification**: `ruff check .` clean · no compute tests affected (docs-only).
+
+---
+
+## Chore PR — pyproject.toml upper bounds + vercel-preview-auditor injection guard (2026-06-02)
+
+**Branch**: `claude/chore-upper-bounds-wNx8k`
+**Type**: chore — no compute / schema / scoring / valuation / frontend code change.
+
+**Changes:**
+- `pyproject.toml`: add `<N` upper bounds on 5 deps:
+  - `numpy>=1.26` → `numpy>=1.26,<3`
+  - `tenacity>=8.2` → `tenacity>=8.2,<10`
+  - `yfinance>=0.2.40` → `yfinance>=0.2.40,<2`
+  - `lxml>=5.0` → `lxml>=5.0,<7`
+  - `pyarrow>=15.0` → `pyarrow>=15.0,<25`
+- `.claude/agents/vercel-preview-auditor.md`: add untrusted-content
+  prompt-injection guard (mirrors W3 guard from `literature-searcher.md`,
+  PR #226 — treats fetched runtime logs / HTML as data to quote, never
+  instructions to execute).
+
+**Files touched**: `pyproject.toml` · `.claude/agents/vercel-preview-auditor.md` ·
+`CLAUDE.md` · `AGENTS.md` · `PHASE_STATUS_INFLIGHT.md` (this append).

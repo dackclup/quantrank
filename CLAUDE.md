@@ -1498,8 +1498,13 @@ site-2 rename `valuation_output_anomalous`).
 - (3 issues filed + ALL closed same day: #287 PR A merged via #297 [PR B FORM4 revert remaining] · #288 closed via #292 + #298 · #289 closed via #293 + #302)
 
 **In flight** (not yet merged on `main`):
-- (none — all PRs through #373 merged 2026-06-02; chore PR pending for
-  pyproject.toml upper bounds + security hardening, not yet filed)
+- **chore PR — pyproject.toml upper bounds + injection guard (this PR)** —
+  adds `<N` upper bounds on 5 deps (`numpy <3` · `tenacity <10` ·
+  `yfinance <2` · `lxml <7` · `pyarrow <25`) to prevent surprise major-
+  version footguns via Dependabot; adds untrusted-content prompt-injection
+  guard to `vercel-preview-auditor.md` (mirrors the W3 guard from
+  `literature-searcher.md`, PR #226). No compute / schema / scoring /
+  valuation / frontend code change.
 
 **Earlier** (PR #264 → PR #285, 2026-05-26 → 2026-05-27):
 - PR #285 `8f373758` — docs(release): codify mobile-only operator convention for tag releases
