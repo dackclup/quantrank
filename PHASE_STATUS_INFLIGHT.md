@@ -5049,8 +5049,9 @@ invariant. No compute / schema / scoring / valuation change. Branch
 Re-critique #2 P1 (palette coherence). Two parts:
 - **Alarm-red dots → soft `bg-rose-500`** (`--c-neg-dot`): the recommendation
   "Sell" dot (`RecommendationBadge`) + the Moderate-high/High loss-chance dots
-  (`LossChanceBadge` + `RankingTable` mobile card) were the last raw
-  `bg-red-500/600` dots — NOT in the globals.css allowlist, so they rendered raw
+  (`LossChanceBadge` + `RankingTable` mobile card) + the `RiskSummaryCard`
+  severity dots (raw `bg-rose-600`, caught as the `frontend-design-reviewer`
+  WARN) were the last raw alarm dots — NOT in the globals.css allowlist, so they rendered raw
   alarm-red against otherwise-soft chip bodies (the "gamified red-green"
   PRODUCT.md anti-reference). Now `bg-rose-500 dark:bg-rose-400`, matching
   `FairPriceBarChart`'s existing "Overvalued" dot. A severity ramp can't carry

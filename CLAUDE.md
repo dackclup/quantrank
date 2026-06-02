@@ -990,8 +990,9 @@ whitespace / single-line fixes do not trigger.
   stay raw mid-saturation rgb BY DESIGN (thin ring needs the saturation; the
   amber mid-band has no soft token anyway). **The one soft NEGATIVE dot token is
   `bg-rose-500`** (→ `--c-neg-dot`); the recommendation "Sell" + loss-chance
-  Moderate-high/High dots were the last raw `bg-red-500/600` alarm-dots and are
-  now `bg-rose-500` (a severity ramp can't carry two distinct SOFT red dots —
+  Moderate-high/High dots (raw `bg-red-500/600`) + the `RiskSummaryCard` severity
+  dots (raw `bg-rose-600`) were the last alarm-dots, all now `bg-rose-500`
+  (a severity ramp can't carry two distinct SOFT red dots —
   only `--c-neg-dot` exists — so both high bands share it + distinguish via label
   + `text-red-700/900`). The `PillarRadarChart` bar fills + legend use the same
   raw `scoreAccentColor`-style rgb as the score gauge BY DESIGN (chart ramp +

@@ -320,7 +320,8 @@ export function FairPriceCard(props) {  // no types
   family). For any positive/negative surface use a listed class or the chip
   family; inline `style`/svg `stroke` (gauge accents) are never reached and stay
   raw rgb by design. The one soft NEGATIVE dot is `bg-rose-500`; the "Sell" +
-  high-loss-chance dots (was raw `bg-red-500/600`) now use it. `PillarRadarChart`
+  high-loss-chance dots + `RiskSummaryCard` severity dots (was raw
+  `bg-red-500/600` / `bg-rose-600`) now use it. `PillarRadarChart`
   bar fills are raw `scoreAccentColor` rgb BY DESIGN (chart ramp + amber gap) —
   not a soft-color miss. Full rationale in CLAUDE.md §Gotchas.
 - **44px touch targets + modal focus-trap + severity-toned warning headings**
