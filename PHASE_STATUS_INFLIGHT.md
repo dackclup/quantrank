@@ -5331,3 +5331,33 @@ export still ships the skeleton (`Loading price history` + `animate-shimmer`) wi
 be confirmed on the Vercel preview (the dynamic-import is a standard Next pattern;
 tsc + build pass). 2 files (1 new wrapper + 2-line page swap) + docs. No compute /
 schema / scoring / valuation change. Branch `claude/sharp-newton-8pj6p`.
+
+---
+
+### fix(frontend) — score gauge tier word out-of-sync with TIERS (finishes #363 P3) (this PR)
+
+`expert-user-explorer` (run to confirm the #367 lazy-chart renders — it does, GO)
+surfaced a pre-existing [MAJOR] display bug: `ScoreGauge.tsx` + `ScoreBadge.tsx`
+each carried their OWN local `tierLabel()` on the wrong `80/60/40/20` accent
+boundaries (Exceptional ≥80 / Strong ≥60 / …) instead of the canonical `TIERS`
+(25/40/55/70). The composite-score gauge therefore labeled the tier by the COLOR
+boundaries → **81 tickers showed the wrong word**, incl. the top-3 (NVDA 73 / CF /
+HST said "Strong" not "Exceptional") and the 78-ticker 55-60 band ("Average" not
+"Strong") — contradicting the pillar bars (TIERS-correct since #363) on the SAME
+detail page. The #363 P3 consolidation fixed the pillars but missed these two
+score surfaces.
+
+- **`lib/visual.ts`**: new canonical `scoreTierLabel(score)` = `TIERS.find(...)?.label`
+  — the single source the gauge + mobile caption + pillars now share.
+- **`ScoreGauge.tsx`** (lg hero gauge): dropped its local `tierLabel`, calls
+  `scoreTierLabel(Math.round(score))` (integer display → band-from-rounded).
+- **`ScoreBadge.tsx`** (md mobile card caption): dropped its local `tierLabel`,
+  calls `scoreTierLabel(Number(score.toFixed(1)))` (1-decimal display). The `sm`
+  table pill shows no tier word (unaffected). `scoreAccentColor` (the COLOR) left
+  on its own 20/40/60/80 heat-signal boundaries BY DESIGN.
+
+Verified: `tsc --noEmit` 0 · `next build` 506 · `ruff check .` clean; **whole-universe
+export cross-check: 0 gauge tier-word mismatches** (NVDA 73 → "Exceptional", ORCL/VRTX
+58 → "Strong"); no test pinned the labels. `frontend-design-reviewer` at the gate.
+CLAUDE.md §Gotchas + AGENTS.md mirror updated. No compute / schema / scoring /
+valuation change — 3 frontend files + docs. Branch `claude/sharp-newton-8pj6p`.

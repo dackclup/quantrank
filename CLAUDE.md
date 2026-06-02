@@ -1229,6 +1229,28 @@ whitespace / single-line fixes do not trigger.
   (the page is a Server Component). If a SECOND Recharts surface is ever added,
   give it the same lazy-wrapper treatment.
 
+- **The composite-score gauge + mobile caption tier WORD comes from the canonical
+  `scoreTierLabel` (lib/visual.ts TIERS) — NOT a local rubric, and NOT the
+  `scoreAccentColor` boundaries** (`ScoreGauge.tsx` + `ScoreBadge.tsx` +
+  `lib/visual.ts`, `$impeccable` 2026-06-02; finishes the `clarify P3` TIERS
+  consolidation that the pillar bars got in #363 but these two surfaces missed).
+  Both components previously carried their OWN local `tierLabel()` on the wrong
+  `80/60/40/20` accent boundaries (Exceptional ≥80 / Strong ≥60 / …), so the
+  gauge labeled the tier by the COLOR boundaries instead of the TIERS
+  (25/40/55/70) boundaries — **81 tickers showed the wrong word**, incl. the
+  top-3 (NVDA/CF/HST at 71-73 said "Strong" not "Exceptional") and the 78-ticker
+  55-60 band ("Average" not "Strong"), contradicting the pillar bars on the SAME
+  page (`expert-user-explorer` catch). Now both call
+  `scoreTierLabel(<displayed value>)` — `Math.round(score)` for the integer gauge
+  (`ScoreGauge`), `Number(score.toFixed(1))` for the 1-decimal mobile caption
+  (`ScoreBadge` md) — so the word bands off the SHOWN number (§Gotchas
+  band-from-rounded). The `sm` table pill shows no tier word (just the number +
+  dot). **`scoreAccentColor` (the gauge arc + dot COLOR) intentionally stays on
+  its own 20/40/60/80 heat-signal boundaries** — it is NOT the tier-label rubric;
+  the word↔color boundary split is the documented design (a 73 is "Exceptional"
+  word in the ≥60 emerald, not the ≥80 deep-emerald). Add a NEW score-tier-word
+  surface → call `scoreTierLabel`, never a fresh local copy.
+
 ## Phase status
 
 Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged

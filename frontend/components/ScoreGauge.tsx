@@ -14,14 +14,7 @@
 
 import type { CSSProperties, JSX } from 'react';
 import { useCountUp, usePlayOnMount } from '@/lib/useMotion';
-
-const tierLabel = (score: number): string => {
-  if (score >= 80) return 'Exceptional';
-  if (score >= 60) return 'Strong';
-  if (score >= 40) return 'Average';
-  if (score >= 20) return 'Weak';
-  return 'Poor';
-};
+import { scoreTierLabel } from '@/lib/visual';
 
 export function ScoreGauge({
   score,
@@ -113,7 +106,7 @@ export function ScoreGauge({
           className="text-[0.625rem] uppercase tracking-wider"
           style={{ color: accent }}
         >
-          {tierLabel(score)}
+          {scoreTierLabel(Math.round(score))}
         </span>
       </div>
     </div>

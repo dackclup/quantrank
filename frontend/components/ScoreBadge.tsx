@@ -1,5 +1,5 @@
 import type { JSX } from 'react';
-import { scoreAccentColor, scoreColorClasses } from '@/lib/visual';
+import { scoreAccentColor, scoreColorClasses, scoreTierLabel } from '@/lib/visual';
 import { ScoreGauge } from '@/components/ScoreGauge';
 
 // Two-size component: the pill ('sm' default) for rankings table cells
@@ -9,15 +9,10 @@ import { ScoreGauge } from '@/components/ScoreGauge';
 // The radial gauge SVG renders a soft sage-to-terracotta arc whose
 // arc length is the score percentile. Tier label ("Exceptional",
 // "Strong", etc.) sits below the numeric score for context — addresses
-// the design feedback that "64.0" alone lacks meaning.
-
-const tierLabel = (score: number): string => {
-  if (score >= 80) return 'Exceptional';
-  if (score >= 60) return 'Strong';
-  if (score >= 40) return 'Average';
-  if (score >= 20) return 'Weak';
-  return 'Poor';
-};
+// the design feedback that "64.0" alone lacks meaning. The tier WORD
+// comes from the canonical `scoreTierLabel` (lib/visual.ts TIERS), shared
+// with ScoreGauge + the pillar bars; `scoreAccentColor` (its COLOR) stays
+// on its own heat-signal boundaries by design.
 
 export function ScoreBadge({
   score,
@@ -54,7 +49,7 @@ export function ScoreBadge({
           {score.toFixed(1)}
         </span>
         <span className="text-[0.625rem] font-medium uppercase tracking-wider" style={{ color: accent }}>
-          {tierLabel(score)}
+          {scoreTierLabel(Number(score.toFixed(1)))}
         </span>
       </div>
     );

@@ -50,6 +50,22 @@ export function getTier(score: number | null | undefined): ScoreTier | null {
   return TIERS.find((t) => score >= t.min && score < t.max)?.id ?? null;
 }
 
+// Tier WORD (Exceptional / Strong / Average / Weak / Poor) for a 0-100 score,
+// from the canonical `TIERS` rubric — the SINGLE source the composite-score
+// gauge (`ScoreGauge`), the mobile score caption (`ScoreBadge` md), and the
+// pillar bars all share (the `$impeccable clarify P3` consolidation). Before
+// 2026-06-02, `ScoreGauge` + `ScoreBadge` carried their OWN local copies on the
+// wrong `80/60/40/20` accent boundaries, so 81 tickers (incl. the top 3) showed
+// the wrong tier word — contradicting the pillar bars on the same page. Callers
+// band off the value they DISPLAY (`Math.round(score)` for the integer gauge,
+// `Number(score.toFixed(1))` for the 1-decimal mobile caption) so the word never
+// contradicts the shown number at a boundary (§Gotchas band-from-rounded).
+// `scoreAccentColor` stays on its own 20/40/60/80 heat-signal boundaries BY
+// DESIGN — it is the gauge's COLOR, not the tier-label rubric.
+export function scoreTierLabel(score: number): string {
+  return TIERS.find((t) => score >= t.min && score < t.max)?.label ?? 'Poor';
+}
+
 export type MosBucket = 'cheap' | 'fair' | 'over';
 
 export type MosBucketMeta = {
