@@ -425,6 +425,13 @@ export function FairPriceCard(props) {  // no types
   schema demoted by POSITION, not a fainter AA-failing color) → methodology fine
   print. Product-bolder = clarity / hierarchy / one accent, not drama. Don't
   re-flatten tiers 2+3 into one gray line. Full rationale in CLAUDE.md §Gotchas.
+- **Ranking-table "no matches" empty-state = the app's warm delight moment**
+  (`RankingTable.tsx`, `$impeccable delight` 2026-06-02): muted `SearchX` (lucide,
+  aria-hidden) anchor glyph + human heading + actionable recovery nudge +
+  `animate-fade-in`. Product-delight = a SPECIFIC reached moment, warm not wacky
+  (finance reads the room). A new empty/error/pending state follows the same shape
+  (glyph + heading + how-to-recover); don't scatter delight onto non-empty
+  surfaces. Full rationale in CLAUDE.md §Gotchas.
 
 ## Git workflow
 

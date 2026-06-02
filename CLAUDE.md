@@ -1304,6 +1304,23 @@ whitespace / single-line fixes do not trigger.
   header fact goes in the tier matching its importance — never re-merge tiers 2+3
   into one gray sentence, and don't promote the schema version out of tier 3.
 
+- **The ranking-table "no matches" empty-state is the app's ONE warm delight
+  moment — keep it helpful, not wacky** (`frontend/components/RankingTable.tsx`,
+  `$impeccable delight` 2026-06-02). The REACHABLE over-filtered-to-zero state
+  was a flat gray line + button; it now carries a muted decorative `SearchX`
+  (lucide, `aria-hidden`) anchor glyph + a `font-medium text-slate-700` heading +
+  an ACTIONABLE recovery nudge ("Try a wider score range, or clear a sector or
+  two") + `animate-fade-in` (reduced-motion guarded via the shared motion
+  system). Product-register delight = a SPECIFIC reached moment, warm +
+  recovery-oriented — finance "reads the room": warm, never playful / confetti /
+  Easter-egg. A NEW empty / error / pending state should follow the same shape
+  (anchor glyph + human heading + how-to-recover line), NOT a bare "no data"
+  string — but do NOT scatter delight onto non-empty surfaces (delight
+  everywhere = noise; the high-frequency surfaces already carry the motion
+  system). `SearchX` is a NAMED lucide import (tree-shakes per the lucide
+  §Gotcha); RankingTable's other icons are legacy inline SVGs (don't bulk-convert
+  them — only new glyphs use lucide).
+
 ## Phase status
 
 Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged

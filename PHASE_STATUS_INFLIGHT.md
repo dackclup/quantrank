@@ -5437,3 +5437,35 @@ focal point only (home header) — detail hero + table untouched (bolder ≠ mak
 everything bold). `frontend-design-reviewer` at the gate. CLAUDE.md §Gotchas +
 AGENTS.md mirror updated. No compute / schema / scoring / valuation change — 1
 frontend file + docs. Branch `claude/sharp-newton-8pj6p`.
+
+---
+
+### feat(frontend) — warm the ranking-table empty-state (`$impeccable delight`) (this PR)
+
+`/impeccable delight`. Product-register delight = "a SPECIFIC reached moment,
+warm + recovery-oriented — reliability carries the rest; delight everywhere =
+noise" (reference). QuantRank's high-frequency surfaces are already delightful
+(gauge sweep · count-ups · chart intro draw · row stagger · press · hover-lift),
+so the genuine gap was an EDGE state the reference calls prime delight territory.
+The most REACHABLE one is the ranking-table "no matches" empty-state (user
+over-filters to zero) — it was a flat gray line + button (reads as an error, no
+help). One focal point only (delight ≠ everywhere); the two near-never-seen
+"pending" banners were deliberately left out.
+
+- `RankingTable.tsx` empty-state: added a muted decorative **`SearchX`** anchor
+  glyph (lucide named import, `aria-hidden`, `text-slate-300 dark:text-slate-600`,
+  `strokeWidth 1.5`), a warmer `font-medium text-slate-700` heading ("No stocks
+  match those filters"), an ACTIONABLE recovery nudge ("Try a wider score range,
+  or clear a sector or two" — tells the user how to recover, the product-delight
+  "anticipate needs" move), and `animate-fade-in` so the empty card doesn't snap
+  in (reduced-motion guarded). Layout `p-6 text-center` → `flex flex-col
+  items-center px-6 py-10` (generous space for the moment). "Clear all filters"
+  button kept; `mt-3` → `mt-4`.
+- Warm, NOT wacky — finance "reads the room" (no confetti / Easter egg / playful
+  copy). Icon is decorative so the heading carries SR meaning; AA-safe text
+  tokens.
+
+Verified: `tsc --noEmit` 0 · `next build` 506/506 (home `/` +1 kB from the
+tree-shaken `SearchX`) · `ruff check .` clean. `frontend-design-reviewer` at the
+gate. CLAUDE.md §Gotchas + AGENTS.md mirror updated. No compute / schema /
+scoring / valuation change — 1 frontend file + docs. Branch `claude/sharp-newton-8pj6p`.
