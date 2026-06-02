@@ -5558,3 +5558,24 @@ non-compute: frontend code polish + CI security hardening + stale-doc correction
 collection errors are pre-existing: `openassetpricing` optional dep not installed
 in remote env) · `tsc` errors are pre-existing env noise (missing `@types/node`).
 No compute / schema / scoring / valuation change.
+
+---
+
+## Commit B — doc drain PRs #331–#373 (2026-06-02)
+
+**Branch**: `claude/sharp-knuth-WNM3i`
+**Type**: docs/chore — CLAUDE.md + AGENTS.md + PHASE_STATUS.md drain only; no
+compute / schema / scoring / valuation / frontend code change.
+
+**Summary**: Drains 43 PRs (#331–#373, 2026-05-31 → 2026-06-02) from CLAUDE.md
+§Phase status "Recently merged" + PHASE_STATUS.md "Recently merged". The old
+#303–#330 "Recently merged" blocks are demoted to new "Earlier" sections. "In
+flight" entries for PR-B (merged as #351) and `financial-engineer` (merged as
+#331) replaced with "(none)". AGENTS.md §Phase + version state "In flight"
+bullet updated to "all PRs through #373 merged". PHASE_STATUS.md §Current state
+date bumped 2026-05-31 → 2026-06-02.
+
+**Files touched**: CLAUDE.md · AGENTS.md · PHASE_STATUS.md ·
+PHASE_STATUS_INFLIGHT.md (this append).
+
+**Verification**: `ruff check .` clean · no compute tests affected (docs-only).

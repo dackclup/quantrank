@@ -590,22 +590,14 @@ list lives in [`CLAUDE.md`](CLAUDE.md) §Phase status. Schema-version
 history table is in [`SKILL.md`](SKILL.md). This file's role is to
 note cross-tool-specific points only:
 
-- **In flight — PR-B (frontend hero chips + deep-audit MUST-FIX sweep; no schema
-  change, no compute change)**: replaces the detail-hero sector + industry chips
-  with a country chip (`country-flag-icons` flag + ISO tag) + exchange chip
-  (lucide `Landmark` + display name), reading `StockDetail.country` / `.exchange`
-  (populated by PR-A2, **merged via PR #347 → #349**). New dep `country-flag-icons
-  ^1.6.17` (MIT, 0 transitive, 0 install-script — both auditors SAFE). NULL-SAFE:
-  renders nothing until ≥ 1 cron populates the fields, so PR-B is **held Draft —
-  merge after the next cron** (observability-before-wiring). Bundled Commit A
-  applies 12 MUST-FIX items from a full-system deep audit: dark-mode variants on
-  price-chart reference chips + `font-mono` on `RawMetricsTable` values + ScoreGauge
-  `aria-label` + 2 loose-null fixes in `RankingTable` + `ring-amber-200` in
-  `RiskSummaryCard` + `manual-trigger.yml` script-injection guard (env: routing) +
-  schema-pointer corrections in CLAUDE.md / PHASE_STATUS.md / WORKFLOW.md + emit
-  count in METHODOLOGY.md + past-tense fix in SKILL.md. Cross-tool agents: a
-  `StockDetail` at 0.10.12+ carries `exchange` + `country` (both `str | None`),
-  populated from cron Run #73+.
+- **All PRs through #373 merged (2026-06-02)** — see CLAUDE.md §Phase status for
+  the full record (PRs #331–#373, 2026-05-31 → 2026-06-02; 43 PRs covering the
+  `$impeccable` full-frontend pass · `financial-engineer` 20th subagent · PR-B
+  country/exchange hero chips · Commit A 12-item deep-audit MUST-FIX sweep). No
+  PR currently in flight. Chore PR pending for pyproject.toml upper bounds +
+  security hardening (not yet filed). Cross-tool agents: `StockDetail` at
+  0.10.12+ carries `exchange` + `country` (`str | None`), populated from cron
+  Run #73+.
 
 - Production-verified run: cron **Run #71** (`368dccd9`, 14m 32s
   warm-cache, 2026-05-28 08:44 UTC) — useful for non-Claude agents

@@ -1408,7 +1408,51 @@ ladder closure + LedgerCraft frontend reskin (defense layer 32 → 33;
 PR #264 `multi_class_aggregate_shares_suspected` + PR #265 DQIC
 site-2 rename `valuation_output_anomalous`).
 
-**Recently merged** (PR #303 → PR #330, 2026-05-29 → 2026-05-31):
+**Recently merged** (PR #331 → PR #373, 2026-05-31 → 2026-06-02):
+- PR #373 `93c98a2` — fix(audit): Commit A — full-system deep-audit MUST-FIX sweep (12 items: `PriceHistoryChart` dark-mode reference chips + `ring-rose-200` · `RawMetricsTable` `font-mono` · `ScoreGauge` `role="img"` aria-label · `RankingTable` loose-null ×2 · `RiskSummaryCard` `ring-amber-200` · `manual-trigger.yml` script-injection fix via `env:` · schema pointer `0.10.11→0.10.12` in CLAUDE.md/PHASE_STATUS.md/WORKFLOW.md · METHODOLOGY.md ~21→~27 emitted flags · SKILL.md PR-A2 stale ref)
+- PR #372 `858cf21` — feat(frontend): detail-page two-level spacing rhythm + `HeroAttributeTiles` float fix (`$impeccable layout`)
+- PR #371 `8014916` — feat(frontend): ranking-table warm empty-state — `SearchX` anchor glyph + actionable recovery nudge + `animate-fade-in` (`$impeccable delight`)
+- PR #370 `64a72f9` — feat(frontend): bolder home-page header — 4-tier hierarchy + universe-count `font-mono font-semibold text-emerald-800` brand accent (`$impeccable bolder`)
+- PR #369 `f9c5f47` — feat(frontend): global `.press` utility — `scale(0.97)` `:active` press feedback on 23 interactive controls, reduced-motion guarded (`$impeccable animate`)
+- PR #368 `9a0a1a8` — fix(frontend): `ScoreGauge` + `ScoreBadge` tier word from canonical `scoreTierLabel` / TIERS boundaries (fixes 81-ticker wrong-word mismatch; finishes clarify P3)
+- PR #367 `08baab4` — perf(frontend): `PriceHistoryChartLazy` — Recharts code-splits out of stock-detail First Load JS (214→110 kB, −49%); server page imports lazy wrapper only
+- PR #366 `cd14811` — polish(frontend): design-system drift sweep — chip `font-medium` · numeric `font-mono tabular-nums` · `bg-amber-50` annotate bodies · `ring-{tone}-200` negative rings · `tracking-wider` small-caps · `!mt-8` zone-seam footnote (`$impeccable polish`)
+- PR #365 `e2050f0` — fix(frontend): `FilterDrawer` in-drawer active-filter removable-chip summary (remove-ONE path without close → reopen dance; `$impeccable` H3 minor)
+- PR #364 `6b57f57` — fix(frontend): detail-page a11y minors — `MoSBadge` `role="img"` + "(vs fair value)" anchor · `PillarRadarChart` `sr-only` sector-median notch · hero "Data as of {date}" freshness line
+- PR #363 `e8a8268` — fix(frontend): `PillarRadarChart` pillar tier labels → canonical TIERS vocabulary + 25/40/55/70 boundaries (single source of truth; `$impeccable clarify` P3)
+- PR #362 `c29fe86` — fix(frontend): detail hero loss-chance full 5-band `{ tone, dot, label }` object — surfaces band WORD as caption (`$impeccable clarify` P2)
+- PR #361 `e757028` — fix(frontend): restore daily-change `CurrentPriceLine` to stock detail + demote `FairPriceCard` to reference tier
+- PR #360 `545a1a0` — fix(frontend): palette coherence — soften alarm-red dots → `bg-rose-500` (`--c-neg-dot`) + correct stale pillar-bar inline-rgb comment
+- PR #359 `fbe32bf` — fix(frontend): loss-chance band from `Math.round(pct)` (band-from-rounded) + empty-state recovery nudge + pending nits (P3 polish)
+- PR #358 `24c9be7` — feat(frontend): URL-serialized filter state — shareable/bookmarkable ranking views via `filter-url.ts` + `filter-storage.ts` (`history.replaceState`; Nielsen H7)
+- PR #357 `183305e` — feat(frontend): "Supporting data" `<details>` progressive disclosure — raw fundamentals + data quality collapsed by default; `<article>` stays Server Component
+- PR #356 `dd56dc1` — fix(frontend): WCAG-AA secondary text `text-slate-500 dark:text-slate-400` app-wide (16 components) + `FilterDrawer` chip `min-h-[44px] lg:min-h-0` touch target
+- PR #355 `93231b7` — fix(frontend): a11y + clarity punch-down — `FilterDrawer` Tab focus-trap + focus-restore · `min-h-[44px]` on 23 controls · `MoSBadge` label basis · warning-card severity-toned `<h2>`
+- PR #354 `d5c933e` — docs(design): regenerate `docs/design.md` + `docs/DESIGN_SIDECAR.md` (`$impeccable document`)
+- PR #353 `ef83c4a` — docs(skill): un-stale `frontend-design-system` Rule 4 (dark-mode pairing conventions)
+- PR #352 `339fef5` — feat(frontend): calm daily-change chip (soft OKLCH tokens) + honest `scoreAccentColor` boundary comments
+- PR #351 `2978748` — feat(frontend): country + exchange hero chips — `ListingChips.tsx` + `country-flag-icons ^1.6.17` (PR-B; NULL-SAFE until cron Run #73+ populates fields)
+- PR #350 `c47445f` — docs(design): add `impeccable` PRODUCT.md + DESIGN.md project-context files
+- PR #349 `809cd4d` — feat(compute): wire `country` + `exchange` into `main.py` (PR-A2; `exchange_coverage_pct` + `country_coverage_pct` `Metadata` observability fields)
+- PR #348 `65af2ec` — chore(skills): vendor `impeccable` frontend-design skill (Apache-2.0; `.agents/skills/impeccable` + root `skills-lock.json` pin)
+- PR #347 `5f39d64` — feat(ingest): `country` + `exchange` listing metadata from yfinance `fast_info` (PR-A1; new `StockDetail.country` + `.exchange`; schema `0.10.11→0.10.12-phase4.6`)
+- PR #346 `9575d22` — chore(gitignore): ignore `.agents/skills/impeccable/` local-only build artifacts
+- PR #345 `983195b` — fix(frontend): `PillarRadarChart` mobile reflow — `order-last col-span-2` bar drops full-width under label+value row on narrow viewports
+- PR #344 `b773bbf` — feat(frontend): `HeroAttributeTiles` — 4-box category grid (`lucide-react ^1.17.0`; Size + Sector live, Dividend + Type reserved "Coming soon")
+- PR #342 `fb74a7b` — feat(frontend): static `RecommendationBadge` (removes `chip-pop`) + `HeroMetric` count-up client leaf for fair value / target / loss-chance
+- PR #341 `4079ad2` — feat(frontend): price-chart 5Y → monthly `aggregateMonthly()` (60 pts); 1M/6M/YTD/1Y stay daily with 260-pt downsample cap
+- PR #340 `e1b169b` — fix(frontend): detail reading-order — `PillarRadarChart` above warning group + hero risk-veto chip reverted ("ไม่เอา")
+- PR #339 `2ade490` — fix(frontend): de-dup fair-price pair — drop `FairPriceCard` per-method dollar table (interpretation vs reference split; two-formula anchor note in §Gotchas)
+- PR #338 `add85f4` — docs(gotchas): background-run hygiene — `Agent run_in_background` orphan + Bash zombie prevention rules
+- PR #337 `abf1e17` — feat(frontend): `RiskSummaryCard` — merge `RiskFlagsCard` + `ManipulationRiskCard` (RANK GATES vs MANIPULATION INDEX via `alsoFired = firedComponents − gateSet`)
+- PR #336 `5155caa` — chore(agents): `effort: max` frontmatter on all 20 subagents + `tools/check_model_pin.py` CI guard (blocks `CLAUDE_CODE_SUBAGENT_MODEL` override in committed settings)
+- PR #335 `0b9add5` — fix(frontend): hero score "N/100" denominator · `MoSBadge` real `mos_pct` % · `FairPriceBarChart` chevron sized + centered
+- PR #334 `18c4507` — fix(frontend): nav chevrons + content-up spacing + kill `RankingTable` mounting flash (remove `isClient` gate)
+- PR #333 `bd2c15d` — docs(gotchas): PR #332 hero invariants — CSS container-query split (46rem) + sign-aware `MoSBadge` arc (`-scale-x-100` mirror contract)
+- PR #332 `43838c6` — feat(frontend): stock-detail hero rework — sign-aware `MoSBadge` · container-query desktop split · drop hero price line
+- PR #331 `3cb95eb` — feat(agents): add `financial-engineer` (20th subagent, Tier 3 Specialized · opus · read-only generative quant-design) + drain #311–#330 doc drift
+
+**Earlier** (PR #303 → PR #330, 2026-05-29 → 2026-05-31):
 - PR #330 `ba218ff` — feat(frontend): motion + price-chart polish — app-wide ONE `ease-in-out` timing-curve unification + `max-width` transition fix for symmetric sidebar collapse/expand (§Gotchas "ONE ease-in-out curve" + sidebar `max-width` load-bearing notes)
 - PR #329 `9ee1b32` — feat(frontend): price-chart intro sweep (line + crosshair draw left→right) + remove tooltip price box
 - PR #328 `c80b5e8` — fix(frontend): move brand to top header when sidebar collapsed; chevron-only rail (`data-rail="header"` family)
@@ -1454,33 +1498,8 @@ site-2 rename `valuation_output_anomalous`).
 - (3 issues filed + ALL closed same day: #287 PR A merged via #297 [PR B FORM4 revert remaining] · #288 closed via #292 + #298 · #289 closed via #293 + #302)
 
 **In flight** (not yet merged on `main`):
-- **PR-B — country + exchange hero chips (frontend, this PR)** — replaces the
-  detail-hero `#rank`-row's `SectorChip` + `· industry` text with a **country
-  chip** (`country-flag-icons` flag + ISO tag) + an **exchange chip** (lucide
-  `Landmark` icon + display name), reading `detail.country` / `detail.exchange`
-  (populated by **PR-A2, merged via PR #347 → #349**). New
-  `frontend/components/ListingChips.tsx` + new dep `country-flag-icons ^1.6.17`
-  (MIT, 0 transitive, 0 install-script — dependency-auditor + security-reviewer
-  both SAFE). NULL-SAFE: renders nothing until ≥ 1 cron populates the fields
-  (current data has them null), so the row degrades to the bare `#rank` chip.
-  **Held Draft — merge after the next cron** confirms `exchange_coverage_pct`
-  (observability-before-wiring). Sector still shows in the `HeroAttributeTiles`
-  Sector tile. Full entry in [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md).
-  No compute / schema / scoring / valuation change — frontend + 1 dep only.
-- **20th subagent `financial-engineer` + doc-drain housekeeping (this PR)** —
-  adds the generative quant-design seat (Tier 3 Specialized · opus ·
-  read-only; the design counterpart to `methodology-scientist`'s
-  validation seat — it PROPOSES a new valuation method / factor / pillar /
-  defense flag + academic anchor, then hands off to `methodology-scientist`
-  to ratify). Roster 19 → 20 (5 opus / 15 sonnet); coordination flows
-  7 → 8 (new Flow 8 quant-design in README). Also drains the #311–#330 doc
-  drift surfaced at session start: PRs #327–#330 into this **Recently
-  merged** block + #311–#330 into PHASE_STATUS.md §Recently merged +
-  subagent-count lockstep across CLAUDE.md / AGENTS.md / CONTEXT.md /
-  WORKFLOW.md / PHASE_STATUS.md / README.md. Full entry in
-  [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (PR #237 convention).
-  Doc + agent-infra only — no compute / schema / scoring / valuation /
-  frontend code change.
+- (none — all PRs through #373 merged 2026-06-02; chore PR pending for
+  pyproject.toml upper bounds + security hardening, not yet filed)
 
 **Earlier** (PR #264 → PR #285, 2026-05-26 → 2026-05-27):
 - PR #285 `8f373758` — docs(release): codify mobile-only operator convention for tag releases

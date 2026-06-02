@@ -13,7 +13,7 @@
 | 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → **v1.5** | ⚪ not started |
 | 8 | Universe expansion (S&P 1500) | ⚪ not started |
 
-## Current state (2026-05-31)
+## Current state (2026-06-02)
 
 | Field | Value |
 |---|---|
@@ -28,35 +28,77 @@
 | Skill inventory | **46** invocation-triggerable + phase planning docs |
 | Subagent inventory | **20** project-specific in 4 tiers (5 opus + 15 sonnet): **Tier 1 Core** (`quantrank-reviewer` · `schema-sentinel` · `defense-layer-auditor` · `edgar-debugger` · `stock-detail-auditor`) · **Tier 2 Lifecycle** (`security-reviewer` · `frontend-design-reviewer` · `vercel-preview-auditor` · `expert-user-explorer` · `release-captain` · `phase-coordinator`) · **Tier 3 Specialized** (`test-engineer` · `methodology-scientist` · `literature-searcher` · `performance-engineer` · `dependency-auditor` · `financial-engineer`) · **Tier 4 Operations** (`docs-reviewer` · `ci-triage-engineer` · `incident-commander`) |
 
-**Recently merged** (PR #311 → PR #330, 2026-05-29 → 2026-05-31):
-- PR #330 `ba218ff` — feat(frontend): motion + price-chart polish (app-wide ONE `ease-in-out` timing-curve unification + `max-width` transition fix for symmetric sidebar collapse/expand)
-- PR #329 `9ee1b32` — feat(frontend): price-chart intro sweep (line + crosshair draw left→right) + remove tooltip price box
-- PR #328 `c80b5e8` — fix(frontend): move brand to top header when sidebar collapsed; chevron-only rail (`data-rail="header"`)
-- PR #327 `0303e9f` — docs: CLAUDE.md §Phase status drain (#311–#326) + Section A-L label fix + 2 PR #326 §Gotchas
-- PR #326 `b82b845` — fix(frontend): sidebar refresh/rotate flash + chart crosshair re-park (width-delta ResizeObserver debounced remount) + no-text-flash pre-paint + 2 flaky-test guards
-- PR #325 `732853c` — feat(frontend): app-wide fluid responsive scaling (clamp root font-size) + layout-density audit + sidebar collapsed-state polish
-- PR #324 `6ca174f` — fix(frontend): tap (no drag) moves the price-chart crosshair to the tap point
-- PR #323 `4f7edf1` — fix(frontend): chart reference-line + chip polish (post-#322) + `overflow-x: clip` §Gotcha
-- PR #322 `fd04527` — fix(frontend): price-chart crosshair — park-at-latest · touch scrub · tap/scroll re-park · flush right edge + no page-widen
-- PR #321 `3640a8e` — fix(frontend): bump stale sidebar footer version chip v1.2 → v1.4.0
-- PR #320 `22cd579` — fix(frontend): keep mobile sidebar drawer full when desktop collapsed pref is set
-- PR #319 `a49f21c` — docs: fix stale skill-count (45 → 46) across 4 doc homes + correct LESSONS_LEARNED
-- PR #318 `79c0aac` — docs: add `docs/LESSONS_LEARNED.md` — agent-process dos & don'ts
-- PR #317 `fc886de` — fix(frontend): stack detail hero below `lg` to fix sidebar-expanded gauge/chip overlap
-- PR #316 `89c5ee0` — docs(skill): add `web-animation-design` skill (original-prose, inspire-only; skill count 45 → 46)
-- PR #315 `aeca318` — fix(frontend): responsive + a11y audit fixes — 320px hero overflow · focus rings · touch targets
-- PR #314 `a5e756b` — docs(frontend): fix stale `.gauge-arc` comment ref in ScoreGauge header
-- PR #313 `c5251f7` — fix(frontend): animation audit fixes + play-every-visit + gauge keyframe sweep
-- PR #312 `e602485` — feat(frontend): app-wide tasteful motion — gauge sweep · row stagger · veto pulse
-- PR #311 `10c6221` — docs: reconcile cross-doc drift after the 6-PR session (#303–#310)
+**Recently merged** (PR #331 → PR #373, 2026-05-31 → 2026-06-02):
+- PR #373 `93c98a2` — fix(audit): Commit A — 12-item deep-audit MUST-FIX sweep (dark-mode chips · font-mono · aria-label · loose-null ×2 · ring-amber-200 · script-injection · schema pointer · ~27 emit count · PR-A2 ref)
+- PR #372 `858cf21` — feat(frontend): detail-page two-level spacing + attr-tiles float fix
+- PR #371 `8014916` — feat(frontend): ranking-table warm empty-state (SearchX + nudge + fade-in)
+- PR #370 `64a72f9` — feat(frontend): bolder home-page header — 4-tier hierarchy + emerald universe-count accent
+- PR #369 `f9c5f47` — feat(frontend): global `.press` utility — `scale(0.97)` press feedback on 23 controls
+- PR #368 `9a0a1a8` — fix(frontend): `ScoreGauge` + `ScoreBadge` tier word → canonical TIERS (fixes 81-ticker wrong-word mismatch)
+- PR #367 `08baab4` — perf(frontend): `PriceHistoryChartLazy` — Recharts code-splits from stock-detail First Load (214→110 kB, −49%)
+- PR #366 `cd14811` — polish(frontend): drift sweep — chip `font-medium` · `font-mono tabular-nums` · `bg-amber-50` · `ring-200` · `tracking-wider`
+- PR #365 `e2050f0` — fix(frontend): `FilterDrawer` in-drawer active-filter removable chips (remove-ONE path)
+- PR #364 `6b57f57` — fix(frontend): a11y minors — `MoSBadge` `role="img"` + "(vs fair value)" · pillar `sr-only` median · hero "Data as of {date}"
+- PR #363 `e8a8268` — fix(frontend): pillar tier labels → canonical TIERS vocabulary + 25/40/55/70 boundaries
+- PR #362 `c29fe86` — fix(frontend): hero loss-chance full 5-band `{ tone, dot, label }` object + band WORD caption
+- PR #361 `e757028` — fix(frontend): restore daily-change `CurrentPriceLine` to detail + demote `FairPriceCard`
+- PR #360 `545a1a0` — fix(frontend): soften alarm-red dots → `bg-rose-500` + correct pillar-bar comment
+- PR #359 `fbe32bf` — fix(frontend): loss-chance band from `Math.round(pct)` + empty-state recovery + nits
+- PR #358 `24c9be7` — feat(frontend): URL-serialized filter state — shareable/bookmarkable via `filter-url.ts`
+- PR #357 `183305e` — feat(frontend): "Supporting data" `<details>` progressive disclosure
+- PR #356 `dd56dc1` — fix(frontend): WCAG-AA secondary text (`slate-500/400` app-wide) + `FilterDrawer` chip `min-h-[44px]`
+- PR #355 `93231b7` — fix(frontend): a11y punch-down — `FilterDrawer` focus-trap · `min-h-[44px]` ×23 · warning-card severity headings
+- PR #354 `d5c933e` — docs(design): regenerate DESIGN.md + sidecar
+- PR #353 `ef83c4a` — docs(skill): un-stale `frontend-design-system` Rule 4 dark-mode
+- PR #352 `339fef5` — feat(frontend): calm daily-change chip + honest gauge-accent comments
+- PR #351 `2978748` — feat(frontend): country + exchange hero chips (PR-B; `country-flag-icons ^1.6.17`)
+- PR #350 `c47445f` — docs(design): add `impeccable` PRODUCT.md + DESIGN.md context
+- PR #349 `809cd4d` — feat(compute): wire `country` + `exchange` into `main.py` (PR-A2; coverage observability)
+- PR #348 `65af2ec` — chore(skills): vendor `impeccable` skill (Apache-2.0)
+- PR #347 `5f39d64` — feat(ingest): `country` + `exchange` listing metadata (PR-A1; schema `0.10.11→0.10.12`)
+- PR #346 `9575d22` — chore(gitignore): ignore `impeccable` skill local artifacts
+- PR #345 `983195b` — fix(frontend): `PillarRadarChart` mobile reflow (bar full-width on narrow viewports)
+- PR #344 `b773bbf` — feat(frontend): `HeroAttributeTiles` 4-box grid (`lucide-react`; Size + Sector live, 2 reserved)
+- PR #342 `fb74a7b` — feat(frontend): static `RecommendationBadge` + `HeroMetric` count-up client leaf
+- PR #341 `4079ad2` — feat(frontend): price-chart 5Y → `aggregateMonthly()` (60 pts vs 260-pt daily downsample)
+- PR #340 `e1b169b` — fix(frontend): detail reading-order — radar above warning group + revert hero veto chip
+- PR #339 `2ade490` — fix(frontend): de-dup fair-price pair — drop `FairPriceCard` per-method table
+- PR #338 `add85f4` — docs(gotchas): background-run hygiene (`Agent run_in_background` orphan + Bash zombie)
+- PR #337 `abf1e17` — feat(frontend): `RiskSummaryCard` merge (RANK GATES vs MANIPULATION INDEX de-dup)
+- PR #336 `5155caa` — chore(agents): `effort: max` on all 20 subagents + `check_model_pin.py` CI guard
+- PR #335 `0b9add5` — fix(frontend): hero "N/100" · `MoSBadge` real % · fair-price chevron fix
+- PR #334 `18c4507` — fix(frontend): nav chevrons + spacing + kill `RankingTable` mounting flash
+- PR #333 `bd2c15d` — docs(gotchas): PR #332 hero invariants (container-query + sign-aware MoS)
+- PR #332 `43838c6` — feat(frontend): stock-detail hero rework — sign-aware MoS · container-query split · drop price line
+- PR #331 `3cb95eb` — feat(agents): add `financial-engineer` (20th subagent) + drain #311–#330 doc drift
 
-**Earlier** (PR #303 → PR #310, 2026-05-29):
-- PR #310 `a941e2e` — fix(scoring): inject `stale_filing_hard` before Top-5 rotation (latent Rule-16 fix, closes #309; Step-6b pre-scan + `asof_date` hoist; +5 tests; zero scoring impact)
-- PR #308 `e77efbf` — fix(frontend): correct RiskFlagsCard footer over-claim + add latent `stale_filing_hard` key (header "Risk Vetoes" → "Risk Flags")
-- PR #307 `bb1d7fd` — feat(agents): Phase B — opus-4.8 orchestrator + dynamic-workflow tuning (uniform `## Handoff` contract on all 19 agents + README §"Dynamic workflow" + Flow 7)
-- PR #306 `6ce7c1b` — fix(frontend): render `risk_flags[]` vetoes on stock detail (`RiskFlagsCard`; closes #305)
-- PR #304 `e070db6` — feat(agents): add `expert-user-explorer` (19th subagent, Tier 2 Lifecycle)
-- PR #303 `847c21b` — feat(scoring): Phase 4.5e PR 6 — Form-4 10b5-1 negation guard (schema `0.10.10 → 0.10.11-phase4.6`; new `Metadata.form4_negation_guard_downgrade_count`; 34 new tests; quantrank-reviewer READY-TO-PUSH, WARN-1 regex-anchor gap deferred to a follow-up gated on cron Run #72+)
+**Earlier** (PR #303 → PR #330, 2026-05-29 → 2026-05-31):
+- PR #330 `ba218ff` — feat(frontend): motion + price-chart polish (ONE `ease-in-out` + `max-width` transition)
+- PR #329 `9ee1b32` — feat(frontend): price-chart intro sweep (line + crosshair draw left→right)
+- PR #328 `c80b5e8` — fix(frontend): move brand to header when sidebar collapsed; chevron-only rail
+- PR #327 `0303e9f` — docs: CLAUDE.md §Phase status drain (#311–#326) + 2 §Gotchas
+- PR #326 `b82b845` — fix(frontend): sidebar refresh flash + crosshair debounce remount + pre-paint + 2 flaky-test guards
+- PR #325 `732853c` — feat(frontend): fluid responsive scaling (clamp root font-size) + density audit
+- PR #324 `6ca174f` — fix(frontend): tap moves crosshair to tap point
+- PR #323 `4f7edf1` — fix(frontend): chart reference-line + chip polish + `overflow-x: clip` §Gotcha
+- PR #322 `fd04527` — fix(frontend): price-chart crosshair full rework (park-at-latest · touch scrub · flush right)
+- PR #321 `3640a8e` — fix(frontend): sidebar footer version chip v1.2 → v1.4.0
+- PR #320 `22cd579` — fix(frontend): keep mobile sidebar drawer full when desktop collapsed pref is set
+- PR #319 `a49f21c` — docs: fix stale skill-count (45 → 46) + LESSONS_LEARNED
+- PR #318 `79c0aac` — docs: add `docs/LESSONS_LEARNED.md`
+- PR #317 `fc886de` — fix(frontend): stack detail hero below `lg`
+- PR #316 `89c5ee0` — docs(skill): add `web-animation-design` (skill count 45 → 46)
+- PR #315 `aeca318` — fix(frontend): responsive + a11y audit (320px hero · focus rings · touch targets)
+- PR #314 `a5e756b` — docs(frontend): fix stale `.gauge-arc` comment
+- PR #313 `c5251f7` — fix(frontend): animation audit + play-every-visit + gauge keyframe sweep
+- PR #312 `e602485` — feat(frontend): app-wide tasteful motion (gauge sweep · row stagger · veto pulse)
+- PR #311 `10c6221` — docs: reconcile cross-doc drift after 6-PR session (#303–#310)
+- PR #310 `a941e2e` — fix(scoring): inject `stale_filing_hard` before Top-5 rotation (latent Rule-16 fix, closes #309)
+- PR #308 `e77efbf` — fix(frontend): RiskFlagsCard footer over-claim + `stale_filing_hard` key + "Risk Flags" header
+- PR #307 `bb1d7fd` — feat(agents): Phase B — opus-4.8 orchestrator + `## Handoff` contract on 19 agents + Flow 7
+- PR #306 `6ce7c1b` — fix(frontend): render `risk_flags[]` vetoes on stock detail (closes #305)
+- PR #304 `e070db6` — feat(agents): add `expert-user-explorer` (19th subagent)
+- PR #303 `847c21b` — feat(scoring): Phase 4.5e PR 6 — Form-4 10b5-1 negation guard (schema `0.10.10→0.10.11`)
 
 **Earlier** (PR #286 → PR #302, 2026-05-28; **14 PRs landed same day post-v1.4.0 release**):
 - PR #302 `c956f06a` — chore(valuation): PR #293 follow-up — Site-2 dead-code removal (`_has_corrupt_input` + `_data_quality_corrupt_result`; cron Run #71 retention gate confirmed clean; NET −56 prod lines / −84 test lines)
