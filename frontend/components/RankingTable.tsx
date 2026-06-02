@@ -262,34 +262,35 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
   // That snap is the refresh FLASH the user reported (2026-05-31, mobile). With
   // the class in the static HTML there is no opaque frame and no flash.
   //
-  // Hydration-safe: `animateRows` derives ONLY from `safePage` (1) + `interacted`
-  // (false) at first render, identical on the build-time prerender and the
-  // client's first render — so the same classes appear on both sides, no
-  // mismatch (this is why baking it in is safe HERE, unlike the general Rule-5
-  // warning which assumes a state/effect-derived class). reduced-motion is still
-  // honored: globals.css `animation: none !important` disables the keyframe AND
-  // its fill-mode, so rows render at their natural opacity:1 (content never
-  // hidden — no-JS users likewise just get the CSS animation playing once, rows
-  // fully visible by ~800ms). Plays on EVERY visit because a fresh mount (full
-  // load or client-nav back to /) re-renders page-1 rows with the class present.
+  // Hydration-safe: `animateRows` derives ONLY from `safePage` (1) +
+  // `firstRenderRef.current` (true) at first render, identical on the build-time
+  // prerender and the client's hydration render (a fresh ref is `true` on both)
+  // — so the same classes appear on both sides, no mismatch. reduced-motion is
+  // still honored: globals.css `animation: none !important` disables the keyframe
+  // AND its fill-mode, so rows render at their natural opacity:1 (content never
+  // hidden). Plays on EVERY visit because a fresh mount (full load or client-nav
+  // back to /) starts with a fresh `firstRenderRef = true`.
   //
-  // The `interacted` latch still matters WITHIN a mount: it fixes the
-  // sort-replay jank (audit MAJOR) — a sort/filter re-keys rows → fresh
-  // <tr>/<li> DOM elements that would re-run the cascade on every click.
-  // The latch flips true on the first interaction (sort / filter / search /
-  // paginate, set synchronously in the handlers) so the cascade plays once
-  // on arrival, then interactions render static. It MUST be flipped
-  // synchronously inside each interaction handler (spendStagger, wired into
-  // onSort / filter toggles / search / paginate) — NOT via a watching
-  // useEffect, because an effect fires AFTER the render that already applied
-  // the animate class to the freshly re-keyed sorted rows, so the cascade
-  // would still play once before the latch caught up.
-  const [interacted, setInteracted] = useState(false);
-  const spendStagger = () => setInteracted(true);
-  const animateRows = safePage === 1 && !interacted;
+  // "Play ONCE per mount, never on an in-page interaction" (design.md Motion
+  // Rule 2): `firstRenderRef` is flipped false by an empty-dep effect that runs
+  // ONCE after the first paint, BEFORE the user can interact — so EVERY later
+  // render (sort / filter / search / paginate / the FLIP reshuffle) reads it as
+  // false → no stagger class → the cascade never replays. This also keeps the
+  // filter-driven FLIP slide the SOLE motion on a filter change (no entrance-fade
+  // competing on rows that ENTER the filtered set). NOTE the precise mechanism:
+  // an empty-dep MOUNT effect, NOT a filter-deps-watching effect — the latter
+  // would fire AFTER each filtered render (too late, replaying the cascade once),
+  // the anti-pattern the prior `interacted`-latch design warned about. The mount
+  // effect fires before any interaction, so the gate is already spent by the time
+  // the user does anything — a single uniform gate covering every path (including
+  // the FilterDrawer-internal search box + score slider) with no per-handler wiring.
+  const firstRenderRef = useRef(true);
+  useEffect(() => {
+    firstRenderRef.current = false;
+  }, []);
+  const animateRows = safePage === 1 && firstRenderRef.current;
 
   const onSort = (key: SortKey) => {
-    spendStagger(); // first sort ends the entrance cascade (no replay)
     if (sortKey === key) {
       setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
     } else {

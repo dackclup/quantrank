@@ -1395,6 +1395,15 @@ whitespace / single-line fixes do not trigger.
   that dimension's changes won't trigger the slide. Do NOT switch the gate to
   `orderKey` alone or wire a `filterKey`-less `useFlip` onto a paginated list
   expecting sort to animate — that re-introduces the partial-fire-looks-broken bug.
+  **Companion (entrance-stagger gate):** the row entrance cascade (`animate-rise-in`)
+  is gated to play ONCE per mount — `firstRenderRef` (true on the initial SSR +
+  hydration render, so no mismatch) is flipped false by an empty-dep mount effect
+  that runs before any interaction, so `animateRows` is false on every later render.
+  This (a) enforces design.md Motion Rule 2 "sort/filter must not re-stagger"
+  uniformly (the prior `spendStagger` latch was wired only into `onSort`), and (b)
+  keeps the FLIP the SOLE motion on a filter change (no entrance-fade competing on
+  rows ENTERING the filtered set). Do NOT re-wire the entrance stagger to fire on
+  an interaction — that revives the competition + the Rule-2 violation.
 
 ## Phase status
 

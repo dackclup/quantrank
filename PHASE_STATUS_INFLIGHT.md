@@ -5624,6 +5624,16 @@ surviving rows slide old→new via a WAAPI `translateY` (300ms, app
   dims), refs on the desktop `<tbody>` + mobile `<ul>`, `data-flip-key={row.ticker}`
   on every `<tr>` / `<li>`. Zero-height skip → each hook animates only its visible
   list (desktop no-op on mobile + vice-versa).
+- Entrance-stagger interaction fix (both reviewers' WARN — the pre-existing
+  `spendStagger` latch was wired only into `onSort`, so the comment lied + design.md
+  Rule 2 "filter must not re-stagger" was violated for filter/search, AND the
+  entrance fade competed with the FLIP on rows ENTERING the filtered set). Replaced
+  the `interacted`/`spendStagger` latch with a `firstRenderRef` flipped false by an
+  empty-dep mount effect (runs once after first paint, before any interaction) →
+  `animateRows` is true only on the pristine mount render, so EVERY interaction
+  (sort/filter/search/paginate, incl. FilterDrawer-internal) is covered by one
+  uniform gate with no per-handler wiring; the FLIP is now the SOLE motion on a
+  filter change. Hydration-safe (ref is `true` on both SSR + client first render).
 
 Verified IN-BROWSER (`expert-user-explorer`, real headless Playwright + a
 `Element.prototype.animate` spy, verdict GO): search "A"→"AP" fired 36→7 on `<tr>`,
