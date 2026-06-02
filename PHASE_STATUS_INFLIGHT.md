@@ -5664,3 +5664,26 @@ FLIP, hover-lift, press, and the home row-stagger are all unchanged (each convey
 / is the one signature). 1 code constant + doc lockstep (CLAUDE.md §Gotcha + AGENTS.md +
 design.md token row & signature note). No compute / schema / scoring / valuation change.
 Branch `claude/sharp-newton-8pj6p`.
+
+---
+
+**$impeccable typeset — drop the unused Instrument Serif (4th font family → 3, ≤ cap)**
+(`frontend/app/globals.css` + `frontend/package.json` + `package-lock.json` + docs).
+Typeset assessment found the type system already well-tuned (tabular-nums + JetBrains Mono
+on every numeric, fixed-rem scale + fluid root, body ≥16px, weight + letter-spacing
+discipline) EXCEPT the font-family count: 4 families (IBM Plex Sans · JetBrains Mono ·
+Roboto Slab · Instrument Serif) over the ≤3 cap, and the 4th — Instrument Serif — had
+ZERO component consumers (grep `font-serif` / `display-serif` / `var(--font-serif)` across
+app/components/lib hit only globals.css definitions). It was "reserved for marquee" but no
+surface ever used it; Roboto Slab already owns the editorial-display role (two serifs also
+tripped the "don't pair similar fonts" rule). Full drop: removed the 2 `@fontsource/
+instrument-serif` `@import`s (400 + 400-italic) + `--font-instrument-serif` / `--font-serif`
+CSS vars + the dead `.display-serif` class + the `@fontsource/instrument-serif` dep
+(package.json + regenerated package-lock.json). Net: 3 families at the cap, 2 fewer woff2
+fetches, 0 dead code, 0 unused dep. tailwind.config had no `serif` mapping (nothing to
+remove); `font-mono` / `font-sans` / `font-slab` paths unchanged. Visually a no-op (the
+font was never rendered). Verified: `ruff` clean · `tsc --noEmit` 0 · `next build` 506/506
+Compiled successfully · `grep instrument-serif package-lock.json` = 0. Doc lockstep:
+CLAUDE.md §Stack font list (4→3) + docs/design.md (Four→Three + removed the Instrument row)
++ globals.css / layout.tsx comments + this entry. No compute / schema / scoring / valuation
+change. Branch `claude/sharp-newton-8pj6p`.

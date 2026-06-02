@@ -141,14 +141,16 @@ canonical conversions:
 
 ## Typography
 
-Four self-hosted faces via `@fontsource`. Each face is loaded as
-woff2 + `@font-face` declarations in `globals.css`.
+Three self-hosted faces via `@fontsource`. Each face is loaded as
+woff2 + `@font-face` declarations in `globals.css`. (The unused
+Instrument Serif display face was dropped in the `$impeccable typeset`
+pass, 2026-06-02 — it had zero component consumers; Roboto Slab owns
+the editorial-display role, keeping the family count at the ≤3 cap.)
 
 | Role | Family | Tailwind class | Use |
 |---|---|---|---|
 | Body | **IBM Plex Sans** | default (`font-sans`) | Paragraphs, labels, body text |
 | Tabular numerics | **JetBrains Mono** | `font-mono` | Numeric columns, ticker codes |
-| Editorial display | **Instrument Serif** | `font-serif` | Marquee headlines (sparingly) |
 | Ledger headline | **Roboto Slab** | `font-slab` | h1/h2 hero surfaces, wordmark |
 
 ### Scale

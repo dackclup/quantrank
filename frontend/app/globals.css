@@ -9,13 +9,11 @@
  * in node_modules; no build-time external fetch.
  *
  * IBM Plex Sans, JetBrains Mono — weights 400 / 500 / 600 / 700
- * (Plex) and 400 / 500 / 600 (JetBrains). Instrument Serif —
- * weight 400 normal + italic. Matches the prior `next/font/google`
- * config exactly. Each `@import` pulls one woff2 + its @font-face
- * declaration.
+ * (Plex) and 400 / 500 / 600 (JetBrains). Each `@import` pulls one
+ * woff2 + its @font-face declaration.
  *
  * Font family CSS variables sit alongside the legacy
- * `--font-{ibm-plex-sans, jetbrains-mono, instrument-serif}`
+ * `--font-{ibm-plex-sans, jetbrains-mono}`
  * names so existing utility classes + inline-style consumers
  * (StockLogo.tsx: `fontFamily: 'var(--font-mono)'`) keep working
  * without rename. */
@@ -26,16 +24,12 @@
 @import '@fontsource/jetbrains-mono/400.css';
 @import '@fontsource/jetbrains-mono/500.css';
 @import '@fontsource/jetbrains-mono/600.css';
-@import '@fontsource/instrument-serif/400.css';
-@import '@fontsource/instrument-serif/400-italic.css';
 /* LedgerCraft adoption (2026-05-22) — Roboto Slab for headings.
  * The slab-serif gives the "editorial finance" feel of Bloomberg /
  * WSJ / FT print sections that LedgerCraft's "professional
  * accounting software" aesthetic codifies. Applied via the new
  * `font-slab` Tailwind class on headline surfaces (h1/h2 of the
- * RankingTable header + the layout wordmark). Instrument Serif
- * (display-serif) is preserved for true display-scale marquee
- * surfaces; the two roles do not overlap. */
+ * RankingTable header + the layout wordmark). */
 @import '@fontsource/roboto-slab/400.css';
 @import '@fontsource/roboto-slab/500.css';
 @import '@fontsource/roboto-slab/600.css';
@@ -45,11 +39,9 @@
   color-scheme: light;
   --font-ibm-plex-sans: 'IBM Plex Sans';
   --font-jetbrains-mono: 'JetBrains Mono';
-  --font-instrument-serif: 'Instrument Serif';
   --font-roboto-slab: 'Roboto Slab';
   --font-sans: var(--font-ibm-plex-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
-  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
   --font-slab: var(--font-roboto-slab), 'Roboto Slab', ui-serif, Georgia, serif;
 
   /* Soft positive — muted forest green (oklch hue 152, near
@@ -221,16 +213,11 @@ code {
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }
-.display-serif {
-  font-family: var(--font-serif);
-  font-weight: 400;
-  letter-spacing: -0.01em;
-}
 .font-slab {
   /* LedgerCraft adoption — slab-serif headline face. Use for h1/h2
    * surfaces (RankingTable header, /stock/[ticker] hero, layout
-   * wordmark). Distinct from `display-serif` which is reserved
-   * for marquee/hero scale only. */
+   * wordmark). The sole display/headline face since the unused
+   * Instrument Serif was dropped (`$impeccable typeset` 2026-06-02). */
   font-family: var(--font-slab);
   letter-spacing: -0.005em;
 }
