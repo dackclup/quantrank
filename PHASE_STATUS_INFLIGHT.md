@@ -5711,3 +5711,20 @@ change. Branch `claude/sharp-newton-8pj6p`.
 **Verification**: `ruff check .` clean · `python -m compute.output.schema_check` in sync · affected pytest green (124).
 
 **Files touched**: `compute/ingest/cross_source.py` · `compute/output/schemas.py` · `compute/main.py` · `compute/config.py` · `frontend/lib/types.ts` · `frontend/lib/schema-snapshot.json` · `tests/test_ingest/test_cross_source_exchange.py` · `tests/test_output/test_exchange_schema.py` · `tests/test_main.py` · `tests/test_config.py` · `SKILL.md` · `CLAUDE.md` · `PHASE_STATUS.md` · `WORKFLOW.md` · `AGENTS.md` · `PHASE_STATUS_INFLIGHT.md` (this append).
+
+---
+
+## Frontend a11y/clarity — MoS donut capped-gauge glyph + H1 screen-reader name (2026-06-02, post-cron UX pass)
+
+**Branch**: `claude/frontend-mos-h1-a11y`
+**Type**: fix(frontend) — DISPLAY-ONLY, no schema / compute / data change. Two MINOR findings from the post-cron `expert-user-explorer` pass, designed by `frontend-design-reviewer`.
+
+**Finding 1 — MoS donut vs text "two numbers" on deeply-overvalued names.** On NVDA (`mos_pct = -189.15`) the `MoSBadge` donut center showed `<−99` (clamped to fit the 64px ring) while the adjacent text column showed the real `−189%` — read as a contradiction. Fix: `centerOf` clamp glyph `<−99 / >+99` → `≤−99 / ≥+99` so the donut reads as a CAPPED gauge ("ring maxed, real figure in the text column"), not a bare comparison. The text column keeps the real value BY DESIGN (the comment at line 53-59 — deeply over/under-valued tickers must read their actual margin), so clamping the text (loses info) or unclamping the donut (overflows 64px) were both rejected; the glyph reframe is the only option that keeps both.
+
+**Finding 2 — H1 screen-reader concatenation.** The stock-detail `<h1>` rendered the ticker span immediately adjacent to the `RecommendationBadge` span with no separator → `textContent` "NVDASell" (SR announces one token). Fix: add `aria-label` to the `<h1>` (`${ticker} — ${RECOMMENDATION_LABELS[recommendation]}`) so SR announces "NVDA — Sell". Visual layout unchanged; em-dash matches the project's title/value separator; loose-falsy guard skips the suffix if recommendation is absent. `RECOMMENDATION_LABELS` already exported from `RecommendationBadge.tsx`.
+
+**Changes:** `frontend/components/MoSBadge.tsx` (centerOf glyph + 2 comment updates) · `frontend/app/stock/[ticker]/page.tsx` (import `RECOMMENDATION_LABELS` + h1 `aria-label`).
+
+**Verification**: `tsc --noEmit` clean · `next build` green (506 static pages, /stock/[ticker] First Load 110 kB).
+
+**Files touched**: `frontend/components/MoSBadge.tsx` · `frontend/app/stock/[ticker]/page.tsx` · `PHASE_STATUS_INFLIGHT.md` (this append).

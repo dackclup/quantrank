@@ -11,7 +11,7 @@ import { PriceHistoryChartLazy } from '@/components/PriceHistoryChartLazy';
 import RawMetricsTable from '@/components/RawMetricsTable';
 import { RiskSummaryCard } from '@/components/RiskSummaryCard';
 import { ScoreBadge } from '@/components/ScoreBadge';
-import { RecommendationBadge } from '@/components/RecommendationBadge';
+import { RecommendationBadge, RECOMMENDATION_LABELS } from '@/components/RecommendationBadge';
 import { ListingChips } from '@/components/ListingChips';
 import { StockLogo } from '@/components/StockLogo';
 import { Tier2EventCard } from '@/components/Tier2EventCard';
@@ -173,7 +173,23 @@ export default function StockDetailPage({
               </span>
               <ListingChips country={detail.country} exchange={detail.exchange} />
             </div>
-            <h1 className="mt-2 flex flex-wrap items-center gap-3">
+            {/* aria-label gives the heading a clean accessible NAME
+                ("NVDA — Sell") instead of the ticker span + badge text
+                running together as one token ("NVDASell") for screen
+                readers — the ticker and the RecommendationBadge are
+                adjacent inline children with no separator text node
+                (2026-06-02 a11y audit). Visual layout is unchanged; the
+                em-dash matches the project's title/value separator
+                (HeroMetric / FairPriceCard). Loose-falsy guard skips the
+                suffix if recommendation is absent. */}
+            <h1
+              className="mt-2 flex flex-wrap items-center gap-3"
+              aria-label={`${detail.ticker}${
+                detail.recommendation
+                  ? ` — ${RECOMMENDATION_LABELS[detail.recommendation]}`
+                  : ''
+              }`}
+            >
               <StockLogo ticker={detail.ticker} size={48} />
               <span className="font-mono text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-5xl">
                 {detail.ticker}

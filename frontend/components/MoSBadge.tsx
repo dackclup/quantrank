@@ -46,13 +46,16 @@ const accentColor = (mos: number): string =>
   mos >= 0 ? '#059669' /* emerald-600 */ : '#e11d48'; /* rose-600 */
 
 // Center label from a (possibly mid-count) value: sign + integer, clamped so it
-// never overflows the 64×64 donut ("+99" / "−99" / ">+99" / "<−99").
+// never overflows the 64×64 donut. Past ±99 the donut shows a CAPPED-gauge glyph
+// "≤−99" / "≥+99" (NOT "<−99" / ">+99"): the ≤/≥ reads as "the ring is maxed,
+// the real figure is in the text column" rather than a bare comparison that
+// looked like it contradicted the unclamped −189% beside it (2026-06-02 audit).
 const centerOf = (v: number): string =>
-  v < -99 ? '<−99' : v > 99 ? '>+99' : `${v < 0 ? '−' : '+'}${Math.abs(Math.round(v))}`;
+  v <= -99 ? '≤−99' : v >= 99 ? '≥+99' : `${v < 0 ? '−' : '+'}${Math.abs(Math.round(v))}`;
 
 // Right-side big label from a (possibly mid-count) value: matches ScoreGauge's
 // `tabular-nums text-lg` weight. Shows the REAL percentage with no clamp (the
-// center label inside the 64px donut carries the compact <−99 / >+99 clamp;
+// center label inside the 64px donut carries the compact ≤−99 / ≥+99 cap;
 // out here there's room for the true value, e.g. −1362%), so deeply over-/
 // under-valued tickers read their actual margin. Rounded to a whole percent.
 const fullOf = (v: number): string =>
