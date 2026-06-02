@@ -32,7 +32,11 @@ function capTierLabel(marketCap: number | null): string | null {
 
 // One tile. `value` null → the tile renders in its "reserved" state: dimmed
 // icon + the caption acting as the headline + a small "Coming soon" sub-line,
-// so an empty tile reads as intentional, never as a data bug.
+// so an empty tile reads as intentional, never as a data bug. Reserved tiles
+// share the FILLED tile's SURFACE (only the dashed border + dimmed content
+// distinguish them) so the 4-tile row reads as one cohesive band — the earlier
+// half-opacity `bg-slate-50/50` made the placeholders vanish against the warm
+// page bg, so the row "floated" (squint-test, $impeccable layout 2026-06-02).
 function Tile({
   icon,
   caption,
@@ -48,7 +52,7 @@ function Tile({
       className={`flex flex-col gap-2 rounded border p-3 ${
         filled
           ? 'border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-800/40'
-          : 'border-dashed border-slate-200 bg-slate-50/50 dark:border-slate-800 dark:bg-slate-900'
+          : 'border-dashed border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-800/40'
       }`}
     >
       <span

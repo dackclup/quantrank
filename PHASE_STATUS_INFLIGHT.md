@@ -5469,3 +5469,48 @@ Verified: `tsc --noEmit` 0 · `next build` 506/506 (home `/` +1 kB from the
 tree-shaken `SearchX`) · `ruff check .` clean. `frontend-design-reviewer` at the
 gate. CLAUDE.md §Gotchas + AGENTS.md mirror updated. No compute / schema /
 scoring / valuation change — 1 frontend file + docs. Branch `claude/sharp-newton-8pj6p`.
+
+---
+
+### feat(frontend) — detail-page zone-grouping + attr-tiles float fix (`$impeccable layout`) (this PR)
+
+`/impeccable layout`. Objective spacing was already 100% on-scale (grep: zero
+arbitrary `p/m/gap/space-[…]` values) so this is NOT a consistency fix — it's
+the one judgment call the squint-test surfaced. User ran a real screenshot
+squint-test (expert-user-explorer, build @ 80149162) → chose (ค) both:
+zone-grouping + attr-tiles float fix.
+
+**(ก) Detail-page two-level spacing rhythm** (`app/stock/[ticker]/page.tsx`).
+The `<article space-y-4>` gave a uniform 16px across ~9 seams → read as one
+undifferentiated stack at squint distance (worst on the long mobile scroll, no
+"where am I" map). Added 32px air at the two highest-value cognitive seams —
+**above warnings** + **above valuation** — while keeping the identity/analysis
+flow + the fair-price pair + supporting footer tight at 16px.
+- Article STAYS `space-y-4` (no reindent of the hero / 80-line `<details>`);
+  only the **warnings pair** (Tier2+Risk) and the **valuation pair**
+  (FairBar+FairCard) are wrapped in `<div className="space-y-4 !mt-8">`.
+- `!mt-8` (important) is REQUIRED — a plain `mt-8` on a `space-y-4` child is
+  overridden by space-y's higher-specificity `> * ~ *` margin-top (the footgun
+  behind the existing "no per-section mb-*" §Gotcha). Verified in compiled CSS:
+  `.\!mt-8{margin-top:2rem!important}` vs space-y-4's non-important margin.
+- **Clean-stock-safe**: the warnings wrapper is gated on a new page-level
+  `hasWarningZone` = the EXACT union of both cards' null-guards (Tier2:
+  tier2_events present AND ≥1 of going_concern/non_reliance/auditor_change;
+  Risk: risk_flags non-empty OR manipulation_index > 0). Both cards null-collapse
+  to no DOM node, so an always-rendered `!mt-8` wrapper would strand a 32px void
+  on AAPL-style clean stocks. Valuation wrapper is ungated (always present).
+
+**(ข) HeroAttributeTiles float/vanish fix** (`HeroAttributeTiles.tsx`). The
+reserved (Dividend / Type "Coming soon") tiles used a half-opacity
+`bg-slate-50/50` / `dark:bg-slate-900` surface ≈ the warm page bg → they vanished
+and the 4-tile row "floated" (squint-test, esp. mobile). Now reserved tiles share
+the FILLED surface (`bg-slate-50 dark:bg-slate-800/40`); the dashed border +
+dimmed icon + "Coming soon" carry the reserved signal so placeholders stay quiet
+without disappearing. No outer card (tiles are mini-cards — would nest).
+
+Verified: `tsc --noEmit` 0 · `next build` 506/506 · `ruff check .` clean · the
+`!mt-8` important-override confirmed present in the built CSS. `frontend-design-reviewer`
+at the gate (sonnet pool was 529-ing earlier — fall back to inline review if it
+can't run). CLAUDE.md §Gotchas (amended the spacing clause + 2 new entries) +
+AGENTS.md mirror updated. No compute / schema / scoring / valuation change — 2
+frontend files + docs. Branch `claude/sharp-newton-8pj6p`.

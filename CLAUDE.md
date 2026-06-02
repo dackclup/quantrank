@@ -1202,8 +1202,11 @@ whitespace / single-line fixes do not trigger.
   so the pos/neg-strong asymmetry is intentional per "no dopamine red"). (5)
   small-caps value sub-labels use `tracking-wider` (not `tracking-wide`) — the
   `FairPriceCard` stat-grid `dt`s were the holdout. Detail-page section spacing
-  is owned by the `<article>` `space-y-4` — a section MUST NOT add its own
-  `mb-*` (the `PillarRadarChart` `mb-4` was creating a 32px double-gap). And no
+  is owned by the `<article>` `space-y-4` DEFAULT (16px) plus two deliberate
+  `!mt-8` zone-seams (§Gotchas "detail-page two-level spacing") — a section MUST
+  NOT add its OWN ad-hoc `mb-*`/`mt-*` (the `PillarRadarChart` `mb-4` was
+  creating a 32px double-gap; a plain `mt-*` is silently overridden by `space-y`
+  anyway). And no
   "coming in v1.3" style stale version copy — use "coming soon" (the
   `PriceTimePeriodSelector` 1D/5D tooltips).
 
@@ -1320,6 +1323,48 @@ whitespace / single-line fixes do not trigger.
   system). `SearchX` is a NAMED lucide import (tree-shakes per the lucide
   §Gotcha); RankingTable's other icons are legacy inline SVGs (don't bulk-convert
   them — only new glyphs use lucide).
+
+- **The stock-detail `<article>` uses a TWO-LEVEL spacing rhythm — `space-y-4`
+  default (16px) + two `!mt-8` zone-seams (32px); the warnings seam is GATED so
+  it never strands a gap** (`frontend/app/stock/[ticker]/page.tsx`, `$impeccable
+  layout` 2026-06-02; a squint-test confirmed the prior uniform 16px read as one
+  undifferentiated stack, weakest on the long mobile scroll). The page's
+  cognitive zones: identity+analysis (back-link → hero → attribute tiles → price
+  → pillars) · **warnings** (Tier2EventCard + RiskSummaryCard) · **valuation**
+  (FairPriceBarChart + FairPriceCard) · supporting (collapsed `<details>` +
+  methodology). The two highest-value seams get 32px of air: **above warnings** +
+  **above valuation**. Implementation keeps the diff small + clean-stock-safe:
+  the article STAYS `space-y-4` (so the big identity/analysis flow + the
+  supporting footer keep 16px with NO reindent of the hero / 80-line `<details>`),
+  and ONLY the warnings + valuation pairs are wrapped in `<div className="space-y-4
+  !mt-8">`. **`!mt-8` (important) is REQUIRED** — a plain `mt-8` on a child of
+  `space-y-4` is silently overridden by space-y's higher-specificity `> * ~ *`
+  margin-top (the same footgun behind the "no per-section mb-*" rule); `!important`
+  is the deliberate documented override (verified present in the compiled CSS:
+  `.\!mt-8{margin-top:2rem!important}` vs space-y-4's non-important margin). The
+  **warnings wrapper is gated on a page-level `hasWarningZone`** = the EXACT union
+  of the two cards' null-guards (Tier2 renders iff `tier2_events` present AND ≥1
+  of `going_concern_disclosure`/`non_reliance_filing`/`auditor_change`; Risk
+  renders iff `risk_flags` non-empty OR `manipulation_index > 0`) — because both
+  cards null-collapse to NO DOM node on a clean stock, an always-rendered `!mt-8`
+  wrapper would strand a 32px void. **Keep `hasWarningZone` in lockstep with those
+  cards' null conditions.** The valuation wrapper is ungated (always present → on
+  a clean stock its `!mt-8` is the single pillars→valuation seam; on a flagged
+  stock it follows the warnings zone). Do NOT convert the article to `space-y-8`
+  + wrap every group (reindents the hero + `<details>` for no gain).
+
+- **`HeroAttributeTiles` reserved tiles share the FILLED tile SURFACE** — only a
+  dashed border + dimmed content distinguish them (`frontend/components/HeroAttributeTiles.tsx`,
+  `$impeccable layout` 2026-06-02). The reserved (Dividend / Type "Coming soon")
+  tiles used a half-opacity `bg-slate-50/50` (light) / `bg-slate-900` (dark)
+  surface that nearly matched the warm page bg `#F8F6F3` → the placeholders
+  vanished and the 4-tile row "floated" at squint distance (esp. mobile). Now
+  reserved tiles use the SAME `bg-slate-50 dark:bg-slate-800/40` surface as
+  filled tiles, so the row reads as one cohesive band; the DASHED border + dimmed
+  icon (`text-slate-300 dark:text-slate-600`) + "Coming soon" sub-line (NOT a
+  fainter surface) carry the reserved signal so placeholders stay quiet without
+  disappearing. Don't revert to a half-opacity reserved surface, and don't wrap
+  the tile grid in an outer card (the tiles are mini-cards — that nests cards).
 
 ## Phase status
 

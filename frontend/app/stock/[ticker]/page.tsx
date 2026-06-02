@@ -103,6 +103,21 @@ export default function StockDetailPage({
     : lc < 80 ? { tone: 'text-red-700 dark:text-red-300', dot: 'bg-rose-500 dark:bg-rose-400', label: 'Moderate-high' }
     : { tone: 'text-red-700 dark:text-red-300', dot: 'bg-rose-500 dark:bg-rose-400', label: 'High' };
 
+  // Does the WARNINGS zone (Tier2EventCard + RiskSummaryCard) render anything?
+  // This is the EXACT union of the two cards' own null-guards — Tier2 renders
+  // iff tier2_events present AND ≥1 of going_concern / non_reliance / auditor
+  // is set; Risk renders iff risk_flags non-empty OR manipulation_index > 0.
+  // Used to render the warnings zone wrapper ONLY when it has content, so its
+  // `!mt-8` zone-seam never strands a 32px gap on a clean stock (both cards
+  // null-collapse to no DOM node). Keep in lockstep with the cards' null
+  // conditions (§Gotchas "detail-page zone-grouping").
+  const t2 = detail.tier2_events;
+  const hasWarningZone =
+    (t2 != null &&
+      (t2.going_concern_disclosure || t2.non_reliance_filing || t2.auditor_change)) ||
+    (detail.risk_flags?.length ?? 0) > 0 ||
+    (detail.manipulation_index ?? 0) > 0;
+
   return (
     <article className="space-y-4">
       <Link
@@ -288,31 +303,51 @@ export default function StockDetailPage({
         baseline={detail.pillar_baseline}
       />
 
-      <Tier2EventCard
-        tier2_events={detail.tier2_events}
-        ticker={detail.ticker}
-      />
+      {/* WARNINGS zone — Tier2 (8-K events) + Risk (rank gates + manipulation).
+          `!mt-8` opens a 32px zone-seam above the group (the sharpest gear-shift:
+          "what are the pillar scores" → "are there red flags"), overriding the
+          article's default 16px `space-y-4`. Gated on `hasWarningZone` (the exact
+          union of both cards' null-guards) so the seam never strands a void on a
+          clean stock — both cards null-collapse, so an always-rendered wrapper
+          would leave an empty 32px gap. Inner `space-y-4` keeps the pair at 16px
+          when both fire. */}
+      {hasWarningZone && (
+        <div className="space-y-4 !mt-8">
+          <Tier2EventCard
+            tier2_events={detail.tier2_events}
+            ticker={detail.ticker}
+          />
 
-      <RiskSummaryCard
-        riskFlags={detail.risk_flags}
-        manipulationIndex={detail.manipulation_index}
-        compositeScore={detail.composite_score}
-        compositeScoreAdjusted={detail.composite_score_adjusted}
-        components={detail.manipulation_components}
-      />
+          <RiskSummaryCard
+            riskFlags={detail.risk_flags}
+            manipulationIndex={detail.manipulation_index}
+            compositeScore={detail.composite_score}
+            compositeScoreAdjusted={detail.composite_score_adjusted}
+            components={detail.manipulation_components}
+          />
+        </div>
+      )}
 
-      <FairPriceBarChart
-        fair_price={detail.fair_price}
-        current_price={detail.current_price}
-        ticker={detail.ticker}
-      />
+      {/* VALUATION zone — the interpretation+reference fair-price pair (coupled
+          per §Gotchas, kept tight at 16px by inner `space-y-4`). `!mt-8` opens
+          the second 32px zone-seam (the gear-shift risk → "what's it worth").
+          Always present, so no gate: on a clean stock this is the single seam
+          right after the pillars; on a flagged stock it follows the warnings
+          zone. */}
+      <div className="space-y-4 !mt-8">
+        <FairPriceBarChart
+          fair_price={detail.fair_price}
+          current_price={detail.current_price}
+          ticker={detail.ticker}
+        />
 
-      <FairPriceCard
-        ensemble={detail.fair_price}
-        currentPrice={detail.current_price}
-        warnings={detail.valuation_warnings}
-        tangibleBookValue={detail.tangible_book_value}
-      />
+        <FairPriceCard
+          ensemble={detail.fair_price}
+          currentPrice={detail.current_price}
+          warnings={detail.valuation_warnings}
+          tangibleBookValue={detail.tangible_book_value}
+        />
+      </div>
 
       {/* Supporting data — the reference/audit zone (raw fundamentals +
           data-quality provenance), grouped into ONE collapsible card and

@@ -432,6 +432,18 @@ export function FairPriceCard(props) {  // no types
   (finance reads the room). A new empty/error/pending state follows the same shape
   (glyph + heading + how-to-recover); don't scatter delight onto non-empty
   surfaces. Full rationale in CLAUDE.md §Gotchas.
+- **Stock-detail `<article>` = two-level spacing rhythm** (`page.tsx`,
+  `$impeccable layout` 2026-06-02): `space-y-4` default (16px) + two `!mt-8`
+  zone-seams (32px) above the warnings + valuation groups (squint-test: the
+  prior uniform 16px read as one undifferentiated stack, worst on mobile). Only
+  those 2 pairs are wrapped (article stays `space-y-4` — no hero/`<details>`
+  reindent); `!mt-8` important is REQUIRED (a plain `mt-*` is overridden by
+  space-y's `> * ~ *`). The warnings wrapper is gated on `hasWarningZone` (the
+  exact union of both cards' null-guards) so a clean stock doesn't strand a 32px
+  void. Also: `HeroAttributeTiles` reserved tiles now share the FILLED surface
+  (`bg-slate-50 dark:bg-slate-800/40`) — dashed border + dimmed content
+  distinguish them — so the 4-tile row no longer floats/vanishes. Full rationale
+  in CLAUDE.md §Gotchas.
 
 ## Git workflow
 
