@@ -259,7 +259,8 @@ JS hooks in `lib/useMotion.ts`.
    feels alive on every navigation. What's forbidden is *looping* /
    permanent motion (an animation that runs continuously after arrival) and
    *re-firing on in-page interaction* (sort/filter must not re-stagger — the
-   RankingTable `interacted` latch enforces this within a mount). The
+   RankingTable `firstRenderRef` play-once-per-mount gate enforces this within a
+   mount). The
    filter-driven FLIP reshuffle (`useFlip`, $impeccable overdrive) is a
    DISTINCT, intentional exception — it is NOT the entrance stagger re-firing
    but a positional slide that CONVEYS the filter result (the surviving rows
