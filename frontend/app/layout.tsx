@@ -9,7 +9,7 @@ import { ThemeProvider } from '@/components/ThemeProvider';
 // fetch IBM Plex Sans from Google Fonts) on a transient Google
 // Fonts network blip. @fontsource bundles the woff2 files into
 // node_modules so the build never touches an external host. CSS
-// variables `--font-{ibm-plex-sans, jetbrains-mono, instrument-serif}`
+// variables `--font-{ibm-plex-sans, jetbrains-mono, roboto-slab}`
 // are now declared in globals.css instead of injected by `next/font`.
 
 export const metadata: Metadata = {

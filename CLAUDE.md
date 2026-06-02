@@ -15,8 +15,7 @@ design-system spec.
 - **Next.js 14.2** (App Router, static export) — React 18.3 ·
   TypeScript 5.9 · Tailwind 3.4 · Recharts 2.15. Self-hosted fonts
   via @fontsource: **IBM Plex Sans** (body) · **JetBrains Mono**
-  (tabular numerics) · **Instrument Serif** (display marquee) ·
-  **Roboto Slab** (headlines, LedgerCraft adoption Phase 1 PR #211 +
+  (tabular numerics) · **Roboto Slab** (headlines, LedgerCraft adoption Phase 1 PR #211 +
   Phase 2 PR #212 + Phase 3a PR #213 + Phase 3c PR #215 — `font-slab`
   + 4-tier shadow tokens + spreadsheet header treatment + `AppShell`
   / `Sidebar` left-rail nav; Phase 3b (merged) — `next-themes`
