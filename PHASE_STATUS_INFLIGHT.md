@@ -5129,3 +5129,41 @@ rounded at the boundary). `frontend-design-reviewer` at the gate. CLAUDE.md
 §Gotchas (band-from-rounded + HeroMetric count-up) + AGENTS.md mirror updated for
 the `lossChanceTone` → `lossBand` rename + the hero-now-shows-the-word change. No
 compute / schema / scoring / valuation change. Branch `claude/sharp-newton-8pj6p`.
+
+---
+
+### `$impeccable clarify` — pillar tier-label consolidation (this PR)
+
+Re-critique #2 P3 (terminology consistency / Nielsen H4). The 8-pillar
+`PillarRadarChart` banded with its OWN 4-word scheme (Strong / Decent / Weak /
+Poor at 30/50/70) while the composite score `ScoreBadge` uses the 5-tier `TIERS`
+rubric (Exceptional / Strong / Average / Weak / Poor at 25/40/55/70, `lib/visual.ts`).
+Both are 0–100 "higher = better", so the overlap was a trap: "Strong" meant
+55-70 on the score gauge but ≥70 on a pillar (same word, two ranges; "Weak" and
+"Poor" diverged too). A 4-band scheme can NEVER be consistent with the 5-tier
+scale (different boundary counts), so the only coherent fix is to make the pillar
+speak the composite vocabulary.
+
+- **`PillarRadarChart.tsx`** (1 file, +54/−27) — `tierLabel` now derives from
+  `TIERS.find(...)` (imported from `lib/visual.ts` — single source of truth, so a
+  threshold change flows to both surfaces). `colorFor` became a 5-step ramp keyed
+  to the same 25/40/55/70 boundaries; the gridline ticks (30/50/70 → 25/40/55/70),
+  the axis number ticks (0/30/50/70/100 → 0/25/40/55/70/100), and the legend
+  (4 → 5 entries: Exceptional 70+ / Strong 55–70 / Average 40–55 / Weak 25–40 /
+  Poor <25) all realign to the same boundaries — so color ↔ word ↔ gridline ↔
+  legend are internally coherent and a pillar at 60 reads identically to a
+  composite score of 60.
+- **band-from-rounded applied** (§Gotchas invariant): the consolidation makes the
+  boundaries coincide with displayed roundable values, so the bar tier/number/color
+  now band off `Math.round(value)` (a 54.6 renders "55 Strong", not "55 Average"
+  against the "Strong (55–70)" legend). Only the continuous bar FILL width stays
+  on the raw float. `scoreAccentColor` (score-gauge accent, 20/40/60/80) left
+  untouched — it's a heat-signal, not the tier-label rubric.
+
+Verified: `tsc --noEmit` 0 errors; `next build` 506 routes; `ruff check .` clean;
+96 pillar cells across 12 exported pages cross-checked — 0 label mismatches vs the
+`TIERS` rubric, 0 "Decent" leftovers, 0 stale-legend pages, new 5-tier legend
+present. `frontend-design-reviewer` at the gate. CLAUDE.md §Gotchas (new pillar-
+TIERS entry + pillar-bars rgb note) + AGENTS.md mirror updated. No compute /
+schema / scoring / valuation change — 1 frontend component + docs only. Branch
+`claude/sharp-newton-8pj6p`.
