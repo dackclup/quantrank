@@ -19,7 +19,7 @@ import {
   type TimePeriod,
 } from '@/components/PriceTimePeriodSelector';
 
-interface Props {
+export interface Props {
   ticker: string;
   fairPriceMedian?: number | null;
   fairPriceMax?: number | null;
