@@ -877,9 +877,14 @@ whitespace / single-line fixes do not trigger.
   curve as the Score / MoS gauge sweep). `page.tsx` stays a Server Component;
   `HeroMetric` is the small `'use client'` leaf that holds the hook (don't lift
   the hook into the page — that would force the whole detail page client-side).
-  The loss-chance 5-band tone is computed server-side in `page.tsx`
-  (`lossChanceTone`) and passed as a prop so the band rubric stays in one place
-  and matches `RankingTable` (NVDA 55% → slate, not red — the band is `<60`).
+  The loss-chance band (`{ tone, dot, label }`) is computed server-side in
+  `page.tsx` (`lossBand`) and passed to `HeroMetric` as the value `tone` PLUS a
+  `caption` (the band WORD — "Neutral" / "Moderate-high" — surfaced under the
+  number so a bare "55%" isn't ambiguous; `$impeccable clarify` P2 2026-06-02,
+  matching the mobile ranking card's dot+word treatment) so the band rubric
+  stays in one place and matches `RankingTable` (NVDA 56% → Neutral slate, not
+  red — the band is `<60`). The `caption` is static (it never animates with the
+  count-up); price metrics (Fair value / Target) pass no caption.
   `useCountUp` inits at the target so SSR / no-JS / reduced-motion render the
   exact value (the count-up is progressive enhancement, never a visibility gate).
   `HeroMetric` also ADDS `dark:` variants the old inline hero metrics lacked
@@ -1092,17 +1097,21 @@ whitespace / single-line fixes do not trigger.
 - **Loss-chance (and any rounded-display band/tone) must derive from the
   ROUNDED integer, NOT the raw float** (`LossChanceBadge.tsx` +
   `RankingTable.tsx` mobile card + `app/stock/[ticker]/page.tsx` hero
-  `lossChanceTone`, `$impeccable clarify` P3, 2026-06-01). All three display
-  `Math.round(pct)` (`HeroMetric` prints `${Math.round(v)}%`) but previously
-  banded off the raw `pct` — so a 59.7 rendered "**60% · Neutral**" (the number
-  reads as the start of the 60-79 Moderate-high band while the tone said <60
-  Neutral). Now all three band off `Math.round(pct)`. The 5-band rubric (`<25`
-  Low / `<40` Moderate-low / `<60` Neutral / `<80` Moderate-high / else High) is
-  DUPLICATED across those three sites (LossChanceBadge `BANDS` array · the inline
-  ternary in the mobile card · the 3-tone collapse in the hero) — they move in
-  lockstep, so a threshold change touches all three. General rule for any new
-  threshold chip whose value is shown rounded: band off the same rounded value
-  you render.
+  `lossBand`, `$impeccable clarify` P3 2026-06-01 + P2 2026-06-02). All three
+  display `Math.round(pct)` (`HeroMetric` prints `${Math.round(v)}%`) but
+  previously banded off the raw `pct` — so a 59.7 rendered "**60% · Neutral**"
+  (the number reads as the start of the 60-79 Moderate-high band while the tone
+  said <60 Neutral). Now all three band off `Math.round(pct)`. The 5-band rubric
+  (`<25` Low / `<40` Moderate-low / `<60` Neutral / `<80` Moderate-high / else
+  High) is DUPLICATED across those three sites (LossChanceBadge `BANDS` array ·
+  the inline ternary in the mobile card · the `lossBand` object in the hero) —
+  they move in lockstep, so a threshold change touches all three. The hero site
+  was a 3-tone-only collapse until P2 (2026-06-02) promoted it to the full
+  5-band `{ tone, dot, label }` object so the hero surfaces the band WORD as a
+  caption (not just the number tone) — its five rows are now a verbatim copy of
+  the mobile-card ternary, which is the lockstep contract. General rule for any
+  new threshold chip whose value is shown rounded: band off the same rounded
+  value you render.
 
 ## Phase status
 

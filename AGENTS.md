@@ -355,11 +355,14 @@ export function FairPriceCard(props) {  // no types
   export). A NEW filter dimension must be added to all three (FilterSnapshot, the
   URL param scheme, the RankingTable effects). Full rationale in CLAUDE.md §Gotchas.
 - **Loss-chance band/tone derives from `Math.round(pct)`, not the raw float**
-  (`LossChanceBadge` + `RankingTable` mobile card + detail-hero `lossChanceTone`,
-  2026-06-01): the display rounds (`HeroMetric` prints `${Math.round(v)}%`), so
-  banding off the raw value showed "60% · Neutral" for a 59.7. The 5-band rubric
-  is duplicated across all three — keep them in lockstep. Full rationale in
-  CLAUDE.md §Gotchas.
+  (`LossChanceBadge` + `RankingTable` mobile card + detail-hero `lossBand`,
+  2026-06-01 + P2 2026-06-02): the display rounds (`HeroMetric` prints
+  `${Math.round(v)}%`), so banding off the raw value showed "60% · Neutral" for
+  a 59.7. The 5-band rubric is duplicated across all three — keep them in
+  lockstep. P2 promoted the hero from a 3-tone collapse to the full 5-band
+  `{ tone, dot, label }` object so the hero now shows the band WORD ("Neutral",
+  …) under the number, matching the mobile card. Full rationale in CLAUDE.md
+  §Gotchas.
 
 ## Git workflow
 
