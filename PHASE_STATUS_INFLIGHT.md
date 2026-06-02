@@ -5096,3 +5096,36 @@ Two P1s from re-critique #2 in one PR:
 Verified: `tsc` clean + `next build` 506 routes; `frontend-design-reviewer` at
 the gate. No compute / schema / scoring / valuation change. Branch
 `claude/sharp-newton-8pj6p`.
+
+---
+
+### `$impeccable clarify` — loss-chance band word on the detail hero (this PR)
+
+Re-critique #2 P2 (clarity). The stock-detail hero's "Loss chance" metric showed
+only a band-TINTED number ("55%") — a bare percentage with no plain-English read
+of whether that's good or bad, while the mobile ranking card already answers it
+with a dot + band word ("Neutral"). This PR gives the hero the same word so the
+two surfaces speak the same language and the number isn't ambiguous.
+
+- **`app/stock/[ticker]/page.tsx`** — replaced the `lossChanceTone` string (a
+  3-tone-only collapse) with a `lossBand` object `{ tone, dot, label }` computed
+  from `lc = Math.round(detail.loss_chance_pct)` using the FULL 5-band rubric
+  copied verbatim from the RankingTable mobile-card ternary (`<25` Low / `<40`
+  Moderate-low / `<60` Neutral / `<80` Moderate-high / else High). Band logic
+  stays server-side, in one place. Passed `tone={lossBand?.tone ?? default}` +
+  `caption={lossBand}` to the Loss-chance `<HeroMetric>`.
+- **`components/HeroMetric.tsx`** — added optional `caption?: { label; dot } |
+  null`. When `value != null && caption`, renders a third line under the value:
+  an `aria-hidden` accent dot + the band word, styled `text-[0.6875rem]
+  text-slate-500 dark:text-slate-400` — the EXACT classes the mobile card caption
+  uses. Caption is STATIC (never animates with the count-up). Fair value / Target
+  pass no caption → unchanged 2-line layout; `items-start` on the row absorbs the
+  loss-chance column's extra line with no misalignment.
+
+Verified: `tsc --noEmit` 0 errors; `next build` 506 routes; `ruff check .` clean;
+14 random exported pages cross-checked — band word matches the rounded % with 0
+mismatches (incl. LIN at exactly 60% → "Moderate-high", validating band-from-
+rounded at the boundary). `frontend-design-reviewer` at the gate. CLAUDE.md
+§Gotchas (band-from-rounded + HeroMetric count-up) + AGENTS.md mirror updated for
+the `lossChanceTone` → `lossBand` rename + the hero-now-shows-the-word change. No
+compute / schema / scoring / valuation change. Branch `claude/sharp-newton-8pj6p`.

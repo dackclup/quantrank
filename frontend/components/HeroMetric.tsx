@@ -32,6 +32,7 @@ export function HeroMetric({
   value,
   format,
   tone = 'text-slate-900 dark:text-slate-100',
+  caption = null,
 }: {
   label: string;
   // null → render an em-dash placeholder (no animation, nothing to count to).
@@ -40,6 +41,12 @@ export function HeroMetric({
   // Tailwind text-color classes for the value (Loss chance passes a
   // band-driven tone; the price metrics use the default ink).
   tone?: string;
+  // Optional plain-English band word under the value (Loss chance shows
+  // "Neutral" / "Moderate-high" / … so a bare "55%" isn't ambiguous —
+  // matches the mobile ranking card's dot + word treatment). Server-computed
+  // and STATIC — it does not animate with the count-up. null on the price
+  // metrics (Fair value / Target carry no band).
+  caption?: { label: string; dot: string } | null;
 }) {
   // Plays on every detail visit; reduced-motion → false (static value).
   const play = usePlayOnMount(`hero-metric:${label}`);
@@ -62,6 +69,15 @@ export function HeroMetric({
           className={`flex h-6 items-center font-mono text-lg font-semibold tabular-nums leading-none ${tone}`}
         >
           {formatValue(shown, format)}
+        </span>
+      )}
+      {value != null && caption && (
+        <span className="inline-flex items-center gap-1 text-[0.6875rem] text-slate-500 dark:text-slate-400">
+          <span
+            className={`inline-block h-1.5 w-1.5 rounded-full ${caption.dot}`}
+            aria-hidden="true"
+          />
+          {caption.label}
         </span>
       )}
     </div>

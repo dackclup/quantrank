@@ -76,19 +76,26 @@ export default function StockDetailPage({
   const missingCount = detail.data_quality.missing_metrics.length;
   const mosPct = detail.fair_price?.mos_pct ?? null;
 
-  // Loss-chance tone — mirror the 5-band rubric used by the mobile ranking
-  // card (RankingTable.tsx) so the detail page and the front page agree.
-  // Computed here (server) and passed to the HeroMetric client leaf so the
-  // band logic stays in one place and the leaf stays presentation-only.
-  // Round before banding so the tone matches the displayed integer:
-  // HeroMetric prints `${Math.round(v)}%`, so a raw 59.7 shows "60%" and
-  // must read in the same band as 60 (not the <60 slate tone).
+  // Loss-chance band — mirror the 5-band rubric used by the mobile ranking
+  // card (RankingTable.tsx) so the detail hero and the front page agree on
+  // BOTH the number tone AND the plain-English band word ("Neutral",
+  // "Moderate-high", …). Computed here (server) and passed to the HeroMetric
+  // client leaf so the band logic stays in one place and the leaf stays
+  // presentation-only. Round before banding so the band matches the displayed
+  // integer: HeroMetric prints `${Math.round(v)}%`, so a raw 59.7 shows "60%"
+  // and must read in the 60-79 "Moderate-high" band, not the <60 "Neutral"
+  // tone the raw value would pick (the "60% · Neutral" bug — see §Gotchas
+  // band-from-rounded). The five `{ tone, dot, label }` rows are an exact
+  // copy of the RankingTable mobile-card ternary; they move in lockstep.
   const lc =
     detail.loss_chance_pct == null ? null : Math.round(detail.loss_chance_pct);
-  const lossChanceTone =
-    lc == null ? 'text-slate-900 dark:text-slate-100'
-    : lc < 60 ? (lc < 40 ? 'text-emerald-700 dark:text-emerald-300' : 'text-slate-700 dark:text-slate-300')
-    : 'text-red-700 dark:text-red-300';
+  const lossBand =
+    lc == null ? null
+    : lc < 25 ? { tone: 'text-emerald-700 dark:text-emerald-300', dot: 'bg-emerald-700 dark:bg-emerald-400', label: 'Low' }
+    : lc < 40 ? { tone: 'text-emerald-700 dark:text-emerald-300', dot: 'bg-emerald-500 dark:bg-emerald-400', label: 'Moderate-low' }
+    : lc < 60 ? { tone: 'text-slate-700 dark:text-slate-300', dot: 'bg-slate-500 dark:bg-slate-400', label: 'Neutral' }
+    : lc < 80 ? { tone: 'text-red-700 dark:text-red-300', dot: 'bg-rose-500 dark:bg-rose-400', label: 'Moderate-high' }
+    : { tone: 'text-red-700 dark:text-red-300', dot: 'bg-rose-500 dark:bg-rose-400', label: 'High' };
 
   return (
     <article className="space-y-4">
@@ -217,7 +224,8 @@ export default function StockDetailPage({
                 label="Loss chance"
                 value={detail.loss_chance_pct ?? null}
                 format="percent"
-                tone={lossChanceTone}
+                tone={lossBand?.tone ?? 'text-slate-900 dark:text-slate-100'}
+                caption={lossBand}
               />
             </div>
           </div>
