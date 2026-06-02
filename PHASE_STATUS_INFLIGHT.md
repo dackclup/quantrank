@@ -5402,3 +5402,38 @@ per-file counts match intent, desktop `<tr>` untouched, no double-apply.
 `frontend-design-reviewer` at the gate. CLAUDE.md §Gotchas + AGENTS.md mirror
 updated. No compute / schema / scoring / valuation change — 7 frontend files +
 docs. Branch `claude/sharp-newton-8pj6p`.
+
+---
+
+### feat(frontend) — bolder home-page header hierarchy (`$impeccable bolder`) (this PR)
+
+`/impeccable bolder` on the home page. Product-register bolder = "stronger
+hierarchy, clearer weight contrast, one sharper accent, more committed density —
+clarity, not drama" (reference). The one genuinely timid surface was the home
+`<header>`: a modest `text-2xl` headline over a flat run of same-weight
+`text-slate-500` gray where the **502 universe count** (the fact the whole app
+is about) sat at the SAME visual weight as the dev-only **schema version**, then
+a dense methodology paragraph — flat hierarchy / "too safe". Amplified to a
+confident 4-tier hierarchy; LedgerCraft restraint preserved (no gradient, no
+metric-card, no alarm color).
+
+- **Tier 1 headline** — `text-2xl sm:text-3xl` → `text-3xl sm:text-4xl`
+  `font-slab` + `text-balance` ("make big things bigger").
+- **Tier 2 sub-headline** (new) — `text-base` "All `502` companies, ranked by an
+  8-pillar composite score." The count is the ONE figure given presence:
+  `font-mono font-semibold` in **`text-emerald-800 dark:text-emerald-300`** —
+  the single deliberate brand accent on the otherwise all-slate front door
+  (weight contrast + one-accent, the product-bolder levers). NOTE: the initial
+  `-700` shade soft-remapped to oklch 56% = 4.08:1 on the body bg (FAILS AA for
+  non-large text); `frontend-design-reviewer` caught it → bumped to `-800`
+  (oklch 50% = 5.23:1 PASS, and reads more committed).
+- **Tier 3 provenance** — universe · updated · schema collapsed to one `text-xs`
+  muted line; schema version demoted by POSITION (last), NOT a fainter color
+  (avoids the AA-failing inverted `slate-400/500` token).
+- **Tier 4 methodology** — content UNCHANGED, clearly subordinate fine print.
+
+Verified: `tsc --noEmit` 0 · `next build` 506/506 · `ruff check .` clean. One
+focal point only (home header) — detail hero + table untouched (bolder ≠ make
+everything bold). `frontend-design-reviewer` at the gate. CLAUDE.md §Gotchas +
+AGENTS.md mirror updated. No compute / schema / scoring / valuation change — 1
+frontend file + docs. Branch `claude/sharp-newton-8pj6p`.
