@@ -112,7 +112,7 @@ export function PillarRadarChart({
   return (
     <section
       aria-label={`Pillar score breakdown for ${ticker}`}
-      className="mb-4 rounded border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900"
+      className="rounded border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900"
     >
       <div className="mb-4 flex flex-wrap items-baseline justify-between gap-3">
         <div>

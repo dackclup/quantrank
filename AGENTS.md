@@ -386,6 +386,13 @@ export function FairPriceCard(props) {  // no types
   gated on any-active; "Clear all" stays remove-everything. A new filter
   dimension must add a row to the `activeChips` builder. Full rationale in
   CLAUDE.md §Gotchas.
+- **Chip/numeric/soft-shade consistency** (`$impeccable polish`, 2026-06-02):
+  every chip carries `font-medium` (SectorChip + the RankingTable toolbar chips
+  were holdouts); every large number carries `font-mono` (RiskSummaryCard manip
+  index was the holdout); annotate-amber bodies use `bg-amber-50`; negative-
+  strong rings use the soft `-200` shade (never raw `-300`); value sub-labels use
+  `tracking-wider`; sections don't add own `mb-*` (the `<article>` `space-y-4`
+  owns gaps). Full rationale in CLAUDE.md §Gotchas.
 
 ## Git workflow
 

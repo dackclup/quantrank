@@ -105,7 +105,7 @@ function severityClasses(severity: Severity): string {
   if (severity === 'veto') {
     return 'bg-rose-100 text-rose-800 ring-rose-200 dark:bg-rose-900/30 dark:text-rose-200 dark:ring-rose-800';
   }
-  return 'bg-amber-100 text-amber-800 ring-amber-200 dark:bg-amber-900/30 dark:text-amber-200 dark:ring-amber-800';
+  return 'bg-amber-50 text-amber-800 ring-amber-200 dark:bg-amber-900/30 dark:text-amber-200 dark:ring-amber-800';
 }
 
 function rowTextClasses(severity: Severity): string {

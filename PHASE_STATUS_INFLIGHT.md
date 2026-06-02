@@ -5252,3 +5252,52 @@ updated. No compute / schema / scoring / valuation change. Branch
 **Re-critique #2 backlog: COMPLETE** — P1 (#360 palette · #361 daily-change +
 FairPriceCard demote) · P2 (#362 loss-chance band word) · P3 (#363 pillar tier
 consolidation) · minors (#364 detail-page a11y/clarify + this PR FilterDrawer H3).
+
+---
+
+### `$impeccable polish` — design-system drift sweep (this PR)
+
+Final quality pass after the re-critique #2 backlog closed. `frontend-design-reviewer`
+ran a polish-discovery pass (P1×4 / P2×6 / P3×6); I triaged + applied the 8
+clear-wins, declined the intentional carve-outs. 9 files, +18/−18 (pure
+class-string + copy tweaks; no logic change).
+
+**Applied:**
+- **`Tier2EventCard`** annotate badge `bg-amber-100 → bg-amber-50` (matches the
+  app's other amber-warning bodies; amber has no globals.css soft-remap so the
+  lighter shade sits beside the softened rose veto).
+- **`RankingTable`** 5 active-filter toolbar chips + `font-medium` (were
+  `font-normal`, the only chips in the app missing it).
+- **`SectorChip`** + `font-medium` (same holdout).
+- **`RiskSummaryCard`** manipulation-index `text-3xl` number + its `/100`
+  denominator + `font-mono` (was rendering in body font; every other big number
+  is mono).
+- **`FairPriceCard`** stat-grid `dt`s `tracking-wide → tracking-wider` (matches
+  every other value sub-label).
+- **`PillarRadarChart`** removed `mb-4` (the `<article>` `space-y-4` already owns
+  the gap → was a 32px double-gap).
+- **`RecommendationBadge`** cautious + **`LossChanceBadge`** High band
+  `ring-red-300 → ring-red-200` (soft-allowlist shade, not raw; aligns with the
+  #360 alarm-softening; positive-strong `ring-emerald-300` kept by design).
+- **`PriceTimePeriodSelector`** 1D/5D tooltip "coming in v1.3 → coming soon"
+  (v1.3 already shipped — stale version copy).
+
+**Declined (verify-before-fix → intentional):** "Loss chance" vs "Loss Chance"
+casing (CSS-uppercased on screen + SR casing-agnostic → no user-facing diff);
+FairPriceBarChart verdict badge `px-1.5` (intentional compact in a dense list);
+FilterDrawer CTA `bg-emerald-700` (brand primary); MoSBadge inline hex (accent
+shared with svg stroke); Sidebar chevron 32px (desktop/mouse only); ScoreBadge
+sm sizing (intentional hierarchy); DualRange fill + ListingChips icon (taste).
+
+**Process note caught by export cross-check:** the RecommendationBadge edit (and
+2 others) first failed silently in the batch ("file not read" / string mismatch);
+the whole-universe export grep (113 pages still raw `ring-red-300`) surfaced it →
+re-applied + rebuilt → 0 old / 113 soft. Lesson: a batched Edit needs a prior
+Read per file, and the export grep is the real proof, not the Edit "success" line.
+
+Verified: `tsc --noEmit` 0 · `next build` 506 routes · `ruff check .` clean;
+whole-universe export cross-checked (font-medium chips, amber-50 annotate ×5,
+font-mono manip-index ×55, ring-red-200 ×113 / ring-red-300 ×0). CLAUDE.md
+§Gotchas (new chip/numeric/soft-shade consistency entry) + AGENTS.md mirror
+updated. No compute / schema / scoring / valuation change. Branch
+`claude/sharp-newton-8pj6p`.

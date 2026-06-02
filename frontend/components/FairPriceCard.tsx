@@ -70,7 +70,7 @@ export default function FairPriceCard({
       {/* Headline median + MoS */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div>
-          <dt className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          <dt className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">
             Median fair
           </dt>
           <dd className="mt-1 font-mono text-lg font-semibold tabular-nums leading-none text-slate-900 dark:text-slate-100">
@@ -78,7 +78,7 @@ export default function FairPriceCard({
           </dd>
         </div>
         <div>
-          <dt className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          <dt className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">
             Margin of safety
             <span className="ml-1 normal-case tracking-normal text-slate-500 dark:text-slate-400">
               (vs fair value)
@@ -92,7 +92,7 @@ export default function FairPriceCard({
           </dd>
         </div>
         <div>
-          <dt className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          <dt className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">
             Max (ex-outliers)
           </dt>
           <dd className="mt-1 font-mono text-lg font-semibold tabular-nums leading-none text-slate-700 dark:text-slate-300">
@@ -100,7 +100,7 @@ export default function FairPriceCard({
           </dd>
         </div>
         <div>
-          <dt className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          <dt className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">
             Tangible BVPS
           </dt>
           <dd className="mt-1 font-mono text-lg font-semibold tabular-nums leading-none text-slate-700 dark:text-slate-300">

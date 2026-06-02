@@ -33,8 +33,8 @@ const ENABLED_PERIODS: ReadonlySet<TimePeriod> = new Set([
 ]);
 
 const DISABLED_TOOLTIP: Record<'1D' | '5D', string> = {
-  '1D': 'Intraday data — coming in v1.3',
-  '5D': 'Intraday data — coming in v1.3',
+  '1D': 'Intraday data — coming soon',
+  '5D': 'Intraday data — coming soon',
 };
 
 interface Props {

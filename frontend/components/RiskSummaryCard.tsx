@@ -305,9 +305,9 @@ export function RiskSummaryCard({
             )}
           </div>
 
-          <div className={`text-3xl font-semibold tabular-nums ${tone.text}`}>
+          <div className={`text-3xl font-mono font-semibold tabular-nums ${tone.text}`}>
             {manipulationIndex!.toFixed(0)}
-            <span className="text-base font-normal text-slate-500 dark:text-slate-400">
+            <span className="text-base font-mono font-normal text-slate-500 dark:text-slate-400">
               /100
             </span>
           </div>
