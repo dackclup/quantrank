@@ -1251,6 +1251,37 @@ whitespace / single-line fixes do not trigger.
   word in the ≥60 emerald, not the ≥80 deep-emerald). Add a NEW score-tier-word
   surface → call `scoreTierLabel`, never a fresh local copy.
 
+- **Press feedback is the global `.press` utility — the PRESS tier of the
+  app-wide motion system, NOT a per-component Tailwind `active:`**
+  (`frontend/app/globals.css` + 23 control surfaces across 7 files,
+  `$impeccable animate` 2026-06-02). The motion system already had hover
+  (`.hover-lift` + slate bg), keyboard focus (`:focus-visible`), entrances
+  (`rise-in` / `flag-pulse` / `gauge-sweep`) and loading (`shimmer`) — but ZERO
+  press/tap acknowledgment (`active:` was 0 occurrences app-wide). On touch
+  there is no hover, so the press-scale is the ONLY confirmation a tap
+  registered → it finishes the 44px-touch-target a11y work. `.press` =
+  `transition: transform 130ms + bg/border/color/opacity 150ms ease-in-out`
+  (the app-wide curve) + `:active { transform: scale(0.97) }`, reduced-motion
+  guarded in the SAME guard block as `.hover-lift`. **Why a global class, not
+  `active:scale-[…]` Tailwind**: (a) ONE reduced-motion off-switch covers every
+  press target — a bare Tailwind `active:scale` would still shrink under
+  `prefers-reduced-motion` (it has no built-in guard); (b) the comprehensive
+  transition list lets `.press` cleanly REPLACE a host's `transition-colors` /
+  `transition-opacity` without snapping its hover fade. **Composition with
+  `.hover-lift`** (the mobile ranking CARD carries both): `.press` is defined
+  AFTER `.hover-lift` so its transition wins, while hover→lift (`:hover`
+  translateY) and press→scale (`:active`) stay distinct states. **Scope =
+  discrete controls only** — buttons · chips · toggles · sidebar nav + brand ·
+  hamburger · back-links · pagination · `FilterDrawer` CTAs + active-chip ×'s +
+  the 4 filter-toggle grids · `PriceTimePeriodSelector` ENABLED buttons (the
+  disabled ones get none; `:active` can't fire on `disabled` anyway) · the
+  mobile ranking card. **NOT** the desktop `<tr>` (`transform` on a table row is
+  a known rendering footgun + it already has `hover-lift`) and **NOT** the
+  sortable column headers (a column-wide scale reads wrong; they keep
+  `:focus-visible` + the arrow-rotate). A NEW interactive control MUST add
+  `press` to stay consistent — same discipline as "a new animated component uses
+  ease-in-out".
+
 ## Phase status
 
 Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged

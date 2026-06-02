@@ -205,7 +205,7 @@ export function FilterDrawer({
             type="button"
             onClick={onClose}
             aria-label="Close filters"
-            className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm text-slate-500 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+            className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-sm text-slate-500 press hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.75">
               <path d="M5 5l10 10M15 5L5 15" strokeLinecap="round" />
@@ -240,7 +240,7 @@ export function FilterDrawer({
                     type="button"
                     onClick={chip.onRemove}
                     aria-label={`Remove filter: ${chip.label}`}
-                    className="group inline-flex min-h-[44px] items-center gap-1.5 rounded-sm bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 ring-1 ring-inset ring-slate-300 transition-colors hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-slate-700 lg:min-h-0"
+                    className="group inline-flex min-h-[44px] items-center gap-1.5 rounded-sm bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 ring-1 ring-inset ring-slate-300 press hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-slate-700 lg:min-h-0"
                   >
                     {chip.label}
                     <svg
@@ -311,7 +311,7 @@ export function FilterDrawer({
                     key={t.id}
                     type="button"
                     onClick={() => toggleTier(t.id)}
-                    className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition-colors lg:min-h-0 ${
+                    className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset press lg:min-h-0 ${
                       on ? t.cls : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
                     }`}
                   >
@@ -338,7 +338,7 @@ export function FilterDrawer({
                     key={rec}
                     type="button"
                     onClick={() => toggleRecommendation(rec)}
-                    className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition-colors lg:min-h-0 ${
+                    className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset press lg:min-h-0 ${
                       on
                         ? RECOMMENDATION_CHIP_TONES[rec]
                         : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
@@ -364,7 +364,7 @@ export function FilterDrawer({
                     key={b.id}
                     type="button"
                     onClick={() => toggleMos(b.id)}
-                    className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition-colors lg:min-h-0 ${
+                    className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset press lg:min-h-0 ${
                       on ? b.cls : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
                     }`}
                   >
@@ -395,7 +395,7 @@ export function FilterDrawer({
                     key={s}
                     type="button"
                     onClick={() => toggleSector(s)}
-                    className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition-colors lg:min-h-0 ${
+                    className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset press lg:min-h-0 ${
                       on ? `${sty.bg} ${sty.fg} ${sty.ring}` : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
                     }`}
                   >
@@ -415,14 +415,14 @@ export function FilterDrawer({
           <button
             type="button"
             onClick={clearAll}
-            className="inline-flex min-h-[44px] items-center rounded-sm px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+            className="inline-flex min-h-[44px] items-center rounded-sm px-3 py-1.5 text-xs font-medium text-slate-600 press hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
           >
             Clear all
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="inline-flex min-h-[44px] items-center rounded-sm bg-emerald-700 px-4 py-1.5 text-sm font-medium text-white transition-colors duration-150 hover:bg-emerald-800 dark:bg-emerald-600 dark:text-white dark:hover:bg-emerald-500"
+            className="inline-flex min-h-[44px] items-center rounded-sm bg-emerald-700 px-4 py-1.5 text-sm font-medium text-white press hover:bg-emerald-800 dark:bg-emerald-600 dark:text-white dark:hover:bg-emerald-500"
           >
             View {filteredCount.toLocaleString()} stock{filteredCount === 1 ? '' : 's'}
           </button>

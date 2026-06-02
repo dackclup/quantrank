@@ -430,6 +430,31 @@ code {
   transform: translateY(-1px);
 }
 
+/* Press feedback — interactive controls scale down a hair WHILE actively
+ * pressed, then ease back on release. The ONE micro-interaction tier the motion
+ * system was missing: it already had hover (.hover-lift + slate bg), keyboard
+ * focus (:focus-visible), entrances (rise-in / flag-pulse / gauge-sweep) and
+ * loading (shimmer) — but no PRESS/tap acknowledgment. On touch there is no
+ * hover, so the press-scale is the ONLY confirmation a tap registered; this
+ * finishes the 44px-touch-target a11y work. transform drives the motion (Motion
+ * Rule 1 — compositor-friendly, zero layout shift); the color / opacity props
+ * are listed so .press cleanly REPLACES a host's transition-colors /
+ * transition-opacity without snapping its hover fade, AND composes with
+ * .hover-lift on the mobile ranking card (defined AFTER it so .press's
+ * transition wins, while hover→lift and press→scale stay distinct states).
+ * ease-in-out matches the app-wide curve; reduced-motion neutralizes it below. */
+.press {
+  transition:
+    transform 130ms ease-in-out,
+    background-color 150ms ease-in-out,
+    border-color 150ms ease-in-out,
+    color 150ms ease-in-out,
+    opacity 150ms ease-in-out;
+}
+.press:active {
+  transform: scale(0.97);
+}
+
 /* Reduced-motion guard — disable the shimmer sweep + fade-in + every
  * tasteful-motion utility for users with `prefers-reduced-motion:
  * reduce`. Entrances snap straight to their end state (opacity 1, no
@@ -452,6 +477,12 @@ code {
     transition: none !important;
   }
   .hover-lift:hover {
+    transform: none !important;
+  }
+  .press {
+    transition: none !important;
+  }
+  .press:active {
     transform: none !important;
   }
   .animate-shimmer {

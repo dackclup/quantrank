@@ -341,7 +341,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
         <button
           type="button"
           onClick={() => setDrawerOpen(true)}
-          className="inline-flex min-h-[44px] items-center gap-2 rounded-sm border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition-colors duration-150 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+          className="inline-flex min-h-[44px] items-center gap-2 rounded-sm border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 press hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
         >
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
             <path d="M2 4h12M4 8h8M6 12h4" strokeLinecap="round" />
@@ -393,7 +393,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                 key={`f-sec-${s}`}
                 type="button"
                 onClick={() => toggleSector(s)}
-                className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset transition-opacity duration-100 hover:opacity-75 ${sty.bg} ${sty.fg} ${sty.ring}`}
+                className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset press hover:opacity-75 ${sty.bg} ${sty.fg} ${sty.ring}`}
               >
                 <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ backgroundColor: sty.dot }} />
                 {s}
@@ -408,7 +408,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                 key={`f-tier-${id}`}
                 type="button"
                 onClick={() => toggleTier(id)}
-                className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset transition-opacity duration-100 hover:opacity-75 ${t.cls}`}
+                className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset press hover:opacity-75 ${t.cls}`}
               >
                 <span className={`inline-block h-1.5 w-1.5 rounded-full ${t.dot}`} />
                 {t.label}
@@ -423,7 +423,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                 key={`f-mos-${id}`}
                 type="button"
                 onClick={() => toggleMos(id)}
-                className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset transition-opacity duration-100 hover:opacity-75 ${b.cls}`}
+                className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset press hover:opacity-75 ${b.cls}`}
               >
                 <span className={`inline-block h-1.5 w-1.5 rounded-full ${b.dot}`} />
                 {b.label}
@@ -436,7 +436,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
               key={`f-rec-${rec}`}
               type="button"
               onClick={() => toggleRecommendation(rec)}
-              className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset transition-opacity duration-100 hover:opacity-75 ${RECOMMENDATION_CHIP_TONES[rec]}`}
+              className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset press hover:opacity-75 ${RECOMMENDATION_CHIP_TONES[rec]}`}
             >
               <span className={`inline-block h-1.5 w-1.5 rounded-full ${RECOMMENDATION_CHIP_DOTS[rec]}`} />
               {RECOMMENDATION_LABELS[rec]}
@@ -447,7 +447,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
             <button
               type="button"
               onClick={() => setScoreRange([0, 100])}
-              className="inline-flex items-center gap-1.5 rounded-sm bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 ring-1 ring-inset ring-slate-300 transition-opacity duration-100 hover:opacity-75 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700"
+              className="inline-flex items-center gap-1.5 rounded-sm bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 ring-1 ring-inset ring-slate-300 press hover:opacity-75 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700"
             >
               Score {scoreRange[0]}–{scoreRange[1]}
               <span aria-hidden="true" className="opacity-60">×</span>
@@ -456,7 +456,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
           <button
             type="button"
             onClick={clearAll}
-            className="ml-1 text-xs font-medium text-slate-500 underline-offset-2 hover:text-slate-900 hover:underline dark:text-slate-400 dark:hover:text-slate-100"
+            className="ml-1 press text-xs font-medium text-slate-500 underline-offset-2 hover:text-slate-900 hover:underline dark:text-slate-400 dark:hover:text-slate-100"
           >
             Clear all
           </button>
@@ -550,7 +550,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
           return (
             <li
               key={row.ticker}
-              className={`hover-lift min-h-[7rem] rounded border border-slate-200 bg-white transition-colors duration-100 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/50 ${staggerClass}`}
+              className={`hover-lift press min-h-[7rem] rounded border border-slate-200 bg-white transition-colors duration-100 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/50 ${staggerClass}`}
             >
               <Link
                 href={`/stock/${row.ticker}/`}
@@ -698,7 +698,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
             <button
               type="button"
               onClick={clearAll}
-              className="mt-3 inline-flex min-h-[44px] items-center rounded-sm border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors duration-150 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+              className="mt-3 inline-flex min-h-[44px] items-center rounded-sm border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 press hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
             >
               Clear all filters
             </button>
@@ -712,7 +712,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
             type="button"
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={safePage === 1}
-            className="inline-flex min-h-[44px] items-center gap-1 rounded-sm border border-slate-300 bg-white px-3 py-1 text-slate-700 transition-colors duration-150 enabled:hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:enabled:hover:bg-slate-800"
+            className="inline-flex min-h-[44px] items-center gap-1 rounded-sm border border-slate-300 bg-white px-3 py-1 text-slate-700 press enabled:hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:enabled:hover:bg-slate-800"
           >
             <svg
               width="14"
@@ -736,7 +736,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
             type="button"
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={safePage === totalPages}
-            className="inline-flex min-h-[44px] items-center gap-1 rounded-sm border border-slate-300 bg-white px-3 py-1 text-slate-700 transition-colors duration-150 enabled:hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:enabled:hover:bg-slate-800"
+            className="inline-flex min-h-[44px] items-center gap-1 rounded-sm border border-slate-300 bg-white px-3 py-1 text-slate-700 press enabled:hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:enabled:hover:bg-slate-800"
           >
             Next
             <svg

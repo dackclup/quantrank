@@ -5361,3 +5361,44 @@ export cross-check: 0 gauge tier-word mismatches** (NVDA 73 → "Exceptional", O
 58 → "Strong"); no test pinned the labels. `frontend-design-reviewer` at the gate.
 CLAUDE.md §Gotchas + AGENTS.md mirror updated. No compute / schema / scoring /
 valuation change — 3 frontend files + docs. Branch `claude/sharp-newton-8pj6p`.
+
+---
+
+### feat(frontend) — press feedback on interactive controls (`$impeccable animate`) (this PR)
+
+`/impeccable animate` on the (already mature) motion system. Assessment found the
+system covers hover (`.hover-lift` + slate bg), keyboard focus (`:focus-visible`),
+entrances (`rise-in` / `flag-pulse` / `gauge-sweep` / price-chart intro draw / row
+stagger) and loading (`shimmer`) — but had **ZERO press/tap acknowledgment**
+(`grep "active:"` = 0 occurrences app-wide). On touch there is no hover, so a
+press-scale is the only confirmation a tap registered; this completes the session's
+44px-touch-target a11y work. Deliverable is ONE tier added, not a pile-on (the
+product register + the reference both warn against animation fatigue).
+
+- **`globals.css`**: new `.press` utility (next to `.hover-lift`) — `transition:
+  transform 130ms + bg/border/color/opacity 150ms ease-in-out` (the app-wide
+  curve) + `:active { transform: scale(0.97) }`, plus a reduced-motion `none`
+  guard in the same block as `.hover-lift`.
+- Applied `press` to **23 discrete controls across 7 files**: ThemeToggle (row +
+  icon), AppShell (hamburger + brand link), Sidebar (brand · chevron · mobile-close
+  · nav-link), PriceTimePeriodSelector (the 2 ENABLED states only), FilterDrawer
+  (close · active-chip × · the 4 filter-toggle grids · Clear all · View-N CTA),
+  RankingTable (Filters · 4 toolbar chips · score-clear chip · Clear-all text ·
+  mobile ranking CARD · empty-state Clear-all · pagination Prev/Next), and the
+  stock-detail back-link (×2 branches).
+- **Global class, not Tailwind `active:scale`**: (a) ONE reduced-motion guard
+  covers every target (a bare `active:scale` would still shrink under
+  `prefers-reduced-motion`); (b) the comprehensive transition list lets `.press`
+  cleanly REPLACE a host's `transition-colors`/`-opacity` with no hover-fade
+  snap, and COMPOSE with `.hover-lift` on the mobile card (defined after it →
+  press's transition wins; hover→lift and press→scale stay distinct states).
+- **Excluded** the desktop `<tr>` (`transform` on a table row is a rendering
+  footgun + it already has `hover-lift`) and the sortable column headers
+  (column-wide scale reads wrong; they keep `:focus-visible` + arrow-rotate).
+
+Verified: `tsc --noEmit` 0 · `next build` 506 (First Load JS unchanged — CSS-only,
+zero JS delta) · `ruff check .` clean; export-grep proof: 31 `press` usages,
+per-file counts match intent, desktop `<tr>` untouched, no double-apply.
+`frontend-design-reviewer` at the gate. CLAUDE.md §Gotchas + AGENTS.md mirror
+updated. No compute / schema / scoring / valuation change — 7 frontend files +
+docs. Branch `claude/sharp-newton-8pj6p`.

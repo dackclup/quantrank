@@ -132,7 +132,7 @@ export function Sidebar({ collapsed, animate, onToggleCollapse, mobileOpen, onMo
             href="/"
             onClick={onMobileClose}
             data-rail="hide"
-            className="flex min-h-[44px] min-w-0 items-center gap-2 text-slate-900 hover:opacity-80 dark:text-slate-100"
+            className="flex min-h-[44px] min-w-0 items-center gap-2 text-slate-900 press hover:opacity-80 dark:text-slate-100"
             aria-label="QuantRank home"
           >
             <span aria-hidden="true" className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-sm bg-emerald-700 font-mono text-xs font-semibold text-white dark:bg-emerald-600 dark:text-white">Q</span>
@@ -147,7 +147,7 @@ export function Sidebar({ collapsed, animate, onToggleCollapse, mobileOpen, onMo
             data-rail="chevron"
             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             onClick={onToggleCollapse}
-            className={`hidden h-8 w-8 items-center justify-center rounded-sm text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100 md:inline-flex ${collapsed ? '' : 'ml-auto'}`}
+            className={`hidden h-8 w-8 items-center justify-center rounded-sm text-slate-500 press hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100 md:inline-flex ${collapsed ? '' : 'ml-auto'}`}
           >
             <svg
               width="14"
@@ -168,7 +168,7 @@ export function Sidebar({ collapsed, animate, onToggleCollapse, mobileOpen, onMo
             type="button"
             aria-label="Close navigation"
             onClick={onMobileClose}
-            className="ml-auto inline-flex h-11 w-11 items-center justify-center rounded-sm text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100 md:hidden"
+            className="ml-auto inline-flex h-11 w-11 items-center justify-center rounded-sm text-slate-500 press hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100 md:hidden"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <line x1="18" y1="6" x2="6" y2="18" />
@@ -270,7 +270,7 @@ function SidebarLink({
   collapsed: boolean;
   onClick?: () => void;
 }) {
-  const base = `group flex min-h-[44px] items-center gap-2.5 rounded-sm px-2 py-1.5 text-sm transition-colors ${
+  const base = `group flex min-h-[44px] items-center gap-2.5 rounded-sm px-2 py-1.5 text-sm press ${
     active
       ? 'bg-slate-100 font-medium text-slate-900 dark:bg-slate-800 dark:text-slate-100'
       : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100'
