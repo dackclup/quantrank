@@ -5212,3 +5212,43 @@ updated. No compute / schema / scoring / valuation change. Branch
   "active filters" removable-chip summary at the top (parity with the page's
   active-filter chips). Distinct FilterDrawer UX surface (focus-trap + chip
   removal wiring) → its own PR.
+
+---
+
+### `$impeccable` minor — FilterDrawer in-drawer active-filter removal (this PR)
+
+Re-critique #2's LAST minor (4 of 4; Nielsen H3, "User control & freedom").
+Closes the gap where a user could not remove ONE specific active filter from
+inside the open drawer without close → click the page chip → reopen (the page's
+active-filter row is behind the backdrop).
+
+- **`FilterDrawer.tsx`** (1 file, +76) — new "Active filters" section at the TOP
+  of the drawer body, rendered only when `activeChips.length > 0`. One removable
+  `<button>` chip per active filter: search · score (when narrowed from [0,100])
+  · each tier · valuation bucket · recommendation · sector. Each chip's × calls
+  the SAME setter its per-group toggle uses (`setSearch('')` /
+  `setScoreRange([0,100])` / `toggleTier` / `toggleMos` / `toggleRecommendation`
+  / `toggleSector`), so removal is consistent with the controls below. "Clear
+  all" (footer) stays the remove-EVERYTHING path; this is remove-ONE.
+
+Design notes: neutral outlined-light chip family (`bg-slate-100 ring-slate-200`
++ paired dark:) + an inline-svg × (reuses the close-button path, no new icon
+dep). `min-h-[44px] lg:min-h-0` touch target per the in-drawer chip convention.
+The drawer focus-trap queries `focusables()` dynamically on each Tab + filters
+to visible, so the chip buttons are trapped automatically (no trap change);
+focus-on-open still lands on the header Close button. The `activeChips` builder
+is a 4th synced surface alongside the "filter state lives in THREE places" gotcha
+(state · sessionStorage · URL) — a new filter dimension must add a row here too.
+
+Verified: `tsc --noEmit` 0 errors; `next build` 506 routes; `ruff check .` clean;
+home export confirms the drawer renders ("Composite score" / "Clear all" present)
+and the "Active filters" section is correctly ABSENT on a fresh no-filter load
+(runtime-gated; interactive behavior to be confirmed on the Vercel preview +
+Playwright). `frontend-design-reviewer` at the gate. CLAUDE.md §Gotchas (new
+entry; the #364 "still-open" note flipped to resolved) + AGENTS.md mirror
+updated. No compute / schema / scoring / valuation change. Branch
+`claude/sharp-newton-8pj6p`.
+
+**Re-critique #2 backlog: COMPLETE** — P1 (#360 palette · #361 daily-change +
+FairPriceCard demote) · P2 (#362 loss-chance band word) · P3 (#363 pillar tier
+consolidation) · minors (#364 detail-page a11y/clarify + this PR FilterDrawer H3).

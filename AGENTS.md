@@ -379,6 +379,13 @@ export function FairPriceCard(props) {  // no types
   median (parity with the mouse `title` + notch); the hero shows "Data as of
   {date}". `MoSCell.tsx` is orphaned dead code. Full rationale in CLAUDE.md
   §Gotchas.
+- **`FilterDrawer` "Active filters" removable summary** (`FilterDrawer.tsx`,
+  2026-06-02): a top-of-drawer chip row (one × chip per active filter) lets a
+  user remove ONE filter from inside the open drawer (the page's active-filter
+  row is behind the backdrop). Each × reuses the per-group toggle's setter;
+  gated on any-active; "Clear all" stays remove-everything. A new filter
+  dimension must add a row to the `activeChips` builder. Full rationale in
+  CLAUDE.md §Gotchas.
 
 ## Git workflow
 

@@ -1159,9 +1159,27 @@ whitespace / single-line fixes do not trigger.
   freshness was previously only inside the collapsed Supporting-data drawer.
   NOTE: `MoSCell.tsx` is ORPHANED dead code (no importer — only stale comment
   refs in `page.tsx` / `LossChanceBadge.tsx` / `visual.ts`); not a live surface,
-  so its `title` was out of scope. Still-open `$impeccable` minor (separate PR):
-  the FilterDrawer can't remove an individual active filter from a consolidated
-  in-drawer summary (the per-group toggles already de-select; Nielsen H3).
+  so its `title` was out of scope.
+
+- **`FilterDrawer` has an "Active filters" removable-chip summary at the top of
+  the drawer body — the in-drawer remove-ONE path** (`frontend/components/FilterDrawer.tsx`,
+  `$impeccable` H3 minor 2026-06-02). Closes the last re-critique #2 minor: a
+  user could not remove ONE specific active filter from inside the open drawer
+  without the close → click the page chip → reopen dance (the page's active-
+  filter row is behind the backdrop). The summary mirrors that row INSIDE the
+  drawer — one removable chip per active filter (search · score-when-narrowed ·
+  each tier / valuation / recommendation / sector), each chip's × reusing the
+  SAME setter its per-group toggle uses (`setSearch('')` / `setScoreRange([0,100])`
+  / `toggleTier|toggleMos|toggleRecommendation|toggleSector`). Gated on
+  `activeChips.length > 0`, so it's absent on a fresh (no-filter) load. "Clear
+  all" (footer) stays the remove-EVERYTHING path; this is remove-ONE. Adding a
+  NEW filter dimension means adding a row to the `activeChips` builder too (it's
+  a 4th synced surface alongside the §Gotchas "filter state lives in THREE
+  places" — React state · sessionStorage · URL). The chips are focusable
+  `<button>`s; the drawer's focus-trap queries `focusables()` DYNAMICALLY on
+  each Tab + filters to visible, so they're included automatically (no trap
+  change needed). `min-h-[44px] lg:min-h-0` touch target per the in-drawer chip
+  convention.
 
 ## Phase status
 
