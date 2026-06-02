@@ -602,15 +602,21 @@ list lives in [`CLAUDE.md`](CLAUDE.md) §Phase status. Schema-version
 history table is in [`SKILL.md`](SKILL.md). This file's role is to
 note cross-tool-specific points only:
 
-- **Chore PR in flight — pyproject.toml upper bounds + injection guard
-  (this PR)**: adds `<N` upper bounds on 5 Python deps (`numpy <3` ·
-  `tenacity <10` · `yfinance <2` · `lxml <7` · `pyarrow <25`) to prevent
-  surprise major-version footguns; adds untrusted-content prompt-injection
-  guard to `vercel-preview-auditor.md`. Doc + dep bounds only — no
-  compute / schema / scoring / valuation / frontend code change.
-  (PRs #331–#373 all merged 2026-06-02; see CLAUDE.md §Phase status for
-  the full record.) Cross-tool agents: `StockDetail` at 0.10.12+ carries
-  `exchange` + `country` (`str | None`), populated from cron Run #73+.
+- **Listing-metadata canary PR in flight — schema `0.10.13-phase4.6`
+  (this PR)**: PATCH bump adding `Metadata.country_coverage_pct: float |
+  None` + a CBOE `BTS → Cboe BZX` fix in `cross_source._EXCHANGE_NAME_BY_CODE`.
+  The 2026-06-02 post-cron audit disproved the 0.10.12 "country tracks
+  exchange 1:1" assumption: `exchange_name` passes an unknown venue code
+  through verbatim (counts as covered) while `country_for_exchange` resolves
+  only known US codes, so the two DIVERGE on a raw passthrough (CBOE's `BTS`:
+  exchange 100% / country 99.8%). `country_coverage_pct` is the strict
+  canary; `main.py` logs a divergence WARNING. DISPLAY-ONLY — no
+  ranking/scoring/veto change. Cross-tool agents: `StockDetail` at 0.10.12+
+  carries `exchange` + `country` (`str | None`); 0.10.13+ adds
+  `Metadata.country_coverage_pct` (nullable on legacy snapshots). The chore
+  PR (pyproject.toml upper bounds + `vercel-preview-auditor` injection guard)
+  merged as **#381**; PRs #331–#373 all merged 2026-06-02 — see CLAUDE.md
+  §Phase status for the full record.
 
 - Production-verified run: cron **Run #71** (`368dccd9`, 14m 32s
   warm-cache, 2026-05-28 08:44 UTC) — useful for non-Claude agents

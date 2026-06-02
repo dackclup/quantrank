@@ -667,20 +667,26 @@ def _pillar_scores_to_schema(row: pd.Series) -> PillarScores:
     )
 
 
-def _exchange_coverage_pct(by_ticker: dict[str, str | None]) -> float | None:
-    """PR-A2 — % of the iterated universe with a resolved exchange (display-only).
+def _coverage_pct(by_ticker: dict[str, str | None]) -> float | None:
+    """PR-A2 — % of the iterated universe with a non-null value (display-only).
 
-    Rule-18 observability for the country/exchange listing-metadata fields.
-    ``None`` only on an empty universe (avoids ZeroDivisionError); otherwise a
-    0-100 float (0.0 is a real "nothing resolved" signal — e.g. a cold simulate
-    cache under ``QR_SKIP_CROSS_SOURCE``). Pure helper so the tests import the
-    production formula instead of copying it (CLAUDE.md §Gotchas PR #310 — no
-    verbatim-copy test helpers).
+    Rule-18 observability formula for the listing-metadata fields. Shared by
+    BOTH ``exchange_coverage_pct`` and ``country_coverage_pct`` (0.10.13-phase4.6)
+    — the two are NOT redundant: ``exchange`` passes an unknown code through
+    verbatim (counts as covered), while ``country`` resolves only known US codes
+    (an unknown code → None → uncovered), so the two diverge exactly on a raw
+    passthrough code. ``country_coverage_pct`` is therefore the strict canary
+    ``exchange_coverage_pct`` structurally cannot be (the CBOE/``BTS`` case,
+    2026-06-02 audit). ``None`` only on an empty universe (avoids
+    ZeroDivisionError); otherwise a 0-100 float (0.0 is a real "nothing
+    resolved" signal — e.g. a cold simulate cache under ``QR_SKIP_CROSS_SOURCE``).
+    Pure helper so the tests import the production formula instead of copying it
+    (CLAUDE.md §Gotchas PR #310 — no verbatim-copy test helpers).
     """
     if not by_ticker:
         return None
-    n_with_exchange = sum(1 for v in by_ticker.values() if v is not None)
-    return round(100.0 * n_with_exchange / len(by_ticker), 2)
+    n_resolved = sum(1 for v in by_ticker.values() if v is not None)
+    return round(100.0 * n_resolved / len(by_ticker), 2)
 
 
 def run_weekly_compute() -> int:
@@ -2104,14 +2110,37 @@ def run_weekly_compute() -> int:
     # PR-A2 — Rule 18 observability: exchange-resolution coverage across the
     # universe (display-only fields). Watch this for >= 1 cron before PR-B
     # wires the frontend country/exchange chips (observability-before-wiring).
+    # country_coverage_pct (0.10.13-phase4.6) is the strict-resolution sibling:
+    # exchange counts passthrough codes as covered, country does not, so a gap
+    # between them flags an unknown venue code (the CBOE/BTS canary).
     n_with_exchange = sum(1 for v in exchange_by_ticker.values() if v is not None)
-    exchange_coverage_pct = _exchange_coverage_pct(exchange_by_ticker)
+    exchange_coverage_pct = _coverage_pct(exchange_by_ticker)
+    country_coverage_pct = _coverage_pct(country_by_ticker)
+    n_with_country = sum(1 for v in country_by_ticker.values() if v is not None)
     logger.info(
-        "Exchange coverage: %d / %d (%.1f%%)",
+        "Exchange coverage: %d / %d (%.1f%%) | Country coverage: %d / %d (%.1f%%)",
         n_with_exchange,
         len(exchange_by_ticker),
         exchange_coverage_pct if exchange_coverage_pct is not None else 0.0,
+        n_with_country,
+        len(country_by_ticker),
+        country_coverage_pct if country_coverage_pct is not None else 0.0,
     )
+    if (
+        exchange_coverage_pct is not None
+        and country_coverage_pct is not None
+        and country_coverage_pct < exchange_coverage_pct
+    ):
+        # Divergence = an exchange code resolved to a display name but not to a
+        # US country tag (unknown venue passthrough). Surfaces the next CBOE/BTS
+        # before it reaches a user as a flagless raw-code chip.
+        logger.warning(
+            "Listing-metadata coverage divergence: country %.2f%% < exchange "
+            "%.2f%% — an unknown exchange code passed through without a country "
+            "tag (add it to _EXCHANGE_NAME_BY_CODE in cross_source.py)",
+            country_coverage_pct,
+            exchange_coverage_pct,
+        )
 
     meta = Metadata(
         version=config.SCHEMA_VERSION,
@@ -2198,6 +2227,7 @@ def run_weekly_compute() -> int:
         cross_source_disagreement_count=cross_source_disagreement_count,
         cross_source_delta_histogram=cross_source_delta_histogram,
         exchange_coverage_pct=exchange_coverage_pct,
+        country_coverage_pct=country_coverage_pct,
         shares_fallback_triggered_count=shares_fallback_triggered_count,
         shares_fallback_too_low_count=shares_fallback_too_low_count,
         shares_fallback_dimensional_override_count=(

@@ -296,9 +296,22 @@ class Metadata(BaseModel):
     # resolved to a non-null display name (the rest had a cold-cache miss or an
     # unknown venue code). Ships BEFORE the hero country/exchange chips read the
     # field (observability-before-wiring) so the frontend wiring waits for ≥ 1
-    # cron confirming coverage is high. `country` rides the same fetch, so its
-    # coverage tracks `exchange` 1:1 — no separate counter needed.
+    # cron confirming coverage is high.
     exchange_coverage_pct: float | None = None
+    # ``country_coverage_pct`` (0.10.13-phase4.6, Rule 18) — % of the universe
+    # whose `StockDetail.country` resolved (US-tagged). The original 0.10.12
+    # docstring claimed "country tracks exchange 1:1 — no separate counter
+    # needed"; the 2026-06-02 post-cron audit DISPROVED that: `exchange` passes
+    # an unknown code through verbatim (counts as covered), while `country`
+    # resolves only known US codes, so the two DIVERGE exactly on a raw
+    # passthrough code (CBOE's `BTS` showed exchange=100% / country=99.8%).
+    # This field is therefore the strict-resolution canary that
+    # `exchange_coverage_pct` structurally cannot be: a gap between them flags
+    # an unknown venue code reaching production as a flagless raw-code chip.
+    # main.py emits a WARNING when country < exchange so the verify-helper +
+    # cron logs both catch the next divergence. Nullable on legacy snapshots
+    # (pre-0.10.13).
+    country_coverage_pct: float | None = None
     # Issue #246 PR1 retrofit (0.10.3-phase4.5e) — Rule 18 observability for
     # the `_fetch_shares_from_per_filing_xbrl` fallback trigger extended in
     # PR #253. ``shares_fallback_triggered_count`` = total tickers where the

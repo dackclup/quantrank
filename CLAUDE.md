@@ -1408,9 +1408,39 @@ whitespace / single-line fixes do not trigger.
   rows ENTERING the filtered set). Do NOT re-wire the entrance stagger to fire on
   an interaction — that revives the competition + the Rule-2 violation.
 
+- **`exchange_coverage_pct` and `country_coverage_pct` look like siblings but
+  DIVERGE on a raw passthrough code — `country_coverage_pct` is the strict
+  canary** (`compute/ingest/cross_source.py` + `compute/main.py`, schema
+  `0.10.13-phase4.6`, 2026-06-02 post-cron audit). `exchange_name(code)` passes
+  an UNKNOWN venue code through verbatim (a non-null raw code → counts as
+  "covered"), while `country_for_exchange(code)` resolves ONLY codes in
+  `_US_EXCHANGE_CODES` (an unknown code → `None` → uncovered). So the two
+  coverage metrics agree on known codes but diverge EXACTLY on an unknown
+  passthrough: CBOE's `BTS` venue (Cboe Global Markets self-lists on Cboe BZX;
+  `BTS` ≠ the already-mapped `BATS`) showed `exchange_coverage_pct = 100%`
+  while country was 99.8% (CBOE country `null`). The original 0.10.12 schema
+  docstring claimed "country tracks exchange 1:1 — no separate counter needed";
+  that is FALSE for passthrough codes, which is precisely the blind spot
+  `exchange_coverage_pct` structurally cannot see (it counts the raw code as
+  covered). `country_coverage_pct` is therefore the durable canary — `main.py`
+  emits a `logger.warning(...coverage divergence...)` when `country < exchange`,
+  and the verify-helper can assert the gap. **Fix for a new divergence**: add
+  the unknown code to `_EXCHANGE_NAME_BY_CODE` (one line fixes BOTH the exchange
+  display AND the country tag, since `_US_EXCHANGE_CODES = frozenset(...keys())`
+  derives from the dict). The `_coverage_pct` helper (renamed from
+  `_exchange_coverage_pct`) is shared by both metrics — don't re-split it.
+
 ## Phase status
 
-Current schema **`0.10.12-phase4.6`** on `main` (PR #303 merged
+Current schema **`0.10.13-phase4.6`** (this PR — listing-metadata
+canary: additive `Metadata.country_coverage_pct: float | None` +
+CBOE `BTS → Cboe BZX` fix in `cross_source._EXCHANGE_NAME_BY_CODE`;
+the 2026-06-02 post-cron audit found exchange-coverage's
+unknown-code passthrough HIDES the country gap, so
+`country_coverage_pct` is the strict-resolution canary — see the
+§Gotchas entry "`exchange_coverage_pct` and `country_coverage_pct`
+… DIVERGE on a raw passthrough code"). Prior schema
+**`0.10.12-phase4.6`** on `main` (PR #303 merged
 2026-05-29 `847c21b` — Phase 4.5e PR 6 Form-4 10b5-1 negation guard,
 residual footgun #1 from PR 4-eq; new
 `Metadata.form4_negation_guard_downgrade_count: int | None` counts

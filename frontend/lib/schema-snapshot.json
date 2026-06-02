@@ -37,6 +37,11 @@
       "required": true,
       "default": "<required>"
     },
+    "country_coverage_pct": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
     "cross_source_delta_histogram": {
       "type": "dict[str, int] | None",
       "required": false,

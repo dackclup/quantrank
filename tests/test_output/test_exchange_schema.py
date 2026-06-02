@@ -40,7 +40,7 @@ def _base_metadata_payload() -> dict:
     tests/test_output/.
     """
     return {
-        "version": "0.10.12-phase4.6",
+        "version": "0.10.13-phase4.6",
         "last_update_utc": "2026-06-01T22:00:00Z",
         "next_update_utc": "2026-06-08T22:00:00Z",
         "universe": "sp500",
@@ -131,6 +131,59 @@ def test_exchange_coverage_pct_optional_default_none() -> None:
     serialised = meta.model_dump(mode="json")
     assert "exchange_coverage_pct" in serialised
     assert serialised["exchange_coverage_pct"] is None
+
+
+# ---------------------------------------------------------------------------
+# Metadata.country_coverage_pct (0.10.13-phase4.6) — the strict-resolution
+# sibling of exchange_coverage_pct (diverges on a raw passthrough code)
+# ---------------------------------------------------------------------------
+
+
+def test_country_coverage_pct_exists_on_metadata_with_float() -> None:
+    """0.10.13-phase4.6 — country_coverage_pct accepts a float and round-trips."""
+    payload = _base_metadata_payload()
+    payload["country_coverage_pct"] = 99.8
+
+    meta = Metadata.model_validate(payload)
+    assert meta.country_coverage_pct == 99.8
+
+    serialised = meta.model_dump(mode="json")
+    assert serialised["country_coverage_pct"] == 99.8
+
+    restored = Metadata.model_validate(serialised)
+    assert restored.country_coverage_pct == meta.country_coverage_pct
+
+
+def test_country_coverage_pct_can_diverge_below_exchange() -> None:
+    """The canary contract: country_coverage_pct < exchange_coverage_pct is a
+    VALID, expected state (an unknown exchange code passed through as covered
+    for exchange but resolved to no country). The schema must accept the gap —
+    main.py logs a WARNING on it, but it is not a validation error.
+    """
+    payload = _base_metadata_payload()
+    payload["exchange_coverage_pct"] = 100.0
+    payload["country_coverage_pct"] = 99.8  # the CBOE/BTS pre-fix shape
+
+    meta = Metadata.model_validate(payload)
+    assert meta.exchange_coverage_pct == 100.0
+    assert meta.country_coverage_pct == 99.8
+    assert meta.country_coverage_pct < meta.exchange_coverage_pct
+
+
+def test_country_coverage_pct_optional_default_none() -> None:
+    """0.10.13-phase4.6 — country_coverage_pct is optional with a ``= None``
+    default. A legacy metadata.json (pre-0.10.13) deserialises cleanly with the
+    new field silently defaulting to None (PATCH-bump backward-compat).
+    """
+    payload = _base_metadata_payload()
+    assert "country_coverage_pct" not in payload
+
+    meta = Metadata.model_validate(payload)
+    assert meta.country_coverage_pct is None
+
+    serialised = meta.model_dump(mode="json")
+    assert "country_coverage_pct" in serialised
+    assert serialised["country_coverage_pct"] is None
 
 
 # ---------------------------------------------------------------------------

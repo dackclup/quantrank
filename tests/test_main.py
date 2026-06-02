@@ -27,8 +27,8 @@ from compute.main import (
     _build_peer_groupings,
     _build_raw_metrics,
     _build_universe_metrics,
+    _coverage_pct,
     _eps_3y_avg,
-    _exchange_coverage_pct,
     _fcf_5y,
     _filing_lag,
     _fundamentals_one,
@@ -829,7 +829,7 @@ def test_step6b_hard_stale_flag_not_duplicated_when_already_present():
 #
 # The six tests below lock the three sub-contracts introduced by PR-A2:
 #
-#   (1) compute.main._exchange_coverage_pct — the PRODUCTION coverage formula,
+#   (1) compute.main._coverage_pct — the PRODUCTION coverage formula,
 #       imported (NOT copied) so a denominator/numerator drift in
 #       run_weekly_compute breaks these tests loudly (CLAUDE.md §Gotchas
 #       PR #310 — no verbatim-copy test helpers).
@@ -854,36 +854,36 @@ def test_step6b_hard_stale_flag_not_duplicated_when_already_present():
 # -- coverage formula tests ---------------------------------------------------
 
 
-def test_exchange_coverage_pct_all_resolved() -> None:
+def test_coverage_pct_all_resolved() -> None:
     """All tickers resolve → 100.00%."""
     acc = {"AAPL": "NASDAQ", "MSFT": "NASDAQ", "JPM": "NYSE"}
-    assert _exchange_coverage_pct(acc) == 100.00
+    assert _coverage_pct(acc) == 100.00
 
 
-def test_exchange_coverage_pct_partial_resolution() -> None:
+def test_coverage_pct_partial_resolution() -> None:
     """1 of 2 tickers resolves → 50.00%."""
     acc = {"AAPL": "NASDAQ", "MISS": None}
-    assert _exchange_coverage_pct(acc) == 50.00
+    assert _coverage_pct(acc) == 50.00
 
 
-def test_exchange_coverage_pct_all_none() -> None:
+def test_coverage_pct_all_none() -> None:
     """All tickers unresolved (cold simulate cache) → 0.00%."""
     acc = {"AAPL": None, "MSFT": None}
-    assert _exchange_coverage_pct(acc) == 0.00
+    assert _coverage_pct(acc) == 0.00
 
 
-def test_exchange_coverage_pct_empty_dict_returns_none() -> None:
+def test_coverage_pct_empty_dict_returns_none() -> None:
     """Empty universe (edge case) → None, matching the ``if exchange_by_ticker``
     guard in run_weekly_compute that avoids zero-division."""
-    assert _exchange_coverage_pct({}) is None
+    assert _coverage_pct({}) is None
 
 
-def test_exchange_coverage_pct_rounding_two_decimal_places() -> None:
+def test_coverage_pct_rounding_two_decimal_places() -> None:
     """Result is rounded to exactly 2 decimal places — mirrors
     ``round(100.0 * n / len, 2)`` in the production formula."""
     # 2 of 3 resolved → 66.666… → round to 66.67
     acc = {"A": "NASDAQ", "B": "NYSE", "C": None}
-    result = _exchange_coverage_pct(acc)
+    result = _coverage_pct(acc)
     assert result == 66.67
 
 
@@ -917,7 +917,7 @@ def test_step8_exchange_mapping_none_code(monkeypatch) -> None:
     both exchange_name(None) and country_for_exchange(None) must return None.
 
     These tickers are excluded from the coverage numerator — confirmed by the
-    coverage formula test_exchange_coverage_pct_partial_resolution above.
+    coverage formula test_coverage_pct_partial_resolution above.
     """
     monkeypatch.setattr("compute.main.fetch_yfinance_exchange", lambda _t: None)
 
@@ -977,5 +977,5 @@ def test_step8_exchange_coverage_excludes_none_entries(monkeypatch) -> None:
     assert country_by_ticker["MISS"] is None
 
     # Coverage: 1 of 2 resolved
-    coverage = _exchange_coverage_pct(exchange_by_ticker)
+    coverage = _coverage_pct(exchange_by_ticker)
     assert coverage == 50.00
