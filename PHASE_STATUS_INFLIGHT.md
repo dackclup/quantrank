@@ -5601,3 +5601,37 @@ PHASE_STATUS_INFLIGHT.md (this append).
 
 **Files touched**: `pyproject.toml` · `.claude/agents/vercel-preview-auditor.md` ·
 `CLAUDE.md` · `AGENTS.md` · `PHASE_STATUS_INFLIGHT.md` (this append).
+
+---
+
+**$impeccable overdrive — filter-scoped FLIP reshuffle on the ranking table (PR #382)**
+(`frontend/lib/useFlip.ts` new + `frontend/components/RankingTable.tsx`). Overdrive
+direction chosen by the user (A: sort/filter reshuffle FLIP), then narrowed to
+FILTER-SCOPED after a first browser pass showed the sort case misfires on the
+paginated table. When a filter/search change reorders the visible ranking, the
+surviving rows slide old→new via a WAAPI `translateY` (300ms, app
+`cubic-bezier(0.4,0,0.2,1)` ease-in-out, reduced-motion guarded, transform-only so
+`space-y` + table column layout are untouched).
+
+- `useFlip(orderKey, filterKey)` — measures `[data-flip-key]` children in a
+  `useLayoutEffect`, translates survivors on the next render; re-measures on ANY
+  order change (`orderKey`) but only PLAYS on a `filterKey` change. Why
+  filter-scoped: a column-SORT turns over the whole paginated 50-row page so a sort
+  FLIP fires on <5% of rows = looks broken; a FILTER keeps survivors in the DOM so
+  partial animation is semantically correct ("the field responded") + fits the
+  product-register "motion conveys state, not decoration."
+- `RankingTable.tsx` — `orderKey` (page tickers) + `filterKey` (JSON of all 6 filter
+  dims), refs on the desktop `<tbody>` + mobile `<ul>`, `data-flip-key={row.ticker}`
+  on every `<tr>` / `<li>`. Zero-height skip → each hook animates only its visible
+  list (desktop no-op on mobile + vice-versa).
+
+Verified IN-BROWSER (`expert-user-explorer`, real headless Playwright + a
+`Element.prototype.animate` spy, verdict GO): search "A"→"AP" fired 36→7 on `<tr>`,
+sector filter 3; **column-sort fired 0** (×3: Score, reverse, Price); filter-then-sort
+gate = filter 35 / sort 0; mobile search fired 36→7 on `<li>` (TR=0); reduced-motion
+= 0 (rows reorder instantly, all visible); 0 console errors; layout clean (0
+overlaps / 0 stuck transforms / 0 column drift). `ruff check .` clean · `tsc
+--noEmit` 0 · `next build` 506/506 (home First Load JS 109 kB, hook adds ~0) · CI
+Frontend build + Python lint+test + Vercel all green. CLAUDE.md §Gotchas + AGENTS.md
+§Code style mirror added. No compute / schema / scoring / valuation change — 1 new
+client hook + className/ref wiring. Branch `claude/sharp-newton-8pj6p`.
