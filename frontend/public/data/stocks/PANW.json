@@ -5,19 +5,19 @@
   "industry": "Systems Software",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 245191688964.84375,
-  "current_price": 300.48,
-  "rank": 443,
-  "composite_score": 39.74,
+  "market_cap": 240173269042.96875,
+  "current_price": 294.33,
+  "rank": 445,
+  "composite_score": 39.55,
   "pillar_scores": {
     "quality": 32.88,
-    "value": 11.19,
-    "growth": 53.77,
-    "momentum": 62.75,
-    "health": 54.56,
+    "value": 12.1,
+    "growth": 54.11,
+    "momentum": 60.06,
+    "health": 54.52,
     "profitability": 36.99,
-    "technical": 71.71,
-    "risk": 60.29,
+    "technical": 70.77,
+    "risk": 59.06,
     "sentiment": null,
     "ml": null
   },
@@ -34,8 +34,8 @@
     "eps_basic": 1.5709558823529413,
     "eps_diluted": 1.5709558823529413,
     "shares_outstanding": 816000000.0,
-    "market_cap": 245191688964.84375,
-    "pe_ratio_ttm": 191.27208749890298,
+    "market_cap": 240173269042.96875,
+    "pe_ratio_ttm": 187.3572580099608,
     "goodwill": 6931000000.0
   },
   "fair_price": {
@@ -47,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 62.824345921321466,
+        "value": 66.11786284160131,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 125.07074885459507,
+        "value": 123.30920418650854,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 61.439813838828734,
+        "value": 58.442612919572646,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -77,17 +77,19 @@
         "tier_used": null
       }
     },
-    "median": 61.439813838828734,
-    "max": 125.07074885459507,
+    "median": 58.442612919572646,
+    "max": 123.30920418650854,
     "low": 3.254531883428683,
-    "high": 125.07074885459507,
-    "mos_pct": -389.0639997291638,
+    "high": 123.30920418650854,
+    "mos_pct": -403.6222233549271,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
-      "extreme_rim_estimate"
+      "extreme_multiples_ev_ebitda_estimate",
+      "extreme_rim_estimate",
+      "extreme_estimate_majority"
     ],
-    "valuation_methods_applicable": 3
+    "valuation_methods_applicable": 2
   },
   "top5_factors": [],
   "score_history": [],
@@ -97,7 +99,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 103,
+    "filing_lag_days": 104,
     "latest_period_end": "2026-02-11",
     "latest_filed_date": "2026-02-18"
   },
@@ -107,7 +109,9 @@
   "valuation_warnings": [
     "goodwill_heavy",
     "extreme_graham_estimate",
+    "extreme_multiples_ev_ebitda_estimate",
     "extreme_rim_estimate",
+    "extreme_estimate_majority",
     "accruals_momentum_high"
   ],
   "has_history": true,
@@ -123,22 +127,22 @@
     "label": "Information Technology median (n=73)",
     "values": {
       "Quality": 48.63,
-      "Value": 48.63,
-      "Growth": 53.42,
-      "Momentum": 67.98,
+      "Value": 48.86,
+      "Growth": 53.77,
+      "Momentum": 65.96,
       "Health": 69.56,
       "Profitability": 49.54,
-      "Technical": 60.71,
-      "Risk": 48.79
+      "Technical": 63.2,
+      "Risk": 48.59
     }
   },
   "beneish_m_score": -3.234848764466455,
   "dechow_f_score": 1.1923560718378101,
   "recommendation": "cautious",
-  "loss_chance_pct": 71.13141611635649,
-  "price_change_1d_pct": 6.6705,
+  "loss_chance_pct": 72.22403024886754,
+  "price_change_1d_pct": -2.0467,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 39.24,
+  "composite_score_adjusted": 39.05,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -186,10 +190,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.79,
+  "osap_blended_score": 45.7,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 3,
+  "valuation_methods_applicable": 2,
   "form4_diagnostics": null,
-  "cross_source_delta": 0.00612743929121989
+  "cross_source_delta": 0.010213238986766258
 }

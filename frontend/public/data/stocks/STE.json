@@ -5,18 +5,18 @@
   "industry": "Health Care Equipment",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 20600957223.81195,
-  "current_price": 211.07,
-  "rank": 285,
-  "composite_score": 49.27,
+  "market_cap": 20452601029.609146,
+  "current_price": 209.55,
+  "rank": 292,
+  "composite_score": 48.88,
   "pillar_scores": {
     "quality": 39.41,
     "value": 51.69,
     "growth": 68.01,
-    "momentum": 19.42,
+    "momentum": 20.12,
     "health": 81.2,
     "profitability": 48.59,
-    "technical": 62.2,
+    "technical": 52.54,
     "risk": 42.93,
     "sentiment": null,
     "ml": null
@@ -34,8 +34,8 @@
     "eps_basic": 8.04385257199138,
     "eps_diluted": 8.04385257199138,
     "shares_outstanding": 97602485.0,
-    "market_cap": 20600957223.81195,
-    "pe_ratio_ttm": 26.239914945627245,
+    "market_cap": 20452601029.609146,
+    "pe_ratio_ttm": 26.05095023514093,
     "goodwill": 4194800000.0
   },
   "fair_price": {
@@ -47,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 222.49596946519242,
+        "value": 218.27866384841508,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 216.1552142946176,
+        "value": 212.85551960791562,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 274.13386671055594,
+        "value": 269.24367611062394,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -77,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 216.1552142946176,
-    "max": 274.13386671055594,
+    "median": 212.85551960791562,
+    "max": 269.24367611062394,
     "low": 43.43915932117885,
-    "high": 274.13386671055594,
-    "mos_pct": 2.352571964083065,
+    "high": 269.24367611062394,
+    "mos_pct": 1.5529390838662036,
     "valuation_warnings": [
       "goodwill_heavy",
       "value_trap_risk"
@@ -93,7 +93,7 @@
   "data_quality": {
     "missing_metrics": [],
     "imputed_metrics": [],
-    "filing_lag_days": 3,
+    "filing_lag_days": 4,
     "latest_period_end": "2026-05-27",
     "latest_filed_date": "2026-05-29"
   },
@@ -120,17 +120,17 @@
       "Momentum": 34.81,
       "Health": 59.8,
       "Profitability": 50.85,
-      "Technical": 54.08,
-      "Risk": 42.93
+      "Technical": 52.79,
+      "Risk": 42.6
     }
   },
   "beneish_m_score": -7.352048910457745,
   "dechow_f_score": 0.4430959641098462,
   "recommendation": "neutral",
-  "loss_chance_pct": 42.540007762691346,
-  "price_change_1d_pct": -0.7803,
+  "loss_chance_pct": 43.01783743809793,
+  "price_change_1d_pct": -0.7201,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 49.27,
+  "composite_score_adjusted": 48.88,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -178,10 +178,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.56,
+  "osap_blended_score": 50.36,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5,
   "form4_diagnostics": null,
-  "cross_source_delta": 1.4359136202742789e-08
+  "cross_source_delta": 0.002934886057878245
 }
