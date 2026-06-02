@@ -5687,3 +5687,27 @@ Compiled successfully · `grep instrument-serif package-lock.json` = 0. Doc lock
 CLAUDE.md §Stack font list (4→3) + docs/design.md (Four→Three + removed the Instrument row)
 + globals.css / layout.tsx comments + this entry. No compute / schema / scoring / valuation
 change. Branch `claude/sharp-newton-8pj6p`.
+
+---
+
+## Listing-metadata canary — country_coverage_pct + CBOE BTS fix (2026-06-02, post-cron audit)
+
+**Branch**: `claude/listing-metadata-cboe-country`
+**Type**: fix(ingest) + schema PATCH bump `0.10.12-phase4.6 → 0.10.13-phase4.6`. DISPLAY-ONLY — no ranking / scoring / valuation / veto change.
+
+**Origin**: post-cron stock-detail-auditor + defense-layer-auditor (2026-06-01 cron) found CBOE with `country=null` + raw `BTS` exchange chip, and `country_coverage_pct` absent from metadata. The 0.10.12 schema docstring assumed "country tracks exchange 1:1 — no separate counter needed"; the audit disproved it.
+
+**Root cause**: `exchange_name` passes an unknown venue code through verbatim (counts as covered), while `country_for_exchange` resolves only known US codes (unknown → None). They diverge exactly on a raw passthrough code. CBOE's `BTS` (Cboe Global Markets self-lists on Cboe BZX; `BTS` ≠ already-mapped `BATS`) was absent from `_EXCHANGE_NAME_BY_CODE` → exchange 100% / country 99.8%.
+
+**Changes:**
+- `compute/ingest/cross_source.py`: add `"BTS": "Cboe BZX"` to `_EXCHANGE_NAME_BY_CODE` (one line fixes BOTH exchange display + US country tag, since `_US_EXCHANGE_CODES` derives from the dict keys).
+- `compute/output/schemas.py`: add `Metadata.country_coverage_pct: float | None = None` + correct the now-disproven "no separate counter needed" docstring.
+- `compute/main.py`: generalize `_exchange_coverage_pct` → `_coverage_pct` (shared by both metrics); compute + wire `country_coverage_pct`; add a divergence `logger.warning` when country < exchange (the next-CBOE canary).
+- `compute/config.py`: `SCHEMA_VERSION` `0.10.12 → 0.10.13-phase4.6`.
+- `frontend/lib/types.ts` + `frontend/lib/schema-snapshot.json`: schema triple lockstep.
+- Tests: `BTS` mapping regression + `country_coverage_pct` round-trip / divergence / optional-default + `_coverage_pct` rename in `test_main.py` + `test_config.py` pin bump.
+- Docs: SKILL.md schema-table row · CLAUDE.md schema pointer + §Gotcha "coverage divergence" · PHASE_STATUS.md + WORKFLOW.md pointers · AGENTS.md cross-tool note.
+
+**Verification**: `ruff check .` clean · `python -m compute.output.schema_check` in sync · affected pytest green (124).
+
+**Files touched**: `compute/ingest/cross_source.py` · `compute/output/schemas.py` · `compute/main.py` · `compute/config.py` · `frontend/lib/types.ts` · `frontend/lib/schema-snapshot.json` · `tests/test_ingest/test_cross_source_exchange.py` · `tests/test_output/test_exchange_schema.py` · `tests/test_main.py` · `tests/test_config.py` · `SKILL.md` · `CLAUDE.md` · `PHASE_STATUS.md` · `WORKFLOW.md` · `AGENTS.md` · `PHASE_STATUS_INFLIGHT.md` (this append).

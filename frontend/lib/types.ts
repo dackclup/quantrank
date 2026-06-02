@@ -201,6 +201,13 @@ export type Metadata = {
   // StockDetail.exchange resolved to a non-null display name. Ships before the
   // hero country/exchange chips read the field (observability-before-wiring).
   exchange_coverage_pct?: number | null;
+  // country_coverage_pct (0.10.13-phase4.6) — % of universe whose
+  // StockDetail.country resolved (US-tagged). NOT redundant with
+  // exchange_coverage_pct: exchange passes unknown codes through (counts as
+  // covered) while country resolves only known US codes, so the two diverge on
+  // a raw passthrough code (the CBOE/BTS canary; exchange 100% / country 99.8%
+  // on the 2026-06-02 cron before the BTS fix).
+  country_coverage_pct?: number | null;
   // Issue #246 PR2a (0.10.3-phase4.5e) — Rule 18 retrofit for the
   // `_fetch_shares_from_per_filing_xbrl` fallback trigger extended in
   // PR #253. triggered_count = total fired (None-primary + too_low-

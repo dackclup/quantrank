@@ -84,7 +84,17 @@ _CACHE_TTL_SECONDS = config.YFINANCE_INFO_CACHE_MAX_AGE_HOURS * 3600
 # to show the raw code than to drop the field). Sourced from the Yahoo
 # Finance exchange-code set: NMS/NGM/NCM = the three NASDAQ tiers (Global
 # Select / Global Market / Capital Market), NYQ = NYSE, PCX = NYSE Arca,
-# ASE = NYSE American, BATS = Cboe BZX.
+# ASE = NYSE American, BATS/BTS = Cboe BZX.
+#
+# ``BTS`` (2026-06-02 post-cron stock-detail audit) — Cboe Global Markets
+# (ticker CBOE) self-lists on its own Cboe BZX Exchange; Yahoo emits the
+# terse ``BTS`` code for it, DISTINCT from the ``BATS`` code already mapped.
+# Before this entry, ``BTS`` passed through raw as the exchange name AND —
+# because it was absent from ``_US_EXCHANGE_CODES`` (derived from these keys)
+# — ``country_for_exchange("BTS")`` returned None, so CBOE rendered a raw
+# "BTS" chip with no country flag. Adding it here fixes BOTH (exchange display
+# + the US country tag in one line, since the country set derives from these
+# keys).
 _EXCHANGE_NAME_BY_CODE: dict[str, str] = {
     "NMS": "NASDAQ",
     "NGM": "NASDAQ",
@@ -94,6 +104,7 @@ _EXCHANGE_NAME_BY_CODE: dict[str, str] = {
     "NYQ": "NYSE",
     "ASE": "NYSE American",
     "BATS": "Cboe BZX",
+    "BTS": "Cboe BZX",
 }
 
 # Every venue above is a US listing. The S&P 500 is a US-large-cap index, so

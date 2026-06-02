@@ -33,8 +33,16 @@ def test_schema_version_is_phase4_6():
     observability field ``Metadata.exchange_coverage_pct``. Display-only;
     frontend wiring (hero country/exchange chips) lands in PR-B after ≥ 1 cron
     confirms coverage (observability-before-wiring).
+
+    Listing-metadata canary (0.10.13-phase4.6, 2026-06-02 post-cron audit) —
+    PATCH bump for the additive ``Metadata.country_coverage_pct: float | None``.
+    The 0.10.12 design assumed country tracked exchange 1:1; the audit
+    disproved it (CBOE's ``BTS`` code passed through as exchange but resolved
+    to no country → exchange 100% / country 99.8%). The new field is the
+    strict-resolution canary, paired with the ``BTS → Cboe BZX`` fix in
+    ``cross_source._EXCHANGE_NAME_BY_CODE`` and a main.py divergence WARNING.
     Locks the version against accidental revert."""
-    assert config.SCHEMA_VERSION == "0.10.12-phase4.6"
+    assert config.SCHEMA_VERSION == "0.10.13-phase4.6"
 
 
 def test_multi_class_overcount_allowlist_membership():

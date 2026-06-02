@@ -47,6 +47,7 @@ _KNOWN_CODE_CASES: list[tuple[str, str]] = [
     ("NYQ", "NYSE"),
     ("ASE", "NYSE American"),
     ("BATS", "Cboe BZX"),
+    ("BTS", "Cboe BZX"),
 ]
 
 
@@ -54,6 +55,17 @@ _KNOWN_CODE_CASES: list[tuple[str, str]] = [
 def test_exchange_name_known_code(code: str, expected_name: str) -> None:
     """Every known S&P-500-universe exchange code maps to its canonical display name."""
     assert exchange_name(code) == expected_name
+
+
+def test_cboe_bts_code_resolves_exchange_and_country() -> None:
+    """Regression (2026-06-02 post-cron audit) — CBOE Global Markets self-lists
+    on its own Cboe BZX venue, for which yfinance emits the terse ``BTS`` code
+    (DISTINCT from ``BATS``). Before the fix, ``BTS`` passed through raw as the
+    exchange name AND resolved to no country (absent from _US_EXCHANGE_CODES),
+    so CBOE rendered a "BTS" chip with no US flag. Both must now resolve.
+    """
+    assert exchange_name("BTS") == "Cboe BZX"
+    assert country_for_exchange("BTS") == "US"
 
 
 def test_exchange_name_unknown_code_passes_through() -> None:
