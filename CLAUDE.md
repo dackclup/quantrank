@@ -1181,6 +1181,32 @@ whitespace / single-line fixes do not trigger.
   change needed). `min-h-[44px] lg:min-h-0` touch target per the in-drawer chip
   convention.
 
+- **Chip family carries `font-medium`; every large numeric display carries
+  `font-mono`; annotate-amber bodies use `bg-amber-50`; negative-strong rings
+  use the soft `-200` shade, never raw `-300`** (`$impeccable polish` pass
+  2026-06-02 — corrected residual drift, codified here so it doesn't re-drift).
+  Concretely: (1) ALL chips render `font-medium` (the `SectorChip` + the five
+  `RankingTable` active-filter toolbar chips were the holdouts at `font-normal`;
+  `FilterDrawer` / `RecommendationBadge` were already correct). (2) ALL large
+  numeric values use `font-mono tabular-nums` (the `RiskSummaryCard` manipulation
+  index `text-3xl` + its `/100` denominator were rendering in the body font —
+  every other big number, `ScoreGauge` / `MoSBadge` / `HeroMetric`, is mono). (3)
+  `Tier2EventCard`'s annotate severity badge uses `bg-amber-50` (not `bg-amber-100`)
+  to match the app's other amber-warning bodies (`FairPriceCard` chips, `TIERS`
+  Average/Weak chip bodies) — amber has NO globals.css soft-remap, so the lighter
+  shade is what keeps it visually beside the softened rose veto. (4) negative-
+  strong ring shades are `ring-red-200` / `ring-rose-200` (in the globals.css
+  soft-allowlist), never `ring-red-300` (raw, more saturated) — fixed on
+  `RecommendationBadge` `cautious` (Sell) + `LossChanceBadge` High band; the
+  positive-strong ring stays `ring-emerald-300` BY DESIGN (emerald isn't alarm,
+  so the pos/neg-strong asymmetry is intentional per "no dopamine red"). (5)
+  small-caps value sub-labels use `tracking-wider` (not `tracking-wide`) — the
+  `FairPriceCard` stat-grid `dt`s were the holdout. Detail-page section spacing
+  is owned by the `<article>` `space-y-4` — a section MUST NOT add its own
+  `mb-*` (the `PillarRadarChart` `mb-4` was creating a 32px double-gap). And no
+  "coming in v1.3" style stale version copy — use "coming soon" (the
+  `PriceTimePeriodSelector` 1D/5D tooltips).
+
 ## Phase status
 
 Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged

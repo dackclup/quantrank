@@ -393,7 +393,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                 key={`f-sec-${s}`}
                 type="button"
                 onClick={() => toggleSector(s)}
-                className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs ring-1 ring-inset transition-opacity duration-100 hover:opacity-75 ${sty.bg} ${sty.fg} ${sty.ring}`}
+                className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset transition-opacity duration-100 hover:opacity-75 ${sty.bg} ${sty.fg} ${sty.ring}`}
               >
                 <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ backgroundColor: sty.dot }} />
                 {s}
@@ -408,7 +408,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                 key={`f-tier-${id}`}
                 type="button"
                 onClick={() => toggleTier(id)}
-                className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs ring-1 ring-inset transition-opacity duration-100 hover:opacity-75 ${t.cls}`}
+                className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset transition-opacity duration-100 hover:opacity-75 ${t.cls}`}
               >
                 <span className={`inline-block h-1.5 w-1.5 rounded-full ${t.dot}`} />
                 {t.label}
@@ -423,7 +423,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                 key={`f-mos-${id}`}
                 type="button"
                 onClick={() => toggleMos(id)}
-                className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs ring-1 ring-inset transition-opacity duration-100 hover:opacity-75 ${b.cls}`}
+                className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset transition-opacity duration-100 hover:opacity-75 ${b.cls}`}
               >
                 <span className={`inline-block h-1.5 w-1.5 rounded-full ${b.dot}`} />
                 {b.label}
@@ -436,7 +436,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
               key={`f-rec-${rec}`}
               type="button"
               onClick={() => toggleRecommendation(rec)}
-              className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs ring-1 ring-inset transition-opacity duration-100 hover:opacity-75 ${RECOMMENDATION_CHIP_TONES[rec]}`}
+              className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset transition-opacity duration-100 hover:opacity-75 ${RECOMMENDATION_CHIP_TONES[rec]}`}
             >
               <span className={`inline-block h-1.5 w-1.5 rounded-full ${RECOMMENDATION_CHIP_DOTS[rec]}`} />
               {RECOMMENDATION_LABELS[rec]}
@@ -447,7 +447,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
             <button
               type="button"
               onClick={() => setScoreRange([0, 100])}
-              className="inline-flex items-center gap-1.5 rounded-sm bg-slate-100 px-2 py-0.5 text-xs text-slate-700 ring-1 ring-inset ring-slate-300 transition-opacity duration-100 hover:opacity-75 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700"
+              className="inline-flex items-center gap-1.5 rounded-sm bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 ring-1 ring-inset ring-slate-300 transition-opacity duration-100 hover:opacity-75 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700"
             >
               Score {scoreRange[0]}–{scoreRange[1]}
               <span aria-hidden="true" className="opacity-60">×</span>
