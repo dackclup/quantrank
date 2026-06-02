@@ -15,6 +15,8 @@
 // global Disclaimer banner covers the legal "not a backtested
 // probability" framing — no inline qualifier needed.
 
+import { Chip, CHIP_SIZES } from '@/components/Chip';
+
 type Band = {
   max: number;            // strictly less than `max` puts the value in this band
   cls: string;            // chip tone — outlined-light, light mode only
@@ -58,12 +60,6 @@ const BANDS: readonly Band[] = [
   },
 ];
 
-const SIZE_CLASSES: Record<'xs' | 'sm' | 'md', string> = {
-  xs: 'px-1.5 py-0 text-[0.625rem]',
-  sm: 'px-2 py-0.5 text-xs',
-  md: 'px-2.5 py-0.5 text-sm',
-};
-
 function bandFor(pct: number): Band {
   for (const b of BANDS) {
     if (pct < b.max) return b;
@@ -86,7 +82,7 @@ export function LossChanceBadge({
   if (lossChancePct == null) {
     return (
       <span
-        className={`inline-flex items-center text-slate-500 dark:text-slate-400 ${SIZE_CLASSES[size]} ${className}`}
+        className={`inline-flex items-center text-slate-500 dark:text-slate-400 ${CHIP_SIZES[size]} ${className}`}
         title="Loss Chance unavailable — fair-price ensemble missing"
         aria-label="Loss Chance unavailable"
       >
@@ -99,15 +95,16 @@ export function LossChanceBadge({
   // <60 "Neutral" tone the raw value would pick (the "60% · Neutral" bug).
   const rounded = Math.round(lossChancePct);
   const band = bandFor(rounded);
-  const sizeCls = SIZE_CLASSES[size];
   return (
-    <span
-      className={`inline-flex items-center gap-1.5 rounded-sm font-medium ring-1 ring-inset ${band.cls} ${sizeCls} ${className}`}
+    <Chip
+      tone={band.cls}
+      size={size}
+      dot={band.dot}
+      className={className}
       title={`Loss Chance ${rounded}% — combines composite, defense flags, MoS.`}
       aria-label={`Loss Chance ${rounded}%. ${band.label}.`}
     >
-      <span className={`inline-block h-1.5 w-1.5 rounded-full ${band.dot}`} aria-hidden="true" />
       {rounded}%
-    </span>
+    </Chip>
   );
 }

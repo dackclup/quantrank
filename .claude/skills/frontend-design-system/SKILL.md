@@ -52,6 +52,21 @@ for hierarchy.
 
 ### Canonical chip pattern
 
+Use the shared **`Chip` primitive** (`frontend/components/Chip.tsx`) — do NOT
+hand-roll the shell string. `<Chip tone={…} size="sm" dot={…}>label</Chip>`
+renders exactly the markup below (it owns the `inline-flex … rounded-sm
+font-medium ring-1 ring-inset` shell + the `gap-1.5` + the 6px dot + the size
+scale). `RecommendationBadge` / `LossChanceBadge` / `ListingChips` /
+`Tier2EventCard`'s severity badge all render through it. For a bespoke surface
+that deviates on font-weight or text-size — `ScoreBadge`'s `font-semibold
+tabular-nums` numeric pill, `SectorChip`'s inline-rgb sector dot + 1px-larger
+`xs` text — compose the exported `CHIP_BASE` + `CHIP_DOT` constants and the
+`CHIP_SIZES` scale by hand instead of duplicating the literal strings (routing
+those through the `size`/`dot` props would emit a conflicting Tailwind
+utility). The primitive passes tone classes through verbatim so the
+`globals.css` soft-OKLCH override (a class allowlist) still applies — never
+pre-resolve a tone to hex. It expands to:
+
 ```tsx
 // Outlined-light chip — same shape across sector / recommendation /
 // score-tier / MoS-bucket / future exchange / loss-chance.
@@ -126,9 +141,10 @@ Fix: badge and pill use SAME tone family.
 
 ### When chip shape changes (rare)
 
-Two acceptable variations:
+Pass `size` to the `Chip` primitive — the four steps live in `CHIP_SIZES`
+(`Chip.tsx`), so the variations are a prop, not a re-typed string:
 - **`size="xs"`** for ultra-tight layouts (mobile data row, ticker prefix):
-  `px-1.5 py-0 text-[10px]` + dot is still rendered
+  `px-1.5 py-0 text-[0.625rem]` + dot is still rendered
 - **`size="lg"`** for detail page hero header: `px-3 py-1 text-base` + bigger dot
 
 The shape is the same chip — only `px` / `py` / `text-{size}` change.
@@ -143,6 +159,12 @@ Don't duplicate or hardcode tones — import them:
 | `TIERS` | 5 score tiers (Exceptional/Strong/Average/Weak/Poor) with `cls` + `dot` classes |
 | `MOS_BUCKETS` | 3 MoS buckets (Undervalued/Near fair/Overvalued) with `cls` + `dot` |
 | `sectorStyle(sector)` | 11 GICS sectors → `{bg, fg, ring, dot}` |
+
+The chip SHELL (not the tones) lives in `frontend/components/Chip.tsx`: the
+`Chip` component + `CHIP_BASE` / `CHIP_DOT` / `CHIP_SIZES` exports are the single
+source for the outlined-light shape + size scale. Pass a tone from the table
+above (or a sister badge's tone map) INTO `<Chip tone={…}>`; don't re-hardcode
+`inline-flex … ring-1 ring-inset` or the `px-/text-` size strings.
 
 For recommendation-specific tones (PR 4d):
 - `RecommendationBadge.tsx::TONES` — Pattern A (inline badge)
@@ -348,12 +370,16 @@ Before opening a UI PR, walk this checklist:
 - Onboarding a new contributor to QuantRank frontend
 - Porting a design from a screenshot (Jitta-style reference, etc.)
 
-When in doubt: read `RecommendationBadge.tsx` + `SectorChip.tsx` + the
-chip rendering in `RankingTable.tsx` toolbar bar. Three canonical examples
+When in doubt: read `Chip.tsx` (the primitive) + `RecommendationBadge.tsx`
+(component-form caller) + `SectorChip.tsx` (bespoke `CHIP_BASE` caller) + the
+chip rendering in `RankingTable.tsx` toolbar bar (a selection-state caller that
+still hand-rolls the shell with `RECOMMENDATION_CHIP_TONES`). Canonical examples
 of the system in action.
 
 ## Companion docs
 
+- `frontend/components/Chip.tsx` — the outlined-light chip primitive +
+  `CHIP_BASE` / `CHIP_DOT` / `CHIP_SIZES` shell exports
 - `frontend/lib/visual.ts` — TIERS / MOS_BUCKETS / sectorStyle tone bank
 - `frontend/components/RecommendationBadge.tsx` — both Pattern A and
   Pattern B tone exports

@@ -271,6 +271,12 @@ separate, the layout is wrong, not the shadow.
   same 2px radius, no shadow.
 
 ### Chips (the canonical pattern)
+- **Primitive:** the shared `Chip` component (`frontend/components/Chip.tsx`)
+  owns the shell — `<Chip tone={…} size="sm" dot={…}>label</Chip>`. The
+  `CHIP_BASE` / `CHIP_DOT` / `CHIP_SIZES` exports cover bespoke surfaces that
+  deviate on weight/text-size (`ScoreBadge`'s numeric pill, `SectorChip`'s
+  inline-rgb dot). Tone classes pass through verbatim so the `globals.css`
+  soft-OKLCH allowlist still applies — never inline a hex.
 - **Style:** outlined-light, always. Tinted `bg-{tone}-50` + `text-{tone}-700` +
   `ring-1 ring-inset ring-{tone}-200` + an optional `h-1.5 w-1.5 rounded-full`
   status dot (or a ↗/↘ arrow for directional values). 2px body radius; the dot

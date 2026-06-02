@@ -1,5 +1,6 @@
 import type { JSX } from 'react';
 import { sectorStyle } from '@/lib/visual';
+import { CHIP_BASE, CHIP_DOT } from '@/components/Chip';
 
 // Colored sector chip — replaces the plain-text sector cell flagged
 // by the design feedback. The dot left of the label gives a fast
@@ -19,15 +20,20 @@ export function SectorChip({
   size?: 'xs' | 'sm';
 }): JSX.Element {
   const s = sectorStyle(sector);
+  // Composes the shared chip shell + dot by hand (not the `Chip` component):
+  // the `xs` text-size is `text-[0.6875rem]` — a deliberate 1px-larger value
+  // than the canonical `CHIP_SIZES.xs` (`text-[0.625rem]`) for the tight mobile
+  // sector|price row — and the dot is an inline-rgb sector accent, so routing
+  // through `size`/`dot` would emit a conflicting text/dot utility.
   const padX = size === 'xs' ? 'px-1.5 py-0' : 'px-2 py-0.5';
   const textSize = size === 'xs' ? 'text-[0.6875rem]' : 'text-xs';
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-sm font-medium ring-1 ring-inset ${padX} ${textSize} ${s.bg} ${s.fg} ${s.ring}`}
+      className={`${CHIP_BASE} gap-1.5 font-medium ${padX} ${textSize} ${s.bg} ${s.fg} ${s.ring}`}
     >
       <span
         aria-hidden="true"
-        className="inline-block h-1.5 w-1.5 rounded-full"
+        className={CHIP_DOT}
         style={{ backgroundColor: s.dot }}
       />
       <span className="truncate">{sector}</span>

@@ -1184,6 +1184,35 @@ whitespace / single-line fixes do not trigger.
   change needed). `min-h-[44px] lg:min-h-0` touch target per the in-drawer chip
   convention.
 
+- **The outlined-light chip is a PRIMITIVE now — `frontend/components/Chip.tsx`,
+  not a copy-pasted className string** (`$impeccable extract` 2026-06-02). The
+  design system's "one outlined-light chip pattern" (frontend-design-system
+  SKILL.md Rule 2) was, until this PR, a COPY-PASTE convention: the shell
+  (`inline-flex items-center rounded-sm font-medium ring-1 ring-inset` + the
+  `h-1.5 w-1.5 rounded-full` dot + the `px-/text-` size scale) was re-typed
+  inline in 7+ components, and the `SIZE_CLASSES` map was duplicated VERBATIM in
+  `RecommendationBadge` + `LossChanceBadge`. Now: `<Chip tone={…} size="sm"
+  dot={…} leading={…}>label</Chip>` owns the shell + conditional `gap-1.5` + dot,
+  and the `CHIP_BASE` / `CHIP_DOT` / `CHIP_SIZES` exports cover bespoke surfaces
+  that can't route through the canonical props because they'd emit a CONFLICTING
+  Tailwind utility — `ScoreBadge`'s `font-semibold tabular-nums` numeric pill
+  (the chip family is `font-medium`) and `SectorChip`'s inline-rgb sector dot +
+  1px-larger `xs` text (`text-[0.6875rem]` vs the canonical `CHIP_SIZES.xs`
+  `text-[0.625rem]`, a deliberate mobile-row deviation). **Rules of the road:**
+  (a) a NEW metadata chip uses `<Chip>`, never a hand-typed shell; (b) a bespoke
+  numeric/icon surface composes `CHIP_BASE` + `CHIP_DOT` (+ `CHIP_SIZES`) so the
+  shell stays single-sourced; (c) tone classes pass through `Chip` VERBATIM (it
+  is tone-agnostic) so the `globals.css` soft-OKLCH `!important` allowlist still
+  remaps them — never pre-resolve a tone to hex inside the chip; (d) `Chip` is a
+  pure presentational (no-`'use client'`) component so it renders in BOTH server
+  callers (`SectorChip` / `RecommendationBadge` / `ListingChips`) and client
+  callers (`LossChanceBadge` / `Tier2EventCard`). NOT migrated (deliberately
+  left bespoke — different intent, follow-up `polish`): the `RankingTable` /
+  `FilterDrawer` selection-state filter chips (they layer `press hover:opacity-75`
+  + selected/unselected state on `RECOMMENDATION_CHIP_TONES`), `FairPriceCard`'s
+  `<li>`-shaped warning chips, and `FairPriceBarChart`'s verdict badges. The
+  `RECOMMENDATION_CHIP_TONES` / `_DOTS` / `_LABELS` / `_VALUES` exports are
+  unchanged (those filter chips still import them).
 - **Chip family carries `font-medium`; every large numeric display carries
   `font-mono`; annotate-amber bodies use `bg-amber-50`; negative-strong rings
   use the soft `-200` shade, never raw `-300`** (`$impeccable polish` pass

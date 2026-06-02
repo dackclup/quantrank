@@ -3,6 +3,7 @@
 import type { JSX } from 'react';
 
 import type { Tier2Events } from '@/lib/types';
+import { Chip } from '@/components/Chip';
 
 // Per PR 3d Step 6 spec, Tier-2 events are the *first* thing a user
 // should see about a stock — they affect investability more than
@@ -201,12 +202,9 @@ export function Tier2EventCard({
               <span className="text-slate-700 dark:text-slate-300">{row.label}</span>
             </span>
             <span className="flex flex-wrap items-center gap-2">
-              <span
-                className={`inline-flex items-center rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${severityClasses(row.severity)}`}
-                role="status"
-              >
+              <Chip tone={severityClasses(row.severity)} role="status">
                 {row.severityLabel}
-              </span>
+              </Chip>
               {row.url && (
                 <a
                   className="inline-flex items-center text-xs text-slate-500 underline-offset-2 transition-colors duration-150 hover:text-slate-900 hover:underline dark:text-slate-400 dark:hover:text-slate-100"
