@@ -118,7 +118,7 @@ function bandTone(index: number): {
       ring: 'ring-rose-300 dark:ring-rose-800',
       bg: 'bg-rose-50 dark:bg-rose-900/30',
       text: 'text-rose-900 dark:text-rose-200',
-      dot: 'bg-rose-600 dark:bg-rose-400',
+      dot: 'bg-rose-500 dark:bg-rose-400',
       label: 'High',
     };
   }
@@ -215,7 +215,7 @@ export function RiskSummaryCard({
         {hasGates ? (
           <span className="inline-flex items-center gap-1.5 rounded-sm bg-rose-50 px-2.5 py-0.5 text-xs font-medium tabular-nums text-rose-900 ring-1 ring-inset ring-rose-300 dark:bg-rose-900/30 dark:text-rose-200 dark:ring-rose-800">
             <span
-              className="inline-block h-1.5 w-1.5 rounded-full bg-rose-600 dark:bg-rose-400"
+              className="inline-block h-1.5 w-1.5 rounded-full bg-rose-500 dark:bg-rose-400"
               aria-hidden="true"
             />
             {rankGates.length} active
@@ -245,7 +245,7 @@ export function RiskSummaryCard({
               return (
                 <li key={flag} className="flex items-start gap-2">
                   <span
-                    className="mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-rose-600 dark:bg-rose-400"
+                    className="mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-rose-500 dark:bg-rose-400"
                     aria-hidden="true"
                   />
                   <span>
