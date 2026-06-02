@@ -444,6 +444,16 @@ export function FairPriceCard(props) {  // no types
   (`bg-slate-50 dark:bg-slate-800/40`) — dashed border + dimmed content
   distinguish them — so the 4-tile row no longer floats/vanishes. Full rationale
   in CLAUDE.md §Gotchas.
+- **Ranking-table FLIP reshuffle is FILTER-SCOPED** (`lib/useFlip.ts` +
+  `RankingTable.tsx`, `$impeccable overdrive` 2026-06-02): on a filter/search change
+  the surviving rows slide old→new via WAAPI `translateY` (300ms, app ease-in-out,
+  reduced-motion guarded, transform-only). `useFlip(orderKey, filterKey)` re-measures
+  on any order change but only PLAYS when `filterKey` changed — NOT on a column-sort,
+  because the paginated 50-row page turns over on sort so a sort FLIP fires on <5% of
+  rows and reads as broken (browser-verified: sort=0, filter=36/7). Every reorderable
+  child needs `data-flip-key`; the hook skips zero-height nodes (desktop `<tbody>`
+  no-op on mobile + vice-versa). A new filter dimension must be added to the
+  `filterKey` JSON. Full rationale in CLAUDE.md §Gotchas.
 
 ## Git workflow
 

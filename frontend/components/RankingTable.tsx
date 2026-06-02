@@ -24,6 +24,7 @@ import {
 import { parseFiltersFromUrl, writeFiltersToUrl } from '@/lib/filter-url';
 import { formatMosPct } from '@/lib/format';
 import type { Recommendation, StockSummary } from '@/lib/types';
+import { useFlip } from '@/lib/useFlip';
 import {
   MOS_BUCKETS,
   TIERS,
@@ -228,6 +229,29 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
   const safePage = Math.min(page, totalPages);
   const pageRows = sorted.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
+  // FLIP reshuffle ($impeccable overdrive) — when a FILTER / SEARCH change
+  // reorders the visible rows, the surviving rows slide from their old
+  // position to the new one (transform-only, 300ms, app ease-in-out,
+  // reduced-motion guarded). Filter-scoped on purpose: a column-sort turns
+  // over the whole paginated 50-row page, so a sort-triggered FLIP would fire
+  // on <5% of rows and read as broken; a filter keeps survivors in the DOM, so
+  // partial animation there is semantically correct ("the field responded").
+  // `orderKey` re-runs the measure on ANY order change (sort / page silently
+  // re-baseline); `filterKey` is what GATES the play. Both the desktop
+  // <tbody> and the mobile <ul> get a hook; each animates only its visible
+  // (non-zero-height) list, so the off-screen layout is a no-op.
+  const orderKey = pageRows.map((r) => r.ticker).join(',');
+  const filterKey = JSON.stringify([
+    search,
+    [...sectorSet].sort(),
+    scoreRange,
+    [...tierSet].sort(),
+    [...mosSet].sort(),
+    [...recommendationSet].sort(),
+  ]);
+  const tbodyFlipRef = useFlip<HTMLTableSectionElement>(orderKey, filterKey);
+  const cardsFlipRef = useFlip<HTMLUListElement>(orderKey, filterKey);
+
   // Row stagger-entrance. The animate class is intentionally BAKED into the
   // static HTML (NOT gated behind a usePlayOnMount effect) so the rows start at
   // the `rise-in` keyframe's `from` state (opacity:0) from the very FIRST paint.
@@ -238,34 +262,35 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
   // That snap is the refresh FLASH the user reported (2026-05-31, mobile). With
   // the class in the static HTML there is no opaque frame and no flash.
   //
-  // Hydration-safe: `animateRows` derives ONLY from `safePage` (1) + `interacted`
-  // (false) at first render, identical on the build-time prerender and the
-  // client's first render — so the same classes appear on both sides, no
-  // mismatch (this is why baking it in is safe HERE, unlike the general Rule-5
-  // warning which assumes a state/effect-derived class). reduced-motion is still
-  // honored: globals.css `animation: none !important` disables the keyframe AND
-  // its fill-mode, so rows render at their natural opacity:1 (content never
-  // hidden — no-JS users likewise just get the CSS animation playing once, rows
-  // fully visible by ~800ms). Plays on EVERY visit because a fresh mount (full
-  // load or client-nav back to /) re-renders page-1 rows with the class present.
+  // Hydration-safe: `animateRows` derives ONLY from `safePage` (1) +
+  // `firstRenderRef.current` (true) at first render, identical on the build-time
+  // prerender and the client's hydration render (a fresh ref is `true` on both)
+  // — so the same classes appear on both sides, no mismatch. reduced-motion is
+  // still honored: globals.css `animation: none !important` disables the keyframe
+  // AND its fill-mode, so rows render at their natural opacity:1 (content never
+  // hidden). Plays on EVERY visit because a fresh mount (full load or client-nav
+  // back to /) starts with a fresh `firstRenderRef = true`.
   //
-  // The `interacted` latch still matters WITHIN a mount: it fixes the
-  // sort-replay jank (audit MAJOR) — a sort/filter re-keys rows → fresh
-  // <tr>/<li> DOM elements that would re-run the cascade on every click.
-  // The latch flips true on the first interaction (sort / filter / search /
-  // paginate, set synchronously in the handlers) so the cascade plays once
-  // on arrival, then interactions render static. It MUST be flipped
-  // synchronously inside each interaction handler (spendStagger, wired into
-  // onSort / filter toggles / search / paginate) — NOT via a watching
-  // useEffect, because an effect fires AFTER the render that already applied
-  // the animate class to the freshly re-keyed sorted rows, so the cascade
-  // would still play once before the latch caught up.
-  const [interacted, setInteracted] = useState(false);
-  const spendStagger = () => setInteracted(true);
-  const animateRows = safePage === 1 && !interacted;
+  // "Play ONCE per mount, never on an in-page interaction" (design.md Motion
+  // Rule 2): `firstRenderRef` is flipped false by an empty-dep effect that runs
+  // ONCE after the first paint, BEFORE the user can interact — so EVERY later
+  // render (sort / filter / search / paginate / the FLIP reshuffle) reads it as
+  // false → no stagger class → the cascade never replays. This also keeps the
+  // filter-driven FLIP slide the SOLE motion on a filter change (no entrance-fade
+  // competing on rows that ENTER the filtered set). NOTE the precise mechanism:
+  // an empty-dep MOUNT effect, NOT a filter-deps-watching effect — the latter
+  // would fire AFTER each filtered render (too late, replaying the cascade once),
+  // the anti-pattern the prior `interacted`-latch design warned about. The mount
+  // effect fires before any interaction, so the gate is already spent by the time
+  // the user does anything — a single uniform gate covering every path (including
+  // the FilterDrawer-internal search box + score slider) with no per-handler wiring.
+  const firstRenderRef = useRef(true);
+  useEffect(() => {
+    firstRenderRef.current = false;
+  }, []);
+  const animateRows = safePage === 1 && firstRenderRef.current;
 
   const onSort = (key: SortKey) => {
-    spendStagger(); // first sort ends the entrance cascade (no replay)
     if (sortKey === key) {
       setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
     } else {
@@ -501,7 +526,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
+          <tbody ref={tbodyFlipRef} className="divide-y divide-slate-100 dark:divide-slate-800/60">
             {pageRows.map((row, i) => {
               // Stagger entrance on first home view this session — rows
               // cascade in (cap at 12 steps so the tail never waits > ~480ms;
@@ -511,7 +536,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                 ? `animate-rise-in stagger-${Math.min(12, i + 1)}`
                 : '';
               return (
-                <tr key={row.ticker} className={`hover-lift transition-colors duration-100 odd:bg-white even:bg-slate-100 hover:bg-slate-200 dark:odd:bg-slate-900 dark:even:bg-slate-900/50 dark:hover:bg-slate-800 ${staggerClass}`}>
+                <tr key={row.ticker} data-flip-key={row.ticker} className={`hover-lift transition-colors duration-100 odd:bg-white even:bg-slate-100 hover:bg-slate-200 dark:odd:bg-slate-900 dark:even:bg-slate-900/50 dark:hover:bg-slate-800 ${staggerClass}`}>
                   <td className="px-3 py-2 tabular-nums text-slate-700 dark:text-slate-300">{row.rank}</td>
                   <td className="px-3 py-2 font-mono font-semibold text-slate-900 dark:text-slate-100">
                     <Link
@@ -542,7 +567,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
       </div>
 
       {/* Mobile + tablet cards (below lg) */}
-      <ul className="space-y-2 lg:hidden">
+      <ul ref={cardsFlipRef} className="space-y-2 lg:hidden">
         {pageRows.map((row, i) => {
           const mos = formatMosPct(row.margin_of_safety_pct);
           const staggerClass = animateRows
@@ -551,6 +576,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
           return (
             <li
               key={row.ticker}
+              data-flip-key={row.ticker}
               className={`hover-lift press min-h-[7rem] rounded border border-slate-200 bg-white transition-colors duration-100 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/50 ${staggerClass}`}
             >
               <Link

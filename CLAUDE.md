@@ -1366,6 +1366,45 @@ whitespace / single-line fixes do not trigger.
   disappearing. Don't revert to a half-opacity reserved surface, and don't wrap
   the tile grid in an outer card (the tiles are mini-cards — that nests cards).
 
+- **The ranking-table FLIP reshuffle is FILTER-SCOPED — never make it fire on a
+  column-sort** (`frontend/lib/useFlip.ts` + `frontend/components/RankingTable.tsx`,
+  `$impeccable overdrive` 2026-06-02). When a FILTER / SEARCH change reorders the
+  visible rows, the surviving rows slide from their old position to the new one via
+  a WAAPI `node.animate()` `translateY` (300ms, the app-wide `cubic-bezier(0.4,0,0.2,1)`
+  ease-in-out, reduced-motion guarded; transform-only, so the mobile `<ul>` `space-y`
+  and the desktop table's column layout are untouched — verified in-browser: 0 row
+  overlaps / 0 stuck post-animation transforms / 0 column drift). `useFlip(orderKey,
+  filterKey)` re-measures positions on ANY order change (`orderKey` = the visible
+  tickers joined) but only PLAYS the slide when `filterKey` (JSON of search · sectors
+  · scoreRange · tiers · mos · recommendations) changed since the last render — on a
+  sort/page change it silently re-baselines. **Why filter-scoped, not
+  every-reorder**: the table is paginated (50 rows/page), so a column-SORT turns
+  over the ENTIRE visible page — almost none of the new page's keys are in the
+  prev-position map — so a sort-triggered FLIP animates a handful of rows while the
+  rest snap, which reads as broken (browser-verified: sort fired **0** animate calls
+  ×3 incl. reverse, while search fired 36 then 7 and a sector filter 3). A FILTER
+  keeps the survivors in the DOM and slides them as the field narrows, so partial
+  animation there is SEMANTICALLY CORRECT ("the field responded to what you typed")
+  and satisfies the product-register rule "motion conveys state, not decoration."
+  **Contract**: every reorderable child needs `data-flip-key={stableId}` (here
+  `row.ticker`); the hook SKIPS zero-height nodes, so the desktop `<tbody>` hook is a
+  silent no-op on a mobile viewport (table hidden) and the mobile `<ul>` hook is a
+  no-op on desktop — each animates only its own visible list. **Adding a NEW filter
+  dimension means adding it to the `filterKey` JSON** (on top of the existing
+  THREE-place filter sync + the FilterDrawer `activeChips` builder) — miss it and
+  that dimension's changes won't trigger the slide. Do NOT switch the gate to
+  `orderKey` alone or wire a `filterKey`-less `useFlip` onto a paginated list
+  expecting sort to animate — that re-introduces the partial-fire-looks-broken bug.
+  **Companion (entrance-stagger gate):** the row entrance cascade (`animate-rise-in`)
+  is gated to play ONCE per mount — `firstRenderRef` (true on the initial SSR +
+  hydration render, so no mismatch) is flipped false by an empty-dep mount effect
+  that runs before any interaction, so `animateRows` is false on every later render.
+  This (a) enforces design.md Motion Rule 2 "sort/filter must not re-stagger"
+  uniformly (the prior `spendStagger` latch was wired only into `onSort`), and (b)
+  keeps the FLIP the SOLE motion on a filter change (no entrance-fade competing on
+  rows ENTERING the filtered set). Do NOT re-wire the entrance stagger to fire on
+  an interaction — that revives the competition + the Rule-2 violation.
+
 ## Phase status
 
 Current schema **`0.10.12-phase4.6`** on `main` (PR #303 merged
