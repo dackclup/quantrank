@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+import { CurrentPriceLine } from '@/components/CurrentPriceLine';
 import FairPriceCard from '@/components/FairPriceCard';
 import { FairPriceBarChart } from '@/components/FairPriceBarChart';
 import { HeroAttributeTiles } from '@/components/HeroAttributeTiles';
@@ -158,6 +159,12 @@ export default function StockDetailPage({
             <p className="mt-1 font-slab text-2xl text-slate-700 dark:text-slate-300 sm:text-3xl">
               {detail.name}
             </p>
+            {/* Current quote (price + day-over-day change) — re-wired
+                CurrentPriceLine, which was orphaned after a hero refactor;
+                its removal is why the detail page lost the daily change the
+                rankings cards still show ($impeccable critique #2 P1). Client
+                leaf rendered fine by this Server Component page. */}
+            <CurrentPriceLine ticker={detail.ticker} fallbackPrice={detail.current_price} />
           </div>
           <div className="hero-right flex min-w-0 flex-col gap-3">
             {/* Top row: composite donut + MoS donut — paired summary stats
