@@ -872,9 +872,13 @@ whitespace / single-line fixes do not trigger.
   consumers now (Tailwind purges it from the bundle) — don't "clean it up" by
   deleting the keyframe unless you also confirm no future surface wants it. (2)
   Fair value / Target / Loss chance in the hero now COUNT-UP on each visit via
-  the new `HeroMetric` client leaf, which wraps the existing
-  `useCountUp(value, play, 800)` (easeInOutCubic — the SAME app-wide ease-in-out
-  curve as the Score / MoS gauge sweep). `page.tsx` stays a Server Component;
+  the new `HeroMetric` client leaf, which wraps
+  `useCountUp(value, play, 300)` (easeInOutCubic — the SAME app-wide ease-in-out
+  curve as the Score / MoS gauge sweep, but a SHORTER beat: `$impeccable quieter`
+  2026-06-02 dropped it 800 → 300ms so it lands inside the design.md ≤320ms micro
+  budget and the 800ms Score-gauge sweep stays the page's LONE >320ms signature —
+  the prior 800ms made the score gauge + MoS gauge + all three of these count-ups
+  race at 800ms on every detail load; do NOT bump back to 800). `page.tsx` stays a Server Component;
   `HeroMetric` is the small `'use client'` leaf that holds the hook (don't lift
   the hook into the page — that would force the whole detail page client-side).
   The loss-chance band (`{ tone, dot, label }`) is computed server-side in

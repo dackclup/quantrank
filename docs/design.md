@@ -247,6 +247,7 @@ JS hooks in `lib/useMotion.ts`.
 | `.hover-lift` | `translateY(-1px)` | 160ms ease-out | table row / card hover (pairs with slate hover-bg) |
 | `.stagger-1..12` | `animation-delay` 40–480ms | — | cascade a row/list group (capped at 12 steps) |
 | `useFlip` (`lib/useFlip.ts`) | `translateY` FLIP reshuffle | 300ms `cubic-bezier(.4,0,.2,1)` | RankingTable rows slide to new positions on a **filter/search** change (NOT sort — see Rule 2) |
+| `useCountUp` (`HeroMetric`) | number eases 0 → value | 300ms easeInOutCubic | hero SECONDARY metrics (Fair value / Target / Loss chance); within the micro budget so the gauge stays the lone >320ms beat (the Score/MoS gauge's OWN synced count-up rides the 800ms `.gauge-arc` row above) |
 | `animate-shimmer` / `animate-fade-in` | (pre-existing) skeleton + mount | 1.5s / 200ms | async-loading placeholder |
 
 ### Five non-negotiable rules
@@ -286,7 +287,9 @@ The composite-score radial gauge (`ScoreGauge.tsx`, the detail-page
 `ScoreBadge size="lg"`) sweeps 0→value with a synchronized count-up over
 800ms on every visit to a stock's detail page. It is the app's headline number, so it
 earns the one longer beat. Everything else stays in the ≤ 320ms micro
-budget.
+budget — including the secondary hero count-ups (Fair value / Target / Loss chance),
+which `$impeccable quieter` (2026-06-02) dropped 800 → 300ms so the gauge sweep is
+genuinely the LONE >320ms beat, not one of several 800ms animations racing on load.
 
 ---
 

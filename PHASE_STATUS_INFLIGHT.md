@@ -5645,3 +5645,22 @@ overlaps / 0 stuck transforms / 0 column drift). `ruff check .` clean · `tsc
 Frontend build + Python lint+test + Vercel all green. CLAUDE.md §Gotchas + AGENTS.md
 §Code style mirror added. No compute / schema / scoring / valuation change — 1 new
 client hook + className/ref wiring. Branch `claude/sharp-newton-8pj6p`.
+
+---
+
+**$impeccable quieter — calm the stock-detail page-load motion density**
+(`frontend/components/HeroMetric.tsx` + docs). After this session's animate/overdrive/
+delight additions, every stock-detail visit fired ~6 entrance animations near-together
+at ~800ms (chart intro draw + Score-gauge sweep + MoS-gauge sweep + the three hero
+count-ups Fair value / Target / Loss chance) — brushing the product-register "no
+orchestrated page-load sequence" + diluting design.md's own "the score gauge is the
+ONE >320ms beat" (the count-ups were ALSO 800ms). Surgical calm: dropped the three
+secondary `HeroMetric` count-ups 800 → 300ms (inside the ≤320ms micro budget) so they
+settle fast and the 800ms Score-gauge sweep is genuinely the page's LONE >320ms
+signature. Color / contrast / weight / layout were assessed as already deeply restrained
+(LedgerCraft + soft-OKLCH no-alarm-red) → left untouched (quieting them would strip
+identity, not refine it). The Score gauge + MoS gauge sweeps, the chart intro draw,
+FLIP, hover-lift, press, and the home row-stagger are all unchanged (each conveys state
+/ is the one signature). 1 code constant + doc lockstep (CLAUDE.md §Gotcha + AGENTS.md +
+design.md token row & signature note). No compute / schema / scoring / valuation change.
+Branch `claude/sharp-newton-8pj6p`.
