@@ -143,7 +143,7 @@ export function FilterDrawer({
   const scoreActive = scoreRange[0] !== 0 || scoreRange[1] !== 100;
   const activeChips: { key: string; label: string; onRemove: () => void }[] = [];
   if (search.trim())
-    activeChips.push({ key: 'search', label: `Search: ${search}`, onRemove: () => setSearch('') });
+    activeChips.push({ key: 'search', label: `Search: ${search.trim()}`, onRemove: () => setSearch('') });
   if (scoreActive)
     activeChips.push({
       key: 'score',
@@ -217,13 +217,22 @@ export function FilterDrawer({
           {activeChips.length > 0 && (
             <div>
               <div className="mb-2 flex items-baseline justify-between">
-                <label className="text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                {/* <span>, not <label> — this is a section heading for a GROUP
+                    of removable buttons, not a label for a single form control
+                    (an orphaned <label> announces oddly to SR). */}
+                <span className="text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                   Active filters
-                </label>
+                </span>
                 <span className="text-[0.6875rem] text-slate-500 dark:text-slate-400">
                   {activeChips.length}
                 </span>
               </div>
+              {/* Uniform NEUTRAL chips (not per-family tones) on purpose: the ×
+                  is the affordance, and one neutral surface reads as "all of
+                  these are removable" more clearly than a multi-hue strip. Ring
+                  is slate-300 to match the page toolbar's active-filter chip
+                  (RankingTable.tsx) — its semantic twin, not the slate-200
+                  unselected-toggle state below. */}
               <div className="flex flex-wrap gap-1.5">
                 {activeChips.map((chip) => (
                   <button
@@ -231,7 +240,7 @@ export function FilterDrawer({
                     type="button"
                     onClick={chip.onRemove}
                     aria-label={`Remove filter: ${chip.label}`}
-                    className="group inline-flex min-h-[44px] items-center gap-1.5 rounded-sm bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 ring-1 ring-inset ring-slate-200 transition-colors hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-slate-700 lg:min-h-0"
+                    className="group inline-flex min-h-[44px] items-center gap-1.5 rounded-sm bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 ring-1 ring-inset ring-slate-300 transition-colors hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-slate-700 lg:min-h-0"
                   >
                     {chip.label}
                     <svg
