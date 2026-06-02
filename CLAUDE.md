@@ -1282,6 +1282,28 @@ whitespace / single-line fixes do not trigger.
   `press` to stay consistent — same discipline as "a new animated component uses
   ease-in-out".
 
+- **The home-page header is a deliberate 4-TIER hierarchy — don't re-flatten it
+  to a uniform gray run** (`frontend/app/page.tsx`, `$impeccable bolder`
+  2026-06-02). It previously opened with a modest `text-2xl` headline over a
+  single same-weight `text-slate-500` line where the universe COUNT (the fact the
+  app is about) sat at the EXACT same visual weight as the dev-only schema version
+  — flat hierarchy / "too safe". Now four tiers: (1) `text-3xl sm:text-4xl
+  font-slab` headline (`text-balance`); (2) a `text-base` sub-headline whose
+  universe-count number is the ONE figure given presence — `font-mono
+  font-semibold` in **`text-emerald-800 dark:text-emerald-300`** (the `-700`
+  shade soft-remaps to oklch 56% = 4.08:1 on the body bg, which FAILS AA for
+  non-large text; `-800` → oklch 50% = 5.23:1 PASS, and reads more committed),
+  the single deliberate brand accent on the otherwise all-slate front door
+  (product-bolder =
+  stronger hierarchy + weight contrast + ONE accent, NOT color drama / no metric-
+  card / no gradient); (3) a `text-xs` muted PROVENANCE line (universe · updated ·
+  schema) where the schema version is demoted by POSITION (last) — NOT by a
+  fainter color (the inverted `text-slate-400 dark:text-slate-500` token fails AA
+  per the §Gotcha above, so the whole line stays `text-slate-500
+  dark:text-slate-400`); (4) the methodology fine print (content unchanged). A NEW
+  header fact goes in the tier matching its importance — never re-merge tiers 2+3
+  into one gray sentence, and don't promote the schema version out of tier 3.
+
 ## Phase status
 
 Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged

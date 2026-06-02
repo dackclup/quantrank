@@ -418,6 +418,13 @@ export function FairPriceCard(props) {  // no types
   (buttons · chips · toggles · nav/back-links · pagination · CTAs · mobile
   ranking card); NOT the desktop `<tr>` or sort headers. A new interactive
   control must add `press`. Full rationale in CLAUDE.md §Gotchas.
+- **Home-page header = deliberate 4-tier hierarchy** (`app/page.tsx`,
+  `$impeccable bolder` 2026-06-02): headline → weight-contrasted sub-headline
+  (the universe COUNT is the one figure with presence, in brand `emerald-800` —
+  the single front-door accent; `-700` would fail AA at 4.08:1, `-800` = 5.23:1) → muted provenance (universe · updated · schema;
+  schema demoted by POSITION, not a fainter AA-failing color) → methodology fine
+  print. Product-bolder = clarity / hierarchy / one accent, not drama. Don't
+  re-flatten tiers 2+3 into one gray line. Full rationale in CLAUDE.md §Gotchas.
 
 ## Git workflow
 
