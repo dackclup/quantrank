@@ -5301,3 +5301,33 @@ font-mono manip-index ×55, ring-red-200 ×113 / ring-red-300 ×0). CLAUDE.md
 §Gotchas (new chip/numeric/soft-shade consistency entry) + AGENTS.md mirror
 updated. No compute / schema / scoring / valuation change. Branch
 `claude/sharp-newton-8pj6p`.
+
+---
+
+### `$impeccable optimize` — lazy-load the price chart (Recharts code-split) (this PR)
+
+Acts on the `$impeccable audit` one actionable P3 (Recharts dominated the
+stock-detail First Load JS). `optimize.md` discipline: measured first, fixed the
+real bottleneck, measured after.
+
+- **Diagnosis**: `PriceHistoryChart` is the ONLY Recharts consumer
+  (`PillarRadarChart` is a div-bar list). It's `'use client'` + already fetches
+  its history JSON on mount + shows a shimmer skeleton until then (so the static
+  HTML already showed a skeleton, not the chart — the chart is effectively
+  client-loaded today). So deferring the Recharts JS has NO UX downside, and the
+  "never lazy-load above-fold" caution is moot (a skeleton already shows there).
+- **Fix**: new `PriceHistoryChartLazy.tsx` (`'use client'`) wraps it in
+  `dynamic(() => import('./PriceHistoryChart'), { ssr: false, loading: <skeleton> })`;
+  the page imports the wrapper. The wrapper's skeleton is an EXACT copy of the
+  chart's internal one (`space-y-3` shimmer stack + `h-64`) → zero CLS, one
+  continuous skeleton (chunk-load → data-fetch → render).
+- **Measured**: `/stock/[ticker]` First Load JS **214 kB → 110 kB (−49%)**;
+  page-specific code 115 kB → 11 kB; now matches the home page (~107 kB). Recharts
+  moved to an on-demand async chunk.
+
+Verified: `tsc --noEmit` 0 · `next build` 506 routes · `ruff check .` clean; NVDA
+export still ships the skeleton (`Loading price history` + `animate-shimmer`) with
+0 inline Recharts. `frontend-design-reviewer` at the gate; live-chart-renders to
+be confirmed on the Vercel preview (the dynamic-import is a standard Next pattern;
+tsc + build pass). 2 files (1 new wrapper + 2-line page swap) + docs. No compute /
+schema / scoring / valuation change. Branch `claude/sharp-newton-8pj6p`.

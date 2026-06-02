@@ -393,6 +393,13 @@ export function FairPriceCard(props) {  // no types
   strong rings use the soft `-200` shade (never raw `-300`); value sub-labels use
   `tracking-wider`; sections don't add own `mb-*` (the `<article>` `space-y-4`
   owns gaps). Full rationale in CLAUDE.md §Gotchas.
+- **Price chart is lazy-loaded (`PriceHistoryChartLazy`)** (`$impeccable optimize`,
+  2026-06-02): Recharts (the only Recharts consumer) code-splits out of the
+  stock-detail First Load via `dynamic(ssr:false)`, dropping it 214 → 110 kB
+  (−49%). The Server Component page imports the LAZY wrapper, never
+  `PriceHistoryChart` directly (that would pull Recharts back). Zero-CLS — the
+  chart already client-fetched + showed a skeleton. Full rationale in CLAUDE.md
+  §Gotchas.
 
 ## Git workflow
 

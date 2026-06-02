@@ -1207,6 +1207,28 @@ whitespace / single-line fixes do not trigger.
   "coming in v1.3" style stale version copy — use "coming soon" (the
   `PriceTimePeriodSelector` 1D/5D tooltips).
 
+- **The price chart is lazy-loaded via `PriceHistoryChartLazy` so Recharts
+  code-splits OUT of the stock-detail First Load JS — the Server Component page
+  imports the LAZY wrapper, NEVER `PriceHistoryChart` directly** (`frontend/components/PriceHistoryChartLazy.tsx`
+  + `app/stock/[ticker]/page.tsx`, `$impeccable optimize` 2026-06-02). Recharts
+  is the ONLY Recharts consumer in the app (`PillarRadarChart` is a div-bar list,
+  not Recharts) and was the dominant chunk: lazy-loading it via
+  `dynamic(() => import('./PriceHistoryChart'), { ssr: false })` dropped the
+  `/stock/[ticker]` First Load JS from **214 kB → 110 kB (−49%)** (page-specific
+  code 115 kB → 11 kB), matching the home page. **Importing `PriceHistoryChart`
+  directly into the server page would pull Recharts back into First Load** —
+  always go through the lazy wrapper. Safe + zero-CLS because the chart was
+  ALREADY a `'use client'` leaf that fetches its history JSON on mount and shows
+  a shimmer skeleton until then (its header comment: "keeps these out of the SSR
+  bundle"), so the static HTML already showed a skeleton, not the chart. The
+  wrapper's `loading` skeleton is an EXACT copy of the chart's internal one (the
+  `space-y-3` shimmer stack ending in `h-64 w-full animate-shimmer`), so the
+  reserved height is identical → no layout shift, and the user sees one
+  continuous skeleton (chunk-load → data-fetch → render). `next/dynamic` with
+  `ssr: false` MUST live in a Client Component, which is why the wrapper exists
+  (the page is a Server Component). If a SECOND Recharts surface is ever added,
+  give it the same lazy-wrapper treatment.
+
 ## Phase status
 
 Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged

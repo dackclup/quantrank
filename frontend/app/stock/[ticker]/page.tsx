@@ -7,7 +7,7 @@ import { HeroAttributeTiles } from '@/components/HeroAttributeTiles';
 import { HeroMetric } from '@/components/HeroMetric';
 import { MoSBadge } from '@/components/MoSBadge';
 import { PillarRadarChart } from '@/components/PillarRadarChart';
-import { PriceHistoryChart } from '@/components/PriceHistoryChart';
+import { PriceHistoryChartLazy } from '@/components/PriceHistoryChartLazy';
 import RawMetricsTable from '@/components/RawMetricsTable';
 import { RiskSummaryCard } from '@/components/RiskSummaryCard';
 import { ScoreBadge } from '@/components/ScoreBadge';
@@ -261,7 +261,7 @@ export default function StockDetailPage({
               Interactive 5-year price history chart for {detail.ticker}. Latest
               close ${detail.current_price.toFixed(2)}.
             </p>
-            <PriceHistoryChart
+            <PriceHistoryChartLazy
               ticker={detail.ticker}
               fairPriceMedian={detail.fair_price?.median ?? null}
               fairPriceMax={detail.fair_price?.max ?? null}
