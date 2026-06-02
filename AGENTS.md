@@ -408,6 +408,16 @@ export function FairPriceCard(props) {  // no types
   `scoreAccentColor` (the COLOR) stays on its own heat-signal boundaries. A new
   score-tier-word surface must call `scoreTierLabel`, never a local copy. Full
   rationale in CLAUDE.md §Gotchas.
+- **Press feedback = the global `.press` utility** (`globals.css` + 23 controls
+  across 7 files, `$impeccable animate` 2026-06-02): the press/tap tier the
+  motion system was missing (`active:` was 0 app-wide) — `transition: transform
+  130ms + colors/opacity 150ms ease-in-out` + `:active { scale(0.97) }`,
+  reduced-motion guarded beside `.hover-lift`. A global class (not Tailwind
+  `active:scale`) so ONE reduced-motion guard covers every target + it cleanly
+  replaces a host's `transition-colors`/`-opacity`. Scope = discrete controls
+  (buttons · chips · toggles · nav/back-links · pagination · CTAs · mobile
+  ranking card); NOT the desktop `<tr>` or sort headers. A new interactive
+  control must add `press`. Full rationale in CLAUDE.md §Gotchas.
 
 ## Git workflow
 

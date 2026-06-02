@@ -36,7 +36,7 @@ export default function StockDetailPage({
       <article className="space-y-6">
         <Link
           href="/"
-          className="inline-flex min-h-[44px] items-center gap-1 text-sm text-slate-900 transition-opacity hover:opacity-70 dark:text-slate-100"
+          className="inline-flex min-h-[44px] items-center gap-1 text-sm text-slate-900 press hover:opacity-70 dark:text-slate-100"
         >
           <svg
             width="14"
@@ -107,7 +107,7 @@ export default function StockDetailPage({
     <article className="space-y-4">
       <Link
         href="/"
-        className="inline-flex min-h-[44px] items-center gap-1 text-sm text-slate-900 transition-opacity hover:opacity-70 dark:text-slate-100"
+        className="inline-flex min-h-[44px] items-center gap-1 text-sm text-slate-900 press hover:opacity-70 dark:text-slate-100"
       >
         <svg
           width="14"

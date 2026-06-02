@@ -91,7 +91,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             type="button"
             aria-label="Open navigation"
             onClick={openMobile}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-sm text-slate-600 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100 md:hidden"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-sm text-slate-600 press hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100 md:hidden"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="3" y1="6" x2="21" y2="6" />
@@ -111,7 +111,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             href="/"
             data-rail="show"
             aria-label="QuantRank home"
-            className={`hidden min-w-0 items-center gap-2 text-slate-900 transition-opacity hover:opacity-80 dark:text-slate-100 ${collapsed ? 'md:flex' : ''}`}
+            className={`hidden min-w-0 items-center gap-2 text-slate-900 press hover:opacity-80 dark:text-slate-100 ${collapsed ? 'md:flex' : ''}`}
           >
             <span aria-hidden="true" className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-sm bg-emerald-700 font-mono text-xs font-semibold text-white dark:bg-emerald-600 dark:text-white">Q</span>
             <span className="font-slab text-base font-semibold tracking-tight">QuantRank</span>
