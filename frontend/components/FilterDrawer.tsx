@@ -133,6 +133,44 @@ export function FilterDrawer({
     };
   }, [open, onClose]);
 
+  // Active-filter summary chips — mirror the page's active-filter row INSIDE
+  // the drawer so a user can remove ONE specific filter without the
+  // close → click the page chip → reopen dance (Nielsen H3 / $impeccable
+  // minor). Each chip's × reuses the SAME setter the per-group toggle below
+  // uses, so removal is consistent with the controls. "Clear all" (footer)
+  // stays the remove-EVERYTHING path; this is the remove-ONE path. Score is
+  // "active" only when the range is narrowed from the full [0, 100].
+  const scoreActive = scoreRange[0] !== 0 || scoreRange[1] !== 100;
+  const activeChips: { key: string; label: string; onRemove: () => void }[] = [];
+  if (search.trim())
+    activeChips.push({ key: 'search', label: `Search: ${search.trim()}`, onRemove: () => setSearch('') });
+  if (scoreActive)
+    activeChips.push({
+      key: 'score',
+      label: `Score ${scoreRange[0]}–${scoreRange[1]}`,
+      onRemove: () => setScoreRange([0, 100]),
+    });
+  for (const id of tierSet)
+    activeChips.push({
+      key: `tier:${id}`,
+      label: TIERS.find((t) => t.id === id)?.label ?? id,
+      onRemove: () => toggleTier(id),
+    });
+  for (const id of mosSet)
+    activeChips.push({
+      key: `mos:${id}`,
+      label: MOS_BUCKETS.find((b) => b.id === id)?.label ?? id,
+      onRemove: () => toggleMos(id),
+    });
+  for (const rec of recommendationSet)
+    activeChips.push({
+      key: `rec:${rec}`,
+      label: RECOMMENDATION_LABELS[rec],
+      onRemove: () => toggleRecommendation(rec),
+    });
+  for (const s of sectorSet)
+    activeChips.push({ key: `sector:${s}`, label: s, onRemove: () => toggleSector(s) });
+
   return (
     <>
       <div
@@ -176,6 +214,53 @@ export function FilterDrawer({
         </header>
 
         <div className="flex-1 space-y-6 overflow-y-auto px-5 py-5">
+          {activeChips.length > 0 && (
+            <div>
+              <div className="mb-2 flex items-baseline justify-between">
+                {/* <span>, not <label> — this is a section heading for a GROUP
+                    of removable buttons, not a label for a single form control
+                    (an orphaned <label> announces oddly to SR). */}
+                <span className="text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  Active filters
+                </span>
+                <span className="text-[0.6875rem] text-slate-500 dark:text-slate-400">
+                  {activeChips.length}
+                </span>
+              </div>
+              {/* Uniform NEUTRAL chips (not per-family tones) on purpose: the ×
+                  is the affordance, and one neutral surface reads as "all of
+                  these are removable" more clearly than a multi-hue strip. Ring
+                  is slate-300 to match the page toolbar's active-filter chip
+                  (RankingTable.tsx) — its semantic twin, not the slate-200
+                  unselected-toggle state below. */}
+              <div className="flex flex-wrap gap-1.5">
+                {activeChips.map((chip) => (
+                  <button
+                    key={chip.key}
+                    type="button"
+                    onClick={chip.onRemove}
+                    aria-label={`Remove filter: ${chip.label}`}
+                    className="group inline-flex min-h-[44px] items-center gap-1.5 rounded-sm bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 ring-1 ring-inset ring-slate-300 transition-colors hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-slate-700 lg:min-h-0"
+                  >
+                    {chip.label}
+                    <svg
+                      aria-hidden="true"
+                      width="12"
+                      height="12"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      className="text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-300"
+                    >
+                      <path d="M5 5l10 10M15 5L5 15" strokeLinecap="round" />
+                    </svg>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div>
             <label className="mb-2 block text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
               Search
