@@ -5068,3 +5068,31 @@ Verified: `tsc` clean + `next build` 506 routes; `frontend-design-reviewer` at t
 gate. CLAUDE.md §Gotchas + AGENTS.md mirror updated (negative-dot token +
 pillar-bars-by-design). No compute / schema / scoring / valuation change. Branch
 `claude/sharp-newton-8pj6p`.
+
+---
+
+### `$impeccable` re-critique #2 — daily-change on detail + FairPriceCard demote (this PR)
+
+Two P1s from re-critique #2 in one PR:
+- **Daily change restored to the detail page** (B's MAJOR "daily change missing
+  from the detail hero"): root cause was `CurrentPriceLine` — a purpose-built
+  "current quote" block (price + day-over-day change + ↗/↓ + "past day") that
+  had been ORPHANED (a hero refactor dropped its render; only a stale comment in
+  `RankingTable` still referenced it). Re-wired into the detail hero under the
+  company name (`app/stock/[ticker]/page.tsx`): `<CurrentPriceLine ticker
+  fallbackPrice />`, a `'use client'` leaf the Server Component renders fine. The
+  hero now shows the current price + today's move (it previously showed only the
+  forecasts — fair-value / target / loss-chance).
+- **FairPriceCard demoted to the recessed reference surface** (H8 hierarchy):
+  the *reference* "Fair price ensemble" card was `bg-white` — same elevation as
+  the *decision* `FairPriceBarChart` ("Fair price check") directly above it. Now
+  `bg-slate-50/60 dark:bg-slate-900/40` (matching the Supporting-data zone), so
+  the bottom of the detail page reads as a recessed reference zone (FairPriceCard
+  → Supporting-data → methodology) distinct from the white decision cards above.
+  Both `<section>`s (main + null-snapshot fallback) recessed. **FairPriceBarChart
+  stays white (decision) — do NOT re-unify the two surfaces; the split IS the
+  demotion.**
+
+Verified: `tsc` clean + `next build` 506 routes; `frontend-design-reviewer` at
+the gate. No compute / schema / scoring / valuation change. Branch
+`claude/sharp-newton-8pj6p`.

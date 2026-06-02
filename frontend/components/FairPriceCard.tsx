@@ -39,7 +39,7 @@ export default function FairPriceCard({
   // No ensemble at all (snapshot was missing entirely).
   if (!ensemble) {
     return (
-      <section className="rounded border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+      <section className="rounded border border-slate-200 bg-slate-50/60 p-4 dark:border-slate-800 dark:bg-slate-900/40">
         <h2 className="mb-2 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
           Fair price ensemble
         </h2>
@@ -62,7 +62,7 @@ export default function FairPriceCard({
   const mos = formatMosPct(ensemble.mos_pct);
 
   return (
-    <section className="rounded border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+    <section className="rounded border border-slate-200 bg-slate-50/60 p-4 dark:border-slate-800 dark:bg-slate-900/40">
       <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
         Fair price ensemble
       </h2>
