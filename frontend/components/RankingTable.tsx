@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { SearchX } from 'lucide-react';
 
 import { FilterDrawer } from '@/components/FilterDrawer';
 import { LossChanceBadge } from '@/components/LossChanceBadge';
@@ -690,15 +691,30 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
       </ul>
 
       {pageRows.length === 0 && (
-        <div className="rounded border border-slate-200 bg-white p-6 text-center dark:border-slate-800 dark:bg-slate-900">
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            No stocks match the current filters.
+        <div className="animate-fade-in flex flex-col items-center rounded border border-slate-200 bg-white px-6 py-10 text-center dark:border-slate-800 dark:bg-slate-900">
+          {/* Empty-state delight ($impeccable delight): a REACHABLE moment (the
+              user over-filtered to zero). Warm + helpful + professional, not
+              wacky (finance = "read the room"): a muted anchor glyph + a human
+              heading + an actionable nudge telling the user how to RECOVER, not
+              just that they failed. The icon is decorative (aria-hidden) so the
+              heading carries the meaning for SR; fade-in is reduced-motion
+              guarded via the shared motion system. */}
+          <SearchX
+            aria-hidden="true"
+            strokeWidth={1.5}
+            className="mb-3 h-8 w-8 text-slate-300 dark:text-slate-600"
+          />
+          <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
+            No stocks match those filters
+          </p>
+          <p className="mt-1 max-w-xs text-xs text-slate-500 dark:text-slate-400">
+            Try a wider score range, or clear a sector or two.
           </p>
           {activeCount > 0 && (
             <button
               type="button"
               onClick={clearAll}
-              className="mt-3 inline-flex min-h-[44px] items-center rounded-sm border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 press hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+              className="mt-4 inline-flex min-h-[44px] items-center rounded-sm border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 press hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
             >
               Clear all filters
             </button>
