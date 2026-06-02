@@ -363,6 +363,15 @@ export function FairPriceCard(props) {  // no types
   `{ tone, dot, label }` object so the hero now shows the band WORD ("Neutral",
   …) under the number, matching the mobile card. Full rationale in CLAUDE.md
   §Gotchas.
+- **`PillarRadarChart` tier labels share the composite `TIERS` vocabulary**
+  (`frontend/components/PillarRadarChart.tsx` + `lib/visual.ts`, P3 2026-06-02):
+  the pillar bars previously used a separate 4-word scheme (Strong/Decent/Weak/
+  Poor at 30/50/70) that collided with the composite score's 5-tier words
+  (Exceptional/Strong/Average/Weak/Poor at 25/40/55/70) — "Strong" meant two
+  different ranges. The pillar now derives its tier word + color ramp + gridlines
+  + legend from the SAME `TIERS` boundaries, banded off `Math.round(value)`. Do
+  NOT reintroduce a second band table in the pillar. Full rationale in CLAUDE.md
+  §Gotchas.
 
 ## Git workflow
 

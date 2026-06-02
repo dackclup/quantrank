@@ -3,6 +3,7 @@
 import type { JSX } from 'react';
 
 import type { PillarBaseline, PillarScores } from '@/lib/types';
+import { TIERS } from '@/lib/visual';
 
 // "Pillar breakdown" — horizontal bar list from the QuantRank.html
 // design. The previous Recharts polar radar was hard to read for
@@ -37,23 +38,33 @@ const PILLAR_DESCRIPTIONS: Record<string, string> = {
   Risk: 'Volatility & drawdown profile',
 };
 
-// 4-step color ramp — same direction + same raw rgb() as ScoreBadge's
-// scoreAccentColor (sage at top, terracotta at bottom). These are INLINE
-// style values, so the globals.css soft-color overrides (which remap utility
-// CLASSES only) do NOT reach them — the bars render at full saturation BY
-// DESIGN, matching the score-gauge accent ring; the amber mid-band (Weak)
-// has no soft-token equivalent in globals.css anyway.
+// 5-step color ramp keyed to the SAME score-tier boundaries as the composite
+// `TIERS` (25 / 40 / 55 / 70 — visual.ts). P3 vocabulary consolidation
+// (2026-06-02): pillars previously used a SEPARATE 4-band Strong/Decent/Weak/
+// Poor rubric at 30/50/70, which collided with the composite score tiers —
+// "Strong" meant 55-70 on the score gauge but ≥70 on a pillar, same word for
+// two different ranges. Now a pillar at 60 reads the SAME tier WORD + tone as a
+// composite score of 60. These are INLINE style rgb() values, so the
+// globals.css soft-color overrides (which remap utility CLASSES only) do NOT
+// reach them — the bars render at full saturation BY DESIGN, echoing the
+// score-gauge accent palette; the amber / dark-amber mid-bands have no
+// soft-token equivalent in globals.css anyway. Color boundaries == label
+// boundaries == gridlines == legend (all 25/40/55/70) so the pillar is
+// internally coherent.
 const colorFor = (v: number): string =>
   v >= 70 ? 'rgb(5 150 105)' :
-  v >= 50 ? 'rgb(16 185 129)' :
-  v >= 30 ? 'rgb(245 158 11)' :
+  v >= 55 ? 'rgb(16 185 129)' :
+  v >= 40 ? 'rgb(245 158 11)' :
+  v >= 25 ? 'rgb(180 83 9)' :
   'rgb(225 29 72)';
 
+// Tier WORD from the shared composite `TIERS` rubric (Exceptional / Strong /
+// Average / Weak / Poor) so the pillar and the score gauge speak ONE
+// vocabulary — single source of truth in visual.ts, so a threshold change
+// there flows to both surfaces. Matches `getTier` semantics (min inclusive,
+// max exclusive; top open bound 101).
 const tierLabel = (v: number): string =>
-  v >= 70 ? 'Strong' :
-  v >= 50 ? 'Decent' :
-  v >= 30 ? 'Weak' :
-  'Poor';
+  TIERS.find((t) => v >= t.min && v < t.max)?.label ?? 'Poor';
 
 export function PillarRadarChart({
   pillars,
@@ -123,14 +134,19 @@ export function PillarRadarChart({
       <ul className="space-y-3 sm:space-y-2">
         {rows.map((r) => {
           const widthClamped = Math.max(2, Math.min(100, r.value));
-          const c = colorFor(r.value);
+          // Band + display off the ROUNDED integer (the badge shows `rounded`),
+          // so a 54.6 doesn't render "55" next to an "Average" tone while the
+          // legend says Strong starts at 55 (§Gotchas band-from-rounded). The
+          // bar FILL width stays on the raw float — it's a continuous element.
+          const rounded = Math.round(r.value);
+          const c = colorFor(rounded);
           const baselineClamped =
             r.baselineValue !== null ? Math.max(0, Math.min(100, r.baselineValue)) : null;
           return (
             <li
               key={r.key as string}
               className="grid grid-cols-[1fr_auto] grid-rows-[auto_auto] gap-x-3 gap-y-1.5 sm:grid-cols-[8rem_1fr_4.5rem] sm:grid-rows-1 sm:items-center sm:gap-3"
-              title={`${r.label}: ${r.value.toFixed(1)} (${tierLabel(r.value)})${
+              title={`${r.label}: ${r.value.toFixed(1)} (${tierLabel(rounded)})${
                 r.baselineValue !== null && baseline
                   ? ` — ${baseline.label.toLowerCase()}: ${r.baselineValue.toFixed(1)}`
                   : ''
@@ -143,10 +159,11 @@ export function PillarRadarChart({
                 </div>
               </div>
               <div className="relative order-last col-span-2 h-5 rounded-sm bg-slate-100 dark:bg-slate-800 sm:order-none sm:col-span-1">
-                {/* Tier-boundary tick lines at 30 / 50 / 70 — visually
-                    show which tier the bar lands in. */}
-                <div className="absolute inset-y-0 left-[30%] w-px bg-slate-200 dark:bg-slate-700" />
-                <div className="absolute inset-y-0 left-[50%] w-px bg-slate-200 dark:bg-slate-700" />
+                {/* Tier-boundary tick lines at 25 / 40 / 55 / 70 (the shared
+                    composite TIERS boundaries) — show which tier the bar lands in. */}
+                <div className="absolute inset-y-0 left-[25%] w-px bg-slate-200 dark:bg-slate-700" />
+                <div className="absolute inset-y-0 left-[40%] w-px bg-slate-200 dark:bg-slate-700" />
+                <div className="absolute inset-y-0 left-[55%] w-px bg-slate-200 dark:bg-slate-700" />
                 <div className="absolute inset-y-0 left-[70%] w-px bg-slate-200 dark:bg-slate-700" />
                 <div
                   className="absolute inset-y-0.5 left-1 rounded-sm"
@@ -166,9 +183,9 @@ export function PillarRadarChart({
                   className="font-mono text-sm font-semibold tabular-nums"
                   style={{ color: c }}
                 >
-                  {r.value.toFixed(0)}
+                  {rounded}
                 </div>
-                <div className="text-[0.625rem]" style={{ color: c }}>{tierLabel(r.value)}</div>
+                <div className="text-[0.625rem]" style={{ color: c }}>{tierLabel(rounded)}</div>
               </div>
             </li>
           );
@@ -182,43 +199,53 @@ export function PillarRadarChart({
         <div className="hidden sm:block" />
         <div className="relative col-span-2 h-4 text-[0.625rem] text-slate-500 dark:text-slate-400 sm:col-span-1">
           <span className="absolute left-0">0</span>
-          <span className="absolute left-[30%] -translate-x-1/2">30</span>
-          <span className="absolute left-[50%] -translate-x-1/2">50</span>
+          <span className="absolute left-[25%] -translate-x-1/2">25</span>
+          <span className="absolute left-[40%] -translate-x-1/2">40</span>
+          <span className="absolute left-[55%] -translate-x-1/2">55</span>
           <span className="absolute left-[70%] -translate-x-1/2">70</span>
           <span className="absolute right-0">100</span>
         </div>
         <div className="hidden sm:block" />
       </div>
 
-      {/* Legend — explains the 4-tier color ramp. */}
+      {/* Legend — explains the 5-tier color ramp (shared composite TIERS
+          vocabulary + boundaries, so a pillar tier reads the same as a
+          composite score tier). */}
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[0.6875rem] text-slate-500 dark:text-slate-400">
         <span className="inline-flex items-center gap-1.5">
           <span
             className="inline-block h-2 w-3 rounded-sm"
             style={{ backgroundColor: 'rgb(5 150 105)' }}
           />
-          Strong (70+)
+          Exceptional (70+)
         </span>
         <span className="inline-flex items-center gap-1.5">
           <span
             className="inline-block h-2 w-3 rounded-sm"
             style={{ backgroundColor: 'rgb(16 185 129)' }}
           />
-          Decent (50–70)
+          Strong (55–70)
         </span>
         <span className="inline-flex items-center gap-1.5">
           <span
             className="inline-block h-2 w-3 rounded-sm"
             style={{ backgroundColor: 'rgb(245 158 11)' }}
           />
-          Weak (30–50)
+          Average (40–55)
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span
+            className="inline-block h-2 w-3 rounded-sm"
+            style={{ backgroundColor: 'rgb(180 83 9)' }}
+          />
+          Weak (25–40)
         </span>
         <span className="inline-flex items-center gap-1.5">
           <span
             className="inline-block h-2 w-3 rounded-sm"
             style={{ backgroundColor: 'rgb(225 29 72)' }}
           />
-          Poor (&lt;30)
+          Poor (&lt;25)
         </span>
       </div>
 

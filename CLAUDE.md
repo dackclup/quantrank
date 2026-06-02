@@ -999,10 +999,13 @@ whitespace / single-line fixes do not trigger.
   dots (raw `bg-rose-600`) were the last alarm-dots, all now `bg-rose-500`
   (a severity ramp can't carry two distinct SOFT red dots —
   only `--c-neg-dot` exists — so both high bands share it + distinguish via label
-  + `text-red-700/900`). The `PillarRadarChart` bar fills + legend use the same
-  raw `scoreAccentColor`-style rgb as the score gauge BY DESIGN (chart ramp +
-  amber gap) — do NOT re-flag them as a soft-color miss (a stale code comment
-  wrongly claimed they were remapped by the override; corrected 2026-06-01).
+  + `text-red-700/900`). The `PillarRadarChart` bar fills + legend use raw
+  inline rgb (a 5-step ramp echoing the score-gauge accent palette) BY DESIGN —
+  do NOT re-flag them as a soft-color miss (a stale code comment wrongly claimed
+  they were remapped by the override; corrected 2026-06-01). Post-P3 (2026-06-02)
+  the ramp is keyed to the composite `TIERS` boundaries (25/40/55/70), not the
+  old 30/50/70 — see the §Gotchas "PillarRadarChart shares the composite TIERS
+  vocabulary" entry below.
 
 - **Interactive controls carry a `min-h-[44px]` touch target; modals trap +
   restore focus; warning-card headings are severity-toned** (`frontend/components/*`,
@@ -1112,6 +1115,27 @@ whitespace / single-line fixes do not trigger.
   the mobile-card ternary, which is the lockstep contract. General rule for any
   new threshold chip whose value is shown rounded: band off the same rounded
   value you render.
+
+- **`PillarRadarChart` shares the composite `TIERS` vocabulary + boundaries —
+  do NOT reintroduce a separate pillar band rubric** (`frontend/components/PillarRadarChart.tsx`,
+  `$impeccable clarify` P3 2026-06-02). The 8-pillar bar list previously banded
+  with its OWN 4-word scheme (Strong / Decent / Weak / Poor) at 30/50/70 — which
+  COLLIDED with the composite score's 5-tier `TIERS` words (Exceptional / Strong
+  / Average / Weak / Poor at 25/40/55/70 in `lib/visual.ts`): "Strong" meant
+  55-70 on the score gauge but ≥70 on a pillar (same word, two ranges;
+  "Weak"/"Poor" also diverged). A 4-band scheme can NEVER be consistent with the
+  5-tier scale (different boundary counts), so the pillar now derives its tier
+  WORD from `TIERS.find(...)` (single source of truth) and its 5-step color ramp
+  + gridline ticks + axis number ticks + legend are ALL keyed to the SAME
+  25/40/55/70 boundaries — a pillar at 60 now reads identically to a composite
+  score of 60. **Touch the rubric in `lib/visual.ts` and it flows to both
+  surfaces; do NOT hardcode a second band table in the pillar.** Bar
+  tier/number/color band off `Math.round(value)` (band-from-rounded, entry
+  above) so a 54.6 doesn't render "55 Average" against the "Strong (55–70)"
+  legend; only the continuous bar FILL width stays on the raw float.
+  `scoreAccentColor` (the score-gauge ACCENT ring, 20/40/60/80) is intentionally
+  left on its own heat-signal boundaries — it is NOT the tier-label rubric and
+  was not touched.
 
 ## Phase status
 
