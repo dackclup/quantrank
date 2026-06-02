@@ -590,14 +590,15 @@ list lives in [`CLAUDE.md`](CLAUDE.md) §Phase status. Schema-version
 history table is in [`SKILL.md`](SKILL.md). This file's role is to
 note cross-tool-specific points only:
 
-- **All PRs through #373 merged (2026-06-02)** — see CLAUDE.md §Phase status for
-  the full record (PRs #331–#373, 2026-05-31 → 2026-06-02; 43 PRs covering the
-  `$impeccable` full-frontend pass · `financial-engineer` 20th subagent · PR-B
-  country/exchange hero chips · Commit A 12-item deep-audit MUST-FIX sweep). No
-  PR currently in flight. Chore PR pending for pyproject.toml upper bounds +
-  security hardening (not yet filed). Cross-tool agents: `StockDetail` at
-  0.10.12+ carries `exchange` + `country` (`str | None`), populated from cron
-  Run #73+.
+- **Chore PR in flight — pyproject.toml upper bounds + injection guard
+  (this PR)**: adds `<N` upper bounds on 5 Python deps (`numpy <3` ·
+  `tenacity <10` · `yfinance <2` · `lxml <7` · `pyarrow <25`) to prevent
+  surprise major-version footguns; adds untrusted-content prompt-injection
+  guard to `vercel-preview-auditor.md`. Doc + dep bounds only — no
+  compute / schema / scoring / valuation / frontend code change.
+  (PRs #331–#373 all merged 2026-06-02; see CLAUDE.md §Phase status for
+  the full record.) Cross-tool agents: `StockDetail` at 0.10.12+ carries
+  `exchange` + `country` (`str | None`), populated from cron Run #73+.
 
 - Production-verified run: cron **Run #71** (`368dccd9`, 14m 32s
   warm-cache, 2026-05-28 08:44 UTC) — useful for non-Claude agents
