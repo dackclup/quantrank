@@ -47,13 +47,13 @@ const BANDS: readonly Band[] = [
   {
     max: 80,
     cls: 'bg-red-50 text-red-700 ring-red-200 dark:bg-red-900/30 dark:text-red-300 dark:ring-red-800',
-    dot: 'bg-red-500 dark:bg-red-400',
+    dot: 'bg-rose-500 dark:bg-rose-400',
     label: 'Moderate-high loss chance',
   },
   {
     max: 100,
     cls: 'bg-red-50 text-red-900 ring-red-300 dark:bg-red-900/30 dark:text-red-100 dark:ring-red-800',
-    dot: 'bg-red-600 dark:bg-red-400',
+    dot: 'bg-rose-500 dark:bg-rose-400',
     label: 'High loss chance',
   },
 ];

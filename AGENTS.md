@@ -319,7 +319,10 @@ export function FairPriceCard(props) {  // no types
   the `$impeccable polish` PR by moving the pill to the outlined-light chip
   family). For any positive/negative surface use a listed class or the chip
   family; inline `style`/svg `stroke` (gauge accents) are never reached and stay
-  raw rgb by design. Full rationale in CLAUDE.md §Gotchas.
+  raw rgb by design. The one soft NEGATIVE dot is `bg-rose-500`; the "Sell" +
+  high-loss-chance dots (was raw `bg-red-500/600`) now use it. `PillarRadarChart`
+  bar fills are raw `scoreAccentColor` rgb BY DESIGN (chart ramp + amber gap) —
+  not a soft-color miss. Full rationale in CLAUDE.md §Gotchas.
 - **44px touch targets + modal focus-trap + severity-toned warning headings**
   (`frontend/components/*`, 2026-06-01): primary interactive controls carry
   `min-h-[44px]` (mobile-first per PRODUCT.md); `FilterDrawer` traps + restores

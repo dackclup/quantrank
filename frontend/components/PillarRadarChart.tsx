@@ -37,10 +37,12 @@ const PILLAR_DESCRIPTIONS: Record<string, string> = {
   Risk: 'Volatility & drawdown profile',
 };
 
-// 4-step color ramp — same direction as ScoreBadge (sage at top,
-// terracotta at bottom). The soft-color overrides in globals.css
-// remap emerald/rose at render time so these RGB values produce
-// the muted palette.
+// 4-step color ramp — same direction + same raw rgb() as ScoreBadge's
+// scoreAccentColor (sage at top, terracotta at bottom). These are INLINE
+// style values, so the globals.css soft-color overrides (which remap utility
+// CLASSES only) do NOT reach them — the bars render at full saturation BY
+// DESIGN, matching the score-gauge accent ring; the amber mid-band (Weak)
+// has no soft-token equivalent in globals.css anyway.
 const colorFor = (v: number): string =>
   v >= 70 ? 'rgb(5 150 105)' :
   v >= 50 ? 'rgb(16 185 129)' :

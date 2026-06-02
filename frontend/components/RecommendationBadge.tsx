@@ -50,7 +50,7 @@ const DOTS: Record<Recommendation, string> = {
   bullish: 'bg-emerald-700 dark:bg-emerald-400',
   lean_bullish: 'bg-emerald-500 dark:bg-emerald-300',
   neutral: 'bg-slate-500 dark:bg-slate-400',
-  cautious: 'bg-red-600 dark:bg-red-400',
+  cautious: 'bg-rose-500 dark:bg-rose-400',
 };
 
 const LABELS: Record<Recommendation, string> = {

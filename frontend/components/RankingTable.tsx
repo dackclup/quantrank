@@ -650,8 +650,8 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                           rounded < 25 ? { tone: 'text-emerald-700 dark:text-emerald-300', dot: 'bg-emerald-700 dark:bg-emerald-400', label: 'Low' } :
                           rounded < 40 ? { tone: 'text-emerald-700 dark:text-emerald-300', dot: 'bg-emerald-500 dark:bg-emerald-400', label: 'Moderate-low' } :
                           rounded < 60 ? { tone: 'text-slate-700 dark:text-slate-300', dot: 'bg-slate-500 dark:bg-slate-400', label: 'Neutral' } :
-                          rounded < 80 ? { tone: 'text-red-700 dark:text-red-300',     dot: 'bg-red-500 dark:bg-red-400',     label: 'Moderate-high' } :
-                                     { tone: 'text-red-700 dark:text-red-300',     dot: 'bg-red-600 dark:bg-red-400',     label: 'High' };
+                          rounded < 80 ? { tone: 'text-red-700 dark:text-red-300',     dot: 'bg-rose-500 dark:bg-rose-400',   label: 'Moderate-high' } :
+                                     { tone: 'text-red-700 dark:text-red-300',     dot: 'bg-rose-500 dark:bg-rose-400',   label: 'High' };
                         return (
                           <>
                             <div className="flex items-baseline gap-1.5">

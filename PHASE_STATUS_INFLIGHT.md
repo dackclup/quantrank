@@ -5041,3 +5041,29 @@ Verified: `tsc` clean + `next build` 506 routes; `frontend-design-reviewer` at t
 gate. CLAUDE.md §Gotchas + AGENTS.md mirror record the band-from-rounded
 invariant. No compute / schema / scoring / valuation change. Branch
 `claude/sharp-newton-8pj6p`.
+
+---
+
+### `$impeccable colorize` — palette coherence (alarm-red dots → soft) (this PR)
+
+Re-critique #2 P1 (palette coherence). Two parts:
+- **Alarm-red dots → soft `bg-rose-500`** (`--c-neg-dot`): the recommendation
+  "Sell" dot (`RecommendationBadge`) + the Moderate-high/High loss-chance dots
+  (`LossChanceBadge` + `RankingTable` mobile card) were the last raw
+  `bg-red-500/600` dots — NOT in the globals.css allowlist, so they rendered raw
+  alarm-red against otherwise-soft chip bodies (the "gamified red-green"
+  PRODUCT.md anti-reference). Now `bg-rose-500 dark:bg-rose-400`, matching
+  `FairPriceBarChart`'s existing "Overvalued" dot. A severity ramp can't carry
+  two distinct SOFT red dots (only `--c-neg-dot` exists), so both high bands
+  share `bg-rose-500` + distinguish via label + `text-red-700/900`.
+- **`PillarRadarChart` comment fix** (verify-before-fix on the re-critique's "P0
+  pillar bars bypass soft-color"): the bars are raw `scoreAccentColor`-style rgb
+  BY DESIGN (consistent with the score-gauge accent ring; the amber mid-band has
+  no soft token, so softening only emerald/rose would leave a lone raw amber).
+  The actual defect was a stale code comment falsely claiming the inline rgb was
+  remapped by globals.css — corrected. Bars unchanged.
+
+Verified: `tsc` clean + `next build` 506 routes; `frontend-design-reviewer` at the
+gate. CLAUDE.md §Gotchas + AGENTS.md mirror updated (negative-dot token +
+pillar-bars-by-design). No compute / schema / scoring / valuation change. Branch
+`claude/sharp-newton-8pj6p`.

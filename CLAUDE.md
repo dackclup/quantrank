@@ -988,7 +988,15 @@ whitespace / single-line fixes do not trigger.
   remaps utility CLASSES only: inline `style` / svg `stroke` values (the score
   + MoS gauge accents via `scoreAccentColor` / `MoSBadge`) are never reached and
   stay raw mid-saturation rgb BY DESIGN (thin ring needs the saturation; the
-  amber mid-band has no soft token anyway).
+  amber mid-band has no soft token anyway). **The one soft NEGATIVE dot token is
+  `bg-rose-500`** (→ `--c-neg-dot`); the recommendation "Sell" + loss-chance
+  Moderate-high/High dots were the last raw `bg-red-500/600` alarm-dots and are
+  now `bg-rose-500` (a severity ramp can't carry two distinct SOFT red dots —
+  only `--c-neg-dot` exists — so both high bands share it + distinguish via label
+  + `text-red-700/900`). The `PillarRadarChart` bar fills + legend use the same
+  raw `scoreAccentColor`-style rgb as the score gauge BY DESIGN (chart ramp +
+  amber gap) — do NOT re-flag them as a soft-color miss (a stale code comment
+  wrongly claimed they were remapped by the override; corrected 2026-06-01).
 
 - **Interactive controls carry a `min-h-[44px]` touch target; modals trap +
   restore focus; warning-card headings are severity-toned** (`frontend/components/*`,
