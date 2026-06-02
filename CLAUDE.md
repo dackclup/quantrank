@@ -1137,6 +1137,32 @@ whitespace / single-line fixes do not trigger.
   left on its own heat-signal boundaries — it is NOT the tier-label rubric and
   was not touched.
 
+- **MoS donut + pillar rows expose their data to SR (not just a mouse `title`);
+  the hero MoS is anchored "vs fair value"; the hero shows "Data as of {date}"**
+  (`MoSBadge.tsx` + `PillarRadarChart.tsx` + `app/stock/[ticker]/page.tsx`,
+  `$impeccable` a11y/clarify minors 2026-06-02). (1) `MoSBadge` is now a single
+  `role="img"` with a comprehensive `aria-label` ("Margin of safety versus fair
+  value: −12%, Overvalued") built from the FINAL `mos` (never the count-up
+  `shown`), with the donut `<svg>` `aria-hidden` — SR announces ONE clean string
+  instead of the donut digit + the text column separately, and the basis reaches
+  SR/keyboard (the old mouse-only `title` on the non-interactive `<div>` did
+  not). (2) `MoSBadge` also shows a VISIBLE `(vs fair value)` anchor (mirrors
+  `FairPriceCard`'s label) so the hero MoS is disambiguated in-page from
+  `FairPriceBarChart`'s "vs today's price" (vs MARKET price) — each MoS formula
+  now names its anchor on screen (the §Gotchas "fair-price detail pair" two-
+  formula split). (3) Each `PillarRadarChart` row adds an `sr-only` span with the
+  sector-median (`baseline.label` + rounded value), gated on the SAME
+  `baselineValue !== null` as the visual notch — so the median that lived only in
+  the mouse `title` + the bar notch now reaches SR/keyboard. (4) The detail hero
+  shows a compact "Data as of {YYYY-MM-DD}" line from
+  `getMetadata().last_update_utc` (the cron date the home page already shows) —
+  freshness was previously only inside the collapsed Supporting-data drawer.
+  NOTE: `MoSCell.tsx` is ORPHANED dead code (no importer — only stale comment
+  refs in `page.tsx` / `LossChanceBadge.tsx` / `visual.ts`); not a live surface,
+  so its `title` was out of scope. Still-open `$impeccable` minor (separate PR):
+  the FilterDrawer can't remove an individual active filter from a consolidated
+  in-drawer summary (the per-group toggles already de-select; Nielsen H3).
+
 ## Phase status
 
 Current schema **`0.10.11-phase4.6`** on `main` (PR #303 merged
