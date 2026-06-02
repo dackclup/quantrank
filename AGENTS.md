@@ -372,6 +372,13 @@ export function FairPriceCard(props) {  // no types
   + legend from the SAME `TIERS` boundaries, banded off `Math.round(value)`. Do
   NOT reintroduce a second band table in the pillar. Full rationale in CLAUDE.md
   §Gotchas.
+- **Detail-page a11y/clarity minors** (`MoSBadge` + `PillarRadarChart` +
+  `app/stock/[ticker]/page.tsx`, 2026-06-02): the MoS donut is a `role="img"`
+  with a full `aria-label` + a visible `(vs fair value)` anchor (disambiguates
+  the two MoS formulas in-page); each pillar row carries an `sr-only` sector-
+  median (parity with the mouse `title` + notch); the hero shows "Data as of
+  {date}". `MoSCell.tsx` is orphaned dead code. Full rationale in CLAUDE.md
+  §Gotchas.
 
 ## Git workflow
 

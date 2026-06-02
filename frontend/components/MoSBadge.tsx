@@ -66,9 +66,13 @@ export function MoSBadge({ mos }: { mos: number | null | undefined }): JSX.Eleme
 
   if (mos == null || Number.isNaN(mos)) {
     return (
-      <div className="flex items-center gap-2">
+      <div
+        className="flex items-center gap-2"
+        role="img"
+        aria-label="Margin of safety versus fair value: unavailable"
+      >
         <div className="relative h-16 w-16 shrink-0">
-          <svg viewBox="0 0 64 64" className="h-16 w-16 -rotate-90">
+          <svg viewBox="0 0 64 64" className="h-16 w-16 -rotate-90" aria-hidden="true">
             <circle
               cx="32"
               cy="32"
@@ -85,6 +89,9 @@ export function MoSBadge({ mos }: { mos: number | null | undefined }): JSX.Eleme
         <div className="flex min-w-[3.5rem] flex-col">
           <span className="text-[0.625rem] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
             Margin of safety
+            <span className="ml-1 normal-case tracking-normal text-slate-500 dark:text-slate-400">
+              (vs fair value)
+            </span>
           </span>
           <span className="font-mono text-lg font-semibold tabular-nums text-slate-300 dark:text-slate-600">
             —
@@ -109,12 +116,24 @@ export function MoSBadge({ mos }: { mos: number | null | undefined }): JSX.Eleme
   const reverse = mos < 0; // negative → mirror the gauge to counter-clockwise
 
   return (
-    <div className="flex items-center gap-2" title={`${mos.toFixed(1)}% margin of safety`}>
+    // role="img" + a single comprehensive aria-label so SR announces one clean
+    // string ("Margin of safety versus fair value: +12%, Undervalued") instead
+    // of the donut center digit + the text column separately — and so the
+    // basis ("vs fair value") reaches SR/keyboard, which the mouse-only `title`
+    // on this non-interactive div never did ($impeccable a11y minor). The label
+    // is built from the FINAL `mos` (not the count-up `shown`), so it never
+    // animates. The visual children are presentational under role="img".
+    <div
+      className="flex items-center gap-2"
+      role="img"
+      aria-label={`Margin of safety versus fair value: ${fullOf(mos)}, ${tierLabel(mos)}`}
+      title={`${mos.toFixed(1)}% margin of safety vs fair value`}
+    >
       {/* Negative MoS mirrors the whole gauge horizontally so the arc sweeps
           counter-clockwise (opposite the score gauge); the number span is
           mirrored back below so it stays readable. */}
       <div className={`relative h-16 w-16 shrink-0${reverse ? ' -scale-x-100' : ''}`}>
-        <svg viewBox="0 0 64 64" className="h-16 w-16 -rotate-90">
+        <svg viewBox="0 0 64 64" className="h-16 w-16 -rotate-90" aria-hidden="true">
           <circle
             cx="32"
             cy="32"
@@ -156,6 +175,9 @@ export function MoSBadge({ mos }: { mos: number | null | undefined }): JSX.Eleme
       <div className="flex min-w-[3.5rem] flex-col">
         <span className="text-[0.625rem] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
           Margin of safety
+          <span className="ml-1 normal-case tracking-normal text-slate-500 dark:text-slate-400">
+            (vs fair value)
+          </span>
         </span>
         <span className="font-mono text-lg font-semibold tabular-nums text-slate-900 dark:text-slate-100">
           {fullOf(shown)}

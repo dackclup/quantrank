@@ -5167,3 +5167,48 @@ present. `frontend-design-reviewer` at the gate. CLAUDE.md §Gotchas (new pillar
 TIERS entry + pillar-bars rgb note) + AGENTS.md mirror updated. No compute /
 schema / scoring / valuation change — 1 frontend component + docs only. Branch
 `claude/sharp-newton-8pj6p`.
+
+---
+
+### `$impeccable` a11y + clarify minors — detail-page cluster (this PR)
+
+Re-critique #2 minors (3 of 4 — the detail-page cluster; the 4th, FilterDrawer
+in-drawer active-filter removal, is a focused follow-up PR). 3 files, +46/−5.
+
+- **`MoSBadge.tsx`** (Sam keyboard/SR minor + Alex two-MoS-formula minor): the
+  MoS donut's mouse-only `title` on a non-interactive `<div>` was invisible to
+  keyboard/SR. Now a single `role="img"` + comprehensive `aria-label` ("Margin
+  of safety versus fair value: −12%, Overvalued", built from the FINAL `mos`, not
+  the count-up), donut `<svg>` `aria-hidden` → SR announces one clean string. Also
+  adds a VISIBLE `(vs fair value)` anchor (mirrors `FairPriceCard`) so the hero
+  MoS is disambiguated in-page from `FairPriceBarChart`'s "vs today's price"
+  (vs market) — each formula now names its anchor on screen.
+- **`PillarRadarChart.tsx`** (Sam minor): each row adds an `sr-only` sector-median
+  (`baseline.label` + rounded value), gated on the SAME `baselineValue !== null`
+  as the visual notch — the median that lived only in the mouse `title` + the
+  notch now reaches SR/keyboard (verified: NVDA renders 8 sr-only
+  "Information Technology median (n=73) N" spans, lockstep with the notch).
+- **`app/stock/[ticker]/page.tsx`** (open question → yes): compact "Data as of
+  {YYYY-MM-DD}" in the hero from `getMetadata().last_update_utc` (the cron date
+  the home page already shows); freshness was previously only inside the
+  collapsed Supporting-data drawer.
+
+Verify-before-fix: `MoSCell.tsx` is ORPHANED dead code (no importer; stale comment
+refs only) → out of scope. The two detail fair-price cards were ALREADY visibly
+disambiguated (`FairPriceCard` "(vs fair value)" + `FairPriceBarChart` "vs today's
+price"); this PR only adds the missing hero anchor.
+
+Verified: `tsc --noEmit` 0 errors; `next build` 506 routes; `ruff check .` clean;
+NVDA export cross-checked (role=img aria-label, visible "(vs fair value)", "Data
+as of 2026-06-01", 8 pillar sr-only median spans, donut `aria-hidden`).
+`frontend-design-reviewer` at the gate. CLAUDE.md §Gotchas + AGENTS.md mirror
+updated. No compute / schema / scoring / valuation change. Branch
+`claude/sharp-newton-8pj6p`.
+
+### Still-open minor (separate follow-up PR)
+- **FilterDrawer — remove an individual active filter from a consolidated
+  in-drawer summary** (Nielsen H3; re-critique #2). Today the per-group toggles
+  already de-select a filter from inside the drawer, but there's no single
+  "active filters" removable-chip summary at the top (parity with the page's
+  active-filter chips). Distinct FilterDrawer UX surface (focus-trap + chip
+  removal wiring) → its own PR.

@@ -186,6 +186,14 @@ export function PillarRadarChart({
                   {rounded}
                 </div>
                 <div className="text-[0.625rem]" style={{ color: c }}>{tierLabel(rounded)}</div>
+                {/* Sector-median value is otherwise only in the mouse `title`
+                    + the visual notch on the bar — surface it to keyboard/SR
+                    too ($impeccable a11y minor). */}
+                {r.baselineValue !== null && baseline && (
+                  <span className="sr-only">
+                    {baseline.label} {Math.round(r.baselineValue)}
+                  </span>
+                )}
               </div>
             </li>
           );

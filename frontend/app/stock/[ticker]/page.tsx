@@ -15,7 +15,7 @@ import { RecommendationBadge } from '@/components/RecommendationBadge';
 import { ListingChips } from '@/components/ListingChips';
 import { StockLogo } from '@/components/StockLogo';
 import { Tier2EventCard } from '@/components/Tier2EventCard';
-import { getStockDetail, listTickersForStaticBuild } from '@/lib/data';
+import { getMetadata, getStockDetail, listTickersForStaticBuild } from '@/lib/data';
 import { filingLagBadgeClasses } from '@/lib/visual';
 
 export const dynamicParams = false;
@@ -87,6 +87,12 @@ export default function StockDetailPage({
   // tone the raw value would pick (the "60% · Neutral" bug — see §Gotchas
   // band-from-rounded). The five `{ tone, dot, label }` rows are an exact
   // copy of the RankingTable mobile-card ternary; they move in lockstep.
+  // Compute freshness date (UTC date portion of the cron's last_update_utc)
+  // for the hero "Data as of" line — the same source the home page shows
+  // ($impeccable harden minor: the detail page previously surfaced a date
+  // only inside the collapsed Supporting-data drawer). Server-read, no client cost.
+  const dataAsOf = getMetadata().last_update_utc?.slice(0, 10) ?? null;
+
   const lc =
     detail.loss_chance_pct == null ? null : Math.round(detail.loss_chance_pct);
   const lossBand =
@@ -172,6 +178,11 @@ export default function StockDetailPage({
                 rankings cards still show ($impeccable critique #2 P1). Client
                 leaf rendered fine by this Server Component page. */}
             <CurrentPriceLine ticker={detail.ticker} fallbackPrice={detail.current_price} />
+            {dataAsOf && (
+              <p className="mt-1 text-[0.6875rem] text-slate-500 dark:text-slate-400">
+                Data as of {dataAsOf}
+              </p>
+            )}
           </div>
           <div className="hero-right flex min-w-0 flex-col gap-3">
             {/* Top row: composite donut + MoS donut — paired summary stats
