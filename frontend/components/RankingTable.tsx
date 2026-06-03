@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { SearchX } from 'lucide-react';
 
 import { FilterDrawer } from '@/components/FilterDrawer';
+import { FilterRail } from '@/components/FilterRail';
 import { LossChanceBadge } from '@/components/LossChanceBadge';
 import {
   RECOMMENDATION_CHIP_DOTS,
@@ -392,9 +393,32 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
   };
 
   return (
-    <div className={`space-y-3 ${selected.size > 0 ? 'pb-20' : ''}`}>
-      {/* Toolbar: Filters button (with active count) + inline search + count */}
-      <div className="flex flex-wrap items-center gap-2">
+    <div className={selected.size > 0 ? 'pb-20' : undefined}>
+      {/* xl+ : persistent filter rail | content column. Below xl the rail is
+          hidden (display:none) and the FilterDrawer + its toolbar trigger take over.
+          (impeccable critique P1 — a 502-row screener must not hide its primary
+          task behind a modal on desktop.) Engages at xl, not lg: a 288px rail at
+          lg (1024-1279) squeezed the 7-col table below its ~700px floor. */}
+      <div className="xl:flex xl:items-start xl:gap-6">
+        <FilterRail
+          state={{ search, sectorSet, scoreRange, tierSet, mosSet, recommendationSet }}
+          setters={{
+            setSearch,
+            toggleSector,
+            setScoreRange,
+            toggleTier,
+            toggleMos,
+            toggleRecommendation,
+            clearAll,
+          }}
+          sectors={sectors}
+          totalCount={data.length}
+          filteredCount={filtered.length}
+        />
+        <div className="min-w-0 space-y-3 xl:flex-1">
+      {/* Toolbar: Filters button (with active count) + inline search + count.
+          Hidden at xl+ — the persistent FilterRail replaces it there. */}
+      <div className="flex flex-wrap items-center gap-2 xl:hidden">
         <button
           type="button"
           onClick={() => setDrawerOpen(true)}
@@ -442,7 +466,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
       {/* Active filter chips — click any chip to remove that single
           filter; "Clear all" wipes everything. */}
       {activeCount > 0 && (
-        <div className="flex flex-wrap items-center gap-1.5">
+        <div className="flex flex-wrap items-center gap-1.5 xl:hidden">
           {Array.from(sectorSet).map((s) => {
             const sty = sectorStyle(s);
             return (
@@ -856,6 +880,8 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
           </button>
         </div>
       )}
+        </div>
+      </div>
 
       {/* Compare action bar — appears once anything is selected. Fixed to the
           viewport bottom (the wrapper is pointer-events-none so it never blocks
