@@ -137,7 +137,7 @@ export function Sidebar({ collapsed, animate, onToggleCollapse, mobileOpen, onMo
             className="flex min-h-[44px] min-w-0 items-center gap-2 text-slate-900 press hover:opacity-80 dark:text-slate-100"
             aria-label="QuantRank home"
           >
-            <span aria-hidden="true" className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-sm bg-emerald-700 font-mono text-xs font-semibold text-white dark:bg-emerald-600 dark:text-white">Q</span>
+            <span aria-hidden="true" className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-sm bg-emerald-700 font-mono text-xs font-semibold text-white dark:bg-emerald-700 dark:text-white">Q</span>
             {/* The whole brand Link carries `data-rail="hide"`, so it (Q +
                 wordmark together) hides at md+ when collapsed — it lives in the
                 top header then. On mobile (< md) the rule doesn't apply, so the

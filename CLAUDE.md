@@ -428,6 +428,7 @@ always-loaded context small while preserving discoverability of every invariant.
 - **Whole-app polish conventions (`$impeccable polish "all app"`, 2026-06-03) — empty-state CTA is `disabled` not just styled · a labeled chip inside an `aria-label`'d container is `aria-hidden` · `ring-rose-300` is never a negative chip ring (`-200` only) · detail-page valuation sections own no `mb-*`**
 - **Sidebar version chip = build-time `NEXT_PUBLIC_APP_VERSION` (`next.config.js` git-describe→SHA), never a hardcoded version**
 - **Cross-stock `/compare` reads `?compare=` via `window.location` (mount effect), NEVER `useSearchParams` (static-export `<Suspense>` trap); ranking-table multi-select is in-memory (URL is the share artifact) · `pillarColor`→`lib/visual`, `flagLabel`→`lib/flag-labels` are SHARED tokens (don't re-inline) · best-in-row is metric-aware + never color-only**
+- **`globals.css` soft-color `!important` override is LITERAL-class-keyed → it NEVER reaches `dark:bg-emerald-*` / `dark:bg-rose-*` solid-fills (they render RAW Tailwind in dark → white label ~3.8:1, under AA). A dark CTA / brand mark = `dark:bg-emerald-700` (emerald-700 = `#047857`, white 5.5:1) or a `--c-*` token directly, never `dark:bg-emerald-600` expecting the soft remap (filter theme audit #401; Q-mark sweep this PR)**
 
 ## Phase status
 

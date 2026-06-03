@@ -399,3 +399,43 @@ build + `frontend-design-reviewer` static review cover it.
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Filter contrast sweep completion — selected-chip + Q-mark + §Gotchas (in flight, 2026-06-03)
+
+**Branch**: `claude/optimistic-fermat-lUTnF`
+**Type**: fix(frontend) + docs — completes the dark/light AA-contrast sweep the #401
+filter theme audit deferred. No schema / compute / data change; no schema bump.
+
+**#1 — Selected-chip + solid-badge AA (light).** The soft-color override mapped
+`.text-emerald-600` / `.text-emerald-700` AND `.bg-emerald-600` to `--c-pos-medium`
+oklch(56%); on the `--c-pos-bg` oklch(97%) tint that text is **4.08:1** and white-on-the-
+solid-badge is **4.40:1** — both under AA (WCAG-verified by `frontend-design-reviewer`
+via sRGB linearisation, since `node_modules` is absent / no in-browser). Remapped those
+3 override rules → `--c-pos-strong` oklch(50%) → **5.22:1** (text) / **5.64:1** (badge),
+fixing TIERS exceptional/strong + MOS "Undervalued" + Rec "Buy" chips + filingLag <60d +
+ScoreBadge ≥80 + the positive metric-delta text in ONE 3-line `globals.css` edit. Rose +
+amber chips already passed (4.77 / 4.84:1) → untouched; bg-darkening was REJECTED (it
+lowers the ratio — the tint is the lighter end). Dark side-effect: those classes now
+resolve to dark `--c-pos-strong` oklch(72%) vs medium oklch(66%) — slightly brighter
+emerald text on the deep dark chip bg, no contrast risk; flagged for a Vercel-preview eyeball.
+
+**#2 — "Q" brand-mark dark sweep.** `Sidebar` + `AppShell` Q-logo used
+`dark:bg-emerald-600` (decorative `aria-hidden`, contrast-exempt) → `dark:bg-emerald-700`,
+so it reads as the brand primary `#15803D` in both themes (consistency, not a blocker).
+
+**#3 — §Gotchas formalized.** New CLAUDE.md index line + `docs/GOTCHAS.md` detail for the
+systemic finding behind #401's dark CTA: the `globals.css` soft-color `!important`
+override is LITERAL-class-keyed → never reaches `dark:bg-emerald-*` / `dark:bg-rose-*`
+solid-fills; a dark CTA / brand mark uses `dark:bg-emerald-700` or a `--c-*` token.
+
+**Still deferred:** desktop filter IA (modal-drawer-only at every width → architectural;
+its own PR with a design pass).
+
+**Verification**: token/class-level edits; `next build` / `tsc` not run locally (no
+`node_modules`) — CI Frontend build + the reviewer's WCAG computation cover it.
+
+**Files**: `frontend/app/globals.css` (3-line override remap + comment) ·
+`frontend/components/Sidebar.tsx` · `frontend/components/AppShell.tsx` · `CLAUDE.md`
+(§Gotchas index) · `docs/GOTCHAS.md` (detail) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
