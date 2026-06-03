@@ -101,6 +101,7 @@ export default function CompareView({ all }: { all: StockSummary[] }) {
     const wanted = Array.from(
       new Set(raw.split(/[\s,]+/).map((t) => t.toUpperCase()).filter(Boolean)),
     );
+    if (wanted.length === 0) return; // punctuation/whitespace-only — nothing to add or clear
     const next = [...tickers];
     const added: string[] = [];
     const notInUniverse: string[] = [];
