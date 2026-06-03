@@ -316,3 +316,25 @@ confirms the `?`-link aria-label shipped.
 `frontend/components/Sidebar.tsx` (URL → shared const) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Compare bulk-add — paste a comma-separated ticker list (in flight, 2026-06-03)
+
+**Branch**: `claude/busy-newton-L6J56`
+**Type**: feat(frontend) — FRONTEND-ONLY, no schema / compute / data change; no schema
+bump. #395 item #3 (bulk-add, `$impeccable harden`) — the LAST backlog item.
+
+The /compare add-input added one ticker at a time; a power-user arriving via a shared
+URL had no bulk path (the ranking-table multi-select was the only one). Now `CompareView`'s
+add handler (`addTicker` → `addFromInput`) splits the input on `[\s,]+` (comma / whitespace
+/ newline) and adds the valid, not-already-selected tickers in order up to the cap (4); the
+rest surface as ONE concise note (`not in the universe: … · max 4 — … didn't fit · already
+added: …`) rather than failing the whole paste. `commit()` fires only when ≥1 was added,
+else the input is kept for editing. The single-ticker case is the degenerate path (unchanged
+behavior). Placeholder/label/button reworded to signal the bulk capability ("Add tickers…",
+"Add").
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (507 pages, /compare 7.55 kB).
+
+**Files**: `frontend/components/CompareView.tsx` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---

@@ -88,25 +88,40 @@ export default function CompareView({ all }: { all: StockSummary[] }) {
     writeUrl(next);
   };
 
-  const addTicker = () => {
-    const up = input.trim().toUpperCase();
-    if (!up) return;
-    const hit = bySymbol.get(up);
-    if (!hit) {
-      setError(`"${input.trim()}" isn't in the current universe.`);
-      return;
+  // Bulk-add: the input takes one ticker OR a comma / whitespace / newline
+  // separated list (paste a shortlist). Adds the valid, not-already-selected
+  // ones in order up to the cap; the rest (not-found / over-cap / already-added)
+  // surface as ONE concise note rather than failing the whole paste.
+  const addFromInput = () => {
+    const raw = input.trim();
+    if (!raw) return;
+    const wanted = Array.from(
+      new Set(raw.split(/[\s,]+/).map((t) => t.toUpperCase()).filter(Boolean)),
+    );
+    const next = [...tickers];
+    const added: string[] = [];
+    const notInUniverse: string[] = [];
+    const already: string[] = [];
+    const overflow: string[] = [];
+    for (const t of wanted) {
+      const hit = bySymbol.get(t);
+      if (!hit) notInUniverse.push(t);
+      else if (next.includes(hit.ticker)) already.push(hit.ticker);
+      else if (next.length >= MAX) overflow.push(hit.ticker);
+      else {
+        next.push(hit.ticker);
+        added.push(hit.ticker);
+      }
     }
-    if (tickers.includes(hit.ticker)) {
-      setError(`${hit.ticker} is already in the comparison.`);
-      return;
+    const caveats: string[] = [];
+    if (notInUniverse.length) caveats.push(`not in the universe: ${notInUniverse.join(', ')}`);
+    if (overflow.length) caveats.push(`max ${MAX} — ${overflow.join(', ')} didn't fit`);
+    if (already.length) caveats.push(`already added: ${already.join(', ')}`);
+    if (added.length > 0) {
+      commit(next); // updates tickers + URL; clears the URL-parse notes
+      setInput('');
     }
-    if (atMax) {
-      setError(`You can compare up to ${MAX} stocks. Remove one first.`);
-      return;
-    }
-    commit([...tickers, hit.ticker]);
-    setInput('');
-    setError(null);
+    setError(caveats.length > 0 ? caveats.join(' · ') : null);
   };
 
   const removeTicker = (ticker: string) => commit(tickers.filter((t) => t !== ticker));
@@ -115,12 +130,12 @@ export default function CompareView({ all }: { all: StockSummary[] }) {
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        addTicker();
+        addFromInput();
       }}
       className="flex flex-wrap items-center gap-2"
     >
       <label htmlFor="compare-add" className="sr-only">
-        Add a ticker to compare
+        Add tickers to compare (one, or several comma-separated)
       </label>
       <div className="relative">
         <input
@@ -132,7 +147,7 @@ export default function CompareView({ all }: { all: StockSummary[] }) {
             if (error) setError(null);
           }}
           disabled={atMax}
-          placeholder={atMax ? 'Max 4 reached' : 'Add a ticker…'}
+          placeholder={atMax ? 'Max 4 reached' : 'Add tickers…'}
           aria-describedby={error ? 'compare-add-error' : undefined}
           className="min-h-[44px] w-44 rounded-sm border border-slate-300 bg-white px-3 py-2 text-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500"
         />
@@ -149,7 +164,7 @@ export default function CompareView({ all }: { all: StockSummary[] }) {
         disabled={atMax || input.trim() === ''}
         className="press inline-flex min-h-[44px] items-center rounded-sm border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 enabled:hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:enabled:hover:bg-slate-800"
       >
-        Add stock
+        Add
       </button>
       {error && (
         <span id="compare-add-error" role="status" className="text-xs text-amber-700 dark:text-amber-400">
