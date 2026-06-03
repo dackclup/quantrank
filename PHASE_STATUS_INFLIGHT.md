@@ -515,3 +515,37 @@ Neutral row `#9CA3AF` (labeled ≈ slate-400, actually gray-400) and the merged
 `frontend/app/globals.css` (comment-only) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## docs: design-doc cleanup — Neutral-row hex + 3-doc role map (in flight, 2026-06-03)
+
+**Branch**: `claude/optimistic-fermat-lUTnF`
+**Type**: docs + tool-config — `docs/design.md` + `.impeccable/design.json` (generated
+config); no code / schema / compute / data change. Closes the pre-existing items the #406
+brand-hex correction left tracked + the new one docs-reviewer found this round.
+
+- **Neutral row**: the `docs/design.md` color table had `#9CA3AF` labeled `≈ slate-400`,
+  but `#9CA3AF` is Tailwind **gray-400**; slate-400 is `#94A3B8`. The design system is
+  slate-based throughout → corrected to `#94A3B8` / `slate-400` (label "(gray)" → "(slate)").
+- **3-doc role map**: added a "Related design docs" note to `docs/design.md` (the canonical
+  spec) clarifying the distinct roles of the repo's THREE design docs — `docs/design.md`
+  (canonical), `DESIGN.md` (impeccable skill doc, machine-read subset), `ledgercraft-DESIGN.md`
+  (upstream LedgerCraft source spec, provenance) — to head off the cross-doc drift that
+  produced the brand-hex mislabel. NOT merged/deleted: each serves a distinct purpose.
+- **`.impeccable/design.json`** (docs-reviewer follow-up — a tracked, generated tool-config
+  carrying the SAME stale brand color, distinct from the `critique/` archive): `canonical` +
+  `displayName` "Forest Green" `#15803D` → "Emerald" `#047857`; the `.ds-btn-primary` CSS
+  (`#15803D`/`#166534` → `#047857`/`#065F46`); and the stale positive/negative OKLCH canonicals
+  + tonal-ramp hues → current globals.css values (155 → 152; primary ramp hue 150 → emerald 165).
+  Hand-fixed to match the now-correct `DESIGN.md` (a future `$impeccable document` regen derives
+  the same); JSON re-validated.
+
+**Left intentionally** (stated, not edited): the merged `.impeccable/critique/` snapshot's
+stale hex-ratio line — that dir is an append-only timestamped archive, so editing it would
+rewrite a historical record; the current canonical docs supersede it.
+
+Lockstep: DOC-ONLY (not code / workflow / schema) — this entry covers it; no CLAUDE.md /
+AGENTS.md substance change needed (no convention / gotcha / phase change).
+
+**Files**: `docs/design.md` · `.impeccable/design.json` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---

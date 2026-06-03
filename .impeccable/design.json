@@ -6,9 +6,9 @@
     "colorMeta": {
       "primary": {
         "role": "primary",
-        "displayName": "Forest Green",
-        "canonical": "#15803D",
-        "tonalRamp": ["oklch(25% 0.07 150)", "oklch(33% 0.10 150)", "oklch(41% 0.12 150)", "oklch(50% 0.13 150)", "oklch(58% 0.13 150)", "oklch(68% 0.11 150)", "oklch(80% 0.07 150)", "oklch(94% 0.03 150)"]
+        "displayName": "Emerald",
+        "canonical": "#047857",
+        "tonalRamp": ["oklch(25% 0.07 165)", "oklch(33% 0.10 165)", "oklch(41% 0.12 165)", "oklch(50% 0.13 165)", "oklch(58% 0.13 165)", "oklch(68% 0.11 165)", "oklch(80% 0.07 165)", "oklch(94% 0.03 165)"]
       },
       "secondary": {
         "role": "secondary",
@@ -25,14 +25,14 @@
       "positive": {
         "role": "semantic-positive",
         "displayName": "Sage",
-        "canonical": "oklch(50% 0.09 155)",
+        "canonical": "oklch(50% 0.13 152)",
         "note": "Applied via the globals.css soft-color override; chip surface renders bg oklch(97% 0.03 152) / text oklch(56% 0.12 152) / ring oklch(86% 0.07 152) / dot oklch(60% 0.13 152).",
-        "tonalRamp": ["oklch(28% 0.06 155)", "oklch(36% 0.08 155)", "oklch(44% 0.09 155)", "oklch(50% 0.09 155)", "oklch(58% 0.09 155)", "oklch(68% 0.07 155)", "oklch(82% 0.05 155)", "oklch(95% 0.02 155)"]
+        "tonalRamp": ["oklch(28% 0.06 152)", "oklch(36% 0.08 152)", "oklch(44% 0.09 152)", "oklch(50% 0.09 152)", "oklch(58% 0.09 152)", "oklch(68% 0.07 152)", "oklch(82% 0.05 152)", "oklch(95% 0.02 152)"]
       },
       "negative": {
         "role": "semantic-negative",
         "displayName": "Dusty Rose",
-        "canonical": "oklch(48% 0.09 18)",
+        "canonical": "oklch(48% 0.10 18)",
         "note": "Soft band, deliberately far from alarm red. The globals.css override is an allowlist — bg-rose-600 is NOT remapped and renders raw, so use a listed class or the chip family.",
         "tonalRamp": ["oklch(28% 0.07 18)", "oklch(36% 0.08 18)", "oklch(44% 0.09 18)", "oklch(48% 0.09 18)", "oklch(57% 0.09 18)", "oklch(68% 0.08 18)", "oklch(82% 0.05 18)", "oklch(95% 0.02 18)"]
       },
@@ -82,7 +82,7 @@
       "refersTo": "button-primary",
       "description": "Forest-green CTA — the one place solid fill is allowed. FilterDrawer submit, wordmark.",
       "html": "<button class=\"ds-btn-primary\">View 412 stocks</button>",
-      "css": ".ds-btn-primary { background: #15803D; color: #FFFFFF; font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; font-weight: 600; padding: 8px 16px; border: none; border-radius: 2px; cursor: pointer; transition: background 160ms ease-in-out, transform 160ms ease-in-out; } .ds-btn-primary:hover { background: #166534; transform: translateY(-1px); } .ds-btn-primary:focus-visible { outline: 2px solid #15803D; outline-offset: 2px; }"
+      "css": ".ds-btn-primary { background: #047857; color: #FFFFFF; font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; font-weight: 600; padding: 8px 16px; border: none; border-radius: 2px; cursor: pointer; transition: background 160ms ease-in-out, transform 160ms ease-in-out; } .ds-btn-primary:hover { background: #065F46; transform: translateY(-1px); } .ds-btn-primary:focus-visible { outline: 2px solid #047857; outline-offset: 2px; }"
     },
     {
       "name": "Recommendation Chip",
