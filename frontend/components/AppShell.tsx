@@ -113,7 +113,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             aria-label="QuantRank home"
             className={`hidden min-w-0 items-center gap-2 text-slate-900 press hover:opacity-80 dark:text-slate-100 ${collapsed ? 'md:flex' : ''}`}
           >
-            <span aria-hidden="true" className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-sm bg-emerald-700 font-mono text-xs font-semibold text-white dark:bg-emerald-600 dark:text-white">Q</span>
+            <span aria-hidden="true" className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-sm bg-emerald-700 font-mono text-xs font-semibold text-white dark:bg-emerald-700 dark:text-white">Q</span>
             <span className="font-slab text-base font-semibold tracking-tight">QuantRank</span>
           </Link>
           <span className="ml-auto text-xs text-slate-500 dark:text-slate-400">US equity stock ranking</span>

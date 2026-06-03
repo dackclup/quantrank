@@ -1226,3 +1226,25 @@
   is a semantic `<table>` (`<th scope="col">` per stock, `<th scope="row">` per
   metric) with the metric-label rail `sticky left-0` for horizontal scroll on
   mobile.
+- **`globals.css` soft-color override is LITERAL-class-keyed — it never reaches
+  `dark:`-prefixed utilities.** The soft-color layer (which gives the muted sage /
+  terracotta look without touching component class strings) is a set of plain
+  `!important` rules keyed on the bare utility: `.bg-emerald-600 { background-color:
+  var(--c-pos-medium) }`, `.text-emerald-700 { … }`, `.bg-rose-500 { … }`, etc.
+  Tailwind compiles a `dark:` variant to a SEPARATE class token (`dark:bg-emerald-600`,
+  selector `.dark .dark\:bg-emerald-600`) whose name the `.bg-emerald-600` rule does
+  NOT match — so in dark mode a `dark:bg-emerald-*` / `dark:bg-rose-*` SOLID-fill
+  renders RAW Tailwind, bypassing the soft remap entirely. The bite (filter theme
+  audit, PRs #398 / #400 / #401): the dark "View N stocks" + "Compare N" CTAs used
+  `dark:bg-emerald-600` → raw `#059669`, white label **3.77:1** (under the 4.5:1 AA
+  floor for 14px text), while light `bg-emerald-700` (no `-700` override exists) was
+  already a safe **5.48:1**. Fix pattern: for a dark solid-fill CTA or brand mark use
+  `dark:bg-emerald-700` (Tailwind `emerald-700` = `#047857`, white 5.48:1) or drive
+  the background from a `--c-*` token directly — NEVER `dark:bg-emerald-600` expecting
+  the soft remap. Swept surfaces: FilterDrawer + RankingTable CTAs (#401), Sidebar +
+  AppShell "Q" brand mark (the deferred-items follow-up PR). Note the `--c-*` CSS
+  variables themselves DO flip per theme (`:root` vs `.dark`), so LIGHT surfaces using
+  the literal classes (`bg-emerald-50`, `text-emerald-700`, …) are unaffected — this
+  gotcha is dark-variant-only. The decorative `aria-hidden` Q-mark was contrast-exempt
+  but swept anyway for brand consistency (it should read as the brand primary, not the
+  lighter emerald-600, in both themes).

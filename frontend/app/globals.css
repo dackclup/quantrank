@@ -236,13 +236,17 @@ code {
  */
 
 /* ── Emerald → muted sage ── */
-.text-emerald-600 { color: var(--c-pos-medium) !important; }
-.text-emerald-700 { color: var(--c-pos-medium) !important; }
+/* text-emerald-600/700 + the bg-emerald-600 solid badge map to --c-pos-STRONG, not
+   -medium: --c-pos-medium oklch(56%) on the --c-pos-bg oklch(97%) tint is only 4.08:1
+   (white-on-medium solid badge 4.40:1) — both under WCAG AA. --c-pos-strong clears
+   5.22:1 (text) / 5.64:1 (badge). WCAG-verified, filter theme-audit follow-up. */
+.text-emerald-600 { color: var(--c-pos-strong) !important; }
+.text-emerald-700 { color: var(--c-pos-strong) !important; }
 .text-emerald-800 { color: var(--c-pos-strong) !important; }
 .bg-emerald-50 { background-color: var(--c-pos-bg) !important; }
 .bg-emerald-100 { background-color: var(--c-pos-bg-mid) !important; }
 .bg-emerald-500 { background-color: var(--c-pos-dot) !important; }
-.bg-emerald-600 { background-color: var(--c-pos-medium) !important; }
+.bg-emerald-600 { background-color: var(--c-pos-strong) !important; }
 .ring-emerald-200 {
   --tw-ring-color: var(--c-pos-ring) !important;
 }
