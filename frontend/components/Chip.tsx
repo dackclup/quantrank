@@ -61,7 +61,9 @@ export function Chip({
   size?: ChipSize;
   /** Class-based status dot, e.g. `bg-emerald-500 dark:bg-emerald-400`. Rendered before children. */
   dot?: string;
-  /** Leading element (a flag / icon) rendered before children — gets the same gap as a dot. */
+  /** Leading element (a flag / icon) rendered before children — gets the same gap
+   *  as a dot. Mutually exclusive with `dot` (passing both renders them
+   *  consecutively with one gap); current callers use one or the other. */
   leading?: ReactNode;
   className?: string;
   title?: string;

@@ -166,9 +166,10 @@ source for the outlined-light shape + size scale. Pass a tone from the table
 above (or a sister badge's tone map) INTO `<Chip tone={…}>`; don't re-hardcode
 `inline-flex … ring-1 ring-inset` or the `px-/text-` size strings.
 
-For recommendation-specific tones (PR 4d):
-- `RecommendationBadge.tsx::TONES` — Pattern A (inline badge)
-- `RecommendationBadge.tsx::RECOMMENDATION_CHIP_TONES` — Pattern B (active chip)
+For recommendation-specific tones (PR 4d) — one outlined-light family, two
+usage CONTEXTS (not two visual patterns; see Rule 2):
+- `RecommendationBadge.tsx::TONES` — static badge tones
+- `RecommendationBadge.tsx::RECOMMENDATION_CHIP_TONES` — selection-state filter-chip tones
 - `RecommendationBadge.tsx::RECOMMENDATION_CHIP_DOTS` — small dot indicator
 
 **New dimensions** (e.g., future exchange-pill in PR 4i) follow the same
@@ -255,7 +256,7 @@ Stick to Tailwind's 4-px scale. Common patterns:
 | Card / container interior | `p-3` to `p-6` | `gap-4` to `gap-6` |
 
 Rounded scale:
-- `rounded-full` — chips, pills, ring-dot indicators
+- `rounded-full` — status dots inside chips, toggle switches (the chip BODY is `rounded-sm`/2px since LedgerCraft A2)
 - `rounded-md` — buttons, search input
 - `rounded-lg` — cards, table containers
 - `rounded-2xl` — hero detail-page header card
@@ -271,9 +272,9 @@ of:
 2. **Persistence** via `frontend/lib/filter-storage.ts` — bump version key
    when adding a new field (`v1` → `v2` etc.) so old saved snapshots are
    cleanly ignored
-3. **Drawer section** in `FilterDrawer.tsx` — `<label>` + chip group; chip
-   uses Pattern A-flavored "on" + outlined "off" state
-4. **Active chip in toolbar bar** in `RankingTable.tsx` — Pattern B styling
+3. **Drawer section** in `FilterDrawer.tsx` — `<label>` + chip group; selected
+   and unselected both use the outlined-light pattern (differ by ring/tint)
+4. **Active chip in toolbar bar** in `RankingTable.tsx` — the same outlined-light chip
 5. **Filter logic** in the `filtered` `useMemo` — empty-set means "pass all"
 6. **activeCount** counter for the Filters button badge
 
@@ -316,8 +317,8 @@ However:
 
 ## Anti-patterns checklist (what NOT to do)
 
-❌ **Mixing Pattern A and Pattern B** — solid badges in active-chip rows
-   (the PR #68 incident)
+❌ **Solid-fill badge next to an outlined chip** (the PR #68 incident) — every
+   chip/badge is the one outlined-light pattern, never a solid fill
 
 ❌ **Hard-coded hex colors** outside Recharts adapters
    `style={{ color: '#0f172a' }}` — use `text-slate-900` instead
@@ -351,7 +352,7 @@ Before opening a UI PR, walk this checklist:
 
 - [ ] Tones imported from `lib/visual.ts` or sister badge component
 - [ ] Light + dark mode classes both present
-- [ ] Pattern A (inline) vs Pattern B (chip) chosen consistently
+- [ ] Outlined-light pattern used consistently (no solid-fill badge)
 - [ ] Tabular-nums on numeric columns
 - [ ] Aria labels + title attributes on interactive elements
 - [ ] Filter checklist (Rule 7) walked end-to-end if adding a filter
@@ -381,8 +382,8 @@ of the system in action.
 - `frontend/components/Chip.tsx` — the outlined-light chip primitive +
   `CHIP_BASE` / `CHIP_DOT` / `CHIP_SIZES` shell exports
 - `frontend/lib/visual.ts` — TIERS / MOS_BUCKETS / sectorStyle tone bank
-- `frontend/components/RecommendationBadge.tsx` — both Pattern A and
-  Pattern B tone exports
+- `frontend/components/RecommendationBadge.tsx` — the static-badge +
+  selection-state chip tone exports
 - `frontend/components/SectorChip.tsx` — canonical outlined-chip
   implementation
 - `.claude/skills/phase-4/recommendation-badge/PLAN.md` — design lock

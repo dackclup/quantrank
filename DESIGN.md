@@ -191,7 +191,6 @@ base hues enter the system.
 **Display Font:** Roboto Slab (with `ui-serif, Georgia, serif`)
 **Body Font:** IBM Plex Sans (with `ui-sans-serif, system-ui, sans-serif`)
 **Numeric / Mono Font:** JetBrains Mono (with `ui-monospace, monospace`)
-**Editorial accent:** Instrument Serif — marquee headlines only, used sparingly.
 
 **Character:** A slab-serif headline over a humanist-sans body reads as
 "editorial finance" — the authority of a printed research note without the
@@ -224,8 +223,8 @@ text-slate-600` triple is reserved for top-level section `h2`s and table
 text-slate-500`. The weight delta between header and data is what creates the
 spreadsheet feel — don't flatten it.
 
-**The Three-Family Ceiling.** Slab display + sans body + mono numerics. Instrument
-Serif is a rare editorial accent, not a fourth working face.
+**The Three-Family Ceiling.** Slab display + sans body + mono numerics — three
+working faces, no fourth.
 
 ## 4. Elevation
 
