@@ -104,7 +104,7 @@ merged PRs whose labels were never updated from "(in flight, this PR)"). The
 merged narrative is preserved in git history + summarized in PHASE_STATUS.md.
 This file restarts lean per its own "Merged -> housekeeping move" convention._
 
-## PR — Claude token-economy optimization (in flight, 2026-06-03)
+## PR #391 — Claude token-economy optimization (in flight, 2026-06-03)
 
 **Branch**: `claude/dreamy-heisenberg-4IfRj`
 **Type**: chore(infra) — docs + agent infrastructure only; no compute / schema /
@@ -119,7 +119,7 @@ scoring / valuation / frontend / dependency change; no schema bump.
   project context).
 - **P1** — collapsed AGENTS.md §"Phase + version state" ~1,068-line mirror ->
   pointer; reset this file to its header.
-- **P2** — shortened `delegate-first.sh` injection (~120->~45 tok/turn) +
+- **P2** — shortened `delegate-first.sh` injection (~220->~83 tok/turn) +
   `effort: max->high` on deterministic script-runners (`schema-sentinel`,
   `vercel-preview-auditor`).
 - **New skill** `.claude/skills/thai-token-economy/SKILL.md` — Thai I/O <-> English

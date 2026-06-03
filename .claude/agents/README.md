@@ -401,11 +401,12 @@ each invocation.
    - `opus` — full code review where breadth + nuance matter (one or
      two passes over a multi-file diff, weighing project-specific
      conventions against the change).
-   - **`effort: max` on every agent** (the `effort` frontmatter field,
-     orthogonal to `model`). All 20 agents run at the top reasoning level
-     since each is a correctness / judgment gate. A new agent gets
-     `effort: max` too unless it's a pure mechanical lookup (then `high`,
-     with a note). See §Model split above.
+   - **`effort: max` on judgment-gate agents** (the `effort` frontmatter
+     field, orthogonal to `model`). 18 of 20 agents run at the top
+     reasoning level; the 2 deterministic script-runners (`schema-sentinel`
+     + `vercel-preview-auditor`) sit at `effort: high` — see §Effort above.
+     A new agent gets `effort: max` too unless it's a pure mechanical
+     lookup (then `high`, with a note). See §Model split above.
 4. **Tool allowlist.** Restrict to what the agent actually needs. A code
    reviewer doesn't need `Edit` or `Write`; an auditor doesn't need
    `Edit` either. Explicit allowlists reduce blast radius.
