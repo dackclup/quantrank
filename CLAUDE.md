@@ -426,6 +426,7 @@ always-loaded context small while preserving discoverability of every invariant.
 - **The ranking-table FLIP reshuffle is FILTER-SCOPED — never make it fire on a
 - **`exchange_coverage_pct` and `country_coverage_pct` look like siblings but
 - **Whole-app polish conventions (`$impeccable polish "all app"`, 2026-06-03) — empty-state CTA is `disabled` not just styled · a labeled chip inside an `aria-label`'d container is `aria-hidden` · `ring-rose-300` is never a negative chip ring (`-200` only) · detail-page valuation sections own no `mb-*`**
+- **Sidebar version chip = build-time `NEXT_PUBLIC_APP_VERSION` (`next.config.js` git-describe→SHA), never a hardcoded version**
 
 ## Phase status
 

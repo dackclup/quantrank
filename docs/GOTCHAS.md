@@ -1167,8 +1167,23 @@
   double-announce); `CurrentPriceLine` negative `text-rose-600 → -700` (allowlist);
   `ScoreBadge` md `font-bold → -semibold` (numeric family); `FilterDrawer`
   unselected-chip hover `bg-slate-50 → -200` (darken-on-hover, not lighten).
-  DEFERRED (NOT in this pass): the stale `v1.4.0` Sidebar version chip
-  (release-process tied — needs a `NEXT_PUBLIC_APP_VERSION` wire or a fresh release
-  cut), the `FairPriceCard` raw flag humanization (`w.replace(/_/g,' ')` → a real
-  label map), and a P3 cross-stock COMPARE view (product-scope feature gap, not
-  polish).
+  DEFERRED at the time: a P3 cross-stock COMPARE view (product-scope feature gap,
+  not polish) remains open. The stale `v1.4.0` Sidebar version chip and the
+  `FairPriceCard` raw flag humanization were both RESOLVED in the follow-up — see
+  the "Sidebar version chip" gotcha below.
+
+- **Sidebar version chip = build-time `NEXT_PUBLIC_APP_VERSION`, never a
+  hardcoded version** (`frontend/next.config.js` + `frontend/components/Sidebar.tsx`,
+  2026-06-03; resolves the #392-deferred stale `v1.4.0`). A hardcoded version
+  string goes stale the instant `main` moves past the release tag — the chip read
+  `v1.4.0` for 30+ PRs while the deployed site was well ahead. `next.config.js`
+  now computes `NEXT_PUBLIC_APP_VERSION` at build via an `env:` block: explicit
+  env override → `git describe --tags --always --dirty` (reformatted
+  `TAG-N-gSHA` → `TAG+N`, so local dev with tags shows e.g. `v1.4.0-phase4.6+30`)
+  → `VERCEL_GIT_COMMIT_SHA` / `GITHUB_SHA` short (shallow CI/Vercel clones have NO
+  tags, so production shows the 7-char commit SHA — an honest build id) → `'dev'`.
+  `Sidebar.tsx` reads `process.env.NEXT_PUBLIC_APP_VERSION` (inlined at build by
+  the `env:` config) — do NOT re-hardcode a version literal. Companion change in
+  the same PR: `FairPriceCard` valuation-warning humanization `w.replace(/_/g,' ')`
+  → a `VALUATION_WARNING_LABELS` map (Title-Case fallback for unknown flags) so a
+  valuation warning reads the same labelled way the `RiskSummaryCard` flags do.
