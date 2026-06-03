@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { SearchX } from 'lucide-react';
 
@@ -45,6 +46,7 @@ type SortKey =
 type SortDir = 'asc' | 'desc';
 
 const PAGE_SIZE = 50;
+const MAX_COMPARE = 4;
 
 function formatPrice(p: number): string {
   return p.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 });
@@ -64,6 +66,12 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
     () => new Set(),
   );
   const [drawerOpen, setDrawerOpen] = useState(false);
+  // Multi-select for the cross-stock compare view. In-memory only (a transient
+  // action; the /compare URL is the shareable artifact, not this selection).
+  // Keyed by ticker, so it survives pagination + filtering — independent of the
+  // filtered/paged slice and separate from the filter state above.
+  const [selected, setSelected] = useState<Set<string>>(() => new Set());
+  const router = useRouter();
   // `hydrated` gates the persist-on-change effect so we don't overwrite
   // the saved snapshot with the empty defaults during the first render
   // (the load effect runs after that initial render).
@@ -195,6 +203,29 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
     // would immediately re-save the defaults, which is correct but
     // wasteful — an explicit remove is the cleaner signal).
     clearFilterSnapshot();
+  };
+
+  const toggleSelect = (t: string) =>
+    setSelected((prev) => {
+      const n = new Set(prev);
+      if (n.has(t)) n.delete(t);
+      else {
+        if (n.size >= MAX_COMPARE) return prev; // cap; checkbox is disabled too
+        n.add(t);
+      }
+      return n;
+    });
+  const removeSelect = (t: string) =>
+    setSelected((prev) => {
+      const n = new Set(prev);
+      n.delete(t);
+      return n;
+    });
+  const goCompare = () => {
+    if (selected.size < 2) return;
+    router.push(
+      `/compare/?compare=${Array.from(selected).map(encodeURIComponent).join(',')}`,
+    );
   };
 
   const scoreActive = scoreRange[0] !== 0 || scoreRange[1] !== 100;
@@ -361,7 +392,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
   };
 
   return (
-    <div className="space-y-3">
+    <div className={`space-y-3 ${selected.size > 0 ? 'pb-20' : ''}`}>
       {/* Toolbar: Filters button (with active count) + inline search + count */}
       <div className="flex flex-wrap items-center gap-2">
         <button
@@ -515,6 +546,9 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
         <table className="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
           <thead className="bg-slate-50 text-xs uppercase tracking-[0.14em] dark:bg-slate-900/60">
             <tr>
+              <th scope="col" className="w-9 px-3 py-2">
+                <span className="sr-only">Select to compare</span>
+              </th>
               {headerCell('rank', 'Rank')}
               {headerCell('ticker', 'Ticker')}
               {headerCell('name', 'Name')}
@@ -537,6 +571,21 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                 : '';
               return (
                 <tr key={row.ticker} data-flip-key={row.ticker} className={`hover-lift transition-colors duration-100 odd:bg-white even:bg-slate-100 hover:bg-slate-200 dark:odd:bg-slate-900 dark:even:bg-slate-900/50 dark:hover:bg-slate-800 ${staggerClass}`}>
+                  <td className="px-3 py-2">
+                    <input
+                      type="checkbox"
+                      checked={selected.has(row.ticker)}
+                      onChange={() => toggleSelect(row.ticker)}
+                      disabled={!selected.has(row.ticker) && selected.size >= MAX_COMPARE}
+                      aria-label={`Select ${row.ticker} to compare`}
+                      title={
+                        !selected.has(row.ticker) && selected.size >= MAX_COMPARE
+                          ? `Compare up to ${MAX_COMPARE} stocks`
+                          : undefined
+                      }
+                      className="h-4 w-4 cursor-pointer accent-emerald-700 disabled:cursor-not-allowed disabled:opacity-40 dark:accent-emerald-500"
+                    />
+                  </td>
                   <td className="px-3 py-2 tabular-nums text-slate-700 dark:text-slate-300">{row.rank}</td>
                   <td className="px-3 py-2 font-mono font-semibold text-slate-900 dark:text-slate-100">
                     <Link
@@ -577,11 +626,22 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
             <li
               key={row.ticker}
               data-flip-key={row.ticker}
-              className={`hover-lift press min-h-[7rem] rounded border border-slate-200 bg-white transition-colors duration-100 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/50 ${staggerClass}`}
+              className={`hover-lift press relative min-h-[7rem] rounded border border-slate-200 bg-white transition-colors duration-100 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/50 ${staggerClass}`}
             >
+              {/* Compare checkbox — a sibling of the card <Link> (not nested:
+                  interactive-in-interactive is invalid), absolutely placed so the
+                  card body pads left to clear it. */}
+              <input
+                type="checkbox"
+                checked={selected.has(row.ticker)}
+                onChange={() => toggleSelect(row.ticker)}
+                disabled={!selected.has(row.ticker) && selected.size >= MAX_COMPARE}
+                aria-label={`Select ${row.ticker} to compare`}
+                className="absolute left-3 top-3.5 z-10 h-5 w-5 cursor-pointer accent-emerald-700 disabled:cursor-not-allowed disabled:opacity-40 dark:accent-emerald-500"
+              />
               <Link
                 href={`/stock/${row.ticker}/`}
-                className="flex h-full flex-col gap-1 p-3"
+                className="flex h-full flex-col gap-1 p-3 pl-11"
               >
                 {/* Mobile card header — mirrors the detail-page hero
                     cadence (frontend/app/stock/[ticker]/page.tsx:88-103):
@@ -794,6 +854,57 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
               <polyline points="9 18 15 12 9 6" />
             </svg>
           </button>
+        </div>
+      )}
+
+      {/* Compare action bar — appears once anything is selected. Fixed to the
+          viewport bottom (the wrapper is pointer-events-none so it never blocks
+          the page; only the bar itself is interactive). The "Compare" CTA is the
+          one place a solid forest-green fill is allowed (it's a primary action,
+          not a chip). animate-fade-in is reduced-motion-guarded by the global
+          motion system. */}
+      {selected.size > 0 && (
+        <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 flex justify-center px-4 pb-4">
+          <div className="animate-fade-in pointer-events-auto flex max-w-[calc(100vw-2rem)] items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-overlay dark:border-slate-700 dark:bg-slate-900">
+            <span className="whitespace-nowrap text-xs font-medium text-slate-600 dark:text-slate-300">
+              <span className="font-mono font-semibold tabular-nums text-slate-900 dark:text-slate-100">
+                {selected.size}
+              </span>{' '}
+              selected
+            </span>
+            <ul className="hidden max-w-[36vw] items-center gap-1 overflow-x-auto sm:flex">
+              {Array.from(selected).map((t) => (
+                <li key={t}>
+                  <span className="inline-flex items-center gap-1 rounded-sm bg-slate-100 px-1.5 py-0.5 text-xs font-medium text-slate-700 ring-1 ring-inset ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700">
+                    <span className="font-mono">{t}</span>
+                    <button
+                      type="button"
+                      onClick={() => removeSelect(t)}
+                      aria-label={`Remove ${t} from selection`}
+                      className="press opacity-60 hover:opacity-100"
+                    >
+                      <span aria-hidden="true">×</span>
+                    </button>
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <button
+              type="button"
+              onClick={() => setSelected(new Set())}
+              className="press whitespace-nowrap text-xs font-medium text-slate-500 underline-offset-2 hover:text-slate-900 hover:underline dark:text-slate-400 dark:hover:text-slate-100"
+            >
+              Clear
+            </button>
+            <button
+              type="button"
+              onClick={goCompare}
+              disabled={selected.size < 2}
+              className="press inline-flex min-h-[44px] items-center gap-1.5 whitespace-nowrap rounded-sm bg-emerald-700 px-3 py-2 text-sm font-semibold text-white enabled:hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {selected.size < 2 ? 'Select 1 more' : `Compare ${selected.size}`}
+            </button>
+          </div>
         </div>
       )}
     </div>

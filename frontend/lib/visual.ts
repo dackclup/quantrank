@@ -176,6 +176,27 @@ export function scoreAccentColor(score: number): string {
   return 'rgb(225 29 72)';
 }
 
+// Pillar / sub-score bar color — the inline-rgb ramp the pillar bars render at,
+// on the SHARED composite TIERS boundaries (70 / 55 / 40 / 25). Inline rgb (not a
+// utility class) BY DESIGN: the globals.css soft-color overrides remap utility
+// CLASSES only, so they never reach an inline `backgroundColor` / `color`, and
+// the bars echo the score-gauge accent at full saturation (the amber mid-bands
+// have no soft-token equivalent anyway). Pair with `scoreTierLabel` for the
+// matching WORD so color + word + boundaries stay ONE vocabulary across
+// `PillarRadarChart` and the cross-stock compare matrix (the P3-consolidation
+// invariant — see §Gotchas "PillarRadarChart shares the composite TIERS vocab").
+export function pillarColor(v: number): string {
+  return v >= 70
+    ? 'rgb(5 150 105)'
+    : v >= 55
+      ? 'rgb(16 185 129)'
+      : v >= 40
+        ? 'rgb(245 158 11)'
+        : v >= 25
+          ? 'rgb(180 83 9)'
+          : 'rgb(225 29 72)';
+}
+
 // 0..1 mapped from MoS in [-100, +100], clamped to the visual range.
 // Used by MoSCell to position the diverging bar relative to the
 // vertical center line.

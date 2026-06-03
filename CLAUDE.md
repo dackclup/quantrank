@@ -427,6 +427,7 @@ always-loaded context small while preserving discoverability of every invariant.
 - **`exchange_coverage_pct` and `country_coverage_pct` look like siblings but
 - **Whole-app polish conventions (`$impeccable polish "all app"`, 2026-06-03) — empty-state CTA is `disabled` not just styled · a labeled chip inside an `aria-label`'d container is `aria-hidden` · `ring-rose-300` is never a negative chip ring (`-200` only) · detail-page valuation sections own no `mb-*`**
 - **Sidebar version chip = build-time `NEXT_PUBLIC_APP_VERSION` (`next.config.js` git-describe→SHA), never a hardcoded version**
+- **Cross-stock `/compare` reads `?compare=` via `window.location` (mount effect), NEVER `useSearchParams` (static-export `<Suspense>` trap); ranking-table multi-select is in-memory (URL is the share artifact) · `pillarColor`→`lib/visual`, `flagLabel`→`lib/flag-labels` are SHARED tokens (don't re-inline) · best-in-row is metric-aware + never color-only**
 
 ## Phase status
 

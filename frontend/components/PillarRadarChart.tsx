@@ -3,7 +3,7 @@
 import type { JSX } from 'react';
 
 import type { PillarBaseline, PillarScores } from '@/lib/types';
-import { scoreTierLabel } from '@/lib/visual';
+import { pillarColor, scoreTierLabel } from '@/lib/visual';
 
 // "Pillar breakdown" — horizontal bar list from the QuantRank.html
 // design. The previous Recharts polar radar was hard to read for
@@ -38,25 +38,14 @@ const PILLAR_DESCRIPTIONS: Record<string, string> = {
   Risk: 'Volatility & drawdown profile',
 };
 
-// 5-step color ramp keyed to the SAME score-tier boundaries as the composite
-// `TIERS` (25 / 40 / 55 / 70 — visual.ts). P3 vocabulary consolidation
-// (2026-06-02): pillars previously used a SEPARATE 4-band Strong/Decent/Weak/
-// Poor rubric at 30/50/70, which collided with the composite score tiers —
-// "Strong" meant 55-70 on the score gauge but ≥70 on a pillar, same word for
-// two different ranges. Now a pillar at 60 reads the SAME tier WORD + tone as a
-// composite score of 60. These are INLINE style rgb() values, so the
-// globals.css soft-color overrides (which remap utility CLASSES only) do NOT
-// reach them — the bars render at full saturation BY DESIGN, echoing the
-// score-gauge accent palette; the amber / dark-amber mid-bands have no
-// soft-token equivalent in globals.css anyway. Color boundaries == label
-// boundaries == gridlines == legend (all 25/40/55/70) so the pillar is
-// internally coherent.
-const colorFor = (v: number): string =>
-  v >= 70 ? 'rgb(5 150 105)' :
-  v >= 55 ? 'rgb(16 185 129)' :
-  v >= 40 ? 'rgb(245 158 11)' :
-  v >= 25 ? 'rgb(180 83 9)' :
-  'rgb(225 29 72)';
+// Bar color is the shared `pillarColor` ramp (lib/visual.ts) on the SAME
+// score-tier boundaries as the composite `TIERS` (25 / 40 / 55 / 70). P3
+// vocabulary consolidation (2026-06-02): pillars previously used a SEPARATE
+// 4-band rubric at 30/50/70 that collided with the composite score tiers; now a
+// pillar at 60 reads the SAME tier WORD + tone as a composite score of 60.
+// Color boundaries == label boundaries == gridlines == legend (all 25/40/55/70)
+// so the pillar is internally coherent. The ramp lives in visual.ts so the
+// cross-stock compare matrix renders the identical color (one source, no drift).
 
 // Tier WORD comes from the shared `scoreTierLabel` (lib/visual.ts TIERS) — the
 // SAME single source the composite-score gauge + mobile caption use, so the
@@ -136,7 +125,7 @@ export function PillarRadarChart({
           // legend says Strong starts at 55 (§Gotchas band-from-rounded). The
           // bar FILL width stays on the raw float — it's a continuous element.
           const rounded = Math.round(r.value);
-          const c = colorFor(rounded);
+          const c = pillarColor(rounded);
           const baselineClamped =
             r.baselineValue !== null ? Math.max(0, Math.min(100, r.baselineValue)) : null;
           return (
