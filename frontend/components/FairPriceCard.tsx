@@ -1,5 +1,6 @@
 import { formatFairPrice, formatMosPct, mosColorClass } from '@/lib/format';
 import type { FairPriceEnsemble } from '@/lib/types';
+import { CHIP_BASE } from '@/components/Chip';
 
 interface Props {
   ensemble: FairPriceEnsemble | null;
@@ -121,7 +122,7 @@ export default function FairPriceCard({
           {warnings.map((w) => (
             <li
               key={w}
-              className="inline-flex items-center rounded-sm bg-amber-50 px-2 py-0.5 text-amber-800 ring-1 ring-inset ring-amber-200 dark:bg-amber-900/30 dark:text-amber-200 dark:ring-amber-800"
+              className={`${CHIP_BASE} bg-amber-50 px-2 py-0.5 font-medium text-amber-800 ring-amber-200 dark:bg-amber-900/30 dark:text-amber-200 dark:ring-amber-800`}
             >
               {w.replace(/_/g, ' ')}
             </li>

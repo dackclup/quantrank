@@ -86,7 +86,7 @@ Tone palette (paired light + `dark:` — see Rule 4):
 |---|---|---|---|---|
 | Positive strong | `bg-emerald-50` | `text-emerald-900` | `ring-emerald-300` | `bg-emerald-700` |
 | Positive light | `bg-emerald-50` | `text-emerald-700` | `ring-emerald-200` | `bg-emerald-500` |
-| Neutral | `bg-slate-100` | `text-slate-700` | `ring-slate-300` | `bg-slate-500` |
+| Neutral | `bg-slate-100` | `text-slate-700` | `ring-slate-200` | `bg-slate-500` |
 | Negative | `bg-red-50` | `text-red-900` | `ring-red-200` | `bg-rose-500` |
 | Info (sector blue/purple/etc.) | `bg-{tone}-50` | `text-{tone}-700` | `ring-{tone}-200` | `bg-{tone}-500` |
 
@@ -255,11 +255,10 @@ Stick to Tailwind's 4-px scale. Common patterns:
 | Large button / hero badge | `px-3 py-1.5` or `px-4 py-2` | `gap-3` |
 | Card / container interior | `p-3` to `p-6` | `gap-4` to `gap-6` |
 
-Rounded scale:
-- `rounded-full` — status dots inside chips, toggle switches (the chip BODY is `rounded-sm`/2px since LedgerCraft A2)
-- `rounded-md` — buttons, search input
-- `rounded-lg` — cards, table containers
-- `rounded-2xl` — hero detail-page header card
+Rounded scale (LedgerCraft — data surfaces ≤ 4px; borders carry depth, not radius):
+- `rounded-sm` (2px) — chip BODY, buttons, inputs, search field
+- `rounded` (4px) — cards, table containers, the stock-detail hero
+- `rounded-full` — status dots inside chips + toggle switches ONLY
 
 ## Rule 7 — Filter UX contracts
 

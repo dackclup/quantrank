@@ -463,10 +463,12 @@ export function FairPriceCard(props) {  // no types
   size scale; `CHIP_BASE` / `CHIP_DOT` / `CHIP_SIZES` exports cover bespoke
   surfaces (`ScoreBadge` semibold pill, `SectorChip` inline-rgb dot) that would
   emit a conflicting utility through the props. A NEW metadata chip uses `<Chip>`;
-  tones pass through verbatim (globals.css allowlist). `RankingTable` /
-  `FilterDrawer` selection chips + `FairPriceCard` `<li>` warnings stay bespoke
-  (follow-up `polish`); `RECOMMENDATION_CHIP_*` exports unchanged. Full rationale
-  in CLAUDE.md §Gotchas.
+  tones pass through verbatim (globals.css allowlist). Follow-up `$impeccable
+  polish` extended the shell into `FairPriceCard` `<li>` warnings (+`font-medium`)
+  and `FairPriceBarChart` tally pills/verdict badges (via `CHIP_BASE`); only the
+  `RankingTable` / `FilterDrawer` selection-state filter chips stay bespoke
+  (interactive toggles). Neutral chip ring normalized to canonical `ring-slate-200`.
+  `RECOMMENDATION_CHIP_*` exports unchanged. Full rationale in CLAUDE.md §Gotchas.
 
 ## Git workflow
 

@@ -4,6 +4,7 @@ import type { JSX } from 'react';
 
 import type { FairPriceEnsemble } from '@/lib/types';
 import { formatFairPrice } from '@/lib/format';
+import { CHIP_BASE, CHIP_DOT } from '@/components/Chip';
 
 // "Fair price check" — verdict card from the QuantRank.html design.
 //
@@ -258,29 +259,16 @@ export function FairPriceBarChart({
       {/* Tally pills — "Of N methods: X say cheap…" */}
       <div className="mb-3 flex flex-wrap items-center gap-2 text-xs">
         <span className="text-slate-500 dark:text-slate-400">Of {nonOutlier} methods:</span>
-        {tally.cheap > 0 && (
-          <span
-            className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 font-medium ${VERDICT_STYLE.cheap.bg} ${VERDICT_STYLE.cheap.text} ring-1 ring-inset ${VERDICT_STYLE.cheap.ring}`}
-          >
-            <span className={`inline-block h-1.5 w-1.5 rounded-full ${VERDICT_STYLE.cheap.dot}`} />
-            <span className="font-mono tabular-nums">{tally.cheap}</span> say cheap
-          </span>
-        )}
-        {tally.fair > 0 && (
-          <span
-            className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 font-medium ${VERDICT_STYLE.fair.bg} ${VERDICT_STYLE.fair.text} ring-1 ring-inset ${VERDICT_STYLE.fair.ring}`}
-          >
-            <span className={`inline-block h-1.5 w-1.5 rounded-full ${VERDICT_STYLE.fair.dot}`} />
-            <span className="font-mono tabular-nums">{tally.fair}</span> say fair
-          </span>
-        )}
-        {tally.pricey > 0 && (
-          <span
-            className={`inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 font-medium ${VERDICT_STYLE.pricey.bg} ${VERDICT_STYLE.pricey.text} ring-1 ring-inset ${VERDICT_STYLE.pricey.ring}`}
-          >
-            <span className={`inline-block h-1.5 w-1.5 rounded-full ${VERDICT_STYLE.pricey.dot}`} />
-            <span className="font-mono tabular-nums">{tally.pricey}</span> say pricey
-          </span>
+        {(['cheap', 'fair', 'pricey'] as const).map((v) =>
+          tally[v] > 0 ? (
+            <span
+              key={v}
+              className={`${CHIP_BASE} gap-1.5 px-2.5 py-1 font-medium ${VERDICT_STYLE[v].bg} ${VERDICT_STYLE[v].text} ${VERDICT_STYLE[v].ring}`}
+            >
+              <span aria-hidden="true" className={`${CHIP_DOT} ${VERDICT_STYLE[v].dot}`} />
+              <span className="font-mono tabular-nums">{tally[v]}</span> say {v}
+            </span>
+          ) : null,
         )}
         {tally.outlier > 0 && (
           <span className="text-slate-500 dark:text-slate-400">
@@ -344,7 +332,7 @@ export function FairPriceBarChart({
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">{r.label}</span>
                   <span
-                    className={`inline-flex items-center rounded-sm px-1.5 py-0.5 text-[0.625rem] font-medium uppercase tracking-wide ${v.bg} ${v.text} ring-1 ring-inset ${v.ring}`}
+                    className={`${CHIP_BASE} px-1.5 py-0.5 text-[0.625rem] font-medium uppercase tracking-wide ${v.bg} ${v.text} ${v.ring}`}
                   >
                     {v.label}
                   </span>
