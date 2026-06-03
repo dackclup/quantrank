@@ -3,21 +3,21 @@
   "name": "Cboe Global Markets",
   "sector": "Financials",
   "industry": "Financial Exchanges & Data",
-  "exchange": "BTS",
-  "country": null,
-  "market_cap": 29126194369.537598,
-  "current_price": 278.31,
-  "rank": 66,
-  "composite_score": 60.45,
+  "exchange": "Cboe BZX",
+  "country": "US",
+  "market_cap": 28841535949.306396,
+  "current_price": 275.59,
+  "rank": 65,
+  "composite_score": 60.5,
   "pillar_scores": {
     "quality": 62.67,
-    "value": 43.11,
+    "value": 43.78,
     "growth": 74.67,
-    "momentum": 67.53,
-    "health": 74.82,
+    "momentum": 67.28,
+    "health": 74.9,
     "profitability": 66.67,
-    "technical": 25.17,
-    "risk": 75.66,
+    "technical": 24.33,
+    "risk": 74.57,
     "sentiment": null,
     "ml": null
   },
@@ -34,8 +34,8 @@
     "eps_basic": 11.801771066395458,
     "eps_diluted": 11.801771066395458,
     "shares_outstanding": 104653784.0,
-    "market_cap": 29126194369.537598,
-    "pe_ratio_ttm": 23.58205357423496,
+    "market_cap": 28841535949.306396,
+    "pe_ratio_ttm": 23.351579588135696,
     "goodwill": 3142400000.0
   },
   "fair_price": {
@@ -47,13 +47,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 296.9935178297741,
+        "value": 294.93984848149597,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 106.12425453773602,
+        "value": 105.62534715044656,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -77,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 73.66088242443901,
-    "max": 296.9935178297741,
+    "median": 73.41142873079427,
+    "max": 294.93984848149597,
     "low": 14.75009993937842,
-    "high": 296.9935178297741,
-    "mos_pct": -277.8260433467965,
+    "high": 294.93984848149597,
+    "mos_pct": -275.4047579546527,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -126,17 +126,17 @@
       "Momentum": 49.1,
       "Health": 50.72,
       "Profitability": 49.11,
-      "Technical": 52.79,
-      "Risk": 54.88
+      "Technical": 53.49,
+      "Risk": 54.98
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 57.77362217795485,
-  "price_change_1d_pct": -7.5351,
+  "loss_chance_pct": 57.75190903054448,
+  "price_change_1d_pct": -8.4388,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 60.45,
+  "composite_score_adjusted": 60.5,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,10 +184,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 56.15,
+  "osap_blended_score": 56.17,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2,
   "form4_diagnostics": null,
-  "cross_source_delta": 0.002209751975181214
+  "cross_source_delta": 1.599451559359372e-08
 }
