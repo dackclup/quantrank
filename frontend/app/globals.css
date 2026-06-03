@@ -44,13 +44,14 @@
   --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-slab: var(--font-roboto-slab), 'Roboto Slab', ui-serif, Georgia, serif;
 
-  /* Soft positive — muted forest green (oklch hue 152, near
-   * LedgerCraft #15803D / emerald-700). LedgerCraft Phase 3b
-   * canonical palette alignment (2026-05-22) shifted hue 155 → 152
-   * + chroma 0.09 → 0.13 so the strong swatch reads closer to the
-   * spec's #15803D forest green without flipping all the way to
-   * Tailwind's solid emerald-700 (which loses the OKLCH-perceptual
-   * smoothness across the medium / bg swatches). */
+  /* Soft positive — muted forest green (oklch hue 152, near the
+   * LedgerCraft forest-green spec #15803D = Tailwind green-700; NOT
+   * emerald-700, which is the cooler #047857 the SOLID brand CTAs +
+   * Q-mark actually ship). LedgerCraft Phase 3b canonical palette
+   * alignment (2026-05-22) shifted hue 155 → 152 + chroma 0.09 → 0.13
+   * so the strong swatch reads closer to that forest #15803D without
+   * flipping all the way to the solid emerald-700 #047857 (which loses
+   * the OKLCH-perceptual smoothness across the medium / bg swatches). */
   --c-pos-strong: oklch(50% 0.13 152);
   --c-pos-medium: oklch(56% 0.12 152);
   --c-pos-bg: oklch(97% 0.03 152);

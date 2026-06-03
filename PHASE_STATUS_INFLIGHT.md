@@ -421,7 +421,7 @@ emerald text on the deep dark chip bg, no contrast risk; flagged for a Vercel-pr
 
 **#2 — "Q" brand-mark dark sweep.** `Sidebar` + `AppShell` Q-logo used
 `dark:bg-emerald-600` (decorative `aria-hidden`, contrast-exempt) → `dark:bg-emerald-700`,
-so it reads as the brand primary `#15803D` in both themes (consistency, not a blocker).
+so it reads as the brand primary `emerald-700` (`#047857`) in both themes (consistency, not a blocker).
 
 **#3 — §Gotchas formalized.** New CLAUDE.md index line + `docs/GOTCHAS.md` detail for the
 systemic finding behind #401's dark CTA: the `globals.css` soft-color `!important`
@@ -480,5 +480,38 @@ split is a candidate follow-up; the three component headers document it inline f
 (new) · `frontend/components/FilterDrawer.tsx` (rewritten as shell) ·
 `frontend/components/RankingTable.tsx` (2-col layout + `xl:hidden` toolbar/chips) ·
 `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
+
+## docs: correct brand-primary hex mislabel (emerald-700 = #047857, not #15803D) (in flight, 2026-06-03)
+
+**Branch**: `claude/optimistic-fermat-lUTnF`
+**Type**: docs — DOC/COMMENT-ONLY, no code / schema / compute / data change; the one
+`frontend/app/globals.css` edit is comment-only (no CSS rule / visual change).
+
+The #401 filter theme audit surfaced (via `frontend-design-reviewer`) that the project
+docs labeled the brand primary `#15803D` as `emerald-700` — but `#15803D` is Tailwind
+**green-700**; `emerald-700` is `#047857`. `tailwind.config.ts` has no emerald override,
+so `bg-emerald-700` (the View/Compare CTAs + the Q-mark) ships `#047857` (cooler emerald),
+not the spec's forest `#15803D`. **Decision (user, 2026-06-03): Option A — bless the
+shipped emerald**; fix the docs to the real hex rather than re-tint the app. No visual
+change. Corrected: `docs/design.md` Primary `#15803D → #047857` + hover `#166534 → #065F46`
+(green-800 → emerald-800) + a Hex note; `CLAUDE.md` §Stack + `AGENTS.md` §Phase-3d brand-
+primary hex; `globals.css` soft-positive comment (the OKLCH band genuinely leans toward
+forest `#15803D` = green-700 for CHIP surfaces — kept, now clearly distinguished from the
+emerald-700 `#047857` SOLID CTAs). Lockstep: CLAUDE.md + AGENTS.md both carry the substance
+edit (+ this entry).
+
+**docs-reviewer follow-ups folded**: also corrected the ROOT `DESIGN.md` (impeccable
+design doc — the same mislabel set was there: YAML `primary`/`primary-hover` + the "Forest
+Green"/"Pine" names → Emerald + `#047857`/`#065F46`), fixed the inverted `#15803D` claim in
+the #404 Q-mark inflight entry (→ emerald-700 `#047857`), and refreshed the stale
+`docs/design.md` OKLCH table (hue 155 → 152 + chroma → current globals.css values) that sat
+one section below the new Hex note. Pre-existing + tracked-not-fixed: the `docs/design.md`
+Neutral row `#9CA3AF` (labeled ≈ slate-400, actually gray-400) and the merged
+`.impeccable/critique/` snapshot's hex-ratio line (vendored output).
+
+**Files**: `DESIGN.md` (root) · `docs/design.md` · `CLAUDE.md` · `AGENTS.md` ·
+`frontend/app/globals.css` (comment-only) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---

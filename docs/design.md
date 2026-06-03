@@ -62,8 +62,8 @@ single approved way to reach them in code (no inline hex per Rule 0).
 
 | Role | LedgerCraft hex | Tailwind class | Use |
 |---|---|---|---|
-| **Primary** (forest green) | `#15803D` | `emerald-700` | CTAs, wordmark Q logo, "View N stocks" submit, positive balance |
-| **Primary hover** | `#166534` | `emerald-800` | Primary button hover |
+| **Primary** (emerald) | `#047857` | `emerald-700` | CTAs, wordmark Q logo, "View N stocks" submit, positive balance |
+| **Primary hover** | `#065F46` | `emerald-800` | Primary button hover |
 | **Secondary** (steel) | `#64748B` | `slate-500` | Secondary actions, column headers |
 | **Tertiary** (amber) | `#B45309` | `amber-700` | Alerts, overdue notices, warning chip text |
 | **Neutral** (gray) | `#9CA3AF` | ≈ `slate-400` | Borders, disabled states, placeholders |
@@ -76,25 +76,33 @@ LedgerCraft "Primary button" pattern. Used for the FilterDrawer
 chips / data surfaces — those follow the outlined-light pattern per
 Rule 2.
 
+> **Hex note (2026-06-03).** Earlier revisions labeled Primary `#15803D` /
+> hover `#166534` — but those are Tailwind **green**-700 / green-800. The code
+> ships **emerald**-700 / emerald-800 (`#047857` / `#065F46`), a cooler green, so
+> the table above now states the SHIPPED hex. The brand is the cool emerald, not
+> forest green (decision 2026-06-03: bless the implementation). Note the OKLCH
+> soft-positive band below deliberately leans toward the forest `#15803D` (green-700)
+> for chip surfaces — that is distinct from the solid emerald CTAs and is intentional.
+
 ### Semantic (OKLCH, soft band)
 
 OKLCH was chosen over HSL because the perceptually-uniform lightness
 axis prevents accidental saturation blowups — see `globals.css:55-75`.
-Hue 155 (sage / muted green) for positive, hue 18 (dusty rose) for
+Hue 152 (muted forest green) for positive, hue 18 (dusty rose) for
 negative. Both kept far from the "alarm" intensity.
 
 | Role | CSS var | OKLCH | Purpose |
 |---|---|---|---|
-| Positive (strong) | `--c-pos-strong` | `oklch(50% 0.09 155)` | "Undervalued" text, MoS positive |
-| Positive (medium) | `--c-pos-medium` | `oklch(56% 0.09 155)` | Bar fills, mid-emphasis |
-| Positive (bg) | `--c-pos-bg` | `oklch(97% 0.025 155)` | Chip backgrounds |
-| Positive (ring) | `--c-pos-ring` | `oklch(86% 0.06 155)` | Chip rings |
-| Positive (dot) | `--c-pos-dot` | `oklch(60% 0.10 155)` | Chip dot |
-| Negative (strong) | `--c-neg-strong` | `oklch(48% 0.09 18)` | "Overvalued" text, MoS negative |
-| Negative (medium) | `--c-neg-medium` | `oklch(54% 0.09 18)` | Bar fills, mid-emphasis |
+| Positive (strong) | `--c-pos-strong` | `oklch(50% 0.13 152)` | "Undervalued" text, MoS positive |
+| Positive (medium) | `--c-pos-medium` | `oklch(56% 0.12 152)` | Bar fills, mid-emphasis |
+| Positive (bg) | `--c-pos-bg` | `oklch(97% 0.03 152)` | Chip backgrounds |
+| Positive (ring) | `--c-pos-ring` | `oklch(86% 0.07 152)` | Chip rings |
+| Positive (dot) | `--c-pos-dot` | `oklch(60% 0.13 152)` | Chip dot |
+| Negative (strong) | `--c-neg-strong` | `oklch(48% 0.10 18)` | "Overvalued" text, MoS negative |
+| Negative (medium) | `--c-neg-medium` | `oklch(54% 0.10 18)` | Bar fills, mid-emphasis |
 | Negative (bg) | `--c-neg-bg` | `oklch(97% 0.025 18)` | Chip backgrounds |
 | Negative (ring) | `--c-neg-ring` | `oklch(86% 0.06 18)` | Chip rings |
-| Negative (dot) | `--c-neg-dot` | `oklch(60% 0.10 18)` | Chip dot |
+| Negative (dot) | `--c-neg-dot` | `oklch(60% 0.12 18)` | Chip dot |
 
 ### Tailwind accent ramps
 
@@ -440,8 +448,8 @@ Inline hex bypasses the chip-family discipline and accumulates as
 
 ### Rule 1 — Soft palette, no saturation
 
-The semantic green / red ride the OKLCH soft band (hue 155 / hue 18,
-chroma ≤ 0.10). The "bright fresh green" and alarm-red intensities
+The semantic green / red ride the OKLCH soft band (hue 152 / hue 18,
+chroma ≤ 0.13). The "bright fresh green" and alarm-red intensities
 were explicitly rejected during design review.
 
 **Do:** `style={{ color: 'var(--c-pos-strong)' }}` for "undervalued"
