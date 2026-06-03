@@ -892,7 +892,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
             <button
               type="button"
               onClick={() => setSelected(new Set())}
-              className="press whitespace-nowrap text-xs font-medium text-slate-500 underline-offset-2 hover:text-slate-900 hover:underline dark:text-slate-400 dark:hover:text-slate-100"
+              className="press inline-flex min-h-[44px] items-center whitespace-nowrap text-xs font-medium text-slate-500 underline-offset-2 hover:text-slate-900 hover:underline dark:text-slate-400 dark:hover:text-slate-100"
             >
               Clear
             </button>

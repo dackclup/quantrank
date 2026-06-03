@@ -84,6 +84,10 @@ function Dash() {
   return <span className="font-mono text-sm text-slate-300 dark:text-slate-600">—</span>;
 }
 
+// Per-stock cells CENTER their value. design.md mandates `text-right` for a
+// ranked LIST column, but this is a cross-sectional matrix (cols = stocks, rows =
+// metric) — centering reads better across 2–4 equal columns, and every value
+// still carries `tabular-nums` so digits align within a column.
 const CELL = 'px-2 py-2 text-center align-middle';
 
 function MetricRow({
@@ -99,7 +103,7 @@ function MetricRow({
     <tr className="border-t border-slate-100 dark:border-slate-800/60">
       <th
         scope="row"
-        className="sticky left-0 z-10 bg-slate-50 px-3 py-2 text-left align-middle dark:bg-slate-900/70"
+        className="sticky left-0 z-10 bg-slate-50 px-3 py-2 text-left align-middle dark:bg-slate-900"
       >
         <span className="text-xs font-medium text-slate-700 dark:text-slate-300">{label}</span>
         {sub && (
@@ -119,7 +123,11 @@ function GroupHeader({ label, span }: { label: string; span: number }) {
       <th
         scope="colgroup"
         colSpan={span}
-        className="bg-slate-100 px-3 py-1.5 text-left text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:bg-slate-800/60 dark:text-slate-400"
+        // sticky left-0 keeps the section label visible while the stock columns
+        // scroll horizontally on mobile (the row is one full-width cell, so
+        // there's nothing behind it to bleed through — the /60 dark tint is safe
+        // here, unlike the per-metric rail which had to go fully opaque).
+        className="sticky left-0 bg-slate-100 px-3 py-1.5 text-left text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:bg-slate-800/60 dark:text-slate-400"
       >
         {label}
       </th>
@@ -254,7 +262,7 @@ export function CompareMatrix({
           <tr className="border-b border-slate-200 dark:border-slate-800">
             <th
               scope="col"
-              className="sticky left-0 z-20 w-[7.5rem] bg-slate-50 px-3 py-3 text-left align-bottom text-[0.625rem] font-medium uppercase tracking-wider text-slate-400 dark:bg-slate-900/70 dark:text-slate-500 sm:w-[9rem]"
+              className="sticky left-0 z-20 w-[7.5rem] bg-slate-50 px-3 py-3 text-left align-bottom text-[0.625rem] font-medium uppercase tracking-wider text-slate-400 dark:bg-slate-900 dark:text-slate-500 sm:w-[9rem]"
             >
               {n} stocks
             </th>
@@ -264,7 +272,7 @@ export function CompareMatrix({
                   type="button"
                   onClick={() => onRemove(s.ticker)}
                   aria-label={`Remove ${s.ticker} from comparison`}
-                  className="press absolute right-1 top-1 inline-flex h-6 w-6 items-center justify-center rounded-sm text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+                  className="press absolute right-0 top-0 inline-flex h-11 w-11 items-center justify-center rounded-sm text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-slate-200 lg:h-6 lg:w-6"
                 >
                   <span aria-hidden="true" className="text-base leading-none">
                     ×
