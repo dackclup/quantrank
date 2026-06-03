@@ -17,7 +17,7 @@
 | Workflow harness (PR iteration, phase bump) | Skill |
 | One-shot lookup / search | Direct `Read` / `Grep` |
 
-When a task fits both, prefer the **skill** if it already exists — 46
+When a task fits both, prefer the **skill** if it already exists — 47
 skills are loaded each session, so the main agent already has the
 trigger map. Subagents add value where context isolation or parallelism
 specifically helps.
@@ -313,16 +313,22 @@ pass. Sonnet agents also drain the separate Max-plan
 "Weekly · Sonnet only" pool (see [`CLAUDE.md`](../../CLAUDE.md)
 §Spawn discipline).
 
-**Effort: all 20 agents run at `effort: max`** (frontmatter, set 2026-05-31).
-The `effort` field is orthogonal to `model` — `model` picks WHICH model
-(opus / sonnet), `effort` sets how hard it reasons. `max` is the top of the
-`low / medium / high / xhigh / max` ladder and overrides the session's
-inherited effort while the subagent is active. Rationale: every agent here is
-a correctness / judgment gate (review · audit · academic validation · design),
-so the extra reasoning headroom pays back — and sonnet-at-max still drains the
-separate Sonnet-only pool rather than the all-models pool. A NEW agent should
-carry `effort: max` too (authoring convention #3 below). If a future agent is a
-pure mechanical lookup where max is wasteful, drop it to `high` deliberately
+**Effort: 18 of 20 agents run at `effort: max`** (frontmatter; set 2026-05-31,
+carve-out 2026-06-03). The `effort` field is orthogonal to `model` — `model`
+picks WHICH model (opus / sonnet), `effort` sets how hard it reasons. `max` is
+the top of the `low / medium / high / xhigh / max` ladder and overrides the
+session's inherited effort while the subagent is active. Rationale: most agents
+are open-ended correctness / judgment gates (review · audit · academic
+validation · design), so the extra reasoning headroom pays back — and
+sonnet-at-max still drains the separate Sonnet-only pool rather than the
+all-models pool. **The two carve-outs at `effort: high` are the deterministic
+script-runners — `schema-sentinel` (runs `schema_check`, reports the diff) and
+`vercel-preview-auditor` (runs a fixed Vercel MCP chain, reports GO/WAIT):**
+they follow a fixed procedure, so max reasoning is wasted; `high` saves
+thinking tokens per spawn at no capability cost (token-economy drain,
+2026-06-03). A NEW agent should carry `effort: max` too (authoring convention #3
+below). If an agent is a pure mechanical lookup where max is wasteful, drop it
+to `high` deliberately
 and note why.
 
 ## How auto-invocation works
@@ -395,11 +401,12 @@ each invocation.
    - `opus` — full code review where breadth + nuance matter (one or
      two passes over a multi-file diff, weighing project-specific
      conventions against the change).
-   - **`effort: max` on every agent** (the `effort` frontmatter field,
-     orthogonal to `model`). All 20 agents run at the top reasoning level
-     since each is a correctness / judgment gate. A new agent gets
-     `effort: max` too unless it's a pure mechanical lookup (then `high`,
-     with a note). See §Model split above.
+   - **`effort: max` on judgment-gate agents** (the `effort` frontmatter
+     field, orthogonal to `model`). 18 of 20 agents run at the top
+     reasoning level; the 2 deterministic script-runners (`schema-sentinel`
+     + `vercel-preview-auditor`) sit at `effort: high` — see §Effort above.
+     A new agent gets `effort: max` too unless it's a pure mechanical
+     lookup (then `high`, with a note). See §Model split above.
 4. **Tool allowlist.** Restrict to what the agent actually needs. A code
    reviewer doesn't need `Edit` or `Write`; an auditor doesn't need
    `Edit` either. Explicit allowlists reduce blast radius.

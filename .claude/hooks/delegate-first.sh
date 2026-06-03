@@ -7,9 +7,11 @@
 # Writes: stdout JSON  (hookSpecificOutput.additionalContext)
 #
 # Design notes:
-#   - Always-fire: the reminder is short (~120 tokens) and the cost is
-#     worth keeping the rule loaded every turn. Filtering by prompt
-#     content would risk missing the cases that need it most.
+#   - Always-fire: the reminder is short (~80 tokens, trimmed 2026-06-03
+#     from the prior ~220-token verbatim copy — the full (a)-(d) rule
+#     lives in CLAUDE.md §Auto-routing, which is always loaded, so this
+#     injection only needs to be a pointer, not a restatement).
+#     Filtering by prompt content would risk missing cases that need it.
 #   - Fail-open: missing jq / unwritable stdin / etc. → exit 0 with
 #     no output. The harness treats absent additionalContext as no-op.
 
@@ -19,7 +21,7 @@ cat <<'JSON'
 {
   "hookSpecificOutput": {
     "hookEventName": "UserPromptSubmit",
-    "additionalContext": "DELEGATE-FIRST CHECK (Main agent = orchestrator, not laborer): Before doing inline work for this turn, scan .claude/agents/ — is there a sub-agent whose description matches this request? If yes → spawn it (sonnet sub-agents drain the Max-plan 'Weekly · Sonnet only' pool which is a separate, paid-for budget that is currently under-utilized). Inline work is acceptable ONLY when: (a) no sub-agent matches the task, (b) the request is a trivial lookup answerable with ≤ 1 Read + a single sentence, (c) the user explicitly says 'ทำเอง' / 'inline this' / 'don't spawn agents', OR (d) the work IS the meta-task of building/editing the agent + hook infrastructure itself. See CLAUDE.md §Auto-routing policy §Main agent role for the role definition + concrete delegation-patterns table."
+    "additionalContext": "DELEGATE-FIRST: you are the orchestrator. Default = spawn the matching .claude/agents/ sub-agent (drains the paid, idle Sonnet pool), not inline work. Inline ONLY if no agent matches / trivial 1-Read lookup / user said do-it-inline / it is agent-infra meta-work. Full (a)-(d) rule + delegation table: CLAUDE.md §Auto-routing policy."
   }
 }
 JSON

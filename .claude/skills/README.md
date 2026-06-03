@@ -13,7 +13,7 @@ populations:
 
 - **Loaded skills** (sit flat under `.claude/skills/<name>/SKILL.md`) —
   see [`CLAUDE.md`](../../CLAUDE.md) §Layout row for the canonical
-  breakdown (currently 46 invocation-triggerable skills). Bump that
+  breakdown (currently 47 invocation-triggerable skills). Bump that
   CLAUDE.md row when adding/removing a top-level skill; this file
   references rather than duplicates the count to avoid drift.
 - **Planning documents** (nested under `phase-N/<name>/PLAN.md`) —
@@ -27,7 +27,7 @@ populations:
 ├── README.md                                  # this file
 ├── THIRD_PARTY_NOTICES.md                     # license attribution for vendored skills
 │
-├── verify-production-output/SKILL.md          ┐ 10 QuantRank cross-phase
+├── verify-production-output/SKILL.md          ┐ 11 QuantRank cross-phase
 ├── schema-check/SKILL.md                      │ skills — loaded by
 ├── defense-scorecard/SKILL.md                 │ Claude Code at session
 ├── top5-rotation-audit/SKILL.md               │ start
@@ -36,7 +36,8 @@ populations:
 ├── pr-iteration-flow/SKILL.md                 │
 ├── security-check/SKILL.md                    │
 ├── pr-quality-gate/SKILL.md                   │
-├── frontend-design-system/SKILL.md            ┘ (added PR 4d aftermath)
+├── frontend-design-system/SKILL.md            │ (added PR 4d aftermath)
+├── thai-token-economy/SKILL.md                ┘ (token-economy 2026-06-03)
 │
 ├── algorithmic-art/SKILL.md                   ┐ 17 vendored Anthropic
 ├── brand-guidelines/SKILL.md                  │ skills (full upstream
@@ -83,7 +84,7 @@ phase begins, the relevant PLAN.md gets fleshed out and **promoted**
 into a top-level `<skill-name>/SKILL.md` so Claude Code can actually
 invoke it.
 
-## QuantRank cross-phase skills (9)
+## QuantRank cross-phase skills (11)
 
 | Skill | When to use |
 |---|---|
@@ -96,6 +97,8 @@ invoke it.
 | `pr-iteration-flow` | During UI polish iteration — manage Draft↔Ready flips + spot-check matrix authoring |
 | `security-check` | Before release tags / CI workflow edits / dependency adds — Section A-G audit of secrets, CVEs, EDGAR rate-limit hygiene, output JSON cleanliness, CI permissions, licenses, git hygiene |
 | `pr-quality-gate` | Before authorizing Draft→Ready or merge — Section A-G PR completeness audit: scope, skill triggers met, doc drift, test coverage, local verification ladder, commit hygiene, polish |
+| `frontend-design-system` | Before adding any new UI component / badge / chip / filter control / color — keep the new surface within the established design family |
+| `thai-token-economy` | When the session is conducted in Thai — Thai human I/O but English machine-facing artifacts + reasoning, concise Thai replies (honest: Thai is ~2-4x tok/char, so layer-separation is the lever) |
 
 ## QuantRank phase-specific stubs (36)
 
