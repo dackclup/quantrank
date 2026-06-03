@@ -49,15 +49,14 @@ export const FLAG_LABELS: Record<string, string> = {
   going_concern_disclosure: 'Going-concern disclosure',
   going_concern: 'Going-concern disclosure',
   auditor_change: 'Auditor change',
-  // Rank-gate VETO flags (compute/scoring/risk_overlay.py). These labels MIRROR
-  // RiskSummaryCard's RANK_GATE_META — the authoritative risk surface — VERBATIM,
-  // so a flag reads the SAME string on the cross-stock compare matrix (FlagsCell)
-  // and on the stock-detail Risk Summary (the e2e found the compare matrix was
-  // Title-Casing these via the fallback while the detail page showed the precise
-  // label). RANK_GATE_META keeps its own copy because each entry there ALSO carries
-  // an academic `detail` line; these are the label strings the chip surfaces share
-  // — keep the two in sync (a later PR can fold RANK_GATE_META.label onto
-  // flagLabel() to retire the last copy).
+  // Rank-gate VETO flags (compute/scoring/risk_overlay.py). `FLAG_LABELS` is the
+  // SINGLE source for these labels: `RiskSummaryCard.RANK_GATE_META` renders its
+  // rank-gate label via `flagLabel()` and holds only the academic `detail` line,
+  // so the cross-stock compare matrix (FlagsCell) and the stock-detail Risk Summary
+  // read the SAME string with no duplicate to drift. (The post-merge e2e on #394
+  // found the matrix Title-Casing these via the fallback while the detail page
+  // showed the precise label; #396 added them here, and the single-source fold
+  // made the match structural.)
   altman_distress: 'Altman financial distress',
   sloan_accruals_top_decile: 'Sloan accruals — top decile',
   net_issuance_top_decile: 'Net share issuance — top decile',

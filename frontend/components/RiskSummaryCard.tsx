@@ -1,5 +1,7 @@
 'use client';
 
+import { flagLabel } from '@/lib/flag-labels';
+
 // Risk Summary — ONE container merging the former RiskFlagsCard +
 // ManipulationRiskCard (2026-05-31, user request "รวม risk flags + risk
 // index เป็น container เดียว"). The two were separate cards that showed
@@ -34,50 +36,46 @@
 // rounded / ring-1 ring-inset / rounded-sm chip / tabular-nums /
 // paired dark: family from both originals — no new design tokens.
 
+// Rank-gate flag DETAIL lines (the academic anchor rendered under the label).
+// The LABEL itself now comes from the shared `flagLabel` (lib/flag-labels.ts) —
+// the SINGLE source the cross-stock compare matrix + this card share, so the two
+// can't drift: the post-merge e2e on #394 found the compare matrix Title-Casing
+// these vetoes via its fallback while this card showed the precise label; #396
+// made `FLAG_LABELS` mirror these verbatim, and this fold retires the duplicated
+// per-entry `label` so the match is STRUCTURAL, not "keep in sync". Academic
+// anchors from docs/METHODOLOGY.md §Active vetoes. An unknown flag falls through
+// to flagLabel's Title-Case (+ no detail line) instead of the old raw key.
 interface FlagMeta {
-  label: string;
   detail: string;
 }
 
-// Rank-gate flags carry the academic anchor (rendered with the detail
-// line). Academic anchors from docs/METHODOLOGY.md §Active vetoes.
-// Unknown flags fall through to the raw key (forward-safe if a new veto
-// lands before this map is updated).
 const RANK_GATE_META: Record<string, FlagMeta> = {
   altman_distress: {
-    label: 'Altman financial distress',
     detail: 'Altman Z″ below 1.10 — financial-distress zone (Altman 1968).',
   },
   sloan_accruals_top_decile: {
-    label: 'Sloan accruals — top decile',
     detail: 'Within-sector top decile of accruals / assets (Sloan 1996).',
   },
   net_issuance_top_decile: {
-    label: 'Net share issuance — top decile',
     detail: 'Top-decile net issuance over the trailing year (Pontiff-Woodgate 2008 / Daniel-Titman 2006).',
   },
   non_reliance_filing: {
-    label: '8-K Item 4.02 non-reliance',
     detail: 'Prior financials flagged not-to-be-relied-upon within the trailing year (Schroeder 2024).',
   },
   beneish_manipulation_veto: {
-    label: 'Beneish M-score veto',
     detail: 'Beneish M-score above −1.78 — earnings manipulation likely (Beneish 1999).',
   },
   dechow_manipulation_veto: {
-    label: 'Dechow F-score veto',
     detail: 'Dechow F-score above 3.0 — elevated misstatement risk (Dechow et al. 2011).',
   },
   data_quality_input_corruption: {
-    label: 'Data-quality guard',
     detail: 'Upstream input out of range (e.g. share-count units) — fair-price methods suppressed (Step 7.5 sanity guard).',
   },
   // Not a compute_risk_flags veto — a fair-price ensemble GUARD merged into
   // risk_flags[] at compute/main.py after Step-7 rotation, so it does NOT
   // forfeit entered_top5 the way the vetoes do. Fires 0× in the current
-  // cron but is structurally reachable; labelled so it never renders raw.
+  // cron but is structurally reachable.
   stale_filing_hard: {
-    label: 'Stale filing — fair-price suppressed',
     detail: 'Most recent filing older than 180 days — all 6 fair-price methods skipped (practitioner freshness guard, not a veto).',
   },
 };
@@ -250,7 +248,7 @@ export function RiskSummaryCard({
                   />
                   <span>
                     <span className="font-medium text-slate-900 dark:text-slate-100">
-                      {meta?.label ?? flag}
+                      {flagLabel(flag)}
                     </span>
                     <span className="ml-1.5 font-mono text-xs text-slate-500 dark:text-slate-400">
                       [{flag}]
