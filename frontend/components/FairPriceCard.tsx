@@ -2,6 +2,56 @@ import { formatFairPrice, formatMosPct, mosColorClass } from '@/lib/format';
 import type { FairPriceEnsemble } from '@/lib/types';
 import { CHIP_BASE } from '@/components/Chip';
 
+// Human labels for the valuation-ensemble warning flags (`warnings` =
+// StockDetail.valuation_warnings). Mirrors RiskSummaryCard's labelled approach
+// so the same flag doesn't read "beneish high" in one card and a full label in
+// another. Unknown flags fall back to Title Case — forward-safe if a new
+// valuation_warnings string lands in compute/valuation/ensemble.py before this
+// map is updated (cf. the `extreme_{method}_estimate` family at ensemble.py:142).
+const VALUATION_WARNING_LABELS: Record<string, string> = {
+  // Valuation-method extremeness + valuation-specific guards (ensemble.py).
+  extreme_graham_estimate: 'Extreme Graham estimate',
+  extreme_multiples_pe_estimate: 'Extreme P/E estimate',
+  extreme_multiples_pb_estimate: 'Extreme P/B estimate',
+  extreme_multiples_ev_ebitda_estimate: 'Extreme EV/EBITDA estimate',
+  extreme_rim_estimate: 'Extreme Residual-Income estimate',
+  extreme_dcf_estimate: 'Extreme DCF estimate',
+  extreme_estimate_majority: 'Majority of methods extreme',
+  stale_filing_soft: 'Stale filing',
+  goodwill_heavy: 'Goodwill-heavy balance sheet',
+  value_trap_risk: 'Value-trap risk (RIM)',
+  data_quality_input_corruption: 'Data-quality guard',
+  valuation_output_anomalous: 'Valuation output anomalous',
+  // Manipulation / earnings-quality flags that compute/main.py ALSO appends to
+  // valuation_warnings (beneish/dechow/etc. at main.py:1650+) — labelled to match
+  // RiskSummaryCard's MANIPULATION_FLAG_LABELS so the same flag never reads two
+  // ways across the two cards. (Kept as a local copy rather than a cross-import:
+  // RiskSummaryCard is a `'use client'` module and this card is a Server
+  // Component; flag labels are stable enough that the small duplication is safe.)
+  beneish_high: 'Beneish M-score (warning band)',
+  dechow_high: 'Dechow F-score (warning band)',
+  manipulation_triple_flag: 'Triple-stack (Sloan + Beneish + Dechow)',
+  rem_suspect: 'Real Earnings Management',
+  restatement_history: 'Restatement history',
+  restatement_high_confidence: 'Restatement — high confidence',
+  late_filing_notification: 'Late-filing notification',
+  accruals_momentum_high: 'Accruals momentum',
+  loss_avoidance_pattern: 'Loss-avoidance pattern',
+  loss_avoidance_pattern_size_invariant: 'Loss-avoidance — size-invariant',
+  share_count_extraction_missing: 'Share-count extraction missing',
+  insider_sell_cluster: 'Insider-sell cluster',
+  c_suite_unusual_sell: 'C-suite unusual selling',
+  multi_class_aggregate_shares_suspected: 'Multi-class share aggregation suspected',
+  cross_source_disagreement: 'Cross-source price disagreement',
+};
+
+function warningLabel(w: string): string {
+  return (
+    VALUATION_WARNING_LABELS[w] ??
+    w.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+  );
+}
+
 interface Props {
   ensemble: FairPriceEnsemble | null;
   currentPrice: number;
@@ -125,7 +175,7 @@ export default function FairPriceCard({
               key={w}
               className={`${CHIP_BASE} bg-amber-50 px-2 py-0.5 font-medium text-amber-800 ring-amber-200 dark:bg-amber-900/30 dark:text-amber-200 dark:ring-amber-800`}
             >
-              {w.replace(/_/g, ' ')}
+              {warningLabel(w)}
             </li>
           ))}
         </ul>

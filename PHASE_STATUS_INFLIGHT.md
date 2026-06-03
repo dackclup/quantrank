@@ -131,3 +131,38 @@ scoring / valuation / frontend / dependency change; no schema bump.
 `docs/GOTCHAS.md` (new) · `docs/PHASE_STATUS_ARCHIVE.md` (new) ·
 `.claude/hooks/delegate-first.sh` · `.claude/agents/schema-sentinel.md` ·
 `.claude/agents/vercel-preview-auditor.md` · `.claude/skills/thai-token-economy/SKILL.md` (new).
+
+---
+
+## Sidebar version-chip auto-wire + FairPriceCard warning labels (in flight, 2026-06-03)
+
+**Branch**: `claude/version-chip-flag-labels`
+**Type**: fix(frontend) — FRONTEND-ONLY, no schema / compute / data change; no schema bump. Resolves 2 of the 3 items the #392 whole-app polish pass deferred.
+
+**#1 — Sidebar version chip auto-wire.** The footer chip was hardcoded `v1.4.0`
+(the last release tag) while `main` ran 30+ PRs ahead → misleading. `next.config.js`
+now computes `NEXT_PUBLIC_APP_VERSION` at build via an `env:` block:
+explicit override → `git describe --tags --always --dirty` (reformatted
+`TAG-N-gSHA` → `TAG+N`) → `VERCEL_GIT_COMMIT_SHA` / `GITHUB_SHA` short → `'dev'`.
+`Sidebar.tsx` reads `process.env.NEXT_PUBLIC_APP_VERSION` (inlined at build).
+Local dev with tags shows `v1.4.0-phase4.6+N`; shallow CI/Vercel clones (no tags)
+show the 7-char commit SHA — both honest, never stale. (User-chosen approach:
+"Auto build version".)
+
+**#2 — FairPriceCard warning labels.** The valuation-ensemble warning chips
+humanized flags with a raw `w.replace(/_/g,' ')` ("extreme graham estimate") while
+`RiskSummaryCard` uses proper labels — the same flag read two ways. Added a
+`VALUATION_WARNING_LABELS` map (the `extreme_{method}_estimate` family +
+`extreme_estimate_majority` / `stale_filing_soft` / `goodwill_heavy` /
+`value_trap_risk` / `data_quality_input_corruption` / `valuation_output_anomalous` /
+`insufficient_history_for_roe`) with a Title-Case fallback for unknown flags
+(forward-safe per `compute/valuation/ensemble.py:142`).
+
+**Still deferred:** the P3 cross-stock COMPARE view (product-scope feature, not polish).
+
+**Verification**: `next build` GREEN locally (506 pages, lint + types valid); the
+version wire resolves at config-load (verified `node -e require('./next.config.js')`).
+
+**Files**: `frontend/next.config.js` · `frontend/components/Sidebar.tsx` ·
+`frontend/components/FairPriceCard.tsx` · `CLAUDE.md` (§Gotchas index) ·
+`docs/GOTCHAS.md` (detail) · `PHASE_STATUS_INFLIGHT.md` (this).
