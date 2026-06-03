@@ -9,12 +9,12 @@
 // new flag string lands in compute/ before this map is updated (cf. the
 // `extreme_{method}_estimate` family at ensemble.py:142).
 //
-// NOTE: `RiskSummaryCard` keeps its OWN richer `RANK_GATE_META` +
-// `MANIPULATION_FLAG_LABELS` (it renders rank-gate semantics + the
-// manipulation-index breakdown, not just a label) — that card is `'use client'`
-// and its meta is more than a string map, so it intentionally does not route
-// through here yet. This module is the label-only source the presentational
-// surfaces share.
+// NOTE: `RiskSummaryCard.RANK_GATE_META` routes its rank-gate LABEL through
+// `flagLabel()` (the #397 single-source fold) and keeps only the academic
+// `detail` line — so the rank-gate vetoes read the SAME string here and on the
+// stock-detail Risk Summary. Its SEPARATE `MANIPULATION_FLAG_LABELS` (the "Also
+// fired" surplus list) keeps its own richer academic-anchored strings and does
+// NOT route through here. This module is the label source the chip surfaces share.
 export const FLAG_LABELS: Record<string, string> = {
   // Valuation-method extremeness + valuation-specific guards (ensemble.py).
   extreme_graham_estimate: 'Extreme Graham estimate',

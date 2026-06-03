@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { HelpCircle } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 import { CHIP_BASE } from '@/components/Chip';
@@ -9,6 +10,7 @@ import { SectorChip } from '@/components/SectorChip';
 import { StockLogo } from '@/components/StockLogo';
 import { flagLabel } from '@/lib/flag-labels';
 import { formatFairPrice, formatMosPct, mosColorClass } from '@/lib/format';
+import { METHODOLOGY_URL } from '@/lib/links';
 import type { PillarScores, StockSummary } from '@/lib/types';
 import { pillarColor } from '@/lib/visual';
 
@@ -117,7 +119,17 @@ function MetricRow({
   );
 }
 
-function GroupHeader({ label, span }: { label: string; span: number }) {
+function GroupHeader({
+  label,
+  span,
+  help = false,
+}: {
+  label: string;
+  span: number;
+  /** Render a `?` link to the methodology doc — for the jargon-heavy groups
+   *  (Risk · Valuation), the first-timer "what does this mean?" path (#395). */
+  help?: boolean;
+}) {
   return (
     <tr>
       <th
@@ -129,7 +141,25 @@ function GroupHeader({ label, span }: { label: string; span: number }) {
         // here, unlike the per-metric rail which had to go fully opaque).
         className="sticky left-0 bg-slate-100 px-3 py-1.5 text-left text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:bg-slate-800/60 dark:text-slate-400"
       >
-        {label}
+        <span className="inline-flex items-center gap-1">
+          {label}
+          {help && (
+            // A real <a> (not a mouse-only tooltip — the app avoids decorative
+            // tooltips, and there is no in-app methodology page) → the GitHub
+            // methodology doc, the same target the sidebar resource rail uses.
+            // 44px touch target on mobile, compact on desktop (the × precedent).
+            <a
+              href={METHODOLOGY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${label} — read the methodology (opens in a new tab)`}
+              title="Methodology"
+              className="press inline-flex h-6 w-6 items-center justify-center text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
+            >
+              <HelpCircle aria-hidden="true" strokeWidth={1.75} className="h-3.5 w-3.5" />
+            </a>
+          )}
+        </span>
       </th>
     </tr>
   );
@@ -294,7 +324,7 @@ export function CompareMatrix({
                   type="button"
                   onClick={() => onRemove(s.ticker)}
                   aria-label={`Remove ${s.ticker} from comparison`}
-                  className="press absolute right-0 top-0 inline-flex h-11 w-11 items-center justify-center rounded-sm text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-slate-200 lg:h-6 lg:w-6"
+                  className="press absolute right-0 top-0 inline-flex h-11 w-11 items-center justify-center rounded-sm text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200 lg:h-6 lg:w-6"
                 >
                   <span aria-hidden="true" className="text-base leading-none">
                     ×
@@ -372,7 +402,7 @@ export function CompareMatrix({
             );
           })}
 
-          <GroupHeader label="Valuation" span={span} />
+          <GroupHeader label="Valuation" span={span} help />
           <MetricRow label="Price" sub="latest close">
             {stocks.map((s) => (
               <td key={s.ticker} className={CELL}>
@@ -415,7 +445,7 @@ export function CompareMatrix({
             })}
           </MetricRow>
 
-          <GroupHeader label="Risk · defense layer" span={span} />
+          <GroupHeader label="Risk · defense layer" span={span} help />
           <MetricRow label="Flags" sub="fewer is better">
             {stocks.map((s, i) => (
               <td key={s.ticker} className={CELL}>

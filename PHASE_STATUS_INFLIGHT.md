@@ -285,3 +285,34 @@ still ship via `flagLabel`.
 (this).
 
 ---
+
+## Compare jargon-help — methodology ? link on group headers (in flight, 2026-06-03)
+
+**Branch**: `claude/busy-newton-L6J56`
+**Type**: feat(frontend) — FRONTEND-ONLY, no schema / compute / data change; no schema
+bump. #395 item #2 (jargon inline-help), shaped via `$impeccable`.
+
+The critique flagged that a first-timer on the compare matrix sees "Manipulation index
+12 ▲" with no in-context "what's this?". Recon found the metric rows already carry
+directional `sub` clarifiers (MoS "vs fair value, higher is better", etc.) and that
+there IS a methodology target — the Sidebar's "Methodology" resource link →
+docs/METHODOLOGY.md on GitHub (no in-app /methodology page). Shape-confirmed affordance
+(user choice): a `?` link on the jargon-heavy group headers → methodology, NOT per-term
+tooltips (mouse-only, off-pattern) and NOT a full in-app page (out of scope).
+
+- `CompareMatrix.GroupHeader` gains an optional `help` prop; the **Valuation** + **Risk ·
+  defense layer** group headers render a small `HelpCircle` `?` link → the methodology
+  doc (new tab, real `<a>`, aria-labelled, 44px touch target on mobile / compact on
+  desktop per the × precedent).
+- `CompareView` footnote: the existing "methodology" prose is now an actual link.
+- New `lib/links.ts` `METHODOLOGY_URL` is the SINGLE source — `Sidebar` (was an inline
+  URL), `CompareMatrix`, and `CompareView` all import it (no 3rd copy to drift).
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (507 pages); built-chunk grep
+confirms the `?`-link aria-label shipped.
+
+**Files**: `frontend/lib/links.ts` (new) · `frontend/components/CompareMatrix.tsx`
+(`GroupHeader` help) · `frontend/components/CompareView.tsx` (footnote link) ·
+`frontend/components/Sidebar.tsx` (URL → shared const) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 
 import { CompareMatrix } from '@/components/CompareMatrix';
+import { METHODOLOGY_URL } from '@/lib/links';
 import type { StockSummary } from '@/lib/types';
 
 const MAX = 4;
@@ -262,8 +263,17 @@ export default function CompareView({ all }: { all: StockSummary[] }) {
           {notes}
           <p className="max-w-2xl text-pretty text-xs leading-relaxed text-slate-500 dark:text-slate-400">
             Educational use only — not investment advice; flags mark elevated risk, never confirmed
-            fraud. Figures are from the latest weekly compute. See the methodology for the 8-pillar
-            composite, the 6-method fair-price ensemble, and each defense flag&rsquo;s academic prior.
+            fraud. Figures are from the latest weekly compute. See the{' '}
+            <a
+              href={METHODOLOGY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="press font-medium text-slate-600 underline underline-offset-2 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-200"
+            >
+              methodology
+            </a>{' '}
+            for the 8-pillar composite, the 6-method fair-price ensemble, and each defense
+            flag&rsquo;s academic prior.
           </p>
         </div>
       )}
