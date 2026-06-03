@@ -1206,13 +1206,22 @@ whitespace / single-line fixes do not trigger.
   remaps them — never pre-resolve a tone to hex inside the chip; (d) `Chip` is a
   pure presentational (no-`'use client'`) component so it renders in BOTH server
   callers (`SectorChip` / `RecommendationBadge` / `ListingChips`) and client
-  callers (`LossChanceBadge` / `Tier2EventCard`). NOT migrated (deliberately
-  left bespoke — different intent, follow-up `polish`): the `RankingTable` /
-  `FilterDrawer` selection-state filter chips (they layer `press hover:opacity-75`
-  + selected/unselected state on `RECOMMENDATION_CHIP_TONES`), `FairPriceCard`'s
-  `<li>`-shaped warning chips, and `FairPriceBarChart`'s verdict badges. The
-  `RECOMMENDATION_CHIP_TONES` / `_DOTS` / `_LABELS` / `_VALUES` exports are
-  unchanged (those filter chips still import them).
+  callers (`LossChanceBadge` / `Tier2EventCard`). The follow-up `$impeccable
+  polish` (PR after #388) extended the shell to `FairPriceCard`'s `<li>` warning
+  chips (which also gained the chip-family `font-medium` — the documented
+  holdout) + `FairPriceBarChart`'s tally pills (DRY'd 3 copies → one map) +
+  verdict badges — all compose `CHIP_BASE` / `CHIP_DOT` BY HAND because they have
+  non-standard padding (`px-2.5 py-1` / `px-1.5 py-0.5`) / uppercase / mono
+  content that the canonical `size` prop can't emit without a conflicting
+  utility. STILL bespoke by design: the `RankingTable` / `FilterDrawer`
+  selection-state filter chips (they layer `press hover:opacity-75` +
+  selected/unselected state on `RECOMMENDATION_CHIP_TONES`) — interactive
+  toggles, not metadata chips. The `RECOMMENDATION_CHIP_TONES` / `_DOTS` /
+  `_LABELS` / `_VALUES` exports are unchanged (those filter chips still import
+  them). **Neutral chip ring is canonically `ring-slate-200`** (matches the
+  sector / listing / MoS-fair neutral) — the `RecommendationBadge` "Hold" +
+  `LossChanceBadge` "Neutral" outliers were normalized `ring-slate-300 → 200` in
+  the same polish so all neutral chips share one ring shade.
 - **Chip family carries `font-medium`; every large numeric display carries
   `font-mono`; annotate-amber bodies use `bg-amber-50`; negative-strong rings
   use the soft `-200` shade, never raw `-300`** (`$impeccable polish` pass

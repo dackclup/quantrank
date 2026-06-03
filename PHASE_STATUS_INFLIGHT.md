@@ -5754,3 +5754,24 @@ change. Branch `claude/sharp-newton-8pj6p`.
 **Docs (lockstep)**: `frontend-design-system` SKILL.md Rule 2/3 + chip-shape + companion-docs sections rewritten (the "copy an existing component's pattern" convention → "use the `Chip` primitive") · DESIGN.md §Components Chips · CLAUDE.md §Gotchas new entry · AGENTS.md §Gotchas-mirror + §Phase-version in-flight · this append.
 
 **Files touched**: `frontend/components/Chip.tsx` (new) · `frontend/components/RecommendationBadge.tsx` · `frontend/components/LossChanceBadge.tsx` · `frontend/components/ListingChips.tsx` · `frontend/components/SectorChip.tsx` · `frontend/components/ScoreBadge.tsx` · `frontend/components/Tier2EventCard.tsx` · `.claude/skills/frontend-design-system/SKILL.md` · `DESIGN.md` · `CLAUDE.md` · `AGENTS.md` · `PHASE_STATUS_INFLIGHT.md` (this append).
+
+---
+
+## Frontend design-system — chip-family polish follow-up to the `Chip` primitive (2026-06-03, `$impeccable polish`)
+
+**Branch**: `claude/chip-family-polish`
+**Type**: polish(frontend) — FRONTEND-ONLY, no schema / compute / data change; no schema-version bump. Follows the merged PR #388 (`Chip` primitive). Mix of parity-exact dedup + small intentional consistency fixes.
+
+**Origin**: the post-#388 `frontend-design-reviewer` WARN list — the surfaces deliberately deferred from the extract PR, now reconciled.
+
+**Changes:**
+- `FairPriceCard` warning chips — compose `CHIP_BASE` + ADD `font-medium` (the documented chip-family holdout; intentional 400 → 500 weight so the amber warning chips join the family). The `<li>`-as-chip structure is preserved (no DOM change); text-size still inherited from the `<ul> text-xs`.
+- `FairPriceBarChart` — tally pills DRY'd (3 near-identical inline copies → one `(['cheap','fair','pricey'] as const).map`, the suffix is `say {v}`) composing `CHIP_BASE` + `CHIP_DOT`; verdict badges compose `CHIP_BASE`. Parity-exact (non-standard `px-2.5 py-1` / `px-1.5 py-0.5` + mono/uppercase content preserved — that's why constants, not the `<Chip>` props).
+- Neutral chip ring normalized `ring-slate-300 → ring-slate-200` on `RecommendationBadge.TONES.neutral` ("Hold") + `LossChanceBadge` neutral band ("Neutral") so all neutral chips match the canonical neutral used by sector / listing / MoS-fair (`NEUTRAL_CHIP_RG` / `MOS_BUCKETS.fair`). `RECOMMENDATION_CHIP_TONES === TONES`, so the filter chips inherit the fix. Wide blast radius (every "Hold" row), tiny 1-shade change → flag for the Vercel-preview eyeball.
+- `frontend-design-system` SKILL.md — Rule 2 neutral-row ring `slate-300 → slate-200` (matches the code); Rule 6 radius scale finished (the stale `rounded-md buttons` / `rounded-lg cards` / `rounded-2xl hero` lines → the LedgerCraft reality: `rounded-sm` chips/buttons/inputs, `rounded` cards/tables/hero, `rounded-full` dots/toggles only).
+
+**Deliberately STILL bespoke**: `RankingTable` / `FilterDrawer` selection-state filter chips (interactive toggles w/ `press` + selected/unselected state — not metadata chips).
+
+**Verification**: `node_modules` absent in the sandbox (CI + Vercel preview cover the build, per the documented pattern); verified by static review — grep confirms no inline `rounded-sm … ring-1 ring-inset` shell left in `FairPriceCard` / `FairPriceBarChart`; parity-exact dedups checked by utility-set; the two intentional changes (`font-medium`, neutral ring 300→200) are minimal + documented. `tsc --noEmit` + `next build` run in CI.
+
+**Files touched**: `frontend/components/FairPriceCard.tsx` · `frontend/components/FairPriceBarChart.tsx` · `frontend/components/RecommendationBadge.tsx` · `frontend/components/LossChanceBadge.tsx` · `.claude/skills/frontend-design-system/SKILL.md` · `CLAUDE.md` · `AGENTS.md` · `PHASE_STATUS_INFLIGHT.md` (this append).
