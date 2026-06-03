@@ -214,3 +214,40 @@ client-side).
 (this).
 
 ---
+
+## Compare view polish — flag-label consistency + Risk-row overflow cap (in flight, 2026-06-03)
+
+**Branch**: `claude/busy-newton-L6J56`
+**Type**: fix(frontend) — FRONTEND-ONLY, no schema / compute / data change; no schema
+bump. `$impeccable polish` follow-up on the merged compare view (#394), folding the
+critique P2 + the post-merge e2e finding (both logged in #395).
+
+**#1 — flag-label consistency (e2e finding).** The post-merge e2e (`expert-user-explorer`)
+caught the CompareMatrix `FlagsCell` Title-Casing the rank-gate VETO `risk_flags` via
+the `flagLabel` fallback ("Sloan Accruals Top Decile") while `RiskSummaryCard` rendered
+the canonical label ("Sloan accruals — top decile") — same flag, two labels across
+compare↔detail. Root cause: `lib/flag-labels.ts` `FLAG_LABELS` was seeded from the
+valuation-warnings + manipulation flags only, missing the rank-gate vetoes. Fix: added
+the 5 missing veto keys (`altman_distress` / `sloan_accruals_top_decile` /
+`net_issuance_top_decile` / `beneish_manipulation_veto` / `dechow_manipulation_veto`) +
+reconciled 2 conflicting shared keys (`non_reliance_filing` → "8-K Item 4.02
+non-reliance"; `stale_filing_hard` → "Stale filing — fair-price suppressed") to mirror
+`RiskSummaryCard.RANK_GATE_META` VERBATIM. `RiskSummaryCard` left untouched (its META
+also carries an academic `detail` line; folding its label onto `flagLabel()` for a true
+single-source is noted as a later PR).
+
+**#2 — Risk-row flag-overflow cap (critique P2).** A flag-laden column grew the Flags
+row far taller than a clean column's single "Clean" chip (row-height asymmetry).
+`FlagsCell` now caps visible flag chips at 3 + a neutral "+N more" chip (full list in
+`title` + sr-only); the count chip + best-▲ stay the comparable signal.
+
+**Still deferred to #395**: jargon inline-help (`clarify`) + bulk-add paste (`harden`) —
+features, not polish.
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (507 pages, `/compare` 6.83
+kB); built-chunk grep confirms the canonical veto strings shipped.
+
+**Files**: `frontend/lib/flag-labels.ts` · `frontend/components/CompareMatrix.tsx`
+(`FlagsCell`) · `docs/GOTCHAS.md` (compare gotcha) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---

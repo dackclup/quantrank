@@ -25,7 +25,6 @@ export const FLAG_LABELS: Record<string, string> = {
   extreme_dcf_estimate: 'Extreme DCF estimate',
   extreme_estimate_majority: 'Majority of methods extreme',
   stale_filing_soft: 'Stale filing',
-  stale_filing_hard: 'Stale filing (hard)',
   goodwill_heavy: 'Goodwill-heavy balance sheet',
   value_trap_risk: 'Value-trap risk (RIM)',
   data_quality_input_corruption: 'Data-quality guard',
@@ -49,8 +48,23 @@ export const FLAG_LABELS: Record<string, string> = {
   // Tier-2 8-K / going-concern event vetoes + annotates (tier2.py).
   going_concern_disclosure: 'Going-concern disclosure',
   going_concern: 'Going-concern disclosure',
-  non_reliance_filing: 'Non-reliance (restatement) filing',
   auditor_change: 'Auditor change',
+  // Rank-gate VETO flags (compute/scoring/risk_overlay.py). These labels MIRROR
+  // RiskSummaryCard's RANK_GATE_META — the authoritative risk surface — VERBATIM,
+  // so a flag reads the SAME string on the cross-stock compare matrix (FlagsCell)
+  // and on the stock-detail Risk Summary (the e2e found the compare matrix was
+  // Title-Casing these via the fallback while the detail page showed the precise
+  // label). RANK_GATE_META keeps its own copy because each entry there ALSO carries
+  // an academic `detail` line; these are the label strings the chip surfaces share
+  // — keep the two in sync (a later PR can fold RANK_GATE_META.label onto
+  // flagLabel() to retire the last copy).
+  altman_distress: 'Altman financial distress',
+  sloan_accruals_top_decile: 'Sloan accruals — top decile',
+  net_issuance_top_decile: 'Net share issuance — top decile',
+  non_reliance_filing: '8-K Item 4.02 non-reliance',
+  beneish_manipulation_veto: 'Beneish M-score veto',
+  dechow_manipulation_veto: 'Dechow F-score veto',
+  stale_filing_hard: 'Stale filing — fair-price suppressed',
 };
 
 export function flagLabel(flag: string): string {
