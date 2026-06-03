@@ -265,7 +265,7 @@ export function FairPriceBarChart({
               key={v}
               className={`${CHIP_BASE} gap-1.5 px-2.5 py-1 font-medium ${VERDICT_STYLE[v].bg} ${VERDICT_STYLE[v].text} ${VERDICT_STYLE[v].ring}`}
             >
-              <span className={`${CHIP_DOT} ${VERDICT_STYLE[v].dot}`} />
+              <span aria-hidden="true" className={`${CHIP_DOT} ${VERDICT_STYLE[v].dot}`} />
               <span className="font-mono tabular-nums">{tally[v]}</span> say {v}
             </span>
           ) : null,
