@@ -202,7 +202,7 @@ export function Tier2EventCard({
               <span className="text-slate-700 dark:text-slate-300">{row.label}</span>
             </span>
             <span className="flex flex-wrap items-center gap-2">
-              <Chip tone={severityClasses(row.severity)} role="status">
+              <Chip tone={severityClasses(row.severity)}>
                 {row.severityLabel}
               </Chip>
               {row.url && (

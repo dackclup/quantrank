@@ -885,8 +885,13 @@
   `_LABELS` / `_VALUES` exports are unchanged (those filter chips still import
   them). **Neutral chip ring is canonically `ring-slate-200`** (matches the
   sector / listing / MoS-fair neutral) — the `RecommendationBadge` "Hold" +
-  `LossChanceBadge` "Neutral" outliers were normalized `ring-slate-300 → 200` in
-  the same polish so all neutral chips share one ring shade.
+  `LossChanceBadge` "Neutral" (#389) AND the `RankingTable` / `FilterDrawer`
+  active-filter chips (follow-up) were all normalized `ring-slate-300 → 200`, so
+  EVERY neutral chip — static metadata AND interactive filter — shares one ring
+  shade (the filter chips keep their bespoke STRUCTURE, only the ring shade is
+  unified). No `ring-slate-300` neutral outlier remains; the lone surviving
+  `ring-slate-300` is `FairPriceBarChart`'s deliberately-muted `outlier` verdict
+  tone (NOT a neutral chip — leave it).
 - **Chip family carries `font-medium`; every large numeric display carries
   `font-mono`; annotate-amber bodies use `bg-amber-50`; negative-strong rings
   use the soft `-200` shade, never raw `-300`** (`$impeccable polish` pass
@@ -1132,4 +1137,38 @@
   display AND the country tag, since `_US_EXCHANGE_CODES = frozenset(...keys())`
   derives from the dict). The `_coverage_pct` helper (renamed from
   `_exchange_coverage_pct`) is shared by both metrics — don't re-split it.
-
+- **Whole-app polish conventions (`$impeccable polish "all app"`, 2026-06-03):
+  empty-state CTA is DISABLED not just styled · a labeled chip inside an
+  `aria-label`'d container is `aria-hidden` · `ring-rose-300` is never a chip
+  ring · valuation sections own no `mb-*`** (audit by `frontend-design-reviewer`
+  + `expert-user-explorer`, the latter built + drove the real app via Playwright).
+  Four reusable rules surfaced/reinforced: (1) **`FilterDrawer`'s "View N stocks"
+  primary CTA is `disabled` + de-emphasized when `filteredCount === 0`** (label →
+  "No matching stocks") — a bright emerald CTA must never invite a click toward a
+  0-result screen; Close / "Clear all" / backdrop stay the recovery paths (the
+  focus-trap drops a disabled button automatically). (2) **A `RecommendationBadge`
+  (or any labeled chip) embedded in a container that ALREADY carries its own
+  `aria-label`** — the stock-detail `<h1>` (`aria-label="TICKER — Rec"`) — is
+  wrapped in `<span aria-hidden="true">` so SR doesn't double-read "NVDASell"; it
+  STAYS announced where it's the sole source (the ranking-table ticker cell — do
+  NOT aria-hide it there). (3) **`ring-rose-300` is never a negative chip ring** —
+  the `globals.css` soft-OKLCH allowlist only remaps `-200` (raw `-300` =
+  alarm-pink); `RiskSummaryCard` (band / outer-ring / gate-chip) + `FairPriceBarChart`
+  "Heavily overvalued" headline were the last holdouts, now `-200` (extends the
+  "negative-strong rings use soft -200" rule; `FairPriceBarChart`'s `outlier`
+  verdict keeps `ring-slate-300` BY DESIGN — a muted tone, not a negative ring).
+  (4) **Detail-page valuation sections own NO `mb-*`** — the `<article>`
+  `space-y-4 !mt-8` wrapper owns the gaps; `FairPriceBarChart`'s outer `mb-4` was
+  a 32px double-gap holdout (same fix as the `PillarRadarChart mb-4`). Also folded
+  in (one-offs): `FairPriceCard` stat grid is now a real `<dl>` (was a `<div>` with
+  orphaned `<dt>/<dd>` — invalid HTML on every stock); `Tier2EventCard` severity
+  chip dropped its bogus `role="status"` live region (static content); AppShell
+  hamburger `<svg>` `aria-hidden` + `HeroAttributeTiles` `aria-labelledby` (kill
+  double-announce); `CurrentPriceLine` negative `text-rose-600 → -700` (allowlist);
+  `ScoreBadge` md `font-bold → -semibold` (numeric family); `FilterDrawer`
+  unselected-chip hover `bg-slate-50 → -200` (darken-on-hover, not lighten).
+  DEFERRED (NOT in this pass): the stale `v1.4.0` Sidebar version chip
+  (release-process tied — needs a `NEXT_PUBLIC_APP_VERSION` wire or a fresh release
+  cut), the `FairPriceCard` raw flag humanization (`w.replace(/_/g,' ')` → a real
+  label map), and a P3 cross-stock COMPARE view (product-scope feature gap, not
+  polish).

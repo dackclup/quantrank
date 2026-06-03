@@ -473,7 +473,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
             <button
               type="button"
               onClick={() => setScoreRange([0, 100])}
-              className="inline-flex items-center gap-1.5 rounded-sm bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 ring-1 ring-inset ring-slate-300 press hover:opacity-75 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700"
+              className="inline-flex items-center gap-1.5 rounded-sm bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 ring-1 ring-inset ring-slate-200 press hover:opacity-75 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700"
             >
               Score {scoreRange[0]}–{scoreRange[1]}
               <span aria-hidden="true" className="opacity-60">×</span>

@@ -120,7 +120,7 @@ function headlineFor(medianPct: number | null, ticker: string): Headline {
     tag: 'Heavily overvalued',
     desc: `Models suggest ${ticker} is far above estimated fair value`,
     cls: 'text-rose-900 dark:text-rose-100', bg: 'bg-rose-50 dark:bg-rose-900/30',
-    ring: 'ring-rose-300 dark:ring-rose-800', big: 'text-rose-800 dark:text-rose-200',
+    ring: 'ring-rose-200 dark:ring-rose-800', big: 'text-rose-800 dark:text-rose-200',
   };
 }
 
@@ -176,7 +176,7 @@ export function FairPriceBarChart({
   return (
     <section
       aria-label={`Fair price methods for ${ticker}`}
-      className="mb-4 rounded border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900"
+      className="rounded border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900"
     >
       <div className="mb-4">
         <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">

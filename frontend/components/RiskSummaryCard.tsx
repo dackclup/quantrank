@@ -115,7 +115,7 @@ function bandTone(index: number): {
 } {
   if (index >= 50) {
     return {
-      ring: 'ring-rose-300 dark:ring-rose-800',
+      ring: 'ring-rose-200 dark:ring-rose-800',
       bg: 'bg-rose-50 dark:bg-rose-900/30',
       text: 'text-rose-900 dark:text-rose-200',
       dot: 'bg-rose-500 dark:bg-rose-400',
@@ -187,7 +187,7 @@ export function RiskSummaryCard({
 
   // Worst-case outer ring: rose when any rank gate fires; otherwise the
   // manipulation band tone.
-  const outerRing = hasGates ? 'ring-rose-300 dark:ring-rose-800' : tone.ring;
+  const outerRing = hasGates ? 'ring-rose-200 dark:ring-rose-800' : tone.ring;
 
   // Heading tone signals decision-criticality so this warning card outweighs
   // the neutral data sections below it (audit P2 — flat eyebrow hierarchy).
@@ -213,7 +213,7 @@ export function RiskSummaryCard({
           Risk Summary
         </h2>
         {hasGates ? (
-          <span className="inline-flex items-center gap-1.5 rounded-sm bg-rose-50 px-2.5 py-0.5 text-xs font-medium tabular-nums text-rose-900 ring-1 ring-inset ring-rose-300 dark:bg-rose-900/30 dark:text-rose-200 dark:ring-rose-800">
+          <span className="inline-flex items-center gap-1.5 rounded-sm bg-rose-50 px-2.5 py-0.5 text-xs font-medium tabular-nums text-rose-900 ring-1 ring-inset ring-rose-200 dark:bg-rose-900/30 dark:text-rose-200 dark:ring-rose-800">
             <span
               className="inline-block h-1.5 w-1.5 rounded-full bg-rose-500 dark:bg-rose-400"
               aria-hidden="true"

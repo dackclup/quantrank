@@ -194,7 +194,14 @@ export default function StockDetailPage({
               <span className="font-mono text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-5xl">
                 {detail.ticker}
               </span>
-              <RecommendationBadge recommendation={detail.recommendation} size="md" />
+              {/* aria-hidden: the H1's own aria-label already carries
+                  "TICKER — Recommendation", so the badge is decorative in the
+                  a11y tree here (prevents the "NVDASell" double-read; the badge
+                  stays announced in the ranking table where it's the sole
+                  source). expert-user-explorer + frontend-design-reviewer a11y. */}
+              <span aria-hidden="true">
+                <RecommendationBadge recommendation={detail.recommendation} size="md" />
+              </span>
             </h1>
             {/* LedgerCraft Phase 2 — company name in slab-serif gives
                 the "editorial finance" register (Bloomberg / WSJ

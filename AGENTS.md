@@ -467,8 +467,27 @@ export function FairPriceCard(props) {  // no types
   polish` extended the shell into `FairPriceCard` `<li>` warnings (+`font-medium`)
   and `FairPriceBarChart` tally pills/verdict badges (via `CHIP_BASE`); only the
   `RankingTable` / `FilterDrawer` selection-state filter chips stay bespoke
-  (interactive toggles). Neutral chip ring normalized to canonical `ring-slate-200`.
+  (interactive toggles — though a follow-up normalized their NEUTRAL ring to the
+  canonical `ring-slate-200` too: bespoke structure, shared ring shade). Neutral
+  chip ring is canonically `ring-slate-200` across EVERY neutral chip now (no
+  `ring-slate-300` neutral outlier remains; the surviving `ring-slate-300` is
+  `FairPriceBarChart`'s muted `outlier` verdict, not a neutral chip).
   `RECOMMENDATION_CHIP_*` exports unchanged. Full rationale in CLAUDE.md §Gotchas.
+- **Whole-app polish pass** (`$impeccable polish "all app"`, 2026-06-03; audited
+  by `frontend-design-reviewer` + `expert-user-explorer` which built + drove the
+  real app): 4 reusable rules + a batch of one-off a11y/consistency fixes.
+  Reusable: (1) empty-state primary CTA is `disabled` not just styled
+  (`FilterDrawer` "View 0 stocks"); (2) a labeled chip inside an `aria-label`'d
+  container is `aria-hidden` (detail `<h1>` badge — but stays announced in the
+  ranking table); (3) `ring-rose-300` is never a negative chip ring (`-200` only;
+  RiskSummaryCard + FairPriceBarChart headline were the holdouts); (4) detail
+  valuation sections own no `mb-*` (FairPriceBarChart double-gap). One-offs:
+  `FairPriceCard` `<div>`→`<dl>`, Tier2 drop `role="status"`, AppShell svg
+  `aria-hidden`, HeroAttributeTiles `aria-labelledby`, CurrentPriceLine
+  `text-rose-600→700`, ScoreBadge md `font-bold→semibold`, FilterDrawer
+  unselected hover darken. Deferred: Sidebar `v1.4.0` version chip, FairPriceCard
+  flag label map, P3 compare view (product gap). Verified `next build` green
+  locally (506 pages). Full rationale in CLAUDE.md §Gotchas.
 
 ## Git workflow
 
