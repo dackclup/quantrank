@@ -456,6 +456,17 @@ export function FairPriceCard(props) {  // no types
   child needs `data-flip-key`; the hook skips zero-height nodes (desktop `<tbody>`
   no-op on mobile + vice-versa). A new filter dimension must be added to the
   `filterKey` JSON. Full rationale in CLAUDE.md §Gotchas.
+- **Outlined-light chip is a PRIMITIVE — `frontend/components/Chip.tsx`**
+  (`$impeccable extract` 2026-06-02): the design system's one chip pattern was a
+  copy-pasted className shell across 7+ components (+ a verbatim-duplicated
+  `SIZE_CLASSES` map). Now `<Chip tone size dot leading>` owns the shell + dot +
+  size scale; `CHIP_BASE` / `CHIP_DOT` / `CHIP_SIZES` exports cover bespoke
+  surfaces (`ScoreBadge` semibold pill, `SectorChip` inline-rgb dot) that would
+  emit a conflicting utility through the props. A NEW metadata chip uses `<Chip>`;
+  tones pass through verbatim (globals.css allowlist). `RankingTable` /
+  `FilterDrawer` selection chips + `FairPriceCard` `<li>` warnings stay bespoke
+  (follow-up `polish`); `RECOMMENDATION_CHIP_*` exports unchanged. Full rationale
+  in CLAUDE.md §Gotchas.
 
 ## Git workflow
 
@@ -602,6 +613,16 @@ list lives in [`CLAUDE.md`](CLAUDE.md) §Phase status. Schema-version
 history table is in [`SKILL.md`](SKILL.md). This file's role is to
 note cross-tool-specific points only:
 
+- **`Chip` primitive extraction PR in flight (this PR)** — `$impeccable
+  extract`: new `frontend/components/Chip.tsx` consolidates the copy-pasted
+  outlined-light chip shell (7+ inline copies + a verbatim-duplicated
+  `SIZE_CLASSES` map) into one primitive + `CHIP_BASE` / `CHIP_DOT` /
+  `CHIP_SIZES` exports. Migrates `RecommendationBadge` / `LossChanceBadge` /
+  `ListingChips` / `Tier2EventCard` (component form) + `SectorChip` /
+  `ScoreBadge` (constants form), rendering-identically. FRONTEND-ONLY — no
+  schema / compute / scoring / valuation / data change; no schema-version bump.
+  `RECOMMENDATION_CHIP_*` exports preserved. See CLAUDE.md §Gotchas "outlined-
+  light chip is a PRIMITIVE now".
 - **Listing-metadata canary PR in flight — schema `0.10.13-phase4.6`
   (this PR)**: PATCH bump adding `Metadata.country_coverage_pct: float |
   None` + a CBOE `BTS → Cboe BZX` fix in `cross_source._EXCHANGE_NAME_BY_CODE`.

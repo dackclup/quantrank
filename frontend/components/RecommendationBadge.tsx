@@ -1,4 +1,5 @@
 import type { Recommendation } from '@/lib/types';
+import { Chip, type ChipSize } from '@/components/Chip';
 
 // 4-tier recommendation badge. Outlined-light tone family matching
 // SectorChip / score-tier / MoS-bucket chips — one consistent visual
@@ -67,13 +68,6 @@ const SHORT_LABELS: Record<Recommendation, string> = {
   cautious: 'S',
 };
 
-const SIZE_CLASSES: Record<'xs' | 'sm' | 'md' | 'lg', string> = {
-  xs: 'px-1.5 py-0 text-[0.625rem]',
-  sm: 'px-2 py-0.5 text-xs',
-  md: 'px-2.5 py-0.5 text-sm',
-  lg: 'px-3 py-1 text-base',
-};
-
 export function RecommendationBadge({
   recommendation,
   size = 'sm',
@@ -81,7 +75,7 @@ export function RecommendationBadge({
   className = '',
 }: {
   recommendation: Recommendation | null;
-  size?: 'xs' | 'sm' | 'md' | 'lg';
+  size?: ChipSize;
   // `short` shows 2-letter code (BU/LB/NT/CA) for ultra-tight layouts
   // like the ranking-table ticker row on mobile. Default = full label.
   short?: boolean;
@@ -95,21 +89,21 @@ export function RecommendationBadge({
   // nothing rather than a confusing placeholder. Once a few weekly
   // computes land, the null path is unreachable in production.
   if (!recommendation) return null;
-  const tone = TONES[recommendation];
-  const dotCls = DOTS[recommendation];
-  const sizeCls = SIZE_CLASSES[size];
   const label = short ? SHORT_LABELS[recommendation] : LABELS[recommendation];
-  // The `gap-1.5` + dot shape mirrors SectorChip / score-tier chips
-  // so a row of "Materials [dot] · Buy [dot]" reads as one family.
+  // Renders through the shared `Chip` primitive — the dot shape + `gap-1.5`
+  // mirror SectorChip / score-tier chips so a row of "Materials [dot] · Buy
+  // [dot]" reads as one family. `whitespace-nowrap` keeps the label on one line.
   return (
-    <span
-      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-sm font-medium ring-1 ring-inset ${tone} ${sizeCls} ${className}`}
+    <Chip
+      tone={TONES[recommendation]}
+      size={size}
+      dot={DOTS[recommendation]}
+      className={`whitespace-nowrap ${className}`}
       title={LABELS[recommendation]}
       aria-label={`Recommendation: ${LABELS[recommendation]}`}
     >
-      <span className={`inline-block h-1.5 w-1.5 rounded-full ${dotCls}`} aria-hidden="true" />
       {label}
-    </span>
+    </Chip>
   );
 }
 

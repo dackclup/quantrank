@@ -5728,3 +5728,29 @@ change. Branch `claude/sharp-newton-8pj6p`.
 **Verification**: `tsc --noEmit` clean · `next build` green (506 static pages, /stock/[ticker] First Load 110 kB).
 
 **Files touched**: `frontend/components/MoSBadge.tsx` · `frontend/app/stock/[ticker]/page.tsx` · `PHASE_STATUS_INFLIGHT.md` (this append).
+
+---
+
+## Frontend design-system — extract the outlined-light chip into a `Chip` primitive (2026-06-02, `$impeccable extract`)
+
+**Branch**: `claude/busy-newton-L6J56`
+**Type**: refactor(frontend) — FRONTEND-ONLY, no schema / compute / scoring / valuation / data change; NO schema-version bump. Rendering-identical (structural consolidation, not a visual change).
+
+**Origin**: `$impeccable extract` (no target) → the design system's "one outlined-light chip pattern" (`frontend-design-system` SKILL.md Rule 2, DESIGN.md §Components) was a COPY-PASTE convention, not a component. The shell (`inline-flex items-center rounded-sm font-medium ring-1 ring-inset` + the `h-1.5 w-1.5 rounded-full` dot + the `px-/text-` size scale) was re-typed inline in 7+ components, and the `SIZE_CLASSES` map was duplicated VERBATIM in `RecommendationBadge` + `LossChanceBadge`. Textbook extract: 3+ uses, same documented intent.
+
+**Extraction**: new `frontend/components/Chip.tsx` exports:
+- `Chip` — the component (`<Chip tone size dot leading className title role aria-label>label</Chip>`); owns the shell + a conditional `gap-1.5` (only when a dot/leading is present) + the dot render. Pure presentational (no `'use client'`) so it renders in both server + client callers.
+- `CHIP_SIZES` (the canonical xs/sm/md/lg padding+text scale — replaces the 2 duplicated maps), `CHIP_BASE` (shell, no weight/gap), `CHIP_DOT` (6px round) — for bespoke surfaces that can't route through the props.
+- `ChipSize` type.
+
+**Migrations** (all rendering-identical — same Tailwind utility SET; only class ORDER shifts, which is safe for non-conflicting utilities; tone strings pass through verbatim so the `globals.css` soft-OKLCH allowlist is untouched):
+- Component form (via `<Chip>`): `RecommendationBadge` (dot + `whitespace-nowrap`), `LossChanceBadge` (dot; em-dash placeholder uses `CHIP_SIZES`), `ListingChips` (leading flag/`Landmark` icon), `Tier2EventCard` severity badge (no dot, `role="status"`).
+- Constants form (compose `CHIP_BASE` + `CHIP_DOT` by hand — deviate on weight/text so the props would emit a conflicting utility): `SectorChip` (inline-rgb sector dot + 1px-larger `xs` text `text-[0.6875rem]` preserved), `ScoreBadge` sm-pill (`font-semibold tabular-nums` + min-width).
+
+**Deliberately NOT migrated** (different intent — follow-up `polish`): `RankingTable` / `FilterDrawer` selection-state filter chips (layer `press hover:opacity-75` + selected/unselected state on `RECOMMENDATION_CHIP_TONES`), `FairPriceCard` `<li>`-shaped warning chips (also a font-medium holdout), `FairPriceBarChart` verdict badges. `RECOMMENDATION_CHIP_TONES` / `_DOTS` / `_LABELS` / `_VALUES` exports UNCHANGED (those callers still import them).
+
+**Verification**: `node_modules` absent in the sandbox (documented — CI runs the build), so verified by static review: grep confirms no leftover local `SIZE_CLASSES`/`sizeCls` + no hand-rolled shell remaining in the 6 migrated files; per-component utility-set parity walked by hand; tone passthrough preserves the globals.css allowlist. `tsc --noEmit` + `next build` run by CI.
+
+**Docs (lockstep)**: `frontend-design-system` SKILL.md Rule 2/3 + chip-shape + companion-docs sections rewritten (the "copy an existing component's pattern" convention → "use the `Chip` primitive") · DESIGN.md §Components Chips · CLAUDE.md §Gotchas new entry · AGENTS.md §Gotchas-mirror + §Phase-version in-flight · this append.
+
+**Files touched**: `frontend/components/Chip.tsx` (new) · `frontend/components/RecommendationBadge.tsx` · `frontend/components/LossChanceBadge.tsx` · `frontend/components/ListingChips.tsx` · `frontend/components/SectorChip.tsx` · `frontend/components/ScoreBadge.tsx` · `frontend/components/Tier2EventCard.tsx` · `.claude/skills/frontend-design-system/SKILL.md` · `DESIGN.md` · `CLAUDE.md` · `AGENTS.md` · `PHASE_STATUS_INFLIGHT.md` (this append).

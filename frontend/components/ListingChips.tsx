@@ -1,6 +1,7 @@
 import type { JSX } from 'react';
 import { Landmark } from 'lucide-react';
 import US from 'country-flag-icons/react/3x2/US';
+import { Chip } from '@/components/Chip';
 
 // Listing-metadata chips for the stock-detail hero (PR-B) — a country chip
 // (flag + ISO tag, e.g. 🇺🇸 US) and an exchange chip (generic Landmark icon +
@@ -29,10 +30,10 @@ const COUNTRY_NAME: Record<string, string> = {
   US: 'United States',
 };
 
-// LedgerCraft neutral-steel chip (mirrors SectorChip): slate-100 bg /
-// slate-600 fg / slate-200 ring, 2px radius, font-medium, paired dark variants.
-const CHIP =
-  'inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset ' +
+// LedgerCraft neutral-steel tone (mirrors SectorChip): slate-100 bg /
+// slate-600 fg / slate-200 ring, paired dark variants. Rendered through the
+// shared `Chip` primitive at the default `sm` size (2px radius, font-medium).
+const STEEL_TONE =
   'bg-slate-100 text-slate-600 ring-slate-200 ' +
   'dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700';
 
@@ -48,24 +49,34 @@ export function ListingChips({
   return (
     <>
       {country && (
-        <span className={CHIP} title={`Country: ${COUNTRY_NAME[country] ?? country}`}>
-          {Flag && (
-            <Flag
-              aria-hidden="true"
-              className="h-3.5 w-auto rounded-[1px] ring-1 ring-inset ring-black/10 dark:ring-white/15"
-            />
-          )}
+        <Chip
+          tone={STEEL_TONE}
+          title={`Country: ${COUNTRY_NAME[country] ?? country}`}
+          leading={
+            Flag ? (
+              <Flag
+                aria-hidden="true"
+                className="h-3.5 w-auto rounded-[1px] ring-1 ring-inset ring-black/10 dark:ring-white/15"
+              />
+            ) : undefined
+          }
+        >
           <span className="truncate">{country}</span>
-        </span>
+        </Chip>
       )}
       {exchange && (
-        <span className={CHIP} title={`Exchange: ${exchange}`}>
-          <Landmark
-            aria-hidden="true"
-            className="h-3.5 w-3.5 shrink-0 text-slate-500 dark:text-slate-400"
-          />
+        <Chip
+          tone={STEEL_TONE}
+          title={`Exchange: ${exchange}`}
+          leading={
+            <Landmark
+              aria-hidden="true"
+              className="h-3.5 w-3.5 shrink-0 text-slate-500 dark:text-slate-400"
+            />
+          }
+        >
           <span className="truncate">{exchange}</span>
-        </span>
+        </Chip>
       )}
     </>
   );

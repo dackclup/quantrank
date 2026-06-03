@@ -1,6 +1,7 @@
 import type { JSX } from 'react';
 import { scoreAccentColor, scoreColorClasses, scoreTierLabel } from '@/lib/visual';
 import { ScoreGauge } from '@/components/ScoreGauge';
+import { CHIP_BASE, CHIP_DOT } from '@/components/Chip';
 
 // Two-size component: the pill ('sm' default) for rankings table cells
 // + mobile cards, and the radial-gauge variant ('lg') for the stock
@@ -56,16 +57,20 @@ export function ScoreBadge({
   }
 
   const accent = scoreAccentColor(score);
+  // Composes the shared chip shell + dot by hand (not the `Chip` component):
+  // this numeric pill is `font-semibold tabular-nums` (vs the chip family's
+  // `font-medium`) at `text-sm` with `sm` padding + a min-width + an inline-rgb
+  // accent dot, so it can't route through the canonical `size`/`dot` props.
   return (
     <span
-      className={`inline-flex min-w-[3.25rem] items-center justify-center gap-1.5 rounded-sm px-2 py-0.5 text-sm font-semibold tabular-nums ring-1 ring-inset ${scoreColorClasses(score)}`}
+      className={`${CHIP_BASE} min-w-[3.25rem] justify-center gap-1.5 px-2 py-0.5 text-sm font-semibold tabular-nums ${scoreColorClasses(score)}`}
     >
       {/* Skip the dot for top-tier (≥80) where the badge already has
           a solid color fill — the dot would be invisible anyway. */}
       {score < 80 && (
         <span
           aria-hidden="true"
-          className="inline-block h-1.5 w-1.5 rounded-full"
+          className={CHIP_DOT}
           style={{ backgroundColor: accent }}
         />
       )}
