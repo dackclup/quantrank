@@ -251,3 +251,37 @@ kB); built-chunk grep confirms the canonical veto strings shipped.
 (`FlagsCell`) · `docs/GOTCHAS.md` (compare gotcha) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Flag-label single-source fold — RANK_GATE_META.label → flagLabel (in flight, 2026-06-03)
+
+**Branch**: `claude/busy-newton-L6J56`
+**Type**: refactor(frontend) — FRONTEND-ONLY, behavior-preserving; no schema / compute
+/ data change; no schema bump. Closes the #395 single-source debt (quantrank-reviewer
+WARN on #396).
+
+`RiskSummaryCard.RANK_GATE_META` no longer carries a per-entry `label` — it holds only
+the academic `detail` line, and the rank-gate label renders via the shared `flagLabel()`
+(`lib/flag-labels.ts`). #396 had added the rank-gate veto labels to `FLAG_LABELS`
+mirroring `RANK_GATE_META` verbatim (fixing the e2e-found compare↔detail drift) but left
+the two as a "keep in sync" duplication; this fold makes the match STRUCTURAL — `FLAG_LABELS`
+is the single source, so a future veto added without a `FLAG_LABELS` entry can't silently
+regress the compare matrix to Title-Case (the detail page would Title-Case it identically
+rather than diverge). Behavior-preserving for known flags (flagLabel returns the same
+verbatim strings — confirmed: detail-page chunk still ships "Altman financial distress" /
+"Beneish M-score veto" / "Sloan accruals — top decile"); an unknown flag now Title-Cases
+(+ no detail) instead of rendering the raw key — a strict readability gain, and the raw
+`[key]` monospace annotation still shows the key.
+
+**#395 housekeeping**: the row-height NIT is resolved **won't-do** — frontend-design-reviewer
+chose VISIBLE=3 on #396 and argued VISIBLE=2-at-4-columns is too aggressive ("+7 more"
+useless as a preview). Jargon-help (`clarify`) + bulk-add (`harden`) remain deferred (features).
+
+**Verification**: `tsc --noEmit` clean (no leftover `.label` access on `RANK_GATE_META`);
+`next build` GREEN (507 pages); detail-page chunk grep confirms the canonical veto labels
+still ship via `flagLabel`.
+
+**Files**: `frontend/components/RiskSummaryCard.tsx` (`RANK_GATE_META` → `{detail}` +
+`flagLabel(flag)`) · `frontend/lib/flag-labels.ts` (comment) · `PHASE_STATUS_INFLIGHT.md`
+(this).
+
+---
