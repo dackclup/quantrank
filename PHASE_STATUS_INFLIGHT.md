@@ -5775,3 +5775,26 @@ change. Branch `claude/sharp-newton-8pj6p`.
 **Verification**: `node_modules` absent in the sandbox (CI + Vercel preview cover the build, per the documented pattern); verified by static review — grep confirms no inline `rounded-sm … ring-1 ring-inset` shell left in `FairPriceCard` / `FairPriceBarChart`; parity-exact dedups checked by utility-set; the two intentional changes (`font-medium`, neutral ring 300→200) are minimal + documented. `tsc --noEmit` + `next build` run in CI.
 
 **Files touched**: `frontend/components/FairPriceCard.tsx` · `frontend/components/FairPriceBarChart.tsx` · `frontend/components/RecommendationBadge.tsx` · `frontend/components/LossChanceBadge.tsx` · `.claude/skills/frontend-design-system/SKILL.md` · `CLAUDE.md` · `AGENTS.md` · `PHASE_STATUS_INFLIGHT.md` (this append).
+
+---
+
+## Frontend design-system — finish the neutral-ring normalization on the filter chips (2026-06-03, chip-family follow-up)
+
+**Branch**: `claude/chip-filter-ring-normalize`
+**Type**: fix(frontend) — FRONTEND-ONLY, no schema / compute / data change; no schema-version bump. Closes the last WARN-2 from the PR #389 `frontend-design-reviewer` review.
+
+**Origin**: PR #389 normalized the static neutral chips (`RecommendationBadge` "Hold" + `LossChanceBadge` "Neutral") to `ring-slate-200`, but the design review noted the two bespoke active-filter chips still used `ring-slate-300` → a three-value neutral family. Analysis confirmed these two are NOT a deliberate selected-state affordance (their colored siblings in the SAME active-filter row — sector via `NEUTRAL_CHIP_RG`, "Hold" post-#389 — already use `ring-slate-200`); the `ring-slate-300` was leftover drift.
+
+**Changes:**
+- `FilterDrawer.tsx:243` (the in-drawer "Active filters" removable chip) — `ring-slate-300 → ring-slate-200`.
+- `RankingTable.tsx:476` (the toolbar "Score X–Y" active-filter chip) — `ring-slate-300 → ring-slate-200`.
+- Both keep their bespoke STRUCTURE (`press` + `hover` selection-state behavior — correctly NOT routed through `<Chip>`); only the neutral ring shade is unified. Dark `dark:ring-slate-700` untouched.
+- `frontend-design-system` SKILL.md Rule 6 — added the `StockLogo` `rounded-md` carve-out line (the #389 reviewer's low-pri note: a logo container is not a chip/button/card data surface, so its 6px corner is allowed; prevents a future false-positive flag).
+
+**NOT touched** (deliberate): `FairPriceBarChart`'s `outlier` `ring-slate-300` (a deliberately-muted verdict tone, not a neutral chip) and `PriceTimePeriodSelector` (a different surface, not flagged).
+
+**Result**: EVERY neutral chip — static metadata AND interactive filter — now shares the canonical `ring-slate-200`; no `ring-slate-300` neutral outlier remains.
+
+**Verification**: `node_modules` absent in the sandbox (CI + Vercel preview cover the build); verified by static review — grep confirms the only `ring-slate-300` left in `frontend/components/` is `FairPriceBarChart` (outlier verdict) + `PriceTimePeriodSelector` (out of scope). `tsc --noEmit` + `next build` run in CI.
+
+**Files touched**: `frontend/components/FilterDrawer.tsx` · `frontend/components/RankingTable.tsx` · `.claude/skills/frontend-design-system/SKILL.md` · `CLAUDE.md` · `AGENTS.md` · `PHASE_STATUS_INFLIGHT.md` (this append).
