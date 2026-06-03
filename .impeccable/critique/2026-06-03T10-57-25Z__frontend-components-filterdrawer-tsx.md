@@ -2,7 +2,7 @@
 target: filter UI (FilterDrawer + toolbar, all breakpoints/platforms)
 total_score: 34
 p0_count: 0
-p1_count: 2
+p1_count: 3
 timestamp: 2026-06-03T10-57-25Z
 slug: frontend-components-filterdrawer-tsx
 ---
@@ -166,3 +166,84 @@ her what MoS means is the least-readable text on the panel. She trusts the live 
 - Do the composite-score slider AND the score-tier chips both need to exist, or is one the honest control?
 - If the help text is worth showing, why is it the hardest thing on the panel to read?
 - Could the eleven sectors scan as a tidy block instead of a ragged wrap?
+
+## Addendum — Dark + Light mode theme audit (2026-06-03)
+
+Token-level pass over every filter color pair across both themes (`:root` light band
+oklch 56%/97% vs `.dark` band oklch 66%/22%) plus the resolution path of the
+`globals.css` soft-color `!important` override layer. No browser pass (node_modules
+absent) — ratios marked `~` are hand-derived from the OKLCH→sRGB tokens and should be
+confirmed in-browser; direction (pass/fail) is confident.
+
+### Per-element light vs dark
+
+| Element (filter) | Light | Dark | Verdict |
+|---|---|---|---|
+| Section labels `slate-700/300` | OK ~8:1 | OK ~7:1 | pass both |
+| Unselected chip TEXT `slate-600/400` | OK ~7:1 | OK ~5.5:1 | pass both |
+| Unselected chip FILL vs panel | OK `slate-100` on white | FAIL `slate-900` chip on `slate-900` panel (ring-only) | dark affordance loss |
+| Selected chip label (pos/neg) | FAIL ~3.4:1 (`--c-*-medium` on 97% tint) | OK (light text on 22% tint) | light fail |
+| Chip help/range text `opacity-60` 10px | FAIL ~1.9:1 | FAIL ~3.7:1 | fail both |
+| Search placeholder | FAIL unset (UA default) | OK `slate-500` | light gap |
+| DualRange track/fill/thumb | OK | OK | pass both |
+| Primary CTA "View N" (white on green) | OK `emerald-700` ~5.8:1 | FAIL `emerald-600` ~3.5:1 | dark fail |
+| Backdrop scrim `slate-900/40` | OK dims light page | WEAK under-dims (≈ `slate-950`) | dark weak (desktop) |
+| Count / footer / borders | OK | OK | pass both |
+
+### Theme strengths
+
+- **Zero light-only leak** — every filter surface ships a `dark:` pair (panel/border/label/
+  count/input/track/thumb/footer/CTA/all chip families). Honors PRODUCT.md "never ship a
+  light-only surface."
+- DualRange inverts correctly (fill `slate-900`→`slate-100`, thumb border+bg swap); semantic
+  tokens flip cleanly through `:root`/`.dark` with hue held constant (152/18) so warmth does not
+  shift between themes.
+
+### Theme-specific issues
+
+#### [P1] Dark-mode primary CTA fails AA — and the soft-override never reaches `dark:` variants
+- **Mechanism:** the override layer keys on the LITERAL utility class (`.bg-emerald-600 { … !important }`).
+  The dark CTA uses `dark:bg-emerald-600`, a different class token, so the override does NOT apply —
+  it renders raw Tailwind `emerald-600` (#059669); white label on it ~3.5:1, under the 4.5:1 the
+  brand promises for 14px text. Light uses `bg-emerald-700` (#15803D) ~5.8:1, safe.
+- **Wider implication (audit beyond filter):** EVERY `dark:bg-emerald-*` / `dark:bg-rose-*`
+  SOLID-FILL surface app-wide bypasses the "soft" system and renders at full Tailwind saturation in
+  dark. In the filter the only victim is the CTA; this is the dark-side blind spot of the §Gotchas
+  "soft-color overrides are an ALLOWLIST" rule.
+- **Fix:** dark CTA → `dark:bg-emerald-700` (white reads), or add a `.dark .dark\:bg-emerald-600`
+  override mapping to `--c-pos-strong`; cleanest is to drive the CTA from `--c-pos-strong` directly.
+
+#### [P1] Help/range `opacity-60` text fails in BOTH modes
+- Light ~1.9:1 (hard fail), dark ~3.7:1 (still under) — 10px AND 40%-faded loses both ways
+  ("70-100", "MoS ≥ +10%", "±10% MoS"). Fix: drop `opacity-60`, use solid `text-slate-500
+  dark:text-slate-400` at >=11px. (Same finding as the main report's P1(a), now confirmed both-mode.)
+
+#### [P2] Selected chip label ~3.4:1 in LIGHT only (dark passes)
+- `--c-pos-medium` oklch(56%) / `--c-neg-medium` oklch(54%) on the 97% tint ~3.4:1 for the 12px
+  medium label (both hues). Dark = light text oklch(66%) on dark tint oklch(22%), comfortable.
+  Fix: in light, push selected chip text to `--c-pos-strong` / `text-emerald-800` (~4.5:1+).
+
+#### [P2] Unselected toggle chips disappear into the panel in dark
+- Toggle chip `dark:bg-slate-900` == drawer panel `dark:bg-slate-900` → no fill contrast, only the
+  `slate-700` ring delineates. Light shows them filled (`slate-100` on white). So the chip
+  affordance differs by mode (filled in light, outline-only in dark), AND it is inconsistent with
+  the drawer's own active-summary chips, which use `dark:bg-slate-800` (filled) in the same panel.
+  Fix: unselected toggle chip → `dark:bg-slate-800` (match summary chips), or drop the panel to
+  `slate-950` so `slate-900` chips lift off it.
+
+#### [P2] Light-mode search placeholder color unset (dark handled)
+- Only `dark:placeholder-slate-500` is declared; light falls to the UA default (browser-dependent,
+  ~4.5:1 borderline). Fix: add `placeholder-slate-500` to both search inputs.
+
+#### [P3] Backdrop scrim is not theme-aware — under-dims in dark
+- `bg-slate-900/40` over the dark page (`slate-950`) is a near-invisible dim → weak modal separation
+  on DESKTOP dark (mobile unaffected; the full-width drawer covers everything). Fix: `bg-black/50`
+  or a dark-aware higher opacity.
+
+### Theme verdict
+
+Structure is sound (complete pairing, no leak), but contrast splits three ways: DARK is hit by the
+white-on-green CTA (P1), chip-fill loss (P2), and weak scrim (P3); LIGHT is hit by the selected-chip
+label (P2) and unset placeholder (P2); BOTH modes are hit by the `opacity-60` help text (P1). The
+most systemically interesting finding is that the soft-override allowlist does not reach `dark:`
+solid-fill utilities — worth an app-wide audit, not just the filter.
