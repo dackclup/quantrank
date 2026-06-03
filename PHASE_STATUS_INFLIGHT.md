@@ -5789,7 +5789,7 @@ change. Branch `claude/sharp-newton-8pj6p`.
 - `FilterDrawer.tsx:243` (the in-drawer "Active filters" removable chip) — `ring-slate-300 → ring-slate-200`.
 - `RankingTable.tsx:476` (the toolbar "Score X–Y" active-filter chip) — `ring-slate-300 → ring-slate-200`.
 - Both keep their bespoke STRUCTURE (`press` + `hover` selection-state behavior — correctly NOT routed through `<Chip>`); only the neutral ring shade is unified. Dark `dark:ring-slate-700` untouched.
-- `frontend-design-system` SKILL.md Rule 6 — added the `StockLogo` `rounded-md` carve-out line (the #389 reviewer's low-pri note: a logo container is not a chip/button/card data surface, so its 6px corner is allowed; prevents a future false-positive flag).
+- `frontend-design-system` SKILL.md Rule 6 — added the `StockLogo` carve-out line (the #389 reviewer's low-pri note: a logo is not a chip/button/card data surface, so its inline `borderRadius` (`'4px'` today) is allowed and not flagged; prevents a future false-positive flag). NOTE: the live `StockLogo` uses an inline `borderRadius: '4px'`, NOT a `rounded-md` class — the carve-out is worded value-agnostically so it doesn't restate a stale 6px/`rounded-md` claim (caught by the PR #390 design review).
 
 **NOT touched** (deliberate): `FairPriceBarChart`'s `outlier` `ring-slate-300` (a deliberately-muted verdict tone, not a neutral chip) and `PriceTimePeriodSelector` (a different surface, not flagged).
 

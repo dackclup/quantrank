@@ -259,7 +259,7 @@ Rounded scale (LedgerCraft — data surfaces ≤ 4px; borders carry depth, not r
 - `rounded-sm` (2px) — chip BODY, buttons, inputs, search field
 - `rounded` (4px) — cards, table containers, the stock-detail hero
 - `rounded-full` — status dots inside chips + toggle switches ONLY
-- `rounded-md` — logo containers ONLY (`StockLogo`; a logo is not a chip / button / card data surface, so the 6px corner is an allowed carve-out)
+- logo containers (`StockLogo`) are the ONE exception to this scale — a logo is not a chip / button / card data surface, so its inline `borderRadius` (`'4px'` today) is allowed and not flagged
 
 ## Rule 7 — Filter UX contracts
 
