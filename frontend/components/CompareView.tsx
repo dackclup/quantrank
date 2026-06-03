@@ -268,7 +268,7 @@ export default function CompareView({ all }: { all: StockSummary[] }) {
               href={METHODOLOGY_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-medium text-slate-600 underline underline-offset-2 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
+              className="press font-medium text-slate-600 underline underline-offset-2 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-200"
             >
               methodology
             </a>{' '}

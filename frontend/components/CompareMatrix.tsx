@@ -154,7 +154,7 @@ function GroupHeader({
               rel="noopener noreferrer"
               aria-label={`${label} — read the methodology (opens in a new tab)`}
               title="Methodology"
-              className="press inline-flex h-11 w-11 items-center justify-center text-slate-400 hover:text-slate-700 dark:text-slate-500 dark:hover:text-slate-300 lg:h-6 lg:w-6"
+              className="press inline-flex h-6 w-6 items-center justify-center text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
             >
               <HelpCircle aria-hidden="true" strokeWidth={1.75} className="h-3.5 w-3.5" />
             </a>
@@ -324,7 +324,7 @@ export function CompareMatrix({
                   type="button"
                   onClick={() => onRemove(s.ticker)}
                   aria-label={`Remove ${s.ticker} from comparison`}
-                  className="press absolute right-0 top-0 inline-flex h-11 w-11 items-center justify-center rounded-sm text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-slate-200 lg:h-6 lg:w-6"
+                  className="press absolute right-0 top-0 inline-flex h-11 w-11 items-center justify-center rounded-sm text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200 lg:h-6 lg:w-6"
                 >
                   <span aria-hidden="true" className="text-base leading-none">
                     ×
