@@ -417,7 +417,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
             aria-label="Search by ticker or company name"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="min-h-[44px] w-full rounded-sm border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:border-slate-500 dark:focus:ring-slate-500"
+            className="min-h-[44px] w-full rounded-sm border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm placeholder-slate-500 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:border-slate-500 dark:focus:ring-slate-500"
           />
           <svg
             aria-hidden="true"
@@ -900,7 +900,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
               type="button"
               onClick={goCompare}
               disabled={selected.size < 2}
-              className="press inline-flex min-h-[44px] items-center gap-1.5 whitespace-nowrap rounded-sm bg-emerald-700 px-3 py-2 text-sm font-semibold text-white enabled:hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-emerald-600 dark:enabled:hover:bg-emerald-500"
+              className="press inline-flex min-h-[44px] items-center gap-1.5 whitespace-nowrap rounded-sm bg-emerald-700 px-3 py-2 text-sm font-semibold text-white enabled:hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-emerald-700 dark:enabled:hover:bg-emerald-800"
             >
               {selected.size < 2 ? 'Select 1 more' : `Compare ${selected.size}`}
             </button>

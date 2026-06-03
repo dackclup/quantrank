@@ -357,3 +357,45 @@ user actively submits the picker), so a zero-add paste surfaces ONLY its own cav
 **Files**: `frontend/components/CompareView.tsx` · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Filter dark/light theme contrast fixes — impeccable colorize (in flight, 2026-06-03)
+
+**Branch**: `claude/optimistic-fermat-lUTnF`
+**Type**: fix(frontend) — FRONTEND-ONLY, no schema / compute / data change; no schema
+bump. Implements the AA-contrast fixes from the `$impeccable critique` filter theme audit
+(snapshot `.impeccable/critique/2026-06-03T10-57-25Z__frontend-components-filterdrawer-tsx.md`,
+merged via #398 + #400).
+
+**Fixes (dark + light):**
+- **[P1] Dark CTA** — `View N stocks` (FilterDrawer) + `Compare N` (RankingTable) used
+  `dark:bg-emerald-600`; white label ~3.8:1, under AA. Root cause: the `globals.css`
+  soft-color `!important` override keys on LITERAL Tailwind classes, so it never reaches
+  `dark:` variants → dark rendered raw `emerald-600`. Fixed to `dark:bg-emerald-700`
+  (white ~5:1). Light `bg-emerald-700` was already safe. (Rationale recorded as a code
+  comment at the FilterDrawer CTA so the pattern isn't reintroduced.)
+- **[P1] Help/range text** — dropped `opacity-60` (failed both modes: light ~1.9:1,
+  dark ~3.7:1) on the tier-range + MoS-help chip text, bumped 10px→11px; now inherits
+  the chip's full color (slate-600 unselected ~7:1; the SELECTED-chip tone is the
+  deferred shared-token item below).
+- **[P2] Unselected toggle chips in dark** — `dark:bg-slate-900` equaled the drawer panel,
+  so chips read ring-only. Changed to `dark:bg-slate-800 dark:text-slate-300` (matches the
+  active-summary chips → now consistent in BOTH modes).
+- **[P2] Light placeholder** — added `placeholder-slate-500` to both search inputs
+  (FilterDrawer + RankingTable toolbar); dark already had it.
+- **[P3] Backdrop scrim** — added `dark:bg-black/60` (`slate-900/40` under-dimmed the
+  near-black dark page).
+
+**Deferred (NOT in this PR — need broader review):** selected-chip label ~3.4:1 in light
+(shared `visual.ts` TIERS/MOS tokens → app-wide blast radius; measure in-browser first) ·
+desktop filter IA (modal-drawer-only at all widths → architectural) · `Sidebar`/`AppShell`
+"Q" logo `dark:bg-emerald-600` (decorative `aria-hidden`, not WCAG text) · the general
+"soft-override doesn't reach `dark:` solid-fill" sweep (formalize as a §Gotchas entry).
+
+**Verification**: Tailwind-class-only edits, design-token palette (slate/emerald scale).
+`next build` / `tsc` NOT run locally (`node_modules` absent in this env) — CI Frontend
+build + `frontend-design-reviewer` static review cover it.
+
+**Files**: `frontend/components/FilterDrawer.tsx` · `frontend/components/RankingTable.tsx` ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---

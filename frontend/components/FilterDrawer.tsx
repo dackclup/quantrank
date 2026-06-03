@@ -174,7 +174,7 @@ export function FilterDrawer({
   return (
     <>
       <div
-        className={`fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-[2px] transition-opacity duration-200 ${
+        className={`fixed inset-0 z-40 bg-slate-900/40 dark:bg-black/60 backdrop-blur-[2px] transition-opacity duration-200 ${
           open ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
         onClick={onClose}
@@ -271,7 +271,7 @@ export function FilterDrawer({
                 placeholder="Ticker or company name…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="min-h-[44px] w-full rounded-sm border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:border-slate-500 dark:focus:ring-slate-500"
+                className="min-h-[44px] w-full rounded-sm border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm placeholder-slate-500 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:border-slate-500 dark:focus:ring-slate-500"
               />
               <svg
                 aria-hidden="true"
@@ -312,12 +312,12 @@ export function FilterDrawer({
                     type="button"
                     onClick={() => toggleTier(t.id)}
                     className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset press lg:min-h-0 ${
-                      on ? t.cls : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
+                      on ? t.cls : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-slate-700'
                     }`}
                   >
                     <span className={`inline-block h-1.5 w-1.5 rounded-full ${t.dot}`} />
                     {t.label}
-                    <span className="font-mono text-[0.625rem] tabular-nums opacity-60">
+                    <span className="font-mono text-[0.6875rem] tabular-nums">
                       {t.min}–{t.max === 101 ? '100' : t.max}
                     </span>
                   </button>
@@ -341,7 +341,7 @@ export function FilterDrawer({
                     className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset press lg:min-h-0 ${
                       on
                         ? RECOMMENDATION_CHIP_TONES[rec]
-                        : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
+                        : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-slate-700'
                     }`}
                   >
                     <span className={`inline-block h-1.5 w-1.5 rounded-full ${RECOMMENDATION_CHIP_DOTS[rec]}`} />
@@ -365,12 +365,12 @@ export function FilterDrawer({
                     type="button"
                     onClick={() => toggleMos(b.id)}
                     className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset press lg:min-h-0 ${
-                      on ? b.cls : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
+                      on ? b.cls : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-slate-700'
                     }`}
                   >
                     <span className={`inline-block h-1.5 w-1.5 rounded-full ${b.dot}`} />
                     {b.label}
-                    <span className="text-[0.625rem] opacity-60">{b.help}</span>
+                    <span className="text-[0.6875rem]">{b.help}</span>
                   </button>
                 );
               })}
@@ -396,7 +396,7 @@ export function FilterDrawer({
                     type="button"
                     onClick={() => toggleSector(s)}
                     className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset press lg:min-h-0 ${
-                      on ? `${sty.bg} ${sty.fg} ${sty.ring}` : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
+                      on ? `${sty.bg} ${sty.fg} ${sty.ring}` : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-slate-700'
                     }`}
                   >
                     <span
@@ -423,7 +423,10 @@ export function FilterDrawer({
               bright emerald CTA never invites a click toward a 0-result screen
               (expert-user-explorer MAJOR). The Close button / "Clear all" /
               backdrop remain the recovery paths; the focus-trap drops a disabled
-              button automatically. */}
+              button automatically. Dark uses emerald-700 (not -600): the
+              globals.css soft-color override keys on literal class names and
+              never reaches dark: variants, so dark:bg-emerald-600 would render
+              raw emerald-600 (white ~3.8:1, under AA — impeccable theme audit). */}
           <button
             type="button"
             onClick={onClose}
@@ -431,7 +434,7 @@ export function FilterDrawer({
             className={`inline-flex min-h-[44px] items-center rounded-sm px-4 py-1.5 text-sm font-medium press ${
               filteredCount === 0
                 ? 'cursor-not-allowed bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500'
-                : 'bg-emerald-700 text-white hover:bg-emerald-800 dark:bg-emerald-600 dark:text-white dark:hover:bg-emerald-500'
+                : 'bg-emerald-700 text-white hover:bg-emerald-800 dark:bg-emerald-700 dark:text-white dark:hover:bg-emerald-800'
             }`}
           >
             {filteredCount === 0
