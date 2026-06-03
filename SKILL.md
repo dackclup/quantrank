@@ -215,7 +215,7 @@ with file-purpose annotations. This file's role: lock the
 | `frontend/` | Next.js static export (App Router; per-stock pages) | 0 |
 | `tests/` | pytest suite (offline + `@network` gated) | 0+ |
 | `docs/` | `stock_ranking_knowledge.md` · `RESEARCH_FINDINGS.md` · `ARCHITECTURE.md` · `METHODOLOGY.md` · `archived/PHASE_0_3_WORKFLOW.md` | — |
-| `.claude/skills/` | 46 invocation-triggerable skills + `phase-N/` planning docs | — |
+| `.claude/skills/` | 47 invocation-triggerable skills + `phase-N/` planning docs | — |
 
 ---
 

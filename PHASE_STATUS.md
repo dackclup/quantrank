@@ -25,7 +25,7 @@
 | Prior release tag | [**`v1.3.0-phase4.5e`**](https://github.com/dackclup/quantrank/releases/tag/v1.3.0-phase4.5e) — 2026-05-26 at `5db3b978` (Phase 4.5e Form-4 cluster + LedgerCraft reskin; defense layer headline 32 → 33) |
 | Production run | `368dccd9` (2026-05-28 cron Run #71, 14m 32s warm cache, post-PR #298 cache-v5 bump; empirically validated PR #297 wall-clock fields — `tier2_wc=10.6s`, `form4_wc=null` per FORM4_FETCH_SKIP, `osap_wc=347.1s`, `cross_source_wc=133.2s`. Smoking gun for Issue #288 cache-replay bypass: `multi_class_per_class_attempt_count=0` + `fundamentals_latency_p50_seconds=0.0`) |
 | Universe | 502 stocks (S&P 500 minus 1 delisting) |
-| Skill inventory | **46** invocation-triggerable + phase planning docs |
+| Skill inventory | **47** invocation-triggerable + phase planning docs |
 | Subagent inventory | **20** project-specific in 4 tiers (5 opus + 15 sonnet): **Tier 1 Core** (`quantrank-reviewer` · `schema-sentinel` · `defense-layer-auditor` · `edgar-debugger` · `stock-detail-auditor`) · **Tier 2 Lifecycle** (`security-reviewer` · `frontend-design-reviewer` · `vercel-preview-auditor` · `expert-user-explorer` · `release-captain` · `phase-coordinator`) · **Tier 3 Specialized** (`test-engineer` · `methodology-scientist` · `literature-searcher` · `performance-engineer` · `dependency-auditor` · `financial-engineer`) · **Tier 4 Operations** (`docs-reviewer` · `ci-triage-engineer` · `incident-commander`) |
 
 **Recently merged** (PR #331 → PR #373, 2026-05-31 → 2026-06-02):
