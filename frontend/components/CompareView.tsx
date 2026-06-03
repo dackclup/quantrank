@@ -170,18 +170,25 @@ export default function CompareView({ all }: { all: StockSummary[] }) {
       >
         Add
       </button>
-      {/* Always-mounted live region — a freshly-inserted, already-populated
-          role="status" node isn't reliably announced (WebKit / older Chromium
-          watch for content CHANGES inside a region present at mount). Tone is
-          amber only for a pure miss; a partial success rides calm slate. */}
-      <span
-        id="compare-add-error"
-        role="status"
-        className={`text-xs ${errorIsWarn ? 'text-amber-700 dark:text-amber-400' : 'text-slate-500 dark:text-slate-400'}`}
-      >
-        {error ?? ''}
-      </span>
     </form>
+  );
+
+  // The add-feedback live region is rendered OUTSIDE `picker` so it survives the
+  // `atMax` transition. A bulk paste that fills the cap (adds 4 + skips some)
+  // flips `atMax` true in the same commit, which replaces `picker` with the
+  // "Comparing N (max)" line — keeping the note inside `picker` would silently
+  // swallow the "X didn't fit" caveat exactly when it matters most (#402
+  // spot-check). Always-mounted (a freshly-inserted, already-populated
+  // role="status" node isn't reliably announced); amber only for a pure miss,
+  // calm slate for a success-with-footnote.
+  const addError = (
+    <span
+      id="compare-add-error"
+      role="status"
+      className={`text-xs ${errorIsWarn ? 'text-amber-700 dark:text-amber-400' : 'text-slate-500 dark:text-slate-400'}`}
+    >
+      {error ?? ''}
+    </span>
   );
 
   const notes = (
@@ -258,6 +265,7 @@ export default function CompareView({ all }: { all: StockSummary[] }) {
             </ul>
           )}
           {picker}
+          {addError}
           {notes}
           <Link
             href="/"
@@ -285,6 +293,7 @@ export default function CompareView({ all }: { all: StockSummary[] }) {
               Clear all
             </button>
           </div>
+          {addError}
           {notes}
           <p className="max-w-2xl text-pretty text-xs leading-relaxed text-slate-500 dark:text-slate-400">
             Educational use only — not investment advice; flags mark elevated risk, never confirmed
