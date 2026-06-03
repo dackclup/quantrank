@@ -68,8 +68,9 @@ export default function FairPriceCard({
         Fair price ensemble
       </h2>
 
-      {/* Headline median + MoS */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+      {/* Headline median + MoS — a real `<dl>` so the dt/dd pairs are a
+          valid description list (the grid classes apply identically on a dl). */}
+      <dl className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div>
           <dt className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">
             Median fair
@@ -110,7 +111,7 @@ export default function FairPriceCard({
               : '—'}
           </dd>
         </div>
-      </div>
+      </dl>
 
       {/* Warnings — flex-wrap with gap-2 so adjacent chips have visible
           breathing room (user feedback 2026-05-14: pills were touching
@@ -131,7 +132,8 @@ export default function FairPriceCard({
       )}
 
       <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
-        Median of all applicable methods (current price ${currentPrice.toFixed(2)}).
+        Median of all applicable methods (current price{' '}
+        <span className="font-mono tabular-nums">${currentPrice.toFixed(2)}</span>).
         Per-method estimates + each method&rsquo;s cheap/fair/pricey read are in
         the Fair price check above. Outliers above 5× or below 0.2× current
         price are excluded from the max but kept in the median. See methodology

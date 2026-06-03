@@ -5798,3 +5798,28 @@ change. Branch `claude/sharp-newton-8pj6p`.
 **Verification**: `node_modules` absent in the sandbox (CI + Vercel preview cover the build); verified by static review — grep confirms the only `ring-slate-300` left in `frontend/components/` is `FairPriceBarChart` (outlier verdict) + `PriceTimePeriodSelector` (out of scope). `tsc --noEmit` + `next build` run in CI.
 
 **Files touched**: `frontend/components/FilterDrawer.tsx` · `frontend/components/RankingTable.tsx` · `.claude/skills/frontend-design-system/SKILL.md` · `CLAUDE.md` · `AGENTS.md` · `PHASE_STATUS_INFLIGHT.md` (this append).
+
+---
+
+## Frontend — whole-app `$impeccable polish` pass (2026-06-03)
+
+**Branch**: `claude/polish-all-app` (rebased onto `origin/main` = #390 `3a19b38`)
+**Type**: polish(frontend) — FRONTEND-ONLY, no schema / compute / data change; no schema-version bump. `/impeccable polish "all app"`, flagship bar.
+
+**Origin**: two parallel read-only audits — `frontend-design-reviewer` (component-code) + `expert-user-explorer` (BUILT + drove the real static export via Playwright on port 8099; zero console errors, all display-vs-JSON cross-checks clean). The implementable, genuine remaining items from both, triaged functional-before-cosmetic. The app is already heavily polished (~50 prior passes); this is the NEXT tier, not a re-litigation of documented invariants.
+
+**Reusable conventions (now in CLAUDE.md §Gotchas):**
+1. Empty-state primary CTA is `disabled` not just styled — `FilterDrawer` "View N stocks" → `disabled` + de-emphasized + relabel "No matching stocks" when `filteredCount === 0` (a bright emerald CTA must never invite a click to a 0-result screen; Close/"Clear all"/backdrop remain recovery; the focus-trap drops a disabled button).
+2. A labeled chip inside an `aria-label`'d container is `aria-hidden` — the stock-detail `<h1>` `RecommendationBadge` wrapped in `<span aria-hidden>` (kills the "NVDASell" double-read); STAYS announced in the ranking-table ticker cell where it's the sole source.
+3. `ring-rose-300` is never a negative chip ring (globals.css allowlist only remaps `-200`; raw `-300` = alarm-pink) — `RiskSummaryCard` band/outer/gate-chip + `FairPriceBarChart` "Heavily overvalued" headline → `-200`.
+4. Detail-page valuation sections own no `mb-*` — `FairPriceBarChart` outer `mb-4` was a 32px double-gap vs the `<article>` `space-y-4 !mt-8` wrapper.
+
+**One-off fixes:** `FairPriceCard` stat grid `<div>` → `<dl>` (orphaned `<dt>/<dd>` = invalid HTML on every stock) + footnote price → `font-mono tabular-nums`; `Tier2EventCard` severity chip dropped bogus `role="status"` live region; AppShell hamburger `<svg>` `aria-hidden`; `HeroAttributeTiles` `aria-labelledby` (was double-announced); `CurrentPriceLine` negative `text-rose-600 → -700`; `ScoreBadge` md `font-bold → -semibold`; `FilterDrawer` unselected-chip hover `bg-slate-50 → -200` (darken not lighten).
+
+**Deliberately SKIPPED (no-op / marginal):** RankingTable Score/LossChance `<td>` `tabular-nums` (the badge owns the number, td has no direct text) · FairPriceBarChart prose % delta `tabular-nums` (static, sans-emphasis, no reflow).
+
+**DEFERRED (noted in CLAUDE.md):** stale `v1.4.0` Sidebar version chip (release-process tied — needs `NEXT_PUBLIC_APP_VERSION` or a fresh release cut) · `FairPriceCard` raw flag humanization (`w.replace(/_/g,' ')` → a label map) · P3 cross-stock COMPARE view (product-scope feature gap, not polish).
+
+**Verification**: `next build` GREEN LOCALLY (the explorer left a working `node_modules` — 506 static pages, ✓ lint + type-check valid, / = 109 kB · /stock = 110 kB). Rebased onto #390 (stale-base catch); FilterDrawer auto-merged #390's `ring-slate-200` active-chip + my hover/CTA changes cleanly; one expected CLAUDE.md §Gotchas conflict resolved (kept #390's neutral-ring sentence + appended the polish gotcha).
+
+**Files touched**: `frontend/components/FairPriceCard.tsx` · `FairPriceBarChart.tsx` · `RiskSummaryCard.tsx` · `Tier2EventCard.tsx` · `AppShell.tsx` · `HeroAttributeTiles.tsx` · `CurrentPriceLine.tsx` · `ScoreBadge.tsx` · `FilterDrawer.tsx` · `frontend/app/stock/[ticker]/page.tsx` · `CLAUDE.md` · `AGENTS.md` · `PHASE_STATUS_INFLIGHT.md` (this append).
