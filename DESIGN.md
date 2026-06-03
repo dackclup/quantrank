@@ -10,8 +10,8 @@ colors:
   ink: "#0F172A"
   ink-subdued: "#475569"
   ink-muted: "#94A3B8"
-  primary: "#15803D"
-  primary-hover: "#166534"
+  primary: "#047857"
+  primary-hover: "#065F46"
   secondary: "#64748B"
   tertiary: "#B45309"
   error: "#DC2626"
@@ -130,10 +130,12 @@ neutral spine, and a soft sage/rose semantic band that signals value without
 ever turning into alarm.
 
 ### Primary
-- **Forest Green** (`#15803D`, emerald-700): the single brand voice. Reserved
+- **Emerald** (`#047857`, emerald-700): the single brand voice. Reserved
   for the wordmark "Q" logo, the FilterDrawer "View N stocks" submit, and
-  genuine positive-balance emphasis. Hover deepens to **Pine** (`#166534`,
-  emerald-800). It is a CTA color, not a data color.
+  genuine positive-balance emphasis. Hover deepens to **deep emerald** (`#065F46`,
+  emerald-800). It is a CTA color, not a data color. (The LedgerCraft spec
+  originally named a forest green `#15803D` = green-700; the build ships Tailwind
+  emerald-700 `#047857` and that cool emerald is the brand — decision 2026-06-03.)
 
 ### Secondary
 - **Steel** (`#64748B`, slate-500): secondary actions, table column headers,
@@ -175,7 +177,7 @@ ever turning into alarm.
 "alarm red" (`text-red-600`) intensities are forbidden for value state.
 
 **The Tailwind-Class Rule.** Reach every color through a Tailwind utility class,
-never an inline hex (`style={{ color: '#15803D' }}` is prohibited): inline hex
+never an inline hex (`style={{ color: '#047857' }}` is prohibited): inline hex
 bypasses chip-family discipline and the `globals.css` soft-color override. The
 sole carve-out is the **gauge stroke + tiny status dots** (Score / MoS donut),
 which take an inline `rgb` accent on purpose — a thin 6px ring needs the
@@ -263,8 +265,8 @@ separate, the layout is wrong, not the shadow.
 
 ### Buttons
 - **Shape:** sharp — 2px radius (`rounded-sm`). Never softer on a data surface.
-- **Primary:** forest-green fill (`#15803D`) + white text, 8px×16px padding;
-  hover deepens to `#166534`. This solid fill is the *one* place solid color is
+- **Primary:** emerald fill (`#047857`) + white text, 8px×16px padding;
+  hover deepens to `#065F46`. This solid fill is the *one* place solid color is
   allowed — it is a CTA, not a chip.
 - **Secondary / ghost:** steel text on a transparent or `surface-alt` ground,
   same 2px radius, no shadow.
