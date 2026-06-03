@@ -199,18 +199,40 @@ function FlagsCell({ stock, best, count }: { stock: StockSummary; best: boolean;
         </span>
         {best && <BestMark count={count} />}
       </span>
-      {total > 0 && (
-        <ul className="flex flex-wrap justify-center gap-1">
-          {flags.map((f) => (
-            <li
-              key={f}
-              className={`${CHIP_BASE} bg-amber-50 px-1.5 py-0 text-[0.625rem] font-medium text-amber-800 ring-amber-200 dark:bg-amber-900/30 dark:text-amber-200 dark:ring-amber-800`}
-            >
-              {flagLabel(f)}
-            </li>
-          ))}
-        </ul>
-      )}
+      {total > 0 &&
+        (() => {
+          // Cap the visible flag chips so a flag-laden column doesn't grow the
+          // Flags row far taller than a clean column's single "Clean" chip (the
+          // row-height-asymmetry the critique flagged). The count chip above +
+          // the best-▲ stay the comparable signal; the overflow folds into a
+          // neutral "+N more" chip — an sr-only span carries the full list for
+          // assistive tech (the `title` is a mouse-hover bonus only). The detail
+          // page has the complete list.
+          const VISIBLE = 3;
+          const shown = flags.slice(0, VISIBLE);
+          const rest = flags.slice(VISIBLE);
+          return (
+            <ul className="flex flex-wrap justify-center gap-1">
+              {shown.map((f) => (
+                <li
+                  key={f}
+                  className={`${CHIP_BASE} bg-amber-50 px-1.5 py-0 text-[0.625rem] font-medium text-amber-800 ring-amber-200 dark:bg-amber-900/30 dark:text-amber-200 dark:ring-amber-800`}
+                >
+                  {flagLabel(f)}
+                </li>
+              ))}
+              {rest.length > 0 && (
+                <li
+                  className={`${CHIP_BASE} bg-slate-100 px-1.5 py-0 text-[0.625rem] font-medium text-slate-700 ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700`}
+                  title={rest.map(flagLabel).join(', ')}
+                >
+                  +{rest.length} more
+                  <span className="sr-only">: {rest.map(flagLabel).join(', ')}</span>
+                </li>
+              )}
+            </ul>
+          );
+        })()}
     </div>
   );
 }

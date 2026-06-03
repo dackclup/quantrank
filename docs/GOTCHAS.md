@@ -1212,7 +1212,14 @@
   matrix never drifts from the detail page: `pillarColor` → `lib/visual.ts` (was a
   local `colorFor` in `PillarRadarChart`) and `flagLabel` → `lib/flag-labels.ts`
   (was `FairPriceCard`'s local `VALUATION_WARNING_LABELS`; `FairPriceCard` now
-  imports it). Best-in-row marking is METRIC-AWARE (max for composite / pillars /
+  imports it; the compare-polish PR then EXTENDED `FLAG_LABELS` to cover the
+  rank-gate VETO `risk_flags` — `altman_distress` / `sloan_accruals_top_decile` /
+  `net_issuance_top_decile` / `beneish_manipulation_veto` / `dechow_manipulation_veto`
+  / `non_reliance_filing` / `stale_filing_hard` — with strings mirroring
+  `RiskSummaryCard.RANK_GATE_META` VERBATIM, because the post-merge e2e caught the
+  matrix Title-Casing those vetoes via the fallback while the detail page showed
+  the precise label; keep `FLAG_LABELS` ↔ `RANK_GATE_META` in sync until a later
+  PR single-sources them). Best-in-row marking is METRIC-AWARE (max for composite / pillars /
   MoS, min for loss-chance / flag-count / manipulation-index, and NONE for raw
   price / 1d-change / fair-median — marking "highest price = best" would be
   dishonest) and never color-only (a sage ▲ + an sr-only "best of N"). The matrix
