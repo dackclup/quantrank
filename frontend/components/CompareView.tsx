@@ -59,6 +59,9 @@ export default function CompareView({ all }: { all: StockSummary[] }) {
   const [truncated, setTruncated] = useState(false);
   const [input, setInput] = useState('');
   const [error, setError] = useState<string | null>(null);
+  // Amber when the note is a pure miss (nothing added); calm slate when it's a
+  // success-with-footnote (some tickers landed, some were skipped).
+  const [errorIsWarn, setErrorIsWarn] = useState(false);
 
   // Hydrate the selection from the URL once, after mount (client-only). The
   // build-time HTML can't know the query, so it renders the skeleton; this fills
@@ -114,13 +117,14 @@ export default function CompareView({ all }: { all: StockSummary[] }) {
       }
     }
     const caveats: string[] = [];
-    if (notInUniverse.length) caveats.push(`not in the universe: ${notInUniverse.join(', ')}`);
-    if (overflow.length) caveats.push(`max ${MAX} — ${overflow.join(', ')} didn't fit`);
+    if (notInUniverse.length) caveats.push(`not in the S&P 500: ${notInUniverse.join(', ')}`);
+    if (overflow.length) caveats.push(`over the ${MAX}-stock cap: ${overflow.join(', ')}`);
     if (already.length) caveats.push(`already added: ${already.join(', ')}`);
     if (added.length > 0) {
       commit(next); // updates tickers + URL; clears the URL-parse notes
       setInput('');
     }
+    setErrorIsWarn(added.length === 0); // pure miss → amber; partial success → slate
     setError(caveats.length > 0 ? caveats.join(' · ') : null);
   };
 
@@ -166,11 +170,17 @@ export default function CompareView({ all }: { all: StockSummary[] }) {
       >
         Add
       </button>
-      {error && (
-        <span id="compare-add-error" role="status" className="text-xs text-amber-700 dark:text-amber-400">
-          {error}
-        </span>
-      )}
+      {/* Always-mounted live region — a freshly-inserted, already-populated
+          role="status" node isn't reliably announced (WebKit / older Chromium
+          watch for content CHANGES inside a region present at mount). Tone is
+          amber only for a pure miss; a partial success rides calm slate. */}
+      <span
+        id="compare-add-error"
+        role="status"
+        className={`text-xs ${errorIsWarn ? 'text-amber-700 dark:text-amber-400' : 'text-slate-500 dark:text-slate-400'}`}
+      >
+        {error ?? ''}
+      </span>
     </form>
   );
 
