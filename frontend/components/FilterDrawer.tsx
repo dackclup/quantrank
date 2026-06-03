@@ -312,7 +312,7 @@ export function FilterDrawer({
                     type="button"
                     onClick={() => toggleTier(t.id)}
                     className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset press lg:min-h-0 ${
-                      on ? t.cls : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
+                      on ? t.cls : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
                     }`}
                   >
                     <span className={`inline-block h-1.5 w-1.5 rounded-full ${t.dot}`} />
@@ -341,7 +341,7 @@ export function FilterDrawer({
                     className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset press lg:min-h-0 ${
                       on
                         ? RECOMMENDATION_CHIP_TONES[rec]
-                        : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
+                        : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
                     }`}
                   >
                     <span className={`inline-block h-1.5 w-1.5 rounded-full ${RECOMMENDATION_CHIP_DOTS[rec]}`} />
@@ -365,7 +365,7 @@ export function FilterDrawer({
                     type="button"
                     onClick={() => toggleMos(b.id)}
                     className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset press lg:min-h-0 ${
-                      on ? b.cls : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
+                      on ? b.cls : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
                     }`}
                   >
                     <span className={`inline-block h-1.5 w-1.5 rounded-full ${b.dot}`} />
@@ -396,7 +396,7 @@ export function FilterDrawer({
                     type="button"
                     onClick={() => toggleSector(s)}
                     className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset press lg:min-h-0 ${
-                      on ? `${sty.bg} ${sty.fg} ${sty.ring}` : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
+                      on ? `${sty.bg} ${sty.fg} ${sty.ring}` : 'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800'
                     }`}
                   >
                     <span
@@ -419,12 +419,24 @@ export function FilterDrawer({
           >
             Clear all
           </button>
+          {/* Disabled + de-emphasized when the filter set matches nothing, so a
+              bright emerald CTA never invites a click toward a 0-result screen
+              (expert-user-explorer MAJOR). The Close button / "Clear all" /
+              backdrop remain the recovery paths; the focus-trap drops a disabled
+              button automatically. */}
           <button
             type="button"
             onClick={onClose}
-            className="inline-flex min-h-[44px] items-center rounded-sm bg-emerald-700 px-4 py-1.5 text-sm font-medium text-white press hover:bg-emerald-800 dark:bg-emerald-600 dark:text-white dark:hover:bg-emerald-500"
+            disabled={filteredCount === 0}
+            className={`inline-flex min-h-[44px] items-center rounded-sm px-4 py-1.5 text-sm font-medium press ${
+              filteredCount === 0
+                ? 'cursor-not-allowed bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500'
+                : 'bg-emerald-700 text-white hover:bg-emerald-800 dark:bg-emerald-600 dark:text-white dark:hover:bg-emerald-500'
+            }`}
           >
-            View {filteredCount.toLocaleString()} stock{filteredCount === 1 ? '' : 's'}
+            {filteredCount === 0
+              ? 'No matching stocks'
+              : `View ${filteredCount.toLocaleString()} stock${filteredCount === 1 ? '' : 's'}`}
           </button>
         </footer>
       </aside>

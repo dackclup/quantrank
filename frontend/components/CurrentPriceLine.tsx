@@ -85,7 +85,7 @@ export function CurrentPriceLine({ ticker, fallbackPrice }: Props) {
       </div>
       {quote.changeAbs !== null && quote.changePct !== null && (
         <div
-          className={`flex flex-wrap items-baseline gap-1.5 text-sm ${positive ? 'text-emerald-700 dark:text-emerald-300' : 'text-rose-600 dark:text-rose-400'}`}
+          className={`flex flex-wrap items-baseline gap-1.5 text-sm ${positive ? 'text-emerald-700 dark:text-emerald-300' : 'text-rose-700 dark:text-rose-400'}`}
         >
           <span className="font-mono font-semibold tabular-nums">
             {positive ? '+' : ''}

@@ -106,8 +106,8 @@ export function HeroAttributeTiles({
     // `<section>` + sr-only heading completes the document outline (every
     // other detail-page block carries an <h2>); the tiles are self-labeled
     // per-tile so the heading is screen-reader-only.
-    <section aria-label="Company attributes" className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-      <h2 className="sr-only">Company attributes</h2>
+    <section aria-labelledby="company-attributes-heading" className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <h2 id="company-attributes-heading" className="sr-only">Company attributes</h2>
       <Tile
         icon={<Building2 className={ICON_CLS} strokeWidth={1.75} />}
         caption="Size"
