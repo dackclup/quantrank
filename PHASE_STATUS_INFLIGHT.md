@@ -549,3 +549,65 @@ AGENTS.md substance change needed (no convention / gotcha / phase change).
 **Files**: `docs/design.md` · `.impeccable/design.json` · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Filter polish — dark placeholder AA + dual-range thumb focus (in flight, 2026-06-03)
+
+**Branch**: `claude/beautiful-goldberg-ktA03`
+**Type**: fix(frontend) — FRONTEND-ONLY, no schema / compute / data change; no schema bump.
+`$impeccable polish` pass on the filter surfaces, layered on TOP of the merged #398–#407 filter
+overhaul. Two net-new findings the #401 theme audit + #405 rail work did not cover (verified
+against the merged code, not a duplicate — only open-PR check: none).
+
+**#1 — Dark-mode search placeholder AA fail.** All THREE placeholder-bearing text inputs on these
+surfaces (`FilterControls` rail/drawer search + `RankingTable` mobile-toolbar search + the
+`CompareView` "Add tickers" input) carried `dark:placeholder-slate-500`; slate-500 on the
+`dark:bg-slate-900` field is **3.75:1**, under the 4.5:1 AA floor PRODUCT.md mandates in BOTH
+themes. (The #401 audit added the LIGHT `placeholder-slate-500` to the two filter inputs but read
+the dark one as "already present" without measuring it; the CompareView input had neither token
+audited.) Fixed all three to `dark:placeholder-slate-400` → **6.96:1** — the documented muted-text
+pair (`text-slate-500 dark:text-slate-400`). The CompareView input also gained the LIGHT
+`placeholder-slate-500` it was missing (light slate-500 = 4.76:1; matches the two filter inputs).
+The third instance was folded in per the `quantrank-reviewer` WARN so the systematic AA fix isn't
+left 2-of-3 done.
+
+**#2 — DualRange keyboard focus + off-system thumb shadow.** Each handle is a full-width
+transparent `<input type=range>`, so the global `:focus-visible` outline (globals.css) wrapped the
+ENTIRE 0→100 track — a keyboard user saw an indigo line spanning the whole slider with no cue which
+handle was active (WCAG 2.4.7 focus-visible, weak). Added `focus-visible:outline-none` on both
+inputs + a soft indigo-500 halo (`box-shadow:0 0 0 3px rgba(99,102,241,.55)`) on the
+`::-webkit-slider-thumb` / `::-moz-range-thumb` pseudo on `:focus-visible`, so focus now lands on the
+actual thumb (verified light + dark — the halo reads on both the white and slate-900 thumb fills
+with no theme-specific offset). Also replaced the thumb's raw Tailwind `shadow` (off-system per
+design.md "Borders-As-Depth" — the 4 formal elevation tiers only) with `shadow-subtle`, the
+hairline-lift tier, on both engines.
+
+**#3 — Active-filter count badge `tabular-nums`.** The `FilterControls` "Active filters" header
+count (a bare integer) rendered without `font-mono tabular-nums`, off the project's "every
+number" / Tabular-Nums rule and inconsistent with the rail/drawer header counts; added them to
+match (`frontend-design-reviewer` WARN, surfaced by this pass).
+
+**Design-review WARN triage** (`frontend-design-reviewer` = READY-FOR-SPOT-CHECK, all 3 core
+changes PASS): folded in #3 above. SKIPPED `dark:shadow-none` on the thumb (reviewer: "not
+required" — `shadow-subtle` is perceptually invisible on the slate-900 dark thumb and the 2px
+border carries the depth per Borders-As-Depth; a no-op). SKIPPED flipping the two search inputs'
+`focus:outline-none` → `focus-visible:` (pre-existing, behavior-identical here — the only outline
+in play is the global `:focus-visible` one and the inputs already carry a replacement
+`focus:ring-1`; the slider needed the flip only because it had NO ring). REJECTED adding
+`shadow-medium` to the FilterRail container — post-LedgerCraft NO resting surface carries a shadow
+(design.md §Elevation: only the Overlay tier is live, on the FilterDrawer; the RankingTable
+container is border-only too), so a resting shadow would violate the "Don't add shadow-medium to a
+card/table" invariant.
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (507 pages, lint + types valid);
+production-CSS grep confirms the focus-halo rule + `placeholder-slate-400` survive the purge;
+Playwright contrast probe confirms dark placeholder 3.75 → 6.96:1, and light + dark slider-focus
+screenshots confirm the halo on the thumb (full-width outline suppressed).
+
+**Lockstep**: code PR, no new convention / gotcha → this entry satisfies the minimum (no CLAUDE.md /
+AGENTS.md substance change). The DualRange focus mechanism is documented inline in the component.
+
+**Files**: `frontend/components/DualRange.tsx` · `frontend/components/FilterControls.tsx` ·
+`frontend/components/RankingTable.tsx` · `frontend/components/CompareView.tsx` ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---

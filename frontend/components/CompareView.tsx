@@ -161,7 +161,7 @@ export default function CompareView({ all }: { all: StockSummary[] }) {
           disabled={atMax}
           placeholder={atMax ? 'Max 4 reached' : 'Add tickers…'}
           aria-describedby={error ? 'compare-add-error' : undefined}
-          className="min-h-[44px] w-44 rounded-sm border border-slate-300 bg-white px-3 py-2 text-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500"
+          className="min-h-[44px] w-44 rounded-sm border border-slate-300 bg-white px-3 py-2 text-sm placeholder-slate-500 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-400"
         />
         <datalist id="compare-add-options">
           {available.map((s) => (
