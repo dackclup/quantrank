@@ -611,3 +611,54 @@ AGENTS.md substance change). The DualRange focus mechanism is documented inline 
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Filter polish round 2 — active-filter chip language + interaction-state audit (in flight, 2026-06-03)
+
+**Branch**: `claude/beautiful-goldberg-ktA03`
+**Type**: fix(frontend) — FRONTEND-ONLY, no schema / compute / data change; no schema bump.
+`$impeccable polish` round 2 on the filter surfaces (follow-up to merged #408), user-directed.
+
+**Active-filter chip language unified.** The active-filter "remove" chips rendered in TWO visual
+languages: the `FilterControls` summary (rail + drawer) used a flat NEUTRAL chip with no dot, while the
+`RankingTable` mobile toolbar used FULL type-colored tints (tier `t.cls` / mos `b.cls` / rec
+`RECOMMENDATION_CHIP_TONES`). On mobile, opening/closing the drawer showed the same filters two ways.
+Unified BOTH on the LedgerCraft-canonical "neutral steel body + colored leading dot" treatment (the
+sector-chip pattern): a new shared `ACTIVE_FILTER_CHIP_TONE` token in `lib/visual.ts`; the panel summary
+gains per-type dots (tier/mos/rec class dot + sector inline-rgb dot; search/score have no type → no dot);
+the toolbar tier/mos/rec chips drop their full tint → neutral body + keep their dots. Chosen over
+full-tint-everywhere because the summary sits directly above the full-tint *toggle* chips — neutral+dot
+keeps the remove-summary distinct from the stateful toggles (no color doubling) while preserving
+at-a-glance identity via the dot (which matters most in the toolbar, where no toggles are visible).
+Removed the now-unused `RECOMMENDATION_CHIP_TONES` import from `RankingTable`.
+
+**Interaction-state audit (no fixes needed).** Drove headless Playwright through the round-2 states the
+user named: drawer focus-trap (22 tabs all stayed inside ✓, order Close → remove-chips → search → slider
+→ toggles), long sector names ("Communication Services" — no clip / overflow / h-scroll in the w-72 rail
+✓), reduced-motion (rail renders, slider focus halo works — focus is not motion-gated ✓). All pass; no
+code change.
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (507 pages, lint + types valid); the shared
+tone token ships in the bundle; light + dark screenshots confirm the rail summary + mobile toolbar now
+render the identical neutral-body + colored-dot chip.
+
+**Review (both gates)**: `quantrank-reviewer` = READY-TO-PUSH (all invariants pass; confirmed the sector
+inline-rgb dot carve-out + that the `RECOMMENDATION_CHIP_TONES` removal is scoped to RankingTable).
+`frontend-design-reviewer` validated the neutral+dot direction + token placement, found 1 FAIL + WARNs —
+all folded: (1) the toolbar SECTOR remove-chip still inlined `${sty.bg} ${sty.fg} ${sty.ring}` instead of
+the shared token (a token-drift trap if the tone is later tuned — functionally identical today since
+sectors map to neutral) → switched to `${ACTIVE_FILTER_CHIP_TONE}` (dot kept); (2) the panel summary
+hover was `hover:bg-slate-200` vs the SKILL.md-canonical `hover:opacity-75` for active-filter chips →
+unified to `hover:opacity-75` (both contexts now match canonical); (3) added the quantrank-reviewer's
+"exactly one of `dot`/`dotStyle`" hardening comment. DEFERRED (reasoned won't-fix): `tabular-nums` on the
+"Score N–N" chip — it's a label-style chip (not a numeric column that stacks across rows), and `font-mono`
+would wrongly mono-ify the "Score" word; a standalone chip gains no alignment from `tabular-nums`. Pre-
+Mark-Ready: `vercel-preview-auditor` on the preview (the visual gate, per the design-reviewer handoff).
+
+**Lockstep**: code PR, no new convention / gotcha → this entry satisfies the minimum (no CLAUDE.md /
+AGENTS.md substance change; the shared token is self-documenting + commented in lib/visual.ts).
+
+**Files**: `frontend/lib/visual.ts` (`ACTIVE_FILTER_CHIP_TONE`) ·
+`frontend/components/FilterControls.tsx` (summary dots + shared tone) ·
+`frontend/components/RankingTable.tsx` (toolbar chips → neutral+dot) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---

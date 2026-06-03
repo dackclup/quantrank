@@ -10,7 +10,6 @@ import { FilterRail } from '@/components/FilterRail';
 import { LossChanceBadge } from '@/components/LossChanceBadge';
 import {
   RECOMMENDATION_CHIP_DOTS,
-  RECOMMENDATION_CHIP_TONES,
   RECOMMENDATION_LABELS,
   RecommendationBadge,
 } from '@/components/RecommendationBadge';
@@ -28,6 +27,7 @@ import { formatMosPct } from '@/lib/format';
 import type { Recommendation, StockSummary } from '@/lib/types';
 import { useFlip } from '@/lib/useFlip';
 import {
+  ACTIVE_FILTER_CHIP_TONE,
   MOS_BUCKETS,
   TIERS,
   getMosBucket,
@@ -474,7 +474,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                 key={`f-sec-${s}`}
                 type="button"
                 onClick={() => toggleSector(s)}
-                className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset press hover:opacity-75 ${sty.bg} ${sty.fg} ${sty.ring}`}
+                className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset press hover:opacity-75 ${ACTIVE_FILTER_CHIP_TONE}`}
               >
                 <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ backgroundColor: sty.dot }} />
                 {s}
@@ -489,7 +489,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                 key={`f-tier-${id}`}
                 type="button"
                 onClick={() => toggleTier(id)}
-                className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset press hover:opacity-75 ${t.cls}`}
+                className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset press hover:opacity-75 ${ACTIVE_FILTER_CHIP_TONE}`}
               >
                 <span className={`inline-block h-1.5 w-1.5 rounded-full ${t.dot}`} />
                 {t.label}
@@ -504,7 +504,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                 key={`f-mos-${id}`}
                 type="button"
                 onClick={() => toggleMos(id)}
-                className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset press hover:opacity-75 ${b.cls}`}
+                className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset press hover:opacity-75 ${ACTIVE_FILTER_CHIP_TONE}`}
               >
                 <span className={`inline-block h-1.5 w-1.5 rounded-full ${b.dot}`} />
                 {b.label}
@@ -517,7 +517,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
               key={`f-rec-${rec}`}
               type="button"
               onClick={() => toggleRecommendation(rec)}
-              className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset press hover:opacity-75 ${RECOMMENDATION_CHIP_TONES[rec]}`}
+              className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset press hover:opacity-75 ${ACTIVE_FILTER_CHIP_TONE}`}
             >
               <span className={`inline-block h-1.5 w-1.5 rounded-full ${RECOMMENDATION_CHIP_DOTS[rec]}`} />
               {RECOMMENDATION_LABELS[rec]}
@@ -528,7 +528,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
             <button
               type="button"
               onClick={() => setScoreRange([0, 100])}
-              className="inline-flex items-center gap-1.5 rounded-sm bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 ring-1 ring-inset ring-slate-200 press hover:opacity-75 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700"
+              className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset press hover:opacity-75 ${ACTIVE_FILTER_CHIP_TONE}`}
             >
               Score {scoreRange[0]}–{scoreRange[1]}
               <span aria-hidden="true" className="opacity-60">×</span>

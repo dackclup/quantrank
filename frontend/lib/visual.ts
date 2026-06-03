@@ -148,6 +148,18 @@ export function sectorStyle(sector: string): SectorStyle {
   };
 }
 
+// Resting tone for the active-filter "remove" chips — the ONE visual language
+// shared by the `FilterControls` summary strip (rail + drawer) and the
+// `RankingTable` mobile-toolbar active-chip row. Neutral steel body; a colored
+// leading DOT (tier/mos/rec `dot`, or the sector inline-rgb dot) carries the
+// per-type identity — the LedgerCraft "chip body collapses to neutral, only the
+// dot keeps identity" rule the sector chip already follows. Deliberately distinct
+// from the full-tint TOGGLE chips (a selected tier toggle stays `t.cls`): the
+// remove-summary reads as utilitarian, the toggles as stateful, while the two
+// summaries themselves now match. Layout/hover stay at each call site.
+export const ACTIVE_FILTER_CHIP_TONE =
+  'bg-slate-100 text-slate-700 ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700';
+
 // Score-badge color classes — matches the design's 5-step ramp.
 // LedgerCraft Phase 3b: paired light + `dark:` variants. Top tier
 // is solid-fill emerald (the legacy "score ≥ 80" surface predates

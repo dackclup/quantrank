@@ -1,5 +1,7 @@
 'use client';
 
+import type { CSSProperties } from 'react';
+
 import { DualRange } from '@/components/DualRange';
 import {
   RECOMMENDATION_CHIP_DOTS,
@@ -8,7 +10,7 @@ import {
   RECOMMENDATION_VALUES,
 } from '@/components/RecommendationBadge';
 import type { Recommendation } from '@/lib/types';
-import { MOS_BUCKETS, TIERS, sectorStyle } from '@/lib/visual';
+import { ACTIVE_FILTER_CHIP_TONE, MOS_BUCKETS, TIERS, sectorStyle } from '@/lib/visual';
 
 // The shared filter BODY — the "Active filters" remove-one summary strip + search
 // + dual-range composite-score slider + score-tier / recommendation / valuation /
@@ -65,7 +67,17 @@ export function FilterControls({
   // the per-group toggle uses). Score is "active" only when narrowed from the full
   // [0, 100]. "Clear all" (the shell footer) stays the remove-EVERYTHING path.
   const scoreActive = scoreRange[0] !== 0 || scoreRange[1] !== 100;
-  const activeChips: { key: string; label: string; onRemove: () => void }[] = [];
+  // Each typed chip carries its colored leading dot (or the sector inline-rgb
+  // `dotStyle`) so the neutral-body summary still reads its per-type identity at
+  // a glance — the ONE active-filter chip language shared with the RankingTable
+  // toolbar (`ACTIVE_FILTER_CHIP_TONE`). search / score have no type, so no dot.
+  const activeChips: {
+    key: string;
+    label: string;
+    onRemove: () => void;
+    dot?: string;
+    dotStyle?: CSSProperties;
+  }[] = [];
   if (search.trim())
     activeChips.push({ key: 'search', label: `Search: ${search.trim()}`, onRemove: () => setSearch('') });
   if (scoreActive)
@@ -78,22 +90,30 @@ export function FilterControls({
     activeChips.push({
       key: `tier:${id}`,
       label: TIERS.find((t) => t.id === id)?.label ?? id,
+      dot: TIERS.find((t) => t.id === id)?.dot,
       onRemove: () => toggleTier(id),
     });
   for (const id of mosSet)
     activeChips.push({
       key: `mos:${id}`,
       label: MOS_BUCKETS.find((b) => b.id === id)?.label ?? id,
+      dot: MOS_BUCKETS.find((b) => b.id === id)?.dot,
       onRemove: () => toggleMos(id),
     });
   for (const rec of recommendationSet)
     activeChips.push({
       key: `rec:${rec}`,
       label: RECOMMENDATION_LABELS[rec],
+      dot: RECOMMENDATION_CHIP_DOTS[rec],
       onRemove: () => toggleRecommendation(rec),
     });
   for (const s of sectorSet)
-    activeChips.push({ key: `sector:${s}`, label: s, onRemove: () => toggleSector(s) });
+    activeChips.push({
+      key: `sector:${s}`,
+      label: s,
+      dotStyle: { backgroundColor: sectorStyle(s).dot },
+      onRemove: () => toggleSector(s),
+    });
 
   return (
     <div className={`space-y-6 ${className}`}>
@@ -116,8 +136,16 @@ export function FilterControls({
                 type="button"
                 onClick={chip.onRemove}
                 aria-label={`Remove filter: ${chip.label}`}
-                className="group inline-flex min-h-[44px] items-center gap-1.5 rounded-sm bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 ring-1 ring-inset ring-slate-200 press hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-slate-700 lg:min-h-0"
+                className={`group inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset press hover:opacity-75 lg:min-h-0 ${ACTIVE_FILTER_CHIP_TONE}`}
               >
+                {/* Exactly one of `dot` (class — tier/mos/rec) or `dotStyle` (inline
+                    rgb — sector) is set per chip; search/score set neither. */}
+                {chip.dot && (
+                  <span className={`inline-block h-1.5 w-1.5 rounded-full ${chip.dot}`} aria-hidden="true" />
+                )}
+                {chip.dotStyle && (
+                  <span className="inline-block h-1.5 w-1.5 rounded-full" style={chip.dotStyle} aria-hidden="true" />
+                )}
                 {chip.label}
                 <svg
                   aria-hidden="true"
