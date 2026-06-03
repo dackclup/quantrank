@@ -123,6 +123,13 @@ export default function CompareView({ all }: { all: StockSummary[] }) {
     if (added.length > 0) {
       commit(next); // updates tickers + URL; clears the URL-parse notes
       setInput('');
+    } else {
+      // Nothing added → commit() didn't run; still clear the stale URL-parse
+      // hydrate notes (notFound / truncated from the initial ?compare= parse) so
+      // a zero-add paste surfaces ONLY its own caveat, not a leftover "not in the
+      // universe" note left over from page load (#395 nit 2 — the dual-note edge).
+      setNotFound([]);
+      setTruncated(false);
     }
     setErrorIsWarn(added.length === 0); // pure miss → amber; partial success → slate
     setError(caveats.length > 0 ? caveats.join(' · ') : null);
