@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+
+import { METHODOLOGY_URL } from '@/lib/links';
 import { ThemeToggle } from './ThemeToggle';
 
 // LedgerCraft Phase 3c — left-rail navigation. Desktop: sticky 240px
@@ -31,7 +33,7 @@ const NAV_ITEMS: Array<{ label: string; href: string; isActive: (p: string) => b
 const RESOURCE_ITEMS: Array<{ label: string; href: string; external: true; icon: JSX.Element }> = [
   {
     label: 'Methodology',
-    href: 'https://github.com/dackclup/quantrank/blob/main/docs/METHODOLOGY.md',
+    href: METHODOLOGY_URL,
     external: true,
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
