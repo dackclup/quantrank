@@ -1187,3 +1187,35 @@
   the same PR: `FairPriceCard` valuation-warning humanization `w.replace(/_/g,' ')`
   → a `VALUATION_WARNING_LABELS` map (Title-Case fallback for unknown flags) so a
   valuation warning reads the same labelled way the `RiskSummaryCard` flags do.
+  (That map was CENTRALIZED into `lib/flag-labels.ts` as `flagLabel` in the later
+  compare-view PR — see the next gotcha.)
+
+- **Cross-stock COMPARE view — `/compare` reads `?compare=` via
+  `window.location`, NEVER `useSearchParams`** (`frontend/app/compare/page.tsx` +
+  `frontend/components/CompareView.tsx` + `CompareMatrix.tsx`, 2026-06-03; closes
+  the #392-deferred compare gap). The selection (`?compare=AAPL,MSFT`) is
+  read/written with `window.location.search` in a mount effect +
+  `history.replaceState` — the SAME pattern `lib/filter-url` uses for the ranking
+  filters — NOT Next's `useSearchParams`: on a static export (`output: 'export'`)
+  a `useSearchParams` consumer must sit behind a `<Suspense>` boundary or the
+  build errors, and the window.location pattern sidesteps that entirely. The URL
+  is the single shareable artifact; the ranking table's multi-select
+  (`RankingTable` checkboxes, capped at `MAX_COMPARE = 4`, an in-memory
+  `Set<ticker>` that survives pagination/filter) is a transient action, NOT
+  persisted to sessionStorage. The `/compare` server shell build-imports
+  `getRankings()` — the focused compare set (composite + the 8 active pillars +
+  fair median + MoS + the risk/defense-flag load) lives ENTIRELY on
+  `StockSummary`/rankings.json, so there is NO per-stock `stocks/<T>.json` fetch
+  and NO loading waterfall (the full 6-method fair-price breakdown +
+  manipulation-component breakdown are deliberately detail-page-only; the
+  per-column ticker links out for that depth). Two tokens were CENTRALIZED so the
+  matrix never drifts from the detail page: `pillarColor` → `lib/visual.ts` (was a
+  local `colorFor` in `PillarRadarChart`) and `flagLabel` → `lib/flag-labels.ts`
+  (was `FairPriceCard`'s local `VALUATION_WARNING_LABELS`; `FairPriceCard` now
+  imports it). Best-in-row marking is METRIC-AWARE (max for composite / pillars /
+  MoS, min for loss-chance / flag-count / manipulation-index, and NONE for raw
+  price / 1d-change / fair-median — marking "highest price = best" would be
+  dishonest) and never color-only (a sage ▲ + an sr-only "best of N"). The matrix
+  is a semantic `<table>` (`<th scope="col">` per stock, `<th scope="row">` per
+  metric) with the metric-label rail `sticky left-0` for horizontal scroll on
+  mobile.

@@ -166,3 +166,51 @@ version wire resolves at config-load (verified `node -e require('./next.config.j
 **Files**: `frontend/next.config.js` · `frontend/components/Sidebar.tsx` ·
 `frontend/components/FairPriceCard.tsx` · `CLAUDE.md` (§Gotchas index) ·
 `docs/GOTCHAS.md` (detail) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
+
+## Cross-stock COMPARE view — /compare + ranking-table multi-select (in flight, 2026-06-03)
+
+**Branch**: `claude/busy-newton-L6J56`
+**Type**: feat(frontend) — FRONTEND-ONLY, no schema / compute / data change; no
+schema bump. Ships the P3 cross-stock COMPARE view deferred by the #392 whole-app
+polish pass (the last open item from it; designed via `$impeccable shape`, brief
+re-audited + confirmed before craft).
+
+**What**: a new `/compare` route compares up to 4 S&P 500 names side by side
+across the focused decision-set — composite + tier, the 8 active pillars,
+fair-price median + margin of safety, and the risk/defense-flag load. Entry is
+multi-select on the ranking table (checkbox per row, capped at `MAX_COMPARE = 4`)
+→ a fixed "Compare (N)" bar → `/compare/?compare=AAPL,MSFT`. The matrix is a
+semantic `<table>` (rows = metric, cols = stock) with a sticky metric-label rail
+for horizontal scroll on mobile; best-in-row marking is metric-aware (max for
+composite / pillars / MoS, min for loss-chance / flag-count / manipulation-index,
+none for raw price) and never color-only (sage ▲ + sr-only "best of N").
+
+**Architecture**: the `/compare` server shell build-imports `getRankings()` (the
+focused set is 100% on `StockSummary`/rankings.json → no per-stock fetch, no
+loading waterfall; the 6-method fair-price breakdown stays detail-page-only).
+`CompareView` (client) reads/writes `?compare=` via `window.location` +
+`history.replaceState` — NOT `useSearchParams` (which would force a `<Suspense>`
+boundary on the static export). Selection is in-memory; the URL is the shareable
+artifact.
+
+**DRY**: `pillarColor` centralized into `lib/visual.ts` (was a local `colorFor`
+in `PillarRadarChart`, now shared with the matrix) + `flagLabel` centralized into
+`lib/flag-labels.ts` (was `FairPriceCard`'s local `VALUATION_WARNING_LABELS`;
+`FairPriceCard` refactored to import it).
+
+**Verification**: `next build` GREEN locally — 507 static pages (506 + `/compare`),
+lint + types valid; `/compare` = `○ Static` 6.64 kB. `tsc --noEmit` clean. The
+static shell renders the H1 + skeleton pre-hydration (the query is read
+client-side).
+
+**Files**: `frontend/app/compare/page.tsx` (new) · `frontend/components/CompareView.tsx`
+(new) · `frontend/components/CompareMatrix.tsx` (new) · `frontend/lib/flag-labels.ts`
+(new) · `frontend/components/RankingTable.tsx` (multi-select + compare bar) ·
+`frontend/lib/visual.ts` (`pillarColor`) · `frontend/components/PillarRadarChart.tsx`
+(use `pillarColor`) · `frontend/components/FairPriceCard.tsx` (use `flagLabel`) ·
+`CLAUDE.md` (§Gotchas index) · `docs/GOTCHAS.md` (detail) · `PHASE_STATUS_INFLIGHT.md`
+(this).
+
+---

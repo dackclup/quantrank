@@ -485,9 +485,12 @@ export function FairPriceCard(props) {  // no types
   `FairPriceCard` `<div>`→`<dl>`, Tier2 drop `role="status"`, AppShell svg
   `aria-hidden`, HeroAttributeTiles `aria-labelledby`, CurrentPriceLine
   `text-rose-600→700`, ScoreBadge md `font-bold→semibold`, FilterDrawer
-  unselected hover darken. Deferred: Sidebar `v1.4.0` version chip, FairPriceCard
-  flag label map, P3 compare view (product gap). Verified `next build` green
-  locally (506 pages). Full rationale in CLAUDE.md §Gotchas.
+  unselected hover darken. Verified `next build` green locally (506 pages). Full
+  rationale in CLAUDE.md §Gotchas. The three items that pass deferred are now ALL
+  shipped: the Sidebar `v1.4.0` version chip + FairPriceCard flag labels in #393
+  (the labels later centralized into `lib/flag-labels.ts`), and the P3 cross-stock
+  compare view as `/compare` + ranking-table multi-select (2026-06-03) — see
+  `PHASE_STATUS_INFLIGHT.md`.
 
 ## Git workflow
 

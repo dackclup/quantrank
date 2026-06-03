@@ -1,0 +1,61 @@
+// Shared human labels for the defense-layer flags that surface across the app:
+//   • `valuation_warnings` (compute/valuation/ensemble.py + the manipulation
+//     flags compute/main.py ALSO appends — beneish/dechow/… at main.py:1650+)
+//   • `risk_flags` (the 7 active vetoes + the annotate cohort)
+//
+// One map so the SAME flag never reads two ways across two surfaces (the
+// FairPriceCard valuation chips, the cross-stock CompareMatrix risk row, and any
+// future consumer). Unknown flags fall back to Title Case — forward-safe if a
+// new flag string lands in compute/ before this map is updated (cf. the
+// `extreme_{method}_estimate` family at ensemble.py:142).
+//
+// NOTE: `RiskSummaryCard` keeps its OWN richer `RANK_GATE_META` +
+// `MANIPULATION_FLAG_LABELS` (it renders rank-gate semantics + the
+// manipulation-index breakdown, not just a label) — that card is `'use client'`
+// and its meta is more than a string map, so it intentionally does not route
+// through here yet. This module is the label-only source the presentational
+// surfaces share.
+export const FLAG_LABELS: Record<string, string> = {
+  // Valuation-method extremeness + valuation-specific guards (ensemble.py).
+  extreme_graham_estimate: 'Extreme Graham estimate',
+  extreme_multiples_pe_estimate: 'Extreme P/E estimate',
+  extreme_multiples_pb_estimate: 'Extreme P/B estimate',
+  extreme_multiples_ev_ebitda_estimate: 'Extreme EV/EBITDA estimate',
+  extreme_rim_estimate: 'Extreme Residual-Income estimate',
+  extreme_dcf_estimate: 'Extreme DCF estimate',
+  extreme_estimate_majority: 'Majority of methods extreme',
+  stale_filing_soft: 'Stale filing',
+  stale_filing_hard: 'Stale filing (hard)',
+  goodwill_heavy: 'Goodwill-heavy balance sheet',
+  value_trap_risk: 'Value-trap risk (RIM)',
+  data_quality_input_corruption: 'Data-quality guard',
+  valuation_output_anomalous: 'Valuation output anomalous',
+  // Manipulation / earnings-quality flags (compute/main.py + manipulation_index).
+  beneish_high: 'Beneish M-score (warning band)',
+  dechow_high: 'Dechow F-score (warning band)',
+  manipulation_triple_flag: 'Triple-stack (Sloan + Beneish + Dechow)',
+  rem_suspect: 'Real Earnings Management',
+  restatement_history: 'Restatement history',
+  restatement_high_confidence: 'Restatement — high confidence',
+  late_filing_notification: 'Late-filing notification',
+  accruals_momentum_high: 'Accruals momentum',
+  loss_avoidance_pattern: 'Loss-avoidance pattern',
+  loss_avoidance_pattern_size_invariant: 'Loss-avoidance — size-invariant',
+  share_count_extraction_missing: 'Share-count extraction missing',
+  insider_sell_cluster: 'Insider-sell cluster',
+  c_suite_unusual_sell: 'C-suite unusual selling',
+  multi_class_aggregate_shares_suspected: 'Multi-class share aggregation suspected',
+  cross_source_disagreement: 'Cross-source price disagreement',
+  // Tier-2 8-K / going-concern event vetoes + annotates (tier2.py).
+  going_concern_disclosure: 'Going-concern disclosure',
+  going_concern: 'Going-concern disclosure',
+  non_reliance_filing: 'Non-reliance (restatement) filing',
+  auditor_change: 'Auditor change',
+};
+
+export function flagLabel(flag: string): string {
+  return (
+    FLAG_LABELS[flag] ??
+    flag.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+  );
+}
