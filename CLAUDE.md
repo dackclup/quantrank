@@ -1220,8 +1220,13 @@ whitespace / single-line fixes do not trigger.
   `_LABELS` / `_VALUES` exports are unchanged (those filter chips still import
   them). **Neutral chip ring is canonically `ring-slate-200`** (matches the
   sector / listing / MoS-fair neutral) — the `RecommendationBadge` "Hold" +
-  `LossChanceBadge` "Neutral" outliers were normalized `ring-slate-300 → 200` in
-  the same polish so all neutral chips share one ring shade.
+  `LossChanceBadge` "Neutral" (#389) AND the `RankingTable` / `FilterDrawer`
+  active-filter chips (follow-up) were all normalized `ring-slate-300 → 200`, so
+  EVERY neutral chip — static metadata AND interactive filter — shares one ring
+  shade (the filter chips keep their bespoke STRUCTURE, only the ring shade is
+  unified). No `ring-slate-300` neutral outlier remains; the lone surviving
+  `ring-slate-300` is `FairPriceBarChart`'s deliberately-muted `outlier` verdict
+  tone (NOT a neutral chip — leave it).
 - **Chip family carries `font-medium`; every large numeric display carries
   `font-mono`; annotate-amber bodies use `bg-amber-50`; negative-strong rings
   use the soft `-200` shade, never raw `-300`** (`$impeccable polish` pass

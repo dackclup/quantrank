@@ -467,7 +467,11 @@ export function FairPriceCard(props) {  // no types
   polish` extended the shell into `FairPriceCard` `<li>` warnings (+`font-medium`)
   and `FairPriceBarChart` tally pills/verdict badges (via `CHIP_BASE`); only the
   `RankingTable` / `FilterDrawer` selection-state filter chips stay bespoke
-  (interactive toggles). Neutral chip ring normalized to canonical `ring-slate-200`.
+  (interactive toggles — though a follow-up normalized their NEUTRAL ring to the
+  canonical `ring-slate-200` too: bespoke structure, shared ring shade). Neutral
+  chip ring is canonically `ring-slate-200` across EVERY neutral chip now (no
+  `ring-slate-300` neutral outlier remains; the surviving `ring-slate-300` is
+  `FairPriceBarChart`'s muted `outlier` verdict, not a neutral chip).
   `RECOMMENDATION_CHIP_*` exports unchanged. Full rationale in CLAUDE.md §Gotchas.
 
 ## Git workflow

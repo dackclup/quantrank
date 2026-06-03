@@ -240,7 +240,7 @@ export function FilterDrawer({
                     type="button"
                     onClick={chip.onRemove}
                     aria-label={`Remove filter: ${chip.label}`}
-                    className="group inline-flex min-h-[44px] items-center gap-1.5 rounded-sm bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 ring-1 ring-inset ring-slate-300 press hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-slate-700 lg:min-h-0"
+                    className="group inline-flex min-h-[44px] items-center gap-1.5 rounded-sm bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 ring-1 ring-inset ring-slate-200 press hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-slate-700 lg:min-h-0"
                   >
                     {chip.label}
                     <svg
