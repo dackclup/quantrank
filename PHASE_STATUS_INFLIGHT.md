@@ -338,3 +338,22 @@ behavior). Placeholder/label/button reworded to signal the bulk capability ("Add
 **Files**: `frontend/components/CompareView.tsx` · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Compare bulk-add — clear stale URL-parse notes on a zero-add submit (in flight, 2026-06-03)
+
+**Branch**: `claude/busy-newton-L6J56`
+**Type**: fix(frontend) — FRONTEND-ONLY, no schema / compute / data change; no schema
+bump. #395 nit 2 (the dual-note edge from the #402 quantrank-reviewer WARN).
+
+When an add-input submit added NOTHING (all dupe / invalid / over-cap), `commit()` did
+not run, so the initial `?compare=` URL-parse hydrate notes (`notFound` / `truncated`)
+were NOT cleared and rendered alongside the fresh `addError` caveat — two notes about
+overlapping ticker sets. Fix: `addFromInput` now clears `setNotFound([])` /
+`setTruncated(false)` in the zero-add branch too (those hydrate notes are stale once the
+user actively submits the picker), so a zero-add paste surfaces ONLY its own caveat.
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (507 pages).
+
+**Files**: `frontend/components/CompareView.tsx` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
