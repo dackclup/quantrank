@@ -439,3 +439,46 @@ its own PR with a design pass).
 (§Gotchas index) · `docs/GOTCHAS.md` (detail) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Desktop filter IA — persistent left rail (in flight, 2026-06-03)
+
+**Branch**: `claude/optimistic-fermat-lUTnF`
+**Type**: feat(frontend) — FRONTEND-ONLY, no schema / compute / data change; no schema
+bump. The last deferred item from the #401 filter critique (P1: a 502-row screener hid
+filtering behind a modal drawer at EVERY width). Designed via `$impeccable shape`; user
+chose Option A (persistent left rail).
+
+**What**: on `xl+` (≥1280) the filter controls render as a PERSISTENT left rail beside the
+ranking table (no modal / backdrop / scroll-lock) — the screener-canonical "filters always
+visible" pattern. Below `xl` the existing modal `FilterDrawer` + its toolbar trigger are
+unchanged. Breakpoint is xl not lg: at lg (1024-1279) a 288px rail squeezed the 7-col table
+below its ~700px floor → immediate horizontal scroll (frontend-design-reviewer WARN; user
+picked xl).
+
+**Refactor (pure presentation; no filter LOGIC moved)**: the filter BODY (active-chips strip
++ search + composite `DualRange` + tier/rec/valuation/sector chips) was extracted into a new
+`FilterControls.tsx` shared by BOTH shells, so the six groups live in ONE place.
+`FilterDrawer.tsx` is now only the modal shell (focus-trap / scroll-lock / Esc / restore-focus
+/ header count / footer Clear-all + "View N" CTA) wrapping `<FilterControls>`; it re-exports
+`FilterState`/`FilterSetters` (canonical defs moved to FilterControls). New `FilterRail.tsx` =
+`hidden xl:flex` `<aside aria-label="Filters">`, `w-72 xl:sticky xl:top-14
+xl:max-h-[calc(100vh-4.5rem)]`, header count + scroll body + footer Clear-all (no modal
+behaviors). `RankingTable` wraps `[FilterRail | content]` in an `xl:flex xl:items-start xl:gap-6`
+row; the toolbar + page-level active-chips row get `xl:hidden` (rail replaces them at xl+); the
+FilterDrawer + compare bar stay at the root (both `fixed`). The CLOSED drawer is set `.inert`
+imperatively (a11y FAIL fix from review — without it the xl+ rail + the never-opened drawer
+expose every filter button TWICE to a screen-reader / keyboard user). `FilterState`/`FilterSetters`
+stay owned by RankingTable and threaded into both shells (controlled-view pattern).
+
+**Verification**: `next build` / `tsc` NOT run locally (`node_modules` absent) — CI Frontend
+build + `frontend-design-reviewer` static review + a Vercel-preview spot-check across
+1440 / 1280 / 1024 / 768 / 375 (light + dark) before Mark-Ready. Lockstep satisfied via this
+entry. (A §Gotchas line for the "FilterControls shared by FilterRail(xl+)/FilterDrawer(<xl)"
+split is a candidate follow-up; the three component headers document it inline for now.)
+
+**Files**: `frontend/components/FilterControls.tsx` (new) · `frontend/components/FilterRail.tsx`
+(new) · `frontend/components/FilterDrawer.tsx` (rewritten as shell) ·
+`frontend/components/RankingTable.tsx` (2-col layout + `xl:hidden` toolbar/chips) ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---
