@@ -1140,10 +1140,27 @@ STATIC imports (the project pattern). Decisions noted for the user: **"CH" read 
 (universes + filing sources + currency) is the separate Phase-5+ effort; the disabled pills
 will become real market links when that data lands.
 
-**Verification**: `tsc --noEmit` clean; `next build` GREEN (512 pages); Playwright shot
-confirms the 5-market row renders above "S&P 500 ranking" with US active + the rest "Soon".
+**Follow-up 1 — restyle to TopNav idiom** (user: "ทำหน้าตาแบบเดียวกับแถบ home ด้านบน"):
+`CountryTabs` moved from outlined-light pills to the TopNav underline-tab idiom
+(`border-b-2 -mb-px` emerald active underline, muted disabled tabs, container `border-b`
+baseline, horizontal scroll). Labels shortened "US stocks" → "US".
 
-**Files**: `frontend/components/CountryTabs.tsx` (new) · `frontend/app/ranking/page.tsx`
-(render above the header) · `PHASE_STATUS_INFLIGHT.md` (this).
+**Follow-up 2 — index/universe sub-row** (user: "ด้านล่างปุ่ม country stock จะมีแยกเป็น
+all stock|s&p500|NASDAQ 100 และอื่นๆ จะเปลี่ยนไปในแต่ละประเทศ"): new
+`frontend/components/IndexTabs.tsx` — a SECONDARY row beneath the country tabs listing the
+indices for the active country (US: All stocks · **S&P 500 (active)** · NASDAQ 100 · Dow 30).
+SECONDARY hierarchy = quieter PILL idiom (filled-emerald active `bg-emerald-700 text-white`
++ muted disabled "soon" pills), deliberately distinct from the primary 44px underline country
+tabs. Pills are NON-ACTIONABLE (active `<span>`, rest `disabled`) so the 44px tap-target rule
+doesn't apply (`min-h-[36px]`). Index list keyed per country (`INDICES_BY_COUNTRY`) for the
+expansion; only US reachable today, only S&P 500 has data (= the active pill, honest).
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (512 pages); Playwright shots
+(light + dark) confirm the two-tier selector renders above "S&P 500 ranking" — country
+underline tabs (US active) over index pills (S&P 500 active) + the rest "soon".
+
+**Files**: `frontend/components/CountryTabs.tsx` (new, then restyled) ·
+`frontend/components/IndexTabs.tsx` (new) · `frontend/app/ranking/page.tsx`
+(render both rows above the header) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---

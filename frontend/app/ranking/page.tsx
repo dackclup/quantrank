@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import { CountryTabs } from '@/components/CountryTabs';
+import { IndexTabs } from '@/components/IndexTabs';
 import RankingTable from '@/components/RankingTable';
 import { getMetadata, getRankings } from '@/lib/data';
 
@@ -16,9 +17,14 @@ export default function RankingPage() {
 
   return (
     <section className="space-y-6">
-      {/* Country / market selector — US is live (the S&P 500); the rest are
-          placeholders for the multi-country expansion. */}
-      <CountryTabs />
+      {/* Two-tier market selector: country row (underline tabs) + index row
+          (secondary pills). Grouped tightly so they read as one control unit.
+          US is live (the S&P 500); every other country / index is a placeholder
+          for the multi-country expansion. */}
+      <div className="space-y-3">
+        <CountryTabs />
+        <IndexTabs />
+      </div>
       <header className="max-w-3xl space-y-3">
         <h1 className="text-balance font-slab text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-4xl">
           S&amp;P 500 ranking
