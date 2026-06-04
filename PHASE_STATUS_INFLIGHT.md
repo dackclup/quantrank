@@ -708,3 +708,28 @@ aria-pressed) · `.claude/skills/frontend-design-system/SKILL.md` (selected-stat
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Filter polish round 4 — composite-score slider thumb visibility (in flight, 2026-06-03)
+
+**Branch**: `claude/beautiful-goldberg-ktA03` (PR #409, additional commit)
+**Type**: fix(frontend) — FRONTEND-ONLY, no schema / compute / data change; no schema bump.
+User-reported: the Composite Score `DualRange` slider HANDLES were invisible ("สีมันกลืนกับพื้นหลัง").
+
+**Root cause**: the thumb fill was `bg-white dark:bg-slate-900` — the SAME color as the panel it sits
+on (`bg-white dark:bg-slate-900`), so each handle camouflaged into the background (only the thin border
+hinted at it). Confirmed in-browser at score=40-80 (interior thumbs, not edge-clipped): light = a
+near-invisible white knob on white; dark = a near-invisible slate-900 knob on slate-950.
+
+**Fix**: invert the thumb so the FILL contrasts the PANEL — `bg-slate-900 dark:bg-white` (dark knob on
+the light panel / white knob on the dark panel) — and flip the border to the INVERSE
+(`border-white dark:border-slate-900`) so the handle still separates from the same-colored active fill
+bar (slate-900 light / slate-100 dark) where it rides. High contrast in both themes (~17:1), well past
+WCAG 1.4.11. The #408 focus halo + `shadow-subtle` are unchanged.
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (507 pages); before/after slider screenshots
+(light + dark, interior thumbs) confirm the handles are now clearly visible, solid, draggable knobs.
+
+**Files**: `frontend/components/DualRange.tsx` (thumb fill/border inversion + comment) ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---
