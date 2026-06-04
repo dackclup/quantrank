@@ -893,3 +893,58 @@ data source), not a tweak to this bar.
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Strip Compare + Filter + Resources from PR #412 (in flight, 2026-06-04)
+
+**Branch**: `claude/confident-ramanujan-NgV5y` (PR #412, follow-up commit)
+**Type**: refactor(frontend) — FRONTEND-ONLY, no schema / compute / data change; no
+schema bump. User-directed scope reduction on the same PR ("เอา resources และรื้อ
+compare stock ออก … Compare ลบทิ้งทั้งหมด … ลบ filter ทิ้งด้วย"); search is KEPT
+(user chose "เก็บช่องค้นหาไว้" via AskUserQuestion).
+
+**Removed — Compare feature (entirely):** deleted `frontend/app/compare/page.tsx`,
+`frontend/components/CompareView.tsx`, `frontend/components/CompareMatrix.tsx`; pulled
+the ranking-table multi-select checkboxes + the fixed "Compare (N)" action bar +
+`selected`/`goCompare` state out of `RankingTable`.
+
+**Removed — Filter screener (entirely; free-text search KEPT):** deleted
+`frontend/components/{FilterControls,FilterDrawer,FilterRail,DualRange}.tsx` +
+`frontend/lib/{filter-storage,filter-url}.ts`; pulled all filter state (sector / tier /
+mos / recommendation sets + composite-score range), the multi-axis `filtered` logic
+(now search-only), the sessionStorage+URL persistence, the active-filter chips, and the
+Filters button out of `RankingTable`.
+
+**Removed — Sidebar Resources + Compare nav:** the `Resources` section
+(Methodology / Design / GitHub) + the `Compare` `Browse` item; nav is now Browse
+(Rankings · Sectors) + Insights (Top Movers). Dropped the now-unused `@/lib/links`
+`METHODOLOGY_URL` import.
+
+**`RankingTable.tsx` rewritten lean** (938 → ~430 lines): free-text search + column
+sort + pagination + FLIP reshuffle (now gated on `search`) + stagger entrance + desktop
+table + mobile cards + empty-state (reworded "No stocks match your search" + "Clear
+search"). Same row markup, minus the compare checkbox. SHARED helpers introduced by the
+removed features but used elsewhere are RETAINED: `lib/flag-labels.ts` (`flagLabel` →
+RiskSummaryCard + FairPriceCard) and `pillarColor` in `lib/visual.ts` (→ PillarRadarChart).
+`lib/links.ts` left in place (now an orphaned `METHODOLOGY_URL` export — harmless, not
+imported anywhere).
+
+**Cross-branch note**: the in-flight Compare/Filter polish branches (`busy-newton-L6J56`,
+`beautiful-goldberg-ktA03`, `optimistic-fermat-lUTnF`) become moot / conflicting if this
+merges — flagged to the user (close those PRs). Several CLAUDE.md / docs/GOTCHAS.md /
+AGENTS.md gotchas documenting the removed Compare/Filter code are now stale; the
+always-loaded CLAUDE.md §Gotchas index lines are pruned in this commit, a full
+`docs/GOTCHAS.md` + `AGENTS.md` sweep is a noted follow-up (docs-reviewer).
+
+**Verification**: `tsc --noEmit` clean (after clearing stale `.next/types/app/compare`);
+`next build` GREEN — **508 static pages** (`/compare` gone), `/` bundle 10.6 → 5.08 kB;
+Playwright screenshots (mobile home search-only toolbar + drawer Browse/Insights,
+desktop full-width table no filter-rail/compare-column) confirm no stranded UI.
+`quantrank-reviewer` + `frontend-design-reviewer` review in flight.
+
+**Files**: deleted `frontend/app/compare/page.tsx` ·
+`frontend/components/{CompareView,CompareMatrix,FilterControls,FilterDrawer,FilterRail,DualRange}.tsx` ·
+`frontend/lib/{filter-storage,filter-url}.ts`; rewrote `frontend/components/RankingTable.tsx`;
+edited `frontend/components/Sidebar.tsx` (drop Resources + Compare) · `CLAUDE.md`
+(§Gotchas index prune) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
