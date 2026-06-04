@@ -948,3 +948,144 @@ edited `frontend/components/Sidebar.tsx` (drop Resources + Compare) · `CLAUDE.m
 (§Gotchas index prune) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Top tab nav (Home·Ranking·News·Analysis·Portfolio) + Home overview + placeholder pages (in flight, 2026-06-04)
+
+**Branch**: `claude/confident-ramanujan-NgV5y` (NEW PR after #412 merged; branch
+rebased onto post-merge `main`)
+**Type**: feat(frontend) — FRONTEND-ONLY, no schema / compute / data change; no schema
+bump. User reference: the Seeking Alpha mobile top-tab nav (Home·News·Analysis·
+Portfolio). User-chosen scope (4 AskUserQuestion answers): top tabs COEXIST with the
+existing sidebar ("keep both"); Home = overview/dashboard (not the table); Analysis +
+Portfolio = "Coming soon" placeholders for now.
+
+**What**:
+- **`TopNav`** (new, client) — Seeking-Alpha-style horizontal tab bar Home · Ranking ·
+  News · Analysis · Portfolio in the sticky header; active tab = emerald underline +
+  `aria-current`; horizontal-scroll on mobile; 44px targets. Mounted as a SECOND header
+  row in `AppShell` (the `<header>` became a 2-row column: controls row + tabs row),
+  coexisting with the left-rail `Sidebar`.
+- **Home `/` rewritten** as an overview dashboard: hero (universe stat + "View full
+  ranking" CTA) + 3 preview cards — Top ranked (top-5 + `ScoreBadge`), Movers today
+  (3 gainers / 3 losers from real `price_change_1d_pct`), Top sectors (top-4 by avg
+  composite) — each links through to `/ranking` · `/movers` · `/sectors`. All derived
+  from the build-imported `rankings.json` (no new data).
+- **`/ranking`** (new) — the full `RankingTable` + the old home intro, moved here off
+  `/`. The Sidebar `Rankings` item now points to `/ranking` (was `/`).
+- **`/news` + `/analysis` + `/portfolio`** (new) — render the shared new `ComingSoon` placeholder
+  (icon + "Coming soon" + detail + a `bg-emerald-700` / `dark:bg-emerald-700` "Browse
+  the ranking" CTA). Portfolio is slated to become a localStorage watchlist, Analysis a
+  distributions/methodology view — both deferred per the user.
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (`/`, `/ranking`, `/analysis`,
+`/portfolio`, `/sectors`, `/movers`, `/stock/[ticker]` all static); Playwright
+screenshots (mobile + desktop · home / ranking / analysis) confirm the tab bar (active
+underline), the coexisting sidebar, the real-data overview cards, and the placeholder
+pages render. `frontend-design-reviewer` review in flight.
+
+**Files**: new `frontend/components/{TopNav,ComingSoon}.tsx` ·
+`frontend/app/{ranking,news,analysis,portfolio}/page.tsx`; rewrote `frontend/app/page.tsx`
+(Home overview); edited `frontend/components/AppShell.tsx` (2-row header + TopNav) ·
+`frontend/components/Sidebar.tsx` (Rankings → /ranking) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
+
+## Full-width top chrome — sidebar moved BELOW the top bar (in flight, 2026-06-04)
+
+**Branch**: `claude/confident-ramanujan-NgV5y` (PR #413, follow-up commit)
+**Type**: refactor(frontend) — layout-only, no schema / compute / data change. User:
+"แถบด้านข้าง ต้องไม่กินพื้นที่แถบด้านบน แต่กินพื้นที่แถบ home ได้".
+
+`AppShell` was a `[Sidebar | (header + content)]` row — the full-height rail sat in
+the top-left, squeezing the header / tab nav / market-stats strip to the RIGHT of it.
+Restructured to a column: the **full-width top chrome** (sticky `<header>` controls-row
++ TopNav-row, then the MarketStatsBar strip) spans edge-to-edge ABOVE a
+`[Sidebar | content]` row, so the sidebar only eats into the content width, never the
+top bar. The desktop rail is now `md:sticky md:top-[calc(3.5rem_+_46px)]
+md:h-[calc(100vh_-_3.5rem_-_46px)]` (was `md:top-0 md:h-screen`) — the offset = the
+header height (controls `h-14`=3.5rem + the 44px tab row + 2px borders) so it sticks
+flush UNDER the header. **Invariant**: if the header height changes (controls/tab row
+height or borders), update the rail's `md:top` + `md:h` calc to match, or the rail gaps
+/overlaps the header. The mobile drawer (`fixed inset-y-0`) is unchanged — a full-height
+modal overlay on hamburger tap. The globals.css sidebar pre-paint (width/max-width-only)
+is untouched.
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (512 pages); Playwright
+screenshots — desktop top + scrolled-700px confirm the top bar stays full-width + sticky
+and the rail sticks flush below it (no gap/overlap); mobile drawer still slides + works.
+
+**Files**: `frontend/components/AppShell.tsx` (return restructure: full-width top chrome
++ `[Sidebar|content]` row; controls row `py-2` → `h-14`) · `frontend/components/Sidebar.tsx`
+(rail `md:top`/`md:h` calc offset) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
+
+## Sidebar → overlay drawer + brand/toggle moved to the header (in flight, 2026-06-04)
+
+**Branch**: `claude/confident-ramanujan-NgV5y` (PR #413, follow-up commit)
+**Type**: refactor(frontend) — layout/interaction, no schema / compute / data change.
+User: "เอาโลโก้กับชื่อออกจากแถบด้านข้าง ... โชว์โลโก้ชื่อด้านบนตลอด ... ย้ายปุ่มเปิดแถบ
+ไปไว้หน้าโลโก้ ... เปลี่ยนเป็นสามขีด ... กดเปิดแล้วเป็น x". Desktop mode:
+drawer-overlay-all-sizes (user choice via AskUserQuestion).
+
+Converted the sidebar from a desktop-persistent collapsible rail + mobile drawer into
+ONE overlay drawer on EVERY breakpoint (closed by default) — the Seeking-Alpha model:
+- **Brand (Q + wordmark) moved to the header, ALWAYS visible** (was rail-only /
+  mobile-wordmark-only); removed from the drawer.
+- **One ☰/✕ toggle in the header, BEFORE the brand**, on every breakpoint — ☰ when
+  closed, ✕ when open (`aria-expanded`). Replaces the old mobile hamburger + the
+  desktop collapse chevron.
+- **Drawer = `fixed left-0 top-[calc(3.5rem_+_46px)] bottom-0 w-64`** (BELOW the sticky
+  header so the ✕ stays visible/clickable) + a backdrop at the same top offset; slides
+  on `translate-x`; Esc + backdrop tap + nav-link tap close it; body-scroll-locked while
+  open. Content is full-width at all sizes (no rail).
+- **Removed the entire collapse machinery**: the `collapsed` state + localStorage
+  persistence + the AppShell pre-paint sync, the `data-rail` / `data-sidebar-rail`
+  attribute system, the layout.tsx pre-paint `<script>` (`quantrank.sidebar.collapsed`),
+  and the `html.sidebar-collapsed` + `data-rail` block in `globals.css` (~52 lines). Net
+  simplification.
+
+**Stale gotcha pruned**: CLAUDE.md §Gotchas index line "Sidebar `data-rail` attrs ↔
+`globals.css` pre-paint rules move in lockstep" removed (mechanism gone). The matching
+`docs/GOTCHAS.md` detail + any AGENTS.md mirror are a noted follow-up sweep.
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (512 pages); grep confirms
+ZERO residual `data-rail` / `sidebar-collapsed` / `collapsed`-prop refs; Playwright
+(mobile + desktop, closed + open) confirms the header brand + ☰, the ☰→✕ flip, the drawer
+opening BELOW the header with the ✕ still visible, and the empty drawer (no brand).
+
+**Files**: `frontend/components/AppShell.tsx` (rewrite) · `frontend/components/Sidebar.tsx`
+(rewrite) · `frontend/app/layout.tsx` (drop pre-paint script) · `frontend/app/globals.css`
+(drop collapse/data-rail block) · `CLAUDE.md` (§Gotchas index prune) ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---
+
+## Disclaimer banner → footer (in flight, 2026-06-04)
+
+**Branch**: `claude/confident-ramanujan-NgV5y` (PR #413, follow-up commit)
+**Type**: refactor(frontend) — layout-only, no schema / compute / data change. User:
+"เอาแถบนี้ออก" (the top disclaimer banner). User choice: MOVE to footer (keep legal
+coverage), not delete entirely.
+
+The `<Disclaimer />` top banner (slate-50 strip + amber alert icon + a "more/less"
+toggle, between the market-stats strip and the page content) was removed. Its FULL text
+— including the previously-behind-"more" detail ("Scores and 'fair prices' are model
+outputs … do not use for real-money trading decisions") — was moved into the `AppShell`
+`<footer>` as plain muted text, so the regulated-style badges (Strong Buy / Sell) + Loss
+Chance % keep their legal-safety coverage per frontend-design-system Rule 9. The
+`Disclaimer.tsx` component is now orphaned → deleted. `LossChanceBadge` /
+`RecommendationBadge` still call it the "global Disclaimer banner" in comments — accurate
+as the legal-coverage relationship, but the "banner"/"top" wording (incl. Rule 9 in the
+frontend-design-system skill) is a NOTED follow-up to reword to "footer disclaimer" so a
+contributor doesn't re-add a top banner.
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (512 pages); Playwright
+screenshots confirm the top banner is gone (the market-stats strip now sits directly
+above the page heading) and the full disclaimer renders in the footer.
+
+**Files**: `frontend/components/AppShell.tsx` (drop banner + import; footer gains the
+disclaimer text) · `frontend/components/Disclaimer.tsx` (deleted) ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---

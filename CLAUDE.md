@@ -391,7 +391,6 @@ always-loaded context small while preserving discoverability of every invariant.
 - **Lint the WHOLE repo before push, never per-file**
 - **`html, body` are globally `overflow-x: clip`**
 - **Root font-size is FLUID**
-- **Sidebar `data-rail` attrs ↔ `globals.css` pre-paint rules move in
 - **Re-parking the price-chart crosshair MUST debounce the `<AreaChart>`
 - **App-wide motion uses ONE `ease-in-out` timing curve**
 - **The stock-detail hero splits on a CSS CONTAINER QUERY, not a viewport
