@@ -686,10 +686,25 @@ themes), so the slate-toned options now read as clearly selected too. DRY'd the 
 touched → zero app-wide blast radius (the deferred #401 concern). Confirmed in-browser: light + dark +
 the slate-toned worst case all read clearly.
 
-**Verification**: `tsc --noEmit` clean; `next build` GREEN (507 pages); the inset-ring box-shadow class
-ships in the production CSS; before/after screenshots (light / dark / slate-toned) confirm the fix.
+**Review fixes folded** (`quantrank-reviewer` = READY-TO-PUSH; `frontend-design-reviewer` =
+READY-FOR-SPOT-CHECK, 1 FAIL + WARNs, all addressed): (1) **[FAIL] `aria-pressed={on}`** added to all
+4 toggle button groups — the ring/weight is visual-only, so a screen-reader user got NO selected
+signal (the AT-equivalent of the bug this PR fixes for sighted users); (2) **[WARN] WCAG 1.4.11** —
+slate-400 ring was ~2.7:1 on the light pale tint (under the 3:1 non-text-contrast floor); switched to
+**slate-500** (`rgb(100,116,139)`, ~4.6:1 light / clearly visible dark) → one value still covers both
+themes, and it reads MORE clearly (better serves the goal); (3) **[WARN]** extracted the raw-rgb ring
+to a named `SELECTED_RING_SHADOW` const + tightened the rationale comment (the soft-override keys only
+emerald/rose ring tones, NOT *every* `ring-*` — the real reason box-shadow wins is ring-collision with
+the per-tone `ring-{tone}` + the `ring-1` shell); (4) **[WARN]** documented the new selected-state
+treatment in `frontend-design-system/SKILL.md` §"Filter drawer selected-state chip" (font-semibold +
+2px box-shadow ring + aria-pressed; no `ring-*`) so the next contributor doesn't regress it.
 
-**Files**: `frontend/components/FilterControls.tsx` (toggle helper + selected enhancement) ·
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (507 pages); `aria-pressed` ships in the
+home HTML (verified `true` on selected / `false` on unselected) + the slate-500 inset-ring class ships
+in production CSS; before/after + slate-500 screenshots (light / dark / slate-toned) confirm the fix.
+
+**Files**: `frontend/components/FilterControls.tsx` (toggle helper + selected enhancement +
+aria-pressed) · `.claude/skills/frontend-design-system/SKILL.md` (selected-state addendum) ·
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---

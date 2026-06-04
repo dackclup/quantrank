@@ -53,16 +53,25 @@ const UNSELECTED_CHIP =
 // was indistinguishable for the slate-toned options (Near fair / Hold), where
 // "selected" used the same slate as "unselected" — a user couldn't tell a chip
 // was on ($impeccable round 3, user-chosen "heavier ring + bold, no checkmark").
-// Selected = the chip's tone tint + bold label + a 2px NEUTRAL inset ring drawn
-// via `box-shadow`. box-shadow (not a Tailwind `ring-*`) sidesteps the
-// globals.css soft-color override that remaps every `ring-*` color, so the
-// selected ring is reliable and the SAME on every tone. slate-400 reads on both
-// the light pale tint and the dark slate-800 surface, so one value covers both
-// themes. Unselected keeps the thin pale `ring-1`.
+// Selected = the chip's tone tint (no fill change — outlined-light per SKILL.md
+// Rule 2) + a bold label + a 2px NEUTRAL inset ring. `aria-pressed={on}` on each
+// button carries the same state to screen readers (the ring/weight is visual-only).
+//
+// The ring is a raw-rgb `box-shadow`, NOT a Tailwind `ring-*` — a deliberate Rule 0
+// exception (same register as the `sectorStyle` inline dot colors). A ring utility
+// is wrong here for two reasons: (a) it would collide with the per-tone
+// `ring-{tone}-200` the tone already sets + the `ring-1 ring-inset` shell, and
+// (b) globals.css remaps the emerald/rose ring tones via `!important`, so a layered
+// neutral ring is unreliable across tones. A box-shadow composes on a separate CSS
+// property, immune to both. Value = Tailwind slate-500 (#64748B): ≥ 3:1 (WCAG 1.4.11
+// non-text contrast) on the light pale tint AND clearly visible on the dark
+// slate-800 surface, so one value covers both themes + every tone. Unselected keeps
+// the thin pale `ring-1`.
 const TOGGLE_BASE =
   'inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs press lg:min-h-0';
 const TOGGLE_OFF = `ring-1 ring-inset font-medium ${UNSELECTED_CHIP}`;
-const TOGGLE_ON = 'font-semibold [box-shadow:inset_0_0_0_2px_rgb(148,163,184)]';
+const SELECTED_RING_SHADOW = '[box-shadow:inset_0_0_0_2px_rgb(100,116,139)]';
+const TOGGLE_ON = `font-semibold ${SELECTED_RING_SHADOW}`;
 
 function toggleChipClass(on: boolean, tone: string): string {
   return `${TOGGLE_BASE} ${on ? `${tone} ${TOGGLE_ON}` : TOGGLE_OFF}`;
@@ -235,6 +244,7 @@ export function FilterControls({
               <button
                 key={t.id}
                 type="button"
+                aria-pressed={on}
                 onClick={() => toggleTier(t.id)}
                 className={toggleChipClass(on, t.cls)}
               >
@@ -260,6 +270,7 @@ export function FilterControls({
               <button
                 key={rec}
                 type="button"
+                aria-pressed={on}
                 onClick={() => toggleRecommendation(rec)}
                 className={toggleChipClass(on, RECOMMENDATION_CHIP_TONES[rec])}
               >
@@ -282,6 +293,7 @@ export function FilterControls({
               <button
                 key={b.id}
                 type="button"
+                aria-pressed={on}
                 onClick={() => toggleMos(b.id)}
                 className={toggleChipClass(on, b.cls)}
               >
@@ -311,6 +323,7 @@ export function FilterControls({
               <button
                 key={s}
                 type="button"
+                aria-pressed={on}
                 onClick={() => toggleSector(s)}
                 className={toggleChipClass(on, `${sty.bg} ${sty.fg} ${sty.ring}`)}
               >
