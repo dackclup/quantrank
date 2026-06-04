@@ -773,3 +773,27 @@ now visible AND the slate-toned selected stays distinct.
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## docs — record the #408/#409 color/UX mistake retro (in flight, 2026-06-04)
+
+**Branch**: `claude/beautiful-goldberg-ktA03`
+**Type**: docs — DOC-ONLY, no code / schema / compute / data / workflow change. Records the recurring
+color/UX mistake class from the filter-page polish (#408 + #409) per user request ("บันทึกข้อผิดพลาด
+ของการใช้สีและ UX ครั้งนี้").
+
+`docs/LESSONS_LEARNED.md` gains a dated `2026-06-04` Mistakes-log entry (9 numbered lessons) + a TL;DR
+bullet + 2 DON'T rows + 2 DO rows. The core lesson: a **foreground element whose color ≈ its background
+camouflaged** — 5× across the session, every one in **dark mode** and/or a **non-default state**
+(selected / disabled / interior-slider / slate-toned), all missed by static + per-commit review (3
+found by the user). Generalized: never set fg = the surface's own token; verify **WCAG 1.4.11**
+(non-text, ≥ 3:1 for rings/borders/thumbs) in BOTH themes + every state; a comprehensive whole-surface
+browser contrast audit up front beats N per-commit round-trips. The actionable rule is mirrored into
+`.claude/skills/frontend-design-system/SKILL.md` §Anti-patterns checklist (2 new bullets).
+
+**Lockstep**: doc-only (no code / workflow / schema) → this entry covers it; no CLAUDE.md / AGENTS.md
+substance change owed (the design rule lives in the frontend-design-system skill, its load-bearing home).
+
+**Files**: `docs/LESSONS_LEARNED.md` · `.claude/skills/frontend-design-system/SKILL.md` ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---
