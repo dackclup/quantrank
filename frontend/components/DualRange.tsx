@@ -23,9 +23,18 @@ export function DualRange({
   const pct = (v: number) => ((v - min) / (max - min)) * 100;
 
   // Each thumb gets pointer-events back, with consistent styling
-  // across WebKit and Mozilla engines. Depth is the 2px slate border +
-  // `shadow-subtle` (the formal hairline-lift tier — the raw Tailwind
-  // `shadow` it replaced is off-system per design.md "Borders-As-Depth").
+  // across WebKit and Mozilla engines.
+  //
+  // Thumb FILL contrasts the PANEL, not matches it: a slate-900 (dark) knob on
+  // the light panel, a white knob on the dark panel. The earlier `bg-white` /
+  // `dark:bg-slate-900` fill was the SAME color as the panel it sat on
+  // (`bg-white dark:bg-slate-900`), so the handles camouflaged into the
+  // background and a user couldn't see them (reported 2026-06-03). The 2px
+  // border is the INVERSE of the fill (white on the dark knob, slate-900 on the
+  // light knob) so the handle still separates from the same-colored active fill
+  // bar (slate-900 light / slate-100 dark) where it rides. `shadow-subtle` adds
+  // the hairline lift (the raw Tailwind `shadow` it replaced is off-system per
+  // design.md "Borders-As-Depth").
   //
   // Keyboard focus rides the THUMB, not the input. Each handle is a
   // full-width transparent `<input type=range>`, so the global
@@ -34,23 +43,23 @@ export function DualRange({
   // which handle was active. `focus-visible:outline-none` (on the input,
   // below) suppresses that; the indigo halo here lands on the actual thumb
   // instead. Indigo-500 (#6366f1) matches the app-wide focus color; a soft
-  // 3px halo reads as focus over both the white (light) and slate-900 (dark)
+  // 3px halo reads as focus over both the slate-900 (light) and white (dark)
   // thumb fills without a theme-specific offset color.
   const thumb =
     '[&::-webkit-slider-thumb]:pointer-events-auto ' +
     '[&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 ' +
     '[&::-webkit-slider-thumb]:appearance-none ' +
     '[&::-webkit-slider-thumb]:rounded-full ' +
-    '[&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-slate-900 dark:[&::-webkit-slider-thumb]:border-slate-100 ' +
-    '[&::-webkit-slider-thumb]:bg-white dark:[&::-webkit-slider-thumb]:bg-slate-900 [&::-webkit-slider-thumb]:shadow-subtle ' +
+    '[&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white dark:[&::-webkit-slider-thumb]:border-slate-900 ' +
+    '[&::-webkit-slider-thumb]:bg-slate-900 dark:[&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-subtle ' +
     '[&::-webkit-slider-thumb]:cursor-grab ' +
     '[&:focus-visible::-webkit-slider-thumb]:[box-shadow:0_0_0_3px_rgba(99,102,241,0.55)] ' +
     '[&::-moz-range-thumb]:pointer-events-auto ' +
     '[&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 ' +
     '[&::-moz-range-thumb]:appearance-none ' +
     '[&::-moz-range-thumb]:rounded-full ' +
-    '[&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-slate-900 dark:[&::-moz-range-thumb]:border-slate-100 ' +
-    '[&::-moz-range-thumb]:bg-white dark:[&::-moz-range-thumb]:bg-slate-900 [&::-moz-range-thumb]:shadow-subtle ' +
+    '[&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white dark:[&::-moz-range-thumb]:border-slate-900 ' +
+    '[&::-moz-range-thumb]:bg-slate-900 dark:[&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:shadow-subtle ' +
     '[&:focus-visible::-moz-range-thumb]:[box-shadow:0_0_0_3px_rgba(99,102,241,0.55)]';
 
   return (

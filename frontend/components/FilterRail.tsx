@@ -65,7 +65,7 @@ export function FilterRail({
           type="button"
           onClick={setters.clearAll}
           disabled={activeCount === 0}
-          className="press inline-flex items-center text-xs font-medium text-slate-600 underline-offset-2 hover:text-slate-900 hover:underline disabled:cursor-not-allowed disabled:text-slate-400 disabled:no-underline dark:text-slate-400 dark:hover:text-slate-100 dark:disabled:text-slate-600"
+          className="press inline-flex items-center text-xs font-medium text-slate-600 underline-offset-2 hover:text-slate-900 hover:underline disabled:cursor-not-allowed disabled:text-slate-400 disabled:no-underline dark:text-slate-400 dark:hover:text-slate-100 dark:disabled:text-slate-500"
         >
           Clear all
         </button>

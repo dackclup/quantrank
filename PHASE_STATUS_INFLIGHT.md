@@ -611,3 +611,165 @@ AGENTS.md substance change). The DualRange focus mechanism is documented inline 
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Filter polish round 2 — active-filter chip language + interaction-state audit (in flight, 2026-06-03)
+
+**Branch**: `claude/beautiful-goldberg-ktA03`
+**Type**: fix(frontend) — FRONTEND-ONLY, no schema / compute / data change; no schema bump.
+`$impeccable polish` round 2 on the filter surfaces (follow-up to merged #408), user-directed.
+
+**Active-filter chip language unified.** The active-filter "remove" chips rendered in TWO visual
+languages: the `FilterControls` summary (rail + drawer) used a flat NEUTRAL chip with no dot, while the
+`RankingTable` mobile toolbar used FULL type-colored tints (tier `t.cls` / mos `b.cls` / rec
+`RECOMMENDATION_CHIP_TONES`). On mobile, opening/closing the drawer showed the same filters two ways.
+Unified BOTH on the LedgerCraft-canonical "neutral steel body + colored leading dot" treatment (the
+sector-chip pattern): a new shared `ACTIVE_FILTER_CHIP_TONE` token in `lib/visual.ts`; the panel summary
+gains per-type dots (tier/mos/rec class dot + sector inline-rgb dot; search/score have no type → no dot);
+the toolbar tier/mos/rec chips drop their full tint → neutral body + keep their dots. Chosen over
+full-tint-everywhere because the summary sits directly above the full-tint *toggle* chips — neutral+dot
+keeps the remove-summary distinct from the stateful toggles (no color doubling) while preserving
+at-a-glance identity via the dot (which matters most in the toolbar, where no toggles are visible).
+Removed the now-unused `RECOMMENDATION_CHIP_TONES` import from `RankingTable`.
+
+**Interaction-state audit (no fixes needed).** Drove headless Playwright through the round-2 states the
+user named: drawer focus-trap (22 tabs all stayed inside ✓, order Close → remove-chips → search → slider
+→ toggles), long sector names ("Communication Services" — no clip / overflow / h-scroll in the w-72 rail
+✓), reduced-motion (rail renders, slider focus halo works — focus is not motion-gated ✓). All pass; no
+code change.
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (507 pages, lint + types valid); the shared
+tone token ships in the bundle; light + dark screenshots confirm the rail summary + mobile toolbar now
+render the identical neutral-body + colored-dot chip.
+
+**Review (both gates)**: `quantrank-reviewer` = READY-TO-PUSH (all invariants pass; confirmed the sector
+inline-rgb dot carve-out + that the `RECOMMENDATION_CHIP_TONES` removal is scoped to RankingTable).
+`frontend-design-reviewer` validated the neutral+dot direction + token placement, found 1 FAIL + WARNs —
+all folded: (1) the toolbar SECTOR remove-chip still inlined `${sty.bg} ${sty.fg} ${sty.ring}` instead of
+the shared token (a token-drift trap if the tone is later tuned — functionally identical today since
+sectors map to neutral) → switched to `${ACTIVE_FILTER_CHIP_TONE}` (dot kept); (2) the panel summary
+hover was `hover:bg-slate-200` vs the SKILL.md-canonical `hover:opacity-75` for active-filter chips →
+unified to `hover:opacity-75` (both contexts now match canonical); (3) added the quantrank-reviewer's
+"exactly one of `dot`/`dotStyle`" hardening comment. DEFERRED (reasoned won't-fix): `tabular-nums` on the
+"Score N–N" chip — it's a label-style chip (not a numeric column that stacks across rows), and `font-mono`
+would wrongly mono-ify the "Score" word; a standalone chip gains no alignment from `tabular-nums`. Pre-
+Mark-Ready: `vercel-preview-auditor` on the preview (the visual gate, per the design-reviewer handoff).
+
+**Lockstep**: code PR, no new convention / gotcha → this entry satisfies the minimum (no CLAUDE.md /
+AGENTS.md substance change; the shared token is self-documenting + commented in lib/visual.ts).
+
+**Files**: `frontend/lib/visual.ts` (`ACTIVE_FILTER_CHIP_TONE`) ·
+`frontend/components/FilterControls.tsx` (summary dots + shared tone) ·
+`frontend/components/RankingTable.tsx` (toolbar chips → neutral+dot) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
+
+## Filter polish round 3 — toggle selected-state visibility (in flight, 2026-06-03)
+
+**Branch**: `claude/beautiful-goldberg-ktA03` (PR #409, additional commit)
+**Type**: fix(frontend) — FRONTEND-ONLY, no schema / compute / data change; no schema bump.
+User-reported: the filter TOGGLE chips (tier / rec / valuation / sector) gave almost no signal that a
+chip was selected ("กดแล้วมองไม่เห็นว่ากดยัง").
+
+**Diagnosis** (Playwright + computed-style probe): selection relied ONLY on the pale tone tint — the
+dot is present on selected AND unselected, so it never signalled selection. The tint was too subtle in
+light, near-invisible in dark (`emerald-900/20` over `slate-800`), and for the slate-toned options
+(Near fair / Hold) the selected tone IS slate → in dark it was byte-identical to unselected (zero
+change), in light `slate-50` vs `slate-100` (almost nothing).
+
+**Fix** (user-chosen "heavier ring + bold, no checkmark"; keeps outlined-light per SKILL.md "never
+solid fill"): selected toggle = the tone tint + **bold label** + a **2px neutral inset ring** drawn via
+`box-shadow` (NOT a Tailwind `ring-*` — box-shadow sidesteps the globals.css soft-color override that
+remaps every `ring-*` color, so the selected ring is reliable and the SAME on every tone). The ring is
+`slate-400`, which reads on BOTH the light pale tint and the dark slate-800 surface (one value, both
+themes), so the slate-toned options now read as clearly selected too. DRY'd the 4 toggle groups
+(tier/rec/mos/sector) through a `toggleChipClass(on, tone)` helper. No shared TIERS/MOS/REC token
+touched → zero app-wide blast radius (the deferred #401 concern). Confirmed in-browser: light + dark +
+the slate-toned worst case all read clearly.
+
+**Review fixes folded** (`quantrank-reviewer` = READY-TO-PUSH; `frontend-design-reviewer` =
+READY-FOR-SPOT-CHECK, 1 FAIL + WARNs, all addressed): (1) **[FAIL] `aria-pressed={on}`** added to all
+4 toggle button groups — the ring/weight is visual-only, so a screen-reader user got NO selected
+signal (the AT-equivalent of the bug this PR fixes for sighted users); (2) **[WARN] WCAG 1.4.11** —
+slate-400 ring was ~2.7:1 on the light pale tint (under the 3:1 non-text-contrast floor); switched to
+**slate-500** (`rgb(100,116,139)`, ~4.6:1 light / clearly visible dark) → one value still covers both
+themes, and it reads MORE clearly (better serves the goal); (3) **[WARN]** extracted the raw-rgb ring
+to a named `SELECTED_RING_SHADOW` const + tightened the rationale comment (the soft-override keys only
+emerald/rose ring tones, NOT *every* `ring-*` — the real reason box-shadow wins is ring-collision with
+the per-tone `ring-{tone}` + the `ring-1` shell); (4) **[WARN]** documented the new selected-state
+treatment in `frontend-design-system/SKILL.md` §"Filter drawer selected-state chip" (font-semibold +
+2px box-shadow ring + aria-pressed; no `ring-*`) so the next contributor doesn't regress it.
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (507 pages); `aria-pressed` ships in the
+home HTML (verified `true` on selected / `false` on unselected) + the slate-500 inset-ring class ships
+in production CSS; before/after + slate-500 screenshots (light / dark / slate-toned) confirm the fix.
+
+**Files**: `frontend/components/FilterControls.tsx` (toggle helper + selected enhancement +
+aria-pressed) · `.claude/skills/frontend-design-system/SKILL.md` (selected-state addendum) ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---
+
+## Filter polish round 4 — composite-score slider thumb visibility (in flight, 2026-06-03)
+
+**Branch**: `claude/beautiful-goldberg-ktA03` (PR #409, additional commit)
+**Type**: fix(frontend) — FRONTEND-ONLY, no schema / compute / data change; no schema bump.
+User-reported: the Composite Score `DualRange` slider HANDLES were invisible ("สีมันกลืนกับพื้นหลัง").
+
+**Root cause**: the thumb fill was `bg-white dark:bg-slate-900` — the SAME color as the panel it sits
+on (`bg-white dark:bg-slate-900`), so each handle camouflaged into the background (only the thin border
+hinted at it). Confirmed in-browser at score=40-80 (interior thumbs, not edge-clipped): light = a
+near-invisible white knob on white; dark = a near-invisible slate-900 knob on slate-950.
+
+**Fix**: invert the thumb so the FILL contrasts the PANEL — `bg-slate-900 dark:bg-white` (dark knob on
+the light panel / white knob on the dark panel) — and flip the border to the INVERSE
+(`border-white dark:border-slate-900`) so the handle still separates from the same-colored active fill
+bar (slate-900 light / slate-100 dark) where it rides. High contrast in both themes (~17:1), well past
+WCAG 1.4.11. The #408 focus halo + `shadow-subtle` are unchanged.
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (507 pages); before/after slider screenshots
+(light + dark, interior thumbs) confirm the handles are now clearly visible, solid, draggable knobs.
+
+**Files**: `frontend/components/DualRange.tsx` (thumb fill/border inversion + comment) ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---
+
+## Filter polish round 5 — comprehensive review a11y/contrast fixes (in flight, 2026-06-03)
+
+**Branch**: `claude/beautiful-goldberg-ktA03` (PR #409, additional commit)
+**Type**: fix(frontend) — FRONTEND-ONLY, no schema / compute / data change; no schema bump.
+Folds the BLOCKER + MAJOR + cheap findings from a comprehensive `frontend-design-reviewer` pass over the
+WHOLE filter page (it confirmed the slider / selected-state / placeholder fixes correct, and surfaced
+the same class of camouflage/a11y bug proactively):
+
+- **[BLOCKER] B1** — the dark rail "Clear all" DISABLED text was `dark:disabled:text-slate-600` =
+  **2.36:1** on the slate-900 panel (camouflaged) → `dark:disabled:text-slate-500` = **3.75:1** (matches
+  the app's disabled-text convention; visible-but-muted vs the enabled slate-400).
+- **[BLOCKER] B2** — the `FilterControls` search `<input>` had no programmatic label (the `<label>` was
+  an unassociated sibling → SR announced an unnamed field). Added `htmlFor="filter-search"` +
+  `id="filter-search"`.
+- **[MAJOR] M1** — the dark UNSELECTED toggle-chip ring was `dark:ring-slate-700` = **1.41:1** on the
+  slate-800 chip → invisible boundary (WCAG 1.4.11). → `dark:ring-slate-500` = **3.07:1**. Scoped to
+  `UNSELECTED_CHIP` (the interactive toggle chips) ONLY — NOT the app-wide `NEUTRAL_CHIP_RG` /
+  `ACTIVE_FILTER_CHIP_TONE` (the #401 blast-radius trap; deferred). Verified the slate-toned SELECTED
+  state (Near fair / Hold) STILL reads distinct after the unselected ring became visible — the
+  `font-semibold` + 2px box-shadow ring carry it (screenshot-confirmed).
+- **[MAJOR] M2** — tier / valuation chips announced "Exceptional70–100" (label + range run together for
+  SR) → added `aria-label` (e.g. "Exceptional, score 70–100" / "Near fair, ±10% MoS").
+- **[NIT] N2** — toolbar "Clear all" was `text-slate-500` = 4.41:1 (0.09 under AA) → `text-slate-600`
+  (~5.9:1; also matches the rail "Clear all").
+
+**Deferred (noted)**: N1 (the 4 chip-group heading `<label>`s are semantically inert — a `<span>` /
+`role=group` refactor, pre-existing) · the app-wide `dark:ring-slate-700` neutral-chip ring on sector +
+active-filter chips (`NEUTRAL_CHIP_RG` / `ACTIVE_FILTER_CHIP_TONE` — app-wide, its own pass).
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (507 pages); Playwright contrast probe
+confirms B1 **3.75:1** / M1 **3.07:1**, the search input is programmatically labeled, and the tier
+aria-label reads "Exceptional, score 70–100"; dark screenshot confirms unselected chip boundaries are
+now visible AND the slate-toned selected stays distinct.
+
+**Files**: `frontend/components/FilterControls.tsx` (B2 label · M1 ring · M2 aria-labels) ·
+`frontend/components/FilterRail.tsx` (B1) · `frontend/components/RankingTable.tsx` (N2) ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---

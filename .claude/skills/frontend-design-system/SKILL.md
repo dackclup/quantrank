@@ -134,6 +134,20 @@ ring-slate-300` for unselected. NEVER use saturated solid for selected —
 the drawer chip should match the active-toolbar chip exactly so a user can
 trace "this chip is selected → it shows up there as an active filter".
 
+**Selected-state affordance (added $impeccable 2026-06-03, PR #409).** The tone
+tint alone is too weak to read as "selected" — it vanishes in dark mode and is
+identical to unselected for the slate-toned options (Near fair / Hold). A selected
+toggle therefore ALSO carries `font-semibold` (vs `font-medium` unselected) + a
+**2px neutral inset ring** via a raw-rgb `box-shadow`
+(`[box-shadow:inset_0_0_0_2px_rgb(100,116,139)]` = slate-500). Use `box-shadow`, NOT
+a Tailwind `ring-*`: the per-tone `ring-{tone}-*` is already set by the tone and
+`globals.css` remaps the emerald/rose ring tones via `!important`, so a layered ring
+utility is unreliable. slate-500 clears WCAG 1.4.11 (≥ 3:1) on the light pale tint
+and reads on the dark slate-800 — one value, both themes, every tone. The button
+also sets `aria-pressed={on}` so the state reaches screen readers (ring/weight is
+visual-only). Still NEVER a solid fill — the tone tint is unchanged. The
+`FilterControls.toggleChipClass()` helper is the single source.
+
 ⚠️ **Anti-pattern (PR #68 second iteration mistake — don't repeat)**:
 solid inline badge (`bg-emerald-700 text-white`) next to outlined sector
 pill (`bg-{tone}-50`). User-reported the inconsistency on screenshot review.

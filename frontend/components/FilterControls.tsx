@@ -1,5 +1,7 @@
 'use client';
 
+import type { CSSProperties } from 'react';
+
 import { DualRange } from '@/components/DualRange';
 import {
   RECOMMENDATION_CHIP_DOTS,
@@ -8,7 +10,7 @@ import {
   RECOMMENDATION_VALUES,
 } from '@/components/RecommendationBadge';
 import type { Recommendation } from '@/lib/types';
-import { MOS_BUCKETS, TIERS, sectorStyle } from '@/lib/visual';
+import { ACTIVE_FILTER_CHIP_TONE, MOS_BUCKETS, TIERS, sectorStyle } from '@/lib/visual';
 
 // The shared filter BODY — the "Active filters" remove-one summary strip + search
 // + dual-range composite-score slider + score-tier / recommendation / valuation /
@@ -44,7 +46,37 @@ export type FilterSetters = {
 };
 
 const UNSELECTED_CHIP =
-  'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-slate-700';
+  'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-500 dark:hover:bg-slate-700';
+
+// Toggle chip className composer. The SELECTED state needs a clear,
+// color-INDEPENDENT signal: the pale tone tint alone vanished in dark mode and
+// was indistinguishable for the slate-toned options (Near fair / Hold), where
+// "selected" used the same slate as "unselected" — a user couldn't tell a chip
+// was on ($impeccable round 3, user-chosen "heavier ring + bold, no checkmark").
+// Selected = the chip's tone tint (no fill change — outlined-light per SKILL.md
+// Rule 2) + a bold label + a 2px NEUTRAL inset ring. `aria-pressed={on}` on each
+// button carries the same state to screen readers (the ring/weight is visual-only).
+//
+// The ring is a raw-rgb `box-shadow`, NOT a Tailwind `ring-*` — a deliberate Rule 0
+// exception (same register as the `sectorStyle` inline dot colors). A ring utility
+// is wrong here for two reasons: (a) it would collide with the per-tone
+// `ring-{tone}-200` the tone already sets + the `ring-1 ring-inset` shell, and
+// (b) globals.css remaps the emerald/rose ring tones via `!important`, so a layered
+// neutral ring is unreliable across tones. A box-shadow composes on a separate CSS
+// property, immune to both. Value = Tailwind slate-500 (#64748B): ≥ 3:1 (WCAG 1.4.11
+// non-text contrast) on the light pale tint AND clearly visible on the dark
+// slate-800 surface, so one value covers both themes + every tone. Unselected keeps
+// the thin pale `ring-1`.
+const TOGGLE_BASE =
+  'inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs press lg:min-h-0';
+const TOGGLE_OFF = `ring-1 ring-inset font-medium ${UNSELECTED_CHIP}`;
+const SELECTED_RING_SHADOW = '[box-shadow:inset_0_0_0_2px_rgb(100,116,139)]';
+const TOGGLE_ON = `font-semibold ${SELECTED_RING_SHADOW}`;
+
+function toggleChipClass(on: boolean, tone: string): string {
+  return `${TOGGLE_BASE} ${on ? `${tone} ${TOGGLE_ON}` : TOGGLE_OFF}`;
+}
+
 
 export function FilterControls({
   state,
@@ -65,7 +97,17 @@ export function FilterControls({
   // the per-group toggle uses). Score is "active" only when narrowed from the full
   // [0, 100]. "Clear all" (the shell footer) stays the remove-EVERYTHING path.
   const scoreActive = scoreRange[0] !== 0 || scoreRange[1] !== 100;
-  const activeChips: { key: string; label: string; onRemove: () => void }[] = [];
+  // Each typed chip carries its colored leading dot (or the sector inline-rgb
+  // `dotStyle`) so the neutral-body summary still reads its per-type identity at
+  // a glance — the ONE active-filter chip language shared with the RankingTable
+  // toolbar (`ACTIVE_FILTER_CHIP_TONE`). search / score have no type, so no dot.
+  const activeChips: {
+    key: string;
+    label: string;
+    onRemove: () => void;
+    dot?: string;
+    dotStyle?: CSSProperties;
+  }[] = [];
   if (search.trim())
     activeChips.push({ key: 'search', label: `Search: ${search.trim()}`, onRemove: () => setSearch('') });
   if (scoreActive)
@@ -78,22 +120,30 @@ export function FilterControls({
     activeChips.push({
       key: `tier:${id}`,
       label: TIERS.find((t) => t.id === id)?.label ?? id,
+      dot: TIERS.find((t) => t.id === id)?.dot,
       onRemove: () => toggleTier(id),
     });
   for (const id of mosSet)
     activeChips.push({
       key: `mos:${id}`,
       label: MOS_BUCKETS.find((b) => b.id === id)?.label ?? id,
+      dot: MOS_BUCKETS.find((b) => b.id === id)?.dot,
       onRemove: () => toggleMos(id),
     });
   for (const rec of recommendationSet)
     activeChips.push({
       key: `rec:${rec}`,
       label: RECOMMENDATION_LABELS[rec],
+      dot: RECOMMENDATION_CHIP_DOTS[rec],
       onRemove: () => toggleRecommendation(rec),
     });
   for (const s of sectorSet)
-    activeChips.push({ key: `sector:${s}`, label: s, onRemove: () => toggleSector(s) });
+    activeChips.push({
+      key: `sector:${s}`,
+      label: s,
+      dotStyle: { backgroundColor: sectorStyle(s).dot },
+      onRemove: () => toggleSector(s),
+    });
 
   return (
     <div className={`space-y-6 ${className}`}>
@@ -116,8 +166,16 @@ export function FilterControls({
                 type="button"
                 onClick={chip.onRemove}
                 aria-label={`Remove filter: ${chip.label}`}
-                className="group inline-flex min-h-[44px] items-center gap-1.5 rounded-sm bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 ring-1 ring-inset ring-slate-200 press hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-slate-700 lg:min-h-0"
+                className={`group inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset press hover:opacity-75 lg:min-h-0 ${ACTIVE_FILTER_CHIP_TONE}`}
               >
+                {/* Exactly one of `dot` (class — tier/mos/rec) or `dotStyle` (inline
+                    rgb — sector) is set per chip; search/score set neither. */}
+                {chip.dot && (
+                  <span className={`inline-block h-1.5 w-1.5 rounded-full ${chip.dot}`} aria-hidden="true" />
+                )}
+                {chip.dotStyle && (
+                  <span className="inline-block h-1.5 w-1.5 rounded-full" style={chip.dotStyle} aria-hidden="true" />
+                )}
                 {chip.label}
                 <svg
                   aria-hidden="true"
@@ -138,11 +196,12 @@ export function FilterControls({
       )}
 
       <div>
-        <label className="mb-2 block text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+        <label htmlFor="filter-search" className="mb-2 block text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
           Search
         </label>
         <div className="relative">
           <input
+            id="filter-search"
             type="search"
             placeholder="Ticker or company name…"
             value={search}
@@ -186,10 +245,10 @@ export function FilterControls({
               <button
                 key={t.id}
                 type="button"
+                aria-pressed={on}
+                aria-label={`${t.label}, score ${t.min}–${t.max === 101 ? 100 : t.max}`}
                 onClick={() => toggleTier(t.id)}
-                className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset press lg:min-h-0 ${
-                  on ? t.cls : UNSELECTED_CHIP
-                }`}
+                className={toggleChipClass(on, t.cls)}
               >
                 <span className={`inline-block h-1.5 w-1.5 rounded-full ${t.dot}`} />
                 {t.label}
@@ -213,10 +272,9 @@ export function FilterControls({
               <button
                 key={rec}
                 type="button"
+                aria-pressed={on}
                 onClick={() => toggleRecommendation(rec)}
-                className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset press lg:min-h-0 ${
-                  on ? RECOMMENDATION_CHIP_TONES[rec] : UNSELECTED_CHIP
-                }`}
+                className={toggleChipClass(on, RECOMMENDATION_CHIP_TONES[rec])}
               >
                 <span className={`inline-block h-1.5 w-1.5 rounded-full ${RECOMMENDATION_CHIP_DOTS[rec]}`} />
                 {RECOMMENDATION_LABELS[rec]}
@@ -237,10 +295,10 @@ export function FilterControls({
               <button
                 key={b.id}
                 type="button"
+                aria-pressed={on}
+                aria-label={`${b.label}, ${b.help}`}
                 onClick={() => toggleMos(b.id)}
-                className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset press lg:min-h-0 ${
-                  on ? b.cls : UNSELECTED_CHIP
-                }`}
+                className={toggleChipClass(on, b.cls)}
               >
                 <span className={`inline-block h-1.5 w-1.5 rounded-full ${b.dot}`} />
                 {b.label}
@@ -268,10 +326,9 @@ export function FilterControls({
               <button
                 key={s}
                 type="button"
+                aria-pressed={on}
                 onClick={() => toggleSector(s)}
-                className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset press lg:min-h-0 ${
-                  on ? `${sty.bg} ${sty.fg} ${sty.ring}` : UNSELECTED_CHIP
-                }`}
+                className={toggleChipClass(on, `${sty.bg} ${sty.fg} ${sty.ring}`)}
               >
                 <span
                   className="inline-block h-1.5 w-1.5 rounded-full"
