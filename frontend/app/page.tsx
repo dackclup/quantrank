@@ -83,7 +83,9 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* Preview cards — each links through to its full view. */}
+      {/* Preview cards — all derived inline from rankings.json. "Top ranked"
+          links to /ranking; Movers / Sectors have no standalone page (removed
+          2026-06-04), so they show their top rows inline without a "see all" link. */}
       <div className="grid gap-4 lg:grid-cols-3">
         <OverviewCard title="Top ranked" href="/ranking" linkLabel="Full ranking">
           <ol className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -100,14 +102,14 @@ export default function HomePage() {
           </ol>
         </OverviewCard>
 
-        <OverviewCard title="Movers today" href="/movers" linkLabel="All movers">
+        <OverviewCard title="Movers today">
           <div className="space-y-3">
             <MoverGroup label="Gainers" rows={gainers} tone="pos" />
             <MoverGroup label="Losers" rows={losers} tone="neg" />
           </div>
         </OverviewCard>
 
-        <OverviewCard title="Top sectors" href="/sectors" linkLabel="All sectors">
+        <OverviewCard title="Top sectors">
           <ul className="divide-y divide-slate-100 dark:divide-slate-800">
             {sectors.map((s) => {
               const sty = sectorStyle(s.sector);
@@ -134,17 +136,21 @@ function OverviewCard({
   children,
 }: {
   title: string;
-  href: string;
-  linkLabel: string;
+  // Optional: cards without a dedicated full page (Movers / Sectors, whose
+  // standalone routes were removed 2026-06-04) render the header without a link.
+  href?: string;
+  linkLabel?: string;
   children: React.ReactNode;
 }) {
   return (
     <section className="rounded border border-slate-200 bg-white p-4 shadow-subtle dark:border-slate-800 dark:bg-slate-900">
       <div className="mb-2 flex items-center justify-between gap-2">
         <h2 className="text-sm font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">{title}</h2>
-        <Link href={href} className="press text-xs font-medium text-emerald-700 hover:underline dark:text-emerald-300">
-          {linkLabel} →
-        </Link>
+        {href && linkLabel && (
+          <Link href={href} className="press text-xs font-medium text-emerald-700 hover:underline dark:text-emerald-300">
+            {linkLabel} →
+          </Link>
+        )}
       </div>
       {children}
     </section>

@@ -327,16 +327,16 @@ export function FairPriceCard(props) {  // no types
   bar fills are raw `scoreAccentColor` rgb BY DESIGN (chart ramp + amber gap) —
   not a soft-color miss. Full rationale in CLAUDE.md §Gotchas.
 - **Build-time, server-component stats — never `import lib/data.ts` into a `'use client'`
-  component** (`frontend/app/sectors` + `frontend/app/movers`, 2026-06-04): the `/sectors`
-  + `/movers` routes (+ home/ranking dashboard stats) are plain Server Components deriving
-  every value from the already-imported `rankings.json` / `metadata.json` at BUILD time —
-  QuantRank is a weekly static export, so they are "as of" the last cron, NOT live (the
-  `metadata.last_update_utc` stamp is the anchor). A genuinely live / intra-week feed (or
-  net-new index/commodity data) is a separate observability-before-wiring PR, not a tweak.
-  The data layer (`lib/data.ts`, fs + JSON) must never enter the client bundle — resolve on
-  the server, pass the node in as a prop/child. (The top `MarketStatsBar` strip +
-  `lib/market-stats.ts` + the `AppShell` `topBar` slot that first carried this pattern were
-  removed 2026-06-04.) Full rationale in CLAUDE.md §Gotchas.
+  component** (`frontend/app/page.tsx` + `frontend/app/ranking/page.tsx`, 2026-06-04): the home
+  dashboard + ranking page are plain Server Components deriving every value from the
+  already-imported `rankings.json` / `metadata.json` at BUILD time — QuantRank is a weekly
+  static export, so they are "as of" the last cron, NOT live (the `metadata.last_update_utc`
+  stamp is the anchor). A genuinely live / intra-week feed (or net-new index/commodity data) is
+  a separate observability-before-wiring PR, not a tweak. The data layer (`lib/data.ts`, fs +
+  JSON) must never enter the client bundle — resolve on the server, pass the node in as a
+  prop/child. (Removed 2026-06-04: the top `MarketStatsBar` strip + `lib/market-stats.ts` +
+  `AppShell` `topBar` slot, and the standalone `/sectors` + `/movers` routes.) Full rationale
+  in CLAUDE.md §Gotchas.
 - **44px touch targets + modal focus-trap + severity-toned warning headings**
   (`frontend/components/*`, 2026-06-01): primary interactive controls carry
   `min-h-[44px]` (mobile-first per PRODUCT.md); `FilterDrawer` traps + restores

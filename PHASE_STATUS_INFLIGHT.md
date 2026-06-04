@@ -1239,3 +1239,39 @@ header has no ☰ button (starts at the brand) and the version chip renders in t
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Delete the standalone /sectors + /movers routes (in flight, 2026-06-04)
+
+**Branch**: `claude/confident-ramanujan-NgV5y` (PR #414, follow-up commit)
+**Type**: feat(frontend) — route removal only, no schema / compute / data change.
+User: "ลบทั้ง 2 หน้า" (delete both pages) — chosen via AskUserQuestion after the Sidebar
+removal orphaned them (they were reachable ONLY from the now-deleted Sidebar nav).
+
+Deleted `frontend/app/sectors/page.tsx` + `frontend/app/movers/page.tsx` (route count
+512 → 510). Both were self-contained (only `getRankings` from `lib/data` + `sectorStyle`
+from `lib/visual`, both shared + still used elsewhere — `sectorStyle` by the home Top-sectors
+card + `SectorChip` on the detail page), so no exclusive component/lib was orphaned.
+
+**Home page dead-link fix**: `frontend/app/page.tsx` had two preview cards ("Movers today"
+→ `/movers`, "Top sectors" → `/sectors`) whose "All movers / All sectors →" links now point
+at deleted routes. Made `OverviewCard`'s `href` + `linkLabel` OPTIONAL and dropped them from
+those two cards — the cards KEEP their inline data preview (gainers/losers + top sectors,
+both derived from `rankings.json`) but no longer render a dead "see all" link. The "Top
+ranked" card keeps its `/ranking` link. (Kept the preview cards because the user deleted the
+PAGES, not the home dashboard — flagged to the user as easily reversible.)
+
+**Docs**: the build-time-server-component gotcha (rewritten in the prior MarketStatsBar-removal
+commit to cite `/sectors` + `/movers` as the surviving example) was updated AGAIN across
+`CLAUDE.md` (§Gotchas index) + `docs/GOTCHAS.md` (detail) + `AGENTS.md` (mirror) to use the
+home + ranking pages as the example, and to record the `/sectors` + `/movers` removal.
+
+**Verification**: no residual `/sectors` / `/movers` route refs (grep clean; `sectorStyle`
+symbol refs are the shared lib, correctly kept); `tsc --noEmit` clean; `next build` GREEN
+(510 pages, no `/sectors` or `/movers` in the route table); Playwright shot confirms the home
+Movers / Sectors cards render their data inline without the dead "see all" links.
+
+**Files**: `frontend/app/page.tsx` · `frontend/app/sectors/page.tsx` (deleted) ·
+`frontend/app/movers/page.tsx` (deleted) · `CLAUDE.md` · `docs/GOTCHAS.md` · `AGENTS.md` ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---

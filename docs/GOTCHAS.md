@@ -1251,13 +1251,12 @@
   lighter emerald-600, in both themes).
 
 - **Build-time, server-component stats — never `import lib/data.ts` into a `'use client'`
-  component** (`frontend/app/sectors`, `frontend/app/movers`, 2026-06-04). The `/sectors`
-  (GICS-sector cards) + `/movers` (top-10 day gainers/losers) routes — surfaced in the
-  Sidebar `Browse` / `Insights` sections — plus the home/ranking dashboard stats are plain
-  **Server Components** that derive EVERY value at build time from the already-build-imported
-  `rankings.json` + `metadata.json` (`getRankings()` / `getMetadata()`), with no per-stock
-  fetch and no loading waterfall. QuantRank is a **weekly static export**, so these numbers
-  are "as of" the last compute cron — NOT a live/intra-week feed; the
+  component** (`frontend/app/page.tsx`, `frontend/app/ranking/page.tsx`, 2026-06-04). The home
+  dashboard (top-ranked / movers-today / top-sectors preview cards) + the ranking page are
+  plain **Server Components** that derive EVERY value at build time from the
+  already-build-imported `rankings.json` + `metadata.json` (`getRankings()` / `getMetadata()`),
+  with no per-stock fetch and no loading waterfall. QuantRank is a **weekly static export**, so
+  these numbers are "as of" the last compute cron — NOT a live/intra-week feed; the
   `metadata.last_update_utc` "Updated" stamp is the honesty anchor and the mover deltas are
   real `price_change_1d_pct` from that run, not streaming. Do NOT wire a genuinely live or
   intra-week market feed (or net-new index/commodity data) in as a "tweak" — that is a
@@ -1267,9 +1266,9 @@
   server-derived content, resolve it on the server and pass the node in as a prop/child (the
   canonical "RSC-into-client-shell" pattern, same as `children`) — never `import lib/data.ts`
   (or any `fs`-touching module) into a `'use client'` component. Touch-target floor: linked
-  stat/mover rows carry `min-h-[44px]` (the project interactive floor) — keep it on any new
+  stat/stock rows carry `min-h-[44px]` (the project interactive floor) — keep it on any new
   linked row. (History: the Seeking-Alpha-style top `MarketStatsBar` strip +
   `frontend/lib/market-stats.ts` + the `AppShell` `topBar?: React.ReactNode` slot that first
-  carried this RSC-into-client-shell pattern were added in PR #412 and REMOVED 2026-06-04 at
-  user request — "เอาแถบใต้ home ออก"; the build-time server-component rule lives on via
-  `/sectors` + `/movers`.)
+  carried this RSC-into-client-shell pattern, AND the standalone `/sectors` + `/movers` routes,
+  were all REMOVED 2026-06-04 at user request; the build-time server-component rule lives on via
+  the home + ranking pages.)
