@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 
 import { Sidebar } from './Sidebar';
@@ -16,6 +16,8 @@ import { TopNav } from './TopNav';
 
 export function AppShell({ children, topBar }: { children: React.ReactNode; topBar?: React.ReactNode }) {
   const [open, setOpen] = useState(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const wasOpenRef = useRef(false);
 
   // Lock body scroll while the drawer overlays the page.
   useEffect(() => {
@@ -35,6 +37,13 @@ export function AppShell({ children, topBar }: { children: React.ReactNode; topB
     return () => window.removeEventListener('keydown', onKey);
   }, [open]);
 
+  // Restore focus to the toggle when the drawer closes (WCAG 2.4.3); the guard
+  // skips the initial render so focus isn't stolen on mount.
+  useEffect(() => {
+    if (!open && wasOpenRef.current) toggleRef.current?.focus();
+    wasOpenRef.current = open;
+  }, [open]);
+
   return (
     <div className="flex min-h-screen flex-col">
       {/* Full-width top chrome — the controls + tab nav + the market-stats strip
@@ -44,9 +53,11 @@ export function AppShell({ children, topBar }: { children: React.ReactNode; topB
           {/* Sidebar toggle — ☰ when closed, ✕ when open. Sits BEFORE the brand
               and shows on every breakpoint (the sidebar is a drawer at all sizes). */}
           <button
+            ref={toggleRef}
             type="button"
             aria-label={open ? 'Close navigation' : 'Open navigation'}
             aria-expanded={open}
+            aria-controls="sidebar-drawer"
             onClick={() => setOpen((v) => !v)}
             className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-sm text-slate-600 press hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
           >

@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -65,25 +66,60 @@ const INSIGHTS_ITEMS: NavItem[] = [
 
 export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
   const pathname = usePathname() ?? '/';
+  const asideRef = useRef<HTMLElement>(null);
+
+  // Modal focus management (WCAG 2.4.3, the FilterDrawer standard — docs/GOTCHAS.md):
+  // make the CLOSED off-canvas drawer fully `inert` so its links aren't Tab-reachable
+  // behind the page, and move focus to the first nav link when it OPENS. AppShell
+  // restores focus to the toggle on close; Esc (AppShell) is the keyboard close (the
+  // visible ✕ lives in the header, outside the trapped dialog).
+  useEffect(() => {
+    const root = asideRef.current;
+    if (!root) return;
+    root.inert = !open;
+    if (open) root.querySelector<HTMLElement>('a[href],button:not([disabled])')?.focus();
+  }, [open]);
+
+  // Focus trap — wrap Tab / Shift+Tab within the open drawer.
+  const trapTab = (e: React.KeyboardEvent) => {
+    if (e.key !== 'Tab') return;
+    const root = asideRef.current;
+    if (!root) return;
+    const f = root.querySelectorAll<HTMLElement>('a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])');
+    if (f.length === 0) return;
+    const first = f[0];
+    const last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  };
 
   return (
     <>
       {/* Backdrop — starts BELOW the header so the ☰/✕ toggle stays clickable.
-          Always mounted (opacity toggle) so the fade animates; tabIndex flips to
-          -1 when closed so the invisible backdrop can't trap keyboard focus. */}
+          Decorative mouse close-target (aria-hidden + not a Tab stop); the modal
+          is closed by Esc / the header ✕ / a backdrop tap. */}
       <button
         type="button"
-        aria-label="Close navigation"
+        aria-hidden="true"
+        tabIndex={-1}
         onClick={onClose}
-        aria-hidden={!open}
-        tabIndex={open ? 0 : -1}
         className={`fixed inset-x-0 bottom-0 top-[calc(3.5rem_+_46px)] z-30 bg-slate-900/40 transition-opacity duration-200 dark:bg-black/60 ${
           open ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
       />
 
       <aside
+        ref={asideRef}
+        id="sidebar-drawer"
+        role="dialog"
+        aria-modal={open}
         aria-label="Primary navigation"
+        onKeyDown={trapTab}
         className={`fixed bottom-0 left-0 top-[calc(3.5rem_+_46px)] z-40 flex w-64 flex-col border-r border-slate-200 bg-white transition-transform duration-200 ease-in-out motion-reduce:transition-none dark:border-slate-800 dark:bg-slate-950 ${
           open ? 'translate-x-0' : '-translate-x-full'
         }`}

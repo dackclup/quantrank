@@ -147,12 +147,11 @@ export default function StockDetailPage({
       <header className="hero-card rounded border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900 sm:p-6">
         {/* Two-column split driven by a CSS CONTAINER QUERY, not a viewport
             breakpoint (globals.css `.hero-card`/`.hero-split`/`.hero-left`/
-            `.hero-right` under `@container hero (min-width: 46rem)`). Why a
-            container query: the sidebar (expanded 240px / collapsed 64px /
-            mobile-drawer 0px) changes the hero's ACTUAL width independently of
-            the viewport, so a viewport `md:`/`lg:` gate left a dead band where
-            the sidebar was a desktop rail but the hero still stacked (the bug
-            the user reported 2026-05-31). The container query measures the
+            `.hero-right` under `@container hero (min-width: 46rem)`). A container
+            query measures the hero's ACTUAL rendered width (which is capped at
+            max-w-[1152px] and so diverges from the raw viewport), so the split
+            fires on the real available width rather than a viewport `md:`/`lg:`
+            gate that left a dead band where the hero still stacked. The container query measures the
             hero's real inline-size AFTER the sidebar takes its cut, so the
             split fires exactly when there's room — and when space is squeezed
             (narrow viewport OR expanded sidebar) it falls back to the SAME

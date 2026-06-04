@@ -452,14 +452,13 @@ code {
  * The hero header lays out as TWO columns (name block left · stats block
  * top-right) when there's room, and falls back to the vertical mobile-portrait
  * stack when space is squeezed. The decision is driven by the hero's OWN width
- * (`container-type: inline-size` on `.hero-card`), NOT the viewport — because
- * the left sidebar (expanded 240px / collapsed 64px / mobile-drawer 0) eats a
- * viewport-variable slice, so a viewport `md:`/`lg:` gate left a dead band
- * where the sidebar was already a desktop rail but the hero still stacked
- * (user-reported bug 2026-05-31). A container query measures the real space the
- * hero has AFTER the sidebar's cut, so the row engages exactly when both
- * columns fit and otherwise drops to the mobile stack — matching the user's
- * "if it's too squeezed, just use the mobile layout" direction.
+ * (`container-type: inline-size` on `.hero-card`), NOT the viewport — the
+ * content column is capped at max-w-[1152px], so the hero's real width diverges
+ * from the raw viewport and a viewport `md:`/`lg:` gate left a dead band where
+ * the hero still stacked despite having room (user-reported bug 2026-05-31). A
+ * container query measures the real space the hero has, so the row engages
+ * exactly when both columns fit and otherwise drops to the mobile stack —
+ * matching the user's "if it's too squeezed, just use the mobile layout" direction.
  *
  * Default (the JSX `flex flex-col` classes) = stacked. The query only ADDS the
  * row behaviour, so browsers without @container support (pre-2023) keep the
