@@ -1147,17 +1147,22 @@ baseline, horizontal scroll). Labels shortened "US stocks" → "US".
 
 **Follow-up 2 — index/universe sub-row** (user: "ด้านล่างปุ่ม country stock จะมีแยกเป็น
 all stock|s&p500|NASDAQ 100 และอื่นๆ จะเปลี่ยนไปในแต่ละประเทศ"): new
-`frontend/components/IndexTabs.tsx` — a SECONDARY row beneath the country tabs listing the
-indices for the active country (US: All stocks · **S&P 500 (active)** · NASDAQ 100 · Dow 30).
-SECONDARY hierarchy = quieter PILL idiom (filled-emerald active `bg-emerald-700 text-white`
-+ muted disabled "soon" pills), deliberately distinct from the primary 44px underline country
-tabs. Pills are NON-ACTIONABLE (active `<span>`, rest `disabled`) so the 44px tap-target rule
-doesn't apply (`min-h-[36px]`). Index list keyed per country (`INDICES_BY_COUNTRY`) for the
-expansion; only US reachable today, only S&P 500 has data (= the active pill, honest).
+`frontend/components/IndexTabs.tsx` — a row beneath the country tabs listing the indices for
+the active country (US: All stocks · **S&P 500 (active)** · NASDAQ 100 · Dow 30). Index list
+keyed per country (`INDICES_BY_COUNTRY`) for the expansion; only US reachable today, only
+S&P 500 has data (= the active item, honest). Idiom iterated twice: (a) first shipped as
+secondary PILLS; `frontend-design-reviewer` flagged the `bg-emerald-700` solid-fill active
+pill as the SKILL.md Rule 2 / PR #68 anti-pattern → swapped to the outlined-light emerald
+"bullish" tone + `font-semibold` + dot (re-review PASS); (b) user then asked for the SAME
+design as the buttons above ("ใช้ design แบบเดียวกับปุ่มด้านบน") → restyled to the CountryTabs /
+TopNav underline-tab idiom verbatim (active = emerald `border-b-2` underline + darker text, no
+fill — so it does NOT reintroduce the solid-fill anti-pattern). The two underline rows stay
+distinguishable by content (countries carry flags; indices are text labels) + position.
+`aria-current="true"` kept (selection indicator in a `role="group"`, not a page-nav link).
 
 **Verification**: `tsc --noEmit` clean; `next build` GREEN (512 pages); Playwright shots
 (light + dark) confirm the two-tier selector renders above "S&P 500 ranking" — country
-underline tabs (US active) over index pills (S&P 500 active) + the rest "soon".
+underline tabs (US active) over index underline tabs (S&P 500 active) + the rest "soon".
 
 **Files**: `frontend/components/CountryTabs.tsx` (new, then restyled) ·
 `frontend/components/IndexTabs.tsx` (new) · `frontend/app/ranking/page.tsx`
