@@ -153,60 +153,6 @@ html.dark {
   color-scheme: dark;
 }
 
-/* Pre-hydration sidebar width (Bug A — "the sidebar opens then shrinks back
- * by itself" on refresh). The static export bakes the EXPANDED sidebar markup
- * into every page, so on refresh the rail paints at full width, then React
- * reads localStorage and collapses it — a visible widthward flash. The inline
- * script in layout.tsx adds `.sidebar-collapsed` to <html> BEFORE paint when
- * the user's stored choice was collapsed; this rule then renders the rail at
- * its collapsed width immediately, so React's post-hydration collapse causes
- * no width change at all. Mirrors how next-themes pre-paints the dark class.
- * Scoped to md+ — below md the sidebar is an off-canvas drawer, not a rail, so
- * `collapsed` is a no-op there. `overflow:hidden` clips the not-yet-collapsed
- * inner labels for the sub-paint moment until React applies the collapsed
- * layout. AppShell keeps the class in sync with the live collapsed state once
- * hydrated, so the rule never fights React's width after the app is
- * interactive (the class is removed the instant the rail is expanded). */
-@media (min-width: 768px) {
-  html.sidebar-collapsed aside[data-sidebar-rail] {
-    width: 4rem;
-    max-width: 4rem;
-    overflow: hidden;
-  }
-  /* Render the FULL collapsed layout pre-hydration, not just the width — else
-   * the expanded inner content (wordmark "QuantRank" + nav labels + section
-   * headers) paints for a frame on a collapsed refresh, then React hydrates
-   * and hides it ("text pops up then disappears"). These rules mirror the
-   * `collapsed ? 'md:…'` Tailwind classes the React tree applies, keyed to the
-   * pre-paint `.sidebar-collapsed` class so the rail looks collapsed from the
-   * FIRST paint. They AGREE with React's classes post-hydration (both collapse
-   * when the class/prop is set, kept in sync by AppShell), so they never fight.
-   * Keep the data-rail values in step with the matching `collapsed ? …` classes
-   * in Sidebar.tsx. */
-  html.sidebar-collapsed [data-rail="hide"] {
-    display: none;
-  }
-  html.sidebar-collapsed [data-rail="show"] {
-    display: flex;
-  }
-  html.sidebar-collapsed [data-rail="header"] {
-    justify-content: center; /* md:justify-center — only the chevron remains */
-    padding-left: 0.5rem; /* md:px-2 */
-    padding-right: 0.5rem;
-  }
-  html.sidebar-collapsed [data-rail="navlink"] {
-    justify-content: center; /* md:justify-center */
-    padding-left: 0; /* md:px-0 */
-    padding-right: 0;
-  }
-  html.sidebar-collapsed [data-rail="chevron"] {
-    /* Drop the expanded ml-auto; actual centering comes from the parent
-     * [data-rail="header"] justify-content:center (the chevron is the only
-     * remaining flex child once the brand Link hides). */
-    margin-left: 0;
-  }
-}
-
 .font-mono,
 code {
   font-family: var(--font-mono);

@@ -1019,3 +1019,44 @@ and the rail sticks flush below it (no gap/overlap); mobile drawer still slides 
 (rail `md:top`/`md:h` calc offset) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Sidebar → overlay drawer + brand/toggle moved to the header (in flight, 2026-06-04)
+
+**Branch**: `claude/confident-ramanujan-NgV5y` (PR #413, follow-up commit)
+**Type**: refactor(frontend) — layout/interaction, no schema / compute / data change.
+User: "เอาโลโก้กับชื่อออกจากแถบด้านข้าง ... โชว์โลโก้ชื่อด้านบนตลอด ... ย้ายปุ่มเปิดแถบ
+ไปไว้หน้าโลโก้ ... เปลี่ยนเป็นสามขีด ... กดเปิดแล้วเป็น x". Desktop mode:
+drawer-overlay-all-sizes (user choice via AskUserQuestion).
+
+Converted the sidebar from a desktop-persistent collapsible rail + mobile drawer into
+ONE overlay drawer on EVERY breakpoint (closed by default) — the Seeking-Alpha model:
+- **Brand (Q + wordmark) moved to the header, ALWAYS visible** (was rail-only /
+  mobile-wordmark-only); removed from the drawer.
+- **One ☰/✕ toggle in the header, BEFORE the brand**, on every breakpoint — ☰ when
+  closed, ✕ when open (`aria-expanded`). Replaces the old mobile hamburger + the
+  desktop collapse chevron.
+- **Drawer = `fixed left-0 top-[calc(3.5rem_+_46px)] bottom-0 w-64`** (BELOW the sticky
+  header so the ✕ stays visible/clickable) + a backdrop at the same top offset; slides
+  on `translate-x`; Esc + backdrop tap + nav-link tap close it; body-scroll-locked while
+  open. Content is full-width at all sizes (no rail).
+- **Removed the entire collapse machinery**: the `collapsed` state + localStorage
+  persistence + the AppShell pre-paint sync, the `data-rail` / `data-sidebar-rail`
+  attribute system, the layout.tsx pre-paint `<script>` (`quantrank.sidebar.collapsed`),
+  and the `html.sidebar-collapsed` + `data-rail` block in `globals.css` (~52 lines). Net
+  simplification.
+
+**Stale gotcha pruned**: CLAUDE.md §Gotchas index line "Sidebar `data-rail` attrs ↔
+`globals.css` pre-paint rules move in lockstep" removed (mechanism gone). The matching
+`docs/GOTCHAS.md` detail + any AGENTS.md mirror are a noted follow-up sweep.
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (512 pages); grep confirms
+ZERO residual `data-rail` / `sidebar-collapsed` / `collapsed`-prop refs; Playwright
+(mobile + desktop, closed + open) confirms the header brand + ☰, the ☰→✕ flip, the drawer
+opening BELOW the header with the ✕ still visible, and the empty drawer (no brand).
+
+**Files**: `frontend/components/AppShell.tsx` (rewrite) · `frontend/components/Sidebar.tsx`
+(rewrite) · `frontend/app/layout.tsx` (drop pre-paint script) · `frontend/app/globals.css`
+(drop collapse/data-rail block) · `CLAUDE.md` (§Gotchas index prune) ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---
