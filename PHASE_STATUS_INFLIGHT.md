@@ -1322,3 +1322,42 @@ then-departed names use ONE ticker for the add/remove pair (CDAY for Ceridian/Da
 `docs/GOTCHAS.md` (detail) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Phase 7.0 PR-1 — benchmark index export (in flight, 2026-06-04)
+
+**Branch**: `claude/loving-clarke-kAZII` (PR #416, additional commit)
+**Type**: feat(compute) + schema — exports the benchmark index series for the
+portfolio-backtest comparison chart; schema PATCH `0.10.13 -> 0.10.14-phase4.6`
+(additive `Metadata.benchmark_coverage_pct`). Observability-before-wiring: the
+data file + coverage metric ship now; the home page reads them in PR-4. No
+scoring / ranking / veto impact (display-only).
+
+`compute/ingest/prices.py` gains `BENCHMARK_TICKERS = (SPY, QQQ, DIA, IWM)` +
+`fetch_benchmarks()` (per-symbol graceful-degradation try/except; SPY shares the
+warm price cache with the existing beta fetch). `compute/output/writer.py` gains
+`write_benchmarks_json()` -> `frontend/public/data/portfolio/benchmarks.json`
+(column-major `{dates, spy, qqq, dia, iwm}`, Adj-Close-preferred, ~5y tail aligned
+to the union of trading dates, NaN/missing -> null), returning `(path, coverage_pct)`.
+`main.py` wires the fetch+write right after the SPY beta fetch and surfaces
+`benchmark_coverage_pct` on `Metadata`.
+
+The financial-engineer's "drift-detector manifest" scout step does NOT apply here
+-- yfinance is already a load-bearing dep (no new external-API surface to lock);
+the lightweight `BENCHMARK_TICKERS` manifest test + the coverage metric are the
+appropriate guards.
+
+**Verification**: schema triple regenerated + in sync (`schema_check`); `ruff check .`
+clean; new tests pass (`write_benchmarks_json` shape / union-dates / NaN->null /
+all-empty->None + `fetch_benchmarks` per-symbol / exception-swallow + `test_config`
+version bump) -- 32 passed locally. The live SPY/QQQ/DIA/IWM fetch + the actual
+benchmarks.json run on the weekly cron (sandbox has no network / price cache). The
+remaining offline-suite collection errors are pre-existing missing-dep (edgar/scipy),
+unrelated to this change.
+
+**Files**: `compute/ingest/prices.py` · `compute/output/writer.py` · `compute/main.py`
+· `compute/config.py` (version) · `compute/output/schemas.py` · `frontend/lib/types.ts`
+· `frontend/lib/schema-snapshot.json` · `tests/test_output/test_writer.py` ·
+`tests/test_ingest/test_benchmarks.py` (new) · `tests/test_config.py` ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---

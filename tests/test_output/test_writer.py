@@ -142,6 +142,61 @@ def test_write_metadata_json_universe_provenance_legacy_snapshot(tmp_path):
     assert payload["survivorship_bias_corrected"] is None
 
 
+def test_write_benchmarks_json_shape_and_coverage(tmp_path):
+    """Phase 7.0 PR-1 — column-major benchmark export + coverage %."""
+    import pandas as pd
+
+    from compute.output.writer import write_benchmarks_json
+
+    idx = pd.to_datetime(["2024-01-02", "2024-01-03", "2024-01-04"])
+    spy = pd.DataFrame(
+        {"Adj Close": [470.0, 472.5, 471.0], "Close": [469.0, 472.0, 470.5]}, index=idx
+    )
+    qqq = pd.DataFrame({"Close": [400.0, 401.0, 402.0]}, index=idx)  # no Adj Close
+    path, coverage = write_benchmarks_json(
+        {"SPY": spy, "QQQ": qqq, "DIA": None, "IWM": None}, tmp_path
+    )
+    assert path == tmp_path / "portfolio" / "benchmarks.json"
+    assert coverage == 50.0  # 2 of 4 had data
+    payload = json.loads(path.read_text())
+    assert payload["dates"] == ["2024-01-02", "2024-01-03", "2024-01-04"]
+    assert payload["spy"] == [470.0, 472.5, 471.0]  # Adj Close preferred
+    assert payload["qqq"] == [400.0, 401.0, 402.0]  # Close fallback
+    assert payload["dia"] == [None, None, None]
+    assert payload["iwm"] == [None, None, None]
+
+
+def test_write_benchmarks_json_union_dates_and_nan(tmp_path):
+    """Union of trading dates; NaN and missing-date both serialize to null."""
+    import pandas as pd
+
+    from compute.output.writer import write_benchmarks_json
+
+    spy = pd.DataFrame(
+        {"Adj Close": [470.0, float("nan"), 471.0]},
+        index=pd.to_datetime(["2024-01-02", "2024-01-03", "2024-01-04"]),
+    )
+    qqq = pd.DataFrame(  # missing the middle date → null on the union axis
+        {"Adj Close": [400.0, 402.0]},
+        index=pd.to_datetime(["2024-01-02", "2024-01-04"]),
+    )
+    path, coverage = write_benchmarks_json({"SPY": spy, "QQQ": qqq}, tmp_path)
+    payload = json.loads(path.read_text())
+    assert payload["dates"] == ["2024-01-02", "2024-01-03", "2024-01-04"]
+    assert payload["spy"] == [470.0, None, 471.0]  # NaN → null
+    assert payload["qqq"] == [400.0, None, 402.0]  # missing date → null
+    assert coverage == 100.0
+
+
+def test_write_benchmarks_json_all_empty_returns_none(tmp_path):
+    """No usable benchmark → (None, 0.0); the cron must continue (display-only)."""
+    from compute.output.writer import write_benchmarks_json
+
+    path, coverage = write_benchmarks_json({"SPY": None, "QQQ": None}, tmp_path)
+    assert path is None
+    assert coverage == 0.0
+
+
 def test_write_stock_detail_round_trip(tmp_path):
     detail = StockDetail(
         ticker="AAPL",

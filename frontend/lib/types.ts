@@ -208,6 +208,11 @@ export type Metadata = {
   // a raw passthrough code (the CBOE/BTS canary; exchange 100% / country 99.8%
   // on the 2026-06-02 cron before the BTS fix).
   country_coverage_pct?: number | null;
+  // benchmark_coverage_pct (0.10.14-phase4.6) — % of the benchmark index
+  // proxies (SPY/QQQ/DIA/IWM) whose ~5y close series exported to
+  // public/data/portfolio/benchmarks.json. Observability-before-wiring: ships
+  // before the Phase 7 AI-pick home page reads benchmarks.json. Display-only.
+  benchmark_coverage_pct?: number | null;
   // Issue #246 PR2a (0.10.3-phase4.5e) — Rule 18 retrofit for the
   // `_fetch_shares_from_per_filing_xbrl` fallback trigger extended in
   // PR #253. triggered_count = total fired (None-primary + too_low-

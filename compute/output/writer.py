@@ -124,6 +124,73 @@ def write_stock_history(
         return False
 
 
+def write_benchmarks_json(
+    benchmarks: dict[str, pd.DataFrame | None],
+    output_dir: Path,
+) -> tuple[Path | None, float]:
+    """Write the multi-index benchmark close series for the portfolio backtest.
+
+    Writes a column-major JSON to ``output_dir/portfolio/benchmarks.json``::
+
+        {"dates": ["YYYY-MM-DD", ...],
+         "spy": [float | null, ...], "qqq": [...], "dia": [...], "iwm": [...]}
+
+    keyed by LOWERCASE ticker. Each series is Adj-Close-preferred close over the
+    last ``HISTORY_TAIL_DAYS`` (~5 trading years), aligned to the UNION of all
+    benchmarks' trading dates (a symbol missing a date → ``null``). NaN → null.
+
+    Returns
+    -------
+    tuple[Path | None, float]
+        ``(path, coverage_pct)`` where ``coverage_pct`` is the % of requested
+        benchmarks that produced a non-empty series — surfaced as
+        ``Metadata.benchmark_coverage_pct`` (observability-before-wiring: the
+        field ships ≥ 1 cron before the home page reads this file). ``path`` is
+        ``None`` when NO benchmark had usable data (the cron continues — the
+        benchmark layer is display-only).
+    """
+    requested = list(benchmarks.keys())
+    series_by_sym: dict[str, pd.Series] = {}
+    for sym, df in benchmarks.items():
+        if df is None or len(df) == 0:
+            continue
+        close_col = "Adj Close" if "Adj Close" in df.columns else "Close"
+        if close_col not in df.columns:
+            continue
+        series_by_sym[sym] = df[close_col].tail(min(HISTORY_TAIL_DAYS, len(df)))
+
+    coverage_pct = (
+        round(100.0 * len(series_by_sym) / len(requested), 1) if requested else 0.0
+    )
+    if not series_by_sym:
+        return None, coverage_pct
+
+    all_dates = sorted(set().union(*(set(s.index) for s in series_by_sym.values())))
+    payload: dict[str, Any] = {"dates": [d.strftime("%Y-%m-%d") for d in all_dates]}
+    for sym in requested:
+        s = series_by_sym.get(sym)
+        if s is None:
+            payload[sym.lower()] = [None] * len(all_dates)
+            continue
+        col: list = []
+        for v in s.reindex(all_dates).tolist():
+            try:
+                f = float(v)
+            except (TypeError, ValueError):
+                col.append(None)
+                continue
+            col.append(f if math.isfinite(f) else None)
+        payload[sym.lower()] = col
+
+    try:
+        out_path = output_dir / "portfolio" / "benchmarks.json"
+        atomic_write_json(out_path, payload)
+        return out_path, coverage_pct
+    except Exception as e:  # noqa: BLE001
+        logger.warning("write_benchmarks_json atomic write failed: %s", e)
+        return None, coverage_pct
+
+
 def read_previous_top5(data_dir: Path) -> set[str]:
     """Return the ticker set that ranked in the previous run's Top-5.
 
