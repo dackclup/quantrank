@@ -18,15 +18,16 @@ design-system spec.
   (tabular numerics) · **Roboto Slab** (headlines, LedgerCraft adoption Phase 1 PR #211 +
   Phase 2 PR #212 + Phase 3a PR #213 + Phase 3c PR #215 — `font-slab`
   + 4-tier shadow tokens + spreadsheet header treatment + `AppShell`
-  / `Sidebar` left-rail nav; Phase 3b (merged) — `next-themes`
+  + `TopNav` tab nav (the `Sidebar` left-rail was removed PR #414, with
+  `TopNav` now the sole nav); Phase 3b (merged) — `next-themes`
   class-strategy dark mode, OKLCH dark band, paired `dark:` variants
-  across every chip family + table + card + drawer surface, three-
-  state theme toggle in sidebar footer + AppShell header.
+  across every chip family + table + card surface, three-state theme
+  toggle in the AppShell header.
   Phase 3d folded into the same PR: LedgerCraft canonical palette
   alignment — body bg `#FAFAFA`, brand primary `emerald-700`
   (`#047857`; the LedgerCraft spec named forest-green `#15803D` =
   green-700, but the impl ships Tailwind emerald-700) on wordmark Q
-  logo + FilterDrawer submit CTA, OKLCH
+  logo + primary CTA surfaces, OKLCH
   hue 155 → 152 + chroma 0.09 → 0.13 closer to forest green,
   border-radius normalization `rounded-2xl/xl` → `rounded-lg`).
 - **CI** — GitHub Actions; weekday `compute-rankings.yml` (cron Mon-Fri 22:00 UTC; weekends skipped — no new trading data)
@@ -422,12 +423,12 @@ always-loaded context small while preserving discoverability of every invariant.
 - **The ranking-table "no matches" empty-state is the app's ONE warm delight
 - **The stock-detail `<article>` uses a TWO-LEVEL spacing rhythm — `space-y-4`
 - **`HeroAttributeTiles` reserved tiles share the FILLED tile SURFACE**
-- **The ranking-table FLIP reshuffle is FILTER-SCOPED — never make it fire on a
+- **The ranking-table FLIP reshuffle is SEARCH-SCOPED — never make it fire on a
 - **`exchange_coverage_pct` and `country_coverage_pct` look like siblings but
 - **Whole-app polish conventions (`$impeccable polish "all app"`, 2026-06-03) — empty-state CTA is `disabled` not just styled · a labeled chip inside an `aria-label`'d container is `aria-hidden` · `ring-rose-300` is never a negative chip ring (`-200` only) · detail-page valuation sections own no `mb-*`**
 - **Footer build-version chip = build-time `NEXT_PUBLIC_APP_VERSION` (`next.config.js` git-describe→SHA), never a hardcoded version (in the `AppShell` footer since 2026-06-04; was the removed Sidebar footer before)**
 - **`pillarColor`→`lib/visual` + `flagLabel`→`lib/flag-labels` are SHARED tokens (don't re-inline) — introduced by the now-removed compare/filter, still used by `PillarRadarChart` / `RiskSummaryCard` / `FairPriceCard`**
-- **`globals.css` soft-color `!important` override is LITERAL-class-keyed → it NEVER reaches `dark:bg-emerald-*` / `dark:bg-rose-*` solid-fills (they render RAW Tailwind in dark → white label ~3.8:1, under AA). A dark CTA / brand mark = `dark:bg-emerald-700` (emerald-700 = `#047857`, white 5.5:1) or a `--c-*` token directly, never `dark:bg-emerald-600` expecting the soft remap (filter theme audit #401; Q-mark sweep this PR)**
+- **`globals.css` soft-color `!important` override is LITERAL-class-keyed → it NEVER reaches `dark:bg-emerald-*` / `dark:bg-rose-*` solid-fills (they render RAW Tailwind in dark → white label ~3.8:1, under AA). A dark CTA / brand mark = `dark:bg-emerald-700` (emerald-700 = `#047857`, white 5.5:1) or a `--c-*` token directly, never `dark:bg-emerald-600` expecting the soft remap (theme audit #401)**
 - **The home + ranking pages derive stats from `rankings.json`/`metadata.json` at BUILD TIME (Server Components) — weekly static export, so values are "as of" the last cron, NOT live; never `import lib/data.ts` (or any `fs` module) into a `'use client'` component (resolve on the server, pass the node in as a prop/child). Removed 2026-06-04: the top `MarketStatsBar` strip + `lib/market-stats.ts` + `AppShell` `topBar` slot, AND the standalone `/sectors` + `/movers` routes — the build-time server-component rule lives on via the home + ranking pages**
 
 ## Phase status
