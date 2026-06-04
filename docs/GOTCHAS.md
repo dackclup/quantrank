@@ -1123,3 +1123,41 @@
   carried this RSC-into-client-shell pattern, AND the standalone `/sectors` + `/movers` routes,
   were all REMOVED 2026-06-04 at user request; the build-time server-component rule lives on via
   the home + ranking pages.)
+
+## `data/sp500_membership_historical.csv` is the survivorship ledger — keep it ADD/REMOVE-balanced + run the verifier
+
+`compute/ingest/historical_universe.members_at(as_of, current_universe)` reconstructs S&P 500
+membership on any past date by REVERSING the ADD/REMOVE events in
+`data/sp500_membership_historical.csv` from today's anchor universe. Correctness depends on the
+ledger being COMPLETE and BALANCED across the backtest window: every index change is a pair
+(1 ADD entrant + 1 REMOVE leaver on the same effective date), plus a handful of genuine 1-sided
+spinoff adds / market-cap removals that net out over time. A MISSING add leaves a later-joiner in
+the historical universe (forward-looking leak); a MISSING remove drops a genuinely-present name
+(residual survivorship). Both directions corrupt the backtest — this is the methodology-scientist
+BLOCKING gate for the Phase 7.0 portfolio-backtest epic.
+
+**After ANY edit to the CSV, run `python scripts/verify_membership_ledger.py`.** It reverse-walks
+`members_at` from the live `rankings.json` universe across every month of the 2021-06 -> present
+window and FAILS on (a) the reconstructed size leaving the S&P 500 band (498-506), or (b) any
+ticker removed-in-window-but-still-in-universe / added-in-window-but-absent. A drift localizes the
+missing/extra event to the month it appears.
+
+Conventions baked in by the Phase 7.0 PR-0 rebuild:
+- **Effective date, not announcement date** (S&P announces ~1 week ahead). SVB Financial =
+  ticker **SIVB**, removed effective **2023-03-15** (not the 03-13 announcement the prior ledger
+  used).
+- **Real tickers** — SIVB not "SVB"; **BX** = Blackstone, **BLK** = BlackRock (never confuse).
+- **Per-row `source_url` = the Wikipedia change-history table** (stable + resolves). Do NOT
+  hand-author `press.spglobal.com/<date>-<title>` deep links — that URL shape 404s.
+- **Renamed-then-departed names use ONE ticker for the add/remove pair** (e.g. CDAY for
+  Ceridian -> Dayforce) because `members_at` skips RENAME rows (no alias map applied today).
+- **Drop an event that postdates the cron universe anchor** (a spinoff effective after the
+  latest `rankings.json`, e.g. the 2026-06-02 FedEx Freight / EPAM swap) until the weekly cron
+  picks it up — else the reversal anchor and the ledger disagree.
+
+History: the prior ledger had been silently feeding the Phase 4.6 survivorship harness ~30 errors
++ ~110 missing events (BLK mislabeled "Blackstone", a bogus 2024-08-30 BLL removal that was really
+a 2022 BLL->BALL rename, KDP/UA/UAA date contradictions, a missing SBNY 2023-failure removal, a
+scrambled 2020-06-22 add trio). PR-0 rebuilt it triangulated across S&P DJI releases + the
+fja05680/sp500 maintained CSV + Wikipedia (214 events, ADD/REMOVE balanced 107/107) and added the
+verifier as the gate.

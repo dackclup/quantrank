@@ -171,11 +171,16 @@ def test_members_at_atvi_pre_acquisition(
 def test_members_at_svb_pre_collapse(
     current_universe_502: frozenset[str],
 ) -> None:
-    """SVB collapsed 2023-03-13. Before that date → in universe."""
+    """SVB Financial (ticker SIVB) removed 2023-03-15. Before that → in universe.
+
+    The prior ledger used the colloquial "SVB" + the 2023-03-13 *announcement*
+    date; the Phase 7.0 PR-0 rebuild corrects it to the real NASDAQ ticker SIVB
+    and the *effective* index-removal date 2023-03-15.
+    """
     pre_svb_collapse = date(2023, 3, 12)
     today = date(2026, 5, 27)
     result = members_at(pre_svb_collapse, current_universe_502, anchor_date=today)
-    assert "SVB" in result.tickers
+    assert "SIVB" in result.tickers
 
 
 # --- members_at: pre-coverage degradation -------------------------

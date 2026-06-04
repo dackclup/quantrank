@@ -1275,3 +1275,50 @@ Movers / Sectors cards render their data inline without the dead "see all" links
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Phase 7.0 PR-0 — survivorship membership-ledger rebuild (in flight, 2026-06-04)
+
+**Branch**: `claude/loving-clarke-kAZII`
+**Type**: fix(data) + test — rebuilds `data/sp500_membership_historical.csv` (the
+survivorship-bias ledger consumed by `compute/ingest/historical_universe.members_at`); no
+schema / compute-logic / frontend change; no schema bump. First PR of the **Phase 7.0
+AI-pick point-in-time portfolio-backtest** epic — the methodology-scientist BLOCKING PR-0
+gate (the ledger must be verified before any backtest leg is trusted).
+
+**Why**: a multi-agent design pass (financial-engineer -> methodology-scientist) found the
+prior ledger materially broken, far beyond the one known BLK/BX bug: ~30 errors + ~110
+missing events over 2020-2026. Confirmed defects: `BLK,ADD,Blackstone` (BLK = BlackRock, a
+longtime member; Blackstone = BX) + the missing paired ABNB add; a BOGUS `2024-08-30 BLL`
+removal (Ball never left -- BLL->BALL was a 2022 ticker rename); KDP/UA/UAA dates
+self-contradictory; the SBNY (Signature Bank) 2023-failure removal MISSING; the 2020-06-22
+add trio scrambled (real = TYL/TDY/BIO). The Phase 4.6 survivorship harness has therefore
+been running on corrupt membership the whole time.
+
+**What**: full 2020-04 -> 2026-05 rebuild, triangulated across S&P DJI press releases + the
+fja05680/sp500 maintained change-CSV + Wikipedia (each load-bearing 2021-06+ event confirmed
+by >=2). 214 events, ADD/REMOVE perfectly balanced (107/107). SVB->SIVB ticker + 03-13->03-15
+effective-date fix. Per-row source_url normalized to the Wikipedia change-history table (the
+research pass's per-event `press.spglobal.com/<date>-<title>` URLs 404 -- wrong format; the
+DATA was triangulated, but we cite the source that resolves).
+
+**Integrity gate (new)**: `scripts/verify_membership_ledger.py` reverse-walks `members_at`
+from the live 502-ticker universe across every month of the 2021-06->2026-06 window and
+asserts (a) the reconstructed S&P 500 size stays in band (498-506; observed worst 504) and
+(b) every removed ticker is absent from / every added ticker present in the current universe.
+Runs CLEAN. Two consumer tests updated for the corrected SVB->SIVB / 03-15 data; all 31
+historical-universe + universe-drift tests pass; `ruff check .` clean.
+
+**Residual / caveats**: the 2026-06-02 FedEx Freight (FDXF) spinoff / EPAM removal is DROPPED
+-- it postdates the 2026-06-03 cron universe anchor (FDXF not yet in rankings.json), so
+including it would corrupt the reversal; it re-enters when the cron picks it up. Pre-2021
+1-sided 2020 spinoffs (OTIS/CARR) are slightly unbalanced (outside the backtest window). JBL
++ ALK placed at the web-confirmed 2023-12-18 rebalance (SEDG exit date confirmed). Renamed-
+then-departed names use ONE ticker for the add/remove pair (CDAY for Ceridian/Dayforce) since
+`members_at` does not apply rename aliasing.
+
+**Files**: `data/sp500_membership_historical.csv` · `scripts/verify_membership_ledger.py`
+(new) · `tests/test_ingest/test_historical_universe.py` ·
+`tests/test_validation/test_universe_drift.py` · `CLAUDE.md` (§Gotchas index) ·
+`docs/GOTCHAS.md` (detail) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
