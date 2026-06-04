@@ -662,3 +662,34 @@ AGENTS.md substance change; the shared token is self-documenting + commented in 
 `frontend/components/RankingTable.tsx` (toolbar chips → neutral+dot) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Filter polish round 3 — toggle selected-state visibility (in flight, 2026-06-03)
+
+**Branch**: `claude/beautiful-goldberg-ktA03` (PR #409, additional commit)
+**Type**: fix(frontend) — FRONTEND-ONLY, no schema / compute / data change; no schema bump.
+User-reported: the filter TOGGLE chips (tier / rec / valuation / sector) gave almost no signal that a
+chip was selected ("กดแล้วมองไม่เห็นว่ากดยัง").
+
+**Diagnosis** (Playwright + computed-style probe): selection relied ONLY on the pale tone tint — the
+dot is present on selected AND unselected, so it never signalled selection. The tint was too subtle in
+light, near-invisible in dark (`emerald-900/20` over `slate-800`), and for the slate-toned options
+(Near fair / Hold) the selected tone IS slate → in dark it was byte-identical to unselected (zero
+change), in light `slate-50` vs `slate-100` (almost nothing).
+
+**Fix** (user-chosen "heavier ring + bold, no checkmark"; keeps outlined-light per SKILL.md "never
+solid fill"): selected toggle = the tone tint + **bold label** + a **2px neutral inset ring** drawn via
+`box-shadow` (NOT a Tailwind `ring-*` — box-shadow sidesteps the globals.css soft-color override that
+remaps every `ring-*` color, so the selected ring is reliable and the SAME on every tone). The ring is
+`slate-400`, which reads on BOTH the light pale tint and the dark slate-800 surface (one value, both
+themes), so the slate-toned options now read as clearly selected too. DRY'd the 4 toggle groups
+(tier/rec/mos/sector) through a `toggleChipClass(on, tone)` helper. No shared TIERS/MOS/REC token
+touched → zero app-wide blast radius (the deferred #401 concern). Confirmed in-browser: light + dark +
+the slate-toned worst case all read clearly.
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (507 pages); the inset-ring box-shadow class
+ships in the production CSS; before/after screenshots (light / dark / slate-toned) confirm the fix.
+
+**Files**: `frontend/components/FilterControls.tsx` (toggle helper + selected enhancement) ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---

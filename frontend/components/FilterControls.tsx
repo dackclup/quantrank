@@ -48,6 +48,27 @@ export type FilterSetters = {
 const UNSELECTED_CHIP =
   'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-slate-700';
 
+// Toggle chip className composer. The SELECTED state needs a clear,
+// color-INDEPENDENT signal: the pale tone tint alone vanished in dark mode and
+// was indistinguishable for the slate-toned options (Near fair / Hold), where
+// "selected" used the same slate as "unselected" — a user couldn't tell a chip
+// was on ($impeccable round 3, user-chosen "heavier ring + bold, no checkmark").
+// Selected = the chip's tone tint + bold label + a 2px NEUTRAL inset ring drawn
+// via `box-shadow`. box-shadow (not a Tailwind `ring-*`) sidesteps the
+// globals.css soft-color override that remaps every `ring-*` color, so the
+// selected ring is reliable and the SAME on every tone. slate-400 reads on both
+// the light pale tint and the dark slate-800 surface, so one value covers both
+// themes. Unselected keeps the thin pale `ring-1`.
+const TOGGLE_BASE =
+  'inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs press lg:min-h-0';
+const TOGGLE_OFF = `ring-1 ring-inset font-medium ${UNSELECTED_CHIP}`;
+const TOGGLE_ON = 'font-semibold [box-shadow:inset_0_0_0_2px_rgb(148,163,184)]';
+
+function toggleChipClass(on: boolean, tone: string): string {
+  return `${TOGGLE_BASE} ${on ? `${tone} ${TOGGLE_ON}` : TOGGLE_OFF}`;
+}
+
+
 export function FilterControls({
   state,
   setters,
@@ -215,9 +236,7 @@ export function FilterControls({
                 key={t.id}
                 type="button"
                 onClick={() => toggleTier(t.id)}
-                className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset press lg:min-h-0 ${
-                  on ? t.cls : UNSELECTED_CHIP
-                }`}
+                className={toggleChipClass(on, t.cls)}
               >
                 <span className={`inline-block h-1.5 w-1.5 rounded-full ${t.dot}`} />
                 {t.label}
@@ -242,9 +261,7 @@ export function FilterControls({
                 key={rec}
                 type="button"
                 onClick={() => toggleRecommendation(rec)}
-                className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset press lg:min-h-0 ${
-                  on ? RECOMMENDATION_CHIP_TONES[rec] : UNSELECTED_CHIP
-                }`}
+                className={toggleChipClass(on, RECOMMENDATION_CHIP_TONES[rec])}
               >
                 <span className={`inline-block h-1.5 w-1.5 rounded-full ${RECOMMENDATION_CHIP_DOTS[rec]}`} />
                 {RECOMMENDATION_LABELS[rec]}
@@ -266,9 +283,7 @@ export function FilterControls({
                 key={b.id}
                 type="button"
                 onClick={() => toggleMos(b.id)}
-                className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset press lg:min-h-0 ${
-                  on ? b.cls : UNSELECTED_CHIP
-                }`}
+                className={toggleChipClass(on, b.cls)}
               >
                 <span className={`inline-block h-1.5 w-1.5 rounded-full ${b.dot}`} />
                 {b.label}
@@ -297,9 +312,7 @@ export function FilterControls({
                 key={s}
                 type="button"
                 onClick={() => toggleSector(s)}
-                className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium ring-1 ring-inset press lg:min-h-0 ${
-                  on ? `${sty.bg} ${sty.fg} ${sty.ring}` : UNSELECTED_CHIP
-                }`}
+                className={toggleChipClass(on, `${sty.bg} ${sty.fg} ${sty.ring}`)}
               >
                 <span
                   className="inline-block h-1.5 w-1.5 rounded-full"
