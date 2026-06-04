@@ -989,3 +989,33 @@ pages render. `frontend-design-reviewer` review in flight.
 `frontend/components/Sidebar.tsx` (Rankings → /ranking) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Full-width top chrome — sidebar moved BELOW the top bar (in flight, 2026-06-04)
+
+**Branch**: `claude/confident-ramanujan-NgV5y` (PR #413, follow-up commit)
+**Type**: refactor(frontend) — layout-only, no schema / compute / data change. User:
+"แถบด้านข้าง ต้องไม่กินพื้นที่แถบด้านบน แต่กินพื้นที่แถบ home ได้".
+
+`AppShell` was a `[Sidebar | (header + content)]` row — the full-height rail sat in
+the top-left, squeezing the header / tab nav / market-stats strip to the RIGHT of it.
+Restructured to a column: the **full-width top chrome** (sticky `<header>` controls-row
++ TopNav-row, then the MarketStatsBar strip) spans edge-to-edge ABOVE a
+`[Sidebar | content]` row, so the sidebar only eats into the content width, never the
+top bar. The desktop rail is now `md:sticky md:top-[calc(3.5rem_+_46px)]
+md:h-[calc(100vh_-_3.5rem_-_46px)]` (was `md:top-0 md:h-screen`) — the offset = the
+header height (controls `h-14`=3.5rem + the 44px tab row + 2px borders) so it sticks
+flush UNDER the header. **Invariant**: if the header height changes (controls/tab row
+height or borders), update the rail's `md:top` + `md:h` calc to match, or the rail gaps
+/overlaps the header. The mobile drawer (`fixed inset-y-0`) is unchanged — a full-height
+modal overlay on hamburger tap. The globals.css sidebar pre-paint (width/max-width-only)
+is untouched.
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (512 pages); Playwright
+screenshots — desktop top + scrolled-700px confirm the top bar stays full-width + sticky
+and the rail sticks flush below it (no gap/overlap); mobile drawer still slides + works.
+
+**Files**: `frontend/components/AppShell.tsx` (return restructure: full-width top chrome
++ `[Sidebar|content]` row; controls row `py-2` → `h-14`) · `frontend/components/Sidebar.tsx`
+(rail `md:top`/`md:h` calc offset) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
