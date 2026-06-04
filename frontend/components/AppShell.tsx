@@ -27,8 +27,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <span aria-hidden="true" className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-sm bg-emerald-700 font-mono text-xs font-semibold text-white dark:bg-emerald-700 dark:text-white">Q</span>
             <span className="font-slab text-base font-semibold tracking-tight">QuantRank</span>
           </Link>
-          <div className="ml-auto flex items-center gap-2">
-            <span className="hidden text-xs text-slate-500 dark:text-slate-400 sm:inline">Equity rankings</span>
+          <div className="ml-auto flex items-center">
             <ThemeToggle layout="icon" />
           </div>
         </div>
