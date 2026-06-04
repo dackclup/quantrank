@@ -90,7 +90,7 @@ export default function HomePage() {
             {top.map((r) => (
               <li key={r.ticker}>
                 <Link href={`/stock/${r.ticker}/`} className="press flex items-center gap-3 py-2 hover:opacity-80">
-                  <span className="w-5 shrink-0 font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">{r.rank}</span>
+                  <span className="w-5 shrink-0 font-mono text-xs tabular-nums text-slate-500 dark:text-slate-400">{r.rank}</span>
                   <span className="font-mono text-sm font-semibold text-slate-900 dark:text-slate-100">{r.ticker}</span>
                   <span className="min-w-0 flex-1 truncate text-sm text-slate-500 dark:text-slate-400">{r.name}</span>
                   <ScoreBadge score={r.composite_score} />
@@ -115,7 +115,7 @@ export default function HomePage() {
                 <li key={s.sector} className="flex items-center gap-2 py-2">
                   <span className="inline-block h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: sty.dot }} aria-hidden="true" />
                   <span className="min-w-0 flex-1 truncate text-sm text-slate-700 dark:text-slate-300">{s.sector}</span>
-                  <span className="font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">{s.count}</span>
+                  <span className="font-mono text-xs tabular-nums text-slate-500 dark:text-slate-400">{s.count}</span>
                   <span className="font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">{s.avg.toFixed(1)}</span>
                 </li>
               );
@@ -142,7 +142,7 @@ function OverviewCard({
     <section className="rounded border border-slate-200 bg-white p-4 shadow-subtle dark:border-slate-800 dark:bg-slate-900">
       <div className="mb-2 flex items-center justify-between gap-2">
         <h2 className="text-sm font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">{title}</h2>
-        <Link href={href} className="press text-xs font-medium text-emerald-700 hover:underline dark:text-emerald-400">
+        <Link href={href} className="press text-xs font-medium text-emerald-700 hover:underline dark:text-emerald-300">
           {linkLabel} →
         </Link>
       </div>
@@ -155,7 +155,7 @@ function MoverGroup({ label, rows, tone }: { label: string; rows: Mover[]; tone:
   const toneText = tone === 'pos' ? 'text-emerald-700 dark:text-emerald-300' : 'text-rose-700 dark:text-rose-300';
   return (
     <div>
-      <div className="mb-1 text-[0.625rem] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">{label}</div>
+      <div className="mb-1 text-[0.625rem] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">{label}</div>
       <ul className="space-y-0.5">
         {rows.map((m) => (
           <li key={m.ticker}>

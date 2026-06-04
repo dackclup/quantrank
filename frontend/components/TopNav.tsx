@@ -24,7 +24,7 @@ export function TopNav() {
 
   return (
     <nav
-      aria-label="Primary"
+      aria-label="Top navigation"
       className="flex items-center gap-1 overflow-x-auto px-2 md:px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
     >
       {TABS.map((t) => {
