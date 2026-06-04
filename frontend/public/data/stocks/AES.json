@@ -5,19 +5,19 @@
   "industry": "Independent Power Producers & Energy Traders",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 10469155444.478462,
-  "current_price": 14.68,
-  "rank": 142,
-  "composite_score": 55.59,
+  "market_cap": 10490549985.434807,
+  "current_price": 14.71,
+  "rank": 139,
+  "composite_score": 55.68,
   "pillar_scores": {
     "quality": 63.71,
     "value": 62.9,
     "growth": 55.65,
-    "momentum": 61.4,
+    "momentum": 61.95,
     "health": 12.15,
     "profitability": 53.23,
-    "technical": 65.44,
-    "risk": 39.24,
+    "technical": 66.09,
+    "risk": 39.08,
     "sentiment": null,
     "ml": null
   },
@@ -34,8 +34,8 @@
     "eps_basic": 3.696237104288319,
     "eps_diluted": 3.696237104288319,
     "shares_outstanding": 713157713.0,
-    "market_cap": 10469155444.478462,
-    "pe_ratio_ttm": 3.971606769529007,
+    "market_cap": 10490549985.434807,
+    "pe_ratio_ttm": 3.9797230597248894,
     "goodwill": 342000000.0
   },
   "fair_price": {
@@ -47,13 +47,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 73.67507934877476,
+        "value": 73.01219585776491,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 13.493491081580414,
+        "value": 13.416287784866881,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -77,16 +77,15 @@
         "tier_used": null
       }
     },
-    "median": 11.382615776068004,
-    "max": 13.493491081580414,
+    "median": 11.344014127711239,
+    "max": 73.01219585776491,
     "low": 6.895340345834429,
-    "high": 73.67507934877476,
-    "mos_pct": -28.968600838135483,
+    "high": 73.01219585776491,
+    "mos_pct": -29.67191218682706,
     "valuation_warnings": [
-      "goodwill_heavy",
-      "extreme_multiples_pe_estimate"
+      "goodwill_heavy"
     ],
-    "valuation_methods_applicable": 3
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -107,7 +106,6 @@
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
-    "extreme_multiples_pe_estimate",
     "restatement_history"
   ],
   "has_history": true,
@@ -123,22 +121,22 @@
     "label": "Utilities median (n=31)",
     "values": {
       "Quality": 51.61,
-      "Value": 47.85,
+      "Value": 46.77,
       "Growth": 54.03,
-      "Momentum": 61.01,
-      "Health": 17.97,
+      "Momentum": 60.41,
+      "Health": 17.93,
       "Profitability": 52.15,
-      "Technical": 46.31,
-      "Risk": 69.36
+      "Technical": 48.26,
+      "Risk": 69.82
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.15063629569373063,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 49.34408113899708,
-  "price_change_1d_pct": -0.1361,
+  "loss_chance_pct": 48.54292935406702,
+  "price_change_1d_pct": 0.2044,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 55.09,
+  "composite_score_adjusted": 55.18,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -186,10 +184,10 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 53.72,
+  "osap_blended_score": 53.77,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 3,
+  "valuation_methods_applicable": 4,
   "form4_diagnostics": null,
-  "cross_source_delta": 6.003143859619586e-08
+  "cross_source_delta": 7.029515209856423e-08
 }
