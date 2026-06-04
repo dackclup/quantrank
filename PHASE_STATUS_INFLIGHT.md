@@ -1060,3 +1060,32 @@ opening BELOW the header with the ✕ still visible, and the empty drawer (no br
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Disclaimer banner → footer (in flight, 2026-06-04)
+
+**Branch**: `claude/confident-ramanujan-NgV5y` (PR #413, follow-up commit)
+**Type**: refactor(frontend) — layout-only, no schema / compute / data change. User:
+"เอาแถบนี้ออก" (the top disclaimer banner). User choice: MOVE to footer (keep legal
+coverage), not delete entirely.
+
+The `<Disclaimer />` top banner (slate-50 strip + amber alert icon + a "more/less"
+toggle, between the market-stats strip and the page content) was removed. Its FULL text
+— including the previously-behind-"more" detail ("Scores and 'fair prices' are model
+outputs … do not use for real-money trading decisions") — was moved into the `AppShell`
+`<footer>` as plain muted text, so the regulated-style badges (Strong Buy / Sell) + Loss
+Chance % keep their legal-safety coverage per frontend-design-system Rule 9. The
+`Disclaimer.tsx` component is now orphaned → deleted. `LossChanceBadge` /
+`RecommendationBadge` still call it the "global Disclaimer banner" in comments — accurate
+as the legal-coverage relationship, but the "banner"/"top" wording (incl. Rule 9 in the
+frontend-design-system skill) is a NOTED follow-up to reword to "footer disclaimer" so a
+contributor doesn't re-add a top banner.
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (512 pages); Playwright
+screenshots confirm the top banner is gone (the market-stats strip now sits directly
+above the page heading) and the full disclaimer renders in the footer.
+
+**Files**: `frontend/components/AppShell.tsx` (drop banner + import; footer gains the
+disclaimer text) · `frontend/components/Disclaimer.tsx` (deleted) ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---

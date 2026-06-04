@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 
 import { Sidebar } from './Sidebar';
-import { Disclaimer } from './Disclaimer';
 import { ThemeToggle } from './ThemeToggle';
 import { TopNav } from './TopNav';
 
@@ -96,15 +95,21 @@ export function AppShell({ children, topBar }: { children: React.ReactNode; topB
       {/* Universe-snapshot ticker strip (server-rendered) — full-width, below the
           sticky header, scrolls away. */}
       {topBar}
-      <Disclaimer />
       <main className="flex-1 px-4 pb-8 pt-4 md:px-8 md:pb-10 md:pt-6">
         {/* Content cap is a FIXED px (not max-w-6xl): with the fluid root
             font-size a rem max-width expands too far on ultrawide. */}
         <div className="mx-auto max-w-[1152px]">{children}</div>
       </main>
       <footer className="border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
-        <div className="mx-auto max-w-[1152px] px-4 py-6 text-xs text-slate-500 dark:text-slate-400 md:px-8">
-          QuantRank · MIT licensed · Data refreshed every US trading day via GitHub Actions.
+        <div className="mx-auto max-w-[1152px] space-y-2 px-4 py-6 text-xs text-slate-500 dark:text-slate-400 md:px-8">
+          {/* Legal-safety disclaimer (design-system Rule 9) — moved here from the
+              top banner per user request; full text kept so the regulated-style
+              badges (Strong Buy/Sell) + Loss Chance % stay covered. */}
+          <p>
+            <span className="font-medium text-slate-600 dark:text-slate-300">Educational use only.</span>{' '}
+            Not investment advice. Past performance does not predict future results. Scores and &ldquo;fair prices&rdquo; are model outputs from public data — they can be wrong, stale, or misleading; do not use for real-money trading decisions.
+          </p>
+          <p>QuantRank · MIT licensed · Data refreshed every US trading day via GitHub Actions.</p>
         </div>
       </footer>
       {/* Overlay drawer (fixed) — rendered last so it stacks above the content. */}
