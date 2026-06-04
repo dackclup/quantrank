@@ -1204,3 +1204,38 @@ light + dark) confirm the strip is gone and the nav sits directly above the cont
 `CLAUDE.md` · `docs/GOTCHAS.md` · `AGENTS.md` · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Remove the overlay Sidebar drawer — TopNav is the sole nav now (in flight, 2026-06-04)
+
+**Branch**: `claude/confident-ramanujan-NgV5y` (PR #414, follow-up commit)
+**Type**: feat(frontend) — UI removal only, no schema / compute / data change. User:
+"เอาแถบด้านข้างออก" (remove the sidebar).
+
+Removed the overlay Sidebar drawer (Browse: Rankings + Sectors · Insights: Top Movers ·
+footer: theme toggle + build-version chip) and its ☰/✕ header toggle. Deleted
+`frontend/components/Sidebar.tsx`; stripped ALL drawer machinery from
+`frontend/components/AppShell.tsx` (the `open` state, `toggleRef` / `wasOpenRef`, the
+body-scroll-lock / Esc-close / focus-restore effects, the ☰ button, the `<Sidebar/>`
+render) — AppShell is now a plain **Server Component** (no `'use client'`, no hooks). The
+TopNav tab bar (Home · Ranking · News · Analysis · Portfolio) is the SOLE navigation surface.
+
+**Build-version chip relocated, NOT dropped**: the build-time `NEXT_PUBLIC_APP_VERSION`
+chip moved from the Sidebar footer into the page footer (`AppShell`), so build provenance
+stays visible. The `next.config.js` git-describe→SHA wiring is unchanged; the
+gotcha was updated in lockstep (`CLAUDE.md` §Gotchas index + `docs/GOTCHAS.md` detail:
+consumer Sidebar.tsx → AppShell footer). Stale TopNav header comment ("alongside the
+left-rail Sidebar, keep both") corrected.
+
+**Orphaned routes — OPEN QUESTION for the user**: `/sectors` + `/movers` were reachable
+ONLY from the Sidebar; with it gone they build fine but have no nav entry. NOT resolved in
+this commit — pending the user's call (add to TopNav / delete the pages / leave URL-only).
+
+**Verification**: no residual `Sidebar` / `sidebar-drawer` / `topBar` import refs (grep
+clean); `tsc --noEmit` clean; `next build` GREEN (512 pages); Playwright shots confirm the
+header has no ☰ button (starts at the brand) and the version chip renders in the footer.
+
+**Files**: `frontend/components/AppShell.tsx` · `frontend/components/Sidebar.tsx` (deleted) ·
+`frontend/components/TopNav.tsx` (comment) · `CLAUDE.md` · `docs/GOTCHAS.md` ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---

@@ -1,79 +1,24 @@
-'use client';
-
-import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 
-import { Sidebar } from './Sidebar';
 import { ThemeToggle } from './ThemeToggle';
 import { TopNav } from './TopNav';
 
-// App shell — a FULL-WIDTH top chrome (controls row + tab nav) over a full-width
-// content column. The Sidebar is an overlay DRAWER
-// (closed by default, every breakpoint) opened by the ☰ button in the header,
-// which flips to ✕ while open (the Seeking-Alpha model — user choice 2026-06-04).
-// The drawer sits BELOW the sticky header, so the toggle stays visible/usable.
+// App shell — a FULL-WIDTH top chrome (brand + theme-toggle row, then the tab
+// nav) over a full-width content column, plus the footer disclaimer. The former
+// overlay Sidebar drawer (and its ☰ toggle + focus-trap state) was removed
+// 2026-06-04 at user request ("เอาแถบด้านข้างออก"); the TopNav tab bar is now the
+// SOLE navigation surface, so this shell has no client state and is a plain
+// Server Component. The build-version chip that lived in the drawer footer moved
+// into the page footer below (still the build-time NEXT_PUBLIC_APP_VERSION).
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const [open, setOpen] = useState(false);
-  const toggleRef = useRef<HTMLButtonElement>(null);
-  const wasOpenRef = useRef(false);
-
-  // Lock body scroll while the drawer overlays the page.
-  useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : '';
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [open]);
-
-  // Esc closes the drawer.
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [open]);
-
-  // Restore focus to the toggle when the drawer closes (WCAG 2.4.3); the guard
-  // skips the initial render so focus isn't stolen on mount.
-  useEffect(() => {
-    if (!open && wasOpenRef.current) toggleRef.current?.focus();
-    wasOpenRef.current = open;
-  }, [open]);
-
   return (
     <div className="flex min-h-screen flex-col">
-      {/* Full-width top chrome — the controls + tab nav span edge-to-edge; the
-          sidebar overlays BELOW this, never the top bar. */}
+      {/* Full-width top chrome — brand + theme toggle, then the tab nav; spans
+          edge-to-edge. */}
       <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-950/95">
         <div className="flex h-14 items-center gap-2 px-4 md:px-6">
-          {/* Sidebar toggle — ☰ when closed, ✕ when open. Sits BEFORE the brand
-              and shows on every breakpoint (the sidebar is a drawer at all sizes). */}
-          <button
-            ref={toggleRef}
-            type="button"
-            aria-label={open ? 'Close navigation' : 'Open navigation'}
-            aria-expanded={open}
-            aria-controls="sidebar-drawer"
-            onClick={() => setOpen((v) => !v)}
-            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-sm text-slate-600 press hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
-          >
-            {open ? (
-              <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            ) : (
-              <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="12" x2="21" y2="12" />
-                <line x1="3" y1="18" x2="21" y2="18" />
-              </svg>
-            )}
-          </button>
-          {/* Brand — Q logo + wordmark, ALWAYS visible (every breakpoint). */}
+          {/* Brand — Q logo + wordmark. */}
           <Link
             href="/"
             aria-label="QuantRank home"
@@ -106,11 +51,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <span className="font-medium text-slate-600 dark:text-slate-300">Educational use only.</span>{' '}
             Not investment advice. Past performance does not predict future results. Scores and &ldquo;fair prices&rdquo; are model outputs from public data — they can be wrong, stale, or misleading; do not use for real-money trading decisions.
           </p>
-          <p>QuantRank · MIT licensed · Data refreshed every US trading day via GitHub Actions.</p>
+          {/* Build-version chip (relocated from the removed Sidebar footer) — the
+              build-time NEXT_PUBLIC_APP_VERSION, never a hardcoded version. */}
+          <p>
+            QuantRank{' '}
+            <span className="font-mono">{process.env.NEXT_PUBLIC_APP_VERSION || 'dev'}</span> · MIT
+            licensed · Data refreshed every US trading day via GitHub Actions.
+          </p>
         </div>
       </footer>
-      {/* Overlay drawer (fixed) — rendered last so it stacks above the content. */}
-      <Sidebar open={open} onClose={() => setOpen(false)} />
     </div>
   );
 }
