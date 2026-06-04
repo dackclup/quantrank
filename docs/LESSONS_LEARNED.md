@@ -21,6 +21,11 @@
   `git log origin/main..HEAD` ว่าว่าง.
 - **lint / test ทั้ง repo ก่อน push** ไม่ใช่เฉพาะไฟล์ที่แก้.
 - **responsive ต้องเทสต์ viewport × สถานะ sidebar (กาง/หุบ)** ไม่ใช่ viewport อย่างเดียว.
+- **สี: ห้ามตั้ง fg = สี token ของพื้นที่มันวางอยู่** (เช่น knob ขาวบนพื้นขาว → กลืนหาย).
+  เช็ก contrast กับพื้น *จริง* ทั้ง **light + dark** และ **ทุก state** (selected /
+  disabled / interior) — รวม **non-text 1.4.11** (ring / border / thumb ≥ 3:1) ไม่ใช่
+  แค่ text. งาน "polish ทั้งหน้า" = browser audit ทั้ง surface × 2 ธีม × ทุก state
+  **ก่อน** push (per-commit review จับ camouflage ไม่เจอ).
 - **อย่า `curl … | bash`** จากโดเมนที่ไม่รู้จัก (RCE).
 - **เนื้อหา license ไม่ชัด → เขียนใหม่เป็น original**, อย่า commit ของ verbatim.
 
@@ -66,6 +71,8 @@ mobile → "overlap = none in all 8 cases". Numbers, not vibes.
 | Use the **Read tool** before `Edit` (especially after `git reset`) | Bash `head` / `tail` / `grep` does NOT satisfy the harness's read-before-edit guard. |
 | Ship undeclared-license / commercial-derived material as **original prose, inspire-only**, with attribution | precedent: `good-code-bad-code`, `9arm` fallback; tracked in THIRD_PARTY_NOTICES.md. |
 | Delegate to sub-agents by default; **inline only** for cross-agent synthesis, trivial lookups, building agent/hook infra, or when no agent matches | CLAUDE.md §Auto-routing policy. |
+| For a "polish page X" task, run a **comprehensive browser contrast audit (both themes × every state: selected/disabled/interior/edge), computing real ratios for close calls, BEFORE push** | Per-commit/static review missed all 5 dark-mode camouflage bugs in #408/#409; the comprehensive whole-surface pass + the user caught them. One pass beats N round-trips. |
+| Verify pseudo-element styles (`::thumb`, `::placeholder`) via **screenshot + known token values**, not `getComputedStyle` | Headless `getComputedStyle` returns defaults/`none`/transparent for pseudo-elements. |
 
 ## DON'T
 
@@ -78,8 +85,69 @@ mobile → "overlap = none in all 8 cases". Numbers, not vibes.
 | Commit verbatim text from a paid course / undeclared-license source to a public repo | IP risk — rewrite as original prose. |
 | `@settings(deadline=None)` in Hypothesis tests | A slow example is itself a signal. CLAUDE.md §Gotchas. |
 | Assume a responsive fix works because the CSS "looks right" | Measure it (Playwright bounding boxes). |
+| Set an element's color = the **same token as the surface it sits on** (a `bg-white` knob on a white panel; a `dark:bg-slate-900` thumb on the slate-900 panel) | It camouflages — visible only via its border. Use the CONTRASTING value (dark-on-light / light-on-dark). |
+| Review contrast only in **light mode / the default state / from static code** | Camouflage hides in dark + selected/disabled/interior. WCAG **1.4.11** (non-text: rings/borders/thumbs ≥ 3:1) is the repeatedly-missed standard, not just 1.4.3 text. |
 
 ## Mistakes log
+
+### 2026-06-04 — filter-page color/UX polish (`$impeccable`, #408 + #409)
+
+A multi-round `$impeccable polish` of the filter page surfaced ONE recurring
+bug class — **a foreground element whose color ≈ its background, so it
+camouflaged** — *five* times, every one in **dark mode** and/or a
+**non-default state**, all missed by static + per-commit review, three of
+them found by the **user** one at a time. This is a code/domain (design-system)
+lesson as much as a process one; the actionable rule is mirrored in
+`.claude/skills/frontend-design-system/SKILL.md` §"Anti-patterns checklist".
+
+1. **Never set an element's color to the SAME token as the surface it sits
+   on.** The composite-score slider thumbs were `bg-white dark:bg-slate-900`
+   — the *exact* color of the panel they sit on (`bg-white dark:bg-slate-900`)
+   — so the handles were invisible (only the 2px border hinted at them).
+   *Fix:* the knob FILL must CONTRAST the panel (dark knob on a light surface /
+   light knob on a dark surface), with the border as the INVERSE so it still
+   separates from the same-colored active-fill bar.
+2. **Check WCAG 1.4.11 (non-text contrast, ≥ 3:1) on borders / rings / thumbs /
+   icons — not just 1.4.3 (text, ≥ 4.5:1).** Almost every miss was *non-text*:
+   the dark unselected-chip ring `slate-700`-on-`slate-800` = **1.41:1**
+   (invisible boundary); the dark disabled "Clear all" `slate-600`-on-`slate-900`
+   = **2.36:1**. *Fix:* `slate-500` is the floor for a neutral ring/text on a
+   `slate-800/900` dark surface (≈ 3.0–3.8:1).
+3. **Dark mode is where camouflage hides.** All five read OK (or less-bad) in
+   light and failed in dark — the dark surface sits close in luminance to the
+   muted slate tokens. *Always do a dark-mode pass.*
+4. **Test the NON-DEFAULT states.** The bugs lived in SELECTED (not unselected),
+   DISABLED (not enabled), INTERIOR slider positions (not the 0/100 default), and
+   the SLATE-TONED options (Near fair / Hold) — never the default. A selected
+   toggle was indistinguishable from unselected in dark because the pale tint ≈
+   the unselected slate AND the slate-toned tones ARE slate. *Fix:* drive every
+   state (selected / disabled / interior / edge) × theme in a real browser.
+5. **A "selected / active" signal must be EXCLUSIVE to that state.** The chip dot
+   rendered on BOTH selected and unselected, so it carried zero state info; the
+   differentiator (a 2px ring + `font-semibold`) had to be added as a
+   selected-only signal — and `aria-pressed` to carry it to screen readers.
+6. **Raising an adjacent element's contrast can erode a pair's gap.** Making the
+   unselected ring visible (1.41 → 3.07:1) narrowed its distance from the
+   *selected* 2px ring of the same color — had to re-verify the slate-toned
+   selected still reads (bold + 2px carries it). When you bump one element,
+   re-check the pairs that relied on the old gap.
+7. **Process: per-commit / static review missed all five; only a COMPREHENSIVE
+   whole-surface browser pass (both themes × every state) caught the rest — and
+   the user caught 3 first.** *Fix:* for a "polish page X" task, run the holistic
+   multi-theme / multi-state browser contrast audit UP FRONT (computing actual
+   ratios for close calls), not per-commit. It would have surfaced all five at
+   once instead of across five round-trips.
+8. **`getComputedStyle` can't read pseudo-element styles** (`::-webkit-slider-thumb`,
+   `::placeholder`, `:focus-visible::thumb`) in headless — it returns
+   defaults / `none` / transparent. *Fix:* verify those via screenshot + the
+   known token values, not the pseudo's computed style.
+9. **Tracked debt:** the same `dark:ring-slate-700`-on-`slate-800` = 1.41:1 ring
+   is the *app-wide* neutral-chip default (`NEUTRAL_CHIP_RG` /
+   `ACTIVE_FILTER_CHIP_TONE` → sector chips + active-filter chips everywhere).
+   Only the scoped `UNSELECTED_CHIP` (filter toggles) was fixed; the app-wide bump
+   is DEFERRED (ScoreBadge / table / detail blast radius — the #401-class trap,
+   its own pass). Also deferred: the 4 chip-group heading `<label>`s are
+   semantically inert (need `<span>` + `role=group`).
 
 ### 2026-05-29 — hero-overlap fix (PR #317) · skill install (#316) · responsive (#315)
 

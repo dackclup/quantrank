@@ -360,6 +360,20 @@ However:
    Sell uses `red-600` not `red-800`. Saturation eye-fatigues users
    scanning a long ranking list
 
+❌ **Setting an element's color = the same token as the surface it sits on**
+   (a `bg-white` knob on a white panel; a `dark:bg-slate-900` thumb on the
+   slate-900 panel) — it CAMOUFLAGES, visible only via its border. Use the
+   CONTRASTING value (dark-on-light / light-on-dark), with the border as the
+   inverse to separate it from any same-colored fill. (#408/#409 hit this 5×.)
+
+❌ **Checking contrast only in light mode / the default state / from static
+   code** — camouflage hides in **dark mode** + non-default states (selected /
+   disabled / interior-slider / the slate-toned options). Verify **WCAG 1.4.11**
+   (non-text: rings / borders / thumbs / icons ≥ 3:1 — `slate-500` is the floor
+   on a `slate-800/900` dark surface) in BOTH themes, not just 1.4.3 text. A
+   "selected/active" cue must be EXCLUSIVE to that state (a dot shown on both
+   states signals nothing). Full retro: `docs/LESSONS_LEARNED.md` (2026-06-04).
+
 ## Reference component checklist (for new UI work)
 
 Before opening a UI PR, walk this checklist:
