@@ -16,7 +16,7 @@ import { ThemeProvider } from '@/components/ThemeProvider';
 export const metadata: Metadata = {
   title: 'QuantRank',
   description:
-    'Static-site US equity ranking — fundamental, technical, factor, sentiment, and ML signals combined into a 0–100 composite StockRank.',
+    'Static-site equity ranking — fundamental, technical, factor, sentiment, and ML signals combined into a 0–100 composite StockRank.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

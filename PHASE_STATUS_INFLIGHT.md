@@ -1089,3 +1089,35 @@ disclaimer text) · `frontend/components/Disclaimer.tsx` (deleted) ·
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## De-brand the home/ranking copy off "S&P 500" (universe-agnostic) (in flight, 2026-06-04)
+
+**Branch**: `claude/confident-ramanujan-NgV5y` (NEW PR after #413 merged; rebased onto main)
+**Type**: refactor(frontend) — COPY-only, no schema / compute / data change. User: the scope
+is expanding to ~5 countries, so the home page should not be branded "S&P 500".
+
+Generalized the prominent user-facing copy so it doesn't hard-code the current single
+universe, ahead of the multi-country data expansion (a separate Phase-5+ effort — NOT in
+this PR). The CURRENT coverage stays honest via the DATA-DRIVEN provenance line
+(`metadata.universe` still renders "SP500" on /ranking) — only the hard-coded brand strings
+changed:
+- Home (`app/page.tsx`): h1 "S&P 500, ranked." → "Equities, ranked."; title/description drop
+  "US-equity" / "S&P 500" / the hard-coded "502".
+- Ranking (`app/ranking/page.tsx`): h1 "S&P 500 ranking" → "Equity ranking"; description generalized.
+- Sectors (`app/sectors/page.tsx`): "The S&P 500 universe…" → "The ranked universe…".
+- `AppShell` header tagline "US equity stock ranking" → "Equity rankings".
+- `layout.tsx` root metadata "Static-site US equity ranking…" → "…equity ranking…".
+- `PillarRadarChart` "percentile rank against current S&P 500" → "…against the current universe".
+
+Code COMMENTS that mention S&P 500 (types.ts / visual.ts / MoSCell) left as-is (accurate to
+the current data). The actual 5-country ingest (new per-country universes, currency, non-US
+filing sources) is a major separate effort to be scoped (financial-engineer).
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (512 pages); Playwright screenshots
+confirm the home shows "Equities, ranked." with no S&P 500, and /ranking's data-driven
+provenance still shows the current universe.
+
+**Files**: `frontend/app/{page,ranking/page,sectors/page,layout}.tsx` ·
+`frontend/components/{AppShell,PillarRadarChart}.tsx` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---

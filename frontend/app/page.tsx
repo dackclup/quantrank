@@ -6,9 +6,9 @@ import { getMetadata, getRankings } from '@/lib/data';
 import { sectorStyle } from '@/lib/visual';
 
 export const metadata: Metadata = {
-  title: 'QuantRank — S&P 500 ranking',
+  title: 'QuantRank — equity rankings',
   description:
-    'A static-site US-equity ranking — 502 S&P 500 names scored by an 8-pillar composite with an academic defense layer. Overview dashboard.',
+    'A static-site equity ranking — companies scored by an 8-pillar composite with an academic defense layer. Overview dashboard.',
 };
 
 function signedPct(v: number): string {
@@ -63,7 +63,7 @@ export default function HomePage() {
       {/* Hero */}
       <header className="max-w-3xl space-y-3">
         <h1 className="text-balance font-slab text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-4xl">
-          S&amp;P 500, ranked.
+          Equities, ranked.
         </h1>
         <p className="max-w-2xl text-pretty text-base text-slate-600 dark:text-slate-300">
           All{' '}

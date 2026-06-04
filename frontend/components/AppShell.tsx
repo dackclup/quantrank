@@ -83,7 +83,7 @@ export function AppShell({ children, topBar }: { children: React.ReactNode; topB
             <span className="font-slab text-base font-semibold tracking-tight">QuantRank</span>
           </Link>
           <div className="ml-auto flex items-center gap-2">
-            <span className="hidden text-xs text-slate-500 dark:text-slate-400 sm:inline">US equity stock ranking</span>
+            <span className="hidden text-xs text-slate-500 dark:text-slate-400 sm:inline">Equity rankings</span>
             <ThemeToggle layout="icon" />
           </div>
         </div>

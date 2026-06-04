@@ -6,7 +6,7 @@ import { getMetadata, getRankings } from '@/lib/data';
 export const metadata: Metadata = {
   title: 'Ranking · QuantRank',
   description:
-    'The full S&P 500 ranking — 502 names scored by an 8-pillar composite, searchable and sortable.',
+    'The full equity ranking — every name scored by an 8-pillar composite, searchable and sortable.',
 };
 
 export default function RankingPage() {
@@ -17,7 +17,7 @@ export default function RankingPage() {
     <section className="space-y-6">
       <header className="max-w-3xl space-y-3">
         <h1 className="text-balance font-slab text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-4xl">
-          S&amp;P 500 ranking
+          Equity ranking
         </h1>
         <p className="max-w-2xl text-pretty text-base text-slate-600 dark:text-slate-300">
           All{' '}

@@ -7,7 +7,7 @@ import { sectorStyle } from '@/lib/visual';
 export const metadata: Metadata = {
   title: 'Sectors · QuantRank',
   description:
-    'The S&P 500 universe broken down by GICS sector — name count, average composite score, and the top-ranked name in each sector.',
+    'The ranked universe broken down by GICS sector — name count, average composite score, and the top-ranked name in each sector.',
 };
 
 type SectorAgg = {
