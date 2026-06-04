@@ -431,6 +431,7 @@ always-loaded context small while preserving discoverability of every invariant.
 - **Sidebar version chip = build-time `NEXT_PUBLIC_APP_VERSION` (`next.config.js` git-describe→SHA), never a hardcoded version**
 - **Cross-stock `/compare` reads `?compare=` via `window.location` (mount effect), NEVER `useSearchParams` (static-export `<Suspense>` trap); ranking-table multi-select is in-memory (URL is the share artifact) · `pillarColor`→`lib/visual`, `flagLabel`→`lib/flag-labels` are SHARED tokens (don't re-inline) · best-in-row is metric-aware + never color-only**
 - **`globals.css` soft-color `!important` override is LITERAL-class-keyed → it NEVER reaches `dark:bg-emerald-*` / `dark:bg-rose-*` solid-fills (they render RAW Tailwind in dark → white label ~3.8:1, under AA). A dark CTA / brand mark = `dark:bg-emerald-700` (emerald-700 = `#047857`, white 5.5:1) or a `--c-*` token directly, never `dark:bg-emerald-600` expecting the soft remap (filter theme audit #401; Q-mark sweep this PR)**
+- **The top `MarketStatsBar` strip is a BUILD-TIME snapshot, NOT a live ticker — every value derives from the already-imported `rankings.json`/`metadata.json` (`lib/market-stats.ts`); QuantRank is a weekly static export so it is "as of" the last cron (the "Updated" item is the anchor). It is a SERVER component passed into the client `AppShell` via the `topBar` slot — never `import` `lib/data.ts` into a client component. `/sectors` + `/movers` derive from `rankings.json` the same way**
 
 ## Phase status
 

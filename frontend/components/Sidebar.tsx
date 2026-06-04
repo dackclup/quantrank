@@ -14,7 +14,12 @@ import { ThemeToggle } from './ThemeToggle';
 // `/stock/<ticker>/` for detail pages — both highlight "Rankings"
 // since the detail pages are descendants of the rankings view.
 
-const NAV_ITEMS: Array<{ label: string; href: string; isActive: (p: string) => boolean; icon: JSX.Element }> = [
+type NavItem = { label: string; href: string; isActive: (p: string) => boolean; icon: JSX.Element };
+
+// Primary destinations. `/` + `/stock/*` both highlight Rankings (detail pages
+// are descendants of the ranking view); the other entries match on their own
+// path prefix.
+const BROWSE_ITEMS: NavItem[] = [
   {
     label: 'Rankings',
     href: '/',
@@ -25,6 +30,44 @@ const NAV_ITEMS: Array<{ label: string; href: string; isActive: (p: string) => b
         <line x1="9" y1="3" x2="9" y2="21" />
         <line x1="15" y1="8" x2="15" y2="21" />
         <line x1="21" y1="14" x2="21" y2="21" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Sectors',
+    href: '/sectors',
+    isActive: (p) => p.startsWith('/sectors'),
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <rect x="3" y="3" width="7" height="7" rx="1" />
+        <rect x="14" y="3" width="7" height="7" rx="1" />
+        <rect x="14" y="14" width="7" height="7" rx="1" />
+        <rect x="3" y="14" width="7" height="7" rx="1" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Compare',
+    href: '/compare',
+    isActive: (p) => p.startsWith('/compare'),
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <rect x="3" y="4" width="7" height="16" rx="1" />
+        <rect x="14" y="4" width="7" height="16" rx="1" />
+      </svg>
+    ),
+  },
+];
+
+const INSIGHTS_ITEMS: NavItem[] = [
+  {
+    label: 'Top Movers',
+    href: '/movers',
+    isActive: (p) => p.startsWith('/movers'),
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <polyline points="3 17 9 11 13 15 21 7" />
+        <polyline points="15 7 21 7 21 13" />
       </svg>
     ),
   },
@@ -181,8 +224,22 @@ export function Sidebar({ collapsed, animate, onToggleCollapse, mobileOpen, onMo
 
         {/* Nav sections */}
         <nav className="flex-1 overflow-y-auto px-2 py-4">
-          <SidebarSection label="Navigation" collapsed={collapsed}>
-            {NAV_ITEMS.map((item) => (
+          <SidebarSection label="Browse" collapsed={collapsed}>
+            {BROWSE_ITEMS.map((item) => (
+              <SidebarLink
+                key={item.label}
+                href={item.href}
+                label={item.label}
+                icon={item.icon}
+                active={item.isActive(pathname)}
+                collapsed={collapsed}
+                onClick={onMobileClose}
+              />
+            ))}
+          </SidebarSection>
+
+          <SidebarSection label="Insights" collapsed={collapsed}>
+            {INSIGHTS_ITEMS.map((item) => (
               <SidebarLink
                 key={item.label}
                 href={item.href}

@@ -838,3 +838,58 @@ selection signal is the bg-fill + text, so the ring bump doesn't blur selected-v
 `frontend/components/FilterControls.tsx` (ring bump + 5 group `role=group`) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Seeking-Alpha-style top market-stats bar + richer side nav (in flight, 2026-06-04)
+
+**Branch**: `claude/confident-ramanujan-NgV5y`
+**Type**: feat(frontend) — FRONTEND-ONLY, no schema / compute / data change; no
+schema bump. User reference: the Seeking Alpha mobile site (a top market-ticker
+strip + a multi-section slide-out side nav). User-chosen scope (3 AskUserQuestion
+answers): top bar = **QuantRank's own stats** (not a market-index/commodity feed —
+QuantRank is a weekly static export and cannot show a live futures ticker); side
+nav = **add menu sections + new pages**; approach = **prototype UI first**.
+
+**What** (prototype; derives REAL stats from the already-build-imported
+`rankings.json`/`metadata.json` — no mock numbers, no new ingestion / data source /
+schema field):
+- **Top bar** `MarketStatsBar` — a thin, horizontally-scrolling "ticker" strip
+  under the app header (Seeking-Alpha shape), filled with the universe snapshot:
+  universe size · avg composite · median MoS (tone) · #flagged · today's top
+  gainer + top loser (real `price_change_1d_pct`, emerald/rose + directional
+  caret, links to `/stock/<T>`) · last-compute date. NOT live — the "Updated"
+  item is the honesty anchor.
+- **Side nav** — `Sidebar` gains `Browse` (Rankings / Sectors / Compare) +
+  `Insights` (Top Movers) sections (was the single "Navigation" + Rankings);
+  Resources unchanged. New inline-SVG icons; reuses the existing
+  `SidebarSection`/`SidebarLink` (so the `data-rail` collapsed-rail + mobile-drawer
+  invariants are untouched).
+- **New routes** `/sectors` (GICS-sector cards: count / avg score / top name, sorted
+  by avg score) + `/movers` (top-10 gainers / losers by day change) — both derive
+  from `rankings.json` at build (no per-stock fetch).
+
+**Architecture**: `MarketStatsBar` is a SERVER component, rendered in `layout.tsx`
+and handed to the `'use client'` `AppShell` as a new `topBar?: React.ReactNode`
+slot — NOT imported by AppShell — so `lib/data.ts` (fs + JSON imports) never enters
+the client bundle. New derivation lives in `frontend/lib/market-stats.ts`
+(`getMarketStats()`).
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (509 static pages:
+502 stocks + home + compare + `/sectors` + `/movers` + not-found; `/sectors` +
+`/movers` = `○ Static`); Playwright screenshots (mobile home + open drawer,
+desktop home, `/sectors`, `/movers`; light) confirm the strip + new sections +
+pages render with real data and cross-check (ticker "TOP GAINER TPL +9.7%" ==
+`/movers` row 1). `frontend-design-reviewer` review in flight.
+
+**Follow-ups**: wire the two reserved-feeling stats (week-over-week deltas on the
+aggregate numbers) once a prior-run snapshot loader exists; a genuinely live /
+intra-week market feed would be a separate observability-before-wiring PR (new
+data source), not a tweak to this bar.
+
+**Files**: `frontend/lib/market-stats.ts` (new) · `frontend/components/MarketStatsBar.tsx`
+(new) · `frontend/app/sectors/page.tsx` (new) · `frontend/app/movers/page.tsx` (new) ·
+`frontend/components/AppShell.tsx` (`topBar` slot) · `frontend/app/layout.tsx`
+(pass `<MarketStatsBar/>`) · `frontend/components/Sidebar.tsx` (Browse + Insights) ·
+`CLAUDE.md` (§Gotchas index) · `docs/GOTCHAS.md` (detail) · `AGENTS.md` (§Gotchas mirror) ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---
