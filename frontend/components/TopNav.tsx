@@ -4,10 +4,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 // TopNav — the Seeking-Alpha-style primary horizontal tab bar (Home · Ranking ·
-// Analysis · Portfolio) that sits in the sticky app header, ALONGSIDE the
-// left-rail Sidebar (user chose "keep both"). Active tab gets an emerald
-// underline; the row scrolls horizontally on a narrow viewport. Client
-// component — `usePathname` drives the active state.
+// News · Analysis · Portfolio) in the sticky app header. It is the app's SOLE
+// navigation surface since the left-rail Sidebar drawer was removed 2026-06-04.
+// Active tab gets an emerald underline; the row scrolls horizontally on a narrow
+// viewport. Client component — `usePathname` drives the active state.
 
 type Tab = { label: string; href: string; isActive: (p: string) => boolean };
 

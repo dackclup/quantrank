@@ -1089,3 +1089,189 @@ disclaimer text) · `frontend/components/Disclaimer.tsx` (deleted) ·
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## De-brand the home/ranking copy off "S&P 500" (universe-agnostic) (in flight, 2026-06-04)
+
+**Branch**: `claude/confident-ramanujan-NgV5y` (NEW PR after #413 merged; rebased onto main)
+**Type**: refactor(frontend) — COPY-only, no schema / compute / data change. User: the scope
+is expanding to ~5 countries, so the home page should not be branded "S&P 500".
+
+Generalized the prominent user-facing copy so it doesn't hard-code the current single
+universe, ahead of the multi-country data expansion (a separate Phase-5+ effort — NOT in
+this PR). The CURRENT coverage stays honest via the DATA-DRIVEN provenance line
+(`metadata.universe` still renders "SP500" on /ranking) — only the hard-coded brand strings
+changed:
+- Home (`app/page.tsx`): h1 "S&P 500, ranked." → "Equities, ranked."; title/description drop
+  "US-equity" / "S&P 500" / the hard-coded "502".
+- Ranking (`app/ranking/page.tsx`): KEPT "S&P 500 ranking" + the original description (user
+  follow-up) — the /ranking page names the ACTUAL current universe; only the Home/brand
+  surfaces are universe-agnostic.
+- Sectors (`app/sectors/page.tsx`): "The S&P 500 universe…" → "The ranked universe…".
+- `AppShell` header tagline "US equity stock ranking" → "Equity rankings".
+- `layout.tsx` root metadata "Static-site US equity ranking…" → "…equity ranking…".
+- `PillarRadarChart` "percentile rank against current S&P 500" → "…against the current universe".
+
+Code COMMENTS that mention S&P 500 (types.ts / visual.ts / MoSCell) left as-is (accurate to
+the current data). The actual 5-country ingest (new per-country universes, currency, non-US
+filing sources) is a major separate effort to be scoped (financial-engineer).
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (512 pages); Playwright screenshots
+confirm the home shows "Equities, ranked." with no S&P 500, and /ranking's data-driven
+provenance still shows the current universe.
+
+**Files**: `frontend/app/{page,ranking/page,sectors/page,layout}.tsx` ·
+`frontend/components/{AppShell,PillarRadarChart}.tsx` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
+
+## Country/market selector scaffold above the /ranking heading (in flight, 2026-06-04)
+
+**Branch**: `claude/confident-ramanujan-NgV5y` (PR #414, follow-up commit)
+**Type**: feat(frontend) — UI-scaffold only, no schema / compute / data change. User:
+"ด้านบนคำว่า s&p500 จะมีปุ่มเรียงกันอยู่ … US / TH / CH / JP / [my pick]".
+
+New `CountryTabs` row above the `/ranking` `<h1>`: a market selector for the planned
+multi-country expansion. **US is the ACTIVE market** (it's the current data = the
+S&P 500, emerald outlined-light pill labelled "US stocks"); **TH · CN · JP · UK are
+disabled "Soon" placeholders** (no data yet). Flags via `country-flag-icons` per-country
+STATIC imports (the project pattern). Decisions noted for the user: **"CH" read as China
+(`CN`)** given the Asian context (CH = Switzerland officially); **the 5th market is UK
+(`GB`)** — a placeholder pick, swap freely. Pure scaffold — the actual per-country ingest
+(universes + filing sources + currency) is the separate Phase-5+ effort; the disabled pills
+will become real market links when that data lands.
+
+**Follow-up 1 — restyle to TopNav idiom** (user: "ทำหน้าตาแบบเดียวกับแถบ home ด้านบน"):
+`CountryTabs` moved from outlined-light pills to the TopNav underline-tab idiom
+(`border-b-2 -mb-px` emerald active underline, muted disabled tabs, container `border-b`
+baseline, horizontal scroll). Labels shortened "US stocks" → "US".
+
+**Follow-up 2 — index/universe sub-row** (user: "ด้านล่างปุ่ม country stock จะมีแยกเป็น
+all stock|s&p500|NASDAQ 100 และอื่นๆ จะเปลี่ยนไปในแต่ละประเทศ"): new
+`frontend/components/IndexTabs.tsx` — a row beneath the country tabs listing the indices for
+the active country. Full US benchmark set (user "ปรับ index list ให้ครบ"): All stocks ·
+**S&P 500 (active)** · S&P 400 · S&P 600 · NASDAQ 100 · NASDAQ Composite · Dow 30 ·
+Russell 1000 · Russell 2000 · Russell 3000 — the row scrolls horizontally (scrollbar hidden).
+Index list keyed per country (`INDICES_BY_COUNTRY`) for the expansion; only US reachable
+today, only S&P 500 has data (= the active item, honest). Idiom iterated twice: (a) first shipped as
+secondary PILLS; `frontend-design-reviewer` flagged the `bg-emerald-700` solid-fill active
+pill as the SKILL.md Rule 2 / PR #68 anti-pattern → swapped to the outlined-light emerald
+"bullish" tone + `font-semibold` + dot (re-review PASS); (b) user then asked for the SAME
+design as the buttons above ("ใช้ design แบบเดียวกับปุ่มด้านบน") → restyled to the CountryTabs /
+TopNav underline-tab idiom verbatim (active = emerald `border-b-2` underline + darker text, no
+fill — so it does NOT reintroduce the solid-fill anti-pattern). The two underline rows stay
+distinguishable by content (countries carry flags; indices are text labels) + position.
+`aria-current="true"` kept (selection indicator in a `role="group"`, not a page-nav link).
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (512 pages); Playwright shots
+(light + dark) confirm the two-tier selector renders above "S&P 500 ranking" — country
+underline tabs (US active) over index underline tabs (S&P 500 active) + the rest "soon".
+
+**Files**: `frontend/components/CountryTabs.tsx` (new, then restyled) ·
+`frontend/components/IndexTabs.tsx` (new) · `frontend/app/ranking/page.tsx`
+(render both rows above the header) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
+
+## Remove the MarketStatsBar strip under the top nav (in flight, 2026-06-04)
+
+**Branch**: `claude/confident-ramanujan-NgV5y` (PR #414, follow-up commit)
+**Type**: feat(frontend) — UI removal only, no schema / compute / data change. User:
+"เอาแถบใต้ home ออก" (remove the bar under the Home/top nav).
+
+Removed the Seeking-Alpha-style universe-snapshot strip (`MarketStatsBar`) that sat
+directly below the top tab nav on every page (it was added in PR #412, the same
+session's earlier scope). Deleted `frontend/components/MarketStatsBar.tsx` +
+`frontend/lib/market-stats.ts` (both now fully dead — grep confirms no other importer);
+unwired it from `frontend/app/layout.tsx` (dropped the `<MarketStatsBar/>` import +
+render) and removed the now-unused `topBar?: React.ReactNode` slot from
+`frontend/components/AppShell.tsx`. The top tab nav now sits directly above the page
+content; the header's `border-b` is the divider. The `/sectors` + `/movers` routes are
+UNAFFECTED — they derive from `rankings.json` independently (not via `market-stats.ts`).
+
+**Docs**: the now-stale `MarketStatsBar` gotcha was rewritten in lockstep across
+`CLAUDE.md` (§Gotchas index) + `docs/GOTCHAS.md` (detail) + `AGENTS.md` (mirror) — kept the
+still-valid invariant (build-time server-component stats; never `import lib/data.ts` into a
+`'use client'` component; `/sectors` + `/movers` derive from `rankings.json`), dropped the
+deleted-component specifics, and noted the removal. The PR #412 historical inflight entries
+above are left intact (append-only record).
+
+**Verification**: no residual `MarketStatsBar` / `market-stats` / `topBar` refs (grep clean);
+`tsc --noEmit` clean; `next build` GREEN (512 pages); Playwright shots (home + ranking,
+light + dark) confirm the strip is gone and the nav sits directly above the content.
+
+**Files**: `frontend/app/layout.tsx` · `frontend/components/AppShell.tsx` ·
+`frontend/components/MarketStatsBar.tsx` (deleted) · `frontend/lib/market-stats.ts` (deleted) ·
+`CLAUDE.md` · `docs/GOTCHAS.md` · `AGENTS.md` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
+
+## Remove the overlay Sidebar drawer — TopNav is the sole nav now (in flight, 2026-06-04)
+
+**Branch**: `claude/confident-ramanujan-NgV5y` (PR #414, follow-up commit)
+**Type**: feat(frontend) — UI removal only, no schema / compute / data change. User:
+"เอาแถบด้านข้างออก" (remove the sidebar).
+
+Removed the overlay Sidebar drawer (Browse: Rankings + Sectors · Insights: Top Movers ·
+footer: theme toggle + build-version chip) and its ☰/✕ header toggle. Deleted
+`frontend/components/Sidebar.tsx`; stripped ALL drawer machinery from
+`frontend/components/AppShell.tsx` (the `open` state, `toggleRef` / `wasOpenRef`, the
+body-scroll-lock / Esc-close / focus-restore effects, the ☰ button, the `<Sidebar/>`
+render) — AppShell is now a plain **Server Component** (no `'use client'`, no hooks). The
+TopNav tab bar (Home · Ranking · News · Analysis · Portfolio) is the SOLE navigation surface.
+
+**Build-version chip relocated, NOT dropped**: the build-time `NEXT_PUBLIC_APP_VERSION`
+chip moved from the Sidebar footer into the page footer (`AppShell`), so build provenance
+stays visible. The `next.config.js` git-describe→SHA wiring is unchanged; the
+gotcha was updated in lockstep (`CLAUDE.md` §Gotchas index + `docs/GOTCHAS.md` detail:
+consumer Sidebar.tsx → AppShell footer). Stale TopNav header comment ("alongside the
+left-rail Sidebar, keep both") corrected.
+
+**Orphaned routes — OPEN QUESTION for the user**: `/sectors` + `/movers` were reachable
+ONLY from the Sidebar; with it gone they build fine but have no nav entry. NOT resolved in
+this commit — pending the user's call (add to TopNav / delete the pages / leave URL-only).
+
+**Verification**: no residual `Sidebar` / `sidebar-drawer` / `topBar` import refs (grep
+clean); `tsc --noEmit` clean; `next build` GREEN (512 pages); Playwright shots confirm the
+header has no ☰ button (starts at the brand) and the version chip renders in the footer.
+
+**Files**: `frontend/components/AppShell.tsx` · `frontend/components/Sidebar.tsx` (deleted) ·
+`frontend/components/TopNav.tsx` (comment) · `CLAUDE.md` · `docs/GOTCHAS.md` ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---
+
+## Delete the standalone /sectors + /movers routes (in flight, 2026-06-04)
+
+**Branch**: `claude/confident-ramanujan-NgV5y` (PR #414, follow-up commit)
+**Type**: feat(frontend) — route removal only, no schema / compute / data change.
+User: "ลบทั้ง 2 หน้า" (delete both pages) — chosen via AskUserQuestion after the Sidebar
+removal orphaned them (they were reachable ONLY from the now-deleted Sidebar nav).
+
+Deleted `frontend/app/sectors/page.tsx` + `frontend/app/movers/page.tsx` (route count
+512 → 510). Both were self-contained (only `getRankings` from `lib/data` + `sectorStyle`
+from `lib/visual`, both shared + still used elsewhere — `sectorStyle` by the home Top-sectors
+card + `SectorChip` on the detail page), so no exclusive component/lib was orphaned.
+
+**Home page dead-link fix**: `frontend/app/page.tsx` had two preview cards ("Movers today"
+→ `/movers`, "Top sectors" → `/sectors`) whose "All movers / All sectors →" links now point
+at deleted routes. Made `OverviewCard`'s `href` + `linkLabel` OPTIONAL and dropped them from
+those two cards — the cards KEEP their inline data preview (gainers/losers + top sectors,
+both derived from `rankings.json`) but no longer render a dead "see all" link. The "Top
+ranked" card keeps its `/ranking` link. (Kept the preview cards because the user deleted the
+PAGES, not the home dashboard — flagged to the user as easily reversible.)
+
+**Docs**: the build-time-server-component gotcha (rewritten in the prior MarketStatsBar-removal
+commit to cite `/sectors` + `/movers` as the surviving example) was updated AGAIN across
+`CLAUDE.md` (§Gotchas index) + `docs/GOTCHAS.md` (detail) + `AGENTS.md` (mirror) to use the
+home + ranking pages as the example, and to record the `/sectors` + `/movers` removal.
+
+**Verification**: no residual `/sectors` / `/movers` route refs (grep clean; `sectorStyle`
+symbol refs are the shared lib, correctly kept); `tsc --noEmit` clean; `next build` GREEN
+(510 pages, no `/sectors` or `/movers` in the route table); Playwright shot confirms the home
+Movers / Sectors cards render their data inline without the dead "see all" links.
+
+**Files**: `frontend/app/page.tsx` · `frontend/app/sectors/page.tsx` (deleted) ·
+`frontend/app/movers/page.tsx` (deleted) · `CLAUDE.md` · `docs/GOTCHAS.md` · `AGENTS.md` ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---

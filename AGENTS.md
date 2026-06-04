@@ -326,18 +326,17 @@ export function FairPriceCard(props) {  // no types
   `bg-red-500/600` / `bg-rose-600`) now use it. `PillarRadarChart`
   bar fills are raw `scoreAccentColor` rgb BY DESIGN (chart ramp + amber gap) —
   not a soft-color miss. Full rationale in CLAUDE.md §Gotchas.
-- **`MarketStatsBar` top strip = BUILD-TIME snapshot, not a live ticker**
-  (`frontend/components/MarketStatsBar.tsx` + `frontend/lib/market-stats.ts`,
-  2026-06-04): the Seeking-Alpha-shaped universe-snapshot bar (universe · avg score ·
-  median MoS · #flagged · today's top gainer/loser · last-compute date) derives every
-  value from the already-imported `rankings.json` / `metadata.json` at BUILD time —
-  QuantRank is a weekly static export, so it is "as of" the last cron, NOT live (the
-  "Updated" item is the anchor). A genuinely live / intra-week feed (or net-new
-  index/commodity data) is a separate observability-before-wiring PR, not a tweak. It
-  is a SERVER component passed into the client `AppShell` via the `topBar` slot, so
-  `lib/data.ts` (fs + JSON) never enters the client bundle — never `import` the data
-  layer into a `'use client'` component. New `/sectors` + `/movers` routes derive from
-  `rankings.json` the same way. Full rationale in CLAUDE.md §Gotchas.
+- **Build-time, server-component stats — never `import lib/data.ts` into a `'use client'`
+  component** (`frontend/app/page.tsx` + `frontend/app/ranking/page.tsx`, 2026-06-04): the home
+  dashboard + ranking page are plain Server Components deriving every value from the
+  already-imported `rankings.json` / `metadata.json` at BUILD time — QuantRank is a weekly
+  static export, so they are "as of" the last cron, NOT live (the `metadata.last_update_utc`
+  stamp is the anchor). A genuinely live / intra-week feed (or net-new index/commodity data) is
+  a separate observability-before-wiring PR, not a tweak. The data layer (`lib/data.ts`, fs +
+  JSON) must never enter the client bundle — resolve on the server, pass the node in as a
+  prop/child. (Removed 2026-06-04: the top `MarketStatsBar` strip + `lib/market-stats.ts` +
+  `AppShell` `topBar` slot, and the standalone `/sectors` + `/movers` routes.) Full rationale
+  in CLAUDE.md §Gotchas.
 - **44px touch targets + modal focus-trap + severity-toned warning headings**
   (`frontend/components/*`, 2026-06-01): primary interactive controls carry
   `min-h-[44px]` (mobile-first per PRODUCT.md); `FilterDrawer` traps + restores

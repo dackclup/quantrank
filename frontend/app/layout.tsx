@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { AppShell } from '@/components/AppShell';
-import { MarketStatsBar } from '@/components/MarketStatsBar';
 import { ThemeProvider } from '@/components/ThemeProvider';
 
 // PR 4.5d follow-up — self-host all 3 fonts via @fontsource packages
@@ -16,7 +15,7 @@ import { ThemeProvider } from '@/components/ThemeProvider';
 export const metadata: Metadata = {
   title: 'QuantRank',
   description:
-    'Static-site US equity ranking — fundamental, technical, factor, sentiment, and ML signals combined into a 0–100 composite StockRank.',
+    'Static-site equity ranking — fundamental, technical, factor, sentiment, and ML signals combined into a 0–100 composite StockRank.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -28,10 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <body>
         <ThemeProvider>
-          {/* MarketStatsBar is a Server Component rendered here and handed to
-              the client AppShell as a slot, so the universe-snapshot data
-              (rankings.json) is read at build time and never bundled client-side. */}
-          <AppShell topBar={<MarketStatsBar />}>{children}</AppShell>
+          <AppShell>{children}</AppShell>
         </ThemeProvider>
       </body>
     </html>

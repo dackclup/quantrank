@@ -1172,9 +1172,10 @@
   `FairPriceCard` raw flag humanization were both RESOLVED in the follow-up — see
   the "Sidebar version chip" gotcha below.
 
-- **Sidebar version chip = build-time `NEXT_PUBLIC_APP_VERSION`, never a
-  hardcoded version** (`frontend/next.config.js` + `frontend/components/Sidebar.tsx`,
-  2026-06-03; resolves the #392-deferred stale `v1.4.0`). A hardcoded version
+- **Footer build-version chip = build-time `NEXT_PUBLIC_APP_VERSION`, never a
+  hardcoded version** (`frontend/next.config.js` + `frontend/components/AppShell.tsx`
+  footer — relocated there 2026-06-04 when the Sidebar was removed; was the Sidebar
+  footer originally, 2026-06-03; resolves the #392-deferred stale `v1.4.0`). A hardcoded version
   string goes stale the instant `main` moves past the release tag — the chip read
   `v1.4.0` for 30+ PRs while the deployed site was well ahead. `next.config.js`
   now computes `NEXT_PUBLIC_APP_VERSION` at build via an `env:` block: explicit
@@ -1182,8 +1183,8 @@
   `TAG-N-gSHA` → `TAG+N`, so local dev with tags shows e.g. `v1.4.0-phase4.6+30`)
   → `VERCEL_GIT_COMMIT_SHA` / `GITHUB_SHA` short (shallow CI/Vercel clones have NO
   tags, so production shows the 7-char commit SHA — an honest build id) → `'dev'`.
-  `Sidebar.tsx` reads `process.env.NEXT_PUBLIC_APP_VERSION` (inlined at build by
-  the `env:` config) — do NOT re-hardcode a version literal. Companion change in
+  The `AppShell` footer reads `process.env.NEXT_PUBLIC_APP_VERSION` (inlined at build
+  by the `env:` config) — do NOT re-hardcode a version literal. Companion change in
   the same PR: `FairPriceCard` valuation-warning humanization `w.replace(/_/g,' ')`
   → a `VALUATION_WARNING_LABELS` map (Title-Case fallback for unknown flags) so a
   valuation warning reads the same labelled way the `RiskSummaryCard` flags do.
@@ -1249,30 +1250,25 @@
   but swept anyway for brand consistency (it should read as the brand primary, not the
   lighter emerald-600, in both themes).
 
-- **The top `MarketStatsBar` strip is a BUILD-TIME snapshot, not a live ticker**
-  (`frontend/components/MarketStatsBar.tsx` + `frontend/lib/market-stats.ts`,
-  2026-06-04). The Seeking-Alpha-shaped universe-snapshot strip under the app header
-  (universe size · avg composite · median MoS · #flagged · today's top gainer + top
-  loser · last-compute date) derives EVERY value at build time from the
-  already-build-imported `rankings.json` + `metadata.json` (`getMarketStats()` →
-  `getRankings()` / `getMetadata()`). QuantRank is a **weekly static export**, so the
-  strip is "as of" the last compute cron — NOT a live/intra-week feed. The trailing
-  **"Updated"** item (from `metadata.last_update_utc`) is the honesty anchor; the
-  mover deltas are real `price_change_1d_pct` from that run, not streaming. Do NOT
-  wire a genuinely live or intra-week market feed (or net-new index/commodity data)
-  into this bar as a "tweak" — that is a separate **observability-before-wiring** PR
-  (new external data source, new `Metadata.*_coverage_pct` diagnostic, schema triple).
-  Architecture: `MarketStatsBar` is a **Server Component** rendered in `layout.tsx`
-  and handed to the `'use client'` `AppShell` via a new `topBar?: React.ReactNode`
-  slot — it is NOT imported by `AppShell`. This is the canonical "RSC-into-client-
-  shell" pattern (same as `children`): the node is fully resolved on the server before
-  it crosses the boundary, so the data layer (`lib/data.ts`, which imports `fs` + the
-  JSON) never enters the client bundle. If you need the client shell to render new
-  server-derived content, follow the same slot pattern — never `import` `lib/data.ts`
-  (or any `fs`-touching module) into a `'use client'` component. The two new routes
-  `/sectors` (GICS-sector cards) + `/movers` (top-10 day gainers/losers), surfaced in
-  the Sidebar `Browse` / `Insights` sections, are plain Server Components that derive
-  from `rankings.json` at build the same way (no per-stock fetch, no loading
-  waterfall). Touch-target floor: the bar's linked mover items + the `/movers` rows
-  carry `min-h-[44px]` (the project interactive-control floor) — keep it on any new
-  linked stat/row.
+- **Build-time, server-component stats — never `import lib/data.ts` into a `'use client'`
+  component** (`frontend/app/page.tsx`, `frontend/app/ranking/page.tsx`, 2026-06-04). The home
+  dashboard (top-ranked / movers-today / top-sectors preview cards) + the ranking page are
+  plain **Server Components** that derive EVERY value at build time from the
+  already-build-imported `rankings.json` + `metadata.json` (`getRankings()` / `getMetadata()`),
+  with no per-stock fetch and no loading waterfall. QuantRank is a **weekly static export**, so
+  these numbers are "as of" the last compute cron — NOT a live/intra-week feed; the
+  `metadata.last_update_utc` "Updated" stamp is the honesty anchor and the mover deltas are
+  real `price_change_1d_pct` from that run, not streaming. Do NOT wire a genuinely live or
+  intra-week market feed (or net-new index/commodity data) in as a "tweak" — that is a
+  separate **observability-before-wiring** PR (new external data source, new
+  `Metadata.*_coverage_pct` diagnostic, schema triple). The data layer (`lib/data.ts`, which
+  imports `fs` + the JSON) must never enter the client bundle: if a `'use client'` shell needs
+  server-derived content, resolve it on the server and pass the node in as a prop/child (the
+  canonical "RSC-into-client-shell" pattern, same as `children`) — never `import lib/data.ts`
+  (or any `fs`-touching module) into a `'use client'` component. Touch-target floor: linked
+  stat/stock rows carry `min-h-[44px]` (the project interactive floor) — keep it on any new
+  linked row. (History: the Seeking-Alpha-style top `MarketStatsBar` strip +
+  `frontend/lib/market-stats.ts` + the `AppShell` `topBar?: React.ReactNode` slot that first
+  carried this RSC-into-client-shell pattern, AND the standalone `/sectors` + `/movers` routes,
+  were all REMOVED 2026-06-04 at user request; the build-time server-component rule lives on via
+  the home + ranking pages.)
