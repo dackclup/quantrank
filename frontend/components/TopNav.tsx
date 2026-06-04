@@ -15,6 +15,7 @@ const TABS: Tab[] = [
   { label: 'Home', href: '/', isActive: (p) => p === '/' },
   // Ranking owns the table + every per-stock detail page (descendants of it).
   { label: 'Ranking', href: '/ranking', isActive: (p) => p.startsWith('/ranking') || p.startsWith('/stock/') },
+  { label: 'News', href: '/news', isActive: (p) => p.startsWith('/news') },
   { label: 'Analysis', href: '/analysis', isActive: (p) => p.startsWith('/analysis') },
   { label: 'Portfolio', href: '/portfolio', isActive: (p) => p.startsWith('/portfolio') },
 ];

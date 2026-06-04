@@ -949,7 +949,7 @@ edited `frontend/components/Sidebar.tsx` (drop Resources + Compare) · `CLAUDE.m
 
 ---
 
-## Top tab nav (Home·Ranking·Analysis·Portfolio) + Home overview + placeholder pages (in flight, 2026-06-04)
+## Top tab nav (Home·Ranking·News·Analysis·Portfolio) + Home overview + placeholder pages (in flight, 2026-06-04)
 
 **Branch**: `claude/confident-ramanujan-NgV5y` (NEW PR after #412 merged; branch
 rebased onto post-merge `main`)
@@ -961,7 +961,7 @@ Portfolio = "Coming soon" placeholders for now.
 
 **What**:
 - **`TopNav`** (new, client) — Seeking-Alpha-style horizontal tab bar Home · Ranking ·
-  Analysis · Portfolio in the sticky header; active tab = emerald underline +
+  News · Analysis · Portfolio in the sticky header; active tab = emerald underline +
   `aria-current`; horizontal-scroll on mobile; 44px targets. Mounted as a SECOND header
   row in `AppShell` (the `<header>` became a 2-row column: controls row + tabs row),
   coexisting with the left-rail `Sidebar`.
@@ -972,7 +972,7 @@ Portfolio = "Coming soon" placeholders for now.
   from the build-imported `rankings.json` (no new data).
 - **`/ranking`** (new) — the full `RankingTable` + the old home intro, moved here off
   `/`. The Sidebar `Rankings` item now points to `/ranking` (was `/`).
-- **`/analysis` + `/portfolio`** (new) — render the shared new `ComingSoon` placeholder
+- **`/news` + `/analysis` + `/portfolio`** (new) — render the shared new `ComingSoon` placeholder
   (icon + "Coming soon" + detail + a `bg-emerald-700` / `dark:bg-emerald-700` "Browse
   the ranking" CTA). Portfolio is slated to become a localStorage watchlist, Analysis a
   distributions/methodology view — both deferred per the user.
@@ -984,7 +984,7 @@ underline), the coexisting sidebar, the real-data overview cards, and the placeh
 pages render. `frontend-design-reviewer` review in flight.
 
 **Files**: new `frontend/components/{TopNav,ComingSoon}.tsx` ·
-`frontend/app/{ranking,analysis,portfolio}/page.tsx`; rewrote `frontend/app/page.tsx`
+`frontend/app/{ranking,news,analysis,portfolio}/page.tsx`; rewrote `frontend/app/page.tsx`
 (Home overview); edited `frontend/components/AppShell.tsx` (2-row header + TopNav) ·
 `frontend/components/Sidebar.tsx` (Rankings → /ranking) · `PHASE_STATUS_INFLIGHT.md` (this).
 
