@@ -35,7 +35,7 @@ const COUNTRY_NAME: Record<string, string> = {
 // shared `Chip` primitive at the default `sm` size (2px radius, font-medium).
 const STEEL_TONE =
   'bg-slate-100 text-slate-600 ring-slate-200 ' +
-  'dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700';
+  'dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-500';
 
 export function ListingChips({
   country,

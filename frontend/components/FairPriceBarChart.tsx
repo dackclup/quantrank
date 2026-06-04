@@ -76,9 +76,9 @@ const VERDICT_STYLE: Record<Verdict, {
   phrase: string;
 }> = {
   cheap:   { dot: 'bg-emerald-500 dark:bg-emerald-400', text: 'text-emerald-700 dark:text-emerald-300', bg: 'bg-emerald-50 dark:bg-emerald-900/30', ring: 'ring-emerald-200 dark:ring-emerald-800', label: 'Undervalued', phrase: "thinks it's a bargain" },
-  fair:    { dot: 'bg-slate-400 dark:bg-slate-500',     text: 'text-slate-600 dark:text-slate-400',   bg: 'bg-slate-50 dark:bg-slate-800',         ring: 'ring-slate-200 dark:ring-slate-700',   label: 'Fair',        phrase: "thinks it's fairly priced" },
+  fair:    { dot: 'bg-slate-400 dark:bg-slate-500',     text: 'text-slate-600 dark:text-slate-400',   bg: 'bg-slate-50 dark:bg-slate-800',         ring: 'ring-slate-200 dark:ring-slate-500',   label: 'Fair',        phrase: "thinks it's fairly priced" },
   pricey:  { dot: 'bg-rose-500 dark:bg-rose-400',       text: 'text-rose-700 dark:text-rose-300',     bg: 'bg-rose-50 dark:bg-rose-900/30',         ring: 'ring-rose-200 dark:ring-rose-800',     label: 'Overvalued',  phrase: "thinks it's expensive" },
-  outlier: { dot: 'bg-slate-300 dark:bg-slate-600',     text: 'text-slate-500 dark:text-slate-400',   bg: 'bg-slate-100 dark:bg-slate-800',        ring: 'ring-slate-300 dark:ring-slate-700',   label: 'Outlier',     phrase: 'estimate looks unreliable' },
+  outlier: { dot: 'bg-slate-300 dark:bg-slate-600',     text: 'text-slate-500 dark:text-slate-400',   bg: 'bg-slate-100 dark:bg-slate-800',        ring: 'ring-slate-300 dark:ring-slate-500',   label: 'Outlier',     phrase: 'estimate looks unreliable' },
 };
 
 type Headline = {
@@ -105,7 +105,7 @@ function headlineFor(medianPct: number | null, ticker: string): Headline {
       tag: 'Near fair value',
       desc: `Models suggest ${ticker} is priced roughly in line`,
       cls: 'text-slate-700 dark:text-slate-300', bg: 'bg-slate-50 dark:bg-slate-800',
-      ring: 'ring-slate-200 dark:ring-slate-700', big: 'text-slate-700 dark:text-slate-300',
+      ring: 'ring-slate-200 dark:ring-slate-500', big: 'text-slate-700 dark:text-slate-300',
     };
   }
   if (medianPct >= -50) {

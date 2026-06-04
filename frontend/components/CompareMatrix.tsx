@@ -253,7 +253,7 @@ function FlagsCell({ stock, best, count }: { stock: StockSummary; best: boolean;
               ))}
               {rest.length > 0 && (
                 <li
-                  className={`${CHIP_BASE} bg-slate-100 px-1.5 py-0 text-[0.625rem] font-medium text-slate-700 ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700`}
+                  className={`${CHIP_BASE} bg-slate-100 px-1.5 py-0 text-[0.625rem] font-medium text-slate-700 ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-500`}
                   title={rest.map(flagLabel).join(', ')}
                 >
                   +{rest.length} more

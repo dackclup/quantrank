@@ -222,11 +222,11 @@ export function FilterControls({
         </div>
       </div>
 
-      <div>
+      <div role="group" aria-labelledby="filter-score-label">
         <div className="mb-2 flex items-baseline justify-between">
-          <label className="text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+          <span id="filter-score-label" className="text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
             Composite score
-          </label>
+          </span>
           <span className="font-mono text-xs tabular-nums text-slate-700 dark:text-slate-300">
             {scoreRange[0]}–{scoreRange[1]}
           </span>
@@ -235,10 +235,10 @@ export function FilterControls({
       </div>
 
       <div>
-        <label className="mb-2 block text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+        <span id="filter-tier-label" className="mb-2 block text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
           Score tier
-        </label>
-        <div className="flex flex-wrap gap-1.5">
+        </span>
+        <div role="group" aria-labelledby="filter-tier-label" className="flex flex-wrap gap-1.5">
           {TIERS.map((t) => {
             const on = tierSet.has(t.id);
             return (
@@ -262,10 +262,10 @@ export function FilterControls({
       </div>
 
       <div>
-        <label className="mb-2 block text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+        <span id="filter-rec-label" className="mb-2 block text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
           Recommendation
-        </label>
-        <div className="flex flex-wrap gap-1.5">
+        </span>
+        <div role="group" aria-labelledby="filter-rec-label" className="flex flex-wrap gap-1.5">
           {RECOMMENDATION_VALUES.map((rec) => {
             const on = recommendationSet.has(rec);
             return (
@@ -285,10 +285,10 @@ export function FilterControls({
       </div>
 
       <div>
-        <label className="mb-2 block text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+        <span id="filter-valuation-label" className="mb-2 block text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
           Valuation
-        </label>
-        <div className="flex flex-wrap gap-1.5">
+        </span>
+        <div role="group" aria-labelledby="filter-valuation-label" className="flex flex-wrap gap-1.5">
           {MOS_BUCKETS.map((b) => {
             const on = mosSet.has(b.id);
             return (
@@ -311,14 +311,14 @@ export function FilterControls({
 
       <div>
         <div className="mb-2 flex items-baseline justify-between">
-          <label className="text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+          <span id="filter-sectors-label" className="text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
             Sectors
-          </label>
+          </span>
           <span className="text-[0.6875rem] text-slate-500 dark:text-slate-400">
             {sectorSet.size === 0 ? 'All' : `${sectorSet.size} selected`}
           </span>
         </div>
-        <div className="flex flex-wrap gap-1.5">
+        <div role="group" aria-labelledby="filter-sectors-label" className="flex flex-wrap gap-1.5">
           {sectors.map((s) => {
             const on = sectorSet.has(s);
             const sty = sectorStyle(s);

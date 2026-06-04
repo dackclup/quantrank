@@ -82,7 +82,7 @@ export const MOS_BUCKETS: readonly MosBucketMeta[] = [
     cls: 'bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-800',
     dot: 'bg-emerald-500 dark:bg-emerald-400' },
   { id: 'fair', label: 'Near fair', range: [-10, 10], help: '±10% MoS',
-    cls: 'bg-slate-50 text-slate-700 ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700',
+    cls: 'bg-slate-50 text-slate-700 ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-500',
     dot: 'bg-slate-400 dark:bg-slate-500' },
   { id: 'over', label: 'Overvalued', range: [-Infinity, -10], help: 'MoS < −10%',
     cls: 'bg-rose-50 text-rose-700 ring-rose-200 dark:bg-rose-900/30 dark:text-rose-300 dark:ring-rose-800',
@@ -116,7 +116,7 @@ export type SectorStyle = {
 // the surrounding tinted background + matching ring change.
 const NEUTRAL_CHIP_BG = 'bg-slate-100 dark:bg-slate-800';
 const NEUTRAL_CHIP_FG = 'text-slate-600 dark:text-slate-300';
-const NEUTRAL_CHIP_RG = 'ring-slate-200 dark:ring-slate-700';
+const NEUTRAL_CHIP_RG = 'ring-slate-200 dark:ring-slate-500';
 
 // 11 GICS sectors. Anything outside this map falls back to the same
 // neutral chip in sectorStyle() below, with a slate-400 dot for the
@@ -158,7 +158,7 @@ export function sectorStyle(sector: string): SectorStyle {
 // remove-summary reads as utilitarian, the toggles as stateful, while the two
 // summaries themselves now match. Layout/hover stay at each call site.
 export const ACTIVE_FILTER_CHIP_TONE =
-  'bg-slate-100 text-slate-700 ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700';
+  'bg-slate-100 text-slate-700 ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-500';
 
 // Score-badge color classes — matches the design's 5-step ramp.
 // LedgerCraft Phase 3b: paired light + `dark:` variants. Top tier
@@ -219,7 +219,7 @@ export function mosVisualFraction(mos: number | null | undefined): number | null
 }
 
 export function filingLagBadgeClasses(days: number | null): string {
-  if (days === null) return 'bg-slate-100 text-slate-600 ring-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:ring-slate-700';
+  if (days === null) return 'bg-slate-100 text-slate-600 ring-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:ring-slate-500';
   if (days < 60) return 'bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-800';
   if (days < 180) return 'bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:ring-amber-800';
   return 'bg-red-50 text-red-700 ring-red-200 dark:bg-red-900/30 dark:text-red-300 dark:ring-red-800';
