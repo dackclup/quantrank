@@ -24,9 +24,15 @@ type IndexOption = { code: string; label: string; name: string; active?: boolean
 const INDICES_BY_COUNTRY: Record<string, IndexOption[]> = {
   US: [
     { code: 'ALL', label: 'All stocks', name: 'All US-listed stocks' },
-    { code: 'SPX', label: 'S&P 500', name: 'S&P 500', active: true },
+    { code: 'SPX', label: 'S&P 500', name: 'S&P 500 (large-cap)', active: true },
+    { code: 'MID', label: 'S&P 400', name: 'S&P MidCap 400' },
+    { code: 'SML', label: 'S&P 600', name: 'S&P SmallCap 600' },
     { code: 'NDX', label: 'NASDAQ 100', name: 'NASDAQ 100' },
+    { code: 'COMP', label: 'NASDAQ Composite', name: 'NASDAQ Composite' },
     { code: 'DJI', label: 'Dow 30', name: 'Dow Jones Industrial Average' },
+    { code: 'RUI', label: 'Russell 1000', name: 'Russell 1000 (large-cap)' },
+    { code: 'RUT', label: 'Russell 2000', name: 'Russell 2000 (small-cap)' },
+    { code: 'RUA', label: 'Russell 3000', name: 'Russell 3000 (broad market)' },
   ],
 };
 

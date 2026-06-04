@@ -1148,9 +1148,11 @@ baseline, horizontal scroll). Labels shortened "US stocks" → "US".
 **Follow-up 2 — index/universe sub-row** (user: "ด้านล่างปุ่ม country stock จะมีแยกเป็น
 all stock|s&p500|NASDAQ 100 และอื่นๆ จะเปลี่ยนไปในแต่ละประเทศ"): new
 `frontend/components/IndexTabs.tsx` — a row beneath the country tabs listing the indices for
-the active country (US: All stocks · **S&P 500 (active)** · NASDAQ 100 · Dow 30). Index list
-keyed per country (`INDICES_BY_COUNTRY`) for the expansion; only US reachable today, only
-S&P 500 has data (= the active item, honest). Idiom iterated twice: (a) first shipped as
+the active country. Full US benchmark set (user "ปรับ index list ให้ครบ"): All stocks ·
+**S&P 500 (active)** · S&P 400 · S&P 600 · NASDAQ 100 · NASDAQ Composite · Dow 30 ·
+Russell 1000 · Russell 2000 · Russell 3000 — the row scrolls horizontally (scrollbar hidden).
+Index list keyed per country (`INDICES_BY_COUNTRY`) for the expansion; only US reachable
+today, only S&P 500 has data (= the active item, honest). Idiom iterated twice: (a) first shipped as
 secondary PILLS; `frontend-design-reviewer` flagged the `bg-emerald-700` solid-fill active
 pill as the SKILL.md Rule 2 / PR #68 anti-pattern → swapped to the outlined-light emerald
 "bullish" tone + `font-semibold` + dot (re-review PASS); (b) user then asked for the SAME
