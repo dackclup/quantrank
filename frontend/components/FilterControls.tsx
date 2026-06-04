@@ -46,7 +46,7 @@ export type FilterSetters = {
 };
 
 const UNSELECTED_CHIP =
-  'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-slate-700';
+  'bg-slate-100 text-slate-600 ring-slate-200 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-500 dark:hover:bg-slate-700';
 
 // Toggle chip className composer. The SELECTED state needs a clear,
 // color-INDEPENDENT signal: the pale tone tint alone vanished in dark mode and
@@ -196,11 +196,12 @@ export function FilterControls({
       )}
 
       <div>
-        <label className="mb-2 block text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+        <label htmlFor="filter-search" className="mb-2 block text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
           Search
         </label>
         <div className="relative">
           <input
+            id="filter-search"
             type="search"
             placeholder="Ticker or company name…"
             value={search}
@@ -245,6 +246,7 @@ export function FilterControls({
                 key={t.id}
                 type="button"
                 aria-pressed={on}
+                aria-label={`${t.label}, score ${t.min}–${t.max === 101 ? 100 : t.max}`}
                 onClick={() => toggleTier(t.id)}
                 className={toggleChipClass(on, t.cls)}
               >
@@ -294,6 +296,7 @@ export function FilterControls({
                 key={b.id}
                 type="button"
                 aria-pressed={on}
+                aria-label={`${b.label}, ${b.help}`}
                 onClick={() => toggleMos(b.id)}
                 className={toggleChipClass(on, b.cls)}
               >

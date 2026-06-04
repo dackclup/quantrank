@@ -733,3 +733,43 @@ WCAG 1.4.11. The #408 focus halo + `shadow-subtle` are unchanged.
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Filter polish round 5 — comprehensive review a11y/contrast fixes (in flight, 2026-06-03)
+
+**Branch**: `claude/beautiful-goldberg-ktA03` (PR #409, additional commit)
+**Type**: fix(frontend) — FRONTEND-ONLY, no schema / compute / data change; no schema bump.
+Folds the BLOCKER + MAJOR + cheap findings from a comprehensive `frontend-design-reviewer` pass over the
+WHOLE filter page (it confirmed the slider / selected-state / placeholder fixes correct, and surfaced
+the same class of camouflage/a11y bug proactively):
+
+- **[BLOCKER] B1** — the dark rail "Clear all" DISABLED text was `dark:disabled:text-slate-600` =
+  **2.36:1** on the slate-900 panel (camouflaged) → `dark:disabled:text-slate-500` = **3.75:1** (matches
+  the app's disabled-text convention; visible-but-muted vs the enabled slate-400).
+- **[BLOCKER] B2** — the `FilterControls` search `<input>` had no programmatic label (the `<label>` was
+  an unassociated sibling → SR announced an unnamed field). Added `htmlFor="filter-search"` +
+  `id="filter-search"`.
+- **[MAJOR] M1** — the dark UNSELECTED toggle-chip ring was `dark:ring-slate-700` = **1.41:1** on the
+  slate-800 chip → invisible boundary (WCAG 1.4.11). → `dark:ring-slate-500` = **3.07:1**. Scoped to
+  `UNSELECTED_CHIP` (the interactive toggle chips) ONLY — NOT the app-wide `NEUTRAL_CHIP_RG` /
+  `ACTIVE_FILTER_CHIP_TONE` (the #401 blast-radius trap; deferred). Verified the slate-toned SELECTED
+  state (Near fair / Hold) STILL reads distinct after the unselected ring became visible — the
+  `font-semibold` + 2px box-shadow ring carry it (screenshot-confirmed).
+- **[MAJOR] M2** — tier / valuation chips announced "Exceptional70–100" (label + range run together for
+  SR) → added `aria-label` (e.g. "Exceptional, score 70–100" / "Near fair, ±10% MoS").
+- **[NIT] N2** — toolbar "Clear all" was `text-slate-500` = 4.41:1 (0.09 under AA) → `text-slate-600`
+  (~5.9:1; also matches the rail "Clear all").
+
+**Deferred (noted)**: N1 (the 4 chip-group heading `<label>`s are semantically inert — a `<span>` /
+`role=group` refactor, pre-existing) · the app-wide `dark:ring-slate-700` neutral-chip ring on sector +
+active-filter chips (`NEUTRAL_CHIP_RG` / `ACTIVE_FILTER_CHIP_TONE` — app-wide, its own pass).
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (507 pages); Playwright contrast probe
+confirms B1 **3.75:1** / M1 **3.07:1**, the search input is programmatically labeled, and the tier
+aria-label reads "Exceptional, score 70–100"; dark screenshot confirms unselected chip boundaries are
+now visible AND the slate-toned selected stays distinct.
+
+**Files**: `frontend/components/FilterControls.tsx` (B2 label · M1 ring · M2 aria-labels) ·
+`frontend/components/FilterRail.tsx` (B1) · `frontend/components/RankingTable.tsx` (N2) ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---
