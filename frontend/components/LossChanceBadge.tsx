@@ -42,7 +42,7 @@ const BANDS: readonly Band[] = [
   },
   {
     max: 60,
-    cls: 'bg-slate-100 text-slate-700 ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700',
+    cls: 'bg-slate-100 text-slate-700 ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-500',
     dot: 'bg-slate-500 dark:bg-slate-400',
     label: 'Neutral loss chance',
   },

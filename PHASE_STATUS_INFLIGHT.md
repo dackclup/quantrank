@@ -797,3 +797,44 @@ substance change owed (the design rule lives in the frontend-design-system skill
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Deferred filter-polish cleanup — app-wide neutral-chip ring + filter group semantics (in flight, 2026-06-04)
+
+**Branch**: `claude/beautiful-goldberg-ktA03`
+**Type**: fix(frontend) — FRONTEND-ONLY, no schema / compute / data change; no schema bump. Closes the
+two items the #409 comprehensive review DEFERRED (user: "ทำส่วนที่ค้างไว้ต่อ").
+
+**#1 — app-wide neutral-chip ring contrast (the deferred half of #409 M1).** The dark neutral-chip ring
+`dark:ring-slate-700` on the `dark:bg-slate-800` chip = **1.41:1** (invisible boundary, WCAG 1.4.11) is
+the *whole-app* default — #409 fixed only the scoped `UNSELECTED_CHIP` to avoid blast radius. Bumped ALL
+of it → `dark:ring-slate-500` (**3.07:1**) across the 9 files that carry it, so every neutral chip in the
+one outlined-light family (Rule 2) gets a consistent visible dark boundary: `lib/visual.ts`
+(`NEUTRAL_CHIP_RG` sector chips · `ACTIVE_FILTER_CHIP_TONE` active-filter chips · MOS "Near fair" tone ·
+`filingLagBadge`) + `RecommendationBadge` (neutral) · `LossChanceBadge` · `ListingChips` ·
+`FairPriceBarChart` (fair/outlier legend) · `CompareMatrix` · `CompareView` · `RankingTable`
+(compare-pill). Light ring (`ring-slate-200`) left as-is (the chip-bg-vs-page diff carries the light
+boundary; reviewer deemed it fine). Verified in the densest surface (ranking table, dark): chips read as
+clean defined pills, not busy.
+
+**#2 — filter group-heading semantics (the deferred N1).** The 5 filter group headings (Composite score /
+Score tier / Recommendation / Valuation / Sectors) were bare `<label>`s with no associated control —
+semantically inert, and SR never announced the grouping. Each `<label>` → `<span id="filter-*-label">`
+and its control container → `role="group" aria-labelledby="filter-*-label"`, so a screen reader announces
+e.g. "Score tier, group" on entry. (The Search `<label htmlFor>` is a real label → untouched.)
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (507 pages); dark screenshot confirms the
+neutral chip boundaries are now visible app-wide (table sector chips / recommendation / loss-chance) and
+the 5 `role=group`s resolve to their heading text. `frontend-design-reviewer` cross-surface pass
+(table / detail / compare × both themes) = READY-FOR-SPOT-CHECK ("defined chips, not heavy"; light
+unchanged).
+
+**Review follow-on folded**: the reviewer caught that `PriceTimePeriodSelector`'s SELECTED
+(`dark:ring-slate-600`/`bg-slate-800` = 1.93:1) + enabled-unselected (2.36:1) rings were ALSO < 3:1 —
+the sed only caught its `slate-700` disabled state, leaving the disabled ring more visible than the
+selected one. Bumped both `dark:ring-slate-600` → `dark:ring-slate-500` (3.07 / 3.75:1); the
+selection signal is the bg-fill + text, so the ring bump doesn't blur selected-vs-unselected.
+
+**Files**: `frontend/lib/visual.ts` · `frontend/components/{RecommendationBadge,LossChanceBadge,ListingChips,FairPriceBarChart,CompareMatrix,CompareView,RankingTable,PriceTimePeriodSelector}.tsx` (ring bump) ·
+`frontend/components/FilterControls.tsx` (ring bump + 5 group `role=group`) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
