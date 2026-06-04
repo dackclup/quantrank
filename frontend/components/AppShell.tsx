@@ -14,7 +14,11 @@ import { ThemeToggle } from './ThemeToggle';
 
 const STORAGE_KEY = 'quantrank.sidebar.collapsed';
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+// `topBar` is an optional server-rendered slot (the MarketStatsBar) passed
+// down from the Server-Component layout — kept as a prop, not imported here,
+// so this client shell never pulls the data layer (fs / JSON imports) into the
+// client bundle.
+export function AppShell({ children, topBar }: { children: React.ReactNode; topBar?: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
@@ -119,6 +123,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <span className="ml-auto text-xs text-slate-500 dark:text-slate-400">US equity stock ranking</span>
           <ThemeToggle layout="icon" />
         </header>
+        {/* Universe-snapshot ticker strip (server-rendered, passed in from the
+            layout). Sits below the sticky nav header and scrolls away with the
+            page — not a live feed (see MarketStatsBar). */}
+        {topBar}
         <Disclaimer />
         {/* Top padding kept tight (pt-4/pt-6) so the page content sits higher
             under the sticky header — the user wanted the app's overview pulled

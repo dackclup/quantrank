@@ -838,3 +838,113 @@ selection signal is the bg-fill + text, so the ring bump doesn't blur selected-v
 `frontend/components/FilterControls.tsx` (ring bump + 5 group `role=group`) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Seeking-Alpha-style top market-stats bar + richer side nav (in flight, 2026-06-04)
+
+**Branch**: `claude/confident-ramanujan-NgV5y`
+**Type**: feat(frontend) — FRONTEND-ONLY, no schema / compute / data change; no
+schema bump. User reference: the Seeking Alpha mobile site (a top market-ticker
+strip + a multi-section slide-out side nav). User-chosen scope (3 AskUserQuestion
+answers): top bar = **QuantRank's own stats** (not a market-index/commodity feed —
+QuantRank is a weekly static export and cannot show a live futures ticker); side
+nav = **add menu sections + new pages**; approach = **prototype UI first**.
+
+**What** (prototype; derives REAL stats from the already-build-imported
+`rankings.json`/`metadata.json` — no mock numbers, no new ingestion / data source /
+schema field):
+- **Top bar** `MarketStatsBar` — a thin, horizontally-scrolling "ticker" strip
+  under the app header (Seeking-Alpha shape), filled with the universe snapshot:
+  universe size · avg composite · median MoS (tone) · #flagged · today's top
+  gainer + top loser (real `price_change_1d_pct`, emerald/rose + directional
+  caret, links to `/stock/<T>`) · last-compute date. NOT live — the "Updated"
+  item is the honesty anchor.
+- **Side nav** — `Sidebar` gains `Browse` (Rankings / Sectors / Compare) +
+  `Insights` (Top Movers) sections (was the single "Navigation" + Rankings);
+  Resources unchanged. New inline-SVG icons; reuses the existing
+  `SidebarSection`/`SidebarLink` (so the `data-rail` collapsed-rail + mobile-drawer
+  invariants are untouched).
+- **New routes** `/sectors` (GICS-sector cards: count / avg score / top name, sorted
+  by avg score) + `/movers` (top-10 gainers / losers by day change) — both derive
+  from `rankings.json` at build (no per-stock fetch).
+
+**Architecture**: `MarketStatsBar` is a SERVER component, rendered in `layout.tsx`
+and handed to the `'use client'` `AppShell` as a new `topBar?: React.ReactNode`
+slot — NOT imported by AppShell — so `lib/data.ts` (fs + JSON imports) never enters
+the client bundle. New derivation lives in `frontend/lib/market-stats.ts`
+(`getMarketStats()`).
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (509 static pages:
+502 stocks + home + compare + `/sectors` + `/movers` + not-found; `/sectors` +
+`/movers` = `○ Static`); Playwright screenshots (mobile home + open drawer,
+desktop home, `/sectors`, `/movers`; light) confirm the strip + new sections +
+pages render with real data and cross-check (ticker "TOP GAINER TPL +9.7%" ==
+`/movers` row 1). `frontend-design-reviewer` review in flight.
+
+**Follow-ups**: wire the two reserved-feeling stats (week-over-week deltas on the
+aggregate numbers) once a prior-run snapshot loader exists; a genuinely live /
+intra-week market feed would be a separate observability-before-wiring PR (new
+data source), not a tweak to this bar.
+
+**Files**: `frontend/lib/market-stats.ts` (new) · `frontend/components/MarketStatsBar.tsx`
+(new) · `frontend/app/sectors/page.tsx` (new) · `frontend/app/movers/page.tsx` (new) ·
+`frontend/components/AppShell.tsx` (`topBar` slot) · `frontend/app/layout.tsx`
+(pass `<MarketStatsBar/>`) · `frontend/components/Sidebar.tsx` (Browse + Insights) ·
+`CLAUDE.md` (§Gotchas index) · `docs/GOTCHAS.md` (detail) · `AGENTS.md` (§Gotchas mirror) ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---
+
+## Strip Compare + Filter + Resources from PR #412 (in flight, 2026-06-04)
+
+**Branch**: `claude/confident-ramanujan-NgV5y` (PR #412, follow-up commit)
+**Type**: refactor(frontend) — FRONTEND-ONLY, no schema / compute / data change; no
+schema bump. User-directed scope reduction on the same PR ("เอา resources และรื้อ
+compare stock ออก … Compare ลบทิ้งทั้งหมด … ลบ filter ทิ้งด้วย"); search is KEPT
+(user chose "เก็บช่องค้นหาไว้" via AskUserQuestion).
+
+**Removed — Compare feature (entirely):** deleted `frontend/app/compare/page.tsx`,
+`frontend/components/CompareView.tsx`, `frontend/components/CompareMatrix.tsx`; pulled
+the ranking-table multi-select checkboxes + the fixed "Compare (N)" action bar +
+`selected`/`goCompare` state out of `RankingTable`.
+
+**Removed — Filter screener (entirely; free-text search KEPT):** deleted
+`frontend/components/{FilterControls,FilterDrawer,FilterRail,DualRange}.tsx` +
+`frontend/lib/{filter-storage,filter-url}.ts`; pulled all filter state (sector / tier /
+mos / recommendation sets + composite-score range), the multi-axis `filtered` logic
+(now search-only), the sessionStorage+URL persistence, the active-filter chips, and the
+Filters button out of `RankingTable`.
+
+**Removed — Sidebar Resources + Compare nav:** the `Resources` section
+(Methodology / Design / GitHub) + the `Compare` `Browse` item; nav is now Browse
+(Rankings · Sectors) + Insights (Top Movers). Dropped the now-unused `@/lib/links`
+`METHODOLOGY_URL` import.
+
+**`RankingTable.tsx` rewritten lean** (938 → ~430 lines): free-text search + column
+sort + pagination + FLIP reshuffle (now gated on `search`) + stagger entrance + desktop
+table + mobile cards + empty-state (reworded "No stocks match your search" + "Clear
+search"). Same row markup, minus the compare checkbox. SHARED helpers introduced by the
+removed features but used elsewhere are RETAINED: `lib/flag-labels.ts` (`flagLabel` →
+RiskSummaryCard + FairPriceCard) and `pillarColor` in `lib/visual.ts` (→ PillarRadarChart).
+`lib/links.ts` left in place (now an orphaned `METHODOLOGY_URL` export — harmless, not
+imported anywhere).
+
+**Cross-branch note**: the in-flight Compare/Filter polish branches (`busy-newton-L6J56`,
+`beautiful-goldberg-ktA03`, `optimistic-fermat-lUTnF`) become moot / conflicting if this
+merges — flagged to the user (close those PRs). Several CLAUDE.md / docs/GOTCHAS.md /
+AGENTS.md gotchas documenting the removed Compare/Filter code are now stale; the
+always-loaded CLAUDE.md §Gotchas index lines are pruned in this commit, a full
+`docs/GOTCHAS.md` + `AGENTS.md` sweep is a noted follow-up (docs-reviewer).
+
+**Verification**: `tsc --noEmit` clean (after clearing stale `.next/types/app/compare`);
+`next build` GREEN — **508 static pages** (`/compare` gone), `/` bundle 10.6 → 5.08 kB;
+Playwright screenshots (mobile home search-only toolbar + drawer Browse/Insights,
+desktop full-width table no filter-rail/compare-column) confirm no stranded UI.
+`quantrank-reviewer` + `frontend-design-reviewer` review in flight.
+
+**Files**: deleted `frontend/app/compare/page.tsx` ·
+`frontend/components/{CompareView,CompareMatrix,FilterControls,FilterDrawer,FilterRail,DualRange}.tsx` ·
+`frontend/lib/{filter-storage,filter-url}.ts`; rewrote `frontend/components/RankingTable.tsx`;
+edited `frontend/components/Sidebar.tsx` (drop Resources + Compare) · `CLAUDE.md`
+(§Gotchas index prune) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---

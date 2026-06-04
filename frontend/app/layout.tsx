@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { AppShell } from '@/components/AppShell';
+import { MarketStatsBar } from '@/components/MarketStatsBar';
 import { ThemeProvider } from '@/components/ThemeProvider';
 
 // PR 4.5d follow-up — self-host all 3 fonts via @fontsource packages
@@ -39,7 +40,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
         <ThemeProvider>
-          <AppShell>{children}</AppShell>
+          {/* MarketStatsBar is a Server Component rendered here and handed to
+              the client AppShell as a slot, so the universe-snapshot data
+              (rankings.json) is read at build time and never bundled client-side. */}
+          <AppShell topBar={<MarketStatsBar />}>{children}</AppShell>
         </ThemeProvider>
       </body>
     </html>

@@ -1,39 +1,17 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { SearchX } from 'lucide-react';
 
-import { FilterDrawer } from '@/components/FilterDrawer';
-import { FilterRail } from '@/components/FilterRail';
 import { LossChanceBadge } from '@/components/LossChanceBadge';
-import {
-  RECOMMENDATION_CHIP_DOTS,
-  RECOMMENDATION_LABELS,
-  RecommendationBadge,
-} from '@/components/RecommendationBadge';
+import { RecommendationBadge } from '@/components/RecommendationBadge';
 import { ScoreBadge } from '@/components/ScoreBadge';
 import { SectorChip } from '@/components/SectorChip';
 import { StockLogo } from '@/components/StockLogo';
-import {
-  clearFilterSnapshot,
-  loadFilterSnapshot,
-  saveFilterSnapshot,
-  type FilterSnapshot,
-} from '@/lib/filter-storage';
-import { parseFiltersFromUrl, writeFiltersToUrl } from '@/lib/filter-url';
 import { formatMosPct } from '@/lib/format';
-import type { Recommendation, StockSummary } from '@/lib/types';
+import type { StockSummary } from '@/lib/types';
 import { useFlip } from '@/lib/useFlip';
-import {
-  ACTIVE_FILTER_CHIP_TONE,
-  MOS_BUCKETS,
-  TIERS,
-  getMosBucket,
-  getTier,
-  sectorStyle,
-} from '@/lib/visual';
 
 type SortKey =
   | 'rank'
@@ -47,199 +25,35 @@ type SortKey =
 type SortDir = 'asc' | 'desc';
 
 const PAGE_SIZE = 50;
-const MAX_COMPARE = 4;
 
 function formatPrice(p: number): string {
   return p.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 });
 }
 
 export default function RankingTable({ data }: { data: StockSummary[] }) {
-  // Filter state. Defaults are empty/full-range on SSR + first render
-  // (avoids server/client markup mismatch); `useEffect` below rehydrates
-  // from sessionStorage after mount so a user returning from a stock
-  // detail page sees the same filters they left applied.
+  // Search-only view. The multi-dimension filter screener + the cross-stock
+  // compare multi-select were removed; the table keeps free-text search, column
+  // sort, and pagination.
   const [search, setSearch] = useState('');
-  const [sectorSet, setSectorSet] = useState<Set<string>>(() => new Set());
-  const [scoreRange, setScoreRange] = useState<[number, number]>([0, 100]);
-  const [tierSet, setTierSet] = useState<Set<string>>(() => new Set());
-  const [mosSet, setMosSet] = useState<Set<string>>(() => new Set());
-  const [recommendationSet, setRecommendationSet] = useState<Set<Recommendation>>(
-    () => new Set(),
-  );
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  // Multi-select for the cross-stock compare view. In-memory only (a transient
-  // action; the /compare URL is the shareable artifact, not this selection).
-  // Keyed by ticker, so it survives pagination + filtering — independent of the
-  // filtered/paged slice and separate from the filter state above.
-  const [selected, setSelected] = useState<Set<string>>(() => new Set());
-  const router = useRouter();
-  // `hydrated` gates the persist-on-change effect so we don't overwrite
-  // the saved snapshot with the empty defaults during the first render
-  // (the load effect runs after that initial render).
-  const hydratedRef = useRef(false);
-
-  // Rehydrate filters on mount (client-only, runs once). The URL query
-  // string wins when present (a shared / bookmarked / reloaded filtered
-  // view is an explicit intent); otherwise fall back to the within-tab
-  // sessionStorage snapshot (return-from-detail navigation). A clean `/`
-  // URL parses to `null`, so it never clobbers a restored snapshot.
-  useEffect(() => {
-    const saved = parseFiltersFromUrl() ?? loadFilterSnapshot();
-    if (saved.search) setSearch(saved.search);
-    if (saved.sectors.length > 0) setSectorSet(new Set(saved.sectors));
-    if (saved.scoreRange[0] !== 0 || saved.scoreRange[1] !== 100) {
-      setScoreRange(saved.scoreRange);
-    }
-    if (saved.tiers.length > 0) setTierSet(new Set(saved.tiers));
-    if (saved.mos.length > 0) setMosSet(new Set(saved.mos));
-    if (saved.recommendations.length > 0) {
-      setRecommendationSet(new Set(saved.recommendations));
-    }
-    hydratedRef.current = true;
-  }, []);
 
   // Sort + pagination
   const [sortKey, setSortKey] = useState<SortKey>('rank');
   const [sortDir, setSortDir] = useState<SortDir>('asc');
   const [page, setPage] = useState(1);
 
-  const sectors = useMemo(() => {
-    const s = new Set(data.map((d) => d.sector));
-    return Array.from(s).sort();
-  }, [data]);
-
-  // Multi-axis filter: every active dimension AND-combines (a stock
-  // has to match each non-empty filter to survive). Empty filters
-  // pass everything through (sectorSet.size===0 means "all sectors").
+  // Free-text search over ticker + company name. Empty query passes everything.
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return data.filter((row) => {
-      if (sectorSet.size > 0 && !sectorSet.has(row.sector)) return false;
-      if (scoreRange[0] !== 0 || scoreRange[1] !== 100) {
-        const sc = row.composite_score;
-        if (sc == null || Number.isNaN(sc)) return false;
-        if (sc < scoreRange[0] || sc > scoreRange[1]) return false;
-      }
-      if (tierSet.size > 0) {
-        const t = getTier(row.composite_score);
-        if (!t || !tierSet.has(t)) return false;
-      }
-      if (mosSet.size > 0) {
-        const b = getMosBucket(row.margin_of_safety_pct);
-        if (!b || !mosSet.has(b)) return false;
-      }
-      if (recommendationSet.size > 0) {
-        if (!row.recommendation || !recommendationSet.has(row.recommendation)) {
-          return false;
-        }
-      }
-      if (!q) return true;
-      return row.ticker.toLowerCase().includes(q) || row.name.toLowerCase().includes(q);
-    });
-  }, [data, search, sectorSet, scoreRange, tierSet, mosSet, recommendationSet]);
+    if (!q) return data;
+    return data.filter(
+      (row) => row.ticker.toLowerCase().includes(q) || row.name.toLowerCase().includes(q),
+    );
+  }, [data, search]);
 
-  // Reset page on any filter change so user doesn't end up on a
-  // suddenly-empty page after narrowing results.
+  // Reset page on a search change so the user doesn't land on a now-empty page.
   useEffect(() => {
     setPage(1);
-  }, [search, sectorSet, scoreRange, tierSet, mosSet, recommendationSet]);
-
-  // Persist filter state on every change (post-hydration). Skipping the
-  // initial render via `hydratedRef` avoids clobbering a saved snapshot
-  // with empty defaults before the load effect has a chance to read it.
-  // Mirror to BOTH sessionStorage (within-tab return nav) AND the URL
-  // (shareable / bookmarkable view) so the two stay in sync; clearing the
-  // last filter writes the bare pathname (no `?`).
-  useEffect(() => {
-    if (!hydratedRef.current) return;
-    const snapshot: FilterSnapshot = {
-      search,
-      sectors: Array.from(sectorSet),
-      scoreRange,
-      tiers: Array.from(tierSet),
-      mos: Array.from(mosSet),
-      recommendations: Array.from(recommendationSet),
-    };
-    saveFilterSnapshot(snapshot);
-    writeFiltersToUrl(snapshot);
-  }, [search, sectorSet, scoreRange, tierSet, mosSet, recommendationSet]);
-
-  const toggleSector = (s: string) =>
-    setSectorSet((prev) => {
-      const n = new Set(prev);
-      if (n.has(s)) n.delete(s);
-      else n.add(s);
-      return n;
-    });
-  const toggleTier = (t: string) =>
-    setTierSet((prev) => {
-      const n = new Set(prev);
-      if (n.has(t)) n.delete(t);
-      else n.add(t);
-      return n;
-    });
-  const toggleMos = (m: string) =>
-    setMosSet((prev) => {
-      const n = new Set(prev);
-      if (n.has(m)) n.delete(m);
-      else n.add(m);
-      return n;
-    });
-  const toggleRecommendation = (rec: Recommendation) =>
-    setRecommendationSet((prev) => {
-      const n = new Set(prev);
-      if (n.has(rec)) n.delete(rec);
-      else n.add(rec);
-      return n;
-    });
-  const clearAll = () => {
-    setSearch('');
-    setSectorSet(new Set());
-    setScoreRange([0, 100]);
-    setTierSet(new Set());
-    setMosSet(new Set());
-    setRecommendationSet(new Set());
-    // Wipe the persisted snapshot too so a tab close → reopen lands on
-    // the same clean state (otherwise the persist-on-change effect
-    // would immediately re-save the defaults, which is correct but
-    // wasteful — an explicit remove is the cleaner signal).
-    clearFilterSnapshot();
-  };
-
-  const toggleSelect = (t: string) =>
-    setSelected((prev) => {
-      const n = new Set(prev);
-      if (n.has(t)) n.delete(t);
-      else {
-        if (n.size >= MAX_COMPARE) return prev; // cap; checkbox is disabled too
-        n.add(t);
-      }
-      return n;
-    });
-  const removeSelect = (t: string) =>
-    setSelected((prev) => {
-      const n = new Set(prev);
-      n.delete(t);
-      return n;
-    });
-  const goCompare = () => {
-    if (selected.size < 2) return;
-    router.push(
-      `/compare/?compare=${Array.from(selected).map(encodeURIComponent).join(',')}`,
-    );
-  };
-
-  const scoreActive = scoreRange[0] !== 0 || scoreRange[1] !== 100;
-  // Aggregate count for the badge on the Filters button — one per
-  // active dimension, not per active chip, so the user sees "2"
-  // when they have any sectors + any tiers selected.
-  const activeCount =
-    (search ? 1 : 0) +
-    (sectorSet.size ? 1 : 0) +
-    (scoreActive ? 1 : 0) +
-    (tierSet.size ? 1 : 0) +
-    (mosSet.size ? 1 : 0) +
-    (recommendationSet.size ? 1 : 0);
+  }, [search]);
 
   const sorted = useMemo(() => {
     const arr = [...filtered];
@@ -261,61 +75,29 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
   const safePage = Math.min(page, totalPages);
   const pageRows = sorted.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
-  // FLIP reshuffle ($impeccable overdrive) — when a FILTER / SEARCH change
-  // reorders the visible rows, the surviving rows slide from their old
-  // position to the new one (transform-only, 300ms, app ease-in-out,
-  // reduced-motion guarded). Filter-scoped on purpose: a column-sort turns
-  // over the whole paginated 50-row page, so a sort-triggered FLIP would fire
-  // on <5% of rows and read as broken; a filter keeps survivors in the DOM, so
-  // partial animation there is semantically correct ("the field responded").
-  // `orderKey` re-runs the measure on ANY order change (sort / page silently
-  // re-baseline); `filterKey` is what GATES the play. Both the desktop
-  // <tbody> and the mobile <ul> get a hook; each animates only its visible
-  // (non-zero-height) list, so the off-screen layout is a no-op.
+  // FLIP reshuffle ($impeccable overdrive) — when a SEARCH change reorders the
+  // visible rows, the surviving rows slide from their old position to the new
+  // one (transform-only, 300ms, app ease-in-out, reduced-motion guarded).
+  // Search-scoped on purpose: a column-sort turns over the whole paginated
+  // 50-row page, so a sort-triggered FLIP would fire on <5% of rows and read as
+  // broken; a search keeps survivors in the DOM, so partial animation there is
+  // semantically correct ("the field responded"). `orderKey` re-runs the
+  // measure on ANY order change (sort / page silently re-baseline); `filterKey`
+  // is what GATES the play.
   const orderKey = pageRows.map((r) => r.ticker).join(',');
-  const filterKey = JSON.stringify([
-    search,
-    [...sectorSet].sort(),
-    scoreRange,
-    [...tierSet].sort(),
-    [...mosSet].sort(),
-    [...recommendationSet].sort(),
-  ]);
+  const filterKey = search;
   const tbodyFlipRef = useFlip<HTMLTableSectionElement>(orderKey, filterKey);
   const cardsFlipRef = useFlip<HTMLUListElement>(orderKey, filterKey);
 
   // Row stagger-entrance. The animate class is intentionally BAKED into the
   // static HTML (NOT gated behind a usePlayOnMount effect) so the rows start at
-  // the `rise-in` keyframe's `from` state (opacity:0) from the very FIRST paint.
-  // Why: on a static-export site the browser paints the static HTML BEFORE any
-  // JS runs — so an effect that adds the animate class one frame after mount
-  // leaves a window where the row is painted OPAQUE (no class yet) and then
-  // snaps to invisible when the class lands (`fill-mode: both` applies `from`).
-  // That snap is the refresh FLASH the user reported (2026-05-31, mobile). With
-  // the class in the static HTML there is no opaque frame and no flash.
-  //
-  // Hydration-safe: `animateRows` derives ONLY from `safePage` (1) +
-  // `firstRenderRef.current` (true) at first render, identical on the build-time
-  // prerender and the client's hydration render (a fresh ref is `true` on both)
-  // — so the same classes appear on both sides, no mismatch. reduced-motion is
-  // still honored: globals.css `animation: none !important` disables the keyframe
-  // AND its fill-mode, so rows render at their natural opacity:1 (content never
-  // hidden). Plays on EVERY visit because a fresh mount (full load or client-nav
-  // back to /) starts with a fresh `firstRenderRef = true`.
-  //
-  // "Play ONCE per mount, never on an in-page interaction" (design.md Motion
-  // Rule 2): `firstRenderRef` is flipped false by an empty-dep effect that runs
-  // ONCE after the first paint, BEFORE the user can interact — so EVERY later
-  // render (sort / filter / search / paginate / the FLIP reshuffle) reads it as
-  // false → no stagger class → the cascade never replays. This also keeps the
-  // filter-driven FLIP slide the SOLE motion on a filter change (no entrance-fade
-  // competing on rows that ENTER the filtered set). NOTE the precise mechanism:
-  // an empty-dep MOUNT effect, NOT a filter-deps-watching effect — the latter
-  // would fire AFTER each filtered render (too late, replaying the cascade once),
-  // the anti-pattern the prior `interacted`-latch design warned about. The mount
-  // effect fires before any interaction, so the gate is already spent by the time
-  // the user does anything — a single uniform gate covering every path (including
-  // the FilterDrawer-internal search box + score slider) with no per-handler wiring.
+  // the `rise-in` keyframe's `from` state (opacity:0) from the very FIRST paint
+  // (a one-frame-opaque-then-snap flash otherwise). Hydration-safe: `animateRows`
+  // derives ONLY from `safePage` (1) + `firstRenderRef.current` (true) at first
+  // render, identical on the build-time prerender and the client's hydration
+  // render. Plays ONCE per mount (`firstRenderRef` flipped false by an empty-dep
+  // effect that runs before any interaction), never on an in-page interaction
+  // (sort / search / paginate / FLIP reshuffle).
   const firstRenderRef = useRef(true);
   useEffect(() => {
     firstRenderRef.current = false;
@@ -346,12 +128,11 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
         tabIndex={0}
         className={`cursor-pointer select-none px-3 py-2 text-left font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 ${extraClass}`}
         onClick={() => onSort(key)}
-        // Keyboard parity for the click-to-sort header (2026-05-29 audit
-        // S1 — WCAG 2.1.1 / 4.1.2). tabIndex makes the columnheader
-        // focusable; Enter/Space activate the same sort. preventDefault on
-        // Space stops the page from scrolling. aria-sort already announces
-        // the current direction to screen readers; the global :focus-visible
-        // ring (globals.css) supplies the visible focus indicator.
+        // Keyboard parity for the click-to-sort header (WCAG 2.1.1 / 4.1.2).
+        // tabIndex makes the columnheader focusable; Enter/Space activate the
+        // same sort. preventDefault on Space stops the page from scrolling. The
+        // visible focus indicator comes from the global `:focus-visible` ring in
+        // globals.css — do NOT add `focus:outline-none` here without a replacement.
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
@@ -393,47 +174,9 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
   };
 
   return (
-    <div className={selected.size > 0 ? 'pb-20' : undefined}>
-      {/* xl+ : persistent filter rail | content column. Below xl the rail is
-          hidden (display:none) and the FilterDrawer + its toolbar trigger take over.
-          (impeccable critique P1 — a 502-row screener must not hide its primary
-          task behind a modal on desktop.) Engages at xl, not lg: a 288px rail at
-          lg (1024-1279) squeezed the 7-col table below its ~700px floor. */}
-      <div className="xl:flex xl:items-start xl:gap-6">
-        <FilterRail
-          state={{ search, sectorSet, scoreRange, tierSet, mosSet, recommendationSet }}
-          setters={{
-            setSearch,
-            toggleSector,
-            setScoreRange,
-            toggleTier,
-            toggleMos,
-            toggleRecommendation,
-            clearAll,
-          }}
-          sectors={sectors}
-          totalCount={data.length}
-          filteredCount={filtered.length}
-        />
-        <div className="min-w-0 space-y-3 xl:flex-1">
-      {/* Toolbar: Filters button (with active count) + inline search + count.
-          Hidden at xl+ — the persistent FilterRail replaces it there. */}
-      <div className="flex flex-wrap items-center gap-2 xl:hidden">
-        <button
-          type="button"
-          onClick={() => setDrawerOpen(true)}
-          className="inline-flex min-h-[44px] items-center gap-2 rounded-sm border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 press hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
-        >
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M2 4h12M4 8h8M6 12h4" strokeLinecap="round" />
-          </svg>
-          Filters
-          {activeCount > 0 && (
-            <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-sm bg-slate-900 px-1 text-[0.625rem] font-semibold text-white dark:bg-slate-100 dark:text-slate-900">
-              {activeCount}
-            </span>
-          )}
-        </button>
+    <div className="space-y-3">
+      {/* Toolbar: inline search + result count. */}
+      <div className="flex flex-wrap items-center gap-2">
         <div className="relative min-w-[12.5rem] max-w-xs flex-1">
           <input
             type="search"
@@ -459,120 +202,17 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
           <span className="font-mono font-semibold tabular-nums text-slate-700 dark:text-slate-300">
             {sorted.length.toLocaleString()}
           </span>
-          <span className="text-slate-500 dark:text-slate-400"> / {data.length.toLocaleString()} stocks</span>
+          <span className="tabular-nums text-slate-500 dark:text-slate-400"> / {data.length.toLocaleString()} stocks</span>
         </div>
       </div>
 
-      {/* Active filter chips — click any chip to remove that single
-          filter; "Clear all" wipes everything. */}
-      {activeCount > 0 && (
-        <div className="flex flex-wrap items-center gap-1.5 xl:hidden">
-          {Array.from(sectorSet).map((s) => {
-            const sty = sectorStyle(s);
-            return (
-              <button
-                key={`f-sec-${s}`}
-                type="button"
-                onClick={() => toggleSector(s)}
-                className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset press hover:opacity-75 ${ACTIVE_FILTER_CHIP_TONE}`}
-              >
-                <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ backgroundColor: sty.dot }} />
-                {s}
-                <span aria-hidden="true" className="opacity-60">×</span>
-              </button>
-            );
-          })}
-          {Array.from(tierSet).map((id) => {
-            const t = TIERS.find((x) => x.id === id);
-            return t ? (
-              <button
-                key={`f-tier-${id}`}
-                type="button"
-                onClick={() => toggleTier(id)}
-                className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset press hover:opacity-75 ${ACTIVE_FILTER_CHIP_TONE}`}
-              >
-                <span className={`inline-block h-1.5 w-1.5 rounded-full ${t.dot}`} />
-                {t.label}
-                <span aria-hidden="true" className="opacity-60">×</span>
-              </button>
-            ) : null;
-          })}
-          {Array.from(mosSet).map((id) => {
-            const b = MOS_BUCKETS.find((x) => x.id === id);
-            return b ? (
-              <button
-                key={`f-mos-${id}`}
-                type="button"
-                onClick={() => toggleMos(id)}
-                className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset press hover:opacity-75 ${ACTIVE_FILTER_CHIP_TONE}`}
-              >
-                <span className={`inline-block h-1.5 w-1.5 rounded-full ${b.dot}`} />
-                {b.label}
-                <span aria-hidden="true" className="opacity-60">×</span>
-              </button>
-            ) : null;
-          })}
-          {Array.from(recommendationSet).map((rec) => (
-            <button
-              key={`f-rec-${rec}`}
-              type="button"
-              onClick={() => toggleRecommendation(rec)}
-              className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset press hover:opacity-75 ${ACTIVE_FILTER_CHIP_TONE}`}
-            >
-              <span className={`inline-block h-1.5 w-1.5 rounded-full ${RECOMMENDATION_CHIP_DOTS[rec]}`} />
-              {RECOMMENDATION_LABELS[rec]}
-              <span aria-hidden="true" className="opacity-60">×</span>
-            </button>
-          ))}
-          {scoreActive && (
-            <button
-              type="button"
-              onClick={() => setScoreRange([0, 100])}
-              className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-medium ring-1 ring-inset press hover:opacity-75 ${ACTIVE_FILTER_CHIP_TONE}`}
-            >
-              Score {scoreRange[0]}–{scoreRange[1]}
-              <span aria-hidden="true" className="opacity-60">×</span>
-            </button>
-          )}
-          <button
-            type="button"
-            onClick={clearAll}
-            className="ml-1 press text-xs font-medium text-slate-600 underline-offset-2 hover:text-slate-900 hover:underline dark:text-slate-400 dark:hover:text-slate-100"
-          >
-            Clear all
-          </button>
-        </div>
-      )}
-
-      <FilterDrawer
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        state={{ search, sectorSet, scoreRange, tierSet, mosSet, recommendationSet }}
-        setters={{
-          setSearch,
-          toggleSector,
-          setScoreRange,
-          toggleTier,
-          toggleMos,
-          toggleRecommendation,
-          clearAll,
-        }}
-        sectors={sectors}
-        totalCount={data.length}
-        filteredCount={filtered.length}
-      />
-
       {/* Desktop table (lg+). Portrait tablets (md→lg, 768–1023px) fall back
-          to the card list below: the 7-col table needs ~700px but the md
-          content area is only ~530px beside the sidebar, which clipped the
-          Sector column (2026-05-29 layout-density audit). */}
+          to the card list below: the 6-col table needs ~700px but the md
+          content area is only ~530px beside the sidebar. */}
       <div className="hidden overflow-x-auto rounded border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 lg:block">
         <table className="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
           <thead className="bg-slate-50 text-xs uppercase tracking-[0.14em] dark:bg-slate-900/60">
             <tr>
-              <th scope="col" className="w-9 px-3 py-2">
-                <span className="sr-only">Select to compare</span>
-              </th>
               {headerCell('rank', 'Rank')}
               {headerCell('ticker', 'Ticker')}
               {headerCell('name', 'Name')}
@@ -595,21 +235,6 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                 : '';
               return (
                 <tr key={row.ticker} data-flip-key={row.ticker} className={`hover-lift transition-colors duration-100 odd:bg-white even:bg-slate-100 hover:bg-slate-200 dark:odd:bg-slate-900 dark:even:bg-slate-900/50 dark:hover:bg-slate-800 ${staggerClass}`}>
-                  <td className="px-3 py-2">
-                    <input
-                      type="checkbox"
-                      checked={selected.has(row.ticker)}
-                      onChange={() => toggleSelect(row.ticker)}
-                      disabled={!selected.has(row.ticker) && selected.size >= MAX_COMPARE}
-                      aria-label={`Select ${row.ticker} to compare`}
-                      title={
-                        !selected.has(row.ticker) && selected.size >= MAX_COMPARE
-                          ? `Compare up to ${MAX_COMPARE} stocks`
-                          : undefined
-                      }
-                      className="h-4 w-4 cursor-pointer accent-emerald-700 disabled:cursor-not-allowed disabled:opacity-40 dark:accent-emerald-500"
-                    />
-                  </td>
                   <td className="px-3 py-2 tabular-nums text-slate-700 dark:text-slate-300">{row.rank}</td>
                   <td className="px-3 py-2 font-mono font-semibold text-slate-900 dark:text-slate-100">
                     <Link
@@ -650,26 +275,14 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
             <li
               key={row.ticker}
               data-flip-key={row.ticker}
-              className={`hover-lift press relative min-h-[7rem] rounded border border-slate-200 bg-white transition-colors duration-100 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/50 ${staggerClass}`}
+              className={`hover-lift press min-h-[7rem] rounded border border-slate-200 bg-white transition-colors duration-100 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/50 ${staggerClass}`}
             >
-              {/* Compare checkbox — a sibling of the card <Link> (not nested:
-                  interactive-in-interactive is invalid), absolutely placed so the
-                  card body pads left to clear it. */}
-              <input
-                type="checkbox"
-                checked={selected.has(row.ticker)}
-                onChange={() => toggleSelect(row.ticker)}
-                disabled={!selected.has(row.ticker) && selected.size >= MAX_COMPARE}
-                aria-label={`Select ${row.ticker} to compare`}
-                className="absolute left-3 top-3.5 z-10 h-5 w-5 cursor-pointer accent-emerald-700 disabled:cursor-not-allowed disabled:opacity-40 dark:accent-emerald-500"
-              />
               <Link
                 href={`/stock/${row.ticker}/`}
-                className="flex h-full flex-col gap-1 p-3 pl-11"
+                className="flex h-full flex-col gap-1 p-3"
               >
                 {/* Mobile card header — mirrors the detail-page hero
-                    cadence (frontend/app/stock/[ticker]/page.tsx:88-103):
-                    rank pill + sector chip on the top line, then
+                    cadence: rank pill + sector chip on the top line, then
                     [logo] TICKER [recommendation] on the next line,
                     then company name. ScoreBadge floats on the right. */}
                 <div className="flex items-start justify-between gap-3">
@@ -693,8 +306,7 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                 </div>
                 {/* 2-column symmetric quote block — label sits inline
                     BEFORE the number ("PRICE $123.01 USD"), with the
-                    supporting pill on the second line. Same shape on
-                    both columns so the card stays balanced. */}
+                    supporting pill on the second line. */}
                 <div className="mt-1 grid grid-cols-2 gap-3">
                   <div className="flex flex-col items-start gap-1">
                     <div className="flex items-baseline gap-1.5">
@@ -713,23 +325,18 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                         const positive = pct >= 0;
                         // Daily change reads as an outlined-light chip in the one
                         // shared chip family — NOT a solid green/red dopamine pill
-                        // (PRODUCT.md "calm, never urgent" + the "no gamified
-                        // red-green" anti-reference). The ↗/↘ arrow is a non-color
-                        // affordance so direction still reads without color (state
-                        // is never color-only). Symmetric tokens also fix the prior
-                        // asymmetry: globals.css softens bg-emerald-600 but has no
-                        // bg-rose-600 remap, so the old down-pill rendered raw
-                        // alarm-red while the up-pill was soft sage.
+                        // (PRODUCT.md "calm, never urgent"). The ↗/↘ arrow is a
+                        // non-color affordance so direction still reads without
+                        // color (state is never color-only).
                         const pillCls = positive
                           ? 'bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-800'
                           : 'bg-rose-50 text-rose-700 ring-rose-200 dark:bg-rose-900/30 dark:text-rose-300 dark:ring-rose-800';
-                        const absCls = positive ? 'text-emerald-700' : 'text-rose-700';
-                        // Derive absolute $ change from current_price +
-                        // pct (the same identity CurrentPriceLine uses
-                        // on the detail page: abs = price * pct / (100
-                        // + pct)). Avoids adding a schema field for
-                        // what is already implied by the two values
-                        // already in StockSummary.
+                        const absCls = positive
+                          ? 'text-emerald-700 dark:text-emerald-300'
+                          : 'text-rose-700 dark:text-rose-300';
+                        // Derive absolute $ change from current_price + pct (the
+                        // same identity CurrentPriceLine uses on the detail page:
+                        // abs = price * pct / (100 + pct)).
                         const abs = (row.current_price * pct) / (100 + pct);
                         return (
                           <div className="flex items-center gap-1.5 text-[0.6875rem]">
@@ -802,30 +409,28 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
       {pageRows.length === 0 && (
         <div className="animate-fade-in flex flex-col items-center rounded border border-slate-200 bg-white px-6 py-10 text-center dark:border-slate-800 dark:bg-slate-900">
           {/* Empty-state delight ($impeccable delight): a REACHABLE moment (the
-              user over-filtered to zero). Warm + helpful + professional, not
-              wacky (finance = "read the room"): a muted anchor glyph + a human
-              heading + an actionable nudge telling the user how to RECOVER, not
-              just that they failed. The icon is decorative (aria-hidden) so the
-              heading carries the meaning for SR; fade-in is reduced-motion
-              guarded via the shared motion system. */}
+              user searched for a name that isn't in the universe). Warm + helpful,
+              not wacky (finance = "read the room"): a muted glyph + a human
+              heading + an actionable nudge on how to RECOVER. The icon is
+              decorative (aria-hidden); fade-in is reduced-motion guarded. */}
           <SearchX
             aria-hidden="true"
             strokeWidth={1.5}
             className="mb-3 h-8 w-8 text-slate-300 dark:text-slate-600"
           />
           <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
-            No stocks match those filters
+            No stocks match your search
           </p>
           <p className="mt-1 max-w-xs text-xs text-slate-500 dark:text-slate-400">
-            Try a wider score range, or clear a sector or two.
+            Try a different ticker or company name.
           </p>
-          {activeCount > 0 && (
+          {search && (
             <button
               type="button"
-              onClick={clearAll}
+              onClick={() => setSearch('')}
               className="mt-4 inline-flex min-h-[44px] items-center rounded-sm border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 press hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
             >
-              Clear all filters
+              Clear search
             </button>
           )}
         </div>
@@ -878,59 +483,6 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
               <polyline points="9 18 15 12 9 6" />
             </svg>
           </button>
-        </div>
-      )}
-        </div>
-      </div>
-
-      {/* Compare action bar — appears once anything is selected. Fixed to the
-          viewport bottom (the wrapper is pointer-events-none so it never blocks
-          the page; only the bar itself is interactive). The "Compare" CTA is the
-          one place a solid forest-green fill is allowed (it's a primary action,
-          not a chip). animate-fade-in is reduced-motion-guarded by the global
-          motion system. */}
-      {selected.size > 0 && (
-        <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 flex justify-center px-4 pb-4">
-          <div className="animate-fade-in pointer-events-auto flex max-w-[calc(100vw-2rem)] items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-overlay dark:border-slate-700 dark:bg-slate-900">
-            <span className="whitespace-nowrap text-xs font-medium text-slate-600 dark:text-slate-300">
-              <span className="font-mono font-semibold tabular-nums text-slate-900 dark:text-slate-100">
-                {selected.size}
-              </span>{' '}
-              selected
-            </span>
-            <ul className="hidden max-w-[36vw] items-center gap-1 overflow-x-auto sm:flex">
-              {Array.from(selected).map((t) => (
-                <li key={t}>
-                  <span className="inline-flex items-center gap-1 rounded-sm bg-slate-100 px-1.5 py-0.5 text-xs font-medium text-slate-700 ring-1 ring-inset ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-500">
-                    <span className="font-mono">{t}</span>
-                    <button
-                      type="button"
-                      onClick={() => removeSelect(t)}
-                      aria-label={`Remove ${t} from selection`}
-                      className="press opacity-60 hover:opacity-100"
-                    >
-                      <span aria-hidden="true">×</span>
-                    </button>
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <button
-              type="button"
-              onClick={() => setSelected(new Set())}
-              className="press inline-flex min-h-[44px] items-center whitespace-nowrap text-xs font-medium text-slate-500 underline-offset-2 hover:text-slate-900 hover:underline dark:text-slate-400 dark:hover:text-slate-100"
-            >
-              Clear
-            </button>
-            <button
-              type="button"
-              onClick={goCompare}
-              disabled={selected.size < 2}
-              className="press inline-flex min-h-[44px] items-center gap-1.5 whitespace-nowrap rounded-sm bg-emerald-700 px-3 py-2 text-sm font-semibold text-white enabled:hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-emerald-700 dark:enabled:hover:bg-emerald-800"
-            >
-              {selected.size < 2 ? 'Select 1 more' : `Compare ${selected.size}`}
-            </button>
-          </div>
         </div>
       )}
     </div>

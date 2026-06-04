@@ -411,11 +411,9 @@ always-loaded context small while preserving discoverability of every invariant.
 - **Interactive controls carry a `min-h-[44px]` touch target; modals trap +
 - **Secondary / muted text uses `text-slate-500 dark:text-slate-400` — NOT the
 - **The stock-detail page splits into a DECISION zone and a collapsed
-- **Ranking-table filter state lives in THREE synced places — React state ·
 - **Loss-chance (and any rounded-display band/tone) must derive from the
 - **`PillarRadarChart` shares the composite `TIERS` vocabulary + boundaries —
 - **MoS donut + pillar rows expose their data to SR (not just a mouse `title`);
-- **`FilterDrawer` has an "Active filters" removable-chip summary at the top of
 - **The outlined-light chip is a PRIMITIVE now — `frontend/components/Chip.tsx`,
 - **Chip family carries `font-medium`; every large numeric display carries
 - **The price chart is lazy-loaded via `PriceHistoryChartLazy` so Recharts
@@ -429,8 +427,9 @@ always-loaded context small while preserving discoverability of every invariant.
 - **`exchange_coverage_pct` and `country_coverage_pct` look like siblings but
 - **Whole-app polish conventions (`$impeccable polish "all app"`, 2026-06-03) — empty-state CTA is `disabled` not just styled · a labeled chip inside an `aria-label`'d container is `aria-hidden` · `ring-rose-300` is never a negative chip ring (`-200` only) · detail-page valuation sections own no `mb-*`**
 - **Sidebar version chip = build-time `NEXT_PUBLIC_APP_VERSION` (`next.config.js` git-describe→SHA), never a hardcoded version**
-- **Cross-stock `/compare` reads `?compare=` via `window.location` (mount effect), NEVER `useSearchParams` (static-export `<Suspense>` trap); ranking-table multi-select is in-memory (URL is the share artifact) · `pillarColor`→`lib/visual`, `flagLabel`→`lib/flag-labels` are SHARED tokens (don't re-inline) · best-in-row is metric-aware + never color-only**
+- **`pillarColor`→`lib/visual` + `flagLabel`→`lib/flag-labels` are SHARED tokens (don't re-inline) — introduced by the now-removed compare/filter, still used by `PillarRadarChart` / `RiskSummaryCard` / `FairPriceCard`**
 - **`globals.css` soft-color `!important` override is LITERAL-class-keyed → it NEVER reaches `dark:bg-emerald-*` / `dark:bg-rose-*` solid-fills (they render RAW Tailwind in dark → white label ~3.8:1, under AA). A dark CTA / brand mark = `dark:bg-emerald-700` (emerald-700 = `#047857`, white 5.5:1) or a `--c-*` token directly, never `dark:bg-emerald-600` expecting the soft remap (filter theme audit #401; Q-mark sweep this PR)**
+- **The top `MarketStatsBar` strip is a BUILD-TIME snapshot, NOT a live ticker — every value derives from the already-imported `rankings.json`/`metadata.json` (`lib/market-stats.ts`); QuantRank is a weekly static export so it is "as of" the last cron (the "Updated" item is the anchor). It is a SERVER component passed into the client `AppShell` via the `topBar` slot — never `import` `lib/data.ts` into a client component. `/sectors` + `/movers` derive from `rankings.json` the same way**
 
 ## Phase status
 
