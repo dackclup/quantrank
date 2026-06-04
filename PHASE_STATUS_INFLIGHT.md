@@ -1123,3 +1123,27 @@ provenance still shows the current universe.
 `frontend/components/{AppShell,PillarRadarChart}.tsx` · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Country/market selector scaffold above the /ranking heading (in flight, 2026-06-04)
+
+**Branch**: `claude/confident-ramanujan-NgV5y` (PR #414, follow-up commit)
+**Type**: feat(frontend) — UI-scaffold only, no schema / compute / data change. User:
+"ด้านบนคำว่า s&p500 จะมีปุ่มเรียงกันอยู่ … US / TH / CH / JP / [my pick]".
+
+New `CountryTabs` row above the `/ranking` `<h1>`: a market selector for the planned
+multi-country expansion. **US is the ACTIVE market** (it's the current data = the
+S&P 500, emerald outlined-light pill labelled "US stocks"); **TH · CN · JP · UK are
+disabled "Soon" placeholders** (no data yet). Flags via `country-flag-icons` per-country
+STATIC imports (the project pattern). Decisions noted for the user: **"CH" read as China
+(`CN`)** given the Asian context (CH = Switzerland officially); **the 5th market is UK
+(`GB`)** — a placeholder pick, swap freely. Pure scaffold — the actual per-country ingest
+(universes + filing sources + currency) is the separate Phase-5+ effort; the disabled pills
+will become real market links when that data lands.
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (512 pages); Playwright shot
+confirms the 5-market row renders above "S&P 500 ranking" with US active + the rest "Soon".
+
+**Files**: `frontend/components/CountryTabs.tsx` (new) · `frontend/app/ranking/page.tsx`
+(render above the header) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
