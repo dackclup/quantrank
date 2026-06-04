@@ -1103,7 +1103,9 @@ this PR). The CURRENT coverage stays honest via the DATA-DRIVEN provenance line
 changed:
 - Home (`app/page.tsx`): h1 "S&P 500, ranked." → "Equities, ranked."; title/description drop
   "US-equity" / "S&P 500" / the hard-coded "502".
-- Ranking (`app/ranking/page.tsx`): h1 "S&P 500 ranking" → "Equity ranking"; description generalized.
+- Ranking (`app/ranking/page.tsx`): KEPT "S&P 500 ranking" + the original description (user
+  follow-up) — the /ranking page names the ACTUAL current universe; only the Home/brand
+  surfaces are universe-agnostic.
 - Sectors (`app/sectors/page.tsx`): "The S&P 500 universe…" → "The ranked universe…".
 - `AppShell` header tagline "US equity stock ranking" → "Equity rankings".
 - `layout.tsx` root metadata "Static-site US equity ranking…" → "…equity ranking…".
