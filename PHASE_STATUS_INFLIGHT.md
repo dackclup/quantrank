@@ -1361,3 +1361,43 @@ unrelated to this change.
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Phase 7.0 PR-2a — AI-pick selection + inverse-vol weighting engine (in flight, 2026-06-04)
+
+**Branch**: `claude/loving-clarke-kAZII` (PR #416, additional commit)
+**Type**: feat(compute) — new pure `compute/portfolio/` package; no schema /
+frontend / data change; no schema bump. The deterministic, I/O-free CORE of the
+"fair AI-pick + auto-weight" — the same functions serve the forward cron pick and
+the point-in-time backfill (PR-2b). methodology-scientist RATIFIED the priors
+(2026-06-04).
+
+`compute/portfolio/weights.py`:
+- `select_picks(candidates, count)` — composite desc -> exclude the 7 active
+  rank-gate VETOES (annotate flags don't exclude) -> cap 2/GICS-sector for
+  count>=5 -> backfill if the cap leaves the basket short; tiebreak
+  `composite_score_adjusted` desc then ticker asc; count clamped [1, 10]. Reads
+  ONLY ranking+detail fields (`PickCandidate`).
+- `inverse_vol_weights(sigmas, cap=0.35)` — w_i prop 1/sigma_i, capped +
+  renormalized to sum 1 via PERMANENT pinning (a capped name never re-absorbs
+  residual -> no above-cap oscillation); infeasible cap (N*cap<1, e.g. N<3)
+  degrades to equal weight. Anchors: AFP 2012 / Frazzini-Pedersen 2014 BAB /
+  DGU 2009. NOT composite-proportional (ordinal-scale error).
+- `trailing_return_sigma(closes, window=90)` — sample stdev of trailing daily
+  returns (stdlib `statistics`; null / non-positive prices dropped).
+
+**Verification**: 19 offline tests pass (selection ordering / veto exclusion /
+sector-cap binding at count>=5 / count clamp / tiebreak; inverse-vol sum=1 / cap /
+infeasible-degrade / bad-sigma-drop + a Hypothesis property `sum(w)=1 & w<=cap when
+feasible`; sigma edge cases). `ruff check .` clean. Pure functions -> no look-ahead
+surface (the leak-probe lives in PR-2b's point-in-time backfill).
+
+**Next (PR-2b)**: wire the forward pick into main.py (`StockSummary.suggested_weight`
+from the warm price cache) + the `Metadata.portfolio_backtest_*` diagnostics +
+`scripts/backfill_portfolio_pit.py` (point-in-time NAV backfill; runs on
+`workflow_dispatch`, needs the 5y price cache — cron-side).
+
+**Files**: `compute/portfolio/__init__.py` (new) · `compute/portfolio/weights.py`
+(new) · `tests/test_portfolio/test_weights.py` (new) · `PHASE_STATUS_INFLIGHT.md`
+(this).
+
+---
