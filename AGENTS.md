@@ -202,8 +202,7 @@ export function FairPriceCard(props) {  // no types
   surfaces: hero card → `shadow-large`; company-name `<p>` →
   `font-slab`; FairPriceBarChart headline → `shadow-medium`;
   FairPriceBarChart method-list → `shadow-subtle`; PillarRadarChart
-  container → `shadow-medium`; FilterDrawer panel `shadow-2xl` →
-  `shadow-overlay`; RawMetricsTable → `shadow-medium` + alternating
+  container → `shadow-medium`; RawMetricsTable → `shadow-medium` + alternating
   rows. Section labels (the small `text-sm font-medium uppercase
   tracking-wide` h2s) intentionally STAYED in IBM Plex Sans — slab
   at that small uppercase size reads wrong; slab is hero-scale only.
@@ -212,16 +211,7 @@ export function FairPriceCard(props) {  // no types
   `font-semibold`, `tracking-wide` (0.025em) → `tracking-[0.14em]`,
   `text-slate-500` → `text-slate-600` — darker + heavier + wider
   letter-spacing for Excel/Numbers column-header feel.
-  **Phase 3c (PR #215)** landed the LedgerCraft layout shell:
-  `frontend/components/AppShell.tsx` + `Sidebar.tsx` replaced the
-  former top-banner header. Desktop: 240px sticky left rail with a
-  collapse-to-64px icon-only state persisted via
-  `localStorage["quantrank.sidebar.collapsed"]`. Mobile: sidebar
-  hidden by default, slides in as overlay drawer when the
-  `<header>` hamburger fires. Active-route highlighting uses
-  `usePathname()` from `next/navigation`. Two nav sections —
-  Navigation (internal: Rankings) and Resources (external:
-  Methodology / Design / GitHub).
+  **Phase 3c (PR #215)** landed the LedgerCraft layout shell (`AppShell.tsx`). NOTE: the `Sidebar.tsx` left rail added here was later REMOVED (PRs #413/#414); `TopNav` is now the sole nav.
   **Phase 3b (this PR)** lands class-strategy dark mode behind
   `next-themes`. `tailwind.config.ts` flips to `darkMode: 'class'`;
   `<ThemeProvider>` (uses `next-themes`, `attribute="class"`,
@@ -240,7 +230,7 @@ export function FairPriceCard(props) {  // no types
   PR #339, per-method values live in `FairPriceBarChart` only), cards
   (FairPriceBarChart / FairPriceCard /
   PillarRadarChart / Tier2EventCard / RiskSummaryCard /
-  Disclaimer / FilterDrawer), and the two app pages (home + stock
+  Disclaimer), and the two app pages (home + stock
   detail). The stock-detail SECTION ORDER is deliberate (PR #340 — see
   CLAUDE.md §Gotchas "Stock-detail section order"): hero → price →
   PillarRadarChart → Tier2EventCard → RiskSummaryCard → fair-price pair →
@@ -267,16 +257,12 @@ export function FairPriceCard(props) {  // no types
   New `<ThemeToggle layout="icon|row">` component renders
   a three-state cycle button (system → light → dark → system) with
   `useTheme()` + a `mounted` guard to suppress the SSR-fallback
-  hydration mismatch. Lives in both the AppShell sticky header
-  (icon layout) and the Sidebar footer (row layout when expanded,
-  icon when collapsed). `<html suppressHydrationWarning>` on
+  hydration mismatch. Lives in the AppShell sticky header (icon layout). `<html suppressHydrationWarning>` on
   layout.tsx silences the harmless attribute mismatch
   `next-themes` introduces when it sets the class before paint.
   **Phase 3d (folded into the same PR)** aligns to LedgerCraft's
   canonical palette: body bg `#FAFAFA` (was slate-50 `#F8FAFC`);
-  brand primary `emerald-700` (`#047857`) on the wordmark Q logo +
-  FilterDrawer "View N stocks" submit CTA — the LedgerCraft
-  "Primary button" pattern; OKLCH positive band shifted hue 155 →
+  brand primary `emerald-700` (`#047857`) on the wordmark Q logo — the LedgerCraft "Primary button" pattern; OKLCH positive band shifted hue 155 →
   152 + chroma 0.09 → 0.13 (light) / 0.13 → 0.16 (dark) so the
   strong swatch sits closer to forest-green #15803D (green-700) in
   perceptually-uniform space without flipping to solid emerald-700 (#047857);
@@ -290,8 +276,7 @@ export function FairPriceCard(props) {  // no types
 - **Global `overflow-x: clip` on `html, body`** (`frontend/app/globals.css`,
   PR #322): the page never scrolls horizontally — wide content nests its own
   `overflow-x-auto` (e.g. `RankingTable`'s desktop table). Keep `clip`, never
-  `hidden` (`hidden` creates a scroll container and breaks the sticky
-  sidebar/header). Full rationale in CLAUDE.md §Gotchas.
+  `hidden` (`hidden` creates a scroll container and breaks the sticky header). Full rationale in CLAUDE.md §Gotchas.
 - **Fluid root font-size** (`frontend/app/globals.css` `html { font-size:
   clamp(1rem, 0.89rem + 0.45vw, 1.125rem) }`, 2026-05-29): the rem-based app
   scales everything with the viewport (~16px phone → ~18px tablet+). Use
@@ -301,10 +286,7 @@ export function FairPriceCard(props) {  // no types
   §Gotchas.
 - **Stock-detail hero splits on a CSS container query, not a viewport
   breakpoint** (`frontend/app/stock/[ticker]/page.tsx` + `globals.css`
-  `.hero-card` / `@container hero (min-width: 46rem)`, PR #332): the sidebar
-  eats a viewport-variable width slice, so the hero's two-column (name-left /
-  stats-top-right) vs stacked decision keys off the hero's OWN inline-size, not
-  `md:`/`lg:`. JSX default = the stacked `flex-col`; the `@container` rule only
+  `.hero-card` / `@container hero (min-width: 46rem)`, PR #332): the hero's two-column (name-left / stats-top-right) vs stacked decision keys off the hero's OWN inline-size, not `md:`/`lg:` viewport prefixes (robust to future layout-chrome changes). JSX default = the stacked `flex-col`; the `@container` rule only
   ADDS the row. Don't refactor back to viewport prefixes. Raw CSS, no
   container-query plugin/dep. Full rationale in CLAUDE.md §Gotchas.
 - **MoS gauge arc is sign-aware** (`frontend/components/MoSBadge.tsx`, PR #332):
@@ -339,8 +321,7 @@ export function FairPriceCard(props) {  // no types
   in CLAUDE.md §Gotchas.
 - **44px touch targets + modal focus-trap + severity-toned warning headings**
   (`frontend/components/*`, 2026-06-01): primary interactive controls carry
-  `min-h-[44px]` (mobile-first per PRODUCT.md); `FilterDrawer` traps + restores
-  focus like a real modal (WCAG 2.4.3), not just Esc + scroll-lock; the
+  `min-h-[44px]` (mobile-first per PRODUCT.md); any future slide-over/modal must trap + restore focus (WCAG 2.4.3), not just Esc + scroll-lock; the
   `Tier2EventCard` / `RiskSummaryCard` `<h2>` takes a rose/amber severity tone so
   warning cards outweigh the neutral data-section eyebrows. A new control / modal
   / warning card must follow suit. Full rationale in CLAUDE.md §Gotchas.
@@ -350,8 +331,7 @@ export function FairPriceCard(props) {  // no types
   clears both (~4.8:1 / ~7:1). slate-* is OUTSIDE the globals.css soft-override
   allowlist → check contrast on the raw hex, not an OKLCH token. Normalized
   app-wide (16 components); disabled controls + decorative `aria-hidden` icons
-  stay faint by design. Same pass added `min-h-[44px] lg:min-h-0` to the
-  FilterDrawer selection chips. Full rationale in CLAUDE.md §Gotchas.
+  stay faint by design. Full rationale in CLAUDE.md §Gotchas.
 - **Stock-detail page = DECISION zone + collapsed "Supporting data" reference
   zone** (`app/stock/[ticker]/page.tsx`, 2026-06-01): raw fundamentals +
   data-quality are grouped into one native `<details>` (Server-Component-safe,
@@ -359,14 +339,6 @@ export function FairPriceCard(props) {  // no types
   different register from the decision eyebrows). A new provenance section goes
   INSIDE it; a new decision signal goes above the fair-price pair. Don't
   re-flatten into a 12th top-level section. Full rationale in CLAUDE.md §Gotchas.
-- **Ranking-table filter state lives in 3 synced places: React state +
-  sessionStorage + URL query** (`RankingTable.tsx` + `lib/filter-storage.ts` +
-  `lib/filter-url.ts`, 2026-06-01): a filtered view is now shareable /
-  bookmarkable / reload-safe (`q`/`sector`/`score`/`tier`/`mos`/`rec` params).
-  URL wins on mount, else sessionStorage; persist writes both. `filter-url.ts`
-  uses `history.replaceState` (not `useSearchParams` → no Suspense on the static
-  export). A NEW filter dimension must be added to all three (FilterSnapshot, the
-  URL param scheme, the RankingTable effects). Full rationale in CLAUDE.md §Gotchas.
 - **Loss-chance band/tone derives from `Math.round(pct)`, not the raw float**
   (`LossChanceBadge` + `RankingTable` mobile card + detail-hero `lossBand`,
   2026-06-01 + P2 2026-06-02): the display rounds (`HeroMetric` prints
@@ -392,13 +364,6 @@ export function FairPriceCard(props) {  // no types
   median (parity with the mouse `title` + notch); the hero shows "Data as of
   {date}". `MoSCell.tsx` is orphaned dead code. Full rationale in CLAUDE.md
   §Gotchas.
-- **`FilterDrawer` "Active filters" removable summary** (`FilterDrawer.tsx`,
-  2026-06-02): a top-of-drawer chip row (one × chip per active filter) lets a
-  user remove ONE filter from inside the open drawer (the page's active-filter
-  row is behind the backdrop). Each × reuses the per-group toggle's setter;
-  gated on any-active; "Clear all" stays remove-everything. A new filter
-  dimension must add a row to the `activeChips` builder. Full rationale in
-  CLAUDE.md §Gotchas.
 - **Chip/numeric/soft-shade consistency** (`$impeccable polish`, 2026-06-02):
   every chip carries `font-medium` (SectorChip + the RankingTable toolbar chips
   were holdouts); every large number carries `font-mono` (RiskSummaryCard manip
@@ -457,16 +422,7 @@ export function FairPriceCard(props) {  // no types
   (`bg-slate-50 dark:bg-slate-800/40`) — dashed border + dimmed content
   distinguish them — so the 4-tile row no longer floats/vanishes. Full rationale
   in CLAUDE.md §Gotchas.
-- **Ranking-table FLIP reshuffle is FILTER-SCOPED** (`lib/useFlip.ts` +
-  `RankingTable.tsx`, `$impeccable overdrive` 2026-06-02): on a filter/search change
-  the surviving rows slide old→new via WAAPI `translateY` (300ms, app ease-in-out,
-  reduced-motion guarded, transform-only). `useFlip(orderKey, filterKey)` re-measures
-  on any order change but only PLAYS when `filterKey` changed — NOT on a column-sort,
-  because the paginated 50-row page turns over on sort so a sort FLIP fires on <5% of
-  rows and reads as broken (browser-verified: sort=0, filter=36/7). Every reorderable
-  child needs `data-flip-key`; the hook skips zero-height nodes (desktop `<tbody>`
-  no-op on mobile + vice-versa). A new filter dimension must be added to the
-  `filterKey` JSON. Full rationale in CLAUDE.md §Gotchas.
+- **Ranking-table FLIP reshuffle is SEARCH-SCOPED** (`lib/useFlip.ts` + `RankingTable.tsx`, `$impeccable overdrive` 2026-06-02): on a search change the surviving rows slide old→new via WAAPI `translateY` (300ms, app ease-in-out, reduced-motion guarded, transform-only). `useFlip(orderKey, filterKey)` re-measures on any order change but only PLAYS when `filterKey` (the current search string) changed — NOT on a column-sort, because the paginated 50-row page turns over on sort so a sort FLIP fires on <5% of rows and reads as broken (browser-verified: sort=0, search fired 36 then 7). Every reorderable child needs `data-flip-key`; the hook skips zero-height nodes (desktop `<tbody>` no-op on mobile + vice-versa). A new search/filter dimension must be added to the `filterKey` JSON. Full rationale in CLAUDE.md §Gotchas.
 - **Outlined-light chip is a PRIMITIVE — `frontend/components/Chip.tsx`**
   (`$impeccable extract` 2026-06-02): the design system's one chip pattern was a
   copy-pasted className shell across 7+ components (+ a verbatim-duplicated
@@ -476,9 +432,7 @@ export function FairPriceCard(props) {  // no types
   emit a conflicting utility through the props. A NEW metadata chip uses `<Chip>`;
   tones pass through verbatim (globals.css allowlist). Follow-up `$impeccable
   polish` extended the shell into `FairPriceCard` `<li>` warnings (+`font-medium`)
-  and `FairPriceBarChart` tally pills/verdict badges (via `CHIP_BASE`); only the
-  `RankingTable` / `FilterDrawer` selection-state filter chips stay bespoke
-  (interactive toggles — though a follow-up normalized their NEUTRAL ring to the
+  and `FairPriceBarChart` tally pills/verdict badges (via `CHIP_BASE`); only the `RankingTable` selection-state chips stay bespoke (interactive toggles — though a follow-up normalized their NEUTRAL ring to the
   canonical `ring-slate-200` too: bespoke structure, shared ring shade). Neutral
   chip ring is canonically `ring-slate-200` across EVERY neutral chip now (no
   `ring-slate-300` neutral outlier remains; the surviving `ring-slate-300` is
@@ -487,21 +441,11 @@ export function FairPriceCard(props) {  // no types
 - **Whole-app polish pass** (`$impeccable polish "all app"`, 2026-06-03; audited
   by `frontend-design-reviewer` + `expert-user-explorer` which built + drove the
   real app): 4 reusable rules + a batch of one-off a11y/consistency fixes.
-  Reusable: (1) empty-state primary CTA is `disabled` not just styled
-  (`FilterDrawer` "View 0 stocks"); (2) a labeled chip inside an `aria-label`'d
+  Reusable: (1) empty-state primary CTA is `disabled` not just styled (any modal/drawer CTA with a zero result count); (2) a labeled chip inside an `aria-label`'d
   container is `aria-hidden` (detail `<h1>` badge — but stays announced in the
   ranking table); (3) `ring-rose-300` is never a negative chip ring (`-200` only;
   RiskSummaryCard + FairPriceBarChart headline were the holdouts); (4) detail
-  valuation sections own no `mb-*` (FairPriceBarChart double-gap). One-offs:
-  `FairPriceCard` `<div>`→`<dl>`, Tier2 drop `role="status"`, AppShell svg
-  `aria-hidden`, HeroAttributeTiles `aria-labelledby`, CurrentPriceLine
-  `text-rose-600→700`, ScoreBadge md `font-bold→semibold`, FilterDrawer
-  unselected hover darken. Verified `next build` green locally (506 pages). Full
-  rationale in CLAUDE.md §Gotchas. The three items that pass deferred are now ALL
-  shipped: the Sidebar `v1.4.0` version chip + FairPriceCard flag labels in #393
-  (the labels later centralized into `lib/flag-labels.ts`), and the P3 cross-stock
-  compare view as `/compare` + ranking-table multi-select (2026-06-03) — see
-  `PHASE_STATUS_INFLIGHT.md`.
+  valuation sections own no `mb-*` (FairPriceBarChart double-gap). One-offs: `FairPriceCard` `<div>`→`<dl>`, Tier2 drop `role="status"`, HeroAttributeTiles `aria-labelledby`, CurrentPriceLine `text-rose-600→700`, ScoreBadge md `font-bold→semibold`. Verified `next build` green locally. Full rationale in CLAUDE.md §Gotchas.
 
 ## Git workflow
 
