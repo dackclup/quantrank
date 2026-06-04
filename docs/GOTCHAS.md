@@ -235,14 +235,12 @@
   import can fail elsewhere.
 - **`html, body` are globally `overflow-x: clip`** (`frontend/app/globals.css`,
   PR #322). Keep `clip` — NOT `hidden`: both stop the page from widening, but
-  `clip` creates NO scroll container, so the `position: sticky` sidebar +
-  header keep working (`overflow: hidden` would break them). Consequence:
+  `clip` creates NO scroll container, so the `position: sticky` header keeps working (`overflow: hidden` would break it). Consequence:
   page-level horizontal scroll is intentionally impossible — a genuinely wide
   surface must nest its OWN scroll container (`overflow-x-auto` on the inner
   element, as `RankingTable`'s desktop table does), never rely on the page
   scrolling. Why it exists: the price-chart `AreaChart` remount (crosshair
-  re-park on release) transiently overflowed, and the `fixed inset-0` sidebar
-  backdrop then sized itself to the widened layout viewport and SUSTAINED it
+  re-park on release) transiently overflowed, and the `fixed inset-0` sidebar backdrop (the sidebar has since been removed) then sized itself to the widened layout viewport and SUSTAINED it
   as phantom right-side scroll (only reproducible under mobile emulation — a
   plain desktop viewport hid it). `overflow: clip` is Safari 16+ / Chrome 90+;
   pre-Safari-16 silently degrades to the prior behavior (not a regression,
@@ -263,40 +261,15 @@
   chart-internal SVG labels sized in raw px (Recharts `tick fontSize`) are a
   known minor holdout — they don't follow the rem scale.
 
-- **Sidebar `data-rail` attrs ↔ `globals.css` pre-paint rules move in
-  lockstep** (`frontend/components/Sidebar.tsx` + `frontend/app/globals.css`,
-  PR #326). The collapsed sidebar is rendered BEFORE React hydrates: a
-  pre-paint inline script in `frontend/app/layout.tsx` adds `.sidebar-collapsed`
-  to `<html>` from `localStorage['quantrank.sidebar.collapsed']`, and
-  `html.sidebar-collapsed [data-rail="…"]` rules in `globals.css` mirror the
-  `collapsed ? 'md:…'` Tailwind classes `Sidebar.tsx` applies at runtime. Five
-  `data-rail` values are in use: `hide` · `show` · `header` · `navlink` ·
-  `chevron`. Add a new collapsible Sidebar element WITHOUT a matching
-  `html.sidebar-collapsed [data-rail="<new>"]` rule and the "sidebar opens then
-  shrinks back / text flashes for a frame on refresh + rotation" regression
-  returns for that element. `AppShell` keeps the `<html>` class synced to the
-  live collapsed state (`classList.toggle`) so the CSS never fights React
-  post-hydration. The aside transition is also gated behind an `animate` flag
-  (true only ~250ms around an explicit toggle) + `motion-reduce:transition-none`
-  so refresh / rotation switch width INSTANTLY (no animated shrink). The
-  animated transition list MUST include `max-width` alongside `width` (PR #330):
-  the collapsed rail toggles `md:max-w-[64px]` AND the pre-paint rule sets
-  `max-width:4rem`, so an un-transitioned `max-width` snaps to the collapsed cap
-  the instant `collapsed` flips and CLAMPS the rendered width to 64px — the
-  `width` animation is nullified, so collapse "snaps" while expand (a GROWING
-  max-width never clamps) stays smooth = asymmetric jank. `max-width` is
-  load-bearing (not removable): it caps the fluid-rem `md:w-60` — which is
-  ~270px at the font-size ceiling — down to a stable 240px.
 - **Re-parking the price-chart crosshair MUST debounce the `<AreaChart>`
   remount ≥ ~300ms** (`frontend/components/PriceHistoryChart.tsx`, PR #326).
   Recharts 2.15 applies `defaultIndex` (latest-point park) only on MOUNT. A
-  WIDTH change — window resize, device rotation, OR the sidebar expand/collapse
-  reflowing the content width — makes `ResponsiveContainer` re-measure over
+  WIDTH change — window resize or device rotation — makes `ResponsiveContainer` re-measure over
   ~100-200ms. Bumping the `<AreaChart key>` remount key immediately re-parks
   against the OLD width → the crosshair lands at index 0 (far LEFT). A
   width-delta `ResizeObserver` debounced ~300ms lands the remount AFTER the
   re-measure so it re-parks at the latest point. Shorten / remove the debounce
-  → the "crosshair jumps left on sidebar toggle" regression returns. This
+  → the "crosshair jumps left on resize/rotation" regression returns. This
   ResizeObserver subsumes the old orientation-only `matchMedia` re-park
   (rotation changes width too).
 - **App-wide motion uses ONE `ease-in-out` timing curve** (2026-05-30,
@@ -304,8 +277,7 @@
   of the start and decelerates into the end — one calm, symmetric feel across
   the whole app. Concretely: `tailwind.config.ts` `animation` (`fade-in` /
   `rise-in` / `chip-pop` / `flag-pulse`), `globals.css` `.gauge-sweep` +
-  `.hover-lift`, the `Sidebar` collapse/expand + `FilterDrawer` slide-over
-  transitions, and the JS rAF easings in `PriceHistoryChart.tsx` (intro sweep)
+  `.hover-lift`, and the JS rAF easings in `PriceHistoryChart.tsx` (intro sweep)
   + `useMotion.ts` (`useCountUp`) all use `ease-in-out` — the CSS keyword /
   Tailwind `ease-in-out` class / `easeInOutCubic = t<0.5 ? 4t³ :
   1−(−2t+2)³/2` in JS. A NEW animated component MUST follow suit — do not
@@ -326,20 +298,13 @@
   out name-block-left / stats-block-top-right when there's room and falls back
   to the vertical mobile-portrait stack when squeezed — but the decision is
   driven by the hero's OWN inline-size (`container: hero / inline-size` on the
-  `<header>`), NOT `md:`/`lg:` viewport prefixes. **Why it must stay a container
-  query**: the left `Sidebar` eats a viewport-VARIABLE slice (expanded 240px /
-  collapsed 64px / mobile-drawer 0px), so at one fixed viewport the hero's real
-  width differs by ~180px depending on sidebar state. A viewport `md:`/`lg:`
-  gate therefore left a DEAD BAND (768–1023px) where the sidebar was already a
-  desktop rail but the hero still stacked — the bug the user hit 2026-05-31.
-  The container query measures the space the hero actually has AFTER the sidebar
-  takes its cut, so the row engages exactly when both columns fit. Consequences
+  `<header>`), NOT `md:`/`lg:` viewport prefixes. **Why it must stay a container query**: the hero card's real available width depends on the surrounding layout — a viewport `md:`/`lg:` gate is brittle to future layout-chrome changes.
+  The container query measures the space the hero actually has, so the row engages exactly when both columns fit. Consequences
   for future edits: (a) the JSX default classes are the STACKED `flex flex-col`
   (`hero-split` / `hero-left` / `hero-right`); the `@container` rule only ADDS
   the row behavior, so pre-2023 browsers without `@container` degrade to the
   safe stack — do NOT "simplify" the hooks back to `md:flex-row`; (b) the 46rem
-  threshold ≈ left name block + the ~18rem stats block + gap headroom — retune
-  it against BOTH sidebar states, not just one viewport; (c) `@container` is
+  threshold ≈ left name block + the ~18rem stats block + gap headroom — retune it against the live layout, not just one viewport; (c) `@container` is
   raw CSS in `globals.css` (no `@tailwindcss/container-queries` plugin / no new
   dep — Tailwind compiles the raw rule through fine, verified in the built CSS).
 - **MoS gauge arc direction is SIGN-AWARE** (`frontend/components/MoSBadge.tsx`,
@@ -678,17 +643,11 @@
 - **Interactive controls carry a `min-h-[44px]` touch target; modals trap +
   restore focus; warning-card headings are severity-toned** (`frontend/components/*`,
   `$impeccable audit`+`critique` punch-down 2026-06-01). Three a11y standards
-  landed across the UI: (1) every primary interactive control (Sidebar nav items
-  + mobile-close + brand link, AppShell hamburger, FilterDrawer buttons + drawer
-  search, RankingTable Filters / search / pagination, `PriceTimePeriodSelector`,
-  the `DualRange` grab zone + thumbs, the detail back-link, ThemeToggle) carries
+  landed across the UI: (1) every primary interactive control (TopNav links + brand link, RankingTable search / pagination, `PriceTimePeriodSelector`, the detail back-link, ThemeToggle) carries
   `min-h-[44px]` (often `min-w-[44px]` / `h-11 w-11`) so the tap target clears
   the mobile-first floor PRODUCT.md mandates — a NEW button/input/link MUST
   follow suit (never ship a `py-1`/`h-8` control as a touch target). (2)
-  `FilterDrawer` is a true modal: it traps Tab/Shift+Tab within the `<aside>`
-  (a focusables sweep keyed off `asideRef`), moves focus IN on open, and restores
-  it to the trigger on close (WCAG 2.4.3) — a future slide-over/dialog must do
-  the same, not just body-scroll-lock + Esc. (3) Warning cards (`Tier2EventCard`
+  Any future slide-over/dialog must trap Tab/Shift+Tab within its root, move focus IN on open, and restore it to the trigger on close (WCAG 2.4.3) — not just body-scroll-lock + Esc. (3) Warning cards (`Tier2EventCard`
   / `RiskSummaryCard`) tone their `<h2>` by severity (rose veto / amber annotate,
   else neutral slate) so they outweigh the neutral data-section eyebrows — a
   deliberate break from the uniform `text-slate-600` header treatment, gated on
@@ -713,10 +672,7 @@
   darker. Correctly LEFT faint (do NOT "re-fix"): DISABLED controls
   (`PriceTimePeriodSelector`
   disabled period buttons — WCAG 1.4.3 inactive exemption) and decorative
-  `aria-hidden` icons. Same PR lifted the `FilterDrawer` filter-SELECTION chips
-  to `min-h-[44px] lg:min-h-0` (44px tap target on touch viewports, compact
-  ~24px on desktop) — the in-drawer chips were the one touch-target the
-  2026-06-01 `min-h` sweep above missed. **Audit caveat**: a browser-tool "dark
+  `aria-hidden` icons. **Audit caveat**: a browser-tool "dark
   contrast" finding can mis-name the token (an agent reported `slate-400` @
   4.2:1; the real failing token was `slate-500` and the fail spanned BOTH
   modes) — verify the actual class + surface before fixing.
@@ -744,26 +700,6 @@
   frames the composite). Inner section `<h2>`s are kept (the summary is a styled
   span, not a heading) so the document outline stays intact.
 
-- **Ranking-table filter state lives in THREE synced places — React state ·
-  sessionStorage · URL query** (`frontend/components/RankingTable.tsx` +
-  `lib/filter-storage.ts` + `lib/filter-url.ts`, `$impeccable harden` P2 /
-  Nielsen H7, 2026-06-01). A filtered view (sector + tier + recommendation +
-  score range + search) is now shareable / bookmarkable / reload-safe via the
-  URL query (`q` · `sector` · `score=min-max` · `tier` · `mos` · `rec`, each
-  omitted at its default). On mount the **URL wins** (an explicit shared link),
-  else it falls back to the within-tab sessionStorage snapshot; the persist
-  effect writes BOTH. **`filter-url.ts` uses `history.replaceState` +
-  `window.location.search`, NOT `useSearchParams`** — deliberate: the Next 14
-  static export would force a `<Suspense>` boundary around `useSearchParams`,
-  and `replaceState` (not `pushState`) keeps filter toggles out of the browser
-  back-stack. **Adding a NEW filter dimension means touching all three:**
-  `FilterSnapshot` in `filter-storage.ts` (+ its validators), the param scheme
-  in `filter-url.ts` (parse + write), and the mount/persist effects + drawer in
-  `RankingTable.tsx` — miss one and the dimension silently won't round-trip.
-  Unknown `sector`/`tier`/`mos` URL values are harmless (the predicates match
-  nothing); `rec` is validated against the known set so the typed
-  `Recommendation[]` holds. Both helpers fail-soft (SSR guard +
-  try/catch-swallow) — filter state is convenience, never a throw.
 
 - **Loss-chance (and any rounded-display band/tone) must derive from the
   ROUNDED integer, NOT the raw float** (`LossChanceBadge.tsx` +
@@ -829,25 +765,6 @@
   refs in `page.tsx` / `LossChanceBadge.tsx` / `visual.ts`); not a live surface,
   so its `title` was out of scope.
 
-- **`FilterDrawer` has an "Active filters" removable-chip summary at the top of
-  the drawer body — the in-drawer remove-ONE path** (`frontend/components/FilterDrawer.tsx`,
-  `$impeccable` H3 minor 2026-06-02). Closes the last re-critique #2 minor: a
-  user could not remove ONE specific active filter from inside the open drawer
-  without the close → click the page chip → reopen dance (the page's active-
-  filter row is behind the backdrop). The summary mirrors that row INSIDE the
-  drawer — one removable chip per active filter (search · score-when-narrowed ·
-  each tier / valuation / recommendation / sector), each chip's × reusing the
-  SAME setter its per-group toggle uses (`setSearch('')` / `setScoreRange([0,100])`
-  / `toggleTier|toggleMos|toggleRecommendation|toggleSector`). Gated on
-  `activeChips.length > 0`, so it's absent on a fresh (no-filter) load. "Clear
-  all" (footer) stays the remove-EVERYTHING path; this is remove-ONE. Adding a
-  NEW filter dimension means adding a row to the `activeChips` builder too (it's
-  a 4th synced surface alongside the §Gotchas "filter state lives in THREE
-  places" — React state · sessionStorage · URL). The chips are focusable
-  `<button>`s; the drawer's focus-trap queries `focusables()` DYNAMICALLY on
-  each Tab + filters to visible, so they're included automatically (no trap
-  change needed). `min-h-[44px] lg:min-h-0` touch target per the in-drawer chip
-  convention.
 
 - **The outlined-light chip is a PRIMITIVE now — `frontend/components/Chip.tsx`,
   not a copy-pasted className string** (`$impeccable extract` 2026-06-02). The
@@ -878,27 +795,15 @@
   verdict badges — all compose `CHIP_BASE` / `CHIP_DOT` BY HAND because they have
   non-standard padding (`px-2.5 py-1` / `px-1.5 py-0.5`) / uppercase / mono
   content that the canonical `size` prop can't emit without a conflicting
-  utility. STILL bespoke by design: the `RankingTable` / `FilterDrawer`
-  selection-state filter chips (they layer `press hover:opacity-75` +
-  selected/unselected state on `RECOMMENDATION_CHIP_TONES`) — interactive
-  toggles, not metadata chips. The `RECOMMENDATION_CHIP_TONES` / `_DOTS` /
-  `_LABELS` / `_VALUES` exports are unchanged (those filter chips still import
-  them). **Neutral chip ring is canonically `ring-slate-200`** (matches the
-  sector / listing / MoS-fair neutral) — the `RecommendationBadge` "Hold" +
-  `LossChanceBadge` "Neutral" (#389) AND the `RankingTable` / `FilterDrawer`
-  active-filter chips (follow-up) were all normalized `ring-slate-300 → 200`, so
-  EVERY neutral chip — static metadata AND interactive filter — shares one ring
-  shade (the filter chips keep their bespoke STRUCTURE, only the ring shade is
-  unified). No `ring-slate-300` neutral outlier remains; the lone surviving
+  utility. STILL bespoke by design: the `RankingTable` selection-state chips (the remaining interactive toggle surfaces that layer `press hover:opacity-75`) — interactive controls, not metadata chips. **Neutral chip ring is canonically `ring-slate-200`** (matches the
+  sector / listing / MoS-fair neutral) — the `RecommendationBadge` "Hold" + `LossChanceBadge` "Neutral" (#389) AND the `RankingTable` active-filter chips (follow-up) were all normalized `ring-slate-300 → 200`, so EVERY neutral chip — static metadata AND interactive toggle — shares one ring shade. No `ring-slate-300` neutral outlier remains; the lone surviving
   `ring-slate-300` is `FairPriceBarChart`'s deliberately-muted `outlier` verdict
   tone (NOT a neutral chip — leave it).
 - **Chip family carries `font-medium`; every large numeric display carries
   `font-mono`; annotate-amber bodies use `bg-amber-50`; negative-strong rings
   use the soft `-200` shade, never raw `-300`** (`$impeccable polish` pass
   2026-06-02 — corrected residual drift, codified here so it doesn't re-drift).
-  Concretely: (1) ALL chips render `font-medium` (the `SectorChip` + the five
-  `RankingTable` active-filter toolbar chips were the holdouts at `font-normal`;
-  `FilterDrawer` / `RecommendationBadge` were already correct). (2) ALL large
+  Concretely: (1) ALL chips render `font-medium` (the `SectorChip` was the holdout at `font-normal`; `RecommendationBadge` was already correct). (2) ALL large
   numeric values use `font-mono tabular-nums` (the `RiskSummaryCard` manipulation
   index `text-3xl` + its `/100` denominator were rendering in the body font —
   every other big number, `ScoreGauge` / `MoSBadge` / `HeroMetric`, is mono). (3)
@@ -985,9 +890,7 @@
   `.hover-lift`** (the mobile ranking CARD carries both): `.press` is defined
   AFTER `.hover-lift` so its transition wins, while hover→lift (`:hover`
   translateY) and press→scale (`:active`) stay distinct states. **Scope =
-  discrete controls only** — buttons · chips · toggles · sidebar nav + brand ·
-  hamburger · back-links · pagination · `FilterDrawer` CTAs + active-chip ×'s +
-  the 4 filter-toggle grids · `PriceTimePeriodSelector` ENABLED buttons (the
+  discrete controls only** — buttons · chips · toggles · TopNav links + brand link · back-links · pagination · `PriceTimePeriodSelector` ENABLED buttons (the
   disabled ones get none; `:active` can't fire on `disabled` anyway) · the
   mobile ranking card. **NOT** the desktop `<tr>` (`transform` on a table row is
   a known rendering footgun + it already has `hover-lift`) and **NOT** the
@@ -1086,24 +989,20 @@
   and the desktop table's column layout are untouched — verified in-browser: 0 row
   overlaps / 0 stuck post-animation transforms / 0 column drift). `useFlip(orderKey,
   filterKey)` re-measures positions on ANY order change (`orderKey` = the visible
-  tickers joined) but only PLAYS the slide when `filterKey` (JSON of search · sectors
-  · scoreRange · tiers · mos · recommendations) changed since the last render — on a
+  tickers joined) but only PLAYS the slide when `filterKey` (the current search string) changed since the last render — on a
   sort/page change it silently re-baselines. **Why filter-scoped, not
   every-reorder**: the table is paginated (50 rows/page), so a column-SORT turns
   over the ENTIRE visible page — almost none of the new page's keys are in the
   prev-position map — so a sort-triggered FLIP animates a handful of rows while the
   rest snap, which reads as broken (browser-verified: sort fired **0** animate calls
-  ×3 incl. reverse, while search fired 36 then 7 and a sector filter 3). A FILTER
+  ×3 incl. reverse, while search fired 36 then 7). A FILTER
   keeps the survivors in the DOM and slides them as the field narrows, so partial
   animation there is SEMANTICALLY CORRECT ("the field responded to what you typed")
   and satisfies the product-register rule "motion conveys state, not decoration."
   **Contract**: every reorderable child needs `data-flip-key={stableId}` (here
   `row.ticker`); the hook SKIPS zero-height nodes, so the desktop `<tbody>` hook is a
   silent no-op on a mobile viewport (table hidden) and the mobile `<ul>` hook is a
-  no-op on desktop — each animates only its own visible list. **Adding a NEW filter
-  dimension means adding it to the `filterKey` JSON** (on top of the existing
-  THREE-place filter sync + the FilterDrawer `activeChips` builder) — miss it and
-  that dimension's changes won't trigger the slide. Do NOT switch the gate to
+  no-op on desktop — each animates only its own visible list. **Adding a NEW filter dimension to `RankingTable` means adding it to the `filterKey` JSON** — miss it and that dimension's changes won't trigger the slide. Do NOT switch the gate to
   `orderKey` alone or wire a `filterKey`-less `useFlip` onto a paginated list
   expecting sort to animate — that re-introduces the partial-fire-looks-broken bug.
   **Companion (entrance-stagger gate):** the row entrance cascade (`animate-rise-in`)
@@ -1142,11 +1041,7 @@
   `aria-label`'d container is `aria-hidden` · `ring-rose-300` is never a chip
   ring · valuation sections own no `mb-*`** (audit by `frontend-design-reviewer`
   + `expert-user-explorer`, the latter built + drove the real app via Playwright).
-  Four reusable rules surfaced/reinforced: (1) **`FilterDrawer`'s "View N stocks"
-  primary CTA is `disabled` + de-emphasized when `filteredCount === 0`** (label →
-  "No matching stocks") — a bright emerald CTA must never invite a click toward a
-  0-result screen; Close / "Clear all" / backdrop stay the recovery paths (the
-  focus-trap drops a disabled button automatically). (2) **A `RecommendationBadge`
+  Four reusable rules surfaced/reinforced: (1) **An empty-state primary CTA must be `disabled` + de-emphasized when it would yield 0 results** — a bright emerald CTA must never invite a click toward a 0-result screen. Apply to any future modal/drawer CTA with a result count. (2) **A `RecommendationBadge`
   (or any labeled chip) embedded in a container that ALREADY carries its own
   `aria-label`** — the stock-detail `<h1>` (`aria-label="TICKER — Rec"`) — is
   wrapped in `<span aria-hidden="true">` so SR doesn't double-read "NVDASell"; it
@@ -1162,15 +1057,9 @@
   a 32px double-gap holdout (same fix as the `PillarRadarChart mb-4`). Also folded
   in (one-offs): `FairPriceCard` stat grid is now a real `<dl>` (was a `<div>` with
   orphaned `<dt>/<dd>` — invalid HTML on every stock); `Tier2EventCard` severity
-  chip dropped its bogus `role="status"` live region (static content); AppShell
-  hamburger `<svg>` `aria-hidden` + `HeroAttributeTiles` `aria-labelledby` (kill
-  double-announce); `CurrentPriceLine` negative `text-rose-600 → -700` (allowlist);
-  `ScoreBadge` md `font-bold → -semibold` (numeric family); `FilterDrawer`
-  unselected-chip hover `bg-slate-50 → -200` (darken-on-hover, not lighten).
-  DEFERRED at the time: a P3 cross-stock COMPARE view (product-scope feature gap,
-  not polish) remains open. The stale `v1.4.0` Sidebar version chip and the
-  `FairPriceCard` raw flag humanization were both RESOLVED in the follow-up — see
-  the "Sidebar version chip" gotcha below.
+  chip dropped its bogus `role="status"` live region (static content); `HeroAttributeTiles` `aria-labelledby` (kill double-announce); `CurrentPriceLine` negative `text-rose-600 → -700` (allowlist);
+  `ScoreBadge` md `font-bold → -semibold` (numeric family).
+  DEFERRED at the time: a P3 cross-stock compare view was scoped then removed (PR #412). The `FairPriceCard` raw flag humanization was RESOLVED in the follow-up — see the footer build-version gotcha below.
 
 - **Footer build-version chip = build-time `NEXT_PUBLIC_APP_VERSION`, never a
   hardcoded version** (`frontend/next.config.js` + `frontend/components/AppShell.tsx`
@@ -1188,45 +1077,8 @@
   the same PR: `FairPriceCard` valuation-warning humanization `w.replace(/_/g,' ')`
   → a `VALUATION_WARNING_LABELS` map (Title-Case fallback for unknown flags) so a
   valuation warning reads the same labelled way the `RiskSummaryCard` flags do.
-  (That map was CENTRALIZED into `lib/flag-labels.ts` as `flagLabel` in the later
-  compare-view PR — see the next gotcha.)
+  (That map was later CENTRALIZED into `lib/flag-labels.ts` as `flagLabel`, which is still used by `FairPriceCard` / `PillarRadarChart` / `RiskSummaryCard`.)
 
-- **Cross-stock COMPARE view — `/compare` reads `?compare=` via
-  `window.location`, NEVER `useSearchParams`** (`frontend/app/compare/page.tsx` +
-  `frontend/components/CompareView.tsx` + `CompareMatrix.tsx`, 2026-06-03; closes
-  the #392-deferred compare gap). The selection (`?compare=AAPL,MSFT`) is
-  read/written with `window.location.search` in a mount effect +
-  `history.replaceState` — the SAME pattern `lib/filter-url` uses for the ranking
-  filters — NOT Next's `useSearchParams`: on a static export (`output: 'export'`)
-  a `useSearchParams` consumer must sit behind a `<Suspense>` boundary or the
-  build errors, and the window.location pattern sidesteps that entirely. The URL
-  is the single shareable artifact; the ranking table's multi-select
-  (`RankingTable` checkboxes, capped at `MAX_COMPARE = 4`, an in-memory
-  `Set<ticker>` that survives pagination/filter) is a transient action, NOT
-  persisted to sessionStorage. The `/compare` server shell build-imports
-  `getRankings()` — the focused compare set (composite + the 8 active pillars +
-  fair median + MoS + the risk/defense-flag load) lives ENTIRELY on
-  `StockSummary`/rankings.json, so there is NO per-stock `stocks/<T>.json` fetch
-  and NO loading waterfall (the full 6-method fair-price breakdown +
-  manipulation-component breakdown are deliberately detail-page-only; the
-  per-column ticker links out for that depth). Two tokens were CENTRALIZED so the
-  matrix never drifts from the detail page: `pillarColor` → `lib/visual.ts` (was a
-  local `colorFor` in `PillarRadarChart`) and `flagLabel` → `lib/flag-labels.ts`
-  (was `FairPriceCard`'s local `VALUATION_WARNING_LABELS`; `FairPriceCard` now
-  imports it; the compare-polish PR then EXTENDED `FLAG_LABELS` to cover the
-  rank-gate VETO `risk_flags` — `altman_distress` / `sloan_accruals_top_decile` /
-  `net_issuance_top_decile` / `beneish_manipulation_veto` / `dechow_manipulation_veto`
-  / `non_reliance_filing` / `stale_filing_hard` — with strings mirroring
-  `RiskSummaryCard.RANK_GATE_META` VERBATIM, because the post-merge e2e caught the
-  matrix Title-Casing those vetoes via the fallback while the detail page showed
-  the precise label; keep `FLAG_LABELS` ↔ `RANK_GATE_META` in sync until a later
-  PR single-sources them). Best-in-row marking is METRIC-AWARE (max for composite / pillars /
-  MoS, min for loss-chance / flag-count / manipulation-index, and NONE for raw
-  price / 1d-change / fair-median — marking "highest price = best" would be
-  dishonest) and never color-only (a sage ▲ + an sr-only "best of N"). The matrix
-  is a semantic `<table>` (`<th scope="col">` per stock, `<th scope="row">` per
-  metric) with the metric-label rail `sticky left-0` for horizontal scroll on
-  mobile.
 - **`globals.css` soft-color override is LITERAL-class-keyed — it never reaches
   `dark:`-prefixed utilities.** The soft-color layer (which gives the muted sage /
   terracotta look without touching component class strings) is a set of plain
@@ -1242,8 +1094,7 @@
   already a safe **5.48:1**. Fix pattern: for a dark solid-fill CTA or brand mark use
   `dark:bg-emerald-700` (Tailwind `emerald-700` = `#047857`, white 5.48:1) or drive
   the background from a `--c-*` token directly — NEVER `dark:bg-emerald-600` expecting
-  the soft remap. Swept surfaces: FilterDrawer + RankingTable CTAs (#401), Sidebar +
-  AppShell "Q" brand mark (the deferred-items follow-up PR). Note the `--c-*` CSS
+  the soft remap. Swept surfaces at the time: RankingTable CTAs (#401), AppShell "Q" brand mark (the deferred-items follow-up PR). (FilterDrawer and Sidebar have since been removed.) Note the `--c-*` CSS
   variables themselves DO flip per theme (`:root` vs `.dark`), so LIGHT surfaces using
   the literal classes (`bg-emerald-50`, `text-emerald-700`, …) are unaffected — this
   gotcha is dark-variant-only. The decorative `aria-hidden` Q-mark was contrast-exempt
