@@ -948,3 +948,44 @@ edited `frontend/components/Sidebar.tsx` (drop Resources + Compare) · `CLAUDE.m
 (§Gotchas index prune) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Top tab nav (Home·Ranking·Analysis·Portfolio) + Home overview + placeholder pages (in flight, 2026-06-04)
+
+**Branch**: `claude/confident-ramanujan-NgV5y` (NEW PR after #412 merged; branch
+rebased onto post-merge `main`)
+**Type**: feat(frontend) — FRONTEND-ONLY, no schema / compute / data change; no schema
+bump. User reference: the Seeking Alpha mobile top-tab nav (Home·News·Analysis·
+Portfolio). User-chosen scope (4 AskUserQuestion answers): top tabs COEXIST with the
+existing sidebar ("keep both"); Home = overview/dashboard (not the table); Analysis +
+Portfolio = "Coming soon" placeholders for now.
+
+**What**:
+- **`TopNav`** (new, client) — Seeking-Alpha-style horizontal tab bar Home · Ranking ·
+  Analysis · Portfolio in the sticky header; active tab = emerald underline +
+  `aria-current`; horizontal-scroll on mobile; 44px targets. Mounted as a SECOND header
+  row in `AppShell` (the `<header>` became a 2-row column: controls row + tabs row),
+  coexisting with the left-rail `Sidebar`.
+- **Home `/` rewritten** as an overview dashboard: hero (universe stat + "View full
+  ranking" CTA) + 3 preview cards — Top ranked (top-5 + `ScoreBadge`), Movers today
+  (3 gainers / 3 losers from real `price_change_1d_pct`), Top sectors (top-4 by avg
+  composite) — each links through to `/ranking` · `/movers` · `/sectors`. All derived
+  from the build-imported `rankings.json` (no new data).
+- **`/ranking`** (new) — the full `RankingTable` + the old home intro, moved here off
+  `/`. The Sidebar `Rankings` item now points to `/ranking` (was `/`).
+- **`/analysis` + `/portfolio`** (new) — render the shared new `ComingSoon` placeholder
+  (icon + "Coming soon" + detail + a `bg-emerald-700` / `dark:bg-emerald-700` "Browse
+  the ranking" CTA). Portfolio is slated to become a localStorage watchlist, Analysis a
+  distributions/methodology view — both deferred per the user.
+
+**Verification**: `tsc --noEmit` clean; `next build` GREEN (`/`, `/ranking`, `/analysis`,
+`/portfolio`, `/sectors`, `/movers`, `/stock/[ticker]` all static); Playwright
+screenshots (mobile + desktop · home / ranking / analysis) confirm the tab bar (active
+underline), the coexisting sidebar, the real-data overview cards, and the placeholder
+pages render. `frontend-design-reviewer` review in flight.
+
+**Files**: new `frontend/components/{TopNav,ComingSoon}.tsx` ·
+`frontend/app/{ranking,analysis,portfolio}/page.tsx`; rewrote `frontend/app/page.tsx`
+(Home overview); edited `frontend/components/AppShell.tsx` (2-row header + TopNav) ·
+`frontend/components/Sidebar.tsx` (Rankings → /ranking) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---

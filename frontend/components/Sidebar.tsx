@@ -21,8 +21,8 @@ type NavItem = { label: string; href: string; isActive: (p: string) => boolean; 
 const BROWSE_ITEMS: NavItem[] = [
   {
     label: 'Rankings',
-    href: '/',
-    isActive: (p) => p === '/' || p.startsWith('/stock/'),
+    href: '/ranking',
+    isActive: (p) => p.startsWith('/ranking') || p.startsWith('/stock/'),
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <line x1="3" y1="12" x2="3" y2="21" />

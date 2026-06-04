@@ -1,61 +1,172 @@
-import RankingTable from '@/components/RankingTable';
+import type { Metadata } from 'next';
+import Link from 'next/link';
+
+import { ScoreBadge } from '@/components/ScoreBadge';
 import { getMetadata, getRankings } from '@/lib/data';
+import { sectorStyle } from '@/lib/visual';
+
+export const metadata: Metadata = {
+  title: 'QuantRank — S&P 500 ranking',
+  description:
+    'A static-site US-equity ranking — 502 S&P 500 names scored by an 8-pillar composite with an academic defense layer. Overview dashboard.',
+};
+
+function signedPct(v: number): string {
+  const sign = v >= 0 ? '+' : '−';
+  return `${sign}${Math.abs(v).toFixed(2)}%`;
+}
+
+type Mover = { ticker: string; name: string; chg: number };
 
 export default function HomePage() {
   const rankings = getRankings();
-  const metadata = getMetadata();
+  const meta = getMetadata();
+
+  if (meta.universe_size === 0 || rankings.length === 0) {
+    return (
+      <section className="space-y-6">
+        <h1 className="font-slab text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">QuantRank</h1>
+        <div className="rounded border border-amber-200 bg-amber-50 p-6 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-200">
+          <p className="font-medium">Compute pending.</p>
+          <p className="mt-1">The first compute hasn&rsquo;t run yet. Scheduled cron: Mon-Fri 22:00 UTC (after US market close).</p>
+        </div>
+      </section>
+    );
+  }
+
+  // All previews derive from the build-imported rankings.json — no new data.
+  const top = rankings.slice(0, 5);
+
+  const changes = rankings
+    .map((r) => ({ ticker: r.ticker, name: r.name, chg: r.price_change_1d_pct }))
+    .filter((x): x is Mover => typeof x.chg === 'number');
+  const gainers = [...changes].sort((a, b) => b.chg - a.chg).slice(0, 3);
+  const losers = [...changes].sort((a, b) => a.chg - b.chg).slice(0, 3);
+
+  const bySector = new Map<string, number[]>();
+  for (const r of rankings) {
+    const k = r.sector || 'Unknown';
+    const arr = bySector.get(k);
+    if (arr) arr.push(r.composite_score);
+    else bySector.set(k, [r.composite_score]);
+  }
+  const sectors = Array.from(bySector, ([sector, scores]) => ({
+    sector,
+    count: scores.length,
+    avg: scores.reduce((a, b) => a + b, 0) / scores.length,
+  }))
+    .sort((a, b) => b.avg - a.avg)
+    .slice(0, 4);
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-8">
+      {/* Hero */}
       <header className="max-w-3xl space-y-3">
         <h1 className="text-balance font-slab text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-4xl">
-          S&amp;P 500 ranking
+          S&amp;P 500, ranked.
         </h1>
-        {/* Sub-headline carries the one figure that earns presence — the
-            universe count — as a heavier, brand-emerald number inside an
-            otherwise medium-weight sentence (weight + one-accent contrast, the
-            product-bolder levers). The page's front door had zero brand accent
-            before; this is the single deliberate one. */}
         <p className="max-w-2xl text-pretty text-base text-slate-600 dark:text-slate-300">
           All{' '}
-          <span className="font-mono font-semibold tabular-nums text-emerald-800 dark:text-emerald-300">
-            {metadata.universe_size}
-          </span>{' '}
-          companies, ranked by an 8-pillar composite score.
+          <span className="font-mono font-semibold tabular-nums text-emerald-800 dark:text-emerald-300">{meta.universe_size}</span>{' '}
+          companies scored by an 8-pillar composite with an academic defense layer.
         </p>
-        {/* Provenance — clearly tertiary. Universe name + freshness + schema all
-            sit at the standard muted tier; the schema version is demoted by
-            POSITION (last) rather than a fainter (AA-failing) color. */}
-        <p className="text-xs text-slate-500 dark:text-slate-400">
-          <span className="font-mono">{metadata.universe}</span>
-          {' · updated '}
-          <span className="font-mono">{metadata.last_update_utc}</span>
-          {' · schema '}
-          <span className="font-mono">{metadata.version}</span>
-        </p>
-        {/* Methodology fine print — content unchanged, clearly subordinate. */}
-        <p className="max-w-2xl text-pretty text-xs leading-relaxed text-slate-500 dark:text-slate-400">
-          Composite is the 8-pillar weighted score (quality, value, growth,
-          momentum, health, profitability, technical, risk).{' '}
-          <span className="font-mono">sentiment</span> and{' '}
-          <span className="font-mono">ml</span> pillars are reserved for a
-          later phase; their 0.20 weight is redistributed pro-rata across the
-          active pillars. Risk-overlay flags annotate; flagged tickers cannot
-          earn the entered-top-5 badge even at rank #1 by composite.
-        </p>
+        <div className="flex flex-wrap items-center gap-3 pt-1">
+          <Link
+            href="/ranking"
+            className="inline-flex min-h-[44px] items-center rounded-sm bg-emerald-700 px-4 text-sm font-semibold text-white press hover:bg-emerald-800 dark:bg-emerald-700 dark:hover:bg-emerald-800"
+          >
+            View full ranking
+          </Link>
+          <span className="text-xs text-slate-500 dark:text-slate-400">
+            Updated <span className="font-mono">{meta.last_update_utc}</span>
+          </span>
+        </div>
       </header>
 
-      {metadata.universe_size === 0 || rankings.length === 0 ? (
-        <div className="rounded border border-amber-200 bg-amber-50 p-6 text-center text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-200">
-          <p className="font-medium">Compute pending.</p>
-          <p className="mt-1">
-            The first compute hasn&rsquo;t run yet. Scheduled cron: Mon-Fri
-            22:00 UTC (after US market close), or trigger manually from the GitHub Actions tab.
-          </p>
-        </div>
-      ) : (
-        <RankingTable data={rankings} />
-      )}
+      {/* Preview cards — each links through to its full view. */}
+      <div className="grid gap-4 lg:grid-cols-3">
+        <OverviewCard title="Top ranked" href="/ranking" linkLabel="Full ranking">
+          <ol className="divide-y divide-slate-100 dark:divide-slate-800">
+            {top.map((r) => (
+              <li key={r.ticker}>
+                <Link href={`/stock/${r.ticker}/`} className="press flex items-center gap-3 py-2 hover:opacity-80">
+                  <span className="w-5 shrink-0 font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">{r.rank}</span>
+                  <span className="font-mono text-sm font-semibold text-slate-900 dark:text-slate-100">{r.ticker}</span>
+                  <span className="min-w-0 flex-1 truncate text-sm text-slate-500 dark:text-slate-400">{r.name}</span>
+                  <ScoreBadge score={r.composite_score} />
+                </Link>
+              </li>
+            ))}
+          </ol>
+        </OverviewCard>
+
+        <OverviewCard title="Movers today" href="/movers" linkLabel="All movers">
+          <div className="space-y-3">
+            <MoverGroup label="Gainers" rows={gainers} tone="pos" />
+            <MoverGroup label="Losers" rows={losers} tone="neg" />
+          </div>
+        </OverviewCard>
+
+        <OverviewCard title="Top sectors" href="/sectors" linkLabel="All sectors">
+          <ul className="divide-y divide-slate-100 dark:divide-slate-800">
+            {sectors.map((s) => {
+              const sty = sectorStyle(s.sector);
+              return (
+                <li key={s.sector} className="flex items-center gap-2 py-2">
+                  <span className="inline-block h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: sty.dot }} aria-hidden="true" />
+                  <span className="min-w-0 flex-1 truncate text-sm text-slate-700 dark:text-slate-300">{s.sector}</span>
+                  <span className="font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">{s.count}</span>
+                  <span className="font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">{s.avg.toFixed(1)}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </OverviewCard>
+      </div>
     </section>
+  );
+}
+
+function OverviewCard({
+  title,
+  href,
+  linkLabel,
+  children,
+}: {
+  title: string;
+  href: string;
+  linkLabel: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="rounded border border-slate-200 bg-white p-4 shadow-subtle dark:border-slate-800 dark:bg-slate-900">
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <h2 className="text-sm font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">{title}</h2>
+        <Link href={href} className="press text-xs font-medium text-emerald-700 hover:underline dark:text-emerald-400">
+          {linkLabel} →
+        </Link>
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function MoverGroup({ label, rows, tone }: { label: string; rows: Mover[]; tone: 'pos' | 'neg' }) {
+  const toneText = tone === 'pos' ? 'text-emerald-700 dark:text-emerald-300' : 'text-rose-700 dark:text-rose-300';
+  return (
+    <div>
+      <div className="mb-1 text-[0.625rem] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">{label}</div>
+      <ul className="space-y-0.5">
+        {rows.map((m) => (
+          <li key={m.ticker}>
+            <Link href={`/stock/${m.ticker}/`} className="press flex items-center gap-2 hover:opacity-80">
+              <span className="font-mono text-sm font-semibold text-slate-900 dark:text-slate-100">{m.ticker}</span>
+              <span className="min-w-0 flex-1 truncate text-xs text-slate-500 dark:text-slate-400">{m.name}</span>
+              <span className={`font-mono text-xs font-semibold tabular-nums ${toneText}`}>{signedPct(m.chg)}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
