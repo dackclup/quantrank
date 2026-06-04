@@ -1249,30 +1249,26 @@
   but swept anyway for brand consistency (it should read as the brand primary, not the
   lighter emerald-600, in both themes).
 
-- **The top `MarketStatsBar` strip is a BUILD-TIME snapshot, not a live ticker**
-  (`frontend/components/MarketStatsBar.tsx` + `frontend/lib/market-stats.ts`,
-  2026-06-04). The Seeking-Alpha-shaped universe-snapshot strip under the app header
-  (universe size · avg composite · median MoS · #flagged · today's top gainer + top
-  loser · last-compute date) derives EVERY value at build time from the
-  already-build-imported `rankings.json` + `metadata.json` (`getMarketStats()` →
-  `getRankings()` / `getMetadata()`). QuantRank is a **weekly static export**, so the
-  strip is "as of" the last compute cron — NOT a live/intra-week feed. The trailing
-  **"Updated"** item (from `metadata.last_update_utc`) is the honesty anchor; the
-  mover deltas are real `price_change_1d_pct` from that run, not streaming. Do NOT
-  wire a genuinely live or intra-week market feed (or net-new index/commodity data)
-  into this bar as a "tweak" — that is a separate **observability-before-wiring** PR
-  (new external data source, new `Metadata.*_coverage_pct` diagnostic, schema triple).
-  Architecture: `MarketStatsBar` is a **Server Component** rendered in `layout.tsx`
-  and handed to the `'use client'` `AppShell` via a new `topBar?: React.ReactNode`
-  slot — it is NOT imported by `AppShell`. This is the canonical "RSC-into-client-
-  shell" pattern (same as `children`): the node is fully resolved on the server before
-  it crosses the boundary, so the data layer (`lib/data.ts`, which imports `fs` + the
-  JSON) never enters the client bundle. If you need the client shell to render new
-  server-derived content, follow the same slot pattern — never `import` `lib/data.ts`
-  (or any `fs`-touching module) into a `'use client'` component. The two new routes
-  `/sectors` (GICS-sector cards) + `/movers` (top-10 day gainers/losers), surfaced in
-  the Sidebar `Browse` / `Insights` sections, are plain Server Components that derive
-  from `rankings.json` at build the same way (no per-stock fetch, no loading
-  waterfall). Touch-target floor: the bar's linked mover items + the `/movers` rows
-  carry `min-h-[44px]` (the project interactive-control floor) — keep it on any new
-  linked stat/row.
+- **Build-time, server-component stats — never `import lib/data.ts` into a `'use client'`
+  component** (`frontend/app/sectors`, `frontend/app/movers`, 2026-06-04). The `/sectors`
+  (GICS-sector cards) + `/movers` (top-10 day gainers/losers) routes — surfaced in the
+  Sidebar `Browse` / `Insights` sections — plus the home/ranking dashboard stats are plain
+  **Server Components** that derive EVERY value at build time from the already-build-imported
+  `rankings.json` + `metadata.json` (`getRankings()` / `getMetadata()`), with no per-stock
+  fetch and no loading waterfall. QuantRank is a **weekly static export**, so these numbers
+  are "as of" the last compute cron — NOT a live/intra-week feed; the
+  `metadata.last_update_utc` "Updated" stamp is the honesty anchor and the mover deltas are
+  real `price_change_1d_pct` from that run, not streaming. Do NOT wire a genuinely live or
+  intra-week market feed (or net-new index/commodity data) in as a "tweak" — that is a
+  separate **observability-before-wiring** PR (new external data source, new
+  `Metadata.*_coverage_pct` diagnostic, schema triple). The data layer (`lib/data.ts`, which
+  imports `fs` + the JSON) must never enter the client bundle: if a `'use client'` shell needs
+  server-derived content, resolve it on the server and pass the node in as a prop/child (the
+  canonical "RSC-into-client-shell" pattern, same as `children`) — never `import lib/data.ts`
+  (or any `fs`-touching module) into a `'use client'` component. Touch-target floor: linked
+  stat/mover rows carry `min-h-[44px]` (the project interactive floor) — keep it on any new
+  linked row. (History: the Seeking-Alpha-style top `MarketStatsBar` strip +
+  `frontend/lib/market-stats.ts` + the `AppShell` `topBar?: React.ReactNode` slot that first
+  carried this RSC-into-client-shell pattern were added in PR #412 and REMOVED 2026-06-04 at
+  user request — "เอาแถบใต้ home ออก"; the build-time server-component rule lives on via
+  `/sectors` + `/movers`.)

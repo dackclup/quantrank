@@ -1171,3 +1171,36 @@ underline tabs (US active) over index underline tabs (S&P 500 active) + the rest
 (render both rows above the header) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Remove the MarketStatsBar strip under the top nav (in flight, 2026-06-04)
+
+**Branch**: `claude/confident-ramanujan-NgV5y` (PR #414, follow-up commit)
+**Type**: feat(frontend) — UI removal only, no schema / compute / data change. User:
+"เอาแถบใต้ home ออก" (remove the bar under the Home/top nav).
+
+Removed the Seeking-Alpha-style universe-snapshot strip (`MarketStatsBar`) that sat
+directly below the top tab nav on every page (it was added in PR #412, the same
+session's earlier scope). Deleted `frontend/components/MarketStatsBar.tsx` +
+`frontend/lib/market-stats.ts` (both now fully dead — grep confirms no other importer);
+unwired it from `frontend/app/layout.tsx` (dropped the `<MarketStatsBar/>` import +
+render) and removed the now-unused `topBar?: React.ReactNode` slot from
+`frontend/components/AppShell.tsx`. The top tab nav now sits directly above the page
+content; the header's `border-b` is the divider. The `/sectors` + `/movers` routes are
+UNAFFECTED — they derive from `rankings.json` independently (not via `market-stats.ts`).
+
+**Docs**: the now-stale `MarketStatsBar` gotcha was rewritten in lockstep across
+`CLAUDE.md` (§Gotchas index) + `docs/GOTCHAS.md` (detail) + `AGENTS.md` (mirror) — kept the
+still-valid invariant (build-time server-component stats; never `import lib/data.ts` into a
+`'use client'` component; `/sectors` + `/movers` derive from `rankings.json`), dropped the
+deleted-component specifics, and noted the removal. The PR #412 historical inflight entries
+above are left intact (append-only record).
+
+**Verification**: no residual `MarketStatsBar` / `market-stats` / `topBar` refs (grep clean);
+`tsc --noEmit` clean; `next build` GREEN (512 pages); Playwright shots (home + ranking,
+light + dark) confirm the strip is gone and the nav sits directly above the content.
+
+**Files**: `frontend/app/layout.tsx` · `frontend/components/AppShell.tsx` ·
+`frontend/components/MarketStatsBar.tsx` (deleted) · `frontend/lib/market-stats.ts` (deleted) ·
+`CLAUDE.md` · `docs/GOTCHAS.md` · `AGENTS.md` · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---

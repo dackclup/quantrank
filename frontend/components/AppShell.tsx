@@ -7,13 +7,13 @@ import { Sidebar } from './Sidebar';
 import { ThemeToggle } from './ThemeToggle';
 import { TopNav } from './TopNav';
 
-// App shell — a FULL-WIDTH top chrome (controls row + tab nav + the market-stats
-// strip) over a full-width content column. The Sidebar is an overlay DRAWER
+// App shell — a FULL-WIDTH top chrome (controls row + tab nav) over a full-width
+// content column. The Sidebar is an overlay DRAWER
 // (closed by default, every breakpoint) opened by the ☰ button in the header,
 // which flips to ✕ while open (the Seeking-Alpha model — user choice 2026-06-04).
 // The drawer sits BELOW the sticky header, so the toggle stays visible/usable.
 
-export function AppShell({ children, topBar }: { children: React.ReactNode; topBar?: React.ReactNode }) {
+export function AppShell({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const wasOpenRef = useRef(false);
@@ -45,8 +45,8 @@ export function AppShell({ children, topBar }: { children: React.ReactNode; topB
 
   return (
     <div className="flex min-h-screen flex-col">
-      {/* Full-width top chrome — the controls + tab nav + the market-stats strip
-          span edge-to-edge; the sidebar overlays BELOW this, never the top bar. */}
+      {/* Full-width top chrome — the controls + tab nav span edge-to-edge; the
+          sidebar overlays BELOW this, never the top bar. */}
       <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-950/95">
         <div className="flex h-14 items-center gap-2 px-4 md:px-6">
           {/* Sidebar toggle — ☰ when closed, ✕ when open. Sits BEFORE the brand
@@ -92,9 +92,6 @@ export function AppShell({ children, topBar }: { children: React.ReactNode; topB
           <TopNav />
         </div>
       </header>
-      {/* Universe-snapshot ticker strip (server-rendered) — full-width, below the
-          sticky header, scrolls away. */}
-      {topBar}
       <main className="flex-1 px-4 pb-8 pt-4 md:px-8 md:pb-10 md:pt-6">
         {/* Content cap is a FIXED px (not max-w-6xl): with the fluid root
             font-size a rem max-width expands too far on ultrawide. */}
