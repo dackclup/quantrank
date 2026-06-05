@@ -27,6 +27,11 @@
     }
   },
   "Metadata": {
+    "benchmark_coverage_pct": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
     "c_suite_unusual_sell_firing_count": {
       "type": "int | None",
       "required": false,

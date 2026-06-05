@@ -1275,3 +1275,129 @@ Movers / Sectors cards render their data inline without the dead "see all" links
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Phase 7.0 PR-0 — survivorship membership-ledger rebuild (in flight, 2026-06-04)
+
+**Branch**: `claude/loving-clarke-kAZII`
+**Type**: fix(data) + test — rebuilds `data/sp500_membership_historical.csv` (the
+survivorship-bias ledger consumed by `compute/ingest/historical_universe.members_at`); no
+schema / compute-logic / frontend change; no schema bump. First PR of the **Phase 7.0
+AI-pick point-in-time portfolio-backtest** epic — the methodology-scientist BLOCKING PR-0
+gate (the ledger must be verified before any backtest leg is trusted).
+
+**Why**: a multi-agent design pass (financial-engineer -> methodology-scientist) found the
+prior ledger materially broken, far beyond the one known BLK/BX bug: ~30 errors + ~110
+missing events over 2020-2026. Confirmed defects: `BLK,ADD,Blackstone` (BLK = BlackRock, a
+longtime member; Blackstone = BX) + the missing paired ABNB add; a BOGUS `2024-08-30 BLL`
+removal (Ball never left -- BLL->BALL was a 2022 ticker rename); KDP/UA/UAA dates
+self-contradictory; the SBNY (Signature Bank) 2023-failure removal MISSING; the 2020-06-22
+add trio scrambled (real = TYL/TDY/BIO). The Phase 4.6 survivorship harness has therefore
+been running on corrupt membership the whole time.
+
+**What**: full 2020-04 -> 2026-05 rebuild, triangulated across S&P DJI press releases + the
+fja05680/sp500 maintained change-CSV + Wikipedia (each load-bearing 2021-06+ event confirmed
+by >=2). 214 events, ADD/REMOVE perfectly balanced (107/107). SVB->SIVB ticker + 03-13->03-15
+effective-date fix. Per-row source_url normalized to the Wikipedia change-history table (the
+research pass's per-event `press.spglobal.com/<date>-<title>` URLs 404 -- wrong format; the
+DATA was triangulated, but we cite the source that resolves).
+
+**Integrity gate (new)**: `scripts/verify_membership_ledger.py` reverse-walks `members_at`
+from the live 502-ticker universe across every month of the 2021-06->2026-06 window and
+asserts (a) the reconstructed S&P 500 size stays in band (498-506; observed worst 504) and
+(b) every removed ticker is absent from / every added ticker present in the current universe.
+Runs CLEAN. Two consumer tests updated for the corrected SVB->SIVB / 03-15 data; all 31
+historical-universe + universe-drift tests pass; `ruff check .` clean.
+
+**Residual / caveats**: the 2026-06-02 FedEx Freight (FDXF) spinoff / EPAM removal is DROPPED
+-- it postdates the 2026-06-03 cron universe anchor (FDXF not yet in rankings.json), so
+including it would corrupt the reversal; it re-enters when the cron picks it up. Pre-2021
+1-sided 2020 spinoffs (OTIS/CARR) are slightly unbalanced (outside the backtest window). JBL
++ ALK placed at the web-confirmed 2023-12-18 rebalance (SEDG exit date confirmed). Renamed-
+then-departed names use ONE ticker for the add/remove pair (CDAY for Ceridian/Dayforce) since
+`members_at` does not apply rename aliasing.
+
+**Files**: `data/sp500_membership_historical.csv` · `scripts/verify_membership_ledger.py`
+(new) · `tests/test_ingest/test_historical_universe.py` ·
+`tests/test_validation/test_universe_drift.py` · `CLAUDE.md` (§Gotchas index) ·
+`docs/GOTCHAS.md` (detail) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
+
+## Phase 7.0 PR-1 — benchmark index export (in flight, 2026-06-04)
+
+**Branch**: `claude/loving-clarke-kAZII` (PR #416, additional commit)
+**Type**: feat(compute) + schema — exports the benchmark index series for the
+portfolio-backtest comparison chart; schema PATCH `0.10.13 -> 0.10.14-phase4.6`
+(additive `Metadata.benchmark_coverage_pct`). Observability-before-wiring: the
+data file + coverage metric ship now; the home page reads them in PR-4. No
+scoring / ranking / veto impact (display-only).
+
+`compute/ingest/prices.py` gains `BENCHMARK_TICKERS = (SPY, QQQ, DIA, IWM)` +
+`fetch_benchmarks()` (per-symbol graceful-degradation try/except; SPY shares the
+warm price cache with the existing beta fetch). `compute/output/writer.py` gains
+`write_benchmarks_json()` -> `frontend/public/data/portfolio/benchmarks.json`
+(column-major `{dates, spy, qqq, dia, iwm}`, Adj-Close-preferred, ~5y tail aligned
+to the union of trading dates, NaN/missing -> null), returning `(path, coverage_pct)`.
+`main.py` wires the fetch+write right after the SPY beta fetch and surfaces
+`benchmark_coverage_pct` on `Metadata`.
+
+The financial-engineer's "drift-detector manifest" scout step does NOT apply here
+-- yfinance is already a load-bearing dep (no new external-API surface to lock);
+the lightweight `BENCHMARK_TICKERS` manifest test + the coverage metric are the
+appropriate guards.
+
+**Verification**: schema triple regenerated + in sync (`schema_check`); `ruff check .`
+clean; new tests pass (`write_benchmarks_json` shape / union-dates / NaN->null /
+all-empty->None + `fetch_benchmarks` per-symbol / exception-swallow + `test_config`
+version bump) -- 32 passed locally. The live SPY/QQQ/DIA/IWM fetch + the actual
+benchmarks.json run on the weekly cron (sandbox has no network / price cache). The
+remaining offline-suite collection errors are pre-existing missing-dep (edgar/scipy),
+unrelated to this change.
+
+**Files**: `compute/ingest/prices.py` · `compute/output/writer.py` · `compute/main.py`
+· `compute/config.py` (version) · `compute/output/schemas.py` · `frontend/lib/types.ts`
+· `frontend/lib/schema-snapshot.json` · `tests/test_output/test_writer.py` ·
+`tests/test_ingest/test_benchmarks.py` (new) · `tests/test_config.py` ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---
+
+## Phase 7.0 PR-2a — AI-pick selection + inverse-vol weighting engine (in flight, 2026-06-04)
+
+**Branch**: `claude/loving-clarke-kAZII` (PR #416, additional commit)
+**Type**: feat(compute) — new pure `compute/portfolio/` package; no schema /
+frontend / data change; no schema bump. The deterministic, I/O-free CORE of the
+"fair AI-pick + auto-weight" — the same functions serve the forward cron pick and
+the point-in-time backfill (PR-2b). methodology-scientist RATIFIED the priors
+(2026-06-04).
+
+`compute/portfolio/weights.py`:
+- `select_picks(candidates, count)` — composite desc -> exclude the 7 active
+  rank-gate VETOES (annotate flags don't exclude) -> cap 2/GICS-sector for
+  count>=5 -> backfill if the cap leaves the basket short; tiebreak
+  `composite_score_adjusted` desc then ticker asc; count clamped [1, 10]. Reads
+  ONLY ranking+detail fields (`PickCandidate`).
+- `inverse_vol_weights(sigmas, cap=0.35)` — w_i prop 1/sigma_i, capped +
+  renormalized to sum 1 via PERMANENT pinning (a capped name never re-absorbs
+  residual -> no above-cap oscillation); infeasible cap (N*cap<1, e.g. N<3)
+  degrades to equal weight. Anchors: AFP 2012 / Frazzini-Pedersen 2014 BAB /
+  DGU 2009. NOT composite-proportional (ordinal-scale error).
+- `trailing_return_sigma(closes, window=90)` — sample stdev of trailing daily
+  returns (stdlib `statistics`; null / non-positive prices dropped).
+
+**Verification**: 19 offline tests pass (selection ordering / veto exclusion /
+sector-cap binding at count>=5 / count clamp / tiebreak; inverse-vol sum=1 / cap /
+infeasible-degrade / bad-sigma-drop + a Hypothesis property `sum(w)=1 & w<=cap when
+feasible`; sigma edge cases). `ruff check .` clean. Pure functions -> no look-ahead
+surface (the leak-probe lives in PR-2b's point-in-time backfill).
+
+**Next (PR-2b)**: wire the forward pick into main.py (`StockSummary.suggested_weight`
+from the warm price cache) + the `Metadata.portfolio_backtest_*` diagnostics +
+`scripts/backfill_portfolio_pit.py` (point-in-time NAV backfill; runs on
+`workflow_dispatch`, needs the 5y price cache — cron-side).
+
+**Files**: `compute/portfolio/__init__.py` (new) · `compute/portfolio/weights.py`
+(new) · `tests/test_portfolio/test_weights.py` (new) · `PHASE_STATUS_INFLIGHT.md`
+(this).
+
+---

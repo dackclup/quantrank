@@ -58,16 +58,18 @@ def test_drift_report_added_since_includes_recent_additions(
 def test_drift_report_removed_since_includes_delistings(
     current_universe_sample: frozenset[str],
 ) -> None:
-    """At 2023-03-12 (1 day before SVB collapse), SVB should be in removed_since."""
+    """At 2023-03-12 (before the 2023-03-15 removal), SIVB should be in removed_since."""
     today = date(2026, 5, 27)
     report = compute_universe_drift(
         date(2023, 3, 12),
         current_universe_sample,
         anchor_date=today,
     )
-    # SVB was in S&P 500 on 2023-03-12, collapsed 2023-03-13 → in removed_since
-    # (NOT in current_universe_sample, but historically WAS there)
-    assert "SVB" in report.removed_since
+    # SVB Financial (ticker SIVB) was in the S&P 500 on 2023-03-12 and was
+    # removed effective 2023-03-15 (bank failure) → in removed_since. (NOT in
+    # current_universe_sample, but historically WAS there.) The prior ledger's
+    # "SVB" + 2023-03-13 announce-date was corrected in the Phase 7.0 PR-0 rebuild.
+    assert "SIVB" in report.removed_since
 
 
 def test_drift_report_anchor_date_is_zero_drift(

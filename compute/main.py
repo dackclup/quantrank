@@ -69,7 +69,7 @@ from compute.ingest.fundamentals import (
 from compute.ingest.fundamentals import (
     reset_fallback_stats as reset_shares_fallback_stats,
 )
-from compute.ingest.prices import fetch_prices, fetch_spy_benchmark
+from compute.ingest.prices import fetch_benchmarks, fetch_prices, fetch_spy_benchmark
 from compute.ingest.universe import get_sp500_constituents
 from compute.output.schemas import (
     DataQuality,
@@ -82,6 +82,7 @@ from compute.output.schemas import (
 )
 from compute.output.writer import (
     read_previous_top5,
+    write_benchmarks_json,
     write_metadata_json,
     write_rankings_json,
     write_stock_detail,
@@ -719,6 +720,23 @@ def run_weekly_compute() -> int:
     if benchmark is None or benchmark.empty:
         logger.warning("SPY benchmark unavailable — beta will be NaN for all tickers")
         benchmark = None
+
+    # Phase 7.0 PR-1 — export the benchmark index series (SPY/QQQ/DIA/IWM) for
+    # the portfolio-backtest comparison chart. Observability-before-wiring:
+    # benchmarks.json + benchmark_coverage_pct ship now; the home page reads the
+    # file in PR-4. SPY is already warm in the price cache from the beta fetch.
+    benchmark_coverage_pct: float | None = None
+    try:
+        _bench_path, benchmark_coverage_pct = write_benchmarks_json(
+            fetch_benchmarks(), config.DATA_DIR
+        )
+        logger.info(
+            "Benchmark export: %s (coverage %.1f%%)",
+            _bench_path if _bench_path is not None else "NONE",
+            benchmark_coverage_pct,
+        )
+    except Exception as e:  # noqa: BLE001
+        logger.warning("Benchmark export failed (non-fatal): %s", e)
 
     # Step 1 — prices in parallel.
     rows: list[dict] = []
@@ -2148,6 +2166,8 @@ def run_weekly_compute() -> int:
         next_update_utc=_iso(now + timedelta(days=_next_business_day_offset(now))),
         universe=config.UNIVERSE,
         universe_size=len(summaries),
+        # Phase 7.0 PR-1 — benchmark index export coverage (Rule 18 observability).
+        benchmark_coverage_pct=benchmark_coverage_pct,
         # Phase 4.6 (0.10.7-phase4.6) — survivorship-bias provenance per
         # Research Report v1.0 §7.4. Forward cron's as-of is today, and
         # the universe we just scored IS today's current S&P 500 — so

@@ -41,8 +41,12 @@ def test_schema_version_is_phase4_6():
     to no country → exchange 100% / country 99.8%). The new field is the
     strict-resolution canary, paired with the ``BTS → Cboe BZX`` fix in
     ``cross_source._EXCHANGE_NAME_BY_CODE`` and a main.py divergence WARNING.
-    Locks the version against accidental revert."""
-    assert config.SCHEMA_VERSION == "0.10.13-phase4.6"
+    Locks the version against accidental revert.
+
+    PR-1 (0.10.14-phase4.6) — Phase 7.0 PR-1 PATCH bump for the additive
+    ``Metadata.benchmark_coverage_pct`` (benchmark index export observability;
+    SPY/QQQ/DIA/IWM → portfolio/benchmarks.json)."""
+    assert config.SCHEMA_VERSION == "0.10.14-phase4.6"
 
 
 def test_multi_class_overcount_allowlist_membership():

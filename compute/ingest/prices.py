@@ -41,6 +41,35 @@ def fetch_spy_benchmark(period: str = config.PRICES_PERIOD) -> pd.DataFrame | No
     return fetch_prices(SPY_TICKER, period=period)
 
 
+# Phase 7.0 PR-1 — index-proxy ETFs exported for the portfolio-backtest
+# benchmark selector. SPY = S&P 500 (also the β baseline above); QQQ =
+# Nasdaq-100; DIA = Dow Jones Industrial Average; IWM = Russell 2000.
+# Display-only — no scoring / ranking / veto impact; the home page lets the
+# user compare the AI-pick basket against the chosen index. SPY shares
+# fetch_prices' on-disk cache with fetch_spy_benchmark (no double download).
+BENCHMARK_TICKERS: tuple[str, ...] = ("SPY", "QQQ", "DIA", "IWM")
+
+
+def fetch_benchmarks(
+    period: str = config.PRICES_PERIOD,
+) -> dict[str, pd.DataFrame | None]:
+    """Fetch OHLCV for each ``BENCHMARK_TICKERS`` symbol, degrading per symbol.
+
+    Returns a dict keyed by ticker; the value is ``None`` when that symbol's
+    fetch failed (network / empty response). Never raises — a single benchmark
+    failure must not block the weekly cron (graceful-degradation pattern); the
+    caller surfaces the success rate as ``Metadata.benchmark_coverage_pct``.
+    """
+    out: dict[str, pd.DataFrame | None] = {}
+    for sym in BENCHMARK_TICKERS:
+        try:
+            out[sym] = fetch_prices(sym, period=period)
+        except Exception as e:  # noqa: BLE001
+            logger.warning("benchmark fetch failed for %s: %s", sym, e)
+            out[sym] = None
+    return out
+
+
 def fetch_prices(ticker: str, period: str = config.PRICES_PERIOD) -> pd.DataFrame | None:
     """Return a daily OHLCV DataFrame for ``ticker``, or ``None`` on failure."""
     cache_dir = config.PRICES_CACHE_DIR

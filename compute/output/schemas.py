@@ -312,6 +312,15 @@ class Metadata(BaseModel):
     # cron logs both catch the next divergence. Nullable on legacy snapshots
     # (pre-0.10.13).
     country_coverage_pct: float | None = None
+    # Phase 7.0 PR-1 (0.10.14-phase4.6, Rule 18) — observability-before-wiring
+    # surface for the benchmark index export. % of the BENCHMARK_TICKERS
+    # (SPY/QQQ/DIA/IWM) whose ~5y close series exported to
+    # ``frontend/public/data/portfolio/benchmarks.json``. Ships BEFORE the Phase
+    # 7 AI-pick home page reads benchmarks.json: the UI wiring (PR-4) waits for
+    # ≥ 1 cron confirming coverage is high. Display-only (no ranking / scoring /
+    # veto impact). Nullable on legacy snapshots (pre-0.10.14) and when the
+    # export loop was skipped via escape-hatch.
+    benchmark_coverage_pct: float | None = None
     # Issue #246 PR1 retrofit (0.10.3-phase4.5e) — Rule 18 observability for
     # the `_fetch_shares_from_per_filing_xbrl` fallback trigger extended in
     # PR #253. ``shares_fallback_triggered_count`` = total tickers where the
