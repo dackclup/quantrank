@@ -217,6 +217,26 @@ def test_restatement_at_risk_filings_index_semantics() -> None:
     assert bf._restatement_at_risk(None, "2022-06-01") is False     # unresolved -> not at-risk
 
 
+def test_insample_lag_clause_states_actual_result_vs_spy() -> None:
+    """The disclaimer's result-dependent sentence reflects the ACTUAL default-count net
+    line vs SPY (lag / lead / tracked), and falls back generically when nav is empty — so
+    it can never claim a win the chart contradicts (methodology-scientist honesty fix)."""
+    d0, d1 = date(2021, 6, 1), date(2026, 6, 1)
+
+    def _nav(net_last: float, spy_last: float) -> dict:
+        return {
+            "by_count": {str(bf.DEFAULT_COUNT): {"net": [100.0, net_last]}},
+            "benchmark": {"spy": [100.0, spy_last]},
+        }
+
+    assert "underperformed the S&P 500 (132 vs 180" in bf._insample_lag_clause(_nav(132.0, 180.0), d0, d1)
+    assert "outperformed the S&P 500 (190 vs 180" in bf._insample_lag_clause(_nav(190.0, 180.0), d0, d1)
+    assert "tracked the S&P 500" in bf._insample_lag_clause(_nav(180.2, 180.0), d0, d1)  # within dead-band
+    fallback = bf._insample_lag_clause({"by_count": {}, "benchmark": {}}, d0, d1)
+    assert "Past performance" in fallback
+    assert "underperformed" not in fallback and "outperformed" not in fallback  # no directional claim
+
+
 def _bday_frame(prices: list[float]) -> pd.DataFrame:
     idx = pd.bdate_range("2022-01-03", periods=len(prices))
     return pd.DataFrame({"Close": prices, "Adj Close": prices}, index=idx)
