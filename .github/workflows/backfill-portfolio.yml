@@ -25,9 +25,18 @@ permissions:
 jobs:
   backfill:
     runs-on: ubuntu-latest
+    # SECURITY (security-reviewer FAIL, 2026-06-05): never let a
+    # workflow_dispatch against `main` commit the artifact straight to the
+    # protected branch. The backfill is meant to run on a FEATURE branch and
+    # land its data via PR review; the weekly cron (compute-rankings.yml) is the
+    # only writer to `main`. This guard blocks the dispatch-against-main path.
+    if: github.ref_name != 'main'
     # Only the final commit step writes; scope write to this job.
     permissions:
       contents: write
+    # Budget: ~20 quarterly rebalances x ~500 names x (cache-load + score). Warm
+    # cache ~15-20m; fully-cold (price + fundamentals_history re-fetch) ~60m; 120m
+    # leaves headroom. A timeout commits nothing (the artifact is all-or-none).
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v6
@@ -100,7 +109,8 @@ jobs:
           else
             git commit -m "chore: backfill portfolio backtest $(date -u +%Y-%m-%d)"
             for attempt in 1 2 3; do
-              git pull --rebase --autostash origin "${GITHUB_REF_NAME}" && git push && break
+              git pull --rebase --autostash origin "${GITHUB_REF_NAME}" \
+              && git push origin HEAD:"${GITHUB_REF_NAME}" && break
               echo "Push attempt $attempt failed; retrying."
               sleep $((attempt * 5))
             done
