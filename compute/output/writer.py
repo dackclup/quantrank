@@ -191,6 +191,22 @@ def write_benchmarks_json(
         return None, coverage_pct
 
 
+def write_backtest_pit_json(payload: dict[str, Any], output_dir: Path) -> Path:
+    """Write the point-in-time portfolio backtest artifact atomically.
+
+    Target: ``output_dir/portfolio/backtest_pit.json``. The artifact is
+    self-describing — it carries its OWN ``meta`` block (window, rebalance count,
+    survivorship + restatement canaries, the honesty disclaimer) rather than
+    leaning on ``metadata.json``, because the backfill is a standalone
+    ``workflow_dispatch`` job, NOT the weekly cron (which would have to
+    read-modify-write metadata.json and race the bot commit). Produced by
+    ``scripts/backfill_portfolio_pit.py``; consumed by the home page (PR-4).
+    """
+    out = output_dir / "portfolio" / "backtest_pit.json"
+    atomic_write_json(out, payload)
+    return out
+
+
 def read_previous_top5(data_dir: Path) -> set[str]:
     """Return the ticker set that ranked in the previous run's Top-5.
 

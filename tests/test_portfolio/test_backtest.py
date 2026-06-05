@@ -11,6 +11,7 @@ from datetime import date
 import pytest
 
 from compute.portfolio.backtest import (
+    align_benchmark_nav,
     build_portfolio_nav,
     quarterly_rebalance_dates,
     rebase,
@@ -124,3 +125,26 @@ def test_weights_renormalized_over_priced_names() -> None:
     nav = build_portfolio_nav(dates, closes, reb, cost_bps_per_side=0.0)
     # only AAA priced -> 100% AAA -> tracks AAA (+50%)
     assert nav["gross"] == pytest.approx([100.0, 150.0])
+
+
+# --- benchmark alignment ------------------------------------------------------
+
+
+def test_align_benchmark_nav_subset_dates_rebased() -> None:
+    out = align_benchmark_nav(
+        ["2021-01-04", "2021-01-06"],
+        ["2021-01-04", "2021-01-05", "2021-01-06"],
+        [400.0, 410.0, 420.0],
+    )
+    # rebased to 100 at the first portfolio date (400) -> 420/400*100 = 105
+    assert out == pytest.approx([100.0, 105.0])
+
+
+def test_align_benchmark_nav_forward_fills_missing_date() -> None:
+    out = align_benchmark_nav(
+        ["2021-01-04", "2021-01-05", "2021-01-06"],
+        ["2021-01-04", "2021-01-06"],  # benchmark has no 01-05
+        [400.0, 440.0],
+    )
+    # 01-05 forward-fills the 400 close -> 100; 01-06 = 440/400*100 = 110
+    assert out == pytest.approx([100.0, 100.0, 110.0])

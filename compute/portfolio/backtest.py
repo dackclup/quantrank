@@ -240,3 +240,33 @@ def rebase(values: Sequence[float | None], *, base: float = 100.0) -> list[float
     for v in values:
         out.append(base * (v / anchor) if (v is not None and v == v) else None)
     return out
+
+
+def align_benchmark_nav(
+    portfolio_dates: Sequence[str],
+    bench_dates: Sequence[str],
+    bench_closes: Sequence[float | None],
+    *,
+    base: float = 100.0,
+) -> list[float | None]:
+    """Forward-fill a benchmark close series onto the portfolio's dates, rebased.
+
+    For each portfolio date use the most-recent benchmark close on or before it
+    (forward-fill), then rebase to ``base`` at the first portfolio date with a
+    value — so the benchmark line shares the portfolio NAV's window start. A
+    portfolio date before the benchmark's first valid close maps to None.
+    Pure: lets the multi-timeframe comparison be assembled + tested offline.
+    """
+    pairs = sorted(zip(bench_dates, bench_closes, strict=False), key=lambda x: x[0])
+    n = len(pairs)
+    j = 0
+    last_valid: float | None = None
+    aligned: list[float | None] = []
+    for d in portfolio_dates:
+        while j < n and pairs[j][0] <= d:
+            c = pairs[j][1]
+            if c is not None and c == c and c > 0:
+                last_valid = float(c)
+            j += 1
+        aligned.append(last_valid)
+    return rebase(aligned, base=base)
