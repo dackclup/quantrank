@@ -1495,8 +1495,10 @@ a weekend (quarter-end + 45d) is now SNAPPED to the next trading day (decide-at-
 trade-next-open) instead of being silently dropped by `build_portfolio_nav` (which requires
 the as-of date to be in the price calendar). `HEADLINE_COUNT` → `DEFAULT_COUNT` (5, the
 slider's landing position, not a cap); the restatement-contamination canary now tracks the
-full top-`MAX_PICKS` selectable set. +2 unit tests (`_assemble_nav` per-N alignment +
-weekend-snap); the integration test updated to the new shape. `ruff` clean; 1514 offline pass.
+full top-`MAX_PICKS` selectable set. +5 net-new tests (per-N alignment + down-name drag,
+weekend-snap, sigma-empty leg-skip distinct from the membership-degraded skip, snap
+fallback-to-last + empty→None — the last three from the test-engineer pre-push gate); the
+integration test updated to the new shape. `ruff` clean; full offline suite green.
 
 **Next on this branch**: dispatch the backfill (`ref=claude/loving-clarke-kAZII`) → review
 the canaries (`incomplete_membership_count` / `restatement_contamination_pct` /
@@ -1508,6 +1510,7 @@ multi-timeframe NAV-vs-index chart, McLean-Pontiff disclaimer) consuming `backte
 **Files (steps 1-2)**: `.github/workflows/backfill-portfolio.yml` (benchmark-gen step +
 `git add` broadened) · `scripts/backfill_portfolio_pit.py` (per-N NAV + trading-day snap +
 `weights_by_count`) · `tests/test_portfolio/test_backfill_integration.py` (new-shape asserts
-+ 2 `_assemble_nav` unit tests) · `PHASE_STATUS_INFLIGHT.md` (this).
++ 5 net-new tests: per-N alignment, weekend-snap, sigma-empty skip, snap fallback/empty) ·
+`PHASE_STATUS_INFLIGHT.md` (this).
 
 ---

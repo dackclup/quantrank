@@ -148,6 +148,26 @@ def test_run_backfill_skips_incomplete_membership(tmp_path, _universe) -> None:
     assert meta["incomplete_membership_count"] > 0
 
 
+def test_run_backfill_skips_sigma_empty_rebalance(tmp_path, _universe) -> None:
+    """A trusted (members-complete) leg where NO pick has a computable 90d sigma is
+    silently skipped at the `weights_by_count` empty -> `continue` gate: rebalance_count
+    AND incomplete_membership_count are BOTH 0 — a path distinct from the is_complete=False
+    skip (so an all-zero result isn't misread as a membership-coverage gap)."""
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(1)),
+        # full prices (pillars score normally) but no name yields a sigma -> every leg's
+        # weights_by_count is empty -> the `continue` fires for all of them.
+        mock.patch.object(bf, "trailing_return_sigma", return_value=None),
+    ):
+        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path)
+
+    meta = json.loads(out.read_text())["meta"]
+    assert meta["rebalance_count"] == 0          # every leg skipped at the sigma gate
+    assert meta["incomplete_membership_count"] == 0  # NOT the membership-degraded path
+
+
 def _bday_frame(prices: list[float]) -> pd.DataFrame:
     idx = pd.bdate_range("2022-01-03", periods=len(prices))
     return pd.DataFrame({"Close": prices, "Adj Close": prices}, index=idx)
@@ -192,3 +212,15 @@ def test_assemble_nav_snaps_weekend_rebalance_to_trading_day(tmp_path) -> None:
     assert out["by_count"]  # the leg was NOT dropped
     assert out["dates"][0] == "2022-01-10"  # snapped Sat -> Mon
     assert out["by_count"]["1"]["gross"][0] == pytest.approx(100.0)
+
+
+def test_snap_to_trading_day_falls_back_to_last_when_date_is_past_all_prices() -> None:
+    """A rebalance dated after the last available trading day snaps to that last day
+    (price data ends before the rebalance) rather than returning None or raising."""
+    trading_days = ["2022-01-03", "2022-01-04", "2022-01-05", "2022-01-06", "2022-01-07"]
+    assert bf._snap_to_trading_day("2099-06-30", trading_days) == "2022-01-07"
+
+
+def test_snap_to_trading_day_returns_none_on_empty_dates() -> None:
+    """The documented `None only if empty` guard — no trading days to snap to."""
+    assert bf._snap_to_trading_day("2022-01-03", []) is None
