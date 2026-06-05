@@ -1431,16 +1431,35 @@ within-cohort -> point-in-time honest). All 8 pillars included; two mandatory gu
 "point-in-time proxy" (annual-not-TTM, sector-stable-from-today) + the McLean-Pontiff decay
 banner.
 
-**Remaining (this PR continues)**: the orchestrator `scripts/backfill_portfolio_pit.py`
-(`members_at(T)` cohort -> synthetic PIT snapshot -> `compute_all_pillars` -> composite ->
-`select_picks` -> `inverse_vol_weights` -> `build_portfolio_nav` -> benchmark NAV -> write
-`backtest_pit.json`), the `Metadata.portfolio_backtest_*` observability fields + the
-`backtest_pit.json` schema triple, the writer, and a `workflow_dispatch` action. The
-orchestrator + the actual 5y data are validated by a CI `workflow_dispatch` run (the sandbox
-has no pandas / warm caches).
+**Now COMPLETE in this PR** (was "remaining"): the orchestrator
+`scripts/backfill_portfolio_pit.py` (`members_at(T)` cohort -> synthetic PIT snapshot +
+filed<=T history frame [guardrail 1] + price-at-T [guardrail 2] -> `compute_all_pillars` ->
+frozen composite -> `select_picks` (10 holdings, sigma stored) -> `inverse_vol_weights` ->
+`build_portfolio_nav` (headline-5; gross/net/conservative) vs benchmark NAVs -> write via
+`writer.write_backtest_pit_json`), the `align_benchmark_nav` helper, and the
+`.github/workflows/backfill-portfolio.yml` `workflow_dispatch` (warm-cache restore, env-proxy
+inputs, `if: github.ref_name != 'main'` guard — security-reviewer FAIL fixed + W1 docs). The
+artifact SELF-CARRIES its `meta` block (window + canaries + disclaimer) so NO schema-triple
+change / version bump is needed (standalone dispatch, not the cron).
 
-**Files so far**: `compute/portfolio/backtest.py` (new) · `compute/portfolio/pit_fundamentals.py`
-(new) · `tests/test_portfolio/test_backtest.py` (new) · `tests/test_portfolio/test_pit_fundamentals.py`
-(new) · `PHASE_STATUS_INFLIGHT.md` (this).
+**Validation**: `ruff check .` clean; FULL offline suite **1510 passed / 13 skipped** (deps
+installable in-env); 42 `tests/test_portfolio/` pass — incl. `test_backfill_integration.py`
+that runs `run_backfill` end-to-end on a synthetic universe through the REAL pillar pipeline
+(the wiring the sandbox couldn't exercise before). quantrank-reviewer READY-TO-PUSH (0 FAIL).
+
+**Deferred to follow-up (PR-2c / disclosed)**: the actual 5y `backtest_pit.json` DATA comes
+from a CI `workflow_dispatch` run AFTER this merges (a dispatch trigger only registers once
+the workflow file is on `main`); the point-in-time defense-layer VETO replay
+(`meta.veto_layer_replayed = False` today — composite-rank + sector-cap only); the optional
+`Metadata.portfolio_backtest_*` mirror; and a methodology-scientist check that
+`restatement_contamination_pct` lands low on the first real run.
+
+**Files**: `compute/portfolio/backtest.py` (new · NAV engine · 15 tests) ·
+`compute/portfolio/pit_fundamentals.py` (new · PIT guardrail · 10 tests) ·
+`scripts/backfill_portfolio_pit.py` (new · orchestrator) · `compute/output/writer.py`
+(`write_backtest_pit_json`) · `.github/workflows/backfill-portfolio.yml` (new) ·
+`tests/test_portfolio/{test_backtest,test_pit_fundamentals,test_backfill_integration}.py`
+(new · 27 tests) · `CLAUDE.md` + `AGENTS.md` (§Commands + §Security · W1) ·
+`PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
