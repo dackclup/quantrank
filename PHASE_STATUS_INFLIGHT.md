@@ -1401,3 +1401,65 @@ from the warm price cache) + the `Metadata.portfolio_backtest_*` diagnostics +
 (this).
 
 ---
+
+## Phase 7.0 PR-2b — point-in-time portfolio backtest engine (in flight, 2026-06-04)
+
+**Branch**: `claude/loving-clarke-kAZII`
+**Type**: feat(compute) — backtest engine modules + tests; no schema bump YET (the
+`Metadata.portfolio_backtest_*` observability fields + the `backtest_pit.json` model land
+with the orchestrator). Builds on the merged Phase 7.0 foundation (#416).
+
+**Goal**: the offline-verifiable HEART of the point-in-time 5-year backtest backfill, built
+ahead of the (locally-unverifiable) orchestrator that wires the caches.
+
+- **NAV engine** (`compute/portfolio/backtest.py`) — pure, pandas-free: `quarterly_rebalance_dates`
+  + `build_portfolio_nav` (buy-and-hold drift, gross + net-of-turnover-cost per NMV 2016,
+  delisting carry-forward, weight renormalization) + `rebase`. 10 tests.
+- **PIT-fundamentals guardrail** (`compute/portfolio/pit_fundamentals.py`) — the
+  methodology-scientist's #1 silent-look-ahead point: select only annual 10-K facts with
+  `filing_date <= T` (amendments excluded, latest FY), so re-scoring at a historical date
+  can't read a later filing. Pure + offline-testable; 9 tests incl. the mandated
+  future-blockbuster leak-probe.
+
+**Methodology re-ratification (2026-06-04)**: the full live 8-pillar composite is NOT
+point-in-time reconstructable (its flow pillars read a TTM snapshot assembled from the
+LATEST filings — unreplayable offline without paid vintage data). methodology-scientist
+RATIFIED **Option A**: rebuild a synthetic snapshot from ANNUAL (10-K) fundamentals filed<=T
+and re-run the EXISTING pillar pipeline (the only cross-sectional op, `normalize_metric`, is
+within-cohort -> point-in-time honest). All 8 pillars included; two mandatory guardrails
+(history filed<=T before Piotroski/CAGR; `current_price` = price-at-T). Relabel as a
+"point-in-time proxy" (annual-not-TTM, sector-stable-from-today) + the McLean-Pontiff decay
+banner.
+
+**Now COMPLETE in this PR** (was "remaining"): the orchestrator
+`scripts/backfill_portfolio_pit.py` (`members_at(T)` cohort -> synthetic PIT snapshot +
+filed<=T history frame [guardrail 1] + price-at-T [guardrail 2] -> `compute_all_pillars` ->
+frozen composite -> `select_picks` (10 holdings, sigma stored) -> `inverse_vol_weights` ->
+`build_portfolio_nav` (headline-5; gross/net/conservative) vs benchmark NAVs -> write via
+`writer.write_backtest_pit_json`), the `align_benchmark_nav` helper, and the
+`.github/workflows/backfill-portfolio.yml` `workflow_dispatch` (warm-cache restore, env-proxy
+inputs, `if: github.ref_name != 'main'` guard — security-reviewer FAIL fixed + W1 docs). The
+artifact SELF-CARRIES its `meta` block (window + canaries + disclaimer) so NO schema-triple
+change / version bump is needed (standalone dispatch, not the cron).
+
+**Validation**: `ruff check .` clean; FULL offline suite **1510 passed / 13 skipped** (deps
+installable in-env); 42 `tests/test_portfolio/` pass — incl. `test_backfill_integration.py`
+that runs `run_backfill` end-to-end on a synthetic universe through the REAL pillar pipeline
+(the wiring the sandbox couldn't exercise before). quantrank-reviewer READY-TO-PUSH (0 FAIL).
+
+**Deferred to follow-up (PR-2c / disclosed)**: the actual 5y `backtest_pit.json` DATA comes
+from a CI `workflow_dispatch` run AFTER this merges (a dispatch trigger only registers once
+the workflow file is on `main`); the point-in-time defense-layer VETO replay
+(`meta.veto_layer_replayed = False` today — composite-rank + sector-cap only); the optional
+`Metadata.portfolio_backtest_*` mirror; and a methodology-scientist check that
+`restatement_contamination_pct` lands low on the first real run.
+
+**Files**: `compute/portfolio/backtest.py` (new · NAV engine · 15 tests) ·
+`compute/portfolio/pit_fundamentals.py` (new · PIT guardrail · 10 tests) ·
+`scripts/backfill_portfolio_pit.py` (new · orchestrator) · `compute/output/writer.py`
+(`write_backtest_pit_json`) · `.github/workflows/backfill-portfolio.yml` (new) ·
+`tests/test_portfolio/{test_backtest,test_pit_fundamentals,test_backfill_integration}.py`
+(new · 27 tests) · `CLAUDE.md` + `AGENTS.md` (§Commands + §Security · W1) ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---

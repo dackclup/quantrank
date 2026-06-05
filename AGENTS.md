@@ -559,6 +559,14 @@ export function FairPriceCard(props) {  // no types
   the host. The skill's `scripts/` run ONLY in a local dev agent session (no
   `package.json` / install hooks) — never in CI or the static export. See
   CLAUDE.md §Gotchas + `THIRD_PARTY_NOTICES.md` §pbakaus/impeccable.
+- **`backfill-portfolio.yml` workflow_dispatch (Phase 7.0 PR-2b)** — its
+  `start` / `end` inputs reach the shell ONLY via the `IN_START` / `IN_END`
+  env proxies (never `${{ inputs.* }}` interpolated into a `run:` line — the
+  Actions script-injection vector) and are validated by `date.fromisoformat`
+  in `scripts/backfill_portfolio_pit.py` before any syscall. The job carries
+  `if: github.ref_name != 'main'` so a dispatch can never commit the artifact
+  straight to the protected branch; the backfill lands its data via PR review,
+  and the weekly cron stays the only writer to `main`.
 - **CI escape-hatch env-var combo for simulate** (5 vars, all set
   together in `.github/workflows/pre-merge-prod-sim.yml`; NONE set
   in weekly cron `compute-rankings.yml`). Each is optional, fails

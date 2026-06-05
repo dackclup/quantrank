@@ -66,6 +66,7 @@ design-system spec.
 | Frontend build | `cd frontend && npx --no -- next build` |
 | Frontend type-check | `cd frontend && npx --no -- tsc --noEmit` |
 | Local weekly compute | `python -m compute.main` (writes `frontend/public/data/`) |
+| Backtest backfill (manual) | `python -m scripts.backfill_portfolio_pit` — or the `backfill-portfolio.yml` `workflow_dispatch` (Phase 7.0; writes `frontend/public/data/portfolio/backtest_pit.json`; `IN_START`/`IN_END` are the shell-safe proxies for its `start`/`end` inputs) |
 | Section A-L verification | `python .claude/skills/verify-production-output/helper.py` |
 
 Verification ladder before any push: `ruff check .` → `pytest -m "not
