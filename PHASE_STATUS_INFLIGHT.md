@@ -1401,3 +1401,46 @@ from the warm price cache) + the `Metadata.portfolio_backtest_*` diagnostics +
 (this).
 
 ---
+
+## Phase 7.0 PR-2b — point-in-time portfolio backtest engine (in flight, 2026-06-04)
+
+**Branch**: `claude/loving-clarke-kAZII`
+**Type**: feat(compute) — backtest engine modules + tests; no schema bump YET (the
+`Metadata.portfolio_backtest_*` observability fields + the `backtest_pit.json` model land
+with the orchestrator). Builds on the merged Phase 7.0 foundation (#416).
+
+**Goal**: the offline-verifiable HEART of the point-in-time 5-year backtest backfill, built
+ahead of the (locally-unverifiable) orchestrator that wires the caches.
+
+- **NAV engine** (`compute/portfolio/backtest.py`) — pure, pandas-free: `quarterly_rebalance_dates`
+  + `build_portfolio_nav` (buy-and-hold drift, gross + net-of-turnover-cost per NMV 2016,
+  delisting carry-forward, weight renormalization) + `rebase`. 10 tests.
+- **PIT-fundamentals guardrail** (`compute/portfolio/pit_fundamentals.py`) — the
+  methodology-scientist's #1 silent-look-ahead point: select only annual 10-K facts with
+  `filing_date <= T` (amendments excluded, latest FY), so re-scoring at a historical date
+  can't read a later filing. Pure + offline-testable; 9 tests incl. the mandated
+  future-blockbuster leak-probe.
+
+**Methodology re-ratification (2026-06-04)**: the full live 8-pillar composite is NOT
+point-in-time reconstructable (its flow pillars read a TTM snapshot assembled from the
+LATEST filings — unreplayable offline without paid vintage data). methodology-scientist
+RATIFIED **Option A**: rebuild a synthetic snapshot from ANNUAL (10-K) fundamentals filed<=T
+and re-run the EXISTING pillar pipeline (the only cross-sectional op, `normalize_metric`, is
+within-cohort -> point-in-time honest). All 8 pillars included; two mandatory guardrails
+(history filed<=T before Piotroski/CAGR; `current_price` = price-at-T). Relabel as a
+"point-in-time proxy" (annual-not-TTM, sector-stable-from-today) + the McLean-Pontiff decay
+banner.
+
+**Remaining (this PR continues)**: the orchestrator `scripts/backfill_portfolio_pit.py`
+(`members_at(T)` cohort -> synthetic PIT snapshot -> `compute_all_pillars` -> composite ->
+`select_picks` -> `inverse_vol_weights` -> `build_portfolio_nav` -> benchmark NAV -> write
+`backtest_pit.json`), the `Metadata.portfolio_backtest_*` observability fields + the
+`backtest_pit.json` schema triple, the writer, and a `workflow_dispatch` action. The
+orchestrator + the actual 5y data are validated by a CI `workflow_dispatch` run (the sandbox
+has no pandas / warm caches).
+
+**Files so far**: `compute/portfolio/backtest.py` (new) · `compute/portfolio/pit_fundamentals.py`
+(new) · `tests/test_portfolio/test_backtest.py` (new) · `tests/test_portfolio/test_pit_fundamentals.py`
+(new) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
