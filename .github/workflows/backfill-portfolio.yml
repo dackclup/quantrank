@@ -71,6 +71,24 @@ jobs:
             cache-v5-${{ steps.quarter.outputs.q }}-
             cache-v5-
 
+      # The backfill READS frontend/public/data/portfolio/benchmarks.json for the
+      # SPY/QQQ/DIA/IWM comparison lines but does NOT produce it — that file is a
+      # weekly-cron output (compute/main.py write_benchmarks_json), and the cron
+      # that introduced the writer has not committed it yet. Regenerate it here so a
+      # SINGLE dispatch yields a benchmark-complete artifact instead of a backtest
+      # with empty comparison lines (and without waiting ~17h for the next cron).
+      # Cheap: 4 yfinance close-series fetches via the same trusted code path as the
+      # cron; if benchmarks.json is later committed by a cron this just refreshes it.
+      - name: Generate benchmark series (benchmarks.json)
+        run: |
+          python - <<'PY'
+          from compute import config
+          from compute.ingest.prices import fetch_benchmarks
+          from compute.output.writer import write_benchmarks_json
+          path, coverage = write_benchmarks_json(fetch_benchmarks(), config.DATA_DIR)
+          print(f"  benchmarks.json -> {path} (coverage {coverage:.1f}%)")
+          PY
+
       - name: Run point-in-time backfill
         # Inputs go through env, NEVER interpolated straight into the run script
         # (template `${{ inputs.* }}` in a shell line is the classic Actions
@@ -103,7 +121,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add frontend/public/data/portfolio/backtest_pit.json
+          # Commit BOTH portfolio artifacts: the freshly-regenerated benchmarks.json
+          # (the comparison index series) and the backtest_pit.json the frontend reads.
+          git add frontend/public/data/portfolio/
           if git diff --cached --quiet; then
             echo "No backtest changes to commit."
           else

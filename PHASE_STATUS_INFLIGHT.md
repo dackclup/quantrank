@@ -1463,3 +1463,54 @@ the workflow file is on `main`); the point-in-time defense-layer VETO replay
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Phase 7.0 PR-4 — AI-pick home page (backfill self-sufficiency + real data + frontend) (in flight, 2026-06-05)
+
+**Branch**: `claude/loving-clarke-kAZII` (continues post-#417-merge)
+**Type**: ci + feat(frontend) — starts with a backfill-workflow tweak so a SINGLE dispatch
+yields a benchmark-complete artifact; grows to the real 5y `backtest_pit.json` data + the
+AI-pick home page that renders it. No schema bump (the artifact self-carries its `meta`).
+
+**Step 1 (this commit) — backfill self-sufficiency.** The merged backfill workflow READS
+`frontend/public/data/portfolio/benchmarks.json` for the SPY/QQQ/DIA/IWM comparison lines
+but does NOT produce it — that file is a weekly-cron output (`compute/main.py`
+`write_benchmarks_json`), and the cron that introduced the writer (#416) has not committed
+it yet (last data commit `531b4a5d` predates the writer). A dispatch today would emit a
+backtest with EMPTY comparison lines; the next cron is ~17h out. Fix: a new
+`Generate benchmark series (benchmarks.json)` workflow step regenerates it via the SAME
+trusted code path as the cron (`fetch_benchmarks()` + `write_benchmarks_json()`, 4 yfinance
+close-series) right before the backfill runs, and the commit step's `git add` is broadened
+from the single `backtest_pit.json` to the whole `portfolio/` dir so BOTH artifacts land.
+Self-contained, no cron-timing dependency, no merged-orchestrator code touched.
+
+**Step 2 — NAV per holding count (Option A, user-chosen).** The user chose the faithful
+reading of "ปรับ 1-10 ตัวแล้ววัดผล": the 1-10 slider re-runs the backtest LINE, not just the
+holdings list. The orchestrator now, at each rebalance, inverse-vol weights the top-N picks
+for EVERY N=1..MAX_PICKS, and the artifact stores a daily NAV series per count —
+`nav.by_count["1".."10"]`, each `{gross, net, net_conservative, turnover_by_rebalance}` —
+sharing one `dates` axis + the rebased `benchmark` lines. Each rebalance also stores its
+ranked `holdings` (ticker/score/sector/sigma_90d) + `weights_by_count`, so the picks panel
+needs no client-side weight re-derivation. Also fixes a latent NAV bug: a rebalance dated on
+a weekend (quarter-end + 45d) is now SNAPPED to the next trading day (decide-at-T,
+trade-next-open) instead of being silently dropped by `build_portfolio_nav` (which requires
+the as-of date to be in the price calendar). `HEADLINE_COUNT` → `DEFAULT_COUNT` (5, the
+slider's landing position, not a cap); the restatement-contamination canary now tracks the
+full top-`MAX_PICKS` selectable set. +5 net-new tests (per-N alignment + down-name drag,
+weekend-snap, sigma-empty leg-skip distinct from the membership-degraded skip, snap
+fallback-to-last + empty→None — the last three from the test-engineer pre-push gate); the
+integration test updated to the new shape. `ruff` clean; full offline suite green.
+
+**Next on this branch**: dispatch the backfill (`ref=claude/loving-clarke-kAZII`) → review
+the canaries (`incomplete_membership_count` / `restatement_contamination_pct` /
+`rebalance_count` / NAV sanity, methodology-scientist on the contamination figure) → build
+the AI-pick home (`frontend/app/page.tsx`: count slider 1-10, benchmark selector,
+multi-timeframe NAV-vs-index chart, McLean-Pontiff disclaimer) consuming `backtest_pit.json`
++ `benchmarks.json` + new `frontend/lib/types.ts` backtest types.
+
+**Files (steps 1-2)**: `.github/workflows/backfill-portfolio.yml` (benchmark-gen step +
+`git add` broadened) · `scripts/backfill_portfolio_pit.py` (per-N NAV + trading-day snap +
+`weights_by_count`) · `tests/test_portfolio/test_backfill_integration.py` (new-shape asserts
++ 5 net-new tests: per-N alignment, weekend-snap, sigma-empty skip, snap fallback/empty) ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---
