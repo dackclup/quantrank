@@ -66,6 +66,7 @@ jobs:
             compute/cache/fundamentals_history
             compute/cache/prices
             compute/cache/universe-v2.parquet
+            compute/cache/edgar_amendments
           key: cache-v5-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
             cache-v5-${{ steps.quarter.outputs.q }}-

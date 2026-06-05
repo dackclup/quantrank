@@ -69,6 +69,7 @@ from compute.portfolio.weights import (
 )
 from compute.scoring.composite import compute_composite, neutralize_pillar_scores
 from compute.scoring.pillars import TickerInputs, compute_all_pillars
+from compute.scoring.restatement_filings import fetch_amendments
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +81,11 @@ CONSERVATIVE_COST_BPS = 25.0  # the "show the cost band" second net line
 BENCHMARKS_JSON = "portfolio/benchmarks.json"
 RULE_VERSION = "phase3-effective-weights"
 
-DISCLAIMER = (
+# Method caveats only. The result-dependent in-sample lead/lag sentence (vs SPY) is
+# computed from the ACTUAL NAV and appended in run_backfill so the disclaimer can never
+# contradict the line shown (methodology-scientist: the old "upper bound" tail implied a
+# win and misframed a losing default).
+DISCLAIMER_BASE = (
     "Illustrative backtest, not investment advice. This is a point-in-time PROXY "
     "of QuantRank's ranking rule, not a replay of the live composite: at each "
     "historical rebalance it re-runs the current frozen 8-pillar weights using only "
@@ -89,7 +94,7 @@ DISCLAIMER = (
     "assumed stable from today, the defense-layer vetoes are not replayed, and "
     "survivorship is corrected via the point-in-time membership ledger. Figures are "
     "gross of slippage; per McLean-Pontiff (2016) published-factor edges decay ~32% "
-    "post-publication — treat historical results as an upper bound, not an expectation."
+    "post-publication."
 )
 
 _SNAPSHOT_FIELDS = {f.name for f in dataclasses.fields(FundamentalsSnapshot)}
@@ -139,19 +144,57 @@ def _price_at(prices: pd.DataFrame, as_of_ts: pd.Timestamp) -> float | None:
     return f if f == f and f > 0 else None
 
 
-def _restatement_at_risk(rows: list[dict], as_of: str) -> bool:
-    """True if any 10-K/A was filed AFTER ``as_of`` for a fiscal year visible at T.
+def _restatement_at_risk(amendments: list[dict] | None, as_of: str) -> bool:
+    """True if the name filed ANY 10-K/A or 10-Q/A AFTER ``as_of``.
 
-    The methodology-scientist's upper-bound contamination metric: a selected name
-    is "at risk" of a silent companyfacts restatement overwrite if it has a later
-    amendment on a year that contributed to its as-of-T score.
+    Re-sourced (methodology-scientist 2026-06-05) from the SAME EDGAR filings-index
+    feed the live ``restatement_history`` flag uses (``fetch_amendments`` →
+    ``company.get_filings``), NOT the companyfacts-XBRL annual-fact scan it used
+    before — that scan only saw amendments that re-filed a pulled annual XBRL concept,
+    so it systematically under-counted partial / non-financial amendments and reported
+    a misleading 0.0%. This is a CONSERVATIVE look-ahead-contamination canary: a
+    post-as-of amendment means the cached companyfacts data the backtest read at T may
+    silently reflect that later restatement. It does NOT restrict to the specific
+    fiscal years that fed the as-of score (the filings index carries no period map), so
+    it over- rather than under-counts — the safe direction for a disclosed canary.
+    ``None`` (fetch failed / no EDGAR identity) is treated as "unresolved", NOT at-risk
+    (the caller counts those separately).
     """
-    for r in rows:
-        if r.get("form_type") == "10-K/A":
-            fd = r.get("filing_date")
-            if isinstance(fd, str) and fd > as_of:
-                return True
+    if not amendments:
+        return False
+    for f in amendments:
+        fd = f.get("filing_date")
+        if isinstance(fd, str) and fd > as_of:
+            return True
     return False
+
+
+def _insample_lag_clause(nav: dict, start: date, end: date) -> str:
+    """Result-dependent honesty sentence appended to the disclaimer.
+
+    States how the DEFAULT-count NET line actually did vs SPY in-sample, computed from
+    the produced NAV so the disclaimer can never claim a win the chart contradicts
+    (methodology-scientist 2026-06-05). Falls back to a generic caveat if either series
+    is unavailable.
+    """
+    series = nav.get("by_count", {}).get(str(DEFAULT_COUNT), {})
+    net = series.get("net") or []
+    spy = nav.get("benchmark", {}).get("spy") or []
+    p = next((v for v in reversed(net) if v is not None), None)
+    s = next((v for v in reversed(spy) if v is not None), None)
+    if p is None or s is None:
+        return (
+            " Past performance, even favorable, does not predict future results; read the"
+            " full holding-count ladder, not any single line."
+        )
+    verb = "underperformed" if p < s - 0.5 else "outperformed" if p > s + 0.5 else "tracked"
+    return (
+        f" In this {start.year}-{end.year} sample the default {DEFAULT_COUNT}-holding net"
+        f" line {verb} the S&P 500 ({p:.0f} vs {s:.0f}, both rebased to 100 at the start):"
+        f" a factor-tilted, per-sector-capped book can lag a cap-weighted index for long"
+        f" stretches. Past performance, even favorable, does not predict future results;"
+        f" read the full 1-{MAX_PICKS} holding-count ladder, not any single line."
+    )
 
 
 def run_backfill(start: date, end: date, *, data_dir: Path | None = None) -> Path:
@@ -183,6 +226,24 @@ def run_backfill(start: date, end: date, *, data_dir: Path | None = None) -> Pat
     incomplete_membership = 0
     restate_names: set[str] = set()
     picked_names: set[str] = set()
+    restate_unresolved: set[str] = set()
+
+    # Restatement canary — re-sourced from the EDGAR filings index (the live
+    # restatement_history flag's feed) rather than companyfacts-XBRL. Amendment history
+    # is per-name (filtered by filing_date > T per rebalance), so fetch it LAZILY per
+    # picked name and memoize: only the ~50-80 names ever selected hit EDGAR, not the
+    # full ~500 universe. Lookback spans the whole window back from today.
+    amend_window_days = (date.today() - start).days + 60
+    amend_memo: dict[str, list[dict] | None] = {}
+
+    def _amendments(ticker: str) -> list[dict] | None:
+        if ticker not in amend_memo:
+            try:
+                amend_memo[ticker] = fetch_amendments(ticker, lookback_days=amend_window_days)
+            except Exception as e:  # noqa: BLE001 — a canary fetch never kills the backfill
+                logger.warning("backfill: amendment fetch failed for %s: %s", ticker, e)
+                amend_memo[ticker] = None
+        return amend_memo[ticker]
 
     for T in rebal_dates:
         T_iso = T.isoformat()
@@ -256,10 +317,14 @@ def run_backfill(start: date, end: date, *, data_dir: Path | None = None) -> Pat
         rebalance_picks.append((T_iso, weights_by_count))
 
         # Contamination canary tracks the FULL selectable set (top-MAX_PICKS) — any of
-        # these names can surface once the user slides the count up.
+        # these names can surface once the user slides the count up. A name whose
+        # amendment fetch failed is "unresolved" (counted separately), not at-risk.
         picked_names.update(picks)
         for t in picks:
-            if _restatement_at_risk(rows_by_ticker.get(t, []), T_iso):
+            amends = _amendments(t)
+            if amends is None:
+                restate_unresolved.add(t)
+            elif _restatement_at_risk(amends, T_iso):
                 restate_names.add(t)
 
         rebalances_out.append(
@@ -287,6 +352,7 @@ def run_backfill(start: date, end: date, *, data_dir: Path | None = None) -> Pat
     restate_pct = (
         round(100.0 * len(restate_names) / len(picked_names), 1) if picked_names else None
     )
+    disclaimer = DISCLAIMER_BASE + _insample_lag_clause(nav, start, end)
     payload = {
         "meta": {
             "generated_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -301,9 +367,11 @@ def run_backfill(start: date, end: date, *, data_dir: Path | None = None) -> Pat
             "cost_bps_conservative": CONSERVATIVE_COST_BPS,
             "incomplete_membership_count": incomplete_membership,
             "restatement_contamination_pct": restate_pct,
+            "restatement_canary_source": "edgar-filings-index",
+            "restatement_canary_unresolved_count": len(restate_unresolved),
             "sector_from_today": True,
             "veto_layer_replayed": False,
-            "disclaimer": DISCLAIMER,
+            "disclaimer": disclaimer,
         },
         "rebalances": rebalances_out,
         "nav": nav,
