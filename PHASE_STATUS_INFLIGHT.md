@@ -1483,6 +1483,21 @@ close-series) right before the backfill runs, and the commit step's `git add` is
 from the single `backtest_pit.json` to the whole `portfolio/` dir so BOTH artifacts land.
 Self-contained, no cron-timing dependency, no merged-orchestrator code touched.
 
+**Step 2 — NAV per holding count (Option A, user-chosen).** The user chose the faithful
+reading of "ปรับ 1-10 ตัวแล้ววัดผล": the 1-10 slider re-runs the backtest LINE, not just the
+holdings list. The orchestrator now, at each rebalance, inverse-vol weights the top-N picks
+for EVERY N=1..MAX_PICKS, and the artifact stores a daily NAV series per count —
+`nav.by_count["1".."10"]`, each `{gross, net, net_conservative, turnover_by_rebalance}` —
+sharing one `dates` axis + the rebased `benchmark` lines. Each rebalance also stores its
+ranked `holdings` (ticker/score/sector/sigma_90d) + `weights_by_count`, so the picks panel
+needs no client-side weight re-derivation. Also fixes a latent NAV bug: a rebalance dated on
+a weekend (quarter-end + 45d) is now SNAPPED to the next trading day (decide-at-T,
+trade-next-open) instead of being silently dropped by `build_portfolio_nav` (which requires
+the as-of date to be in the price calendar). `HEADLINE_COUNT` → `DEFAULT_COUNT` (5, the
+slider's landing position, not a cap); the restatement-contamination canary now tracks the
+full top-`MAX_PICKS` selectable set. +2 unit tests (`_assemble_nav` per-N alignment +
+weekend-snap); the integration test updated to the new shape. `ruff` clean; 1514 offline pass.
+
 **Next on this branch**: dispatch the backfill (`ref=claude/loving-clarke-kAZII`) → review
 the canaries (`incomplete_membership_count` / `restatement_contamination_pct` /
 `rebalance_count` / NAV sanity, methodology-scientist on the contamination figure) → build
@@ -1490,7 +1505,9 @@ the AI-pick home (`frontend/app/page.tsx`: count slider 1-10, benchmark selector
 multi-timeframe NAV-vs-index chart, McLean-Pontiff disclaimer) consuming `backtest_pit.json`
 + `benchmarks.json` + new `frontend/lib/types.ts` backtest types.
 
-**Files (step 1)**: `.github/workflows/backfill-portfolio.yml` (benchmark-gen step +
-`git add` broadened) · `PHASE_STATUS_INFLIGHT.md` (this).
+**Files (steps 1-2)**: `.github/workflows/backfill-portfolio.yml` (benchmark-gen step +
+`git add` broadened) · `scripts/backfill_portfolio_pit.py` (per-N NAV + trading-day snap +
+`weights_by_count`) · `tests/test_portfolio/test_backfill_integration.py` (new-shape asserts
++ 2 `_assemble_nav` unit tests) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---

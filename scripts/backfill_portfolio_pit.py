@@ -25,9 +25,11 @@ the membership ledger. See ``meta.disclaimer`` in the output.
     cross-source / manipulation layer). DISCLOSED — a `value-trap`-style name
     can appear in a historical pick that the live rule would have vetoed. Tracked
     as the PR-2c follow-up.
-  * **Headline count = 5**, holdings stored for up to ``MAX_PICKS`` (10) per
-    rebalance with their σ so the PR-4 count slider (1-10) can re-derive + re-
-    weight client-side from the per-stock history.
+  * **NAV per holding count N=1..``MAX_PICKS`` (10).** At each rebalance the top-N
+    picks are inverse-vol weighted and the artifact stores a daily NAV series for
+    every N, so the PR-4 count slider (1-10) re-runs the backtest line vs the index
+    directly (no client-side re-derivation). ``DEFAULT_COUNT`` (5) is the slider's
+    landing position. Each rebalance also stores its ranked holdings + ``weights_by_count``.
 
 **Run** (CI ``workflow_dispatch`` — needs warm price + fundamentals_history
 caches; the dev sandbox has neither, so this script is CI-validated, not
@@ -37,6 +39,7 @@ locally-run): ``python -m scripts.backfill_portfolio_pit [--start YYYY-MM-DD]``.
 from __future__ import annotations
 
 import argparse
+import bisect
 import dataclasses
 import logging
 from datetime import UTC, date, datetime
@@ -69,7 +72,10 @@ from compute.scoring.pillars import TickerInputs, compute_all_pillars
 
 logger = logging.getLogger(__name__)
 
-HEADLINE_COUNT = 5
+# The slider's default landing position. The artifact carries a NAV per holding
+# count N=1..MAX_PICKS (the 1-10 slider re-runs the backtest line), so this is the
+# count shown before the user touches the slider — not a cap.
+DEFAULT_COUNT = 5
 CONSERVATIVE_COST_BPS = 25.0  # the "show the cost band" second net line
 BENCHMARKS_JSON = "portfolio/benchmarks.json"
 RULE_VERSION = "phase3-effective-weights"
@@ -170,7 +176,10 @@ def run_backfill(start: date, end: date, *, data_dir: Path | None = None) -> Pat
 
     rebal_dates = quarterly_rebalance_dates(start, end)
     rebalances_out: list[dict] = []
-    rebalance_weights: list[tuple[str, dict[str, float]]] = []  # (snapped_date, headline weights)
+    # Per rebalance: (snapped_date, {count N -> {ticker -> weight}}) for N=1..MAX_PICKS.
+    # The NAV builder turns each N into its own daily NAV series; the frontend slider
+    # reads the matching count.
+    rebalance_picks: list[tuple[str, dict[int, dict[str, float]]]] = []
     incomplete_membership = 0
     restate_names: set[str] = set()
     picked_names: set[str] = set()
@@ -232,17 +241,24 @@ def run_backfill(start: date, end: date, *, data_dir: Path | None = None) -> Pat
             sig = trailing_return_sigma(closes[col].tolist())
             if sig is not None:
                 sigmas[t] = sig
-        full_weights = inverse_vol_weights(sigmas) if sigmas else {}
+        # Per-count inverse-vol weights: for each selectable basket size N=1..MAX_PICKS,
+        # weight the top-N picks by inverse vol (the SAME ratified rule, applied to the
+        # top-N subset of THIS rebalance's cohort). The 1-10 slider reads
+        # weights_by_count[N]; _assemble_nav builds a NAV per N from these.
+        weights_by_count: dict[int, dict[str, float]] = {}
+        for n in range(1, MAX_PICKS + 1):
+            sub = {t: sigmas[t] for t in picks[:n] if t in sigmas}
+            w = inverse_vol_weights(sub) if sub else {}
+            if w:
+                weights_by_count[n] = w
+        if not weights_by_count:
+            continue  # no name in this leg had a computable 90d sigma
+        rebalance_picks.append((T_iso, weights_by_count))
 
-        # headline basket = top-HEADLINE_COUNT, re-weighted over just those names
-        head = picks[:HEADLINE_COUNT]
-        head_sig = {t: sigmas[t] for t in head if t in sigmas}
-        head_weights = inverse_vol_weights(head_sig) if head_sig else {}
-        if head_weights:
-            rebalance_weights.append((T_iso, head_weights))
-
-        picked_names.update(head)
-        for t in head:
+        # Contamination canary tracks the FULL selectable set (top-MAX_PICKS) — any of
+        # these names can surface once the user slides the count up.
+        picked_names.update(picks)
+        for t in picks:
             if _restatement_at_risk(rows_by_ticker.get(t, []), T_iso):
                 restate_names.add(t)
 
@@ -256,14 +272,17 @@ def run_backfill(start: date, end: date, *, data_dir: Path | None = None) -> Pat
                         "composite_score": round(float(composite[t]), 2),
                         "sector": sector_by_ticker.get(t, "Unknown"),
                         "sigma_90d": round(sigmas[t], 6) if t in sigmas else None,
-                        "weight": round(full_weights.get(t, 0.0), 6),
                     }
                     for t in picks
                 ],
+                "weights_by_count": {
+                    str(n): {t: round(w, 6) for t, w in wmap.items()}
+                    for n, wmap in weights_by_count.items()
+                },
             }
         )
 
-    nav = _assemble_nav(rebalance_weights, prices_by_ticker, data_dir)
+    nav = _assemble_nav(rebalance_picks, prices_by_ticker, data_dir)
 
     restate_pct = (
         round(100.0 * len(restate_names) / len(picked_names), 1) if picked_names else None
@@ -276,7 +295,7 @@ def run_backfill(start: date, end: date, *, data_dir: Path | None = None) -> Pat
             "as_of_end": end.isoformat(),
             "rebalance_count": len(rebalances_out),
             "max_holdings": MAX_PICKS,
-            "headline_count": HEADLINE_COUNT,
+            "default_count": DEFAULT_COUNT,
             "default_benchmark": "spy",
             "cost_bps_per_side": DEFAULT_COST_BPS_PER_SIDE,
             "cost_bps_conservative": CONSERVATIVE_COST_BPS,
@@ -297,19 +316,34 @@ def run_backfill(start: date, end: date, *, data_dir: Path | None = None) -> Pat
     return out
 
 
+def _snap_to_trading_day(date_iso: str, dates: list[str]) -> str | None:
+    """First trading day in ``dates`` on or after ``date_iso`` (decide at T, trade the
+    next open); falls back to the last trading day before it if none follows. ``dates``
+    is sorted-ascending ISO strings (lexical == chronological). None only if empty."""
+    if not dates:
+        return None
+    i = bisect.bisect_left(dates, date_iso)
+    return dates[i] if i < len(dates) else dates[-1]
+
+
 def _assemble_nav(
-    rebalance_weights: list[tuple[str, dict[str, float]]],
+    rebalance_picks: list[tuple[str, dict[int, dict[str, float]]]],
     prices_by_ticker: dict[str, pd.DataFrame],
     data_dir: Path,
 ) -> dict:
-    """Daily gross + net (+ conservative net) NAV for the headline basket + benchmarks."""
-    if not rebalance_weights:
-        return {"dates": [], "portfolio_gross": [], "portfolio_net": [],
-                "portfolio_net_conservative": [], "benchmark": {}, "turnover_by_rebalance": []}
+    """Daily gross/net/conservative NAV for EACH holding count N=1..MAX_PICKS + benchmarks.
 
-    held = sorted({t for _, w in rebalance_weights for t in w})
-    start_iso = rebalance_weights[0][0]
-    start_ts = pd.Timestamp(start_iso)
+    ``rebalance_picks`` is ``[(as_of_date, {N: {ticker: weight}})]``. For each count N
+    the matching per-rebalance weight maps become one daily NAV series (the 1-10 slider
+    selects the count); ``dates`` + ``benchmark`` are shared across all counts (same
+    trading calendar, same rebased index lines).
+    """
+    empty = {"dates": [], "benchmark": {}, "by_count": {}, "default_count": DEFAULT_COUNT}
+    if not rebalance_picks:
+        return empty
+
+    held = sorted({t for _, wbc in rebalance_picks for wmap in wbc.values() for t in wmap})
+    start_ts = pd.Timestamp(rebalance_picks[0][0])
 
     closes: dict[str, dict[str, float]] = {}
     all_dates: set[str] = set()
@@ -318,33 +352,55 @@ def _assemble_nav(
         if pf is None:
             continue
         col = "Adj Close" if "Adj Close" in pf.columns else "Close"
-        series = pf.loc[start_ts:, col]
-        m: dict[str, float] = {}
-        for ts, v in series.items():
+        for ts, v in pf.loc[start_ts:, col].items():
             try:
                 f = float(v)
             except (TypeError, ValueError):
                 continue
             if f == f and f > 0:
                 d = ts.strftime("%Y-%m-%d")
-                m[d] = f
+                closes.setdefault(t, {})[d] = f
                 all_dates.add(d)
-        closes[t] = m
 
     dates = sorted(all_dates)
-    gross_net = build_portfolio_nav(dates, closes, rebalance_weights)
-    conservative = build_portfolio_nav(
-        dates, closes, rebalance_weights, cost_bps_per_side=CONSERVATIVE_COST_BPS
-    )
+    if not dates:
+        return empty
 
-    benchmark = _benchmark_navs(dates, data_dir)
+    # Snap each calendar rebalance (quarter-end + 45d — may land on a weekend) to the
+    # first trading day on/after it, so every leg fires on a real price date. The axis
+    # = every trading day from the earliest snapped rebalance; each count's NAV is a
+    # suffix of it, so a count first selectable at a LATER rebalance is left-padded with
+    # None (the same gap contract the benchmark line uses). In a full-universe run every
+    # count is present from the first rebalance and no padding occurs.
+    global_start = _snap_to_trading_day(rebalance_picks[0][0], dates)
+    axis = [d for d in dates if d >= global_start]
+
+    by_count: dict[str, dict] = {}
+    for n in range(1, MAX_PICKS + 1):
+        legs = [
+            (snapped, wbc[n])
+            for d, wbc in rebalance_picks
+            if n in wbc and (snapped := _snap_to_trading_day(d, dates)) is not None
+        ]
+        if not legs:
+            continue
+        gn = build_portfolio_nav(dates, closes, legs)
+        cons = build_portfolio_nav(
+            dates, closes, legs, cost_bps_per_side=CONSERVATIVE_COST_BPS
+        )
+        pad: list[float | None] = [None] * (len(axis) - len(gn["dates"]))
+        by_count[str(n)] = {
+            "gross": pad + gn["gross"],
+            "net": pad + gn["net"],
+            "net_conservative": pad + cons["net"],
+            "turnover_by_rebalance": gn["turnover_by_rebalance"],
+        }
+
     return {
-        "dates": gross_net["dates"],
-        "portfolio_gross": gross_net["gross"],
-        "portfolio_net": gross_net["net"],
-        "portfolio_net_conservative": conservative["net"],
-        "benchmark": benchmark,
-        "turnover_by_rebalance": gross_net["turnover_by_rebalance"],
+        "dates": axis,
+        "benchmark": _benchmark_navs(axis, data_dir),
+        "by_count": by_count,
+        "default_count": DEFAULT_COUNT,
     }
 
 
