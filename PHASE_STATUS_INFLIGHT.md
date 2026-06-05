@@ -1463,3 +1463,34 @@ the workflow file is on `main`); the point-in-time defense-layer VETO replay
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Phase 7.0 PR-4 — AI-pick home page (backfill self-sufficiency + real data + frontend) (in flight, 2026-06-05)
+
+**Branch**: `claude/loving-clarke-kAZII` (continues post-#417-merge)
+**Type**: ci + feat(frontend) — starts with a backfill-workflow tweak so a SINGLE dispatch
+yields a benchmark-complete artifact; grows to the real 5y `backtest_pit.json` data + the
+AI-pick home page that renders it. No schema bump (the artifact self-carries its `meta`).
+
+**Step 1 (this commit) — backfill self-sufficiency.** The merged backfill workflow READS
+`frontend/public/data/portfolio/benchmarks.json` for the SPY/QQQ/DIA/IWM comparison lines
+but does NOT produce it — that file is a weekly-cron output (`compute/main.py`
+`write_benchmarks_json`), and the cron that introduced the writer (#416) has not committed
+it yet (last data commit `531b4a5d` predates the writer). A dispatch today would emit a
+backtest with EMPTY comparison lines; the next cron is ~17h out. Fix: a new
+`Generate benchmark series (benchmarks.json)` workflow step regenerates it via the SAME
+trusted code path as the cron (`fetch_benchmarks()` + `write_benchmarks_json()`, 4 yfinance
+close-series) right before the backfill runs, and the commit step's `git add` is broadened
+from the single `backtest_pit.json` to the whole `portfolio/` dir so BOTH artifacts land.
+Self-contained, no cron-timing dependency, no merged-orchestrator code touched.
+
+**Next on this branch**: dispatch the backfill (`ref=claude/loving-clarke-kAZII`) → review
+the canaries (`incomplete_membership_count` / `restatement_contamination_pct` /
+`rebalance_count` / NAV sanity, methodology-scientist on the contamination figure) → build
+the AI-pick home (`frontend/app/page.tsx`: count slider 1-10, benchmark selector,
+multi-timeframe NAV-vs-index chart, McLean-Pontiff disclaimer) consuming `backtest_pit.json`
++ `benchmarks.json` + new `frontend/lib/types.ts` backtest types.
+
+**Files (step 1)**: `.github/workflows/backfill-portfolio.yml` (benchmark-gen step +
+`git add` broadened) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
