@@ -365,7 +365,11 @@ export function FairPriceCard(props) {  // no types
   auto-refreshes every run — it rides the cron's existing trusted
   `git add frontend/public/data/` commit (continue-on-error + 40m step cap so a
   backtest hiccup can't block the rankings commit); `backfill-portfolio.yml`
-  stays the manual on-demand path, guarded off `main`.
+  stays the manual on-demand path, guarded off `main`. A `trading-day-gate` job
+  skips the SCHEDULED run on NYSE holidays (stdlib-only, hardcoded holiday set,
+  **default-run + fail-open** so it never skips a real trading day; manual
+  `workflow_dispatch` bypasses it) — so the cron runs on trading days only and
+  doesn't land timestamp-only no-op commits on weekday holidays.
 - **Loss-chance band/tone derives from `Math.round(pct)`, not the raw float**
   (`LossChanceBadge` + `RankingTable` mobile card + detail-hero `lossBand`,
   2026-06-01 + P2 2026-06-02): the display rounds (`HeroMetric` prints
