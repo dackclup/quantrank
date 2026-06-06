@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 from compute.output.schemas import (
     DataQuality,
@@ -13,6 +14,7 @@ from compute.output.schemas import (
     StockSummary,
 )
 from compute.output.writer import (
+    _PRUNE_SAFETY_FLOOR,
     atomic_write_json,
     prune_orphan_stock_files,
     write_metadata_json,
@@ -396,3 +398,54 @@ def test_prune_orphan_stock_files_empty_keep_skips(tmp_path):
 def test_prune_orphan_stock_files_missing_dir_no_error(tmp_path):
     """No stocks/ directory yet (fresh checkout) → returns [] without error."""
     assert prune_orphan_stock_files(_big_keep(), tmp_path) == []
+
+
+def test_prune_orphan_stock_files_at_floor_boundary_prunes(tmp_path):
+    """keep size == _PRUNE_SAFETY_FLOOR is NOT < floor → prune fires (pins the `<`)."""
+    keep = [f"T{i:03d}" for i in range(_PRUNE_SAFETY_FLOOR)]  # exactly the floor
+    _seed_stock_files(tmp_path, keep[:1])
+    (tmp_path / "stocks" / "ORPHAN.json").write_text("{}")
+    assert prune_orphan_stock_files(keep, tmp_path) == ["ORPHAN"]
+    assert not (tmp_path / "stocks" / "ORPHAN.json").exists()
+
+
+def test_prune_orphan_stock_files_below_floor_boundary_skips(tmp_path):
+    """keep size == floor - 1 IS < floor → prune skipped (companion boundary; an
+    `<` → `<=` mutation would wrongly prune here)."""
+    keep = [f"T{i:03d}" for i in range(_PRUNE_SAFETY_FLOOR - 1)]
+    (tmp_path / "stocks").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "stocks" / "ORPHAN.json").write_text("{}")
+    assert prune_orphan_stock_files(keep, tmp_path) == []
+    assert (tmp_path / "stocks" / "ORPHAN.json").exists()
+
+
+def test_prune_orphan_stock_files_ignores_non_json_files(tmp_path):
+    """The glob is `*.json` — a non-JSON file in stocks/ is never an unlink target."""
+    keep = _big_keep()
+    _seed_stock_files(tmp_path, keep[:2])
+    (tmp_path / "stocks" / "README.txt").write_text("not a stock file")
+    (tmp_path / "stocks" / "ZZZ.json").write_text("{}")  # a real orphan
+    assert prune_orphan_stock_files(keep, tmp_path) == ["ZZZ"]
+    assert (tmp_path / "stocks" / "README.txt").exists()  # untouched
+    assert not (tmp_path / "stocks" / "ZZZ.json").exists()
+
+
+def test_prune_orphan_stock_files_unlink_failure_does_not_abort(tmp_path, monkeypatch):
+    """One un-removable orphan must not abort the prune (the documented per-file
+    try/except) — the other orphan is still pruned."""
+    keep = _big_keep()
+    (tmp_path / "stocks").mkdir(parents=True, exist_ok=True)
+    for t in ("AAA", "ZZZ"):
+        (tmp_path / "stocks" / f"{t}.json").write_text("{}")
+    real_unlink = Path.unlink
+
+    def flaky_unlink(self, *args, **kwargs):
+        if self.stem == "AAA":
+            raise OSError("simulated permission error")
+        return real_unlink(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "unlink", flaky_unlink)
+    pruned = prune_orphan_stock_files(keep, tmp_path)
+    assert pruned == ["ZZZ"]  # the failing orphan is absent from the return
+    assert (tmp_path / "stocks" / "AAA.json").exists()  # survived its OSError
+    assert not (tmp_path / "stocks" / "ZZZ.json").exists()  # the other was pruned

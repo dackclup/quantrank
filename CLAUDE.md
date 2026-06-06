@@ -434,7 +434,7 @@ always-loaded context small while preserving discoverability of every invariant.
 - **The home + ranking pages derive stats from `rankings.json`/`metadata.json` at BUILD TIME (Server Components) — weekly static export, so values are "as of" the last cron, NOT live; never `import lib/data.ts` (or any `fs` module) into a `'use client'` component (resolve on the server, pass the node in as a prop/child). Removed 2026-06-04: the top `MarketStatsBar` strip + `lib/market-stats.ts` + `AppShell` `topBar` slot, AND the standalone `/sectors` + `/movers` routes — the build-time server-component rule lives on via the home + ranking pages**
 - **`data/sp500_membership_historical.csv` (the survivorship ledger behind `members_at()`) must stay ADD/REMOVE-balanced — the reverse-walk reconstructs ~500-503 constituents at EVERY backtest month; run `scripts/verify_membership_ledger.py` after ANY edit (checks the size band + that every removed ticker is gone / every added ticker present vs the live universe). Use effective (not announcement) dates + real tickers (SIVB not "SVB"; BX=Blackstone≠BLK=BlackRock); cite the Wikipedia change-history URL (the `press.spglobal.com/<date>-<title>` shape 404s). Rebuilt + integrity-gated in Phase 7.0 PR-0 after the prior ledger was found badly broken (~30 errors + ~110 missing events)**
 - **The home page IS the AI-pick portfolio (Phase 7.0 PR-4)** — reads `backtest_pit.json` via `getAiPickData()` (fs-read + trim+round to a small client view-model, NEVER a static `import`; the 1.3MB artifact never ships in the page payload; `null` → "backtest pending"). Server resolves → the `'use client'` `AiPickPortfolio` gets it as props (the build-time-data rule). The 1-10 slider switches `nav.by_count[N]` (one NAV line per count); the chart uses the pre-aligned `nav.benchmark`, so `benchmarks.json` is NOT read by the frontend
-- **Per-stock JSON for a ticker dropped from the universe (de-listing OR ticker-rename, e.g. EPAM out / BK→BNY) is auto-pruned by `prune_orphan_stock_files()` in `compute/main.py` (right after `write_rankings_json`) — removes `stocks/{T}.json` + `stocks/history/{T}.json` for any ticker not in the just-written rankings; the cron's existing `git add frontend/public/data/` stages the deletes (git ≥ 2.0 pathspec records removals → no workflow change). A `_PRUNE_SAFETY_FLOOR=50` guard skips the prune on a degraded run so it can never wipe `stocks/`. The orphan never rendered a page (`generateStaticParams` reads `rankings.json` with `dynamicParams=false`) — it was deploy-size + the 503≠502 verify-count drift. Don't switch frontend param-gen to glob `stocks/` (it reads rankings by design)**
+- **Per-stock JSON for a dropped ticker (de-listed / renamed, e.g. EPAM / BK→BNY) is auto-pruned by `prune_orphan_stock_files()` (defined in `compute/output/writer.py`, called from `compute/main.py` after `write_rankings_json`; safety floor `_PRUNE_SAFETY_FLOOR=50`; cron `git add` stages the deletes). Don't glob `stocks/` for param-gen — it reads `rankings.json` by design. Full detail: `docs/GOTCHAS.md`**
 
 ## Phase status
 
@@ -496,7 +496,7 @@ Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_
 
 **In flight** (not yet merged on `main`):
 - **chore(output) — orphan per-stock-file prune (this PR)** — fixes the
-  release-blocking file-count drift (503 stock files vs 502 ranked). A ticker
+  release-blocking file-count drift (503 detail / 504 history vs 502 ranked). A ticker
   leaving the universe — **de-listed** (EPAM) or **renamed** (BK → BNY) — left
   its `stocks/{T}.json` + `stocks/history/{T}.json` shipping forever, because the
   cron's `git add` never removes files compute simply stopped writing. New
@@ -510,9 +510,10 @@ Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_
   orphans (EPAM detail+history, BK history) → **502/502, zero orphans**.
   **NO schema / scoring / frontend change** — the orphan never rendered a page
   (`generateStaticParams` reads `rankings.json` with `dynamicParams=false`); this
-  is deploy-size + verify-count hygiene. 5 new `tests/test_output/test_writer.py`
-  prune tests (happy-path / history-only / safety-floor / empty-keep /
-  missing-dir); full offline suite 1544 green. Folds the post-#428 doc
+  is deploy-size + verify-count hygiene. 9 new `tests/test_output/test_writer.py`
+  prune tests (happy-path / history-only / safety-floor / empty-keep / missing-dir
+  / 49-50 floor boundary / non-JSON survival / unlink-failure resilience); full
+  offline suite green. Folds the post-#428 doc
   housekeeping: replaces the now-merged Watchlist §In-flight entry + reflects
   #428 in PHASE_STATUS.md (INFLIGHT entries stay append-only per that file's
   "do NOT move on merge" convention).
