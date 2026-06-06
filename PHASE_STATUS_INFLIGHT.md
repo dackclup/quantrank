@@ -1710,3 +1710,42 @@ Frontend build + the Vercel preview are the compile gate (display-only TS, no Py
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## ci(cron) — auto-refresh the PIT backtest in the weekly cron (in flight, 2026-06-06)
+
+User ask: "รันอัตโนมัติพร้อมกับ cron" — make the AI-pick backtest refresh automatically with
+the weekly cron instead of needing a manual `backfill-portfolio.yml` dispatch. Today
+`compute-rankings.yml` writes `rankings.json` / `metadata.json` / `stocks/*` / `benchmarks.json`
+but NOT `backtest_pit.json` (the home page's NAV + Current picks + Rotation history all read
+that artifact), so the whole AI-pick surface stays frozen to the last manual backfill.
+
+**Why fold into the cron (not a separate scheduled workflow):** `backfill-portfolio.yml` carries
+the `if: github.ref_name != 'main'` guard (security-reviewer FAIL 2026-06-05) precisely so a
+dispatch can't commit straight to the protected `main`. A *new* scheduled workflow would run on
+`main` and hit the same wall. The weekly cron is already the SOLE trusted writer to `main`, so
+the correct move is to widen what the trusted cron commits — NOT to weaken the guard.
+
+Change (`.github/workflows/compute-rankings.yml`):
+- New step after "Run weekly compute", before "Commit JSON outputs":
+  `python -m scripts.backfill_portfolio_pit`. It reuses the SAME prices +
+  fundamentals_history + benchmarks.json the compute step just refreshed (warm ~15-20m). The
+  existing "Commit JSON outputs" step already `git add frontend/public/data/`, so
+  `backtest_pit.json` commits alongside the rankings — no commit-step change.
+- `continue-on-error: true` + `timeout-minutes: 40` (step-level) so a backtest stall / failure
+  can NEVER block the rankings commit. The writer is atomic (tmp + os.replace), so a failed run
+  leaves the prior `backtest_pit.json` intact.
+- Job `timeout-minutes` 195 → 225 for headroom over a worst-case cold compute (~140-160m) PLUS
+  the 40m-capped backtest step.
+- `FORM4_FETCH_SKIP=1` is irrelevant to the backfill — its veto set is the 7 active rank-gates,
+  none Form-4.
+
+Result: every weekday cron now refreshes the AI-pick home page (NAV tail + headline return stay
+current; new quarterly rebalances auto-appear when their +45d filing-lag date passes). Closes
+CLAUDE.md §Next deliverables 7.0(b). Manual `backfill-portfolio.yml` stays as the on-demand /
+custom-window path.
+
+**Files**: `.github/workflows/compute-rankings.yml` · `CLAUDE.md` (§Stack CI line + §Phase
+status in-flight + §Next deliverables 7.0(b)) · `AGENTS.md` (AI-pick bullet) ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---

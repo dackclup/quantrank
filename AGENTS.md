@@ -359,7 +359,13 @@ export function FairPriceCard(props) {  // no types
   entered/exited markers, reactive to the count slider — fed by
   `AiPickData.timeline` (trimmed ticker+sector per rebalance from
   `getAiPickData()`, display-only types, no schema change). It is the
-  point-in-time rotation, NOT today's picks back-projected.
+  point-in-time rotation, NOT today's picks back-projected. The weekly cron
+  (`compute-rankings.yml`) now folds a warm `backfill_portfolio_pit` step after
+  the compute so `backtest_pit.json` (NAV + Current picks + Rotation history)
+  auto-refreshes every run — it rides the cron's existing trusted
+  `git add frontend/public/data/` commit (continue-on-error + 40m step cap so a
+  backtest hiccup can't block the rankings commit); `backfill-portfolio.yml`
+  stays the manual on-demand path, guarded off `main`.
 - **Loss-chance band/tone derives from `Math.round(pct)`, not the raw float**
   (`LossChanceBadge` + `RankingTable` mobile card + detail-hero `lossBand`,
   2026-06-01 + P2 2026-06-02): the display rounds (`HeroMetric` prints
