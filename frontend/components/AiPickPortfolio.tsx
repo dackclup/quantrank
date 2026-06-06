@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react';
 
 import { NavCompareChartLazy } from './NavCompareChartLazy';
 import { HoldingsCountSlider } from './HoldingsCountSlider';
+import { HoldingsTimeline } from './HoldingsTimeline';
 import { ScoreBadge } from './ScoreBadge';
 import { SectorChip } from './SectorChip';
 import { SegmentedSelector, type SegmentOption } from './SegmentedSelector';
@@ -66,7 +67,7 @@ function toneClass(v: number | null): string {
 }
 
 export function AiPickPortfolio({ data }: { data: AiPickData }) {
-  const { meta, dates, netByCount, benchmark, finalsByCount, latest } = data;
+  const { meta, dates, netByCount, benchmark, finalsByCount, latest, timeline } = data;
 
   const [count, setCount] = useState<number>(meta.default_count);
   const [bench, setBench] = useState<string>(meta.default_benchmark);
@@ -254,6 +255,12 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
           })}
         </ol>
       </div>
+
+      {/* Rotation history — every quarterly rebalance's holdings at the current
+          basket size (entered/exited vs the prior quarter). The data the user
+          asked to see: "what was held 5 years ago + how it rotated", not "today's
+          picks back-projected". Reactive to the count slider. */}
+      {timeline.length > 0 && <HoldingsTimeline timeline={timeline} count={count} />}
 
       {/* Disclaimer — the artifact's own honest, result-dependent text (Rule 9: the
           global banner covers terminology; this is the backtest-specific provenance). */}
