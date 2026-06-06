@@ -1,13 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { Star } from 'lucide-react';
+import { Star, X } from 'lucide-react';
 
 import { RecommendationBadge } from '@/components/RecommendationBadge';
 import { ScoreBadge } from '@/components/ScoreBadge';
 import { SectorChip } from '@/components/SectorChip';
 import { StockLogo } from '@/components/StockLogo';
-import { WatchlistButton } from '@/components/WatchlistButton';
 import type { StockSummary } from '@/lib/types';
 import { useWatchlist } from '@/lib/useWatchlist';
 
@@ -19,12 +18,35 @@ import { useWatchlist } from '@/lib/useWatchlist';
 // rank. A saved ticker that's no longer in the universe (delisted since it was
 // starred) simply has no row to render; it stays in storage harmlessly.
 
-function WatchlistCard({ row }: { row: StockSummary }) {
+function WatchlistCard({
+  row,
+  onRemove,
+}: {
+  row: StockSummary;
+  onRemove: (ticker: string) => void;
+}) {
   return (
-    <li className="hover-lift flex items-stretch overflow-hidden rounded border border-slate-200 bg-white transition-colors duration-100 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/50">
+    <li className="relative hover-lift overflow-hidden rounded border border-slate-200 bg-white transition-colors duration-100 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/50">
+      {/* Remove from watchlist — an X in the top-left corner. Absolute + z-10
+          so it sits ABOVE the row's <Link> as a sibling (never a nested
+          interactive <button> inside the <a>); preventDefault + stopPropagation
+          keep a corner tap from also following the link. The row reserves
+          `pl-14` so the logo clears the 44px hit target. */}
+      <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onRemove(row.ticker);
+        }}
+        aria-label={`Remove ${row.ticker} from watchlist`}
+        className="absolute left-1 top-1 z-10 inline-flex h-11 w-11 items-center justify-center rounded-sm text-slate-400 press hover:bg-slate-100 hover:text-slate-600 dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-slate-300"
+      >
+        <X className="h-[1.125rem] w-[1.125rem]" strokeWidth={2} aria-hidden="true" />
+      </button>
       <Link
         href={`/stock/${row.ticker}/`}
-        className="press flex min-w-0 flex-1 items-center gap-3 p-3"
+        className="press flex items-center gap-3 py-3 pl-14 pr-3"
       >
         <StockLogo ticker={row.ticker} size={36} />
         <div className="min-w-0 flex-1">
@@ -46,17 +68,12 @@ function WatchlistCard({ row }: { row: StockSummary }) {
           </span>
         </div>
       </Link>
-      {/* Dedicated right rail so the star never overlaps the row's <Link> (an
-          interactive button can't validly nest inside an <a>). */}
-      <div className="flex shrink-0 items-center border-l border-slate-100 pl-1 pr-1.5 dark:border-slate-800">
-        <WatchlistButton ticker={row.ticker} />
-      </div>
     </li>
   );
 }
 
 export function WatchlistView({ rankings }: { rankings: StockSummary[] }) {
-  const { tickers, mounted } = useWatchlist();
+  const { tickers, mounted, remove } = useWatchlist();
 
   const savedSet = new Set(tickers);
   const rows = rankings
@@ -100,7 +117,7 @@ export function WatchlistView({ rankings }: { rankings: StockSummary[] }) {
             No saved names yet
           </p>
           <p className="mt-1 max-w-md text-sm text-slate-500 dark:text-slate-400">
-            Tap the star icon on any stock — in the ranking or on a stock page — to add it here.
+            Tap the star on any stock page to add it here.
             Your watchlist lives entirely in this browser; no account needed.
           </p>
           <Link
@@ -113,7 +130,7 @@ export function WatchlistView({ rankings }: { rankings: StockSummary[] }) {
       ) : (
         <ul className="space-y-2">
           {rows.map((row) => (
-            <WatchlistCard key={row.ticker} row={row} />
+            <WatchlistCard key={row.ticker} row={row} onRemove={remove} />
           ))}
         </ul>
       )}

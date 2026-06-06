@@ -11,8 +11,8 @@ import { useCallback, useEffect, useState } from 'react';
 //
 // Cross-tab sync: the native `storage` event keeps other tabs in step. It does
 // NOT fire in the tab that made the change, so same-tab writes also dispatch a
-// custom event that this hook listens to — every WatchlistButton on the page
-// reflects a toggle immediately.
+// custom event that this hook listens to — every watchlist control on the page
+// (the detail-page Save toggle + the /portfolio remove X) updates immediately.
 
 const STORAGE_KEY = 'quantrank:watchlist';
 const UPDATE_EVENT = 'quantrank:watchlist-change';
