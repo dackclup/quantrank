@@ -28,7 +28,8 @@
 | Skill inventory | **47** invocation-triggerable + phase planning docs |
 | Subagent inventory | **20** project-specific in 4 tiers (5 opus + 15 sonnet): **Tier 1 Core** (`quantrank-reviewer` · `schema-sentinel` · `defense-layer-auditor` · `edgar-debugger` · `stock-detail-auditor`) · **Tier 2 Lifecycle** (`security-reviewer` · `frontend-design-reviewer` · `vercel-preview-auditor` · `expert-user-explorer` · `release-captain` · `phase-coordinator`) · **Tier 3 Specialized** (`test-engineer` · `methodology-scientist` · `literature-searcher` · `performance-engineer` · `dependency-auditor` · `financial-engineer`) · **Tier 4 Operations** (`docs-reviewer` · `ci-triage-engineer` · `incident-commander`) |
 
-**Recently merged** (Phase 7.0 + cron + Phase 4j.1 cluster, #416 → #427, 2026-06-04 → 2026-06-06):
+**Recently merged** (Phase 7.0 + cron + Phase 4j.1 cluster, #416 → #428, 2026-06-04 → 2026-06-06):
+- PR #428 — feat(frontend): Phase 7.0 personal browser-local Watchlist (`/portfolio` stub → real localStorage watchlist; FRONTEND-ONLY, no schema change)
 - PR #427 — perf(cron): split tier2 cache (fast + slow-text run-id key) + per-stage timing summary
 - PR #426 — feat(features): Phase 4j.1 Qlib Alpha158 observability surface (schema `0.10.14 → 0.10.15`; 9 `Metadata.alpha158_*` + reused PBO/DSR gate; observability-only, Δscore = 0)
 - PR #425 — ci(cron): trading-day NYSE-holiday gate

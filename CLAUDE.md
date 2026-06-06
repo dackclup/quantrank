@@ -434,6 +434,7 @@ always-loaded context small while preserving discoverability of every invariant.
 - **The home + ranking pages derive stats from `rankings.json`/`metadata.json` at BUILD TIME (Server Components) — weekly static export, so values are "as of" the last cron, NOT live; never `import lib/data.ts` (or any `fs` module) into a `'use client'` component (resolve on the server, pass the node in as a prop/child). Removed 2026-06-04: the top `MarketStatsBar` strip + `lib/market-stats.ts` + `AppShell` `topBar` slot, AND the standalone `/sectors` + `/movers` routes — the build-time server-component rule lives on via the home + ranking pages**
 - **`data/sp500_membership_historical.csv` (the survivorship ledger behind `members_at()`) must stay ADD/REMOVE-balanced — the reverse-walk reconstructs ~500-503 constituents at EVERY backtest month; run `scripts/verify_membership_ledger.py` after ANY edit (checks the size band + that every removed ticker is gone / every added ticker present vs the live universe). Use effective (not announcement) dates + real tickers (SIVB not "SVB"; BX=Blackstone≠BLK=BlackRock); cite the Wikipedia change-history URL (the `press.spglobal.com/<date>-<title>` shape 404s). Rebuilt + integrity-gated in Phase 7.0 PR-0 after the prior ledger was found badly broken (~30 errors + ~110 missing events)**
 - **The home page IS the AI-pick portfolio (Phase 7.0 PR-4)** — reads `backtest_pit.json` via `getAiPickData()` (fs-read + trim+round to a small client view-model, NEVER a static `import`; the 1.3MB artifact never ships in the page payload; `null` → "backtest pending"). Server resolves → the `'use client'` `AiPickPortfolio` gets it as props (the build-time-data rule). The 1-10 slider switches `nav.by_count[N]` (one NAV line per count); the chart uses the pre-aligned `nav.benchmark`, so `benchmarks.json` is NOT read by the frontend
+- **Per-stock JSON for a ticker dropped from the universe (de-listing OR ticker-rename, e.g. EPAM out / BK→BNY) is auto-pruned by `prune_orphan_stock_files()` in `compute/main.py` (right after `write_rankings_json`) — removes `stocks/{T}.json` + `stocks/history/{T}.json` for any ticker not in the just-written rankings; the cron's existing `git add frontend/public/data/` stages the deletes (git ≥ 2.0 pathspec records removals → no workflow change). A `_PRUNE_SAFETY_FLOOR=50` guard skips the prune on a degraded run so it can never wipe `stocks/`. The orphan never rendered a page (`generateStaticParams` reads `rankings.json` with `dynamicParams=false`) — it was deploy-size + the 503≠502 verify-count drift. Don't switch frontend param-gen to glob `stocks/` (it reads rankings by design)**
 
 ## Phase status
 
@@ -494,29 +495,31 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **feat(frontend) — Phase 7.0 personal Watchlist (this PR)** — turns the
-  `/portfolio` coming-soon stub into a real **browser-local watchlist**
-  (localStorage key `quantrank:watchlist`, no account / no backend; nothing
-  leaves the device). New `lib/useWatchlist.ts` hook (mounted-guard mirroring
-  `ThemeToggle`/next-themes so the star-fill never hydration-mismatches;
-  cross-tab + same-tab `storage`-event sync) + `WatchlistButton` (icon-only
-  star on the ranking rows · labeled "Save to watchlist" pill on the
-  stock-detail hero; `e.stopPropagation()` so a row-tap doesn't navigate) +
-  `WatchlistView` (the `/portfolio` Server Component reads `getRankings()` and
-  passes the rankings to the client view per the build-time-data rule —
-  `lib/data.ts` never imported into a client component; filters to saved
-  tickers, sorts by rank, warm empty-state matching the ranking empty-state).
-  **FRONTEND-ONLY — no schema / compute / scoring change** (`composite_score`
-  + every JSON byte untouched; `tsc --noEmit` + `next build` green, 510/510
-  static pages). Folds the post-4j.1 doc housekeeping: CLAUDE.md schema
-  `0.10.14 → 0.10.15` + this §In-flight refresh + a PHASE_STATUS.md merged-log
-  reflect of #424/#425/#426/#427 (INFLIGHT entries stay append-only per that
-  file's "do NOT move on merge" convention). (#426 Phase 4j.1 + #427
-  tier2-cache + #425 holiday-gate + #424 cron-refresh already merged.)
+- **chore(output) — orphan per-stock-file prune (this PR)** — fixes the
+  release-blocking file-count drift (503 stock files vs 502 ranked). A ticker
+  leaving the universe — **de-listed** (EPAM) or **renamed** (BK → BNY) — left
+  its `stocks/{T}.json` + `stocks/history/{T}.json` shipping forever, because the
+  cron's `git add` never removes files compute simply stopped writing. New
+  `prune_orphan_stock_files(keep_tickers, data_dir)` in
+  `compute/output/writer.py`, called in `compute/main.py` right after
+  `write_rankings_json` — removes detail + history for any ticker not in the
+  just-written rankings; the cron's existing `git add frontend/public/data/`
+  stages the deletions (git ≥ 2.0 pathspec records removals → **no workflow
+  change**). A `_PRUNE_SAFETY_FLOOR=50` guard skips the prune on a degraded run
+  so it can never wipe `stocks/`. Plus a one-time `git rm` of the 3 current
+  orphans (EPAM detail+history, BK history) → **502/502, zero orphans**.
+  **NO schema / scoring / frontend change** — the orphan never rendered a page
+  (`generateStaticParams` reads `rankings.json` with `dynamicParams=false`); this
+  is deploy-size + verify-count hygiene. 5 new `tests/test_output/test_writer.py`
+  prune tests (happy-path / history-only / safety-floor / empty-keep /
+  missing-dir); full offline suite 1544 green. Folds the post-#428 doc
+  housekeeping: replaces the now-merged Watchlist §In-flight entry + reflects
+  #428 in PHASE_STATUS.md (INFLIGHT entries stay append-only per that file's
+  "do NOT move on merge" convention).
 
 
 **Next deliverables** (pick by appetite):
-- **Phase 7.0 follow-ups** — (a) **IN FLIGHT (this PR)** — the personal
+- **Phase 7.0 follow-ups** — (a) **DONE (#428)** — the personal
   **Watchlist** feature (the `/portfolio` coming-soon stub → a real
   browser-local watchlist, localStorage-only, no backend);
   (b) **DONE (#424)** — the PIT backtest auto-refreshes inside the weekly

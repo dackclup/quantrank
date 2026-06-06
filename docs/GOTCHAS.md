@@ -1222,3 +1222,42 @@ load-bearing rules:
   Recharts adapters), sourced from the soft palette (emerald/indigo/slate) and swapped via
   `next-themes`. `SegmentedSelector` (benchmark + timeframe pickers) mirrors `PriceTimePeriodSelector`
   (the outlined-light radiogroup), so the controls read as one family with the price chart's toggle.
+
+## Per-stock JSON for dropped tickers is auto-pruned — don't glob `stocks/` for param-gen
+
+When a ticker leaves the ranked universe, its `frontend/public/data/stocks/{T}.json` +
+`stocks/history/{T}.json` would linger forever: the weekly cron rewrites the files of every CURRENT
+constituent and runs `git add frontend/public/data/`, but `git add <pathspec>` only *stages* a
+deletion if the file is actually gone from the working tree — and nothing was removing the files of
+tickers compute simply stopped writing. Two real cases produced orphans (the count drifted to 503
+detail / 504 history vs 502 ranked, which trips production-output verification and bloats the
+deploy):
+
+- **De-listing** — `EPAM` left the S&P 500. Both `stocks/EPAM.json` and `stocks/history/EPAM.json`
+  stayed behind.
+- **Ticker rename** — Bank of New York Mellon changed `BK` → `BNY`. The live `BNY.*` files are
+  written each run; the stale `stocks/history/BK.json` (no detail counterpart) lingered.
+
+Fix (the chore(output) prune PR): `prune_orphan_stock_files(keep_tickers, data_dir)` in
+`compute/output/writer.py`, called in `compute/main.py` **right after `write_rankings_json`**, removes
+detail + history for any ticker not in the just-written rankings. The cron's existing
+`git add frontend/public/data/` then stages the deletions (git ≥ 2.0 records removals under a
+directory pathspec), so **no `compute-rankings.yml` change is needed**.
+
+Load-bearing details:
+
+- **Safety floor.** `_PRUNE_SAFETY_FLOOR = 50`: if the keep set is smaller than 50 (empty / truncated
+  rankings on a degraded run) the prune is SKIPPED entirely and logs a warning — a bad run can never
+  wipe `stocks/`. The live universe is ~502, and `run_weekly_compute` already aborts before the write
+  step if too few tickers priced, so a healthy run is never near the floor.
+- **Per-file resilience.** Each `unlink()` is wrapped so one un-removable file doesn't abort the
+  whole prune; the function returns the sorted list of pruned tickers for the log line / audit.
+- **History-only orphans are handled.** The prune walks BOTH `stocks/*.json` and
+  `stocks/history/*.json` (non-recursive globs on each dir), so the `BK`-style case (history present,
+  detail already gone) is caught.
+- **The orphan never rendered a page.** `frontend/app/stock/[ticker]/page.tsx` sets
+  `dynamicParams = false` and `generateStaticParams()` maps over `listTickersForStaticBuild()`, which
+  reads `rankings.json` — so `/stock/<dropped>` already 404'd. This is deploy-size + verify-count
+  hygiene, NOT a user-visible-page fix. **Do not "fix" param-gen by globbing the `stocks/` directory**
+  — that would resurrect the orphan as a live (stale-data) page. Param-gen reads `rankings.json` by
+  design; the prune keeps the data directory in lockstep with it.

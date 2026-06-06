@@ -14,6 +14,7 @@ from compute.output.schemas import (
 )
 from compute.output.writer import (
     atomic_write_json,
+    prune_orphan_stock_files,
     write_metadata_json,
     write_rankings_json,
     write_stock_detail,
@@ -329,3 +330,69 @@ def test_write_stock_history_payload_schema_keys(tmp_path):
         "ticker", "dates", "opens", "highs", "lows", "closes", "volumes",
     }
     assert all(isinstance(d, str) for d in payload["dates"])
+
+
+# -- prune_orphan_stock_files (release-hygiene: drop de-listed tickers) ------
+
+
+def _seed_stock_files(data_dir, tickers) -> None:
+    """Create dummy detail + history JSON for each ticker under data_dir."""
+    (data_dir / "stocks").mkdir(parents=True, exist_ok=True)
+    (data_dir / "stocks" / "history").mkdir(parents=True, exist_ok=True)
+    for t in tickers:
+        (data_dir / "stocks" / f"{t}.json").write_text("{}")
+        (data_dir / "stocks" / "history" / f"{t}.json").write_text("{}")
+
+
+def _big_keep() -> list[str]:
+    """A keep set comfortably above _PRUNE_SAFETY_FLOOR (50)."""
+    return [f"T{i:03d}" for i in range(60)]
+
+
+def test_prune_orphan_stock_files_removes_dropped_ticker(tmp_path):
+    """An index de-listing (EPAM) → detail + history both pruned; kept survive."""
+    keep = _big_keep()
+    _seed_stock_files(tmp_path, [*keep[:3], "EPAM"])  # 3 current + 1 orphan
+    # Pass a generator to prove the Iterable contract (main.py passes one).
+    pruned = prune_orphan_stock_files(iter(keep), tmp_path)
+    assert pruned == ["EPAM"]
+    assert not (tmp_path / "stocks" / "EPAM.json").exists()
+    assert not (tmp_path / "stocks" / "history" / "EPAM.json").exists()
+    # A retained ticker keeps BOTH files.
+    assert (tmp_path / "stocks" / f"{keep[0]}.json").exists()
+    assert (tmp_path / "stocks" / "history" / f"{keep[0]}.json").exists()
+
+
+def test_prune_orphan_stock_files_multiple_sorted_and_history_only(tmp_path):
+    """Returns sorted tickers; a history-only orphan (no detail file) is pruned too."""
+    keep = _big_keep()
+    _seed_stock_files(tmp_path, keep[:2])
+    for t in ("ZZZ", "ABC"):  # two full orphans (detail + history)
+        (tmp_path / "stocks" / f"{t}.json").write_text("{}")
+        (tmp_path / "stocks" / "history" / f"{t}.json").write_text("{}")
+    # Orphan that only ever wrote a history file (no detail) — still pruned.
+    (tmp_path / "stocks" / "history" / "HONLY.json").write_text("{}")
+    pruned = prune_orphan_stock_files(keep, tmp_path)
+    assert pruned == ["ABC", "HONLY", "ZZZ"]
+    assert not (tmp_path / "stocks" / "history" / "HONLY.json").exists()
+
+
+def test_prune_orphan_stock_files_safety_floor_skips_small_keep(tmp_path):
+    """A degraded run (keep set < floor) must NOT delete anything — even orphans."""
+    _seed_stock_files(tmp_path, ["AAPL", "MSFT", "EPAM"])
+    pruned = prune_orphan_stock_files(["AAPL", "MSFT"], tmp_path)  # 2 < floor 50
+    assert pruned == []
+    assert (tmp_path / "stocks" / "EPAM.json").exists()
+    assert (tmp_path / "stocks" / "AAPL.json").exists()
+
+
+def test_prune_orphan_stock_files_empty_keep_skips(tmp_path):
+    """Empty keep set (degenerate run) → no-op, never wipes the directory."""
+    _seed_stock_files(tmp_path, ["AAPL"])
+    assert prune_orphan_stock_files([], tmp_path) == []
+    assert (tmp_path / "stocks" / "AAPL.json").exists()
+
+
+def test_prune_orphan_stock_files_missing_dir_no_error(tmp_path):
+    """No stocks/ directory yet (fresh checkout) → returns [] without error."""
+    assert prune_orphan_stock_files(_big_keep(), tmp_path) == []
