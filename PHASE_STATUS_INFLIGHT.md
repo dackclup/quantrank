@@ -1839,7 +1839,7 @@ cache-split detail) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ## Phase 4j.1 — Qlib Alpha158 observability surface (in flight, 2026-06-06)
 
-**Branch** `claude/sleepy-lovelace-1D1bt`. The FIRST Phase-4 factor-INTEGRATION PR (the 4h OSAP /
+**Branch**: `claude/sleepy-lovelace-1D1bt`. The FIRST Phase-4 factor-INTEGRATION PR (the 4h OSAP /
 4i JKP / 4j Qlib / 4k IPCA scouts all merged; this lands the 4j.1 slice of CLAUDE.md §Next
 deliverables "Phase 4i.1 / 4j.1 / 4k.1"). Flow-8 design→ratify→implement: `financial-engineer`
 designed it, `literature-searcher` pulled the Alpha158 source facts, `methodology-scientist`
