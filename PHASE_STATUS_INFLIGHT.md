@@ -1559,3 +1559,49 @@ the NEXT PR.
 re-dispatch) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Phase 7.0 PR-4 — AI-pick portfolio home page (in flight, 2026-06-06)
+
+**Branch**: `claude/loving-clarke-kAZII` (post-#419-merge)
+**Type**: feat(frontend) — rebuilds `frontend/app/page.tsx` into the AI-pick portfolio the
+user asked for, consuming the merged `backtest_pit.json`. No schema / compute change; the
+artifact self-carries its meta so no schema triple.
+
+Replaces the rankings-preview home (the full ranking lives on at `/ranking`, linked from the
+hero). The page renders: a **1-10 holdings slider** that re-runs the backtest LINE (the
+artifact stores one NAV series per count, so performance-vs-index changes with the count, not
+just the displayed picks); a **benchmark selector** (SPY/QQQ/DIA/IWM); a **multi-timeframe
+NAV-vs-index chart** (1Y/3Y/5Y, portfolio net vs the chosen index, both rebased to 100 at the
+window start; Recharts, lazy-split, theme-aware); the **full-window headline** (net return vs
+the index — honest: the N=5 default lags SPY, shown not buried, per the methodology verdict);
+the **gross / net / higher-slippage cost band**; the **current top-N picks** (inverse-vol
+weights + sector chip + composite, linking to `/stock/<ticker>`); and the artifact's own
+**result-dependent disclaimer**.
+
+**Architecture / footgun handling**: `lib/data.ts` `getAiPickData()` (build-time server) reads
+the 1.3 MB `backtest_pit.json` via `fs` (NOT a static `import` — that would make tsc infer a
+giant literal + bundle a server blob) and **trims + rounds (2dp)** it to a small client view
+model (net line per count + benchmark lines + per-count finals + the latest rebalance), so the
+full artifact never ships in the page payload. Returns `null` → "backtest pending" state when
+the backfill hasn't run. The server page resolves the data; the `'use client'`
+`AiPickPortfolio` receives it as PROPS (never imports `lib/data.ts` — the build-time-data
+gotcha). `SegmentedSelector` mirrors `PriceTimePeriodSelector` (outlined-light radiogroup);
+`NavCompareChart` follows the Recharts hex-exception + next-themes pattern.
+
+**Validation**: node_modules absent locally → no local tsc/build. **CI Frontend (build) =
+SUCCESS** (next build + tsc compiled clean); Vercel preview deployed green. Gated:
+`frontend-design-reviewer` (static design/a11y) + a Vercel-preview spot-check + an
+`expert-user-explorer` experiential pass before Mark-Ready.
+
+**Deferred / follow-up**: the `/portfolio` tab still points at the ComingSoon watchlist stub
+(reconcile vs the now-portfolio home in a later PR); CLAUDE.md §Phase status is still frozen at
+pre-Phase-7 (schema 0.10.13-phase4.6) — a housekeeping bump to reflect the Phase 7.0 ladder is
+its own pass.
+
+**Files**: `frontend/app/page.tsx` (rewritten) · `frontend/components/AiPickPortfolio.tsx` +
+`NavCompareChart.tsx` + `NavCompareChartLazy.tsx` + `HoldingsCountSlider.tsx` +
+`SegmentedSelector.tsx` (new) · `frontend/lib/data.ts` (`getBacktestPIT` + `getAiPickData`) ·
+`frontend/lib/types.ts` (`Backtest*` + `AiPickData`) · `CLAUDE.md` §Gotchas index +
+`docs/GOTCHAS.md` (detail) + `AGENTS.md` (lockstep) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---

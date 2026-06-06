@@ -339,6 +339,15 @@ export function FairPriceCard(props) {  // no types
   different register from the decision eyebrows). A new provenance section goes
   INSIDE it; a new decision signal goes above the fair-price pair. Don't
   re-flatten into a 12th top-level section. Full rationale in CLAUDE.md §Gotchas.
+- **The home page IS the AI-pick portfolio** (`app/page.tsx`, Phase 7.0 PR-4):
+  reads `backtest_pit.json` via `getAiPickData()` (fs-read + trim+round to a small
+  client view-model — NEVER a static `import`; the 1.3MB artifact never ships in
+  the page payload; `null` → "backtest pending"). The Server-Component page
+  resolves it; the `'use client'` `AiPickPortfolio` receives it as props
+  (build-time-data rule — no client component imports `lib/data.ts`). The 1-10
+  slider switches `nav.by_count[N]` (one NAV line per count); the chart uses the
+  pre-aligned `nav.benchmark`, so `benchmarks.json` is NOT read by the frontend.
+  Full rationale in CLAUDE.md §Gotchas.
 - **Loss-chance band/tone derives from `Math.round(pct)`, not the raw float**
   (`LossChanceBadge` + `RankingTable` mobile card + detail-hero `lossBand`,
   2026-06-01 + P2 2026-06-02): the display rounds (`HeroMetric` prints

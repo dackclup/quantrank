@@ -505,3 +505,98 @@ export type StockDetail = {
   // are possible without re-running the validator.
   cross_source_delta?: number | null;
 };
+
+// ---------------------------------------------------------------------------
+// Phase 7.0 — point-in-time portfolio backtest (frontend/public/data/portfolio/
+// backtest_pit.json). DISPLAY-ONLY: the artifact self-carries its own `meta`
+// block (no Pydantic model), so these types are NOT part of the schema-snapshot
+// triple — they describe a standalone workflow_dispatch artifact, not a
+// schemas.py model. Consumed only by the AI-pick home page.
+// ---------------------------------------------------------------------------
+
+export type BacktestHolding = {
+  ticker: string;
+  composite_score: number;
+  sector: string;
+  sigma_90d: number | null;
+};
+
+export type BacktestRebalance = {
+  date: string;
+  members_complete: boolean;
+  holdings: BacktestHolding[];
+  // { "1": { TICKER: weight, ... }, ..., "10": {...} } — inverse-vol weights
+  // for each selectable basket size N. Weights within a count sum to ~1.
+  weights_by_count: Record<string, Record<string, number>>;
+};
+
+export type BacktestNavCountSeries = {
+  gross: (number | null)[];
+  net: (number | null)[];
+  net_conservative: (number | null)[];
+  turnover_by_rebalance: number[];
+};
+
+export type BacktestNav = {
+  // Shared trading-day axis (ISO YYYY-MM-DD) from the first rebalance onward.
+  dates: string[];
+  // Rebased-to-100 index NAVs aligned to `dates`; null before a series starts.
+  benchmark: Record<'spy' | 'qqq' | 'dia' | 'iwm', (number | null)[]>;
+  // Daily NAV per holding count N=1..max_holdings, all on `dates`.
+  by_count: Record<string, BacktestNavCountSeries>;
+  default_count: number;
+};
+
+export type BacktestMeta = {
+  generated_utc: string;
+  rule_version: string;
+  as_of_start: string;
+  as_of_end: string;
+  rebalance_count: number;
+  max_holdings: number;
+  default_count: number;
+  default_benchmark: string;
+  cost_bps_per_side: number;
+  cost_bps_conservative: number;
+  incomplete_membership_count: number;
+  restatement_contamination_pct: number | null;
+  restatement_canary_source: string;
+  restatement_canary_unresolved_count: number;
+  sector_from_today: boolean;
+  veto_layer_replayed: boolean;
+  disclaimer: string;
+};
+
+export type BacktestPIT = {
+  meta: BacktestMeta;
+  rebalances: BacktestRebalance[];
+  nav: BacktestNav;
+};
+
+// Trimmed + rounded view model the SERVER page derives from BacktestPIT and
+// passes to the client AI-pick component — so the 1.3 MB raw artifact (full
+// unrounded NAV floats + all 20 rebalances) never ships in the page payload.
+// Only the net line per count + the benchmark lines + per-count final values +
+// the latest rebalance's holdings are needed client-side.
+export type AiPickFinals = {
+  gross: number | null;
+  net: number | null;
+  conservative: number | null;
+};
+
+export type AiPickData = {
+  meta: BacktestMeta;
+  dates: string[];
+  // net NAV per holding count N (rounded), aligned to `dates`.
+  netByCount: Record<string, (number | null)[]>;
+  // rebased benchmark NAVs per symbol (rounded), aligned to `dates`.
+  benchmark: Record<string, (number | null)[]>;
+  // final (last-finite) gross/net/conservative per count, for the summary.
+  finalsByCount: Record<string, AiPickFinals>;
+  // the most-recent rebalance's ranked holdings + per-count weights.
+  latest: {
+    date: string;
+    holdings: BacktestHolding[];
+    weightsByCount: Record<string, Record<string, number>>;
+  } | null;
+};
