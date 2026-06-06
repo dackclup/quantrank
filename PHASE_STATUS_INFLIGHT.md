@@ -1514,3 +1514,48 @@ multi-timeframe NAV-vs-index chart, McLean-Pontiff disclaimer) consuming `backte
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Phase 7.0 PR-3 — re-source restatement canary + dynamic disclaimer + first real 5y backtest data (in flight, 2026-06-05)
+
+**Branch**: `claude/loving-clarke-kAZII` (post-#418-merge; carries the workflow_dispatch data commit)
+**Type**: fix(compute) + data — orchestrator canary re-source + result-dependent disclaimer +
+the committed `backtest_pit.json` / `benchmarks.json`. No schema change (artifact self-carries meta).
+
+The FIRST real backfill dispatch (run #2, branch ref, green 11m58s) produced a complete artifact:
+20 quarterly rebalances 2021-08→2026-06, NAV per count N=1..10 + SPY/QQQ/DIA/IWM benchmarks
+(100% coverage). methodology-scientist validated it **PUBLISHABLE WITH 2 fixes** (NAV / selection /
+survivorship / PIT-guardrails APPROVED-AS-HONEST — the default N=5 net 132.8 lagging SPY 180.8 is
+the EXPECTED quality/value-tilt + 2-per-sector-cap lag in a 2021-26 mega-cap-momentum regime per
+Lakonishok-Shleifer-Vishny 1994, not a bug; N=1 −62% is the sane concentration tail; N=5 default
+is the pre-committed, non-cherry-picked landing). The 2 required fixes (user chose the accurate
+option — re-source + re-dispatch):
+
+1. **Restatement canary re-sourced** — `_restatement_at_risk` previously scanned companyfacts-XBRL
+   `10-K/A` annual-fact rows, which only see amendments that re-filed a pulled XBRL concept →
+   systematically under-counted partial / non-financial amendments → a misleading
+   `restatement_contamination_pct = 0.0` (contradicts Hennes-Leone-Miller 2008). Now fetches the
+   SAME EDGAR filings-index feed the live `restatement_history` flag uses
+   (`restatement_filings.fetch_amendments`, lazy per-picked-name + memoized so only the ~50-80
+   selected names hit EDGAR, not the ~500 universe; 5y lookback). Conservative (any 10-K/A or
+   10-Q/A filed after the as-of date; no period-map so it over- not under-counts). New meta:
+   `restatement_canary_source: "edgar-filings-index"` + `restatement_canary_unresolved_count` (picks
+   whose amendment fetch failed — counted separately, not as at-risk).
+2. **Dynamic disclaimer** — `DISCLAIMER` → `DISCLAIMER_BASE` (method caveats, dropped the misleading
+   "treat as an upper bound" tail) + a result-dependent in-sample lead/lag sentence computed from the
+   actual NAV (`_insample_lag_clause`), so the disclaimer can never claim a win the chart contradicts
+   (it now states the default-count net line under/out-performed SPY with the real figures).
+
+Workflow: `compute/cache/edgar_amendments` added to the cache-restore paths. +3 tests (canary fires
+on a post-as-of amendment, unresolved-on-fetch-failure, `_restatement_at_risk` filings-index
+semantics); **50 `tests/test_portfolio` pass; 1520 offline**. ruff clean. `quantrank-reviewer` gate +
+a re-dispatch (regenerates the artifact with the accurate non-zero canary + dynamic disclaimer) +
+methodology-scientist re-bless of the real canary value before Mark-Ready. Frontend AI-pick home is
+the NEXT PR.
+
+**Files**: `scripts/backfill_portfolio_pit.py` (canary re-source + dynamic disclaimer) ·
+`.github/workflows/backfill-portfolio.yml` (edgar_amendments cache) ·
+`tests/test_portfolio/test_backfill_integration.py` (+3 tests) ·
+`frontend/public/data/portfolio/{backtest_pit,benchmarks}.json` (the committed artifact, refreshed by
+re-dispatch) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---

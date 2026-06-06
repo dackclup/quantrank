@@ -80,6 +80,7 @@ def test_run_backfill_produces_wellformed_artifact(tmp_path, _universe) -> None:
         mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
         mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(scale_by_cik.get(cik, 1.0))),
         mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),  # no restatements -> canary 0.0
     ):
         out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path)
 
@@ -95,6 +96,10 @@ def test_run_backfill_produces_wellformed_artifact(tmp_path, _universe) -> None:
     assert meta["default_count"] == bf.DEFAULT_COUNT
     assert meta["disclaimer"].startswith("Illustrative backtest")
     assert meta["incomplete_membership_count"] == 0  # all dates in coverage
+    # restatement canary re-sourced from the EDGAR filings index (no amendments -> 0.0)
+    assert meta["restatement_canary_source"] == "edgar-filings-index"
+    assert meta["restatement_contamination_pct"] == 0.0
+    assert meta["restatement_canary_unresolved_count"] == 0
 
     # rebalances: ranked holdings + per-count inverse-vol weights (each basket sums ~1)
     for reb in payload["rebalances"]:
@@ -166,6 +171,70 @@ def test_run_backfill_skips_sigma_empty_rebalance(tmp_path, _universe) -> None:
     meta = json.loads(out.read_text())["meta"]
     assert meta["rebalance_count"] == 0          # every leg skipped at the sigma gate
     assert meta["incomplete_membership_count"] == 0  # NOT the membership-degraded path
+
+
+def test_run_backfill_restatement_canary_flags_post_asof_amendment(tmp_path, _universe) -> None:
+    """A picked name with a 10-K/A filed AFTER its selection date raises the re-sourced
+    canary — restatement_contamination_pct > 0 (vs the old companyfacts scan's 0.0)."""
+    post_asof = [{"form": "10-K/A", "filing_date": "2099-01-01", "accession": "x", "filing_url": ""}]
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=post_asof),
+    ):
+        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path)
+
+    meta = json.loads(out.read_text())["meta"]
+    assert meta["rebalance_count"] > 0
+    assert meta["restatement_contamination_pct"] == pytest.approx(100.0)  # every pick flagged
+    assert meta["restatement_canary_unresolved_count"] == 0
+
+
+def test_run_backfill_restatement_canary_unresolved_on_fetch_failure(tmp_path, _universe) -> None:
+    """fetch_amendments returning None (EDGAR unreachable) marks picks UNRESOLVED, not
+    at-risk: contamination stays 0.0 but the unresolved count is non-zero (honest)."""
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=None),
+    ):
+        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path)
+
+    meta = json.loads(out.read_text())["meta"]
+    assert meta["restatement_contamination_pct"] == 0.0
+    assert meta["restatement_canary_unresolved_count"] > 0
+
+
+def test_restatement_at_risk_filings_index_semantics() -> None:
+    """The re-sourced canary: ANY amendment filed after as_of fires; before/empty/None don't."""
+    amends = [{"form": "10-K/A", "filing_date": "2023-03-15"}]
+    assert bf._restatement_at_risk(amends, "2022-06-01") is True    # filed after as_of
+    assert bf._restatement_at_risk(amends, "2024-01-01") is False   # filed before as_of
+    assert bf._restatement_at_risk([{"form": "10-Q/A", "filing_date": "2023-01-01"}], "2022-01-01") is True
+    assert bf._restatement_at_risk([], "2022-06-01") is False       # no amendments
+    assert bf._restatement_at_risk(None, "2022-06-01") is False     # unresolved -> not at-risk
+
+
+def test_insample_lag_clause_states_actual_result_vs_spy() -> None:
+    """The disclaimer's result-dependent sentence reflects the ACTUAL default-count net
+    line vs SPY (lag / lead / tracked), and falls back generically when nav is empty — so
+    it can never claim a win the chart contradicts (methodology-scientist honesty fix)."""
+    d0, d1 = date(2021, 6, 1), date(2026, 6, 1)
+
+    def _nav(net_last: float, spy_last: float) -> dict:
+        return {
+            "by_count": {str(bf.DEFAULT_COUNT): {"net": [100.0, net_last]}},
+            "benchmark": {"spy": [100.0, spy_last]},
+        }
+
+    assert "underperformed the S&P 500 (132 vs 180" in bf._insample_lag_clause(_nav(132.0, 180.0), d0, d1)
+    assert "outperformed the S&P 500 (190 vs 180" in bf._insample_lag_clause(_nav(190.0, 180.0), d0, d1)
+    assert "tracked the S&P 500" in bf._insample_lag_clause(_nav(180.2, 180.0), d0, d1)  # within dead-band
+    fallback = bf._insample_lag_clause({"by_count": {}, "benchmark": {}}, d0, d1)
+    assert "Past performance" in fallback
+    assert "underperformed" not in fallback and "outperformed" not in fallback  # no directional claim
 
 
 def _bday_frame(prices: list[float]) -> pd.DataFrame:
