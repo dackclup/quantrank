@@ -30,7 +30,7 @@ design-system spec.
   logo + primary CTA surfaces, OKLCH
   hue 155 → 152 + chroma 0.09 → 0.13 closer to forest green,
   border-radius normalization `rounded-2xl/xl` → `rounded-lg`).
-- **CI** — GitHub Actions; weekday `compute-rankings.yml` (cron Mon-Fri 22:00 UTC; weekends skipped — no new trading data)
+- **CI** — GitHub Actions; weekday `compute-rankings.yml` (cron Mon-Fri 22:00 UTC; weekends skipped — no new trading data; also folds a warm PIT-backtest refresh step so the AI-pick home page updates each cron)
 - **Data** — SEC EDGAR via `edgartools` · yfinance for prices · S&P 500
   constituents scraped from Wikipedia
 
@@ -490,24 +490,28 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **feat(frontend) — AI-pick "Rotation history" timeline (this PR)** —
-  surfaces what the backtest actually HELD at every quarterly rebalance,
-  not just the latest "Current picks". New `HoldingsTimeline.tsx` renders
-  all 20 rebalances newest-first at the current basket size with
-  entered/exited markers, reactive to the count slider; fed by a new
-  `AiPickData.timeline` (trimmed ticker+sector per rebalance via
-  `getAiPickData()` — display-only types, NO schema change, no backfill
-  needed; reads `rebalances` already on `main`). Answers the user's "show
-  the holdings from 5y ago + the quarterly rotation, NOT today's picks
-  back-projected". (Sector-cap removal #422 merged on `main`.)
+- **ci(cron) — auto-refresh the PIT backtest in the weekly cron (this PR)** —
+  folds `python -m scripts.backfill_portfolio_pit` into
+  `compute-rankings.yml` as a warm step after the compute (reuses the same
+  prices + fundamentals_history + benchmarks.json just refreshed), so the
+  AI-pick home page (NAV + Current picks + Rotation history) refreshes every
+  cron instead of needing a manual `backfill-portfolio.yml` dispatch. The
+  cron is the established SOLE trusted writer to `main`, so backtest_pit.json
+  rides the existing `git add frontend/public/data/` commit; the manual
+  workflow keeps its `if: ref != main` guard (NOT weakened — we only widen
+  what the already-trusted cron commits). `continue-on-error` + a 40m step
+  cap + the atomic writer mean a backtest hiccup can never block the rankings
+  commit; job ceiling 195 → 225 for headroom. Closes §Next deliverables
+  7.0(b). (Holdings-timeline #423 + sector-cap #422 already merged.)
 
 
 **Next deliverables** (pick by appetite):
 - **Phase 7.0 follow-ups** — (a) the personal **Watchlist** feature (turn
   the `/portfolio` coming-soon stub into a real browser-local watchlist);
-  (b) schedule `backfill-portfolio.yml` (quarterly or post-cron) so
-  `backtest_pit.json` refreshes each new quarter — it is a one-off manual
-  dispatch today; (c) PR-2c deferred — point-in-time defense-layer veto
+  (b) **in flight (this PR)** — the PIT backtest now auto-refreshes inside
+  the weekly cron (a warm `backfill_portfolio_pit` step folded into
+  `compute-rankings.yml`); `backfill-portfolio.yml` remains the manual
+  on-demand path; (c) PR-2c deferred — point-in-time defense-layer veto
   replay in the backtest (currently `veto_layer_replayed=False`, disclosed).
 - **Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — after ≥ 1
   cron's `form4_rule10b5_one_excluded_count` lands and firing-rate

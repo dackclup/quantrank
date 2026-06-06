@@ -69,7 +69,18 @@ jobs:
     #   Metadata observability. Budget: 195m × 5 weekday runs × 4 weeks =
     #   3,900 GitHub Actions minutes/month (~$15 over the 2,000-min free
     #   tier on the paid plan).
-    timeout-minutes: 195
+    # - Phase 7.0 follow-up (2026-06-06): folded the PIT portfolio backtest
+    #   into the cron as a warm step so the AI-pick home page refreshes weekly
+    #   without a manual dispatch. The backfill runs AFTER the compute step in
+    #   the same job, so it inherits the working-dir caches the compute just
+    #   warmed → ~15-20m (not the ~60m cold budget the standalone
+    #   backfill-portfolio.yml carries). Capped at 40m + continue-on-error so
+    #   it can never block the rankings commit; job ceiling raised 195 → 225 to
+    #   preserve headroom over a worst-case cold compute (~140-160m) PLUS the
+    #   capped backtest step. Cost: warm steady-state adds ~15-20m/run
+    #   (~300-400 Actions-min/month); worst-case monthly ceiling is now
+    #   225m × 5 weekday runs × 4 weeks = 4,500 GitHub Actions minutes/month.
+    timeout-minutes: 225
     steps:
       - uses: actions/checkout@v6
         with:
@@ -201,6 +212,49 @@ jobs:
 
       - name: Run weekly compute
         run: python -m compute.main
+
+      - name: Refresh portfolio backtest (PIT) — warm caches from the compute step
+        # Phase 7.0 follow-up (CLAUDE.md §Next deliverables item b): fold the
+        # point-in-time AI-pick backtest into the cron so the home page's NAV +
+        # Current picks + Rotation-history stay current weekly instead of needing
+        # a manual backfill-portfolio.yml dispatch. It reuses the SAME prices +
+        # fundamentals_history + benchmarks.json the compute step just refreshed
+        # (warm ~15-20m), and the "Commit JSON outputs" step below already
+        # git-adds frontend/public/data/ so backtest_pit.json commits alongside
+        # the rankings. The weekly cron is the established SOLE trusted writer to
+        # main, so this stays inside the existing trusted write path; the manual
+        # backfill-portfolio.yml keeps its `if: ref != main` guard (security-
+        # reviewer 2026-06-05) — we are NOT weakening that, only widening what the
+        # already-trusted cron commits.
+        #
+        # continue-on-error + a 40m step cap so a backtest stall / failure can
+        # NEVER block the rankings commit: the writer is atomic (tmp + os.replace),
+        # so a failed run leaves the prior backtest_pit.json intact and the cron
+        # still commits the fresh rankings. FORM4_FETCH_SKIP is irrelevant here —
+        # the backfill's veto set is the 7 active rank-gates, none Form-4.
+        continue-on-error: true
+        timeout-minutes: 40
+        run: python -m scripts.backfill_portfolio_pit
+
+      - name: Show backtest meta (canary)
+        # Per-run visibility that the folded backtest refresh actually completed.
+        # The backfill step is continue-on-error, so without this a silent kill /
+        # failure would leave no signal in the cron log. Mirrors the canary in
+        # backfill-portfolio.yml. `generated_utc` is the tell: if it is THIS run's
+        # timestamp the refresh landed; if it is stale the backfill was killed at
+        # the 40m cap and the prior (atomic) artifact is what will be committed.
+        run: |
+          python - <<'PY'
+          import json, pathlib
+          p = pathlib.Path("frontend/public/data/portfolio/backtest_pit.json")
+          if p.exists():
+              meta = json.loads(p.read_text()).get("meta", {})
+              for k in ("generated_utc", "as_of_end", "rebalance_count",
+                        "restatement_contamination_pct"):
+                  print(f"  {k}: {meta.get(k)}")
+          else:
+              print("  backtest_pit.json NOT present")
+          PY
 
       - name: Commit JSON outputs
         run: |
