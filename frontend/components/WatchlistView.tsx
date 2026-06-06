@@ -3,10 +3,7 @@
 import Link from 'next/link';
 import { Star, X } from 'lucide-react';
 
-import { RecommendationBadge } from '@/components/RecommendationBadge';
-import { ScoreBadge } from '@/components/ScoreBadge';
-import { SectorChip } from '@/components/SectorChip';
-import { StockLogo } from '@/components/StockLogo';
+import { StockListCard } from '@/components/StockListCard';
 import type { StockSummary } from '@/lib/types';
 import { useWatchlist } from '@/lib/useWatchlist';
 
@@ -46,27 +43,9 @@ function WatchlistCard({
       </button>
       <Link
         href={`/stock/${row.ticker}/`}
-        className="press flex items-center gap-3 py-3 pl-14 pr-3"
+        className="press flex flex-col gap-1 py-3 pl-14 pr-3"
       >
-        <StockLogo ticker={row.ticker} size={36} />
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-lg font-semibold text-slate-900 dark:text-slate-100">
-              {row.ticker}
-            </span>
-            <RecommendationBadge recommendation={row.recommendation} size="xs" />
-          </div>
-          <div className="truncate text-sm text-slate-600 dark:text-slate-300">{row.name}</div>
-          <div className="mt-1">
-            <SectorChip sector={row.sector} size="xs" />
-          </div>
-        </div>
-        <div className="flex shrink-0 flex-col items-end gap-1">
-          <ScoreBadge score={row.composite_score} size="md" />
-          <span className="font-mono text-sm tabular-nums text-slate-700 dark:text-slate-300">
-            ${row.current_price.toFixed(2)}
-          </span>
-        </div>
+        <StockListCard row={row} />
       </Link>
     </li>
   );
