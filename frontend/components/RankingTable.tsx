@@ -9,6 +9,7 @@ import { RecommendationBadge } from '@/components/RecommendationBadge';
 import { ScoreBadge } from '@/components/ScoreBadge';
 import { SectorChip } from '@/components/SectorChip';
 import { StockLogo } from '@/components/StockLogo';
+import { WatchlistButton } from '@/components/WatchlistButton';
 import { formatMosPct } from '@/lib/format';
 import type { StockSummary } from '@/lib/types';
 import { useFlip } from '@/lib/useFlip';
@@ -222,6 +223,9 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
               <th scope="col" className="px-3 py-2 text-right font-semibold text-slate-600 dark:text-slate-400">
                 Loss Chance
               </th>
+              <th scope="col" className="px-2 py-2">
+                <span className="sr-only">Watchlist</span>
+              </th>
             </tr>
           </thead>
           <tbody ref={tbodyFlipRef} className="divide-y divide-slate-100 dark:divide-slate-800/60">
@@ -257,6 +261,9 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                   <td className="px-3 py-2 text-right">
                     <LossChanceBadge lossChancePct={row.loss_chance_pct} size="xs" />
                   </td>
+                  <td className="px-1 text-center">
+                    <WatchlistButton ticker={row.ticker} />
+                  </td>
                 </tr>
               );
             })}
@@ -275,11 +282,11 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
             <li
               key={row.ticker}
               data-flip-key={row.ticker}
-              className={`hover-lift press min-h-[7rem] rounded border border-slate-200 bg-white transition-colors duration-100 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/50 ${staggerClass}`}
+              className={`hover-lift flex items-stretch overflow-hidden min-h-[7rem] rounded border border-slate-200 bg-white transition-colors duration-100 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/50 ${staggerClass}`}
             >
               <Link
                 href={`/stock/${row.ticker}/`}
-                className="flex h-full flex-col gap-1 p-3"
+                className="press flex h-full min-w-0 flex-1 flex-col gap-1 p-3"
               >
                 {/* Mobile card header — mirrors the detail-page hero
                     cadence: rank pill + sector chip on the top line, then
@@ -401,6 +408,11 @@ export default function RankingTable({ data }: { data: StockSummary[] }) {
                 </div>
                 {mos.tooltip && <span className="sr-only">{mos.tooltip}</span>}
               </Link>
+              {/* Star sits in its own right rail — an interactive <button> can't
+                  validly nest inside the row's <a>. */}
+              <div className="flex shrink-0 items-center border-l border-slate-100 pl-1 pr-1.5 dark:border-slate-800">
+                <WatchlistButton ticker={row.ticker} />
+              </div>
             </li>
           );
         })}

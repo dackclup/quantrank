@@ -1,19 +1,21 @@
 import type { Metadata } from 'next';
 
-import { ComingSoon } from '@/components/ComingSoon';
+import { WatchlistView } from '@/components/WatchlistView';
+import { getRankings } from '@/lib/data';
 
 export const metadata: Metadata = {
   title: 'Watchlist · QuantRank',
   description:
-    'A personal watchlist of QuantRank names — save tickers and track their composite scores. Coming soon.',
+    'Your personal watchlist of QuantRank names — save tickers and track their composite scores. Lives entirely in your browser.',
 };
 
+// Server Component: reads the full ranking snapshot at build time (the
+// build-time data rule — lib/data.ts must never be imported by a client
+// component) and hands it to the client WatchlistView, which filters it to the
+// tickers the visitor has starred into browser localStorage. The saved set
+// never leaves the browser; the server only ships the public ranking rows
+// (the same payload the /ranking page already sends).
 export default function PortfolioPage() {
-  return (
-    <ComingSoon
-      title="Watchlist"
-      lead="Coming soon"
-      detail="A personal watchlist — save the names you're tracking and watch their composite scores and prices move week to week — is coming. It'll live entirely in your browser (no account, no sign-in needed). For the algorithmic AI-pick portfolio, see Home."
-    />
-  );
+  const rankings = getRankings();
+  return <WatchlistView rankings={rankings} />;
 }

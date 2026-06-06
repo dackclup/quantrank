@@ -15,6 +15,7 @@ import { RecommendationBadge, RECOMMENDATION_LABELS } from '@/components/Recomme
 import { ListingChips } from '@/components/ListingChips';
 import { StockLogo } from '@/components/StockLogo';
 import { Tier2EventCard } from '@/components/Tier2EventCard';
+import { WatchlistButton } from '@/components/WatchlistButton';
 import { getMetadata, getStockDetail, listTickersForStaticBuild } from '@/lib/data';
 import { filingLagBadgeClasses } from '@/lib/visual';
 
@@ -120,25 +121,28 @@ export default function StockDetailPage({
 
   return (
     <article className="space-y-4">
-      <Link
-        href="/"
-        className="inline-flex min-h-[44px] items-center gap-1 text-sm text-slate-900 press hover:opacity-70 dark:text-slate-100"
-      >
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
+      <div className="flex items-center justify-between gap-2">
+        <Link
+          href="/"
+          className="inline-flex min-h-[44px] items-center gap-1 text-sm text-slate-900 press hover:opacity-70 dark:text-slate-100"
         >
-          <polyline points="15 18 9 12 15 6" />
-        </svg>
-        Back to ranking
-      </Link>
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+          Back to ranking
+        </Link>
+        <WatchlistButton ticker={detail.ticker} labeled />
+      </div>
 
       {/* Hero header card — new layout from QuantRank.html design:
           rank badge + sector chip on top row, big mono ticker, serif
