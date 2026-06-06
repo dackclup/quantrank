@@ -3,7 +3,9 @@
 import Link from 'next/link';
 import { Star, X } from 'lucide-react';
 
-import { StockListCard } from '@/components/StockListCard';
+import { SectorChip } from '@/components/SectorChip';
+import { Sparkline } from '@/components/Sparkline';
+import { StockLogo } from '@/components/StockLogo';
 import type { StockSummary } from '@/lib/types';
 import { useWatchlist } from '@/lib/useWatchlist';
 
@@ -14,6 +16,12 @@ import { useWatchlist } from '@/lib/useWatchlist';
 // rankings to the saved tickers and render the matches ordered by composite
 // rank. A saved ticker that's no longer in the universe (delisted since it was
 // starred) simply has no row to render; it stays in storage harmlessly.
+//
+// Each row is a compact watchlist line — [logo · ticker · rank · sector] ·
+// [price-trend Sparkline] · [price + daily-change chip] — with a trailing X to
+// remove. The register stays calm/editorial (outlined-light change chip + a
+// muted sign-aware sparkline), NOT a gamified trading row (PRODUCT.md
+// anti-reference #1).
 
 function WatchlistCard({
   row,
@@ -22,31 +30,71 @@ function WatchlistCard({
   row: StockSummary;
   onRemove: (ticker: string) => void;
 }) {
+  const pct = row.price_change_1d_pct;
+  const positive = pct != null && pct >= 0;
+
   return (
-    <li className="relative hover-lift overflow-hidden rounded border border-slate-200 bg-white transition-colors duration-100 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/50">
-      {/* Remove from watchlist — an X in the top-left corner. Absolute + z-10
-          so it sits ABOVE the row's <Link> as a sibling (never a nested
-          interactive <button> inside the <a>); preventDefault + stopPropagation
-          keep a corner tap from also following the link. The row reserves
-          `pl-14` so the logo clears the 44px hit target. */}
+    <li className="hover-lift flex items-stretch overflow-hidden rounded border border-slate-200 bg-white transition-colors duration-100 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/50">
+      <Link
+        href={`/stock/${row.ticker}/`}
+        aria-label={`Open ${row.ticker} detail`}
+        className="press flex min-w-0 flex-1 items-center gap-3 p-3"
+      >
+        {/* Left — logo + ticker (+ small rank) over the sector chip. */}
+        <div className="flex shrink-0 items-center gap-2.5">
+          <StockLogo ticker={row.ticker} size={32} />
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5">
+              <span className="font-mono text-base font-semibold text-slate-900 dark:text-slate-100">
+                {row.ticker}
+              </span>
+              <span className="font-mono text-[0.625rem] tabular-nums text-slate-400 dark:text-slate-500">
+                #{row.rank}
+              </span>
+            </div>
+            <SectorChip sector={row.sector} size="xs" />
+          </div>
+        </div>
+
+        {/* Middle — muted, sign-aware price-trend sparkline (the flexible column). */}
+        <div className="min-w-0 flex-1 px-1">
+          <Sparkline ticker={row.ticker} />
+        </div>
+
+        {/* Right — last price over the outlined-light daily-change chip. */}
+        <div className="flex shrink-0 flex-col items-end gap-1">
+          <span className="font-mono text-base font-semibold tabular-nums text-slate-900 dark:text-slate-100">
+            ${row.current_price.toFixed(2)}
+          </span>
+          {pct != null ? (
+            <span
+              className={`inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 text-[0.6875rem] font-semibold tabular-nums ring-1 ring-inset ${
+                positive
+                  ? 'bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-800'
+                  : 'bg-rose-50 text-rose-700 ring-rose-200 dark:bg-rose-900/30 dark:text-rose-300 dark:ring-rose-800'
+              }`}
+            >
+              <span aria-hidden="true">{positive ? '↗' : '↘'}</span>
+              {positive ? '+' : ''}
+              {pct.toFixed(2)}%
+            </span>
+          ) : (
+            <span className="text-[0.6875rem] text-slate-400 dark:text-slate-500">past day n/a</span>
+          )}
+        </div>
+      </Link>
+
+      {/* Trailing X remove rail — a sibling of the row's <Link> (an interactive
+          button can't validly nest inside an <a>); echoes the reference's
+          right-side delete. Full-height rail with a >=44px hit target. */}
       <button
         type="button"
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          onRemove(row.ticker);
-        }}
+        onClick={() => onRemove(row.ticker)}
         aria-label={`Remove ${row.ticker} from watchlist`}
-        className="absolute left-1 top-1 z-10 inline-flex h-11 w-11 items-center justify-center rounded-sm text-slate-400 press hover:bg-slate-100 hover:text-slate-600 dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-slate-300"
+        className="flex min-w-[44px] shrink-0 items-center justify-center border-l border-slate-100 text-slate-400 press hover:bg-slate-100 hover:text-rose-600 dark:border-slate-800 dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-rose-400"
       >
         <X className="h-[1.125rem] w-[1.125rem]" strokeWidth={2} aria-hidden="true" />
       </button>
-      <Link
-        href={`/stock/${row.ticker}/`}
-        className="press flex flex-col gap-1 py-3 pl-14 pr-3"
-      >
-        <StockListCard row={row} />
-      </Link>
     </li>
   );
 }
@@ -107,7 +155,7 @@ export function WatchlistView({ rankings }: { rankings: StockSummary[] }) {
           </Link>
         </div>
       ) : (
-        <ul className="space-y-2">
+        <ul className="max-w-3xl space-y-2">
           {rows.map((row) => (
             <WatchlistCard key={row.ticker} row={row} onRemove={remove} />
           ))}
