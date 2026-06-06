@@ -437,7 +437,10 @@ always-loaded context small while preserving discoverability of every invariant.
 
 ## Phase status
 
-Current schema **`0.10.14-phase4.6`** on `main`. **Phase 7.0 — the
+Current schema **`0.10.15-phase4.6`** on `main` (#426 Phase 4j.1 — additive
+9 `Metadata.alpha158_*` Qlib observability fields, `OsapGateDiagnostic` reused,
+no new model; observability-only, Δscore = 0). Prior **`0.10.14-phase4.6`**:
+**Phase 7.0 — the
 AI-pick portfolio home + 5-year point-in-time backtest — shipped**
 (#416 → #420: survivorship membership ledger + benchmark export +
 inverse-vol weighting → PIT NAV engine + anti-look-ahead orchestrator →
@@ -491,32 +494,31 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **feat(features) — Phase 4j.1 Qlib Alpha158 observability surface (this PR)** —
-  the FIRST Phase-4 factor-INTEGRATION PR (after the 4h/4i/4j/4k scouts).
-  Ships `compute/features/alpha158_replicate.py` — a feature→decile-spread
-  long-short-return adapter (Grinold-Kahn 2000 Ch.6 Fundamental-Law
-  construction) that lets the existing Phase-4h PBO/DSR gate
-  (`osap_validation.gate_osap_signals`, reused verbatim) screen the 158
-  Alpha158 features with `n_trials=158` — plus 9 additive
-  `Metadata.alpha158_*` diagnostic fields (schema PATCH `0.10.14 →
-  0.10.15-phase4.6`; `alpha158_gate_diagnostics` reuses `OsapGateDiagnostic`)
-  and the 158-feature accounting equation (`158 == missing + dropped + used
-  + excluded`). **Observability-only (Rule 18): blends NOTHING — Top-5 +
-  every `composite_score` byte-identical to pre-4j.1 (Δscore = 0); the
-  rank-influencing blend + the `|φ| < 0.30` orthogonality gate are deferred
-  to 4j.2.** The live feature source (Qlib `.bin` BYO `dump_bin`) is itself
-  deferred — `_acquire_alpha158_inputs` raises until the bin cache lands →
-  graceful degradation nulls every `alpha158_*` field; the adapter + gate
-  wiring ship now, verified by offline synthetic fixtures
-  (methodology-scientist GO-WITH-CONDITIONS pre-ratified `used=0`/all-None on
-  the early crons as the honest, conservative outcome). Closes the 4j.1 slice
-  of §Next deliverables Phase 4 integration. (#427 tier2-cache-split + #425
-  holiday-gate + #424 cron-refresh + #422/#423 already merged.)
+- **feat(frontend) — Phase 7.0 personal Watchlist (this PR)** — turns the
+  `/portfolio` coming-soon stub into a real **browser-local watchlist**
+  (localStorage key `quantrank:watchlist`, no account / no backend; nothing
+  leaves the device). New `lib/useWatchlist.ts` hook (mounted-guard mirroring
+  `ThemeToggle`/next-themes so the star-fill never hydration-mismatches;
+  cross-tab + same-tab `storage`-event sync) + `WatchlistButton` (icon-only
+  star on the ranking rows · labeled "Save to watchlist" pill on the
+  stock-detail hero; `e.stopPropagation()` so a row-tap doesn't navigate) +
+  `WatchlistView` (the `/portfolio` Server Component reads `getRankings()` and
+  passes the rankings to the client view per the build-time-data rule —
+  `lib/data.ts` never imported into a client component; filters to saved
+  tickers, sorts by rank, warm empty-state matching the ranking empty-state).
+  **FRONTEND-ONLY — no schema / compute / scoring change** (`composite_score`
+  + every JSON byte untouched; `tsc --noEmit` + `next build` green, 510/510
+  static pages). Folds the post-4j.1 doc housekeeping: CLAUDE.md schema
+  `0.10.14 → 0.10.15` + this §In-flight refresh + a PHASE_STATUS.md merged-log
+  reflect of #424/#425/#426/#427 (INFLIGHT entries stay append-only per that
+  file's "do NOT move on merge" convention). (#426 Phase 4j.1 + #427
+  tier2-cache + #425 holiday-gate + #424 cron-refresh already merged.)
 
 
 **Next deliverables** (pick by appetite):
-- **Phase 7.0 follow-ups** — (a) the personal **Watchlist** feature (turn
-  the `/portfolio` coming-soon stub into a real browser-local watchlist);
+- **Phase 7.0 follow-ups** — (a) **IN FLIGHT (this PR)** — the personal
+  **Watchlist** feature (the `/portfolio` coming-soon stub → a real
+  browser-local watchlist, localStorage-only, no backend);
   (b) **DONE (#424)** — the PIT backtest auto-refreshes inside the weekly
   cron (a warm `backfill_portfolio_pit` step folded into
   `compute-rankings.yml`); `backfill-portfolio.yml` remains the manual
@@ -532,8 +534,9 @@ Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_
   `Metadata.value_trap_risk_delta_by_sector` (PR #300)
 - **Phase 4i.1 / 4j.1 / 4k.1** — JKP / Qlib / IPCA integration PRs
   (~1-2w each → v1.1.0-phase4). **4j.1 (Qlib Alpha158 observability surface)
-  in flight (this PR)** — adapter + reused PBO/DSR gate + 9 diagnostic
-  `Metadata.alpha158_*` fields, no blend (4j.2 blends); 4i.1 (JKP, license-
+  DONE (#426)** — adapter + reused PBO/DSR gate + 9 diagnostic
+  `Metadata.alpha158_*` fields shipped, no blend (4j.2 blends — deferred,
+  needs ≥ 1 real cron + the live Qlib feature source); 4i.1 (JKP, license-
   review-required per #115) + 4k.1 (IPCA) remain.
 - **Phase 5** — ML meta-learner (~10-12w, unblocks PR 4b §3
   IC-decay writer #75)

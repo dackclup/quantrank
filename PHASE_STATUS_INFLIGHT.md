@@ -1895,3 +1895,57 @@ section (the parallel log was collapsed 2026-06-03), so no parallel AGENTS.md en
 `CLAUDE.md` (§Phase status in-flight) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## feat(frontend) — Phase 7.0 personal Watchlist (in flight, 2026-06-06)
+
+**Branch** `claude/sleepy-lovelace-1D1bt`. Turns the `/portfolio` coming-soon stub into a real
+**browser-local watchlist** — save tickers from the ranking + stock pages and see them on
+`/portfolio`. localStorage-only (key `quantrank:watchlist`), no account / no backend / nothing
+leaves the device. FRONTEND-ONLY: no schema / compute / scoring change (`composite_score` + every
+JSON byte untouched).
+
+**What ships:**
+- `frontend/lib/useWatchlist.ts` (new) — the hook. localStorage-backed `string[]` of tickers with
+  a `mounted` guard mirroring `ThemeToggle`/next-themes (SSR + first client render emit "not
+  saved"; the real set reads post-hydration → no star-fill hydration mismatch) + cross-tab (native
+  `storage`) + same-tab (custom-event) sync. Defensive parse (de-dupes, drops non-strings);
+  quota / private-mode writes degrade silently.
+- `frontend/components/WatchlistButton.tsx` (new) — the star toggle. Icon-only square (ranking
+  rows) + `labeled` "Save to watchlist" pill (stock-detail hero). `aria-pressed` + dynamic
+  `aria-label`; `e.stopPropagation()` + `e.preventDefault()` so a tap on the star inside a row
+  `<Link>` (un)saves without navigating. Saved tone = emerald (NOT amber — amber is the project's
+  warning/caution semantic, per design-review).
+- `frontend/components/WatchlistView.tsx` (new) — the `/portfolio` client view. Filters the
+  server-passed rankings to saved tickers, sorts by rank, renders cards (reusing
+  `ScoreBadge` / `SectorChip` / `RecommendationBadge` / `StockLogo`); pre-mount loading branch (no
+  empty-state flash) + a warm empty-state matching the ranking empty-state anatomy.
+- `frontend/app/portfolio/page.tsx` (rewrite) — Server Component reads `getRankings()` and passes
+  rankings to `<WatchlistView>` per the build-time-data rule (`lib/data.ts` never imported into a
+  client component; the saved set lives only in the browser).
+- `frontend/components/RankingTable.tsx` (edit) — trailing star column (desktop table) + mobile
+  card restructured to a flex-row `[<Link> + star right-rail]` (a `<button>` can't validly nest in
+  the row `<a>`); `data-flip-key` + `animate-rise-in stagger-*` kept on the `<li>` so the
+  search-scoped FLIP reshuffle is intact.
+- `frontend/app/stock/[ticker]/page.tsx` (edit) — back-link row wrapped in `justify-between` + the
+  labeled `WatchlistButton`.
+
+**Review:** `frontend-design-reviewer` returned 1 FAIL (inverted muted pair on the loading text →
+fixed to `text-slate-500 dark:text-slate-400`) + 4 WARN (labeled-pill `border-emerald-300` →
+`-200` per the soft-OKLCH allowlist · icon `h-11` → `min-h-[44px]` convention · count
+`tabular-nums` · pill `py-2`) — all applied. Architecture (hydration guard / a11y / FLIP /
+empty-state-CTA-not-disabled / emerald-not-amber) validated. `tsc --noEmit` + `next build` green
+(510 / 510 static pages).
+
+**Docs housekeeping folded in (post-4j.1):** CLAUDE.md schema `0.10.14 → 0.10.15` + §In-flight
+refresh (4j.1 → this) + §Next-deliverables (4j.1 DONE, Watchlist in-flight); PHASE_STATUS.md
+merged-log reflect of #424 / #425 / #426 / #427. The #424 / #425 / #427 / 4j.1 INFLIGHT entries
+STAY (append-only "do NOT move on merge" convention — periodic housekeeping drains them, not this
+PR).
+
+**Files**: `frontend/lib/useWatchlist.ts` (new) · `frontend/components/WatchlistButton.tsx` (new) ·
+`frontend/components/WatchlistView.tsx` (new) · `frontend/app/portfolio/page.tsx` (rewrite) ·
+`frontend/components/RankingTable.tsx` · `frontend/app/stock/[ticker]/page.tsx` · `CLAUDE.md`
+(schema + §In-flight + §Next-deliverables) · `PHASE_STATUS.md` (merged-log + current-state) ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---

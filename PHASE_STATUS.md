@@ -13,11 +13,11 @@
 | 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → **v1.5** | ⚪ not started |
 | 8 | Universe expansion (S&P 1500) | ⚪ not started |
 
-## Current state (2026-06-02)
+## Current state (2026-06-06)
 
 | Field | Value |
 |---|---|
-| Schema | **`0.10.13-phase4.6`** (this PR — PATCH bump: listing-metadata canary `Metadata.country_coverage_pct: float | None` + CBOE `BTS → Cboe BZX` fix in `cross_source._EXCHANGE_NAME_BY_CODE`. The 2026-06-02 post-cron audit disproved the 0.10.12 "country tracks exchange 1:1" assumption — exchange passes unknown codes through as covered while country resolves only known US codes, so they diverge on a raw passthrough (CBOE's `BTS`: exchange 100% / country 99.8%). Prior: PR #303 merged 2026-05-29 `847c21b` — `0.10.12-phase4.6` Phase 4.5e PR 6 Form-4 10b5-1 negation guard; supersedes PR #300's `0.10.10` per-sector delta + PR #297's `0.10.9` wall-clocks + PR #292's `0.10.8` Rule 18 disambiguator.) |
+| Schema | **`0.10.15-phase4.6`** (current on `main` — #426 Phase 4j.1 added 9 `Metadata.alpha158_*` Qlib observability fields; #416 added `Metadata.benchmark_coverage_pct` (`0.10.14`). Prior **`0.10.13-phase4.6`** — PATCH bump: listing-metadata canary `Metadata.country_coverage_pct: float | None` + CBOE `BTS → Cboe BZX` fix in `cross_source._EXCHANGE_NAME_BY_CODE`. The 2026-06-02 post-cron audit disproved the 0.10.12 "country tracks exchange 1:1" assumption — exchange passes unknown codes through as covered while country resolves only known US codes, so they diverge on a raw passthrough (CBOE's `BTS`: exchange 100% / country 99.8%). Prior: PR #303 merged 2026-05-29 `847c21b` — `0.10.12-phase4.6` Phase 4.5e PR 6 Form-4 10b5-1 negation guard; supersedes PR #300's `0.10.10` per-sector delta + PR #297's `0.10.9` wall-clocks + PR #292's `0.10.8` Rule 18 disambiguator.) |
 | Defense layer | **33 declared boolean flags** (7 active vetoes + 26 annotates + reserved slots; ~27 currently emit; `USE_SECTOR_COE = True` post-PR #294 flip) · plus 5 numerical guards + `manipulation_index` rollup |
 | Active vetoes | **7** — `altman_distress` · `sloan_accruals_top_decile` · `net_issuance_top_decile` · `non_reliance_filing` · `beneish_manipulation_veto` · `dechow_manipulation_veto` · `data_quality_input_corruption` |
 | Latest release tag | [**`v1.4.0-phase4.6`**](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6) — 2026-05-27 at `bbca9cac` (Phase 4.6 honest re-validation harness) |
@@ -28,7 +28,15 @@
 | Skill inventory | **47** invocation-triggerable + phase planning docs |
 | Subagent inventory | **20** project-specific in 4 tiers (5 opus + 15 sonnet): **Tier 1 Core** (`quantrank-reviewer` · `schema-sentinel` · `defense-layer-auditor` · `edgar-debugger` · `stock-detail-auditor`) · **Tier 2 Lifecycle** (`security-reviewer` · `frontend-design-reviewer` · `vercel-preview-auditor` · `expert-user-explorer` · `release-captain` · `phase-coordinator`) · **Tier 3 Specialized** (`test-engineer` · `methodology-scientist` · `literature-searcher` · `performance-engineer` · `dependency-auditor` · `financial-engineer`) · **Tier 4 Operations** (`docs-reviewer` · `ci-triage-engineer` · `incident-commander`) |
 
-**Recently merged** (PR #331 → PR #373, 2026-05-31 → 2026-06-02):
+**Recently merged** (Phase 7.0 + cron + Phase 4j.1 cluster, #416 → #427, 2026-06-04 → 2026-06-06):
+- PR #427 — perf(cron): split tier2 cache (fast + slow-text run-id key) + per-stage timing summary
+- PR #426 — feat(features): Phase 4j.1 Qlib Alpha158 observability surface (schema `0.10.14 → 0.10.15`; 9 `Metadata.alpha158_*` + reused PBO/DSR gate; observability-only, Δscore = 0)
+- PR #425 — ci(cron): trading-day NYSE-holiday gate
+- PR #424 — ci(cron): auto-refresh the PIT backtest inside the weekly cron
+- PR #416 → #420 — feat: Phase 7.0 AI-pick portfolio home + 5y PIT backtest (schema `0.10.13 → 0.10.14` `benchmark_coverage_pct`)
+- _PRs #374 → #415 await a housekeeping-drain reconcile into this log — their append-only detail lives in [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md)._
+
+**Earlier merged** (PR #331 → PR #373, 2026-05-31 → 2026-06-02):
 - PR #373 `93c98a2` — fix(audit): Commit A — 12-item deep-audit MUST-FIX sweep (dark-mode chips · font-mono · aria-label · loose-null ×2 · ring-amber-200 · script-injection · schema pointer · ~27 emit count · PR-A2 ref)
 - PR #372 `858cf21` — feat(frontend): detail-page two-level spacing + attr-tiles float fix
 - PR #371 `8014916` — feat(frontend): ranking-table warm empty-state (SearchX + nudge + fade-in)
