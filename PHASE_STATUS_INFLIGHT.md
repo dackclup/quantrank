@@ -1605,3 +1605,30 @@ its own pass.
 `docs/GOTCHAS.md` (detail) + `AGENTS.md` (lockstep) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Phase 7.0 follow-up — nav reconcile + §Phase status housekeeping (in flight, 2026-06-06)
+
+**Branch**: `claude/loving-clarke-kAZII` (post-#420-merge)
+**Type**: chore — frontend (one nav label) + docs only; no schema / compute change.
+
+Two cleanups deferred from the PR-4 merge:
+
+1. **Nav reconcile.** Home is now the AI-pick *portfolio* (Phase 7.0), but the TopNav
+   "Portfolio" tab pointed at the coming-soon personal-*watchlist* stub (`/portfolio`) —
+   two things both called "portfolio". Relabelled the tab **"Portfolio" → "Watchlist"**
+   (the stub already describes itself as a personal watchlist; distinct feature from the
+   algorithmic AI-pick on Home) + updated the `/portfolio` page title/heading to
+   "Watchlist". Route unchanged (`/portfolio`, low-churn — it's a coming-soon stub).
+
+2. **§Phase status housekeeping.** CLAUDE.md §Phase status had been frozen at pre-Phase-7
+   (schema `0.10.13`, in-flight = the long-merged token-economy PR #391). Updated: current
+   schema → **`0.10.14-phase4.6`** (the actual `main` value; `Metadata.benchmark_coverage_pct`
+   from #416 PR-1 — Phase 7 added no schema bump, the backtest artifact self-carries its
+   meta) + a Phase 7.0-shipped summary (#416→#420); refreshed the in-flight entry + added
+   Phase 7.0 follow-ups to Next deliverables (Watchlist feature · scheduling the backfill ·
+   PR-2c PIT veto replay). AGENTS.md AI-pick bullet gains the Watchlist-relabel note (lockstep).
+
+**Files**: `frontend/components/TopNav.tsx` · `frontend/app/portfolio/page.tsx` · `CLAUDE.md`
+(§Phase status) · `AGENTS.md` (AI-pick bullet) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
