@@ -1949,3 +1949,49 @@ PR).
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## chore(output) — orphan per-stock-file prune (in flight, 2026-06-06)
+
+**Problem.** Production output drifted to **503 detail / 504 history files vs 502 ranked** — a
+release-blocking count mismatch (it trips `verify-production-output`). Root cause: the weekly cron
+rewrites the JSON of every CURRENT constituent and runs `git add frontend/public/data/`, but
+`git add <pathspec>` only stages a *deletion* when the file is gone from the working tree — and
+nothing removed the files of tickers compute simply stopped writing. Two real orphan sources:
+
+- **De-listing** — `EPAM` left the S&P 500 → `stocks/EPAM.json` + `stocks/history/EPAM.json` lingered.
+- **Ticker rename** — BNY Mellon `BK → BNY` → live `BNY.*` written each run, stale
+  `stocks/history/BK.json` (no detail counterpart) lingered.
+
+**Fix.** New `prune_orphan_stock_files(keep_tickers, data_dir)` in `compute/output/writer.py`, called
+in `compute/main.py` **right after `write_rankings_json`** — removes detail + history for any ticker
+not in the just-written rankings. The cron's existing `git add frontend/public/data/` stages the
+deletions (git ≥ 2.0 records removals under a directory pathspec) → **no `compute-rankings.yml`
+change**. `_PRUNE_SAFETY_FLOOR = 50` skips the prune entirely on a degraded run (empty / truncated
+rankings) so it can never wipe `stocks/`; per-file `unlink` is wrapped (one bad file ≠ abort); walks
+BOTH `stocks/*.json` and `stocks/history/*.json` (so history-only orphans like `BK` are caught);
+returns the sorted pruned-ticker list for the log line. Plus a one-time `git rm` of the 3 current
+orphans (EPAM detail+history, BK history) → **502/502, zero orphans now**.
+
+**Scope.** NO schema / scoring / frontend change. The orphan never rendered a page
+(`generateStaticParams` reads `rankings.json`, `dynamicParams=false` → `/stock/<dropped>` 404'd) —
+this is deploy-size + verify-count hygiene. Verification ladder: `ruff` clean · 9 new prune tests in
+`tests/test_output/test_writer.py` (happy-path / multiple-sorted + history-only / safety-floor /
+empty-keep / missing-dir / 49-50 floor boundary / non-JSON survival / unlink-failure resilience —
+the last 4 folded from the test-engineer review) · full offline suite **1544 passed, 13 skipped**
+(skips all pre-existing: optional deps qlib/ipca + shallow-clone git history; osap collection errors
+are a sandbox missing-dep, not this change) · `verify-production-output` helper **0 failures, 1
+pre-existing warning** (502/502 parity restored). Unblocks **release v1.5.0-phase7.0**.
+
+**Docs housekeeping folded in (post-#428):** replaced the merged Watchlist §In-flight entry in
+CLAUDE.md with this one + §Next-deliverables (Watchlist DONE #428); added the orphan-prune §Gotchas
+one-liner (CLAUDE.md) + full detail (docs/GOTCHAS.md); annotated `writer.py` in AGENTS.md
+§Project-structure. (The #428 INFLIGHT entry above STAYS — append-only "do NOT move on merge".)
+
+**Files**: `compute/output/writer.py` (new `prune_orphan_stock_files` + `_PRUNE_SAFETY_FLOOR`) ·
+`compute/main.py` (import + call after `write_rankings_json`) ·
+`tests/test_output/test_writer.py` (9 prune tests) · 3 `git rm` (EPAM detail+history, BK history) ·
+`CLAUDE.md` (§Gotchas + §In-flight + §Next-deliverables) · `AGENTS.md` (§Project-structure
+writer.py annotation) · `docs/GOTCHAS.md` (full detail) · `PHASE_STATUS.md` (#428 merged-log reflect
++ range bump) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---

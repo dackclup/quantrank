@@ -6,6 +6,7 @@ import json
 import logging
 import math
 import os
+from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
@@ -122,6 +123,73 @@ def write_stock_history(
     except Exception as e:  # noqa: BLE001
         logger.warning("write_stock_history: %s atomic write failed: %s", ticker, e)
         return False
+
+
+# Defensive floor: never prune when the "keep" set is implausibly small. A
+# degraded run (empty / truncated rankings) must NOT be allowed to wipe the
+# whole stocks/ directory. The live universe is ~502, and run_weekly_compute
+# already aborts before the write step if too few tickers priced — so a healthy
+# run is never anywhere near this floor.
+_PRUNE_SAFETY_FLOOR = 50
+
+
+def prune_orphan_stock_files(keep_tickers: Iterable[str], data_dir: Path) -> list[str]:
+    """Delete per-stock JSON for tickers no longer in the universe.
+
+    The weekly cron rewrites ``stocks/{TICKER}.json`` (+ ``stocks/history/
+    {TICKER}.json``) for every CURRENT constituent but never removes the files
+    of a DROPPED ticker — so an index de-listing (e.g. EPAM leaving the S&P 500)
+    leaves orphan detail + history files shipping forever in the static export.
+    The orphan never renders a page (``generateStaticParams`` reads
+    ``rankings.json`` with ``dynamicParams = false``, so ``/stock/<dropped>``
+    404s), but the file count drifts above the ranked-universe count — which
+    trips production-output verification and bloats the deploy.
+
+    Removes both ``stocks/{T}.json`` and ``stocks/history/{T}.json`` for every
+    ``T`` not in ``keep_tickers``. The weekly cron's existing
+    ``git add frontend/public/data/`` stages the deletions (git >= 2.0 pathspec
+    semantics record removals), so no workflow change is needed.
+
+    Safety: pruning is SKIPPED entirely when ``keep_tickers`` is smaller than
+    ``_PRUNE_SAFETY_FLOOR`` so a degraded run can never wipe ``stocks/``.
+
+    Returns
+    -------
+    list[str]
+        The sorted tickers whose files were pruned (for logging / audit).
+    """
+    keep = {str(t) for t in keep_tickers}
+    if len(keep) < _PRUNE_SAFETY_FLOOR:
+        logger.warning(
+            "prune_orphan_stock_files: keep set too small (%d < %d) — skipping "
+            "prune so a degraded run cannot wipe stocks/",
+            len(keep),
+            _PRUNE_SAFETY_FLOOR,
+        )
+        return []
+
+    pruned: set[str] = set()
+    for sub in (data_dir / "stocks", data_dir / "stocks" / "history"):
+        if not sub.is_dir():
+            continue
+        for f in sub.glob("*.json"):
+            if f.stem in keep:
+                continue
+            try:
+                f.unlink()
+                pruned.add(f.stem)
+            except OSError as e:
+                logger.warning(
+                    "prune_orphan_stock_files: could not remove %s: %s", f, e
+                )
+
+    if pruned:
+        logger.warning(
+            "Pruned %d orphan stock ticker(s) (de-listed / dropped): %s",
+            len(pruned),
+            ", ".join(sorted(pruned)),
+        )
+    return sorted(pruned)
 
 
 def write_benchmarks_json(

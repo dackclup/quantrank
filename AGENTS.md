@@ -78,7 +78,7 @@ compute/                          # Python compute pipeline (read/write OK)
 ├── output/                       # ⚠️ schemas live here (triple lockstep)
 │   ├── schemas.py                # Pydantic models — mirror frontend/lib/types.ts
 │   ├── schema_check.py           # Drift guard against frontend/lib/schema-snapshot.json
-│   └── writer.py                 # Atomic writes
+│   └── writer.py                 # Atomic writes + prune_orphan_stock_files (drops de-listed/renamed tickers' stock JSON; see CLAUDE.md §Gotchas)
 ├── config.py · main.py
 └── cache/                        # 🚫 GITIGNORED — never commit
 

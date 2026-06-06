@@ -81,6 +81,7 @@ from compute.output.schemas import (
     StockSummary,
 )
 from compute.output.writer import (
+    prune_orphan_stock_files,
     read_previous_top5,
     write_benchmarks_json,
     write_metadata_json,
@@ -2508,6 +2509,10 @@ def run_weekly_compute() -> int:
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)
     write_rankings_json(summaries, config.DATA_DIR)
     write_metadata_json(meta, config.DATA_DIR)
+    # Remove per-stock files for tickers dropped from the universe (e.g. an
+    # index de-listing). The cron's `git add frontend/public/data/` stages the
+    # deletions; guarded by a safety floor so a degraded run can't wipe stocks/.
+    prune_orphan_stock_files((s.ticker for s in summaries), config.DATA_DIR)
     logger.info("Wrote rankings.json (%d rows) and metadata.json", len(summaries))
 
     # Best-effort RSS memory log (psutil is not a hard requirement; production

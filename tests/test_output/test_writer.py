@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 from compute.output.schemas import (
     DataQuality,
@@ -13,7 +14,9 @@ from compute.output.schemas import (
     StockSummary,
 )
 from compute.output.writer import (
+    _PRUNE_SAFETY_FLOOR,
     atomic_write_json,
+    prune_orphan_stock_files,
     write_metadata_json,
     write_rankings_json,
     write_stock_detail,
@@ -329,3 +332,120 @@ def test_write_stock_history_payload_schema_keys(tmp_path):
         "ticker", "dates", "opens", "highs", "lows", "closes", "volumes",
     }
     assert all(isinstance(d, str) for d in payload["dates"])
+
+
+# -- prune_orphan_stock_files (release-hygiene: drop de-listed tickers) ------
+
+
+def _seed_stock_files(data_dir, tickers) -> None:
+    """Create dummy detail + history JSON for each ticker under data_dir."""
+    (data_dir / "stocks").mkdir(parents=True, exist_ok=True)
+    (data_dir / "stocks" / "history").mkdir(parents=True, exist_ok=True)
+    for t in tickers:
+        (data_dir / "stocks" / f"{t}.json").write_text("{}")
+        (data_dir / "stocks" / "history" / f"{t}.json").write_text("{}")
+
+
+def _big_keep() -> list[str]:
+    """A keep set comfortably above _PRUNE_SAFETY_FLOOR (50)."""
+    return [f"T{i:03d}" for i in range(60)]
+
+
+def test_prune_orphan_stock_files_removes_dropped_ticker(tmp_path):
+    """An index de-listing (EPAM) → detail + history both pruned; kept survive."""
+    keep = _big_keep()
+    _seed_stock_files(tmp_path, [*keep[:3], "EPAM"])  # 3 current + 1 orphan
+    # Pass a generator to prove the Iterable contract (main.py passes one).
+    pruned = prune_orphan_stock_files(iter(keep), tmp_path)
+    assert pruned == ["EPAM"]
+    assert not (tmp_path / "stocks" / "EPAM.json").exists()
+    assert not (tmp_path / "stocks" / "history" / "EPAM.json").exists()
+    # A retained ticker keeps BOTH files.
+    assert (tmp_path / "stocks" / f"{keep[0]}.json").exists()
+    assert (tmp_path / "stocks" / "history" / f"{keep[0]}.json").exists()
+
+
+def test_prune_orphan_stock_files_multiple_sorted_and_history_only(tmp_path):
+    """Returns sorted tickers; a history-only orphan (no detail file) is pruned too."""
+    keep = _big_keep()
+    _seed_stock_files(tmp_path, keep[:2])
+    for t in ("ZZZ", "ABC"):  # two full orphans (detail + history)
+        (tmp_path / "stocks" / f"{t}.json").write_text("{}")
+        (tmp_path / "stocks" / "history" / f"{t}.json").write_text("{}")
+    # Orphan that only ever wrote a history file (no detail) — still pruned.
+    (tmp_path / "stocks" / "history" / "HONLY.json").write_text("{}")
+    pruned = prune_orphan_stock_files(keep, tmp_path)
+    assert pruned == ["ABC", "HONLY", "ZZZ"]
+    assert not (tmp_path / "stocks" / "history" / "HONLY.json").exists()
+
+
+def test_prune_orphan_stock_files_safety_floor_skips_small_keep(tmp_path):
+    """A degraded run (keep set < floor) must NOT delete anything — even orphans."""
+    _seed_stock_files(tmp_path, ["AAPL", "MSFT", "EPAM"])
+    pruned = prune_orphan_stock_files(["AAPL", "MSFT"], tmp_path)  # 2 < floor 50
+    assert pruned == []
+    assert (tmp_path / "stocks" / "EPAM.json").exists()
+    assert (tmp_path / "stocks" / "AAPL.json").exists()
+
+
+def test_prune_orphan_stock_files_empty_keep_skips(tmp_path):
+    """Empty keep set (degenerate run) → no-op, never wipes the directory."""
+    _seed_stock_files(tmp_path, ["AAPL"])
+    assert prune_orphan_stock_files([], tmp_path) == []
+    assert (tmp_path / "stocks" / "AAPL.json").exists()
+
+
+def test_prune_orphan_stock_files_missing_dir_no_error(tmp_path):
+    """No stocks/ directory yet (fresh checkout) → returns [] without error."""
+    assert prune_orphan_stock_files(_big_keep(), tmp_path) == []
+
+
+def test_prune_orphan_stock_files_at_floor_boundary_prunes(tmp_path):
+    """keep size == _PRUNE_SAFETY_FLOOR is NOT < floor → prune fires (pins the `<`)."""
+    keep = [f"T{i:03d}" for i in range(_PRUNE_SAFETY_FLOOR)]  # exactly the floor
+    _seed_stock_files(tmp_path, keep[:1])
+    (tmp_path / "stocks" / "ORPHAN.json").write_text("{}")
+    assert prune_orphan_stock_files(keep, tmp_path) == ["ORPHAN"]
+    assert not (tmp_path / "stocks" / "ORPHAN.json").exists()
+
+
+def test_prune_orphan_stock_files_below_floor_boundary_skips(tmp_path):
+    """keep size == floor - 1 IS < floor → prune skipped (companion boundary; an
+    `<` → `<=` mutation would wrongly prune here)."""
+    keep = [f"T{i:03d}" for i in range(_PRUNE_SAFETY_FLOOR - 1)]
+    (tmp_path / "stocks").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "stocks" / "ORPHAN.json").write_text("{}")
+    assert prune_orphan_stock_files(keep, tmp_path) == []
+    assert (tmp_path / "stocks" / "ORPHAN.json").exists()
+
+
+def test_prune_orphan_stock_files_ignores_non_json_files(tmp_path):
+    """The glob is `*.json` — a non-JSON file in stocks/ is never an unlink target."""
+    keep = _big_keep()
+    _seed_stock_files(tmp_path, keep[:2])
+    (tmp_path / "stocks" / "README.txt").write_text("not a stock file")
+    (tmp_path / "stocks" / "ZZZ.json").write_text("{}")  # a real orphan
+    assert prune_orphan_stock_files(keep, tmp_path) == ["ZZZ"]
+    assert (tmp_path / "stocks" / "README.txt").exists()  # untouched
+    assert not (tmp_path / "stocks" / "ZZZ.json").exists()
+
+
+def test_prune_orphan_stock_files_unlink_failure_does_not_abort(tmp_path, monkeypatch):
+    """One un-removable orphan must not abort the prune (the documented per-file
+    try/except) — the other orphan is still pruned."""
+    keep = _big_keep()
+    (tmp_path / "stocks").mkdir(parents=True, exist_ok=True)
+    for t in ("AAA", "ZZZ"):
+        (tmp_path / "stocks" / f"{t}.json").write_text("{}")
+    real_unlink = Path.unlink
+
+    def flaky_unlink(self, *args, **kwargs):
+        if self.stem == "AAA":
+            raise OSError("simulated permission error")
+        return real_unlink(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "unlink", flaky_unlink)
+    pruned = prune_orphan_stock_files(keep, tmp_path)
+    assert pruned == ["ZZZ"]  # the failing orphan is absent from the return
+    assert (tmp_path / "stocks" / "AAA.json").exists()  # survived its OSError
+    assert not (tmp_path / "stocks" / "ZZZ.json").exists()  # the other was pruned
