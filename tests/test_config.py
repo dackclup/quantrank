@@ -45,8 +45,19 @@ def test_schema_version_is_phase4_6():
 
     PR-1 (0.10.14-phase4.6) — Phase 7.0 PR-1 PATCH bump for the additive
     ``Metadata.benchmark_coverage_pct`` (benchmark index export observability;
-    SPY/QQQ/DIA/IWM → portfolio/benchmarks.json)."""
-    assert config.SCHEMA_VERSION == "0.10.14-phase4.6"
+    SPY/QQQ/DIA/IWM → portfolio/benchmarks.json).
+
+    Phase 4j.1 (0.10.15-phase4.6) — PATCH bump for the additive Qlib
+    Alpha158 observability surface: 9 ``Metadata.alpha158_*`` fields
+    (features_used / excluded_features / features_ic_12m /
+    features_missing_from_compute / features_dropped_no_long_short /
+    gate_diagnostics [reuses ``OsapGateDiagnostic``] / coverage_pct /
+    survivorship_bias_corrected / wall_clock_seconds). Observability-only
+    (Rule 18) — the feature→long-short-return adapter + the reused
+    PBO/DSR gate are wired but blend NOTHING (``composite_score``
+    unchanged, Δscore = 0); the rank-influencing blend is deferred to
+    4j.2."""
+    assert config.SCHEMA_VERSION == "0.10.15-phase4.6"
 
 
 def test_multi_class_overcount_allowlist_membership():

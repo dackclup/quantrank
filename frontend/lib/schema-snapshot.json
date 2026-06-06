@@ -27,6 +27,51 @@
     }
   },
   "Metadata": {
+    "alpha158_coverage_pct": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
+    "alpha158_excluded_features": {
+      "type": "list[str] | None",
+      "required": false,
+      "default": null
+    },
+    "alpha158_features_dropped_no_long_short": {
+      "type": "list[str] | None",
+      "required": false,
+      "default": null
+    },
+    "alpha158_features_ic_12m": {
+      "type": "dict[str, float] | None",
+      "required": false,
+      "default": null
+    },
+    "alpha158_features_missing_from_compute": {
+      "type": "list[str] | None",
+      "required": false,
+      "default": null
+    },
+    "alpha158_features_used": {
+      "type": "list[str] | None",
+      "required": false,
+      "default": null
+    },
+    "alpha158_gate_diagnostics": {
+      "type": "dict[str, OsapGateDiagnostic] | None",
+      "required": false,
+      "default": null
+    },
+    "alpha158_survivorship_bias_corrected": {
+      "type": "bool | None",
+      "required": false,
+      "default": null
+    },
+    "alpha158_wall_clock_seconds": {
+      "type": "float | None",
+      "required": false,
+      "default": null
+    },
     "benchmark_coverage_pct": {
       "type": "float | None",
       "required": false,

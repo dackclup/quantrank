@@ -1836,3 +1836,62 @@ index + §Phase status in-flight) · `AGENTS.md` (cache-split gotcha) · `docs/G
 cache-split detail) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Phase 4j.1 — Qlib Alpha158 observability surface (in flight, 2026-06-06)
+
+**Branch**: `claude/sleepy-lovelace-1D1bt`. The FIRST Phase-4 factor-INTEGRATION PR (the 4h OSAP /
+4i JKP / 4j Qlib / 4k IPCA scouts all merged; this lands the 4j.1 slice of CLAUDE.md §Next
+deliverables "Phase 4i.1 / 4j.1 / 4k.1"). Flow-8 design→ratify→implement: `financial-engineer`
+designed it, `literature-searcher` pulled the Alpha158 source facts, `methodology-scientist`
+returned GO-WITH-CONDITIONS.
+
+**What ships (observability-only, SKILL.md Rule 18 — Δscore = 0 on every ticker):**
+- `compute/features/alpha158_replicate.py` — a feature→long-short-return adapter. Alpha158 yields
+  per-stock-per-date feature VALUES, not portfolio returns; the PBO/DSR gate needs a
+  `(date × signal)` return matrix. The adapter, per feature per month, cross-sectionally ranks the
+  universe and forms a top-decile-minus-bottom-decile portfolio on the NEXT month's forward return
+  (Grinold-Kahn 2000 Ch.6 Fundamental-Law construction; zero free parameters). It OWNS the lag
+  (shifts the trailing-return panel forward internally) so feature@m only ever pairs with the
+  return over (m, m+1] — never a contemporaneous leak.
+- The Phase-4h gate is REUSED verbatim: `osap_validation.gate_osap_signals(...,
+  requested_signals=ALPHA158_FEATURE_NAMES)` with `n_trials=158` (Harvey-Liu-Zhu 2016 t≥3.0
+  multiple-testing posture). No PBO/DSR math reimplemented.
+- 9 additive `Metadata.alpha158_*` fields (schema PATCH `0.10.14 → 0.10.15-phase4.6`;
+  `alpha158_gate_diagnostics` reuses `OsapGateDiagnostic`): features_used · excluded_features ·
+  features_ic_12m · features_missing_from_compute · features_dropped_no_long_short ·
+  gate_diagnostics · coverage_pct · survivorship_bias_corrected · wall_clock_seconds. The
+  158-feature accounting equation `158 == missing + dropped + used + excluded` is closed +
+  Hypothesis-property-tested (the invariant whose absence hid Phase 4h's ~78-signal silent drop).
+- `compute/main.py` Step 7.6 mirrors the OSAP Step 7.5 try/except graceful-degradation block;
+  blends NOTHING, writes no `StockDetail` field.
+
+**Deferred (named follow-ups):**
+- *Live feature source* — the Qlib `.bin` BYO `dump_bin` adapter (Qlib ships no public US bundle).
+  Step 7.6's `_acquire_alpha158_inputs` raises until the bin cache is wired → every `alpha158_*`
+  field nulls. methodology-scientist pre-ratified `used=0` / all-None on the early crons as honest
+  (insufficient monthly history < `MIN_OBS_PER_SIGNAL=16`), NOT a bug. The adapter + gate are
+  verified offline by synthetic fixtures regardless.
+- *4j.2 — the blend* — a PBO/DSR survivor may influence rank only if it ALSO clears `|φ| < 0.30`
+  (Cohen 1988 / `docs/phase3-correlation/findings.md` redundancy threshold) vs the accepted-OSAP +
+  momentum/technical exposures. 4j.1 surfaces but gates nothing on φ.
+
+**Citation discipline (methodology condition #1):** Yang et al. 2020 (arXiv:2009.11189, the Qlib
+whitepaper) is cited as the IMPLEMENTATION reference only — arXiv-only, no standalone per-feature
+IC, self-describes Alpha158 as a re-expression of classical TA. NOT promoted to the CLAUDE.md
+canonical anchor list; per-family anchors are the classical literature (Jegadeesh-Titman 1993
+momentum · Frazzini-Pedersen 2014 BAB · candlestick / volume-flow lit). The PBO/DSR gate is the
+empirical defense, not any paper claim. A surfaced |IC| > 0.05 = overfit alarm.
+
+**Docs-lockstep note:** code+schema PR; satisfies CLAUDE.md §Conventions via the "EITHER a
+`PHASE_STATUS_INFLIGHT.md` entry OR a CLAUDE.md+AGENTS.md substance diff" rule — this entry +
+the CLAUDE.md §Phase status in-flight substance diff. AGENTS.md §Phase+version is a pointer-only
+section (the parallel log was collapsed 2026-06-03), so no parallel AGENTS.md entry is added.
+
+**Files**: `compute/features/alpha158_replicate.py` (new) · `compute/main.py` (Step 7.6 +
+`_acquire_alpha158_inputs`) · `compute/output/schemas.py` (+9 `Metadata.alpha158_*`) ·
+`compute/config.py` (`SCHEMA_VERSION` → 0.10.15) · `frontend/lib/types.ts` +
+`frontend/lib/schema-snapshot.json` (schema triple) ·
+`tests/test_features/test_alpha158_replicate.py` (new) · `tests/test_config.py` (version pin) ·
+`CLAUDE.md` (§Phase status in-flight) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---

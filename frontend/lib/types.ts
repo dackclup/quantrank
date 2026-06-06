@@ -100,6 +100,38 @@ export type Metadata = {
   //                             + osap_signals_used + osap_excluded_signals
   // Null on legacy outputs from before 0.9.2-phase4h.2.
   osap_signals_dropped_no_long_short: string[] | null;
+  // Phase 4j.1 (0.10.15-phase4.6, Rule 18) — Qlib Alpha158 factor
+  // integration, OBSERVABILITY-ONLY. The adapter
+  // (`compute/features/alpha158_replicate.py`) converts the 158 per-stock
+  // Alpha158 feature values into the (date × signal) long-short return
+  // contract so the existing PBO/DSR gate applies unchanged (n_trials=158).
+  // 4j.1 blends NOTHING — composite_score is byte-identical to pre-4j.1
+  // (Δscore = 0); the rank-influencing blend is deferred to 4j.2. Null on
+  // legacy outputs (pre-0.10.15) and when the Alpha158 pipeline degrades.
+  // The 158-feature accounting equation MUST close:
+  //   158 === alpha158_features_missing_from_compute
+  //         + alpha158_features_dropped_no_long_short
+  //         + alpha158_features_used + alpha158_excluded_features
+  alpha158_features_used?: string[] | null;
+  alpha158_excluded_features?: string[] | null;
+  alpha158_features_ic_12m?: Record<string, number> | null;
+  alpha158_features_missing_from_compute?: string[] | null;
+  alpha158_features_dropped_no_long_short?: string[] | null;
+  // Per-feature PBO/DSR/Sharpe/rejection_reason — reuses OsapGateDiagnostic
+  // verbatim (the gate-verdict shape is signal-agnostic).
+  alpha158_gate_diagnostics?: Record<string, OsapGateDiagnostic> | null;
+  // % of the universe with ≥1 non-null Alpha158 feature at the latest date
+  // (feature-compute health canary; parity with tier2_coverage_pct).
+  alpha158_coverage_pct?: number | null;
+  // Survivorship honesty: true only when the per-month ranking universe
+  // came from the point-in-time membership snapshot AND every consumed
+  // month was complete; a single degraded month flips it false. Null when
+  // the pipeline degraded.
+  alpha158_survivorship_bias_corrected?: boolean | null;
+  // Wall-clock seconds for the Alpha158 Step 7.6 block (feature compute +
+  // adapter + gate). Null on full-pipeline failure. Parity with
+  // osap_wall_clock_seconds.
+  alpha158_wall_clock_seconds?: number | null;
   // Epic #150 Phase 1.6 (issue #155) — explicit compute-time state of
   // the Tier-2 8-K defenses (`compute/scoring/tier2._EIGHT_K_DEFENSES_ENABLED`).
   // Optional + nullable: absent / null on legacy outputs written before

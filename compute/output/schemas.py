@@ -136,6 +136,45 @@ class Metadata(BaseModel):
     # the hardcoded port=01/10 filter. Surfaced here so the gap is
     # auditable. ``None`` when no signals were dropped on this dimension.
     osap_signals_dropped_no_long_short: list[str] | None = None
+    # --- Phase 4j.1 (0.10.15-phase4.6, Rule 18) — Qlib Alpha158 factor
+    # integration, OBSERVABILITY-ONLY. The adapter
+    # (``compute/features/alpha158_replicate.py``) converts the 158
+    # per-stock Alpha158 feature values into the ``(date × signal)``
+    # long-short return contract so the existing PBO/DSR gate
+    # (``osap_validation.gate_osap_signals``) applies unchanged with
+    # ``n_trials=158``. 4j.1 blends NOTHING — ``composite_score`` is
+    # byte-identical to pre-4j.1 (Δscore = 0 on every ticker); the
+    # rank-influencing blend is deferred to 4j.2 (≥ 1 cron later, after
+    # the accounting equation is verified on real data). All fields
+    # nullable on legacy snapshots (pre-0.10.15) and when the Alpha158
+    # pipeline degrades (graceful-degradation: every ``alpha158_*`` field
+    # → ``None``). The 158-feature accounting equation MUST close:
+    #   158 == features_missing_from_compute + features_dropped_no_long_short
+    #          + features_used + excluded_features
+    alpha158_features_used: list[str] | None = None
+    alpha158_excluded_features: list[str] | None = None
+    alpha158_features_ic_12m: dict[str, float] | None = None
+    alpha158_features_missing_from_compute: list[str] | None = None
+    alpha158_features_dropped_no_long_short: list[str] | None = None
+    # Per-feature PBO/DSR/Sharpe/rejection_reason. Reuses
+    # ``OsapGateDiagnostic`` verbatim — the gate-verdict shape is
+    # signal-agnostic (methodology-scientist: reuse-as-is to avoid a
+    # gratuitous schema-snapshot churn).
+    alpha158_gate_diagnostics: dict[str, OsapGateDiagnostic] | None = None
+    # % of the universe with ≥ 1 non-null Alpha158 feature at the latest
+    # date — feature-compute health canary, parity with
+    # ``tier2_coverage_pct``.
+    alpha158_coverage_pct: float | None = None
+    # methodology condition #2 — survivorship honesty. ``True`` only when
+    # the per-month ranking universe came from the point-in-time
+    # membership snapshot AND every consumed month was complete; a single
+    # degraded month flips it ``False``. ``None`` when the pipeline
+    # degraded (no run).
+    alpha158_survivorship_bias_corrected: bool | None = None
+    # Wall-clock seconds for the Alpha158 Step 7.6 block (feature compute
+    # + adapter + gate). ``None`` on full-pipeline failure. Parity with
+    # ``osap_wall_clock_seconds``; gates the ``timeout-minutes`` rebaseline.
+    alpha158_wall_clock_seconds: float | None = None
     # Epic #150 Phase 1.6 (issue #155) — explicit compute-time state of
     # the Tier-2 8-K defenses (`compute/scoring/tier2._EIGHT_K_DEFENSES_ENABLED`).
     # Lets `verify-production-output/helper.py` Section B branch on the

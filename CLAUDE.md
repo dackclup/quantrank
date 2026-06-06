@@ -491,28 +491,34 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **perf(cron) — tier2 cache split + per-stage timing summary (this PR)** —
-  fixes the confirmed *self-reinforcing cold-cache trap* (edgar-debugger): the
-  single 11-path `actions/cache` bundle (~250-500 MB) was too big to save in the
-  post-job window on 100-180m runs, so `edgar_10k_text`/`edgar_8k` never
-  persisted → tier2 ran COLD ~80m every run (cron #82: fundamentals warm
-  p95=11.3s but `tier2_wall_clock`=4836s). **Fix: split into two independent
-  caches** — fast (fundamentals/prices/form4, per-quarter key, unchanged) +
-  slow-text (edgar_10k_text/edgar_8k/osap, **run-id key + prefix restore-keys**
-  so each run always persists fresh text + restores last-good; no static-key
-  90-day cliff). + edgar_8k TTL 7→6d (cron-cadence boundary). + a
-  **"Stage timing summary"** step writing per-stage wall-clock to
-  `$GITHUB_STEP_SUMMARY` (`if: always()`) so "which stage is slow / failed" is
-  visible per run (perf-engineer Tier 1). Expected: warm cron ~95m → ~15-20m.
-  (Holiday-gate #425 + backtest-refresh #424 + timeline #423 + sector-cap #422
-  merged.)
+- **feat(features) — Phase 4j.1 Qlib Alpha158 observability surface (this PR)** —
+  the FIRST Phase-4 factor-INTEGRATION PR (after the 4h/4i/4j/4k scouts).
+  Ships `compute/features/alpha158_replicate.py` — a feature→decile-spread
+  long-short-return adapter (Grinold-Kahn 2000 Ch.6 Fundamental-Law
+  construction) that lets the existing Phase-4h PBO/DSR gate
+  (`osap_validation.gate_osap_signals`, reused verbatim) screen the 158
+  Alpha158 features with `n_trials=158` — plus 9 additive
+  `Metadata.alpha158_*` diagnostic fields (schema PATCH `0.10.14 →
+  0.10.15-phase4.6`; `alpha158_gate_diagnostics` reuses `OsapGateDiagnostic`)
+  and the 158-feature accounting equation (`158 == missing + dropped + used
+  + excluded`). **Observability-only (Rule 18): blends NOTHING — Top-5 +
+  every `composite_score` byte-identical to pre-4j.1 (Δscore = 0); the
+  rank-influencing blend + the `|φ| < 0.30` orthogonality gate are deferred
+  to 4j.2.** The live feature source (Qlib `.bin` BYO `dump_bin`) is itself
+  deferred — `_acquire_alpha158_inputs` raises until the bin cache lands →
+  graceful degradation nulls every `alpha158_*` field; the adapter + gate
+  wiring ship now, verified by offline synthetic fixtures
+  (methodology-scientist GO-WITH-CONDITIONS pre-ratified `used=0`/all-None on
+  the early crons as the honest, conservative outcome). Closes the 4j.1 slice
+  of §Next deliverables Phase 4 integration. (#427 tier2-cache-split + #425
+  holiday-gate + #424 cron-refresh + #422/#423 already merged.)
 
 
 **Next deliverables** (pick by appetite):
 - **Phase 7.0 follow-ups** — (a) the personal **Watchlist** feature (turn
   the `/portfolio` coming-soon stub into a real browser-local watchlist);
-  (b) **in flight (this PR)** — the PIT backtest now auto-refreshes inside
-  the weekly cron (a warm `backfill_portfolio_pit` step folded into
+  (b) **DONE (#424)** — the PIT backtest auto-refreshes inside the weekly
+  cron (a warm `backfill_portfolio_pit` step folded into
   `compute-rankings.yml`); `backfill-portfolio.yml` remains the manual
   on-demand path; (c) PR-2c deferred — point-in-time defense-layer veto
   replay in the backtest (currently `veto_layer_replayed=False`, disclosed).
@@ -525,7 +531,10 @@ Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_
   (`value_trap_risk` 132 → 109); now tracking per-sector delta via
   `Metadata.value_trap_risk_delta_by_sector` (PR #300)
 - **Phase 4i.1 / 4j.1 / 4k.1** — JKP / Qlib / IPCA integration PRs
-  (~1-2w each → v1.1.0-phase4)
+  (~1-2w each → v1.1.0-phase4). **4j.1 (Qlib Alpha158 observability surface)
+  in flight (this PR)** — adapter + reused PBO/DSR gate + 9 diagnostic
+  `Metadata.alpha158_*` fields, no blend (4j.2 blends); 4i.1 (JKP, license-
+  review-required per #115) + 4k.1 (IPCA) remain.
 - **Phase 5** — ML meta-learner (~10-12w, unblocks PR 4b §3
   IC-decay writer #75)
 - **Stock-attribute data — Dividend + Security-type** — fills the two
