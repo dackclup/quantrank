@@ -690,6 +690,40 @@ def _coverage_pct(by_ticker: dict[str, str | None]) -> float | None:
     return round(100.0 * n_resolved / len(by_ticker), 2)
 
 
+def _acquire_alpha158_inputs(asof_date: date, tickers: list[str]) -> tuple:
+    """Acquire the three Alpha158 adapter inputs — DEFERRED (Phase 4j.1).
+
+    The live Alpha158 feature panel requires a populated Qlib ``.bin``
+    cache, and the yfinance→Qlib BYO ``dump_bin`` adapter is a separate
+    infra lift (deferred per the scout — see
+    ``compute/ingest/qlib_features.py``). Phase 4j.1 ships the diagnostic
+    ``Metadata.alpha158_*`` surface + the adapter
+    (``compute/features/alpha158_replicate.py``) + the gate WIRING ahead
+    of the live data (SKILL.md Rule 18 observability-before-wiring);
+    methodology-scientist pre-ratified ``used=0`` / all-``None`` on the
+    early crons as the honest, conservative outcome (insufficient
+    history). This raises until the bin cache lands; the Step 7.6
+    try/except degrades every ``alpha158_*`` field to ``None``.
+
+    The follow-on (the bin-cache PR) implements the body to return:
+        - feature_panel: ``(date, ticker)``-MultiIndexed Alpha158 feature
+          values (``qlib_features.fetch_alpha158_features`` over the
+          populated bin cache).
+        - period_returns: ``(date, ticker)`` trailing per-period returns
+          built from the existing price cache.
+        - universe_provider: ``as_of -> (members, is_complete)`` wired to
+          ``compute.ingest.historical_universe.members_at`` so the
+          monthly ranking universe is point-in-time + survivorship-honest.
+    """
+    raise RuntimeError(
+        "Alpha158 feature panel unavailable: the yfinance→Qlib .bin BYO "
+        "dump_bin adapter is deferred (Phase 4j.1 observability scope). "
+        "The diagnostic surface + adapter + gate wiring shipped; live "
+        f"feature data lands when the bin cache is wired (asof="
+        f"{asof_date.isoformat()}, universe={len(tickers)})."
+    )
+
+
 def run_weekly_compute() -> int:
     """Run the full weekly compute. Returns the count of successfully scored tickers."""
     logging.basicConfig(
@@ -1442,6 +1476,145 @@ def run_weekly_compute() -> int:
         osap_signals_dropped_no_long_short_list = []
         # Issue #287 PR A — leave osap_wall_clock_seconds = None on failure.
         osap_wall_clock_seconds = None
+
+    # Phase 4j.1 — Qlib Alpha158 factor integration, OBSERVABILITY-ONLY
+    # (SKILL.md Rule 18). The adapter
+    # (``compute/features/alpha158_replicate.py``) converts the 158
+    # per-stock Alpha158 feature values into the ``(date × signal)``
+    # long-short return contract so the Phase-4h PBO/DSR gate
+    # (``osap_validation.gate_osap_signals``) applies UNCHANGED with
+    # ``n_trials=158``. This phase blends NOTHING — Top-5 + every
+    # ``composite_score`` is byte-identical to pre-4j.1 (Δscore = 0 on
+    # every ticker, per Rule 16); the rank-influencing blend is deferred
+    # to 4j.2. Wrapped in try/except so an Alpha158 / Qlib / data failure
+    # NEVER blocks weekly production — every ``alpha158_*`` field degrades
+    # to ``None``. The live feature SOURCE is itself deferred
+    # (``_acquire_alpha158_inputs`` raises until the Qlib bin cache is
+    # wired); the diagnostic surface + adapter + gate wiring ship now and
+    # are verified by the offline test suite.
+    alpha158_features_used: list[str] = []
+    alpha158_excluded_features: list[str] = []
+    alpha158_features_ic_12m: dict[str, float] = {}
+    alpha158_features_missing_from_compute: list[str] = []
+    alpha158_features_dropped_no_long_short_list: list[str] = []
+    alpha158_gate_diagnostics: dict[str, OsapGateDiagnostic] = {}
+    alpha158_coverage_pct: float | None = None
+    alpha158_survivorship_bias_corrected: bool | None = None
+    _alpha158_wc_start = time.monotonic()
+    alpha158_wall_clock_seconds: float | None = None
+    try:
+        from compute.features.alpha158_replicate import (
+            compute_alpha158_long_short_returns,
+            features_dropped_no_long_short,
+            features_missing_from_compute,
+        )
+        from compute.features.alpha158_replicate import (
+            coverage_pct as alpha158_coverage_fn,
+        )
+        from compute.ingest.qlib_features import ALPHA158_FEATURE_NAMES
+        from compute.validation.osap_validation import (
+            compute_rolling_ic_12m,
+            filter_accepted_signals,
+            gate_osap_signals,
+        )
+
+        # Acquire the feature panel + forward-return panel + point-in-time
+        # universe provider. DEFERRED — raises until the Qlib bin cache
+        # lands (see the helper docstring); caught below → every field None.
+        (
+            alpha158_features,
+            alpha158_period_returns,
+            alpha158_universe_provider,
+        ) = _acquire_alpha158_inputs(asof_date, list(pillar_df.index))
+
+        ls_result = compute_alpha158_long_short_returns(
+            alpha158_features,
+            alpha158_period_returns,
+            universe_provider=alpha158_universe_provider,
+        )
+        alpha158_ls = ls_result.long_short
+        alpha158_survivorship_bias_corrected = (
+            ls_result.survivorship_bias_corrected
+        )
+
+        # Accounting buckets 1 + 2: never-computed + computed-but-no-LS.
+        alpha158_features_missing_from_compute = features_missing_from_compute(
+            alpha158_features, ALPHA158_FEATURE_NAMES
+        )
+        alpha158_features_dropped_no_long_short_list = (
+            features_dropped_no_long_short(
+                alpha158_ls, alpha158_features, ALPHA158_FEATURE_NAMES
+            )
+        )
+
+        # The Phase-4h PBO/DSR gate, reused verbatim with n_trials=158.
+        gate_results = gate_osap_signals(
+            alpha158_ls, requested_signals=ALPHA158_FEATURE_NAMES
+        )
+        alpha158_gate_diagnostics = {
+            feat: OsapGateDiagnostic(
+                pbo=result.pbo,
+                dsr=result.dsr,
+                sharpe=result.sharpe,
+                rejection_reason=result.rejection_reason,
+            )
+            for feat, result in gate_results.items()
+        }
+        alpha158_features_used, alpha158_excluded_features = (
+            filter_accepted_signals(gate_results)
+        )
+
+        # Rolling-12m IC per accepted feature — observability ONLY, never a
+        # gate decision. A surfaced |IC| > 0.05 is an overfit / look-ahead
+        # ALARM to audit, not a win (methodology-scientist red flag).
+        for feat in alpha158_features_used:
+            ic = compute_rolling_ic_12m(alpha158_ls, feat)
+            if ic is not None:
+                alpha158_features_ic_12m[feat] = round(float(ic), 4)
+
+        alpha158_coverage_pct = alpha158_coverage_fn(
+            alpha158_features, len(pillar_df.index)
+        )
+
+        # Accounting equation guard — logged, NEVER fatal. The invariant
+        # whose absence made Phase 4h's ~78-signal silent drop invisible
+        # for a full phase:
+        #   158 == missing + dropped + used + excluded
+        _alpha158_accounted = (
+            len(alpha158_features_missing_from_compute)
+            + len(alpha158_features_dropped_no_long_short_list)
+            + len(alpha158_features_used)
+            + len(alpha158_excluded_features)
+        )
+        if _alpha158_accounted != config.ALPHA158_FEATURE_COUNT:
+            logger.warning(
+                "Alpha158 accounting equation does NOT close: %d "
+                "(missing=%d + dropped=%d + used=%d + excluded=%d) != %d",
+                _alpha158_accounted,
+                len(alpha158_features_missing_from_compute),
+                len(alpha158_features_dropped_no_long_short_list),
+                len(alpha158_features_used),
+                len(alpha158_excluded_features),
+                config.ALPHA158_FEATURE_COUNT,
+            )
+        alpha158_wall_clock_seconds = round(
+            time.monotonic() - _alpha158_wc_start, 1
+        )
+    except Exception as e:  # noqa: BLE001
+        logger.warning(
+            "Alpha158 pipeline failed/deferred (observability-only — "
+            "production continues); metadata.alpha158_* → None. Error: %s",
+            e,
+        )
+        alpha158_features_used = []
+        alpha158_excluded_features = []
+        alpha158_features_ic_12m = {}
+        alpha158_features_missing_from_compute = []
+        alpha158_features_dropped_no_long_short_list = []
+        alpha158_gate_diagnostics = {}
+        alpha158_coverage_pct = None
+        alpha158_survivorship_bias_corrected = None
+        alpha158_wall_clock_seconds = None
 
     # Step 8 — combined per-ticker loop: fair-price ensemble + price history
     # write + StockSummary + StockDetail. Single pass so per-ticker outputs
@@ -2200,6 +2373,24 @@ def run_weekly_compute() -> int:
         osap_signals_dropped_no_long_short=(
             osap_signals_dropped_no_long_short_list or None
         ),
+        # Phase 4j.1 (0.10.15-phase4.6) — Qlib Alpha158 observability surface
+        # (no blend; composite_score unchanged). `x or None` so the
+        # graceful-degradation path (empty list/dict) serializes as None.
+        # Coverage / survivorship / wall-clock pass through directly (they
+        # are already None on the degraded path).
+        alpha158_features_used=alpha158_features_used or None,
+        alpha158_excluded_features=alpha158_excluded_features or None,
+        alpha158_features_ic_12m=alpha158_features_ic_12m or None,
+        alpha158_features_missing_from_compute=(
+            alpha158_features_missing_from_compute or None
+        ),
+        alpha158_features_dropped_no_long_short=(
+            alpha158_features_dropped_no_long_short_list or None
+        ),
+        alpha158_gate_diagnostics=alpha158_gate_diagnostics or None,
+        alpha158_coverage_pct=alpha158_coverage_pct,
+        alpha158_survivorship_bias_corrected=alpha158_survivorship_bias_corrected,
+        alpha158_wall_clock_seconds=alpha158_wall_clock_seconds,
         tier2_enabled=_EIGHT_K_DEFENSES_ENABLED,
         loss_avoidance_size_invariant_firing_count=(
             loss_avoidance_size_invariant_firing_count
