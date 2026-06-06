@@ -443,9 +443,10 @@ inverse-vol weighting → PIT NAV engine + anti-look-ahead orchestrator →
 NAV-per-holding-count N=1-10 → re-sourced restatement canary +
 result-dependent disclaimer + the real 5y `backtest_pit.json` → the
 AI-pick home page that renders it). The backtest artifact self-carries
-its `meta`, so Phase 7 added **no schema bump**: `0.10.14` is the
-additive `Metadata.benchmark_coverage_pct` (#416 PR-1), and `0.10.13`
-was the `country_coverage_pct` strict-resolution canary (see §Gotchas). Prior schema
+its `meta`, so it required **no `schemas.py` model**; the only Phase 7
+schema change was the additive `Metadata.benchmark_coverage_pct`
+(`0.10.14`, #416 PR-1, atop the prior `0.10.13` `country_coverage_pct`
+strict-resolution canary — see §Gotchas). Prior schema
 **`0.10.12-phase4.6`** on `main` (PR #303 merged
 2026-05-29 `847c21b` — Phase 4.5e PR 6 Form-4 10b5-1 negation guard,
 residual footgun #1 from PR 4-eq; new
