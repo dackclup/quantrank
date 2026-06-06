@@ -1673,3 +1673,40 @@ signature, framed as such in the disclaimer, NOT read as validation.
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## AI-pick "Rotation history" timeline (in flight, 2026-06-06)
+
+Surfaces the backtest's point-in-time holdings at EVERY quarterly rebalance, not just the
+latest "Current picks" card. Directly answers the user's request: "show what was held 5
+years ago + how it rotated each quarter" — explicitly NOT "today's picks back-projected"
+(which would be the look-ahead / survivorship bias the PIT engine exists to avoid). The
+per-rebalance holdings already live in `backtest_pit.json.rebalances`; this PR just trims +
+exposes them to the frontend and renders the rotation. No compute / schema / Python change,
+so **no backfill re-run is required** (unlike #422).
+
+Changes:
+- `frontend/lib/types.ts` — new DISPLAY-ONLY `AiPickTimelineHolding` / `AiPickTimelineEntry`
+  types + an `AiPickData.timeline` field. NOT part of the Pydantic↔TS↔snapshot triple (the
+  Phase 7 artifact self-carries its meta); `schema_check` green (in sync, no drift).
+- `frontend/lib/data.ts` — `getAiPickData()` now emits `timeline`: every rebalance trimmed
+  to `{ticker, sector}` in composite order. Tiny payload (~20 × 10 × 2 strings) vs the 1.3MB
+  raw artifact; weights are intentionally omitted (the live "Current picks" card owns
+  weights — the timeline is the rotation STORY, not a per-quarter weight table).
+- `frontend/components/HoldingsTimeline.tsx` (new) — renders all rebalances newest-first at
+  the current basket size, with per-quarter entered (emerald dot + SR aria-label) / exited
+  (muted sub-line) markers + an avg-turnover stat. Reactive to the count slider (slices each
+  entry to top-`count`, the same cut `select_picks` makes). a11y: each ticker is a
+  `/stock/<T>/` link whose aria-label carries entered-state + sector (not colour-only).
+- `frontend/components/AiPickPortfolio.tsx` — renders `<HoldingsTimeline>` below "Current
+  picks", passing the shared `count` state so the slider drives both the chart and the
+  timeline.
+
+`schema_check` green. tsc / `next build` not runnable locally (no `node_modules`) → CI
+Frontend build + the Vercel preview are the compile gate (display-only TS, no Python).
+
+**Files**: `frontend/lib/types.ts` · `frontend/lib/data.ts` ·
+`frontend/components/HoldingsTimeline.tsx` (new) · `frontend/components/AiPickPortfolio.tsx` ·
+`CLAUDE.md` (§Phase status in-flight) · `AGENTS.md` (AI-pick bullet) ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---

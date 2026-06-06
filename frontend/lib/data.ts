@@ -54,9 +54,10 @@ function lastFinite(arr: (number | null)[]): number | null {
 /**
  * Trim + round the 1.3 MB point-in-time backtest artifact into the small view
  * model the AI-pick home page ships to the client (the net line per count + the
- * benchmark lines + per-count finals + the latest rebalance). Returns null when
- * no backtest has been produced yet (empty `nav`/`rebalances`) so the page can
- * render a "backtest pending" state instead of crashing. Build-time only.
+ * benchmark lines + per-count finals + the latest rebalance + the trimmed
+ * rotation timeline). Returns null when no backtest has been produced yet (empty
+ * `nav`/`rebalances`) so the page can render a "backtest pending" state instead
+ * of crashing. Build-time only.
  */
 export function getAiPickData(): AiPickData | null {
   const bt = getBacktestPIT();
@@ -100,6 +101,13 @@ export function getAiPickData(): AiPickData | null {
       holdings: last.holdings,
       weightsByCount: last.weights_by_count,
     },
+    // Every rebalance, trimmed to ticker + sector (oldest → newest). The full
+    // holdings/weights stay in the raw artifact; the timeline only needs the
+    // composite-ordered ticker list per quarter to render the rotation.
+    timeline: rebalances.map((r) => ({
+      date: r.date,
+      holdings: r.holdings.map((h) => ({ ticker: h.ticker, sector: h.sector })),
+    })),
   };
 }
 

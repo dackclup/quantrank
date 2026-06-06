@@ -353,7 +353,13 @@ export function FairPriceCard(props) {  // no types
   `select_picks`) is **top-N eligible by composite, NO sector cap** (the
   2-per-sector cap was removed 2026-06-06) — the basket can concentrate in one
   sector, so the home surfaces a "Top sector: X — N of count" disclosure;
-  inverse-vol + the 0.35 cap bound single-NAME risk only.
+  inverse-vol + the 0.35 cap bound single-NAME risk only. The home also renders a
+  **"Rotation history"** timeline (`HoldingsTimeline.tsx`): every quarterly
+  rebalance's holdings at the current basket size, newest-first, with
+  entered/exited markers, reactive to the count slider — fed by
+  `AiPickData.timeline` (trimmed ticker+sector per rebalance from
+  `getAiPickData()`, display-only types, no schema change). It is the
+  point-in-time rotation, NOT today's picks back-projected.
 - **Loss-chance band/tone derives from `Math.round(pct)`, not the raw float**
   (`LossChanceBadge` + `RankingTable` mobile card + detail-hero `lossBand`,
   2026-06-01 + P2 2026-06-02): the display rounds (`HeroMetric` prints

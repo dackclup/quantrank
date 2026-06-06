@@ -490,16 +490,16 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **feat(compute) — remove the 2-per-sector cap from AI-pick selection
-  (this PR)** — `select_picks` is now top-N eligible by composite alone
-  (the basket can concentrate in one sector; user decision, methodology-
-  scientist APPROVED — concentration/diversification tradeoff, picks stay
-  merit-based via the already-neutralized composite). inverse-vol + the
-  0.35 single-name cap bound single-NAME risk only, so single-SECTOR
-  concentration is now disclosed (a "Top sector: X — N of count" line on
-  the home + a corrected disclaimer clause). Needs a backfill re-run to
-  regenerate `backtest_pit.json` with the uncapped selection. (Nav
-  Portfolio→Watchlist + §Phase status housekeeping merged via #421.)
+- **feat(frontend) — AI-pick "Rotation history" timeline (this PR)** —
+  surfaces what the backtest actually HELD at every quarterly rebalance,
+  not just the latest "Current picks". New `HoldingsTimeline.tsx` renders
+  all 20 rebalances newest-first at the current basket size with
+  entered/exited markers, reactive to the count slider; fed by a new
+  `AiPickData.timeline` (trimmed ticker+sector per rebalance via
+  `getAiPickData()` — display-only types, NO schema change, no backfill
+  needed; reads `rebalances` already on `main`). Answers the user's "show
+  the holdings from 5y ago + the quarterly rotation, NOT today's picks
+  back-projected". (Sector-cap removal #422 merged on `main`.)
 
 
 **Next deliverables** (pick by appetite):

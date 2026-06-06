@@ -584,6 +584,23 @@ export type AiPickFinals = {
   conservative: number | null;
 };
 
+// One quarterly rebalance trimmed to just the rotation view: ticker + sector,
+// holdings ordered by composite desc (so the client slices [0, count) to mirror
+// `select_picks(count)` and diffs consecutive entries for the entered / exited
+// markers). Weights are intentionally NOT carried here — the per-quarter weight
+// table would be noise; the live "Current picks" card owns weights. Keeping this
+// to two strings per holding is what lets all 20 rebalances ship in the page
+// payload without re-bloating it toward the 1.3 MB raw artifact.
+export type AiPickTimelineHolding = {
+  ticker: string;
+  sector: string;
+};
+
+export type AiPickTimelineEntry = {
+  date: string;
+  holdings: AiPickTimelineHolding[];
+};
+
 export type AiPickData = {
   meta: BacktestMeta;
   dates: string[];
@@ -599,4 +616,9 @@ export type AiPickData = {
     holdings: BacktestHolding[];
     weightsByCount: Record<string, Record<string, number>>;
   } | null;
+  // every quarterly rebalance (oldest → newest), trimmed to ticker + sector, for
+  // the rotation-history timeline. The client slices each entry to [0, count) so
+  // the timeline tracks the count slider, then diffs neighbours for entered /
+  // exited markers.
+  timeline: AiPickTimelineEntry[];
 };
