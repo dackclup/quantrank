@@ -303,7 +303,11 @@ LATE_FILING_LOOKBACK_DAYS: int = 365
 # Item 4.02 / 4.01 disclosures are sticky once filed so even a 7-day
 # stale cache won't cause a flagged ticker to silently un-flag.
 EDGAR_8K_CACHE_DIR: Path = CACHE_DIR / "edgar_8k"
-EDGAR_8K_CACHE_TTL_SECONDS: int = 7 * 86400  # 7 days
+# 6 days (was 7): a 7-day TTL equals the weekly cron cadence, so a cache entry
+# exactly 7 days old lands on the `age > ttl` boundary and re-fetches on any run
+# drift / DST shift. 6 days adds a 24h buffer so a warm 8-K cache reliably hits
+# run-to-run (edgar-debugger 2026-06-06, secondary to the tier2 cache-split fix).
+EDGAR_8K_CACHE_TTL_SECONDS: int = 6 * 86400  # 6 days
 
 # Cap how much of an Item body we keep in the cache + surface in the
 # UI excerpt. 500 chars is enough for the human reviewer to gauge

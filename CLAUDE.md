@@ -384,6 +384,7 @@ always-loaded context small while preserving discoverability of every invariant.
 - **`loss_avoidance_pattern` thresholds rescaled**
 - **Hypothesis property-based tests**
 - **CI escape-hatch env-var combo for simulate**
+- **The cron cache is split into TWO `actions/cache` steps (don't re-merge): fast (quarter-key) + slow-text (run-id key)**
 - **GitHub-Actions-injected env-vars `GITHUB_RUN_ID` + `GITHUB_SHA`**
 - **`IMPECCABLE_NO_UPDATE_CHECK` + `IMPECCABLE_UPDATE_HOST`**
 - **`Metadata.*_wall_clock_seconds` ≠ `fundamentals_latency_p95_seconds`**
@@ -490,17 +491,21 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **ci(cron) — trading-day holiday gate (this PR)** — adds a tiny
-  `trading-day-gate` job to `compute-rankings.yml` that skips the SCHEDULED
-  weekday run on NYSE full-day holidays (~9-10/yr) so the cron no longer lands
-  a timestamp-only no-op commit (the folded backtest's `generated_utc` always
-  moves). Stdlib-only (no checkout / pip, ~15s), hardcoded NYSE holiday set
-  2026-2028, **default = run** + **fail-open** so a stale list degrades to a
-  harmless no-op run, NEVER a skipped real trading day; a manual
-  `workflow_dispatch` bypasses the gate. The `compute` job gains
-  `needs: trading-day-gate` + `if: …outputs.run == 'true' || workflow_dispatch`.
-  (Backtest auto-refresh #424 + holdings-timeline #423 + sector-cap #422
-  already merged.)
+- **perf(cron) — tier2 cache split + per-stage timing summary (this PR)** —
+  fixes the confirmed *self-reinforcing cold-cache trap* (edgar-debugger): the
+  single 11-path `actions/cache` bundle (~250-500 MB) was too big to save in the
+  post-job window on 100-180m runs, so `edgar_10k_text`/`edgar_8k` never
+  persisted → tier2 ran COLD ~80m every run (cron #82: fundamentals warm
+  p95=11.3s but `tier2_wall_clock`=4836s). **Fix: split into two independent
+  caches** — fast (fundamentals/prices/form4, per-quarter key, unchanged) +
+  slow-text (edgar_10k_text/edgar_8k/osap, **run-id key + prefix restore-keys**
+  so each run always persists fresh text + restores last-good; no static-key
+  90-day cliff). + edgar_8k TTL 7→6d (cron-cadence boundary). + a
+  **"Stage timing summary"** step writing per-stage wall-clock to
+  `$GITHUB_STEP_SUMMARY` (`if: always()`) so "which stage is slow / failed" is
+  visible per run (perf-engineer Tier 1). Expected: warm cron ~95m → ~15-20m.
+  (Holiday-gate #425 + backtest-refresh #424 + timeline #423 + sector-cap #422
+  merged.)
 
 
 **Next deliverables** (pick by appetite):
