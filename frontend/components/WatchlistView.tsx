@@ -1,10 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { Star, X } from 'lucide-react';
+import { Star, Trash2 } from 'lucide-react';
 
 import { ScoreBadge } from '@/components/ScoreBadge';
 import { SectorChip } from '@/components/SectorChip';
+import { StockLogo } from '@/components/StockLogo';
 import { WatchlistChart } from '@/components/WatchlistChart';
 import type { StockSummary } from '@/lib/types';
 import { useWatchlist } from '@/lib/useWatchlist';
@@ -46,26 +47,19 @@ function WatchlistCard({
         aria-label={`Open ${row.name} (${row.ticker}) detail`}
         className="absolute inset-0 z-0"
       />
-      <button
-        type="button"
-        onClick={() => onRemove(row.ticker)}
-        aria-label={`Remove ${row.ticker} from watchlist`}
-        className="absolute right-2 top-2 z-20 inline-flex h-11 w-11 items-center justify-center rounded-sm text-slate-400 press hover:bg-slate-100 hover:text-rose-600 dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-rose-400"
-      >
-        <X className="h-[1.125rem] w-[1.125rem]" strokeWidth={2} aria-hidden="true" />
-      </button>
-
       <div className="pointer-events-none relative z-10 p-4">
-        {/* Header — name + ticker + sector (left); composite-score donut (right,
-            kept clear of the corner remove-X via pr-8). */}
-        <div className="flex items-start justify-between gap-3 pr-10">
-          <div className="min-w-0">
-            <div className="truncate font-slab text-lg font-semibold text-slate-900 dark:text-slate-100">
-              {row.name}
-            </div>
-            <div className="mt-0.5 flex items-center gap-2">
-              <span className="font-mono text-xs text-slate-500 dark:text-slate-400">{row.ticker}</span>
-              <SectorChip sector={row.sector} size="xs" />
+        {/* Header — logo + name + ticker + sector (left); composite-score donut (right). */}
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-3">
+            <StockLogo ticker={row.ticker} size={40} />
+            <div className="min-w-0">
+              <div className="truncate font-slab text-lg font-semibold text-slate-900 dark:text-slate-100">
+                {row.name}
+              </div>
+              <div className="mt-0.5 flex items-center gap-2">
+                <span className="font-mono text-xs text-slate-500 dark:text-slate-400">{row.ticker}</span>
+                <SectorChip sector={row.sector} size="xs" />
+              </div>
             </div>
           </div>
           <div className="shrink-0">
@@ -121,6 +115,21 @@ function WatchlistCard({
             fairPrice={row.fair_price}
             currentPrice={row.current_price}
           />
+        </div>
+
+        {/* Remove control — below the chart, right-aligned. pointer-events-auto
+            + z-20 so the click lands on the button, above the whole-card overlay
+            link; everywhere else on the card still navigates. */}
+        <div className="mt-2 flex justify-end">
+          <button
+            type="button"
+            onClick={() => onRemove(row.ticker)}
+            aria-label={`Remove ${row.ticker} from watchlist`}
+            className="pointer-events-auto relative z-20 inline-flex min-h-[44px] items-center gap-1.5 rounded-sm px-2 text-sm text-slate-500 press hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400"
+          >
+            <Trash2 className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
+            Remove from watchlist
+          </button>
         </div>
       </div>
     </li>
@@ -183,7 +192,7 @@ export function WatchlistView({ rankings }: { rankings: StockSummary[] }) {
           </Link>
         </div>
       ) : (
-        <ul className="max-w-2xl space-y-3">
+        <ul className="space-y-3">
           {rows.map((row) => (
             <WatchlistCard key={row.ticker} row={row} onRemove={remove} />
           ))}
