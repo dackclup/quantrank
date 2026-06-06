@@ -12,12 +12,15 @@ import { usePathname } from 'next/navigation';
 type Tab = { label: string; href: string; isActive: (p: string) => boolean };
 
 const TABS: Tab[] = [
+  // Home IS the AI-pick portfolio (Phase 7.0). The /portfolio route is the
+  // (coming-soon) PERSONAL WATCHLIST — a distinct feature — so its tab is
+  // labelled "Watchlist" to avoid colliding with the portfolio on Home.
   { label: 'Home', href: '/', isActive: (p) => p === '/' },
   // Ranking owns the table + every per-stock detail page (descendants of it).
   { label: 'Ranking', href: '/ranking', isActive: (p) => p.startsWith('/ranking') || p.startsWith('/stock/') },
   { label: 'News', href: '/news', isActive: (p) => p.startsWith('/news') },
   { label: 'Analysis', href: '/analysis', isActive: (p) => p.startsWith('/analysis') },
-  { label: 'Portfolio', href: '/portfolio', isActive: (p) => p.startsWith('/portfolio') },
+  { label: 'Watchlist', href: '/portfolio', isActive: (p) => p.startsWith('/portfolio') },
 ];
 
 export function TopNav() {

@@ -436,14 +436,16 @@ always-loaded context small while preserving discoverability of every invariant.
 
 ## Phase status
 
-Current schema **`0.10.13-phase4.6`** (this PR — listing-metadata
-canary: additive `Metadata.country_coverage_pct: float | None` +
-CBOE `BTS → Cboe BZX` fix in `cross_source._EXCHANGE_NAME_BY_CODE`;
-the 2026-06-02 post-cron audit found exchange-coverage's
-unknown-code passthrough HIDES the country gap, so
-`country_coverage_pct` is the strict-resolution canary — see the
-§Gotchas entry "`exchange_coverage_pct` and `country_coverage_pct`
-… DIVERGE on a raw passthrough code"). Prior schema
+Current schema **`0.10.14-phase4.6`** on `main`. **Phase 7.0 — the
+AI-pick portfolio home + 5-year point-in-time backtest — shipped**
+(#416 → #420: survivorship membership ledger + benchmark export +
+inverse-vol weighting → PIT NAV engine + anti-look-ahead orchestrator →
+NAV-per-holding-count N=1-10 → re-sourced restatement canary +
+result-dependent disclaimer + the real 5y `backtest_pit.json` → the
+AI-pick home page that renders it). The backtest artifact self-carries
+its `meta`, so Phase 7 added **no schema bump**: `0.10.14` is the
+additive `Metadata.benchmark_coverage_pct` (#416 PR-1), and `0.10.13`
+was the `country_coverage_pct` strict-resolution canary (see §Gotchas). Prior schema
 **`0.10.12-phase4.6`** on `main` (PR #303 merged
 2026-05-29 `847c21b` — Phase 4.5e PR 6 Form-4 10b5-1 negation guard,
 residual footgun #1 from PR 4-eq; new
@@ -487,24 +489,21 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **chore(infra) — Claude token-economy optimization (this PR)** — no
-  compute / schema / scoring / valuation / frontend change; docs + agent
-  infra only. **P0**: drained CLAUDE.md §Gotchas (full detail →
-  [`docs/GOTCHAS.md`](docs/GOTCHAS.md), kept a 53-line index) + §Phase
-  status merged-PR log (→ PHASE_STATUS.md / [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md)),
-  cutting the always-loaded file ~55.8K → ~9.7K tok (−82%, ≈46K saved
-  per session AND per sub-agent spawn). **P1**: thinned AGENTS.md
-  §"Phase + version state" mirror → pointer; reset
-  PHASE_STATUS_INFLIGHT.md to its convention header (old body in git
-  history). **P2**: shortened the `delegate-first` per-turn hook
-  injection + dropped `effort: max → high` on the deterministic
-  script-runner agents (`schema-sentinel`, `vercel-preview-auditor`).
-  **New skill** `thai-token-economy` (Thai I/O ↔ English internals
-  discipline). New §Conventions bullet "CLAUDE.md is an INDEX" guards
-  against re-bloat.
+- **chore — Phase 7.0 follow-up (this PR)** — frontend + docs only, no
+  schema / compute change. Nav reconcile: the `/portfolio` tab →
+  **"Watchlist"** (Home is now the AI-pick *portfolio*; `/portfolio`
+  stays the coming-soon personal-*watchlist* stub — distinct features,
+  the relabel disambiguates). Plus this §Phase status housekeeping (the
+  block had been frozen at pre-Phase-7).
 
 
 **Next deliverables** (pick by appetite):
+- **Phase 7.0 follow-ups** — (a) the personal **Watchlist** feature (turn
+  the `/portfolio` coming-soon stub into a real browser-local watchlist);
+  (b) schedule `backfill-portfolio.yml` (quarterly or post-cron) so
+  `backtest_pit.json` refreshes each new quarter — it is a one-off manual
+  dispatch today; (c) PR-2c deferred — point-in-time defense-layer veto
+  replay in the backtest (currently `veto_layer_replayed=False`, disclosed).
 - **Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — after ≥ 1
   cron's `form4_rule10b5_one_excluded_count` lands and firing-rate
   delta confirms the -30% to -45% predicted band (Aboody et al. 2010

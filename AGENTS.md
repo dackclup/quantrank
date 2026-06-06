@@ -347,7 +347,9 @@ export function FairPriceCard(props) {  // no types
   (build-time-data rule — no client component imports `lib/data.ts`). The 1-10
   slider switches `nav.by_count[N]` (one NAV line per count); the chart uses the
   pre-aligned `nav.benchmark`, so `benchmarks.json` is NOT read by the frontend.
-  Full rationale in CLAUDE.md §Gotchas.
+  Full rationale in CLAUDE.md §Gotchas. The `/portfolio` nav tab is labelled
+  **"Watchlist"** (the coming-soon personal watchlist) to disambiguate from the
+  AI-pick portfolio on Home.
 - **Loss-chance band/tone derives from `Math.round(pct)`, not the raw float**
   (`LossChanceBadge` + `RankingTable` mobile card + detail-hero `lossBand`,
   2026-06-01 + P2 2026-06-02): the display rounds (`HeroMetric` prints
