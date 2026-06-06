@@ -490,12 +490,16 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **chore — Phase 7.0 follow-up (this PR)** — frontend + docs only, no
-  schema / compute change. Nav reconcile: the `/portfolio` tab →
-  **"Watchlist"** (Home is now the AI-pick *portfolio*; `/portfolio`
-  stays the coming-soon personal-*watchlist* stub — distinct features,
-  the relabel disambiguates). Plus this §Phase status housekeeping (the
-  block had been frozen at pre-Phase-7).
+- **feat(compute) — remove the 2-per-sector cap from AI-pick selection
+  (this PR)** — `select_picks` is now top-N eligible by composite alone
+  (the basket can concentrate in one sector; user decision, methodology-
+  scientist APPROVED — concentration/diversification tradeoff, picks stay
+  merit-based via the already-neutralized composite). inverse-vol + the
+  0.35 single-name cap bound single-NAME risk only, so single-SECTOR
+  concentration is now disclosed (a "Top sector: X — N of count" line on
+  the home + a corrected disclaimer clause). Needs a backfill re-run to
+  regenerate `backtest_pit.json` with the uncapped selection. (Nav
+  Portfolio→Watchlist + §Phase status housekeeping merged via #421.)
 
 
 **Next deliverables** (pick by appetite):

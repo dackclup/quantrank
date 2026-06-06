@@ -116,6 +116,15 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
   const holdings = latest ? latest.holdings.slice(0, count) : [];
   const weights = latest ? (latest.weightsByCount[countKey] ?? {}) : {};
 
+  // Sector-concentration disclosure (methodology-scientist 2026-06-06): with the
+  // 2-per-sector cap removed, inverse-vol + the 0.35 cap bound single-NAME risk but
+  // NOT single-SECTOR risk — so surface how concentrated the basket is in its
+  // largest sector rather than leaving the reader to count chips.
+  const topSector = holdings.reduce<{ sector: string; n: number } | null>((best, h) => {
+    const n = holdings.filter((x) => x.sector === h.sector).length;
+    return !best || n > best.n ? { sector: h.sector, n } : best;
+  }, null);
+
   return (
     <div className="space-y-6">
       <div className="space-y-5 rounded border border-slate-200 bg-white p-4 shadow-subtle dark:border-slate-800 dark:bg-slate-900 md:p-6">
@@ -209,7 +218,15 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
           </span>
         </div>
         <p className="mb-3 text-xs text-slate-500 dark:text-slate-400">
-          Top {count} by composite, max 2 per sector, inverse-volatility weighted.
+          Top {count} by composite (no sector cap), inverse-volatility weighted.
+          {topSector && (
+            <>
+              {' '}Top sector:{' '}
+              <span className="font-medium text-slate-600 dark:text-slate-300">{topSector.sector}</span>{' '}
+              — <span className="font-mono tabular-nums">{topSector.n}</span> of{' '}
+              <span className="font-mono tabular-nums">{count}</span>.
+            </>
+          )}
         </p>
         <ol className="divide-y divide-slate-100 dark:divide-slate-800">
           {holdings.map((h, i) => {

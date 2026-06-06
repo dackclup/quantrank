@@ -1632,3 +1632,44 @@ Two cleanups deferred from the PR-4 merge:
 (§Phase status) · `AGENTS.md` (AI-pick bullet) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## Phase 7.0 follow-up — remove the 2-per-sector cap from AI-pick selection (in flight, 2026-06-06)
+
+**Branch**: `claude/loving-clarke-kAZII`
+**Type**: feat(compute) — selection-rule change to `select_picks` + paired honesty/copy
+updates. No schema change (artifact self-carries meta). **Needs a backfill re-run** to
+regenerate `backtest_pit.json` with the uncapped selection.
+
+User decision: drop the `MAX_PER_SECTOR = 2` diversification cap so the AI-pick basket is
+purely the top-N eligible names by composite (it can concentrate in one sector). methodology-
+scientist **APPROVED (defensible — proceed)**: a concentrated factor book is a valid
+construct (concentration/diversification tradeoff; DGU 2009 governs *weighting* not sector
+breadth; the composite already does sector-relative + neutralized scoring, so picks stay
+merit-based). The remaining controls (inverse-vol + the 0.35 single-name cap) bound single-
+NAME risk only — single-SECTOR concentration is now intentional, so it MUST be disclosed.
+
+Changes:
+- `compute/portfolio/weights.py` — removed `MAX_PER_SECTOR` / `MIN_COUNT_FOR_SECTOR_CAP`;
+  `select_picks` is now `top-N eligible by composite` (veto filter + tiebreak unchanged);
+  module docstring + comments updated.
+- `scripts/backfill_portfolio_pit.py` — `_insample_lag_clause` drops the now-false
+  "per-sector-capped" wording → "sector-CONCENTRATED (no per-sector cap) … can diverge in
+  either direction"; adds the concentration- + regime-driven / McLean-Pontiff overfitting
+  caveat (any in-sample edge from concentrating into the regime's winning sector is not a
+  free lunch). v1-scope docstring updated.
+- `frontend/components/AiPickPortfolio.tsx` — picks copy "max 2 per sector" → "(no sector
+  cap)"; **new sector-concentration disclosure** ("Top sector: X — N of count", computed
+  from `holdings[].sector`, no schema change) per methodology's required honesty add.
+- `tests/test_portfolio/test_weights.py` — the 2 sector-cap tests replaced by a no-cap
+  "top-N by composite, sector-blind" test. ruff clean; 50 `tests/test_portfolio` pass.
+
+**Expected**: removing the cap likely IMPROVES the 2021-26 in-sample return (loads the
+regime's tech winners the cap had blocked) — but that is the McLean-Pontiff overfitting
+signature, framed as such in the disclaimer, NOT read as validation.
+
+**Files**: `compute/portfolio/weights.py` · `scripts/backfill_portfolio_pit.py` ·
+`frontend/components/AiPickPortfolio.tsx` · `tests/test_portfolio/test_weights.py` ·
+`CLAUDE.md` (§Phase status in-flight) · `AGENTS.md` (AI-pick bullet) ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---
