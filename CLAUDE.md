@@ -30,7 +30,7 @@ design-system spec.
   logo + primary CTA surfaces, OKLCH
   hue 155 → 152 + chroma 0.09 → 0.13 closer to forest green,
   border-radius normalization `rounded-2xl/xl` → `rounded-lg`).
-- **CI** — GitHub Actions; weekday `compute-rankings.yml` (cron Mon-Fri 22:00 UTC; weekends skipped — no new trading data; also folds a warm PIT-backtest refresh step so the AI-pick home page updates each cron)
+- **CI** — GitHub Actions; weekday `compute-rankings.yml` (cron Mon-Fri 22:00 UTC; weekends skipped — no new trading data; a `trading-day-gate` job further skips NYSE holidays; also folds a warm PIT-backtest refresh step so the AI-pick home page updates each cron)
 - **Data** — SEC EDGAR via `edgartools` · yfinance for prices · S&P 500
   constituents scraped from Wikipedia
 
@@ -490,19 +490,17 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **ci(cron) — auto-refresh the PIT backtest in the weekly cron (this PR)** —
-  folds `python -m scripts.backfill_portfolio_pit` into
-  `compute-rankings.yml` as a warm step after the compute (reuses the same
-  prices + fundamentals_history + benchmarks.json just refreshed), so the
-  AI-pick home page (NAV + Current picks + Rotation history) refreshes every
-  cron instead of needing a manual `backfill-portfolio.yml` dispatch. The
-  cron is the established SOLE trusted writer to `main`, so backtest_pit.json
-  rides the existing `git add frontend/public/data/` commit; the manual
-  workflow keeps its `if: ref != main` guard (NOT weakened — we only widen
-  what the already-trusted cron commits). `continue-on-error` + a 40m step
-  cap + the atomic writer mean a backtest hiccup can never block the rankings
-  commit; job ceiling 195 → 225 for headroom. Closes §Next deliverables
-  7.0(b). (Holdings-timeline #423 + sector-cap #422 already merged.)
+- **ci(cron) — trading-day holiday gate (this PR)** — adds a tiny
+  `trading-day-gate` job to `compute-rankings.yml` that skips the SCHEDULED
+  weekday run on NYSE full-day holidays (~9-10/yr) so the cron no longer lands
+  a timestamp-only no-op commit (the folded backtest's `generated_utc` always
+  moves). Stdlib-only (no checkout / pip, ~15s), hardcoded NYSE holiday set
+  2026-2028, **default = run** + **fail-open** so a stale list degrades to a
+  harmless no-op run, NEVER a skipped real trading day; a manual
+  `workflow_dispatch` bypasses the gate. The `compute` job gains
+  `needs: trading-day-gate` + `if: …outputs.run == 'true' || workflow_dispatch`.
+  (Backtest auto-refresh #424 + holdings-timeline #423 + sector-cap #422
+  already merged.)
 
 
 **Next deliverables** (pick by appetite):

@@ -1749,3 +1749,36 @@ status in-flight + §Next deliverables 7.0(b)) · `AGENTS.md` (AI-pick bullet) �
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## ci(cron) — trading-day holiday gate (in flight, 2026-06-06)
+
+User ask: "รันทุกวันยกเว้นวันตลาดปิด" — run on trading days only (skip market-closed days).
+Context: the cron already fires Mon-Fri (`cron: "0 22 * * 1-5"`), so weekends are excluded for
+free at the schedule level. The remaining gap is the ~9-10 NYSE full-day holidays that fall on a
+weekday — the cron still fires on those, and since #424 folded the backtest in, every run now
+moves the backtest's `generated_utc`, so a holiday run lands a timestamp-only no-op commit rather
+than the old clean "No JSON changes to commit". GitHub cron syntax can't express "skip NYSE
+holidays", so this needs a guard.
+
+Change (`.github/workflows/compute-rankings.yml`):
+- New `trading-day-gate` job — stdlib-only (no checkout, no pip install, ~15s). Computes the
+  US/Eastern date and outputs `run=false` iff it is a weekday in a hardcoded NYSE-holiday set
+  (2026-2028), else `run=true`.
+- The `compute` job gains `needs: trading-day-gate` +
+  `if: needs.trading-day-gate.outputs.run == 'true' || github.event_name == 'workflow_dispatch'`.
+- **Safety by design:** the default is "run" and ANY error fails OPEN (`run=true`), so a
+  stale / missing holiday entry degrades to a harmless no-op run — it can NEVER skip a real
+  trading day. A manual `workflow_dispatch` bypasses the gate entirely (forced regen on a holiday
+  / after a fix still works). Gate job runs at the workflow-default `contents: read` (the
+  `compute` job keeps its scoped `contents: write`).
+- Maintenance: extend `NYSE_HOLIDAYS` every year or two (failure mode is a no-op run, not a
+  missed update). Half-day sessions (1pm closes) are intentionally NOT listed — the market traded.
+
+Cost: the gate adds ~1 billable runner-minute per scheduled weekday run (~250/yr) and removes
+~9-10 holiday compute runs (~30m each) — roughly cost-neutral; the real win is correctness
+(trading-days-only) + no timestamp-only no-op commits on holidays.
+
+**Files**: `.github/workflows/compute-rankings.yml` · `CLAUDE.md` (§Stack CI line + §Phase
+status in-flight) · `AGENTS.md` (AI-pick bullet) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
