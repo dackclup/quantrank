@@ -20,11 +20,12 @@ GICS sectors are assumed stable from today, and survivorship is corrected via
 the membership ledger. See ``meta.disclaimer`` in the output.
 
 **v1 scope decisions (flagged for methodology / reviewer):**
-  * **No defense-layer veto replay.** Selection is composite-rank + sector-cap
-    only; the 7 active vetoes are NOT recomputed point-in-time (they need the
-    cross-source / manipulation layer). DISCLOSED — a `value-trap`-style name
-    can appear in a historical pick that the live rule would have vetoed. Tracked
-    as the PR-2c follow-up.
+  * **No defense-layer veto replay.** Selection is composite-rank only (NO sector
+    cap — removed 2026-06-06; the basket concentrates by composite alone); the 7
+    active vetoes are NOT recomputed point-in-time (they need the cross-source /
+    manipulation layer). DISCLOSED — a `value-trap`-style name can appear in a
+    historical pick that the live rule would have vetoed. Tracked as the PR-2c
+    follow-up.
   * **NAV per holding count N=1..``MAX_PICKS`` (10).** At each rebalance the top-N
     picks are inverse-vol weighted and the artifact stores a daily NAV series for
     every N, so the PR-4 count slider (1-10) re-runs the backtest line vs the index
@@ -191,9 +192,12 @@ def _insample_lag_clause(nav: dict, start: date, end: date) -> str:
     return (
         f" In this {start.year}-{end.year} sample the default {DEFAULT_COUNT}-holding net"
         f" line {verb} the S&P 500 ({p:.0f} vs {s:.0f}, both rebased to 100 at the start):"
-        f" a factor-tilted, per-sector-capped book can lag a cap-weighted index for long"
-        f" stretches. Past performance, even favorable, does not predict future results;"
-        f" read the full 1-{MAX_PICKS} holding-count ladder, not any single line."
+        f" a factor-tilted, sector-CONCENTRATED book (no per-sector cap — it can hold many"
+        f" names in one sector) carries higher single-sector risk and can diverge from a"
+        f" cap-weighted index, in either direction, for long stretches. Any in-sample edge"
+        f" is concentration- and regime-driven, not a free lunch (McLean-Pontiff 2016) —"
+        f" past performance, even favorable, does not predict future results; read the full"
+        f" 1-{MAX_PICKS} holding-count ladder, not any single line."
     )
 
 

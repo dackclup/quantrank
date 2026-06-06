@@ -8,10 +8,14 @@ historical rebalance date.
 Selection rule
 --------------
 Highest ``composite_score``, EXCLUDING the 7 active rank-gate VETOES
-(annotate-only flags do NOT exclude — annotate-before-veto), then capped at
-``MAX_PER_SECTOR`` holdings per GICS sector once ``count >= MIN_COUNT_FOR_SECTOR_CAP``.
-Total order tiebreak: ``composite_score_adjusted`` desc (nets the manipulation
-index) then ``ticker`` asc (reproducibility).
+(annotate-only flags do NOT exclude — annotate-before-veto). NO sector cap
+(removed 2026-06-06, user decision): the basket is the top-``count`` eligible
+names by composite, so it can concentrate in a single sector — a deliberate
+concentrated-factor construct (the composite already does sector-relative +
+neutralized scoring, so picks stay merit-based; the concentration is surfaced in
+the UI + disclaimer, never silent). Total order tiebreak:
+``composite_score_adjusted`` desc (nets the manipulation index) then ``ticker``
+asc (reproducibility).
 
 Weighting rule
 --------------
@@ -62,8 +66,10 @@ ACTIVE_VETO_FLAGS: frozenset[str] = frozenset(
 MIN_PICKS: int = 1
 MAX_PICKS: int = 10
 MAX_WEIGHT: float = 0.35  # single-name concentration cap (gut-feel; disclosed)
-MAX_PER_SECTOR: int = 2  # GICS-sector diversification cap
-MIN_COUNT_FOR_SECTOR_CAP: int = 5  # the sector cap only binds at/above this count
+# NOTE: the 2-per-sector diversification cap (MAX_PER_SECTOR / MIN_COUNT_FOR_SECTOR_CAP)
+# was REMOVED 2026-06-06 (user decision) — the basket now concentrates by composite
+# alone. inverse-vol + MAX_WEIGHT bound single-NAME risk; single-SECTOR concentration
+# is intentional + disclosed (methodology-scientist APPROVED 2026-06-06).
 SIGMA_WINDOW_DAYS: int = 90  # trailing daily-return stdev window
 
 
@@ -87,12 +93,12 @@ def is_eligible(risk_flags: Iterable[str] | None) -> bool:
 def select_picks(candidates: Sequence[PickCandidate], count: int) -> list[str]:
     """Return the ordered ``count`` AI-picked tickers (deterministic + fair).
 
-    composite desc -> drop active vetoes -> cap ``MAX_PER_SECTOR`` per sector
-    (only when ``count >= MIN_COUNT_FOR_SECTOR_CAP``). ``count`` is clamped to
-    ``[MIN_PICKS, MAX_PICKS]``. If the sector cap leaves the basket short (too
-    few sectors), the remainder is backfilled ignoring the cap so the requested
-    COUNT is honored (the concentration is surfaced in the UI, never silently
-    dropped).
+    composite desc -> drop the active rank-gate vetoes -> take the top ``count``
+    (clamped to ``[MIN_PICKS, MAX_PICKS]``). NO sector cap (removed 2026-06-06):
+    the basket is purely the highest-composite eligible names, so it can
+    concentrate in one sector — that concentration is surfaced in the UI +
+    disclaimer, never silently constrained. Tiebreak: ``composite_score_adjusted``
+    desc (nets the manipulation index) then ``ticker`` asc.
     """
     count = max(MIN_PICKS, min(MAX_PICKS, count))
     eligible = [c for c in candidates if is_eligible(c.risk_flags)]
@@ -107,28 +113,7 @@ def select_picks(candidates: Sequence[PickCandidate], count: int) -> list[str]:
             c.ticker,
         )
     )
-
-    apply_sector_cap = count >= MIN_COUNT_FOR_SECTOR_CAP
-    picks: list[str] = []
-    per_sector: dict[str, int] = {}
-    for c in eligible:
-        if len(picks) >= count:
-            break
-        if apply_sector_cap and per_sector.get(c.sector, 0) >= MAX_PER_SECTOR:
-            continue
-        picks.append(c.ticker)
-        per_sector[c.sector] = per_sector.get(c.sector, 0) + 1
-
-    if len(picks) < count:  # sector cap left us short → backfill (cap is a soft guard)
-        chosen = set(picks)
-        for c in eligible:
-            if len(picks) >= count:
-                break
-            if c.ticker not in chosen:
-                picks.append(c.ticker)
-                chosen.add(c.ticker)
-
-    return picks
+    return [c.ticker for c in eligible[:count]]
 
 
 def inverse_vol_weights(

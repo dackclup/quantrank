@@ -349,7 +349,11 @@ export function FairPriceCard(props) {  // no types
   pre-aligned `nav.benchmark`, so `benchmarks.json` is NOT read by the frontend.
   Full rationale in CLAUDE.md §Gotchas. The `/portfolio` nav tab is labelled
   **"Watchlist"** (the coming-soon personal watchlist) to disambiguate from the
-  AI-pick portfolio on Home.
+  AI-pick portfolio on Home. Selection (`compute/portfolio/weights.py`
+  `select_picks`) is **top-N eligible by composite, NO sector cap** (the
+  2-per-sector cap was removed 2026-06-06) — the basket can concentrate in one
+  sector, so the home surfaces a "Top sector: X — N of count" disclosure;
+  inverse-vol + the 0.35 cap bound single-NAME risk only.
 - **Loss-chance band/tone derives from `Math.round(pct)`, not the raw float**
   (`LossChanceBadge` + `RankingTable` mobile card + detail-hero `lossBand`,
   2026-06-01 + P2 2026-06-02): the display rounds (`HeroMetric` prints

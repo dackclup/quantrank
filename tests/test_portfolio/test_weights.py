@@ -67,21 +67,14 @@ def test_select_picks_count_clamped():
     assert len(select_picks(cands, 99)) == MAX_PICKS  # clamp down to MAX_PICKS
 
 
-def test_select_picks_sector_cap_binds_at_count_5():
-    # 6 Tech names; with the 2-per-sector cap at count>=5 only 2 Tech survive,
-    # then the cap leaves us short (no other sectors) → backfill honors COUNT.
+def test_select_picks_no_sector_cap_pure_composite():
+    # No sector cap (removed 2026-06-06): the basket is the top-N by composite
+    # regardless of sector. A 6-Tech cohort fills all 5 slots even though Energy
+    # + Health names are present — they simply rank lower on composite.
     cands = [_cand(f"T{i}", 100 - i, sector="Tech") for i in range(6)]
     cands += [_cand("E0", 50, sector="Energy"), _cand("H0", 40, sector="Health")]
-    picks = select_picks(cands, 5)
-    assert len(picks) == 5
-    # top-2 Tech (T0, T1) kept; T2.. capped out in favor of other sectors first
-    assert picks[:2] == ["T0", "T1"]
-    assert "E0" in picks and "H0" in picks
-
-
-def test_select_picks_no_sector_cap_below_count_5():
-    # count=4 (< MIN_COUNT_FOR_SECTOR_CAP) → all-Tech basket allowed.
-    cands = [_cand(f"T{i}", 100 - i, sector="Tech") for i in range(6)]
+    assert select_picks(cands, 5) == ["T0", "T1", "T2", "T3", "T4"]
+    # a lower count is likewise sector-blind
     assert select_picks(cands, 4) == ["T0", "T1", "T2", "T3"]
 
 
