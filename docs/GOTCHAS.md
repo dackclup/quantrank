@@ -104,6 +104,34 @@
   expected steady-state with all five skips active on a warm-cache
   restore: 8-15 min (vs the pre-fix 45-min cap breach across PRs
   #230 / #238 / #241).
+- **The cron cache is split into TWO `actions/cache` steps (don't
+  re-merge): fast (quarter-key) + slow-text (run-id key)** (2026-06-06,
+  edgar-debugger root-cause). The original SINGLE 11-path bundle
+  (~250-500 MB) was too large to save reliably in the post-job window
+  once the job ran 100-180 min — the save truncated and the largest
+  layers (`edgar_10k_text` ~50-150 MB, `edgar_8k`) never persisted, so
+  the next run restored an older bundle WITHOUT them → Tier-2 ran COLD
+  (~80 min full SEC re-fetch) → runtime climbed → next save failed
+  again: a self-reinforcing cold-cache trap (cron #82 evidence:
+  `fundamentals_latency_p95`=11.3s = warm, but `tier2_wall_clock`=4836s
+  = 80.6 min = cold). Fix = two INDEPENDENT caches in
+  `compute-rankings.yml`: (1) **fast** — `fundamentals` /
+  `fundamentals_history` / `prices` / `universe` / `yfinance_info` /
+  `edgar_form4`, key `cache-v5-fast-<quarter>-<os>` (unchanged: proven
+  warm; fundamentals freshness via `_is_fresh()`); (2) **slow-text** —
+  `edgar_10k_text` / `edgar_8k` / `edgar_amendments` /
+  `edgar_late_filings` / `osap`, key `cache-v5-text-<os>-<run_id>` with
+  `restore-keys: cache-v5-text-<os>-`. The run-id key is deliberate —
+  a unique key per run means `actions/cache` never SKIPS the save on
+  immutability, so this run's freshly-fetched text always persists, and
+  the prefix `restore-keys` restores the most-recent prior good save.
+  Do NOT collapse back to one bundle, and do NOT switch the text key to
+  a static `cache-v5-text-<os>` (that freezes the cache → a 90-day
+  cliff when the cached 10-K text ages past its TTL with no re-save).
+  Paired with `EDGAR_8K_CACHE_TTL_SECONDS` 7→6 days (a 7-day TTL equals
+  the weekly cron cadence → boundary re-fetch on drift). Bump `-fast-`
+  vN per the schema/value-correctness taxonomy in the YAML comment;
+  bump `-text-vN` only on a text-cache schema change.
 - **GitHub-Actions-injected env-vars `GITHUB_RUN_ID` + `GITHUB_SHA`**
   — auto-provided by the GitHub Actions runner; read at
   `compute/main.py:2084-2085` via `os.environ.get(...)` with safe

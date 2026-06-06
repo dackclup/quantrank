@@ -1782,3 +1782,57 @@ Cost: the gate adds ~1 billable runner-minute per scheduled weekday run (~250/yr
 status in-flight) · `AGENTS.md` (AI-pick bullet) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## perf(cron) — tier2 cache split + per-stage timing summary (in flight, 2026-06-06)
+
+User ask: "แก้ tier 2" + "แยก run ... รู้ว่าช้าตรงไหน failed ตรงไหน" (fix the slow tier2 + add
+per-stage visibility). Two specialists ran:
+
+**edgar-debugger ROOT-CAUSE-CONFIRMED — self-reinforcing cold-cache trap.** The single 11-path
+`actions/cache` bundle (~250-500 MB) was too large to save in the post-job window once the job
+ran 100-180 min; the save truncated and the largest layers (`edgar_10k_text` ~50-150 MB,
+`edgar_8k`) never persisted → next run restored an older bundle WITHOUT them → Tier-2 ran COLD
+(~80 min full SEC re-fetch) → runtime climbed → next save failed again. Evidence (committed
+metadata.json, cron #82 = run 27044959194): `fundamentals_latency_p95`=11.3s (warm) but
+`tier2_wall_clock_seconds`=4835.6 (80.6 min, cold) on the SAME run — the partial-cold signature.
+
+**performance-engineer — cross-job parallelism is the WRONG fix** (SEC 10 req/s per-UA ceiling →
+running fundamentals+tier2+form4 in parallel jobs = 429 cascade → worse cold runs; + artifact
+overhead + a multi-week compute refactor). The user's real goal is VISIBILITY, delivered by
+Tier 1 (Step Summary, this PR) + Tier 2 (prefetch step-split, deferred follow-up).
+
+Changes (this PR = the cache fix + Tier-1 visibility, workflow + 1 config line — no schema):
+- `.github/workflows/compute-rankings.yml`:
+  - Split the single "Restore compute caches" step into TWO independent `actions/cache` steps —
+    **fast** (`fundamentals`/`fundamentals_history`/`prices`/`universe`/`yfinance_info`/`edgar_form4`,
+    `cache-v5-fast-<quarter>-<os>`, unchanged semantics: fundamentals is proven warm) + **slow-text**
+    (`edgar_10k_text`/`edgar_8k`/`edgar_amendments`/`edgar_late_filings`/`osap`,
+    `cache-v5-text-<os>-<run_id>` + `restore-keys: cache-v5-text-<os>-`). The run-id key guarantees
+    each run's freshly-fetched text PERSISTS (a unique key is never skipped by actions/cache
+    immutability) and the prefix restores last-good — fixing "text never persists" AND avoiding both
+    the static-key 90-day cliff and the quarter-rollover cold run.
+  - New "Stage timing summary" step after compute: reads metadata.json's wall-clock fields →
+    `$GITHUB_STEP_SUMMARY` markdown table (tier2 / Step-8 / OSAP / Form-4), `if: always()` so a
+    compute abort still shows what ran. Answers "ช้าตรงไหน" per run (prices/fundamentals/scoring/
+    writes timing = a follow-up PR needing new hooks + schema bump).
+- `compute/config.py`: `EDGAR_8K_CACHE_TTL_SECONDS` 7→6 days (a 7-day TTL equals the cron cadence →
+  boundary re-fetch on drift; 6 days adds a 24h buffer). No test pins it absolutely
+  (test_eight_k_events uses `TTL + 100` relative).
+
+Expected: warm cron ~95 min → ~15-20 min once the text cache persists. Self-validating — the next
+cron's Stage-timing-summary will show tier2 drop from 80m to ~3-5m + the canary will show
+`edgar_10k_text` warm.
+
+Validation: `ruff` clean; 180 ingest + 139 scoring/output offline tests pass; YAML parses.
+(test_osap / test_qlib collection errors are local-env `.[factors]` deps, not this change.)
+
+Deferred follow-ups (performance-engineer roadmap): Tier-1 gap fields (5 new wall-clock hooks in
+`compute/main.py` for prices/fundamentals-snap/fundamentals-hist/scoring/JSON-write + schema bump
+0.10.15) → Tier-2 prefetch step-split (6 new ingest `__main__` entrypoints → per-stage graph nodes
++ pass/fail + single-step rerun; do AFTER this cache fix lands so the step timing is validated warm).
+
+**Files**: `.github/workflows/compute-rankings.yml` · `compute/config.py` · `CLAUDE.md` (§Gotchas
+index + §Phase status in-flight) · `AGENTS.md` (cache-split gotcha) · `docs/GOTCHAS.md` (full
+cache-split detail) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
