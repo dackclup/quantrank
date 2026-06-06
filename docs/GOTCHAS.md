@@ -1161,3 +1161,36 @@ a 2022 BLL->BALL rename, KDP/UA/UAA date contradictions, a missing SBNY 2023-fai
 scrambled 2020-06-22 add trio). PR-0 rebuilt it triangulated across S&P DJI releases + the
 fja05680/sp500 maintained CSV + Wikipedia (214 events, ADD/REMOVE balanced 107/107) and added the
 verifier as the gate.
+
+## The home page IS the AI-pick portfolio (Phase 7.0 PR-4)
+
+`frontend/app/page.tsx` was rebuilt from a rankings-preview into the AI-pick portfolio. It
+consumes the point-in-time backtest artifact `frontend/public/data/portfolio/backtest_pit.json`
+(produced by the `backfill-portfolio.yml` `workflow_dispatch`, NOT the weekly cron). Several
+load-bearing rules:
+
+- **Read via `fs`, never a static `import`.** `lib/data.ts` `getBacktestPIT()` uses
+  `fs.readFileSync` (like `getStockDetail`), NOT `import backtestPitJson from '@/public/...'`. The
+  artifact is ~1.3 MB; a static JSON `import` would (a) make `tsc` infer a giant literal type and
+  (b) bundle the blob into the server build. `fs` sidesteps both and degrades gracefully (file
+  absent → `null`).
+- **Trim + round before it reaches the client.** `getAiPickData()` (build-time server) converts the
+  full artifact into a small view model — the **net** NAV line per holding count, the four benchmark
+  lines, the per-count final gross/net/conservative values, and ONLY the latest rebalance's holdings
+  — all rounded to 2 dp. This is what ships in the page payload; the raw 1.3 MB (all 20 rebalances +
+  full-precision floats + gross/conservative full series) never does. `null` from `getAiPickData()`
+  renders a "backtest pending" state.
+- **Build-time-data boundary holds.** The server `page.tsx` calls `getAiPickData()` and passes the
+  result as a PROP to the `'use client'` `AiPickPortfolio`. No client component imports `lib/data.ts`
+  (it pulls `fs`). Same rule as the rest of the home/ranking build-time-data surface.
+- **The 1-10 slider switches `nav.by_count[N]`** — the artifact stores one NAV series per count
+  (the slider re-runs the backtest LINE, not just the displayed picks). The chart compares the
+  selected count's net line vs the selected `nav.benchmark[sym]`, both re-rebased to 100 at the
+  chosen timeframe's window start.
+- **`benchmarks.json` is NOT read by the frontend.** The chart uses `nav.benchmark` (already aligned
+  to `nav.dates` + rebased at backfill time). `benchmarks.json` is the weekly-cron-owned raw close
+  series (a diagnostic input to the backfill), not a frontend dependency.
+- **Recharts colors** in `NavCompareChart` use hex literals (the design-system Rule 0 exception for
+  Recharts adapters), sourced from the soft palette (emerald/indigo/slate) and swapped via
+  `next-themes`. `SegmentedSelector` (benchmark + timeframe pickers) mirrors `PriceTimePeriodSelector`
+  (the outlined-light radiogroup), so the controls read as one family with the price chart's toggle.
