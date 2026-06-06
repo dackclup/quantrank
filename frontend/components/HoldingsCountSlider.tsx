@@ -39,7 +39,11 @@ export function HoldingsCountSlider({ value, min, max, onChange }: Props) {
           value={value}
           onChange={(e) => onChange(Number(e.target.value))}
           aria-label={`Number of holdings: ${value} of ${max}`}
-          className="h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200 accent-emerald-700 dark:bg-slate-700 dark:accent-emerald-400"
+          // Native range tinted via accent-color (no `appearance-none` — pairing it
+          // with accent-color hides the thumb on Safari/WebKit; the centerpiece
+          // control must render its thumb cross-browser). The min-h-[44px] wrapper
+          // carries the touch target.
+          className="w-full cursor-pointer accent-emerald-700 dark:accent-emerald-400"
         />
       </div>
       <div className="flex justify-between font-mono text-[0.625rem] tabular-nums text-slate-400 dark:text-slate-500">
