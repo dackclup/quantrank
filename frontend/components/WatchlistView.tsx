@@ -3,10 +3,9 @@
 import Link from 'next/link';
 import { Star, X } from 'lucide-react';
 
-import { CHIP_BASE } from '@/components/Chip';
+import { ScoreBadge } from '@/components/ScoreBadge';
 import { SectorChip } from '@/components/SectorChip';
-import { Sparkline } from '@/components/Sparkline';
-import { StockLogo } from '@/components/StockLogo';
+import { WatchlistChart } from '@/components/WatchlistChart';
 import type { StockSummary } from '@/lib/types';
 import { useWatchlist } from '@/lib/useWatchlist';
 
@@ -18,11 +17,11 @@ import { useWatchlist } from '@/lib/useWatchlist';
 // rank. A saved ticker that's no longer in the universe (delisted since it was
 // starred) simply has no row to render; it stays in storage harmlessly.
 //
-// Each row is a compact watchlist line — [logo · ticker · rank · sector] ·
-// [price-trend Sparkline] · [price + daily-change chip] — with a trailing X to
-// remove. The register stays calm/editorial (outlined-light change chip + a
-// muted sign-aware sparkline), NOT a gamified trading row (PRODUCT.md
-// anti-reference #1).
+// Each saved name is a large card: the company name + composite-score donut up
+// top, price / loss-chance / valuation-vs-fair beneath, and a price chart with a
+// dashed fair-value line. Calm/editorial (PRODUCT.md anti-ref #1: not a gamified
+// trading row) — the valuation signal is the emerald/rose fair line + a labelled
+// "under / over fair value", never color alone.
 
 function WatchlistCard({
   row,
@@ -31,71 +30,99 @@ function WatchlistCard({
   row: StockSummary;
   onRemove: (ticker: string) => void;
 }) {
-  const pct = row.price_change_1d_pct;
-  const positive = pct != null && pct >= 0;
+  const mos = row.margin_of_safety_pct;
+  // Positive MoS = price sits below fair value = undervalued (emerald); negative
+  // = priced above fair value = overvalued (rose).
+  const undervalued = mos != null && mos >= 0;
 
   return (
-    <li className="hover-lift flex items-stretch overflow-hidden rounded border border-slate-200 bg-white transition-colors duration-100 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/50">
+    <li className="relative overflow-hidden rounded border border-slate-200 bg-white shadow-subtle transition-colors duration-100 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/40">
+      {/* Whole-card overlay link — keeps the rich card a single navigation
+          target without nesting interactive children inside an <a>. The content
+          layer is pointer-events-none so clicks fall through to this link; the
+          remove X re-enables pointer events at a higher z-index. */}
       <Link
         href={`/stock/${row.ticker}/`}
-        aria-label={`Open ${row.ticker} detail`}
-        className="press flex min-w-0 flex-1 items-center gap-3 p-3"
-      >
-        {/* Left — logo + ticker (+ small rank) over the sector chip. */}
-        <div className="flex shrink-0 items-center gap-2.5">
-          <StockLogo ticker={row.ticker} size={32} />
-          <div className="min-w-0">
-            <div className="flex items-center gap-1.5">
-              <span className="font-mono text-base font-semibold text-slate-900 dark:text-slate-100">
-                {row.ticker}
-              </span>
-              <span className="font-mono text-[0.625rem] tabular-nums text-slate-500 dark:text-slate-400">
-                #{row.rank}
-              </span>
-            </div>
-            <SectorChip sector={row.sector} size="xs" />
-          </div>
-        </div>
-
-        {/* Middle — muted, sign-aware price-trend sparkline (the flexible column). */}
-        <div className="min-w-0 flex-1 px-1">
-          <Sparkline ticker={row.ticker} />
-        </div>
-
-        {/* Right — last price over the outlined-light daily-change chip. */}
-        <div className="flex shrink-0 flex-col items-end gap-1">
-          <span className="font-mono text-base font-semibold tabular-nums text-slate-900 dark:text-slate-100">
-            ${row.current_price.toFixed(2)}
-          </span>
-          {pct != null ? (
-            <span
-              className={`${CHIP_BASE} gap-1 px-1.5 py-0.5 text-[0.6875rem] font-semibold tabular-nums ${
-                positive
-                  ? 'bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-800'
-                  : 'bg-rose-50 text-rose-700 ring-rose-200 dark:bg-rose-900/30 dark:text-rose-300 dark:ring-rose-800'
-              }`}
-            >
-              <span aria-hidden="true">{positive ? '↗' : '↘'}</span>
-              {positive ? '+' : ''}
-              {pct.toFixed(2)}%
-            </span>
-          ) : (
-            <span className="text-[0.6875rem] text-slate-500 dark:text-slate-400">past day n/a</span>
-          )}
-        </div>
-      </Link>
-
-      {/* Trailing X remove rail — a sibling of the row's <Link> (an interactive
-          button can't validly nest inside an <a>); echoes the reference's
-          right-side delete. Full-height rail with a >=44px hit target. */}
+        aria-label={`Open ${row.name} (${row.ticker}) detail`}
+        className="absolute inset-0 z-0"
+      />
       <button
         type="button"
         onClick={() => onRemove(row.ticker)}
         aria-label={`Remove ${row.ticker} from watchlist`}
-        className="flex min-w-[44px] shrink-0 items-center justify-center border-l border-slate-100 text-slate-400 press hover:bg-slate-100 hover:text-rose-600 dark:border-slate-800 dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-rose-400"
+        className="absolute right-2 top-2 z-20 inline-flex h-9 w-9 items-center justify-center rounded-sm text-slate-400 press hover:bg-slate-100 hover:text-rose-600 dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-rose-400"
       >
         <X className="h-[1.125rem] w-[1.125rem]" strokeWidth={2} aria-hidden="true" />
       </button>
+
+      <div className="pointer-events-none relative z-10 p-4">
+        {/* Header — name + ticker + sector (left); composite-score donut (right,
+            kept clear of the corner remove-X via pr-8). */}
+        <div className="flex items-start justify-between gap-3 pr-8">
+          <div className="min-w-0">
+            <div className="truncate font-slab text-lg font-semibold text-slate-900 dark:text-slate-100">
+              {row.name}
+            </div>
+            <div className="mt-0.5 flex items-center gap-2">
+              <span className="font-mono text-xs text-slate-500 dark:text-slate-400">{row.ticker}</span>
+              <SectorChip sector={row.sector} size="xs" />
+            </div>
+          </div>
+          <div className="shrink-0">
+            <ScoreBadge score={row.composite_score} size="md" />
+          </div>
+        </div>
+
+        {/* Stats — price + loss-chance (left); valuation vs fair value (right). */}
+        <div className="mt-4 flex items-end justify-between gap-3">
+          <div className="flex gap-6">
+            <div>
+              <div className="text-[0.625rem] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Price
+              </div>
+              <div className="font-mono text-base font-semibold tabular-nums text-slate-900 dark:text-slate-100">
+                ${row.current_price.toFixed(2)}
+              </div>
+            </div>
+            <div>
+              <div className="text-[0.625rem] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Loss chance
+              </div>
+              <div className="font-mono text-base font-semibold tabular-nums text-slate-700 dark:text-slate-300">
+                {row.loss_chance_pct != null ? `${row.loss_chance_pct.toFixed(1)}%` : '—'}
+              </div>
+            </div>
+          </div>
+          {mos != null && (
+            <div className="text-right">
+              <div
+                className={`font-mono text-base font-semibold tabular-nums ${
+                  undervalued ? 'text-emerald-700 dark:text-emerald-300' : 'text-rose-700 dark:text-rose-300'
+                }`}
+              >
+                {mos >= 0 ? '+' : ''}
+                {mos.toFixed(1)}%
+              </div>
+              <div
+                className={`text-[0.6875rem] ${
+                  undervalued ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'
+                }`}
+              >
+                {undervalued ? 'under fair value' : 'over fair value'}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Price chart with the dashed fair-value line. */}
+        <div className="mt-4">
+          <WatchlistChart
+            ticker={row.ticker}
+            fairPrice={row.fair_price}
+            currentPrice={row.current_price}
+          />
+        </div>
+      </div>
     </li>
   );
 }
@@ -156,7 +183,7 @@ export function WatchlistView({ rankings }: { rankings: StockSummary[] }) {
           </Link>
         </div>
       ) : (
-        <ul className="max-w-3xl space-y-2">
+        <ul className="max-w-2xl space-y-3">
           {rows.map((row) => (
             <WatchlistCard key={row.ticker} row={row} onRemove={remove} />
           ))}
