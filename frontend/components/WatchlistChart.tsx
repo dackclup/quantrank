@@ -125,7 +125,7 @@ export function WatchlistChart({
           className={
             undervalued
               ? 'stroke-emerald-500 dark:stroke-emerald-400'
-              : 'stroke-rose-400 dark:stroke-rose-400'
+              : 'stroke-rose-400 dark:stroke-rose-300'
           }
         />
       )}

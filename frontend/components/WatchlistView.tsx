@@ -50,7 +50,7 @@ function WatchlistCard({
         type="button"
         onClick={() => onRemove(row.ticker)}
         aria-label={`Remove ${row.ticker} from watchlist`}
-        className="absolute right-2 top-2 z-20 inline-flex h-9 w-9 items-center justify-center rounded-sm text-slate-400 press hover:bg-slate-100 hover:text-rose-600 dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-rose-400"
+        className="absolute right-2 top-2 z-20 inline-flex h-11 w-11 items-center justify-center rounded-sm text-slate-400 press hover:bg-slate-100 hover:text-rose-600 dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-rose-400"
       >
         <X className="h-[1.125rem] w-[1.125rem]" strokeWidth={2} aria-hidden="true" />
       </button>
@@ -58,7 +58,7 @@ function WatchlistCard({
       <div className="pointer-events-none relative z-10 p-4">
         {/* Header — name + ticker + sector (left); composite-score donut (right,
             kept clear of the corner remove-X via pr-8). */}
-        <div className="flex items-start justify-between gap-3 pr-8">
+        <div className="flex items-start justify-between gap-3 pr-10">
           <div className="min-w-0">
             <div className="truncate font-slab text-lg font-semibold text-slate-900 dark:text-slate-100">
               {row.name}
