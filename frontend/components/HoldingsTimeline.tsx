@@ -52,7 +52,10 @@ export function HoldingsTimeline({
       for (const h of slice) sectorByTicker[h.ticker] = h.sector;
       const prevSet = new Set(prev);
       const heldSet = new Set(held);
-      const entered = new Set(held.filter((t) => !prevSet.has(t)));
+      // i === 0 is the initial basket — "entered vs the prior quarter" is
+      // undefined, so don't false-flag every name as new (the row carries the
+      // "initial basket" sub-label instead).
+      const entered = i === 0 ? new Set<string>() : new Set(held.filter((t) => !prevSet.has(t)));
       const exited = prev.filter((t) => !heldSet.has(t));
       if (i > 0) totalEntered += entered.size;
       chrono.push({ date: timeline[i].date, held, entered, exited, sectorByTicker });
@@ -72,7 +75,7 @@ export function HoldingsTimeline({
           Rotation history
         </h2>
         <span className="text-xs text-slate-500 dark:text-slate-400">
-          {timeline.length} quarterly rebalances
+          <span className="font-mono tabular-nums">{timeline.length}</span> quarterly rebalances
         </span>
       </div>
       <p className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
@@ -130,13 +133,13 @@ export function HoldingsTimeline({
                   })}
                 </div>
                 {isInitial ? (
-                  <span className="text-xs text-slate-400 dark:text-slate-500">initial basket</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">initial basket</span>
                 ) : row.exited.length > 0 ? (
-                  <span className="text-xs text-slate-400 dark:text-slate-500">
+                  <span className="text-xs text-slate-500 dark:text-slate-400">
                     exited <span className="font-mono">{row.exited.join(', ')}</span>
                   </span>
                 ) : (
-                  <span className="text-xs text-slate-400 dark:text-slate-500">reweighted only</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">reweighted only</span>
                 )}
               </div>
             </li>
