@@ -1251,6 +1251,43 @@
   },
   {
     "rank": 37,
+    "ticker": "GOOGL",
+    "name": "Alphabet Inc. (Class A)",
+    "sector": "Communication Services",
+    "composite_score": 63.21,
+    "current_price": 368.53,
+    "fair_price": 194.7897187665366,
+    "max_fair_price": 501.7078547047285,
+    "margin_of_safety_pct": -89.19376295265104,
+    "pillar_scores": {
+      "quality": 68.48,
+      "value": 33.33,
+      "growth": 67.39,
+      "momentum": 84.16,
+      "health": 88.27,
+      "profitability": 71.38,
+      "technical": 42.88,
+      "risk": 66.77,
+      "sentiment": null,
+      "ml": null
+    },
+    "risk_flags": [],
+    "valuation_warnings": [
+      "beneish_high",
+      "cross_source_disagreement",
+      "multi_class_aggregate_shares_suspected",
+      "accruals_momentum_high"
+    ],
+    "recommendation": "neutral",
+    "loss_chance_pct": 56.39437178820948,
+    "price_change_1d_pct": -0.9834,
+    "manipulation_index": 8.0,
+    "composite_score_adjusted": 62.41,
+    "entered_top5": false,
+    "exited_top5": false
+  },
+  {
+    "rank": 38,
     "ticker": "SOLV",
     "name": "Solventum",
     "sector": "Health Care",
@@ -1284,7 +1321,7 @@
     "exited_top5": false
   },
   {
-    "rank": 38,
+    "rank": 39,
     "ticker": "NEM",
     "name": "Newmont",
     "sector": "Materials",
@@ -1319,7 +1356,7 @@
     "exited_top5": false
   },
   {
-    "rank": 39,
+    "rank": 40,
     "ticker": "KLAC",
     "name": "KLA Corporation",
     "sector": "Information Technology",
@@ -1356,7 +1393,7 @@
     "exited_top5": false
   },
   {
-    "rank": 40,
+    "rank": 41,
     "ticker": "TRV",
     "name": "The Travelers Companies",
     "sector": "Financials",
@@ -1388,7 +1425,7 @@
     "exited_top5": false
   },
   {
-    "rank": 41,
+    "rank": 42,
     "ticker": "MU",
     "name": "Micron Technology",
     "sector": "Information Technology",
@@ -1425,7 +1462,7 @@
     "exited_top5": false
   },
   {
-    "rank": 42,
+    "rank": 43,
     "ticker": "FRT",
     "name": "Federal Realty Investment Trust",
     "sector": "Real Estate",
@@ -1453,43 +1490,6 @@
     "price_change_1d_pct": 1.4486,
     "manipulation_index": 0.0,
     "composite_score_adjusted": 62.89,
-    "entered_top5": false,
-    "exited_top5": false
-  },
-  {
-    "rank": 43,
-    "ticker": "GOOGL",
-    "name": "Alphabet Inc. (Class A)",
-    "sector": "Communication Services",
-    "composite_score": 62.89,
-    "current_price": 368.53,
-    "fair_price": 181.94202862460082,
-    "max_fair_price": 468.6168522645678,
-    "margin_of_safety_pct": -102.55352848663743,
-    "pillar_scores": {
-      "quality": 68.48,
-      "value": 31.88,
-      "growth": 67.39,
-      "momentum": 84.16,
-      "health": 88.27,
-      "profitability": 71.38,
-      "technical": 42.88,
-      "risk": 66.77,
-      "sentiment": null,
-      "ml": null
-    },
-    "risk_flags": [],
-    "valuation_warnings": [
-      "beneish_high",
-      "cross_source_disagreement",
-      "multi_class_aggregate_shares_suspected",
-      "accruals_momentum_high"
-    ],
-    "recommendation": "neutral",
-    "loss_chance_pct": 56.55741526647036,
-    "price_change_1d_pct": -0.9834,
-    "manipulation_index": 8.0,
-    "composite_score_adjusted": 62.09,
     "entered_top5": false,
     "exited_top5": false
   },
@@ -2619,38 +2619,6 @@
   },
   {
     "rank": 77,
-    "ticker": "META",
-    "name": "Meta Platforms",
-    "sector": "Communication Services",
-    "composite_score": 59.61,
-    "current_price": 593.0,
-    "fair_price": 219.22376912286714,
-    "max_fair_price": 515.3173996583955,
-    "margin_of_safety_pct": -170.49986521655168,
-    "pillar_scores": {
-      "quality": 89.13,
-      "value": 21.01,
-      "growth": 85.87,
-      "momentum": 23.51,
-      "health": 87.57,
-      "profitability": 88.41,
-      "technical": 27.54,
-      "risk": 27.72,
-      "sentiment": null,
-      "ml": null
-    },
-    "risk_flags": [],
-    "valuation_warnings": [],
-    "recommendation": "neutral",
-    "loss_chance_pct": 55.19500440267914,
-    "price_change_1d_pct": -5.5085,
-    "manipulation_index": 0.0,
-    "composite_score_adjusted": 59.61,
-    "entered_top5": false,
-    "exited_top5": false
-  },
-  {
-    "rank": 78,
     "ticker": "SPG",
     "name": "Simon Property Group",
     "sector": "Real Estate",
@@ -2684,6 +2652,38 @@
     "price_change_1d_pct": 1.9833,
     "manipulation_index": 25.0,
     "composite_score_adjusted": 57.1,
+    "entered_top5": false,
+    "exited_top5": false
+  },
+  {
+    "rank": 78,
+    "ticker": "META",
+    "name": "Meta Platforms",
+    "sector": "Communication Services",
+    "composite_score": 59.45,
+    "current_price": 593.0,
+    "fair_price": 219.22376912286714,
+    "max_fair_price": 515.3173996583955,
+    "margin_of_safety_pct": -170.49986521655168,
+    "pillar_scores": {
+      "quality": 89.13,
+      "value": 20.29,
+      "growth": 85.87,
+      "momentum": 23.51,
+      "health": 87.57,
+      "profitability": 88.41,
+      "technical": 27.54,
+      "risk": 27.72,
+      "sentiment": null,
+      "ml": null
+    },
+    "risk_flags": [],
+    "valuation_warnings": [],
+    "recommendation": "neutral",
+    "loss_chance_pct": 55.27652614180957,
+    "price_change_1d_pct": -5.5085,
+    "manipulation_index": 0.0,
+    "composite_score_adjusted": 59.45,
     "entered_top5": false,
     "exited_top5": false
   },
@@ -4712,7 +4712,7 @@
     "composite_score": 55.98,
     "current_price": 19.95,
     "fair_price": 13.171646071741963,
-    "max_fair_price": 22.17883474327109,
+    "max_fair_price": 20.845155473220732,
     "margin_of_safety_pct": -51.46171294216264,
     "pillar_scores": {
       "quality": 71.74,
@@ -8480,7 +8480,7 @@
     "composite_score": 50.96,
     "current_price": 45.37,
     "fair_price": 68.07463473089273,
-    "max_fair_price": 129.66596883920977,
+    "max_fair_price": 119.53869184919876,
     "margin_of_safety_pct": 33.3525635337775,
     "pillar_scores": {
       "quality": 54.35,
@@ -9188,7 +9188,7 @@
     "composite_score": 49.86,
     "current_price": 22.75,
     "fair_price": 49.119197212663714,
-    "max_fair_price": 69.41893696795229,
+    "max_fair_price": 63.643582652997466,
     "margin_of_safety_pct": 53.68409646130233,
     "pillar_scores": {
       "quality": 52.17,
@@ -11306,40 +11306,6 @@
   },
   {
     "rank": 330,
-    "ticker": "TMUS",
-    "name": "T-Mobile US",
-    "sector": "Communication Services",
-    "composite_score": 47.06,
-    "current_price": 178.1,
-    "fair_price": 104.76207650896433,
-    "max_fair_price": 320.04633883492903,
-    "margin_of_safety_pct": -70.0042725749865,
-    "pillar_scores": {
-      "quality": 58.7,
-      "value": 47.1,
-      "growth": 64.13,
-      "momentum": 18.92,
-      "health": 41.79,
-      "profitability": 50.0,
-      "technical": 16.09,
-      "risk": 48.9,
-      "sentiment": null,
-      "ml": null
-    },
-    "risk_flags": [],
-    "valuation_warnings": [
-      "extreme_dcf_estimate"
-    ],
-    "recommendation": "neutral",
-    "loss_chance_pct": 62.46827364455223,
-    "price_change_1d_pct": 0.6101,
-    "manipulation_index": 0.0,
-    "composite_score_adjusted": 47.06,
-    "entered_top5": false,
-    "exited_top5": false
-  },
-  {
-    "rank": 331,
     "ticker": "DOV",
     "name": "Dover Corporation",
     "sector": "Industrials",
@@ -11375,7 +11341,7 @@
     "exited_top5": false
   },
   {
-    "rank": 332,
+    "rank": 331,
     "ticker": "WEC",
     "name": "WEC Energy Group",
     "sector": "Utilities",
@@ -11407,7 +11373,7 @@
     "exited_top5": false
   },
   {
-    "rank": 333,
+    "rank": 332,
     "ticker": "AON",
     "name": "Aon plc",
     "sector": "Financials",
@@ -11443,7 +11409,7 @@
     "exited_top5": false
   },
   {
-    "rank": 334,
+    "rank": 333,
     "ticker": "Q",
     "name": "Qnity Electronics",
     "sector": "Information Technology",
@@ -11477,7 +11443,7 @@
     "exited_top5": false
   },
   {
-    "rank": 335,
+    "rank": 334,
     "ticker": "BRK-B",
     "name": "Berkshire Hathaway",
     "sector": "Financials",
@@ -11514,7 +11480,7 @@
     "exited_top5": false
   },
   {
-    "rank": 336,
+    "rank": 335,
     "ticker": "DELL",
     "name": "Dell Technologies",
     "sector": "Information Technology",
@@ -11551,7 +11517,7 @@
     "exited_top5": false
   },
   {
-    "rank": 337,
+    "rank": 336,
     "ticker": "YUM",
     "name": "Yum! Brands",
     "sector": "Consumer Discretionary",
@@ -11581,6 +11547,40 @@
     "price_change_1d_pct": 1.8841,
     "manipulation_index": 0.0,
     "composite_score_adjusted": 46.92,
+    "entered_top5": false,
+    "exited_top5": false
+  },
+  {
+    "rank": 337,
+    "ticker": "TMUS",
+    "name": "T-Mobile US",
+    "sector": "Communication Services",
+    "composite_score": 46.9,
+    "current_price": 178.1,
+    "fair_price": 104.76207650896433,
+    "max_fair_price": 294.01397467636235,
+    "margin_of_safety_pct": -70.0042725749865,
+    "pillar_scores": {
+      "quality": 58.7,
+      "value": 46.38,
+      "growth": 64.13,
+      "momentum": 18.92,
+      "health": 41.79,
+      "profitability": 50.0,
+      "technical": 16.09,
+      "risk": 48.9,
+      "sentiment": null,
+      "ml": null
+    },
+    "risk_flags": [],
+    "valuation_warnings": [
+      "extreme_dcf_estimate"
+    ],
+    "recommendation": "neutral",
+    "loss_chance_pct": 62.549795383682664,
+    "price_change_1d_pct": 0.6101,
+    "manipulation_index": 0.0,
+    "composite_score_adjusted": 46.9,
     "entered_top5": false,
     "exited_top5": false
   },
@@ -14960,9 +14960,9 @@
     "sector": "Communication Services",
     "composite_score": 40.1,
     "current_price": 10.22,
-    "fair_price": 15.189827145825546,
+    "fair_price": 14.430006712805293,
     "max_fair_price": 28.445038864558466,
-    "margin_of_safety_pct": 32.71812661912048,
+    "margin_of_safety_pct": 29.175360272289367,
     "pillar_scores": {
       "quality": 29.35,
       "value": 69.57,
@@ -14982,7 +14982,7 @@
       "restatement_history"
     ],
     "recommendation": "neutral",
-    "loss_chance_pct": 35.500931724072316,
+    "loss_chance_pct": 36.740899945463205,
     "price_change_1d_pct": -4.3071,
     "manipulation_index": 5.0,
     "composite_score_adjusted": 39.6,
