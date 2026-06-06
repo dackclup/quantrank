@@ -498,15 +498,22 @@ export function FairPriceCard(props) {  // no types
   tsc / next build / schema-check) + "what this PR does NOT touch" +
   reviewer checklist. See `pr-iteration-flow/SKILL.md` for the canonical
   template.
-- **AGENTS.md + CLAUDE.md ship with every PR.** Every PR — current and
-  future, regardless of type (feat / fix / ci / docs / chore) — must
-  include an edit to both AGENTS.md (this file) and CLAUDE.md that
-  records what is changing and why. At minimum, a paragraph under
-  §"Phase + version state" (PR in flight) or in the appropriate section
-  (new gotcha / convention / boundary / command / connector). The PR
-  is incomplete until both agent docs reflect it. Non-Claude runtimes
-  (Copilot / Cursor / Devin) read AGENTS.md; Claude reads CLAUDE.md.
-  They must stay in lockstep so behavior is consistent across agents.
+- **Every PR records itself in the agent-doc surface.** Every PR —
+  regardless of type (feat / fix / ci / docs / chore) — must leave a
+  written trace of what is changing and why. **At minimum, a
+  substantive entry in [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md)**
+  (the append-only side-file adopted 2026-05-24) — OR a matching
+  substance edit to CLAUDE.md + AGENTS.md in the appropriate section
+  (new gotcha / convention / boundary / command / connector). **Do NOT
+  add a per-PR phase/schema log entry under AGENTS.md §"Phase + version
+  state"** — that section was collapsed to a pointer-only redirect on
+  2026-06-03 (the ~1,068-line parallel mirror was retired); per-PR
+  in-flight state now lives ONLY in PHASE_STATUS_INFLIGHT.md + CLAUDE.md
+  §Phase status. A genuinely new convention / gotcha / boundary / command
+  still lands directly in BOTH files (real-section substance, not a phase
+  log). Non-Claude runtimes (Copilot / Cursor / Devin) read AGENTS.md;
+  Claude reads CLAUDE.md — they must stay in lockstep so behavior is
+  consistent across agents.
 
 ## Boundaries
 
