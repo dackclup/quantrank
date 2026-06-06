@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Star, X } from 'lucide-react';
 
+import { CHIP_BASE } from '@/components/Chip';
 import { SectorChip } from '@/components/SectorChip';
 import { Sparkline } from '@/components/Sparkline';
 import { StockLogo } from '@/components/StockLogo';
@@ -48,7 +49,7 @@ function WatchlistCard({
               <span className="font-mono text-base font-semibold text-slate-900 dark:text-slate-100">
                 {row.ticker}
               </span>
-              <span className="font-mono text-[0.625rem] tabular-nums text-slate-400 dark:text-slate-500">
+              <span className="font-mono text-[0.625rem] tabular-nums text-slate-500 dark:text-slate-400">
                 #{row.rank}
               </span>
             </div>
@@ -68,7 +69,7 @@ function WatchlistCard({
           </span>
           {pct != null ? (
             <span
-              className={`inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 text-[0.6875rem] font-semibold tabular-nums ring-1 ring-inset ${
+              className={`${CHIP_BASE} gap-1 px-1.5 py-0.5 text-[0.6875rem] font-semibold tabular-nums ${
                 positive
                   ? 'bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-800'
                   : 'bg-rose-50 text-rose-700 ring-rose-200 dark:bg-rose-900/30 dark:text-rose-300 dark:ring-rose-800'
@@ -79,7 +80,7 @@ function WatchlistCard({
               {pct.toFixed(2)}%
             </span>
           ) : (
-            <span className="text-[0.6875rem] text-slate-400 dark:text-slate-500">past day n/a</span>
+            <span className="text-[0.6875rem] text-slate-500 dark:text-slate-400">past day n/a</span>
           )}
         </div>
       </Link>
