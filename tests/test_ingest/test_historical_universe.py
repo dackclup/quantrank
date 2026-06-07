@@ -229,29 +229,35 @@ def test_list_known_events_date_filter() -> None:
 
 
 def test_csv_coverage_size_invariant() -> None:
-    """Universe size at every snapshot date stays in plausible S&P 500 band [490, 510].
+    """members_at runs across the coverage window + flags pre-coverage dates.
 
-    Hypothesis-style property check (manual sampling instead of @given
-    to avoid network/Hypothesis overhead in the smoke suite). Walks a
-    few representative dates across the coverage window.
+    Smoke check (manual sampling, no network). The anchor is 502 PLACEHOLDER
+    tickers, so the reverse-walk re-adds real removed-tickers (absent from the
+    placeholder set) and the size drifts ABOVE 502 — that drift is a placeholder
+    artifact, not a real size. The real 498-506 band on the live universe is
+    gated by ``scripts/verify_membership_ledger.py``. Coverage now runs from
+    2016-01 onward (Track B 10Y ledger rebuild — fja05680 snapshot-diff).
     """
     today = date(2026, 5, 27)
     current = frozenset({f"TKR{i:04d}" for i in range(502)})  # 502 placeholder
+    # In-coverage dates (>= EARLIEST_EVENT_DATE = 2016-01): is_complete True.
     for d in [
-        date(2020, 6, 1),
+        date(2017, 6, 1),
+        date(2019, 6, 1),
         date(2021, 6, 1),
-        date(2022, 6, 1),
         date(2023, 6, 1),
-        date(2024, 6, 1),
         date(2025, 6, 1),
     ]:
         result = members_at(d, current, anchor_date=today)
-        # CSV is incomplete so size will drift slightly from 502, but
-        # should NEVER drift outside the very-wide [400, 600] band on
-        # the partial 50-event set.
-        assert 400 <= len(result.tickers) <= 600, (
-            f"members_at({d}) returned {len(result.tickers)} tickers — outside [400, 600]"
+        assert result.is_complete is True, f"members_at({d}) should be in coverage"
+        # Wide band — placeholder reverse-walk inflates with the now-complete ledger.
+        assert 400 <= len(result.tickers) <= 800, (
+            f"members_at({d}) returned {len(result.tickers)} tickers — outside [400, 800]"
         )
+    # Pre-coverage (before 2016) is flagged incomplete + returns the anchor snapshot.
+    pre = members_at(date(2014, 6, 1), current, anchor_date=today)
+    assert pre.is_complete is False
+    assert len(pre.tickers) == 502
 
 
 # --- CSV file structure invariants --------------------------------

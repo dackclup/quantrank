@@ -1,7 +1,7 @@
 """Integrity verifier for ``data/sp500_membership_historical.csv``.
 
 Reverse-walks ``members_at()`` from the CURRENT universe (the frontend
-``rankings.json`` snapshot) across every month of the 5-year backtest window
+``rankings.json`` snapshot) across every month of the 10-year backtest window
 and checks two invariants:
 
 1. **Consistency** — every ticker the ledger REMOVES in-window (and never
@@ -37,7 +37,7 @@ from compute.ingest.historical_universe import (  # noqa: E402
 
 RANKINGS = ROOT / "frontend" / "public" / "data" / "rankings.json"
 ANCHOR = date(2026, 6, 3)        # metadata.json last_update_utc date
-WINDOW_START = date(2021, 6, 1)  # 5-year backtest window start
+WINDOW_START = date(2016, 6, 1)  # 10-year backtest window start
 BAND = (498, 506)                # S&P 500: ~500 companies, ~502-503 stocks
 
 

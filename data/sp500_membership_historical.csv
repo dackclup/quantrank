@@ -1,34 +1,27 @@
 effective_date,ticker,action,name,source_url,notes
 # QuantRank historical S&P 500 membership ledger.
 # Format: one row per ADD or REMOVE event. Sorted newest-first; the consumer
-# (compute/ingest/historical_universe.py) re-sorts by date. RENAME events are
-# out of scope (they do not change membership).
+# (compute/ingest/historical_universe.py) re-sorts by date.
+#
+# Coverage: 2016-01-04 .. present (Track B 10Y rebuild). The 2016-01 .. 2026-01-14
+# portion is DERIVED by snapshot-diff of the fja05680 historical-components
+# dataset (consecutive point-in-time constituent sets -> ADD/REMOVE per change
+# date). It is RENAME-AWARE: a ticker symbol change appears as REMOVE old + ADD
+# new on the rename date, so members_at returns the correct historical ticker.
+# The > 2026-01-14 tail is hand-curated (fja05680 coverage ends there); fja05680
+# was cross-validated against the prior hand-built 2020-2026 ledger at the
+# boundary (agreement). Tickers normalized to the yfinance dash form (BRK-B,
+# BF-B). Re-run scripts/verify_membership_ledger.py after ANY edit.
 #
 # Sources (per row source_url):
+#   - fja05680/sp500 "S&P 500 Historical Components & Changes": https://github.com/fja05680/sp500
 #   - S&P Dow Jones Indices press releases: https://press.spglobal.com/
-#   - Wikipedia "List of S&P 500 companies" change-history table:
-#     https://en.wikipedia.org/wiki/List_of_S%26P_500_companies
+#   - Wikipedia "List of S&P 500 companies": https://en.wikipedia.org/wiki/List_of_S%26P_500_companies
 #
 # License posture (per Research Report v1.0 License section):
 #   - Factual list (uncopyrightable per Feist 1991 + 17 U.S.C. 102(b)).
-#   - Our compilation = original work under the project's MIT license; per-row
-#     citation included, no third-party prose reproduced.
-#
-# Scope (Phase 7.0 PR-0 -- full rebuild 2026-06):
-#   - Complete ADD/REMOVE ledger 2020-04 -> 2026-06 (5-year backtest window).
-#   - Triangulated across S&P DJI press releases + fja05680/sp500 maintained
-#     CSV + Wikipedia; each load-bearing 2021-06+ event confirmed by >=2.
-#   - Corrects the prior ledger: BLK->BX (+ missing ABNB), deletes the bogus
-#     2024-08-30 BLL removal (BLL->BALL was a 2022 rename; still a member),
-#     consolidates KDP/UA/UAA to 2022-06-21, adds the missing SBNY (Signature
-#     Bank) 2023 failure removal, fixes the scrambled 2020-06-22 add trio.
-#   - Integrity-gated: members_at() reverse-walk keeps the reconstructed
-#     universe size in the S&P 500 band across every month of the backtest
-#     window (scripts/verify_membership_ledger.py).
-#
-# Methodology (Hou-Xue-Zhang 2020 RFS + McLean-Pontiff 2016 JF):
-#   membership_at(D) = members_at(today) reversed across ADD/REMOVE events
-#   with effective_date > D.
+2026-06-02,FDXF,ADD,FedEx Freight Holding,https://press.spglobal.com/2026-05-27-FedEx-Freight-Holding-Company-Set-to-Join-S-P-500-EPAM-Systems-and-Dave-to-Join-S-P-SmallCap-600,Replaced EPAM (eff. 2026-06-02)
+2026-06-02,EPAM,REMOVE,EPAM Systems,https://press.spglobal.com/2026-05-27-FedEx-Freight-Holding-Company-Set-to-Join-S-P-500-EPAM-Systems-and-Dave-to-Join-S-P-SmallCap-600,"Moved to S&P SmallCap 600; replaced by FDXF (eff. 2026-06-02, ann. 2026-05-27)"
 2026-05-07,VEEV,ADD,Veeva Systems,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced CTRA (Coterra acq. by Devon Energy)
 2026-05-07,CTRA,REMOVE,Coterra Energy,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by Devon Energy; replaced by VEEV
 2026-04-09,HOLX,REMOVE,Hologic,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by Blackstone and TPG replaced by CASY
@@ -41,205 +34,474 @@ effective_date,ticker,action,name,source_url,notes
 2026-03-23,LW,REMOVE,Lamb Weston,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by COHR
 2026-03-23,LITE,ADD,Lumentum Holdings,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced MOH (Molina Healthcare)
 2026-03-23,COHR,ADD,Coherent,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced LW (Lamb Weston)
+2026-02-09,DAY,REMOVE,Ceridian Dayforce,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by Thoma Bravo; traded as DAY after 2024 rename; replaced by CIEN [reconciled CDAY->DAY: renamed 2024-02]
 2026-02-09,CIEN,ADD,Ciena,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced DAY (Dayforce acq. by Thoma Bravo)
-2026-02-09,CDAY,REMOVE,Ceridian Dayforce,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by Thoma Bravo; traded as DAY after 2024 rename; replaced by CIEN
-2025-12-22,SOLS,REMOVE,Solstice Advanced Materials,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by CVNA
-2025-12-22,MHK,REMOVE,Mohawk Industries,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by FIX
-2025-12-22,LKQ,REMOVE,LKQ Corporation,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by CRH
-2025-12-22,FIX,ADD,Comfort Systems USA,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced MHK (Mohawk Industries)
-2025-12-22,CVNA,ADD,Carvana,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced SOLS (Solstice Advanced Materials)
-2025-12-22,CRH,ADD,CRH plc,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced LKQ (LKQ Corporation)
-2025-12-11,K,REMOVE,Kellanova,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by Mars; replaced by ARES
-2025-12-11,ARES,ADD,Ares Management,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced K (Kellanova acq. by Mars)
-2025-11-28,SNDK,ADD,Sandisk,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced IPG (Interpublic acq. by Omnicom)
-2025-11-28,IPG,REMOVE,Interpublic Group,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by Omnicom; replaced by SNDK
-2025-11-04,EMN,REMOVE,Eastman Chemical,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Market-cap change 1-sided
-2025-11-03,Q,ADD,Qnity Electronics,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,DuPont spinoff 1-sided
-2025-10-31,KMX,REMOVE,CarMax,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Market-cap change 1-sided
-2025-10-30,SOLS,ADD,Solstice Advanced Materials,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Honeywell spinoff 1-sided
-2025-09-22,MKTX,REMOVE,MarketAxess Holdings,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by APP
-2025-09-22,HOOD,ADD,Robinhood Markets,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced CZR (Caesars Entertainment)
-2025-09-22,ENPH,REMOVE,Enphase Energy,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by EME
-2025-09-22,EME,ADD,EMCOR Group,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced ENPH (Enphase Energy)
-2025-09-22,CZR,REMOVE,Caesars Entertainment,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by HOOD
-2025-09-22,APP,ADD,AppLovin,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced MKTX (MarketAxess)
-2025-08-28,WBA,REMOVE,Walgreens Boots Alliance,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Taken private by Sycamore Partners; replaced by IBKR
-2025-08-28,IBKR,ADD,Interactive Brokers Group,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced WBA (Walgreens taken private by Sycamore)
-2025-07-23,XYZ,ADD,Block,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced HES (Hess acq. by Chevron); SQ ticker now XYZ
-2025-07-23,HES,REMOVE,Hess Corporation,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by Chevron; replaced by XYZ
-2025-07-18,TTD,ADD,The Trade Desk,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced ANSS (Ansys acq. by Synopsys)
-2025-07-18,ANSS,REMOVE,Ansys,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by Synopsys; replaced by TTD
-2025-07-09,JNPR,REMOVE,Juniper Networks,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by Hewlett Packard Enterprise; replaced by DDOG
-2025-07-09,DDOG,ADD,Datadog,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced JNPR (Juniper acq. by HPE)
-2025-05-19,DFS,REMOVE,Discover Financial Services,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by Capital One; replaced by COIN
-2025-05-19,COIN,ADD,Coinbase Global,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced DFS (Discover acq. by Capital One)
-2025-03-24,WSM,ADD,Williams-Sonoma,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced CE (Celanese)
-2025-03-24,TKO,ADD,TKO Group Holdings,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced TFX (Teleflex)
-2025-03-24,TFX,REMOVE,Teleflex,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by TKO
-2025-03-24,FMC,REMOVE,FMC Corporation,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by EXE
-2025-03-24,EXE,ADD,Expand Energy,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced FMC (FMC Corp)
-2025-03-24,DASH,ADD,DoorDash,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced BWA (BorgWarner)
-2025-03-24,CE,REMOVE,Celanese,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by WSM
-2025-03-24,BWA,REMOVE,BorgWarner,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by DASH
-2024-12-23,WDAY,ADD,Workday,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced AMTM (Amentum)
-2024-12-23,QRVO,REMOVE,Qorvo,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by APO
-2024-12-23,LII,ADD,Lennox International,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced CTLT (Catalent acq. by Novo Holdings)
-2024-12-23,CTLT,REMOVE,Catalent,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by Novo Holdings; replaced by LII
-2024-12-23,APO,ADD,Apollo Global Management,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced QRVO (Qorvo)
-2024-12-23,AMTM,REMOVE,Amentum Holdings,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by WDAY in Dec 2024 rebalance
-2024-11-26,TPL,ADD,Texas Pacific Land,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced MRO (Marathon Oil acq. by ConocoPhillips)
-2024-11-26,MRO,REMOVE,Marathon Oil,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by ConocoPhillips; replaced by TPL
-2024-10-01,BBWI,REMOVE,Bath and Body Works,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Market-cap change 1-sided
-2024-09-30,AMTM,ADD,Amentum Holdings,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Jacobs spinoff merged into Amentum 1-sided
-2024-09-23,PLTR,ADD,Palantir Technologies,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced AAL (American Airlines)
-2024-09-23,ETSY,REMOVE,Etsy,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by DELL
-2024-09-23,ERIE,ADD,Erie Indemnity,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced BIO (Bio-Rad)
-2024-09-23,DELL,ADD,Dell Technologies,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced ETSY (Etsy)
-2024-09-23,BIO,REMOVE,Bio-Rad Laboratories,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by ERIE
-2024-09-23,AAL,REMOVE,American Airlines Group,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by PLTR
-2024-07-08,WRK,REMOVE,WestRock,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Merged into Smurfit WestRock SW
-2024-07-08,SW,ADD,Smurfit WestRock,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Smurfit Kappa plus WestRock merger; replaced WRK
-2024-06-24,RHI,REMOVE,Robert Half,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by KKR
-2024-06-24,KKR,ADD,KKR and Co,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced RHI (Robert Half)
-2024-06-24,ILMN,REMOVE,Illumina,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by GDDY
-2024-06-24,GDDY,ADD,GoDaddy,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced ILMN (Illumina)
-2024-06-24,CRWD,ADD,CrowdStrike Holdings,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced CMA (Comerica)
-2024-06-24,CMA,REMOVE,Comerica,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by CRWD
-2024-05-08,VST,ADD,Vistra,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced PXD (Pioneer Natural Resources acq. by ExxonMobil)
-2024-05-08,PXD,REMOVE,Pioneer Natural Resources,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by ExxonMobil; replaced by VST
-2024-04-03,XRAY,REMOVE,Dentsply Sirona,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Moved to S-P MidCap 400; replaced by GEV
-2024-04-03,VFC,REMOVE,VF Corporation,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Moved to S-P SmallCap 600; replaced by SOLV
-2024-04-03,SOLV,ADD,Solventum,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,3M health-care spinoff; paired with VFC removal
-2024-04-03,GEV,ADD,GE Vernova,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,GE energy spinoff; paired with XRAY removal
-2024-03-18,ZION,REMOVE,Zions Bancorporation,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Moved to S-P MidCap 400; replaced by DECK
-2024-03-18,WHR,REMOVE,Whirlpool,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Moved to S-P MidCap 400; replaced by SMCI
-2024-03-18,SMCI,ADD,Super Micro Computer,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced WHR (Whirlpool to MidCap 400)
-2024-03-18,DECK,ADD,Deckers Outdoor,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced ZION (Zions to MidCap 400)
-2023-12-18,UBER,ADD,Uber Technologies,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced SEE (Sealed Air)
-2023-12-18,SEE,REMOVE,Sealed Air,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by UBER
-2023-12-18,SEDG,REMOVE,SolarEdge Technologies,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Moved to S-P MidCap 400 confirmed effective 2023-12-18
-2023-12-18,JBL,ADD,Jabil,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Joined Dec 2023 rebalance (UBER JBL BLDR)
-2023-12-18,BLDR,ADD,Builders FirstSource,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Dec 2023 rebalance entrant uncertain counterpart
-2023-12-18,ALK,REMOVE,Alaska Air Group,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Moved to S-P MidCap 400 in Dec 2023 rebalance
-2023-10-18,OGN,REMOVE,Organon,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Moved to S-P MidCap 400; replaced by HUBB
-2023-10-18,LULU,ADD,Lululemon Athletica,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced ATVI (Activision Blizzard acq. by Microsoft)
-2023-10-18,HUBB,ADD,Hubbell,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced OGN (Organon to MidCap 400)
-2023-10-18,ATVI,REMOVE,Activision Blizzard,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by Microsoft; replaced by LULU
-2023-10-02,VLTO,ADD,Veralto,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Spun off from Fortive; replaced DXC (DXC Technology)
-2023-10-02,DXC,REMOVE,DXC Technology,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by VLTO
-2023-09-18,NWL,REMOVE,Newell Brands,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by ABNB
-2023-09-18,LNC,REMOVE,Lincoln National,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by BX
-2023-09-18,BX,ADD,Blackstone,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced LNC (Lincoln National)
-2023-09-18,ABNB,ADD,Airbnb,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced NWL (Newell Brands)
-2023-08-25,KVUE,ADD,Kenvue,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,J and J consumer-health spinoff; replaced AAP (Advance Auto Parts)
-2023-08-25,AAP,REMOVE,Advance Auto Parts,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by KVUE
-2023-06-20,PANW,ADD,Palo Alto Networks,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced DISH (DISH Network)
-2023-06-20,DISH,REMOVE,DISH Network,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by PANW
-2023-05-04,FRC,REMOVE,First Republic Bank,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Bank failure acquired by JPMorgan; replaced by AXON
-2023-05-04,AXON,ADD,Axon Enterprise,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced FRC (First Republic Bank failed JPM)
-2023-03-20,LUMN,REMOVE,Lumen Technologies,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by FICO
-2023-03-20,FICO,ADD,Fair Isaac,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced LUMN (Lumen Technologies)
-2023-03-15,SIVB,REMOVE,SVB Financial Group,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Bank failure FDIC receivership; replaced by PODD BG
-2023-03-15,SBNY,REMOVE,Signature Bank,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Bank failure FDIC receivership; replaced by BG
-2023-03-15,PODD,ADD,Insulet,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced SIVB
-2023-03-15,BG,ADD,Bunge,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced SBNY
-2023-01-04,VNO,REMOVE,Vornado Realty Trust,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Moved to S-P MidCap 400; replaced by GEHC
-2023-01-04,GEHC,ADD,GE HealthCare Technologies,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Spun off from GE; replaced VNO (Vornado)
-2022-12-22,STLD,ADD,Steel Dynamics,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced ABMD (Abiomed acq. by J and J)
-2022-12-22,ABMD,REMOVE,Abiomed,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by Johnson and Johnson; replaced by STLD
-2022-12-19,FSLR,ADD,First Solar,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced FBHS (Fortune Brands restructuring)
-2022-12-19,FBHS,REMOVE,Fortune Brands Home and Security,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Restructured into FBIN MBC; replaced by FSLR
-2022-11-01,TWTR,REMOVE,Twitter,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by Elon Musk; replaced by ACGL
-2022-11-01,ACGL,ADD,Arch Capital Group,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced TWTR (Twitter acq. by Musk)
-2022-10-12,TRGP,ADD,Targa Resources,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced NLSN (Nielsen taken private)
-2022-10-12,NLSN,REMOVE,Nielsen Holdings,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Taken private; replaced by TRGP
-2022-10-03,PCG,ADD,PG and E Corporation,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced CTXS (Citrix taken private)
-2022-10-03,EQT,ADD,EQT Corporation,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced DRE (Duke Realty acq. by Prologis)
-2022-10-03,DRE,REMOVE,Duke Realty,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by Prologis; replaced by EQT
-2022-10-03,CTXS,REMOVE,Citrix Systems,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Taken private; replaced by PCG
-2022-09-19,PVH,REMOVE,PVH Corp,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by INVH
-2022-09-19,PENN,REMOVE,Penn National Gaming,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by CSGP
-2022-09-19,INVH,ADD,Invitation Homes,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced PVH (PVH Corp)
-2022-09-19,CSGP,ADD,CoStar Group,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced PENN (Penn National Gaming)
-2022-06-21,UAA,REMOVE,Under Armour Class A,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Both UA and UAA removed for KDP
-2022-06-21,UA,REMOVE,Under Armour Class C,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Both UA and UAA removed for KDP
-2022-06-21,ON,ADD,ON Semiconductor,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced IPGP (IPG Photonics)
-2022-06-21,KDP,ADD,Keurig Dr Pepper,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced UA and UAA both Under Armour classes
-2022-06-21,IPGP,REMOVE,IPG Photonics,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by ON
-2022-06-08,VICI,ADD,VICI Properties,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced CERN (Cerner acq. by Oracle)
-2022-06-08,CERN,REMOVE,Cerner,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by Oracle; replaced by VICI
-2022-04-11,WBD,ADD,Warner Bros Discovery,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Discovery merged with WarnerMedia; net entrant
-2022-04-11,DISCK,REMOVE,Discovery Inc Class C,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Folded into WBD
-2022-04-11,DISCA,REMOVE,Discovery Inc Class A,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Folded into WBD
-2022-04-04,PBCT,REMOVE,Peoples United Financial,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by M and T Bank; replaced by CPT
-2022-04-04,CPT,ADD,Camden Property Trust,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced PBCT (Peoples United acq. by M and T)
-2022-03-02,MOH,ADD,Molina Healthcare,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced INFO (IHS Markit acq. by S and P Global)
-2022-03-02,INFO,REMOVE,IHS Markit,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by S and P Global; replaced by MOH
-2022-02-15,XLNX,REMOVE,Xilinx,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by AMD; replaced by NDSN
-2022-02-15,NDSN,ADD,Nordson,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced XLNX (Xilinx acq. by AMD)
-2022-02-02,GPS,REMOVE,Gap Inc,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by CEG
-2022-02-02,CEG,ADD,Constellation Energy,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Spun off from Exelon (EXC); replaced GPS (Gap)
-2021-12-20,WU,REMOVE,Western Union,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by FDS
-2021-12-20,SEDG,ADD,SolarEdge Technologies,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced HBI (Hanesbrands)
-2021-12-20,SBNY,ADD,Signature Bank,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced LEG (Leggett and Platt)
-2021-12-20,LEG,REMOVE,Leggett and Platt,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by SBNY
-2021-12-20,HBI,REMOVE,Hanesbrands,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by SEDG
-2021-12-20,FDS,ADD,FactSet Research Systems,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced WU (Western Union)
-2021-12-14,KSU,REMOVE,Kansas City Southern,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by Canadian Pacific; replaced by EPAM
-2021-12-14,EPAM,ADD,EPAM Systems,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced KSU (Kansas City Southern acq. by CP)
-2021-09-20,UNM,REMOVE,Unum Group,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by CDAY
-2021-09-20,PRGO,REMOVE,Perrigo,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by MTCH
-2021-09-20,NOV,REMOVE,NOV Inc,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by BRO
-2021-09-20,MTCH,ADD,Match Group,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced PRGO (Perrigo)
-2021-09-20,CDAY,ADD,Ceridian HCM,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced UNM (Unum)
-2021-09-20,BRO,ADD,Brown and Brown,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced NOV (NOV Inc)
-2021-08-30,TECH,ADD,Bio-Techne,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced MXIM (Maxim Integrated acq. by Analog Devices)
-2021-08-30,MXIM,REMOVE,Maxim Integrated,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by Analog Devices; replaced by TECH
-2021-08-03,LB,REMOVE,L Brands,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by BBWI in this restructuring
-2021-08-03,BBWI,ADD,Bath and Body Works,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced LB; L Brands renamed to BBWI then split off VSCO
-2021-07-21,MRNA,ADD,Moderna,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced ALXN (Alexion acq. by AstraZeneca)
-2021-07-21,ALXN,REMOVE,Alexion Pharmaceuticals,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by AstraZeneca; replaced by MRNA
-2021-06-04,OGN,ADD,Organon,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Spinoff from Merck; replaced HFC (HollyFrontier)
-2021-06-04,HFC,REMOVE,HollyFrontier,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by OGN
-2021-05-14,FLIR,REMOVE,FLIR Systems,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by Teledyne; replaced by CRL
-2021-05-14,CRL,ADD,Charles River Laboratories,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced FLIR (acquired by Teledyne)
-2021-04-20,VAR,REMOVE,Varian Medical Systems,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by Siemens Healthineers; replaced by PTC
-2021-04-20,PTC,ADD,PTC Inc,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced VAR (Varian Medical acq. by Siemens)
-2021-03-22,XRX,REMOVE,Xerox,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by GNRC
-2021-03-22,VNT,REMOVE,Vontier,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by CZR
-2021-03-22,SLG,REMOVE,SL Green Realty,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by PENN
-2021-03-22,PENN,ADD,Penn National Gaming,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced SLG (SL Green)
-2021-03-22,NXPI,ADD,NXP Semiconductors,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced FLS (Flowserve)
-2021-03-22,GNRC,ADD,Generac Holdings,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced XRX (Xerox)
-2021-03-22,FLS,REMOVE,Flowserve,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by NXPI
-2021-03-22,CZR,ADD,Caesars Entertainment,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced VNT (Vontier)
-2021-02-12,MPWR,ADD,Monolithic Power Systems,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced FTI (TechnipFMC)
-2021-02-12,FTI,REMOVE,TechnipFMC,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by MPWR
-2021-01-21,TRMB,ADD,Trimble,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced CXO (Concho Resources acq. by ConocoPhillips)
-2021-01-21,CXO,REMOVE,Concho Resources,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by ConocoPhillips; replaced by TRMB
-2021-01-07,TIF,REMOVE,Tiffany and Co,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by LVMH; replaced by ENPH
-2021-01-07,ENPH,ADD,Enphase Energy,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced TIF (Tiffany acquired by LVMH)
-2020-12-21,TSLA,ADD,Tesla,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced AIV (Apartment Investment and Mgmt)
-2020-12-21,AIV,REMOVE,Apartment Investment and Management,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by TSLA
-2020-10-07,POOL,ADD,Pool Corporation,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced ETFC (E-Trade acquired by Morgan Stanley)
-2020-10-07,ETFC,REMOVE,E-Trade Financial,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by Morgan Stanley; replaced by POOL
-2020-09-21,TER,ADD,Teradyne,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced KSS (Kohls)
-2020-09-21,KSS,REMOVE,Kohls,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by TER
-2020-09-21,HRB,REMOVE,H and R Block,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by ETSY
-2020-09-21,ETSY,ADD,Etsy,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced HRB (H and R Block)
-2020-09-21,CTLT,ADD,Catalent,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced COTY (Coty)
-2020-09-21,COTY,REMOVE,Coty,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by CTLT
-2020-06-22,TYL,ADD,Tyler Technologies,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced JWN (Nordstrom)
-2020-06-22,TDY,ADD,Teledyne Technologies,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced HOG (Harley-Davidson)
-2020-06-22,JWN,REMOVE,Nordstrom,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by TYL
-2020-06-22,HOG,REMOVE,Harley-Davidson,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by TDY
-2020-06-22,BIO,ADD,Bio-Rad Laboratories,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced ADS (Alliance Data Systems)
-2020-06-22,ADS,REMOVE,Alliance Data Systems,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by BIO
-2020-05-22,WST,ADD,West Pharmaceutical Services,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced HP (Helmerich and Payne)
-2020-05-22,HP,REMOVE,Helmerich and Payne,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by WST
-2020-05-12,DXCM,ADD,DexCom,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced AGN (Allergan acq. by AbbVie)
-2020-05-12,DPZ,ADD,Dominos Pizza,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced CPRI (Capri Holdings)
-2020-05-12,CPRI,REMOVE,Capri Holdings,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Replaced by DPZ
-2020-05-12,AGN,REMOVE,Allergan,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Acquired by AbbVie; replaced by DXCM
-2020-04-03,OTIS,ADD,Otis Worldwide,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Spinoff from United Technologies (RTX) — 1-sided
-2020-04-03,CARR,ADD,Carrier Global,https://en.wikipedia.org/wiki/List_of_S%26P_500_companies,Spinoff from United Technologies (RTX) — 1-sided
+2026-01-14,MRSH,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2026-01-14,MMC,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-12-22,SOLS,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-12-22,MHK,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-12-22,LKQ,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-12-22,FIX,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-12-22,CVNA,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-12-22,CRH,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-12-11,K,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-12-11,ARES,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-11-28,SNDK,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-11-28,IPG,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-11-11,FISV,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-11-11,FI,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-11-04,EMN,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-11-03,Q,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-10-31,KMX,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-10-30,SOLS,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-09-22,MKTX,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-09-22,HOOD,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-09-22,ENPH,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-09-22,EME,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-09-22,CZR,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-09-22,APP,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-08-28,WBA,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-08-28,IBKR,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-08-08,PSKY,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-08-08,PARA,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-07-23,XYZ,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-07-23,HES,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-07-18,TTD,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-07-18,ANSS,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-07-09,JNPR,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-07-09,DDOG,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-05-19,DFS,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-05-19,COIN,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-04-24,WSM,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-04-24,TKO,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-04-24,TFX,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-04-24,FMC,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-04-24,EXE,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-04-24,DASH,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-04-24,CE,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2025-04-24,BWA,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-12-23,WDAY,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-12-23,QRVO,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-12-23,LII,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-12-23,CTLT,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-12-23,APO,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-12-23,AMTM,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-11-26,TPL,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-11-26,MRO,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-10-01,BBWI,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-09-30,AMTM,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-09-23,PLTR,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-09-23,ETSY,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-09-23,ERIE,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-09-23,DELL,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-09-23,BIO,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-09-23,AAL,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-07-08,WRK,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-07-08,SW,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-06-24,RHI,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-06-24,KKR,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-06-24,ILMN,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-06-24,GDDY,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-06-24,CRWD,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-06-24,CMA,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-05-08,VST,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-05-08,PXD,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-04-03,XRAY,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-04-03,VFC,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-04-03,SOLV,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-04-03,GEV,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-03-25,FLT,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-03-25,CPAY,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-03-18,ZION,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-03-18,WHR,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-03-18,SMCI,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-03-18,DECK,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-03-04,PEAK,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-03-04,DOC,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-02-01,DAY,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2024-02-01,CDAY,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-10-18,UBER,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-10-18,SEE,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-10-18,SEDG,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-10-18,OGN,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-10-18,LULU,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-10-18,JBL,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-10-18,HUBB,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-10-18,BLDR,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-10-18,ATVI,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-10-18,ALK,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-10-02,VLTO,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-10-02,DXC,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-09-18,NWL,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-09-18,LNC,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-09-18,BX,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-09-18,ABNB,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-08-30,COR,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-08-30,ABC,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-08-25,KVUE,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-08-25,AAP,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-07-10,RE,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-07-10,EG,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-06-20,PANW,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-06-20,DISH,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-06-07,FISV,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-06-07,FI,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-05-16,RVTY,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-05-16,PKI,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-05-04,FRC,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-05-04,AXON,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-03-20,LUMN,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-03-20,FICO,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-03-15,SIVB,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-03-15,SBNY,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-03-15,PODD,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-03-15,BG,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-01-04,VNO,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2023-01-04,GEHC,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-12-22,STLD,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-12-22,ABMD,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-12-19,FSLR,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-12-19,FBHS,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-11-08,NLOK,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-11-08,GEN,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-11-01,TWTR,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-11-01,ACGL,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-10-12,TRGP,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-10-12,NLSN,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-10-03,PCG,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-10-03,EQT,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-10-03,DRE,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-10-03,CTXS,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-09-19,PVH,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-09-19,PENN,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-09-19,INVH,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-09-19,CSGP,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-06-28,ELV,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-06-28,ANTM,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-06-21,UAA,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-06-21,UA,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-06-21,ON,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-06-21,KDP,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-06-21,IPGP,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-06-09,META,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-06-09,FB,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-06-08,VICI,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-06-08,CERN,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-05-10,BLL,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-05-10,BALL,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-04-11,WBD,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-04-11,DISCK,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-04-11,DISCA,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-04-04,PBCT,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-04-04,CPT,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-03-02,MOH,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-03-02,INFO,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-02-17,VIAC,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-02-17,PARA,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-02-15,XLNX,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-02-15,NDSN,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-02-02,GPS,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-02-02,CEG,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-01-10,WTW,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2022-01-10,WLTW,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-12-20,WU,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-12-20,SEDG,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-12-20,SBNY,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-12-20,LEG,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-12-20,HBI,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-12-20,FDS,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-12-14,KSU,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-12-14,EPAM,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-10-04,CTRA,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-10-04,COG,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-09-20,UNM,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-09-20,PRGO,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-09-20,NOV,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-09-20,MTCH,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-09-20,CDAY,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-09-20,BRO,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-08-30,TECH,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-08-30,MXIM,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-08-03,LB,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-08-03,BBWI,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-07-21,MRNA,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-07-21,ALXN,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-06-04,OGN,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-06-04,HFC,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-05-14,FLIR,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-05-14,CRL,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-04-20,VAR,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-04-20,PTC,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-03-22,XRX,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-03-22,VNT,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-03-22,SLG,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-03-22,PENN,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-03-22,NXPI,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-03-22,GNRC,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-03-22,FLS,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-03-22,CZR,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-02-12,MPWR,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-02-12,FTI,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-01-21,TRMB,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-01-21,CXO,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-01-07,TIF,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2021-01-07,ENPH,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-12-21,TSLA,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-12-21,AIV,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-11-17,VTRS,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-11-17,MYL,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-10-12,VNT,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-10-12,NBL,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-10-07,POOL,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-10-07,ETFC,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-09-21,TER,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-09-21,KSS,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-09-21,HRB,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-09-21,ETSY,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-09-21,CTLT,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-09-21,COTY,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-09-18,LUMN,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-09-18,CTL,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-06-22,TYL,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-06-22,TDY,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-06-22,JWN,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-06-22,HOG,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-06-22,BIO,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-06-22,ADS,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-05-22,WST,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-05-22,HP,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-05-12,DXCM,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-05-12,DPZ,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-05-12,CPRI,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-05-12,AGN,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-04-06,RTN,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-04-06,M,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-04-06,HWM,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-04-06,ARNC,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-04-03,UTX,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-04-03,RTX,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-04-03,OTIS,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-04-03,CARR,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-03-03,XEC,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-03-03,TT,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-01-28,WCG,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2020-01-28,PAYC,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-12-23,ZBRA,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-12-23,TRIP,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-12-23,STE,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-12-23,MAC,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-12-23,LYV,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-12-23,AMG,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-12-10,JEC,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-12-10,J,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-12-09,TFC,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-12-09,STI,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-12-09,ODFL,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-12-09,BBT,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-12-05,WRB,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-12-05,VIAC,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-12-05,VIAB,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-12-05,CBS,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-11-21,NOW,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-11-21,CELG,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-11-05,SYMC,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-11-05,PEAK,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-11-05,NLOK,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-11-05,HCP,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-10-18,BKR,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-10-18,BHGE,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-10-03,NKTR,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-10-03,LVS,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-09-26,NVR,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-09-26,JEF,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-09-23,TSS,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-09-23,CDW,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-08-09,LDOS,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-08-09,IEX,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-08-09,FL,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-08-09,APC,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-08-08,TMK,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-08-08,GL,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-07-15,TMUS,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-07-15,RHT,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-07-01,MKTX,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-07-01,LLL,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-06-07,MAT,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-06-07,AMCR,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-06-03,FLR,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-06-03,DWDP,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-06-03,DD,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-06-03,CTVA,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-06-01,LHX,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-06-01,HRS,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-04-02,DOW,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-04-02,BHF,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-02-27,WAB,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-02-27,GT,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-02-15,NFX,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-02-15,ATO,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-01-18,TFX,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-01-18,PCG,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-01-02,SCG,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2019-01-02,FRC,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-12-24,CE,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-12-21,ESRX,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-12-03,SRCL,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-12-03,MXIM,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-12-03,LW,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-12-03,FANG,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-11-29,AET,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-11-27,COL,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-11-13,JKHY,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-11-13,EQT,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-11-06,LIN,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-11-06,KEYS,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-11-06,CA,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-10-31,PX,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-10-11,FTNT,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-10-11,EVHC,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-10-01,ROL,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-10-01,ANDV,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-09-19,KORS,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-09-17,WCG,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-09-12,XL,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-08-28,GGP,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-08-28,ANET,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-07-02,KDP,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-07-02,CPRT,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-06-20,FLT,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-06-18,RRC,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-06-18,HFC,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-06-18,BR,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-06-18,AYI,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-06-15,TWX,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-06-07,TWTR,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-06-07,MON,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-06-05,NAVI,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-06-05,EVRG,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-05-31,WYND,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-05-31,ABMD,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-04-04,MSCI,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-04-04,CSRA,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-03-19,TTWO,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-03-19,SIVB,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-03-19,SIG,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-03-19,PDCO,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-03-19,NKTR,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-03-19,CHK,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-03-07,SNI,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-03-07,IPGP,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2018-01-03,HII,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-12-29,BCR,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-10-13,NCLH,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-10-13,LVLT,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-09-18,CDNS,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-09-13,SPLS,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-09-01,SBAC,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-09-01,DWDP,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-09-01,DOW,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-09-01,DD,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-08-29,IQV,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-08-28,WFM,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-08-08,AN,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-08-07,BHF,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-07-26,RMD,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-07-26,RIG,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-07-26,PKG,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-07-26,MUR,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-07-26,MNK,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-07-26,MGM,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-07-26,DRE,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-07-26,BBBY,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-07-26,AOS,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-07-25,RAI,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-06-19,TDC,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-06-19,RE,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-06-19,R,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-06-19,HLT,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-06-19,ANSS,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-06-19,ALGN,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-06-19,AABA,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-06-15,MJN,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-06-02,TGNA,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-06-02,INFO,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-04-05,IT,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-04-05,DNB,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-04-04,SWN,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-04-04,DXC,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-03-20,URBN,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-03-20,RJF,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-03-20,FTR,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-03-20,FSLR,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-03-20,ARE,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-03-20,AMD,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-03-16,SNPS,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-03-13,LLTC,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-03-13,HAR,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-03-13,DISH,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-03-02,REG,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-03-02,ENDP,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-03-01,PBI,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-03-01,CBOE,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-02-28,INCY,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-02-27,SE,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-01-05,STJ,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2017-01-05,IDXX,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-12-02,OI,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-12-02,MAA,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-12-02,LM,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-12-02,EVHC,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-10-03,DO,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-10-03,COTY,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-09-23,HOT,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-09-23,COO,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-09-08,CHTR,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-09-07,EMC,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-09-06,MTD,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-07-05,FTV,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-07-01,TE,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-07-01,LNT,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-07-01,GAS,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-07-01,CPGX,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-07-01,ALB,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-06-24,FBHS,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-06-21,CVC,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-06-03,TDG,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-06-03,BXLT,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-05-31,CCEP,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-05-31,CCE,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-05-31,AJG,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-05-23,LKQ,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-05-23,ARG,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-05-18,TWC,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-05-18,DLR,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-05-13,ALK,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-05-12,SNDK,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-05-03,AYI,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-05-02,ADT,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-04-25,GPN,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-04-25,GME,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-04-18,ULTA,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-04-18,THC,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-04-08,UA,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-04-04,FL,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-04-04,CAM,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-03-30,HOLX,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-03-30,ESV,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-03-30,CNC,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-03-24,POM,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-03-07,UDR,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-03-04,CNX,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-03-04,AWK,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-03-03,GMCR,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-02-22,PCL,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-02-22,CXO,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-02-01,PCP,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-02-01,FRT,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-02-01,CFG,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-02-01,BRCM,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-01-19,EXR,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-01-05,WLTW,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-01-05,FOSL,REMOVE,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-01-04,CPRI,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)
+2016-01-04,CCEP,ADD,,https://github.com/fja05680/sp500 (S&P 500 Historical Components & Changes),snapshot-diff derived (fja05680)

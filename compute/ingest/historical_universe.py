@@ -18,14 +18,23 @@ References (per Research Report v1.0):
   adjustment.
 
 Data source (`data/sp500_membership_historical.csv`):
-- Wikipedia "List of S&P 500 companies" change-history table
-- S&P Dow Jones Indices press releases
+- fja05680/sp500 "S&P 500 Historical Components & Changes" — PRIMARY source for
+  2016-01..2026-01-14 (~97% of rows), snapshot-diffed into ADD/REMOVE events
+  (Track B 10Y rebuild); cross-validated against the prior hand-built 2020-2026
+  ledger at the boundary (agreement).
+- S&P Dow Jones Indices press releases + Wikipedia "List of S&P 500 companies"
+  change-history table — the > 2026-01-14 hand-curated tail + per-row citations.
 - Factual lists (uncopyrightable per Feist 1991); CSV compilation is
   original work under project MIT license; per-row citation included.
 
-Scope (Phase 4.6 v1): events 2020-01-01 → present. ~50 well-known
-ADD/REMOVE events. NOT a complete historical index. Pre-2020 lookups
-return ``is_complete = False`` with the closest-available anchor.
+Scope (Track B 10Y rebuild): events 2016-01-04 → present (485 events; was
+2020-01 / ~50 events in Phase 4.6 v1). The ledger is RENAME-AWARE — a symbol
+change is a REMOVE-old + ADD-new pair on the rename date, so ``members_at``
+returns the correct historical ticker (e.g. CDAY before 2024-02, DAY after).
+Pre-2016 lookups return ``is_complete = False`` with the closest-available
+anchor. CAVEAT: the 2016-2020 segment is single-source (fja05680, community-
+maintained — not CRSP-grade); the size-band verifier gates gross omissions but
+NOT a balanced-but-wrong same-day swap.
 
 API:
     >>> from datetime import date
@@ -53,10 +62,11 @@ logger = logging.getLogger(__name__)
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 HISTORICAL_CSV: Path = PROJECT_ROOT / "data" / "sp500_membership_historical.csv"
 
-# Coverage boundary: events older than this are NOT in the CSV (Phase 4.6 v1).
-# Subsequent PRs may extend backward; for now, lookups before this date
-# return is_complete=False with a warning logged.
-EARLIEST_EVENT_DATE: date = date(2020, 1, 1)
+# Coverage boundary: events older than this are NOT in the CSV. Extended back to
+# 2016-01 (Track B 10Y rebuild — full ledger re-derived from the fja05680
+# historical-components snapshot-diff, 2016-01-04 .. 2026-06-02). Lookups before
+# this date return is_complete=False with a warning logged.
+EARLIEST_EVENT_DATE: date = date(2016, 1, 1)
 
 # Action codes in the CSV. RENAME events are non-membership-changing
 # (ticker rename only) — handled by the alias map, not the add/remove walk.

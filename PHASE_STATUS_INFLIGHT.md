@@ -2052,3 +2052,96 @@ env + emergency comment, add a short revert note) · `CLAUDE.md` (§In-flight) �
 STAYS — append-only.
 
 ---
+
+## feat(frontend) — Jitta-style backtest home: annual-returns table + CAGR + $-growth chart (in flight, 2026-06-07)
+
+**What.** Reshapes the AI-pick home (`AiPickPortfolio`) toward a Jitta-Wealth-style backtest view
+(user request from two Jitta screenshots — a growth chart with $ end-values + an annual-returns
+table with a CAGR row). Layout = **augment** (chosen): the Jitta-style chart + table lead; Current
+picks + Rotation history stay below. Chart framing = **$10,000 → $X** (chosen over rebased-100).
+
+**Changes (3 frontend files, no schema / compute / backtest change):**
+- `components/NavCompareChart.tsx` — new `money?: boolean` + `baseline?: number` props. In money mode:
+  USD axis (`fmtMoneyAxis` → `$12k`) + tooltip (`fmtMoney` → `$12,340`), `ReferenceLine` at the
+  baseline, and **end-of-line $ labels** via a `<LabelList>` `content` renderer that draws only the
+  final point (right margin widened 8→60px). Non-money path byte-identical.
+- `components/AnnualReturnsTable.tsx` (NEW, ~200 lines) — derives calendar-year returns
+  (`NAV(yr-end)/NAV(prev-yr-end)-1`) + CAGR (`(last/first)^(1/elapsed_yrs)-1`) in-browser from the
+  NAV series; real `<table>` + `<th scope>`; reuses the home's emerald/rose/slate `toneClass` +
+  `tabular-nums` + `+`/`−` sign (Rule 10); highlighted CAGR `<tfoot>` row; partial-first-year `*`
+  flag; a caveat note (raw composite · vetoes not replayed · not the live Top-5's record).
+- `components/AiPickPortfolio.tsx` — rebases chart points to `CHART_BASE=10_000`, passes
+  `money + baseline`, reframes the legend to $ end-values + `money$()` helper, inserts
+  `<AnnualReturnsTable>` (full `netByCount[count]` + `benchmark[bench]` series) after the chart card.
+  `NavCompareChartLazy` forwards the new props automatically (spreads `Props`).
+
+**Honest result (by design).** The AI-pick UNDERperforms the S&P 500 at EVERY count over the shipped
+2021-2026 (4.8y) window — count-5 net CAGR ≈ +0.2% vs SPY +12.5%; best (count-10) ≈ +11.2% vs +12.5%;
+worst (count-1) ≈ −17.9%. This is already disclosed in `meta.disclaimer` ("the default 5-holding net
+line underperformed the S&P 500 … defense-layer vetoes are not replayed"). Per user decision
+(Ship + caveat), a caveat sits beside the CAGR row: the backtest is the **raw top-composite signal,
+`veto_layer_replayed=False`** — NOT the live veto-filtered Top-5's record. On-brand for QuantRank's
+honest harness (McLean-Pontiff 2016 decay; survivorship-corrected).
+
+**Verification.** Frontend deps installed; `tsc --noEmit` clean; `next build` 510/510 green; home `/`
+6.25 kB / 105 kB First Load. Derivation numbers validated against the raw `backtest_pit.json` NAV
+(annual + CAGR replicated in python — match). Reviewer gate (`frontend-design-reviewer` +
+`expert-user-explorer` Playwright) running; `vercel-preview-auditor` post-push.
+
+**Files**: `frontend/components/NavCompareChart.tsx` · `frontend/components/AnnualReturnsTable.tsx`
+(new) · `frontend/components/AiPickPortfolio.tsx` · `CLAUDE.md` (§In-flight + §Gotchas) · `AGENTS.md`
+(§Project-structure) · `docs/GOTCHAS.md` (full detail) · `PHASE_STATUS_INFLIGHT.md` (this). The
+FORM4-revert (#431, merged) + orphan-prune (#429, merged) INFLIGHT entries above STAY — append-only.
+
+---
+
+## feat(data) — Track B: 10-year survivorship ledger rebuild (fja05680 snapshot-diff, in flight, 2026-06-07)
+
+**Goal.** Enable a real 10-year AI-pick backtest (user request — Jitta shows 10y).
+The prior `data/sp500_membership_historical.csv` only covered 2020-04 onward, so a
+pre-2020 reconstruction returned the anchor with `is_complete=False` (survivorship-
+degraded — the exact bias the ledger exists to fix).
+
+**What.** Full-rebuilt the ledger from the **fja05680 "S&P 500 Historical Components
+& Changes"** dataset via **snapshot-diff** (consecutive point-in-time constituent
+sets → ADD/REMOVE per change date) for 2016-01-04 .. 2026-01-14, plus the prior
+ledger's hand-curated tail for > 2026-01-14 (fja05680's coverage ends there).
+**485 events, 2016-01-04 .. 2026-06-02.** Tickers normalized to the yfinance dash
+form (BRK-B / BF-B). `EARLIEST_EVENT_DATE` (`historical_universe.py`) + the verify
+`WINDOW_START` both moved **2020-01 → 2016-01/2016-06**.
+
+**Rename-aware (convention shift, documented in the ledger header).** Unlike the
+prior "renames out of scope" hand-built rows, the snapshot-diff records a symbol
+change as REMOVE old + ADD new (e.g. CDAY→DAY 2024-02), so `members_at` returns the
+correct historical ticker at each date — MORE accurate for fetching as-of data.
+
+**Boundary reconciliation.** (a) The curated tail removed Ceridian as `CDAY`
+(2026-02-09); rewritten to `DAY` (the post-2024-rename live ticker). (b) Added the
+**EPAM→FDXF 2026-06-02 swap** (EPAM → S&P SmallCap 600, replaced by FedEx Freight;
+S&P DJI press release) — neither fja05680 (ends 2026-01-14) nor the prior ledger
+had it; this is the **latent gap behind the #429 EPAM orphan**.
+
+**Validation.** `scripts/verify_membership_ledger.py` **CLEAN across the full 10y**
+— size band 498-506, **0 months out of band** (2016-06 .. 2026-06); Invariant-1
+(removed-gone / added-present vs the live 502 universe) holds. fja05680 was
+cross-validated against the prior hand-built 2020-2026 ledger at the boundary
+(agreement on the 2020-04 CARR/OTIS + 2020-05 DXCM/AGN events). 2 floor-dependent
+tests updated (`test_historical_universe` coverage-size + is_complete; backfill
+pre-coverage window 2018→2014). `ruff` clean; offline suite **1547 passed** (1
+pre-existing `test_alpha158_replicate` Hypothesis-`DeadlineExceeded` flake —
+confirmed failing on the pre-change state too, env-slow, unrelated).
+
+**STILL PENDING (heavy, user-gated).** A `backfill_portfolio_pit` re-run with a
+**2016 start** to regenerate the 10Y `backtest_pit.json` (needs 2016+ EDGAR
+fundamentals + prices — cold, long; some 2016-era filings may have gaps). Only then
+does the home's "Max" button show a true 10 years. Methodology review of the
+rebuild recommended before merge (survivorship-honesty = a core product claim).
+
+**Files**: `data/sp500_membership_historical.csv` (rebuilt — 485 events + updated
+header/provenance) · `compute/ingest/historical_universe.py` (`EARLIEST_EVENT_DATE`
+2020→2016) · `scripts/verify_membership_ledger.py` (`WINDOW_START` 2021→2016 +
+comments) · `tests/test_ingest/test_historical_universe.py` ·
+`tests/test_portfolio/test_backfill_integration.py` · `CLAUDE.md` (§Gotchas +
+§In-flight) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---

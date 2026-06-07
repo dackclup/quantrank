@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 
 import { NavCompareChartLazy } from './NavCompareChartLazy';
+import { AnnualReturnsTable } from './AnnualReturnsTable';
 import { HoldingsCountSlider } from './HoldingsCountSlider';
 import { HoldingsTimeline } from './HoldingsTimeline';
 import { ScoreBadge } from './ScoreBadge';
@@ -13,8 +14,11 @@ import type { AiPickData } from '@/lib/types';
 
 const PERIODS: readonly { value: string; label: string; years: number }[] = [
   { value: '1Y', label: '1Y', years: 1 },
-  { value: '3Y', label: '3Y', years: 3 },
   { value: '5Y', label: '5Y', years: 5 },
+  // "Max" shows the full backtest window — ~5y today, and automatically the full
+  // span once the membership ledger + backfill extend it (Track B). Labeled Max
+  // (not "10Y") so it never overstates the data actually present.
+  { value: 'MAX', label: 'Max', years: 100 },
 ];
 
 const BENCHMARKS: readonly SegmentOption[] = [
@@ -26,8 +30,16 @@ const BENCHMARKS: readonly SegmentOption[] = [
 
 const MAX_CHART_POINTS = 180;
 
+// Notional initial capital — both lines start here at the window's start and
+// grow to their final value (Jitta-style growth-of-$10k framing).
+const CHART_BASE = 10_000;
+
 function isFinite_(v: number | null | undefined): v is number {
   return v !== null && v !== undefined && !Number.isNaN(v);
+}
+
+function money$(v: number | null): string {
+  return v === null ? '—' : `$${Math.round(v).toLocaleString('en-US')}`;
 }
 
 function firstFiniteFrom(series: (number | null)[], start: number): number | null {
@@ -71,7 +83,7 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
 
   const [count, setCount] = useState<number>(meta.default_count);
   const [bench, setBench] = useState<string>(meta.default_benchmark);
-  const [period, setPeriod] = useState<string>('5Y');
+  const [period, setPeriod] = useState<string>('MAX');
 
   const countKey = String(count);
   const benchLabel = (BENCHMARKS.find((b) => b.value === bench)?.label ?? bench).toUpperCase();
@@ -89,20 +101,40 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
     const step = Math.max(1, Math.ceil(span / MAX_CHART_POINTS));
     const point = (i: number) => ({
       date: dates[i],
-      portfolio: pAnchor && isFinite_(net[i]) ? Math.round(((net[i] as number) / pAnchor) * 1000) / 10 : null,
-      benchmark: bAnchor && isFinite_(bser[i]) ? Math.round(((bser[i] as number) / bAnchor) * 1000) / 10 : null,
+      portfolio: pAnchor && isFinite_(net[i]) ? Math.round((net[i] as number) / pAnchor * CHART_BASE) : null,
+      benchmark: bAnchor && isFinite_(bser[i]) ? Math.round((bser[i] as number) / bAnchor * CHART_BASE) : null,
+      yearStart: false,
     });
     const points: ReturnType<typeof point>[] = [];
     for (let i = startIdx; i < dates.length; i += step) points.push(point(i));
     if (dates.length > 0 && (dates.length - 1 - startIdx) % step !== 0) {
       points.push(point(dates.length - 1));
     }
+    // Mark the first sampled point of each calendar year — NavCompareChart draws
+    // a hollow ring there and uses these as the year x-axis ticks (Jitta look).
+    let prevYear = '';
+    for (const p of points) {
+      const yr = p.date.slice(0, 4);
+      p.yearStart = yr !== prevYear;
+      prevYear = yr;
+    }
 
     const lastPoint = points[points.length - 1];
+    // Year-to-year straight line (Jitta look, per request): keep only the
+    // year-boundary points + the final point (the current end, for the $ label).
+    // NavCompareChart connects them with straight segments (type="linear").
+    const yearPoints = points.filter((p) => p.yearStart);
+    if (lastPoint && yearPoints[yearPoints.length - 1] !== lastPoint) {
+      yearPoints.push(lastPoint);
+    }
+    const retFromBase = (v: number | null | undefined) =>
+      v === null || v === undefined ? null : (v / CHART_BASE - 1) * 100;
     return {
-      points,
-      periodPortfolio: lastPoint ? (lastPoint.portfolio === null ? null : lastPoint.portfolio - 100) : null,
-      periodBenchmark: lastPoint ? (lastPoint.benchmark === null ? null : lastPoint.benchmark - 100) : null,
+      points: yearPoints,
+      endPortfolio: lastPoint ? lastPoint.portfolio : null,
+      endBenchmark: lastPoint ? lastPoint.benchmark : null,
+      periodPortfolio: lastPoint ? retFromBase(lastPoint.portfolio) : null,
+      periodBenchmark: lastPoint ? retFromBase(lastPoint.benchmark) : null,
     };
   }, [netByCount, benchmark, dates, countKey, bench, period]);
 
@@ -179,6 +211,8 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
             data={view.points}
             portfolioLabel={portfolioLabel}
             benchmarkLabel={benchLabel}
+            money
+            baseline={CHART_BASE}
           />
           <SegmentedSelector
             options={PERIODS}
@@ -186,17 +220,29 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
             onChange={setPeriod}
             ariaLabel="Chart timeframe"
           />
-          {/* Legend — color paired with text label (Rule 10) */}
+          {/* Legend — $-growth framing; color paired with text label + $ value (Rule 10) */}
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-1 text-xs text-slate-600 dark:text-slate-300">
             <span className="inline-flex items-center gap-1.5">
               <span className="inline-block h-2 w-2 rounded-full bg-emerald-700 dark:bg-emerald-400" aria-hidden="true" />
-              {portfolioLabel} (net) {view.periodPortfolio !== null && <span className="font-mono tabular-nums">{pctStr(view.periodPortfolio)}</span>}
+              {portfolioLabel} (net){' '}
+              <span className="font-mono font-semibold tabular-nums text-slate-900 dark:text-slate-100">
+                {money$(view.endPortfolio)}
+              </span>
+              {view.periodPortfolio !== null && (
+                <span className="font-mono tabular-nums">{pctStr(view.periodPortfolio)}</span>
+              )}
             </span>
             <span className="inline-flex items-center gap-1.5">
               <span className="inline-block h-2 w-2 rounded-full bg-indigo-500 dark:bg-indigo-400" aria-hidden="true" />
-              {benchLabel} {view.periodBenchmark !== null && <span className="font-mono tabular-nums">{pctStr(view.periodBenchmark)}</span>}
+              {benchLabel}{' '}
+              <span className="font-mono font-semibold tabular-nums text-slate-900 dark:text-slate-100">
+                {money$(view.endBenchmark)}
+              </span>
+              {view.periodBenchmark !== null && (
+                <span className="font-mono tabular-nums">{pctStr(view.periodBenchmark)}</span>
+              )}
             </span>
-            <span className="text-slate-400 dark:text-slate-500">· rebased to 100 at window start</span>
+            <span className="text-slate-400 dark:text-slate-500">· {money$(CHART_BASE)} invested at window start</span>
           </div>
         </div>
 
@@ -207,6 +253,17 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
           <CostStat label="Net (25bps)" value={consReturn} />
         </div>
       </div>
+
+      {/* Annual returns — Jitta-style calendar-year backtest table + CAGR row,
+          derived in-browser from the selected count's net NAV vs the chosen
+          index (reactive to the slider + benchmark picker; no schema change). */}
+      <AnnualReturnsTable
+        dates={dates}
+        portfolio={netByCount[countKey] ?? []}
+        benchmark={benchmark[bench] ?? []}
+        portfolioLabel={portfolioLabel}
+        benchmarkLabel={benchLabel}
+      />
 
       {/* Current picks */}
       <div className="rounded border border-slate-200 bg-white p-4 shadow-subtle dark:border-slate-800 dark:bg-slate-900 md:p-6">
