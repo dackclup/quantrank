@@ -435,6 +435,7 @@ always-loaded context small while preserving discoverability of every invariant.
 - **`data/sp500_membership_historical.csv` (the survivorship ledger behind `members_at()`) must stay ADD/REMOVE-balanced — the reverse-walk reconstructs ~500-503 constituents at EVERY backtest month; run `scripts/verify_membership_ledger.py` after ANY edit (checks the size band + that every removed ticker is gone / every added ticker present vs the live universe). Use effective (not announcement) dates + real tickers (SIVB not "SVB"; BX=Blackstone≠BLK=BlackRock); cite the Wikipedia change-history URL (the `press.spglobal.com/<date>-<title>` shape 404s). Rebuilt + integrity-gated in Phase 7.0 PR-0 after the prior ledger was found badly broken (~30 errors + ~110 missing events)**
 - **The home page IS the AI-pick portfolio (Phase 7.0 PR-4)** — reads `backtest_pit.json` via `getAiPickData()` (fs-read + trim+round to a small client view-model, NEVER a static `import`; the 1.3MB artifact never ships in the page payload; `null` → "backtest pending"). Server resolves → the `'use client'` `AiPickPortfolio` gets it as props (the build-time-data rule). The 1-10 slider switches `nav.by_count[N]` (one NAV line per count); the chart uses the pre-aligned `nav.benchmark`, so `benchmarks.json` is NOT read by the frontend
 - **Per-stock JSON for a dropped ticker (de-listed / renamed, e.g. EPAM / BK→BNY) is auto-pruned by `prune_orphan_stock_files()` (defined in `compute/output/writer.py`, called from `compute/main.py` after `write_rankings_json`; safety floor `_PRUNE_SAFETY_FLOOR=50`; cron `git add` stages the deletes). Don't glob `stocks/` for param-gen — it reads `rankings.json` by design. Full detail: `docs/GOTCHAS.md`**
+- **The home's `AnnualReturnsTable` (calendar-year rows + CAGR footer) + the `NavCompareChart` `money` mode ($10k→$X growth + end-of-line $ labels) are DERIVED in-browser from the NAV series — no schema / compute / `backtest_pit.json` change. The CAGR is the **raw top-composite signal's** record, NOT the live veto-filtered Top-5 (`veto_layer_replayed=False`) — it underperforms the S&P 500 at every count (honest by design; disclosed in `meta.disclaimer` + a caveat beside the CAGR row). Don't describe the backtest CAGR as the live product's track record. Full detail: `docs/GOTCHAS.md`**
 
 ## Phase status
 
@@ -495,26 +496,22 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **ci(cron) — revert the emergency `FORM4_FETCH_SKIP=1` (Issue #287 PR B, this PR)** —
-  re-enables the Form-4 bulk fetch on the weekly cron. PR #245 set
-  `FORM4_FETCH_SKIP=1` as a 2026-05-25 EMERGENCY when the 5th SEC EDGAR loop went
-  cold simultaneously and the cron hit the 2h30m cap; the workflow comment +
-  Issue #287 PR B prescribed reverting once the durable cron-time fixes landed —
-  PR #297 (timeout rebaseline + cache-restore canary + per-loop wall-clocks) and
-  **PR #427 (tier2 cache split)**. Gate met: cron **run #87 = 15m49s warm, tier2
-  11.2s** (462× faster than #86's 86-min cold), ample headroom for Form-4's
-  ~2-3m. **ZERO scoring change** — Form-4 is observability-only
-  (`form4_enabled=False`); the revert just resumes the `form4_*` Metadata surface
-  (wall-clock, `form4_rule10b5_one_excluded_count`, negation-guard count) toward
-  the 2026-08-19 Q3 cohort audit + the eventual `INSIDER_SELL_CLUSTER_WEIGHT`
-  5.0→7.0 gate. Scope: **`.github/workflows/compute-rankings.yml` only** — the
-  escape-hatch var stays set on `pre-merge-prod-sim.yml` (its 45-min cap), so the
-  revert also re-aligns the docs/GOTCHAS.md + AGENTS.md "NONE set in the weekly
-  cron" invariant that the emergency had silently violated. No code change (the
-  reader is `os.environ.get("FORM4_FETCH_SKIP", "")`, already revert-ready).
-  **Post-merge: a cron dispatch must confirm `form4_wall_clock_seconds` populates
-  + cron stays healthy before tagging release v1.5.0-phase7.0.** (#429 orphan
-  prune merged; this is the next on the same branch.)
+- **feat(frontend) — Jitta-style backtest home: annual-returns table + CAGR + $-growth chart (this PR)** —
+  reshapes the AI-pick home (`AiPickPortfolio`) toward a Jitta-Wealth-style
+  backtest view (user request from screenshots). (1) The growth chart
+  (`NavCompareChart`) gains a `money` mode: both lines start at a notional
+  **$10,000** at window start and grow to their final value, with USD axis /
+  tooltip + **end-of-line $ labels** (Recharts `<LabelList>` last-point renderer).
+  (2) New **`AnnualReturnsTable`** — a calendar-year table (portfolio net return
+  vs the chosen index per year) + a highlighted **CAGR** footer, **derived
+  in-browser** from the NAV series (NO schema / compute / backtest change).
+  Reactive to the count slider + benchmark picker. (3) Augment layout — Current
+  picks + Rotation history stay below. **Honest result, by design**: the AI-pick
+  UNDERperforms the S&P 500 at every holding count (count-5 net CAGR ≈ +0.2% vs
+  SPY +12.5% over the 4.8y window) — already disclosed in the backtest
+  `meta.disclaimer`; a caveat beside the CAGR row notes the backtest is the **raw
+  top-composite signal, not the live veto-filtered Top-5** (`veto_layer_replayed=False`).
+  `tsc --noEmit` + `next build` green (510/510); no schema bump.
 
 
 **Next deliverables** (pick by appetite):

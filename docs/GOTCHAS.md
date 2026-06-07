@@ -1261,3 +1261,33 @@ Load-bearing details:
   hygiene, NOT a user-visible-page fix. **Do not "fix" param-gen by globbing the `stocks/` directory**
   — that would resurrect the orphan as a live (stale-data) page. Param-gen reads `rankings.json` by
   design; the prune keeps the data directory in lockstep with it.
+
+## The home's annual-returns table + CAGR are DERIVED in-browser — and are the RAW signal, not the live product
+
+The Jitta-style backtest view on the AI-pick home is built entirely from the NAV series the home
+already ships — there is **no schema / compute / `backtest_pit.json` change** behind it:
+
+- **`NavCompareChart` `money` mode** — `AiPickPortfolio` rebases each chart point to a notional
+  `CHART_BASE = 10_000` (both lines start at $10,000 at the window start) and passes
+  `money + baseline={CHART_BASE}`. The chart then formats axis / tooltip in USD and draws an
+  **end-of-line $ value label** via a Recharts `<LabelList>` `content` renderer that returns `null`
+  for every index except the last (`right` margin is widened to 60px in money mode to fit it). The
+  non-money path (rebased-to-100) is unchanged and still works.
+- **`AnnualReturnsTable`** — derives, per calendar year, `NAV(year-end) / NAV(prev-year-end) - 1`
+  for the selected count's net line vs the chosen benchmark, plus a CAGR footer
+  (`(NAV_last / NAV_first)^(1/elapsed_years) - 1`). `year-end` = the last finite NAV whose date falls
+  in that year (dates are chronological). The first year is flagged `*` (partial — return since
+  inception, not a full Jan-Dec year) when the window starts mid-year. Reactive to the count slider +
+  benchmark picker (the parent passes the FULL `netByCount[count]` + `benchmark[bench]` series, not
+  the chart's period-trimmed view).
+
+**The honesty caveat is load-bearing — do not remove it.** Over the shipped 2021-2026 PIT window the
+AI-pick UNDERperforms the S&P 500 at **every** holding count (count-5 net CAGR ≈ +0.2% vs SPY
++12.5%; the best, count-10, is ≈ +11.2% vs +12.5%). This is honest by design (McLean-Pontiff 2016
+post-publication decay; survivorship-corrected universe) and is already stated in the backtest
+`meta.disclaimer`. The table additionally carries a caveat beside the CAGR row: the backtest is the
+**raw top-by-composite signal, point-in-time — `veto_layer_replayed=False`, so the 7 defense vetoes
+that filter the live Top-5 are NOT replayed**. Therefore the backtest CAGR is the unfiltered signal's
+record, **not the live product's track record** — never describe it as the latter. Landing the
+deferred PR-2c (point-in-time veto replay) is what would make the backtest reflect the live
+veto-filtered product.

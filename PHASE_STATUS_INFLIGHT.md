@@ -2052,3 +2052,45 @@ env + emergency comment, add a short revert note) · `CLAUDE.md` (§In-flight) �
 STAYS — append-only.
 
 ---
+
+## feat(frontend) — Jitta-style backtest home: annual-returns table + CAGR + $-growth chart (in flight, 2026-06-07)
+
+**What.** Reshapes the AI-pick home (`AiPickPortfolio`) toward a Jitta-Wealth-style backtest view
+(user request from two Jitta screenshots — a growth chart with $ end-values + an annual-returns
+table with a CAGR row). Layout = **augment** (chosen): the Jitta-style chart + table lead; Current
+picks + Rotation history stay below. Chart framing = **$10,000 → $X** (chosen over rebased-100).
+
+**Changes (3 frontend files, no schema / compute / backtest change):**
+- `components/NavCompareChart.tsx` — new `money?: boolean` + `baseline?: number` props. In money mode:
+  USD axis (`fmtMoneyAxis` → `$12k`) + tooltip (`fmtMoney` → `$12,340`), `ReferenceLine` at the
+  baseline, and **end-of-line $ labels** via a `<LabelList>` `content` renderer that draws only the
+  final point (right margin widened 8→60px). Non-money path byte-identical.
+- `components/AnnualReturnsTable.tsx` (NEW, ~200 lines) — derives calendar-year returns
+  (`NAV(yr-end)/NAV(prev-yr-end)-1`) + CAGR (`(last/first)^(1/elapsed_yrs)-1`) in-browser from the
+  NAV series; real `<table>` + `<th scope>`; reuses the home's emerald/rose/slate `toneClass` +
+  `tabular-nums` + `+`/`−` sign (Rule 10); highlighted CAGR `<tfoot>` row; partial-first-year `*`
+  flag; a caveat note (raw composite · vetoes not replayed · not the live Top-5's record).
+- `components/AiPickPortfolio.tsx` — rebases chart points to `CHART_BASE=10_000`, passes
+  `money + baseline`, reframes the legend to $ end-values + `money$()` helper, inserts
+  `<AnnualReturnsTable>` (full `netByCount[count]` + `benchmark[bench]` series) after the chart card.
+  `NavCompareChartLazy` forwards the new props automatically (spreads `Props`).
+
+**Honest result (by design).** The AI-pick UNDERperforms the S&P 500 at EVERY count over the shipped
+2021-2026 (4.8y) window — count-5 net CAGR ≈ +0.2% vs SPY +12.5%; best (count-10) ≈ +11.2% vs +12.5%;
+worst (count-1) ≈ −17.9%. This is already disclosed in `meta.disclaimer` ("the default 5-holding net
+line underperformed the S&P 500 … defense-layer vetoes are not replayed"). Per user decision
+(Ship + caveat), a caveat sits beside the CAGR row: the backtest is the **raw top-composite signal,
+`veto_layer_replayed=False`** — NOT the live veto-filtered Top-5's record. On-brand for QuantRank's
+honest harness (McLean-Pontiff 2016 decay; survivorship-corrected).
+
+**Verification.** Frontend deps installed; `tsc --noEmit` clean; `next build` 510/510 green; home `/`
+6.25 kB / 105 kB First Load. Derivation numbers validated against the raw `backtest_pit.json` NAV
+(annual + CAGR replicated in python — match). Reviewer gate (`frontend-design-reviewer` +
+`expert-user-explorer` Playwright) running; `vercel-preview-auditor` post-push.
+
+**Files**: `frontend/components/NavCompareChart.tsx` · `frontend/components/AnnualReturnsTable.tsx`
+(new) · `frontend/components/AiPickPortfolio.tsx` · `CLAUDE.md` (§In-flight + §Gotchas) · `AGENTS.md`
+(§Project-structure) · `docs/GOTCHAS.md` (full detail) · `PHASE_STATUS_INFLIGHT.md` (this). The
+FORM4-revert (#431, merged) + orphan-prune (#429, merged) INFLIGHT entries above STAY — append-only.
+
+---
