@@ -526,10 +526,14 @@ Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_
   `verify_membership_ledger.py` **CLEAN across the full 10y** (size band 498-506,
   0 months out). Boundary reconciled (CDAY→DAY 2024 rename; EPAM→FDXF 2026-06-02
   swap — fixing the latent gap behind the #429 orphan). 2 floor-dependent tests
-  updated; offline suite 1547 pass (1 pre-existing alpha158 Hypothesis-deadline
-  flake, fails on main too). **STILL PENDING: a `backfill_portfolio_pit` re-run
-  with a 2016 start** (heavy — 2016+ EDGAR/price data) to regenerate the 10Y
-  `backtest_pit.json`; only then does the "Max" button show a true 10 years.
+  updated; offline suite green. **Window wired to 10y**: `backfill_portfolio_pit`
+  `--start` default `today.year-5 → today.year-10` (so BOTH the cron's folded
+  backfill AND a dispatch produce 10y; cron backfill-step cap 40→60m for the
+  heavier ~40-quarter run). **STILL PENDING: the first 10Y `backfill_portfolio_pit`
+  run** (heavy — 2016+ EDGAR/price data) to regenerate `backtest_pit.json` — best
+  seeded via a user `backfill-portfolio.yml` dispatch on this branch (`if: ref !=
+  main` guard → CI commits the 10y artifact to the branch; 120m cap); only then
+  does the "Max" button show a true 10 years.
 
 
 **Next deliverables** (pick by appetite):

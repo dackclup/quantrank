@@ -501,7 +501,12 @@ def main(argv: list[str] | None = None) -> int:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     parser = argparse.ArgumentParser(description="Phase 7.0 point-in-time portfolio backtest backfill")
     today = datetime.now(UTC).date()
-    parser.add_argument("--start", default=date(today.year - 5, today.month, 1).isoformat())
+    # Rolling 10-year window (Track B). The survivorship ledger covers 2016-01
+    # onward (historical_universe.EARLIEST_EVENT_DATE), so `today.year - 10`
+    # stays in-coverage for any year >= 2026. Both the weekly cron's folded
+    # backfill (no --start -> this default) and the backfill-portfolio.yml
+    # dispatch (passes --start) therefore produce a 10y backtest by default.
+    parser.add_argument("--start", default=date(today.year - 10, today.month, 1).isoformat())
     parser.add_argument("--end", default=today.isoformat())
     args = parser.parse_args(argv)
     run_backfill(date.fromisoformat(args.start), date.fromisoformat(args.end))

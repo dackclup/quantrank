@@ -321,13 +321,15 @@ jobs:
         # reviewer 2026-06-05) — we are NOT weakening that, only widening what the
         # already-trusted cron commits.
         #
-        # continue-on-error + a 40m step cap so a backtest stall / failure can
+        # continue-on-error + a step cap so a backtest stall / failure can
         # NEVER block the rankings commit: the writer is atomic (tmp + os.replace),
         # so a failed run leaves the prior backtest_pit.json intact and the cron
         # still commits the fresh rankings. FORM4_FETCH_SKIP is irrelevant here —
-        # the backfill's veto set is the 7 active rank-gates, none Form-4.
+        # the backfill's veto set is the 7 active rank-gates, none Form-4. Cap
+        # raised 40 -> 60 for the Track B 10-year window (~40 quarterly legs vs
+        # ~20; warm ~16m, cold-cache headroom).
         continue-on-error: true
-        timeout-minutes: 40
+        timeout-minutes: 60
         run: python -m scripts.backfill_portfolio_pit
 
       - name: Show backtest meta (canary)
