@@ -4,17 +4,17 @@ import { useEffect, useState } from 'react';
 
 import type { StockHistory } from '@/lib/types';
 
-// Big price-trend chart for the watchlist cards (Jitta-style). Draws the
-// trailing ~5y of closes (the full history file) as a calm slate area with a
-// DASHED horizontal reference line at the fair-value estimate (the 6-method
-// ensemble median).
+// Big price-trend chart for the watchlist cards (Jitta-style). Draws ~5y of
+// MONTHLY closes (the first trading day of each month, matching the detail-page
+// 5Y aggregation) as a calm slate area with a DASHED horizontal reference line
+// at the fair-value estimate (the 6-method ensemble median).
 // Price below the line = undervalued (emerald dashed line); above = overvalued
 // (rose) — the same "under / over the fair line" read the MoS % states in words.
 // Lightweight inline SVG (NO Recharts) so N cards stay cheap; fetches the same
 // /data/stocks/history/<T>.json the detail chart + CurrentPriceLine use.
 // Decorative (aria-hidden): the price + MoS chip carry the data for SR.
 
-const WINDOW = 1300; // ~5 trading years (the full history file)
+const MONTHS = 61; // ~5 trading years at monthly (first-trading-day) resolution
 const VIEW_W = 100;
 const VIEW_H = 48;
 const PAD = 3;
@@ -48,9 +48,23 @@ export function WatchlistChart({
       })
       .then((json) => {
         if (cancelled) return;
-        const series = (json.closes ?? [])
-          .filter((c): c is number => c != null)
-          .slice(-WINDOW);
+        // Downsample daily closes to ~monthly resolution — the first trading
+        // day's close of each calendar month — so a 5y series reads as a clean
+        // ~60-point trend (matching the detail-page 5Y chart) instead of a
+        // dense ~1256-point daily line.
+        const dates = json.dates ?? [];
+        const rawCloses = json.closes ?? [];
+        const len = Math.min(dates.length, rawCloses.length);
+        const monthly: number[] = [];
+        const seen = new Set<string>();
+        for (let i = 0; i < len; i++) {
+          const c = rawCloses[i];
+          const ym = dates[i]?.slice(0, 7); // 'YYYY-MM'
+          if (c == null || !ym || seen.has(ym)) continue;
+          seen.add(ym);
+          monthly.push(c);
+        }
+        const series = monthly.slice(-MONTHS);
         cache.set(ticker, series);
         setCloses(series);
       })
