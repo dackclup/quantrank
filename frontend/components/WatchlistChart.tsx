@@ -5,15 +5,16 @@ import { useEffect, useState } from 'react';
 import type { StockHistory } from '@/lib/types';
 
 // Big price-trend chart for the watchlist cards (Jitta-style). Draws the
-// trailing ~1y of closes as a calm slate area with a DASHED horizontal
-// reference line at the fair-value estimate (the 6-method ensemble median).
+// trailing ~5y of closes (the full history file) as a calm slate area with a
+// DASHED horizontal reference line at the fair-value estimate (the 6-method
+// ensemble median).
 // Price below the line = undervalued (emerald dashed line); above = overvalued
 // (rose) — the same "under / over the fair line" read the MoS % states in words.
 // Lightweight inline SVG (NO Recharts) so N cards stay cheap; fetches the same
 // /data/stocks/history/<T>.json the detail chart + CurrentPriceLine use.
 // Decorative (aria-hidden): the price + MoS chip carry the data for SR.
 
-const WINDOW = 252; // ~1 trading year of sessions
+const WINDOW = 1300; // ~5 trading years (the full history file)
 const VIEW_W = 100;
 const VIEW_H = 48;
 const PAD = 3;
