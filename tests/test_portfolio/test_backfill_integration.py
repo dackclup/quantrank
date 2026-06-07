@@ -145,10 +145,12 @@ def test_run_backfill_skips_incomplete_membership(tmp_path, _universe) -> None:
         mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
         mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(1)),
     ):
-        out = bf.run_backfill(date(2018, 1, 1), date(2019, 6, 1), data_dir=tmp_path)
+        # Pre-2016: the ledger now covers 2016-01 onward (Track B 10Y rebuild),
+        # so the pre-coverage window moved back from 2018 to before 2016.
+        out = bf.run_backfill(date(2014, 1, 1), date(2015, 6, 1), data_dir=tmp_path)
 
     meta = json.loads(out.read_text())["meta"]
-    # every quarterly leg in this window is pre-2020 -> is_complete False -> skipped
+    # every quarterly leg in this window is pre-coverage -> is_complete False -> skipped
     assert meta["rebalance_count"] == 0
     assert meta["incomplete_membership_count"] > 0
 

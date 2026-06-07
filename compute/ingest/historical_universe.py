@@ -53,10 +53,11 @@ logger = logging.getLogger(__name__)
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 HISTORICAL_CSV: Path = PROJECT_ROOT / "data" / "sp500_membership_historical.csv"
 
-# Coverage boundary: events older than this are NOT in the CSV (Phase 4.6 v1).
-# Subsequent PRs may extend backward; for now, lookups before this date
-# return is_complete=False with a warning logged.
-EARLIEST_EVENT_DATE: date = date(2020, 1, 1)
+# Coverage boundary: events older than this are NOT in the CSV. Extended back to
+# 2016-01 (Track B 10Y rebuild — full ledger re-derived from the fja05680
+# historical-components snapshot-diff, 2016-01-04 .. 2026-06-02). Lookups before
+# this date return is_complete=False with a warning logged.
+EARLIEST_EVENT_DATE: date = date(2016, 1, 1)
 
 # Action codes in the CSV. RENAME events are non-membership-changing
 # (ticker rename only) — handled by the alias map, not the add/remove walk.

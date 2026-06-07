@@ -2094,3 +2094,54 @@ honest harness (McLean-Pontiff 2016 decay; survivorship-corrected).
 FORM4-revert (#431, merged) + orphan-prune (#429, merged) INFLIGHT entries above STAY — append-only.
 
 ---
+
+## feat(data) — Track B: 10-year survivorship ledger rebuild (fja05680 snapshot-diff, in flight, 2026-06-07)
+
+**Goal.** Enable a real 10-year AI-pick backtest (user request — Jitta shows 10y).
+The prior `data/sp500_membership_historical.csv` only covered 2020-04 onward, so a
+pre-2020 reconstruction returned the anchor with `is_complete=False` (survivorship-
+degraded — the exact bias the ledger exists to fix).
+
+**What.** Full-rebuilt the ledger from the **fja05680 "S&P 500 Historical Components
+& Changes"** dataset via **snapshot-diff** (consecutive point-in-time constituent
+sets → ADD/REMOVE per change date) for 2016-01-04 .. 2026-01-14, plus the prior
+ledger's hand-curated tail for > 2026-01-14 (fja05680's coverage ends there).
+**485 events, 2016-01-04 .. 2026-06-02.** Tickers normalized to the yfinance dash
+form (BRK-B / BF-B). `EARLIEST_EVENT_DATE` (`historical_universe.py`) + the verify
+`WINDOW_START` both moved **2020-01 → 2016-01/2016-06**.
+
+**Rename-aware (convention shift, documented in the ledger header).** Unlike the
+prior "renames out of scope" hand-built rows, the snapshot-diff records a symbol
+change as REMOVE old + ADD new (e.g. CDAY→DAY 2024-02), so `members_at` returns the
+correct historical ticker at each date — MORE accurate for fetching as-of data.
+
+**Boundary reconciliation.** (a) The curated tail removed Ceridian as `CDAY`
+(2026-02-09); rewritten to `DAY` (the post-2024-rename live ticker). (b) Added the
+**EPAM→FDXF 2026-06-02 swap** (EPAM → S&P SmallCap 600, replaced by FedEx Freight;
+S&P DJI press release) — neither fja05680 (ends 2026-01-14) nor the prior ledger
+had it; this is the **latent gap behind the #429 EPAM orphan**.
+
+**Validation.** `scripts/verify_membership_ledger.py` **CLEAN across the full 10y**
+— size band 498-506, **0 months out of band** (2016-06 .. 2026-06); Invariant-1
+(removed-gone / added-present vs the live 502 universe) holds. fja05680 was
+cross-validated against the prior hand-built 2020-2026 ledger at the boundary
+(agreement on the 2020-04 CARR/OTIS + 2020-05 DXCM/AGN events). 2 floor-dependent
+tests updated (`test_historical_universe` coverage-size + is_complete; backfill
+pre-coverage window 2018→2014). `ruff` clean; offline suite **1547 passed** (1
+pre-existing `test_alpha158_replicate` Hypothesis-`DeadlineExceeded` flake —
+confirmed failing on the pre-change state too, env-slow, unrelated).
+
+**STILL PENDING (heavy, user-gated).** A `backfill_portfolio_pit` re-run with a
+**2016 start** to regenerate the 10Y `backtest_pit.json` (needs 2016+ EDGAR
+fundamentals + prices — cold, long; some 2016-era filings may have gaps). Only then
+does the home's "Max" button show a true 10 years. Methodology review of the
+rebuild recommended before merge (survivorship-honesty = a core product claim).
+
+**Files**: `data/sp500_membership_historical.csv` (rebuilt — 485 events + updated
+header/provenance) · `compute/ingest/historical_universe.py` (`EARLIEST_EVENT_DATE`
+2020→2016) · `scripts/verify_membership_ledger.py` (`WINDOW_START` 2021→2016 +
+comments) · `tests/test_ingest/test_historical_universe.py` ·
+`tests/test_portfolio/test_backfill_integration.py` · `CLAUDE.md` (§Gotchas +
+§In-flight) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
