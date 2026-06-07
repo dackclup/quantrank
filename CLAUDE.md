@@ -511,10 +511,13 @@ Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_
   SPY +12.5% over the 4.8y window) — already disclosed in the backtest
   `meta.disclaimer`; a caveat beside the CAGR row notes the backtest is the **raw
   top-composite signal, not the live veto-filtered Top-5** (`veto_layer_replayed=False`).
-  (4) **Jitta-look chart polish** (2nd iteration): per-calendar-year hollow dots,
-  a year-only x-axis with faint vertical gridlines, the hover crosshair removed
-  (`cursor={false}`), and the period selector is now 1Y / 5Y / **Max** (Max shows
-  the full window; labeled Max not "10Y" so it never overstates the data present).
+  (4) **Jitta-look chart polish** (2nd+3rd iteration): the series is reduced to
+  **one point per calendar year (+ the current end)** drawn as **straight (linear)
+  year-to-year segments** with a hollow dot at each point; a year-only x-axis +
+  faint vertical gridlines; **the hover tooltip card AND crosshair are both
+  removed** (the chart is decorative / `aria-hidden` — data lives in the legend +
+  the Annual-returns table); period selector 1Y / 5Y / **Max** (labeled Max not
+  "10Y" so it never overstates the data present).
   `tsc --noEmit` + `next build` green (510/510); no schema bump.
   **Track B — 10Y survivorship ledger rebuild (DONE in this branch; backfill
   pending):** `data/sp500_membership_historical.csv` full-rebuilt from the

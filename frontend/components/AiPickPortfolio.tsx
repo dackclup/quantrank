@@ -120,10 +120,17 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
     }
 
     const lastPoint = points[points.length - 1];
+    // Year-to-year straight line (Jitta look, per request): keep only the
+    // year-boundary points + the final point (the current end, for the $ label).
+    // NavCompareChart connects them with straight segments (type="linear").
+    const yearPoints = points.filter((p) => p.yearStart);
+    if (lastPoint && yearPoints[yearPoints.length - 1] !== lastPoint) {
+      yearPoints.push(lastPoint);
+    }
     const retFromBase = (v: number | null | undefined) =>
       v === null || v === undefined ? null : (v / CHART_BASE - 1) * 100;
     return {
-      points,
+      points: yearPoints,
       endPortfolio: lastPoint ? lastPoint.portfolio : null,
       endBenchmark: lastPoint ? lastPoint.benchmark : null,
       periodPortfolio: lastPoint ? retFromBase(lastPoint.portfolio) : null,
