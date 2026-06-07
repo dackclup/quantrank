@@ -50,8 +50,10 @@ function WatchlistCard({
       />
       <div className="pointer-events-none relative z-10 p-4">
         {/* Header — sector tag over [logo + name + ticker + recommendation]
-            (left); composite-score donut (right). */}
-        <div className="flex items-start justify-between gap-3">
+            (left); composite-score donut (right). items-center so the left
+            block and the taller-or-shorter score block share a centerline
+            (score number sits level with the logo/name). */}
+        <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
             <SectorChip sector={row.sector} size="xs" />
             <div className="mt-2 flex min-w-0 items-center gap-3">
