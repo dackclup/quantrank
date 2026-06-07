@@ -83,7 +83,7 @@
 - **CI escape-hatch env-var combo for simulate** (5 vars, all set
   together in `.github/workflows/pre-merge-prod-sim.yml`; NONE set in
   weekly cron `compute-rankings.yml`): `FORM4_FETCH_SKIP=1` (skip Form-4
-  bulk fetch — read at `compute/main.py:879`; safe empty default),
+  bulk fetch — read at `compute/main.py:959`; safe empty default),
   `QR_SKIP_TIER2=1` (skip Tier-2 10-K text + 8-K fetch — read at
   `compute/scoring/tier2.py:162`), `QR_SKIP_FUNDAMENTALS=1` (skip
   fundamentals freshness gate — read at `compute/ingest/fundamentals.py`

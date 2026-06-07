@@ -28,7 +28,8 @@
 | Skill inventory | **47** invocation-triggerable + phase planning docs |
 | Subagent inventory | **20** project-specific in 4 tiers (5 opus + 15 sonnet): **Tier 1 Core** (`quantrank-reviewer` · `schema-sentinel` · `defense-layer-auditor` · `edgar-debugger` · `stock-detail-auditor`) · **Tier 2 Lifecycle** (`security-reviewer` · `frontend-design-reviewer` · `vercel-preview-auditor` · `expert-user-explorer` · `release-captain` · `phase-coordinator`) · **Tier 3 Specialized** (`test-engineer` · `methodology-scientist` · `literature-searcher` · `performance-engineer` · `dependency-auditor` · `financial-engineer`) · **Tier 4 Operations** (`docs-reviewer` · `ci-triage-engineer` · `incident-commander`) |
 
-**Recently merged** (Phase 7.0 + cron + Phase 4j.1 cluster, #416 → #428, 2026-06-04 → 2026-06-06):
+**Recently merged** (Phase 7.0 + cron + Phase 4j.1 cluster, #416 → #429, 2026-06-04 → 2026-06-06):
+- PR #429 — chore(output): orphan per-stock-JSON prune for de-listed/renamed tickers (EPAM + BK→BNY; `prune_orphan_stock_files` + safety floor; 502/502 restored; no schema change)
 - PR #428 — feat(frontend): Phase 7.0 personal browser-local Watchlist (`/portfolio` stub → real localStorage watchlist; FRONTEND-ONLY, no schema change)
 - PR #427 — perf(cron): split tier2 cache (fast + slow-text run-id key) + per-stage timing summary
 - PR #426 — feat(features): Phase 4j.1 Qlib Alpha158 observability surface (schema `0.10.14 → 0.10.15`; 9 `Metadata.alpha158_*` + reused PBO/DSR gate; observability-only, Δscore = 0)
@@ -196,7 +197,7 @@
 **Next deliverables** (parallelizable, pick by appetite):
 
 1. **Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — after Issue #287 PR B (FORM4 revert) merges + ≥ 1 cron's `form4_rule10b5_one_excluded_count` lands and the `-30%` to `-45%` firing-rate delta confirms the Aboody et al. 2010 §3.2 midpoint; vesting-residual risk still argues against full 10.0 restoration
-2. **Issue #287 PR B — FORM4 revert** — single-line revert of `FORM4_FETCH_SKIP=1` from `.github/workflows/compute-rankings.yml` env block, gated on ≥ 1 cron < 195m green with `form4_wall_clock_seconds` populated (PR #297's 195m timeout + canary now active; cron Run #71 confirmed 14m 32s warm cache leaves ample headroom). Unblocks PR 5 cluster weight gate-data accumulation for Q3 cohort audit
+2. **Issue #287 PR B — FORM4 revert — IN FLIGHT (this PR)** — removes `FORM4_FETCH_SKIP=1` from `.github/workflows/compute-rankings.yml` env block. Gate ("≥ 1 cron < 195m green") met with wide margin: cron **run #87 = 15m49s warm, `tier2_wall_clock_seconds` 11.2s** after the PR #427 cache split (462× vs #86 cold). ZERO scoring change (Form-4 observability-only, `form4_enabled=False`). Post-merge cron must confirm `form4_wall_clock_seconds` populates. Unblocks PR 5 cluster weight gate-data accumulation for Q3 cohort audit
 3. **Issue #67 follow-up PR #300** (in flight) — per-sector `value_trap_risk` delta instrumentation; methodology-scientist Q2 deferred from PR #294; populates per-sector breakdown of the 132 → 109 aggregate drop on cron Run #72+ for Damodaran shape verification
 4. **v1.5.0 release tag (next)** — gated on Phase 4.5e PR 5 cluster weight promotion (item 1) + Issue #287 PR B (item 2) landing + ≥ 4 weekly crons of post-flip / post-revert data accumulating ahead of Q3 2026-08-19 cohort audit; or cut a `v1.4.x` patch sooner if a structural fix lands on its own
 5. **Phase 4i.1 / 4j.1 / 4k.1 — Factor integrations** (JKP / Qlib / IPCA; ~1-2w each → `v1.1.0-phase4`); 4i.1 license-review-required per #115
