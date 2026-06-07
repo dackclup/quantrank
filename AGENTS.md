@@ -619,10 +619,13 @@ export function FairPriceCard(props) {  // no types
   in weekly cron `compute-rankings.yml`). Each is optional, fails
   open on absence (= no skip), and falls through to live fetch if
   no cached parquet exists. Cron and local dev must leave them
-  unset. The combo is the durable structural fix for the recurring
-  simulate 45-min cap breach pattern (PRs #230 / #238 / #241).
+  unset. (The 2026-05-25 emergency `FORM4_FETCH_SKIP=1` exception on the
+  weekly cron — PR #245 — was reverted via Issue #287 PR B once the tier2
+  cache split #427 made the cron warm again, restoring this "none in
+  cron" invariant.) The combo is the durable structural fix for the
+  recurring simulate 45-min cap breach pattern (PRs #230 / #238 / #241).
   - `FORM4_FETCH_SKIP=1` — skips Form-4 bulk fetch
-    (`compute/main.py:840`)
+    (`compute/main.py:959`)
   - `QR_SKIP_TIER2=1` — skips Tier-2 10-K text + 8-K fetch
     (`compute/scoring/tier2.py:162`)
   - `QR_SKIP_FUNDAMENTALS=1` — skips fundamentals freshness gate

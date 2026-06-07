@@ -1995,3 +1995,60 @@ writer.py annotation) · `docs/GOTCHAS.md` (full detail) · `PHASE_STATUS.md` (#
 + range bump) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## ci(cron) — revert emergency FORM4_FETCH_SKIP=1 (Issue #287 PR B, in flight, 2026-06-06)
+
+**What.** Re-enables the Form-4 bulk fetch on the weekly cron by removing
+`FORM4_FETCH_SKIP: "1"` (+ its 2026-05-25 emergency comment) from the
+`.github/workflows/compute-rankings.yml` top-level `env:` block.
+
+**Why now.** PR #245 set the skip as an EMERGENCY when the 5th SEC EDGAR loop
+(Form-4, added PR #205) went cold simultaneously with the other 4 over a 44h
+Fri→Sun cache-eviction gap and the manual dispatch hit the 2h30m cap. The
+workflow comment + Issue #287 PR B both prescribed reverting once the durable
+cron-time fixes landed: **PR #297** (timeout rebaseline 150→195→225m +
+cache-restore canary + 4 per-loop `*_wall_clock_seconds`) and **PR #427** (the
+tier2 cache split that actually fixed the cold-cache root cause). The Issue #287
+PR B gate — "≥ 1 cron < 195m green" — is met with wide margin: cron **run #87 =
+15m49s warm, `tier2_wall_clock_seconds` 11.2s** (462× faster than run #86's
+86-min cold bootstrap), leaving ample headroom for Form-4's ~2-3m. edgar-debugger
+confirmed worst-case cold ~180m vs the 225m ceiling (45m headroom — the original
+150m-ceiling timeout cannot recur) + edgartools 5.35.1 drift-detector green.
+
+**Impact — ZERO scoring change.** Form-4 is observability-only
+(`form4_enabled=False` at `compute/main.py:2460`; `_FORM4_FLAGS_ENABLED=False`):
+the `insider_sell_cluster` flag is computed but NOT wired into composite / risk /
+rankings. The revert simply resumes the `form4_*` Metadata observability surface
+(`form4_wall_clock_seconds`, `form4_rule10b5_one_excluded_count`,
+`form4_negation_guard_downgrade_count`) so the data accumulates toward the
+2026-08-19 Q3 cohort audit (issue #130) + the eventual
+`INSIDER_SELL_CLUSTER_WEIGHT` 5.0 → 7.0 promotion gate. Defense-layer counts
+UNCHANGED (33 declared flags; 7 active vetoes).
+
+**Scope discipline.** `compute-rankings.yml` ONLY. The CI escape-hatch
+`FORM4_FETCH_SKIP=1` STAYS on `pre-merge-prod-sim.yml` (its 45-min synthetic-cap
+combo, PRs #230/#238/#241 — by design). No code change (the reader is
+`os.environ.get("FORM4_FETCH_SKIP", "")` at `compute/main.py:959`, already
+revert-ready). As a bonus the revert RE-ALIGNS the docs/GOTCHAS.md + AGENTS.md
+"NONE set in the weekly cron" invariant that the silent emergency exception had
+violated since 2026-05-25. Folds 3 reviewer-surfaced pre-existing drifts on the
+same topic: stale `FORM4_FETCH_SKIP` reader line numbers in docs/GOTCHAS.md +
+AGENTS.md (→ `compute/main.py:959`) and WORKFLOW.md's stale
+`form4_enabled=True` roadmap row (→ `False`, matching the code).
+
+**Validation gate (post-merge).** A cron dispatch must confirm
+`form4_wall_clock_seconds` populates (not None) + the cron stays green/warm
+BEFORE tagging release v1.5.0-phase7.0. (Run #87's metadata still shows
+`form4_wall_clock_seconds=null` because the skip was active; the next post-merge
+cron is the proof. First-cron watch per edgar-debugger: `form4_coverage_pct`
+85-95%, `fundamentals_latency_p95` < 15s, `form4_fetch_failures` < 10.)
+
+**Files**: `.github/workflows/compute-rankings.yml` (remove `FORM4_FETCH_SKIP`
+env + emergency comment, add a short revert note) · `CLAUDE.md` (§In-flight) ·
+`AGENTS.md` (§escape-hatch revert note + line-number fix) · `docs/GOTCHAS.md`
+(reader line-number fix) · `WORKFLOW.md` (`form4_enabled` roadmap row fix) ·
+`PHASE_STATUS.md` (#429 merged-log reflect + Issue #287 PR B → IN FLIGHT) ·
+`PHASE_STATUS_INFLIGHT.md` (this). The orphan-prune (#429) INFLIGHT entry above
+STAYS — append-only.
+
+---

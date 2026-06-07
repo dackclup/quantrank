@@ -495,28 +495,26 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **chore(output) — orphan per-stock-file prune (this PR)** — fixes the
-  release-blocking file-count drift (503 detail / 504 history vs 502 ranked). A ticker
-  leaving the universe — **de-listed** (EPAM) or **renamed** (BK → BNY) — left
-  its `stocks/{T}.json` + `stocks/history/{T}.json` shipping forever, because the
-  cron's `git add` never removes files compute simply stopped writing. New
-  `prune_orphan_stock_files(keep_tickers, data_dir)` in
-  `compute/output/writer.py`, called in `compute/main.py` right after
-  `write_rankings_json` — removes detail + history for any ticker not in the
-  just-written rankings; the cron's existing `git add frontend/public/data/`
-  stages the deletions (git ≥ 2.0 pathspec records removals → **no workflow
-  change**). A `_PRUNE_SAFETY_FLOOR=50` guard skips the prune on a degraded run
-  so it can never wipe `stocks/`. Plus a one-time `git rm` of the 3 current
-  orphans (EPAM detail+history, BK history) → **502/502, zero orphans**.
-  **NO schema / scoring / frontend change** — the orphan never rendered a page
-  (`generateStaticParams` reads `rankings.json` with `dynamicParams=false`); this
-  is deploy-size + verify-count hygiene. 9 new `tests/test_output/test_writer.py`
-  prune tests (happy-path / history-only / safety-floor / empty-keep / missing-dir
-  / 49-50 floor boundary / non-JSON survival / unlink-failure resilience); full
-  offline suite green. Folds the post-#428 doc
-  housekeeping: replaces the now-merged Watchlist §In-flight entry + reflects
-  #428 in PHASE_STATUS.md (INFLIGHT entries stay append-only per that file's
-  "do NOT move on merge" convention).
+- **ci(cron) — revert the emergency `FORM4_FETCH_SKIP=1` (Issue #287 PR B, this PR)** —
+  re-enables the Form-4 bulk fetch on the weekly cron. PR #245 set
+  `FORM4_FETCH_SKIP=1` as a 2026-05-25 EMERGENCY when the 5th SEC EDGAR loop went
+  cold simultaneously and the cron hit the 2h30m cap; the workflow comment +
+  Issue #287 PR B prescribed reverting once the durable cron-time fixes landed —
+  PR #297 (timeout rebaseline + cache-restore canary + per-loop wall-clocks) and
+  **PR #427 (tier2 cache split)**. Gate met: cron **run #87 = 15m49s warm, tier2
+  11.2s** (462× faster than #86's 86-min cold), ample headroom for Form-4's
+  ~2-3m. **ZERO scoring change** — Form-4 is observability-only
+  (`form4_enabled=False`); the revert just resumes the `form4_*` Metadata surface
+  (wall-clock, `form4_rule10b5_one_excluded_count`, negation-guard count) toward
+  the 2026-08-19 Q3 cohort audit + the eventual `INSIDER_SELL_CLUSTER_WEIGHT`
+  5.0→7.0 gate. Scope: **`.github/workflows/compute-rankings.yml` only** — the
+  escape-hatch var stays set on `pre-merge-prod-sim.yml` (its 45-min cap), so the
+  revert also re-aligns the docs/GOTCHAS.md + AGENTS.md "NONE set in the weekly
+  cron" invariant that the emergency had silently violated. No code change (the
+  reader is `os.environ.get("FORM4_FETCH_SKIP", "")`, already revert-ready).
+  **Post-merge: a cron dispatch must confirm `form4_wall_clock_seconds` populates
+  + cron stays healthy before tagging release v1.5.0-phase7.0.** (#429 orphan
+  prune merged; this is the next on the same branch.)
 
 
 **Next deliverables** (pick by appetite):
