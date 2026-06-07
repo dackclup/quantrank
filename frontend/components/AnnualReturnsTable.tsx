@@ -90,9 +90,9 @@ export function AnnualReturnsTable({
   portfolioLabel,
   benchmarkLabel,
 }: Props) {
-  const { rows, cagrPortfolio, cagrBenchmark } = useMemo(() => {
+  const { rows, cagrPortfolio, cagrBenchmark, windowYears } = useMemo(() => {
     if (dates.length === 0) {
-      return { rows: [] as Row[], cagrPortfolio: null, cagrBenchmark: null };
+      return { rows: [] as Row[], cagrPortfolio: null, cagrBenchmark: null, windowYears: 0 };
     }
 
     const pAnn = annualReturns(dates, portfolio);
@@ -118,7 +118,12 @@ export function AnnualReturnsTable({
       return a !== null && b !== null && a > 0 && yrs > 0 ? Math.pow(b / a, 1 / yrs) - 1 : null;
     };
 
-    return { rows, cagrPortfolio: cagr(portfolio), cagrBenchmark: cagr(benchmark) };
+    return {
+      rows,
+      cagrPortfolio: cagr(portfolio),
+      cagrBenchmark: cagr(benchmark),
+      windowYears: yrs,
+    };
   }, [dates, portfolio, benchmark]);
 
   if (rows.length === 0) return null;
@@ -184,7 +189,8 @@ export function AnnualReturnsTable({
       </table>
 
       <p className="mt-2 text-pretty text-xs leading-relaxed text-slate-500 dark:text-slate-400">
-        CAGR = compound annual growth over the {rows.length}-year backtest window. Backtest = raw
+        CAGR = compound annual growth over the {windowYears.toFixed(1)}-year backtest window
+        ({dates[0]} → {dates[dates.length - 1]}). Backtest = raw
         top-by-composite picks, point-in-time — the defense-layer vetoes that filter the live Top-5
         are <span className="font-medium">not replayed here</span>, so this is the unfiltered
         signal&rsquo;s record, not the live product&rsquo;s.
