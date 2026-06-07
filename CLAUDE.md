@@ -511,7 +511,16 @@ Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_
   SPY +12.5% over the 4.8y window) — already disclosed in the backtest
   `meta.disclaimer`; a caveat beside the CAGR row notes the backtest is the **raw
   top-composite signal, not the live veto-filtered Top-5** (`veto_layer_replayed=False`).
+  (4) **Jitta-look chart polish** (2nd iteration): per-calendar-year hollow dots,
+  a year-only x-axis with faint vertical gridlines, the hover crosshair removed
+  (`cursor={false}`), and the period selector is now 1Y / 5Y / **Max** (Max shows
+  the full window; labeled Max not "10Y" so it never overstates the data present).
   `tsc --noEmit` + `next build` green (510/510); no schema bump.
+  **Track B (next epic, NOT this PR): a real 10-year backtest** needs the
+  survivorship ledger rebuilt back to 2016 — `data/sp500_membership_historical.csv`
+  currently starts at the 2020-04 event, so a pre-2020 reconstruction would be
+  survivorship-biased (the exact thing the ledger fixes). The "Max" button becomes
+  a true 10Y automatically once that ledger + a `backfill_portfolio_pit` re-run land.
 
 
 **Next deliverables** (pick by appetite):

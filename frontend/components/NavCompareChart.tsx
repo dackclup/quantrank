@@ -26,6 +26,8 @@ export interface NavChartPoint {
   date: string;
   portfolio: number | null;
   benchmark: number | null;
+  /** First sampled point of a calendar year — gets a hollow year dot (Jitta look). */
+  yearStart?: boolean;
 }
 
 export interface Props {
@@ -50,6 +52,10 @@ function fmtTick(d: string): string {
   const mon = MONTHS[Number(parts[1]) - 1] ?? '';
   const yy = (parts[0] ?? '').slice(2);
   return `${mon} '${yy}`;
+}
+
+function fmtYear(d: string): string {
+  return (d ?? '').slice(0, 4);
 }
 
 function fmtMoney(v: number): string {
@@ -142,6 +148,22 @@ function endLabel(total: number, color: string) {
   };
 }
 
+interface DotProps {
+  cx?: number;
+  cy?: number;
+  payload?: NavChartPoint;
+}
+
+// Hollow ring at each calendar-year boundary (Jitta look) — fill = the card
+// surface so the line reads "through" the ring. Recharts requires the dot
+// renderer to return an SVG element, so non-year points return an empty <g/>.
+function yearDot(color: string, surface: string) {
+  return function YearDot({ cx, cy, payload }: DotProps): JSX.Element {
+    if (!payload?.yearStart || cx === undefined || cy === undefined) return <g />;
+    return <circle cx={cx} cy={cy} r={3.5} fill={surface} stroke={color} strokeWidth={1.5} />;
+  };
+}
+
 export function NavCompareChart({ data, portfolioLabel, benchmarkLabel, money = false, baseline = 100 }: Props) {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -152,17 +174,19 @@ export function NavCompareChart({ data, portfolioLabel, benchmarkLabel, money = 
   const grid = isDark ? '#1e293b' : '#e2e8f0'; // slate-800 / slate-200
   const pColor = isDark ? PORTFOLIO.dark : PORTFOLIO.light;
   const bColor = isDark ? BENCHMARK.dark : BENCHMARK.light;
+  const surface = isDark ? '#0f172a' : '#ffffff'; // slate-900 card / white — hollow-dot fill
+  const yearTicks = data.filter((d) => d.yearStart).map((d) => d.date);
 
   return (
     <div className="h-72 w-full" aria-hidden="true">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 8, right: money ? 60 : 8, bottom: 0, left: -12 }}>
-          <CartesianGrid stroke={grid} strokeDasharray="3 3" vertical={false} />
+          <CartesianGrid stroke={grid} strokeDasharray="3 3" vertical />
           <ReferenceLine y={baseline} stroke={grid} strokeWidth={1} />
           <XAxis
             dataKey="date"
-            tickFormatter={fmtTick}
-            minTickGap={48}
+            ticks={yearTicks}
+            tickFormatter={fmtYear}
             tick={{ fontSize: 11, fill: axis }}
             stroke={grid}
             tickLine={false}
@@ -175,17 +199,15 @@ export function NavCompareChart({ data, portfolioLabel, benchmarkLabel, money = 
             tickLine={false}
             width={money ? 48 : 40}
           />
-          <Tooltip
-            content={<NavTooltip money={money} />}
-            cursor={{ stroke: axis, strokeDasharray: '3 3' }}
-          />
+          {/* crosshair removed (cursor={false}) — Jitta look, per request */}
+          <Tooltip content={<NavTooltip money={money} />} cursor={false} />
           <Line
             type="monotone"
             dataKey="benchmark"
             name={benchmarkLabel}
             stroke={bColor}
             strokeWidth={1.5}
-            dot={false}
+            dot={yearDot(bColor, surface)}
             connectNulls
             isAnimationActive={false}
           >
@@ -197,7 +219,7 @@ export function NavCompareChart({ data, portfolioLabel, benchmarkLabel, money = 
             name={portfolioLabel}
             stroke={pColor}
             strokeWidth={2}
-            dot={false}
+            dot={yearDot(pColor, surface)}
             connectNulls
             isAnimationActive={false}
           >

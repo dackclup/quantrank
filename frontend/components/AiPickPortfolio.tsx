@@ -14,8 +14,11 @@ import type { AiPickData } from '@/lib/types';
 
 const PERIODS: readonly { value: string; label: string; years: number }[] = [
   { value: '1Y', label: '1Y', years: 1 },
-  { value: '3Y', label: '3Y', years: 3 },
   { value: '5Y', label: '5Y', years: 5 },
+  // "Max" shows the full backtest window — ~5y today, and automatically the full
+  // span once the membership ledger + backfill extend it (Track B). Labeled Max
+  // (not "10Y") so it never overstates the data actually present.
+  { value: 'MAX', label: 'Max', years: 100 },
 ];
 
 const BENCHMARKS: readonly SegmentOption[] = [
@@ -80,7 +83,7 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
 
   const [count, setCount] = useState<number>(meta.default_count);
   const [bench, setBench] = useState<string>(meta.default_benchmark);
-  const [period, setPeriod] = useState<string>('5Y');
+  const [period, setPeriod] = useState<string>('MAX');
 
   const countKey = String(count);
   const benchLabel = (BENCHMARKS.find((b) => b.value === bench)?.label ?? bench).toUpperCase();
@@ -100,11 +103,20 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
       date: dates[i],
       portfolio: pAnchor && isFinite_(net[i]) ? Math.round((net[i] as number) / pAnchor * CHART_BASE) : null,
       benchmark: bAnchor && isFinite_(bser[i]) ? Math.round((bser[i] as number) / bAnchor * CHART_BASE) : null,
+      yearStart: false,
     });
     const points: ReturnType<typeof point>[] = [];
     for (let i = startIdx; i < dates.length; i += step) points.push(point(i));
     if (dates.length > 0 && (dates.length - 1 - startIdx) % step !== 0) {
       points.push(point(dates.length - 1));
+    }
+    // Mark the first sampled point of each calendar year — NavCompareChart draws
+    // a hollow ring there and uses these as the year x-axis ticks (Jitta look).
+    let prevYear = '';
+    for (const p of points) {
+      const yr = p.date.slice(0, 4);
+      p.yearStart = yr !== prevYear;
+      prevYear = yr;
     }
 
     const lastPoint = points[points.length - 1];
