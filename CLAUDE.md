@@ -519,21 +519,23 @@ Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_
   the Annual-returns table); period selector 1Y / 5Y / **Max** (labeled Max not
   "10Y" so it never overstates the data present).
   `tsc --noEmit` + `next build` green (510/510); no schema bump.
-  **Track B — 10Y survivorship ledger rebuild (DONE in this branch; backfill
-  pending):** `data/sp500_membership_historical.csv` full-rebuilt from the
+  **Track B — survivorship ledger rebuilt to 10y (ledger SHIPPED; backtest stays
+  5y by decision):** `data/sp500_membership_historical.csv` full-rebuilt from the
   fja05680 historical-components snapshot-diff → **2016-01-04 .. 2026-06-02, 485
   events**, `EARLIEST_EVENT_DATE` + verify `WINDOW_START` moved 2020→2016.
   `verify_membership_ledger.py` **CLEAN across the full 10y** (size band 498-506,
-  0 months out). Boundary reconciled (CDAY→DAY 2024 rename; EPAM→FDXF 2026-06-02
-  swap — fixing the latent gap behind the #429 orphan). 2 floor-dependent tests
-  updated; offline suite green. **Window wired to 10y**: `backfill_portfolio_pit`
-  `--start` default `today.year-5 → today.year-10` (so BOTH the cron's folded
-  backfill AND a dispatch produce 10y; cron backfill-step cap 40→60m for the
-  heavier ~40-quarter run). **STILL PENDING: the first 10Y `backfill_portfolio_pit`
-  run** (heavy — 2016+ EDGAR/price data) to regenerate `backtest_pit.json` — best
-  seeded via a user `backfill-portfolio.yml` dispatch on this branch (`if: ref !=
-  main` guard → CI commits the 10y artifact to the branch; 120m cap); only then
-  does the "Max" button show a true 10 years.
+  0 months out; both opus reviewers APPROVED — method survivorship-honest).
+  Boundary reconciled (CDAY→DAY 2024 rename; EPAM→FDXF 2026-06-02 swap — fixing
+  the latent gap behind the #429 orphan). The **ledger is now 10y-READY** (a
+  future 10y backtest is unblocked at the membership layer). **But the backtest
+  stays 5y by decision**: a true 10y also needs the DATA layer extended —
+  `PRICES_PERIOD` ("5y"), the period-blind price cache, and `ANNUAL_HISTORY_YEARS`
+  (5) cap usable history at ~5y (a 10y `--start` silently yields a 5y NAV because
+  the 2016-2021 legs have no price/fundamentals data — confirmed on the 2026-06-07
+  dispatch). Extending those = a permanent ~2× weekly-cron cost for a longer view
+  of a backtest that underperforms the index anyway, so the backfill window stays
+  5y (`backfill_portfolio_pit --start` default `today.year-5`); revisit if/when
+  the data layer is extended. "Max" honestly shows ~5y.
 
 
 **Next deliverables** (pick by appetite):
