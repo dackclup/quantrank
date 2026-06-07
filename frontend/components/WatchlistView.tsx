@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Star, Trash2 } from 'lucide-react';
 
+import { RecommendationBadge } from '@/components/RecommendationBadge';
 import { ScoreBadge } from '@/components/ScoreBadge';
 import { SectorChip } from '@/components/SectorChip';
 import { StockLogo } from '@/components/StockLogo';
@@ -41,24 +42,28 @@ function WatchlistCard({
       {/* Whole-card overlay link — keeps the rich card a single navigation
           target without nesting interactive children inside an <a>. The content
           layer is pointer-events-none so clicks fall through to this link; the
-          remove X re-enables pointer events at a higher z-index. */}
+          trash button below the chart re-enables pointer events (pointer-events-auto + z-20). */}
       <Link
         href={`/stock/${row.ticker}/`}
         aria-label={`Open ${row.name} (${row.ticker}) detail`}
         className="absolute inset-0 z-0"
       />
       <div className="pointer-events-none relative z-10 p-4">
-        {/* Header — logo + name + ticker + sector (left); composite-score donut (right). */}
+        {/* Header — sector tag over [logo + name + ticker + recommendation]
+            (left); composite-score donut (right). */}
         <div className="flex items-start justify-between gap-3">
-          <div className="flex min-w-0 items-center gap-3">
-            <StockLogo ticker={row.ticker} size={40} />
-            <div className="min-w-0">
-              <div className="truncate font-slab text-lg font-semibold text-slate-900 dark:text-slate-100">
-                {row.name}
-              </div>
-              <div className="mt-0.5 flex items-center gap-2">
-                <span className="font-mono text-xs text-slate-500 dark:text-slate-400">{row.ticker}</span>
-                <SectorChip sector={row.sector} size="xs" />
+          <div className="min-w-0">
+            <SectorChip sector={row.sector} size="xs" />
+            <div className="mt-2 flex min-w-0 items-center gap-3">
+              <StockLogo ticker={row.ticker} size={40} />
+              <div className="min-w-0">
+                <div className="truncate font-slab text-lg font-semibold text-slate-900 dark:text-slate-100">
+                  {row.name}
+                </div>
+                <div className="mt-0.5 flex items-center gap-2">
+                  <span className="font-mono text-xs text-slate-500 dark:text-slate-400">{row.ticker}</span>
+                  <RecommendationBadge recommendation={row.recommendation} size="xs" />
+                </div>
               </div>
             </div>
           </div>
