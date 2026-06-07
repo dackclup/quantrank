@@ -1165,10 +1165,12 @@ the historical universe (forward-looking leak); a MISSING remove drops a genuine
 BLOCKING gate for the Phase 7.0 portfolio-backtest epic.
 
 **After ANY edit to the CSV, run `python scripts/verify_membership_ledger.py`.** It reverse-walks
-`members_at` from the live `rankings.json` universe across every month of the 2021-06 -> present
+`members_at` from the live `rankings.json` universe across every month of the 2016-06 -> present
 window and FAILS on (a) the reconstructed size leaving the S&P 500 band (498-506), or (b) any
 ticker removed-in-window-but-still-in-universe / added-in-window-but-absent. A drift localizes the
-missing/extra event to the month it appears.
+missing/extra event to the month it appears. CAVEAT: the size-band check is net-zero-blind — it
+canNOT distinguish a true rename (REMOVE+ADD, net 0) from a balanced-but-WRONG swap; rename
+correctness rests on the snapshot-diff source + manual/methodology cross-check.
 
 Conventions baked in by the Phase 7.0 PR-0 rebuild:
 - **Effective date, not announcement date** (S&P announces ~1 week ahead). SVB Financial =
@@ -1177,18 +1179,26 @@ Conventions baked in by the Phase 7.0 PR-0 rebuild:
 - **Real tickers** — SIVB not "SVB"; **BX** = Blackstone, **BLK** = BlackRock (never confuse).
 - **Per-row `source_url` = the Wikipedia change-history table** (stable + resolves). Do NOT
   hand-author `press.spglobal.com/<date>-<title>` deep links — that URL shape 404s.
-- **Renamed-then-departed names use ONE ticker for the add/remove pair** (e.g. CDAY for
-  Ceridian -> Dayforce) because `members_at` skips RENAME rows (no alias map applied today).
-- **Drop an event that postdates the cron universe anchor** (a spinoff effective after the
-  latest `rankings.json`, e.g. the 2026-06-02 FedEx Freight / EPAM swap) until the weekly cron
-  picks it up — else the reversal anchor and the ledger disagree.
+- **Rename-aware (Track B 10Y rebuild — REPLACED the prior "one ticker, skip RENAME" rule):**
+  a symbol change is a REMOVE-old + ADD-new pair on the rename date (e.g. Ceridian CDAY ->
+  Dayforce DAY, 2024-02-01; Fiserv FISV->FI->FISV), so `members_at` returns the correct
+  historical ticker for as-of data fetch. The snapshot-diff source (fja05680) is rename-aware by
+  construction. The `_ACTION_RENAME` branch in `historical_universe.py` is now effectively dead
+  (renames are encoded as REMOVE+ADD, not RENAME rows).
+- **Events up to the cron universe anchor ARE included.** The 2026-06-02 EPAM -> FDXF (FedEx
+  Freight) swap IS in the ledger — the anchor (`rankings.json` "as of" 2026-06-03) postdates the
+  2026-06-02 effective date, and it fixed the latent gap behind the #429 EPAM orphan. Defer ONLY
+  an event that postdates the anchor (else the reversal anchor and the ledger disagree).
 
 History: the prior ledger had been silently feeding the Phase 4.6 survivorship harness ~30 errors
 + ~110 missing events (BLK mislabeled "Blackstone", a bogus 2024-08-30 BLL removal that was really
 a 2022 BLL->BALL rename, KDP/UA/UAA date contradictions, a missing SBNY 2023-failure removal, a
 scrambled 2020-06-22 add trio). PR-0 rebuilt it triangulated across S&P DJI releases + the
-fja05680/sp500 maintained CSV + Wikipedia (214 events, ADD/REMOVE balanced 107/107) and added the
-verifier as the gate.
+fja05680/sp500 maintained CSV + Wikipedia (214 events 2020-04..2026, ADD/REMOVE balanced 107/107)
+and added the verifier as the gate. **Track B 10Y rebuild** then full-rebuilt it from the fja05680
+snapshot-diff back to **2016-01-04 (485 events, ADD/REMOVE 243/242)** + extended `EARLIEST_EVENT_DATE`
+and the verifier `WINDOW_START` 2020 -> 2016, to enable a real 10-year backtest; verifier CLEAN
+across the full 10y (band 498-506, 0 months out).
 
 ## The home page IS the AI-pick portfolio (Phase 7.0 PR-4)
 
