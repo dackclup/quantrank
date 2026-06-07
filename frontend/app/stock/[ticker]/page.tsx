@@ -141,7 +141,7 @@ export default function StockDetailPage({
           </svg>
           Back to ranking
         </Link>
-        <WatchlistButton ticker={detail.ticker} labeled />
+        <WatchlistButton ticker={detail.ticker} />
       </div>
 
       {/* Hero header card — new layout from QuantRank.html design:
