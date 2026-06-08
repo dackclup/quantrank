@@ -496,25 +496,26 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **fix(portfolio) — AI-pick dedups dual-class issuers (GOOG/GOOGL bug) (this PR)** —
-  `select_picks` (`compute/portfolio/weights.py`) was picking BOTH share classes
-  of a dual-class issuer (Alphabet GOOG+GOOGL; also Fox FOX/FOXA, News NWS/NWSA) —
-  two basket slots for ONE company (the classes share fundamentals → adjacent
-  composites). Confirmed in **6/20 historical rebalances** (e.g. 2022-02-14 GOOGL
-  #1 + GOOG #2 → at count-2 the whole basket was one issuer). Fix: a
-  `_DUAL_CLASS_GROUP` issuer-key map + a dedup pass in `select_picks` that holds
-  each issuer ONCE, **canonicalized to a fixed Class-A ticker (GOOGL/FOXA/NWSA)**
-  so the basket shows the same ticker every quarter — NOT the per-quarter
-  higher-composite class, which would flip GOOG↔GOOGL as their near-equal
-  composites trade places (the rotation-history churn the user flagged) — and
-  fills the freed slot with the next distinct name (falls back to the held class
-  if the canonical is vetoed). **Backtest-only** (the live forward compute doesn't
-  import `weights.py`); ruff clean; **54 portfolio tests pass (+4 dual-class:
-  dedup-higher / all-three-pairs / canonicalize-no-churn / veto×dedup edge)**.
-  **Backfill re-run PENDING**: the deduped baskets appear only after a
-  `backfill_portfolio_pit` run regenerates `backtest_pit.json` (5y, same data →
-  moderate; user `backfill-portfolio.yml` dispatch on this branch → CI commits the
-  artifact), then merge. No schema change.
+- **fix(portfolio/ui) — AI-pick honest-presentation refinements (this PR)** —
+  `methodology-scientist` DEEP audit (2026-06-08, user "ทำไมต่างจากดัชนีเยอะ")
+  confirmed the backtest NAV math is **CORRECT** (8/8 checks: Σwᵢ·rᵢ, rebalance-seam
+  chaining, no look-ahead via leak-probe, cost-on-turnover-at-rebalance, PIT
+  survivorship, benchmark rebased same-base; the suspected dividend/total-return
+  asymmetry **RULED OUT** — both the portfolio AND SPY are total-return via
+  `Adj Close`, proven in code + empirically SPY 1.76× = TR not 1.38× price-only).
+  The count=5 −10%/yr index gap is **~96% pre-cost** = concentration + raw signal
+  (`veto_layer_replayed=False`) + annual-10K basis + 2021-26 mega-cap regime, NOT a
+  bug; net CAGR rises monotonically with N and beats SPY at N≈11 (the
+  diversification curve itself proves soundness). Two honesty refinements (user-
+  authorized): (1) an inline **count-reactive concentration caveat** beside the
+  headline "vs index" number in `AiPickPortfolio.tsx` (so −64% is never read without
+  "this is a 5-name concentrated book; slide right to diversify"); (2)
+  `DISCLAIMER_BASE` "gross of slippage" → "Net figures charge a modeled per-side
+  spread cost (10-25 bps on turnover) but are gross of additional market-impact
+  slippage" (the old phrasing contradicted the net lines shown). Frontend caveat is
+  immediate on deploy; the disclaimer text re-bakes into `backtest_pit.json` on the
+  next cron backfill (or a manual dispatch). No schema change; tsc + build clean;
+  ruff clean.
 
 
 **Next deliverables** (pick by appetite):

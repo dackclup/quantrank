@@ -189,6 +189,34 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
           </div>
         </div>
 
+        {/* Concentration caveat — inline context so the "vs index" number is never
+            read alone (methodology-scientist 2026-06-08: the small-N divergence is
+            concentration / idiosyncratic-risk-driven, a disclosed proxy limit, NOT a
+            calc error — it shrinks as N grows toward the index). */}
+        <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+          {count < 10 ? (
+            <>
+              A concentrated{' '}
+              <span className="font-medium text-slate-600 dark:text-slate-300">
+                {count}-stock
+              </span>{' '}
+              book carries high single-name risk and can trail a cap-weighted index
+              for long stretches — add holdings to diversify, and read the full
+              ladder, not any single line.
+            </>
+          ) : (
+            <>
+              This{' '}
+              <span className="font-medium text-slate-600 dark:text-slate-300">
+                {count}-stock
+              </span>{' '}
+              factor-tilted book has no per-sector cap, so it can diverge from a
+              cap-weighted index in either direction — a backtest proxy, not the live
+              veto-filtered product.
+            </>
+          )}
+        </p>
+
         {/* Controls — count slider + benchmark picker */}
         <div className="grid gap-4 sm:grid-cols-2">
           <HoldingsCountSlider value={count} min={1} max={meta.max_holdings} onChange={setCount} />

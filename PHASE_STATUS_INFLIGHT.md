@@ -2225,3 +2225,55 @@ shows the SAME canonical ticker every quarter) → merge → stable baskets live
 dedup+canonicalize note) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## fix(portfolio/ui) — AI-pick honest-presentation refinements (calc audit-verified, in flight, 2026-06-08)
+
+**Trigger (user, Thai).** "ตรวจสอบหลักการคำนวณแบบละเอียดว่าคำนวณถูกต้องไหม ทำไมต่างจาก
+ดัชนีเยอะจัง" — verify the backtest calculation is correct, and explain why the AI-pick
+diverges so far below the S&P 500.
+
+**Audit verdict (`methodology-scientist`, opus, deep).** The backtest NAV math is
+**CORRECT — no bug**. 8/8 correctness checks PASS, verified against code + the 54-test
+suite + a hand-computed reconstruction: (A1) per-day return = Σ wᵢ·rᵢ; (A2) NAV chaining
+continuous across the rebalance seam (mark-to-market THEN reallocate at same NAV — no
+gap/double-count/off-by-one); (A3) inverse-vol weights applied to the right holdings;
+(A4) NO look-ahead (fundamentals `filing_date <= T`, prices `.loc[:T]`, trades snap to
+first trading day ≥ T — pinned by `test_leak_probe_future_blockbuster_is_ignored`);
+(A5) **dividend / total-return comparability — the prime suspect — RULED OUT**: both the
+portfolio AND the SPY benchmark use `"Adj Close"` from one `fetch_prices(auto_adjust=False)`
+path → both total-return; empirically SPY = 1.76× (TR) not 1.38× (price-only), symmetric,
+no drag; (A6) costs charged on turnover at rebalance only; (A7) PIT survivorship via
+`members_at` (`incomplete_membership_count=0`); (A8) benchmark rebased to 100 at the same
+first date.
+
+**Why so far from the index (count=5 −10.1%/yr net gap, ranked).** ~96% pre-cost (cost is
+only ~0.41%/yr at 10bps). Drivers: (1) **concentration / idiosyncratic risk at small N**
+(~6-9%/yr, dominant — N=1 is −19.8%/yr, N=11 is +13.7% and BEATS SPY, mean-reverts to +9%
+at N=20); (2) raw composite signal with `veto_layer_replayed=False` (~2-4%/yr — holds
+names the live product would veto; `restatement_contamination_pct=7.5`); (3) no per-sector
+cap (~1-3%/yr); (4) annual 10-K instead of live TTM (~1-2%/yr); (5) 2021-26 mega-cap
+cap-weighted regime (~1-3%/yr); (6) McLean-Pontiff decay (~0.5-1%/yr); (7) cost (~0.41%/yr,
+smallest). The monotone net-CAGR rise with N that converges to / beats SPY at N≈11 is
+itself evidence the NAV chain is sound — a broken calc would not coherently converge.
+
+**Refinements (user-authorized via AskUserQuestion 2026-06-08).** Both are PRESENTATION,
+not methodology: (1) `AiPickPortfolio.tsx` — an inline **count-reactive concentration
+caveat** directly below the headline so the "vs index" number (−64% at count=5) is never
+read without "this is a concentrated N-stock book; slide right to diversify, read the full
+ladder"; <10 holdings shows the strong concentration line, ≥10 the milder factor-tilt /
+proxy-not-live-product line. (2) `scripts/backfill_portfolio_pit.py` `DISCLAIMER_BASE` —
+"Figures are gross of slippage" → "Net figures charge a modeled per-side spread cost
+(10-25 bps on turnover) but are gross of additional market-impact slippage" (the old
+phrasing contradicted the net lines actually shown).
+
+**Scope / rollout.** No schema change. Frontend caveat is immediate on deploy; the
+disclaimer text is baked into `backtest_pit.json` `meta.disclaimer`, so it re-bakes on the
+**next weekly-cron backfill step** (or a manual `backfill-portfolio.yml` dispatch) — no
+re-dispatch is strictly required to merge (it self-heals on the next cron). tsc + build
+clean; ruff clean; 54 portfolio tests unchanged (no engine change).
+
+**Files**: `frontend/components/AiPickPortfolio.tsx` (inline caveat) ·
+`scripts/backfill_portfolio_pit.py` (`DISCLAIMER_BASE` wording) · `CLAUDE.md` (§In-flight)
+· `AGENTS.md` (AI-pick audit + caveat note) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
