@@ -251,7 +251,12 @@ _TTM_FLOW_TAGS: dict[str, list[str]] = {
 # Annual history concepts for CAGR + Piotroski. Tuple of (snapshot_key,
 # US-GAAP tag list, fallback lookup). Pulled per fiscal year for the last
 # ``ANNUAL_HISTORY_YEARS`` years.
-ANNUAL_HISTORY_YEARS: int = 5
+# 10y (was 5) so the decade-long AI-pick backtest has 10-K facts back to ~2015 for
+# its earliest (2016) rebalances. The live pillars only read their own shorter
+# window, so older rows are simply ignored — no live-scoring change. Like a tag
+# change, bumping this needs a workflow cache-key bump (the history cache is
+# period-blind by CIK — see the cache-stale guard below).
+ANNUAL_HISTORY_YEARS: int = 10
 
 # ⚠️ Cache-stale guard (PR 4c.1 lesson — see fundamentals.py history):
 # Adding a new metric to `_ANNUAL_TAGS` extends the parquet schema written

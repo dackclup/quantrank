@@ -117,8 +117,11 @@
   = 80.6 min = cold). Fix = two INDEPENDENT caches in
   `compute-rankings.yml`: (1) **fast** — `fundamentals` /
   `fundamentals_history` / `prices` / `universe` / `yfinance_info` /
-  `edgar_form4`, key `cache-v5-fast-<quarter>-<os>` (unchanged: proven
-  warm; fundamentals freshness via `_is_fresh()`); (2) **slow-text** —
+  `edgar_form4`, key `cache-v6-fast-<quarter>-<os>` (bumped v5→v6
+  2026-06-08 to invalidate the PERIOD-BLIND 5y price + fundamentals_history
+  parquets when `PRICES_PERIOD`/`ANNUAL_HISTORY_YEARS` went 10y — the cache key
+  carries no period, so a value change is invisible to it without a vN bump;
+  fundamentals freshness via `_is_fresh()`); (2) **slow-text** —
   `edgar_10k_text` / `edgar_8k` / `edgar_amendments` /
   `edgar_late_filings` / `osap`, key `cache-v5-text-<os>-<run_id>` with
   `restore-keys: cache-v5-text-<os>-`. The run-id key is deliberate —
@@ -525,7 +528,9 @@
 - **Price-chart resolution is PER-PERIOD — 5Y aggregates to monthly, the
   shorter windows stay daily** (`frontend/components/PriceHistoryChart.tsx`,
   PR #341). The on-disk history (`/data/stocks/history/<T>.json`) is and stays
-  **daily OHLCV, ~1254 points over 5y** (`compute/config.PRICES_PERIOD="5y"`,
+  **daily OHLCV, ~1254 points over 5y** (`PRICES_PERIOD` is now `"10y"` for the
+  decade-long AI-pick backtest, but `write_stock_history` tail-caps to
+  `HISTORY_TAIL_DAYS`=1260 ≈ 5y, so the per-stock chart's payload is UNCHANGED;
   yfinance `1d`) — the per-period resolution is a pure FRONTEND render
   decision in the `chartData` memo: **5Y → `aggregateMonthly()`** (one point
   per calendar month = the close of that month's FIRST trading day, ~60 points

@@ -203,9 +203,14 @@ def write_benchmarks_json(
         {"dates": ["YYYY-MM-DD", ...],
          "spy": [float | null, ...], "qqq": [...], "dia": [...], "iwm": [...]}
 
-    keyed by LOWERCASE ticker. Each series is Adj-Close-preferred close over the
-    last ``HISTORY_TAIL_DAYS`` (~5 trading years), aligned to the UNION of all
-    benchmarks' trading dates (a symbol missing a date → ``null``). NaN → null.
+    keyed by LOWERCASE ticker. Each series is the Adj-Close-preferred close over the
+    FULL fetched window (``config.PRICES_PERIOD``, now 10y) — NOT capped at the
+    per-stock ``HISTORY_TAIL_DAYS`` (~5y) — so the AI-pick backtest's "Max" chart can
+    show the benchmark line across the full 10y span (a 5y cap would blank the SPY/QQQ
+    line for the pre-2021 half). This file is read ONLY by the backfill (the frontend
+    uses the pre-aligned ``nav.benchmark`` in ``backtest_pit.json``), so its size is
+    not a frontend-payload concern. Aligned to the UNION of all benchmarks' trading
+    dates (a symbol missing a date → ``null``). NaN → null.
 
     Returns
     -------
@@ -225,7 +230,9 @@ def write_benchmarks_json(
         close_col = "Adj Close" if "Adj Close" in df.columns else "Close"
         if close_col not in df.columns:
             continue
-        series_by_sym[sym] = df[close_col].tail(min(HISTORY_TAIL_DAYS, len(df)))
+        # Full window (not HISTORY_TAIL_DAYS-capped) — the backtest needs the whole
+        # PRICES_PERIOD span for its Max benchmark line; benchmarks.json is backfill-only.
+        series_by_sym[sym] = df[close_col]
 
     coverage_pct = (
         round(100.0 * len(series_by_sym) / len(requested), 1) if requested else 0.0

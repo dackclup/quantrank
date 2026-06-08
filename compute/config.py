@@ -29,7 +29,13 @@ MODELS_DIR: Path = PROJECT_ROOT / "models"
 UNIVERSE: str = "SP500"
 SCHEMA_VERSION: str = "0.10.15-phase4.6"
 
-PRICES_PERIOD: str = "5y"
+# 10y so the AI-pick backtest's "Max" chart spans a full decade (2016+, the
+# survivorship-ledger floor). The weekly compute only consumes ~1y (momentum + NSI
+# lookback), so the extra history is cache overhead, not extra compute. NOTE: the
+# price + fundamentals_history caches are PERIOD-BLIND, so changing this REQUIRES a
+# workflow cache-key bump (cache-vN-fast) to invalidate the stale 5y parquets —
+# otherwise a warm run silently returns the old 5y data.
+PRICES_PERIOD: str = "10y"
 MAX_PARALLEL_FETCHES: int = 10
 # Bumped from 5 to 8 (PR-3d quick wins). SEC EDGAR fair-access policy
 # documents a 10 req/s ceiling per IP. With ~5-10s per snapshot HTTP

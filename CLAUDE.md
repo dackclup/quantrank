@@ -445,7 +445,7 @@ always-loaded context small while preserving discoverability of every invariant.
 - **`pillarColor`→`lib/visual` + `flagLabel`→`lib/flag-labels` are SHARED tokens (don't re-inline) — introduced by the now-removed compare/filter, still used by `PillarRadarChart` / `RiskSummaryCard` / `FairPriceCard`**
 - **`globals.css` soft-color `!important` override is LITERAL-class-keyed → it NEVER reaches `dark:bg-emerald-*` / `dark:bg-rose-*` solid-fills (they render RAW Tailwind in dark → white label ~3.8:1, under AA). A dark CTA / brand mark = `dark:bg-emerald-700` (emerald-700 = `#047857`, white 5.5:1) or a `--c-*` token directly, never `dark:bg-emerald-600` expecting the soft remap (theme audit #401)**
 - **The home + ranking pages derive stats from `rankings.json`/`metadata.json` at BUILD TIME (Server Components) — weekly static export, so values are "as of" the last cron, NOT live; never `import lib/data.ts` (or any `fs` module) into a `'use client'` component (resolve on the server, pass the node in as a prop/child). Removed 2026-06-04: the top `MarketStatsBar` strip + `lib/market-stats.ts` + `AppShell` `topBar` slot, AND the standalone `/sectors` + `/movers` routes — the build-time server-component rule lives on via the home + ranking pages**
-- **`data/sp500_membership_historical.csv` (the survivorship ledger behind `members_at()`) must stay ADD/REMOVE-balanced — the reverse-walk reconstructs ~500-503 constituents at EVERY backtest month; run `scripts/verify_membership_ledger.py` after ANY edit (checks the size band 498-506 + that every removed ticker is gone / every added ticker present vs the live universe). Use effective (not announcement) dates + real tickers (SIVB not "SVB"; BX=Blackstone≠BLK=BlackRock); cite the Wikipedia change-history URL (the `press.spglobal.com/<date>-<title>` shape 404s). **Track B 10Y rebuild**: now covers **2016-01-04 .. present** (485 events; `EARLIEST_EVENT_DATE` + the verify `WINDOW_START` both moved 2020→2016). The 2016-01..2026-01-14 portion is snapshot-diff-DERIVED from the fja05680 historical-components dataset and is **RENAME-AWARE** (a symbol change = REMOVE old + ADD new, so `members_at` returns the correct historical ticker — a convention shift vs the prior "renames out of scope" 2020-2026 hand-built rows, which fja05680 cross-validated at the boundary). Tickers normalized to the yfinance dash form (BRK-B/BF-B). The 10Y `backtest_pit.json` only reflects this after a `backfill_portfolio_pit` re-run with a 2016 start (heavy; needs 2016+ EDGAR/price data)**
+- **`data/sp500_membership_historical.csv` (the survivorship ledger behind `members_at()`) must stay ADD/REMOVE-balanced — the reverse-walk reconstructs ~500-503 constituents at EVERY backtest month; run `scripts/verify_membership_ledger.py` after ANY edit (checks the size band 498-506 + that every removed ticker is gone / every added ticker present vs the live universe). Use effective (not announcement) dates + real tickers (SIVB not "SVB"; BX=Blackstone≠BLK=BlackRock); cite the Wikipedia change-history URL (the `press.spglobal.com/<date>-<title>` shape 404s). **Track B 10Y rebuild**: now covers **2016-01-04 .. present** (485 events; `EARLIEST_EVENT_DATE` + the verify `WINDOW_START` both moved 2020→2016). The 2016-01..2026-01-14 portion is snapshot-diff-DERIVED from the fja05680 historical-components dataset and is **RENAME-AWARE** (a symbol change = REMOVE old + ADD new, so `members_at` returns the correct historical ticker — a convention shift vs the prior "renames out of scope" 2020-2026 hand-built rows, which fja05680 cross-validated at the boundary). Tickers normalized to the yfinance dash form (BRK-B/BF-B). The 10Y `backtest_pit.json` reflects this after the DATA-layer extension (`PRICES_PERIOD`/`ANNUAL_HISTORY_YEARS`→10y + the load-bearing `cache-v6-fast` bump for the period-blind caches + `write_benchmarks_json` full-series) AND a cold `backfill_portfolio_pit` dispatch from 2016 (manual — the cold ~60-85m run exceeds the cron 40m folded-step cap; warm fits). ~15-20 pre-2021-renamed tickers' 2016-2020 legs drop (yfinance can't resolve the historical alias)**
 - **The home page IS the AI-pick portfolio (Phase 7.0 PR-4)** — reads `backtest_pit.json` via `getAiPickData()` (fs-read + trim+round to a small client view-model, NEVER a static `import`; the 1.3MB artifact never ships in the page payload; `null` → "backtest pending"). Server resolves → the `'use client'` `AiPickPortfolio` gets it as props (the build-time-data rule). The 1-10 slider switches `nav.by_count[N]` (one NAV line per count); the chart uses the pre-aligned `nav.benchmark`, so `benchmarks.json` is NOT read by the frontend
 - **Per-stock JSON for a dropped ticker (de-listed / renamed, e.g. EPAM / BK→BNY) is auto-pruned by `prune_orphan_stock_files()` (defined in `compute/output/writer.py`, called from `compute/main.py` after `write_rankings_json`; safety floor `_PRUNE_SAFETY_FLOOR=50`; cron `git add` stages the deletes). Don't glob `stocks/` for param-gen — it reads `rankings.json` by design. Full detail: `docs/GOTCHAS.md`**
 - **The home's `AnnualReturnsTable` (calendar-year rows + CAGR footer) + the `NavCompareChart` `money` mode ($10k→$X growth + end-of-line $ labels) are DERIVED in-browser from the NAV series — no schema / compute / `backtest_pit.json` change. The CAGR is the **raw top-composite signal's** record, NOT the live veto-filtered Top-5 (`veto_layer_replayed=False`) — it underperforms the S&P 500 at every count (honest by design; disclosed in `meta.disclaimer` + a caveat beside the CAGR row). Don't describe the backtest CAGR as the live product's track record. Full detail: `docs/GOTCHAS.md`**
@@ -510,63 +510,33 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **chore(agents) — agent-team layer + 2 write-capable builders (this PR)** —
-  studied the experimental agent-teams feature (≠ the existing report-back
-  subagents: teams = multiple full Claude sessions whose teammates message each
-  other + reuse subagent defs as roles). Adds (1)
-  `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` in `.claude/settings.json`; (2)
-  `.claude/agents/TEAMS.md` — 5 team recipes (Methodology Debate · Incident War
-  Room · Feature Squad · PR Review Crew · Release Board), each with a **mobile/web
-  subagent fallback** since live teams are desktop-terminal only; (3) two NEW
-  write-capable **Tier-5 builders** — `compute-builder` (owns `compute/**`) +
-  `frontend-builder` (owns `frontend/**`) — the layer owners in a cross-layer
-  Feature Squad (also usable as scoped write-subagents; review stays with the
-  existing reviewers). Roster 20 → 22 (5 opus / 17 sonnet; 20 at `effort: max`).
-  Docs lockstep: CLAUDE.md + AGENTS.md + README.md + CONTEXT.md + WORKFLOW.md +
-  docs/GOTCHAS.md. No production code / schema change.
-
-  ---
-
-- **fix(portfolio/ui) — AI-pick honest-presentation refinements (#436 — MERGED 2026-06-08, drains next housekeeping)** —
-  `methodology-scientist` DEEP audit (2026-06-08, user "ทำไมต่างจากดัชนีเยอะ")
-  confirmed the backtest NAV math is **CORRECT** (8/8 checks: Σwᵢ·rᵢ, rebalance-seam
-  chaining, no look-ahead via leak-probe, cost-on-turnover-at-rebalance, PIT
-  survivorship, benchmark rebased same-base; the suspected dividend/total-return
-  asymmetry **RULED OUT** — both the portfolio AND SPY are total-return via
-  `Adj Close`, proven in code + empirically SPY 1.76× = TR not 1.38× price-only).
-  The count=5 −10%/yr index gap is **~96% pre-cost** = concentration + raw signal
-  (`veto_layer_replayed=False`) + annual-10K basis + 2021-26 mega-cap regime, NOT a
-  bug; net CAGR rises monotonically with N and beats SPY at N≈11 (the
-  diversification curve itself proves soundness). Two honesty refinements (user-
-  authorized): (1) an inline **count-reactive concentration caveat** beside the
-  headline "vs index" number in `AiPickPortfolio.tsx` (so −64% is never read without
-  "this is a 5-name concentrated book; slide right to diversify"); (2)
-  `DISCLAIMER_BASE` "gross of slippage" → "Net figures charge a modeled per-side
-  spread cost (10-25 bps on turnover) but are gross of additional market-impact
-  slippage" (the old phrasing contradicted the net lines shown). Frontend caveat is
-  immediate on deploy; the disclaimer text re-bakes into `backtest_pit.json` on the
-  next cron backfill (or a manual dispatch). No schema change; tsc + build clean;
-  ruff clean.
-
-  ---
-
-- **feat(portfolio) — AI-pick high-conviction gate PR-2 (wire selection) (this PR)** —
-  PR-1 (#437, observability) confirmed condition **C1** on its backfill: the gate is
-  eligible at a **median of 52 names/rebalance** (min 31, all 20 rebalances ≥ 31 ≫
-  `DEFAULT_COUNT`=5), so wiring is safe. PR-2 flips `select_picks` to **drive selection
-  by the high-conviction gate**: new `select_picks(…, gate="high_conviction")` filters
-  to `is_high_conviction` (Strong Buy/Buy + MoS>0 + composite≥50 + loss-chance≤45) then
-  takes the top-N by composite among those (default `gate="veto_only"` UNCHANGED — the
-  live/legacy path is byte-identical). The backfill now calls
-  `select_picks(gate="high_conviction")`; **sell-eviction is implicit** (the basket is
-  rebuilt each quarter, so a name that decays out of the gate isn't re-picked).
-  `meta.high_conviction_gate_active` flips **True**; `DISCLAIMER_BASE` now discloses the
-  gate + the ~15-month annual-staleness window (condition C3). No schema model, no
-  frontend change, `compute/main.py` untouched (PR-3 = the wall-free LIVE forward pick,
-  later). ruff clean; tests updated (gate-filters + subset-property + dual-class×gate +
-  default-unchanged pins). **Backfill re-run PENDING** — the gated NAV/holdings/rotation
-  only appear after a `backfill_portfolio_pit` run regenerates `backtest_pit.json`; then
-  verify the gated baskets + sanity-check the result before merge.
+- **feat(backtest) — extend the AI-pick backtest 5y → 10y (this PR)** —
+  the chart's "Max" button is data-limited, not a frontend cap (`PERIODS` Max =
+  `years:100`, auto-extends to the full `nav.dates` span). The ledger is already
+  10y-ready (`EARLIEST_EVENT_DATE` 2016-01); the cap was the DATA layer.
+  `performance-engineer` scoped it (MODERATE — config bumps, no novel work).
+  **Edits**: `config.PRICES_PERIOD` `"5y"→"10y"` · `fundamentals.ANNUAL_HISTORY_YEARS`
+  `5→10` · backfill `--start` default `−5y→−10y` · **`cache-v5→v6` on BOTH period-blind
+  caches** (`compute-rankings.yml` fast + `backfill-portfolio.yml` dispatch — load-bearing:
+  the price/fundamentals parquets are keyed with no period, so without the bump a warm run
+  silently returns stale 5y data; the pre-merge-prod-sim cache stays v5 — it uses 1y windows)
+  · `writer.write_benchmarks_json` now writes the **FULL** series (was `HISTORY_TAIL_DAYS`
+  ~5y-capped → the 10y Max benchmark line would have been blank pre-2021; benchmarks.json is
+  backfill-only so no frontend-payload cost; per-stock history STAYS 5y via the unchanged
+  `HISTORY_TAIL_DAYS`) · **`risk.max_drawdown` 5y window cap** (the live-scoring regression
+  `quantrank-reviewer` caught — it was the ONE risk metric with no window, so 10y prices
+  would have shifted the risk pillar → live ranks; the cap keeps live `max_dd` PRICES_PERIOD-
+  invariant; +2 regression pins). **Zero live-scoring impact** — every live price consumer is
+  windowed (CAGR `series[-(years+1):]`, vol/sharpe/sortino/beta `.tail(1y)`, calmar 3y-cap,
+  max_dd NOW 5y-cap, momentum anchored / 52w-high 1y, technical period-windowed, Piotroski
+  `iloc[-2]`), so the extra 5y is fetched-but-ignored (the simulate is the REQUIRED rank-
+  stability backstop). **Caveat (disclosed)**: ~15-20 tickers renamed before ~2021 (e.g.
+  CDAY→DAY) — yfinance can't resolve the historical alias, so their 2016-2020 legs drop (that
+  cohort is slightly thinner than 2021+). No schema change. ruff clean; 1587 offline tests pass.
+  **Cold 10y backfill PENDING** — must run via the manual `backfill-portfolio.yml` dispatch
+  (cold ~60-85m exceeds the cron's 40m folded-step cap; warm ~30-35m fits after); then
+  verify `meta.as_of_start`≈2016, `rebalance_count`≈40, the Max chart spans 10y, and the
+  benchmark line is non-blank pre-2021.
 
 
 **Next deliverables** (pick by appetite):

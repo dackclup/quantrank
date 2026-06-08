@@ -89,15 +89,26 @@ def _max_drawdown_from_series(s: pd.Series) -> float:
 
 
 def max_drawdown(prices: pd.DataFrame) -> float:
-    """Maximum peak-to-trough drawdown over the available history (negative number)."""
+    """Maximum peak-to-trough drawdown over the trailing ~5y (negative number).
+
+    Window-CAPPED at ``TRADING_DAYS_PER_YEAR * 5`` so this LIVE risk-pillar metric is
+    invariant to ``config.PRICES_PERIOD`` (which went 5y→10y on 2026-06-08 for the
+    decade-long AI-pick backtest). Without the cap, a 10y price series would capture
+    deeper troughs (2020 COVID, 2018-Q4) and silently shift the cross-sectionally-
+    normalized risk pillar → live composite ranks (a retroactive-score change Rule 16
+    forbids). The 5y cap preserves the prior full-5y-history semantics. (calmar below
+    is likewise capped — at 3y — so both window-sensitive drawdown metrics are
+    PRICES_PERIOD-invariant; do NOT remove either cap.)"""
     s = _close_series(prices)
     if len(s) < 30:
         return float("nan")
-    return _max_drawdown_from_series(s)
+    window = s.tail(TRADING_DAYS_PER_YEAR * 5) if len(s) > TRADING_DAYS_PER_YEAR * 5 else s
+    return _max_drawdown_from_series(window)
 
 
 def calmar(prices: pd.DataFrame) -> float:
-    """Calmar = annualized return / |MaxDD|. Uses the trailing 3 years."""
+    """Calmar = annualized return / |MaxDD|. Uses the trailing 3 years (the 3y cap is
+    load-bearing now that PRICES_PERIOD=10y > 3y — keeps this PRICES_PERIOD-invariant)."""
     s = _close_series(prices)
     if len(s) < TRADING_DAYS_PER_YEAR:
         return float("nan")

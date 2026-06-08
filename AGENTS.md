@@ -61,9 +61,12 @@ this section doesn't duplicate them.
 compute/                          # Python compute pipeline (read/write OK)
 ├── ingest/                       # SEC EDGAR + yfinance fetchers
 │   ├── fundamentals.py           # XBRL fact extraction
-│   ├── prices.py                 # yfinance wrapper (5y DAILY OHLCV; the
-│   │                             #   chart's per-period resolution — 5Y
-│   │                             #   monthly, shorter daily — is frontend-
+│   ├── prices.py                 # yfinance wrapper (10y DAILY OHLCV since
+│   │                             #   2026-06-08 for the decade AI-pick backtest;
+│   │                             #   per-stock history tail-capped to ~5y by
+│   │                             #   HISTORY_TAIL_DAYS, so the stock chart's per-
+│   │                             #   period resolution — 5Y monthly, shorter
+│   │                             #   daily — is unchanged + frontend-
 │   │                             #   side, see CLAUDE.md §Gotchas "Price-
 │   │                             #   chart resolution"; 1D/5D intraday = v1.3)
 │   ├── filing_text.py            # 10-K narrative text fetcher
