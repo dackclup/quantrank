@@ -510,33 +510,21 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **feat(backtest) — extend the AI-pick backtest 5y → 10y (this PR)** —
-  the chart's "Max" button is data-limited, not a frontend cap (`PERIODS` Max =
-  `years:100`, auto-extends to the full `nav.dates` span). The ledger is already
-  10y-ready (`EARLIEST_EVENT_DATE` 2016-01); the cap was the DATA layer.
-  `performance-engineer` scoped it (MODERATE — config bumps, no novel work).
-  **Edits**: `config.PRICES_PERIOD` `"5y"→"10y"` · `fundamentals.ANNUAL_HISTORY_YEARS`
-  `5→10` · backfill `--start` default `−5y→−10y` · **`cache-v5→v6` on BOTH period-blind
-  caches** (`compute-rankings.yml` fast + `backfill-portfolio.yml` dispatch — load-bearing:
-  the price/fundamentals parquets are keyed with no period, so without the bump a warm run
-  silently returns stale 5y data; the pre-merge-prod-sim cache stays v5 — it uses 1y windows)
-  · `writer.write_benchmarks_json` now writes the **FULL** series (was `HISTORY_TAIL_DAYS`
-  ~5y-capped → the 10y Max benchmark line would have been blank pre-2021; benchmarks.json is
-  backfill-only so no frontend-payload cost; per-stock history STAYS 5y via the unchanged
-  `HISTORY_TAIL_DAYS`) · **`risk.max_drawdown` 5y window cap** (the live-scoring regression
-  `quantrank-reviewer` caught — it was the ONE risk metric with no window, so 10y prices
-  would have shifted the risk pillar → live ranks; the cap keeps live `max_dd` PRICES_PERIOD-
-  invariant; +2 regression pins). **Zero live-scoring impact** — every live price consumer is
-  windowed (CAGR `series[-(years+1):]`, vol/sharpe/sortino/beta `.tail(1y)`, calmar 3y-cap,
-  max_dd NOW 5y-cap, momentum anchored / 52w-high 1y, technical period-windowed, Piotroski
-  `iloc[-2]`), so the extra 5y is fetched-but-ignored (the simulate is the REQUIRED rank-
-  stability backstop). **Caveat (disclosed)**: ~15-20 tickers renamed before ~2021 (e.g.
-  CDAY→DAY) — yfinance can't resolve the historical alias, so their 2016-2020 legs drop (that
-  cohort is slightly thinner than 2021+). No schema change. ruff clean; 1587 offline tests pass.
-  **Cold 10y backfill PENDING** — must run via the manual `backfill-portfolio.yml` dispatch
-  (cold ~60-85m exceeds the cron's 40m folded-step cap; warm ~30-35m fits after); then
-  verify `meta.as_of_start`≈2016, `rebalance_count`≈40, the Max chart spans 10y, and the
-  benchmark line is non-blank pre-2021.
+- **feat(scoring) — technical-pillar MAD factor, PR-1 construct (this PR, WIP — issue #441)** —
+  fixes the dead `macd_hist` (`pillars.py` expected a dict but `macd_signal` returns a float → it
+  was always NaN→50, an inert constant). Decision (methodology-scientist ×2 + literature-searcher,
+  user-confirmed each fork): the MACD HISTOGRAM has no cross-sectional prior, but the MACD LINE /
+  MAD does — Avramov-Kaplanski-Subrahmanyam 2021 *Rev.Fin.Econ.* (~9% alpha, incremental to
+  momentum) + Han-Zhou-Zhu 2016 *JFE* (MA-trend >2× momentum Sharpe) — at LONG **21/200** windows
+  ONLY (the 12/26 MACD windows sit in Ko-Wang-Yang 2025 *FAJ*'s short-window overreaction regime
+  where the sign inverts). Shipped the **verified construct** `technical.mad_scalefree(short=21,
+  long=200)` = `(SMA_21−SMA_200)/SMA_200` (scale-free → no price-level bias in the cross-sectional
+  rank; +3 construct pins: scale-invariance / sign-at-21/200 / NaN<200). **NOT yet wired**
+  (observe-first, Rule 18). PR-1's remaining half + PR-2 wiring are fully specced in **issue #441**:
+  main.py emits 3 diagnostic `Metadata.mad_*` fields (coverage + Spearman ρ vs `mom_12_1`/`mom_3_1`,
+  pillar UNCHANGED → Δcomposite=0) + schema triple bump (`0.10.16`); PR-2 wires MAD into the pillar
+  only if both ρ<0.30 + coverage≥90% after ≥1 cron, with a simulate Top-5 check. ruff clean;
+  construct tests pass. **CHECKPOINT** — diagnostic+schema+the PR open in a focused next pass.
 
 
 **Next deliverables** (pick by appetite):

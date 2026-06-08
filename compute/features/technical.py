@@ -53,6 +53,35 @@ def macd_signal(
     return float((macd - sig).iloc[-1])
 
 
+def mad_scalefree(prices: pd.DataFrame, short: int = 21, long: int = 200) -> float:
+    """Scale-free moving-average distance (MAD) at the latest bar:
+    ``(SMA_short − SMA_long) / SMA_long``.
+
+    LITERATURE-ANCHORED (issue #441): Avramov-Kaplanski-Subrahmanyam 2021
+    *Rev.Fin.Econ.* 39(2) — MAD (short-SMA minus long-SMA, price-normalized) predicts the
+    cross-section of equity returns (~9% annualized VW alpha, incremental beyond momentum /
+    52-week-high / profitability); Han-Zhou-Zhu 2016 *JFE* 122(2) — MA-trend factor (windows
+    up to 200d) at >2× momentum Sharpe, incremental to momentum. Positive = short-run average
+    above the long-run trend = bullish.
+
+    Windows are LOAD-BEARING for the sign: the long 21/200 windows are the regime the ~9%
+    alpha was measured on. The standard 12/26 MACD windows sit in Ko-Wang-Yang 2025 *FAJ*'s
+    short-window OVERREACTION regime where the cross-sectional sign INVERTS — do NOT shorten
+    these windows without re-validating the sign (this is why MAD is a SEPARATE function, not
+    a reparametrized ``macd_signal``). The ``/ SMA_long`` normalization makes it scale-free so
+    the pillar's cross-sectional percentile-rank is not price-level-biased ($500 vs $20 stock).
+    ``NaN`` when fewer than ``long`` bars.
+    """
+    s = _close(prices)
+    if len(s) < long:
+        return float("nan")
+    sma_short = float(s.tail(short).mean())
+    sma_long = float(s.tail(long).mean())
+    if not np.isfinite(sma_long) or sma_long <= 0:
+        return float("nan")
+    return (sma_short - sma_long) / sma_long
+
+
 def atr(prices: pd.DataFrame, period: int = 14) -> float:
     """Average True Range over ``period`` days (Wilder's smoothing)."""
     if not {"High", "Low"}.issubset(prices.columns):
