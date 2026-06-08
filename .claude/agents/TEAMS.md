@@ -53,6 +53,25 @@ leave on for web/mobile sessions. To opt out for a single session, run
 model** in `/config` (set to *leader's model*, or pick Sonnet to drain
 the Sonnet pool).
 
+## Auto-proposal (Claude offers the team — you confirm)
+
+You don't have to remember to ask. The `delegate-first.sh` UserPromptSubmit hook
+fires every turn and reminds the orchestrator to **proactively propose** the
+matching recipe when a task is team-fit. Creation still needs your one-tap
+confirm (Claude never creates a team without approval), and on web/mobile the
+orchestrator proposes the **subagent fallback** instead (live teams need a
+desktop terminal).
+
+| If the task looks like… | Claude auto-proposes |
+|---|---|
+| cross-layer build (schema + compute + UI + tests) | **Feature Squad** (or the builders as subagents on web/mobile) |
+| new defense flag / threshold recalibration / new factor / scoring pillar | **Methodology Debate** (or the Flow 8 subagent sequence) |
+| production broken / cron stuck / corrupt output, root cause unclear | **Incident War Room** (or the Flow 4 subagent fan-out) |
+| big / risky multi-lens PR review | **PR Review Crew** (or the Flow 1 subagent gate) |
+
+Decline any time ("just do it inline" / "no team") and the orchestrator drops
+back to the normal subagent path.
+
 ## The 5 recipes
 
 Teammate roles reference existing subagent definitions by name (Claude

@@ -2303,6 +2303,12 @@ Ships:
   write-capable builders owning `compute/**` / `frontend/**` (the layer owners in
   a cross-layer Feature Squad; also usable as scoped write-subagents). NOT on-edit
   auto-spawns — review stays with the existing reviewer agents.
+- `.claude/hooks/delegate-first.sh` — **auto-trigger** (added per user request):
+  extends the every-turn UserPromptSubmit nudge so the orchestrator
+  **auto-proposes** the matching team recipe on team-fit tasks (propose-not-create
+  — the feature still needs a user confirm; web/mobile → subagent fallback). Cue→
+  recipe table added to CLAUDE.md §Auto-routing "Agent-team auto-proposal" +
+  TEAMS.md §Auto-proposal.
 
 Roster 20 → 22 (5 opus / 17 sonnet; 20 at `effort: max`, 2 at `high`). Docs
 lockstep: CLAUDE.md (layout + delegation table + model-split/effort + §Gotchas

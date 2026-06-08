@@ -50,7 +50,7 @@ design-system spec.
 | `.claude/skills/` | 47 first-party invocation-triggerable skills + phase planning docs, plus a symlink to the 1 vendored third-party skill (`impeccable`, row below). See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for vendoring / license posture per source. |
 | `.agents/skills/` | Vendored third-party agent skills in the cross-tool [skills.sh](https://skills.sh) layout. Currently 1: **`impeccable`** ([pbakaus/impeccable](https://github.com/pbakaus/impeccable), **Apache-2.0**) — a frontend-design skill (design review / live browser iteration / critique / typography / color / motion), symlinked into `.claude/skills/impeccable`; installed via `npx skills add`, pinned by root `skills-lock.json`, bundled `scripts/` marked `linguist-vendored`. Dev-session tooling only — never runs in CI / the static export / the compute cron. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md). |
 | `.claude/agents/` | 22 project-specific subagents in 5 tiers: **Tier 1 Core** (quantrank-reviewer · schema-sentinel · defense-layer-auditor · edgar-debugger · **stock-detail-auditor**), **Tier 2 Lifecycle** (security-reviewer · frontend-design-reviewer · **vercel-preview-auditor** · **expert-user-explorer** · release-captain · phase-coordinator), **Tier 3 Specialized** (test-engineer · methodology-scientist · **literature-searcher** · performance-engineer · dependency-auditor · **financial-engineer**), **Tier 4 Operations** (docs-reviewer · **ci-triage-engineer** · incident-commander), **Tier 5 Builders** (write-capable: **compute-builder** owns `compute/**` · **frontend-builder** owns `frontend/**`). Spawned via the `Agent` tool with a separate context window; see [`.claude/agents/README.md`](.claude/agents/README.md) for the routing matrix + 8 coordination flows. The collaborative multi-session **agent-teams** feature reuses these defs as teammate roles — [`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md) has the 5 team recipes + the builders' file-ownership protocol + a mobile/web subagent fallback. |
-| `.claude/hooks/` | Bash hook scripts wired by `.claude/settings.json`. 3 hooks total: `log-bash.sh` (PostToolUse Bash → append every command to gitignored `.claude/session.log`) + `schema-reminder.sh` (PostToolUse Write/Edit → inject reminder when any file in the Pydantic↔TS↔snapshot triple is touched) + `delegate-first.sh` (UserPromptSubmit → inject orchestrator-role reminder every user turn so the main agent defaults to spawning sub-agents instead of doing work inline). All fail-open (missing `jq` / unwritable FS / empty stdin → exit 0). 5-second timeout each. |
+| `.claude/hooks/` | Bash hook scripts wired by `.claude/settings.json`. 3 hooks total: `log-bash.sh` (PostToolUse Bash → append every command to gitignored `.claude/session.log`) + `schema-reminder.sh` (PostToolUse Write/Edit → inject reminder when any file in the Pydantic↔TS↔snapshot triple is touched) + `delegate-first.sh` (UserPromptSubmit → inject orchestrator-role reminder every user turn so the main agent defaults to spawning sub-agents instead of doing work inline, AND auto-proposes the matching agent-team recipe when the task is team-fit — see [`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md) §Auto-proposal). All fail-open (missing `jq` / unwritable FS / empty stdin → exit 0). 5-second timeout each. |
 | `.claude/worktrees/` | Harness-managed isolation dirs for subagents spawned via the `Agent` tool with `isolation: "worktree"`. Per-session, transient, **gitignored** (added 2026-05-22 post the 3-PR fan-out so they don't show up as untracked on the main worktree's `git status`). Never commit them. |
 | `docs/agents/` | Per-repo configuration consumed by the vendored mattpocock engineering skills (`to-issues`, `to-prd`). Scaffolded 2026-05-25 via `mattpocock-setup-harness`. 2 files: `issue-tracker.md` (GitHub MCP conventions) + `domain.md` (the upstream-instruction → QuantRank-multi-file-CONTEXT-analog mapping). See §Agent skills below for the index. |
 
@@ -370,6 +370,18 @@ whitespace / single-line fixes do not trigger.
 - **Disable per-session**: user can `/agents` → toggle off any
   agent they don't want auto-routing this session, or say "spawn
   only on explicit ask this session" to force the strictest mode.
+
+### Agent-team auto-proposal (Claude proposes, you confirm)
+
+The `delegate-first.sh` hook nudges the orchestrator every turn to
+**proactively propose** an agent-team recipe (don't wait to be asked) when the
+task is team-fit — cross-layer build → **Feature Squad** · new
+flag/threshold/factor → **Methodology Debate** · root-cause-unclear incident →
+**Incident War Room** · big multi-lens PR → **PR Review Crew**. This is
+**propose-not-create**: the feature never spawns a team without the user's
+confirm. On web/mobile (no desktop terminal) propose the **subagent fallback**
+instead — same flow, runs there. Cue→recipe table + fallbacks:
+[`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md) §Auto-proposal.
 
 ## Gotchas
 
