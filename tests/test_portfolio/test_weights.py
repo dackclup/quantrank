@@ -88,6 +88,62 @@ def test_select_picks_tiebreak_adjusted_then_ticker():
     assert select_picks(cands, 3) == ["M", "A", "Z"]
 
 
+def test_select_picks_dedup_dual_class_keeps_higher_composite():
+    """GOOG + GOOGL are the SAME issuer — never both picked. Keep the
+    higher-composite class; fill the freed slot with the next distinct issuer."""
+    cands = [
+        _cand("GOOGL", 95.0),  # Alphabet Class A — higher composite
+        _cand("GOOG", 94.0),   # Alphabet Class C — sibling, must be skipped
+        _cand("AAA", 90.0),
+        _cand("BBB", 88.0),
+    ]
+    # count=2 → GOOGL (kept) + AAA (next DISTINCT issuer), NOT GOOG.
+    assert select_picks(cands, 2) == ["GOOGL", "AAA"]
+    # GOOG never appears even at a large count — its issuer slot is GOOGL's.
+    picks = select_picks(cands, 10)
+    assert "GOOG" not in picks
+    assert picks == ["GOOGL", "AAA", "BBB"]
+
+
+def test_select_picks_dedup_canonicalizes_to_fixed_class_no_churn():
+    """Even when GOOG (Class C) ranks ABOVE GOOGL this quarter, the basket shows
+    the CANONICAL class (GOOGL). This stops the issuer churning GOOG<->GOOGL
+    quarter-to-quarter when the two near-equal composites flip which ranks higher
+    (the rotation-history spurious-turnover bug)."""
+    cands = [
+        _cand("GOOG", 95.0),   # Class C ranks higher THIS quarter
+        _cand("GOOGL", 94.0),  # Class A — the canonical (must be the one shown)
+        _cand("AAA", 90.0),
+    ]
+    picks = select_picks(cands, 2)
+    assert "GOOG" not in picks        # canonicalized away despite ranking higher
+    assert picks == ["GOOGL", "AAA"]  # stable canonical class -> no cross-quarter churn
+
+
+def test_select_picks_dedup_all_three_dual_class_pairs():
+    """FOX/FOXA + NWS/NWSA collapse to one issuer each (not only Alphabet)."""
+    cands = [
+        _cand("FOXA", 80.0), _cand("FOX", 79.0),
+        _cand("NWSA", 78.0), _cand("NWS", 77.0),
+    ]
+    # one class per issuer, the higher-composite one kept.
+    assert select_picks(cands, 10) == ["FOXA", "NWSA"]
+
+
+def test_select_picks_dedup_vetoed_higher_class_keeps_clean_sibling():
+    """If the higher-composite dual-class is VETOED, the clean sibling represents
+    the issuer (is_eligible filters BEFORE dedup) — the issuer isn't lost. Pins
+    the veto×dedup interaction for a future PR-2c veto-replay backtest."""
+    cands = [
+        _cand("GOOGL", 95.0, flags=["sloan_accruals_top_decile"]),  # higher but VETOED
+        _cand("GOOG", 94.0),  # clean sibling — kept as Alphabet's representative
+        _cand("AAA", 90.0),
+    ]
+    picks = select_picks(cands, 2)
+    assert "GOOGL" not in picks  # vetoed out of the eligible pool
+    assert picks == ["GOOG", "AAA"]
+
+
 # --- inverse_vol_weights -----------------------------------------------------
 
 

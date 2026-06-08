@@ -355,7 +355,13 @@ export function FairPriceCard(props) {  // no types
   `select_picks`) is **top-N eligible by composite, NO sector cap** (the
   2-per-sector cap was removed 2026-06-06) — the basket can concentrate in one
   sector, so the home surfaces a "Top sector: X — N of count" disclosure;
-  inverse-vol + the 0.35 cap bound single-NAME risk only. The home also renders a
+  inverse-vol + the 0.35 cap bound single-NAME risk only. It DOES dedup
+  **dual-class issuers** (`_DUAL_CLASS_GROUP`: GOOG/GOOGL, FOX/FOXA, NWS/NWSA) —
+  one slot per issuer, CANONICALIZED to a fixed Class-A ticker (GOOGL/FOXA/NWSA)
+  so the basket shows the SAME ticker every quarter (else one company burns two
+  slots, and the two classes' near-equal composites flip which ranks higher →
+  spurious GOOG↔GOOGL churn). Falls back to the held class if the canonical is
+  vetoed. The home also renders a
   **"Rotation history"** timeline (`HoldingsTimeline.tsx`): every quarterly
   rebalance's holdings at the current basket size, newest-first, with
   entered/exited markers, reactive to the count slider — fed by
