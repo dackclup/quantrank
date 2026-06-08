@@ -346,7 +346,7 @@ jobs:
         # failure would leave no signal in the cron log. Mirrors the canary in
         # backfill-portfolio.yml. `generated_utc` is the tell: if it is THIS run's
         # timestamp the refresh landed; if it is stale the backfill was killed at
-        # the 40m cap and the prior (atomic) artifact is what will be committed.
+        # the 55m cap and the prior (atomic) artifact is what will be committed.
         run: |
           python - <<'PY'
           import json, pathlib
