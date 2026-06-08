@@ -115,6 +115,20 @@ def test_select_picks_dedup_all_three_dual_class_pairs():
     assert select_picks(cands, 10) == ["FOXA", "NWSA"]
 
 
+def test_select_picks_dedup_vetoed_higher_class_keeps_clean_sibling():
+    """If the higher-composite dual-class is VETOED, the clean sibling represents
+    the issuer (is_eligible filters BEFORE dedup) — the issuer isn't lost. Pins
+    the veto×dedup interaction for a future PR-2c veto-replay backtest."""
+    cands = [
+        _cand("GOOGL", 95.0, flags=["sloan_accruals_top_decile"]),  # higher but VETOED
+        _cand("GOOG", 94.0),  # clean sibling — kept as Alphabet's representative
+        _cand("AAA", 90.0),
+    ]
+    picks = select_picks(cands, 2)
+    assert "GOOGL" not in picks  # vetoed out of the eligible pool
+    assert picks == ["GOOG", "AAA"]
+
+
 # --- inverse_vol_weights -----------------------------------------------------
 
 
