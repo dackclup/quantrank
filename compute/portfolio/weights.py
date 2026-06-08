@@ -78,18 +78,68 @@ SIGMA_WINDOW_DAYS: int = 90  # trailing daily-return stdev window
 @dataclass(frozen=True)
 class PickCandidate:
     """The minimal per-stock view the pick rule reads — all fields already on
-    ``StockSummary`` / rankings.json, so the pick uses ONLY ranking+detail data."""
+    ``StockSummary`` / rankings.json, so the pick uses ONLY ranking+detail data.
+
+    ``recommendation`` / ``mos_pct`` / ``loss_chance_pct`` (added Phase 7 PR-1)
+    feed the high-conviction gate (``is_high_conviction``). They are OPTIONAL and
+    default ``None`` so existing callers (and the veto-only ``select_picks``) are
+    untouched — PR-1 only OBSERVES the gate (counts eligible names per rebalance);
+    PR-2 wires it into selection once the per-rebalance count clears DEFAULT_COUNT."""
 
     ticker: str
     composite_score: float
     sector: str
     risk_flags: tuple[str, ...] = field(default_factory=tuple)
     composite_score_adjusted: float | None = None
+    recommendation: str | None = None  # "bullish"/"lean_bullish"/"neutral"/"cautious"
+    mos_pct: float | None = None  # margin of safety % (>0 = trading below fair value)
+    loss_chance_pct: float | None = None  # heuristic loss-chance % in [5, 95]
+
+
+# High-conviction selection gate (methodology-scientist RATIFY-WITH-CONDITION
+# 2026-06-08). A candidate is high-conviction iff it clears the existing 7-veto
+# gate AND is Strong-Buy/Buy-rated AND trades below fair value (MoS > 0) AND
+# meets the composite floor AND its loss-chance is below the ceiling. Thresholds
+# reuse the production recommendation rubric (ratified 2026-05-14) where possible:
+#   - recommendation set = {bullish, lean_bullish} (= the UI's Strong Buy / Buy)
+#   - MoS > 0: strict undervaluation (Graham-Dodd margin of safety; ~top 30% of
+#     the S&P 500 — p50 MoS ≈ −25%, p75 ≈ +12.5%). Stricter than the rubric's
+#     −10% bullish floor by design — it is the price-discipline overlay.
+#   - composite ≥ 50 (= recommendation.LEAN_BULLISH_COMPOSITE_MIN; redundant with
+#     the recommendation gate but kept explicit per the user's score requirement)
+#   - loss-chance ≤ 45 (below the universe median ≈ 49 — "better-than-average
+#     odds"; the one genuinely new threshold, additive via its MoS+flag inputs,
+#     gut-feel pending the Mode B post-cron binding check, methodology C4)
+# None-handling is FAIL-CLOSED: a missing recommendation / MoS / loss-chance can
+# never be "high conviction" (the conservative direction for a concentrated book).
+HIGH_CONVICTION_RECOMMENDATIONS: frozenset[str] = frozenset({"bullish", "lean_bullish"})
+HIGH_CONVICTION_COMPOSITE_MIN: float = 50.0
+HIGH_CONVICTION_LOSS_CHANCE_MAX: float = 45.0
 
 
 def is_eligible(risk_flags: Iterable[str] | None) -> bool:
     """True when the stock carries NO active rank-gate veto (annotate flags OK)."""
     return not (ACTIVE_VETO_FLAGS & set(risk_flags or ()))
+
+
+def is_high_conviction(c: PickCandidate) -> bool:
+    """True when ``c`` clears the full high-conviction gate (Strong Buy/Buy +
+    MoS > 0 + composite ≥ 50 + loss-chance ≤ 45 + no active veto).
+
+    PR-1 uses this ONLY to COUNT eligible names per rebalance (observability-
+    before-wiring) — ``select_picks`` still gates on ``is_eligible`` alone until
+    PR-2. Fail-closed on any missing input (methodology-scientist 2026-06-08)."""
+    if not is_eligible(c.risk_flags):
+        return False
+    if c.recommendation not in HIGH_CONVICTION_RECOMMENDATIONS:
+        return False
+    if c.mos_pct is None or c.mos_pct <= 0.0:
+        return False
+    if c.composite_score < HIGH_CONVICTION_COMPOSITE_MIN:
+        return False
+    if c.loss_chance_pct is None or c.loss_chance_pct > HIGH_CONVICTION_LOSS_CHANCE_MAX:
+        return False
+    return True
 
 
 # Dual-class share pairs where BOTH tickers sit in the S&P 500 — the SAME issuer

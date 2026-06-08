@@ -1337,3 +1337,69 @@ def test_L3_site2_ceiling_not_invoked_for_high_share_price_ticker():
         "Defense #4 false-positive: multiples_pe ≈ $10,094 is within "
         "5× of current_price=$3,500 ($17,500) — it must NOT be flagged."
     )
+
+
+# -- M. Phase 7 PR-1: hard_stale_days threading in compute_fair_price_ensemble --
+#
+# Pins the new ``hard_stale_days`` keyword arg that the PIT backtest passes to
+# widen Defense #3's hard-stale ceiling from 180 (live) to 455 (annual-aware).
+# A filing lag of 200 days sits between the two ceilings: the live path NULLS
+# the ensemble; the backtest path must NOT null it.
+
+
+def test_M1_lag_200_default_hard_stale_days_nulls_ensemble():
+    """Default path (hard_stale_days omitted): lag=200 > 180 → hard short-circuit.
+    All methods are nulled and 'stale_filing_hard' is returned in risk_flags."""
+    snap = _make_snap_full()
+    result, risk_flags = compute_fair_price_ensemble(
+        ticker="TST",
+        snap=snap,
+        sector="Information Technology",
+        sub_industry=None,
+        industry=None,
+        current_price=100.0,
+        filing_lag_days_value=200,  # > 180 → hard under default ceiling
+        peer_panels={"pe": {}, "pb": {}, "ev_ebitda": {}},
+        universe_metrics={},
+        historical_metrics={},
+    )
+    assert result.mos_pct is None, (
+        "lag=200 with default hard ceiling (180) must short-circuit to null ensemble"
+    )
+    assert "stale_filing_hard" in risk_flags
+
+
+def test_M2_lag_200_hard_stale_days_455_does_not_null_ensemble():
+    """Backtest path: hard_stale_days=455 widens the ceiling so lag=200 is SOFT.
+    Ensemble methods attempt computation; 'stale_filing_hard' NOT in risk_flags."""
+    snap = _make_snap_full()
+    result, risk_flags = compute_fair_price_ensemble(
+        ticker="TST",
+        snap=snap,
+        sector="Information Technology",
+        sub_industry=None,
+        industry=None,
+        current_price=100.0,
+        filing_lag_days_value=200,   # soft under 455-day ceiling (120 < 200 ≤ 455)
+        hard_stale_days=455,
+        peer_panels={"pe": {}, "pb": {}, "ev_ebitda": {}},
+        universe_metrics={},
+        historical_metrics={
+            "TST": {
+                "eps_3y_avg": 2.0,
+                "avg_3y_roe": 0.15,
+                "fcf_5y": [80.0, 90.0, 100.0, 110.0, 120.0],
+            },
+        },
+    )
+    assert "stale_filing_hard" not in risk_flags, (
+        "hard_stale_days=455 widens the ceiling — lag=200 must not trigger "
+        "the hard-stale short-circuit; 'stale_filing_hard' should NOT be in risk_flags"
+    )
+    assert "stale_filing_hard" not in [
+        m.reason for m in result.methods.values()
+    ], "No method should carry reason='stale_filing_hard' when lag=200 is soft under 455-ceiling"
+    # At least one method must have attempted computation (graham/rim/dcf eligible).
+    assert any(m.applicable for m in result.methods.values()), (
+        "At least one valuation method must be applicable when lag=200 is soft"
+    )
