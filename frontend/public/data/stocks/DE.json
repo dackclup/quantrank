@@ -5,19 +5,19 @@
   "industry": "Agricultural & Farm Machinery",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 157492291901.02692,
-  "current_price": 583.44,
-  "rank": 324,
-  "composite_score": 47.36,
+  "market_cap": 156922727888.43842,
+  "current_price": 581.33,
+  "rank": 328,
+  "composite_score": 47.34,
   "pillar_scores": {
     "quality": 44.69,
-    "value": 48.12,
+    "value": 48.54,
     "growth": 37.5,
-    "momentum": 59.31,
+    "momentum": 57.27,
     "health": 49.56,
     "profitability": 35.73,
-    "technical": 54.58,
-    "risk": 59.33,
+    "technical": 57.97,
+    "risk": 58.43,
     "sentiment": null,
     "ml": null
   },
@@ -34,8 +34,8 @@
     "eps_basic": 17.71892133889919,
     "eps_diluted": 17.71892133889919,
     "shares_outstanding": 269937425.0,
-    "market_cap": 157492291901.02692,
-    "pe_ratio_ttm": 32.92751241919861,
+    "market_cap": 156922727888.43842,
+    "pe_ratio_ttm": 32.8084315050049,
     "goodwill": 4513000000.0
   },
   "fair_price": {
@@ -47,13 +47,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 487.1881302127223,
+        "value": 491.85347780453526,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 696.4088331710166,
+        "value": 699.4275321950698,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,10 +78,10 @@
       }
     },
     "median": 223.21825973154708,
-    "max": 696.4088331710166,
+    "max": 699.4275321950698,
     "low": 180.55771702329497,
-    "high": 696.4088331710166,
-    "mos_pct": -161.37646765236815,
+    "high": 699.4275321950698,
+    "mos_pct": -160.43121104383619,
     "valuation_warnings": [],
     "valuation_methods_applicable": 5
   },
@@ -99,7 +99,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 9,
+    "filing_lag_days": 11,
     "latest_period_end": "2026-05-03",
     "latest_filed_date": "2026-05-28"
   },
@@ -118,22 +118,22 @@
     "label": "Industrials median (n=80)",
     "values": {
       "Quality": 47.73,
-      "Value": 48.96,
-      "Growth": 49.45,
-      "Momentum": 53.56,
+      "Value": 48.65,
+      "Growth": 49.06,
+      "Momentum": 56.09,
       "Health": 53.94,
       "Profitability": 48.02,
-      "Technical": 51.74,
-      "Risk": 54.42
+      "Technical": 51.77,
+      "Risk": 54.8
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 61.31901819804118,
-  "price_change_1d_pct": -1.4043,
+  "loss_chance_pct": 61.331904154216474,
+  "price_change_1d_pct": -0.3616,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 47.36,
+  "composite_score_adjusted": 47.34,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -181,10 +181,14 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.61,
+  "osap_blended_score": 49.59,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5,
-  "form4_diagnostics": null,
-  "cross_source_delta": 3.699846521477982e-08
+  "form4_diagnostics": {
+    "insider_count": 19,
+    "latest_filing_date": "2026-05-04",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.007310780381373549
 }

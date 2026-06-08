@@ -5,19 +5,19 @@
   "industry": "Broadline Retail",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 48551399322.509766,
-  "current_price": 109.35,
-  "rank": 249,
-  "composite_score": 50.91,
+  "market_cap": 48515878509.521484,
+  "current_price": 109.27,
+  "rank": 240,
+  "composite_score": 51.05,
   "pillar_scores": {
     "quality": 57.03,
     "value": 26.74,
-    "growth": 41.41,
-    "momentum": 78.83,
+    "growth": 42.97,
+    "momentum": 79.08,
     "health": 61.24,
     "profitability": 64.41,
-    "technical": 39.79,
-    "risk": 54.48,
+    "technical": 38.45,
+    "risk": 54.05,
     "sentiment": null,
     "ml": null
   },
@@ -34,8 +34,8 @@
     "eps_basic": 4.594594594594595,
     "eps_diluted": 4.594594594594595,
     "shares_outstanding": 444000000.0,
-    "market_cap": 48551399322.509766,
-    "pe_ratio_ttm": 23.799705550249886,
+    "market_cap": 48515878509.521484,
+    "pe_ratio_ttm": 23.782293387020335,
     "goodwill": 4463000000.0
   },
   "fair_price": {
@@ -47,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 103.02309483445583,
+        "value": 103.81632410219837,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 59.39731619269585,
+        "value": 58.970134998037956,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 66.445392802221,
+        "value": 65.75032873903787,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -77,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 62.921354497458424,
-    "max": 103.02309483445583,
+    "median": 62.36023186853791,
+    "max": 103.81632410219837,
     "low": 44.388748249942815,
-    "high": 103.02309483445583,
-    "mos_pct": -73.78837335508736,
+    "high": 103.81632410219837,
+    "mos_pct": -75.22384598155334,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -92,7 +92,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 38,
+    "filing_lag_days": 40,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-04-29"
   },
@@ -114,22 +114,22 @@
     "label": "Consumer Discretionary median (n=48)",
     "values": {
       "Quality": 46.35,
-      "Value": 48.87,
-      "Growth": 51.69,
-      "Momentum": 40.29,
+      "Value": 49.22,
+      "Growth": 52.08,
+      "Momentum": 40.46,
       "Health": 43.55,
       "Profitability": 52.43,
-      "Technical": 56.5,
-      "Risk": 41.98
+      "Technical": 55.95,
+      "Risk": 41.4
     }
   },
   "beneish_m_score": -2.380237295891116,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 59.544467096890216,
-  "price_change_1d_pct": 0.1832,
+  "loss_chance_pct": 59.472956265216915,
+  "price_change_1d_pct": -0.0732,
   "manipulation_index": 10.0,
-  "composite_score_adjusted": 49.91,
+  "composite_score_adjusted": 50.05,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -177,10 +177,14 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 51.38,
+  "osap_blended_score": 51.45,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
-  "form4_diagnostics": null,
-  "cross_source_delta": 2.09036682343255e-09
+  "form4_diagnostics": {
+    "insider_count": 12,
+    "latest_filing_date": "2026-05-27",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.00247088650570262
 }

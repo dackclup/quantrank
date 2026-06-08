@@ -5,19 +5,19 @@
   "industry": "Fertilizers & Agricultural Chemicals",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 17435385978.072464,
-  "current_price": 113.49,
-  "rank": 2,
-  "composite_score": 72.14,
+  "market_cap": 17158853988.13147,
+  "current_price": 111.69,
+  "rank": 3,
+  "composite_score": 70.34,
   "pillar_scores": {
     "quality": 92.31,
     "value": 76.92,
     "growth": 35.58,
-    "momentum": 74.55,
+    "momentum": 61.65,
     "health": 75.4,
     "profitability": 82.05,
-    "technical": 17.73,
-    "risk": 56.86,
+    "technical": 14.79,
+    "risk": 55.69,
     "sentiment": null,
     "ml": null
   },
@@ -34,8 +34,8 @@
     "eps_basic": 13.818980879907041,
     "eps_diluted": 13.818980879907041,
     "shares_outstanding": 153629274.0,
-    "market_cap": 17435385978.072464,
-    "pe_ratio_ttm": 8.212617041013878,
+    "market_cap": 17158853988.13147,
+    "pe_ratio_ttm": 8.082361746646948,
     "goodwill": 2492000000.0
   },
   "fair_price": {
@@ -47,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 380.089402541088,
+        "value": 378.7147287764018,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 105.80531495998906,
+        "value": 103.33541703127256,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 343.09172916684656,
+        "value": 337.147816813253,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -77,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 136.74611423198877,
-    "max": 380.089402541088,
+    "median": 135.51116526763053,
+    "max": 378.7147287764018,
     "low": 30.44716151212336,
-    "high": 380.089402541088,
-    "mos_pct": 17.00678406756437,
+    "high": 378.7147287764018,
+    "mos_pct": 17.57874547029257,
     "valuation_warnings": [
       "goodwill_heavy"
     ],
@@ -95,7 +95,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 30,
+    "filing_lag_days": 32,
     "latest_period_end": "2026-05-04",
     "latest_filed_date": "2026-05-07"
   },
@@ -119,20 +119,20 @@
       "Quality": 51.68,
       "Value": 50.8,
       "Growth": 48.56,
-      "Momentum": 52.81,
+      "Momentum": 61.75,
       "Health": 57.53,
       "Profitability": 54.33,
-      "Technical": 51.32,
-      "Risk": 45.7
+      "Technical": 50.42,
+      "Risk": 45.58
     }
   },
   "beneish_m_score": -2.0898643491986895,
   "dechow_f_score": 0.2888164255263529,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 26.97512870486407,
-  "price_change_1d_pct": -3.4292,
+  "loss_chance_pct": 27.676336636219958,
+  "price_change_1d_pct": -1.586,
   "manipulation_index": 3.0,
-  "composite_score_adjusted": 71.84,
+  "composite_score_adjusted": 70.04,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -180,10 +180,14 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 62.0,
+  "osap_blended_score": 61.1,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 6,
-  "form4_diagnostics": null,
-  "cross_source_delta": 7.001420223376856e-09
+  "form4_diagnostics": {
+    "insider_count": 22,
+    "latest_filing_date": "2026-05-28",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.0049243216470000965
 }

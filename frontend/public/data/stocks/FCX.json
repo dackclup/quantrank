@@ -5,19 +5,19 @@
   "industry": "Copper",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 91098167109.5704,
-  "current_price": 63.37,
-  "rank": 36,
-  "composite_score": 63.23,
+  "market_cap": 92923868796.18309,
+  "current_price": 64.64,
+  "rank": 16,
+  "composite_score": 66.37,
   "pillar_scores": {
     "quality": 76.92,
     "value": 48.72,
-    "growth": 71.15,
-    "momentum": 61.4,
+    "growth": 80.29,
+    "momentum": 74.1,
     "health": 61.06,
     "profitability": 64.74,
-    "technical": 58.86,
-    "risk": 38.68,
+    "technical": 67.08,
+    "risk": 38.65,
     "sentiment": null,
     "ml": null
   },
@@ -34,32 +34,32 @@
     "eps_basic": 3.3014277287158404,
     "eps_diluted": 3.3014277287158404,
     "shares_outstanding": 1437559865.0,
-    "market_cap": 91098167109.5704,
-    "pe_ratio_ttm": 19.194725476099958,
+    "market_cap": 92923868796.18309,
+    "pe_ratio_ttm": 19.57940766881228,
     "goodwill": 0.0
   },
   "fair_price": {
     "methods": {
       "graham": {
-        "value": null,
-        "applicable": false,
-        "reason": "non_positive_eps_3y_avg",
+        "value": 17.676325509012727,
+        "applicable": true,
+        "reason": null,
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 90.80537152813733,
+        "value": 90.47695468436905,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 41.285504338605854,
+        "value": 40.32174385369543,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 100.28278386819643,
+        "value": 98.58723748039607,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -77,13 +77,13 @@
         "tier_used": null
       }
     },
-    "median": 66.04543793337159,
-    "max": 100.28278386819643,
+    "median": 40.32174385369543,
+    "max": 98.58723748039607,
     "low": 15.768434467224811,
-    "high": 100.28278386819643,
-    "mos_pct": 4.050906595828582,
+    "high": 98.58723748039607,
+    "mos_pct": -60.31052531901909,
     "valuation_warnings": [],
-    "valuation_methods_applicable": 4
+    "valuation_methods_applicable": 5
   },
   "top5_factors": [],
   "score_history": [],
@@ -94,7 +94,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 29,
+    "filing_lag_days": 31,
     "latest_period_end": "2026-04-30",
     "latest_filed_date": "2026-05-08"
   },
@@ -117,20 +117,20 @@
       "Quality": 51.68,
       "Value": 50.8,
       "Growth": 48.56,
-      "Momentum": 52.81,
+      "Momentum": 61.75,
       "Health": 57.53,
       "Profitability": 54.33,
-      "Technical": 51.32,
-      "Risk": 45.7
+      "Technical": 50.42,
+      "Risk": 45.58
     }
   },
   "beneish_m_score": -2.3396570835237913,
   "dechow_f_score": null,
-  "recommendation": "bullish",
-  "loss_chance_pct": 31.966737421258753,
-  "price_change_1d_pct": -9.0687,
+  "recommendation": "lean_bullish",
+  "loss_chance_pct": 51.81513529216467,
+  "price_change_1d_pct": 2.0041,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 62.73,
+  "composite_score_adjusted": 65.87,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -178,10 +178,14 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 57.54,
+  "osap_blended_score": 59.11,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 4,
-  "form4_diagnostics": null,
-  "cross_source_delta": 6.53972587273587e-08
+  "valuation_methods_applicable": 5,
+  "form4_diagnostics": {
+    "insider_count": 15,
+    "latest_filing_date": "2026-06-02",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.006729617312368903
 }

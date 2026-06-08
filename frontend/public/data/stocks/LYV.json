@@ -5,19 +5,19 @@
   "industry": "Movies & Entertainment",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 37704020419.74823,
-  "current_price": 160.07,
-  "rank": 374,
-  "composite_score": 44.69,
+  "market_cap": 37972543930.08171,
+  "current_price": 161.21,
+  "rank": 357,
+  "composite_score": 45.8,
   "pillar_scores": {
     "quality": 42.39,
     "value": 40.58,
     "growth": 48.37,
-    "momentum": 58.47,
-    "health": 45.62,
+    "momentum": 65.59,
+    "health": 45.66,
     "profitability": 45.65,
-    "technical": 25.45,
-    "risk": 49.7,
+    "technical": 30.13,
+    "risk": 49.0,
     "sentiment": null,
     "ml": null
   },
@@ -34,8 +34,8 @@
     "eps_basic": 1.1225781989684311,
     "eps_diluted": 1.1225781989684311,
     "shares_outstanding": 235547065.0,
-    "market_cap": 37704020419.74823,
-    "pe_ratio_ttm": 142.5914091965367,
+    "market_cap": 37972543930.08171,
+    "pe_ratio_ttm": 143.6069281071088,
     "goodwill": 2933243000.0
   },
   "fair_price": {
@@ -47,7 +47,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 17.11366852884497,
+        "value": 17.23656235915251,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -59,7 +59,7 @@
         "tier_used": null
       },
       "multiples_ev_ebitda": {
-        "value": 106.31862479208849,
+        "value": 105.33552533545158,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,10 +78,10 @@
       }
     },
     "median": 90.44763423084707,
-    "max": 106.31862479208849,
-    "low": 17.11366852884497,
-    "high": 106.31862479208849,
-    "mos_pct": -76.97533902951665,
+    "max": 105.33552533545158,
+    "low": 17.23656235915251,
+    "high": 105.33552533545158,
+    "mos_pct": -78.23573616355206,
     "valuation_warnings": [
       "extreme_multiples_pe_estimate"
     ],
@@ -99,7 +99,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 32,
+    "filing_lag_days": 34,
     "latest_period_end": "2026-04-28",
     "latest_filed_date": "2026-05-05"
   },
@@ -122,20 +122,20 @@
       "Quality": 52.17,
       "Value": 50.0,
       "Growth": 55.98,
-      "Momentum": 46.66,
-      "Health": 45.62,
+      "Momentum": 46.17,
+      "Health": 45.66,
       "Profitability": 50.72,
-      "Technical": 27.54,
-      "Risk": 49.7
+      "Technical": 27.19,
+      "Risk": 49.77
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.2544850967922378,
   "recommendation": "neutral",
-  "loss_chance_pct": 63.6531374501992,
-  "price_change_1d_pct": -0.5838,
+  "loss_chance_pct": 63.10209163346613,
+  "price_change_1d_pct": 0.7122,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 44.69,
+  "composite_score_adjusted": 45.8,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -183,10 +183,14 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.27,
+  "osap_blended_score": 48.82,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 2,
-  "form4_diagnostics": null,
-  "cross_source_delta": 0.012032711596734793
+  "form4_diagnostics": {
+    "insider_count": 8,
+    "latest_filing_date": "2026-05-22",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.01801284452632771
 }

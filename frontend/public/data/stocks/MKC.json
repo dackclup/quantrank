@@ -5,19 +5,19 @@
   "industry": "Packaged Foods & Meats",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 12726456452.178955,
-  "current_price": 47.24,
-  "rank": 314,
-  "composite_score": 47.66,
+  "market_cap": 12783030205.535889,
+  "current_price": 47.45,
+  "rank": 343,
+  "composite_score": 46.44,
   "pillar_scores": {
     "quality": 49.31,
-    "value": 66.2,
-    "growth": 62.15,
-    "momentum": 7.32,
-    "health": 25.26,
+    "value": 65.74,
+    "growth": 50.69,
+    "momentum": 7.42,
+    "health": 25.3,
     "profitability": 54.63,
-    "technical": 68.18,
-    "risk": 31.34,
+    "technical": 73.8,
+    "risk": 31.81,
     "sentiment": null,
     "ml": null
   },
@@ -34,8 +34,8 @@
     "eps_basic": 6.099851521900519,
     "eps_diluted": 6.099851521900519,
     "shares_outstanding": 269400000.0,
-    "market_cap": 12726456452.178955,
-    "pe_ratio_ttm": 7.74445107538426,
+    "market_cap": 12783030205.535889,
+    "pe_ratio_ttm": 7.7788779927803136,
     "goodwill": 6316500000.0
   },
   "fair_price": {
@@ -47,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 151.50444945459452,
+        "value": 151.4472513640448,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 42.406091094115624,
+        "value": 43.034459707537835,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 56.84584924931552,
+        "value": 57.493808501310156,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -71,17 +71,17 @@
         "tier_used": null
       },
       "dcf": {
-        "value": 13.617811610256618,
+        "value": 18.50270030083087,
         "applicable": true,
         "reason": null,
         "tier_used": null
       }
     },
-    "median": 49.62597017171557,
-    "max": 151.50444945459452,
-    "low": 13.617811610256618,
-    "high": 151.50444945459452,
-    "mos_pct": 4.807902968935131,
+    "median": 50.264134104423995,
+    "max": 151.4472513640448,
+    "low": 18.50270030083087,
+    "high": 151.4472513640448,
+    "mos_pct": 5.598690580520428,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -93,7 +93,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 67,
+    "filing_lag_days": 69,
     "latest_period_end": "2026-02-28",
     "latest_filed_date": "2026-03-31"
   },
@@ -116,22 +116,22 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 49.31,
-      "Value": 51.16,
-      "Growth": 47.74,
-      "Momentum": 41.04,
+      "Value": 51.62,
+      "Growth": 49.65,
+      "Momentum": 41.71,
       "Health": 39.58,
       "Profitability": 53.7,
-      "Technical": 49.6,
-      "Risk": 50.98
+      "Technical": 50.7,
+      "Risk": 50.76
     }
   },
   "beneish_m_score": -1.8384699281400236,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 45.48550416708488,
-  "price_change_1d_pct": 1.3299,
+  "loss_chance_pct": 45.81933814778435,
+  "price_change_1d_pct": 0.4445,
   "manipulation_index": 23.0,
-  "composite_score_adjusted": 45.36,
+  "composite_score_adjusted": 44.14,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -179,10 +179,14 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.76,
+  "osap_blended_score": 49.15,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
-  "form4_diagnostics": null,
-  "cross_source_delta": 0.0020668455730622104
+  "form4_diagnostics": {
+    "insider_count": 21,
+    "latest_filing_date": "2026-06-02",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.00974323204539963
 }

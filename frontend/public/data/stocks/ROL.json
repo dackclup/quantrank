@@ -5,19 +5,19 @@
   "industry": "Environmental & Facilities Services",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 22676937792.644753,
-  "current_price": 47.1,
-  "rank": 167,
+  "market_cap": 22652864976.822376,
+  "current_price": 47.05,
+  "rank": 170,
   "composite_score": 54.24,
   "pillar_scores": {
     "quality": 83.59,
-    "value": 25.62,
-    "growth": 84.38,
-    "momentum": 24.45,
+    "value": 26.04,
+    "growth": 83.75,
+    "momentum": 24.3,
     "health": 40.44,
     "profitability": 74.17,
-    "technical": 27.19,
-    "risk": 49.17,
+    "technical": 27.27,
+    "risk": 49.2,
     "sentiment": null,
     "ml": null
   },
@@ -34,8 +34,8 @@
     "eps_basic": 2.084934081515514,
     "eps_diluted": 2.084934081515514,
     "shares_outstanding": 481463663.0,
-    "market_cap": 22676937792.644753,
-    "pe_ratio_ttm": 22.590641541954486,
+    "market_cap": 22652864976.822376,
+    "pe_ratio_ttm": 22.56666033434518,
     "goodwill": 1384591000.0
   },
   "fair_price": {
@@ -47,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 58.69432303349375,
+        "value": 59.08962058473966,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 18.89627970954095,
+        "value": 19.09260979016734,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 29.920155644451494,
+        "value": 30.181032120990803,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -77,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 24.408217676996223,
-    "max": 58.69432303349375,
+    "median": 24.636820955579072,
+    "max": 59.08962058473966,
     "low": 12.205701319048098,
-    "high": 58.69432303349375,
-    "mos_pct": -92.96779100143381,
+    "high": 59.08962058473966,
+    "mos_pct": -90.97431166907901,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -94,7 +94,7 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 44,
+    "filing_lag_days": 46,
     "latest_period_end": "2026-04-13",
     "latest_filed_date": "2026-04-23"
   },
@@ -117,20 +117,20 @@
     "label": "Industrials median (n=80)",
     "values": {
       "Quality": 47.73,
-      "Value": 48.96,
-      "Growth": 49.45,
-      "Momentum": 53.56,
+      "Value": 48.65,
+      "Growth": 49.06,
+      "Momentum": 56.09,
       "Health": 53.94,
       "Profitability": 48.02,
-      "Technical": 51.74,
-      "Risk": 54.42
+      "Technical": 51.77,
+      "Risk": 54.8
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.6192894367944051,
   "recommendation": "neutral",
-  "loss_chance_pct": 60.88000861138778,
-  "price_change_1d_pct": 1.2903,
+  "loss_chance_pct": 60.87904372094954,
+  "price_change_1d_pct": -0.1062,
   "manipulation_index": 25.0,
   "composite_score_adjusted": 51.74,
   "manipulation_components": {
@@ -184,6 +184,10 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
-  "form4_diagnostics": null,
-  "cross_source_delta": 4.800669131153777e-08
+  "form4_diagnostics": {
+    "insider_count": 16,
+    "latest_filing_date": "2026-05-01",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.00010629927738003618
 }

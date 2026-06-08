@@ -5,19 +5,19 @@
   "industry": "Soft Drinks & Non-alcoholic Beverages",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 41537881583.85205,
-  "current_price": 30.53,
-  "rank": 372,
-  "composite_score": 44.73,
+  "market_cap": 42068498947.12245,
+  "current_price": 30.92,
+  "rank": 377,
+  "composite_score": 44.15,
   "pillar_scores": {
-    "quality": 27.08,
-    "value": 47.22,
+    "quality": 26.39,
+    "value": 46.3,
     "growth": 52.08,
-    "momentum": 49.25,
+    "momentum": 46.71,
     "health": 61.02,
     "profitability": 44.91,
-    "technical": 64.29,
-    "risk": 49.87,
+    "technical": 65.74,
+    "risk": 51.53,
     "sentiment": null,
     "ml": null
   },
@@ -34,8 +34,8 @@
     "eps_basic": 1.3465049040844168,
     "eps_diluted": 1.3465049040844168,
     "shares_outstanding": 1360559471.0,
-    "market_cap": 41537881583.85205,
-    "pe_ratio_ttm": 22.673516148390856,
+    "market_cap": 42068498947.12245,
+    "pe_ratio_ttm": 22.963154447119244,
     "goodwill": 20210000000.0
   },
   "fair_price": {
@@ -47,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 33.4436803008708,
+        "value": 33.4310541723244,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 61.279189628797866,
+        "value": 61.31896495058684,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 28.907406180006177,
+        "value": 29.423846240050363,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -77,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 31.17554324043849,
-    "max": 61.279189628797866,
+    "median": 31.42745020618738,
+    "max": 61.31896495058684,
     "low": 4.352212595105785,
-    "high": 61.279189628797866,
-    "mos_pct": 2.07066978372853,
+    "high": 61.31896495058684,
+    "mos_pct": 1.6146716534882273,
     "valuation_warnings": [
       "extreme_dcf_estimate",
       "value_trap_risk"
@@ -95,7 +95,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 44,
+    "filing_lag_days": 46,
     "latest_period_end": "2026-04-21",
     "latest_filed_date": "2026-04-23"
   },
@@ -119,22 +119,22 @@
     "label": "Consumer Staples median (n=36)",
     "values": {
       "Quality": 49.31,
-      "Value": 51.16,
-      "Growth": 47.74,
-      "Momentum": 41.04,
+      "Value": 51.62,
+      "Growth": 49.65,
+      "Momentum": 41.71,
       "Health": 39.58,
       "Profitability": 53.7,
-      "Technical": 49.6,
-      "Risk": 50.98
+      "Technical": 50.7,
+      "Risk": 50.76
     }
   },
   "beneish_m_score": -2.475428133332268,
   "dechow_f_score": 0.6695382738060286,
   "recommendation": "neutral",
-  "loss_chance_pct": 47.90880318451897,
-  "price_change_1d_pct": 1.5635,
+  "loss_chance_pct": 48.359564272024286,
+  "price_change_1d_pct": 1.2774,
   "manipulation_index": 20.0,
-  "composite_score_adjusted": 42.73,
+  "composite_score_adjusted": 42.15,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -182,10 +182,14 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.29,
+  "osap_blended_score": 48.0,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3,
-  "form4_diagnostics": null,
-  "cross_source_delta": 3.6589541710574286e-08
+  "form4_diagnostics": {
+    "insider_count": 11,
+    "latest_filing_date": "2026-06-03",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.002263894873980671
 }

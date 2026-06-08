@@ -5,19 +5,19 @@
   "industry": "Integrated Oil & Gas",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 621410470937.415,
-  "current_price": 149.92,
-  "rank": 356,
-  "composite_score": 45.71,
+  "market_cap": 629037158536.2452,
+  "current_price": 151.76,
+  "rank": 370,
+  "composite_score": 44.77,
   "pillar_scores": {
     "quality": 33.33,
     "value": 42.86,
     "growth": 33.33,
-    "momentum": 72.96,
+    "momentum": 63.94,
     "health": 55.22,
     "profitability": 50.79,
-    "technical": 34.26,
-    "risk": 85.52,
+    "technical": 37.65,
+    "risk": 85.86,
     "sentiment": null,
     "ml": null
   },
@@ -34,8 +34,8 @@
     "eps_basic": 6.321672864789102,
     "eps_diluted": 6.321672864789102,
     "shares_outstanding": 4144947162.0,
-    "market_cap": 621410470937.415,
-    "pe_ratio_ttm": 23.715241420349393,
+    "market_cap": 629037158536.2452,
+    "pe_ratio_ttm": 24.006303039203345,
     "goodwill": null
   },
   "fair_price": {
@@ -47,13 +47,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 118.50300219769338,
+        "value": 119.64251901877348,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 149.17095529877741,
+        "value": 151.07829720151153,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,10 +78,10 @@
       }
     },
     "median": 103.84835266442732,
-    "max": 149.17095529877741,
+    "max": 151.07829720151153,
     "low": 66.5368932103135,
-    "high": 149.17095529877741,
-    "mos_pct": -44.36434890151086,
+    "high": 151.07829720151153,
+    "mos_pct": -46.13615971090938,
     "valuation_warnings": [],
     "valuation_methods_applicable": 5
   },
@@ -99,7 +99,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 33,
+    "filing_lag_days": 35,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-04"
   },
@@ -118,22 +118,22 @@
     "label": "Energy median (n=21)",
     "values": {
       "Quality": 50.0,
-      "Value": 49.21,
+      "Value": 50.79,
       "Growth": 55.95,
-      "Momentum": 76.34,
+      "Momentum": 66.28,
       "Health": 55.22,
       "Profitability": 54.76,
-      "Technical": 37.65,
-      "Risk": 64.91
+      "Technical": 38.0,
+      "Risk": 65.8
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 57.671124294116034,
-  "price_change_1d_pct": -1.3944,
+  "loss_chance_pct": 58.76374313716648,
+  "price_change_1d_pct": 1.2273,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 45.71,
+  "composite_score_adjusted": 44.77,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -181,10 +181,14 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.78,
+  "osap_blended_score": 48.31,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5,
-  "form4_diagnostics": null,
-  "cross_source_delta": 3.135031665892955e-08
+  "form4_diagnostics": {
+    "insider_count": 16,
+    "latest_filing_date": "2026-05-22",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.003755888478421432
 }

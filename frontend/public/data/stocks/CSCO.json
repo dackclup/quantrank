@@ -5,19 +5,19 @@
   "industry": "Communications Equipment",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 479436110244.9392,
-  "current_price": 121.64,
-  "rank": 276,
-  "composite_score": 49.64,
+  "market_cap": 496187207571.1892,
+  "current_price": 125.89,
+  "rank": 277,
+  "composite_score": 49.49,
   "pillar_scores": {
     "quality": 47.92,
-    "value": 45.95,
+    "value": 43.63,
     "growth": 26.39,
-    "momentum": 82.47,
-    "health": 35.7,
+    "momentum": 85.26,
+    "health": 35.74,
     "profitability": 49.54,
-    "technical": 64.99,
-    "risk": 69.36,
+    "technical": 65.39,
+    "risk": 69.46,
     "sentiment": null,
     "ml": null
   },
@@ -34,8 +34,8 @@
     "eps_basic": 3.0339206447305145,
     "eps_diluted": 3.0339206447305145,
     "shares_outstanding": 3941434665.0,
-    "market_cap": 479436110244.9392,
-    "pe_ratio_ttm": 40.09333586259736,
+    "market_cap": 496187207571.1892,
+    "pe_ratio_ttm": 41.494163536644024,
     "goodwill": 59292000000.0
   },
   "fair_price": {
@@ -47,13 +47,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 122.60677296115756,
+        "value": 124.1639879546186,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 122.54685641696086,
+        "value": 125.20594611868559,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -77,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 122.54685641696086,
-    "max": 122.60677296115756,
+    "median": 124.1639879546186,
+    "max": 125.20594611868559,
     "low": 36.54979792733239,
-    "high": 122.60677296115756,
-    "mos_pct": 0.7400083966469782,
+    "high": 125.20594611868559,
+    "mos_pct": -1.3901063130000963,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
@@ -93,7 +93,7 @@
       "ebitda"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 18,
+    "filing_lag_days": 20,
     "latest_period_end": "2026-05-14",
     "latest_filed_date": "2026-05-19"
   },
@@ -114,22 +114,22 @@
     "label": "Information Technology median (n=72)",
     "values": {
       "Quality": 48.52,
-      "Value": 50.87,
-      "Growth": 52.95,
-      "Momentum": 60.41,
-      "Health": 68.42,
+      "Value": 51.79,
+      "Growth": 52.6,
+      "Momentum": 67.23,
+      "Health": 68.44,
       "Profitability": 49.65,
-      "Technical": 58.07,
-      "Risk": 46.91
+      "Technical": 56.85,
+      "Risk": 47.27
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.6284696242351766,
   "recommendation": "neutral",
-  "loss_chance_pct": 39.921429267533306,
-  "price_change_1d_pct": -6.4308,
+  "loss_chance_pct": 40.73926357261629,
+  "price_change_1d_pct": 3.4939,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 49.14,
+  "composite_score_adjusted": 48.99,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -177,10 +177,14 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 50.75,
+  "osap_blended_score": 50.67,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3,
-  "form4_diagnostics": null,
-  "cross_source_delta": 3.393696795563387e-09
+  "form4_diagnostics": {
+    "insider_count": 18,
+    "latest_filing_date": "2026-06-04",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.005798663809317185
 }

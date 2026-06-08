@@ -5,19 +5,19 @@
   "industry": "Internet Services & Infrastructure",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 11172742526.185493,
-  "current_price": 84.38,
-  "rank": 117,
-  "composite_score": 57.06,
+  "market_cap": 10878793514.419342,
+  "current_price": 82.16,
+  "rank": 114,
+  "composite_score": 57.17,
   "pillar_scores": {
     "quality": 78.99,
-    "value": 77.31,
-    "growth": 68.4,
-    "momentum": 9.76,
+    "value": 78.01,
+    "growth": 68.06,
+    "momentum": 12.55,
     "health": 30.76,
     "profitability": 50.46,
-    "technical": 22.41,
-    "risk": 21.95,
+    "technical": 15.39,
+    "risk": 21.86,
     "sentiment": null,
     "ml": null
   },
@@ -34,8 +34,8 @@
     "eps_basic": 6.571263540543174,
     "eps_diluted": 6.571263540543174,
     "shares_outstanding": 132409847.0,
-    "market_cap": 11172742526.185493,
-    "pe_ratio_ttm": 12.84075683965693,
+    "market_cap": 10878793514.419342,
+    "pe_ratio_ttm": 12.502923243787315,
     "goodwill": 3614200000.0
   },
   "fair_price": {
@@ -47,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 265.557841264788,
+        "value": 272.66908399368486,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 17.58514058212856,
+        "value": 18.100659119231054,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 229.28653577285465,
+        "value": 232.58054534700736,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -77,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 153.11734317903722,
-    "max": 265.557841264788,
-    "low": 17.58514058212856,
-    "high": 265.557841264788,
-    "mos_pct": 44.891940062756944,
+    "median": 154.76434796611358,
+    "max": 272.66908399368486,
+    "low": 18.100659119231054,
+    "high": 272.66908399368486,
+    "mos_pct": 46.912835713236284,
     "valuation_warnings": [],
     "valuation_methods_applicable": 4
   },
@@ -97,12 +97,15 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 36,
+    "filing_lag_days": 38,
     "latest_period_end": "2026-04-24",
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "insider_sell_cluster",
+    "c_suite_unusual_sell"
+  ],
   "has_history": true,
   "tangible_book_value": null,
   "tier2_events": {
@@ -116,22 +119,22 @@
     "label": "Information Technology median (n=72)",
     "values": {
       "Quality": 48.52,
-      "Value": 50.87,
-      "Growth": 52.95,
-      "Momentum": 60.41,
-      "Health": 68.42,
+      "Value": 51.79,
+      "Growth": 52.6,
+      "Momentum": 67.23,
+      "Health": 68.44,
       "Profitability": 49.65,
-      "Technical": 58.07,
-      "Risk": 46.91
+      "Technical": 56.85,
+      "Risk": 47.27
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 20.756571554433187,
-  "price_change_1d_pct": -0.5422,
-  "manipulation_index": 0.0,
-  "composite_score_adjusted": 57.06,
+  "loss_chance_pct": 19.995635760475025,
+  "price_change_1d_pct": -2.6309,
+  "manipulation_index": 8.0,
+  "composite_score_adjusted": 56.37,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -147,8 +150,8 @@
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false,
-    "insider_sell_cluster": false,
-    "c_suite_unusual_sell": false
+    "insider_sell_cluster": true,
+    "c_suite_unusual_sell": true
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -179,10 +182,14 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 54.46,
+  "osap_blended_score": 54.51,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
-  "form4_diagnostics": null,
-  "cross_source_delta": 3.4206954342097505e-08
+  "form4_diagnostics": {
+    "insider_count": 13,
+    "latest_filing_date": "2026-06-05",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.00906771530212349
 }

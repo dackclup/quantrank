@@ -5,19 +5,19 @@
   "industry": "Construction Machinery & Heavy Transportation Equipment",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 416544863366.5054,
-  "current_price": 904.28,
-  "rank": 191,
-  "composite_score": 53.29,
+  "market_cap": 418686808668.37366,
+  "current_price": 908.93,
+  "rank": 186,
+  "composite_score": 53.43,
   "pillar_scores": {
     "quality": 68.44,
-    "value": 11.67,
-    "growth": 59.06,
-    "momentum": 92.03,
+    "value": 11.46,
+    "growth": 59.38,
+    "momentum": 91.83,
     "health": 50.42,
     "profitability": 43.54,
-    "technical": 52.89,
-    "risk": 68.11,
+    "technical": 56.4,
+    "risk": 67.83,
     "sentiment": null,
     "ml": null
   },
@@ -34,8 +34,8 @@
     "eps_basic": 20.471650057935204,
     "eps_diluted": 20.471650057935204,
     "shares_outstanding": 460637026.0,
-    "market_cap": 416544863366.5054,
-    "pe_ratio_ttm": 44.17230788616176,
+    "market_cap": 418686808668.37366,
+    "pe_ratio_ttm": 44.39944948763242,
     "goodwill": 5865000000.0
   },
   "fair_price": {
@@ -47,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 562.8753987523621,
+        "value": 568.2655329186307,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 266.7366144483936,
+        "value": 269.5079758923196,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 459.0995374368688,
+        "value": 463.54595682077473,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -77,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 223.62025134825964,
-    "max": 562.8753987523621,
+    "median": 225.00593207022266,
+    "max": 568.2655329186307,
     "low": 110.84983991178791,
-    "high": 562.8753987523621,
-    "mos_pct": -304.38199306402515,
+    "high": 568.2655329186307,
+    "mos_pct": -303.9582353731505,
     "valuation_warnings": [
       "extreme_graham_estimate",
       "extreme_rim_estimate",
@@ -98,7 +98,7 @@
       "interest_expense"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 31,
+    "filing_lag_days": 33,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-06"
   },
@@ -110,7 +110,9 @@
     "extreme_rim_estimate",
     "extreme_dcf_estimate",
     "extreme_estimate_majority",
-    "beneish_high"
+    "beneish_high",
+    "insider_sell_cluster",
+    "c_suite_unusual_sell"
   ],
   "has_history": true,
   "tangible_book_value": 26.867141157688874,
@@ -125,22 +127,22 @@
     "label": "Industrials median (n=80)",
     "values": {
       "Quality": 47.73,
-      "Value": 48.96,
-      "Growth": 49.45,
-      "Momentum": 53.56,
+      "Value": 48.65,
+      "Growth": 49.06,
+      "Momentum": 56.09,
       "Health": 53.94,
       "Profitability": 48.02,
-      "Technical": 51.74,
-      "Risk": 54.42
+      "Technical": 51.77,
+      "Risk": 54.8
     }
   },
   "beneish_m_score": -1.365232239831081,
   "dechow_f_score": 0.5447029785627931,
   "recommendation": "cautious",
-  "loss_chance_pct": 64.35306171148738,
-  "price_change_1d_pct": -3.8491,
-  "manipulation_index": 23.0,
-  "composite_score_adjusted": 50.99,
+  "loss_chance_pct": 64.28693559096946,
+  "price_change_1d_pct": 0.5142,
+  "manipulation_index": 31.0,
+  "composite_score_adjusted": 50.33,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": true,
@@ -156,8 +158,8 @@
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": true,
     "dechow_high": false,
-    "insider_sell_cluster": false,
-    "c_suite_unusual_sell": false
+    "insider_sell_cluster": true,
+    "c_suite_unusual_sell": true
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -188,10 +190,14 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 52.57,
+  "osap_blended_score": 52.64,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3,
-  "form4_diagnostics": null,
-  "cross_source_delta": 9.781436308223444e-05
+  "form4_diagnostics": {
+    "insider_count": 14,
+    "latest_filing_date": "2026-05-15",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.004168123361526579
 }

@@ -5,19 +5,19 @@
   "industry": "Oil & Gas Exploration & Production",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 54186565894.53992,
-  "current_price": 192.62,
+  "market_cap": 56088246529.46008,
+  "current_price": 199.38,
   "rank": 468,
-  "composite_score": 36.41,
+  "composite_score": 36.09,
   "pillar_scores": {
     "quality": 16.67,
     "value": 34.92,
     "growth": 55.95,
-    "momentum": 80.63,
+    "momentum": 73.31,
     "health": 19.2,
     "profitability": 20.63,
-    "technical": 25.0,
-    "risk": 64.91,
+    "technical": 36.21,
+    "risk": 65.8,
     "sentiment": null,
     "ml": null
   },
@@ -34,8 +34,8 @@
     "eps_basic": 1.0095505723641638,
     "eps_diluted": 1.0095505723641638,
     "shares_outstanding": 281313297.0,
-    "market_cap": 54186565894.53992,
-    "pe_ratio_ttm": 190.7977672342955,
+    "market_cap": 56088246529.46008,
+    "pe_ratio_ttm": 197.49382580795805,
     "goodwill": null
   },
   "fair_price": {
@@ -47,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 12.035744854406127,
+        "value": 12.231886047869585,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 245.41392187552987,
+        "value": 250.62735702754634,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 154.9039510799395,
+        "value": 160.49689650783793,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -77,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 174.3116983437458,
-    "max": 245.41392187552987,
-    "low": 12.035744854406127,
-    "high": 245.41392187552987,
-    "mos_pct": -10.503194534504164,
+    "median": 177.10817105769502,
+    "max": 250.62735702754634,
+    "low": 12.231886047869585,
+    "high": 250.62735702754634,
+    "mos_pct": -12.575271763075335,
     "valuation_warnings": [
       "extreme_multiples_pe_estimate",
       "value_trap_risk"
@@ -101,14 +101,16 @@
       "goodwill"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 31,
+    "filing_lag_days": 33,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-06"
   },
   "risk_flags": [],
   "valuation_warnings": [
     "extreme_multiples_pe_estimate",
-    "value_trap_risk"
+    "value_trap_risk",
+    "insider_sell_cluster",
+    "c_suite_unusual_sell"
   ],
   "has_history": true,
   "tangible_book_value": 129.62771539377323,
@@ -123,22 +125,22 @@
     "label": "Energy median (n=21)",
     "values": {
       "Quality": 50.0,
-      "Value": 49.21,
+      "Value": 50.79,
       "Growth": 55.95,
-      "Momentum": 76.34,
+      "Momentum": 66.28,
       "Health": 55.22,
       "Profitability": 54.76,
-      "Technical": 37.65,
-      "Risk": 64.91
+      "Technical": 38.0,
+      "Risk": 65.8
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.11417165781828965,
   "recommendation": "neutral",
-  "loss_chance_pct": 53.47263045032189,
-  "price_change_1d_pct": -5.0853,
-  "manipulation_index": 0.0,
-  "composite_score_adjusted": 36.41,
+  "loss_chance_pct": 54.35846505004291,
+  "price_change_1d_pct": 3.5095,
+  "manipulation_index": 8.0,
+  "composite_score_adjusted": 35.29,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -154,8 +156,8 @@
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false,
-    "insider_sell_cluster": false,
-    "c_suite_unusual_sell": false
+    "insider_sell_cluster": true,
+    "c_suite_unusual_sell": true
   },
   "osap_signals": {
     "AbnormalAccruals": 0.8518518518518519,
@@ -186,10 +188,14 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 44.13,
+  "osap_blended_score": 43.97,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3,
-  "form4_diagnostics": null,
-  "cross_source_delta": 7.074558093363302e-08
+  "form4_diagnostics": {
+    "insider_count": 21,
+    "latest_filing_date": "2026-06-05",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.0034105843790214925
 }

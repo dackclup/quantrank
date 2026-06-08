@@ -5,19 +5,19 @@
   "industry": "Multi-Sector Holdings",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 678557797984.3505,
-  "current_price": 488.13,
-  "rank": 334,
-  "composite_score": 47.0,
+  "market_cap": 678210268744.6005,
+  "current_price": 487.88,
+  "rank": 322,
+  "composite_score": 47.58,
   "pillar_scores": {
     "quality": 37.33,
-    "value": 60.44,
+    "value": 60.89,
     "growth": 37.67,
-    "momentum": 41.88,
+    "momentum": 45.27,
     "health": 50.76,
     "profitability": 53.33,
-    "technical": 44.47,
-    "risk": 68.31,
+    "technical": 45.17,
+    "risk": 68.71,
     "sentiment": null,
     "ml": null
   },
@@ -34,8 +34,8 @@
     "eps_basic": 52.345955157863806,
     "eps_diluted": 52.345955157863806,
     "shares_outstanding": 1390116959.0,
-    "market_cap": 678557797984.3505,
-    "pe_ratio_ttm": 9.325075899574676,
+    "market_cap": 678210268744.6005,
+    "pe_ratio_ttm": 9.32029998137343,
     "goodwill": 83180000000.0
   },
   "fair_price": {
@@ -47,13 +47,13 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 764.9845074321629,
+        "value": 767.6054368210744,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 1119.3531466352408,
+        "value": 1111.58224128915,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -77,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 764.9845074321629,
-    "max": 1119.3531466352408,
+    "median": 767.6054368210744,
+    "max": 1111.58224128915,
     "low": 577.6226155853442,
-    "high": 1119.3531466352408,
-    "mos_pct": 36.19086397954291,
+    "high": 1111.58224128915,
+    "mos_pct": 36.44130415447601,
     "valuation_warnings": [],
     "valuation_methods_applicable": 3
   },
@@ -107,7 +107,7 @@
       "property_plant_equipment"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 33,
+    "filing_lag_days": 35,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-05-04"
   },
@@ -133,20 +133,20 @@
       "Quality": 50.67,
       "Value": 51.33,
       "Growth": 51.5,
-      "Momentum": 48.9,
+      "Momentum": 50.25,
       "Health": 50.76,
       "Profitability": 49.11,
-      "Technical": 53.69,
-      "Risk": 55.78
+      "Technical": 51.49,
+      "Risk": 55.08
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 31.830910920572993,
-  "price_change_1d_pct": 1.9848,
+  "loss_chance_pct": 31.45670307448586,
+  "price_change_1d_pct": -0.0512,
   "manipulation_index": 25.0,
-  "composite_score_adjusted": 44.5,
+  "composite_score_adjusted": 45.08,
   "manipulation_components": {
     "sloan_accruals_top_decile": true,
     "beneish_manipulation_veto": false,
@@ -194,10 +194,14 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 49.43,
+  "osap_blended_score": 49.71,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3,
-  "form4_diagnostics": null,
-  "cross_source_delta": 0.551562784610842
+  "form4_diagnostics": {
+    "insider_count": 5,
+    "latest_filing_date": "2026-05-26",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.5486369725544824
 }

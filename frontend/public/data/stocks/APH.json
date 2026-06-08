@@ -5,19 +5,19 @@
   "industry": "Electronic Components",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 170768840306.94794,
-  "current_price": 138.81,
-  "rank": 67,
-  "composite_score": 60.45,
+  "market_cap": 176606296741.4688,
+  "current_price": 143.555,
+  "rank": 80,
+  "composite_score": 59.15,
   "pillar_scores": {
     "quality": 58.33,
-    "value": 53.47,
-    "growth": 76.04,
-    "momentum": 54.48,
+    "value": 52.31,
+    "growth": 75.35,
+    "momentum": 48.8,
     "health": 73.53,
     "profitability": 43.06,
-    "technical": 76.34,
-    "risk": 58.6,
+    "technical": 71.22,
+    "risk": 59.06,
     "sentiment": null,
     "ml": null
   },
@@ -34,8 +34,8 @@
     "eps_basic": 3.6614159344237835,
     "eps_diluted": 3.6614159344237835,
     "shares_outstanding": 1230234445.0,
-    "market_cap": 170768840306.94794,
-    "pe_ratio_ttm": 37.91156209638308,
+    "market_cap": 176606296741.4688,
+    "pe_ratio_ttm": 39.20750749077986,
     "goodwill": 17542900000.0
   },
   "fair_price": {
@@ -47,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 147.96510678944796,
+        "value": 151.92739155865476,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 111.47776634084096,
+        "value": 114.7458013477313,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 162.81286335475482,
+        "value": 164.95219554580575,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -77,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 129.72143656514447,
-    "max": 162.81286335475482,
+    "median": 133.33659645319304,
+    "max": 164.95219554580575,
     "low": 22.697488432027434,
-    "high": 162.81286335475482,
-    "mos_pct": -7.006213648339546,
+    "high": 164.95219554580575,
+    "mos_pct": -7.663609612365735,
     "valuation_warnings": [
       "extreme_dcf_estimate"
     ],
@@ -94,13 +94,14 @@
       "research_and_development"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 36,
+    "filing_lag_days": 38,
     "latest_period_end": "2026-04-28",
     "latest_filed_date": "2026-05-01"
   },
   "risk_flags": [],
   "valuation_warnings": [
-    "extreme_dcf_estimate"
+    "extreme_dcf_estimate",
+    "beneish_high"
   ],
   "has_history": true,
   "tangible_book_value": null,
@@ -115,22 +116,22 @@
     "label": "Information Technology median (n=72)",
     "values": {
       "Quality": 48.52,
-      "Value": 50.87,
-      "Growth": 52.95,
-      "Momentum": 60.41,
-      "Health": 68.42,
+      "Value": 51.79,
+      "Growth": 52.6,
+      "Momentum": 67.23,
+      "Health": 68.44,
       "Profitability": 49.65,
-      "Technical": 58.07,
-      "Risk": 46.91
+      "Technical": 56.85,
+      "Risk": 47.27
     }
   },
-  "beneish_m_score": null,
+  "beneish_m_score": -1.848015065112261,
   "dechow_f_score": 2.104693116647191,
-  "recommendation": "bullish",
-  "loss_chance_pct": 38.228856245489,
-  "price_change_1d_pct": -5.4235,
-  "manipulation_index": 0.0,
-  "composite_score_adjusted": 60.45,
+  "recommendation": "lean_bullish",
+  "loss_chance_pct": 42.10690853365072,
+  "price_change_1d_pct": 3.4183,
+  "manipulation_index": 3.0,
+  "composite_score_adjusted": 58.85,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -144,7 +145,7 @@
     "accruals_momentum_high": false,
     "loss_avoidance_pattern": false,
     "loss_avoidance_pattern_size_invariant": false,
-    "beneish_high": false,
+    "beneish_high": true,
     "dechow_high": false,
     "insider_sell_cluster": false,
     "c_suite_unusual_sell": false
@@ -178,10 +179,14 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 56.15,
+  "osap_blended_score": 55.5,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3,
-  "form4_diagnostics": null,
-  "cross_source_delta": 1.4317905178681483e-08
+  "form4_diagnostics": {
+    "insider_count": 12,
+    "latest_filing_date": "2026-05-27",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.0015672709896295458
 }

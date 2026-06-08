@@ -5,19 +5,19 @@
   "industry": "Rail Transportation",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 70398992355.07599,
-  "current_price": 313.45,
-  "rank": 381,
-  "composite_score": 44.09,
+  "market_cap": 70017179811.75,
+  "current_price": 311.75,
+  "rank": 380,
+  "composite_score": 44.08,
   "pillar_scores": {
     "quality": 37.66,
-    "value": 50.83,
-    "growth": 21.88,
-    "momentum": 67.65,
-    "health": 30.64,
+    "value": 51.25,
+    "growth": 22.19,
+    "momentum": 67.33,
+    "health": 30.68,
     "profitability": 52.92,
-    "technical": 39.79,
-    "risk": 73.21,
+    "technical": 38.0,
+    "risk": 72.78,
     "sentiment": null,
     "ml": null
   },
@@ -34,8 +34,8 @@
     "eps_basic": 11.888118062423226,
     "eps_diluted": 11.888118062423226,
     "shares_outstanding": 224594001.0,
-    "market_cap": 70398992355.07599,
-    "pe_ratio_ttm": 26.366663803399245,
+    "market_cap": 70017179811.75,
+    "pe_ratio_ttm": 26.223662850842697,
     "goodwill": null
   },
   "fair_price": {
@@ -47,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 334.6700732662893,
+        "value": 336.9240265210523,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 482.67031238072656,
+        "value": 484.7625265105915,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 388.6184513967345,
+        "value": 391.43661171688933,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -77,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 232.65637559767242,
-    "max": 482.67031238072656,
+    "median": 233.78335222505393,
+    "max": 484.7625265105915,
     "low": 81.84088375582319,
-    "high": 482.67031238072656,
-    "mos_pct": -34.72659470509138,
+    "high": 484.7625265105915,
+    "mos_pct": -33.34995714318044,
     "valuation_warnings": [],
     "valuation_methods_applicable": 6
   },
@@ -98,7 +98,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 43,
+    "filing_lag_days": 45,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-24"
   },
@@ -117,22 +117,22 @@
     "label": "Industrials median (n=80)",
     "values": {
       "Quality": 47.73,
-      "Value": 48.96,
-      "Growth": 49.45,
-      "Momentum": 53.56,
+      "Value": 48.65,
+      "Growth": 49.06,
+      "Momentum": 56.09,
       "Health": 53.94,
       "Profitability": 48.02,
-      "Technical": 51.74,
-      "Risk": 54.42
+      "Technical": 51.77,
+      "Risk": 54.8
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 55.10931364561996,
-  "price_change_1d_pct": 2.0378,
+  "loss_chance_pct": 54.632237137397354,
+  "price_change_1d_pct": -0.5424,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 44.09,
+  "composite_score_adjusted": 44.08,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,6 +184,10 @@
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 6,
-  "form4_diagnostics": null,
-  "cross_source_delta": 4.108583129227593e-10
+  "form4_diagnostics": {
+    "insider_count": 7,
+    "latest_filing_date": "2026-04-28",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.0014754875307426052
 }

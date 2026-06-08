@@ -5,19 +5,19 @@
   "industry": "Gas Utilities",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 28416431414.197968,
-  "current_price": 170.24,
-  "rank": 377,
-  "composite_score": 44.63,
+  "market_cap": 28172727353.40045,
+  "current_price": 168.78,
+  "rank": 388,
+  "composite_score": 43.55,
   "pillar_scores": {
     "quality": 24.19,
-    "value": 43.55,
-    "growth": 60.48,
-    "momentum": 61.7,
-    "health": 46.93,
+    "value": 44.09,
+    "growth": 59.68,
+    "momentum": 54.98,
+    "health": 46.97,
     "profitability": 51.61,
-    "technical": 38.05,
-    "risk": 82.12,
+    "technical": 33.62,
+    "risk": 81.03,
     "sentiment": null,
     "ml": null
   },
@@ -34,8 +34,8 @@
     "eps_basic": 8.06484804423048,
     "eps_diluted": 8.06484804423048,
     "shares_outstanding": 166919822.0,
-    "market_cap": 28416431414.197968,
-    "pe_ratio_ttm": 21.1088918922598,
+    "market_cap": 28172727353.40045,
+    "pe_ratio_ttm": 20.92785851061888,
     "goodwill": 731257000.0
   },
   "fair_price": {
@@ -47,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 160.81932366383361,
+        "value": 159.27027946562893,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 198.27544245940518,
+        "value": 196.7003192606116,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 162.37060311662646,
+        "value": 161.71516174074583,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -77,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 160.81932366383361,
-    "max": 198.27544245940518,
+    "median": 159.27027946562893,
+    "max": 196.7003192606116,
     "low": 95.06121593115282,
-    "high": 198.27544245940518,
-    "mos_pct": -5.857929019166152,
+    "high": 196.7003192606116,
+    "mos_pct": -5.9708059441938595,
     "valuation_warnings": [],
     "valuation_methods_applicable": 5
   },
@@ -97,7 +97,7 @@
       "accounts_payable"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 31,
+    "filing_lag_days": 33,
     "latest_period_end": "2026-05-01",
     "latest_filed_date": "2026-05-06"
   },
@@ -118,22 +118,22 @@
     "label": "Utilities median (n=31)",
     "values": {
       "Quality": 51.61,
-      "Value": 46.77,
-      "Growth": 54.03,
-      "Momentum": 61.16,
+      "Value": 45.16,
+      "Growth": 53.23,
+      "Momentum": 55.93,
       "Health": 17.97,
       "Profitability": 52.15,
-      "Technical": 59.39,
-      "Risk": 72.88
+      "Technical": 51.74,
+      "Risk": 72.53
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 44.73728718922325,
-  "price_change_1d_pct": 1.3575,
+  "loss_chance_pct": 45.31626526065035,
+  "price_change_1d_pct": -0.8576,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 44.13,
+  "composite_score_adjusted": 43.05,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -181,10 +181,14 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 48.24,
+  "osap_blended_score": 47.7,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 5,
-  "form4_diagnostics": null,
-  "cross_source_delta": 2.5119341062441063e-08
+  "form4_diagnostics": {
+    "insider_count": 12,
+    "latest_filing_date": "2026-05-04",
+    "fetch_status": "ok"
+  },
+  "cross_source_delta": 0.007169016434472886
 }
