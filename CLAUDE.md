@@ -496,28 +496,23 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **feat(portfolio) — AI-pick high-conviction gate PR-1 (observability) (this PR)** —
-  user-requested rule: the AI-pick should hold ONLY Strong Buy/Buy names, undervalued
-  (MoS > 0), within standard score + loss-chance bands, evicting any name that decays to
-  Sell. `financial-engineer` designed → `methodology-scientist` RATIFIED-WITH-CONDITION
-  (2026-06-08). PR-1 is the **observability** half (Rule 18): the backtest now replays
-  the valuation + recommendation layer **point-in-time** (reusing the live
-  `_build_universe_metrics`/`_build_peer_groupings`/`_build_historical_metrics`) to COUNT
-  how many names clear the gate per rebalance — **WITHOUT changing selection yet** (PR-2
-  wires it once the median eligible count clears `DEFAULT_COUNT`, condition C1).
-  Gate (`is_high_conviction` in `weights.py`; `PickCandidate` +3 fields) =
-  recommendation∈{bullish,lean_bullish} + MoS>0 + composite≥50 + loss-chance≤45,
-  fail-closed. The backtest's annual-10K cadence would trip Defense #3's 180d hard-stale
-  gate ~3 of 4 quarters, so the hard ceiling is relaxed to **455d FOR THE BACKTEST PIT
-  PATH ONLY** (`BACKTEST_HARD_STALE_DAYS`, threaded via
-  `compute_fair_price_ensemble(hard_stale_days=)` → `stale_filing_status(hard_days=)`;
-  the live path keeps `config.FILING_STALE_HARD_DAYS`=180 — condition C2, never mutated).
-  New artifact diagnostics: per-rebalance `eligible_high_conviction_count` +
-  `mos_positive_count`; `meta.high_conviction_eligible_median` (the C1 metric),
-  `recommendation_layer_replayed=True`, `high_conviction_gate_active=False`. No schema
-  model (artifact self-carries meta), no frontend change, `compute/main.py` untouched.
-  ruff clean; 1552 offline tests pass. **Backfill re-run PENDING** to populate the
-  diagnostics — then verify the median clears 5 before authorizing PR-2.
+- **feat(portfolio) — AI-pick high-conviction gate PR-2 (wire selection) (this PR)** —
+  PR-1 (#437, observability) confirmed condition **C1** on its backfill: the gate is
+  eligible at a **median of 52 names/rebalance** (min 31, all 20 rebalances ≥ 31 ≫
+  `DEFAULT_COUNT`=5), so wiring is safe. PR-2 flips `select_picks` to **drive selection
+  by the high-conviction gate**: new `select_picks(…, gate="high_conviction")` filters
+  to `is_high_conviction` (Strong Buy/Buy + MoS>0 + composite≥50 + loss-chance≤45) then
+  takes the top-N by composite among those (default `gate="veto_only"` UNCHANGED — the
+  live/legacy path is byte-identical). The backfill now calls
+  `select_picks(gate="high_conviction")`; **sell-eviction is implicit** (the basket is
+  rebuilt each quarter, so a name that decays out of the gate isn't re-picked).
+  `meta.high_conviction_gate_active` flips **True**; `DISCLAIMER_BASE` now discloses the
+  gate + the ~15-month annual-staleness window (condition C3). No schema model, no
+  frontend change, `compute/main.py` untouched (PR-3 = the wall-free LIVE forward pick,
+  later). ruff clean; tests updated (gate-filters + subset-property + dual-class×gate +
+  default-unchanged pins). **Backfill re-run PENDING** — the gated NAV/holdings/rotation
+  only appear after a `backfill_portfolio_pit` run regenerates `backtest_pit.json`; then
+  verify the gated baskets + sanity-check the result before merge.
 
 
 **Next deliverables** (pick by appetite):

@@ -120,8 +120,14 @@ DISCLAIMER_BASE = (
     "historical rebalance it re-runs the current frozen 8-pillar weights using only "
     "data filed on or before that date, but fundamental pillars use ANNUAL (10-K) "
     "figures in place of the live trailing-twelve-month basis, GICS sectors are "
-    "assumed stable from today, the defense-layer vetoes are not replayed, and "
-    "survivorship is corrected via the point-in-time membership ledger. Net figures "
+    "assumed stable from today, and survivorship is corrected via the point-in-time "
+    "membership ledger. The basket holds ONLY high-conviction names — Strong Buy / "
+    "Buy rated, undervalued (margin of safety > 0), composite >= 50 and loss-chance "
+    "<= 45 — taking the top names by composite among those (a name that decays out "
+    "of the gate is dropped at the next rebalance). The recommendation + 6-method "
+    "valuation layer is replayed point-in-time, with the fair-value staleness gate "
+    "widened to ~15 months for the once-a-year 10-K cadence (vs the live 180-day "
+    "gate); the cross-source manipulation vetoes are NOT replayed. Net figures "
     "charge a modeled per-side spread cost (10-25 bps on turnover) but are gross of "
     "additional market-impact slippage; per McLean-Pontiff (2016) published-factor "
     "edges decay ~32% post-publication."
@@ -417,16 +423,20 @@ def run_backfill(start: date, end: date, *, data_dir: Path | None = None) -> Pat
             )
             for t in composite.index
         ]
-        # PR-1 observability: how many names WOULD pass the high-conviction gate this
-        # rebalance (the C1 acceptance metric — PR-2's wiring is gated on the median of
-        # these clearing DEFAULT_COUNT). Selection below stays UNCHANGED (veto-only).
+        # PR-2: the high-conviction gate now DRIVES selection (C1 cleared on PR-1's
+        # backfill — median eligible 52 >> DEFAULT_COUNT). eligible_high_conviction_count
+        # stays as the per-rebalance diagnostic; picks = top-N BY COMPOSITE among the
+        # gate-eligible names (Strong Buy/Buy + MoS>0 + composite>=50 + loss-chance<=45).
         high_conviction_count = sum(1 for c in candidates if is_high_conviction(c))
         mos_positive_count = sum(
             1 for c in candidates if c.mos_pct is not None and c.mos_pct > 0.0
         )
         hc_counts.append(high_conviction_count)
 
-        picks = select_picks(candidates, count=MAX_PICKS)  # store up to MAX_PICKS (20) holdings
+        # Sell-eviction is implicit: a name that decayed out of the gate this quarter
+        # is absent from the eligible set and won't be re-picked (the basket is rebuilt
+        # from scratch each rebalance).
+        picks = select_picks(candidates, count=MAX_PICKS, gate="high_conviction")
         if not picks:
             continue
 
@@ -510,14 +520,14 @@ def run_backfill(start: date, end: date, *, data_dir: Path | None = None) -> Pat
             "restatement_canary_unresolved_count": len(restate_unresolved),
             "sector_from_today": True,
             "veto_layer_replayed": False,
-            # PR-1 observability (Phase 7): the recommendation/valuation layer IS replayed
-            # point-in-time (to compute the per-rebalance high-conviction counts below), but
-            # it does NOT yet drive selection (gate_active=False — PR-2 wires it). The
-            # cross-source manipulation vetoes are still NOT replayed (veto_layer_replayed
-            # stays False). high_conviction_eligible_median is the C1 acceptance metric:
-            # PR-2 ships only if it clears default_count.
+            # PR-2 (Phase 7): the recommendation/valuation layer is replayed point-in-time
+            # AND now DRIVES selection (gate_active=True) — the basket holds only
+            # high-conviction names. C1 cleared on PR-1's backfill (median eligible 52 >>
+            # default_count). The cross-source manipulation vetoes are still NOT replayed
+            # (veto_layer_replayed stays False). high_conviction_eligible_median remains the
+            # per-rebalance diagnostic (picks = top-N by composite among the eligible set).
             "recommendation_layer_replayed": True,
-            "high_conviction_gate_active": False,
+            "high_conviction_gate_active": True,
             "high_conviction_eligible_median": (
                 statistics.median(hc_counts) if hc_counts else None
             ),
