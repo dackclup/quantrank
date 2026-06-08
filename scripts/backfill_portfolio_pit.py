@@ -672,14 +672,17 @@ def main(argv: list[str] | None = None) -> int:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     parser = argparse.ArgumentParser(description="Phase 7.0 point-in-time portfolio backtest backfill")
     today = datetime.now(UTC).date()
-    # 5-year window. The survivorship ledger is 10y-READY (covers 2016+,
-    # historical_universe.EARLIEST_EVENT_DATE = 2016-01), but a true 10y backtest
-    # ALSO needs the DATA layer extended — PRICES_PERIOD ("5y"), the period-blind
-    # price cache, and ANNUAL_HISTORY_YEARS (5) all cap usable history at ~5y. A
-    # 10y --start silently yields a 5y NAV (the 2016-2021 legs have no price /
-    # fundamentals data and are dropped). Revisit when the data layer is extended
-    # (heavier weekly cron — prices + fundamentals fetch/parse ~2x).
-    parser.add_argument("--start", default=date(today.year - 5, today.month, 1).isoformat())
+    # 10-year window. The survivorship ledger covers 2016+
+    # (historical_universe.EARLIEST_EVENT_DATE = 2016-01) and the DATA layer is now 10y
+    # too (config.PRICES_PERIOD="10y" + fundamentals.ANNUAL_HISTORY_YEARS=10). Caveat:
+    # ~15-20 tickers renamed before ~2021 (e.g. CDAY→DAY) — yfinance can't resolve the
+    # historical alias from the current symbol, so their pre-rename legs are dropped and
+    # the 2016-2020 cohort is slightly thinner than 2021+. The FIRST 10y backfill must run
+    # via the manual backfill-portfolio.yml dispatch: the cold run (~60-85m: 10y price +
+    # 10y fundamentals re-fetch + ~40 quarterly rebalances) exceeds the cron's 40m folded-
+    # step cap; warm steady-state (~30-35m) fits. Requires the cache-vN-fast key bump
+    # (period-blind caches) to have landed first.
+    parser.add_argument("--start", default=date(today.year - 10, today.month, 1).isoformat())
     parser.add_argument("--end", default=today.isoformat())
     args = parser.parse_args(argv)
     run_backfill(date.fromisoformat(args.start), date.fromisoformat(args.end))

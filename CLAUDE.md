@@ -432,7 +432,7 @@ always-loaded context small while preserving discoverability of every invariant.
 - **`pillarColor`→`lib/visual` + `flagLabel`→`lib/flag-labels` are SHARED tokens (don't re-inline) — introduced by the now-removed compare/filter, still used by `PillarRadarChart` / `RiskSummaryCard` / `FairPriceCard`**
 - **`globals.css` soft-color `!important` override is LITERAL-class-keyed → it NEVER reaches `dark:bg-emerald-*` / `dark:bg-rose-*` solid-fills (they render RAW Tailwind in dark → white label ~3.8:1, under AA). A dark CTA / brand mark = `dark:bg-emerald-700` (emerald-700 = `#047857`, white 5.5:1) or a `--c-*` token directly, never `dark:bg-emerald-600` expecting the soft remap (theme audit #401)**
 - **The home + ranking pages derive stats from `rankings.json`/`metadata.json` at BUILD TIME (Server Components) — weekly static export, so values are "as of" the last cron, NOT live; never `import lib/data.ts` (or any `fs` module) into a `'use client'` component (resolve on the server, pass the node in as a prop/child). Removed 2026-06-04: the top `MarketStatsBar` strip + `lib/market-stats.ts` + `AppShell` `topBar` slot, AND the standalone `/sectors` + `/movers` routes — the build-time server-component rule lives on via the home + ranking pages**
-- **`data/sp500_membership_historical.csv` (the survivorship ledger behind `members_at()`) must stay ADD/REMOVE-balanced — the reverse-walk reconstructs ~500-503 constituents at EVERY backtest month; run `scripts/verify_membership_ledger.py` after ANY edit (checks the size band 498-506 + that every removed ticker is gone / every added ticker present vs the live universe). Use effective (not announcement) dates + real tickers (SIVB not "SVB"; BX=Blackstone≠BLK=BlackRock); cite the Wikipedia change-history URL (the `press.spglobal.com/<date>-<title>` shape 404s). **Track B 10Y rebuild**: now covers **2016-01-04 .. present** (485 events; `EARLIEST_EVENT_DATE` + the verify `WINDOW_START` both moved 2020→2016). The 2016-01..2026-01-14 portion is snapshot-diff-DERIVED from the fja05680 historical-components dataset and is **RENAME-AWARE** (a symbol change = REMOVE old + ADD new, so `members_at` returns the correct historical ticker — a convention shift vs the prior "renames out of scope" 2020-2026 hand-built rows, which fja05680 cross-validated at the boundary). Tickers normalized to the yfinance dash form (BRK-B/BF-B). The 10Y `backtest_pit.json` only reflects this after a `backfill_portfolio_pit` re-run with a 2016 start (heavy; needs 2016+ EDGAR/price data)**
+- **`data/sp500_membership_historical.csv` (the survivorship ledger behind `members_at()`) must stay ADD/REMOVE-balanced — the reverse-walk reconstructs ~500-503 constituents at EVERY backtest month; run `scripts/verify_membership_ledger.py` after ANY edit (checks the size band 498-506 + that every removed ticker is gone / every added ticker present vs the live universe). Use effective (not announcement) dates + real tickers (SIVB not "SVB"; BX=Blackstone≠BLK=BlackRock); cite the Wikipedia change-history URL (the `press.spglobal.com/<date>-<title>` shape 404s). **Track B 10Y rebuild**: now covers **2016-01-04 .. present** (485 events; `EARLIEST_EVENT_DATE` + the verify `WINDOW_START` both moved 2020→2016). The 2016-01..2026-01-14 portion is snapshot-diff-DERIVED from the fja05680 historical-components dataset and is **RENAME-AWARE** (a symbol change = REMOVE old + ADD new, so `members_at` returns the correct historical ticker — a convention shift vs the prior "renames out of scope" 2020-2026 hand-built rows, which fja05680 cross-validated at the boundary). Tickers normalized to the yfinance dash form (BRK-B/BF-B). The 10Y `backtest_pit.json` reflects this after the DATA-layer extension (`PRICES_PERIOD`/`ANNUAL_HISTORY_YEARS`→10y + the load-bearing `cache-v6-fast` bump for the period-blind caches + `write_benchmarks_json` full-series) AND a cold `backfill_portfolio_pit` dispatch from 2016 (manual — the cold ~60-85m run exceeds the cron 40m folded-step cap; warm fits). ~15-20 pre-2021-renamed tickers' 2016-2020 legs drop (yfinance can't resolve the historical alias)**
 - **The home page IS the AI-pick portfolio (Phase 7.0 PR-4)** — reads `backtest_pit.json` via `getAiPickData()` (fs-read + trim+round to a small client view-model, NEVER a static `import`; the 1.3MB artifact never ships in the page payload; `null` → "backtest pending"). Server resolves → the `'use client'` `AiPickPortfolio` gets it as props (the build-time-data rule). The 1-10 slider switches `nav.by_count[N]` (one NAV line per count); the chart uses the pre-aligned `nav.benchmark`, so `benchmarks.json` is NOT read by the frontend
 - **Per-stock JSON for a dropped ticker (de-listed / renamed, e.g. EPAM / BK→BNY) is auto-pruned by `prune_orphan_stock_files()` (defined in `compute/output/writer.py`, called from `compute/main.py` after `write_rankings_json`; safety floor `_PRUNE_SAFETY_FLOOR=50`; cron `git add` stages the deletes). Don't glob `stocks/` for param-gen — it reads `rankings.json` by design. Full detail: `docs/GOTCHAS.md`**
 - **The home's `AnnualReturnsTable` (calendar-year rows + CAGR footer) + the `NavCompareChart` `money` mode ($10k→$X growth + end-of-line $ labels) are DERIVED in-browser from the NAV series — no schema / compute / `backtest_pit.json` change. The CAGR is the **raw top-composite signal's** record, NOT the live veto-filtered Top-5 (`veto_layer_replayed=False`) — it underperforms the S&P 500 at every count (honest by design; disclosed in `meta.disclaimer` + a caveat beside the CAGR row). Don't describe the backtest CAGR as the live product's track record. Full detail: `docs/GOTCHAS.md`**
@@ -496,23 +496,28 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **feat(portfolio) — AI-pick high-conviction gate PR-2 (wire selection) (this PR)** —
-  PR-1 (#437, observability) confirmed condition **C1** on its backfill: the gate is
-  eligible at a **median of 52 names/rebalance** (min 31, all 20 rebalances ≥ 31 ≫
-  `DEFAULT_COUNT`=5), so wiring is safe. PR-2 flips `select_picks` to **drive selection
-  by the high-conviction gate**: new `select_picks(…, gate="high_conviction")` filters
-  to `is_high_conviction` (Strong Buy/Buy + MoS>0 + composite≥50 + loss-chance≤45) then
-  takes the top-N by composite among those (default `gate="veto_only"` UNCHANGED — the
-  live/legacy path is byte-identical). The backfill now calls
-  `select_picks(gate="high_conviction")`; **sell-eviction is implicit** (the basket is
-  rebuilt each quarter, so a name that decays out of the gate isn't re-picked).
-  `meta.high_conviction_gate_active` flips **True**; `DISCLAIMER_BASE` now discloses the
-  gate + the ~15-month annual-staleness window (condition C3). No schema model, no
-  frontend change, `compute/main.py` untouched (PR-3 = the wall-free LIVE forward pick,
-  later). ruff clean; tests updated (gate-filters + subset-property + dual-class×gate +
-  default-unchanged pins). **Backfill re-run PENDING** — the gated NAV/holdings/rotation
-  only appear after a `backfill_portfolio_pit` run regenerates `backtest_pit.json`; then
-  verify the gated baskets + sanity-check the result before merge.
+- **feat(backtest) — extend the AI-pick backtest 5y → 10y (this PR)** —
+  the chart's "Max" button is data-limited, not a frontend cap (`PERIODS` Max =
+  `years:100`, auto-extends to the full `nav.dates` span). The ledger is already
+  10y-ready (`EARLIEST_EVENT_DATE` 2016-01); the cap was the DATA layer.
+  `performance-engineer` scoped it (MODERATE — config bumps, no novel work).
+  **5 edits**: `config.PRICES_PERIOD` `"5y"→"10y"` · `fundamentals.ANNUAL_HISTORY_YEARS`
+  `5→10` · backfill `--start` default `−5y→−10y` · `compute-rankings.yml`
+  **cache-key `cache-v5-fast→v6`** (the price/fundamentals caches are PERIOD-BLIND, so
+  the bump is load-bearing — without it a warm run silently returns stale 5y parquets) ·
+  `writer.write_benchmarks_json` now writes the **FULL** series (was `HISTORY_TAIL_DAYS`
+  ~5y-capped → the 10y Max benchmark line would have been blank pre-2021; benchmarks.json
+  is backfill-only so no frontend-payload cost; per-stock history STAYS 5y via the
+  unchanged `HISTORY_TAIL_DAYS`). **Zero live-scoring impact** — verified the live pillars
+  consume fixed windows only (`_cagr_from_history` slices `series[-(years+1):]`, momentum/
+  risk `.tail(1y)`, Piotroski `iloc[-2]`), so the extra 5y is fetched-but-ignored (simulate
+  will confirm). **Caveat (disclosed)**: ~15-20 tickers renamed before ~2021 (e.g. CDAY→DAY)
+  — yfinance can't resolve the historical alias, so their 2016-2020 legs drop (that cohort
+  is slightly thinner than 2021+). No schema change. ruff clean; 1585 offline tests pass.
+  **Cold 10y backfill PENDING** — must run via the manual `backfill-portfolio.yml` dispatch
+  (cold ~60-85m exceeds the cron's 40m folded-step cap; warm ~30-35m fits after); then
+  verify `meta.as_of_start`≈2016, `rebalance_count`≈40, the Max chart spans 10y, and the
+  benchmark line is non-blank pre-2021.
 
 
 **Next deliverables** (pick by appetite):

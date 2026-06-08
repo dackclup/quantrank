@@ -2381,3 +2381,55 @@ sanity-check the gated NAV result before merge.
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## feat(backtest) — extend the AI-pick backtest 5y → 10y (in flight, 2026-06-08)
+
+**Request (user).** The chart's "Max" button still shows only 5 years; make it 10.
+
+**Finding.** The frontend "Max" button is NOT the cap — `PERIODS` Max = `years:100`,
+which `startIndexForYears` resolves to index 0 (the full `nav.dates` span). It shows 5y
+because the DATA is 5y. The survivorship ledger is already 10y-ready
+(`historical_universe.EARLIEST_EVENT_DATE` = 2016-01). `performance-engineer` scoped the
+extension at **MODERATE** — config bumps + a load-bearing cache-key bump, no novel work.
+
+**Change (5 edits).**
+- `compute/config.py` — `PRICES_PERIOD` `"5y"→"10y"` (drives prices AND benchmarks fetch).
+- `compute/ingest/fundamentals.py` — `ANNUAL_HISTORY_YEARS` `5→10` (10-K facts back to ~2015
+  for the 2016 rebalances).
+- `scripts/backfill_portfolio_pit.py` — `--start` default `today.year-5 → today.year-10`
+  (the cron's folded step uses this default).
+- `.github/workflows/compute-rankings.yml` — **`cache-v5-fast → cache-v6-fast`** (the price +
+  fundamentals_history caches are PERIOD-BLIND by key, so a period change is invisible to them;
+  without the bump a warm run silently returns the stale 5y parquets — the load-bearing edit).
+  The slow-text cache is untouched (filing text isn't period-extended).
+- `compute/output/writer.py` `write_benchmarks_json` — write the **FULL** series instead of
+  the `HISTORY_TAIL_DAYS` (~5y) cap (a gap not in the original scope: a 5y-capped benchmarks.json
+  would blank the 10y Max chart's SPY/QQQ line pre-2021). benchmarks.json is backfill-only (the
+  frontend uses `nav.benchmark`), so no payload cost; per-stock history STAYS 5y via the
+  unchanged `HISTORY_TAIL_DAYS` (no stock-chart payload doubling).
+
+**Zero live-scoring impact (verified).** `PRICES_PERIOD`/`ANNUAL_HISTORY_YEARS` feed the live
+weekly compute too, but every live consumer is windowed: `_cagr_from_history` slices
+`series[-(years+1):]` (max 5y CAGR = 6 rows), momentum/risk `.tail(TRADING_DAYS_PER_YEAR)`,
+Piotroski `iloc[-2]`, value.py uses point-in-time `current_price`. So the extra 5y is
+fetched-but-ignored — no pillar/score change. The Pre-Merge Production Simulation (which runs
+on this compute-touching PR) is the empirical backstop.
+
+**Caveat (disclosed).** ~15-20 tickers renamed before ~2021 (e.g. CDAY→DAY) — yfinance resolves
+the CURRENT symbol, not the historical alias, so their 2016-2020 price legs return no data and
+are dropped (`if cur_px is None: continue`). The 2016-2020 cohort is therefore slightly thinner
+than 2021+. Pre-existing 5y limitation, just more exposed at 10y.
+
+**Rollout.** No schema change; ruff clean; 1585 offline tests pass. The FIRST 10y backfill must
+run via the manual `backfill-portfolio.yml` `workflow_dispatch` — the cold run (~60-85m: 10y
+price + 10y fundamentals re-fetch + ~40 quarterly rebalances) exceeds the cron's 40m folded-step
+cap; warm steady-state (~30-35m) fits afterward. Verify: `meta.as_of_start`≈2016,
+`rebalance_count`≈40, the Max chart spans 10y, the benchmark line is non-blank pre-2021.
+
+**Files**: `compute/config.py` · `compute/ingest/fundamentals.py` ·
+`scripts/backfill_portfolio_pit.py` · `.github/workflows/compute-rankings.yml` ·
+`compute/output/writer.py` · `CLAUDE.md` (§In-flight + §Gotchas membership/cache/prices) ·
+`AGENTS.md` (prices.py note) · `docs/GOTCHAS.md` (cache-v6 + prices) · `PHASE_STATUS_INFLIGHT.md`
+(this).
+
+---
