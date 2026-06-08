@@ -134,23 +134,33 @@ def filing_lag_days(filing_date: date | None, asof: date) -> int | None:
     return (asof - filing_date).days
 
 
-def stale_filing_status(lag_days: int | None) -> LagStatus:
+def stale_filing_status(lag_days: int | None, hard_days: int | None = None) -> LagStatus:
     """Map filing lag to a discrete status.
 
     Boundary semantics use strict ``>``, so a stock filed exactly
     ``FILING_STALE_SOFT_DAYS`` ago (default 120) is still ``fresh``, and one
-    filed exactly ``FILING_STALE_HARD_DAYS`` ago (default 180) is ``soft``.
+    filed exactly the hard ceiling ago (default 180) is ``soft``.
+
+    ``hard_days`` overrides the hard-stale ceiling for callers on a non-TTM
+    cadence. The live path passes nothing → ``config.FILING_STALE_HARD_DAYS``
+    (180, fed by TTM/10-Q). The Phase 7 PIT backtest passes a widened
+    annual-aware window (``BACKTEST_HARD_STALE_DAYS`` = 455) so a once-a-year
+    10-K is not auto-nulled ~3 of 4 quarters; a genuinely skipped annual cycle
+    still nulls. NEVER mutate ``config.FILING_STALE_HARD_DAYS`` itself
+    (methodology-scientist condition C2, 2026-06-08). The soft ceiling is not
+    overridden (soft only annotates; it never nulls the ensemble).
 
     Returns
     -------
     "fresh"   — lag ≤ FILING_STALE_SOFT_DAYS
-    "soft"    — FILING_STALE_SOFT_DAYS < lag ≤ FILING_STALE_HARD_DAYS
-    "hard"    — lag > FILING_STALE_HARD_DAYS
+    "soft"    — FILING_STALE_SOFT_DAYS < lag ≤ hard ceiling
+    "hard"    — lag > hard ceiling (default FILING_STALE_HARD_DAYS)
     "unknown" — lag is None
     """
+    hard = config.FILING_STALE_HARD_DAYS if hard_days is None else hard_days
     if lag_days is None:
         return "unknown"
-    if lag_days > config.FILING_STALE_HARD_DAYS:
+    if lag_days > hard:
         return "hard"
     if lag_days > config.FILING_STALE_SOFT_DAYS:
         return "soft"

@@ -2319,3 +2319,107 @@ production code or schema change; `check_model_pin.py` passes (new agents carry
 floating `model: sonnet` aliases + a `model:` line).
 
 ---
+
+## feat(portfolio) — AI-pick high-conviction gate PR-1 (observability) (in flight, 2026-06-08)
+
+**Request (user, Thai).** The AI-pick should select ONLY Strong Buy / Buy names (the
+/ranking + /stock recommendation), never Hold/Sell; evict a holding that decays to Sell
+at rebalance and replace it; prioritize MoS + require fair-value upside positive (MoS>0);
+keep composite score + loss-chance within standard bands.
+
+**Design + ratification.** `financial-engineer` designed the gate; `methodology-scientist`
+RATIFIED-WITH-CONDITION (2026-06-08). Gate = `recommendation ∈ {bullish, lean_bullish}`
+(Strong Buy/Buy) AND `mos_pct > 0` (strict — Graham-Dodd margin of safety; ~top 30% of the
+S&P 500) AND `composite_score ≥ 50` (= `LEAN_BULLISH_COMPOSITE_MIN`) AND
+`loss_chance_pct ≤ 45` (below the universe median ≈49; additive via its MoS+flag inputs)
+AND the existing 7-veto `is_eligible`. **Fail-closed** on any missing input. Sell-eviction
+is automatic (the backtest rebuilds holdings each quarter, so a name that drops below the
+gate simply isn't re-selected).
+
+**This PR = the OBSERVABILITY half (Rule 18 / observability-before-wiring).** The backtest
+(`scripts/backfill_portfolio_pit.py`) now replays the valuation + recommendation layer
+**point-in-time** — reusing the LIVE cross-sectional builders (`_build_universe_metrics` /
+`_build_peer_groupings` / `_build_historical_metrics`, imported from `compute.main` so the
+live path stays untouched) + `compute_fair_price_ensemble` → `derive_recommendation` /
+`derive_loss_chance` — and COUNTS how many cohort names clear the gate per rebalance
+(`is_high_conviction` in `weights.py`). **Selection is UNCHANGED** (`select_picks` still
+gates on `is_eligible` only); PR-2 wires the gate only after the per-rebalance eligible
+count is confirmed to clear `DEFAULT_COUNT` (5) on a real cron (condition **C1**).
+
+**Option B stale-window (condition C2).** The backtest has ANNUAL 10-K data only, so
+Defense #3's 180d hard-stale gate would null the ensemble ~3 of 4 quarters. The hard
+ceiling is relaxed to **`BACKTEST_HARD_STALE_DAYS = 455`** (= SEC 75d 10-K deadline + 365 +
+15d buffer = worst-case legitimate 10-K-to-next gap; a skipped annual cycle still nulls),
+threaded as `compute_fair_price_ensemble(hard_stale_days=…)` → `stale_filing_status(hard_days=…)`.
+The live path passes nothing → keeps `config.FILING_STALE_HARD_DAYS` = 180; the config
+constant is **never mutated**. The real PIT filing lag is computed from the rows
+(`_pit_filing_lag`) — NOT left None — so the gate is honest. Look-ahead guard
+(`filing_date ≤ T`) unaffected (relaxing how OLD a filing may be ≠ admitting future ones).
+
+**Artifact / scope.** New diagnostics: per-rebalance `eligible_high_conviction_count` +
+`mos_positive_count`; `meta.high_conviction_eligible_median` (the C1 acceptance metric),
+`meta.recommendation_layer_replayed = True`, `meta.high_conviction_gate_active = False`,
+`meta.high_conviction_gate` descriptor. No `schemas.py` model (the artifact self-carries
+its meta), no frontend change, **`compute/main.py` untouched** (PR-3 wires the easier
+wall-free LIVE forward pick later). risk_flags / valuation_warnings stay empty PIT (the
+cross-source manipulation layer is still not replayed — `veto_layer_replayed` stays False).
+Deferred watch-items: **C3** (disclose the relaxed window in `meta.disclaimer` when the gate
+drives output, i.e. PR-2 — PR-1 changes no shown number); **C4** (Mode B post-cron check of
+whether LC≤45 is binding-vs-inert). Perf watch: ~10k PIT ensemble runs/backfill —
+`performance-engineer` to confirm under the 40m step cap on the real cron.
+
+**Verification.** ruff clean; **1552 offline tests pass** (no regression); `test-engineer`
+adds gate + 455-boundary + threading pins. **Backfill re-run PENDING** to populate the
+diagnostics → verify the median eligible count clears 5 → THEN authorize PR-2.
+
+**Files**: `scripts/backfill_portfolio_pit.py` (PIT valuation+recommendation step,
+`BACKTEST_HARD_STALE_DAYS`, `_pit_filing_lag`, diagnostics) · `compute/portfolio/weights.py`
+(`PickCandidate` +3 fields, `is_high_conviction`, gate constants) ·
+`compute/valuation/ensemble.py` (`hard_stale_days` param) · `compute/valuation/applicability.py`
+(`stale_filing_status(hard_days=)`) · `tests/test_portfolio/test_weights.py` +
+`tests/test_valuation/test_applicability.py` (+ `test_ensemble.py`) · `CLAUDE.md` (§In-flight)
+· `AGENTS.md` (AI-pick gate note) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
+
+## feat(portfolio) — AI-pick high-conviction gate PR-2 (wire selection) (in flight, 2026-06-08)
+
+**C1 cleared on PR-1's backfill.** PR-1 (#437, merged `3e4f3b23`) shipped the observability
+half and its backfill emitted the eligible-count series: `meta.high_conviction_eligible_median
+= 52`, per-rebalance min 31 / max 86, **all 20 rebalances ≥ 31 ≫ `DEFAULT_COUNT`=5**. So the
+gate is comfortably fillable and methodology-scientist's condition C1 (median eligible ≥
+default_count before wiring) is satisfied — PR-2 wires it.
+
+**Change.** `select_picks` gains a keyword `gate: str = "veto_only"`:
+- `"veto_only"` (DEFAULT, UNCHANGED): eligible = `is_eligible(c.risk_flags)` — the legacy
+  composite-rank basket; every existing caller/test is byte-identical.
+- `"high_conviction"`: eligible = `is_high_conviction(c)` (Strong Buy/Buy + MoS>0 +
+  composite≥50 + loss-chance≤45 + no veto), then the SAME composite-desc sort + dual-class
+  canonicalize + top-N.
+The backfill calls `select_picks(candidates, count=MAX_PICKS, gate="high_conviction")`.
+**Sell-eviction is implicit** — the backtest rebuilds holdings from scratch each rebalance,
+so a name that decays out of the gate at quarter T is absent from the eligible set and not
+re-picked (no separate eviction path needed). `meta.high_conviction_gate_active` flips to
+**True**; `DISCLAIMER_BASE` now discloses the gate (Strong Buy/Buy + undervalued + score/loss
+bands) AND the ~15-month annual fair-value-staleness window vs the live 180d (condition C3).
+
+**Scope.** Backtest-only — `select_picks` is imported ONLY by the backfill; `compute/main.py`
+(the live forward compute) is untouched, so ZERO live-ranking impact. No schema model (the
+artifact self-carries its meta). The cross-source manipulation vetoes are still NOT replayed
+(`veto_layer_replayed` stays False). PR-3 (wire the same gate into the LIVE forward pick — the
+wall-free target, ensemble already runs every cron) is the deferred follow-up.
+
+**Verification.** ruff clean; `test-engineer` reframes the PR-1 default-unchanged pin + adds
+gate-filters / top-N-by-composite / subset-property (`high_conviction ⊆ veto_only`) /
+empty-eligible / dual-class×gate tests. **Backfill re-run PENDING** — the gated
+NAV/holdings/rotation only appear after a `backfill_portfolio_pit` run regenerates
+`backtest_pit.json`; then verify the gated baskets (only Strong Buy/Buy names, no Sell) +
+sanity-check the gated NAV result before merge.
+
+**Files**: `compute/portfolio/weights.py` (`select_picks` `gate` param) ·
+`scripts/backfill_portfolio_pit.py` (`gate="high_conviction"` call, `gate_active=True`,
+`DISCLAIMER_BASE` gate+staleness disclosure) · `tests/test_portfolio/test_weights.py`
+(gate tests) · `CLAUDE.md` (§In-flight) · `AGENTS.md` (AI-pick gate note) ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---

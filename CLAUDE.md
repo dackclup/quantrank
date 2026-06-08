@@ -548,6 +548,26 @@ Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_
   next cron backfill (or a manual dispatch). No schema change; tsc + build clean;
   ruff clean.
 
+  ---
+
+- **feat(portfolio) — AI-pick high-conviction gate PR-2 (wire selection) (this PR)** —
+  PR-1 (#437, observability) confirmed condition **C1** on its backfill: the gate is
+  eligible at a **median of 52 names/rebalance** (min 31, all 20 rebalances ≥ 31 ≫
+  `DEFAULT_COUNT`=5), so wiring is safe. PR-2 flips `select_picks` to **drive selection
+  by the high-conviction gate**: new `select_picks(…, gate="high_conviction")` filters
+  to `is_high_conviction` (Strong Buy/Buy + MoS>0 + composite≥50 + loss-chance≤45) then
+  takes the top-N by composite among those (default `gate="veto_only"` UNCHANGED — the
+  live/legacy path is byte-identical). The backfill now calls
+  `select_picks(gate="high_conviction")`; **sell-eviction is implicit** (the basket is
+  rebuilt each quarter, so a name that decays out of the gate isn't re-picked).
+  `meta.high_conviction_gate_active` flips **True**; `DISCLAIMER_BASE` now discloses the
+  gate + the ~15-month annual-staleness window (condition C3). No schema model, no
+  frontend change, `compute/main.py` untouched (PR-3 = the wall-free LIVE forward pick,
+  later). ruff clean; tests updated (gate-filters + subset-property + dual-class×gate +
+  default-unchanged pins). **Backfill re-run PENDING** — the gated NAV/holdings/rotation
+  only appear after a `backfill_portfolio_pit` run regenerates `backtest_pit.json`; then
+  verify the gated baskets + sanity-check the result before merge.
+
 
 **Next deliverables** (pick by appetite):
 - **Phase 7.0 follow-ups** — (a) **DONE (#428)** — the personal

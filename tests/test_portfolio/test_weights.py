@@ -5,29 +5,45 @@ Pure functions → fully offline (no network, no @network marker, no I/O).
 from __future__ import annotations
 
 import math
+from datetime import date
 
 from hypothesis import given
 from hypothesis import strategies as st
 
 from compute.portfolio.weights import (
+    HIGH_CONVICTION_COMPOSITE_MIN,
+    HIGH_CONVICTION_LOSS_CHANCE_MAX,
+    HIGH_CONVICTION_RECOMMENDATIONS,
     MAX_PICKS,
     MAX_WEIGHT,
     PickCandidate,
     inverse_vol_weights,
     is_eligible,
+    is_high_conviction,
     select_picks,
     trailing_return_sigma,
 )
 
 
-def _cand(ticker, score, sector="Tech", flags=(), adjusted=None):
+def _cand(ticker, score, sector="Tech", flags=(), adjusted=None,
+          recommendation=None, mos_pct=None, loss_chance_pct=None):
     return PickCandidate(
         ticker=ticker,
         composite_score=score,
         sector=sector,
         risk_flags=tuple(flags),
         composite_score_adjusted=adjusted,
+        recommendation=recommendation,
+        mos_pct=mos_pct,
+        loss_chance_pct=loss_chance_pct,
     )
+
+
+def _hc(ticker="TST", score=72.0, flags=(), recommendation="bullish",
+        mos_pct=15.0, loss_chance_pct=30.0):
+    """Builder for a fully high-conviction candidate (all gates pass)."""
+    return _cand(ticker, score, flags=flags, recommendation=recommendation,
+                 mos_pct=mos_pct, loss_chance_pct=loss_chance_pct)
 
 
 # --- is_eligible -------------------------------------------------------------
@@ -223,3 +239,310 @@ def test_trailing_return_sigma_drops_nulls():
 def test_trailing_return_sigma_zero_variance():
     # flat series → zero stdev (defined, not None)
     assert trailing_return_sigma([100.0, 100.0, 100.0, 100.0]) == 0.0
+
+
+# --- Phase 7 PR-1: is_high_conviction + constants ----------------------------
+
+
+def test_hc_constants_pinned():
+    """Methodology-scientist ratified values — pin them explicitly so a future
+    threshold change shows up as a deliberate, test-visible commit."""
+    assert HIGH_CONVICTION_RECOMMENDATIONS == frozenset({"bullish", "lean_bullish"})
+    assert HIGH_CONVICTION_COMPOSITE_MIN == 50.0
+    assert HIGH_CONVICTION_LOSS_CHANCE_MAX == 45.0
+
+
+def test_hc_positive_bullish():
+    """Canonical positive case: bullish + MoS=15 + composite=72 + LC=30 + no veto."""
+    assert is_high_conviction(_hc(recommendation="bullish")) is True
+
+
+def test_hc_positive_lean_bullish():
+    """lean_bullish is in the approved set — must also produce True."""
+    assert is_high_conviction(_hc(recommendation="lean_bullish")) is True
+
+
+def test_hc_mos_strict_greater_than_zero_boundary():
+    """MoS gate is STRICT >0: exactly 0.0 fails; 0.1 passes."""
+    assert is_high_conviction(_hc(mos_pct=0.0)) is False
+    assert is_high_conviction(_hc(mos_pct=0.1)) is True
+
+
+def test_hc_composite_floor_boundary():
+    """composite_score gate: 49.9 fails; exactly 50.0 passes (>= not >)."""
+    assert is_high_conviction(_hc(score=49.9)) is False
+    assert is_high_conviction(_hc(score=50.0)) is True
+
+
+def test_hc_loss_chance_ceiling_boundary():
+    """LC gate: exactly 45.0 passes; 45.1 fails (strict >)."""
+    assert is_high_conviction(_hc(loss_chance_pct=45.0)) is True
+    assert is_high_conviction(_hc(loss_chance_pct=45.1)) is False
+
+
+def test_hc_recommendation_gate_neutral_cautious():
+    """Non-approved recommendations always fail the gate."""
+    assert is_high_conviction(_hc(recommendation="neutral")) is False
+    assert is_high_conviction(_hc(recommendation="cautious")) is False
+
+
+def test_hc_fail_closed_recommendation_none():
+    """None recommendation is FAIL-CLOSED — cannot be high-conviction."""
+    assert is_high_conviction(_hc(recommendation=None)) is False
+
+
+def test_hc_fail_closed_mos_none():
+    """None mos_pct is FAIL-CLOSED — cannot be high-conviction."""
+    assert is_high_conviction(_hc(mos_pct=None)) is False
+
+
+def test_hc_fail_closed_loss_chance_none():
+    """None loss_chance_pct is FAIL-CLOSED — cannot be high-conviction."""
+    assert is_high_conviction(_hc(loss_chance_pct=None)) is False
+
+
+def test_hc_active_veto_blocks_even_when_all_else_passes():
+    """An active rank-gate veto (altman_distress) disqualifies regardless of
+    recommendation, MoS, composite, and loss-chance — veto check is first."""
+    vetoed = _hc(flags=("altman_distress",))
+    assert is_high_conviction(vetoed) is False
+
+
+# --- C1: default gate is veto_only (reconciled for PR-2) ----------------------
+
+
+def test_C1_default_gate_is_veto_only_hc_fields_do_not_filter():
+    """PR-2 reconcile: the DEFAULT gate ('veto_only') does NOT apply the
+    high-conviction filter.  A candidate with recommendation='neutral' (fails
+    is_high_conviction) but no active veto MUST appear in the result when
+    called with the default gate — whether the caller passes gate='veto_only'
+    explicitly or relies on the default.  Pins that the default is unchanged
+    by PR-2's addition of gate='high_conviction'."""
+    # Fails is_high_conviction (neutral recommendation) but has no active veto.
+    non_hc_but_eligible = _cand("CLEAN", 85.0, recommendation="neutral",
+                                mos_pct=None, loss_chance_pct=None)
+    other = _cand("OTHER", 70.0)
+
+    # Both the bare call (default) and the explicit veto_only must be identical
+    # and must include the non-HC candidate.
+    result_default = select_picks([non_hc_but_eligible, other], 2)
+    result_explicit = select_picks([non_hc_but_eligible, other], 2, gate="veto_only")
+    assert result_default == result_explicit, (
+        "select_picks() and select_picks(gate='veto_only') must be identical"
+    )
+    assert "CLEAN" in result_default, (
+        "default gate should include non-high-conviction eligible candidates "
+        "(veto_only does not apply is_high_conviction)"
+    )
+
+
+# --- Phase 7 PR-2: gate='high_conviction' tests --------------------------------
+
+
+def test_hc_gate_filters_out_non_bullish_and_overvalued():
+    """gate='high_conviction' excludes neutral + overvalued candidates even
+    when they rank higher by composite than the gate-passing names.
+
+    Fixture:
+      HI1  bullish    MoS=15  comp=90  LC=30  → passes gate
+      HOLD neutral    MoS=20  comp=95  LC=25  → fails (recommendation)
+      OVER bullish    MoS=-2  comp=85  LC=20  → fails (MoS≤0)
+      HI2  lean_b.   MoS=5   comp=80  LC=40  → passes gate
+      HI3  bullish   MoS=20  comp=70  LC=20  → passes gate
+
+    With count=10 only [HI1, HI2, HI3] appear; HOLD and OVER are absent.
+    """
+    cands = [
+        _cand("HI1",  90.0, recommendation="bullish",      mos_pct=15.0, loss_chance_pct=30.0),
+        _cand("HOLD", 95.0, recommendation="neutral",      mos_pct=20.0, loss_chance_pct=25.0),
+        _cand("OVER", 85.0, recommendation="bullish",      mos_pct=-2.0, loss_chance_pct=20.0),
+        _cand("HI2",  80.0, recommendation="lean_bullish", mos_pct=5.0,  loss_chance_pct=40.0),
+        _cand("HI3",  70.0, recommendation="bullish",      mos_pct=20.0, loss_chance_pct=20.0),
+    ]
+    result = select_picks(cands, 10, gate="high_conviction")
+    assert result == ["HI1", "HI2", "HI3"]
+    assert "HOLD" not in result
+    assert "OVER" not in result
+
+
+def test_hc_gate_orders_by_composite_desc_among_eligible():
+    """gate='high_conviction' still sorts eligible names by composite desc."""
+    cands = [
+        _cand("LOW",  55.0, recommendation="bullish",      mos_pct=10.0, loss_chance_pct=30.0),
+        _cand("MID",  70.0, recommendation="lean_bullish", mos_pct=8.0,  loss_chance_pct=35.0),
+        _cand("HIGH", 88.0, recommendation="bullish",      mos_pct=25.0, loss_chance_pct=20.0),
+    ]
+    result = select_picks(cands, 3, gate="high_conviction")
+    assert result == ["HIGH", "MID", "LOW"]
+
+
+def test_hc_gate_top_n_respected():
+    """gate='high_conviction' returns at most count eligible candidates."""
+    cands = [
+        _cand(f"HC{i}", float(90 - i), recommendation="bullish",
+              mos_pct=10.0, loss_chance_pct=20.0)
+        for i in range(8)
+    ]
+    result = select_picks(cands, 3, gate="high_conviction")
+    assert len(result) == 3
+    assert result == ["HC0", "HC1", "HC2"]
+
+
+def test_hc_gate_empty_when_no_candidate_passes():
+    """When NO candidate clears the gate (all neutral / all overvalued), the
+    result is an empty list — the selection correctly shrinks to zero eligible
+    rather than falling back to veto_only behavior."""
+    cands = [
+        _cand("N1", 90.0, recommendation="neutral",  mos_pct=10.0, loss_chance_pct=20.0),
+        _cand("N2", 80.0, recommendation="cautious", mos_pct=5.0,  loss_chance_pct=15.0),
+        _cand("N3", 75.0, recommendation="bullish",  mos_pct=-5.0, loss_chance_pct=30.0),  # MoS≤0
+    ]
+    result = select_picks(cands, 5, gate="high_conviction")
+    assert result == []
+
+
+def test_hc_gate_dual_class_both_passing_canonicalizes():
+    """GOOG + GOOGL both clear the high-conviction gate → canonicalized to GOOGL
+    (one issuer slot, stable class), same as veto_only.  The gate×canonicalize
+    interaction must not double-count or omit the issuer."""
+    cands = [
+        _cand("GOOG",  92.0, recommendation="bullish", mos_pct=12.0, loss_chance_pct=25.0),
+        _cand("GOOGL", 91.0, recommendation="bullish", mos_pct=10.0, loss_chance_pct=28.0),
+        _cand("AAA",   80.0, recommendation="lean_bullish", mos_pct=8.0, loss_chance_pct=30.0),
+    ]
+    result = select_picks(cands, 3, gate="high_conviction")
+    assert "GOOG" not in result          # canonicalized away
+    assert "GOOGL" in result             # canonical class present
+    assert "AAA" in result               # next distinct issuer fills the freed slot
+    assert len(result) == 2             # only 2 distinct issuers exist
+
+
+def test_hc_gate_dual_class_canonical_ineligible_fallback_to_sibling():
+    """If GOOGL does NOT pass the gate (MoS≤0) but GOOG does, the issuer is
+    represented by GOOG — the select_picks fallback path applies under the gate
+    the same way it applies for veto_only (the 'if key in eligible_tickers'
+    fallback in select_picks emits c.ticker instead of key)."""
+    cands = [
+        _cand("GOOG",  90.0, recommendation="bullish",  mos_pct=15.0, loss_chance_pct=20.0),
+        _cand("GOOGL", 88.0, recommendation="bullish",  mos_pct=-3.0, loss_chance_pct=20.0),  # MoS≤0
+        _cand("AAA",   75.0, recommendation="lean_bullish", mos_pct=5.0, loss_chance_pct=30.0),
+    ]
+    result = select_picks(cands, 3, gate="high_conviction")
+    assert "GOOGL" not in result         # MoS≤0 → not gate-eligible
+    assert "GOOG" in result              # sibling fallback for the Alphabet slot
+    assert "AAA" in result
+
+
+@given(
+    st.lists(
+        st.fixed_dictionaries({
+            "ticker": st.text(min_size=1, max_size=6).filter(
+                lambda t: t not in {"GOOG", "GOOGL", "FOX", "FOXA", "NWS", "NWSA"}
+            ),
+            "composite_score": st.floats(min_value=0.0, max_value=100.0,
+                                          allow_nan=False, allow_infinity=False),
+            "recommendation": st.sampled_from(
+                ["bullish", "lean_bullish", "neutral", "cautious", None]
+            ),
+            "mos_pct": st.one_of(st.none(),
+                                 st.floats(min_value=-50.0, max_value=100.0,
+                                           allow_nan=False, allow_infinity=False)),
+            "loss_chance_pct": st.one_of(st.none(),
+                                         st.floats(min_value=0.0, max_value=100.0,
+                                                   allow_nan=False, allow_infinity=False)),
+            "flags": st.lists(st.sampled_from([
+                "altman_distress", "beneish_manipulation_veto",
+                "going_concern_disclosure", "sloan_accruals_top_decile",
+            ]), max_size=2),
+        }),
+        min_size=0,
+        max_size=15,
+    ),
+    st.integers(min_value=1, max_value=20),
+)
+def test_hc_gate_subset_of_veto_only_property(raw_cands, count):
+    """Property: high_conviction is a strict sub-filter of veto_only.
+
+    For any candidate list with HC fields populated:
+      set(hc_picks) ⊆ set(veto_picks)
+      len(hc_picks) ≤ count
+      len(hc_picks) ≤ len(veto_picks)
+    """
+    # Deduplicate tickers so the fixture has no repeated tickers
+    seen: set[str] = set()
+    cands: list[PickCandidate] = []
+    for d in raw_cands:
+        if d["ticker"] in seen:
+            continue
+        seen.add(d["ticker"])
+        cands.append(PickCandidate(
+            ticker=d["ticker"],
+            composite_score=d["composite_score"],
+            sector="Tech",
+            risk_flags=tuple(d["flags"]),
+            recommendation=d["recommendation"],
+            mos_pct=d["mos_pct"],
+            loss_chance_pct=d["loss_chance_pct"],
+        ))
+
+    hc_picks = select_picks(cands, count, gate="high_conviction")
+    veto_picks = select_picks(cands, count, gate="veto_only")
+
+    # Subset invariant
+    assert set(hc_picks) <= set(veto_picks), (
+        f"HC picks {hc_picks} must be a subset of veto_only picks {veto_picks}"
+    )
+    # Length invariant
+    assert len(hc_picks) <= count
+    assert len(hc_picks) <= len(veto_picks)
+
+
+# --- Phase 7 PR-1: _pit_filing_lag -------------------------------------------
+
+
+def _row(form_type: str, filing_date: str) -> dict:
+    return {"form_type": form_type, "filing_date": filing_date, "metric": "revenue",
+            "value": 100.0, "fiscal_year": None}
+
+
+def test_pit_filing_lag_latest_10k_only():
+    """Latest 10-K on/before as_of determines the lag."""
+    from scripts.backfill_portfolio_pit import _pit_filing_lag
+    rows = [
+        _row("10-K", "2024-02-15"),
+        _row("10-K", "2023-02-20"),   # older — should not win
+        _row("10-Q", "2024-05-01"),   # quarterly — excluded
+    ]
+    as_of = "2025-01-01"
+    result = _pit_filing_lag(rows, as_of, date(2025, 1, 1))
+    # 2025-01-01 − 2024-02-15 = 320 days
+    assert result == (date(2025, 1, 1) - date(2024, 2, 15)).days
+
+
+def test_pit_filing_lag_future_dated_excluded():
+    """A 10-K filed AFTER as_of must not count — future filings violate PIT."""
+    from scripts.backfill_portfolio_pit import _pit_filing_lag
+    rows = [
+        _row("10-K", "2025-03-01"),   # future relative to as_of 2025-01-01
+        _row("10-K", "2024-02-15"),   # eligible
+    ]
+    as_of = "2025-01-01"
+    result = _pit_filing_lag(rows, as_of, date(2025, 1, 1))
+    assert result == (date(2025, 1, 1) - date(2024, 2, 15)).days
+
+
+def test_pit_filing_lag_10q_excluded():
+    """10-Q rows must never contribute to the annual staleness lag."""
+    from scripts.backfill_portfolio_pit import _pit_filing_lag
+    rows = [
+        _row("10-Q", "2024-11-01"),
+        _row("10-Q", "2024-08-01"),
+    ]
+    result = _pit_filing_lag(rows, "2025-01-01", date(2025, 1, 1))
+    assert result is None
+
+
+def test_pit_filing_lag_empty_rows_returns_none():
+    """No rows at all → None (ensemble treats as 'unknown', not hard-stale)."""
+    from scripts.backfill_portfolio_pit import _pit_filing_lag
+    assert _pit_filing_lag([], "2025-01-01", date(2025, 1, 1)) is None

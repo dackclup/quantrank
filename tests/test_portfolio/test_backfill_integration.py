@@ -82,7 +82,11 @@ def test_run_backfill_produces_wellformed_artifact(tmp_path, _universe) -> None:
         mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
         mock.patch.object(bf, "fetch_amendments", return_value=[]),  # no restatements -> canary 0.0
     ):
-        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path)
+        # gate="veto_only" exercises the gate-independent WIRING (snapshot->pillars->NAV
+        # ->canary) with synthetic data that needn't clear the production high-conviction
+        # gate; the gate filter itself is unit-tested in test_weights.py + asserted applied
+        # in test_run_backfill_high_conviction_gate_is_applied below.
+        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only")
 
     assert out.exists()
     payload = json.loads(out.read_text())
@@ -138,6 +142,35 @@ def test_run_backfill_produces_wellformed_artifact(tmp_path, _universe) -> None:
         assert cons_last <= net_last + 1e-9
 
 
+def test_run_backfill_high_conviction_gate_is_applied(tmp_path, _universe) -> None:
+    """The production default gate='high_conviction' threads through to select_picks and is
+    a STRICT sub-filter of veto_only on identical inputs: every name held under the conviction
+    gate is also held under veto_only, meta.high_conviction_gate_active reflects the gate, and
+    the recommendation/valuation layer is replayed either way. (Asserts the relationship +
+    flags, not a specific count — robust to the synthetic cohort happening to pass/fail.)"""
+    def _run(gate: str) -> dict:
+        with (
+            mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+            mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
+            mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+            mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        ):
+            out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate=gate)
+        return json.loads(out.read_text())  # read before the next run overwrites the file
+
+    hc = _run("high_conviction")
+    vo = _run("veto_only")
+
+    assert hc["meta"]["high_conviction_gate_active"] is True
+    assert vo["meta"]["high_conviction_gate_active"] is False
+    assert hc["meta"]["recommendation_layer_replayed"] is True  # replayed regardless of gate
+    assert "high_conviction_gate" in hc["meta"]  # the gate descriptor is emitted
+
+    hc_names = {h["ticker"] for r in hc["rebalances"] for h in r["holdings"]}
+    vo_names = {h["ticker"] for r in vo["rebalances"] for h in r["holdings"]}
+    assert hc_names <= vo_names  # the conviction gate is a strict sub-filter of veto_only
+
+
 def test_run_backfill_skips_incomplete_membership(tmp_path, _universe) -> None:
     """A pre-coverage window (before EARLIEST_EVENT_DATE) yields no trusted legs."""
     with (
@@ -168,7 +201,11 @@ def test_run_backfill_skips_sigma_empty_rebalance(tmp_path, _universe) -> None:
         # weights_by_count is empty -> the `continue` fires for all of them.
         mock.patch.object(bf, "trailing_return_sigma", return_value=None),
     ):
-        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path)
+        # gate="veto_only" exercises the gate-independent WIRING (snapshot->pillars->NAV
+        # ->canary) with synthetic data that needn't clear the production high-conviction
+        # gate; the gate filter itself is unit-tested in test_weights.py + asserted applied
+        # in test_run_backfill_high_conviction_gate_is_applied below.
+        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only")
 
     meta = json.loads(out.read_text())["meta"]
     assert meta["rebalance_count"] == 0          # every leg skipped at the sigma gate
@@ -185,7 +222,11 @@ def test_run_backfill_restatement_canary_flags_post_asof_amendment(tmp_path, _un
         mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
         mock.patch.object(bf, "fetch_amendments", return_value=post_asof),
     ):
-        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path)
+        # gate="veto_only" exercises the gate-independent WIRING (snapshot->pillars->NAV
+        # ->canary) with synthetic data that needn't clear the production high-conviction
+        # gate; the gate filter itself is unit-tested in test_weights.py + asserted applied
+        # in test_run_backfill_high_conviction_gate_is_applied below.
+        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only")
 
     meta = json.loads(out.read_text())["meta"]
     assert meta["rebalance_count"] > 0
@@ -202,7 +243,11 @@ def test_run_backfill_restatement_canary_unresolved_on_fetch_failure(tmp_path, _
         mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
         mock.patch.object(bf, "fetch_amendments", return_value=None),
     ):
-        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path)
+        # gate="veto_only" exercises the gate-independent WIRING (snapshot->pillars->NAV
+        # ->canary) with synthetic data that needn't clear the production high-conviction
+        # gate; the gate filter itself is unit-tested in test_weights.py + asserted applied
+        # in test_run_backfill_high_conviction_gate_is_applied below.
+        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only")
 
     meta = json.loads(out.read_text())["meta"]
     assert meta["restatement_contamination_pct"] == 0.0
