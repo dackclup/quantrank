@@ -64,7 +64,9 @@ ACTIVE_VETO_FLAGS: frozenset[str] = frozenset(
 )
 
 MIN_PICKS: int = 1
-MAX_PICKS: int = 10
+MAX_PICKS: int = 20  # 1-20 holding-count ladder (was 10; backtest-only — the
+# live forward compute / Top-5 does NOT import this). Drives the backtest's
+# by_count[1..MAX_PICKS] + the home slider's max via meta.max_holdings.
 MAX_WEIGHT: float = 0.35  # single-name concentration cap (gut-feel; disclosed)
 # NOTE: the 2-per-sector diversification cap (MAX_PER_SECTOR / MIN_COUNT_FOR_SECTOR_CAP)
 # was REMOVED 2026-06-06 (user decision) — the basket now concentrates by composite

@@ -496,46 +496,21 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **feat(frontend) — Jitta-style backtest home: annual-returns table + CAGR + $-growth chart (this PR)** —
-  reshapes the AI-pick home (`AiPickPortfolio`) toward a Jitta-Wealth-style
-  backtest view (user request from screenshots). (1) The growth chart
-  (`NavCompareChart`) gains a `money` mode: both lines start at a notional
-  **$10,000** at window start and grow to their final value, with USD axis /
-  tooltip + **end-of-line $ labels** (Recharts `<LabelList>` last-point renderer).
-  (2) New **`AnnualReturnsTable`** — a calendar-year table (portfolio net return
-  vs the chosen index per year) + a highlighted **CAGR** footer, **derived
-  in-browser** from the NAV series (NO schema / compute / backtest change).
-  Reactive to the count slider + benchmark picker. (3) Augment layout — Current
-  picks + Rotation history stay below. **Honest result, by design**: the AI-pick
-  UNDERperforms the S&P 500 at every holding count (count-5 net CAGR ≈ +0.2% vs
-  SPY +12.5% over the 4.8y window) — already disclosed in the backtest
-  `meta.disclaimer`; a caveat beside the CAGR row notes the backtest is the **raw
-  top-composite signal, not the live veto-filtered Top-5** (`veto_layer_replayed=False`).
-  (4) **Jitta-look chart polish** (2nd+3rd iteration): the series is reduced to
-  **one point per calendar year (+ the current end)** drawn as **straight (linear)
-  year-to-year segments** with a hollow dot at each point; a year-only x-axis +
-  faint vertical gridlines; **the hover tooltip card AND crosshair are both
-  removed** (the chart is decorative / `aria-hidden` — data lives in the legend +
-  the Annual-returns table); period selector 1Y / 5Y / **Max** (labeled Max not
-  "10Y" so it never overstates the data present).
-  `tsc --noEmit` + `next build` green (510/510); no schema bump.
-  **Track B — survivorship ledger rebuilt to 10y (ledger SHIPPED; backtest stays
-  5y by decision):** `data/sp500_membership_historical.csv` full-rebuilt from the
-  fja05680 historical-components snapshot-diff → **2016-01-04 .. 2026-06-02, 485
-  events**, `EARLIEST_EVENT_DATE` + verify `WINDOW_START` moved 2020→2016.
-  `verify_membership_ledger.py` **CLEAN across the full 10y** (size band 498-506,
-  0 months out; both opus reviewers APPROVED — method survivorship-honest).
-  Boundary reconciled (CDAY→DAY 2024 rename; EPAM→FDXF 2026-06-02 swap — fixing
-  the latent gap behind the #429 orphan). The **ledger is now 10y-READY** (a
-  future 10y backtest is unblocked at the membership layer). **But the backtest
-  stays 5y by decision**: a true 10y also needs the DATA layer extended —
-  `PRICES_PERIOD` ("5y"), the period-blind price cache, and `ANNUAL_HISTORY_YEARS`
-  (5) cap usable history at ~5y (a 10y `--start` silently yields a 5y NAV because
-  the 2016-2021 legs have no price/fundamentals data — confirmed on the 2026-06-07
-  dispatch). Extending those = a permanent ~2× weekly-cron cost for a longer view
-  of a backtest that underperforms the index anyway, so the backfill window stays
-  5y (`backfill_portfolio_pit --start` default `today.year-5`); revisit if/when
-  the data layer is extended. "Max" honestly shows ~5y.
+- **feat — AI-pick holdings slider 1→20 + endpoint labels flanking the track (this PR)** —
+  (1) **Range 1-10 → 1-20**: `compute/portfolio/weights.py` `MAX_PICKS` 10 → 20.
+  **Backtest-only** — the live forward compute / Top-5 does NOT import
+  `weights.py` (verified: `grep MAX_PICKS compute/main.py` empty), so **ZERO
+  live-ranking impact**; it drives the backtest's `by_count[1..20]` + the home
+  slider's max via `meta.max_holdings` (`DEFAULT_COUNT` stays 5). (2) **Slider
+  layout** (`HoldingsCountSlider`): the endpoint numbers (`min`/`max`) moved from
+  a separate row below the track to FLANK the slider on ONE row
+  (`[1] [====track====] [20]`). `tsc` + `next build` green (510/510); ruff clean;
+  50 portfolio tests pass (no test hardcodes 10 — `test_weights` imports
+  `MAX_PICKS`). **Backfill re-run PENDING**: the slider shows 1-10 until a
+  `backfill_portfolio_pit` run regenerates `backtest_pit.json` with
+  `by_count[1..20]` + `max_holdings=20` (5y window, same data → moderate; seeded
+  via a user `backfill-portfolio.yml` dispatch on this branch, CI commits the
+  artifact). Then the slider goes 1-20 live. No schema change.
 
 
 **Next deliverables** (pick by appetite):
