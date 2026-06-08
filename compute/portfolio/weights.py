@@ -96,8 +96,10 @@ def is_eligible(risk_flags: Iterable[str] | None) -> bool:
 # listed twice. The AI pick must hold a company ONCE, never burn two basket slots
 # on one issuer: the A/C classes share fundamentals → near-identical composites →
 # both would otherwise rank adjacent and BOTH get picked (the GOOG+GOOGL bug).
-# Each ticker maps to one canonical issuer key; select_picks keeps the
-# higher-composite class per key and skips its sibling. Verified against the live
+# Each ticker maps to one canonical issuer key; select_picks keeps one slot per
+# key, EMITS the canonical class (the map value), and skips its sibling — so the
+# basket shows the same ticker every rebalance (no GOOG<->GOOGL cross-quarter
+# churn from the two near-equal composites flipping rank). Verified against the live
 # universe 2026-06-08 (only these 3 pairs have both classes in the index — BF/UA/
 # LEN have just one). Extend if a new both-classes-in-index pair appears.
 _DUAL_CLASS_GROUP: dict[str, str] = {
@@ -121,8 +123,13 @@ def select_picks(candidates: Sequence[PickCandidate], count: int) -> list[str]:
     NAMES (one ticker per issuer), so it can concentrate in one sector — that
     concentration is surfaced in the UI + disclaimer, never silently constrained.
     Tiebreak: ``composite_score_adjusted`` desc (nets the manipulation index) then
-    ``ticker`` asc. Dual-class (GOOG/GOOGL, FOX/FOXA, NWS/NWSA) collapses to the
-    higher-composite class so one issuer never takes two basket slots.
+    ``ticker`` asc. Dual-class (GOOG/GOOGL, FOX/FOXA, NWS/NWSA) collapses to ONE
+    slot per issuer, CANONICALIZED to a fixed class (the ``_DUAL_CLASS_GROUP``
+    value, e.g. GOOGL) so the issuer is represented by the SAME ticker every
+    rebalance — the two classes' near-equal composites otherwise flip which ranks
+    higher quarter to quarter, churning the basket GOOG<->GOOGL for the SAME
+    company (spurious turnover). Falls back to the held class only if the canonical
+    class is itself ineligible (e.g. vetoed).
     """
     count = max(MIN_PICKS, min(MAX_PICKS, count))
     eligible = [c for c in candidates if is_eligible(c.risk_flags)]
@@ -137,14 +144,16 @@ def select_picks(candidates: Sequence[PickCandidate], count: int) -> list[str]:
             c.ticker,
         )
     )
+    eligible_tickers = {c.ticker for c in eligible}
     out: list[str] = []
     seen_issuers: set[str] = set()
     for c in eligible:
         key = _company_key(c.ticker)
-        if key in seen_issuers:  # dual-class sibling already picked (higher-composite class kept)
+        if key in seen_issuers:  # this issuer already has a slot (sibling class seen)
             continue
         seen_issuers.add(key)
-        out.append(c.ticker)
+        # Canonical class (stable across quarters) when eligible; else the held one.
+        out.append(key if key in eligible_tickers else c.ticker)
         if len(out) >= count:
             break
     return out

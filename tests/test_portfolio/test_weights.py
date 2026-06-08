@@ -105,6 +105,21 @@ def test_select_picks_dedup_dual_class_keeps_higher_composite():
     assert picks == ["GOOGL", "AAA", "BBB"]
 
 
+def test_select_picks_dedup_canonicalizes_to_fixed_class_no_churn():
+    """Even when GOOG (Class C) ranks ABOVE GOOGL this quarter, the basket shows
+    the CANONICAL class (GOOGL). This stops the issuer churning GOOG<->GOOGL
+    quarter-to-quarter when the two near-equal composites flip which ranks higher
+    (the rotation-history spurious-turnover bug)."""
+    cands = [
+        _cand("GOOG", 95.0),   # Class C ranks higher THIS quarter
+        _cand("GOOGL", 94.0),  # Class A — the canonical (must be the one shown)
+        _cand("AAA", 90.0),
+    ]
+    picks = select_picks(cands, 2)
+    assert "GOOG" not in picks        # canonicalized away despite ranking higher
+    assert picks == ["GOOGL", "AAA"]  # stable canonical class -> no cross-quarter churn
+
+
 def test_select_picks_dedup_all_three_dual_class_pairs():
     """FOX/FOXA + NWS/NWSA collapse to one issuer each (not only Alphabet)."""
     cands = [

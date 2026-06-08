@@ -2176,9 +2176,9 @@ branch). Then the slider goes 1-20 live; merge after verify.
 
 ---
 
-## fix(portfolio) — AI-pick dedups dual-class issuers (GOOG/GOOGL bug, in flight, 2026-06-08)
+## fix(portfolio) — AI-pick dedups dual-class issuers + canonicalizes the class (GOOG/GOOGL bug + cross-quarter churn, in flight, 2026-06-08)
 
-**Bug (user-reported).** `select_picks` (`compute/portfolio/weights.py`) picked
+**Bug 1 (user-reported).** `select_picks` (`compute/portfolio/weights.py`) picked
 BOTH share classes of a dual-class issuer — Alphabet **GOOG + GOOGL** (also Fox
 FOX/FOXA, News Corp NWS/NWSA) — burning two basket slots on ONE company. The A/C
 classes share fundamentals → near-identical composites → they rank adjacent and
@@ -2186,29 +2186,42 @@ both got selected. Confirmed in **6 of 20 historical rebalances** (2021-2022),
 e.g. 2022-02-14: GOOGL #1 + GOOG #2 → at count-2 the entire basket was a single
 issuer.
 
-**Fix.** A `_DUAL_CLASS_GROUP` map (each dual-class ticker → one canonical issuer
-key) + a dedup pass in `select_picks`: iterate composite-desc-sorted eligible,
-keep the FIRST class seen per issuer (= the higher-composite one), skip its
-sibling, fill the freed slot with the next distinct name. Verified against the
-live universe (only GOOG/GOOGL, FOX/FOXA, NWS/NWSA have both classes in the
-index today). One choke point — the backfill's `picks` + `weights_by_count[n]`
-(`picks[:n]`) + NAV all derive from `select_picks`, so the single fix dedups the
-whole chain.
+**Bug 2 (user-reported follow-up).** The first dedup pass kept the FIRST class
+seen per issuer = the **higher-composite** one *that quarter*. But the two classes'
+near-equal composites flip which ranks higher quarter to quarter → the basket
+churned **GOOG↔GOOGL** for the SAME company across rebalances (rotation-history
+showed Nov21 GOOG, Feb22 GOOGL, May22 GOOGL, Aug22 GOOG) — spurious turnover for
+zero economic change.
+
+**Fix.** A `_DUAL_CLASS_GROUP` map (each dual-class ticker → one **canonical**
+issuer key — the Class-A voting ticker GOOGL/FOXA/NWSA) + a dedup pass in
+`select_picks`: iterate composite-desc-sorted eligible, keep the FIRST class seen
+per issuer, skip its sibling, fill the freed slot with the next distinct name —
+AND **emit the canonical class** (not the held one) whenever it is eligible, so
+the issuer is represented by the SAME ticker every rebalance (no cross-quarter
+churn). Falls back to the held class only if the canonical class is itself
+ineligible (e.g. vetoed). Verified against the live universe (only GOOG/GOOGL,
+FOX/FOXA, NWS/NWSA have both classes in the index today). One choke point — the
+backfill's `picks` + `weights_by_count[n]` (`picks[:n]`) + NAV all derive from
+`select_picks`, so the single fix dedups + stabilizes the whole chain.
 
 **Scope.** Backtest-only — `compute/main.py` (live forward compute → rankings.json
 / Top-5) does NOT import `weights.py`, so ZERO live-ranking impact. No schema
-change. ruff clean; **52 portfolio tests pass** (+2: dedup keeps higher-composite
-class + fills next distinct; all-three-pairs collapse).
+change. ruff clean; **54 portfolio tests pass** (+4 dual-class: dedup keeps
+higher-composite class + fills next distinct; all-three-pairs collapse;
+canonicalizes to the fixed class even when the sibling ranks higher → no churn;
+veto×dedup edge keeps the clean sibling).
 
 **Backfill re-run PENDING.** The committed `backtest_pit.json` still has the
-duplicated baskets until a `backfill_portfolio_pit` run regenerates it (5y, same
-data → moderate). Seed via a user `backfill-portfolio.yml` dispatch on this
-branch (`if: ref != main` → CI commits the deduped artifact); verify (no
-dual-class co-occurrence in any rebalance) → merge → deduped baskets live.
+duplicated/churning baskets until a `backfill_portfolio_pit` run regenerates it
+(5y, same data → moderate). Seed via a user `backfill-portfolio.yml` dispatch on
+this branch (`if: ref != main` → CI commits the deduped artifact); verify (no
+dual-class co-occurrence AND no GOOG↔GOOGL flip across rebalances — each issuer
+shows the SAME canonical ticker every quarter) → merge → stable baskets live.
 
 **Files**: `compute/portfolio/weights.py` (`_DUAL_CLASS_GROUP` + `_company_key`
-+ dedup in `select_picks`) · `tests/test_portfolio/test_weights.py` (2 dedup
-tests) · `CLAUDE.md` (§In-flight) · `AGENTS.md` (select_picks dedup note) ·
-`PHASE_STATUS_INFLIGHT.md` (this).
++ dedup + canonicalize in `select_picks`) · `tests/test_portfolio/test_weights.py`
+(3 dedup + 1 veto-edge test) · `CLAUDE.md` (§In-flight) · `AGENTS.md` (select_picks
+dedup+canonicalize note) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---

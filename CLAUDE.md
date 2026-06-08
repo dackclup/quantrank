@@ -502,10 +502,15 @@ Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_
   two basket slots for ONE company (the classes share fundamentals → adjacent
   composites). Confirmed in **6/20 historical rebalances** (e.g. 2022-02-14 GOOGL
   #1 + GOOG #2 → at count-2 the whole basket was one issuer). Fix: a
-  `_DUAL_CLASS_GROUP` issuer-key map + a dedup pass in `select_picks` keeps the
-  higher-composite class per issuer and fills the freed slot with the next
-  distinct name. **Backtest-only** (the live forward compute doesn't import
-  `weights.py`); ruff clean; **52 portfolio tests pass (+2 dedup tests)**.
+  `_DUAL_CLASS_GROUP` issuer-key map + a dedup pass in `select_picks` that holds
+  each issuer ONCE, **canonicalized to a fixed Class-A ticker (GOOGL/FOXA/NWSA)**
+  so the basket shows the same ticker every quarter — NOT the per-quarter
+  higher-composite class, which would flip GOOG↔GOOGL as their near-equal
+  composites trade places (the rotation-history churn the user flagged) — and
+  fills the freed slot with the next distinct name (falls back to the held class
+  if the canonical is vetoed). **Backtest-only** (the live forward compute doesn't
+  import `weights.py`); ruff clean; **54 portfolio tests pass (+4 dual-class:
+  dedup-higher / all-three-pairs / canonicalize-no-churn / veto×dedup edge)**.
   **Backfill re-run PENDING**: the deduped baskets appear only after a
   `backfill_portfolio_pit` run regenerates `backtest_pit.json` (5y, same data →
   moderate; user `backfill-portfolio.yml` dispatch on this branch → CI commits the
