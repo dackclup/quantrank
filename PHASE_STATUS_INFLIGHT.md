@@ -2339,3 +2339,45 @@ diagnostics → verify the median eligible count clears 5 → THEN authorize PR-
 · `AGENTS.md` (AI-pick gate note) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## feat(portfolio) — AI-pick high-conviction gate PR-2 (wire selection) (in flight, 2026-06-08)
+
+**C1 cleared on PR-1's backfill.** PR-1 (#437, merged `3e4f3b23`) shipped the observability
+half and its backfill emitted the eligible-count series: `meta.high_conviction_eligible_median
+= 52`, per-rebalance min 31 / max 86, **all 20 rebalances ≥ 31 ≫ `DEFAULT_COUNT`=5**. So the
+gate is comfortably fillable and methodology-scientist's condition C1 (median eligible ≥
+default_count before wiring) is satisfied — PR-2 wires it.
+
+**Change.** `select_picks` gains a keyword `gate: str = "veto_only"`:
+- `"veto_only"` (DEFAULT, UNCHANGED): eligible = `is_eligible(c.risk_flags)` — the legacy
+  composite-rank basket; every existing caller/test is byte-identical.
+- `"high_conviction"`: eligible = `is_high_conviction(c)` (Strong Buy/Buy + MoS>0 +
+  composite≥50 + loss-chance≤45 + no veto), then the SAME composite-desc sort + dual-class
+  canonicalize + top-N.
+The backfill calls `select_picks(candidates, count=MAX_PICKS, gate="high_conviction")`.
+**Sell-eviction is implicit** — the backtest rebuilds holdings from scratch each rebalance,
+so a name that decays out of the gate at quarter T is absent from the eligible set and not
+re-picked (no separate eviction path needed). `meta.high_conviction_gate_active` flips to
+**True**; `DISCLAIMER_BASE` now discloses the gate (Strong Buy/Buy + undervalued + score/loss
+bands) AND the ~15-month annual fair-value-staleness window vs the live 180d (condition C3).
+
+**Scope.** Backtest-only — `select_picks` is imported ONLY by the backfill; `compute/main.py`
+(the live forward compute) is untouched, so ZERO live-ranking impact. No schema model (the
+artifact self-carries its meta). The cross-source manipulation vetoes are still NOT replayed
+(`veto_layer_replayed` stays False). PR-3 (wire the same gate into the LIVE forward pick — the
+wall-free target, ensemble already runs every cron) is the deferred follow-up.
+
+**Verification.** ruff clean; `test-engineer` reframes the PR-1 default-unchanged pin + adds
+gate-filters / top-N-by-composite / subset-property (`high_conviction ⊆ veto_only`) /
+empty-eligible / dual-class×gate tests. **Backfill re-run PENDING** — the gated
+NAV/holdings/rotation only appear after a `backfill_portfolio_pit` run regenerates
+`backtest_pit.json`; then verify the gated baskets (only Strong Buy/Buy names, no Sell) +
+sanity-check the gated NAV result before merge.
+
+**Files**: `compute/portfolio/weights.py` (`select_picks` `gate` param) ·
+`scripts/backfill_portfolio_pit.py` (`gate="high_conviction"` call, `gate_active=True`,
+`DISCLAIMER_BASE` gate+staleness disclosure) · `tests/test_portfolio/test_weights.py`
+(gate tests) · `CLAUDE.md` (§In-flight) · `AGENTS.md` (AI-pick gate note) ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---

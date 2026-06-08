@@ -164,8 +164,18 @@ def _company_key(ticker: str) -> str:
     return _DUAL_CLASS_GROUP.get(ticker, ticker)
 
 
-def select_picks(candidates: Sequence[PickCandidate], count: int) -> list[str]:
+def select_picks(
+    candidates: Sequence[PickCandidate], count: int, *, gate: str = "veto_only"
+) -> list[str]:
     """Return the ordered ``count`` AI-picked tickers (deterministic + fair).
+
+    ``gate`` selects the eligibility filter: ``"veto_only"`` (default) drops only the
+    7 active rank-gate vetoes (``is_eligible``); ``"high_conviction"`` ALSO requires
+    Strong Buy/Buy + MoS>0 + composite≥50 + loss-chance≤45 (``is_high_conviction``,
+    Phase 7 PR-2 — needs ``recommendation``/``mos_pct``/``loss_chance_pct`` populated;
+    the backfill replays them point-in-time). Sell-eviction is implicit: a name that
+    decays out of the gate at a rebalance is simply not re-selected (the basket is
+    rebuilt from scratch every quarter).
 
     composite desc -> drop the active rank-gate vetoes -> dedup dual-class issuers
     -> take the top ``count`` (clamped to ``[MIN_PICKS, MAX_PICKS]``). NO sector
@@ -179,10 +189,13 @@ def select_picks(candidates: Sequence[PickCandidate], count: int) -> list[str]:
     rebalance — the two classes' near-equal composites otherwise flip which ranks
     higher quarter to quarter, churning the basket GOOG<->GOOGL for the SAME
     company (spurious turnover). Falls back to the held class only if the canonical
-    class is itself ineligible (e.g. vetoed).
+    class is itself ineligible (e.g. vetoed or out of the high-conviction gate).
     """
     count = max(MIN_PICKS, min(MAX_PICKS, count))
-    eligible = [c for c in candidates if is_eligible(c.risk_flags)]
+    if gate == "high_conviction":
+        eligible = [c for c in candidates if is_high_conviction(c)]
+    else:
+        eligible = [c for c in candidates if is_eligible(c.risk_flags)]
     eligible.sort(
         key=lambda c: (
             -c.composite_score,
