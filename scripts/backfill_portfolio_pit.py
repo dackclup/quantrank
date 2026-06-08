@@ -256,7 +256,15 @@ def _insample_lag_clause(nav: dict, start: date, end: date) -> str:
     )
 
 
-def run_backfill(start: date, end: date, *, data_dir: Path | None = None) -> Path:
+def run_backfill(
+    start: date, end: date, *, data_dir: Path | None = None, gate: str = "high_conviction"
+) -> Path:
+    """``gate`` selects the eligibility filter (see ``select_picks``): the production
+    default ``"high_conviction"`` (Strong Buy/Buy + MoS>0 + composite>=50 +
+    loss-chance<=45) or ``"veto_only"`` (the legacy composite-rank basket). The
+    end-to-end WIRING (snapshot -> pillars -> composite -> NAV -> canary) is gate-
+    independent, so wiring tests pass ``gate="veto_only"`` to exercise it with
+    synthetic data that need not clear the conviction gate."""
     data_dir = data_dir or config.DATA_DIR
     members = get_sp500_constituents()
     current = {str(r.ticker) for r in members.itertuples(index=False)}
@@ -436,7 +444,7 @@ def run_backfill(start: date, end: date, *, data_dir: Path | None = None) -> Pat
         # Sell-eviction is implicit: a name that decayed out of the gate this quarter
         # is absent from the eligible set and won't be re-picked (the basket is rebuilt
         # from scratch each rebalance).
-        picks = select_picks(candidates, count=MAX_PICKS, gate="high_conviction")
+        picks = select_picks(candidates, count=MAX_PICKS, gate=gate)
         if not picks:
             continue
 
@@ -527,7 +535,7 @@ def run_backfill(start: date, end: date, *, data_dir: Path | None = None) -> Pat
             # (veto_layer_replayed stays False). high_conviction_eligible_median remains the
             # per-rebalance diagnostic (picks = top-N by composite among the eligible set).
             "recommendation_layer_replayed": True,
-            "high_conviction_gate_active": True,
+            "high_conviction_gate_active": gate == "high_conviction",
             "high_conviction_eligible_median": (
                 statistics.median(hc_counts) if hc_counts else None
             ),
