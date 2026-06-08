@@ -22,14 +22,16 @@ skills are loaded each session, so the main agent already has the
 trigger map. Subagents add value where context isolation or parallelism
 specifically helps.
 
-## The current set (20)
+## The current set (22)
 
-Organized into four tiers — **core** (narrow project invariants),
+Organized into five tiers — **core** (narrow project invariants),
 **lifecycle** (engineering-org roles for PR / release / phase
 boundaries), **specialized expertise** (domain specialists with deep
-project knowledge), and **operations** (orchestrators + ops roles).
-This is the "full enterprise dev team" topology — every tier maps to
-roles a 20-person engineering org would have:
+project knowledge), **operations** (orchestrators + ops roles), and
+**builders** (write-capable implementers for agent-team parallel
+builds — see [`TEAMS.md`](TEAMS.md)). This is the "full enterprise dev
+team" topology — every tier maps to roles a 22-person engineering org
+would have:
 
 ### Tier 1 — Core (5)
 
@@ -71,6 +73,21 @@ roles a 20-person engineering org would have:
 | [`ci-triage-engineer`](ci-triage-engineer.md) | CI / build engineer on-call | GitHub Actions check fails on any open PR (webhook event); "CI failed" / "Python test red" / "build แตก" / "เช็คทำไม CI fail". Knows the CI matrix (Python lint+test · Frontend build · simulate · Vercel preview) + 10-class failure taxonomy (schema-pin-drift / ruff-I001 / F401 / F841 / dep-missing-ci-only / real-bug / simulate-45min-cap / flaky-transient / vercel-build-skew / schema-drift-CI). Read-only; proposes the one-line fix the user authorizes. | sonnet | Read, Bash, Grep, Glob |
 | [`incident-commander`](incident-commander.md) | Incident commander / SRE on-call | Cron fails / hangs / produces corrupt output; Vercel deploy breaks; schema-snapshot CI guard fails; "production is broken" / "site is wrong" / "incident" | opus | Read, Bash, Grep, Glob |
 
+### Tier 5 — Builders (2)
+
+Write-capable implementers — the project's first non-test agents that
+write production code. They are **team-oriented** (the `compute/**` and
+`frontend/**` owners in a cross-layer Feature Squad — see
+[`TEAMS.md`](TEAMS.md)) but also work as scoped write-subagents. NOT
+on-edit auto-spawns: code review stays with `quantrank-reviewer` /
+`defense-layer-auditor` / `frontend-design-reviewer`; these BUILD, the
+others audit.
+
+| Subagent | Enterprise role analogue | Trigger | Model | Tools |
+|---|---|---|---|---|
+| [`compute-builder`](compute-builder.md) | Backend SWE (Python) | Explicit "implement X in compute/"; `compute/**` owner in a Feature Squad | sonnet | Read, Bash, Grep, Glob, Edit, Write |
+| [`frontend-builder`](frontend-builder.md) | Frontend SWE (TS/React) | Explicit "build the X component/route"; `frontend/**` owner in a Feature Squad | sonnet | Read, Bash, Grep, Glob, Edit, Write |
+
 ### Tier rationale
 
 The four tiers reflect QuantRank's actual workload distribution + the
@@ -95,6 +112,11 @@ The four tiers reflect QuantRank's actual workload distribution + the
   failures (signal-driven via the PR-activity webhook); and
   `incident-commander` is the P1 conductor when production breaks.
   These map to "staff+ engineers / SRE on-call" in a big org.
+- **Tier 5 (Builders)** is the write-capable implementer layer —
+  `compute-builder` + `frontend-builder` own one code layer each in an
+  agent-team Feature Squad (or run as scoped write-subagents). They map
+  to the "feature engineers" who build; the other four tiers review what
+  they ship. See [`TEAMS.md`](TEAMS.md).
 
 ## Coordination patterns — how the team works together
 
@@ -301,7 +323,7 @@ HANDOFF · status=<agent's verdict vocab> · next=<DONE | SPAWN <agent>:<scope> 
   command, an ambiguous requirement) — the orchestrator surfaces it via
   `AskUserQuestion` rather than guessing.
 
-**Model split (why 5 opus / 15 sonnet under an opus-4.8 main):** the
+**Model split (why 5 opus / 17 sonnet under an opus-4.8 main):** the
 orchestrator carries cross-agent synthesis, so most agents are **sonnet**
 — focused, well-scoped work handing a crisp verdict back up. The five
 **opus** agents (`quantrank-reviewer` · `methodology-scientist` ·
@@ -313,7 +335,7 @@ pass. Sonnet agents also drain the separate Max-plan
 "Weekly · Sonnet only" pool (see [`CLAUDE.md`](../../CLAUDE.md)
 §Spawn discipline).
 
-**Effort: 18 of 20 agents run at `effort: max`** (frontmatter; set 2026-05-31,
+**Effort: 20 of 22 agents run at `effort: max`** (frontmatter; set 2026-05-31,
 carve-out 2026-06-03). The `effort` field is orthogonal to `model` — `model`
 picks WHICH model (opus / sonnet), `effort` sets how hard it reasons. `max` is
 the top of the `low / medium / high / xhigh / max` ladder and overrides the
@@ -402,7 +424,7 @@ each invocation.
      two passes over a multi-file diff, weighing project-specific
      conventions against the change).
    - **`effort: max` on judgment-gate agents** (the `effort` frontmatter
-     field, orthogonal to `model`). 18 of 20 agents run at the top
+     field, orthogonal to `model`). 20 of 22 agents run at the top
      reasoning level; the 2 deterministic script-runners (`schema-sentinel`
      + `vercel-preview-auditor`) sit at `effort: high` — see §Effort above.
      A new agent gets `effort: max` too unless it's a pure mechanical
@@ -418,6 +440,9 @@ each invocation.
 
 ## Companion docs
 
+- [`TEAMS.md`](TEAMS.md) — agent-team recipes (the collaborative,
+  multi-session complement to these report-back subagents) + the two
+  write-capable builders' team protocol
 - [`CLAUDE.md`](../../CLAUDE.md) §Conventions — project invariants
 - [`AGENTS.md`](../../AGENTS.md) §Boundaries — what subagents may / must
   not do

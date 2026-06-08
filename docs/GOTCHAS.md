@@ -354,7 +354,7 @@
 
 - **Subagent model aliases float forward to the LATEST — guard the downgrade
   vector, not the agent files** (`.claude/agents/*.md` + `tools/check_model_pin.py`,
-  2026-05-31). All 20 agents use bare `model: opus` / `model: sonnet` aliases.
+  2026-05-31). All 22 agents use bare `model: opus` / `model: sonnet` aliases.
   Per the Claude Code docs an alias resolves to the newest Opus/Sonnet at
   runtime and floats forward automatically on a CLI update — so the project is
   "always latest" by design; **never pin a dated/numbered model ID** (e.g.
@@ -378,6 +378,33 @@
   in a workflow-level `env:` block in another `.github/workflows/` file would
   reach the runner without touching `settings.json` and bypass this check —
   don't add one (there's no legitimate reason to pin the subagent model in CI).
+
+- **Agent teams (experimental) are NOT subagents — and they REUSE the subagent
+  defs as teammate roles** (`.claude/agents/TEAMS.md`; flag
+  `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` in `.claude/settings.json`, 2026-06-08).
+  The 22 files in `.claude/agents/` are *subagents*: the main agent spawns them,
+  each runs in its own context, they report back to the main agent ONLY, and they
+  never talk to each other — this works everywhere incl. Claude Code on the
+  web/mobile and drains the paid Sonnet pool. The experimental **agent-teams**
+  feature (Claude Code ≥ v2.1.32) is a DIFFERENT mechanism: a *lead* + *teammates*
+  that are each a full Claude Code session, share a task list, and **message each
+  other directly**; higher token cost; live control is **desktop-terminal only**
+  (in-process / tmux / iTerm2 — not drivable interactively from web/mobile). The
+  bridge: when you spawn a teammate you reference a subagent type by name and
+  Claude honors its `tools` + `model` (the def body is appended to the teammate's
+  system prompt), so the same `.md` file is BOTH a subagent and a teammate role —
+  **turning a subagent off would also remove it from any team** (so "move work
+  from subagents to teams by deleting subagents" is a category error). Caveats:
+  teammates do NOT apply a def's `skills` / `mcpServers` frontmatter (they load
+  those from project/user settings like a normal session); no nested teams; one
+  team per lead; the lead is fixed; `/resume` doesn't restore in-process
+  teammates. The 2 write-capable **Tier-5 builders** (`compute-builder` owns
+  `compute/**`, `frontend-builder` owns `frontend/**`) exist for the cross-layer
+  **Feature Squad** team — they own DISJOINT file sets so teammates never
+  overwrite each other; they are NOT on-edit auto-spawns (code review stays with
+  the reviewer agents). Every recipe in `TEAMS.md` ships a **subagent fallback** so
+  the same flow runs on web/mobile today. `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`
+  is NOT a model-override var, so `tools/check_model_pin.py` ignores it (verified).
 
 - **`RiskSummaryCard` merges rank-gates + manipulation-index into ONE card
   but the two sub-sections are SEMANTICALLY DISTINCT — never flatten them

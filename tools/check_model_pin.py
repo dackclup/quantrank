@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Guard against a silent subagent model downgrade.
 
-The 20 subagents in ``.claude/agents/*.md`` use bare model aliases
+The 22 subagents in ``.claude/agents/*.md`` use bare model aliases
 (``model: opus`` / ``model: sonnet``). Per the Claude Code docs an alias
 resolves to the LATEST Opus/Sonnet at runtime and floats forward on a CLI
 update — which is exactly what we want (no self-inflicted downgrade, always
@@ -74,7 +74,7 @@ def _settings_overrides() -> list[str]:
             continue
         problems.append(
             f"{SETTINGS.relative_to(REPO)} env.{var} = {value!r} — this pins / "
-            f"overrides the subagent model and can silently downgrade all 20 "
+            f"overrides the subagent model and can silently downgrade all 22 "
             f"agents below the latest. Remove it (or set "
             f"CLAUDE_CODE_SUBAGENT_MODEL='inherit') unless the pin is "
             f"deliberate + documented."
@@ -88,7 +88,7 @@ def _agent_pins() -> list[str]:
     if not AGENTS_DIR.is_dir():
         return problems
     for path in sorted(AGENTS_DIR.glob("*.md")):
-        if path.name == "README.md":
+        if path.name in {"README.md", "TEAMS.md"}:  # non-agent docs
             continue
         text = path.read_text()
         # Only inspect the YAML frontmatter (between the first two --- fences).

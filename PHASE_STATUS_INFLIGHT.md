@@ -2278,6 +2278,48 @@ clean; ruff clean; 54 portfolio tests unchanged (no engine change).
 
 ---
 
+## chore(agents) — agent-team layer + 2 write-capable builders (in flight, 2026-06-08)
+
+Branch `claude/confident-gates-pT9pu`. Studied the experimental Claude Code
+**agent-teams** feature ([docs](https://code.claude.com/docs/en/agent-teams) +
+[settings](https://code.claude.com/docs/en/settings)) and designed how it maps
+onto QuantRank. **Key finding:** agent teams ≠ the existing report-back
+subagents — a team is multiple full Claude sessions whose teammates message each
+other + share a task list, and it **reuses subagent definitions as teammate
+roles**. So almost nothing needs replacing; the durable artifacts are team
+recipes + the two write-capable builders the read-only roster lacked. (User
+explicitly chose build scope "B" = Layer-0 + 2 implementers, no `red-team-skeptic`.
+User is mobile-only, so every recipe carries a web/mobile **subagent fallback**.)
+
+Ships:
+- `.claude/settings.json` — `env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` (inert
+  unless a team is created; NOT a model-override var, so `tools/check_model_pin.py`
+  is unaffected — verified against its `_OVERRIDE_VARS` list).
+- `.claude/agents/TEAMS.md` — 5 team recipes (Methodology Debate · Incident War
+  Room · Feature Squad · PR Review Crew · Release Readiness Board), each a desktop
+  team form + a mobile/web subagent fallback; teammate protocol (file-ownership,
+  schema-triple lockstep, plan-approval, cleanup); limitations from the docs.
+- `.claude/agents/compute-builder.md` + `frontend-builder.md` — NEW Tier-5
+  write-capable builders owning `compute/**` / `frontend/**` (the layer owners in
+  a cross-layer Feature Squad; also usable as scoped write-subagents). NOT on-edit
+  auto-spawns — review stays with the existing reviewer agents.
+- `.claude/hooks/delegate-first.sh` — **auto-trigger** (added per user request):
+  extends the every-turn UserPromptSubmit nudge so the orchestrator
+  **auto-proposes** the matching team recipe on team-fit tasks (propose-not-create
+  — the feature still needs a user confirm; web/mobile → subagent fallback). Cue→
+  recipe table added to CLAUDE.md §Auto-routing "Agent-team auto-proposal" +
+  TEAMS.md §Auto-proposal.
+
+Roster 20 → 22 (5 opus / 17 sonnet; 20 at `effort: max`, 2 at `high`). Docs
+lockstep: CLAUDE.md (layout + delegation table + model-split/effort + §Gotchas
+index + §In flight + §Companion files), AGENTS.md, `.claude/agents/README.md`
+(Tier 5 + counts + companion), CONTEXT.md, WORKFLOW.md, docs/GOTCHAS.md (count +
+full-detail gotcha), tools/check_model_pin.py (docstring/message count). No
+production code or schema change; `check_model_pin.py` passes (new agents carry
+floating `model: sonnet` aliases + a `model:` line).
+
+---
+
 ## feat(portfolio) — AI-pick high-conviction gate PR-1 (observability) (in flight, 2026-06-08)
 
 **Request (user, Thai).** The AI-pick should select ONLY Strong Buy / Buy names (the
