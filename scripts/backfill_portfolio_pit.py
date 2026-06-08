@@ -350,13 +350,13 @@ def run_backfill(
         pillar_df, _ = neutralize_pillar_scores(pillar_df)
         composite = compute_composite(pillar_df)
 
-        # --- PR-1 (observability-before-wiring): point-in-time valuation +
-        # recommendation replay. Reuse the LIVE cross-sectional builders on THIS
-        # rebalance's PIT cohort so MoS / recommendation / loss-chance match the
-        # forward rule, then COUNT how many names WOULD clear the high-conviction gate
-        # (Strong Buy/Buy + MoS>0 + composite>=50 + loss-chance<=45). Selection below is
-        # UNCHANGED (still veto-only select_picks) — PR-2 wires the gate once the median
-        # per-rebalance eligible count clears DEFAULT_COUNT (methodology-scientist C1).
+        # --- Point-in-time valuation + recommendation replay. Reuse the LIVE
+        # cross-sectional builders on THIS rebalance's PIT cohort so MoS / recommendation
+        # / loss-chance match the forward rule. PR-1 added this to COUNT eligibles; PR-2
+        # now FEEDS it into selection — `select_picks(gate=gate)` (production default
+        # "high_conviction") holds only names clearing Strong Buy/Buy + MoS>0 +
+        # composite>=50 + loss-chance<=45. eligible_high_conviction_count stays as the
+        # per-rebalance diagnostic (C1 cleared: median 52 >> DEFAULT_COUNT).
         snaps_by_ticker = {t: inp.snapshot for t, inp in inputs.items()}
         hist_by_ticker = {
             t: inp.history for t, inp in inputs.items() if inp.history is not None
