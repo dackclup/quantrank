@@ -126,14 +126,24 @@ jobs:
     #   into the cron as a warm step so the AI-pick home page refreshes weekly
     #   without a manual dispatch. The backfill runs AFTER the compute step in
     #   the same job, so it inherits the working-dir caches the compute just
-    #   warmed → ~15-20m (not the ~60m cold budget the standalone
-    #   backfill-portfolio.yml carries). Capped at 40m + continue-on-error so
-    #   it can never block the rankings commit; job ceiling raised 195 → 225 to
-    #   preserve headroom over a worst-case cold compute (~140-160m) PLUS the
-    #   capped backtest step. Cost: warm steady-state adds ~15-20m/run
-    #   (~300-400 Actions-min/month); worst-case monthly ceiling is now
-    #   225m × 5 weekday runs × 4 weeks = 4,500 GitHub Actions minutes/month.
-    timeout-minutes: 225
+    #   warmed → ~35-45m at the 10Y window (was ~15-20m at 5Y; PR #440 extended
+    #   the backtest 5y → 10y, ~doubling the distinct picks 64 → 134, so the
+    #   per-pick live-EDGAR amendment fetches the backfill does NOT cache-share
+    #   with the compute step grew ~5m → ~10m, atop ~30m PIT scoring). NOT the
+    #   ~60m fully-cold budget the standalone backfill-portfolio.yml carries: the
+    #   compute step pre-warms the current-universe prices + fundamentals_history
+    #   on disk first, and the 214 historical-only ledger members are SKIPPED
+    #   (never fetched — backfill pre-loads only the current universe). Capped at
+    #   55m + continue-on-error so it can never block the rankings commit (cap was
+    #   40m through 2026-06-08; the 10Y warm runtime left only ~5-10m headroom and
+    #   a slow-SEC day could kill the step — a kill is benign: the atomic writer
+    #   keeps the prior backtest_pit.json and the rankings commit still lands, but
+    #   the backtest as_of would stall ~1 week). Job ceiling raised 195 → 225 →
+    #   240 to preserve headroom over a worst-case cold compute (~140-160m) PLUS
+    #   the capped backtest step. Cost: warm steady-state adds ~35-45m/run;
+    #   worst-case monthly ceiling is now 240m × 5 weekday runs × 4 weeks = 4,800
+    #   GitHub Actions minutes/month.
+    timeout-minutes: 240
     steps:
       - uses: actions/checkout@v6
         with:
@@ -321,13 +331,13 @@ jobs:
         # reviewer 2026-06-05) — we are NOT weakening that, only widening what the
         # already-trusted cron commits.
         #
-        # continue-on-error + a 40m step cap so a backtest stall / failure can
+        # continue-on-error + a 55m step cap so a backtest stall / failure can
         # NEVER block the rankings commit: the writer is atomic (tmp + os.replace),
         # so a failed run leaves the prior backtest_pit.json intact and the cron
         # still commits the fresh rankings. FORM4_FETCH_SKIP is irrelevant here —
         # the backfill's veto set is the 7 active rank-gates, none Form-4.
         continue-on-error: true
-        timeout-minutes: 40
+        timeout-minutes: 55
         run: python -m scripts.backfill_portfolio_pit
 
       - name: Show backtest meta (canary)
@@ -336,7 +346,7 @@ jobs:
         # failure would leave no signal in the cron log. Mirrors the canary in
         # backfill-portfolio.yml. `generated_utc` is the tell: if it is THIS run's
         # timestamp the refresh landed; if it is stale the backfill was killed at
-        # the 40m cap and the prior (atomic) artifact is what will be committed.
+        # the 55m cap and the prior (atomic) artifact is what will be committed.
         run: |
           python - <<'PY'
           import json, pathlib

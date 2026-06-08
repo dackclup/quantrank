@@ -510,21 +510,17 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **feat(scoring) — technical-pillar MAD factor, PR-1 construct (this PR, WIP — issue #441)** —
-  fixes the dead `macd_hist` (`pillars.py` expected a dict but `macd_signal` returns a float → it
-  was always NaN→50, an inert constant). Decision (methodology-scientist ×2 + literature-searcher,
-  user-confirmed each fork): the MACD HISTOGRAM has no cross-sectional prior, but the MACD LINE /
-  MAD does — Avramov-Kaplanski-Subrahmanyam 2021 *Rev.Fin.Econ.* (~9% alpha, incremental to
-  momentum) + Han-Zhou-Zhu 2016 *JFE* (MA-trend >2× momentum Sharpe) — at LONG **21/200** windows
-  ONLY (the 12/26 MACD windows sit in Ko-Wang-Yang 2025 *FAJ*'s short-window overreaction regime
-  where the sign inverts). Shipped the **verified construct** `technical.mad_scalefree(short=21,
-  long=200)` = `(SMA_21−SMA_200)/SMA_200` (scale-free → no price-level bias in the cross-sectional
-  rank; +3 construct pins: scale-invariance / sign-at-21/200 / NaN<200). **NOT yet wired**
-  (observe-first, Rule 18). PR-1's remaining half + PR-2 wiring are fully specced in **issue #441**:
-  main.py emits 3 diagnostic `Metadata.mad_*` fields (coverage + Spearman ρ vs `mom_12_1`/`mom_3_1`,
-  pillar UNCHANGED → Δcomposite=0) + schema triple bump (`0.10.16`); PR-2 wires MAD into the pillar
-  only if both ρ<0.30 + coverage≥90% after ≥1 cron, with a simulate Top-5 check. ruff clean;
-  construct tests pass. **CHECKPOINT** — diagnostic+schema+the PR open in a focused next pass.
+- **ci(cron) — raise the folded PIT-backtest step cap 40→55m (this PR — perf-engineer PROPOSE-FIX-1)** —
+  the weekly cron's folded `backfill_portfolio_pit` step (Phase 7.0 follow-up b) warm-runs ~35-45m at
+  the 10Y window — #440 ~doubled the distinct picks 64→134, so the ~134 sequential live-EDGAR
+  amendment fetches (~10m, NOT cache-shared with the compute step) atop ~30m PIT scoring left only
+  ~5-10m headroom under the old **40m** cap; a slow-SEC day could kill the step. Kill is BENIGN
+  (`continue-on-error` + atomic writer → prior `backtest_pit.json` kept, rankings still commit, only
+  the backtest `as_of` stalls ~1 wk; convergence N=1). The 214 historical-only ledger members are
+  SKIPPED (never fetched). Raises the step cap **40→55m** + job ceiling **225→240m** in
+  `compute-rankings.yml` — comment-only elsewhere, no code/schema. Deferred: FIX-3 (align the
+  backfill amendment lookback 10y→5y to drop the ~10m — needs `methodology-scientist` on the narrowed
+  restatement-canary window). (MAD construct PR-1 merged #442; rest tracked in issue #441.)
 
 
 **Next deliverables** (pick by appetite):

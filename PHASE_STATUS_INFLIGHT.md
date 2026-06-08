@@ -2530,3 +2530,45 @@ next pass per #441.
 `PHASE_STATUS_INFLIGHT.md` (this). (issue #441 carries the full spec + remaining tasks.)
 
 ---
+
+## ci(cron) — raise folded PIT-backtest step cap 40 → 55m (in flight, 2026-06-08)
+
+**Origin.** `performance-engineer` audit triggered by the question "will a `compute-rankings` run
+advance the home-page AI-pick backtest, or hit the folded step's 40m cap now that #440 extended it
+5y → 10y?". Verdict: PROPOSE-FIX-1.
+
+**Finding.** The weekly cron's folded `Refresh portfolio backtest (PIT)` step (Phase 7.0 follow-up b)
+runs WARM even on a cold-cache cron — the compute step writes all 502 current-universe prices +
+fundamentals_history to disk first, in the same job, so the backfill reuses them. It pre-loads ONLY
+the current universe (`backfill_portfolio_pit.py:277-284`); the **214 historical-only survivorship-
+ledger members are skipped, never fetched** (zero cold-fetch cost — they have no current CIK/price).
+The real cost driver is the **134 distinct picked tickers' sequential live-EDGAR amendment fetches**
+(~10m), which the backfill does NOT cache-share with the compute step (`restatement_filings.py:183`
+`cached_lookback < lookback_days` miss — backfill asks 10y=3719d, compute wrote 5y=1825d; plus the
+7-day TTL = weekly cadence). #440's 5y→10y extension ~doubled the distinct picks (64→134) → amendment
+cost ~5m→~10m, atop ~30m PIT scoring = **~35-45m warm runtime** vs the **40m** cap → only ~5-10m
+headroom; a slow-SEC day (6-8s/call) could push past 40m and the step is killed at the cap.
+
+**Failure mode is BENIGN** (why FIX, not P1): `continue-on-error: true` + the atomic writer (tmp +
+os.replace) → a killed step leaves the prior `backtest_pit.json` intact and the rankings commit still
+lands; only the backtest `as_of` stalls ~1 week until a SEC-favourable run. Convergence is N=1 (no
+multi-run build-up — each run independently completes or is killed; the historical-only members are
+never the bottleneck).
+
+**This PR.** Raises the folded step `timeout-minutes` **40 → 55** (+ job ceiling **225 → 240** to
+preserve the worst-case cold-compute ~140-160m + capped-backtest headroom) in `compute-rankings.yml`.
+The budget comment block is updated with the perf arithmetic. **No code / schema / Python change** —
+only a step's wall-clock budget widens, so the prior compute's green CI is unaffected.
+
+**Deferred (NOT in this PR).** FIX-3: align the backfill's amendment lookback 10y→5y
+(`config.RESTATEMENT_HISTORY_LOOKBACK_DAYS = 1825d`) so the 134 amendment fetches reuse the compute
+step's `edgar_amendments` cache (~10m → ~0m; warm runtime → ~32m). Needs a `methodology-scientist`
+verdict — it narrows the per-rebalance restatement-canary window (a disclosure-only field; the
+disclaimer already notes the backtest's PIT limitations). FIX-2 (pre-warm `cache-v6-fast`) is moot —
+cron run #88 (in progress 2026-06-08) is already warming that key.
+
+**Files**: `.github/workflows/compute-rankings.yml` (folded step `timeout-minutes` 40→55 + comment;
+job `timeout-minutes` 225→240) · `CLAUDE.md` (§In-flight rotation) · `PHASE_STATUS_INFLIGHT.md`
+(this).
+
+---
