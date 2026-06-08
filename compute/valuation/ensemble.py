@@ -280,8 +280,14 @@ def compute_fair_price_ensemble(
     peer_panels: dict[str, dict[str, list[str]]],
     universe_metrics: dict[str, dict[str, float | None]],
     historical_metrics: dict[str, dict[str, float | list[float] | None]],
+    hard_stale_days: int | None = None,
 ) -> tuple[EnsembleResult, list[str]]:
     """Compute fair-price ensemble for one ticker.
+
+    ``hard_stale_days`` overrides Defense #3's hard-stale ceiling (default
+    ``config.FILING_STALE_HARD_DAYS`` = 180). The live path passes nothing; the
+    Phase 7 PIT backtest passes the annual-aware ``BACKTEST_HARD_STALE_DAYS``
+    (455) so a once-a-year 10-K is not auto-nulled (methodology-scientist C2).
 
     Returns ``(EnsembleResult, risk_flags_to_append)``. The
     ``risk_flags_to_append`` list contains ONLY new flags from this
@@ -305,7 +311,7 @@ def compute_fair_price_ensemble(
     5. RIM value_trap_risk — annotates valuation_warnings if RIM
        skipped on ROE<Ke.
     """
-    lag_status: LagStatus = stale_filing_status(filing_lag_days_value)
+    lag_status: LagStatus = stale_filing_status(filing_lag_days_value, hard_days=hard_stale_days)
 
     # Defense #3 hard-stale: short-circuit. All methods skip with the
     # canonical reason; risk_flag returned for caller to merge.

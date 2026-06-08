@@ -428,3 +428,47 @@ def test_skip_reasons_taxonomy_is_stable():
     assert "value_trap_risk_roe_below_cost_of_equity" in SKIP_REASONS
     # No duplicates.
     assert len(set(SKIP_REASONS)) == len(SKIP_REASONS)
+
+
+# -- B. Phase 7 PR-1: stale_filing_status(hard_days=...) ----------------------
+#
+# Pins the stale_filing_status parameterized hard-stale ceiling introduced for
+# the PIT backtest (BACKTEST_HARD_STALE_DAYS = 455). Ratified by
+# methodology-scientist 2026-06-08, condition C2: NEVER mutate
+# config.FILING_STALE_HARD_DAYS; callers pass a widened ceiling via hard_days.
+
+
+def test_B1_stale_live_default_181_is_hard():
+    """Live default unchanged: lag=181 days → hard (no hard_days arg)."""
+    assert config.FILING_STALE_HARD_DAYS == 180
+    assert stale_filing_status(181) == "hard"
+
+
+def test_B2_stale_live_default_200_is_hard():
+    """Live default unchanged: lag=200 days → hard (no hard_days arg)."""
+    assert stale_filing_status(200) == "hard"
+
+
+def test_B3_stale_455_boundary_soft_at_hard_days_455():
+    """455 boundary: lag==455 with hard_days=455 is SOFT (strict >; 455 is NOT > 455)."""
+    assert stale_filing_status(455, hard_days=455) == "soft"
+
+
+def test_B4_stale_456_is_hard_at_hard_days_455():
+    """456 > 455: lag=456 with hard_days=455 is HARD."""
+    assert stale_filing_status(456, hard_days=455) == "hard"
+
+
+def test_B5_stale_200_is_soft_at_hard_days_455():
+    """120 < 200 ≤ 455: with hard_days=455 the annual lag of 200 is SOFT, not hard."""
+    assert stale_filing_status(200, hard_days=455) == "soft"
+
+
+def test_B6_stale_120_is_fresh_at_hard_days_455():
+    """lag=120 ≤ FILING_STALE_SOFT_DAYS: always FRESH regardless of hard_days."""
+    assert stale_filing_status(120, hard_days=455) == "fresh"
+
+
+def test_B7_stale_none_is_unknown_at_hard_days_455():
+    """None lag → UNKNOWN; hard_days does not affect the None branch."""
+    assert stale_filing_status(None, hard_days=455) == "unknown"

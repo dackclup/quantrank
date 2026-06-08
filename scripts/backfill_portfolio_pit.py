@@ -43,6 +43,7 @@ import argparse
 import bisect
 import dataclasses
 import logging
+import statistics
 from datetime import UTC, date, datetime
 from pathlib import Path
 
@@ -53,6 +54,16 @@ from compute.ingest.fundamentals import FundamentalsSnapshot, fetch_fundamentals
 from compute.ingest.historical_universe import members_at
 from compute.ingest.prices import fetch_prices
 from compute.ingest.universe import get_sp500_constituents
+
+# Reuse the LIVE cross-sectional valuation-input builders (private, but pure) so the
+# PIT proxy's MoS/recommendation match the forward rule exactly. Importing them keeps
+# compute/main.py untouched for PR-1 (methodology-scientist: no live main.py change
+# until PR-3); a future refactor could extract them to a shared module.
+from compute.main import (
+    _build_historical_metrics,
+    _build_peer_groupings,
+    _build_universe_metrics,
+)
 from compute.output.writer import write_backtest_pit_json
 from compute.portfolio.backtest import (
     DEFAULT_COST_BPS_PER_SIDE,
@@ -62,15 +73,22 @@ from compute.portfolio.backtest import (
 )
 from compute.portfolio.pit_fundamentals import pit_history_rows, pit_snapshot_fields
 from compute.portfolio.weights import (
+    HIGH_CONVICTION_COMPOSITE_MIN,
+    HIGH_CONVICTION_LOSS_CHANCE_MAX,
+    HIGH_CONVICTION_RECOMMENDATIONS,
     MAX_PICKS,
     PickCandidate,
     inverse_vol_weights,
+    is_high_conviction,
     select_picks,
     trailing_return_sigma,
 )
 from compute.scoring.composite import compute_composite, neutralize_pillar_scores
+from compute.scoring.loss_chance import derive_loss_chance
 from compute.scoring.pillars import TickerInputs, compute_all_pillars
+from compute.scoring.recommendation import derive_recommendation
 from compute.scoring.restatement_filings import fetch_amendments
+from compute.valuation.ensemble import compute_fair_price_ensemble
 
 logger = logging.getLogger(__name__)
 
@@ -81,6 +99,16 @@ DEFAULT_COUNT = 5
 CONSERVATIVE_COST_BPS = 25.0  # the "show the cost band" second net line
 BENCHMARKS_JSON = "portfolio/benchmarks.json"
 RULE_VERSION = "phase3-effective-weights"
+
+# methodology-scientist RATIFY 2026-06-08 (Option B, condition C2): the backtest has
+# ANNUAL 10-K data only, so the live 180d hard-stale gate (config.FILING_STALE_HARD_DAYS)
+# would null the fair-price ensemble ~3 of 4 quarters. Relax the hard-stale ceiling to
+# 455d FOR THE BACKTEST PIT PATH ONLY (= the SEC 75-day large-accelerated 10-K filing
+# deadline + 365 + a 15d buffer = the worst-case LEGITIMATE 10-K-to-next-10-K gap; a
+# genuinely skipped annual cycle is older than this and still nulls). Threaded via
+# compute_fair_price_ensemble(hard_stale_days=...) — the live path NEVER sets it (keeps
+# config's 180d). Provenance: GUT-FEEL-WITH-SEC-DEADLINE-RATIONALE.
+BACKTEST_HARD_STALE_DAYS = 455
 
 # Method caveats only. The result-dependent in-sample lead/lag sentence (vs SPY) is
 # computed from the ACTUAL NAV and appended in run_backfill so the disclaimer can never
@@ -128,6 +156,26 @@ def _annual_rows(history: pd.DataFrame | None) -> list[dict]:
 def _pit_snapshot(ticker: str, cik: str, rows: list[dict], as_of: str) -> FundamentalsSnapshot:
     fields = {k: v for k, v in pit_snapshot_fields(rows, as_of).items() if k in _SNAPSHOT_FIELDS}
     return FundamentalsSnapshot(ticker=ticker, cik=cik, **fields)
+
+
+def _pit_filing_lag(rows: list[dict], as_of: str, as_of_date: date) -> int | None:
+    """Days from the latest 10-K filed on/before ``as_of`` (annual PIT staleness).
+
+    The PIT snapshot (``pit_snapshot_fields``) returns only metric values, not the
+    filing date, so Defense #3's lag is computed here from the SAME eligible rows
+    (``form_type == "10-K"`` AND ``filing_date <= as_of``). ``None`` when no 10-K is
+    public at ``as_of`` — the ensemble then reads freshness as "unknown" (NOT
+    hard-stale), which is the existing behavior for a name with no filing date."""
+    fds = [
+        r["filing_date"]
+        for r in rows
+        if r.get("form_type") == "10-K"
+        and isinstance(r.get("filing_date"), str)
+        and r["filing_date"] <= as_of
+    ]
+    if not fds:
+        return None
+    return (as_of_date - date.fromisoformat(max(fds))).days
 
 
 def _price_at(prices: pd.DataFrame, as_of_ts: pd.Timestamp) -> float | None:
@@ -232,6 +280,7 @@ def run_backfill(start: date, end: date, *, data_dir: Path | None = None) -> Pat
     restate_names: set[str] = set()
     picked_names: set[str] = set()
     restate_unresolved: set[str] = set()
+    hc_counts: list[int] = []  # PR-1: per-rebalance high-conviction-eligible counts (C1)
 
     # Restatement canary — re-sourced from the EDGAR filings index (the live
     # restatement_history flag's feed) rather than companyfacts-XBRL. Amendment history
@@ -287,15 +336,96 @@ def run_backfill(start: date, end: date, *, data_dir: Path | None = None) -> Pat
         pillar_df, _ = neutralize_pillar_scores(pillar_df)
         composite = compute_composite(pillar_df)
 
+        # --- PR-1 (observability-before-wiring): point-in-time valuation +
+        # recommendation replay. Reuse the LIVE cross-sectional builders on THIS
+        # rebalance's PIT cohort so MoS / recommendation / loss-chance match the
+        # forward rule, then COUNT how many names WOULD clear the high-conviction gate
+        # (Strong Buy/Buy + MoS>0 + composite>=50 + loss-chance<=45). Selection below is
+        # UNCHANGED (still veto-only select_picks) — PR-2 wires the gate once the median
+        # per-rebalance eligible count clears DEFAULT_COUNT (methodology-scientist C1).
+        snaps_by_ticker = {t: inp.snapshot for t, inp in inputs.items()}
+        hist_by_ticker = {
+            t: inp.history for t, inp in inputs.items() if inp.history is not None
+        }
+        val_df = pd.DataFrame(
+            [
+                {"ticker": t, "current_price": inp.current_price, "sector": inp.sector}
+                for t, inp in inputs.items()
+            ]
+        )
+        universe_metrics = _build_universe_metrics(snaps_by_ticker, val_df)
+        _by_sub, by_sector_panel, broad_ex_fin_util = _build_peer_groupings(val_df)
+        historical_metrics = _build_historical_metrics(hist_by_ticker, snaps_by_ticker)
+
+        mos_by_ticker: dict[str, float | None] = {}
+        rec_by_ticker: dict[str, str | None] = {}
+        lc_by_ticker: dict[str, float | None] = {}
+        for raw_t in composite.index:
+            t = str(raw_t)
+            inp = inputs.get(t)
+            snap_t = snaps_by_ticker.get(t)
+            if inp is None or snap_t is None:
+                continue
+            sector_panel = [x for x in by_sector_panel.get(inp.sector, []) if x != t]
+            broad_panel = [x for x in broad_ex_fin_util if x != t]
+            tier_panel = {
+                "sub_industry": [],  # GICS sub-industry not carried PIT -> sector fallback
+                "industry": [],
+                "sector": sector_panel,
+                "broad": broad_panel,
+            }
+            peer_panels = {"pe": tier_panel, "pb": tier_panel, "ev_ebitda": tier_panel}
+            mos: float | None = None
+            try:
+                result, _flags = compute_fair_price_ensemble(
+                    ticker=t,
+                    snap=snap_t,
+                    sector=inp.sector,
+                    sub_industry=None,
+                    industry=None,
+                    current_price=inp.current_price,
+                    filing_lag_days_value=_pit_filing_lag(rows_by_ticker.get(t, []), T_iso, T),
+                    peer_panels=peer_panels,
+                    universe_metrics=universe_metrics,
+                    historical_metrics=historical_metrics,
+                    hard_stale_days=BACKTEST_HARD_STALE_DAYS,
+                )
+                mos = result.mos_pct
+            except Exception as e:  # noqa: BLE001 — one bad name never kills the backfill
+                logger.warning("backfill: ensemble failed for %s @ %s: %s", t, T_iso, e)
+            cs = float(composite[t])
+            # risk_flags / valuation_warnings stay empty PIT (the cross-source
+            # manipulation layer is NOT replayed — veto_layer_replayed=False, disclosed);
+            # recommendation + loss-chance ride on composite + the PIT MoS.
+            mos_by_ticker[t] = mos
+            rec_by_ticker[t] = derive_recommendation(
+                composite_score=cs, risk_flags=(), valuation_warnings=(), mos_pct=mos
+            )
+            lc_by_ticker[t] = derive_loss_chance(
+                composite_score=cs, risk_flags=(), valuation_warnings=(), mos_pct=mos
+            )
+
         candidates = [
             PickCandidate(
                 ticker=str(t),
                 composite_score=float(composite[t]),
                 sector=sector_by_ticker.get(str(t), "Unknown"),
                 risk_flags=(),  # v1: no point-in-time defense-veto replay (disclosed)
+                recommendation=rec_by_ticker.get(str(t)),
+                mos_pct=mos_by_ticker.get(str(t)),
+                loss_chance_pct=lc_by_ticker.get(str(t)),
             )
             for t in composite.index
         ]
+        # PR-1 observability: how many names WOULD pass the high-conviction gate this
+        # rebalance (the C1 acceptance metric — PR-2's wiring is gated on the median of
+        # these clearing DEFAULT_COUNT). Selection below stays UNCHANGED (veto-only).
+        high_conviction_count = sum(1 for c in candidates if is_high_conviction(c))
+        mos_positive_count = sum(
+            1 for c in candidates if c.mos_pct is not None and c.mos_pct > 0.0
+        )
+        hc_counts.append(high_conviction_count)
+
         picks = select_picks(candidates, count=MAX_PICKS)  # store up to MAX_PICKS (20) holdings
         if not picks:
             continue
@@ -349,6 +479,10 @@ def run_backfill(start: date, end: date, *, data_dir: Path | None = None) -> Pat
                     str(n): {t: round(w, 6) for t, w in wmap.items()}
                     for n, wmap in weights_by_count.items()
                 },
+                # PR-1 observability (not yet driving selection): how many cohort names
+                # would clear the high-conviction gate / have positive MoS this rebalance.
+                "eligible_high_conviction_count": high_conviction_count,
+                "mos_positive_count": mos_positive_count,
             }
         )
 
@@ -376,6 +510,24 @@ def run_backfill(start: date, end: date, *, data_dir: Path | None = None) -> Pat
             "restatement_canary_unresolved_count": len(restate_unresolved),
             "sector_from_today": True,
             "veto_layer_replayed": False,
+            # PR-1 observability (Phase 7): the recommendation/valuation layer IS replayed
+            # point-in-time (to compute the per-rebalance high-conviction counts below), but
+            # it does NOT yet drive selection (gate_active=False — PR-2 wires it). The
+            # cross-source manipulation vetoes are still NOT replayed (veto_layer_replayed
+            # stays False). high_conviction_eligible_median is the C1 acceptance metric:
+            # PR-2 ships only if it clears default_count.
+            "recommendation_layer_replayed": True,
+            "high_conviction_gate_active": False,
+            "high_conviction_eligible_median": (
+                statistics.median(hc_counts) if hc_counts else None
+            ),
+            "high_conviction_gate": {
+                "recommendations": sorted(HIGH_CONVICTION_RECOMMENDATIONS),
+                "mos_pct_min_exclusive": 0.0,
+                "composite_min": HIGH_CONVICTION_COMPOSITE_MIN,
+                "loss_chance_max": HIGH_CONVICTION_LOSS_CHANCE_MAX,
+                "hard_stale_days": BACKTEST_HARD_STALE_DAYS,
+            },
             "disclaimer": disclaimer,
         },
         "rebalances": rebalances_out,

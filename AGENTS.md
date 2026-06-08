@@ -372,7 +372,18 @@ export function FairPriceCard(props) {  // no types
   number (small-N → "concentrated N-stock book — slide right to diversify, read the
   full ladder") so the divergence is never read without context; `DISCLAIMER_BASE`
   likewise clarifies the net lines charge a modeled 10-25 bps spread cost (gross only
-  of ADDITIONAL market-impact slippage). The home also renders a
+  of ADDITIONAL market-impact slippage). A **high-conviction selection gate** is
+  being added in stages (`financial-engineer` design → `methodology-scientist`
+  RATIFY-WITH-CONDITION 2026-06-08): the AI-pick should hold ONLY Strong Buy/Buy names
+  (`recommendation∈{bullish,lean_bullish}`) that are undervalued (`MoS>0`), with
+  `composite≥50` + `loss-chance≤45`, fail-closed (`is_high_conviction` in
+  `weights.py`). **PR-1 (observability) replays the valuation+recommendation layer
+  point-in-time and only COUNTS eligible names per rebalance** (`eligible_high_conviction_count`
+  / `meta.high_conviction_eligible_median`) — selection is UNCHANGED until PR-2 wires it
+  (gated on the median clearing `DEFAULT_COUNT`). The backtest's annual-10K cadence
+  relaxes Defense #3's hard-stale ceiling to 455d FOR THE PIT PATH ONLY
+  (`BACKTEST_HARD_STALE_DAYS`; live keeps `config.FILING_STALE_HARD_DAYS`=180, never
+  mutated). The home also renders a
   **"Rotation history"** timeline (`HoldingsTimeline.tsx`): every quarterly
   rebalance's holdings at the current basket size, newest-first, with
   entered/exited markers, reactive to the count slider — fed by

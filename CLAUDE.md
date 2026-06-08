@@ -496,26 +496,28 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **fix(portfolio/ui) — AI-pick honest-presentation refinements (this PR)** —
-  `methodology-scientist` DEEP audit (2026-06-08, user "ทำไมต่างจากดัชนีเยอะ")
-  confirmed the backtest NAV math is **CORRECT** (8/8 checks: Σwᵢ·rᵢ, rebalance-seam
-  chaining, no look-ahead via leak-probe, cost-on-turnover-at-rebalance, PIT
-  survivorship, benchmark rebased same-base; the suspected dividend/total-return
-  asymmetry **RULED OUT** — both the portfolio AND SPY are total-return via
-  `Adj Close`, proven in code + empirically SPY 1.76× = TR not 1.38× price-only).
-  The count=5 −10%/yr index gap is **~96% pre-cost** = concentration + raw signal
-  (`veto_layer_replayed=False`) + annual-10K basis + 2021-26 mega-cap regime, NOT a
-  bug; net CAGR rises monotonically with N and beats SPY at N≈11 (the
-  diversification curve itself proves soundness). Two honesty refinements (user-
-  authorized): (1) an inline **count-reactive concentration caveat** beside the
-  headline "vs index" number in `AiPickPortfolio.tsx` (so −64% is never read without
-  "this is a 5-name concentrated book; slide right to diversify"); (2)
-  `DISCLAIMER_BASE` "gross of slippage" → "Net figures charge a modeled per-side
-  spread cost (10-25 bps on turnover) but are gross of additional market-impact
-  slippage" (the old phrasing contradicted the net lines shown). Frontend caveat is
-  immediate on deploy; the disclaimer text re-bakes into `backtest_pit.json` on the
-  next cron backfill (or a manual dispatch). No schema change; tsc + build clean;
-  ruff clean.
+- **feat(portfolio) — AI-pick high-conviction gate PR-1 (observability) (this PR)** —
+  user-requested rule: the AI-pick should hold ONLY Strong Buy/Buy names, undervalued
+  (MoS > 0), within standard score + loss-chance bands, evicting any name that decays to
+  Sell. `financial-engineer` designed → `methodology-scientist` RATIFIED-WITH-CONDITION
+  (2026-06-08). PR-1 is the **observability** half (Rule 18): the backtest now replays
+  the valuation + recommendation layer **point-in-time** (reusing the live
+  `_build_universe_metrics`/`_build_peer_groupings`/`_build_historical_metrics`) to COUNT
+  how many names clear the gate per rebalance — **WITHOUT changing selection yet** (PR-2
+  wires it once the median eligible count clears `DEFAULT_COUNT`, condition C1).
+  Gate (`is_high_conviction` in `weights.py`; `PickCandidate` +3 fields) =
+  recommendation∈{bullish,lean_bullish} + MoS>0 + composite≥50 + loss-chance≤45,
+  fail-closed. The backtest's annual-10K cadence would trip Defense #3's 180d hard-stale
+  gate ~3 of 4 quarters, so the hard ceiling is relaxed to **455d FOR THE BACKTEST PIT
+  PATH ONLY** (`BACKTEST_HARD_STALE_DAYS`, threaded via
+  `compute_fair_price_ensemble(hard_stale_days=)` → `stale_filing_status(hard_days=)`;
+  the live path keeps `config.FILING_STALE_HARD_DAYS`=180 — condition C2, never mutated).
+  New artifact diagnostics: per-rebalance `eligible_high_conviction_count` +
+  `mos_positive_count`; `meta.high_conviction_eligible_median` (the C1 metric),
+  `recommendation_layer_replayed=True`, `high_conviction_gate_active=False`. No schema
+  model (artifact self-carries meta), no frontend change, `compute/main.py` untouched.
+  ruff clean; 1552 offline tests pass. **Backfill re-run PENDING** to populate the
+  diagnostics — then verify the median clears 5 before authorizing PR-2.
 
 
 **Next deliverables** (pick by appetite):
