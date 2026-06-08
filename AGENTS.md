@@ -361,7 +361,18 @@ export function FairPriceCard(props) {  // no types
   so the basket shows the SAME ticker every quarter (else one company burns two
   slots, and the two classes' near-equal composites flip which ranks higher →
   spurious GOOG↔GOOGL churn). Falls back to the held class if the canonical is
-  vetoed. The home also renders a
+  vetoed. The backtest NAV math is **audit-verified CORRECT** (methodology-scientist
+  2026-06-08: Σwᵢ·rᵢ, rebalance-seam chaining, no look-ahead leak-probe,
+  cost-on-turnover-at-rebalance, PIT survivorship, benchmark rebased same-base, and
+  BOTH portfolio + SPY total-return via `Adj Close` — no dividend asymmetry); the
+  count=5 −10%/yr index gap is concentration + raw signal (`veto_layer_replayed=False`)
+  + annual-10K + 2021-26 mega-cap regime, **~96% pre-cost, NOT a bug** (net CAGR rises
+  monotonically with N and beats SPY at N≈11). So `AiPickPortfolio.tsx` renders an
+  inline **count-reactive concentration caveat** beside the headline "vs index"
+  number (small-N → "concentrated N-stock book — slide right to diversify, read the
+  full ladder") so the divergence is never read without context; `DISCLAIMER_BASE`
+  likewise clarifies the net lines charge a modeled 10-25 bps spread cost (gross only
+  of ADDITIONAL market-impact slippage). The home also renders a
   **"Rotation history"** timeline (`HoldingsTimeline.tsx`): every quarterly
   rebalance's holdings at the current basket size, newest-first, with
   entered/exited markers, reactive to the count slider — fed by

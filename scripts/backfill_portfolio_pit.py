@@ -93,9 +93,10 @@ DISCLAIMER_BASE = (
     "data filed on or before that date, but fundamental pillars use ANNUAL (10-K) "
     "figures in place of the live trailing-twelve-month basis, GICS sectors are "
     "assumed stable from today, the defense-layer vetoes are not replayed, and "
-    "survivorship is corrected via the point-in-time membership ledger. Figures are "
-    "gross of slippage; per McLean-Pontiff (2016) published-factor edges decay ~32% "
-    "post-publication."
+    "survivorship is corrected via the point-in-time membership ledger. Net figures "
+    "charge a modeled per-side spread cost (10-25 bps on turnover) but are gross of "
+    "additional market-impact slippage; per McLean-Pontiff (2016) published-factor "
+    "edges decay ~32% post-publication."
 )
 
 _SNAPSHOT_FIELDS = {f.name for f in dataclasses.fields(FundamentalsSnapshot)}
