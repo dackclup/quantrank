@@ -2489,3 +2489,44 @@ cap; warm steady-state (~30-35m) fits afterward. Verify: `meta.as_of_start`≈20
 (this).
 
 ---
+
+## feat(scoring) — technical-pillar MAD factor, PR-1 CONSTRUCT (checkpoint, in flight, 2026-06-08)
+
+**Origin.** Dead-code fix surfaced by `quantrank-reviewer` on PR #440: `pillars.py:170` expected
+`macd_signal` to return a dict (`"histogram"` key) but it returns a float → `macd_hist` was always
+NaN→50, an inert constant (harmless to ranks today, but a named feature contributing nothing).
+
+**Decision (issue #441; methodology-scientist ×2 + literature-searcher, user-confirmed each fork).**
+The MACD **histogram** has NO cross-sectional-factor prior; the MACD **line / MAD** does (WEAK-YES) —
+Avramov-Kaplanski-Subrahmanyam 2021 *Rev.Fin.Econ.* 39(2) (MAD ~9% annualized VW alpha, incremental
+beyond momentum/52w/profitability) + Han-Zhou-Zhu 2016 *JFE* 122(2) (MA-trend factor, >2× momentum
+Sharpe → resolves the momentum-redundancy worry). Windows are LOAD-BEARING for the sign: the alpha is
+at LONG 21/200 windows; the 12/26 MACD windows sit in Ko-Wang-Yang 2025 *FAJ*'s short-window
+overreaction regime where the cross-sectional sign INVERTS. User chose ACTIVATE-as-MAD-21/200,
+observe-first.
+
+**This commit (PR-1 CONSTRUCT only — checkpoint).** Ships the verified construct
+`compute/features/technical.mad_scalefree(prices, short=21, long=200) = (SMA_21 − SMA_200)/SMA_200`
+(scale-free → no price-level bias in the cross-sectional percentile-rank; positive→bullish; NaN<200),
+LITERATURE-ANCHORED in the docstring (Avramov 2021 + Han-Zhou-Zhu 2016 + the load-bearing-window
+caveat) — a SEPARATE function from the 12/26 `macd_signal` so windows can't silently shorten. +3
+construct pins (scale-invariance — the load-bearing one / sign-at-21/200 / NaN<long). **NOT wired into
+the pillar** — `pillars.py` UNCHANGED (dead `macd_hist`=50 stays → pillar byte-identical → Δcomposite=0).
+
+**Remaining (fully specced in issue #441) — NOT in this commit:**
+- PR-1 diagnostic half: `main.py` emits 3 `Metadata.mad_*` fields — `mad_coverage_pct` +
+  `mad_mom12_corr` + `mad_mom3_corr` (cross-sectional Spearman ρ vs the momentum-pillar metrics) —
+  with the pillar unchanged; schema triple PATCH bump `0.10.15 → 0.10.16-phase4.6`.
+- PR-2 (separate, after ≥1 cron): wire MAD into the technical pillar (replace dead `macd_hist`),
+  GATED on `abs(mad_mom12_corr) < 0.30` AND `abs(mad_mom3_corr) < 0.30` AND `mad_coverage_pct ≥ 90%`
+  AND a simulate Top-5/`entered_top5` diff (Rule 16). If either ρ ≥ 0.30 → momentum echo → REMOVE.
+
+**Verification.** ruff clean; construct tests pass; no schema change yet (the construct is unwired).
+Checkpoint commit so the verified construct isn't lost; the diagnostic+schema+PR open in a focused
+next pass per #441.
+
+**Files**: `compute/features/technical.py` (`mad_scalefree`) ·
+`tests/test_features/test_technical.py` (3 construct pins) · `CLAUDE.md` (§In-flight) ·
+`PHASE_STATUS_INFLIGHT.md` (this). (issue #441 carries the full spec + remaining tasks.)
+
+---
