@@ -88,6 +88,33 @@ def test_select_picks_tiebreak_adjusted_then_ticker():
     assert select_picks(cands, 3) == ["M", "A", "Z"]
 
 
+def test_select_picks_dedup_dual_class_keeps_higher_composite():
+    """GOOG + GOOGL are the SAME issuer — never both picked. Keep the
+    higher-composite class; fill the freed slot with the next distinct issuer."""
+    cands = [
+        _cand("GOOGL", 95.0),  # Alphabet Class A — higher composite
+        _cand("GOOG", 94.0),   # Alphabet Class C — sibling, must be skipped
+        _cand("AAA", 90.0),
+        _cand("BBB", 88.0),
+    ]
+    # count=2 → GOOGL (kept) + AAA (next DISTINCT issuer), NOT GOOG.
+    assert select_picks(cands, 2) == ["GOOGL", "AAA"]
+    # GOOG never appears even at a large count — its issuer slot is GOOGL's.
+    picks = select_picks(cands, 10)
+    assert "GOOG" not in picks
+    assert picks == ["GOOGL", "AAA", "BBB"]
+
+
+def test_select_picks_dedup_all_three_dual_class_pairs():
+    """FOX/FOXA + NWS/NWSA collapse to one issuer each (not only Alphabet)."""
+    cands = [
+        _cand("FOXA", 80.0), _cand("FOX", 79.0),
+        _cand("NWSA", 78.0), _cand("NWS", 77.0),
+    ]
+    # one class per issuer, the higher-composite one kept.
+    assert select_picks(cands, 10) == ["FOXA", "NWSA"]
+
+
 # --- inverse_vol_weights -----------------------------------------------------
 
 

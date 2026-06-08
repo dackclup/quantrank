@@ -496,21 +496,20 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **feat — AI-pick holdings slider 1→20 + endpoint labels flanking the track (this PR)** —
-  (1) **Range 1-10 → 1-20**: `compute/portfolio/weights.py` `MAX_PICKS` 10 → 20.
-  **Backtest-only** — the live forward compute / Top-5 does NOT import
-  `weights.py` (verified: `grep MAX_PICKS compute/main.py` empty), so **ZERO
-  live-ranking impact**; it drives the backtest's `by_count[1..20]` + the home
-  slider's max via `meta.max_holdings` (`DEFAULT_COUNT` stays 5). (2) **Slider
-  layout** (`HoldingsCountSlider`): the endpoint numbers (`min`/`max`) moved from
-  a separate row below the track to FLANK the slider on ONE row
-  (`[1] [====track====] [20]`). `tsc` + `next build` green (510/510); ruff clean;
-  50 portfolio tests pass (no test hardcodes 10 — `test_weights` imports
-  `MAX_PICKS`). **Backfill re-run PENDING**: the slider shows 1-10 until a
-  `backfill_portfolio_pit` run regenerates `backtest_pit.json` with
-  `by_count[1..20]` + `max_holdings=20` (5y window, same data → moderate; seeded
-  via a user `backfill-portfolio.yml` dispatch on this branch, CI commits the
-  artifact). Then the slider goes 1-20 live. No schema change.
+- **fix(portfolio) — AI-pick dedups dual-class issuers (GOOG/GOOGL bug) (this PR)** —
+  `select_picks` (`compute/portfolio/weights.py`) was picking BOTH share classes
+  of a dual-class issuer (Alphabet GOOG+GOOGL; also Fox FOX/FOXA, News NWS/NWSA) —
+  two basket slots for ONE company (the classes share fundamentals → adjacent
+  composites). Confirmed in **6/20 historical rebalances** (e.g. 2022-02-14 GOOGL
+  #1 + GOOG #2 → at count-2 the whole basket was one issuer). Fix: a
+  `_DUAL_CLASS_GROUP` issuer-key map + a dedup pass in `select_picks` keeps the
+  higher-composite class per issuer and fills the freed slot with the next
+  distinct name. **Backtest-only** (the live forward compute doesn't import
+  `weights.py`); ruff clean; **52 portfolio tests pass (+2 dedup tests)**.
+  **Backfill re-run PENDING**: the deduped baskets appear only after a
+  `backfill_portfolio_pit` run regenerates `backtest_pit.json` (5y, same data →
+  moderate; user `backfill-portfolio.yml` dispatch on this branch → CI commits the
+  artifact), then merge. No schema change.
 
 
 **Next deliverables** (pick by appetite):
