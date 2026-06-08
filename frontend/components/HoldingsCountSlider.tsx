@@ -29,7 +29,11 @@ export function HoldingsCountSlider({ value, min, max, onChange }: Props) {
           </span>
         </span>
       </div>
-      <div className="flex min-h-[44px] items-center">
+      {/* min + slider + max on ONE row — the endpoint numbers flank the track L/R. */}
+      <div className="flex min-h-[44px] items-center gap-2.5">
+        <span className="shrink-0 font-mono text-xs tabular-nums text-slate-500 dark:text-slate-400">
+          {min}
+        </span>
         <input
           id="holdings-count"
           type="range"
@@ -43,12 +47,11 @@ export function HoldingsCountSlider({ value, min, max, onChange }: Props) {
           // with accent-color hides the thumb on Safari/WebKit; the centerpiece
           // control must render its thumb cross-browser). The min-h-[44px] wrapper
           // carries the touch target.
-          className="w-full cursor-pointer accent-emerald-700 dark:accent-emerald-400"
+          className="min-w-0 flex-1 cursor-pointer accent-emerald-700 dark:accent-emerald-400"
         />
-      </div>
-      <div className="flex justify-between font-mono text-[0.625rem] tabular-nums text-slate-400 dark:text-slate-500">
-        <span>{min}</span>
-        <span>{max}</span>
+        <span className="shrink-0 font-mono text-xs tabular-nums text-slate-500 dark:text-slate-400">
+          {max}
+        </span>
       </div>
     </div>
   );

@@ -344,9 +344,11 @@ export function FairPriceCard(props) {  // no types
   client view-model — NEVER a static `import`; the 1.3MB artifact never ships in
   the page payload; `null` → "backtest pending"). The Server-Component page
   resolves it; the `'use client'` `AiPickPortfolio` receives it as props
-  (build-time-data rule — no client component imports `lib/data.ts`). The 1-10
-  slider switches `nav.by_count[N]` (one NAV line per count); the chart uses the
-  pre-aligned `nav.benchmark`, so `benchmarks.json` is NOT read by the frontend.
+  (build-time-data rule — no client component imports `lib/data.ts`). The 1-20
+  holdings slider (`MAX_PICKS` in `compute/portfolio/weights.py`; backtest-only,
+  not imported by the live forward compute) switches `nav.by_count[N]` (one NAV
+  line per count); the chart uses the pre-aligned `nav.benchmark`, so
+  `benchmarks.json` is NOT read by the frontend.
   Full rationale in CLAUDE.md §Gotchas. The `/portfolio` nav tab is labelled
   **"Watchlist"** (the coming-soon personal watchlist) to disambiguate from the
   AI-pick portfolio on Home. Selection (`compute/portfolio/weights.py`

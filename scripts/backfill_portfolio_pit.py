@@ -26,9 +26,9 @@ the membership ledger. See ``meta.disclaimer`` in the output.
     manipulation layer). DISCLOSED — a `value-trap`-style name can appear in a
     historical pick that the live rule would have vetoed. Tracked as the PR-2c
     follow-up.
-  * **NAV per holding count N=1..``MAX_PICKS`` (10).** At each rebalance the top-N
+  * **NAV per holding count N=1..``MAX_PICKS`` (20).** At each rebalance the top-N
     picks are inverse-vol weighted and the artifact stores a daily NAV series for
-    every N, so the PR-4 count slider (1-10) re-runs the backtest line vs the index
+    every N, so the count slider (1-20) re-runs the backtest line vs the index
     directly (no client-side re-derivation). ``DEFAULT_COUNT`` (5) is the slider's
     landing position. Each rebalance also stores its ranked holdings + ``weights_by_count``.
 
@@ -75,7 +75,7 @@ from compute.scoring.restatement_filings import fetch_amendments
 logger = logging.getLogger(__name__)
 
 # The slider's default landing position. The artifact carries a NAV per holding
-# count N=1..MAX_PICKS (the 1-10 slider re-runs the backtest line), so this is the
+# count N=1..MAX_PICKS (the 1-20 slider re-runs the backtest line), so this is the
 # count shown before the user touches the slider — not a cap.
 DEFAULT_COUNT = 5
 CONSERVATIVE_COST_BPS = 25.0  # the "show the cost band" second net line
@@ -295,7 +295,7 @@ def run_backfill(start: date, end: date, *, data_dir: Path | None = None) -> Pat
             )
             for t in composite.index
         ]
-        picks = select_picks(candidates, count=MAX_PICKS)  # store up to 10 holdings
+        picks = select_picks(candidates, count=MAX_PICKS)  # store up to MAX_PICKS (20) holdings
         if not picks:
             continue
 

@@ -2145,3 +2145,33 @@ comments) · `tests/test_ingest/test_historical_universe.py` ·
 §In-flight) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## feat — AI-pick holdings slider 1→20 + endpoint labels flanking the track (in flight, 2026-06-07)
+
+**What.** (1) Holdings range 1-10 → **1-20**: `compute/portfolio/weights.py`
+`MAX_PICKS` 10 → 20. (2) `HoldingsCountSlider` layout — the `min`/`max` endpoint
+numbers moved from a separate row below the track to FLANK the slider on one row
+(`[1] [====track====] [20]`).
+
+**Zero live-ranking impact.** `MAX_PICKS` is backtest-only — the live forward
+compute (`compute/main.py` → `rankings.json` / Top-5) does NOT import
+`compute/portfolio/weights.py` (verified: `grep MAX_PICKS compute/main.py` empty).
+It drives the backtest's `by_count[1..MAX_PICKS]` + the home slider max via
+`meta.max_holdings`. `DEFAULT_COUNT` stays 5. No schema change.
+
+**Verification.** ruff clean; 50 portfolio tests pass (no test hardcodes 10 —
+`test_weights` imports `MAX_PICKS`, `select_picks(99)` clamps to it); `tsc` +
+`next build` green (510/510).
+
+**Backfill re-run PENDING.** The slider shows 1-10 until `backfill_portfolio_pit`
+regenerates `backtest_pit.json` with `by_count[1..20]` + `max_holdings=20` (5y
+window, same data → moderate). Seeded via a user `backfill-portfolio.yml`
+dispatch on this branch (`if: ref != main` guard → CI commits the artifact to the
+branch). Then the slider goes 1-20 live; merge after verify.
+
+**Files**: `compute/portfolio/weights.py` (`MAX_PICKS` 10→20) ·
+`frontend/components/HoldingsCountSlider.tsx` (endpoint-flanking layout) ·
+`scripts/backfill_portfolio_pit.py` (comment 1-10→1-20) · `CLAUDE.md` (§In-flight)
+· `AGENTS.md` (AI-pick slider note) · `PHASE_STATUS_INFLIGHT.md` (this).
+
+---
