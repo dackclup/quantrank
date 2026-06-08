@@ -501,19 +501,24 @@ Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_
   `years:100`, auto-extends to the full `nav.dates` span). The ledger is already
   10y-ready (`EARLIEST_EVENT_DATE` 2016-01); the cap was the DATA layer.
   `performance-engineer` scoped it (MODERATE — config bumps, no novel work).
-  **5 edits**: `config.PRICES_PERIOD` `"5y"→"10y"` · `fundamentals.ANNUAL_HISTORY_YEARS`
-  `5→10` · backfill `--start` default `−5y→−10y` · `compute-rankings.yml`
-  **cache-key `cache-v5-fast→v6`** (the price/fundamentals caches are PERIOD-BLIND, so
-  the bump is load-bearing — without it a warm run silently returns stale 5y parquets) ·
-  `writer.write_benchmarks_json` now writes the **FULL** series (was `HISTORY_TAIL_DAYS`
-  ~5y-capped → the 10y Max benchmark line would have been blank pre-2021; benchmarks.json
-  is backfill-only so no frontend-payload cost; per-stock history STAYS 5y via the
-  unchanged `HISTORY_TAIL_DAYS`). **Zero live-scoring impact** — verified the live pillars
-  consume fixed windows only (`_cagr_from_history` slices `series[-(years+1):]`, momentum/
-  risk `.tail(1y)`, Piotroski `iloc[-2]`), so the extra 5y is fetched-but-ignored (simulate
-  will confirm). **Caveat (disclosed)**: ~15-20 tickers renamed before ~2021 (e.g. CDAY→DAY)
-  — yfinance can't resolve the historical alias, so their 2016-2020 legs drop (that cohort
-  is slightly thinner than 2021+). No schema change. ruff clean; 1585 offline tests pass.
+  **Edits**: `config.PRICES_PERIOD` `"5y"→"10y"` · `fundamentals.ANNUAL_HISTORY_YEARS`
+  `5→10` · backfill `--start` default `−5y→−10y` · **`cache-v5→v6` on BOTH period-blind
+  caches** (`compute-rankings.yml` fast + `backfill-portfolio.yml` dispatch — load-bearing:
+  the price/fundamentals parquets are keyed with no period, so without the bump a warm run
+  silently returns stale 5y data; the pre-merge-prod-sim cache stays v5 — it uses 1y windows)
+  · `writer.write_benchmarks_json` now writes the **FULL** series (was `HISTORY_TAIL_DAYS`
+  ~5y-capped → the 10y Max benchmark line would have been blank pre-2021; benchmarks.json is
+  backfill-only so no frontend-payload cost; per-stock history STAYS 5y via the unchanged
+  `HISTORY_TAIL_DAYS`) · **`risk.max_drawdown` 5y window cap** (the live-scoring regression
+  `quantrank-reviewer` caught — it was the ONE risk metric with no window, so 10y prices
+  would have shifted the risk pillar → live ranks; the cap keeps live `max_dd` PRICES_PERIOD-
+  invariant; +2 regression pins). **Zero live-scoring impact** — every live price consumer is
+  windowed (CAGR `series[-(years+1):]`, vol/sharpe/sortino/beta `.tail(1y)`, calmar 3y-cap,
+  max_dd NOW 5y-cap, momentum anchored / 52w-high 1y, technical period-windowed, Piotroski
+  `iloc[-2]`), so the extra 5y is fetched-but-ignored (the simulate is the REQUIRED rank-
+  stability backstop). **Caveat (disclosed)**: ~15-20 tickers renamed before ~2021 (e.g.
+  CDAY→DAY) — yfinance can't resolve the historical alias, so their 2016-2020 legs drop (that
+  cohort is slightly thinner than 2021+). No schema change. ruff clean; 1587 offline tests pass.
   **Cold 10y backfill PENDING** — must run via the manual `backfill-portfolio.yml` dispatch
   (cold ~60-85m exceeds the cron's 40m folded-step cap; warm ~30-35m fits after); then
   verify `meta.as_of_start`≈2016, `rebalance_count`≈40, the Max chart spans 10y, and the

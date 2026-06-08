@@ -2398,22 +2398,34 @@ extension at **MODERATE** — config bumps + a load-bearing cache-key bump, no n
   for the 2016 rebalances).
 - `scripts/backfill_portfolio_pit.py` — `--start` default `today.year-5 → today.year-10`
   (the cron's folded step uses this default).
-- `.github/workflows/compute-rankings.yml` — **`cache-v5-fast → cache-v6-fast`** (the price +
-  fundamentals_history caches are PERIOD-BLIND by key, so a period change is invisible to them;
-  without the bump a warm run silently returns the stale 5y parquets — the load-bearing edit).
-  The slow-text cache is untouched (filing text isn't period-extended).
+- **cache-key bumps `cache-v5 → cache-v6` on BOTH period-blind caches** (load-bearing — the
+  `prices` + `fundamentals_history` parquets are keyed with no period, so a 5y→10y change is
+  invisible without a vN bump → a warm run silently returns stale 5y data): (a)
+  `.github/workflows/compute-rankings.yml` fast cache (`cache-v5-fast → v6`); (b)
+  `.github/workflows/backfill-portfolio.yml` the dispatch path's cache (`cache-v5- → v6-`, key +
+  restore-keys). The slow-text cache (filing text) + the **pre-merge-prod-sim** cache stay v5 —
+  the simulate validates 1y-window live scoring and doesn't consume the extra history, so no
+  forced cold-fetch needed there.
 - `compute/output/writer.py` `write_benchmarks_json` — write the **FULL** series instead of
   the `HISTORY_TAIL_DAYS` (~5y) cap (a gap not in the original scope: a 5y-capped benchmarks.json
   would blank the 10y Max chart's SPY/QQQ line pre-2021). benchmarks.json is backfill-only (the
   frontend uses `nav.benchmark`), so no payload cost; per-stock history STAYS 5y via the
   unchanged `HISTORY_TAIL_DAYS` (no stock-chart payload doubling).
+- `compute/features/risk.py` `max_drawdown` — **5y window cap** (`s.tail(TRADING_DAYS_PER_YEAR*5)`).
+  THIS was a live-scoring-regression gap `quantrank-reviewer` caught: `max_drawdown` was the ONE
+  risk metric with no window (it spanned "available history"), and it IS a live risk-pillar metric
+  (`pillars.py:194`) — so 10y prices would have captured deeper troughs (2020 COVID) → shifted the
+  cross-sectional risk pillar → changed live composite ranks (a Rule-16 retroactive-score change).
+  The 5y cap preserves today's full-5y semantics → live `max_dd` is invariant to PRICES_PERIOD.
+  (`calmar` was already 3y-capped — safe.) +2 regression tests pin the invariance.
 
-**Zero live-scoring impact (verified).** `PRICES_PERIOD`/`ANNUAL_HISTORY_YEARS` feed the live
-weekly compute too, but every live consumer is windowed: `_cagr_from_history` slices
-`series[-(years+1):]` (max 5y CAGR = 6 rows), momentum/risk `.tail(TRADING_DAYS_PER_YEAR)`,
-Piotroski `iloc[-2]`, value.py uses point-in-time `current_price`. So the extra 5y is
-fetched-but-ignored — no pillar/score change. The Pre-Merge Production Simulation (which runs
-on this compute-touching PR) is the empirical backstop.
+**Zero live-scoring impact (verified — including the reviewer-caught gap).** Every live consumer
+of the extra history is windowed: `_cagr_from_history` slices `series[-(years+1):]` (max 5y CAGR),
+vol/sharpe/sortino/beta `.tail(1y)`, calmar 3y-cap, **`max_drawdown` NOW 5y-cap (the fix)**,
+momentum anchored / `distance_from_52w_high` 1y, technical indicators period-windowed, Piotroski
+`iloc[-2]`, value.py point-in-time `current_price`. So the extra 5y is fetched-but-ignored — no
+pillar/score change. The Pre-Merge Production Simulation (runs on this compute-touching PR) is the
+REQUIRED empirical backstop — it must show composite-rank stability (data-freshness noise only).
 
 **Caveat (disclosed).** ~15-20 tickers renamed before ~2021 (e.g. CDAY→DAY) — yfinance resolves
 the CURRENT symbol, not the historical alias, so their 2016-2020 price legs return no data and
@@ -2428,7 +2440,9 @@ cap; warm steady-state (~30-35m) fits afterward. Verify: `meta.as_of_start`≈20
 
 **Files**: `compute/config.py` · `compute/ingest/fundamentals.py` ·
 `scripts/backfill_portfolio_pit.py` · `.github/workflows/compute-rankings.yml` ·
-`compute/output/writer.py` · `CLAUDE.md` (§In-flight + §Gotchas membership/cache/prices) ·
+`.github/workflows/backfill-portfolio.yml` (cache-v6) · `compute/output/writer.py` ·
+`compute/features/risk.py` (`max_drawdown` 5y-cap) · `tests/test_features/test_risk.py`
+(+2 invariance pins) · `CLAUDE.md` (§In-flight + §Gotchas membership/cache/prices) ·
 `AGENTS.md` (prices.py note) · `docs/GOTCHAS.md` (cache-v6 + prices) · `PHASE_STATUS_INFLIGHT.md`
 (this).
 
