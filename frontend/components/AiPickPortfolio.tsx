@@ -163,8 +163,12 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
   const netReturn = view.periodPortfolio;
   const benchReturn = view.periodBenchmark;
 
-  const holdings = latest ? latest.holdings.slice(0, count) : [];
   const weights = latest ? (latest.weightsByCount[countKey] ?? {}) : {};
+  const holdings = latest
+    ? latest.holdings
+        .slice(0, count)
+        .sort((a, b) => (weights[b.ticker] ?? 0) - (weights[a.ticker] ?? 0))
+    : [];
 
   // Sector-concentration disclosure (methodology-scientist 2026-06-06): with the
   // 2-per-sector cap removed, inverse-vol + the 0.35 cap bound single-NAME risk but
