@@ -73,7 +73,7 @@ function toneClass(v: number | null): string {
 }
 
 export function AiPickPortfolio({ data }: { data: AiPickData }) {
-  const { meta, dates, netByCount, benchmark, finalsByCount, latest, timeline } = data;
+  const { meta, dates, netByCount, grossByCount, conservativeByCount, benchmark, finalsByCount, latest, timeline } = data;
 
   // Default to the count with the highest Max-window net return so the first
   // view the user sees is the best-performing basket, not an arbitrary fixed default.
@@ -97,10 +97,14 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
 
   const view = useMemo(() => {
     const net = netByCount[countKey] ?? [];
+    const gross = grossByCount[countKey] ?? [];
+    const cons = conservativeByCount[countKey] ?? [];
     const bser = benchmark[bench] ?? [];
     const years = PERIODS.find((p) => p.value === period)?.years ?? 5;
     const startIdx = startIndexForYears(dates, years);
     const pAnchor = firstFiniteFrom(net, startIdx);
+    const gAnchor = firstFiniteFrom(gross, startIdx);
+    const cAnchor = firstFiniteFrom(cons, startIdx);
     const bAnchor = firstFiniteFrom(bser, startIdx);
 
     const span = dates.length - startIdx;
@@ -135,25 +139,28 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
     }
     const retFromBase = (v: number | null | undefined) =>
       v === null || v === undefined ? null : (v / CHART_BASE - 1) * 100;
+    const lastGross = gross.length > 0 ? gross[gross.length - 1] : null;
+    const lastCons = cons.length > 0 ? cons[cons.length - 1] : null;
+    const periodGross = gAnchor && lastGross != null ? (lastGross / gAnchor - 1) * 100 : null;
+    const periodConservative = cAnchor && lastCons != null ? (lastCons / cAnchor - 1) * 100 : null;
     return {
       points: yearPoints,
       endPortfolio: lastPoint ? lastPoint.portfolio : null,
       endBenchmark: lastPoint ? lastPoint.benchmark : null,
       periodPortfolio: lastPoint ? retFromBase(lastPoint.portfolio) : null,
       periodBenchmark: lastPoint ? retFromBase(lastPoint.benchmark) : null,
+      periodGross,
+      periodConservative,
       periodStart: dates[startIdx] ?? null,
     };
-  }, [netByCount, benchmark, dates, countKey, bench, period]);
+  }, [netByCount, grossByCount, conservativeByCount, benchmark, dates, countKey, bench, period]);
 
-  // Full-window (since inception) returns — used only for GROSS + conservative cost
-  // band columns which have no period-slice series available.
+  // All three cost-band columns are now period-aware (series exposed via grossByCount /
+  // conservativeByCount); finalsByCount is kept only as a fallback when series are absent.
   const finals = finalsByCount[countKey] ?? { gross: null, net: null, conservative: null };
   const ret = (nav: number | null) => (nav === null ? null : nav - 100);
-  const grossReturn = ret(finals.gross);
-  const consReturn = ret(finals.conservative);
-  const isMax = period === 'MAX';
-
-  // Hero headline + NET cost band column always reflect the selected period window.
+  const grossReturn = view.periodGross ?? ret(finals.gross);
+  const consReturn = view.periodConservative ?? ret(finals.conservative);
   const netReturn = view.periodPortfolio;
   const benchReturn = view.periodBenchmark;
 
@@ -285,12 +292,12 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
           </div>
         </div>
 
-        {/* Cost band — period-aware net; gross + conservative are full-window only
-            (no per-period series), shown only on Max to avoid misleading comparisons. */}
-        <div className={`grid gap-2 border-t border-slate-100 pt-4 text-center dark:border-slate-800 ${isMax ? 'grid-cols-3' : 'grid-cols-1'}`}>
-          {isMax && <CostStat label="Gross" value={grossReturn} />}
-          <CostStat label={isMax ? 'Net (10bps)' : `Net (10bps) · ${period}`} value={netReturn} />
-          {isMax && <CostStat label="Net (25bps)" value={consReturn} />}
+        {/* Cost band — all three columns are period-aware now that gross + conservative
+            series are exposed from the backtest artifact. */}
+        <div className="grid grid-cols-3 gap-2 border-t border-slate-100 pt-4 text-center dark:border-slate-800">
+          <CostStat label="Gross" value={grossReturn} />
+          <CostStat label="Net (10bps)" value={netReturn} />
+          <CostStat label="Net (25bps)" value={consReturn} />
         </div>
       </div>
 

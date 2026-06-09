@@ -74,9 +74,13 @@ export function getAiPickData(): AiPickData | null {
   const { meta, nav, rebalances } = bt;
 
   const netByCount: Record<string, (number | null)[]> = {};
+  const grossByCount: Record<string, (number | null)[]> = {};
+  const conservativeByCount: Record<string, (number | null)[]> = {};
   const finalsByCount: Record<string, AiPickFinals> = {};
   for (const [count, series] of Object.entries(nav.by_count)) {
     netByCount[count] = series.net.map(round2);
+    grossByCount[count] = series.gross.map(round2);
+    conservativeByCount[count] = series.net_conservative.map(round2);
     finalsByCount[count] = {
       gross: round2(lastFinite(series.gross)),
       net: round2(lastFinite(series.net)),
@@ -94,6 +98,8 @@ export function getAiPickData(): AiPickData | null {
     meta,
     dates: nav.dates,
     netByCount,
+    grossByCount,
+    conservativeByCount,
     benchmark,
     finalsByCount,
     latest: {
