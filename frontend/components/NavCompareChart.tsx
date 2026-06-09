@@ -127,10 +127,14 @@ export function NavCompareChart({ data, portfolioLabel, benchmarkLabel, money = 
   // remain visible without Recharts auto-hiding every other tick.
   const isNarrow = containerWidth > 0 && containerWidth < 500;
   const labelAngle = isNarrow ? -45 : 0;
-  const xAxisHeight = isNarrow ? 40 : 24;
+  // Compact label size + reduced axis height on mobile for a more open look.
+  const tickFontSize = isNarrow ? 10 : 11;
+  const xAxisHeight = isNarrow ? 34 : 24;
 
   return (
-    <div ref={containerRef} className="h-72 w-full" aria-hidden="true">
+    // h-52 on mobile (208px) → wider aspect ratio, less imposing on small screens;
+    // h-72 on sm+ (288px) for the desktop card view.
+    <div ref={containerRef} className="h-52 sm:h-72 w-full" aria-hidden="true">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 8, right: money ? 60 : 8, bottom: 0, left: -12 }}>
           <CartesianGrid stroke={grid} strokeDasharray="3 3" vertical />
@@ -139,7 +143,7 @@ export function NavCompareChart({ data, portfolioLabel, benchmarkLabel, money = 
             dataKey="date"
             ticks={yearTicks}
             tickFormatter={fmtYear}
-            tick={{ fontSize: 11, fill: axis }}
+            tick={{ fontSize: tickFontSize, fill: axis }}
             stroke={grid}
             tickLine={false}
             interval={0}
@@ -150,7 +154,7 @@ export function NavCompareChart({ data, portfolioLabel, benchmarkLabel, money = 
           <YAxis
             domain={['auto', 'auto']}
             tickFormatter={money ? fmtMoneyAxis : undefined}
-            tick={{ fontSize: 11, fill: axis }}
+            tick={{ fontSize: tickFontSize, fill: axis }}
             stroke={grid}
             tickLine={false}
             width={money ? 48 : 40}
