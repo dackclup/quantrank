@@ -123,13 +123,20 @@ export function NavCompareChart({ data, portfolioLabel, benchmarkLabel, money = 
   const surface = isDark ? '#0f172a' : '#ffffff'; // slate-900 card / white — hollow-dot fill
   const yearTicks = data.filter((d) => d.yearStart).map((d) => d.date);
 
-  // On narrow containers (mobile portrait), rotate year labels so all years
-  // remain visible without Recharts auto-hiding every other tick.
+  // isNarrow gates end-label suppression + right-margin reduction (mobile portrait).
   const isNarrow = containerWidth > 0 && containerWidth < 500;
-  const labelAngle = isNarrow ? -45 : 0;
-  // Compact label size + reduced axis height on mobile for a more open look.
+
+  // Rotate year labels only when they'd genuinely overlap — computed from actual
+  // tick count vs available plot width (~32px per horizontal "2016" label at 10px).
+  // This way 1Y (2 ticks) and 5Y (6 ticks) stay horizontal even on a narrow phone;
+  // only Max (11 ticks) rotates when the container is tight.
+  const plotWidth = containerWidth > 0
+    ? Math.max(0, containerWidth - (money ? 56 : 48) - 8)
+    : 0;
+  const needsRotation = plotWidth > 0 && yearTicks.length * 32 > plotWidth;
+  const labelAngle = needsRotation ? -45 : 0;
   const tickFontSize = isNarrow ? 10 : 11;
-  const xAxisHeight = isNarrow ? 34 : 24;
+  const xAxisHeight = needsRotation ? 34 : 24;
 
   return (
     // h-52 on mobile (208px) → wider aspect ratio, less imposing on small screens;
@@ -150,7 +157,7 @@ export function NavCompareChart({ data, portfolioLabel, benchmarkLabel, money = 
             tickLine={false}
             interval={0}
             angle={labelAngle}
-            textAnchor={isNarrow ? 'end' : 'middle'}
+            textAnchor={needsRotation ? 'end' : 'middle'}
             height={xAxisHeight}
           />
           <YAxis
