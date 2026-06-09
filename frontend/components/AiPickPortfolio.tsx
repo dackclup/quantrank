@@ -75,7 +75,19 @@ function toneClass(v: number | null): string {
 export function AiPickPortfolio({ data }: { data: AiPickData }) {
   const { meta, dates, netByCount, benchmark, finalsByCount, latest, timeline } = data;
 
-  const [count, setCount] = useState<number>(meta.default_count);
+  // Default to the count with the highest Max-window net return so the first
+  // view the user sees is the best-performing basket, not an arbitrary fixed default.
+  const bestMaxCount = useMemo(() => {
+    let best = meta.default_count;
+    let bestVal = -Infinity;
+    for (const [key, val] of Object.entries(finalsByCount)) {
+      const n = val.net;
+      if (n !== null && n > bestVal) { bestVal = n; best = Number(key); }
+    }
+    return best;
+  }, [finalsByCount, meta.default_count]);
+
+  const [count, setCount] = useState<number>(bestMaxCount);
   const [bench, setBench] = useState<string>(meta.default_benchmark);
   const [period, setPeriod] = useState<string>('MAX');
 
