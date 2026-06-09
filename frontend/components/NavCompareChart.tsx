@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTheme } from 'next-themes';
 import {
   CartesianGrid,
@@ -100,7 +100,20 @@ function endLabel(total: number, color: string) {
 export function NavCompareChart({ data, portfolioLabel, benchmarkLabel, money = false, baseline = 100 }: Props) {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState(0);
+
+  useEffect(() => {
+    setMounted(true);
+    const el = containerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver((entries) => {
+      setContainerWidth(entries[0].contentRect.width);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   const isDark = mounted && resolvedTheme === 'dark';
 
   const axis = isDark ? '#94a3b8' : '#64748b'; // slate-400 / slate-500
@@ -110,24 +123,47 @@ export function NavCompareChart({ data, portfolioLabel, benchmarkLabel, money = 
   const surface = isDark ? '#0f172a' : '#ffffff'; // slate-900 card / white — hollow-dot fill
   const yearTicks = data.filter((d) => d.yearStart).map((d) => d.date);
 
+  // isNarrow gates end-label suppression + right-margin reduction (mobile portrait).
+  const isNarrow = containerWidth > 0 && containerWidth < 500;
+
+  // Rotate year labels only when they'd genuinely overlap — computed from actual
+  // tick count vs available plot width (~32px per horizontal "2016" label at 10px).
+  // This way 1Y (2 ticks) and 5Y (6 ticks) stay horizontal even on a narrow phone;
+  // only Max (11 ticks) rotates when the container is tight.
+  const plotWidth = containerWidth > 0
+    ? Math.max(0, containerWidth - (money ? 56 : 48) - 8)
+    : 0;
+  const needsRotation = plotWidth > 0 && yearTicks.length * 32 > plotWidth;
+  const labelAngle = needsRotation ? -45 : 0;
+  const tickFontSize = isNarrow ? 10 : 11;
+  const xAxisHeight = needsRotation ? 34 : 24;
+
   return (
-    <div className="h-72 w-full" aria-hidden="true">
+    // h-52 on mobile (208px) → wider aspect ratio, less imposing on small screens;
+    // h-72 on sm+ (288px) for the desktop card view.
+    <div ref={containerRef} className="h-52 sm:h-72 w-full" aria-hidden="true">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data} margin={{ top: 8, right: money ? 60 : 8, bottom: 0, left: -12 }}>
+        {/* On narrow mobile the end labels are suppressed so the chart can
+            stretch to full width; the values are visible in the legend below. */}
+        <LineChart data={data} margin={{ top: 8, right: money && !isNarrow ? 60 : 8, bottom: 0, left: -12 }}>
           <CartesianGrid stroke={grid} strokeDasharray="3 3" vertical />
           <ReferenceLine y={baseline} stroke={grid} strokeWidth={1} />
           <XAxis
             dataKey="date"
             ticks={yearTicks}
             tickFormatter={fmtYear}
-            tick={{ fontSize: 11, fill: axis }}
+            tick={{ fontSize: tickFontSize, fill: axis }}
             stroke={grid}
             tickLine={false}
+            interval={0}
+            angle={labelAngle}
+            textAnchor={needsRotation ? 'end' : 'middle'}
+            height={xAxisHeight}
           />
           <YAxis
             domain={['auto', 'auto']}
             tickFormatter={money ? fmtMoneyAxis : undefined}
-            tick={{ fontSize: 11, fill: axis }}
+            tick={{ fontSize: tickFontSize, fill: axis }}
             stroke={grid}
             tickLine={false}
             width={money ? 48 : 40}
@@ -143,7 +179,7 @@ export function NavCompareChart({ data, portfolioLabel, benchmarkLabel, money = 
             connectNulls
             isAnimationActive={false}
           >
-            {money && <LabelList content={endLabel(data.length, bColor)} />}
+            {money && !isNarrow && <LabelList content={endLabel(data.length, bColor)} />}
           </Line>
           <Line
             type="linear"
@@ -155,7 +191,7 @@ export function NavCompareChart({ data, portfolioLabel, benchmarkLabel, money = 
             connectNulls
             isAnimationActive={false}
           >
-            {money && <LabelList content={endLabel(data.length, pColor)} />}
+            {money && !isNarrow && <LabelList content={endLabel(data.length, pColor)} />}
           </Line>
         </LineChart>
       </ResponsiveContainer>

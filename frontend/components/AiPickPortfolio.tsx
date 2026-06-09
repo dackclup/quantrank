@@ -14,10 +14,9 @@ import type { AiPickData } from '@/lib/types';
 
 const PERIODS: readonly { value: string; label: string; years: number }[] = [
   { value: '1Y', label: '1Y', years: 1 },
+  { value: '3Y', label: '3Y', years: 3 },
   { value: '5Y', label: '5Y', years: 5 },
-  // "Max" shows the full backtest window — ~5y today, and automatically the full
-  // span once the membership ledger + backfill extend it (Track B). Labeled Max
-  // (not "10Y") so it never overstates the data actually present.
+  { value: '7Y', label: '7Y', years: 7 },
   { value: 'MAX', label: 'Max', years: 100 },
 ];
 
@@ -49,12 +48,6 @@ function firstFiniteFrom(series: (number | null)[], start: number): number | nul
   return null;
 }
 
-function lastFinite(series: (number | null)[]): number | null {
-  for (let i = series.length - 1; i >= 0; i -= 1) {
-    if (isFinite_(series[i])) return series[i] as number;
-  }
-  return null;
-}
 
 function startIndexForYears(dates: string[], years: number): number {
   if (dates.length === 0) return 0;
@@ -79,9 +72,21 @@ function toneClass(v: number | null): string {
 }
 
 export function AiPickPortfolio({ data }: { data: AiPickData }) {
-  const { meta, dates, netByCount, benchmark, finalsByCount, latest, timeline } = data;
+  const { meta, dates, netByCount, grossByCount, conservativeByCount, benchmark, finalsByCount, latest, timeline } = data;
 
-  const [count, setCount] = useState<number>(meta.default_count);
+  // Default to the count with the highest Max-window net return so the first
+  // view the user sees is the best-performing basket, not an arbitrary fixed default.
+  const bestMaxCount = useMemo(() => {
+    let best = meta.default_count;
+    let bestVal = -Infinity;
+    for (const [key, val] of Object.entries(finalsByCount)) {
+      const n = val.net;
+      if (n !== null && n > bestVal) { bestVal = n; best = Number(key); }
+    }
+    return best;
+  }, [finalsByCount, meta.default_count]);
+
+  const [count, setCount] = useState<number>(bestMaxCount);
   const [bench, setBench] = useState<string>(meta.default_benchmark);
   const [period, setPeriod] = useState<string>('MAX');
 
@@ -91,10 +96,14 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
 
   const view = useMemo(() => {
     const net = netByCount[countKey] ?? [];
+    const gross = grossByCount[countKey] ?? [];
+    const cons = conservativeByCount[countKey] ?? [];
     const bser = benchmark[bench] ?? [];
     const years = PERIODS.find((p) => p.value === period)?.years ?? 5;
     const startIdx = startIndexForYears(dates, years);
     const pAnchor = firstFiniteFrom(net, startIdx);
+    const gAnchor = firstFiniteFrom(gross, startIdx);
+    const cAnchor = firstFiniteFrom(cons, startIdx);
     const bAnchor = firstFiniteFrom(bser, startIdx);
 
     const span = dates.length - startIdx;
@@ -129,25 +138,37 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
     }
     const retFromBase = (v: number | null | undefined) =>
       v === null || v === undefined ? null : (v / CHART_BASE - 1) * 100;
+    const lastGross = gross.length > 0 ? gross[gross.length - 1] : null;
+    const lastCons = cons.length > 0 ? cons[cons.length - 1] : null;
+    const periodGross = gAnchor && lastGross != null ? (lastGross / gAnchor - 1) * 100 : null;
+    const periodConservative = cAnchor && lastCons != null ? (lastCons / cAnchor - 1) * 100 : null;
     return {
       points: yearPoints,
       endPortfolio: lastPoint ? lastPoint.portfolio : null,
       endBenchmark: lastPoint ? lastPoint.benchmark : null,
       periodPortfolio: lastPoint ? retFromBase(lastPoint.portfolio) : null,
       periodBenchmark: lastPoint ? retFromBase(lastPoint.benchmark) : null,
+      periodGross,
+      periodConservative,
+      periodStart: dates[startIdx] ?? null,
     };
-  }, [netByCount, benchmark, dates, countKey, bench, period]);
+  }, [netByCount, grossByCount, conservativeByCount, benchmark, dates, countKey, bench, period]);
 
-  // Full-window (since inception) returns for the headline + cost band.
+  // All three cost-band columns are now period-aware (series exposed via grossByCount /
+  // conservativeByCount); finalsByCount is kept only as a fallback when series are absent.
   const finals = finalsByCount[countKey] ?? { gross: null, net: null, conservative: null };
   const ret = (nav: number | null) => (nav === null ? null : nav - 100);
-  const netReturn = ret(finals.net);
-  const grossReturn = ret(finals.gross);
-  const consReturn = ret(finals.conservative);
-  const benchFull = ret(lastFinite(benchmark[bench] ?? []));
+  const grossReturn = view.periodGross ?? ret(finals.gross);
+  const consReturn = view.periodConservative ?? ret(finals.conservative);
+  const netReturn = view.periodPortfolio;
+  const benchReturn = view.periodBenchmark;
 
-  const holdings = latest ? latest.holdings.slice(0, count) : [];
   const weights = latest ? (latest.weightsByCount[countKey] ?? {}) : {};
+  const holdings = latest
+    ? latest.holdings
+        .slice(0, count)
+        .sort((a, b) => (weights[b.ticker] ?? 0) - (weights[a.ticker] ?? 0))
+    : [];
 
   // Sector-concentration disclosure (methodology-scientist 2026-06-06): with the
   // 2-per-sector cap removed, inverse-vol + the 0.35 cap bound single-NAME risk but
@@ -171,19 +192,19 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
               {pctStr(netReturn)}
             </div>
             <div className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-              since {meta.as_of_start} · {meta.rebalance_count} quarterly rebalances
+              since {view.periodStart ?? meta.as_of_start} · {meta.rebalance_count} quarterly rebalances
             </div>
           </div>
           <div className="text-right">
             <div className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
               {benchLabel}
             </div>
-            <div className={`font-mono text-2xl font-semibold tabular-nums ${toneClass(benchFull)}`}>
-              {pctStr(benchFull)}
+            <div className={`font-mono text-2xl font-semibold tabular-nums ${toneClass(benchReturn)}`}>
+              {pctStr(benchReturn)}
             </div>
             <div className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-              {netReturn !== null && benchFull !== null
-                ? `${pctStr(netReturn - benchFull)} vs index`
+              {netReturn !== null && benchReturn !== null
+                ? `${pctStr(netReturn - benchReturn)} vs index`
                 : 'benchmark'}
             </div>
           </div>
@@ -274,7 +295,8 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
           </div>
         </div>
 
-        {/* Cost band — gross / net / higher-slippage (honesty: show the gap) */}
+        {/* Cost band — all three columns are period-aware now that gross + conservative
+            series are exposed from the backtest artifact. */}
         <div className="grid grid-cols-3 gap-2 border-t border-slate-100 pt-4 text-center dark:border-slate-800">
           <CostStat label="Gross" value={grossReturn} />
           <CostStat label="Net (10bps)" value={netReturn} />

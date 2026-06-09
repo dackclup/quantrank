@@ -638,6 +638,10 @@ export type AiPickData = {
   dates: string[];
   // net NAV per holding count N (rounded), aligned to `dates`.
   netByCount: Record<string, (number | null)[]>;
+  // gross NAV per count (no cost deducted), aligned to `dates`.
+  grossByCount: Record<string, (number | null)[]>;
+  // conservative-cost NAV per count (25bps/side), aligned to `dates`.
+  conservativeByCount: Record<string, (number | null)[]>;
   // rebased benchmark NAVs per symbol (rounded), aligned to `dates`.
   benchmark: Record<string, (number | null)[]>;
   // final (last-finite) gross/net/conservative per count, for the summary.
