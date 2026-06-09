@@ -16,6 +16,7 @@ const PERIODS: readonly { value: string; label: string; years: number }[] = [
   { value: '1Y', label: '1Y', years: 1 },
   { value: '3Y', label: '3Y', years: 3 },
   { value: '5Y', label: '5Y', years: 5 },
+  { value: '7Y', label: '7Y', years: 7 },
   { value: 'MAX', label: 'Max', years: 100 },
 ];
 
