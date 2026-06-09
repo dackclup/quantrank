@@ -14,10 +14,8 @@ import type { AiPickData } from '@/lib/types';
 
 const PERIODS: readonly { value: string; label: string; years: number }[] = [
   { value: '1Y', label: '1Y', years: 1 },
+  { value: '3Y', label: '3Y', years: 3 },
   { value: '5Y', label: '5Y', years: 5 },
-  // "Max" shows the full backtest window — ~5y today, and automatically the full
-  // span once the membership ledger + backfill extend it (Track B). Labeled Max
-  // (not "10Y") so it never overstates the data actually present.
   { value: 'MAX', label: 'Max', years: 100 },
 ];
 
