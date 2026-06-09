@@ -49,12 +49,6 @@ function firstFiniteFrom(series: (number | null)[], start: number): number | nul
   return null;
 }
 
-function lastFinite(series: (number | null)[]): number | null {
-  for (let i = series.length - 1; i >= 0; i -= 1) {
-    if (isFinite_(series[i])) return series[i] as number;
-  }
-  return null;
-}
 
 function startIndexForYears(dates: string[], years: number): number {
   if (dates.length === 0) return 0;
@@ -135,16 +129,21 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
       endBenchmark: lastPoint ? lastPoint.benchmark : null,
       periodPortfolio: lastPoint ? retFromBase(lastPoint.portfolio) : null,
       periodBenchmark: lastPoint ? retFromBase(lastPoint.benchmark) : null,
+      periodStart: dates[startIdx] ?? null,
     };
   }, [netByCount, benchmark, dates, countKey, bench, period]);
 
-  // Full-window (since inception) returns for the headline + cost band.
+  // Full-window (since inception) returns — used only for GROSS + conservative cost
+  // band columns which have no period-slice series available.
   const finals = finalsByCount[countKey] ?? { gross: null, net: null, conservative: null };
   const ret = (nav: number | null) => (nav === null ? null : nav - 100);
-  const netReturn = ret(finals.net);
   const grossReturn = ret(finals.gross);
   const consReturn = ret(finals.conservative);
-  const benchFull = ret(lastFinite(benchmark[bench] ?? []));
+  const isMax = period === 'MAX';
+
+  // Hero headline + NET cost band column always reflect the selected period window.
+  const netReturn = view.periodPortfolio;
+  const benchReturn = view.periodBenchmark;
 
   const holdings = latest ? latest.holdings.slice(0, count) : [];
   const weights = latest ? (latest.weightsByCount[countKey] ?? {}) : {};
@@ -171,19 +170,19 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
               {pctStr(netReturn)}
             </div>
             <div className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-              since {meta.as_of_start} · {meta.rebalance_count} quarterly rebalances
+              since {view.periodStart ?? meta.as_of_start} · {meta.rebalance_count} quarterly rebalances
             </div>
           </div>
           <div className="text-right">
             <div className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
               {benchLabel}
             </div>
-            <div className={`font-mono text-2xl font-semibold tabular-nums ${toneClass(benchFull)}`}>
-              {pctStr(benchFull)}
+            <div className={`font-mono text-2xl font-semibold tabular-nums ${toneClass(benchReturn)}`}>
+              {pctStr(benchReturn)}
             </div>
             <div className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-              {netReturn !== null && benchFull !== null
-                ? `${pctStr(netReturn - benchFull)} vs index`
+              {netReturn !== null && benchReturn !== null
+                ? `${pctStr(netReturn - benchReturn)} vs index`
                 : 'benchmark'}
             </div>
           </div>
@@ -274,11 +273,12 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
           </div>
         </div>
 
-        {/* Cost band — gross / net / higher-slippage (honesty: show the gap) */}
-        <div className="grid grid-cols-3 gap-2 border-t border-slate-100 pt-4 text-center dark:border-slate-800">
-          <CostStat label="Gross" value={grossReturn} />
-          <CostStat label="Net (10bps)" value={netReturn} />
-          <CostStat label="Net (25bps)" value={consReturn} />
+        {/* Cost band — period-aware net; gross + conservative are full-window only
+            (no per-period series), shown only on Max to avoid misleading comparisons. */}
+        <div className={`grid gap-2 border-t border-slate-100 pt-4 text-center dark:border-slate-800 ${isMax ? 'grid-cols-3' : 'grid-cols-1'}`}>
+          {isMax && <CostStat label="Gross" value={grossReturn} />}
+          <CostStat label={isMax ? 'Net (10bps)' : `Net (10bps) · ${period}`} value={netReturn} />
+          {isMax && <CostStat label="Net (25bps)" value={consReturn} />}
         </div>
       </div>
 
