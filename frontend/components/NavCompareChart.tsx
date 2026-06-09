@@ -136,7 +136,9 @@ export function NavCompareChart({ data, portfolioLabel, benchmarkLabel, money = 
     // h-72 on sm+ (288px) for the desktop card view.
     <div ref={containerRef} className="h-52 sm:h-72 w-full" aria-hidden="true">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data} margin={{ top: 8, right: money ? 60 : 8, bottom: 0, left: -12 }}>
+        {/* On narrow mobile the end labels are suppressed so the chart can
+            stretch to full width; the values are visible in the legend below. */}
+        <LineChart data={data} margin={{ top: 8, right: money && !isNarrow ? 60 : 8, bottom: 0, left: -12 }}>
           <CartesianGrid stroke={grid} strokeDasharray="3 3" vertical />
           <ReferenceLine y={baseline} stroke={grid} strokeWidth={1} />
           <XAxis
@@ -170,7 +172,7 @@ export function NavCompareChart({ data, portfolioLabel, benchmarkLabel, money = 
             connectNulls
             isAnimationActive={false}
           >
-            {money && <LabelList content={endLabel(data.length, bColor)} />}
+            {money && !isNarrow && <LabelList content={endLabel(data.length, bColor)} />}
           </Line>
           <Line
             type="linear"
@@ -182,7 +184,7 @@ export function NavCompareChart({ data, portfolioLabel, benchmarkLabel, money = 
             connectNulls
             isAnimationActive={false}
           >
-            {money && <LabelList content={endLabel(data.length, pColor)} />}
+            {money && !isNarrow && <LabelList content={endLabel(data.length, pColor)} />}
           </Line>
         </LineChart>
       </ResponsiveContainer>
