@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTheme } from 'next-themes';
 import {
   CartesianGrid,
@@ -100,7 +100,20 @@ function endLabel(total: number, color: string) {
 export function NavCompareChart({ data, portfolioLabel, benchmarkLabel, money = false, baseline = 100 }: Props) {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState(0);
+
+  useEffect(() => {
+    setMounted(true);
+    const el = containerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver((entries) => {
+      setContainerWidth(entries[0].contentRect.width);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   const isDark = mounted && resolvedTheme === 'dark';
 
   const axis = isDark ? '#94a3b8' : '#64748b'; // slate-400 / slate-500
@@ -110,8 +123,14 @@ export function NavCompareChart({ data, portfolioLabel, benchmarkLabel, money = 
   const surface = isDark ? '#0f172a' : '#ffffff'; // slate-900 card / white — hollow-dot fill
   const yearTicks = data.filter((d) => d.yearStart).map((d) => d.date);
 
+  // On narrow containers (mobile portrait), rotate year labels so all years
+  // remain visible without Recharts auto-hiding every other tick.
+  const isNarrow = containerWidth > 0 && containerWidth < 500;
+  const labelAngle = isNarrow ? -45 : 0;
+  const xAxisHeight = isNarrow ? 40 : 24;
+
   return (
-    <div className="h-72 w-full" aria-hidden="true">
+    <div ref={containerRef} className="h-72 w-full" aria-hidden="true">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 8, right: money ? 60 : 8, bottom: 0, left: -12 }}>
           <CartesianGrid stroke={grid} strokeDasharray="3 3" vertical />
@@ -123,6 +142,10 @@ export function NavCompareChart({ data, portfolioLabel, benchmarkLabel, money = 
             tick={{ fontSize: 11, fill: axis }}
             stroke={grid}
             tickLine={false}
+            interval={0}
+            angle={labelAngle}
+            textAnchor={isNarrow ? 'end' : 'middle'}
+            height={xAxisHeight}
           />
           <YAxis
             domain={['auto', 'auto']}
