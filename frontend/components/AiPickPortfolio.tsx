@@ -273,40 +273,50 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
 
         {/* Chart + timeframe */}
         <div className="space-y-2">
-          <NavCompareChartLazy
-            data={view.points}
-            portfolioLabel={portfolioLabel}
-            benchmarkLabel={benchLabel}
-            money
-            baseline={CHART_BASE}
-          />
+          {/* relative wrapper so the stats overlay can be positioned inside the chart area */}
+          <div className="relative">
+            <NavCompareChartLazy
+              data={view.points}
+              portfolioLabel={portfolioLabel}
+              benchmarkLabel={benchLabel}
+              money
+              baseline={CHART_BASE}
+            />
+            {/* Stats overlay — top-left inside the plot area (left offset clears the ~36px y-axis) */}
+            <div className="pointer-events-none absolute left-11 top-3 space-y-0.5 rounded bg-white/90 px-2 py-1 dark:bg-slate-900/90">
+              <div className="flex items-baseline gap-1.5 text-[11px] leading-tight">
+                <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-700 dark:bg-emerald-400" aria-hidden="true" />
+                <span className="font-semibold text-slate-700 dark:text-slate-200">{portfolioLabel} (net)</span>
+                <span className="font-mono font-bold tabular-nums text-slate-900 dark:text-slate-100">{money$(view.endPortfolio)}</span>
+                {view.periodPortfolio !== null && (
+                  <span className={`font-mono tabular-nums ${toneClass(view.periodPortfolio)}`}>{pctStr(view.periodPortfolio)}</span>
+                )}
+              </div>
+              <div className="flex items-baseline gap-1.5 text-[11px] leading-tight">
+                <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500 dark:bg-indigo-400" aria-hidden="true" />
+                <span className="font-semibold text-slate-700 dark:text-slate-200">{benchLabel}</span>
+                <span className="font-mono font-bold tabular-nums text-slate-900 dark:text-slate-100">{money$(view.endBenchmark)}</span>
+                {view.periodBenchmark !== null && (
+                  <span className={`font-mono tabular-nums ${toneClass(view.periodBenchmark)}`}>{pctStr(view.periodBenchmark)}</span>
+                )}
+              </div>
+            </div>
+          </div>
           <SegmentedSelector
             options={PERIODS}
             value={period}
             onChange={setPeriod}
             ariaLabel="Chart timeframe"
           />
-          {/* Legend — $-growth framing; color paired with text label + $ value (Rule 10) */}
+          {/* Legend — color key only; $ values + % are now in the chart overlay */}
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-1 text-xs text-slate-600 dark:text-slate-300">
             <span className="inline-flex items-center gap-1.5">
               <span className="inline-block h-2 w-2 rounded-full bg-emerald-700 dark:bg-emerald-400" aria-hidden="true" />
-              {portfolioLabel} (net){' '}
-              <span className="font-mono font-semibold tabular-nums text-slate-900 dark:text-slate-100">
-                {money$(view.endPortfolio)}
-              </span>
-              {view.periodPortfolio !== null && (
-                <span className="font-mono tabular-nums">{pctStr(view.periodPortfolio)}</span>
-              )}
+              {portfolioLabel} (net)
             </span>
             <span className="inline-flex items-center gap-1.5">
               <span className="inline-block h-2 w-2 rounded-full bg-indigo-500 dark:bg-indigo-400" aria-hidden="true" />
-              {benchLabel}{' '}
-              <span className="font-mono font-semibold tabular-nums text-slate-900 dark:text-slate-100">
-                {money$(view.endBenchmark)}
-              </span>
-              {view.periodBenchmark !== null && (
-                <span className="font-mono tabular-nums">{pctStr(view.periodBenchmark)}</span>
-              )}
+              {benchLabel}
             </span>
             <span className="text-slate-400 dark:text-slate-500">· {money$(CHART_BASE)} invested at window start</span>
           </div>
