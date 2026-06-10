@@ -321,17 +321,6 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
         </div>
       </div>
 
-      {/* Annual returns — Jitta-style calendar-year backtest table + CAGR row,
-          derived in-browser from the selected count's net NAV vs the chosen
-          index (reactive to the slider + benchmark picker; no schema change). */}
-      <AnnualReturnsTable
-        dates={dates}
-        portfolio={netByCount[countKey] ?? []}
-        benchmark={benchmark[bench] ?? []}
-        portfolioLabel={portfolioLabel}
-        benchmarkLabel={benchLabel}
-      />
-
       {/* Current picks */}
       <div className="rounded border border-slate-200 bg-white p-4 shadow-subtle dark:border-slate-800 dark:bg-slate-900 md:p-6">
         <div className="mb-1 flex items-baseline justify-between gap-2">
@@ -394,6 +383,17 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
           basket size (entered/exited vs the prior quarter). The data the user
           asked to see: "what was held 5 years ago + how it rotated", not "today's
           picks back-projected". Reactive to the count slider. */}
+      {/* Annual returns — Jitta-style calendar-year backtest table + CAGR row,
+          derived in-browser from the selected count's net NAV vs the chosen
+          index (reactive to the slider + benchmark picker; no schema change). */}
+      <AnnualReturnsTable
+        dates={dates}
+        portfolio={netByCount[countKey] ?? []}
+        benchmark={benchmark[bench] ?? []}
+        portfolioLabel={portfolioLabel}
+        benchmarkLabel={benchLabel}
+      />
+
       {timeline.length > 0 && <HoldingsTimeline timeline={timeline} count={count} />}
 
       {/* Disclaimer — the artifact's own honest, result-dependent text (Rule 9: the
