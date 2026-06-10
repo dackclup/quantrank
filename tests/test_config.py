@@ -58,15 +58,14 @@ def test_schema_version_is_phase4_6():
     unchanged, Δscore = 0); the rank-influencing blend is deferred to
     4j.2.
 
-    Issue #441 PR-1 (0.10.16-phase4.6) — PATCH bump for the additive
-    MAD factor observability surface: 3 ``Metadata.mad_*`` fields
-    (``mad_coverage_pct`` / ``mad_mom12_corr`` / ``mad_mom3_corr``).
-    Shipped BEFORE any pillar wiring (Delta-score = 0; PR-2 wires the
-    factor). Coverage and correlation diagnostics gate the PR-2
-    blending decision (coverage >= 90%; |rho| < 0.30 vs 12-month and
-    3-month momentum to confirm independence per Han-Zhou-Zhu 2016
-    §4.2)."""
-    assert config.SCHEMA_VERSION == "0.10.16-phase4.6"
+    Issue #441 close-out (0.10.17-phase4.6) — MAD factor REMOVED after
+    pre-registered acceptance gate failure (rho=0.834/0.807 vs 0.30
+    threshold — momentum echo; methodology-scientist RATIFY-REMOVE).
+    ``mad_scalefree`` + ``mad_diagnostics`` + the 3 ``Metadata.mad_*``
+    fields + the dead ``macd_hist`` pillar slot are deleted. Schema
+    bumped 0.10.16 → 0.10.17 (breaking removal → PATCH under the
+    additive-only MINOR convention)."""
+    assert config.SCHEMA_VERSION == "0.10.17-phase4.6"
 
 
 def test_multi_class_overcount_allowlist_membership():
