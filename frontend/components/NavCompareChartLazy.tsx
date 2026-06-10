@@ -14,7 +14,7 @@ function ChartSkeleton() {
   return (
     <div className="space-y-3" aria-busy="true" aria-live="polite">
       <span className="sr-only">Loading performance chart…</span>
-      <div className="h-72 w-full animate-shimmer rounded-sm" />
+      <div className="h-72 w-full rounded-sm bg-slate-100 dark:bg-slate-800" />
     </div>
   );
 }
