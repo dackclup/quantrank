@@ -273,6 +273,9 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
 
         {/* Chart + timeframe */}
         <div className="space-y-2">
+          <div className="text-xs text-slate-400 dark:text-slate-500">
+            {money$(CHART_BASE)} invested at window start
+          </div>
           {/* relative wrapper so the stats overlay can be positioned inside the chart area */}
           <div className="relative">
             <NavCompareChartLazy
@@ -308,18 +311,6 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
             onChange={setPeriod}
             ariaLabel="Chart timeframe"
           />
-          {/* Legend — color key only; $ values + % are now in the chart overlay */}
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-1 text-xs text-slate-600 dark:text-slate-300">
-            <span className="inline-flex items-center gap-1.5">
-              <span className="inline-block h-2 w-2 rounded-full bg-emerald-700 dark:bg-emerald-400" aria-hidden="true" />
-              {portfolioLabel} (net)
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <span className="inline-block h-2 w-2 rounded-full bg-indigo-500 dark:bg-indigo-400" aria-hidden="true" />
-              {benchLabel}
-            </span>
-            <span className="text-slate-400 dark:text-slate-500">· {money$(CHART_BASE)} invested at window start</span>
-          </div>
         </div>
 
         {/* Cost band — all three columns are period-aware now that gross + conservative
