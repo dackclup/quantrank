@@ -360,32 +360,32 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
             const w = weights[h.ticker];
             const pl = plSince[h.ticker] ?? { pct: null, date: null };
             return (
-              <li key={h.ticker} className="flex items-center gap-3 py-2">
-                <span className="w-4 shrink-0 font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
-                  {i + 1}
-                </span>
-                <Link
-                  href={`/stock/${h.ticker}/`}
-                  className="press font-mono text-sm font-semibold text-slate-900 hover:underline dark:text-slate-100"
-                >
-                  {h.ticker}
-                </Link>
-                <span className="hidden sm:inline">
-                  <SectorChip sector={h.sector} />
-                </span>
-                <span className="ml-auto font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
-                  {isFinite_(w) ? `${(w * 100).toFixed(1)}%` : '—'}
-                </span>
-                <div className="w-16 shrink-0 text-right">
-                  <div className={`font-mono text-sm font-semibold tabular-nums ${toneClass(pl.pct)}`}>
+              <li key={h.ticker} className="py-2">
+                <div className="flex items-center gap-3">
+                  <span className="w-4 shrink-0 font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
+                    {i + 1}
+                  </span>
+                  <Link
+                    href={`/stock/${h.ticker}/`}
+                    className="press font-mono text-sm font-semibold text-slate-900 hover:underline dark:text-slate-100"
+                  >
+                    {h.ticker}
+                  </Link>
+                  <span className="hidden sm:inline">
+                    <SectorChip sector={h.sector} />
+                  </span>
+                  <span className="ml-auto font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
+                    {isFinite_(w) ? `${(w * 100).toFixed(1)}%` : '—'}
+                  </span>
+                  <span className={`w-16 shrink-0 text-right font-mono text-sm font-semibold tabular-nums ${toneClass(pl.pct)}`}>
                     {pctStr(pl.pct)}
-                  </div>
-                  {pl.date && (
-                    <div className="font-mono text-[0.6rem] tabular-nums text-slate-400 dark:text-slate-500">
-                      {pl.date.slice(0, 7)}
-                    </div>
-                  )}
+                  </span>
                 </div>
+                {pl.date && (
+                  <div className="mt-0.5 text-right font-mono text-[0.6rem] tabular-nums text-slate-400 dark:text-slate-500">
+                    since {pl.date.slice(0, 7)}
+                  </div>
+                )}
               </li>
             );
           })}
