@@ -380,8 +380,8 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
                   {pctStr(pl.pct)}
                 </span>
                 {pl.date && (
-                  <span className="shrink-0 font-mono text-[0.6rem] tabular-nums text-slate-400 dark:text-slate-500">
-                    since {pl.date.slice(0, 7)}
+                  <span className="shrink-0 font-mono text-[0.6rem] tabular-nums text-slate-700 dark:text-slate-300">
+                    {pl.date.slice(0, 7)}
                   </span>
                 )}
               </li>
