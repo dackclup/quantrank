@@ -2792,7 +2792,7 @@ there is no remaining consumer).
 
 ---
 
-## chore(agents) — 2 NEW data subagents: data-pipeline-engineer + data-analyst (in flight, 2026-06-10)
+## chore(agents) — 3 NEW data subagents: data-pipeline-engineer + data-analyst + data-scientist (in flight, 2026-06-10)
 
 Branch `claude/confident-gates-pT9pu` (reused, reset onto main `bac8a80`). User asked to add the
 data-discipline agents the project needs (Data Engineering / Data Analyst / "all data roles").
@@ -2815,13 +2815,22 @@ the 2 genuinely-needed, NON-overlapping roles — both read-only sonnet `effort:
   pandas dep). DISTINCT from stock-detail-auditor (per-ticker correctness) / defense-layer-auditor
   (defense-flag firing) / methodology-scientist (academic/normative).
 
-DELIBERATELY SKIPPED (documented for the next maintainer): data-quality-engineer (output QC already
-covered by stock-detail-auditor + defense-layer-auditor + schema-sentinel; input QC folded into
-data-pipeline-engineer), data-scientist/ML (financial-engineer owns design; Phase 5 ML is roadmap),
-data-governance/catalog/lineage (overkill for a static-site project; dependency-auditor +
-THIRD_PARTY_NOTICES cover license posture), data-viz/BI (frontend-design-reviewer + the Next.js site).
+- **`data-scientist`** (Data Science / ML — added mid-PR on explicit user request, overriding the
+  initial "premature until Phase 5" call) — the EMPIRICAL seat: signal predictive power (Spearman
+  IC, IC decay, forward returns), backtest statistical scrutiny (PBO/DSR, deflated Sharpe,
+  leakage/look-ahead probes), interpretation of `compute/validation/**` + `compute/features/**`
+  (OSAP / Qlib Alpha158 / IPCA) diagnostics, and Phase-5 ML meta-learner scoping (purged
+  time-series CV, baseline-first, Rule-18 rollout). Seats stay separate by design:
+  financial-engineer DESIGNS → data-scientist EVALUATES → methodology-scientist RATIFIES.
+  DISTINCT from data-analyst (descriptive vs inferential/predictive).
 
-Tier 3 Specialized 6 → 8; roster 22 → 24 (5 fable / 19 sonnet; 22 at `effort: max`, 2 at `high`).
+STILL DELIBERATELY SKIPPED (documented for the next maintainer): data-quality-engineer (output QC
+already covered by stock-detail-auditor + defense-layer-auditor + schema-sentinel; input QC folded
+into data-pipeline-engineer), data-governance/catalog/lineage (overkill for a static-site project;
+dependency-auditor + THIRD_PARTY_NOTICES cover license posture), data-viz/BI
+(frontend-design-reviewer + the Next.js site).
+
+Tier 3 Specialized 6 → 9; roster 22 → 25 (5 fable / 20 sonnet; 23 at `effort: max`, 2 at `high`).
 Both auto-spawn post-cron (added to the `workflow_dispatch`-green batch) + on their on-demand cues.
 Docs lockstep: CLAUDE.md (layout · delegation table · cue table · post-cron batch · model-split),
 `.claude/agents/README.md` (Tier 3 table + header + counts + rationale + model split), AGENTS.md,

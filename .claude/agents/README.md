@@ -22,7 +22,7 @@ skills are loaded each session, so the main agent already has the
 trigger map. Subagents add value where context isolation or parallelism
 specifically helps.
 
-## The current set (24)
+## The current set (25)
 
 Organized into five tiers — **core** (narrow project invariants),
 **lifecycle** (engineering-org roles for PR / release / phase
@@ -30,7 +30,7 @@ boundaries), **specialized expertise** (domain specialists with deep
 project knowledge), **operations** (orchestrators + ops roles), and
 **builders** (write-capable implementers for agent-team parallel
 builds — see [`TEAMS.md`](TEAMS.md)). This is the "full enterprise dev
-team" topology — every tier maps to roles a 24-person engineering org
+team" topology — every tier maps to roles a 25-person engineering org
 would have:
 
 ### Tier 1 — Core (5)
@@ -54,7 +54,7 @@ would have:
 | [`release-captain`](release-captain.md) | Release manager | "tag release" / "cut a release" / "release vX.Y.Z" / after phase epic merge | fable | Read, Bash, Grep, Glob |
 | [`phase-coordinator`](phase-coordinator.md) | Eng-program manager / docs PM | Before branch creation; before PR open / Ready-flip; after phase / sub-PR completes | sonnet | Read, Bash, Grep, Glob |
 
-### Tier 3 — Specialized expertise (8)
+### Tier 3 — Specialized expertise (9)
 
 | Subagent | Enterprise role analogue | Trigger | Model | Tools |
 |---|---|---|---|---|
@@ -66,6 +66,7 @@ would have:
 | [`dependency-auditor`](dependency-auditor.md) | Supply-chain / FOSS-license engineer | Dependabot alert; `pyproject.toml` / `package.json` change; "should I bump X?" / "CVE check" | sonnet | Read, Bash, Grep, Glob |
 | [`data-pipeline-engineer`](data-pipeline-engineer.md) | Data engineer | Post-cron; pre-release; edits under `compute/ingest/**`; membership-ledger edit; a `*_coverage_pct` drop; "is the data pipeline healthy?" / "ตรวจ data pipeline". Audits ALL sources + caches + survivorship ledger + freshness + coverage + backtest artifacts holistically. DISTINCT from edgar-debugger (EDGAR-only) / performance-engineer (latency) / stock-detail-auditor (per-stock output). Read-only. | sonnet | Read, Bash, Grep, Glob |
 | [`data-analyst`](data-analyst.md) | Data analyst / BI | "analyze the rankings" / "วิเคราะห์ data" / "score distribution" / "sector breakdown" / "what changed this week"; post-cron descriptive pass. Aggregate / distributional analytics over rankings.json + metadata.json (score tiers, sector breakdown, rec mix, MoS / factor distributions, Top-N composition, WoW drift). DISTINCT from stock-detail-auditor (per-ticker correctness) / methodology-scientist (academic). Read-only. | sonnet | Read, Bash, Grep, Glob |
+| [`data-scientist`](data-scientist.md) | Data scientist / ML engineer | Signal predictive-power evaluation (Spearman IC · IC decay · forward returns); backtest statistical scrutiny (PBO/DSR · deflated Sharpe · leakage/look-ahead probes); `compute/validation/**` + `compute/features/**` (OSAP / Qlib / IPCA) interpretation; Phase-5 ML meta-learner scoping (purged time-series CV, baseline-first); "is this signal real?" / "overfit ไหม" / "วิเคราะห์เชิงสถิติ". The EMPIRICAL seat — financial-engineer designs → data-scientist evaluates → methodology-scientist ratifies. Read-only. | sonnet | Read, Bash, Grep, Glob |
 
 ### Tier 4 — Operations (3)
 
@@ -107,7 +108,7 @@ The four tiers reflect QuantRank's actual workload distribution + the
   cron-slowdown needs a perf engineer; a new dep needs a supply-chain
   audit; designing a brand-new quant construct (valuation method /
   factor / pillar) or scoping a roadmap phase needs the financial
-  engineer. Data-layer health (ingest / cache / ledger / freshness) needs the data engineer, and aggregate output analytics need the data analyst. These are the "deep specialists" called in for domain depth.
+  engineer. Data-layer health (ingest / cache / ledger / freshness) needs the data engineer, aggregate output analytics need the data analyst, and empirical signal/ML validation needs the data scientist. These are the "deep specialists" called in for domain depth.
 - **Tier 4 (Operations)** is the orchestrator / coordinator layer —
   `docs-reviewer` keeps the project's institutional memory clean;
   `ci-triage-engineer` is the reactive triager for GitHub Actions
@@ -325,7 +326,7 @@ HANDOFF · status=<agent's verdict vocab> · next=<DONE | SPAWN <agent>:<scope> 
   command, an ambiguous requirement) — the orchestrator surfaces it via
   `AskUserQuestion` rather than guessing.
 
-**Model split (why 5 fable / 19 sonnet under a fable-5 main):** the
+**Model split (why 5 fable / 20 sonnet under a fable-5 main):** the
 orchestrator carries cross-agent synthesis, so most agents are **sonnet**
 — focused, well-scoped work handing a crisp verdict back up. The five
 **fable** agents (`quantrank-reviewer` · `methodology-scientist` ·
@@ -337,7 +338,7 @@ pass. Sonnet agents also drain the separate Max-plan
 "Weekly · Sonnet only" pool (see [`CLAUDE.md`](../../CLAUDE.md)
 §Spawn discipline).
 
-**Effort: 22 of 24 agents run at `effort: max`** (frontmatter; set 2026-05-31,
+**Effort: 23 of 25 agents run at `effort: max`** (frontmatter; set 2026-05-31,
 carve-out 2026-06-03). The `effort` field is orthogonal to `model` — `model`
 picks WHICH model (fable / sonnet), `effort` sets how hard it reasons. `max` is
 the top of the `low / medium / high / xhigh / max` ladder and overrides the
@@ -426,7 +427,7 @@ each invocation.
      two passes over a multi-file diff, weighing project-specific
      conventions against the change).
    - **`effort: max` on judgment-gate agents** (the `effort` frontmatter
-     field, orthogonal to `model`). 22 of 24 agents run at the top
+     field, orthogonal to `model`). 23 of 25 agents run at the top
      reasoning level; the 2 deterministic script-runners (`schema-sentinel`
      + `vercel-preview-auditor`) sit at `effort: high` — see §Effort above.
      A new agent gets `effort: max` too unless it's a pure mechanical
