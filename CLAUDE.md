@@ -453,7 +453,16 @@ always-loaded context small while preserving discoverability of every invariant.
 
 ## Phase status
 
-Current schema **`0.10.16-phase4.6`** on `main` (issue #441 PR-1 — additive
+Current schema **`0.10.17-phase4.6`** on `main` (issue #441 close-out —
+REMOVAL PATCH: the 3 `Metadata.mad_*` diagnostics deleted after the
+pre-registered acceptance gate FAILED on the first real cron — `mad_mom12_corr`
+0.834 / `mad_mom3_corr` 0.807 ≫ the |ρ| < 0.30 line at 99.6% coverage =
+decisive momentum echo; `methodology-scientist` RATIFY-REMOVE, one cron
+decision-grade at ~20 SE. The dead `macd_hist` pillar slot removed in the same
+PR — structurally inert since the float-vs-dict check made it always-NaN →
+skipna-dropped; the technical pillar is now an honest 4-metric mean
+(rsi_dist50 / adx / bb_pctb / mfi). Δcomposite = 0, simulate-proven). Prior
+**`0.10.16-phase4.6`** (issue #441 PR-1 — additive
 3 `Metadata.mad_*` MAD-factor diagnostics: coverage + cross-sectional Spearman
 ρ vs `mom_12_1`/`mom_3_1`; pillar untouched, observability-only, Δscore = 0;
 feeds the PR-2 wiring gate |ρ| < 0.30 + coverage ≥ 90%). Prior
@@ -514,28 +523,26 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **docs(roadmap) — roadmap-fit re-scope, user-confirmed (this PR, 2026-06-10)** —
-  a `financial-engineer` roadmap-fit assessment (verified against the repo)
-  found 8 plan-vs-reality divergences; the user confirmed all adjustments.
-  (1) **Phase 7.0c PIT veto-replay PROMOTED** to next-up — it gates Phase 5 ML
-  (the 10Y backtest's raw composite underperforms SPX at every N with
-  `veto_layer_replayed=False`; the veto-rescue question precedes the ~10-12w ML
-  spend). (2) **#441 `macd_hist` fix ordered BEFORE the MAD PR-2 WIRING**
-  (`pillars.py` dict-check vs float return → always-NaN; technical pillar runs
-  4-of-5 inputs; the #447 diagnostics PR-1 deliberately left it — the fix gates
-  the wiring step, not the observability). (3) NEW **data-integrity hardening
-  sprint** (share-count corruption cluster
-  #248/#374/#376/#379/#375/#385/#261/#247+#289) as a Phase 5 entry gate.
-  (4) **v1.1 tag RE-GATED** — JKP 4i.1 dropped from the hard gate (license #115
-  stale since 2026-05-14; WORKFLOW fallback invoked); new gate = OSAP 4h.1
-  (#113) + 4j.2 blend decision on cron IC evidence; IPCA non-blocking.
-  (5) Phase 6 re-scoped TEXT-ONLY (Whisper → 6.1). (6) Phase 7 remainder renamed
-  7.1 with baseline + fit-window gates. (7) Phase 8 staged (S&P 900 pilot; #249
-  pre-cache prerequisite). (8) Phase 4.5e PR 5 marked UNBLOCKED (#287 PR B
-  merged as #431). Doc-drift sweep folded in (PHASE_STATUS.md Phase-7 row ·
-  subagent count 20→22 · stale in-flight/open-issues blocks · WORKFLOW.md
-  schema pointer 0.10.13→0.10.16 · `gtda` license inconsistency · "Opus agents"
-  → fable). Docs-only — no production code / schema change.
+- **refactor(scoring) — issue #441 close-out: REMOVE MAD + the dead
+  `macd_hist` slot (this PR)** — the pre-registered acceptance gate FAILED on
+  the first real cron (2026-06-10, commit `1d12b097`): `mad_mom12_corr` 0.834 /
+  `mad_mom3_corr` 0.807, both ≫ the |ρ| < 0.30 line at 99.6% coverage →
+  decisive **momentum echo** (MAD 21/200 ≈ a trapezoid-weighted ~9.5-month
+  return sum ≈ the `mom_12_1` window; every candidate artifact biases ρ
+  DOWNWARD, so 0.83 is a floor; ~20 SE from the line → one cron is
+  decision-grade). `methodology-scientist` **RATIFY-REMOVE** (scope a, full
+  cleanup): no literature contradiction — AKS 2021 / HZZ 2016 measured
+  CONDITIONAL incremental alpha (orthogonal component, broad CRSP); our
+  fixed-weight linear pillar cannot harvest an orthogonal residual, so wiring
+  at ρ=0.83 would double-count momentum past its declared 0.10 weight.
+  Removes: `mad_scalefree` + `mad_diagnostics` + the main.py pass + the 3
+  `Metadata.mad_*` fields (schema PATCH **`0.10.16 → 0.10.17-phase4.6`**,
+  snapshot regenerated) + 15 MAD tests + the dead `macd_hist` slot in
+  `pillars.py` (float-vs-dict check → always-NaN → skipna-dropped; pillar
+  becomes an honest 4-metric mean — expected Δrank = 0, simulate must show
+  data-drift-only movers). Evidence preserved here + issue #441 close-out.
+  NO replacement 5th input without a fresh pre-registration (candidates if
+  appetite: short-term reversal Jegadeesh 1990 / idio-vol AHXZ 2006 *JF*).
 
 
 **Next deliverables** (re-scoped 2026-06-10, ordered by decision-value):
@@ -543,10 +550,14 @@ Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_
   vetoes in `scripts/backfill_portfolio_pit.py` (flip `veto_layer_replayed`
   False → True) + one backfill dispatch. Answers "does the defense layer rescue
   the composite?" — the **Phase 5 entry gate (a)**.
-- **2 · Issue #441 — fix the dead `macd_hist` input** (always-NaN dict-vs-float
-  type mismatch) **BEFORE the MAD PR-2 wiring** (diagnostics PR-1 merged as
-  #447, pillar untouched), so the IC comparison runs against a clean 5-input
-  technical-pillar baseline.
+- **2 · Issue #441 — DONE (closed by the MAD close-out PR, 2026-06-10)** —
+  the acceptance gate FAILED on the first cron (ρ = 0.834 / 0.807 ≫ 0.30 →
+  momentum echo; `methodology-scientist` RATIFY-REMOVE). MAD construct +
+  diagnostics removed (schema `0.10.17`) and the dead `macd_hist` slot deleted
+  with it — the technical pillar is an honest 4-metric mean. NO 5th technical
+  input without a fresh pre-registration (short-term reversal Jegadeesh 1990 /
+  idio-vol Ang-Hodrick-Xing-Zhang 2006 are the screened candidates), and the
+  MAD PR-2 IC-comparison rationale is moot.
 - **3 · Data-integrity hardening sprint** (~1-2w, NEW) — the share-count /
   extraction corruption cluster (#248 V ~4× no-veto · #374 warm-cache per-class
   bypass · #376 · #379 · #375 · #385 · #261 · #247/#289 NVR) — **Phase 5 entry

@@ -2738,3 +2738,56 @@ lifecycle per phase-status-bump skill).
 (this).
 
 ---
+
+## refactor(scoring) — issue #441 close-out: REMOVE MAD + dead `macd_hist` (in flight, 2026-06-10)
+
+**The gate fired.** First real cron with the #447 diagnostics (2026-06-10, commit `1d12b097`,
+manual dispatch) populated: `mad_coverage_pct` = 99.6 · `mad_mom12_corr` = **0.834** ·
+`mad_mom3_corr` = **0.807**. The pre-registered PR-2 wiring gate (BOTH |ρ| < 0.30 AND
+coverage ≥ 90%) FAILS decisively on the redundancy arm — coverage passes (clean measurement),
+both correlations sit ~20 / ~18 SE above the 0.30 line (Fisher SE ≈ 0.045 at n≈500).
+
+**methodology-scientist RATIFY-REMOVE** (one cron decision-grade):
+- Mechanically expected: MAD 21/200 is algebraically a trapezoid-kernel-weighted sum of ~200
+  trading days (~9.5 months) of returns — nearly the `mom_12_1` window; the skip-month
+  difference did not de-correlate.
+- Every candidate artifact (rank-then-Pearson, winsorize-rank normalization, large-cap range
+  restriction) biases ρ DOWNWARD → 0.83 is a floor, not an inflation.
+- NO literature contradiction: Avramov-Kaplanski-Subrahmanyam 2021 / Han-Zhou-Zhu 2016 measured
+  CONDITIONAL incremental alpha (the orthogonal component, broad CRSP, small-cap-concentrated);
+  ρ² ≈ 0.70 still leaves ~30% orthogonal variance — both facts coexist. But QuantRank's
+  fixed-weight LINEAR pillar mean has no orthogonalization machinery, so wiring raw MAD at
+  ρ = 0.83 re-counts momentum past its declared 0.10 weight (Daniel-Moskowitz 2016 crash-risk
+  style) instead of importing the papers' alpha. The |ρ| < 0.30 gate is the right test FOR THIS
+  ARCHITECTURE. (HZZ's incrementality also needed multi-horizon machinery we never built —
+  the WEAK-YES prior label was correct.)
+
+**This PR (scope a, full cleanup; schema PATCH `0.10.16 → 0.10.17-phase4.6`).**
+- DELETE `technical.mad_scalefree` + `technical.mad_diagnostics` + the main.py diagnostic pass
+  + the 3 `Metadata.mad_*` fields + TS mirror + snapshot regen + the 15 MAD tests + the
+  `test_config.py` pin bump.
+- DELETE the dead `macd_hist` slot in `pillars.py` (premise corrected by methodology-scientist:
+  NOT a constant-50 diluter — `macd_signal` returns float, the `isinstance(macd, dict)` check
+  never fired, the all-NaN column defeats sector-median imputation and `average_pillar_score`
+  skipna-drops it; the pillar was ALREADY a clean 4-metric mean). Residue removed = the falsified
+  metric inventory + the Rule-7 coverage-denominator edge (3-of-5 → 2-of-4 for a ticker with
+  exactly 2 finite technical metrics; expected Δrank = 0 since all 4 live metrics come from the
+  same OHLCV frame). Simulate must show data-drift-only movers.
+- `technical.macd_signal` itself STAYS (an available indicator; only the dead consumption goes).
+- NO replacement 5th input — "fill the hole" is backwards factor design. If appetite arises:
+  short-term reversal (Jegadeesh 1990; lives in the skip-month, low mechanical overlap) or
+  idiosyncratic vol (Ang-Hodrick-Xing-Zhang 2006 *JF*; must also clear the risk pillar) via the
+  same design → literature → pre-registered diagnostic → gate ladder #441 just validated.
+
+**Evidence preserved**: this entry + the issue #441 close-out comment (values, commit, the
+ratification) — NOT in live schema (the one-shot decision is consumed; unlike `alpha158_*`
+there is no remaining consumer).
+
+**Files**: `compute/features/technical.py` · `compute/main.py` · `compute/output/schemas.py` ·
+`compute/config.py` (0.10.17) · `compute/scoring/pillars.py` (dead slot) · `frontend/lib/types.ts`
+· `frontend/lib/schema-snapshot.json` · `tests/test_features/test_technical.py` ·
+`tests/test_output/test_mad_diagnostics_schema.py` (deleted) · `tests/test_config.py` ·
+`tests/test_scoring/*` (macd_hist shape pins, as found) · `CLAUDE.md` · `SKILL.md` ·
+`PHASE_STATUS_INFLIGHT.md` (this).
+
+---
