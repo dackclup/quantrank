@@ -5,19 +5,19 @@
   "industry": "Oil & Gas Exploration & Production",
   "exchange": "NASDAQ",
   "country": "US",
-  "market_cap": 55756294606.89995,
-  "current_price": 198.2,
-  "rank": 468,
-  "composite_score": 35.96,
+  "market_cap": 55292129383.85005,
+  "current_price": 196.55,
+  "rank": 470,
+  "composite_score": 35.93,
   "pillar_scores": {
     "quality": 16.67,
     "value": 34.92,
     "growth": 55.95,
-    "momentum": 72.46,
+    "momentum": 72.26,
     "health": 19.2,
     "profitability": 20.63,
-    "technical": 39.87,
-    "risk": 60.44,
+    "technical": 35.81,
+    "risk": 65.54,
     "sentiment": null,
     "ml": null
   },
@@ -34,8 +34,8 @@
     "eps_basic": 1.0095505723641638,
     "eps_diluted": 1.0095505723641638,
     "shares_outstanding": 281313297.0,
-    "market_cap": 55756294606.89995,
-    "pe_ratio_ttm": 196.32498101021108,
+    "market_cap": 55292129383.85005,
+    "pe_ratio_ttm": 194.69059642200722,
     "goodwill": null
   },
   "fair_price": {
@@ -47,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 12.202960675294435,
+        "value": 12.371088611041646,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 251.3714768769281,
+        "value": 256.54699926849037,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 159.8885568072326,
+        "value": 156.42190914659236,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -77,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 176.80400120739233,
-    "max": 251.3714768769281,
-    "low": 12.202960675294435,
-    "high": 251.3714768769281,
-    "mos_pct": -12.101533672731875,
+    "median": 175.07067737707223,
+    "max": 256.54699926849037,
+    "low": 12.371088611041646,
+    "high": 256.54699926849037,
+    "mos_pct": -12.268945317680355,
     "valuation_warnings": [
       "extreme_multiples_pe_estimate",
       "value_trap_risk"
@@ -125,22 +125,22 @@
     "label": "Energy median (n=21)",
     "values": {
       "Quality": 50.0,
-      "Value": 50.79,
+      "Value": 48.41,
       "Growth": 55.95,
-      "Momentum": 66.38,
+      "Momentum": 66.78,
       "Health": 55.22,
       "Profitability": 54.76,
-      "Technical": 39.87,
-      "Risk": 62.75
+      "Technical": 38.79,
+      "Risk": 65.54
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.11417165781828965,
   "recommendation": "neutral",
-  "loss_chance_pct": 54.25465871045457,
-  "price_change_1d_pct": 2.8969,
+  "loss_chance_pct": 54.331554579015226,
+  "price_change_1d_pct": 1.1892,
   "manipulation_index": 8.0,
-  "composite_score_adjusted": 35.16,
+  "composite_score_adjusted": 35.13,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -188,7 +188,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 43.91,
+  "osap_blended_score": 43.89,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 3,
@@ -197,5 +197,5 @@
     "latest_filing_date": "2026-06-05",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.019979730266402766
+  "cross_source_delta": 7.220105271051762e-08
 }
