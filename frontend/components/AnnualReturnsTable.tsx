@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import { flagLabel } from '@/lib/flag-labels';
 
 // Jitta-style annual backtest table: one row per calendar year (portfolio net
 // return vs the chosen benchmark) + a highlighted CAGR (compound annual) footer.
@@ -212,7 +213,7 @@ export function AnnualReturnsTable({
               <>
                 {' '}(
                 <span className="font-medium">
-                  {vetoesNotReplayed.map((v) => v.name).join(', ')}
+                  {vetoesNotReplayed.map((v) => flagLabel(v.name)).join(', ')}
                 </span>{' '}
                 excluded — needs filing-history data)
               </>

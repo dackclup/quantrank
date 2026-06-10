@@ -2839,10 +2839,29 @@ general; corrected to the gate-level eligibility subset).
 re-run against the Iteration-1 baseline (N=5 45% · N=9 70% · N=18 72.5% vs
 SPY) — the Phase 5 gate (a) measurement.
 
+**Review-round additions (quantrank-reviewer FIX-AND-RE-REVIEW + frontend-design-reviewer):**
+round-once-per-sector fix in `_sector_weights_by_count` (kills the boundary
+flake at root) + honest test tolerance 1e-3 · a REAL-wrapper
+`_compute_pit_risk_flags` unit test (kwarg-drift would otherwise green-suite
+but kill the dispatch) · an `ACTIVE_VETO_FLAGS` set-equality drift guard (an
+8th veto can't silently under-claim `veto_layer_replayed=True`) · DATA-DRIVEN
+veto-replay captions (`getAiPickData()` forwards `vetoLayerReplayed` +
+`vetoesNotReplayed`; AnnualReturnsTable footnote + AiPickPortfolio caveat
+branch on it — mandatory, not optional: the weekly cron auto-refreshes the
+artifact post-merge, so hardcoded captions would go false on their own) ·
+`flagLabel()` on the excluded-veto names ("8-K Item 4.02 non-reliance", not
+snake_case) · the stale CLAUDE.md/docs/GOTCHAS.md AnnualReturnsTable gotcha
+rewritten window-neutral + flag-neutral (the old text pinned BOTH
+`veto_layer_replayed=False` AND the superseded 5y "loses at every N" result).
+
 **Files**: scripts/backfill_portfolio_pit.py ·
 tests/test_portfolio/test_backfill_integration.py ·
-tests/test_portfolio/test_weights.py · CLAUDE.md (§In-flight rotation + item-1
-marker) · PHASE_STATUS.md (§In-flight rotation + Recently-merged #448/#449
-backfill) · PHASE_STATUS_INFLIGHT.md (this).
+tests/test_portfolio/test_weights.py · frontend/lib/data.ts ·
+frontend/lib/types.ts (non-schema section) ·
+frontend/components/AnnualReturnsTable.tsx ·
+frontend/components/AiPickPortfolio.tsx · docs/GOTCHAS.md · CLAUDE.md
+(§In-flight rotation + item-1 marker + gotcha line) · PHASE_STATUS.md
+(§In-flight rotation + Recently-merged #448/#449 backfill) ·
+PHASE_STATUS_INFLIGHT.md (this).
 
 ---

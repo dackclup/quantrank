@@ -169,13 +169,15 @@ def test_run_backfill_produces_wellformed_artifact(tmp_path, _universe) -> None:
 
         # Phase 7.0c: sector_weights_by_count — {str(N): {sector: weight}},
         # per-N weights sum ≈ 1.0.
+        # Tolerance: production N=20 / ~10 sectors rounds each sector weight to 4dp
+        # so per-N accumulation can reach ±~5e-4; abs=1e-3 is the honest bound.
         assert "sector_weights_by_count" in reb
         swbc = reb["sector_weights_by_count"]
         assert isinstance(swbc, dict)
         for n_str, by_sector in swbc.items():
             assert n_str.isdigit()
             assert by_sector
-            assert sum(by_sector.values()) == pytest.approx(1.0, abs=1e-4)
+            assert sum(by_sector.values()) == pytest.approx(1.0, abs=1e-3)
 
         # Phase 7.0c: vetoed_pick_candidates — list of dicts (may be empty when no
         # veto fires, which is the case under the _compute_pit_risk_flags={} mock).
@@ -545,9 +547,11 @@ def test_sector_weights_by_count_sums_to_one(tmp_path, _universe) -> None:
         for key in swbc:
             assert key.isdigit(), f"sector_weights_by_count key is not a digit string: {key!r}"
         # Per-N weights must sum to 1.0.
+        # Tolerance: production N=20 / ~10 sectors rounds each sector weight to 4dp
+        # so per-N accumulation can reach ±~5e-4; abs=1e-3 is the honest bound.
         for n_str, by_sector in swbc.items():
             total = sum(by_sector.values())
-            assert total == pytest.approx(1.0, abs=1e-4), (
+            assert total == pytest.approx(1.0, abs=1e-3), (
                 f"sector_weights_by_count[{n_str}] weights sum to {total}, expected 1.0"
             )
 
@@ -610,3 +614,120 @@ def test_compute_pit_risk_flags_forwards_rebalance_date_as_today(tmp_path, _univ
             f"_compute_pit_risk_flags called with today=date.today() ({t_val!r}); "
             "must be the rebalance date T for PIT-correct NSI lookbacks"
         )
+
+
+def test_compute_pit_risk_flags_real_wrapper_tbvps_corrupt() -> None:
+    """Unit test through the REAL ``_compute_pit_risk_flags`` wrapper — no mock.
+
+    Ensures that a kwarg rename in ``compute_risk_flags`` (e.g. ``today`` →
+    ``as_of``) or a signature mismatch surfaces here as a test failure rather
+    than silently killing the backfill at dispatch.
+
+    Fixture: two synthetic snapshots using real dollar amounts.
+      - CORRUPT: ``stockholders_equity=80B``, ``shares_outstanding=1_000`` (corrupt
+        extraction — 1000 shares instead of ~1B) → TBVPS ≈ $80 million/share »
+        $10K ceiling → ``data_quality_input_corruption`` fires.
+      - CLEAN: same equity, ``shares_outstanding=1_000_000_000`` (1B shares) →
+        TBVPS ≈ $80/share < $10K → no flag.
+
+    Also verifies ``today=rebalance_date`` is forwarded by capturing the kwarg
+    via a thin spy around ``compute_risk_flags`` (one layer only).
+    """
+    from compute.ingest.fundamentals import FundamentalsSnapshot
+
+    rebalance_date = date(2023, 3, 31)
+
+    corrupt_snap = FundamentalsSnapshot(
+        ticker="CORRUPT",
+        cik="999",
+        stockholders_equity=80_000_000_000.0,  # 80B USD
+        shares_outstanding=1_000.0,             # corrupt: 1,000 shares (unit error)
+        revenue=50_000_000_000.0,               # 50B USD — above $50M plausibility floor
+        net_income=5_000_000_000.0,
+        total_assets=200_000_000_000.0,
+        total_liabilities=120_000_000_000.0,
+        operating_cash_flow=8_000_000_000.0,
+    )
+    clean_snap = FundamentalsSnapshot(
+        ticker="CLEAN",
+        cik="111",
+        stockholders_equity=80_000_000_000.0,  # same equity
+        shares_outstanding=1_000_000_000.0,     # clean: 1B shares → TBVPS ≈ $80
+        revenue=50_000_000_000.0,
+        net_income=5_000_000_000.0,
+        total_assets=200_000_000_000.0,
+        total_liabilities=120_000_000_000.0,
+        operating_cash_flow=8_000_000_000.0,
+    )
+
+    # ``compute_risk_flags`` is imported into bf's module namespace at the top
+    # (``from compute.scoring.risk_overlay import compute_risk_flags``), so the
+    # spy must patch it on the ``bf`` module object, not on ``risk_overlay``.
+    captured_today: list[date] = []
+    original_compute_risk_flags = bf.compute_risk_flags
+
+    def _spy_compute_risk_flags(*args, **kwargs):
+        if "today" in kwargs:
+            captured_today.append(kwargs["today"])
+        return original_compute_risk_flags(*args, **kwargs)
+
+    with mock.patch.object(bf, "compute_risk_flags", side_effect=_spy_compute_risk_flags):
+        result = bf._compute_pit_risk_flags(
+            snapshots={"CORRUPT": corrupt_snap, "CLEAN": clean_snap},
+            pit_histories={"CORRUPT": None, "CLEAN": None},
+            sectors={"CORRUPT": "Financials", "CLEAN": "Information Technology"},
+            rebalance_date=rebalance_date,
+            beneish_scores={"CORRUPT": None, "CLEAN": None},
+            dechow_scores={"CORRUPT": None, "CLEAN": None},
+        )
+
+    # Flag correctness: corrupt ticker fires, clean ticker is silent.
+    assert result.get("CORRUPT") == ["data_quality_input_corruption"], (
+        f"Expected CORRUPT to fire data_quality_input_corruption; got {result.get('CORRUPT')}"
+    )
+    assert result.get("CLEAN") == [], (
+        f"Expected CLEAN to have no flags; got {result.get('CLEAN')}"
+    )
+
+    # today= forwarding: the wrapper must pass today=rebalance_date to compute_risk_flags
+    # so NSI lookbacks anchor to T, not to wall-clock today.
+    assert captured_today, (
+        "compute_risk_flags was not called with a today= kwarg — "
+        "_compute_pit_risk_flags may have dropped the today=rebalance_date forward"
+    )
+    assert all(t == rebalance_date for t in captured_today), (
+        f"compute_risk_flags received today={captured_today!r}; expected {rebalance_date!r} "
+        "— today=rebalance_date must be forwarded for PIT-correct NSI lookbacks"
+    )
+
+
+def test_active_veto_flags_covered_by_meta_claims() -> None:
+    """Drift guard: the union of ``_VETOES_REPLAYED`` and ``_VETOES_NOT_REPLAYED``
+    must exactly equal ``ACTIVE_VETO_FLAGS``.
+
+    Rationale: when an 8th active veto is added to ``ACTIVE_VETO_FLAGS`` without
+    updating ``_VETOES_REPLAYED`` or ``_VETOES_NOT_REPLAYED``, the artifact will
+    emit ``veto_layer_replayed=True`` while silently omitting the new veto from the
+    replay — a false claim. This test makes that drift a CI failure rather than a
+    silent bug.
+
+    Import the canonical set from ``compute.portfolio.weights`` (the source of
+    truth for which flags are active vetoes) and compare to the backfill constants.
+    """
+    from compute.portfolio.weights import ACTIVE_VETO_FLAGS as CANONICAL
+
+    replayed = set(bf._VETOES_REPLAYED)
+    not_replayed = {e["name"] for e in bf._VETOES_NOT_REPLAYED}
+    claimed_union = replayed | not_replayed
+
+    assert claimed_union == set(CANONICAL), (
+        f"_VETOES_REPLAYED ∪ {{e['name'] for e in _VETOES_NOT_REPLAYED}} "
+        f"does not equal ACTIVE_VETO_FLAGS.\n"
+        f"  claimed union: {sorted(claimed_union)}\n"
+        f"  ACTIVE_VETO_FLAGS: {sorted(CANONICAL)}\n"
+        f"  missing from claim: {sorted(set(CANONICAL) - claimed_union)}\n"
+        f"  extra in claim: {sorted(claimed_union - set(CANONICAL))}\n"
+        "Add any new active veto to either _VETOES_REPLAYED (if it can be replayed "
+        "PIT from snapshot + history) or _VETOES_NOT_REPLAYED (with a reason string) "
+        "so the meta.veto_layer_replayed claim stays honest."
+    )

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
+import { flagLabel } from '@/lib/flag-labels';
 
 import { NavCompareChartLazy } from './NavCompareChartLazy';
 import { AnnualReturnsTable } from './AnnualReturnsTable';
@@ -280,7 +281,7 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
               point-in-time
               {vetoesNotReplayed && vetoesNotReplayed.length > 0 && (
                 <>
-                  {' '}({vetoesNotReplayed.map((v) => v.name).join(', ')} excluded)
+                  {' '}({vetoesNotReplayed.map((v) => flagLabel(v.name)).join(', ')} excluded)
                 </>
               )}
               — a closer proxy to the live product, but still not identical.
