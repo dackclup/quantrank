@@ -759,9 +759,10 @@ def run_backfill(
             # PR-2 (Phase 7): the recommendation/valuation layer is replayed point-in-time
             # AND now DRIVES selection (gate_active=True) — the basket holds only
             # high-conviction names. C1 cleared on PR-1's backfill (median eligible 52 >>
-            # default_count). The cross-source manipulation vetoes are still NOT replayed
-            # (veto_layer_replayed stays False). high_conviction_eligible_median remains the
-            # per-rebalance diagnostic (picks = top-N by composite among the eligible set).
+            # default_count). Phase 7.0c replays the accounting vetoes too (see
+            # _VETOES_REPLAYED / _VETOES_NOT_REPLAYED above). high_conviction_eligible_median
+            # remains the per-rebalance diagnostic (picks = top-N by composite among the
+            # eligible set).
             "recommendation_layer_replayed": True,
             "high_conviction_gate_active": gate == "high_conviction",
             "high_conviction_eligible_median": (
