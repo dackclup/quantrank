@@ -43,8 +43,10 @@ established commands. No new infrastructure.
 **Session-start protocol**: read [`PHASE_STATUS.md`](PHASE_STATUS.md)
 §"Current state" first as the canonical pointer (it bumps on every
 schema PR; this prose stays stable). As of 2026-06-10
-post-roadmap-re-scope: schema `0.10.16-phase4.6` (#447 issue-#441 PR-1 —
-3 `Metadata.mad_*` MAD diagnostics; prior `0.10.15` #426 Phase 4j.1 —
+post-roadmap-re-scope: schema `0.10.17-phase4.6` (issue #441 close-out —
+MAD diagnostics REMOVED on gate failure + dead `macd_hist` slot deleted;
+prior `0.10.16` #447 added the 3 `Metadata.mad_*` MAD diagnostics; prior
+`0.10.15` #426 Phase 4j.1 —
 9 `Metadata.alpha158_*` Qlib observability fields; prior `0.10.14`
 #416 `benchmark_coverage_pct`). Defense
 layer **33 declared** = 7 vetoes + 26 annotates; release tag
