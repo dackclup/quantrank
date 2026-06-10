@@ -56,8 +56,17 @@ def test_schema_version_is_phase4_6():
     (Rule 18) — the feature→long-short-return adapter + the reused
     PBO/DSR gate are wired but blend NOTHING (``composite_score``
     unchanged, Δscore = 0); the rank-influencing blend is deferred to
-    4j.2."""
-    assert config.SCHEMA_VERSION == "0.10.15-phase4.6"
+    4j.2.
+
+    Issue #441 PR-1 (0.10.16-phase4.6) — PATCH bump for the additive
+    MAD factor observability surface: 3 ``Metadata.mad_*`` fields
+    (``mad_coverage_pct`` / ``mad_mom12_corr`` / ``mad_mom3_corr``).
+    Shipped BEFORE any pillar wiring (Delta-score = 0; PR-2 wires the
+    factor). Coverage and correlation diagnostics gate the PR-2
+    blending decision (coverage >= 90%; |rho| < 0.30 vs 12-month and
+    3-month momentum to confirm independence per Han-Zhou-Zhu 2016
+    §4.2)."""
+    assert config.SCHEMA_VERSION == "0.10.16-phase4.6"
 
 
 def test_multi_class_overcount_allowlist_membership():

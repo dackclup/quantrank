@@ -2623,3 +2623,40 @@ view-model — NOT part of the Pydantic↔TS↔snapshot triple (no schema bump).
 (P/L cell + weight sort) · `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## feat(scoring) — MAD factor diagnostics, issue #441 PR-1 (in flight, 2026-06-10)
+
+**Origin.** The diagnostic half deferred by the #442 construct checkpoint (issue #441 carries the
+ratified spec: methodology-scientist ×2 + literature-searcher; construct = `technical.mad_scalefree
+(short=21, long=200)`, merged unwired).
+
+**This PR (observability-before-wiring, Rule 18).**
+- `compute/main.py` accumulates `mad_scalefree` per ticker in a NEW pass over the already-populated
+  `inputs` dict between Step 7 and Step 8 (the prices DataFrame is already in hand — zero added
+  fetches, ~2 `.tail().mean()` per ticker; in-memory iteration only) plus the
+  momentum pillar inputs `mom_12_1` / `mom_3_1`, then emits 3 additive diagnostics on `Metadata`:
+  - `mad_coverage_pct` — % of the ranked universe with finite MAD (PR-2 gate: ≥ 90%);
+  - `mad_mom12_corr` / `mad_mom3_corr` — cross-sectional Spearman ρ of MAD vs `mom_12_1` / `mom_3_1`
+    across tickers where both sides are finite (PR-2 gate: BOTH |ρ| < 0.30; either ≥ 0.30 = momentum
+    echo → REMOVE per #441). Pandas rank-corr (no scipy / no new dep); < 3 finite pairs or zero
+    variance → `None` (JSON never carries NaN).
+- Whole diagnostic block wrapped in the graceful-degradation try/except → all 3 fields `None` + one
+  `logger.warning`; the cron can never fail on a diagnostic.
+- Schema triple PATCH bump `0.10.15 → 0.10.16-phase4.6` (`compute/config.py` + `schemas.py` +
+  `frontend/lib/types.ts` + regenerated `schema-snapshot.json`).
+- **Pillar UNTOUCHED**: `compute/scoring/pillars.py` zero-diff (dead `macd_hist`=50 stays inert) →
+  Δcomposite = 0; pre-merge-prod-sim movers must be data-drift-only (same proof shape as #442).
+
+**Remaining after this PR (issue #441).** PR-2 wires MAD into the technical pillar (replacing dead
+`macd_hist`) ONLY if the gate passes after ≥ 1 real cron of `mad_*` data, with a simulate
+Top-5/`entered_top5` diff (Rule 16) at wiring time.
+
+**Files**: `compute/config.py` (SCHEMA_VERSION) · `compute/output/schemas.py` (3 fields) ·
+`compute/main.py` (accumulate + emit) · `compute/features/technical.py` (the pure
+`mad_diagnostics` helper, co-located with `mad_scalefree`; rank-then-Pearson because pandas ≥ 2.2
+delegates `method="spearman"` to scipy, which is not a dep) · `frontend/lib/types.ts` (mirror) ·
+`frontend/lib/schema-snapshot.json` (regen) · `tests/` (helper pins) · `CLAUDE.md` (§Phase status
+schema rotation + §In-flight; drained the merged #443 + #446 entries) · `PHASE_STATUS_INFLIGHT.md`
+(this).
+
+---
