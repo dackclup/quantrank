@@ -164,6 +164,13 @@ export function getAiPickData(): AiPickData | null {
     })),
     entryCloses,
     lastCloses,
+    // Caption-branching fields — forwarded from meta so sub-components
+    // (AnnualReturnsTable / AiPickPortfolio) don't receive the full meta
+    // object. Names-only from vetoes_not_replayed; reason is artifact-only.
+    vetoLayerReplayed: meta.veto_layer_replayed,
+    vetoesNotReplayed: meta.vetoes_not_replayed
+      ? meta.vetoes_not_replayed.map((v) => ({ name: v.name }))
+      : undefined,
   };
 }
 

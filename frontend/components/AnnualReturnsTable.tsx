@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import { flagLabel } from '@/lib/flag-labels';
 
 // Jitta-style annual backtest table: one row per calendar year (portfolio net
 // return vs the chosen benchmark) + a highlighted CAGR (compound annual) footer.
@@ -16,6 +17,10 @@ interface Props {
   benchmark: (number | null)[];
   portfolioLabel: string;
   benchmarkLabel: string;
+  /** Forwarded from AiPickData — true once PR #451 artifact lands. */
+  vetoLayerReplayed: boolean;
+  /** Names of vetoes excluded from the replay (only present when vetoLayerReplayed=true). */
+  vetoesNotReplayed: { name: string }[] | undefined;
 }
 
 function isFin(v: number | null | undefined): v is number {
@@ -89,6 +94,8 @@ export function AnnualReturnsTable({
   benchmark,
   portfolioLabel,
   benchmarkLabel,
+  vetoLayerReplayed,
+  vetoesNotReplayed,
 }: Props) {
   const { rows, cagrPortfolio, cagrBenchmark, windowYears } = useMemo(() => {
     if (dates.length === 0) {
@@ -191,9 +198,35 @@ export function AnnualReturnsTable({
       <p className="mt-2 text-pretty text-xs leading-relaxed text-slate-500 dark:text-slate-400">
         CAGR = compound annual growth over the {windowYears.toFixed(1)}-year backtest window
         ({dates[0]} → {dates[dates.length - 1]}). Backtest = raw
-        top-by-composite picks, point-in-time — the defense-layer vetoes that filter the live Top-5
-        are <span className="font-medium">not replayed here</span>, so this is the unfiltered
-        signal&rsquo;s record, not the live product&rsquo;s.
+        top-by-composite picks, point-in-time —{' '}
+        {vetoLayerReplayed ? (
+          <>
+            replays{' '}
+            <span className="font-medium">
+              {vetoesNotReplayed && vetoesNotReplayed.length > 0
+                ? `${7 - vetoesNotReplayed.length} of 7`
+                : 'all 7'}{' '}
+              live defense vetoes
+            </span>{' '}
+            point-in-time
+            {vetoesNotReplayed && vetoesNotReplayed.length > 0 && (
+              <>
+                {' '}(
+                <span className="font-medium">
+                  {vetoesNotReplayed.map((v) => flagLabel(v.name)).join(', ')}
+                </span>{' '}
+                excluded — needs filing-history data)
+              </>
+            )}
+            ; still not the full live product.
+          </>
+        ) : (
+          <>
+            the defense-layer vetoes that filter the live Top-5
+            are <span className="font-medium">not replayed here</span>, so this is the unfiltered
+            signal&rsquo;s record, not the live product&rsquo;s.
+          </>
+        )}
         {hasPartial && (
           <> {' '}* Partial year — since inception ({dates[0]}), not a full calendar year.</>
         )}

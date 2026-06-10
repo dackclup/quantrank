@@ -448,7 +448,7 @@ always-loaded context small while preserving discoverability of every invariant.
 - **`data/sp500_membership_historical.csv` (the survivorship ledger behind `members_at()`) must stay ADD/REMOVE-balanced — the reverse-walk reconstructs ~500-503 constituents at EVERY backtest month; run `scripts/verify_membership_ledger.py` after ANY edit (checks the size band 498-506 + that every removed ticker is gone / every added ticker present vs the live universe). Use effective (not announcement) dates + real tickers (SIVB not "SVB"; BX=Blackstone≠BLK=BlackRock); cite the Wikipedia change-history URL (the `press.spglobal.com/<date>-<title>` shape 404s). **Track B 10Y rebuild**: now covers **2016-01-04 .. present** (485 events; `EARLIEST_EVENT_DATE` + the verify `WINDOW_START` both moved 2020→2016). The 2016-01..2026-01-14 portion is snapshot-diff-DERIVED from the fja05680 historical-components dataset and is **RENAME-AWARE** (a symbol change = REMOVE old + ADD new, so `members_at` returns the correct historical ticker — a convention shift vs the prior "renames out of scope" 2020-2026 hand-built rows, which fja05680 cross-validated at the boundary). Tickers normalized to the yfinance dash form (BRK-B/BF-B). The 10Y `backtest_pit.json` reflects this after the DATA-layer extension (`PRICES_PERIOD`/`ANNUAL_HISTORY_YEARS`→10y + the load-bearing `cache-v6-fast` bump for the period-blind caches + `write_benchmarks_json` full-series) AND a cold `backfill_portfolio_pit` dispatch from 2016 (manual — the cold ~60-85m run exceeds the cron 40m folded-step cap; warm fits). ~15-20 pre-2021-renamed tickers' 2016-2020 legs drop (yfinance can't resolve the historical alias)**
 - **The home page IS the AI-pick portfolio (Phase 7.0 PR-4)** — reads `backtest_pit.json` via `getAiPickData()` (fs-read + trim+round to a small client view-model, NEVER a static `import`; the 1.3MB artifact never ships in the page payload; `null` → "backtest pending"). Server resolves → the `'use client'` `AiPickPortfolio` gets it as props (the build-time-data rule). The 1-10 slider switches `nav.by_count[N]` (one NAV line per count); the chart uses the pre-aligned `nav.benchmark`, so `benchmarks.json` is NOT read by the frontend
 - **Per-stock JSON for a dropped ticker (de-listed / renamed, e.g. EPAM / BK→BNY) is auto-pruned by `prune_orphan_stock_files()` (defined in `compute/output/writer.py`, called from `compute/main.py` after `write_rankings_json`; safety floor `_PRUNE_SAFETY_FLOOR=50`; cron `git add` stages the deletes). Don't glob `stocks/` for param-gen — it reads `rankings.json` by design. Full detail: `docs/GOTCHAS.md`**
-- **The home's `AnnualReturnsTable` (calendar-year rows + CAGR footer) + the `NavCompareChart` `money` mode ($10k→$X growth + end-of-line $ labels) are DERIVED in-browser from the NAV series — no schema / compute / `backtest_pit.json` change. The CAGR is the **raw top-composite signal's** record, NOT the live veto-filtered Top-5 (`veto_layer_replayed=False`) — it underperforms the S&P 500 at every count (honest by design; disclosed in `meta.disclaimer` + a caveat beside the CAGR row). Don't describe the backtest CAGR as the live product's track record. Full detail: `docs/GOTCHAS.md`**
+- **The home's `AnnualReturnsTable` (calendar-year rows + CAGR footer) + the `NavCompareChart` `money` mode ($10k→$X growth + end-of-line $ labels) are DERIVED in-browser from the NAV series — no schema / compute / `backtest_pit.json` change. The CAGR caveat + AiPickPortfolio footnote are DATA-DRIVEN on `meta.veto_layer_replayed` (PR #451 replays 6-of-7 vetoes; `non_reliance_filing` disclosed-excluded) — never hardcode either state, and never quote a window's result as timeless (5y artifact lost to SPY at every N; the 10y artifact has N≥3 ahead — read the live artifact). Even replayed, the backtest ≠ the live product's track record. Full detail: `docs/GOTCHAS.md`**
 - **Agent teams (experimental, ≠ subagents) — flag `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` enables multi-session teams whose teammates MESSAGE each other + reuse subagent defs as roles; the 2 write-capable Tier-5 builders own DISJOINT layers (`compute-builder`=`compute/**`, `frontend-builder`=`frontend/**`) in a Feature Squad; live teams are desktop-terminal only (every recipe ships a mobile/web subagent fallback); teammates DON'T apply a def's `skills`/`mcpServers` frontmatter (load from settings). Recipes: [`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md)**
 
 ## Phase status
@@ -523,33 +523,36 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **refactor(scoring) — issue #441 close-out: REMOVE MAD + the dead
-  `macd_hist` slot (this PR)** — the pre-registered acceptance gate FAILED on
-  the first real cron (2026-06-10, commit `1d12b097`): `mad_mom12_corr` 0.834 /
-  `mad_mom3_corr` 0.807, both ≫ the |ρ| < 0.30 line at 99.6% coverage →
-  decisive **momentum echo** (MAD 21/200 ≈ a trapezoid-weighted ~9.5-month
-  return sum ≈ the `mom_12_1` window; every candidate artifact biases ρ
-  DOWNWARD, so 0.83 is a floor; ~20 SE from the line → one cron is
-  decision-grade). `methodology-scientist` **RATIFY-REMOVE** (scope a, full
-  cleanup): no literature contradiction — AKS 2021 / HZZ 2016 measured
-  CONDITIONAL incremental alpha (orthogonal component, broad CRSP); our
-  fixed-weight linear pillar cannot harvest an orthogonal residual, so wiring
-  at ρ=0.83 would double-count momentum past its declared 0.10 weight.
-  Removes: `mad_scalefree` + `mad_diagnostics` + the main.py pass + the 3
-  `Metadata.mad_*` fields (schema PATCH **`0.10.16 → 0.10.17-phase4.6`**,
-  snapshot regenerated) + 15 MAD tests + the dead `macd_hist` slot in
-  `pillars.py` (float-vs-dict check → always-NaN → skipna-dropped; pillar
-  becomes an honest 4-metric mean — expected Δrank = 0, simulate must show
-  data-drift-only movers). Evidence preserved here + issue #441 close-out.
-  NO replacement 5th input without a fresh pre-registration (candidates if
-  appetite: short-term reversal Jegadeesh 1990 / idio-vol AHXZ 2006 *JF*).
+- **feat(backtest) — Phase 7.0c PIT veto-layer replay + artifact exports
+  (this PR, 2026-06-10)** — roadmap item 1 / Phase 5 entry gate (a). Replays
+  **6 of 7** active vetoes point-in-time at all 40 rebalances from the
+  already-loaded PIT data (Altman · Sloan top-decile · NSI top-decile with
+  `today=T` lookback anchor · Beneish · Dechow from PIT prior-year history ·
+  DQIC); cross-sectional vetoes computed within the PIT cohort at T.
+  `non_reliance_filing` EXCLUDED with disclosure (needs per-name 8-K Item 4.02
+  fetching) — `meta.vetoes_replayed` / `vetoes_not_replayed` carry the honest
+  split; `meta.veto_layer_replayed` False → True; `RULE_VERSION` gains
+  `+veto-replay`; disclaimer updated. Vetoed names are excluded from pick
+  eligibility exactly like live (next-ranked clean fills the slot; composite
+  untouched per Rule 16). New per-rebalance exports: `vetoed_pick_candidates`
+  (the selection-effect headline) · `full_ranked` top-40 · `holdings[].mos_pct`
+  · `sector_weights_by_count` · `high_conviction_count` — unblocks the
+  rank-banding + pick-substitution sector-cap experiments. Artifact stays
+  self-carried (no schema-triple change; +~550KB ≈ 1.85MB < 2MB budget; warm
+  +60-90s). Tests: +7 new / 3 wiring-isolation repairs + the `test_weights`
+  HC-subset Hypothesis property fixed (its invariant was wrong: HC top-N ⊄
+  veto-only top-N in general; correct form is gate-level eligibility subset).
+  Post-merge: one backfill dispatch → first `veto_layer_replayed=True`
+  artifact → re-run the quarterly beat-rate board (baseline: N=5 45% / N=9
+  70% / N=18 72.5% vs SPY).
 
 
 **Next deliverables** (re-scoped 2026-06-10, ordered by decision-value):
-- **1 · Phase 7.0c — PIT veto-layer replay** (PROMOTED) — replay the 7 active
-  vetoes in `scripts/backfill_portfolio_pit.py` (flip `veto_layer_replayed`
-  False → True) + one backfill dispatch. Answers "does the defense layer rescue
-  the composite?" — the **Phase 5 entry gate (a)**.
+- **1 · Phase 7.0c — PIT veto-layer replay** (PROMOTED; **IN FLIGHT — this
+  PR**, 6-of-7 vetoes replayed, `non_reliance_filing` disclosed-excluded) —
+  replay the active vetoes in `scripts/backfill_portfolio_pit.py` (flip
+  `veto_layer_replayed` False → True) + one backfill dispatch. Answers "does
+  the defense layer rescue the composite?" — the **Phase 5 entry gate (a)**.
 - **2 · Issue #441 — DONE (closed by the MAD close-out PR, 2026-06-10)** —
   the acceptance gate FAILED on the first cron (ρ = 0.834 / 0.807 ≫ 0.30 →
   momentum echo; `methodology-scientist` RATIFY-REMOVE). MAD construct +

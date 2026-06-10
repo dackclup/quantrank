@@ -1,4 +1,4 @@
-"""Phase 7.0 PR-2b — point-in-time portfolio backtest backfill (workflow_dispatch).
+"""Phase 7.0 PR-2c — point-in-time portfolio backtest backfill with veto-layer replay.
 
 Reconstructs the AI-pick rule's HISTORICAL performance honestly. At each
 quarterly rebalance date ``T`` over the backtest window it:
@@ -9,28 +9,41 @@ quarterly rebalance date ``T`` over the backtest window it:
      mandated guardrails being (a) the *history* frame fed to the growth/quality
      pillars is filed<=T, and (b) ``current_price`` is the price ON T;
   3. re-scores the existing 8-pillar composite (frozen ``PHASE3_EFFECTIVE_WEIGHTS``);
-  4. picks + weights via ``compute.portfolio.weights`` (composite rank, 2/sector
-     cap, inverse-volatility weights);
-  5. builds a daily gross + net NAV (``compute.portfolio.backtest``) vs the
+  4. replays the 6 accounting-based active vetoes **point-in-time** against the PIT
+     cross-section at T (Phase 7.0c). ``non_reliance_filing`` is EXCLUDED from the
+     replay (no 8-K Item-4.02 history in the loaded PIT data — see
+     ``meta.vetoes_not_replayed``); replayed veto state drives ``select_picks`` as in
+     the live rule, and vetoed candidates are recorded in
+     ``rebalances[i].vetoed_pick_candidates``;
+  5. picks + weights via ``compute.portfolio.weights`` (composite rank,
+     inverse-volatility weights, NO sector cap);
+  6. builds a daily gross + net NAV (``compute.portfolio.backtest``) vs the
      benchmark index series.
+  7. exports per-rebalance supplementary fields: ``full_ranked`` (top-40 by
+     composite), ``mos_pct`` on each holding, ``sector_weights_by_count``,
+     ``high_conviction_count``.
 
 Methodology (ratified 2026-06-04, Option A): this is a **point-in-time PROXY**
 of the forward rule — fundamental pillars use ANNUAL (not the live TTM) basis,
 GICS sectors are assumed stable from today, and survivorship is corrected via
 the membership ledger. See ``meta.disclaimer`` in the output.
 
-**v1 scope decisions (flagged for methodology / reviewer):**
-  * **No defense-layer veto replay.** Selection is composite-rank only (NO sector
-    cap — removed 2026-06-06; the basket concentrates by composite alone); the 7
-    active vetoes are NOT recomputed point-in-time (they need the cross-source /
-    manipulation layer). DISCLOSED — a `value-trap`-style name can appear in a
-    historical pick that the live rule would have vetoed. Tracked as the PR-2c
-    follow-up.
-  * **NAV per holding count N=1..``MAX_PICKS`` (20).** At each rebalance the top-N
-    picks are inverse-vol weighted and the artifact stores a daily NAV series for
-    every N, so the count slider (1-20) re-runs the backtest line vs the index
-    directly (no client-side re-derivation). ``DEFAULT_COUNT`` (5) is the slider's
-    landing position. Each rebalance also stores its ranked holdings + ``weights_by_count``.
+**Veto replay scope (Phase 7.0c):**
+  * Six of the seven active vetoes are replayed PIT:
+      - ``data_quality_input_corruption`` — snapshot-only (TBVPS / revenue patterns)
+      - ``altman_distress`` — Altman Z″ from PIT balance-sheet snapshot
+      - ``sloan_accruals_top_decile`` — (NI−CFO)/TA, cross-section at T
+      - ``net_issuance_top_decile`` — ln(shares_t/shares_{t-12m}), within-sector at T
+      - ``beneish_manipulation_veto`` — 8-ratio M-score from PIT snapshot + history
+      - ``dechow_manipulation_veto`` — F-score from PIT snapshot + history
+  * ``non_reliance_filing`` is NOT replayed: the 8-K Item-4.02 filing history is
+    not present in the pre-loaded PIT data and fetching it per-name per-rebalance
+    would add EDGAR network calls not budgeted for the backfill step. Disclosed via
+    ``meta.vetoes_not_replayed``.
+  * When all six accounting vetoes replay cleanly, ``meta.veto_layer_replayed`` is
+    ``true`` (the primary Phase 5 entry-gate metric). ``non_reliance_filing``
+    appearing in ``meta.vetoes_not_replayed`` is expected and does NOT suppress the
+    flag.
 
 **Run** (CI ``workflow_dispatch`` — needs warm price + fundamentals_history
 caches; the dev sandbox has neither, so this script is CI-validated, not
@@ -83,11 +96,14 @@ from compute.portfolio.weights import (
     select_picks,
     trailing_return_sigma,
 )
+from compute.scoring.beneish import compute_beneish
 from compute.scoring.composite import compute_composite, neutralize_pillar_scores
+from compute.scoring.dechow_f import compute_dechow_f
 from compute.scoring.loss_chance import derive_loss_chance
 from compute.scoring.pillars import TickerInputs, compute_all_pillars
 from compute.scoring.recommendation import derive_recommendation
 from compute.scoring.restatement_filings import fetch_amendments
+from compute.scoring.risk_overlay import compute_risk_flags
 from compute.valuation.ensemble import compute_fair_price_ensemble
 
 logger = logging.getLogger(__name__)
@@ -98,7 +114,11 @@ logger = logging.getLogger(__name__)
 DEFAULT_COUNT = 5
 CONSERVATIVE_COST_BPS = 25.0  # the "show the cost band" second net line
 BENCHMARKS_JSON = "portfolio/benchmarks.json"
-RULE_VERSION = "phase3-effective-weights"
+
+# Phase 7.0c: +veto-replay suffix marks artifacts where veto_layer_replayed=True.
+# Prior artifacts (veto_layer_replayed=False) carry the plain "phase3-effective-weights"
+# version so callers can distinguish the two datasets unambiguously.
+RULE_VERSION = "phase3-effective-weights+veto-replay"
 
 # methodology-scientist RATIFY 2026-06-08 (Option B, condition C2): the backtest has
 # ANNUAL 10-K data only, so the live 180d hard-stale gate (config.FILING_STALE_HARD_DAYS)
@@ -109,6 +129,34 @@ RULE_VERSION = "phase3-effective-weights"
 # compute_fair_price_ensemble(hard_stale_days=...) — the live path NEVER sets it (keeps
 # config's 180d). Provenance: GUT-FEEL-WITH-SEC-DEADLINE-RATIONALE.
 BACKTEST_HARD_STALE_DAYS = 455
+
+# The six accounting vetoes replayed point-in-time (Phase 7.0c). All derive from the
+# already-loaded PIT snapshot + PIT history — no additional EDGAR fetching required.
+_VETOES_REPLAYED: tuple[str, ...] = (
+    "data_quality_input_corruption",
+    "altman_distress",
+    "sloan_accruals_top_decile",
+    "net_issuance_top_decile",
+    "beneish_manipulation_veto",
+    "dechow_manipulation_veto",
+)
+
+# non_reliance_filing is excluded from replay: it requires 8-K Item-4.02 filing
+# history from EDGAR that is NOT part of the pre-loaded PIT fundamentals data.
+# Fetching it per-name per-rebalance would add O(N_picked × N_rebalances) EDGAR
+# calls beyond the restatement-canary amendment fetch that already runs per-picked-
+# name. The flag is a real-time check (trailing 365d), and its historical filings
+# index is not available in the warm fundamentals/price caches that the backfill
+# relies on. This exclusion is honest: the live rule does enforce it; the backtest
+# is a proxy that cannot fully replay it point-in-time.
+_VETOES_NOT_REPLAYED: tuple[dict[str, str], ...] = (
+    {"name": "non_reliance_filing", "reason": "no_8k_history_in_pit_data"},
+)
+
+# Maximum number of top-composite names exported per rebalance as full_ranked.
+# 40 dicts × ~5 fields × ~15 bytes/field (JSON keys + values) ≈ 3-4 KB per rebalance;
+# 40 rebalances ≈ 120-160 KB — still well under ~2 MB total (negligible vs the NAV series).
+_FULL_RANKED_LIMIT = 40
 
 # Method caveats only. The result-dependent in-sample lead/lag sentence (vs SPY) is
 # computed from the ACTUAL NAV and appended in run_backfill so the disclaimer can never
@@ -127,10 +175,15 @@ DISCLAIMER_BASE = (
     "of the gate is dropped at the next rebalance). The recommendation + 6-method "
     "valuation layer is replayed point-in-time, with the fair-value staleness gate "
     "widened to ~15 months for the once-a-year 10-K cadence (vs the live 180-day "
-    "gate); the cross-source manipulation vetoes are NOT replayed. Net figures "
-    "charge a modeled per-side spread cost (10-25 bps on turnover) but are gross of "
-    "additional market-impact slippage; per McLean-Pontiff (2016) published-factor "
-    "edges decay ~32% post-publication."
+    "gate). Six of the seven active accounting vetoes (Altman distress, Sloan "
+    "accruals, net issuance, Beneish manipulation, Dechow F-score, and data-quality "
+    "corruption) are replayed point-in-time against the PIT cross-section; "
+    "non_reliance_filing (8-K Item 4.02) is NOT replayed — no 8-K history is "
+    "available in the loaded PIT data — so a name that filed an Item 4.02 in the "
+    "trailing year at a historical rebalance will appear in this backtest un-vetoed. "
+    "Net figures charge a modeled per-side spread cost (10-25 bps on turnover) but "
+    "are gross of additional market-impact slippage; per McLean-Pontiff (2016) "
+    "published-factor edges decay ~32% post-publication."
 )
 
 _SNAPSHOT_FIELDS = {f.name for f in dataclasses.fields(FundamentalsSnapshot)}
@@ -254,6 +307,62 @@ def _insample_lag_clause(nav: dict, start: date, end: date) -> str:
         f" past performance, even favorable, does not predict future results; read the full"
         f" 1-{MAX_PICKS} holding-count ladder, not any single line."
     )
+
+
+def _compute_pit_risk_flags(
+    snapshots: dict[str, FundamentalsSnapshot | None],
+    pit_histories: dict[str, pd.DataFrame | None],
+    sectors: dict[str, str],
+    rebalance_date: date,
+    beneish_scores: dict[str, float | None],
+    dechow_scores: dict[str, float | None],
+) -> dict[str, list[str]]:
+    """Compute the six accounting-based active vetoes against the PIT cross-section.
+
+    This is a SUBSET of ``compute_risk_flags`` — non_reliance_filing is excluded
+    (no 8-K history in the PIT data). Sloan + NSI cross-sections are computed against
+    the live cohort AT THIS REBALANCE, not today's universe, so the within-sector
+    decile thresholds are PIT-correct.
+
+    ``beneish_scores`` and ``dechow_scores`` are pre-computed per-ticker before calling
+    this function (to avoid recomputing inside compute_risk_flags which doesn't call
+    those scorers directly — it only applies thresholds via the inject paths).
+    """
+    return compute_risk_flags(
+        snapshots=snapshots,
+        histories={t: h for t, h in pit_histories.items() if h is not None},
+        sectors=sectors,
+        today=rebalance_date,  # PIT: NSI lookback anchors to T, not today
+        non_reliance_by_ticker={t: False for t in snapshots},  # excluded; all False
+        beneish_m_scores=beneish_scores,
+        dechow_f_scores=dechow_scores,
+    )
+
+
+def _sector_weights_by_count(
+    weights_by_count: dict[int, dict[str, float]],
+    sector_by_ticker: dict[str, str],
+) -> dict[str, dict[str, float]]:
+    """Aggregate per-ticker weights into sector-weight maps for each count N.
+
+    Returns ``{str(N): {sector: total_weight}}``. Sectors with zero weight in a
+    given count are omitted (saves space). Weights round to 4 dp (2 dp is too coarse
+    for small portfolios; 4 dp matches the inverse-vol weight precision needs).
+
+    Accumulate RAW floats per sector; round ONCE per sector at the end. Rounding
+    on each ADD would introduce per-step rounding error and make Σ = 1 ± n_sectors×5e-5
+    instead of ≤ 1 ulp drift before the single final round.
+    """
+    out: dict[str, dict[str, float]] = {}
+    for n, wmap in weights_by_count.items():
+        raw: dict[str, float] = {}
+        for ticker, w in wmap.items():
+            s = sector_by_ticker.get(ticker, "Unknown")
+            raw[s] = raw.get(s, 0.0) + w
+        by_sector = {s: round(v, 4) for s, v in raw.items()}
+        if by_sector:
+            out[str(n)] = by_sector
+    return out
 
 
 def run_backfill(
@@ -408,9 +517,6 @@ def run_backfill(
             except Exception as e:  # noqa: BLE001 — one bad name never kills the backfill
                 logger.warning("backfill: ensemble failed for %s @ %s: %s", t, T_iso, e)
             cs = float(composite[t])
-            # risk_flags / valuation_warnings stay empty PIT (the cross-source
-            # manipulation layer is NOT replayed — veto_layer_replayed=False, disclosed);
-            # recommendation + loss-chance ride on composite + the PIT MoS.
             mos_by_ticker[t] = mos
             rec_by_ticker[t] = derive_recommendation(
                 composite_score=cs, risk_flags=(), valuation_warnings=(), mos_pct=mos
@@ -419,18 +525,81 @@ def run_backfill(
                 composite_score=cs, risk_flags=(), valuation_warnings=(), mos_pct=mos
             )
 
+        # --- Phase 7.0c: PIT veto-layer replay ---
+        # Compute Beneish and Dechow scores per-ticker before calling compute_risk_flags
+        # (the inject paths in compute_risk_flags take pre-computed scores as dicts).
+        # Using PIT pit_hist ensures the prior-year lookbacks are also filed<=T.
+        beneish_scores: dict[str, float | None] = {}
+        dechow_scores: dict[str, float | None] = {}
+        for t, inp in inputs.items():
+            snap_t = snaps_by_ticker.get(t)
+            pit_hist_t = inp.history  # already filed<=T (GUARDRAIL 1 above)
+            try:
+                br = compute_beneish(snap_t, pit_hist_t)
+                beneish_scores[t] = br.m_score
+            except Exception as e:  # noqa: BLE001
+                logger.warning("backfill: beneish failed for %s @ %s: %s", t, T_iso, e)
+                beneish_scores[t] = None
+            try:
+                dr = compute_dechow_f(snap_t, pit_hist_t)
+                dechow_scores[t] = dr.f_score
+            except Exception as e:  # noqa: BLE001
+                logger.warning("backfill: dechow failed for %s @ %s: %s", t, T_iso, e)
+                dechow_scores[t] = None
+
+        pit_risk_flags = _compute_pit_risk_flags(
+            snapshots=snaps_by_ticker,
+            pit_histories={t: inp.history for t, inp in inputs.items()},
+            sectors={t: inp.sector for t, inp in inputs.items()},
+            rebalance_date=T,
+            beneish_scores=beneish_scores,
+            dechow_scores=dechow_scores,
+        )
+
+        # Build full_ranked: top-_FULL_RANKED_LIMIT names by composite at this rebalance,
+        # including vetoed names (the rank excludes no one — vetoed names just can't be
+        # picked). Provides the raw composite leaderboard the veto selection effect
+        # analysis reads from.
+        composite_sorted = sorted(
+            [(str(t), float(composite[t])) for t in composite.index],
+            key=lambda x: -x[1],
+        )
+        # NOTE — full_ranked[*].recommendation is derived pre-veto (risk_flags=() in
+        # derive_recommendation above). This is DELIBERATE: full_ranked is a raw-signal
+        # leaderboard for rank-banding / sector-cap experiments; it carries the composite
+        # rank and valuation label before the veto layer has a chance to exclude names.
+        # Selection is NOT affected — vetoes operate in select_picks via PickCandidate
+        # .risk_flags (populated from pit_risk_flags below). Do NOT "fix" this to pass
+        # the live veto flags into derive_recommendation for full_ranked: that would hide
+        # a vetoed name's true recommendation label and make the leaderboard look cleaner
+        # than the raw signal warrants (a Rule-16 annotate-vs-veto violation).
+        full_ranked = [
+            {
+                "ticker": t,
+                "composite_score": round(cs, 2),
+                "sector": sector_by_ticker.get(t, "Unknown"),
+                "mos_pct": (
+                    round(mos_by_ticker[t], 2) if mos_by_ticker.get(t) is not None else None
+                ),
+                "recommendation": rec_by_ticker.get(t),
+            }
+            for t, cs in composite_sorted[:_FULL_RANKED_LIMIT]
+        ]
+
         candidates = [
             PickCandidate(
                 ticker=str(t),
                 composite_score=float(composite[t]),
                 sector=sector_by_ticker.get(str(t), "Unknown"),
-                risk_flags=(),  # v1: no point-in-time defense-veto replay (disclosed)
+                risk_flags=tuple(pit_risk_flags.get(str(t), [])),  # PIT veto flags
                 recommendation=rec_by_ticker.get(str(t)),
                 mos_pct=mos_by_ticker.get(str(t)),
                 loss_chance_pct=lc_by_ticker.get(str(t)),
             )
             for t in composite.index
         ]
+        # Fast O(1) lookup for the high_conviction_count per-pick computation below.
+        candidates_by_ticker: dict[str, PickCandidate] = {c.ticker: c for c in candidates}
         # PR-2: the high-conviction gate now DRIVES selection (C1 cleared on PR-1's
         # backfill — median eligible 52 >> DEFAULT_COUNT). eligible_high_conviction_count
         # stays as the per-rebalance diagnostic; picks = top-N BY COMPOSITE among the
@@ -440,6 +609,25 @@ def run_backfill(
             1 for c in candidates if c.mos_pct is not None and c.mos_pct > 0.0
         )
         hc_counts.append(high_conviction_count)
+
+        # Phase 7.0c: Record names that would have been top-MAX_PICKS picks by composite
+        # but were excluded by veto flags. These are the "selection effect" names — the
+        # headline measurement of whether the veto layer rescues or suppresses picks.
+        # We collect candidates that: (a) have at least one active veto flag, and
+        # (b) rank in the top MAX_PICKS by composite among all candidates, so they
+        # WOULD have appeared if the veto layer were absent.
+        vetoed_pick_candidates: list[dict] = []
+        top_n_by_composite = sorted(candidates, key=lambda c: -c.composite_score)[:MAX_PICKS]
+        for c in top_n_by_composite:
+            flags = list(c.risk_flags)
+            if flags:  # has at least one active veto -> would have been in top-N but vetoed
+                vetoed_pick_candidates.append(
+                    {
+                        "ticker": c.ticker,
+                        "composite_score": round(c.composite_score, 2),
+                        "flags": flags,
+                    }
+                )
 
         # Sell-eviction is implicit: a name that decayed out of the gate this quarter
         # is absent from the eligible set and won't be re-picked (the basket is rebuilt
@@ -480,6 +668,9 @@ def run_backfill(
             elif _restatement_at_risk(amends, T_iso):
                 restate_names.add(t)
 
+        # Phase 7.0c: sector_weights_by_count — derived per-N sector-weight map.
+        sw_by_count = _sector_weights_by_count(weights_by_count, sector_by_ticker)
+
         rebalances_out.append(
             {
                 "date": T_iso,
@@ -490,6 +681,12 @@ def run_backfill(
                         "composite_score": round(float(composite[t]), 2),
                         "sector": sector_by_ticker.get(t, "Unknown"),
                         "sigma_90d": round(sigmas[t], 6) if t in sigmas else None,
+                        # Phase 7.0c: signed MoS% per holding (None-safe).
+                        "mos_pct": (
+                            round(mos_by_ticker[t], 2)
+                            if mos_by_ticker.get(t) is not None
+                            else None
+                        ),
                     }
                     for t in picks
                 ],
@@ -501,6 +698,24 @@ def run_backfill(
                 # would clear the high-conviction gate / have positive MoS this rebalance.
                 "eligible_high_conviction_count": high_conviction_count,
                 "mos_positive_count": mos_positive_count,
+                # Phase 7.0c: new fields.
+                # full_ranked: top-_FULL_RANKED_LIMIT names by composite (including vetoed);
+                # enables rank-banding + sector-cap experiments.
+                "full_ranked": full_ranked,
+                # high_conviction_count: how many of the MAX_PICKS picks cleared
+                # the high-conviction gate at this rebalance (distinct from the
+                # cohort-wide eligible_high_conviction_count above).
+                "high_conviction_count": sum(
+                    1 for t in picks
+                    if is_high_conviction(candidates_by_ticker.get(t, PickCandidate(
+                        ticker=t, composite_score=0.0, sector="Unknown"
+                    )))
+                ),
+                # sector_weights_by_count: {str(N): {sector: total_weight}}.
+                "sector_weights_by_count": sw_by_count,
+                # vetoed_pick_candidates: names that would have appeared in the top-N
+                # composite basket but were excluded by at least one active veto.
+                "vetoed_pick_candidates": vetoed_pick_candidates,
             }
         )
 
@@ -510,6 +725,11 @@ def run_backfill(
         round(100.0 * len(restate_names) / len(picked_names), 1) if picked_names else None
     )
     disclaimer = DISCLAIMER_BASE + _insample_lag_clause(nav, start, end)
+
+    # Phase 7.0c: veto_layer_replayed is True when all six accounting vetoes were
+    # included in the replay (non_reliance_filing is deliberately excluded and
+    # disclosed in vetoes_not_replayed — this does NOT suppress the True flag).
+    # The flag answers: "did the backtest include the accounting veto layer?" = yes.
     payload = {
         "meta": {
             "generated_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -527,13 +747,22 @@ def run_backfill(
             "restatement_canary_source": "edgar-filings-index",
             "restatement_canary_unresolved_count": len(restate_unresolved),
             "sector_from_today": True,
-            "veto_layer_replayed": False,
+            # Phase 7.0c: veto_layer_replayed=True — six of seven accounting vetoes
+            # are replayed point-in-time from PIT snapshot + history. The one
+            # excluded veto (non_reliance_filing) is disclosed in vetoes_not_replayed.
+            "veto_layer_replayed": True,
+            "vetoes_replayed": list(_VETOES_REPLAYED),
+            "vetoes_not_replayed": [
+                {"name": v["name"], "reason": v["reason"]}
+                for v in _VETOES_NOT_REPLAYED
+            ],
             # PR-2 (Phase 7): the recommendation/valuation layer is replayed point-in-time
             # AND now DRIVES selection (gate_active=True) — the basket holds only
             # high-conviction names. C1 cleared on PR-1's backfill (median eligible 52 >>
-            # default_count). The cross-source manipulation vetoes are still NOT replayed
-            # (veto_layer_replayed stays False). high_conviction_eligible_median remains the
-            # per-rebalance diagnostic (picks = top-N by composite among the eligible set).
+            # default_count). Phase 7.0c replays the accounting vetoes too (see
+            # _VETOES_REPLAYED / _VETOES_NOT_REPLAYED above). high_conviction_eligible_median
+            # remains the per-rebalance diagnostic (picks = top-N by composite among the
+            # eligible set).
             "recommendation_layer_replayed": True,
             "high_conviction_gate_active": gate == "high_conviction",
             "high_conviction_eligible_median": (
