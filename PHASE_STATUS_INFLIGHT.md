@@ -2791,3 +2791,58 @@ there is no remaining consumer).
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## feat(backtest) — Phase 7.0c PIT veto-layer replay + artifact exports (in flight, 2026-06-10)
+
+Branch `claude/confident-thompson-y58bhe` (reset onto main `bac8a803` post-#449;
+the interim PR #450 macd_hist-restore was closed as superseded by #449's
+evidence-ratified REMOVE — see the #450 close comment). Ratified roadmap
+item 1 (PR #448) — **Phase 5 entry gate (a)**.
+
+**Veto replay (scripts/backfill_portfolio_pit.py only):** replays **6 of 7**
+active vetoes point-in-time at every one of the 40 rebalances, from the PIT
+data the backfill already loads — `altman_distress` · `sloan_accruals_top_decile`
+(within-PIT-cohort cross-section at T) · `net_issuance_top_decile` (`today=T`
+so the 12m lookback anchors to the rebalance date) · `beneish_manipulation_veto`
++ `dechow_manipulation_veto` (PIT prior-year history filed ≤ T) ·
+`data_quality_input_corruption`. `non_reliance_filing` is **EXCLUDED with
+disclosure** — its 8-K Item 4.02 history is not in the preloaded PIT data and
+would need per-name EDGAR fetching; recorded as
+`meta.vetoes_not_replayed=[{name, reason}]`. `meta.veto_layer_replayed`
+False → True; `meta.vetoes_replayed` lists the six; `RULE_VERSION` →
+`phase3-effective-weights+veto-replay`; `DISCLAIMER_BASE` rewritten to the
+honest 6-replayed/1-excluded state. Vetoed names are excluded from pick
+eligibility exactly like live (`select_picks`; next-ranked clean name fills
+the slot); their composite is NEVER modified (Rule 16) and they still appear
+in `full_ranked` with their honest score.
+
+**New per-rebalance artifact exports** (the Iteration-1 experiment backlog;
+artifact is self-carried — NO schema-triple change, `schema_check` clean):
+`vetoed_pick_candidates` (would-have-been-picked names + flags — the
+selection-effect headline) · `full_ranked` top-40
+`{ticker, composite_score, sector, mos_pct, recommendation}` ·
+`holdings[].mos_pct` · `sector_weights_by_count` · `high_conviction_count`.
+Size +~550KB → ~1.85MB (< 2MB budget); warm runtime +60-90s.
+
+**Tests:** 3 wiring-isolation repairs (the new `_compute_pit_risk_flags`
+fires DQIC on synthetic fixtures → zero picks; now mocked for wiring tests +
+the wellformed-artifact test asserts the new meta shape) + 7 new (rule-version
+suffix ×2 · vetoed-candidate excluded-from-picks + Rule-16 composite parity ·
+full_ranked 5-field schema + descending order · sector-weights sum-to-1 ·
+high_conviction_count bounds · today=T forwarding spy). Plus a fix to the
+PRE-EXISTING `test_weights.py::test_hc_gate_subset_of_veto_only_property`
+Hypothesis property whose invariant was wrong (HC top-N ⊄ veto-only top-N in
+general; corrected to the gate-level eligibility subset).
+
+**Post-merge step:** one `backfill-portfolio.yml` dispatch produces the first
+`veto_layer_replayed=True` artifact; then the quarterly beat-rate board is
+re-run against the Iteration-1 baseline (N=5 45% · N=9 70% · N=18 72.5% vs
+SPY) — the Phase 5 gate (a) measurement.
+
+**Files**: scripts/backfill_portfolio_pit.py ·
+tests/test_portfolio/test_backfill_integration.py ·
+tests/test_portfolio/test_weights.py · CLAUDE.md (§In-flight rotation + item-1
+marker) · PHASE_STATUS.md (§In-flight rotation + Recently-merged #448/#449
+backfill) · PHASE_STATUS_INFLIGHT.md (this).
+
+---

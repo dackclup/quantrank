@@ -523,33 +523,36 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **refactor(scoring) — issue #441 close-out: REMOVE MAD + the dead
-  `macd_hist` slot (this PR)** — the pre-registered acceptance gate FAILED on
-  the first real cron (2026-06-10, commit `1d12b097`): `mad_mom12_corr` 0.834 /
-  `mad_mom3_corr` 0.807, both ≫ the |ρ| < 0.30 line at 99.6% coverage →
-  decisive **momentum echo** (MAD 21/200 ≈ a trapezoid-weighted ~9.5-month
-  return sum ≈ the `mom_12_1` window; every candidate artifact biases ρ
-  DOWNWARD, so 0.83 is a floor; ~20 SE from the line → one cron is
-  decision-grade). `methodology-scientist` **RATIFY-REMOVE** (scope a, full
-  cleanup): no literature contradiction — AKS 2021 / HZZ 2016 measured
-  CONDITIONAL incremental alpha (orthogonal component, broad CRSP); our
-  fixed-weight linear pillar cannot harvest an orthogonal residual, so wiring
-  at ρ=0.83 would double-count momentum past its declared 0.10 weight.
-  Removes: `mad_scalefree` + `mad_diagnostics` + the main.py pass + the 3
-  `Metadata.mad_*` fields (schema PATCH **`0.10.16 → 0.10.17-phase4.6`**,
-  snapshot regenerated) + 15 MAD tests + the dead `macd_hist` slot in
-  `pillars.py` (float-vs-dict check → always-NaN → skipna-dropped; pillar
-  becomes an honest 4-metric mean — expected Δrank = 0, simulate must show
-  data-drift-only movers). Evidence preserved here + issue #441 close-out.
-  NO replacement 5th input without a fresh pre-registration (candidates if
-  appetite: short-term reversal Jegadeesh 1990 / idio-vol AHXZ 2006 *JF*).
+- **feat(backtest) — Phase 7.0c PIT veto-layer replay + artifact exports
+  (this PR, 2026-06-10)** — roadmap item 1 / Phase 5 entry gate (a). Replays
+  **6 of 7** active vetoes point-in-time at all 40 rebalances from the
+  already-loaded PIT data (Altman · Sloan top-decile · NSI top-decile with
+  `today=T` lookback anchor · Beneish · Dechow from PIT prior-year history ·
+  DQIC); cross-sectional vetoes computed within the PIT cohort at T.
+  `non_reliance_filing` EXCLUDED with disclosure (needs per-name 8-K Item 4.02
+  fetching) — `meta.vetoes_replayed` / `vetoes_not_replayed` carry the honest
+  split; `meta.veto_layer_replayed` False → True; `RULE_VERSION` gains
+  `+veto-replay`; disclaimer updated. Vetoed names are excluded from pick
+  eligibility exactly like live (next-ranked clean fills the slot; composite
+  untouched per Rule 16). New per-rebalance exports: `vetoed_pick_candidates`
+  (the selection-effect headline) · `full_ranked` top-40 · `holdings[].mos_pct`
+  · `sector_weights_by_count` · `high_conviction_count` — unblocks the
+  rank-banding + pick-substitution sector-cap experiments. Artifact stays
+  self-carried (no schema-triple change; +~550KB ≈ 1.85MB < 2MB budget; warm
+  +60-90s). Tests: +7 new / 3 wiring-isolation repairs + the `test_weights`
+  HC-subset Hypothesis property fixed (its invariant was wrong: HC top-N ⊄
+  veto-only top-N in general; correct form is gate-level eligibility subset).
+  Post-merge: one backfill dispatch → first `veto_layer_replayed=True`
+  artifact → re-run the quarterly beat-rate board (baseline: N=5 45% / N=9
+  70% / N=18 72.5% vs SPY).
 
 
 **Next deliverables** (re-scoped 2026-06-10, ordered by decision-value):
-- **1 · Phase 7.0c — PIT veto-layer replay** (PROMOTED) — replay the 7 active
-  vetoes in `scripts/backfill_portfolio_pit.py` (flip `veto_layer_replayed`
-  False → True) + one backfill dispatch. Answers "does the defense layer rescue
-  the composite?" — the **Phase 5 entry gate (a)**.
+- **1 · Phase 7.0c — PIT veto-layer replay** (PROMOTED; **IN FLIGHT — this
+  PR**, 6-of-7 vetoes replayed, `non_reliance_filing` disclosed-excluded) —
+  replay the active vetoes in `scripts/backfill_portfolio_pit.py` (flip
+  `veto_layer_replayed` False → True) + one backfill dispatch. Answers "does
+  the defense layer rescue the composite?" — the **Phase 5 entry gate (a)**.
 - **2 · Issue #441 — DONE (closed by the MAD close-out PR, 2026-06-10)** —
   the acceptance gate FAILED on the first cron (ρ = 0.834 / 0.807 ≫ 0.30 →
   momentum echo; `methodology-scientist` RATIFY-REMOVE). MAD construct +
