@@ -1325,13 +1325,16 @@ already ships — there is **no schema / compute / `backtest_pit.json` change** 
   benchmark picker (the parent passes the FULL `netByCount[count]` + `benchmark[bench]` series, not
   the chart's period-trimmed view).
 
-**The honesty caveat is load-bearing — do not remove it.** Over the shipped 2021-2026 PIT window the
-AI-pick UNDERperforms the S&P 500 at **every** holding count (count-5 net CAGR ≈ +0.2% vs SPY
-+12.5%; the best, count-10, is ≈ +11.2% vs +12.5%). This is honest by design (McLean-Pontiff 2016
-post-publication decay; survivorship-corrected universe) and is already stated in the backtest
-`meta.disclaimer`. The table additionally carries a caveat beside the CAGR row: the backtest is the
-**raw top-by-composite signal, point-in-time — `veto_layer_replayed=False`, so the 7 defense vetoes
-that filter the live Top-5 are NOT replayed**. Therefore the backtest CAGR is the unfiltered signal's
-record, **not the live product's track record** — never describe it as the latter. Landing the
-deferred PR-2c (point-in-time veto replay) is what would make the backtest reflect the live
-veto-filtered product.
+**The honesty caveat is load-bearing — do not remove it.** The headline numbers are
+WINDOW-DEPENDENT and refresh with every cron: the original 5y (2021-2026) artifact underperformed
+the S&P 500 at every holding count, while the #440 10y (2016-2026) artifact has N≥3 beating SPY
+full-window (N=5 net ≈ 16.6% vs SPY 15.0%; N=9 ≈ 22.4%) with the excess concentrated in 2020-2021
+and 2025 lost at every N — NEVER quote either result as timeless; read the live artifact. The
+in-app disclaimer is result-dependent (PR #419) so the UI self-corrects. Veto-replay state: PR #451
+(Phase 7.0c) replays **6 of the 7** active vetoes point-in-time (`meta.veto_layer_replayed=True`,
+`non_reliance_filing` disclosed-excluded in `meta.vetoes_not_replayed`); artifacts generated BEFORE
+its first post-merge refresh still carry `veto_layer_replayed=False`. The CAGR-row caveat and the
+AiPickPortfolio footnote are DATA-DRIVEN on that flag (both generations stay honest) — keep them
+branching on the artifact, never hardcode either state. Even at `True`, the backtest is still not
+the full live product (one veto un-replayed; annual-10-K PIT vs live TTM) — never describe the
+backtest CAGR as the live product's track record.
