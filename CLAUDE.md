@@ -529,54 +529,31 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **chore(agents) — 3 NEW data subagents: data-pipeline-engineer + data-analyst + data-scientist (this PR)** —
-  fills the DATA discipline gap (user request). `data-pipeline-engineer` (Data Eng, read-only)
-  audits the whole input/data layer holistically — all sources (EDGAR + yfinance + Wikipedia) +
-  parquet caches + the survivorship membership ledger + freshness + `*_coverage_pct` + backtest
-  artifacts; distinct from edgar-debugger (EDGAR-only) / performance-engineer (latency) /
-  stock-detail-auditor (per-stock output). `data-analyst` (read-only) does aggregate/distributional
-  analytics over rankings.json + metadata.json (score tiers · sector breakdown · rec mix ·
-  MoS/factor distributions · Top-N · WoW drift); distinct from stock-detail-auditor (per-ticker) /
-  methodology-scientist (academic). `data-scientist` (read-only; added on user request, overriding
-  the earlier "premature" call) is the EMPIRICAL/ML seat — signal IC + decay, PBO/DSR + leakage
-  scrutiny over `compute/validation/**` + `compute/features/**`, Phase-5 ML scoping (purged
-  time-series CV, baseline-first); design→evaluate→ratify seats stay separate (financial-engineer →
-  data-scientist → methodology-scientist). All three sonnet effort:max, Tier 3 Specialized (6→9).
-  Still skipped: data-quality (covered) / governance / viz (overlap or dead-config).
-  Roster 22 → 25 (5 fable / 20 sonnet; 23 at effort:max). Docs lockstep across
-  CLAUDE.md / AGENTS.md / README / CONTEXT.md / WORKFLOW.md / docs/GOTCHAS.md + check_model_pin
-  count. No production code / schema change.
-
-- **feat(backtest) — Phase 7.0c PIT veto-layer replay + artifact exports
-  (this PR, 2026-06-10)** — roadmap item 1 / Phase 5 entry gate (a). Replays
-  **6 of 7** active vetoes point-in-time at all 40 rebalances from the
-  already-loaded PIT data (Altman · Sloan top-decile · NSI top-decile with
-  `today=T` lookback anchor · Beneish · Dechow from PIT prior-year history ·
-  DQIC); cross-sectional vetoes computed within the PIT cohort at T.
-  `non_reliance_filing` EXCLUDED with disclosure (needs per-name 8-K Item 4.02
-  fetching) — `meta.vetoes_replayed` / `vetoes_not_replayed` carry the honest
-  split; `meta.veto_layer_replayed` False → True; `RULE_VERSION` gains
-  `+veto-replay`; disclaimer updated. Vetoed names are excluded from pick
-  eligibility exactly like live (next-ranked clean fills the slot; composite
-  untouched per Rule 16). New per-rebalance exports: `vetoed_pick_candidates`
-  (the selection-effect headline) · `full_ranked` top-40 · `holdings[].mos_pct`
-  · `sector_weights_by_count` · `high_conviction_count` — unblocks the
-  rank-banding + pick-substitution sector-cap experiments. Artifact stays
-  self-carried (no schema-triple change; +~550KB ≈ 1.85MB < 2MB budget; warm
-  +60-90s). Tests: +7 new / 3 wiring-isolation repairs + the `test_weights`
-  HC-subset Hypothesis property fixed (its invariant was wrong: HC top-N ⊄
-  veto-only top-N in general; correct form is gate-level eligibility subset).
-  Post-merge: one backfill dispatch → first `veto_layer_replayed=True`
-  artifact → re-run the quarterly beat-rate board (baseline: N=5 45% / N=9
-  70% / N=18 72.5% vs SPY).
+- **chore(analysis) — veto-counterfactual tool + gate (a) verdict
+  (this PR, 2026-06-10)** — `scripts/analysis_veto_counterfactual.py`
+  (dev-only) rebuilds veto-vs-no-veto books from `holdings` +
+  `vetoed_pick_candidates` + `full_ranked` and prices both through the real
+  engine fns on identical data (validation: rebuilt veto CAGR ≡ artifact to
+  0.1pp at every N). The first `meta.veto_layer_replayed=true` artifact
+  itself reached `main` via the 2026-06-10 23:51 UTC cron warm refresh (the
+  branch's cold-dispatch copy was superseded and dropped on rebase).
+  **Gate (a) verdict: the veto layer does NOT rescue returns** — CAGR delta
+  mean −1.21pp, negative at 16/20 N; clean anti-growth tilt (helps 2018/2022/
+  2025/2026, hurts 2019/2020/2023/2024); bite is 97% `sloan_accruals_top_
+  decile` firing on structural compounders (NVDA 14×, FAST 11×, NRG 10×).
+  2025's miss is NOT veto-caused (no-veto lost 2025 harder) → composite-
+  signal problem. Sloan-veto disposition routed to `methodology-scientist`
+  via issue #454 (Q3 2026-08-19 cohort audit); no threshold change ships
+  from this in-sample evidence alone. Full detail: PHASE_STATUS_INFLIGHT.md.
 
 
 **Next deliverables** (re-scoped 2026-06-10, ordered by decision-value):
-- **1 · Phase 7.0c — PIT veto-layer replay** (PROMOTED; **IN FLIGHT — this
-  PR**, 6-of-7 vetoes replayed, `non_reliance_filing` disclosed-excluded) —
-  replay the active vetoes in `scripts/backfill_portfolio_pit.py` (flip
-  `veto_layer_replayed` False → True) + one backfill dispatch. Answers "does
-  the defense layer rescue the composite?" — the **Phase 5 entry gate (a)**.
+- **1 · Phase 7.0c — PIT veto-layer replay** — **CODE MERGED (#451)**; first
+  `veto_layer_replayed=True` artifact **ON MAIN** (2026-06-10 23:51 UTC cron
+  warm refresh); the gate (a) counterfactual tool + verdict docs are IN
+  FLIGHT (this PR — see In-flight above). Gate (a) ANSWERED: the
+  defense layer does not rescue the composite's returns (drawdown-year
+  protection only); the 2025 failure lives in the composite signal itself.
 - **2 · Issue #441 — DONE (closed by the MAD close-out PR, 2026-06-10)** —
   the acceptance gate FAILED on the first cron (ρ = 0.834 / 0.807 ≫ 0.30 →
   momentum echo; `methodology-scientist` RATIFY-REMOVE). MAD construct +
