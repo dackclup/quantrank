@@ -29,7 +29,7 @@ You cannot run Python or Node locally. All execution happens in **GitHub Actions
 | **Vercel mobile app** | View deployment status + preview URL | All |
 | **Mobile browser** | Open Vercel preview URL to see live site | All |
 | **Kaggle (web/mobile)** | Monitor heavy training jobs | 5+ |
-| **Modal dashboard** | Monitor LLM/Whisper inference jobs | 6+ |
+| **Modal dashboard** | Monitor LLM/Whisper inference jobs | 6.1+ (Whisper deferred out of Phase 6, re-scope 2026-06-10) |
 
 ---
 
@@ -210,7 +210,7 @@ Defense additions per phase (full bibliography in
 | 5 | Purged + Embargoed CV (skfolio) | (arch) | 100 LOC | López de Prado 2018 |
 | 6 | Lazy Prices 10-K diff | ANNOTATE | 250 LOC | Cohen-Malloy-Nguyen 2020 *JF* |
 | 6 | FinBERT MD&A classifier | ANNOTATE | 400 LOC | Loughran-McDonald + FinBERT |
-| 6 | Whisper Vocal Delivery Quality | ANNOTATE | 600 LOC | Baik-Kim-Kim-Yoon 2025 *JAE* |
+| 6.1 (deferred from 6, re-scope 2026-06-10) | Whisper Vocal Delivery Quality | ANNOTATE | 600 LOC | Baik-Kim-Kim-Yoon 2025 *JAE* |
 | 6 | Insider routine vs opportunistic | ANNOTATE | 200 LOC | Cohen-Malloy-Pomorski 2012 |
 | 7 | HMM 3-state regime gating | (arch) | 250 LOC | Wang et al. 2020 *JRFM* |
 | 7 | Persistent-homology TDA crash detector | (arch) | 300 LOC | Gidea-Katz 2018 |
@@ -935,7 +935,7 @@ Revert to Option A (original Phase 5) if:
 
 # PHASE 6 — Sentiment v2 Enhanced (Option B)
 
-**Goal**: Multi-signal sentiment beyond original Reddit/StockTwits plan. Whisper + 8-K + Lazy Prices.
+**Goal**: Multi-signal sentiment beyond original Reddit/StockTwits plan. TEXT-ONLY (re-scope 2026-06-10): Lazy Prices + 8-K + FinBERT; Whisper → Phase 6.1.
 
 **Research ref**: RESEARCH_FINDINGS.md Section 2.5 (Whisper VDQ), 2.6 (Lazy Prices), 2.9 (8-K events).
 
