@@ -43,6 +43,13 @@ import numpy as np
 import pandas as pd
 
 from compute import config
+
+# issue #441 PR-1 (0.10.16-phase4.6) — MAD diagnostic helper + momentum scalars.
+# ``mad_scalefree`` ships in ``compute.features.technical`` (merged PR #442);
+# ``mad_diagnostics`` (added this PR) computes the cross-sectional Spearman ρ
+# observability surface BEFORE any pillar wiring (Δscore = 0).
+from compute.features.momentum import momentum_3_1, momentum_12_1
+from compute.features.technical import mad_diagnostics, mad_scalefree
 from compute.ingest.cross_source import (
     BUCKET_KEYS as CROSS_SOURCE_BUCKET_KEYS,
 )
@@ -1617,6 +1624,55 @@ def run_weekly_compute() -> int:
         alpha158_survivorship_bias_corrected = None
         alpha158_wall_clock_seconds = None
 
+    # --- issue #441 PR-1 (0.10.16-phase4.6, Rule 18) — MAD factor diagnostics
+    # Accumulate per-ticker MAD + the two momentum scalars from the already-loaded
+    # price DataFrames (inputs is already built above; zero new network calls).
+    # Universe denominator = len(pillar_df.index), matching alpha158_coverage_pct.
+    # Wrapped in try/except so any failure keeps all three fields None and never
+    # blocks the weekly cron (graceful-degradation per SKILL.md Rule 18).
+    mad_coverage_pct: float | None = None
+    mad_mom12_corr: float | None = None
+    mad_mom3_corr: float | None = None
+    try:
+        _mad_by_ticker: dict[str, float] = {}
+        _mom12_by_ticker: dict[str, float] = {}
+        _mom3_by_ticker: dict[str, float] = {}
+        for _mad_ticker, _mad_inp in inputs.items():
+            _p = _mad_inp.prices
+            if _p is None:
+                continue
+            _mad_val = mad_scalefree(_p)
+            if np.isfinite(_mad_val):
+                _mad_by_ticker[_mad_ticker] = _mad_val
+            _m12 = momentum_12_1(_p)
+            if np.isfinite(_m12):
+                _mom12_by_ticker[_mad_ticker] = _m12
+            _m3 = momentum_3_1(_p)
+            if np.isfinite(_m3):
+                _mom3_by_ticker[_mad_ticker] = _m3
+        mad_coverage_pct, mad_mom12_corr, mad_mom3_corr = mad_diagnostics(
+            _mad_by_ticker,
+            _mom12_by_ticker,
+            _mom3_by_ticker,
+            universe_size=len(pillar_df.index),
+        )
+        logger.info(
+            "MAD diagnostics (issue #441 PR-1): coverage=%.1f%% "
+            "mom12_corr=%s mom3_corr=%s",
+            mad_coverage_pct if mad_coverage_pct is not None else float("nan"),
+            mad_mom12_corr,
+            mad_mom3_corr,
+        )
+    except Exception as _mad_e:  # noqa: BLE001
+        logger.warning(
+            "MAD diagnostic block failed (observability-only — "
+            "production continues); metadata.mad_* → None. Error: %s",
+            _mad_e,
+        )
+        mad_coverage_pct = None
+        mad_mom12_corr = None
+        mad_mom3_corr = None
+
     # Step 8 — combined per-ticker loop: fair-price ensemble + price history
     # write + StockSummary + StockDetail. Single pass so per-ticker outputs
     # stay synchronized (e.g., has_history reflects the actual write result;
@@ -2392,6 +2448,11 @@ def run_weekly_compute() -> int:
         alpha158_coverage_pct=alpha158_coverage_pct,
         alpha158_survivorship_bias_corrected=alpha158_survivorship_bias_corrected,
         alpha158_wall_clock_seconds=alpha158_wall_clock_seconds,
+        # issue #441 PR-1 (0.10.16-phase4.6) — MAD factor diagnostics.
+        # All three pass through directly (already None on the degraded path).
+        mad_coverage_pct=mad_coverage_pct,
+        mad_mom12_corr=mad_mom12_corr,
+        mad_mom3_corr=mad_mom3_corr,
         tier2_enabled=_EIGHT_K_DEFENSES_ENABLED,
         loss_avoidance_size_invariant_firing_count=(
             loss_avoidance_size_invariant_firing_count

@@ -2633,7 +2633,9 @@ ratified spec: methodology-scientist ×2 + literature-searcher; construct = `tec
 Top-5/`entered_top5` diff (Rule 16) at wiring time.
 
 **Files**: `compute/config.py` (SCHEMA_VERSION) · `compute/output/schemas.py` (3 fields) ·
-`compute/main.py` (accumulate + emit + helper) · `frontend/lib/types.ts` (mirror) ·
+`compute/main.py` (accumulate + emit) · `compute/features/technical.py` (the pure
+`mad_diagnostics` helper, co-located with `mad_scalefree`; rank-then-Pearson because pandas 2.2
+delegates `method="spearman"` to scipy, which is not a dep) · `frontend/lib/types.ts` (mirror) ·
 `frontend/lib/schema-snapshot.json` (regen) · `tests/` (helper pins) · `CLAUDE.md` (§Phase status
 schema rotation + §In-flight; drained the merged #443 + #446 entries) · `PHASE_STATUS_INFLIGHT.md`
 (this).

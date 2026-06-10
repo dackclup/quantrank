@@ -175,6 +175,30 @@ class Metadata(BaseModel):
     # + adapter + gate). ``None`` on full-pipeline failure. Parity with
     # ``osap_wall_clock_seconds``; gates the ``timeout-minutes`` rebaseline.
     alpha158_wall_clock_seconds: float | None = None
+    # --- issue #441 PR-1 (0.10.16-phase4.6, Rule 18) — MAD factor diagnostics
+    # Scale-free moving-average distance (Avramov-Kaplanski-Subrahmanyam 2021
+    # *Rev.Fin.Econ.* + Han-Zhou-Zhu 2016 *JFE*) observability surface.
+    # Shipped BEFORE any pillar wiring (Δscore = 0; PR-2 wires the factor).
+    # All three fields are nullable on legacy snapshots (pre-0.10.16) and when
+    # the diagnostic block degrades (graceful-degradation: any exception →
+    # all three → None).
+    #
+    # ``mad_coverage_pct`` — % of the tickers that reached the pillar stage
+    # (denominator = ``len(pillar_df.index)``, matching the Alpha158 precedent)
+    # with a finite ``mad_scalefree`` value this run. The PR-2 blending gate
+    # requires ≥ 90 before wiring MAD into the technical pillar.
+    mad_coverage_pct: float | None = None
+    # ``mad_mom12_corr`` — cross-sectional Spearman ρ between MAD and the
+    # ``mom_12_1`` pillar input across tickers where BOTH values are finite.
+    # Computed via rank-then-Pearson (``pd.Series.rank`` + ``pd.Series.corr``
+    # with ``method="pearson"``) — no scipy dep.
+    # The PR-2 gate requires |ρ| < 0.30 — a high correlation signals that MAD
+    # is redundant with (an echo of) 12-month momentum, ruling out the
+    # independent alpha claimed by Han-Zhou-Zhu 2016 §4.2.
+    mad_mom12_corr: float | None = None
+    # ``mad_mom3_corr`` — same Spearman ρ vs ``mom_3_1`` (3-month momentum).
+    # PR-2 gate: |ρ| < 0.30 for the same independence reason.
+    mad_mom3_corr: float | None = None
     # Epic #150 Phase 1.6 (issue #155) — explicit compute-time state of
     # the Tier-2 8-K defenses (`compute/scoring/tier2._EIGHT_K_DEFENSES_ENABLED`).
     # Lets `verify-production-output/helper.py` Section B branch on the

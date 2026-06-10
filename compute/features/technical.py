@@ -82,6 +82,71 @@ def mad_scalefree(prices: pd.DataFrame, short: int = 21, long: int = 200) -> flo
     return (sma_short - sma_long) / sma_long
 
 
+def mad_diagnostics(
+    mad_by_ticker: dict[str, float],
+    mom12_by_ticker: dict[str, float],
+    mom3_by_ticker: dict[str, float],
+    universe_size: int,
+) -> tuple[float | None, float | None, float | None]:
+    """Cross-sectional MAD observability diagnostics (issue #441 PR-1, Rule 18).
+
+    Returns ``(mad_coverage_pct, mad_mom12_corr, mad_mom3_corr)`` — all three
+    fields used by ``Metadata`` for the PR-2 blending gate.
+
+    ``mad_coverage_pct`` — % of the pillar-stage universe (denominator =
+    ``universe_size``, matching ``alpha158_coverage_pct`` which uses
+    ``len(pillar_df.index)``) with a finite ``mad_scalefree`` value.
+    The PR-2 gate requires ≥ 90.
+
+    ``mad_mom12_corr`` / ``mad_mom3_corr`` — cross-sectional Spearman ρ between
+    MAD and ``mom_12_1`` / ``mom_3_1`` across tickers where BOTH are finite.
+    Implemented as rank-then-Pearson (``pd.Series.rank`` + ``pd.Series.corr``
+    with ``method="pearson"``) — no scipy dep.
+    Returns ``None`` (not NaN) when < 3 overlapping finite pairs or when
+    either rank series is constant (zero variance → undefined ρ). JSON carries
+    ``None``, never NaN.
+
+    ``universe_size`` must be > 0; callers should guard.
+    """
+    # Coverage: finite MAD values / total pillar-stage universe.
+    finite_mad = {t: v for t, v in mad_by_ticker.items() if np.isfinite(v)}
+    if universe_size > 0:
+        cov = round(100.0 * len(finite_mad) / universe_size, 2)
+    else:
+        cov = None
+
+    def _spearman_corr(
+        a: dict[str, float], b: dict[str, float]
+    ) -> float | None:
+        """Spearman ρ between two ticker→float maps; returns None when undefined.
+
+        Implemented as rank-then-Pearson (no scipy dep).  Ranks are average
+        ranks for ties (``method="average"``), consistent with classical
+        Spearman ρ. Returns ``None`` (never NaN) when < 3 overlapping pairs or
+        when either rank series is constant (zero variance → undefined ρ).
+        """
+        common = sorted(
+            t for t in a if t in b and np.isfinite(a[t]) and np.isfinite(b[t])
+        )
+        if len(common) < 3:
+            return None
+        s_a = pd.Series([a[t] for t in common], dtype=float)
+        s_b = pd.Series([b[t] for t in common], dtype=float)
+        # Rank-then-Pearson: Spearman ρ = Pearson ρ of the ranks.
+        r_a = s_a.rank(method="average")
+        r_b = s_b.rank(method="average")
+        if r_a.std(ddof=0) == 0 or r_b.std(ddof=0) == 0:
+            return None
+        rho = r_a.corr(r_b, method="pearson")
+        if rho is None or not np.isfinite(float(rho)):
+            return None
+        return round(float(rho), 4)
+
+    corr12 = _spearman_corr(finite_mad, mom12_by_ticker)
+    corr3 = _spearman_corr(finite_mad, mom3_by_ticker)
+    return cov, corr12, corr3
+
+
 def atr(prices: pd.DataFrame, period: int = 14) -> float:
     """Average True Range over ``period`` days (Wilder's smoothing)."""
     if not {"High", "Low"}.issubset(prices.columns):
