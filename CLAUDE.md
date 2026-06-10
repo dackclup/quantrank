@@ -49,7 +49,7 @@ design-system spec.
 | `tests/` | pytest suite (offline + `@network` gated; see CI for current count) |
 | `.claude/skills/` | 47 first-party invocation-triggerable skills + phase planning docs, plus a symlink to the 1 vendored third-party skill (`impeccable`, row below). See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for vendoring / license posture per source. |
 | `.agents/skills/` | Vendored third-party agent skills in the cross-tool [skills.sh](https://skills.sh) layout. Currently 1: **`impeccable`** ([pbakaus/impeccable](https://github.com/pbakaus/impeccable), **Apache-2.0**) — a frontend-design skill (design review / live browser iteration / critique / typography / color / motion), symlinked into `.claude/skills/impeccable`; installed via `npx skills add`, pinned by root `skills-lock.json`, bundled `scripts/` marked `linguist-vendored`. Dev-session tooling only — never runs in CI / the static export / the compute cron. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md). |
-| `.claude/agents/` | 22 project-specific subagents in 5 tiers: **Tier 1 Core** (quantrank-reviewer · schema-sentinel · defense-layer-auditor · edgar-debugger · **stock-detail-auditor**), **Tier 2 Lifecycle** (security-reviewer · frontend-design-reviewer · **vercel-preview-auditor** · **expert-user-explorer** · release-captain · phase-coordinator), **Tier 3 Specialized** (test-engineer · methodology-scientist · **literature-searcher** · performance-engineer · dependency-auditor · **financial-engineer**), **Tier 4 Operations** (docs-reviewer · **ci-triage-engineer** · incident-commander), **Tier 5 Builders** (write-capable: **compute-builder** owns `compute/**` · **frontend-builder** owns `frontend/**`). Spawned via the `Agent` tool with a separate context window; see [`.claude/agents/README.md`](.claude/agents/README.md) for the routing matrix + 8 coordination flows. The collaborative multi-session **agent-teams** feature reuses these defs as teammate roles — [`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md) has the 5 team recipes + the builders' file-ownership protocol + a mobile/web subagent fallback. |
+| `.claude/agents/` | 24 project-specific subagents in 5 tiers: **Tier 1 Core** (quantrank-reviewer · schema-sentinel · defense-layer-auditor · edgar-debugger · **stock-detail-auditor**), **Tier 2 Lifecycle** (security-reviewer · frontend-design-reviewer · **vercel-preview-auditor** · **expert-user-explorer** · release-captain · phase-coordinator), **Tier 3 Specialized** (test-engineer · methodology-scientist · **literature-searcher** · performance-engineer · dependency-auditor · **financial-engineer** · **data-pipeline-engineer** · **data-analyst**), **Tier 4 Operations** (docs-reviewer · **ci-triage-engineer** · incident-commander), **Tier 5 Builders** (write-capable: **compute-builder** owns `compute/**` · **frontend-builder** owns `frontend/**`). Spawned via the `Agent` tool with a separate context window; see [`.claude/agents/README.md`](.claude/agents/README.md) for the routing matrix + 8 coordination flows. The collaborative multi-session **agent-teams** feature reuses these defs as teammate roles — [`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md) has the 5 team recipes + the builders' file-ownership protocol + a mobile/web subagent fallback. |
 | `.claude/hooks/` | Bash hook scripts wired by `.claude/settings.json`. 3 hooks total: `log-bash.sh` (PostToolUse Bash → append every command to gitignored `.claude/session.log`) + `schema-reminder.sh` (PostToolUse Write/Edit → inject reminder when any file in the Pydantic↔TS↔snapshot triple is touched) + `delegate-first.sh` (UserPromptSubmit → inject orchestrator-role reminder every user turn so the main agent defaults to spawning sub-agents instead of doing work inline, AND auto-proposes the matching agent-team recipe when the task is team-fit — see [`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md) §Auto-proposal). All fail-open (missing `jq` / unwritable FS / empty stdin → exit 0). 5-second timeout each. |
 | `.claude/worktrees/` | Harness-managed isolation dirs for subagents spawned via the `Agent` tool with `isolation: "worktree"`. Per-session, transient, **gitignored** (added 2026-05-22 post the 3-PR fan-out so they don't show up as untracked on the main worktree's `git status`). Never commit them. |
 | `docs/agents/` | Per-repo configuration consumed by the vendored mattpocock engineering skills (`to-issues`, `to-prd`). Scaffolded 2026-05-25 via `mattpocock-setup-harness`. 2 files: `issue-tracker.md` (GitHub MCP conventions) + `domain.md` (the upstream-instruction → QuantRank-multi-file-CONTEXT-analog mapping). See §Agent skills below for the index. |
@@ -158,7 +158,7 @@ for the full 4-step pattern + Section I forcing example.
   for active schema + phase + defense-layer count + in-flight PRs, then
   route through [`WORKFLOW.md`](WORKFLOW.md) §"Agentic 6-Phase Cadence"
   (Planning → Code Gen → Integration → Test → Deploy → Monitor) using
-  the standing 22 subagents — don't spawn ad-hoc workflow agents on top.
+  the standing 24 subagents — don't spawn ad-hoc workflow agents on top.
 - **CLAUDE.md is an INDEX, not an encyclopedia (token-budget
   discipline, adopted 2026-06-03).** CLAUDE.md loads into EVERY session
   AND every sub-agent spawn, so it is the project's most token-expensive
@@ -243,8 +243,10 @@ guesswork:
 | "find me the paper that says X" / "หาเปเปอร์เรื่อง Y" / methodology cite outside CLAUDE.md anchor list / new defense-flag prior | `literature-searcher` (sonnet) |
 | "design a new valuation method / factor / scoring pillar / defense flag" / "ออกแบบ factor / โมเดล quant" / "scope Phase 5/6/7" / "should we add signal X" (construct doesn't exist yet) | `financial-engineer` (fable; generative design) → then `methodology-scientist` to ratify |
 | "implement X in compute/" / "build the Y component / route" / cross-layer feature build (schema + compute + UI + test) | `compute-builder` / `frontend-builder` (sonnet, **write** — owns `compute/**` / `frontend/**`) — or a **Feature Squad** agent team ([`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md)) |
+| "ตรวจ data pipeline" / "is the data pipeline healthy?" / ingest-source / cache / membership-ledger / coverage / freshness health | `data-pipeline-engineer` (sonnet, read-only) |
+| "วิเคราะห์ data" / "analyze the rankings" / "score / sector distribution" / "what changed this week" / aggregate output analytics | `data-analyst` (sonnet, read-only) |
 
-Pattern not in the table → walk the description fields of all 22
+Pattern not in the table → walk the description fields of all 24
 agents in `.claude/agents/` before defaulting to inline work.
 
 ### Cue table — when each agent fires
@@ -294,7 +296,9 @@ whitespace / single-line fixes do not trigger.
 | Pre-Mark-Ready on a UI-touching PR OR new Vercel preview URL posted OR user says "ดู preview" / "is deploy green?" / "spot-check the preview" | `vercel-preview-auditor` (sonnet) | Gated; runs Vercel MCP build+runtime+UA-probe before Playwright is scheduled |
 | Post-cron green OR pre-release OR after `vercel-preview-auditor` GO on a UI PR OR user says "ลองใช้ app" / "expert user feedback" / "UX จริง" / "is the app usable?" | `expert-user-explorer` (sonnet) | Gated; builds+serves the static export locally, drives headless Playwright through a persona mission; read-only, proposes issues. NOT per-edit (that's `frontend-design-reviewer`) |
 | methodology-scientist verdict cites a paper outside CLAUDE.md anchor list AND the actual paper text matters, OR user says "find me the paper that says X" / "หาเปเปอร์เรื่อง Y" / new defense-flag academic prior is proposed | `literature-searcher` (sonnet) | On-demand; offloads retrieval so methodology-scientist (fable) stays on judgment |
-| `workflow_dispatch` on `compute-rankings.yml` lands green | `defense-layer-auditor` Section A-L + Section I (Playwright) + `stock-detail-auditor` (per-stock data audit) + `expert-user-explorer` (experiential P1 mission on the fresh data) | Auto post-cron, parallel; all sonnet |
+| `workflow_dispatch` on `compute-rankings.yml` lands green | `defense-layer-auditor` Section A-L + Section I (Playwright) + `stock-detail-auditor` (per-stock data audit) + `data-pipeline-engineer` (data-layer health) + `data-analyst` (aggregate analytics) + `expert-user-explorer` (experiential P1 mission on the fresh data) | Auto post-cron, parallel; all sonnet |
+| Edit under `compute/ingest/**` OR `data/sp500_membership_historical.csv` edit OR a `Metadata.*_coverage_pct` drop OR user says "ตรวจ data pipeline" / "is the data pipeline healthy?" | `data-pipeline-engineer` (sonnet) | Signal-driven, read-only |
+| User says "วิเคราะห์ data" / "analyze the rankings" / "score / sector distribution" / "what changed this week" | `data-analyst` (sonnet) | On-demand, read-only |
 | Quarterly cohort audit scheduled date reached (next 2026-08-19) | `methodology-scientist` (fable) Mode C + `defense-layer-auditor` (sonnet) | Scheduled, sequential |
 | User says "design a new valuation method / factor / scoring pillar / defense flag" / "ออกแบบ factor / โมเดล quant" / "scope Phase 5/6/7" / "should we add signal X" (the construct doesn't exist yet) | `financial-engineer` (fable; generative design) → then `methodology-scientist` to ratify the prior | Rare; design precedes validation (Flow 8) |
 | New defense flag proposed (new risk_flag in `compute/scoring/`) | `methodology-scientist` (fable; validate paper anchor) + `test-engineer` (sonnet; positive + negative tests) | Rare; sequential — methodology first |
@@ -326,10 +330,10 @@ whitespace / single-line fixes do not trigger.
   hard word caps or "≤ N items" limits wastes that pool without
   improving signal. Keep model assignments (`incident-commander`
   + `release-captain` + `methodology-scientist` + `quantrank-
-  reviewer` + `financial-engineer` all fable by design; the other 17
+  reviewer` + `financial-engineer` all fable by design; the other 19
   sonnet) as they are — fable agents land on the "Weekly · all models"
   pool; sonnet agents drain the underutilized sonnet pool. Tune the
-  5-vs-17 split only when usage data justifies it. **20 of 22 agents
+  5-vs-19 split only when usage data justifies it. **22 of 24 agents
   carry `effort: max`** (frontmatter) — orthogonal to `model`: `model`
   picks fable-vs-sonnet, `effort` (low/medium/high/xhigh/max) sets
   reasoning depth and overrides the session's inherited level. Most
@@ -523,6 +527,20 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
+- **chore(agents) — 2 NEW data subagents: data-pipeline-engineer + data-analyst (this PR)** —
+  fills the DATA discipline gap (user request). `data-pipeline-engineer` (Data Eng, read-only)
+  audits the whole input/data layer holistically — all sources (EDGAR + yfinance + Wikipedia) +
+  parquet caches + the survivorship membership ledger + freshness + `*_coverage_pct` + backtest
+  artifacts; distinct from edgar-debugger (EDGAR-only) / performance-engineer (latency) /
+  stock-detail-auditor (per-stock output). `data-analyst` (read-only) does aggregate/distributional
+  analytics over rankings.json + metadata.json (score tiers · sector breakdown · rec mix ·
+  MoS/factor distributions · Top-N · WoW drift); distinct from stock-detail-auditor (per-ticker) /
+  methodology-scientist (academic). Both sonnet effort:max, Tier 3 Specialized (6→8). Deliberately
+  did NOT add generic data-quality / data-science / governance roles (overlap / premature /
+  dead-config). Roster 22 → 24 (5 fable / 19 sonnet; 22 at effort:max). Docs lockstep across
+  CLAUDE.md / AGENTS.md / README / CONTEXT.md / WORKFLOW.md / docs/GOTCHAS.md + check_model_pin
+  count. No production code / schema change.
+
 - **refactor(scoring) — issue #441 close-out: REMOVE MAD + the dead
   `macd_hist` slot (this PR)** — the pre-registered acceptance gate FAILED on
   the first real cron (2026-06-10, commit `1d12b097`): `mad_mom12_corr` 0.834 /

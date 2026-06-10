@@ -354,7 +354,7 @@
 
 - **Subagent model aliases float forward to the LATEST — guard the downgrade
   vector, not the agent files** (`.claude/agents/*.md` + `tools/check_model_pin.py`,
-  2026-05-31). All 22 agents use bare `model: fable` / `model: sonnet` aliases
+  2026-05-31). All 24 agents use bare `model: fable` / `model: sonnet` aliases
   (the 5 judgment-gate agents moved `opus` → `fable` 2026-06-10 when the main
   session moved to Fable 5; `fable` was added to the guard's allowed set).
   Per the Claude Code docs an alias resolves to the newest model in that family

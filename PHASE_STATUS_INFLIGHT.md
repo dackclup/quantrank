@@ -2791,3 +2791,41 @@ there is no remaining consumer).
 `PHASE_STATUS_INFLIGHT.md` (this).
 
 ---
+
+## chore(agents) — 2 NEW data subagents: data-pipeline-engineer + data-analyst (in flight, 2026-06-10)
+
+Branch `claude/confident-gates-pT9pu` (reused, reset onto main `bac8a80`). User asked to add the
+data-discipline agents the project needs (Data Engineering / Data Analyst / "all data roles").
+Rather than bolt on ~5 generic roles (which would violate the one-job-per-agent discipline + create
+dead config a reviewer would flag), mapped the request to QuantRank's REAL data surfaces and added
+the 2 genuinely-needed, NON-overlapping roles — both read-only sonnet `effort: max`, Tier 3:
+
+- **`data-pipeline-engineer`** (Data Engineering) — holistic health of the INPUT + data layer: all
+  three sources (SEC EDGAR via edgartools · yfinance prices+info · Wikipedia constituents), the
+  on-disk parquet caches + cache-key versions, the survivorship membership ledger
+  (`scripts/verify_membership_ledger.py` add/remove balance + 498-506 band + rename-awareness), data
+  freshness/staleness (`fundamentals_latency_p95_seconds`, `*_wall_clock_seconds`, `as_of` dates),
+  cross-source `*_coverage_pct`, and backtest data artifacts (`backtest_pit.json` / `benchmarks.json`
+  structural integrity). DISTINCT from edgar-debugger (EDGAR-only reactive) / performance-engineer
+  (latency) / stock-detail-auditor (per-stock output) / compute-builder (writes code).
+- **`data-analyst`** (Data Analyst / BI) — exploratory / descriptive analytics over the OUTPUT
+  (rankings.json + metadata.json + stocks/*.json + backtest NAV): score-tier histograms,
+  sector/industry breakdowns, recommendation mix, MoS + valuation-method distributions, factor
+  spreads, Top-N composition, aggregate outliers, week-over-week drift. Uses jq + Python stdlib (no
+  pandas dep). DISTINCT from stock-detail-auditor (per-ticker correctness) / defense-layer-auditor
+  (defense-flag firing) / methodology-scientist (academic/normative).
+
+DELIBERATELY SKIPPED (documented for the next maintainer): data-quality-engineer (output QC already
+covered by stock-detail-auditor + defense-layer-auditor + schema-sentinel; input QC folded into
+data-pipeline-engineer), data-scientist/ML (financial-engineer owns design; Phase 5 ML is roadmap),
+data-governance/catalog/lineage (overkill for a static-site project; dependency-auditor +
+THIRD_PARTY_NOTICES cover license posture), data-viz/BI (frontend-design-reviewer + the Next.js site).
+
+Tier 3 Specialized 6 → 8; roster 22 → 24 (5 fable / 19 sonnet; 22 at `effort: max`, 2 at `high`).
+Both auto-spawn post-cron (added to the `workflow_dispatch`-green batch) + on their on-demand cues.
+Docs lockstep: CLAUDE.md (layout · delegation table · cue table · post-cron batch · model-split),
+`.claude/agents/README.md` (Tier 3 table + header + counts + rationale + model split), AGENTS.md,
+CONTEXT.md, WORKFLOW.md (Monitoring phase), docs/GOTCHAS.md (count), tools/check_model_pin.py (count).
+No production code or schema change; ruff + check_model_pin + check_doc_test_counts pass locally.
+
+---

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Guard against a silent subagent model downgrade.
 
-The 22 subagents in ``.claude/agents/*.md`` use bare model aliases
+The 24 subagents in ``.claude/agents/*.md`` use bare model aliases
 (``model: fable`` / ``model: sonnet``). Per the Claude Code docs an alias
 resolves to the LATEST model in that family at runtime and floats forward on a
 CLI update — which is exactly what we want (no self-inflicted downgrade, always
@@ -75,7 +75,7 @@ def _settings_overrides() -> list[str]:
             continue
         problems.append(
             f"{SETTINGS.relative_to(REPO)} env.{var} = {value!r} — this pins / "
-            f"overrides the subagent model and can silently downgrade all 22 "
+            f"overrides the subagent model and can silently downgrade all 24 "
             f"agents below the latest. Remove it (or set "
             f"CLAUDE_CODE_SUBAGENT_MODEL='inherit') unless the pin is "
             f"deliberate + documented."
