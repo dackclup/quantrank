@@ -137,15 +137,18 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
     }
 
     const lastPoint = points[points.length - 1];
-    // 1Y / 3Y → quarterly boundary points; longer periods → yearly boundary points.
-    const isQuarterly = years <= 3;
+    // 1Y → quarterly · 3Y → semi-annual · 5Y+ → yearly boundary points
+    const tickMode: 'quarter' | 'halfyear' | 'year' =
+      years <= 1 ? 'quarter' : years <= 3 ? 'halfyear' : 'year';
     const thinPoints: typeof points[0][] = [];
-    if (isQuarterly) {
-      let prevQ = '';
+    if (tickMode !== 'year') {
+      let prevBucket = '';
       for (const p of points) {
         const [y, m] = p.date.split('-');
-        const q = `${y}-${Math.ceil(Number(m) / 3)}`;
-        if (q !== prevQ) { p.yearStart = true; thinPoints.push(p); prevQ = q; }
+        const bucket = tickMode === 'quarter'
+          ? `${y}-${Math.ceil(Number(m) / 3)}`
+          : `${y}-${Math.ceil(Number(m) / 6)}`;
+        if (bucket !== prevBucket) { p.yearStart = true; thinPoints.push(p); prevBucket = bucket; }
       }
     } else {
       for (const p of points) { if (p.yearStart) thinPoints.push(p); }
@@ -161,7 +164,7 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
     const periodConservative = cAnchor && lastCons != null ? (lastCons / cAnchor - 1) * 100 : null;
     return {
       points: thinPoints,
-      isQuarterly,
+      tickMode,
       endPortfolio: lastPoint ? lastPoint.portfolio : null,
       endBenchmark: lastPoint ? lastPoint.benchmark : null,
       periodPortfolio: lastPoint ? retFromBase(lastPoint.portfolio) : null,
@@ -312,7 +315,7 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
               benchmarkLabel={benchLabel}
               money
               baseline={capital}
-              quarterly={view.isQuarterly}
+              tickMode={view.tickMode}
             />
             {/* Stats overlay — top-left inside the plot area (left offset clears the ~36px y-axis) */}
             <div className="pointer-events-none absolute left-10 top-3 space-y-0.5">

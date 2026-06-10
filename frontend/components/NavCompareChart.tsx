@@ -41,8 +41,8 @@ export interface Props {
   money?: boolean;
   /** Reference-line value (window-start level). 100 when rebased, 10000 ($) in money mode. */
   baseline?: number;
-  /** When true, x-axis ticks are labelled as Q1'25 instead of full years. */
-  quarterly?: boolean;
+  /** Controls x-axis tick granularity: 'year' (default) | 'halfyear' (H1/H2) | 'quarter' (Q1-Q4). */
+  tickMode?: 'year' | 'halfyear' | 'quarter';
 }
 
 // emerald-700 / emerald-400 · indigo-500 / indigo-400 (soft palette, Rule 1)
@@ -56,6 +56,11 @@ function fmtYear(d: string): string {
 function fmtQuarter(d: string): string {
   const [y, m] = (d ?? '').split('-');
   return `Q${Math.ceil(Number(m) / 3)}'${(y ?? '').slice(2)}`;
+}
+
+function fmtHalfYear(d: string): string {
+  const [y, m] = (d ?? '').split('-');
+  return `H${Math.ceil(Number(m) / 6)}'${(y ?? '').slice(2)}`;
 }
 
 function fmtCompact(v: number): string {
@@ -111,7 +116,7 @@ function endLabel(total: number, color: string) {
   };
 }
 
-export function NavCompareChart({ data, portfolioLabel, benchmarkLabel, money = false, baseline = 100, quarterly = false }: Props) {
+export function NavCompareChart({ data, portfolioLabel, benchmarkLabel, money = false, baseline = 100, tickMode = 'year' }: Props) {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -165,7 +170,7 @@ export function NavCompareChart({ data, portfolioLabel, benchmarkLabel, money = 
           <XAxis
             dataKey="date"
             ticks={yearTicks}
-            tickFormatter={quarterly ? fmtQuarter : fmtYear}
+            tickFormatter={tickMode === 'quarter' ? fmtQuarter : tickMode === 'halfyear' ? fmtHalfYear : fmtYear}
             tick={{ fontSize: tickFontSize, fill: axis }}
             stroke={grid}
             tickLine={false}
