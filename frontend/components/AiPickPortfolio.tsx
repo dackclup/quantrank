@@ -88,6 +88,7 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
   const [count, setCount] = useState<number>(bestMaxCount);
   const [bench, setBench] = useState<string>(meta.default_benchmark);
   const [period, setPeriod] = useState<string>('MAX');
+  const [capital, setCapital] = useState<number>(CHART_BASE);
 
   const countKey = String(count);
   const benchLabel = (BENCHMARKS.find((b) => b.value === bench)?.label ?? bench).toUpperCase();
@@ -109,8 +110,8 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
     const step = Math.max(1, Math.ceil(span / MAX_CHART_POINTS));
     const point = (i: number) => ({
       date: dates[i],
-      portfolio: pAnchor && isFinite_(net[i]) ? Math.round((net[i] as number) / pAnchor * CHART_BASE) : null,
-      benchmark: bAnchor && isFinite_(bser[i]) ? Math.round((bser[i] as number) / bAnchor * CHART_BASE) : null,
+      portfolio: pAnchor && isFinite_(net[i]) ? Math.round((net[i] as number) / pAnchor * capital) : null,
+      benchmark: bAnchor && isFinite_(bser[i]) ? Math.round((bser[i] as number) / bAnchor * capital) : null,
       yearStart: false,
     });
     const points: ReturnType<typeof point>[] = [];
@@ -136,7 +137,7 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
       yearPoints.push(lastPoint);
     }
     const retFromBase = (v: number | null | undefined) =>
-      v === null || v === undefined ? null : (v / CHART_BASE - 1) * 100;
+      v === null || v === undefined ? null : (v / capital - 1) * 100;
     const lastGross = gross.length > 0 ? gross[gross.length - 1] : null;
     const lastCons = cons.length > 0 ? cons[cons.length - 1] : null;
     const periodGross = gAnchor && lastGross != null ? (lastGross / gAnchor - 1) * 100 : null;
@@ -151,7 +152,7 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
       periodConservative,
       periodStart: dates[startIdx] ?? null,
     };
-  }, [netByCount, grossByCount, conservativeByCount, benchmark, dates, countKey, bench, period]);
+  }, [netByCount, grossByCount, conservativeByCount, benchmark, dates, countKey, bench, period, capital]);
 
   // All three cost-band columns are now period-aware (series exposed via grossByCount /
   // conservativeByCount); finalsByCount is kept only as a fallback when series are absent.
@@ -273,8 +274,17 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
 
         {/* Chart + timeframe */}
         <div className="space-y-2">
-          <div className="text-xs text-slate-400 dark:text-slate-500">
-            {money$(CHART_BASE)} invested at window start
+          <div className="flex items-baseline gap-1 text-xs text-slate-400 dark:text-slate-500">
+            <span>$</span>
+            <input
+              type="number"
+              min={100}
+              step={1000}
+              value={capital}
+              onChange={(e) => { const v = Math.round(Number(e.target.value)); if (v >= 100) setCapital(v); }}
+              className="w-24 bg-transparent font-mono tabular-nums text-slate-600 focus:outline-none dark:text-slate-300 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            />
+            <span>invested at window start</span>
           </div>
           {/* relative wrapper so the stats overlay can be positioned inside the chart area */}
           <div className="relative">
@@ -283,7 +293,7 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
               portfolioLabel={portfolioLabel}
               benchmarkLabel={benchLabel}
               money
-              baseline={CHART_BASE}
+              baseline={capital}
             />
             {/* Stats overlay — top-left inside the plot area (left offset clears the ~36px y-axis) */}
             <div className="pointer-events-none absolute left-10 top-3 space-y-0.5">
