@@ -461,12 +461,22 @@ def test_hc_gate_dual_class_canonical_ineligible_fallback_to_sibling():
     st.integers(min_value=1, max_value=20),
 )
 def test_hc_gate_subset_of_veto_only_property(raw_cands, count):
-    """Property: high_conviction is a strict sub-filter of veto_only.
+    """Property: every ticker returned by gate='high_conviction' is veto-eligible.
 
-    For any candidate list with HC fields populated:
-      set(hc_picks) ⊆ set(veto_picks)
+    HC is a strictly tighter gate than veto_only: it adds recommendation,
+    MoS, composite, and loss-chance filters ON TOP OF the 7-veto eligibility
+    check.  The invariant is therefore a GATE-LEVEL one — not a top-N
+    selection one.
+
+    With count=N the veto_only top-N can be occupied entirely by veto-eligible
+    but HC-ineligible names (e.g. neutral recommendations).  In that case
+    hc_picks and veto_only_picks are DISJOINT even though every hc pick IS
+    veto-eligible.  Asserting hc_picks ⊆ veto_only_top_N was wrong.
+
+    Correct invariants for any candidate list:
+      set(hc_picks) ⊆ {c.ticker for c in candidates if is_eligible(c.risk_flags)}
       len(hc_picks) ≤ count
-      len(hc_picks) ≤ len(veto_picks)
+      len(hc_picks) ≤ |veto-eligible candidates|
     """
     # Deduplicate tickers so the fixture has no repeated tickers
     seen: set[str] = set()
@@ -486,15 +496,19 @@ def test_hc_gate_subset_of_veto_only_property(raw_cands, count):
         ))
 
     hc_picks = select_picks(cands, count, gate="high_conviction")
-    veto_picks = select_picks(cands, count, gate="veto_only")
 
-    # Subset invariant
-    assert set(hc_picks) <= set(veto_picks), (
-        f"HC picks {hc_picks} must be a subset of veto_only picks {veto_picks}"
+    # Gate-level subset invariant: every HC pick must carry no active veto.
+    # Derive the eligible set directly from the candidates fixture — this is
+    # independent of the veto_only top-N selection, which can be occupied by
+    # veto-eligible-but-not-HC names and therefore does NOT bound hc_picks.
+    veto_eligible_tickers = {c.ticker for c in cands if is_eligible(c.risk_flags)}
+    assert set(hc_picks) <= veto_eligible_tickers, (
+        f"HC picks {hc_picks} contain a veto-ineligible ticker; "
+        f"veto-eligible set: {veto_eligible_tickers}"
     )
-    # Length invariant
+    # Length invariants
     assert len(hc_picks) <= count
-    assert len(hc_picks) <= len(veto_picks)
+    assert len(hc_picks) <= len(veto_eligible_tickers)
 
 
 # --- Phase 7 PR-1: _pit_filing_lag -------------------------------------------

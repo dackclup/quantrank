@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
+import { flagLabel } from '@/lib/flag-labels';
 
 import { NavCompareChartLazy } from './NavCompareChartLazy';
 import { AnnualReturnsTable } from './AnnualReturnsTable';
@@ -79,7 +80,7 @@ function toneClass(v: number | null): string {
 }
 
 export function AiPickPortfolio({ data }: { data: AiPickData }) {
-  const { meta, dates, netByCount, grossByCount, conservativeByCount, benchmark, finalsByCount, latest, timeline, entryCloses, lastCloses } = data;
+  const { meta, dates, netByCount, grossByCount, conservativeByCount, benchmark, finalsByCount, latest, timeline, entryCloses, lastCloses, vetoLayerReplayed, vetoesNotReplayed } = data;
 
   // Default to the count with the highest Max-window net return so the first
   // view the user sees is the best-performing basket, not an arbitrary fixed default.
@@ -264,6 +265,27 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
               for long stretches — add holdings to diversify, and read the full
               ladder, not any single line.
             </>
+          ) : vetoLayerReplayed ? (
+            <>
+              This{' '}
+              <span className="font-medium text-slate-600 dark:text-slate-300">
+                {count}-stock
+              </span>{' '}
+              factor-tilted book has no per-sector cap and replays{' '}
+              <span className="font-medium text-slate-600 dark:text-slate-300">
+                {vetoesNotReplayed && vetoesNotReplayed.length > 0
+                  ? `${7 - vetoesNotReplayed.length} of 7`
+                  : 'all 7'}{' '}
+                live defense vetoes
+              </span>{' '}
+              point-in-time
+              {vetoesNotReplayed && vetoesNotReplayed.length > 0 && (
+                <>
+                  {' '}({vetoesNotReplayed.map((v) => flagLabel(v.name)).join(', ')} excluded)
+                </>
+              )}
+              — a closer proxy to the live product, but still not identical.
+            </>
           ) : (
             <>
               This{' '}
@@ -431,6 +453,8 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
         benchmark={benchmark[bench] ?? []}
         portfolioLabel={portfolioLabel}
         benchmarkLabel={benchLabel}
+        vetoLayerReplayed={vetoLayerReplayed}
+        vetoesNotReplayed={vetoesNotReplayed}
       />
 
       {timeline.length > 0 && <HoldingsTimeline timeline={timeline} count={count} />}
