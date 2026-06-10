@@ -187,23 +187,14 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
     };
   }
 
-  // Buy / Hold / Sell grouping: compare current top-N vs previous rebalance top-N.
-  // Buy  = entered this rebalance (not in prev top-count).
-  // Hold = was in prev AND current top-count.
-  // Sell = was in prev top-count but NOT in current (shown below the table so the
-  //        user knows what to exit, even though they're no longer "Current picks").
-  const prevTickers = new Set(
-    timeline.length >= 2
-      ? timeline[timeline.length - 2].holdings.slice(0, count).map((x) => x.ticker)
-      : []
-  );
-  const buyHoldings  = holdings.filter((h) => !prevTickers.has(h.ticker));
-  const holdHoldings = holdings.filter((h) =>  prevTickers.has(h.ticker));
-  // Sell = prev picks no longer in current top-count
-  const currentTickers = new Set(holdings.map((h) => h.ticker));
-  const sellTickers = timeline.length >= 2
-    ? timeline[timeline.length - 2].holdings.slice(0, count).filter((h) => !currentTickers.has(h.ticker))
-    : [];
+  // Sector-concentration disclosure (methodology-scientist 2026-06-06): with the
+  // 2-per-sector cap removed, inverse-vol + the 0.35 cap bound single-NAME risk but
+  // NOT single-SECTOR risk — so surface how concentrated the basket is in its
+  // largest sector rather than leaving the reader to count chips.
+  const topSector = holdings.reduce<{ sector: string; n: number } | null>((best, h) => {
+    const n = holdings.filter((x) => x.sector === h.sector).length;
+    return !best || n > best.n ? { sector: h.sector, n } : best;
+  }, null);
 
   return (
     <div className="space-y-6">
@@ -342,9 +333,17 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
         </div>
         <p className="mb-3 text-xs text-slate-500 dark:text-slate-400">
           Top {count} by composite (no sector cap), inverse-volatility weighted.
-          Return = total return since first entry rebalance.
+          The right column is each holding&apos;s total return since it entered the
+          basket (first rebalance of its current streak).
+          {topSector && (
+            <>
+              {' '}Top sector:{' '}
+              <span className="font-medium text-slate-600 dark:text-slate-300">{topSector.sector}</span>{' '}
+              — <span className="font-mono tabular-nums">{topSector.n}</span> of{' '}
+              <span className="font-mono tabular-nums">{count}</span>.
+            </>
+          )}
         </p>
-        {/* Column headers */}
         <div className="flex items-center gap-3 border-b border-slate-200 pb-1.5 text-[0.625rem] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:border-slate-700 dark:text-slate-400">
           <span className="w-4 shrink-0">#</span>
           <span>Ticker</span>
@@ -353,33 +352,37 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
           <span className="w-14 shrink-0 text-right">Return</span>
           <span className="w-14 shrink-0 text-right">Entry</span>
         </div>
-        {/* BUY group */}
-        {buyHoldings.length > 0 && (
-          <PickGroup label="Buy" labelClass="text-emerald-700 dark:text-emerald-400" holdings={buyHoldings} weights={weights} plSince={plSince} startRank={1} />
-        )}
-        {/* HOLD group */}
-        {holdHoldings.length > 0 && (
-          <PickGroup label="Hold" labelClass="text-slate-500 dark:text-slate-400" holdings={holdHoldings} weights={weights} plSince={plSince} startRank={buyHoldings.length + 1} />
-        )}
-        {/* SELL group — stocks removed this rebalance */}
-        {sellTickers.length > 0 && (
-          <div>
-            <div className="mt-2 pb-1 text-[0.625rem] font-semibold uppercase tracking-[0.08em] text-rose-600 dark:text-rose-400">
-              Sell
-            </div>
-            <ol className="divide-y divide-slate-100 dark:divide-slate-800">
-              {sellTickers.map((h) => (
-                <li key={h.ticker} className="flex items-center gap-3 py-2 opacity-60">
-                  <span className="w-4 shrink-0" />
-                  <Link href={`/stock/${h.ticker}/`} className="press font-mono text-sm font-semibold text-slate-900 hover:underline dark:text-slate-100">
-                    {h.ticker}
-                  </Link>
-                  <span className="hidden sm:inline"><SectorChip sector={h.sector} /></span>
-                </li>
-              ))}
-            </ol>
-          </div>
-        )}
+        <ol className="divide-y divide-slate-100 dark:divide-slate-800">
+          {holdings.map((h, i) => {
+            const w = weights[h.ticker];
+            const pl = plSince[h.ticker] ?? { pct: null, date: null };
+            return (
+              <li key={h.ticker} className="flex items-center gap-3 py-2">
+                <span className="w-4 shrink-0 font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
+                  {i + 1}
+                </span>
+                <Link
+                  href={`/stock/${h.ticker}/`}
+                  className="press font-mono text-sm font-semibold text-slate-900 hover:underline dark:text-slate-100"
+                >
+                  {h.ticker}
+                </Link>
+                <span className="hidden sm:inline">
+                  <SectorChip sector={h.sector} />
+                </span>
+                <span className="ml-auto w-12 shrink-0 text-right font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
+                  {isFinite_(w) ? `${(w * 100).toFixed(1)}%` : '—'}
+                </span>
+                <span className={`w-14 shrink-0 text-right font-mono text-sm font-semibold tabular-nums ${toneClass(pl.pct)}`}>
+                  {pctStr(pl.pct)}
+                </span>
+                <span className="w-14 shrink-0 text-right font-mono text-[0.6rem] tabular-nums text-slate-700 dark:text-slate-300">
+                  {pl.date ? pl.date.slice(0, 7) : ''}
+                </span>
+              </li>
+            );
+          })}
+        </ol>
       </div>
 
       {/* Rotation history — every quarterly rebalance's holdings at the current
@@ -404,51 +407,6 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
       <p className="text-pretty text-xs leading-relaxed text-slate-500 dark:text-slate-400">
         {meta.disclaimer}
       </p>
-    </div>
-  );
-}
-
-type PickGroupProps = {
-  label: string;
-  labelClass: string;
-  holdings: { ticker: string; sector: string }[];
-  weights: Record<string, number>;
-  plSince: Record<string, { pct: number | null; date: string | null }>;
-  startRank: number;
-};
-
-function PickGroup({ label, labelClass, holdings, weights, plSince, startRank }: PickGroupProps) {
-  return (
-    <div>
-      <div className={`mt-2 pb-1 text-[0.625rem] font-semibold uppercase tracking-[0.08em] ${labelClass}`}>
-        {label}
-      </div>
-      <ol className="divide-y divide-slate-100 dark:divide-slate-800">
-        {holdings.map((h, i) => {
-          const w = weights[h.ticker];
-          const pl = plSince[h.ticker] ?? { pct: null, date: null };
-          return (
-            <li key={h.ticker} className="flex items-center gap-3 py-2">
-              <span className="w-4 shrink-0 font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
-                {startRank + i}
-              </span>
-              <Link href={`/stock/${h.ticker}/`} className="press font-mono text-sm font-semibold text-slate-900 hover:underline dark:text-slate-100">
-                {h.ticker}
-              </Link>
-              <span className="hidden sm:inline"><SectorChip sector={h.sector} /></span>
-              <span className="ml-auto w-12 shrink-0 text-right font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
-                {isFinite_(w) ? `${(w * 100).toFixed(1)}%` : '—'}
-              </span>
-              <span className={`w-14 shrink-0 text-right font-mono text-sm font-semibold tabular-nums ${toneClass(pl.pct)}`}>
-                {pctStr(pl.pct)}
-              </span>
-              <span className="w-14 shrink-0 text-right font-mono text-[0.6rem] tabular-nums text-slate-700 dark:text-slate-300">
-                {pl.date ? pl.date.slice(0, 7) : ''}
-              </span>
-            </li>
-          );
-        })}
-      </ol>
     </div>
   );
 }
