@@ -51,13 +51,18 @@ function fmtYear(d: string): string {
   return (d ?? '').slice(0, 4);
 }
 
-function fmtMoney(v: number): string {
-  return `$${Math.round(v).toLocaleString('en-US')}`;
+function fmtCompact(v: number): string {
+  const abs = Math.abs(v);
+  if (abs >= 1e12) return `$${(v / 1e12).toFixed(1)}T`;
+  if (abs >= 1e9)  return `$${(v / 1e9).toFixed(1)}B`;
+  if (abs >= 1e6)  return `$${(v / 1e6).toFixed(1)}M`;
+  if (abs >= 1e3)  return `$${(v / 1e3).toFixed(0)}k`;
+  return `$${Math.round(v)}`;
 }
 
-function fmtMoneyAxis(v: number): string {
-  return Math.abs(v) >= 1000 ? `$${Math.round(v / 1000)}k` : `$${Math.round(v)}`;
-}
+function fmtMoney(v: number): string { return fmtCompact(v); }
+
+function fmtMoneyAxis(v: number): string { return fmtCompact(v); }
 
 interface EndLabelProps {
   x?: number | string;
