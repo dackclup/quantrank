@@ -382,7 +382,7 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
                   </span>
                 </div>
                 {pl.date && (
-                  <div className="mt-0.5 text-right font-mono text-[0.6rem] tabular-nums text-slate-400 dark:text-slate-500">
+                  <div className="mt-0.5 pl-7 font-mono text-[0.6rem] tabular-nums text-slate-400 dark:text-slate-500">
                     since {pl.date.slice(0, 7)}
                   </div>
                 )}
