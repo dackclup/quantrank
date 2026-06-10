@@ -348,9 +348,9 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
           <span className="w-4 shrink-0">#</span>
           <span>Ticker</span>
           <span className="hidden sm:inline">Sector</span>
-          <span className="ml-auto">Weight</span>
-          <span className="shrink-0">Return</span>
-          <span className="shrink-0">Entry</span>
+          <span className="ml-auto w-12 shrink-0 text-right">Weight</span>
+          <span className="w-14 shrink-0 text-right">Return</span>
+          <span className="w-14 shrink-0 text-right">Entry</span>
         </div>
         <ol className="divide-y divide-slate-100 dark:divide-slate-800">
           {holdings.map((h, i) => {
@@ -370,17 +370,15 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
                 <span className="hidden sm:inline">
                   <SectorChip sector={h.sector} />
                 </span>
-                <span className="ml-auto font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
+                <span className="ml-auto w-12 shrink-0 text-right font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
                   {isFinite_(w) ? `${(w * 100).toFixed(1)}%` : '—'}
                 </span>
-                <span className={`shrink-0 font-mono text-sm font-semibold tabular-nums ${toneClass(pl.pct)}`}>
+                <span className={`w-14 shrink-0 text-right font-mono text-sm font-semibold tabular-nums ${toneClass(pl.pct)}`}>
                   {pctStr(pl.pct)}
                 </span>
-                {pl.date && (
-                  <span className="shrink-0 font-mono text-[0.6rem] tabular-nums text-slate-700 dark:text-slate-300">
-                    {pl.date.slice(0, 7)}
-                  </span>
-                )}
+                <span className="w-14 shrink-0 text-right font-mono text-[0.6rem] tabular-nums text-slate-700 dark:text-slate-300">
+                  {pl.date ? pl.date.slice(0, 7) : ''}
+                </span>
               </li>
             );
           })}
