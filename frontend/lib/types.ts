@@ -657,4 +657,11 @@ export type AiPickData = {
   // the timeline tracks the count slider, then diffs neighbours for entered /
   // exited markers.
   timeline: AiPickTimelineEntry[];
+  // Adjusted close at each rebalance date (index-aligned with `timeline`) for
+  // each CURRENTLY-held ticker, plus the latest close per ticker — lets the
+  // client show P/L since a holding's entry rebalance (streak start depends on
+  // the count slider) without shipping full per-ticker price series. null where
+  // the price-history file doesn't reach back that far.
+  entryCloses: Record<string, (number | null)[]>;
+  lastCloses: Record<string, number | null>;
 };

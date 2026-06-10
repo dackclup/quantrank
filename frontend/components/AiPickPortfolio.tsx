@@ -7,7 +7,6 @@ import { NavCompareChartLazy } from './NavCompareChartLazy';
 import { AnnualReturnsTable } from './AnnualReturnsTable';
 import { HoldingsCountSlider } from './HoldingsCountSlider';
 import { HoldingsTimeline } from './HoldingsTimeline';
-import { ScoreBadge } from './ScoreBadge';
 import { SectorChip } from './SectorChip';
 import { SegmentedSelector, type SegmentOption } from './SegmentedSelector';
 import type { AiPickData } from '@/lib/types';
@@ -72,7 +71,7 @@ function toneClass(v: number | null): string {
 }
 
 export function AiPickPortfolio({ data }: { data: AiPickData }) {
-  const { meta, dates, netByCount, grossByCount, conservativeByCount, benchmark, finalsByCount, latest, timeline } = data;
+  const { meta, dates, netByCount, grossByCount, conservativeByCount, benchmark, finalsByCount, latest, timeline, entryCloses, lastCloses } = data;
 
   // Default to the count with the highest Max-window net return so the first
   // view the user sees is the best-performing basket, not an arbitrary fixed default.
@@ -169,6 +168,24 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
         .slice(0, count)
         .sort((a, b) => (weights[b.ticker] ?? 0) - (weights[a.ticker] ?? 0))
     : [];
+
+  // P/L since the holding's entry: walk the timeline backward while the ticker
+  // stays inside the top-`count` slice — the streak start IS count-dependent (a
+  // stock can be a recent top-3 entrant but a long-time top-10 member). Return =
+  // last adjusted close / close at the entry rebalance (total-return basis).
+  const plSince: Record<string, { pct: number | null; date: string | null }> = {};
+  for (const h of holdings) {
+    let idx = timeline.length - 1;
+    while (idx > 0 && timeline[idx - 1].holdings.slice(0, count).some((x) => x.ticker === h.ticker)) {
+      idx -= 1;
+    }
+    const entry = entryCloses[h.ticker]?.[idx] ?? null;
+    const lastC = lastCloses[h.ticker] ?? null;
+    plSince[h.ticker] = {
+      pct: entry !== null && lastC !== null ? (lastC / entry - 1) * 100 : null,
+      date: timeline[idx]?.date ?? null,
+    };
+  }
 
   // Sector-concentration disclosure (methodology-scientist 2026-06-06): with the
   // 2-per-sector cap removed, inverse-vol + the 0.35 cap bound single-NAME risk but
@@ -327,6 +344,8 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
         </div>
         <p className="mb-3 text-xs text-slate-500 dark:text-slate-400">
           Top {count} by composite (no sector cap), inverse-volatility weighted.
+          The right column is each holding&apos;s total return since it entered the
+          basket (first rebalance of its current streak).
           {topSector && (
             <>
               {' '}Top sector:{' '}
@@ -339,6 +358,7 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
         <ol className="divide-y divide-slate-100 dark:divide-slate-800">
           {holdings.map((h, i) => {
             const w = weights[h.ticker];
+            const pl = plSince[h.ticker] ?? { pct: null, date: null };
             return (
               <li key={h.ticker} className="flex items-center gap-3 py-2">
                 <span className="w-4 shrink-0 font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
@@ -356,7 +376,12 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
                 <span className="ml-auto font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
                   {isFinite_(w) ? `${(w * 100).toFixed(1)}%` : '—'}
                 </span>
-                <ScoreBadge score={h.composite_score} />
+                <span
+                  className={`w-16 shrink-0 text-right font-mono text-sm font-semibold tabular-nums ${toneClass(pl.pct)}`}
+                  title={pl.date ? `since ${pl.date}` : undefined}
+                >
+                  {pctStr(pl.pct)}
+                </span>
               </li>
             );
           })}
