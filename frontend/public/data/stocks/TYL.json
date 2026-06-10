@@ -5,19 +5,19 @@
   "industry": "Application Software",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 13026370764.813385,
-  "current_price": 308.92,
-  "rank": 446,
-  "composite_score": 39.26,
+  "market_cap": 12809207342.084503,
+  "current_price": 303.77,
+  "rank": 452,
+  "composite_score": 38.97,
   "pillar_scores": {
     "quality": 24.65,
-    "value": 57.64,
+    "value": 58.56,
     "growth": 58.33,
-    "momentum": 6.77,
+    "momentum": 6.82,
     "health": 67.17,
     "profitability": 33.1,
-    "technical": 34.06,
-    "risk": 23.67,
+    "technical": 30.83,
+    "risk": 14.34,
     "sentiment": null,
     "ml": null
   },
@@ -34,8 +34,8 @@
     "eps_basic": 7.487551714942247,
     "eps_diluted": 7.487551714942247,
     "shares_outstanding": 42167455.0,
-    "market_cap": 13026370764.813385,
-    "pe_ratio_ttm": 41.25781366040517,
+    "market_cap": 12809207342.084503,
+    "pe_ratio_ttm": 40.57000212866175,
     "goodwill": 2591709000.0
   },
   "fair_price": {
@@ -47,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 276.73369512098856,
+        "value": 278.6901806380897,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_pb": {
-        "value": 709.6611610230095,
+        "value": 730.8722388120069,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
       },
       "multiples_ev_ebitda": {
-        "value": 297.7363009025966,
+        "value": 296.15298804164837,
         "applicable": true,
         "reason": null,
         "tier_used": "sub_industry"
@@ -77,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 276.73369512098856,
-    "max": 709.6611610230095,
+    "median": 278.6901806380897,
+    "max": 730.8722388120069,
     "low": 25.341855416723966,
-    "high": 709.6611610230095,
-    "mos_pct": -11.63079121704854,
+    "high": 730.8722388120069,
+    "mos_pct": -8.999171882611497,
     "valuation_warnings": [
       "goodwill_heavy",
       "extreme_graham_estimate",
@@ -98,7 +98,7 @@
       "inventory"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 41,
+    "filing_lag_days": 42,
     "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-04-29"
   },
@@ -122,22 +122,22 @@
     "label": "Information Technology median (n=72)",
     "values": {
       "Quality": 48.52,
-      "Value": 48.67,
+      "Value": 50.87,
       "Growth": 52.6,
-      "Momentum": 64.47,
+      "Momentum": 66.58,
       "Health": 68.44,
       "Profitability": 49.42,
-      "Technical": 55.49,
-      "Risk": 46.54
+      "Technical": 57.77,
+      "Risk": 53.19
     }
   },
   "beneish_m_score": -2.8861885586743443,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 53.439063040767046,
-  "price_change_1d_pct": 1.6954,
+  "loss_chance_pct": 52.66656865087212,
+  "price_change_1d_pct": -2.6597,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 38.76,
+  "composite_score_adjusted": 38.47,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -185,7 +185,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 45.56,
+  "osap_blended_score": 45.41,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
@@ -194,5 +194,5 @@
     "latest_filing_date": "2026-05-06",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.024352850578326802
+  "cross_source_delta": 0.007812024226958839
 }

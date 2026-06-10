@@ -5,19 +5,19 @@
   "industry": "Timber REITs",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 17773709674.943924,
-  "current_price": 24.65,
-  "rank": 465,
-  "composite_score": 36.48,
+  "market_cap": 17355504789.95514,
+  "current_price": 24.07,
+  "rank": 466,
+  "composite_score": 36.6,
   "pillar_scores": {
     "quality": 20.97,
-    "value": 45.7,
+    "value": 46.24,
     "growth": 41.13,
-    "momentum": 47.01,
+    "momentum": 45.92,
     "health": 37.21,
     "profitability": 26.88,
-    "technical": 48.9,
-    "risk": 41.9,
+    "technical": 55.58,
+    "risk": 36.53,
     "sentiment": null,
     "ml": null
   },
@@ -34,8 +34,8 @@
     "eps_basic": 0.5505912962195042,
     "eps_diluted": 0.5505912962195042,
     "shares_outstanding": 721043000.0,
-    "market_cap": 17773709674.943924,
-    "pe_ratio_ttm": 44.77004955905271,
+    "market_cap": 17355504789.95514,
+    "pe_ratio_ttm": 43.71663675051673,
     "goodwill": 40000000.0
   },
   "fair_price": {
@@ -47,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 16.29016275304461,
+        "value": 16.123954137828676,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 35.027743491846834,
+        "value": 34.21348326653513,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 24.060844018939942,
+        "value": 23.84473059509205,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -77,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 16.29016275304461,
-    "max": 35.027743491846834,
+    "median": 16.123954137828676,
+    "max": 34.21348326653513,
     "low": 4.199214688919839,
-    "high": 35.027743491846834,
-    "mos_pct": -51.318313955600125,
+    "high": 34.21348326653513,
+    "mos_pct": -49.2809982531096,
     "valuation_warnings": [
       "extreme_dcf_estimate",
       "value_trap_risk"
@@ -95,7 +95,7 @@
       "intangibles_net"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 39,
+    "filing_lag_days": 40,
     "latest_period_end": "2026-04-27",
     "latest_filed_date": "2026-05-01"
   },
@@ -119,22 +119,22 @@
     "label": "Real Estate median (n=31)",
     "values": {
       "Quality": 50.81,
-      "Value": 46.77,
+      "Value": 47.31,
       "Growth": 49.19,
-      "Momentum": 60.96,
+      "Momentum": 60.16,
       "Health": 26.29,
       "Profitability": 52.15,
-      "Technical": 50.8,
-      "Risk": 53.78
+      "Technical": 51.49,
+      "Risk": 51.69
     }
   },
   "beneish_m_score": -2.1808532018397306,
   "dechow_f_score": 0.5251794515731361,
   "recommendation": "neutral",
-  "loss_chance_pct": 70.71957614415246,
-  "price_change_1d_pct": 2.4096,
+  "loss_chance_pct": 69.94827281316961,
+  "price_change_1d_pct": -1.6748,
   "manipulation_index": 11.0,
-  "composite_score_adjusted": 35.38,
+  "composite_score_adjusted": 35.5,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -182,7 +182,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 44.17,
+  "osap_blended_score": 44.23,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
@@ -191,5 +191,5 @@
     "latest_filing_date": "2026-06-04",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 4.813257378683489e-07
+  "cross_source_delta": 0.024095889754062395
 }

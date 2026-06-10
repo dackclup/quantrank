@@ -5,19 +5,19 @@
   "industry": "Automobile Manufacturers",
   "exchange": "NYSE",
   "country": "US",
-  "market_cap": 60861449223.51837,
-  "current_price": 14.95,
-  "rank": 405,
-  "composite_score": 42.65,
+  "market_cap": 61065000000.0,
+  "current_price": 15.0,
+  "rank": 400,
+  "composite_score": 43.09,
   "pillar_scores": {
     "quality": 19.79,
     "value": 74.13,
     "growth": 37.5,
-    "momentum": 49.6,
+    "momentum": 49.95,
     "health": 40.7,
     "profitability": 9.72,
-    "technical": 64.64,
-    "risk": 46.05,
+    "technical": 68.23,
+    "risk": 51.83,
     "sentiment": null,
     "ml": null
   },
@@ -34,8 +34,8 @@
     "eps_basic": 0.4487840825350037,
     "eps_diluted": 0.4487840825350037,
     "shares_outstanding": 4071000000.0,
-    "market_cap": 60861449223.51837,
-    "pe_ratio_ttm": 33.31223274412609,
+    "market_cap": 61065000000.0,
+    "pe_ratio_ttm": 33.423645320197046,
     "goodwill": 483000000.0
   },
   "fair_price": {
@@ -47,19 +47,19 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 10.359637035154472,
+        "value": 10.04884353092628,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_pb": {
-        "value": 57.21126598124901,
+        "value": 55.50244236717069,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 33.88751713195684,
+        "value": 33.467502676838194,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -77,11 +77,11 @@
         "tier_used": null
       }
     },
-    "median": 22.123577083555656,
-    "max": 57.21126598124901,
+    "median": 21.758173103882235,
+    "max": 55.50244236717069,
     "low": 5.70459226249834,
-    "high": 57.21126598124901,
-    "mos_pct": 32.4250334708423,
+    "high": 55.50244236717069,
+    "mos_pct": 31.060388533614514,
     "valuation_warnings": [
       "value_trap_risk"
     ],
@@ -98,7 +98,7 @@
       "short_term_debt"
     ],
     "imputed_metrics": [],
-    "filing_lag_days": 40,
+    "filing_lag_days": 41,
     "latest_period_end": "2026-03-31",
     "latest_filed_date": "2026-04-30"
   },
@@ -121,22 +121,22 @@
     "label": "Consumer Discretionary median (n=48)",
     "values": {
       "Quality": 46.35,
-      "Value": 48.78,
+      "Value": 48.44,
       "Growth": 52.08,
-      "Momentum": 41.01,
+      "Momentum": 40.06,
       "Health": 43.51,
       "Profitability": 52.43,
-      "Technical": 56.2,
-      "Risk": 40.9
+      "Technical": 56.9,
+      "Risk": 41.77
     }
   },
   "beneish_m_score": -2.774101184027201,
   "dechow_f_score": null,
   "recommendation": "cautious",
-  "loss_chance_pct": 46.3280535934168,
-  "price_change_1d_pct": -0.3333,
+  "loss_chance_pct": 46.58580880351823,
+  "price_change_1d_pct": 0.6711,
   "manipulation_index": 0.0,
-  "composite_score_adjusted": 42.65,
+  "composite_score_adjusted": 43.09,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -184,7 +184,7 @@
     "RDS": 0.25925925925925924,
     "ReturnSkew3F": 0.9259259259259259
   },
-  "osap_blended_score": 47.25,
+  "osap_blended_score": 47.47,
   "entered_top5": false,
   "exited_top5": false,
   "valuation_methods_applicable": 4,
@@ -193,5 +193,5 @@
     "latest_filing_date": "2026-06-05",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.02120051848880013
+  "cross_source_delta": 0.024463195873249816
 }
