@@ -282,7 +282,7 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
               step={1000}
               value={capital}
               onChange={(e) => { const v = Math.round(Number(e.target.value)); if (v >= 100) setCapital(v); }}
-              className="w-24 bg-transparent font-mono tabular-nums text-slate-600 focus:outline-none dark:text-slate-300 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+              className="w-24 rounded border border-slate-300 bg-transparent px-1.5 py-0.5 font-mono tabular-nums text-slate-600 focus:border-slate-400 focus:outline-none dark:border-slate-600 dark:text-slate-300 dark:focus:border-slate-400 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
             />
             <span>invested at window start</span>
           </div>
