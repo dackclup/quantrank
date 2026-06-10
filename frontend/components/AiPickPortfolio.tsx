@@ -344,6 +344,14 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
             </>
           )}
         </p>
+        <div className="flex items-center gap-3 border-b border-slate-200 pb-1.5 text-[0.625rem] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:border-slate-700 dark:text-slate-400">
+          <span className="w-4 shrink-0">#</span>
+          <span>Ticker</span>
+          <span className="hidden sm:inline">Sector</span>
+          <span className="ml-auto">Weight</span>
+          <span className="shrink-0">Return</span>
+          <span className="shrink-0">Entry</span>
+        </div>
         <ol className="divide-y divide-slate-100 dark:divide-slate-800">
           {holdings.map((h, i) => {
             const w = weights[h.ticker];
