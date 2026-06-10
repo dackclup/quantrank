@@ -191,9 +191,6 @@ lesson as much as a process one; the actionable rule is mirrored in
    prose / inspire-only**, crediting Emil Kowalski + easings.net; zero
    verbatim text copied.
 
----
-*Add the next session's lessons above this line.*
-
 ## 2026-06-10 — bare `pytest` resolves to the SYSTEM python in the remote sandbox
 
 In the Claude Code remote execution environment, `which pytest` → `/root/.local/bin/pytest`
@@ -206,3 +203,6 @@ network"`, and treat any "broad pre-existing failure" claim from a sub-agent as 
 until the orchestrator reproduces it with `python -m pytest`. (The only GENUINE pre-existing
 sandbox gap is the 2 `openassetpricing` osap test modules — the `[factors]` extra isn't
 installed here; CI installs it.)
+
+---
+*Add the next session's lessons above this line.*

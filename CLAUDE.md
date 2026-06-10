@@ -516,8 +516,9 @@ Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_
 **In flight** (not yet merged on `main`):
 - **feat(scoring) — MAD factor diagnostics, issue #441 PR-1 (this PR)** — the
   diagnostic half that the #442 construct checkpoint deferred: `main.py`
-  accumulates `technical.mad_scalefree` per ticker in the existing loop (zero
-  added fetches) and emits **3 additive `Metadata.mad_*` fields** —
+  accumulates `technical.mad_scalefree` per ticker in a new pass over the
+  already-populated `inputs` dict before Step 8 (prices already in hand —
+  zero added fetches) and emits **3 additive `Metadata.mad_*` fields** —
   `mad_coverage_pct` + `mad_mom12_corr` + `mad_mom3_corr` (cross-sectional
   Spearman ρ of MAD vs the momentum pillar inputs `mom_12_1` / `mom_3_1`;
   pandas rank-corr, no new dep; < 3 finite pairs or zero variance → `None`;
