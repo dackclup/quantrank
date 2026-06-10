@@ -154,8 +154,8 @@ _VETOES_NOT_REPLAYED: tuple[dict[str, str], ...] = (
 )
 
 # Maximum number of top-composite names exported per rebalance as full_ranked.
-# 40 dicts × ~5 fields × 2-4 bytes/field ≈ 0.3 KB per rebalance; 40 rebalances
-# ≈ 12 KB — negligible vs the NAV series. Keeps the artifact < ~2 MB total.
+# 40 dicts × ~5 fields × ~15 bytes/field (JSON keys + values) ≈ 3-4 KB per rebalance;
+# 40 rebalances ≈ 120-160 KB — still well under ~2 MB total (negligible vs the NAV series).
 _FULL_RANKED_LIMIT = 40
 
 # Method caveats only. The result-dependent in-sample lead/lag sentence (vs SPY) is
@@ -348,13 +348,18 @@ def _sector_weights_by_count(
     Returns ``{str(N): {sector: total_weight}}``. Sectors with zero weight in a
     given count are omitted (saves space). Weights round to 4 dp (2 dp is too coarse
     for small portfolios; 4 dp matches the inverse-vol weight precision needs).
+
+    Accumulate RAW floats per sector; round ONCE per sector at the end. Rounding
+    on each ADD would introduce per-step rounding error and make Σ = 1 ± n_sectors×5e-5
+    instead of ≤ 1 ulp drift before the single final round.
     """
     out: dict[str, dict[str, float]] = {}
     for n, wmap in weights_by_count.items():
-        by_sector: dict[str, float] = {}
+        raw: dict[str, float] = {}
         for ticker, w in wmap.items():
             s = sector_by_ticker.get(ticker, "Unknown")
-            by_sector[s] = round(by_sector.get(s, 0.0) + w, 4)
+            raw[s] = raw.get(s, 0.0) + w
+        by_sector = {s: round(v, 4) for s, v in raw.items()}
         if by_sector:
             out[str(n)] = by_sector
     return out
@@ -559,6 +564,15 @@ def run_backfill(
             [(str(t), float(composite[t])) for t in composite.index],
             key=lambda x: -x[1],
         )
+        # NOTE — full_ranked[*].recommendation is derived pre-veto (risk_flags=() in
+        # derive_recommendation above). This is DELIBERATE: full_ranked is a raw-signal
+        # leaderboard for rank-banding / sector-cap experiments; it carries the composite
+        # rank and valuation label before the veto layer has a chance to exclude names.
+        # Selection is NOT affected — vetoes operate in select_picks via PickCandidate
+        # .risk_flags (populated from pit_risk_flags below). Do NOT "fix" this to pass
+        # the live veto flags into derive_recommendation for full_ranked: that would hide
+        # a vetoed name's true recommendation label and make the leaderboard look cleaner
+        # than the raw signal warrants (a Rule-16 annotate-vs-veto violation).
         full_ranked = [
             {
                 "ticker": t,
