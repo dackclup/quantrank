@@ -376,12 +376,16 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
                 <span className="ml-auto font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
                   {isFinite_(w) ? `${(w * 100).toFixed(1)}%` : '—'}
                 </span>
-                <span
-                  className={`w-16 shrink-0 text-right font-mono text-sm font-semibold tabular-nums ${toneClass(pl.pct)}`}
-                  title={pl.date ? `since ${pl.date}` : undefined}
-                >
-                  {pctStr(pl.pct)}
-                </span>
+                <div className="w-16 shrink-0 text-right">
+                  <div className={`font-mono text-sm font-semibold tabular-nums ${toneClass(pl.pct)}`}>
+                    {pctStr(pl.pct)}
+                  </div>
+                  {pl.date && (
+                    <div className="font-mono text-[0.6rem] tabular-nums text-slate-400 dark:text-slate-500">
+                      {pl.date.slice(0, 7)}
+                    </div>
+                  )}
+                </div>
               </li>
             );
           })}
