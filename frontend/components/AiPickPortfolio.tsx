@@ -283,8 +283,8 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
               baseline={CHART_BASE}
             />
             {/* Stats overlay — top-left inside the plot area (left offset clears the ~36px y-axis) */}
-            <div className="pointer-events-none absolute left-11 top-3 space-y-0.5 rounded bg-white/90 px-2 py-1 dark:bg-slate-900/90">
-              <div className="flex items-baseline gap-1.5 text-[11px] leading-tight">
+            <div className="pointer-events-none absolute left-9 top-3 space-y-0.5">
+              <div className="flex items-baseline gap-1 text-[10px] leading-tight">
                 <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-700 dark:bg-emerald-400" aria-hidden="true" />
                 <span className="font-semibold text-slate-700 dark:text-slate-200">{portfolioLabel} (net)</span>
                 <span className="font-mono font-bold tabular-nums text-slate-900 dark:text-slate-100">{money$(view.endPortfolio)}</span>
@@ -292,7 +292,7 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
                   <span className={`font-mono tabular-nums ${toneClass(view.periodPortfolio)}`}>{pctStr(view.periodPortfolio)}</span>
                 )}
               </div>
-              <div className="flex items-baseline gap-1.5 text-[11px] leading-tight">
+              <div className="flex items-baseline gap-1 text-[10px] leading-tight">
                 <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500 dark:bg-indigo-400" aria-hidden="true" />
                 <span className="font-semibold text-slate-700 dark:text-slate-200">{benchLabel}</span>
                 <span className="font-mono font-bold tabular-nums text-slate-900 dark:text-slate-100">{money$(view.endBenchmark)}</span>
