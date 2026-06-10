@@ -596,6 +596,10 @@ export type BacktestMeta = {
   restatement_canary_unresolved_count: number;
   sector_from_today: boolean;
   veto_layer_replayed: boolean;
+  // PR #451 — when veto_layer_replayed=true, lists the vetoes that
+  // could NOT be replayed point-in-time (names only; full reason in
+  // the artifact). Absent / null on old artifacts (veto_layer_replayed=false).
+  vetoes_not_replayed?: { name: string; reason?: string }[] | null;
   disclaimer: string;
 };
 
@@ -664,4 +668,11 @@ export type AiPickData = {
   // the price-history file doesn't reach back that far.
   entryCloses: Record<string, (number | null)[]>;
   lastCloses: Record<string, number | null>;
+  // Forwarded from BacktestMeta for caption branching — avoids passing the
+  // full meta object into every sub-component (AnnualReturnsTable /
+  // AiPickPortfolio captions only need these two fields).
+  vetoLayerReplayed: boolean;
+  // Names of vetoes excluded from the replay (only meaningful when
+  // vetoLayerReplayed=true; undefined on old artifacts).
+  vetoesNotReplayed: { name: string }[] | undefined;
 };
