@@ -2738,3 +2738,56 @@ lifecycle per phase-status-bump skill).
 (this).
 
 ---
+
+## fix(scoring) — #441 dead `macd_hist` technical input restored (in flight, 2026-06-10)
+
+Branch `claude/confident-thompson-y58bhe` (reused post-#448; reset onto main).
+Re-scoped roadmap item 2 (PR #448 ordering: this fix BEFORE the MAD PR-2
+wiring). Implements the issue #441 bug fix ONLY — no MAD wiring (the #447
+`Metadata.mad_*` diagnostics keep accumulating ρ evidence for the separate,
+gated wiring PR).
+
+**Root cause (verified):** `technical.macd_signal()` returns a plain float;
+`pillars.py::_technical_metrics` checked `isinstance(macd, dict) and
+"histogram" in macd` — never True → `macd_hist` unconditionally NaN → imputed
+to neutral 50 by the cross-sectional normalizer → the technical pillar ran
+4-of-5 inputs on every ticker, every cron, since the input was introduced.
+
+**Fix:** consumer-side — the dead 8-line dict-inspection block becomes
+`_safe(technical.macd_signal, p)`, the exact idiom used by the sibling
+technical metrics (`adx` / `bb_pctb` / `mfi`). Producer untouched (its float
+contract is correct and documented). Short-history (< 35 bars = 26 slow + 9
+signal warm-up) still yields NaN → the neutral-50 imputation path is preserved
+identically.
+
+**Score impact:** Δscore ≠ 0 BY DESIGN — the pillar regains a real signed
+cross-sectional input. Rule 16 holds: scores recompute on the next cron (no
+retroactive modification); Top-5 annotate/veto logic untouched; the CI
+`simulate` job is the movers gate. NO schema change (`macd_hist` is an
+internal pillar metric, not an output field; `schema_check` clean).
+
+**Tests (+4, suite 1601 → 1605; 3 of 4 confirmed RED against pre-fix code):**
+`test_G1_macd_hist_finite_with_sufficient_history` (regression guard that
+would have caught #441) · `test_G2_macd_hist_nan_with_insufficient_history`
+(< 35-bar contract preserved) ·
+`test_G3_technical_pillar_differs_when_macd_hist_is_live` (pillar
+participation proof via monkey-patched all-NaN comparison) ·
+`test_G4_macd_hist_positive_for_uptrend_negative_for_downtrend` (directional
+sign live). Plus 2 deterministic fixtures (`_linear_prices` / `_tech_inp`)
+following the file's existing synthetic-fixture pattern.
+
+**Verification:** ruff whole-repo pass · offline suite 1605 passed / 13
+skipped (1 pre-existing `DeadlineExceeded` flake in
+`test_alpha158_replicate::test_C1`, unrelated, tracked) · `schema_check` pass.
+
+**Provenance:** built by `compute-builder` (fix) + `test-engineer` (tests) per
+the Tier-5 ownership split; part of the alpha-improvement program Iteration 1
+(P0 experiments ran in parallel — see the program notes in the session; the
+PIT-rerun backlog from those experiments lands with the 7.0c veto-replay PR,
+NOT here).
+
+**Files**: compute/scoring/pillars.py · tests/test_scoring/test_pillars.py ·
+CLAUDE.md (§In-flight rotation) · PHASE_STATUS.md (§In-flight rotation +
+Recently-merged #448 backfill) · PHASE_STATUS_INFLIGHT.md (this).
+
+---

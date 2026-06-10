@@ -285,3 +285,137 @@ def test_F2_full_universe_with_financials_does_not_crash():
     assert df.shape[0] == len(inputs)
     # No assertion on specific values — too dependent on synthetic gen.
     # The smoke aspect is that the call completes without crashing.
+
+
+# -- Issue #441: macd_hist regression suite (live 5th technical input) ---------
+# The dead isinstance(macd, dict) block always returned NaN (pre-fix). These
+# tests pin the four contracts that would have caught the bug.
+
+from compute.scoring.pillars import _technical_metrics  # noqa: E402
+
+
+def _linear_prices(n: int, slope: float = 0.5, start: float = 10.0) -> pd.DataFrame:
+    """Build a deterministic linear OHLCV price series of length *n*.
+
+    A strictly linear close produces a well-defined, sign-stable MACD
+    histogram regardless of random seed — essential for the directional test.
+    """
+    idx = pd.date_range(end=pd.Timestamp("2026-06-10"), periods=n, freq="B")
+    close = pd.Series([start + i * slope for i in range(n)], index=idx)
+    high = close * 1.005
+    low = close * 0.995
+    return pd.DataFrame(
+        {
+            "Open": close,
+            "High": high,
+            "Low": low,
+            "Close": close,
+            "Adj Close": close,
+            "Volume": pd.Series(1_000_000, index=idx),
+        }
+    )
+
+
+def _tech_inp(prices: pd.DataFrame) -> TickerInputs:
+    """Minimal TickerInputs wrapping a prices DataFrame."""
+    return TickerInputs(
+        snapshot=None,
+        prices=prices,
+        benchmark_prices=None,
+        current_price=100.0,
+        sector="Information Technology",
+    )
+
+
+# G1 — regression: >=35 bars → macd_hist is FINITE (the test that would
+# have caught #441: the old isinstance(macd, dict) block always returned NaN).
+def test_G1_macd_hist_finite_with_sufficient_history():
+    """>=35 bars of price history yields a finite macd_hist in _technical_metrics.
+
+    Regression guard for issue #441: the dead isinstance-dict block silently
+    discarded the float returned by macd_signal; _safe() now wires it directly.
+    macd_signal warm-up = slow + signal = 26 + 9 = 35 bars.
+    """
+    prices = _linear_prices(n=35)
+    metrics = _technical_metrics(_tech_inp(prices))
+    assert math.isfinite(metrics["macd_hist"]), (
+        "macd_hist should be finite when len(prices) >= slow + signal (35). "
+        "Got NaN — the isinstance(dict) dead-code regression may have returned."
+    )
+
+
+# G2 — short history → macd_hist is NaN (the imputation path is preserved).
+def test_G2_macd_hist_nan_with_insufficient_history():
+    """<35 bars → macd_hist is NaN; imputation-to-50 path is preserved.
+
+    macd_signal returns NaN when len(close) < slow + signal (35). _safe()
+    converts that to NaN, which the cross-sectional normalizer imputes to 50.
+    """
+    prices = _linear_prices(n=34)  # one bar below the 26+9 warm-up
+    metrics = _technical_metrics(_tech_inp(prices))
+    assert math.isnan(metrics["macd_hist"]), (
+        "macd_hist should be NaN when len(prices) < slow + signal (35). "
+        f"Got {metrics['macd_hist']!r}."
+    )
+
+
+# G3 — macd_hist demonstrably participates in the technical pillar score
+# when the input is live (not all-NaN).
+def test_G3_technical_pillar_differs_when_macd_hist_is_live():
+    """Technical pillar scores differ between live-macd and all-NaN-macd universes.
+
+    Constructs a 10-ticker synthetic universe with >=35 bars per ticker, runs
+    compute_all_pillars twice — once normally, once with macd_signal patched to
+    always return NaN (simulating the pre-#441-fix state) — and asserts the
+    technical pillar column differs.  Proves the 5th input actually participates.
+    """
+    import compute.features.technical as _tech_module  # noqa: PLC0415
+
+    _MACD_WARM_UP = 100  # well above 35, so every ticker has a finite macd_hist
+
+    inputs: dict[str, TickerInputs] = {
+        f"T{i}": _tech_inp(_synthetic_prices(seed=i, drift=0.001 * (i - 5)))
+        for i in range(10)
+    }
+
+    df_live = compute_all_pillars(inputs)
+
+    # Simulate the pre-fix bug: macd_signal always returns NaN.
+    original_macd = _tech_module.macd_signal
+    _tech_module.macd_signal = lambda *_a, **_kw: float("nan")
+    try:
+        df_nanmacd = compute_all_pillars(inputs)
+    finally:
+        _tech_module.macd_signal = original_macd
+
+    tech_live = df_live["technical"].round(4)
+    tech_nan = df_nanmacd["technical"].round(4)
+
+    assert not (tech_live == tech_nan).all(), (
+        "Technical pillar scores are identical with and without live macd_hist. "
+        "The 5th input is not influencing the pillar — check _safe(technical.macd_signal, p) wiring."
+    )
+
+
+# G4 — directional: uptrending series → positive macd_hist;
+# downtrending series → negative macd_hist.
+def test_G4_macd_hist_positive_for_uptrend_negative_for_downtrend():
+    """Strictly uptrending prices → macd_hist > 0; downtrending → macd_hist < 0.
+
+    Validates that the signal is live and correctly signed: a persistent upward
+    trend makes EMA_fast > EMA_slow and grows the MACD line above the signal
+    line; a persistent downward trend inverts the relationship.
+
+    Uses a deterministic linear series (no random seed dependency) with 80 bars
+    so the warm-up (35) is well exceeded and the trend has time to dominate.
+    """
+    prices_up = _linear_prices(n=80, slope=+0.5)   # strictly increasing
+    prices_down = _linear_prices(n=80, slope=-0.5)  # strictly decreasing
+
+    hist_up = _technical_metrics(_tech_inp(prices_up))["macd_hist"]
+    hist_down = _technical_metrics(_tech_inp(prices_down))["macd_hist"]
+
+    assert math.isfinite(hist_up), f"Expected finite macd_hist for uptrend, got {hist_up!r}"
+    assert math.isfinite(hist_down), f"Expected finite macd_hist for downtrend, got {hist_down!r}"
+    assert hist_up > 0, f"Uptrending series should yield positive macd_hist; got {hist_up}"
+    assert hist_down < 0, f"Downtrending series should yield negative macd_hist; got {hist_down}"

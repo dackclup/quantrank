@@ -165,15 +165,9 @@ def _technical_metrics(inp: TickerInputs) -> dict[str, float]:
     # RSI: closeness to 50 is "balanced"; we score |RSI - 50| inverted as a
     # proxy for absence of extreme conditions. Higher score = more balanced.
     rsi_score = math.nan if math.isnan(rsi_val) else 50.0 - abs(rsi_val - 50.0)
-    macd = technical.macd_signal(p)
-    macd_hist = math.nan
-    if isinstance(macd, dict) and "histogram" in macd:
-        v = macd["histogram"]
-        if isinstance(v, int | float) and math.isfinite(v):
-            macd_hist = float(v)
     return {
         "rsi_dist50": rsi_score,
-        "macd_hist": macd_hist,
+        "macd_hist": _safe(technical.macd_signal, p),
         "adx": _safe(technical.adx, p),
         "bb_pctb": _safe(technical.bollinger_pct_b, p),
         "mfi": _safe(technical.mfi, p),

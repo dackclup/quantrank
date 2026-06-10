@@ -28,7 +28,8 @@
 | Skill inventory | **47** invocation-triggerable + phase planning docs |
 | Subagent inventory | **22** project-specific in 5 tiers (5 fable + 17 sonnet): **Tier 1 Core** (`quantrank-reviewer` · `schema-sentinel` · `defense-layer-auditor` · `edgar-debugger` · `stock-detail-auditor`) · **Tier 2 Lifecycle** (`security-reviewer` · `frontend-design-reviewer` · `vercel-preview-auditor` · `expert-user-explorer` · `release-captain` · `phase-coordinator`) · **Tier 3 Specialized** (`test-engineer` · `methodology-scientist` · `literature-searcher` · `performance-engineer` · `dependency-auditor` · `financial-engineer`) · **Tier 4 Operations** (`docs-reviewer` · `ci-triage-engineer` · `incident-commander`) · **Tier 5 Builders** (write-capable: `compute-builder` · `frontend-builder`) |
 
-**Recently merged** (Phase 7.0 + cron + Phase 4j.1 cluster, #416 → #447, 2026-06-04 → 2026-06-10):
+**Recently merged** (Phase 7.0 + cron + Phase 4j.1 cluster, #416 → #448, 2026-06-04 → 2026-06-10):
+- PR #448 — docs(roadmap): roadmap-fit re-scope, user-confirmed 8-point re-sequencing (veto-replay → Phase 5 gate · #441-fix-before-MAD-wiring · data-integrity sprint · v1.1 re-gate sans JKP · Phase 6 text-only · 7.1 rename · Phase 8 staging) + drift sweep
 - PR #447 — feat(scoring): MAD factor diagnostics, issue #441 PR-1 (3 `Metadata.mad_*` fields, schema `0.10.15 → 0.10.16`; pillar UNTOUCHED — dead `macd_hist` stays until the fix+wiring PR; feeds the PR-2 wiring gate `abs(ρ) < 0.30` + coverage ≥ 90%)
 - `3dbe2581` (direct) — feat(home): AI-pick chart overlay, P/L since entry, quarterly/half-year ticks, editable capital
 - PR #446 — chore(agents): 5 judgment-gate subagents `model: opus` → `model: fable` (floating alias) + `check_model_pin.py` allow-list + docs lockstep
@@ -136,7 +137,7 @@
 - (3 issues filed: #287 FORM4 revert + durable 5-loop timeout · #288 GOOG/GOOGL XBRL · #289 NVR DQIC; all closed same day via PR #297 / #298 / #292 / #293)
 
 **In flight** (not yet merged on `main`):
-- **docs(roadmap) — roadmap-fit re-scope, user-confirmed (this PR, 2026-06-10)** — re-sequences the roadmap to match shipped reality (veto-replay before Phase 5 · #441 fix before MAD PR-2 · data-integrity sprint · v1.1 re-gate without JKP · Phase 6 text-only · Phase 7.1 rename · Phase 8 staging) + doc-drift sweep. Full detail: [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md). (The WARN-1 regex-anchor coverage gap from PR #303 remains a documented follow-up gated on cron empirical data.)
+- **fix(scoring) — #441 dead `macd_hist` restored (this PR, 2026-06-10)** — re-scoped roadmap item 2: `pillars.py::_technical_metrics` consumer-side fix via the sibling `_safe()` idiom; technical pillar regains its 5th input (Δscore ≠ 0 on next cron, simulate shows movers; Rule 16 untouched); < 35-bar NaN → neutral-50 path preserved; no schema change; +4 regression tests (1601 → 1605). Gates the MAD PR-2 WIRING. Full detail: [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md). (The WARN-1 regex-anchor coverage gap from PR #303 remains a documented follow-up gated on cron empirical data.)
 
 **Earlier** (PR #264 → PR #285, 2026-05-26 → 2026-05-27):
 - PR #285 `8f373758` — docs(release): codify mobile-only operator convention for tag releases (CLAUDE.md §Gotchas + release-tag SKILL.md + release-captain agent)

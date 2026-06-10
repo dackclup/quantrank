@@ -514,28 +514,19 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **docs(roadmap) — roadmap-fit re-scope, user-confirmed (this PR, 2026-06-10)** —
-  a `financial-engineer` roadmap-fit assessment (verified against the repo)
-  found 8 plan-vs-reality divergences; the user confirmed all adjustments.
-  (1) **Phase 7.0c PIT veto-replay PROMOTED** to next-up — it gates Phase 5 ML
-  (the 10Y backtest's raw composite underperforms SPX at every N with
-  `veto_layer_replayed=False`; the veto-rescue question precedes the ~10-12w ML
-  spend). (2) **#441 `macd_hist` fix ordered BEFORE the MAD PR-2 WIRING**
-  (`pillars.py` dict-check vs float return → always-NaN; technical pillar runs
-  4-of-5 inputs; the #447 diagnostics PR-1 deliberately left it — the fix gates
-  the wiring step, not the observability). (3) NEW **data-integrity hardening
-  sprint** (share-count corruption cluster
-  #248/#374/#376/#379/#375/#385/#261/#247+#289) as a Phase 5 entry gate.
-  (4) **v1.1 tag RE-GATED** — JKP 4i.1 dropped from the hard gate (license #115
-  stale since 2026-05-14; WORKFLOW fallback invoked); new gate = OSAP 4h.1
-  (#113) + 4j.2 blend decision on cron IC evidence; IPCA non-blocking.
-  (5) Phase 6 re-scoped TEXT-ONLY (Whisper → 6.1). (6) Phase 7 remainder renamed
-  7.1 with baseline + fit-window gates. (7) Phase 8 staged (S&P 900 pilot; #249
-  pre-cache prerequisite). (8) Phase 4.5e PR 5 marked UNBLOCKED (#287 PR B
-  merged as #431). Doc-drift sweep folded in (PHASE_STATUS.md Phase-7 row ·
-  subagent count 20→22 · stale in-flight/open-issues blocks · WORKFLOW.md
-  schema pointer 0.10.13→0.10.16 · `gtda` license inconsistency · "Opus agents"
-  → fable). Docs-only — no production code / schema change.
+- **fix(scoring) — #441 dead `macd_hist` restored (this PR, 2026-06-10)** —
+  `pillars.py::_technical_metrics` replaces the dead `isinstance(macd, dict)`
+  block with the sibling `_safe(technical.macd_signal, p)` idiom
+  (consumer-side fix; the producer's float contract is correct and kept).
+  The technical pillar regains its 5th input → **Δscore ≠ 0 by design** on the
+  next cron (the CI `simulate` job shows the movers; Rule 16 untouched — no
+  retroactive modification, Top-5 annotate/veto logic unchanged). Short-history
+  (< 35 bars) NaN → neutral-50 imputation path preserved identically. No schema
+  change (`macd_hist` is an internal pillar metric; snapshot in sync). +4
+  regression tests (finite-on-≥35-bars · NaN-on-<35 · pillar-participation ·
+  directional sign; 3 of 4 confirmed RED against the pre-fix code). Tests
+  1601 → 1605. This is re-scoped roadmap item 2 — it gates the MAD PR-2
+  WIRING (#447 diagnostics keep accumulating ρ evidence meanwhile).
 
 
 **Next deliverables** (re-scoped 2026-06-10, ordered by decision-value):
