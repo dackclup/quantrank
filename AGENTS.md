@@ -95,7 +95,7 @@ frontend/                         # Next.js static site (read/write OK)
 tests/                            # pytest suite
 docs/                             # Academic methodology + research findings
 .claude/skills/                   # 47 first-party skills + phase-N/ planning docs (+ symlink to the vendored impeccable skill at .agents/skills/)
-.claude/agents/                   # 22 subagents (5 fable / 17 sonnet; 20 at `effort: max`, 2 at `high`: schema-sentinel + vercel-preview-auditor) — Tier 1 Core 5 (incl. stock-detail-auditor for per-stock JSON correctness) + Tier 2 Lifecycle 6 (incl. vercel-preview-auditor + expert-user-explorer for interactive end-to-end app usage) + Tier 3 Specialized 6 (incl. literature-searcher + financial-engineer for generative quant design) + Tier 4 Operations 3 (incl. ci-triage-engineer) + Tier 5 Builders 2 (write-capable compute-builder + frontend-builder for agent-team Feature Squads, see TEAMS.md); Claude Code only — Copilot / Cursor / Devin do not auto-route to these
+.claude/agents/                   # 25 subagents (5 fable / 20 sonnet; 23 at `effort: max`, 2 at `high`: schema-sentinel + vercel-preview-auditor) — Tier 1 Core 5 (incl. stock-detail-auditor for per-stock JSON correctness) + Tier 2 Lifecycle 6 (incl. vercel-preview-auditor + expert-user-explorer for interactive end-to-end app usage) + Tier 3 Specialized 9 (incl. literature-searcher + financial-engineer for generative quant design + data-pipeline-engineer + data-analyst + data-scientist for data-layer health + analytics + ML/statistical validation) + Tier 4 Operations 3 (incl. ci-triage-engineer) + Tier 5 Builders 2 (write-capable compute-builder + frontend-builder for agent-team Feature Squads, see TEAMS.md); Claude Code only — Copilot / Cursor / Devin do not auto-route to these
 .claude/hooks/                    # PostToolUse Bash hooks (log-bash.sh, schema-reminder.sh) + UserPromptSubmit hook (delegate-first.sh — orchestrator reminder + agent-team auto-propose for team-fit tasks) wired by .claude/settings.json (Claude Code only — Copilot / Cursor / Devin ignore)
 .claude/worktrees/                # Harness-managed isolation dirs for Agent-tool subagents (Claude Code on the web only; per-session transient; gitignored 2026-05-22)
 .claude/settings.json             # Claude Code harness config (hooks, permissions). Per-user overrides go in .claude/settings.local.json (gitignored)
@@ -753,7 +753,7 @@ turn (`ps … | grep next | awk '{print $2}' | xargs kill` — NOT a broad
 cancel the rest of the tool batch). Full rationale in CLAUDE.md
 §Gotchas "Background runs default to SYNC".
 
-The 22 subagents under `.claude/agents/` follow the **gate-moment
+The 25 subagents under `.claude/agents/` follow the **gate-moment
 auto-routing policy** in [`CLAUDE.md`](CLAUDE.md) §Auto-routing
 policy — most cues fire at "ready to push" / explicit ask / signal
 event, not on every edit. This is the reduced-token policy
@@ -778,7 +778,7 @@ trim target is the boilerplate ("read these first" + verbose intros
 + duplicated material from CLAUDE.md / SKILL.md / AGENTS.md), NOT
 the work the agent does. Hard constraints on prompt size do not
 imply hard caps on output size or investigation depth. Sub-agents
-on the sonnet pool (17 of 22 agents) should walk every relevant
+on the sonnet pool (20 of 25 agents) should walk every relevant
 file, list every finding, and follow every escalation lead — the
 Max-plan "Weekly · Sonnet only" budget is intended for thorough
 audit work and is separate from the "Weekly · all models" pool the
