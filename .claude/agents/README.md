@@ -37,7 +37,7 @@ would have:
 
 | Subagent | Enterprise role analogue | Trigger | Model | Tools |
 |---|---|---|---|---|
-| [`quantrank-reviewer`](quantrank-reviewer.md) | Senior eng / Tech lead | After non-trivial edits in `compute/` / `frontend/` / `tests/`; before flipping a PR to Ready | opus | Read, Grep, Glob, Bash |
+| [`quantrank-reviewer`](quantrank-reviewer.md) | Senior eng / Tech lead | After non-trivial edits in `compute/` / `frontend/` / `tests/`; before flipping a PR to Ready | fable | Read, Grep, Glob, Bash |
 | [`schema-sentinel`](schema-sentinel.md) | API / contract governance | When `schemas.py` / `types.ts` / `schema-snapshot.json` changes; CI schema-drift failures | sonnet | Read, Bash, Grep |
 | [`defense-layer-auditor`](defense-layer-auditor.md) | QA / data observability | After scoring / valuation changes; after weekly cron lands; before PR Ready-flip on scoring touches | sonnet | Read, Bash, Grep, Glob |
 | [`edgar-debugger`](edgar-debugger.md) | On-call for downstream dep | SEC EDGAR ingest test failures; live-run hangs; rate-limit / edgartools drift errors | sonnet | Read, Bash, Grep, Glob |
@@ -51,7 +51,7 @@ would have:
 | [`frontend-design-reviewer`](frontend-design-reviewer.md) | Design system / UI lead | Edits under `frontend/components/` / `frontend/app/`; new badge / chip / color; "doesn't match the rest" | sonnet | Read, Grep, Glob, Bash |
 | [`vercel-preview-auditor`](vercel-preview-auditor.md) | Release / preview-env QA | Before Mark-Ready on UI-touching PR; after `frontend/` / `compute/output/` edit; "ดู preview" / "is deploy green?". Wraps Vercel MCP (`list_deployments` → `get_deployment_build_logs` → `get_runtime_logs` → `web_fetch_vercel_url` 3-route UA probe). Codifies CLAUDE.md §Commands "Section I forcing example" pre-Playwright pass. | sonnet | Read, Bash, Grep, Glob |
 | [`expert-user-explorer`](expert-user-explorer.md) | Power user / beta tester / UX researcher | Post-cron green; pre-release; after `vercel-preview-auditor` GO on a UI PR; "ลองใช้ app" / "expert user feedback" / "UX จริง" / "is the app usable?". BUILDS + SERVES the static export locally and DRIVES headless Playwright through persona missions (value-quality screener primary; risk-checker / quant-comparer / skeptic panel). The only agent that interactively *uses* the app. Read-only — proposes issues, never files/fixes. | sonnet | Read, Bash, Grep, Glob |
-| [`release-captain`](release-captain.md) | Release manager | "tag release" / "cut a release" / "release vX.Y.Z" / after phase epic merge | opus | Read, Bash, Grep, Glob |
+| [`release-captain`](release-captain.md) | Release manager | "tag release" / "cut a release" / "release vX.Y.Z" / after phase epic merge | fable | Read, Bash, Grep, Glob |
 | [`phase-coordinator`](phase-coordinator.md) | Eng-program manager / docs PM | Before branch creation; before PR open / Ready-flip; after phase / sub-PR completes | sonnet | Read, Bash, Grep, Glob |
 
 ### Tier 3 — Specialized expertise (6)
@@ -59,9 +59,9 @@ would have:
 | Subagent | Enterprise role analogue | Trigger | Model | Tools |
 |---|---|---|---|---|
 | [`test-engineer`](test-engineer.md) | SDET / test architect | Missing test coverage; new defense / schema field without test; "add tests" / "TDD this" / "เพิ่ม test" | sonnet | Read, Bash, Grep, Glob, Edit, Write |
-| [`methodology-scientist`](methodology-scientist.md) | Research scientist / domain expert | New defense flag proposed; threshold recalibration; quarterly cohort audit; "validate against literature" / "ตรวจ academic prior" | opus | Read, Bash, Grep, Glob |
-| [`financial-engineer`](financial-engineer.md) | Quant strategist / financial engineer | DESIGN a new valuation method / factor / scoring pillar / defense flag; scope a roadmap phase (Phase 4-7 — factors / ML / sentiment / regime + portfolio); "ออกแบบ factor / โมเดล quant" / "should we add signal X" / "scope Phase 5". Generative-design seat — proposes the construct + academic anchor, then hands to `methodology-scientist` to ratify. Read-only; never implements code, never ships the final verdict. | opus | Read, Bash, Grep, Glob |
-| [`literature-searcher`](literature-searcher.md) | Research librarian / domain-knowledge retrieval | methodology-scientist verdict cites paper outside CLAUDE.md anchor list; new defense-flag academic prior proposed; "find me the paper that says X" / "หาเปเปอร์เรื่อง Y"; SEC rule release / EDGAR filing precise citation needed. Offloads retrieval from `methodology-scientist` (opus) → judgment stays on opus, fetch stays on sonnet. | sonnet | Read, Bash, Grep, Glob, WebSearch, WebFetch |
+| [`methodology-scientist`](methodology-scientist.md) | Research scientist / domain expert | New defense flag proposed; threshold recalibration; quarterly cohort audit; "validate against literature" / "ตรวจ academic prior" | fable | Read, Bash, Grep, Glob |
+| [`financial-engineer`](financial-engineer.md) | Quant strategist / financial engineer | DESIGN a new valuation method / factor / scoring pillar / defense flag; scope a roadmap phase (Phase 4-7 — factors / ML / sentiment / regime + portfolio); "ออกแบบ factor / โมเดล quant" / "should we add signal X" / "scope Phase 5". Generative-design seat — proposes the construct + academic anchor, then hands to `methodology-scientist` to ratify. Read-only; never implements code, never ships the final verdict. | fable | Read, Bash, Grep, Glob |
+| [`literature-searcher`](literature-searcher.md) | Research librarian / domain-knowledge retrieval | methodology-scientist verdict cites paper outside CLAUDE.md anchor list; new defense-flag academic prior proposed; "find me the paper that says X" / "หาเปเปอร์เรื่อง Y"; SEC rule release / EDGAR filing precise citation needed. Offloads retrieval from `methodology-scientist` (fable) → judgment stays on fable, fetch stays on sonnet. | sonnet | Read, Bash, Grep, Glob, WebSearch, WebFetch |
 | [`performance-engineer`](performance-engineer.md) | Performance engineer / SRE | Cron > 15 min warm-cache; per-ticker hang > 30s; p95 latency over budget; "why is the cron slow?" | sonnet | Read, Bash, Grep, Glob |
 | [`dependency-auditor`](dependency-auditor.md) | Supply-chain / FOSS-license engineer | Dependabot alert; `pyproject.toml` / `package.json` change; "should I bump X?" / "CVE check" | sonnet | Read, Bash, Grep, Glob |
 
@@ -71,7 +71,7 @@ would have:
 |---|---|---|---|---|
 | [`docs-reviewer`](docs-reviewer.md) | Tech writer / docs PM | CLAUDE.md / AGENTS.md / SKILL.md / WORKFLOW.md / PHASE_STATUS.md / README.md / METHODOLOGY.md touched; section header added/renamed; "review the docs" | sonnet | Read, Bash, Grep, Glob |
 | [`ci-triage-engineer`](ci-triage-engineer.md) | CI / build engineer on-call | GitHub Actions check fails on any open PR (webhook event); "CI failed" / "Python test red" / "build แตก" / "เช็คทำไม CI fail". Knows the CI matrix (Python lint+test · Frontend build · simulate · Vercel preview) + 10-class failure taxonomy (schema-pin-drift / ruff-I001 / F401 / F841 / dep-missing-ci-only / real-bug / simulate-45min-cap / flaky-transient / vercel-build-skew / schema-drift-CI). Read-only; proposes the one-line fix the user authorizes. | sonnet | Read, Bash, Grep, Glob |
-| [`incident-commander`](incident-commander.md) | Incident commander / SRE on-call | Cron fails / hangs / produces corrupt output; Vercel deploy breaks; schema-snapshot CI guard fails; "production is broken" / "site is wrong" / "incident" | opus | Read, Bash, Grep, Glob |
+| [`incident-commander`](incident-commander.md) | Incident commander / SRE on-call | Cron fails / hangs / produces corrupt output; Vercel deploy breaks; schema-snapshot CI guard fails; "production is broken" / "site is wrong" / "incident" | fable | Read, Bash, Grep, Glob |
 
 ### Tier 5 — Builders (2)
 
@@ -147,7 +147,7 @@ If ANY FAIL  → reviewer routes to the specialist who owns the fix
 User: "tag release v1.3.0" / "ตัด release"
   │
   ▼
-[release-captain] (opus) drives the ladder; spawns in parallel:
+[release-captain] (fable) drives the ladder; spawns in parallel:
   ├─ schema-sentinel         ──► no schema drift on release commit
   ├─ defense-layer-auditor   ──► Section A-J PASS on latest output
   ├─ stock-detail-auditor    ──► per-stock data correctness (prefilter + thorough LLM verdicts for every flagged ticker)
@@ -187,7 +187,7 @@ User: "add a new flag for X"
 User: "production is broken" / "cron stuck" / Vercel deploy fails
   │
   ▼
-[incident-commander] (opus) triages via the symptom matrix; spawns
+[incident-commander] (fable) triages via the symptom matrix; spawns
 parallel specialists:
   ├─ edgar-debugger          (if ingest hang / 429 / 403)
   ├─ defense-layer-auditor   (if output corrupt / Top-5 wrong)
@@ -260,7 +260,7 @@ It is the only agent that *interacts* with the running app.
 User: "design a new factor / valuation method / scoring pillar" / "scope Phase 5"
   │
   ▼
-[financial-engineer] (opus) produces the design proposal (problem →
+[financial-engineer] (fable) produces the design proposal (problem →
 academic anchor → math spec → architecture fit → annotate-before-veto
 rollout → observability fields → test plan → orthogonality → footguns);
 the orchestrator then sequences the gate:
@@ -293,11 +293,11 @@ When a flow says "sequences", each step's output feeds the next —
 e.g., methodology-scientist's predicted firing rate becomes
 defense-layer-auditor's verification target.
 
-## Dynamic workflow & the opus-4.8 orchestrator
+## Dynamic workflow & the fable-5 orchestrator
 
-The main Claude Code session runs on **opus-4.8** and is the orchestrator.
+The main Claude Code session runs on **fable-5** and is the orchestrator.
 The eight flows above are **canonical examples, not an exhaustive
-script** — opus-4.8 composes the next step *dynamically* from what each
+script** — fable-5 composes the next step *dynamically* from what each
 agent reports, so an unexpected finding routes to the right specialist
 even when no canned flow covers it. The live example from this team's
 own history: `expert-user-explorer` surfaced an unrendered-`risk_flags`
@@ -323,12 +323,12 @@ HANDOFF · status=<agent's verdict vocab> · next=<DONE | SPAWN <agent>:<scope> 
   command, an ambiguous requirement) — the orchestrator surfaces it via
   `AskUserQuestion` rather than guessing.
 
-**Model split (why 5 opus / 17 sonnet under an opus-4.8 main):** the
+**Model split (why 5 fable / 17 sonnet under a fable-5 main):** the
 orchestrator carries cross-agent synthesis, so most agents are **sonnet**
 — focused, well-scoped work handing a crisp verdict back up. The five
-**opus** agents (`quantrank-reviewer` · `methodology-scientist` ·
+**fable** agents (`quantrank-reviewer` · `methodology-scientist` ·
 `release-captain` · `incident-commander` · `financial-engineer`) stay
-opus because their job IS breadth-of-judgment (full-diff review ·
+fable because their job IS breadth-of-judgment (full-diff review ·
 academic-prior weighing · release-ladder orchestration · P1 incident
 triage · generative quant design) that doesn't compress to a sonnet
 pass. Sonnet agents also drain the separate Max-plan
@@ -337,7 +337,7 @@ pass. Sonnet agents also drain the separate Max-plan
 
 **Effort: 20 of 22 agents run at `effort: max`** (frontmatter; set 2026-05-31,
 carve-out 2026-06-03). The `effort` field is orthogonal to `model` — `model`
-picks WHICH model (opus / sonnet), `effort` sets how hard it reasons. `max` is
+picks WHICH model (fable / sonnet), `effort` sets how hard it reasons. `max` is
 the top of the `low / medium / high / xhigh / max` ladder and overrides the
 session's inherited effort while the subagent is active. Rationale: most agents
 are open-ended correctness / judgment gates (review · audit · academic
@@ -417,10 +417,10 @@ each invocation.
    from `THIRD_PARTY_NOTICES.md` "Description divergence" — concrete
    keywords ("verify the output", "ตรวจ output", "check the latest run"),
    false-positive guardrails, and a fail-fast verdict format.
-3. **Model selection (this project uses `opus` + `sonnet` only — no `haiku`):**
+3. **Model selection (this project uses `fable` + `sonnet` only — no `haiku`):**
    - `sonnet` — default for deterministic checks (schema drift) AND
      multi-step audits with judgment (defense scorecard, debug).
-   - `opus` — full code review where breadth + nuance matter (one or
+   - `fable` — full code review where breadth + nuance matter (one or
      two passes over a multi-file diff, weighing project-specific
      conventions against the change).
    - **`effort: max` on judgment-gate agents** (the `effort` frontmatter

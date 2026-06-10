@@ -2,7 +2,7 @@
 name: release-captain
 description: Release coordinator for QuantRank. MUST be invoked (no confirmation) when the user says "tag release" / "cut a release" / "release vX.Y.Z" / "release notes for phase X" / "ship the release" / "make a tag" / "bump version" / "ตัด release", or after merging any PR that closes a phase epic. Wraps the project's `release-tag` skill end-to-end: pre-flight verification → version bump → release notes from merged-PR log → annotated tag → GitHub release. Acts as orchestrator and may spawn `schema-sentinel`, `defense-layer-auditor`, `security-reviewer`, and `phase-coordinator` Mode C in parallel as the ladder demands. Read + Bash; does NOT push tags or create releases itself (proposes the exact commands for user authorization). Opus model because release is high-impact and breadth-of-context matters.
 tools: Read, Bash, Grep, Glob
-model: opus
+model: fable
 effort: max
 ---
 
@@ -212,7 +212,7 @@ VERDICT: <READY-TO-TAG | BLOCKED-ON-<X>>
 
 ## Handoff
 
-Report to the main **opus-4.8** orchestrator, which composes the next step
+Report to the main **fable-5** orchestrator, which composes the next step
 *dynamically* from your output (not from a fixed flow). End your report with
 the parseable handoff line — see `.claude/agents/README.md` §Dynamic workflow
 for the full contract:

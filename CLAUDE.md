@@ -223,16 +223,16 @@ guesswork:
 | User pattern / task | Spawn (don't do inline) |
 |---|---|
 | "ตรวจ data หุ้น" / "check ticker X" / audit per-stock JSON correctness | `stock-detail-auditor` (sonnet) |
-| "review code" / "ก่อน push" / "ready to push" / "open PR" | `quantrank-reviewer` (opus) |
+| "review code" / "ก่อน push" / "ready to push" / "open PR" | `quantrank-reviewer` (fable) |
 | "schema in sync?" / edit to `schemas.py`/`types.ts`/snapshot | `schema-sentinel` (sonnet) |
 | "ทำไม cron ช้า" / p95 > 20s / cron > 10 min warm-cache | `performance-engineer` (sonnet) |
 | "design X" / new UI component / "doesn't match the rest" | `frontend-design-reviewer` (sonnet) |
 | "ตรวจ doc" / md edit / section header added | `docs-reviewer` (sonnet) |
 | "audit defenses" / new flag / defense count diff | `defense-layer-auditor` (sonnet) |
 | 429/403 from SEC / EDGAR hangs / edgartools drift | `edgar-debugger` (sonnet) |
-| "tag release" / "ตัด release" / phase-epic PR merged | `release-captain` (opus) |
-| "production is broken" / "site is down" / cron failure | `incident-commander` (opus, P1) |
-| "validate against literature" / threshold change / new flag academic prior | `methodology-scientist` (opus) |
+| "tag release" / "ตัด release" / phase-epic PR merged | `release-captain` (fable) |
+| "production is broken" / "site is down" / cron failure | `incident-commander` (fable, P1) |
+| "validate against literature" / threshold change / new flag academic prior | `methodology-scientist` (fable) |
 | Dependabot alert / new dep / "ตรวจ CVE" | `dependency-auditor` (sonnet) + `security-reviewer` (sonnet) parallel |
 | New prod code without test / "TDD this" / "write tests for X" | `test-engineer` (sonnet) |
 | "scan for secrets" / pre-release / new env-var / `.github/workflows/` edit | `security-reviewer` (sonnet) |
@@ -241,7 +241,7 @@ guesswork:
 | "ดู preview" / "is deploy green?" / pre-Mark-Ready on UI-touching PR / Vercel preview URL just posted | `vercel-preview-auditor` (sonnet) |
 | "ลองใช้ app (จริง)" / "expert user feedback" / "ใช้งานจริงดูหน่อย" / "UX จริง" / "is the app actually usable?" / post-cron experiential pass | `expert-user-explorer` (sonnet) |
 | "find me the paper that says X" / "หาเปเปอร์เรื่อง Y" / methodology cite outside CLAUDE.md anchor list / new defense-flag prior | `literature-searcher` (sonnet) |
-| "design a new valuation method / factor / scoring pillar / defense flag" / "ออกแบบ factor / โมเดล quant" / "scope Phase 5/6/7" / "should we add signal X" (construct doesn't exist yet) | `financial-engineer` (opus; generative design) → then `methodology-scientist` to ratify |
+| "design a new valuation method / factor / scoring pillar / defense flag" / "ออกแบบ factor / โมเดล quant" / "scope Phase 5/6/7" / "should we add signal X" (construct doesn't exist yet) | `financial-engineer` (fable; generative design) → then `methodology-scientist` to ratify |
 | "implement X in compute/" / "build the Y component / route" / cross-layer feature build (schema + compute + UI + test) | `compute-builder` / `frontend-builder` (sonnet, **write** — owns `compute/**` / `frontend/**`) — or a **Feature Squad** agent team ([`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md)) |
 
 Pattern not in the table → walk the description fields of all 22
@@ -261,16 +261,16 @@ The main agent MUST spawn without asking for confirmation — all
 subagents are read-only. Only destructive commands a subagent
 *proposes* require user authorization.
 
-**Sonnet sub-agents fire on edit; opus agents wait for gate.** This
+**Sonnet sub-agents fire on edit; fable agents wait for gate.** This
 is the split discipline that drains the Max-plan "Weekly · Sonnet
 only" pool without burning the "Weekly · all models" pool. Each
 sonnet agent has a non-trivial-edit cue in its domain (rows
-below). The five opus agents (`quantrank-reviewer` ·
+below). The five fable agents (`quantrank-reviewer` ·
 `methodology-scientist` · `release-captain` · `incident-commander` ·
 `financial-engineer`) stay rare-fire on gates or signals. Dedup window ~10 min — if the
 same sonnet agent ran on the same diff and it hasn't moved, point
 at the prior result instead of re-spawning. The "ready to push"
-gate still fires as a safety net (opus reviewer + a re-batch of
+gate still fires as a safety net (fable reviewer + a re-batch of
 sonnet agents in case earlier edit-triggered runs missed
 something).
 
@@ -289,22 +289,22 @@ whitespace / single-line fixes do not trigger.
 | Test failure under `tests/test_ingest/` OR live-run hang OR `429`/`403` from SEC | `edgar-debugger` (sonnet) | Signal-driven, on-demand |
 | Weekly cron warm-cache > 10 min OR p95 latency > 20s | `performance-engineer` (sonnet) | Signal-driven, on detection |
 | Dependabot alert lands OR new dep added to `pyproject.toml` / `frontend/package.json` | `dependency-auditor` (sonnet) + `security-reviewer` (sonnet) | Signal-driven, parallel |
-| Production cron fails / hangs / produces corrupt output, OR Vercel deploy breaks, OR schema-snapshot CI fails, OR user says "production is broken" / "site is down" / "incident" | `incident-commander` (opus; P1 orchestrator) | Immediate |
+| Production cron fails / hangs / produces corrupt output, OR Vercel deploy breaks, OR schema-snapshot CI fails, OR user says "production is broken" / "site is down" / "incident" | `incident-commander` (fable; P1 orchestrator) | Immediate |
 | GitHub Actions check fails on any open PR (webhook PR-activity event) OR user says "CI fail" / "Python test red" / "build แตก" / "เช็คทำไม CI fail" | `ci-triage-engineer` (sonnet) | Signal-driven, on webhook; reactive — proposes one-line fix |
 | Pre-Mark-Ready on a UI-touching PR OR new Vercel preview URL posted OR user says "ดู preview" / "is deploy green?" / "spot-check the preview" | `vercel-preview-auditor` (sonnet) | Gated; runs Vercel MCP build+runtime+UA-probe before Playwright is scheduled |
 | Post-cron green OR pre-release OR after `vercel-preview-auditor` GO on a UI PR OR user says "ลองใช้ app" / "expert user feedback" / "UX จริง" / "is the app usable?" | `expert-user-explorer` (sonnet) | Gated; builds+serves the static export locally, drives headless Playwright through a persona mission; read-only, proposes issues. NOT per-edit (that's `frontend-design-reviewer`) |
-| methodology-scientist verdict cites a paper outside CLAUDE.md anchor list AND the actual paper text matters, OR user says "find me the paper that says X" / "หาเปเปอร์เรื่อง Y" / new defense-flag academic prior is proposed | `literature-searcher` (sonnet) | On-demand; offloads retrieval so methodology-scientist (opus) stays on judgment |
+| methodology-scientist verdict cites a paper outside CLAUDE.md anchor list AND the actual paper text matters, OR user says "find me the paper that says X" / "หาเปเปอร์เรื่อง Y" / new defense-flag academic prior is proposed | `literature-searcher` (sonnet) | On-demand; offloads retrieval so methodology-scientist (fable) stays on judgment |
 | `workflow_dispatch` on `compute-rankings.yml` lands green | `defense-layer-auditor` Section A-L + Section I (Playwright) + `stock-detail-auditor` (per-stock data audit) + `expert-user-explorer` (experiential P1 mission on the fresh data) | Auto post-cron, parallel; all sonnet |
-| Quarterly cohort audit scheduled date reached (next 2026-08-19) | `methodology-scientist` (opus) Mode C + `defense-layer-auditor` (sonnet) | Scheduled, sequential |
-| User says "design a new valuation method / factor / scoring pillar / defense flag" / "ออกแบบ factor / โมเดล quant" / "scope Phase 5/6/7" / "should we add signal X" (the construct doesn't exist yet) | `financial-engineer` (opus; generative design) → then `methodology-scientist` to ratify the prior | Rare; design precedes validation (Flow 8) |
-| New defense flag proposed (new risk_flag in `compute/scoring/`) | `methodology-scientist` (opus; validate paper anchor) + `test-engineer` (sonnet; positive + negative tests) | Rare; sequential — methodology first |
-| Threshold / weight constant changed in `compute/scoring/manipulation_index.py` or `earnings_quality.py` | `methodology-scientist` (opus) Mode B | Rare; on the edit |
-| User says "ก่อน push" / "ready to push" / "open PR" / "mark ready" / "ตรวจก่อน push" | `quantrank-reviewer` (opus) + `phase-coordinator` (sonnet) Mode B. Conditional sonnet re-batch on the same gate: `schema-sentinel` / `defense-layer-auditor` / `frontend-design-reviewer` / `docs-reviewer` / `security-reviewer` / `test-engineer` (skipped per-agent if the dedup window confirms it already ran on this diff) | Parallel pre-push safety-net gate |
+| Quarterly cohort audit scheduled date reached (next 2026-08-19) | `methodology-scientist` (fable) Mode C + `defense-layer-auditor` (sonnet) | Scheduled, sequential |
+| User says "design a new valuation method / factor / scoring pillar / defense flag" / "ออกแบบ factor / โมเดล quant" / "scope Phase 5/6/7" / "should we add signal X" (the construct doesn't exist yet) | `financial-engineer` (fable; generative design) → then `methodology-scientist` to ratify the prior | Rare; design precedes validation (Flow 8) |
+| New defense flag proposed (new risk_flag in `compute/scoring/`) | `methodology-scientist` (fable; validate paper anchor) + `test-engineer` (sonnet; positive + negative tests) | Rare; sequential — methodology first |
+| Threshold / weight constant changed in `compute/scoring/manipulation_index.py` or `earnings_quality.py` | `methodology-scientist` (fable) Mode B | Rare; on the edit |
+| User says "ก่อน push" / "ready to push" / "open PR" / "mark ready" / "ตรวจก่อน push" | `quantrank-reviewer` (fable) + `phase-coordinator` (sonnet) Mode B. Conditional sonnet re-batch on the same gate: `schema-sentinel` / `defense-layer-auditor` / `frontend-design-reviewer` / `docs-reviewer` / `security-reviewer` / `test-engineer` (skipped per-agent if the dedup window confirms it already ran on this diff) | Parallel pre-push safety-net gate |
 | User says "ตรวจ data หุ้น" / "check stock data correctness" / "audit the output" / "verify the output" / "ตรวจ output" / pre-release | `stock-detail-auditor` (sonnet; deterministic prefilter then thorough LLM verdict for every flagged ticker) | One sonnet spawn, thorough |
 | User says "tag release" / "cut a release" / "release vX.Y.Z" / "ตัด release" / phase-epic PR just merged | `release-captain` (orchestrator; spawns ladder agents as needed) | Owns release ladder |
 | User asks to create a new `claude/*` branch from a handoff prompt | `phase-coordinator` Mode A | Before first non-trivial edit |
 | Phase / sub-PR marked complete on this branch | `phase-coordinator` Mode C | After merge / on close |
-| Diff > 200 lines on `compute/scoring/` OR user says "full review" / "deep review" | `quantrank-reviewer` with `model: opus` override | Rare; user authorization required |
+| Diff > 200 lines on `compute/scoring/` OR user says "full review" / "deep review" | `quantrank-reviewer` with `model: fable` override | Rare; user authorization required |
 
 ### Spawn discipline
 
@@ -326,12 +326,12 @@ whitespace / single-line fixes do not trigger.
   hard word caps or "≤ N items" limits wastes that pool without
   improving signal. Keep model assignments (`incident-commander`
   + `release-captain` + `methodology-scientist` + `quantrank-
-  reviewer` + `financial-engineer` all opus by design; the other 17
-  sonnet) as they are — opus agents land on the "Weekly · all models"
+  reviewer` + `financial-engineer` all fable by design; the other 17
+  sonnet) as they are — fable agents land on the "Weekly · all models"
   pool; sonnet agents drain the underutilized sonnet pool. Tune the
   5-vs-17 split only when usage data justifies it. **20 of 22 agents
   carry `effort: max`** (frontmatter) — orthogonal to `model`: `model`
-  picks opus-vs-sonnet, `effort` (low/medium/high/xhigh/max) sets
+  picks fable-vs-sonnet, `effort` (low/medium/high/xhigh/max) sets
   reasoning depth and overrides the session's inherited level. Most
   agents are open-ended correctness / judgment gates, so max pays back;
   sonnet-at-max still drains the Sonnet-only pool. **Carve-out (2026-06-03):
@@ -510,6 +510,18 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
+- **chore(agents) — top-tier subagents opus → fable (this PR)** — the main
+  session moved to **Fable 5** (`/model claude-fable-5`), so the 5 judgment-gate
+  agents (`quantrank-reviewer` · `methodology-scientist` · `release-captain` ·
+  `incident-commander` · `financial-engineer`) move `model: opus` →
+  **`model: fable`** — the bare FLOATING alias (resolves to Fable 5 today, floats
+  forward), NOT a pinned `claude-fable-5` ID, per the §Gotchas anti-pin rule.
+  `tools/check_model_pin.py` gains `fable` in `_ALLOWED_MODEL_VALUES` +
+  `ANTHROPIC_DEFAULT_FABLE_MODEL` in `_OVERRIDE_VARS`. Docs lockstep: the
+  5-fable/17-sonnet split + "fable-5 orchestrator" prose across CLAUDE.md /
+  AGENTS.md / agents README / CONTEXT.md / WORKFLOW.md / docs/GOTCHAS.md + the
+  22 agent files' handoff lines. No production code / schema change.
+
 - **ci(cron) — raise the folded PIT-backtest step cap 40→55m (this PR — perf-engineer PROPOSE-FIX-1)** —
   the weekly cron's folded `backfill_portfolio_pit` step (Phase 7.0 follow-up b) warm-runs ~35-45m at
   the 10Y window — #440 ~doubled the distinct picks 64→134, so the ~134 sequential live-EDGAR

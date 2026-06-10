@@ -143,11 +143,11 @@ explicitly. Otherwise the fix is the user's call to apply or defer.
 | Symptom | Escalate to |
 |---|---|
 | Schema-drift CI fail that you can't classify as intentional | `schema-sentinel` (sonnet) |
-| Real-bug class on a scoring / valuation predicate | `defense-layer-auditor` (sonnet) for impact + `quantrank-reviewer` (opus) for full review |
+| Real-bug class on a scoring / valuation predicate | `defense-layer-auditor` (sonnet) for impact + `quantrank-reviewer` (fable) for full review |
 | Real-bug class on EDGAR ingest / form4 parser | `edgar-debugger` (sonnet) |
 | Vercel build skew with Node version | `frontend-design-reviewer` (sonnet) or `dependency-auditor` (sonnet) |
 | simulate-45min-cap on a new code path that doesn't honor escape hatch | `performance-engineer` (sonnet) for budget analysis |
-| Multi-class compounding failure (schema-pin + lint + real-bug all on one push) | `incident-commander` (opus) to triage + parallelize |
+| Multi-class compounding failure (schema-pin + lint + real-bug all on one push) | `incident-commander` (fable) to triage + parallelize |
 
 ## What you do NOT do
 
@@ -162,7 +162,7 @@ explicitly. Otherwise the fix is the user's call to apply or defer.
 
 ## Handoff
 
-Report to the main **opus-4.8** orchestrator, which composes the next step
+Report to the main **fable-5** orchestrator, which composes the next step
 *dynamically* from your output (not from a fixed flow). End your report with
 the parseable handoff line — see `.claude/agents/README.md` §Dynamic workflow
 for the full contract:
