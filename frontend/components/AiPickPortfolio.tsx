@@ -137,12 +137,21 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
     }
 
     const lastPoint = points[points.length - 1];
-    // Year-to-year straight line (Jitta look, per request): keep only the
-    // year-boundary points + the final point (the current end, for the $ label).
-    // NavCompareChart connects them with straight segments (type="linear").
-    const yearPoints = points.filter((p) => p.yearStart);
-    if (lastPoint && yearPoints[yearPoints.length - 1] !== lastPoint) {
-      yearPoints.push(lastPoint);
+    // 1Y / 3Y → quarterly boundary points; longer periods → yearly boundary points.
+    const isQuarterly = years <= 3;
+    const thinPoints: typeof points[0][] = [];
+    if (isQuarterly) {
+      let prevQ = '';
+      for (const p of points) {
+        const [y, m] = p.date.split('-');
+        const q = `${y}-${Math.ceil(Number(m) / 3)}`;
+        if (q !== prevQ) { p.yearStart = true; thinPoints.push(p); prevQ = q; }
+      }
+    } else {
+      for (const p of points) { if (p.yearStart) thinPoints.push(p); }
+    }
+    if (lastPoint && thinPoints[thinPoints.length - 1] !== lastPoint) {
+      thinPoints.push(lastPoint);
     }
     const retFromBase = (v: number | null | undefined) =>
       v === null || v === undefined ? null : (v / capital - 1) * 100;
@@ -151,7 +160,8 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
     const periodGross = gAnchor && lastGross != null ? (lastGross / gAnchor - 1) * 100 : null;
     const periodConservative = cAnchor && lastCons != null ? (lastCons / cAnchor - 1) * 100 : null;
     return {
-      points: yearPoints,
+      points: thinPoints,
+      isQuarterly,
       endPortfolio: lastPoint ? lastPoint.portfolio : null,
       endBenchmark: lastPoint ? lastPoint.benchmark : null,
       periodPortfolio: lastPoint ? retFromBase(lastPoint.portfolio) : null,
@@ -302,6 +312,7 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
               benchmarkLabel={benchLabel}
               money
               baseline={capital}
+              quarterly={view.isQuarterly}
             />
             {/* Stats overlay — top-left inside the plot area (left offset clears the ~36px y-axis) */}
             <div className="pointer-events-none absolute left-10 top-3 space-y-0.5">
