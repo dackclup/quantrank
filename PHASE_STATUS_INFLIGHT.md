@@ -2604,4 +2604,22 @@ BAD-pin example intentionally kept as the illustration). Historical entries in
 PHASE_STATUS*/archive intentionally untouched. No production code or schema
 change; ruff + check_model_pin + check_doc_test_counts pass locally.
 
+## feat(home) — Current-picks P/L-since-entry column (replaces ScoreBadge)
+
+**Branch**: `claude/mobile-portrait-responsive-2obzg9` (reused post-#444-merge) · **Status**: in flight
+
+The Current-picks list on the AI-pick home page swaps the composite `ScoreBadge` for each holding's
+**total return since it entered the basket** — the first rebalance of its current consecutive streak,
+which is count-dependent (a recent top-3 entrant can be a long-time top-10 member), so the column
+tracks the holdings slider. Build-time `lib/data.ts` samples each currently-held ticker's
+adjusted-close history (`public/data/stocks/history/<T>.json`, yfinance auto-adjusted → total-return
+basis, same as the NAV lines) at every rebalance date (`entryCloses`, index-aligned with `timeline`)
+plus the latest close (`lastCloses`); the client walks the timeline backward to find the streak start
+and derives the %. Also sorts Current picks by weight descending. `AiPickData` is the backtest
+view-model — NOT part of the Pydantic↔TS↔snapshot triple (no schema bump).
+
+**Files**: `frontend/lib/types.ts` (`entryCloses` + `lastCloses` on `AiPickData`) ·
+`frontend/lib/data.ts` (price-history sampling) · `frontend/components/AiPickPortfolio.tsx`
+(P/L cell + weight sort) · `PHASE_STATUS_INFLIGHT.md` (this).
+
 ---
