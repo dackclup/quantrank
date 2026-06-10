@@ -354,14 +354,16 @@
 
 - **Subagent model aliases float forward to the LATEST — guard the downgrade
   vector, not the agent files** (`.claude/agents/*.md` + `tools/check_model_pin.py`,
-  2026-05-31). All 22 agents use bare `model: opus` / `model: sonnet` aliases.
-  Per the Claude Code docs an alias resolves to the newest Opus/Sonnet at
-  runtime and floats forward automatically on a CLI update — so the project is
+  2026-05-31). All 22 agents use bare `model: fable` / `model: sonnet` aliases
+  (the 5 judgment-gate agents moved `opus` → `fable` 2026-06-10 when the main
+  session moved to Fable 5; `fable` was added to the guard's allowed set).
+  Per the Claude Code docs an alias resolves to the newest model in that family
+  at runtime and floats forward automatically on a CLI update — so the project is
   "always latest" by design; **never pin a dated/numbered model ID** (e.g.
   `model: claude-opus-4-8`) in an agent, that's a future-dated downgrade the day
   a newer model ships. The real downgrade risk is NOT in the agent files — it's
   an **environment override**: a `CLAUDE_CODE_SUBAGENT_MODEL` or
-  `ANTHROPIC_DEFAULT_{OPUS,SONNET,HAIKU}_MODEL` committed into
+  `ANTHROPIC_DEFAULT_{FABLE,OPUS,SONNET,HAIKU}_MODEL` committed into
   `.claude/settings.json` pins every subagent to a specific (possibly older)
   version WITHOUT touching a single agent file — an invisible downgrade. CI
   enforces both halves: `tools/check_model_pin.py` (wired into `ci.yml` as the

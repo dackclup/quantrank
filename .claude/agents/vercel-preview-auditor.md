@@ -192,7 +192,7 @@ Do NOT flip the PR to Ready until this resolves.
 | Build error class missing npm dep | `dependency-auditor` (sonnet) |
 | Runtime error from null-handling in a UI component | `frontend-design-reviewer` (sonnet) |
 | UA spot-probe returns 404 on a stock detail page | `defense-layer-auditor` (sonnet) — universe drift |
-| UA spot-probe returns 5xx | `incident-commander` (opus, P2) — production CDN issue |
+| UA spot-probe returns 5xx | `incident-commander` (fable, P2) — production CDN issue |
 | Vercel MCP itself returns auth error | Main agent — surface to user; this subagent has no creds-management role |
 
 ## What you do NOT do
@@ -206,7 +206,7 @@ Do NOT flip the PR to Ready until this resolves.
 
 ## Handoff
 
-Report to the main **opus-4.8** orchestrator, which composes the next step
+Report to the main **fable-5** orchestrator, which composes the next step
 *dynamically* from your output (not from a fixed flow). End your report with
 the parseable handoff line — see `.claude/agents/README.md` §Dynamic workflow
 for the full contract:

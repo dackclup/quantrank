@@ -95,7 +95,7 @@ frontend/                         # Next.js static site (read/write OK)
 tests/                            # pytest suite
 docs/                             # Academic methodology + research findings
 .claude/skills/                   # 47 first-party skills + phase-N/ planning docs (+ symlink to the vendored impeccable skill at .agents/skills/)
-.claude/agents/                   # 22 subagents (5 opus / 17 sonnet; 20 at `effort: max`, 2 at `high`: schema-sentinel + vercel-preview-auditor) — Tier 1 Core 5 (incl. stock-detail-auditor for per-stock JSON correctness) + Tier 2 Lifecycle 6 (incl. vercel-preview-auditor + expert-user-explorer for interactive end-to-end app usage) + Tier 3 Specialized 6 (incl. literature-searcher + financial-engineer for generative quant design) + Tier 4 Operations 3 (incl. ci-triage-engineer) + Tier 5 Builders 2 (write-capable compute-builder + frontend-builder for agent-team Feature Squads, see TEAMS.md); Claude Code only — Copilot / Cursor / Devin do not auto-route to these
+.claude/agents/                   # 22 subagents (5 fable / 17 sonnet; 20 at `effort: max`, 2 at `high`: schema-sentinel + vercel-preview-auditor) — Tier 1 Core 5 (incl. stock-detail-auditor for per-stock JSON correctness) + Tier 2 Lifecycle 6 (incl. vercel-preview-auditor + expert-user-explorer for interactive end-to-end app usage) + Tier 3 Specialized 6 (incl. literature-searcher + financial-engineer for generative quant design) + Tier 4 Operations 3 (incl. ci-triage-engineer) + Tier 5 Builders 2 (write-capable compute-builder + frontend-builder for agent-team Feature Squads, see TEAMS.md); Claude Code only — Copilot / Cursor / Devin do not auto-route to these
 .claude/hooks/                    # PostToolUse Bash hooks (log-bash.sh, schema-reminder.sh) + UserPromptSubmit hook (delegate-first.sh — orchestrator reminder + agent-team auto-propose for team-fit tasks) wired by .claude/settings.json (Claude Code only — Copilot / Cursor / Devin ignore)
 .claude/worktrees/                # Harness-managed isolation dirs for Agent-tool subagents (Claude Code on the web only; per-session transient; gitignored 2026-05-22)
 .claude/settings.json             # Claude Code harness config (hooks, permissions). Per-user overrides go in .claude/settings.local.json (gitignored)
@@ -617,7 +617,7 @@ export function FairPriceCard(props) {  // no types
 - `EDGAR_USER_AGENT` is required for SEC EDGAR fetches. Set via env
   var. CI uses a GitHub Actions secret. Never commit.
 - **Subagent model-downgrade guard.** The 20 Claude Code subagents use
-  floating `model: opus` / `model: sonnet` aliases (always resolve to the
+  floating `model: fable` / `model: sonnet` aliases (always resolve to the
   latest). Do NOT commit a `CLAUDE_CODE_SUBAGENT_MODEL` or
   `ANTHROPIC_DEFAULT_{OPUS,SONNET,HAIKU}_MODEL` override into
   `.claude/settings.json` — it pins every subagent to a fixed (possibly older)
@@ -767,7 +767,7 @@ fires post-cron + pre-release + "ตรวจ data หุ้น").
 
 Every subagent ends its report with a parseable `HANDOFF · status=… ·
 next=<DONE | SPAWN <agent>:<scope> | ESCALATE <agent>:<why> | NEEDS-USER:…>`
-line so the opus-4.8 main session composes the next step *dynamically*
+line so the fable-5 main session composes the next step *dynamically*
 from it — the documented coordination flows are canonical examples, not
 an exhaustive script. See [`.claude/agents/README.md`](.claude/agents/README.md)
 §Dynamic workflow.

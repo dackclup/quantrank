@@ -127,7 +127,7 @@ VERDICT: <DOCS-CLEAN | NEEDS-CROSS-REF-FIX | NEEDS-CLARITY-PASS>
 
 ## Handoff
 
-Report to the main **opus-4.8** orchestrator, which composes the next step
+Report to the main **fable-5** orchestrator, which composes the next step
 *dynamically* from your output (not from a fixed flow). End your report with
 the parseable handoff line — see `.claude/agents/README.md` §Dynamic workflow
 for the full contract:

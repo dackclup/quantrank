@@ -62,8 +62,8 @@ PR #226 triage. Then route via the cadence below.
 | **2. Code Generation** | Non-trivial edit in `compute/` | `test-engineer` (red-green-refactor) · `edgar-debugger` (if ingest) · `defense-layer-auditor` (if scoring/valuation) | Failing → passing test · Rule 18 `Metadata` diagnostic wired before logic |
 | **3. Integration** | Schema triple touched · `frontend/components/` · `.github/workflows/` · new dep | `schema-sentinel` · `frontend-design-reviewer` · `security-reviewer` · `dependency-auditor` (dep bump) | `python -m compute.output.schema_check` clean · chip + tabular-nums + loose-null discipline preserved |
 | **4. Testing** | Logic added in step 2 | `test-engineer` · `defense-layer-auditor` Sections A-L · `stock-detail-auditor` (post-cron) · `performance-engineer` (p95 > 15s) | Offline pytest + Hypothesis + `@network` smoke · Sections A-L pass |
-| **5. Deployment** | Ready-to-push · Draft → Mark Ready · phase-tag boundary | `phase-coordinator` Mode B (lockstep) · `quantrank-reviewer` (opus) · `ci-triage-engineer` (if CI red) · `vercel-preview-auditor` (UI-touching PR) · `release-captain` (opus, tag) | CI green · preview 3-route UA probe green · release notes drafted (if tag) |
-| **6. Monitoring** | Post-cron · post-deploy · weekly | `defense-layer-auditor` Sections A-L · `stock-detail-auditor` · `vercel-preview-auditor` · `performance-engineer` · `incident-commander` (opus, P1 only) | 1-page metric × expected × actual × status report · Top-5 rotation symmetric |
+| **5. Deployment** | Ready-to-push · Draft → Mark Ready · phase-tag boundary | `phase-coordinator` Mode B (lockstep) · `quantrank-reviewer` (fable) · `ci-triage-engineer` (if CI red) · `vercel-preview-auditor` (UI-touching PR) · `release-captain` (fable, tag) | CI green · preview 3-route UA probe green · release notes drafted (if tag) |
+| **6. Monitoring** | Post-cron · post-deploy · weekly | `defense-layer-auditor` Sections A-L · `stock-detail-auditor` · `vercel-preview-auditor` · `performance-engineer` · `incident-commander` (fable, P1 only) | 1-page metric × expected × actual × status report · Top-5 rotation symmetric |
 
 **Cadence invariants**:
 

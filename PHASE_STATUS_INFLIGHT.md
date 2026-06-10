@@ -2572,3 +2572,36 @@ job `timeout-minutes` 225→240) · `CLAUDE.md` (§In-flight rotation) · `PHASE
 (this).
 
 ---
+
+## chore(agents) — top-tier subagents opus → fable (in flight, 2026-06-10)
+
+Branch `claude/confident-gates-pT9pu` (reused post-#439; reset onto main). The
+main session moved to **Fable 5** (`/model claude-fable-5`), so the 5
+judgment-gate agents — `quantrank-reviewer` · `methodology-scientist` ·
+`release-captain` · `incident-commander` · `financial-engineer` — move
+`model: opus` → **`model: fable`** in frontmatter. Per the standing
+model-alias gotcha this is the bare FLOATING alias (resolves to Fable 5 today
+and floats forward on CLI updates), NOT a pinned `claude-fable-5` ID — pinned
+numbered IDs are the documented future-dated-downgrade footgun and are rejected
+by CI.
+
+Guard updated in the same PR: `tools/check_model_pin.py` adds `fable` to
+`_ALLOWED_MODEL_VALUES` (else the rename itself would fail CI) and
+`ANTHROPIC_DEFAULT_FABLE_MODEL` to `_OVERRIDE_VARS` (parallel to the
+OPUS/SONNET/HAIKU triple — blocks the committed-env invisible-downgrade vector
+for the new alias). Success/docstring text updated from "latest Opus/Sonnet" to
+family-neutral phrasing.
+
+Docs lockstep — every current-state "opus" reference flips to fable: CLAUDE.md
+(delegation table · cue table · §Spawn discipline model split "5 fable / 17
+sonnet" · `model: fable` override row), `.claude/agents/README.md` (tier-table
+Model column ×5 · §Dynamic workflow "fable-5 orchestrator" · model-split +
+authoring-conventions §3 "fable + sonnet only"), the 22 agent files' handoff
+lines ("the main **fable-5** orchestrator"), AGENTS.md (roster line + alias
+mention + fable-5 main session), CONTEXT.md (roster row), WORKFLOW.md (phase
+5/6 rows), docs/GOTCHAS.md (alias gotcha rewritten; the `claude-opus-4-8`
+BAD-pin example intentionally kept as the illustration). Historical entries in
+PHASE_STATUS*/archive intentionally untouched. No production code or schema
+change; ruff + check_model_pin + check_doc_test_counts pass locally.
+
+---

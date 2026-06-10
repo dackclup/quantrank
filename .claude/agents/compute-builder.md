@@ -1,6 +1,6 @@
 ---
 name: compute-builder
-description: Python implementation specialist for QuantRank's `compute/` layer — the team's BUILDER seat for the backend, not a reviewer. Spawn EXPLICITLY for a scoped compute-side implementation ("implement X in compute/scoring", "add the ingest fetcher for Y", "wire the writer field Z") OR as the `compute/`-owning teammate in a cross-layer **Feature Squad** agent team (compute-builder + frontend-builder + test-engineer, each owning one layer in parallel). Owns ONLY `compute/**` — never touches `frontend/**` (that is frontend-builder) or `tests/**` (that is test-engineer). Knows the project's load-bearing invariants: annotate-before-veto (Rule 16), observability-before-wiring (Rule 18), the tenacity EDGAR retry policy + 10 req/s ceiling, the Pydantic side of the schema triple, and the graceful-degradation try/except pattern. Write-capable (Edit + Write on `compute/**`). NOT an on-edit auto-spawn — code REVIEW stays with `quantrank-reviewer` (opus) + `defense-layer-auditor` (sonnet); this agent BUILDS, they audit. SKIP for: review/audit tasks; frontend or test work; trivial one-line fixes the main session can do inline.
+description: Python implementation specialist for QuantRank's `compute/` layer — the team's BUILDER seat for the backend, not a reviewer. Spawn EXPLICITLY for a scoped compute-side implementation ("implement X in compute/scoring", "add the ingest fetcher for Y", "wire the writer field Z") OR as the `compute/`-owning teammate in a cross-layer **Feature Squad** agent team (compute-builder + frontend-builder + test-engineer, each owning one layer in parallel). Owns ONLY `compute/**` — never touches `frontend/**` (that is frontend-builder) or `tests/**` (that is test-engineer). Knows the project's load-bearing invariants: annotate-before-veto (Rule 16), observability-before-wiring (Rule 18), the tenacity EDGAR retry policy + 10 req/s ceiling, the Pydantic side of the schema triple, and the graceful-degradation try/except pattern. Write-capable (Edit + Write on `compute/**`). NOT an on-edit auto-spawn — code REVIEW stays with `quantrank-reviewer` (fable) + `defense-layer-auditor` (sonnet); this agent BUILDS, they audit. SKIP for: review/audit tasks; frontend or test work; trivial one-line fixes the main session can do inline.
 tools: Read, Bash, Grep, Glob, Edit, Write
 model: sonnet
 effort: max
@@ -109,7 +109,7 @@ VERDICT: <BUILT-CLEAN | BLOCKED:<why> | NEEDS-USER:<decision>>
 
 ## Handoff
 
-Report to the main **opus-4.8** orchestrator. End with the parseable
+Report to the main **fable-5** orchestrator. End with the parseable
 handoff line (contract in `.claude/agents/README.md` §Dynamic workflow):
 
 `HANDOFF · status=<your verdict vocab> · next=<DONE | SPAWN <agent>:<scope> | ESCALATE <agent>:<why> | NEEDS-USER:<decision>>`

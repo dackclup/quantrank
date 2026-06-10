@@ -2,11 +2,11 @@
 """Guard against a silent subagent model downgrade.
 
 The 22 subagents in ``.claude/agents/*.md`` use bare model aliases
-(``model: opus`` / ``model: sonnet``). Per the Claude Code docs an alias
-resolves to the LATEST Opus/Sonnet at runtime and floats forward on a CLI
-update — which is exactly what we want (no self-inflicted downgrade, always
+(``model: fable`` / ``model: sonnet``). Per the Claude Code docs an alias
+resolves to the LATEST model in that family at runtime and floats forward on a
+CLI update — which is exactly what we want (no self-inflicted downgrade, always
 newest). The risk is NOT in the agent files: it's the *environment*. A
-``CLAUDE_CODE_SUBAGENT_MODEL`` or ``ANTHROPIC_DEFAULT_{OPUS,SONNET,HAIKU}_MODEL``
+``CLAUDE_CODE_SUBAGENT_MODEL`` or ``ANTHROPIC_DEFAULT_{FABLE,OPUS,SONNET,HAIKU}_MODEL``
 override committed into ``.claude/settings.json`` would pin every subagent to a
 specific (possibly older) version WITHOUT changing a single agent file — an
 invisible downgrade. This guard fails CI if either appears in the committed
@@ -36,6 +36,7 @@ SETTINGS = REPO / ".claude" / "settings.json"
 # CLAUDE_CODE_SUBAGENT_MODEL (it means "use the main session's model").
 _OVERRIDE_VARS = (
     "CLAUDE_CODE_SUBAGENT_MODEL",
+    "ANTHROPIC_DEFAULT_FABLE_MODEL",
     "ANTHROPIC_DEFAULT_OPUS_MODEL",
     "ANTHROPIC_DEFAULT_SONNET_MODEL",
     "ANTHROPIC_DEFAULT_HAIKU_MODEL",
@@ -47,7 +48,7 @@ _OVERRIDE_VARS = (
 # (+ `inherit`, which follows the main session). A dated / numbered ID like
 # `claude-opus-4-8` or `claude-sonnet-4-6-20260101` is a PIN that will NOT float
 # forward → a future-dated downgrade the day a newer model ships. Reject those.
-_ALLOWED_MODEL_VALUES = {"opus", "sonnet", "haiku", "inherit"}
+_ALLOWED_MODEL_VALUES = {"fable", "opus", "sonnet", "haiku", "inherit"}
 
 _MODEL_LINE = re.compile(r"^model:\s*(.+?)\s*$", re.MULTILINE)
 
@@ -121,7 +122,7 @@ def main() -> int:
         for p in problems:
             print(f"  ✗ {p}")
         print(
-            "\nWhy this matters: bare `model: opus` / `model: sonnet` aliases "
+            "\nWhy this matters: bare `model: fable` / `model: sonnet` aliases "
             "float forward to the newest model automatically. A committed env "
             "override or a pinned model ID defeats that and can silently run an "
             "OLDER model. See CLAUDE.md §Gotchas 'subagent model aliases float "
@@ -131,7 +132,7 @@ def main() -> int:
     print(
         "Model-pin guard OK — all agent frontmatter uses floating aliases and "
         "committed settings carry no model-override env var (subagents always "
-        "resolve to the latest Opus/Sonnet)."
+        "resolve to the latest model for their alias — Fable/Opus/Sonnet)."
     )
     return 0
 
