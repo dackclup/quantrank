@@ -453,7 +453,11 @@ always-loaded context small while preserving discoverability of every invariant.
 
 ## Phase status
 
-Current schema **`0.10.15-phase4.6`** on `main` (#426 Phase 4j.1 — additive
+Current schema **`0.10.16-phase4.6`** on `main` (issue #441 PR-1 — additive
+3 `Metadata.mad_*` MAD-factor diagnostics: coverage + cross-sectional Spearman
+ρ vs `mom_12_1`/`mom_3_1`; pillar untouched, observability-only, Δscore = 0;
+feeds the PR-2 wiring gate |ρ| < 0.30 + coverage ≥ 90%). Prior
+**`0.10.15-phase4.6`** (#426 Phase 4j.1 — additive
 9 `Metadata.alpha158_*` Qlib observability fields, `OsapGateDiagnostic` reused,
 no new model; observability-only, Δscore = 0). Prior **`0.10.14-phase4.6`**:
 **Phase 7.0 — the
@@ -510,29 +514,20 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **chore(agents) — top-tier subagents opus → fable (this PR)** — the main
-  session moved to **Fable 5** (`/model claude-fable-5`), so the 5 judgment-gate
-  agents (`quantrank-reviewer` · `methodology-scientist` · `release-captain` ·
-  `incident-commander` · `financial-engineer`) move `model: opus` →
-  **`model: fable`** — the bare FLOATING alias (resolves to Fable 5 today, floats
-  forward), NOT a pinned `claude-fable-5` ID, per the §Gotchas anti-pin rule.
-  `tools/check_model_pin.py` gains `fable` in `_ALLOWED_MODEL_VALUES` +
-  `ANTHROPIC_DEFAULT_FABLE_MODEL` in `_OVERRIDE_VARS`. Docs lockstep: the
-  5-fable/17-sonnet split + "fable-5 orchestrator" prose across CLAUDE.md /
-  AGENTS.md / agents README / CONTEXT.md / WORKFLOW.md / docs/GOTCHAS.md + the
-  22 agent files' handoff lines. No production code / schema change.
-
-- **ci(cron) — raise the folded PIT-backtest step cap 40→55m (this PR — perf-engineer PROPOSE-FIX-1)** —
-  the weekly cron's folded `backfill_portfolio_pit` step (Phase 7.0 follow-up b) warm-runs ~35-45m at
-  the 10Y window — #440 ~doubled the distinct picks 64→134, so the ~134 sequential live-EDGAR
-  amendment fetches (~10m, NOT cache-shared with the compute step) atop ~30m PIT scoring left only
-  ~5-10m headroom under the old **40m** cap; a slow-SEC day could kill the step. Kill is BENIGN
-  (`continue-on-error` + atomic writer → prior `backtest_pit.json` kept, rankings still commit, only
-  the backtest `as_of` stalls ~1 wk; convergence N=1). The 214 historical-only ledger members are
-  SKIPPED (never fetched). Raises the step cap **40→55m** + job ceiling **225→240m** in
-  `compute-rankings.yml` — comment-only elsewhere, no code/schema. Deferred: FIX-3 (align the
-  backfill amendment lookback 10y→5y to drop the ~10m — needs `methodology-scientist` on the narrowed
-  restatement-canary window). (MAD construct PR-1 merged #442; rest tracked in issue #441.)
+- **feat(scoring) — MAD factor diagnostics, issue #441 PR-1 (this PR)** — the
+  diagnostic half that the #442 construct checkpoint deferred: `main.py`
+  accumulates `technical.mad_scalefree` per ticker in the existing loop (zero
+  added fetches) and emits **3 additive `Metadata.mad_*` fields** —
+  `mad_coverage_pct` + `mad_mom12_corr` + `mad_mom3_corr` (cross-sectional
+  Spearman ρ of MAD vs the momentum pillar inputs `mom_12_1` / `mom_3_1`;
+  pandas rank-corr, no new dep; < 3 finite pairs or zero variance → `None`;
+  whole block graceful-degradation try/except). Schema triple PATCH bump
+  **`0.10.15 → 0.10.16-phase4.6`** (snapshot regenerated). **Pillar UNTOUCHED**
+  (`pillars.py` zero-diff; dead `macd_hist`=50 stays) → Δcomposite = 0,
+  simulate must show data-drift-only movers. These 3 fields feed the **PR-2
+  wiring gate** after ≥ 1 real cron: `abs(ρ) < 0.30` BOTH + `coverage ≥ 90%`
+  (either ρ ≥ 0.30 → momentum echo → REMOVE per #441), Rule 16 simulate
+  Top-5 check at wiring time.
 
 
 **Next deliverables** (pick by appetite):
