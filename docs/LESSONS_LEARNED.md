@@ -193,3 +193,16 @@ lesson as much as a process one; the actionable rule is mirrored in
 
 ---
 *Add the next session's lessons above this line.*
+
+## 2026-06-10 — bare `pytest` resolves to the SYSTEM python in the remote sandbox
+
+In the Claude Code remote execution environment, `which pytest` → `/root/.local/bin/pytest`
+(system python 3.11, NO project deps — `ModuleNotFoundError: pandas` across ~63 collection
+errors) while `which python` → `/usr/local/bin/python` (full project env). A sub-agent
+(test-engineer, issue #441 PR-1) ran bare `pytest`, hit the wall of import errors, and
+mislabeled them "missing optional dependencies / pre-existing" — the second mislabel of this
+shape (first: #438). Rule: in this environment ALWAYS run `python -m pytest tests/ -m "not
+network"`, and treat any "broad pre-existing failure" claim from a sub-agent as unverified
+until the orchestrator reproduces it with `python -m pytest`. (The only GENUINE pre-existing
+sandbox gap is the 2 `openassetpricing` osap test modules — the `[factors]` extra isn't
+installed here; CI installs it.)
