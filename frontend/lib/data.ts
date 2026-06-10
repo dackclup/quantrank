@@ -51,6 +51,37 @@ function lastFinite(arr: (number | null)[]): number | null {
   return null;
 }
 
+const HISTORY_DIR = path.join(STOCKS_DIR, 'history');
+
+type PriceHistoryFile = { dates: string[]; closes: (number | null)[] };
+
+function readPriceHistory(ticker: string): PriceHistoryFile | null {
+  const file = path.join(HISTORY_DIR, `${ticker}.json`);
+  if (!fs.existsSync(file)) return null;
+  try {
+    const raw = JSON.parse(fs.readFileSync(file, 'utf-8')) as PriceHistoryFile;
+    if (!Array.isArray(raw.dates) || !Array.isArray(raw.closes)) return null;
+    return raw;
+  } catch {
+    return null;
+  }
+}
+
+// Close on the first trading day >= `date`, within a 7-day grace window so a
+// rebalance dated on a holiday/weekend still resolves; null when the price
+// history doesn't cover the date (file starts later than `date`).
+function closeOnOrAfter(hist: PriceHistoryFile, date: string): number | null {
+  for (let i = 0; i < hist.dates.length; i += 1) {
+    if (hist.dates[i] >= date) {
+      const limit = new Date(`${date}T00:00:00Z`);
+      limit.setUTCDate(limit.getUTCDate() + 7);
+      if (hist.dates[i] > limit.toISOString().slice(0, 10)) return null;
+      return round2(hist.closes[i]);
+    }
+  }
+  return null;
+}
+
 /**
  * Trim + round the 1.3 MB point-in-time backtest artifact into the small view
  * model the AI-pick home page ships to the client (the net line per count + the
@@ -94,6 +125,23 @@ export function getAiPickData(): AiPickData | null {
   }
 
   const last = rebalances[rebalances.length - 1];
+
+  // P/L-since-entry support: adjusted close at every rebalance date (index-
+  // aligned with `timeline`) + the latest close, for the CURRENTLY-held tickers
+  // only. Sourced from the per-ticker price-history files the stock-detail
+  // chart already ships (yfinance auto-adjusted closes → split + dividend
+  // adjusted, i.e. total-return basis, same as the NAV lines).
+  const rebalanceDates = rebalances.map((r) => r.date);
+  const entryCloses: Record<string, (number | null)[]> = {};
+  const lastCloses: Record<string, number | null> = {};
+  for (const h of last.holdings) {
+    const hist = readPriceHistory(h.ticker);
+    entryCloses[h.ticker] = hist
+      ? rebalanceDates.map((d) => closeOnOrAfter(hist, d))
+      : rebalanceDates.map(() => null);
+    lastCloses[h.ticker] = hist ? round2(lastFinite(hist.closes)) : null;
+  }
+
   return {
     meta,
     dates: nav.dates,
@@ -114,6 +162,8 @@ export function getAiPickData(): AiPickData | null {
       date: r.date,
       holdings: r.holdings.map((h) => ({ ticker: h.ticker, sector: h.sector })),
     })),
+    entryCloses,
+    lastCloses,
   };
 }
 

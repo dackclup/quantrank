@@ -7,7 +7,6 @@ import { NavCompareChartLazy } from './NavCompareChartLazy';
 import { AnnualReturnsTable } from './AnnualReturnsTable';
 import { HoldingsCountSlider } from './HoldingsCountSlider';
 import { HoldingsTimeline } from './HoldingsTimeline';
-import { ScoreBadge } from './ScoreBadge';
 import { SectorChip } from './SectorChip';
 import { SegmentedSelector, type SegmentOption } from './SegmentedSelector';
 import type { AiPickData } from '@/lib/types';
@@ -38,7 +37,15 @@ function isFinite_(v: number | null | undefined): v is number {
 }
 
 function money$(v: number | null): string {
-  return v === null ? '—' : `$${Math.round(v).toLocaleString('en-US')}`;
+  if (v === null) return '—';
+  const abs = Math.abs(v);
+  if (abs >= 1e18) return `$${(v / 1e18).toFixed(1)}Qi`;
+  if (abs >= 1e15) return `$${(v / 1e15).toFixed(1)}Q`;
+  if (abs >= 1e12) return `$${(v / 1e12).toFixed(1)}T`;
+  if (abs >= 1e9)  return `$${(v / 1e9).toFixed(1)}B`;
+  if (abs >= 1e6)  return `$${(v / 1e6).toFixed(1)}M`;
+  if (abs >= 1e3)  return `$${(v / 1e3).toFixed(0)}k`;
+  return `$${Math.round(v)}`;
 }
 
 function firstFiniteFrom(series: (number | null)[], start: number): number | null {
@@ -72,7 +79,7 @@ function toneClass(v: number | null): string {
 }
 
 export function AiPickPortfolio({ data }: { data: AiPickData }) {
-  const { meta, dates, netByCount, grossByCount, conservativeByCount, benchmark, finalsByCount, latest, timeline } = data;
+  const { meta, dates, netByCount, grossByCount, conservativeByCount, benchmark, finalsByCount, latest, timeline, entryCloses, lastCloses } = data;
 
   // Default to the count with the highest Max-window net return so the first
   // view the user sees is the best-performing basket, not an arbitrary fixed default.
@@ -89,6 +96,7 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
   const [count, setCount] = useState<number>(bestMaxCount);
   const [bench, setBench] = useState<string>(meta.default_benchmark);
   const [period, setPeriod] = useState<string>('MAX');
+  const [capital, setCapital] = useState<number>(CHART_BASE);
 
   const countKey = String(count);
   const benchLabel = (BENCHMARKS.find((b) => b.value === bench)?.label ?? bench).toUpperCase();
@@ -110,8 +118,8 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
     const step = Math.max(1, Math.ceil(span / MAX_CHART_POINTS));
     const point = (i: number) => ({
       date: dates[i],
-      portfolio: pAnchor && isFinite_(net[i]) ? Math.round((net[i] as number) / pAnchor * CHART_BASE) : null,
-      benchmark: bAnchor && isFinite_(bser[i]) ? Math.round((bser[i] as number) / bAnchor * CHART_BASE) : null,
+      portfolio: pAnchor && isFinite_(net[i]) ? Math.round((net[i] as number) / pAnchor * capital) : null,
+      benchmark: bAnchor && isFinite_(bser[i]) ? Math.round((bser[i] as number) / bAnchor * capital) : null,
       yearStart: false,
     });
     const points: ReturnType<typeof point>[] = [];
@@ -129,21 +137,34 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
     }
 
     const lastPoint = points[points.length - 1];
-    // Year-to-year straight line (Jitta look, per request): keep only the
-    // year-boundary points + the final point (the current end, for the $ label).
-    // NavCompareChart connects them with straight segments (type="linear").
-    const yearPoints = points.filter((p) => p.yearStart);
-    if (lastPoint && yearPoints[yearPoints.length - 1] !== lastPoint) {
-      yearPoints.push(lastPoint);
+    // 1Y → quarterly · 3Y → semi-annual · 5Y+ → yearly boundary points
+    const tickMode: 'quarter' | 'halfyear' | 'year' =
+      years <= 1 ? 'quarter' : years <= 3 ? 'halfyear' : 'year';
+    const thinPoints: typeof points[0][] = [];
+    if (tickMode !== 'year') {
+      let prevBucket = '';
+      for (const p of points) {
+        const [y, m] = p.date.split('-');
+        const bucket = tickMode === 'quarter'
+          ? `${y}-${Math.ceil(Number(m) / 3)}`
+          : `${y}-${Math.ceil(Number(m) / 6)}`;
+        if (bucket !== prevBucket) { p.yearStart = true; thinPoints.push(p); prevBucket = bucket; }
+      }
+    } else {
+      for (const p of points) { if (p.yearStart) thinPoints.push(p); }
+    }
+    if (lastPoint && thinPoints[thinPoints.length - 1] !== lastPoint) {
+      thinPoints.push(lastPoint);
     }
     const retFromBase = (v: number | null | undefined) =>
-      v === null || v === undefined ? null : (v / CHART_BASE - 1) * 100;
+      v === null || v === undefined ? null : (v / capital - 1) * 100;
     const lastGross = gross.length > 0 ? gross[gross.length - 1] : null;
     const lastCons = cons.length > 0 ? cons[cons.length - 1] : null;
     const periodGross = gAnchor && lastGross != null ? (lastGross / gAnchor - 1) * 100 : null;
     const periodConservative = cAnchor && lastCons != null ? (lastCons / cAnchor - 1) * 100 : null;
     return {
-      points: yearPoints,
+      points: thinPoints,
+      tickMode,
       endPortfolio: lastPoint ? lastPoint.portfolio : null,
       endBenchmark: lastPoint ? lastPoint.benchmark : null,
       periodPortfolio: lastPoint ? retFromBase(lastPoint.portfolio) : null,
@@ -152,7 +173,7 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
       periodConservative,
       periodStart: dates[startIdx] ?? null,
     };
-  }, [netByCount, grossByCount, conservativeByCount, benchmark, dates, countKey, bench, period]);
+  }, [netByCount, grossByCount, conservativeByCount, benchmark, dates, countKey, bench, period, capital]);
 
   // All three cost-band columns are now period-aware (series exposed via grossByCount /
   // conservativeByCount); finalsByCount is kept only as a fallback when series are absent.
@@ -169,6 +190,24 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
         .slice(0, count)
         .sort((a, b) => (weights[b.ticker] ?? 0) - (weights[a.ticker] ?? 0))
     : [];
+
+  // P/L since the holding's entry: walk the timeline backward while the ticker
+  // stays inside the top-`count` slice — the streak start IS count-dependent (a
+  // stock can be a recent top-3 entrant but a long-time top-10 member). Return =
+  // last adjusted close / close at the entry rebalance (total-return basis).
+  const plSince: Record<string, { pct: number | null; date: string | null }> = {};
+  for (const h of holdings) {
+    let idx = timeline.length - 1;
+    while (idx > 0 && timeline[idx - 1].holdings.slice(0, count).some((x) => x.ticker === h.ticker)) {
+      idx -= 1;
+    }
+    const entry = entryCloses[h.ticker]?.[idx] ?? null;
+    const lastC = lastCloses[h.ticker] ?? null;
+    plSince[h.ticker] = {
+      pct: entry !== null && lastC !== null ? (lastC / entry - 1) * 100 : null,
+      date: timeline[idx]?.date ?? null,
+    };
+  }
 
   // Sector-concentration disclosure (methodology-scientist 2026-06-06): with the
   // 2-per-sector cap removed, inverse-vol + the 0.35 cap bound single-NAME risk but
@@ -256,43 +295,54 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
 
         {/* Chart + timeframe */}
         <div className="space-y-2">
-          <NavCompareChartLazy
-            data={view.points}
-            portfolioLabel={portfolioLabel}
-            benchmarkLabel={benchLabel}
-            money
-            baseline={CHART_BASE}
-          />
+          <div className="flex items-baseline gap-1 text-xs text-slate-400 dark:text-slate-500">
+            <span>$</span>
+            <input
+              type="number"
+              min={100}
+              step={1000}
+              value={capital}
+              onChange={(e) => { const v = Math.round(Number(e.target.value)); if (v >= 100) setCapital(v); }}
+              className="w-24 rounded border border-slate-300 bg-transparent px-1.5 py-0.5 font-mono tabular-nums text-slate-600 focus:border-slate-400 focus:outline-none dark:border-slate-600 dark:text-slate-300 dark:focus:border-slate-400 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            />
+            <span>invested at window start</span>
+          </div>
+          {/* relative wrapper so the stats overlay can be positioned inside the chart area */}
+          <div className="relative">
+            <NavCompareChartLazy
+              data={view.points}
+              portfolioLabel={portfolioLabel}
+              benchmarkLabel={benchLabel}
+              money
+              baseline={capital}
+              tickMode={view.tickMode}
+            />
+            {/* Stats overlay — top-left inside the plot area (left offset clears the ~36px y-axis) */}
+            <div className="pointer-events-none absolute left-10 top-3 space-y-0.5">
+              <div className="flex items-baseline gap-1 text-[10px] leading-tight">
+                <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-700 dark:bg-emerald-400" aria-hidden="true" />
+                <span className="font-semibold text-slate-700 dark:text-slate-200">{portfolioLabel} (net)</span>
+                <span className="font-mono font-bold tabular-nums text-slate-900 dark:text-slate-100">{money$(view.endPortfolio)}</span>
+                {view.periodPortfolio !== null && (
+                  <span className={`font-mono tabular-nums ${toneClass(view.periodPortfolio)}`}>{pctStr(view.periodPortfolio)}</span>
+                )}
+              </div>
+              <div className="flex items-baseline gap-1 text-[10px] leading-tight">
+                <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500 dark:bg-indigo-400" aria-hidden="true" />
+                <span className="font-semibold text-slate-700 dark:text-slate-200">{benchLabel}</span>
+                <span className="font-mono font-bold tabular-nums text-slate-900 dark:text-slate-100">{money$(view.endBenchmark)}</span>
+                {view.periodBenchmark !== null && (
+                  <span className={`font-mono tabular-nums ${toneClass(view.periodBenchmark)}`}>{pctStr(view.periodBenchmark)}</span>
+                )}
+              </div>
+            </div>
+          </div>
           <SegmentedSelector
             options={PERIODS}
             value={period}
             onChange={setPeriod}
             ariaLabel="Chart timeframe"
           />
-          {/* Legend — $-growth framing; color paired with text label + $ value (Rule 10) */}
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-1 text-xs text-slate-600 dark:text-slate-300">
-            <span className="inline-flex items-center gap-1.5">
-              <span className="inline-block h-2 w-2 rounded-full bg-emerald-700 dark:bg-emerald-400" aria-hidden="true" />
-              {portfolioLabel} (net){' '}
-              <span className="font-mono font-semibold tabular-nums text-slate-900 dark:text-slate-100">
-                {money$(view.endPortfolio)}
-              </span>
-              {view.periodPortfolio !== null && (
-                <span className="font-mono tabular-nums">{pctStr(view.periodPortfolio)}</span>
-              )}
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <span className="inline-block h-2 w-2 rounded-full bg-indigo-500 dark:bg-indigo-400" aria-hidden="true" />
-              {benchLabel}{' '}
-              <span className="font-mono font-semibold tabular-nums text-slate-900 dark:text-slate-100">
-                {money$(view.endBenchmark)}
-              </span>
-              {view.periodBenchmark !== null && (
-                <span className="font-mono tabular-nums">{pctStr(view.periodBenchmark)}</span>
-              )}
-            </span>
-            <span className="text-slate-400 dark:text-slate-500">· {money$(CHART_BASE)} invested at window start</span>
-          </div>
         </div>
 
         {/* Cost band — all three columns are period-aware now that gross + conservative
@@ -303,17 +353,6 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
           <CostStat label="Net (25bps)" value={consReturn} />
         </div>
       </div>
-
-      {/* Annual returns — Jitta-style calendar-year backtest table + CAGR row,
-          derived in-browser from the selected count's net NAV vs the chosen
-          index (reactive to the slider + benchmark picker; no schema change). */}
-      <AnnualReturnsTable
-        dates={dates}
-        portfolio={netByCount[countKey] ?? []}
-        benchmark={benchmark[bench] ?? []}
-        portfolioLabel={portfolioLabel}
-        benchmarkLabel={benchLabel}
-      />
 
       {/* Current picks */}
       <div className="rounded border border-slate-200 bg-white p-4 shadow-subtle dark:border-slate-800 dark:bg-slate-900 md:p-6">
@@ -327,6 +366,8 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
         </div>
         <p className="mb-3 text-xs text-slate-500 dark:text-slate-400">
           Top {count} by composite (no sector cap), inverse-volatility weighted.
+          The right column is each holding&apos;s total return since it entered the
+          basket (first rebalance of its current streak).
           {topSector && (
             <>
               {' '}Top sector:{' '}
@@ -336,9 +377,18 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
             </>
           )}
         </p>
+        <div className="flex items-center gap-3 border-b border-slate-200 pb-1.5 text-[0.625rem] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:border-slate-700 dark:text-slate-400">
+          <span className="w-4 shrink-0">#</span>
+          <span>Ticker</span>
+          <span className="hidden sm:inline">Sector</span>
+          <span className="ml-auto w-12 shrink-0 text-right">Weight</span>
+          <span className="w-14 shrink-0 text-right">Return</span>
+          <span className="w-14 shrink-0 text-right">Entry</span>
+        </div>
         <ol className="divide-y divide-slate-100 dark:divide-slate-800">
           {holdings.map((h, i) => {
             const w = weights[h.ticker];
+            const pl = plSince[h.ticker] ?? { pct: null, date: null };
             return (
               <li key={h.ticker} className="flex items-center gap-3 py-2">
                 <span className="w-4 shrink-0 font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
@@ -353,10 +403,15 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
                 <span className="hidden sm:inline">
                   <SectorChip sector={h.sector} />
                 </span>
-                <span className="ml-auto font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
+                <span className="ml-auto w-12 shrink-0 text-right font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
                   {isFinite_(w) ? `${(w * 100).toFixed(1)}%` : '—'}
                 </span>
-                <ScoreBadge score={h.composite_score} />
+                <span className={`w-14 shrink-0 text-right font-mono text-sm font-semibold tabular-nums ${toneClass(pl.pct)}`}>
+                  {pctStr(pl.pct)}
+                </span>
+                <span className="w-14 shrink-0 text-right font-mono text-[0.6rem] tabular-nums text-slate-700 dark:text-slate-300">
+                  {pl.date ? pl.date.slice(0, 7) : ''}
+                </span>
               </li>
             );
           })}
@@ -367,6 +422,17 @@ export function AiPickPortfolio({ data }: { data: AiPickData }) {
           basket size (entered/exited vs the prior quarter). The data the user
           asked to see: "what was held 5 years ago + how it rotated", not "today's
           picks back-projected". Reactive to the count slider. */}
+      {/* Annual returns — Jitta-style calendar-year backtest table + CAGR row,
+          derived in-browser from the selected count's net NAV vs the chosen
+          index (reactive to the slider + benchmark picker; no schema change). */}
+      <AnnualReturnsTable
+        dates={dates}
+        portfolio={netByCount[countKey] ?? []}
+        benchmark={benchmark[bench] ?? []}
+        portfolioLabel={portfolioLabel}
+        benchmarkLabel={benchLabel}
+      />
+
       {timeline.length > 0 && <HoldingsTimeline timeline={timeline} count={count} />}
 
       {/* Disclaimer — the artifact's own honest, result-dependent text (Rule 9: the

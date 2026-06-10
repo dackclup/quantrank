@@ -78,22 +78,18 @@ export function HoldingsTimeline({
           <span className="font-mono tabular-nums">{timeline.length}</span> quarterly rebalances
         </span>
       </div>
-      <p className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
-        <span>
-          ~<span className="font-mono tabular-nums">{avgTurnover.toFixed(1)}</span> of{' '}
-          <span className="font-mono tabular-nums">{count}</span> names change each quarter
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span
-            className="inline-block h-2 w-2 rounded-full bg-emerald-600 dark:bg-emerald-400"
-            aria-hidden="true"
-          />
-          entered this quarter
-        </span>
+      <p className="mb-3 text-xs text-slate-500 dark:text-slate-400">
+        ~<span className="font-mono tabular-nums">{avgTurnover.toFixed(1)}</span> of{' '}
+        <span className="font-mono tabular-nums">{count}</span> names change each quarter
       </p>
       <ol className="divide-y divide-slate-100 dark:divide-slate-800">
         {rows.map((row, idx) => {
           const isInitial = idx === rows.length - 1; // last displayed = oldest
+          // Buy / Hold / Sell split per rebalance. The initial basket is all
+          // buys by definition (no prior quarter to hold from).
+          const buys = isInitial ? row.held : row.held.filter((t) => row.entered.has(t));
+          const holds = isInitial ? [] : row.held.filter((t) => !row.entered.has(t));
+          const sells = row.exited;
           return (
             <li
               key={row.date}
@@ -101,51 +97,88 @@ export function HoldingsTimeline({
             >
               <span className="pt-0.5 font-mono text-xs tabular-nums text-slate-500 dark:text-slate-400">
                 {monthLabel(row.date)}
+                {isInitial && (
+                  <span className="mt-0.5 block text-[0.625rem] text-slate-400 dark:text-slate-500">
+                    initial basket
+                  </span>
+                )}
               </span>
               <div className="flex flex-col gap-1">
-                <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
-                  {row.held.map((t) => {
-                    const isNew = row.entered.has(t);
-                    const sector = row.sectorByTicker[t];
-                    return (
-                      <Link
-                        key={t}
-                        href={`/stock/${t}/`}
-                        title={sector}
-                        aria-label={`${t}${isNew ? ', entered this quarter' : ''}${
-                          sector ? `, ${sector} sector` : ''
-                        }`}
-                        className={`press inline-flex items-center gap-1 font-mono text-sm font-semibold hover:underline ${
-                          isNew
-                            ? 'text-emerald-700 dark:text-emerald-300'
-                            : 'text-slate-700 dark:text-slate-300'
-                        }`}
-                      >
-                        {isNew && (
-                          <span
-                            className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400"
-                            aria-hidden="true"
-                          />
-                        )}
-                        {t}
-                      </Link>
-                    );
-                  })}
-                </div>
-                {isInitial ? (
-                  <span className="text-xs text-slate-500 dark:text-slate-400">initial basket</span>
-                ) : row.exited.length > 0 ? (
-                  <span className="text-xs text-slate-500 dark:text-slate-400">
-                    exited <span className="font-mono">{row.exited.join(', ')}</span>
-                  </span>
-                ) : (
-                  <span className="text-xs text-slate-500 dark:text-slate-400">reweighted only</span>
+                <TimelineGroup
+                  label="Buy"
+                  labelClass="text-emerald-700 dark:text-emerald-400"
+                  tickers={buys}
+                  sectorByTicker={row.sectorByTicker}
+                  linked
+                />
+                <TimelineGroup
+                  label="Hold"
+                  labelClass="text-slate-500 dark:text-slate-400"
+                  tickers={holds}
+                  sectorByTicker={row.sectorByTicker}
+                  linked
+                />
+                <TimelineGroup
+                  label="Sell"
+                  labelClass="text-rose-600 dark:text-rose-400"
+                  tickers={sells}
+                  sectorByTicker={row.sectorByTicker}
+                  linked={false}
+                />
+                {buys.length === 0 && sells.length === 0 && !isInitial && (
+                  <span className="text-xs text-slate-400 dark:text-slate-500">reweighted only</span>
                 )}
               </div>
             </li>
           );
         })}
       </ol>
+    </div>
+  );
+}
+
+// One labeled sub-row of a rebalance (Buy / Hold / Sell). Sold names are no
+// longer in the basket so they render dimmed; held/bought names link to the
+// stock detail page.
+function TimelineGroup({
+  label,
+  labelClass,
+  tickers,
+  sectorByTicker,
+  linked,
+}: {
+  label: string;
+  labelClass: string;
+  tickers: string[];
+  sectorByTicker: Record<string, string>;
+  linked: boolean;
+}) {
+  if (tickers.length === 0) return null;
+  return (
+    <div className="flex items-baseline gap-2">
+      <span className={`w-8 shrink-0 text-[0.625rem] font-semibold uppercase tracking-[0.08em] ${labelClass}`}>
+        {label}
+      </span>
+      <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
+        {tickers.map((t) => {
+          const sector = sectorByTicker[t];
+          return linked ? (
+            <Link
+              key={t}
+              href={`/stock/${t}/`}
+              title={sector}
+              aria-label={`${t}${sector ? `, ${sector} sector` : ''}`}
+              className="press inline-flex items-center font-mono text-sm font-semibold text-slate-700 hover:underline dark:text-slate-300"
+            >
+              {t}
+            </Link>
+          ) : (
+            <span key={t} className="font-mono text-sm font-semibold text-slate-400 dark:text-slate-500">
+              {t}
+            </span>
+          );
+        })}
+      </div>
     </div>
   );
 }

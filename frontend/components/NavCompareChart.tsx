@@ -41,6 +41,8 @@ export interface Props {
   money?: boolean;
   /** Reference-line value (window-start level). 100 when rebased, 10000 ($) in money mode. */
   baseline?: number;
+  /** Controls x-axis tick granularity: 'year' (default) | 'halfyear' (H1/H2) | 'quarter' (Q1-Q4). */
+  tickMode?: 'year' | 'halfyear' | 'quarter';
 }
 
 // emerald-700 / emerald-400 · indigo-500 / indigo-400 (soft palette, Rule 1)
@@ -51,13 +53,30 @@ function fmtYear(d: string): string {
   return (d ?? '').slice(0, 4);
 }
 
-function fmtMoney(v: number): string {
-  return `$${Math.round(v).toLocaleString('en-US')}`;
+function fmtQuarter(d: string): string {
+  const [y, m] = (d ?? '').split('-');
+  return `Q${Math.ceil(Number(m) / 3)}'${(y ?? '').slice(2)}`;
 }
 
-function fmtMoneyAxis(v: number): string {
-  return Math.abs(v) >= 1000 ? `$${Math.round(v / 1000)}k` : `$${Math.round(v)}`;
+function fmtHalfYear(d: string): string {
+  const [y, m] = (d ?? '').split('-');
+  return `H${Math.ceil(Number(m) / 6)}'${(y ?? '').slice(2)}`;
 }
+
+function fmtCompact(v: number): string {
+  const abs = Math.abs(v);
+  if (abs >= 1e18) return `$${(v / 1e18).toFixed(1)}Qi`;
+  if (abs >= 1e15) return `$${(v / 1e15).toFixed(1)}Q`;
+  if (abs >= 1e12) return `$${(v / 1e12).toFixed(1)}T`;
+  if (abs >= 1e9)  return `$${(v / 1e9).toFixed(1)}B`;
+  if (abs >= 1e6)  return `$${(v / 1e6).toFixed(1)}M`;
+  if (abs >= 1e3)  return `$${(v / 1e3).toFixed(0)}k`;
+  return `$${Math.round(v)}`;
+}
+
+function fmtMoney(v: number): string { return fmtCompact(v); }
+
+function fmtMoneyAxis(v: number): string { return fmtCompact(v); }
 
 interface EndLabelProps {
   x?: number | string;
@@ -97,7 +116,7 @@ function endLabel(total: number, color: string) {
   };
 }
 
-export function NavCompareChart({ data, portfolioLabel, benchmarkLabel, money = false, baseline = 100 }: Props) {
+export function NavCompareChart({ data, portfolioLabel, benchmarkLabel, money = false, baseline = 100, tickMode = 'year' }: Props) {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -151,7 +170,7 @@ export function NavCompareChart({ data, portfolioLabel, benchmarkLabel, money = 
           <XAxis
             dataKey="date"
             ticks={yearTicks}
-            tickFormatter={fmtYear}
+            tickFormatter={tickMode === 'quarter' ? fmtQuarter : tickMode === 'halfyear' ? fmtHalfYear : fmtYear}
             tick={{ fontSize: tickFontSize, fill: axis }}
             stroke={grid}
             tickLine={false}
