@@ -514,62 +514,61 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **feat(scoring) — MAD factor diagnostics, issue #441 PR-1 (this PR)** — the
-  diagnostic half that the #442 construct checkpoint deferred: `main.py`
-  accumulates `technical.mad_scalefree` per ticker in a new pass over the
-  already-populated `inputs` dict before Step 8 (prices already in hand —
-  zero added fetches) and emits **3 additive `Metadata.mad_*` fields** —
-  `mad_coverage_pct` + `mad_mom12_corr` + `mad_mom3_corr` (cross-sectional
-  Spearman ρ of MAD vs the momentum pillar inputs `mom_12_1` / `mom_3_1`;
-  pandas rank-corr, no new dep; < 3 finite pairs or zero variance → `None`;
-  whole block graceful-degradation try/except). Schema triple PATCH bump
-  **`0.10.15 → 0.10.16-phase4.6`** (snapshot regenerated). **Pillar UNTOUCHED**
-  (`pillars.py` zero-diff; dead `macd_hist`=50 stays) → Δcomposite = 0,
-  simulate must show data-drift-only movers. These 3 fields feed the **PR-2
-  wiring gate** after ≥ 1 real cron: `abs(ρ) < 0.30` BOTH + `coverage ≥ 90%`
-  (either ρ ≥ 0.30 → momentum echo → REMOVE per #441), Rule 16 simulate
-  Top-5 check at wiring time.
+- **docs(roadmap) — roadmap-fit re-scope, user-confirmed (this PR, 2026-06-10)** —
+  a `financial-engineer` roadmap-fit assessment (verified against the repo)
+  found 8 plan-vs-reality divergences; the user confirmed all adjustments.
+  (1) **Phase 7.0c PIT veto-replay PROMOTED** to next-up — it gates Phase 5 ML
+  (the 10Y backtest's raw composite underperforms SPX at every N with
+  `veto_layer_replayed=False`; the veto-rescue question precedes the ~10-12w ML
+  spend). (2) **#441 `macd_hist` fix ordered BEFORE the MAD PR-2 WIRING**
+  (`pillars.py` dict-check vs float return → always-NaN; technical pillar runs
+  4-of-5 inputs; the #447 diagnostics PR-1 deliberately left it — the fix gates
+  the wiring step, not the observability). (3) NEW **data-integrity hardening
+  sprint** (share-count corruption cluster
+  #248/#374/#376/#379/#375/#385/#261/#247+#289) as a Phase 5 entry gate.
+  (4) **v1.1 tag RE-GATED** — JKP 4i.1 dropped from the hard gate (license #115
+  stale since 2026-05-14; WORKFLOW fallback invoked); new gate = OSAP 4h.1
+  (#113) + 4j.2 blend decision on cron IC evidence; IPCA non-blocking.
+  (5) Phase 6 re-scoped TEXT-ONLY (Whisper → 6.1). (6) Phase 7 remainder renamed
+  7.1 with baseline + fit-window gates. (7) Phase 8 staged (S&P 900 pilot; #249
+  pre-cache prerequisite). (8) Phase 4.5e PR 5 marked UNBLOCKED (#287 PR B
+  merged as #431). Doc-drift sweep folded in (PHASE_STATUS.md Phase-7 row ·
+  subagent count 20→22 · stale in-flight/open-issues blocks · WORKFLOW.md
+  schema pointer 0.10.13→0.10.16 · `gtda` license inconsistency · "Opus agents"
+  → fable). Docs-only — no production code / schema change.
 
 
-**Next deliverables** (pick by appetite):
-- **Phase 7.0 follow-ups** — (a) **DONE (#428)** — the personal
-  **Watchlist** feature (the `/portfolio` coming-soon stub → a real
-  browser-local watchlist, localStorage-only, no backend);
-  (b) **DONE (#424)** — the PIT backtest auto-refreshes inside the weekly
-  cron (a warm `backfill_portfolio_pit` step folded into
-  `compute-rankings.yml`); `backfill-portfolio.yml` remains the manual
-  on-demand path; (c) PR-2c deferred — point-in-time defense-layer veto
-  replay in the backtest (currently `veto_layer_replayed=False`, disclosed).
-- **Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — after ≥ 1
-  cron's `form4_rule10b5_one_excluded_count` lands and firing-rate
-  delta confirms the -30% to -45% predicted band (Aboody et al. 2010
-  §3.2 mid-point; vesting-driven liquidation residual still argues
-  against full 10.0 restoration)
-- **Issue #67 — DONE** (PR #294, 2026-05-28): `USE_SECTOR_COE = True` flipped
-  (`value_trap_risk` 132 → 109); now tracking per-sector delta via
-  `Metadata.value_trap_risk_delta_by_sector` (PR #300)
-- **Phase 4i.1 / 4j.1 / 4k.1** — JKP / Qlib / IPCA integration PRs
-  (~1-2w each → v1.1.0-phase4). **4j.1 (Qlib Alpha158 observability surface)
-  DONE (#426)** — adapter + reused PBO/DSR gate + 9 diagnostic
-  `Metadata.alpha158_*` fields shipped, no blend (4j.2 blends — deferred,
-  needs ≥ 1 real cron + the live Qlib feature source); 4i.1 (JKP, license-
-  review-required per #115) + 4k.1 (IPCA) remain.
-- **Phase 5** — ML meta-learner (~10-12w, unblocks PR 4b §3
-  IC-decay writer #75)
-- **Stock-attribute data — Dividend + Security-type** — fills the two
-  reserved `HeroAttributeTiles` slots (PR #344; both show "Coming soon" until
-  data lands). 7a Dividend: `dividend_yield_pct` / `pays_dividend` from
-  yfinance `Ticker.info` (already in the stack — extends the
-  `compute/ingest/cross_source.py` info-cache pattern, NOT `prices.py` which
-  is `yf.download` OHLCV-only; no new dep) + schema triple +
-  `Metadata.dividend_coverage_pct` observability-first.
-  7b Security-type: Common / ADR / REIT label from yfinance
-  `fast_info.quote_type` (NOT the retired `.info["quoteType"]`) + SEC
-  `dei:DocumentType == "20-F"` / EDGAR submissions `entityType` for ADR
-  detection. Both DISPLAY-ONLY (no ranking/scoring/veto impact); each
-  behind a `*_coverage_pct` diagnostic cron before the tile reads live data
-  (observability-before-wiring). Tiles auto-promote out of "reserved" when
-  `value` flips non-null. See PHASE_STATUS.md §Next deliverables item 7.
+**Next deliverables** (re-scoped 2026-06-10, ordered by decision-value):
+- **1 · Phase 7.0c — PIT veto-layer replay** (PROMOTED) — replay the 7 active
+  vetoes in `scripts/backfill_portfolio_pit.py` (flip `veto_layer_replayed`
+  False → True) + one backfill dispatch. Answers "does the defense layer rescue
+  the composite?" — the **Phase 5 entry gate (a)**.
+- **2 · Issue #441 — fix the dead `macd_hist` input** (always-NaN dict-vs-float
+  type mismatch) **BEFORE the MAD PR-2 wiring** (diagnostics PR-1 merged as
+  #447, pillar untouched), so the IC comparison runs against a clean 5-input
+  technical-pillar baseline.
+- **3 · Data-integrity hardening sprint** (~1-2w, NEW) — the share-count /
+  extraction corruption cluster (#248 V ~4× no-veto · #374 warm-cache per-class
+  bypass · #376 · #379 · #375 · #385 · #261 · #247/#289 NVR) — **Phase 5 entry
+  gate (b)**.
+- **4 · Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — **UNBLOCKED**
+  (#287 PR B merged as #431); needs ≥ 1 cron's
+  `form4_rule10b5_one_excluded_count` confirming the -30% to -45% Aboody et
+  al. 2010 §3.2 band, accumulating ahead of the Q3 2026-08-19 cohort audit.
+- **5 · v1.1.0-phase4 tag — RE-GATED** — JKP 4i.1 **dropped** from the hard
+  gate (license #115; WORKFLOW fallback clause); new gate = OSAP 4h.1 (#113) +
+  the 4j.2 Qlib blend decision on ≥ 1 real cron of `Metadata.alpha158_*` IC
+  evidence (PBO ≤ 0.5 + DSR > 0); 4k.1 IPCA (#122) additive, non-blocking.
+- **6 · Phase 5 — ML meta-learner** (~10-12w; unblocks PR 4b §3 IC-decay
+  writer #75) — gated on items 1 + 3 + a Supabase client-wiring pre-PR
+  (§Connectors). Entry gates spelled out in WORKFLOW.md §Phase 5.
+- **7 · Stock-attribute data — Dividend + Security-type tiles** — unchanged,
+  display-only, parallel-safe; full spec in PHASE_STATUS.md §Next deliverables
+  item 7 (yfinance `Ticker.info` / `fast_info.quote_type` + schema triple +
+  `*_coverage_pct` observability-first; tiles auto-promote when non-null).
+- Phase 6 = TEXT-ONLY, Whisper → 6.1 · Phase 7 remainder = **7.1** (gated on
+  the 7.0c baseline + a longer fit window) · Phase 8 = staged S&P 900 pilot
+  with the #249 off-cycle pre-cache as prerequisite — detail in WORKFLOW.md.
 
 See [`PHASE_STATUS.md`](PHASE_STATUS.md) for the canonical
 chronological tracker.

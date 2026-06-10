@@ -29,7 +29,7 @@ You cannot run Python or Node locally. All execution happens in **GitHub Actions
 | **Vercel mobile app** | View deployment status + preview URL | All |
 | **Mobile browser** | Open Vercel preview URL to see live site | All |
 | **Kaggle (web/mobile)** | Monitor heavy training jobs | 5+ |
-| **Modal dashboard** | Monitor LLM/Whisper inference jobs | 6+ |
+| **Modal dashboard** | Monitor LLM/Whisper inference jobs | 6.1+ (Whisper deferred out of Phase 6, re-scope 2026-06-10) |
 
 ---
 
@@ -42,15 +42,11 @@ established commands. No new infrastructure.
 
 **Session-start protocol**: read [`PHASE_STATUS.md`](PHASE_STATUS.md)
 §"Current state" first as the canonical pointer (it bumps on every
-schema PR; this prose stays stable). As of 2026-06-02 post-cron:
-schema `0.10.13-phase4.6` (listing-metadata canary
-`Metadata.country_coverage_pct` + CBOE `BTS` fix; prior
-`0.10.12-phase4.6` PR #303 merged 2026-05-29 —
-Phase 4.5e PR 6 Form-4 10b5-1 negation guard; new
-`Metadata.form4_negation_guard_downgrade_count`; prior PR #300 PATCH
-bump — new `Metadata.value_trap_risk_delta_by_sector: dict[str, int]
-| None` per methodology-scientist Mode B Q2 verdict deferred from PR
-#294). Defense
+schema PR; this prose stays stable). As of 2026-06-10
+post-roadmap-re-scope: schema `0.10.16-phase4.6` (#447 issue-#441 PR-1 —
+3 `Metadata.mad_*` MAD diagnostics; prior `0.10.15` #426 Phase 4j.1 —
+9 `Metadata.alpha158_*` Qlib observability fields; prior `0.10.14`
+#416 `benchmark_coverage_pct`). Defense
 layer **33 declared** = 7 vetoes + 26 annotates; release tag
 [`v1.4.0-phase4.6`](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6);
 CVE baseline **15 open** (0C / 6H / 7M / 2L) after PR #194 patch +
@@ -68,7 +64,7 @@ PR #226 triage. Then route via the cadence below.
 **Cadence invariants**:
 
 - Steps 1 / 5 / 6 = gate-only (branch open · push · cron). Steps 2 / 3 / 4 = on-edit auto-spawn per `CLAUDE.md` §Auto-routing.
-- Opus agents (`quantrank-reviewer` · `methodology-scientist` · `release-captain` · `incident-commander`) never on every edit — gate or signal only.
+- Fable agents (`quantrank-reviewer` · `methodology-scientist` · `release-captain` · `incident-commander` · `financial-engineer`) never on every edit — gate or signal only.
 - New academic prior or threshold change → step 1 + step 4 BOTH require `methodology-scientist` Mode B verdict before merge.
 - Dedup window ~10 min in step 5 — sonnet subagent that ran at on-edit trigger skips at push gate.
 - This cadence supersedes ad-hoc "Master Prompt / phase-N prompt" packaging — those are now expressed via `.claude/agents/*` + `CLAUDE.md` §Auto-routing, not standalone files.
@@ -88,10 +84,10 @@ PR #226 triage. Then route via the cadence below.
 | **v1.1 SHIPS** | | **Tag v1.1.0-phase4** | | |
 | **4.5** | **Earnings-Manipulation Defense Cluster** ⭐ | Sector-relative Sloan + Beneish/Dechow veto + REM + restatement + insider Form 4 + 10b5-1 filter + composite penalty | ✅ **DONE 2026-05-23** (v1.2.0 tagged; 4.5e ladder PRs #167/#205/#222/#224) | **B** |
 | **v1.2 SHIPS** | | **Tag v1.2.0-phase4.5** | | |
-| 5 | ML meta-learner + SHAP | LightGBM + Triple-Barrier + Conformal | 1-1.5 weeks | B (enhanced) |
-| 6 | Sentiment v2 | Whisper + 8-K + Lazy Prices | 1-1.5 weeks | B (enhanced) |
-| 7 | Regime + Portfolio v2 | Student-t HMM + TDA + NCO | 1 week | B (enhanced) |
-| 8 | Universe expansion | S&P 1500 → v2.0 | 3-5 days | Both |
+| 5 | ML meta-learner + SHAP | LightGBM + Triple-Barrier + Conformal | 1-1.5 weeks | B (enhanced) — **GATED** on 7.0c veto-replay verdict + data-integrity sprint (re-scope 2026-06-10) |
+| 6 | Sentiment v2 — **text-only** | Lazy Prices + 8-K + FinBERT (**Whisper → Phase 6.1**, re-scope 2026-06-10) | 1-1.5 weeks | B (enhanced) |
+| 7 | Regime + Portfolio v2 | **7.0 SHIPPED** (AI-pick home + PIT backtest); remainder = **Phase 7.1** Student-t HMM + TDA + NCO, gated (re-scope 2026-06-10) | 1 week | B (enhanced) |
+| 8 | Universe expansion | **Staged**: S&P 900 pilot → S&P 1500 → v2.0; off-cycle pre-cache (#249) prerequisite (re-scope 2026-06-10) | 3-5 days | Both |
 
 **To v1.0**: ~11 working days. Calendar (full-time): 2-3 weeks. ✅ shipped 2026-05-14.
 **To v1.1 (Phase 4)**: PR 4b + 4h/4i/4j/4k. Calendar 6-8 weeks full-time.
@@ -99,6 +95,17 @@ PR #226 triage. Then route via the cadence below.
 **To v2.0 (Option B, original)**: ~32-37 working days. Calendar: 7-8 weeks (does NOT include 4.5).
 **To v2.0 (Option B + 4.5)**: ~17-19 calendar weeks total full-time.
 **To v2.0 (Option A fallback)**: ~25-28 working days. Calendar: 5-6 weeks.
+
+⚠️ **Re-scope 2026-06-10** (roadmap-fit review, user-confirmed): phase ordering +
+gates above adjusted to match shipped reality — Phase 5 is gated on the Phase
+7.0c PIT veto-replay verdict + the data-integrity hardening sprint
+(PHASE_STATUS.md §Next deliverables items 1 + 3); Phase 6 is text-first with
+Whisper deferred to 6.1; the Phase 7 remainder is Phase 7.1 (7.0 shipped early
+via #416-#420/#424/#428/#440); Phase 8 is staged through an S&P 900 pilot.
+The per-phase "Tag vX.Y-phaseN" strings in the sections below are the ORIGINAL
+plan's numbering and are superseded by the actual release ladder (v1.2-v1.4
+were consumed by Phases 4.5 / 4.5e / 4.6) — `release-captain` assigns the real
+version at tag time.
 
 ---
 
@@ -203,7 +210,7 @@ Defense additions per phase (full bibliography in
 | 5 | Purged + Embargoed CV (skfolio) | (arch) | 100 LOC | López de Prado 2018 |
 | 6 | Lazy Prices 10-K diff | ANNOTATE | 250 LOC | Cohen-Malloy-Nguyen 2020 *JF* |
 | 6 | FinBERT MD&A classifier | ANNOTATE | 400 LOC | Loughran-McDonald + FinBERT |
-| 6 | Whisper Vocal Delivery Quality | ANNOTATE | 600 LOC | Baik-Kim-Kim-Yoon 2025 *JAE* |
+| 6.1 (deferred from 6, re-scope 2026-06-10) | Whisper Vocal Delivery Quality | ANNOTATE | 600 LOC | Baik-Kim-Kim-Yoon 2025 *JAE* |
 | 6 | Insider routine vs opportunistic | ANNOTATE | 200 LOC | Cohen-Malloy-Pomorski 2012 |
 | 7 | HMM 3-state regime gating | (arch) | 250 LOC | Wang et al. 2020 *JRFM* |
 | 7 | Persistent-homology TDA crash detector | (arch) | 300 LOC | Gidea-Katz 2018 |
@@ -756,6 +763,22 @@ in parallel (disjoint code paths).
 - **skfolio**: BSD-3-Clause, ✅ use for `CombinatorialPurgedCV`
   (replacement for mlfinlab's PurgedKFold).
 
+**Phase 5 entry gates (re-scope 2026-06-10 — all three required before task 5.1):**
+
+1. **Phase 7.0c PIT veto-replay verdict recorded** — the shipped 10Y backtest
+   shows the raw composite underperforming SPX at every N=1-10 with
+   `veto_layer_replayed=False`. Phase 5 trains on this signal, so "does the
+   defense layer rescue it?" decides whether the meta-learner targets the raw
+   or veto-filtered signal — or whether the composite needs structural work
+   before any ML spend.
+2. **Data-integrity hardening sprint closed** — the share-count / extraction
+   corruption cluster (#248 · #374 · #376 · #379 · #375 · #385 · #261 ·
+   #247/#289) silently corrupts the composite for several large-caps; labels
+   trained on corrupted scores learn noise.
+3. **Supabase client wiring landed as its own pre-Phase-5 PR** — CLAUDE.md
+   §Connectors: "do not add a client without an explicit PR"; the acceptance
+   criteria below hard-require the cross-run tables.
+
 ## Tasks
 
 ### 5.1 Add deps
@@ -892,7 +915,8 @@ Revert to Option A (original Phase 5) if:
 - [ ] Mean IC ≥ 0.02 OOS
 - [ ] PBO < 50%
 - [ ] **No mlfinlab dependency anywhere in `pyproject.toml`**
-- [ ] **Supabase cross-run tables operational** (schemas in
+- [ ] **Supabase cross-run tables operational** (requires the Supabase
+      client-wiring pre-Phase-5 PR — entry gate 3 above; schemas in
       `phase-5/<plan>/PLAN.md` §"Supabase usage" for each stub):
       - `experiments` (meta-label hyperparameter sweep tracking,
         replaces MLflow / W&B)
@@ -911,11 +935,18 @@ Revert to Option A (original Phase 5) if:
 
 # PHASE 6 — Sentiment v2 Enhanced (Option B)
 
-**Goal**: Multi-signal sentiment beyond original Reddit/StockTwits plan. Whisper + 8-K + Lazy Prices.
+**Goal**: Multi-signal sentiment beyond original Reddit/StockTwits plan. TEXT-ONLY (re-scope 2026-06-10): Lazy Prices + 8-K + FinBERT; Whisper → Phase 6.1.
 
 **Research ref**: RESEARCH_FINDINGS.md Section 2.5 (Whisper VDQ), 2.6 (Lazy Prices), 2.9 (8-K events).
 
-⚠️ **Compute requirement**: This phase needs **Modal ($30/mo credits)** for Whisper transcription. Estimate: ~50 GPU-hrs T4 monthly.
+⚠️ **Re-scope 2026-06-10 — Phase 6 is TEXT-ONLY**: Whisper VDQ (task 6.4) is
+**deferred to Phase 6.1** — it needs external paid compute (Modal), an
+IR-website audio-scraping pipeline, and at ~30s/stock × 502 ≈ 250m of inference
+it has zero headroom under the 240m cron job ceiling. Phase 6 ships the text
+signals in the §6.0 priority order (Lazy Prices → 8-K event windows → FinBERT
+MD&A); FinBERT's ~4h batch runs monthly/quarterly, NOT inside the weekly cron.
+Phase 6.1 (Whisper) re-enters only with funded Modal credits + a re-verified
+2026 price quote (original estimate: $30/mo, ~50 GPU-hrs T4 monthly).
 
 ## Tasks
 
@@ -951,7 +982,7 @@ and FREEZE the defense set if marginal IR < 0.05.
 sentiment_v2 = [
   "transformers>=4.40",
   "torch>=2.2",
-  "openai-whisper>=20240930",   # Whisper transcription
+  # "openai-whisper>=20240930", # Phase 6.1 ONLY — Whisper deferred (re-scope 2026-06-10)
   "sentence-transformers>=3.0", # For Lazy Prices
   "praw>=7.7",                  # Skip for megacap, use for small-cap
   "finnhub-python>=2.4",
@@ -964,7 +995,7 @@ sentiment_v2 = [
 ### 6.3 Insider Form 4 (original Phase 4 plan)
 *(Same as original)*
 
-### 6.4 Whisper Earnings Call Audio ⭐ NEW
+### 6.4 Whisper Earnings Call Audio ⭐ NEW — **deferred → Phase 6.1 (re-scope 2026-06-10)**
 `compute/ingest/earnings_audio.py`:
 - Scrape audio URLs from IR websites + Seeking Alpha public archive
 - Quarterly cron triggers Modal job to transcribe
@@ -1023,7 +1054,8 @@ Revert to Option A (original Phase 4 sentiment) if:
 - [ ] Insider Form 4 cluster signals visible
 - [ ] **Routine vs opportunistic classifier (Cohen-Malloy-Pomorski 2012)
       separates the two; only opportunistic counted as signal**
-- [ ] Whisper transcription job runs quarterly on Modal
+- [ ] ~~Whisper transcription job runs quarterly on Modal~~ — moved to
+      **Phase 6.1**, NOT a Phase 6 gate (re-scope 2026-06-10)
 - [ ] 8-K event features in JSON output (extends Tier-2 defenses from PR 3d)
 - [ ] Lazy Prices similarity computed monthly
 - [ ] **Lazy Prices replicated within 5% of published alpha (or
@@ -1046,6 +1078,16 @@ Revert to Option A (original Phase 4 sentiment) if:
 
 **Research ref**: RESEARCH_FINDINGS.md Section 2.10 (NCO), 2.15 (TDA).
 
+⚠️ **Re-scope 2026-06-10 — remainder renamed Phase 7.1**: Phase 7.0 (AI-pick
+portfolio home + 5y→10y PIT backtest + inverse-vol weighting + watchlist)
+shipped EARLY out of this phase (#416-#420 / #424 / #428 / #440). The tasks
+below are **Phase 7.1** and are gated on BOTH: (a) the **Phase 7.0c veto-replay
+baseline** landing first — regime-conditional weighting must be measured
+against a KNOWN baseline, not the un-replayed one; and (b) a **longer fit
+window** — fitting a 3-state Student-t HMM / TDA crash detector on the current
+~5-10y single-macro-cycle window is an overfit risk (one bull-correction-rally
+arc); TDA additionally needs external monthly compute (Kaggle) per §7.11.
+
 ⚠️ **License re-verification at Phase 7 entry (2026-05-09):**
 - `skfolio` (NCO): BSD-3-Clause, ✅ free
 - `giotto-tda` (TDA, package name `gtda`): Apache 2.0, ✅ free
@@ -1062,7 +1104,7 @@ quant_v2 = [
   "arch>=7.0",
   "alphalens-reloaded>=0.4",
   "skfolio>=0.2",         # NCO portfolio (BSD)
-  "gtda>=0.6",            # TDA (AGPL — verify)
+  "gtda>=0.6",            # TDA (Apache 2.0 — re-verified 2026-05-09; see §License re-verification above)
 ]
 ```
 
@@ -1163,6 +1205,15 @@ Revert to Option A (original Phase 6) if:
 
 **Goal**: Expand from S&P 500 → S&P 1500. **Stop here. Do NOT push to Russell 2000** — free data quality collapses.
 
+⚠️ **Staged re-scope 2026-06-10**: the jump is **500 → S&P 900 pilot (500 + 400
+mid-caps) → 1500**, and the **off-cycle pre-cache workflow (#249) is a hard
+prerequisite** before the pilot. Arithmetic: EDGAR at ~1 req/s sustained
+(`EDGAR_MAX_WORKERS=8` under the 10 req/s ceiling) → 1500 tickers × ~5
+fundamentals fetches ≈ 125m for the fundamentals step ALONE on a cold cache,
+before Tier-2 text scans — the 240m job ceiling cannot absorb a cold
+1500-ticker run inside the weekly cron. The pre-cache moves EDGAR warming to a
+separate mid-week workflow so the weekly cron reads warm.
+
 ## Tasks
 
 *(Same as original Phase 7)*
@@ -1219,6 +1270,8 @@ modeling needed for any actionable signal).
 positives without proportional true positives.
 
 ## Phase 8 Acceptance Criteria
+- [ ] **Off-cycle pre-cache workflow operational (#249) BEFORE the pilot**
+- [ ] **S&P 900 pilot: ≥ 2 green weekly crons before the 1500 cutover**
 - [ ] S&P 1500 ranked weekly
 - [ ] Compute time <90 min
 - [ ] Frontend handles 1500-row table smoothly on mobile

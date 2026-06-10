@@ -616,7 +616,7 @@ export function FairPriceCard(props) {  // no types
 
 - `EDGAR_USER_AGENT` is required for SEC EDGAR fetches. Set via env
   var. CI uses a GitHub Actions secret. Never commit.
-- **Subagent model-downgrade guard.** The 20 Claude Code subagents use
+- **Subagent model-downgrade guard.** The 22 Claude Code subagents use
   floating `model: fable` / `model: sonnet` aliases (always resolve to the
   latest). Do NOT commit a `CLAUDE_CODE_SUBAGENT_MODEL` or
   `ANTHROPIC_DEFAULT_{OPUS,SONNET,HAIKU}_MODEL` override into

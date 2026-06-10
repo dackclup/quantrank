@@ -2660,3 +2660,81 @@ schema rotation + §In-flight; drained the merged #443 + #446 entries) · `PHASE
 (this).
 
 ---
+
+## docs(roadmap) — roadmap-fit re-scope, user-confirmed (in flight, 2026-06-10)
+
+Branch `claude/confident-thompson-y58bhe`. A `financial-engineer` roadmap-fit
+assessment (verified against the repo, not taken from the plan docs) found the
+documented roadmap diverged from shipped reality on 8 fronts; the user confirmed
+ALL adjustments and delegated sequencing. Docs-only — no production code /
+schema / workflow change.
+
+**Re-sequencing decisions** (now encoded in PHASE_STATUS.md §Next deliverables
++ phase table, WORKFLOW.md per-phase blocks, CLAUDE.md §Phase status):
+
+1. **Phase 7.0c PIT veto-replay PROMOTED to next-up** — it is Phase 5 entry
+   gate (a). The 10Y backtest shows the raw composite underperforming SPX at
+   every N=1-10 with `veto_layer_replayed=False`; the veto-rescue question
+   precedes the ~10-12w ML spend (cheapest highest-information experiment:
+   ~1-2 PRs + one backfill dispatch).
+2. **#441 `macd_hist` fix MUST precede MAD PR-2** — verified in code:
+   `technical.macd_signal()` returns a float; `pillars.py` checks
+   `isinstance(macd, dict)` which is never True → `macd_hist` always NaN →
+   technical pillar effectively 4-of-5 inputs. Wiring MAD (scout #442) before
+   the fix makes the MAD-vs-MACD IC comparison meaningless.
+3. **NEW data-integrity hardening sprint** (~1-2w) — #248 (V shares ~4× off,
+   NO veto fired) · #374 (per-class XBRL override never fires warm) · #376
+   (BF-B) · #379 (GEV) · #375 (SNDK) · #385 (APA revenue=None) · #261
+   (multi-class overcount) · #247/#289 (NVR DQIC → `risk_flags` gap / empty
+   fair price). Phase 5 entry gate (b) — labels trained on silently corrupted
+   composites learn noise.
+4. **v1.1.0-phase4 tag RE-GATED** — JKP 4i.1 dropped from the hard gate
+   (CC BY-NC review #115 unresolved since 2026-05-14; WORKFLOW.md fallback
+   clause invoked). New gate: OSAP 4h.1 (#113) + the 4j.2 Qlib blend decision
+   on ≥ 1 real cron of `Metadata.alpha158_*` IC evidence (PBO ≤ 0.5 + DSR > 0).
+   IPCA 4k.1 (#122) additive, non-blocking.
+5. **Phase 6 re-scoped TEXT-ONLY** — §6.0 priority order (Lazy Prices → 8-K →
+   FinBERT); Whisper VDQ → **Phase 6.1** (Modal paid infra + IR audio scraping
+   + ~250m inference ≈ the 240m cron ceiling; FinBERT batch runs
+   monthly/quarterly outside the weekly cron).
+6. **Phase 7 remainder renamed Phase 7.1** — gated on (a) the 7.0c veto-replay
+   baseline and (b) a longer fit window (3-state Student-t HMM / TDA on a
+   single-macro-cycle ~5-10y window = overfit risk; TDA needs external monthly
+   compute per §7.11).
+7. **Phase 8 staged** — S&P 900 pilot (500 + 400 mid-caps) before 1500;
+   off-cycle pre-cache (#249) a hard prerequisite (cold 1500-ticker
+   fundamentals ≈ 125m alone at ~1 req/s sustained vs the 240m job ceiling).
+   Acceptance criteria gain the pilot + pre-cache checkboxes.
+8. **Phase 4.5e PR 5 marked UNBLOCKED** — #287 PR B (FORM4_FETCH_SKIP revert)
+   merged as PR #431; needs ≥ 1 cron of `form4_rule10b5_one_excluded_count`
+   (and ≥ 4 crons ahead of the 2026-08-19 Q3 cohort audit). #287 itself is a
+   close-candidate once a cron confirms `form4_wall_clock_seconds` populates.
+
+**Doc-drift fixes folded in:** PHASE_STATUS.md Phase-7 table row ("not started"
+→ 7.0 SHIPPED / 7.1 gated) · Phase 4/5/6/8 row gate notes · subagent row
+20/4-tier/opus → 22/5-tier/fable (+ Tier 5 Builders) · Current-state date bump ·
+stale "In flight (none through #310)" marker replaced · Recently-merged
+extended #431-#446 · §Next deliverables stale items (the "IN FLIGHT" #287-PR-B
+entry — merged as #431 — and the long-merged PR #300) replaced by the new
+ordering · §Open issues line rebuilt as-of 2026-06-10 (29 open issues, grouped
+by track; #120 annotated "4j.1 DONE #426, re-scoped to the 4j.2 blend
+decision") · WORKFLOW.md session-start schema pointer 0.10.13 → 0.10.15 ·
+"Opus agents" → "Fable agents" in the cadence invariants (missed in #446) ·
+Phase-7 deps `gtda` "(AGPL — verify)" → Apache 2.0 (now matches the §License
+re-verification block in the same file) · per-phase original-plan "Tag vX.Y"
+strings marked superseded by the real release ladder · Phase 5 acceptance
+Supabase row cross-linked to the §Connectors explicit-client-PR rule.
+Post-rebase note: branch rebased over #447 (MAD diagnostics, schema `0.10.16`)
+— schema pointers in this PR updated 0.10.15 → 0.10.16 and the #441 item
+re-worded to "fix gates the PR-2 WIRING" (the #447 diagnostics deliberately
+kept the dead `macd_hist`).
+
+**Deliberately NOT in this PR:** the veto-replay implementation (compute
+change, own PR) · the #441 fix (compute change, own PR) · SKILL.md (no
+constant moved — schema/veto counts unchanged) · METHODOLOGY.md (different
+lifecycle per phase-status-bump skill).
+
+**Files**: PHASE_STATUS.md · WORKFLOW.md · CLAUDE.md · PHASE_STATUS_INFLIGHT.md
+(this).
+
+---
