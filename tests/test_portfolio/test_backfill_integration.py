@@ -1,4 +1,4 @@
-"""End-to-end wiring test for the PR-2b backfill orchestrator (synthetic data).
+"""End-to-end wiring test for the Phase 7.0c backfill orchestrator (synthetic data).
 
 Runs ``run_backfill`` over a 3-ticker synthetic universe with mocked data
 sources (universe / fundamentals_history / prices) but the REAL pillar pipeline,
@@ -7,6 +7,20 @@ integration the dev sandbox otherwise can't exercise (no caches / network) is
 validated offline. Catches the wiring bugs the methodology-scientist flagged
 (synthetic-snapshot field mapping, filed<=T history frame, price-at-T) by
 asserting the orchestrator produces a well-formed ``backtest_pit.json``.
+
+Phase 7.0c additions (PR-2c):
+  - ``meta.veto_layer_replayed`` is True
+  - ``meta.vetoes_replayed`` lists the 6 accounting vetoes
+  - ``meta.vetoes_not_replayed`` lists ``non_reliance_filing`` with reason
+  - ``meta.rule_version`` carries the ``+veto-replay`` suffix
+  - ``rebalances[i].full_ranked``: ≤40 dicts with ticker/composite/sector/mos_pct/recommendation
+  - ``rebalances[i].holdings[j].mos_pct``: float|None
+  - ``rebalances[i].sector_weights_by_count``: {str(N): {sector: weight}}, per-N sums ≈1.0
+  - ``rebalances[i].high_conviction_count``: int in [0, len(picks)]
+  - ``rebalances[i].vetoed_pick_candidates``: vetoed top-N names recorded here,
+    excluded from picks, their composite scores preserved (Rule 16)
+  - ``_compute_pit_risk_flags`` forwards ``today=rebalance_date`` so NSI lookbacks
+    anchor to T (not today)
 """
 from __future__ import annotations
 
@@ -81,6 +95,10 @@ def test_run_backfill_produces_wellformed_artifact(tmp_path, _universe) -> None:
         mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(scale_by_cik.get(cik, 1.0))),
         mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
         mock.patch.object(bf, "fetch_amendments", return_value=[]),  # no restatements -> canary 0.0
+        # Wiring-only isolation: synthetic revenue=100 triggers data_quality_input_corruption
+        # on every ticker (Pattern 2: revenue < $50M). Mock the flag function so picks are
+        # produced and the structural assertions can run against the real wiring.
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
     ):
         # gate="veto_only" exercises the gate-independent WIRING (snapshot->pillars->NAV
         # ->canary) with synthetic data that needn't clear the production high-conviction
@@ -95,7 +113,8 @@ def test_run_backfill_produces_wellformed_artifact(tmp_path, _universe) -> None:
     assert set(payload) >= {"meta", "rebalances", "nav"}
     meta = payload["meta"]
     assert meta["rebalance_count"] == len(payload["rebalances"]) > 0
-    assert meta["veto_layer_replayed"] is False
+    # Phase 7.0c: veto_layer_replayed is True (six accounting vetoes replayed PIT).
+    assert meta["veto_layer_replayed"] is True
     assert meta["sector_from_today"] is True
     assert meta["default_count"] == bf.DEFAULT_COUNT
     assert meta["disclaimer"].startswith("Illustrative backtest")
@@ -105,12 +124,22 @@ def test_run_backfill_produces_wellformed_artifact(tmp_path, _universe) -> None:
     assert meta["restatement_contamination_pct"] == 0.0
     assert meta["restatement_canary_unresolved_count"] == 0
 
+    # Phase 7.0c: vetoes_replayed / vetoes_not_replayed present and correct.
+    assert meta["vetoes_replayed"] == list(bf._VETOES_REPLAYED)
+    assert len(meta["vetoes_not_replayed"]) == 1
+    nr = meta["vetoes_not_replayed"][0]
+    assert nr["name"] == "non_reliance_filing"
+    assert nr["reason"] == "no_8k_history_in_pit_data"
+
     # rebalances: ranked holdings + per-count inverse-vol weights (each basket sums ~1)
     for reb in payload["rebalances"]:
         assert reb["members_complete"] is True
         assert reb["holdings"]
         for h in reb["holdings"]:
             assert {"ticker", "composite_score", "sector", "sigma_90d"} <= set(h)
+            # Phase 7.0c: mos_pct present on every holding (float or None).
+            assert "mos_pct" in h
+            assert h["mos_pct"] is None or isinstance(h["mos_pct"], float)
         wbc = reb["weights_by_count"]
         assert wbc  # at least the count-"1" basket
         for n_str, wmap in wbc.items():
@@ -122,6 +151,36 @@ def test_run_backfill_produces_wellformed_artifact(tmp_path, _universe) -> None:
             assert len(wmap) <= int(n_str)
             # per-holding weights are round(6); summing <= 10 accrues at most ~5e-6
             assert sum(wmap.values()) == pytest.approx(1.0, abs=1e-5)
+
+        # Phase 7.0c: full_ranked — list of ≤40 dicts with the required schema.
+        assert "full_ranked" in reb
+        assert isinstance(reb["full_ranked"], list)
+        assert len(reb["full_ranked"]) <= bf._FULL_RANKED_LIMIT
+        for entry in reb["full_ranked"]:
+            assert set(entry) == {"ticker", "composite_score", "sector", "mos_pct", "recommendation"}
+            assert isinstance(entry["ticker"], str)
+            assert isinstance(entry["composite_score"], (int, float))
+            assert entry["mos_pct"] is None or isinstance(entry["mos_pct"], float)
+
+        # Phase 7.0c: high_conviction_count in [0, len(picks)].
+        assert "high_conviction_count" in reb
+        n_picks = len(reb["holdings"])
+        assert 0 <= reb["high_conviction_count"] <= n_picks
+
+        # Phase 7.0c: sector_weights_by_count — {str(N): {sector: weight}},
+        # per-N weights sum ≈ 1.0.
+        assert "sector_weights_by_count" in reb
+        swbc = reb["sector_weights_by_count"]
+        assert isinstance(swbc, dict)
+        for n_str, by_sector in swbc.items():
+            assert n_str.isdigit()
+            assert by_sector
+            assert sum(by_sector.values()) == pytest.approx(1.0, abs=1e-4)
+
+        # Phase 7.0c: vetoed_pick_candidates — list of dicts (may be empty when no
+        # veto fires, which is the case under the _compute_pit_risk_flags={} mock).
+        assert "vetoed_pick_candidates" in reb
+        assert isinstance(reb["vetoed_pick_candidates"], list)
 
     # NAV: a daily series PER holding count, all aligned to the shared dates; within
     # each count net <= gross and conservative <= net (cost drag); base 100 at the start
@@ -154,6 +213,7 @@ def test_run_backfill_high_conviction_gate_is_applied(tmp_path, _universe) -> No
             mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
             mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
             mock.patch.object(bf, "fetch_amendments", return_value=[]),
+            mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
         ):
             out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate=gate)
         return json.loads(out.read_text())  # read before the next run overwrites the file
@@ -200,6 +260,7 @@ def test_run_backfill_skips_sigma_empty_rebalance(tmp_path, _universe) -> None:
         # full prices (pillars score normally) but no name yields a sigma -> every leg's
         # weights_by_count is empty -> the `continue` fires for all of them.
         mock.patch.object(bf, "trailing_return_sigma", return_value=None),
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
     ):
         # gate="veto_only" exercises the gate-independent WIRING (snapshot->pillars->NAV
         # ->canary) with synthetic data that needn't clear the production high-conviction
@@ -221,6 +282,8 @@ def test_run_backfill_restatement_canary_flags_post_asof_amendment(tmp_path, _un
         mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
         mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
         mock.patch.object(bf, "fetch_amendments", return_value=post_asof),
+        # Wiring-only isolation so picks are produced and the canary assertions run.
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
     ):
         # gate="veto_only" exercises the gate-independent WIRING (snapshot->pillars->NAV
         # ->canary) with synthetic data that needn't clear the production high-conviction
@@ -242,6 +305,8 @@ def test_run_backfill_restatement_canary_unresolved_on_fetch_failure(tmp_path, _
         mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
         mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
         mock.patch.object(bf, "fetch_amendments", return_value=None),
+        # Wiring-only isolation so picks are produced and the canary assertions run.
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
     ):
         # gate="veto_only" exercises the gate-independent WIRING (snapshot->pillars->NAV
         # ->canary) with synthetic data that needn't clear the production high-conviction
@@ -340,3 +405,208 @@ def test_snap_to_trading_day_falls_back_to_last_when_date_is_past_all_prices() -
 def test_snap_to_trading_day_returns_none_on_empty_dates() -> None:
     """The documented `None only if empty` guard — no trading days to snap to."""
     assert bf._snap_to_trading_day("2022-01-03", []) is None
+
+
+# ---------------------------------------------------------------------------
+# Phase 7.0c new-coverage tests
+# ---------------------------------------------------------------------------
+
+
+def test_rule_version_carries_veto_replay_suffix() -> None:
+    """``RULE_VERSION`` carries the ``+veto-replay`` suffix that marks artifacts
+    where ``veto_layer_replayed=True``, so callers can distinguish the two datasets."""
+    assert bf.RULE_VERSION.endswith("+veto-replay"), (
+        f"Expected RULE_VERSION to end with '+veto-replay', got {bf.RULE_VERSION!r}"
+    )
+
+
+def test_meta_rule_version_in_artifact(tmp_path, _universe) -> None:
+    """The artifact's ``meta.rule_version`` matches ``RULE_VERSION`` (i.e., carries
+    the ``+veto-replay`` suffix)."""
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
+    ):
+        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only")
+
+    meta = json.loads(out.read_text())["meta"]
+    assert meta["rule_version"] == bf.RULE_VERSION
+    assert "+veto-replay" in meta["rule_version"]
+
+
+def test_vetoed_pick_candidate_appears_in_record_and_excluded_from_picks(tmp_path, _universe) -> None:
+    """A synthetic ticker given an active veto flag appears in
+    ``rebalances[i].vetoed_pick_candidates`` AND is excluded from the actual
+    ``holdings``.  Its composite score in ``full_ranked`` is unchanged (Rule 16 —
+    veto never modifies the composite score).
+
+    To avoid the ``_compute_pit_risk_flags`` blanket mock while still producing picks,
+    we arrange: two tickers (AAA, BBB) return no flags; CCC returns
+    ``data_quality_input_corruption``. CCC's composite should be high enough to
+    land in the top-20 bucket so it registers as a vetoed candidate.
+    """
+    # Give CCC a very high scale so its composite ranks first in the universe.
+    scale_by_cik = {"1": 1.0, "2": 1.0, "3": 5.0}  # CCC (cik=3) scale=5 -> highest composite
+
+    def _fake_pit_risk_flags(snapshots, pit_histories, sectors, rebalance_date,
+                              beneish_scores, dechow_scores):
+        """Return a veto only for CCC; AAA and BBB are clean."""
+        return {
+            t: ["data_quality_input_corruption"]
+            if t == "CCC" else []
+            for t in snapshots
+        }
+
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history",
+                          side_effect=lambda cik: _annual_history(scale_by_cik.get(cik, 1.0))),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", side_effect=_fake_pit_risk_flags),
+    ):
+        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only")
+
+    payload = json.loads(out.read_text())
+    assert payload["meta"]["rebalance_count"] > 0, "Expected at least one rebalance"
+
+    for reb in payload["rebalances"]:
+        hold_tickers = {h["ticker"] for h in reb["holdings"]}
+        # CCC must NOT appear in holdings (it was vetoed).
+        assert "CCC" not in hold_tickers, (
+            f"CCC has a veto flag but appeared in holdings: {hold_tickers}"
+        )
+        # CCC must appear in vetoed_pick_candidates (it ranked in the top-composite
+        # bucket and was blocked only by the veto flag).
+        vetoed_tickers = {v["ticker"] for v in reb["vetoed_pick_candidates"]}
+        assert "CCC" in vetoed_tickers, (
+            f"CCC should be in vetoed_pick_candidates; got {vetoed_tickers}"
+        )
+        # Rule 16: CCC's composite score in full_ranked is unmodified.
+        ccc_full = next((e for e in reb["full_ranked"] if e["ticker"] == "CCC"), None)
+        ccc_vetoed = next((v for v in reb["vetoed_pick_candidates"] if v["ticker"] == "CCC"), None)
+        if ccc_full is not None and ccc_vetoed is not None:
+            assert ccc_full["composite_score"] == pytest.approx(ccc_vetoed["composite_score"], abs=0.01), (
+                "Rule 16: vetoed_pick_candidates composite_score must match full_ranked "
+                f"composite_score; got {ccc_vetoed['composite_score']} vs {ccc_full['composite_score']}"
+            )
+
+
+def test_full_ranked_schema_and_length(tmp_path, _universe) -> None:
+    """Each ``rebalances[i].full_ranked`` entry has exactly 5 fields, is sorted by
+    descending composite score, and the list is capped at ``_FULL_RANKED_LIMIT``."""
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
+    ):
+        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only")
+
+    payload = json.loads(out.read_text())
+    assert payload["meta"]["rebalance_count"] > 0
+
+    for reb in payload["rebalances"]:
+        fr = reb["full_ranked"]
+        assert len(fr) <= bf._FULL_RANKED_LIMIT
+        assert len(fr) > 0, "Expected at least one entry in full_ranked"
+        for entry in fr:
+            assert set(entry.keys()) == {"ticker", "composite_score", "sector", "mos_pct", "recommendation"}
+        # Sorted descending by composite_score.
+        scores = [e["composite_score"] for e in fr]
+        assert scores == sorted(scores, reverse=True), (
+            f"full_ranked not sorted descending by composite_score: {scores}"
+        )
+
+
+def test_sector_weights_by_count_sums_to_one(tmp_path, _universe) -> None:
+    """``rebalances[i].sector_weights_by_count`` is a ``{str(N): {sector: w}}``
+    mapping where per-N weights sum to 1.0 (within floating-point tolerance)."""
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
+    ):
+        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only")
+
+    payload = json.loads(out.read_text())
+    assert payload["meta"]["rebalance_count"] > 0
+
+    for reb in payload["rebalances"]:
+        swbc = reb["sector_weights_by_count"]
+        assert isinstance(swbc, dict)
+        # The keys must be digit-strings (str(N)).
+        for key in swbc:
+            assert key.isdigit(), f"sector_weights_by_count key is not a digit string: {key!r}"
+        # Per-N weights must sum to 1.0.
+        for n_str, by_sector in swbc.items():
+            total = sum(by_sector.values())
+            assert total == pytest.approx(1.0, abs=1e-4), (
+                f"sector_weights_by_count[{n_str}] weights sum to {total}, expected 1.0"
+            )
+
+
+def test_high_conviction_count_int_within_pick_count(tmp_path, _universe) -> None:
+    """``rebalances[i].high_conviction_count`` is an int in [0, len(holdings)]."""
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
+    ):
+        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path, gate="veto_only")
+
+    payload = json.loads(out.read_text())
+    assert payload["meta"]["rebalance_count"] > 0
+
+    for reb in payload["rebalances"]:
+        hcc = reb["high_conviction_count"]
+        n_picks = len(reb["holdings"])
+        assert isinstance(hcc, int), f"high_conviction_count should be int, got {type(hcc)}"
+        assert 0 <= hcc <= n_picks, (
+            f"high_conviction_count {hcc} out of range [0, {n_picks}]"
+        )
+
+
+def test_compute_pit_risk_flags_forwards_rebalance_date_as_today(tmp_path, _universe) -> None:
+    """``_compute_pit_risk_flags`` is called with ``today=rebalance_date`` so NSI
+    lookbacks anchor to T (the rebalance date), not to today.
+
+    Verified by capturing kwargs via a spy wrapper around the real function — the
+    ``today`` arg must equal the quarterly rebalance date (a value in the range
+    [start, end]), not ``date.today()``.
+    """
+    captured_today_values: list[date] = []
+
+    def _spy(*args, **kwargs):
+        captured_today_values.append(kwargs["rebalance_date"])
+        return {}  # wiring-isolation: no picks killed by flags
+
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", side_effect=_spy),
+    ):
+        start, end = date(2022, 6, 1), date(2023, 6, 1)
+        bf.run_backfill(start, end, data_dir=tmp_path, gate="veto_only")
+
+    assert captured_today_values, "_compute_pit_risk_flags was never called"
+    for t_val in captured_today_values:
+        assert start <= t_val <= end, (
+            f"_compute_pit_risk_flags called with today={t_val!r} outside "
+            f"[{start!r}, {end!r}] — NSI lookback not anchored to the rebalance date"
+        )
+        # Verify it is NOT the current wall-clock date (which would break PIT isolation).
+        assert t_val != date.today(), (
+            f"_compute_pit_risk_flags called with today=date.today() ({t_val!r}); "
+            "must be the rebalance date T for PIT-correct NSI lookbacks"
+        )
