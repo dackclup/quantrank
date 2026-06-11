@@ -1748,3 +1748,44 @@ def test_band_weights_keys_subset_of_band_book_u3_structural(tmp_path, _universe
             f"band_weights keys {band_weights_keys} not a subset of band_book "
             f"{band_book_set} at {reb['date']} — U3 sigma-coverage wiring violated"
         )
+
+
+# ---------------------------------------------------------------------------
+# U12 (Mode B re-entry, V55.1 amendment 2026-06-11): the carry domain is
+# RANK-FREE — retention depends only on score >= 55 + HC-eligibility, never on
+# rank vs MAX_PICKS (the V55.0 slice-exit was the amended-away defect).
+# ---------------------------------------------------------------------------
+
+
+def test_band_carry_retained_beyond_rank_20_v551() -> None:
+    """U12 pin: a tenured incumbent scoring in [55, 65) whose POOL RANK is > 20
+    (24 fresh >= 65 names rank above it) is RETAINED — the BF-B 2016-11-14
+    fixture shape. Under the V55.0 slice domain it would have been force-sold
+    at rank 25; V55.1 keeps it while score >= 55 and HC-eligible."""
+    fresh = [f"F{i:02d}" for i in range(24)]               # 24 names, all >= 65
+    scores = {t: 80.0 - i * 0.5 for i, t in enumerate(fresh)}  # 80.0 .. 68.5
+    scores["CARRY"] = 58.0                                  # tenured, rank 25
+    order = sorted([*fresh, "CARRY"], key=lambda t: -scores[t])
+    assert order.index("CARRY") == 24  # pool rank 25 — beyond the old slice
+
+    book, next_tenure, carry_count = bf._band_book(order, scores, tenure={"CARRY"})
+
+    assert "CARRY" in book, "rank-21+ carry must be retained (V55.1 rank-free domain)"
+    assert "CARRY" in next_tenure
+    assert carry_count == 1
+
+
+def test_band_carry_vetoed_force_sold_regardless_of_score_v551() -> None:
+    """U12 inverse pin: the SAME tenured name absent from `order` (vetoed /
+    HC-evicted upstream) is force-sold and loses tenure even at score >= 55 —
+    veto supremacy is untouched by the V55.1 domain amendment."""
+    fresh = [f"F{i:02d}" for i in range(24)]
+    scores = {t: 80.0 - i * 0.5 for i, t in enumerate(fresh)}
+    scores["CARRY"] = 58.0
+    order = sorted(fresh, key=lambda t: -scores[t])  # CARRY not eligible this leg
+
+    book, next_tenure, carry_count = bf._band_book(order, scores, tenure={"CARRY"})
+
+    assert "CARRY" not in book
+    assert "CARRY" not in next_tenure
+    assert carry_count == 0

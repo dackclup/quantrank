@@ -259,7 +259,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                     {rule.min_picks}
                   </span>
                   {rule.max_picks === null ? (
-                    <>, no cap{'.)'}</>
+                    <>, no cap{').'}</>
                   ) : (
                     <>, max{' '}
                       <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
@@ -282,7 +282,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                     {rule.min_picks}
                   </span>
                   {rule.max_picks === null ? (
-                    <>, no cap{'.)'}</>
+                    <>, no cap{').'}</>
                   ) : (
                     <>, max{' '}
                       <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
@@ -331,7 +331,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                     {rule.min_picks}
                   </span>
                   {rule.max_picks === null ? (
-                    <>, no cap{'.)'}</>
+                    <>, no cap{').'}</>
                   ) : (
                     <>, max{' '}
                       <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
@@ -354,7 +354,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                     {rule.min_picks}
                   </span>
                   {rule.max_picks === null ? (
-                    <>, no cap{'.)'}</>
+                    <>, no cap{').'}</>
                   ) : (
                     <>, max{' '}
                       <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">

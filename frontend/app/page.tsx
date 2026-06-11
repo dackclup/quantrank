@@ -39,15 +39,27 @@ export default function HomePage() {
               <span className="font-mono font-semibold tabular-nums text-emerald-800 dark:text-emerald-300">
                 ≥{adaptiveRule.composite_min.toFixed(0)}
               </span>{' '}
-              (between{' '}
-              <span className="font-mono font-semibold tabular-nums text-emerald-800 dark:text-emerald-300">
-                {adaptiveRule.min_picks}
-              </span>{' '}
-              and{' '}
-              <span className="font-mono font-semibold tabular-nums text-emerald-800 dark:text-emerald-300">
-                {adaptiveRule.max_picks}
-              </span>{' '}
-              names), inverse-volatility weighted.
+              {adaptiveRule.max_picks === null ? (
+                <>
+                  (at least{' '}
+                  <span className="font-mono font-semibold tabular-nums text-emerald-800 dark:text-emerald-300">
+                    {adaptiveRule.min_picks}
+                  </span>{' '}
+                  names, no cap), inverse-volatility weighted.
+                </>
+              ) : (
+                <>
+                  (between{' '}
+                  <span className="font-mono font-semibold tabular-nums text-emerald-800 dark:text-emerald-300">
+                    {adaptiveRule.min_picks}
+                  </span>{' '}
+                  and{' '}
+                  <span className="font-mono font-semibold tabular-nums text-emerald-800 dark:text-emerald-300">
+                    {adaptiveRule.max_picks}
+                  </span>{' '}
+                  names), inverse-volatility weighted.
+                </>
+              )}
             </>
           ) : (
             <>

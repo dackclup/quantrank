@@ -128,9 +128,12 @@ BENCHMARKS_JSON = "portfolio/benchmarks.json"
 # independent fixed-N sweet spot (N=8-14). Expect roughly HALF the in-sample edge
 # forward (McLean-Pontiff 2016 decay + in-sample-selection haircut).
 # Uncap record (user decision 2026-06-11): the MAX_PICKS ceiling is REMOVED from
-# the band/adaptive domain. Evidence on the veto-replayed artifact (40 rebalances
-# 2016-08..2026-05): cap was inert on every leg (max raw 13, max book 15 vs MAX_PICKS
-# 20 — cap never bound); no replacement ceiling. A2 gate re-pointed to the full
+# the band/adaptive domain. U1 regen-diff finding (uncapped `3dbe4798` vs capped
+# `4bfcdb32`): the cap was inert as a COUNT clamp on the FRESH leg (max raw 13)
+# but BOUND as a rank-slice membership test on the CARRY leg — 12/40 rebalances
+# differ (a tenured [55,65) name competes for top-20 against the whole HC pool;
+# first instance BF-B 2016-11-14). Max book is domain-specific: 15 capped /
+# 16 uncapped. No replacement ceiling. A2 gate re-pointed to the full
 # deduped pool (was: raw count from select_picks[:MAX_PICKS] prefix; now: full
 # full_order pool, more responsive to a genuine inflation signal). NEW A2-S spike
 # tripwire: raw >= 25 in a SINGLE rebalance -> reopen immediately (vs the original
@@ -145,16 +148,30 @@ BENCHMARKS_JSON = "portfolio/benchmarks.json"
 #   C  freeze lock: no grid re-sweeps on refreshed artifacts until A/A2-S or B fires.
 # methodology-scientist RATIFY 2026-06-11 (conditions C1 provenance comment = this
 # block; C2 test pin in tests/test_portfolio; C3 gate registration on issue #130).
-# RATIFY-WITH-CONDITIONS (uncap) 2026-06-11: cap inert 0/40 in-sample, max raw 13
-# / max book 15 · no replacement ceiling · A2 re-pointed to full pool + A2-S spike
-# tripwire raw >= 25 -> reopen, registered #130 · U1 regen-diff merge gate.
+# RATIFY-AMENDED-WITH-CONDITIONS (uncap, Mode B re-entry) 2026-06-11: the U1
+# regen diff was NON-EMPTY (carry-leg domain widening, 12/40 rebalances) — the
+# change is recorded as a POST-RESULTS PROTOCOL AMENDMENT V55.0 -> V55.1, not a
+# defect-erasure. U11 re-verification vs the no-band counterfactual (uncapped
+# domain): turnover -35.8% / CAGR +0.33pp / beats +4 — all three V55 criteria
+# pass a fortiori. U10 reads: H2 zero consecutive >0.50 pairs under BOTH domains;
+# H3 trailing-4 mean book exceeds the >14 wire IN-SAMPLE under BOTH domains
+# (capped 14.25 max, 4 windows 2018; uncapped 14.75 max, 5 windows 2017-11..2018)
+# — pre-existing finding, recorded NOT recalibrated (H-C lock), Q3 2026-08-19
+# cohort-audit agenda. Capped-vs-uncapped scoreboard (U1 outcome, claim-
+# quarantined per U8 — never marketed): CAGR 22.4 -> 23.0 / turnover 2.324 ->
+# 2.251 / beats 30/40 both / maxDD -31.4% both. A2 re-pointed to full pool +
+# A2-S spike tripwire raw >= 25 -> reopen; +1 multiplicity charged (U9);
+# reopen criteria U13 registered on #130.
 ADAPTIVE_COMPOSITE_MIN: float = 65.0
 ADAPTIVE_MIN_PICKS: int = 5
 
-# Hysteresis hold-band: an incumbent that entered via >= ADAPTIVE_COMPOSITE_MIN stays
-# in the book while composite >= ADAPTIVE_HOLD_BAND_MIN AND it is still HC-eligible
-# (still present in the rebalance's ``holdings`` / not vetoed). Force-sell when out
-# of holdings OR composite < ADAPTIVE_HOLD_BAND_MIN.
+# Hysteresis hold-band (V55.1 carry domain, amended 2026-06-11): an incumbent that
+# entered via >= ADAPTIVE_COMPOSITE_MIN stays in the book while composite >=
+# ADAPTIVE_HOLD_BAND_MIN AND it remains HC-eligible (un-vetoed, in the FULL deduped
+# HC pool). Retention is INDEPENDENT of rank vs MAX_PICKS or any other name's
+# score (the V55.0 top-20-slice exit was an undesigned interaction with the
+# display-ladder constant; see the amendment record below). Force-sell on
+# HC-ineligibility OR composite < ADAPTIVE_HOLD_BAND_MIN.
 # C0 strict tenure: band rights accrue ONLY to names that entered via
 # >= ADAPTIVE_COMPOSITE_MIN. Floor-pads (names added to reach ADAPTIVE_MIN_PICKS)
 # get NO tenure. Re-entry after a force-sell requires >= ADAPTIVE_COMPOSITE_MIN again.
@@ -171,8 +188,16 @@ ADAPTIVE_MIN_PICKS: int = 5
 #   V55 PASS: turnover -33.8% / CAGR -0.27pp / beats +3 / maxDD -31.4% vs -32.0%.
 #   Strict-C0 re-run: identical to V55; per-half: growth x2.89->x3.35 / x2.57->x2.17,
 #   beats 15/20->17/20 / 11/20->12/20.
+#   AMENDMENT V55.0 -> V55.1 (2026-06-11, post-results): the row above was measured
+#   under the V55.0 SLICE carry domain (incumbent also had to hold a top-20 rank).
+#   The carry domain was amended rank-free after the U1 regen diff exposed the
+#   slice as an undesigned exit channel (12/40 rebalances). V55.1 re-verification
+#   (U11): turnover -35.8% / CAGR +0.33pp / beats +4 vs the same no-band
+#   counterfactual — criteria pass under both protocols; both rows retained.
 # CLAIM DISCIPLINE: the band is a TURNOVER / implementation-cost device only — never
-# market the beat/maxDD deltas as band benefits (within-noise).
+# market the beat/maxDD deltas as band benefits (within-noise). The capped-vs-
+# uncapped deltas (+0.6pp CAGR / -3.1% turnover) are equally quarantined: recorded
+# as the U1 outcome, never marketed (U8).
 # Forward acceptance gates (pre-registered; evaluated at quarterly cohort audits):
 #   H1 realized turnover reduction >= 15% vs no-band counterfactual @ >= 4 live
 #      rebalances.
@@ -949,8 +974,10 @@ def run_backfill(
         # Contamination canary tracks the FULL selectable set (top-MAX_PICKS) — any of
         # these names can surface once the user slides the count up. A name whose
         # amendment fetch failed is "unresolved" (counted separately), not at-risk.
-        picked_names.update(picks)
-        for t in picks:
+        # Post-uncap the product band book can hold rank-21+ names outside `picks`;
+        # the contamination canary must see every holdable name, not just the top-20.
+        picked_names.update(set(picks) | set(band_book))
+        for t in sorted(set(picks) | set(band_book)):
             amends = _amendments(t)
             if amends is None:
                 restate_unresolved.add(t)
@@ -1005,13 +1032,13 @@ def run_backfill(
                 # vetoed_pick_candidates: names that would have appeared in the top-N
                 # composite basket but were excluded by at least one active veto.
                 "vetoed_pick_candidates": vetoed_pick_candidates,
-                # adaptive_count: the adaptive-book holding count for this rebalance
-                # (composite >= ADAPTIVE_COMPOSITE_MIN, floored at ADAPTIVE_MIN_PICKS,
-                # capped at MAX_PICKS, clamped to an available weights map).
+                # adaptive_count: LEGACY/analytics prefix count (floored at
+                # ADAPTIVE_MIN_PICKS, clamped to an available weights_by_count key
+                # <= MAX_PICKS). band_held_count is the authoritative book size.
                 "adaptive_count": n_adaptive,
-                # adaptive_count_raw: the PRE-floor/clamp count (#{composite >= 65}
-                # among HC picks) — the A1 score-drought / A2 inflation acceptance
-                # gates read this, not the floored count.
+                # adaptive_count_raw: PRE-floor count over the FULL deduped
+                # HC-eligible pool (uncensored, post-uncap) — the A1 drought /
+                # A2 inflation / A2-S spike gates read this, not the floored count.
                 "adaptive_count_raw": n_adaptive_raw,
                 # V55 hysteresis hold-band exports (ratified 2026-06-11).
                 # band_book: the banded book tickers ordered by (-composite, ticker).

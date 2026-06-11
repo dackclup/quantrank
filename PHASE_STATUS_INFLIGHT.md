@@ -3422,13 +3422,34 @@ update + `RULE_VERSION` += `+uncapped` + the 3 contract pins updated
 (uncap book pin replaces the cap pin) + UI captions three-way data-driven
 ("min 5, no cap" when null) · U6 gate registration (#130).
 
-**Merge gate U1 (pending)**: regenerate the artifact on this branch and
-diff ALL 40 rebalances' band fields + adaptive NAV against the capped
-`4bfcdb32` generation — the fresh-entry leg is proven invariant (raw ≥ 21
-never occurred) but the carry leg is only an empirical prediction (a
-[55,65) incumbent outside the old top-20 slice would have been force-sold
-by truncation). EMPTY diff → merge; non-empty → verdict void, Mode B
-re-entry with the diff attached.
+**Merge gate U1 — FIRED (non-empty)**: the regen diff (`3dbe4798` vs
+`4bfcdb32`) showed 12/40 rebalances with different band books (72 field
+diffs; first instance BF-B 2016-11-14; zero same-key weight drift — pure
+selection law). The cap was inert as a COUNT clamp (fresh leg, max raw
+13) but BOUND as a rank-slice membership test on the CARRY leg. Mode B
+re-entry verdict: **RATIFY-AMENDED-WITH-CONDITIONS (U7-U13)** — the
+uncapped domain is adopted as a **post-results protocol amendment V55.0 →
+V55.1** (not a defect-erasure): the V55.0 registered text was internally
+ambiguous (slice vs eligibility reading) and the slice exit keyed
+retention to an undesigned display constant + third-party score crowding,
+which none of the band's anchors (Constantinides/Davis-Norman/
+Garleanu-Pedersen) support. U11 re-verification vs the same no-band
+counterfactual: turnover **−35.8%** / CAGR **+0.33pp** / beats **+4** —
+all three V55 criteria pass under BOTH protocols (both rows retained in
+the C1 block). U10 reads: H2 zero consecutive >0.50 carry-share pairs
+under both domains; H3's trailing-4 wire (>14) is exceeded IN-SAMPLE
+under BOTH domains (capped max 14.25 / uncapped 14.75, the 2017-18
+high-count regime) — pre-existing finding, recorded not recalibrated
+(H-C lock), Q3 2026-08-19 cohort-audit agenda. Capped-vs-uncapped
+scoreboard claim-quarantined (U8): CAGR 22.4 → 23.0, turnover 2.324 →
+2.251, beats 30/40 both, maxDD −31.4% both. +1 multiplicity charged
+(U9). U12 rank-free carry pins landed (rank-25 carry retained; vetoed
+inverse). Reopen criteria U13: any live H-gate breach attributable to
+the diff-cohort carries reopens the domain question; Q3 audit reviews
+the first live uncapped carry-cohort health as a standing item.
+Awaiting USER COUNTERSIGN of the V55.0 → V55.1 amendment framing before
+merge (it re-labels the registered rule + re-bases H-gate baselines on
+`3dbe4798`; `4bfcdb32` archived as the U1 counterfactual record).
 
 **Files**: compute/portfolio/weights.py · scripts/backfill_portfolio_pit.py ·
 tests/test_portfolio/ (pins + uncap coverage) · frontend/lib/types.ts ·
