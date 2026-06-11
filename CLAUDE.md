@@ -354,14 +354,23 @@ on structural compounders — disposition routed to issue #454 for the Q3
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **docs/infra — token-economy optimization + 25-agent model/effort
-  audit (this PR, 2026-06-11)** — stale model refs fixed
-  (release-captain "Opus"→fable; reviewer override row); CLAUDE.md
-  re-drained per its own index rule (routing tables merged, §Phase
-  status + §Gotchas + §Stack/§Layout compressed); `quantrank-reviewer`
-  narrowed to gate-fire only; agent + first-party skill descriptions
-  tightened (boundary prose → bodies); 3 dead skills removed; Supabase
-  / Sentry / Gmail / Drive connectors toggled OFF by policy. Detail:
+- **feat(portfolio) — V55 hysteresis hold-band on the adaptive book
+  (this PR, 2026-06-11)** — incumbents stay while composite ≥ 55 (entry
+  unchanged ≥ 65, frozen); strict C0 tenure (band rights only via ≥ 65
+  entry; floor-pads excluded; re-entry needs ≥ 65). Pre-registered grid
+  {60,55}: V60 FAIL recorded; **V55 passes all 3 criteria** (turnover
+  −33.8% · CAGR −0.27pp · beats 26/40 → 29/40 · maxDD better; both
+  window halves better; strict re-run identical). methodology-scientist
+  RATIFY-WITH-CONDITIONS (Constantinides 1986 no-trade region ·
+  Novy-Marx-Velikov 2016 buy/hold spread); H1/H2/H3/H-B/H-C gates on
+  issue #130; claim discipline = turnover device ONLY. Artifact: book is
+  no longer a holdings prefix → new `band_book`/`band_weights`/
+  `band_held_count`/`band_carry_*` per rebalance +
+  `meta.adaptive_rule.hold_band_min`; `nav.adaptive` = banded NAV;
+  frontend 3-state degradation (band → adaptive-prefix → slider).
+  Companion analysis record: issue #461 (2025 attribution: value traps +
+  MoS growth-exclusion + nil 10y IC ≈ +0.025; TTM-lag hypothesis KILLED
+  — would have ejected 2025's winner STLD). Detail:
   PHASE_STATUS_INFLIGHT.md.
 
 **Next deliverables** (re-scoped 2026-06-11, ordered by decision-value;
