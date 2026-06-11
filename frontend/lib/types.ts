@@ -569,6 +569,19 @@ export type BacktestRebalance = {
   // the PREFIX holdings[:adaptive_count] with weights_by_count[String(adaptive_count)].
   // Present only when the artifact was generated with the adaptive rule.
   adaptive_count?: number;
+  // V55 hysteresis hold-band (hold_band_min present in adaptive_rule) — the
+  // ACTUAL book after the band is applied. NOT a prefix of `holdings`; includes
+  // both new entries (composite >= composite_min) and carried names (composite
+  // >= hold_band_min). band_weights is a per-ticker weight map (same inv-vol
+  // contract as weights_by_count but keyed on the banded book, not a count).
+  // band_held_count = len(band_book); band_carry_count = names kept by the band
+  // below composite_min; band_carry_weight_share = fraction of total weight
+  // carried from the prior basket. All absent on pre-band artifacts.
+  band_book?: string[];
+  band_weights?: Record<string, number>;
+  band_held_count?: number;
+  band_carry_count?: number;
+  band_carry_weight_share?: number;
 };
 
 export type BacktestNavCountSeries = {
@@ -598,6 +611,10 @@ export type AdaptiveRule = {
   composite_min: number;
   min_picks: number;
   max_picks: number;
+  // V55 hold-band minimum — composite threshold below which a name exits the
+  // basket. When present the basket is the band_book (not a prefix of holdings).
+  // Absent on pre-band artifacts.
+  hold_band_min?: number;
 };
 
 export type BacktestMeta = {
@@ -664,6 +681,10 @@ export type AiPickTimelineEntry = {
   // legacy slider-mode artifacts. When present, HoldingsTimeline slices this
   // entry to adaptiveCount rather than the fixed `count` prop.
   adaptiveCount?: number;
+  // V55 hold-band — per-rebalance band_held_count (may differ from adaptiveCount
+  // when carry names are present). When present, HoldingsTimeline shows this as
+  // the displayed count rather than adaptiveCount. Absent on pre-band artifacts.
+  bandHeldCount?: number;
 };
 
 // Adaptive-mode view model — present when the artifact carries nav.adaptive.
@@ -686,11 +707,28 @@ export type AiPickAdaptive = {
   // fixed-count books), each with ticker + sector + composite_score + weight.
   // weight is null when the inverse-vol weight was unavailable for a name
   // (sigma_90d missing); rendered as "—" (em-dash) in the UI.
+  // STATE 2 (adaptive-but-pre-band): this is the actual book.
+  // STATE 1 (band): see latestBandHoldings — this field is still populated
+  // (from holdings prefix) but the component renders latestBandHoldings instead.
   latestHoldings: Array<{
     ticker: string;
     sector: string;
     composite_score: number;
     weight: number | null;
+  }>;
+  // V55 hold-band fields — only present in STATE 1 (band artifact).
+  // Absent in STATE 2 (pre-band adaptive) and STATE 3 (legacy slider).
+  //
+  // hold_band_min: the hold threshold from meta.adaptive_rule.hold_band_min.
+  // latestBandHoldings: the band_book-ordered list with band_weights; `carried`
+  //   is true when composite < composite_min (held by the band only).
+  holdBandMin?: number;
+  latestBandHoldings?: Array<{
+    ticker: string;
+    sector: string;
+    composite_score: number;
+    weight: number | null;
+    carried: boolean;
   }>;
 };
 

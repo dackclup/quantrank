@@ -182,7 +182,11 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
     [adaptive.net, adaptive.gross, adaptive.conservative, bser, dates, period, capital],
   );
 
-  const { latestCount, latestHoldings, rule, finals } = adaptive;
+  const { latestCount, latestHoldings, latestBandHoldings, holdBandMin, rule, finals } = adaptive;
+  // STATE 1 (band): use band_book order + band_weights; STATE 2: prefix book.
+  const isBand = holdBandMin !== undefined && latestBandHoldings !== undefined;
+  const displayHoldings = isBand ? latestBandHoldings! : latestHoldings;
+  const displayCount = isBand ? latestBandHoldings!.length : latestCount;
 
   const grossReturn = view.periodGross ?? (finals.gross !== null ? finals.gross - 100 : null);
   const consReturn  = view.periodConservative ?? (finals.conservative !== null ? finals.conservative - 100 : null);
@@ -190,8 +194,9 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
   const benchReturn = view.periodBenchmark;
 
   // Sector-concentration disclosure (methodology-scientist 2026-06-06).
-  const topSector = latestHoldings.reduce<{ sector: string; n: number } | null>((best, h) => {
-    const n = latestHoldings.filter((x) => x.sector === h.sector).length;
+  // Uses displayHoldings so the sector tally matches the rendered picks list.
+  const topSector = displayHoldings.reduce<{ sector: string; n: number } | null>((best, h) => {
+    const n = displayHoldings.filter((x) => x.sector === h.sector).length;
     return !best || n > best.n ? { sector: h.sector, n } : best;
   }, null);
 
@@ -226,18 +231,31 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
           </div>
         </div>
 
-        {/* Adaptive basket context — explains the sizing rule clearly */}
+        {/* Adaptive basket context — explains the sizing rule clearly.
+            The band clause (when holdBandMin is present) describes the
+            hysteresis device as a turnover/stability mechanism only —
+            no performance claims per methodology discipline. */}
         <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400">
           {vetoLayerReplayed ? (
             <>
               AI-sized basket — this quarter{' '}
               <span className="font-medium text-slate-600 dark:text-slate-300">
-                {latestCount} {latestCount === 1 ? 'name' : 'names'}
+                {displayCount} {displayCount === 1 ? 'name' : 'names'}
               </span>{' '}
-              (holds every pick scoring{' '}
+              (every pick scoring{' '}
               <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
                 ≥{rule.composite_min.toFixed(0)}
-              </span>
+              </span>{' '}
+              enters
+              {isBand && (
+                <>
+                  {'; '}holdings stay while{' '}
+                  <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
+                    ≥{holdBandMin!.toFixed(0)}
+                  </span>
+                  {' '}(reduces unnecessary turnover)
+                </>
+              )}
               ; min{' '}
               <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
                 {rule.min_picks}
@@ -265,12 +283,22 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
             <>
               AI-sized basket — this quarter{' '}
               <span className="font-medium text-slate-600 dark:text-slate-300">
-                {latestCount} {latestCount === 1 ? 'name' : 'names'}
+                {displayCount} {displayCount === 1 ? 'name' : 'names'}
               </span>{' '}
-              (holds every pick scoring{' '}
+              (every pick scoring{' '}
               <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
                 ≥{rule.composite_min.toFixed(0)}
-              </span>
+              </span>{' '}
+              enters
+              {isBand && (
+                <>
+                  {'; '}holdings stay while{' '}
+                  <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
+                    ≥{holdBandMin!.toFixed(0)}
+                  </span>
+                  {' '}(reduces unnecessary turnover)
+                </>
+              )}
               ; min{' '}
               <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
                 {rule.min_picks}
@@ -378,18 +406,31 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
         <p className="mb-3 text-xs text-slate-500 dark:text-slate-400">
           AI-sized basket —{' '}
           <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
-            {latestCount}
+            {displayCount}
           </span>{' '}
-          {latestCount === 1 ? 'stock' : 'stocks'} this quarter, inverse-volatility weighted. Every
-          pick scoring{' '}
-          <span className="font-mono tabular-nums">≥{rule.composite_min.toFixed(0)}</span> is
-          included (min <span className="font-mono tabular-nums">{rule.min_picks}</span>, max <span className="font-mono tabular-nums">{rule.max_picks}</span>).
+          {displayCount === 1 ? 'stock' : 'stocks'} this quarter, inverse-volatility weighted.{' '}
+          {isBand ? (
+            <>
+              Every pick scoring{' '}
+              <span className="font-mono tabular-nums">≥{rule.composite_min.toFixed(0)}</span> enters;
+              holdings stay while{' '}
+              <span className="font-mono tabular-nums">≥{holdBandMin!.toFixed(0)}</span>{' '}
+              (min <span className="font-mono tabular-nums">{rule.min_picks}</span>,
+              max <span className="font-mono tabular-nums">{rule.max_picks}</span>).
+            </>
+          ) : (
+            <>
+              Every pick scoring{' '}
+              <span className="font-mono tabular-nums">≥{rule.composite_min.toFixed(0)}</span> is
+              included (min <span className="font-mono tabular-nums">{rule.min_picks}</span>, max <span className="font-mono tabular-nums">{rule.max_picks}</span>).
+            </>
+          )}
           {topSector && (
             <>
               {' '}Top sector:{' '}
               <span className="font-medium text-slate-600 dark:text-slate-300">{topSector.sector}</span>{' '}
               — <span className="font-mono tabular-nums">{topSector.n}</span> of{' '}
-              <span className="font-mono tabular-nums">{latestCount}</span>.
+              <span className="font-mono tabular-nums">{displayCount}</span>.
             </>
           )}
         </p>
@@ -401,28 +442,36 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
           <span className="w-12 shrink-0 text-right">Weight</span>
         </div>
         <ol aria-labelledby="adaptive-picks-heading" className="divide-y divide-slate-100 dark:divide-slate-800">
-          {latestHoldings.map((h, i) => (
-            <li key={h.ticker} className="flex items-center gap-3 py-2">
-              <span className="w-4 shrink-0 font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
-                {i + 1}
-              </span>
-              <Link
-                href={`/stock/${h.ticker}/`}
-                className="press font-mono text-sm font-semibold text-slate-900 hover:underline dark:text-slate-100"
-              >
-                {h.ticker}
-              </Link>
-              <span className="hidden sm:inline">
-                <SectorChip sector={h.sector} />
-              </span>
-              <span className="ml-auto w-14 shrink-0 text-right font-mono text-sm tabular-nums text-slate-700 dark:text-slate-300">
-                {h.composite_score.toFixed(1)}
-              </span>
-              <span className="w-12 shrink-0 text-right font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
-                {isFinite_(h.weight) ? `${(h.weight * 100).toFixed(1)}%` : '—'}
-              </span>
-            </li>
-          ))}
+          {displayHoldings.map((h, i) => {
+            // "held" treatment: a carried name (composite < composite_min, kept
+            // by the hold-band) gets a subtle muted score tone — reuses the
+            // existing `text-slate-400 dark:text-slate-500` secondary-text token
+            // family so no new palette entry is introduced. Only present on STATE 1
+            // artifacts where `carried` is defined.
+            const isCarried = 'carried' in h && h.carried;
+            return (
+              <li key={h.ticker} className="flex items-center gap-3 py-2">
+                <span className="w-4 shrink-0 font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
+                  {i + 1}
+                </span>
+                <Link
+                  href={`/stock/${h.ticker}/`}
+                  className="press font-mono text-sm font-semibold text-slate-900 hover:underline dark:text-slate-100"
+                >
+                  {h.ticker}
+                </Link>
+                <span className="hidden sm:inline">
+                  <SectorChip sector={h.sector} />
+                </span>
+                <span className={`ml-auto w-14 shrink-0 text-right font-mono text-sm tabular-nums ${isCarried ? 'text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-300'}`}>
+                  {h.composite_score.toFixed(1)}
+                </span>
+                <span className="w-12 shrink-0 text-right font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
+                  {isFinite_(h.weight) ? `${(h.weight * 100).toFixed(1)}%` : '—'}
+                </span>
+              </li>
+            );
+          })}
         </ol>
       </div>
 
@@ -438,7 +487,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
       />
 
       {timeline.length > 0 && (
-        <HoldingsTimeline timeline={timeline} count={latestCount} />
+        <HoldingsTimeline timeline={timeline} count={displayCount} />
       )}
 
       <p className="text-pretty text-xs leading-relaxed text-slate-500 dark:text-slate-400">

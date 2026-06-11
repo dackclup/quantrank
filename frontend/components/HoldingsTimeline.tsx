@@ -62,10 +62,14 @@ export function HoldingsTimeline({
     let prev: string[] = [];
     let totalEntered = 0;
     for (let i = 0; i < timeline.length; i += 1) {
-      // In adaptive mode each quarter uses its own count; in slider mode use
-      // the fixed `count` prop so legacy behavior is completely unchanged.
+      // In adaptive mode each quarter uses its own count.
+      // Prefer bandHeldCount when present (STATE 1 band artifact) — it is the
+      // true held count after the hysteresis filter and may exceed adaptiveCount
+      // when carry names push the basket above the entry-only count.
+      // In slider mode use the fixed `count` prop so legacy behavior is
+      // completely unchanged.
       const sliceCount = isAdaptive
-        ? (timeline[i].adaptiveCount as number)
+        ? (timeline[i].bandHeldCount ?? timeline[i].adaptiveCount as number)
         : count;
       const slice = timeline[i].holdings.slice(0, sliceCount);
       const held = slice.map((h) => h.ticker);

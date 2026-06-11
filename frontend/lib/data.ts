@@ -172,6 +172,49 @@ export function getAiPickData(): AiPickData | null {
         weight: round2(adaptiveWeights[h.ticker] ?? null),
       }));
 
+    // V55 HOLD-BAND (STATE 1) — detected when the latest rebalance carries
+    // band_book + band_weights AND meta.adaptive_rule.hold_band_min is present.
+    // The band book is NOT a prefix of holdings; it is the actual held set after
+    // the hysteresis filter. Absent → STATE 2 (pre-band adaptive, unchanged).
+    const hasBand =
+      typeof meta.adaptive_rule.hold_band_min === 'number' &&
+      Array.isArray(last.band_book) &&
+      last.band_book.length > 0 &&
+      last.band_weights != null;
+
+    // Build a lookup of composite scores for all holdings so we can tag
+    // carried names (composite < composite_min) in the band book.
+    const compositeByTicker: Record<string, number> = {};
+    for (const h of last.holdings) {
+      compositeByTicker[h.ticker] = h.composite_score;
+    }
+    const sectorByTicker: Record<string, string> = {};
+    for (const h of last.holdings) {
+      sectorByTicker[h.ticker] = h.sector;
+    }
+
+    const bandFields: Partial<Pick<
+      import('./types').AiPickAdaptive,
+      'holdBandMin' | 'latestBandHoldings'
+    >> = hasBand
+      ? {
+          holdBandMin: meta.adaptive_rule.hold_band_min as number,
+          latestBandHoldings: (last.band_book as string[]).map((ticker) => {
+            const bw = (last.band_weights as Record<string, number>)[ticker] ?? null;
+            const score = compositeByTicker[ticker] ?? 0;
+            return {
+              ticker,
+              sector: sectorByTicker[ticker] ?? '',
+              composite_score: round2(score) ?? score,
+              weight: round2(bw),
+              // A name is "carried" when its score is below composite_min but
+              // still above hold_band_min — held for stability, not a new entry.
+              carried: score < meta.adaptive_rule!.composite_min,
+            };
+          }),
+        }
+      : {};
+
     adaptive = {
       rule: meta.adaptive_rule,
       net: adaptiveSeries.net.map(round2),
@@ -184,6 +227,7 @@ export function getAiPickData(): AiPickData | null {
       },
       latestCount: adaptiveCount,
       latestHoldings: adaptiveHoldings,
+      ...bandFields,
     };
   }
 
@@ -206,10 +250,15 @@ export function getAiPickData(): AiPickData | null {
     // `adaptiveCount` is carried through when present so HoldingsTimeline can
     // slice each quarter to ITS OWN count (the adaptive basket varies 5-13)
     // rather than back-projecting today's count onto every historical quarter.
+    // `bandHeldCount` is carried when the rebalance has the hold-band applied —
+    // it reflects the true held count (may differ from adaptiveCount when
+    // carries are present). HoldingsTimeline prefers bandHeldCount over
+    // adaptiveCount when both are present.
     timeline: rebalances.map((r) => ({
       date: r.date,
       holdings: r.holdings.map((h) => ({ ticker: h.ticker, sector: h.sector })),
       ...(typeof r.adaptive_count === 'number' ? { adaptiveCount: r.adaptive_count } : {}),
+      ...(typeof r.band_held_count === 'number' ? { bandHeldCount: r.band_held_count } : {}),
     })),
     entryCloses,
     lastCloses,
