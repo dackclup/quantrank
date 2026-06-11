@@ -354,24 +354,23 @@ on structural compounders — disposition routed to issue #454 for the Q3
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **feat(portfolio) — adaptive-book CAP REMOVAL (this PR, 2026-06-11)** —
-  user decision: `max_picks` 20 → unbounded (floor 5 / entry 65 / band 55
-  unchanged, locks untouched). `methodology-scientist`
-  RATIFY-WITH-CONDITIONS U1-U6: the cap was a display-ladder reuse with
-  zero in-sample bite (max raw 13 / max book 15 over 40 rebalances); no
-  replacement ceiling — guards move to the gate layer (A2 re-pointed to
-  the FULL deduped HC-eligible pool + NEW A2-S spike tripwire raw ≥ 25
-  single-rebalance → reopen, registered #130). Implementation:
-  `select_picks(count=None)` skips the clamp (same order + dual-class
-  dedup); `picks = full_order[:MAX_PICKS]` keeps holdings/by_count
-  byte-identical; `_band_book` uncapped; σ covers every band member;
-  `meta.adaptive_rule.max_picks: null` (key kept; `max_holdings` stays
-  20); `RULE_VERSION` += `+uncapped`; UI captions render "min 5, no cap"
-  data-driven. **Merge gate U1**: the regen'd artifact must DIFF EMPTY
-  against the capped one across all 40 rebalances' band fields + NAV
-  (fresh-leg invariance is proven; the carry-leg is an empirical
-  prediction — non-empty diff voids the verdict, back to Mode B). Full
-  detail: PHASE_STATUS_INFLIGHT.md.
+- **fix(backtest) — rolling-window anchors pinned (this PR, 2026-06-11)** —
+  two silent run-date-relative time bombs found while answering "does the
+  first rebalance have enough data?": (1) the backfill `--start` default
+  was today−10y (rolling — the cron would silently drop the canonical
+  2016-08 first rebalance ~Aug 2026) → now `BACKTEST_CANONICAL_START =
+  2016-06-01`, fixed, ledger-anchored; (2) `fetch_prices` pulled 10y from
+  the RUN date with a period-blind cache → the first rebalance's 90d sigma
+  computed on ~45 trading days, degrading as the window slid → `min_start`
+  param (None = legacy behavior; shallow fresh cache → at-most-once deeper
+  refetch with `period="max"`, overwrite); the backfill passes
+  `min_start = start − 185d`. Live weekly compute path untouched. Tests:
+  22 mock-signature repairs + 8 new pins (min_start contract P1-P4 +
+  anchor pins A1-A4); full suite 1645 passed. Companion finding recorded
+  on issue #465: pre-2016 extension is blocked on a licensed
+  delisted-price source (yfinance has zero pre-2021 delisted coverage) —
+  2016 is the honest floor on the free stack. Detail:
+  PHASE_STATUS_INFLIGHT.md.
 
 **Next deliverables** (re-scoped 2026-06-11, ordered by decision-value;
 prior items 1-2 — 7.0c gate (a) + issue #441 — are DONE, see

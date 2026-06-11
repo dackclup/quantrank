@@ -93,7 +93,7 @@ def test_run_backfill_produces_wellformed_artifact(tmp_path, _universe) -> None:
     with (
         mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
         mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(scale_by_cik.get(cik, 1.0))),
-        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
         mock.patch.object(bf, "fetch_amendments", return_value=[]),  # no restatements -> canary 0.0
         # Wiring-only isolation: synthetic revenue=100 triggers data_quality_input_corruption
         # on every ticker (Pattern 2: revenue < $50M). Mock the flag function so picks are
@@ -213,7 +213,7 @@ def test_run_backfill_high_conviction_gate_is_applied(tmp_path, _universe) -> No
         with (
             mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
             mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
-            mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+            mock.patch.object(bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
             mock.patch.object(bf, "fetch_amendments", return_value=[]),
             mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
         ):
@@ -238,7 +238,7 @@ def test_run_backfill_skips_incomplete_membership(tmp_path, _universe) -> None:
     with (
         mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
         mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
-        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(1)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(1)),
     ):
         # Pre-2016: the ledger now covers 2016-01 onward (Track B 10Y rebuild),
         # so the pre-coverage window moved back from 2018 to before 2016.
@@ -258,7 +258,7 @@ def test_run_backfill_skips_sigma_empty_rebalance(tmp_path, _universe) -> None:
     with (
         mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
         mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
-        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(1)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(1)),
         # full prices (pillars score normally) but no name yields a sigma -> every leg's
         # weights_by_count is empty -> the `continue` fires for all of them.
         mock.patch.object(bf, "trailing_return_sigma", return_value=None),
@@ -282,7 +282,7 @@ def test_run_backfill_restatement_canary_flags_post_asof_amendment(tmp_path, _un
     with (
         mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
         mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
-        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
         mock.patch.object(bf, "fetch_amendments", return_value=post_asof),
         # Wiring-only isolation so picks are produced and the canary assertions run.
         mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
@@ -305,7 +305,7 @@ def test_run_backfill_restatement_canary_unresolved_on_fetch_failure(tmp_path, _
     with (
         mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
         mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
-        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
         mock.patch.object(bf, "fetch_amendments", return_value=None),
         # Wiring-only isolation so picks are produced and the canary assertions run.
         mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
@@ -436,7 +436,7 @@ def test_meta_rule_version_in_artifact(tmp_path, _universe) -> None:
     with (
         mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
         mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
-        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
         mock.patch.object(bf, "fetch_amendments", return_value=[]),
         mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
     ):
@@ -474,7 +474,7 @@ def test_vetoed_pick_candidate_appears_in_record_and_excluded_from_picks(tmp_pat
         mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
         mock.patch.object(bf, "fetch_fundamentals_history",
                           side_effect=lambda cik: _annual_history(scale_by_cik.get(cik, 1.0))),
-        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
         mock.patch.object(bf, "fetch_amendments", return_value=[]),
         mock.patch.object(bf, "_compute_pit_risk_flags", side_effect=_fake_pit_risk_flags),
     ):
@@ -511,7 +511,7 @@ def test_full_ranked_schema_and_length(tmp_path, _universe) -> None:
     with (
         mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
         mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
-        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
         mock.patch.object(bf, "fetch_amendments", return_value=[]),
         mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
     ):
@@ -539,7 +539,7 @@ def test_sector_weights_by_count_sums_to_one(tmp_path, _universe) -> None:
     with (
         mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
         mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
-        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
         mock.patch.object(bf, "fetch_amendments", return_value=[]),
         mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
     ):
@@ -569,7 +569,7 @@ def test_high_conviction_count_int_within_pick_count(tmp_path, _universe) -> Non
     with (
         mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
         mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
-        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
         mock.patch.object(bf, "fetch_amendments", return_value=[]),
         mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
     ):
@@ -604,7 +604,7 @@ def test_compute_pit_risk_flags_forwards_rebalance_date_as_today(tmp_path, _univ
     with (
         mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
         mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
-        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
         mock.patch.object(bf, "fetch_amendments", return_value=[]),
         mock.patch.object(bf, "_compute_pit_risk_flags", side_effect=_spy),
     ):
@@ -762,7 +762,7 @@ def test_adaptive_count_end_to_end_all_picks_above_threshold(tmp_path, _universe
     with (
         mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
         mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
-        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
         mock.patch.object(bf, "fetch_amendments", return_value=[]),
         mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
     ):
@@ -795,7 +795,7 @@ def test_adaptive_count_floor_invariant(tmp_path, _universe) -> None:
     with (
         mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
         mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
-        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
         mock.patch.object(bf, "fetch_amendments", return_value=[]),
         mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
     ):
@@ -928,7 +928,7 @@ def test_run_backfill_every_rebalance_has_adaptive_count_int_in_range(tmp_path, 
     with (
         mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
         mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
-        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
         mock.patch.object(bf, "fetch_amendments", return_value=[]),
         mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
     ):
@@ -952,7 +952,7 @@ def test_meta_adaptive_rule_values(tmp_path, _universe) -> None:
     with (
         mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
         mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
-        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
         mock.patch.object(bf, "fetch_amendments", return_value=[]),
         mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
     ):
@@ -978,7 +978,7 @@ def test_disclaimer_mentions_adaptive_threshold_tokens(tmp_path, _universe) -> N
     with (
         mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
         mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),
-        mock.patch.object(bf, "fetch_prices", side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_prices", side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
         mock.patch.object(bf, "fetch_amendments", return_value=[]),
         mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
     ):
@@ -1385,7 +1385,7 @@ def test_band_exports_structural_invariants_end_to_end(tmp_path, _universe) -> N
         mock.patch.object(bf, "fetch_fundamentals_history",
                           side_effect=lambda cik: _annual_history(1.0)),
         mock.patch.object(bf, "fetch_prices",
-                          side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+                          side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
         mock.patch.object(bf, "fetch_amendments", return_value=[]),
         mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
     ):
@@ -1496,7 +1496,7 @@ def test_band_tenure_threading_no_crash_and_correct_types(tmp_path, _universe) -
         mock.patch.object(bf, "fetch_fundamentals_history",
                           side_effect=lambda cik: _annual_history(1.0)),
         mock.patch.object(bf, "fetch_prices",
-                          side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+                          side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
         mock.patch.object(bf, "fetch_amendments", return_value=[]),
         mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
     ):
@@ -1634,7 +1634,7 @@ def test_band_exports_present_in_artifact_meta_adaptive_rule(tmp_path, _universe
         mock.patch.object(bf, "fetch_fundamentals_history",
                           side_effect=lambda cik: _annual_history(1.0)),
         mock.patch.object(bf, "fetch_prices",
-                          side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+                          side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
         mock.patch.object(bf, "fetch_amendments", return_value=[]),
         mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
     ):
@@ -1686,7 +1686,7 @@ def test_meta_adaptive_rule_max_picks_is_none_u5(tmp_path, _universe) -> None:
         mock.patch.object(bf, "fetch_fundamentals_history",
                           side_effect=lambda cik: _annual_history(1.0)),
         mock.patch.object(bf, "fetch_prices",
-                          side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+                          side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
         mock.patch.object(bf, "fetch_amendments", return_value=[]),
         mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
     ):
@@ -1731,7 +1731,7 @@ def test_band_weights_keys_subset_of_band_book_u3_structural(tmp_path, _universe
         mock.patch.object(bf, "fetch_fundamentals_history",
                           side_effect=lambda cik: _annual_history(1.0)),
         mock.patch.object(bf, "fetch_prices",
-                          side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+                          side_effect=lambda t, **_kw: _prices(abs(hash(t)) % 1000)),
         mock.patch.object(bf, "fetch_amendments", return_value=[]),
         mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
     ):

@@ -3457,3 +3457,55 @@ frontend/components/AiPickPortfolio.tsx · CLAUDE.md (§In-flight rotation) ·
 PHASE_STATUS_INFLIGHT.md (this).
 
 ---
+
+## fix(backtest) — rolling-window anchors pinned + pre-2016 scout record (2026-06-11)
+
+**Branch**: `claude/confident-thompson-y58bhe` · **Status**: in flight
+
+User question "ไตรมาสแรกมีข้อมูลพอไหม / ควรดึงย้อนหลังเพิ่มไหม" surfaced
+two silent run-date-relative time bombs:
+1. `--start` default = today−10y (ROLLING) — the cron passes no --start,
+   so the artifact window slid daily and would have silently dropped the
+   canonical 2016-08 first rebalance around Aug 2026. Fixed:
+   `BACKTEST_CANONICAL_START = date(2016, 6, 1)` (ledger-Track-B-anchored,
+   never run-date-relative; changing it gates on a ledger-coverage check +
+   methodology sign-off).
+2. `fetch_prices(period="10y")` reached back 10y from the RUN date with a
+   PERIOD-BLIND parquet cache — the first rebalance's trailing-90d sigma
+   was computed on ~45 trading days (silent; the function accepts >= 3
+   points), degrading toward zero as the window slid. Fixed: `min_start`
+   param on fetch_prices (None = byte-identical legacy; a fresh-but-shallow
+   cache triggers an at-most-once deeper refetch with period="max" that
+   overwrites the cache; new listings whose full history starts after the
+   floor are cached as-is — no retry loop). The backfill passes
+   `min_start = start − 185d` (90 trading ≈ 130 calendar + margin) for the
+   universe + benchmarks; compute/main.py never passes it (live unchanged).
+
+Fundamentals depth was verified NOT to be a problem: the pillars already
+consume every 10-K filed <= T (XBRL back to ~2009-2011), independent of
+the backtest start — "pull more history" is already maximal on that axis.
+
+Companion scout (data-pipeline-engineer) on extending the window pre-2016
+recorded on issue #465: ledger extendable (fja05680 to ~1996) and XBRL
+coverage ~90% at 2013-Q1 / 100% by 2013-Q3 — but **yfinance has ZERO
+price data for pre-~2021 delisted tickers** (SWY/FDO/DTV/JDSU verified
+empty), so a 2013-2015 extension would silently drop ~58 names/rebalance
+(~12% of the cross-section) = the exact survivorship bias the ledger
+prevents. **2016 is the honest floor on the free stack**; 2013-Q3 (+12
+rebalances) requires a licensed delisted-price source — owner decision,
+parked on #465. Side finding: fundamentals_latency_p95 28.12s > 15s on
+the latest run — watch next cron.
+
+Tests: 22 mock-signature repairs (`fetch_prices` now receives kwargs) + 8
+new pins — min_start contract (shallow-refetch-once / deep-no-download /
+new-listing-no-loop / None-bypass) + anchor pins (canonical-start value &
+type / argparse default not rolling / buffer 185 / price floor precedes
+the first rebalance). Full suite 1645 passed (1 pre-existing alpha158
+Hypothesis flake, unrelated).
+
+**Files**: compute/ingest/prices.py · scripts/backfill_portfolio_pit.py ·
+tests/test_portfolio/test_backfill_integration.py ·
+tests/test_ingest/test_prices_min_start.py (new) · CLAUDE.md (§In-flight
+rotation) · PHASE_STATUS_INFLIGHT.md (this).
+
+---
