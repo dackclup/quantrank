@@ -1355,7 +1355,7 @@ def main(argv: list[str] | None = None) -> int:
     # 2016-01); ~15-20 tickers renamed before ~2021 (e.g. CDAY→DAY) are missing
     # pre-rename legs.  The FIRST (cold) backfill must still run via the manual
     # backfill-portfolio.yml dispatch: cold runtime (~60-85m) exceeds the cron's
-    # 40m folded-step cap; warm steady-state (~30-35m) fits.
+    # 55m folded-step cap (bumped 2026-06-08); warm steady-state ~35-45m fits.
     parser.add_argument("--start", default=BACKTEST_CANONICAL_START.isoformat())
     parser.add_argument("--end", default=today.isoformat())
     args = parser.parse_args(argv)

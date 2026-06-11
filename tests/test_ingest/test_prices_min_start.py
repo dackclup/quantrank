@@ -264,34 +264,21 @@ def test_A1_backtest_canonical_start_value_and_type() -> None:
 
 
 def test_A2_argparse_default_is_canonical_start_not_rolling() -> None:
-    """A2: parsing an empty argument list via ``main(argv=[])`` yields
-    ``args.start == BACKTEST_CANONICAL_START.isoformat()`` — NOT a
-    ``today - 10y`` rolling default.
-
-    This test pins the fix that prevents the artifact's window from advancing
-    one day per cron run (around Aug 2026 the canonical first rebalance at
-    2016-08-14 would have silently dropped off the left edge under a rolling
-    default).  We exercise the argparse wiring directly without running
-    ``run_backfill``.
-    """
-    # Capture the parsed args without running run_backfill.
-    import argparse
-    from datetime import UTC, datetime
+    """A2 anchor pin: running ``main([])`` (no --start) must hand run_backfill the
+    CANONICAL fixed start — exercising the PRODUCTION parser, not a replica.
+    Guards the rolling today-relative default from creeping back: if main()'s
+    default reverted to ``today - 10y``, the asserted date would drift daily."""
+    from unittest import mock
 
     from scripts import backfill_portfolio_pit as bf
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--start", default=bf.BACKTEST_CANONICAL_START.isoformat())
-    parser.add_argument("--end", default=datetime.now(UTC).date().isoformat())
-    args = parser.parse_args([])
-
-    assert args.start == bf.BACKTEST_CANONICAL_START.isoformat(), (
-        f"argparse default for --start must be BACKTEST_CANONICAL_START "
-        f"({bf.BACKTEST_CANONICAL_START.isoformat()!r}); got {args.start!r}"
-    )
-    assert args.start == "2016-06-01", (
-        f"argparse --start default must be '2016-06-01' (fixed anchor); got {args.start!r}"
-    )
+    with mock.patch.object(bf, "run_backfill") as rb:
+        rc = bf.main([])
+    assert rc == 0
+    assert rb.call_count == 1
+    start_arg = rb.call_args.args[0]
+    assert start_arg == bf.BACKTEST_CANONICAL_START
+    assert start_arg == datetime.date(2016, 6, 1)
 
 
 # ---------------------------------------------------------------------------
@@ -322,26 +309,22 @@ def test_A3_sigma_lookback_buffer_days_is_185() -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_A4_price_floor_precedes_first_rebalance() -> None:
-    """A4: ``BACKTEST_CANONICAL_START - timedelta(185)`` must be strictly before
-    the first canonical rebalance date (2016-08-14) so that rebalance's trailing
-    90-day sigma window is fully populated from fetched history.
-
-    If this assertion fails it means the buffer or the canonical start moved in
-    a way that starves the first leg's sigma computation.
-    """
-    from datetime import timedelta
-
+def test_A4_price_floor_covers_full_sigma_window() -> None:
+    """A4 anchor pin: the price floor (canonical start - 185d buffer) must precede
+    the first rebalance (2016-08-14) by AT LEAST 130 calendar days — the span that
+    holds ~90 TRADING days, so the first leg's trailing sigma window is FULL (the
+    pre-fix state computed it on ~45 trading days). A zero buffer would still pass
+    a bare ordering assert; this pins the magnitude."""
     from scripts.backfill_portfolio_pit import (
         _SIGMA_LOOKBACK_BUFFER_DAYS,
         BACKTEST_CANONICAL_START,
     )
 
-    first_rebalance = datetime.date(2016, 8, 14)  # first quarterly rebalance in the window
-    price_floor = BACKTEST_CANONICAL_START - timedelta(days=_SIGMA_LOOKBACK_BUFFER_DAYS)
-
-    assert price_floor < first_rebalance, (
-        f"price_floor {price_floor!r} must be before first_rebalance {first_rebalance!r}; "
-        "the sigma lookback buffer is insufficient — adjust _SIGMA_LOOKBACK_BUFFER_DAYS "
-        "or BACKTEST_CANONICAL_START (methodology-scientist sign-off required)"
+    floor = BACKTEST_CANONICAL_START - datetime.timedelta(
+        days=_SIGMA_LOOKBACK_BUFFER_DAYS
+    )
+    first_rebalance = datetime.date(2016, 8, 14)
+    assert (first_rebalance - floor).days >= 130, (
+        f"sigma window short: floor {floor} is only "
+        f"{(first_rebalance - floor).days}d before the first rebalance"
     )

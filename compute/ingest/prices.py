@@ -98,6 +98,10 @@ def fetch_prices(
         ticker), and the result is cached and returned without looping.
         Default ``None`` = byte-identical current behaviour (the live weekly
         compute path never passes this argument).
+        Fail-closed: if the deeper refetch itself fails, ``None`` is returned
+        even though a (shallow) fresh cache exists — a silently short sigma
+        window is the bug this parameter prevents, so the ticker drops from
+        that run instead.
     """
     cache_dir = config.PRICES_CACHE_DIR
     cache_dir.mkdir(parents=True, exist_ok=True)
