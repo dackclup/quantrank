@@ -311,8 +311,9 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
               min={100}
               step={1000}
               value={capital}
+              aria-label="Initial capital in dollars"
               onChange={(e) => { const v = Math.round(Number(e.target.value)); if (v >= 100) setCapital(v); }}
-              className="w-24 rounded border border-slate-300 bg-transparent px-1.5 py-0.5 font-mono tabular-nums text-slate-600 focus:border-slate-400 focus:outline-none dark:border-slate-600 dark:text-slate-300 dark:focus:border-slate-400 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+              className="w-24 rounded border border-slate-300 bg-transparent px-1.5 py-0.5 font-mono tabular-nums text-slate-600 focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 dark:border-slate-600 dark:text-slate-300 dark:focus:border-slate-400 dark:focus:ring-slate-500 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
             />
             <span>invested at window start</span>
           </div>
@@ -364,7 +365,10 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
       {/* Current picks — adaptive basket */}
       <div className="rounded border border-slate-200 bg-white p-4 shadow-subtle dark:border-slate-800 dark:bg-slate-900 md:p-6">
         <div className="mb-1 flex items-baseline justify-between gap-2">
-          <h2 className="font-slab text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100">
+          <h2
+            id="adaptive-picks-heading"
+            className="font-slab text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100"
+          >
             Current picks
           </h2>
           <span className="text-xs text-slate-500 dark:text-slate-400">
@@ -379,7 +383,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
           {latestCount === 1 ? 'stock' : 'stocks'} this quarter, inverse-volatility weighted. Every
           pick scoring{' '}
           <span className="font-mono tabular-nums">≥{rule.composite_min.toFixed(0)}</span> is
-          included (min {rule.min_picks}, max {rule.max_picks}).
+          included (min <span className="font-mono tabular-nums">{rule.min_picks}</span>, max <span className="font-mono tabular-nums">{rule.max_picks}</span>).
           {topSector && (
             <>
               {' '}Top sector:{' '}
@@ -396,7 +400,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
           <span className="ml-auto w-14 shrink-0 text-right">Score</span>
           <span className="w-12 shrink-0 text-right">Weight</span>
         </div>
-        <ol className="divide-y divide-slate-100 dark:divide-slate-800">
+        <ol aria-labelledby="adaptive-picks-heading" className="divide-y divide-slate-100 dark:divide-slate-800">
           {latestHoldings.map((h, i) => (
             <li key={h.ticker} className="flex items-center gap-3 py-2">
               <span className="w-4 shrink-0 font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
