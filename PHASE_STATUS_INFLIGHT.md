@@ -3047,5 +3047,56 @@ tests/test_ingest/test_issue288_xbrl_concept_tuple.py · tests/test_config.py ·
 CLAUDE.md (§Gotchas one-liner + §In-flight rotation) · AGENTS.md (§Boundaries
 🚫 Never) · SKILL.md (schema-version table) · docs/GOTCHAS.md (full detail) ·
 PHASE_STATUS_INFLIGHT.md (this).
+## feat(portfolio) — ADAPTIVE AI-sized basket; user count slider retired (2026-06-11)
+
+**Branch**: `claude/confident-thompson-y58bhe` · **Status**: in flight
+
+User decision: AI picks now sizes its OWN basket each rebalance — the
+holding count is no longer a user choice. Bounds 1-20 (cap = MAX_PICKS),
+count varies by quarter. Rule: every high-conviction-gated pick with
+`composite_score >= 65`, floor 5 names. Constants `ADAPTIVE_COMPOSITE_MIN`
+/ `ADAPTIVE_MIN_PICKS` live in ONE place (`scripts/backfill_portfolio_pit.py`)
+`methodology-scientist` Mode-B verdict: **RATIFY 2026-06-11** — all three
+constants as proposed, conditional on C1 (provenance comment on the
+constants block — landed) + C2 (test pins incl. the inclusive-65.0
+boundary — landed) + C3 (gates A1 score-drought / A2 inflation / B
+relative-vs-by_count[8]-and-SPY @ 8th live rebalance / C freeze-lock
+registered on issue #130 — landed). The in-sample-sweep concern was
+explicitly disclosed in the dossier (65 is not a
+canonical TIERS boundary; mitigants = coarse 4-point grid, monotone
+dose-response 55→60→65 in BOTH window halves with a documented cliff at 70,
+floor-5 chosen from {1,3,5} where it binds only in tiny-count quarters, and
+consistency with the independent fixed-N sweet spot at N=8-14).
+
+Evidence (production veto-replayed artifact, real engine fns, yfinance Adj
+Close, net 10bps/side, 40 rebalances 2016-08 → 2026-05; SPY 14.8% CAGR):
+adaptive book CAGR **22.8%**, quarterly beat **27/40 (68%)**, maxDD
+**−32.0%** (best of every rule tested), split-half x2.90 / x2.60 vs SPY
+x2.24 / x1.73; counts 5-13, mean 8.0. Rejected alternatives: hold-all-HC
+(degenerates to always-20 — every rebalance had ≥ 20 eligible; 17.0% CAGR),
+canonical ≥55 (inert, mean 19.5 names), canonical ≥70 (0-8 names, −47.4%
+DD, 11.5% CAGR), parameter-free largest-gap elbow (ten 1-name quarters).
+
+Artifact contract (self-carried, no schema-triple change):
+`meta.adaptive_rule = {composite_min, min_picks, max_picks}` ·
+`nav.adaptive = {gross, net, net_conservative, turnover_by_rebalance}`
+(same axis/pad contract as by_count entries) ·
+`rebalances[*].adaptive_count` (adaptive book = `holdings[:adaptive_count]`
+prefix; weights = `weights_by_count[adaptive_count]`, reused not
+recomputed). `by_count` + `default_count` retained for analytics +
+fallback. Frontend renders the adaptive book with NO slider when
+`nav.adaptive` is present, and falls back to the legacy slider UI when
+absent — deploy-safe across the artifact regeneration boundary (the same
+two-step as PR #451 → #453: code first, then a backfill dispatch / cron
+regenerates the artifact).
+
+**Files**: scripts/backfill_portfolio_pit.py · frontend/lib/data.ts ·
+frontend/lib/types.ts (non-schema section) ·
+frontend/components/AiPickPortfolio.tsx ·
+frontend/components/HoldingsTimeline.tsx (per-quarter adaptive counts) ·
+frontend/app/page.tsx (hero + metadata branch) ·
+tests/test_portfolio/ (adaptive-book tests) · docs/GOTCHAS.md (slider
+gotcha rewritten adaptive-first) · CLAUDE.md (§In-flight rotation + gotcha
+index line) · PHASE_STATUS_INFLIGHT.md (this).
 
 ---

@@ -452,7 +452,7 @@ always-loaded context small while preserving discoverability of every invariant.
 - **`globals.css` soft-color `!important` override is LITERAL-class-keyed → it NEVER reaches `dark:bg-emerald-*` / `dark:bg-rose-*` solid-fills (they render RAW Tailwind in dark → white label ~3.8:1, under AA). A dark CTA / brand mark = `dark:bg-emerald-700` (emerald-700 = `#047857`, white 5.5:1) or a `--c-*` token directly, never `dark:bg-emerald-600` expecting the soft remap (theme audit #401)**
 - **The home + ranking pages derive stats from `rankings.json`/`metadata.json` at BUILD TIME (Server Components) — weekly static export, so values are "as of" the last cron, NOT live; never `import lib/data.ts` (or any `fs` module) into a `'use client'` component (resolve on the server, pass the node in as a prop/child). Removed 2026-06-04: the top `MarketStatsBar` strip + `lib/market-stats.ts` + `AppShell` `topBar` slot, AND the standalone `/sectors` + `/movers` routes — the build-time server-component rule lives on via the home + ranking pages**
 - **`data/sp500_membership_historical.csv` (the survivorship ledger behind `members_at()`) must stay ADD/REMOVE-balanced — the reverse-walk reconstructs ~500-503 constituents at EVERY backtest month; run `scripts/verify_membership_ledger.py` after ANY edit (checks the size band 498-506 + that every removed ticker is gone / every added ticker present vs the live universe). Use effective (not announcement) dates + real tickers (SIVB not "SVB"; BX=Blackstone≠BLK=BlackRock); cite the Wikipedia change-history URL (the `press.spglobal.com/<date>-<title>` shape 404s). **Track B 10Y rebuild**: now covers **2016-01-04 .. present** (485 events; `EARLIEST_EVENT_DATE` + the verify `WINDOW_START` both moved 2020→2016). The 2016-01..2026-01-14 portion is snapshot-diff-DERIVED from the fja05680 historical-components dataset and is **RENAME-AWARE** (a symbol change = REMOVE old + ADD new, so `members_at` returns the correct historical ticker — a convention shift vs the prior "renames out of scope" 2020-2026 hand-built rows, which fja05680 cross-validated at the boundary). Tickers normalized to the yfinance dash form (BRK-B/BF-B). The 10Y `backtest_pit.json` reflects this after the DATA-layer extension (`PRICES_PERIOD`/`ANNUAL_HISTORY_YEARS`→10y + the load-bearing `cache-v6-fast` bump for the period-blind caches + `write_benchmarks_json` full-series) AND a cold `backfill_portfolio_pit` dispatch from 2016 (manual — the cold ~60-85m run exceeds the cron 40m folded-step cap; warm fits). ~15-20 pre-2021-renamed tickers' 2016-2020 legs drop (yfinance can't resolve the historical alias)**
-- **The home page IS the AI-pick portfolio (Phase 7.0 PR-4)** — reads `backtest_pit.json` via `getAiPickData()` (fs-read + trim+round to a small client view-model, NEVER a static `import`; the 1.3MB artifact never ships in the page payload; `null` → "backtest pending"). Server resolves → the `'use client'` `AiPickPortfolio` gets it as props (the build-time-data rule). The 1-10 slider switches `nav.by_count[N]` (one NAV line per count); the chart uses the pre-aligned `nav.benchmark`, so `benchmarks.json` is NOT read by the frontend
+- **The home page IS the AI-pick portfolio (Phase 7.0 PR-4)** — reads `backtest_pit.json` via `getAiPickData()` (fs-read + trim+round to a small client view-model, NEVER a static `import`; the 1.3MB artifact never ships in the page payload; `null` → "backtest pending"). Server resolves → the `'use client'` `AiPickPortfolio` gets it as props (the build-time-data rule). The AI sizes its own basket per rebalance when `nav.adaptive` is present (composite ≥ 65 / floor 5 / cap 20; book = `holdings[:adaptive_count]`, weights = `weights_by_count[adaptive_count]`); the 1-20 slider + `nav.by_count[N]` render only as the legacy fallback for pre-adaptive artifacts; the chart uses the pre-aligned `nav.benchmark`, so `benchmarks.json` is NOT read by the frontend
 - **Per-stock JSON for a dropped ticker (de-listed / renamed, e.g. EPAM / BK→BNY) is auto-pruned by `prune_orphan_stock_files()` (defined in `compute/output/writer.py`, called from `compute/main.py` after `write_rankings_json`; safety floor `_PRUNE_SAFETY_FLOOR=50`; cron `git add` stages the deletes). Don't glob `stocks/` for param-gen — it reads `rankings.json` by design. Full detail: `docs/GOTCHAS.md`**
 - **The home's `AnnualReturnsTable` (calendar-year rows + CAGR footer) + the `NavCompareChart` `money` mode ($10k→$X growth + end-of-line $ labels) are DERIVED in-browser from the NAV series — no schema / compute / `backtest_pit.json` change. The CAGR caveat + AiPickPortfolio footnote are DATA-DRIVEN on `meta.veto_layer_replayed` (PR #451 replays 6-of-7 vetoes; `non_reliance_filing` disclosed-excluded) — never hardcode either state, and never quote a window's result as timeless (5y artifact lost to SPY at every N; the 10y artifact has N≥3 ahead — read the live artifact). Even replayed, the backtest ≠ the live product's track record. Full detail: `docs/GOTCHAS.md`**
 - **Agent teams (experimental, ≠ subagents) — flag `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` enables multi-session teams whose teammates MESSAGE each other + reuse subagent defs as roles; the 2 write-capable Tier-5 builders own DISJOINT layers (`compute-builder`=`compute/**`, `frontend-builder`=`frontend/**`) in a Feature Squad; live teams are desktop-terminal only (every recipe ships a mobile/web subagent fallback); teammates DON'T apply a def's `skills`/`mcpServers` frontmatter (load from settings). Recipes: [`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md)**
@@ -530,22 +530,25 @@ site-2 rename `valuation_output_anomalous`).
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **chore(analysis) — veto-counterfactual tool + gate (a) verdict
-  (this PR, 2026-06-10)** — `scripts/analysis_veto_counterfactual.py`
-  (dev-only) rebuilds veto-vs-no-veto books from `holdings` +
-  `vetoed_pick_candidates` + `full_ranked` and prices both through the real
-  engine fns on identical data (validation: rebuilt veto CAGR ≡ artifact to
-  0.1pp at every N). The first `meta.veto_layer_replayed=true` artifact
-  itself reached `main` via the 2026-06-10 23:51 UTC cron warm refresh (the
-  branch's cold-dispatch copy was superseded and dropped on rebase).
-  **Gate (a) verdict: the veto layer does NOT rescue returns** — CAGR delta
-  mean −1.21pp, negative at 16/20 N; clean anti-growth tilt (helps 2018/2022/
-  2025/2026, hurts 2019/2020/2023/2024); bite is 97% `sloan_accruals_top_
-  decile` firing on structural compounders (NVDA 14×, FAST 11×, NRG 10×).
-  2025's miss is NOT veto-caused (no-veto lost 2025 harder) → composite-
-  signal problem. Sloan-veto disposition routed to `methodology-scientist`
-  via issue #454 (Q3 2026-08-19 cohort audit); no threshold change ships
-  from this in-sample evidence alone. Full detail: PHASE_STATUS_INFLIGHT.md.
+- **feat(portfolio) — ADAPTIVE AI-sized basket, user count slider removed
+  (this PR, 2026-06-11)** — user decision: the AI sizes its own basket each
+  rebalance (1-20 names, count varies by quarter) and the user-facing
+  holding-count slider is retired. Rule: every HC-gated pick with composite
+  ≥ 65, floor 5, cap 20 (= MAX_PICKS) — constants `ADAPTIVE_*` in
+  `scripts/backfill_portfolio_pit.py`; `methodology-scientist` RATIFY
+  2026-06-11 (C1 provenance comment + C2 test pins + C3 gates A1/A2/B/C
+  registered on issue #130). Evidence (production veto-replayed artifact, real engine
+  fns, net 10bps): CAGR 22.8% vs SPY 14.8%, quarterly beat 27/40 (68%),
+  maxDD −32.0% (best of all rules tested), wins BOTH halves of the window;
+  counts 5-13 (mean 8). Canonical-boundary alternatives fail (≥55 inert at
+  mean 19.5 names; ≥70 catastrophic −47% DD); hold-all-HC degenerates to
+  always-20 (all 40 rebalances had ≥ 20 eligible); parameter-free elbow cut
+  collapses to 1-name quarters. Artifact contract: `meta.adaptive_rule` +
+  `nav.adaptive` + `rebalances[*].adaptive_count` (book = holdings prefix;
+  weights = `weights_by_count[adaptive_count]` reused); `by_count` retained
+  for analytics; frontend falls back to the legacy slider UI when
+  `nav.adaptive` is absent so the deploy is safe across the artifact
+  regeneration boundary. Full detail: PHASE_STATUS_INFLIGHT.md.
 
 - **fix(ingest) — Issue #374 RATIFY-B dual-class share-count fix (this PR,
   2026-06-11)** — schema **`0.10.18-phase4.6`** PATCH (additive
@@ -576,8 +579,8 @@ Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_
 **Next deliverables** (re-scoped 2026-06-10, ordered by decision-value):
 - **1 · Phase 7.0c — PIT veto-layer replay** — **CODE MERGED (#451)**; first
   `veto_layer_replayed=True` artifact **ON MAIN** (2026-06-10 23:51 UTC cron
-  warm refresh); the gate (a) counterfactual tool + verdict docs are IN
-  FLIGHT (this PR — see In-flight above). Gate (a) ANSWERED: the
+  warm refresh); the gate (a) counterfactual tool + verdict docs MERGED
+  (#453, 2026-06-11). Gate (a) ANSWERED: the
   defense layer does not rescue the composite's returns (drawdown-year
   protection only); the 2025 failure lives in the composite signal itself.
 - **2 · Issue #441 — DONE (closed by the MAD close-out PR, 2026-06-10)** —

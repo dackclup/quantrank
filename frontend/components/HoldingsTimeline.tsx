@@ -25,14 +25,24 @@ type Row = {
   entered: Set<string>;
   exited: string[];
   sectorByTicker: Record<string, string>;
+  // The slice width used for this row — equals each entry's own adaptiveCount
+  // in adaptive mode, or the fixed `count` prop in slider mode.
+  sliceCount: number;
 };
 
 /**
  * Rotation history of the AI pick: every quarterly rebalance's holdings at the
  * current basket size, newest first, with the names that entered / exited vs the
- * prior quarter. Reactive to the count slider (slices each rebalance to the
- * top-`count`, the same cut `select_picks` makes). Read-only display — links each
- * ticker to its detail page.
+ * prior quarter.
+ *
+ * Two modes — selected automatically from the data:
+ * - ADAPTIVE mode: when every entry carries `adaptiveCount`, each quarter is
+ *   sliced to ITS OWN count (the adaptive basket varies quarter-to-quarter).
+ *   The caption reflects the variable basket size instead of quoting a fixed N.
+ * - SLIDER mode (legacy): all entries are sliced to the single `count` prop.
+ *   Reactive to the count slider exactly as before — behavior is unchanged.
+ *
+ * Read-only display — links each ticker to its detail page.
  */
 export function HoldingsTimeline({
   timeline,
@@ -41,12 +51,23 @@ export function HoldingsTimeline({
   timeline: AiPickTimelineEntry[];
   count: number;
 }) {
+  // Adaptive mode: true when every entry in the timeline carries adaptiveCount.
+  // A single missing entry falls back to slider mode (safe for partial artifacts).
+  const isAdaptive = timeline.length > 0 && timeline.every(
+    (e) => typeof e.adaptiveCount === 'number',
+  );
+
   const { rows, avgTurnover } = useMemo(() => {
     const chrono: Row[] = [];
     let prev: string[] = [];
     let totalEntered = 0;
     for (let i = 0; i < timeline.length; i += 1) {
-      const slice = timeline[i].holdings.slice(0, count);
+      // In adaptive mode each quarter uses its own count; in slider mode use
+      // the fixed `count` prop so legacy behavior is completely unchanged.
+      const sliceCount = isAdaptive
+        ? (timeline[i].adaptiveCount as number)
+        : count;
+      const slice = timeline[i].holdings.slice(0, sliceCount);
       const held = slice.map((h) => h.ticker);
       const sectorByTicker: Record<string, string> = {};
       for (const h of slice) sectorByTicker[h.ticker] = h.sector;
@@ -58,13 +79,13 @@ export function HoldingsTimeline({
       const entered = i === 0 ? new Set<string>() : new Set(held.filter((t) => !prevSet.has(t)));
       const exited = prev.filter((t) => !heldSet.has(t));
       if (i > 0) totalEntered += entered.size;
-      chrono.push({ date: timeline[i].date, held, entered, exited, sectorByTicker });
+      chrono.push({ date: timeline[i].date, held, entered, exited, sectorByTicker, sliceCount });
       prev = held;
     }
     const transitions = Math.max(1, timeline.length - 1);
     chrono.reverse(); // newest first for display
     return { rows: chrono, avgTurnover: totalEntered / transitions };
-  }, [timeline, count]);
+  }, [timeline, count, isAdaptive]);
 
   if (rows.length === 0) return null;
 
@@ -79,8 +100,17 @@ export function HoldingsTimeline({
         </span>
       </div>
       <p className="mb-3 text-xs text-slate-500 dark:text-slate-400">
-        ~<span className="font-mono tabular-nums">{avgTurnover.toFixed(1)}</span> of{' '}
-        <span className="font-mono tabular-nums">{count}</span> names change each quarter
+        {isAdaptive ? (
+          <>
+            ~<span className="font-mono tabular-nums">{avgTurnover.toFixed(1)}</span> names rotate each
+            quarter — the AI re-sizes the basket each quarter
+          </>
+        ) : (
+          <>
+            ~<span className="font-mono tabular-nums">{avgTurnover.toFixed(1)}</span> of{' '}
+            <span className="font-mono tabular-nums">{count}</span> names change each quarter
+          </>
+        )}
       </p>
       <ol className="divide-y divide-slate-100 dark:divide-slate-800">
         {rows.map((row, idx) => {
@@ -100,6 +130,11 @@ export function HoldingsTimeline({
                 {isInitial && (
                   <span className="mt-0.5 block text-[0.625rem] text-slate-400 dark:text-slate-500">
                     initial basket
+                  </span>
+                )}
+                {isAdaptive && (
+                  <span className="mt-0.5 block text-[0.625rem] tabular-nums text-slate-400 dark:text-slate-500">
+                    {row.sliceCount} {row.sliceCount === 1 ? 'name' : 'names'}
                   </span>
                 )}
               </span>

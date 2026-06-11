@@ -4,16 +4,25 @@ import Link from 'next/link';
 import { AiPickPortfolio } from '@/components/AiPickPortfolio';
 import { getAiPickData, getMetadata } from '@/lib/data';
 
-export const metadata: Metadata = {
-  title: 'QuantRank — AI stock picks, backtested',
-  description:
-    'A deterministic, point-in-time backtested portfolio drawn from the QuantRank 8-pillar composite — pick 1-10 names, inverse-volatility weighted, measured against the S&P 500 and other US indices.',
-};
+// Build-time metadata — branches on isAdaptive so the SEO description matches
+// the rendered branch during the artifact-regeneration window.
+// generateMetadata runs at build time (static export) so getAiPickData() is safe.
+export function generateMetadata(): Metadata {
+  const aiPick = getAiPickData();
+  const isAdaptive = aiPick?.adaptive !== null && aiPick?.adaptive !== undefined;
+  return {
+    title: 'QuantRank — AI stock picks, backtested',
+    description: isAdaptive
+      ? 'A deterministic, point-in-time backtested portfolio drawn from the QuantRank 8-pillar composite — AI-sized basket, inverse-volatility weighted, measured against the S&P 500 and other US indices.'
+      : 'A deterministic, point-in-time backtested portfolio drawn from the QuantRank 8-pillar composite, inverse-volatility weighted, and tracked against the S&P 500 and other US indices over the past decade.',
+  };
+}
 
 export default function HomePage() {
   const aiPick = getAiPickData();
   const meta = getMetadata();
-  const maxHoldings = aiPick?.meta.max_holdings ?? 10;
+  const isAdaptive = aiPick?.adaptive !== null && aiPick?.adaptive !== undefined;
+  const adaptiveRule = aiPick?.meta.adaptive_rule ?? null;
 
   return (
     <section className="space-y-8">
@@ -23,12 +32,29 @@ export default function HomePage() {
           AI picks, backtested.
         </h1>
         <p className="max-w-2xl text-pretty text-base text-slate-600 dark:text-slate-300">
-          A point-in-time portfolio drawn only from the QuantRank 8-pillar composite — pick{' '}
-          <span className="font-mono font-semibold tabular-nums text-emerald-800 dark:text-emerald-300">
-            1–{maxHoldings}
-          </span>{' '}
-          names, inverse-volatility weighted, and see how the rule would have tracked the index over
-          the past five years.
+          {isAdaptive && adaptiveRule ? (
+            <>
+              A point-in-time portfolio drawn only from the QuantRank 8-pillar composite — the AI
+              sizes its own basket each quarter, holding every pick that scores{' '}
+              <span className="font-mono font-semibold tabular-nums text-emerald-800 dark:text-emerald-300">
+                ≥{adaptiveRule.composite_min.toFixed(0)}
+              </span>{' '}
+              (between{' '}
+              <span className="font-mono font-semibold tabular-nums text-emerald-800 dark:text-emerald-300">
+                {adaptiveRule.min_picks}
+              </span>{' '}
+              and{' '}
+              <span className="font-mono font-semibold tabular-nums text-emerald-800 dark:text-emerald-300">
+                {adaptiveRule.max_picks}
+              </span>{' '}
+              names), inverse-volatility weighted.
+            </>
+          ) : (
+            <>
+              A point-in-time portfolio drawn only from the QuantRank 8-pillar composite, inverse-volatility
+              weighted, and tracked against the S&P 500 and other US indices over the past decade.
+            </>
+          )}
         </p>
         <div className="flex flex-wrap items-center gap-3 pt-1">
           <Link
