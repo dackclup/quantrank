@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated_utc": "2026-06-11T14:00:00Z",
+    "generated_utc": "2026-06-11T15:35:11Z",
     "rule_version": "phase3-effective-weights+veto-replay+hold-band-55+uncapped",
     "as_of_start": "2016-06-01",
     "as_of_end": "2026-06-11",
@@ -49,7 +49,7 @@
       "min_picks": 5,
       "max_picks": null
     },
-    "disclaimer": "Illustrative backtest, not investment advice. This is a point-in-time PROXY of QuantRank's ranking rule, not a replay of the live composite: at each historical rebalance it re-runs the current frozen 8-pillar weights using only data filed on or before that date, but fundamental pillars use ANNUAL (10-K) figures in place of the live trailing-twelve-month basis, GICS sectors are assumed stable from today, and survivorship is corrected via the point-in-time membership ledger. The basket holds ONLY high-conviction names — Strong Buy / Buy rated, undervalued (margin of safety > 0), composite >= 50 and loss-chance <= 45 — taking the top names by composite among those (a name that decays out of the gate is dropped at the next rebalance). The recommendation + 6-method valuation layer is replayed point-in-time, with the fair-value staleness gate widened to ~15 months for the once-a-year 10-K cadence (vs the live 180-day gate). Six of the seven active accounting vetoes (Altman distress, Sloan accruals, net issuance, Beneish manipulation, Dechow F-score, and data-quality corruption) are replayed point-in-time against the PIT cross-section; non_reliance_filing (8-K Item 4.02) is NOT replayed — no 8-K history is available in the loaded PIT data — so a name that filed an Item 4.02 in the trailing year at a historical rebalance will appear in this backtest un-vetoed. Net figures charge a modeled per-side spread cost (10-25 bps on turnover) but are gross of additional market-impact slippage; per McLean-Pontiff (2016) published-factor edges decay ~32% post-publication. The adaptive AI-pick book sizes itself each rebalance: it holds ALL high-conviction picks with composite score >= 65 (no ceiling), with a floor of 5 names, so holding count varies by quarter (uncap ratified 2026-06-11 — in-sample max book 15 over 40 rebalances; cap was inert 0/40 legs; A2 spike tripwire: raw >= 25 in a single rebalance triggers reopening, registered #130; forward acceptance gates pre-registered). Incumbents are retained while scoring >= 55 to reduce turnover (V55 hysteresis band ratified 2026-06-11; the band is a turnover/implementation-cost device — no performance claims). In this 2016-2026 sample the default 5-holding net line outperformed the S&P 500 (669 vs 388, both rebased to 100 at the start): a factor-tilted, sector-CONCENTRATED book (no per-sector cap — it can hold many names in one sector) carries higher single-sector risk and can diverge from a cap-weighted index, in either direction, for long stretches. Any in-sample edge is concentration- and regime-driven, not a free lunch (McLean-Pontiff 2016) — past performance, even favorable, does not predict future results; read the full 1-20 holding-count ladder, not any single line."
+    "disclaimer": "Illustrative backtest, not investment advice. This is a point-in-time PROXY of QuantRank's ranking rule, not a replay of the live composite: at each historical rebalance it re-runs the current frozen 8-pillar weights using only data filed on or before that date, but fundamental pillars use ANNUAL (10-K) figures in place of the live trailing-twelve-month basis, GICS sectors are assumed stable from today, and survivorship is corrected via the point-in-time membership ledger. The basket holds ONLY high-conviction names — Strong Buy / Buy rated, undervalued (margin of safety > 0), composite >= 50 and loss-chance <= 45 — taking the top names by composite among those (a name that decays out of the gate is dropped at the next rebalance). The recommendation + 6-method valuation layer is replayed point-in-time, with the fair-value staleness gate widened to ~15 months for the once-a-year 10-K cadence (vs the live 180-day gate). Six of the seven active accounting vetoes (Altman distress, Sloan accruals, net issuance, Beneish manipulation, Dechow F-score, and data-quality corruption) are replayed point-in-time against the PIT cross-section; non_reliance_filing (8-K Item 4.02) is NOT replayed — no 8-K history is available in the loaded PIT data — so a name that filed an Item 4.02 in the trailing year at a historical rebalance will appear in this backtest un-vetoed. Net figures charge a modeled per-side spread cost (10-25 bps on turnover) but are gross of additional market-impact slippage; per McLean-Pontiff (2016) published-factor edges decay ~32% post-publication. The adaptive AI-pick book sizes itself each rebalance: it holds ALL high-conviction picks with composite score >= 65 (no ceiling), with a floor of 5 names, so holding count varies by quarter (uncap ratified 2026-06-11 — in-sample max book 16 over 40 rebalances; the former cap never bound fresh entries (max raw 13) and its carry-leg rank-slice exit was removed as the V55.0 -> V55.1 protocol amendment; A2-S spike tripwire: raw >= 25 in a single rebalance triggers reopening, registered #130; forward acceptance gates pre-registered). Incumbents are retained while scoring >= 55 to reduce turnover (V55 hysteresis band ratified 2026-06-11; the band is a turnover/implementation-cost device — no performance claims). In this 2016-2026 sample the default 5-holding net line outperformed the S&P 500 (669 vs 388, both rebased to 100 at the start): a factor-tilted, sector-CONCENTRATED book (no per-sector cap — it can hold many names in one sector) carries higher single-sector risk and can diverge from a cap-weighted index, in either direction, for long stretches. Any in-sample edge is concentration- and regime-driven, not a free lunch (McLean-Pontiff 2016) — past performance, even favorable, does not predict future results; read the full 1-20 holding-count ladder, not any single line."
   },
   "rebalances": [
     {
@@ -1087,8 +1087,8 @@
           "LYB": 0.5
         },
         "3": {
-          "FAST": 0.35,
           "LYB": 0.35,
+          "FAST": 0.35,
           "UAL": 0.3
         },
         "4": {
@@ -1624,8 +1624,8 @@
           "Materials": 0.5
         },
         "3": {
-          "Industrials": 0.65,
-          "Materials": 0.35
+          "Materials": 0.35,
+          "Industrials": 0.65
         },
         "4": {
           "Industrials": 0.426,
@@ -10266,8 +10266,8 @@
           "GOOGL": 0.5
         },
         "3": {
-          "TSCO": 0.35,
           "GOOGL": 0.35,
+          "TSCO": 0.35,
           "LRCX": 0.3
         },
         "4": {
@@ -10803,8 +10803,8 @@
           "Communication Services": 0.5
         },
         "3": {
-          "Consumer Discretionary": 0.35,
           "Communication Services": 0.35,
+          "Consumer Discretionary": 0.35,
           "Information Technology": 0.3
         },
         "4": {
@@ -11184,8 +11184,8 @@
           "TSCO": 0.5
         },
         "3": {
-          "TSCO": 0.35,
           "CTAS": 0.35,
+          "TSCO": 0.35,
           "MU": 0.3
         },
         "4": {
@@ -11721,8 +11721,8 @@
           "Consumer Discretionary": 0.5
         },
         "3": {
-          "Consumer Discretionary": 0.35,
           "Industrials": 0.35,
+          "Consumer Discretionary": 0.35,
           "Information Technology": 0.3
         },
         "4": {
@@ -12083,8 +12083,8 @@
           "GOOGL": 0.5
         },
         "3": {
-          "CTAS": 0.35,
           "GOOGL": 0.35,
+          "CTAS": 0.35,
           "LRCX": 0.3
         },
         "4": {
@@ -12620,8 +12620,8 @@
           "Communication Services": 0.5
         },
         "3": {
-          "Industrials": 0.35,
           "Communication Services": 0.35,
+          "Industrials": 0.35,
           "Information Technology": 0.3
         },
         "4": {
@@ -14806,8 +14806,8 @@
           "LRCX": 0.5
         },
         "3": {
-          "TSCO": 0.35,
           "GOOGL": 0.35,
+          "TSCO": 0.35,
           "LRCX": 0.3
         },
         "4": {
@@ -15343,8 +15343,8 @@
           "Information Technology": 0.5
         },
         "3": {
-          "Consumer Discretionary": 0.35,
           "Communication Services": 0.35,
+          "Consumer Discretionary": 0.35,
           "Information Technology": 0.3
         },
         "4": {
@@ -19230,8 +19230,8 @@
           "GOOGL": 0.5
         },
         "3": {
-          "TSCO": 0.35,
           "GOOGL": 0.35,
+          "TSCO": 0.35,
           "NVDA": 0.3
         },
         "4": {
@@ -19767,8 +19767,8 @@
           "Communication Services": 0.5
         },
         "3": {
-          "Consumer Discretionary": 0.35,
           "Communication Services": 0.35,
+          "Consumer Discretionary": 0.35,
           "Information Technology": 0.3
         },
         "4": {
@@ -21020,8 +21020,8 @@
           "CTAS": 0.5
         },
         "3": {
-          "GOOGL": 0.35,
           "CTAS": 0.35,
+          "GOOGL": 0.35,
           "MRNA": 0.3
         },
         "4": {
@@ -21557,8 +21557,8 @@
           "Industrials": 0.5
         },
         "3": {
-          "Communication Services": 0.35,
           "Industrials": 0.35,
+          "Communication Services": 0.35,
           "Health Care": 0.3
         },
         "4": {
@@ -22938,8 +22938,8 @@
           "GOOGL": 0.5
         },
         "3": {
-          "TSCO": 0.35,
           "CTAS": 0.35,
+          "TSCO": 0.35,
           "GOOGL": 0.3
         },
         "4": {
@@ -23475,8 +23475,8 @@
           "Communication Services": 0.5
         },
         "3": {
-          "Consumer Discretionary": 0.35,
           "Industrials": 0.35,
+          "Consumer Discretionary": 0.35,
           "Communication Services": 0.3
         },
         "4": {
@@ -23887,8 +23887,8 @@
           "MRNA": 0.5
         },
         "3": {
-          "TSCO": 0.35,
           "CTAS": 0.35,
+          "TSCO": 0.35,
           "MRNA": 0.3
         },
         "4": {
@@ -24424,8 +24424,8 @@
           "Health Care": 0.5
         },
         "3": {
-          "Consumer Discretionary": 0.35,
           "Industrials": 0.35,
+          "Consumer Discretionary": 0.35,
           "Health Care": 0.3
         },
         "4": {
@@ -30287,8 +30287,8 @@
           "STLD": 0.5
         },
         "3": {
-          "BLDR": 0.35,
           "STLD": 0.35,
+          "BLDR": 0.35,
           "AVGO": 0.3
         },
         "4": {
@@ -30824,8 +30824,8 @@
           "Materials": 0.5
         },
         "3": {
-          "Industrials": 0.35,
           "Materials": 0.35,
+          "Industrials": 0.35,
           "Information Technology": 0.3
         },
         "4": {
@@ -32068,8 +32068,8 @@
           "HAL": 0.5
         },
         "3": {
-          "HAL": 0.35,
           "DVA": 0.35,
+          "HAL": 0.35,
           "DECK": 0.3
         },
         "4": {
@@ -32605,8 +32605,8 @@
           "Energy": 0.5
         },
         "3": {
-          "Energy": 0.35,
           "Health Care": 0.35,
+          "Energy": 0.35,
           "Consumer Discretionary": 0.3
         },
         "4": {
