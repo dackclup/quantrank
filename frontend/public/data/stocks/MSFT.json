@@ -7,7 +7,7 @@
   "country": "US",
   "market_cap": 2951762705166.4785,
   "current_price": 397.36,
-  "rank": 119,
+  "rank": 120,
   "composite_score": 56.99,
   "pillar_scores": {
     "quality": 63.89,
@@ -16,7 +16,7 @@
     "momentum": 30.13,
     "health": 79.24,
     "profitability": 69.68,
-    "technical": 25.15,
+    "technical": 25.1,
     "risk": 39.84,
     "sentiment": null,
     "ml": null
@@ -96,7 +96,9 @@
     "latest_filed_date": "2026-04-29"
   },
   "risk_flags": [],
-  "valuation_warnings": [],
+  "valuation_warnings": [
+    "insider_sell_cluster"
+  ],
   "has_history": true,
   "tangible_book_value": 39.50011162405447,
   "tier2_events": {
@@ -115,17 +117,17 @@
       "Momentum": 63.84,
       "Health": 68.44,
       "Profitability": 49.42,
-      "Technical": 50.82,
+      "Technical": 50.77,
       "Risk": 46.85
     }
   },
   "beneish_m_score": -2.8486821926831656,
   "dechow_f_score": 0.2729533620746848,
   "recommendation": "lean_bullish",
-  "loss_chance_pct": 44.585592178677075,
+  "loss_chance_pct": 44.586837198597394,
   "price_change_1d_pct": -1.4997,
-  "manipulation_index": 0.0,
-  "composite_score_adjusted": 56.99,
+  "manipulation_index": 5.0,
+  "composite_score_adjusted": 56.49,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -141,7 +143,7 @@
     "loss_avoidance_pattern_size_invariant": false,
     "beneish_high": false,
     "dechow_high": false,
-    "insider_sell_cluster": false,
+    "insider_sell_cluster": true,
     "c_suite_unusual_sell": false
   },
   "osap_signals": {
@@ -178,9 +180,9 @@
   "exited_top5": false,
   "valuation_methods_applicable": 6,
   "form4_diagnostics": {
-    "insider_count": 11,
-    "latest_filing_date": "2026-06-02",
+    "insider_count": 12,
+    "latest_filing_date": "2026-06-10",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.0672429210005981e-08
+  "cross_source_delta": 0.018849342016922226
 }

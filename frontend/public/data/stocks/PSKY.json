@@ -7,8 +7,8 @@
   "country": "US",
   "market_cap": 11526580469.13147,
   "current_price": 10.31,
-  "rank": 414,
-  "composite_score": 41.94,
+  "rank": 415,
+  "composite_score": 41.93,
   "pillar_scores": {
     "quality": 29.35,
     "value": 69.57,
@@ -16,8 +16,8 @@
     "momentum": 27.89,
     "health": 46.45,
     "profitability": 35.51,
-    "technical": 39.69,
-    "risk": 22.71,
+    "technical": 39.54,
+    "risk": 22.68,
     "sentiment": null,
     "ml": null
   },
@@ -48,7 +48,7 @@
         "tier_used": null
       },
       "multiples_pe": {
-        "value": 1.8762039200495202,
+        "value": 2.299842772953394,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -60,7 +60,7 @@
         "tier_used": "sector"
       },
       "multiples_ev_ebitda": {
-        "value": 22.679596318782156,
+        "value": 40.744103999395115,
         "applicable": true,
         "reason": null,
         "tier_used": "sector"
@@ -78,16 +78,15 @@
         "tier_used": null
       }
     },
-    "median": 14.075256911147244,
-    "max": 28.917067729698807,
-    "low": 1.8762039200495202,
-    "high": 28.917067729698807,
-    "mos_pct": 26.750889985876974,
+    "median": 17.19399261660557,
+    "max": 40.744103999395115,
+    "low": 2.299842772953394,
+    "high": 40.744103999395115,
+    "mos_pct": 40.037194097317844,
     "valuation_warnings": [
-      "goodwill_heavy",
-      "extreme_multiples_pe_estimate"
+      "goodwill_heavy"
     ],
-    "valuation_methods_applicable": 3
+    "valuation_methods_applicable": 4
   },
   "top5_factors": [],
   "score_history": [],
@@ -112,7 +111,6 @@
   "risk_flags": [],
   "valuation_warnings": [
     "goodwill_heavy",
-    "extreme_multiples_pe_estimate",
     "restatement_history"
   ],
   "has_history": true,
@@ -128,22 +126,22 @@
     "label": "Communication Services median (n=23)",
     "values": {
       "Quality": 52.17,
-      "Value": 49.64,
+      "Value": 51.45,
       "Growth": 55.98,
-      "Momentum": 45.07,
+      "Momentum": 45.72,
       "Health": 45.66,
       "Profitability": 50.72,
-      "Technical": 39.69,
+      "Technical": 39.54,
       "Risk": 50.96
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": null,
   "recommendation": "neutral",
-  "loss_chance_pct": 36.668772314631845,
+  "loss_chance_pct": 31.022923445348653,
   "price_change_1d_pct": 0.6836,
   "manipulation_index": 5.0,
-  "composite_score_adjusted": 41.44,
+  "composite_score_adjusted": 41.43,
   "manipulation_components": {
     "sloan_accruals_top_decile": false,
     "beneish_manipulation_veto": false,
@@ -194,11 +192,11 @@
   "osap_blended_score": 46.89,
   "entered_top5": false,
   "exited_top5": false,
-  "valuation_methods_applicable": 3,
+  "valuation_methods_applicable": 4,
   "form4_diagnostics": {
     "insider_count": 7,
-    "latest_filing_date": "2026-06-04",
+    "latest_filing_date": "2026-06-08",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 0.0010493348743733407
+  "cross_source_delta": 0.015942381317996922
 }

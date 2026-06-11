@@ -16,7 +16,7 @@
     "momentum": 80.58,
     "health": 89.24,
     "profitability": 72.69,
-    "technical": 38.94,
+    "technical": 38.89,
     "risk": 48.06,
     "sentiment": null,
     "ml": null
@@ -109,7 +109,8 @@
     "extreme_graham_estimate",
     "extreme_rim_estimate",
     "extreme_dcf_estimate",
-    "extreme_estimate_majority"
+    "extreme_estimate_majority",
+    "cross_source_disagreement"
   ],
   "has_history": true,
   "tangible_book_value": 16.485411770408536,
@@ -129,14 +130,14 @@
       "Momentum": 63.84,
       "Health": 68.44,
       "Profitability": 49.42,
-      "Technical": 50.82,
+      "Technical": 50.77,
       "Risk": 46.85
     }
   },
   "beneish_m_score": null,
   "dechow_f_score": 0.7830952410820516,
   "recommendation": "cautious",
-  "loss_chance_pct": 63.47543391249816,
+  "loss_chance_pct": 63.47667893241848,
   "price_change_1d_pct": -5.8557,
   "manipulation_index": 20.0,
   "composite_score_adjusted": 53.05,
@@ -196,5 +197,5 @@
     "latest_filing_date": "2026-06-03",
     "fetch_status": "ok"
   },
-  "cross_source_delta": 1.4928658625582868e-08
+  "cross_source_delta": 0.05046173619517475
 }
