@@ -29,13 +29,6 @@ type Row = {
   // in adaptive mode, or the fixed `count` prop in slider mode.
   sliceCount: number;
   // FAIL-1: when the rebalance has a band_book, the held set is EXACT (not a
-  // prefix). `hasBandBook` gates the display-count sub-label to avoid showing
-  // the count-slice number for band entries.
-  hasBandBook: boolean;
-  // Set of carry names for this rebalance — used only in the Sell row label
-  // to distinguish "exited cleanly" from "still carried". Present only when
-  // bandCarryNames was exported by the engine.
-  carryNameSet: Set<string>;
 };
 
 /**
@@ -71,7 +64,7 @@ export function HoldingsTimeline({
     let totalEntered = 0;
     for (let i = 0; i < timeline.length; i += 1) {
       const entry = timeline[i];
-      // FAIL-1 fix: when the entry carries bandBook, use the EXACT held set
+      // When the entry carries bandBook, use the EXACT held set
       // (the band book is NOT a prefix of `holdings`). Build sectorByTicker
       // from the full holdings list so band-carried names whose rank may have
       // fallen below the count slice still resolve.
@@ -106,7 +99,6 @@ export function HoldingsTimeline({
       const entered = i === 0 ? new Set<string>() : new Set(held.filter((t) => !prevSet.has(t)));
       const exited = prev.filter((t) => !heldSet.has(t));
       if (i > 0) totalEntered += entered.size;
-      const carryNameSet = new Set(entry.bandCarryNames ?? []);
       chrono.push({
         date: entry.date,
         held,
@@ -114,8 +106,6 @@ export function HoldingsTimeline({
         exited,
         sectorByTicker,
         sliceCount,
-        hasBandBook,
-        carryNameSet,
       });
       prev = held;
     }

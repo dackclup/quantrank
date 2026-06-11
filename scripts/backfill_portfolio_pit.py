@@ -884,7 +884,7 @@ def run_backfill(
             )
 
         # Collect this leg's band weights for the adaptive NAV (replaces the old
-        # prefix-based adaptive series as the THE product adaptive line).
+        # prefix-based adaptive series as THE product adaptive line).
         if band_weights_map:
             band_legs_for_nav.append((T_iso, band_weights_map))
 

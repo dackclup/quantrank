@@ -204,7 +204,7 @@ export function getAiPickData(): AiPickData | null {
             const score = compositeByTicker[ticker] ?? 0;
             const compositeMin = meta.adaptive_rule!.composite_min;
             const holdBandMin = meta.adaptive_rule!.hold_band_min as number;
-            // WARN-carried fix: prefer the engine-exported band_carry_names list
+            // Prefer the engine-exported band_carry_names list
             // when present — it is the authoritative source (the engine knows
             // exactly which names were carried vs freshly entered, whereas the
             // score-only inference can mislabel floor-padded thin legs).
@@ -269,7 +269,7 @@ export function getAiPickData(): AiPickData | null {
     // carries are present). HoldingsTimeline prefers bandHeldCount over
     // adaptiveCount when both are present.
     //
-    // FAIL-1 fix: `bandBook` carries the EXACT held set for band rebalances
+    // `bandBook` carries the EXACT held set for band rebalances
     // (r.band_book from the raw artifact). The band book is NOT a prefix of
     // `holdings` — HoldingsTimeline must use it directly when present instead
     // of slicing holdings[:sliceCount]. Sectors are resolved from r.holdings.

@@ -243,7 +243,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                 {displayCount} {displayCount === 1 ? 'name' : 'names'}
               </span>{' '}
               {isBand ? (
-                // FAIL-5: band-only copy — "enters; holdings stay while ≥holdBandMin"
+                // Band-only copy — "enters; holdings stay while ≥holdBandMin"
                 // lives ONLY here. STATE 1 artifacts only.
                 <>
                   (every pick scoring{' '}
@@ -265,7 +265,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                   {').'}
                 </>
               ) : (
-                // FAIL-5: original pre-band wording for STATE 2 (current artifact).
+                // Original pre-band wording for STATE 2 (current artifact).
                 // "holds every pick scoring ≥N" — unchanged from the pre-V55 copy.
                 <>
                   (holds every pick scoring{' '}
@@ -305,7 +305,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                 {displayCount} {displayCount === 1 ? 'name' : 'names'}
               </span>{' '}
               {isBand ? (
-                // FAIL-5: band-only copy — "enters; holdings stay while ≥holdBandMin"
+                // Band-only copy — "enters; holdings stay while ≥holdBandMin"
                 // lives ONLY here. STATE 1 artifacts only.
                 <>
                   (every pick scoring{' '}
@@ -327,7 +327,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                   {').'}
                 </>
               ) : (
-                // FAIL-5: original pre-band wording for STATE 2 (current artifact).
+                // Original pre-band wording for STATE 2 (current artifact).
                 // "holds every pick scoring ≥N" — unchanged from the pre-V55 copy.
                 <>
                   (holds every pick scoring{' '}
