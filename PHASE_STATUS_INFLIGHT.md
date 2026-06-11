@@ -3156,3 +3156,32 @@ drained merged #453 + #456 bullets — + §Next-deliverables item-1 pointer
 fix) · PHASE_STATUS_INFLIGHT.md (this).
 
 ---
+
+## docs(portfolio) — adaptive-artifact verification + first A1/A2 gate baseline (2026-06-11)
+
+**Branch**: `claude/confident-thompson-y58bhe` · **Status**: in flight
+
+Durable record of the FIRST post-#457 adaptive artifact verification. The
+branch's backfill-dispatch copy (04:04 UTC) was SUPERSEDED before merge by
+the rankings-dispatch warm refresh that landed directly on `main`
+(`65bfd335`, 04:20 UTC, post-#456 share-count fix + post-#458 cache-v7) —
+the branch artifact commit was dropped; main's copy is canonical. Both
+artifacts verified identically: `meta.adaptive_rule = {composite_min: 65.0,
+min_picks: 5, max_picks: 20}` · `nav.adaptive` (gross/net/net_conservative/
+turnover) · `rebalances[*].adaptive_count` + `adaptive_count_raw` · counts
+5-13 (mean 8.0) · adaptive net CAGR 22.8% vs SPY 14.9% — matches the #457
+ratified evaluation to the decimal · `veto_layer_replayed` stays true.
+
+**First official A1/A2 gate read** (gates registered on issue #130):
+neither fires on history; 3 raw<5 drought quarters in 10y (2020-02 raw 3 ·
+2025-11 raw 3 · 2026-02 raw 2) — the two most-recent quarters are droughts
+and the current book (2026-05-15) holds the FLOOR 5 (ALL · APA · LULU ·
+IBKR · ACGL; raw back to 5 at 2026-05). Conviction is currently thin —
+watch A1 at the next cron/cohort audit. Frontend flip verified on a local
+static export against the adaptive artifact: home renders the adaptive
+branch (no slider, varying-count caption, veto-replay caption intact),
+510 pages. **Production is LIVE on the adaptive basket as of `65bfd335`.**
+
+**Files**: PHASE_STATUS_INFLIGHT.md (this).
+
+---
