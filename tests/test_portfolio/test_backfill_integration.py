@@ -1650,3 +1650,101 @@ def test_band_exports_present_in_artifact_meta_adaptive_rule(tmp_path, _universe
         f"meta.adaptive_rule.hold_band_min must be 55.0 (pre-registered V55); "
         f"got {rule['hold_band_min']!r}"
     )
+
+
+# ---------------------------------------------------------------------------
+# Uncap coverage pins — methodology conditions U5/U3 (e2e level, 2026-06-11).
+#
+# U5: meta.adaptive_rule["max_picks"] is None in the artifact.
+# U3: sigma coverage — set(band_weights.keys()) ⊆ set(band_book ∩ priced).
+#
+# Engineering a >20-name cohort with the 3-ticker synthetic fixture is
+# impossible (the real pillar pipeline only processes the 3 members), so U3
+# sigma coverage is pinned at the structural seam available in the e2e artifact:
+# band_weights.keys() ⊆ band_book (every band-weighted name is in band_book).
+# The direct unit-level U3 invariant is inherently satisfied by the sigma-loop
+# design (the loop extends sigmas to cover band_book members not in picks); see
+# the inline docstring below for the engineering boundary explanation.
+# ---------------------------------------------------------------------------
+
+
+def test_meta_adaptive_rule_max_picks_is_none_u5(tmp_path, _universe) -> None:
+    """U5 pin: meta.adaptive_rule['max_picks'] is None in the artifact.
+
+    The uncap (2026-06-11 ratification) removes the MAX_PICKS hard ceiling from
+    the band book.  The artifact contract is: the key is KEPT but set to None
+    explicitly — 'considered and deliberately removed', no key-drop ambiguity
+    (see test_meta_adaptive_rule_values above, which also pins this, and which
+    this test exists alongside as an isolated per-condition pin per the U2/U3/U4
+    coverage task list).
+
+    Fixture: standard 3-ticker synthetic universe; gate='veto_only' for wiring
+    isolation.  The max_picks=None value must survive JSON serialisation.
+    """
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history",
+                          side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices",
+                          side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
+    ):
+        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path,
+                              gate="veto_only")
+
+    meta = json.loads(out.read_text())["meta"]
+    assert "adaptive_rule" in meta, "meta.adaptive_rule key missing from artifact"
+    rule = meta["adaptive_rule"]
+    assert "max_picks" in rule, (
+        "meta.adaptive_rule['max_picks'] key must be present (explicit null contract, "
+        "not key-drop)"
+    )
+    assert rule["max_picks"] is None, (
+        f"meta.adaptive_rule['max_picks'] must be None (uncap removes the ceiling); "
+        f"got {rule['max_picks']!r}"
+    )
+
+
+def test_band_weights_keys_subset_of_band_book_u3_structural(tmp_path, _universe) -> None:
+    """U3 sigma-coverage structural pin: set(band_weights.keys()) ⊆ set(band_book).
+
+    Engineering boundary note: the direct unit-level U3 invariant
+    (set(band_weights.keys()) == set(band_book ∩ priced)) cannot be exercised by
+    engineering a >20-name e2e cohort using the 3-ticker synthetic fixture — the
+    real pillar pipeline only processes the 3 members and cannot produce a cohort
+    larger than MAX_PICKS=20.  The sigma loop in run_backfill extends sigmas to
+    cover rank-21+ band_book members before inverse_vol_weights is called;
+    that path only fires when len(band_book) > 20, which is structurally
+    unreachable with a 3-ticker universe.
+
+    What CAN be pinned at this seam: the subset invariant
+    set(band_weights.keys()) ⊆ set(band_book) holds for every rebalance — no
+    ticker is weighted that is not in the band book.  This covers the wiring
+    (band_sigmas filtering step) without requiring a >20-name fixture.
+
+    Fixture: standard 3-ticker synthetic universe; gate='veto_only' for wiring
+    isolation.
+    """
+    with (
+        mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
+        mock.patch.object(bf, "fetch_fundamentals_history",
+                          side_effect=lambda cik: _annual_history(1.0)),
+        mock.patch.object(bf, "fetch_prices",
+                          side_effect=lambda t: _prices(abs(hash(t)) % 1000)),
+        mock.patch.object(bf, "fetch_amendments", return_value=[]),
+        mock.patch.object(bf, "_compute_pit_risk_flags", return_value={}),
+    ):
+        out = bf.run_backfill(date(2022, 6, 1), date(2023, 6, 1), data_dir=tmp_path,
+                              gate="veto_only")
+
+    payload = json.loads(out.read_text())
+    assert payload["meta"]["rebalance_count"] > 0, "Expected at least one rebalance"
+
+    for reb in payload["rebalances"]:
+        band_book_set = set(reb["band_book"])
+        band_weights_keys = set(reb["band_weights"].keys())
+        assert band_weights_keys <= band_book_set, (
+            f"band_weights keys {band_weights_keys} not a subset of band_book "
+            f"{band_book_set} at {reb['date']} — U3 sigma-coverage wiring violated"
+        )
