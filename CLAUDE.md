@@ -310,7 +310,7 @@ whitespace / single-line fixes do not trigger.
 | User says "tag release" / "cut a release" / "release vX.Y.Z" / "ตัด release" / phase-epic PR just merged | `release-captain` (orchestrator; spawns ladder agents as needed) | Owns release ladder |
 | User asks to create a new `claude/*` branch from a handoff prompt | `phase-coordinator` Mode A | Before first non-trivial edit |
 | Phase / sub-PR marked complete on this branch | `phase-coordinator` Mode C | After merge / on close |
-| Diff > 200 lines on `compute/scoring/` OR user says "full review" / "deep review" | `quantrank-reviewer` with `model: fable` override | Rare; user authorization required |
+| Diff > 200 lines on `compute/scoring/` OR user says "full review" / "deep review" | `quantrank-reviewer` (fable by default — no model override needed) | Rare |
 
 ### Spawn discipline
 

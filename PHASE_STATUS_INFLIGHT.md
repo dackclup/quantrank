@@ -3185,3 +3185,30 @@ branch (no slider, varying-count caption, veto-replay caption intact),
 **Files**: PHASE_STATUS_INFLIGHT.md (this).
 
 ---
+
+## docs(agents) — 25-agent model+effort audit: fix stale model references (in flight, 2026-06-11)
+
+**Branch**: `claude/friendly-rubin-liav05` · **Scope**: docs / agent-defs only —
+no code / workflow / schema surface.
+
+Full 25-agent `model:`/`effort:` frontmatter audit vs `.claude/agents/README.md`
+§Model split + authoring convention #3: **all 25 assignments confirmed
+appropriate** (5 fable+max judgment gates · 18 sonnet+max · 2 sonnet+high
+deterministic script-runner carve-outs). No frontmatter changes. Two stale-doc
+fixes shipped:
+
+1. `release-captain.md` description said "Opus model" — predates the fable
+   migration; frontmatter was already `model: fable`. → "Fable model".
+2. CLAUDE.md cue-table row "`quantrank-reviewer` with `model: fable` override ·
+   user authorization required" — stale since the reviewer became fable by
+   default; there is no override left to authorize. → reworded, clause dropped.
+
+Side observation (no change): `vercel-preview-auditor`'s UUID-pinned MCP tool
+names are the documented install-specific limitation (docs/GOTCHAS.md
+§"Sub-agent `tools:` frontmatter") with the gap-surfacing mitigation already in
+place.
+
+**Files**: .claude/agents/release-captain.md · CLAUDE.md (§Auto-routing cue
+table row) · PHASE_STATUS_INFLIGHT.md (this).
+
+---
