@@ -115,6 +115,13 @@ DEFAULT_COUNT = 5
 CONSERVATIVE_COST_BPS = 25.0  # the "show the cost band" second net line
 BENCHMARKS_JSON = "portfolio/benchmarks.json"
 
+# Adaptive-book rule: the AI sizes its own basket each rebalance by holding EVERY
+# high-conviction pick whose composite_score >= ADAPTIVE_COMPOSITE_MIN, subject to
+# a floor of ADAPTIVE_MIN_PICKS and a cap of MAX_PICKS.
+# Pending methodology-scientist ratification — keep these as the single flip point.
+ADAPTIVE_COMPOSITE_MIN: float = 65.0
+ADAPTIVE_MIN_PICKS: int = 5
+
 # Phase 7.0c: +veto-replay suffix marks artifacts where veto_layer_replayed=True.
 # Prior artifacts (veto_layer_replayed=False) carry the plain "phase3-effective-weights"
 # version so callers can distinguish the two datasets unambiguously.
@@ -183,7 +190,11 @@ DISCLAIMER_BASE = (
     "trailing year at a historical rebalance will appear in this backtest un-vetoed. "
     "Net figures charge a modeled per-side spread cost (10-25 bps on turnover) but "
     "are gross of additional market-impact slippage; per McLean-Pontiff (2016) "
-    "published-factor edges decay ~32% post-publication."
+    "published-factor edges decay ~32% post-publication. "
+    "The adaptive AI-pick book sizes itself each rebalance: it holds every "
+    "high-conviction pick with composite score >= 65, with a minimum of 5 names and "
+    "a maximum of 20, so holding count varies by quarter (rule pending "
+    "methodology-scientist ratification)."
 )
 
 _SNAPSHOT_FIELDS = {f.name for f in dataclasses.fields(FundamentalsSnapshot)}
@@ -395,10 +406,12 @@ def run_backfill(
 
     rebal_dates = quarterly_rebalance_dates(start, end)
     rebalances_out: list[dict] = []
-    # Per rebalance: (snapped_date, {count N -> {ticker -> weight}}) for N=1..MAX_PICKS.
-    # The NAV builder turns each N into its own daily NAV series; the frontend slider
-    # reads the matching count.
-    rebalance_picks: list[tuple[str, dict[int, dict[str, float]]]] = []
+    # Per rebalance: (snapped_date, {count N -> {ticker -> weight}}, n_adaptive) for
+    # N=1..MAX_PICKS.  The NAV builder turns each N into its own daily NAV series; the
+    # frontend slider reads the matching count. n_adaptive is the adaptive-book count
+    # for this rebalance (composite >= ADAPTIVE_COMPOSITE_MIN, floored at ADAPTIVE_MIN_PICKS,
+    # capped at MAX_PICKS; see the adaptive-rule constants above).
+    rebalance_picks: list[tuple[str, dict[int, dict[str, float]], int]] = []
     incomplete_membership = 0
     restate_names: set[str] = set()
     picked_names: set[str] = set()
@@ -655,7 +668,24 @@ def run_backfill(
                 weights_by_count[n] = w
         if not weights_by_count:
             continue  # no name in this leg had a computable 90d sigma
-        rebalance_picks.append((T_iso, weights_by_count))
+
+        # Adaptive-book count for this rebalance: prefix of `picks` (composite-desc,
+        # HC-gated) whose composite_score >= ADAPTIVE_COMPOSITE_MIN.
+        n_adaptive = sum(
+            1 for t in picks if float(composite[t]) >= ADAPTIVE_COMPOSITE_MIN
+        )
+        # Floor: at least ADAPTIVE_MIN_PICKS (or len(picks) if the basket is smaller).
+        n_adaptive = max(n_adaptive, min(ADAPTIVE_MIN_PICKS, len(picks)))
+        # Cap is implicit: len(picks) <= MAX_PICKS (select_picks never exceeds MAX_PICKS).
+        # Clamp to the largest count that has weights (sigma-less names may shrink maps).
+        available_counts = sorted(weights_by_count.keys())
+        if available_counts:
+            n_adaptive = max(
+                (c for c in available_counts if c <= n_adaptive),
+                default=available_counts[0],
+            )
+
+        rebalance_picks.append((T_iso, weights_by_count, n_adaptive))
 
         # Contamination canary tracks the FULL selectable set (top-MAX_PICKS) — any of
         # these names can surface once the user slides the count up. A name whose
@@ -716,6 +746,10 @@ def run_backfill(
                 # vetoed_pick_candidates: names that would have appeared in the top-N
                 # composite basket but were excluded by at least one active veto.
                 "vetoed_pick_candidates": vetoed_pick_candidates,
+                # adaptive_count: the adaptive-book holding count for this rebalance
+                # (composite >= ADAPTIVE_COMPOSITE_MIN, floored at ADAPTIVE_MIN_PICKS,
+                # capped at MAX_PICKS, clamped to an available weights map).
+                "adaptive_count": n_adaptive,
             }
         )
 
@@ -775,6 +809,14 @@ def run_backfill(
                 "loss_chance_max": HIGH_CONVICTION_LOSS_CHANCE_MAX,
                 "hard_stale_days": BACKTEST_HARD_STALE_DAYS,
             },
+            # Adaptive-book rule: AI sizes its own basket each rebalance.
+            # Hold every HC pick with composite >= composite_min; min_picks floor;
+            # max_picks cap (= MAX_PICKS). Pending methodology-scientist ratification.
+            "adaptive_rule": {
+                "composite_min": ADAPTIVE_COMPOSITE_MIN,
+                "min_picks": ADAPTIVE_MIN_PICKS,
+                "max_picks": MAX_PICKS,
+            },
             "disclaimer": disclaimer,
         },
         "rebalances": rebalances_out,
@@ -799,22 +841,33 @@ def _snap_to_trading_day(date_iso: str, dates: list[str]) -> str | None:
 
 
 def _assemble_nav(
-    rebalance_picks: list[tuple[str, dict[int, dict[str, float]]]],
+    rebalance_picks: list[tuple[str, dict[int, dict[str, float]], int]],
     prices_by_ticker: dict[str, pd.DataFrame],
     data_dir: Path,
 ) -> dict:
     """Daily gross/net/conservative NAV for EACH holding count N=1..MAX_PICKS + benchmarks.
 
-    ``rebalance_picks`` is ``[(as_of_date, {N: {ticker: weight}})]``. For each count N
-    the matching per-rebalance weight maps become one daily NAV series (the 1-10 slider
-    selects the count); ``dates`` + ``benchmark`` are shared across all counts (same
-    trading calendar, same rebased index lines).
+    ``rebalance_picks`` is ``[(as_of_date, {N: {ticker: weight}}, n_adaptive)]``.
+    For each count N the matching per-rebalance weight maps become one daily NAV series
+    (the 1-10 slider selects the count); ``dates`` + ``benchmark`` are shared across all
+    counts (same trading calendar, same rebased index lines).
+    Additionally builds an ``"adaptive"`` NAV entry using ``weights_by_count[n_adaptive]``
+    per rebalance (same inner shape as a by_count entry; left-padded with None when a leg
+    is missing — same contract as by_count).
     """
-    empty = {"dates": [], "benchmark": {}, "by_count": {}, "default_count": DEFAULT_COUNT}
+    empty = {
+        "dates": [],
+        "benchmark": {},
+        "by_count": {},
+        "adaptive": {},
+        "default_count": DEFAULT_COUNT,
+    }
     if not rebalance_picks:
         return empty
 
-    held = sorted({t for _, wbc in rebalance_picks for wmap in wbc.values() for t in wmap})
+    held = sorted(
+        {t for _, wbc, _ in rebalance_picks for wmap in wbc.values() for t in wmap}
+    )
     start_ts = pd.Timestamp(rebalance_picks[0][0])
 
     closes: dict[str, dict[str, float]] = {}
@@ -851,7 +904,7 @@ def _assemble_nav(
     for n in range(1, MAX_PICKS + 1):
         legs = [
             (snapped, wbc[n])
-            for d, wbc in rebalance_picks
+            for d, wbc, _ in rebalance_picks
             if n in wbc and (snapped := _snap_to_trading_day(d, dates)) is not None
         ]
         if not legs:
@@ -868,10 +921,33 @@ def _assemble_nav(
             "turnover_by_rebalance": gn["turnover_by_rebalance"],
         }
 
+    # Adaptive NAV: for each rebalance use weights_by_count[n_adaptive].
+    # Skip a rebalance if its n_adaptive map is missing (sigma-less names shrink
+    # available maps — the skip keeps the adaptive series honest).
+    adaptive_legs = [
+        (snapped, wbc[n_adp])
+        for d, wbc, n_adp in rebalance_picks
+        if n_adp in wbc and (snapped := _snap_to_trading_day(d, dates)) is not None
+    ]
+    adaptive: dict = {}
+    if adaptive_legs:
+        gn_adp = build_portfolio_nav(dates, closes, adaptive_legs)
+        cons_adp = build_portfolio_nav(
+            dates, closes, adaptive_legs, cost_bps_per_side=CONSERVATIVE_COST_BPS
+        )
+        pad_adp: list[float | None] = [None] * (len(axis) - len(gn_adp["dates"]))
+        adaptive = {
+            "gross": pad_adp + gn_adp["gross"],
+            "net": pad_adp + gn_adp["net"],
+            "net_conservative": pad_adp + cons_adp["net"],
+            "turnover_by_rebalance": gn_adp["turnover_by_rebalance"],
+        }
+
     return {
         "dates": axis,
         "benchmark": _benchmark_navs(axis, data_dir),
         "by_count": by_count,
+        "adaptive": adaptive,
         "default_count": DEFAULT_COUNT,
     }
 
