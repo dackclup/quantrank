@@ -322,7 +322,7 @@ always-loaded context small while preserving discoverability of every invariant.
 - **`globals.css` soft-color `!important` override is LITERAL-class-keyed — never reaches `dark:` solid-fills (theme audit #401)**
 - **Home + ranking pages derive stats at BUILD TIME (Server Components) — never `fs`-import into a `'use client'` component**
 - **`data/sp500_membership_historical.csv` must stay ADD/REMOVE-balanced — run `scripts/verify_membership_ledger.py` after ANY edit; Track B covers 2016→present, rename-aware**
-- **The home page IS the AI-pick portfolio — `getAiPickData()` fs-read; NEVER static-`import` the 1.3MB `backtest_pit.json`. The AI sizes its own basket when `nav.adaptive` is present (composite ≥ 65 / floor 5 / cap 20); the 1-20 slider + `nav.by_count[N]` are the legacy fallback for pre-adaptive artifacts**
+- **The home page IS the AI-pick portfolio — `getAiPickData()` fs-read; NEVER static-`import` the 1.3MB `backtest_pit.json`. The AI sizes its own basket when `nav.adaptive` is present (composite ≥ 65 / floor 5 / no cap (uncapped 2026-06-11)); the 1-20 slider + `nav.by_count[N]` are the legacy fallback for pre-adaptive artifacts**
 - **Per-stock JSON for dropped tickers auto-pruned by `prune_orphan_stock_files()` — don't glob `stocks/` for param-gen**
 - **`AnnualReturnsTable` + `NavCompareChart` money mode derive in-browser from NAV; the CAGR caveat is DATA-DRIVEN on `meta.veto_layer_replayed` — never hardcode it, and backtest ≠ live track record**
 - **Agent teams (experimental, ≠ subagents) — desktop-terminal only; builders own disjoint layers; recipes in [`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md)**
@@ -337,8 +337,8 @@ COMPANY-TOTAL across classes, additive
 manifests it landed as #458; first post-bump cron ran 2026-06-11 —
 verify `multi_class_per_class_override_count` = 2 + GOOG ≡ GOOGL
 ≈ 12.09B on that artifact). The AI-pick home now sizes its own basket
-(adaptive rule, composite ≥ 65 / floor 5 / cap 20 — see §Gotchas; gates
-A1/A2/B/C tracked on issue #130). The technical
+(adaptive rule, composite ≥ 65 / floor 5 / no cap (uncapped 2026-06-11) — see §Gotchas; gates
+A1/A2/A2-S/B/C tracked on issue #130). The technical
 pillar is an honest 4-metric mean after the #441 MAD close-out
 (`0.10.17`, RATIFY-REMOVE) — **no 5th technical input without a fresh
 pre-registration**. Defense layer **33 declared boolean flags** (7

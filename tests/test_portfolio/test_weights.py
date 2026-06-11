@@ -673,7 +673,7 @@ def test_select_picks_count_none_all_dual_class_pairs_dedup():
         )
 
 
-def test_select_picks_int_count_regression_guard_u3():
+def test_select_picks_int_count_regression_guard():
     """U3 regression guard: integer count still clamps to [MIN_PICKS, MAX_PICKS].
 
     The uncap change (count=None) must not affect the existing int-count path.

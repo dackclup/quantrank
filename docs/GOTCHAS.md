@@ -1302,14 +1302,14 @@ load-bearing rules:
 - **The ADAPTIVE book is the headline; the 1-20 slider is legacy-fallback-only.** When the artifact
   carries `nav.adaptive` + `meta.adaptive_rule` (+ `rebalances[*].adaptive_count`), the AI sizes its
   own basket each rebalance — every HC-gated pick with `composite_score >= adaptive_rule.composite_min`
-  (65), floor `min_picks` (5), cap `max_picks` (20 = MAX_PICKS) — and the UI shows THE one adaptive
+  (65), floor `min_picks` (5), no cap (`max_picks: null` — uncapped 2026-06-11; A2-S spike tripwire raw ≥ 25 guards the open ceiling) — and the UI shows THE one adaptive
   book with NO count slider. The adaptive book at a rebalance is the PREFIX
   `holdings[:adaptive_count]` (holdings are composite-desc) and its weights are exactly
   `weights_by_count[String(adaptive_count)]` — never recompute them. The `nav.by_count[N]` series
   remain in the artifact for analytics/experiments, and the OLD slider UI renders only when
   `nav.adaptive` is absent (an artifact generated before the adaptive rule landed) so the deploy is
   safe across the regeneration boundary. The ADAPTIVE_* constants live in ONE place
-  (`scripts/backfill_portfolio_pit.py`) per methodology-scientist RATIFY 2026-06-11 (gates A1/A2/B/C on issue #130).
+  (`scripts/backfill_portfolio_pit.py`) per methodology-scientist RATIFY 2026-06-11 (gates A1/A2/A2-S/B/C on issue #130).
 - **`benchmarks.json` is NOT read by the frontend.** The chart uses `nav.benchmark` (already aligned
   to `nav.dates` + rebased at backfill time). `benchmarks.json` is the weekly-cron-owned raw close
   series (a diagnostic input to the backfill), not a frontend dependency.

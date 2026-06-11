@@ -3447,9 +3447,9 @@ scoreboard claim-quarantined (U8): CAGR 22.4 → 23.0, turnover 2.324 →
 inverse). Reopen criteria U13: any live H-gate breach attributable to
 the diff-cohort carries reopens the domain question; Q3 audit reviews
 the first live uncapped carry-cohort health as a standing item.
-Awaiting USER COUNTERSIGN of the V55.0 → V55.1 amendment framing before
-merge (it re-labels the registered rule + re-bases H-gate baselines on
-`3dbe4798`; `4bfcdb32` archived as the U1 counterfactual record).
+USER COUNTERSIGNED the V55.0 → V55.1 amendment framing 2026-06-11
+(post-U10/U11 reads); H-gate baselines re-base on `3dbe4798`; `4bfcdb32`
+archived as the U1 counterfactual record.
 
 **Files**: compute/portfolio/weights.py · scripts/backfill_portfolio_pit.py ·
 tests/test_portfolio/ (pins + uncap coverage) · frontend/lib/types.ts ·
