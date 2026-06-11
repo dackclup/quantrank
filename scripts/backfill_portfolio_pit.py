@@ -117,7 +117,7 @@ BENCHMARKS_JSON = "portfolio/benchmarks.json"
 
 # Adaptive-book rule: the AI sizes its own basket each rebalance by holding EVERY
 # high-conviction pick whose composite_score >= ADAPTIVE_COMPOSITE_MIN, subject to
-# a floor of ADAPTIVE_MIN_PICKS and a cap of MAX_PICKS.
+# a floor of ADAPTIVE_MIN_PICKS. NO ceiling (uncap ratified 2026-06-11 — see below).
 # Provenance: EMPIRICAL-IN-SAMPLE (grid-swept {55,60,65,70} x {1,3,5} floors, 40
 # rebalances 2016-08..2026-05 on the veto-replayed artifact; NOT literature-anchored,
 # NOT a canonical TIERS boundary). Structural corroboration: monotone dose-response
@@ -127,15 +127,27 @@ BENCHMARKS_JSON = "portfolio/benchmarks.json"
 # ~80% of idiosyncratic variance); the rule's mean count (8.0) lands on the
 # independent fixed-N sweet spot (N=8-14). Expect roughly HALF the in-sample edge
 # forward (McLean-Pontiff 2016 decay + in-sample-selection haircut).
+# Uncap record (user decision 2026-06-11): the MAX_PICKS ceiling is REMOVED from
+# the band/adaptive domain. Evidence on the veto-replayed artifact (40 rebalances
+# 2016-08..2026-05): cap was inert on every leg (max raw 13, max book 15 vs MAX_PICKS
+# 20 — cap never bound); no replacement ceiling. A2 gate re-pointed to the full
+# deduped pool (was: raw count from select_picks[:MAX_PICKS] prefix; now: full
+# full_order pool, more responsive to a genuine inflation signal). NEW A2-S spike
+# tripwire: raw >= 25 in a SINGLE rebalance -> reopen immediately (vs the original
+# A2 >= 18 in 2 consecutive rebalances, which remains). Both registered on issue #130.
 # Forward acceptance gates (pre-registered; evaluated at quarterly cohort audits):
 #   A1 score-drought: raw pre-floor count < 5 in >= 3 of any 4 consecutive
 #      rebalances -> reopen threshold (candidate 60).
 #   A2 inflation: raw count >= 18 in 2 consecutive rebalances -> reopen.
+#   A2-S spike: raw count >= 25 in ANY single rebalance -> reopen immediately.
 #   B  relative gate @ 8th live rebalance: adaptive net NAV trails BOTH
 #      by_count[8] AND SPY -> reopen (fallback = quasi-fixed-N=8, NOT a higher floor).
-#   C  freeze lock: no grid re-sweeps on refreshed artifacts until A or B fires.
+#   C  freeze lock: no grid re-sweeps on refreshed artifacts until A/A2-S or B fires.
 # methodology-scientist RATIFY 2026-06-11 (conditions C1 provenance comment = this
 # block; C2 test pin in tests/test_portfolio; C3 gate registration on issue #130).
+# RATIFY-WITH-CONDITIONS (uncap) 2026-06-11: cap inert 0/40 in-sample, max raw 13
+# / max book 15 · no replacement ceiling · A2 re-pointed to full pool + A2-S spike
+# tripwire raw >= 25 -> reopen, registered #130 · U1 regen-diff merge gate.
 ADAPTIVE_COMPOSITE_MIN: float = 65.0
 ADAPTIVE_MIN_PICKS: int = 5
 
@@ -180,7 +192,7 @@ ADAPTIVE_HOLD_BAND_MIN: float = 55.0
 # Phase 7.0c: +veto-replay suffix marks artifacts where veto_layer_replayed=True.
 # Prior artifacts (veto_layer_replayed=False) carry the plain "phase3-effective-weights"
 # version so callers can distinguish the two datasets unambiguously.
-RULE_VERSION = "phase3-effective-weights+veto-replay+hold-band-55"
+RULE_VERSION = "phase3-effective-weights+veto-replay+hold-band-55+uncapped"
 
 # methodology-scientist RATIFY 2026-06-08 (Option B, condition C2): the backtest has
 # ANNUAL 10-K data only, so the live 180d hard-stale gate (config.FILING_STALE_HARD_DAYS)
@@ -246,12 +258,14 @@ DISCLAIMER_BASE = (
     "Net figures charge a modeled per-side spread cost (10-25 bps on turnover) but "
     "are gross of additional market-impact slippage; per McLean-Pontiff (2016) "
     "published-factor edges decay ~32% post-publication. "
-    "The adaptive AI-pick book sizes itself each rebalance: it holds every "
-    "high-conviction pick with composite score >= 65, with a minimum of 5 names and "
-    "a maximum of 20, so holding count varies by quarter (rule ratified "
-    "2026-06-11; forward acceptance gates pre-registered). Incumbents are retained "
-    "while scoring >= 55 to reduce turnover (V55 hysteresis band ratified 2026-06-11; "
-    "the band is a turnover/implementation-cost device — no performance claims)."
+    "The adaptive AI-pick book sizes itself each rebalance: it holds ALL "
+    "high-conviction picks with composite score >= 65 (no ceiling), with a floor of "
+    "5 names, so holding count varies by quarter (uncap ratified 2026-06-11 — "
+    "in-sample max book 15 over 40 rebalances; cap was inert 0/40 legs; A2 spike "
+    "tripwire: raw >= 25 in a single rebalance triggers reopening, registered #130; "
+    "forward acceptance gates pre-registered). Incumbents are retained while scoring "
+    ">= 55 to reduce turnover (V55 hysteresis band ratified 2026-06-11; the band is "
+    "a turnover/implementation-cost device — no performance claims)."
 )
 
 _SNAPSHOT_FIELDS = {f.name for f in dataclasses.fields(FundamentalsSnapshot)}
@@ -436,13 +450,21 @@ def _sector_weights_by_count(
 def _adaptive_count(scores: list[float], available_counts: list[int]) -> tuple[int, int]:
     """``(raw, final)`` adaptive-book counts for one rebalance.
 
-    ``raw`` = #{score >= ADAPTIVE_COMPOSITE_MIN}, INCLUSIVE boundary (a pick scoring
-    exactly 65.0 is in the book) — the A1/A2 acceptance gates read the raw count.
-    ``final`` = raw floored at ``min(ADAPTIVE_MIN_PICKS, len(scores))`` (cap implicit:
-    ``len(scores) <= MAX_PICKS`` via select_picks), then clamped to the largest
-    available weights count <= it — falling back to the smallest available when none
-    is (the sigma-coverage degradation path; gate A1 monitors the final count for
-    exactly this reason). C2 test pin: tests/test_portfolio/test_backfill_integration.py.
+    ``raw`` = #{score >= ADAPTIVE_COMPOSITE_MIN} in the FULL deduped eligible pool
+    (all scores passed in, INCLUSIVE boundary — a pick scoring exactly 65.0 is in
+    the book). Post-uncap (2026-06-11), ``scores`` covers the full ``full_order``
+    list (not just ``picks[:MAX_PICKS]``), so ``raw`` is the uncensored pool size.
+    The A1/A2/A2-S acceptance gates read this raw count.
+
+    ``final`` (LEGACY / analytics only) = raw floored at
+    ``min(ADAPTIVE_MIN_PICKS, len(scores))``, then clamped to the largest available
+    weights count <= it — falling back to the smallest available when none is (the
+    sigma-coverage degradation path; gate A1 monitors the final count for exactly
+    this reason). ``final`` keys into ``weights_by_count`` for the per-count ladder
+    and is retained for the per-rebalance ``adaptive_count`` export (analytics), but
+    it is NOT the authoritative book size. ``band_held_count`` is the authoritative
+    band-book size (uncapped). C2 test pin:
+    tests/test_portfolio/test_backfill_integration.py.
     """
     raw = sum(1 for s in scores if s >= ADAPTIVE_COMPOSITE_MIN)
     final = max(raw, min(ADAPTIVE_MIN_PICKS, len(scores)))
@@ -459,9 +481,16 @@ def _band_book(
 ) -> tuple[list[str], set[str], int]:
     """Pure hysteresis-hold-band book builder (C2 unit-testability gate).
 
-    ``order``   — HC-eligible tickers sorted composite-desc (output of ``select_picks``
-                  up to ``MAX_PICKS``; the caller's HC gate is the sole eligibility
-                  filter — ``_band_book`` does not re-check veto flags).
+    Post-uncap (2026-06-11): the ``MAX_PICKS`` ceiling on ``core`` is REMOVED.
+    ``order`` may contain > MAX_PICKS names (the caller passes ``full_order`` from
+    the uncapped ``select_picks(count=None)`` call), and the band book may grow
+    beyond MAX_PICKS when many incumbents score >= 65 or there are many fresh
+    entrants. Cap removed per the 2026-06-11 uncap ratification; floor logic
+    unchanged: pads to ``min(ADAPTIVE_MIN_PICKS, len(order))``.
+
+    ``order``   — HC-eligible tickers sorted composite-desc (output of
+                  ``select_picks(count=None)``; the caller's HC gate is the sole
+                  eligibility filter — ``_band_book`` does not re-check veto flags).
     ``scores``  — composite score for each ticker (at minimum covers every ticker
                   in ``order``; extra keys are silently ignored).
     ``tenure``  — set of tickers that entered the book via >= ``ADAPTIVE_COMPOSITE_MIN``
@@ -478,7 +507,8 @@ def _band_book(
                  (55 <= score; the >= 65 entry requirement was met in a prior rebalance).
       fresh    = eligible with composite >= ``ADAPTIVE_COMPOSITE_MIN`` (>= 65)
                  that are NOT already counted as carries.
-      core     = top-``MAX_PICKS`` of sorted(carries ∪ fresh) by (-composite, ticker).
+      core     = sorted(carries ∪ fresh) by (-composite, ticker).
+                 (NO MAX_PICKS cap — uncapped per 2026-06-11 ratification.)
       pads     = top non-core eligible names to reach
                  ``min(ADAPTIVE_MIN_PICKS, len(order))``; pads get NO tenure.
       book     = sorted(core + pads) by (-composite, ticker).
@@ -501,12 +531,13 @@ def _band_book(
         if t not in carry_set and scores.get(t, 0.0) >= ADAPTIVE_COMPOSITE_MIN
     ]
 
-    # Core: union of carries + fresh, sorted by (-score, ticker), capped at MAX_PICKS.
+    # Core: union of carries + fresh, sorted by (-score, ticker).
+    # NO MAX_PICKS cap — uncapped per the 2026-06-11 uncap ratification.
     core_unsorted = carries + [t for t in fresh if t not in carry_set]
     core: list[str] = sorted(
         core_unsorted,
         key=lambda t: (-scores.get(t, 0.0), t),
-    )[:MAX_PICKS]
+    )
     core_set = set(core)
 
     # Pads: top non-core eligible names to reach ADAPTIVE_MIN_PICKS (or available count).
@@ -813,12 +844,26 @@ def run_backfill(
         # Sell-eviction is implicit: a name that decayed out of the gate this quarter
         # is absent from the eligible set and won't be re-picked (the basket is rebuilt
         # from scratch each rebalance).
-        picks = select_picks(candidates, count=MAX_PICKS, gate=gate)
-        if not picks:
+        # U2 uncap (2026-06-11): get the FULL uncapped eligible order (all HC-eligible
+        # names in composite-desc order, no [MIN_PICKS, MAX_PICKS] clamp); then take
+        # ``picks`` as the top-MAX_PICKS prefix for the legacy holdings/weights_by_count
+        # path. The single select_picks(count=None) call preserves all ordering/dedup
+        # semantics (dual-class, tiebreak) on the full domain.
+        full_order = select_picks(candidates, count=None, gate=gate)
+        if not full_order:
             continue
+        picks = full_order[:MAX_PICKS]
 
+        # U3 sigma coverage: compute sigmas over the UNION of picks (by_count domain)
+        # AND band_book (which may include members beyond rank-20 when the band retains
+        # them). Since band_book is computed BELOW (needs only order+scores+tenure),
+        # we first compute sigmas over `picks` here for weights_by_count, then extend
+        # to the full band_book domain after _band_book is called. prices_by_ticker
+        # already holds the full cohort, so extending is cheap.
         sigmas: dict[str, float] = {}
         for t in picks:
+            if t not in prices_by_ticker:
+                continue
             closes = prices_by_ticker[t].loc[:T_ts]
             col = "Adj Close" if "Adj Close" in closes.columns else "Close"
             sig = trailing_return_sigma(closes[col].tolist())
@@ -837,25 +882,38 @@ def run_backfill(
         if not weights_by_count:
             continue  # no name in this leg had a computable 90d sigma
 
-        # Adaptive-book count for this rebalance: prefix of `picks` (composite-desc,
-        # HC-gated) whose composite_score >= ADAPTIVE_COMPOSITE_MIN. The RAW pre-floor
-        # count is exported separately — the A1/A2 acceptance gates read it.
+        # U4 adaptive_count_raw: count from the FULL deduped pool (full_order), not
+        # just the MAX_PICKS prefix. This is the uncensored pool size the A1/A2/A2-S
+        # gates read. The legacy `_adaptive_count` `final` value keys into
+        # weights_by_count for the per-rebalance analytics export.
         n_adaptive_raw, n_adaptive = _adaptive_count(
-            [float(composite[t]) for t in picks], list(weights_by_count.keys())
+            [float(composite[t]) for t in full_order], list(weights_by_count.keys())
         )
 
         rebalance_picks.append((T_iso, weights_by_count, n_adaptive))
 
-        # V55 hysteresis hold-band: build the banded book from the HC-eligible picks,
-        # threading tenure state across rebalances (C0 strict tenure semantics).
-        # ``picks`` is already composite-desc HC-eligible (the band's eligibility domain).
-        scores_this = {t: float(composite[t]) for t in picks}
+        # V55 hysteresis hold-band: build the banded book from the HC-eligible
+        # full_order (uncapped domain), threading tenure state across rebalances
+        # (C0 strict tenure semantics). The band book may exceed MAX_PICKS now that
+        # the core cap is removed — all fresh >= 65 + carried >= 55 names are included.
+        scores_this = {t: float(composite[t]) for t in full_order}
         # Snapshot prior tenure BEFORE updating — carry_names_in_book references the OLD
         # tenure (names that were tenured going INTO this rebalance, i.e. the true carries).
         prior_band_tenure = band_tenure
         band_book, next_band_tenure, band_carry_count = _band_book(
-            picks, scores_this, prior_band_tenure
+            full_order, scores_this, prior_band_tenure
         )
+
+        # U3 sigma coverage extension: ensure sigmas cover every band_book member
+        # (rank-21+ names that the band retains need their sigma for band_weights).
+        for t in band_book:
+            if t in sigmas or t not in prices_by_ticker:
+                continue
+            closes = prices_by_ticker[t].loc[:T_ts]
+            col = "Adj Close" if "Adj Close" in closes.columns else "Close"
+            sig = trailing_return_sigma(closes[col].tolist())
+            if sig is not None:
+                sigmas[t] = sig
         band_tenure = next_band_tenure  # thread tenure state to the next rebalance
 
         # Compute inverse-vol weights FRESH over the banded book (not from weights_by_count
@@ -1034,14 +1092,17 @@ def run_backfill(
             # Adaptive-book rule: AI sizes its own basket each rebalance.
             # Hold every HC pick with composite >= composite_min; incumbents are
             # retained while composite >= hold_band_min (V55 hysteresis, ratified
-            # 2026-06-11); min_picks floor; max_picks cap (= MAX_PICKS).
+            # 2026-06-11); min_picks floor; max_picks = None (uncapped per the
+            # 2026-06-11 uncap ratification — key kept, explicit null, so callers
+            # can detect the artifact generation; max_holdings=20 unchanged).
             # methodology-scientist RATIFY 2026-06-11 + RATIFY-WITH-CONDITIONS
-            # 2026-06-11 (hold_band_min; C0 strict tenure).
+            # 2026-06-11 (hold_band_min; C0 strict tenure) +
+            # RATIFY-WITH-CONDITIONS (uncap) 2026-06-11 (cap inert 0/40).
             "adaptive_rule": {
                 "composite_min": ADAPTIVE_COMPOSITE_MIN,
                 "hold_band_min": ADAPTIVE_HOLD_BAND_MIN,
                 "min_picks": ADAPTIVE_MIN_PICKS,
-                "max_picks": MAX_PICKS,
+                "max_picks": None,  # uncapped per 2026-06-11 ratification
             },
             "disclaimer": disclaimer,
         },

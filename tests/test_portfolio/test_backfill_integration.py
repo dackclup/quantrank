@@ -422,8 +422,11 @@ def test_rule_version_carries_veto_replay_and_band_suffixes() -> None:
     assert "+veto-replay" in bf.RULE_VERSION, (
         f"Expected RULE_VERSION to contain '+veto-replay', got {bf.RULE_VERSION!r}"
     )
-    assert bf.RULE_VERSION.endswith("+hold-band-55"), (
-        f"Expected RULE_VERSION to end with '+hold-band-55', got {bf.RULE_VERSION!r}"
+    assert "+hold-band-55" in bf.RULE_VERSION, (
+        f"Expected RULE_VERSION to contain '+hold-band-55', got {bf.RULE_VERSION!r}"
+    )
+    assert bf.RULE_VERSION.endswith("+uncapped"), (
+        f"Expected RULE_VERSION to end with '+uncapped', got {bf.RULE_VERSION!r}"
     )
 
 
@@ -961,7 +964,9 @@ def test_meta_adaptive_rule_values(tmp_path, _universe) -> None:
     assert rule == {
         "composite_min": bf.ADAPTIVE_COMPOSITE_MIN,
         "min_picks": bf.ADAPTIVE_MIN_PICKS,
-        "max_picks": bf.MAX_PICKS,
+        # Uncap (2026-06-11, condition U5): the key is KEPT with an explicit null —
+        # "considered and deliberately removed", never key-drop ambiguity.
+        "max_picks": None,
         "hold_band_min": bf.ADAPTIVE_HOLD_BAND_MIN,
     }, f"adaptive_rule mismatch: {rule}"
 
@@ -1318,41 +1323,22 @@ def test_band_book_reentry_after_force_sell_requires_65() -> None:
     )
 
 
-def test_band_book_cap_max_picks_highest_composite_wins() -> None:
-    """C2 pin — Item 8: when carries + fresh exceed MAX_PICKS, core truncates to MAX_PICKS.
-
-    Fixture forces MAX_PICKS + 2 names all scoring >= 65, so carries ∪ fresh >
-    MAX_PICKS.  The top MAX_PICKS by composite must be in core; the remaining two
-    are dropped.  book ⊆ order is verified (no name outside the eligible set).
-
-    Fixture construction:
-      - tenure = set of MAX_PICKS + 2 names (all previously tenured).
-      - order = all MAX_PICKS + 2 names (all HC-eligible this rebalance).
-      - scores: ascending from 65.0 so the top MAX_PICKS are deterministic.
-    """
-    n = bf.MAX_PICKS + 2        # 22 total candidates; only 20 (MAX_PICKS) allowed in core
+def test_band_book_uncapped_holds_all_qualifying_names() -> None:
+    """Uncap pin (methodology RATIFY-WITH-CONDITIONS 2026-06-11, U2/U5): when more
+    than MAX_PICKS names qualify (all >= 65 here), the book holds ALL of them —
+    the former core[:MAX_PICKS] truncation is gone. Forward guards live at the
+    gate layer (A2 full-pool / A2-S spike >= 25 / H3), not in a silent clamp.
+    book ⊆ order still holds (no name outside the eligible set)."""
+    n = bf.MAX_PICKS + 2        # 22 candidates, every one >= 65
     tickers = [f"T{i:02d}" for i in range(n)]
-    # Scores: 65.0, 66.0, …, 65+n-1 (all >= 65; higher index = higher score).
     scores = {t: 65.0 + i for i, t in enumerate(tickers)}
-    # Order: sorted composite-desc (highest score first) so the caller's ordering
-    # convention is respected.
     order = sorted(tickers, key=lambda t: -scores[t])
     tenure = set(tickers)  # all were tenured
 
     book, next_tenure, carry_count = bf._band_book(order, scores, tenure)
 
-    # Core must be capped at MAX_PICKS.
-    assert len(next_tenure) <= bf.MAX_PICKS, (
-        f"next_tenure has {len(next_tenure)} names; expected <= MAX_PICKS={bf.MAX_PICKS}"
-    )
-    # book may include pads, but core (captured by next_tenure) is <= MAX_PICKS.
-    # Also verify the top-MAX_PICKS by score are the ones kept (highest composite wins).
-    expected_core = set(order[:bf.MAX_PICKS])
-    assert next_tenure == expected_core, (
-        f"Expected top-{bf.MAX_PICKS} composites in next_tenure; "
-        f"got {next_tenure} vs expected {expected_core}"
-    )
-    # book ⊆ order (no name outside the eligible set).
+    assert len(book) == n, f"uncapped book must hold all {n} qualifying names; got {len(book)}"
+    assert next_tenure == set(tickers), "uncapped core keeps tenure for every qualifying name"
     assert set(book) <= set(order), (
         f"book contains names outside order (eligible set): {set(book) - set(order)}"
     )
