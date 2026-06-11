@@ -1,17 +1,6 @@
 ---
 name: worker-session-handoff
-description: Generate a paste-ready handoff prompt for a parallel Claude Code
-  worker session that will create a branch, implement scoped work, open a
-  Draft PR, and report back. Pre-populates constraint locks (Rule 16, Rule 18,
-  schema triple, no-merge), the standard verification ladder, and a
-  report-back structure so the user copies one block instead of editing five
-  template snippets. TRIGGER when the user asks "prompt คำสั่ง" / "ส่ง
-  session ใหม่" / "เขียน handoff" / "เขียน prompt ให้ session ใหม่" /
-  "spawn a worker session" / "open this from a worker" after a plan has
-  been approved. ALSO trigger when the user describes a multi-file
-  implementation task and says "for the worker" / "in parallel". SKIP for
-  trivial edits doable inline in ≤5 minutes (single-line fixes, typo
-  changes, comment polish) — handoff overhead dominates.
+description: Generate a paste-ready handoff prompt for a parallel worker session (branch → scoped implementation → Draft PR → report-back), pre-populating the constraint locks (Rule 16 / Rule 18 / schema triple / no-merge), the verification ladder, and the report structure. TRIGGER: "prompt คำสั่ง" / "ส่ง session ใหม่" / "เขียน handoff" / "เขียน prompt ให้ session ใหม่" / "spawn a worker session", or a multi-file task earmarked "for the worker" / "in parallel".
 ---
 
 # worker-session-handoff
@@ -161,3 +150,18 @@ PR body ต้องมี:
   signal in the epic-#125 series
 - PR #131 (this skill's neighbor: branch-collision check) — handoff
   pre-empted PR #123-style duplicate work via a preflight script
+
+## Long-form description (moved out of frontmatter 2026-06-11 token drain)
+
+Generate a paste-ready handoff prompt for a parallel Claude Code
+worker session that will create a branch, implement scoped work, open a
+Draft PR, and report back. Pre-populates constraint locks (Rule 16, Rule 18,
+schema triple, no-merge), the standard verification ladder, and a
+report-back structure so the user copies one block instead of editing five
+template snippets. TRIGGER when the user asks "prompt คำสั่ง" / "ส่ง
+session ใหม่" / "เขียน handoff" / "เขียน prompt ให้ session ใหม่" /
+"spawn a worker session" / "open this from a worker" after a plan has
+been approved. ALSO trigger when the user describes a multi-file
+implementation task and says "for the worker" / "in parallel". SKIP for
+trivial edits doable inline in ≤5 minutes (single-line fixes, typo
+changes, comment polish) — handoff overhead dominates.

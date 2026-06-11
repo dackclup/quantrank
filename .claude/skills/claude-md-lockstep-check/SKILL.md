@@ -1,6 +1,6 @@
 ---
 name: claude-md-lockstep-check
-description: Verify CLAUDE.md + AGENTS.md were both modified on the current branch, per QuantRank's "ship with every PR" rule (CLAUDE.md §Conventions). Catches the common drift pattern where only one of the two agent docs is updated, or neither when code / workflows / schemas changed. TRIGGER before opening any PR, after staging a commit that touches `compute/`, `frontend/`, `.github/workflows/`, `pyproject.toml`, `compute/output/schemas.py`, or `frontend/lib/types.ts`, when the user says "lockstep check", "did I update both docs?", "CLAUDE.md drift", "ลืม update CLAUDE.md หรือเปล่า", or before flipping a PR from Draft to Ready. SKIP for PRs that touch ONLY `CLAUDE.md` / `AGENTS.md` themselves (the lockstep is trivially satisfied), for `.claude/skills/<vendored>/` body-only changes (vendor-sync skill handles those), and for branch-local exploration commits that won't ship as a PR.
+description: Verify CLAUDE.md + AGENTS.md both moved on the current branch per the "ship with every PR" rule — catches one-side-only drift and code/workflow/schema PRs missing both. TRIGGER: before opening any PR, after staging commits that touch compute/ / frontend/ / workflows / schemas, before Draft→Ready, or "lockstep check" / "did I update both docs?" / "ลืม update CLAUDE.md หรือเปล่า".
 ---
 
 # CLAUDE.md + AGENTS.md Lockstep Check
@@ -136,3 +136,7 @@ that catches the "code changed but neither doc updated" failure mode.
 - Not coupled to `phase-status-bump` — that skill aligns the
   PHASE_STATUS / SKILL / WORKFLOW triple; this skill is the CLAUDE +
   AGENTS pair, which is a different invariant
+
+## Long-form description (moved out of frontmatter 2026-06-11 token drain)
+
+Verify CLAUDE.md + AGENTS.md were both modified on the current branch, per QuantRank's "ship with every PR" rule (CLAUDE.md §Conventions). Catches the common drift pattern where only one of the two agent docs is updated, or neither when code / workflows / schemas changed. TRIGGER before opening any PR, after staging a commit that touches `compute/`, `frontend/`, `.github/workflows/`, `pyproject.toml`, `compute/output/schemas.py`, or `frontend/lib/types.ts`, when the user says "lockstep check", "did I update both docs?", "CLAUDE.md drift", "ลืม update CLAUDE.md หรือเปล่า", or before flipping a PR from Draft to Ready. SKIP for PRs that touch ONLY `CLAUDE.md` / `AGENTS.md` themselves (the lockstep is trivially satisfied), for `.claude/skills/<vendored>/` body-only changes (vendor-sync skill handles those), and for branch-local exploration commits that won't ship as a PR.

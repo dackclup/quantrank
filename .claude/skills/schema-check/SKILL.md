@@ -1,17 +1,6 @@
 ---
 name: schema-check
-description: Run `python -m compute.output.schema_check` to verify that the
-  Pydantic models in `compute/output/schemas.py` agree with the TypeScript
-  types in `frontend/lib/types.ts` via the canonical snapshot at
-  `frontend/lib/schema-snapshot.json`. Also regenerate the snapshot when a
-  schema change has been mirrored on both sides. TRIGGER any time
-  `schemas.py` is edited (added / removed / renamed field on StockSummary,
-  StockDetail, Metadata, RawMetrics, DataQuality, or PillarScores), any
-  time `types.ts` is edited, when CI fails with a schema-drift error,
-  before pushing a PR that touches output schemas, or whenever the user
-  asks "did I update both sides?" / "is the schema in sync?" — even
-  without naming the snapshot file. SKIP for unrelated Pydantic models
-  inside `compute/` that aren't part of the JSON output surface.
+description: Run `python -m compute.output.schema_check` to verify `schemas.py` ↔ `types.ts` via `schema-snapshot.json`; regenerate the snapshot when a change is mirrored on both sides. TRIGGER: any edit to schemas.py or types.ts, CI schema-drift failure, pre-push on schema-touching PRs, or "did I update both sides?" / "is the schema in sync?".
 ---
 
 # schema-check
@@ -122,3 +111,18 @@ local dev so the CI red-light never fires.
   from this layer at runtime
 - `phase-status-bump` — when the schema version moves, the docs that
   cite it also need to move; that skill keeps them aligned
+
+## Long-form description (moved out of frontmatter 2026-06-11 token drain)
+
+Run `python -m compute.output.schema_check` to verify that the
+Pydantic models in `compute/output/schemas.py` agree with the TypeScript
+types in `frontend/lib/types.ts` via the canonical snapshot at
+`frontend/lib/schema-snapshot.json`. Also regenerate the snapshot when a
+schema change has been mirrored on both sides. TRIGGER any time
+`schemas.py` is edited (added / removed / renamed field on StockSummary,
+StockDetail, Metadata, RawMetrics, DataQuality, or PillarScores), any
+time `types.ts` is edited, when CI fails with a schema-drift error,
+before pushing a PR that touches output schemas, or whenever the user
+asks "did I update both sides?" / "is the schema in sync?" — even
+without naming the snapshot file. SKIP for unrelated Pydantic models
+inside `compute/` that aren't part of the JSON output surface.

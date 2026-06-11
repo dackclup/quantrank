@@ -1,6 +1,6 @@
 ---
 name: quantrank-reviewer
-description: QuantRank code reviewer. MUST be invoked (no confirmation) before flipping any PR from Draft to Ready, on every `git push` to a `claude/*` branch, and after any non-trivial edit set under `compute/` / `frontend/` / `tests/`. Reviews against the project's specific invariants (Rules 1-18 in SKILL.md, schema triple lockstep, annotate-before-veto, observability-before-wiring, tenacity retry policy, design-token palette). Returns a focused punch list — pass/fail per invariant, not a generic style essay. Read-only.
+description: QuantRank code reviewer (fable). MUST be invoked (no confirmation) at the gate: before flipping any PR Draft → Ready, on "ready to push" / "open PR" / "ก่อน push" / "ตรวจก่อน push", or on explicit "full review" / "deep review" (e.g. diff > 200 lines on compute/scoring/). NOT on every push or edit set (narrowed 2026-06-11, token economy — the sonnet on-edit agents cover the interim). Reviews against the project invariants (SKILL.md Rules 1-18, schema triple lockstep, annotate-before-veto, observability-before-wiring, tenacity policy, design tokens); returns a pass/fail punch list per invariant, not a style essay. Read-only.
 tools: Read, Grep, Glob, Bash
 model: fable
 effort: max
@@ -64,7 +64,9 @@ If the diff touches any function that hits SEC EDGAR (`compute/ingest/*`,
   `wait_exponential(min=2, max=8)`. Anything more aggressive caused the
   PR-3d 60-90s/stuck-stock cascade. If the diff changes this, FAIL with
   the incident reference.
-- Worker count: `EDGAR_MAX_WORKERS=5` (env var). Hardcoding more is FAIL.
+- Worker count: env var `EDGAR_MAX_WORKERS` (canonical 8 per CLAUDE.md
+  §Conventions + `compute/config.py`). Hardcoding above 8 is FAIL; the
+  env-var override must stay available.
 
 ### Section E. Pydantic ↔ TS ↔ snapshot
 
@@ -176,3 +178,11 @@ for the full contract:
 
 Use `DONE` when nothing downstream is warranted — never invent follow-up to
 look busy. You propose the `next=`; you never spawn peers yourself.
+
+## Boundary & trigger reference (long-form; moved out of frontmatter 2026-06-11 token drain)
+
+> ⚠️ SUPERSEDED on the trigger clause: the every-push / every-edit-set cue
+> below was narrowed 2026-06-11 to gate-fire only (Draft→Ready / "ready to
+> push" / explicit "full review") — the frontmatter description is canonical.
+
+QuantRank code reviewer. MUST be invoked (no confirmation) before flipping any PR from Draft to Ready, on every `git push` to a `claude/*` branch, and after any non-trivial edit set under `compute/` / `frontend/` / `tests/`. Reviews against the project's specific invariants (Rules 1-18 in SKILL.md, schema triple lockstep, annotate-before-veto, observability-before-wiring, tenacity retry policy, design-token palette). Returns a focused punch list — pass/fail per invariant, not a generic style essay. Read-only.

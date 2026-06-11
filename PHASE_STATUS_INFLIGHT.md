@@ -3185,3 +3185,129 @@ branch (no slider, varying-count caption, veto-replay caption intact),
 **Files**: PHASE_STATUS_INFLIGHT.md (this).
 
 ---
+
+## docs(agents) — 25-agent model+effort audit: fix stale model references (in flight, 2026-06-11)
+
+**Branch**: `claude/friendly-rubin-liav05` · **Scope**: docs / agent-defs only —
+no code / workflow / schema surface.
+
+Full 25-agent `model:`/`effort:` frontmatter audit vs `.claude/agents/README.md`
+§Model split + authoring convention #3: **all 25 assignments confirmed
+appropriate** (5 fable+max judgment gates · 18 sonnet+max · 2 sonnet+high
+deterministic script-runner carve-outs). No frontmatter changes. Two stale-doc
+fixes shipped:
+
+1. `release-captain.md` description said "Opus model" — predates the fable
+   migration; frontmatter was already `model: fable`. → "Fable model".
+2. CLAUDE.md cue-table row "`quantrank-reviewer` with `model: fable` override ·
+   user authorization required" — stale since the reviewer became fable by
+   default; there is no override left to authorize. → reworded, clause dropped.
+
+Side observation (no change): `vercel-preview-auditor`'s UUID-pinned MCP tool
+names are the documented install-specific limitation (docs/GOTCHAS.md
+§"Sub-agent `tools:` frontmatter") with the gap-surfacing mitigation already in
+place.
+
+**Files**: .claude/agents/release-captain.md · CLAUDE.md (§Auto-routing cue
+table row) · PHASE_STATUS_INFLIGHT.md (this).
+
+---
+
+## docs(infra) — token-economy optimization: CLAUDE.md re-drain + description tightening + reviewer gate-narrowing (in flight, 2026-06-11)
+
+**Branch**: `claude/friendly-rubin-liav05` (same PR #459 as the model-ref fixes —
+the session is branch-locked, so the confirmed optimization batch lands on the
+same PR). **Scope**: docs + `.claude/**` only — no code / workflow / schema
+surface.
+
+User-confirmed batch (5 items) after the measured-baseline report (~28K tok of
+always-loaded context per session):
+
+1. **CLAUDE.md re-drain 14.0K → ~7.8K tok (−44%)** — §Stack LedgerCraft PR
+   narrative → pointer to docs/design.md; §Layout fat cells compressed;
+   §Conventions rebase-history compressed; §Auto-routing Delegation-patterns +
+   Cue tables (70% overlap) MERGED into one routing table; §Gotchas paragraph
+   entries → true one-liners (detail verified present in docs/GOTCHAS.md;
+   missing `pillarColor`/`flagLabel` entry APPENDED there first); §Phase status
+   currency-fixed (0.10.18 on main; #453/#456 in-flight entries rotated out —
+   both merged; done Next-deliverables items 1-2 dropped, renumbered) with the
+   drained prose archived VERBATIM in docs/PHASE_STATUS_ARCHIVE.md; §Agent
+   skills compressed. CLAUDE.md loads into every session AND every sub-agent
+   spawn, so the saving multiplies (~6.2K × (1 + spawns)).
+2. **Agent `description:` tightening, all 25 defs (23.1K → 13.3K chars ≈
+   −2.5K tok/session)** — every original description preserved VERBATIM in the
+   agent body under "## Boundary & trigger reference" (paid only at spawn);
+   new descriptions keep ALL trigger cues incl. Thai phrases.
+   `quantrank-reviewer`'s preserved long-form got a SUPERSEDED banner on the
+   every-push clause.
+3. **First-party skill descriptions, 18 files (~17.6K → ~7.7K chars ≈ −2.5K
+   tok/session)** — same preserve-in-body pattern ("## Long-form description").
+   Vendored skills (mattpocock-* / 9arm-* / impeccable / portable-karpathy /
+   good-code) untouched per vendor-sync discipline. **3 dead skills REMOVED**:
+   `karpathy-llm-wiki` (vendored gist, never fires for finance scope —
+   THIRD_PARTY_NOTICES entry retained with REMOVED banner; vendor-sync source
+   row marked skip), `doc-coauthoring` + `mcp-builder` (Anthropic snapshot,
+   unused; phase-11 PLAN.md pointer annotated to re-vendor when Phase 11
+   starts). skills README index updated.
+4. **`quantrank-reviewer` (fable) narrowed to gate-fire only** — Draft→Ready /
+   "ready to push" / "open PR" / explicit "full review"; NO LONGER fires on
+   every `git push` or non-trivial edit set (the documented cue contradicted
+   the stated "fable agents wait for gate" split and cost 5+ fable reviews per
+   polish-heavy PR). Sonnet on-edit agents are unchanged and cover the interim.
+   CLAUDE.md routing table + agent description both updated.
+5. **Connector policy** — Supabase / Sentry / Gmail / Google Drive marked
+   ⏸ toggle-OFF in CLAUDE.md §Connectors + AGENTS.md (token economy; re-enable
+   per phase). NOTE: the actual toggle is a USER action in Claude app Settings
+   → Connectors — repo files cannot flip it.
+
+Deferred (flagged, not executed — outside the confirmed list): deleting the
+remaining ~15 unused vendored-Anthropic-snapshot skills (docx · pptx · pdf ·
+canvas-design (~5MB fonts) · slack-gif-creator · algorithmic-art ·
+brand-guidelines · internal-comms · theme-factory · web-artifacts-builder …) —
+next candidate batch if further savings wanted.
+
+**Measured result**: always-loaded per-session context ~28K → ~17K tok
+(CLAUDE.md 14.0→7.8K · agent descs 5.8→3.3K · skill descs 8.5→~6K) and each
+sub-agent spawn carries ~6.2K tok less CLAUDE.md.
+
+**Files**: CLAUDE.md · AGENTS.md · docs/GOTCHAS.md (+pillarColor entry) ·
+docs/PHASE_STATUS_ARCHIVE.md (drain archive) · .claude/agents/*.md (25) ·
+.claude/skills/<18 first-party>/SKILL.md · .claude/skills/README.md ·
+.claude/skills/vendor-sync/SKILL.md · .claude/skills/phase-11/public-api-docs/PLAN.md ·
+THIRD_PARTY_NOTICES.md · 3 skill dirs removed · PHASE_STATUS_INFLIGHT.md (this).
+
+---
+
+### Addendum (same PR, 2026-06-11): agentic-workflow audit round
+
+User-requested audit of the agentic + dynamic workflow (correct / complete /
+non-redundant / token-fit). `docs-reviewer` walked WORKFLOW.md + agents/README
++ TEAMS.md vs the new routing table. Verdict: mechanics SOUND (HANDOFF routing
+live-verified; all multi-agent events complementary, not duplicative; cadence
+maps the 25-roster with no orphan phase). Fixes shipped: WORKFLOW Step-6
+roster (drop `vercel-preview-auditor` — deploy-gate agent, guaranteed-GO waste
+post-cron; add missing `expert-user-explorer`); README gate-only trigger ×2;
+TEAMS.md "22"→25 ×4 + AGENTS.md ×2; **defense-layer-auditor false-FAIL bug**
+(hardcoded `0.9.4-phase4h.4` → read CLAUDE.md at run time) + A-J→A-L ×5 (K/L
+findings were silently dropped from reports); **quantrank-reviewer false-FAIL
+bug** (`EDGAR_MAX_WORKERS=5` pin → canonical 8); `delegate-first.sh` hook
+injection slimmed ~195→~80 tok/turn. Deferred recommendation: drain
+PHASE_STATUS.md §Current state (8.6K-tok forced read every session-start) to
+~2K — separate PR (collision-prone file).
+
+---
+
+### Addendum (same PR, 2026-06-11): PHASE_STATUS.md §Current state drain
+
+User-confirmed follow-through of the workflow-audit recommendation: §Current
+state (the forced-read session-start section) drained 244 lines / ~8.6K tok →
+92 lines / ~2.1K tok. All merged-PR lists + closed next-deliverables entries +
+stale table prose MOVED VERBATIM (python slice, not retyped) into
+§Chronological history §"Relocated from §Current state". Currency fixes folded
+in: schema row → 0.10.18 (#456 + #458 manifest, verification pending on the
+2026-06-11 artifact), skill inventory 47→45, subagent inventory 22→25,
+production-run pointer → `65bfd335`, in-flight → PR #459 single entry,
+next-deliverables renumbered (DONE items relocated; 7a/7b spec retained as
+item 5 — CLAUDE.md pointer updated item 7→5).
+
+---

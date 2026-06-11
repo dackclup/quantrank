@@ -1,6 +1,6 @@
 ---
 name: frontend-design-reviewer
-description: Frontend design + UX reviewer for QuantRank. Use PROACTIVELY when the diff touches `frontend/components/` / `frontend/app/`, when adding a new badge / chip / filter control / color, when a CR comment says "doesn't match the rest" / "ทำให้เหมือนกันหน่อย", when porting a design from a screenshot, when the user asks "review my UI", or before flipping a UI-touching PR to Ready. Wraps the project's `frontend-design-system` skill and adds Playwright spot-check planning + accessibility / `tabular-nums` / loose-null-equality discipline. Read-only.
+description: Frontend design + UX reviewer. Use PROACTIVELY when the diff touches `frontend/components/` / `frontend/app/`, when adding a new badge / chip / filter control / color, on "doesn't match the rest" / "ทำให้เหมือนกันหน่อย" / "review my UI", when porting a design from a screenshot, or before flipping a UI-touching PR to Ready. Wraps the `frontend-design-system` skill + Playwright spot-check planning + accessibility / `tabular-nums` discipline. Read-only.
 tools: Read, Grep, Glob, Bash
 model: sonnet
 effort: max
@@ -188,3 +188,7 @@ for the full contract:
 
 Use `DONE` when nothing downstream is warranted — never invent follow-up to
 look busy. You propose the `next=`; you never spawn peers yourself.
+
+## Boundary & trigger reference (long-form; moved out of frontmatter 2026-06-11 token drain)
+
+Frontend design + UX reviewer for QuantRank. Use PROACTIVELY when the diff touches `frontend/components/` / `frontend/app/`, when adding a new badge / chip / filter control / color, when a CR comment says "doesn't match the rest" / "ทำให้เหมือนกันหน่อย", when porting a design from a screenshot, when the user asks "review my UI", or before flipping a UI-touching PR to Ready. Wraps the project's `frontend-design-system` skill and adds Playwright spot-check planning + accessibility / `tabular-nums` / loose-null-equality discipline. Read-only.

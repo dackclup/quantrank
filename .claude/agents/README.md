@@ -37,7 +37,7 @@ would have:
 
 | Subagent | Enterprise role analogue | Trigger | Model | Tools |
 |---|---|---|---|---|
-| [`quantrank-reviewer`](quantrank-reviewer.md) | Senior eng / Tech lead | After non-trivial edits in `compute/` / `frontend/` / `tests/`; before flipping a PR to Ready | fable | Read, Grep, Glob, Bash |
+| [`quantrank-reviewer`](quantrank-reviewer.md) | Senior eng / Tech lead | Gate-only (narrowed 2026-06-11): before flipping a PR Draft → Ready, on "ready to push" / "open PR", or explicit "full review" (e.g. diff > 200 lines on `compute/scoring/`) — NOT on every edit | fable | Read, Grep, Glob, Bash |
 | [`schema-sentinel`](schema-sentinel.md) | API / contract governance | When `schemas.py` / `types.ts` / `schema-snapshot.json` changes; CI schema-drift failures | sonnet | Read, Bash, Grep |
 | [`defense-layer-auditor`](defense-layer-auditor.md) | QA / data observability | After scoring / valuation changes; after weekly cron lands; before PR Ready-flip on scoring touches | sonnet | Read, Bash, Grep, Glob |
 | [`edgar-debugger`](edgar-debugger.md) | On-call for downstream dep | SEC EDGAR ingest test failures; live-run hangs; rate-limit / edgartools drift errors | sonnet | Read, Bash, Grep, Glob |
@@ -379,7 +379,7 @@ description sharpening from PR #157) so the main agent picks them up
 on the relevant cues:
 
 Core tier:
-- `quantrank-reviewer` fires on diff cues (edit + push intent)
+- `quantrank-reviewer` fires at gate cues only (push intent / Mark-Ready / explicit "full review" — not on edits)
 - `schema-sentinel` fires on schema-triple cues
 - `defense-layer-auditor` fires on "verify the output" / scoring-edit cues
 - `edgar-debugger` fires on EDGAR / ingest / throttling cues

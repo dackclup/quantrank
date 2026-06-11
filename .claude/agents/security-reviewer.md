@@ -1,6 +1,6 @@
 ---
 name: security-reviewer
-description: Security-review specialist for QuantRank. Use PROACTIVELY before any release tag, before any PR that touches `.github/workflows/`, before pushing a branch that adds new pip / npm dependencies, before merging anything that adds a new env-var requirement, after a near-miss (almost-committed-a-token), or when the user asks "is this safe to push?" / "security review" / "check for secrets" / "ตรวจ security" / "scan for CVE". Wraps the project's `security-check` skill (which runs `helper.py`) and adds Dependabot CVE triage, EDGAR_USER_AGENT handling spot-check, and CI workflow over-permission detection. Read-only.
+description: Security-review specialist. Use PROACTIVELY before any release tag, any `.github/workflows/` edit, any new pip / npm dependency, any new env-var requirement, after a near-miss (almost-committed token), or on "is this safe to push?" / "security review" / "check for secrets" / "ตรวจ security" / "scan for CVE". Wraps the `security-check` skill + Dependabot CVE triage + EDGAR_USER_AGENT spot-check + workflow over-permission detection. Read-only.
 tools: Read, Bash, Grep, Glob
 model: sonnet
 effort: max
@@ -142,3 +142,7 @@ for the full contract:
 
 Use `DONE` when nothing downstream is warranted — never invent follow-up to
 look busy. You propose the `next=`; you never spawn peers yourself.
+
+## Boundary & trigger reference (long-form; moved out of frontmatter 2026-06-11 token drain)
+
+Security-review specialist for QuantRank. Use PROACTIVELY before any release tag, before any PR that touches `.github/workflows/`, before pushing a branch that adds new pip / npm dependencies, before merging anything that adds a new env-var requirement, after a near-miss (almost-committed-a-token), or when the user asks "is this safe to push?" / "security review" / "check for secrets" / "ตรวจ security" / "scan for CVE". Wraps the project's `security-check` skill (which runs `helper.py`) and adds Dependabot CVE triage, EDGAR_USER_AGENT handling spot-check, and CI workflow over-permission detection. Read-only.

@@ -1,18 +1,6 @@
 ---
 name: top5-rotation-audit
-description: Audit QuantRank's Top-5 rotation invariants in the most recent
-  compute output — verify that flagged top-rank stocks correctly lose their
-  `entered_top5` badge and that the next-in-line stock fills the slot.
-  Compares the raw top-5 (by composite score) against the effective top-5
-  (after veto suppression) and reports composition churn vs a baseline run.
-  TRIGGER after any change to `compute/scoring/composite.py`,
-  `compute/scoring/risk_overlay.py`, or `compute/output/writer.py`, after
-  a veto threshold tweak, after a new veto lands, or when the user asks
-  "did Top-5 rotate this week?" / "why is X at rank 1 but not entered?"
-  / "is the badge suppression working?". ALSO use as the focused dive
-  when verify-production-output Section D flags a rotation anomaly.
-  SKIP for the full Section A-H production scan (use verify-production-
-  output) or a defense-layer count comparison (use defense-scorecard).
+description: Audit Top-5 rotation invariants in the latest output — flagged top-rank stocks lose `entered_top5`, the next-in-line clean stock inherits it; compares raw vs effective top-5 and reports churn vs baseline. TRIGGER: after changes to `composite.py` / `risk_overlay.py` / `writer.py`, a veto threshold tweak, a new veto, "did Top-5 rotate this week?" / "is the badge suppression working?", or as the focused dive when verify-production-output Section D flags a rotation anomaly.
 ---
 
 # top5-rotation-audit
@@ -153,3 +141,19 @@ A-H scan when only the rotation matters.
 - `defense-scorecard` — the veto layer this skill depends on
 - `compute/output/writer.py::write_rankings_json` — the production code
   that implements the rotation
+
+## Long-form description (moved out of frontmatter 2026-06-11 token drain)
+
+Audit QuantRank's Top-5 rotation invariants in the most recent
+compute output — verify that flagged top-rank stocks correctly lose their
+`entered_top5` badge and that the next-in-line stock fills the slot.
+Compares the raw top-5 (by composite score) against the effective top-5
+(after veto suppression) and reports composition churn vs a baseline run.
+TRIGGER after any change to `compute/scoring/composite.py`,
+`compute/scoring/risk_overlay.py`, or `compute/output/writer.py`, after
+a veto threshold tweak, after a new veto lands, or when the user asks
+"did Top-5 rotate this week?" / "why is X at rank 1 but not entered?"
+/ "is the badge suppression working?". ALSO use as the focused dive
+when verify-production-output Section D flags a rotation anomaly.
+SKIP for the full Section A-H production scan (use verify-production-
+output) or a defense-layer count comparison (use defense-scorecard).

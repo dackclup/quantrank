@@ -22,7 +22,7 @@ cat <<'JSON'
 {
   "hookSpecificOutput": {
     "hookEventName": "UserPromptSubmit",
-    "additionalContext": "DELEGATE-FIRST: you are the orchestrator. Default = spawn the matching .claude/agents/ sub-agent (drains the paid, idle Sonnet pool), not inline work. Inline ONLY if no agent matches / trivial 1-Read lookup / user said do-it-inline / it is agent-infra meta-work. AGENT-TEAM AUTO-PROPOSE: do NOT wait to be asked — when the task is team-fit (cross-layer build · new-flag/threshold/factor debate · root-cause-unclear incident · big multi-lens PR review) proactively PROPOSE the matching recipe before going inline; it is propose-not-create (the feature needs the user confirm) and on web/mobile propose the subagent fallback (same flow, runs there). Cues+recipes: .claude/agents/TEAMS.md §Auto-proposal. Full (a)-(d) rule + delegation table: CLAUDE.md §Auto-routing policy."
+    "additionalContext": "DELEGATE-FIRST: orchestrator, not laborer — default = spawn the matching .claude/agents/ sub-agent; inline only per the (a)-(e) exceptions. Routing table + exceptions: CLAUDE.md §Auto-routing. Team-fit task → PROPOSE the matching TEAMS.md §Auto-proposal recipe (propose-not-create; web/mobile → subagent fallback)."
   }
 }
 JSON

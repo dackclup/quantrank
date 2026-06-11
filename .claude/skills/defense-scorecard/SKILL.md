@@ -1,20 +1,6 @@
 ---
 name: defense-scorecard
-description: Tally QuantRank's defense layer counts (active vetoes / numerical
-  guards / annotate flags) from the most recent compute output and compare
-  against a prior run's baseline. Surfaces per-flag delta (altman_distress,
-  sloan_accruals_top_decile, net_issuance_top_decile, non_reliance_filing,
-  goodwill_heavy, value_trap_risk, extreme_<method>_estimate,
-  stale_filing_soft, data_quality_input_corruption, going_concern_disclosure,
-  auditor_change) and reports which stocks are flagged. TRIGGER after any
-  change to `compute/scoring/risk_overlay.py`, after a new defense
-  (Beneish, Dechow) lands, after a feature flag flip (e.g., Phase 4
-  re-enabling 8-K vetoes), or when the user asks "are the vetoes still
-  firing the same?" / "how many altman flags?" / "did the defense layer
-  change?". ALSO use during PR review to confirm a scoring change didn't
-  silently regress the defense layer. SKIP when the user wants the full
-  Section A-H production scan (use verify-production-output) or a deep
-  dive into Top-5 rotation specifically (use top5-rotation-audit).
+description: Tally defense-layer counts (active vetoes / numerical guards / annotate flags) from the latest compute output and diff against a prior baseline — per-flag delta + which stocks are flagged. TRIGGER: after `compute/scoring/risk_overlay.py` changes, a new defense lands, a feature-flag flip, PR review of scoring changes, or "are the vetoes still firing the same?" / "how many altman flags?" / "did the defense layer change?".
 ---
 
 # defense-scorecard
@@ -144,3 +130,21 @@ catches such regressions before merge.
   reshapes the user-visible Top-5
 - `phase-3b/altman-debug`, `phase-3b/sloan-debug`, `phase-3b/nsi-debug`
   — per-flag triage when a count moves unexpectedly
+
+## Long-form description (moved out of frontmatter 2026-06-11 token drain)
+
+Tally QuantRank's defense layer counts (active vetoes / numerical
+guards / annotate flags) from the most recent compute output and compare
+against a prior run's baseline. Surfaces per-flag delta (altman_distress,
+sloan_accruals_top_decile, net_issuance_top_decile, non_reliance_filing,
+goodwill_heavy, value_trap_risk, extreme_<method>_estimate,
+stale_filing_soft, data_quality_input_corruption, going_concern_disclosure,
+auditor_change) and reports which stocks are flagged. TRIGGER after any
+change to `compute/scoring/risk_overlay.py`, after a new defense
+(Beneish, Dechow) lands, after a feature flag flip (e.g., Phase 4
+re-enabling 8-K vetoes), or when the user asks "are the vetoes still
+firing the same?" / "how many altman flags?" / "did the defense layer
+change?". ALSO use during PR review to confirm a scoring change didn't
+silently regress the defense layer. SKIP when the user wants the full
+Section A-H production scan (use verify-production-output) or a deep
+dive into Top-5 rotation specifically (use top5-rotation-audit).

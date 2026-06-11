@@ -1,6 +1,6 @@
 ---
 name: vendor-sync
-description: Pull updates from each vendored upstream source (mattpocock/skills, multica-ai/andrej-karpathy-skills, karpathy gist, 9arm-skills) and reconcile with QuantRank's local copies — including the post-PR-#157 description-divergence resolution policy. TRIGGER when the user explicitly says "vendor sync", "sync upstream skills", "update vendored skills", "pull mattpocock updates", "refresh vendored sources", or names a specific upstream source plus "sync". ALSO trigger on quarterly cadence (≥ 6 months since the last `Vendored date` in `THIRD_PARTY_NOTICES.md`), when a security advisory affects an upstream source, or when CLAUDE.md / SKILL.md cite an upstream-fixed bug. SKIP for one-off edits to a single vendored file (use Edit directly) and for non-vendored project skills (`schema-check`, `pr-iteration-flow`, etc. — those are first-party and have no upstream).
+description: Pull updates from each vendored upstream (mattpocock/skills, multica-ai/andrej-karpathy-skills, karpathy gist, 9arm-skills) and reconcile with the local copies, including the description-divergence resolution policy. TRIGGER: "vendor sync" / "sync upstream skills" / "update vendored skills" / a named source + "sync"; quarterly cadence (≥ 6 months since the last Vendored date in THIRD_PARTY_NOTICES.md); or a security advisory / upstream-fixed bug touching a vendored source.
 ---
 
 # Vendor Sync
@@ -19,7 +19,7 @@ fresh without losing the local divergence work.
 |---|---|---|---|
 | [`mattpocock/skills`](https://github.com/mattpocock/skills) | `mattpocock-*` (8 skills) | MIT | GitHub repo, commit-SHA pinnable |
 | [`multica-ai/andrej-karpathy-skills`](https://github.com/multica-ai/andrej-karpathy-skills) | `portable-karpathy-guidelines` (1 skill) | MIT | GitHub repo, commit-SHA pinnable |
-| [Karpathy LLM Wiki gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) | `karpathy-llm-wiki` (1 skill) | NONE DECLARED (in-text copy permission) | gist, date-pinnable only |
+| [Karpathy LLM Wiki gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) | `karpathy-llm-wiki` (REMOVED 2026-06-11 — skip this source) | NONE DECLARED (in-text copy permission) | gist, date-pinnable only |
 | `9arm-skills` (LICENSE PENDING upstream) | `9arm-*` (4 skills) | PENDING | gist or repo, license-blocked |
 
 Authoritative metadata for each source (commit SHA, vendored date,
@@ -195,3 +195,7 @@ A daily/weekly bot could open auto-syncs, but the description-
 divergence resolution (step 4) needs human judgment — keep this as
 an on-demand workflow until the divergence policy stabilizes (after
 ≥ 2 manual sync cycles validate the policy works in practice).
+
+## Long-form description (moved out of frontmatter 2026-06-11 token drain)
+
+Pull updates from each vendored upstream source (mattpocock/skills, multica-ai/andrej-karpathy-skills, karpathy gist, 9arm-skills) and reconcile with QuantRank's local copies — including the post-PR-#157 description-divergence resolution policy. TRIGGER when the user explicitly says "vendor sync", "sync upstream skills", "update vendored skills", "pull mattpocock updates", "refresh vendored sources", or names a specific upstream source plus "sync". ALSO trigger on quarterly cadence (≥ 6 months since the last `Vendored date` in `THIRD_PARTY_NOTICES.md`), when a security advisory affects an upstream source, or when CLAUDE.md / SKILL.md cite an upstream-fixed bug. SKIP for one-off edits to a single vendored file (use Edit directly) and for non-vendored project skills (`schema-check`, `pr-iteration-flow`, etc. — those are first-party and have no upstream).

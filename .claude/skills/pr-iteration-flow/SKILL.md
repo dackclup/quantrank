@@ -1,19 +1,6 @@
 ---
 name: pr-iteration-flow
-description: >
-  Manage QuantRank's PR-review workflow — the Draft↔Ready flip cycle,
-  CI-event subscription, spot-check matrix generation, and the rhythm
-  of fix-commit-spot-check iterations before final user-authorized
-  Mark-Ready (5+ polish iterations per PR is common). The default
-  workflow harness while any PR is open. TRIGGER when opening a new
-  PR (open as Draft), when the user spot-checks a Vercel preview and
-  requests a fix, when a stop-the-line issue surfaces after Mark-Ready
-  (flip back to Draft), when CI fails on a PR branch (subscribe +
-  investigate), when authorizing the final Mark-Ready after spot-check
-  approval, or when the user says "open a PR for this" / "mark this
-  ready" / "flip to draft" / "watch this PR for me" / "เช็ค CI" / "ดู
-  PR". SKIP post-merge cleanup steps (branch deletion / tag / file
-  follow-up issues — those are different workflows).
+description: PR-review workflow harness while any PR is open: Draft↔Ready flips, CI-event subscription, spot-check matrix generation, the fix-commit-spot-check rhythm, and the final user-authorized Mark-Ready. TRIGGER: opening a PR (open as Draft), a preview spot-check fix request, a stop-the-line issue after Mark-Ready, CI failure on the branch, or "open a PR" / "mark this ready" / "flip to draft" / "watch this PR" / "เช็ค CI" / "ดู PR".
 ---
 
 # pr-iteration-flow
@@ -251,3 +238,19 @@ near-miss that surfaced earlier in the project.
   touched
 - `phase-status-bump` — runs AFTER merge as part of the broader phase
   lifecycle; not inside the PR-iteration loop itself
+
+## Long-form description (moved out of frontmatter 2026-06-11 token drain)
+
+Manage QuantRank's PR-review workflow — the Draft↔Ready flip cycle,
+CI-event subscription, spot-check matrix generation, and the rhythm
+of fix-commit-spot-check iterations before final user-authorized
+Mark-Ready (5+ polish iterations per PR is common). The default
+workflow harness while any PR is open. TRIGGER when opening a new
+PR (open as Draft), when the user spot-checks a Vercel preview and
+requests a fix, when a stop-the-line issue surfaces after Mark-Ready
+(flip back to Draft), when CI fails on a PR branch (subscribe +
+investigate), when authorizing the final Mark-Ready after spot-check
+approval, or when the user says "open a PR for this" / "mark this
+ready" / "flip to draft" / "watch this PR for me" / "เช็ค CI" / "ดู
+PR". SKIP post-merge cleanup steps (branch deletion / tag / file
+follow-up issues — those are different workflows).

@@ -1,20 +1,6 @@
 ---
 name: network-test-runner
-description: Run pytest with the `@pytest.mark.network` opt-in marker enabled
-  to exercise live SEC EDGAR fetches against the real API. Required when
-  modifying any module under `compute/ingest/` (fundamentals, prices,
-  universe), `compute/ingest/filing_text.py`, or `compute/scoring/
-  eight_k_events.py`. Sets up the `EDGAR_USER_AGENT` env var requirement,
-  surfaces SEC throttling state via per-test duration, and distinguishes
-  rate-limit failures from genuine regressions. TRIGGER any time the
-  ingest layer or any EDGAR-bound module changes, when offline /
-  synthetic-fixture tests pass but the user wants live-data confidence,
-  when CI doesn't run network tests (sandboxed) and the change needs
-  pre-merge live verification, or when the user asks "did the live
-  fetch still work?" / "run the @network tests" / "test against real
-  EDGAR". SKIP for any change that doesn't touch the ingest or 10-K /
-  8-K parser layers — the @network tests skip cleanly without
-  `EDGAR_USER_AGENT` so accidental invocation is harmless.
+description: Run pytest with the `@pytest.mark.network` marker against live SEC EDGAR (requires `EDGAR_USER_AGENT`); separates SEC throttling from genuine regressions via per-test duration. TRIGGER: any change under `compute/ingest/` or an EDGAR-bound module (`filing_text.py`, `eight_k_events.py`), when offline fixtures pass but live confidence is needed, or "run the @network tests" / "test against real EDGAR" / "did the live fetch still work?".
 ---
 
 # network-test-runner
@@ -168,3 +154,21 @@ merging an ingest change.
   work; a Section A scan confirms it actually does.
 - The PR 3d run-#14 incident (SEC throttling at scale) was triaged
   using this skill against the affected ingest modules.
+
+## Long-form description (moved out of frontmatter 2026-06-11 token drain)
+
+Run pytest with the `@pytest.mark.network` opt-in marker enabled
+to exercise live SEC EDGAR fetches against the real API. Required when
+modifying any module under `compute/ingest/` (fundamentals, prices,
+universe), `compute/ingest/filing_text.py`, or `compute/scoring/
+eight_k_events.py`. Sets up the `EDGAR_USER_AGENT` env var requirement,
+surfaces SEC throttling state via per-test duration, and distinguishes
+rate-limit failures from genuine regressions. TRIGGER any time the
+ingest layer or any EDGAR-bound module changes, when offline /
+synthetic-fixture tests pass but the user wants live-data confidence,
+when CI doesn't run network tests (sandboxed) and the change needs
+pre-merge live verification, or when the user asks "did the live
+fetch still work?" / "run the @network tests" / "test against real
+EDGAR". SKIP for any change that doesn't touch the ingest or 10-K /
+8-K parser layers — the @network tests skip cleanly without
+`EDGAR_USER_AGENT` so accidental invocation is harmless.

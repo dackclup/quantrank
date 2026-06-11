@@ -12,10 +12,10 @@ sub-directories like `phase-N/`. So this directory has two
 populations:
 
 - **Loaded skills** (sit flat under `.claude/skills/<name>/SKILL.md`) —
-  see [`CLAUDE.md`](../../CLAUDE.md) §Layout row for the canonical
-  breakdown (currently 47 invocation-triggerable skills). Bump that
-  CLAUDE.md row when adding/removing a top-level skill; this file
-  references rather than duplicates the count to avoid drift.
+  see [`CLAUDE.md`](../../CLAUDE.md) §Layout row for the role split
+  (it intentionally carries no count). The count lives HERE — currently
+  45 invocation-triggerable skills (first-party + vendored incl. the impeccable symlink); bump THIS line when adding/removing
+  a top-level skill.
 - **Planning documents** (nested under `phase-N/<name>/PLAN.md`) —
   roadmap docs for skills that don't yet exist. Renamed from
   `SKILL.md` to `PLAN.md` to honestly reflect that Claude Code does
@@ -39,15 +39,13 @@ populations:
 ├── frontend-design-system/SKILL.md            │ (added PR 4d aftermath)
 ├── thai-token-economy/SKILL.md                ┘ (token-economy 2026-06-03)
 │
-├── algorithmic-art/SKILL.md                   ┐ 17 vendored Anthropic
+├── algorithmic-art/SKILL.md                   ┐ 15 vendored Anthropic (doc-coauthoring + mcp-builder removed 2026-06-11 token drain)
 ├── brand-guidelines/SKILL.md                  │ skills (full upstream
 ├── canvas-design/SKILL.md                     │ snapshot 2026-05-09) —
 ├── claude-api/SKILL.md                        │ also loaded at session
-├── doc-coauthoring/SKILL.md                   │ start
 ├── docx/SKILL.md                              │
 ├── frontend-design/SKILL.md                   │
 ├── internal-comms/SKILL.md                    │
-├── mcp-builder/SKILL.md                       │
 ├── pdf/SKILL.md                               │
 ├── pptx/SKILL.md                              │
 ├── skill-creator/SKILL.md                     │
@@ -122,7 +120,7 @@ intent + acceptance criteria so the implementation has a clear target.
 | Phase 7 — regime + portfolio | `student-t-hmm-fit`, `nco-portfolio-allocate`, `tda-risk-off` |
 | Phase 8 — universe expansion | `universe-expand-sp1500`, `microcap-skip` |
 
-## Vendored third-party skills (17, from `anthropics/skills`)
+## Vendored third-party skills (15, from `anthropics/skills`)
 
 Full snapshot of [`anthropics/skills`](https://github.com/anthropics/skills)
 @ main (2026-05-09). Placed flat alongside the QuantRank skills so
@@ -135,11 +133,9 @@ marketplace mechanism, no runtime fetch from GitHub.
 | `brand-guidelines` | Apply Anthropic corporate colors / typography to artifacts |
 | `canvas-design` | Static visual design (posters, graphics) as PNG/PDF — includes ~5 MB of font files |
 | `claude-api` | Build/debug Claude API + Anthropic SDK apps; prompt caching; model versioning |
-| `doc-coauthoring` | Structured workflow for collaborative docs / proposals / decision docs |
 | `docx` | Create/edit Word documents (.docx); formatting, tables, tracked changes |
 | `frontend-design` | Production-grade UI; distinctive visual design; avoid AI clichés |
 | `internal-comms` | Template-based internal communications (updates, FAQs, status reports) |
-| `mcp-builder` | Create Model Context Protocol servers in Python (FastMCP) or TypeScript |
 | `pdf` | Read/extract/merge/split PDFs; OCR; encryption; watermarking |
 | `pptx` | Create/edit PowerPoint presentations; templates; layouts; speaker notes |
 | `skill-creator` | Develop, test, iterate, and package Claude skills; eval framework |

@@ -1,6 +1,6 @@
 ---
 name: edgar-debugger
-description: SEC EDGAR ingest debug specialist. Use when tests under tests/test_ingest/ fail, when a live compute run hangs or shows 60-90s/stuck-stock cascades, when EDGAR rate-limit errors surface, when edgartools API drift is suspected, or when the user asks "why is the cron stuck on EDGAR?" / "is EDGAR throttling us?" / "did edgartools break?". Knows the project's tenacity policy, rate-limit budget, drift-detector manifests, and the PR-3d amplification incident. Read + bash for log inspection; does NOT modify code (proposes the fix, user implements).
+description: SEC EDGAR ingest debug specialist. Use when tests under tests/test_ingest/ fail, when a live run hangs or shows stuck-stock cascades, on EDGAR rate-limit errors (429/403), suspected edgartools API drift, or "why is the cron stuck on EDGAR?" / "is EDGAR throttling us?" / "did edgartools break?". Knows the tenacity policy, rate-limit budget, and drift-detector manifests. Read + Bash; proposes the fix, does not modify code.
 tools: Read, Bash, Grep, Glob
 model: sonnet
 effort: max
@@ -178,3 +178,7 @@ for the full contract:
 
 Use `DONE` when nothing downstream is warranted — never invent follow-up to
 look busy. You propose the `next=`; you never spawn peers yourself.
+
+## Boundary & trigger reference (long-form; moved out of frontmatter 2026-06-11 token drain)
+
+SEC EDGAR ingest debug specialist. Use when tests under tests/test_ingest/ fail, when a live compute run hangs or shows 60-90s/stuck-stock cascades, when EDGAR rate-limit errors surface, when edgartools API drift is suspected, or when the user asks "why is the cron stuck on EDGAR?" / "is EDGAR throttling us?" / "did edgartools break?". Knows the project's tenacity policy, rate-limit budget, drift-detector manifests, and the PR-3d amplification incident. Read + bash for log inspection; does NOT modify code (proposes the fix, user implements).

@@ -1,6 +1,6 @@
 ---
 name: thai-token-economy
-description: Token-efficient discipline for a Thai-speaking session — keep the Thai UX, cut the token cost, with NO loss of capability. The lever is LAYER SEPARATION — human I/O in Thai (the user's prompts + your final reply), but every machine-facing artifact AND your internal reasoning in English (code, comments, identifiers, commit messages, PR titles/bodies, log lines, test names, sub-agent prompts, scratch reasoning), and Thai replies kept concise (tables + English identifiers over long Thai connective prose). Honest about the tokenizer — Thai costs ~2-4x tokens per character vs English, so "Thai == English cost" is impossible; this discipline closes most of the gap instead. TRIGGER at the start of any non-trivial multi-step task in a Thai-language session, when the user says "ประหยัด token" / "ตอบสั้นๆ" / "คุยไทยแต่ให้ประหยัด" / "ใช้ token เยอะ" / "ทำไม token เยอะ" / "why so many tokens", or as the standing style whenever a session is conducted in Thai. SKIP for English-only sessions (nothing to optimize), and never let concision suppress a real finding / warning / caveat — concision drops redundant glue, not substance.
+description: Thai for the human, English for the machine. In Thai sessions reply in concise Thai but keep ALL machine-facing artifacts + reasoning in English (code · comments · commits · PR bodies · logs · sub-agent prompts) — Thai costs ~2-4x tokens/char at the tokenizer. Never drop a real finding / warning / caveat for concision. TRIGGER: any session where the user writes Thai.
 ---
 
 # Thai Token Economy
@@ -112,3 +112,7 @@ Concision is about **glue and repetition**, never about substance.
 - Answer/number first? · Any English-then-Thai duplication to cut? · Could
   a 3-line table replace a paragraph? · Any Thai that's actually a code
   identifier / path (leave it ASCII)? · Did I keep every real finding?
+
+## Long-form description (moved out of frontmatter 2026-06-11 token drain)
+
+Token-efficient discipline for a Thai-speaking session — keep the Thai UX, cut the token cost, with NO loss of capability. The lever is LAYER SEPARATION — human I/O in Thai (the user's prompts + your final reply), but every machine-facing artifact AND your internal reasoning in English (code, comments, identifiers, commit messages, PR titles/bodies, log lines, test names, sub-agent prompts, scratch reasoning), and Thai replies kept concise (tables + English identifiers over long Thai connective prose). Honest about the tokenizer — Thai costs ~2-4x tokens per character vs English, so "Thai == English cost" is impossible; this discipline closes most of the gap instead. TRIGGER at the start of any non-trivial multi-step task in a Thai-language session, when the user says "ประหยัด token" / "ตอบสั้นๆ" / "คุยไทยแต่ให้ประหยัด" / "ใช้ token เยอะ" / "ทำไม token เยอะ" / "why so many tokens", or as the standing style whenever a session is conducted in Thai. SKIP for English-only sessions (nothing to optimize), and never let concision suppress a real finding / warning / caveat — concision drops redundant glue, not substance.

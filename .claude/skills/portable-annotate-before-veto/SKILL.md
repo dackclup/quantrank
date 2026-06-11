@@ -1,18 +1,6 @@
 ---
 name: portable-annotate-before-veto
-description: For every new defense / risk flag in a ranking or scoring
-  system, ship it as `annotate` (informational metadata, no rank change)
-  FIRST. Promote to `veto` (rank suppressor) only after ≥ 1 production
-  cron of observation + threshold calibration + cohort-acceptance check.
-  Prevents "fire-and-regret" patterns where a new flag with the wrong
-  threshold instantly removes a large fraction of the universe from
-  Top-N. Generic — drop-in for any project with a progressive-rollout
-  defense / scoring layer. TRIGGER when adding a new rule that filters /
-  scores / ranks production output, when previewing a "what if we vetoed
-  on X" threshold sweep, or when a CR comment says "make this a veto" on
-  a fresh annotate. SKIP for project-internal scoring tweaks that don't
-  change rank output (pure additive features behind a sum-to-1 weight
-  invariant).
+description: Every new defense / risk flag ships as `annotate` (informational, no rank change) FIRST; promote to `veto` only after ≥ 1 production cron + threshold calibration + cohort-acceptance check — prevents fire-and-regret universe wipeouts. Generic drop-in. TRIGGER: adding any rule that filters / scores / ranks production output, a "what if we vetoed on X" sweep, or a CR comment "make this a veto" on a fresh annotate.
 ---
 
 # portable-annotate-before-veto
@@ -130,3 +118,19 @@ gated on a future S&P-500-scaled threshold revision.
 See QuantRank's `SKILL.md` Rule 16 (Top-5 rank suppression
 semantics) and `WORKFLOW.md` § "Annotate-first defense rollout" for
 the project-specific lock.
+
+## Long-form description (moved out of frontmatter 2026-06-11 token drain)
+
+For every new defense / risk flag in a ranking or scoring
+system, ship it as `annotate` (informational metadata, no rank change)
+FIRST. Promote to `veto` (rank suppressor) only after ≥ 1 production
+cron of observation + threshold calibration + cohort-acceptance check.
+Prevents "fire-and-regret" patterns where a new flag with the wrong
+threshold instantly removes a large fraction of the universe from
+Top-N. Generic — drop-in for any project with a progressive-rollout
+defense / scoring layer. TRIGGER when adding a new rule that filters /
+scores / ranks production output, when previewing a "what if we vetoed
+on X" threshold sweep, or when a CR comment says "make this a veto" on
+a fresh annotate. SKIP for project-internal scoring tweaks that don't
+change rank output (pure additive features behind a sum-to-1 weight
+invariant).

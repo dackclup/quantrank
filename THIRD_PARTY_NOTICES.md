@@ -57,7 +57,11 @@ repo is the codification of those observations into a Claude Code skill.
 
 ---
 
-## karpathy-llm-wiki (Claude Code reference doc)
+## karpathy-llm-wiki (Claude Code reference doc) — REMOVED 2026-06-11
+
+> **REMOVED from the repo 2026-06-11** (token-economy drain — the skill never
+> fired for QuantRank's finance scope). Entry retained for vendoring history;
+> `vendor-sync` must SKIP this source. Re-vendor from the gist if ever needed.
 
 - **Source**: <https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f>
 - **Author**: Andrej Karpathy

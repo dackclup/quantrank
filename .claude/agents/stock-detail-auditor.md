@@ -1,6 +1,6 @@
 ---
 name: stock-detail-auditor
-description: Data-correctness auditor for the per-stock JSON the frontend renders (frontend/public/data/stocks/<TICKER>.json + rankings.json + metadata.json). Pre-filters the universe deterministically for outliers (range / consistency / Rule 16 invariant / known-issue overlap), then does thorough LLM-judgment review walking every flagged ticker — no artificial caps; runs on the Max-plan sonnet pool which is the intended budget for deep audits. Read-only. Fires at hand-off moments (post-cron, pre-release, "ตรวจ data หุ้น"), not on every code edit. Covers OUTPUT correctness; FORMULA correctness is the methodology-scientist slot.
+description: Per-stock OUTPUT-correctness auditor for the JSON the frontend renders (stocks/<TICKER>.json + rankings.json + metadata.json). Fires at hand-off moments — post-cron, pre-release, "ตรวจ data หุ้น" / "check ticker X" / "audit the output" — NOT on every code edit. Deterministic outlier prefilter (range / consistency / Rule 16 / known-issue overlap), then thorough LLM verdict for EVERY flagged ticker, no caps (the sonnet pool is the intended budget). Read-only; FORMULA correctness is methodology-scientist's slot.
 tools: Read, Bash, Grep, Glob
 model: sonnet
 effort: max
@@ -163,3 +163,7 @@ for the full contract:
 
 Use `DONE` when nothing downstream is warranted — never invent follow-up to
 look busy. You propose the `next=`; you never spawn peers yourself.
+
+## Boundary & trigger reference (long-form; moved out of frontmatter 2026-06-11 token drain)
+
+Data-correctness auditor for the per-stock JSON the frontend renders (frontend/public/data/stocks/<TICKER>.json + rankings.json + metadata.json). Pre-filters the universe deterministically for outliers (range / consistency / Rule 16 invariant / known-issue overlap), then does thorough LLM-judgment review walking every flagged ticker — no artificial caps; runs on the Max-plan sonnet pool which is the intended budget for deep audits. Read-only. Fires at hand-off moments (post-cron, pre-release, "ตรวจ data หุ้น"), not on every code edit. Covers OUTPUT correctness; FORMULA correctness is the methodology-scientist slot.

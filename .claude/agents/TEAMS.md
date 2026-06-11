@@ -3,7 +3,7 @@
 > Recipes for the experimental **agent teams** feature (Claude Code
 > ≥ v2.1.32) — coordinating multiple full Claude Code sessions (one
 > **lead** + **teammates**) that share a task list and message each
-> other directly. This is the COLLABORATIVE complement to the 22
+> other directly. This is the COLLABORATIVE complement to the 25
 > read-/write-subagents in this directory, which only report back to
 > the main agent. Official docs:
 > [agent-teams](https://code.claude.com/docs/en/agent-teams) ·
@@ -14,7 +14,7 @@
 The two are **different mechanisms**, and a team **reuses subagent
 definitions as teammate roles** — it does not replace them.
 
-| | **Subagent** (the 22 files here) | **Agent team** (this doc) |
+| | **Subagent** (the 25 files here) | **Agent team** (this doc) |
 |---|---|---|
 | Communication | reports back to main only; peers never talk | teammates message each other directly (mailbox) |
 | Coordination | main spawns + manages everything | shared task list; teammates self-claim |
@@ -187,7 +187,7 @@ subagent form is usually the right call.
   Split panes need tmux/iTerm2 (not VS Code terminal / Windows Terminal
   / Ghostty). Teammates do NOT apply a subagent definition's `skills` /
   `mcpServers` frontmatter — they load skills + MCP from project/user
-  settings like a normal session (none of our 22 defs set those, so no
+  settings like a normal session (none of our 25 defs set those, so no
   impact).
 
 ## How to start one (desktop)
@@ -209,7 +209,7 @@ Each owns its layer; require plan approval before schema changes.
 
 ## Companion docs
 
-- [`README.md`](README.md) — the 22-subagent catalog + 8 subagent flows
+- [`README.md`](README.md) — the 25-subagent catalog + 8 subagent flows
 - [`CLAUDE.md`](../../CLAUDE.md) §Auto-routing policy — subagent routing
 - the two builders: [`compute-builder.md`](compute-builder.md) ·
   [`frontend-builder.md`](frontend-builder.md)

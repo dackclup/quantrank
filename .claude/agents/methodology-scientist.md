@@ -1,6 +1,6 @@
 ---
 name: methodology-scientist
-description: Academic-prior validation specialist for QuantRank's defense layer. MUST be invoked (no confirmation) when a new defense flag is proposed, when a threshold is recalibrated (e.g., Phase 2.4 BD 1997 rescale), when a weight constant in `manipulation_index.py` is changed, when the user asks "validate against literature" / "check the prior" / "is the threshold right" / "ตรวจ academic prior", or quarterly at the cohort audit (next 2026-08-19). Wraps the project's `quarterly-cohort-audit` skill and adds per-flag academic citation tracking. Knows the canonical literature: Altman 1968 / 1993 (Z-score), Sloan 1996 (accruals), Beneish 1999 (M-score), Dechow 2011 (F-score), Mayew 2015 (going-concern phrase scan), Burgstahler-Dichev 1997 (loss avoidance), Hennes-Leone-Miller 2008 (restatement irregularities), Daniel-Titman 2006 (net issuance), Damodaran 2019 (sector CoE). Read-only.
+description: Academic-prior validation specialist for the defense layer. MUST be invoked (no confirmation) when a new defense flag is proposed, a threshold is recalibrated, a weight constant in `manipulation_index.py` changes, on "validate against literature" / "check the prior" / "is the threshold right" / "ตรวจ academic prior", and at the quarterly cohort audit (next 2026-08-19). Wraps the quarterly-cohort-audit skill + per-flag citation tracking over the canonical anchors (Altman 1968 · Sloan 1996 · Beneish 1999 · Dechow 2011 · Mayew 2015 · Burgstahler-Dichev 1997 · Hennes-Leone-Miller 2008 · Daniel-Titman 2006 · Damodaran 2019 · …). Read-only.
 tools: Read, Bash, Grep, Glob
 model: fable
 effort: max
@@ -177,3 +177,7 @@ for the full contract:
 
 Use `DONE` when nothing downstream is warranted — never invent follow-up to
 look busy. You propose the `next=`; you never spawn peers yourself.
+
+## Boundary & trigger reference (long-form; moved out of frontmatter 2026-06-11 token drain)
+
+Academic-prior validation specialist for QuantRank's defense layer. MUST be invoked (no confirmation) when a new defense flag is proposed, when a threshold is recalibrated (e.g., Phase 2.4 BD 1997 rescale), when a weight constant in `manipulation_index.py` is changed, when the user asks "validate against literature" / "check the prior" / "is the threshold right" / "ตรวจ academic prior", or quarterly at the cohort audit (next 2026-08-19). Wraps the project's `quarterly-cohort-audit` skill and adds per-flag academic citation tracking. Knows the canonical literature: Altman 1968 / 1993 (Z-score), Sloan 1996 (accruals), Beneish 1999 (M-score), Dechow 2011 (F-score), Mayew 2015 (going-concern phrase scan), Burgstahler-Dichev 1997 (loss avoidance), Hennes-Leone-Miller 2008 (restatement irregularities), Daniel-Titman 2006 (net issuance), Damodaran 2019 (sector CoE). Read-only.

@@ -1631,3 +1631,99 @@ Future contributors who hit the same conflict find the §Gotchas
 entry + the §Conventions recipe and resolve in seconds, instead
 of re-discovering the pattern.
 
+
+---
+
+## Drained 2026-06-11 (token-economy re-drain PR) — CLAUDE.md §Phase status prose as of 0.10.17→0.10.18 transition
+
+Verbatim block removed from CLAUDE.md §Phase status; canonical detail also
+lives in PHASE_STATUS.md + PHASE_STATUS_INFLIGHT.md entries for the same PRs.
+
+Current schema **`0.10.17-phase4.6`** on `main` (issue #441 close-out —
+REMOVAL PATCH: the 3 `Metadata.mad_*` diagnostics deleted after the
+pre-registered acceptance gate FAILED on the first real cron — `mad_mom12_corr`
+0.834 / `mad_mom3_corr` 0.807 ≫ the |ρ| < 0.30 line at 99.6% coverage =
+decisive momentum echo; `methodology-scientist` RATIFY-REMOVE, one cron
+decision-grade at ~20 SE. The dead `macd_hist` pillar slot removed in the same
+PR — structurally inert since the float-vs-dict check made it always-NaN →
+skipna-dropped; the technical pillar is now an honest 4-metric mean
+(rsi_dist50 / adx / bb_pctb / mfi). Δcomposite = 0, simulate-proven). Prior
+**`0.10.16-phase4.6`** (issue #441 PR-1 — additive
+3 `Metadata.mad_*` MAD-factor diagnostics: coverage + cross-sectional Spearman
+ρ vs `mom_12_1`/`mom_3_1`; pillar untouched, observability-only, Δscore = 0;
+feeds the PR-2 wiring gate |ρ| < 0.30 + coverage ≥ 90%). Prior
+**`0.10.15-phase4.6`** (#426 Phase 4j.1 — additive
+9 `Metadata.alpha158_*` Qlib observability fields, `OsapGateDiagnostic` reused,
+no new model; observability-only, Δscore = 0). Prior **`0.10.14-phase4.6`**:
+**Phase 7.0 — the
+AI-pick portfolio home + 5-year point-in-time backtest — shipped**
+(#416 → #420: survivorship membership ledger + benchmark export +
+inverse-vol weighting → PIT NAV engine + anti-look-ahead orchestrator →
+NAV-per-holding-count N=1-10 → re-sourced restatement canary +
+result-dependent disclaimer + the real 5y `backtest_pit.json` → the
+AI-pick home page that renders it). The backtest artifact self-carries
+its `meta`, so it required **no `schemas.py` model**; the only Phase 7
+schema change was the additive `Metadata.benchmark_coverage_pct`
+(`0.10.14`, #416 PR-1, atop the prior `0.10.13` `country_coverage_pct`
+strict-resolution canary). Prior schema
+**`0.10.12-phase4.6`** on `main` (PR #303 merged
+2026-05-29 `847c21b` — Phase 4.5e PR 6 Form-4 10b5-1 negation guard,
+residual footgun #1 from PR 4-eq; new
+`Metadata.form4_negation_guard_downgrade_count: int | None` counts
+True → False downgrades from the 11-token bidirectional ±5-word-token
+regex wrapping `edgar.ownership.core.detect_10b5_1_plan`. Prior: PR #300
+PATCH bump — new `Metadata.value_trap_risk_delta_by_sector: dict[str,
+int] | None` per methodology-scientist Q2 verdict deferred from PR #294;
+positive value = sector dropped flags after flip per lower sector Ke vs
+flat 10% baseline; populates from cron Run #72+ as Step 8 per-ticker
+loop accumulation). Schema cluster history: PR #297
+Issue #287 PR A `0.10.7 → 0.10.9-phase4.6` (4 new `Metadata.*_wall_clock_seconds`
+fields for Tier-2 / Form-4 / OSAP / Step-8 cross_source loops; paired
+with `compute-rankings.yml` `timeout-minutes: 150 → 195` + cache-
+restore canary; empirically validated on cron Run #71 / `368dccd9` at
+2026-05-28 08:44 UTC). PR #298 cache-v5 bump landed (workflow cache
+key flipped v4 → v5 to force live EDGAR re-fetch on cron Run #72 so
+PR #292 GOOG/GOOGL per-class XBRL override actually fires; Run #71
+confirmed silent-failure pattern via `multi_class_per_class_attempt_count = 0`).
+Latest release tag **`v1.4.0-phase4.6`**
+(2026-05-27, `bbca9cac`) — Phase 4.6 honest re-validation harness
+(universe survivorship-bias fix per Hou-Xue-Zhang 2020 + rankings.json
+time-series loader + forward-return loader + per-pillar Spearman IC
++ manipulation-index distribution shift + honest-baseline CLI with
+McLean-Pontiff 2016 32% post-publication decay banner). Post-tag
+production patches: PR #292 schema PATCH `0.10.7 → 0.10.8-phase4.6`
+(Rule 18 disambiguator `multi_class_per_class_attempt_count` for
+the GOOG/GOOGL XBRL concept-name omission fix); PR #293 Site-2 DQIC
+ceiling retirement (NVR FP, methodology-scientist Option C); PR #294
+sector-CoE flip (Issue #67 `USE_SECTOR_COE = True`, Damodaran 2019
+Ch. 8.4 11-sector Ke, `value_trap_risk` 132 → 109 cohort drop).
+Prior tag **`v1.3.0-phase4.5e`**
+(2026-05-26, `5db3b978`) — Phase 4.5e Form-4 insider-clustering
+ladder closure + LedgerCraft frontend reskin (defense layer 32 → 33;
+PR #264 `multi_class_aggregate_shares_suspected` + PR #265 DQIC
+site-2 rename `valuation_output_anomalous`).
+
+In-flight entries rotated out by the same drain (both MERGED): the
+veto-counterfactual tool + gate (a) verdict (#453) and the Issue #374
+RATIFY-B dual-class share-count fix (#456) — full text preserved in
+PHASE_STATUS_INFLIGHT.md §chore(analysis) 2026-06-10 + §fix(ingest)
+2026-06-11. Next-deliverables items closed by the drain: item 1 (Phase
+7.0c gate (a) — ANSWERED: veto layer does not rescue returns) and item
+2 (Issue #441 — DONE, RATIFY-REMOVE; NO 5th technical input without a
+fresh pre-registration; screened candidates = short-term reversal
+Jegadeesh 1990 / idio-vol Ang-Hodrick-Xing-Zhang 2006).
+
+### Addendum (same 2026-06-11 drain, post-rebase): two further in-flight entries rotated out as MERGED
+
+**feat(portfolio) — ADAPTIVE AI-sized basket** (merged; verification follow-up
+= #460) and **chore(ci) — cache-v7 bump manifesting #374 RATIFY-B** (merged as
+#458) — both full texts preserved in PHASE_STATUS_INFLIGHT.md (§feat(portfolio)
+adaptive + §chore(ci) cache-v7, 2026-06-11). Key facts carried into the live
+docs: adaptive rule composite ≥ 65 / floor 5 / cap 20, evidence CAGR 22.8% vs
+SPY 14.8% with maxDD −32.0%, artifact contract `meta.adaptive_rule` +
+`nav.adaptive` + `rebalances[*].adaptive_count`, frontend legacy-slider
+fallback (CLAUDE.md §Gotchas AI-pick line + docs/GOTCHAS.md); cache families
+unified on v7 (fast/backfill/sim) with `test_workflow_fast_cache_key_is_v7`
+pinning, expected first-cold-cron evidence `multi_class_per_class_override_count`
+= 2 · GOOG ≡ GOOGL ≈ 12.09B · `shares_outstanding_listed_class` populated
+(CLAUDE.md §Phase status current-state).

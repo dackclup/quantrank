@@ -1,6 +1,6 @@
 ---
 name: incident-commander
-description: Production-failure incident commander for QuantRank. MUST be invoked (no confirmation) when the weekly compute cron fails / hangs / produces corrupt output, when the Vercel deploy breaks, when the schema-snapshot CI guard fails, when a user reports "production is broken" / "the site is wrong" / "rankings look corrupt" / "site is down" / "cron stuck" / "incident". Acts as orchestrator that triages the symptom, fans out to the relevant specialist subagents in parallel, and synthesizes their findings into a single incident timeline + mitigation plan + post-mortem skeleton. Spawns `edgar-debugger`, `defense-layer-auditor`, `performance-engineer`, `security-reviewer`, `dependency-auditor`, or `schema-sentinel` as the symptom demands. Read + Bash; emits commands for the user to authorize.
+description: Production-failure incident commander. MUST be invoked (no confirmation) when the weekly compute cron fails / hangs / produces corrupt output, the Vercel deploy breaks, the schema-snapshot CI guard fails, or the user says "production is broken" / "the site is wrong" / "site is down" / "cron stuck" / "incident". Triages the symptom, fans out to specialist subagents in parallel, synthesizes incident timeline + mitigation plan + post-mortem skeleton. Read + Bash; emits commands for user authorization.
 tools: Read, Bash, Grep, Glob
 model: fable
 effort: max
@@ -137,3 +137,7 @@ for the full contract:
 
 Use `DONE` when nothing downstream is warranted — never invent follow-up to
 look busy. You propose the `next=`; you never spawn peers yourself.
+
+## Boundary & trigger reference (long-form; moved out of frontmatter 2026-06-11 token drain)
+
+Production-failure incident commander for QuantRank. MUST be invoked (no confirmation) when the weekly compute cron fails / hangs / produces corrupt output, when the Vercel deploy breaks, when the schema-snapshot CI guard fails, when a user reports "production is broken" / "the site is wrong" / "rankings look corrupt" / "site is down" / "cron stuck" / "incident". Acts as orchestrator that triages the symptom, fans out to the relevant specialist subagents in parallel, and synthesizes their findings into a single incident timeline + mitigation plan + post-mortem skeleton. Spawns `edgar-debugger`, `defense-layer-auditor`, `performance-engineer`, `security-reviewer`, `dependency-auditor`, or `schema-sentinel` as the symptom demands. Read + Bash; emits commands for the user to authorize.

@@ -61,7 +61,7 @@ PR #226 triage. Then route via the cadence below.
 | **3. Integration** | Schema triple touched · `frontend/components/` · `.github/workflows/` · new dep | `schema-sentinel` · `frontend-design-reviewer` · `security-reviewer` · `dependency-auditor` (dep bump) | `python -m compute.output.schema_check` clean · chip + tabular-nums + loose-null discipline preserved |
 | **4. Testing** | Logic added in step 2 | `test-engineer` · `defense-layer-auditor` Sections A-L · `stock-detail-auditor` (post-cron) · `performance-engineer` (p95 > 15s) | Offline pytest + Hypothesis + `@network` smoke · Sections A-L pass |
 | **5. Deployment** | Ready-to-push · Draft → Mark Ready · phase-tag boundary | `phase-coordinator` Mode B (lockstep) · `quantrank-reviewer` (fable) · `ci-triage-engineer` (if CI red) · `vercel-preview-auditor` (UI-touching PR) · `release-captain` (fable, tag) | CI green · preview 3-route UA probe green · release notes drafted (if tag) |
-| **6. Monitoring** | Post-cron · post-deploy · weekly | `defense-layer-auditor` Sections A-L · `stock-detail-auditor` · `data-pipeline-engineer` · `data-analyst` · `vercel-preview-auditor` · `performance-engineer` · `incident-commander` (fable, P1 only) | 1-page metric × expected × actual × status report · Top-5 rotation symmetric |
+| **6. Monitoring** | Post-cron · post-deploy · weekly | `defense-layer-auditor` Sections A-L · `stock-detail-auditor` · `data-pipeline-engineer` · `data-analyst` · `expert-user-explorer` · `performance-engineer` · `incident-commander` (fable, P1 only) | 1-page metric × expected × actual × status report · Top-5 rotation symmetric |
 
 **Cadence invariants**:
 

@@ -13,20 +13,106 @@
 | 7 | Regime + portfolio (Student-t HMM + NCO + TDA) → **v1.5** | 🟡 PARTIAL — **Phase 7.0 SHIPPED** (AI-pick portfolio home + 5y→10y PIT backtest + watchlist + cron auto-refresh; #416-#420 / #424 / #428 / #440); remainder re-scoped as **Phase 7.1** (re-scope 2026-06-10), gated on the 7.0c veto-replay baseline + a longer fit window (single-macro-cycle HMM/TDA = overfit risk) |
 | 8 | Universe expansion (S&P 1500) | ⚪ not started — **staged re-scope (2026-06-10)**: S&P 900 pilot (500 + 400 mid-caps) first; off-cycle pre-cache (#249) is a hard prerequisite (EDGAR ~1 req/s sustained → cold 1500-ticker fundamentals ≈ 125m alone vs the 240m job ceiling) |
 
-## Current state (2026-06-10)
+## Current state (2026-06-11)
 
 | Field | Value |
 |---|---|
-| Schema | **`0.10.17-phase4.6`** (current on `main` — issue #441 close-out: the 3 `Metadata.mad_*` MAD-factor diagnostics REMOVED after the pre-registered acceptance gate FAILED on the first real cron (`mad_mom12_corr` 0.834 / `mad_mom3_corr` 0.807 ≫ |ρ| < 0.30 → momentum echo; methodology-scientist RATIFY-REMOVE) + the dead `macd_hist` pillar slot deleted (technical pillar now an honest 4-metric mean). Prior `0.10.16` #447 issue-#441 PR-1 added those 3 diagnostics feeding the now-closed PR-2 wiring gate; prior `0.10.15` #426 Phase 4j.1 added 9 `Metadata.alpha158_*` Qlib observability fields; #416 added `Metadata.benchmark_coverage_pct` (`0.10.14`). Prior **`0.10.13-phase4.6`** — PATCH bump: listing-metadata canary `Metadata.country_coverage_pct: float | None` + CBOE `BTS → Cboe BZX` fix in `cross_source._EXCHANGE_NAME_BY_CODE`. The 2026-06-02 post-cron audit disproved the 0.10.12 "country tracks exchange 1:1" assumption — exchange passes unknown codes through as covered while country resolves only known US codes, so they diverge on a raw passthrough (CBOE's `BTS`: exchange 100% / country 99.8%). Prior: PR #303 merged 2026-05-29 `847c21b` — `0.10.12-phase4.6` Phase 4.5e PR 6 Form-4 10b5-1 negation guard; supersedes PR #300's `0.10.10` per-sector delta + PR #297's `0.10.9` wall-clocks + PR #292's `0.10.8` Rule 18 disambiguator.) |
+| Schema | **`0.10.18-phase4.6`** (#456 RATIFY-B dual-class company-total + additive `RawMetrics.shares_outstanding_listed_class`; manifested by the #458 cache-v7 bump — first post-bump cron 2026-06-11, verify `multi_class_per_class_override_count` = 2 + GOOG ≡ GOOGL ≈ 12.09B. Full lineage: SKILL.md §schema-version table + §Chronological history below) |
 | Defense layer | **33 declared boolean flags** (7 active vetoes + 26 annotates + reserved slots; ~27 currently emit; `USE_SECTOR_COE = True` post-PR #294 flip) · plus 5 numerical guards + `manipulation_index` rollup |
 | Active vetoes | **7** — `altman_distress` · `sloan_accruals_top_decile` · `net_issuance_top_decile` · `non_reliance_filing` · `beneish_manipulation_veto` · `dechow_manipulation_veto` · `data_quality_input_corruption` |
 | Latest release tag | [**`v1.4.0-phase4.6`**](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6) — 2026-05-27 at `bbca9cac` (Phase 4.6 honest re-validation harness) |
-| Post-tag production patches | PR #292 (`e9aaab31`, schema `0.10.7 → 0.10.8-phase4.6`, GOOG/GOOGL XBRL fix) · PR #293 (`95e638bf`, Site-2 DQIC retirement, NVR FP) · PR #294 (`0ddb6b81`, sector-CoE flip `USE_SECTOR_COE = True`, Issue #67 closure) · PR #295 (`2d2ec83e`, post-session housekeeping drain 6 INFLIGHT + pointer bumps) · PR #296 (`e85dfbcf`, add root CONTEXT.md pointer + reconcile `docs/agents/domain.md`) · PR #297 (`ecb60e64`, schema `0.10.8 → 0.10.9-phase4.6`, Issue #287 PR A durable timeout + 4 `*_wall_clock_seconds` fields) · PR #298 (`030675e9`, cache-key `v4 → v5` to flush stale parquet so PR #292 GOOG/GOOGL fix actually fires; closes Issue #288 silent-failure gap) · PR #299 (`3ec4b29e`, end-of-day INFLIGHT drain of #295/#297/#298) · PR #300 (`5fa9a443`, schema `0.10.9 → 0.10.10-phase4.6`, Issue #67 follow-up per-sector delta) · PR #301 (`978cab65`, end-of-day .md sweep — 8 MUST-FIX + 6 SHOULD-FIX cross-doc drifts) · PR #302 (`c956f06a`, PR #293 follow-up Site-2 dead-code removal — `_has_corrupt_input` + `_data_quality_corrupt_result` removed after cron Run #71 confirmed clean) |
+| Post-tag production patches | PR #292 → #302 cluster (2026-05-28/29) — list relocated to §Chronological history |
 | Prior release tag | [**`v1.3.0-phase4.5e`**](https://github.com/dackclup/quantrank/releases/tag/v1.3.0-phase4.5e) — 2026-05-26 at `5db3b978` (Phase 4.5e Form-4 cluster + LedgerCraft reskin; defense layer headline 32 → 33) |
-| Production run | `368dccd9` (2026-05-28 cron Run #71, 14m 32s warm cache, post-PR #298 cache-v5 bump; empirically validated PR #297 wall-clock fields — `tier2_wc=10.6s`, `form4_wc=null` per FORM4_FETCH_SKIP, `osap_wc=347.1s`, `cross_source_wc=133.2s`. Smoking gun for Issue #288 cache-replay bypass: `multi_class_per_class_attempt_count=0` + `fundamentals_latency_p50_seconds=0.0`) |
+| Production run | `65bfd335` (2026-06-11 cron — FIRST run on the #458 cache-v7 family; RATIFY-B manifest verification pending on this artifact). Prior validated baseline: `368dccd9` cron Run #71 (detail relocated to §Chronological history) |
 | Universe | 502 stocks (S&P 500 minus 1 delisting) |
-| Skill inventory | **47** invocation-triggerable + phase planning docs |
-| Subagent inventory | **22** project-specific in 5 tiers (5 fable + 17 sonnet): **Tier 1 Core** (`quantrank-reviewer` · `schema-sentinel` · `defense-layer-auditor` · `edgar-debugger` · `stock-detail-auditor`) · **Tier 2 Lifecycle** (`security-reviewer` · `frontend-design-reviewer` · `vercel-preview-auditor` · `expert-user-explorer` · `release-captain` · `phase-coordinator`) · **Tier 3 Specialized** (`test-engineer` · `methodology-scientist` · `literature-searcher` · `performance-engineer` · `dependency-auditor` · `financial-engineer`) · **Tier 4 Operations** (`docs-reviewer` · `ci-triage-engineer` · `incident-commander`) · **Tier 5 Builders** (write-capable: `compute-builder` · `frontend-builder`) |
+| Skill inventory | **45** invocation-triggerable (44 + the vendored `impeccable` symlink) + `phase-N/` planning docs — index: `.claude/skills/README.md` |
+| Subagent inventory | **25** in 5 tiers (5 fable + 20 sonnet; 23 `effort: max`, 2 `high`) — roster + routing matrix: `.claude/agents/README.md` |
+
+**In flight** (not yet merged on `main`; per-PR detail lives in
+[`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) — append there, not here):
+- docs/infra — token-economy optimization + 25-agent model/effort audit + agentic-workflow audit (PR #459, 2026-06-11).
+
+**Next deliverables** (re-scoped 2026-06-11; prior items 1-2 — 7.0c gate (a)
++ issue #441 — are DONE, closed entries relocated to §Chronological history):
+
+1. **Data-integrity hardening sprint (~1-2w)** — close the silent share-count /
+   extraction corruption cluster before any new ML/factor work trains on the
+   composite: #248 (V shares ~4× off, NO veto fired) · #374 (warm-cache
+   per-class bypass — source fix #456 + cache-v7 #458 landed, verification on
+   the 2026-06-11 artifact pending) · #376 (BF-B) · #379 (GEV spinoff) · #375
+   (SNDK reverse-split) · #385 (APA revenue=None) · #261 (multi-class
+   overcount) · #247/#289 (NVR DQIC gap / empty fair price). **Phase 5 entry
+   gate (b)**.
+2. **Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — UNBLOCKED (#287
+   PR B merged as #431); needs ≥ 1 cron's `form4_rule10b5_one_excluded_count`
+   confirming the Aboody et al. 2010 §3.2 −30..−45% band + ≥ 4 crons
+   accumulating ahead of the Q3 2026-08-19 cohort audit; vesting-residual risk
+   still argues against full 10.0 restoration.
+3. **v1.1.0-phase4 tag — RE-GATED** — JKP 4i.1 dropped from the hard gate
+   (license #115); gate = OSAP 4h.1 (#113) + the 4j.2 Qlib blend decision on
+   ≥ 1 real cron of `Metadata.alpha158_*` IC evidence (PBO ≤ 0.5 + DSR > 0);
+   4k.1 IPCA (#122) additive, non-blocking.
+4. **Phase 5 — ML meta-learner** (~10-12w; unblocks IC-decay writer #75) —
+   GATED on item 1 + the 7.0c composite-signal follow-through + a Supabase
+   client-wiring pre-PR (CLAUDE.md §Connectors). Entry gates: WORKFLOW.md
+   §Phase 5.
+5. **Stock-attribute data — Dividend + Security-type tiles** (display-only,
+   parallel-safe; fill the two reserved `HeroAttributeTiles` slots, never touch
+   ranking/scoring/defense; one MINOR schema bump per signal;
+   observability-before-wiring `Metadata.*_coverage_pct` cron first):
+   - **7a. Dividend signal** — add a `dividend` block to the per-stock schema
+     (Pydantic `StockDetail` + TS `types.ts` + snapshot, the triple-lockstep).
+     Source: yfinance already in the stack — `yf.Ticker(t).info["dividendYield"]`
+     / `["payoutRatio"]` (the `Ticker.info` API surface already used by
+     `compute/ingest/cross_source.py:129` for `marketCap` + cached under
+     `YFINANCE_INFO_CACHE_DIR`; dividend ingest extends that SAME pattern —
+     `prices.py` only does `yf.download()` OHLCV, so it's the wrong anchor),
+     no new dependency. Ship the diagnostic `Metadata.dividend_coverage_pct`
+     FIRST (observability-before-wiring, Rule 18) — confirm the field
+     populates on a real cron before the `HeroAttributeTiles` "Dividend" tile
+     reads it. Fields to consider: `dividend_yield_pct`, `pays_dividend: bool`,
+     optional `payout_ratio`. Tile auto-promotes out of the reserved state
+     once `value` is non-null. **Methodology note**: dividend yield is
+     descriptive metadata, NOT a new scoring pillar or veto — keep it out of
+     the composite unless a separate `financial-engineer` +
+     `methodology-scientist` design says otherwise.
+   - **7b. Security-type signal** — the `Type` tile (Common stock / ADR /
+     REIT / etc.). Source: yfinance `yf.Ticker(t).fast_info.quote_type`
+     (NOT `.info["quoteType"]` — that key is retired into `fast_info` on
+     current yfinance; and `.info["legalType"]` is funds-only, `None` for
+     equities — don't use it), AND for ADR/foreign-issuer detection the SEC
+     route `dei:DocumentType == "20-F"` in the XBRL filing (the standard
+     foreign-private-issuer annual-report form) or the EDGAR submissions JSON
+     `entityType` field (already fetched by `compute/ingest/sec_health.py`).
+     The universe is S&P 500 so ADRs are rare but present. Same schema-triple
+     + observability-first discipline. Smaller than 7a (a categorical label,
+     no numeric).
+   Both are **annotate/display-only** — they fill the two reserved
+   `HeroAttributeTiles` slots, they do NOT touch ranking, scoring, or the
+   defense layer. Sequence each behind a `Metadata.*_coverage_pct` diagnostic
+   cron before flipping the tile to read live data (the Phase 4h → 4h.2
+   observability-before-wiring precedent). Schema bumps: one MINOR per signal.
+   Display-only, parallel-safe — proceeds alongside items 1-3.
+6. **v1.5.0 release tag** — gated on item 2 (cluster weight promotion)
+   landing + post-revert cron data accumulating ahead of the Q3 2026-08-19
+   cohort audit; or a `v1.4.x` patch sooner if a structural fix lands alone.
+
+Phase 6 = TEXT-ONLY (→ 6.1) · Phase 7 remainder = 7.1 (gated on the 7.0c
+baseline + a longer fit window) · Phase 8 = staged S&P 900 pilot (#249
+off-cycle pre-cache prerequisite) — detail in WORKFLOW.md.
+
+**Open issues** (as of 2026-06-10, post-roadmap-re-scope; grouped by track): **Data-integrity sprint cluster (item 3)** — #248 (V shares ~4×) · #374 (per-class override warm-cache bypass) · #376 (BF-B) · #379 (GEV) · #375 (SNDK) · #385 (APA revenue) · #261 (multi-class overcount) · #247 + #289 (NVR DQIC → `risk_flags` gap / empty fair price). **Scoring fix (item 2)** — #441 (DONE — closed by #449: the MAD acceptance gate failed at ρ ≈ 0.83 ≫ 0.30 → momentum echo → REMOVE the construct + the dead `macd_hist` slot, schema `0.10.17`). **Factor track** — #113 (OSAP 4h.1, in the v1.1 gate) · #115 (JKP license — dropped from the v1.1 gate 2026-06-10) · #120 (Qlib — 4j.1 observability DONE #426; re-scoped to the 4j.2 blend decision) · #122 (IPCA 4k.1, non-blocking) · #75 (IC-decay writer, Phase-5-blocked). **Ops / infra** — #15 (throttle resilience) · #41 (Next.js 14 → 16 CVEs — zero exploitability on static-export) · #207 (form4 tenacity retry) · #208 / #218 / #377 / #378 (test + verify-helper gaps) · #249 (cron rebaseline / off-cycle pre-cache — now a Phase 8 hard prerequisite) · #259 (orchestrator package extract) · #287 (PR A merged #297 + PR B merged #431 — close-candidate once a cron confirms `form4_wall_clock_seconds` populates). **Process / research** — #130 (Q3 cohort audit 2026-08-19) · #137 (9arm-skills license, deadline 2026-06-17) · #150 (foundation reconciliation) · #260 (TMCS, Phase-6-gated).
+
+---
+
+## Chronological history
+
+### Relocated from §Current state (2026-06-11 token drain — verbatim)
+
+The merged-PR lists + stale table prose below were MOVED here unchanged from
+§Current state (the forced-read session-start section) on 2026-06-11; newest
+first. Closed next-deliverables entries (7.0c gate (a) + issue #441) follow
+the lists.
 
 **Recently merged** (Phase 7.0 + cron + Phase 4j.1 cluster, #416 → #449, 2026-06-04 → 2026-06-10):
 - PR #449 — refactor(scoring): issue #441 close-out — REMOVE MAD + the dead `macd_hist` slot (pre-registered gate FAILED on the first real cron: ρ 0.834 / 0.807 ≫ the 0.30 line = momentum echo; methodology-scientist RATIFY-REMOVE; schema `0.10.16 → 0.10.17`; technical pillar = honest 4-metric mean; NO 5th input without a fresh pre-registration)
@@ -137,9 +223,6 @@
 - PR #286 `27361047` — chore(docs): housekeeping PR-B — drain INFLIGHT + bump pointers post-v1.4.0
 - (3 issues filed: #287 FORM4 revert + durable 5-loop timeout · #288 GOOG/GOOGL XBRL · #289 NVR DQIC; all closed same day via PR #297 / #298 / #292 / #293)
 
-**In flight** (not yet merged on `main`):
-- **feat(backtest) — Phase 7.0c PIT veto-layer replay + artifact exports (this PR, 2026-06-10)** — roadmap item 1: replays **6 of the 7** active vetoes point-in-time at all 40 rebalances (`non_reliance_filing` excluded with disclosure — needs per-name 8-K fetching; `meta.vetoes_replayed` / `vetoes_not_replayed` carry the honest split); `meta.veto_layer_replayed` False → True; `RULE_VERSION` +veto-replay; new per-rebalance exports `vetoed_pick_candidates` (selection-effect headline) + `full_ranked` top-40 + `holdings[].mos_pct` + `sector_weights_by_count` + `high_conviction_count` (unblocks rank-banding + pick-substitution experiments). Artifact self-carried (no schema-triple change). +7 tests / 3 wiring-isolation repairs + the `test_weights` HC-subset property invariant fix. Post-merge: one backfill dispatch produces the first `veto_layer_replayed=True` artifact → re-run the beat-rate board = **Phase 5 entry gate (a) measurement**. Full detail: [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md). (The WARN-1 regex-anchor coverage gap from PR #303 remains a documented follow-up gated on cron empirical data.)
-
 **Earlier** (PR #264 → PR #285, 2026-05-26 → 2026-05-27):
 - PR #285 `8f373758` — docs(release): codify mobile-only operator convention for tag releases (CLAUDE.md §Gotchas + release-tag SKILL.md + release-captain agent)
 - PR #284 `a820caee` — fix(test): `test_compute_shift_live_repo_recent_window` resilient to shallow clones (CI `actions/checkout@v6` fetch-depth=1 default)
@@ -204,60 +287,17 @@
 - PR #171 `842f68dd` — docs: Phase 2 doc-drift reconcile — 5 files match current implementation
 - PR #170 — Phase 1 ops hardening: `compute-monthly.yml` perm + EDGAR_MAX_WORKERS doc + going-concern FP stat
 
-**Next deliverables** (re-scoped 2026-06-10 per the user-confirmed roadmap-fit review; ordered by decision-value):
+**Closed next-deliverables entries (relocated):**
 
 1. **Phase 7.0c — PIT veto-layer replay** (**PROMOTED to top**) — replay the 7 active vetoes inside `scripts/backfill_portfolio_pit.py` (flip `veto_layer_replayed` False → True) + one backfill dispatch. The cheapest highest-information experiment left: the shipped 10Y backtest shows the RAW composite underperforming SPX at every N=1-10, so "does the defense layer rescue the signal?" must be answered BEFORE Phase 5's ~10-12w ML track is funded. The recorded verdict is **Phase 5 entry gate (a)**.
 2. **Issue #441 — DONE (closed by the MAD close-out PR #449, 2026-06-10)** — the pre-registered acceptance gate FAILED on the first real cron (`mad_mom12_corr` 0.834 / `mad_mom3_corr` 0.807 ≫ |ρ| < 0.30 at 99.6% coverage → momentum echo; methodology-scientist RATIFY-REMOVE, one cron decision-grade at ~20 SE). MAD (`mad_scalefree` + diagnostics) removed AND the dead `macd_hist` pillar slot deleted with it (schema `0.10.17`) — the `isinstance(macd, dict)` check on a float return made it always-NaN/skipna-dropped, so the technical pillar was already (and is now honestly) a 4-metric mean. The MAD PR-2 wiring + its IC-baseline rationale are moot; no 5th technical input without a fresh pre-registration (short-term reversal Jegadeesh 1990 / idio-vol Ang-Hodrick-Xing-Zhang 2006 are the screened candidates).
-3. **Data-integrity hardening sprint (~1-2w, NEW)** — close the silent share-count / extraction corruption cluster before any new ML/factor work trains on the composite: #248 (V shares ~4× off, NO veto fired) · #374 (GOOG/GOOGL+4 per-class override never fires on warm cache) · #376 (BF-B share-count FP) · #379 (GEV spinoff gap) · #375 (SNDK reverse-split watch) · #385 (APA revenue=None) · #261 (multi-class overcount) · #247/#289 (NVR DQIC missing from `risk_flags` / empty fair price). These corrupt market-cap + every per-share metric downstream while evading the DQIC veto. **Phase 5 entry gate (b)**.
-4. **Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — **UNBLOCKED**: Issue #287 PR B (FORM4 revert) merged as PR #431. Needs ≥ 1 cron's `form4_rule10b5_one_excluded_count` with the `-30%` to `-45%` firing-rate delta confirming the Aboody et al. 2010 §3.2 midpoint, and ≥ 4 crons accumulating ahead of the Q3 2026-08-19 cohort audit; vesting-residual risk still argues against full 10.0 restoration
-5. **v1.1.0-phase4 tag — RE-GATED (2026-06-10)** — 4i.1 (JKP) **dropped from the hard gate** (CC BY-NC license review #115 unresolved since 2026-05-14; WORKFLOW.md fallback clause invoked — JKP re-enters only if the license clears). New gate: 4h.1 full per-stock OSAP replication (#113) + the 4j.2 Qlib blend decision made on ≥ 1 real cron of `Metadata.alpha158_*` IC evidence (PBO ≤ 0.5 + DSR > 0). 4k.1 (IPCA, #122) is additive and non-blocking.
-6. **Phase 5 — ML meta-learner** (~10-12w; unblocks PR 4b §3 IC-decay writer #75) — **GATED on items 1 + 3** plus a Supabase client-wiring pre-PR (CLAUDE.md §Connectors: no client without an explicit PR; the Phase 5 acceptance criteria hard-require the cross-run tables)
-7. **Stock-attribute data — Dividend + Security-type** (frontend tiles already
-   reserved via PR #344 `HeroAttributeTiles`; both render a "Coming soon"
-   placeholder until the data lands). Two independent ingest + schema-triple
-   deliverables:
-   - **7a. Dividend signal** — add a `dividend` block to the per-stock schema
-     (Pydantic `StockDetail` + TS `types.ts` + snapshot, the triple-lockstep).
-     Source: yfinance already in the stack — `yf.Ticker(t).info["dividendYield"]`
-     / `["payoutRatio"]` (the `Ticker.info` API surface already used by
-     `compute/ingest/cross_source.py:129` for `marketCap` + cached under
-     `YFINANCE_INFO_CACHE_DIR`; dividend ingest extends that SAME pattern —
-     `prices.py` only does `yf.download()` OHLCV, so it's the wrong anchor),
-     no new dependency. Ship the diagnostic `Metadata.dividend_coverage_pct`
-     FIRST (observability-before-wiring, Rule 18) — confirm the field
-     populates on a real cron before the `HeroAttributeTiles` "Dividend" tile
-     reads it. Fields to consider: `dividend_yield_pct`, `pays_dividend: bool`,
-     optional `payout_ratio`. Tile auto-promotes out of the reserved state
-     once `value` is non-null. **Methodology note**: dividend yield is
-     descriptive metadata, NOT a new scoring pillar or veto — keep it out of
-     the composite unless a separate `financial-engineer` +
-     `methodology-scientist` design says otherwise.
-   - **7b. Security-type signal** — the `Type` tile (Common stock / ADR /
-     REIT / etc.). Source: yfinance `yf.Ticker(t).fast_info.quote_type`
-     (NOT `.info["quoteType"]` — that key is retired into `fast_info` on
-     current yfinance; and `.info["legalType"]` is funds-only, `None` for
-     equities — don't use it), AND for ADR/foreign-issuer detection the SEC
-     route `dei:DocumentType == "20-F"` in the XBRL filing (the standard
-     foreign-private-issuer annual-report form) or the EDGAR submissions JSON
-     `entityType` field (already fetched by `compute/ingest/sec_health.py`).
-     The universe is S&P 500 so ADRs are rare but present. Same schema-triple
-     + observability-first discipline. Smaller than 7a (a categorical label,
-     no numeric).
-   Both are **annotate/display-only** — they fill the two reserved
-   `HeroAttributeTiles` slots, they do NOT touch ranking, scoring, or the
-   defense layer. Sequence each behind a `Metadata.*_coverage_pct` diagnostic
-   cron before flipping the tile to read live data (the Phase 4h → 4h.2
-   observability-before-wiring precedent). Schema bumps: one MINOR per signal.
-   Display-only, parallel-safe — proceeds alongside items 1-3.
-8. **v1.5.0 release tag** — gated on item 4 (cluster weight promotion) landing +
-   post-revert cron data accumulating ahead of the Q3 2026-08-19 cohort audit;
-   or cut a `v1.4.x` patch sooner if a structural fix lands on its own
 
-**Open issues** (as of 2026-06-10, post-roadmap-re-scope; grouped by track): **Data-integrity sprint cluster (item 3)** — #248 (V shares ~4×) · #374 (per-class override warm-cache bypass) · #376 (BF-B) · #379 (GEV) · #375 (SNDK) · #385 (APA revenue) · #261 (multi-class overcount) · #247 + #289 (NVR DQIC → `risk_flags` gap / empty fair price). **Scoring fix (item 2)** — #441 (DONE — closed by #449: the MAD acceptance gate failed at ρ ≈ 0.83 ≫ 0.30 → momentum echo → REMOVE the construct + the dead `macd_hist` slot, schema `0.10.17`). **Factor track** — #113 (OSAP 4h.1, in the v1.1 gate) · #115 (JKP license — dropped from the v1.1 gate 2026-06-10) · #120 (Qlib — 4j.1 observability DONE #426; re-scoped to the 4j.2 blend decision) · #122 (IPCA 4k.1, non-blocking) · #75 (IC-decay writer, Phase-5-blocked). **Ops / infra** — #15 (throttle resilience) · #41 (Next.js 14 → 16 CVEs — zero exploitability on static-export) · #207 (form4 tenacity retry) · #208 / #218 / #377 / #378 (test + verify-helper gaps) · #249 (cron rebaseline / off-cycle pre-cache — now a Phase 8 hard prerequisite) · #259 (orchestrator package extract) · #287 (PR A merged #297 + PR B merged #431 — close-candidate once a cron confirms `form4_wall_clock_seconds` populates). **Process / research** — #130 (Q3 cohort audit 2026-08-19) · #137 (9arm-skills license, deadline 2026-06-17) · #150 (foundation reconciliation) · #260 (TMCS, Phase-6-gated).
+**Drained Current-state table prose (schema lineage / patches / run baseline):**
 
----
+| Schema | **`0.10.17-phase4.6`** (current on `main` — issue #441 close-out: the 3 `Metadata.mad_*` MAD-factor diagnostics REMOVED after the pre-registered acceptance gate FAILED on the first real cron (`mad_mom12_corr` 0.834 / `mad_mom3_corr` 0.807 ≫ |ρ| < 0.30 → momentum echo; methodology-scientist RATIFY-REMOVE) + the dead `macd_hist` pillar slot deleted (technical pillar now an honest 4-metric mean). Prior `0.10.16` #447 issue-#441 PR-1 added those 3 diagnostics feeding the now-closed PR-2 wiring gate; prior `0.10.15` #426 Phase 4j.1 added 9 `Metadata.alpha158_*` Qlib observability fields; #416 added `Metadata.benchmark_coverage_pct` (`0.10.14`). Prior **`0.10.13-phase4.6`** — PATCH bump: listing-metadata canary `Metadata.country_coverage_pct: float | None` + CBOE `BTS → Cboe BZX` fix in `cross_source._EXCHANGE_NAME_BY_CODE`. The 2026-06-02 post-cron audit disproved the 0.10.12 "country tracks exchange 1:1" assumption — exchange passes unknown codes through as covered while country resolves only known US codes, so they diverge on a raw passthrough (CBOE's `BTS`: exchange 100% / country 99.8%). Prior: PR #303 merged 2026-05-29 `847c21b` — `0.10.12-phase4.6` Phase 4.5e PR 6 Form-4 10b5-1 negation guard; supersedes PR #300's `0.10.10` per-sector delta + PR #297's `0.10.9` wall-clocks + PR #292's `0.10.8` Rule 18 disambiguator.) |
+| Post-tag production patches | PR #292 (`e9aaab31`, schema `0.10.7 → 0.10.8-phase4.6`, GOOG/GOOGL XBRL fix) · PR #293 (`95e638bf`, Site-2 DQIC retirement, NVR FP) · PR #294 (`0ddb6b81`, sector-CoE flip `USE_SECTOR_COE = True`, Issue #67 closure) · PR #295 (`2d2ec83e`, post-session housekeeping drain 6 INFLIGHT + pointer bumps) · PR #296 (`e85dfbcf`, add root CONTEXT.md pointer + reconcile `docs/agents/domain.md`) · PR #297 (`ecb60e64`, schema `0.10.8 → 0.10.9-phase4.6`, Issue #287 PR A durable timeout + 4 `*_wall_clock_seconds` fields) · PR #298 (`030675e9`, cache-key `v4 → v5` to flush stale parquet so PR #292 GOOG/GOOGL fix actually fires; closes Issue #288 silent-failure gap) · PR #299 (`3ec4b29e`, end-of-day INFLIGHT drain of #295/#297/#298) · PR #300 (`5fa9a443`, schema `0.10.9 → 0.10.10-phase4.6`, Issue #67 follow-up per-sector delta) · PR #301 (`978cab65`, end-of-day .md sweep — 8 MUST-FIX + 6 SHOULD-FIX cross-doc drifts) · PR #302 (`c956f06a`, PR #293 follow-up Site-2 dead-code removal — `_has_corrupt_input` + `_data_quality_corrupt_result` removed after cron Run #71 confirmed clean) |
+| Production run | `368dccd9` (2026-05-28 cron Run #71, 14m 32s warm cache, post-PR #298 cache-v5 bump; empirically validated PR #297 wall-clock fields — `tier2_wc=10.6s`, `form4_wc=null` per FORM4_FETCH_SKIP, `osap_wc=347.1s`, `cross_source_wc=133.2s`. Smoking gun for Issue #288 cache-replay bypass: `multi_class_per_class_attempt_count=0` + `fundamentals_latency_p50_seconds=0.0`) |
 
-## Chronological history
 
 **Tooling note (2026-05-17, post-v1.2)**: Claude Code MCP connectors
 added for Vercel + Supabase + Sentry (Sentry SDK wiring deferred to

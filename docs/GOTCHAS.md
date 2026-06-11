@@ -1389,3 +1389,13 @@ AiPickPortfolio footnote are DATA-DRIVEN on that flag (both generations stay hon
 branching on the artifact, never hardcode either state. Even at `True`, the backtest is still not
 the full live product (one veto un-replayed; annual-10-K PIT vs live TTM) — never describe the
 backtest CAGR as the live product's track record.
+
+- **`pillarColor` → `lib/visual` + `flagLabel` → `lib/flag-labels` are SHARED
+  tokens — don't re-inline them** (index entry detail; moved here 2026-06-11).
+  Both were introduced by the now-REMOVED compare/filter feature but remain
+  load-bearing: `pillarColor` (per-pillar hue mapping) is consumed by
+  `PillarRadarChart`, and `flagLabel` (risk-flag → human label map,
+  centralized in `lib/flag-labels.ts`) is consumed by `FairPriceCard` /
+  `PillarRadarChart` / `RiskSummaryCard`. When adding a new pillar hue or a
+  new risk-flag label, extend the shared module — re-inlining a private copy
+  in a component re-creates the divergence the centralization fixed.

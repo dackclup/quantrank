@@ -1,19 +1,6 @@
 ---
 name: portable-graceful-degradation-try-except
-description: Wrap every external-data integration call site in a try /
-  except that sets ALL related output fields to None on failure.
-  Production cron / job MUST NEVER block on a single external
-  dependency failure (network outage, API rate limit, schema drift,
-  package install failure). The try/except is paired with a structured
-  log line and a per-integration `Metadata.<source>_status` field so
-  the failure is observable downstream. Generic — drop-in for any
-  project with a multi-source production pipeline. TRIGGER when adding
-  a new external-data integration (API client, dataset fetch, optional
-  dependency), when the user says "this shouldn't break the cron", or
-  when CR feedback flags "what happens if this fails?". SKIP for core
-  compute paths with no upstream dependency (pure math, in-memory
-  transforms) and for early-development scout PRs where loud failure
-  is the desired feedback signal.
+description: Wrap every external-data call site in a try/except that sets ALL related output fields to None on failure — the production cron must never block on a single source. Pair with a structured log line + a per-integration `Metadata.<source>_status` field. Generic drop-in. TRIGGER: adding any external-data integration, "this shouldn't break the cron", or CR feedback "what happens if this fails?".
 ---
 
 # portable-graceful-degradation-try-except
@@ -139,3 +126,20 @@ downstream-aware).
 See QuantRank's `SKILL.md` Rule 17 (production cron never blocks on
 external dep) and `WORKFLOW.md` § "Graceful degradation contract"
 for the project-specific lock.
+
+## Long-form description (moved out of frontmatter 2026-06-11 token drain)
+
+Wrap every external-data integration call site in a try /
+except that sets ALL related output fields to None on failure.
+Production cron / job MUST NEVER block on a single external
+dependency failure (network outage, API rate limit, schema drift,
+package install failure). The try/except is paired with a structured
+log line and a per-integration `Metadata.<source>_status` field so
+the failure is observable downstream. Generic — drop-in for any
+project with a multi-source production pipeline. TRIGGER when adding
+a new external-data integration (API client, dataset fetch, optional
+dependency), when the user says "this shouldn't break the cron", or
+when CR feedback flags "what happens if this fails?". SKIP for core
+compute paths with no upstream dependency (pure math, in-memory
+transforms) and for early-development scout PRs where loud failure
+is the desired feedback signal.
