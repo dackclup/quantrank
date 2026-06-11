@@ -242,29 +242,48 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
               <span className="font-medium text-slate-600 dark:text-slate-300">
                 {displayCount} {displayCount === 1 ? 'name' : 'names'}
               </span>{' '}
-              (every pick scoring{' '}
-              <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
-                ≥{rule.composite_min.toFixed(0)}
-              </span>{' '}
-              enters
-              {isBand && (
+              {isBand ? (
+                // FAIL-5: band-only copy — "enters; holdings stay while ≥holdBandMin"
+                // lives ONLY here. STATE 1 artifacts only.
                 <>
-                  {'; '}holdings stay while{' '}
+                  (every pick scoring{' '}
+                  <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
+                    ≥{rule.composite_min.toFixed(0)}
+                  </span>{' '}
+                  enters{'; '}holdings stay while{' '}
                   <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
                     ≥{holdBandMin!.toFixed(0)}
                   </span>
-                  {' '}(reduces unnecessary turnover)
+                  {' '}(reduces unnecessary turnover); min{' '}
+                  <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
+                    {rule.min_picks}
+                  </span>
+                  , max{' '}
+                  <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
+                    {rule.max_picks}
+                  </span>
+                  {').'}
                 </>
-              )}
-              ; min{' '}
-              <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
-                {rule.min_picks}
-              </span>
-              , max{' '}
-              <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
-                {rule.max_picks}
-              </span>
-              ). Replays{' '}
+              ) : (
+                // FAIL-5: original pre-band wording for STATE 2 (current artifact).
+                // "holds every pick scoring ≥N" — unchanged from the pre-V55 copy.
+                <>
+                  (holds every pick scoring{' '}
+                  <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
+                    ≥{rule.composite_min.toFixed(0)}
+                  </span>
+                  ; min{' '}
+                  <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
+                    {rule.min_picks}
+                  </span>
+                  , max{' '}
+                  <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
+                    {rule.max_picks}
+                  </span>
+                  {').'}
+                </>
+              )}{' '}
+              Replays{' '}
               <span className="font-medium text-slate-600 dark:text-slate-300">
                 {vetoesNotReplayed && vetoesNotReplayed.length > 0
                   ? `${7 - vetoesNotReplayed.length} of 7`
@@ -285,29 +304,48 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
               <span className="font-medium text-slate-600 dark:text-slate-300">
                 {displayCount} {displayCount === 1 ? 'name' : 'names'}
               </span>{' '}
-              (every pick scoring{' '}
-              <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
-                ≥{rule.composite_min.toFixed(0)}
-              </span>{' '}
-              enters
-              {isBand && (
+              {isBand ? (
+                // FAIL-5: band-only copy — "enters; holdings stay while ≥holdBandMin"
+                // lives ONLY here. STATE 1 artifacts only.
                 <>
-                  {'; '}holdings stay while{' '}
+                  (every pick scoring{' '}
+                  <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
+                    ≥{rule.composite_min.toFixed(0)}
+                  </span>{' '}
+                  enters{'; '}holdings stay while{' '}
                   <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
                     ≥{holdBandMin!.toFixed(0)}
                   </span>
-                  {' '}(reduces unnecessary turnover)
+                  {' '}(reduces unnecessary turnover); min{' '}
+                  <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
+                    {rule.min_picks}
+                  </span>
+                  , max{' '}
+                  <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
+                    {rule.max_picks}
+                  </span>
+                  {').'}
                 </>
-              )}
-              ; min{' '}
-              <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
-                {rule.min_picks}
-              </span>
-              , max{' '}
-              <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
-                {rule.max_picks}
-              </span>
-              ). Factor-tilted book — the defense-layer vetoes that filter the live
+              ) : (
+                // FAIL-5: original pre-band wording for STATE 2 (current artifact).
+                // "holds every pick scoring ≥N" — unchanged from the pre-V55 copy.
+                <>
+                  (holds every pick scoring{' '}
+                  <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
+                    ≥{rule.composite_min.toFixed(0)}
+                  </span>
+                  ; min{' '}
+                  <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
+                    {rule.min_picks}
+                  </span>
+                  , max{' '}
+                  <span className="font-mono tabular-nums font-medium text-slate-600 dark:text-slate-300">
+                    {rule.max_picks}
+                  </span>
+                  {').'}
+                </>
+              )}{' '}
+              Factor-tilted book — the defense-layer vetoes that filter the live
               Top-5 are{' '}
               <span className="font-medium text-slate-600 dark:text-slate-300">
                 not replayed here
@@ -445,9 +483,10 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
           {displayHoldings.map((h, i) => {
             // "held" treatment: a carried name (composite < composite_min, kept
             // by the hold-band) gets a subtle muted score tone — reuses the
-            // existing `text-slate-400 dark:text-slate-500` secondary-text token
-            // family so no new palette entry is introduced. Only present on STATE 1
-            // artifacts where `carried` is defined.
+            // canonical muted pair `text-slate-500 dark:text-slate-400` so the
+            // light-mode score stays ≥ 4.5:1 AA at 14px (slate-400 on white is
+            // only ~2.9:1 — FAIL-3 fix). Only present on STATE 1 artifacts where
+            // `carried` is defined.
             const isCarried = 'carried' in h && h.carried === true;
             return (
               <li key={h.ticker} className="flex items-center gap-3 py-2">
@@ -463,7 +502,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                 <span className="hidden sm:inline">
                   <SectorChip sector={h.sector} />
                 </span>
-                <span className={`ml-auto w-14 shrink-0 text-right font-mono text-sm tabular-nums ${isCarried ? 'text-slate-400 dark:text-slate-400' : 'text-slate-700 dark:text-slate-300'}`}>
+                <span className={`ml-auto w-14 shrink-0 text-right font-mono text-sm tabular-nums ${isCarried ? 'text-slate-500 dark:text-slate-400' : 'text-slate-700 dark:text-slate-300'}`}>
                   {h.composite_score.toFixed(1)}
                   {isCarried && <span className="sr-only"> (held)</span>}
                 </span>
