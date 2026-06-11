@@ -777,17 +777,14 @@ def test_adaptive_count_end_to_end_all_picks_above_threshold(tmp_path, _universe
         )
 
 
-def test_adaptive_count_floor_when_all_picks_below_threshold(tmp_path, _universe) -> None:
+def test_adaptive_count_floor_invariant(tmp_path, _universe) -> None:
     """End-to-end FLOOR invariant: with a 3-ticker universe and gate='veto_only',
     adaptive_count >= min(ADAPTIVE_MIN_PICKS, len(picks)) must hold at every leg
     regardless of where the synthetic composites land relative to 65 (scale 1.0
     fixtures do NOT force them below threshold; the raw=0 floor arithmetic is
     pinned exactly by the _adaptive_count unit test)."""
-    # Drive composite below ADAPTIVE_COMPOSITE_MIN (65) by using very low scales so the
-    # composite pillar scores are all near the neutral baseline (~50 for a 3-ticker cohort).
-    # The scale_by_cik approach suppresses revenue/profit without triggering
-    # data_quality_input_corruption (revenue must stay >= $50M — $100M * 0.01 * ~1 = $1M,
-    # which may fire the corruption veto, so mock _compute_pit_risk_flags to stay clean).
+    # _compute_pit_risk_flags is mocked clean: synthetic revenue=100 would fire the
+    # data_quality_input_corruption veto and empty the picks (wiring-isolation pattern).
     with (
         mock.patch.object(bf, "get_sp500_constituents", return_value=_universe),
         mock.patch.object(bf, "fetch_fundamentals_history", side_effect=lambda cik: _annual_history(1.0)),

@@ -5,7 +5,7 @@ import { AiPickPortfolio } from '@/components/AiPickPortfolio';
 import { getAiPickData, getMetadata } from '@/lib/data';
 
 // Build-time metadata — branches on isAdaptive so the SEO description matches
-// the rendered branch during the artifact-regeneration window (WARN-1 fix).
+// the rendered branch during the artifact-regeneration window.
 // generateMetadata runs at build time (static export) so getAiPickData() is safe.
 export function generateMetadata(): Metadata {
   const aiPick = getAiPickData();

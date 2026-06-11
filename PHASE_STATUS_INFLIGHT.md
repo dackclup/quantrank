@@ -3062,7 +3062,7 @@ constants block — landed) + C2 (test pins incl. the inclusive-65.0
 boundary — landed) + C3 (gates A1 score-drought / A2 inflation / B
 relative-vs-by_count[8]-and-SPY @ 8th live rebalance / C freeze-lock
 registered on issue #130 — landed). The in-sample-sweep concern was
-explicitly disclosed in the dossier (: 65 is not a
+explicitly disclosed in the dossier (65 is not a
 canonical TIERS boundary; mitigants = coarse 4-point grid, monotone
 dose-response 55→60→65 in BOTH window halves with a documented cliff at 70,
 floor-5 chosen from {1,3,5} where it binds only in tiny-count quarters, and
