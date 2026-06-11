@@ -181,7 +181,10 @@ jobs:
       # cache-schema or live-fetch-only value-correctness change:
       #   v4 (PR 4c.1): `_ANNUAL_TAGS` += stockholders_equity
       #   v5 (Issue #288): GOOG/GOOGL per-class XBRL share-override path
-      #   -> bump to v6 next time either trigger fires.
+      #   v6-fast (Phase 7.0): 10y PRICES_PERIOD/ANNUAL_HISTORY_YEARS flush
+      #   v7-fast (Issue #374 RATIFY-B): flush per-class/contaminated parquets
+      #     so shares_outstanding repopulates as the company-total aggregate
+      #   -> bump to v8-fast next time either trigger fires.
       - name: Restore fast caches (fundamentals / prices / form4)
         uses: actions/cache@v5
         with:
@@ -192,10 +195,10 @@ jobs:
             compute/cache/universe-v2.parquet
             compute/cache/yfinance_info
             compute/cache/edgar_form4
-          key: cache-v6-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
+          key: cache-v7-fast-${{ steps.quarter.outputs.q }}-${{ runner.os }}
           restore-keys: |
-            cache-v6-fast-${{ steps.quarter.outputs.q }}-
-            cache-v6-fast-
+            cache-v7-fast-${{ steps.quarter.outputs.q }}-
+            cache-v7-fast-
 
       # SLOW-changing text bundle — RUN-ID key + prefix restore-keys (the textbook
       # "keep a cache fresh AND persistent" idiom). A unique key per run means the

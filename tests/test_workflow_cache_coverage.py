@@ -67,23 +67,36 @@ def test_workflow_restores_each_cache_dir(cache_path: Path) -> None:
     )
 
 
-def test_workflow_cache_key_is_v5() -> None:
-    """Cache key bumped v4 → v5 in Issue #288 follow-up PR (2026-05-28).
+def test_workflow_fast_cache_key_is_v7() -> None:
+    """FAST cache key is `cache-v7-fast-` (Issue #374 RATIFY-B follow-up).
 
-    Rationale: PR #292 (`e9aaab31`, 2026-05-28) + PR #269 introduced the
-    GOOG/GOOGL per-class XBRL share-override at
-    `compute/ingest/fundamentals.py:1043-1067` (Branch 3 of `_build_snapshot`).
-    Branch 3 only executes on live EDGAR fetch — `fetch_fundamentals`
-    short-circuits at `_is_fresh()` (line 1292) when cached parquet age
-    by `latest_filed_date` < `FUNDAMENTALS_REFETCH_DAYS = 45`. The warm
-    cache replayed pre-PR-#292 aggregate `shares_outstanding = 12.116B`
-    for GOOG / GOOGL on cron Run #71 (`368dccd9`, 2026-05-28 08:44 UTC),
-    surfaced by the PR #292 Rule 18 disambiguator showing
-    `multi_class_per_class_attempt_count = 0`. Cache-key bump flushes
-    stale parquets so Branch 3 exercises on the next live fetch.
-    Established v3→v4 precedent (PR 4c.1) + v1→v2 precedent (PR #49).
+    Bump history on the fundamentals/prices ("fast", quarter-keyed) bundle:
 
-    Bump rationale taxonomy (introduced this PR, expanded from PR 4c.1):
+    - v4 → v5 (Issue #288 follow-up, 2026-05-28): PR #292 + PR #269
+      introduced the GOOG/GOOGL per-class XBRL share-override in Branch 3
+      of `_build_snapshot`. Branch 3 only executes on live EDGAR fetch —
+      `fetch_fundamentals` short-circuits at `_is_fresh()` when the cached
+      parquet is < `FUNDAMENTALS_REFETCH_DAYS = 45` days old — so the warm
+      cache replayed stale values (cron Run #71, surfaced by
+      `multi_class_per_class_attempt_count = 0`).
+    - v5 → v6-fast (Phase 7.0 10y rebuild): `PRICES_PERIOD` /
+      `ANNUAL_HISTORY_YEARS` → 10y; the period-blind parquets required a
+      flush. (The old form of this test kept matching `key: cache-v5-`
+      via the SLOW-TEXT key substring after that bump — the guard had
+      rotted; it now pins the fast key explicitly.)
+    - v6-fast → v7-fast (Issue #374 / PR #456 RATIFY-B, 2026-06-11):
+      second firing of taxonomy trigger 3. The RATIFY-B revert makes
+      `shares_outstanding` the companyfacts company-total aggregate, but
+      warm parquets for the 6 `MULTI_CLASS_OVERCOUNT_ALLOWLIST` tickers
+      still carry per-class / cross-contaminated values written by the
+      pre-fix code (the #374 CIK-collision). The bump flushes them so the
+      next cron cold-fetches and repopulates on the ratified basis.
+      `backfill-portfolio.yml` + `pre-merge-prod-sim.yml` move to the same
+      `cache-v7-` family so their prefix restore-keys keep matching the
+      cron's saves (the sim had drifted to the dead v5 family, which after
+      this fix would have produced phantom GOOG/GOOGL movers on every PR).
+
+    Bump rationale taxonomy (PR 4c.1 lineage):
 
     - Bump on parquet/JSON *schema* change (column rename / add / shape
       change), OR
@@ -91,17 +104,19 @@ def test_workflow_cache_key_is_v5() -> None:
       per-cache `_is_fresh()` checks can't detect via filing-date alone,
       OR
     - **Bump on *value-correctness* fix inside a live-fetch-only code path
-      that cache replay short-circuits past** (e.g., the per-class XBRL
-      share-override Branch 3 — the fix code is correct but never reaches
-      execution on warm-cache crons).
+      that cache replay short-circuits past** (Branch 3, both firings).
 
-    Bump again to v6 next time any of the three triggers fires.
+    Bump again to v8-fast next time any of the three triggers fires.
+    The slow-text bundle (`cache-v5-text-` + run-id key) is governed
+    separately — bump it only on a text-cache schema change per the
+    workflow comment.
     """
     text = _workflow_text()
-    assert "key: cache-v5-" in text, (
-        "Workflow cache key must be `cache-v5-${{ ... }}` per Issue #288 "
-        "follow-up (2026-05-28). Bump to v6 only when a cache directory's "
-        "*schema* changes, a new metric is added to `_ANNUAL_TAGS` / "
-        "`_TTM_*` / `_BALANCE_TAGS`, OR a value-correctness fix lands in a "
-        "live-fetch-only path that cache replay would short-circuit past."
+    assert "key: cache-v7-fast-" in text, (
+        "compute-rankings.yml FAST cache key must be `cache-v7-fast-${{ ... }}` "
+        "per Issue #374 RATIFY-B follow-up (2026-06-11). Bump to v8-fast only "
+        "when a cache directory's *schema* changes, a new metric is added to "
+        "`_ANNUAL_TAGS` / `_TTM_*` / `_BALANCE_TAGS`, OR a value-correctness "
+        "fix lands in a live-fetch-only path that cache replay would "
+        "short-circuit past."
     )
