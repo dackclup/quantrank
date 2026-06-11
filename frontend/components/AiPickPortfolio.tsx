@@ -448,7 +448,7 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
             // existing `text-slate-400 dark:text-slate-500` secondary-text token
             // family so no new palette entry is introduced. Only present on STATE 1
             // artifacts where `carried` is defined.
-            const isCarried = 'carried' in h && h.carried;
+            const isCarried = 'carried' in h && h.carried === true;
             return (
               <li key={h.ticker} className="flex items-center gap-3 py-2">
                 <span className="w-4 shrink-0 font-mono text-xs tabular-nums text-slate-400 dark:text-slate-500">
@@ -463,8 +463,9 @@ function AiPickAdaptiveBranch({ data }: { data: AiPickData }) {
                 <span className="hidden sm:inline">
                   <SectorChip sector={h.sector} />
                 </span>
-                <span className={`ml-auto w-14 shrink-0 text-right font-mono text-sm tabular-nums ${isCarried ? 'text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-300'}`}>
+                <span className={`ml-auto w-14 shrink-0 text-right font-mono text-sm tabular-nums ${isCarried ? 'text-slate-400 dark:text-slate-400' : 'text-slate-700 dark:text-slate-300'}`}>
                   {h.composite_score.toFixed(1)}
+                  {isCarried && <span className="sr-only"> (held)</span>}
                 </span>
                 <span className="w-12 shrink-0 text-right font-mono text-sm font-semibold tabular-nums text-slate-900 dark:text-slate-100">
                   {isFinite_(h.weight) ? `${(h.weight * 100).toFixed(1)}%` : '—'}
