@@ -172,6 +172,63 @@ export function getAiPickData(): AiPickData | null {
         weight: round2(adaptiveWeights[h.ticker] ?? null),
       }));
 
+    // V55 HOLD-BAND (STATE 1) — detected when the latest rebalance carries
+    // band_book + band_weights AND meta.adaptive_rule.hold_band_min is present.
+    // The band book is NOT a prefix of holdings; it is the actual held set after
+    // the hysteresis filter. Absent → STATE 2 (pre-band adaptive, unchanged).
+    const hasBand =
+      typeof meta.adaptive_rule.hold_band_min === 'number' &&
+      Array.isArray(last.band_book) &&
+      last.band_book.length > 0 &&
+      last.band_weights != null;
+
+    // Build a lookup of composite scores for all holdings so we can tag
+    // carried names (composite < composite_min) in the band book.
+    const compositeByTicker: Record<string, number> = {};
+    for (const h of last.holdings) {
+      compositeByTicker[h.ticker] = h.composite_score;
+    }
+    const sectorByTicker: Record<string, string> = {};
+    for (const h of last.holdings) {
+      sectorByTicker[h.ticker] = h.sector;
+    }
+
+    const bandFields: Partial<Pick<
+      import('./types').AiPickAdaptive,
+      'holdBandMin' | 'latestBandHoldings'
+    >> = hasBand
+      ? {
+          holdBandMin: meta.adaptive_rule.hold_band_min as number,
+          latestBandHoldings: (last.band_book as string[]).map((ticker) => {
+            const bw = (last.band_weights as Record<string, number>)[ticker] ?? null;
+            const score = compositeByTicker[ticker] ?? 0;
+            const compositeMin = meta.adaptive_rule!.composite_min;
+            const holdBandMin = meta.adaptive_rule!.hold_band_min as number;
+            // Prefer the engine-exported band_carry_names list
+            // when present — it is the authoritative source (the engine knows
+            // exactly which names were carried vs freshly entered, whereas the
+            // score-only inference can mislabel floor-padded thin legs).
+            // Fallback gains the lower-bound guard (score >= holdBandMin) so
+            // floor-pads (score < holdBandMin) are never false-positive carried.
+            const carryNames = Array.isArray(last.band_carry_names)
+              ? (last.band_carry_names as string[])
+              : null;
+            const carried = carryNames
+              ? carryNames.includes(ticker)
+              : score >= holdBandMin && score < compositeMin;
+            return {
+              ticker,
+              sector: sectorByTicker[ticker] ?? '',
+              composite_score: round2(score) ?? score,
+              weight: round2(bw),
+              // A name is "carried" when its score is below composite_min but
+              // still above hold_band_min — held for stability, not a new entry.
+              carried,
+            };
+          }),
+        }
+      : {};
+
     adaptive = {
       rule: meta.adaptive_rule,
       net: adaptiveSeries.net.map(round2),
@@ -184,6 +241,7 @@ export function getAiPickData(): AiPickData | null {
       },
       latestCount: adaptiveCount,
       latestHoldings: adaptiveHoldings,
+      ...bandFields,
     };
   }
 
@@ -206,10 +264,28 @@ export function getAiPickData(): AiPickData | null {
     // `adaptiveCount` is carried through when present so HoldingsTimeline can
     // slice each quarter to ITS OWN count (the adaptive basket varies 5-13)
     // rather than back-projecting today's count onto every historical quarter.
+    // `bandHeldCount` is carried when the rebalance has the hold-band applied —
+    // it reflects the true held count (may differ from adaptiveCount when
+    // carries are present). HoldingsTimeline prefers bandHeldCount over
+    // adaptiveCount when both are present.
+    //
+    // `bandBook` carries the EXACT held set for band rebalances
+    // (r.band_book from the raw artifact). The band book is NOT a prefix of
+    // `holdings` — HoldingsTimeline must use it directly when present instead
+    // of slicing holdings[:sliceCount]. Sectors are resolved from r.holdings.
+    // `bandCarryNames` carries r.band_carry_names when present so the
+    // timeline can tag carried tickers without re-inferring from scores.
     timeline: rebalances.map((r) => ({
       date: r.date,
       holdings: r.holdings.map((h) => ({ ticker: h.ticker, sector: h.sector })),
       ...(typeof r.adaptive_count === 'number' ? { adaptiveCount: r.adaptive_count } : {}),
+      ...(typeof r.band_held_count === 'number' ? { bandHeldCount: r.band_held_count } : {}),
+      ...(Array.isArray(r.band_book) && r.band_book.length > 0
+        ? { bandBook: r.band_book as string[] }
+        : {}),
+      ...(Array.isArray(r.band_carry_names) && r.band_carry_names.length > 0
+        ? { bandCarryNames: r.band_carry_names as string[] }
+        : {}),
     })),
     entryCloses,
     lastCloses,

@@ -3311,3 +3311,57 @@ next-deliverables renumbered (DONE items relocated; 7a/7b spec retained as
 item 5 — CLAUDE.md pointer updated item 7→5).
 
 ---
+
+## feat(portfolio) — V55 hysteresis hold-band (entry 65 / hold 55) (2026-06-11)
+
+**Branch**: `claude/confident-thompson-y58bhe` · **Status**: in flight
+
+Iteration-2 outcome. Exact rule: an incumbent stays while composite
+>= 55 AND it is still present in the rebalance's top-MAX_PICKS HC
+`holdings` (a >= 55 incumbent can still exit by rank/eligibility).
+Pre-registered experiment (grid {60,55} declared
+before running; criteria: turnover −30% / CAGR ≥ −0.5pp / beats ≥ −2q):
+**V55 passes all three** — annualized Σ|Δw| 3.508 → 2.324 (−33.8%), net
+CAGR 22.7% → 22.4% (−0.27pp), beats vs SPY 26/40 → 29/40, maxDD −32.0% →
+−31.4%. Per-half (neutral record): beats improved in both halves
+(15/20→17/20 · 11/20→12/20); growth +H1 (x2.89→x3.35) / −H2
+(x2.57→x2.17). V60 FAIL recorded (−27.7% turnover, −0.8pp).
+`methodology-scientist` **RATIFY-WITH-CONDITIONS** — hysteresis is a
+canonical implementation-cost device (Constantinides 1986 JPE no-trade
+region · Davis-Norman 1990 · Garleanu-Pedersen 2013 JF ·
+Novy-Marx-Velikov 2016 RFS buy/hold spread · Russell banding precedent);
+C0 strict tenure (entered-via-65 only; floor-pads no tenure; re-entry
+needs 65) disambiguated by an identical-result strict re-run; C1
+provenance comment on `ADAPTIVE_HOLD_BAND_MIN = 55.0`; C2 test pins; C3
+artifact contract — the band BREAKS the holdings-prefix property, so the
+artifact gains `rebalances[*].band_book` + `band_weights` +
+`band_held_count` + `band_carry_count` + `band_carry_weight_share`,
+`nav.adaptive` regenerates from band legs, `meta.adaptive_rule` gains
+`hold_band_min`. H-gates H1/H2/H3/H-B/H-C registered on issue #130
+(incl. freeze lock on 55). **Claim discipline**: the band is a TURNOVER
+device only — beat/maxDD deltas are within-noise, never marketed.
+Frontend: 3-state graceful degradation (band artifact → adaptive-prefix
+artifact → legacy slider) so the deploy is safe across regeneration;
+carried names get an sr-only "(held)" suffix + the canonical muted token
+(AA both modes); the timeline renders the exact `band_book` membership
+(never a prefix slice). As-landed extras: the C2 e2e pin caught an
+int-vs-float `band_carry_weight_share` contract bug (float() guard
+landed); `band_carry_names` exported per rebalance (exact H2 cohort);
+`RULE_VERSION` gains `+hold-band-55` per the `+veto-replay` precedent.
+
+Companion analyses recorded on issue #461: 2025 attribution (value-trap
+capture DECK/BLDR/LULU/DVA + structural MoS-gate growth exclusion —
+top-10-composite capture 1/10 mid-2025 + score compression to the floor;
+composite 10y cross-sectional IC ≈ +0.025, nil) and the TTM-vs-annual
+lag hypothesis KILLED (2TP/1FP/2FN on 5 PIT-clean cases; a TTM filter
+would have ejected 2025's biggest winner STLD; live pipeline already
+TTM-aware — backtest-proxy property only).
+
+**Files**: scripts/backfill_portfolio_pit.py ·
+frontend/lib/data.ts · frontend/lib/types.ts (non-schema) ·
+frontend/components/AiPickPortfolio.tsx ·
+frontend/components/HoldingsTimeline.tsx ·
+tests/test_portfolio/ (C2 pins) · CLAUDE.md (§In-flight rotation) ·
+PHASE_STATUS_INFLIGHT.md (this).
+
+---

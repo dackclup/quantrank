@@ -139,10 +139,48 @@ BENCHMARKS_JSON = "portfolio/benchmarks.json"
 ADAPTIVE_COMPOSITE_MIN: float = 65.0
 ADAPTIVE_MIN_PICKS: int = 5
 
+# Hysteresis hold-band: an incumbent that entered via >= ADAPTIVE_COMPOSITE_MIN stays
+# in the book while composite >= ADAPTIVE_HOLD_BAND_MIN AND it is still HC-eligible
+# (still present in the rebalance's ``holdings`` / not vetoed). Force-sell when out
+# of holdings OR composite < ADAPTIVE_HOLD_BAND_MIN.
+# C0 strict tenure: band rights accrue ONLY to names that entered via
+# >= ADAPTIVE_COMPOSITE_MIN. Floor-pads (names added to reach ADAPTIVE_MIN_PICKS)
+# get NO tenure. Re-entry after a force-sell requires >= ADAPTIVE_COMPOSITE_MIN again.
+# Tier: EMPIRICAL-IN-SAMPLE, THEORY-ANCHORED.
+#   Theory: Constantinides 1986 JPE (no-trade region with transaction costs) ·
+#   Davis-Norman 1990 (viscosity solution to the no-trade band) ·
+#   Garleanu-Pedersen 2013 JF (partial-adjustment / hold-band dynamics) ·
+#   Novy-Marx-Velikov 2016 RFS (buy/hold spread implementation cost) ·
+#   FTSE Russell reconstitution banding (1% AUM buffer — structural precedent).
+# Pre-registration record (issue #130):
+#   Grid exhausted: {60, 55}; criteria C1 turnover -30%, C2 CAGR >= -0.5pp,
+#   C3 beats >= -2q; denominator = 40 legs incl. final partial.
+#   V60 FAIL recorded: turnover -27.7% / CAGR -0.8pp (fails C2).
+#   V55 PASS: turnover -33.8% / CAGR -0.27pp / beats +3 / maxDD -31.4% vs -32.0%.
+#   Strict-C0 re-run: identical to V55; per-half: growth x2.89->x3.35 / x2.57->x2.17,
+#   beats 15/20->17/20 / 11/20->12/20.
+# CLAIM DISCIPLINE: the band is a TURNOVER / implementation-cost device only — never
+# market the beat/maxDD deltas as band benefits (within-noise).
+# Forward acceptance gates (pre-registered; evaluated at quarterly cohort audits):
+#   H1 realized turnover reduction >= 15% vs no-band counterfactual @ >= 4 live
+#      rebalances.
+#   H2 carry-cohort health: carry weight-share > 50% for 2 consecutive rebalances
+#      OR carry lags fresh cohort > 5pp/q avg over 4 OR any carried name -30% in a
+#      quarter while in the 55-64 corridor -> reopen.
+#   H3 trailing-4 mean book > 14 -> reopen.
+#   H-B @ 8th live banded rebalance: trails BOTH no-band counterfactual AND SPY ->
+#      revert to un-banded (single-constant flip).
+#   H-C freeze lock on 55: no re-sweeps; no second hysteresis DOF without fresh
+#      pre-registration.
+# methodology-scientist RATIFY-WITH-CONDITIONS 2026-06-11 (C0 strict tenure
+# verified; C1 = this block; C2 pins in tests/test_portfolio; C3 artifact contract
+# in the per-rebalance band_* exports + meta.adaptive_rule.hold_band_min).
+ADAPTIVE_HOLD_BAND_MIN: float = 55.0
+
 # Phase 7.0c: +veto-replay suffix marks artifacts where veto_layer_replayed=True.
 # Prior artifacts (veto_layer_replayed=False) carry the plain "phase3-effective-weights"
 # version so callers can distinguish the two datasets unambiguously.
-RULE_VERSION = "phase3-effective-weights+veto-replay"
+RULE_VERSION = "phase3-effective-weights+veto-replay+hold-band-55"
 
 # methodology-scientist RATIFY 2026-06-08 (Option B, condition C2): the backtest has
 # ANNUAL 10-K data only, so the live 180d hard-stale gate (config.FILING_STALE_HARD_DAYS)
@@ -211,7 +249,9 @@ DISCLAIMER_BASE = (
     "The adaptive AI-pick book sizes itself each rebalance: it holds every "
     "high-conviction pick with composite score >= 65, with a minimum of 5 names and "
     "a maximum of 20, so holding count varies by quarter (rule ratified "
-    "2026-06-11; forward acceptance gates pre-registered)."
+    "2026-06-11; forward acceptance gates pre-registered). Incumbents are retained "
+    "while scoring >= 55 to reduce turnover (V55 hysteresis band ratified 2026-06-11; "
+    "the band is a turnover/implementation-cost device — no performance claims)."
 )
 
 _SNAPSHOT_FIELDS = {f.name for f in dataclasses.fields(FundamentalsSnapshot)}
@@ -412,6 +452,92 @@ def _adaptive_count(scores: list[float], available_counts: list[int]) -> tuple[i
     return raw, final
 
 
+def _band_book(
+    order: list[str],
+    scores: dict[str, float],
+    tenure: set[str],
+) -> tuple[list[str], set[str], int]:
+    """Pure hysteresis-hold-band book builder (C2 unit-testability gate).
+
+    ``order``   — HC-eligible tickers sorted composite-desc (output of ``select_picks``
+                  up to ``MAX_PICKS``; the caller's HC gate is the sole eligibility
+                  filter — ``_band_book`` does not re-check veto flags).
+    ``scores``  — composite score for each ticker (at minimum covers every ticker
+                  in ``order``; extra keys are silently ignored).
+    ``tenure``  — set of tickers that entered the book via >= ``ADAPTIVE_COMPOSITE_MIN``
+                  in a prior rebalance; empty on the first rebalance (band inert).
+
+    Returns ``(book, next_tenure, carry_count)`` where:
+      ``book``        — ordered list of selected tickers (composite-desc, alpha-asc tiebreak);
+      ``next_tenure`` — tenure set to carry forward (= set(core), pads excluded — C0);
+      ``carry_count`` — # tenured names retained via the band (score in [55, 65));
+                        first rebalance always returns 0.
+
+    Semantics (C0 strict tenure):
+      carries  = tenured ∩ eligible with composite >= ``ADAPTIVE_HOLD_BAND_MIN``
+                 (55 <= score; the >= 65 entry requirement was met in a prior rebalance).
+      fresh    = eligible with composite >= ``ADAPTIVE_COMPOSITE_MIN`` (>= 65)
+                 that are NOT already counted as carries.
+      core     = top-``MAX_PICKS`` of sorted(carries ∪ fresh) by (-composite, ticker).
+      pads     = top non-core eligible names to reach
+                 ``min(ADAPTIVE_MIN_PICKS, len(order))``; pads get NO tenure.
+      book     = sorted(core + pads) by (-composite, ticker).
+      next_tenure = set(core) (not pads — C0).
+      carry_count = #{t in core : t in tenure AND score < ADAPTIVE_COMPOSITE_MIN}
+                    i.e. names held via the band (not fresh entrants).
+    """
+    eligible_set = set(order)  # HC-eligible this rebalance (already filtered by caller)
+
+    # Carries: prior tenured names that are still HC-eligible AND score >= band floor.
+    carries: list[str] = [
+        t for t in tenure
+        if t in eligible_set and scores.get(t, 0.0) >= ADAPTIVE_HOLD_BAND_MIN
+    ]
+
+    # Fresh: HC-eligible names scoring >= entry threshold, not already a carry.
+    carry_set = set(carries)
+    fresh: list[str] = [
+        t for t in order
+        if t not in carry_set and scores.get(t, 0.0) >= ADAPTIVE_COMPOSITE_MIN
+    ]
+
+    # Core: union of carries + fresh, sorted by (-score, ticker), capped at MAX_PICKS.
+    core_unsorted = carries + [t for t in fresh if t not in carry_set]
+    core: list[str] = sorted(
+        core_unsorted,
+        key=lambda t: (-scores.get(t, 0.0), t),
+    )[:MAX_PICKS]
+    core_set = set(core)
+
+    # Pads: top non-core eligible names to reach ADAPTIVE_MIN_PICKS (or available count).
+    target = min(ADAPTIVE_MIN_PICKS, len(order))
+    pads: list[str] = []
+    if len(core) < target:
+        for t in order:
+            if t not in core_set:
+                pads.append(t)
+                if len(core) + len(pads) >= target:
+                    break
+
+    # Book: core + pads sorted by (-score, ticker).
+    book: list[str] = sorted(
+        core + pads,
+        key=lambda t: (-scores.get(t, 0.0), t),
+    )
+
+    # Next tenure = set(core) only — pads get no tenure (C0).
+    next_tenure: set[str] = core_set
+
+    # Carry count: core names that are tenured AND score < entry threshold (the band is
+    # the reason they are in the book — fresh entrants >= 65 are NOT carry-band names).
+    carry_count: int = sum(
+        1 for t in core
+        if t in tenure and scores.get(t, 0.0) < ADAPTIVE_COMPOSITE_MIN
+    )
+
+    return book, next_tenure, carry_count
+
+
 def run_backfill(
     start: date, end: date, *, data_dir: Path | None = None, gate: str = "high_conviction"
 ) -> Path:
@@ -448,6 +574,12 @@ def run_backfill(
     # for this rebalance (composite >= ADAPTIVE_COMPOSITE_MIN, floored at ADAPTIVE_MIN_PICKS,
     # capped at MAX_PICKS; see the adaptive-rule constants above).
     rebalance_picks: list[tuple[str, dict[int, dict[str, float]], int]] = []
+    # Band-leg list for _assemble_nav: each entry is (snapped_date, {ticker: weight}).
+    # The band NAV replaces the prefix-based adaptive NAV as the product adaptive series.
+    band_legs_for_nav: list[tuple[str, dict[str, float]]] = []
+    # C0 tenure set: names that entered the book via composite >= ADAPTIVE_COMPOSITE_MIN;
+    # carries forward across rebalances; empty = band inert on first rebalance.
+    band_tenure: set[str] = set()
     incomplete_membership = 0
     restate_names: set[str] = set()
     picked_names: set[str] = set()
@@ -714,6 +846,48 @@ def run_backfill(
 
         rebalance_picks.append((T_iso, weights_by_count, n_adaptive))
 
+        # V55 hysteresis hold-band: build the banded book from the HC-eligible picks,
+        # threading tenure state across rebalances (C0 strict tenure semantics).
+        # ``picks`` is already composite-desc HC-eligible (the band's eligibility domain).
+        scores_this = {t: float(composite[t]) for t in picks}
+        # Snapshot prior tenure BEFORE updating — carry_names_in_book references the OLD
+        # tenure (names that were tenured going INTO this rebalance, i.e. the true carries).
+        prior_band_tenure = band_tenure
+        band_book, next_band_tenure, band_carry_count = _band_book(
+            picks, scores_this, prior_band_tenure
+        )
+        band_tenure = next_band_tenure  # thread tenure state to the next rebalance
+
+        # Compute inverse-vol weights FRESH over the banded book (not from weights_by_count
+        # which is prefix-based; the band book is not necessarily a prefix).
+        band_sigmas = {t: sigmas[t] for t in band_book if t in sigmas}
+        band_weights_map = inverse_vol_weights(band_sigmas) if band_sigmas else {}
+
+        # Carry-weight share: fraction of the band book's total weight held by carry names
+        # (those in prior tenure AND score < ADAPTIVE_COMPOSITE_MIN — the band's value).
+        # Rounded to 4 dp per spec; None when the book has no weight (degenerate leg).
+        # Carry names: tenured incumbents held via the band (55 <= score < 65).
+        # Lower bound matters: a force-sold (< 55) tenured name re-entering as a
+        # floor PAD must not pollute the H2 gate's carry-share input.
+        carry_names_in_book = {
+            t for t in band_book
+            if t in prior_band_tenure
+            and ADAPTIVE_HOLD_BAND_MIN <= scores_this.get(t, 0.0) < ADAPTIVE_COMPOSITE_MIN
+        }
+        band_carry_weight_share: float | None = None
+        if band_weights_map:
+            band_carry_weight_share = round(
+                # float() guards the empty-carry case: sum() over an empty
+                # generator returns int(0); the artifact contract is float.
+                float(sum(band_weights_map.get(t, 0.0) for t in carry_names_in_book)),
+                4,
+            )
+
+        # Collect this leg's band weights for the adaptive NAV (replaces the old
+        # prefix-based adaptive series as THE product adaptive line).
+        if band_weights_map:
+            band_legs_for_nav.append((T_iso, band_weights_map))
+
         # Contamination canary tracks the FULL selectable set (top-MAX_PICKS) — any of
         # these names can surface once the user slides the count up. A name whose
         # amendment fetch failed is "unresolved" (counted separately), not at-risk.
@@ -781,10 +955,27 @@ def run_backfill(
                 # among HC picks) — the A1 score-drought / A2 inflation acceptance
                 # gates read this, not the floored count.
                 "adaptive_count_raw": n_adaptive_raw,
+                # V55 hysteresis hold-band exports (ratified 2026-06-11).
+                # band_book: the banded book tickers ordered by (-composite, ticker).
+                "band_book": band_book,
+                # band_weights: inverse-vol weights over the band book (fresh per leg);
+                # {ticker: round(w, 6)} — NOT a prefix of weights_by_count.
+                "band_weights": {t: round(w, 6) for t, w in band_weights_map.items()},
+                # band_held_count: number of names in the banded book this rebalance.
+                "band_held_count": len(band_book),
+                # band_carry_count: tenured names retained via the band (55 <= score < 65).
+                "band_carry_count": band_carry_count,
+                # band_carry_weight_share: fraction of band book weight from carry names;
+                # None when band_weights is empty (degenerate leg with no usable sigmas).
+                "band_carry_weight_share": band_carry_weight_share,
+                # band_carry_names: the exact carry cohort (sorted) — lets the UI mark
+                # carried names without inferring from scores, and the H2 audit read
+                # the cohort directly.
+                "band_carry_names": sorted(carry_names_in_book),
             }
         )
 
-    nav = _assemble_nav(rebalance_picks, prices_by_ticker, data_dir)
+    nav = _assemble_nav(rebalance_picks, prices_by_ticker, data_dir, band_legs_for_nav)
 
     restate_pct = (
         round(100.0 * len(restate_names) / len(picked_names), 1) if picked_names else None
@@ -841,10 +1032,14 @@ def run_backfill(
                 "hard_stale_days": BACKTEST_HARD_STALE_DAYS,
             },
             # Adaptive-book rule: AI sizes its own basket each rebalance.
-            # Hold every HC pick with composite >= composite_min; min_picks floor;
-            # max_picks cap (= MAX_PICKS). methodology-scientist RATIFY 2026-06-11.
+            # Hold every HC pick with composite >= composite_min; incumbents are
+            # retained while composite >= hold_band_min (V55 hysteresis, ratified
+            # 2026-06-11); min_picks floor; max_picks cap (= MAX_PICKS).
+            # methodology-scientist RATIFY 2026-06-11 + RATIFY-WITH-CONDITIONS
+            # 2026-06-11 (hold_band_min; C0 strict tenure).
             "adaptive_rule": {
                 "composite_min": ADAPTIVE_COMPOSITE_MIN,
+                "hold_band_min": ADAPTIVE_HOLD_BAND_MIN,
                 "min_picks": ADAPTIVE_MIN_PICKS,
                 "max_picks": MAX_PICKS,
             },
@@ -875,16 +1070,21 @@ def _assemble_nav(
     rebalance_picks: list[tuple[str, dict[int, dict[str, float]], int]],
     prices_by_ticker: dict[str, pd.DataFrame],
     data_dir: Path,
+    band_legs: list[tuple[str, dict[str, float]]] | None = None,
 ) -> dict:
     """Daily gross/net/conservative NAV for EACH holding count N=1..MAX_PICKS + benchmarks.
 
     ``rebalance_picks`` is ``[(as_of_date, {N: {ticker: weight}}, n_adaptive)]``.
     For each count N the matching per-rebalance weight maps become one daily NAV series
-    (the legacy 1-20 slider fallback selects the count); ``dates`` + ``benchmark`` are shared across all
-    counts (same trading calendar, same rebased index lines).
-    Additionally builds an ``"adaptive"`` NAV entry using ``weights_by_count[n_adaptive]``
-    per rebalance (same inner shape as a by_count entry; left-padded with None when a leg
-    is missing — same contract as by_count).
+    (the legacy 1-20 slider fallback selects the count); ``dates`` + ``benchmark`` are
+    shared across all counts (same trading calendar, same rebased index lines).
+
+    ``band_legs`` is ``[(as_of_date, {ticker: weight})]`` — the V55 hysteresis band book
+    weights for each rebalance. When provided, the ``"adaptive"`` NAV entry is built from
+    these band legs (the ratified product adaptive series); otherwise falls back to the
+    old prefix-based ``weights_by_count[n_adaptive]`` path (backward-compatible for tests
+    that omit the argument). Same inner shape as a by_count entry; left-padded with None
+    when a leg is missing — same contract as by_count.
     """
     empty = {
         "dates": [],
@@ -896,8 +1096,12 @@ def _assemble_nav(
     if not rebalance_picks:
         return empty
 
+    # Collect all tickers from both prefix-count legs AND band legs so their price
+    # series are loaded once; band tickers may not be in the prefix-count universe
+    # when the band book diverges from the simple prefix.
     held = sorted(
         {t for _, wbc, _ in rebalance_picks for wmap in wbc.values() for t in wmap}
+        | {t for _, wmap in (band_legs or []) for t in wmap}
     )
     start_ts = pd.Timestamp(rebalance_picks[0][0])
 
@@ -952,14 +1156,23 @@ def _assemble_nav(
             "turnover_by_rebalance": gn["turnover_by_rebalance"],
         }
 
-    # Adaptive NAV: for each rebalance use weights_by_count[n_adaptive].
-    # Skip a rebalance if its n_adaptive map is missing (sigma-less names shrink
-    # available maps — the skip keeps the adaptive series honest).
-    adaptive_legs = [
-        (snapped, wbc[n_adp])
-        for d, wbc, n_adp in rebalance_picks
-        if n_adp in wbc and (snapped := _snap_to_trading_day(d, dates)) is not None
-    ]
+    # Adaptive NAV: V55 hysteresis band legs when provided (the ratified product adaptive
+    # series); falls back to the old prefix-based weights_by_count[n_adaptive] path for
+    # backward compatibility with tests that pre-date the band (no band_legs argument).
+    # Skip a leg when the snapped date cannot be resolved (the skip keeps the series honest).
+    if band_legs:
+        adaptive_legs = [
+            (snapped, wmap)
+            for d, wmap in band_legs
+            if (snapped := _snap_to_trading_day(d, dates)) is not None
+        ]
+    else:
+        # Legacy fallback: prefix-based adaptive (no tenure state, n_adaptive count).
+        adaptive_legs = [
+            (snapped, wbc[n_adp])
+            for d, wbc, n_adp in rebalance_picks
+            if n_adp in wbc and (snapped := _snap_to_trading_day(d, dates)) is not None
+        ]
     adaptive: dict = {}
     if adaptive_legs:
         gn_adp = build_portfolio_nav(dates, closes, adaptive_legs)

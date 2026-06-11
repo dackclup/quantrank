@@ -28,6 +28,7 @@ type Row = {
   // The slice width used for this row — equals each entry's own adaptiveCount
   // in adaptive mode, or the fixed `count` prop in slider mode.
   sliceCount: number;
+  // FAIL-1: when the rebalance has a band_book, the held set is EXACT (not a
 };
 
 /**
@@ -62,15 +63,34 @@ export function HoldingsTimeline({
     let prev: string[] = [];
     let totalEntered = 0;
     for (let i = 0; i < timeline.length; i += 1) {
-      // In adaptive mode each quarter uses its own count; in slider mode use
-      // the fixed `count` prop so legacy behavior is completely unchanged.
-      const sliceCount = isAdaptive
-        ? (timeline[i].adaptiveCount as number)
-        : count;
-      const slice = timeline[i].holdings.slice(0, sliceCount);
-      const held = slice.map((h) => h.ticker);
+      const entry = timeline[i];
+      // When the entry carries bandBook, use the EXACT held set
+      // (the band book is NOT a prefix of `holdings`). Build sectorByTicker
+      // from the full holdings list so band-carried names whose rank may have
+      // fallen below the count slice still resolve.
+      const hasBandBook = Array.isArray(entry.bandBook) && entry.bandBook.length > 0;
       const sectorByTicker: Record<string, string> = {};
-      for (const h of slice) sectorByTicker[h.ticker] = h.sector;
+      for (const h of entry.holdings) sectorByTicker[h.ticker] = h.sector;
+
+      let held: string[];
+      let sliceCount: number;
+      if (hasBandBook) {
+        // STATE 1: band book is the authoritative membership; sliceCount
+        // equals bandHeldCount (== band_book.length).
+        held = entry.bandBook as string[];
+        sliceCount = held.length;
+      } else {
+        // STATE 2 (adaptive-pre-band) or slider mode: prefix slice.
+        // In adaptive mode each quarter uses its own count.
+        // In slider mode use the fixed `count` prop so legacy behavior is
+        // completely unchanged.
+        sliceCount = isAdaptive
+          ? (entry.bandHeldCount ?? entry.adaptiveCount as number)
+          : count;
+        const slice = entry.holdings.slice(0, sliceCount);
+        held = slice.map((h) => h.ticker);
+      }
+
       const prevSet = new Set(prev);
       const heldSet = new Set(held);
       // i === 0 is the initial basket — "entered vs the prior quarter" is
@@ -79,7 +99,14 @@ export function HoldingsTimeline({
       const entered = i === 0 ? new Set<string>() : new Set(held.filter((t) => !prevSet.has(t)));
       const exited = prev.filter((t) => !heldSet.has(t));
       if (i > 0) totalEntered += entered.size;
-      chrono.push({ date: timeline[i].date, held, entered, exited, sectorByTicker, sliceCount });
+      chrono.push({
+        date: entry.date,
+        held,
+        entered,
+        exited,
+        sectorByTicker,
+        sliceCount,
+      });
       prev = held;
     }
     const transitions = Math.max(1, timeline.length - 1);
