@@ -2909,3 +2909,49 @@ frontend/components/AiPickPortfolio.tsx · docs/GOTCHAS.md · CLAUDE.md
 PHASE_STATUS_INFLIGHT.md (this).
 
 ---
+
+## chore(analysis) — veto-counterfactual tool + the gate (a) verdict (2026-06-10)
+
+**Branch**: `claude/confident-thompson-y58bhe` · **Status**: in flight
+
+Ships the counterfactual analysis tool
+(`scripts/analysis_veto_counterfactual.py`, dev-only, network) + the gate (a)
+verdict docs. The verdict was measured on the FIRST
+`meta.veto_layer_replayed=true` `backtest_pit.json` (cold backfill dispatch
+on this branch, run 2026-06-10 16:12 UTC, post-#451 code: 40 rebalances
+2016-08-14 → 2026-05-15, 6-of-7 vetoes replayed, `non_reliance_filing`
+disclosed-excluded). That cold artifact commit was SUPERSEDED before this PR
+merged — the 2026-06-10 23:51 UTC cron warm refresh landed an equivalent
+veto-replayed artifact directly on `main`, so the branch copy was dropped on
+rebase and this PR carries only the tool + docs.
+
+**Phase 5 entry-gate (a) verdict — "does the defense layer rescue the
+composite?" → NO on returns, PARTIAL on drawdown protection.** The
+counterfactual rebuilds the veto book and a no-veto book per rebalance from
+the artifact's own `holdings` + `vetoed_pick_candidates` + `full_ranked`
+(conviction-side-qualified re-insertion) and prices BOTH through the real
+engine fns on identical yfinance data — validation: rebuilt veto-book net
+CAGR matches `nav.by_count[N].net` to 0.1pp at every N. Results:
+CAGR delta (veto − no-veto) mean **−1.21pp**, negative at **16/20 N**
+(ex-N1-2 mean −0.65pp; lone large positive +4.7pp at N=5 is a boundary
+outlier between ~0 neighbors N=4/N=6). Year pattern is a clean
+**anti-growth tilt**: veto HELPS every drawdown-ish year (2018 / 2022 /
+2025 / 2026 at every N inspected) and HURTS every growth-led year (2019 /
+2020 / 2023 / 2024). Bite is **97% one flag** — `sloan_accruals_top_decile`
+(159/164 in-range candidacies), firing repeatedly on structural compounders
+(NVDA 14×, FAST 11×, NRG 10×, LRCX 9×, ANET 7×, LLY 4×); only 82/164
+candidacies clear the conviction-side gate, so the true bite ≈ 2/rebalance.
+2025's miss is NOT veto-caused — the no-veto book lost 2025 HARDER (N=5
+−9.4% vs veto −0.0% vs SPY +17.7%): the failure is in the composite signal.
+Follow-up routed to `methodology-scientist` via issue (Sloan veto → Q3
+2026-08-19 cohort audit; candidate outcomes: demote-to-annotate for pick
+eligibility per Rule 16, growth-conditioned percentile, or keep-as-is
+accepting the documented cost as drawdown insurance). Per pre-registration
+discipline NO threshold/flag change ships from this in-sample evidence alone.
+
+**Files**: scripts/analysis_veto_counterfactual.py ·
+PHASE_STATUS_INFLIGHT.md (this) · CLAUDE.md (§In-flight rotation).
+(The cold artifact commit `29c665cf` was dropped on rebase — superseded by
+the cron's warm veto-replayed copy on `main`.)
+
+---
