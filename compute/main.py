@@ -381,6 +381,9 @@ def _build_raw_metrics(
         eps_basic=ttm_eps,
         eps_diluted=ttm_eps,
         shares_outstanding=snapshot.shares_outstanding,
+        # Issue #374 (RATIFY-B, 2026-06-11) — listed-class per-class share count;
+        # None for non-MULTI_CLASS_OVERCOUNT tickers and on warm-cache crons.
+        shares_outstanding_listed_class=snapshot.shares_outstanding_listed_class,
         market_cap=market_cap,
         pe_ratio_ttm=pe_ttm,
         goodwill=snapshot.goodwill,

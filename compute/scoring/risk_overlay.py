@@ -297,6 +297,17 @@ def _net_stock_issuance(
 
     Positive NSI = dilution (more shares outstanding now). Top decile of NSI
     (within-sector) is the flag trigger per Pontiff-Woodgate 2008.
+
+    Series-consistency invariant (Issue #374, RATIFY-B, 2026-06-11):
+    Both ``snap.shares_outstanding`` (snapshot) and the ``shares_outstanding``
+    rows in ``history`` (_ANNUAL_TAGS → us-gaap:CommonStockSharesOutstanding
+    via the SEC companyfacts aggregate) represent the COMPANY-TOTAL across all
+    share classes. The RATIFY-B revert in ``compute/ingest/fundamentals.py``
+    ensures the snapshot is the aggregate (no per-class override any more), so
+    numerator and denominator are on the same basis. Pre-RATIFY-B, GOOG/GOOGL
+    had ``snap.shares_outstanding`` = per-class (~5.4B/5.8B) while ``prior``
+    = aggregate (~12.1B), yielding a spurious ln(5.4B/12.1B) ≈ −0.80 collapse
+    signal. That bias is eliminated by this revert.
     """
     if snap is None or snap.shares_outstanding is None or snap.shares_outstanding <= 0:
         return math.nan

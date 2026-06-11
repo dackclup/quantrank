@@ -827,8 +827,10 @@ def test_erie_fallback_recovers_correct_share_count():
 
 def test_per_class_override_fires_for_goog_with_filer_namespace_member():
     """GOOG case: primary=12.12B (Alphabet aggregate), per-class filter
-    returns 5.43B (Class C). The override fires; shares_outstanding ends
-    at 5.43B; ``per_class_override`` counter increments."""
+    returns 5.43B (Class C). Branch 3 fires; the aggregate is RETAINED in
+    ``shares_outstanding`` (RATIFY-B class-invariant); the per-class value
+    lands in ``shares_outstanding_listed_class``; ``per_class_override``
+    counter increments."""
     from compute.ingest.fundamentals import (
         _build_snapshot,
         get_fallback_stats,
@@ -859,14 +861,19 @@ def test_per_class_override_fires_for_goog_with_filer_namespace_member():
     # Confirm the filter mode kwarg was passed correctly
     _, kwargs = mock_fallback.call_args
     assert kwargs.get("target_class_member") == "goog:CapitalClassCMember"
-    assert snapshot.shares_outstanding == per_class
+    # RATIFY-B: aggregate retained in shares_outstanding (class-invariant)
+    assert snapshot.shares_outstanding == primary
+    # Per-class captured in the new additive field
+    assert snapshot.shares_outstanding_listed_class == per_class
     assert get_fallback_stats()["per_class_override"] == 1
     assert get_fallback_stats()["mc_reconcile_failure"] == 0
 
 
 def test_per_class_override_fires_for_googl_with_standard_namespace_member():
     """GOOGL case: primary=12.12B aggregate, per-class returns 5.82B
-    (Class A standard namespace). Override fires."""
+    (Class A standard namespace). Branch 3 fires; the aggregate is RETAINED
+    in ``shares_outstanding`` (RATIFY-B class-invariant); the per-class value
+    lands in ``shares_outstanding_listed_class``."""
     from compute.ingest.fundamentals import (
         _build_snapshot,
         get_fallback_stats,
@@ -894,7 +901,10 @@ def test_per_class_override_fires_for_googl_with_standard_namespace_member():
     ):
         snapshot = _build_snapshot("GOOGL", "0001652044")
 
-    assert snapshot.shares_outstanding == per_class
+    # RATIFY-B: aggregate retained in shares_outstanding (class-invariant)
+    assert snapshot.shares_outstanding == primary
+    # Per-class captured in the new additive field
+    assert snapshot.shares_outstanding_listed_class == per_class
     assert get_fallback_stats()["per_class_override"] == 1
 
 
@@ -988,10 +998,11 @@ def test_per_class_override_skipped_when_per_class_gte_primary():
 
 
 def test_per_class_override_mc_reconcile_warning_on_fraction_below_5pct():
-    """When per_class < primary BUT per_class / primary < 5%, the
-    override fires (primary > per_class so per-class IS the better
-    value) AND the reconcile-failure counter increments to flag
-    the unexpected ratio for cohort-audit review."""
+    """When per_class < primary BUT per_class / primary < 5%, Branch 3 fires
+    (per_class_override counter increments, per_class lands in
+    ``shares_outstanding_listed_class``) AND the reconcile-failure counter
+    increments to flag the unexpected ratio for cohort-audit review.
+    RATIFY-B: aggregate is RETAINED in ``shares_outstanding``."""
     from compute.ingest.fundamentals import (
         _build_snapshot,
         get_fallback_stats,
@@ -1013,8 +1024,11 @@ def test_per_class_override_mc_reconcile_warning_on_fraction_below_5pct():
     ):
         snapshot = _build_snapshot("GOOG", "0001652044")
 
-    # Override DID fire (per_class < primary)
-    assert snapshot.shares_outstanding == per_class
+    # RATIFY-B: aggregate retained in shares_outstanding (class-invariant)
+    assert snapshot.shares_outstanding == primary
+    # Per-class lands in the new additive field (not in shares_outstanding)
+    assert snapshot.shares_outstanding_listed_class == per_class
+    # Override counter incremented (per_class < primary — valid per-class capture)
     assert get_fallback_stats()["per_class_override"] == 1
     # AND reconcile counter incremented (fraction outside 5-95% band)
     assert get_fallback_stats()["mc_reconcile_failure"] == 1
