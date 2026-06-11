@@ -1,18 +1,6 @@
 ---
 name: phase-status-bump
-description: >
-  Update PHASE_STATUS.md, SKILL.md, and WORKFLOW.md in lockstep when a
-  QuantRank phase or sub-PR completes. These three docs cross-reference
-  each other (current phase, schema version, active veto count,
-  deferred items) and tend to drift if updated piecemeal — this skill
-  is the single update flow that keeps them aligned. TRIGGER after
-  merging a phase-completion PR, after tagging a release version, when
-  a sub-PR within a phase finishes and the next begins, when the schema
-  version moves, or when the user asks "mark phase X complete" / "bump
-  the status docs" / "update the phase tracker". SKIP for compute /
-  frontend code changes (no docs to bump), for README /
-  docs/ARCHITECTURE.md updates (different lifecycle), or when only one
-  of the three triple-docs needs editing — if just one, edit it directly.
+description: Update PHASE_STATUS.md + SKILL.md + WORKFLOW.md in lockstep when a phase / sub-PR completes — the single flow that keeps the cross-referencing triple aligned. TRIGGER: after merging a phase-completion PR, after a release tag, when a sub-PR finishes and the next begins, when the schema version moves, or "mark phase X complete" / "bump the status docs" / "update the phase tracker".
 ---
 
 # phase-status-bump
@@ -172,3 +160,18 @@ This skill is the cheap insurance against that drift.
 - `defense-scorecard` — generates the active veto count for SKILL.md
 - `pr-iteration-flow` — the PR-side workflow this skill plugs into at
   the end (PR merge → status bump)
+
+## Long-form description (moved out of frontmatter 2026-06-11 token drain)
+
+Update PHASE_STATUS.md, SKILL.md, and WORKFLOW.md in lockstep when a
+QuantRank phase or sub-PR completes. These three docs cross-reference
+each other (current phase, schema version, active veto count,
+deferred items) and tend to drift if updated piecemeal — this skill
+is the single update flow that keeps them aligned. TRIGGER after
+merging a phase-completion PR, after tagging a release version, when
+a sub-PR within a phase finishes and the next begins, when the schema
+version moves, or when the user asks "mark phase X complete" / "bump
+the status docs" / "update the phase tracker". SKIP for compute /
+frontend code changes (no docs to bump), for README /
+docs/ARCHITECTURE.md updates (different lifecycle), or when only one
+of the three triple-docs needs editing — if just one, edit it directly.

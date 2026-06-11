@@ -3212,3 +3212,68 @@ place.
 table row) · PHASE_STATUS_INFLIGHT.md (this).
 
 ---
+
+## docs(infra) — token-economy optimization: CLAUDE.md re-drain + description tightening + reviewer gate-narrowing (in flight, 2026-06-11)
+
+**Branch**: `claude/friendly-rubin-liav05` (same PR #459 as the model-ref fixes —
+the session is branch-locked, so the confirmed optimization batch lands on the
+same PR). **Scope**: docs + `.claude/**` only — no code / workflow / schema
+surface.
+
+User-confirmed batch (5 items) after the measured-baseline report (~28K tok of
+always-loaded context per session):
+
+1. **CLAUDE.md re-drain 14.0K → ~7.8K tok (−44%)** — §Stack LedgerCraft PR
+   narrative → pointer to docs/design.md; §Layout fat cells compressed;
+   §Conventions rebase-history compressed; §Auto-routing Delegation-patterns +
+   Cue tables (70% overlap) MERGED into one routing table; §Gotchas paragraph
+   entries → true one-liners (detail verified present in docs/GOTCHAS.md;
+   missing `pillarColor`/`flagLabel` entry APPENDED there first); §Phase status
+   currency-fixed (0.10.18 on main; #453/#456 in-flight entries rotated out —
+   both merged; done Next-deliverables items 1-2 dropped, renumbered) with the
+   drained prose archived VERBATIM in docs/PHASE_STATUS_ARCHIVE.md; §Agent
+   skills compressed. CLAUDE.md loads into every session AND every sub-agent
+   spawn, so the saving multiplies (~6.2K × (1 + spawns)).
+2. **Agent `description:` tightening, all 25 defs (23.1K → 13.3K chars ≈
+   −2.5K tok/session)** — every original description preserved VERBATIM in the
+   agent body under "## Boundary & trigger reference" (paid only at spawn);
+   new descriptions keep ALL trigger cues incl. Thai phrases.
+   `quantrank-reviewer`'s preserved long-form got a SUPERSEDED banner on the
+   every-push clause.
+3. **First-party skill descriptions, 18 files (~17.6K → ~7.7K chars ≈ −2.5K
+   tok/session)** — same preserve-in-body pattern ("## Long-form description").
+   Vendored skills (mattpocock-* / 9arm-* / impeccable / portable-karpathy /
+   good-code) untouched per vendor-sync discipline. **3 dead skills REMOVED**:
+   `karpathy-llm-wiki` (vendored gist, never fires for finance scope —
+   THIRD_PARTY_NOTICES entry retained with REMOVED banner; vendor-sync source
+   row marked skip), `doc-coauthoring` + `mcp-builder` (Anthropic snapshot,
+   unused; phase-11 PLAN.md pointer annotated to re-vendor when Phase 11
+   starts). skills README index updated.
+4. **`quantrank-reviewer` (fable) narrowed to gate-fire only** — Draft→Ready /
+   "ready to push" / "open PR" / explicit "full review"; NO LONGER fires on
+   every `git push` or non-trivial edit set (the documented cue contradicted
+   the stated "fable agents wait for gate" split and cost 5+ fable reviews per
+   polish-heavy PR). Sonnet on-edit agents are unchanged and cover the interim.
+   CLAUDE.md routing table + agent description both updated.
+5. **Connector policy** — Supabase / Sentry / Gmail / Google Drive marked
+   ⏸ toggle-OFF in CLAUDE.md §Connectors + AGENTS.md (token economy; re-enable
+   per phase). NOTE: the actual toggle is a USER action in Claude app Settings
+   → Connectors — repo files cannot flip it.
+
+Deferred (flagged, not executed — outside the confirmed list): deleting the
+remaining ~15 unused vendored-Anthropic-snapshot skills (docx · pptx · pdf ·
+canvas-design (~5MB fonts) · slack-gif-creator · algorithmic-art ·
+brand-guidelines · internal-comms · theme-factory · web-artifacts-builder …) —
+next candidate batch if further savings wanted.
+
+**Measured result**: always-loaded per-session context ~28K → ~17K tok
+(CLAUDE.md 14.0→7.8K · agent descs 5.8→3.3K · skill descs 8.5→~6K) and each
+sub-agent spawn carries ~6.2K tok less CLAUDE.md.
+
+**Files**: CLAUDE.md · AGENTS.md · docs/GOTCHAS.md (+pillarColor entry) ·
+docs/PHASE_STATUS_ARCHIVE.md (drain archive) · .claude/agents/*.md (25) ·
+.claude/skills/<18 first-party>/SKILL.md · .claude/skills/README.md ·
+.claude/skills/vendor-sync/SKILL.md · .claude/skills/phase-11/public-api-docs/PLAN.md ·
+THIRD_PARTY_NOTICES.md · 3 skill dirs removed · PHASE_STATUS_INFLIGHT.md (this).
+
+---

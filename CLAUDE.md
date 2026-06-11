@@ -13,24 +13,16 @@ design-system spec.
 - **Python 3.11+** — pandas 2.2 · edgartools 5.32 · pydantic 2.6 ·
   tenacity 8.2 · BeautifulSoup 4 · lxml 5 · pytest 8 · ruff 0.4
 - **Next.js 14.2** (App Router, static export) — React 18.3 ·
-  TypeScript 5.9 · Tailwind 3.4 · Recharts 2.15. Self-hosted fonts
-  via @fontsource: **IBM Plex Sans** (body) · **JetBrains Mono**
-  (tabular numerics) · **Roboto Slab** (headlines, LedgerCraft adoption Phase 1 PR #211 +
-  Phase 2 PR #212 + Phase 3a PR #213 + Phase 3c PR #215 — `font-slab`
-  + 4-tier shadow tokens + spreadsheet header treatment + `AppShell`
-  + `TopNav` tab nav (the `Sidebar` left-rail was removed PR #414, with
-  `TopNav` now the sole nav); Phase 3b (merged) — `next-themes`
-  class-strategy dark mode, OKLCH dark band, paired `dark:` variants
-  across every chip family + table + card surface, three-state theme
-  toggle in the AppShell header.
-  Phase 3d folded into the same PR: LedgerCraft canonical palette
-  alignment — body bg `#FAFAFA`, brand primary `emerald-700`
-  (`#047857`; the LedgerCraft spec named forest-green `#15803D` =
-  green-700, but the impl ships Tailwind emerald-700) on wordmark Q
-  logo + primary CTA surfaces, OKLCH
-  hue 155 → 152 + chroma 0.09 → 0.13 closer to forest green,
-  border-radius normalization `rounded-2xl/xl` → `rounded-lg`).
-- **CI** — GitHub Actions; weekday `compute-rankings.yml` (cron Mon-Fri 22:00 UTC; weekends skipped — no new trading data; a `trading-day-gate` job further skips NYSE holidays; also folds a warm PIT-backtest refresh step so the AI-pick home page updates each cron)
+  TypeScript 5.9 · Tailwind 3.4 · Recharts 2.15. Fonts via @fontsource:
+  **IBM Plex Sans** (body) · **JetBrains Mono** (tabular numerics) ·
+  **Roboto Slab** (headlines). LedgerCraft design system: `AppShell` +
+  `TopNav` (sole nav since PR #414), brand primary `emerald-700`
+  (`#047857`), `next-themes` class-strategy dark mode with paired
+  `dark:` variants on every surface. Visual spec + adoption history:
+  [`docs/design.md`](docs/design.md).
+- **CI** — GitHub Actions; weekday `compute-rankings.yml` (cron Mon-Fri
+  22:00 UTC; `trading-day-gate` skips weekends + NYSE holidays; folds a
+  warm PIT-backtest refresh so the AI-pick home updates each cron)
 - **Data** — SEC EDGAR via `edgartools` · yfinance for prices · S&P 500
   constituents scraped from Wikipedia
 
@@ -47,12 +39,12 @@ design-system spec.
 | `frontend/components/` | React UI (RankingTable, FairPriceBarChart, …) |
 | `frontend/public/data/` | Compute output: `metadata.json` + `rankings.json` + `stocks/<TICKER>.json` |
 | `tests/` | pytest suite (offline + `@network` gated; see CI for current count) |
-| `.claude/skills/` | 47 first-party invocation-triggerable skills + phase planning docs, plus a symlink to the 1 vendored third-party skill (`impeccable`, row below). See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for vendoring / license posture per source. |
-| `.agents/skills/` | Vendored third-party agent skills in the cross-tool [skills.sh](https://skills.sh) layout. Currently 1: **`impeccable`** ([pbakaus/impeccable](https://github.com/pbakaus/impeccable), **Apache-2.0**) — a frontend-design skill (design review / live browser iteration / critique / typography / color / motion), symlinked into `.claude/skills/impeccable`; installed via `npx skills add`, pinned by root `skills-lock.json`, bundled `scripts/` marked `linguist-vendored`. Dev-session tooling only — never runs in CI / the static export / the compute cron. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md). |
-| `.claude/agents/` | 25 project-specific subagents in 5 tiers: **Tier 1 Core** (quantrank-reviewer · schema-sentinel · defense-layer-auditor · edgar-debugger · **stock-detail-auditor**), **Tier 2 Lifecycle** (security-reviewer · frontend-design-reviewer · **vercel-preview-auditor** · **expert-user-explorer** · release-captain · phase-coordinator), **Tier 3 Specialized** (test-engineer · methodology-scientist · **literature-searcher** · performance-engineer · dependency-auditor · **financial-engineer** · **data-pipeline-engineer** · **data-analyst** · **data-scientist**), **Tier 4 Operations** (docs-reviewer · **ci-triage-engineer** · incident-commander), **Tier 5 Builders** (write-capable: **compute-builder** owns `compute/**` · **frontend-builder** owns `frontend/**`). Spawned via the `Agent` tool with a separate context window; see [`.claude/agents/README.md`](.claude/agents/README.md) for the routing matrix + 8 coordination flows. The collaborative multi-session **agent-teams** feature reuses these defs as teammate roles — [`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md) has the 5 team recipes + the builders' file-ownership protocol + a mobile/web subagent fallback. |
-| `.claude/hooks/` | Bash hook scripts wired by `.claude/settings.json`. 3 hooks total: `log-bash.sh` (PostToolUse Bash → append every command to gitignored `.claude/session.log`) + `schema-reminder.sh` (PostToolUse Write/Edit → inject reminder when any file in the Pydantic↔TS↔snapshot triple is touched) + `delegate-first.sh` (UserPromptSubmit → inject orchestrator-role reminder every user turn so the main agent defaults to spawning sub-agents instead of doing work inline, AND auto-proposes the matching agent-team recipe when the task is team-fit — see [`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md) §Auto-proposal). All fail-open (missing `jq` / unwritable FS / empty stdin → exit 0). 5-second timeout each. |
-| `.claude/worktrees/` | Harness-managed isolation dirs for subagents spawned via the `Agent` tool with `isolation: "worktree"`. Per-session, transient, **gitignored** (added 2026-05-22 post the 3-PR fan-out so they don't show up as untracked on the main worktree's `git status`). Never commit them. |
-| `docs/agents/` | Per-repo configuration consumed by the vendored mattpocock engineering skills (`to-issues`, `to-prd`). Scaffolded 2026-05-25 via `mattpocock-setup-harness`. 2 files: `issue-tracker.md` (GitHub MCP conventions) + `domain.md` (the upstream-instruction → QuantRank-multi-file-CONTEXT-analog mapping). See §Agent skills below for the index. |
+| `.claude/skills/` | Invocation-triggerable skills (first-party + vendored — license posture per source in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)) + `phase-N/` planning stubs. Index: [`.claude/skills/README.md`](.claude/skills/README.md). |
+| `.agents/skills/` | Vendored third-party skills in the cross-tool [skills.sh](https://skills.sh) layout (currently 1: `impeccable`, Apache-2.0, symlinked into `.claude/skills/`, pinned by `skills-lock.json`). Dev-session tooling only — never runs in CI / the export / the cron. |
+| `.claude/agents/` | 25 project subagents in 5 tiers (Core · Lifecycle · Specialized · Operations · write-capable Builders: `compute-builder` owns `compute/**`, `frontend-builder` owns `frontend/**`). Routing matrix + 8 coordination flows: [`.claude/agents/README.md`](.claude/agents/README.md); agent-team recipes: [`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md). |
+| `.claude/hooks/` | 3 bash hooks wired by `.claude/settings.json`: `log-bash.sh` (Bash audit log → `.claude/session.log`) · `schema-reminder.sh` (schema-triple edit reminder) · `delegate-first.sh` (orchestrator-role + team auto-proposal nudge every turn). All fail-open, 5s timeout. |
+| `.claude/worktrees/` | Harness-managed isolation dirs for `isolation: "worktree"` subagent spawns. Transient, gitignored — never commit. |
+| `docs/agents/` | Config consumed by the vendored mattpocock skills: `issue-tracker.md` + `domain.md`. See §Agent skills. |
 
 ## Commands
 
@@ -83,22 +75,22 @@ Playwright pass.
 
 ## Connectors
 
-Claude Code sessions for this project have these MCP connectors
-enabled (managed in Claude app Settings → Connectors):
+MCP connectors, managed in Claude app Settings → Connectors (repo files
+cannot toggle them — the user flips the switch there):
 
 | Connector | Status | Use |
 |---|---|---|
 | **GitHub** | ✅ active | PRs, issues, releases, CI runs, file ops |
-| **Vercel** | ✅ active (since 2026-05-17) | pre-Playwright deploy + runtime log check: `list_deployments` / `get_deployment_build_logs` / `get_runtime_logs` |
-| **Supabase** | ✅ active (since 2026-05-17) | **reserved for Phase 5+** — not used by current code; do not add a client without an explicit PR |
-| **Sentry** | ⚪ planned | post-deploy error monitor; `@sentry/nextjs` SDK wiring is a separate PR (not yet filed) |
-| Gmail · Google Drive | ✅ active | rarely used; cross-tool comms / doc backup |
+| **Vercel** | ✅ active | pre-Playwright deploy + runtime log check: `list_deployments` / `get_deployment_build_logs` / `get_runtime_logs` |
+| **Supabase** | ⏸ toggle OFF (token-economy policy 2026-06-11) | reserved for Phase 5+ — re-enable with the Phase 5 client-wiring pre-PR |
+| **Sentry** | ⏸ toggle OFF (same policy) | planned post-deploy monitor; re-enable when the `@sentry/nextjs` wiring PR lands |
+| Gmail · Google Drive | ⏸ toggle OFF (same policy) | rarely used; re-enable per-task for cross-tool comms / doc backup |
 
-If `ToolSearch query="<name>"` returns no matches, this session
-started before that connector was registered. Don't restart mid-task
-(loses audit context) — delegate the connector-bound step to a sibling
-session. See [`AGENTS.md`](AGENTS.md) §"Multi-session audit pattern"
-for the full 4-step pattern + Section I forcing example.
+Unused connectors cost schema/name tokens on surfaces that load tools
+eagerly. If `ToolSearch query="<name>"` returns no matches, the session
+predates the connector — don't restart mid-task (loses audit context);
+delegate the connector-bound step to a sibling session
+([`AGENTS.md`](AGENTS.md) §"Multi-session audit pattern").
 
 ## Conventions
 
@@ -139,20 +131,11 @@ for the full 4-step pattern + Section I forcing example.
   EITHER a `PHASE_STATUS_INFLIGHT.md` entry OR a matching CLAUDE.md +
   AGENTS.md substance diff.
 - **Rebase onto `origin/main` before flipping any PR Draft → Ready.**
-  The §Phase status block in CLAUDE.md + the §Phase + version state
-  block in AGENTS.md were append-shaped (pre-2026-05-24) — every PR
-  inserted a new "**X in flight (this PR)**" bullet at the SAME
-  insertion point, and parallel PRs hit `mergeable_state: dirty`.
-  PR #230's adoption of [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md)
-  closes that pattern at the structural level: new PRs append their
-  in-flight entry to the side-file (parallel-safe), so the rebase
-  discipline is now a backstop for OTHER conflict surfaces (shared
-  code edits, workflow YAML changes, schema bumps) — not the
-  recurring §Phase status drag it used to be. **The mitigation
-  remains local**: before authorizing Mark-Ready, run
-  `git fetch origin main && git rebase origin/main` and resolve any
-  remaining benign conflicts ("keep both in chronological order" if
-  somebody added a CLAUDE.md substance change in the same area).
+  [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (PR #230) made
+  phase-status entries parallel-safe, so the rebase is the backstop for
+  the OTHER conflict surfaces (shared code edits, workflow YAML, schema
+  bumps): run `git fetch origin main && git rebase origin/main` and
+  resolve benign doc conflicts "keep both in chronological order".
 - **Session-start phase identification.** First action on any new
   session: read [`PHASE_STATUS.md`](PHASE_STATUS.md) §"Current state"
   for active schema + phase + defense-layer count + in-flight PRs, then
@@ -187,206 +170,93 @@ for the full 4-step pattern + Section I forcing example.
 
 ### Main agent role — orchestrator, not laborer
 
-The main Claude Code session is the **orchestrator / tech lead** of
-the 22-agent team, not the laborer. Default action when given a
-task is to **identify the matching sub-agent in `.claude/agents/`
-and spawn it** — not to do the work inline. The
-`UserPromptSubmit` hook injects this reminder every turn so the
-rule stays loaded.
+The main session is the **orchestrator / tech lead** of the 25-agent
+team, not the laborer. Default on any task: **spawn the matching
+sub-agent from `.claude/agents/`**, not inline work (the
+`UserPromptSubmit` hook re-injects this rule every turn). Main-session
+tokens land on the "Weekly · all models" pool; sonnet sub-agents drain
+the separate, paid-but-under-utilized "Weekly · Sonnet only" pool.
 
-**Inline work is the EXCEPTION**, acceptable only when:
+**Inline work is the EXCEPTION**, acceptable only when: (a) no agent's
+`description:` matches; (b) trivial lookup — ≤ 1 Read + a one-sentence
+answer; (c) the user says "ทำเอง" / "inline this" / "don't spawn
+agents"; (d) the work IS the agent / hook / settings
+meta-infrastructure itself; (e) cross-agent synthesis after sub-agents
+report. Otherwise STOP and spawn first.
 
-- (a) No sub-agent's `description:` matches the task.
-- (b) The request is a trivial lookup — answerable with ≤ 1 Read +
-  a single-sentence answer (e.g. "what's the current schema
-  version?").
-- (c) The user explicitly says "ทำเอง" / "inline this" / "don't
-  spawn agents" / "do it yourself".
-- (d) The work IS the meta-task of building or editing the agent /
-  hook / settings infrastructure itself (you can't delegate
-  building the delegation system).
-- (e) Cross-agent synthesis after multiple sub-agents have
-  reported — that's orchestrator work by definition.
+### Routing table — trigger → spawn
 
-If none of (a)-(e) applies and you find yourself reading / grepping /
-investigating production code without having spawned an agent, STOP
-and spawn the relevant sub-agent first. Main-session tokens land on
-the "Weekly · all models" pool; sonnet sub-agents land on the
-separate "Weekly · Sonnet only" pool which on Max plans is paid-for
-and currently under-utilized.
-
-### Delegation patterns — common requests → which agent to spawn
-
-Concrete mapping so the delegate-first check doesn't become
-guesswork:
-
-| User pattern / task | Spawn (don't do inline) |
-|---|---|
-| "ตรวจ data หุ้น" / "check ticker X" / audit per-stock JSON correctness | `stock-detail-auditor` (sonnet) |
-| "review code" / "ก่อน push" / "ready to push" / "open PR" | `quantrank-reviewer` (fable) |
-| "schema in sync?" / edit to `schemas.py`/`types.ts`/snapshot | `schema-sentinel` (sonnet) |
-| "ทำไม cron ช้า" / p95 > 20s / cron > 10 min warm-cache | `performance-engineer` (sonnet) |
-| "design X" / new UI component / "doesn't match the rest" | `frontend-design-reviewer` (sonnet) |
-| "ตรวจ doc" / md edit / section header added | `docs-reviewer` (sonnet) |
-| "audit defenses" / new flag / defense count diff | `defense-layer-auditor` (sonnet) |
-| 429/403 from SEC / EDGAR hangs / edgartools drift | `edgar-debugger` (sonnet) |
-| "tag release" / "ตัด release" / phase-epic PR merged | `release-captain` (fable) |
-| "production is broken" / "site is down" / cron failure | `incident-commander` (fable, P1) |
-| "validate against literature" / threshold change / new flag academic prior | `methodology-scientist` (fable) |
-| Dependabot alert / new dep / "ตรวจ CVE" | `dependency-auditor` (sonnet) + `security-reviewer` (sonnet) parallel |
-| New prod code without test / "TDD this" / "write tests for X" | `test-engineer` (sonnet) |
-| "scan for secrets" / pre-release / new env-var / `.github/workflows/` edit | `security-reviewer` (sonnet) |
-| New `claude/*` branch from handoff / phase complete / PR open | `phase-coordinator` (sonnet) |
-| CI check failed (webhook event) / "CI fail" / "Python test red" / "build แตก" / "เช็คทำไม CI fail" | `ci-triage-engineer` (sonnet) |
-| "ดู preview" / "is deploy green?" / pre-Mark-Ready on UI-touching PR / Vercel preview URL just posted | `vercel-preview-auditor` (sonnet) |
-| "ลองใช้ app (จริง)" / "expert user feedback" / "ใช้งานจริงดูหน่อย" / "UX จริง" / "is the app actually usable?" / post-cron experiential pass | `expert-user-explorer` (sonnet) |
-| "find me the paper that says X" / "หาเปเปอร์เรื่อง Y" / methodology cite outside CLAUDE.md anchor list / new defense-flag prior | `literature-searcher` (sonnet) |
-| "design a new valuation method / factor / scoring pillar / defense flag" / "ออกแบบ factor / โมเดล quant" / "scope Phase 5/6/7" / "should we add signal X" (construct doesn't exist yet) | `financial-engineer` (fable; generative design) → then `methodology-scientist` to ratify |
-| "implement X in compute/" / "build the Y component / route" / cross-layer feature build (schema + compute + UI + test) | `compute-builder` / `frontend-builder` (sonnet, **write** — owns `compute/**` / `frontend/**`) — or a **Feature Squad** agent team ([`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md)) |
-| "ตรวจ data pipeline" / "is the data pipeline healthy?" / ingest-source / cache / membership-ledger / coverage / freshness health | `data-pipeline-engineer` (sonnet, read-only) |
-| "วิเคราะห์ data" / "analyze the rankings" / "score / sector distribution" / "what changed this week" / aggregate output analytics | `data-analyst` (sonnet, read-only) |
-| "is this signal real?" / "IC เท่าไหร่" / "overfit ไหม" / "วิเคราะห์เชิงสถิติ" / evaluate signal-vs-forward-returns / PBO-DSR / leakage probe / scope Phase-5 ML | `data-scientist` (sonnet, read-only) |
-
-Pattern not in the table → walk the description fields of all 25
-agents in `.claude/agents/` before defaulting to inline work.
-
-### Cue table — when each agent fires
-
-Subagents under [`.claude/agents/`](.claude/agents/) auto-spawn on
-the cues below — **lean-by-design**. Most
-cues fire at GATE moments (`ready to push` / explicit ask / signal
-event), **not on every edit**. Each spawn costs a separate context
-window; the policy keeps that cost bounded while preserving the
-safety net at decision points. The hook layer covers per-edit
-reminders that don't need LLM judgment.
-
-The main agent MUST spawn without asking for confirmation — all
-subagents are read-only. Only destructive commands a subagent
-*proposes* require user authorization.
-
-**Sonnet sub-agents fire on edit; fable agents wait for gate.** This
-is the split discipline that drains the Max-plan "Weekly · Sonnet
-only" pool without burning the "Weekly · all models" pool. Each
-sonnet agent has a non-trivial-edit cue in its domain (rows
-below). The five fable agents (`quantrank-reviewer` ·
+One row per fire-pattern; user-ask cues and event cues share a row.
+Sonnet agents (the unmarked default) fire on edits / signals in their
+domain; the five **fable** agents (`quantrank-reviewer` ·
 `methodology-scientist` · `release-captain` · `incident-commander` ·
-`financial-engineer`) stay rare-fire on gates or signals. Dedup window ~10 min — if the
-same sonnet agent ran on the same diff and it hasn't moved, point
-at the prior result instead of re-spawning. The "ready to push"
-gate still fires as a safety net (fable reviewer + a re-batch of
-sonnet agents in case earlier edit-triggered runs missed
-something).
+`financial-engineer`) are gate / signal-only. **Non-trivial edit** =
+> 5 added lines OR non-comment code OR a public-symbol change (pure
+comment / whitespace / single-line fixes don't trigger). Spawn
+read-only agents **without asking** — only a proposed destructive
+command needs user authorization. Pattern not in the table → walk the
+`description:` fields of all 25 agents before defaulting to inline.
 
-**What "non-trivial edit" means**: > 5 added lines OR touches
-non-comment code OR adds/removes a public symbol. Pure comment /
-whitespace / single-line fixes do not trigger.
-
-| When | Auto-spawn | Notes |
-|---|---|---|
-| **Non-trivial edit** to `compute/output/schemas.py` / `frontend/lib/types.ts` / `frontend/lib/schema-snapshot.json` | `schema-sentinel` (sonnet) | On-edit; sonnet pool; hook still fires its reminder regardless |
-| **Non-trivial edit** to `compute/scoring/*` or `compute/valuation/*` | `defense-layer-auditor` (sonnet) | On-edit; sonnet pool |
-| **Non-trivial edit** to `frontend/components/*` or `frontend/app/*` | `frontend-design-reviewer` (sonnet) | On-edit; sonnet pool; emits Playwright spot-check matrix |
-| **Non-trivial edit** to `.github/workflows/*` OR new dep in `pyproject.toml` / `frontend/package.json` OR new env-var read | `security-reviewer` (sonnet) | On-edit; sonnet pool |
-| Production code added without a corresponding test in the same diff | `test-engineer` (sonnet) | On-edit; sonnet pool; covers `compute/**/*.py` not under `tests/` |
-| **Non-trivial edit** to any of CLAUDE.md / AGENTS.md / SKILL.md / WORKFLOW.md / PHASE_STATUS.md / README.md / METHODOLOGY.md | `docs-reviewer` (sonnet) | On-edit; sonnet pool; substance check (file-touch lockstep handled separately by `phase-coordinator` Mode B at the push gate) |
-| Test failure under `tests/test_ingest/` OR live-run hang OR `429`/`403` from SEC | `edgar-debugger` (sonnet) | Signal-driven, on-demand |
-| Weekly cron warm-cache > 10 min OR p95 latency > 20s | `performance-engineer` (sonnet) | Signal-driven, on detection |
-| Dependabot alert lands OR new dep added to `pyproject.toml` / `frontend/package.json` | `dependency-auditor` (sonnet) + `security-reviewer` (sonnet) | Signal-driven, parallel |
-| Production cron fails / hangs / produces corrupt output, OR Vercel deploy breaks, OR schema-snapshot CI fails, OR user says "production is broken" / "site is down" / "incident" | `incident-commander` (fable; P1 orchestrator) | Immediate |
-| GitHub Actions check fails on any open PR (webhook PR-activity event) OR user says "CI fail" / "Python test red" / "build แตก" / "เช็คทำไม CI fail" | `ci-triage-engineer` (sonnet) | Signal-driven, on webhook; reactive — proposes one-line fix |
-| Pre-Mark-Ready on a UI-touching PR OR new Vercel preview URL posted OR user says "ดู preview" / "is deploy green?" / "spot-check the preview" | `vercel-preview-auditor` (sonnet) | Gated; runs Vercel MCP build+runtime+UA-probe before Playwright is scheduled |
-| Post-cron green OR pre-release OR after `vercel-preview-auditor` GO on a UI PR OR user says "ลองใช้ app" / "expert user feedback" / "UX จริง" / "is the app usable?" | `expert-user-explorer` (sonnet) | Gated; builds+serves the static export locally, drives headless Playwright through a persona mission; read-only, proposes issues. NOT per-edit (that's `frontend-design-reviewer`) |
-| methodology-scientist verdict cites a paper outside CLAUDE.md anchor list AND the actual paper text matters, OR user says "find me the paper that says X" / "หาเปเปอร์เรื่อง Y" / new defense-flag academic prior is proposed | `literature-searcher` (sonnet) | On-demand; offloads retrieval so methodology-scientist (fable) stays on judgment |
-| `workflow_dispatch` on `compute-rankings.yml` lands green | `defense-layer-auditor` Section A-L + Section I (Playwright) + `stock-detail-auditor` (per-stock data audit) + `data-pipeline-engineer` (data-layer health) + `data-analyst` (aggregate analytics) + `expert-user-explorer` (experiential P1 mission on the fresh data) | Auto post-cron, parallel; all sonnet |
-| Edit under `compute/ingest/**` OR `data/sp500_membership_historical.csv` edit OR a `Metadata.*_coverage_pct` drop OR user says "ตรวจ data pipeline" / "is the data pipeline healthy?" | `data-pipeline-engineer` (sonnet) | Signal-driven, read-only |
-| User says "วิเคราะห์ data" / "analyze the rankings" / "score / sector distribution" / "what changed this week" | `data-analyst` (sonnet) | On-demand, read-only |
-| Signal/factor predictive-power question OR backtest statistical scrutiny (overfit / leakage / PBO-DSR) OR `compute/validation/**`-`compute/features/**` output interpretation OR Phase-5 ML scoping OR user says "is this signal real?" / "overfit ไหม" / "วิเคราะห์เชิงสถิติ" | `data-scientist` (sonnet) | On-demand; empirical seat (financial-engineer designs → data-scientist evaluates → methodology-scientist ratifies) |
-| Quarterly cohort audit scheduled date reached (next 2026-08-19) | `methodology-scientist` (fable) Mode C + `defense-layer-auditor` (sonnet) | Scheduled, sequential |
-| User says "design a new valuation method / factor / scoring pillar / defense flag" / "ออกแบบ factor / โมเดล quant" / "scope Phase 5/6/7" / "should we add signal X" (the construct doesn't exist yet) | `financial-engineer` (fable; generative design) → then `methodology-scientist` to ratify the prior | Rare; design precedes validation (Flow 8) |
-| New defense flag proposed (new risk_flag in `compute/scoring/`) | `methodology-scientist` (fable; validate paper anchor) + `test-engineer` (sonnet; positive + negative tests) | Rare; sequential — methodology first |
-| Threshold / weight constant changed in `compute/scoring/manipulation_index.py` or `earnings_quality.py` | `methodology-scientist` (fable) Mode B | Rare; on the edit |
-| User says "ก่อน push" / "ready to push" / "open PR" / "mark ready" / "ตรวจก่อน push" | `quantrank-reviewer` (fable) + `phase-coordinator` (sonnet) Mode B. Conditional sonnet re-batch on the same gate: `schema-sentinel` / `defense-layer-auditor` / `frontend-design-reviewer` / `docs-reviewer` / `security-reviewer` / `test-engineer` (skipped per-agent if the dedup window confirms it already ran on this diff) | Parallel pre-push safety-net gate |
-| User says "ตรวจ data หุ้น" / "check stock data correctness" / "audit the output" / "verify the output" / "ตรวจ output" / pre-release | `stock-detail-auditor` (sonnet; deterministic prefilter then thorough LLM verdict for every flagged ticker) | One sonnet spawn, thorough |
-| User says "tag release" / "cut a release" / "release vX.Y.Z" / "ตัด release" / phase-epic PR just merged | `release-captain` (orchestrator; spawns ladder agents as needed) | Owns release ladder |
-| User asks to create a new `claude/*` branch from a handoff prompt | `phase-coordinator` Mode A | Before first non-trivial edit |
-| Phase / sub-PR marked complete on this branch | `phase-coordinator` Mode C | After merge / on close |
-| Diff > 200 lines on `compute/scoring/` OR user says "full review" / "deep review" | `quantrank-reviewer` (fable by default — no model override needed) | Rare |
+| Trigger (user ask OR event) | Spawn |
+|---|---|
+| "ก่อน push" / "ready to push" / "open PR" / "mark ready" / "ตรวจก่อน push" — OR explicit "full review" / "deep review" / diff > 200 lines on `compute/scoring/` | `quantrank-reviewer` (fable) + `phase-coordinator` Mode B, plus conditional sonnet re-batch (`schema-sentinel` / `defense-layer-auditor` / `frontend-design-reviewer` / `docs-reviewer` / `security-reviewer` / `test-engineer`, dedup-skipped). **The fable review fires at this gate only — NOT on every push / edit set** (narrowed 2026-06-11, token economy) |
+| "ตรวจ data หุ้น" / "check ticker X" / "verify the output" / "ตรวจ output" / pre-release | `stock-detail-auditor` — deterministic prefilter, then thorough verdict per flagged ticker |
+| Non-trivial edit to `schemas.py` / `types.ts` / `schema-snapshot.json` OR "schema in sync?" OR CI schema-drift | `schema-sentinel` |
+| Non-trivial edit to `compute/scoring/*` / `compute/valuation/*` OR "audit defenses" / defense count diff | `defense-layer-auditor` |
+| Non-trivial edit to `frontend/components/*` / `frontend/app/*` OR "design X" / new UI component / "doesn't match the rest" | `frontend-design-reviewer` — emits Playwright spot-check matrix |
+| Non-trivial edit to `.github/workflows/*` OR new env-var read OR "scan for secrets" / pre-release | `security-reviewer` |
+| Dependabot alert OR new dep in `pyproject.toml` / `frontend/package.json` OR "ตรวจ CVE" | `dependency-auditor` + `security-reviewer` (parallel) |
+| Prod code without a test in the same diff OR "write tests for X" / "TDD this" | `test-engineer` |
+| Non-trivial edit to CLAUDE.md / AGENTS.md / SKILL.md / WORKFLOW.md / PHASE_STATUS.md / README.md / METHODOLOGY.md OR "ตรวจ doc" | `docs-reviewer` — substance check (file-touch lockstep = `phase-coordinator` Mode B at the gate) |
+| `tests/test_ingest/` failure OR live-run hang OR SEC 429/403 OR edgartools drift | `edgar-debugger` |
+| "ทำไม cron ช้า" OR warm-cache > 10 min OR p95 > 20s | `performance-engineer` |
+| Cron fails / hangs / corrupt output OR Vercel deploy breaks OR schema CI fails OR "production is broken" / "site is down" / "incident" | `incident-commander` (fable, P1) — immediate |
+| CI check fails on an open PR (webhook) OR "CI fail" / "Python test red" / "build แตก" / "เช็คทำไม CI fail" | `ci-triage-engineer` — proposes the one-line fix |
+| Pre-Mark-Ready on a UI-touching PR OR Vercel preview URL posted OR "ดู preview" / "is deploy green?" | `vercel-preview-auditor` — Vercel MCP chain before Playwright |
+| Post-cron green OR pre-release OR vercel GO on a UI PR OR "ลองใช้ app (จริง)" / "expert user feedback" / "UX จริง" / "is the app actually usable?" | `expert-user-explorer` — serves the export, drives Playwright persona missions; NOT per-edit |
+| Methodology cite outside the CLAUDE.md anchor list (paper text matters) OR "find me the paper that says X" / "หาเปเปอร์เรื่อง Y" OR new defense-flag prior | `literature-searcher` — keeps fable tokens on judgment |
+| `workflow_dispatch` on `compute-rankings.yml` lands green | Post-cron parallel batch: `defense-layer-auditor` (Section A-L + I) + `stock-detail-auditor` + `data-pipeline-engineer` + `data-analyst` + `expert-user-explorer` |
+| Edit under `compute/ingest/**` OR `data/sp500_membership_historical.csv` edit OR `Metadata.*_coverage_pct` drop OR "ตรวจ data pipeline" / "is the data pipeline healthy?" | `data-pipeline-engineer` |
+| "วิเคราะห์ data" / "analyze the rankings" / "score / sector distribution" / "what changed this week" | `data-analyst` |
+| "is this signal real?" / "IC เท่าไหร่" / "overfit ไหม" / "วิเคราะห์เชิงสถิติ" OR PBO-DSR / leakage probe OR Phase-5 ML scoping | `data-scientist` — empirical seat (financial-engineer designs → data-scientist evaluates → methodology-scientist ratifies) |
+| New defense flag proposed OR threshold / weight change in `manipulation_index.py` / `earnings_quality.py` OR "validate against literature" OR quarterly cohort audit (next 2026-08-19) | `methodology-scientist` (fable) — new flags also get `test-engineer`; the quarterly audit pairs `defense-layer-auditor` |
+| "design a new valuation method / factor / scoring pillar / defense flag" / "ออกแบบ factor / โมเดล quant" / "scope Phase 5/6/7" (construct doesn't exist yet) | `financial-engineer` (fable) → `methodology-scientist` ratifies the prior |
+| "tag release" / "cut a release" / "ตัด release" OR phase-epic PR merged | `release-captain` (fable) — owns the release ladder |
+| New `claude/*` branch from a handoff · phase / sub-PR complete | `phase-coordinator` Mode A · Mode C (Mode B rides the push gate) |
+| "implement X in compute/" / "build the Y component / route" / cross-layer feature build | `compute-builder` / `frontend-builder` (**write**, disjoint layers) — or propose a **Feature Squad** team ([`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md)) |
 
 ### Spawn discipline
 
-- **Route on the handoff line.** Every sub-agent ends its report
-  with a parseable `HANDOFF · status=… · next=<DONE | SPAWN
-  <agent>:<scope> | ESCALATE <agent>:<why> | NEEDS-USER:<decision>>` line
-  (convention in [`.claude/agents/README.md`](.claude/agents/README.md)
-  §Dynamic workflow). Compose the next step from it **dynamically** —
-  the 8 coordination flows are canonical examples, not an exhaustive
-  script; an unexpected finding still routes to the right specialist
-  (this session's `expert-user-explorer` → bug → `frontend-design-reviewer`
-  → re-validate loop was composed on the fly, not from a listed flow).
-- **Don't gatekeep sub-agent effort.** When a sub-agent is
-  spawned, let it do the full thorough job — read every relevant
-  file, walk every section, follow every escalation lead.
-  Sonnet sub-agent tokens come out of the "Weekly · Sonnet only"
-  pool on Max plans, which is a separate budget that empties
-  slowly and often goes unused. Bounding sub-agent output with
-  hard word caps or "≤ N items" limits wastes that pool without
-  improving signal. Keep model assignments (`incident-commander`
-  + `release-captain` + `methodology-scientist` + `quantrank-
-  reviewer` + `financial-engineer` all fable by design; the other 20
-  sonnet) as they are — fable agents land on the "Weekly · all models"
-  pool; sonnet agents drain the underutilized sonnet pool. Tune the
-  5-vs-20 split only when usage data justifies it. **23 of 25 agents
-  carry `effort: max`** (frontmatter) — orthogonal to `model`: `model`
-  picks fable-vs-sonnet, `effort` (low/medium/high/xhigh/max) sets
-  reasoning depth and overrides the session's inherited level. Most
-  agents are open-ended correctness / judgment gates, so max pays back;
-  sonnet-at-max still drains the Sonnet-only pool. **Carve-out (2026-06-03):
-  the two deterministic script-runners — `schema-sentinel` (runs
-  `schema_check`, reports the diff) and `vercel-preview-auditor` (runs a
-  fixed Vercel MCP chain, reports GO/WAIT) — run at `effort: high`, not
-  max** (max reasoning is wasted on a fixed procedure; saves thinking
-  tokens per spawn at no capability cost). A new agent gets `effort: max`
-  unless it's a pure mechanical lookup (then `high`, with a note) —
-  README §Authoring conventions #3.
-- **Prefer delegation to sub-agents** over inline main-session
-  work when both options exist. Main-session tokens land on the
-  "Weekly · all models" pool; sonnet sub-agents land on the
-  separate, often-under-utilized "Weekly · Sonnet only" pool.
-  Route work through sonnet sub-agents proactively to balance
-  pool usage — e.g., when the user edits a scoring file, spawn
-  `defense-layer-auditor` (sonnet) early to walk the diff before
-  the main agent (which costs all-models tokens) synthesizes.
-- **Spawn without asking** for read-only subagents — just spawn
-  and report back. Do not pause the user's flow with "should I
-  spawn X?".
-- **Ask before authorizing the destructive command** a subagent
-  proposes (e.g., `release-captain` emits `git tag` + `git push
-  origin <tag>` — that command needs explicit user authorization
-  per §Executing actions with care).
-- **Skip auto-spawn** if the user explicitly says "skip the X
-  agent", "don't review this one", "I'll handle it manually" —
-  note the skip in chat and proceed.
-- **De-duplicate**: if a subagent ran on the same diff within the
-  last ~10 minutes and the diff hasn't moved, don't re-spawn —
-  point to the prior result instead.
-- **Parallel at gate moments, not on every edit**: when multiple
-  conditional batch-mates fire at the "ready to push" gate, spawn
-  them in parallel — they each have their own context window, and
-  the user gets one consolidated report cycle.
-- **Disable per-session**: user can `/agents` → toggle off any
-  agent they don't want auto-routing this session, or say "spawn
-  only on explicit ask this session" to force the strictest mode.
+- **Route on the handoff line.** Every agent report ends with
+  `HANDOFF · status=… · next=<DONE | SPAWN <agent>:<scope> | ESCALATE
+  <agent>:<why> | NEEDS-USER:<decision>>` — compose next steps
+  dynamically; the 8 flows in
+  [`.claude/agents/README.md`](.claude/agents/README.md) are canonical
+  examples, not an exhaustive script.
+- **Don't gatekeep sub-agent effort** — no word caps / "≤ N items";
+  sonnet tokens drain the under-utilized Sonnet-only pool. Keep the
+  5-fable / 20-sonnet model split and the effort policy (23 of 25 at
+  `effort: max`; the two deterministic script-runners `schema-sentinel`
+  + `vercel-preview-auditor` at `high`; a new agent gets `max` unless
+  it's a pure mechanical lookup). Rationale + authoring conventions:
+  README §Model split + §Authoring #3.
+- **Ask before authorizing a destructive command** an agent proposes
+  (e.g. `release-captain`'s `git tag` + push); honor "skip the X
+  agent" / "I'll handle it manually" — note the skip and proceed.
+- **Parallel at gate moments, not per edit** — batch-mates at the push
+  gate spawn in one message. **De-duplicate**: same agent + same
+  unchanged diff within ~10 min → point at the prior result.
+- **Disable per-session**: `/agents` toggle, or "spawn only on
+  explicit ask this session".
 
 ### Agent-team auto-proposal (Claude proposes, you confirm)
 
-The `delegate-first.sh` hook nudges the orchestrator every turn to
-**proactively propose** an agent-team recipe (don't wait to be asked) when the
-task is team-fit — cross-layer build → **Feature Squad** · new
-flag/threshold/factor → **Methodology Debate** · root-cause-unclear incident →
-**Incident War Room** · big multi-lens PR → **PR Review Crew**. This is
-**propose-not-create**: the feature never spawns a team without the user's
-confirm. On web/mobile (no desktop terminal) propose the **subagent fallback**
-instead — same flow, runs there. Cue→recipe table + fallbacks:
+When the task is team-fit, **proactively propose** the recipe (the
+hook nudges this every turn): cross-layer build → **Feature Squad** ·
+new flag/threshold/factor → **Methodology Debate** · root-cause-unclear
+incident → **Incident War Room** · big multi-lens PR → **PR Review
+Crew**. Propose-not-create — the user confirms; on web/mobile propose
+the subagent fallback (same flow). Cue→recipe table:
 [`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md) §Auto-proposal.
 
 ## Gotchas
@@ -446,200 +316,94 @@ always-loaded context small while preserving discoverability of every invariant.
 - **`HeroAttributeTiles` reserved tiles share the FILLED tile SURFACE**
 - **The ranking-table FLIP reshuffle is SEARCH-SCOPED — never make it fire on a
 - **`exchange_coverage_pct` and `country_coverage_pct` look like siblings but
-- **Whole-app polish conventions (`$impeccable polish "all app"`, 2026-06-03) — empty-state CTA is `disabled` not just styled · a labeled chip inside an `aria-label`'d container is `aria-hidden` · `ring-rose-300` is never a negative chip ring (`-200` only) · detail-page valuation sections own no `mb-*`**
-- **Footer build-version chip = build-time `NEXT_PUBLIC_APP_VERSION` (`next.config.js` git-describe→SHA), never a hardcoded version (in the `AppShell` footer since 2026-06-04; was the removed Sidebar footer before)**
-- **`pillarColor`→`lib/visual` + `flagLabel`→`lib/flag-labels` are SHARED tokens (don't re-inline) — introduced by the now-removed compare/filter, still used by `PillarRadarChart` / `RiskSummaryCard` / `FairPriceCard`**
-- **`globals.css` soft-color `!important` override is LITERAL-class-keyed → it NEVER reaches `dark:bg-emerald-*` / `dark:bg-rose-*` solid-fills (they render RAW Tailwind in dark → white label ~3.8:1, under AA). A dark CTA / brand mark = `dark:bg-emerald-700` (emerald-700 = `#047857`, white 5.5:1) or a `--c-*` token directly, never `dark:bg-emerald-600` expecting the soft remap (theme audit #401)**
-- **The home + ranking pages derive stats from `rankings.json`/`metadata.json` at BUILD TIME (Server Components) — weekly static export, so values are "as of" the last cron, NOT live; never `import lib/data.ts` (or any `fs` module) into a `'use client'` component (resolve on the server, pass the node in as a prop/child). Removed 2026-06-04: the top `MarketStatsBar` strip + `lib/market-stats.ts` + `AppShell` `topBar` slot, AND the standalone `/sectors` + `/movers` routes — the build-time server-component rule lives on via the home + ranking pages**
-- **`data/sp500_membership_historical.csv` (the survivorship ledger behind `members_at()`) must stay ADD/REMOVE-balanced — the reverse-walk reconstructs ~500-503 constituents at EVERY backtest month; run `scripts/verify_membership_ledger.py` after ANY edit (checks the size band 498-506 + that every removed ticker is gone / every added ticker present vs the live universe). Use effective (not announcement) dates + real tickers (SIVB not "SVB"; BX=Blackstone≠BLK=BlackRock); cite the Wikipedia change-history URL (the `press.spglobal.com/<date>-<title>` shape 404s). **Track B 10Y rebuild**: now covers **2016-01-04 .. present** (485 events; `EARLIEST_EVENT_DATE` + the verify `WINDOW_START` both moved 2020→2016). The 2016-01..2026-01-14 portion is snapshot-diff-DERIVED from the fja05680 historical-components dataset and is **RENAME-AWARE** (a symbol change = REMOVE old + ADD new, so `members_at` returns the correct historical ticker — a convention shift vs the prior "renames out of scope" 2020-2026 hand-built rows, which fja05680 cross-validated at the boundary). Tickers normalized to the yfinance dash form (BRK-B/BF-B). The 10Y `backtest_pit.json` reflects this after the DATA-layer extension (`PRICES_PERIOD`/`ANNUAL_HISTORY_YEARS`→10y + the load-bearing `cache-v6-fast` bump for the period-blind caches + `write_benchmarks_json` full-series) AND a cold `backfill_portfolio_pit` dispatch from 2016 (manual — the cold ~60-85m run exceeds the cron 40m folded-step cap; warm fits). ~15-20 pre-2021-renamed tickers' 2016-2020 legs drop (yfinance can't resolve the historical alias)**
-- **The home page IS the AI-pick portfolio (Phase 7.0 PR-4)** — reads `backtest_pit.json` via `getAiPickData()` (fs-read + trim+round to a small client view-model, NEVER a static `import`; the 1.3MB artifact never ships in the page payload; `null` → "backtest pending"). Server resolves → the `'use client'` `AiPickPortfolio` gets it as props (the build-time-data rule). The AI sizes its own basket per rebalance when `nav.adaptive` is present (composite ≥ 65 / floor 5 / cap 20; book = `holdings[:adaptive_count]`, weights = `weights_by_count[adaptive_count]`); the 1-20 slider + `nav.by_count[N]` render only as the legacy fallback for pre-adaptive artifacts; the chart uses the pre-aligned `nav.benchmark`, so `benchmarks.json` is NOT read by the frontend
-- **Per-stock JSON for a dropped ticker (de-listed / renamed, e.g. EPAM / BK→BNY) is auto-pruned by `prune_orphan_stock_files()` (defined in `compute/output/writer.py`, called from `compute/main.py` after `write_rankings_json`; safety floor `_PRUNE_SAFETY_FLOOR=50`; cron `git add` stages the deletes). Don't glob `stocks/` for param-gen — it reads `rankings.json` by design. Full detail: `docs/GOTCHAS.md`**
-- **The home's `AnnualReturnsTable` (calendar-year rows + CAGR footer) + the `NavCompareChart` `money` mode ($10k→$X growth + end-of-line $ labels) are DERIVED in-browser from the NAV series — no schema / compute / `backtest_pit.json` change. The CAGR caveat + AiPickPortfolio footnote are DATA-DRIVEN on `meta.veto_layer_replayed` (PR #451 replays 6-of-7 vetoes; `non_reliance_filing` disclosed-excluded) — never hardcode either state, and never quote a window's result as timeless (5y artifact lost to SPY at every N; the 10y artifact has N≥3 ahead — read the live artifact). Even replayed, the backtest ≠ the live product's track record. Full detail: `docs/GOTCHAS.md`**
-- **Agent teams (experimental, ≠ subagents) — flag `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` enables multi-session teams whose teammates MESSAGE each other + reuse subagent defs as roles; the 2 write-capable Tier-5 builders own DISJOINT layers (`compute-builder`=`compute/**`, `frontend-builder`=`frontend/**`) in a Feature Squad; live teams are desktop-terminal only (every recipe ships a mobile/web subagent fallback); teammates DON'T apply a def's `skills`/`mcpServers` frontmatter (load from settings). Recipes: [`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md)**
-- **Dual-class share count: `shares_outstanding` = SEC companyfacts COMPANY-TOTAL across ALL classes (ASC 260 / RATIFY-B, #374), NOT the listed line's per-class float — it must be class-invariant so the CIK-keyed parquet cache (one file per CIK, both tickers of a pair share it) can't corrupt it. The listed line's own per-class count lives in the additive `shares_outstanding_listed_class` (checksum/display only, NO scoring consumer, cold-path-only). EPS/BVPS/fair-price/market_cap/NSI/Dechow all consume the company-total. Applies to ratio-1 classes only (GOOG/GOOGL · FOX/FOXA · NWS/NWSA via `MULTI_CLASS_OVERCOUNT_ALLOWLIST`); BRK-B (1500:1) stays deferred. Full detail: `docs/GOTCHAS.md`**
+- **Whole-app polish conventions (`$impeccable polish`, 2026-06-03)** — empty-state CTA `disabled` · labeled chip in `aria-label`'d container is `aria-hidden` · negative chip ring is `-200` only · no `mb-*` on valuation sections
+- **Footer build-version chip = build-time `NEXT_PUBLIC_APP_VERSION`, never hardcoded**
+- **`pillarColor`→`lib/visual` + `flagLabel`→`lib/flag-labels` are SHARED tokens — don't re-inline**
+- **`globals.css` soft-color `!important` override is LITERAL-class-keyed — never reaches `dark:` solid-fills (theme audit #401)**
+- **Home + ranking pages derive stats at BUILD TIME (Server Components) — never `fs`-import into a `'use client'` component**
+- **`data/sp500_membership_historical.csv` must stay ADD/REMOVE-balanced — run `scripts/verify_membership_ledger.py` after ANY edit; Track B covers 2016→present, rename-aware**
+- **The home page IS the AI-pick portfolio — `getAiPickData()` fs-read; NEVER static-`import` the 1.3MB `backtest_pit.json`. The AI sizes its own basket when `nav.adaptive` is present (composite ≥ 65 / floor 5 / cap 20); the 1-20 slider + `nav.by_count[N]` are the legacy fallback for pre-adaptive artifacts**
+- **Per-stock JSON for dropped tickers auto-pruned by `prune_orphan_stock_files()` — don't glob `stocks/` for param-gen**
+- **`AnnualReturnsTable` + `NavCompareChart` money mode derive in-browser from NAV; the CAGR caveat is DATA-DRIVEN on `meta.veto_layer_replayed` — never hardcode it, and backtest ≠ live track record**
+- **Agent teams (experimental, ≠ subagents) — desktop-terminal only; builders own disjoint layers; recipes in [`.claude/agents/TEAMS.md`](.claude/agents/TEAMS.md)**
+- **Dual-class `shares_outstanding` = SEC company-TOTAL across classes (ASC 260 / RATIFY-B #374); the per-class count lives in `shares_outstanding_listed_class` (display-only)**
 
 ## Phase status
 
-Current schema **`0.10.17-phase4.6`** on `main` (issue #441 close-out —
-REMOVAL PATCH: the 3 `Metadata.mad_*` diagnostics deleted after the
-pre-registered acceptance gate FAILED on the first real cron — `mad_mom12_corr`
-0.834 / `mad_mom3_corr` 0.807 ≫ the |ρ| < 0.30 line at 99.6% coverage =
-decisive momentum echo; `methodology-scientist` RATIFY-REMOVE, one cron
-decision-grade at ~20 SE. The dead `macd_hist` pillar slot removed in the same
-PR — structurally inert since the float-vs-dict check made it always-NaN →
-skipna-dropped; the technical pillar is now an honest 4-metric mean
-(rsi_dist50 / adx / bb_pctb / mfi). Δcomposite = 0, simulate-proven). Prior
-**`0.10.16-phase4.6`** (issue #441 PR-1 — additive
-3 `Metadata.mad_*` MAD-factor diagnostics: coverage + cross-sectional Spearman
-ρ vs `mom_12_1`/`mom_3_1`; pillar untouched, observability-only, Δscore = 0;
-feeds the PR-2 wiring gate |ρ| < 0.30 + coverage ≥ 90%). Prior
-**`0.10.15-phase4.6`** (#426 Phase 4j.1 — additive
-9 `Metadata.alpha158_*` Qlib observability fields, `OsapGateDiagnostic` reused,
-no new model; observability-only, Δscore = 0). Prior **`0.10.14-phase4.6`**:
-**Phase 7.0 — the
-AI-pick portfolio home + 5-year point-in-time backtest — shipped**
-(#416 → #420: survivorship membership ledger + benchmark export +
-inverse-vol weighting → PIT NAV engine + anti-look-ahead orchestrator →
-NAV-per-holding-count N=1-10 → re-sourced restatement canary +
-result-dependent disclaimer + the real 5y `backtest_pit.json` → the
-AI-pick home page that renders it). The backtest artifact self-carries
-its `meta`, so it required **no `schemas.py` model**; the only Phase 7
-schema change was the additive `Metadata.benchmark_coverage_pct`
-(`0.10.14`, #416 PR-1, atop the prior `0.10.13` `country_coverage_pct`
-strict-resolution canary — see §Gotchas). Prior schema
-**`0.10.12-phase4.6`** on `main` (PR #303 merged
-2026-05-29 `847c21b` — Phase 4.5e PR 6 Form-4 10b5-1 negation guard,
-residual footgun #1 from PR 4-eq; new
-`Metadata.form4_negation_guard_downgrade_count: int | None` counts
-True → False downgrades from the 11-token bidirectional ±5-word-token
-regex wrapping `edgar.ownership.core.detect_10b5_1_plan`. Prior: PR #300
-PATCH bump — new `Metadata.value_trap_risk_delta_by_sector: dict[str,
-int] | None` per methodology-scientist Q2 verdict deferred from PR #294;
-positive value = sector dropped flags after flip per lower sector Ke vs
-flat 10% baseline; populates from cron Run #72+ as Step 8 per-ticker
-loop accumulation). Schema cluster history: PR #297
-Issue #287 PR A `0.10.7 → 0.10.9-phase4.6` (4 new `Metadata.*_wall_clock_seconds`
-fields for Tier-2 / Form-4 / OSAP / Step-8 cross_source loops; paired
-with `compute-rankings.yml` `timeout-minutes: 150 → 195` + cache-
-restore canary; empirically validated on cron Run #71 / `368dccd9` at
-2026-05-28 08:44 UTC). PR #298 cache-v5 bump landed (workflow cache
-key flipped v4 → v5 to force live EDGAR re-fetch on cron Run #72 so
-PR #292 GOOG/GOOGL per-class XBRL override actually fires; Run #71
-confirmed silent-failure pattern via `multi_class_per_class_attempt_count = 0`). Defense layer **33 declared boolean flags** (7 active
-vetoes + 26 annotates + reserved slots; ~27 currently emit;
-`USE_SECTOR_COE = True` post-PR #294 flip). Plus 5 numerical guards
-+ `manipulation_index` rollup. Latest release tag
+Current schema **`0.10.18-phase4.6`** on `main` (#456 — Issue #374
+RATIFY-B dual-class fix: `shares_outstanding` = SEC companyfacts
+COMPANY-TOTAL across classes, additive
+`RawMetrics.shares_outstanding_listed_class`. The cache-v7 bump that
+manifests it landed as #458; first post-bump cron ran 2026-06-11 —
+verify `multi_class_per_class_override_count` = 2 + GOOG ≡ GOOGL
+≈ 12.09B on that artifact). The AI-pick home now sizes its own basket
+(adaptive rule, composite ≥ 65 / floor 5 / cap 20 — see §Gotchas; gates
+A1/A2/B/C tracked on issue #130). The technical
+pillar is an honest 4-metric mean after the #441 MAD close-out
+(`0.10.17`, RATIFY-REMOVE) — **no 5th technical input without a fresh
+pre-registration**. Defense layer **33 declared boolean flags** (7
+active vetoes + 26 annotates + reserved; ~27 emit; `USE_SECTOR_COE =
+True`) + 5 numerical guards + `manipulation_index` rollup. Gate (a)
+verdict (#453): **the veto layer does NOT rescue returns**
+(drawdown-year protection only; bite is 97% `sloan_accruals_top_decile`
+on structural compounders — disposition routed to issue #454 for the Q3
+2026-08-19 cohort audit). Latest release tag
 [**`v1.4.0-phase4.6`**](https://github.com/dackclup/quantrank/releases/tag/v1.4.0-phase4.6)
-(2026-05-27, `bbca9cac`) — Phase 4.6 honest re-validation harness
-(universe survivorship-bias fix per Hou-Xue-Zhang 2020 + rankings.json
-time-series loader + forward-return loader + per-pillar Spearman IC
-+ manipulation-index distribution shift + honest-baseline CLI with
-McLean-Pontiff 2016 32% post-publication decay banner). Post-tag
-production patches: PR #292 schema PATCH `0.10.7 → 0.10.8-phase4.6`
-(Rule 18 disambiguator `multi_class_per_class_attempt_count` for
-the GOOG/GOOGL XBRL concept-name omission fix); PR #293 Site-2 DQIC
-ceiling retirement (NVR FP, methodology-scientist Option C); PR #294
-sector-CoE flip (Issue #67 `USE_SECTOR_COE = True`, Damodaran 2019
-Ch. 8.4 11-sector Ke, `value_trap_risk` 132 → 109 cohort drop).
-Prior tag [**`v1.3.0-phase4.5e`**](https://github.com/dackclup/quantrank/releases/tag/v1.3.0-phase4.5e)
-(2026-05-26, `5db3b978`) — Phase 4.5e Form-4 insider-clustering
-ladder closure + LedgerCraft frontend reskin (defense layer 32 → 33;
-PR #264 `multi_class_aggregate_shares_suspected` + PR #265 DQIC
-site-2 rename `valuation_output_anomalous`).
+(2026-05-27) — Phase 4.6 honest re-validation harness.
 
 Full merged-PR log: [`PHASE_STATUS.md`](PHASE_STATUS.md) (canonical) · [`PHASE_STATUS_INFLIGHT.md`](PHASE_STATUS_INFLIGHT.md) (per-PR) · [`docs/PHASE_STATUS_ARCHIVE.md`](docs/PHASE_STATUS_ARCHIVE.md) (drained prose).
 
 **In flight** (not yet merged on `main`):
-- **feat(portfolio) — ADAPTIVE AI-sized basket, user count slider removed
-  (this PR, 2026-06-11)** — user decision: the AI sizes its own basket each
-  rebalance (1-20 names, count varies by quarter) and the user-facing
-  holding-count slider is retired. Rule: every HC-gated pick with composite
-  ≥ 65, floor 5, cap 20 (= MAX_PICKS) — constants `ADAPTIVE_*` in
-  `scripts/backfill_portfolio_pit.py`; `methodology-scientist` RATIFY
-  2026-06-11 (C1 provenance comment + C2 test pins + C3 gates A1/A2/B/C
-  registered on issue #130). Evidence (production veto-replayed artifact, real engine
-  fns, net 10bps): CAGR 22.8% vs SPY 14.8%, quarterly beat 27/40 (68%),
-  maxDD −32.0% (best of all rules tested), wins BOTH halves of the window;
-  counts 5-13 (mean 8). Canonical-boundary alternatives fail (≥55 inert at
-  mean 19.5 names; ≥70 catastrophic −47% DD); hold-all-HC degenerates to
-  always-20 (all 40 rebalances had ≥ 20 eligible); parameter-free elbow cut
-  collapses to 1-name quarters. Artifact contract: `meta.adaptive_rule` +
-  `nav.adaptive` + `rebalances[*].adaptive_count` (book = holdings prefix;
-  weights = `weights_by_count[adaptive_count]` reused); `by_count` retained
-  for analytics; frontend falls back to the legacy slider UI when
-  `nav.adaptive` is absent so the deploy is safe across the artifact
-  regeneration boundary. Full detail: PHASE_STATUS_INFLIGHT.md.
+- **docs/infra — token-economy optimization + 25-agent model/effort
+  audit (this PR, 2026-06-11)** — stale model refs fixed
+  (release-captain "Opus"→fable; reviewer override row); CLAUDE.md
+  re-drained per its own index rule (routing tables merged, §Phase
+  status + §Gotchas + §Stack/§Layout compressed); `quantrank-reviewer`
+  narrowed to gate-fire only; agent + first-party skill descriptions
+  tightened (boundary prose → bodies); 3 dead skills removed; Supabase
+  / Sentry / Gmail / Drive connectors toggled OFF by policy. Detail:
+  PHASE_STATUS_INFLIGHT.md.
 
-- **chore(ci) — cache-v7 bump: manifest the #374 RATIFY-B fix (this PR,
-  2026-06-11)** — flips the fast cache family `cache-v6-fast → cache-v7-fast`
-  in `compute-rankings.yml` so the next cron cold-fetches fundamentals and
-  repopulates the 6 `MULTI_CLASS_OVERCOUNT_ALLOWLIST` tickers' parquets on
-  the ratified company-total basis (the #456 source fix is latent on warm
-  crons until this lands — PR #298 cache-v5 precedent, taxonomy trigger 3
-  second firing). `backfill-portfolio.yml` `cache-v6 → v7` +
-  `pre-merge-prod-sim.yml` `cache-v5 → v7` move to the SAME family so their
-  prefix restore-keys keep matching the cron's saves — the sim had drifted
-  to the dead v5 family, which post-#456 would have produced phantom
-  GOOG/GOOGL movers on every future PR sim. The rotted
-  `test_workflow_cache_key_is_v5` (matched via the slow-text key substring
-  after the v6-fast bump) is rewritten as
-  `test_workflow_fast_cache_key_is_v7` pinning the FAST key explicitly +
-  full bump-history docstring. Slow-text `cache-v5-text` untouched
-  (run-id idiom, no share data). Expected first-cold-cron evidence:
-  `multi_class_per_class_override_count` back to 2 · GOOG = GOOGL
-  `shares_outstanding` ≈ 12.09B · GOOGL rank ≈ 85 with GOOG adjacent ·
-  `shares_outstanding_listed_class` populated (5.43B / 5.82B). Cold run
-  ~25-50 min, inside `timeout-minutes: 195`.
-
-
-**Next deliverables** (re-scoped 2026-06-10, ordered by decision-value):
-- **1 · Phase 7.0c — PIT veto-layer replay** — **DONE**: code merged (#451),
-  first `veto_layer_replayed=True` artifact ON MAIN (2026-06-10 23:51 UTC
-  cron warm refresh), gate (a) counterfactual tool + verdict docs merged
-  (#453). Gate (a) ANSWERED: the defense layer does not rescue the
-  composite's returns (drawdown-year protection only); the 2025 failure
-  lives in the composite signal itself (Sloan disposition → issue #454,
-  Q3 2026-08-19 cohort audit).
-- **2 · Issue #441 — DONE (closed by the MAD close-out PR, 2026-06-10)** —
-  the acceptance gate FAILED on the first cron (ρ = 0.834 / 0.807 ≫ 0.30 →
-  momentum echo; `methodology-scientist` RATIFY-REMOVE). MAD construct +
-  diagnostics removed (schema `0.10.17`) and the dead `macd_hist` slot deleted
-  with it — the technical pillar is an honest 4-metric mean. NO 5th technical
-  input without a fresh pre-registration (short-term reversal Jegadeesh 1990 /
-  idio-vol Ang-Hodrick-Xing-Zhang 2006 are the screened candidates), and the
-  MAD PR-2 IC-comparison rationale is moot.
-- **3 · Data-integrity hardening sprint** (~1-2w, NEW) — the share-count /
-  extraction corruption cluster (#248 V ~4× no-veto · #374 warm-cache per-class
-  bypass · #376 · #379 · #375 · #385 · #261 · #247/#289 NVR) — **Phase 5 entry
-  gate (b)**.
-- **4 · Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** — **UNBLOCKED**
-  (#287 PR B merged as #431); needs ≥ 1 cron's
-  `form4_rule10b5_one_excluded_count` confirming the -30% to -45% Aboody et
-  al. 2010 §3.2 band, accumulating ahead of the Q3 2026-08-19 cohort audit.
-- **5 · v1.1.0-phase4 tag — RE-GATED** — JKP 4i.1 **dropped** from the hard
-  gate (license #115; WORKFLOW fallback clause); new gate = OSAP 4h.1 (#113) +
-  the 4j.2 Qlib blend decision on ≥ 1 real cron of `Metadata.alpha158_*` IC
-  evidence (PBO ≤ 0.5 + DSR > 0); 4k.1 IPCA (#122) additive, non-blocking.
-- **6 · Phase 5 — ML meta-learner** (~10-12w; unblocks PR 4b §3 IC-decay
-  writer #75) — gated on items 1 + 3 + a Supabase client-wiring pre-PR
-  (§Connectors). Entry gates spelled out in WORKFLOW.md §Phase 5.
-- **7 · Stock-attribute data — Dividend + Security-type tiles** — unchanged,
-  display-only, parallel-safe; full spec in PHASE_STATUS.md §Next deliverables
-  item 7 (yfinance `Ticker.info` / `fast_info.quote_type` + schema triple +
-  `*_coverage_pct` observability-first; tiles auto-promote when non-null).
-- Phase 6 = TEXT-ONLY, Whisper → 6.1 · Phase 7 remainder = **7.1** (gated on
-  the 7.0c baseline + a longer fit window) · Phase 8 = staged S&P 900 pilot
-  with the #249 off-cycle pre-cache as prerequisite — detail in WORKFLOW.md.
+**Next deliverables** (re-scoped 2026-06-11, ordered by decision-value;
+prior items 1-2 — 7.0c gate (a) + issue #441 — are DONE, see
+PHASE_STATUS.md):
+- **1 · Data-integrity hardening sprint** (~1-2w) — the share-count /
+  extraction corruption cluster (#248 V ~4× no-veto · #374 warm-cache
+  bypass · #376 · #379 · #375 · #385 · #261 · #247/#289 NVR) —
+  **Phase 5 entry gate (b)**.
+- **2 · Phase 4.5e PR 5 — cluster weight promotion 5.0 → 7.0** —
+  UNBLOCKED (#287 PR B merged as #431); needs ≥ 1 cron's
+  `form4_rule10b5_one_excluded_count` confirming the Aboody et al. 2010
+  §3.2 −30..−45% band ahead of the Q3 2026-08-19 cohort audit.
+- **3 · v1.1.0-phase4 tag — RE-GATED** — gate = OSAP 4h.1 (#113) + the
+  4j.2 Qlib blend decision on ≥ 1 real cron of `Metadata.alpha158_*` IC
+  evidence (PBO ≤ 0.5 + DSR > 0); 4k.1 IPCA (#122) additive,
+  non-blocking; JKP 4i.1 dropped from the hard gate (license #115).
+- **4 · Phase 5 — ML meta-learner** (~10-12w; unblocks IC-decay writer
+  #75) — gated on item 1 + the 7.0c composite-signal follow-through + a
+  Supabase client-wiring pre-PR (§Connectors). Entry gates: WORKFLOW.md
+  §Phase 5.
+- **5 · Stock-attribute tiles (Dividend + Security-type)** —
+  display-only, parallel-safe; full spec: PHASE_STATUS.md §Next item 7.
+- Phase 6 = TEXT-ONLY (→ 6.1) · Phase 7 remainder = **7.1** (gated on
+  the 7.0c baseline + a longer fit window) · Phase 8 = staged S&P 900
+  pilot (#249 off-cycle pre-cache prerequisite) — detail in WORKFLOW.md.
 
 See [`PHASE_STATUS.md`](PHASE_STATUS.md) for the canonical
 chronological tracker.
 
 ## Agent skills
 
-Per-repo configuration consumed by the vendored mattpocock engineering
-skills (`to-issues`, `to-prd`, et al.). Scaffolded 2026-05-25 via
-`mattpocock-setup-harness`.
-
-### Issue tracker
-
-GitHub Issues at `dackclup/quantrank` via the GitHub MCP server
-(`mcp__github__*` tools — `gh` CLI is not installed in the remote
-execution environment). See [`docs/agents/issue-tracker.md`](docs/agents/issue-tracker.md).
-
-### Domain docs
-
-Single-context. QuantRank's `CONTEXT.md` analog is **multi-file** —
-distributed across CLAUDE.md + docs/METHODOLOGY.md + SKILL.md +
-WORKFLOW.md; the ADR analog is `PHASE_STATUS_INFLIGHT.md` (append-only
-side-file). See [`docs/agents/domain.md`](docs/agents/domain.md) for the
-upstream-instruction-to-QuantRank-file mapping.
-
-### Triage labels
-
-Intentionally NOT scaffolded — the upstream `triage` skill is not
-vendored in QuantRank (skipped at 2026-05-20 base sync), so a triage
-label vocabulary would be dead config. If `triage` is vendored in a
-future sync, re-run `/mattpocock-setup-harness` to add this section.
+Per-repo config for the vendored mattpocock skills (`to-issues`,
+`to-prd`): **issue tracker** = GitHub Issues via the GitHub MCP server
+(`gh` CLI absent in the remote env) —
+[`docs/agents/issue-tracker.md`](docs/agents/issue-tracker.md);
+**domain docs** = QuantRank's CONTEXT.md analog is multi-file
+(CLAUDE.md + docs/METHODOLOGY.md + SKILL.md + WORKFLOW.md) with
+`PHASE_STATUS_INFLIGHT.md` as the ADR analog —
+[`docs/agents/domain.md`](docs/agents/domain.md). **Triage labels**
+intentionally NOT scaffolded (upstream `triage` skill not vendored;
+re-run `/mattpocock-setup-harness` if a future sync adds it).
 
 ## Companion files
 

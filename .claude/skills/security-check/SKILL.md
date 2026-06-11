@@ -1,18 +1,6 @@
 ---
 name: security-check
-description: Audit QuantRank's repo + branch for the security pitfalls specific to
-  a public static-site finance project — committed secrets, dependency CVEs,
-  EDGAR rate-limit violations, output-JSON PII, CI workflow over-permissions,
-  third-party license drift, and dangerous git operations. TRIGGER before
-  every release tag, before any PR that touches CI workflows (`.github/`),
-  before pushing a branch that adds new pip / npm dependencies, before
-  merging anything that adds a new env-var requirement, after a contributor
-  reports a near-miss (e.g., almost-committed-a-token), or when the user
-  asks "is this safe to push?" / "security review" / "check for secrets" /
-  "audit before release". ALSO use periodically (every 4-6 weeks) as a
-  baseline scan. SKIP for routine UI / docs / skills-folder changes that
-  don't touch deps, CI, secrets handling, or compute output schemas — those
-  are sufficiently covered by `pr-iteration-flow`'s standard verification.
+description: Audit repo + branch for the security pitfalls of a public static-site finance project: committed secrets, dependency CVEs, EDGAR rate-limit violations, output-JSON PII, CI workflow over-permissions, license drift, dangerous git ops. TRIGGER: before every release tag, any `.github/` CI-workflow PR, any new pip/npm dep or env-var requirement, after a near-miss, "is this safe to push?" / "security review" / "check for secrets", or as a 4-6-weekly baseline scan.
 ---
 
 # security-check
@@ -242,3 +230,19 @@ This skill is the gate that catches each of those before they ship.
   the public-side leak even if schema-check missed it
 - `pr-iteration-flow` — the broader review workflow; this skill is
   a specific gate within it for high-risk PRs
+
+## Long-form description (moved out of frontmatter 2026-06-11 token drain)
+
+Audit QuantRank's repo + branch for the security pitfalls specific to
+a public static-site finance project — committed secrets, dependency CVEs,
+EDGAR rate-limit violations, output-JSON PII, CI workflow over-permissions,
+third-party license drift, and dangerous git operations. TRIGGER before
+every release tag, before any PR that touches CI workflows (`.github/`),
+before pushing a branch that adds new pip / npm dependencies, before
+merging anything that adds a new env-var requirement, after a contributor
+reports a near-miss (e.g., almost-committed-a-token), or when the user
+asks "is this safe to push?" / "security review" / "check for secrets" /
+"audit before release". ALSO use periodically (every 4-6 weeks) as a
+baseline scan. SKIP for routine UI / docs / skills-folder changes that
+don't touch deps, CI, secrets handling, or compute output schemas — those
+are sufficiently covered by `pr-iteration-flow`'s standard verification.

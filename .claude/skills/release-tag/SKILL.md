@@ -1,6 +1,6 @@
 ---
 name: release-tag
-description: Cut a versioned release for a QuantRank phase-completion PR — bump `pyproject.toml` version, write release notes from the merged-PR log, tag `vX.Y.Z-phase<N>`, push the tag, and create the GitHub release. Codifies the project's release convention so the next release doesn't have to re-derive it. TRIGGER when the user explicitly says "tag release", "cut a release", "release v1.X.Y", "release notes for phase X", "ship the release", "make a tag", or "bump version", and after merging any PR that closes a phase (epic #150 Phase 1 complete, Phase 4.5e ships, etc.). ALSO trigger when the user names a specific version string (e.g., "v1.3.0-phase4.5e") in a context that suggests cutting a release. SKIP for in-flight PRs that haven't merged yet (release tags lag the merge by at least the time it takes to verify the post-merge compute output), for hotfix / patch releases that don't close a phase boundary (those can ship under the existing tag), and for re-running a release that already exists (use `git tag --list` to check first).
+description: Cut a versioned release for a phase-completion PR — bump `pyproject.toml`, draft notes from the merged-PR log, tag `vX.Y.Z-phase<N>`, create the GitHub release via the mobile-operator pre-filled-URL flow. TRIGGER: "tag release" / "cut a release" / "release vX.Y.Z" / "release notes" / "make a tag" / "bump version", or after merging any phase-closing PR.
 ---
 
 # Release Tag Workflow
@@ -332,3 +332,7 @@ After the release lands:
   requires explicit user authorization
 - Not for `frontend/public/data/` weekly compute updates — those are
   not tagged; only phase-completion releases are
+
+## Long-form description (moved out of frontmatter 2026-06-11 token drain)
+
+Cut a versioned release for a QuantRank phase-completion PR — bump `pyproject.toml` version, write release notes from the merged-PR log, tag `vX.Y.Z-phase<N>`, push the tag, and create the GitHub release. Codifies the project's release convention so the next release doesn't have to re-derive it. TRIGGER when the user explicitly says "tag release", "cut a release", "release v1.X.Y", "release notes for phase X", "ship the release", "make a tag", or "bump version", and after merging any PR that closes a phase (epic #150 Phase 1 complete, Phase 4.5e ships, etc.). ALSO trigger when the user names a specific version string (e.g., "v1.3.0-phase4.5e") in a context that suggests cutting a release. SKIP for in-flight PRs that haven't merged yet (release tags lag the merge by at least the time it takes to verify the post-merge compute output), for hotfix / patch releases that don't close a phase boundary (those can ship under the existing tag), and for re-running a release that already exists (use `git tag --list` to check first).

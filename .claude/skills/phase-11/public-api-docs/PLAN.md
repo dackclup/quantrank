@@ -64,7 +64,7 @@ API doc page formalizes this for 3rd-party readers.
    - curl GET
    - Python with `pandas.read_json`
    - JavaScript with `fetch`
-   - MCP server stub (reuses `mcp-builder` skill)
+   - MCP server stub (reuses `mcp-builder` skill — removed 2026-06-11; re-vendor when Phase 11 starts)
 7. **Changelog** — version-by-version diff (from CHANGELOG.md)
 8. **License** — MIT; commercial use prohibited per Disclaimer
 
@@ -76,7 +76,7 @@ API doc page formalizes this for 3rd-party readers.
 | Schema table auto-render from `schema-snapshot.json` | ~250 | 2 |
 | Quickstart + 4 example languages | ~300 | 2 |
 | Versioning + changelog page | ~200 | 1.5 |
-| MCP server stub example (links to vendored `mcp-builder` skill) | ~300 | 2 |
+| MCP server stub example (links to `mcp-builder` skill — removed 2026-06-11; re-vendor when Phase 11 starts) | ~300 | 2 |
 | i18n (TH + EN) | ~800 | 3 |
 | OpenAPI / Swagger generation (optional Phase 11+) | ~400 | 2 |
 | Tests | ~150 | 1 |

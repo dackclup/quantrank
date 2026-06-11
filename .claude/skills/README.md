@@ -39,15 +39,13 @@ populations:
 ├── frontend-design-system/SKILL.md            │ (added PR 4d aftermath)
 ├── thai-token-economy/SKILL.md                ┘ (token-economy 2026-06-03)
 │
-├── algorithmic-art/SKILL.md                   ┐ 17 vendored Anthropic
+├── algorithmic-art/SKILL.md                   ┐ 15 vendored Anthropic (doc-coauthoring + mcp-builder removed 2026-06-11 token drain)
 ├── brand-guidelines/SKILL.md                  │ skills (full upstream
 ├── canvas-design/SKILL.md                     │ snapshot 2026-05-09) —
 ├── claude-api/SKILL.md                        │ also loaded at session
-├── doc-coauthoring/SKILL.md                   │ start
 ├── docx/SKILL.md                              │
 ├── frontend-design/SKILL.md                   │
 ├── internal-comms/SKILL.md                    │
-├── mcp-builder/SKILL.md                       │
 ├── pdf/SKILL.md                               │
 ├── pptx/SKILL.md                              │
 ├── skill-creator/SKILL.md                     │
@@ -135,11 +133,9 @@ marketplace mechanism, no runtime fetch from GitHub.
 | `brand-guidelines` | Apply Anthropic corporate colors / typography to artifacts |
 | `canvas-design` | Static visual design (posters, graphics) as PNG/PDF — includes ~5 MB of font files |
 | `claude-api` | Build/debug Claude API + Anthropic SDK apps; prompt caching; model versioning |
-| `doc-coauthoring` | Structured workflow for collaborative docs / proposals / decision docs |
 | `docx` | Create/edit Word documents (.docx); formatting, tables, tracked changes |
 | `frontend-design` | Production-grade UI; distinctive visual design; avoid AI clichés |
 | `internal-comms` | Template-based internal communications (updates, FAQs, status reports) |
-| `mcp-builder` | Create Model Context Protocol servers in Python (FastMCP) or TypeScript |
 | `pdf` | Read/extract/merge/split PDFs; OCR; encryption; watermarking |
 | `pptx` | Create/edit PowerPoint presentations; templates; layouts; speaker notes |
 | `skill-creator` | Develop, test, iterate, and package Claude skills; eval framework |

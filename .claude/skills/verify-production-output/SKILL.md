@@ -1,20 +1,6 @@
 ---
 name: verify-production-output
-description: >
-  Run a Section A-H verification on the most recent QuantRank compute
-  output (frontend/public/data/metadata.json + stocks/*.json +
-  rankings.json). Surfaces metadata fields, Tier-2 fired-flag
-  inventory, fair-price coverage, data-quality guard counts, Top-5
-  rotation invariants, risk-flag deltas vs baseline, fundamentals
-  latency p50/p95, and universe-size consistency. TRIGGER whenever a
-  weekly compute run lands on main, after any workflow_dispatch
-  completes, before authorizing a PR from Draft to Mark-Ready, before
-  tagging a release, after any change to scoring / risk-overlay /
-  fair-price layers, or when the user just says "verify the output" /
-  "looks good?" / "check the latest run" / "ตรวจ output" / "เช็ค
-  production" — invoke even without naming a section. SKIP if the
-  user is asking about Python test execution against live SEC EDGAR
-  (use network-test-runner) or schema drift only (use schema-check).
+description: Section A-H/L verification of the latest compute output (metadata.json + rankings.json + stocks/*.json): metadata fields, fired-flag inventory, fair-price coverage, data-quality guard counts, Top-5 rotation invariants, flag deltas vs baseline, fundamentals latency p50/p95, universe-size consistency. TRIGGER: a compute run lands on main, any workflow_dispatch completes, pre-Mark-Ready, pre-release, after scoring / risk-overlay / fair-price changes, or "verify the output" / "check the latest run" / "ตรวจ output" / "เช็ค production" — even without naming a section.
 ---
 
 # verify-production-output
@@ -227,3 +213,20 @@ safety net.
 - `top5-rotation-audit` — deep dive on entered_top5 / exited_top5 invariants
 - `pr-iteration-flow` — codifies the broader Draft↔Ready review pattern
   this skill plugs into
+
+## Long-form description (moved out of frontmatter 2026-06-11 token drain)
+
+Run a Section A-H verification on the most recent QuantRank compute
+output (frontend/public/data/metadata.json + stocks/*.json +
+rankings.json). Surfaces metadata fields, Tier-2 fired-flag
+inventory, fair-price coverage, data-quality guard counts, Top-5
+rotation invariants, risk-flag deltas vs baseline, fundamentals
+latency p50/p95, and universe-size consistency. TRIGGER whenever a
+weekly compute run lands on main, after any workflow_dispatch
+completes, before authorizing a PR from Draft to Mark-Ready, before
+tagging a release, after any change to scoring / risk-overlay /
+fair-price layers, or when the user just says "verify the output" /
+"looks good?" / "check the latest run" / "ตรวจ output" / "เช็ค
+production" — invoke even without naming a section. SKIP if the
+user is asking about Python test execution against live SEC EDGAR
+(use network-test-runner) or schema drift only (use schema-check).

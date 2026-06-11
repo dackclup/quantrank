@@ -1,20 +1,6 @@
 ---
 name: branch-collision-check
-description: >
-  Preflight check for QuantRank worker sessions handed off via a
-  prompt. Lists active claude/* branches + recent merged PRs (last 48h) and
-  flags scope-keyword collisions so a duplicate PR (like #123, closed as a
-  duplicate of #119+#121 after 100% wasted effort) doesn't reach Draft. Pure
-  read-only — uses git ls-remote + git log only, no `gh` CLI / GitHub API
-  needed. TRIGGER before creating a new claude/* branch from a handoff prompt,
-  before the first non-trivial file edit on a fresh worker session, when the
-  user mentions a Phase number / issue number / "Item #N" that hasn't been
-  cross-checked against open PRs, or when "do this on a new branch" / "spawn
-  a worker session" appears in the handoff. SKIP for doc-only chores that
-  can't collide on substance (e.g., editing a single comment, fixing a typo),
-  for the second-and-later iterations within the same already-checked
-  session, or when the user has explicitly authorized parallel work on the
-  same scope ("yes I know #119 shipped, also open this from the worker side").
+description: Preflight for worker sessions handed off via prompt: list active claude/* branches + last-48h merged PRs and flag scope-keyword collisions before a duplicate PR reaches Draft. Pure read-only (git ls-remote + git log; no GitHub API). TRIGGER: before creating a claude/* branch from a handoff, before the first non-trivial edit in a fresh worker session, or when a Phase / issue / Item number hasn't been cross-checked against open PRs.
 ---
 
 # branch-collision-check
@@ -121,3 +107,20 @@ directly via PRs #119 (Qlib) + #121 (IPCA). Root cause: the worker
 session never inspected the `claude/*` branch list + recent PRs
 before writing code. This skill exists to make that check
 mandatory before the first edit on a worker session.
+
+## Long-form description (moved out of frontmatter 2026-06-11 token drain)
+
+Preflight check for QuantRank worker sessions handed off via a
+prompt. Lists active claude/* branches + recent merged PRs (last 48h) and
+flags scope-keyword collisions so a duplicate PR (like #123, closed as a
+duplicate of #119+#121 after 100% wasted effort) doesn't reach Draft. Pure
+read-only — uses git ls-remote + git log only, no `gh` CLI / GitHub API
+needed. TRIGGER before creating a new claude/* branch from a handoff prompt,
+before the first non-trivial file edit on a fresh worker session, when the
+user mentions a Phase number / issue number / "Item #N" that hasn't been
+cross-checked against open PRs, or when "do this on a new branch" / "spawn
+a worker session" appears in the handoff. SKIP for doc-only chores that
+can't collide on substance (e.g., editing a single comment, fixing a typo),
+for the second-and-later iterations within the same already-checked
+session, or when the user has explicitly authorized parallel work on the
+same scope ("yes I know #119 shipped, also open this from the worker side").
